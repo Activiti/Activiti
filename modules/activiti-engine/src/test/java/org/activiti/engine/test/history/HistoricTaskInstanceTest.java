@@ -18,6 +18,7 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.task.TaskEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 
@@ -30,13 +31,16 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
   public void testHistoricTaskInstance() {
     String processInstanceId = runtimeService.startProcessInstanceByKey("HistoricTaskInstanceTest").getId();
     
-    String taskId = taskService.createTaskQuery().singleResult().getId();
+    Task runtimeTask = taskService.createTaskQuery().singleResult();
+    String taskId = runtimeTask.getId();
+    String taskDefinitionKey = runtimeTask.getTaskDefinitionKey();
     
     HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().singleResult();
     assertEquals(taskId, historicTaskInstance.getId());
     assertEquals("Clean up", historicTaskInstance.getName());
     assertEquals("Schedule an engineering meeting for next week with the new hire.", historicTaskInstance.getDescription());
     assertEquals("kermit", historicTaskInstance.getAssignee());
+    assertEquals(taskDefinitionKey, historicTaskInstance.getTaskDefinitionKey());
     assertNull(historicTaskInstance.getEndTime());
     assertNull(historicTaskInstance.getDurationInMillis());
     
@@ -48,6 +52,7 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
 
     historicTaskInstance = historyService.createHistoricTaskInstanceQuery().singleResult();
     assertEquals(TaskEntity.DELETE_REASON_COMPLETED, historicTaskInstance.getDeleteReason());
+    assertEquals(taskDefinitionKey, historicTaskInstance.getTaskDefinitionKey());
     assertNotNull(historicTaskInstance.getEndTime());
     assertNotNull(historicTaskInstance.getDurationInMillis());
     
@@ -109,6 +114,10 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskDeleteReason(TaskEntity.DELETE_REASON_COMPLETED).count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskDeleteReason("deleted").count());
     
+    // Task definition ID
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskDefinitionKey("task").count());
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskDefinitionKey("unexistingkey").count());
+    
     // Finished and Unfinished - Add anther other instance that has a running task (unfinished)
     runtimeService.startProcessInstanceByKey("HistoricTaskQueryTest");
     
@@ -131,6 +140,7 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByProcessInstanceId().asc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByTaskDescription().asc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByTaskName().asc().count());    
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByTaskDefinitionKey().asc().count());    
     
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByDeleteReason().desc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByExecutionId().desc().count());    
@@ -140,6 +150,7 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByProcessInstanceId().desc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByTaskDescription().desc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByTaskName().desc().count());    
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByTaskDefinitionKey().desc().count());    
   }
   
   public void testInvalidSorting() {

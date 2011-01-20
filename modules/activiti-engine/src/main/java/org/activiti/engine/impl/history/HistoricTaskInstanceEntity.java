@@ -32,6 +32,7 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
   protected String name;
   protected String description;
   protected String assignee;
+  protected String taskDefinitionKey;
 
   public HistoricTaskInstanceEntity() {
   }
@@ -47,6 +48,7 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
     this.description = task.getDescription();
     this.assignee = task.getAssignee();
     this.startTime = ClockUtil.getCurrentTime();
+    this.taskDefinitionKey = task.getTaskDefinitionKey();
   }
 
   // persistence //////////////////////////////////////////////////////////////
@@ -58,6 +60,7 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
     persistentState.put("endTime", endTime);
     persistentState.put("durationInMillis", durationInMillis);
     persistentState.put("deleteReason", deleteReason);
+    persistentState.put("taskDefinitionKey", taskDefinitionKey);
     return persistentState;
   }
 
@@ -86,6 +89,12 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
   }
   public void setAssignee(String assignee) {
     this.assignee = assignee;
+  }
+  public String getTaskDefinitionKey() {
+    return taskDefinitionKey;
+  }
+  public void setTaskDefinitionKey(String taskDefinitionKey) {
+    this.taskDefinitionKey = taskDefinitionKey;
   }
   
 }

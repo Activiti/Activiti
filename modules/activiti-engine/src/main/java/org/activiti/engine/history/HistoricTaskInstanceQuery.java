@@ -13,7 +13,9 @@
 
 package org.activiti.engine.history;
 
+import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.query.Query;
+import org.activiti.engine.task.Task;
 
 
 /**
@@ -60,6 +62,13 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
    * The syntax that should be used is the same as in SQL, eg. %activiti%.
    */
   HistoricTaskInstanceQuery taskDescriptionLike(String taskDescriptionLike);
+  
+  /**
+   * Only select historic task instances with the given task definition key.
+   * @see Task#getTaskDefinitionKey()
+   * @see TaskDefinition#getKey()
+   */
+  HistoricTaskInstanceQuery taskDefinitionKey(String taskDefinitionKey);
   
   /** Only select historic task instances with the given task delete reason. */
   HistoricTaskInstanceQuery taskDeleteReason(String taskDeleteReason);
@@ -124,4 +133,7 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
   
   /** Order by task delete reason (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricTaskInstanceQuery orderByDeleteReason();
+
+  /** Order by task definition key (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  HistoricTaskInstanceQuery orderByTaskDefinitionKey();
 }

@@ -38,6 +38,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
   protected String taskDeleteReasonLike;
   protected String taskAssignee;
   protected String taskAssigneeLike;
+  protected String taskDefinitionKey;
   protected boolean finished;
   protected boolean unfinished;
 
@@ -130,6 +131,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
     this.unfinished = true;
     return this;
   }
+  
+  public HistoricTaskInstanceQuery taskDefinitionKey(String taskDefinitionKey) {
+    this.taskDefinitionKey = taskDefinitionKey;
+    return this;
+  }
 
   // ordering /////////////////////////////////////////////////////////////////
 
@@ -182,6 +188,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
     orderBy(HistoricTaskInstanceQueryProperty.DELETE_REASON);
     return this;
   }
+  
+  public HistoricTaskInstanceQuery orderByTaskDefinitionKey() {
+    orderBy(HistoricTaskInstanceQueryProperty.TASK_DEFINITION_KEY);
+    return this;
+  }
 
   // getters and setters //////////////////////////////////////////////////////
   
@@ -229,5 +240,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
   }
   public String getTaskId() {
     return taskId;
+  }
+  public String getTaskDefinitionKey() {
+    return taskDefinitionKey;
   }
 }

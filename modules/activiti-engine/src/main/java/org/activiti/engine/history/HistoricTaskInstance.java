@@ -59,4 +59,7 @@ public interface HistoricTaskInstance {
 
   /** Difference between {@link #getEndTime()} and {@link #getStartTime()} in milliseconds.  */
   Long getDurationInMillis();
+  
+  /** Task definition key. */
+  String getTaskDefinitionKey();
 }

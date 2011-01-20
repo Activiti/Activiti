@@ -405,6 +405,17 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   public void setTaskDefinition(TaskDefinition taskDefinition) {
     this.taskDefinition = taskDefinition;
     this.taskDefinitionKey = taskDefinition.getKey();
+    
+    CommandContext commandContext = CommandContext.getCurrent();
+    if(commandContext != null) {
+      int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
+      if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+        HistoricTaskInstanceEntity historicTaskInstance = commandContext.getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, id);
+        if (historicTaskInstance!=null) {
+          historicTaskInstance.setTaskDefinitionKey(this.taskDefinitionKey);
+        }
+      }
+    }
   }
 
   public TaskDefinition getTaskDefinition() {
@@ -490,6 +501,17 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   
   public void setTaskDefinitionKey(String taskDefinitionKey) {
     this.taskDefinitionKey = taskDefinitionKey;
+    
+    CommandContext commandContext = CommandContext.getCurrent();
+    if(commandContext != null) {
+      int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
+      if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+        HistoricTaskInstanceEntity historicTaskInstance = commandContext.getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, id);
+        if (historicTaskInstance!=null) {
+          historicTaskInstance.setTaskDefinitionKey(this.taskDefinitionKey);
+        }
+      }
+    }
   }
 
   public String getEventName() {

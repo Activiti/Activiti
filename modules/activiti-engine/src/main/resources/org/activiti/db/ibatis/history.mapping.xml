@@ -250,7 +250,8 @@
         START_TIME_,
         END_TIME_,
         DURATION_,
-        DELETE_REASON_
+        DELETE_REASON_,
+        TASK_DEF_KEY_
       ) values (
         #{id ,jdbcType=VARCHAR},
         #{processDefinitionId, jdbcType=VARCHAR},
@@ -262,7 +263,8 @@
         #{startTime, jdbcType=TIMESTAMP},
         #{endTime, jdbcType=TIMESTAMP},
         #{durationInMillis ,jdbcType=BIGINT},
-        #{deleteReason ,jdbcType=BIGINT}
+        #{deleteReason ,jdbcType=BIGINT},
+        #{taskDefinitionKey ,jdbcType=VARCHAR}
       )
   </insert>
 
@@ -274,7 +276,8 @@
       ASSIGNEE_ = #{assignee, jdbcType=VARCHAR},
       END_TIME_ = #{endTime, jdbcType=TIMESTAMP},
       DURATION_ = #{durationInMillis ,jdbcType=BIGINT},
-      DELETE_REASON_ = #{deleteReason ,jdbcType=VARCHAR}
+      DELETE_REASON_ = #{deleteReason ,jdbcType=VARCHAR},
+      TASK_DEF_KEY_ = #{taskDefinitionKey ,jdbcType=VARCHAR}
     where ID_ = #{id}
   </update>
 
@@ -302,6 +305,7 @@
     <result property="endTime" column="END_TIME_" jdbcType="TIMESTAMP" />
     <result property="durationInMillis" column="DURATION_" jdbcType="BIGINT" />
     <result property="deleteReason" column="DELETE_REASON_" jdbcType="VARCHAR" />
+    <result property="taskDefinitionKey" column="TASK_DEF_KEY_" jdbcType="VARCHAR" />
   </resultMap>
 
   <!-- HISTORIC TASK INSTANCE SELECT -->
@@ -334,6 +338,9 @@
       </if>
       <if test="processInstanceId != null">
         and HTI.PROC_INST_ID_ = #{processInstanceId}
+      </if>
+      <if test="taskDefinitionKey != null">
+        and HTI.TASK_DEF_KEY_ = #{taskDefinitionKey}
       </if>
       <if test="executionId != null">
         and HTI.EXECUTION_ID_ = #{executionId}
