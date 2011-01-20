@@ -13,7 +13,6 @@
 
 package org.activiti.engine.history;
 
-import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.query.Query;
 import org.activiti.engine.task.Task;
 
@@ -66,7 +65,6 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
   /**
    * Only select historic task instances with the given task definition key.
    * @see Task#getTaskDefinitionKey()
-   * @see TaskDefinition#getKey()
    */
   HistoricTaskInstanceQuery taskDefinitionKey(String taskDefinitionKey);
   
