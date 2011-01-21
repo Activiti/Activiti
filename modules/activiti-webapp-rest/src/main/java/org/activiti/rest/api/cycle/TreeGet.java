@@ -33,16 +33,16 @@ import org.springframework.extensions.webscripts.Status;
  */
 public class TreeGet extends ActivitiCycleWebScript {
 
-//  private static Logger log = Logger.getLogger(TreeGet.class.getName());
+  // private static Logger log = Logger.getLogger(TreeGet.class.getName());
 
   @Override
   protected void execute(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     RepositoryNodeCollection rootNodes = this.repositoryService.getChildren("/", "");
     List<TreeFolderDto> tree = new ArrayList<TreeFolderDto>();
-    for(RepositoryNode repositoryNode : rootNodes.asList()) {
-      tree.add(new TreeFolderDto((RepositoryFolder)repositoryNode));
+    for (RepositoryNode repositoryNode : rootNodes.asList()) {
+      tree.add(new TreeFolderDto((RepositoryFolder) repositoryNode));
     }
-    
+
     String connectorId = req.getString("connectorId");
     String nodeId = req.getString("nodeId");
     if (connectorId != null && nodeId != null) {
@@ -56,16 +56,16 @@ public class TreeGet extends ActivitiCycleWebScript {
         nodeDto = new TreeFolderDto((RepositoryFolder) node);
         nodeDto.setExpanded(String.valueOf(Boolean.TRUE));
       }
-      
+
       String parentFolderId = node.getMetadata().getParentFolderId();
-      while(parentFolderId != null && !parentFolderId.equals("/")) {
+      while (parentFolderId != null && parentFolderId.length() > 0 && !parentFolderId.equals("/")) {
         node = this.repositoryService.getRepositoryNode(connectorId, parentFolderId);
-        TreeFolderDto parentNodeDto = new TreeFolderDto((RepositoryFolder)node);
+        TreeFolderDto parentNodeDto = new TreeFolderDto((RepositoryFolder) node);
         parentNodeDto.setExpanded(String.valueOf(Boolean.TRUE));
 
         List<TreeNodeDto> dtoChildren = new ArrayList<TreeNodeDto>();
         for (RepositoryNode currentNode : this.repositoryService.getChildren(connectorId, node.getNodeId()).asList()) {
-          if(currentNode.getNodeId().equals(nodeDto.getArtifactId())) {
+          if (currentNode.getNodeId().equals(nodeDto.getArtifactId())) {
             dtoChildren.add(nodeDto);
           } else if (currentNode instanceof RepositoryArtifact) {
             dtoChildren.add(new TreeArtifactDto((RepositoryArtifact) currentNode));
@@ -74,14 +74,14 @@ public class TreeGet extends ActivitiCycleWebScript {
           }
         }
         parentNodeDto.setChildren(dtoChildren);
-        
+
         parentFolderId = node.getMetadata().getParentFolderId();
         nodeDto = parentNodeDto;
       }
-      
-      for(TreeNodeDto treeNode : tree) {
-        if(treeNode.getConnectorId().equals(connectorId)) {
-          ((TreeFolderDto)treeNode).setChildren(((TreeFolderDto)nodeDto).getChildren());
+
+      for (TreeNodeDto treeNode : tree) {
+        if (treeNode.getConnectorId().equals(connectorId)) {
+          ((TreeFolderDto) treeNode).setChildren(((TreeFolderDto) nodeDto).getChildren());
           treeNode.setExpanded(String.valueOf(Boolean.TRUE));
         }
       }

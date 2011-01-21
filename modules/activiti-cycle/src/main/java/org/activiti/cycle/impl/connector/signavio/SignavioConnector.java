@@ -301,6 +301,7 @@ public class SignavioConnector extends AbstractRepositoryConnector implements Si
     String parent = json.optString("parent");
     if (parent != null) {
       String parentId = getConfiguration().getModelIdFromUrl(parent);
+      parentId = parentId.replace("/directory", "");      
       fileInfo.getMetadata().setParentFolderId(parentId);
     }
 
@@ -772,7 +773,7 @@ public class SignavioConnector extends AbstractRepositoryConnector implements Si
       path = path + "/";
     }
     setConfigValue(CONFIG_KEY_SIGNAVIO_BASE_URL, path);
-    String type = getConfigValue(CONFIG_KEY_TYPE,String.class);
+    String type = getConfigValue(CONFIG_KEY_TYPE, String.class);
     if ("oryx".equals(type)) {
       configuration = new OryxConnectorConfiguration(this);
     } else {
