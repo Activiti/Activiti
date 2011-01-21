@@ -114,4 +114,19 @@ public interface CycleConfigurationService {
    */
   public void updateRepositoryConnectorConfiguration(String configurationClass, String configurationId, Map<String, String> values);
 
+  /**
+   * Retrieve a global configuration value
+   */
+  public String getConfigurationValue(String groupId, String key);
+
+  /**
+   * set a global configuration value
+   */
+  public void setConfigurationValue(String groupId, String key, String value);
+
+  /**
+   * set a global configuration value, providing a default value
+   */
+  public String getConfigurationValue(String groupId, String key, String defaultValue);
+
 }

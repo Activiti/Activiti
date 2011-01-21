@@ -4,7 +4,6 @@ import org.activiti.cycle.context.CycleApplicationContext;
 import org.activiti.cycle.context.CycleMapContext;
 import org.activiti.cycle.context.CycleRequestContext;
 import org.activiti.cycle.context.CycleSessionContext;
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.junit.After;
 import org.junit.Before;
 

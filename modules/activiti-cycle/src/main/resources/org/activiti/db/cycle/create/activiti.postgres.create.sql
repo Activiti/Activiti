@@ -10,6 +10,14 @@ create table ACT_CY_CONN_CONFIG (
 	primary key (ID_)
 );
 
+create table ACT_CY_CONFIG (
+	ID_ varchar(255) NOT NULL,
+	GROUP_ varchar(255) NOT NULL,
+	KEY_ varchar(255) NOT NULL,
+	VALUE_ varchar(255),
+	primary key (ID_)
+);
+
 create table ACT_CY_LINK (
 	ID_ varchar(255) NOT NULL,
 	SOURCE_CONNECTOR_ID_ varchar(255),

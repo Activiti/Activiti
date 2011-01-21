@@ -44,11 +44,13 @@ public class CycleServiceConfiguration {
     // wire-up
     repositoryService.setLinkDao(dao);
     configurationService.setCycleConfigurationDao(dao);
+    configurationService.setCycleRepositoryConnectorConfigurationDao(dao);
     tagService.setTagDao(dao);
     commentService.setTagDao(dao);
     repositoryService.setCycleServiceConfiguration(this);
     tagService.setCycleServiceConfiguration(this);
     configurationService.setCycleServiceConfiguration(this);
+    
   }
 
   private void initializeServices() {

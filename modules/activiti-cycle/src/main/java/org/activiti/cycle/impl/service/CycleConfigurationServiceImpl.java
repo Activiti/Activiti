@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.text.html.parser.Entity;
+
 import org.activiti.cycle.CycleComponentFactory;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryConnectorConfiguration;
@@ -13,7 +15,9 @@ import org.activiti.cycle.context.CycleSessionContext;
 import org.activiti.cycle.impl.components.RuntimeConnectorList;
 import org.activiti.cycle.impl.conf.RepositoryConfigurationHandler;
 import org.activiti.cycle.impl.conf.RepositoryConnectorConfigurationImpl;
+import org.activiti.cycle.impl.db.CycleConfigurationDao;
 import org.activiti.cycle.impl.db.CycleRepositoryConnectorConfigurationDao;
+import org.activiti.cycle.impl.db.entity.CycleConfigEntity;
 import org.activiti.cycle.service.CycleConfigurationService;
 
 /**
@@ -23,7 +27,9 @@ import org.activiti.cycle.service.CycleConfigurationService;
  */
 public class CycleConfigurationServiceImpl implements CycleConfigurationService {
 
-  private CycleRepositoryConnectorConfigurationDao cycleConfigurationDao;
+  private CycleRepositoryConnectorConfigurationDao cycleRepositoryConnectorConfigurationDao;
+
+  private CycleConfigurationDao cycleConfigurationDao;
 
   private CycleServiceConfiguration cycleServiceConfiguration;
 
@@ -41,8 +47,12 @@ public class CycleConfigurationServiceImpl implements CycleConfigurationService 
     this.cycleServiceConfiguration = cycleServiceConfiguration;
   }
 
-  public void setCycleConfigurationDao(CycleRepositoryConnectorConfigurationDao cycleConfigurationDao) {
+  public void setCycleConfigurationDao(CycleConfigurationDao cycleConfigurationDao) {
     this.cycleConfigurationDao = cycleConfigurationDao;
+  }
+
+  public void setCycleRepositoryConnectorConfigurationDao(CycleRepositoryConnectorConfigurationDao cycleRepositoryConnectorConfigurationDao) {
+    this.cycleRepositoryConnectorConfigurationDao = cycleRepositoryConnectorConfigurationDao;
   }
 
   protected String getCurrentUserId() {
@@ -83,7 +93,7 @@ public class CycleConfigurationServiceImpl implements CycleConfigurationService 
     if (currentUserId == null) {
       throw new IllegalArgumentException("currentUserId must not be null. Set 'cuid' in Cycle Session Context.");
     }
-    List<RepositoryConnectorConfiguration> configurations = cycleConfigurationDao.getRepositoryConnectorConfigurationsForUser(currentUserId);
+    List<RepositoryConnectorConfiguration> configurations = cycleRepositoryConnectorConfigurationDao.getRepositoryConnectorConfigurationsForUser(currentUserId);
     return configurations;
   }
 
@@ -154,7 +164,7 @@ public class CycleConfigurationServiceImpl implements CycleConfigurationService 
       RepositoryConfigurationHandler.setConfigurationfields(values, repositoryConnectorConfiguration);
 
       // store configuration container
-      cycleConfigurationDao.saveConfiguration(repositoryConnectorConfiguration);
+      cycleRepositoryConnectorConfigurationDao.saveConfiguration(repositoryConnectorConfiguration);
 
       // update runtime connectors:
       RuntimeConnectorList runtimeConnectorList = CycleSessionContext.get(RuntimeConnectorList.class);
@@ -180,6 +190,31 @@ public class CycleConfigurationServiceImpl implements CycleConfigurationService 
       result.put(name, componentName);
     }
     return result;
+  }
+
+  public String getConfigurationValue(String groupId, String key) {
+    CycleConfigEntity entity = cycleConfigurationDao.selectCycleConfigByGroupAndKey(groupId, key);
+    if (entity == null) {
+      return null;
+    }
+    return entity.getValue();
+  }
+
+  public void setConfigurationValue(String groupId, String key, String value) {
+    CycleConfigEntity entity = cycleConfigurationDao.selectCycleConfigByGroupAndKey(groupId, key);
+    if (entity == null) {
+      entity = new CycleConfigEntity();
+    }
+    entity.setValue(value);
+    cycleConfigurationDao.saveCycleConfig(entity);
+  }
+
+  public String getConfigurationValue(String groupId, String key, String defaultValue) {
+    String value = getConfigurationValue(groupId, key);
+    if (value == null) {
+      return defaultValue;
+    }
+    return value;
   }
 
 }

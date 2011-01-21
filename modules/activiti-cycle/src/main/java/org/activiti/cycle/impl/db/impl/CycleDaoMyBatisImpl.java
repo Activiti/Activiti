@@ -3,7 +3,6 @@ package org.activiti.cycle.impl.db.impl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -13,10 +12,12 @@ import org.activiti.cycle.RepositoryConnectorConfiguration;
 import org.activiti.cycle.impl.CycleTagContentImpl;
 import org.activiti.cycle.impl.conf.RepositoryConnectorConfigurationImpl;
 import org.activiti.cycle.impl.db.CycleCommentDao;
+import org.activiti.cycle.impl.db.CycleConfigurationDao;
 import org.activiti.cycle.impl.db.CycleRepositoryConnectorConfigurationDao;
 import org.activiti.cycle.impl.db.CycleLinkDao;
 import org.activiti.cycle.impl.db.CyclePeopleLinkDao;
 import org.activiti.cycle.impl.db.CycleTagDao;
+import org.activiti.cycle.impl.db.entity.CycleConfigEntity;
 import org.activiti.cycle.impl.db.entity.CycleRepositoryConnectorConfigurationEntity;
 import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity;
 import org.activiti.cycle.impl.db.entity.RepositoryNodeCommentEntity;
@@ -27,7 +28,7 @@ import org.activiti.engine.identity.Group;
 import org.apache.ibatis.session.SqlSession;
 
 public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements CycleCommentDao, CycleRepositoryConnectorConfigurationDao, CycleLinkDao,
-        CyclePeopleLinkDao, CycleTagDao {
+        CyclePeopleLinkDao, CycleTagDao, CycleConfigurationDao {
 
   private static Logger log = Logger.getLogger(CycleDaoMyBatisImpl.class.getName());
 
@@ -320,6 +321,62 @@ public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements 
     SqlSession session = openSession();
     try {
       return (List<CycleRepositoryConnectorConfigurationEntity>) session.selectList("selectRepositoryConnectorConfigurationByGroup", id);
+    } finally {
+      session.close();
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<CycleConfigEntity> selectCycleConfigById(String id) {
+    SqlSession session = openSession();
+    try {
+      return (List<CycleConfigEntity>) session.selectList("selectCycleConfigById", id);
+    } finally {
+      session.close();
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<CycleConfigEntity> selectCycleConfigByGroup(String group) {
+    SqlSession session = openSession();
+    try {
+      return (List<CycleConfigEntity>) session.selectList("selectCycleConfigByGroup", group);
+    } finally {
+      session.close();
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public CycleConfigEntity selectCycleConfigByGroupAndKey(String group, String key) {
+    SqlSession session = openSession();
+    try {
+      CycleConfigEntity exampleEntity = new CycleConfigEntity();
+      exampleEntity.setGroupName(group);
+      exampleEntity.setKey(key);
+      return (CycleConfigEntity) session.selectOne("selectCycleConfigByGroupAndKey", exampleEntity);
+    } finally {
+      session.close();
+    }
+  }
+
+  public void saveCycleConfig(CycleConfigEntity entity) {
+    SqlSession session = openSession();
+    try {
+      if (null != entity.getId()) {
+        session.update("updateCycleConfigById", entity);
+      } else {
+        CycleConfigEntity existingEntity = selectCycleConfigByGroupAndKey(entity.getGroupName(), entity.getKey());
+        if (existingEntity != null) {
+          throw new RuntimeException("An entity with key '" + entity.getKey() + "' and group '" + entity.getGroupName() + "' already exists. ");
+        }
+        entity.setId(UUID.randomUUID().toString());
+        session.insert("insertCycleConfig", entity);
+      }
+      session.commit();
+    } catch (Exception e) {
+      log.log(Level.WARNING, "Could not update " + entity, e);
+      session.rollback();
+      throw new RuntimeException(e);
     } finally {
       session.close();
     }
