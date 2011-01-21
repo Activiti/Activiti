@@ -99,6 +99,11 @@
 	  <artifactId>postgresql</artifactId>
       <scope>test</scope>
 	</dependency>
+	<dependency>
+	  <groupId>net.sourceforge.jtds</groupId>
+	  <artifactId>jtds</artifactId>
+	  <scope>test</scope>
+	</dependency>
 
 </dependencies>
 

@@ -338,8 +338,8 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
           </row>
           <row>
             <entry>mssql</entry>
-            <entry></entry>
-            <entry>not yet supported (coming soon)</entry>
+            <entry>2008 using JDBC jtds-1.2.4</entry>
+            <entry><link linkend="experimental"><emphasis role="bold">[EXPERIMENTAL]</emphasis></link></entry>
           </row>
         </tbody>
       </tgroup>

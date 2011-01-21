@@ -54,8 +54,8 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     assertTrue(assigneeIndex >= 0);
     assertTrue(createTimeIndex >= 0);
     
-    assertOneOf(new String [] {"VARCHAR", "NVARCHAR2"}, tableMetaData.getColumnTypes().get(assigneeIndex));
-    assertOneOf(new String [] {"TIMESTAMP", "TIMESTAMP(6)"}, tableMetaData.getColumnTypes().get(createTimeIndex));
+    assertOneOf(new String [] {"VARCHAR", "NVARCHAR2", "nvarchar"}, tableMetaData.getColumnTypes().get(assigneeIndex));
+    assertOneOf(new String [] {"TIMESTAMP", "TIMESTAMP(6)", "datetime"}, tableMetaData.getColumnTypes().get(createTimeIndex));
   }
   
   private void assertOneOf(String[] possibleValues, String currentValue) {
