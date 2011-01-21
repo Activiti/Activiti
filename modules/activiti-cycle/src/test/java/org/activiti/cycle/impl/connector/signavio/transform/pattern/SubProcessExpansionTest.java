@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
+import org.activiti.cycle.impl.ActivitiCycleTest;
 import org.activiti.cycle.impl.connector.fs.FileSystemConnector;
 import org.activiti.cycle.impl.connector.fs.SignavioFileSystemConnector;
 import org.activiti.cycle.impl.connector.signavio.transform.JsonTransformer;
@@ -16,7 +17,7 @@ import org.json.JSONException;
 import org.junit.Test;
 
 
-public class SubProcessExpansionTest {
+public class SubProcessExpansionTest extends ActivitiCycleTest {
 
   @Test
   public void testGetModelIdFromSignavioUrl() throws UnsupportedEncodingException {

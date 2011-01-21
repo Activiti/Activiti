@@ -2,10 +2,11 @@ package org.activiti.cycle.impl.connector.signavio.util;
 
 import static org.junit.Assert.*;
 
+import org.activiti.cycle.impl.ActivitiCycleTest;
 import org.junit.Test;
 
 
-public class CustomPropertyTest {
+public class CustomPropertyTest extends ActivitiCycleTest {
 
   @Test
   public void testGetValue() {

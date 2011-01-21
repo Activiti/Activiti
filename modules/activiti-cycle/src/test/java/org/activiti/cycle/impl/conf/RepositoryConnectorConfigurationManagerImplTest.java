@@ -1,11 +1,12 @@
 package org.activiti.cycle.impl.conf;
 
+import org.activiti.cycle.impl.ActivitiCycleTest;
 import org.activiti.engine.ProcessEngines;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class RepositoryConnectorConfigurationManagerImplTest {
+public class RepositoryConnectorConfigurationManagerImplTest extends ActivitiCycleTest{
 
   @BeforeClass
   public static void setUp() throws Exception {

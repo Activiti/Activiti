@@ -10,13 +10,14 @@ import org.activiti.cycle.ContentRepresentation;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryNode;
+import org.activiti.cycle.impl.ActivitiCycleTest;
 import org.activiti.cycle.service.CycleContentService;
 import org.activiti.cycle.service.CycleServiceFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class FileSystemConnectorTest {
+public class FileSystemConnectorTest extends ActivitiCycleTest {
 
   private static Logger log = Logger.getLogger(FileSystemConnectorTest.class.getName());
 
