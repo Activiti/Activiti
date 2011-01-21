@@ -94,7 +94,6 @@ public class FormDto {
     }
 
     strb.append("</table>");
-    System.out.println(strb);
     return strb.toString();
   }
 

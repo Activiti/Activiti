@@ -629,6 +629,7 @@
         <module>modules/activiti-osgi</module>
         <module>modules/activiti-osgi-rest</module>
 	<module>modules/activiti-camel</module>
+	<module>modules/activiti-jbpm-migration</module>
       </modules>
     </profile>
     <profile>

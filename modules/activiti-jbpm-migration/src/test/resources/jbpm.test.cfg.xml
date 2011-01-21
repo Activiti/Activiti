@@ -1,0 +1,55 @@
+<jbpm-configuration>
+  
+  <jbpm-context>
+    <service name="authentication" factory="org.jbpm.security.authentication.DefaultAuthenticationServiceFactory" />
+    <service name="logging" factory="org.jbpm.logging.db.DbLoggingServiceFactory" />
+    <service name="message" factory="org.jbpm.msg.db.DbMessageServiceFactory" />
+    <service name="persistence" factory="org.jbpm.persistence.db.DbPersistenceServiceFactory" />
+    <service name="scheduler" factory="org.jbpm.scheduler.db.DbSchedulerServiceFactory" />
+    <service name="tx" factory="org.jbpm.tx.TxServiceFactory" />
+  </jbpm-context>
+  
+  <!-- configuration property used by persistence service impl org.jbpm.persistence.db.DbPersistenceServiceFactory -->
+  <string name="resource.hibernate.cfg.xml" value="hibernate.test.cfg.xml" />
+
+  <!-- configuration resource files pointing to default configuration files in jbpm-{version}.jar -->
+  <string name="resource.business.calendar" value="org/jbpm/calendar/jbpm.business.calendar.properties" />
+  <string name="resource.default.modules" value="org/jbpm/graph/def/jbpm.default.modules.properties" />
+  <string name="resource.converter" value="org/jbpm/db/hibernate/jbpm.converter.properties" />
+  <string name="resource.action.types" value="org/jbpm/graph/action/action.types.xml" />
+  <string name="resource.node.types" value="org/jbpm/graph/node/node.types.xml" />
+  <string name="resource.parsers" value="org/jbpm/jpdl/par/jbpm.parsers.xml" />
+  <string name="resource.varmapping" value="org/jbpm/context/exe/jbpm.varmapping.xml" />
+  <string name="resource.mail.templates" value="jbpm.mail.templates.xml" />
+
+  <!-- class loading -->
+  <!-- <string name="jbpm.classLoader" value="jbpm" />
+       <string name="jbpm.customClassLoader.className" value="com...MyClassLoaderUtil" /> 
+       <bean name="jbpm.processClassLoader" class="org.jbpm.instantiation.DefaultProcessClassLoaderFactory" singelton="true" />-->
+
+  <!-- make sure the block size matches the length in ByteArray.hbm.xml -->
+  <int    name="jbpm.byte.block.size" value="1024" singleton="true" />
+  <bean   name="jbpm.task.instance.factory" class="org.jbpm.taskmgmt.impl.DefaultTaskInstanceFactoryImpl" singleton="true" />
+  <bean   name="jbpm.variable.resolver" class="org.jbpm.jpdl.el.impl.JbpmVariableResolver" singleton="true" />
+  
+  <!-- 
+  <string name="jbpm.mail.smtp.host" value="localhost" />
+  <bean   name="jbpm.mail.address.resolver" class="org.jbpm.identity.mail.IdentityAddressResolver" singleton="true" />
+  <string name="jbpm.mail.from.address" value="jbpm@noreply" />
+  -->
+  
+  <!--
+  <bean name="jbpm.job.executor" class="org.jbpm.job.executor.JobExecutor">
+    <field name="jbpmConfiguration"><ref bean="jbpmConfiguration" /></field>
+    <field name="name"><string value="JbpmJobExecutor" /></field>
+    <field name="nbrOfThreads"><int value="1" /></field>
+    <field name="idleInterval"><int value="5000" /></field>
+    <field name="maxIdleInterval"><int value="3600000" /></field> 
+    <field name="historyMaxSize"><int value="20" /></field>
+    <field name="maxLockTime"><int value="600000" /></field> 
+    <field name="lockMonitorInterval"><int value="60000" /></field> 
+    <field name="lockBufferTime"><int value="5000" /></field>
+  </bean>
+  -->
+
+</jbpm-configuration>
