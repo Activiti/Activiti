@@ -1,11 +1,11 @@
 
 create table ACT_CY_CONN_CONFIG (
-	ID_ varchar2(255) NOT NULL,
-	PLUGIN_ID_ varchar2(255) NOT NULL,
-	INSTANCE_NAME_ varchar2(255) NOT NULL, 
-	INSTANCE_ID_ varchar2(255) NOT NULL,  
-	USER_ varchar2(255),
-	GROUP_ varchar2(255),
+	ID_ varchar(255) NOT NULL,
+	PLUGIN_ID_ varchar(255) NOT NULL,
+	INSTANCE_NAME_ varchar(255) NOT NULL, 
+	INSTANCE_ID_ varchar(255) NOT NULL,  
+	USER_ varchar(255),
+	GROUP_ varchar(255),
 	VALUES_ text,	
 	primary key (ID_)
 );
