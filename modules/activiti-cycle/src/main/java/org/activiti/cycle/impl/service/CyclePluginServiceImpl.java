@@ -93,6 +93,11 @@ public class CyclePluginServiceImpl implements CyclePluginService {
     return sortedList;
   }
 
+  public ParameterizedAction getParameterizedActionById(String actionId) {
+    Actions actions = CycleComponentFactory.getCycleComponentInstance(Actions.class, Actions.class);
+    return actions.getParameterizedActionById(actionId);
+  }
+
   private void removeExcludedActions(Set actions) {
     CycleComponentFactory.removeExcludedComponents(actions);
   }

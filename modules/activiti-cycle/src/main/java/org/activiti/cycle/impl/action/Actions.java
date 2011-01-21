@@ -2,6 +2,7 @@ package org.activiti.cycle.impl.action;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,6 +25,7 @@ public class Actions {
 
   boolean initialized = false;
 
+  private Map<String, Action> actionsByName = new HashMap<String, Action>();
   private Set<ParameterizedAction> globalParameterizedActions = new HashSet<ParameterizedAction>();
   private Set<CreateUrlAction> globalCreateUrlActions = new HashSet<CreateUrlAction>();
   private Map<RepositoryArtifactType, Set<ParameterizedAction>> parameterizedActionsMap = new HashMap<RepositoryArtifactType, Set<ParameterizedAction>>();
@@ -64,10 +66,19 @@ public class Actions {
     }
   }
 
+  public ParameterizedAction getParameterizedActionById(String name) {
+    Action action = actionsByName.get(name);
+    if (action instanceof ParameterizedAction) {
+      return (ParameterizedAction) action;
+    }
+    return null;
+  }
+
   private <T extends Action> void loadMap(Map<RepositoryArtifactType, Set<T>> map, Set<T> globalActionsSet, Class<T> clazz) {
     Set<Class<T>> actionClasses = CycleComponentFactory.getAllImplementations(clazz);
     for (Class<T> class1 : actionClasses) {
       T actionObject = CycleApplicationContext.get(class1);
+      actionsByName.put(actionObject.getId(), actionObject);
       Set<RepositoryArtifactType> artifactTypes = actionObject.getArtifactTypes();
       if (artifactTypes == null || artifactTypes.size() == 0) {
         globalActionsSet.add(actionObject);

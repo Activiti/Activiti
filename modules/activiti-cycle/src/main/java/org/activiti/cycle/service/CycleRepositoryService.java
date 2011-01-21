@@ -130,6 +130,8 @@ public interface CycleRepositoryService {
    */
   public boolean login(String username, String password, String connectorId);
 
+  public String getActionFormTemplate(String connectorId, String artifactId, String actionId);
+
   
 
 }

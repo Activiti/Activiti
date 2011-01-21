@@ -9,6 +9,8 @@ import org.activiti.cycle.CycleComponentFactory;
 import org.activiti.cycle.RepositoryAuthenticationException;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
+import org.activiti.cycle.context.CycleMapContext;
+import org.activiti.cycle.context.CycleRequestContext;
 import org.activiti.cycle.context.CycleSessionContext;
 import org.activiti.cycle.impl.components.RuntimeConnectorList;
 import org.activiti.cycle.impl.connector.PasswordEnabledRepositoryConnector;
@@ -46,6 +48,9 @@ public class CycleHttpSession {
     CycleSessionContext.setContext(new HttpSessionContext(httpSession));
     // make the current user id available in the session context
     CycleSessionContext.set("cuid", cuid);
+    
+    // initialize the request context and bind it to his request:
+    CycleRequestContext.setContext(new CycleMapContext());
 
     // invoke request filters
     for (CycleRequestFilter requestFilter : requestFilters) {
@@ -83,7 +88,8 @@ public class CycleHttpSession {
   }
 
   public static void closeSession() {
-    CycleSessionContext.clearContext();
+    CycleRequestContext.clearContext();
+    CycleSessionContext.clearContext();    
   }
 
 }

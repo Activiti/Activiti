@@ -15,6 +15,7 @@ import org.activiti.cycle.action.CreateUrlAction;
 import org.activiti.cycle.context.CycleApplicationContext;
 import org.activiti.cycle.context.CycleContext;
 import org.activiti.cycle.context.CycleContextType;
+import org.activiti.cycle.context.CycleRequestContext;
 import org.activiti.cycle.context.CycleSessionContext;
 import org.activiti.cycle.transform.ContentArtifactTypeTransformation;
 import org.activiti.cycle.transform.ContentMimeTypeTransformation;
@@ -49,8 +50,11 @@ import org.activiti.cycle.transform.ContentMimeTypeTransformation;
  * <p>
  * <strong>Component Context</strong> <br>
  * Cycle uses a simple contextual component model. Instances of components are
- * stored in a {@link CycleContext}. Two different cycle contexts are supported:
+ * stored in a {@link CycleContext}. Three different cycle contexts are
+ * supported:
  * <ul>
+ * <li> {@link CycleContextType#REQUEST} ant the corresponding
+ * {@link CycleRequestContext}: a request-scoped context</li>
  * <li> {@link CycleContextType#SESSION} and the corresponding
  * {@link CycleSessionContext}: the session context is a usersession-scoped
  * context of which one instance per usersession is managed. Components residing

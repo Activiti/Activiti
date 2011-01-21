@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.cycle.Content;
+import org.activiti.cycle.CycleComponentFactory;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactLink;
 import org.activiti.cycle.RepositoryConnector;
@@ -13,9 +14,11 @@ import org.activiti.cycle.RepositoryFolder;
 import org.activiti.cycle.RepositoryNode;
 import org.activiti.cycle.RepositoryNodeCollection;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
+import org.activiti.cycle.action.ParameterizedAction;
 import org.activiti.cycle.context.CycleSessionContext;
 import org.activiti.cycle.impl.RepositoryFolderImpl;
 import org.activiti.cycle.impl.RepositoryNodeCollectionImpl;
+import org.activiti.cycle.impl.action.fom.FormHandler;
 import org.activiti.cycle.impl.components.RuntimeConnectorList;
 import org.activiti.cycle.impl.connector.util.TransactionalConnectorUtils;
 import org.activiti.cycle.impl.db.CycleLinkDao;
@@ -158,6 +161,12 @@ public class CycleRepositoryServiceImpl implements CycleRepositoryService {
   }
 
   public void executeParameterizedAction(String connectorId, String artifactId, String actionId, Map<String, Object> parameters) throws Exception {
+
+    ParameterizedAction action = cycleServiceConfiguration.getCyclePluginService().getParameterizedActionById(actionId);
+    String form = action.getFormAsHtml();
+    FormHandler formHandler = CycleComponentFactory.getCycleComponentInstance(FormHandler.class, FormHandler.class);
+    formHandler.setValues(form, parameters);
+
     RepositoryConnector connector = getRepositoryConnector(connectorId);
 
     // TODO: (Nils Preusker, 20.10.2010), find a better way to solve this!
@@ -169,6 +178,25 @@ public class CycleRepositoryServiceImpl implements CycleRepositoryService {
     }
 
     connector.executeParameterizedAction(artifactId, actionId, parameters);
+  }
+
+  public String getActionFormTemplate(String connectorId, String artifactId, String actionId) {
+    // Retrieve the artifact from the repository
+    RepositoryArtifact artifact = getRepositoryArtifact(connectorId, artifactId);
+
+    // Retrieve the action and its form
+    String form = null;
+    for (ParameterizedAction action : cycleServiceConfiguration.getCyclePluginService().getParameterizedActions(artifact)) {
+      if (action.getId().equals(actionId)) {
+        form = action.getFormAsHtml();
+        break;
+      }
+    }
+
+    // evaluate expressions in the form using the FormHandler.
+    FormHandler formHandler = CycleComponentFactory.getCycleComponentInstance(FormHandler.class, FormHandler.class);
+    form = formHandler.parseForm(form);
+    return form;
   }
 
   // public List<ArtifactType> getSupportedArtifactTypes(String connectorId,

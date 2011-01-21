@@ -33,4 +33,6 @@ public interface CyclePluginService {
 
   public Set<RepositoryArtifactOpenLinkAction> getArtifactOpenLinkActions(RepositoryArtifact artifact);
 
+  public ParameterizedAction getParameterizedActionById(String actionId);
+
 }

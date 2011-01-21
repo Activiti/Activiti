@@ -1,5 +1,11 @@
 package org.activiti.rest.api.cycle.session;
 
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import javax.servlet.http.HttpSession;
 
 import org.activiti.cycle.context.CycleContext;
@@ -23,6 +29,25 @@ public class HttpSessionContext implements CycleContext {
 
   public Object get(String key) {
     return session.getAttribute(key);
+  }
+
+  public Set<String> getKeySet() {
+    HashSet<String> result = new HashSet<String>();
+    for (@SuppressWarnings("unchecked")
+    Enumeration<String> e = session.getAttributeNames(); e.hasMoreElements();) {
+      result.add(e.nextElement());
+    }
+    return result;
+  }
+
+  public Map<String, Object> getValues() {
+    HashMap<String, Object> result = new HashMap<String, Object>();
+    for (@SuppressWarnings("unchecked")
+    Enumeration<String> e = session.getAttributeNames(); e.hasMoreElements();) {
+      String key = e.nextElement();
+      result.put(key, session.getAttribute(key));
+    }
+    return result;
   }
 
 }

@@ -25,6 +25,7 @@ import org.activiti.cycle.annotations.Interceptors;
 import org.activiti.cycle.context.CycleApplicationContext;
 import org.activiti.cycle.context.CycleContext;
 import org.activiti.cycle.context.CycleContextType;
+import org.activiti.cycle.context.CycleRequestContext;
 import org.activiti.cycle.context.CycleSessionContext;
 import org.activiti.cycle.impl.CycleComponentInvocationHandler;
 import org.activiti.cycle.impl.Interceptor;
@@ -155,6 +156,12 @@ public abstract class CycleComponentFactory {
 
   private Object restoreFormContext(CycleComponentDescriptor descriptor) {
     switch (descriptor.contextType) {
+    case REQUEST:
+      CycleContext requestContext = CycleRequestContext.getLocalContext();
+      if (requestContext != null) {
+        return requestContext.get(descriptor.name);
+      }
+      break;
     case SESSION:
       CycleContext sessionContext = CycleSessionContext.getLocalContext();
       if (sessionContext != null) {
@@ -173,6 +180,9 @@ public abstract class CycleComponentFactory {
 
   private void storeInContext(Object instance, CycleComponentDescriptor descriptor) {
     switch (descriptor.contextType) {
+    case REQUEST:
+      CycleRequestContext.set(descriptor.name, instance);
+      break;
     case SESSION:
       CycleSessionContext.set(descriptor.name, instance);
       break;
@@ -291,7 +301,7 @@ public abstract class CycleComponentFactory {
   public static String getComponentName(Class< ? > cycleComponentClass) {
     CycleComponent componentAnnotation = cycleComponentClass.getAnnotation(CycleComponent.class);
     String name = componentAnnotation.value();
-    if (name == null) {
+    if (name == null || name.length() == 0) {
       name = componentAnnotation.name();
     }
     if (name == null || name.length() == 0) {

@@ -1,7 +1,5 @@
 package org.activiti.cycle.context;
 
-import java.util.HashMap;
-
 import org.activiti.cycle.CycleComponentFactory;
 import org.activiti.cycle.CycleComponentFactory.CycleComponentDescriptor;
 
@@ -13,18 +11,7 @@ import org.activiti.cycle.CycleComponentFactory.CycleComponentDescriptor;
  */
 public class CycleApplicationContext {
 
-  private static CycleContext wrappedContext = new CycleContext() {
-
-    private HashMap<String, Object> map = new HashMap<String, Object>();
-
-    public void set(String key, Object value) {
-      map.put(key, value);
-    }
-
-    public Object get(String key) {
-      return map.get(key);
-    }
-  };
+  private static CycleContext wrappedContext =  new CycleMapContext();
 
   public static void set(String key, Object value) {
     wrappedContext.set(key, value);

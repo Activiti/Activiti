@@ -29,17 +29,18 @@ public class ActionExecutionPut extends ActivitiCycleWebScript {
     String connectorId = req.getMandatoryString("connectorId");
     String artifactId = req.getMandatoryString("artifactId");
     String actionId = req.getMandatoryString("actionName");
-    
-    Map<String, Object> parameters = req.getFormVariables();    
+
+    Map<String, Object> parameters = req.getFormVariables();
     try {
       repositoryService.executeParameterizedAction(connectorId, artifactId, actionId, parameters);
       model.put("result", true);
     } catch (Exception e) {
-      // TODO: see whether this makes sense, probably either exception or negative result.
+      // TODO: see whether this makes sense, probably either exception or
+      // negative result.
       model.put("result", false);
       throw new RuntimeException(e);
     }
-    
+
   }
 
 }
