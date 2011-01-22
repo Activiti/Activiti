@@ -20,13 +20,10 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  * 
  * @author Esteban Robles Luna
  */
-public class MessageImplicitDataOutputAssociation extends AbstractDataOutputAssociation {
+public class MessageImplicitDataOutputAssociation extends AbstractDataAssociation {
 
-  protected String sourceRef;
-  
   public MessageImplicitDataOutputAssociation(String targetRef, String sourceRef) {
-    super(targetRef);
-    this.sourceRef = sourceRef;
+    super(sourceRef, targetRef);
   }
 
   @Override
@@ -34,7 +31,7 @@ public class MessageImplicitDataOutputAssociation extends AbstractDataOutputAsso
     MessageInstance message = (MessageInstance) execution.getVariable(WebServiceActivityBehavior.CURRENT_MESSAGE);
     if (message.getStructureInstance() instanceof FieldBaseStructureInstance) {
       FieldBaseStructureInstance structure = (FieldBaseStructureInstance) message.getStructureInstance();
-      execution.setVariable(this.targetRef, structure.getFieldValue(this.sourceRef));
+      execution.setVariable(this.getTarget(), structure.getFieldValue(this.getSource()));
     }
   }
 }

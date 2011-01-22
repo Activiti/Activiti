@@ -41,14 +41,26 @@ public class AtomicOperationProcessEnd extends AbstractEventAtomicOperation {
 
   @Override
   protected void eventNotificationsCompleted(InterpretableExecution execution) {
+    InterpretableExecution superExecution = execution.getSuperExecution();
+    SubProcessActivityBehavior subProcessActivityBehavior = null;
+
+    // copy variables before destroying the ended sub process instance
+    if (superExecution!=null) {
+      ActivityImpl activity = (ActivityImpl) superExecution.getActivity();
+      subProcessActivityBehavior = (SubProcessActivityBehavior) activity.getActivityBehavior();
+      try {
+        subProcessActivityBehavior.completing(superExecution, execution);
+      } catch (Exception e) {
+        log.log(Level.SEVERE, "Error while completing sub process of execution " + execution, e);
+      }
+    }
+    
     execution.destroy();
     execution.remove();
 
-    InterpretableExecution superExecution = execution.getSuperExecution();
+    // and trigger execution afterwards
     if (superExecution!=null) {
       superExecution.setSubProcessInstance(null);
-      ActivityImpl activity = (ActivityImpl) superExecution.getActivity();
-      SubProcessActivityBehavior subProcessActivityBehavior = (SubProcessActivityBehavior) activity.getActivityBehavior();
       try {
         subProcessActivityBehavior.completed(superExecution);
       } catch (Exception e) {

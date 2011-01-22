@@ -13,6 +13,9 @@
 
 package org.activiti.engine.impl.bpmn;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.pvm.PvmProcessInstance;
@@ -30,11 +33,21 @@ import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 public class CallActivityBehaviour extends AbstractBpmnActivity implements SubProcessActivityBehavior {
   
   protected String processDefinitonKey;
+  private List<AbstractDataAssociation> dataInputAssociations = new ArrayList<AbstractDataAssociation>();
+  private List<AbstractDataAssociation> dataOutputAssociations = new ArrayList<AbstractDataAssociation>();
   
   public CallActivityBehaviour(String processDefinitionKey) {
     this.processDefinitonKey = processDefinitionKey;
   }
-  
+
+  public void addDataInputAssociation(AbstractDataAssociation dataInputAssociation) {
+    this.dataInputAssociations.add(dataInputAssociation);
+  }
+
+  public void addDataOutputAssociation(AbstractDataAssociation dataOutputAssociation) {
+    this.dataOutputAssociations.add(dataOutputAssociation);
+  }
+
   public void execute(ActivityExecution execution) throws Exception {
     ProcessDefinitionImpl processDefinition = 
       CommandContext
@@ -42,16 +55,30 @@ public class CallActivityBehaviour extends AbstractBpmnActivity implements SubPr
         .getRepositorySession()
         .findDeployedLatestProcessDefinitionByKey(processDefinitonKey);
     
-    PvmProcessInstance processInstance = execution.createSubProcessInstance(processDefinition);
-    processInstance.start();
+    PvmProcessInstance subProcessInstance = execution.createSubProcessInstance(processDefinition);
+    
+    // copy process variables
+    for (AbstractDataAssociation dataInputAssociation : dataInputAssociations) {
+      Object value = execution.getVariable(dataInputAssociation.getSource());
+      subProcessInstance.setVariable(dataInputAssociation.getTarget(), value);
+    }
+    
+    subProcessInstance.start();
   }
   
   public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
     // only data.  no control flow available on this execution.
+
+    // copy process variables
+    for (AbstractDataAssociation dataOutputAssociation : dataOutputAssociations) {
+      Object value = subProcessInstance.getVariable(dataOutputAssociation.getSource());
+      execution.setVariable(dataOutputAssociation.getTarget(), value);
+    }
   }
 
   public void completed(ActivityExecution execution) throws Exception {
     // only control flow.  no sub process instance data available
     leave(execution);
   }
+
 }

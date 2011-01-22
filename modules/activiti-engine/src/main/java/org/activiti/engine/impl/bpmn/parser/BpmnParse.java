@@ -23,8 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.bpmn.AbstractDataInputAssociation;
-import org.activiti.engine.impl.bpmn.AbstractDataOutputAssociation;
+import org.activiti.engine.impl.bpmn.AbstractDataAssociation;
 import org.activiti.engine.impl.bpmn.Assignment;
 import org.activiti.engine.impl.bpmn.BoundaryEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.BpmnInterface;
@@ -578,7 +577,7 @@ public class BpmnParse extends Parse {
     return ioSpecification;
   }
   
-  protected AbstractDataInputAssociation parseDataInputAssociation(Element dataAssociationElement) {
+  protected AbstractDataAssociation parseDataInputAssociation(Element dataAssociationElement) {
     String sourceRef = dataAssociationElement.element("sourceRef").getText();
     String targetRef = dataAssociationElement.element("targetRef").getText();
     
@@ -851,12 +850,12 @@ public class BpmnParse extends Parse {
         }
         
         for (Element dataAssociationElement : serviceTaskElement.elements("dataInputAssociation")) {
-          AbstractDataInputAssociation dataAssociation = this.parseDataInputAssociation(dataAssociationElement);
+          AbstractDataAssociation dataAssociation = this.parseDataInputAssociation(dataAssociationElement);
           webServiceActivityBehavior.addDataInputAssociation(dataAssociation);
         }
         
         for (Element dataAssociationElement : serviceTaskElement.elements("dataOutputAssociation")) {
-          AbstractDataOutputAssociation dataAssociation = this.parseDataOutputAssociation(dataAssociationElement);
+          AbstractDataAssociation dataAssociation = this.parseDataOutputAssociation(dataAssociationElement);
           webServiceActivityBehavior.addDataOutputAssociation(dataAssociation);
         }
 
@@ -970,12 +969,12 @@ public class BpmnParse extends Parse {
         }
         
         for (Element dataAssociationElement : sendTaskElement.elements("dataInputAssociation")) {
-          AbstractDataInputAssociation dataAssociation = this.parseDataInputAssociation(dataAssociationElement);
+          AbstractDataAssociation dataAssociation = this.parseDataInputAssociation(dataAssociationElement);
           webServiceActivityBehavior.addDataInputAssociation(dataAssociation);
         }
         
         for (Element dataAssociationElement : sendTaskElement.elements("dataOutputAssociation")) {
-          AbstractDataOutputAssociation dataAssociation = this.parseDataOutputAssociation(dataAssociationElement);
+          AbstractDataAssociation dataAssociation = this.parseDataOutputAssociation(dataAssociationElement);
           webServiceActivityBehavior.addDataOutputAssociation(dataAssociation);
         }
 
@@ -992,7 +991,7 @@ public class BpmnParse extends Parse {
     }
   }
 
-  protected AbstractDataOutputAssociation parseDataOutputAssociation(Element dataAssociationElement) {
+  protected AbstractDataAssociation parseDataOutputAssociation(Element dataAssociationElement) {
     String targetRef = dataAssociationElement.element("targetRef").getText();
 
     if (dataAssociationElement.element("sourceRef") != null) {
@@ -1000,7 +999,7 @@ public class BpmnParse extends Parse {
       return new MessageImplicitDataOutputAssociation(targetRef, sourceRef);
     } else {
       Expression transformation = this.expressionManager.createExpression(dataAssociationElement.element("transformation").getText());
-      AbstractDataOutputAssociation dataOutputAssociation = new TransformationDataOutputAssociation(targetRef, transformation);
+      AbstractDataAssociation dataOutputAssociation = new TransformationDataOutputAssociation(null, targetRef, transformation);
       return dataOutputAssociation;
     }
   }
@@ -1669,8 +1668,21 @@ public class BpmnParse extends Parse {
       addError("Missing attribute 'calledElement'", callActivityElement);
     }
     
+    CallActivityBehaviour callActivityBehaviour = new CallActivityBehaviour(calledElement);
+    
+    // parse data input and output
+    for (Element dataAssociationElement : callActivityElement.elements("dataInputAssociation")) {
+      AbstractDataAssociation dataAssociation = this.parseDataInputAssociation(dataAssociationElement);
+      callActivityBehaviour.addDataInputAssociation(dataAssociation);
+    }
+    
+    for (Element dataAssociationElement : callActivityElement.elements("dataOutputAssociation")) {
+      AbstractDataAssociation dataAssociation = this.parseDataOutputAssociation(dataAssociationElement);
+      callActivityBehaviour.addDataOutputAssociation(dataAssociation);
+    }
+   
     activity.setScope(true);
-    activity.setActivityBehavior(new CallActivityBehaviour(calledElement));
+    activity.setActivityBehavior(callActivityBehaviour);
     
     parseExecutionListenersOnScope(callActivityElement, activity);
 

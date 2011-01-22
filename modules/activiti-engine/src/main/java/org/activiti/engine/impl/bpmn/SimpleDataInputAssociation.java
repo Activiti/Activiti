@@ -22,7 +22,7 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  * 
  * @author Esteban Robles Luna
  */
-public class SimpleDataInputAssociation extends AbstractDataInputAssociation {
+public class SimpleDataInputAssociation extends AbstractDataAssociation {
 
   protected List<Assignment> assignments;
   

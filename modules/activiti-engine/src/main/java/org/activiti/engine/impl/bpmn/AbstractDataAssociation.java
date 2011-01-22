@@ -15,17 +15,28 @@ package org.activiti.engine.impl.bpmn;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 /**
- * A data output association between a source and a target
+ * A data association (Input or Output) between a source and a target
  * 
  * @author Esteban Robles Luna
  */
-public abstract class AbstractDataOutputAssociation {
+public abstract class AbstractDataAssociation {
 
-  protected String targetRef;
+  protected String source;
   
-  protected AbstractDataOutputAssociation(String targetRef) {
-    this.targetRef = targetRef;
+  protected String target;
+  
+  protected AbstractDataAssociation(String source, String target) {
+    this.source = source;
+    this.target = target;
   }
-
+  
   public abstract void evaluate(ActivityExecution execution);
+  
+  public String getSource() {
+    return source;
+  }
+  
+  public String getTarget() {
+    return target;
+  }
 }

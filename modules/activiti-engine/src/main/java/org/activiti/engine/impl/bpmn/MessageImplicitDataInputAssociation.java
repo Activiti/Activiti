@@ -20,7 +20,7 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  * 
  * @author Esteban Robles Luna
  */
-public class MessageImplicitDataInputAssociation extends AbstractDataInputAssociation {
+public class MessageImplicitDataInputAssociation extends AbstractDataAssociation {
 
   public MessageImplicitDataInputAssociation(String source, String target) {
     super(source, target);

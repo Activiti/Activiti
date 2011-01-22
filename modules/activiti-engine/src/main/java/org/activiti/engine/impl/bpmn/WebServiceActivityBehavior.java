@@ -32,21 +32,21 @@ public class WebServiceActivityBehavior implements ActivityBehavior {
   
   protected IOSpecification ioSpecification;
   
-  protected List<AbstractDataInputAssociation> dataInputAssociations;
+  protected List<AbstractDataAssociation> dataInputAssociations;
 
-  protected List<AbstractDataOutputAssociation> dataOutputAssociations;
+  protected List<AbstractDataAssociation> dataOutputAssociations;
 
   public WebServiceActivityBehavior(Operation operation) {
     this.operation = operation;
-    this.dataInputAssociations = new ArrayList<AbstractDataInputAssociation>();
-    this.dataOutputAssociations = new ArrayList<AbstractDataOutputAssociation>();
+    this.dataInputAssociations = new ArrayList<AbstractDataAssociation>();
+    this.dataOutputAssociations = new ArrayList<AbstractDataAssociation>();
   }
   
-  public void addDataInputAssociation(AbstractDataInputAssociation dataAssociation) {
+  public void addDataInputAssociation(AbstractDataAssociation dataAssociation) {
     this.dataInputAssociations.add(dataAssociation);
   }
   
-  public void addDataOutputAssociation(AbstractDataOutputAssociation dataAssociation) {
+  public void addDataOutputAssociation(AbstractDataAssociation dataAssociation) {
     this.dataOutputAssociations.add(dataAssociation);
   }
   
@@ -86,13 +86,13 @@ public class WebServiceActivityBehavior implements ActivityBehavior {
   }
   
   private void returnMessage(MessageInstance message, ActivityExecution execution) {
-    for (AbstractDataOutputAssociation dataAssociation : this.dataOutputAssociations) {
+    for (AbstractDataAssociation dataAssociation : this.dataOutputAssociations) {
       dataAssociation.evaluate(execution);
     }
   }
 
   private void fillMessage(MessageInstance message, ActivityExecution execution) {
-    for (AbstractDataInputAssociation dataAssociation : this.dataInputAssociations) {
+    for (AbstractDataAssociation dataAssociation : this.dataInputAssociations) {
       dataAssociation.evaluate(execution);
     }
   }

@@ -20,17 +20,17 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  * 
  * @author Esteban Robles Luna
  */
-public class TransformationDataOutputAssociation extends AbstractDataOutputAssociation {
+public class TransformationDataOutputAssociation extends AbstractDataAssociation {
 
   protected Expression transformation;
   
-  public TransformationDataOutputAssociation(String targetRef, Expression transformation) {
-    super(targetRef);
+  public TransformationDataOutputAssociation(String sourceRef, String targetRef, Expression transformation) {
+    super(sourceRef, targetRef);
     this.transformation = transformation;
   }
 
   public void evaluate(ActivityExecution execution) {
     Object value = this.transformation.getValue(execution);
-    execution.setVariable(this.targetRef, value);
+    execution.setVariable(this.getTarget(), value);
   }
 }
