@@ -34,6 +34,7 @@ import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
+import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.impl.util.ClassNameUtil;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -93,6 +94,10 @@ public abstract class TestHelper {
         deploymentBuilder.addClasspathResource(resource);
       }
       
+      // adjust schema validation
+      DeploymentBuilderImpl impl = (DeploymentBuilderImpl) deploymentBuilder;
+      impl.getDeployment().setValidatingSchema(deploymentAnnotation.validateSchmea());
+
       deploymentId = deploymentBuilder.deploy().getId();
     }
     
