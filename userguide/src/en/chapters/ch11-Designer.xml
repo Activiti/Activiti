@@ -237,7 +237,7 @@
   &lt;dependency&gt;
     &lt;groupId&gt;org.activiti&lt;/groupId&gt;
     &lt;artifactId&gt;activiti-designer-integration&lt;/artifactId&gt;
-    &lt;version&gt;0.6.0&lt;/version&gt; &lt;!-- Current Activiti Designer Version --&gt;
+    &lt;version&gt;0.7.0&lt;/version&gt; &lt;!-- Current Activiti Designer Version --&gt;
     &lt;scope&gt;compile&lt;/scope&gt;
   &lt;/dependency&gt;
 &lt;/dependencies&gt;
@@ -534,11 +534,6 @@ public class AcmeMoneyTask extends AbstractCustomServiceTask {
         <para>This section describes the property types you can use for a
             <literal>CustomServiceTask</literal> by setting its type to a
             <literal>PropertyType</literal> value.</para>
-        <note>
-          <para>If you take a look at the <literal>PropertyType</literal> enum, you'll also find a
-              <literal>DATE_PICKER</literal> value. You shouldn't use that value yet, because it
-            hasn't been implemented to work in the property screen.</para>
-        </note>
         <section>
           <title>PropertyType.TEXT</title>
           <para>Creates a single line text field as shown below. Can be a required field and shows
@@ -589,10 +584,7 @@ public class AcmeMoneyTask extends AbstractCustomServiceTask {
             Validation failures are displayed by changing the background of the entire field to a
             light red color. The value of the field is stored as a string of the form 1y 2mo 3w 4d
             5h 6m 7s, which represents 1 year, 2 months, 3 weeks, 4 days, 6 minutes and 7 seconds.
-            The entire string is always stored, even if parts are 0.<note>
-              <para>At the moment, this property type is not correctly injected into your runtime
-                class.</para>
-            </note></para>
+            The entire string is always stored, even if parts are 0.</para>
           <para>
             <mediaobject>
               <imageobject>
@@ -604,6 +596,121 @@ public class AcmeMoneyTask extends AbstractCustomServiceTask {
             <mediaobject>
               <imageobject>
                 <imagedata align="center" fileref="images/designer.property.period.invalid.png"/>
+              </imageobject>
+            </mediaobject>
+          </para>
+        </section>
+        <section>
+          <title>PropertyType.BOOLEAN_CHOICE</title>
+          <para>Creates a single checkbox control for boolean or toggle choices. Note that you can
+            specify the <literal>required</literal> attribute on the <literal>Property</literal>
+            annotation, but it will not be evaluated because that would leave the user without a
+            choice whether to check the box or not. The value stored in the diagram is
+            java.lang.Boolean.toString(boolean), which results in "true" or "false".</para>
+          <para>
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center" fileref="images/designer.property.boolean.choice.png"/>
+              </imageobject>
+            </mediaobject>
+          </para>
+        </section>
+        <section>
+          <title>PropertyType.RADIO_CHOICE</title>
+          <para>Creates a group of radio buttons as shown below. Selection of any of the radio
+            buttons is mutually exclusive with selection of any of the others (i.e., only one
+            selection allowed). Can be a required field and shows validation messages as a tooltip.
+            Validation failures are displayed by changing the background of the group to a light red
+            color.</para>
+          <para>This property type expects the class member you have annotated to also have an
+            accompanying <literal>@PropertyItems</literal> annotation (for an example, see below).
+            Using this additional annotation, you can specify the list of items that should be
+            offered in an array of Strings. Specify the items by adding two array entries for each
+            item: first, the label to be shown; second, the value to be stored. </para>
+          <para>
+            <programlisting>@Property(type = PropertyType.RADIO_CHOICE, displayName = "Withdrawl limit", required = true)
+@Help(displayHelpShort = "The maximum daily withdrawl amount ", displayHelpLong = "Choose the maximum daily amount that can be withdrawn from the account.")
+@PropertyItems({ LIMIT_LOW_LABEL, LIMIT_LOW_VALUE, LIMIT_MEDIUM_LABEL, LIMIT_MEDIUM_VALUE, LIMIT_HIGH_LABEL, LIMIT_HIGH_VALUE })
+private String withdrawlLimit;</programlisting>
+          </para>
+          <para>
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center" fileref="images/designer.property.radio.choice.png"/>
+              </imageobject>
+            </mediaobject>
+          </para>
+          <para>
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center"
+                  fileref="images/designer.property.radio.choice.invalid.png"/>
+              </imageobject>
+            </mediaobject>
+          </para>
+        </section>
+        <section>
+          <title>PropertyType.COMBOBOX_CHOICE</title>
+          <para>Creates a combobox with fixed options as shown below. Can be a required field and
+            shows validation messages as a tooltip. Validation failures are displayed by changing
+            the background of the combobox to a light red color.</para>
+          <para>This property type expects the class member you have annotated to also have an
+            accompanying <literal>@PropertyItems</literal> annotation (for an example, see below).
+            Using this additional annotation, you can specify the list of items that should be
+            offered in an array of Strings. Specify the items by adding two array entries for each
+            item: first, the label to be shown; second, the value to be stored. </para>
+          <para>
+            <programlisting>@Property(type = PropertyType.COMBOBOX_CHOICE, displayName = "Account type", required = true)
+@Help(displayHelpShort = "The type of account", displayHelpLong = "Choose a type of account from the list of options")
+@PropertyItems({ ACCOUNT_TYPE_SAVINGS_LABEL, ACCOUNT_TYPE_SAVINGS_VALUE, ACCOUNT_TYPE_JUNIOR_LABEL, ACCOUNT_TYPE_JUNIOR_VALUE, ACCOUNT_TYPE_JOINT_LABEL,
+  ACCOUNT_TYPE_JOINT_VALUE, ACCOUNT_TYPE_TRANSACTIONAL_LABEL, ACCOUNT_TYPE_TRANSACTIONAL_VALUE, ACCOUNT_TYPE_STUDENT_LABEL, ACCOUNT_TYPE_STUDENT_VALUE,
+  ACCOUNT_TYPE_SENIOR_LABEL, ACCOUNT_TYPE_SENIOR_VALUE })
+private String accountType;</programlisting>
+          </para>
+          <para>
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center" fileref="images/designer.property.combobox.choice.png"/>
+              </imageobject>
+            </mediaobject>
+          </para>
+          <para>
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center"
+                  fileref="images/designer.property.combobox.choice.invalid.png"/>
+              </imageobject>
+            </mediaobject>
+          </para>
+        </section>
+        <section>
+          <title>PropertyType.DATE_PICKER</title>
+          <para>Creates a date selection control as shown below. Can be a required field and shows
+            validation messages as a tooltip (note, that the control used will auto-set the
+            selection to the date on the system, so the value is seldom empty). Validation failures
+            are displayed by changing the background of the control to a light red color.</para>
+          <para>This property type expects the class member you have annotated to also have an
+            accompanying <literal>@DatePickerProperty</literal> annotation (for an example, see
+            below). Using this additional annotation, you can specify the date time pattern to be
+            used to store dates in the diagram and the type of datepicker you would like to be
+            shown. Both attributes are optional and have default values that will be used if you
+            don't specify them (these are static variables in the
+              <literal>DatePickerProperty</literal> annotation). The
+              <literal>dateTimePattern</literal> attribute should be used to supply a pattern to the
+              <literal>SimpleDateFormat</literal> class. When using the <literal>swtStyle</literal>
+            attribute, you should specify an integer value that is supported by
+              <literal>SWT</literal>'s <literal>DateTime</literal> control, because this is the
+            control that is used to render this type of property.</para>
+          <para>
+            <programlisting>@Property(type = PropertyType.DATE_PICKER, displayName = "Expiry date", required = true)
+@Help(displayHelpShort = "The date the account expires ", displayHelpLong = "Choose the date when the account will expire if no extended before the date.")
+@DatePickerProperty(dateTimePattern = "MM-dd-yyyy", swtStyle = 32)
+private String expiryDate;</programlisting>
+          </para>
+          <para>
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center" fileref="images/designer.property.date.picker.png"/>
               </imageobject>
             </mediaobject>
           </para>
