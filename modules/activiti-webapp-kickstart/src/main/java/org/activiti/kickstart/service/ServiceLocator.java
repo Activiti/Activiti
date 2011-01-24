@@ -24,13 +24,13 @@ import org.activiti.engine.ProcessEngines;
  */
 public class ServiceLocator {
 
-  protected static AdhocWorkflowService ahodcWorkflowServiceInstance;
+  protected static KickstartService ahodcWorkflowServiceInstance;
 
-  public static AdhocWorkflowService getAdhocWorkflowService() {
+  public static KickstartService getAdhocWorkflowService() {
     if (ahodcWorkflowServiceInstance == null) {
       synchronized (ServiceLocator.class) {
         if (ahodcWorkflowServiceInstance == null) {
-          ahodcWorkflowServiceInstance = new AdhocWorkflowServiceImpl(ProcessEngines.getDefaultProcessEngine());
+          ahodcWorkflowServiceInstance = new KickstartServiceImpl(ProcessEngines.getDefaultProcessEngine());
         }
       }
     }

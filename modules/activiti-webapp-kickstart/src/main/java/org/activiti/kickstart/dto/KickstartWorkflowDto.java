@@ -37,7 +37,7 @@ import org.activiti.kickstart.util.ExpressionUtil;
 /**
  * @author Joram Barrez
  */
-public class AdhocWorkflowDto {
+public class KickstartWorkflowDto {
 
   public static final String START_NAME = "theStart";
   public static final String END_NAME = "theEnd";
@@ -50,7 +50,7 @@ public class AdhocWorkflowDto {
   // Cached version of the BPMN JAXB counterpart
   protected Definitions definitions;
 
-  public AdhocWorkflowDto() {
+  public KickstartWorkflowDto() {
   }
 
   public String getName() {

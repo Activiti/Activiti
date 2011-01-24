@@ -18,22 +18,22 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 
 import org.activiti.engine.repository.Deployment;
-import org.activiti.kickstart.dto.AdhocWorkflowDto;
-import org.activiti.kickstart.dto.AdhocWorkflowInfo;
+import org.activiti.kickstart.dto.KickstartWorkflowDto;
+import org.activiti.kickstart.dto.KickstartWorkflowInfo;
 
 /**
  * @author Joram Barrez
  */
-public interface AdhocWorkflowService {
+public interface KickstartService {
 
   /**
    * deploys the Workflow and returns the deployment id
    */
-  String deployAdhocWorkflow(AdhocWorkflowDto adhocWorkflow) throws JAXBException;
+  String deployKickstartWorkflow(KickstartWorkflowDto adhocWorkflow) throws JAXBException;
 
-  List<AdhocWorkflowInfo> findAdhocWorkflowInformation();
+  List<KickstartWorkflowInfo> findKickstartWorkflowInformation();
 
-  AdhocWorkflowDto findAdhocWorkflowById(String id) throws JAXBException;
+  KickstartWorkflowDto findKickstartWorkflowById(String id) throws JAXBException;
 
   InputStream getProcessImage(String processDefinitionId);
 

@@ -16,11 +16,11 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
-import org.activiti.kickstart.dto.AdhocWorkflowInfo;
-import org.activiti.kickstart.service.AdhocWorkflowService;
+import org.activiti.kickstart.dto.KickstartWorkflowInfo;
+import org.activiti.kickstart.service.KickstartService;
 import org.activiti.kickstart.service.ServiceLocator;
 import org.activiti.kickstart.ui.ViewManager;
-import org.activiti.kickstart.ui.listener.EditExistingAdhocWorkflowClickListener;
+import org.activiti.kickstart.ui.listener.EditExistingKickstartWorkflowClickListener;
 import org.activiti.kickstart.ui.popup.ProcessImagePopupWindow;
 
 import com.vaadin.data.Item;
@@ -50,7 +50,7 @@ public class SelectAdhocWorkflowPanel extends Panel {
 //  protected Resource xmlImage;
 
   protected ViewManager viewManager;
-  protected AdhocWorkflowService adhocWorkflowService;
+  protected KickstartService adhocWorkflowService;
 
   public SelectAdhocWorkflowPanel(ViewManager viewManager) {
     this.viewManager = viewManager;
@@ -104,8 +104,8 @@ public class SelectAdhocWorkflowPanel extends Panel {
   }
 
   protected void initWorkflowTableContents() {
-    List<AdhocWorkflowInfo> processDefinitions = adhocWorkflowService.findAdhocWorkflowInformation();
-    for (final AdhocWorkflowInfo infoDto : processDefinitions) {
+    List<KickstartWorkflowInfo> processDefinitions = adhocWorkflowService.findKickstartWorkflowInformation();
+    for (final KickstartWorkflowInfo infoDto : processDefinitions) {
       Item workflowItem = workflowTable.getItem(workflowTable.addItem());
       Button nameButton = new Button(infoDto.getName());
       nameButton.setStyleName("link");
@@ -132,7 +132,7 @@ public class SelectAdhocWorkflowPanel extends Panel {
       editButton.setStyleName("link");
 //      editButton.setIcon(editImage);
       editButton.setData(infoDto.getId());
-      editButton.addListener(new EditExistingAdhocWorkflowClickListener(viewManager, adhocWorkflowService));
+      editButton.addListener(new EditExistingKickstartWorkflowClickListener(viewManager, adhocWorkflowService));
       actions.addComponent(editButton);
 
       StreamResource.StreamSource streamSource = new StreamSource() {

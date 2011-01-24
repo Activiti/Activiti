@@ -35,7 +35,7 @@ import org.activiti.kickstart.bpmn20.model.connector.SequenceFlow;
 import org.activiti.kickstart.bpmn20.model.event.EndEvent;
 import org.activiti.kickstart.bpmn20.model.event.StartEvent;
 import org.activiti.kickstart.bpmn20.model.gateway.ParallelGateway;
-import org.activiti.kickstart.dto.AdhocWorkflowDto;
+import org.activiti.kickstart.dto.KickstartWorkflowDto;
 import org.activiti.kickstart.dto.TaskBlock;
 
 /**
@@ -63,7 +63,7 @@ public class ProcessDiagramGenerator {
   protected int TASK_BLOCK_WIDTH = GATEWAY_WIDTH + TASK_WIDTH + SEQUENCE_FLOW_WIDTH + LONG_SEQUENCE_FLOW_WITHOUT_ARROW_WIDTH;
 
   // Instance members
-  protected AdhocWorkflowDto adhocWorkflow;
+  protected KickstartWorkflowDto adhocWorkflow;
 
   // Will be set during image generation
   protected int startX;
@@ -75,7 +75,7 @@ public class ProcessDiagramGenerator {
   protected Map<String, List<SequenceFlow>> incomingSequenceFlowMapping;
   protected Set<String> handledElements;
 
-  public ProcessDiagramGenerator(AdhocWorkflowDto adhocWorkflow) {
+  public ProcessDiagramGenerator(KickstartWorkflowDto adhocWorkflow) {
     this.adhocWorkflow = adhocWorkflow;
   }
 

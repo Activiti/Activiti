@@ -13,7 +13,7 @@
 package org.activiti.kickstart.ui.panel;
 
 import org.activiti.kickstart.ui.ViewManager;
-import org.activiti.kickstart.ui.listener.CreateAdhocWorkflowClickListener;
+import org.activiti.kickstart.ui.listener.CreateKickstartWorkflowClickListener;
 import org.activiti.kickstart.ui.listener.EnhanceWorkflowClickListener;
 
 import com.vaadin.ui.Button;
@@ -38,7 +38,7 @@ public class ActionsPanel extends Panel {
 
     Button createAdhocWorkflowButton = new Button(CREATE_WORKFLOW);
     createAdhocWorkflowButton.setWidth("132px");
-    createAdhocWorkflowButton.addListener(new CreateAdhocWorkflowClickListener(viewManager));
+    createAdhocWorkflowButton.addListener(new CreateKickstartWorkflowClickListener(viewManager));
 
     Button enhanceWorkflowButton = new Button(ENHANCE_WORKFLOW);
     enhanceWorkflowButton.setWidth("132px");

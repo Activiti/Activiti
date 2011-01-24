@@ -14,7 +14,7 @@ package org.activiti.kickstart;
 
 import org.activiti.kickstart.ui.ViewManager;
 import org.activiti.kickstart.ui.panel.ActionsPanel;
-import org.activiti.kickstart.ui.panel.AdhocWorkflowPanel;
+import org.activiti.kickstart.ui.panel.KickstartWorkflowPanel;
 
 import com.vaadin.Application;
 import com.vaadin.ui.CustomLayout;
@@ -80,7 +80,7 @@ public class KickStartApplication extends Application {
   }
 
   protected void initDefaultWorkArea() {
-    viewManager.switchWorkArea(ViewManager.EDIT_ADHOC_WORKFLOW, new AdhocWorkflowPanel(viewManager));
+    viewManager.switchWorkArea(ViewManager.EDIT_ADHOC_WORKFLOW, new KickstartWorkflowPanel(viewManager));
   }
 
   // GETTERS /////////////////////////////////////////////////////////////////////////

@@ -12,9 +12,9 @@
  */
 package org.activiti.kickstart.ui.panel;
 
-import org.activiti.kickstart.dto.AdhocWorkflowDto;
+import org.activiti.kickstart.dto.KickstartWorkflowDto;
 import org.activiti.kickstart.dto.TaskDto;
-import org.activiti.kickstart.service.AdhocWorkflowService;
+import org.activiti.kickstart.service.KickstartService;
 import org.activiti.kickstart.service.ServiceLocator;
 import org.activiti.kickstart.ui.ViewManager;
 import org.activiti.kickstart.ui.popup.ErrorPopupWindow;
@@ -38,7 +38,7 @@ import com.vaadin.ui.themes.Reindeer;
 /**
  * @author Joram Barrez
  */
-public class AdhocWorkflowPanel extends Panel {
+public class KickstartWorkflowPanel extends Panel {
 
   protected static final long serialVersionUID = -2074647293591779784L;
 
@@ -57,10 +57,10 @@ public class AdhocWorkflowPanel extends Panel {
 
   // dependencies
   protected ViewManager viewManager;
-  protected AdhocWorkflowService adhocWorkflowService;
-  protected AdhocWorkflowDto existingAdhocWorkflow;
+  protected KickstartService adhocWorkflowService;
+  protected KickstartWorkflowDto existingAdhocWorkflow;
 
-  public AdhocWorkflowPanel(ViewManager viewManager, AdhocWorkflowDto existingAdhocWorkflow) {
+  public KickstartWorkflowPanel(ViewManager viewManager, KickstartWorkflowDto existingAdhocWorkflow) {
     this.viewManager = viewManager;
     this.existingAdhocWorkflow = existingAdhocWorkflow;
     this.saveImage = new ClassResource("images/page_save.png", viewManager.getApplication());
@@ -68,7 +68,7 @@ public class AdhocWorkflowPanel extends Panel {
     init();
   }
 
-  public AdhocWorkflowPanel(ViewManager viewManager) {
+  public KickstartWorkflowPanel(ViewManager viewManager) {
     this(viewManager, null);
   }
 
@@ -157,7 +157,7 @@ public class AdhocWorkflowPanel extends Panel {
 
       public void buttonClick(ClickEvent event) {
         try {
-          adhocWorkflowService.deployAdhocWorkflow(createAdhocWorkflow());
+          adhocWorkflowService.deployKickstartWorkflow(createAdhocWorkflow());
           Panel successPanel = new Panel();
           successPanel.setStyleName(Reindeer.PANEL_LIGHT);
           Label successLabel = new Label("Process successfully deployed");
@@ -203,8 +203,8 @@ public class AdhocWorkflowPanel extends Panel {
     layout.addComponent(footer);
   }
 
-  protected AdhocWorkflowDto createAdhocWorkflow() {
-    AdhocWorkflowDto adhocWorkflow = new AdhocWorkflowDto();
+  protected KickstartWorkflowDto createAdhocWorkflow() {
+    KickstartWorkflowDto adhocWorkflow = new KickstartWorkflowDto();
     adhocWorkflow.setName((String) nameField.getValue());
     adhocWorkflow.setDescription((String) descriptionField.getValue());
     for (TaskDto task : taskTable.getTasks()) {

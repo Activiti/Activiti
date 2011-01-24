@@ -12,10 +12,10 @@
  */
 package org.activiti.kickstart.ui.listener;
 
-import org.activiti.kickstart.dto.AdhocWorkflowDto;
-import org.activiti.kickstart.service.AdhocWorkflowService;
+import org.activiti.kickstart.dto.KickstartWorkflowDto;
+import org.activiti.kickstart.service.KickstartService;
 import org.activiti.kickstart.ui.ViewManager;
-import org.activiti.kickstart.ui.panel.AdhocWorkflowPanel;
+import org.activiti.kickstart.ui.panel.KickstartWorkflowPanel;
 import org.activiti.kickstart.ui.popup.ErrorPopupWindow;
 
 import com.vaadin.ui.Button;
@@ -24,22 +24,22 @@ import com.vaadin.ui.Button.ClickEvent;
 /**
  * @author Joram Barrez
  */
-public class EditExistingAdhocWorkflowClickListener implements Button.ClickListener {
+public class EditExistingKickstartWorkflowClickListener implements Button.ClickListener {
 
   protected static final long serialVersionUID = -2160682103119947071L;
 
   protected ViewManager viewManager;
-  protected AdhocWorkflowService adhocWorkflowService;
+  protected KickstartService adhocWorkflowService;
 
-  public EditExistingAdhocWorkflowClickListener(ViewManager viewManager, AdhocWorkflowService adhocWorkflowService) {
+  public EditExistingKickstartWorkflowClickListener(ViewManager viewManager, KickstartService adhocWorkflowService) {
     this.viewManager = viewManager;
     this.adhocWorkflowService = adhocWorkflowService;
   }
 
   public void buttonClick(ClickEvent event) {
     try {
-      AdhocWorkflowDto adhocWorkflow = adhocWorkflowService.findAdhocWorkflowById((String) event.getButton().getData());
-      viewManager.switchWorkArea(ViewManager.EDIT_ADHOC_WORKFLOW, new AdhocWorkflowPanel(viewManager, adhocWorkflow));
+      KickstartWorkflowDto adhocWorkflow = adhocWorkflowService.findKickstartWorkflowById((String) event.getButton().getData());
+      viewManager.switchWorkArea(ViewManager.EDIT_ADHOC_WORKFLOW, new KickstartWorkflowPanel(viewManager, adhocWorkflow));
     } catch (Exception e) {
       e.printStackTrace();
       viewManager.showPopupWindow(new ErrorPopupWindow(e));

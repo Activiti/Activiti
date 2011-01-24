@@ -42,25 +42,25 @@ import org.activiti.kickstart.bpmn20.model.activity.type.UserTask;
 import org.activiti.kickstart.bpmn20.model.connector.SequenceFlow;
 import org.activiti.kickstart.bpmn20.model.gateway.ParallelGateway;
 import org.activiti.kickstart.diagram.ProcessDiagramGenerator;
-import org.activiti.kickstart.dto.AdhocWorkflowDto;
-import org.activiti.kickstart.dto.AdhocWorkflowInfo;
+import org.activiti.kickstart.dto.KickstartWorkflowDto;
+import org.activiti.kickstart.dto.KickstartWorkflowInfo;
 import org.activiti.kickstart.dto.FormDto;
 import org.activiti.kickstart.dto.TaskDto;
 
 /**
  * @author Joram Barrez
  */
-public class AdhocWorkflowServiceImpl implements AdhocWorkflowService {
+public class KickstartServiceImpl implements KickstartService {
 
   protected RepositoryService repositoryService;
   protected HistoryService historyService;
 
-  public AdhocWorkflowServiceImpl(ProcessEngine processEngine) {
+  public KickstartServiceImpl(ProcessEngine processEngine) {
     this.repositoryService = processEngine.getRepositoryService();
     this.historyService = processEngine.getHistoryService();
   }
 
-  public String deployAdhocWorkflow(AdhocWorkflowDto adhocWorkflow) throws JAXBException {
+  public String deployKickstartWorkflow(KickstartWorkflowDto adhocWorkflow) throws JAXBException {
     String deploymentName = "Process " + adhocWorkflow.getName();
     String bpmn20XmlResourceName = generateBpmnResourceName(adhocWorkflow.getName());
     DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().name(deploymentName);
@@ -86,7 +86,7 @@ public class AdhocWorkflowServiceImpl implements AdhocWorkflowService {
     return deployment.getId();
   }
 
-  public List<AdhocWorkflowInfo> findAdhocWorkflowInformation() {
+  public List<KickstartWorkflowInfo> findKickstartWorkflowInformation() {
     List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery()
       .processDefinitionKeyLike("adhoc_%")
       .orderByProcessDefinitionName()
@@ -97,10 +97,10 @@ public class AdhocWorkflowServiceImpl implements AdhocWorkflowService {
     return convertToDto(processDefinitions);
   }
 
-  protected List<AdhocWorkflowInfo> convertToDto(List<ProcessDefinition> processDefinitions) {
-    List<AdhocWorkflowInfo> dtos = new ArrayList<AdhocWorkflowInfo>();
+  protected List<KickstartWorkflowInfo> convertToDto(List<ProcessDefinition> processDefinitions) {
+    List<KickstartWorkflowInfo> dtos = new ArrayList<KickstartWorkflowInfo>();
     for (ProcessDefinition processDefinition : processDefinitions) {
-      AdhocWorkflowInfo dto = new AdhocWorkflowInfo();
+      KickstartWorkflowInfo dto = new KickstartWorkflowInfo();
       dto.setId(processDefinition.getId());
       dto.setKey(processDefinition.getKey());
       dto.setName(processDefinition.getName());
@@ -127,7 +127,7 @@ public class AdhocWorkflowServiceImpl implements AdhocWorkflowService {
     return dtos;
   }
 
-  public AdhocWorkflowDto findAdhocWorkflowById(String id) throws JAXBException {
+  public KickstartWorkflowDto findKickstartWorkflowById(String id) throws JAXBException {
     // Get process definition for key
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
       .processDefinitionId(id)
@@ -173,7 +173,7 @@ public class AdhocWorkflowServiceImpl implements AdhocWorkflowService {
     return processName.replace(" ", "_") + ".bpmn20.xml";
   }
 
-  protected String createBpmn20Xml(AdhocWorkflowDto adhocWorkflow) throws JAXBException {
+  protected String createBpmn20Xml(KickstartWorkflowDto adhocWorkflow) throws JAXBException {
     JAXBContext jaxbContext = JAXBContext.newInstance(Definitions.class);
     Marshaller marshaller = jaxbContext.createMarshaller();
     StringWriter writer = new StringWriter();
@@ -181,8 +181,8 @@ public class AdhocWorkflowServiceImpl implements AdhocWorkflowService {
     return writer.toString();
   }
 
-  public AdhocWorkflowDto convertToAdhocWorkflow(String deploymentId, Definitions definitions) {
-    AdhocWorkflowDto adhocWorkflow = new AdhocWorkflowDto();
+  public KickstartWorkflowDto convertToAdhocWorkflow(String deploymentId, Definitions definitions) {
+    KickstartWorkflowDto adhocWorkflow = new KickstartWorkflowDto();
 
     for (BaseElement baseElement : definitions.getRootElement()) {
       if (baseElement instanceof org.activiti.kickstart.bpmn20.model.Process) {
@@ -217,8 +217,8 @@ public class AdhocWorkflowServiceImpl implements AdhocWorkflowService {
         }
 
         // Follow sequence flow to discover sequence of tasks
-        SequenceFlow currentSequenceFlow = sequenceFlows.get(AdhocWorkflowDto.START_NAME).get(0); // Can be only one
-        while (!currentSequenceFlow.getTargetRef().getId().equals(AdhocWorkflowDto.END_NAME)) {
+        SequenceFlow currentSequenceFlow = sequenceFlows.get(KickstartWorkflowDto.START_NAME).get(0); // Can be only one
+        while (!currentSequenceFlow.getTargetRef().getId().equals(KickstartWorkflowDto.END_NAME)) {
 
           String targetRef = currentSequenceFlow.getTargetRef().getId();
           TaskDto taskDto = null;

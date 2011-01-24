@@ -13,7 +13,7 @@
 package org.activiti.kickstart.ui.listener;
 
 import org.activiti.kickstart.ui.ViewManager;
-import org.activiti.kickstart.ui.panel.AdhocWorkflowPanel;
+import org.activiti.kickstart.ui.panel.KickstartWorkflowPanel;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -21,18 +21,18 @@ import com.vaadin.ui.Button.ClickEvent;
 /**
  * @author Joram Barrez
  */
-public class CreateAdhocWorkflowClickListener implements Button.ClickListener {
+public class CreateKickstartWorkflowClickListener implements Button.ClickListener {
 
   private static final long serialVersionUID = 3743698821958704189L;
 
   protected ViewManager viewManager;
 
-  public CreateAdhocWorkflowClickListener(ViewManager viewManager) {
+  public CreateKickstartWorkflowClickListener(ViewManager viewManager) {
     this.viewManager = viewManager;
   }
 
   public void buttonClick(ClickEvent event) {
-    viewManager.switchWorkArea(ViewManager.EDIT_ADHOC_WORKFLOW, new AdhocWorkflowPanel(viewManager));
+    viewManager.switchWorkArea(ViewManager.EDIT_ADHOC_WORKFLOW, new KickstartWorkflowPanel(viewManager));
   }
 
 }
