@@ -16,12 +16,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 
 /**
  * @author Joram Barrez
  * @author Falko Menge <falko.menge@camunda.com>
+ * @author Frederik Heremans
  */
 public class CustomTaskAssignmentTest extends PluggableActivitiTestCase {
   
@@ -65,7 +67,7 @@ public class CustomTaskAssignmentTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testAssigneeAssignment() {
-    runtimeService.startProcessInstanceByKey("customTaskAssignment");
+    runtimeService.startProcessInstanceByKey("setAssigneeInListener");
     assertNotNull(taskService.createTaskQuery().taskAssignee("kermit").singleResult());
     assertEquals(0, taskService.createTaskQuery().taskAssignee("fozzie").count());
     assertEquals(0, taskService.createTaskQuery().taskAssignee("gonzo").count());
@@ -73,7 +75,7 @@ public class CustomTaskAssignmentTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testOverwriteExistingAssignments() {
-    runtimeService.startProcessInstanceByKey("customTaskAssignment");
+    runtimeService.startProcessInstanceByKey("overrideAssigneeInListener");
     assertNotNull(taskService.createTaskQuery().taskAssignee("kermit").singleResult());
     assertEquals(0, taskService.createTaskQuery().taskAssignee("fozzie").count());
     assertEquals(0, taskService.createTaskQuery().taskAssignee("gonzo").count());
@@ -95,6 +97,25 @@ public class CustomTaskAssignmentTest extends PluggableActivitiTestCase {
     assertNotNull(taskService.createTaskQuery().taskAssignee("gonzo").singleResult());
     assertEquals(0, taskService.createTaskQuery().taskAssignee("fozzie").count());
     assertEquals(0, taskService.createTaskQuery().taskAssignee("kermit").count());
+  }
+  
+  @Deployment
+  public void testReleaseTask() throws Exception {
+    runtimeService.startProcessInstanceByKey("releaseTaskProcess");
+    
+    Task task = taskService.createTaskQuery().taskAssignee("fozzie").singleResult();
+    assertNotNull(task);
+    String taskId = task.getId();
+    
+    // Set assignee to null
+    taskService.setAssignee(taskId, null);
+    
+    task = taskService.createTaskQuery().taskAssignee("fozzie").singleResult();
+    assertNull(task);
+    
+    task = taskService.createTaskQuery().taskId(taskId).singleResult();
+    assertNotNull(task);
+    assertNull(task.getAssignee());
   }
 
 }

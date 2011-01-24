@@ -4,7 +4,7 @@
   xmlns:activiti="http://activiti.org/bpmn"
 	targetNamespace="Examples">
 	
-	<process id="customTaskAssignment" name="Custom task assignment Example">
+	<process id="setAssigneeInListener" name="Custom task assignment Example">
 	
 		<startEvent id="theStart" />
 		

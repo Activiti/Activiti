@@ -4,7 +4,7 @@
   xmlns:activiti="http://activiti.org/bpmn"
 	targetNamespace="Examples">
 	
-	<process id="overrideAssigneeInListener" name="Custom task assignment Example">
+	<process id="releaseTaskProcess" name="Custom task assignment Example">
 	
 		<startEvent id="theStart" />
 		
@@ -14,9 +14,6 @@
 		  <documentation>
 		    Schedule a meeting with management.
 		  </documentation>
-		  <extensionElements>
-		    <activiti:taskListener event="create" class="org.activiti.examples.bpmn.tasklistener.AssigneeAssignment" />
-		  </extensionElements>
 		</userTask>
 		
 		<sequenceFlow id="flow2" sourceRef="task1" targetRef="theEnd" />

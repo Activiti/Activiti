@@ -50,19 +50,17 @@ public class AddIdentityLinkCmd implements Command<Void> {
       throw new ActivitiException("type is required when adding a new task identity link");
     }
     
-    if (userId == null && groupId == null) {
-      throw new ActivitiException("userId and groupId cannot both be null");
-    }
     
-    // Special treatment for assignee
+    
+    // Special treatment for assignee, group cannot be used an userId may be null
     if (IdentityLinkType.ASSIGNEE.equals(type)) {
-      if (userId == null) {
-        throw new ActivitiException("When involving an assignee, the userId should always" 
-                + " be provided (but null was given)");
-      }
       if (groupId != null) {
         throw new ActivitiException("Incompatible usage: cannot use ASSIGNEE" 
                 + " together with a groupId");
+      }
+    } else {
+      if (userId == null && groupId == null) {
+        throw new ActivitiException("userId and groupId cannot both be null");
       }
     }
   }
