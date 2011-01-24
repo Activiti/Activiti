@@ -1669,17 +1669,33 @@ public class BpmnParse extends Parse {
     }
     
     CallActivityBehaviour callActivityBehaviour = new CallActivityBehaviour(calledElement);
-    
-    // parse data input and output
-    for (Element dataAssociationElement : callActivityElement.elements("dataInputAssociation")) {
-      AbstractDataAssociation dataAssociation = this.parseDataInputAssociation(dataAssociationElement);
-      callActivityBehaviour.addDataInputAssociation(dataAssociation);
+
+    Element extentionsElement = callActivityElement.element("extensionElements");    
+    if(extentionsElement != null) {
+      // input data elements
+      for(Element listenerElement : extentionsElement.elementsNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "in")) {
+        String source = listenerElement.attribute("source");
+        String target = listenerElement.attribute("target");        
+        callActivityBehaviour.addDataInputAssociation(new SimpleDataInputAssociation(source, target));
+      }      
+      // output data elements
+      for(Element listenerElement : extentionsElement.elementsNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "out")) {
+        String source = listenerElement.attribute("source");
+        String target = listenerElement.attribute("target");        
+        callActivityBehaviour.addDataOutputAssociation(new MessageImplicitDataOutputAssociation(target, source));
+      }      
     }
-    
-    for (Element dataAssociationElement : callActivityElement.elements("dataOutputAssociation")) {
-      AbstractDataAssociation dataAssociation = this.parseDataOutputAssociation(dataAssociationElement);
-      callActivityBehaviour.addDataOutputAssociation(dataAssociation);
-    }
+
+//    // parse data input and output
+//    for (Element dataAssociationElement : callActivityElement.elements("dataInputAssociation")) {
+//      AbstractDataAssociation dataAssociation = this.parseDataInputAssociation(dataAssociationElement);
+//      callActivityBehaviour.addDataInputAssociation(dataAssociation);
+//    }
+//    
+//    for (Element dataAssociationElement : callActivityElement.elements("dataOutputAssociation")) {
+//      AbstractDataAssociation dataAssociation = this.parseDataOutputAssociation(dataAssociationElement);
+//      callActivityBehaviour.addDataOutputAssociation(dataAssociation);
+//    }
    
     activity.setScope(true);
     activity.setActivityBehavior(callActivityBehaviour);

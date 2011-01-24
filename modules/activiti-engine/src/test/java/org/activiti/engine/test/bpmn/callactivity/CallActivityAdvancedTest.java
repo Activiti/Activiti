@@ -139,7 +139,7 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
   @Deployment(resources = {
     "org/activiti/engine/test/bpmn/callactivity/CallActivity.testSubProcessDataInputOutput.bpmn20.xml", 
     "org/activiti/engine/test/bpmn/callactivity/simpleSubProcess.bpmn20.xml" },
-    validateSchmea=false)
+    validateSchmea=true)
   public void testSubProcessWithDataInputOutput() {
     Map<String, Object> vars = new HashMap<String, Object>();
     vars.put("superVariable", "Hello from the super process.");    

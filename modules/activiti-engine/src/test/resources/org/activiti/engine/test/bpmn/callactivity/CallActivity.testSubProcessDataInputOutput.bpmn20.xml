@@ -11,10 +11,13 @@
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="callSubProcess" />
     
     <callActivity id="callSubProcess" calledElement="simpleSubProcess" >
+	  <extensionElements>
+	    <activiti:in source="superVariable" target="subVariable" />
+	    <activiti:out source="subVariable" target="superVariable" />
+	  </extensionElements>
       <!--
         Warning: The following code abuses the syntax of Data Associations
         for a radical shortcut.
-      -->    
       <dataInputAssociation>
         <sourceRef>superVariable</sourceRef>
         <targetRef>subVariable</targetRef>
@@ -23,6 +26,8 @@
         <sourceRef>subVariable</sourceRef>
         <targetRef>superVariable</targetRef>
       </dataOutputAssociation>
+      -->    
+      
     </callActivity>
     
     <sequenceFlow id="flow3" sourceRef="callSubProcess" targetRef="userTask" />
