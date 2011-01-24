@@ -12,6 +12,7 @@
  */
 package org.activiti.kickstart.ui;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
@@ -29,8 +30,10 @@ import com.vaadin.ui.Window;
  * 
  * @author Joram Barrez
  */
-public class ViewManager {
+public class ViewManager implements Serializable {
 
+  private static final long serialVersionUID = 4097162454884471228L;
+  
   public static final String EDIT_ADHOC_WORKFLOW = "editAdhocWorkflow";
   public static final String PROCESS_SUCESSFULLY_DEPLOYED = "processSuccessfullyDeployed";
   public static final String SELECT_ADHOC_WORKFLOW = "selectAdhocWorkflow";
