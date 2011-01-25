@@ -62,7 +62,7 @@ public class RemedyTemporarySignavioIncompatibility {
         
     xml = removeAttribute(xml, "typeLanguage");
     xml = removeAttribute(xml, "expressionLanguage");
-    xml = removeAttribute(xml, "xmlns:bpmndi");
+    //xml = removeAttribute(xml, "xmlns:bpmndi");
    
     return xml;
   }
