@@ -69,7 +69,7 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
   // ACT-482
   @Deployment
   public void testNestedForkJoin() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("nestedForkJoin");
+   runtimeService.startProcessInstanceByKey("nestedForkJoin");
    
    // After process startm, only task 0 should be active
    TaskQuery query = taskService.createTaskQuery().orderByTaskName().asc(); 

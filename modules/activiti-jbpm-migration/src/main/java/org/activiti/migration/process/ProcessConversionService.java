@@ -43,6 +43,7 @@ public interface ProcessConversionService {
   String HUMAN_PERFORMER_TAG = "humanPerformer";
   String RESOURCE_ASSIGNMENT_EXPRESSION_TAG = "resourceAssignmentExpression";
   String FORMAL_EXPRESSION_TAG = "formalExpression";
+  String CANIDATE_USERS_ATTRIBUTE = "activiti:candidateUsers";
   String SEQUENCE_FLOW_TAG = "sequenceFlow";
   
   // Other constants

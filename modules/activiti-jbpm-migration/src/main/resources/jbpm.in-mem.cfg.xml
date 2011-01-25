@@ -10,7 +10,7 @@
   </jbpm-context>
   
   <!-- configuration property used by persistence service impl org.jbpm.persistence.db.DbPersistenceServiceFactory -->
-  <string name="resource.hibernate.cfg.xml" value="hibernate.test.cfg.xml" />
+  <string name="resource.hibernate.cfg.xml" value="hibernate.in-mem.cfg.xml" />
 
   <!-- configuration resource files pointing to default configuration files in jbpm-{version}.jar -->
   <string name="resource.business.calendar" value="org/jbpm/calendar/jbpm.business.calendar.properties" />

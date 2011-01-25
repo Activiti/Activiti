@@ -12,14 +12,8 @@
  */
 package org.activiti.migration.test.process.conversion;
 
-import java.util.Map;
-
 import org.activiti.engine.runtime.Execution;
 import org.activiti.migration.test.MigrationTestCase;
-import org.activiti.migration.util.XmlUtil;
-import org.jbpm.JbpmContext;
-import org.jbpm.graph.def.ProcessDefinition;
-import org.w3c.dom.Document;
 
 
 /**
@@ -34,19 +28,11 @@ public class SimplestProcessDefinitionConversionTest extends MigrationTestCase {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    JbpmContext jbpmContext = jbpmConfiguration.createJbpmContext();
-    try {
-      ProcessDefinition processDefinition = ProcessDefinition
-        .parseXmlResource("org/activiti/migration/test/process/conversion/simplest/processdefinition.xml");
-      jbpmContext.deployProcessDefinition(processDefinition);
-      jbpmContext.newProcessInstance("simplest");
-    } finally {
-      jbpmContext.close();
-    }
+    deployJbpmProcess("org/activiti/migration/test/process/conversion/simplest");
   }
   
   public void testStartProcessInstanceOfMigratedProcess() throws Exception {
-    String migratedBpmn20Xml = migrateProcess("simplest");
+    String migratedBpmn20Xml = convertProcess("simplest");
     String deployId = repositoryService.createDeployment()
       .addString("simplest.bpmn20.xml", migratedBpmn20Xml)
       .deploy()

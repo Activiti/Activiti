@@ -22,11 +22,14 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.migration.dao.Jbpm3Dao;
 import org.activiti.migration.dao.Jbpm3DaoImpl;
 import org.activiti.migration.process.ProcessConversionService;
 import org.activiti.migration.process.ProcessConversionServiceImpl;
+import org.activiti.migration.util.XmlUtil;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.w3c.dom.Document;
@@ -64,20 +67,36 @@ public class Jbpm3ToActivitiMigrator {
     
   }
   
-  public void migrate() {
+  public Map<String, Document> convertProcesses() {
     if (LOGGER.isLoggable(Level.INFO)) {
-      LOGGER.info("Starting migration");
+      LOGGER.info("Starting process conversion");
     }
     
     validateDbParameters();
     try {
       processConversionService = createProcessConversionService();
       migratedProcessDefinitions = processConversionService.convertAllProcessDefinitions();
+      return migratedProcessDefinitions;
     } catch (Exception e){
-      LOGGER.log(Level.SEVERE, "Exception while creating processConversionService", e);
+      throw new ActivitiException("Could convert the processes", e);
     } finally {
       processConversionService.close();
     }
+  }
+  
+  public void deployConvertedProcessesToActiviti() {
+    if (migratedProcessDefinitions == null || migratedProcessDefinitions.size() == 0) {
+      convertProcesses();
+    }
+    
+    ProcessEngine processEngine = createProcessEngine();
+    for (String processName : migratedProcessDefinitions.keySet()) {
+      processEngine.getRepositoryService().createDeployment()
+        .addString(processName.replace(" ", "_") + ".bpmn20.xml", 
+                XmlUtil.toString(migratedProcessDefinitions.get(processName)))
+        .deploy();
+    }
+    processEngine.close();
   }
   
   protected void validateDbParameters() {
@@ -167,7 +186,7 @@ public class Jbpm3ToActivitiMigrator {
     setJbpm3DbUser(jbpm3DbParameters.getProperty("username"));
     setJbpm3DbPassword(jbpm3DbParameters.getProperty("password"));
     setJbpm3DbHibernateDialect(jbpm3DbParameters.getProperty("hibernate.dialect"));
-    
+     
     // activiti
     setActivitiDbDriver(activitiDbParameters.getProperty("driver"));
     setActivitiDbUrl(activitiDbParameters.getProperty("url"));
@@ -176,6 +195,17 @@ public class Jbpm3ToActivitiMigrator {
     setActivitiDbType(activitiDbParameters.getProperty("type"));
     
     return this;
+  }
+  
+  public ProcessEngine createProcessEngine() {
+    return StandaloneProcessEngineConfiguration.createStandaloneProcessEngineConfiguration()
+      .setDatabaseType(activitiDbType)
+      .setJdbcDriver(activitiDbDriver)
+      .setJdbcUrl(activitiDbUrl)
+      .setJdbcUsername(activitiDbUser)
+      .setJdbcPassword(activitiDbPassword)
+      .setDatabaseSchemaUpdate("true")
+      .buildProcessEngine();
   }
   
   // Getters and setters //////////////////////////////////////////////////////////////////////////

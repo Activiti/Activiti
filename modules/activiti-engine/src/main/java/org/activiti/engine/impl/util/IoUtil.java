@@ -78,7 +78,7 @@ public class IoUtil {
       outputStream.write(content.getBytes());
       outputStream.flush();
     } catch(Exception e) {
-      throw new ActivitiException("Couldn't write file " + filePath + ": " + e.getMessage());
+      throw new ActivitiException("Couldn't write file " + filePath, e);
     } finally {
       IoUtil.closeSilently(outputStream);
     }

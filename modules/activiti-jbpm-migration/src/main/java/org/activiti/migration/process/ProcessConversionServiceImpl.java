@@ -164,7 +164,8 @@ public class ProcessConversionServiceImpl implements ProcessConversionService {
     userTaskElement.setAttribute("id", task.getTaskNode().getName());
     userTaskElement.setAttribute("name", name);
     
-    if (task.getActorIdExpression() != null) {
+    String actorIdExpression = task.getActorIdExpression();
+    if (actorIdExpression != null) {
       Element humanPerformer = processDefinitionDocument.createElement(HUMAN_PERFORMER_TAG);
       userTaskElement.appendChild(humanPerformer);
       
@@ -173,7 +174,12 @@ public class ProcessConversionServiceImpl implements ProcessConversionService {
       
       Element formalExpression = processDefinitionDocument.createElement(FORMAL_EXPRESSION_TAG);
       assignmentExpression.appendChild(formalExpression);
-      formalExpression.setTextContent(task.getActorIdExpression());
+      formalExpression.setTextContent(actorIdExpression);
+    }
+    
+    String pooledActorsExpression = task.getPooledActorsExpression();
+    if (pooledActorsExpression != null) {
+      userTaskElement.setAttribute(CANIDATE_USERS_ATTRIBUTE, pooledActorsExpression);
     }
     
     return userTaskElement;

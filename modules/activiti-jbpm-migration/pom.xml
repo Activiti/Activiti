@@ -7,9 +7,9 @@
 	<groupId>org.activiti</groupId>
 	<artifactId>activiti-jbpm-migration</artifactId>
 
-  <properties>
-    <current.version>5.2-SNAPSHOT</current.version>
-  </properties>
+	<properties>
+		<current.version>5.2-SNAPSHOT</current.version>
+	</properties>
 
 	<parent>
 		<groupId>org.activiti</groupId>
@@ -19,7 +19,7 @@
 	</parent>
 
 	<dependencies>
-	  <!-- jBPM 3 --> 
+		<!-- jBPM 3 -->
 		<dependency>
 			<groupId>org.jbpm.jbpm3</groupId>
 			<artifactId>jbpm-jpdl</artifactId>
@@ -37,21 +37,21 @@
 				</exclusion>
 				<!-- Excluding all other dependencies that we don't need -->
 				<exclusion>
-				  <groupId>org.apache.ant</groupId>
-				  <artifactId>ant</artifactId>
+					<groupId>org.apache.ant</groupId>
+					<artifactId>ant</artifactId>
 				</exclusion>
 				<exclusion>
-          <groupId>org.apache.jackrabbit</groupId>
-          <artifactId>jackrabbit-core</artifactId>
-        </exclusion>
+					<groupId>org.apache.jackrabbit</groupId>
+					<artifactId>jackrabbit-core</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
-      <groupId>asm</groupId>
-      <artifactId>asm</artifactId>
-      <version>3.3</version>
-    </dependency>
-    <!-- Database -->
+			<groupId>asm</groupId>
+			<artifactId>asm</artifactId>
+			<version>3.3</version>
+		</dependency>
+		<!-- Database -->
 		<dependency>
 			<groupId>commons-dbcp</groupId>
 			<artifactId>commons-dbcp</artifactId>
@@ -65,7 +65,6 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -73,5 +72,27 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+          <appendAssemblyId>false</appendAssemblyId>
+					<descriptors>
+						<descriptor>src/main/assembly.xml</descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

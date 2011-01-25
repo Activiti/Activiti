@@ -1,0 +1,36 @@
+<assembly>
+	<id>jbpm-migration</id>
+	<formats>
+		<format>zip</format>
+	</formats>
+	<dependencySets>
+		<dependencySet>
+			<outputDirectory>lib</outputDirectory>
+		</dependencySet>
+	</dependencySets>
+	<files>
+		<file>
+			<source>src/main/resources/build.xml</source>
+			<outputDirectory>/</outputDirectory>
+		</file>
+		<file>
+			<source>src/main/resources/jbpm3.db.in-mem.properties</source>
+			<destName>jbpm3.db.properties</destName>
+			<outputDirectory>/</outputDirectory>
+		</file>
+		<file>
+			<source>src/main/resources/activiti.db.in-mem.properties</source>
+			<destName>activiti.db.properties</destName>
+			<outputDirectory>/</outputDirectory>
+		</file>
+	</files>
+	<fileSets>
+		<fileSet>
+			<directory>target/</directory>
+			<outputDirectory>/processes</outputDirectory>
+			<excludes>
+				<exclude>**/*</exclude> <!-- See http://jira.codehaus.org/browse/MASSEMBLY-108 -->
+			</excludes>
+		</fileSet>
+	</fileSets>
+</assembly>

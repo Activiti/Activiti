@@ -13,13 +13,21 @@
 package org.activiti.migration.test;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.migration.Jbpm3ToActivitiMigrator;
+import org.activiti.migration.util.Jbpm3Util;
 import org.activiti.migration.util.XmlUtil;
+import org.activiti.migration.util.ZipUtil;
 import org.jbpm.JbpmConfiguration;
+import org.jbpm.JbpmContext;
+import org.jbpm.graph.def.ProcessDefinition;
 import org.w3c.dom.Document;
 
 
@@ -28,19 +36,14 @@ import org.w3c.dom.Document;
  */
 public class MigrationTestCase extends PluggableActivitiTestCase {
   
-  protected static JbpmConfiguration jbpmConfiguration;
+  protected JbpmConfiguration jbpmConfiguration;
 
   protected Jbpm3ToActivitiMigrator migrator;
-  
   
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    
-    if (jbpmConfiguration == null) {
-      jbpmConfiguration = JbpmConfiguration.getInstance("jbpm.test.cfg.xml");
-    }
-    
+    this.jbpmConfiguration = Jbpm3Util.getJbpmConfiguration("jbpm.in-mem.cfg.xml");
     this.migrator = createMigrator();
   }
   
@@ -50,25 +53,72 @@ public class MigrationTestCase extends PluggableActivitiTestCase {
     super.tearDown();
   }
   
+  protected void deployJbpmProcess(String packageName) {
+    JbpmContext jbpmContext = jbpmConfiguration.createJbpmContext();
+    try {
+      Map<String, byte[]> files = new HashMap<String, byte[]>();
+      
+      // process definition
+      String processDefinitionPath = packageName + "/processdefinition.xml";
+      files.put("processdefinition.xml", readProcessResource(processDefinitionPath, true));
+      
+      // gpd.xml
+      String gpdPath = packageName + "/gpd.xml";
+      byte[] gpdBytes = readProcessResource(gpdPath, false);
+      if (gpdBytes != null) {
+        files.put("gpd.xml", gpdBytes);
+      }
+        
+      // process image
+      String imagePath = packageName + "/processimage.jpg";
+      byte[] imageBytes = readProcessResource(imagePath, false);
+      if (imageBytes != null) {
+        files.put("processimage.jpg", imageBytes);
+      }
+        
+      try {
+        ProcessDefinition processDefinition = 
+          ProcessDefinition.parseParZipInputStream(ZipUtil.createZipInputStream(files));
+        jbpmContext.deployProcessDefinition(processDefinition);
+      } catch (IOException e) {
+        throw new ActivitiException("Couldn't create zip file", e);
+      }
+    } finally {
+      jbpmContext.close();
+    }
+  }
+  
+  protected byte[] readProcessResource(String path, boolean throwErrorOnMissing) {
+    InputStream is = this.getClass().getClassLoader().getResourceAsStream(path);    
+    if (is != null) {
+      byte[] resource = IoUtil.readInputStream(is, path);
+      IoUtil.closeSilently(is);
+      return resource;
+    } else {
+      if (throwErrorOnMissing) {
+        throw new ActivitiException("Can't find " + path);
+      }
+      return null;
+    }
+  }
+  
   protected Jbpm3ToActivitiMigrator createMigrator() throws IOException {
     Properties jbpm3DbProperties = new Properties();
-    jbpm3DbProperties.load(this.getClass().getClassLoader().getResourceAsStream("jbpm3.db.properties"));
+    jbpm3DbProperties.load(this.getClass().getClassLoader().getResourceAsStream("jbpm3.db.in-mem.properties"));
 
     Properties activitiDbProperties = new Properties();
-    activitiDbProperties.load(this.getClass().getClassLoader().getResourceAsStream("activiti.db.properties"));
+    activitiDbProperties.load(this.getClass().getClassLoader().getResourceAsStream("activiti.db.in-mem.properties"));
     
     Jbpm3ToActivitiMigrator migrator = new Jbpm3ToActivitiMigrator();
     migrator.configureFromProperties(jbpm3DbProperties, activitiDbProperties);
     return migrator;
   }
   
-  protected String migrateProcess(String processName) {
-    migrator.migrate();
+  protected String convertProcess(String processName) {
+    migrator.convertProcesses();
     
     Map<String, Document> migratedProcessDefinitions = migrator.getMigratedProcessDefinitions();
-    assertEquals(1, migratedProcessDefinitions.size());
-    
     return XmlUtil.toString(migratedProcessDefinitions.get(processName));
   }
-
+  
 }
