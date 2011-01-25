@@ -4,6 +4,7 @@
 	<property file="${user.home}/.activiti/build.properties" />
 	<property name="activiti.version" value="5.2-SNAPSHOT" />
 	<property name="activiti.home" value="../../distro/target/activiti-${activiti.version}/" />
+  <property name="database" value="h2" />
   <property name="server" value="tomcat" />
 
 	<condition property="mvn.executable" value="mvn.bat" else="mvn">
@@ -24,9 +25,8 @@
 
     <echo message="Installing ${server}..." />
     <ant antfile="${activiti.home}/setup/build.xml" inheritall="false">
-      <target name="db.install" />
-      <target name="db.install" />
-      <target name="server.install" />
+      <target name="h2.install" />
+      <target name="tomcat.install" />
       <property name="db" value="${database}" />
       <property name="server" value="${server}" />
     </ant>
@@ -75,13 +75,19 @@
     <!-- TODO: Use DB.properties to populate the config?? -->
     <copy todir="target/war/classes" filtering="true" file="activiti.cfg.xml" />
 
-		<echo message="Building the war-file..." />
-		<war destfile="target/activiti-server-${activiti.version}.war" needxmlfile="false">
-			<lib dir="target/war/lib" />
-			<classes dir="target/war/classes" />
-			<metainf dir="target/war/META-INF" />
-		</war>
-		
+    <echo message="Copying the activiti-cactus jar to libs..." />
+    <copy file="../../modules/activiti-cactus/target/activiti-cactus-${activiti.version}.jar" todir="target/war/lib" description="Copying the activiti-cactus-${activiti.version}.jar to WAR lib" />
+    <mkdir dir="target/cactus/lib" />
+    <!-- Copy all dependencies from activiti-cactus, this will also be used for running the actual cactus tests -->
+    <exec executable="${mvn.executable}" dir="../../modules/activiti-cactus/">
+      <arg line="dependency:copy-dependencies -DoutputDirectory=../../qa/server/target/cactus/lib" />
+    </exec>
+		<delete>
+			<fileset dir="target/cactus/lib">
+				<include name="ant-*" />
+			</fileset>
+		</delete>
+
 		<echo message="Generating txt-file containing all tests using task in the activiti-cactus jar..." />
     <taskdef name="list-tests" classname="org.activiti.test.cactus.ant.ListTestsTask">
       <classpath>
@@ -94,14 +100,13 @@
     </list-tests>
     <echo message="Created 'target/war/classes/activiti.cactus.tests.txt', containing test-class names" />
 
-		<echo message="Copying the activiti-cactus jar to libs..." />
-    <copy file="../../modules/activiti-cactus/target/activiti-cactus-${activiti.version}.jar" todir="target/war/lib" description="Copying the activiti-cactus-${activiti.version}.jar to WAR lib" />
-  	<mkdir dir="target/cactus/lib" />
-    <!-- Copy all dependencies from activiti-cactus, this will also be used for running the actual cactus tests -->
-    <exec executable="${mvn.executable}" dir="../../modules/activiti-cactus/">
-      <arg line="dependency:copy-dependencies -DoutputDirectory=target/cactus/lib" />
-    </exec>
-
+    <echo message="Building the war-file..." />
+    <war destfile="target/activiti-server-${activiti.version}.war" needxmlfile="false">
+      <lib dir="target/war/lib" />
+      <classes dir="target/war/classes" />
+      <metainf dir="target/war/META-INF" />
+    </war>
+    
     <echo message="Defining cactus ant tasks..." />
     <taskdef resource="cactus.tasks">
       <classpath>
@@ -113,27 +118,31 @@
 		<cactifywar srcfile="target/activiti-server-${activiti.version}.war" destfile="target/activiti-server-cactified.war">
 	    <lib dir="target/cactus/lib" />
 	  </cactifywar>
-		
-    <echo message="Running server tests..." />
+
+ 	  <echo message="Running server tests..." />
     <cactus warfile="target/activiti-server-cactified.war" fork="yes" failureproperty="tests.failed">
+      <jvmarg value="-Xms1024m"/>
+      <jvmarg value="-Xmx1024m"/>
       <classpath>
+        <pathelement location="target/war/classes" />
         <fileset dir="target/war/lib" />
         <fileset dir="target/cactus/lib" />
       </classpath>
       <containerset timeout="180000">
-        <tomcat6x if="cactus.home.tomcat4x"
-            dir="${cactus.home.tomcat4x}" port="${cactus.port}"
-            output="${target.testreports.dir}/tomcat4x.out"
-            todir="${target.testreports.dir}/tomcat4x"/>
+      	<cargo containerId="tomcat6x" 
+      		     output="target/cargo.tomcat6.output.log" 
+      		     log="target/cargo.tomcat6.log"
+      		     home="${activiti.home}/apps/apache-tomcat-6.0.29">
+      	  <configuration>
+      	    <property name="cargo.servlet.port" value="8080"/>
+      	    <property name="cargo.logging" value="high"/>
+            <property name="cargo.jvmargs" value="-Xms1024m -Xmx1024m" />
+            <deployable type="war" file="target/activiti-server-cactified.war"/>
+      	  </configuration>
+      	</cargo>
       </containerset>
-      <formatter type="brief" usefile="false"/>
       <formatter type="xml"/>
-      <batchtest>
-        <fileset dir="${src.cactus.dir}">
-          <include name="**/Test*.java"/>
-          <exclude name="**/Test*All.java"/>
-        </fileset>
-      </batchtest>
+    	<test name="org.activiti.test.cactus.ActivitiServletTestCase" />
     </cactus>
 	</target>
 

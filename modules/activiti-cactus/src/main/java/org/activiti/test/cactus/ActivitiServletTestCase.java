@@ -38,17 +38,16 @@ import org.apache.cactus.ServletTestSuite;
  */
 public class ActivitiServletTestCase extends TestCase {
 
-  public static final String TESTS_LIST_FILENAME = "/activiti.cactus.tests.txt";
-
   public static Test suite() {
     ServletTestSuite suite = new ServletTestSuite();
 
     // Add all test class-names that are present in a file on the classpath
     InputStream is = null;
     try {
-      is = ActivitiServletTestCase.class.getResourceAsStream(TESTS_LIST_FILENAME);
+      is = Thread.currentThread().getContextClassLoader().getResourceAsStream("activiti.cactus.tests.txt");
+//      is = ActivitiServletTestCase.class.getClassLoader().getResourceAsStream("activiti.cactus.tests.txt");
       if (is == null) {
-        throw new RuntimeException("File " + TESTS_LIST_FILENAME + " is not found on classpath!");
+        throw new RuntimeException("File activiti.cactus.tests.txt is not found on classpath!");
       }
 
       List<String> testsToRun = readLines(is);

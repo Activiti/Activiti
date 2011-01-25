@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.test.api.testing;
+package org.activiti.standalone.testing;
 
 import static org.junit.Assert.assertEquals;
 

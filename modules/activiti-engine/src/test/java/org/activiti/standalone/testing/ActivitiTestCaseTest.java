@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.test.api.testing;
+package org.activiti.standalone.testing;
 
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.ActivitiTestCase;
