@@ -8,9 +8,10 @@
 
 	<property name="activiti.cfg.jar" value="${activiti.tomcat.home.lib}/activiti-cfg.jar" />
 
-	<property name="maven.ant.tasks.jar" value="${lib.dir}/maven-ant-tasks.jar" />
-	<property name="maven.ant.tasks.bootstrap.location"
-		value="http://www.apache.org/dist//maven/binaries/maven-ant-tasks-2.1.1.jar" />
+  <property name="maven.repo.local" value="${user.home}/.m2/repository" />
+  <property name="maven.ant.tasks.dir" value="${maven.repo.local}/org/apache/maven/maven-ant-tasks/2.1.1/" />
+  <property name="maven.ant.tasks.jar" value="${maven.ant.tasks.dir}/maven-ant-tasks-2.1.1.jar" />
+	<property name="maven.ant.tasks.bootstrap.location" value="http://www.apache.org/dist//maven/binaries/maven-ant-tasks-2.1.1.jar" />
 	<available property="maven.ant.tasks.jar.exists" file="${maven.ant.tasks.jar}" />
 
 	<!--
