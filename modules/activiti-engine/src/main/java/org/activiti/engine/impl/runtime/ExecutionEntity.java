@@ -404,20 +404,10 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
       log.fine("transitions to take concurrent: " + transitions);
       log.fine("active concurrent executions: " + concurrentActiveExecutions);
     }
-    
-    boolean allInSameActivity = true;
-    if (concurrentInActiveExecutions.size() > 1) {
-      String activityId = concurrentInActiveExecutions.get(0).getActivityId();
-      for (ExecutionEntity execution: concurrentInActiveExecutions) {
-        if (!execution.isEnded && !execution.getActivityId().equals(activityId)) {
-          allInSameActivity = false;
-        }
-      }
-    }
 
     if ( (transitions.size()==1)
          && (concurrentActiveExecutions.isEmpty())
-         && allInSameActivity
+         && allExecutionsInSameActivity(concurrentInActiveExecutions)
        ) {
 
       List<ExecutionEntity> recyclableExecutionImpls = (List) recyclableExecutions;
@@ -475,6 +465,18 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
         outgoingExecution.take();
       }
     }
+  }
+  
+  private boolean allExecutionsInSameActivity(List<ExecutionEntity> executions) {
+    if (executions.size() > 1) {
+      String activityId = executions.get(0).getActivityId();
+      for (ExecutionEntity execution : executions) {
+        if (!execution.isEnded && !execution.getActivityId().equals(activityId)) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
   
   public void performOperation(AtomicOperation executionOperation) {
