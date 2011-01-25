@@ -16,6 +16,7 @@
 	</target>
 
 	<target name="server.test">
+		
     <echo message="Building distribution..." />
     <ant antfile="../../distro/build.xml" inheritall="false">
       <target name="clean" />
@@ -26,106 +27,38 @@
     <echo message="Installing ${server}..." />
     <ant antfile="${activiti.home}/setup/build.xml" inheritall="false">
       <target name="h2.install" />
+      <target name="h2.start" />
       <target name="tomcat.install" />
       <property name="db" value="${database}" />
       <property name="server" value="${server}" />
     </ant>
-
+		
 		<echo message="Building the activiti-cactus module..." />
     <exec executable="${mvn.executable}" dir="../../modules/activiti-cactus/">
-      <arg line="clean install" />
+      <arg line="-Ddatabase=${database} clean install" />
     </exec>
-
-		<echo message="Gathtering activiti-cactus dependency libs in target/war/lib..."/>
-    <mkdir dir="target/war/lib" />
-    <copy todir="target/war/lib">
-      <fileset dir="${activiti.home}/setup/files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.txt" />
-      <fileset dir="${activiti.home}/setup/files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.feature.jpa.txt" />
-      <fileset dir="${activiti.home}/setup/files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.feature.groovy.txt" />
-      <fileset dir="${activiti.home}/setup/files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.test.txt" />
-    </copy>
-
-		<echo message="Adding test classes and resources..." />
-    <mkdir dir="target/war/classes" />
-    <javac destdir="target/war/classes" target="1.5" srcdir="../../modules/activiti-engine/src/test/java">
-      <exclude name="**/org/activiti/standalone/" />
-      <classpath>
-        <fileset dir="target/war/lib" id="id">
-          <include name="*.jar" />
-        </fileset>
-      </classpath>
-    </javac>
-
-		<echo message="Adding test-resources..." />
-    <copy todir="target/war/classes">
-      <fileset dir="../../modules/activiti-engine/src/test/resources">
-        <exclude name="**/META-INF/" />
-        <exclude name="**/org/activiti/standalone/" />
-        <exclude name="**/activiti.cfg.xml" />
+    <delete>
+      <fileset dir="target/cactus/lib">
+        <include name="ant-*" />
       </fileset>
-    </copy>
-		
-		<echo message="Adding META-INF..." />
-    <mkdir dir="target/war/META-INF" />
-    <copy todir="target/war/META-INF">
-      <fileset dir="../../modules/activiti-engine/src/test/resources/META-INF" />
-    </copy>
-    
-		<echo message="Creating activiti.cfg.xml..." />
-    <!-- TODO: Use DB.properties to populate the config?? -->
-    <copy todir="target/war/classes" filtering="true" file="activiti.cfg.xml" />
+    </delete>
 
-    <echo message="Copying the activiti-cactus jar to libs..." />
-    <copy file="../../modules/activiti-cactus/target/activiti-cactus-${activiti.version}.jar" todir="target/war/lib" description="Copying the activiti-cactus-${activiti.version}.jar to WAR lib" />
-    <mkdir dir="target/cactus/lib" />
-    <!-- Copy all dependencies from activiti-cactus, this will also be used for running the actual cactus tests -->
-    <exec executable="${mvn.executable}" dir="../../modules/activiti-cactus/">
-      <arg line="dependency:copy-dependencies -DoutputDirectory=../../qa/server/target/cactus/lib" />
-    </exec>
-		<delete>
-			<fileset dir="target/cactus/lib">
-				<include name="ant-*" />
-			</fileset>
-		</delete>
+    <copy file="../../modules/activiti-cactus/target/activiti-cactus-${activiti.version}.war"
+          tofile="target/activiti-server-testing.war" />
 
-		<echo message="Generating txt-file containing all tests using task in the activiti-cactus jar..." />
-    <taskdef name="list-tests" classname="org.activiti.test.cactus.ant.ListTestsTask">
-      <classpath>
-        <fileset dir="target/cactus/lib" />
-        <fileset file="target/war/lib/activiti-cactus-${activiti.version}.jar" />
-      </classpath>
-    </taskdef>
-    <list-tests targetfile="target/war/classes/activiti.cactus.tests.txt">
-      <testfileset dir="target/war/classes" />
-    </list-tests>
-    <echo message="Created 'target/war/classes/activiti.cactus.tests.txt', containing test-class names" />
-
-    <echo message="Building the war-file..." />
-    <war destfile="target/activiti-server-${activiti.version}.war" needxmlfile="false">
-      <lib dir="target/war/lib" />
-      <classes dir="target/war/classes" />
-      <metainf dir="target/war/META-INF" />
-    </war>
-    
     <echo message="Defining cactus ant tasks..." />
     <taskdef resource="cactus.tasks">
       <classpath>
         <fileset dir="target/cactus/lib" />
       </classpath>
     </taskdef>
-
-    <echo message="Cactifying war..." />
-		<cactifywar srcfile="target/activiti-server-${activiti.version}.war" destfile="target/activiti-server-cactified.war">
-	    <lib dir="target/cactus/lib" />
-	  </cactifywar>
-
+		
  	  <echo message="Running server tests..." />
-    <cactus warfile="target/activiti-server-cactified.war" fork="yes" failureproperty="tests.failed">
+    <cactus warfile="target/activiti-server-testing.war" fork="yes" failureproperty="tests.failed">
       <jvmarg value="-Xms1024m"/>
       <jvmarg value="-Xmx1024m"/>
       <classpath>
-        <pathelement location="target/war/classes" />
-        <fileset dir="target/war/lib" />
+        <pathelement location="../../modules/activiti-cactus/target/classes" />
         <fileset dir="target/cactus/lib" />
       </classpath>
       <containerset timeout="180000">
@@ -137,7 +70,7 @@
       	    <property name="cargo.servlet.port" value="8080"/>
       	    <property name="cargo.logging" value="high"/>
             <property name="cargo.jvmargs" value="-Xms1024m -Xmx1024m" />
-            <deployable type="war" file="target/activiti-server-cactified.war"/>
+            <deployable type="war" file="target/activiti-server-testing.war"/>
       	  </configuration>
       	</cargo>
       </containerset>
@@ -145,5 +78,10 @@
     	<test name="org.activiti.test.cactus.ActivitiServletTestCase" />
     </cactus>
 	</target>
+
+  <ant antfile="${activiti.home}/setup/build.xml" inheritall="false">
+    <target name="h2.stop" />
+    <property name="db" value="${database}" />
+  </ant>
 
 </project>

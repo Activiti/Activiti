@@ -45,7 +45,6 @@ public class ActivitiServletTestCase extends TestCase {
     InputStream is = null;
     try {
       is = Thread.currentThread().getContextClassLoader().getResourceAsStream("activiti.cactus.tests.txt");
-//      is = ActivitiServletTestCase.class.getClassLoader().getResourceAsStream("activiti.cactus.tests.txt");
       if (is == null) {
         throw new RuntimeException("File activiti.cactus.tests.txt is not found on classpath!");
       }

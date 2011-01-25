@@ -6,6 +6,7 @@
   <name>Activiti - Cactus</name>
   <groupId>org.activiti</groupId>
   <artifactId>activiti-cactus</artifactId>
+  <packaging>war</packaging>
 
   <parent>
     <groupId>org.activiti</groupId>
@@ -14,7 +15,25 @@
     <version>5.2-SNAPSHOT</version>
   </parent>
 
-   <dependencies>
+  <dependencies>
+
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-engine</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-engine</artifactId>
+      <classifier>tests</classifier>
+      <version>${version}</version>
+    </dependency>
 
     <dependency>
       <groupId>org.apache.cactus</groupId>
@@ -34,18 +53,117 @@
       <artifactId>jaxen</artifactId>
       <version>1.1.1</version>
     </dependency>
+    
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.persistence</groupId>
+      <artifactId>persistence-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-jta_1.1_spec</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.openjpa</groupId>
+        <artifactId>openjpa</artifactId>
+      </dependency>
+    <dependency>
+        <groupId>org.subethamail</groupId>
+      <artifactId>subethasmtp-wiser</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>net.sourceforge.jtds</groupId>
+      <artifactId>jtds</artifactId>
+    </dependency>
+    
   </dependencies>
-
+  
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
+       <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.1</version>
+        <executions>
+          <execution>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+          </execution>
+        </executions>
         <configuration>
-          <excludes>
-            <exclude>**/*DummyTestCase.java</exclude>
-          </excludes>
+          <mainClass>org.activiti.test.cactus.ListTests</mainClass>
         </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>../../qa/server/target/cactus/lib</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <!--
+          only worked with this version, there might be a bug with antrun
+          see http://jira.codehaus.org/browse/MANTRUN-109
+        -->
+        <version>1.4</version>
+        <executions>
+          <execution>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <echo message="using activiti configuration for ${database}: ${user.home}/.activiti/server/build.${database}.properties" />
+                <copy todir="target/classes" file="src/main/cfg/activiti.cfg.xml">
+                  <filterset filtersfile="${user.home}/.activiti/server/build.${database}.properties" />
+                </copy>
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
+
 </project>

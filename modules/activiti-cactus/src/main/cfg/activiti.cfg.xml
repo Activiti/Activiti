@@ -7,11 +7,11 @@
   <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration">
   
     <!-- Database configurations -->
-    <property name="databaseType" value="h2" />
-    <property name="jdbcUrl" value="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000" />
-    <property name="jdbcDriver" value="org.h2.Driver" />
-    <property name="jdbcUsername" value="sa" />
-    <property name="jdbcPassword" value="" />
+    <property name="databaseType" value="@db@" />
+    <property name="jdbcUrl" value="@jdbc.url@" />
+    <property name="jdbcDriver" value="@jdbc.driver@" />
+    <property name="jdbcUsername" value="@jdbc.username@" />
+    <property name="jdbcPassword" value="@jdbc.password@" />
     
     <!-- Database configurations -->
     <property name="databaseSchemaUpdate" value="true" />
