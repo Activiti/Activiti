@@ -8,7 +8,8 @@
   <!-- Spring Application Context location -->
   <context-param>
     <param-name>contextConfigLocation</param-name>
-    <param-value>/WEB-INF/web-application-context.xml</param-value>
+    <param-value>WEB-INF/web-application-context-osgi.xml,
+        WEB-INF/web-application-context.xml</param-value>
     <description>Spring config file location</description>
   </context-param>
 

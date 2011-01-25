@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.impl.ProcessDefinitionQueryProperty;
+import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.rest.model.RestProcessDefinition;
@@ -28,7 +29,7 @@ import org.springframework.extensions.webscripts.Status;
 
 /**
  * Returns details about the process definitions.
- * 
+ *
  * @author Erik Winlof
  */
 public class ProcessDefinitionsGet extends ActivitiPagingWebScript {
@@ -43,15 +44,11 @@ public class ProcessDefinitionsGet extends ActivitiPagingWebScript {
 
   /**
    * Collects details about the process definitions for the webscript template.
-   * 
-   * @param req
-   *          The webscripts request
-   * @param status
-   *          The webscripts status
-   * @param cache
-   *          The webscript cache
-   * @param model
-   *          The webscripts template model
+   *
+   * @param req    The webscripts request
+   * @param status The webscripts status
+   * @param cache  The webscript cache
+   * @param model  The webscripts template model
    */
   @Override
   @SuppressWarnings("unchecked")
@@ -68,12 +65,24 @@ public class ProcessDefinitionsGet extends ActivitiPagingWebScript {
         StartFormData startFormData = getFormService().getStartFormData(p.getId());
         if (startFormData != null) {
           restProcessDefinition.setStartFormResourceKey(startFormData.getFormKey());
+          restProcessDefinition.setGraphicNotationDefined(isGraphicNotationDefined(p.getId()));
+
         }
         processDefinitionTasks.add(restProcessDefinition);
       }
       // Add the list of wrapped Tasks to the model
       model.put("processDefinitions", processDefinitionTasks);
     }
+  }
+
+  private boolean isGraphicNotationDefined(String id) {
+    try {
+      return ((ProcessDefinitionEntity) ((RepositoryServiceImpl) getRepositoryService())
+          .getDeployedProcessDefinition(id)).isGraphicalNotationDefined();
+    } catch (Exception e) {
+      //Process not deployed?
+    }
+    return false;
   }
 
 }

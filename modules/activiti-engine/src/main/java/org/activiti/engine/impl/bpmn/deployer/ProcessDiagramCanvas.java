@@ -63,7 +63,8 @@ public class ProcessDiagramCanvas {
   protected static Color TASK_COLOR = new Color(255, 255, 204);
   protected static Color BOUNDARY_EVENT_COLOR = new Color(255, 255, 255);
   protected static Color CONDITIONAL_INDICATOR_COLOR = new Color(255, 255, 255);
-  
+  protected static Color HIGHLIGHT_COLOR = Color.RED;
+
   // Strokes
   protected static Stroke THICK_TASK_BORDER_STROKE = new BasicStroke(3.0f);
   protected static Stroke GATEWAY_TYPE_STROKE = new BasicStroke(3.0f);
@@ -433,6 +434,20 @@ public class ProcessDiagramCanvas {
     g.draw(line);
 
     g.setStroke(orginalStroke);
+  }
+
+  public void drawHighLight(int x, int y, int width, int height) {
+    Paint originalPaint = g.getPaint();
+    Stroke originalStroke = g.getStroke();
+
+    g.setPaint(HIGHLIGHT_COLOR);
+    g.setStroke(THICK_TASK_BORDER_STROKE);
+
+    RoundRectangle2D rect = new RoundRectangle2D.Double(x, y, width, height, 20, 20);
+    g.draw(rect);
+
+    g.setPaint(originalPaint);
+    g.setStroke(originalStroke);
   }
 
 }

@@ -17,14 +17,14 @@ import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 
 /**
  * Model used in REST-API, adding field startFormResourceKey to task.
- * 
+ *
  * @author Frederik Heremans
  */
 public class RestProcessDefinition extends ProcessDefinitionEntity {
 
   private static final long serialVersionUID = 1L;
-  
-  
+
+
   public RestProcessDefinition(ProcessDefinitionEntity processDefinition) {
     this.setId(processDefinition.getId());
     this.setKey(processDefinition.getKey());
@@ -36,6 +36,16 @@ public class RestProcessDefinition extends ProcessDefinitionEntity {
   }
 
   protected String startFormResourceKey;
+
+  protected boolean isGraphicNotationDefined;
+
+  public boolean isGraphicNotationDefined() {
+    return isGraphicNotationDefined;
+  }
+
+  public void setGraphicNotationDefined(boolean graphicNotationDefined) {
+    isGraphicNotationDefined = graphicNotationDefined;
+  }
 
   public String getStartFormResourceKey() {
     return startFormResourceKey;

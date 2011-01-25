@@ -178,13 +178,28 @@
         class="org.activiti.rest.builder.process.ProcessInstanceObjectBuilder">
     <property name="templateName" value="process/process-instance.post.json" />
   </bean>
-  
+
+  <bean id="webscript.org.activiti.rest.api.process.process-instance-diagram.get"
+        class="org.activiti.rest.api.process.ProcessInstanceDiagramGet"
+        parent="activitiWebScript">
+  </bean>
+
+
   <bean id="webscript.org.activiti.rest.api.process.process-definitions.get"
         class="org.activiti.rest.api.process.ProcessDefinitionsGet"
         parent="activitiWebScript">
   </bean>
   <bean id="org.activiti.rest.api.process.process-definitions.get.json.builder" 
         class="org.activiti.rest.builder.process.ProcessDefinitionsObjectBuilder">
+    <property name="templateName" value="process/process-definitions.get.json" />
+  </bean>
+
+  <bean id="webscript.org.activiti.rest.api.process.process-instances.get"
+        class="org.activiti.rest.api.process.ProcessInstancesGet"
+        parent="activitiWebScript">
+  </bean>
+  <bean id="org.activiti.rest.api.process.process-instances.get.json.builder"
+        class="org.activiti.rest.builder.process.ProcessInstancesObjectBuilder">
     <property name="templateName" value="process/process-definitions.get.json" />
   </bean>
 
@@ -415,4 +430,12 @@
         parent="activitiWebScript">
   </bean>
 
+<bean parent="webscripts.formatmap">
+  <property name="formats">
+    <props>
+      <prop key="png">image/png</prop>
+    </props>
+  </property>
+</bean>
+    
 </beans>

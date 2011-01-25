@@ -6,6 +6,12 @@
 ]
 </#macro>
 
+<#macro printProcessInstanceList processInstances>
+[
+  <#list processInstances as processInstance><@printSimpleProcessInstance processInstance/><#if processInstance_has_next>,</#if></#list>
+]
+</#macro>
+
 <#macro printProcessDefinition processDefinition>
 {
   "id": "${processDefinition.id}",
@@ -15,10 +21,10 @@
   "deploymentId": "${processDefinition.deploymentId}",
   "resourceName": "${processDefinition.resourceName}",
   "diagramResourceName": <#if processDefinition.diagramResourceName??>"${processDefinition.diagramResourceName}"<#else>null</#if>,
-  "startFormResourceKey": <#if processDefinition.startFormResourceKey??>"${processDefinition.startFormResourceKey}"<#else>null</#if>
+  "startFormResourceKey": <#if processDefinition.startFormResourceKey??>"${processDefinition.startFormResourceKey}"<#else>null</#if>,
+  "graphicNotationDefined": "${processDefinition.graphicNotationDefined?string}"
 }
 </#macro>
-
 
 <#macro printProcessInstance processInstance>
 {
@@ -28,5 +34,14 @@
   "ended": ${processInstance.ended?string}
 }
 </#macro>
+<#macro printSimpleProcessInstance processInstance>
+{
+  "id": "${processInstance.id}",
+  "processDefinitionId": "${processInstance.processDefinitionId}",
+  "businessKey": <#if processInstance.businessKey??>"${processInstance.businessKey}"<#else>null</#if>,
+  "startTime": <#if processInstance.startTime??>"${iso8601Date(processInstance.startTime)}"<#else>null</#if>,
+  "startUserId": <#if processInstance.startUserId??>"${processInstance.startUserId}"<#else>null</#if>
 
+}
+</#macro>
 </#escape>

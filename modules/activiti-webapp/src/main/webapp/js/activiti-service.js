@@ -937,8 +937,23 @@ Activiti.service.Ajax = function() {
       var url = Activiti.service.REST_PROXY_URI_RELATIVE + "process-definitions", 
       params = Activiti.util.objectToArgumentString(eventValue);
       return (params) ? url + "?" + params : url;
+    },
+
+    /**
+     * Creates the GET url used to get processInstances
+     *
+     * @method loadProcessInstancesURL
+     * @param processId {string} Id of process
+     * @param eventValue {object} paging info
+     * @return {string} The url
+     */
+    loadProcessInstancesURL: function ManagementService_loadProcessInstancesURL(processId, eventValue)
+    {
+      params = Activiti.util.objectToArgumentString(eventValue);
+
+      return Activiti.service.REST_PROXY_URI_RELATIVE + "process-instances?processDefinitionId="
+        +processId+((params) ? '&'+params : "");
     }
-    
 
   });
 })();
@@ -1148,6 +1163,7 @@ Activiti.service.Ajax = function() {
      event: {
        loadTables: "loadTables",
        loadTable: "loadTable",
+       loadProcessInstances: "loadProcessInstances",
        deleteDeployments: "deleteDeployments",
        loadJob: "loadJob",
        executeJob: "executeJob",

@@ -27,24 +27,7 @@
   <!-- IMPORT SPRING SURF/WEBSCRIPT -->
 
   <!-- Import Web Scripts Framework config files-->
-  <import resource="classpath:org/springframework/extensions/webscripts/spring-webscripts-application-context.xml" />
-  <import resource="classpath:org/springframework/extensions/webscripts/spring-webscripts-mvc-context.xml" />
-  <import resource="classpath:org/springframework/extensions/webscripts/spring-webscripts-api-application-context.xml" />
-
-
-  <!-- OVERRIDE SURF/WEBSCRIPT SETUP -->
-  <bean id="webscripts.store" class="org.activiti.rest.osgi.OsgiClassPathStore">
-     <property name="mustExist"><value>false</value></property>
-     <property name="classPath"><value>webscripts</value></property>
-  </bean>
-
-  <bean id="webscripts.searchpath" class="org.springframework.extensions.webscripts.SearchPath">
-    <property name="searchPath">
-      <list>
-        <ref bean="webscripts.store" />
-      </list>
-    </property>
-  </bean>
+  <import resource="classpath*:org/springframework/extensions/webscripts/*-context.xml" />
 
 
   <!-- SETUP ACTIVITI REST API WEBSCRIPTS -->
@@ -70,12 +53,12 @@
   </bean>
 
   <!-- Plug in custom template processor based on JSONObjects -->
-  <bean id="jsonObjectTemplateProcessor" class="org.activiti.rest.builder.JSONTemplateProcessor">
+  <!--bean id="jsonObjectTemplateProcessor" class="org.activiti.rest.builder.JSONTemplateProcessor">
       <property name="templateProcessorRegistry" ref="webscripts.web.templateregistry" />
       <property name="defaultEncoding" value="UTF-8" />
       <property name="templateNamePrefix" value="org/activiti/rest/api/" />
       <property name="indentFactor" value="2" />
-  </bean>
+  </bean-->
 
   <!--
     Java backed webscripts needs to be registered.
@@ -131,6 +114,10 @@
     <property name="templateName" value="identity/group-users.get.json" />
   </bean>
 
+  <bean id="webscript.org.activiti.rest.api.repository.deployment.post"
+        class="org.activiti.rest.api.repository.DeploymentPost"
+        parent="activitiWebScript">
+  </bean>
 
   <bean id="webscript.org.activiti.rest.api.repository.deployment-resource.get"
         class="org.activiti.rest.api.repository.DeploymentResourceGet"
@@ -192,12 +179,27 @@
     <property name="templateName" value="process/process-instance.post.json" />
   </bean>
 
+  <bean id="webscript.org.activiti.rest.api.process.process-instance-diagram.get"
+        class="org.activiti.rest.api.process.ProcessInstanceDiagramGet"
+        parent="activitiWebScript">
+  </bean>
+
+
   <bean id="webscript.org.activiti.rest.api.process.process-definitions.get"
         class="org.activiti.rest.api.process.ProcessDefinitionsGet"
         parent="activitiWebScript">
   </bean>
   <bean id="org.activiti.rest.api.process.process-definitions.get.json.builder"
         class="org.activiti.rest.builder.process.ProcessDefinitionsObjectBuilder">
+    <property name="templateName" value="process/process-definitions.get.json" />
+  </bean>
+
+  <bean id="webscript.org.activiti.rest.api.process.process-instances.get"
+        class="org.activiti.rest.api.process.ProcessInstancesGet"
+        parent="activitiWebScript">
+  </bean>
+  <bean id="org.activiti.rest.api.process.process-instances.get.json.builder"
+        class="org.activiti.rest.builder.process.ProcessInstancesObjectBuilder">
     <property name="templateName" value="process/process-definitions.get.json" />
   </bean>
 
@@ -348,8 +350,18 @@
         parent="activitiWebScript">
   </bean>
 
+  <bean id="webscript.org.activiti.rest.api.cycle.incoming-artifact-links.get"
+        class="org.activiti.rest.api.cycle.IncomingArtifactLinksGet"
+        parent="activitiWebScript">
+  </bean>
+
   <bean id="webscript.org.activiti.rest.api.cycle.artifact-link.post"
         class="org.activiti.rest.api.cycle.ArtifactLinkPost"
+        parent="activitiWebScript">
+  </bean>
+
+  <bean id="webscript.org.activiti.rest.api.cycle.artifact-link.delete"
+        class="org.activiti.rest.api.cycle.ArtifactLinkDelete"
         parent="activitiWebScript">
   </bean>
 
@@ -362,4 +374,68 @@
         class="org.activiti.rest.api.cycle.FolderPost"
         parent="activitiWebScript">
   </bean>
+
+  <bean id="webscript.org.activiti.rest.api.cycle.tag.post"
+        class="org.activiti.rest.api.cycle.TagPost"
+        parent="activitiWebScript">
+  </bean>
+
+  <bean id="webscript.org.activiti.rest.api.cycle.tag.delete"
+        class="org.activiti.rest.api.cycle.TagDelete"
+        parent="activitiWebScript">
+  </bean>
+
+  <bean id="webscript.org.activiti.rest.api.cycle.tags.post"
+        class="org.activiti.rest.api.cycle.TagsPost"
+        parent="activitiWebScript">
+  </bean>
+
+  <bean id="webscript.org.activiti.rest.api.cycle.tags.get"
+        class="org.activiti.rest.api.cycle.TagsGet"
+        parent="activitiWebScript">
+  </bean>
+
+  <bean id="webscript.org.activiti.rest.api.cycle.user-config.post"
+        class="org.activiti.rest.api.cycle.UserConfigPost"
+        parent="activitiWebScript">
+  </bean>
+
+  <bean id="webscript.org.activiti.rest.api.cycle.user-config.get"
+        class="org.activiti.rest.api.cycle.UserConfigGet"
+        parent="activitiWebScript">
+  </bean>
+
+  <bean id="webscript.org.activiti.rest.api.cycle.available-connector-configs.get"
+        class="org.activiti.rest.api.cycle.AvailableConnectorConfigsGet"
+        parent="activitiWebScript">
+  </bean>
+
+  <bean id="webscript.org.activiti.rest.api.cycle.comment.post"
+        class="org.activiti.rest.api.cycle.CommentPost"
+        parent="activitiWebScript">
+  </bean>
+
+  <bean id="webscript.org.activiti.rest.api.cycle.comment.get"
+        class="org.activiti.rest.api.cycle.CommentGet"
+        parent="activitiWebScript">
+  </bean>
+
+  <bean id="webscript.org.activiti.rest.api.cycle.comment.delete"
+        class="org.activiti.rest.api.cycle.CommentDelete"
+        parent="activitiWebScript">
+  </bean>
+
+  <bean id="webscript.org.activiti.rest.api.cycle.tree.get"
+        class="org.activiti.rest.api.cycle.TreeGet"
+        parent="activitiWebScript">
+  </bean>
+
+<bean parent="webscripts.formatmap">
+  <property name="formats">
+    <props>
+      <prop key="png">image/png</prop>
+    </props>
+  </property>
+</bean>
+
 </beans>
