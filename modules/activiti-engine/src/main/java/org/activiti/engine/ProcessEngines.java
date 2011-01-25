@@ -69,8 +69,10 @@ public abstract class ProcessEngines {
   /** is called when a server boots by the activiti-rest webapp. */
   public synchronized static void init() {
     if (!isInitialized) {
-      // Create a new hashMap in case the ProcessEngines.destroy() was called before and map is Unmodifiable
-      processEngines = new HashMap<String, ProcessEngine>();
+      if(processEngines == null) {
+        // Create new map to store process-engines if current map is null
+        processEngines = new HashMap<String, ProcessEngine>();        
+      }
       ClassLoader classLoader = ReflectUtil.getClassLoader();
       Enumeration<URL> resources = null;
       try {
