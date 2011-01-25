@@ -20,6 +20,8 @@ import org.jbpm.graph.def.Transition;
 import org.jbpm.graph.node.EndState;
 import org.jbpm.graph.node.StartState;
 import org.jbpm.graph.node.State;
+import org.jbpm.graph.node.TaskNode;
+import org.jbpm.taskmgmt.def.Task;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -32,10 +34,15 @@ public interface ProcessConversionService {
   // BPMN 2.0 XML constants
   String BPMN20_ROOT_TAG = "definitions";
   String PROCESS_TAG = "process";
+  String DOCUMENTATION_TAG = "documentation";
   String START_EVENT_TAG = "startEvent";
   String END_EVENT_TAG = "endEvent";
-  String RECEIVE_TASK_TAG = "receiveTask";
   String TASK_TAG = "task";
+  String RECEIVE_TASK_TAG = "receiveTask";
+  String USER_TASK_TAG = "userTask";
+  String HUMAN_PERFORMER_TAG = "humanPerformer";
+  String RESOURCE_ASSIGNMENT_EXPRESSION_TAG = "resourceAssignmentExpression";
+  String FORMAL_EXPRESSION_TAG = "formalExpression";
   String SEQUENCE_FLOW_TAG = "sequenceFlow";
   
   // Other constants
@@ -53,6 +60,10 @@ public interface ProcessConversionService {
   Element convertState(Document processDefinitionDocument, State state);
   
   Element convertEndState(Document processDefinitionDocument, EndState endState);
+  
+  Element convertTaskNode(Document processDefinitionDocument, TaskNode tasknode);
+  
+  Element convertTask(Document processDefinitionDocument, Task task);
   
   List<Element> convertTransitions(Document processDefinitionDocument, List<Transition> transitions);
   

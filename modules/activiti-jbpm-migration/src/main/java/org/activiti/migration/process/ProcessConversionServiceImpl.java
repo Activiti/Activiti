@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,6 +33,10 @@ import org.jbpm.graph.def.Transition;
 import org.jbpm.graph.node.EndState;
 import org.jbpm.graph.node.StartState;
 import org.jbpm.graph.node.State;
+import org.jbpm.graph.node.TaskNode;
+import org.jbpm.taskmgmt.def.Task;
+import org.w3c.dom.CDATASection;
+import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -75,21 +80,26 @@ public class ProcessConversionServiceImpl implements ProcessConversionService {
         element = convertEndState(processDefinitionXml, (EndState) node);
       } else if (node instanceof State) {
         element = convertState(processDefinitionXml, (State) node);
+      } else if (node instanceof TaskNode){
+        element = convertTaskNode(processDefinitionXml, (TaskNode) node);
       } else {
         // if node is not yet implemented, we convert it to a simple passthrough
         element = convertToPassThroughTask(processDefinitionXml, node);
       }
       
+      // common elements
+      convertDescription(processDefinitionXml, node, element);
+      
+      // add converted element in process
       processElement.appendChild(element);
       
+      // convert the outgoing transitions of that node
       List<Transition> outgoingTransitions = jbpm3Dao.getOutgoingTransitions(node);
       List<Element> sequenceFlowElements = convertTransitions(processDefinitionXml, outgoingTransitions);
       for (Element sequenceFlowElement : sequenceFlowElements) {
         processElement.appendChild(sequenceFlowElement);
       }
     }
-    
-   
     
     return processDefinitionXml;
   }
@@ -110,6 +120,48 @@ public class ProcessConversionServiceImpl implements ProcessConversionService {
     Element endElement = processDefinitionDocument.createElement(END_EVENT_TAG);
     endElement.setAttribute("id", endState.getName());
     return endElement;
+  }
+  
+  @SuppressWarnings("unchecked")
+  public Element convertTaskNode(Document processDefinitionDocument, TaskNode taskNode) {
+    
+    Set<Task> tasks = taskNode.getTasks();
+    if (tasks.size() >= 1) {
+      Element userTaskElement = convertTask(processDefinitionDocument, tasks.iterator().next());
+      
+      if (tasks.size() > 1) {
+        String warningMsg = "Warning: currently only one task for a task-node is supported, "
+          + "only converting one task of the " + tasks.size() + " tasks of task-node " + taskNode.getName();
+        LOGGER.warning(warningMsg);
+        
+        Comment comment = processDefinitionDocument.createComment(warningMsg);
+        userTaskElement.appendChild(comment);
+      } 
+      
+      return userTaskElement;
+    } else { // if task-node doesn't have any tasks, just convert it to a passthrough
+      return convertToPassThroughTask(processDefinitionDocument, taskNode);
+    }
+  }
+  
+  public Element convertTask(Document processDefinitionDocument, Task task) {
+    Element userTaskElement = processDefinitionDocument.createElement(USER_TASK_TAG);
+    userTaskElement.setAttribute("id", task.getTaskNode().getName());
+    userTaskElement.setAttribute("name", task.getTaskNode().getName());
+    
+    if (task.getActorIdExpression() != null) {
+      Element humanPerformer = processDefinitionDocument.createElement(HUMAN_PERFORMER_TAG);
+      userTaskElement.appendChild(humanPerformer);
+      
+      Element assignmentExpression = processDefinitionDocument.createElement(RESOURCE_ASSIGNMENT_EXPRESSION_TAG);
+      humanPerformer.appendChild(assignmentExpression);
+      
+      Element formalExpression = processDefinitionDocument.createElement(FORMAL_EXPRESSION_TAG);
+      assignmentExpression.appendChild(formalExpression);
+      formalExpression.setTextContent(task.getActorIdExpression());
+    }
+    
+    return userTaskElement;
   }
   
   public List<Element> convertTransitions(Document processDefinitionDocument, List<Transition> transitions) {
@@ -153,7 +205,6 @@ public class ProcessConversionServiceImpl implements ProcessConversionService {
     } catch (ParserConfigurationException e) {
       throw new ActivitiException("Could not create empty BPMN 2.0 xml document", e);
     }
-
   }
   
   public void close() {
@@ -175,6 +226,20 @@ public class ProcessConversionServiceImpl implements ProcessConversionService {
       throw new ActivitiException("Multiple tags " + PROCESS_TAG + " found. Something is surely wrong.");
     }
     return (Element) nodeList.item(0);
+  }
+  
+  protected void convertDescription(Document processDefinitionDocument, Node node, Element element) {
+    if (node.getDescription() != null) {
+      Element documentationElement = processDefinitionDocument.createElement(DOCUMENTATION_TAG);
+      CDATASection documentationText = processDefinitionDocument.createCDATASection(node.getDescription());
+      documentationElement.appendChild(documentationText);
+      org.w3c.dom.Node firstChild = element.getFirstChild();
+      if (firstChild != null) {
+        element.insertBefore(documentationElement, firstChild);
+      } else {
+        element.appendChild(documentationElement);
+      }
+    }
   }
   
   // Getters and setters ///////////////////////////////////
