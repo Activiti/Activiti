@@ -17,6 +17,8 @@ import java.util.List;
 import org.jbpm.graph.def.Node;
 import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.def.Transition;
+import org.jbpm.graph.node.TaskNode;
+import org.jbpm.taskmgmt.def.Task;
 
 
 /**
@@ -27,6 +29,8 @@ public interface Jbpm3Dao {
   List<ProcessDefinition> getAllProcessDefinitions();
   
   List<Node> getNodes(ProcessDefinition processDefinition);
+  
+  List<Task> getTasks(TaskNode taskNode);
   
   // From and to are eagerly fetched
   List<Transition> getOutgoingTransitions(Node node);

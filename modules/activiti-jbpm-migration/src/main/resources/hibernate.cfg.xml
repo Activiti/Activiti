@@ -1,10 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
 
+<!--Commented out, since it causes connection timeout exceptions sometimes
 <!DOCTYPE hibernate-configuration PUBLIC 
 "-//Hibernate/Hibernate Configuration DTD 3.0//EN" 
 "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 
-<hibernate-configuration>
+--><hibernate-configuration>
 <session-factory>
 
     <property name="hibernate.connection.driver_class">@jbpm.db.driver.class@</property>

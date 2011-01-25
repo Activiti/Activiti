@@ -12,7 +12,6 @@
  */
 package org.activiti.migration;
 
-import java.io.IOException;
 import java.io.StringReader;
 import java.util.Map;
 import java.util.Properties;
@@ -21,7 +20,6 @@ import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.util.IoUtil;
@@ -33,7 +31,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 
 /**

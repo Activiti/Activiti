@@ -19,6 +19,8 @@ import org.hibernate.SessionFactory;
 import org.jbpm.graph.def.Node;
 import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.def.Transition;
+import org.jbpm.graph.node.TaskNode;
+import org.jbpm.taskmgmt.def.Task;
 
 
 /**
@@ -29,8 +31,13 @@ public class Jbpm3DaoImpl implements Jbpm3Dao {
   
   protected SessionFactory sessionFactory;
   
-  public static String NODES_QUERY =
+  public static String NODES_FOR_PROCESSDEFINITION_QUERY =
     "select node from org.jbpm.graph.def.Node node where node.processDefinition = :processDefinition";
+  
+  public static String TASK_FOR_TASKNODE_QUERY = 
+    "select task from org.jbpm.taskmgmt.def.Task task "
+    + "inner join fetch task.taskNode "
+    + "where task.taskNode = :taskNode";
   
   public static String TRANSITION_QUERY = 
     "select transition from org.jbpm.graph.def.Transition transition "
@@ -49,7 +56,15 @@ public class Jbpm3DaoImpl implements Jbpm3Dao {
   public List<Node> getNodes(final ProcessDefinition processDefinition) {
     return executeInSession(new HibernateCallback<List<Node>>() {
       public List<Node> execute(Session session) {
-        return session.createQuery(NODES_QUERY).setEntity("processDefinition", processDefinition).list();
+        return session.createQuery(NODES_FOR_PROCESSDEFINITION_QUERY).setEntity("processDefinition", processDefinition).list();
+      }
+    });
+  }
+  
+  public List<Task> getTasks(final TaskNode taskNode) {
+    return executeInSession(new HibernateCallback<List<Task>>() {
+      public List<Task> execute(Session session) {
+        return session.createQuery(TASK_FOR_TASKNODE_QUERY).setEntity("taskNode", taskNode).list();
       }
     });
   }

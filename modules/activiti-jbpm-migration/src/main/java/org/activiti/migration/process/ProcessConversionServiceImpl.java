@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -105,27 +104,38 @@ public class ProcessConversionServiceImpl implements ProcessConversionService {
   }
   
   public Element convertStartState(Document processDefinitionDocument, StartState startState) {
+    if (LOGGER.isLoggable(Level.INFO)) {
+      LOGGER.info("Converting start-state '" + startState.getName() + "'");
+    }
     Element startElement = processDefinitionDocument.createElement(START_EVENT_TAG);
     startElement.setAttribute("id", startState.getName());
     return startElement;
   }
   
   public Element convertState(Document processDefinitionDocument, State state) {
+    if (LOGGER.isLoggable(Level.INFO)) {
+      LOGGER.info("Converting state '" + state.getName() + "'");
+    }
     Element stateElement = processDefinitionDocument.createElement(RECEIVE_TASK_TAG);
     stateElement.setAttribute("id", state.getName());
     return stateElement;
   }
   
   public Element convertEndState(Document processDefinitionDocument, EndState endState) {
+    if (LOGGER.isLoggable(Level.INFO)) {
+      LOGGER.info("Converting end-state '" + endState.getName() + "'");
+    }
     Element endElement = processDefinitionDocument.createElement(END_EVENT_TAG);
     endElement.setAttribute("id", endState.getName());
     return endElement;
   }
   
-  @SuppressWarnings("unchecked")
   public Element convertTaskNode(Document processDefinitionDocument, TaskNode taskNode) {
+    if (LOGGER.isLoggable(Level.INFO)) {
+      LOGGER.info("Converting task-node '" + taskNode.getName() + "'");
+    }
     
-    Set<Task> tasks = taskNode.getTasks();
+    List<Task> tasks = jbpm3Dao.getTasks(taskNode);
     if (tasks.size() >= 1) {
       Element userTaskElement = convertTask(processDefinitionDocument, tasks.iterator().next());
       
@@ -145,9 +155,14 @@ public class ProcessConversionServiceImpl implements ProcessConversionService {
   }
   
   public Element convertTask(Document processDefinitionDocument, Task task) {
+    if (LOGGER.isLoggable(Level.INFO)) {
+      LOGGER.info("Converting task of taskNode '" + task.getTaskNode() + "'");
+    }
+    
     Element userTaskElement = processDefinitionDocument.createElement(USER_TASK_TAG);
+    String name = task.getName() == null ? task.getTaskNode().getName() : task.getName();
     userTaskElement.setAttribute("id", task.getTaskNode().getName());
-    userTaskElement.setAttribute("name", task.getTaskNode().getName());
+    userTaskElement.setAttribute("name", name);
     
     if (task.getActorIdExpression() != null) {
       Element humanPerformer = processDefinitionDocument.createElement(HUMAN_PERFORMER_TAG);
@@ -173,6 +188,9 @@ public class ProcessConversionServiceImpl implements ProcessConversionService {
   }
   
   public Element convertTransition(Document processDefinitionDocument, Transition transition) {
+    if (LOGGER.isLoggable(Level.INFO)) {
+      LOGGER.info("Converting transition '" + transition.getId() + "'");
+    }
     Element sequenceFlowElement = processDefinitionDocument.createElement(SEQUENCE_FLOW_TAG);
     if (transition.getName() != null) {
       sequenceFlowElement.setAttribute("id", transition.getName());
