@@ -33,7 +33,11 @@
       <property name="server" value="${server}" />
     </ant>
 		
-		<echo message="Building the activiti-cactus module..." />
+		<echo message="Building the activiti-engine tests..." />
+    <exec executable="${mvn.executable}" dir="../../modules/activiti-engine/">
+      <arg line="-DskipTests -Ptest install" />
+    </exec>
+    <echo message="Building the activiti-cactus module..." />
     <exec executable="${mvn.executable}" dir="../../modules/activiti-cactus/">
       <arg line="-Ddatabase=${database} clean install" />
     </exec>
@@ -77,11 +81,12 @@
       <formatter type="xml"/>
     	<test name="org.activiti.test.cactus.ActivitiServletTestCase" />
     </cactus>
-	</target>
 
   <ant antfile="${activiti.home}/setup/build.xml" inheritall="false">
     <target name="h2.stop" />
     <property name="db" value="${database}" />
   </ant>
+
+	</target>
 
 </project>
