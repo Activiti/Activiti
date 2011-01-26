@@ -94,10 +94,6 @@ public abstract class TestHelper {
         deploymentBuilder.addClasspathResource(resource);
       }
       
-      // adjust schema validation
-      DeploymentBuilderImpl impl = (DeploymentBuilderImpl) deploymentBuilder;
-      impl.getDeployment().setValidatingSchema(deploymentAnnotation.validateSchmea());
-
       deploymentId = deploymentBuilder.deploy().getId();
     }
     
