@@ -14,7 +14,7 @@
         <activiti:field name="to" expression="${recipient}" />
         <activiti:field name="subject" expression="Your order ${orderId} has been shipped" />
         <activiti:field name="html">
-          <expression>
+          <activiti:expression>
             <![CDATA[
               <html>
                 <body>
@@ -28,7 +28,7 @@
                 </body>
               </html>
             ]]>
-          </expression>
+          </activiti:expression>
         </activiti:field>      
       </extensionElements>
     </sendTask>

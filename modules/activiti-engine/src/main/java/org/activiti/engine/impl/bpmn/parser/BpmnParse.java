@@ -1070,7 +1070,7 @@ public class BpmnParse extends Parse {
   
   protected FieldDeclaration parseStringFieldDeclaration(Element fieldDeclarationElement, Element serviceTaskElement, String fieldName) {
     try {
-      String fieldValue = getStringValueFromAttributeOrElement("stringValue", "string", null, fieldDeclarationElement);
+      String fieldValue = getStringValueFromAttributeOrElement("stringValue", "string", fieldDeclarationElement);
       if(fieldValue != null) {
         return new FieldDeclaration(fieldName, Expression.class.getName(), new FixedValue(fieldValue)); 
       }
@@ -1087,7 +1087,7 @@ public class BpmnParse extends Parse {
   
   protected FieldDeclaration parseExpressionFieldDeclaration(Element fieldDeclarationElement, Element serviceTaskElement, String fieldName) {
     try {
-      String expression = getStringValueFromAttributeOrElement("expression", "expression", null, fieldDeclarationElement);
+      String expression = getStringValueFromAttributeOrElement("expression", "expression", fieldDeclarationElement);
       if(expression != null && expression.trim().length() > 0) {
         return new FieldDeclaration(fieldName, Expression.class.getName(), expressionManager.createExpression(expression));
       }
@@ -1101,11 +1101,11 @@ public class BpmnParse extends Parse {
     return null;
   }
   
-  protected String getStringValueFromAttributeOrElement(String attributeName, String elementName, String namespace, Element element) {
+  protected String getStringValueFromAttributeOrElement(String attributeName, String elementName, Element element) {
     String value = null;
     
-    String attributeValue = element.attributeNS(namespace, attributeName);
-    Element childElement = element.elementNS(namespace, elementName);
+    String attributeValue = element.attribute(attributeName);
+    Element childElement = element.elementNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, elementName);
     String stringElementText = null;
     
     if(attributeValue != null && childElement != null) {
