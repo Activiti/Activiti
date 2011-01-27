@@ -21,9 +21,10 @@ import java.util.Properties;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.IoUtil;
-import org.activiti.migration.Jbpm3ToActivitiMigrator;
+import org.activiti.migration.ServiceFactory;
+import org.activiti.migration.service.ProcessConversionService;
+import org.activiti.migration.service.XmlTransformationService;
 import org.activiti.migration.util.Jbpm3Util;
-import org.activiti.migration.util.XmlUtil;
 import org.activiti.migration.util.ZipUtil;
 import org.jbpm.JbpmConfiguration;
 import org.jbpm.JbpmContext;
@@ -38,18 +39,22 @@ public class MigrationTestCase extends PluggableActivitiTestCase {
   
   protected JbpmConfiguration jbpmConfiguration;
 
-  protected Jbpm3ToActivitiMigrator migrator;
+  protected ServiceFactory serviceFactory;
+  protected ProcessConversionService processConversionService;
+  protected XmlTransformationService xmlTransformationService;
   
   @Override
   protected void setUp() throws Exception {
     super.setUp();
     this.jbpmConfiguration = Jbpm3Util.getJbpmConfiguration("jbpm.in-mem.cfg.xml");
-    this.migrator = createMigrator();
+    this.serviceFactory = createServiceFactory();
+    this.processConversionService = serviceFactory.getProcessConversionService();
+    this.xmlTransformationService = serviceFactory.getXmlTransformationService();
   }
   
   @Override
   protected void tearDown() throws Exception {
-    this.migrator = null;
+    this.serviceFactory = null;
     super.tearDown();
   }
   
@@ -102,23 +107,19 @@ public class MigrationTestCase extends PluggableActivitiTestCase {
     }
   }
   
-  protected Jbpm3ToActivitiMigrator createMigrator() throws IOException {
+  protected ServiceFactory createServiceFactory() throws IOException {
     Properties jbpm3DbProperties = new Properties();
     jbpm3DbProperties.load(this.getClass().getClassLoader().getResourceAsStream("jbpm3.db.in-mem.properties"));
 
     Properties activitiDbProperties = new Properties();
     activitiDbProperties.load(this.getClass().getClassLoader().getResourceAsStream("activiti.db.in-mem.properties"));
     
-    Jbpm3ToActivitiMigrator migrator = new Jbpm3ToActivitiMigrator();
-    migrator.configureFromProperties(jbpm3DbProperties, activitiDbProperties);
-    return migrator;
+    return ServiceFactory.configureFromProperties(jbpm3DbProperties, activitiDbProperties);
   }
   
   protected String convertProcess(String processName) {
-    migrator.convertProcesses();
-    
-    Map<String, Document> migratedProcessDefinitions = migrator.getMigratedProcessDefinitions();
-    return XmlUtil.toString(migratedProcessDefinitions.get(processName));
+    Map<String, Document> migratedProcessDefinitions = processConversionService.convertAllProcessDefinitions();
+    return xmlTransformationService.convertToString(migratedProcessDefinitions.get(processName));
   }
   
 }

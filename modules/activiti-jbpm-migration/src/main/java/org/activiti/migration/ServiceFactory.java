@@ -13,7 +13,6 @@
 package org.activiti.migration;
 
 import java.io.StringReader;
-import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,9 +26,12 @@ import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.migration.dao.Jbpm3Dao;
 import org.activiti.migration.dao.Jbpm3DaoImpl;
-import org.activiti.migration.process.ProcessConversionService;
-import org.activiti.migration.process.ProcessConversionServiceImpl;
-import org.activiti.migration.util.XmlUtil;
+import org.activiti.migration.service.ActivitiService;
+import org.activiti.migration.service.ActivitiServiceImpl;
+import org.activiti.migration.service.ProcessConversionService;
+import org.activiti.migration.service.ProcessConversionServiceImpl;
+import org.activiti.migration.service.XmlTransformationService;
+import org.activiti.migration.service.XmlTransformationServiceImpl;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.w3c.dom.Document;
@@ -37,11 +39,13 @@ import org.xml.sax.InputSource;
 
 
 /**
+ * TODO: two ways on constructing it
+ * 
  * @author Joram Barrez
  */
-public class Jbpm3ToActivitiMigrator {
+public class ServiceFactory {
   
-  protected static final Logger LOGGER = Logger.getLogger(Jbpm3ToActivitiMigrator.class.getName());
+  protected static final Logger LOGGER = Logger.getLogger(ServiceFactory.class.getName());
   
   // jBPM db parameters
   protected String jbpm3DbDriver;
@@ -59,44 +63,34 @@ public class Jbpm3ToActivitiMigrator {
   
   // Dependencies
   protected ProcessConversionService processConversionService;
+  protected ActivitiService activitiService;
+  protected ProcessEngine processEngine;
+  protected Jbpm3Dao jbpm3Dao;
+  protected SessionFactory sessionFactory;
+  protected XmlTransformationService xmlTransformationService;
   
-  // Results
-  protected Map<String, Document> migratedProcessDefinitions;
   
-  public Jbpm3ToActivitiMigrator() {
+  public static ServiceFactory configureFromProperties(Properties jbpm3DbParameters, Properties activitiDbParameters) {
     
-  }
-  
-  public Map<String, Document> convertProcesses() {
-    if (LOGGER.isLoggable(Level.INFO)) {
-      LOGGER.info("Starting process conversion");
-    }
+    ServiceFactory serviceFactory = new ServiceFactory();
     
-    validateDbParameters();
-    try {
-      processConversionService = createProcessConversionService();
-      migratedProcessDefinitions = processConversionService.convertAllProcessDefinitions();
-      return migratedProcessDefinitions;
-    } catch (Exception e){
-      throw new ActivitiException("Could convert the processes", e);
-    } finally {
-      processConversionService.close();
-    }
-  }
-  
-  public void deployConvertedProcessesToActiviti() {
-    if (migratedProcessDefinitions == null || migratedProcessDefinitions.size() == 0) {
-      convertProcesses();
-    }
+    // jbpm 3
+    serviceFactory.setJbpm3DbDriver(jbpm3DbParameters.getProperty("driver"));
+    serviceFactory.setJbpm3DbUrl(jbpm3DbParameters.getProperty("url"));
+    serviceFactory.setJbpm3DbUser(jbpm3DbParameters.getProperty("username"));
+    serviceFactory.setJbpm3DbPassword(jbpm3DbParameters.getProperty("password"));
+    serviceFactory.setJbpm3DbHibernateDialect(jbpm3DbParameters.getProperty("hibernate.dialect"));
+     
+    // activiti
+    serviceFactory.setActivitiDbDriver(activitiDbParameters.getProperty("driver"));
+    serviceFactory.setActivitiDbUrl(activitiDbParameters.getProperty("url"));
+    serviceFactory.setActivitiDbUser(activitiDbParameters.getProperty("username"));
+    serviceFactory.setActivitiDbPassword(activitiDbParameters.getProperty("password"));
+    serviceFactory.setActivitiDbType(activitiDbParameters.getProperty("type"));
     
-    ProcessEngine processEngine = createProcessEngine();
-    for (String processName : migratedProcessDefinitions.keySet()) {
-      processEngine.getRepositoryService().createDeployment()
-        .addString(processName.replace(" ", "_") + ".bpmn20.xml", 
-                XmlUtil.toString(migratedProcessDefinitions.get(processName)))
-        .deploy();
-    }
-    processEngine.close();
+    serviceFactory.validateDbParameters();
+    
+    return serviceFactory;
   }
   
   protected void validateDbParameters() {
@@ -141,20 +135,27 @@ public class Jbpm3ToActivitiMigrator {
     }
   }
   
-  // Dependency init ///////////////////////////////////////////////////////////////////////
+  // Getters and setters //////////////////////////////////////////////////////////////////////////
   
-  protected ProcessConversionService createProcessConversionService() {
-    ProcessConversionServiceImpl service = new ProcessConversionServiceImpl(createJbpm3Dao());
+  public ProcessConversionService getProcessConversionService() {
+    if (processConversionService == null) {
+      this.processConversionService = createDefaultProcessConversionService();
+    } 
+    return processConversionService;
+  }
+  
+  protected ProcessConversionService createDefaultProcessConversionService() {
+    ProcessConversionServiceImpl service = new ProcessConversionServiceImpl(getJbpm3Dao());
     return service;
   }
   
-  protected Jbpm3Dao createJbpm3Dao() {
+  protected Jbpm3Dao createDefaultJbpm3Dao() {
     Jbpm3DaoImpl jbpm3Dao = new Jbpm3DaoImpl();
-    jbpm3Dao.setSessionFactory(createSessionFactory());
+    jbpm3Dao.setSessionFactory(getSessionFactory());
     return jbpm3Dao;
   }
   
-  protected SessionFactory createSessionFactory() {
+  protected SessionFactory createDefaultSessionFactory() {
    
     String hibernateConfigXml = new String(IoUtil.readInputStream(
             this.getClass().getClassLoader().getResourceAsStream("hibernate.cfg.xml"), null));
@@ -179,25 +180,42 @@ public class Jbpm3ToActivitiMigrator {
     return new Configuration().configure(document).buildSessionFactory();
   }
   
-  public Jbpm3ToActivitiMigrator configureFromProperties(Properties jbpm3DbParameters, Properties activitiDbParameters) {
-    // jbpm 3
-    setJbpm3DbDriver(jbpm3DbParameters.getProperty("driver"));
-    setJbpm3DbUrl(jbpm3DbParameters.getProperty("url"));
-    setJbpm3DbUser(jbpm3DbParameters.getProperty("username"));
-    setJbpm3DbPassword(jbpm3DbParameters.getProperty("password"));
-    setJbpm3DbHibernateDialect(jbpm3DbParameters.getProperty("hibernate.dialect"));
-     
-    // activiti
-    setActivitiDbDriver(activitiDbParameters.getProperty("driver"));
-    setActivitiDbUrl(activitiDbParameters.getProperty("url"));
-    setActivitiDbUser(activitiDbParameters.getProperty("username"));
-    setActivitiDbPassword(activitiDbParameters.getProperty("password"));
-    setActivitiDbType(activitiDbParameters.getProperty("type"));
-    
-    return this;
+  public ActivitiService getActivitiService() {
+    if (activitiService == null) {
+      this.activitiService = createDefaultActivitiService();
+    }
+    return activitiService;
   }
   
-  public ProcessEngine createProcessEngine() {
+  public Jbpm3Dao getJbpm3Dao() {
+    if (jbpm3Dao == null) {
+      this.jbpm3Dao = createDefaultJbpm3Dao();
+    }
+    return jbpm3Dao;
+  }
+  
+  public SessionFactory getSessionFactory() {
+    if (sessionFactory == null) {
+      this.sessionFactory = createDefaultSessionFactory();
+    }
+    return sessionFactory;
+  }
+  
+  public ProcessEngine getProcessEngine() {
+    if (processEngine == null) {
+      this.processEngine = createDefaultProcessEngine();
+    }
+    return processEngine;
+  }
+  
+  public ActivitiService createDefaultActivitiService() {
+    ActivitiServiceImpl activitiServiceImpl = new ActivitiServiceImpl();
+    activitiServiceImpl.setProcessEngine(getProcessEngine());
+    activitiServiceImpl.setXmlTransformationService(xmlTransformationService);
+    return activitiServiceImpl;
+  }
+  
+  public ProcessEngine createDefaultProcessEngine() {
     return StandaloneProcessEngineConfiguration.createStandaloneProcessEngineConfiguration()
       .setDatabaseType(activitiDbType)
       .setJdbcDriver(activitiDbDriver)
@@ -208,22 +226,58 @@ public class Jbpm3ToActivitiMigrator {
       .buildProcessEngine();
   }
   
-  // Getters and setters //////////////////////////////////////////////////////////////////////////
+  public XmlTransformationService getXmlTransformationService() {
+    if (xmlTransformationService == null) {
+      this.xmlTransformationService = createDefaultXmlTransformationService();
+    }
+    return xmlTransformationService;
+  }
+  
+  protected XmlTransformationService createDefaultXmlTransformationService() {
+    XmlTransformationServiceImpl xmlTransformationService = new XmlTransformationServiceImpl();
+    return xmlTransformationService;
+  }
+  
+  // Dependency setters
+  
+  public void setProcessConversionService(ProcessConversionService processConversionService) {
+    this.processConversionService = processConversionService;
+  }
+  public void setActivitiService(ActivitiService activitiService) {
+    this.activitiService = activitiService;
+  }
+  public void setSessionFactory(SessionFactory sessionFactory) {
+    this.sessionFactory = sessionFactory;
+  }
+  public void setJbpm3Dao(Jbpm3Dao jbpm3Dao) {
+    this.jbpm3Dao = jbpm3Dao;
+  }
+  public void setProcessEngine(ProcessEngine processEngine) {
+    this.processEngine = processEngine;
+  }
+  public void setXmlTransformationService(XmlTransformationService xmlTransformationService) {
+    this.xmlTransformationService = xmlTransformationService;
+  }
+  
+  // Regular setters and getters ////////////////////////////////////////////////////////////////
   
   public void setJbpm3DbParameters(String jbpm3DbDriver, String jbpm3DbUrl, 
-          String jbpm3DbUser, String jbpm3DbPassword) {
+          String jbpm3DbUser, String jbpm3DbPassword, String jbpm3HibernateDialect) {
     setJbpm3DbDriver(jbpm3DbDriver);
     setJbpm3DbUrl(jbpm3DbUrl);
     setJbpm3DbUser(jbpm3DbUser);
     setJbpm3DbPassword(jbpm3DbPassword);
+    setJbpm3DbHibernateDialect(jbpm3HibernateDialect);
   }
-  public void setActivitiDbParameters(String ActivitiDbDriver, String ActivitiDbUrl, 
-          String ActivitiDbUser, String ActivitiDbPassword) {
+  public void setActivitiDbParameters(String activitiDbType, String ActivitiDbDriver, 
+          String ActivitiDbUrl, String ActivitiDbUser, String ActivitiDbPassword) {
+    setActivitiDbType(activitiDbType);
     setActivitiDbDriver(ActivitiDbDriver);
     setActivitiDbUrl(ActivitiDbUrl);
     setActivitiDbUser(ActivitiDbUser);
     setActivitiDbPassword(ActivitiDbPassword);
   }
+
   public String getJbpm3DbDriver() {
     return jbpm3DbDriver;
   }
@@ -283,18 +337,6 @@ public class Jbpm3ToActivitiMigrator {
   }
   public void setActivitiDbType(String activitiDbType) {
     this.activitiDbType = activitiDbType;
-  }
-  public ProcessConversionService getProcessConversionService() {
-    return processConversionService;
-  }
-  public void setProcessConversionService(ProcessConversionService processConversionService) {
-    this.processConversionService = processConversionService;
-  }
-  public Map<String, Document> getMigratedProcessDefinitions() {
-    return migratedProcessDefinitions;
-  }
-  public void setMigratedProcessDefinitions(Map<String, Document> migratedProcessDefinitions) {
-    this.migratedProcessDefinitions = migratedProcessDefinitions;
   }
   
 }

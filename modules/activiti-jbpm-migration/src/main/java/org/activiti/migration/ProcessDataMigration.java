@@ -28,14 +28,15 @@ import java.util.logging.Logger;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.LogUtil;
-import org.activiti.migration.util.XmlUtil;
+import org.activiti.migration.service.ActivitiService;
+import org.activiti.migration.service.ProcessConversionService;
 import org.w3c.dom.Document;
 
 
 /**
  * @author Joram Barrez
  */
-public class ProcessMigration {
+public class ProcessDataMigration {
   
   static {
     LogUtil.readJavaUtilLoggingConfigFromClasspath();
@@ -44,10 +45,25 @@ public class ProcessMigration {
   protected static final Logger LOGGER = Logger.getLogger(ProcessConversion.class.getName());
   protected static final DateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
   
+  protected ServiceFactory serviceFactory;
   protected String workingDir;
   
-  public ProcessMigration(String workingDir) {
+  public static void main(String[] args) throws Exception {
+    validateParameters(args);
+    ProcessDataMigration migration = new ProcessDataMigration(args[0]);
+    migration.execute();
+  }
+  
+  protected static void validateParameters(String[] args) {
+    if (args.length != 1) {
+      throw new ActivitiException("Invalid number of arguments passed to " 
+              + ProcessConversion.class.getName());
+    }
+   }
+  
+  public ProcessDataMigration(String workingDir) {
     this.workingDir = workingDir;
+    this.serviceFactory = createServiceFactory();
   }
   
   public void execute() throws IOException {
@@ -56,22 +72,28 @@ public class ProcessMigration {
     }
     
     // convert processes and write them out
-    Jbpm3ToActivitiMigrator migrator = createMigrator();
-    Map<String, Document> migratedProcesses = migrator.convertProcesses();
+    ProcessConversionService processConversionService = serviceFactory.getProcessConversionService();
+    Map<String, Document> migratedProcesses = processConversionService.convertAllProcessDefinitions();
+    
+    if (LOGGER.isLoggable(Level.INFO)) {
+      LOGGER.info("Writing converted processes ...");
+    }
     writeConvertedProcesses(migratedProcesses, workingDir);
     
     // Deploy processes to Activiti
-    migrator.deployConvertedProcessesToActiviti();
+    if (LOGGER.isLoggable(Level.INFO)) {
+      LOGGER.info("Deploying converted processes to Activiti ... ");
+    }
+    ActivitiService activitiService = serviceFactory.getActivitiService();
+    activitiService.deployConvertedProcesses(migratedProcesses);
     
     // TODO: data migration
   }
   
-  protected Jbpm3ToActivitiMigrator createMigrator() throws IOException {
-    Jbpm3ToActivitiMigrator migrator = new Jbpm3ToActivitiMigrator();
+  protected ServiceFactory createServiceFactory() {
     Properties jbpmDbProperties = loadProperties(workingDir + "/jbpm3.db.properties", true);
     Properties activitiDbProperties = loadProperties(workingDir + "/activiti.db.properties", false);
-    migrator.configureFromProperties(jbpmDbProperties, activitiDbProperties);
-    return migrator;
+    return ServiceFactory.configureFromProperties(jbpmDbProperties, activitiDbProperties);
   }
   
   protected void writeConvertedProcesses(Map<String, Document> migratedProcesses, String workingDir) {
@@ -79,16 +101,22 @@ public class ProcessMigration {
     outputDir.mkdir();
     for (String processName : migratedProcesses.keySet()) {
       String bpmnFileName = processName.replace(" ", "_") + ".bpmn20.xml";
-      writeProcessToFile(XmlUtil.toString(migratedProcesses.get(processName)), outputDir.getAbsolutePath() + "/" + bpmnFileName);
+      String convertedProcessXml = serviceFactory.getXmlTransformationService()
+        .convertToString(migratedProcesses.get(processName)); 
+      writeProcessToFile(convertedProcessXml, outputDir.getAbsolutePath() + "/" + bpmnFileName);
     }
   }
 
-  protected Properties loadProperties(String path, boolean required) throws IOException{
-    FileInputStream is = new FileInputStream(new File(path));
+  // Properties are loaded from file
+  protected Properties loadProperties(String path, boolean required) {
+    FileInputStream is = null;
     try {
+      is = new FileInputStream(new File(path));
       Properties properties = new Properties();
       properties.load(is);
       return properties;
+    } catch (IOException e) {
+      throw new ActivitiException("Couldn't read " + path, e);
     } finally {
       IoUtil.closeSilently(is);
     }
@@ -111,18 +139,5 @@ public class ProcessMigration {
       IoUtil.closeSilently(outputStream);
     }
   }
-  
-  public static void main(String[] args) throws Exception {
-    validateParameters(args);
-    ProcessMigration migration = new ProcessMigration(args[0]);
-    migration.execute();
-  }
-  
-  protected static void validateParameters(String[] args) {
-    if (args.length != 1) {
-      throw new ActivitiException("Invalid number of arguments passed to " 
-              + ProcessConversion.class.getName());
-    }
-   }
 
 }

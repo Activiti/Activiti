@@ -10,7 +10,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.migration.util;
+
+package org.activiti.migration.service;
 
 import java.io.StringWriter;
 
@@ -25,12 +26,13 @@ import javax.xml.transform.stream.StreamResult;
 import org.activiti.engine.ActivitiException;
 import org.w3c.dom.Document;
 
+
 /**
  * @author Joram Barrez
  */
-public class XmlUtil {
-
-  public static String toString(Document document) {
+public class XmlTransformationServiceImpl implements XmlTransformationService {
+  
+  public String convertToString(Document document) {
     try {
       Source source = new DOMSource(document);
       StringWriter stringWriter = new StringWriter();

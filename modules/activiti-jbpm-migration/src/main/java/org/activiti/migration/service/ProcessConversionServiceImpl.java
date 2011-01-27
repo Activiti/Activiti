@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.migration.process;
+package org.activiti.migration.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,7 +59,8 @@ public class ProcessConversionServiceImpl implements ProcessConversionService {
     List<ProcessDefinition> processDefinitions = jbpm3Dao.getAllProcessDefinitions();
     for (ProcessDefinition processDefinition : processDefinitions) {
       if (LOGGER.isLoggable(Level.INFO)) {
-        LOGGER.info("Converting process definition '" + processDefinition.getName() + "'");
+        LOGGER.info("Converting process definition '" + processDefinition.getName() 
+                + "', version " + processDefinition.getVersion());
       }
       Document processDefinitionDocument = convertProcessDefinition(processDefinition);
       processDefinitionMap.put(processDefinition.getName(), processDefinitionDocument);

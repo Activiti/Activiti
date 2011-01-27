@@ -21,6 +21,8 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.util.IoUtil;
+import org.activiti.migration.service.ProcessConversionService;
 import org.activiti.migration.util.Jbpm3Util;
 import org.jbpm.JbpmContext;
 import org.w3c.dom.Document;
@@ -29,35 +31,53 @@ import org.w3c.dom.Document;
 /**
  * @author Joram Barrez
  */
-public class ProcessConversion extends ProcessMigration {
+public class ProcessConversion extends ProcessDataMigration {
   
   protected static final String JBPM_IN_MEM_CFG = "jbpm.in-mem.cfg.xml";
   protected static final String ACTIVITI_IN_MEM_DB_PROPS = "activiti.db.in-mem.properties";
   protected static final String JBPM3_IN_MEM_DB_PROPS = "jbpm3.db.in-mem.properties";
+  
+  public static void main(String[] args) throws Exception {
+    validateParameters(args);
+    ProcessConversion processConversion = new ProcessConversion(args[0]);
+    processConversion.execute();
+  }
+  
+  protected static void validateParameters(String[] args) {
+    if (args.length != 1) {
+      throw new ActivitiException("Invalid number of arguments passed to " 
+              + ProcessConversion.class.getName());
+    }
+   }
   
   public ProcessConversion(String workingDir) {
     super(workingDir);
   }
   
   public void execute() throws IOException {
-    searchAndDeployProcessesToInMemDatabase(new File(workingDir + "/processes"));
+    int nrOfProcesses = scanAndDeployProcessesToInMemDatabase(new File(workingDir + "/processes"));
     
-    Jbpm3ToActivitiMigrator migrator = createMigrator();
-    Map<String, Document> migratedProcesses = migrator.convertProcesses();
-    writeConvertedProcesses(migratedProcesses, workingDir);
+    if (nrOfProcesses > 0) {
+      ServiceFactory serviceFactory = createServiceFactory();
+      ProcessConversionService processConversionService = serviceFactory.getProcessConversionService();
+      Map<String, Document> migratedProcesses = processConversionService.convertAllProcessDefinitions();
+      writeConvertedProcesses(migratedProcesses, workingDir);
+    } else {
+      if (LOGGER.isLoggable(Level.INFO)) {
+        LOGGER.info("No process definitions were found");
+      }
+    }
   }
   
    @Override
-  protected Jbpm3ToActivitiMigrator createMigrator() throws IOException {
-     Jbpm3ToActivitiMigrator migrator = new Jbpm3ToActivitiMigrator();
+  protected ServiceFactory createServiceFactory() {
      Properties jbpmDbProperties = loadProperties(JBPM3_IN_MEM_DB_PROPS, true); // This is the in-memory db properties file INSIDE the jar
      Properties activitiDbProperties = loadProperties(ACTIVITI_IN_MEM_DB_PROPS, false); // This is the in-memory db properties file INSIDE the jar
-     migrator.configureFromProperties(jbpmDbProperties, activitiDbProperties);
-     return migrator;
+     return ServiceFactory.configureFromProperties(jbpmDbProperties, activitiDbProperties);
   }
    
-  // properties are loaded from classpath for conversion
-  protected Properties loadProperties(String path, boolean required) throws IOException {
+  // properties are loaded from classpath for process conversion (ie in-memory database)
+  protected Properties loadProperties(String path, boolean required) {
     InputStream is = ProcessConversion.class.getClassLoader().getResourceAsStream(path);
     if (is == null) {
       if (required) {
@@ -70,13 +90,15 @@ public class ProcessConversion extends ProcessMigration {
         Properties properties = new Properties();
         properties.load(is);
         return properties;
+      } catch (IOException e) {
+        throw new ActivitiException("Couldn't read " + path, e);
       } finally {
-        is.close();
+        IoUtil.closeSilently(is);
       }
     }
   }
 
-  protected void searchAndDeployProcessesToInMemDatabase(File directory) {
+  protected int scanAndDeployProcessesToInMemDatabase(File directory) {
 
     if (directory == null || !directory.exists()) {
       throw new ActivitiException("Provided directory does not exist");
@@ -85,12 +107,15 @@ public class ProcessConversion extends ProcessMigration {
       throw new ActivitiException(directory.getAbsolutePath() + " is not a folder");
     }
     
+    int nrOfProcessesFound = 0;
+    
     File processDefinitionFile = new File(directory.getAbsolutePath() + "/processdefinition.xml");
     if (processDefinitionFile.exists()) {
       
       if (LOGGER.isLoggable(Level.INFO)) {
         LOGGER.info("Process definition found in " + directory.getAbsolutePath());
       }
+      nrOfProcessesFound++;
       
       JbpmContext context = Jbpm3Util.getJbpmConfiguration(JBPM_IN_MEM_CFG).createJbpmContext();
       try {
@@ -112,22 +137,11 @@ public class ProcessConversion extends ProcessMigration {
     
     if (subDirectories.length > 0) {
       for (File subDirectory : subDirectories) {
-        searchAndDeployProcessesToInMemDatabase(subDirectory);
+        nrOfProcessesFound += scanAndDeployProcessesToInMemDatabase(subDirectory);
       }
     }
+    
+    return nrOfProcessesFound;
   }
-  
-  public static void main(String[] args) throws Exception {
-    validateParameters(args);
-    ProcessConversion processConversion = new ProcessConversion(args[0]);
-    processConversion.execute();
-  }
-  
-  protected static void validateParameters(String[] args) {
-    if (args.length != 1) {
-      throw new ActivitiException("Invalid number of arguments passed to " 
-              + ProcessConversion.class.getName());
-    }
-   }
   
 }

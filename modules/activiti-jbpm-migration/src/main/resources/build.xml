@@ -3,7 +3,7 @@
 <project name="jbpm.migration" default="migrate">
 
 	<target name="migrate">
-		<java classname="org.activiti.migration.ProcessMigration" fork="yes">
+		<java classname="org.activiti.migration.ProcessDataMigration" fork="yes">
 			<classpath>
 				<fileset dir="lib" />
 			</classpath>

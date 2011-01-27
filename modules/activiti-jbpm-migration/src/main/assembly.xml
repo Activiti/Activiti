@@ -14,6 +14,10 @@
 			<outputDirectory>/</outputDirectory>
 		</file>
 		<file>
+      <source>src/main/license.txt</source>
+      <outputDirectory>/</outputDirectory>
+    </file>
+		<file>
 			<source>src/main/resources/jbpm3.db.in-mem.properties</source>
 			<destName>jbpm3.db.properties</destName>
 			<outputDirectory>/</outputDirectory>
@@ -25,6 +29,10 @@
 		</file>
 	</files>
 	<fileSets>
+	  <fileSet>
+	   <directory>src</directory>
+	   <outputDirectory>src</outputDirectory>
+	  </fileSet>
 		<fileSet>
 			<directory>target/</directory>
 			<outputDirectory>/processes</outputDirectory>
