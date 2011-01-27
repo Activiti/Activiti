@@ -276,7 +276,7 @@
       </documentation>
     </annotation>
     <complexType>
-      <sequence>
+      <sequence minOccurs="0" maxOccurs="unbounded">
         <element ref="tns:field" />
       </sequence>
       <attribute name="class" type="string">
@@ -328,7 +328,7 @@
       </documentation>
     </annotation>
     <complexType>
-      <sequence>
+      <sequence minOccurs="0" maxOccurs="unbounded">
         <element ref="tns:field" />
       </sequence>
       <attribute name="class" type="string">
@@ -355,7 +355,7 @@
           </documentation>
         </annotation>
       </attribute>
-      <attribute name="event" use="required">
+      <attribute name="event" use="optional">
         <annotation>
           <documentation>
             The event on which the delegation class or expression will be executed.
