@@ -88,10 +88,8 @@
                      url="${jdbc.url}" 
                      userid="${jdbc.username}"
                      onerror="continue"
-                     classpathref="maven.test.classpath">
-                   <javaresource name="org/activiti/db/drop/activiti.${database}.drop.sql" 
-                                 classpathref="maven.test.classpath" /> 
-                </sql>
+                     classpathref="maven.test.classpath" 
+                     src="scripts/${database}.sql"/>
               </tasks>
             </configuration>
           </execution>
