@@ -8,7 +8,7 @@ create table ACT_CY_CONN_CONFIG (
 	GROUP_ varchar(255),
 	VALUES_ text,	
 	primary key (ID_)
-) TYPE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 create table ACT_CY_CONFIG (
 	ID_ varchar(255) NOT NULL,
@@ -16,7 +16,7 @@ create table ACT_CY_CONFIG (
 	KEY_ varchar(255) NOT NULL,
 	VALUE_ varchar(255) NOT NULL,
 	primary key (ID_)
-) TYPE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 create table ACT_CY_LINK (
 	ID_ varchar(255) NOT NULL,
@@ -34,7 +34,7 @@ create table ACT_CY_LINK (
 	COMMENT_ varchar(1000),
 	LINKED_BOTH_WAYS_ boolean,
 	primary key(ID_)
-)TYPE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 create table ACT_CY_PEOPLE_LINK (
 	ID_ varchar(255) NOT NULL,
@@ -55,7 +55,7 @@ create table ACT_CY_TAG (
 	ARTIFACT_ID_ varchar(550),
 	ALIAS_ varchar(255),
 	primary key(ID_)	
-)TYPE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 create table ACT_CY_COMMENT (
 	ID_ varchar(255) NOT NULL,
@@ -67,7 +67,7 @@ create table ACT_CY_COMMENT (
 	DATE_ timestamp NOT NULL,
 	ANSWERED_COMMENT_ID_ varchar(255) DEFAULT NULL,
 	primary key(ID_)
-)TYPE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 create index ACT_CY_IDX_COMMENT on ACT_CY_COMMENT(ANSWERED_COMMENT_ID_);
 alter table ACT_CY_COMMENT 
