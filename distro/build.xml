@@ -348,6 +348,18 @@
         <include name="logging.properties" />
       </fileset>
     </copy>
+    <!-- CXF EXAMPLES -->
+    <!-- mkdir dir="${target.distro.root}/workspace/activiti-cxf-examples/src/test/java" />
+    <copy todir="${target.distro.root}/workspace/activiti-cxf-examples/src/test/java" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-cxf/src/test/java">
+        <exclude name="**/WSDLImporterTest.java" />
+      </fileset>
+    </copy>
+    <mkdir dir="${target.distro.root}/workspace/activiti-cxf-examples/src/test/resources" />
+    <copy todir="${target.distro.root}/workspace/activiti-cxf-examples/src/test/resources" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-cxf/src/test/resources">
+      </fileset>
+    </copy -->
 	</target>
 
 	<target name="build.docs" unless="nodocs">
