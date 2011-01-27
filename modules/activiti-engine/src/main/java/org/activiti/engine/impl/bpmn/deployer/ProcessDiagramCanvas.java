@@ -313,10 +313,12 @@ public class ProcessDiagramCanvas {
     }
     
     // text
-    String text = fitTextToWidth(name, width);
-    int textX = x + ( (width - fontMetrics.stringWidth(text)) / 2);
-    int textY = y + ( (height - fontMetrics.getHeight()) / 2) + fontMetrics.getHeight();
-    g.drawString(text, textX, textY);
+    if (name != null) {
+      String text = fitTextToWidth(name, width);
+      int textX = x + ( (width - fontMetrics.stringWidth(text)) / 2);
+      int textY = y + ( (height - fontMetrics.getHeight()) / 2) + fontMetrics.getHeight();
+      g.drawString(text, textX, textY);
+    }
   }
   
   protected String fitTextToWidth(String original, int width) {
