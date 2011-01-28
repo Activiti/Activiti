@@ -81,6 +81,10 @@
 					<groupId>org.safehaus.jug</groupId>
 					<artifactId>jug</artifactId>
 				</exclusion>
+				<exclusion>
+				  <groupId>asm</groupId>
+				  <artifactId>asm</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
