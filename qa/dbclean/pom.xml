@@ -80,8 +80,8 @@
             </goals>
             <configuration>
               <tasks>
-                <echo message="loading properties from ${user.home}/.activiti/dbclean/${database}.properties" />
-                <property file="${user.home}/.activiti/${cfgdir}/${database}.properties" />
+                <echo message="loading properties from ${user.home}/.activiti/${cfgdir}/build.${database}.properties" />
+                <property file="${user.home}/.activiti/${cfgdir}/build.${database}.properties" />
                 <echo message="cleaning db ${jdbc.url}" />
                 <sql driver="${jdbc.driver}" 
                      password="${jdbc.password}" 
@@ -89,7 +89,7 @@
                      userid="${jdbc.username}"
                      onerror="continue"
                      classpathref="maven.test.classpath" 
-                     src="scripts/${database}.sql"/>
+                     src="scripts/drop.activiti.{database}.sql"/>
               </tasks>
             </configuration>
           </execution>
