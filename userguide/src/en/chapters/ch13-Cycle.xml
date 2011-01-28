@@ -44,91 +44,113 @@
         and a demo Eclipse workspace, which is located at
         <literal>${activiti.home}/workspace/activiti-cycle-examples</literal>
         in your local file system.
-        The repositories are plugged in as repository connectors.
-        You'll find the configuration as an XML string in
-        the table <literal>CYCLE_CONFIG</literal> in the Activiti database,
-        which you can access as described in <xref linkend="inspecting.database"/>.
-        Here is the default configuration for the user kermit:
+        The repositories are plugged in as repository connectors.        
+        You'll find the configuration in
+        the table <literal>CYCLE_CONN_CONFIG</literal> in the Activiti database,
+        which you can access as described in <xref linkend="inspecting.database"/>.        
     </para>
     
+    <para>
+    	The database schema has 6 columns:     
+   		<orderedlist>
+    	<listitem>
+			<literal>PLUGIN_ID_</literal>: The plugin-id of the connector (e.g.
+			&quot;org.activiti.cycle.impl.connector.fs.FileSystemConnector&quot;
+			for the filesystem connector and
+			&quot;org.activiti.cycle.impl.connector.signavio.SignavioConnector&quot;
+			for the connector to the activiti modeler.)
+    	</listitem>
+    	<listitem>
+			<literal>INSTANCE_NAME_</literal>: Name of the connector instance. This is the string
+			which is rendered as root folder for this connector in the cycle
+			repository tree. Note that it is possible to use the same connector
+			multiple times, to connect to different repositories
+			of the same type (e.g. to multiple eclipse workspaces using the
+			filesystem connector). In that case the <literal>CYCLE_CONN_CONFIG</literal>
+			will contain multiple lines with the same <literal>PULGIN_ID_</literal> but different
+			<literal>INSTANCE_NAME_</literal>s and different <literal>INSTANCE_ID_</literal>s (see below).
+    	</listitem>
+    	<listitem>
+    		<literal>INSTANCE_ID_</literal>: is used internally to address a connector instance.
+    	</listitem>
+    	<listitem>
+    		<literal>USER_</literal>: the user the current connector instance is configured for.
+			(NOTE: This
+			is not the login-name for the connector, but the Activiti Cycle
+			username, e.g. &quot;kermit&quot; in the demo-configuration.)		
+	   	</listitem>
+	   	<listitem>
+	   		<literal>GROUP_</literal>: a connector instance can be either configured for a single user, or for a group. 
+	   		If the &quot;GROUP_&quot; field is set for a given connector instance, cycle will load this instance for every 
+	   		user belonging to that group. 
+	   	</listitem>
+	   	<listitem>
+	   		<literal>VALUES_</literal>: an XML string containing the values for the current configuration. 
+	   		It is a serialized map of the form <literal>&lt;map&gt;(&lt;entry&gt;&lt;string&gt;KEY&lt;/string&gt;&lt;string&gt;VALUE&lt;/string&gt;&lt;/entry&gt;)*&lt;/map&gt;</literal> 
+	   	</listitem>
+    	</orderedlist>    
+    </para>
+    
+    Executing the following SQL statement sets the default configuration for &quot;kermit&quot;, including an instance of the 
+    filesystem connector and an instance of the signavio connector used to access the activiti modeler repository:
+    	            
     <programlisting>
-      ...
-      &lt;org.activiti.cycle.impl.conf.ConfigurationContainer&gt;
-        &lt;name&gt;kermit&lt;/name&gt;
-        &lt;linkedConnectors&gt;
-          &lt;org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration&gt;
-            &lt;id&gt;Activiti&lt;/id&gt;
-            &lt;name&gt;Activiti Modeler&lt;/name&gt;
-            &lt;signavioBaseUrl&gt;http://localhost:8080/activiti-modeler/&lt;/signavioBaseUrl&gt;
-            &lt;loginRequired&gt;false&lt;/loginRequired&gt;
-            &lt;credentialsSaved&gt;true&lt;/credentialsSaved&gt;
-            &lt;user&gt;&lt;/user&gt;
-            &lt;password&gt;&lt;/password&gt;
-          &lt;/org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration&gt;
-          &lt;org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration&gt;
-            &lt;id&gt;Workspace&lt;/id&gt;
-            &lt;name&gt;Eclipse Workspace (File System)&lt;/name&gt;
-            &lt;baseFilePath&gt;/path-to-activiti-home/activiti-5.0.beta2/workspace/activiti-cycle-examples&lt;/baseFilePath&gt;
-          &lt;/org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration&gt;
-        &lt;/linkedConnectors&gt; &lt;parentContainers/&gt;
-      &lt;/org.activiti.cycle.impl.conf.ConfigurationContainer&gt;
-      ...
-    </programlisting>
+insert into ACT_CY_CONN_CONFIG values ('1', 
+			'org.activiti.cycle.impl.connector.fs.FileSystemConnector',
+			'Eclipse Workspace (File System)',
+			'Workspace',
+			'kermit', '',
+			'&lt;map&gt;&lt;entry&gt;&lt;string&gt;basePath&lt;/string&gt;&lt;string&gt;/path-to-activiti-home/activiti-5.0.beta2/workspace/activiti-cycle-examples&lt;/string&gt;&lt;/entry&gt;&lt;/map&gt;');
+			
+insert into ACT_CY_CONN_CONFIG values ('2', 
+			'org.activiti.cycle.impl.connector.signavio.SignavioConnector',
+			'Activiti Modeler',
+			'Activiti',
+			'kermit', '',
+			'&lt;map&gt;
+				&lt;entry&gt;&lt;string&gt;signavioBaseUrl&lt;/string&gt;&lt;string&gt;http://localhost:8080/activiti-modeler/&lt;/string&gt;&lt;/entry&gt;
+				&lt;entry&gt;&lt;string&gt;loginRequired&lt;/string&gt;&lt;boolean&gt;false&lt;/boolean&gt;&lt;/entry&gt;
+			&lt;/map&gt;');   	  
+</programlisting>
     
     <para>
         Now, if you want to add, e.g., a Signavio Process Modeler repository,
-        you can simply do this by adding a connector configuration to the XML configuration.
+        you can add a configuration for the <literal>PLUGIN_ID_</literal> 'org.activiti.cycle.impl.connector.signavio.SignavioConnector'.
         If you need a Signavio account, you can register for a free trial
         at the <ulink url="http://www.signavio.com">Signavio web site</ulink>.
         Here is an example configuration:
     </para>
     
     <programlisting>
-      ...
-      &lt;org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration&gt;
-        &lt;id&gt;Signavio&lt;/id&gt;
-        &lt;name&gt;Signavio&lt;/name&gt;
-        &lt;signavioBaseUrl&gt;https://editor.signavio.com/&lt;/signavioBaseUrl&gt;
-        &lt;loginRequired&gt;true&lt;/loginRequired&gt;
-        &lt;credentialsSaved&gt;true&lt;/credentialsSaved&gt;
-        &lt;user&gt;your user name&lt;/user&gt;
-        &lt;password&gt;secret&lt;/password&gt;
-      &lt;/org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration&gt;
-      ...
+&lt;map&gt;
+	&lt;entry&gt;&lt;string&gt;signavioBaseUrl&lt;/string&gt;&lt;string&gt;https://editor.signavio.com/&lt;/string&gt;&lt;/entry&gt;
+	&lt;entry&gt;&lt;string&gt;loginRequired&lt;/string&gt;&lt;boolean&gt;true&lt;/boolean&gt;&lt;/entry&gt;
+	&lt;entry&gt;&lt;string&gt;username&lt;/string&gt;&lt;string&gt;your user name&lt;/string&gt;&lt;/entry&gt;
+	&lt;entry&gt;&lt;string&gt;password&lt;/string&gt;&lt;string&gt;secret&lt;/string&gt;&lt;/entry&gt;
+&lt;/map&gt;
     </programlisting>
     
     <para>
         You may also choose not to save your username and password in the database
-        by setting 'credentialsSaved' to 'false' and leaving 'user' and 'password' empty.
-        Cycle will then ask you for your credentials when it needs them.
+        and leaving 'username' and 'password' empty. Cycle will then ask you for your credentials when it needs them.
     </para>
 
     <para>
         Another thing you might consider
         is to add a collection of BPMN examples from
         the <ulink url="http://oryx-project.org/">Oryx Project</ulink>.
-        In order to do this, all you need is the following connector configuration:
+        In order to do this, you need a connector configuration for the <literal>PLUGIN_ID_</literal> 
+        'org.activiti.cycle.impl.connector.signavio.SignavioConnector':
     </para>
     
     <programlisting>
-      ...
-      &lt;org.activiti.cycle.impl.connector.signavio.OryxConnectorConfiguration&gt;
-        &lt;id&gt;Signavio&lt;/id&gt;
-        &lt;name&gt;oryx-project.org&lt;/name&gt;
-        &lt;signavioBaseUrl&gt;http://oryx-project.org/&lt;/signavioBaseUrl&gt;
-        &lt;loginRequired&gt;false&lt;/loginRequired&gt;
-        &lt;credentialsSaved&gt;true&lt;/credentialsSaved&gt;
-        &lt;user&gt;&lt;/user&gt;
-        &lt;password&gt;&lt;/password&gt;
-      &lt;/org.activiti.cycle.impl.connector.signavio.OryxConnectorConfiguration&gt;
-      ...
+&lt;map&gt;
+	&lt;entry&gt;&lt;string&gt;type&lt;/string&gt;&lt;string&gt;oryx&lt;/string&gt;&lt;/entry&gt;
+	&lt;entry&gt;&lt;string&gt;signavioBaseUrl&lt;/string&gt;&lt;string&gt;http://oryx-project.org/&lt;/string&gt;&lt;/entry&gt;
+	&lt;entry&gt;&lt;string&gt;loginRequired&lt;/string&gt;&lt;boolean&gt;false&lt;/boolean&gt;&lt;/entry&gt;
+&lt;/map&gt;
     </programlisting>
-    	
-    <para>
-    	Activiti Cycle also has the capabilities to connect to SVN (Subversion) repositories. 
-    	The following is an example configuration for the SVN Connector:    
-    </para>
-    	
+    	    	
   </section>
   
   <section>
