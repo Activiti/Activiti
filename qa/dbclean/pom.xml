@@ -89,7 +89,7 @@
                      userid="${jdbc.username}"
                      onerror="continue"
                      classpathref="maven.test.classpath" 
-                     src="scripts/drop.activiti.{database}.sql"/>
+                     src="scripts/drop.activiti.${database}.sql"/>
               </tasks>
             </configuration>
           </execution>
