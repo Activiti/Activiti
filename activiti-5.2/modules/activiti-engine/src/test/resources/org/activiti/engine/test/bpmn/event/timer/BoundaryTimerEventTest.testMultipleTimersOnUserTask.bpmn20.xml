@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:activiti="http://activiti.org/bpmn" 
+	targetNamespace="Examples">
+
+	<process id="multipleTimersOnUserTask">
+
+		<startEvent id="theStart" />
+
+		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="firstTask" />
+
+		<userTask id="firstTask" name="First Task" />
+
+		<sequenceFlow id="flow2" sourceRef="firstTask" targetRef="theEnd" />
+
+		<endEvent id="theEnd" />
+		
+		<!-- First timer -->
+
+		<boundaryEvent id="escalationTimer1" cancelActivity="true" attachedToRef="firstTask">
+			<timerEventDefinition>
+				<timeDuration>PT2H</timeDuration>
+			</timerEventDefinition>
+		</boundaryEvent>
+
+		<sequenceFlow id="flow3" sourceRef="escalationTimer1" targetRef="secondTask" />
+
+		<userTask id="secondTask" name="Second Task" />
+
+		<sequenceFlow id="flow4" sourceRef="secondTask" targetRef="escalatedEnd" />
+		
+		<!-- Second timer -->
+		
+		<boundaryEvent id="escalationTimer2" cancelActivity="true" attachedToRef="firstTask">
+      <timerEventDefinition>
+        <timeDuration>PT1H</timeDuration>
+      </timerEventDefinition>
+    </boundaryEvent>
+
+    <sequenceFlow id="flow5" sourceRef="escalationTimer2" targetRef="thirdTask" />
+
+    <userTask id="thirdTask" name="Third Task" />
+
+    <sequenceFlow id="flow6" sourceRef="thirdTask" targetRef="escalatedEnd" />
+    
+    <!-- Third timer -->
+    
+      <boundaryEvent id="escalationTimer3" cancelActivity="true" attachedToRef="firstTask">
+      <timerEventDefinition>
+        <timeDuration>PT3H</timeDuration>
+      </timerEventDefinition>
+    </boundaryEvent>
+
+    <sequenceFlow id="flow7" sourceRef="escalationTimer3" targetRef="fourthTask" />
+
+    <userTask id="fourthTask" name="Fourth Task" />
+
+    <sequenceFlow id="flow8" sourceRef="fourthTask" targetRef="escalatedEnd" />
+
+		<endEvent id="escalatedEnd" />
+
+	</process>
+
+</definitions>

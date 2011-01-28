@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Returns the cycle tree</shortname>
+  <description>Returns a json representation of the cycle repository tree</description>
+  <url>/tree</url>
+  <authentication>user</authentication>
+  <format default="json">argument</format>
+</webscript>

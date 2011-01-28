@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+  
+<mapper namespace="org.activiti.cycle">
+
+   <!-- CYCLE CONFIG RESULT MAP -->	
+  
+  <resultMap id="resultMapCycleRepositoryConnectorConfiguration" type="org.activiti.cycle.impl.db.entity.CycleRepositoryConnectorConfigurationEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="pluginId" column="PLUGIN_ID_" jdbcType="VARCHAR" />
+    <result property="instanceId" column="INSTANCE_ID_" jdbcType="VARCHAR" />
+     <result property="instanceName" column="INSTANCE_NAME_" jdbcType="VARCHAR" />
+    <result property="user" column="USER_" jdbcType="VARCHAR" />
+    <result property="group" column="GROUP_" jdbcType="VARCHAR" />
+    <result property="values" column="VALUES_" jdbcType="VARCHAR" />   
+  </resultMap>
+
+  <!-- CYCLE CONFIG SELECT BY USER-->
+  
+  <select id="selectRepositoryConnectorConfigurationByUser" parameterType="string" resultMap="resultMapCycleRepositoryConnectorConfiguration">
+  	select * from ACT_CY_CONN_CONFIG where USER_ = #{id}
+  </select>  
+  
+  <!-- CYCLE CONFIG SELECT BY GROUP-->
+  
+  <select id="selectRepositoryConnectorConfigurationByGroup" parameterType="string" resultMap="resultMapCycleRepositoryConnectorConfiguration">
+  	select * from ACT_CY_CONN_CONFIG where GROUP_ = #{id}
+  </select>  
+  
+  <!-- CYCLE CONFIG SELECT BY INSTANCE_ID and USER-->
+  
+  <select id="selectRepositoryConnectorConfiguration" parameterType="org.activiti.cycle.impl.db.entity.CycleRepositoryConnectorConfigurationEntity" resultMap="resultMapCycleRepositoryConnectorConfiguration">
+  	select * from ACT_CY_CONN_CONFIG where USER_ = #{user} and INSTANCE_ID_ = #{instanceId} and PLUGIN_ID_ = #{pluginId}
+  </select>  
+  
+  <!-- CYCLE CONFIG INSERT -->
+  
+  <insert id="insertRepositoryConnectorConfiguration" parameterType="org.activiti.cycle.impl.db.entity.CycleRepositoryConnectorConfigurationEntity">
+    insert into ACT_CY_CONN_CONFIG  (ID_, PLUGIN_ID_, INSTANCE_ID_, INSTANCE_NAME_, USER_, GROUP_, VALUES_)
+    values (
+    	#{id ,jdbcType=VARCHAR},    	
+	    #{pluginId, jdbcType=VARCHAR},
+	    #{instanceId, jdbcType=VARCHAR},
+	    #{instanceName, jdbcType=VARCHAR},
+	    #{user, jdbcType=VARCHAR},
+	    #{group, jdbcType=VARCHAR},
+	    #{values, jdbcType=VARCHAR}
+    )
+  </insert>
+  
+  <!-- CYCLE CONFIG DELETE -->
+  
+  <delete id="deleteRepositoryConnectorConfigurationById" parameterType="string">
+  	delete from ACT_CY_CONN_CONFIG  where ID_ = #{id}
+  </delete>
+
+  <!-- CYCLE CONFIG UPDATE -->
+  
+  <update id="updateCycleRepositoryConnectorConfigurationById" parameterType="org.activiti.cycle.impl.db.entity.CycleRepositoryConnectorConfigurationEntity">
+    update ACT_CY_CONN_CONFIG  set
+    	PLUGIN_ID_ = #{pluginId},
+    	INSTANCE_ID_ = #{instanceId},
+    	INSTANCE_NAME_ = #{instanceName},
+    	USER_ = #{user},
+    	GROUP_ = #{group},
+    	VALUES_ = #{values}
+    where ID_ = #{id} 	
+  </update>
+
+</mapper>

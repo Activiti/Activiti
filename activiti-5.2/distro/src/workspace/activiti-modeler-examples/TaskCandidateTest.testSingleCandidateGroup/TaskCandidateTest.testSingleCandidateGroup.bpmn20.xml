@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:signavio="http://www.signavio.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="" expressionLanguage="http://www.w3.org/1999/XPath" id="sid-1056644a-deff-4221-b926-b96857d19331" targetNamespace="http://www.signavio.com/bpmn20" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
+   <process id="sid-1078f764-9bce-4525-9020-b10385f63254" isExecutable="false">
+      <startEvent id="sid-34506B63-6680-49A5-A4E0-4575FFC74728" name="">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
+         </extensionElements>
+         <outgoing>sid-98285B47-7683-40B4-8079-21706FBD8B22</outgoing>
+      </startEvent>
+      <userTask completionQuantity="1" id="sid-9E8B7B5E-82FF-4E92-9390-44CF546B3A00" implementation="unspecified" isForCompensation="false" name="Pay out expenses" startQuantity="1">
+         <documentation id="sid-81e946fb-0e61-4498-b17e-3d4e71e67d0d">Transfer money for approved expenses to employee.</documentation>
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffcc"/>
+         </extensionElements>
+         <incoming>sid-98285B47-7683-40B4-8079-21706FBD8B22</incoming>
+         <outgoing>sid-3ACB4945-F443-454B-B517-1F49A44EE383</outgoing>
+         <potentialOwner id="sid-0ac9a0b0-04de-4947-bfe7-1b72a8e04f63" resourceRef="">
+            <resourceAssignmentExpression id="sid-cbab346f-dbb8-443d-a65a-063d10274eb9">
+               <formalExpression id="sid-977f7233-9d73-42db-a29f-7eac81f716ec">accountancy</formalExpression>
+            </resourceAssignmentExpression>
+         </potentialOwner>
+      </userTask>
+      <endEvent id="sid-72386F9F-1C1D-45A3-8D92-7D97996A00D6" name="">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
+         </extensionElements>
+         <incoming>sid-3ACB4945-F443-454B-B517-1F49A44EE383</incoming>
+      </endEvent>
+      <sequenceFlow id="sid-98285B47-7683-40B4-8079-21706FBD8B22" name="" sourceRef="sid-34506B63-6680-49A5-A4E0-4575FFC74728" targetRef="sid-9E8B7B5E-82FF-4E92-9390-44CF546B3A00"/>
+      <sequenceFlow id="sid-3ACB4945-F443-454B-B517-1F49A44EE383" name="" sourceRef="sid-9E8B7B5E-82FF-4E92-9390-44CF546B3A00" targetRef="sid-72386F9F-1C1D-45A3-8D92-7D97996A00D6"/>
+   </process>
+   <bpmndi:BPMNDiagram id="sid-ea0c1090-268c-4f68-95b6-3273991cd238">
+      <bpmndi:BPMNPlane bpmnElement="sid-1078f764-9bce-4525-9020-b10385f63254" id="sid-91ce2a88-fa4c-4fdd-8f92-600cc884c9da">
+         <bpmndi:BPMNShape bpmnElement="sid-34506B63-6680-49A5-A4E0-4575FFC74728" id="sid-34506B63-6680-49A5-A4E0-4575FFC74728_gui">
+            <omgdc:Bounds height="30.0" width="30.0" x="255.0" y="175.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-9E8B7B5E-82FF-4E92-9390-44CF546B3A00" id="sid-9E8B7B5E-82FF-4E92-9390-44CF546B3A00_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="348.0" y="150.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-72386F9F-1C1D-45A3-8D92-7D97996A00D6" id="sid-72386F9F-1C1D-45A3-8D92-7D97996A00D6_gui">
+            <omgdc:Bounds height="28.0" width="28.0" x="506.0" y="176.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNEdge bpmnElement="sid-98285B47-7683-40B4-8079-21706FBD8B22" id="sid-98285B47-7683-40B4-8079-21706FBD8B22_gui">
+            <omgdi:waypoint x="285.0" y="190.0"/>
+            <omgdi:waypoint x="348.0" y="190.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sid-3ACB4945-F443-454B-B517-1F49A44EE383" id="sid-3ACB4945-F443-454B-B517-1F49A44EE383_gui">
+            <omgdi:waypoint x="448.0" y="190.0"/>
+            <omgdi:waypoint x="506.0" y="190.0"/>
+         </bpmndi:BPMNEdge>
+      </bpmndi:BPMNPlane>
+   </bpmndi:BPMNDiagram>
+</definitions>

@@ -1,0 +1,11 @@
+<h1>Provide additional details for ${customerName}</h1>
+<table>
+  <tr>
+    <td>
+      <label>
+        Details:<br/>
+       <textarea name="details" value="${details}"></textarea>
+      </label>
+    </td>
+  </tr>
+</table>

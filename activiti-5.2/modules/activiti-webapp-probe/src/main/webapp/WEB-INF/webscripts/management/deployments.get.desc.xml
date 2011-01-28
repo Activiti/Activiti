@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>Probe Deployment List</shortname>
+  <description>Displays the deployments and allows them to be deleted</description>
+  <url>/component/deployments</url>
+</webscript>

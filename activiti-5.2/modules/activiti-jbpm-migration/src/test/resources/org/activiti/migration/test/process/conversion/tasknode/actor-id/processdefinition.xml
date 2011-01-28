@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process-definition  xmlns="urn:jbpm.org:jpdl-3.2"  name="actorIdProcess">
+
+
+	<start-state name="start-state1">
+		<transition to="task-node1"></transition>
+	</start-state>
+
+
+	<task-node name="task-node1">
+		<task name="myTask">
+			<description>
+				This is the task description
+			</description>
+			<assignment actor-id="kermit"></assignment>
+		</task>
+		<transition to="end-state1"></transition>
+	</task-node>
+
+
+	<end-state name="end-state1"></end-state>
+
+
+</process-definition>

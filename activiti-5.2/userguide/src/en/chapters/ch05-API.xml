@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">
+
+<chapter>
+  <title>API</title>
+
+  <section id="apiEngine">
+    <title>Engine API</title>
+    <para>The engine API is the most common way of interacting with
+    Activiti. The central starting point is the <literal>ProcessEngine</literal>,
+    which can be created in several ways as described in the 
+    <link linkend="configuration">configuration section</link>.
+    From the ProcessEngine, you can obtain the
+    various services that contain the workflow/BPM
+    methods.  ProcessEngine and the services objects are thread safe.
+    So you can keep a reference to 1 of those for a whole server.
+    </para>
+    <mediaobject><imageobject><imagedata align="center" fileref="images/api.services.png"/></imageobject></mediaobject>
+    <programlisting>ProcessEngine processEngine = new ProcessEngineBuilder()
+  .configureFromPropertiesResource(configurationResource)
+  .buildProcessEngine();
+
+RuntimeService runtimeService = processEngine.getRuntimeService();
+RepositoryService repositoryService = processEngine.getRepositoryService();
+TaskService taskService = processEngine.getTaskService();
+ManagementService managementService = processEngine.getManagementService();
+IdentityService identityService = processEngine.getIdentityService();
+HistoryService historyService = processEngine.getHistoryService();
+FormService formService = processEngine.getFormService();</programlisting>
+    <para>The names of the service are quite self-explanatory.
+    For detailed information on the services and the engine API, see<ulink url="../javadocs/index.html"> the javadocs</ulink>. 
+    </para>
+    
+  </section>
+
+  <section>
+    <title>Exception strategy</title>
+    <para>The base exception in Activiti is the <literal>org.activiti.engine.ActivitiException</literal>, an unchecked exception. This exception can be thrown at all times by the API, but 'expected' exceptions that 
+    happen in specific methods are documented in the <ulink url="../javadocs/index.html"> the javadocs</ulink>.
+    For example, an extract from <literal>TaskService</literal>:
+    <programlisting>/**
+ * Called when the task is successfully executed.
+ * @param taskId the id of the task to complete, cannot be null.
+ * @throws ActivitiException when no task exists with the given id.
+ */
+ void complete(String taskId);
+    </programlisting>
+    
+    In the example above, when an id is passed for which no task exists, an exception will be thrown. Also, since the javadoc <emphasis role="bold">explicitly states that taskId cannot be null, an <literal>ActivitiException</literal> will be thrown when <literal>null</literal> is passed</emphasis>.
+    </para>
+    <para>
+      Even though we want to avoid a big exception hierarchy, the following subclasses were added which are thrown in specific cases:
+      <itemizedlist>
+        <listitem>
+            <para>
+             <literal>ActivitiWrongDbException: </literal> Thrown when the Activiti engine discovers a mismatch between the database schema version and the engine version. 
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+             <literal>ActivitiOptimisticLockingException: </literal> Thrown when an optimistic locking occurs in the datastore caused by concurrent access of the same data entry. 
+            </para>
+          </listitem>
+      </itemizedlist>
+    </para>
+  </section>
+  
+  <section id="apiUnitTesting">
+    <title>Unit testing</title>
+    <para>
+      Business processes are an integral part of software projects and they should be tested
+      in the same way normal application logic is tested: with unit tests. Since Activiti
+      is an embeddable Java engine, writing unit test for business processes is as simple
+      as writing regular unit tests.
+    </para>
+    <para>
+      Activiti supports both Junit versions 3 and 4 style of unit testing. In the Junit 3 style,
+      the <emphasis>org.activiti.engine.test.ActivitiTestCase</emphasis> must be extended.
+      This will make the processEngine and the services available through protected member fields. 
+      In the <emphasis>setup()</emphasis> of the test,  the processEngine will be initialized
+      by default with the <emphasis>activiti.cfg.xml</emphasis> resource on the classpath.  To specify a different
+      configuration file, override the <emphasis>getConfigurationResource()</emphasis> method.
+      Process engines are be cached statically over multiple unit tests when the configuration resource
+      is the same. 
+   </para>
+   <para>
+    By extending <emphasis>ActivitiTestCase</emphasis>, you can annotate test methods 
+    with <emphasis>org.activiti.engine.test.Deployment</emphasis>. Before the test is run,
+    a resource file of the form <emphasis>testClassName.testMethod.bpmn20.xml</emphasis>
+    in the same package as the test class, will be deployed. At the end of the test, the deployment
+    will be deleted, including all related process instances, tasks, etc. The <emphasis>Deployment</emphasis>
+    annotation also supports setting the resource location explicitly. See 
+    <ulink url="../javadocs/org/activiti/engine/test/Deployment.html">the Javadocs</ulink> for more
+    details.
+   </para> 
+   <para>
+     Taking all that in account, a Junit 3 style test looks as follows.
+     <programlisting>
+public class MyBusinessProcessTest extends ActivitiTestCase {
+   
+  @Deployment
+  public void testSimpleProcess() {
+    runtimeService.startProcessInstanceByKey(&quot;simpleProcess&quot;);
+    
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals(&quot;My Task&quot;, task.getName());
+    
+    taskService.complete(task.getId());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+  }
+}      
+      </programlisting>
+    </para>
+    <para>
+      To get the same functionality when using the Junit 4 style of writing unit tests, 
+      the <emphasis>org.activiti.engine.test.ActivitiRule</emphasis> Rule must be 
+      used. Through this rule, the process engine and services are available through getters. As with the 
+      <emphasis>ActivitiTestCase</emphasis> (see above), including this Rule will enable the use
+      of the <emphasis>org.activiti.engine.test.Deployment</emphasis> annotation (see above for an explanation
+      of its use and configuration) and it will look for the default configuration file on the classpath. 
+      Process engines are statically cached over multiple unit tests when using the same configuration resource. 
+   </para>
+   <para>
+     Following code snippet shows an example of using the Junit 4 style of testing and the 
+     usage of the <emphasis>ActivitiRule</emphasis>. 
+     <programlisting>
+public class MyBusinessProcessTest {
+  
+  @Rule
+  public ActivitiRule activitiRule = new ActivitiRule();
+  
+  @Test
+  @Deployment
+  public void ruleUsageExample() {
+    RuntimeService runtimeService = activitiRule.getRuntimeService();
+    runtimeService.startProcessInstanceByKey(&quot;ruleUsage&quot;);
+    
+    TaskService taskService = activitiRule.getTaskService();
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals(&quot;My Task&quot;, task.getName());
+    
+    taskService.complete(task.getId());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+  }
+}
+      </programlisting>
+    </para>    
+  </section>
+
+  <section>
+    <title>The process engine in a webapplication</title>
+    
+    <para>
+      The <literal>ProcessEngine</literal> is a thread-safe class and can
+      easily be shared among multiple threads. In a webapplication, this 
+      means it is possible to create the process engine when the container boots
+      and shut down the engine when the container goes down.
+    </para>
+    
+    <para>
+      The following code snippet how you can write a simple ServletContextListener
+      to initialize and destroy process engines in a plain Servlet environment:
+      <programlisting>
+public class ProcessEnginesServletContextListener implements ServletContextListener {
+  
+  public void contextInitialized(ServletContextEvent servletContextEvent) {
+    ProcessEngines.init();
+  }
+
+  public void contextDestroyed(ServletContextEvent servletContextEvent) {
+    ProcessEngines.destroy();
+  }
+
+}</programlisting>
+      The contextInitialized will delegate to <literal>ProcessEngines.init()</literal>. That will
+      look for <literal>activiti.cfg.xml</literal> resource files on the classpath,
+      and create a <literal>ProcessEngines</literal> for the given configurations (eg. multiple jars with a configuration file).
+      If you have multiple such resource files on the classpath, make sure they all have different names.
+      When the process engine  is needed, it can be fetched using <programlisting>ProcessEngines.getDefaultProcessEngine()</programlisting>
+      or <programlisting>ProcessEngines.getProcessEngine("myName");</programlisting>
+      Of course, it is also possible to use any of the variants of creating a process engine, 
+      as described in the <link linkend="configuration">configuration section</link>.
+    </para>
+    
+    <para>The contextDestroyed of the context-listener delegates to <literal>ProcessEngines.destroy()</literal>.
+    That will properly close all initialized process engines.
+    </para>
+  </section>
+
+  <section>
+    <title>Process Virtual Machine API</title>
+    <para><link linkend="experimental"><emphasis role="bold">[EXPERIMENTAL]</emphasis></link>
+    This API is probably going to change in subsequent releases.
+    </para>
+    <para>The Process Virtual Machine API exposes the POJO core of the Process Virtual Machine.
+    Reading and playing with it is interesting for education purposes to understand
+    the internal workings of Activiti.  And the POJO API can also be used to build
+    new process languages.
+    </para>
+    <para>For example:</para>
+    <programlisting>PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
+  .createActivity("a")
+    .initial()
+    .behavior(new WaitState())
+    .transition("b")
+  .endActivity()
+  .createActivity("b")
+    .behavior(new WaitState())
+    .transition("c")
+  .endActivity()
+  .createActivity("c")
+    .behavior(new WaitState())
+  .endActivity()
+  .buildProcessDefinition();
+
+PvmProcessInstance processInstance = processDefinition.createProcessInstance();
+processInstance.start();
+
+PvmExecution activityInstance = processInstance.findExecution("a");
+assertNotNull(activityInstance);
+
+activityInstance.signal(null, null);
+
+activityInstance = processInstance.findExecution("b");
+assertNotNull(activityInstance);
+
+activityInstance.signal(null, null);
+
+activityInstance = processInstance.findExecution("c");
+assertNotNull(activityInstance);</programlisting>
+  </section>
+  
+  
+  <section id="apiExpressions">
+    <title>Expressions</title>
+    <para>Activiti uses UEL for expression-resolving. UEL stands for <emphasis>Unified Expression Language</emphasis> and is part of the EE6 specification ()see
+          <ulink url="http://docs.sun.com/app/docs/doc/820-7627/gjddd?l=en&amp;a=view">
+          the EE6 specification</ulink> for detailed information). To support all features of latest UEL spec on ALL environements, we use a modified version of JUEL.
+    </para>
+    <para>
+      Expressions can be used in for example <link linkend="bpmnJavaServiceTaskXML">Java Service tasks</link>, <link linkend="executionListeners">Execution Listeners</link>, <link linkend="taskListeners">Task Listeners</link> and  <link linkend="conditionalSequenceFlowXml">Conditional sequence flows</link>.
+      Although there are 2 types of expressions, value-expression and method-expression, activiti makes abstraction of this and they can both be used where an <literal>expression</literal> is needed.
+      <itemizedlist>
+        <listitem>
+          <para>
+            <emphasis role="bold">Value expression</emphasis>: resolves to a value. By default, all process variables are available to use. Also all spring-beans (if using Spring) are available to use in expressions. 
+            On top of that, the <literal>DelegateExecution</literal> is also available in the expression-context and can be accessed using the name <literal>execution</literal>. 
+            <emphasis role="bold">Since the execution is exposed as <literal>execution</literal>, all variables and spring-beans with name <literal>execution</literal> are hidden and cannot be used in an expression.</emphasis>
+            Some examples:
+<programlisting>${myVar}
+${myBean.myProperty}</programlisting>
+          </para>
+        </listitem>
+        <listitem>
+        <para>
+            <emphasis role="bold">Method expression</emphasis>: invokes a method, with or without parameters. <emphasis role="bold">When invoking a method without parameters, be sure to add empty parentheses after the method-name.</emphasis>
+            The passed parameters can be literal values or expressions that are resolved themselves. Examples:
+<programlisting>${printer.print()}
+${myBean.addNewOrder('orderName')}
+${myBean.doSomething(myVar, execution)}
+</programlisting>
+          </para>
+        </listitem>
+      </itemizedlist>
+      Note that these expressions support resolving primitives (incl. comparing them), beans, lists, arrays and maps.
+    </para>
+    <para>
+      For more concrete usage and examples, check out <link linkend="springExpressions">Expressions in Spring</link>, <link linkend="bpmnJavaServiceTaskXML">Java Service tasks</link>, <link linkend="executionListeners">Execution Listeners</link>,  <link linkend="taskListeners">Task Listeners</link> or <link linkend="conditionalSequenceFlowXml">Conditional sequence flows</link>.
+    </para>
+    
+  </section>
+
+</chapter>

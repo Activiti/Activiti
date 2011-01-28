@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<page>
+  <id>links-widget</id>
+  <title>Links</title>
+  <template-instance>widget</template-instance>
+  <authentication>admin</authentication>
+  <components>
+    <component>
+      <region-id>widget1</region-id>
+      <url>/component/links</url>
+      <properties>
+        <connectorId>{connectorId}</connectorId>
+        <artifactId>{artifactId}</artifactId>
+        <!-- Note that the htmlid will there automatically when coming though the "page resolver mechanism" -->
+      </properties>
+    </component>
+  </components>
+</page>

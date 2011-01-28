@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  targetNamespace="Examples">
+  
+  <process id="deeplyNestedErrorThrown">
+	
+    <startEvent id="theStart" />
+		<sequenceFlow id="flow0" sourceRef="theStart" targetRef="subprocess1" />
+	
+	  <subProcess id="subprocess1">
+      <startEvent id="start1" />
+      <sequenceFlow id="flow1" sourceRef="start1" targetRef="subprocess2" />
+      
+      <subProcess id="subprocess2">
+        <startEvent id="start2" />
+        <sequenceFlow id="flow2" sourceRef="start2" targetRef="subprocess3" />
+        
+        <subProcess id="subprocess3">
+	        <startEvent id="start3" />
+	        <sequenceFlow id="flow3" sourceRef="start3" targetRef="subprocess4" />
+	        
+	        <subProcess id="subprocess4">
+		        <startEvent id="start4" />
+		        <sequenceFlow id="flow4" sourceRef="start4" targetRef="subprocess5" />
+		        
+		        <subProcess id="subprocess5">
+			        <startEvent id="start5" />
+			        <sequenceFlow id="flow5" sourceRef="start5" targetRef="decision" />
+			        <exclusiveGateway id="decision" />
+						  <sequenceFlow id="decision1" sourceRef="decision" targetRef="throwError1">
+						    <conditionExpression>${input == 1}</conditionExpression>
+						  </sequenceFlow>
+						  <sequenceFlow id="decision2" sourceRef="decision" targetRef="throwError2">
+						    <conditionExpression>${input == 2}</conditionExpression>
+						  </sequenceFlow>
+						  
+						  <endEvent id="throwError1">
+						    <errorEventDefinition errorRef="error1" />
+						  </endEvent>
+						  
+						   <endEvent id="throwError2">
+                <errorEventDefinition errorRef="error2" />
+              </endEvent>
+						  
+			      </subProcess> 
+			      
+			      <sequenceFlow id="flow7" sourceRef="subprocess5" targetRef="subprocess4End" />
+            <endEvent id="subprocess4End" />
+		  
+		      </subProcess> 
+		      
+		      <sequenceFlow id="flow8" sourceRef="subprocess4" targetRef="subprocess3End" />
+          <endEvent id="subprocess3End" />
+	  
+	      </subProcess> 
+	      
+	      <sequenceFlow id="flow9" sourceRef="subprocess3" targetRef="subprocess2End" />
+        <endEvent id="subprocess2End" />
+  
+      </subProcess> 
+      
+      <sequenceFlow id="flow10" sourceRef="subprocess2" targetRef="subprocess1End" />
+      <endEvent id="subprocess1End" />
+      
+      <boundaryEvent id="subprocess2Catch" cancelActivity="true" attachedToRef="subprocess2">
+        <errorEventDefinition errorRef="error1"/>
+	    </boundaryEvent>
+	    <sequenceFlow id="flow11" sourceRef="subprocess2Catch" targetRef="subprocess1End" />
+  
+	  </subProcess> 
+	
+	  <sequenceFlow id="flow12" sourceRef="subprocess1" targetRef="processEnd1" />
+    <endEvent id="processEnd1" />
+		
+		<boundaryEvent id="subprocess1Catch" cancelActivity="true" attachedToRef="subprocess1">
+        <errorEventDefinition errorRef="error2"/>
+    </boundaryEvent>
+    <sequenceFlow id="flow13" sourceRef="subprocess1Catch" targetRef="processEnd2" />
+    <endEvent id="processEnd2" />
+		
+	</process>
+</definitions>

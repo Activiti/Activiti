@@ -1,0 +1,11 @@
+<script type="text/javascript" src="SIGNAVIO_EDITOR_SRC">
+</script>
+
+<script type="text/plain">
+{
+	url: "SIGNAVIO_MODEL_URL",
+	server: "SIGNAVIO_SERVER_URL",
+	zoom: SIGNAVIO_ZOOM,		
+	HIGHLIGHTS	
+}
+</script>

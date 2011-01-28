@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>Probe Processes</shortname>
+  <description>Displays deployed processes</description>
+  <url>/component/process-definitions</url>
+</webscript>

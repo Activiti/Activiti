@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="jbpm.migration" default="migrate">
+
+	<target name="migrate">
+		<java classname="org.activiti.migration.ProcessDataMigration" fork="yes">
+			<classpath>
+				<fileset dir="lib" />
+			</classpath>
+			<arg value="${user.dir}" />
+		</java>
+	</target>
+
+	<target name="convert.processes">
+		<java classname="org.activiti.migration.ProcessConversion" fork="yes">
+			<classpath>
+				<fileset dir="lib" />
+			</classpath>
+			<arg value="${user.dir}" />
+		</java>
+	</target>
+
+</project>
