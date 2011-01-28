@@ -29,7 +29,7 @@ public class TaskNodeConversionTest extends MigrationTestCase {
   }
   
   public void testActorIdToAssigneeConversion() {
-    String migratedBpmn20Xml = convertProcess("actorIdProcess");
+    String migratedBpmn20Xml = getConvertedProcess("actorIdProcess-1");
     String deployId = repositoryService.createDeployment()
       .addString("actorIdProcess.bpmn20.xml", migratedBpmn20Xml) .deploy().getId();
     
@@ -44,7 +44,7 @@ public class TaskNodeConversionTest extends MigrationTestCase {
   }
   
   public void testPooledActorsConversion() {
-    String migratedBpmn20Xml = convertProcess("pooledActorsProcess");
+    String migratedBpmn20Xml = getConvertedProcess("pooledActorsProcess-1");
     String deployId = repositoryService.createDeployment()
       .addString("pooledActorsProcess.bpmn20.xml", migratedBpmn20Xml).deploy().getId();
     

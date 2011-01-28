@@ -32,7 +32,7 @@ public class SimplestProcessDefinitionConversionTest extends MigrationTestCase {
   }
   
   public void testStartProcessInstanceOfMigratedProcess() throws Exception {
-    String migratedBpmn20Xml = convertProcess("simplest");
+    String migratedBpmn20Xml = getConvertedProcess("simplest-1");
     String deployId = repositoryService.createDeployment()
       .addString("simplest.bpmn20.xml", migratedBpmn20Xml)
       .deploy()

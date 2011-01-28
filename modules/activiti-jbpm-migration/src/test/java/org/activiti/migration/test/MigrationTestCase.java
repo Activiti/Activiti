@@ -117,7 +117,7 @@ public class MigrationTestCase extends PluggableActivitiTestCase {
     return ServiceFactory.configureFromProperties(jbpm3DbProperties, activitiDbProperties);
   }
   
-  protected String convertProcess(String processName) {
+  protected String getConvertedProcess(String processName) {
     Map<String, Document> migratedProcessDefinitions = processConversionService.convertAllProcessDefinitions();
     return xmlTransformationService.convertToString(migratedProcessDefinitions.get(processName));
   }

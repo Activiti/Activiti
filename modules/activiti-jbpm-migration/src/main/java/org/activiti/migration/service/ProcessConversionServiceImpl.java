@@ -63,13 +63,13 @@ public class ProcessConversionServiceImpl implements ProcessConversionService {
                 + "', version " + processDefinition.getVersion());
       }
       Document processDefinitionDocument = convertProcessDefinition(processDefinition);
-      processDefinitionMap.put(processDefinition.getName(), processDefinitionDocument);
+      processDefinitionMap.put(processDefinition.getName() + "-" + processDefinition.getVersion(), processDefinitionDocument);
     }
     return processDefinitionMap;
   }
   
   public Document convertProcessDefinition(ProcessDefinition processDefinition) {
-    Document processDefinitionXml = createEmptyBpmn20Document(processDefinition.getName());
+    Document processDefinitionXml = createEmptyBpmn20Document(processDefinition.getName(), processDefinition.getVersion());
     Element processElement = getProcessElement(processDefinitionXml);
     
     for (Node node : jbpm3Dao.getNodes(processDefinition)) {
@@ -207,7 +207,7 @@ public class ProcessConversionServiceImpl implements ProcessConversionService {
     return sequenceFlowElement;
   }
   
-  public Document createEmptyBpmn20Document(String processName) {
+  public Document createEmptyBpmn20Document(String processName, int version) {
     try {
       DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
       factory.setNamespaceAware(true);

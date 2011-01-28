@@ -70,7 +70,7 @@ public interface ProcessConversionService {
   
   Element convertTransition(Document processDefinitionDocument, Transition transition);
   
-  Document createEmptyBpmn20Document(String processName);
+  Document createEmptyBpmn20Document(String processName, int version);
   
   void close();
   

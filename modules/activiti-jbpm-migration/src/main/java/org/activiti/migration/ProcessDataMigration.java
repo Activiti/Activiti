@@ -43,7 +43,7 @@ public class ProcessDataMigration {
   }
   
   protected static final Logger LOGGER = Logger.getLogger(ProcessConversion.class.getName());
-  protected static final DateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
+  protected static final DateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
   
   protected ServiceFactory serviceFactory;
   protected String workingDir;
