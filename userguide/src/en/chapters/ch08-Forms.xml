@@ -83,30 +83,64 @@
       
       And here is the contents of that form file:
       
-      <programlisting>&lt;h1&gt;Vacation Request&lt;/h1&gt;
-
-Employee Name:&lt;br/&gt;
-&lt;input type=&quot;text&quot; name=&quot;employeeName&quot; value=&quot;&quot; /&gt;
-&lt;input type=&quot;hidden&quot; name=&quot;employeeName_required&quot; value=&quot;true&quot; /&gt;
-
-Number of days:&lt;br/&gt;
-&lt;input type=&quot;number&quot; name=&quot;numberOfDays&quot; value=&quot;1&quot; /&gt;
-&lt;input type=&quot;hidden&quot; name=&quot;numberOfDays_type&quot; value=&quot;Integer&quot; /&gt;
-
-First day of vacation:&lt;br/&gt;
-&lt;input type=&quot;date&quot; name=&quot;startDate&quot; /&gt;
-&lt;input type=&quot;hidden&quot; name=&quot;startDate_type&quot; value=&quot;Date&quot; /&gt;
-
-Date of return to work:&lt;br/&gt;
-&lt;input type=&quot;date&quot; name=&quot;returnDate&quot; /&gt;
-&lt;input type=&quot;hidden&quot; name=&quot;returnDate_type&quot; value=&quot;Date&quot; /&gt;
-
-Vacation pay requested
-&lt;input type=&quot;checkbox&quot; name=&quot;vacationPay&quot;/&gt; Vacation pay requested
-&lt;input type=&quot;hidden&quot; name=&quot;vacationPay_boolean&quot; value=&quot;true&quot;/&gt;
-
-Motivation:&lt;br/&gt;
-&lt;textarea name=&quot;vacationMotivation&quot; value=&quot;&quot;&gt;&lt;/textarea&gt;</programlisting>
+      <programlisting>
+&lt;h1&gt;Vacation Request&lt;/h1&gt;
+&lt;table&gt;
+  &lt;tr&gt;
+    &lt;td&gt;
+      &lt;label&gt;
+        Employee name:&lt;br/&gt;
+        &lt;input type=&quot;text&quot; name=&quot;employeeName&quot; value=&quot;&quot; /&gt;
+        &lt;input type=&quot;hidden&quot; name=&quot;employeeName_required&quot; value=&quot;true&quot; /&gt;
+        &lt;input type=&quot;hidden&quot; name=&quot;employeeName_type&quot; value=&quot;User&quot; /&gt;
+      &lt;/label&gt;&lt;br/&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;  
+    &lt;td&gt;
+      &lt;label&gt;
+        Number of days:&lt;br/&gt;
+        &lt;input type=&quot;number&quot; name=&quot;numberOfDays&quot; value=&quot;1&quot; min=&quot;1&quot; /&gt;
+        &lt;input type=&quot;hidden&quot; name=&quot;numberOfDays_type&quot; value=&quot;Integer&quot; /&gt;
+      &lt;/label&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;
+      &lt;label&gt;
+         First day of vacation: (YYYY-MM-DD)&lt;br/&gt;
+         &lt;input type=&quot;date&quot; name=&quot;startDate&quot;/&gt;
+         &lt;input type=&quot;hidden&quot; name=&quot;startDate_type&quot; value=&quot;Date&quot;/&gt;
+      &lt;/label&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;
+      &lt;label&gt;
+         Date of return to work: (YYYY-MM-DD)&lt;br/&gt;
+         &lt;input type=&quot;date&quot; name=&quot;returnDate&quot;/&gt;
+         &lt;input type=&quot;hidden&quot; name=&quot;returnDate_type&quot; value=&quot;Date&quot;/&gt;
+      &lt;/label&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;
+      &lt;label&gt;
+        &lt;input type=&quot;checkbox&quot; name=&quot;vacationPay&quot;/&gt; Vacation pay requested
+        &lt;input type=&quot;hidden&quot; name=&quot;vacationPay_boolean&quot; value=&quot;true&quot;/&gt;
+      &lt;/label&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;
+      &lt;label&gt;
+        Motivation:&lt;br/&gt;
+       &lt;textarea name=&quot;vacationMotivation&quot; value=&quot;&quot;&gt;&lt;/textarea&gt;
+      &lt;/label&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+</programlisting>
     </para>
     
     <para><link linkend="experimental"><emphasis role="bold">&lt;EXPERIMENTAL&gt;</emphasis></link>
