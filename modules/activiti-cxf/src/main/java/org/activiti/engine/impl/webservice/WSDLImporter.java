@@ -196,7 +196,7 @@ public class WSDLImporter implements XMLImporter {
   }
 
   private void createDefaultStructures(Element rootTypes) {
-    NodeList complexTypes = rootTypes.getElementsByTagName("xs:complexType");
+    NodeList complexTypes = rootTypes.getElementsByTagNameNS("http://www.w3.org/2001/XMLSchema", "complexType");
     for (int i = 0; i < complexTypes.getLength(); i++) {
       Element element = (Element) complexTypes.item(i);
       String structureName = this.namespace + element.getAttribute("name");
@@ -212,7 +212,7 @@ public class WSDLImporter implements XMLImporter {
       Document doc = parser.getDocument();
       Element root = (Element) doc.getFirstChild();
       Element typesElement = (Element) root.getElementsByTagName("wsdl:types").item(0);
-      return (Element) typesElement.getElementsByTagName("xs:schema").item(0);
+      return (Element) typesElement.getElementsByTagNameNS("http://www.w3.org/2001/XMLSchema", "schema").item(0);
     } catch (SAXException e) {
       throw new ActivitiException(e.getMessage(), e);
     } catch (IOException e) {
