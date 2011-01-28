@@ -8,18 +8,18 @@ import org.junit.Test;
 
 public class RepositoryConnectorConfigurationManagerImplTest extends ActivitiCycleTest{
 
-  @BeforeClass
-  public static void setUp() throws Exception {
-    // ProcessEngines.destroy();
-    ProcessEngines.init();
-    // configurationService = new CycleServiceImpl();
-  }
+//  @BeforeClass
+//  public static void setUp() throws Exception {
+//    // ProcessEngines.destroy();
+//    ProcessEngines.init();
+//    // configurationService = new CycleServiceImpl();
+//  }
 
-  @AfterClass
-  public static void tearDown() throws Exception {
-    // configurationService = null;
-    // ProcessEngines.destroy();
-  }
+//  @AfterClass
+//  public static void tearDown() throws Exception {
+//    // configurationService = null;
+//    // ProcessEngines.destroy();
+//  }
 
   // @Test
   // public void testAPI() {

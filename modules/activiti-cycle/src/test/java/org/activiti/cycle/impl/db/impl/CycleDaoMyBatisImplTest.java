@@ -4,28 +4,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.activiti.cycle.impl.ActivitiCycleDbAwareTest;
 import org.activiti.cycle.impl.CycleTagContentImpl;
 import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity;
 import org.activiti.cycle.impl.db.entity.RepositoryNodeCommentEntity;
 import org.activiti.cycle.impl.db.entity.RepositoryNodePeopleLinkEntity;
 import org.activiti.cycle.impl.db.entity.RepositoryNodeTagEntity;
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 
 
-public class CycleDaoMyBatisImplTest extends PluggableActivitiTestCase {
+public class CycleDaoMyBatisImplTest extends ActivitiCycleDbAwareTest {
   
-  private CycleDaoMyBatisImpl dao;
+  private CycleDaoMyBatisImpl dao = new CycleDaoMyBatisImpl();
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-//    if (ProcessEngines.getDefaultProcessEngine() == null) {
-//      initializeProcessEngine();
-//      ProcessEngines.registerProcessEngine(processEngine);
-//    }
-    dao = new CycleDaoMyBatisImpl();
-  }
-  
   public void testArtifactLinks() throws Throwable {    
     RepositoryArtifactLinkEntity link = new RepositoryArtifactLinkEntity();
     link.setSourceConnectorId("connector1");
