@@ -43,6 +43,132 @@
     <p>We are including slightly modified source code of the Apache Licensed <a href="http://juel.sourceforge.net/" title="JUEL project page">JUEL 2.2.1</a>, created by Odysseus Software GmbH.</p>
 
   <h1>Activiti Release Notes</h1>
+
+  <h3>Release Notes - Activiti - Version 5.2</h3>
+    
+  <h4>Highlights</h4>
+  <ul>
+    <li>First version of the jBPM-Activiti migration</li>
+    <li>Visualization of the current activity in Activiti Probe</li>
+    <li>Added support for BPMN error event in Activiti Engine</li>
+    <li>Added support for BPMN 2.0 import in Activiti Designer</li>
+    <li>Improved form datatypes</li>
+    <li>Automated in container testing</li>
+    <li>Various bug fixes</li>
+  </ul>
+    
+<h4>        Sub-task
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-512'>ACT-512</a>] -         Add Checkbox control
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-513'>ACT-513</a>] -         Add static dropdown control
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-514'>ACT-514</a>] -         Add radio control
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-515'>ACT-515</a>] -         Add datepicker control
+</li>
+</ul>
+    
+<h4>        Bug
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-428'>ACT-428</a>] -         It is not possible to use function with more then 1 argument as custom assignment handler for candidateGroups
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-473'>ACT-473</a>] -         ProcessEngineFactoryBean fails to register created process engine properly
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-474'>ACT-474</a>] -         Activiti Designer doesn&#39;t support multiple end events
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-479'>ACT-479</a>] -         Vacation Request form example code in user guide is not correct
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-505'>ACT-505</a>] -         Process definition cache not in sync when redeploying process definition with same generated id
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-509'>ACT-509</a>] -         Reported progress for ExportMarshallers and ProcessValidators is incorrect
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-533'>ACT-533</a>] -         In Eclipse the export process to bpmn20.xml fails in some attributes of &quot;UserTask&quot;
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-557'>ACT-557</a>] -         Field TASK_DEF_KEY_ is not populated on ACT_HI_TASK and not exposed on HistoricTaskInstance
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-572'>ACT-572</a>] -         Maven &quot;check&quot; profile states successful build when there are test-failures
+</li>
+</ul>
+    
+<h4>        Improvement
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-467'>ACT-467</a>] -         Invalid small icon path throws unclear exception
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-492'>ACT-492</a>] -         Incorrect icon paths result in exceptions for CustomServiceTasks
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-498'>ACT-498</a>] -         Include active activity instance id on HistoricVariableUpdate when variable is updated
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-499'>ACT-499</a>] -         Start- and end-event should also be include as HistoricActivityInstance when history-level is at FULL
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-534'>ACT-534</a>] -         The BPMN validator should not fail validation if CustomServiceTasks are included
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-567'>ACT-567</a>] -         Allow assignee of a task to be set to null
+</li>
+</ul>
+    
+<h4>        New Feature
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-15'>ACT-15</a>] -         Implement BPMN boundary error event
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-281'>ACT-281</a>] -         BPMN default sequence flow
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-354'>ACT-354</a>] -         Add data mapping capabilities in call activity
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-446'>ACT-446</a>] -         Add support for execution and task listener configuration
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-447'>ACT-447</a>] -         Add support for a receive task
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-511'>ACT-511</a>] -         Add support for simple controls in CustomServiceTasks
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-543'>ACT-543</a>] -         Capture initiator in KickStart
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-554'>ACT-554</a>] -         Return deploymentId when deploying process in AdhocWorkflowService (KickStart)
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-555'>ACT-555</a>] -         Rename AdhocWorkflowService to KickstartService
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-560'>ACT-560</a>] -         Improve CallActivity for independant subprocess to support parameters
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-563'>ACT-563</a>] -         Start JBPM Migration
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-569'>ACT-569</a>] -         Visualize current activities of process instances in probe
+</li>
+</ul>
+    
+<h4>        Task
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-108'>ACT-108</a>] -         Create server script for continuous integration
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-457'>ACT-457</a>] -         Support the documentation element
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-486'>ACT-486</a>] -         User library is not present by default
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-494'>ACT-494</a>] -         Refactor deployments
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-496'>ACT-496</a>] -         Change action icons to links
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-504'>ACT-504</a>] -         Document exception handling in service task
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-510'>ACT-510</a>] -         Check export for each PropertyType to BPMN
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-544'>ACT-544</a>] -         Fix oracle metadata problem
+</li>
+</ul>
+        
+<h4>        Wish
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-188'>ACT-188</a>] -         Source jar files are not published on maven repository
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-476'>ACT-476</a>] -         document the activiti database tables
+</li>
+</ul>
+
   
   <h3>Release Notes - Activiti - Version 5.1</h3>
   
