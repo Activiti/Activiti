@@ -53,6 +53,10 @@
     select * from ACT_GE_PROPERTY where NAME_ = #{name}
   </select>
   
+  <select id="selectProperties" resultMap="propertyResultMap">
+    select * from ACT_GE_PROPERTY 
+  </select>
+  
   <!-- TABLE DATA -->
   
   <!-- The property passing doesn't seem to work with parameterType='string', so we are forced to use a map here -->

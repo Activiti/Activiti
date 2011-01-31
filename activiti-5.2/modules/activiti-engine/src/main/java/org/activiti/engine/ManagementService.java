@@ -12,6 +12,7 @@
  */
 package org.activiti.engine;
 
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.management.TableMetaData;
@@ -71,5 +72,7 @@ public interface ManagementService {
    * @throws ActivitiException when no job exists with the given id.
    */
   String getJobExceptionStacktrace(String jobId);
-  
+
+  /** get the list of properties. */
+  Map<String, String> getProperties();
 }

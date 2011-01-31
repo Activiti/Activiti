@@ -11,7 +11,7 @@
     
     <sequenceFlow id="flow1" sourceRef="start" targetRef="taskWithExecutionVariables" />
 
-    <userTask id="taskWithExecutionVariables" />
+    <userTask id="taskWithExecutionVariables" name="taskWithExecutionVariables" />
     
     <sequenceFlow id="flow2" sourceRef="taskWithExecutionVariables" targetRef="end" />
     

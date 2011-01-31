@@ -32,7 +32,15 @@ public class UserTaskAfterTest extends UpgradeTestCase {
     
     String processInstanceId = task.getProcessInstanceId();
     
-    assertEquals(0, 
+    long expectedHistoryTaskInstances = -1;
+    String schemaHistory = managementService.getProperties().get("schema.history");
+    if (schemaHistory.startsWith("create(5.0)")) {
+      expectedHistoryTaskInstances = 0;
+    } else {
+      expectedHistoryTaskInstances = 2;
+    }
+    
+    assertEquals(expectedHistoryTaskInstances, 
       historyService.createHistoricTaskInstanceQuery()
         .processInstanceId(processInstanceId)
         .orderByTaskName().asc()
@@ -46,7 +54,7 @@ public class UserTaskAfterTest extends UpgradeTestCase {
             .list()
             .size());
 
-    assertEquals(1, 
+    assertEquals(expectedHistoryTaskInstances+1, 
             historyService.createHistoricTaskInstanceQuery()
               .processInstanceId(processInstanceId)
               .orderByTaskName().asc()
@@ -65,7 +73,7 @@ public class UserTaskAfterTest extends UpgradeTestCase {
             .list()
             .size());
 
-    assertEquals(1, 
+    assertEquals(expectedHistoryTaskInstances+1, 
             historyService.createHistoricTaskInstanceQuery()
               .processInstanceId(processInstanceId)
               .orderByTaskName().asc()

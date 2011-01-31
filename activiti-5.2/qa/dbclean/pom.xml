@@ -90,6 +90,7 @@
                      url="${jdbc.url}" 
                      userid="${jdbc.username}"
                      onerror="continue"
+                     autocommit="true"
                      classpathref="maven.test.classpath" 
                      src="scripts/drop.activiti.${database}.sql"/>
               </tasks>
