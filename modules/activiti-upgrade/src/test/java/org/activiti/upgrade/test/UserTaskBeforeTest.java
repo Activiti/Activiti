@@ -33,11 +33,9 @@ public class UserTaskBeforeTest extends UpgradeTestCase {
 
   @Deployment
   public void testTaskWithExecutionVariables() {
-    runtimeService.startProcessInstanceByKey("taskWithExecutionVariablesProcess");
-
     Map<String, Object> variables = new HashMap<String, Object>();
     variables.put("instrument", "trumpet");
     variables.put("player", "gonzo");
-    runtimeService.startProcessInstanceByKey("userTaskProcess", variables);
+    runtimeService.startProcessInstanceByKey("taskWithExecutionVariablesProcess", variables);
   }
 }

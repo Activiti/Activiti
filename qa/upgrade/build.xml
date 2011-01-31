@@ -44,7 +44,6 @@
 				<pathelement location="target/activiti-${activiti.old.version}-upgrade-before-classes" />
 				<fileset dir="target/activiti-${activiti.old.version}/workspace/activiti-engine-examples/libs-runtime" />
         <fileset dir="target/activiti-${activiti.old.version}/workspace/activiti-engine-examples/libs-test" />
-        <pathelement location="${oracle.driver.path}" />
 			</classpath>
 			<batchtest todir="target/test-results-before" fork="yes">
 				<fileset dir="target/activiti-${activiti.old.version}-upgrade-before-classes">
@@ -82,11 +81,12 @@
 	
   <target name="internal.install.old.distro" unless="old.installation.available">
   	<mkdir dir="target/activiti-${activiti.old.version}" />
-    <unzip src="${downloads.dir}/activiti-${activiti.old.version}.zip" dest="target/activiti-${activiti.old.version}" />
     <unzip src="${downloads.dir}/activiti-${activiti.old.version}.zip" dest="target" />
   	<copy file="${user.home}/.activiti/upgrade/build.${database}.properties" todir="target/activiti-${activiti.old.version}/setup" overwrite="true" />
-    <copy file="${oracle.driver.path}" todir="target/activiti-${activiti.old.version}/setup/files/dependencies/libs" />
     <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="inflate.examples" inheritall="false" />
+    <exec executable="${mvn.executable}">
+      <arg line="dependency:copy-dependencies -Dactiviti.upgrade.version=${activiti.old.version}-ALWAYS-SNAPSHOT -DincludeGroupIds=com.oracle.jdbc -DoutputDirectory=target/activiti-${activiti.old.version}/workspace/activiti-engine-examples/libs-test" />
+    </exec>
     <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.install" inheritall="false">
       <property name="db" value="${database}" />
     </ant>
