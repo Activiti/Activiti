@@ -17,6 +17,7 @@ import java.util.Map;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.impl.cmd.ExecuteJobsCmd;
 import org.activiti.engine.impl.cmd.GetJobExceptionStacktraceCmd;
+import org.activiti.engine.impl.cmd.GetPropertiesCmd;
 import org.activiti.engine.impl.cmd.GetTableCountCmd;
 import org.activiti.engine.impl.cmd.GetTableMetaDataCmd;
 import org.activiti.engine.management.TableMetaData;
@@ -52,5 +53,9 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
 
   public String getJobExceptionStacktrace(String jobId) {
     return commandExecutor.execute(new GetJobExceptionStacktraceCmd(jobId));
+  }
+
+  public Map<String, String> getProperties() {
+    return commandExecutor.execute(new GetPropertiesCmd());
   }
 }
