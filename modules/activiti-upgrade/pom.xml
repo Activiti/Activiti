@@ -28,25 +28,21 @@
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <version>1.2.132</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
       <version>5.1.6</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>postgresql</groupId>
       <artifactId>postgresql</artifactId>
       <version>8.4-701.jdbc4</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.oracle.jdbc</groupId>
       <artifactId>ojdbc5</artifactId>
       <version>11.2.0.1.0</version>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 

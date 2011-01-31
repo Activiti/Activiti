@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 
 import junit.framework.AssertionFailedError;
 
+import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.test.AbstractActivitiTestCase;
@@ -32,12 +33,15 @@ public class UpgradeTestCase extends AbstractActivitiTestCase {
 
   private static Logger log = Logger.getLogger(UpgradeTestCase.class.getName());
   
+  protected static ProcessEngine cachedProcessEngine = null;
+  
   protected void initializeProcessEngine() {
-    if (processEngine==null) {
+    if (cachedProcessEngine==null) {
       processEngineConfiguration = (ProcessEngineConfigurationImpl) ProcessEngineConfiguration
         .createProcessEngineConfigurationFromResourceDefault();
-      processEngine = processEngineConfiguration.buildProcessEngine();
+      cachedProcessEngine = processEngineConfiguration.buildProcessEngine();
     }
+    processEngine = cachedProcessEngine; 
   }
   
   @Override
