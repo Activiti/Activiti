@@ -87,6 +87,11 @@
     <exec executable="${mvn.executable}">
       <arg line="dependency:copy-dependencies -Dactiviti.upgrade.version=${activiti.old.version}-ALWAYS-SNAPSHOT -DincludeGroupIds=com.oracle.jdbc -DoutputDirectory=target/activiti-${activiti.old.version}/workspace/activiti-engine-examples/libs-test" />
     </exec>
+    <copy todir="target/activiti-${activiti.old.version}/setup/files/dependencies/libs">
+      <fileset dir="target/activiti-${activiti.old.version}/workspace/activiti-engine-examples/libs-test">
+      	<include name="ojdbc5*.jar" />
+      </fileset>
+    </copy>
     <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.install" inheritall="false">
       <property name="db" value="${database}" />
     </ant>
