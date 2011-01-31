@@ -12,11 +12,15 @@
     <result property="key" column="KEY_" jdbcType="VARCHAR" />
      <result property="value" column="VALUE_" jdbcType="VARCHAR" />
   </resultMap>
-
+  
+  
+  <select id="selectCycleConfigGroups" resultType="java.util.List">
+  	select distinct GROUP_ from ACT_CY_CONFIG
+  </select>  
   
   <select id="selectCycleConfigById" parameterType="string" resultMap="resultMapCycleConfig">
   	select * from ACT_CY_CONFIG where ID_ = #{id}
-  </select>  
+  </select> 
   
   <select id="selectCycleConfigByGroup" parameterType="string" resultMap="resultMapCycleConfig">
   	select * from ACT_CY_CONFIG where GROUP_ = #{groupName}

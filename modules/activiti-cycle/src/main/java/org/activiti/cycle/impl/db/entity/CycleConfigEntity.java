@@ -36,10 +36,11 @@ public class CycleConfigEntity implements Serializable, PersistentObject {
   }
 
   public String getId() {
-    return null;
+    return id;
   }
 
   public void setId(String id) {
+    this.id = id;
   }
 
   public String getGroupName() {

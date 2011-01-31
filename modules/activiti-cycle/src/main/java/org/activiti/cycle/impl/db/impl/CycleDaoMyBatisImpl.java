@@ -3,6 +3,7 @@ package org.activiti.cycle.impl.db.impl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -346,7 +347,6 @@ public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements 
     }
   }
 
-  @SuppressWarnings("unchecked")
   public CycleConfigEntity selectCycleConfigByGroupAndKey(String group, String key) {
     SqlSession session = openSession();
     try {
@@ -354,6 +354,16 @@ public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements 
       exampleEntity.setGroupName(group);
       exampleEntity.setKey(key);
       return (CycleConfigEntity) session.selectOne("selectCycleConfigByGroupAndKey", exampleEntity);
+    } finally {
+      session.close();
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<String> selectCycleConfigurationGroups() {
+    SqlSession session = openSession();
+    try {
+      return (List<String>) session.selectList("selectCycleConfigGroups");
     } finally {
       session.close();
     }

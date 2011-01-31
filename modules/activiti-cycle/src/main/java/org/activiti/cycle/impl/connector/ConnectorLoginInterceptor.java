@@ -27,6 +27,7 @@ public class ConnectorLoginInterceptor implements Interceptor {
     ignoredMethods.add("startConfiguration");
     ignoredMethods.add("configurationFinished");
     ignoredMethods.add("addConfiguration");
+    ignoredMethods.add("addConfigurationEntry");
     ignoredMethods.add("getUsername");
     ignoredMethods.add("getPassword");
     ignoredMethods.add("login");

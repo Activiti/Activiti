@@ -129,4 +129,16 @@ public interface CycleConfigurationService {
    */
   public String getConfigurationValue(String groupId, String key, String defaultValue);
 
+  /**
+   * @return an array of configuration groups.
+   */
+  public String[] getConfigurationGroups();
+
+  /**
+   * @param groupId
+   *          the groupId to retreive the configuration values for.
+   * @return an map of configuration Key/Value pairs for the provided groupid
+   */
+  public Map<String, String> getConfigurationValuesForGroup(String groupId);
+
 }

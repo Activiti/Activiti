@@ -22,9 +22,9 @@ public class RuntimeConnectorList implements Serializable {
   // TODO: needs testing: When do servlet containers serialize/deserialize?
   // Tomcat seems to do it between shutdowns / startups. At the moment I would
   // qualify this as a 'hack' - Daniel Meyer
-  private transient Map<String, RepositoryConnector> connectors;
+  protected transient Map<String, RepositoryConnector> connectors;
 
-  private transient List<RepositoryConnector> connectorList;
+  protected transient List<RepositoryConnector> connectorList;
 
   public RuntimeConnectorList() {
     init();
@@ -40,7 +40,7 @@ public class RuntimeConnectorList implements Serializable {
     return connectorList;
   }
 
-  private synchronized void init() {
+  protected synchronized void init() {
     if (connectors != null && connectorList != null) {
       return;
     }

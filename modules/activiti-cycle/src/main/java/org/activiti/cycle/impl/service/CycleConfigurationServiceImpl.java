@@ -217,4 +217,17 @@ public class CycleConfigurationServiceImpl implements CycleConfigurationService 
     return value;
   }
 
+  public String[] getConfigurationGroups() {
+    return cycleConfigurationDao.selectCycleConfigurationGroups().toArray(new String[0]);
+  }
+
+  public Map<String, String> getConfigurationValuesForGroup(String groupId) {
+    Map<String, String> resultMap = new HashMap<String, String>();
+
+    List<CycleConfigEntity> result = cycleConfigurationDao.selectCycleConfigByGroup(groupId);
+    for (CycleConfigEntity cycleConfigEntity : result) {
+      resultMap.put(cycleConfigEntity.getKey(), cycleConfigEntity.getValue());
+    }
+    return resultMap;
+  }
 }
