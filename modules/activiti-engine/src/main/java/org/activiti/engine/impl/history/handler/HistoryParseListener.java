@@ -19,7 +19,6 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.delegate.TaskListener;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
@@ -99,7 +98,7 @@ public class HistoryParseListener implements BpmnParseListener {
   }
 
   public void parseStartEvent(Element startEventElement, ScopeImpl scope, ActivityImpl activity) {
-    if (fullHistoryEnabled(scope.getProcessDefinition(), historyLevel)) {
+    if (fullHistoryEnabled(historyLevel)) {
       activity.addExecutionListener(ExecutionListener.EVENTNAME_END, START_EVENT_END_HANDLER);
     }
   }
@@ -131,27 +130,16 @@ public class HistoryParseListener implements BpmnParseListener {
     }
   }
   
-  public static boolean fullHistoryEnabled(ScopeImpl scopeElement, int historyLevel) {
-    return determineHistoryLevel(scopeElement, historyLevel) >= ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL;
+  public static boolean fullHistoryEnabled(int historyLevel) {
+    return historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL;
   }
   
   public static boolean auditHistoryEnabled(ScopeImpl scopeElement, int historyLevel) {
-    return determineHistoryLevel(scopeElement, historyLevel) >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT;
+    return historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT;
   }
   
   public static boolean activityHistoryEnabled(ScopeImpl scopeElement, int historyLevel) {
-    return determineHistoryLevel(scopeElement, historyLevel) >= ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY;
-  }
-  
-  public static int determineHistoryLevel(ScopeImpl scopeElement, int historyLevel) {
-    ProcessDefinitionImpl processDefinition = scopeElement.getProcessDefinition();
-    if (processDefinition != null) {
-      Integer processHistoryLevel = ((ProcessDefinitionEntity) processDefinition).getHistoryLevel();
-      if (processHistoryLevel != null) {
-        return Math.min(historyLevel, ((ProcessDefinitionEntity) scopeElement.getProcessDefinition()).getHistoryLevel());
-      }
-    }
-    return historyLevel;
+    return historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY;
   }
 
   public void parseSendTask(Element sendTaskElement, ScopeImpl scope, ActivityImpl activity) {
