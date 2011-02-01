@@ -357,7 +357,7 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
       <listitem>
         <para>
           Edit <literal>setup/build.properties</literal> and change the <literal>db</literal>
-          parameter to your type of database {<literal>oracle | mysql | postgresql | h2</literal>}.
+          parameter to your type of database {<literal>oracle | mysql | postgres | h2</literal>}.
         </para>
       </listitem>
       <listitem>

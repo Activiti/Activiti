@@ -28,7 +28,6 @@ import org.activiti.engine.impl.repository.PropertyEntity;
 public class GetPropertiesCmd implements Command<Map<String, String>> {
 
   @SuppressWarnings("unchecked")
-  @Override
   public Map<String, String> execute(CommandContext commandContext) {
     List<PropertyEntity> propertyEntities = commandContext
       .getDbSqlSession()

@@ -45,11 +45,6 @@
       <artifactId>cglib</artifactId>
       <scope>provided</scope>
     </dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-      <scope>provided</scope>
-		</dependency>
     <dependency>
     <groupId>javax.persistence</groupId>
     <artifactId>persistence-api</artifactId>
