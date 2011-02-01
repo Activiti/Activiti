@@ -8,7 +8,7 @@
   <artifactId>activiti-engine-examples</artifactId>
 
   <packaging>jar</packaging>
-  <version>5.2-SNAPSHOT</version>
+  <version>5.3-SNAPSHOT</version>
 
   <dependencies>
   
