@@ -301,7 +301,7 @@ public class SignavioConnector extends AbstractRepositoryConnector implements Si
     String parent = json.optString("parent");
     if (parent != null) {
       String parentId = getConfiguration().getModelIdFromUrl(parent);
-      parentId = parentId.replace("/directory", "");      
+      parentId = parentId.replace("/directory", "");
       fileInfo.getMetadata().setParentFolderId(parentId);
     }
 
@@ -599,6 +599,10 @@ public class SignavioConnector extends AbstractRepositoryConnector implements Si
       // RepositoryArtifact.class, id);
       throw new RepositoryException("Unable to move folder " + directoryId + " to directory " + targetFolderId, ex);
     }
+  }
+
+  public RepositoryArtifact createEmptyArtifact(String parentFolderId, String artifactName, String artifactType) throws RepositoryNodeNotFoundException {
+    return createArtifactFromJSON(parentFolderId, artifactName, artifactType, "{}");
   }
 
   public RepositoryArtifact createArtifact(String parentFolderId, String artifactName, String artifactType, Content artifactContent)

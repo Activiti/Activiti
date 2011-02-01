@@ -84,7 +84,26 @@ public abstract class AbstractRepositoryConnector implements RepositoryConnector
     if (value == null) {
       return null;
     }
-    return (T) value;
+    if (value instanceof String) {
+      if (String.class.equals(castTo)) {
+        return (T) value;
+      }
+      if (Boolean.class.equals(castTo)) {
+        return (T) Boolean.valueOf((String) value);
+      }
+      if (Integer.class.equals(castTo)) {
+        return (T) Integer.valueOf((String) value);
+      }
+      if (Float.class.equals(castTo)) {
+        return (T) Float.valueOf((String) value);
+      }
+      if (Long.class.equals(castTo)) {
+        return (T) Long.valueOf((String) value);
+      }
+      throw new RuntimeException("Cannot cast connector configuration value of type 'String' for key '" + key + "' to class '" + castTo);
+    } else {
+      return (T) value;
+    }
   }
 
   protected void setConfigValue(String key, String value) {

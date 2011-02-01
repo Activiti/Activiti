@@ -201,6 +201,12 @@ public class FileSystemConnector extends AbstractFileSystemBasedRepositoryConnec
     return folder;
   }
 
+  public RepositoryArtifact createEmptyArtifact(String parentFolderId, String artifactName, String artifactType) throws RepositoryNodeNotFoundException {
+    Content emptyContent = new Content();
+    emptyContent.setValue("");
+    return createArtifact(parentFolderId, artifactName, artifactType, emptyContent);
+  }
+
   public RepositoryArtifact createArtifact(String parentFolderId, String artifactName, String artifactType, Content artifactContent)
           throws RepositoryNodeNotFoundException {
     File newFile = new File(getFileFromId(parentFolderId), artifactName);

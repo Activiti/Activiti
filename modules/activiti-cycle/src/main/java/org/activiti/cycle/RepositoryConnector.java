@@ -80,6 +80,20 @@ public interface RepositoryConnector {
           String contentRepresentationName, Content artifactContent) throws RepositoryNodeNotFoundException;
 
   /**
+   * create a new {@link RepositoryArtifact} with no content.
+   * 
+   * 
+   * @param parentFolderId
+   *          the id of the parent {@link RepositoryFolder}
+   * @param artifactName
+   *          name of the new {@link RepositoryArtifact}
+   * @param artifactType
+   *          type of the new {@link RepositoryArtifact}
+   * 
+   */
+  public RepositoryArtifact createEmptyArtifact(String parentFolderId, String artifactName, String artifactType) throws RepositoryNodeNotFoundException;;
+
+  /**
    * create a new subfolder in the given folder
    */
   public RepositoryFolder createFolder(String parentFolderId, String name) throws RepositoryNodeNotFoundException;
@@ -172,7 +186,7 @@ public interface RepositoryConnector {
    * @see #configurationFinished()
    */
   public void addConfiguration(Map<String, Object> configurationValues);
-  
+
   /**
    * Add a single configuration entry
    */

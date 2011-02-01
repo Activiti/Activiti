@@ -69,6 +69,10 @@ public class TagConnector implements RepositoryConnector {
 
     return tagFolderList;
   }
+  
+  public RepositoryArtifact createEmptyArtifact(String parentFolderId, String artifactName, String artifactType) throws RepositoryNodeNotFoundException {
+    throw new UnsupportedOperationException("Cannot create artifact in TagConnector, use real RepositoryConnector istead.");
+  }
 
   public RepositoryNode getRepositoryNode(String id) throws RepositoryNodeNotFoundException {
     return getRepositoryFolder(id);
