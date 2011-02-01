@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.cycle.BrokenLinkException;
 import org.activiti.cycle.Content;
 import org.activiti.cycle.CycleComponentFactory;
 import org.activiti.cycle.RepositoryArtifact;
@@ -246,8 +247,12 @@ public class CycleRepositoryServiceImpl implements CycleRepositoryService {
 
     List<RepositoryArtifactLinkEntity> linkResultList = linkDao.getOutgoingArtifactLinks(sourceConnectorId, sourceArtifactId);
     for (RepositoryArtifactLinkEntity entity : linkResultList) {
-      entity.resolveArtifacts(this);
-      artifactLinks.add(entity);
+      try {
+        entity.resolveArtifacts(this);
+        artifactLinks.add(entity);
+      } catch (BrokenLinkException e) {
+        // ignoring this link
+      }
     }
 
     return artifactLinks;
@@ -257,12 +262,15 @@ public class CycleRepositoryServiceImpl implements CycleRepositoryService {
     List<RepositoryArtifactLink> artifactLinks = new ArrayList<RepositoryArtifactLink>();
     List<RepositoryArtifactLinkEntity> linkResultList = linkDao.getIncomingArtifactLinks(targetConnectorId, targetArtifactId);
     for (RepositoryArtifactLinkEntity entity : linkResultList) {
-      entity.resolveArtifacts(this);
-      artifactLinks.add(entity);
+      try {
+        entity.resolveArtifacts(this);
+        artifactLinks.add(entity);
+      } catch (BrokenLinkException e) {
+        // ignoring this link
+      }
     }
     return artifactLinks;
   }
-
   public void deleteLink(String linkId) {
     linkDao.deleteArtifactLink(linkId);
   }

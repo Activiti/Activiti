@@ -3,9 +3,11 @@ package org.activiti.cycle.impl.db.entity;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.cycle.BrokenLinkException;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactLink;
 import org.activiti.cycle.RepositoryNode;
+import org.activiti.cycle.RepositoryNodeNotFoundException;
 import org.activiti.cycle.service.CycleRepositoryService;
 import org.activiti.engine.impl.db.PersistentObject;
 
@@ -18,7 +20,7 @@ import org.activiti.engine.impl.db.PersistentObject;
  * @author ruecker, polenz
  */
 public class RepositoryArtifactLinkEntity implements PersistentObject, RepositoryArtifactLink {
-  
+
   /**
    * TODO: Add own mini repository for types incling names for forward and
    * reverse direction (like "is implemented by" in this case)
@@ -27,18 +29,18 @@ public class RepositoryArtifactLinkEntity implements PersistentObject, Repositor
   public static final String TYPE_REFINES = "refines";
   public static final String TYPE_UNSPECIFIED = "unspecified link";
   public static final String TYPE_COPY = "copy";
-  
+
   /**
-   * artificial id used as primary key to identify this link
-   * auto generated primary key
+   * artificial id used as primary key to identify this link auto generated
+   * primary key
    */
   private String id;
-  
+
   private String sourceConnectorId;
   private String sourceArtifactId;
-  
+
   private transient RepositoryArtifact sourceRepositoryArtifact;
-  
+
   /**
    * machine readable id of element (what that exactly is depends on the
    * connector, could be the Signavio UUID for example)
@@ -50,12 +52,12 @@ public class RepositoryArtifactLinkEntity implements PersistentObject, Repositor
    */
   private String sourceElementName;
   private Long sourceRevision;
-  
+
   private String targetConnectorId;
   private String targetArtifactId;
-  
+
   private transient RepositoryArtifact targetRepositoryArtifact;
-  
+
   private String targetElementId;
   private String targetElementName;
   private Long targetRevision;
@@ -75,13 +77,17 @@ public class RepositoryArtifactLinkEntity implements PersistentObject, Repositor
    * indicate if the link is found in both directions, default is true. If false
    * the link is only found when searching links for artifactId1
    */
-  private boolean linkedBothWays = true;  
+  private boolean linkedBothWays = true;
 
   public void resolveArtifacts(CycleRepositoryService service) {
-    this.sourceRepositoryArtifact = service.getRepositoryArtifact(sourceConnectorId, sourceArtifactId);
-    this.targetRepositoryArtifact = service.getRepositoryArtifact(targetConnectorId, targetArtifactId);
+    try {
+      this.sourceRepositoryArtifact = service.getRepositoryArtifact(sourceConnectorId, sourceArtifactId);
+      this.targetRepositoryArtifact = service.getRepositoryArtifact(targetConnectorId, targetArtifactId);
+    } catch (RepositoryNodeNotFoundException e) {
+      throw new BrokenLinkException("Broken link", sourceArtifactId, targetArtifactId, e);
+    }
   }
-  
+
   public void setSourceArtifact(RepositoryArtifact sourceArtifact) {
     sourceRepositoryArtifact = sourceArtifact;
     sourceConnectorId = sourceArtifact.getConnectorId();
@@ -112,7 +118,7 @@ public class RepositoryArtifactLinkEntity implements PersistentObject, Repositor
     persistentState.put("linkedBothWays", linkedBothWays);
     return persistentState;
   }
-  
+
   public String getSourceArtifactId() {
     return sourceArtifactId;
   }
@@ -153,7 +159,6 @@ public class RepositoryArtifactLinkEntity implements PersistentObject, Repositor
     this.linkType = linkType;
   }
 
-  
   public String getSourceElementId() {
     return sourceElementId;
   }
@@ -180,7 +185,7 @@ public class RepositoryArtifactLinkEntity implements PersistentObject, Repositor
   public void setComment(String comment) {
     this.comment = comment;
   }
-  
+
   public String getSourceElementName() {
     return sourceElementName;
   }
@@ -196,7 +201,7 @@ public class RepositoryArtifactLinkEntity implements PersistentObject, Repositor
   public void setTargetElementName(String targetElementName) {
     this.targetElementName = targetElementName;
   }
-  
+
   public String getId() {
     return id;
   }
@@ -205,7 +210,6 @@ public class RepositoryArtifactLinkEntity implements PersistentObject, Repositor
     this.id = id;
   }
 
-  
   public boolean isLinkedBothWays() {
     return linkedBothWays;
   }
@@ -213,11 +217,11 @@ public class RepositoryArtifactLinkEntity implements PersistentObject, Repositor
   public void setLinkedBothWays(boolean linkedBothWays) {
     this.linkedBothWays = linkedBothWays;
   }
-  
+
   public String getSourceConnectorId() {
     return sourceConnectorId;
   }
-  
+
   public void setSourceConnectorId(String sourceConnectorId) {
     this.sourceConnectorId = sourceConnectorId;
   }
@@ -225,7 +229,7 @@ public class RepositoryArtifactLinkEntity implements PersistentObject, Repositor
   public String getTargetConnectorId() {
     return targetConnectorId;
   }
-  
+
   public void setTargetConnectorId(String targetConnectorId) {
     this.targetConnectorId = targetConnectorId;
   }
