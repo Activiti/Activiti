@@ -187,6 +187,9 @@
   <condition property="db.is.mssql">
     <equals arg1="${db}" arg2="mssql" casesensitive="false"/>
   </condition>
+  <condition property="db.is.db2">
+    <equals arg1="${db}" arg2="db2" casesensitive="false"/>
+  </condition>
 
   <target name="db.create" 
           description="Creates the Activiti tables in the DB">
@@ -623,6 +626,7 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
       <include name="postgresql-*.jar" if="db.is.postgres"/>
       <include name="ojdbc5*.jar" if="db.is.oracle"/>
       <include name="jtds-*.jar" if="db.is.mssql"/>
+	  <include name="db2jcc*.jar" if="db.is.db2"/>
     </fileset>
   </target>
 

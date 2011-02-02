@@ -104,7 +104,6 @@
       <artifactId>jtds</artifactId>
       <scope>test</scope>
     </dependency>
-  
   </dependencies>
 
   <properties>
@@ -305,6 +304,23 @@
         <dependency>
           <groupId>com.oracle.jdbc</groupId>
           <artifactId>ojdbc5</artifactId>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+    
+    <profile>
+      <id>db2</id>
+      <activation>
+        <property>
+          <name>database</name>
+          <value>db2</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.ibm.db2.jcc</groupId>
+          <artifactId>db2jcc4</artifactId>
           <scope>test</scope>
         </dependency>
       </dependencies>

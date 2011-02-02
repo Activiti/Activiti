@@ -145,6 +145,12 @@
         <scope>test</scope>
       </dependency>
       <dependency>
+        <groupId>com.ibm.db2.jcc</groupId>
+        <artifactId>db2jcc4</artifactId>
+		<version>9.7</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-engine</artifactId>
         <version>${version}</version>

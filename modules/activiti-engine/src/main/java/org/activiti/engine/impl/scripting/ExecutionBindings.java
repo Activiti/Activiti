@@ -46,27 +46,45 @@ public class ExecutionBindings implements Bindings {
   
   protected VariableScope variableScope;
   
-  public ExecutionBindings(VariableScope variableScope) {
+  protected Map<String, Object> fixedBindings;
+  
+  public ExecutionBindings(VariableScope variableScope, Map<String, Object> fixedBindings) {
     if (variableScope==null) {
       throw new ActivitiException("variableScope cannot be null");
     }
     this.variableScope = variableScope;
+    this.fixedBindings = fixedBindings;
   }
 
   public boolean containsKey(Object key) {
-    return EXECUTION_KEY.equals(key) || variableScope.hasVariable((String) key);
+    boolean keyInFixed = false;
+    if(fixedBindings != null) {
+      keyInFixed = fixedBindings.containsKey(key);
+    }
+    
+    return keyInFixed || EXECUTION_KEY.equals(key) || variableScope.hasVariable((String) key);
   }
 
   public Object get(Object key) {
     if (EXECUTION_KEY.equals(key)) {
       return variableScope;
+    } else if(fixedBindings != null) {
+      Object fixedValue = fixedBindings.get(key);
+      if(fixedValue != null) {
+        return fixedValue;
+      }
     }
+    
     return variableScope.getVariable((String) key);
   }
 
   public Object put(String name, Object value) {
     Object oldValue = null;
     if (!UNSTORED_KEYS.contains(name)) {
+      
+      if(fixedBindings != null && fixedBindings.containsKey(name)) {
+        throw new ActivitiException("Cannot set value in script: " + name);
+      }
       oldValue = variableScope.getVariable(name);
       variableScope.setVariable(name, value);
     }

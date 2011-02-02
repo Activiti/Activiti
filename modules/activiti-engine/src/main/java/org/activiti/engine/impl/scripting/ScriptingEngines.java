@@ -13,6 +13,7 @@
 package org.activiti.engine.impl.scripting;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.script.Bindings;
 import javax.script.ScriptEngine;
@@ -23,7 +24,6 @@ import javax.script.SimpleBindings;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.impl.pvm.runtime.ExecutionImpl;
 
 /**
  * @author Tom Baeyens
@@ -56,7 +56,11 @@ public class ScriptingEngines {
   }
 
   public Object evaluate(String script, String language, DelegateExecution execution) {
-    Bindings bindings = createBindings(execution);
+    return evaluate(script, language, execution, null);
+  }
+  
+  public Object evaluate(String script, String language, DelegateExecution execution, Map<String, Object> fixedBindings) {
+    Bindings bindings = createBindings(execution, fixedBindings);
     ScriptEngine scriptEngine = scriptEngineManager.getEngineByName(language);
 
     if (scriptEngine == null) {
@@ -70,10 +74,11 @@ public class ScriptingEngines {
     }
   }
 
-  /** override to build a spring aware ScriptingEngines */
-  protected Bindings createBindings(DelegateExecution execution) {
+  /** override to build a spring aware ScriptingEngines 
+   * @param fixedBindings */
+  protected Bindings createBindings(DelegateExecution execution, Map<String, Object> fixedBindings) {
     if (execution != null) {
-      return new ExecutionBindings(execution);
+      return new ExecutionBindings(execution, fixedBindings);
     }
     return new SimpleBindings();
   }

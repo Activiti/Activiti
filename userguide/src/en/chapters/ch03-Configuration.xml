@@ -333,8 +333,8 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
           </row>
           <row>
             <entry>db2</entry>
-            <entry></entry>
-            <entry>not yet supported (coming soon, see <ulink url="http://jira.codehaus.org/browse/ACT-330">ACT-330</ulink>)</entry>
+            <entry>DB2 9.7 using db2jcc4</entry>
+            <entry><link linkend="experimental"><emphasis role="bold">[EXPERIMENTAL]</emphasis></link></entry>
           </row>
           <row>
             <entry>mssql</entry>
@@ -357,7 +357,7 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
       <listitem>
         <para>
           Edit <literal>setup/build.properties</literal> and change the <literal>db</literal>
-          parameter to your type of database {<literal>oracle | mysql | postgres | h2</literal>}.
+          parameter to your type of database {<literal>oracle | mysql | postgres | h2 | db2 | mssql</literal>}.
         </para>
       </listitem>
       <listitem>
@@ -397,8 +397,8 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
          </listitem>
          <listitem>
            <para>
-             Copy the downloaded ojdbc5.jar to <literal>setup/files/dependencies/libs/</literal>
-             This filename is 
+             Copy the downloaded ojdbc5.jar to <literal>setup/files/dependencies/libs/</literal>. Make sure the filename is 'ojdbc5.jar' in order to
+             be picked up by the activiti demo installation (eg. when taking the driver from your maven repo).
            </para>
          </listitem>
        </itemizedlist>
