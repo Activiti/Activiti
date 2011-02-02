@@ -91,16 +91,87 @@ repositoryService.createDeployment()
     <para>For each process definition in a business archive the following steps are performed to 
     initialize the properties <literal>key</literal>, <literal>version</literal>, <literal>name</literal> and <literal>id</literal>:
     </para>
+    
     <itemizedlist>
-      <listitem><para>The process <literal>id</literal> attribute is used as the process definition <literal>key</literal> property</para></listitem>
-      <listitem><para>The process <literal>name</literal> attribute is used as the process definition <literal>name</literal> property.
+      <listitem><para>The process definition <literal>id</literal> attribute in the XML file is used as the process definition <literal>key</literal> property</para></listitem>
+      <listitem><para>The process definition <literal>name</literal> attribute in the XML file is used as the process definition <literal>name</literal> property.
         If the name attribute is not specified, then id attribute is used as the name.
       </para></listitem>
       <listitem><para>The first time a process with a particular key is deployed, version 1 is assigned.  For all subsequent deployments of
       process definitions with the same key, the version will be set 1 higher then the max currently deployed version.  The key property
       is used to distinct process definitions.</para></listitem>
-      <listitem><para>The id property is set to {processDefinitionKey}:{processDefinitionVersion}</para></listitem>
+      <listitem>
+        <para>
+          The id property is set to {processDefinitionKey}:{processDefinitionVersion}:{generated-id},
+          where <literal>generated-id</literal> is a unique number added to guarantee uniquencess
+          of the process id for the process definition caches in a clustered environment.
+        </para>
+      </listitem>
     </itemizedlist>
+    
+    <para>
+      Take for example the following process
+<programlisting>
+&lt;definitions id=&quot;myDefinitions&quot; &gt;
+  &lt;process id=&quot;myProcess&quot; name=&quot;My important process&quot; &gt;
+    ...      
+</programlisting>    
+      When deploying this process definition, the process definition in the database will look as follows
+      <table>
+        <title></title>
+        <tgroup cols='4'>
+          <thead>
+            <row>
+              <entry>id</entry>
+              <entry>key</entry>
+              <entry>name</entry>
+              <entry>version</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry>myProcess:1:676</entry>
+              <entry>myProcess</entry>
+              <entry>My important process</entry>
+              <entry>1</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+      Suppose we now deploy an updated version of the same process (eg. changing some user tasks),
+      but the <literal>id</literal> of the process definition remains the same. The process
+      definition table will now contain following entries:
+       <table>
+        <title></title>
+        <tgroup cols='4'>
+          <thead>
+            <row>
+              <entry>id</entry>
+              <entry>key</entry>
+              <entry>name</entry>
+              <entry>version</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry>myProcess:1:676</entry>
+              <entry>myProcess</entry>
+              <entry>My important process</entry>
+              <entry>1</entry>
+            </row><row>
+              <entry>myProcess:2:870</entry>
+              <entry>myProcess</entry>
+              <entry>My important process</entry>
+              <entry>2</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table> 
+      When the <literal>runtimeService.startProcessInstanceByKey("myProcess")</literal> is called,
+      it will now use the process definition with version <literal>2</literal>, as this is the 
+      latest version of the process definition.
+    </para>
+    
   </section>
   
   <section id="providingProcessDiagram">
