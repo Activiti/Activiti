@@ -216,7 +216,9 @@ public class ProcessDiagramGenerator {
     for (PvmTransition sequenceFlow : activity.getOutgoingTransitions()) {
       List<Integer> waypoints = ((TransitionImpl) sequenceFlow).getWaypoints();
       for (int i=2; i < waypoints.size(); i+=2) { // waypoints.size() minimally 4: x1, y1, x2, y2 
-        boolean drawConditionalIndicator = i == 2 && sequenceFlow.getProperty(BpmnParse.PROPERTYNAME_CONDITION) != null;
+        boolean drawConditionalIndicator = (i == 2) 
+          && sequenceFlow.getProperty(BpmnParse.PROPERTYNAME_CONDITION) != null
+          && !((String) activity.getProperty("type")).toLowerCase().contains("gateway");
         if (i < waypoints.size() - 2) {
           processDiagramCanvas.drawSequenceflowWithoutArrow(waypoints.get(i-2), waypoints.get(i-1), 
                 waypoints.get(i), waypoints.get(i+1), drawConditionalIndicator);
