@@ -46,7 +46,7 @@ create table ACT_CY_PEOPLE_LINK (
 	LINK_TYPE_ varchar(255),
 	COMMENT_ varchar(1000),
 	primary key(ID_)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 create table ACT_CY_TAG (
 	ID_ varchar(255),
