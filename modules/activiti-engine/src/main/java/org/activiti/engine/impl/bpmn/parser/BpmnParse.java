@@ -133,7 +133,7 @@ public class BpmnParse extends Parse {
    * that this map doesn't need to be re-initialized for each new process
    * definition.
    */
-  protected Map<String, MessageDefinition> messages;
+  protected Map<String, MessageDefinition> messages = new HashMap<String, MessageDefinition>();
   protected Map<String, StructureDefinition> structures = new HashMap<String, StructureDefinition>();
   protected Map<String, BpmnInterfaceImplementation> interfaceImplementations = new HashMap<String, BpmnInterfaceImplementation>();
   protected Map<String, OperationImplementation> operationImplementations = new HashMap<String, OperationImplementation>();
