@@ -13,7 +13,7 @@
 
 package org.activiti.engine.impl.history.handler;
 
-import org.activiti.engine.impl.bpmn.UserTaskActivity;
+import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.BpmnParseListener;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
@@ -80,7 +80,7 @@ public class HistoryParseListener implements BpmnParseListener {
     addActivityHandlers(userTaskElement, activity);
     
     if (activityHistoryEnabled(scope, historyLevel)) {
-      TaskDefinition taskDefinition = ((UserTaskActivity) activity.getActivityBehavior()).getTaskDefinition();
+      TaskDefinition taskDefinition = ((UserTaskActivityBehavior) activity.getActivityBehavior()).getTaskDefinition();
       taskDefinition.addTaskListener(TaskListener.EVENTNAME_ASSIGNMENT, USER_TASK_ASSIGNMENT_HANDLER);
     }
   }

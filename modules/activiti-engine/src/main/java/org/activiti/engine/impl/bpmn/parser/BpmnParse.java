@@ -23,48 +23,48 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.bpmn.AbstractDataAssociation;
-import org.activiti.engine.impl.bpmn.Assignment;
-import org.activiti.engine.impl.bpmn.BoundaryEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.BpmnInterface;
-import org.activiti.engine.impl.bpmn.BpmnInterfaceImplementation;
-import org.activiti.engine.impl.bpmn.BusinessRuleTaskActivity;
-import org.activiti.engine.impl.bpmn.CallActivityBehaviour;
-import org.activiti.engine.impl.bpmn.ClassDelegate;
-import org.activiti.engine.impl.bpmn.ClassStructureDefinition;
-import org.activiti.engine.impl.bpmn.Condition;
-import org.activiti.engine.impl.bpmn.Data;
-import org.activiti.engine.impl.bpmn.DataRef;
-import org.activiti.engine.impl.bpmn.DelegateExpressionExecutionListener;
-import org.activiti.engine.impl.bpmn.DelegateExpressionTaskListener;
-import org.activiti.engine.impl.bpmn.ErrorEndEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.ExclusiveGatewayActivityBehavior;
-import org.activiti.engine.impl.bpmn.ExpressionExecutionListener;
-import org.activiti.engine.impl.bpmn.ExpressionTaskListener;
-import org.activiti.engine.impl.bpmn.IOSpecification;
-import org.activiti.engine.impl.bpmn.ItemDefinition;
-import org.activiti.engine.impl.bpmn.ItemKind;
-import org.activiti.engine.impl.bpmn.MailActivityBehavior;
-import org.activiti.engine.impl.bpmn.ManualTaskActivity;
-import org.activiti.engine.impl.bpmn.MessageDefinition;
-import org.activiti.engine.impl.bpmn.MessageImplicitDataInputAssociation;
-import org.activiti.engine.impl.bpmn.MessageImplicitDataOutputAssociation;
-import org.activiti.engine.impl.bpmn.NoneEndEventActivity;
-import org.activiti.engine.impl.bpmn.NoneStartEventActivity;
-import org.activiti.engine.impl.bpmn.Operation;
-import org.activiti.engine.impl.bpmn.OperationImplementation;
-import org.activiti.engine.impl.bpmn.ParallelGatewayActivity;
-import org.activiti.engine.impl.bpmn.ReceiveTaskActivity;
-import org.activiti.engine.impl.bpmn.ScriptTaskActivity;
-import org.activiti.engine.impl.bpmn.ServiceTaskDelegateExpressionActivityBehavior;
-import org.activiti.engine.impl.bpmn.ServiceTaskExpressionActivityBehavior;
-import org.activiti.engine.impl.bpmn.SimpleDataInputAssociation;
-import org.activiti.engine.impl.bpmn.StructureDefinition;
-import org.activiti.engine.impl.bpmn.SubProcessActivity;
-import org.activiti.engine.impl.bpmn.TaskActivity;
-import org.activiti.engine.impl.bpmn.TransformationDataOutputAssociation;
-import org.activiti.engine.impl.bpmn.UserTaskActivity;
-import org.activiti.engine.impl.bpmn.WebServiceActivityBehavior;
+import org.activiti.engine.impl.Condition;
+import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.BusinessRuleTaskActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.CallActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.ErrorEndEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.ExclusiveGatewayActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.MailActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.ManualTaskActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.NoneEndEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.NoneStartEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.ParallelGatewayActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.ReceiveTaskActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.ScriptTaskActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.ServiceTaskDelegateExpressionActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.ServiceTaskExpressionActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.SubProcessActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.TaskActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.WebServiceActivityBehavior;
+import org.activiti.engine.impl.bpmn.data.AbstractDataAssociation;
+import org.activiti.engine.impl.bpmn.data.Assignment;
+import org.activiti.engine.impl.bpmn.data.ClassStructureDefinition;
+import org.activiti.engine.impl.bpmn.data.Data;
+import org.activiti.engine.impl.bpmn.data.DataRef;
+import org.activiti.engine.impl.bpmn.data.IOSpecification;
+import org.activiti.engine.impl.bpmn.data.ItemDefinition;
+import org.activiti.engine.impl.bpmn.data.ItemKind;
+import org.activiti.engine.impl.bpmn.data.SimpleDataInputAssociation;
+import org.activiti.engine.impl.bpmn.data.StructureDefinition;
+import org.activiti.engine.impl.bpmn.data.TransformationDataOutputAssociation;
+import org.activiti.engine.impl.bpmn.helper.ClassDelegate;
+import org.activiti.engine.impl.bpmn.listener.DelegateExpressionExecutionListener;
+import org.activiti.engine.impl.bpmn.listener.DelegateExpressionTaskListener;
+import org.activiti.engine.impl.bpmn.listener.ExpressionExecutionListener;
+import org.activiti.engine.impl.bpmn.listener.ExpressionTaskListener;
+import org.activiti.engine.impl.bpmn.webservice.BpmnInterface;
+import org.activiti.engine.impl.bpmn.webservice.BpmnInterfaceImplementation;
+import org.activiti.engine.impl.bpmn.webservice.MessageDefinition;
+import org.activiti.engine.impl.bpmn.webservice.MessageImplicitDataInputAssociation;
+import org.activiti.engine.impl.bpmn.webservice.MessageImplicitDataOutputAssociation;
+import org.activiti.engine.impl.bpmn.webservice.Operation;
+import org.activiti.engine.impl.bpmn.webservice.OperationImplementation;
 import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.el.FixedValue;
@@ -651,7 +651,7 @@ public class BpmnParse extends Parse {
       // Currently only none start events supported
       
       // TODO: a subprocess is only allowed to have a none start event 
-      startEventActivity.setActivityBehavior(new NoneStartEventActivity());
+      startEventActivity.setActivityBehavior(new NoneStartEventActivityBehavior());
       
       for (BpmnParseListener parseListener: parseListeners) {
         parseListener.parseStartEvent(startEventElement, scope, startEventActivity);
@@ -758,7 +758,7 @@ public class BpmnParse extends Parse {
    */
   public void parseParallelGateway(Element parallelGwElement, ScopeImpl scope) {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(parallelGwElement, scope);
-    activity.setActivityBehavior(new ParallelGatewayActivity());
+    activity.setActivityBehavior(new ParallelGatewayActivityBehavior());
     
     parseExecutionListenersOnScope(parallelGwElement, activity);
     
@@ -791,7 +791,7 @@ public class BpmnParse extends Parse {
       resultVariableName = scriptTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "resultVariableName");
     }
     
-    activity.setActivityBehavior(new ScriptTaskActivity(script, language, resultVariableName));
+    activity.setActivityBehavior(new ScriptTaskActivityBehavior(script, language, resultVariableName));
     
     parseExecutionListenersOnScope(scriptTaskElement, activity);
 
@@ -878,7 +878,7 @@ public class BpmnParse extends Parse {
   public void parseBusinessRuleTask(Element businessRuleTaskElement, ScopeImpl scope) {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(businessRuleTaskElement, scope);
 
-    BusinessRuleTaskActivity ruleActivity = new BusinessRuleTaskActivity();
+    BusinessRuleTaskActivityBehavior ruleActivity = new BusinessRuleTaskActivityBehavior();
     
     String ruleInputString = businessRuleTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "ruleVariablesInput");
     String rulesString = businessRuleTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "rules");
@@ -1131,7 +1131,7 @@ public class BpmnParse extends Parse {
    */
   public void parseTask(Element taskElement, ScopeImpl scope) {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(taskElement, scope);
-    activity.setActivityBehavior(new TaskActivity());
+    activity.setActivityBehavior(new TaskActivityBehavior());
     
     parseExecutionListenersOnScope(taskElement, activity);
 
@@ -1145,7 +1145,7 @@ public class BpmnParse extends Parse {
    */
   public void parseManualTask(Element manualTaskElement, ScopeImpl scope) {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(manualTaskElement, scope);
-    activity.setActivityBehavior(new ManualTaskActivity());
+    activity.setActivityBehavior(new ManualTaskActivityBehavior());
     
     parseExecutionListenersOnScope(manualTaskElement, activity);
 
@@ -1159,7 +1159,7 @@ public class BpmnParse extends Parse {
    */
   public void parseReceiveTask(Element receiveTaskElement, ScopeImpl scope) {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(receiveTaskElement, scope);
-    activity.setActivityBehavior(new ReceiveTaskActivity());
+    activity.setActivityBehavior(new ReceiveTaskActivityBehavior());
 
     parseExecutionListenersOnScope(receiveTaskElement, activity);
     
@@ -1190,7 +1190,7 @@ public class BpmnParse extends Parse {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(userTaskElement, scope);
     TaskDefinition taskDefinition = parseTaskDefinition(userTaskElement, activity.getId(), (ProcessDefinitionEntity) scope.getProcessDefinition());
 
-    UserTaskActivity userTaskActivity = new UserTaskActivity(expressionManager, taskDefinition);
+    UserTaskActivityBehavior userTaskActivity = new UserTaskActivityBehavior(expressionManager, taskDefinition);
     activity.setActivityBehavior(userTaskActivity);
 
     parseProperties(userTaskElement, activity);
@@ -1438,7 +1438,7 @@ public class BpmnParse extends Parse {
           activity.setActivityBehavior(new ErrorEndEventActivityBehavior(error != null ? error.getErrorCode() : errorRef));
         }
       } else { // default: none end event
-        activity.setActivityBehavior(new NoneEndEventActivity());
+        activity.setActivityBehavior(new NoneEndEventActivityBehavior());
       }
 
       for (BpmnParseListener parseListener: parseListeners) {
@@ -1647,7 +1647,7 @@ public class BpmnParse extends Parse {
   public void parseSubProcess(Element subProcessElement, ScopeImpl scope) {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(subProcessElement, scope);
     activity.setScope(true);
-    activity.setActivityBehavior(new SubProcessActivity());
+    activity.setActivityBehavior(new SubProcessActivityBehavior());
     parseScope(subProcessElement, activity);
    
     for (BpmnParseListener parseListener: parseListeners) {
@@ -1668,7 +1668,7 @@ public class BpmnParse extends Parse {
       addError("Missing attribute 'calledElement'", callActivityElement);
     }
     
-    CallActivityBehaviour callActivityBehaviour = new CallActivityBehaviour(calledElement);
+    CallActivityBehavior callActivityBehaviour = new CallActivityBehavior(calledElement);
 
     Element extentionsElement = callActivityElement.element("extensionElements");    
     if(extentionsElement != null) {

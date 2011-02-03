@@ -15,7 +15,7 @@ package org.activiti.engine.impl.el;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.impl.bpmn.Condition;
+import org.activiti.engine.impl.Condition;
 
 
 /**

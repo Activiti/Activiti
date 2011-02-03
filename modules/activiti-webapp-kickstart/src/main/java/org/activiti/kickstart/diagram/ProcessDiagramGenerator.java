@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.activiti.engine.impl.bpmn.deployer.ProcessDiagramCanvas;
+import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramCanvas;
 import org.activiti.kickstart.bpmn20.model.BaseElement;
 import org.activiti.kickstart.bpmn20.model.Definitions;
 import org.activiti.kickstart.bpmn20.model.FlowElement;

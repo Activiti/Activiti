@@ -13,7 +13,7 @@
 package org.activiti.engine.impl.el;
 
 import org.activiti.engine.delegate.VariableScope;
-import org.activiti.engine.impl.bpmn.ItemInstance;
+import org.activiti.engine.impl.bpmn.data.ItemInstance;
 import org.activiti.engine.impl.javax.el.ArrayELResolver;
 import org.activiti.engine.impl.javax.el.BeanELResolver;
 import org.activiti.engine.impl.javax.el.CompositeELResolver;

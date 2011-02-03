@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.bpmn.deployer;
+package org.activiti.engine.impl.bpmn.diagram;
 
 import java.io.InputStream;
 import java.util.Collections;

@@ -29,7 +29,7 @@ import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.bpmn.ItemInstance;
+import org.activiti.engine.impl.bpmn.data.ItemInstance;
 import org.activiti.engine.impl.el.ExpressionFactoryResolver;
 import org.activiti.engine.impl.javax.el.ArrayELResolver;
 import org.activiti.engine.impl.javax.el.BeanELResolver;

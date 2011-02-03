@@ -12,7 +12,7 @@
  */
 package org.activiti.engine.impl.variable;
 
-import org.activiti.engine.impl.bpmn.ItemInstance;
+import org.activiti.engine.impl.bpmn.data.ItemInstance;
 
 /**
  * Custom object type

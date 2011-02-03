@@ -15,10 +15,10 @@ package org.activiti.engine.impl.webservice;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.activiti.engine.impl.bpmn.MessageDefinition;
-import org.activiti.engine.impl.bpmn.MessageInstance;
-import org.activiti.engine.impl.bpmn.Operation;
-import org.activiti.engine.impl.bpmn.OperationImplementation;
+import org.activiti.engine.impl.bpmn.webservice.MessageDefinition;
+import org.activiti.engine.impl.bpmn.webservice.MessageInstance;
+import org.activiti.engine.impl.bpmn.webservice.Operation;
+import org.activiti.engine.impl.bpmn.webservice.OperationImplementation;
 
 /**
  * Represents a WS implementation of a {@link Operation}

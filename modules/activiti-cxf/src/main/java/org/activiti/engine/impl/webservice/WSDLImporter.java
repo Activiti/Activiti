@@ -33,8 +33,8 @@ import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.bpmn.SimpleStructureDefinition;
-import org.activiti.engine.impl.bpmn.StructureDefinition;
+import org.activiti.engine.impl.bpmn.data.SimpleStructureDefinition;
+import org.activiti.engine.impl.bpmn.data.StructureDefinition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.XMLImporter;
 import org.activiti.engine.impl.util.ReflectUtil;

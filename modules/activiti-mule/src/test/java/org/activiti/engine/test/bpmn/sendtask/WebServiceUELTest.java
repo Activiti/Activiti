@@ -15,9 +15,9 @@ package org.activiti.engine.test.bpmn.sendtask;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.impl.bpmn.FieldBaseStructureInstance;
-import org.activiti.engine.impl.bpmn.ItemDefinition;
-import org.activiti.engine.impl.bpmn.ItemInstance;
+import org.activiti.engine.impl.bpmn.data.FieldBaseStructureInstance;
+import org.activiti.engine.impl.bpmn.data.ItemDefinition;
+import org.activiti.engine.impl.bpmn.data.ItemInstance;
 import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.db.DbRepositorySessionFactory;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
