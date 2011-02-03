@@ -19,7 +19,7 @@ package org.activiti.engine.impl.bpmn.behavior;
  * 
  * @author Joram Barrez
  */
-public abstract class GatewayActivityBehavior extends AbstractFlowNodeBehavior {
+public abstract class GatewayActivityBehavior extends FlowNodeActivityBehavior {
   
   // TODO: implement diverging/converging 
 

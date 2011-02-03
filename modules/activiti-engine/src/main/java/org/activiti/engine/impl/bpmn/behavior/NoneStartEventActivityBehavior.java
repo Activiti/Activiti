@@ -22,7 +22,7 @@ package org.activiti.engine.impl.bpmn.behavior;
  * 
  * @author Joram Barrez
  */
-public class NoneStartEventActivityBehavior extends AbstractFlowNodeBehavior {
+public class NoneStartEventActivityBehavior extends FlowNodeActivityBehavior {
 
   // Nothing to see here.
   // The default behaviour of the BpmnActivity is exactly what

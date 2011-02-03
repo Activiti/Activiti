@@ -25,7 +25,7 @@ import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
  * 
  * @author Joram Barrez
  */
-public abstract class AbstractFlowNodeBehavior implements SignallableActivityBehavior {
+public abstract class FlowNodeActivityBehavior implements SignallableActivityBehavior {
   
   protected BpmnActivityBehavior bpmnActivityBehavior = new BpmnActivityBehavior();
   

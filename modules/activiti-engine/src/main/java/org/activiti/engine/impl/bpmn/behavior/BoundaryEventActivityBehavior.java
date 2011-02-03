@@ -23,7 +23,7 @@ import org.activiti.engine.impl.runtime.ExecutionEntity;
 /**
  * @author Joram Barrez
  */
-public class BoundaryEventActivityBehavior extends AbstractFlowNodeBehavior {
+public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
   
   protected boolean interrupting;
   

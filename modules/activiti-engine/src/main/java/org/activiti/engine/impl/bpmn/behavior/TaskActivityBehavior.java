@@ -21,6 +21,6 @@ package org.activiti.engine.impl.bpmn.behavior;
  * 
  * @author Joram Barrez
  */
-public class TaskActivityBehavior extends AbstractFlowNodeBehavior {
+public class TaskActivityBehavior extends FlowNodeActivityBehavior {
 
 }

@@ -10,30 +10,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.bpmn;
+
+package org.activiti.engine.impl.bpmn.behavior;
+
+import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 
 /**
- * An instance of a {@link MessageDefinition}
- * 
- * @author Esteban Robles Luna
+ * @author Joram Barrez
  */
-public class MessageInstance {
+public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior {
 
-  protected MessageDefinition message;
-  
-  protected ItemInstance item;
-  
-  MessageInstance(MessageDefinition message, ItemInstance item) {
-    this.message = message;
-    this.item = item;
+  public void execute(ActivityExecution execution) throws Exception {
+    
   }
   
-  public StructureInstance getStructureInstance() {
-    return this.item.getStructureInstance();
-  }
-  
-  public MessageDefinition getMessage() {
-    return this.message;
-  }
 }

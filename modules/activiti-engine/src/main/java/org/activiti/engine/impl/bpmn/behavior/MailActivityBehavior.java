@@ -18,6 +18,8 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
+import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
@@ -27,7 +29,7 @@ import org.apache.commons.mail.SimpleEmail;
  * @author Joram Barrez
  * @author Frederik Heremans
  */
-public class MailActivityBehavior extends ServiceTaskJavaDelegateActivityBehavior {
+public class MailActivityBehavior implements ActivityBehavior {
 
   private Expression to;
   private Expression from;
@@ -37,7 +39,7 @@ public class MailActivityBehavior extends ServiceTaskJavaDelegateActivityBehavio
   private Expression text;
   private Expression html;
 
-  public void execute(DelegateExecution execution) {
+  public void execute(ActivityExecution execution) {
     String toStr = getStringFromField(to, execution);
     String fromStr = getStringFromField(from, execution);
     String ccStr = getStringFromField(cc, execution);

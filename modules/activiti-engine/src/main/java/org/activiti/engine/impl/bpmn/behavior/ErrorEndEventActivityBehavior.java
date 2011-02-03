@@ -24,7 +24,7 @@ import org.activiti.engine.impl.runtime.ExecutionEntity;
 /**
  * @author Joram Barrez
  */
-public class ErrorEndEventActivityBehavior extends AbstractFlowNodeBehavior {
+public class ErrorEndEventActivityBehavior extends FlowNodeActivityBehavior {
   
   protected static final Logger LOG = Logger.getLogger(ErrorEndEventActivityBehavior.class.getName());
   protected String borderEventActivityId; // the nested activity representing the boundary event
