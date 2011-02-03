@@ -374,7 +374,7 @@
     
     <para>For example:</para>
     
-    <programlisting>&lt;userTask id=&quot;task&quot;
+    <programlisting>&lt;userTask id=&quot;task&quot;&gt;
   &lt;extensionElements&gt;
     &lt;activiti:formProperty id=&quot;room&quot; /&gt;
     &lt;activiti:formProperty id=&quot;duration&quot; type=&quot;long&quot;/&gt;
