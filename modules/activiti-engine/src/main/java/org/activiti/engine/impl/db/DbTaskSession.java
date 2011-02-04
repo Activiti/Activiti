@@ -21,6 +21,7 @@ import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.cfg.TaskSession;
+import org.activiti.engine.impl.history.HistoricTaskInstanceEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.task.IdentityLinkEntity;
@@ -68,6 +69,22 @@ public class DbTaskSession implements TaskSession, Session {
   @SuppressWarnings("unchecked")
   public List<HistoricTaskInstance> findHistoricTaskInstancesByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery, Page page) {
     return dbSqlSession.selectList("selectHistoricTaskInstancesByQueryCriteria", historicTaskInstanceQuery, page);
+  }
+  
+  public HistoricTaskInstanceEntity findHistoricTaskInstanceById(String id) {
+    if (id == null) {
+      throw new ActivitiException("Invalid historic task id : null");
+    }
+    return (HistoricTaskInstanceEntity) dbSqlSession.selectOne("selectHistoricTaskInstance", id);
+  }
+  
+  public void deleteHistoricTaskInstance(String taskId) {
+    HistoricTaskInstanceEntity historicTaskInstance = findHistoricTaskInstanceById(taskId);
+    if(historicTaskInstance == null) {
+      throw new ActivitiException("No historic task instance found for id '" + taskId + "'");
+    }
+    
+    historicTaskInstance.delete();
   }
 
   public void close() {

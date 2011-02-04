@@ -51,5 +51,11 @@ public interface HistoryService {
   /** Deletes historic task instance.  This might be useful for tasks that are 
    * {@link TaskService#newTask() dynamically created} and then {@link TaskService#complete(String) completed}. */
   void deleteHistoricTaskInstance(String taskId);
+  
+  /**
+   * Deletes historic process instance. All historic activities, historic task and
+   * historic details (variable updates, form properties) are deleted as well.
+   */
+  void deleteHistoricProcessInstance(String processInstanceId);
 
 }

@@ -36,6 +36,8 @@ public interface TaskSession {
 
   List<IdentityLinkEntity> findIdentityLinksByTaskId(String taskId);
 
+  HistoricTaskInstance findHistoricTaskInstanceById(String taskId);
   long findHistoricTaskInstanceCountByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQueryImpl);
   List<HistoricTaskInstance> findHistoricTaskInstancesByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQueryImpl, Page page);
+  void deleteHistoricTaskInstance(String taskId);
 }

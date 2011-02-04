@@ -30,6 +30,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+import org.activiti.engine.test.api.runtime.DummySerializable;
 import org.activiti.engine.test.history.SerializableVariable;
 
 
@@ -544,6 +545,15 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     assertEquals(2, historicTaskVariableUpdates.size());
 
     historyService.deleteHistoricTaskInstance(taskId);
+    
+    // Check if the variable updates have been removed as well
+    historicTaskVariableUpdates = historyService.createHistoricDetailQuery()
+      .taskId(taskId)
+      .variableUpdates()
+      .orderByVariableName().asc()
+      .list();
+  
+     assertEquals(0, historicTaskVariableUpdates.size());
   }
   
   // ACT-592
@@ -552,6 +562,64 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerVariablesProcess");
     runtimeService.setVariable(processInstance.getId(), "myVar", 123456L);
     assertEquals(123456L, runtimeService.getVariable(processInstance.getId(), "myVar"));
+  }
+  
+  
+  @Deployment
+  public void testDeleteHistoricProcessInstance() {
+    // Start process-instance with some variables set
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("processVar", 123L);
+    vars.put("anotherProcessVar", new DummySerializable());
+    
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("HistoricTaskInstanceTest", vars);
+    assertNotNull(processInstance);
+    
+    // Set 2 task properties
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    taskService.setVariableLocal(task.getId(), "taskVar", 45678);
+    taskService.setVariableLocal(task.getId(), "anotherTaskVar", "value");
+ 
+    // Finish the task, this end the process-instance
+    taskService.complete(task.getId());
+    
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
+    assertEquals(2, historyService.createHistoricActivityInstanceQuery().processInstanceId(processInstance.getId()).count());
+    assertEquals(4, historyService.createHistoricDetailQuery().processInstanceId(processInstance.getId()).count());
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().processInstanceId(processInstance.getId()).count());
+    
+    // Delete the historic process-instance
+    historyService.deleteHistoricProcessInstance(processInstance.getId());
+    
+    // Verify no traces are left in the history tables
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
+    assertEquals(0, historyService.createHistoricActivityInstanceQuery().processInstanceId(processInstance.getId()).count());
+    assertEquals(0, historyService.createHistoricDetailQuery().processInstanceId(processInstance.getId()).count());
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().processInstanceId(processInstance.getId()).count());
+    
+    try {
+      // Delete the historic process-instance, which is still running
+      historyService.deleteHistoricProcessInstance("unexisting");
+      fail("Exception expected when deleting process-instance that is still running");
+    } catch(ActivitiException ae) {
+      // Expected exception
+      assertTextPresent("No historic process instance found with id: unexisting", ae.getMessage());
+    }
+  }
+  
+  @Deployment
+  public void testDeleteRunningHistoricProcessInstance() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("HistoricTaskInstanceTest");
+    assertNotNull(processInstance);
+    
+    try {
+      // Delete the historic process-instance, which is still running
+      historyService.deleteHistoricProcessInstance(processInstance.getId());
+      fail("Exception expected when deleting process-instance that is still running");
+    } catch(ActivitiException ae) {
+      // Expected exception
+      assertTextPresent("Process instance is still running, cannot delete historic process instance", ae.getMessage());
+    }
   }
   
 }

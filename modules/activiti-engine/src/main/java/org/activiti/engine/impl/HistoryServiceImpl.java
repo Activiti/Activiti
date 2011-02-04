@@ -19,7 +19,8 @@ import org.activiti.engine.history.HistoricActivityInstanceQuery;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.history.HistoricDetailQuery;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
-import org.activiti.engine.impl.cmd.DeleteHistoricTaskInstance;
+import org.activiti.engine.impl.cmd.DeleteHistoricProcessInstanceCmd;
+import org.activiti.engine.impl.cmd.DeleteHistoricTaskInstanceCmd;
 
 /**
  * @author Tom Baeyens
@@ -44,6 +45,10 @@ public class HistoryServiceImpl extends ServiceImpl implements HistoryService {
   }
 
   public void deleteHistoricTaskInstance(String taskId) {
-    commandExecutor.execute(new DeleteHistoricTaskInstance(taskId));
+    commandExecutor.execute(new DeleteHistoricTaskInstanceCmd(taskId));
+  }
+
+  public void deleteHistoricProcessInstance(String processInstanceId) {
+    commandExecutor.execute(new DeleteHistoricProcessInstanceCmd(processInstanceId));
   }
 }

@@ -13,27 +13,27 @@
 
 package org.activiti.engine.impl.cmd;
 
-import org.activiti.engine.impl.history.HistoricTaskInstanceEntity;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-
 
 /**
  * @author Tom Baeyens
  */
-public class DeleteHistoricTaskInstance implements Command<Object> {
+public class DeleteHistoricTaskInstanceCmd implements Command<Object> {
 
   protected String taskId;
-  
-  public DeleteHistoricTaskInstance(String taskId) {
+
+  public DeleteHistoricTaskInstanceCmd(String taskId) {
     this.taskId = taskId;
   }
 
   public Object execute(CommandContext commandContext) {
-    commandContext
-      .getDbSqlSession()
-      .delete(HistoricTaskInstanceEntity.class, taskId);
-    
+
+    if (taskId == null) {
+      throw new ActivitiException("taskId is null");
+    }
+    commandContext.getTaskSession().deleteHistoricTaskInstance(taskId);
     return null;
   }
 

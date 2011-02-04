@@ -14,10 +14,15 @@
 package org.activiti.engine.impl.history;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.HistoricDetailQueryImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.engine.impl.task.TaskEntity;
 import org.activiti.engine.impl.util.ClockUtil;
@@ -64,8 +69,24 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
     return persistentState;
   }
 
-  // getters and setters //////////////////////////////////////////////////////
+  public void delete() {
+    CommandContext commandContext = CommandContext.getCurrent();
+    
+    int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
+    if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
+      HistoricDetailQueryImpl variableQuery = 
+        (HistoricDetailQueryImpl) new HistoricDetailQueryImpl().taskId(id);
+      
+      List<HistoricDetail> details = variableQuery.executeList(commandContext, null);
+      for(HistoricDetail detail : details) {
+        ((HistoricDetailEntity) detail).delete();
+      }
+    }
+    
+    commandContext.getDbSqlSession().delete(HistoricTaskInstanceEntity.class, id);
+  }
   
+  // getters and setters //////////////////////////////////////////////////////
   public String getExecutionId() {
     return executionId;
   }
