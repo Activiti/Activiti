@@ -350,10 +350,9 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
       List< ? extends ActivityExecution> concurrentExecutions = getParent().getExecutions();
       for (ActivityExecution concurrentExecution: concurrentExecutions) {
         if (concurrentExecution.getActivity()==activity) {
-          if (concurrentExecution.isActive()) {
-            throw new PvmException("didn't expect active execution in "+activity+". bug?");
+          if (!concurrentExecution.isActive()) {
+            inactiveConcurrentExecutionsInActivity.add(concurrentExecution);
           }
-          inactiveConcurrentExecutionsInActivity.add(concurrentExecution);
         } else {
           otherConcurrentExecutions.add(concurrentExecution);
         }
@@ -844,7 +843,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     Map<String, Object> persistentState = new HashMap<String, Object>();
     persistentState.put("processDefinitionId", this.processDefinitionId);
     persistentState.put("businessKey", businessKey);
-    persistentState.put("activitiId", this.activityId);
+    persistentState.put("activityId", this.activityId);
     persistentState.put("isActive", this.isActive);
     persistentState.put("isConcurrent", this.isConcurrent);
     persistentState.put("isScope", this.isScope);

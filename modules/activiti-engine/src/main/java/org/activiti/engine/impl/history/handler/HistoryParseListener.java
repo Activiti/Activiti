@@ -57,27 +57,27 @@ public class HistoryParseListener implements BpmnParseListener {
   }
 
   public void parseExclusiveGateway(Element exclusiveGwElement, ScopeImpl scope, ActivityImpl activity) {
-    addActivityHandlers(exclusiveGwElement, activity);
+    addActivityHandlers(activity);
   }
 
   public void parseCallActivity(Element callActivityElement, ScopeImpl scope, ActivityImpl activity) {
-    addActivityHandlers(callActivityElement, activity);
+    addActivityHandlers(activity);
   }
 
   public void parseManualTask(Element manualTaskElement, ScopeImpl scope, ActivityImpl activity) {
-    addActivityHandlers(manualTaskElement, activity);
+    addActivityHandlers(activity);
   }
 
   public void parseScriptTask(Element scriptTaskElement, ScopeImpl scope, ActivityImpl activity) {
-    addActivityHandlers(scriptTaskElement, activity);
+    addActivityHandlers(activity);
   }
 
   public void parseTask(Element taskElement, ScopeImpl scope, ActivityImpl activity) {
-    addActivityHandlers(taskElement, activity);
+    addActivityHandlers(activity);
   }
 
   public void parseUserTask(Element userTaskElement, ScopeImpl scope, ActivityImpl activity) {
-    addActivityHandlers(userTaskElement, activity);
+    addActivityHandlers(activity);
     
     if (activityHistoryEnabled(scope, historyLevel)) {
       TaskDefinition taskDefinition = ((UserTaskActivityBehavior) activity.getActivityBehavior()).getTaskDefinition();
@@ -86,21 +86,25 @@ public class HistoryParseListener implements BpmnParseListener {
   }
 
   public void parseServiceTask(Element serviceTaskElement, ScopeImpl scope, ActivityImpl activity) {
-    addActivityHandlers(serviceTaskElement, activity);
+    addActivityHandlers(activity);
   }
   
   public void parseBusinessRuleTask(Element businessRuleTaskElement, ScopeImpl scope, ActivityImpl activity) {
-    addActivityHandlers(businessRuleTaskElement, activity);
+    addActivityHandlers(activity);
   }
 
   public void parseSubProcess(Element subProcessElement, ScopeImpl scope, ActivityImpl activity) {
-    addActivityHandlers(subProcessElement, activity);
+    addActivityHandlers(activity);
   }
 
   public void parseStartEvent(Element startEventElement, ScopeImpl scope, ActivityImpl activity) {
     if (fullHistoryEnabled(historyLevel)) {
       activity.addExecutionListener(ExecutionListener.EVENTNAME_END, START_EVENT_END_HANDLER);
     }
+  }
+  
+  public void parseSendTask(Element sendTaskElement, ScopeImpl scope, ActivityImpl activity) {
+    addActivityHandlers(activity);
   }
 
   public void parseEndEvent(Element endEventElement, ScopeImpl scope, ActivityImpl activity) {
@@ -120,10 +124,15 @@ public class HistoryParseListener implements BpmnParseListener {
 
   public void parseSequenceFlow(Element sequenceFlowElement, ScopeImpl scopeElement, TransitionImpl transition) {
   }
+  
+  public void parseMultiInstanceLoopCharacteristics(Element activityElement, 
+          Element multiInstanceLoopCharacteristicsElement, ActivityImpl activity, ActivityImpl nestedActivity) {
+    addActivityHandlers(nestedActivity);
+  }
 
   // helper methods ///////////////////////////////////////////////////////////
   
-  protected void addActivityHandlers(Element activityElement, ActivityImpl activity) {
+  protected void addActivityHandlers(ActivityImpl activity) {
     if (activityHistoryEnabled(activity, historyLevel)) {
       activity.addExecutionListener(ExecutionListener.EVENTNAME_START, ACTIVITY_INSTANCE_START_LISTENER, 0);
       activity.addExecutionListener(ExecutionListener.EVENTNAME_END, ACTIVITI_INSTANCE_END_LISTENER);
@@ -142,8 +151,4 @@ public class HistoryParseListener implements BpmnParseListener {
     return historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY;
   }
 
-  public void parseSendTask(Element sendTaskElement, ScopeImpl scope, ActivityImpl activity) {
-    addActivityHandlers(sendTaskElement, activity);
-  }
-  
 }

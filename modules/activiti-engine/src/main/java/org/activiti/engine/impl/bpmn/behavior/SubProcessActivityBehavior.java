@@ -30,7 +30,7 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
  * 
  * @author Joram Barrez
  */
-public class SubProcessActivityBehavior extends FlowNodeActivityBehavior implements CompositeActivityBehavior {
+public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior implements CompositeActivityBehavior {
   
   public void execute(ActivityExecution execution) throws Exception {
     PvmActivity activity = execution.getActivity();

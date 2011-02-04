@@ -109,6 +109,11 @@ public interface ActivityExecution extends DelegateExecution {
    * Returns whether this execution is a scope.
    */
   boolean isScope();
+  
+  /**
+   * Changes whether this execution is a scope or not
+   */
+  void setScope(boolean isScope);
 
   /**
    * Retrieves all executions which are concurrent and inactive at the given activity.

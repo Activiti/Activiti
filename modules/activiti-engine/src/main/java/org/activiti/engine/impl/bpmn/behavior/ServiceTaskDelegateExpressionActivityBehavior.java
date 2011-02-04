@@ -27,7 +27,7 @@ import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
  * @author Joram Barrez
  * @author Josh Long 
  */
-public class ServiceTaskDelegateExpressionActivityBehavior extends FlowNodeActivityBehavior {
+public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityBehavior {
   
   protected Expression expression;
   

@@ -5,14 +5,14 @@
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
   
-  <process id="miSequentialUserTasks">
+  <process id="miParallelUserTasks">
   
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="miTasks" />
     
-    <userTask id="miTasks" name="My Task" activiti:assignee="kermit_${loopCounter}">
-      <multiInstanceLoopCharacteristics isSequential="true">
-        <loopCardinality>${2+1}</loopCardinality>
+    <userTask id="miTasks" name="My Task ${loopCounter}" >
+      <multiInstanceLoopCharacteristics isSequential="false">
+        <loopCardinality>${5-2}</loopCardinality>
       </multiInstanceLoopCharacteristics>
     </userTask>
     

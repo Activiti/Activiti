@@ -5,7 +5,7 @@
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
   
-  <process id="miSequentialUserTasks">
+  <process id="miSequentialUserTasksWithTimer">
   
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="miTasks" />
@@ -15,6 +15,15 @@
         <loopCardinality>${2+1}</loopCardinality>
       </multiInstanceLoopCharacteristics>
     </userTask>
+    
+    <boundaryEvent id="timer" attachedToRef="miTasks">
+      <timerEventDefinition>
+        <timeDuration>PT2H</timeDuration>
+      </timerEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="flow4" sourceRef="timer" targetRef="taskAfterTimer" />
+    
+    <userTask id="taskAfterTimer" />
     
     <sequenceFlow id="flow3" sourceRef="miTasks" targetRef="theEnd" />
     <endEvent id="theEnd" />

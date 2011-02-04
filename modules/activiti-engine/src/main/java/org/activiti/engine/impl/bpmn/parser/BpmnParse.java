@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.Condition;
+import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BusinessRuleTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.CallActivityBehavior;
@@ -31,6 +32,7 @@ import org.activiti.engine.impl.bpmn.behavior.ErrorEndEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ExclusiveGatewayActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.MailActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ManualTaskActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.NoneEndEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.NoneStartEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ParallelGatewayActivityBehavior;
@@ -663,16 +665,56 @@ public class BpmnParse extends Parse {
       }
       
       // Parse stuff common to activities above  
-      parseLoopCharacteristics(activityElement, activity);
+      if (activity != null) {
+        parseMultiInstanceLoopCharacteristics(activityElement, activity);
+      }
     }
   }
   
   /**
    * Parses loopCharacteristics (standardLoop/Multi-instance) of an activity, if any is defined.
    */
-  public void parseLoopCharacteristics(Element activityElement, ActivityImpl activity) {
+  public void parseMultiInstanceLoopCharacteristics(Element activityElement, ActivityImpl activity) {
+    
+    // Only 'activities' (in the BPMN 2.0 spec meaning) can have mi characteristics
+    if (!(activity.getActivityBehavior() instanceof AbstractBpmnActivityBehavior)) {
+      return;
+    }
+    
     Element miLoopCharacteristics = activityElement.element("multiInstanceLoopCharacteristics");
     if (miLoopCharacteristics != null) {
+      boolean isSequential = parseBooleanAttribute(miLoopCharacteristics.attribute("isSequential"), false);
+      
+      // new
+      String type = (String) activity.getProperty("type");
+      activity.setProperty("type", "multi-instance " + type);
+      activity.setScope(true);
+      
+      ActivityImpl nestedActivity = activity.createActivity("multi-instance " + activityElement.attribute("id"));
+      nestedActivity.setProperty("type", type);
+      nestedActivity.setActivityBehavior(activity.getActivityBehavior());
+      
+      MultiInstanceActivityBehavior miActivityBehavior = new MultiInstanceActivityBehavior(nestedActivity);
+      miActivityBehavior.setSequential(isSequential);
+      activity.setActivityBehavior(miActivityBehavior);
+      // new
+
+//      MultiInstanceActivityBehavior miActivityBehavior = new MultiInstanceActivityBehavior(activityBehavior, isSequential);
+//      activity.setScope(true);
+//      activity.setActivityBehavior(miActivityBehavior);
+      
+      Element loopCardinality = miLoopCharacteristics.element("loopCardinality");
+      if (loopCardinality != null) {
+        String loopCardinalityText = loopCardinality.getText();
+        if (loopCardinalityText == null || "".equals(loopCardinalityText)) {
+          addError("loopCardinality must be defined for a multiInstanceLoopCharacteristics definition ", miLoopCharacteristics);
+        }
+        miActivityBehavior.setLoopCardinalityExpression(expressionManager.createExpression(loopCardinalityText));
+      }
+      
+      for (BpmnParseListener parseListener: parseListeners) {
+        parseListener.parseMultiInstanceLoopCharacteristics(activityElement, miLoopCharacteristics, activity, nestedActivity);
+      }
       
     }
   }
@@ -2107,6 +2149,14 @@ public class BpmnParse extends Parse {
 
   public void addOperation(OperationImplementation operationImplementation) {
     this.operationImplementations.put(operationImplementation.getId(), operationImplementation);
+  }
+  
+  public Boolean parseBooleanAttribute(String booleanText, boolean defaultValue) {
+    if (booleanText == null) {
+      return defaultValue;
+    } else {
+      return parseBooleanAttribute(booleanText);
+    }
   }
 
   public Boolean parseBooleanAttribute(String booleanText) {

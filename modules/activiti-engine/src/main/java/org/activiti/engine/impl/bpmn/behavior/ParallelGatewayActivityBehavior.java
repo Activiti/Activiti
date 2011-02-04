@@ -55,15 +55,12 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
 
   public void execute(ActivityExecution execution) throws Exception { 
     PvmActivity activity = execution.getActivity();
-
     List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
     
     execution.inactivate();
-    
     lockConcurrentRoot(execution);
     
     List<ActivityExecution> joinedExecutions = execution.findInactiveConcurrentExecutions(activity);
-    
     int nbrOfExecutionsToJoin = execution.getActivity().getIncomingTransitions().size();
     int nbrOfExecutionsJoined = joinedExecutions.size();
     
@@ -77,13 +74,12 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
   }
 
   protected void lockConcurrentRoot(ActivityExecution execution) {
-    ExecutionEntity concurrentRoot = null; 
-    ExecutionEntity executionEntity = (ExecutionEntity)execution;
-    if (executionEntity.isConcurrent()) {
-      concurrentRoot = (ExecutionEntity) executionEntity.getParent();
+    ActivityExecution concurrentRoot = null; 
+    if (execution.isConcurrent()) {
+      concurrentRoot = execution.getParent();
     } else {
-      concurrentRoot = executionEntity;
+      concurrentRoot = execution;
     }
-    concurrentRoot.forceUpdate();
+    ((ExecutionEntity)concurrentRoot).forceUpdate();
   }
 }

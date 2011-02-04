@@ -31,7 +31,7 @@ import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
  * 
  * @author Joram Barrez
  */
-public class CallActivityBehavior extends FlowNodeActivityBehavior implements SubProcessActivityBehavior {
+public class CallActivityBehavior extends AbstractBpmnActivityBehavior implements SubProcessActivityBehavior {
   
   protected String processDefinitonKey;
   private List<AbstractDataAssociation> dataInputAssociations = new ArrayList<AbstractDataAssociation>();

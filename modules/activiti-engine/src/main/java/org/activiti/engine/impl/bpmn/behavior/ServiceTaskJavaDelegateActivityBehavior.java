@@ -24,7 +24,7 @@ import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
 /**
  * @author Tom Baeyens
  */
-public class ServiceTaskJavaDelegateActivityBehavior extends BpmnActivityBehavior implements ActivityBehavior, ExecutionListener {
+public class ServiceTaskJavaDelegateActivityBehavior extends TaskActivityBehavior implements ActivityBehavior, ExecutionListener {
   
   protected JavaDelegate javaDelegate;
   
@@ -37,7 +37,7 @@ public class ServiceTaskJavaDelegateActivityBehavior extends BpmnActivityBehavio
 
   public void execute(ActivityExecution execution) throws Exception {
     execute((DelegateExecution) execution);
-    performDefaultOutgoingBehavior(execution);
+    leave(execution);
   }
   
   public void notify(ExecutionListenerExecution execution) throws Exception {

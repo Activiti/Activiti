@@ -25,7 +25,7 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  * @author Christian Stettler
  * @author Frederik Heremans
  */
-public class ServiceTaskExpressionActivityBehavior extends FlowNodeActivityBehavior {
+public class ServiceTaskExpressionActivityBehavior extends TaskActivityBehavior {
 
   protected Expression expression;
   protected String resultVariableName;
