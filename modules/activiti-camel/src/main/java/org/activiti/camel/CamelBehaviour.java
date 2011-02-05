@@ -13,17 +13,17 @@
 
 package org.activiti.camel;
 
-import org.activiti.engine.impl.bpmn.BpmnActivityBehavior;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.activiti.engine.impl.bpmn.behavior.BpmnActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.impl.DefaultExchange;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 public class CamelBehaviour extends BpmnActivityBehavior implements ActivityBehavior {
 
