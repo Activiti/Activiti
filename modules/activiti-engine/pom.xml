@@ -229,6 +229,39 @@
         </plugins>
       </build>
     </profile>
+    
+    <profile>
+      <id>test</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <!--
+              only worked with this version, there might be a bug with antrun
+              see http://jira.codehaus.org/browse/MANTRUN-109
+            -->
+            <version>1.4</version>
+            <executions>
+              <execution>
+                <id>database-test-create-schema</id>
+                <phase>process-test-classes</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <property file="${user.home}/.activiti/jdbc/h2.properties"/>
+                    <echo message="jdbc url ${jdbc.url}" />
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
+    
 
     <!--  database qa profile -->
     <profile>
@@ -257,15 +290,9 @@
                 <configuration>
                   <tasks>
                     <echo message="creating db schema in ${database}" />
-                    <ant antfile="${basedir}/../../qa/db/build.xml" target="create.db.schema"
-                      inheritAll="false">
-                      <property name="test_classpath" refid="maven.test.classpath" />
-                      <property name="database" value="${database}" />
-                    </ant>
-                    <echo message="updating activiti cfg to ${database}" />
-                    <ant antfile="${basedir}/../../qa/db/build.xml" target="create.activiti.cfg">
-                      <property name="database" value="${database}" />
-                    </ant>
+                    <copy file="${basedir}/../../qa/db/activiti.cfg.xml" todir="target/test-classes" overwrite="true">
+                      <filterset filtersfile="${user.home}/.activiti/jdbc/${database}.properties" />
+                    </copy>
                   </tasks>
                 </configuration>
               </execution>
@@ -278,11 +305,7 @@
                 <configuration>
                   <tasks>
                     <echo message="dropping schema in ${database}" />
-                    <ant antfile="${basedir}/../../qa/db/build.xml" target="drop.db.schema"
-                      inheritAll="false">
-                      <property name="test_classpath" refid="maven.test.classpath" />
-                      <property name="database" value="${database}" />
-                    </ant>
+                    <java classname="org.activiti.engine.impl.db.DbSchemaDrop" classpathref="maven.test.classpath" />
                   </tasks>
                 </configuration>
               </execution>
