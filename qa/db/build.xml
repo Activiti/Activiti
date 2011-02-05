@@ -15,7 +15,10 @@
 			<pathelement path="${test_classpath}"/>
 		</path>
 		<sql driver="${jdbc.driver}" password="${jdbc.password}" url="${jdbc.url}" userid="${jdbc.username}" classpathref="test.classpath">
-			<javaresource name="org/activiti/db/create/activiti.${database}.create.sql" classpathref="test.classpath"/>
+			<javaresource name="org/activiti/db/create/activiti.${database}.create.engine.sql" classpathref="test.classpath"/>
+      <javaresource name="org/activiti/db/create/activiti.${database}.create.history.sql" classpathref="test.classpath"/>
+      <javaresource name="org/activiti/db/create/activiti.${database}.create.identity.sql" classpathref="test.classpath"/>
+      <!-- javaresource name="org/activiti/db/create/activiti.${database}.create.cycle.sql" classpathref="test.classpath"/ -->
 		</sql>
 	</target>
 
@@ -33,7 +36,7 @@
 			<pathelement path="${test_classpath}"/>
 		</path>
 		<sql driver="${jdbc.driver}" password="${jdbc.password}" url="${jdbc.url}" userid="${jdbc.username}" classpathref="test.classpath">
-			<javaresource name="org/activiti/db/cycle/create/activiti.${database}.create.sql" classpathref="test.classpath"/>
+      <javaresource name="org/activiti/db/cycle/create/activiti.${database}.cycle.create.sql" classpathref="test.classpath"/>
 		</sql>
 	</target>
 
@@ -51,7 +54,10 @@
 			<pathelement path="${test_classpath}"/>
 		</path>
 		<sql driver="${jdbc.driver}" password="${jdbc.password}" url="${jdbc.url}" userid="${jdbc.username}" classpathref="test.classpath">
-			<javaresource name="org/activiti/db/drop/activiti.${database}.drop.sql" classpathref="test.classpath"/>
+			<javaresource name="org/activiti/db/drop/activiti.${database}.drop.engine.sql" classpathref="test.classpath"/>
+      <javaresource name="org/activiti/db/drop/activiti.${database}.drop.history.sql" classpathref="test.classpath"/>
+      <javaresource name="org/activiti/db/drop/activiti.${database}.drop.identity.sql" classpathref="test.classpath"/>
+      <!-- javaresource name="org/activiti/db/drop/activiti.${database}.drop.cycle.sql" classpathref="test.classpath"/ -->
 		</sql>
 	</target>
 
