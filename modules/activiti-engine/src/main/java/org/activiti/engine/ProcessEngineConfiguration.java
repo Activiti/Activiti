@@ -117,7 +117,7 @@ public abstract class ProcessEngineConfiguration {
   protected int mailServerPort = 25;
   protected String mailServerDefaultFrom = "activiti@localhost";
 
-  protected String databaseType = "h2";
+  protected String databaseType;
   protected String databaseSchemaUpdate = DB_SCHEMA_UPDATE_FALSE;
   protected String jdbcDriver = "org.h2.Driver";
   protected String jdbcUrl = "jdbc:h2:tcp://localhost/activiti";

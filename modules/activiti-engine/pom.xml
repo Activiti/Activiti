@@ -293,6 +293,71 @@
     </profile>
 
     <profile>
+      <id>testSchemaMetaData</id>
+      <activation>
+        <property>
+          <name>metadatabase</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+		      <plugin>
+		        <artifactId>maven-surefire-plugin</artifactId>
+		        <configuration>
+              <includes>
+                <include>**/JdbcMetaDataTest.java</include>
+              </includes>
+		          <excludes />
+		        </configuration>
+		      </plugin>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.4</version>
+            <executions>
+              <execution>
+                <id>database-test-create-schema</id>
+                <phase>process-test-classes</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <echo message="creating db schema in ${metadatabase}" />
+                    <ant antfile="${basedir}/../../qa/db/build.xml" target="create.db.schema">
+                      <property name="test_classpath" refid="maven.test.classpath" />
+                      <property name="database" value="${metadatabase}" />
+                    </ant>
+                    <echo message="updating activiti cfg to ${metadatabase}" />
+                    <ant antfile="${basedir}/../../qa/db/build.xml" target="create.activiti.cfg">
+                      <property name="database" value="${metadatabase}" />
+                    </ant>
+                  </tasks>
+                </configuration>
+              </execution>
+              <execution>
+                <id>database-test-drop-schema</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <echo message="dropping schema in ${metadatabase}" />
+                    <ant antfile="${basedir}/../../qa/db/build.xml" target="drop.db.schema"
+                      inheritAll="false">
+                      <property name="test_classpath" refid="maven.test.classpath" />
+                      <property name="database" value="${metadatabase}" />
+                    </ant>
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
       <id>oracle</id>
       <activation>
         <property>

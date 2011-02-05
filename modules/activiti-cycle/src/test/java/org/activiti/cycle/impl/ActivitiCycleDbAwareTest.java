@@ -31,8 +31,8 @@ public abstract class ActivitiCycleDbAwareTest extends PluggableActivitiTestCase
 
       public Object execute(CommandContext commandContext) {
         DbSqlSession session = commandContext.getSession(DbSqlSession.class);
-        session.executeSchemaResourceOperation("cycle/drop", "drop");
-        session.executeSchemaResourceOperation("cycle/create", "create");
+//        session.executeSchemaResourceOperation("cycle/drop", "drop");
+//        session.executeSchemaResourceOperation("cycle/create", "create");
         return null;
       }
     });
@@ -44,7 +44,7 @@ public abstract class ActivitiCycleDbAwareTest extends PluggableActivitiTestCase
 
       public Object execute(CommandContext commandContext) {
         DbSqlSession session = commandContext.getSession(DbSqlSession.class);
-        session.executeSchemaResourceOperation("cycle/drop", "drop");
+//        session.executeSchemaResourceOperation("cycle/drop", "drop");
         return null;
       }
     });

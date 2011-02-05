@@ -465,11 +465,11 @@ public class DbSqlSession implements Session {
   }
 
   public void dbSchemaCreate() {
-    executeSchemaResourceOperation("create", "create");
+    executeSchemaResourceOperation("create", "create", false);
   }
 
   public void dbSchemaDrop() {
-    executeSchemaResourceOperation("drop", "drop");
+    executeSchemaResourceOperation("drop", "drop", false);
   }
   
   public void dbSchemaUpgrade() {
@@ -502,7 +502,7 @@ public class DbSqlSession implements Session {
       int minorLibraryVersionNumber = Integer.parseInt(libraryVersion.substring(2));
       
       while (minorDbVersionNumber<minorLibraryVersionNumber) {
-        upgradeStepStaticResource(minorDbVersionNumber);
+        executeSchemaResourceOperation("upgrade", "upgradestep.5"+minorDbVersionNumber+".to."+(minorDbVersionNumber+1), true);
         upgradeStepJavaClass(minorDbVersionNumber);
         minorDbVersionNumber++;
       }
@@ -512,7 +512,7 @@ public class DbSqlSession implements Session {
   }
 
   protected void upgradeStepJavaClass(int minorDbVersionNumber) {
-    String upgradestepClassName = "org.activiti.engine.impl.db.upgrade.DbUpgradeStep5"+minorDbVersionNumber;
+    String upgradestepClassName = "org.activiti.engine.impl.db.upgrade.DbUpgradeStep5"+minorDbVersionNumber+"To"+(minorDbVersionNumber+1);
     DbUpgradeStep dbUpgradeStep = null;
     try {
       dbUpgradeStep = (DbUpgradeStep) ReflectUtil.instantiate(upgradestepClassName);
@@ -529,36 +529,37 @@ public class DbSqlSession implements Session {
     }
   }
 
-  protected void upgradeStepStaticResource(int minorDbVersionNumber) {
-    String resourceName = getResourceForDbOperation("upgrade", "upgradestep.5"+minorDbVersionNumber);
-    InputStream inputStream = ReflectUtil.getResourceAsStream(resourceName);
-    if (inputStream!=null) {
-      try {
-        executeSchemaResource("upgrade", resourceName, inputStream);
-        
-      } finally {
-        IoUtil.closeSilently(inputStream);
-      }
-    } else {
-      log.fine("no upgrade script "+resourceName+" for upgrade step from 5."+minorDbVersionNumber+" to 5."+(minorDbVersionNumber+1));
+  public void executeSchemaResourceOperation(String directory, String operation, boolean isOptional) {
+    if (dbSqlSessionFactory.isDbEngineUsed()) {
+      executeSchemaResource(operation, getResourceForDbOperation(directory, operation, "engine"), isOptional);
     }
+    if (dbSqlSessionFactory.isDbIdentityUsed()) {
+      executeSchemaResource(operation, getResourceForDbOperation(directory, operation, "identity"), isOptional);
+    }
+    if (dbSqlSessionFactory.isDbHistoryUsed()) {
+      executeSchemaResource(operation, getResourceForDbOperation(directory, operation, "history"), isOptional);
+    }
+    if (dbSqlSessionFactory.isDbCycleUsed()) {
+      executeSchemaResource(operation, getResourceForDbOperation(directory, operation, "cycle"), isOptional);
+    }
+
   }
 
-  public void executeSchemaResourceOperation(String directory, String operation) {
-    executeSchemaResource(operation, getResourceForDbOperation(directory, operation));
-  }
-
-  public String getResourceForDbOperation(String directory, String operation) {
+  public String getResourceForDbOperation(String directory, String operation, String component) {
     String databaseType = dbSqlSessionFactory.getDatabaseType();
-    return "org/activiti/db/" + directory + "/activiti." + databaseType + "." + operation + ".sql";
+    return "org/activiti/db/" + directory + "/activiti." + databaseType + "." + operation + "."+component+".sql";
   }
 
-  public void executeSchemaResource(String operation, String resourceName) {
+  public void executeSchemaResource(String operation, String resourceName, boolean isOptional) {
     InputStream inputStream = null;
     try {
       inputStream = ReflectUtil.getResourceAsStream(resourceName);
       if (inputStream == null) {
-        throw new ActivitiException("resource '" + resourceName + "' is not available");
+        if (isOptional) {
+          log.fine("no schema resource "+resourceName+" for "+operation);
+        } else {
+          throw new ActivitiException("resource '" + resourceName + "' is not available");
+        }
       }
 
       executeSchemaResource(operation, resourceName, inputStream);
@@ -570,6 +571,7 @@ public class DbSqlSession implements Session {
 
   private void executeSchemaResource(String operation, String resourceName, InputStream inputStream) {
     String sqlStatement = null;
+    String exceptionSqlStatement = null;
     try {
       Connection connection = sqlSession.getConnection();
       Exception exception = null;
@@ -586,6 +588,7 @@ public class DbSqlSession implements Session {
           } catch (Exception e) {
             if (exception == null) {
               exception = e;
+              exceptionSqlStatement = sqlStatement;
             }
             log.log(Level.SEVERE, "problem during schema " + operation + ", statement '" + sqlStatement, e);
           }
@@ -599,7 +602,7 @@ public class DbSqlSession implements Session {
       log.fine("activiti db schema " + operation + " successful");
       
     } catch (Exception e) {
-      throw new ActivitiException("couldn't "+operation+" db schema: "+sqlStatement, e);
+      throw new ActivitiException("couldn't "+operation+" db schema: "+exceptionSqlStatement, e);
     }
   }
   

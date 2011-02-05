@@ -16,11 +16,16 @@ package org.activiti.engine.impl.cfg;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.sql.DataSource;
@@ -215,6 +220,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected List<BpmnParseListener> preParseListeners;
   protected List<BpmnParseListener> postParseListeners;
   
+  protected Properties databaseTypeMappings;
+  protected boolean isDbEngineUsed = true;
+  protected boolean isDbIdentityUsed = true;
+  protected boolean isDbHistoryUsed = true;
+  protected boolean isDbCycleUsed = false;
+  
   // buildProcessEngine ///////////////////////////////////////////////////////
   
   public ProcessEngine buildProcessEngine() {
@@ -359,6 +370,53 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       // ACT-233: connection pool of Ibatis is not properely initialized if this is not called!
       ((PooledDataSource)dataSource).forceCloseAll();
     }
+
+    initDatabaseType();
+  }
+
+  public void initDatabaseType() {
+    InputStream stream;
+    if (databaseTypeMappings==null) {
+      stream = ReflectUtil.getResourceAsStream("org/activiti/db/default.type.mapping.properties");
+      try {
+        databaseTypeMappings = new Properties();
+        databaseTypeMappings.load(stream);
+      } catch (Exception e) {
+        throw new ActivitiException("couldn't read org/activiti/db/default.type.mapping.properties", e);
+      } finally {
+        if (stream!=null) {
+          try {
+            stream.close();
+          } catch (Exception e) {
+            log.log(Level.SEVERE, "problem closing stream", e);
+          }
+        }
+      }
+    }
+
+    Connection connection = null;
+    try {
+      connection = dataSource.getConnection();
+      DatabaseMetaData databaseMetaData = connection.getMetaData();
+      String databaseProductName = databaseMetaData.getDatabaseProductName();
+      log.fine("database product name: '"+databaseProductName+"'");
+      databaseType = databaseTypeMappings.getProperty(databaseProductName);
+      if (databaseType==null) {
+        throw new ActivitiException("couldn't deduct database type from database product name '"+databaseProductName+"'");
+      }
+      log.fine("using database type: "+databaseType);
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        if (connection!=null) {
+          connection.close();
+        }
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
   }
   
   // myBatis SqlSessionFactory ////////////////////////////////////////////////
@@ -422,6 +480,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       dbSqlSessionFactory.setDatabaseType(databaseType);
       dbSqlSessionFactory.setIdGenerator(idGenerator);
       dbSqlSessionFactory.setSqlSessionFactory(sqlSessionFactory);
+      dbSqlSessionFactory.setDbEngineUsed(isDbEngineUsed);
+      dbSqlSessionFactory.setDbIdentityUsed(isDbIdentityUsed);
+      dbSqlSessionFactory.setDbHistoryUsed(isDbHistoryUsed);
+      dbSqlSessionFactory.setDbCycleUsed(isDbCycleUsed);
       addSessionFactory(dbSqlSessionFactory);
     }
     if (customSessionFactories!=null) {
@@ -1197,5 +1259,45 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public ProcessEngineConfigurationImpl setJpaCloseEntityManager(boolean jpaCloseEntityManager) {
     this.jpaCloseEntityManager = jpaCloseEntityManager;
     return this;
+  }
+
+  
+  public boolean isDbEngineUsed() {
+    return isDbEngineUsed;
+  }
+
+  
+  public void setDbEngineUsed(boolean isDbEngineUsed) {
+    this.isDbEngineUsed = isDbEngineUsed;
+  }
+
+  
+  public boolean isDbIdentityUsed() {
+    return isDbIdentityUsed;
+  }
+
+  
+  public void setDbIdentityUsed(boolean isDbIdentityUsed) {
+    this.isDbIdentityUsed = isDbIdentityUsed;
+  }
+
+  
+  public boolean isDbHistoryUsed() {
+    return isDbHistoryUsed;
+  }
+
+  
+  public void setDbHistoryUsed(boolean isDbHistoryUsed) {
+    this.isDbHistoryUsed = isDbHistoryUsed;
+  }
+
+  
+  public boolean isDbCycleUsed() {
+    return isDbCycleUsed;
+  }
+
+  
+  public void setDbCycleUsed(boolean isDbCycleUsed) {
+    this.isDbCycleUsed = isDbCycleUsed;
   }
 }

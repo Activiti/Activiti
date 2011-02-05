@@ -1,6 +1,3 @@
-alter table ACT_RU_VARIABLE 
-add TASK_ID_ varchar(64);
-
 alter table ACT_HI_DETAIL 
 add TASK_ID_ varchar(64);
 

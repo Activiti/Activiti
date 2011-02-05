@@ -55,6 +55,10 @@ public class DbSqlSessionFactory implements SessionFactory {
   protected Map<Class<?>,String>  updateStatements = Collections.synchronizedMap(new HashMap<Class<?>, String>());
   protected Map<Class<?>,String>  deleteStatements = Collections.synchronizedMap(new HashMap<Class<?>, String>());
   protected Map<Class<?>,String>  selectStatements = Collections.synchronizedMap(new HashMap<Class<?>, String>());
+  protected boolean isDbEngineUsed = true;
+  protected boolean isDbIdentityUsed = true;
+  protected boolean isDbHistoryUsed = true;
+  protected boolean isDbCycleUsed = true;
 
   public Class< ? > getSessionType() {
     return DbSqlSession.class;
@@ -192,4 +196,43 @@ public class DbSqlSessionFactory implements SessionFactory {
     this.selectStatements = selectStatements;
   }
 
+  
+  public boolean isDbEngineUsed() {
+    return isDbEngineUsed;
+  }
+
+  
+  public void setDbEngineUsed(boolean isDbEngineUsed) {
+    this.isDbEngineUsed = isDbEngineUsed;
+  }
+
+  
+  public boolean isDbIdentityUsed() {
+    return isDbIdentityUsed;
+  }
+
+  
+  public void setDbIdentityUsed(boolean isDbIdentityUsed) {
+    this.isDbIdentityUsed = isDbIdentityUsed;
+  }
+
+  
+  public boolean isDbHistoryUsed() {
+    return isDbHistoryUsed;
+  }
+
+  
+  public void setDbHistoryUsed(boolean isDbHistoryUsed) {
+    this.isDbHistoryUsed = isDbHistoryUsed;
+  }
+
+  
+  public boolean isDbCycleUsed() {
+    return isDbCycleUsed;
+  }
+
+  
+  public void setDbCycleUsed(boolean isDbCycleUsed) {
+    this.isDbCycleUsed = isDbCycleUsed;
+  }
 }

@@ -40,6 +40,25 @@ import org.apache.ibatis.session.RowBounds;
 public class DbManagementSession implements ManagementSession, Session {
   
   private static Logger log = Logger.getLogger(DbManagementSession.class.getName());
+  
+  // TODO tableNames should be obtained by using metadata
+  //  connection = dataSource.getConnection();
+  //  DatabaseMetaData databaseMetaData = connection.getMetaData();
+  //  String databaseProductName = databaseMetaData.getDatabaseProductName();
+  //  log.info("DB driver name: "+databaseMetaData.getDriverName());
+  //  String[] tableTypes = {"TABLE"};
+  //  ResultSet catalogs = databaseMetaData.getCatalogs();
+  //  while (catalogs.next()) {
+  //    String catalog = catalogs.getString("TABLE_CAT");
+  //    log.info("DB catalog: "+catalog);
+  //  }
+  //  ResultSet tables = databaseMetaData.getTables(null, null, null, tableTypes);
+  //  while (tables.next()) {
+  //    String tableCatalog = tables.getString("TABLE_CAT");
+  //    String tableName = tables.getString("TABLE_NAME");
+  //    String tableSchema = tables.getString("TABLE_SCHEM");
+  //    log.info("DB table: "+tableName+" "+tableCatalog+" "+tableSchema);
+  //  }
 
   protected static String[] tableNames = new String[]{
     "ACT_GE_PROPERTY",
