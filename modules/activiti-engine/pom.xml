@@ -291,7 +291,7 @@
                   <tasks>
                     <echo message="creating db schema in ${database}" />
                     <copy file="${basedir}/../../qa/db/activiti.cfg.xml" todir="target/test-classes" overwrite="true">
-                      <filterset filtersfile="${user.home}/.activiti/jdbc/${database}.properties" />
+                      <filterset filtersfile="${user.home}/.activiti/jdbc/build.${database}.properties" />
                     </copy>
                   </tasks>
                 </configuration>

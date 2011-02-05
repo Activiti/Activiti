@@ -18,12 +18,17 @@ import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.util.LogUtil;
 
 
 /**
  * @author Tom Baeyens
  */
 public class DbSchemaUpgrade {
+
+  static {
+    LogUtil.readJavaUtilLoggingConfigFromClasspath();
+  }
 
   public static void main(String[] args) {
     ProcessEngineImpl processEngine = (ProcessEngineImpl) ProcessEngines.getDefaultProcessEngine();
@@ -32,7 +37,7 @@ public class DbSchemaUpgrade {
       public Object execute(CommandContext commandContext) {
         commandContext
           .getSession(DbSqlSession.class)
-          .dbSchemaUpgrade();
+          .dbSchemaUpdate();
         return null;
       }
     });
