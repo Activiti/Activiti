@@ -36,7 +36,7 @@
 			<pathelement path="${test_classpath}"/>
 		</path>
 		<sql driver="${jdbc.driver}" password="${jdbc.password}" url="${jdbc.url}" userid="${jdbc.username}" classpathref="test.classpath">
-      <javaresource name="org/activiti/db/cycle/create/activiti.${database}.cycle.create.sql" classpathref="test.classpath"/>
+      <javaresource name="org/activiti/db/cycle/create/activiti.${database}.create.sql" classpathref="test.classpath"/>
 		</sql>
 	</target>
 
