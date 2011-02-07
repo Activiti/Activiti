@@ -11,6 +11,11 @@
     <property name="jdbcDriver" value="org.h2.Driver" />
     <property name="jdbcUsername" value="sa" />
     <property name="jdbcPassword" value="" />
+       
+    <!-- <property name="dbEngineUsed" value="false" /> -->
+    <property name="dbIdentityUsed" value="false" />
+    <property name="dbHistoryUsed" value="false" />
+    <property name="dbCycleUsed" value="true" />
     
     <!-- Database configurations -->
     <property name="databaseSchemaUpdate" value="true" />

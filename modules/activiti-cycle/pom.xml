@@ -41,7 +41,7 @@
             <exclude>**/SftpConnectorTest.java</exclude>
             <exclude>**/AdjustShapeNamesForXmlNCNameTest.java</exclude>
             <exclude>**/FileSystemConnectorTest.java</exclude>
-            <exclude>**/CycleDaoMyBatisImplTest.java</exclude>
+            <!-- <exclude>**/CycleDaoMyBatisImplTest.java</exclude> -->
 					</excludes>
 				</configuration>
 			</plugin>
