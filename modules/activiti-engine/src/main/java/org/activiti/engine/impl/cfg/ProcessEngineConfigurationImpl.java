@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.sql.DataSource;
@@ -220,8 +219,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected List<BpmnParseListener> preParseListeners;
   protected List<BpmnParseListener> postParseListeners;
   
-  protected Properties databaseTypeMappings;
-  protected boolean isDbEngineUsed = true;
   protected boolean isDbIdentityUsed = true;
   protected boolean isDbHistoryUsed = true;
   protected boolean isDbCycleUsed = false;
@@ -373,27 +370,21 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
     initDatabaseType();
   }
+  
+  protected static Properties databaseTypeMappings = getDefaultDatabaseTypeMappings();
+  
+  protected static Properties getDefaultDatabaseTypeMappings() {
+    Properties databaseTypeMappings = new Properties();
+    databaseTypeMappings.setProperty("H2","h2");
+    databaseTypeMappings.setProperty("MySQL","mysql");
+    databaseTypeMappings.setProperty("Oracle","oracle");
+    databaseTypeMappings.setProperty("PostgreSQL","postgres");
+    databaseTypeMappings.setProperty("Microsoft SQL Server","mssql");
+    databaseTypeMappings.setProperty("DB2","db2");
+    return databaseTypeMappings;
+  }
 
   public void initDatabaseType() {
-    InputStream stream;
-    if (databaseTypeMappings==null) {
-      stream = ReflectUtil.getResourceAsStream("org/activiti/db/default.type.mapping.properties");
-      try {
-        databaseTypeMappings = new Properties();
-        databaseTypeMappings.load(stream);
-      } catch (Exception e) {
-        throw new ActivitiException("couldn't read org/activiti/db/default.type.mapping.properties", e);
-      } finally {
-        if (stream!=null) {
-          try {
-            stream.close();
-          } catch (Exception e) {
-            log.log(Level.SEVERE, "problem closing stream", e);
-          }
-        }
-      }
-    }
-
     Connection connection = null;
     try {
       connection = dataSource.getConnection();
@@ -480,7 +471,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       dbSqlSessionFactory.setDatabaseType(databaseType);
       dbSqlSessionFactory.setIdGenerator(idGenerator);
       dbSqlSessionFactory.setSqlSessionFactory(sqlSessionFactory);
-      dbSqlSessionFactory.setDbEngineUsed(isDbEngineUsed);
       dbSqlSessionFactory.setDbIdentityUsed(isDbIdentityUsed);
       dbSqlSessionFactory.setDbHistoryUsed(isDbHistoryUsed);
       dbSqlSessionFactory.setDbCycleUsed(isDbCycleUsed);
@@ -1259,16 +1249,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public ProcessEngineConfigurationImpl setJpaCloseEntityManager(boolean jpaCloseEntityManager) {
     this.jpaCloseEntityManager = jpaCloseEntityManager;
     return this;
-  }
-
-  
-  public boolean isDbEngineUsed() {
-    return isDbEngineUsed;
-  }
-
-  
-  public void setDbEngineUsed(boolean isDbEngineUsed) {
-    this.isDbEngineUsed = isDbEngineUsed;
   }
 
   

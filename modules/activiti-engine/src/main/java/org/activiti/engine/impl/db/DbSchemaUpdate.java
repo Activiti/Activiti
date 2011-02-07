@@ -24,7 +24,7 @@ import org.activiti.engine.impl.util.LogUtil;
 /**
  * @author Tom Baeyens
  */
-public class DbSchemaUpgrade {
+public class DbSchemaUpdate {
 
   static {
     LogUtil.readJavaUtilLoggingConfigFromClasspath();

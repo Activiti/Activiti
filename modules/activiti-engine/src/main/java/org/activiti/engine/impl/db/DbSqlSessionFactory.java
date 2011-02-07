@@ -55,7 +55,6 @@ public class DbSqlSessionFactory implements SessionFactory {
   protected Map<Class<?>,String>  updateStatements = Collections.synchronizedMap(new HashMap<Class<?>, String>());
   protected Map<Class<?>,String>  deleteStatements = Collections.synchronizedMap(new HashMap<Class<?>, String>());
   protected Map<Class<?>,String>  selectStatements = Collections.synchronizedMap(new HashMap<Class<?>, String>());
-  protected boolean isDbEngineUsed = true;
   protected boolean isDbIdentityUsed = true;
   protected boolean isDbHistoryUsed = true;
   protected boolean isDbCycleUsed = true;
@@ -196,17 +195,6 @@ public class DbSqlSessionFactory implements SessionFactory {
     this.selectStatements = selectStatements;
   }
 
-  
-  public boolean isDbEngineUsed() {
-    return isDbEngineUsed;
-  }
-
-  
-  public void setDbEngineUsed(boolean isDbEngineUsed) {
-    this.isDbEngineUsed = isDbEngineUsed;
-  }
-
-  
   public boolean isDbIdentityUsed() {
     return isDbIdentityUsed;
   }

@@ -15,7 +15,6 @@ package org.activiti.engine.impl.history.handler;
 
 import java.util.List;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
@@ -35,14 +34,12 @@ public class ActivityInstanceEndHandler implements ExecutionListener {
   public void notify(ExecutionListenerExecution execution) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(executionEntity);
-    historicActivityInstance.markEnded(null);
+    if (historicActivityInstance!=null) {
+      historicActivityInstance.markEnded(null);
+    }
   }
 
   public static HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution) {
-    return findActivityInstance(execution, false);
-  }
-
-  public static HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution, boolean isNullAllowed) {
     CommandContext commandContext = CommandContext.getCurrent();
 
     String executionId = execution.getId();
@@ -75,10 +72,6 @@ public class ActivityInstanceEndHandler implements ExecutionListener {
       return findActivityInstance((ExecutionEntity) execution.getParent());
     }
     
-    if (isNullAllowed) {
-      return null;
-    }
-     
-    throw new ActivitiException("no existing history activity entity found for execution "+executionId+" in activity "+activityId);
+    return null;
   }
 }

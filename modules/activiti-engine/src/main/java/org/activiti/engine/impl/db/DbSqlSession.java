@@ -440,15 +440,31 @@ public class DbSqlSession implements Session {
   
   public void dbSchemaCheckVersion() {
     try {
-      String dbVersion = getDbVersion(sqlSession);
+      String missingComponents = null;
+      if (!isEngineTablePresent()) {
+        missingComponents = addMissingComponent(missingComponents, "engine");
+      }
+      if (dbSqlSessionFactory.isDbHistoryUsed() && !isHistoryTablePresent()) {
+        missingComponents = addMissingComponent(missingComponents, "history");
+      }
+      if (dbSqlSessionFactory.isDbIdentityUsed() && !isIdentityTablePresent()) {
+        missingComponents = addMissingComponent(missingComponents, "identity");
+      }
+      if (dbSqlSessionFactory.isDbCycleUsed() && !isCycleTablePresent()) {
+        missingComponents = addMissingComponent(missingComponents, "cycle");
+      }
+      if (missingComponents!=null) {
+        throw new ActivitiException("no activiti tables in db. missing components {"+missingComponents+"}. set <property name=\"databaseSchemaUpdate\" to value=\"true\" or value=\"create-drop\" (use create-drop for testing only!) in bean processEngineConfiguration in activiti.cfg.xml for automatic schema creation");
+      }
+
+      String dbVersion = getDbVersion();
       if (!ProcessEngine.VERSION.equals(dbVersion)) {
         throw new ActivitiWrongDbException(ProcessEngine.VERSION, dbVersion);
       }
 
     } catch (Exception e) {
       if (isMissingTablesException(e)) {
-        throw new ActivitiException(
-                "no activiti tables in db.  set <property name=\"databaseSchemaUpdate\" to value=\"true\" or value=\"create-drop\" (use create-drop for testing only!) in bean processEngineConfiguration in activiti.cfg.xml for automatic schema creation", e);
+        throw new ActivitiException("no activiti tables in db.  set <property name=\"databaseSchemaUpdate\" to value=\"true\" or value=\"create-drop\" (use create-drop for testing only!) in bean processEngineConfiguration in activiti.cfg.xml for automatic schema creation", e);
       } else {
         if (e instanceof RuntimeException) {
           throw (RuntimeException) e;
@@ -461,34 +477,56 @@ public class DbSqlSession implements Session {
     log.fine("activiti db schema check successful");
   }
 
-  protected String getDbVersion(SqlSession sqlSession) {
+  protected String addMissingComponent(String missingComponents, String component) {
+    if (missingComponents==null) {
+      return component;
+    }
+    return missingComponents+", "+component;
+  }
+
+  protected String getDbVersion() {
     String selectSchemaVersionStatement = dbSqlSessionFactory.mapStatement("selectDbSchemaVersion");
     return (String) sqlSession.selectOne(selectSchemaVersionStatement);
   }
 
   public void dbSchemaCreate() {
-    if (dbSqlSessionFactory.isDbEngineUsed() && !isEngineTablePresent()) {
-      executeMandatorySchemaResource("create", "engine");
+    if (isEngineTablePresent()) {
+      String dbVersion = getDbVersion();
+      if (!ProcessEngine.VERSION.equals(dbVersion)) {
+        throw new ActivitiWrongDbException(ProcessEngine.VERSION, dbVersion);
+      }
+    } else {
+      dbSchemaCreateEngine();
     }
-    if (dbSqlSessionFactory.isDbHistoryUsed() && !isHistoryTablePresent()) {
-      executeMandatorySchemaResource("create", "history");
+    if (dbSqlSessionFactory.isDbHistoryUsed()) {
+      dbSchemaCreateHistory();
     }
-    if (dbSqlSessionFactory.isDbIdentityUsed() && !isIdentityTablePresent()) {
-      executeMandatorySchemaResource("create", "identity");
+    if (dbSqlSessionFactory.isDbIdentityUsed()) {
+      dbSchemaCreateIdentity();
     }
-    if (dbSqlSessionFactory.isDbCycleUsed() && !isCycleTablePresent()) {
-      executeMandatorySchemaResource("create", "cycle");
+    if (dbSqlSessionFactory.isDbCycleUsed()) {
+      dbSchemaCreateCycle();
     }
   }
 
-  private void executeMandatorySchemaResource(String operation, String component) {
-    executeSchemaResource(operation, getResourceForDbOperation(operation, operation, component), false);
+  protected void dbSchemaCreateCycle() {
+    executeMandatorySchemaResource("create", "cycle");
+  }
+
+  protected void dbSchemaCreateIdentity() {
+    executeMandatorySchemaResource("create", "identity");
+  }
+
+  protected void dbSchemaCreateHistory() {
+    executeMandatorySchemaResource("create", "history");
+  }
+
+  protected void dbSchemaCreateEngine() {
+    executeMandatorySchemaResource("create", "engine");
   }
 
   public void dbSchemaDrop() {
-    if (dbSqlSessionFactory.isDbEngineUsed()) {
-      executeMandatorySchemaResource("drop", "engine");
-    }
+    executeMandatorySchemaResource("drop", "engine");
     if (dbSqlSessionFactory.isDbHistoryUsed()) {
       executeMandatorySchemaResource("drop", "history");
     }
@@ -499,43 +537,62 @@ public class DbSqlSession implements Session {
       executeMandatorySchemaResource("drop", "cycle");
     }
   }
-  
+
+  public void dbSchemaPrune() {
+    if (isHistoryTablePresent() && !dbSqlSessionFactory.isDbHistoryUsed()) {
+      executeMandatorySchemaResource("drop", "history");
+    }
+    if (isIdentityTablePresent() && dbSqlSessionFactory.isDbIdentityUsed()) {
+      executeMandatorySchemaResource("drop", "identity");
+    }
+    if (isCycleTablePresent() && dbSqlSessionFactory.isDbCycleUsed()) {
+      executeMandatorySchemaResource("drop", "cycle");
+    }
+  }
+
+  public void executeMandatorySchemaResource(String operation, String component) {
+    executeSchemaResource(operation, getResourceForDbOperation(operation, operation, component), false);
+  }
+
   private static String[] TABLE_TYPES = {"TABLE"};
 
   public void dbSchemaUpdate() {
     if (isEngineTablePresent()) {
       dbSchemaUpgrade("engine");
     } else {
-      executeMandatorySchemaResource("create", "engine");
+      dbSchemaCreateEngine();
     }
+    
     if (isHistoryTablePresent()) {
       dbSchemaUpgrade("history");
-    } else {
-      executeMandatorySchemaResource("create", "history");
+    } else if (dbSqlSessionFactory.isDbHistoryUsed()) {
+      dbSchemaCreateHistory();
     }
+    
     if (isIdentityTablePresent()) {
       dbSchemaUpgrade("identity");
-    } else {
-      executeMandatorySchemaResource("create", "identity");
+    } else if (dbSqlSessionFactory.isDbIdentityUsed()) {
+      dbSchemaCreateIdentity();
     }
+    
     if (isCycleTablePresent()) {
       dbSchemaUpgrade("cycle");
-    } else {
-      executeMandatorySchemaResource("create", "cycle");
+    } else if (dbSqlSessionFactory.isDbCycleUsed()) {
+      dbSchemaCreateCycle();
     }
   }
 
   public boolean isEngineTablePresent(){
-    return isTablePresent( "ACT_RU_EXECUTION");
+    return isTablePresent("ACT_RU_EXECUTION");
   }
   public boolean isHistoryTablePresent(){
-    return isTablePresent( "ACT_HI_PROCINST");
+    return isTablePresent("ACT_HI_PROCINST");
   }
   public boolean isIdentityTablePresent(){
-    return isTablePresent( "ACT_ID_USER");
+    return isTablePresent("ACT_ID_USER");
   }
   public boolean isCycleTablePresent(){
-    return isTablePresent( "ACT_CY_CONFIG");
+    return isTablePresent("ACT_CY_CONFIG");
   }
 
   public boolean isTablePresent(String tableName) {

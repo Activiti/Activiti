@@ -830,7 +830,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   protected void initializeActivityInstanceId(HistoricVariableUpdateEntity historicVariableUpdate) {
     ProcessEngineConfigurationImpl processEngineConfig = CommandContext.getCurrent().getProcessEngineConfiguration(); 
     if (processEngineConfig.getHistoryLevel() >= processEngineConfig.HISTORYLEVEL_FULL) {
-      HistoricActivityInstanceEntity historicActivityInstance = ActivityInstanceEndHandler.findActivityInstance(this, true);
+      HistoricActivityInstanceEntity historicActivityInstance = ActivityInstanceEndHandler.findActivityInstance(this);
       if (historicActivityInstance!=null) {
         historicVariableUpdate.setActivityInstanceId(historicActivityInstance.getId());
       }
