@@ -88,6 +88,12 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
    **/
   TaskQuery taskDefinitionKeyLike(String keyLike);
   
+  /**
+   * Only select tasks with have a local task variable with the given name
+   * set to the given value.
+   */
+  TaskQuery taskVariableValueEquals(String variableName, Object variableValue);
+  
   // ordering ////////////////////////////////////////////////////////////
   
   /** Order by task id (needs to be followed by {@link #asc()} or {@link #desc()}). */

@@ -109,6 +109,9 @@
     <if test="candidateUser != null || candidateGroups != null">
       inner join ACT_RU_IDENTITYLINK I on I.TASK_ID_ = T.ID_
     </if>
+    <foreach collection="variables" index="index" item="var">
+      inner join ACT_RU_VARIABLE A${index} on T.ID_ = A${index}.TASK_ID_ 
+    </foreach>
     <where>
       <if test="taskId != null">
         T.ID_ = #{taskId}
@@ -175,6 +178,29 @@
           </if>
         )
       </if>
+      <foreach item="var" collection="variables" index="index">
+        and A${index}.NAME_= #{var.name}
+        <if test="!var.type.equals('null')">
+          and A${index}.TYPE_ = #{var.type}
+        </if>
+        <!-- Variable value -->
+        <if test="var.textValue != null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
+          and A${index}.TEXT_ =  #{var.textValue}
+        </if>
+        <if test="var.textValue2 != null">
+          and A${index}.TEXT2_ = #{var.textValue2}
+        </if>
+        <if test="var.longValue != null">
+          and A${index}.LONG_ = #{var.longValue}
+        </if>
+        <if test="var.doubleValue != null">
+          and A${index}.DOUBLE_ = #{var.doubleValue}
+        </if>
+        <!-- Null variable type -->
+        <if test="var.textValue == null &amp;&amp; var.textValue2 == null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
+          and A${index}.TEXT_ is null and A${index}.TEXT2_ is null and A${index}.LONG_ is null and A${index}.DOUBLE_ is null and A${index}.BYTEARRAY_ID_ is null
+        </if>
+      </foreach>
     </where>
   </sql>
 

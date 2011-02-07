@@ -19,8 +19,10 @@ import java.util.List;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.identity.Group;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.variable.VariableTypes;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 
@@ -47,6 +49,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   protected Date createTimeAfter;
   protected String key;
   protected String keyLike;
+  protected List<QueryVariableValue> variables = new ArrayList<QueryVariableValue>();
   
   public TaskQueryImpl() {
   }
@@ -170,6 +173,11 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     return this;
   }
   
+  public TaskQuery taskVariableValueEquals(String variableName, Object variableValue) {
+    variables.add(new QueryVariableValue(variableName, variableValue, QueryOperator.EQUALS));
+    return this;
+  }
+  
   public List<String> getCandidateGroups() {
     if (candidateGroup!=null) {
       return Collections.singletonList(candidateGroup);
@@ -191,6 +199,13 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     return groupIds;
   }
   
+  protected void ensureVariablesInitialized(ProcessEngineConfigurationImpl configuration) {    
+    VariableTypes types = configuration.getVariableTypes();
+    for(QueryVariableValue var : variables) {
+      var.initialize(types);
+    }
+  }
+
   //ordering ////////////////////////////////////////////////////////////////
   
   public TaskQuery orderByTaskId() {
@@ -228,6 +243,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   //results ////////////////////////////////////////////////////////////////
   
   public List<Task> executeList(CommandContext commandContext, Page page) {
+    ensureVariablesInitialized(commandContext.getProcessEngineConfiguration());
     checkQueryOk();
     return commandContext
       .getTaskSession()
@@ -235,6 +251,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   }
   
   public long executeCount(CommandContext commandContext) {
+    ensureVariablesInitialized(commandContext.getProcessEngineConfiguration());
     checkQueryOk();
     return commandContext
       .getTaskSession()
@@ -293,5 +310,8 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   }
   public String getKeyLike() {
     return keyLike;
+  }
+  public List<QueryVariableValue> getVariables() {
+    return variables;
   }
 }
