@@ -134,7 +134,7 @@ Activiti.widget.createSubmitDialog = function(component, name)
 {
   var dialog = new YAHOO.widget.Dialog(component.id + "-" + name,
   {
-    fixedcenter: true,
+    fixedcenter: "contained",
     visible: false,
     constraintoviewport: true,
     modal: true,
@@ -426,7 +426,7 @@ Activiti.widget.PopupManager = function()
           draggable:true,
           modal: true,
           constraintoviewport: true,
-          fixedcenter: true,
+          fixedcenter: "contained",
           effect:
           {
             effect:YAHOO.widget.ContainerEffect.FADE,
