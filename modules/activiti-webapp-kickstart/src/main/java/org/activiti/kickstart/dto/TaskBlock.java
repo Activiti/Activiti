@@ -20,29 +20,29 @@ import java.util.List;
  */
 public class TaskBlock {
 
-  protected List<TaskDto> tasks;
+  protected List<BaseTaskDto> tasks;
 
   public TaskBlock() {
-    this.tasks = new ArrayList<TaskDto>();
+    this.tasks = new ArrayList<BaseTaskDto>();
   }
 
-  public TaskBlock(List<TaskDto> tasks) {
+  public TaskBlock(List<BaseTaskDto> tasks) {
     this.tasks = tasks;
   }
 
-  public List<TaskDto> getTasks() {
+  public List<BaseTaskDto> getTasks() {
     return tasks;
   }
 
-  public void setTasks(List<TaskDto> tasks) {
+  public void setTasks(List<BaseTaskDto> tasks) {
     this.tasks = tasks;
   }
 
-  public void addTask(TaskDto task) {
+  public void addTask(BaseTaskDto task) {
     tasks.add(task);
   }
 
-  public TaskDto get(int index) {
+  public BaseTaskDto get(int index) {
     return tasks.get(index);
   }
 

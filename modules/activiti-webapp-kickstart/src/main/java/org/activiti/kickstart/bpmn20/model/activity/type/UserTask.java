@@ -41,11 +41,13 @@ import org.activiti.kickstart.bpmn20.model.activity.Task;
 import org.activiti.kickstart.bpmn20.model.activity.misc.UserTaskImplementation;
 import org.activiti.kickstart.bpmn20.model.activity.resource.Rendering;
 
-
 /**
- * <p>Java class for tUserTask complex type.
+ * <p>
+ * Java class for tUserTask complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="tUserTask">
@@ -64,102 +66,96 @@ import org.activiti.kickstart.bpmn20.model.activity.resource.Rendering;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tUserTask", propOrder = {
-    "rendering"
-})
-public class UserTask
-    extends Task
-{
-	
-	@XmlAttribute(name = "formKey", namespace = "http://activiti.org/bpmn")
-	protected String formKey;
-	
-	public void setFormKey(String formKey) {
-		this.formKey = formKey;
-	}
-	
-	public String getFormKey() {
-		return formKey;
-	}
-	
-	/* Constructors */
-	
-	/**
-	 * Default constructor
-	 */
-	public UserTask() {	}
-	
-	
-	/**
-	 * Copy constructor based on a {@link UserTask}
-	 * @param task
-	 */
-	public UserTask(UserTask task) {
-		super(task);
-		
-		this.getRendering().addAll(task.getRendering());
-		this.setImplementation(task.getImplementation());
-	}
-	
-    protected List<Rendering> rendering;
-    @XmlAttribute
-    protected UserTaskImplementation implementation;
-    
-    /**
-     * Gets the value of the rendering property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the rendering property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getRendering().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link Rendering }
-     * 
-     * 
-     */
-    public List<Rendering> getRendering() {
-        if (rendering == null) {
-            rendering = new ArrayList<Rendering>();
-        }
-        return this.rendering;
-    }
+@XmlType(name = "tUserTask", propOrder = { "rendering" })
+public class UserTask extends Task {
 
-    /**
-     * Gets the value of the implementation property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link UserTaskImplementation }
-     *     
-     */
-    public UserTaskImplementation getImplementation() {
-        if (implementation == null) {
-            return UserTaskImplementation.UNSPECIFIED;
-        } else {
-            return implementation;
-        }
-    }
+  @XmlAttribute(name = "formKey", namespace = "http://activiti.org/bpmn")
+  protected String formKey;
 
-    /**
-     * Sets the value of the implementation property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link UserTaskImplementation }
-     *     
-     */
-    public void setImplementation(UserTaskImplementation value) {
-        this.implementation = value;
+  public void setFormKey(String formKey) {
+    this.formKey = formKey;
+  }
+
+  public String getFormKey() {
+    return formKey;
+  }
+
+  /* Constructors */
+
+  /**
+   * Default constructor
+   */
+  public UserTask() {
+  }
+
+  /**
+   * Copy constructor based on a {@link UserTask}
+   * 
+   * @param task
+   */
+  public UserTask(UserTask task) {
+    super(task);
+
+    this.getRendering().addAll(task.getRendering());
+    this.setImplementation(task.getImplementation());
+  }
+
+  protected List<Rendering> rendering;
+  @XmlAttribute
+  protected UserTaskImplementation implementation;
+
+  /**
+   * Gets the value of the rendering property.
+   * 
+   * <p>
+   * This accessor method returns a reference to the live list, not a snapshot.
+   * Therefore any modification you make to the returned list will be present
+   * inside the JAXB object. This is why there is not a <CODE>set</CODE> method
+   * for the rendering property.
+   * 
+   * <p>
+   * For example, to add a new item, do as follows:
+   * 
+   * <pre>
+   * getRendering().add(newItem);
+   * </pre>
+   * 
+   * 
+   * <p>
+   * Objects of the following type(s) are allowed in the list {@link Rendering }
+   * 
+   * 
+   */
+  public List<Rendering> getRendering() {
+    if (rendering == null) {
+      rendering = new ArrayList<Rendering>();
     }
+    return this.rendering;
+  }
+
+  /**
+   * Gets the value of the implementation property.
+   * 
+   * @return possible object is {@link UserTaskImplementation }
+   * 
+   */
+  public UserTaskImplementation getImplementation() {
+    if (implementation == null) {
+      return UserTaskImplementation.UNSPECIFIED;
+    } else {
+      return implementation;
+    }
+  }
+
+  /**
+   * Sets the value of the implementation property.
+   * 
+   * @param value
+   *          allowed object is {@link UserTaskImplementation }
+   * 
+   */
+  public void setImplementation(UserTaskImplementation value) {
+    this.implementation = value;
+  }
 
 }

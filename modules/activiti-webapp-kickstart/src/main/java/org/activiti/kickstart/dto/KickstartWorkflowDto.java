@@ -20,12 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.activiti.kickstart.bpmn20.model.Definitions;
 import org.activiti.kickstart.bpmn20.model.Documentation;
 import org.activiti.kickstart.bpmn20.model.FlowElement;
-import org.activiti.kickstart.bpmn20.model.FormalExpression;
 import org.activiti.kickstart.bpmn20.model.Process;
-import org.activiti.kickstart.bpmn20.model.activity.resource.HumanPerformer;
-import org.activiti.kickstart.bpmn20.model.activity.resource.PotentialOwner;
-import org.activiti.kickstart.bpmn20.model.activity.resource.ResourceAssignmentExpression;
-import org.activiti.kickstart.bpmn20.model.activity.type.UserTask;
 import org.activiti.kickstart.bpmn20.model.bpmndi.BPMNDiagram;
 import org.activiti.kickstart.bpmn20.model.bpmndi.BPMNPlane;
 import org.activiti.kickstart.bpmn20.model.connector.SequenceFlow;
@@ -44,7 +39,7 @@ public class KickstartWorkflowDto {
 
   protected String name;
   protected String description;
-  protected List<TaskDto> tasks = new ArrayList<TaskDto>();
+  protected List<BaseTaskDto> tasks = new ArrayList<BaseTaskDto>();
   protected List<TaskBlock> taskBlocks;
 
   // Cached version of the BPMN JAXB counterpart
@@ -71,17 +66,17 @@ public class KickstartWorkflowDto {
     this.definitions = null;
   }
 
-  public List<TaskDto> getTasks() {
+  public List<BaseTaskDto> getTasks() {
     return Collections.unmodifiableList(tasks);
   }
 
-  public void setTasks(List<TaskDto> tasks) {
+  public void setTasks(List<BaseTaskDto> tasks) {
     this.tasks = tasks;
     this.taskBlocks = null;
     this.definitions = null;
   }
 
-  public void addTask(TaskDto task) {
+  public void addTask(BaseTaskDto task) {
     tasks.add(task);
     this.taskBlocks = null;
     this.definitions = null;
@@ -97,7 +92,7 @@ public class KickstartWorkflowDto {
   protected void generateTaskBlocks() {
     taskBlocks = new ArrayList<TaskBlock>();
     for (int i = 0; i < tasks.size(); i++) {
-      TaskDto task = tasks.get(i);
+      BaseTaskDto task = tasks.get(i);
       // Parallel tasks are grouped in the same task block
       if (task.getStartsWithPrevious() && (i != 0)) {
         taskBlocks.get(taskBlocks.size() - 1).addTask(task);
@@ -151,64 +146,29 @@ public class KickstartWorkflowDto {
     process.getFlowElement().add(startEvent);
 
     // We'll group tasks by each 'task block' that is to be executed in parallel
-    List<List<UserTask>> UserTaskBlocks = new ArrayList<List<UserTask>>();
+    List<List<FlowElement>> TaskBlockList = new ArrayList<List<FlowElement>>();
     int index = 1;
     List<TaskBlock> taskBlocks = getTaskBlocks();
     for (TaskBlock taskBlock : taskBlocks) {
 
-      List<UserTask> UserTaskBlock = new ArrayList<UserTask>();
-      UserTaskBlocks.add(UserTaskBlock);
+      List<FlowElement> TaskBlock = new ArrayList<FlowElement>();
+      TaskBlockList.add(TaskBlock);
 
-      for (TaskDto task : taskBlock.getTasks()) {
+      for (BaseTaskDto baseTask : taskBlock.getTasks()) {
 
-        UserTask userTask = new UserTask();
-        userTask.setId("task_" + index++);
-        userTask.setName(task.getName());
-        if (task.getForm() != null) {
-          userTask.setFormKey(task.generateDefaultFormName());
-        }
+        FlowElement generatedTask = baseTask.createFlowElement();
 
-        // assignee
-        if (task.getAssignee() != null && !"".equals(task.getAssignee())) {
-          HumanPerformer humanPerformer = new HumanPerformer();
-          humanPerformer.setId(userTask.getId() + "_humanPerformer");
-          ResourceAssignmentExpression assignmentExpression = new ResourceAssignmentExpression();
-          assignmentExpression.setId(userTask.getId() + "_humanPerformer_assignmentExpression");
-          FormalExpression formalExpression = new FormalExpression(task.getAssignee());
-          formalExpression.setId(userTask.getId() + "_humanPerformer_formalExpressions");
-          assignmentExpression.setExpression(formalExpression);
-          humanPerformer.setResourceAssignmentExpression(assignmentExpression);
-          userTask.getActivityResource().add(humanPerformer);
-        }
-        
-        // groups
-        if (task.getGroups() != null && !"".equals(task.getGroups()) ) {
-          PotentialOwner potentialOwner = new PotentialOwner();
-          potentialOwner.setId(userTask.getId() + "_potentialOwner");
-          ResourceAssignmentExpression assignmentExpression = new ResourceAssignmentExpression();
-          assignmentExpression.setId(userTask.getId() + "_potentialOwner_assignmentExpression");
-          
-          StringBuilder groups = new StringBuilder();
-          for (String group : task.getGroups().split(",")) {
-            groups.append(group + ",");
-          }
-          groups.deleteCharAt(groups.length() - 1);
-          FormalExpression formalExpression = new FormalExpression(groups.toString());
-          
-          formalExpression.setId(userTask.getId() + "_potentialOwner_formalExpressions");
-          assignmentExpression.setExpression(formalExpression);
-          potentialOwner.setResourceAssignmentExpression(assignmentExpression);
-          userTask.getActivityResource().add(potentialOwner);
-        }
+        generatedTask.setId("task_" + index++);
+        generatedTask.setName(baseTask.getName());
 
         // Description
-        Documentation taskDocumentation = new Documentation(ExpressionUtil.replaceWhiteSpaces(task.getDescription()));
-        taskDocumentation.setId(userTask.getId() + "_documentation");
-        userTask.getDocumentation().add(taskDocumentation);
-
+        if (baseTask.getDescription() != null) {
+          Documentation taskDocumentation = new Documentation(ExpressionUtil.replaceWhiteSpaces(baseTask.getDescription()));
+          taskDocumentation.setId(generatedTask.getId() + "_documentation");
+          generatedTask.getDocumentation().add(taskDocumentation);
+        }
         // process.getFlowElement().add(userTask);
-        UserTaskBlock.add(userTask);
-
+        TaskBlock.add(generatedTask);
       }
     }
 
@@ -220,7 +180,7 @@ public class KickstartWorkflowDto {
 
     // All tasks blocks
     for (int i = 0; i < taskBlocks.size(); i++) {
-      convertTaskBlockToBpmn20(process, flowIndex, gatewayIndex, UserTaskBlocks.get(i), lastFlowElementOfBlockStack);
+      convertTaskBlockToBpmn20(process, flowIndex, gatewayIndex, TaskBlockList.get(i), lastFlowElementOfBlockStack);
     }
 
     // End
@@ -233,7 +193,7 @@ public class KickstartWorkflowDto {
 
     return definitions;
   }
-  
+
   protected FlowElement getLast(List<FlowElement> elements) {
     if (elements.size() > 0) {
       return elements.get(elements.size() - 1);
@@ -252,13 +212,13 @@ public class KickstartWorkflowDto {
   }
 
   protected void convertTaskBlockToBpmn20(Process process, AtomicInteger flowIndex, 
-          AtomicInteger gatewayIndex, List<UserTask> taskBlock,
+          AtomicInteger gatewayIndex, List<FlowElement> taskBlock,
           List<FlowElement> lastFlowElementOfBlockStack) {
 
     SequenceFlow sequenceFlow = createSequenceFlow(process, flowIndex, 
             getLast(lastFlowElementOfBlockStack), null);
     if (taskBlock.size() == 1) {
-      UserTask userTask = taskBlock.get(0);
+      FlowElement userTask = taskBlock.get(0);
       sequenceFlow.setTargetRef(userTask);
       lastFlowElementOfBlockStack.add(userTask);
       process.getFlowElement().add(userTask);
@@ -273,7 +233,7 @@ public class KickstartWorkflowDto {
 
       // sequence flow to each task of the task block from the parallel gateway
       // and back to the join
-      for (UserTask taskInBlock : taskBlock) {
+      for (FlowElement taskInBlock : taskBlock) {
         createSequenceFlow(process, flowIndex, fork, taskInBlock);
         createSequenceFlow(process, flowIndex, taskInBlock, join);
         process.getFlowElement().add(taskInBlock);

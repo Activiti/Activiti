@@ -35,17 +35,26 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.kickstart.bpmn20.model.BaseElement;
 import org.activiti.kickstart.bpmn20.model.Definitions;
 import org.activiti.kickstart.bpmn20.model.FlowElement;
+import org.activiti.kickstart.bpmn20.model.activity.Task;
 import org.activiti.kickstart.bpmn20.model.activity.resource.ActivityResource;
 import org.activiti.kickstart.bpmn20.model.activity.resource.HumanPerformer;
 import org.activiti.kickstart.bpmn20.model.activity.resource.PotentialOwner;
+import org.activiti.kickstart.bpmn20.model.activity.type.ScriptTask;
+import org.activiti.kickstart.bpmn20.model.activity.type.ServiceTask;
 import org.activiti.kickstart.bpmn20.model.activity.type.UserTask;
 import org.activiti.kickstart.bpmn20.model.connector.SequenceFlow;
+import org.activiti.kickstart.bpmn20.model.extension.AbstractExtensionElement;
+import org.activiti.kickstart.bpmn20.model.extension.activiti.ActivitFieldExtensionElement;
 import org.activiti.kickstart.bpmn20.model.gateway.ParallelGateway;
 import org.activiti.kickstart.diagram.ProcessDiagramGenerator;
+import org.activiti.kickstart.dto.BaseTaskDto;
+import org.activiti.kickstart.dto.FormDto;
 import org.activiti.kickstart.dto.KickstartWorkflowDto;
 import org.activiti.kickstart.dto.KickstartWorkflowInfo;
-import org.activiti.kickstart.dto.FormDto;
-import org.activiti.kickstart.dto.TaskDto;
+import org.activiti.kickstart.dto.MailTaskDto;
+import org.activiti.kickstart.dto.ScriptTaskDto;
+import org.activiti.kickstart.dto.ServiceTaskDto;
+import org.activiti.kickstart.dto.UserTaskDto;
 
 /**
  * @author Joram Barrez
@@ -73,11 +82,16 @@ public class KickstartServiceImpl implements KickstartService {
     deploymentBuilder.addString(bpmn20XmlResourceName, createBpmn20Xml(adhocWorkflow));
 
     // forms
-    for (TaskDto task : adhocWorkflow.getTasks()) {
-      FormDto form = task.getForm();
-      if (form != null) {
-        deploymentBuilder.addString(task.generateDefaultFormName(), form.toHtml());
-        deploymentBuilder.addString(task.generateDefaultFormName() + ".internal", form.toString());
+    for (BaseTaskDto task : adhocWorkflow.getTasks()) {
+      if (task instanceof UserTaskDto) {
+        UserTaskDto userTask = (UserTaskDto) task;
+
+        FormDto form = userTask.getForm();
+        if (form != null) {
+          deploymentBuilder.addString(userTask.generateDefaultFormName(), form.toHtml());
+          deploymentBuilder.addString(userTask.generateDefaultFormName() + ".internal",
+                  form.toString());
+        }
       }
     }
 
@@ -88,12 +102,12 @@ public class KickstartServiceImpl implements KickstartService {
 
   public List<KickstartWorkflowInfo> findKickstartWorkflowInformation() {
     List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery()
-      .processDefinitionKeyLike("adhoc_%")
-      .orderByProcessDefinitionName()
-      .asc()
-      .orderByProcessDefinitionVersion()
-      .desc()
-      .list();
+    .processDefinitionKeyLike("adhoc_%")
+    .orderByProcessDefinitionName()
+    .asc()
+    .orderByProcessDefinitionVersion()
+    .desc()
+    .list();
     return convertToDto(processDefinitions);
   }
 
@@ -108,9 +122,9 @@ public class KickstartServiceImpl implements KickstartService {
       dto.setDeploymentId(processDefinition.getDeploymentId());
 
       Date deploymentTime = repositoryService.createDeploymentQuery()
-        .deploymentId(processDefinition.getDeploymentId())
-        .singleResult()
-        .getDeploymentTime();
+      .deploymentId(processDefinition.getDeploymentId())
+      .singleResult()
+      .getDeploymentTime();
       dto.setCreateTime(deploymentTime);
 
       dto.setNrOfRuntimeInstances(historyService.createHistoricProcessInstanceQuery()
@@ -130,10 +144,10 @@ public class KickstartServiceImpl implements KickstartService {
   public KickstartWorkflowDto findKickstartWorkflowById(String id) throws JAXBException {
     // Get process definition for key
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
-      .processDefinitionId(id)
-      .singleResult();
+    .processDefinitionId(id)
+    .singleResult();
 
-    // Get BPMN 2.0 XML file for this process defintion from database and parse it with JAXB
+    // Get BPMN 2.0 XML file from database and parse it with JAXB
     InputStream is = null;
     Definitions definitions = null;
     try {
@@ -153,16 +167,16 @@ public class KickstartServiceImpl implements KickstartService {
 
   public InputStream getProcessImage(String processDefinitionId) {
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
-      .processDefinitionId(processDefinitionId)
-      .singleResult();
+    .processDefinitionId(processDefinitionId)
+    .singleResult();
     return repositoryService.getResourceAsStream(processDefinition.getDeploymentId(), 
             processDefinition.getDiagramResourceName());
   };
 
   public InputStream getProcessBpmnXml(String processDefinitionId) {
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
-      .processDefinitionId(processDefinitionId)
-      .singleResult();
+    .processDefinitionId(processDefinitionId)
+    .singleResult();
     return repositoryService.getResourceAsStream(processDefinition.getDeploymentId(), 
             processDefinition.getResourceName());
   }
@@ -196,12 +210,12 @@ public class KickstartServiceImpl implements KickstartService {
         }
 
         // user tasks
-        Map<String, UserTask> userTasks = new HashMap<String, UserTask>();
+        Map<String, Task> tasks = new HashMap<String, Task>();
         Map<String, ParallelGateway> gateways = new HashMap<String, ParallelGateway>();
         Map<String, List<SequenceFlow>> sequenceFlows = new HashMap<String, List<SequenceFlow>>();
         for (FlowElement flowElement : process.getFlowElement()) {
-          if (flowElement instanceof UserTask) {
-            userTasks.put(flowElement.getId(), (UserTask) flowElement);
+          if (flowElement instanceof Task) {
+            tasks.put(flowElement.getId(), (Task) flowElement);
           }
           if (flowElement instanceof ParallelGateway) {
             gateways.put(flowElement.getId(), (ParallelGateway) flowElement);
@@ -221,27 +235,27 @@ public class KickstartServiceImpl implements KickstartService {
         while (!currentSequenceFlow.getTargetRef().getId().equals(KickstartWorkflowDto.END_NAME)) {
 
           String targetRef = currentSequenceFlow.getTargetRef().getId();
-          TaskDto taskDto = null;
-          if (userTasks.containsKey(targetRef)) {
+          BaseTaskDto taskDto = null;
+          if (tasks.containsKey(targetRef)) {
 
-            taskDto = convertUserTaskToTaskDto(deploymentId, (UserTask) currentSequenceFlow.getTargetRef());
+            taskDto = convertTaskToTaskDto(deploymentId, (Task) currentSequenceFlow.getTargetRef());
             currentSequenceFlow = sequenceFlows.get(currentSequenceFlow.getTargetRef().getId()).get(0); // Can be only one
             adhocWorkflow.addTask(taskDto);
 
           } else if (gateways.containsKey(targetRef)) {
 
-            UserTask userTask = null;
+            Task task = null;
             for (int i = 0; i < sequenceFlows.get(targetRef).size(); i++) {
               SequenceFlow seqFlowOutOfGateway = sequenceFlows.get(targetRef).get(i);
-              userTask = (UserTask) seqFlowOutOfGateway.getTargetRef();
-              taskDto = convertUserTaskToTaskDto(deploymentId, userTask);
+              task = (Task) seqFlowOutOfGateway.getTargetRef();
+              taskDto = convertTaskToTaskDto(deploymentId, task);
               if (i > 0) {
                 taskDto.setStartWithPrevious(true);
               }
               adhocWorkflow.addTask(taskDto);
             }
 
-            String parallelJoinId = sequenceFlows.get(userTask.getId()).get(0).getTargetRef().getId(); // any seqflow is ok
+            String parallelJoinId = sequenceFlows.get(task.getId()).get(0).getTargetRef().getId(); // any seqflow is ok
             currentSequenceFlow = sequenceFlows.get(parallelJoinId).get(0); // can be only one
 
           }
@@ -254,18 +268,48 @@ public class KickstartServiceImpl implements KickstartService {
     return adhocWorkflow;
   }
 
-  protected TaskDto convertUserTaskToTaskDto(String deploymentId, UserTask userTask) {
-    TaskDto task = new TaskDto();
-    
-    task.setId(userTask.getId());
-    task.setName(userTask.getName());
-    if (!userTask.getDocumentation().isEmpty()) {
-      task.setDescription(userTask.getDocumentation().get(0).getText());
+  protected BaseTaskDto convertTaskToTaskDto(final String deploymentId, final Task task) {
+    BaseTaskDto baseTaskDto = null;
+
+    if (task instanceof UserTask) {
+      baseTaskDto = new UserTaskDto();
+      convertUserTaskToTaskDto(deploymentId, (UserTaskDto) baseTaskDto, (UserTask) task);
+    } else if (task instanceof ServiceTask) {
+      if (((ServiceTask)task).getType() != null
+              && ((ServiceTask)task).getType().equals("mail")) {
+        baseTaskDto = new MailTaskDto();
+        convertMailTaskToTaskDto(deploymentId, (MailTaskDto) baseTaskDto, (ServiceTask) task);
+      } else {
+        baseTaskDto = new ServiceTaskDto();
+        convertServiceTaskToTaskDto(deploymentId, (ServiceTaskDto) baseTaskDto, (ServiceTask) task);
+      }
+    } else if (task instanceof ScriptTask) {
+      baseTaskDto = new ScriptTaskDto();
+      convertScriptTaskToTaskDto(deploymentId, (ScriptTaskDto) baseTaskDto, (ScriptTask) task);
     }
 
+    handleBaseTaskDtoProperties(baseTaskDto, task);
+
+    return baseTaskDto;
+  }
+
+  private void handleBaseTaskDtoProperties(BaseTaskDto baseTaskDto, Task task) {
+    // task id
+    baseTaskDto.setId(task.getId());
+
+    // task name
+    baseTaskDto.setName(task.getName());
+
+    // task description
+    if (!task.getDocumentation().isEmpty()) {
+      baseTaskDto.setDescription(task.getDocumentation().get(0).getText());
+    }
+  }
+
+  protected void convertUserTaskToTaskDto(final String deploymentId, UserTaskDto task, final UserTask userTask) {
     // Assignment
     for (ActivityResource activityResource : userTask.getActivityResource()) {
-     if (activityResource instanceof PotentialOwner) {
+      if (activityResource instanceof PotentialOwner) {
         PotentialOwner potentialOwner = (PotentialOwner) activityResource;
         List<String> content = potentialOwner.getResourceAssignmentExpression().getExpression().getContent();
         if (!content.isEmpty()) {
@@ -279,7 +323,7 @@ public class KickstartServiceImpl implements KickstartService {
         }
       }
     }
-    
+
     // Task form
     if (userTask.getFormKey() != null) {
       InputStream is = repositoryService.getResourceAsStream(deploymentId, userTask.getFormKey() + ".internal");
@@ -287,8 +331,50 @@ public class KickstartServiceImpl implements KickstartService {
       IoUtil.closeSilently(is);
       task.setForm(FormDto.createFromSerialized(serializedForm));
     }
+  }
 
-    return task;
+  protected void convertServiceTaskToTaskDto(final String deploymentId, ServiceTaskDto task, final ServiceTask serviceTask) {
+
+    task.setClassName(serviceTask.getClassName());
+    task.setExpression(serviceTask.getExpression());
+    task.setDelegateExpression(serviceTask.getDelegateExpression());
+  }
+
+  protected void convertMailTaskToTaskDto(final String deploymentId, MailTaskDto task, final ServiceTask serviceTask) {
+
+    List<AbstractExtensionElement> extensionElements = serviceTask.getExtensionElements().getAny();
+    for (AbstractExtensionElement abstractExtensionElement : extensionElements) {
+      ActivitFieldExtensionElement field = (ActivitFieldExtensionElement) abstractExtensionElement;
+      String fieldName = field.getName();
+      if (fieldName.equals("to")) {
+        task.getTo().setStringValue(field.getStringValue());
+        task.getTo().setExpression(field.getExpression());
+      } else if (fieldName.equals("from")) {
+        task.getFrom().setStringValue(field.getStringValue());
+        task.getFrom().setExpression(field.getExpression());
+      } else if (fieldName.equals("subject")) {
+        task.getSubject().setStringValue(field.getStringValue());
+        task.getSubject().setExpression(field.getExpression());
+      } else if (fieldName.equals("cc")) {
+        task.getCc().setStringValue(field.getStringValue());
+        task.getCc().setExpression(field.getExpression());
+      } else if (fieldName.equals("bcc")) {
+        task.getBcc().setStringValue(field.getStringValue());
+        task.getBcc().setExpression(field.getExpression());
+      } else if (fieldName.equals("html")) {
+        task.getHtml().setStringValue(field.getStringValue());
+        task.getHtml().setExpression(field.getExpression());
+      } else if (fieldName.equals("text")) {
+        task.getText().setStringValue(field.getStringValue());
+        task.getText().setExpression(field.getExpression());
+      }
+    }
+  }
+
+  protected void convertScriptTaskToTaskDto(final String deploymentId, ScriptTaskDto task, final ScriptTask serviceTask) {
+    task.setScriptFormat(serviceTask.getScriptFormat());
+    task.setResultVariableName(serviceTask.getResultVariableName());
+    task.setScript(serviceTask.getScript());
   }
 
 }

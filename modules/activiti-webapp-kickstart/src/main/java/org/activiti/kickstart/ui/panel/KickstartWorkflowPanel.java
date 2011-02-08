@@ -12,8 +12,11 @@
  */
 package org.activiti.kickstart.ui.panel;
 
+import java.util.List;
+
+import org.activiti.kickstart.dto.BaseTaskDto;
 import org.activiti.kickstart.dto.KickstartWorkflowDto;
-import org.activiti.kickstart.dto.TaskDto;
+import org.activiti.kickstart.dto.UserTaskDto;
 import org.activiti.kickstart.service.KickstartService;
 import org.activiti.kickstart.service.ServiceLocator;
 import org.activiti.kickstart.ui.ViewManager;
@@ -138,8 +141,10 @@ public class KickstartWorkflowPanel extends Panel {
     if (existingAdhocWorkflow == null) {
       taskTable.addDefaultTaskRow();
     } else {
-      for (TaskDto task : existingAdhocWorkflow.getTasks()) {
-        taskTable.addTaskRow(task);
+      for (BaseTaskDto task : existingAdhocWorkflow.getTasks()) {
+        if(task instanceof UserTaskDto) {
+          taskTable.addTaskRow((UserTaskDto) task);
+        }
       }
     }
 
@@ -207,7 +212,7 @@ public class KickstartWorkflowPanel extends Panel {
     KickstartWorkflowDto adhocWorkflow = new KickstartWorkflowDto();
     adhocWorkflow.setName((String) nameField.getValue());
     adhocWorkflow.setDescription((String) descriptionField.getValue());
-    for (TaskDto task : taskTable.getTasks()) {
+    for (UserTaskDto task : taskTable.getTasks()) {
       adhocWorkflow.addTask(task);
     }
     return adhocWorkflow;

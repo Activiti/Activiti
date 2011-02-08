@@ -33,11 +33,13 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.activiti.kickstart.bpmn20.model.activity.Task;
 
-
 /**
- * <p>Java class for tScriptTask complex type.
+ * <p>
+ * Java class for tScriptTask complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="tScriptTask">
@@ -56,84 +58,86 @@ import org.activiti.kickstart.bpmn20.model.activity.Task;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tScriptTask", propOrder = {
-    "script"
-})
-public class ScriptTask
-    extends Task
-{
-	/**
-	 * Default constructor
-	 */
-	public ScriptTask() {
-		
-	}
-	
-	/**
-	 * Copy constructor
-	 * 
-	 * @param scriptTask
-	 * 		The {@link ScriptTask} to copy.
-	 */
-	public ScriptTask(ScriptTask scriptTask) {
-		super(scriptTask);
-		this.setScript(scriptTask.getScript());
-		this.setScriptFormat(scriptTask.getScriptFormat());
-	}
-	
-	@XmlElement
-    protected String script;
-    
-	@XmlAttribute
-    @XmlSchemaType(name = "anyURI")
-    protected String scriptFormat;
+@XmlType(name = "tScriptTask", propOrder = { "script" })
+public class ScriptTask extends Task {
 
-    /**
-     * Gets the value of the script property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getScript() {
-        return script;
-    }
+  @XmlAttribute(name = "resultVariableName", namespace = "http://activiti.org/bpmn")
+  protected String resultVariableName;
 
-    /**
-     * Sets the value of the script property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setScript(String value) {
-        this.script = value;
-    }
+  public void setResultVariableName(String resultVariableName) {
+    this.resultVariableName = resultVariableName;
+  }
 
-    /**
-     * Gets the value of the scriptLanguage property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getScriptFormat() {
-        return scriptFormat;
-    }
+  public String getResultVariableName() {
+    return resultVariableName;
+  }
 
-    /**
-     * Sets the value of the scriptLanguage property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setScriptFormat(String value) {
-        this.scriptFormat = value;
-    }
+  /**
+   * Default constructor
+   */
+  public ScriptTask() {
+
+  }
+
+  /**
+   * Copy constructor
+   * 
+   * @param scriptTask
+   *          The {@link ScriptTask} to copy.
+   */
+  public ScriptTask(ScriptTask scriptTask) {
+    super(scriptTask);
+    this.setScript(scriptTask.getScript());
+    this.setScriptFormat(scriptTask.getScriptFormat());
+  }
+
+  @XmlElement
+  protected String script;
+
+  @XmlAttribute
+  @XmlSchemaType(name = "anyURI")
+  protected String scriptFormat;
+
+  /**
+   * Gets the value of the script property.
+   * 
+   * @return possible object is {@link String }
+   * 
+   */
+  public String getScript() {
+    return script;
+  }
+
+  /**
+   * Sets the value of the script property.
+   * 
+   * @param value
+   *          allowed object is {@link String }
+   * 
+   */
+  public void setScript(String value) {
+    this.script = value;
+  }
+
+  /**
+   * Gets the value of the scriptLanguage property.
+   * 
+   * @return possible object is {@link String }
+   * 
+   */
+  public String getScriptFormat() {
+    return scriptFormat;
+  }
+
+  /**
+   * Sets the value of the scriptLanguage property.
+   * 
+   * @param value
+   *          allowed object is {@link String }
+   * 
+   */
+  public void setScriptFormat(String value) {
+    this.scriptFormat = value;
+  }
 
 }

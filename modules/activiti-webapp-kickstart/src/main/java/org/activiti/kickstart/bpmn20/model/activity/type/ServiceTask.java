@@ -33,11 +33,13 @@ import javax.xml.namespace.QName;
 import org.activiti.kickstart.bpmn20.model.activity.Task;
 import org.activiti.kickstart.bpmn20.model.activity.misc.ServiceImplementation;
 
-
 /**
- * <p>Java class for tServiceTask complex type.
+ * <p>
+ * Java class for tServiceTask complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="tServiceTask">
@@ -55,70 +57,108 @@ import org.activiti.kickstart.bpmn20.model.activity.misc.ServiceImplementation;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tServiceTask")
-public class ServiceTask
-    extends Task
-{
+public class ServiceTask extends Task {
 
-	public ServiceTask() {
-		
-	}
-	
-	/**
-	 * Copy constructor
-	 * 
-	 * @param brTask
-	 * 		Template {@link BusinessRuleTask}
-	 */
-	public ServiceTask(ServiceTask brTask) {
-		super(brTask);
-		this.setImplementation(brTask.getImplementation());
-	}
-	
-	
-    @XmlAttribute
-    protected ServiceImplementation implementation;
-	
-    @XmlAttribute
-    protected QName operationRef;
-    
-	/* Getter & Setter */
-	
-	/**
-	 * @return the implementation
-	 */
-	public ServiceImplementation getImplementation() {
-		return implementation;
-	}
-	
-	/**
-	 * @param implementation the implementation to set
-	 */
-	public void setImplementation(ServiceImplementation implementation) {
-		this.implementation = implementation;
-	}
+  @XmlAttribute(name = "delegateExpression", namespace = "http://activiti.org/bpmn")
+  protected String delegateExpression;
 
-    /**
-     * Gets the value of the operationRef property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link QName }
-     *     
-     */
-    public QName getOperationRef() {
-        return operationRef;
-    }
+  public void setDelegateExpression(String delegateExpression) {
+    this.delegateExpression = delegateExpression;
+  }
 
-    /**
-     * Sets the value of the operationRef property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link QName }
-     *     
-     */
-    public void setOperationRef(QName value) {
-        this.operationRef = value;
-    }
+  public String getDelegateExpression() {
+    return delegateExpression;
+  }
+
+  @XmlAttribute(name = "class", namespace = "http://activiti.org/bpmn")
+  protected String className;
+
+  public void setClassName(String className) {
+    this.className = className;
+  }
+
+  public String getClassName() {
+    return className;
+  }
+
+  @XmlAttribute(name = "expression", namespace = "http://activiti.org/bpmn")
+  private String expression;
+
+  public void setExpression(String expression) {
+    this.expression = expression;
+  }
+
+  public String getExpression() {
+    return expression;
+  }
+
+  @XmlAttribute(name = "type", namespace = "http://activiti.org/bpmn")
+  private String type;
+
+  public void setType(String type) {
+    this.type = type;
+  }
+  public String getType() {
+    return type;
+  }
+
+  public ServiceTask() {
+
+  }
+
+  /**
+   * Copy constructor
+   * 
+   * @param brTask
+   *          Template {@link BusinessRuleTask}
+   */
+  public ServiceTask(ServiceTask brTask) {
+    super(brTask);
+    this.setImplementation(brTask.getImplementation());
+  }
+
+  @XmlAttribute
+  protected ServiceImplementation implementation;
+
+  @XmlAttribute
+  protected QName operationRef;
+
+  /* Getter & Setter */
+
+  /**
+   * @return the implementation
+   */
+  public ServiceImplementation getImplementation() {
+    return implementation;
+  }
+
+  /**
+   * @param implementation
+   *          the implementation to set
+   */
+  public void setImplementation(ServiceImplementation implementation) {
+    this.implementation = implementation;
+  }
+
+  /**
+   * Gets the value of the operationRef property.
+   * 
+   * @return possible object is {@link QName }
+   * 
+   */
+  public QName getOperationRef() {
+    return operationRef;
+  }
+
+  /**
+   * Sets the value of the operationRef property.
+   * 
+   * @param value
+   *          allowed object is {@link QName }
+   * 
+   */
+  public void setOperationRef(QName value) {
+    this.operationRef = value;
+  }
 
 }
