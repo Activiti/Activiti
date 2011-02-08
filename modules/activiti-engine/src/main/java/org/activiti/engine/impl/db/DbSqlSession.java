@@ -601,12 +601,24 @@ public class DbSqlSession implements Session {
       connection = sqlSession.getConnection();
       DatabaseMetaData databaseMetaData = connection.getMetaData();
       ResultSet tables = null;
+      
+      boolean tablePresent = false;
       try {
-        tables = databaseMetaData.getTables(null, null, tableName, JDBC_METADATA_TABLE_TYPES);
-        return tables.next();
+        tables = databaseMetaData.getTables(null, null, tableName.toUpperCase(), JDBC_METADATA_TABLE_TYPES);
+        tablePresent = tables.next();
       } finally {
         tables.close();
       }
+      
+      if(!tablePresent) {
+        try {
+          tables = databaseMetaData.getTables(null, null, tableName.toLowerCase(), JDBC_METADATA_TABLE_TYPES);
+          tablePresent = tables.next();
+        } finally {
+          tables.close();
+        }
+      }
+      return tablePresent;
     } catch (Exception e) {
       throw new ActivitiException("couldn't check if tables are already present using metadata: "+e.getMessage(), e); 
     }
