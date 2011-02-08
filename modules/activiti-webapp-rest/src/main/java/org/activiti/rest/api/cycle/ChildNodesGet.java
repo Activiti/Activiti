@@ -31,8 +31,6 @@ import org.springframework.extensions.webscripts.Status;
  */
 public class ChildNodesGet extends ActivitiCycleWebScript {
 
-  private static Logger log = Logger.getLogger(ChildNodesGet.class.getName());
-
   @Override
   protected void execute(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
 

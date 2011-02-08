@@ -14,6 +14,7 @@
 package org.activiti.rest.api.cycle;
 
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.activiti.cycle.RepositoryAuthenticationException;
 import org.activiti.cycle.service.CycleCommentService;
@@ -33,6 +34,8 @@ import org.springframework.extensions.webscripts.Status;
  * @author Nils Preusker (nils.preusker@camunda.com)
  */
 public abstract class ActivitiCycleWebScript extends ActivitiWebScript {
+  
+  protected Logger log = Logger.getLogger(getClass().getName());
 
   protected CycleRepositoryService repositoryService;
   protected CycleTagService tagService;

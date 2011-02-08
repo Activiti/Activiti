@@ -36,27 +36,20 @@ import org.springframework.extensions.webscripts.Status;
  */
 public class TreeGet extends ActivitiCycleWebScript {
 
-  protected String connectorId;
-  protected String nodeId;
-  protected TreeFolderDto connectorRootNode;
-  protected List<TreeFolderDto> tree;
-
-  private static Logger log = Logger.getLogger(TreeGet.class.getName());
-
   @Override
   protected void execute(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     RepositoryNodeCollection rootNodes = this.repositoryService.getChildren("/", "");
     // load tree
-    tree = new ArrayList<TreeFolderDto>();
+    List<TreeFolderDto> tree = new ArrayList<TreeFolderDto>();
     for (RepositoryNode repositoryNode : rootNodes.asList()) {
       tree.add(new TreeFolderDto((RepositoryFolder) repositoryNode));
     }
-    connectorId = req.getString("connectorId");
-    nodeId = req.getString("nodeId");
+    String connectorId = req.getString("connectorId");
+    String nodeId = req.getString("nodeId");
     if (connectorId != null && nodeId != null) {
       try {
         // try to expand the tree
-        expandTree();
+        expandTree(tree, connectorId, nodeId);
       } catch (Exception e) {
         log.log(Level.WARNING, "Could not expand tree " + e.getMessage(), e);
       }
@@ -64,8 +57,8 @@ public class TreeGet extends ActivitiCycleWebScript {
     model.put("tree", tree);
   }
 
-  private void expandTree() {
-
+  private void expandTree(List<TreeFolderDto> tree, String connectorId, String nodeId) {
+    TreeFolderDto connectorRootNode = null;
     // locate the node for this connector in the tree
     for (TreeFolderDto treeFolderDto : tree) {
       if (treeFolderDto.getConnectorId().equals(connectorId)) {
@@ -76,7 +69,7 @@ public class TreeGet extends ActivitiCycleWebScript {
     }
 
     // expand the root node
-    expandRoot();
+    expandNode(connectorRootNode, false, connectorId);
 
     // expand the current node and iteratively its parent nodes until we reach
     // the root node.
@@ -84,13 +77,13 @@ public class TreeGet extends ActivitiCycleWebScript {
       RepositoryNode node = repositoryService.getRepositoryNode(connectorId, nodeId);
       TreeNodeDto treeNodeDtoForTheCurrentNode = getTreeNodeDto(node, false);
       if (treeNodeDtoForTheCurrentNode instanceof TreeFolderDto) {
-        expandNode((TreeFolderDto) treeNodeDtoForTheCurrentNode, false);
+        expandNode((TreeFolderDto) treeNodeDtoForTheCurrentNode, false, connectorId);
       }
       String parentId = node.getMetadata().getParentFolderId();
       while (parentId != null && parentId.length() > 0 && parentId != connectorRootNode.getArtifactId()) {
         RepositoryNode parentNode = repositoryService.getRepositoryNode(connectorId, parentId);
         TreeFolderDto parentTreeNode = (TreeFolderDto) getTreeNodeDto(parentNode, true);
-        expandNode(parentTreeNode, false);
+        expandNode(parentTreeNode, false, connectorId);
         parentTreeNode.replaceNode(treeNodeDtoForTheCurrentNode);
         treeNodeDtoForTheCurrentNode = parentTreeNode;
         parentId = parentNode.getMetadata().getParentFolderId();
@@ -99,14 +92,7 @@ public class TreeGet extends ActivitiCycleWebScript {
     }
   }
 
-  protected void expandRoot() {
-    // if we are queried for the "root"-node of a connector, we fetch the
-    // children of the connector and append them to the node already present
-    // in "tree".
-    expandNode(connectorRootNode, false);
-  }
-
-  protected void expandNode(TreeFolderDto dto, boolean expandChildren) {
+  protected void expandNode(TreeFolderDto dto, boolean expandChildren, String connectorId) {
     RepositoryNodeCollection childNodes = repositoryService.getChildren(connectorId, dto.getArtifactId());
     List<TreeNodeDto> children = new ArrayList<TreeNodeDto>();
     for (RepositoryNode node : childNodes.asList()) {
