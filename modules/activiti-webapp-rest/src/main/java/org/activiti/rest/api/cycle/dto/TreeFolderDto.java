@@ -13,6 +13,9 @@
 
 package org.activiti.rest.api.cycle.dto;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.activiti.cycle.RepositoryFolder;
@@ -23,7 +26,7 @@ import org.activiti.cycle.RepositoryFolder;
 public class TreeFolderDto extends TreeNodeDto {
 
   private final String folder = String.valueOf(Boolean.TRUE);
-  private List<TreeNodeDto> children;
+  private List<TreeNodeDto> children = new ArrayList<TreeNodeDto>();
 
   public TreeFolderDto(RepositoryFolder folder) {
     super(folder);
@@ -40,6 +43,36 @@ public class TreeFolderDto extends TreeNodeDto {
 
   public void setChildren(List<TreeNodeDto> children) {
     this.children = children;
+    sortChildNodes();
+  }
+
+  public void replaceNode(TreeNodeDto node) {
+    int index = children.indexOf(node);
+    if (index == -1) {
+      return;
+    }
+    children.set(index, node);
+    sortChildNodes();
+  }
+
+  public void sortChildNodes() {
+
+    Collections.sort(children, new Comparator<TreeNodeDto>() {
+
+      public int compare(TreeNodeDto arg0, TreeNodeDto arg1) {
+        if (arg0 instanceof TreeFolderDto) {
+          if (arg1 instanceof TreeFolderDto) {
+            return arg0.getLabel().compareTo(arg1.getLabel());
+          }
+          return -1;
+        }
+        if (arg1 instanceof TreeFolderDto) {
+          return 1;
+        }
+        return arg0.getLabel().compareTo(arg1.getLabel());
+      
+      }
+    });
   }
 
 }

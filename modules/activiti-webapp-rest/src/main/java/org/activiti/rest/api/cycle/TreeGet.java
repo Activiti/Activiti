@@ -15,6 +15,8 @@ package org.activiti.rest.api.cycle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryFolder;
@@ -30,63 +32,98 @@ import org.springframework.extensions.webscripts.Status;
 /**
  * 
  * @author Nils Preusker (nils.preusker@camunda.com)
+ * @author daniel.meyer@camunda.com
  */
 public class TreeGet extends ActivitiCycleWebScript {
 
-  // private static Logger log = Logger.getLogger(TreeGet.class.getName());
+  protected String connectorId;
+  protected String nodeId;
+  protected TreeFolderDto connectorRootNode;
+  protected List<TreeFolderDto> tree;
+
+  private static Logger log = Logger.getLogger(TreeGet.class.getName());
 
   @Override
   protected void execute(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     RepositoryNodeCollection rootNodes = this.repositoryService.getChildren("/", "");
-    List<TreeFolderDto> tree = new ArrayList<TreeFolderDto>();
+    // load tree
+    tree = new ArrayList<TreeFolderDto>();
     for (RepositoryNode repositoryNode : rootNodes.asList()) {
       tree.add(new TreeFolderDto((RepositoryFolder) repositoryNode));
     }
-
-    String connectorId = req.getString("connectorId");
-    String nodeId = req.getString("nodeId");
+    connectorId = req.getString("connectorId");
+    nodeId = req.getString("nodeId");
     if (connectorId != null && nodeId != null) {
-
-      RepositoryNode node = this.repositoryService.getRepositoryNode(connectorId, nodeId);
-
-      TreeNodeDto nodeDto;
-      if (node instanceof RepositoryArtifact) {
-        nodeDto = new TreeArtifactDto((RepositoryArtifact) node);
-      } else {
-        nodeDto = new TreeFolderDto((RepositoryFolder) node);
-        nodeDto.setExpanded(String.valueOf(Boolean.TRUE));
+      try {
+        // try to expand the tree
+        expandTree();
+      } catch (Exception e) {
+        log.log(Level.WARNING, "Could not expand tree " + e.getMessage(), e);
       }
+    }
+    model.put("tree", tree);
+  }
 
-      String parentFolderId = node.getMetadata().getParentFolderId();
-      while (parentFolderId != null && parentFolderId.length() > 0 && !parentFolderId.equals("/")) {
-        node = this.repositoryService.getRepositoryNode(connectorId, parentFolderId);
-        TreeFolderDto parentNodeDto = new TreeFolderDto((RepositoryFolder) node);
-        parentNodeDto.setExpanded(String.valueOf(Boolean.TRUE));
+  private void expandTree() {
 
-        List<TreeNodeDto> dtoChildren = new ArrayList<TreeNodeDto>();
-        for (RepositoryNode currentNode : this.repositoryService.getChildren(connectorId, node.getNodeId()).asList()) {
-          if (currentNode.getNodeId().equals(nodeDto.getArtifactId())) {
-            dtoChildren.add(nodeDto);
-          } else if (currentNode instanceof RepositoryArtifact) {
-            dtoChildren.add(new TreeArtifactDto((RepositoryArtifact) currentNode));
-          } else {
-            dtoChildren.add(new TreeFolderDto((RepositoryFolder) currentNode));
-          }
-        }
-        parentNodeDto.setChildren(dtoChildren);
-
-        parentFolderId = node.getMetadata().getParentFolderId();
-        nodeDto = parentNodeDto;
-      }
-
-      for (TreeNodeDto treeNode : tree) {
-        if (treeNode.getConnectorId().equals(connectorId)) {
-          ((TreeFolderDto) treeNode).setChildren(((TreeFolderDto) nodeDto).getChildren());
-          treeNode.setExpanded(String.valueOf(Boolean.TRUE));
-        }
+    // locate the node for this connector in the tree
+    for (TreeFolderDto treeFolderDto : tree) {
+      if (treeFolderDto.getConnectorId().equals(connectorId)) {
+        connectorRootNode = treeFolderDto;
+        connectorRootNode.setExpanded(String.valueOf(Boolean.TRUE));
+        break;
       }
     }
 
-    model.put("tree", tree);
+    // expand the root node
+    expandRoot();
+
+    // expand the current node and iteratively its parent nodes until we reach
+    // the root node.
+    if (!nodeId.equals(connectorRootNode.getArtifactId())) {
+      RepositoryNode node = repositoryService.getRepositoryNode(connectorId, nodeId);
+      TreeNodeDto treeNodeDtoForTheCurrentNode = getTreeNodeDto(node, false);
+      if (treeNodeDtoForTheCurrentNode instanceof TreeFolderDto) {
+        expandNode((TreeFolderDto) treeNodeDtoForTheCurrentNode, false);
+      }
+      String parentId = node.getMetadata().getParentFolderId();
+      while (parentId != null && parentId.length() > 0 && parentId != connectorRootNode.getArtifactId()) {
+        RepositoryNode parentNode = repositoryService.getRepositoryNode(connectorId, parentId);
+        TreeFolderDto parentTreeNode = (TreeFolderDto) getTreeNodeDto(parentNode, true);
+        expandNode(parentTreeNode, false);
+        parentTreeNode.replaceNode(treeNodeDtoForTheCurrentNode);
+        treeNodeDtoForTheCurrentNode = parentTreeNode;
+        parentId = parentNode.getMetadata().getParentFolderId();
+      }
+      connectorRootNode.replaceNode(treeNodeDtoForTheCurrentNode);
+    }
+  }
+
+  protected void expandRoot() {
+    // if we are queried for the "root"-node of a connector, we fetch the
+    // children of the connector and append them to the node already present
+    // in "tree".
+    expandNode(connectorRootNode, false);
+  }
+
+  protected void expandNode(TreeFolderDto dto, boolean expandChildren) {
+    RepositoryNodeCollection childNodes = repositoryService.getChildren(connectorId, dto.getArtifactId());
+    List<TreeNodeDto> children = new ArrayList<TreeNodeDto>();
+    for (RepositoryNode node : childNodes.asList()) {
+      TreeNodeDto childNode = getTreeNodeDto(node, expandChildren);
+      children.add(childNode);
+    }
+    dto.setChildren(children);
+  }
+
+  protected TreeNodeDto getTreeNodeDto(RepositoryNode node, boolean expand) {
+    TreeNodeDto dto = null;
+    if (node instanceof RepositoryArtifact) {
+      dto = new TreeArtifactDto((RepositoryArtifact) node);
+    } else if (node instanceof RepositoryFolder) {
+      dto = new TreeFolderDto((RepositoryFolder) node);
+      dto.setExpanded(String.valueOf((Boolean) expand));
+    }
+    return dto;
   }
 }

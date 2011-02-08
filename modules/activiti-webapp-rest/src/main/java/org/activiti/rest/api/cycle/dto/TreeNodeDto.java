@@ -51,4 +51,37 @@ public abstract class TreeNodeDto {
     this.expanded = expanded;
   }
 
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((artifactId == null) ? 0 : artifactId.hashCode());
+    result = prime * result + ((connectorId == null) ? 0 : connectorId.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    TreeNodeDto other = (TreeNodeDto) obj;
+    if (artifactId == null) {
+      if (other.artifactId != null)
+        return false;
+    } else if (!artifactId.equals(other.artifactId))
+      return false;
+    if (connectorId == null) {
+      if (other.connectorId != null)
+        return false;
+    } else if (!connectorId.equals(other.connectorId))
+      return false;
+    return true;
+  }
+  
+ 
+
 }
