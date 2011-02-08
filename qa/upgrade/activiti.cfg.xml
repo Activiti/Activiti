@@ -7,7 +7,6 @@
   <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration">
   
     <!-- Database configurations -->
-    <property name="databaseType" value="@db@" />
     <property name="jdbcUrl" value="@jdbc.url@" />
     <property name="jdbcDriver" value="@jdbc.driver@" />
     <property name="jdbcUsername" value="@jdbc.username@" />

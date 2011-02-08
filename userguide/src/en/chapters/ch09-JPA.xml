@@ -76,7 +76,6 @@
 &lt;/bean&gt;
 
 &lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;org.activiti.spring.SpringProcessEngineConfiguration&quot;&gt;
-  &lt;property name=&quot;databaseType&quot; value=&quot;h2&quot; /&gt;
   &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;
   &lt;property name=&quot;transactionManager&quot; ref=&quot;transactionManager&quot; /&gt;
   &lt;property name=&quot;databaseSchemaUpdate&quot; value=&quot;true&quot; /&gt;

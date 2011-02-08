@@ -6,7 +6,6 @@
 
   <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
   
-    <property name="databaseType" value="h2" />
     <property name="jdbcUrl" value="jdbc:h2:mem:migration;DB_CLOSE_DELAY=1000" />
     <property name="jdbcDriver" value="org.h2.Driver" />
     <property name="jdbcUsername" value="sa" />

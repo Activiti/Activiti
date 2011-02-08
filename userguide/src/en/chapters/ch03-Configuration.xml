@@ -27,7 +27,6 @@
 
   &lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration&quot;&gt;
   
-    &lt;property name=&quot;databaseType&quot; value=&quot;h2&quot; /&gt;
     &lt;property name=&quot;jdbcUrl&quot; value=&quot;jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000&quot; /&gt;
     &lt;property name=&quot;jdbcDriver&quot; value=&quot;org.h2.Driver&quot; /&gt;
     &lt;property name=&quot;jdbcUsername&quot; value=&quot;sa&quot; /&gt;
@@ -192,7 +191,6 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
     <para>
       Example database configuration:
       <programlisting>
-&lt;property name=&quot;databaseType&quot; value=&quot;h2&quot; /&gt;
 &lt;property name=&quot;jdbcUrl&quot; value=&quot;jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000&quot; /&gt;
 &lt;property name=&quot;jdbcDriver&quot; value=&quot;org.h2.Driver&quot; /&gt;
 &lt;property name=&quot;jdbcUsername&quot; value=&quot;sa&quot; /&gt;
@@ -226,7 +224,10 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
       <itemizedlist>
         <listitem>
           <para>
-            <emphasis role="bold">databaseType</emphasis>: indicates the type of database.
+            <emphasis role="bold">databaseType</emphasis>: It's normally not necessary to 
+            specify this property as it is automatically analysed from the database connection metadata.  
+            Should only be specified in case automatic detection fails.
+            Possible values: {h2, mysql, oracle, postgres, mssql, db2}
             <emphasis role="bold">This property is required when not using the default H2 database</emphasis>
             This setting will determine which create/drop scripts and queries will be used. See 
             <link linkend="supporteddatabases">the 'supported databases' section</link> for 
