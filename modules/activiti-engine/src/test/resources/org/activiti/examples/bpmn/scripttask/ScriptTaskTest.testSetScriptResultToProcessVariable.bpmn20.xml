@@ -22,11 +22,11 @@
   
     <startEvent id="theStart" />
 
-    <scriptTask id="theScriptTaskWithExistingProcessVariableName" scriptFormat="juel" activiti:resultVariableName="existingProcessVariableName">
+    <scriptTask id="theScriptTaskWithExistingProcessVariableName" scriptFormat="juel" activiti:resultVariable="existingProcessVariableName">
       <script>#{echo}</script>
     </scriptTask>
 
-    <scriptTask id="theScriptTaskWithNewProcessVariableName" scriptFormat="juel" activiti:resultVariableName="newProcessVariableName">
+    <scriptTask id="theScriptTaskWithNewProcessVariableName" scriptFormat="juel" activiti:resultVariable="newProcessVariableName">
       <script>#{echo}</script>
     </scriptTask>
 

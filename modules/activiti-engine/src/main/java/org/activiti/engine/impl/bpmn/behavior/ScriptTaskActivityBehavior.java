@@ -27,12 +27,12 @@ public class ScriptTaskActivityBehavior extends TaskActivityBehavior {
   
   protected final String script;
   protected final String language;
-  protected final String resultVariableName;
+  protected final String resultVariable;
 
-  public ScriptTaskActivityBehavior(String script, String language, String resultVariableName) {
+  public ScriptTaskActivityBehavior(String script, String language, String resultVariable) {
     this.script = script;
     this.language = language;
-    this.resultVariableName = resultVariableName;
+    this.resultVariable = resultVariable;
   }
   
   public void execute(ActivityExecution execution) throws Exception {
@@ -43,8 +43,8 @@ public class ScriptTaskActivityBehavior extends TaskActivityBehavior {
 
     Object result = scriptingEngines.evaluate(script, language, execution);
 
-    if (resultVariableName != null) {
-      execution.setVariable(resultVariableName, result);
+    if (resultVariable != null) {
+      execution.setVariable(resultVariable, result);
     }
 
     leave(execution);

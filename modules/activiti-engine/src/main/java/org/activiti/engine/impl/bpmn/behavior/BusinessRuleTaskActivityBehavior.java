@@ -39,7 +39,7 @@ public class BusinessRuleTaskActivityBehavior extends TaskActivityBehavior {
   protected Set<Expression> variablesInputExpressions = new HashSet<Expression>();
   protected Set<Expression> rulesExpressions = new HashSet<Expression>();
   protected boolean exclude = false;
-  protected String resultVariableName;
+  protected String resultVariable;
 
   public BusinessRuleTaskActivityBehavior() {}
   
@@ -85,7 +85,7 @@ public class BusinessRuleTaskActivityBehavior extends TaskActivityBehavior {
       for (Object object : ruleOutputObjects) {
         outputVariables.add(object);
       }
-      execution.setVariable(resultVariableName, outputVariables);
+      execution.setVariable(resultVariable, outputVariables);
     }
     ksession.dispose();
     leave(execution);
@@ -103,8 +103,8 @@ public class BusinessRuleTaskActivityBehavior extends TaskActivityBehavior {
     this.exclude = exclude;
   }
   
-  public void setResultVariableName(String resultVariableName) {
-    this.resultVariableName = resultVariableName;
+  public void setResultVariable(String resultVariableName) {
+    this.resultVariable = resultVariableName;
   }
   
 }

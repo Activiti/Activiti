@@ -783,7 +783,11 @@ public class BpmnParse extends Parse {
         language = ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE;
       }
 
-      resultVariableName = scriptTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "resultVariableName");
+      resultVariableName = scriptTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "resultVariable");
+      if (resultVariableName==null) {
+        // for backwards compatible reasons
+        resultVariableName = scriptTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "resultVariableName");
+      }
     }
     
     activity.setActivityBehavior(new ScriptTaskActivityBehavior(script, language, resultVariableName));
@@ -806,7 +810,10 @@ public class BpmnParse extends Parse {
     String className = serviceTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "class");
     String expression = serviceTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "expression");
     String delegateExpression = serviceTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "delegateExpression");
-    String resultVariableName = serviceTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "resultVariableName");
+    String resultVariableName = serviceTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "resultVariable");
+    if (resultVariableName==null) {
+      resultVariableName = serviceTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "resultVariableName");
+    }
     String implementation = serviceTaskElement.attribute("implementation");
     String operationRef = this.resolveName(serviceTaskElement.attribute("operationRef"));
 
@@ -880,7 +887,10 @@ public class BpmnParse extends Parse {
     String ruleInputString = businessRuleTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "ruleVariablesInput");
     String rulesString = businessRuleTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "rules");
     String excludeString = businessRuleTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "exclude");
-    String resultVariableNameString = businessRuleTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "resultVariableName");
+    String resultVariableNameString = businessRuleTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "resultVariable");
+    if (resultVariableNameString==null) {
+      resultVariableNameString = businessRuleTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "resultVariableName");
+    }
     
     if (ruleInputString != null) {
       String[] ruleInputObjects = ruleInputString.split(",");
@@ -912,13 +922,13 @@ public class BpmnParse extends Parse {
     if (resultVariableNameString != null) {
       resultVariableNameString = resultVariableNameString.trim();
       if (resultVariableNameString.length() > 0 == false) {
-        addError("'resultVariableName' must contain a text value for business rule tasks", businessRuleTaskElement);
+        addError("'resultVariable' must contain a text value for business rule tasks", businessRuleTaskElement);
       
       } else {
-        ruleActivity.setResultVariableName(resultVariableNameString);
+        ruleActivity.setResultVariable(resultVariableNameString);
       }
     } else {
-      ruleActivity.setResultVariableName("org.activiti.engine.rules.OUTPUT");
+      ruleActivity.setResultVariable("org.activiti.engine.rules.OUTPUT");
     }
     
     activity.setActivityBehavior(ruleActivity);

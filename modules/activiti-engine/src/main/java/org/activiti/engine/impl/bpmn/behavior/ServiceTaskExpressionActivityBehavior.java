@@ -28,18 +28,18 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 public class ServiceTaskExpressionActivityBehavior extends TaskActivityBehavior {
 
   protected Expression expression;
-  protected String resultVariableName;
+  protected String resultVariable;
 
-  public ServiceTaskExpressionActivityBehavior(Expression expression, String resultVariableName) {
+  public ServiceTaskExpressionActivityBehavior(Expression expression, String resultVariable) {
     this.expression = expression;
-    this.resultVariableName = resultVariableName;
+    this.resultVariable = resultVariable;
   }
 
   public void execute(ActivityExecution execution) throws Exception {
     Object value = expression.getValue(execution);
 
-    if (resultVariableName != null) {
-      execution.setVariable(resultVariableName, value);
+    if (resultVariable != null) {
+      execution.setVariable(resultVariable, value);
     }
     
     leave(execution);

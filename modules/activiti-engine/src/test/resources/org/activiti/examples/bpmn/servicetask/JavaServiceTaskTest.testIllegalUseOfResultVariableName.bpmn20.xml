@@ -13,7 +13,7 @@
     
     <serviceTask id="javaService" 
                  activiti:class="org.activiti.examples.bpmn.servicetask.ToUppercase" 
-                 activiti:resultVariableName="var"
+                 activiti:resultVariable="var"
             />
     
     <sequenceFlow id="flow2" sourceRef="javaService" targetRef="waitState" />

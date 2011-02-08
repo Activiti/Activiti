@@ -1574,11 +1574,11 @@ public class FakeLdapService {
 
 		    <para>
 		      The return value of a script task can be assigned to an already existing or to a new process variable by
-              specifying the process variable name as a literal value for the <emphasis>'activiti:resultVariableName'</emphasis> attribute
+              specifying the process variable name as a literal value for the <emphasis>'activiti:resultVariable'</emphasis> attribute
               of a script task definition. Any existing value for a specific process variable will be overwritten by the result
               value of the script execution. When not specifying a result variable name, the script result value gets ignored.
 <programlisting>
-&lt;scriptTask id=&quot;theScriptTask&quot; name=&quot;Execute script&quot; scriptFormat=&quot;juel&quot; activiti:resultVariableName=&quot;myVar&quot;&gt;
+&lt;scriptTask id=&quot;theScriptTask&quot; name=&quot;Execute script&quot; scriptFormat=&quot;juel&quot; activiti:resultVariable=&quot;myVar&quot;&gt;
   &lt;script&gt;#{echo}&lt;/script&gt;
 &lt;/scriptTask&gt;</programlisting>
 
@@ -1864,13 +1864,13 @@ public class ReverseStringsFieldInjected implements JavaDelegate {
 
          <para>
            The return value of a service execution (for service task using expression only) can be assigned to an already existing or to a new process variable by
-           specifying the process variable name as a literal value for the <emphasis>'activiti:resultVariableName'</emphasis> attribute
+           specifying the process variable name as a literal value for the <emphasis>'activiti:resultVariable'</emphasis> attribute
            of a service task definition. Any existing value for a specific process variable will be overwritten by the result
            value of the service execution. When not specifying a result variable name, the service execution result value gets ignored.
 <programlisting>
 &lt;serviceTask id=&quot;aMethodExpressionServiceTask&quot;
     activiti:expression=&quot;#{myService.doSomething()}&quot;
-    activiti:resultVariableName=&quot;myVar&quot; /&gt;
+    activiti:resultVariable=&quot;myVar&quot; /&gt;
 </programlisting>
              
            In the example above, the result of the service execution (the return value of the <emphasis>'doSomething()'</emphasis> method invocation on an object that is made available

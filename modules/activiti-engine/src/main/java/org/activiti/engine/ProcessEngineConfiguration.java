@@ -17,13 +17,9 @@ import java.io.InputStream;
 
 import javax.sql.DataSource;
 
+import org.activiti.engine.impl.cfg.SpringConfigurationHelper;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
 
 
 /** Configuration information from which a process engine can be build.
@@ -152,8 +148,7 @@ public abstract class ProcessEngineConfiguration {
   }
 
   public static ProcessEngineConfiguration createProcessEngineConfigurationFromResource(String resource, String beanName) {
-    Resource springResource = new ClassPathResource(resource);
-    return parseProcessEngineConfiguration(springResource, beanName);
+    return SpringConfigurationHelper.parseProcessEngineConfigurationFromResource(resource, beanName);
   }
   
   public static ProcessEngineConfiguration createProcessEngineConfigurationFromInputStream(InputStream inputStream) {
@@ -161,18 +156,9 @@ public abstract class ProcessEngineConfiguration {
   }
 
   public static ProcessEngineConfiguration createProcessEngineConfigurationFromInputStream(InputStream inputStream, String beanName) {
-    Resource springResource = new InputStreamResource(inputStream);
-    return parseProcessEngineConfiguration(springResource, beanName);
+    return SpringConfigurationHelper.parseProcessEngineConfigurationFromInputStream(inputStream, beanName);
   }
 
-  protected static ProcessEngineConfiguration parseProcessEngineConfiguration(Resource springResource, String beanName) {
-    DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
-    XmlBeanDefinitionReader xmlBeanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
-    xmlBeanDefinitionReader.setValidationMode(XmlBeanDefinitionReader.VALIDATION_XSD);
-    xmlBeanDefinitionReader.loadBeanDefinitions(springResource);
-    return (ProcessEngineConfiguration) beanFactory.getBean(beanName);
-  }
-  
   public static ProcessEngineConfiguration createStandaloneProcessEngineConfiguration() {
     return new StandaloneProcessEngineConfiguration();
   }

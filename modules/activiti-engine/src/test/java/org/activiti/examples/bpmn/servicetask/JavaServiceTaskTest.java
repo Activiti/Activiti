@@ -80,7 +80,7 @@ public class JavaServiceTaskTest extends PluggableActivitiTestCase {
       repositoryService.createDeployment().addClasspathResource("org/activiti/examples/bpmn/servicetask/JavaServiceTaskTest.testIllegalUseOfResultVariableName.bpmn20.xml").deploy();
       fail();
     } catch (ActivitiException e) {
-      assertTrue(e.getMessage().contains("resultVariableName"));
+      assertTrue(e.getMessage().contains("resultVariable"));
     }
   }
   

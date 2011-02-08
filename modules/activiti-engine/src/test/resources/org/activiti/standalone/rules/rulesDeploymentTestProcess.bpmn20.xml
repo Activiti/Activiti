@@ -9,7 +9,7 @@
   
     <startEvent id="start"/>
     <sequenceFlow id="flow1" sourceRef="start" targetRef="ruleTask" />
-    <businessRuleTask id="ruleTask" activiti:ruleVariablesInput="${order}" activiti:resultVariableName="rulesOutput"/>
+    <businessRuleTask id="ruleTask" activiti:ruleVariablesInput="${order}" activiti:resultVariable="rulesOutput"/>
     <sequenceFlow id="flow2" sourceRef="ruleTask" targetRef="receiveTask" />
     <receiveTask id="receiveTask" />
     <sequenceFlow id="flow3" sourceRef="receiveTask" targetRef="end" />
