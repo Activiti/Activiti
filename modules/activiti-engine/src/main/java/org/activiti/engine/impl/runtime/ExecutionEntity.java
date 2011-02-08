@@ -334,6 +334,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     if (transition==null) {
       throw new PvmException("transition is null");
     }
+    setActivity((ActivityImpl)transition.getSource());
     setTransition((TransitionImpl) transition);
     performOperation(AtomicOperation.TRANSITION_NOTIFY_LISTENER_END);
   }
@@ -437,7 +438,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
         ExecutionEntity outgoingExecution = null;
         if (recyclableExecutions.isEmpty()) {
           outgoingExecution = concurrentRoot.createExecution();
-          log.fine("new "+outgoingExecution+" created to take transition "+outgoingTransition);
+          log.fine("new "+outgoingExecution+" with parent " 
+                  + outgoingExecution.getParent()+" created to take transition "+outgoingTransition);
         } else {
           outgoingExecution = (ExecutionEntity) recyclableExecutions.remove(0);
           log.fine("recycled "+outgoingExecution+" to take transition "+outgoingTransition);

@@ -16,6 +16,7 @@ package org.activiti.engine.impl.bpmn.behavior;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmTransition;
@@ -35,7 +36,12 @@ public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior imp
   public void execute(ActivityExecution execution) throws Exception {
     PvmActivity activity = execution.getActivity();
     ActivityImpl initialActivity = (ActivityImpl) activity.getProperty(BpmnParse.PROPERTYNAME_INITIAL);
-
+    
+    if (initialActivity == null) {
+      throw new ActivitiException("No initial activity found for subprocess " 
+              + execution.getActivity().getId());
+    }
+    
     execution.executeActivity(initialActivity);
   }
   

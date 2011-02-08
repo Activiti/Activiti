@@ -13,11 +13,15 @@
 
 package org.activiti.engine.test.bpmn.multiinstance;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
 
 
@@ -98,5 +102,102 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     taskService.complete(taskAfterTimer.getId());
     assertProcessEnded(procId);
   }
+  
+  @Deployment
+  public void testSequentialScriptTasks() {
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("sum", 0);
+    vars.put("nrOfLoops", 5);
+    runtimeService.startProcessInstanceByKey("miSequentialScriptTask", vars);
+    Execution waitStateExecution = runtimeService.createExecutionQuery().singleResult();
+    int sum = (Integer) runtimeService.getVariable(waitStateExecution.getId(), "sum");
+    assertEquals(10, sum);
+  }
+  
+  @Deployment
+  public void testParallelScriptTasks() {
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("sum", 0);
+    vars.put("nrOfLoops", 10);
+    runtimeService.startProcessInstanceByKey("miParallelScriptTask", vars);
+    Execution waitStateExecution = runtimeService.createExecutionQuery().singleResult();
+    int sum = (Integer) runtimeService.getVariable(waitStateExecution.getId(), "sum");
+    assertEquals(45, sum);
+  }
+  
+  @Deployment
+  public void testSequentialSubProcess() {
+    String procId = runtimeService.startProcessInstanceByKey("miSequentialSubprocess").getId();
+    
+    TaskQuery query = taskService.createTaskQuery().orderByTaskName().asc();
+    for (int i=0; i<4; i++) {
+      List<Task> tasks = query.list();
+      assertEquals(2, tasks.size());
+      
+      assertEquals("task one", tasks.get(0).getName());
+      assertEquals("task two", tasks.get(1).getName());
+      
+      taskService.complete(tasks.get(0).getId());
+      taskService.complete(tasks.get(1).getId());
+    }
+    
+    assertProcessEnded(procId);
+  }
+  
+  @Deployment
+  public void testSequentialSubProcessWithTimer() {
+    String procId = runtimeService.startProcessInstanceByKey("miSequentialSubprocessWithTimer").getId();
+    
+    // Complete one subprocess
+    List<Task> tasks = taskService.createTaskQuery().list();
+    assertEquals(2, tasks.size());
+    taskService.complete(tasks.get(0).getId());
+    taskService.complete(tasks.get(1).getId());
+    tasks = taskService.createTaskQuery().list();
+    assertEquals(2, tasks.size());
 
+    // Fire timer
+    Job timer = managementService.createJobQuery().singleResult();
+    managementService.executeJob(timer.getId());
+    
+    Task taskAfterTimer = taskService.createTaskQuery().singleResult();
+    assertEquals("taskAfterTimer", taskAfterTimer.getTaskDefinitionKey());
+    taskService.complete(taskAfterTimer.getId());
+    
+    assertProcessEnded(procId);
+  }
+
+  @Deployment
+  public void testParallelSubProcess() {
+    String procId = runtimeService.startProcessInstanceByKey("miParallelSubprocess").getId();
+    List<Task> tasks = taskService.createTaskQuery().list();
+    assertEquals(10, tasks.size());
+    
+    for (Task task : tasks) {
+      taskService.complete(task.getId());
+    }
+    assertProcessEnded(procId);
+  }
+  
+  @Deployment
+  public void testParallelSubProcessWithTimer() {
+    String procId = runtimeService.startProcessInstanceByKey("miParallelSubprocessWithTimer").getId();
+    List<Task> tasks = taskService.createTaskQuery().list();
+    assertEquals(6, tasks.size());
+    
+    // Complete two tasks
+    taskService.complete(tasks.get(0).getId());
+    taskService.complete(tasks.get(1).getId());
+    
+    // Fire timer
+    Job timer = managementService.createJobQuery().singleResult();
+    managementService.executeJob(timer.getId());
+    
+    Task taskAfterTimer = taskService.createTaskQuery().singleResult();
+    assertEquals("taskAfterTimer", taskAfterTimer.getTaskDefinitionKey());
+    taskService.complete(taskAfterTimer.getId());
+    
+    assertProcessEnded(procId);
+  }
+  
 }

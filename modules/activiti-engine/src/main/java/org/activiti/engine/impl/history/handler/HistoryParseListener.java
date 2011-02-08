@@ -126,8 +126,7 @@ public class HistoryParseListener implements BpmnParseListener {
   }
   
   public void parseMultiInstanceLoopCharacteristics(Element activityElement, 
-          Element multiInstanceLoopCharacteristicsElement, ActivityImpl activity, ActivityImpl nestedActivity) {
-    addActivityHandlers(nestedActivity);
+          Element multiInstanceLoopCharacteristicsElement, ActivityImpl activity) {
   }
 
   // helper methods ///////////////////////////////////////////////////////////

@@ -46,6 +46,6 @@ public interface BpmnParseListener {
   void parseProperty(Element propertyElement, VariableDeclaration variableDeclaration, ActivityImpl activity);
   void parseSequenceFlow(Element sequenceFlowElement, ScopeImpl scopeElement, TransitionImpl transition);
   void parseSendTask(Element sendTaskElement, ScopeImpl scope, ActivityImpl activity);
-  void parseMultiInstanceLoopCharacteristics(Element activityElement, Element multiInstanceLoopCharacteristicsElement, ActivityImpl activity, ActivityImpl nestedActivity);
+  void parseMultiInstanceLoopCharacteristics(Element activityElement, Element multiInstanceLoopCharacteristicsElement, ActivityImpl activity);
 
 }

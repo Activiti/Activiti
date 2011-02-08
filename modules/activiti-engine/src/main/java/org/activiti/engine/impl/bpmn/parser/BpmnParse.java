@@ -685,23 +685,9 @@ public class BpmnParse extends Parse {
     if (miLoopCharacteristics != null) {
       boolean isSequential = parseBooleanAttribute(miLoopCharacteristics.attribute("isSequential"), false);
       
-      // new
-      String type = (String) activity.getProperty("type");
-      activity.setProperty("type", "multi-instance " + type);
+      MultiInstanceActivityBehavior miActivityBehavior = new MultiInstanceActivityBehavior((AbstractBpmnActivityBehavior) activity.getActivityBehavior(), isSequential);
       activity.setScope(true);
-      
-      ActivityImpl nestedActivity = activity.createActivity("multi-instance " + activityElement.attribute("id"));
-      nestedActivity.setProperty("type", type);
-      nestedActivity.setActivityBehavior(activity.getActivityBehavior());
-      
-      MultiInstanceActivityBehavior miActivityBehavior = new MultiInstanceActivityBehavior(nestedActivity);
-      miActivityBehavior.setSequential(isSequential);
       activity.setActivityBehavior(miActivityBehavior);
-      // new
-
-//      MultiInstanceActivityBehavior miActivityBehavior = new MultiInstanceActivityBehavior(activityBehavior, isSequential);
-//      activity.setScope(true);
-//      activity.setActivityBehavior(miActivityBehavior);
       
       Element loopCardinality = miLoopCharacteristics.element("loopCardinality");
       if (loopCardinality != null) {
@@ -713,7 +699,7 @@ public class BpmnParse extends Parse {
       }
       
       for (BpmnParseListener parseListener: parseListeners) {
-        parseListener.parseMultiInstanceLoopCharacteristics(activityElement, miLoopCharacteristics, activity, nestedActivity);
+        parseListener.parseMultiInstanceLoopCharacteristics(activityElement, miLoopCharacteristics, activity);
       }
       
     }

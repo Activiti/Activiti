@@ -93,6 +93,9 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
             lastConcurrent.getExecutions().clear();
           }
           
+          // Copy execution-local variables of lastConcurrent
+          concurrentRoot.setVariablesLocal(lastConcurrent.getVariablesLocal());
+          
           lastConcurrent.remove();
         } else {
           lastConcurrent.setConcurrent(false);
