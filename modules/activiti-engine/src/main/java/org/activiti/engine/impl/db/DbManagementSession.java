@@ -71,7 +71,7 @@ public class DbManagementSession implements ManagementSession, Session {
         tables = databaseMetaData.getTables(null, null, "ACT_%", DbSqlSession.JDBC_METADATA_TABLE_TYPES);
         while (tables.next()) {
           String tableName = tables.getString("TABLE_NAME");
-          tableNames.add(tableName);
+          tableNames.add(tableName.toUpperCase());
         }
       } finally {
         tables.close();
