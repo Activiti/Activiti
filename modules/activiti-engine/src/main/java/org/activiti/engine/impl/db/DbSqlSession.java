@@ -554,7 +554,7 @@ public class DbSqlSession implements Session {
     executeSchemaResource(operation, getResourceForDbOperation(operation, operation, component), false);
   }
 
-  private static String[] TABLE_TYPES = {"TABLE"};
+  public static String[] JDBC_METADATA_TABLE_TYPES = {"TABLE"};
 
   public void dbSchemaUpdate() {
     if (isEngineTablePresent()) {
@@ -602,7 +602,7 @@ public class DbSqlSession implements Session {
       DatabaseMetaData databaseMetaData = connection.getMetaData();
       ResultSet tables = null;
       try {
-        tables = databaseMetaData.getTables(null, null, tableName, TABLE_TYPES);
+        tables = databaseMetaData.getTables(null, null, tableName, JDBC_METADATA_TABLE_TYPES);
         return tables.next();
       } finally {
         tables.close();

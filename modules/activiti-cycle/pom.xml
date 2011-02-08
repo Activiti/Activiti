@@ -41,7 +41,7 @@
             <exclude>**/SftpConnectorTest.java</exclude>
             <exclude>**/AdjustShapeNamesForXmlNCNameTest.java</exclude>
             <exclude>**/FileSystemConnectorTest.java</exclude>
-            <!-- <exclude>**/CycleDaoMyBatisImplTest.java</exclude> -->
+            <exclude>**/CycleDaoMyBatisImplTest.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
@@ -192,12 +192,10 @@
                 </goals>
                 <configuration>
                   <tasks>
-                    <echo message="creating cycle db schema in ${database}" />                  
-                    <ant antfile="${basedir}/../../qa/db/build.xml" target="create.db.schema.cycle"
-                      inheritAll="false">
-                      <property name="test_classpath" refid="maven.test.classpath" />
-                      <property name="database" value="${database}" />
-                    </ant>                    
+                    <echo message="creating db schema in ${database}" />
+                    <copy file="${basedir}/../../qa/db/activiti.cycle.cfg.xml" tofile="target/test-classes/activiti.cfg.xml" overwrite="true">
+                      <filterset filtersfile="${user.home}/.activiti/jdbc/build.${database}.properties" />
+                    </copy>
                   </tasks>
                 </configuration>
               </execution>
@@ -209,12 +207,8 @@
                 </goals>
                 <configuration>
                   <tasks>
-                    <echo message="dropping cycle db schema in ${database}" />
-                    <ant antfile="${basedir}/../../qa/db/build.xml" target="drop.db.schema.cycle"
-                      inheritAll="false">
-                      <property name="test_classpath" refid="maven.test.classpath" />
-                      <property name="database" value="${database}" />
-                    </ant>                  
+                    <echo message="dropping schema in ${database}" />
+                    <java classname="org.activiti.engine.impl.db.DbSchemaDrop" classpathref="maven.test.classpath" />
                   </tasks>
                 </configuration>
               </execution>

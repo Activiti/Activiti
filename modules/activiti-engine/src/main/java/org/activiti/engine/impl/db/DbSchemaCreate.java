@@ -13,11 +13,8 @@
 
 package org.activiti.engine.impl.db;
 
-import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.impl.ProcessEngineImpl;
-import org.activiti.engine.impl.interceptor.Command;
-import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.util.LogUtil;
 
 
@@ -31,16 +28,10 @@ public class DbSchemaCreate {
   }
 
   public static void main(String[] args) {
-    ProcessEngineImpl processEngine = (ProcessEngineImpl) ProcessEngines.getDefaultProcessEngine();
-    CommandExecutor commandExecutor = processEngine.getProcessEngineConfiguration().getCommandExecutorTxRequired();
-    commandExecutor.execute(new Command<Object> (){
-      public Object execute(CommandContext commandContext) {
-        commandContext
-          .getSession(DbSqlSession.class)
-          .dbSchemaCreate();
-        return null;
-      }
-    });
+    ProcessEngineConfiguration
+      .createProcessEngineConfigurationFromResourceDefault()
+      .setDatabaseSchemaUpdate(ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_CREATE)
+      .buildProcessEngine();
   }
 
 }
