@@ -14,7 +14,7 @@
   </resultMap>
   
   
-  <select id="selectCycleConfigGroups" resultType="java.util.List">
+  <select id="selectCycleConfigGroups" resultMap="resultMapCycleConfig">
   	select distinct GROUP_ from ACT_CY_CONFIG
   </select>  
   

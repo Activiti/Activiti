@@ -327,11 +327,10 @@ public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements 
     }
   }
 
-  @SuppressWarnings("unchecked")
-  public List<CycleConfigEntity> selectCycleConfigById(String id) {
+  public CycleConfigEntity selectCycleConfigById(String id) {
     SqlSession session = openSession();
     try {
-      return (List<CycleConfigEntity>) session.selectList("selectCycleConfigById", id);
+      return (CycleConfigEntity) session.selectOne("selectCycleConfigById", id);
     } finally {
       session.close();
     }
@@ -363,7 +362,22 @@ public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements 
   public List<String> selectCycleConfigurationGroups() {
     SqlSession session = openSession();
     try {
-      return (List<String>) session.selectList("selectCycleConfigGroups");
+      List<CycleConfigEntity> entities = (List<CycleConfigEntity>) session.selectList("selectCycleConfigGroups");
+      List<String> result = new ArrayList<String>();
+      for (CycleConfigEntity entity : entities) {
+        result.add(entity.getGroupName());
+      }
+      return result;
+    } finally {
+      session.close();
+    }
+  }
+
+  public void deleteCycleConfigurationEntry(String id) {
+    SqlSession session = openSession();
+    try {
+      session.delete("deleteConfigById", id);
+      session.commit();
     } finally {
       session.close();
     }

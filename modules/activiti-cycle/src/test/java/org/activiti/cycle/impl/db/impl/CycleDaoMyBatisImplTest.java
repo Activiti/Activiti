@@ -176,29 +176,35 @@ public class CycleDaoMyBatisImplTest extends ActivitiCycleDbAwareTest {
   }
   
   public void testSelectCycleConfigGroups() {
-//    CycleConfigEntity ce1 = new CycleConfigEntity();
-//    ce1.setGroupName("g1");  
-//    ce1.setKey("key1");
-//    ce1.setValue("value1");
-//    
-//    CycleConfigEntity ce2 = new CycleConfigEntity();
-//    ce2.setGroupName("g2");  
-//    ce2.setKey("key2");
-//    ce2.setValue("value2");
-//    
-//    CycleConfigEntity ce3 = new CycleConfigEntity();
-//    ce3.setGroupName("g1");  // g1   
-//    ce3.setKey("key3");
-//    ce3.setValue("value3");
-//        
-//    dao.saveCycleConfig(ce1);
-//    dao.saveCycleConfig(ce2);
-//    dao.saveCycleConfig(ce3);
-//    
-//    List<String> groups = dao.selectCycleConfigurationGroups();
-//    
-//    assertEquals(2, groups.size());
-//     
+    CycleConfigEntity ce1 = new CycleConfigEntity();
+    ce1.setGroupName("g1");  
+    ce1.setKey("key1");
+    ce1.setValue("value1");
+    
+    CycleConfigEntity ce2 = new CycleConfigEntity();
+    ce2.setGroupName("g2");  
+    ce2.setKey("key2");
+    ce2.setValue("value2");
+    
+    CycleConfigEntity ce3 = new CycleConfigEntity();
+    ce3.setGroupName("g1");  // g1   
+    ce3.setKey("key3");
+    ce3.setValue("value3");
+        
+    dao.saveCycleConfig(ce1);
+    dao.saveCycleConfig(ce2);
+    dao.saveCycleConfig(ce3);
+    
+    List<String> groups = dao.selectCycleConfigurationGroups();
+    
+    assertEquals(2, groups.size());
+    
+    for (String group : groups) {
+    	for (CycleConfigEntity entity : dao.selectCycleConfigByGroup(group)) {
+    		dao.deleteCycleConfigurationEntry(entity.getId());    					
+		}
+	}
+         
   }
 
 }

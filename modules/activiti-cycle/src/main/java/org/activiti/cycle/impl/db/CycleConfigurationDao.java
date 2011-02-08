@@ -17,8 +17,10 @@ public interface CycleConfigurationDao {
 
   public List<CycleConfigEntity> selectCycleConfigByGroup(String group);
 
-  public List<CycleConfigEntity> selectCycleConfigById(String id);
+  public CycleConfigEntity selectCycleConfigById(String id);
   
   public List<String> selectCycleConfigurationGroups();
+  
+  public void deleteCycleConfigurationEntry(String id);
 
 }

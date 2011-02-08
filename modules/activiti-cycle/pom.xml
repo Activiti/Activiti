@@ -35,13 +35,10 @@
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<excludes>
-						<exclude>**/RepositoryConnectorConfigurationManagerImplTest.java</exclude>
-						<exclude>**/TestSvnRepositoryConnector.java</exclude>
-            <exclude>**/SftpConnectorTest.java</exclude>
+					<excludes>			
             <exclude>**/AdjustShapeNamesForXmlNCNameTest.java</exclude>
             <exclude>**/FileSystemConnectorTest.java</exclude>
-            <exclude>**/CycleDaoMyBatisImplTest.java</exclude>
+          <!--   <exclude>**/CycleDaoMyBatisImplTest.java</exclude> -->
 					</excludes>
 				</configuration>
 			</plugin>
