@@ -17,9 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.CompositeActivityBehavior;
+import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 
 
@@ -27,7 +29,7 @@ import org.activiti.engine.impl.runtime.ExecutionEntity;
  * @author Joram Barrez
  */
 public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior  
-  implements CompositeActivityBehavior {
+  implements CompositeActivityBehavior, SubProcessActivityBehavior {
   
   // Variables for outer instance(as described in spec)
   protected final String NUMBER_OF_INSTANCES = "numberOfInstances";
@@ -123,21 +125,6 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
     }
   }
   
-  public void lastExecutionEnded(ActivityExecution execution) {
-    // In case of a sequential multi-instance, we get a 'lastExecutionEnded'
-    // for every activity instance that is completed, one at a time.
-    // This means we must delegate to the normal leave logic of a multi instance
-    //
-    // However, in the parallel case, we get a 'lastExecutionEnded'
-    // when ALL parallel activity instances are completed, in which case
-    // we know we can leave the multi instance activity in the regular BPMN 2.0 way
-    if (isSequential) {
-      leave(execution);
-    } else {
-      super.leave(execution);
-    }
-  }
-  
   protected int resolveLoopCardinality(ActivityExecution execution) {
     // Using Number since expr can evaluate to eg. Long (default for Juel)
     Object value = loopCardinalityExpression.getValue(execution);
@@ -162,6 +149,31 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
       parent = parent.getParent();
     }
     return (Integer) value;
+  }
+  
+  // required for supporting embedded subprocesses
+  public void lastExecutionEnded(ActivityExecution execution) {
+    // In case of a sequential multi-instance, we get a 'lastExecutionEnded'
+    // for every activity instance that is completed, one at a time.
+    // This means we must delegate to the normal leave logic of a multi instance
+    //
+    // However, in the parallel case, we get a 'lastExecutionEnded'
+    // when ALL parallel activity instances are completed, in which case
+    // we know we can leave the multi instance activity in the regular BPMN 2.0 way
+    if (isSequential) {
+      leave(execution);
+    } else {
+      super.leave(execution);
+    }
+  }
+  
+  // required for supporting external subprocesses
+  public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
+  }
+
+  // required for supporting external subprocesses
+  public void completed(ActivityExecution execution) throws Exception {
+    leave(execution);
   }
   
   // Getters and Setters ///////////////////////////////////////////////////////////
@@ -189,5 +201,6 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
   public void setLoopCardinalityExpression(Expression loopCardinalityExpression) {
     this.loopCardinalityExpression = loopCardinalityExpression;
   }
+
   
 }

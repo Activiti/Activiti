@@ -71,6 +71,19 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   }
   
   @Deployment
+  public void testNestedSequentialUserTasks() {
+    String procId = runtimeService.startProcessInstanceByKey("miNestedSequentialUserTasks").getId();
+    
+    for (int i=0; i<3; i++) {
+      Task task = taskService.createTaskQuery().taskAssignee("kermit").singleResult();
+      assertEquals("My Task", task.getName());
+      taskService.complete(task.getId());
+    }
+    
+    assertProcessEnded(procId);
+  }
+  
+  @Deployment
   public void testParallelUserTasks() {
     String procId = runtimeService.startProcessInstanceByKey("miParallelUserTasks").getId();
     
@@ -100,6 +113,19 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     Task taskAfterTimer = taskService.createTaskQuery().singleResult();
     assertEquals("taskAfterTimer", taskAfterTimer.getTaskDefinitionKey());
     taskService.complete(taskAfterTimer.getId());
+    assertProcessEnded(procId);
+  }
+  
+  @Deployment
+  public void testNestedParallelUserTasks() {
+    String procId = runtimeService.startProcessInstanceByKey("miNestedParallelUserTasks").getId();
+    
+    List<Task> tasks = taskService.createTaskQuery().taskAssignee("kermit").list();
+    for (Task task : tasks) {
+      assertEquals("My Task", task.getName());
+      taskService.complete(task.getId());
+    }
+    
     assertProcessEnded(procId);
   }
   
@@ -166,6 +192,44 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     
     assertProcessEnded(procId);
   }
+  
+  @Deployment
+  public void testNestedSequentialSubProcess() {
+    String procId = runtimeService.startProcessInstanceByKey("miNestedSequentialSubProcess").getId();
+    
+    for (int i=0; i<3; i++) {
+      List<Task> tasks = taskService.createTaskQuery().taskAssignee("kermit").list();
+      taskService.complete(tasks.get(0).getId());
+      taskService.complete(tasks.get(1).getId());
+    }
+    
+    assertProcessEnded(procId);
+  }
+  
+  @Deployment
+  public void testNestedSequentialSubProcessWithTimer() {
+    String procId = runtimeService.startProcessInstanceByKey("miNestedSequentialSubProcessWithTimer").getId();
+    
+    for (int i=0; i<2; i++) {
+      List<Task> tasks = taskService.createTaskQuery().taskAssignee("kermit").list();
+      taskService.complete(tasks.get(0).getId());
+      taskService.complete(tasks.get(1).getId());
+    }
+    
+    // Complete one task, to make it a bit more trickier
+    List<Task> tasks = taskService.createTaskQuery().taskAssignee("kermit").list();
+    taskService.complete(tasks.get(0).getId());
+    
+    // Fire timer
+    Job timer = managementService.createJobQuery().singleResult();
+    managementService.executeJob(timer.getId());
+    
+    Task taskAfterTimer = taskService.createTaskQuery().singleResult();
+    assertEquals("taskAfterTimer", taskAfterTimer.getTaskDefinitionKey());
+    taskService.complete(taskAfterTimer.getId());
+    
+    assertProcessEnded(procId);
+  }
 
   @Deployment
   public void testParallelSubProcess() {
@@ -189,6 +253,196 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     taskService.complete(tasks.get(0).getId());
     taskService.complete(tasks.get(1).getId());
     
+    // Fire timer
+    Job timer = managementService.createJobQuery().singleResult();
+    managementService.executeJob(timer.getId());
+    
+    Task taskAfterTimer = taskService.createTaskQuery().singleResult();
+    assertEquals("taskAfterTimer", taskAfterTimer.getTaskDefinitionKey());
+    taskService.complete(taskAfterTimer.getId());
+    
+    assertProcessEnded(procId);
+  }
+  
+  @Deployment
+  public void testNestedParallelSubProcess() {
+    String procId = runtimeService.startProcessInstanceByKey("miNestedParallelSubProcess").getId();
+    List<Task> tasks = taskService.createTaskQuery().list();
+    assertEquals(8, tasks.size());
+    
+    for (Task task : tasks) {
+      taskService.complete(task.getId());
+    }
+    assertProcessEnded(procId);
+  }
+  
+  @Deployment
+  public void testNestedParallelSubProcessWithTimer() {
+    String procId = runtimeService.startProcessInstanceByKey("miNestedParallelSubProcess").getId();
+    List<Task> tasks = taskService.createTaskQuery().list();
+    assertEquals(12, tasks.size());
+    
+    for (int i=0; i<3; i++) {
+      taskService.complete(tasks.get(i).getId());
+    }
+    
+    // Fire timer
+    Job timer = managementService.createJobQuery().singleResult();
+    managementService.executeJob(timer.getId());
+    
+    Task taskAfterTimer = taskService.createTaskQuery().singleResult();
+    assertEquals("taskAfterTimer", taskAfterTimer.getTaskDefinitionKey());
+    taskService.complete(taskAfterTimer.getId());
+    
+    assertProcessEnded(procId);
+  }
+  
+  @Deployment(resources = {"org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialCallActivity.bpmn20.xml",
+          "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml"})
+  public void testSequentialCallActivity() {
+    String procId = runtimeService.startProcessInstanceByKey("miSequentialCallActivity").getId();
+    
+    for (int i=0; i<3; i++) {
+      List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
+      assertEquals(2, tasks.size());
+      assertEquals("task one", tasks.get(0).getName());
+      assertEquals("task two", tasks.get(1).getName());
+      taskService.complete(tasks.get(0).getId());
+      taskService.complete(tasks.get(1).getId());
+    }
+    
+    assertProcessEnded(procId);
+  }
+  
+  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialCallActivityWithTimer.bpmn20.xml",
+      "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml" })
+  public void testSequentialCallActivityWithTimer() {
+    String procId = runtimeService.startProcessInstanceByKey("miSequentialCallActivityWithTimer").getId();
+
+    // Complete first subprocess
+    List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
+    assertEquals(2, tasks.size());
+    assertEquals("task one", tasks.get(0).getName());
+    assertEquals("task two", tasks.get(1).getName());
+    taskService.complete(tasks.get(0).getId());
+    taskService.complete(tasks.get(1).getId());
+    
+    // Fire timer
+    Job timer = managementService.createJobQuery().singleResult();
+    managementService.executeJob(timer.getId());
+    
+    Task taskAfterTimer = taskService.createTaskQuery().singleResult();
+    assertEquals("taskAfterTimer", taskAfterTimer.getTaskDefinitionKey());
+    taskService.complete(taskAfterTimer.getId());
+    
+    assertProcessEnded(procId);
+  }
+  
+  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelCallActivity.bpmn20.xml",
+      "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml" })
+  public void testParallelCallActivity() {
+    String procId = runtimeService.startProcessInstanceByKey("miParallelCallActivity").getId();
+    List<Task> tasks = taskService.createTaskQuery().list();
+    assertEquals(12, tasks.size());
+    for (int i = 0; i < tasks.size(); i++) {
+      taskService.complete(tasks.get(i).getId());
+    }
+
+    assertProcessEnded(procId);
+  }
+  
+  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelCallActivityWithTimer.bpmn20.xml",
+      "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml" })
+  public void testParallelCallActivityWithTimer() {
+    String procId = runtimeService.startProcessInstanceByKey("miParallelCallActivity").getId();
+    List<Task> tasks = taskService.createTaskQuery().list();
+    assertEquals(6, tasks.size());
+    for (int i = 0; i < 2; i++) {
+      taskService.complete(tasks.get(i).getId());
+    }
+
+    // Fire timer
+    Job timer = managementService.createJobQuery().singleResult();
+    managementService.executeJob(timer.getId());
+    
+    Task taskAfterTimer = taskService.createTaskQuery().singleResult();
+    assertEquals("taskAfterTimer", taskAfterTimer.getTaskDefinitionKey());
+    taskService.complete(taskAfterTimer.getId());
+    
+    assertProcessEnded(procId);
+  }
+  
+  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testNestedSequentialCallActivity.bpmn20.xml",
+      "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml" })
+  public void testNestedSequentialCallActivity() {
+    String procId = runtimeService.startProcessInstanceByKey("miNestedSequentialCallActivity").getId();
+    
+    for (int i=0; i<4; i++) {
+      List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
+      assertEquals(2, tasks.size());
+      assertEquals("task one", tasks.get(0).getName());
+      assertEquals("task two", tasks.get(1).getName());
+      taskService.complete(tasks.get(0).getId());
+      taskService.complete(tasks.get(1).getId());
+    }
+
+    assertProcessEnded(procId);
+  }
+  
+  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testNestedSequentialCallActivityWithTimer.bpmn20.xml",
+      "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml" })
+  public void testNestedSequentialCallActivityWithTimer() {
+    String procId = runtimeService.startProcessInstanceByKey("miNestedSequentialCallActivityWithTimer").getId();
+
+    // first instance
+    List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
+    assertEquals(2, tasks.size());
+    assertEquals("task one", tasks.get(0).getName());
+    assertEquals("task two", tasks.get(1).getName());
+    taskService.complete(tasks.get(0).getId());
+    taskService.complete(tasks.get(1).getId());
+    
+    // one task of second instance
+    tasks = taskService.createTaskQuery().list();
+    assertEquals(2, tasks.size());
+    taskService.complete(tasks.get(0).getId());
+
+    // Fire timer
+    Job timer = managementService.createJobQuery().singleResult();
+    managementService.executeJob(timer.getId());
+    
+    Task taskAfterTimer = taskService.createTaskQuery().singleResult();
+    assertEquals("taskAfterTimer", taskAfterTimer.getTaskDefinitionKey());
+    taskService.complete(taskAfterTimer.getId());
+    
+    assertProcessEnded(procId);
+  }
+  
+  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testNestedParallelCallActivity.bpmn20.xml",
+  "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml" })
+  public void testNestedParallelCallActivity() {
+    String procId = runtimeService.startProcessInstanceByKey("miNestedParallelCallActivity").getId();
+
+    List<Task> tasks = taskService.createTaskQuery().list();
+    assertEquals(14, tasks.size());
+    for (int i = 0; i < 14; i++) {
+      taskService.complete(tasks.get(i).getId());
+    }
+
+    assertProcessEnded(procId);
+  }
+  
+  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testNestedParallelCallActivityWithTimer.bpmn20.xml",
+  "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml" })
+  public void testNestedParallelCallActivityWithTimer() {
+    String procId = runtimeService.startProcessInstanceByKey("miNestedParallelCallActivityWithTimer").getId();
+
+    List<Task> tasks = taskService.createTaskQuery().list();
+    assertEquals(4, tasks.size());
+    for (int i = 0; i < 3; i++) {
+      taskService.complete(tasks.get(i).getId());
+    }
+
     // Fire timer
     Job timer = managementService.createJobQuery().singleResult();
     managementService.executeJob(timer.getId());
