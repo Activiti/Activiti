@@ -68,8 +68,7 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
     List<CommandInterceptor> defaultCommandInterceptorsTxRequired = new ArrayList<CommandInterceptor>();
     defaultCommandInterceptorsTxRequired.add(new LogInterceptor());
     defaultCommandInterceptorsTxRequired.add(new SpringTransactionInterceptor(transactionManager, TransactionTemplate.PROPAGATION_REQUIRED));
-    CommandContextInterceptor commandContextInterceptor = new CommandContextInterceptor();
-    commandContextInterceptor.setCommandContextFactory(commandContextFactory);
+    CommandContextInterceptor commandContextInterceptor = new CommandContextInterceptor(commandContextFactory, processEngineContext);
     defaultCommandInterceptorsTxRequired.add(commandContextInterceptor);
     defaultCommandInterceptorsTxRequired.add(new CommandExecutorImpl());
     return defaultCommandInterceptorsTxRequired;
@@ -79,8 +78,7 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
     List<CommandInterceptor> defaultCommandInterceptorsTxRequiresNew = new ArrayList<CommandInterceptor>();
     defaultCommandInterceptorsTxRequiresNew.add(new LogInterceptor());
     defaultCommandInterceptorsTxRequiresNew.add(new SpringTransactionInterceptor(transactionManager, TransactionTemplate.PROPAGATION_REQUIRES_NEW));
-    CommandContextInterceptor commandContextInterceptor = new CommandContextInterceptor();
-    commandContextInterceptor.setCommandContextFactory(commandContextFactory);
+    CommandContextInterceptor commandContextInterceptor = new CommandContextInterceptor(commandContextFactory, processEngineContext);
     defaultCommandInterceptorsTxRequiresNew.add(commandContextInterceptor);
     defaultCommandInterceptorsTxRequiresNew.add(new CommandExecutorImpl());
     return defaultCommandInterceptorsTxRequiresNew;

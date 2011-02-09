@@ -24,6 +24,7 @@ import java.util.Map;
  */
 public class ProcessEngineContext {
 
+  protected int historyLevel;
   protected Map<Object, Object> processEngineContextObjects;
   protected VariableTypes variableTypes;
   protected String mailServerDefaultFrom;
@@ -31,6 +32,9 @@ public class ProcessEngineContext {
   protected int mailServerPort;
   protected String mailServerUsername;
   protected String mailServerPassword;
+  protected boolean isDbIdentityUsed = true;
+  protected boolean isDbHistoryUsed = true;
+  protected boolean isDbCycleUsed = true;
 
   public ProcessEngineContext(ProcessEngineConfigurationImpl processEngineConfiguration) {
     this.processEngineContextObjects = processEngineConfiguration.getProcessEngineObjects();
@@ -40,6 +44,10 @@ public class ProcessEngineContext {
     this.mailServerPort = processEngineConfiguration.getMailServerPort();
     this.mailServerUsername = processEngineConfiguration.getMailServerUsername();
     this.mailServerPassword = processEngineConfiguration.getMailServerPassword();
+    this.historyLevel = processEngineConfiguration.getHistoryLevel();
+    this.isDbIdentityUsed = processEngineConfiguration.isDbIdentityUsed();
+    this.isDbHistoryUsed = processEngineConfiguration.isDbHistoryUsed();
+    this.isDbCycleUsed = processEngineConfiguration.isDbCycleUsed();
   }
 
   public Map<Object, Object> getProcessEngineContextObjects() {
@@ -69,4 +77,28 @@ public class ProcessEngineContext {
   public int getMailServerPort() {
     return mailServerPort;
   }
+
+  public int getHistoryLevel() {
+    return historyLevel;
+  }
+
+  public void setHistoryLevel(int historyLevel) {
+    this.historyLevel = historyLevel;
+  }
+
+  
+  public boolean isDbIdentityUsed() {
+    return isDbIdentityUsed;
+  }
+
+  
+  public boolean isDbHistoryUsed() {
+    return isDbHistoryUsed;
+  }
+
+  
+  public boolean isDbCycleUsed() {
+    return isDbCycleUsed;
+  }
+  
 }

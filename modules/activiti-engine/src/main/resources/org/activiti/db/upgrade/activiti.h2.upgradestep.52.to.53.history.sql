@@ -1,3 +1,7 @@
+execute java org.activiti.engine.impl.db.upgrade.DbUpgradeStep52To53InsertPropertyHistoryLevel
+
+-- removing not null constraint from ACT_HI_DETAIL.PROC_INST_ID_ and ACT_HI_DETAIL.EXECUTION_ID_
+
 create table ACT_HI_DETAIL_TMP (
 Ê Ê ID_ varchar(64) not null,
 Ê Ê TYPE_ varchar(255) not null,
