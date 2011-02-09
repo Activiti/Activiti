@@ -47,8 +47,8 @@ public class DbHistorySession extends AbstractDbSession implements HistorySessio
     List<HistoricDetailEntity> historicDetails = (List) new HistoricDetailQueryImpl()
       .processInstanceId(historicProcessInstanceId)
       .executeList(CommandContext.getCurrent(), null);
-    for (HistoricDetailEntity historicVariableUpdate: historicDetails) {
-      historicVariableUpdate.delete();
+    for (HistoricDetailEntity historicDetail: historicDetails) {
+      historicDetail.delete();
     }
     
     dbSqlSession.delete("deleteHistoricActivityInstancesByProcessInstanceId", historicProcessInstanceId);

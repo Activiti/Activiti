@@ -289,7 +289,7 @@
                 </goals>
                 <configuration>
                   <tasks>
-                    <echo message="creating db schema in ${database}" />
+                    <echo message="updating activiti configuration to db ${database}" />
                     <copy file="${basedir}/../../qa/db/activiti.cfg.xml" todir="target/test-classes" overwrite="true">
                       <filterset filtersfile="${user.home}/.activiti/jdbc/build.${database}.properties" />
                     </copy>
@@ -310,6 +310,90 @@
                 </configuration>
               </execution>
             </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <!--  check history full -->
+    <profile>
+      <id>cfghistoryfull</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.4</version>
+            <executions>
+              <execution>
+                <id>database-test-create-schema</id>
+                <phase>process-test-classes</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <echo message="updating activiti configuration to qa/cfg/historyfull.activiti.cfg.xml" />
+                    <copy file="${basedir}/../../qa/cfg/historyfull.activiti.cfg.xml" tofile="target/test-classes/activiti.cfg.xml" overwrite="true" />
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+		      <plugin>
+		        <artifactId>maven-surefire-plugin</artifactId>
+		        <configuration>
+		          <excludes>
+		            <exclude>**/*TestCase.java</exclude>
+		            <exclude>**/CompetingJobAcquisitionTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-234 -->
+		            <exclude>**/WSDLImporterTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-315 -->
+		            <exclude>**/JobExecutorTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-427 -->
+		            <exclude>**/HistoricTaskInstanceUpdateTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-485  -->
+                <exclude>**/TaskVariablesTest.java</exclude>
+		          </excludes>
+		        </configuration>
+		      </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <!--  check history none -->
+    <profile>
+      <id>cfghistorynone</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.4</version>
+            <executions>
+              <execution>
+                <id>database-test-create-schema</id>
+                <phase>process-test-classes</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <echo message="updating activiti configuration to qa/cfg/historynone.activiti.cfg.xml" />
+                    <copy file="${basedir}/../../qa/cfg/historynone.activiti.cfg.xml" tofile="target/test-classes/activiti.cfg.xml" overwrite="true" />
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <excludes>
+                <exclude>**/*TestCase.java</exclude>
+                <exclude>**/CompetingJobAcquisitionTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-234 -->
+                <exclude>**/WSDLImporterTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-315 -->
+                <exclude>**/JobExecutorTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-427 -->
+                <exclude>**/HistoricTaskInstanceUpdateTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-485  -->
+                
+                <exclude>**/Historic*InstanceTest.java</exclude>
+                <exclude>**/HistoryServiceTest.java</exclude>
+              </excludes>
+            </configuration>
           </plugin>
         </plugins>
       </build>
