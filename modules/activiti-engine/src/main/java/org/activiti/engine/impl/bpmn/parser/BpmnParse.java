@@ -2010,8 +2010,8 @@ public class BpmnParse extends Parse {
     String processId = bpmnPlaneElement.attribute("bpmnElement");
     if (processId != null && !"".equals(processId)) {
       ProcessDefinitionEntity processDefinition = getProcessDefinition(processId);
-      processDefinition.setGraphicalNotationDefined(true);
       if (processDefinition != null) {
+        processDefinition.setGraphicalNotationDefined(true);
         
          List<Element> shapes = bpmnPlaneElement.elementsNS(BpmnParser.BPMN_DI_NS, "BPMNShape");
          for (Element shape : shapes) {
