@@ -25,4 +25,6 @@ public interface Expression {
    
    void setValue(Object value, VariableScope variableScope);
    
+   String getExpressionText();
+   
 }

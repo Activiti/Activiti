@@ -33,9 +33,13 @@ public class FixedValue implements Expression {
   public Object getValue(VariableScope variableScope) {
     return value;
   }
-
+  
   public void setValue(Object value, VariableScope variableScope) {
     throw new ActivitiException("Cannot change fixed value");
+  }
+  
+  public String getExpressionText() {
+    return value.toString();
   }
 
 }

@@ -71,6 +71,19 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   }
   
   @Deployment
+  public void testSequentialUserTasksCompletionCondition() {
+    String procId = runtimeService.startProcessInstanceByKey("miSequentialUserTasksCompletionCondition").getId();
+    
+    // 10 tasks are to be created, but completionCondition stops them at 6 
+    for (int i=0; i<6; i++) {
+      Task task = taskService.createTaskQuery().singleResult();
+      taskService.complete(task.getId());
+    }
+    assertNull(taskService.createTaskQuery().singleResult());
+    assertProcessEnded(procId);
+  }
+  
+  @Deployment
   public void testNestedSequentialUserTasks() {
     String procId = runtimeService.startProcessInstanceByKey("miNestedSequentialUserTasks").getId();
     
@@ -113,6 +126,20 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     Task taskAfterTimer = taskService.createTaskQuery().singleResult();
     assertEquals("taskAfterTimer", taskAfterTimer.getTaskDefinitionKey());
     taskService.complete(taskAfterTimer.getId());
+    assertProcessEnded(procId);
+  }
+  
+  @Deployment
+  public void testParallelUserTasksCompletionCondition() {
+    String procId = runtimeService.startProcessInstanceByKey("miParallelUserTasksCompletionCondition").getId();
+    List<Task> tasks = taskService.createTaskQuery().list();
+    assertEquals(5, tasks.size());
+    
+    // Completing 3 tasks gives 50% of tasks completed, which triggers completionCondition
+    for (int i=0; i<3; i++) {
+      assertEquals(5-i, taskService.createTaskQuery().count());
+      taskService.complete(tasks.get(i).getId());
+    }
     assertProcessEnded(procId);
   }
   

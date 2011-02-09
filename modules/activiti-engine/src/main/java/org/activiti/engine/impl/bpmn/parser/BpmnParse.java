@@ -689,6 +689,7 @@ public class BpmnParse extends Parse {
       activity.setScope(true);
       activity.setActivityBehavior(miActivityBehavior);
       
+      // loopCardinality
       Element loopCardinality = miLoopCharacteristics.element("loopCardinality");
       if (loopCardinality != null) {
         String loopCardinalityText = loopCardinality.getText();
@@ -696,6 +697,13 @@ public class BpmnParse extends Parse {
           addError("loopCardinality must be defined for a multiInstanceLoopCharacteristics definition ", miLoopCharacteristics);
         }
         miActivityBehavior.setLoopCardinalityExpression(expressionManager.createExpression(loopCardinalityText));
+      }
+      
+      // completionCondition
+      Element completionCondition = miLoopCharacteristics.element("completionCondition");
+      if (completionCondition != null) {
+        String completionConditionText = completionCondition.getText();
+        miActivityBehavior.setCompletionConditionExpression(expressionManager.createExpression(completionConditionText));
       }
       
       for (BpmnParseListener parseListener: parseListeners) {

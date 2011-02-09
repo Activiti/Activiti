@@ -31,17 +31,19 @@ import org.activiti.engine.impl.runtime.ExecutionEntity;
 public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior  
   implements CompositeActivityBehavior, SubProcessActivityBehavior {
   
-  // Variables for outer instance(as described in spec)
-  protected final String NUMBER_OF_INSTANCES = "numberOfInstances";
-  protected final String NUMBER_OF_ACTIVE_INSTANCES = "numberOfActiveInstances";
-  protected final String NUMBER_OF_COMPLETED_INSTANCES = "numberOfCompletedInstances";
+  // Variable names for outer instance(as described in spec)
+  protected final String NUMBER_OF_INSTANCES = "nrOfInstances";
+  protected final String NUMBER_OF_ACTIVE_INSTANCES = "nrOfActiveInstances";
+  protected final String NUMBER_OF_COMPLETED_INSTANCES = "nrOfCompletedInstances";
   
-  // Variables for inner instances (as described in the spec)
+  // Variable names for inner instances (as described in the spec)
   protected final String LOOP_COUNTER = "loopCounter";
   
+  // members
   protected AbstractBpmnActivityBehavior activityBehavior;
   protected boolean isSequential;
   protected Expression loopCardinalityExpression;
+  protected Expression completionConditionExpression;
   
   public MultiInstanceActivityBehavior(AbstractBpmnActivityBehavior activityBehavior, boolean isSequential) {
     this.activityBehavior = activityBehavior;
@@ -56,11 +58,11 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
               + ", but was " + loopCardinalityValue);
     }
     setLoopVariable(execution, NUMBER_OF_INSTANCES, loopCardinalityValue);
-    setLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES, 1);
     setLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES, 0);
     
     if (isSequential || loopCardinalityValue == 1) {
       setLoopVariable(execution, LOOP_COUNTER, 0);
+      setLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES, 1);
       activityBehavior.execute(execution);
     } else {
       List<ActivityExecution> concurrentExecutions = new ArrayList<ActivityExecution>();
@@ -71,6 +73,8 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
         concurrentExecution.setScope(false);
         concurrentExecutions.add(concurrentExecution);
       }
+      
+      setLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES, loopCardinalityValue);
       
       // Before the activities are executed, all executions MUST be created up front
       // Do not try to merge this loop with the previous one, as it will lead to bugs,
@@ -89,17 +93,17 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
   
   protected void leave(ActivityExecution execution) {
     int loopCounter = getLoopVariable(execution, LOOP_COUNTER);
+    int nrOfInstances = getLoopVariable(execution, NUMBER_OF_INSTANCES);
+    int nrOfCompletedInstances = getLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES);
+    int nrOfActiveInstances = getLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES);
     
     if (isSequential) {
+      setLoopVariable(execution, LOOP_COUNTER, loopCounter+1);
+      setLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances +1);
       
-      int numberOfInstances = getLoopVariable(execution, NUMBER_OF_INSTANCES);
-      int numberOfCompletedInstances = getLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES);
-      
-      if (loopCounter == numberOfInstances-1) {
+      if (loopCounter == nrOfInstances-1 || completionConditionSatisfied(execution)) {
         super.leave(execution);
       } else {
-        setLoopVariable(execution, LOOP_COUNTER, loopCounter+1);
-        setLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES, numberOfCompletedInstances+1);
         try {
           activityBehavior.execute(execution);
         } catch (Exception e) {
@@ -109,46 +113,31 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
       
     } else {
       
-      int numberOfInstances = getLoopVariable(execution, NUMBER_OF_INSTANCES);
-      int numberOfCompletedInstances = getLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES);
+      setLoopVariable(execution.getParent(), NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances+1);
+      setLoopVariable(execution.getParent(), NUMBER_OF_ACTIVE_INSTANCES, nrOfActiveInstances-1);
       
       execution.inactivate();
       ((ExecutionEntity) execution.getParent()).forceUpdate();
       
       List<ActivityExecution> joinedExecutions = execution.findInactiveConcurrentExecutions(execution.getActivity());
-      if (joinedExecutions.size() == numberOfInstances) {
+      if (joinedExecutions.size() == nrOfInstances || completionConditionSatisfied(execution)) {
+        
+        // Removing all active child executions (ie because completionCondition is true)
+        List<ExecutionEntity> executionsToRemove = new ArrayList<ExecutionEntity>();
+        for (ActivityExecution childExecution : execution.getParent().getExecutions()) {
+          if (childExecution.isActive()) {
+            executionsToRemove.add((ExecutionEntity) childExecution);
+          }
+        }
+        for (ExecutionEntity executionToRemove : executionsToRemove) {
+          executionToRemove.remove();
+        }
+        
         execution.takeAll(execution.getActivity().getOutgoingTransitions(), joinedExecutions);
       } else {
-        setLoopVariable(execution.getParent(), NUMBER_OF_COMPLETED_INSTANCES, numberOfCompletedInstances++);
       }
       
     }
-  }
-  
-  protected int resolveLoopCardinality(ActivityExecution execution) {
-    // Using Number since expr can evaluate to eg. Long (default for Juel)
-    Object value = loopCardinalityExpression.getValue(execution);
-    if (value instanceof Number) {
-      return ((Number) value).intValue();
-    } else if (value instanceof String) {
-      return Integer.valueOf((String) value);
-    } else {
-      throw new ActivitiException("Could not resolve loopCardinality: not a number nor number String");
-    }
-  }
-  
-  protected void setLoopVariable(ActivityExecution execution, String variableName, int value) {
-    execution.setVariableLocal(variableName, value);
-  }
-  
-  protected int getLoopVariable(ActivityExecution execution, String variableName) {
-    Object value = execution.getVariableLocal(variableName);
-    ActivityExecution parent = execution.getParent();
-    while (value == null && parent != null) {
-      value = parent.getVariableLocal(variableName);
-      parent = parent.getParent();
-    }
-    return (Integer) value;
   }
   
   // required for supporting embedded subprocesses
@@ -176,31 +165,73 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
     leave(execution);
   }
   
+  // Helpers //////////////////////////////////////////////////////////////////////
+  
+  protected int resolveLoopCardinality(ActivityExecution execution) {
+    // Using Number since expr can evaluate to eg. Long (default for Juel)
+    Object value = loopCardinalityExpression.getValue(execution);
+    if (value instanceof Number) {
+      return ((Number) value).intValue();
+    } else if (value instanceof String) {
+      return Integer.valueOf((String) value);
+    } else {
+      throw new ActivitiException("Could not resolve loopCardinality expression '" 
+              +loopCardinalityExpression.getExpressionText()+"': not a number nor number String");
+    }
+  }
+  
+  protected boolean completionConditionSatisfied(ActivityExecution execution) {
+    if (completionConditionExpression != null) {
+      Object value = completionConditionExpression.getValue(execution);
+      if (! (value instanceof Boolean)) {
+        throw new ActivitiException("completionCondition '"
+                +completionConditionExpression.getExpressionText()
+                +"' does not evaluate to a boolean value");
+      }
+      return (Boolean) value;
+    }
+    return false;
+  }
+  
+  protected void setLoopVariable(ActivityExecution execution, String variableName, int value) {
+    execution.setVariableLocal(variableName, value);
+  }
+  
+  protected int getLoopVariable(ActivityExecution execution, String variableName) {
+    Object value = execution.getVariableLocal(variableName);
+    ActivityExecution parent = execution.getParent();
+    while (value == null && parent != null) {
+      value = parent.getVariableLocal(variableName);
+      parent = parent.getParent();
+    }
+    return (Integer) value;
+  }
+  
   // Getters and Setters ///////////////////////////////////////////////////////////
 
   public AbstractBpmnActivityBehavior getActivityBehavior() {
     return activityBehavior;
   }
-
   public void setActivityBehavior(AbstractBpmnActivityBehavior activityBehavior) {
     this.activityBehavior = activityBehavior;
   }
-
   public boolean isSequential() {
     return isSequential;
   }
-
   public void setSequential(boolean isSequential) {
     this.isSequential = isSequential;
   }
-
   public Expression getLoopCardinalityExpression() {
     return loopCardinalityExpression;
   }
-
   public void setLoopCardinalityExpression(Expression loopCardinalityExpression) {
     this.loopCardinalityExpression = loopCardinalityExpression;
   }
-
+  public Expression getCompletionConditionExpression() {
+    return completionConditionExpression;
+  }
+  public void setCompletionConditionExpression(Expression completionConditionExpression) {
+    this.completionConditionExpression = completionConditionExpression;
+  }
   
 }

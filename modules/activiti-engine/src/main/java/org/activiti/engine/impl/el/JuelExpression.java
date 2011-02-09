@@ -26,6 +26,7 @@ import org.activiti.engine.impl.javax.el.ValueExpression;
  * Expression implementation backed by a JUEL {@link ValueExpression}.
  * 
  * @author Frederik Heremans
+ * @author Joram Barrez
  */
 public class JuelExpression implements Expression {
 
@@ -36,6 +37,7 @@ public class JuelExpression implements Expression {
   public JuelExpression(ValueExpression valueExpression, ExpressionManager expressionManager, String expressionText) {
     this.valueExpression = valueExpression;
     this.expressionManager = expressionManager;
+    this.expressionText = expressionText;
   }
 
   public Object getValue(VariableScope variableScope) {
@@ -50,7 +52,7 @@ public class JuelExpression implements Expression {
       throw new ActivitiException("Error while evalutaing expression", ele);
     }
   }
-
+  
   public void setValue(Object value, VariableScope variableScope) {
     ELContext elContext = expressionManager.getElContext(variableScope);
     valueExpression.setValue(elContext, value);
