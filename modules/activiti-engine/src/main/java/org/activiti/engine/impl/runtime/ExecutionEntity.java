@@ -29,6 +29,7 @@ import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.RuntimeSession;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
@@ -799,12 +800,14 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     }
     
     // update the persisted historic activity instances that are open
-    List<HistoricActivityInstanceEntity> historicActivityInstances = (List) new HistoricActivityInstanceQueryImpl()
-      .executionId(id)
-      .unfinished()
-      .executeList(commandContext, null);
-    for (HistoricActivityInstanceEntity historicActivityInstance: historicActivityInstances) {
-      historicActivityInstance.setExecutionId(replacedBy.getId());
+    if (Context.getProcessEngineContext().getHistoryLevel()>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
+      List<HistoricActivityInstanceEntity> historicActivityInstances = (List) new HistoricActivityInstanceQueryImpl()
+        .executionId(id)
+        .unfinished()
+        .executeList(commandContext, null);
+      for (HistoricActivityInstanceEntity historicActivityInstance: historicActivityInstances) {
+        historicActivityInstance.setExecutionId(replacedBy.getId());
+      }
     }
   }
 

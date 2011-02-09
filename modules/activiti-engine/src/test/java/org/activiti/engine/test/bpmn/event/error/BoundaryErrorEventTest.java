@@ -15,6 +15,7 @@ package org.activiti.engine.test.bpmn.event.error;
 import java.util.List;
 
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.task.Task;
@@ -121,20 +122,21 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
             CollectionUtil.singletonMap("input", 1)).getId();
     assertProcessEnded(procId);
     
-    HistoricProcessInstance hip = historyService.createHistoricProcessInstanceQuery()
-      .processInstanceId(procId)
-      .singleResult();
-    assertEquals("processEnd1", hip.getEndActivityId());
-    
+    HistoricProcessInstance hip;
+    int historyLevel = processEngineConfiguration.getHistoryLevel();
+    if (historyLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
+      hip = historyService.createHistoricProcessInstanceQuery().processInstanceId(procId).singleResult();
+      assertEquals("processEnd1", hip.getEndActivityId());
+    }
     // input == 2 -> error2 is thrown -> catched on subprocess1 -> proc inst end 2
     procId = runtimeService.startProcessInstanceByKey("deeplyNestedErrorThrown", 
             CollectionUtil.singletonMap("input", 1)).getId();
     assertProcessEnded(procId);
     
-    hip = historyService.createHistoricProcessInstanceQuery()
-      .processInstanceId(procId)
-      .singleResult();
-    assertEquals("processEnd1", hip.getEndActivityId());
+    if (historyLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
+      hip = historyService.createHistoricProcessInstanceQuery().processInstanceId(procId).singleResult();
+      assertEquals("processEnd1", hip.getEndActivityId());
+    }
   }
   
   @Deployment(resources = {

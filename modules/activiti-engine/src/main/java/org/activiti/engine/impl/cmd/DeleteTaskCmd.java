@@ -15,6 +15,7 @@ package org.activiti.engine.impl.cmd;
 import java.util.Collection;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.history.HistoricTaskInstanceEntity;
 import org.activiti.engine.impl.interceptor.Command;
@@ -64,8 +65,11 @@ public class DeleteTaskCmd implements Command<Void> {
       task.delete(TaskEntity.DELETE_REASON_DELETED);
     }
     if (cascade) {
-      DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
-      dbSqlSession.delete(HistoricTaskInstanceEntity.class, taskId);
+      int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
+      if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+        DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
+        dbSqlSession.delete(HistoricTaskInstanceEntity.class, taskId);
+      }
     }
   }
 }

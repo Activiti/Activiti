@@ -22,6 +22,7 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.IdentityLink;
@@ -270,7 +271,10 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     
     String taskId = task.getId();
     taskService.complete(taskId, null);
-    historyService.deleteHistoricTaskInstance(taskId);
+
+    if (processEngineConfiguration.getHistoryLevel()>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+      historyService.deleteHistoricTaskInstance(taskId);
+    }
     
     // Fetch the task again
     task = taskService.createTaskQuery().taskId(taskId).singleResult();
@@ -284,7 +288,10 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     
     String taskId = task.getId();
     taskService.complete(taskId, Collections.EMPTY_MAP);
-    historyService.deleteHistoricTaskInstance(taskId);
+
+    if (processEngineConfiguration.getHistoryLevel()>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+      historyService.deleteHistoricTaskInstance(taskId);
+    }
     
     // Fetch the task again
     task = taskService.createTaskQuery().taskId(taskId).singleResult();
