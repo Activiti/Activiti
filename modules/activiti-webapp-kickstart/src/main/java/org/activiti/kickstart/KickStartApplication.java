@@ -18,8 +18,8 @@ import org.activiti.kickstart.ui.panel.KickstartWorkflowPanel;
 
 import com.vaadin.Application;
 import com.vaadin.ui.CustomLayout;
+import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.SplitPanel;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
 
@@ -37,7 +37,7 @@ public class KickStartApplication extends Application {
   // ui
   protected ViewManager viewManager;
   protected CustomLayout mainLayout; // general layout of the app
-  protected SplitPanel splitPanel; // app uses a split panel: left actions, right work area
+  protected HorizontalSplitPanel splitPanel; // app uses a split panel: left actions, right work area
   protected ActionsPanel actionsPanel; // left panel with user actions
   protected Panel currentWorkArea; // right panel of ui where actual work happens
 
@@ -48,8 +48,7 @@ public class KickStartApplication extends Application {
   }
 
   protected void initMainWindow() {
-    mainLayout = new CustomLayout(THEME_NAME); // uses layout defined in
-                                               // webapp/Vaadin/themes/yakalo
+    mainLayout = new CustomLayout(THEME_NAME); // uses layout defined in webapp/Vaadin/themes/yakalo
     mainLayout.setSizeFull();
 
     Window mainWindow = new Window(TITLE);
@@ -62,11 +61,11 @@ public class KickStartApplication extends Application {
   }
 
   protected void initSplitPanel() {
-    splitPanel = new SplitPanel(SplitPanel.ORIENTATION_HORIZONTAL);
-    splitPanel.setSplitPosition(170, SplitPanel.UNITS_PIXELS);
+    splitPanel = new HorizontalSplitPanel(); 
+    splitPanel.setSplitPosition(170, HorizontalSplitPanel.UNITS_PIXELS);
     splitPanel.setStyleName(Reindeer.LAYOUT_WHITE);
     splitPanel.setSizeFull();
-
+    
     mainLayout.addComponent(splitPanel, CONTENT_LOCATION);
   }
 

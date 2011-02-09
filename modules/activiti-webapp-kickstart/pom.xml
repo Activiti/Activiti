@@ -49,7 +49,7 @@
 					<stopPort>9966</stopPort>
 					<stopKey>activiti-kickstartc</stopKey>
 					<!-- Redeploy every x seconds if changes are detected, 0 for no automatic redeployment -->
-					<scanIntervalSeconds>0</scanIntervalSeconds>
+					<scanIntervalSeconds>5</scanIntervalSeconds>
 					<!-- make sure Jetty also finds the widgetset -->
 					<webAppConfig>
 						<contextPath>/activiti-kickstart</contextPath>

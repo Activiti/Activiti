@@ -47,7 +47,8 @@ public class TaskTable extends Table implements TaskFormModelListener {
 
     setEditable(true);
     setColumnReorderingAllowed(true);
-    setPageLength(size());
+
+    setPageLength(0);
 
     addContainerProperty("name", String.class, null);
     addContainerProperty("assignee", String.class, null);

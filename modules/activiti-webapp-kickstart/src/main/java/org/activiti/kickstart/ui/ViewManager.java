@@ -19,8 +19,8 @@ import java.util.Stack;
 
 import org.activiti.kickstart.KickStartApplication;
 
+import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.SplitPanel;
 import com.vaadin.ui.Window;
 
 /**
@@ -39,11 +39,11 @@ public class ViewManager implements Serializable {
   public static final String SELECT_ADHOC_WORKFLOW = "selectAdhocWorkflow";
 
   protected KickStartApplication application;
-  protected SplitPanel splitPanel;
+  protected HorizontalSplitPanel splitPanel;
   protected Map<String, Panel> views = new HashMap<String, Panel>();
   protected Stack<Panel> screenStack = new Stack<Panel>();
 
-  public ViewManager(KickStartApplication application, SplitPanel splitPanel) {
+  public ViewManager(KickStartApplication application, HorizontalSplitPanel splitPanel) {
     this.application = application;
     this.splitPanel = splitPanel;
   }
@@ -55,6 +55,7 @@ public class ViewManager implements Serializable {
     } else {
       panel = views.get(viewName);
     }
+    
     splitPanel.setSecondComponent(panel);
   }
 
