@@ -57,6 +57,7 @@ import org.activiti.engine.impl.calendar.BusinessCalendarManager;
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 import org.activiti.engine.impl.calendar.MapBusinessCalendarManager;
 import org.activiti.engine.impl.cfg.standalone.StandaloneMybatisTransactionContextFactory;
+import org.activiti.engine.impl.context.ProcessEngineContext;
 import org.activiti.engine.impl.db.DbHistorySessionFactory;
 import org.activiti.engine.impl.db.DbIdGenerator;
 import org.activiti.engine.impl.db.DbIdentitySessionFactory;
@@ -147,7 +148,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // COMMAND EXECUTORS ////////////////////////////////////////////////////////
   
   // Command executor and interceptor stack
-  /** the configurable list which will be {@link #initializeInterceptorChain(List) processed} to build the {@link #commandExecutorTxRequired} */
+  /** the configurable list which will be {@link #initInterceptorChain(java.util.List) processed} to build the {@link #commandExecutorTxRequired} */
   protected List<CommandInterceptor> customPreCommandInterceptorsTxRequired;
   protected List<CommandInterceptor> customPostCommandInterceptorsTxRequired;
   
@@ -156,7 +157,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   /** this will be initialized during the configurationComplete() */
   protected CommandExecutor commandExecutorTxRequired;
   
-  /** the configurable list which will be {@link #initializeInterceptorChain(List) processed} to build the {@link #commandExecutorTxRequiresNew} */
+  /** the configurable list which will be {@link #initInterceptorChain(List) processed} to build the {@link #commandExecutorTxRequiresNew} */
   protected List<CommandInterceptor> customPreCommandInterceptorsTxRequiresNew;
   protected List<CommandInterceptor> customPostCommandInterceptorsTxRequiresNew;
 
@@ -164,7 +165,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   /** this will be initialized during the configurationComplete() */
   protected CommandExecutor commandExecutorTxRequiresNew;
-
+  
+  protected ProcessEngineContext processEngineContext;
+  
   // SESSIOB FACTORIES ////////////////////////////////////////////////////////
 
   protected List<SessionFactory> customSessionFactories;
@@ -218,7 +221,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   protected List<BpmnParseListener> preParseListeners;
   protected List<BpmnParseListener> postParseListeners;
-  
+
+  protected Map<Object, Object> processEngineObjects;
+
+
   protected boolean isDbIdentityUsed = true;
   protected boolean isDbHistoryUsed = true;
   protected boolean isDbCycleUsed = false;
@@ -236,6 +242,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initHistoryLevel();
     initExpressionManager();
     initVariableTypes();
+    initProcessEngineObjects();
+    initProcessEngineContext();
     initFormEngines();
     initFormTypes();
     initScriptingEngines();
@@ -686,6 +694,18 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       }
     }
   }
+  
+  protected void initProcessEngineObjects() {
+    if (processEngineObjects ==null) {
+      processEngineObjects = new HashMap<Object, Object>();
+    }
+  }
+
+  protected void initProcessEngineContext() {
+    if (processEngineContext==null) {
+      processEngineContext = new ProcessEngineContext(this);
+    }
+  }
 
   // getters and setters //////////////////////////////////////////////////////
   
@@ -1105,7 +1125,38 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public void setCustomPostBPMNParseListeners(List<BpmnParseListener> postParseListeners) {
     this.postParseListeners = postParseListeners;
   }
+  
+  public ProcessEngineContext getProcessEngineContext() {
+    return processEngineContext;
+  }
 
+  public void setProcessEngineContext(ProcessEngineContext processEngineContext) {
+    this.processEngineContext = processEngineContext;
+  }
+  
+  public List<BpmnParseListener> getPreParseListeners() {
+    return preParseListeners;
+  }
+
+  public void setPreParseListeners(List<BpmnParseListener> preParseListeners) {
+    this.preParseListeners = preParseListeners;
+  }
+  
+  public List<BpmnParseListener> getPostParseListeners() {
+    return postParseListeners;
+  }
+  
+  public void setPostParseListeners(List<BpmnParseListener> postParseListeners) {
+    this.postParseListeners = postParseListeners;
+  }
+
+  public Map<Object, Object> getProcessEngineObjects() {
+    return processEngineObjects;
+  }
+
+  public void setProcessEngineObjects(Map<Object, Object> processEngineObjects) {
+    this.processEngineObjects = processEngineObjects;
+  }
 
   @Override
   public ProcessEngineConfigurationImpl setClassLoader(ClassLoader classLoader) {

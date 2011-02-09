@@ -73,14 +73,15 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
       ProcessEngineConfigurationImpl processEngineConfiguration = (ProcessEngineConfigurationImpl) ProcessEngineConfiguration
         .createProcessEngineConfigurationFromResource("org/activiti/examples/variables/jpa/activiti.cfg.xml");
       
-      processEngine = processEngineConfiguration.buildProcessEngine();
-      
+      cachedProcessEngine = processEngineConfiguration.buildProcessEngine();
+
       EntityManagerSessionFactory entityManagerSessionFactory = (EntityManagerSessionFactory) processEngineConfiguration
         .getSessionFactories()
         .get(EntityManagerSession.class);
       
       entityManagerFactory = entityManagerSessionFactory.getEntityManagerFactory();
     }
+    processEngine = cachedProcessEngine;
   }
 
   public void setupJPAEntities() {

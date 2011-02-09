@@ -101,7 +101,7 @@
   
   <sql id="selectExecutionsByQueryCriteriaSql">
     from ACT_RU_EXECUTION E
-    <foreach collection="variables" index="index" item="var">
+    <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
     	inner join ACT_RU_VARIABLE A${index} on E.ID_ = A${index}.EXECUTION_ID_ 
     </foreach>
     inner join ACT_RE_PROCDEF P on E.PROC_DEF_ID_ = P.ID_
@@ -135,42 +135,42 @@
       <if test="subProcessInstanceId != null">
         and E.ID_ = (select PROC_INST_ID_ from ACT_RU_EXECUTION where ID_ = (select SUPER_EXEC_ from ACT_RU_EXECUTION where ID_ = #{subProcessInstanceId}))
       </if>
-      <foreach item="var" collection="variables" index="index">
-      	and A${index}.NAME_= #{var.name}
-        <if test="!var.type.equals('null')">
+      <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
+      	and A${index}.NAME_= #{queryVariableValue.name}
+        <if test="!queryVariableValue.type.equals('null')">
         <!-- When operator is not-equals or type of value is null, type doesn't matter! -->
-          and A${index}.TYPE_ = #{var.type}
+          and A${index}.TYPE_ = #{queryVariableValue.type}
         </if>
-      	<if test="var.textValue != null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
+      	<if test="queryVariableValue.textValue != null &amp;&amp; queryVariableValue.longValue == null &amp;&amp; queryVariableValue.doubleValue == null">
 	      and A${index}.TEXT_
 	      <choose>
-	        <when test="var.operator.equals('LIKE')">LIKE</when>
+	        <when test="queryVariableValue.operator.equals('LIKE')">LIKE</when>
 	        <otherwise><include refid="executionVariableOperator" /></otherwise>
 	      </choose>
-	        #{var.textValue}
+	        #{queryVariableValue.textValue}
       	</if>
-      	<if test="var.textValue2 != null">
+      	<if test="queryVariableValue.textValue2 != null">
 	      and A${index}.TEXT2_
 	      <choose>
-	        <when test="var.operator.equals('LIKE')">LIKE</when>
+	        <when test="queryVariableValue.operator.equals('LIKE')">LIKE</when>
 	        <otherwise><include refid="executionVariableOperator" /></otherwise>
 	      </choose>
-	        #{var.textValue2}
+	        #{queryVariableValue.textValue2}
       	</if>
-      	<if test="var.longValue != null">
+      	<if test="queryVariableValue.longValue != null">
 	      and A${index}.LONG_
 	      <include refid="executionVariableOperator" />
-	      #{var.longValue}
+	      #{queryVariableValue.longValue}
       	</if>
-      	<if test="var.doubleValue != null">
+      	<if test="queryVariableValue.doubleValue != null">
 	      and A${index}.DOUBLE_
 	      <include refid="executionVariableOperator" />
-	      #{var.doubleValue}
+	      #{queryVariableValue.doubleValue}
       	</if>
       	<!-- Null variable type -->
-      	<if test="var.textValue == null &amp;&amp; var.textValue2 == null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
+      	<if test="queryVariableValue.textValue == null &amp;&amp; queryVariableValue.textValue2 == null &amp;&amp; queryVariableValue.longValue == null &amp;&amp; queryVariableValue.doubleValue == null">
           <choose>
-	        <when test="var.operator.equals('NOT_EQUALS')">
+	        <when test="queryVariableValue.operator.equals('NOT_EQUALS')">
 	          and (A${index}.TEXT_ is not null or A${index}.TEXT2_ is not null or A${index}.LONG_ is not null or A${index}.DOUBLE_ is not null or A${index}.BYTEARRAY_ID_ is not null)
 	        </when>
 	        <otherwise>
@@ -184,12 +184,12 @@
   
   <sql id="executionVariableOperator">
     <choose>
-   	  <when test="var.operator.equals('EQUALS')">=</when>
-   	  <when test="var.operator.equals('NOT_EQUALS')">&lt;&gt;</when>
-   	  <when test="var.operator.equals('GREATER_THAN')">&gt;</when>
-   	  <when test="var.operator.equals('GREATER_THAN_OR_EQUAL')">&gt;=</when>
-   	  <when test="var.operator.equals('LESS_THAN')">&lt;</when>
-   	  <when test="var.operator.equals('LESS_THAN_OR_EQUAL')">&lt;=</when>
+   	  <when test="queryVariableValue.operator.equals('EQUALS')">=</when>
+   	  <when test="queryVariableValue.operator.equals('NOT_EQUALS')">&lt;&gt;</when>
+   	  <when test="queryVariableValue.operator.equals('GREATER_THAN')">&gt;</when>
+   	  <when test="queryVariableValue.operator.equals('GREATER_THAN_OR_EQUAL')">&gt;=</when>
+   	  <when test="queryVariableValue.operator.equals('LESS_THAN')">&lt;</when>
+   	  <when test="queryVariableValue.operator.equals('LESS_THAN_OR_EQUAL')">&lt;=</when>
    </choose>
   </sql>
   

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.variable.VariableTypes;
@@ -31,7 +31,7 @@ import org.activiti.engine.query.Query;
  */
 public abstract class ExecutionVariableQueryImpl<T extends Query<?,?>, U> extends AbstractQuery<T, U> {
 
-  protected List<QueryVariableValue> variables = new ArrayList<QueryVariableValue>();
+  protected List<QueryVariableValue> queryVariableValues = new ArrayList<QueryVariableValue>();
   
   public ExecutionVariableQueryImpl() {
   }
@@ -108,7 +108,7 @@ public abstract class ExecutionVariableQueryImpl<T extends Query<?,?>, U> extend
         throw new ActivitiException("Booleans and null cannot be used in 'like' condition");
       }
     }
-    variables.add(new QueryVariableValue(name, value, operator));
+    queryVariableValues.add(new QueryVariableValue(name, value, operator));
   }
   
   private boolean isBoolean(Object value) {
@@ -118,15 +118,19 @@ public abstract class ExecutionVariableQueryImpl<T extends Query<?,?>, U> extend
     return Boolean.class.isAssignableFrom(value.getClass()) || boolean.class.isAssignableFrom(value.getClass());
   }
 
-  protected void ensureVariablesInitialized(ProcessEngineConfigurationImpl configuration) {    
-    VariableTypes types = configuration.getVariableTypes();
-    for(QueryVariableValue var : variables) {
-      var.initialize(types);
+  protected void ensureVariablesInitialized() {
+    if (!queryVariableValues.isEmpty()) {
+      VariableTypes variableTypes = Context
+              .getProcessEngineContext()
+              .getVariableTypes();
+      for(QueryVariableValue queryVariableValue : queryVariableValues) {
+        queryVariableValue.initialize(variableTypes);
+      }
     }
   }
 
-  public List<QueryVariableValue> getVariables() {
-    return variables;
+  public List<QueryVariableValue> getQueryVariableValues() {
+    return queryVariableValues;
   }
 
   

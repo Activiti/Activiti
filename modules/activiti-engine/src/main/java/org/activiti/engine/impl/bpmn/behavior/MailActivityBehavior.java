@@ -14,10 +14,10 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.context.ProcessEngineContext;
 import org.activiti.engine.impl.el.Expression;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.apache.commons.mail.Email;
@@ -118,7 +118,7 @@ public class MailActivityBehavior implements ActivityBehavior {
     if (from != null) {
       fromAddres = from;
     } else { // use default configured from address in process engine config
-      fromAddres = CommandContext.getCurrent().getProcessEngineConfiguration().getMailServerDefaultFrom();
+      fromAddres = Context.getProcessEngineContext().getMailServerDefaultFrom();
     }
 
     try {
@@ -159,19 +159,19 @@ public class MailActivityBehavior implements ActivityBehavior {
   }
 
   protected void setMailServerProperties(Email email) {
-    ProcessEngineConfiguration config = CommandContext.getCurrent().getProcessEngineConfiguration();
+    ProcessEngineContext processEngineContext = Context.getProcessEngineContext();
 
-    String host = config.getMailServerHost();
+    String host = processEngineContext.getMailServerHost();
     if (host == null) {
       throw new ActivitiException("Could not send email: no SMTP host is configured");
     }
     email.setHostName(host);
 
-    int port = config.getMailServerPort();
+    int port = processEngineContext.getMailServerPort();
     email.setSmtpPort(port);
 
-    String user = config.getMailServerUsername();
-    String password = config.getMailServerPassword();
+    String user = processEngineContext.getMailServerUsername();
+    String password = processEngineContext.getMailServerPassword();
     if (user != null && password != null) {
       email.setAuthentication(user, password);
     }

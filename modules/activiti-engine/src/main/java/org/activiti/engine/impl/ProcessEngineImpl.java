@@ -26,6 +26,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TransactionContextFactory;
+import org.activiti.engine.impl.context.ProcessEngineContext;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.el.ExpressionManager;
@@ -58,9 +59,11 @@ public class ProcessEngineImpl implements ProcessEngine {
   
   // TODO remove or refactor this
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
+  protected ProcessEngineContext processEngineContext;
 
   public ProcessEngineImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
     this.processEngineConfiguration = processEngineConfiguration;
+    this.processEngineContext = processEngineConfiguration.getProcessEngineContext();
     
     this.name = processEngineConfiguration.getProcessEngineName();
     this.repositoryService = processEngineConfiguration.getRepositoryService();
