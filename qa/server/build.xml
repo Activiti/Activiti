@@ -35,7 +35,7 @@
 		
 		<echo message="Building the activiti-engine tests..." />
     <exec executable="${mvn.executable}" dir="../../modules/activiti-engine/">
-      <arg line="-DskipTests -Ptest install" />
+      <arg line="-DskipTests -Pcreate-test-jar install" />
     </exec>
     <echo message="Building the activiti-cactus module..." />
     <exec executable="${mvn.executable}" dir="../../modules/activiti-cactus/">
