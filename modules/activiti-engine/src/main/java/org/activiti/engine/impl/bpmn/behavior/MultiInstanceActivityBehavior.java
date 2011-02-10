@@ -76,7 +76,19 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
         ActivityExecution concurrentExecution = execution.createExecution();
         concurrentExecution.setActive(true);
         concurrentExecution.setConcurrent(true);
-        concurrentExecution.setScope(false);
+
+        // TODO: clean up (or find better workaround ...)
+        if (activityBehavior instanceof org.activiti.engine.impl.bpmn.behavior.SubProcessActivityBehavior) {
+          concurrentExecution.setScope(false); 
+          ActivityExecution concurrentExecution2 = concurrentExecution.createExecution();
+          concurrentExecution2.setActive(true);
+          concurrentExecution2.setConcurrent(false);
+          concurrentExecution2.setScope(true);
+          concurrentExecution = concurrentExecution2;
+        } else {
+          concurrentExecution.setScope(false);
+        }
+        
         concurrentExecutions.add(concurrentExecution);
         logLoopDetails(concurrentExecution, "initialized", loopCounter, 0, loopCardinalityValue, loopCardinalityValue);
       }
@@ -126,6 +138,14 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
       
       nrOfCompletedInstances++;
       nrOfActiveInstances--;
+      
+      // TODO: cleanup (or find better workaround)
+      if (activityBehavior instanceof org.activiti.engine.impl.bpmn.behavior.SubProcessActivityBehavior) {
+        ExecutionEntity tempExecution = (ExecutionEntity) execution;
+        execution = execution.getParent();
+        tempExecution.remove();
+      }
+      
       setLoopVariable(execution.getParent(), NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
       setLoopVariable(execution.getParent(), NUMBER_OF_ACTIVE_INSTANCES, nrOfActiveInstances);
       logLoopDetails(execution, "instance completed", loopCounter, nrOfCompletedInstances, nrOfActiveInstances, nrOfInstances);
@@ -149,7 +169,7 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
                     +	"but multi-instance is completed. Removing this execution.");
           }
           executionToRemove.inactivate();
-          executionToRemove.remove();
+          executionToRemove.deleteCascade("multi-instance completed");
         }
         
         execution.takeAll(execution.getActivity().getOutgoingTransitions(), joinedExecutions);
@@ -161,18 +181,7 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
   
   // required for supporting embedded subprocesses
   public void lastExecutionEnded(ActivityExecution execution) {
-    // In case of a sequential multi-instance, we get a 'lastExecutionEnded'
-    // for every activity instance that is completed, one at a time.
-    // This means we must delegate to the normal leave logic of a multi instance
-    //
-    // However, in the parallel case, we get a 'lastExecutionEnded'
-    // when ALL parallel activity instances are completed, in which case
-    // we know we can leave the multi instance activity in the regular BPMN 2.0 way
-    if (isSequential) {
-      leave(execution);
-    } else {
-      super.leave(execution);
-    }
+    leave(execution);
   }
   
   // required for supporting external subprocesses

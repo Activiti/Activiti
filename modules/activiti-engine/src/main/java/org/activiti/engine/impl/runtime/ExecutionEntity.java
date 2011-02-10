@@ -214,6 +214,10 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     createdExecution.setProcessInstance(getProcessInstance());
     createdExecution.setActivity(getActivity());
     
+    if (log.isLoggable(Level.FINE)) {
+      log.fine("Child execution "+createdExecution+" created with parent "+this);
+    }
+    
     return createdExecution;
   }
   

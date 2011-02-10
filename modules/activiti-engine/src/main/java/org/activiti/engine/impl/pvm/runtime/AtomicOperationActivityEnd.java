@@ -67,7 +67,6 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
         execution.remove();
         parentScopeExecution.setActivity(parentActivity);
         parentScopeExecution.performOperation(ACTIVITY_END);
-        // TODO prune if necessary
       }
 
     } else { // execution.isConcurrent() && !execution.isScope()

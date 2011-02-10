@@ -5,14 +5,15 @@
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
   
-  <process id="miParallelSubprocess">
+  <process id="miSequentialSubprocessCompletionCondition">
   
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="miSubProcess" />
     
     <subProcess id="miSubProcess">
-      <multiInstanceLoopCharacteristics isSequential="false">
-        <loopCardinality>2</loopCardinality>
+      <multiInstanceLoopCharacteristics isSequential="true">
+        <loopCardinality>4</loopCardinality>
+        <completionCondition>${nrOfCompletedInstances == 3}</completionCondition>
       </multiInstanceLoopCharacteristics>
       
       <startEvent id="subProcessStart" />
@@ -23,16 +24,12 @@
       <sequenceFlow id="subFlow3" sourceRef="subProcessFork" targetRef="subProcessTask2" />
       
       <userTask id="subProcessTask1" name="task one" />
-      <sequenceFlow id="subFlow4" sourceRef="subProcessTask1" targetRef="join" />
+      <sequenceFlow id="subFlow4" sourceRef="subProcessTask1" targetRef="subProcessEnd1" />
+      <endEvent id="subProcessEnd1" />  
       
       <userTask id="subProcessTask2" name="task two" />
-      <sequenceFlow id="subFlow5" sourceRef="subProcessTask2" targetRef="join" />
-      
-      <parallelGateway id="join" />
-      <sequenceFlow id="subFlow6" sourceRef="join" targetRef="subProcessEnd" />
-      
-      <endEvent id="subProcessEnd" />  
-       
+      <sequenceFlow id="subFlow5" sourceRef="subProcessTask2" targetRef="subProcessEnd2" />
+      <endEvent id="subProcessEnd2" />  
       
     </subProcess>
     

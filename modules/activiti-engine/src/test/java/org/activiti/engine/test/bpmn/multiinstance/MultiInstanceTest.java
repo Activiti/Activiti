@@ -237,6 +237,25 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   }
   
   @Deployment
+  public void testSequentialSubProcessCompletionCondition() {
+    String procId = runtimeService.startProcessInstanceByKey("miSequentialSubprocessCompletionCondition").getId();
+    
+    TaskQuery query = taskService.createTaskQuery().orderByTaskName().asc();
+    for (int i=0; i<3; i++) {
+      List<Task> tasks = query.list();
+      assertEquals(2, tasks.size());
+      
+      assertEquals("task one", tasks.get(0).getName());
+      assertEquals("task two", tasks.get(1).getName());
+      
+      taskService.complete(tasks.get(0).getId());
+      taskService.complete(tasks.get(1).getId());
+    }
+    
+    assertProcessEnded(procId);
+  }
+  
+  @Deployment
   public void testNestedSequentialSubProcess() {
     String procId = runtimeService.startProcessInstanceByKey("miNestedSequentialSubProcess").getId();
     
@@ -277,8 +296,8 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   @Deployment
   public void testParallelSubProcess() {
     String procId = runtimeService.startProcessInstanceByKey("miParallelSubprocess").getId();
-    List<Task> tasks = taskService.createTaskQuery().list();
-    assertEquals(10, tasks.size());
+    List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
+    assertEquals(4, tasks.size());
     
     for (Task task : tasks) {
       taskService.complete(task.getId());
@@ -303,6 +322,19 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     Task taskAfterTimer = taskService.createTaskQuery().singleResult();
     assertEquals("taskAfterTimer", taskAfterTimer.getTaskDefinitionKey());
     taskService.complete(taskAfterTimer.getId());
+    
+    assertProcessEnded(procId);
+  }
+  
+  @Deployment
+  public void testParallelSubProcessCompletionCondition() {
+    String procId = runtimeService.startProcessInstanceByKey("miParallelSubprocessCompletionCondition").getId();
+    List<Task> tasks = taskService.createTaskQuery().orderByTaskId().asc().list();
+    assertEquals(4, tasks.size());
+    
+    for (int i=0; i<2; i++) {
+      taskService.complete(tasks.get(i).getId());
+    }
     
     assertProcessEnded(procId);
   }
