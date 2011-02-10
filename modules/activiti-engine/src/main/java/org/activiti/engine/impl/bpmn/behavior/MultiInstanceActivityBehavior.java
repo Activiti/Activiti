@@ -15,6 +15,8 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -30,6 +32,8 @@ import org.activiti.engine.impl.runtime.ExecutionEntity;
  */
 public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior  
   implements CompositeActivityBehavior, SubProcessActivityBehavior {
+  
+  protected static final Logger LOGGER = Logger.getLogger(MultiInstanceActivityBehavior.class.getName());
   
   // Variable names for outer instance(as described in spec)
   protected final String NUMBER_OF_INSTANCES = "nrOfInstances";
@@ -63,8 +67,10 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
     if (isSequential || loopCardinalityValue == 1) {
       setLoopVariable(execution, LOOP_COUNTER, 0);
       setLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES, 1);
+      logLoopDetails(execution, "initialized", 0, 0, 1, loopCardinalityValue);
       activityBehavior.execute(execution);
     } else {
+      setLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES, loopCardinalityValue);
       List<ActivityExecution> concurrentExecutions = new ArrayList<ActivityExecution>();
       for (int loopCounter=0; loopCounter<loopCardinalityValue; loopCounter++) {
         ActivityExecution concurrentExecution = execution.createExecution();
@@ -72,17 +78,20 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
         concurrentExecution.setConcurrent(true);
         concurrentExecution.setScope(false);
         concurrentExecutions.add(concurrentExecution);
+        logLoopDetails(concurrentExecution, "initialized", loopCounter, 0, loopCardinalityValue, loopCardinalityValue);
       }
-      
-      setLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES, loopCardinalityValue);
       
       // Before the activities are executed, all executions MUST be created up front
       // Do not try to merge this loop with the previous one, as it will lead to bugs,
       // due to possible child execution pruning.
       for (int loopCounter=0; loopCounter<loopCardinalityValue; loopCounter++) {
         ActivityExecution concurrentExecution = concurrentExecutions.get(loopCounter);
-        setLoopVariable(concurrentExecution, LOOP_COUNTER, loopCounter);
-        activityBehavior.execute(concurrentExecution);
+        if (concurrentExecution.isActive()) { 
+          // executions can be inactive, if instances are all automatics (no-waitstate)
+          // and completionCondition has been met
+          setLoopVariable(concurrentExecution, LOOP_COUNTER, loopCounter);
+          activityBehavior.execute(concurrentExecution);
+        }
       }
     }
   } 
@@ -98,10 +107,12 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
     int nrOfActiveInstances = getLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES);
     
     if (isSequential) {
-      setLoopVariable(execution, LOOP_COUNTER, loopCounter+1);
-      setLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances +1);
-      
-      if (loopCounter == nrOfInstances-1 || completionConditionSatisfied(execution)) {
+      loopCounter++;
+      nrOfCompletedInstances++;
+      setLoopVariable(execution, LOOP_COUNTER, loopCounter);
+      setLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
+      logLoopDetails(execution, "instance completed", loopCounter, nrOfCompletedInstances, nrOfActiveInstances, nrOfInstances);
+      if (loopCounter == nrOfInstances || completionConditionSatisfied(execution)) {
         super.leave(execution);
       } else {
         try {
@@ -113,8 +124,11 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
       
     } else {
       
-      setLoopVariable(execution.getParent(), NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances+1);
-      setLoopVariable(execution.getParent(), NUMBER_OF_ACTIVE_INSTANCES, nrOfActiveInstances-1);
+      nrOfCompletedInstances++;
+      nrOfActiveInstances--;
+      setLoopVariable(execution.getParent(), NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
+      setLoopVariable(execution.getParent(), NUMBER_OF_ACTIVE_INSTANCES, nrOfActiveInstances);
+      logLoopDetails(execution, "instance completed", loopCounter, nrOfCompletedInstances, nrOfActiveInstances, nrOfInstances);
       
       execution.inactivate();
       ((ExecutionEntity) execution.getParent()).forceUpdate();
@@ -130,6 +144,11 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
           }
         }
         for (ExecutionEntity executionToRemove : executionsToRemove) {
+          if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.fine("Execution " + executionToRemove + " still active, "
+                    +	"but multi-instance is completed. Removing this execution.");
+          }
+          executionToRemove.inactivate();
           executionToRemove.remove();
         }
         
@@ -188,7 +207,11 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
                 +completionConditionExpression.getExpressionText()
                 +"' does not evaluate to a boolean value");
       }
-      return (Boolean) value;
+      Boolean booleanValue = (Boolean) value;
+      if (LOGGER.isLoggable(Level.FINE)) {
+        LOGGER.fine("Completion condition of multi-instance satisfied: " + booleanValue);
+      }
+      return booleanValue;
     }
     return false;
   }
@@ -205,6 +228,20 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
       parent = parent.getParent();
     }
     return (Integer) value;
+  }
+  
+  protected void logLoopDetails(ActivityExecution execution, String custom, int loopCounter, 
+          int nrOfCompletedInstances, int nrOfActiveInstances, int nrOfInstances) {
+    if (LOGGER.isLoggable(Level.FINE)) {
+      StringBuilder strb = new StringBuilder();
+      strb.append(isSequential ? "Sequential " : "Parallel ");
+      strb.append(" multi-instance '" + execution.getActivity() + "' " + custom + ". ");
+      strb.append("Details: loopCounter=" + loopCounter + ", ");
+      strb.append("nrOrCompletedInstances=" + nrOfCompletedInstances + ", ");
+      strb.append("nrOfActiveInstances=" + nrOfActiveInstances+ ", ");
+      strb.append("nrOfInstances=" + nrOfInstances);
+      LOGGER.fine(strb.toString());
+    }
   }
   
   // Getters and Setters ///////////////////////////////////////////////////////////

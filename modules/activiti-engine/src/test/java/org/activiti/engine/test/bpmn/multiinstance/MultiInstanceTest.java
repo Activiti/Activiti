@@ -168,6 +168,14 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   }
   
   @Deployment
+  public void testSequentialScriptTasksCompletionCondition() {
+    runtimeService.startProcessInstanceByKey("miSequentialScriptTaskCompletionCondition").getId();
+    Execution waitStateExecution = runtimeService.createExecutionQuery().singleResult();
+    int sum = (Integer) runtimeService.getVariable(waitStateExecution.getId(), "sum");
+    assertEquals(5, sum);
+  }
+  
+  @Deployment
   public void testParallelScriptTasks() {
     Map<String, Object> vars = new HashMap<String, Object>();
     vars.put("sum", 0);
@@ -176,6 +184,14 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     Execution waitStateExecution = runtimeService.createExecutionQuery().singleResult();
     int sum = (Integer) runtimeService.getVariable(waitStateExecution.getId(), "sum");
     assertEquals(45, sum);
+  }
+  
+  @Deployment
+  public void testParallelScriptTasksCompletionCondition() {
+    runtimeService.startProcessInstanceByKey("miParallelScriptTaskCompletionCondition");
+    Execution waitStateExecution = runtimeService.createExecutionQuery().singleResult();
+    int sum = (Integer) runtimeService.getVariable(waitStateExecution.getId(), "sum");
+    assertEquals(2, sum);
   }
   
   @Deployment
