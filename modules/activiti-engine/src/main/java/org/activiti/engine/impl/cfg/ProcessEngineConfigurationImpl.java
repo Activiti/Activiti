@@ -86,7 +86,11 @@ import org.activiti.engine.impl.jobexecutor.JobExecutorTimerSessionFactory;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
 import org.activiti.engine.impl.repository.Deployer;
+import org.activiti.engine.impl.scripting.BeansResolverFactory;
+import org.activiti.engine.impl.scripting.ResolverFactory;
+import org.activiti.engine.impl.scripting.ScriptBindingsFactory;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
+import org.activiti.engine.impl.scripting.VariableScopeResolverFactory;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.impl.variable.BooleanType;
@@ -202,14 +206,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected List<AbstractFormType> customFormTypes;
   protected FormTypes formTypes;
 
-  protected List<String> customScriptingEngineClasses;
-  protected ScriptingEngines scriptingEngines;
-  
   protected List<VariableType> customPreVariableTypes;
   protected List<VariableType> customPostVariableTypes;
   protected VariableTypes variableTypes;
   
   protected ExpressionManager expressionManager;
+  protected List<String> customScriptingEngineClasses;
+  protected ScriptingEngines scriptingEngines;
+  protected List<ResolverFactory> resolverFactories;
+  
   protected BusinessCalendarManager businessCalendarManager;
 
   protected String wsSyncFactoryClassName = DEFAULT_WS_SYNC_FACTORY;
@@ -222,8 +227,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected List<BpmnParseListener> preParseListeners;
   protected List<BpmnParseListener> postParseListeners;
 
-  protected Map<Object, Object> processEngineObjects;
-
+  protected Map<Object, Object> beans;
 
   protected boolean isDbIdentityUsed = true;
   protected boolean isDbHistoryUsed = true;
@@ -242,7 +246,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initHistoryLevel();
     initExpressionManager();
     initVariableTypes();
-    initProcessEngineObjects();
+    initBeans();
     initProcessEngineContext();
     initFormEngines();
     initFormTypes();
@@ -654,8 +658,13 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   }
 
   protected void initScriptingEngines() {
+    if (resolverFactories==null) {
+      resolverFactories = new ArrayList<ResolverFactory>();
+      resolverFactories.add(new VariableScopeResolverFactory());
+      resolverFactories.add(new BeansResolverFactory());
+    }
     if (scriptingEngines==null) {
-      scriptingEngines = new ScriptingEngines();
+      scriptingEngines = new ScriptingEngines(new ScriptBindingsFactory(resolverFactories));
     }
   }
 
@@ -695,9 +704,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
   
-  protected void initProcessEngineObjects() {
-    if (processEngineObjects ==null) {
-      processEngineObjects = new HashMap<Object, Object>();
+  protected void initBeans() {
+    if (beans == null) {
+      beans = new HashMap<Object, Object>();
     }
   }
 
@@ -1150,12 +1159,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     this.postParseListeners = postParseListeners;
   }
 
-  public Map<Object, Object> getProcessEngineObjects() {
-    return processEngineObjects;
+  public Map<Object, Object> getBeans() {
+    return beans;
   }
 
-  public void setProcessEngineObjects(Map<Object, Object> processEngineObjects) {
-    this.processEngineObjects = processEngineObjects;
+  public void setBeans(Map<Object, Object> beans) {
+    this.beans = beans;
   }
 
   @Override
@@ -1330,5 +1339,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   public void setDbCycleUsed(boolean isDbCycleUsed) {
     this.isDbCycleUsed = isDbCycleUsed;
+  }
+
+  
+  public List<ResolverFactory> getResolverFactories() {
+    return resolverFactories;
+  }
+
+  
+  public void setResolverFactories(List<ResolverFactory> resolverFactories) {
+    this.resolverFactories = resolverFactories;
   }
 }

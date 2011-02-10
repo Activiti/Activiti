@@ -25,7 +25,7 @@ import java.util.Map;
 public class ProcessEngineContext {
 
   protected int historyLevel;
-  protected Map<Object, Object> processEngineContextObjects;
+  protected Map<Object, Object> beans;
   protected VariableTypes variableTypes;
   protected String mailServerDefaultFrom;
   protected String mailServerHost;
@@ -37,7 +37,7 @@ public class ProcessEngineContext {
   protected boolean isDbCycleUsed = true;
 
   public ProcessEngineContext(ProcessEngineConfigurationImpl processEngineConfiguration) {
-    this.processEngineContextObjects = processEngineConfiguration.getProcessEngineObjects();
+    this.beans = processEngineConfiguration.getBeans();
     this.variableTypes = processEngineConfiguration.getVariableTypes();
     this.mailServerDefaultFrom = processEngineConfiguration.getMailServerDefaultFrom();
     this.mailServerHost = processEngineConfiguration.getMailServerHost();
@@ -50,8 +50,8 @@ public class ProcessEngineContext {
     this.isDbCycleUsed = processEngineConfiguration.isDbCycleUsed();
   }
 
-  public Map<Object, Object> getProcessEngineContextObjects() {
-    return processEngineContextObjects;
+  public Map<Object, Object> getBeans() {
+    return beans;
   }
 
   public VariableTypes getVariableTypes() {
@@ -86,19 +86,15 @@ public class ProcessEngineContext {
     this.historyLevel = historyLevel;
   }
 
-  
   public boolean isDbIdentityUsed() {
     return isDbIdentityUsed;
   }
 
-  
   public boolean isDbHistoryUsed() {
     return isDbHistoryUsed;
   }
 
-  
   public boolean isDbCycleUsed() {
     return isDbCycleUsed;
   }
-  
 }

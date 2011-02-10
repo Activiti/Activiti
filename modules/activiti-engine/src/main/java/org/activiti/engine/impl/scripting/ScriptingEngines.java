@@ -24,6 +24,7 @@ import javax.script.SimpleBindings;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.VariableScope;
 
 /**
  * @author Tom Baeyens
@@ -33,9 +34,11 @@ public class ScriptingEngines {
   public static final String DEFAULT_SCRIPTING_LANGUAGE = "juel";
 
   private final ScriptEngineManager scriptEngineManager;
+  protected ScriptBindingsFactory scriptBindingsFactory;
 
-  public ScriptingEngines() {
+  public ScriptingEngines(ScriptBindingsFactory scriptBindingsFactory) {
     this(new ScriptEngineManager());
+    this.scriptBindingsFactory = scriptBindingsFactory;
   }
 
   public ScriptingEngines(ScriptEngineManager scriptEngineManager) {
@@ -55,12 +58,8 @@ public class ScriptingEngines {
     }
   }
 
-  public Object evaluate(String script, String language, DelegateExecution execution) {
-    return evaluate(script, language, execution, null);
-  }
-  
-  public Object evaluate(String script, String language, DelegateExecution execution, Map<String, Object> fixedBindings) {
-    Bindings bindings = createBindings(execution, fixedBindings);
+  public Object evaluate(String script, String language, VariableScope variableScope) {
+    Bindings bindings = createBindings(variableScope);
     ScriptEngine scriptEngine = scriptEngineManager.getEngineByName(language);
 
     if (scriptEngine == null) {
@@ -74,12 +73,15 @@ public class ScriptingEngines {
     }
   }
 
-  /** override to build a spring aware ScriptingEngines 
-   * @param fixedBindings */
-  protected Bindings createBindings(DelegateExecution execution, Map<String, Object> fixedBindings) {
-    if (execution != null) {
-      return new ExecutionBindings(execution, fixedBindings);
-    }
-    return new SimpleBindings();
+  /** override to build a spring aware ScriptingEngines */
+  protected Bindings createBindings(VariableScope variableScope) {
+    return scriptBindingsFactory.createBindings(variableScope); 
+  }
+  
+  public ScriptBindingsFactory getScriptBindingsFactory() {
+    return scriptBindingsFactory;
+  }
+  public void setScriptBindingsFactory(ScriptBindingsFactory scriptBindingsFactory) {
+    this.scriptBindingsFactory = scriptBindingsFactory;
   }
 }

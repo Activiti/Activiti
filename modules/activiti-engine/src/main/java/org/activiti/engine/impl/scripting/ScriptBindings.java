@@ -10,31 +10,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.scripting;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.script.Bindings;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.VariableScope;
-import org.activiti.engine.impl.pvm.runtime.ExecutionImpl;
 
 
 /**
- * Bindings implementation using an {@link ExecutionImpl} as 'back-end'.
- * 
  * @author Tom Baeyens
- * @author Joram Barrez
  */
-public class ExecutionBindings implements Bindings {
+public class ScriptBindings implements Bindings {
 
-  protected static final String EXECUTION_KEY = "execution";
-  
   /**
    * The script engine implementations put some key/value pairs into the binding.
    * This list contains those keys, such that they wouldn't be stored as process variable.
@@ -43,48 +38,36 @@ public class ExecutionBindings implements Bindings {
    */
   protected static final Set<String> UNSTORED_KEYS = 
     new HashSet<String>(Arrays.asList("out", "out:print", "lang:import", "context", "elcontext", "print", "println"));
-  
+
+  protected List<Resolver> scriptResolvers;
   protected VariableScope variableScope;
-  
-  protected Map<String, Object> fixedBindings;
-  
-  public ExecutionBindings(VariableScope variableScope, Map<String, Object> fixedBindings) {
-    if (variableScope==null) {
-      throw new ActivitiException("variableScope cannot be null");
-    }
+
+  public ScriptBindings(List<Resolver> scriptResolvers, VariableScope variableScope) {
+    this.scriptResolvers = scriptResolvers;
     this.variableScope = variableScope;
-    this.fixedBindings = fixedBindings;
   }
 
   public boolean containsKey(Object key) {
-    boolean keyInFixed = false;
-    if(fixedBindings != null) {
-      keyInFixed = fixedBindings.containsKey(key);
+    for (Resolver scriptResolver: scriptResolvers) {
+      if (scriptResolver.containsKey(key)) {
+        return true;
+      }
     }
-    
-    return keyInFixed || EXECUTION_KEY.equals(key) || variableScope.hasVariable((String) key);
+    return false;
   }
 
   public Object get(Object key) {
-    if (EXECUTION_KEY.equals(key)) {
-      return variableScope;
-    } else if(fixedBindings != null) {
-      Object fixedValue = fixedBindings.get(key);
-      if(fixedValue != null) {
-        return fixedValue;
+    for (Resolver scriptResolver: scriptResolvers) {
+      if (scriptResolver.containsKey(key)) {
+        return scriptResolver.get(key);
       }
     }
-    
-    return variableScope.getVariable((String) key);
+    return null;
   }
 
   public Object put(String name, Object value) {
     Object oldValue = null;
     if (!UNSTORED_KEYS.contains(name)) {
-      
-      if(fixedBindings != null && fixedBindings.containsKey(name)) {
-        throw new ActivitiException("Cannot set value in script: " + name);
-      }
       oldValue = variableScope.getVariable(name);
       variableScope.setVariable(name, value);
     }
@@ -92,19 +75,23 @@ public class ExecutionBindings implements Bindings {
   }
 
   public Set<java.util.Map.Entry<String, Object>> entrySet() {
-    return variableScope.getVariables().entrySet();
+    throw new UnsupportedOperationException();
+//    return variableScope.getVariables().entrySet();
   }
 
   public Set<String> keySet() {
-    return variableScope.getVariables().keySet();
+    throw new UnsupportedOperationException();
+//    return variableScope.getVariables().keySet();
   }
 
   public int size() {
-    return variableScope.getVariables().size();
+    throw new UnsupportedOperationException();
+//    return variableScope.getVariables().size();
   }
 
   public Collection<Object> values() {
-    return variableScope.getVariables().values();
+    throw new UnsupportedOperationException();
+//    return variableScope.getVariables().values();
   }
 
   public void putAll(Map< ? extends String, ? extends Object> toMerge) {
@@ -129,4 +116,5 @@ public class ExecutionBindings implements Bindings {
   public boolean isEmpty() {
     throw new UnsupportedOperationException();
   }
+
 }

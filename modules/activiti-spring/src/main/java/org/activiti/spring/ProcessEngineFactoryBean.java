@@ -16,6 +16,7 @@ package org.activiti.spring;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.cfg.SpringBeanFactoryProxyMap;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
@@ -47,6 +48,11 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
   public ProcessEngine getObject() throws Exception {
     initializeExpressionManager();
     initializeTransactionExternallyManaged();
+    
+    if (processEngineConfiguration.getBeans()==null) {
+      processEngineConfiguration.setBeans(new SpringBeanFactoryProxyMap(applicationContext));
+    }
+    
     processEngine = (ProcessEngineImpl) processEngineConfiguration.buildProcessEngine();
 
     return processEngine;

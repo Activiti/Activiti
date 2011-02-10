@@ -33,7 +33,9 @@ public class SpringConfigurationHelper {
     XmlBeanDefinitionReader xmlBeanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
     xmlBeanDefinitionReader.setValidationMode(XmlBeanDefinitionReader.VALIDATION_XSD);
     xmlBeanDefinitionReader.loadBeanDefinitions(springResource);
-    return (ProcessEngineConfiguration) beanFactory.getBean(beanName);
+    ProcessEngineConfigurationImpl processEngineConfiguration = (ProcessEngineConfigurationImpl) beanFactory.getBean(beanName);
+    processEngineConfiguration.setBeans(new SpringBeanFactoryProxyMap(beanFactory));
+    return processEngineConfiguration;
   }
 
   public static ProcessEngineConfiguration parseProcessEngineConfigurationFromInputStream(InputStream inputStream, String beanName) {
