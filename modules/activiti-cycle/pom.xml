@@ -128,16 +128,32 @@
 			<artifactId>servlet-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<!-- added h2.jar to support H2 database -->
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>test</scope>
-		</dependency>
 		<dependency>
 			<groupId>com.signavio</groupId>
 			<artifactId>signavio-core-components</artifactId>
 		</dependency>
+    <!-- jdbc drivers -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>test</scope>
+    </dependency>
+		<dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.sourceforge.jtds</groupId>
+      <artifactId>jtds</artifactId>
+      <scope>test</scope>
+    </dependency>
+		
 	</dependencies>
 
 	<profiles>
@@ -164,10 +180,10 @@
 		</profile>
 		
 		<!--  database qa profile -->
-   		<profile>
-      		<id>database</id>
-      		<activation>
-        	<property>
+ 		<profile>
+    	<id>database</id>
+      <activation>
+      	<property>
           <name>database</name>
         </property>
       </activation>
@@ -213,7 +229,42 @@
           </plugin>
         </plugins>
       </build>
-    </profile>	
+    </profile>
+    
+    <profile>
+      <id>oracle</id>
+      <activation>
+        <property>
+          <name>database</name>
+          <value>oracle</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.oracle.jdbc</groupId>
+          <artifactId>ojdbc5</artifactId>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+    
+    <profile>
+      <id>db2</id>
+      <activation>
+        <property>
+          <name>database</name>
+          <value>db2</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.ibm.db2.jcc</groupId>
+          <artifactId>db2jcc4</artifactId>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+    	
 	</profiles>
 
 	<reporting>
