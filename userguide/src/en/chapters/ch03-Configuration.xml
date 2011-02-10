@@ -298,6 +298,18 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
     </para>
   </section>
   
+  <section id="exposingConfigurationBeans">
+    <title>Exposing configuration beans in expressions and scripts</title>
+    <para>By default, all beans that you specify in the <literal>activiti.cfg.xml</literal> configuration 
+    or in your own spring configuration file are available to expressions and in the scripts.
+    If you want to limit the visibility of beans in your configuration file, then you can 
+    configure a property called <literal>beans</literal> in your process engine configuration.
+    The beans property in ProcessEngineConfiguration is a map. When you specify that property,
+    only beans specified in that map will be visible to expressions and scripts.  The exposed beans 
+    will be exposed with the names as you specify in that map.  
+    </para>
+  </section>
+
   <section id="supporteddatabases">
     <title>Supported databases</title>
     <para>Following are the types (case sensitive!) that Activiti uses to refer to databases.</para>
