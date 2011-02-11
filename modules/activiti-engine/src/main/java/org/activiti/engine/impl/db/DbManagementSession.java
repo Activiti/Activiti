@@ -54,6 +54,7 @@ public class DbManagementSession implements ManagementSession, Session {
       for (String tableName: getTablesPresentInDatabase()) {
         tableCount.put(tableName, getTableCount(tableName));
       }
+      log.fine("Number of rows per activiti table: "+tableCount);
     } catch (Exception e) {
       throw new ActivitiException("couldn't get table counts", e);
     }
@@ -68,10 +69,13 @@ public class DbManagementSession implements ManagementSession, Session {
       DatabaseMetaData databaseMetaData = connection.getMetaData();
       ResultSet tables = null;
       try {
+        log.fine("retrieving activiti tables from jdbc metadata");
         tables = databaseMetaData.getTables(null, null, "ACT_%", DbSqlSession.JDBC_METADATA_TABLE_TYPES);
         while (tables.next()) {
           String tableName = tables.getString("TABLE_NAME");
-          tableNames.add(tableName.toUpperCase());
+          tableName = tableName.toUpperCase();
+          tableNames.add(tableName);
+          log.fine("  retrieved activiti table name "+tableName);
         }
       } finally {
         tables.close();
