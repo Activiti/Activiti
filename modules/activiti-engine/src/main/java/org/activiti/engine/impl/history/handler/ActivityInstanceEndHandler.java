@@ -39,6 +39,11 @@ public class ActivityInstanceEndHandler implements ExecutionListener {
     }
   }
 
+  /**
+   * Finds the {@link HistoricActivityInstanceEntity} that is active in the given
+   * execution. Uses the {@link DbSqlSession} cache to make sure the right instance
+   * is returned, regardless of whether or not entities have already been flushed to DB.
+   */
   public static HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution) {
     CommandContext commandContext = CommandContext.getCurrent();
 
