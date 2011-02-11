@@ -16,7 +16,6 @@ package org.activiti.engine.impl.cmd;
 import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
 
 
 /**
@@ -25,10 +24,9 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 public class CreateUserQueryCmd implements Command<UserQuery> {
   
   public UserQuery execute(CommandContext commandContext) {
-    CommandExecutor commandExecutor = commandContext.getProcessEngineConfiguration().getCommandExecutorTxRequired();
     return commandContext
       .getIdentitySession()
-      .createNewUserQuery(commandExecutor);
+      .createNewUserQuery();
   }
 
 }

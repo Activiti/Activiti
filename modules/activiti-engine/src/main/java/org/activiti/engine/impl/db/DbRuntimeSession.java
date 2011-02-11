@@ -53,9 +53,9 @@ public class DbRuntimeSession implements Session, RuntimeSession {
       throw new ActivitiException("No process instance found for id '" + processInstanceId + "'");
     }
     
-    List<TaskEntity> tasks = (List) new TaskQueryImpl()
+    List<TaskEntity> tasks = (List) new TaskQueryImpl(CommandContext.getCurrent())
       .processInstanceId(processInstanceId)
-      .executeList(CommandContext.getCurrent(), null);
+      .list();
     for (TaskEntity task: tasks) {
       task.delete(TaskEntity.DELETE_REASON_DELETED);
     }

@@ -755,9 +755,9 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
     // delete all the tasks
     CommandContext commandContext = CommandContext.getCurrent();
-    List<TaskEntity> tasks = (List) new TaskQueryImpl()
+    List<TaskEntity> tasks = (List) new TaskQueryImpl(commandContext)
       .executionId(id)
-      .executeList(commandContext, null);
+      .list();
     for (TaskEntity task : tasks) {
       if (replacedBy!=null) {
         task.setExecution(replacedBy);
@@ -766,9 +766,9 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
       }
     }
 
-    List<Job> jobs = new JobQueryImpl()
+    List<Job> jobs = new JobQueryImpl(commandContext)
       .executionId(id)
-      .executeList(commandContext, null);
+      .list();
     for (Job job: jobs) {
       if (replacedBy!=null) {
         ((JobEntity)job).setExecution((ExecutionEntity) replacedBy);
@@ -805,10 +805,10 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     
     // update the persisted historic activity instances that are open
     if (Context.getProcessEngineContext().getHistoryLevel()>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
-      List<HistoricActivityInstanceEntity> historicActivityInstances = (List) new HistoricActivityInstanceQueryImpl()
+      List<HistoricActivityInstanceEntity> historicActivityInstances = (List) new HistoricActivityInstanceQueryImpl(commandContext)
         .executionId(id)
         .unfinished()
-        .executeList(commandContext, null);
+        .list();
       for (HistoricActivityInstanceEntity historicActivityInstance: historicActivityInstances) {
         historicActivityInstance.setExecutionId(replacedBy.getId());
       }

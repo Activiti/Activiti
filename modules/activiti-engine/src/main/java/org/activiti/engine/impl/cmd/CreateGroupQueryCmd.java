@@ -16,7 +16,6 @@ package org.activiti.engine.impl.cmd;
 import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
 
 
 /**
@@ -25,10 +24,9 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 public class CreateGroupQueryCmd implements Command<GroupQuery> {
 
   public GroupQuery execute(CommandContext commandContext) {
-    CommandExecutor commandExecutor = commandContext.getProcessEngineConfiguration().getCommandExecutorTxRequired();
     return commandContext
       .getIdentitySession()
-      .createNewGroupQuery(commandExecutor);
+      .createNewGroupQuery();
   }
 
 }

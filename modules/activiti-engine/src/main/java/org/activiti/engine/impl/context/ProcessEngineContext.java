@@ -13,11 +13,12 @@
 
 package org.activiti.engine.impl.context;
 
+import java.util.Map;
+
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.activiti.engine.impl.variable.VariableTypes;
-
-import java.util.Map;
 
 
 /**
@@ -29,6 +30,7 @@ public class ProcessEngineContext {
   protected Map<Object, Object> beans;
   protected VariableTypes variableTypes;
   protected ScriptingEngines scriptingEngines;
+  protected CommandExecutor commandExecutorTxRequired;
   protected String mailServerDefaultFrom;
   protected String mailServerHost;
   protected int mailServerPort;
@@ -38,9 +40,11 @@ public class ProcessEngineContext {
   protected boolean isDbHistoryUsed = true;
   protected boolean isDbCycleUsed = true;
 
-  public ProcessEngineContext(ProcessEngineConfigurationImpl processEngineConfiguration) {
+  public void initialize(ProcessEngineConfigurationImpl processEngineConfiguration) {
     this.beans = processEngineConfiguration.getBeans();
     this.variableTypes = processEngineConfiguration.getVariableTypes();
+    this.scriptingEngines = processEngineConfiguration.getScriptingEngines();
+    this.commandExecutorTxRequired = processEngineConfiguration.getCommandExecutorTxRequired();
     this.mailServerDefaultFrom = processEngineConfiguration.getMailServerDefaultFrom();
     this.mailServerHost = processEngineConfiguration.getMailServerHost();
     this.mailServerPort = processEngineConfiguration.getMailServerPort();
@@ -98,5 +102,17 @@ public class ProcessEngineContext {
 
   public boolean isDbCycleUsed() {
     return isDbCycleUsed;
+  }
+  
+  public ScriptingEngines getScriptingEngines() {
+    return scriptingEngines;
+  }
+  
+  public void setScriptingEngines(ScriptingEngines scriptingEngines) {
+    this.scriptingEngines = scriptingEngines;
+  }
+
+  public CommandExecutor getCommandExecutorTxRequired() {
+    return commandExecutorTxRequired;
   }
 }

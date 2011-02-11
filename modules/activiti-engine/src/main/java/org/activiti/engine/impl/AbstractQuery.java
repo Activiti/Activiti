@@ -37,19 +37,21 @@ public abstract class AbstractQuery<T extends Query<?,?>, U> implements Command<
   }
     
   protected CommandExecutor commandExecutor;
+  protected CommandContext commandContext;
   protected String orderBy;
   
   protected int firstResult;
   protected int maxResults;
   protected ResultType resultType;
  
-  protected AbstractQuery() {
-  }
-
   protected AbstractQuery(CommandExecutor commandExecutor) {
     this.commandExecutor = commandExecutor;
   }
   
+  public AbstractQuery(CommandContext commandContext) {
+    this.commandContext = commandContext;
+  }
+
   protected QueryProperty orderProperty;
 
   @SuppressWarnings("unchecked")
@@ -85,12 +87,18 @@ public abstract class AbstractQuery<T extends Query<?,?>, U> implements Command<
   @SuppressWarnings("unchecked")
   public U singleResult() {
     this.resultType = ResultType.SINGLE_RESULT;
+    if (commandContext!=null) {
+      return executeSingleResult(commandContext);
+    }
     return (U) commandExecutor.execute(this);
   }
 
   @SuppressWarnings("unchecked")
   public List<U> list() {
     this.resultType = ResultType.LIST;
+    if (commandContext!=null) {
+      return executeList(commandContext, null);
+    }
     return (List<U>) commandExecutor.execute(this);
   }
   
@@ -99,11 +107,17 @@ public abstract class AbstractQuery<T extends Query<?,?>, U> implements Command<
     this.firstResult = firstResult;
     this.maxResults = maxResults;
     this.resultType = ResultType.LIST_PAGE;
+    if (commandContext!=null) {
+      return executeList(commandContext, new Page(firstResult, maxResults));
+    }
     return (List<U>) commandExecutor.execute(this);
   }
   
   public long count() {
     this.resultType = ResultType.COUNT;
+    if (commandContext!=null) {
+      return executeCount(commandContext);
+    }
     return (Long) commandExecutor.execute(this);
   }
   

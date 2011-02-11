@@ -32,7 +32,8 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
   protected String name;
   protected String nameLike;
 
-  public DeploymentQueryImpl() {
+  public DeploymentQueryImpl(CommandContext commandContext) {
+    super(commandContext);
   }
 
   public DeploymentQueryImpl(CommandExecutor commandExecutor) {

@@ -247,13 +247,13 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initExpressionManager();
     initVariableTypes();
     initBeans();
-    initProcessEngineContext();
     initFormEngines();
     initFormTypes();
     initScriptingEngines();
     initBusinessCalendarManager();
     initCommandContextFactory();
     initTransactionContextFactory();
+    initProcessEngineContext();
     initCommandExecutors();
     initServices();
     initIdGenerator();
@@ -264,6 +264,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initSqlSessionFactory();
     initSessionFactories();
     initJpa();
+    
+    processEngineContext.initialize(this);
   }
 
   // command executors ////////////////////////////////////////////////////////
@@ -712,7 +714,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected void initProcessEngineContext() {
     if (processEngineContext==null) {
-      processEngineContext = new ProcessEngineContext(this);
+      processEngineContext = new ProcessEngineContext();
     }
   }
 

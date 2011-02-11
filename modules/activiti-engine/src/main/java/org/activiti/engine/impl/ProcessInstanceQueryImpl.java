@@ -41,7 +41,8 @@ public class ProcessInstanceQueryImpl extends ExecutionVariableQueryImpl<Process
   
   protected CommandExecutor commandExecutor;
   
-  public ProcessInstanceQueryImpl() {
+  public ProcessInstanceQueryImpl(CommandContext commandContext) {
+    super(commandContext);
   }
   
   public ProcessInstanceQueryImpl(CommandExecutor commandExecutor) {

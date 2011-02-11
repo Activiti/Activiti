@@ -23,7 +23,6 @@ import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cfg.IdentitySession;
 import org.activiti.engine.impl.identity.UserEntity;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.interceptor.Session;
 
 /**
@@ -48,7 +47,7 @@ public class CustomIdentitySession implements IdentitySession, Session {
     return null;
   }
 
-  public GroupQuery createNewGroupQuery(CommandExecutor commandExecutor) {
+  public GroupQuery createNewGroupQuery() {
     trace(Thread.currentThread().getStackTrace());
     return null;
   }
@@ -58,7 +57,7 @@ public class CustomIdentitySession implements IdentitySession, Session {
     return new UserEntity(userId);
   }
 
-  public UserQuery createNewUserQuery(CommandExecutor commandExecutor) {
+  public UserQuery createNewUserQuery() {
     trace(Thread.currentThread().getStackTrace());
     return null;
   }

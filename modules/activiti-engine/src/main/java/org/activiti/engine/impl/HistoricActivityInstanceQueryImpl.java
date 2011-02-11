@@ -38,7 +38,8 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
   protected boolean finished;
   protected boolean unfinished;
 
-  public HistoricActivityInstanceQueryImpl() {
+  public HistoricActivityInstanceQueryImpl(CommandContext commandContext) {
+    super(commandContext);
   }
   
   public HistoricActivityInstanceQueryImpl(CommandExecutor commandExecutor) {

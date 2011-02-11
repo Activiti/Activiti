@@ -339,6 +339,20 @@
               </execution>
             </executions>
           </plugin>
+          <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <excludes>
+                <exclude>**/*TestCase.java</exclude>
+                <exclude>**/CompetingJobAcquisitionTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-234 -->
+                <exclude>**/WSDLImporterTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-315 -->
+                <exclude>**/JobExecutorTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-427 -->
+                <exclude>**/HistoricTaskInstanceUpdateTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-485  -->
+                
+                <exclude>org/activiti/standalone/**</exclude>
+              </excludes>
+            </configuration>
+          </plugin>
         </plugins>
       </build>
     </profile>
@@ -366,6 +380,20 @@
                 </configuration>
               </execution>
             </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <excludes>
+                <exclude>**/*TestCase.java</exclude>
+                <exclude>**/CompetingJobAcquisitionTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-234 -->
+                <exclude>**/WSDLImporterTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-315 -->
+                <exclude>**/JobExecutorTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-427 -->
+                <exclude>**/HistoricTaskInstanceUpdateTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-485  -->
+                
+                <exclude>org/activiti/standalone/**</exclude>
+              </excludes>
+            </configuration>
           </plugin>
         </plugins>
       </build>
@@ -407,6 +435,7 @@
                 
                 <exclude>**/Historic*InstanceTest.java</exclude>
                 <exclude>**/HistoryServiceTest.java</exclude>
+                <exclude>org/activiti/standalone/**</exclude>
               </excludes>
             </configuration>
           </plugin>

@@ -13,7 +13,6 @@
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.identity.Group;
 import org.activiti.engine.impl.identity.GroupEntity;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;

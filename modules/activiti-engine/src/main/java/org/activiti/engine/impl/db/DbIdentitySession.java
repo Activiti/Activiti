@@ -25,10 +25,10 @@ import org.activiti.engine.impl.GroupQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.UserQueryImpl;
 import org.activiti.engine.impl.cfg.IdentitySession;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.identity.GroupEntity;
 import org.activiti.engine.impl.identity.UserEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.interceptor.Session;
 
 
@@ -119,16 +119,16 @@ public class DbIdentitySession implements IdentitySession, Session {
     return new GroupEntity(groupId);
   }
 
-  public GroupQuery createNewGroupQuery(CommandExecutor commandExecutor) {
-    return new GroupQueryImpl(commandExecutor);
+  public GroupQuery createNewGroupQuery() {
+    return new GroupQueryImpl(Context.getProcessEngineContext().getCommandExecutorTxRequired());
   }
 
   public User createNewUser(String userId) {
     return new UserEntity(userId);
   }
 
-  public UserQuery createNewUserQuery(CommandExecutor commandExecutor) {
-    return new UserQueryImpl(commandExecutor);
+  public UserQuery createNewUserQuery() {
+    return new UserQueryImpl(Context.getProcessEngineContext().getCommandExecutorTxRequired());
   }
 
   public void updateGroup(Group updatedGroup) {

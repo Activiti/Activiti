@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
-import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -63,11 +62,11 @@ public class ActivityInstanceEndHandler implements ExecutionListener {
       }
     }
     
-    List<HistoricActivityInstance> historicActivityInstances = new HistoricActivityInstanceQueryImpl()
+    List<HistoricActivityInstance> historicActivityInstances = new HistoricActivityInstanceQueryImpl(commandContext)
       .executionId(executionId)
       .activityId(activityId)
       .unfinished()
-      .executeList(commandContext, new Page(0, 1));
+      .listPage(0, 1);
     
     if (!historicActivityInstances.isEmpty()) {
       return (HistoricActivityInstanceEntity) historicActivityInstances.get(0);

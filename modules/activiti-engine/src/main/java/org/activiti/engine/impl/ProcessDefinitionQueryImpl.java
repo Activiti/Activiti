@@ -42,7 +42,8 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   protected Integer version;
   protected boolean latest = false;
 
-  public ProcessDefinitionQueryImpl() {
+  public ProcessDefinitionQueryImpl(CommandContext commandContext) {
+    super(commandContext);
   }
 
   public ProcessDefinitionQueryImpl(CommandExecutor commandExecutor) {

@@ -51,7 +51,8 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   protected String keyLike;
   protected List<QueryVariableValue> variables = new ArrayList<QueryVariableValue>();
   
-  public TaskQueryImpl() {
+  public TaskQueryImpl(CommandContext commandContext) {
+    super(commandContext);
   }
   
   public TaskQueryImpl(CommandExecutor commandExecutor) {

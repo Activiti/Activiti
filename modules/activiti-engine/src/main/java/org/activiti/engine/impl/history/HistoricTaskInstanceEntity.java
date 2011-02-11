@@ -75,9 +75,9 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
     int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
     if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
       HistoricDetailQueryImpl variableQuery = 
-        (HistoricDetailQueryImpl) new HistoricDetailQueryImpl().taskId(id);
+        (HistoricDetailQueryImpl) new HistoricDetailQueryImpl(commandContext).taskId(id);
       
-      List<HistoricDetail> details = variableQuery.executeList(commandContext, null);
+      List<HistoricDetail> details = variableQuery.list();
       for(HistoricDetail detail : details) {
         ((HistoricDetailEntity) detail).delete();
       }

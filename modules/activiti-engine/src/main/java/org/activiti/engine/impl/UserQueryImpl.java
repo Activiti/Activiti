@@ -36,14 +36,14 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
   protected String emailLike;
   protected String groupId;
   
-  public UserQueryImpl() {
-    
+  public UserQueryImpl(CommandContext commandContext) {
+    super(commandContext);
   }
-  
+
   public UserQueryImpl(CommandExecutor commandExecutor) {
     super(commandExecutor);
   }
-  
+
   public UserQuery userId(String id) {
     if (id == null) {
       throw new ActivitiException("Provided id is null");

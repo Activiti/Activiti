@@ -19,7 +19,6 @@ import org.activiti.engine.impl.cfg.TaskSession;
 import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.task.TaskEntity;
 
 

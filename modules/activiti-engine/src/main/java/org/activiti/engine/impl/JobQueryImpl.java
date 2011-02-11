@@ -42,7 +42,8 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
   protected Date duedateHigherThenOrEqual;
   protected Date duedateLowerThenOrEqual;
   
-  public JobQueryImpl() {
+  public JobQueryImpl(CommandContext commandContext) {
+    super(commandContext);
   }
 
   public JobQueryImpl(CommandExecutor commandExecutor) {

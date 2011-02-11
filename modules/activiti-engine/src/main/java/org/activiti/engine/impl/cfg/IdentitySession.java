@@ -20,7 +20,6 @@ import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.impl.Page;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
 
 
 /**
@@ -36,7 +35,7 @@ public interface IdentitySession {
   User findUserById(String userId);
   List<User> findUsersByGroupId(String groupId);
   boolean isValidUser(String userId);
-  UserQuery createNewUserQuery(CommandExecutor commandExecutor);
+  UserQuery createNewUserQuery();
   List<User> findUserByQueryCriteria(Object query, Page page);
   long findUserCountByQueryCriteria(Object query);
   
@@ -47,7 +46,7 @@ public interface IdentitySession {
   void deleteGroup(String groupId);
   Group findGroupById(String groupId);
   List<Group> findGroupsByUser(String userId);
-  GroupQuery createNewGroupQuery(CommandExecutor commandExecutor);
+  GroupQuery createNewGroupQuery();
   List<Group> findGroupByQueryCriteria(Object query, Page page);
   long findGroupCountByQueryCriteria(Object query);
 

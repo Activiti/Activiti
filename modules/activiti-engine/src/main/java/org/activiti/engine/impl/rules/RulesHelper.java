@@ -57,11 +57,11 @@ public class RulesHelper {
   }
 
   public static KnowledgeBase findLatestKnowledgeBaseByDeploymentName(String deploymentName) {
-    DeploymentQueryImpl deploymentQuery = new DeploymentQueryImpl();
+    DeploymentQueryImpl deploymentQuery = new DeploymentQueryImpl(CommandContext.getCurrent());
     deploymentQuery
       .deploymentName(deploymentName)
       .orderByDeploymenTime().asc();
-    List<Deployment> deployments = deploymentQuery.executeList(CommandContext.getCurrent(), new Page(0, 1));
+    List<Deployment> deployments = deploymentQuery.listPage(0, 1);
     if (deployments.isEmpty()) {
       throw new ActivitiException("no deployments with name "+deploymentName);
     }

@@ -48,9 +48,9 @@ public class DbHistorySession extends AbstractDbSession implements HistorySessio
   public void deleteHistoricProcessInstance(String historicProcessInstanceId) {
     int historyLevel = Context.getProcessEngineContext().getHistoryLevel();
     if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
-      List<HistoricDetailEntity> historicDetails = (List) new HistoricDetailQueryImpl()
+      List<HistoricDetailEntity> historicDetails = (List) new HistoricDetailQueryImpl(CommandContext.getCurrent())
         .processInstanceId(historicProcessInstanceId)
-        .executeList(CommandContext.getCurrent(), null);
+        .list();
       for (HistoricDetailEntity historicDetail: historicDetails) {
         historicDetail.delete();
       }

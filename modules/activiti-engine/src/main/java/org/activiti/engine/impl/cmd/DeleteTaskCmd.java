@@ -13,10 +13,15 @@
 package org.activiti.engine.impl.cmd;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.history.HistoricDetail;
+import org.activiti.engine.impl.HistoricDetailQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
+import org.activiti.engine.impl.history.HistoricDetailEntity;
 import org.activiti.engine.impl.history.HistoricTaskInstanceEntity;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -65,10 +70,16 @@ public class DeleteTaskCmd implements Command<Void> {
       task.delete(TaskEntity.DELETE_REASON_DELETED);
     }
     if (cascade) {
-      int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
+      int historyLevel = Context.getProcessEngineContext().getHistoryLevel();
+      DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
       if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
-        DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
         dbSqlSession.delete(HistoricTaskInstanceEntity.class, taskId);
+      }
+      List<HistoricDetail> historicTaskDetails = new HistoricDetailQueryImpl(commandContext)
+        .taskId(taskId)
+        .list();
+      for (HistoricDetail historicTaskDetail: historicTaskDetails) {
+        dbSqlSession.delete(HistoricDetailEntity.class, historicTaskDetail.getId());
       }
     }
   }

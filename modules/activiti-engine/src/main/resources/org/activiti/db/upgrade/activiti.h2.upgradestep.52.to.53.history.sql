@@ -45,6 +45,11 @@ create table ACT_HI_DETAIL (
 Ê Ê primary key (ID_)
 );
 
+create index ACT_IDX_HI_DETAIL_PROC_INST on ACT_HI_DETAIL(PROC_INST_ID_);
+create index ACT_IDX_HI_DETAIL_ACT_INST on ACT_HI_DETAIL(ACT_INST_ID_);
+create index ACT_IDX_HI_DETAIL_TIME on ACT_HI_DETAIL(TIME_);
+create index ACT_IDX_HI_DETAIL_NAME on ACT_HI_DETAIL(NAME_);
+
 insert into ACT_HI_DETAIL
 select * from ACT_HI_DETAIL_TMP;
 
