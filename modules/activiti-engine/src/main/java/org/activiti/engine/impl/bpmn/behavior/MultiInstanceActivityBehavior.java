@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -53,11 +54,14 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
   // Variable names for inner instances (as described in the spec)
   protected final String LOOP_COUNTER = "loopCounter";
   
-  // instance members
+  // Instance members
   protected AbstractBpmnActivityBehavior originalActivityBehavior;
   protected boolean isSequential;
   protected Expression loopCardinalityExpression;
   protected Expression completionConditionExpression;
+  protected Expression loopDataInputRefExpression;
+  protected String loopDataInputRefVariable;
+  protected String inputDataItemVariable;
   
   /**
    * @param originalActivityBehavior The original {@link ActivityBehavior} of the activity 
@@ -75,29 +79,29 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
    * Spawns the instances of the activity.
    */
   public void execute(ActivityExecution execution) throws Exception {
-    int loopCardinalityValue = resolveLoopCardinality(execution);
-    if (loopCardinalityValue <= 0) {
-      throw new ActivitiException("Invalid loopCardinality: must be positive integer value" 
-              + ", but was " + loopCardinalityValue);
+    int nrOfInstances = resolveNrOfInstances(execution);
+    if (nrOfInstances <= 0) {
+      throw new ActivitiException("Invalid number of instances: must be positive integer value" 
+              + ", but was " + nrOfInstances);
     }
-    setLoopVariable(execution, NUMBER_OF_INSTANCES, loopCardinalityValue);
+    setLoopVariable(execution, NUMBER_OF_INSTANCES, nrOfInstances);
     setLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES, 0);
     
-    if (isSequential || loopCardinalityValue == 1) {
-      executeSequentialBehavior(execution, loopCardinalityValue);
+    if (isSequential || nrOfInstances == 1) {
+      executeSequentialBehavior(execution, nrOfInstances);
     } else {
-      executeParallelBehavior(execution, loopCardinalityValue);
+      executeParallelBehavior(execution, nrOfInstances);
     }
   }
-
+  
   /**
    * Handles the sequential case of spawning the instances.
    * Will only create one instance, since at most one instance can be active.
    */
-  protected void executeSequentialBehavior(ActivityExecution execution, int loopCardinalityValue) throws Exception {
+  protected void executeSequentialBehavior(ActivityExecution execution, int nrOfInstances) throws Exception {
     setLoopVariable(execution, LOOP_COUNTER, 0);
     setLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES, 1);
-    logLoopDetails(execution, "initialized", 0, 0, 1, loopCardinalityValue);
+    logLoopDetails(execution, "initialized", 0, 0, 1, nrOfInstances);
     originalActivityBehavior.execute(execution);
   }
   
@@ -105,10 +109,10 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
    * Handles the parallel case of spawning the instances.
    * Will create child executions accordingly for every instance needed.
    */
-  protected void executeParallelBehavior(ActivityExecution execution, int loopCardinalityValue) throws Exception {
-    setLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES, loopCardinalityValue);
+  protected void executeParallelBehavior(ActivityExecution execution, int nrOfInstances) throws Exception {
+    setLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES, nrOfInstances);
     List<ActivityExecution> concurrentExecutions = new ArrayList<ActivityExecution>();
-    for (int loopCounter=0; loopCounter<loopCardinalityValue; loopCounter++) {
+    for (int loopCounter=0; loopCounter<nrOfInstances; loopCounter++) {
       ActivityExecution concurrentExecution = execution.createExecution();
       concurrentExecution.setActive(true);
       concurrentExecution.setConcurrent(true);
@@ -123,13 +127,13 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
       } 
       
       concurrentExecutions.add(concurrentExecution);
-      logLoopDetails(concurrentExecution, "initialized", loopCounter, 0, loopCardinalityValue, loopCardinalityValue);
+      logLoopDetails(concurrentExecution, "initialized", loopCounter, 0, nrOfInstances, nrOfInstances);
     }
     
     // Before the activities are executed, all executions MUST be created up front
     // Do not try to merge this loop with the previous one, as it will lead to bugs,
     // due to possible child execution pruning.
-    for (int loopCounter=0; loopCounter<loopCardinalityValue; loopCounter++) {
+    for (int loopCounter=0; loopCounter<nrOfInstances; loopCounter++) {
       ActivityExecution concurrentExecution = concurrentExecutions.get(loopCounter);
       if (concurrentExecution.isActive() && concurrentExecution.getParent().isActive()) { 
         // executions can be inactive, if instances are all automatics (no-waitstate)
@@ -243,6 +247,35 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
   
   // Helpers //////////////////////////////////////////////////////////////////////
   
+  @SuppressWarnings("rawtypes")
+  protected int resolveNrOfInstances(ActivityExecution execution) {
+    int nrOfInstances = -1;
+    if (loopCardinalityExpression != null) {
+      nrOfInstances = resolveLoopCardinality(execution);
+    } else if (loopDataInputRefExpression != null) {
+      Object obj = loopDataInputRefExpression.getValue(execution);
+      if (! (obj instanceof Collection)) {
+        throw new ActivitiException("loopDataInputRef '"
+                +loopDataInputRefExpression.getExpressionText()+"' didn't resolve to a Collection");
+      }
+      nrOfInstances = ((Collection) obj).size();
+    } else if (loopDataInputRefVariable != null) {
+      Object obj = execution.getVariable(loopDataInputRefVariable);
+      if (! (obj instanceof Collection)) {
+        throw new ActivitiException("loopDataInputRef '"+loopDataInputRefVariable+"' is not a Collection");
+      }
+    } else {
+      throw new ActivitiException("Couldn't resolve loopCardinality nor loopDataInputRef");
+    }
+    return nrOfInstances;
+  }
+  
+  protected boolean usesCollection() {
+    return loopDataInputRefExpression != null 
+              || loopDataInputRefVariable != null
+              || inputDataItemVariable != null;
+  }
+  
   protected boolean isExtraScopeNeeded() {
     // special care is needed when the behavior is an embedded subprocess
     // (not very clean, but it works)
@@ -309,12 +342,6 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
   
   // Getters and Setters ///////////////////////////////////////////////////////////
 
-  public AbstractBpmnActivityBehavior getActivityBehavior() {
-    return originalActivityBehavior;
-  }
-  public void setActivityBehavior(AbstractBpmnActivityBehavior activityBehavior) {
-    this.originalActivityBehavior = activityBehavior;
-  }
   public boolean isSequential() {
     return isSequential;
   }
@@ -332,6 +359,30 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
   }
   public void setCompletionConditionExpression(Expression completionConditionExpression) {
     this.completionConditionExpression = completionConditionExpression;
+  }
+  public AbstractBpmnActivityBehavior getOriginalActivityBehavior() {
+    return originalActivityBehavior;
+  }
+  public void setOriginalActivityBehavior(AbstractBpmnActivityBehavior originalActivityBehavior) {
+    this.originalActivityBehavior = originalActivityBehavior;
+  }
+  public Expression getLoopDataInputRefExpression() {
+    return loopDataInputRefExpression;
+  }
+  public void setLoopDataInputRefExpression(Expression loopDataInputRefExpression) {
+    this.loopDataInputRefExpression = loopDataInputRefExpression;
+  }
+  public String getLoopDataInputRefVariable() {
+    return loopDataInputRefVariable;
+  }
+  public void setLoopDataInputRefVariable(String loopDataInputRefVariable) {
+    this.loopDataInputRefVariable = loopDataInputRefVariable;
+  }
+  public String getInputDataItemVariable() {
+    return inputDataItemVariable;
+  }
+  public void setInputDataItemVariable(String inputDataItemVariable) {
+    this.inputDataItemVariable = inputDataItemVariable;
   }
   
 }

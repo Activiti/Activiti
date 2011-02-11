@@ -706,6 +706,33 @@ public class BpmnParse extends Parse {
         miActivityBehavior.setCompletionConditionExpression(expressionManager.createExpression(completionConditionText));
       }
       
+      // loopDataInputRef
+      Element loopDataInputRef = miLoopCharacteristics.element("loopDataInputRef");
+      if (loopDataInputRef != null) {
+        String loopDataInputRefText = loopDataInputRef.getText();
+        if (loopDataInputRefText != null) {
+          if (loopDataInputRefText.contains("${")) {
+            miActivityBehavior.setLoopDataInputRefExpression(expressionManager.createExpression(loopDataInputRefText));
+          } else {
+            miActivityBehavior.setLoopDataInputRefVariable(loopDataInputRefText);
+          }
+        }
+      }
+      
+      // dataInputItem
+      Element inputDataItem = miLoopCharacteristics.element("dataInputItem");
+      if (inputDataItem != null) {
+        String inputDataItemText = inputDataItem.getText();
+        miActivityBehavior.setInputDataItemVariable(inputDataItemText);
+      }
+      
+      // Validation
+      if (miActivityBehavior.getLoopCardinalityExpression() == null
+              && miActivityBehavior.getLoopDataInputRefExpression() == null
+              && miActivityBehavior.getLoopDataInputRefVariable() == null) {
+        addError("Either either loopCardinality or loopDataInputRef must been set", miLoopCharacteristics);
+      }
+      
       for (BpmnParseListener parseListener: parseListeners) {
         parseListener.parseMultiInstanceLoopCharacteristics(activityElement, miLoopCharacteristics, activity);
       }
