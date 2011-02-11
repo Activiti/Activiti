@@ -74,12 +74,12 @@ public class DeleteTaskCmd implements Command<Void> {
       DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
       if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
         dbSqlSession.delete(HistoricTaskInstanceEntity.class, taskId);
-      }
-      List<HistoricDetail> historicTaskDetails = new HistoricDetailQueryImpl(commandContext)
-        .taskId(taskId)
-        .list();
-      for (HistoricDetail historicTaskDetail: historicTaskDetails) {
-        dbSqlSession.delete(HistoricDetailEntity.class, historicTaskDetail.getId());
+        List<HistoricDetail> historicTaskDetails = new HistoricDetailQueryImpl(commandContext)
+          .taskId(taskId)
+          .list();
+        for (HistoricDetail historicTaskDetail: historicTaskDetails) {
+          dbSqlSession.delete(HistoricDetailEntity.class, historicTaskDetail.getId());
+        }
       }
     }
   }
