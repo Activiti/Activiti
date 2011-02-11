@@ -70,7 +70,11 @@ public class DbManagementSession implements ManagementSession, Session {
       ResultSet tables = null;
       try {
         log.fine("retrieving activiti tables from jdbc metadata");
-        tables = databaseMetaData.getTables(null, null, "ACT_%", DbSqlSession.JDBC_METADATA_TABLE_TYPES);
+        String tableNameFilter = "ACT_%";
+        if ("postgres".equals(dbSqlSession.getDbSqlSessionFactory().getDatabaseType())) {
+          tableNameFilter = "act_%";
+        }
+        tables = databaseMetaData.getTables(null, null, tableNameFilter, DbSqlSession.JDBC_METADATA_TABLE_TYPES);
         while (tables.next()) {
           String tableName = tables.getString("TABLE_NAME");
           tableName = tableName.toUpperCase();
@@ -118,24 +122,17 @@ public class DbManagementSession implements ManagementSession, Session {
         .getSqlSession()
         .getConnection()
         .getMetaData();
-      DbMetaDataHandler databaseMetaDataHandler = TableMetaDataCacheHandler.getInstance().getDatabaseHandler(metaData);
-      TableMetaData resultCached = null;
-      if( (resultCached = databaseMetaDataHandler.getFromCache(tableName)) != null)
-      {
-    	  return resultCached; 
+
+      if ("postgres".equals(dbSqlSession.getDbSqlSessionFactory().getDatabaseType())) {
+        tableName = tableName.toLowerCase();
       }
-      else
-      {
-    	  tableName = databaseMetaDataHandler.handleTableName(tableName);
-      }
+
       ResultSet resultSet = metaData.getColumns(null, null, tableName, null);
       while(resultSet.next()) {
         String name = resultSet.getString("COLUMN_NAME");
         String type = resultSet.getString("TYPE_NAME");
         result.addColumnMetaData(name, type);
       }
-      
-      databaseMetaDataHandler.addToCache(result);
       
     } catch (SQLException e) {
       throw new ActivitiException("Could not retrieve database metadata: " + e.getMessage());
