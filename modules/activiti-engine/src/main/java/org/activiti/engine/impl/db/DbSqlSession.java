@@ -801,7 +801,7 @@ public class DbSqlSession implements Session {
     if (sqlStatement==null) {
       return line;
     }
-    return sqlStatement + " \n" + line;
+    return sqlStatement + " "+ System.getProperty("line.separator") + line;
   }
   
   protected String readNextTrimmedLine(BufferedReader reader) throws IOException {
