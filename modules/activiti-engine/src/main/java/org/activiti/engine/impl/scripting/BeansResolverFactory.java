@@ -22,17 +22,14 @@ import org.activiti.engine.impl.context.Context;
  */
 public class BeansResolverFactory implements ResolverFactory, Resolver {
 
-  @Override
   public Resolver createResolver(VariableScope variableScope) {
     return this;
   }
 
-  @Override
   public boolean containsKey(Object key) {
     return Context.getProcessEngineContext().getBeans().containsKey(key);
   }
 
-  @Override
   public Object get(Object key) {
     return Context.getProcessEngineContext().getBeans().get(key);
   }

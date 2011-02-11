@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.task.Task;
@@ -30,9 +31,10 @@ import org.activiti.engine.test.Deployment;
  */
 public class MultiInstanceTest extends PluggableActivitiTestCase {
   
-  @Deployment
+  @Deployment(resources = {"org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.sequentialUserTasks.bpmn20.xml"})
   public void testSequentialUserTasks() {
-    String procId = runtimeService.startProcessInstanceByKey("miSequentialUserTasks").getId();
+    String procId = runtimeService.startProcessInstanceByKey("miSequentialUserTasks", 
+            CollectionUtil.singletonMap("nrOfLoops", 3)).getId();
     
     Task task = taskService.createTaskQuery().singleResult();
     assertEquals("My Task", task.getName());
@@ -53,11 +55,12 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     assertProcessEnded(procId);
   }
   
-  @Deployment
+  @Deployment(resources = {"org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.sequentialUserTasks.bpmn20.xml"})
   public void testSequentialUserTasksWithTimer() {
-    String procId = runtimeService.startProcessInstanceByKey("miSequentialUserTasksWithTimer").getId();
+    String procId = runtimeService.startProcessInstanceByKey("miSequentialUserTasks",
+            CollectionUtil.singletonMap("nrOfLoops", 3)).getId();
     
-    // Complete 1 of 3 tasks
+    // Complete 1 tasks
     taskService.complete(taskService.createTaskQuery().singleResult().getId());
     
     // Fire timer
@@ -70,12 +73,13 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     assertProcessEnded(procId);
   }
   
-  @Deployment
+  @Deployment(resources = {"org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.sequentialUserTasks.bpmn20.xml"})
   public void testSequentialUserTasksCompletionCondition() {
-    String procId = runtimeService.startProcessInstanceByKey("miSequentialUserTasksCompletionCondition").getId();
+    String procId = runtimeService.startProcessInstanceByKey("miSequentialUserTasks",
+            CollectionUtil.singletonMap("nrOfLoops", 10)).getId();
     
-    // 10 tasks are to be created, but completionCondition stops them at 6 
-    for (int i=0; i<6; i++) {
+    // 10 tasks are to be created, but completionCondition stops them at 5
+    for (int i=0; i<5; i++) {
       Task task = taskService.createTaskQuery().singleResult();
       taskService.complete(task.getId());
     }
@@ -340,6 +344,28 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   }
   
   @Deployment
+  public void testParallelSubProcessAllAutomatic() {
+    String procId = runtimeService.startProcessInstanceByKey("miParallelSubprocessAllAutomatics",
+            CollectionUtil.singletonMap("nrOfLoops", 5)).getId();
+    Execution waitState = runtimeService.createExecutionQuery().singleResult();
+    assertEquals(10, runtimeService.getVariable(waitState.getId(), "sum"));
+    
+    runtimeService.signal(waitState.getId());
+    assertProcessEnded(procId);
+  }
+  
+  @Deployment(resources = {"org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelSubProcessAllAutomatic.bpmn20.xml"})
+  public void testParallelSubProcessAllAutomaticCompletionCondition() {
+    String procId = runtimeService.startProcessInstanceByKey("miParallelSubprocessAllAutomatics", 
+            CollectionUtil.singletonMap("nrOfLoops", 10)).getId();
+    Execution waitState = runtimeService.createExecutionQuery().singleResult();
+    assertEquals(12, runtimeService.getVariable(waitState.getId(), "sum"));
+    
+    runtimeService.signal(waitState.getId());
+    assertProcessEnded(procId);
+  }
+  
+  @Deployment
   public void testNestedParallelSubProcess() {
     String procId = runtimeService.startProcessInstanceByKey("miNestedParallelSubProcess").getId();
     List<Task> tasks = taskService.createTaskQuery().list();
@@ -525,6 +551,20 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     Task taskAfterTimer = taskService.createTaskQuery().singleResult();
     assertEquals("taskAfterTimer", taskAfterTimer.getTaskDefinitionKey());
     taskService.complete(taskAfterTimer.getId());
+    
+    assertProcessEnded(procId);
+  }
+  
+  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testNestedParallelCallActivityCompletionCondition.bpmn20.xml",
+  "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml" })
+  public void testNestedParallelCallActivityCompletionCondition() {
+    String procId = runtimeService.startProcessInstanceByKey("miNestedParallelCallActivityCompletionCondition").getId();
+
+    List<Task> tasks = taskService.createTaskQuery().orderByTaskId().asc().list();
+    assertEquals(8, tasks.size());
+    for (int i = 0; i < 4; i++) {
+      taskService.complete(tasks.get(i).getId());
+    }
     
     assertProcessEnded(procId);
   }

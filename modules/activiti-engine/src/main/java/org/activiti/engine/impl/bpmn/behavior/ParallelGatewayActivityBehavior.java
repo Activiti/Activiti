@@ -36,10 +36,11 @@ import org.activiti.engine.impl.runtime.ExecutionEntity;
  * potentially then doing the fork behavior in case of multiple outgoing
  * sequence flow).
  * 
- * TODO: think of documenting possible difference to spec p. 436: "The parallel
+ * Note that there is a slight difference to spec (p. 436): "The parallel
  * gateway is activated if there is at least one Token on each incoming sequence
- * flow." (and we do not check the incoming sequence flow but only the numbers
- * of tokens and flows)
+ * flow." We only check the number of incoming tokens to the number of sequenceflow.
+ * So if two tokens would arrive through the same sequence flow, our implementation
+ * would activate the gateway.
  * 
  * Note that a Parallel Gateway having one incoming and multiple ougoing
  * sequence flow, is the same as having multiple outgoing sequence flow on a
