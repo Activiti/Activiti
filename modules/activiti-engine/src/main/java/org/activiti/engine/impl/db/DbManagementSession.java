@@ -129,8 +129,8 @@ public class DbManagementSession implements ManagementSession, Session {
 
       ResultSet resultSet = metaData.getColumns(null, null, tableName, null);
       while(resultSet.next()) {
-        String name = resultSet.getString("COLUMN_NAME");
-        String type = resultSet.getString("TYPE_NAME");
+        String name = resultSet.getString("COLUMN_NAME").toUpperCase();
+        String type = resultSet.getString("TYPE_NAME").toUpperCase();
         result.addColumnMetaData(name, type);
       }
       

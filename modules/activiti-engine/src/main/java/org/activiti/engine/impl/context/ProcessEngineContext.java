@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.context;
 
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.activiti.engine.impl.variable.VariableTypes;
 
 import java.util.Map;
@@ -27,6 +28,7 @@ public class ProcessEngineContext {
   protected int historyLevel;
   protected Map<Object, Object> beans;
   protected VariableTypes variableTypes;
+  protected ScriptingEngines scriptingEngines;
   protected String mailServerDefaultFrom;
   protected String mailServerHost;
   protected int mailServerPort;

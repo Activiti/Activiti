@@ -19,7 +19,7 @@ import java.util.List;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.identity.Group;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.variable.VariableTypes;
@@ -199,8 +199,8 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     return groupIds;
   }
   
-  protected void ensureVariablesInitialized(ProcessEngineConfigurationImpl configuration) {    
-    VariableTypes types = configuration.getVariableTypes();
+  protected void ensureVariablesInitialized() {    
+    VariableTypes types = Context.getProcessEngineContext().getVariableTypes();
     for(QueryVariableValue var : variables) {
       var.initialize(types);
     }
@@ -243,7 +243,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   //results ////////////////////////////////////////////////////////////////
   
   public List<Task> executeList(CommandContext commandContext, Page page) {
-    ensureVariablesInitialized(commandContext.getProcessEngineConfiguration());
+    ensureVariablesInitialized();
     checkQueryOk();
     return commandContext
       .getTaskSession()
@@ -251,7 +251,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   }
   
   public long executeCount(CommandContext commandContext) {
-    ensureVariablesInitialized(commandContext.getProcessEngineConfiguration());
+    ensureVariablesInitialized();
     checkQueryOk();
     return commandContext
       .getTaskSession()

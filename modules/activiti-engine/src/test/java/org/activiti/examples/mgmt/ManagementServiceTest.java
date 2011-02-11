@@ -40,7 +40,6 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     assertEquals(new Long(0), tableCount.get("ACT_RE_PROCDEF"));
     assertEquals(new Long(0), tableCount.get("ACT_RU_TASK"));
     assertEquals(new Long(0), tableCount.get("ACT_RU_IDENTITYLINK"));
-    ;
   }
 
   public void testGetTableMetaData() {
