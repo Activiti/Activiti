@@ -13,15 +13,14 @@
 package org.activiti.engine.impl.jobexecutor;
 
 import org.activiti.engine.impl.cfg.MessageSession;
-import org.activiti.engine.impl.cfg.MessageSessionFactory;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
+import org.activiti.engine.impl.interceptor.SessionFactory;
 
 
 /**
  * @author Tom Baeyens
  */
-public class JobExecutorMessageSessionFactory implements MessageSessionFactory {
+public class JobExecutorMessageSessionFactory implements SessionFactory {
 
   protected JobExecutor jobExecutor;
 
@@ -29,10 +28,6 @@ public class JobExecutorMessageSessionFactory implements MessageSessionFactory {
     return MessageSession.class;
   }
   
-  public MessageSession openMessageSession(CommandContext commandContext) {
-    return new JobExecutorMessageSession(commandContext, jobExecutor);
-  }
-
   public Session openSession() {
     return new JobExecutorMessageSession();
   }

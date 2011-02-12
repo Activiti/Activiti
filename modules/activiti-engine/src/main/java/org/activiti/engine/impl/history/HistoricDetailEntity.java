@@ -16,9 +16,9 @@ package org.activiti.engine.impl.history;
 import java.util.Date;
 
 import org.activiti.engine.history.HistoricDetail;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.interceptor.CommandContext;
 
 
 /**
@@ -39,8 +39,8 @@ public class HistoricDetailEntity implements HistoricDetail, PersistentObject {
   }
   
   public void delete() {
-    DbSqlSession dbSqlSession = CommandContext
-      .getCurrent()
+    DbSqlSession dbSqlSession = Context
+      .getCommandContext()
       .getDbSqlSession();
 
     dbSqlSession.delete(HistoricDetailEntity.class, id);

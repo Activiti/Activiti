@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cfg.RuntimeSession;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -73,15 +74,15 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject {
       execution = runtimeSession.findExecutionById(executionId);
     }
 
-    Map<String, JobHandler> jobHandlers = commandContext.getProcessEngineConfiguration().getJobHandlers();
+    Map<String, JobHandler> jobHandlers = Context.getProcessEngineConfiguration().getJobHandlers();
     JobHandler jobHandler = jobHandlers.get(jobHandlerType);
 
     jobHandler.execute(jobHandlerConfiguration, execution, commandContext);
   }
   
   public void delete() {
-    DbSqlSession dbSqlSession = CommandContext
-      .getCurrent()
+    DbSqlSession dbSqlSession = Context
+      .getCommandContext()
       .getDbSqlSession();
 
     dbSqlSession.delete(JobEntity.class, id);
@@ -194,8 +195,8 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject {
     ByteArrayEntity byteArray = getExceptionByteArray();
     if(byteArray == null) {
       byteArray = new ByteArrayEntity("job.exceptionByteArray", exceptionBytes);
-      CommandContext
-        .getCurrent()
+      Context
+        .getCommandContext()
         .getDbSqlSession()
         .insert(byteArray);
       exceptionByteArrayId = byteArray.getId();
@@ -242,7 +243,10 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject {
 
   private ByteArrayEntity getExceptionByteArray() {
     if ((exceptionByteArray == null) && (exceptionByteArrayId != null)) {
-      exceptionByteArray = CommandContext.getCurrent().getRuntimeSession().findByteArrayById(exceptionByteArrayId);
+      exceptionByteArray = Context
+        .getCommandContext()
+        .getRuntimeSession()
+        .findByteArrayById(exceptionByteArrayId);
     }
     return exceptionByteArray;
   }

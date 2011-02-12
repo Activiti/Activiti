@@ -189,8 +189,8 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   }
   
   protected List<String> getGroupsForCandidateUser(String candidateUser) {
-    List<Group> groups = CommandContext
-      .getCurrent()
+    List<Group> groups = Context
+      .getCommandContext()
       .getIdentitySession()
       .findGroupsByUser(candidateUser);
     List<String> groupIds = new ArrayList<String>();
@@ -201,7 +201,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   }
   
   protected void ensureVariablesInitialized() {    
-    VariableTypes types = Context.getProcessEngineContext().getVariableTypes();
+    VariableTypes types = Context.getProcessEngineConfiguration().getVariableTypes();
     for(QueryVariableValue var : variables) {
       var.initialize(types);
     }

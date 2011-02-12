@@ -70,7 +70,7 @@ public class DeleteTaskCmd implements Command<Void> {
       task.delete(TaskEntity.DELETE_REASON_DELETED);
     }
     if (cascade) {
-      int historyLevel = Context.getProcessEngineContext().getHistoryLevel();
+      int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
       DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
       if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
         dbSqlSession.delete(HistoricTaskInstanceEntity.class, taskId);

@@ -14,7 +14,7 @@
 package org.activiti.engine.impl.variable;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.context.Context;
 
 
 /**
@@ -49,8 +49,9 @@ public class JPAEntityVariableType implements VariableType {
   }
 
   public void setValue(Object value, ValueFields valueFields) {
-    EntityManagerSession entityManagerSession = 
-      CommandContext.getCurrent().getSession(EntityManagerSession.class);
+    EntityManagerSession entityManagerSession = Context 
+      .getCommandContext()
+      .getSession(EntityManagerSession.class);
     if (entityManagerSession == null) {
       throw new ActivitiException("Cannot set JPA variable: " + EntityManagerSession.class + " not configured");
     } else {

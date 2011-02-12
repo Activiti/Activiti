@@ -15,6 +15,7 @@ package org.activiti.engine.impl.jobexecutor;
 
 import org.activiti.engine.impl.cfg.TransactionListener;
 import org.activiti.engine.impl.cmd.DecrementJobRetriesCmd;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
 
@@ -32,8 +33,8 @@ public class DecrementJobRetriesListener implements TransactionListener {
   }
   
   public void execute(CommandContext commandContext) {
-    // TODO http://jira.codehaus.org/browse/ACT-45 use a separate 'requiresNew' command executor
-    commandContext.getProcessEngineConfiguration()
+    Context
+      .getProcessEngineConfiguration()
       .getCommandExecutorTxRequiresNew()
       .execute(new DecrementJobRetriesCmd(jobId, exception));
   }

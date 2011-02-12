@@ -28,7 +28,6 @@ import org.activiti.engine.impl.cfg.IdentitySession;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.identity.GroupEntity;
 import org.activiti.engine.impl.identity.UserEntity;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 
 
@@ -40,7 +39,7 @@ public class DbIdentitySession implements IdentitySession, Session {
   protected DbSqlSession dbSqlSession;
 
   public DbIdentitySession() {
-    this.dbSqlSession = CommandContext.getCurrentSession(DbSqlSession.class);
+    this.dbSqlSession = Context.getCommandContext().getSession(DbSqlSession.class);
   }
 
   public void insertUser(User user) {
@@ -120,7 +119,7 @@ public class DbIdentitySession implements IdentitySession, Session {
   }
 
   public GroupQuery createNewGroupQuery() {
-    return new GroupQueryImpl(Context.getProcessEngineContext().getCommandExecutorTxRequired());
+    return new GroupQueryImpl(Context.getProcessEngineConfiguration().getCommandExecutorTxRequired());
   }
 
   public User createNewUser(String userId) {
@@ -128,7 +127,7 @@ public class DbIdentitySession implements IdentitySession, Session {
   }
 
   public UserQuery createNewUserQuery() {
-    return new UserQueryImpl(Context.getProcessEngineContext().getCommandExecutorTxRequired());
+    return new UserQueryImpl(Context.getProcessEngineConfiguration().getCommandExecutorTxRequired());
   }
 
   public void updateGroup(Group updatedGroup) {

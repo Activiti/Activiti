@@ -18,10 +18,9 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.DeploymentQueryImpl;
-import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cfg.RepositorySession;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbRepositorySessionFactory;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.repository.DeploymentEntity;
 import org.activiti.engine.repository.Deployment;
 import org.drools.KnowledgeBase;
@@ -33,8 +32,7 @@ import org.drools.KnowledgeBase;
 public class RulesHelper {
 
   public static KnowledgeBase findKnowledgeBaseByDeploymentId(String deploymentId) {
-    CommandContext commandContext = CommandContext.getCurrent();
-    DbRepositorySessionFactory repositorySessionFactory = (DbRepositorySessionFactory) commandContext
+    DbRepositorySessionFactory repositorySessionFactory = (DbRepositorySessionFactory) Context
       .getProcessEngineConfiguration()
       .getSessionFactories()
       .get(RepositorySession.class);
@@ -42,7 +40,7 @@ public class RulesHelper {
     Map<String, Object> knowledgeBaseCache = repositorySessionFactory.getKnowledgeBaseCache();
     KnowledgeBase knowledgeBase = (KnowledgeBase) knowledgeBaseCache.get(deploymentId);
     if (knowledgeBase==null) {
-      RepositorySession repositorySession = commandContext.getRepositorySession();
+      RepositorySession repositorySession = Context.getCommandContext().getRepositorySession();
       DeploymentEntity deployment = repositorySession.findDeploymentById(deploymentId);
       if (deployment==null) {
         throw new ActivitiException("no deployment with id "+deploymentId);
@@ -57,7 +55,7 @@ public class RulesHelper {
   }
 
   public static KnowledgeBase findLatestKnowledgeBaseByDeploymentName(String deploymentName) {
-    DeploymentQueryImpl deploymentQuery = new DeploymentQueryImpl(CommandContext.getCurrent());
+    DeploymentQueryImpl deploymentQuery = new DeploymentQueryImpl(Context.getCommandContext());
     deploymentQuery
       .deploymentName(deploymentName)
       .orderByDeploymenTime().asc();

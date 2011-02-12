@@ -37,9 +37,7 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.context.ProcessEngineContext;
 import org.activiti.engine.impl.db.upgrade.DbUpgradeStep;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.repository.PropertyEntity;
 import org.activiti.engine.impl.runtime.VariableInstanceEntity;
@@ -463,7 +461,7 @@ public class DbSqlSession implements Session {
         errorMessage = addMissingComponent(errorMessage, "cycle");
       }
       
-      Integer configuredHistoryLevel = Context.getProcessEngineContext().getHistoryLevel();
+      Integer configuredHistoryLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
       PropertyEntity historyLevelProperty = selectById(PropertyEntity.class, "historyLevel");
       if (historyLevelProperty==null) {
         if (errorMessage==null) {
@@ -512,9 +510,10 @@ public class DbSqlSession implements Session {
   }
 
   public void dbSchemaCreate() {
-    ProcessEngineContext processEngineContext = Context.getProcessEngineContext();
-    int configuredHistoryLevel = processEngineContext.getHistoryLevel();
-    if ( (!processEngineContext.isDbHistoryUsed())
+    ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
+    
+    int configuredHistoryLevel = processEngineConfiguration.getHistoryLevel();
+    if ( (!processEngineConfiguration.isDbHistoryUsed())
          && (configuredHistoryLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE)
        ) {
       throw new ActivitiException("historyLevel config is higher then 'none' and dbHistoryUsed is set to false");
@@ -529,14 +528,14 @@ public class DbSqlSession implements Session {
       dbSchemaCreateEngine();
     }
 
-    if (processEngineContext.isDbHistoryUsed()) {
+    if (processEngineConfiguration.isDbHistoryUsed()) {
       dbSchemaCreateHistory();
     }
 
-    if (processEngineContext.isDbIdentityUsed()) {
+    if (processEngineConfiguration.isDbIdentityUsed()) {
       dbSchemaCreateIdentity();
     }
-    if (processEngineContext.isDbCycleUsed()) {
+    if (processEngineConfiguration.isDbCycleUsed()) {
       dbSchemaCreateCycle();
     }
   }
@@ -556,7 +555,7 @@ public class DbSqlSession implements Session {
   protected void dbSchemaCreateEngine() {
     executeMandatorySchemaResource("create", "engine");
     
-    int configuredHistoryLevel = Context.getProcessEngineContext().getHistoryLevel();
+    int configuredHistoryLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
     PropertyEntity property = new PropertyEntity("historyLevel", Integer.toString(configuredHistoryLevel));
     insert(property);
   }
@@ -834,7 +833,7 @@ public class DbSqlSession implements Session {
   }
   
   public void performSchemaOperationsProcessEngineBuild() {
-    String databaseSchemaUpdate = CommandContext.getCurrent().getProcessEngineConfiguration().getDatabaseSchemaUpdate();
+    String databaseSchemaUpdate = Context.getProcessEngineConfiguration().getDatabaseSchemaUpdate();
     if (ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_DROP_CREATE.equals(databaseSchemaUpdate)) {
       try {
         dbSchemaDrop();
@@ -857,7 +856,7 @@ public class DbSqlSession implements Session {
   }
 
   public void performSchemaOperationsProcessEngineClose() {
-    String databaseSchemaUpdate = CommandContext.getCurrent().getProcessEngineConfiguration().getDatabaseSchemaUpdate();
+    String databaseSchemaUpdate = Context.getProcessEngineConfiguration().getDatabaseSchemaUpdate();
     if (org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP.equals(databaseSchemaUpdate)) {
       dbSchemaDrop();
     }

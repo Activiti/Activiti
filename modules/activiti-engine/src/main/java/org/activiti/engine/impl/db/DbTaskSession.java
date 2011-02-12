@@ -21,8 +21,8 @@ import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.cfg.TaskSession;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.history.HistoricTaskInstanceEntity;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.task.IdentityLinkEntity;
 import org.activiti.engine.impl.task.TaskEntity;
@@ -37,7 +37,7 @@ public class DbTaskSession implements TaskSession, Session {
   protected DbSqlSession dbSqlSession;
 
   public DbTaskSession() {
-    this.dbSqlSession = CommandContext.getCurrentSession(DbSqlSession.class);
+    this.dbSqlSession = Context.getCommandContext().getSession(DbSqlSession.class);
   }
 
   public TaskEntity findTaskById(String id) {

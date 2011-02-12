@@ -18,6 +18,7 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cfg.TimerSession;
 import org.activiti.engine.impl.cfg.TransactionState;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
@@ -30,12 +31,7 @@ import org.activiti.engine.impl.util.ClockUtil;
  */
 public class JobExecutorTimerSession implements TimerSession, Session {
 
-  private final CommandContext commandContext;
-  private final JobExecutor jobExecutor;
-  
   public JobExecutorTimerSession() {
-    this.commandContext = CommandContext.getCurrent();
-    this.jobExecutor = commandContext.getProcessEngineConfiguration().getJobExecutor();
   }
 
   public void schedule(TimerEntity timer) {
@@ -44,6 +40,8 @@ public class JobExecutorTimerSession implements TimerSession, Session {
       throw new ActivitiException("duedate is null");
     }
     
+    CommandContext commandContext = Context.getCommandContext();
+    
     commandContext
       .getDbSqlSession()
       .insert(timer);
@@ -51,17 +49,23 @@ public class JobExecutorTimerSession implements TimerSession, Session {
     // Check if this timer fires before the next time the job executor will check for new timers to fire.
     // This is highly unlikely because normally waitTimeInMillis is 5000 (5 seconds)
     // and timers are usually set further in the future
+    
+    JobExecutor jobExecutor = Context.getProcessEngineConfiguration().getJobExecutor();
     int waitTimeInMillis = jobExecutor.getWaitTimeInMillis();
     if (duedate.getTime() < (ClockUtil.getCurrentTime().getTime()+waitTimeInMillis)) {
       // then notify the job executor.
       commandContext
         .getTransactionContext()
-        .addTransactionListener(TransactionState.COMMITTED, new MessageAddedNotification(jobExecutor));
+        .addTransactionListener(TransactionState.COMMITTED, new MessageAddedNotification());
     }
   }
 
   public void cancelTimers(ExecutionEntity execution) {
-    List<TimerEntity> timers = commandContext.getRuntimeSession().findTimersByExecutionId(execution.getId()); 
+    List<TimerEntity> timers = Context
+      .getCommandContext()
+      .getRuntimeSession()
+      .findTimersByExecutionId(execution.getId());
+    
     for (TimerEntity timer: timers) {
       timer.delete();
     }

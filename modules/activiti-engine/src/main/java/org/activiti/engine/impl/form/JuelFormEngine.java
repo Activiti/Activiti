@@ -15,7 +15,7 @@ package org.activiti.engine.impl.form;
 import org.activiti.engine.form.FormData;
 import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.form.TaskFormData;
-import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.repository.ResourceEntity;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.activiti.engine.impl.task.TaskEntity;
@@ -34,9 +34,8 @@ public class JuelFormEngine implements FormEngine {
     if (startForm.getFormKey()==null) {
       return null;
     }
-    CommandContext commandContext = CommandContext.getCurrent();
-    String formTemplateString = getFormTemplateString(startForm, commandContext);
-    ScriptingEngines scriptingEngines = commandContext.getProcessEngineConfiguration().getScriptingEngines();
+    String formTemplateString = getFormTemplateString(startForm);
+    ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
     return scriptingEngines.evaluate(formTemplateString, ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE, null);
   }
 
@@ -44,18 +43,18 @@ public class JuelFormEngine implements FormEngine {
     if (taskForm.getFormKey()==null) {
       return null;
     }
-    CommandContext commandContext = CommandContext.getCurrent();
-    String formTemplateString = getFormTemplateString(taskForm, commandContext);
-    ScriptingEngines scriptingEngines = commandContext.getProcessEngineConfiguration().getScriptingEngines();
+    String formTemplateString = getFormTemplateString(taskForm);
+    ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
     TaskEntity task = (TaskEntity) taskForm.getTask();
     return scriptingEngines.evaluate(formTemplateString, ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE, task.getExecution());
   }
 
-  private String getFormTemplateString(FormData formInstance, CommandContext commandContext) {
+  private String getFormTemplateString(FormData formInstance) {
     String deploymentId = formInstance.getDeploymentId();
     String formKey = formInstance.getFormKey();
     
-    ResourceEntity resourceStream = commandContext
+    ResourceEntity resourceStream = Context
+      .getCommandContext()
       .getRepositorySession()
       .findResourceByDeploymentIdAndResourceName(deploymentId, formKey);
     

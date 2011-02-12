@@ -30,7 +30,7 @@ public class ValidateActivitiDeployment extends CreateTechnicalBpmnXmlAction {
   public void execute(RepositoryConnector connector, RepositoryArtifact artifact, Map<String, Object> parameters) throws Exception {    
     // TODO: Okay, this needs more serious thinking where we get the engine
     // from!
-    ExpressionManager expressionManager = ((ProcessEngineImpl) ProcessEngines.getDefaultProcessEngine()).getExpressionManager();
+    ExpressionManager expressionManager = ((ProcessEngineImpl) ProcessEngines.getDefaultProcessEngine()).getProcessEngineConfiguration().getExpressionManager();
     
     String bpmnXml = ActivitiCompliantBpmn20Provider.createBpmnXml((SignavioConnector) connector, artifact); 
     

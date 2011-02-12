@@ -14,6 +14,10 @@
 package org.activiti.engine.impl.interceptor;
 
 
+import java.lang.reflect.UndeclaredThrowableException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
 import javax.transaction.InvalidTransactionException;
@@ -23,9 +27,6 @@ import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
-import java.lang.reflect.UndeclaredThrowableException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author Guillaume Nodet
@@ -149,6 +150,8 @@ public class JtaTransactionInterceptor extends CommandInterceptor {
     }
 
     private static class TransactionException extends RuntimeException {
+        private static final long serialVersionUID = 1L;
+
         private TransactionException() {
         }
 

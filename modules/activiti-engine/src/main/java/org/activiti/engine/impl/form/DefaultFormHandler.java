@@ -21,9 +21,9 @@ import java.util.Map;
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.repository.DeploymentEntity;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
@@ -45,12 +45,11 @@ public class DefaultFormHandler implements FormHandler {
     Element extensionElement = activityElement.element("extensionElements");
     if (extensionElement != null) {
 
-      CommandContext commandContext = CommandContext.getCurrent();
-      ExpressionManager expressionManager = commandContext
+      ExpressionManager expressionManager = Context
         .getProcessEngineConfiguration()
         .getExpressionManager();
       
-      FormTypes formTypes = commandContext
+      FormTypes formTypes = Context
         .getProcessEngineConfiguration()
         .getFormTypes();
     

@@ -15,7 +15,6 @@ package org.activiti.engine.impl.interceptor;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,14 +41,13 @@ public class CommandContext {
 
   private static Logger log = Logger.getLogger(CommandContext.class.getName());
 
-  private static final ThreadLocal<Stack<CommandContext>> txContextStacks = new ThreadLocal<Stack<CommandContext>>();
-
   protected Command< ? > command;
   protected TransactionContext transactionContext;
+  protected Map<Class< ? >, SessionFactory> sessionFactories;
   protected Map<Class< ? >, Session> sessions = new HashMap<Class< ? >, Session>();
   protected Throwable exception = null;
-  protected ProcessEngineConfigurationImpl processEngineConfiguration;
   protected LinkedList<AtomicOperation> nextOperations = new LinkedList<AtomicOperation>();
+
   
   public void performOperation(AtomicOperation executionOperation, InterpretableExecution execution) {
     nextOperations.add(executionOperation);
@@ -64,39 +62,12 @@ public class CommandContext {
     }
   }
 
-  public static void setCurrentCommandContext(CommandContext commandContext) {
-    getContextStack(true).push(commandContext);
-  }
-
-  public static void removeCurrentCommandContext() {
-    getContextStack(true).pop();
-  }
-
-  public static CommandContext getCurrent() {
-    Stack<CommandContext> contextStack = getContextStack(false);
-    if ((contextStack == null) || (contextStack.isEmpty())) {
-      return null;
-    }
-    return contextStack.peek();
-  }
-  
-  public static <T> T getCurrentSession(Class<T> sessionClass) {
-    return (T) getCurrent().getSession(sessionClass);
-  }
-
-  private static Stack<CommandContext> getContextStack(boolean isInitializationRequired) {
-    Stack<CommandContext> txContextStack = txContextStacks.get();
-    if (txContextStack == null && isInitializationRequired) {
-      txContextStack = new Stack<CommandContext>();
-      txContextStacks.set(txContextStack);
-    }
-    return txContextStack;
-  }
-
   public CommandContext(Command<?> command, ProcessEngineConfigurationImpl processEngineConfiguration) {
     this.command = command;
-    this.processEngineConfiguration = processEngineConfiguration;
-    this.transactionContext = processEngineConfiguration.getTransactionContextFactory().openTransactionContext(this);
+    sessionFactories = processEngineConfiguration.getSessionFactories();
+    this.transactionContext = processEngineConfiguration
+      .getTransactionContextFactory()
+      .openTransactionContext(this);
   }
 
   public void close() {
@@ -180,7 +151,7 @@ public class CommandContext {
   public <T> T getSession(Class<T> sessionClass) {
     Session session = sessions.get(sessionClass);
     if (session == null) {
-      SessionFactory sessionFactory = processEngineConfiguration.getSessionFactories().get(sessionClass);
+      SessionFactory sessionFactory = sessionFactories.get(sessionClass);
       if (sessionFactory==null) {
         throw new ActivitiException("no session factory configured for "+sessionClass.getName());
       }
@@ -232,8 +203,5 @@ public class CommandContext {
   }
   public Throwable getException() {
     return exception;
-  }
-  public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
-    return processEngineConfiguration;
   }
 }

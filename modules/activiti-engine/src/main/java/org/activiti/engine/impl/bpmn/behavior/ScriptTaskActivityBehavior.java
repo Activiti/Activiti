@@ -13,7 +13,6 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 
@@ -38,7 +37,7 @@ public class ScriptTaskActivityBehavior extends TaskActivityBehavior {
   
   public void execute(ActivityExecution execution) throws Exception {
     ScriptingEngines scriptingEngines = Context
-      .getProcessEngineContext()
+      .getProcessEngineConfiguration()
       .getScriptingEngines();
 
     Object result = scriptingEngines.evaluate(script, language, execution);

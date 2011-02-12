@@ -15,8 +15,8 @@ package org.activiti.engine.impl.task;
 import java.io.Serializable;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.task.IdentityLink;
 
 
@@ -44,18 +44,18 @@ public class IdentityLinkEntity implements Serializable, IdentityLink, Persisten
   
   public static IdentityLinkEntity createAndInsert() {
     IdentityLinkEntity identityLinkEntity = new IdentityLinkEntity();
-    CommandContext
-        .getCurrent()
-        .getDbSqlSession()
-        .insert(identityLinkEntity);
+    Context
+      .getCommandContext()
+      .getDbSqlSession()
+      .insert(identityLinkEntity);
     return identityLinkEntity;
   }
   
   public void delete() {
-    CommandContext
-        .getCurrent()
-        .getDbSqlSession()
-        .delete(IdentityLinkEntity.class, id);
+    Context
+      .getCommandContext()
+      .getDbSqlSession()
+      .delete(IdentityLinkEntity.class, id);
     
     // TODO remove this task assignment from the task
   }
@@ -116,10 +116,10 @@ public class IdentityLinkEntity implements Serializable, IdentityLink, Persisten
   
   public TaskEntity getTask() {
     if ( (task==null) && (taskId!=null) ) {
-      this.task = CommandContext
-          .getCurrent()
-          .getTaskSession()
-          .findTaskById(taskId);
+      this.task = Context
+        .getCommandContext()
+        .getTaskSession()
+        .findTaskById(taskId);
     }
     return task;
   }

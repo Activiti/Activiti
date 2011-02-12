@@ -21,6 +21,7 @@ import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.HistoricDetailQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
@@ -70,9 +71,9 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
   }
 
   public void delete() {
-    CommandContext commandContext = CommandContext.getCurrent();
+    CommandContext commandContext = Context.getCommandContext();
     
-    int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
+    int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
     if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
       HistoricDetailQueryImpl variableQuery = 
         (HistoricDetailQueryImpl) new HistoricDetailQueryImpl(commandContext).taskId(id);

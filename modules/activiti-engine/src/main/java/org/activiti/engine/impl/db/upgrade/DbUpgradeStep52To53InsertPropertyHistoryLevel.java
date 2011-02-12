@@ -24,7 +24,7 @@ import org.activiti.engine.impl.repository.PropertyEntity;
 public class DbUpgradeStep52To53InsertPropertyHistoryLevel implements DbUpgradeStep {
 
   public void execute(DbSqlSession dbSqlSession) throws Exception {
-    int historyLevel = Context.getProcessEngineContext().getHistoryLevel();
+    int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
     PropertyEntity property = new PropertyEntity("historyLevel", Integer.toString(historyLevel));
     dbSqlSession.insert(property);
   }

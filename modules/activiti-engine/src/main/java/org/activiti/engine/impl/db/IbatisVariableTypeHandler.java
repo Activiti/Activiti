@@ -19,7 +19,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.impl.variable.VariableTypes;
 import org.apache.ibatis.type.JdbcType;
@@ -58,8 +58,7 @@ public class IbatisVariableTypeHandler implements TypeHandler {
 
   protected VariableTypes getVariableTypes() {
     if (variableTypes==null) {
-      variableTypes = CommandContext
-        .getCurrent()
+      variableTypes = Context
         .getProcessEngineConfiguration()
         .getVariableTypes();
     }

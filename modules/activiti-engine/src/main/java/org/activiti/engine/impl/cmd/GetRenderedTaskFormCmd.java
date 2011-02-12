@@ -16,6 +16,7 @@ package org.activiti.engine.impl.cmd;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.impl.cfg.TaskSession;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.form.FormEngine;
 import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.interceptor.Command;
@@ -48,7 +49,7 @@ public class GetRenderedTaskFormCmd  implements Command<Object> {
       return null;
     }
     
-    FormEngine formEngine = commandContext
+    FormEngine formEngine = Context
       .getProcessEngineConfiguration()
       .getFormEngines()
       .get(formEngineName);

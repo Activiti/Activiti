@@ -22,7 +22,7 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.util.ReflectUtil;
 
 /**
@@ -120,7 +120,10 @@ public class JPAEntityMappings {
   }
 
   private Object findEntity(Class< ? > entityClass, Object primaryKey) {
-    EntityManager em = CommandContext.getCurrent().getSession(EntityManagerSession.class).getEntityManager();
+    EntityManager em = Context
+      .getCommandContext()
+      .getSession(EntityManagerSession.class)
+      .getEntityManager();
     
     Object entity = em.find(entityClass, primaryKey);
     if(entity == null) {

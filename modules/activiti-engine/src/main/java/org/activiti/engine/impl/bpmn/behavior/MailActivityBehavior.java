@@ -15,8 +15,8 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.context.ProcessEngineContext;
 import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
@@ -118,7 +118,7 @@ public class MailActivityBehavior implements ActivityBehavior {
     if (from != null) {
       fromAddres = from;
     } else { // use default configured from address in process engine config
-      fromAddres = Context.getProcessEngineContext().getMailServerDefaultFrom();
+      fromAddres = Context.getProcessEngineConfiguration().getMailServerDefaultFrom();
     }
 
     try {
@@ -159,19 +159,19 @@ public class MailActivityBehavior implements ActivityBehavior {
   }
 
   protected void setMailServerProperties(Email email) {
-    ProcessEngineContext processEngineContext = Context.getProcessEngineContext();
+    ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
 
-    String host = processEngineContext.getMailServerHost();
+    String host = processEngineConfiguration.getMailServerHost();
     if (host == null) {
       throw new ActivitiException("Could not send email: no SMTP host is configured");
     }
     email.setHostName(host);
 
-    int port = processEngineContext.getMailServerPort();
+    int port = processEngineConfiguration.getMailServerPort();
     email.setSmtpPort(port);
 
-    String user = processEngineContext.getMailServerUsername();
-    String password = processEngineContext.getMailServerPassword();
+    String user = processEngineConfiguration.getMailServerUsername();
+    String password = processEngineConfiguration.getMailServerPassword();
     if (user != null && password != null) {
       email.setAuthentication(user, password);
     }

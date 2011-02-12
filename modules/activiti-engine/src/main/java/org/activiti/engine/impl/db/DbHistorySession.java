@@ -30,7 +30,6 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.history.HistoricDetailEntity;
 import org.activiti.engine.impl.history.HistoricProcessInstanceEntity;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 
 
@@ -46,9 +45,9 @@ public class DbHistorySession extends AbstractDbSession implements HistorySessio
 
   @SuppressWarnings("unchecked")
   public void deleteHistoricProcessInstance(String historicProcessInstanceId) {
-    int historyLevel = Context.getProcessEngineContext().getHistoryLevel();
+    int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
     if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
-      List<HistoricDetailEntity> historicDetails = (List) new HistoricDetailQueryImpl(CommandContext.getCurrent())
+      List<HistoricDetailEntity> historicDetails = (List) new HistoricDetailQueryImpl(Context.getCommandContext())
         .processInstanceId(historicProcessInstanceId)
         .list();
       for (HistoricDetailEntity historicDetail: historicDetails) {

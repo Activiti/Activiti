@@ -19,8 +19,10 @@ import javax.persistence.PersistenceException;
 import javax.persistence.TransactionRequiredException;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.cfg.TransactionListener;
 import org.activiti.engine.impl.cfg.TransactionState;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
 /**
@@ -83,21 +85,25 @@ public class EntityManagerSessionImpl implements EntityManagerSession {
       
       if(handleTransactions) {
         // Add transaction listeners, if transactions should be handled
-        CommandContext.getCurrent().getTransactionContext().addTransactionListener(TransactionState.COMMITTED, new TransactionListener() {
+        TransactionListener jpaTransactionCommitListener = new TransactionListener() {
           public void execute(CommandContext commandContext) {
             if (isTransactionActive()) {
               entityManager.getTransaction().commit();
             }
           }
-        });
-
-        CommandContext.getCurrent().getTransactionContext().addTransactionListener(TransactionState.ROLLED_BACK, new TransactionListener() {
+        };
+        
+        TransactionListener jpaTransactionRollbackListener = new TransactionListener() {
           public void execute(CommandContext commandContext) {
             if (isTransactionActive()) {
               entityManager.getTransaction().rollback();
             }
           }
-        });
+        };
+
+        TransactionContext transactionContext = Context.getCommandContext().getTransactionContext();
+        transactionContext.addTransactionListener(TransactionState.COMMITTED, jpaTransactionCommitListener);
+        transactionContext.addTransactionListener(TransactionState.ROLLED_BACK, jpaTransactionRollbackListener);
 
         // Also, start a transaction, if one isn't started already
         if (!isTransactionActive()) {

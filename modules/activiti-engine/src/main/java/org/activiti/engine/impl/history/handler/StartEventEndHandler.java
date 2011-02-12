@@ -15,6 +15,7 @@ package org.activiti.engine.impl.history.handler;
 
 import java.util.List;
 
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -32,7 +33,7 @@ public class StartEventEndHandler implements ExecutionListener {
     String executionId = execution.getId();
     String activityId = ((ExecutionEntity)execution).getActivityId();
 
-    CommandContext commandContext = CommandContext.getCurrent();
+    CommandContext commandContext = Context.getCommandContext();
     // search for the historic activity instance in the dbsqlsession cache
     DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
     List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = dbSqlSession.findInCache(HistoricActivityInstanceEntity.class);

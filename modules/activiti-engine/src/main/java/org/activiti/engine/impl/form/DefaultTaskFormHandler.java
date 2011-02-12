@@ -13,8 +13,6 @@
 
 package org.activiti.engine.impl.form;
 
-import java.util.Map;
-
 import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.impl.task.TaskEntity;
 

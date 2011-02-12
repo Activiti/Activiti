@@ -122,7 +122,7 @@ public abstract class ExecutionVariableQueryImpl<T extends Query<?,?>, U> extend
   protected void ensureVariablesInitialized() {
     if (!queryVariableValues.isEmpty()) {
       VariableTypes variableTypes = Context
-              .getProcessEngineContext()
+              .getProcessEngineConfiguration()
               .getVariableTypes();
       for(QueryVariableValue queryVariableValue : queryVariableValues) {
         queryVariableValue.initialize(variableTypes);

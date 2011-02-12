@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.impl.interceptor;
 
+import org.activiti.engine.impl.context.Context;
+
 
 /**
  * @author Tom Baeyens
@@ -19,6 +21,6 @@ package org.activiti.engine.impl.interceptor;
 public class CommandExecutorImpl extends CommandInterceptor {
 
   public <T> T execute(Command<T> command) {
-    return command.execute(CommandContext.getCurrent());
+    return command.execute(Context.getCommandContext());
   }
 }

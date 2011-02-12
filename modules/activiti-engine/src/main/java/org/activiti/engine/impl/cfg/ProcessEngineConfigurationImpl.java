@@ -57,7 +57,6 @@ import org.activiti.engine.impl.calendar.BusinessCalendarManager;
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 import org.activiti.engine.impl.calendar.MapBusinessCalendarManager;
 import org.activiti.engine.impl.cfg.standalone.StandaloneMybatisTransactionContextFactory;
-import org.activiti.engine.impl.context.ProcessEngineContext;
 import org.activiti.engine.impl.db.DbHistorySessionFactory;
 import org.activiti.engine.impl.db.DbIdGenerator;
 import org.activiti.engine.impl.db.DbIdentitySessionFactory;
@@ -170,9 +169,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   /** this will be initialized during the configurationComplete() */
   protected CommandExecutor commandExecutorTxRequiresNew;
   
-  protected ProcessEngineContext processEngineContext;
-  
-  // SESSIOB FACTORIES ////////////////////////////////////////////////////////
+  // SESSION FACTORIES ////////////////////////////////////////////////////////
 
   protected List<SessionFactory> customSessionFactories;
   protected DbSqlSessionFactory dbSqlSessionFactory;
@@ -253,7 +250,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initBusinessCalendarManager();
     initCommandContextFactory();
     initTransactionContextFactory();
-    initProcessEngineContext();
     initCommandExecutors();
     initServices();
     initIdGenerator();
@@ -264,8 +260,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initSqlSessionFactory();
     initSessionFactories();
     initJpa();
-    
-    processEngineContext.initialize(this);
   }
 
   // command executors ////////////////////////////////////////////////////////
@@ -712,12 +706,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
-  protected void initProcessEngineContext() {
-    if (processEngineContext==null) {
-      processEngineContext = new ProcessEngineContext();
-    }
-  }
-
   // getters and setters //////////////////////////////////////////////////////
   
   public String getProcessEngineName() {
@@ -1135,14 +1123,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public void setCustomPostBPMNParseListeners(List<BpmnParseListener> postParseListeners) {
     this.postParseListeners = postParseListeners;
-  }
-  
-  public ProcessEngineContext getProcessEngineContext() {
-    return processEngineContext;
-  }
-
-  public void setProcessEngineContext(ProcessEngineContext processEngineContext) {
-    this.processEngineContext = processEngineContext;
   }
   
   public List<BpmnParseListener> getPreParseListeners() {

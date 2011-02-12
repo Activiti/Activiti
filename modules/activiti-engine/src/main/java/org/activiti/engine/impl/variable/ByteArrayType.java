@@ -12,7 +12,7 @@
  */
 package org.activiti.engine.impl.variable;
 
-import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.runtime.ByteArrayEntity;
 
 /**
@@ -42,8 +42,8 @@ public class ByteArrayType implements VariableType {
     byte[] bytes = (byte[]) value;
     if (byteArray==null) {
       byteArray = new ByteArrayEntity(bytes);
-      CommandContext
-        .getCurrent()
+      Context
+        .getCommandContext()
         .getDbSqlSession()
         .insert(byteArray);
       valueFields.setByteArrayValue(byteArray);

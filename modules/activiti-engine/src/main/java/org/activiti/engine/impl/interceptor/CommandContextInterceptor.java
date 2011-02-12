@@ -14,8 +14,8 @@
 package org.activiti.engine.impl.interceptor;
 
 
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.context.ProcessEngineContext;
 
 /**
  * @author Tom Baeyens
@@ -23,23 +23,22 @@ import org.activiti.engine.impl.context.ProcessEngineContext;
 public class CommandContextInterceptor extends CommandInterceptor {
 
   protected CommandContextFactory commandContextFactory;
-  protected ProcessEngineContext processEngineContext;
+  protected ProcessEngineConfigurationImpl processEngineConfiguration;
 
   public CommandContextInterceptor() {
   }
 
-  public CommandContextInterceptor(CommandContextFactory commandContextFactory, ProcessEngineContext processEngineContext) {
+  public CommandContextInterceptor(CommandContextFactory commandContextFactory, ProcessEngineConfigurationImpl processEngineConfiguration) {
     this.commandContextFactory = commandContextFactory;
-    this.processEngineContext = processEngineContext;
+    this.processEngineConfiguration = processEngineConfiguration;
   }
 
   public <T> T execute(Command<T> command) {
     CommandContext context = commandContextFactory.createCommandContext(command);
 
     try {
-      CommandContext.setCurrentCommandContext(context);
       Context.setCommandContext(context);
-      Context.setProcessEngineContext(processEngineContext);
+      Context.setProcessEngineConfiguration(processEngineConfiguration);
       return next.execute(command);
       
     } catch (Exception e) {
@@ -49,9 +48,8 @@ public class CommandContextInterceptor extends CommandInterceptor {
       try {
         context.close();
       } finally {
-        CommandContext.removeCurrentCommandContext();
         Context.removeCommandContext();
-        Context.removeProcessEngineContext();
+        Context.removeProcessEngineConfiguration();
       }
     }
     
@@ -66,11 +64,11 @@ public class CommandContextInterceptor extends CommandInterceptor {
     this.commandContextFactory = commandContextFactory;
   }
 
-  public ProcessEngineContext getProcessEngineContext() {
-    return processEngineContext;
+  public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
+    return processEngineConfiguration;
   }
 
-  public void setProcessEngineContext(ProcessEngineContext processEngineContext) {
-    this.processEngineContext = processEngineContext;
+  public void setProcessEngineContext(ProcessEngineConfigurationImpl processEngineContext) {
+    this.processEngineConfiguration = processEngineContext;
   }
 }

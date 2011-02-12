@@ -38,6 +38,7 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
     return ExecutionListener.EVENTNAME_END;
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   protected void eventNotificationsCompleted(InterpretableExecution execution) {
     ActivityImpl activity = (ActivityImpl) execution.getActivity();

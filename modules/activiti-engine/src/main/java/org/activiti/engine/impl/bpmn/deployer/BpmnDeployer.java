@@ -25,6 +25,7 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.cfg.RepositorySession;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbRepositorySession;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.el.ExpressionManager;
@@ -94,8 +95,9 @@ public class BpmnDeployer implements Deployer {
       }
     }
     
-    DbRepositorySession dbRepositorySession = (DbRepositorySession) CommandContext.getCurrentSession(RepositorySession.class);
-    DbSqlSession dbSqlSession = CommandContext.getCurrentSession(DbSqlSession.class);
+    CommandContext commandContext = Context.getCommandContext();
+    DbRepositorySession dbRepositorySession = (DbRepositorySession) commandContext.getSession(RepositorySession.class);
+    DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);
     for (ProcessDefinitionEntity processDefinition : processDefinitions) {
       if (deployment.isNew()) {
         int processDefinitionVersion;
@@ -184,7 +186,10 @@ public class BpmnDeployer implements Deployer {
     resource.setBytes(bytes);
     resource.setDeploymentId(deploymentEntity.getId());
     
-    CommandContext.getCurrent().getDbSqlSession().insert(resource);
+    Context
+      .getCommandContext()
+      .getDbSqlSession()
+      .insert(resource);
   }
   
   public ExpressionManager getExpressionManager() {

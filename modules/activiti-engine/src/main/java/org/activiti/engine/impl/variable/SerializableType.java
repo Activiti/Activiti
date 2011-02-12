@@ -19,7 +19,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.runtime.VariableInstanceEntity;
 import org.activiti.engine.impl.util.IoUtil;
 
@@ -50,8 +50,8 @@ public class SerializableType extends ByteArrayType {
       valueFields.setCachedValue(deserializedObject);
       
       if (valueFields instanceof VariableInstanceEntity) {
-        CommandContext
-          .getCurrent()
+        Context
+          .getCommandContext()
           .getDbSqlSession()
           .addDeserializedObject(deserializedObject, bytes, (VariableInstanceEntity) valueFields);
       }

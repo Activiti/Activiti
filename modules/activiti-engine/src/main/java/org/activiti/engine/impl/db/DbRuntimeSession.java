@@ -21,7 +21,7 @@ import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.cfg.RuntimeSession;
-import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.runtime.ByteArrayEntity;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
@@ -42,7 +42,7 @@ public class DbRuntimeSession implements Session, RuntimeSession {
   protected DbSqlSession dbSqlSession;
 
   public DbRuntimeSession() {
-    this.dbSqlSession = CommandContext.getCurrent().getDbSqlSession();
+    this.dbSqlSession = Context.getCommandContext().getDbSqlSession();
   }
 
   @SuppressWarnings("unchecked")
@@ -53,7 +53,7 @@ public class DbRuntimeSession implements Session, RuntimeSession {
       throw new ActivitiException("No process instance found for id '" + processInstanceId + "'");
     }
     
-    List<TaskEntity> tasks = (List) new TaskQueryImpl(CommandContext.getCurrent())
+    List<TaskEntity> tasks = (List) new TaskQueryImpl(Context.getCommandContext())
       .processInstanceId(processInstanceId)
       .list();
     for (TaskEntity task: tasks) {

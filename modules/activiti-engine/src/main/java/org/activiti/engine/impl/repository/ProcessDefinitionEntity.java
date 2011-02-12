@@ -19,6 +19,7 @@ import java.util.Map;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.form.StartFormHandler;
@@ -60,7 +61,7 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   public ExecutionEntity createProcessInstance(String businessKey) {
 	  ExecutionEntity processInstance = (ExecutionEntity) super.createProcessInstance();
 
-	    CommandContext commandContext = CommandContext.getCurrent();
+	    CommandContext commandContext = Context.getCommandContext();
 
 	    commandContext
 	      .getDbSqlSession()
@@ -83,7 +84,7 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
 	      processInstance.setVariable(initiatorVariableName, authenticatedUserId);
 	    }
 	    
-	    int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
+	    int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
 	    if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY) {
 	      HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity(processInstance);
 
@@ -93,7 +94,7 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
 	    }
 	    
 	    if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
-	      IdGenerator idGenerator = commandContext.getProcessEngineConfiguration().getIdGenerator();
+	      IdGenerator idGenerator = Context.getProcessEngineConfiguration().getIdGenerator();
 	      
 	      String processDefinitionId = processInstance.getProcessDefinitionId();
 	      String processInstanceId = processInstance.getProcessInstanceId();

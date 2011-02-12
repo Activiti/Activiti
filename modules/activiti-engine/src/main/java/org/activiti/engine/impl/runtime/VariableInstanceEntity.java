@@ -16,9 +16,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti.engine.impl.variable.VariableType;
 
@@ -57,8 +57,8 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Se
   public static VariableInstanceEntity createAndInsert(String name, VariableType type, Object value) {
     VariableInstanceEntity variableInstance = create(name, type, value);
 
-    CommandContext
-      .getCurrent()
+    Context
+      .getCommandContext()
       .getDbSqlSession()
       .insert(variableInstance);
   
@@ -81,8 +81,8 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Se
 
   public void delete() {
     // delete variable
-    DbSqlSession dbSqlSession = CommandContext
-      .getCurrent()
+    DbSqlSession dbSqlSession = Context
+      .getCommandContext()
       .getDbSqlSession();
     
     dbSqlSession.delete(VariableInstanceEntity.class, id);
@@ -143,7 +143,10 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Se
 
   public ByteArrayEntity getByteArrayValue() {
     if ((byteArrayValue == null) && (byteArrayValueId != null)) {
-      byteArrayValue = CommandContext.getCurrent().getRuntimeSession().findByteArrayById(byteArrayValueId);
+      byteArrayValue = Context
+        .getCommandContext()
+        .getRuntimeSession()
+        .findByteArrayById(byteArrayValueId);
     }
     return byteArrayValue;
   }

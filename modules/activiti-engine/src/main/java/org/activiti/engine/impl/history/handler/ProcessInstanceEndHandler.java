@@ -13,8 +13,8 @@
 
 package org.activiti.engine.impl.history.handler;
 
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.history.HistoricProcessInstanceEntity;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
@@ -26,8 +26,8 @@ import org.activiti.engine.impl.runtime.ExecutionEntity;
 public class ProcessInstanceEndHandler implements ExecutionListener {
 
   public void notify(ExecutionListenerExecution execution) {
-    HistoricProcessInstanceEntity historicProcessInstance = CommandContext
-      .getCurrent()
+    HistoricProcessInstanceEntity historicProcessInstance = Context
+      .getCommandContext()
       .getHistorySession()
       .findHistoricProcessInstance(execution.getProcessInstanceId());
     

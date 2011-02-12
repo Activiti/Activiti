@@ -13,7 +13,6 @@
 
 package org.activiti.engine.impl.form;
 
-import java.util.List;
 import java.util.Map;
 
 

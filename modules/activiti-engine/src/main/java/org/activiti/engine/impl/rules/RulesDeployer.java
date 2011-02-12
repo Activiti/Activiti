@@ -17,8 +17,8 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.activiti.engine.impl.cfg.RepositorySession;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbRepositorySessionFactory;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.repository.Deployer;
 import org.activiti.engine.impl.repository.DeploymentEntity;
 import org.activiti.engine.impl.repository.ResourceEntity;
@@ -57,8 +57,7 @@ public class RulesDeployer implements Deployer {
     if (knowledgeBuilder!=null) {
       KnowledgeBase knowledgeBase = knowledgeBuilder.newKnowledgeBase();
       
-      DbRepositorySessionFactory repositorySessionFactory = (DbRepositorySessionFactory) 
-        CommandContext.getCurrent()
+      DbRepositorySessionFactory repositorySessionFactory = (DbRepositorySessionFactory) Context
         .getProcessEngineConfiguration()
         .getSessionFactories()
         .get(RepositorySession.class);

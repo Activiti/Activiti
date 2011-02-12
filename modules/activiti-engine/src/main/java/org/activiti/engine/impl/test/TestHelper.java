@@ -29,12 +29,11 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
-import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
-import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.impl.util.ClassNameUtil;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -154,8 +153,8 @@ public abstract class TestHelper {
     }
   }
   
-  public static void waitForJobExecutorToProcessAllJobs(ProcessEngine processEngine, long maxMillisToWait, long intervalMillis) {
-    JobExecutor jobExecutor = ((ProcessEngineImpl)processEngine).getJobExecutor();
+  public static void waitForJobExecutorToProcessAllJobs(ProcessEngineConfigurationImpl processEngineConfiguration, long maxMillisToWait, long intervalMillis) {
+    JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
     jobExecutor.start();
 
     try {
@@ -166,7 +165,7 @@ public abstract class TestHelper {
       try {
         while (areJobsAvailable && !task.isTimeLimitExceeded()) {
           Thread.sleep(intervalMillis);
-          areJobsAvailable = areJobsAvailable(processEngine);
+          areJobsAvailable = areJobsAvailable(processEngineConfiguration);
         }
       } catch (InterruptedException e) {
       } finally {
@@ -181,8 +180,8 @@ public abstract class TestHelper {
     }
   }
 
-  public static boolean areJobsAvailable(ProcessEngine processEngine) {
-    return !processEngine
+  public static boolean areJobsAvailable(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    return !processEngineConfiguration
       .getManagementService()
       .createJobQuery()
       .executable()

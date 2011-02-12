@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.impl.cfg.RepositorySession;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.repository.Deployment;
 
 
@@ -53,8 +53,10 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
   // lazy loading /////////////////////////////////////////////////////////////
   public Map<String, ResourceEntity> getResources() {
     if (resources==null && id!=null) {
-      RepositorySession repositorySession = CommandContext.getCurrentSession(RepositorySession.class);
-      List<ResourceEntity> resourcesList = repositorySession.findResourcesByDeploymentId(id);
+      List<ResourceEntity> resourcesList = Context
+        .getCommandContext()
+        .getSession(RepositorySession.class)
+        .findResourcesByDeploymentId(id);
       resources = new HashMap<String, ResourceEntity>();
       for (ResourceEntity resource: resourcesList) {
         resources.put(resource.getName(), resource);

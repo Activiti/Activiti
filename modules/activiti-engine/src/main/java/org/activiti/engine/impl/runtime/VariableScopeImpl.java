@@ -23,7 +23,7 @@ import java.util.Set;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.db.DbSqlSession;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.history.HistoricVariableUpdateEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.javax.el.ELContext;
@@ -51,7 +51,7 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   protected void ensureVariableInstancesInitialized() {
     if (variableInstances==null) {
       variableInstances = new HashMap<String, VariableInstanceEntity>();
-      CommandContext commandContext = CommandContext.getCurrent();
+      CommandContext commandContext = Context.getCommandContext();
       if (commandContext == null) {
         throw new ActivitiException("lazy loading outside command context");
       }
@@ -185,13 +185,14 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   protected void setVariableInstanceValue(Object value, VariableInstanceEntity variableInstance) {
     variableInstance.setValue(value);
     
-    CommandContext commandContext = CommandContext.getCurrent();
-    int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
+    int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
     if (historyLevel==ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
-      DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
-      HistoricVariableUpdateEntity historicVariableUpdate = new HistoricVariableUpdateEntity(variableInstance, dbSqlSession);
+      HistoricVariableUpdateEntity historicVariableUpdate = new HistoricVariableUpdateEntity(variableInstance);
       initializeActivityInstanceId(historicVariableUpdate);
-      dbSqlSession.insert(historicVariableUpdate);
+      Context
+        .getCommandContext()
+        .getDbSqlSession()
+        .insert(historicVariableUpdate);
     }
   }
   
@@ -205,8 +206,7 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
       throw new ActivitiException("variable '"+variableName+"' already exists. Use setVariableLocal if you want to overwrite the value");
     }
     
-    CommandContext commandContext = CommandContext.getCurrent();
-    VariableTypes variableTypes = commandContext
+    VariableTypes variableTypes = Context
       .getProcessEngineConfiguration()
       .getVariableTypes();
     

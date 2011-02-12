@@ -21,7 +21,8 @@ import java.util.Arrays;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.context.Context;
 
 
 /**
@@ -227,8 +228,9 @@ public abstract class ReflectUtil {
   }
   
   private static ClassLoader getCustomClassLoader() {
-    if(CommandContext.getCurrent() != null) {
-      final ClassLoader classLoader = CommandContext.getCurrent().getProcessEngineConfiguration().getClassLoader();
+    ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
+    if(processEngineConfiguration != null) {
+      final ClassLoader classLoader = processEngineConfiguration.getClassLoader();
       if(classLoader != null) {
         return classLoader;
       }

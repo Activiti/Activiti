@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.TablePageQueryImpl;
 import org.activiti.engine.impl.cfg.ManagementSession;
-import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.repository.PropertyEntity;
 import org.activiti.engine.management.TableMetaData;
@@ -45,7 +45,7 @@ public class DbManagementSession implements ManagementSession, Session {
   protected DbSqlSession dbSqlSession;
 
   public DbManagementSession() {
-    this.dbSqlSession = CommandContext.getCurrentSession(DbSqlSession.class);
+    this.dbSqlSession = Context.getCommandContext().getSession(DbSqlSession.class);
   }
   
   public Map<String, Long> getTableCount() {

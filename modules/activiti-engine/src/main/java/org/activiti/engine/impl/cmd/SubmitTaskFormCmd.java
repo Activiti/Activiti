@@ -18,6 +18,7 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TaskSession;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.history.HistoricFormPropertyEntity;
@@ -54,7 +55,7 @@ public class SubmitTaskFormCmd implements Command<Object> {
       throw new ActivitiException("Cannot find task with id " + taskId);
     }
     
-    int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
+    int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
     ExecutionEntity execution = task.getExecution();
     if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT && execution != null) {
       DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);

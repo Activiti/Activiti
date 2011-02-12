@@ -26,6 +26,7 @@ import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.RepositorySession;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.repository.Deployer;
@@ -47,8 +48,8 @@ public class DbRepositorySession implements Session, RepositorySession {
   
   public DbRepositorySession(DbRepositorySessionFactory dbRepositorySessionFactory) {
     this.dbRepositorySessionFactory = dbRepositorySessionFactory;
-    this.dbSqlSession = CommandContext
-      .getCurrent()
+    this.dbSqlSession = Context
+      .getCommandContext()
       .getSession(DbSqlSession.class);
   }
 
@@ -73,12 +74,12 @@ public class DbRepositorySession implements Session, RepositorySession {
 
   public void deleteDeployment(String deploymentId, boolean cascade) {
     if (cascade) {
-      CommandContext commandContext = CommandContext.getCurrent();
+      CommandContext commandContext = Context.getCommandContext();
       List<ProcessDefinition> processDefinitions = new ProcessDefinitionQueryImpl(commandContext)
         .deploymentId(deploymentId)
         .list();
 
-      int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
+      int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
       boolean isHistoryEnabled = historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY;
       
       for (ProcessDefinition processDefinition: processDefinitions) {

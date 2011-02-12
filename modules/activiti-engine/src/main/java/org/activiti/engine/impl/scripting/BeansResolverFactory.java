@@ -27,10 +27,10 @@ public class BeansResolverFactory implements ResolverFactory, Resolver {
   }
 
   public boolean containsKey(Object key) {
-    return Context.getProcessEngineContext().getBeans().containsKey(key);
+    return Context.getProcessEngineConfiguration().getBeans().containsKey(key);
   }
 
   public Object get(Object key) {
-    return Context.getProcessEngineContext().getBeans().get(key);
+    return Context.getProcessEngineConfiguration().getBeans().get(key);
   }
 }

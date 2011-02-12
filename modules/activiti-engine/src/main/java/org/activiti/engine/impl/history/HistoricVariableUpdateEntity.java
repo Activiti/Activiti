@@ -16,9 +16,9 @@ package org.activiti.engine.impl.history;
 import java.util.Date;
 
 import org.activiti.engine.history.HistoricVariableUpdate;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.runtime.ByteArrayEntity;
 import org.activiti.engine.impl.runtime.VariableInstanceEntity;
 import org.activiti.engine.impl.util.ClockUtil;
@@ -50,7 +50,7 @@ public class HistoricVariableUpdateEntity extends HistoricDetailEntity implement
   public HistoricVariableUpdateEntity() {
   }
 
-  public HistoricVariableUpdateEntity(VariableInstanceEntity variableInstance, DbSqlSession dbSqlSession) {
+  public HistoricVariableUpdateEntity(VariableInstanceEntity variableInstance) {
     this.processInstanceId = variableInstance.getProcessInstanceId();
     this.executionId = variableInstance.getExecutionId();
     this.taskId = variableInstance.getTaskId();
@@ -61,7 +61,10 @@ public class HistoricVariableUpdateEntity extends HistoricDetailEntity implement
     if (variableInstance.getByteArrayValueId()!=null) {
       // TODO test and review.  name ok here?
       this.byteArrayValue = new ByteArrayEntity(name, variableInstance.getByteArrayValue().getBytes());
-      dbSqlSession.insert(byteArrayValue);
+      Context
+        .getCommandContext()
+        .getDbSqlSession()
+        .insert(byteArrayValue);
       this.byteArrayValueId = byteArrayValue.getId();
     }
     this.textValue = variableInstance.getTextValue();
@@ -85,8 +88,9 @@ public class HistoricVariableUpdateEntity extends HistoricDetailEntity implement
       // cache, but should be checked and docced here (or removed if it turns out to be unnecessary)
       // @see also HistoricVariableInstanceEntity
       getByteArrayValue();
-      CommandContext
-        .getCurrentSession(DbSqlSession.class)
+      Context
+        .getCommandContext()
+        .getSession(DbSqlSession.class)
         .delete(ByteArrayEntity.class, byteArrayValueId);
     }
   }

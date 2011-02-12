@@ -26,7 +26,6 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TransactionContextFactory;
-import org.activiti.engine.impl.context.ProcessEngineContext;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.el.ExpressionManager;
@@ -56,15 +55,10 @@ public class ProcessEngineImpl implements ProcessEngine {
   protected ExpressionManager expressionManager;
   protected int historyLevel;
   protected TransactionContextFactory transactionContextFactory;
-  
-  // TODO remove or refactor this
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
-  protected ProcessEngineContext processEngineContext;
 
   public ProcessEngineImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
     this.processEngineConfiguration = processEngineConfiguration;
-    this.processEngineContext = processEngineConfiguration.getProcessEngineContext();
-    
     this.name = processEngineConfiguration.getProcessEngineName();
     this.repositoryService = processEngineConfiguration.getRepositoryService();
     this.runtimeService = processEngineConfiguration.getRuntimeService();
@@ -114,10 +108,6 @@ public class ProcessEngineImpl implements ProcessEngine {
     return name;
   }
 
-  public JobExecutor getJobExecutor() {
-    return jobExecutor;
-  }
-
   public IdentityService getIdentityService() {
     return identityService;
   }
@@ -138,32 +128,12 @@ public class ProcessEngineImpl implements ProcessEngine {
     return runtimeService;
   }
   
-  public String getDatabaseSchemaUpdate() {
-    return databaseSchemaUpdate;
-  }
-  
   public RepositoryService getRepositoryService() {
     return repositoryService;
   }
   
   public FormService getFormService() {
     return formService;
-  }
-  
-  public Map<Class< ? >, SessionFactory> getSessionFactories() {
-    return sessionFactories;
-  }
-
-  public ExpressionManager getExpressionManager() {
-    return expressionManager;
-  }
-
-  public int getHistoryLevel() {
-    return historyLevel;
-  }
-  
-  public TransactionContextFactory getTransactionContextFactory() {
-    return transactionContextFactory;
   }
 
   public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {

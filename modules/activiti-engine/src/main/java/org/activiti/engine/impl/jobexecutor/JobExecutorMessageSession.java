@@ -14,6 +14,7 @@ package org.activiti.engine.impl.jobexecutor;
 
 import org.activiti.engine.impl.cfg.MessageSession;
 import org.activiti.engine.impl.cfg.TransactionState;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.runtime.MessageEntity;
@@ -24,27 +25,17 @@ import org.activiti.engine.impl.runtime.MessageEntity;
  */
 public class JobExecutorMessageSession implements Session, MessageSession {
 
-  private final CommandContext commandContext;
-  private final JobExecutor jobExecutor;
-  
-  public JobExecutorMessageSession(CommandContext commandContext, JobExecutor jobExecutor) {
-    this.commandContext = commandContext;
-    this.jobExecutor = jobExecutor;
-  }
-
-  public JobExecutorMessageSession() {
-    this.commandContext = CommandContext.getCurrent();
-    this.jobExecutor = commandContext.getProcessEngineConfiguration().getJobExecutor();
-  }
-
   public void send(MessageEntity message) {
+    CommandContext commandContext = Context.getCommandContext();
+    
     commandContext
       .getDbSqlSession()
       .insert(message);
     
+    
     commandContext
       .getTransactionContext()
-      .addTransactionListener(TransactionState.COMMITTED, new MessageAddedNotification(jobExecutor));
+      .addTransactionListener(TransactionState.COMMITTED, new MessageAddedNotification());
   }
 
   public void close() {

@@ -18,7 +18,7 @@ import java.util.List;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.data.AbstractDataAssociation;
-import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.pvm.PvmProcessInstance;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
@@ -50,11 +50,10 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
   }
 
   public void execute(ActivityExecution execution) throws Exception {
-    ProcessDefinitionImpl processDefinition = 
-      CommandContext
-        .getCurrent()
-        .getRepositorySession()
-        .findDeployedLatestProcessDefinitionByKey(processDefinitonKey);
+    ProcessDefinitionImpl processDefinition = Context
+      .getCommandContext()
+      .getRepositorySession()
+      .findDeployedLatestProcessDefinitionByKey(processDefinitonKey);
     
     PvmProcessInstance subProcessInstance = execution.createSubProcessInstance(processDefinition);
     

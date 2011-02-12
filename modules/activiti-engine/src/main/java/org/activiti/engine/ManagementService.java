@@ -12,7 +12,6 @@
  */
 package org.activiti.engine;
 
-import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.management.TableMetaData;

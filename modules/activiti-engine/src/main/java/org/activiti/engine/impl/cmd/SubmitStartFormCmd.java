@@ -18,6 +18,7 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.RepositorySession;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.form.StartFormHandler;
 import org.activiti.engine.impl.history.HistoricFormPropertyEntity;
@@ -51,7 +52,7 @@ public class SubmitStartFormCmd implements Command<ProcessInstance> {
     ExecutionEntity processInstance = null;
     processInstance = processDefinition.createProcessInstance();
 
-    int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
+    int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
     if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY) {
       DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);
 

@@ -18,8 +18,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.activiti.engine.impl.cfg.RepositorySession;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.Expression;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.repository.DeploymentEntity;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
@@ -45,16 +46,14 @@ public class BusinessRuleTaskActivityBehavior extends TaskActivityBehavior {
   
   public void execute(ActivityExecution execution) throws Exception {
     String processDefinitionID = execution.getActivity().getProcessDefinition().getId();
-    ProcessDefinitionEntity definitionEntity = CommandContext.getCurrent()
-            .getRepositorySession()
-             .findDeployedProcessDefinitionById(processDefinitionID);
+    RepositorySession repositorySession = Context
+      .getCommandContext()
+      .getRepositorySession();
+    ProcessDefinitionEntity definitionEntity = repositorySession.findDeployedProcessDefinitionById(processDefinitionID);
     String deploymentID = definitionEntity.getDeploymentId();
     
-    DeploymentEntity deploymentEntity = CommandContext.getCurrent()
-            .getRepositorySession()
-            .findDeploymentById(deploymentID);
-    KnowledgeBase knowledgeBase = RulesHelper.findLatestKnowledgeBaseByDeploymentName(
-            deploymentEntity.getName()); 
+    DeploymentEntity deploymentEntity = repositorySession.findDeploymentById(deploymentID);
+    KnowledgeBase knowledgeBase = RulesHelper.findLatestKnowledgeBaseByDeploymentName(deploymentEntity.getName()); 
     StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();
     
     if (variablesInputExpressions != null) {
