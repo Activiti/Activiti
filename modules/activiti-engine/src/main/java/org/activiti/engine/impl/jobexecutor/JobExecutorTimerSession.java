@@ -56,7 +56,7 @@ public class JobExecutorTimerSession implements TimerSession, Session {
       // then notify the job executor.
       commandContext
         .getTransactionContext()
-        .addTransactionListener(TransactionState.COMMITTED, new MessageAddedNotification());
+        .addTransactionListener(TransactionState.COMMITTED, new MessageAddedNotification(jobExecutor));
     }
   }
 

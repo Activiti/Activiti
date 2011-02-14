@@ -33,9 +33,10 @@ public class JobExecutorMessageSession implements Session, MessageSession {
       .insert(message);
     
     
+    JobExecutor jobExecutor = Context.getProcessEngineConfiguration().getJobExecutor();
     commandContext
       .getTransactionContext()
-      .addTransactionListener(TransactionState.COMMITTED, new MessageAddedNotification());
+      .addTransactionListener(TransactionState.COMMITTED, new MessageAddedNotification(jobExecutor));
   }
 
   public void close() {
