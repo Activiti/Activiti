@@ -26,6 +26,7 @@ import org.activiti.engine.impl.cmd.DeleteTaskCmd;
 import org.activiti.engine.impl.cmd.GetIdentityLinksForTaskCmd;
 import org.activiti.engine.impl.cmd.GetTaskVariableCmd;
 import org.activiti.engine.impl.cmd.GetTaskVariablesCmd;
+import org.activiti.engine.impl.cmd.DeleteIdentityLinkCmd;
 import org.activiti.engine.impl.cmd.SaveTaskCmd;
 import org.activiti.engine.impl.cmd.SetTaskPriorityCmd;
 import org.activiti.engine.impl.cmd.SetTaskVariablesCmd;
@@ -79,21 +80,35 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   }
   
   public void addCandidateUser(String taskId, String userId) {
-    commandExecutor.execute(new AddIdentityLinkCmd(taskId, userId, null, 
-            IdentityLinkType.CANDIDATE));
+    commandExecutor.execute(new AddIdentityLinkCmd(taskId, userId, null, IdentityLinkType.CANDIDATE));
   }
   
   public void addCandidateGroup(String taskId, String groupId) {
-    commandExecutor.execute(new AddIdentityLinkCmd(taskId, null, groupId, 
-            IdentityLinkType.CANDIDATE));
+    commandExecutor.execute(new AddIdentityLinkCmd(taskId, null, groupId, IdentityLinkType.CANDIDATE));
   }
   
-  public void addUserIdentityLink(String taskId, String userId, String identityLinkeType) {
-    commandExecutor.execute(new AddIdentityLinkCmd(taskId, userId, null, identityLinkeType));
+  public void addUserIdentityLink(String taskId, String userId, String identityLinkType) {
+    commandExecutor.execute(new AddIdentityLinkCmd(taskId, userId, null, identityLinkType));
   }
 
   public void addGroupIdentityLink(String taskId, String groupId, String identityLinkType) {
     commandExecutor.execute(new AddIdentityLinkCmd(taskId, null, groupId, identityLinkType));
+  }
+  
+  public void deleteCandidateGroup(String taskId, String groupId) {
+    commandExecutor.execute(new DeleteIdentityLinkCmd(taskId, null, groupId, IdentityLinkType.CANDIDATE));
+  }
+
+  public void deleteCandidateUser(String taskId, String userId) {
+    commandExecutor.execute(new DeleteIdentityLinkCmd(taskId, userId, null, IdentityLinkType.CANDIDATE));
+  }
+
+  public void deleteGroupIdentityLink(String taskId, String groupId, String identityLinkType) {
+    commandExecutor.execute(new DeleteIdentityLinkCmd(taskId, null, groupId, identityLinkType));
+  }
+
+  public void deleteUserIdentityLink(String taskId, String userId, String identityLinkType) {
+    commandExecutor.execute(new DeleteIdentityLinkCmd(taskId, userId, null, identityLinkType));
   }
   
   public List<IdentityLink> getIdentityLinksForTask(String taskId) {
@@ -169,11 +184,5 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
 
   public void setVariablesLocal(String executionId, Map<String, ? extends Object> variables) {
     commandExecutor.execute(new SetTaskVariablesCmd(executionId, variables, true));
-  }
-
-  // getters and setters //////////////////////////////////////////////////////
-  
-  public CommandExecutor getCommandExecutor() {
-    return commandExecutor;
   }
 }

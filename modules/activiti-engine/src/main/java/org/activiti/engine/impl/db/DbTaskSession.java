@@ -13,7 +13,9 @@
 
 package org.activiti.engine.impl.db;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricTaskInstance;
@@ -62,6 +64,16 @@ public class DbTaskSession implements TaskSession, Session {
     return dbSqlSession.selectList("selectIdentityLinksByTask", taskId);
   }
 
+  @SuppressWarnings("unchecked")
+  public List<IdentityLinkEntity> findIdentityLinkByTaskUserGroupAndType(String taskId, String userId, String groupId, String type) {
+    Map<String, String> parameters = new HashMap<String, String>();
+    parameters.put("taskId", taskId);
+    parameters.put("userId", userId);
+    parameters.put("groupId", groupId);
+    parameters.put("type", type);
+    return dbSqlSession.selectList("selectIdentityLinkByTaskUserGroupAndType", parameters);
+  }
+
   public long findHistoricTaskInstanceCountByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery) {
     return (Long) dbSqlSession.selectOne("selectHistoricTaskInstanceCountByQueryCriteria", historicTaskInstanceQuery);
   }
@@ -92,5 +104,4 @@ public class DbTaskSession implements TaskSession, Session {
 
   public void flush() {
   }
-
 }

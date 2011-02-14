@@ -254,7 +254,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     
   // task assignment //////////////////////////////////////////////////////////
   
-  public IdentityLinkEntity createIdentityLink(String userId, String groupId, String type) {
+  public IdentityLinkEntity addIdentityLink(String userId, String groupId, String type) {
     IdentityLinkEntity identityLinkEntity = IdentityLinkEntity.createAndInsert();
     getIdentityLinks().add(identityLinkEntity);
     identityLinkEntity.setTask(this);
@@ -262,6 +262,17 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     identityLinkEntity.setGroupId(groupId);
     identityLinkEntity.setType(type);
     return identityLinkEntity;
+  }
+  
+  public void deleteIdentityLink(String userId, String groupId, String type) {
+    List<IdentityLinkEntity> identityLinks = Context
+      .getCommandContext()
+      .getTaskSession()
+      .findIdentityLinkByTaskUserGroupAndType(id, userId, groupId, type);
+    
+    for (IdentityLinkEntity identityLink: identityLinks) {
+      identityLink.delete();
+    }
   }
   
   public Set<IdentityLink> getCandidates() {
@@ -275,7 +286,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   }
   
   public void addCandidateUser(String userId) {
-    createIdentityLink(userId, null, IdentityLinkType.CANDIDATE);
+    addIdentityLink(userId, null, IdentityLinkType.CANDIDATE);
   }
   
   public void addCandidateUsers(Collection<String> candidateUsers) {
@@ -285,7 +296,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   }
   
   public void addCandidateGroup(String groupId) {
-    createIdentityLink(null, groupId, IdentityLinkType.CANDIDATE);
+    addIdentityLink(null, groupId, IdentityLinkType.CANDIDATE);
   }
   
   public void addCandidateGroups(Collection<String> candidateGroups) {
@@ -294,6 +305,34 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     }
   }
   
+  public void addGroupIdentityLink(String groupId, String identityLinkType) {
+    addIdentityLink(null, groupId, identityLinkType);
+  }
+
+  public void addUserIdentityLink(String userId, String identityLinkType) {
+    addIdentityLink(userId, null, identityLinkType);
+  }
+
+  public void deleteCandidateGroup(String groupId) {
+    deleteGroupIdentityLink(groupId, IdentityLinkType.CANDIDATE);
+  }
+
+  public void deleteCandidateUser(String userId) {
+    deleteUserIdentityLink(userId, IdentityLinkType.CANDIDATE);
+  }
+
+  public void deleteGroupIdentityLink(String groupId, String identityLinkType) {
+    if (groupId!=null) {
+      deleteIdentityLink(null, groupId, identityLinkType);
+    }
+  }
+
+  public void deleteUserIdentityLink(String userId, String identityLinkType) {
+    if (userId!=null) {
+      deleteIdentityLink(userId, null, identityLinkType);
+    }
+  }
+
   public List<IdentityLinkEntity> getIdentityLinks() {
     if (!isIdentityLinksInitialized) {
       taskIdentityLinkEntities = Context
@@ -523,5 +562,5 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   public void setEventName(String eventName) {
     this.eventName = eventName;
   }
-  
+
 }

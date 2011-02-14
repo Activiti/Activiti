@@ -241,5 +241,20 @@
   <select id="selectIdentityLinksByTask" parameterType="string" resultMap="identityLinkResultMap">
     select * from ACT_RU_IDENTITYLINK where TASK_ID_ = #{taskId}
   </select>
-
+  
+  <select id="selectIdentityLinkByTaskUserGroupAndType" parameterType="map" resultMap="identityLinkResultMap">
+    select * 
+    from ACT_RU_IDENTITYLINK 
+    where TASK_ID_ = #{taskId}
+      <if test="userId != null">
+        and USER_ID_ = #{userId}
+      </if>
+      <if test="groupId != null">
+        and GROUP_ID_ = #{groupId}
+      </if>
+      <if test="type != null">
+        and TYPE_ = #{type}
+      </if>
+  </select>
+  
 </mapper>

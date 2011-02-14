@@ -35,9 +35,11 @@ public interface TaskSession {
   long findTaskCountByQueryCriteria(TaskQueryImpl taskQuery);
 
   List<IdentityLinkEntity> findIdentityLinksByTaskId(String taskId);
+  List<IdentityLinkEntity> findIdentityLinkByTaskUserGroupAndType(String taskId, String userId, String groupId, String type);
 
   HistoricTaskInstance findHistoricTaskInstanceById(String taskId);
   long findHistoricTaskInstanceCountByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQueryImpl);
   List<HistoricTaskInstance> findHistoricTaskInstancesByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQueryImpl, Page page);
   void deleteHistoricTaskInstance(String taskId);
+
 }

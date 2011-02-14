@@ -10,6 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
@@ -21,10 +22,10 @@ import org.activiti.engine.task.IdentityLinkType;
 
 
 /**
- * @author Joram Barrez
+ * @author Tom Baeyens
  */
-public class AddIdentityLinkCmd implements Command<Void> {
-  
+public class DeleteIdentityLinkCmd implements Command<Object> {
+
   protected String taskId;
   
   protected String userId;
@@ -33,7 +34,7 @@ public class AddIdentityLinkCmd implements Command<Void> {
   
   protected String type;
   
-  public AddIdentityLinkCmd(String taskId, String userId, String groupId, String type) {
+  public DeleteIdentityLinkCmd(String taskId, String userId, String groupId, String type) {
     validateParams(userId, groupId, type, taskId);
     this.taskId = taskId;
     this.userId = userId;
@@ -49,8 +50,6 @@ public class AddIdentityLinkCmd implements Command<Void> {
     if (type == null) {
       throw new ActivitiException("type is required when adding a new task identity link");
     }
-    
-    
     
     // Special treatment for assignee, group cannot be used an userId may be null
     if (IdentityLinkType.ASSIGNEE.equals(type)) {
@@ -74,9 +73,9 @@ public class AddIdentityLinkCmd implements Command<Void> {
     }
     
     if (IdentityLinkType.ASSIGNEE.equals(type)) {
-      task.setAssignee(userId);
+      task.setAssignee(null);
     } else {
-      task.addIdentityLink(userId, groupId, type);
+      task.deleteIdentityLink(userId, groupId, type);
     }
     
     return null;  
