@@ -500,6 +500,19 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
 
   public void setPriority(int priority) {
     this.priority = priority;
+    
+    CommandContext commandContext = Context.getCommandContext();
+    // if there is no command context, then it means that the user is calling the 
+    // setAssignee outside a service method.  E.g. while creating a new task.
+    if (commandContext!=null) {
+      int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
+      if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+        HistoricTaskInstanceEntity historicTaskInstance = commandContext.getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, id);
+        if (historicTaskInstance!=null) {
+          historicTaskInstance.setPriority(priority);
+        }
+      }
+    }
   }
 
   public Date getCreateTime() {

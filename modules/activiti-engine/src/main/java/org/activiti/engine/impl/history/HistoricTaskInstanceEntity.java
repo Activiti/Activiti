@@ -39,6 +39,7 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
   protected String description;
   protected String assignee;
   protected String taskDefinitionKey;
+  protected int priority;
 
   public HistoricTaskInstanceEntity() {
   }
@@ -67,6 +68,7 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
     persistentState.put("durationInMillis", durationInMillis);
     persistentState.put("deleteReason", deleteReason);
     persistentState.put("taskDefinitionKey", taskDefinitionKey);
+    persistentState.put("priority", priority);
     return persistentState;
   }
 
@@ -118,5 +120,10 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
   public void setTaskDefinitionKey(String taskDefinitionKey) {
     this.taskDefinitionKey = taskDefinitionKey;
   }
-  
+  public int getPriority() {
+    return priority;
+  }
+  public void setPriority(int priority) {
+    this.priority = priority;
+  }
 }

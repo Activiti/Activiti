@@ -90,6 +90,11 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
   HistoricTaskInstanceQuery taskAssigneeLike(String taskAssigneeLike);
   
   /** 
+   * Only select historic task instances with the given priority.
+   */
+  HistoricTaskInstanceQuery taskPriority(Integer taskPriority);
+  
+  /** 
    * Only select historic task instances which are finished.
    */
   HistoricTaskInstanceQuery finished();
@@ -134,4 +139,7 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
 
   /** Order by task definition key (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricTaskInstanceQuery orderByTaskDefinitionKey();
+  
+  /** Order by task priority key (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  HistoricTaskInstanceQuery orderByTaskPriority();
 }

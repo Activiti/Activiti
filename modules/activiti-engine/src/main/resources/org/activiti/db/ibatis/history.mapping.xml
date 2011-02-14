@@ -251,7 +251,8 @@
         END_TIME_,
         DURATION_,
         DELETE_REASON_,
-        TASK_DEF_KEY_
+        TASK_DEF_KEY_,
+        PRIORITY_
       ) values (
         #{id ,jdbcType=VARCHAR},
         #{processDefinitionId, jdbcType=VARCHAR},
@@ -264,7 +265,8 @@
         #{endTime, jdbcType=TIMESTAMP},
         #{durationInMillis ,jdbcType=BIGINT},
         #{deleteReason ,jdbcType=BIGINT},
-        #{taskDefinitionKey ,jdbcType=VARCHAR}
+        #{taskDefinitionKey ,jdbcType=VARCHAR},
+        #{priority, jdbcType=INTEGER}
       )
   </insert>
 
@@ -279,7 +281,8 @@
       END_TIME_ = #{endTime, jdbcType=TIMESTAMP},
       DURATION_ = #{durationInMillis ,jdbcType=BIGINT},
       DELETE_REASON_ = #{deleteReason ,jdbcType=VARCHAR},
-      TASK_DEF_KEY_ = #{taskDefinitionKey ,jdbcType=VARCHAR}
+      TASK_DEF_KEY_ = #{taskDefinitionKey ,jdbcType=VARCHAR},
+      PRIORITY_ = #{priority, jdbcType=INTEGER} 
     where ID_ = #{id}
   </update>
 
@@ -308,6 +311,7 @@
     <result property="durationInMillis" column="DURATION_" jdbcType="BIGINT" />
     <result property="deleteReason" column="DELETE_REASON_" jdbcType="VARCHAR" />
     <result property="taskDefinitionKey" column="TASK_DEF_KEY_" jdbcType="VARCHAR" />
+    <result property="priority" column="PRIORITY_" jdbcType="INTEGER" />
   </resultMap>
 
   <!-- HISTORIC TASK INSTANCE SELECT -->
@@ -370,6 +374,9 @@
       </if>
       <if test="taskAssigneeLike != null">
         and HTI.ASSIGNEE_ like #{taskAssigneeLike}
+      </if>
+      <if test="taskPriority != null">
+        and HTI.PRIORITY_ = #{taskPriority}
       </if>
       <if test="unfinished">
         and HTI.END_TIME_ is null

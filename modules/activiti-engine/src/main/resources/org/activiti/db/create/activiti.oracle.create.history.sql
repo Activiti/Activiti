@@ -41,6 +41,7 @@ create table ACT_HI_TASKINST (
     END_TIME_ TIMESTAMP(6),
     DURATION_ NUMBER(19,0),
     DELETE_REASON_ NVARCHAR2(255),
+    PRIORITY_ INTEGER,
     primary key (ID_)
 );
 

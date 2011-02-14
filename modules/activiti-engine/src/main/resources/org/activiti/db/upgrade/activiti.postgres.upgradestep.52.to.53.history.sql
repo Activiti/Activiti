@@ -54,3 +54,7 @@ insert into ACT_HI_DETAIL
 select * from ACT_HI_DETAIL_TMP;
 
 drop table ACT_HI_DETAIL_TMP;
+
+-- Add column PRIORITY_ to ACT_HI_TASKINST and set to default priority (ACT-484)
+alter table ACT_HI_TASKINST add column PRIORITY_ integer;
+update ACT_HI_TASKINST set PRIORITY_ = 50;

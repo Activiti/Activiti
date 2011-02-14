@@ -37,6 +37,7 @@ public class HistoricTaskInstanceQueryProperty implements QueryProperty {
   public static final HistoricTaskInstanceQueryProperty START = new HistoricTaskInstanceQueryProperty("START_TIME_");
   public static final HistoricTaskInstanceQueryProperty END = new HistoricTaskInstanceQueryProperty("END_TIME_");
   public static final HistoricTaskInstanceQueryProperty DURATION = new HistoricTaskInstanceQueryProperty("DURATION_");
+  public static final HistoricTaskInstanceQueryProperty TASK_PRIORITY = new HistoricTaskInstanceQueryProperty("PRIORITY_");
 
   private String name;
 

@@ -39,6 +39,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
   protected String taskAssignee;
   protected String taskAssigneeLike;
   protected String taskDefinitionKey;
+  protected Integer taskPriority;
   protected boolean finished;
   protected boolean unfinished;
 
@@ -136,6 +137,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
     this.taskDefinitionKey = taskDefinitionKey;
     return this;
   }
+  
+  public HistoricTaskInstanceQuery taskPriority(Integer taskPriority) {
+    this.taskPriority = taskPriority;
+    return this;
+  }
 
   // ordering /////////////////////////////////////////////////////////////////
 
@@ -191,6 +197,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
   
   public HistoricTaskInstanceQuery orderByTaskDefinitionKey() {
     orderBy(HistoricTaskInstanceQueryProperty.TASK_DEFINITION_KEY);
+    return this;
+  }
+  
+  public HistoricTaskInstanceQuery orderByTaskPriority() {
+    orderBy(HistoricTaskInstanceQueryProperty.TASK_PRIORITY);
     return this;
   }
 
