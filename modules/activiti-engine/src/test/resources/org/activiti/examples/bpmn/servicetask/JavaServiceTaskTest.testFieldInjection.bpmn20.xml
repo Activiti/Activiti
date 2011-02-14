@@ -20,11 +20,23 @@
       </extensionElements>             
     </serviceTask>
     
-    <sequenceFlow id="flow2" sourceRef="javaService" targetRef="waitState" />
+    <sequenceFlow id="flow2" sourceRef="javaService" targetRef="javaService2" />
+    
+    <serviceTask id="javaService2" 
+                 name="Java service invocation" 
+                 activiti:class="org.activiti.examples.bpmn.servicetask.ToUpperCaseSetterInjected">
+      <extensionElements>
+        <activiti:field name="text">
+          <activiti:string>Hello Setter</activiti:string>
+        </activiti:field>
+      </extensionElements>             
+    </serviceTask>
+    
+    <sequenceFlow id="flow3" sourceRef="javaService2" targetRef="waitState" />
     
     <receiveTask id="waitState" />
     
-    <sequenceFlow id="flow3" sourceRef="waitState" targetRef="theEnd" />
+    <sequenceFlow id="flow4" sourceRef="waitState" targetRef="theEnd" />
     
     <endEvent id="theEnd" />
     

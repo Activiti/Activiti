@@ -25,6 +25,7 @@ import org.activiti.engine.test.Deployment;
 
 /**
  * @author Joram Barrez
+ * @author Frederik Heremans
  */
 public class JavaServiceTaskTest extends PluggableActivitiTestCase {
 
@@ -40,12 +41,16 @@ public class JavaServiceTaskTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testFieldInjection() {
+    // Process contains 2 service-tasks using field-injection. One should use the exposed setter,
+    // the other is using the private field.
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("fieldInjection");
     Execution execution = runtimeService.createExecutionQuery()
       .processInstanceId(pi.getId())
       .activityId("waitState")
       .singleResult();
+    
     assertEquals("HELLO WORLD", runtimeService.getVariable(execution.getId(), "var"));
+    assertEquals("HELLO SETTER", runtimeService.getVariable(execution.getId(), "setterVar"));
   }
   
   @Deployment

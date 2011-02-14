@@ -1759,13 +1759,17 @@ public class ToUppercase implements JavaDelegate {
       <title>Field injection</title>
       
         <para>
-        It's possible to inject values into the fields of the delegated classes. The following types of injection are supported:
-        <itemizedlist>
-          <listitem><para>Fixed string values</para></listitem>
-          <listitem><para>Expressions</para></listitem>
-        </itemizedlist>
-      </para>
-      
+          It's possible to inject values into the fields of the delegated classes. The following types of injection are supported:
+          <itemizedlist>
+            <listitem><para>Fixed string values</para></listitem>
+            <listitem><para>Expressions</para></listitem>
+          </itemizedlist>
+        </para>
+        <para>
+          If available, the value is injected through a public setter method on your delegated class, folowing the Java Bean naming conventions (eg. field <literal>fistName</literal> has setter <literal>setFirstName(...)</literal>). 
+          If no setter is available for that field, the value of private member will be set on the delegate. SecurityManagers in some environments don't allow modifying private fields,
+          so it's safer to expose a public setter-method for the fields you want to have injected.
+        </para>
         <para>
           The following code snippet shows how to inject a constant value into a field. Field injection
           is supported when using the <emphasis>'class'</emphasis> attribute.

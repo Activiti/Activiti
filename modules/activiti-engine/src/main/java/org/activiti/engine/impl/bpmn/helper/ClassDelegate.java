@@ -14,6 +14,8 @@
 package org.activiti.engine.impl.bpmn.helper;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
@@ -118,21 +120,40 @@ public class ClassDelegate implements ActivityBehavior, TaskListener, ExecutionL
     Object object = ReflectUtil.instantiate(className);
     if(fieldDeclarations != null) {
       for(FieldDeclaration declaration : fieldDeclarations) {
-        Field field = ReflectUtil.getField(declaration.getName(), object);
-        if(field == null) {
-          throw new ActivitiException("Field definition uses unexisting field '" + declaration.getName() + "' on class " + className);
-        }
-        // Check if the delegate field's type is correct
-       if(!fieldTypeCompatible(declaration, field)) {
-         throw new ActivitiException("Incompatible type set on field declaration '" + declaration.getName() 
-            + "' for class " + className 
-            + ". Declared value has type " + declaration.getValue().getClass().getName() 
-            + ", while expecting " + field.getType().getName());
-       }
-       ReflectUtil.setField(field, object, declaration.getValue());
+        applyFieldDeclaration(declaration, object);
       }
     }
     return object;
+  }
+  
+  private static void applyFieldDeclaration(FieldDeclaration declaration, Object target) {
+    Method setterMethod = ReflectUtil.getSetter(declaration.getName(), 
+      target.getClass(), declaration.getValue().getClass());
+    
+    if(setterMethod != null) {
+      try {
+        setterMethod.invoke(target, declaration.getValue());
+      } catch (IllegalArgumentException e) {
+        throw new ActivitiException("Error while invoking '" + declaration.getName() + "' on class " + target.getClass().getName(), e);
+      } catch (IllegalAccessException e) {
+        throw new ActivitiException("Illegal acces when calling '" + declaration.getName() + "' on class " + target.getClass().getName(), e);
+      } catch (InvocationTargetException e) {
+        throw new ActivitiException("Exception while invoking '" + declaration.getName() + "' on class " + target.getClass().getName(), e);
+      }
+    } else {
+      Field field = ReflectUtil.getField(declaration.getName(), target);
+      if(field == null) {
+        throw new ActivitiException("Field definition uses unexisting field '" + declaration.getName() + "' on class " + target.getClass().getName());
+      }
+      // Check if the delegate field's type is correct
+     if(!fieldTypeCompatible(declaration, field)) {
+       throw new ActivitiException("Incompatible type set on field declaration '" + declaration.getName() 
+          + "' for class " + target.getClass().getName() 
+          + ". Declared value has type " + declaration.getValue().getClass().getName() 
+          + ", while expecting " + field.getType().getName());
+     }
+     ReflectUtil.setField(field, target, declaration.getValue());
+    }
   }
   
   public static boolean fieldTypeCompatible(FieldDeclaration declaration, Field field) {
