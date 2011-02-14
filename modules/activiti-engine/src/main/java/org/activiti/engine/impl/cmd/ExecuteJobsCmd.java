@@ -17,8 +17,10 @@ import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cfg.TransactionState;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.jobexecutor.DecrementJobRetriesListener;
 import org.activiti.engine.impl.runtime.JobEntity;
 
@@ -54,9 +56,13 @@ public class ExecuteJobsCmd implements Command<Object> {
       job.execute(commandContext);
     } catch (RuntimeException exception) {
       // When transaction is rolled back, decrement retries
+      CommandExecutor commandExecutor = Context
+        .getProcessEngineConfiguration()
+        .getCommandExecutorTxRequiresNew();
+      
       commandContext.getTransactionContext().addTransactionListener(
         TransactionState.ROLLED_BACK, 
-        new DecrementJobRetriesListener(jobId, exception));
+        new DecrementJobRetriesListener(commandExecutor, jobId, exception));
        
       // throw the original exception to indicate the ExecuteJobCmd failed
       throw exception;
