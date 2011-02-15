@@ -13,6 +13,7 @@
 
 package org.activiti.engine.test.bpmn.multiinstance;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -144,6 +145,28 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
       assertEquals(5-i, taskService.createTaskQuery().count());
       taskService.complete(tasks.get(i).getId());
     }
+    assertProcessEnded(procId);
+  }
+  
+  @Deployment
+  public void testParallelUserTasksBasedOnCollection() {
+    List<String> assigneeList = Arrays.asList("kermit", "gonzo", "mispiggy", "fozzie", "bubba");
+    String procId = runtimeService.startProcessInstanceByKey("miParallelUserTasksBasedOnCollection",
+          CollectionUtil.singletonMap("assigneeList", assigneeList)).getId();
+    
+    List<Task> tasks = taskService.createTaskQuery().orderByTaskAssignee().asc().list();
+    assertEquals(5, tasks.size());
+    assertEquals("bubba", tasks.get(0).getAssignee());
+    assertEquals("fozzie", tasks.get(1).getAssignee());
+    assertEquals("gonzo", tasks.get(2).getAssignee());
+    assertEquals("kermit", tasks.get(3).getAssignee());
+    assertEquals("mispiggy", tasks.get(4).getAssignee());
+    
+    // Completing 3 tasks will trigger completioncondition
+    taskService.complete(tasks.get(0).getId());
+    taskService.complete(tasks.get(1).getId());
+    taskService.complete(tasks.get(2).getId());
+    assertEquals(0, taskService.createTaskQuery().count());
     assertProcessEnded(procId);
   }
   

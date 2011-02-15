@@ -36,8 +36,10 @@ import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.NoneEndEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.NoneStartEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ParallelGatewayActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.ParallelMultiInstanceBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ReceiveTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ScriptTaskActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.SequentialMultiInstanceBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ServiceTaskDelegateExpressionActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ServiceTaskExpressionActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.SubProcessActivityBehavior;
@@ -685,7 +687,12 @@ public class BpmnParse extends Parse {
     if (miLoopCharacteristics != null) {
       boolean isSequential = parseBooleanAttribute(miLoopCharacteristics.attribute("isSequential"), false);
       
-      MultiInstanceActivityBehavior miActivityBehavior = new MultiInstanceActivityBehavior((AbstractBpmnActivityBehavior) activity.getActivityBehavior(), isSequential);
+      MultiInstanceActivityBehavior miActivityBehavior = null;
+      if (isSequential) {
+        miActivityBehavior = new SequentialMultiInstanceBehavior((AbstractBpmnActivityBehavior) activity.getActivityBehavior());
+      } else {
+        miActivityBehavior = new ParallelMultiInstanceBehavior((AbstractBpmnActivityBehavior) activity.getActivityBehavior());
+      }
       activity.setScope(true);
       activity.setActivityBehavior(miActivityBehavior);
       
@@ -720,10 +727,10 @@ public class BpmnParse extends Parse {
       }
       
       // dataInputItem
-      Element inputDataItem = miLoopCharacteristics.element("dataInputItem");
+      Element inputDataItem = miLoopCharacteristics.element("inputDataItem");
       if (inputDataItem != null) {
-        String inputDataItemText = inputDataItem.getText();
-        miActivityBehavior.setInputDataItemVariable(inputDataItemText);
+        String inputDataItemName = inputDataItem.attribute("name");
+        miActivityBehavior.setInputDataItemVariable(inputDataItemName);
       }
       
       // Validation

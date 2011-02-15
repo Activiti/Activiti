@@ -13,9 +13,8 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,7 +25,6 @@ import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.CompositeActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
-import org.activiti.engine.impl.runtime.ExecutionEntity;
 
 
 /**
@@ -41,7 +39,7 @@ import org.activiti.engine.impl.runtime.ExecutionEntity;
  * 
  * @author Joram Barrez
  */
-public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior  
+public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior  
   implements CompositeActivityBehavior, SubProcessActivityBehavior {
   
   protected static final Logger LOGGER = Logger.getLogger(MultiInstanceActivityBehavior.class.getName());
@@ -56,7 +54,6 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
   
   // Instance members
   protected AbstractBpmnActivityBehavior originalActivityBehavior;
-  protected boolean isSequential;
   protected Expression loopCardinalityExpression;
   protected Expression completionConditionExpression;
   protected Expression loopDataInputRefExpression;
@@ -69,166 +66,15 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
    * @param isSequential Indicates whether the multi instance behavior
    *                     must be sequential or parallel
    */
-  public MultiInstanceActivityBehavior(AbstractBpmnActivityBehavior originalActivityBehavior, boolean isSequential) {
+  public MultiInstanceActivityBehavior(AbstractBpmnActivityBehavior originalActivityBehavior) {
     this.originalActivityBehavior = originalActivityBehavior;
     this.originalActivityBehavior.setMultiInstanceActivityBehavior(this);
-    this.isSequential = isSequential;
   }
   
-  /**
-   * Spawns the instances of the activity.
-   */
-  public void execute(ActivityExecution execution) throws Exception {
-    int nrOfInstances = resolveNrOfInstances(execution);
-    if (nrOfInstances <= 0) {
-      throw new ActivitiException("Invalid number of instances: must be positive integer value" 
-              + ", but was " + nrOfInstances);
-    }
-    setLoopVariable(execution, NUMBER_OF_INSTANCES, nrOfInstances);
-    setLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES, 0);
-    
-    if (isSequential || nrOfInstances == 1) {
-      executeSequentialBehavior(execution, nrOfInstances);
-    } else {
-      executeParallelBehavior(execution, nrOfInstances);
-    }
-  }
   
-  /**
-   * Handles the sequential case of spawning the instances.
-   * Will only create one instance, since at most one instance can be active.
-   */
-  protected void executeSequentialBehavior(ActivityExecution execution, int nrOfInstances) throws Exception {
-    setLoopVariable(execution, LOOP_COUNTER, 0);
-    setLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES, 1);
-    logLoopDetails(execution, "initialized", 0, 0, 1, nrOfInstances);
-    originalActivityBehavior.execute(execution);
-  }
-  
-  /**
-   * Handles the parallel case of spawning the instances.
-   * Will create child executions accordingly for every instance needed.
-   */
-  protected void executeParallelBehavior(ActivityExecution execution, int nrOfInstances) throws Exception {
-    setLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES, nrOfInstances);
-    List<ActivityExecution> concurrentExecutions = new ArrayList<ActivityExecution>();
-    for (int loopCounter=0; loopCounter<nrOfInstances; loopCounter++) {
-      ActivityExecution concurrentExecution = execution.createExecution();
-      concurrentExecution.setActive(true);
-      concurrentExecution.setConcurrent(true);
-      concurrentExecution.setScope(false);
-      
-      if (isExtraScopeNeeded()) {
-        ActivityExecution extraScopedExecution = concurrentExecution.createExecution();
-        extraScopedExecution.setActive(true);
-        extraScopedExecution.setConcurrent(false);
-        extraScopedExecution.setScope(true);
-        concurrentExecution = extraScopedExecution;
-      } 
-      
-      concurrentExecutions.add(concurrentExecution);
-      logLoopDetails(concurrentExecution, "initialized", loopCounter, 0, nrOfInstances, nrOfInstances);
-    }
-    
-    // Before the activities are executed, all executions MUST be created up front
-    // Do not try to merge this loop with the previous one, as it will lead to bugs,
-    // due to possible child execution pruning.
-    for (int loopCounter=0; loopCounter<nrOfInstances; loopCounter++) {
-      ActivityExecution concurrentExecution = concurrentExecutions.get(loopCounter);
-      if (concurrentExecution.isActive() && concurrentExecution.getParent().isActive()) { 
-        // executions can be inactive, if instances are all automatics (no-waitstate)
-        // and completionCondition has been met in the meantime
-        setLoopVariable(concurrentExecution, LOOP_COUNTER, loopCounter);
-        originalActivityBehavior.execute(concurrentExecution);
-      }
-    }
-  }
-  
-  /**
-   * Intercepts signals, and delegates it to the wrapped {@link ActivityBehavior}.
-   */
+  // Intercepts signals, and delegates it to the wrapped {@link ActivityBehavior}.
   public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
     originalActivityBehavior.signal(execution, signalName, signalData);
-  }
-  
-  /**
-   * Called when the wrapped {@link ActivityBehavior} calls the 
-   * {@link AbstractBpmnActivityBehavior#leave(ActivityExecution)} method.
-   */
-  protected void leave(ActivityExecution execution) {
-    int loopCounter = getLoopVariable(execution, LOOP_COUNTER);
-    int nrOfInstances = getLoopVariable(execution, NUMBER_OF_INSTANCES);
-    int nrOfCompletedInstances = getLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES);
-    int nrOfActiveInstances = getLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES);
-    
-    if (isSequential) {
-      sequentialLeave(execution, loopCounter, nrOfInstances, nrOfCompletedInstances, nrOfActiveInstances);
-    } else {
-      parallelLeave(execution, loopCounter, nrOfInstances, nrOfCompletedInstances, nrOfActiveInstances);
-    }
-  }
-
-  /**
-   * Handles the completion of one instance, and executes the logic for the sequential behavior.    
-   */
-  protected void sequentialLeave(ActivityExecution execution, int loopCounter, int nrOfInstances, 
-          int nrOfCompletedInstances, int nrOfActiveInstances) {
-    loopCounter++;
-    nrOfCompletedInstances++;
-    setLoopVariable(execution, LOOP_COUNTER, loopCounter);
-    setLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
-    logLoopDetails(execution, "instance completed", loopCounter, nrOfCompletedInstances, nrOfActiveInstances, nrOfInstances);
-    if (loopCounter == nrOfInstances || completionConditionSatisfied(execution)) {
-      super.leave(execution);
-    } else {
-      try {
-        originalActivityBehavior.execute(execution);
-      } catch (Exception e) {
-        throw new ActivitiException("Could not execute inner activity behavior of multi instance behavior", e);
-      }
-    }
-  }
-  
-  protected void parallelLeave(ActivityExecution execution, int loopCounter, int nrOfInstances, 
-          int nrOfCompletedInstances, int nrOfActiveInstances) {
-    nrOfCompletedInstances++;
-    nrOfActiveInstances--;
-    
-    if (isExtraScopeNeeded()) {
-      // In case an extra scope was created, it must be destroyed first before going further
-      ExecutionEntity temp = (ExecutionEntity) execution;
-      execution = execution.getParent();
-      temp.remove();
-    }
-    
-    setLoopVariable(execution.getParent(), NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
-    setLoopVariable(execution.getParent(), NUMBER_OF_ACTIVE_INSTANCES, nrOfActiveInstances);
-    logLoopDetails(execution, "instance completed", loopCounter, nrOfCompletedInstances, nrOfActiveInstances, nrOfInstances);
-    
-    execution.inactivate();
-    ((ExecutionEntity) execution.getParent()).forceUpdate();
-    
-    List<ActivityExecution> joinedExecutions = execution.findInactiveConcurrentExecutions(execution.getActivity());
-    if (joinedExecutions.size() == nrOfInstances || completionConditionSatisfied(execution)) {
-      
-      // Removing all active child executions (ie because completionCondition is true)
-      List<ExecutionEntity> executionsToRemove = new ArrayList<ExecutionEntity>();
-      for (ActivityExecution childExecution : execution.getParent().getExecutions()) {
-        if (childExecution.isActive()) {
-          executionsToRemove.add((ExecutionEntity) childExecution);
-        }
-      }
-      for (ExecutionEntity executionToRemove : executionsToRemove) {
-        if (LOGGER.isLoggable(Level.FINE)) {
-          LOGGER.fine("Execution " + executionToRemove + " still active, "
-                  + "but multi-instance is completed. Removing this execution.");
-        }
-        executionToRemove.inactivate();
-        executionToRemove.deleteCascade("multi-instance completed");
-      }
-      
-      execution.takeAll(execution.getActivity().getOutgoingTransitions(), joinedExecutions);
-    } 
   }
   
   // required for supporting embedded subprocesses
@@ -264,21 +110,42 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
       if (! (obj instanceof Collection)) {
         throw new ActivitiException("loopDataInputRef '"+loopDataInputRefVariable+"' is not a Collection");
       }
+      nrOfInstances = ((Collection) obj).size();
     } else {
       throw new ActivitiException("Couldn't resolve loopCardinality nor loopDataInputRef");
     }
     return nrOfInstances;
   }
   
+  @SuppressWarnings("rawtypes")
+  protected void executeOriginalBehavior(ActivityExecution execution, int loopCounter) throws Exception {
+    if (usesCollection() && inputDataItemVariable != null) {
+      Collection collection = null;
+       if (loopDataInputRefExpression != null) {
+        collection = (Collection) loopDataInputRefExpression.getValue(execution);
+      } else if (loopDataInputRefVariable != null) {
+        collection = (Collection) execution.getVariable(loopDataInputRefVariable);
+      }
+       
+      Object value = null;
+      int index = 0;
+      Iterator it = collection.iterator();
+      while (index <= loopCounter) {
+        value = it.next();
+        index++;
+      }
+      setLoopVariable(execution, inputDataItemVariable, value);
+    }
+    originalActivityBehavior.execute(execution);
+  }
+  
   protected boolean usesCollection() {
     return loopDataInputRefExpression != null 
-              || loopDataInputRefVariable != null
-              || inputDataItemVariable != null;
+              || loopDataInputRefVariable != null;
   }
   
   protected boolean isExtraScopeNeeded() {
-    // special care is needed when the behavior is an embedded subprocess
-    // (not very clean, but it works)
+    // special care is needed when the behavior is an embedded subprocess (not very clean, but it works)
     return originalActivityBehavior instanceof org.activiti.engine.impl.bpmn.behavior.SubProcessActivityBehavior;  
   }
   
@@ -312,7 +179,7 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
     return false;
   }
   
-  protected void setLoopVariable(ActivityExecution execution, String variableName, int value) {
+  protected void setLoopVariable(ActivityExecution execution, String variableName, Object value) {
     execution.setVariableLocal(variableName, value);
   }
   
@@ -330,8 +197,7 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
           int nrOfCompletedInstances, int nrOfActiveInstances, int nrOfInstances) {
     if (LOGGER.isLoggable(Level.FINE)) {
       StringBuilder strb = new StringBuilder();
-      strb.append(isSequential ? "Sequential " : "Parallel ");
-      strb.append(" multi-instance '" + execution.getActivity() + "' " + custom + ". ");
+      strb.append("Multi-instance '" + execution.getActivity() + "' " + custom + ". ");
       strb.append("Details: loopCounter=" + loopCounter + ", ");
       strb.append("nrOrCompletedInstances=" + nrOfCompletedInstances + ", ");
       strb.append("nrOfActiveInstances=" + nrOfActiveInstances+ ", ");
@@ -342,12 +208,6 @@ public class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
   
   // Getters and Setters ///////////////////////////////////////////////////////////
 
-  public boolean isSequential() {
-    return isSequential;
-  }
-  public void setSequential(boolean isSequential) {
-    this.isSequential = isSequential;
-  }
   public Expression getLoopCardinalityExpression() {
     return loopCardinalityExpression;
   }
