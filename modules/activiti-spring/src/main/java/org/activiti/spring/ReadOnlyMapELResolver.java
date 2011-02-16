@@ -15,35 +15,34 @@ package org.activiti.spring;
 
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.javax.el.ELContext;
 import org.activiti.engine.impl.javax.el.ELResolver;
-import org.springframework.context.ApplicationContext;
 
 /**
- * @author Tom Baeyens
+ * An {@link ELResolver} that exposed object values in the map, under the name of the entry's key.
+ * The values in the map are only returned when requested property has no 'base', meaning
+ * it's a root-object.
+ * 
  * @author Frederik Heremans
  */
-public class ApplicationContextElResolver extends ELResolver {
+public class ReadonlyMapELResolver extends ELResolver {
 
-  protected ApplicationContext applicationContext;
+  protected Map<Object, Object> wrappedMap;
   
-  public ApplicationContextElResolver(ApplicationContext applicationContext) {
-    this.applicationContext = applicationContext;
+  public ReadonlyMapELResolver(Map<Object, Object> map) {
+    this.wrappedMap = map;
   }
 
   public Object getValue(ELContext context, Object base, Object property) {
     if (base == null) {
-      // according to javadoc, can only be a String
-      String key = (String) property;
-
-      if (applicationContext.containsBean(key)) {
+      if (wrappedMap.containsKey(property)) {
         context.setPropertyResolved(true);
-        return applicationContext.getBean(key);
+        return wrappedMap.get(property);
       }
     }
-
     return null;
   }
 
@@ -53,10 +52,8 @@ public class ApplicationContextElResolver extends ELResolver {
 
   public void setValue(ELContext context, Object base, Object property, Object value) {
     if(base == null) {
-      String key = (String) property;
-      if (applicationContext.containsBean(key)) {
-        throw new ActivitiException("Cannot set value of '" + property + 
-          "', it resolves to a bean defined in the Spring application-context.");
+      if (wrappedMap.containsKey(property)) {
+        throw new ActivitiException("Cannot set value of '" + property + "', it's readonly!");
       }
     }
   }
