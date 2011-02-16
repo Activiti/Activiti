@@ -146,7 +146,25 @@ userBean.hello();</programlisting>
   <section id="springExpressions">
     <title>Expressions</title>
     <para>When using the ProcessEngineFactoryBean, by default, all <link linkend="apiExpressions">expressions</link> in the BPMN processes
-    will also 'see' the Spring beans.  For example, the SpringTransactionIntegrationTest <literal>hello.bpmn20.xml</literal>
+    will also 'see' all the Spring beans. It's possible to limit the beans you want to expose in expressions or even exposing no beans at all using a map that you can configure. 
+    The example below exposes a single bean (printer), available to use under the key "printer". 
+    <emphasis role="bold">To have NO beans exposed at all, just pass an empty list as 'beans' property on the SpringProcessEngineConfiguration. 
+    When no 'beans' property is set, all spring-beans in the context will be available. </emphasis>
+    </para>
+    <programlisting>
+&lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;org.activiti.spring.SpringProcessEngineConfiguration&quot;&gt;
+  ...
+  &lt;property name=&quot;beans&quot;&gt;
+    &lt;map&gt;
+      &lt;entry key=&quot;printer&quot; value-ref=&quot;printer&quot; /&gt;
+    &lt;/map&gt;
+  &lt;/property&gt;
+&lt;/bean&gt;
+  
+  &lt;bean id=&quot;printer&quot; class=&quot;org.activiti.examples.spring.Printer&quot; /&gt;
+    </programlisting>
+    
+    <para>Now the exposed beans can be used in expressions: for example, the SpringTransactionIntegrationTest <literal>hello.bpmn20.xml</literal>
     shows how a method on a Spring bean can be invoked using a UEL method expression:
     </para>
     <programlisting>&lt;definitions id=&quot;definitions&quot; ...>
