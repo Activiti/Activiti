@@ -28,11 +28,11 @@ import org.activiti.engine.impl.javax.el.ELResolver;
  * 
  * @author Frederik Heremans
  */
-public class ReadonlyMapELResolver extends ELResolver {
+public class ReadOnlyMapELResolver extends ELResolver {
 
   protected Map<Object, Object> wrappedMap;
   
-  public ReadonlyMapELResolver(Map<Object, Object> map) {
+  public ReadOnlyMapELResolver(Map<Object, Object> map) {
     this.wrappedMap = map;
   }
 
