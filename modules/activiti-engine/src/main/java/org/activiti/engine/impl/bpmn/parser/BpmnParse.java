@@ -1540,8 +1540,7 @@ public class BpmnParse extends Parse {
       ActivityImpl nestedActivity = createActivityOnScope(boundaryEventElement, parentActivity); 
 
       String cancelActivity = boundaryEventElement.attribute("cancelActivity", "true");
-//      boolean interrupting = cancelActivity.equals("true") ? true : false;
-      boolean interrupting = true; // non-interrupting not yet supported
+      boolean interrupting = cancelActivity.equals("true") ? true : false;
       
       // Catch event behavior is the same for all types
       BoundaryEventActivityBehavior behavior = new BoundaryEventActivityBehavior(interrupting);
@@ -1553,6 +1552,7 @@ public class BpmnParse extends Parse {
       if (timerEventDefinition != null) {
         parseBoundaryTimerEventDefinition(timerEventDefinition, interrupting, nestedActivity);
       } else if (errorEventDefinition != null) {
+        interrupting = true; // non-interrupting not yet supported
         parseBoundaryErrorEventDefinition(errorEventDefinition, interrupting, parentActivity, nestedActivity);
       } else {
         addError("Unsupported boundary event type", boundaryEventElement);
