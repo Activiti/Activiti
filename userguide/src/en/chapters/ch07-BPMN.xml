@@ -2729,6 +2729,22 @@ assertNotNull(execution);
   &lt;/timerEventDefinition&gt;</emphasis>
 &lt;/boundaryEvent&gt;          
 </programlisting>
+          In the grafical representation, the line of the circle is dotted as you can see in this example above:
+          
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.non.interrupting.boundary.timer.event.png"/></imageobject></mediaobject>
+          
+          A typical use case is sending an escalation email additionally but not interrupt the normal process flow.
+        </para>        
+
+        <para>
+          Since BPMn 2.0 there is the difference between the interrupting and non interrupting timer event. The 
+          interrupting is the default. The non-interrupting leads to the original activity is <emphasis role="bold">not</emphasis>
+          interrupted but the activity stays there. Instead an additional executions is created and send over the
+          outgoing transition of the event. In the XML representation, the <emphasis>cancelActivity</emphasis> attribute
+          is set to false:
+<programlisting>
+&lt;boundaryEvent id=&quot;escalationTimer&quot; cancelActivity=&quot;false&quot; attachedToRef=&quot;firstLineSupport&quot;/&gt;
+</programlisting>
         </para>
         
         <para>
