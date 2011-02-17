@@ -163,7 +163,7 @@
      */
     onActionViewProcessDiagram: function Processes_onActionViewProcessDiagram(data, datatable)
     {
-      var url = Activiti.service.REST_PROXY_URI_RELATIVE + '/deployment/' + $html(data.deploymentId) + '/resource/' + $html(data.diagramResourceName);
+      var url = Activiti.service.REST_PROXY_URI_RELATIVE + '/deployment/' + encodeURIComponent($html(data.deploymentId)) + '/resource/' + $html(data.diagramResourceName);
       Activiti.widget.PopupManager.displayImage(url);
     },
 
