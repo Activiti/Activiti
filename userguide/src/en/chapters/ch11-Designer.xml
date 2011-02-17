@@ -187,6 +187,9 @@
         customizations you wish to make. In order for this to work, your classes should implement
         certain interfaces. There is an integration library available with those interfaces and base
         classes to extend which you should add to your project's classpath. </para>
+      <para>You can find the code examples listed below in source control with Activiti Designer.
+        Take a look in the <literal>examples/money-tasks</literal> directory in the
+          <literal>projects/designer</literal> directory of Activiti's source code.</para>
       <para>
         <note>
           <para>You can setup your project in whichever tool you prefer and build the JAR with your
