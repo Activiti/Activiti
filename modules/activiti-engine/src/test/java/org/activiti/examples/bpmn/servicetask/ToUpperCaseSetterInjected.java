@@ -13,10 +13,9 @@
  */
 package org.activiti.examples.bpmn.servicetask;
 
-import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.el.Expression;
-import org.junit.Assert;
 
 
 /**
@@ -30,7 +29,7 @@ public class ToUpperCaseSetterInjected implements JavaDelegate {
   public void execute(DelegateExecution execution) {
     
     if(!setterInvoked) {
-      Assert.fail("Setter was not invoked");
+      throw new RuntimeException("Setter was not invoked");
     }
     execution.setVariable("setterVar", ((String)text.getValue(execution)).toUpperCase());
   }
