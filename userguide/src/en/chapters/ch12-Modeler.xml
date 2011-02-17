@@ -12,6 +12,12 @@
     that they are easily accessible and can be imported without hassles into any Java IDE.
   </para>
   
+  <para>Activiti Modeler is a separate component developed by Signavio and hosted 
+      in <ulink url="http://code.google.com/p/signavio-core-components/">a google code project</ulink>.  
+      The license for the Activiti Modeler 
+      is <ulink url="http://en.wikipedia.org/wiki/MIT_License">MIT</ulink>
+  </para>
+  
   <para>
     Bugs and issues can be reported on the 
     <ulink url="http://code.google.com/p/signavio-core-components/issues/list">Signavio core components issue tracker</ulink>.

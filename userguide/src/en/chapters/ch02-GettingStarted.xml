@@ -70,7 +70,8 @@
       <listitem><para>(*) Install Tomcat in ${activiti.home}/apps/apache-tomcat-${tomcat.version}</para></listitem>
       <listitem><para>(*) Create an Activiti configuration jar</para></listitem>
       <listitem><para>(*) Deploy the REST interface webapp into tomcat</para></listitem>
-      <listitem><para>(*) Download the Activiti Modeler webapp to ${activiti.home}/webapps</para></listitem>
+      <listitem><para>(*) Download the Activiti Modeler webapp to ${activiti.home}/webapps.  The license for the Activiti Modeler 
+      is <ulink url="http://en.wikipedia.org/wiki/MIT_License">MIT</ulink>.</para></listitem>
       <listitem><para>(*) Deploy the Probe, Explorer and Modeler webapps into tomcat.</para></listitem>
       <listitem><para>Start tomcat</para></listitem>
     </itemizedlist>
