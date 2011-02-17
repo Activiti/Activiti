@@ -430,7 +430,7 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
               <literal>POST /process-instance</literal>
               <programlisting>
 {
-  "processDefinitionId":"financialReport:1",
+  "processDefinitionId":"financialReport:1:1700",
   "businessKey":"order-4711"
 }</programlisting>
             </para>
@@ -445,9 +445,20 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
               <programlisting>
 {
   "id": "217",
-  "processDefinitionId": "financialReport:1",
+  "processDefinitionId": "financialReport:1:1700",
   "activityNames": ["writeReportTask"],
   "ended": true
+}</programlisting>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">Request providing processDefinitionKey instead of Id:</emphasis>
+              <literal>POST /process-instance</literal>
+              <programlisting>
+{
+  "processDefinitionKey":"financialReport:1",
+  "businessKey":"order-4711"
 }</programlisting>
             </para>
           </listitem>
