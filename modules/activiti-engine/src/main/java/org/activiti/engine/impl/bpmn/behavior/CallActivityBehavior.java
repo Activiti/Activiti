@@ -59,7 +59,13 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     
     // copy process variables
     for (AbstractDataAssociation dataInputAssociation : dataInputAssociations) {
-      Object value = execution.getVariable(dataInputAssociation.getSource());
+      Object value = null;
+      if (dataInputAssociation.getSourceExpression()!=null) {
+        value = dataInputAssociation.getSourceExpression().getValue(execution);
+      }
+      else {
+        value = execution.getVariable(dataInputAssociation.getSource());
+      }
       subProcessInstance.setVariable(dataInputAssociation.getTarget(), value);
     }
     
@@ -71,7 +77,14 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
 
     // copy process variables
     for (AbstractDataAssociation dataOutputAssociation : dataOutputAssociations) {
-      Object value = subProcessInstance.getVariable(dataOutputAssociation.getSource());
+      Object value = null;
+      if (dataOutputAssociation.getSourceExpression()!=null) {
+        value = dataOutputAssociation.getSourceExpression().getValue(subProcessInstance);
+      }
+      else {
+        value = subProcessInstance.getVariable(dataOutputAssociation.getSource());
+      }
+      
       execution.setVariable(dataOutputAssociation.getTarget(), value);
     }
   }

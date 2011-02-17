@@ -165,10 +165,30 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
     assertEquals("Task in super process", taskAfterSubProcess.getName());
     assertEquals("Hello from sub process.", runtimeService.getVariable(processInstance.getId(), "superVariable"));
     assertEquals("Hello from sub process.", taskService.getVariable(taskAfterSubProcess.getId(), "superVariable"));
-    
+
+    vars.clear();
+    vars.put("x", new Long(5));
 
     // Completing this task ends the super process which leads to a task in the super process
-    taskService.complete(taskAfterSubProcess.getId());
+    taskService.complete(taskAfterSubProcess.getId(), vars);
+    
+    // now we are the second time in the sub process but passed variables via expressions
+    Task taskInSecondSubProcess = taskQuery.singleResult();
+    assertEquals("Task in subprocess", taskInSecondSubProcess.getName());
+    assertEquals(10l, runtimeService.getVariable(taskInSecondSubProcess.getProcessInstanceId(), "y"));
+    assertEquals(10l, taskService.getVariable(taskInSecondSubProcess.getId(), "y"));
+
+    // Completing this task ends the subprocess which leads to a task in the super process
+    taskService.complete(taskInSecondSubProcess.getId());
+
+    // one task in the subprocess should be active after starting the process instance
+    Task taskAfterSecondSubProcess = taskQuery.singleResult();
+    assertEquals("Task in super process", taskAfterSecondSubProcess.getName());
+    assertEquals(15l, runtimeService.getVariable(taskAfterSecondSubProcess.getProcessInstanceId(), "z"));
+    assertEquals(15l, taskService.getVariable(taskAfterSecondSubProcess.getId(), "z"));
+
+    // and end last task in Super process
+    taskService.complete(taskAfterSecondSubProcess.getId());
 
     assertProcessEnded(processInstance.getId());
     assertEquals(0, runtimeService.createExecutionQuery().list().size());

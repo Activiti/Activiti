@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.bpmn.data;
 
+import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 /**
@@ -22,14 +23,21 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 public abstract class AbstractDataAssociation {
 
   protected String source;
-  
+
+  protected Expression sourceExpression;
+
   protected String target;
   
   protected AbstractDataAssociation(String source, String target) {
     this.source = source;
     this.target = target;
   }
-  
+
+  protected AbstractDataAssociation(Expression sourceExpression, String target) {
+    this.sourceExpression = sourceExpression;
+    this.target = target;
+  }
+
   public abstract void evaluate(ActivityExecution execution);
   
   public String getSource() {
@@ -38,5 +46,10 @@ public abstract class AbstractDataAssociation {
   
   public String getTarget() {
     return target;
+  }
+
+  
+  public Expression getSourceExpression() {
+    return sourceExpression;
   }
 }

@@ -3028,6 +3028,39 @@ assertNotNull(execution);
         </para>
         
       </section>
+
+      <section id="bpmnCallActivityParameters">
+        <title>Passing Parameters</title>
+        <para>
+          You can pass process variables to the sub process and vice versa. The data is copied into the subprocess when it is
+          started and copied back into the main process when it ends.
+<programlisting>
+&lt;callActivity id=&quot;callSubProcess&quot; calledElement=&quot;checkCreditProcess&quot; /&gt;
+	  &lt;extensionElements&gt;
+	    &lt;activiti:in source=&quot;someVariableInMainProcess&quot; target=&quot;nameOfVariableInSubProcess&quot; /&gt;
+	    &lt;activiti:out source=&quot;someVariableInSubProcss&quot; target=&quot;nameOfVariableInMainProcess&quot; /&gt;
+	  &lt;/extensionElements&gt;
+&lt;/callActivity&gt;
+</programlisting>
+          We used an Activiti Extension as a shortcut for the BPMN standard elements called <emphasis>dataInputAssociation</emphasis>
+          and <emphasis>dataOutputAssociation</emphasis>, which only work if you declare process variables in the BPMN 2.0
+          standard way.
+        </para>
+        
+        <para>
+          It is possible to use expressions here as well:
+<programlisting>
+&lt;callActivity id=&quot;callSubProcess&quot; calledElement=&quot;checkCreditProcess&quot; /&gt;
+	  &lt;extensionElements&gt;
+	    &lt;activiti:in sourceExpression=&quot;${x+5}"&quot; target=&quot;y&quot; /&gt;
+	    &lt;activiti:out source=&quot;${y+5}&quot; target=&quot;z&quot; /&gt;
+	  &lt;/extensionElements&gt;
+&lt;/callActivity&gt;
+</programlisting>
+          So in the end z = y+5 = x+5+5 :-)
+        </para>
+        
+      </section>
       
       <section id="bpmnCallActivityExample">
       

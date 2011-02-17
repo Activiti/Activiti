@@ -15,6 +15,7 @@ package org.activiti.engine.impl.bpmn.webservice;
 import org.activiti.engine.impl.bpmn.behavior.WebServiceActivityBehavior;
 import org.activiti.engine.impl.bpmn.data.AbstractDataAssociation;
 import org.activiti.engine.impl.bpmn.data.FieldBaseStructureInstance;
+import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 /**
@@ -24,6 +25,10 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  * @author Esteban Robles Luna
  */
 public class MessageImplicitDataOutputAssociation extends AbstractDataAssociation {
+
+  public MessageImplicitDataOutputAssociation(String targetRef, Expression sourceExpression) {
+    super(sourceExpression, targetRef);
+  }
 
   public MessageImplicitDataOutputAssociation(String targetRef, String sourceRef) {
     super(sourceRef, targetRef);

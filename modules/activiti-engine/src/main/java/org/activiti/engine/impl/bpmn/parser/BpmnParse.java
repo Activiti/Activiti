@@ -1730,15 +1730,29 @@ public class BpmnParse extends Parse {
     if(extentionsElement != null) {
       // input data elements
       for(Element listenerElement : extentionsElement.elementsNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "in")) {
-        String source = listenerElement.attribute("source");
-        String target = listenerElement.attribute("target");        
-        callActivityBehaviour.addDataInputAssociation(new SimpleDataInputAssociation(source, target));
+        String sourceExpression = listenerElement.attribute("sourceExpression");
+        String target = listenerElement.attribute("target");
+        if (sourceExpression!=null) {
+          Expression expression = expressionManager.createExpression(sourceExpression.trim());
+          callActivityBehaviour.addDataInputAssociation(new SimpleDataInputAssociation(expression, target));          
+        }
+        else {
+          String source = listenerElement.attribute("source");
+          callActivityBehaviour.addDataInputAssociation(new SimpleDataInputAssociation(source, target));          
+        }
       }      
       // output data elements
       for(Element listenerElement : extentionsElement.elementsNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "out")) {
-        String source = listenerElement.attribute("source");
-        String target = listenerElement.attribute("target");        
-        callActivityBehaviour.addDataOutputAssociation(new MessageImplicitDataOutputAssociation(target, source));
+        String sourceExpression = listenerElement.attribute("sourceExpression");
+        String target = listenerElement.attribute("target");
+        if (sourceExpression!=null) {
+          Expression expression = expressionManager.createExpression(sourceExpression.trim());
+          callActivityBehaviour.addDataOutputAssociation(new MessageImplicitDataOutputAssociation(target, expression));
+        }
+        else {
+          String source = listenerElement.attribute("source");
+          callActivityBehaviour.addDataOutputAssociation(new MessageImplicitDataOutputAssociation(target, source));          
+        }
       }      
     }
 

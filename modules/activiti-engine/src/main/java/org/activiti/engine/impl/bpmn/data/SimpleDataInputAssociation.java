@@ -15,6 +15,7 @@ package org.activiti.engine.impl.bpmn.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 /**
@@ -24,11 +25,14 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class SimpleDataInputAssociation extends AbstractDataAssociation {
 
-  protected List<Assignment> assignments;
+  protected List<Assignment> assignments = new ArrayList<Assignment>();
   
+  public SimpleDataInputAssociation(Expression sourceExpression, String target) {
+    super(sourceExpression, target);
+  }
+
   public SimpleDataInputAssociation(String source, String target) {
     super(source, target);
-    this.assignments = new ArrayList<Assignment>();
   }
   
   public void addAssignment(Assignment assignment) {

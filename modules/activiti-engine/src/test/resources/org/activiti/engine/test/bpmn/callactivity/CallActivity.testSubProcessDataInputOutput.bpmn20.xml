@@ -26,15 +26,27 @@
         <sourceRef>subVariable</sourceRef>
         <targetRef>superVariable</targetRef>
       </dataOutputAssociation>
-      -->    
-      
+      -->
     </callActivity>
     
-    <sequenceFlow id="flow3" sourceRef="callSubProcess" targetRef="userTask" />
+    <sequenceFlow id="flow3" sourceRef="callSubProcess" targetRef="userTask1" />
     
-    <userTask id="userTask" name="Task in super process" />
+    <userTask id="userTask1" name="Task in super process" />
   
-    <sequenceFlow id="flow4" sourceRef="userTask" targetRef="theEnd" />
+    <sequenceFlow id="flow4" sourceRef="userTask1" targetRef="callSubProcessWithExpression" />
+    
+    <callActivity id="callSubProcessWithExpression" calledElement="simpleSubProcess" >
+	  <extensionElements>
+	    <activiti:in sourceExpression="${x+5}" target="y" />
+	    <activiti:out sourceExpression="${y+5}" target="z" />
+	  </extensionElements>
+    </callActivity>    
+
+    <sequenceFlow id="flow5" sourceRef="callSubProcessWithExpression" targetRef="userTask2" />
+    
+    <userTask id="userTask2" name="Task in super process" />
+  
+    <sequenceFlow id="flow6" sourceRef="userTask2" targetRef="theEnd" />
     
     <endEvent id="theEnd" />
     
