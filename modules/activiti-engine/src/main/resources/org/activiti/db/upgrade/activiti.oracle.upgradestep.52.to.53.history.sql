@@ -3,14 +3,14 @@ execute java org.activiti.engine.impl.db.upgrade.DbUpgradeStep52To53InsertProper
 -- removing not null constraint from ACT_HI_DETAIL.PROC_INST_ID_ and ACT_HI_DETAIL.EXECUTION_ID_
 
 create table ACT_HI_DETAIL_TMP (
-    ID_ NVARCHAR2(64) not null,
+    ID_ varchar(64) not null,
     TYPE_ NVARCHAR2(255) not null,
     PROC_INST_ID_ NVARCHAR2(64),
     EXECUTION_ID_ NVARCHAR2(64),
     TASK_ID_ NVARCHAR2(64),
     ACT_INST_ID_ NVARCHAR2(64),
     NAME_ NVARCHAR2(255),
-    VAR_TYPE_ NVARCHAR2(255),
+    VAR_TYPE_ NVARCHAR2(64),
     REV_ INTEGER,
     TIME_ TIMESTAMP(6) not null,
     BYTEARRAY_ID_ NVARCHAR2(64),
@@ -27,18 +27,18 @@ select * from ACT_HI_DETAIL;
 drop table ACT_HI_DETAIL;
 
 create table ACT_HI_DETAIL (
-    ID_ NVARCHAR2(64) not null,
+    ID_ varchar(64) not null,
     TYPE_ NVARCHAR2(255) not null,
-    TIME_ TIMESTAMP(6) not null,
-    NAME_ NVARCHAR2(255),
     PROC_INST_ID_ NVARCHAR2(64),
     EXECUTION_ID_ NVARCHAR2(64),
     TASK_ID_ NVARCHAR2(64),
     ACT_INST_ID_ NVARCHAR2(64),
-    VAR_TYPE_ NVARCHAR2(255),
+    NAME_ NVARCHAR2(255),
+    VAR_TYPE_ NVARCHAR2(64),
     REV_ INTEGER,
+    TIME_ TIMESTAMP(6) not null,
     BYTEARRAY_ID_ NVARCHAR2(64),
-    NUMBER(*,10)_ NUMBER(*,10),
+    DOUBLE_ NUMBER(*,10),
     LONG_ NUMBER(19,0),
     TEXT_ NVARCHAR2(255),
     TEXT2_ NVARCHAR2(255),
