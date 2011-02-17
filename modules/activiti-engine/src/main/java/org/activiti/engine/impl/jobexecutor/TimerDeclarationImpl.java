@@ -14,6 +14,8 @@ package org.activiti.engine.impl.jobexecutor;
 
 import java.io.Serializable;
 
+import org.activiti.engine.delegate.VariableScope;
+import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.runtime.TimerEntity;
 
 
@@ -24,15 +26,15 @@ public class TimerDeclarationImpl implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  protected String duedateDescription;
+  protected Expression duedateDescription;
   protected String jobHandlerType;
   protected String jobHandlerConfiguration = null;
   protected String repeat;
   protected boolean exclusive = TimerEntity.DEFAULT_EXCLUSIVE;
   protected int retries = TimerEntity.DEFAULT_RETRIES;
 
-  public TimerDeclarationImpl(String duedateDescription, String jobHandlerType) {
-    this.duedateDescription = duedateDescription;
+  public TimerDeclarationImpl(Expression durationExpression, String jobHandlerType) {
+    this.duedateDescription = durationExpression;
     this.jobHandlerType = jobHandlerType;
   }
 
@@ -63,12 +65,15 @@ public class TimerDeclarationImpl implements Serializable {
   public void setRetries(int retries) {
     this.retries = retries;
   }
-  public String getDuedateDescription() {
+  public Expression getDuedateDescriptionExpression() {
     return duedateDescription;
   }
-  public void setDuedateDescription(String duedateDescription) {
-    this.duedateDescription = duedateDescription;
+  public String getDuedateDescriptionValue(VariableScope variableScope) {
+    return (String) duedateDescription.getValue(variableScope);
   }
+//  public void setDuedateDescription(String duedateDescription) {
+//    this.duedateDescription = duedateDescription;
+//  }
   public void setJobHandlerType(String jobHandlerType) {
     this.jobHandlerType = jobHandlerType;
   }

@@ -1583,14 +1583,15 @@ public class BpmnParse extends Parse {
 
     // TimeDuration
     Element timeDuration = timerEventDefinition.element("timeDuration");
-    String timeDurationText = null;
+    Expression timeDurationExpression = null;
     if (timeDuration != null) {
-      timeDurationText = timeDuration.getText();
+      String timeDurationText = timeDuration.getText().trim();
+      timeDurationExpression = expressionManager.createExpression(timeDurationText);
     }
 
     // Parse the timer declaration
     // TODO move the timer declaration into the bpmn activity or next to the TimerSession
-    TimerDeclarationImpl timerDeclaration = new TimerDeclarationImpl(timeDurationText, TimerExecuteNestedActivityJobHandler.TYPE);
+    TimerDeclarationImpl timerDeclaration = new TimerDeclarationImpl(timeDurationExpression, TimerExecuteNestedActivityJobHandler.TYPE);
     timerDeclaration.setJobHandlerConfiguration(timerActivity.getId());
     addTimerDeclaration(timerActivity.getParent(), timerDeclaration);
     if (timerActivity.getParent() instanceof ActivityImpl) {

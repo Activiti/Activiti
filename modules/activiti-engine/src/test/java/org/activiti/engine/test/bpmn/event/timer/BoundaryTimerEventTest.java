@@ -14,6 +14,7 @@
 package org.activiti.engine.test.bpmn.event.timer;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -78,6 +79,30 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     
     Task task = taskService.createTaskQuery().singleResult();
     assertEquals("task outside subprocess", task.getName());
+  }
+  
+  @Deployment
+  public void testExpressionOnTimer(){
+    // Set the clock fixed
+    Date startTime = new Date();
+    
+    HashMap<String, Object> variables = new HashMap<String, Object>();
+    variables.put("duration", "PT1H");
+    
+    // After process start, there should be a timer created
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("testExpressionOnTimer", variables);
+
+    JobQuery jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
+    List<Job> jobs = jobQuery.list();
+    assertEquals(1, jobs.size());
+
+    // After setting the clock to time '1 hour and 5 seconds', the second timer should fire
+    ClockUtil.setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
+    waitForJobExecutorToProcessAllJobs(5000L, 25L);
+    assertEquals(0L, jobQuery.count());
+
+    // which means the process has ended
+    assertProcessEnded(pi.getId());
   }
 
 }

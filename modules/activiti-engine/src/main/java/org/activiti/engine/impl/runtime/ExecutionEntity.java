@@ -280,7 +280,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
           .getProcessEngineConfiguration()
           .getBusinessCalendarManager()
           .getBusinessCalendar(DurationBusinessCalendar.NAME);
-        Date duedate = businessCalendar.resolveDuedate(timerDeclaration.getDuedateDescription());
+        Date duedate = businessCalendar.resolveDuedate(timerDeclaration.getDuedateDescriptionValue(this));
 
         TimerEntity timer = new TimerEntity(timerDeclaration);
         timer.setDuedate(duedate);
