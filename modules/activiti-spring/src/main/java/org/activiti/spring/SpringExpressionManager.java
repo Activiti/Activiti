@@ -58,7 +58,7 @@ public class SpringExpressionManager extends ExpressionManager {
     
     if(beans != null) {
       // Only expose limited set of beans in expressions
-      compositeElResolver.add(new ReadonlyMapELResolver(beans));
+      compositeElResolver.add(new ReadOnlyMapELResolver(beans));
     } else {
       // Expose full application-context in expressions
       compositeElResolver.add(new ApplicationContextElResolver(applicationContext));
