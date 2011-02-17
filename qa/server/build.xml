@@ -16,9 +16,6 @@
   <property name="jboss.distro" value="${downloads.dir}/jboss-${jboss.version}.zip" />
   <property name="jboss.download.url" value="http://downloads.sourceforge.net/project/jboss/JBoss/JBoss-${jboss.version}/jboss-${jboss.version}.zip" />
 
-	<available property="is.jboss.installed" file="${jboss.home}/bin" />
-  <available property="is.jboss.available" file="${jboss.distro}" />
-
 	<condition property="is.database.h2">
     <equals arg1="${database}" arg2="h2" />
   </condition>
@@ -47,6 +44,8 @@
   </target>
 
   <target name="test" depends="build.distribution, build.testing.war">
+    <available property="is.jboss.installed" file="${jboss.home}/bin" />
+    <available property="is.jboss.available" file="${jboss.distro}" />
   	<antcall target="${server}.install" />
     <antcall target="${server}.deploy.testing.war" />
     <antcall target="h2.start" />
@@ -66,6 +65,7 @@
       <test name="org.activiti.test.cactus.ActivitiServletTestCase" todir="target/junit-reports"/>
     </junit>
 
+    <antcall target="${server}.stop" />
   	<antcall target="h2.stop" />
   </target>
 	
@@ -153,7 +153,14 @@
 
   <!-- ### JBOSS ##################################################### -->
 
-  <target name="jboss.install" depends="jboss.download, jboss.unzip" />
+  <target name="jboss.install" depends="jboss.download, jboss.unzip">
+    <chmod perm="a+x">
+      <fileset dir="${jboss.home}/bin">
+        <include name="*.sh"/>
+        <include name="*.bat"/>
+      </fileset>
+    </chmod>
+  </target>
 
   <target name="jboss.download" unless="is.jboss.available">
     <mkdir dir="${downloads.dir}" />
@@ -178,7 +185,7 @@
           depends="internal.taskdef.launch">
     <launch dir="${jboss.home}/bin"
             script="shutdown"
-            msg="Stopped"/>
+    	      args="-S" />
   </target>
 
   <target name="jboss.deploy.testing.war">

@@ -13,6 +13,9 @@
 package org.activiti.engine.impl.ant;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
@@ -28,6 +31,7 @@ public class LaunchTask extends Task {
   File dir;
   String script;
   String msg;
+  String args;
   
   public void execute() throws BuildException {
     if (dir==null) {
@@ -37,8 +41,21 @@ public class LaunchTask extends Task {
       throw new BuildException("script attribute is required with the launch task");
     }    
     
+    String[] cmd = null;
     String executable = getExecutable();
-    String[] cmd = new String[]{executable};
+    if (args!=null) {
+      List<String> pieces = new ArrayList<String>();
+      pieces.add(executable);
+      StringTokenizer tokenizer = new StringTokenizer("args", " ");
+      while (tokenizer.hasMoreTokens()) {
+        pieces.add(tokenizer.nextToken());
+      }
+      cmd = pieces.toArray(new String[pieces.size()]);
+      
+    } else {
+      cmd = new String[]{executable};
+    }
+    
     LaunchThread.launch(this,cmd,dir,msg);
   }
 
@@ -76,15 +93,16 @@ public class LaunchTask extends Task {
   public void setDir(File dir) {
     this.dir = dir;
   }
-
   
   public void setScript(String script) {
     this.script = script;
   }
-
   
   public void setMsg(String msg) {
     this.msg = msg;
   }
   
+  public void setArgs(String args) {
+    this.args = args;
+  }
 }
