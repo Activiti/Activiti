@@ -38,7 +38,7 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
       }
     });
 
-    waitForJobExecutorToProcessAllJobs(5000L, 50L);
+    waitForJobExecutorToProcessAllJobs(15000L, 50L);
   }
 
   public void testJobCommandsWith3Exceptions() {
@@ -53,7 +53,7 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
       }
     });
 
-    waitForJobExecutorToProcessAllJobs(5000L, 50L);
+    waitForJobExecutorToProcessAllJobs(15000L, 50L);
 
     // TODO check if there is a failed job in the DLQ
 
