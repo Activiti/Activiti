@@ -85,7 +85,7 @@
   	<copy file="${user.home}/.activiti/upgrade/build.${database}.properties" todir="target/activiti-${activiti.old.version}/setup" overwrite="true" />
     <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="inflate.examples" inheritall="false" />
     <exec executable="${mvn.executable}">
-      <arg line="dependency:copy-dependencies -Dactiviti.upgrade.version=${activiti.old.version}-ALWAYS-SNAPSHOT -DincludeGroupIds=com.oracle.jdbc -DoutputDirectory=target/activiti-${activiti.old.version}/workspace/activiti-engine-examples/libs-test" />
+      <arg line="dependency:copy-dependencies -X -Dactiviti.upgrade.version=${activiti.old.version}-ALWAYS-SNAPSHOT -DincludeGroupIds=com.oracle.jdbc -DoutputDirectory=target/activiti-${activiti.old.version}/workspace/activiti-engine-examples/libs-test" />
     </exec>
     <copy todir="target/activiti-${activiti.old.version}/setup/files/dependencies/libs">
       <fileset dir="target/activiti-${activiti.old.version}/workspace/activiti-engine-examples/libs-test">
