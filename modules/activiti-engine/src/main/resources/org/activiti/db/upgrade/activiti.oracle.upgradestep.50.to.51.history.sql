@@ -13,3 +13,5 @@ create table ACT_HI_TASKINST (
     DELETE_REASON_ NVARCHAR2(255),
     primary key (ID_)
 );
+
+alter table ACT_HI_DETAIL add TASK_ID_ varchar(64);
