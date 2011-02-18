@@ -38,9 +38,7 @@ public class JsonProvider extends SignavioContentRepresentationProvider {
     try {
       SignavioConnectorInterface signavioConnector = (SignavioConnectorInterface) CycleSessionContext.get(RuntimeConnectorList.class).getConnectorById(artifact.getConnectorId());
       Content content = new Content();
-      Response jsonResponse = getJsonResponse(signavioConnector, artifact, "/json");
-
-      String jsonString = jsonResponse.getEntity().getText();
+      String jsonString = getJsonResponse(signavioConnector, artifact, "/json");
       JSONObject jsonObj = new JSONObject(jsonString);
       content.setValue(jsonObj.toString(2));
       return content;

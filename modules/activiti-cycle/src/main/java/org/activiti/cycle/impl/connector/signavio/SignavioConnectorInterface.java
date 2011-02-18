@@ -5,8 +5,6 @@ import java.io.IOException;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
 import org.restlet.Client;
-import org.restlet.Request;
-import org.restlet.Response;
 
 /**
  * Public interface for the Signavio Connector.
@@ -28,10 +26,8 @@ public interface SignavioConnectorInterface extends RepositoryConnector {
 
   public String getSecurityToken();
 
-  public Response getJsonResponse(String url) throws IOException;
+  public String getJsonResponse(String url) throws IOException;
 
-  public Response sendRequest(Request request) throws IOException;
-
-  public abstract SignavioConnectorConfiguration getConfiguration();
+  public SignavioConnectorConfiguration getConfiguration();
 
 }

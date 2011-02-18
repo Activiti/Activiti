@@ -39,6 +39,7 @@ import org.restlet.data.MediaType;
 import org.restlet.data.Method;
 import org.restlet.data.Preference;
 import org.restlet.data.Reference;
+import org.restlet.engine.Engine;
 import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.representation.Representation;
 
@@ -115,12 +116,16 @@ public class EmbeddableModelProvider extends SignavioContentRepresentationProvid
 
     // Send the request and retrieve the response
     Response embeddedBOResponse = client.handle(embeddedBORequest);
+    embeddedBORequest.release();
 
     // Get the ResponseBody as JSON
     JsonRepresentation jsonData = new JsonRepresentation(embeddedBOResponse.getEntity());
-
+    
     // Transform to JSONArray
     JSONArray jsonArray = jsonData.getJsonArray();
+    
+    embeddedBOResponse.release();
+    Engine.clearThreadLocalVariables();
 
     // Content of jsonArray above with modelID
     // /model/6fd6be02c610475c9daab28a046282e2

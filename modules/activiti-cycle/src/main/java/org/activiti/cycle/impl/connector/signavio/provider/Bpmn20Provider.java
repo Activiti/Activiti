@@ -43,8 +43,8 @@ public class Bpmn20Provider extends SignavioContentRepresentationProvider {
       // use the bpmn2_0_serialization export servlet to provide bpmn20 xml
       // by doing this, we can support different signavio versions instead of
       // the commercial Signavio only
-      Response jsonResponse = getJsonResponse(signavioConnector, artifact, "/json");
-      JSONObject jsonData = new JSONObject(jsonResponse.getEntity().getText());
+      String jsonResponse = getJsonResponse(signavioConnector, artifact, "/json");
+      JSONObject jsonData = new JSONObject(jsonResponse);
       String result = signavioConnector.transformJsonToBpmn20Xml(jsonData.toString());
 
       // This would have been the alternative that works only for signavio but

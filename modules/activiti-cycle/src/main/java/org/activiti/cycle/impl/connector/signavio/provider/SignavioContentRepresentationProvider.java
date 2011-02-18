@@ -17,13 +17,12 @@ import java.io.IOException;
 import org.activiti.cycle.ContentRepresentation;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnectorInterface;
-import org.restlet.Response;
 
 public abstract class SignavioContentRepresentationProvider implements ContentRepresentation {
 
   private static final long serialVersionUID = 1L;
 
-  public static Response getJsonResponse(SignavioConnectorInterface connector, RepositoryArtifact artifact, String urlSuffix) throws IOException {
+  public static String getJsonResponse(SignavioConnectorInterface connector, RepositoryArtifact artifact, String urlSuffix) throws IOException {
     String url = connector.getModelUrl(artifact) + urlSuffix;
     return connector.getJsonResponse(url);
   }
