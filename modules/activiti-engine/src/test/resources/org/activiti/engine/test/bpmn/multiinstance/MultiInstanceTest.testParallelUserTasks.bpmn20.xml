@@ -10,7 +10,7 @@
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="miTasks" />
     
-    <userTask id="miTasks" name="My Task ${loopCounter}" >
+    <userTask id="miTasks" name="My Task ${loopCounter}" activiti:assignee="kermit_${loopCounter}" >
       <multiInstanceLoopCharacteristics isSequential="false">
         <loopCardinality>${5-2}</loopCardinality>
       </multiInstanceLoopCharacteristics>

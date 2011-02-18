@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 
 
@@ -27,15 +28,15 @@ import org.activiti.engine.impl.runtime.ExecutionEntity;
  */
 public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior {
   
-  public ParallelMultiInstanceBehavior(AbstractBpmnActivityBehavior originalActivityBehavior) {
-    super(originalActivityBehavior);
+  public ParallelMultiInstanceBehavior(ActivityImpl activity, AbstractBpmnActivityBehavior originalActivityBehavior) {
+    super(activity, originalActivityBehavior);
   }
   
   /**
    * Handles the parallel case of spawning the instances.
    * Will create child executions accordingly for every instance needed.
    */
-  public void execute(ActivityExecution execution) throws Exception {
+   protected void createInstances(ActivityExecution execution) throws Exception {
     int nrOfInstances = resolveNrOfInstances(execution);
     if (nrOfInstances <= 0) {
       throw new ActivitiException("Invalid number of instances: must be positive integer value" 
@@ -70,9 +71,9 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     // due to possible child execution pruning.
     for (int loopCounter=0; loopCounter<nrOfInstances; loopCounter++) {
       ActivityExecution concurrentExecution = concurrentExecutions.get(loopCounter);
+      // executions can be inactive, if instances are all automatics (no-waitstate)
+      // and completionCondition has been met in the meantime
       if (concurrentExecution.isActive() && concurrentExecution.getParent().isActive()) { 
-        // executions can be inactive, if instances are all automatics (no-waitstate)
-        // and completionCondition has been met in the meantime
         setLoopVariable(concurrentExecution, LOOP_COUNTER, loopCounter);
         executeOriginalBehavior(concurrentExecution, loopCounter);
       }
@@ -85,6 +86,8 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
    * Handles the completion of one of the parallel instances
    */
   public void leave(ActivityExecution execution) {
+    callActivityEndListeners(execution);
+    
     int loopCounter = getLoopVariable(execution, LOOP_COUNTER);
     int nrOfInstances = getLoopVariable(execution, NUMBER_OF_INSTANCES);
     int nrOfCompletedInstances = getLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES) + 1;
@@ -101,15 +104,16 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     setLoopVariable(execution.getParent(), NUMBER_OF_ACTIVE_INSTANCES, nrOfActiveInstances);
     logLoopDetails(execution, "instance completed", loopCounter, nrOfCompletedInstances, nrOfActiveInstances, nrOfInstances);
     
-    execution.inactivate();
-    ((ExecutionEntity) execution.getParent()).forceUpdate();
+    ExecutionEntity executionEntity = (ExecutionEntity) execution;
+    executionEntity.inactivate();
+    executionEntity.getParent().forceUpdate();
     
-    List<ActivityExecution> joinedExecutions = execution.findInactiveConcurrentExecutions(execution.getActivity());
+    List<ActivityExecution> joinedExecutions = executionEntity.findInactiveConcurrentExecutions(execution.getActivity());
     if (joinedExecutions.size() == nrOfInstances || completionConditionSatisfied(execution)) {
       
       // Removing all active child executions (ie because completionCondition is true)
       List<ExecutionEntity> executionsToRemove = new ArrayList<ExecutionEntity>();
-      for (ActivityExecution childExecution : execution.getParent().getExecutions()) {
+      for (ActivityExecution childExecution : executionEntity.getParent().getExecutions()) {
         if (childExecution.isActive()) {
           executionsToRemove.add((ExecutionEntity) childExecution);
         }
@@ -122,8 +126,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
         executionToRemove.inactivate();
         executionToRemove.deleteCascade("multi-instance completed");
       }
-      
-      execution.takeAll(execution.getActivity().getOutgoingTransitions(), joinedExecutions);
+      executionEntity.takeAll(executionEntity.getActivity().getOutgoingTransitions(), joinedExecutions);
     } 
   }
 

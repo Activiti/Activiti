@@ -34,13 +34,12 @@ import org.activiti.engine.impl.variable.VariableDeclaration;
  */
 public class HistoryParseListener implements BpmnParseListener {
   
-  private static final StartEventEndHandler START_EVENT_END_HANDLER = new StartEventEndHandler();
+  protected static final StartEventEndHandler START_EVENT_END_HANDLER = new StartEventEndHandler();
 
-  private static final ActivityInstanceEndHandler ACTIVITI_INSTANCE_END_LISTENER = new ActivityInstanceEndHandler();
+  protected static final ActivityInstanceEndHandler ACTIVITI_INSTANCE_END_LISTENER = new ActivityInstanceEndHandler();
 
-  private static final ActivityInstanceStartHandler ACTIVITY_INSTANCE_START_LISTENER = new ActivityInstanceStartHandler();
+  protected static final ActivityInstanceStartHandler ACTIVITY_INSTANCE_START_LISTENER = new ActivityInstanceStartHandler();
 
-  // Statically created handlers
   protected static final UserTaskAssignmentHandler USER_TASK_ASSIGNMENT_HANDLER = new UserTaskAssignmentHandler();
 
   // The history level set in the Activiti configuration
@@ -127,6 +126,9 @@ public class HistoryParseListener implements BpmnParseListener {
   
   public void parseMultiInstanceLoopCharacteristics(Element activityElement, 
           Element multiInstanceLoopCharacteristicsElement, ActivityImpl activity) {
+    // Remove any history parse listeners already attached: the Multi instance behavior will
+    // call them for every instance that will be created
+
   }
 
   // helper methods ///////////////////////////////////////////////////////////

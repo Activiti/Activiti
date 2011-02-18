@@ -134,6 +134,9 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
   /** Order by task description (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricTaskInstanceQuery orderByTaskDescription();
   
+  /** Order by task assignee (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  HistoricTaskInstanceQuery orderByTaskAssignee();
+  
   /** Order by task delete reason (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricTaskInstanceQuery orderByDeleteReason();
 

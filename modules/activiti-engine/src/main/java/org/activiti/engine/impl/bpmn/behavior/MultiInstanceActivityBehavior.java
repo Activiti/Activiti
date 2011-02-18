@@ -15,6 +15,7 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,7 +25,10 @@ import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.CompositeActivityBehavior;
+import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
+import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
 import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
 
 
 /**
@@ -53,7 +57,8 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   protected final String LOOP_COUNTER = "loopCounter";
   
   // Instance members
-  protected AbstractBpmnActivityBehavior originalActivityBehavior;
+  protected ActivityImpl activity;
+  protected AbstractBpmnActivityBehavior innerActivityBehavior;
   protected Expression loopCardinalityExpression;
   protected Expression completionConditionExpression;
   protected Expression loopDataInputRefExpression;
@@ -61,20 +66,30 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   protected String inputDataItemVariable;
   
   /**
-   * @param originalActivityBehavior The original {@link ActivityBehavior} of the activity 
+   * @param innerActivityBehavior The original {@link ActivityBehavior} of the activity 
    *                         that will be wrapped inside this behavior.
    * @param isSequential Indicates whether the multi instance behavior
    *                     must be sequential or parallel
    */
-  public MultiInstanceActivityBehavior(AbstractBpmnActivityBehavior originalActivityBehavior) {
-    this.originalActivityBehavior = originalActivityBehavior;
-    this.originalActivityBehavior.setMultiInstanceActivityBehavior(this);
+  public MultiInstanceActivityBehavior(ActivityImpl activity, AbstractBpmnActivityBehavior innerActivityBehavior) {
+    this.activity = activity;
+    this.innerActivityBehavior = innerActivityBehavior;
+    this.innerActivityBehavior.setMultiInstanceActivityBehavior(this);
   }
   
+  public void execute(ActivityExecution execution) throws Exception {
+    if (getLoopVariable(execution, LOOP_COUNTER) == null) {
+      createInstances(execution);
+    } else {
+      innerActivityBehavior.execute(execution);
+    }
+  }
+  
+  protected abstract void createInstances(ActivityExecution execution) throws Exception;
   
   // Intercepts signals, and delegates it to the wrapped {@link ActivityBehavior}.
   public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
-    originalActivityBehavior.signal(execution, signalName, signalData);
+    innerActivityBehavior.signal(execution, signalName, signalData);
   }
   
   // required for supporting embedded subprocesses
@@ -136,7 +151,14 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
       }
       setLoopVariable(execution, inputDataItemVariable, value);
     }
-    originalActivityBehavior.execute(execution);
+
+    // If loopcounter == 1, then historic activity instance already created, no need to
+    // pass through executeActivity again.
+    if (loopCounter == 0) {
+      innerActivityBehavior.execute(execution);
+    } else {
+      execution.executeActivity(activity);
+    }
   }
   
   protected boolean usesCollection() {
@@ -146,7 +168,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   
   protected boolean isExtraScopeNeeded() {
     // special care is needed when the behavior is an embedded subprocess (not very clean, but it works)
-    return originalActivityBehavior instanceof org.activiti.engine.impl.bpmn.behavior.SubProcessActivityBehavior;  
+    return innerActivityBehavior instanceof org.activiti.engine.impl.bpmn.behavior.SubProcessActivityBehavior;  
   }
   
   protected int resolveLoopCardinality(ActivityExecution execution) {
@@ -183,7 +205,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     execution.setVariableLocal(variableName, value);
   }
   
-  protected int getLoopVariable(ActivityExecution execution, String variableName) {
+  protected Integer getLoopVariable(ActivityExecution execution, String variableName) {
     Object value = execution.getVariableLocal(variableName);
     ActivityExecution parent = execution.getParent();
     while (value == null && parent != null) {
@@ -191,6 +213,21 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
       parent = parent.getParent();
     }
     return (Integer) value;
+  }
+  
+  /**
+   * Since no transitions are followed when leaving the inner activity,
+   * it is needed to call the end listeners yourself.
+   */
+  protected void callActivityEndListeners(ActivityExecution execution) {
+    List<ExecutionListener> listeners = activity.getExecutionListeners(ExecutionListener.EVENTNAME_END);
+    for (ExecutionListener executionListener : listeners) {
+      try {
+        executionListener.notify((ExecutionListenerExecution) execution);
+      } catch (Exception e) {
+        throw new ActivitiException("Couldn't execute end listener", e);
+      }
+    }
   }
   
   protected void logLoopDetails(ActivityExecution execution, String custom, int loopCounter, 
@@ -221,10 +258,10 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     this.completionConditionExpression = completionConditionExpression;
   }
   public AbstractBpmnActivityBehavior getOriginalActivityBehavior() {
-    return originalActivityBehavior;
+    return innerActivityBehavior;
   }
   public void setOriginalActivityBehavior(AbstractBpmnActivityBehavior originalActivityBehavior) {
-    this.originalActivityBehavior = originalActivityBehavior;
+    this.innerActivityBehavior = originalActivityBehavior;
   }
   public Expression getLoopDataInputRefExpression() {
     return loopDataInputRefExpression;

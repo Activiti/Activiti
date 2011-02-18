@@ -15,6 +15,7 @@ package org.activiti.engine.impl.bpmn.behavior;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
 
 
 /**
@@ -22,15 +23,15 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavior {
   
-  public SequentialMultiInstanceBehavior(AbstractBpmnActivityBehavior originalActivityBehavior) {
-    super(originalActivityBehavior);
+  public SequentialMultiInstanceBehavior(ActivityImpl activity, AbstractBpmnActivityBehavior innerActivityBehavior) {
+    super(activity, innerActivityBehavior);
   }
   
   /**
    * Handles the sequential case of spawning the instances.
    * Will only create one instance, since at most one instance can be active.
    */
-  public void execute(ActivityExecution execution) throws Exception {
+  protected void createInstances(ActivityExecution execution) throws Exception {
     int nrOfInstances = resolveNrOfInstances(execution);
     if (nrOfInstances <= 0) {
       throw new ActivitiException("Invalid number of instances: must be positive integer value" 
@@ -43,7 +44,7 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
     setLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES, 1);
     logLoopDetails(execution, "initialized", 0, 0, 1, nrOfInstances);
     
-    executeOriginalBehavior(execution, nrOfInstances);
+    executeOriginalBehavior(execution, 0);
   }
   
   /**
@@ -52,6 +53,8 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
    * Handles the completion of one instance, and executes the logic for the sequential behavior.    
    */
   public void leave(ActivityExecution execution) {
+    callActivityEndListeners(execution);
+    
     int loopCounter = getLoopVariable(execution, LOOP_COUNTER) + 1;
     int nrOfInstances = getLoopVariable(execution, NUMBER_OF_INSTANCES);
     int nrOfCompletedInstances = getLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES) + 1;

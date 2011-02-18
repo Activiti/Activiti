@@ -685,13 +685,13 @@ public class BpmnParse extends Parse {
     
     Element miLoopCharacteristics = activityElement.element("multiInstanceLoopCharacteristics");
     if (miLoopCharacteristics != null) {
-      boolean isSequential = parseBooleanAttribute(miLoopCharacteristics.attribute("isSequential"), false);
-      
+
       MultiInstanceActivityBehavior miActivityBehavior = null;
+      boolean isSequential = parseBooleanAttribute(miLoopCharacteristics.attribute("isSequential"), false);
       if (isSequential) {
-        miActivityBehavior = new SequentialMultiInstanceBehavior((AbstractBpmnActivityBehavior) activity.getActivityBehavior());
+        miActivityBehavior = new SequentialMultiInstanceBehavior(activity, (AbstractBpmnActivityBehavior) activity.getActivityBehavior());
       } else {
-        miActivityBehavior = new ParallelMultiInstanceBehavior((AbstractBpmnActivityBehavior) activity.getActivityBehavior());
+        miActivityBehavior = new ParallelMultiInstanceBehavior(activity, (AbstractBpmnActivityBehavior) activity.getActivityBehavior());
       }
       activity.setScope(true);
       activity.setActivityBehavior(miActivityBehavior);
