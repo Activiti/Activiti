@@ -24,28 +24,7 @@ import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.Condition;
-import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.BusinessRuleTaskActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.CallActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ErrorEndEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ExclusiveGatewayActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.MailActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ManualTaskActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.NoneEndEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.NoneStartEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ParallelGatewayActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ParallelMultiInstanceBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ReceiveTaskActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ScriptTaskActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.SequentialMultiInstanceBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ServiceTaskDelegateExpressionActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ServiceTaskExpressionActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.SubProcessActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.TaskActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.WebServiceActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.*;
 import org.activiti.engine.impl.bpmn.data.AbstractDataAssociation;
 import org.activiti.engine.impl.bpmn.data.Assignment;
 import org.activiti.engine.impl.bpmn.data.ClassStructureDefinition;
@@ -77,6 +56,7 @@ import org.activiti.engine.impl.form.DefaultStartFormHandler;
 import org.activiti.engine.impl.form.DefaultTaskFormHandler;
 import org.activiti.engine.impl.form.StartFormHandler;
 import org.activiti.engine.impl.form.TaskFormHandler;
+import org.activiti.engine.impl.jobexecutor.TimerCatchIntermediateEventJobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
 import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
@@ -659,6 +639,8 @@ public class BpmnParse extends Parse {
         activity = parseSubProcess(activityElement, scopeElement);
       } else if (activityElement.getTagName().equals("callActivity")) {
         activity = parseCallActivity(activityElement, scopeElement);
+      } else if (activityElement.getTagName().equals("intermediateCatchEvent")) {
+        activity = parseIntermediateCatchEvent(activityElement, scopeElement);
       } else if (activityElement.getTagName().equals("adHocSubProcess")
               || activityElement.getTagName().equals("complexGateway")
               || activityElement.getTagName().equals("eventBasedGateway")
@@ -672,7 +654,24 @@ public class BpmnParse extends Parse {
       }
     }
   }
-  
+
+  private ActivityImpl parseIntermediateCatchEvent(Element intermediateEventElement, ScopeImpl scopeElement) {
+    ActivityImpl nestedActivity = createActivityOnScope(intermediateEventElement, scopeElement);
+
+    // Catch event behavior is the same for all types
+    nestedActivity.setActivityBehavior(new IntermediateCatchEventActivitiBehaviour());
+
+    Element timerEventDefinition = intermediateEventElement.element("timerEventDefinition");
+    if (timerEventDefinition != null) {
+      parseIntemediateTimerEventDefinition(timerEventDefinition, nestedActivity);
+    } else {
+      addError("Unsupported intermediate event type", intermediateEventElement);
+    }
+    return nestedActivity;
+  }
+
+
+
   /**
    * Parses loopCharacteristics (standardLoop/Multi-instance) of an activity, if any is defined.
    */
@@ -1577,7 +1576,30 @@ public class BpmnParse extends Parse {
    */
   public void parseBoundaryTimerEventDefinition(Element timerEventDefinition, boolean interrupting, ActivityImpl timerActivity) {
     timerActivity.setProperty("type", "boundaryTimer");
+    TimerDeclarationImpl timerDeclaration = parseTimer(timerEventDefinition, timerActivity, TimerExecuteNestedActivityJobHandler.TYPE);
+    addTimerDeclaration(timerActivity.getParent(), timerDeclaration);
 
+
+    if (timerActivity.getParent() instanceof ActivityImpl) {
+      ((ActivityImpl)timerActivity.getParent()).setScope(true);
+    }
+    
+    for (BpmnParseListener parseListener: parseListeners) {
+      parseListener.parseBoundaryTimerEventDefinition(timerEventDefinition, interrupting, timerActivity);
+    }
+  }
+
+  private void parseIntemediateTimerEventDefinition(Element timerEventDefinition, ActivityImpl timerActivity) {
+    timerActivity.setProperty("type", "intermediateTimer");
+    TimerDeclarationImpl timerDeclaration = parseTimer(timerEventDefinition, timerActivity, TimerCatchIntermediateEventJobHandler.TYPE);
+    addTimerDeclaration(timerActivity, timerDeclaration);
+    timerActivity.setScope(true);
+    for (BpmnParseListener parseListener : parseListeners) {
+      parseListener.parseIntermediateTimerEventDefinition(timerEventDefinition, timerActivity);
+    }
+  }
+
+  private TimerDeclarationImpl parseTimer(Element timerEventDefinition, ScopeImpl timerActivity, String jobHandlerType) {
     // TimeDate
 
     // TimeCycle
@@ -1592,18 +1614,11 @@ public class BpmnParse extends Parse {
 
     // Parse the timer declaration
     // TODO move the timer declaration into the bpmn activity or next to the TimerSession
-    TimerDeclarationImpl timerDeclaration = new TimerDeclarationImpl(timeDurationExpression, TimerExecuteNestedActivityJobHandler.TYPE);
+    TimerDeclarationImpl timerDeclaration = new TimerDeclarationImpl(timeDurationExpression, jobHandlerType);
     timerDeclaration.setJobHandlerConfiguration(timerActivity.getId());
-    addTimerDeclaration(timerActivity.getParent(), timerDeclaration);
-    if (timerActivity.getParent() instanceof ActivityImpl) {
-      ((ActivityImpl)timerActivity.getParent()).setScope(true);
-    }
-    
-    for (BpmnParseListener parseListener: parseListeners) {
-      parseListener.parseBoundaryTimerEventDefinition(timerEventDefinition, interrupting, timerActivity);
-    }
+    return timerDeclaration;
   }
-  
+
   public void parseBoundaryErrorEventDefinition(Element errorEventDefinition, boolean interrupting,
           ActivityImpl activity, ActivityImpl nestedErrorEventActivity) {
     
