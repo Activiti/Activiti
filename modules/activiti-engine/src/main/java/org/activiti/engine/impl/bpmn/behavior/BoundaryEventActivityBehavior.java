@@ -43,13 +43,13 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
     List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
     List<ExecutionEntity> interruptedExecutions = null;
     
-    ExecutionEntity executionImpl = (ExecutionEntity) execution;
+    ExecutionEntity executionEntity = (ExecutionEntity) execution;
     if (interrupting) {
-      if (executionImpl.getSubProcessInstance()!=null) {
-        executionImpl.getSubProcessInstance().deleteCascade(executionImpl.getDeleteReason());
+      if (executionEntity.getSubProcessInstance()!=null) {
+        executionEntity.getSubProcessInstance().deleteCascade(executionEntity.getDeleteReason());
       }
       
-      interruptedExecutions = new ArrayList<ExecutionEntity>(executionImpl.getExecutions());
+      interruptedExecutions = new ArrayList<ExecutionEntity>(executionEntity.getExecutions());
       for (ExecutionEntity interruptedExecution: interruptedExecutions) {
         interruptedExecution.deleteCascade("interrupting boundary event '"+execution.getActivity().getId()+"' fired");
       }
@@ -60,7 +60,9 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
       // non interrupting event, introduced with BPMN 2.0, we need to create a new execution in this case
       
       // create a new execution and move it out from the timer activity 
-      ExecutionEntity outgoingExecution = executionImpl.createExecution();
+      ExecutionEntity concurrentRoot = ((execution.isConcurrent() && !execution.isScope()) 
+              ? executionEntity.getParent() : executionEntity);
+      ExecutionEntity outgoingExecution = concurrentRoot.createExecution();
       log.fine("new "+outgoingExecution+" created in non interrupting boundary event '"+execution.getActivity().getId()+"'");
     
       outgoingExecution.setActive(true);
@@ -71,7 +73,7 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
       // now we have to move the execution back to the real activity
       // since the execution stays there (non interrupting) and it was
       // set to the boundary event before
-      executionImpl.setActivity(executionImpl.getActivity().getParentActivity());      
+      executionEntity.setActivity(executionEntity.getActivity().getParentActivity());      
     }
   }
 
