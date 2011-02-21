@@ -54,6 +54,9 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
       concurrentExecution.setConcurrent(true);
       concurrentExecution.setScope(false);
       
+      // In case of an embedded subprocess, and extra child execution is required
+      // Otherwise, all child executions would end up under the same parent,
+      // without any differentation to which embedded subprocess they belong
       if (isExtraScopeNeeded()) {
         ActivityExecution extraScopedExecution = concurrentExecution.createExecution();
         extraScopedExecution.setActive(true);
@@ -97,9 +100,9 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     
     if (isExtraScopeNeeded()) {
       // In case an extra scope was created, it must be destroyed first before going further
-      ExecutionEntity temp = (ExecutionEntity) execution;
+      ExecutionEntity extraScope = (ExecutionEntity) execution;
       execution = execution.getParent();
-      temp.remove();
+      extraScope.remove();
     }
     
     setLoopVariable(execution.getParent(), NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);

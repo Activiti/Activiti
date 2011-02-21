@@ -119,16 +119,12 @@ public class ErrorEndEventActivityBehavior extends FlowNodeActivityBehavior {
     
     boolean matchingParentFound = false;
     ActivityExecution leavingExecution = execution;
-    String multiInstance = (String) catchingScope.getProperty("multiInstance");
-    ActivityImpl currentActivity = (multiInstance == null || "sequential".equals(multiInstance))  ?
-          (ActivityImpl) execution.getActivity().getParent()  : (ActivityImpl) execution.getActivity();
+    ActivityImpl currentActivity = (ActivityImpl) execution.getActivity().getParent();
     
     // Traverse parents until one is found that is a scope 
     // and matches the activity the boundary event is defined on
     while(!matchingParentFound && leavingExecution != null && currentActivity != null) {
-      if (leavingExecution.isScope() 
-            && !leavingExecution.isConcurrent() 
-            && currentActivity.getId().equals(catchingScope.getId())) {
+      if (!leavingExecution.isConcurrent() && currentActivity.getId().equals(catchingScope.getId())) {
         matchingParentFound = true;
       } else if (leavingExecution.isConcurrent()) {
         leavingExecution = leavingExecution.getParent();
@@ -136,6 +132,13 @@ public class ErrorEndEventActivityBehavior extends FlowNodeActivityBehavior {
         currentActivity = currentActivity.getParentActivity();
         leavingExecution = leavingExecution.getParent();
       } 
+    }
+    
+    // Follow parents up until matching scope can't be found anymore (needed to support for multi-instance)
+    while (leavingExecution.getParent() != null 
+            && leavingExecution.getParent().getActivity() != null
+            && leavingExecution.getParent().getActivity().getId().equals(catchingScope.getId())) {
+      leavingExecution = leavingExecution.getParent();
     }
     
     if (matchingParentFound && leavingExecution != null) {
