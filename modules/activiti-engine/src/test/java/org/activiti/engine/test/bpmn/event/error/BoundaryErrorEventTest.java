@@ -12,7 +12,9 @@
  */
 package org.activiti.engine.test.bpmn.event.error;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -176,6 +178,44 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     
     // Completing the task will end the process instance
     taskService.complete(task.getId());
+    assertProcessEnded(procId);
+  }
+  
+  @Deployment
+  public void testCatchErrorOnParallelMultiInstance() {
+    String procId = runtimeService.startProcessInstanceByKey("catchErrorOnParallelMi").getId();
+    List<Task> tasks = taskService.createTaskQuery().list();
+    assertEquals(5, tasks.size());
+    
+    // Complete two subprocesses, just to make it a bit more complex
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("throwError", false);
+    taskService.complete(tasks.get(2).getId(), vars);
+    taskService.complete(tasks.get(3).getId(), vars);
+    
+    // Reach the error event
+    vars.put("throwError", true);
+    taskService.complete(tasks.get(1).getId(), vars);
+    
+    assertEquals(0, taskService.createTaskQuery().count());
+    assertProcessEnded(procId);
+  }
+  
+  @Deployment
+  public void testCatchErrorOnSequentialMultiInstance() {
+    String procId = runtimeService.startProcessInstanceByKey("catchErrorOnSequentialMi").getId();
+    
+    // complete one task
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("throwError", false);
+    Task task = taskService.createTaskQuery().singleResult();
+    taskService.complete(task.getId(), vars);
+    
+    // complete second task and throw error
+    vars.put("throwError", true);
+    task = taskService.createTaskQuery().singleResult();
+    taskService.complete(task.getId(), vars);
+    
     assertProcessEnded(procId);
   }
 

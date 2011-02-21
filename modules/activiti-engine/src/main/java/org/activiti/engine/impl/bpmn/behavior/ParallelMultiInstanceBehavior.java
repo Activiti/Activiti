@@ -73,7 +73,9 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
       ActivityExecution concurrentExecution = concurrentExecutions.get(loopCounter);
       // executions can be inactive, if instances are all automatics (no-waitstate)
       // and completionCondition has been met in the meantime
-      if (concurrentExecution.isActive() && concurrentExecution.getParent().isActive()) { 
+      if (concurrentExecution.isActive() && !concurrentExecution.isEnded() 
+              && concurrentExecution.getParent().isActive() 
+              && !concurrentExecution.getParent().isEnded()) { 
         setLoopVariable(concurrentExecution, LOOP_COUNTER, loopCounter);
         executeOriginalBehavior(concurrentExecution, loopCounter);
       }

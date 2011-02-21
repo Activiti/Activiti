@@ -694,6 +694,7 @@ public class BpmnParse extends Parse {
         miActivityBehavior = new ParallelMultiInstanceBehavior(activity, (AbstractBpmnActivityBehavior) activity.getActivityBehavior());
       }
       activity.setScope(true);
+      activity.setProperty("multiInstance", isSequential ? "sequential" : "parallel");
       activity.setActivityBehavior(miActivityBehavior);
       
       // loopCardinality

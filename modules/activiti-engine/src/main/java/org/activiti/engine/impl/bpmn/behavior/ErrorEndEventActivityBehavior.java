@@ -36,7 +36,7 @@ public class ErrorEndEventActivityBehavior extends FlowNodeActivityBehavior {
   
   public void execute(ActivityExecution execution) throws Exception {
     
-    // TODO: merge two approaches (super process / regular process approach), not 100% happy with it now
+    // TODO: merge two approaches (super process / regular process approach)
     
     // The borderEventActivityId is set during parsing (for performance reasons)
     // However, this only works on one process level (and not for call activities)
@@ -88,7 +88,7 @@ public class ErrorEndEventActivityBehavior extends FlowNodeActivityBehavior {
     
     if (found) {
       outgoingExecution.executeActivity(catchingActivity);
-    } else {
+    } else { // no matching catch found, going one level up in process hierarchy
       ActivityExecution superSuperExecution = getSuperExecution(superExecution);
       if (superSuperExecution != null) {
         executeCatchInSuperProcess(superSuperExecution);
@@ -118,44 +118,42 @@ public class ErrorEndEventActivityBehavior extends FlowNodeActivityBehavior {
     }
     
     boolean matchingParentFound = false;
-    ActivityExecution parentExecution = execution;
-    ActivityImpl parentActivity = (ActivityImpl) execution.getActivity().getParent();
+    ActivityExecution leavingExecution = execution;
+    String multiInstance = (String) catchingScope.getProperty("multiInstance");
+    ActivityImpl currentActivity = (multiInstance == null || "sequential".equals(multiInstance))  ?
+          (ActivityImpl) execution.getActivity().getParent()  : (ActivityImpl) execution.getActivity();
     
     // Traverse parents until one is found that is a scope 
     // and matches the activity the boundary event is defined on
-    while(!matchingParentFound && parentExecution != null && parentActivity != null) {
-      if (parentExecution.isScope() 
-              && !parentExecution.isConcurrent() 
-              && parentActivity.getId().equals(catchingScope.getId())) {
+    while(!matchingParentFound && leavingExecution != null && currentActivity != null) {
+      if (leavingExecution.isScope() 
+            && !leavingExecution.isConcurrent() 
+            && currentActivity.getId().equals(catchingScope.getId())) {
         matchingParentFound = true;
-      } else if (parentExecution.isConcurrent()) {
-        parentExecution = parentExecution.getParent();
-      } else if (parentExecution.isScope()) {
-        parentActivity = parentActivity.getParentActivity();
-        parentExecution = parentExecution.getParent();
+      } else if (leavingExecution.isConcurrent()) {
+        leavingExecution = leavingExecution.getParent();
+      } else {
+        currentActivity = currentActivity.getParentActivity();
+        leavingExecution = leavingExecution.getParent();
       } 
-      
     }
     
-    if (matchingParentFound && parentExecution != null) {
-      parentExecution.executeActivity(borderEventActivity);
+    if (matchingParentFound && leavingExecution != null) {
+      leavingExecution.executeActivity(borderEventActivity);
     } else {
       throw new ActivitiException("No matching parent execution for activity " + borderEventActivityId + " found");
     }
   }
-
+  
   public String getBorderEventActivityId() {
     return borderEventActivityId;
   }
-
   public void setBorderEventActivityId(String borderEventActivityId) {
     this.borderEventActivityId = borderEventActivityId;
   }
-
   public String getErrorCode() {
     return errorCode;
   }
-
   public void setErrorCode(String errorCode) {
     this.errorCode = errorCode;
   }

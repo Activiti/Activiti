@@ -84,6 +84,11 @@ public interface ActivityExecution extends DelegateExecution {
   boolean isActive();
   
   /**
+   * returns whether this execution has ended or not.
+   */
+  boolean isEnded();
+  
+  /**
    * changes the concurrent indicator on this execution.
    */
   void setConcurrent(boolean isConcurrent);
