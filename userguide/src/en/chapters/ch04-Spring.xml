@@ -41,6 +41,15 @@
     contains the dataSource, transactionManager, processEngine and the Activiti
     Engine services.
     </para>
+    <para>
+      When passing the DataSource to the <literal>SpringProcessEngineConfiguration</literal> (using property "dataSource"), Activiti uses a <literal>org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy</literal> internally, which wraps the passed DataSource.
+      This is done make sure the SQL connections retrieved from the DataSource and the Spring transactions play well together.
+      This implies that it's no longer needed to proxy the dataSource yourself in spring-configuration, however it's allowed to pass a <literal>TransactionAwareDataSourceProxy</literal> into the <literal>SpringProcessEngineConfiguration</literal>.
+      In this case no additional wrapping will occur.
+    </para>
+    <para>
+      <emphasis role="bold">Make sure when declaring a <literal>TransactionAwareDataSourceProxy</literal> in Spring configuration yourself, that you don't use it for resources that are already aware of Spring-transactions (eg. DataSourceTransactionManager and JPATransactionManager need the un-proxied dataSource).</emphasis>
+    </para>
     <programlisting>
 &lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot; 
        xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
@@ -50,15 +59,11 @@
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
                            http://www.springframework.org/schema/tx      http://www.springframework.org/schema/tx/spring-tx-3.0.xsd&quot;&gt;
 
-  &lt;bean id=&quot;dataSource&quot; class=&quot;org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy&quot;&gt;
-    &lt;property name=&quot;targetDataSource&quot;&gt;
-      &lt;bean class=&quot;org.springframework.jdbc.datasource.SimpleDriverDataSource&quot;&gt;
-        &lt;property name=&quot;driverClass&quot; value=&quot;org.h2.Driver&quot; /&gt;
-        &lt;property name=&quot;url&quot; value=&quot;jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000&quot; /&gt;
-        &lt;property name=&quot;username&quot; value=&quot;sa&quot; /&gt;
-        &lt;property name=&quot;password&quot; value=&quot;&quot; /&gt;
-      &lt;/bean&gt;
-    &lt;/property&gt;
+  &lt;bean id=&quot;dataSource&quot; class=&quot;org.springframework.jdbc.datasource.SimpleDriverDataSource&quot;&gt;
+    &lt;property name=&quot;driverClass&quot; value=&quot;org.h2.Driver&quot; /&gt;
+    &lt;property name=&quot;url&quot; value=&quot;jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000&quot; /&gt;
+    &lt;property name=&quot;username&quot; value=&quot;sa&quot; /&gt;
+    &lt;property name=&quot;password&quot; value=&quot;&quot; /&gt;
   &lt;/bean&gt;
 
   &lt;bean id=&quot;transactionManager&quot; class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;

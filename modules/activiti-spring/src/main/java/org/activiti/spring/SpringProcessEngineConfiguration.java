@@ -19,6 +19,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.zip.ZipInputStream;
 
+import javax.sql.DataSource;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
@@ -33,6 +35,7 @@ import org.activiti.engine.repository.DeploymentBuilder;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ContextResource;
 import org.springframework.core.io.Resource;
+import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -140,6 +143,17 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
       }
       
       deploymentBuilder.deploy();
+    }
+  }
+  
+  @Override
+  public ProcessEngineConfigurationImpl setDataSource(DataSource dataSource) {
+    if(dataSource instanceof TransactionAwareDataSourceProxy) {
+      return super.setDataSource(dataSource);
+    } else {
+      // Wrap datasource in Transaction-aware proxy
+      DataSource proxiedDataSource = new TransactionAwareDataSourceProxy(dataSource);
+      return super.setDataSource(proxiedDataSource);
     }
   }
   
