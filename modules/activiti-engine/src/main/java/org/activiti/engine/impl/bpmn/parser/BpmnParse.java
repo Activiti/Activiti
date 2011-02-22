@@ -713,31 +713,54 @@ public class BpmnParse extends Parse {
         miActivityBehavior.setCompletionConditionExpression(expressionManager.createExpression(completionConditionText));
       }
       
+      // activiti:collection
+      String collection = miLoopCharacteristics.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "collection");
+      if (collection != null) {
+        if (collection.contains("{")) {
+          miActivityBehavior.setCollectionExpression(expressionManager.createExpression(collection));
+        } else {
+          miActivityBehavior.setCollectionVariable(collection);
+        }
+      }
+      
       // loopDataInputRef
       Element loopDataInputRef = miLoopCharacteristics.element("loopDataInputRef");
       if (loopDataInputRef != null) {
         String loopDataInputRefText = loopDataInputRef.getText();
         if (loopDataInputRefText != null) {
-          if (loopDataInputRefText.contains("${")) {
-            miActivityBehavior.setLoopDataInputRefExpression(expressionManager.createExpression(loopDataInputRefText));
+          if (loopDataInputRefText.contains("{")) {
+            miActivityBehavior.setCollectionExpression(expressionManager.createExpression(loopDataInputRefText));
           } else {
-            miActivityBehavior.setLoopDataInputRefVariable(loopDataInputRefText);
+            miActivityBehavior.setCollectionVariable(loopDataInputRefText);
           }
         }
+      }
+      
+      // activiti:elementVariable
+      String elementVariable = miLoopCharacteristics.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "elementVariable");
+      if (elementVariable != null) {
+        miActivityBehavior.setCollectionElementVariable(elementVariable);
       }
       
       // dataInputItem
       Element inputDataItem = miLoopCharacteristics.element("inputDataItem");
       if (inputDataItem != null) {
         String inputDataItemName = inputDataItem.attribute("name");
-        miActivityBehavior.setInputDataItemVariable(inputDataItemName);
+        miActivityBehavior.setCollectionElementVariable(inputDataItemName);
       }
       
       // Validation
       if (miActivityBehavior.getLoopCardinalityExpression() == null
-              && miActivityBehavior.getLoopDataInputRefExpression() == null
-              && miActivityBehavior.getLoopDataInputRefVariable() == null) {
-        addError("Either either loopCardinality or loopDataInputRef must been set", miLoopCharacteristics);
+              && miActivityBehavior.getCollectionExpression() == null
+              && miActivityBehavior.getCollectionVariable() == null) {
+        addError("Either loopCardinality or loopDataInputRef/activiti:collection must been set", miLoopCharacteristics);
+      }
+      
+      // Validation
+      if (miActivityBehavior.getCollectionExpression() == null
+              && miActivityBehavior.getCollectionVariable() == null
+              && miActivityBehavior.getCollectionElementVariable() != null) {
+        addError("LoopDataInputRef/activiti:collection must be set when using inputDataItem or activiti:elementVariable", miLoopCharacteristics);
       }
       
       for (BpmnParseListener parseListener: parseListeners) {

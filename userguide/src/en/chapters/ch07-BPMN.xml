@@ -780,7 +780,7 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
           This is an Activiti specific shortcut.
           More concretely, following snippets are equivalent in functionality. 
                     <programlisting>
-&lt;error id=&quot;myError&quot; errorCode=&quot;123&quot; /&gt;
+&lt;error id=&quot;myError&quot; errorCode=&quot;error123&quot; /&gt;
 ...
 &lt;process id=&quot;myProcess&quot;&gt;  
 ...  
@@ -791,10 +791,12 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
           is equivalent with
                     <programlisting>
 &lt;endEvent id=&quot;myErrorEndEvent&quot;&gt;
-  &lt;errorEventDefinition errorRef=&quot;123&quot; /&gt;
+  &lt;errorEventDefinition errorRef=&quot;error123&quot; /&gt;
 &lt;/endEvent&gt;          
           </programlisting>
         </para>
+        Note that the <literal>errorRef</literal> must comply with the BPMN 2.0 schema, and must
+        be a valid QName.
       </section>
 		  
 		</section>
@@ -3057,20 +3059,20 @@ assertNotNull(execution);
         
       </section>
 
-      <section id="bpmnCallActivityParameters">
-        <title>Passing Parameters</title>
+      <section id="bpmnCallActivityPassVariables">
+        <title>Passing variables</title>
         <para>
           You can pass process variables to the sub process and vice versa. The data is copied into the subprocess when it is
           started and copied back into the main process when it ends.
 <programlisting>
-&lt;callActivity id=&quot;callSubProcess&quot; calledElement=&quot;checkCreditProcess&quot; /&gt;
-	  &lt;extensionElements&gt;
-	    &lt;activiti:in source=&quot;someVariableInMainProcess&quot; target=&quot;nameOfVariableInSubProcess&quot; /&gt;
-	    &lt;activiti:out source=&quot;someVariableInSubProcss&quot; target=&quot;nameOfVariableInMainProcess&quot; /&gt;
-	  &lt;/extensionElements&gt;
+&lt;callActivity id=&quot;callSubProcess&quot; calledElement=&quot;checkCreditProcess&quot; &gt;
+  &lt;extensionElements&gt;
+	  &lt;activiti:in source=&quot;someVariableInMainProcess&quot; target=&quot;nameOfVariableInSubProcess&quot; /&gt;
+	  &lt;activiti:out source=&quot;someVariableInSubProcss&quot; target=&quot;nameOfVariableInMainProcess&quot; /&gt;
+  &lt;/extensionElements&gt;
 &lt;/callActivity&gt;
 </programlisting>
-          We used an Activiti Extension as a shortcut for the BPMN standard elements called <emphasis>dataInputAssociation</emphasis>
+          We use an Activiti Extension as a shortcut for the BPMN standard elements called <emphasis>dataInputAssociation</emphasis>
           and <emphasis>dataOutputAssociation</emphasis>, which only work if you declare process variables in the BPMN 2.0
           standard way.
         </para>
@@ -3078,14 +3080,14 @@ assertNotNull(execution);
         <para>
           It is possible to use expressions here as well:
 <programlisting>
-&lt;callActivity id=&quot;callSubProcess&quot; calledElement=&quot;checkCreditProcess&quot; /&gt;
-	  &lt;extensionElements&gt;
-	    &lt;activiti:in sourceExpression=&quot;${x+5}"&quot; target=&quot;y&quot; /&gt;
-	    &lt;activiti:out source=&quot;${y+5}&quot; target=&quot;z&quot; /&gt;
-	  &lt;/extensionElements&gt;
+&lt;callActivity id=&quot;callSubProcess&quot; calledElement=&quot;checkCreditProcess&quot; &gt;
+	&lt;extensionElements&gt;
+	  &lt;activiti:in sourceExpression=&quot;${x+5}"&quot; target=&quot;y&quot; /&gt;
+	  &lt;activiti:out source=&quot;${y+5}&quot; target=&quot;z&quot; /&gt;
+	&lt;/extensionElements&gt;
 &lt;/callActivity&gt;
 </programlisting>
-          So in the end z = y+5 = x+5+5 :-)
+          So in the end z = y+5 = x+5+5 
         </para>
         
       </section>

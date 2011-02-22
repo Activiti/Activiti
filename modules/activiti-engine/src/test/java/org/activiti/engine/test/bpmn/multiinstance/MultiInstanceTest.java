@@ -234,6 +234,33 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   }
   
   @Deployment
+  public void testParallelUserTasksCustomExtensions() {
+    Map<String, Object> vars = new HashMap<String, Object>();
+    List<String> assigneeList = Arrays.asList("kermit", "gonzo", "fozzie");
+    vars.put("assigneeList", assigneeList);
+    runtimeService.startProcessInstanceByKey("miSequentialUserTasks", vars);
+    
+    for (String assignee : assigneeList) {
+      Task task = taskService.createTaskQuery().singleResult();
+      assertEquals(assignee, task.getAssignee());
+      taskService.complete(task.getId());
+    }
+  }
+  
+  @Deployment
+  public void testParallelUserTasksExecutionAndTaskListeners() {
+    runtimeService.startProcessInstanceByKey("miParallelUserTasks");
+    List<Task> tasks = taskService.createTaskQuery().list();
+    for (Task task : tasks) {
+      taskService.complete(task.getId());
+    }
+    
+    Execution waitState = runtimeService.createExecutionQuery().singleResult();
+    assertEquals(3, runtimeService.getVariable(waitState.getId(), "taskListenerCounter"));
+    assertEquals(3, runtimeService.getVariable(waitState.getId(), "executionListenerCounter"));
+  }
+  
+  @Deployment
   public void testNestedParallelUserTasks() {
     String procId = runtimeService.startProcessInstanceByKey("miNestedParallelUserTasks").getId();
     

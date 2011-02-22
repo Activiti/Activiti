@@ -399,5 +399,24 @@
     </complexType>
   </element>
   
+  <attribute name="collection" type="string">
+    <annotation>
+      <documentation>
+        To be used on the multiInstanceLoopCharacteristics element, referencing a collection.
+        For each element in the collection, an instance will be created. Can be an expression 
+        or reference to a process variable.
+      </documentation>
+    </annotation>
+  </attribute>
+  
+  <attribute name="elementVariable" type="string">
+    <annotation>
+      <documentation>
+        To be used on the multiInstanceLoopCharacteristics element, used in conjunction with
+        the activiti:collection attribute. Denotes the name of the process variable that
+        will be set on each created instance, containing an element of the specified collection.
+      </documentation>
+    </annotation>
+  </attribute>
   
 </schema>
