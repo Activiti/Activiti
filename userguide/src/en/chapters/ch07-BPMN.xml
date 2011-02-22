@@ -2876,7 +2876,89 @@ assertNotNull(execution);
       </section>
 		  
 		</section>
-		
+
+        <section id="bpmnIntermediateCatchingEvent">
+
+          <title>Intermediate catching events</title>
+
+		  <para>
+		    All intermediate catching events events are defined in the same way:
+<programlisting>
+&lt;intermediateCatchEvent id=&quot;myIntermediateCatchEvent&quot; &gt;
+      &lt;XXXEventDefinition/&gt;
+&lt;/intermediateCatchEvent&gt;</programlisting>
+		  </para>
+
+		  <para>
+		    An intermediate catching event is defined with
+		    <itemizedlist>
+		      <listitem>
+		        <para>
+		          A unique identifier (process-wide)
+		        </para>
+		      </listitem>
+		      <listitem>
+		        <para>
+		          An XML sub-element of the form <emphasis>XXXEventDefinition</emphasis>
+		          (e.g. <emphasis>TimerEventDefinition</emphasis>, etc.)
+		          defining the type of the intermediate catching event. See the specific catching event types
+		          for more details.
+		        </para>
+		      </listitem>
+		    </itemizedlist>
+		  </para>
+
+        </section>
+
+        <section id="bpmnTimerIntermediateEvent">
+
+            <title>Timer intermediate catching event</title>
+
+            <section id="bpmnTimerIntermediateEventDescription">
+                <title>Description</title>
+
+        <para>
+          An timer intermediate event acts as a stopwatch. When an execution arrives
+          in catching event activity, a timer is started.
+          When the timer fires (e.g. after a specified interval), the sequence flow going out of the timer intermediate event is followed.
+        </para>
+
+            </section>
+
+            <section id="bpmnTimerIntermediateEventGraphicalNotation">
+
+              <title>Graphical Notation</title>
+
+              <para>
+                A timer intermediate event is visualized as a intermediate catching event, with the timer icon on the inside.
+                <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.intermediate.timer.event.png"/></imageobject></mediaobject>
+              </para>
+
+            </section>
+
+            <section id="bpmnTimerIntermediateEventXml">
+
+              <title>XML Representation</title>
+
+              <para>
+
+          A timer intermediate event is defined as a <link linkend="bpmnIntermediateCatchingEvent">intermediate catching event</link>.
+          The specific type sub-element is in this case a <emphasis role="bold">timerEventDefinition</emphasis>
+          element.
+                 <programlisting>
+        &lt;intermediateCatchEvent id=&quot;timer&quot;&gt;
+            <emphasis role="bold">&lt;timerEventDefinition&gt;
+                &lt;timeDuration&gt;PT5M&lt;/timeDuration&gt;
+            &lt;/timerEventDefinition&gt;</emphasis>
+        &lt;/intermediateCatchEvent&gt;
+                 </programlisting>
+              See <link linkend="bpmnTimerBoundaryEventXml">timer boundary event</link> for configuration details.
+
+              </para>
+            </section>
+
+        </section>
+
 		<section id="bpmnSubProcess">
 		
 		  <title>SubProcess</title>
