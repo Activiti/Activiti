@@ -1926,7 +1926,7 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
      </section>
   		
 		</section>
- <!--  
+  
 <section id="bpmnWebserviceTask">
 	<title>WebService Task</title><link linkend="experimental">
 		<emphasis role="bold">[EXPERIMENTAL]</emphasis>
@@ -2121,7 +2121,7 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
 	</section>
 </section>    
 
--->   
+
     
     <section id="executionListeners">
       <title>Execution listener</title>

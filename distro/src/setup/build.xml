@@ -72,6 +72,7 @@
   <target name="inflate.examples"
           description="Inflates the ${activiti.home}/workspace example projects with the required dependency libs"
           depends="cfg.create">
+  	
     <mkdir dir="${activiti.home}/workspace/activiti-engine-examples/libs-runtime" />
     <copy todir="${activiti.home}/workspace/activiti-engine-examples/libs-runtime">
       <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.txt" />
@@ -80,7 +81,7 @@
     <copy todir="${activiti.home}/workspace/activiti-engine-examples/libs-test">
       <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.test.txt" />
     </copy>
-    
+
     <mkdir dir="${activiti.home}/workspace/activiti-groovy-examples/libs-runtime" />
     <copy todir="${activiti.home}/workspace/activiti-groovy-examples/libs-runtime">
       <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.txt" />
@@ -123,7 +124,7 @@
       </fileset>
     </move>
 
-    <!-- mkdir dir="${activiti.home}/workspace/activiti-cxf-examples/libs-runtime" />
+    <mkdir dir="${activiti.home}/workspace/activiti-cxf-examples/libs-runtime" />
     <copy todir="${activiti.home}/workspace/activiti-cxf-examples/libs-runtime">
       <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.txt" />
       <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.feature.cxf.txt" />
@@ -131,7 +132,7 @@
     <mkdir dir="${activiti.home}/workspace/activiti-cxf-examples/libs-test" />
     <copy todir="${activiti.home}/workspace/activiti-cxf-examples/libs-test">
       <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.test.txt" />
-    </copy -->
+    </copy>
   </target>
   
   <!-- ### DEMO #################################################################### -->

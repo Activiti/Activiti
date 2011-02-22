@@ -97,6 +97,11 @@
         <include name="activiti-spring-*.jar" />
       </fileset>
     </copy>
+	    <copy todir="target/libs-engine-runtime-feature-cxf">
+	      <fileset dir="../modules/activiti-cxf/target">
+	        <include name="activiti-cxf-*.jar" />
+	      </fileset>
+	    </copy>
     <!-- DELETE UNNECESSARY ANT JARS -->
     <delete>
        <fileset dir="target/libs-engine-runtime">
@@ -349,7 +354,7 @@
       </fileset>
     </copy>
     <!-- CXF EXAMPLES -->
-    <!-- mkdir dir="${target.distro.root}/workspace/activiti-cxf-examples/src/test/java" />
+    <mkdir dir="${target.distro.root}/workspace/activiti-cxf-examples/src/test/java" />
     <copy todir="${target.distro.root}/workspace/activiti-cxf-examples/src/test/java" includeEmptyDirs="false">
       <fileset dir="../modules/activiti-cxf/src/test/java">
         <exclude name="**/WSDLImporterTest.java" />
@@ -359,7 +364,7 @@
     <copy todir="${target.distro.root}/workspace/activiti-cxf-examples/src/test/resources" includeEmptyDirs="false">
       <fileset dir="../modules/activiti-cxf/src/test/resources">
       </fileset>
-    </copy -->
+    </copy>
 	</target>
 
 	<target name="build.docs" unless="nodocs">
