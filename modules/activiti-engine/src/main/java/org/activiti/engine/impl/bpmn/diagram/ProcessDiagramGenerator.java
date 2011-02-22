@@ -33,13 +33,13 @@ import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
  */
 public class ProcessDiagramGenerator {
   
-  protected static final Map<String, DrawInstruction> activityDrawInstructions = new HashMap<String, DrawInstruction>();
+  protected static final Map<String, ActivityDrawInstruction> activityDrawInstructions = new HashMap<String, ActivityDrawInstruction>();
   
   // The instructions on how to draw a certain construct is 
   // created statically and stored in a map for performance.
   static {
     // start event
-    activityDrawInstructions.put("startEvent", new DrawInstruction() {
+    activityDrawInstructions.put("startEvent", new ActivityDrawInstruction() {
       public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
         processDiagramCreator.drawNoneStartEvent(activityImpl.getX(), activityImpl.getY(), 
                 activityImpl.getWidth(), activityImpl.getHeight());
@@ -47,7 +47,7 @@ public class ProcessDiagramGenerator {
     });
     
     // end event
-    activityDrawInstructions.put("endEvent", new DrawInstruction() {
+    activityDrawInstructions.put("endEvent", new ActivityDrawInstruction() {
       public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
         processDiagramCreator.drawNoneEndEvent(activityImpl.getX(), activityImpl.getY(), 
                 activityImpl.getWidth(), activityImpl.getHeight());
@@ -55,7 +55,7 @@ public class ProcessDiagramGenerator {
     });
     
     // error end event
-    activityDrawInstructions.put("errorEndEvent", new DrawInstruction() {
+    activityDrawInstructions.put("errorEndEvent", new ActivityDrawInstruction() {
       public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
         processDiagramCreator.drawErrorEndEvent(activityImpl.getX(), activityImpl.getY(), 
                 activityImpl.getWidth(), activityImpl.getHeight());
@@ -64,7 +64,7 @@ public class ProcessDiagramGenerator {
     
     
     // task
-    activityDrawInstructions.put("task", new DrawInstruction() {
+    activityDrawInstructions.put("task", new ActivityDrawInstruction() {
       public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
         processDiagramCreator.drawTask((String) activityImpl.getProperty("name"), activityImpl.getX(),
                 activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
@@ -72,7 +72,7 @@ public class ProcessDiagramGenerator {
     });
     
     // user task
-    activityDrawInstructions.put("userTask", new DrawInstruction() {
+    activityDrawInstructions.put("userTask", new ActivityDrawInstruction() {
       public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
         processDiagramCreator.drawUserTask((String) activityImpl.getProperty("name"), activityImpl.getX(),
                 activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
@@ -80,7 +80,7 @@ public class ProcessDiagramGenerator {
     });
     
     // script task
-    activityDrawInstructions.put("scriptTask", new DrawInstruction() {
+    activityDrawInstructions.put("scriptTask", new ActivityDrawInstruction() {
       public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
         processDiagramCreator.drawScriptTask((String) activityImpl.getProperty("name"), activityImpl.getX(),
                 activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
@@ -88,7 +88,7 @@ public class ProcessDiagramGenerator {
     });
     
     // service task
-    activityDrawInstructions.put("serviceTask", new DrawInstruction() {
+    activityDrawInstructions.put("serviceTask", new ActivityDrawInstruction() {
       public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
         processDiagramCreator.drawServiceTask((String) activityImpl.getProperty("name"), activityImpl.getX(),
                 activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
@@ -96,7 +96,7 @@ public class ProcessDiagramGenerator {
     });
     
     // receive task
-    activityDrawInstructions.put("receiveTask", new DrawInstruction() {
+    activityDrawInstructions.put("receiveTask", new ActivityDrawInstruction() {
       public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
         processDiagramCreator.drawReceiveTask((String) activityImpl.getProperty("name"), activityImpl.getX(),
                 activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
@@ -104,7 +104,7 @@ public class ProcessDiagramGenerator {
     });
     
     // send task
-    activityDrawInstructions.put("sendTask", new DrawInstruction() {
+    activityDrawInstructions.put("sendTask", new ActivityDrawInstruction() {
       public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
         processDiagramCreator.drawSendTask((String) activityImpl.getProperty("name"), activityImpl.getX(),
                 activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
@@ -112,7 +112,7 @@ public class ProcessDiagramGenerator {
     });
     
     // manual task
-    activityDrawInstructions.put("manualTask", new DrawInstruction() {
+    activityDrawInstructions.put("manualTask", new ActivityDrawInstruction() {
       public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
         processDiagramCreator.drawManualTask((String) activityImpl.getProperty("name"), activityImpl.getX(),
                 activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
@@ -120,7 +120,7 @@ public class ProcessDiagramGenerator {
     });
     
     // exclusive gateway
-    activityDrawInstructions.put("exclusiveGateway", new DrawInstruction() {
+    activityDrawInstructions.put("exclusiveGateway", new ActivityDrawInstruction() {
       public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
         processDiagramCreator.drawExclusiveGateway(activityImpl.getX(), activityImpl.getY(), 
                 activityImpl.getWidth(), activityImpl.getHeight());
@@ -128,7 +128,7 @@ public class ProcessDiagramGenerator {
     });
     
     // parallel gateway
-    activityDrawInstructions.put("parallelGateway", new DrawInstruction() {
+    activityDrawInstructions.put("parallelGateway", new ActivityDrawInstruction() {
       public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
         processDiagramCreator.drawParallelGateway(activityImpl.getX(), activityImpl.getY(), 
                 activityImpl.getWidth(), activityImpl.getHeight());
@@ -136,7 +136,7 @@ public class ProcessDiagramGenerator {
     });
     
     // Boundary timer
-    activityDrawInstructions.put("boundaryTimer", new DrawInstruction() {
+    activityDrawInstructions.put("boundaryTimer", new ActivityDrawInstruction() {
       public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
         processDiagramCreator.drawCatchingTimerEvent(activityImpl.getX(), activityImpl.getY(), 
                 activityImpl.getWidth(), activityImpl.getHeight());
@@ -144,7 +144,7 @@ public class ProcessDiagramGenerator {
     });
     
     // Boundary catch error
-    activityDrawInstructions.put("boundaryError", new DrawInstruction() {
+    activityDrawInstructions.put("boundaryError", new ActivityDrawInstruction() {
       public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
         processDiagramCreator.drawCatchingErroEvent(activityImpl.getX(), activityImpl.getY(), 
                 activityImpl.getWidth(), activityImpl.getHeight());
@@ -152,7 +152,7 @@ public class ProcessDiagramGenerator {
     });
 
     // timer catch event
-    activityDrawInstructions.put("intermediateTimer", new DrawInstruction() {
+    activityDrawInstructions.put("intermediateTimer", new ActivityDrawInstruction() {
       public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
         processDiagramCreator.drawCatchingTimerEvent(activityImpl.getX(), activityImpl.getY(),
                 activityImpl.getWidth(), activityImpl.getHeight());
@@ -160,7 +160,7 @@ public class ProcessDiagramGenerator {
     });
     
     // subprocess
-    activityDrawInstructions.put("subProcess", new DrawInstruction() {
+    activityDrawInstructions.put("subProcess", new ActivityDrawInstruction() {
       public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
         Boolean isExpanded = (Boolean) activityImpl.getProperty(BpmnParse.PROPERTYNAME_ISEXPANDED);
         if (isExpanded != null && isExpanded == false) {
@@ -174,9 +174,8 @@ public class ProcessDiagramGenerator {
     });
     
     // call activity
-    activityDrawInstructions.put("callActivity", new DrawInstruction() {
+    activityDrawInstructions.put("callActivity", new ActivityDrawInstruction() {
       public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
-        //Boolean isExpanded = (Boolean) activityImpl.getProperty(BpmnParse.PROPERTYNAME_ISEXPANDED);
         processDiagramCreator.drawCollapsedCallActivity((String) activityImpl.getProperty("name"), 
                   activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
       }
@@ -214,13 +213,40 @@ public class ProcessDiagramGenerator {
   }
   
   protected static void drawActivity(ProcessDiagramCanvas processDiagramCanvas, ActivityImpl activity, List<String> highLightedActivities) {
-    DrawInstruction drawInstruction = activityDrawInstructions.get((String) activity.getProperty("type"));
+    String type = (String) activity.getProperty("type");
+    ActivityDrawInstruction drawInstruction = activityDrawInstructions.get(type);
     if (drawInstruction != null) {
+      
       drawInstruction.draw(processDiagramCanvas, activity);
+      
+      // Gather info on the multi instance marker
+      boolean multiInstanceSequential = false, multiInstanceParallel = false, collapsed = false;
+      String multiInstance = (String) activity.getProperty("multiInstance");
+      if (multiInstance != null) {
+        if ("sequential".equals(multiInstance)) {
+          multiInstanceSequential = true;
+        } else {
+          multiInstanceParallel = true;
+        }
+      }
+      
+      // Gather info on the collapsed marker
+      Boolean expanded = (Boolean) activity.getProperty(BpmnParse.PROPERTYNAME_ISEXPANDED);
+      if (expanded != null) {
+        collapsed = !expanded;
+      }
+      
+      // Actually draw the markers
+      processDiagramCanvas.drawActivityMarkers(activity.getX(), activity.getY(), activity.getWidth(), 
+              activity.getHeight(), multiInstanceSequential, multiInstanceParallel, collapsed);
+      
+      // Draw highlighted activities
       if (highLightedActivities.contains(activity.getId())) {
           drawHighLight(processDiagramCanvas, activity);
       }
+      
     }
+    
     for (PvmTransition sequenceFlow : activity.getOutgoingTransitions()) {
       List<Integer> waypoints = ((TransitionImpl) sequenceFlow).getWaypoints();
       for (int i=2; i < waypoints.size(); i+=2) { // waypoints.size() minimally 4: x1, y1, x2, y2 
@@ -286,7 +312,7 @@ public class ProcessDiagramGenerator {
     return new ProcessDiagramCanvas(maxX + 10, maxY + 10, minX, minY);
   }
   
-  protected interface DrawInstruction {
+  protected interface ActivityDrawInstruction {
     
     void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl);
     

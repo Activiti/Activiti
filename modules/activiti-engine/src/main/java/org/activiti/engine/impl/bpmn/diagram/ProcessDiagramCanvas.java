@@ -58,6 +58,7 @@ public class ProcessDiagramCanvas {
   // Predefined sized
   protected static final int ARROW_WIDTH = 5;
   protected static final int CONDITIONAL_INDICATOR_WIDTH = 16;
+  protected static final int MARKER_WIDTH = 12;
   
   // Colors
   protected static Color TASK_COLOR = new Color(255, 255, 204);
@@ -69,6 +70,7 @@ public class ProcessDiagramCanvas {
   protected static Stroke THICK_TASK_BORDER_STROKE = new BasicStroke(3.0f);
   protected static Stroke GATEWAY_TYPE_STROKE = new BasicStroke(3.0f);
   protected static Stroke END_EVENT_STROKE = new BasicStroke(3.0f);
+  protected static Stroke MULTI_INSTANCE_STROKE = new BasicStroke(1.3f);
   
   // icons
   protected static int ICON_SIZE = 16;
@@ -381,11 +383,14 @@ public class ProcessDiagramCanvas {
   }
   
   protected void drawCollapsedTask(String name, int x, int y, int width, int height, boolean thickBorder) {
+    // The collapsed marker is now visualized separately
     drawTask(name, x, y, width, height, thickBorder);
-    
+  }
+  
+  public void drawCollapsedMarker(int x, int y, int width, int height) {
     // rectangle
-    int rectangleWidth = 14; 
-    int rectangleHeight = 14;
+    int rectangleWidth = MARKER_WIDTH; 
+    int rectangleHeight = MARKER_WIDTH;
     Rectangle rect = new Rectangle(x + (width-rectangleWidth)/2, 
             y + height - rectangleHeight - 3, rectangleWidth, rectangleHeight);
     g.draw(rect);
@@ -395,6 +400,28 @@ public class ProcessDiagramCanvas {
     g.draw(line);
     line = new Line2D.Double(rect.getMinX() + 2, rect.getCenterY(), rect.getMaxX() - 2, rect.getCenterY());
     g.draw(line);
+  }
+  
+  public void drawActivityMarkers(int x, int y, int width, int height,
+          boolean multiInstanceSequential, boolean multiInstanceParallel, boolean collapsed) {
+    if (collapsed) {
+      if (!multiInstanceSequential && !multiInstanceParallel) {
+        drawCollapsedMarker(x, y, width, height);
+      } else {
+        drawCollapsedMarker(x-MARKER_WIDTH/2-2, y, width, height);
+        if (multiInstanceSequential) {
+          drawMultiInstanceMarker(true, x+MARKER_WIDTH/2+2, y, width, height);
+        } else if (multiInstanceParallel) {
+          drawMultiInstanceMarker(false, x+MARKER_WIDTH/2+2, y, width, height);
+        }
+      }
+    } else {
+      if (multiInstanceSequential) {
+        drawMultiInstanceMarker(false, x, y, width, height);
+      } else if (multiInstanceParallel) {
+        drawMultiInstanceMarker(true, x, y, width, height);
+      }
+    }
   }
   
   public void drawGateway(int x, int y, int width, int height) {
@@ -437,7 +464,29 @@ public class ProcessDiagramCanvas {
 
     g.setStroke(orginalStroke);
   }
+  
+  public void drawMultiInstanceMarker(boolean sequential, int x, int y, int width, int height) {
+    int rectangleWidth = MARKER_WIDTH;
+    int rectangleHeight = MARKER_WIDTH;
+    int lineX = x + (width-rectangleWidth)/2;
+    int lineY = y + height - rectangleHeight - 3;
+    
+    Stroke orginalStroke = g.getStroke();
+    g.setStroke(MULTI_INSTANCE_STROKE);
 
+    if (sequential) {
+      g.draw(new Line2D.Double(lineX, lineY, lineX+rectangleWidth, lineY));
+      g.draw(new Line2D.Double(lineX, lineY+rectangleHeight/2, lineX+rectangleWidth, lineY+rectangleHeight/2));
+      g.draw(new Line2D.Double(lineX, lineY+rectangleHeight, lineX+rectangleWidth, lineY+rectangleHeight));
+    } else {
+      g.draw(new Line2D.Double(lineX, lineY, lineX, lineY+rectangleHeight));
+      g.draw(new Line2D.Double(lineX+rectangleWidth/2, lineY, lineX+rectangleWidth/2, lineY+rectangleHeight));
+      g.draw(new Line2D.Double(lineX+rectangleWidth, lineY, lineX+rectangleWidth, lineY+rectangleHeight));
+    }
+      
+    g.setStroke(orginalStroke);
+  }
+  
   public void drawHighLight(int x, int y, int width, int height) {
     Paint originalPaint = g.getPaint();
     Stroke originalStroke = g.getStroke();
