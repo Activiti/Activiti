@@ -155,7 +155,10 @@
             <configuration>
               <tasks>
                 <echo message="using activiti configuration for ${database}: ${user.home}/.activiti/server/build.${database}.properties" />
-                <copy todir="target/classes" file="src/main/cfg/activiti.cfg.xml">
+                <copy tofile="target/classes/activiti.cfg.xml" file="src/main/cfg/standalone.activiti.cfg.xml">
+                  <filterset filtersfile="${user.home}/.activiti/server/build.${database}.properties" />
+                </copy>
+                <copy tofile="target/classes/activiti-engine-testsuite-context.xml" file="src/main/cfg/spring.activiti.cfg.xml">
                   <filterset filtersfile="${user.home}/.activiti/server/build.${database}.properties" />
                 </copy>
               </tasks>

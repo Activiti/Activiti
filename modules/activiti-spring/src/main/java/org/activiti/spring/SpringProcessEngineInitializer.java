@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.impl.test.ProcessEngineInitializer;
+import org.activiti.engine.impl.util.ReflectUtil;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -33,7 +34,16 @@ public class SpringProcessEngineInitializer implements ProcessEngineInitializer 
   public ProcessEngine getProcessEngine() {
     log.fine("==== BUILDING SPRING APPLICATION CONTEXT AND PROCESS ENGINE =========================================");
     
-    ApplicationContext applicationContext = new ClassPathXmlApplicationContext("activiti-engine-testsuite-context.xml");
+    String contextResourceName = null;
+    if (ReflectUtil.getResource("activiti-engine-testsuite-context.xml")!=null) {
+      contextResourceName = "activiti-engine-testsuite-context.xml";
+    } else if (ReflectUtil.getResource("activiti-context.xml")!=null) {
+      contextResourceName = "activiti-context.xml";
+    } else {
+      throw new ActivitiException("no spring context configuration file found (tried 'activiti-context.xml' and 'activiti-engine-testsuite-context.xml')");
+    }
+    
+    ApplicationContext applicationContext = new ClassPathXmlApplicationContext(contextResourceName);
     Map<String, ProcessEngine> beansOfType = applicationContext.getBeansOfType(ProcessEngine.class);
     if ( (beansOfType==null)
          || (beansOfType.isEmpty())

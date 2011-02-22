@@ -17,7 +17,6 @@ import java.util.List;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineInfo;
 import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.impl.test.AbstractActivitiTestCase;
 import org.activiti.engine.impl.test.PvmTestCase;
 
 /**
@@ -27,7 +26,7 @@ public class ProcessEnginesTest extends PvmTestCase {
   
   protected void setUp() throws Exception {
     super.setUp();
-    AbstractActivitiTestCase.closeCachedProcessEngines();
+    ProcessEngines.destroy();
     ProcessEngines.init();
   }
   

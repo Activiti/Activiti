@@ -223,9 +223,4 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
       thread.interrupt();
     }
   }
-
-  public static void closeCachedProcessEngines() {
-    PluggableActivitiTestCase.closeCachedProcessEngines();
-    ResourceActivitiTestCase.closeCachedProcessEngines();
-  }
 }

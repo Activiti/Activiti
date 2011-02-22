@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.impl.ProcessEngineInfoImpl;
+import org.activiti.engine.impl.test.ProcessEngineInitializer;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
 
@@ -84,6 +85,13 @@ public abstract class ProcessEngines {
         URL resource = resources.nextElement();
         initProcessEnginFromResource(resource);
       }
+      
+      InputStream activitiContextInputStream = ReflectUtil.getResourceAsStream("activiti-context.xml");
+      if (activitiContextInputStream!=null) {
+        ProcessEngineInitializer processEngineInitializer = (ProcessEngineInitializer) ReflectUtil.instantiate("org.activiti.spring.SpringProcessEngineInitializer");
+        processEngineInitializer.getProcessEngine();
+      }
+
       isInitialized = true;
     } else {
       log.info("Process engines already initialized");
@@ -217,6 +225,11 @@ public abstract class ProcessEngines {
           log.log(Level.SEVERE, "exception while closing "+(processEngineName==null ? "the default process engine" : "process engine "+processEngineName), e);
         }
       }
+      
+      processEngineInfosByName.clear();
+      processEngineInfosByResourceUrl.clear();
+      processEngineInfos.clear();
+      
       isInitialized = false;
     }
   }

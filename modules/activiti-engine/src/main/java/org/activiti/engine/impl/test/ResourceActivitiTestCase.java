@@ -44,10 +44,4 @@ public class ResourceActivitiTestCase extends AbstractActivitiTestCase {
     }
   }
 
-  public static void closeCachedProcessEngines() {
-    for (ProcessEngine cachedProcessEngine: cachedProcessEngines.values()) {
-      cachedProcessEngine.close();
-    }
-    cachedProcessEngines.clear();
-  }
 }

@@ -16,6 +16,7 @@ package org.activiti.engine.impl.test;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
@@ -62,14 +63,10 @@ public class PluggableActivitiTestCase extends AbstractActivitiTestCase {
   protected void initializeProcessEngine() {
     if (cachedProcessEngine==null) {
       cachedProcessEngine = processEngineInitializer.getProcessEngine();
+      if (cachedProcessEngine==null) {
+        throw new ActivitiException("proces engine initializer '"+processEngineInitializer.getClass().getName()+"' didn't return a process engine");
+      }
     }
     processEngine = cachedProcessEngine;
-  }
-  
-  public static void closeCachedProcessEngines() {
-    if (cachedProcessEngine!=null) {
-      cachedProcessEngine.close();
-      cachedProcessEngine = null;
-    }
   }
 }

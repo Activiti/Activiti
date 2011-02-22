@@ -16,7 +16,7 @@ package org.activiti.engine.impl.test;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.ProcessEngines;
 
 
 /**
@@ -28,9 +28,7 @@ public class DefaultProcessEngineInitializer implements ProcessEngineInitializer
 
   public ProcessEngine getProcessEngine() {
     log.fine("==== BUILDING PROCESS ENGINE ========================================================================");
-    ProcessEngine processEngine = ProcessEngineConfiguration
-      .createProcessEngineConfigurationFromResourceDefault()
-      .buildProcessEngine();
+    ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
     log.fine("==== PROCESS ENGINE CREATED =========================================================================");
     return processEngine;
   }
