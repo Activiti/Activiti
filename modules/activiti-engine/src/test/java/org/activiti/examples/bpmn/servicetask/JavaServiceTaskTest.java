@@ -15,6 +15,7 @@ package org.activiti.examples.bpmn.servicetask;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiClassLoadingException;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
@@ -77,6 +78,8 @@ public class JavaServiceTaskTest extends PluggableActivitiTestCase {
       fail();
     } catch (ActivitiException e) {
       assertTrue(e.getMessage().contains("couldn't instantiate class org.activiti.BogusClass"));
+      assertNotNull(e.getCause());
+      assertTrue(e.getCause() instanceof ActivitiClassLoadingException);
     }
   }
 

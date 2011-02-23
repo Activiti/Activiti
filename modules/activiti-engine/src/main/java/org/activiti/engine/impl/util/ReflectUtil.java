@@ -20,6 +20,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
+import org.activiti.engine.ActivitiClassLoadingException;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
@@ -43,26 +44,41 @@ public abstract class ReflectUtil {
   public static Class<?> loadClass(String className) {
    Class<?> clazz = null;
    ClassLoader classLoader = getCustomClassLoader();
-   if(classLoader != null) {
-     LOG.finest("Trying to load class with custom classloader: " + className);
-     clazz = loadClassSilent(className, classLoader);
-   }
    
+   // First exception in chain of classloaders will be used as cause when no class is found in any of them
+   Throwable throwable = null;
+   
+   if(classLoader != null) {
+     try {
+       LOG.finest("Trying to load class with custom classloader: " + className);
+       clazz = Class.forName(className, true, classLoader);
+     } catch(Throwable t) {
+       throwable = t;
+     }
+   }
    if(clazz == null) {
-     // Try the current Thread context classloader
-     LOG.finest("Trying to load class with current thread context classloader: " + className);
-     classLoader = Thread.currentThread().getContextClassLoader();
-     clazz = loadClassSilent(className, classLoader);
+     try {
+       LOG.finest("Trying to load class with current thread context classloader: " + className);
+       clazz = Class.forName(className, true, Thread.currentThread().getContextClassLoader());
+     } catch(Throwable t) {
+       if(throwable == null) {
+         throwable = t;
+       }
+     }
      if(clazz == null) {
-       // Finally, try the classloader for this class
-       LOG.finest("Trying to load class with local classloader: " + className);
-       classLoader = ReflectUtil.class.getClassLoader();
-       clazz = loadClassSilent(className, classLoader);
+       try {
+         LOG.finest("Trying to load class with local classloader: " + className);
+         clazz = Class.forName(className, true, ReflectUtil.class.getClassLoader());
+       } catch(Throwable t) {
+         if(throwable == null) {
+           throwable = t;
+         }
+       }
      }
    }
   
    if(clazz == null) {
-     throw new ActivitiException("Couldn't load class "+className);     
+     throw new ActivitiClassLoadingException(className, throwable);
    }
    return clazz;
   }
@@ -260,14 +276,5 @@ public abstract class ReflectUtil {
       }
     }
     return null;
-  }
-  
-  private static Class<?> loadClassSilent(String className, ClassLoader classLoader) {
-    try {
-      return Class.forName(className, true, classLoader);
-    } catch (ClassNotFoundException cnfe) {
-      // Ignore exception, we return null;
-      return null;
-    }
   }
 }

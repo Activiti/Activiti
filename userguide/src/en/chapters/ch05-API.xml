@@ -61,6 +61,11 @@ FormService formService = processEngine.getFormService();</programlisting>
              <literal>ActivitiOptimisticLockingException: </literal> Thrown when an optimistic locking occurs in the datastore caused by concurrent access of the same data entry. 
             </para>
           </listitem>
+          <listitem>
+            <para>
+             <literal>ActivitiClassLoadingException: </literal> Thrown when an class requested to load was not found or when error occurred while loading it (eg. JavaDelegates, TaskListeners, ...).
+            </para>
+          </listitem>
       </itemizedlist>
     </para>
   </section>
