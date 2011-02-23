@@ -435,6 +435,7 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
                    internal.deploy.activiti.probe.into.tomcat,
                    internal.deploy.activiti.cycle.into.tomcat,
                    internal.deploy.activiti.kickstart.into.tomcat,
+  	               internal.deploy.activiti.administrator.into.tomcat,
                    internal.deploy.activiti.modeler.into.tomcat" />
 
   <target name="build.webapps"
@@ -460,6 +461,9 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
   	  <fileset dir="${activiti.home}/setup/files/dependencies/libs" 
   	           includesfile="${activiti.home}/setup/files/dependencies/libs.webapp.kickstart.txt" />
   	</copy>
+  	<copy todir="${activiti.home}/setup/build/webapps/activiti-administrator.war/WEB-INF/lib">
+  	  <fileset dir="${activiti.home}/setup/files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.webapp.administrator.txt" />
+    </copy>
     <copy todir="${activiti.home}/setup/build/webapps/activiti-rest.war/WEB-INF/lib">
       <fileset dir="${activiti.home}/setup/files/dependencies/libs" 
                includesfile="${activiti.home}/setup/files/dependencies/libs.webapp.rest.txt" />
@@ -523,6 +527,14 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
 		  <fileset dir="${activiti.home}/setup/build/webapps/activiti-kickstart.war" />
 		 </copy>
 	</target>
+	
+	<target name="internal.deploy.activiti.administrator.into.tomcat">
+	  <mkdir dir="${tomcat.home}/webapps/activiti-administrator" />
+	  <copy todir="${tomcat.home}/webapps/activiti-administrator">
+	    <fileset dir="${activiti.home}/setup/build/webapps/activiti-administrator.war" />
+	  </copy>
+	</target>
+
 
   
   <!-- ### LAUNCH TASKDEF AND CLASSPATH #################################################################### -->
@@ -591,6 +603,7 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
     <open-html-page url="http://localhost:8080/activiti-modeler" />
     <open-html-page url="http://localhost:8080/activiti-cycle" />
   	<open-html-page url="http://localhost:8080/activiti-kickstart" />
+  	<open-html-page url="http://localhost:8080/activiti-administrator" />  
   </target>
 	
 	<macrodef name="open-html-page">
