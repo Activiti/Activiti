@@ -143,9 +143,6 @@
                     <copy todir="src/test/resources" overwrite="true">
                       <fileset dir="../activiti-engine/src/test/resources" />
                     </copy>
-		                <copy todir="target/test-classes" overwrite="true">
-		                  <fileset dir="src/test/resources-engine-testrun" />
-		                </copy>
 		              </tasks>
 		            </configuration>
 		          </execution>

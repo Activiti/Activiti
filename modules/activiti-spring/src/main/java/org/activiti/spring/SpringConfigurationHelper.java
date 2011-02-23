@@ -18,7 +18,6 @@ import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.impl.test.ProcessEngineInitializer;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -27,20 +26,15 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 /**
  * @author Tom Baeyens
  */
-public class SpringProcessEngineInitializer implements ProcessEngineInitializer {
-
-  private static Logger log = Logger.getLogger(SpringProcessEngineInitializer.class.getName());
+public class SpringConfigurationHelper {
   
-  public ProcessEngine getProcessEngine() {
+  private static Logger log = Logger.getLogger(SpringConfigurationHelper.class.getName());
+
+  public static ProcessEngine buildProcessEngine(String contextResourceName) {
     log.fine("==== BUILDING SPRING APPLICATION CONTEXT AND PROCESS ENGINE =========================================");
     
-    String contextResourceName = null;
-    if (ReflectUtil.getResource("activiti-engine-testsuite-context.xml")!=null) {
-      contextResourceName = "activiti-engine-testsuite-context.xml";
-    } else if (ReflectUtil.getResource("activiti-context.xml")!=null) {
-      contextResourceName = "activiti-context.xml";
-    } else {
-      throw new ActivitiException("no spring context configuration file found (tried 'activiti-context.xml' and 'activiti-engine-testsuite-context.xml')");
+    if (ReflectUtil.getResource(contextResourceName)==null) {
+      throw new ActivitiException("no spring context configuration resource found: "+contextResourceName);
     }
     
     ApplicationContext applicationContext = new ClassPathXmlApplicationContext(contextResourceName);
@@ -48,7 +42,7 @@ public class SpringProcessEngineInitializer implements ProcessEngineInitializer 
     if ( (beansOfType==null)
          || (beansOfType.isEmpty())
        ) {
-      throw new ActivitiException("no "+ProcessEngine.class.getName()+" defined in the application context activiti-context.xml");
+      throw new ActivitiException("no "+ProcessEngine.class.getName()+" defined in the application context "+contextResourceName);
     }
     
     ProcessEngine processEngine = beansOfType.values().iterator().next();
@@ -56,4 +50,6 @@ public class SpringProcessEngineInitializer implements ProcessEngineInitializer 
     log.fine("==== SPRING PROCESS ENGINE CREATED ==================================================================");
     return processEngine;
   }
+
+
 }

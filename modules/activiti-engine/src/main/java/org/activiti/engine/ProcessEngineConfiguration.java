@@ -17,7 +17,7 @@ import java.io.InputStream;
 
 import javax.sql.DataSource;
 
-import org.activiti.engine.impl.cfg.SpringConfigurationHelper;
+import org.activiti.engine.impl.cfg.BeansConfigurationHelper;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 
@@ -148,7 +148,7 @@ public abstract class ProcessEngineConfiguration {
   }
 
   public static ProcessEngineConfiguration createProcessEngineConfigurationFromResource(String resource, String beanName) {
-    return SpringConfigurationHelper.parseProcessEngineConfigurationFromResource(resource, beanName);
+    return BeansConfigurationHelper.parseProcessEngineConfigurationFromResource(resource, beanName);
   }
   
   public static ProcessEngineConfiguration createProcessEngineConfigurationFromInputStream(InputStream inputStream) {
@@ -156,7 +156,7 @@ public abstract class ProcessEngineConfiguration {
   }
 
   public static ProcessEngineConfiguration createProcessEngineConfigurationFromInputStream(InputStream inputStream, String beanName) {
-    return SpringConfigurationHelper.parseProcessEngineConfigurationFromInputStream(inputStream, beanName);
+    return BeansConfigurationHelper.parseProcessEngineConfigurationFromInputStream(inputStream, beanName);
   }
 
   public static ProcessEngineConfiguration createStandaloneProcessEngineConfiguration() {

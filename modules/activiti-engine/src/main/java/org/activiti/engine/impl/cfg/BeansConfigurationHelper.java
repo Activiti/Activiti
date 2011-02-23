@@ -26,7 +26,7 @@ import org.springframework.core.io.Resource;
 /**
  * @author Tom Baeyens
  */
-public class SpringConfigurationHelper {
+public class BeansConfigurationHelper {
 
   public static ProcessEngineConfiguration parseProcessEngineConfiguration(Resource springResource, String beanName) {
     DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();

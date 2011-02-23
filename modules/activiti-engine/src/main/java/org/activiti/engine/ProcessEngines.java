@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -27,7 +29,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.impl.ProcessEngineInfoImpl;
-import org.activiti.engine.impl.test.ProcessEngineInitializer;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
 
@@ -86,10 +87,16 @@ public abstract class ProcessEngines {
         initProcessEnginFromResource(resource);
       }
       
-      InputStream activitiContextInputStream = ReflectUtil.getResourceAsStream("activiti-context.xml");
+      String springConfigurationResource = "activiti-context.xml";
+      InputStream activitiContextInputStream = ReflectUtil.getResourceAsStream(springConfigurationResource);
       if (activitiContextInputStream!=null) {
-        ProcessEngineInitializer processEngineInitializer = (ProcessEngineInitializer) ReflectUtil.instantiate("org.activiti.spring.SpringProcessEngineInitializer");
-        processEngineInitializer.getProcessEngine();
+        try {
+          Class< ? > springConfigurationHelperClass = ReflectUtil.loadClass("org.activiti.spring.SpringConfigurationHelper");
+          Method method = springConfigurationHelperClass.getMethod("buildProcessEngine", new Class<?>[]{String.class});
+          method.invoke(null, new Object[]{springConfigurationResource});
+        } catch (Exception e) {
+          throw new ActivitiException("couldn't initialize process engine from spring configuration resource "+springConfigurationResource+": "+e.getMessage(), e);
+        }
       }
 
       isInitialized = true;
