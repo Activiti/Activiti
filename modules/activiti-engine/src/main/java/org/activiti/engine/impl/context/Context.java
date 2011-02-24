@@ -17,6 +17,7 @@ import java.util.Stack;
 
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 
 
 /**
@@ -26,8 +27,7 @@ public class Context {
 
   protected static ThreadLocal<Stack<CommandContext>> commandContextThreadLocal = new ThreadLocal<Stack<CommandContext>>();
   protected static ThreadLocal<Stack<ProcessEngineConfigurationImpl>> processEngineConfigurationStackThreadLocal = new ThreadLocal<Stack<ProcessEngineConfigurationImpl>>();
-//  protected static ThreadLocal<Stack<ExecutionContext>> executionContextStackThreadLocal = new ThreadLocal<Stack<ExecutionContext>>();
-//  protected static ThreadLocal<Stack<ProcessDefinitionContext>> processDefinitionContextStackThreadLocal = new ThreadLocal<Stack<ProcessDefinitionContext>>();
+  protected static ThreadLocal<Stack<ExecutionContext>> executionContextStackThreadLocal = new ThreadLocal<Stack<ExecutionContext>>();
 
   public static CommandContext getCommandContext() {
     Stack<CommandContext> stack = getStack(commandContextThreadLocal);
@@ -61,29 +61,17 @@ public class Context {
     getStack(processEngineConfigurationStackThreadLocal).pop();
   }
 
-//  public static ExecutionContext getExecutionContext() {
-//    return getStack(executionContextStackThreadLocal).peek();
-//  }
-//
-//  public static void setExecutionContext(ExecutionContext executionContext) {
-//    getStack(executionContextStackThreadLocal).push(executionContext);
-//  }
-//
-//  public static void removeExecutionContext() {
-//    getStack(executionContextStackThreadLocal).pop();
-//  }
-//
-//  public static ProcessDefinitionContext getProcessDefinitionContext() {
-//    return getStack(processDefinitionContextStackThreadLocal).peek();
-//  }
-//
-//  public static void setProcessDefinitionContext(ProcessDefinitionContext processDefinitionContext) {
-//    getStack(processDefinitionContextStackThreadLocal).push(processDefinitionContext);
-//  }
-//
-//  public static void removeProcessDefinitionContext() {
-//    getStack(processDefinitionContextStackThreadLocal).pop();
-//  }
+  public static ExecutionContext getExecutionContext() {
+    return getStack(executionContextStackThreadLocal).peek();
+  }
+
+  public static void setExecutionContext(InterpretableExecution execution) {
+    getStack(executionContextStackThreadLocal).push(new ExecutionContext(execution));
+  }
+
+  public static void removeExecutionContext() {
+    getStack(executionContextStackThreadLocal).pop();
+  }
 
   protected static <T> Stack<T> getStack(ThreadLocal<Stack<T>> threadLocal) {
     Stack<T> stack = threadLocal.get();

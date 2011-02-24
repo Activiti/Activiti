@@ -29,6 +29,8 @@ import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.cfg.TaskSession;
 import org.activiti.engine.impl.cfg.TimerSession;
 import org.activiti.engine.impl.cfg.TransactionContext;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.context.ExecutionContext;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
@@ -52,12 +54,17 @@ public class CommandContext {
   public void performOperation(AtomicOperation executionOperation, InterpretableExecution execution) {
     nextOperations.add(executionOperation);
     if (nextOperations.size()==1) {
-      while (!nextOperations.isEmpty()) {
-        AtomicOperation currentOperation = nextOperations.removeFirst();
-        if (log.isLoggable(Level.FINEST)) {
-          log.finest("AtomicOperation: " + currentOperation + " on " + this);
+      try {
+        Context.setExecutionContext(execution);
+        while (!nextOperations.isEmpty()) {
+          AtomicOperation currentOperation = nextOperations.removeFirst();
+          if (log.isLoggable(Level.FINEST)) {
+            log.finest("AtomicOperation: " + currentOperation + " on " + this);
+          }
+          currentOperation.execute(execution);
         }
-        currentOperation.execute(execution);
+      } finally {
+        Context.removeExecutionContext();
       }
     }
   }
