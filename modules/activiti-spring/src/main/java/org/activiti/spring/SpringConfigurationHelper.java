@@ -13,14 +13,15 @@
 
 package org.activiti.spring;
 
+import java.net.URL;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.impl.util.ReflectUtil;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
+import org.springframework.core.io.UrlResource;
 
 
 /**
@@ -30,19 +31,15 @@ public class SpringConfigurationHelper {
   
   private static Logger log = Logger.getLogger(SpringConfigurationHelper.class.getName());
 
-  public static ProcessEngine buildProcessEngine(String contextResourceName) {
+  public static ProcessEngine buildProcessEngine(URL resource) {
     log.fine("==== BUILDING SPRING APPLICATION CONTEXT AND PROCESS ENGINE =========================================");
     
-    if (ReflectUtil.getResource(contextResourceName)==null) {
-      throw new ActivitiException("no spring context configuration resource found: "+contextResourceName);
-    }
-    
-    ApplicationContext applicationContext = new ClassPathXmlApplicationContext(contextResourceName);
+    ApplicationContext applicationContext = new GenericXmlApplicationContext(new UrlResource(resource));
     Map<String, ProcessEngine> beansOfType = applicationContext.getBeansOfType(ProcessEngine.class);
     if ( (beansOfType==null)
          || (beansOfType.isEmpty())
        ) {
-      throw new ActivitiException("no "+ProcessEngine.class.getName()+" defined in the application context "+contextResourceName);
+      throw new ActivitiException("no "+ProcessEngine.class.getName()+" defined in the application context "+resource.toString());
     }
     
     ProcessEngine processEngine = beansOfType.values().iterator().next();

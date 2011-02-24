@@ -7,7 +7,7 @@
   <para>While you definitely can use Activiti without Spring, we've provided some very nice integration features
   that are explained in this chapter.  
   </para>
-
+  
   <section>
     <title>ProcessEngineFactoryBean</title>
     

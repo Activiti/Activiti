@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -68,7 +67,9 @@ public abstract class ProcessEngines {
   protected static Map<String, ProcessEngineInfo> processEngineInfosByResourceUrl = new HashMap<String, ProcessEngineInfo>();
   protected static List<ProcessEngineInfo> processEngineInfos = new ArrayList<ProcessEngineInfo>();
   
-  /** is called when a server boots by the activiti-rest webapp. */
+  /** Initializes all process engines that can be found on the classpath for 
+   * resources <code>activiti.cfg.xml</code> (plain Activiti style configuration)
+   * and for resources <code>activiti-context.xml</code> (Spring style configuration). */
   public synchronized static void init() {
     if (!isInitialized) {
       if(processEngines == null) {
@@ -80,29 +81,37 @@ public abstract class ProcessEngines {
       try {
         resources = classLoader.getResources("activiti.cfg.xml");
       } catch (IOException e) {
-        throw new ActivitiException("can't find activiti.cfg.xml resources on the classpath: "+System.getProperty("java.class.path"), e);
+        throw new ActivitiException("problem retrieving activiti.cfg.xml resources on the classpath: "+System.getProperty("java.class.path"), e);
       }
       while (resources.hasMoreElements()) {
         URL resource = resources.nextElement();
         initProcessEnginFromResource(resource);
       }
       
-      String springConfigurationResource = "activiti-context.xml";
-      InputStream activitiContextInputStream = ReflectUtil.getResourceAsStream(springConfigurationResource);
-      if (activitiContextInputStream!=null) {
-        try {
-          Class< ? > springConfigurationHelperClass = ReflectUtil.loadClass("org.activiti.spring.SpringConfigurationHelper");
-          Method method = springConfigurationHelperClass.getMethod("buildProcessEngine", new Class<?>[]{String.class});
-          method.invoke(null, new Object[]{springConfigurationResource});
-        } catch (Exception e) {
-          throw new ActivitiException("couldn't initialize process engine from spring configuration resource "+springConfigurationResource+": "+e.getMessage(), e);
-        }
+      try {
+        resources = classLoader.getResources("activiti-context.xml");
+      } catch (IOException e) {
+        throw new ActivitiException("problem retrieving activiti-context.xml resources on the classpath: "+System.getProperty("java.class.path"), e);
+      }
+      while (resources.hasMoreElements()) {
+        URL resource = resources.nextElement();
+        initProcessEngineFromSpringResource(resource);
       }
 
       isInitialized = true;
     } else {
       log.info("Process engines already initialized");
     }
+  }
+
+  protected static void initProcessEngineFromSpringResource(URL resource) {
+    try {
+      Class< ? > springConfigurationHelperClass = ReflectUtil.loadClass("org.activiti.spring.SpringConfigurationHelper");
+      Method method = springConfigurationHelperClass.getMethod("buildProcessEngine", new Class<?>[]{URL.class});
+      method.invoke(null, new Object[]{resource});
+    } catch (Exception e) {
+      throw new ActivitiException("couldn't initialize process engine from spring configuration resource "+resource.toString()+": "+e.getMessage(), e);
+    } 
   }
  
   /**

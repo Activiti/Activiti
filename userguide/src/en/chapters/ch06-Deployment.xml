@@ -18,51 +18,36 @@
       Note that Java classes present in the business archive <emphasis role="bold">will not be added to the classpath.</emphasis> All custom classes used in process definitions in the business archive (for example Java service tasks or event listener implementations) should be present
       on the activiti-engine's classpath in order to run the processes. 
     </para>
-  </section>
-  
-  <section>
-    <title>Java classes</title>
-    <para>All custom classes that are used in your process (eg. JavaDelegates used in servicetaks or event-listeners, TaskListeners, ...) should be present on the engine's classpath when an instance of the process is started.
-    It's not nessecairy to have those classes on the classpath when deploying the process-definition into the engine.
-    </para>
-    <para>
-    When you are using the demo setup and you want to add your custom classes, you should add a jar containing your classes to the activiti-rest webapp lib. Don't forget to include the dependencies of your custom classes (if any) as wel. 
-    This is the same location where the activiti-engine jar is located. You can find this folder inside your distro at the folowing location: 
-    </para>
-    <para>
-    <programlisting>${activiti distro}/apps/apache-tomcat-6.0.29/webapps/activiti-rest/lib/</programlisting>
-    </para>
-  </section>
-  
-  <section>
-    <title>Deploying with Activiti Probe</title>
-    <para>In <link linkend="probeDeployments">page 'Deployments' in Activiti Probe</link>, you can upload a
-    business archive to deploy it in the Activiti Engine.  
-    </para>
-  </section>
-  
-  <section>
-    <title>Deploying programmatically</title>
-    <para>Deploying a business archive from a zip file can be done like this: 
-    </para>
-    <programlisting>String barFileName = "path/to/process-one.bar";
+
+	  <section>
+	    <title>Deploying with Activiti Probe</title>
+	    <para>In <link linkend="probeDeployments">page 'Deployments' in Activiti Probe</link>, you can upload a
+	    business archive to deploy it in the Activiti Engine.  
+	    </para>
+	  </section>
+	  
+	  <section>
+	    <title>Deploying programmatically</title>
+	    <para>Deploying a business archive from a zip file can be done like this: 
+	    </para>
+	    <programlisting>String barFileName = "path/to/process-one.bar";
 ZipInputStream inputStream = new ZipInputStream(new FileInputStream(barFileName));
     
 repositoryService.createDeployment()
     .name("process-one.bar")
     .addZipInputStream(inputStream)
     .deploy();
-</programlisting>
-    <para>It's also possible to build a deployment from individual resources. 
-    See javadocs for more details.</para>
-  </section>
-  
-  <section>
-    <title>Deploying with ant</title>
-    <para>To deploy a business archive with ant, first the <literal>deploy-bar</literal> task 
-    needs to be defined.  Make sure that the configuration jar is on the classpath, as well as the 
-    Activiti jar and all its dependencies:</para>
-    <programlisting>&lt;taskdef name=&quot;deploy-bar&quot; classname=&quot;org.activiti.engine.impl.ant.DeployBarTask&quot;&gt;
+	</programlisting>
+	    <para>It's also possible to build a deployment from individual resources. 
+	    See javadocs for more details.</para>
+	  </section>
+	  
+	  <section>
+	    <title>Deploying with ant</title>
+	    <para>To deploy a business archive with ant, first the <literal>deploy-bar</literal> task 
+	    needs to be defined.  Make sure that the configuration jar is on the classpath, as well as the 
+	    Activiti jar and all its dependencies:</para>
+	    <programlisting>&lt;taskdef name=&quot;deploy-bar&quot; classname=&quot;org.activiti.engine.impl.ant.DeployBarTask&quot;&gt;
   &lt;classpath&gt;
     &lt;fileset dir=&quot;...&quot;&gt;
       &lt;include name=&quot;activiti-cfg.jar&quot;/&gt;
@@ -75,12 +60,54 @@ repositoryService.createDeployment()
   &lt;/classpath&gt;
 &lt;/taskdef&gt;
 &lt;deploy-bar file=&quot;.../yourprocess.bar&quot; /&gt;</programlisting>
+    </section>
+	  <section>
+	    <title>Deploying with Activiti Probe</title>
+	    <para>It's possible to deploy process definitions through probe, this is described in <link linkend="probeDeployments">Activiti Probe - Deployments</link>.</para>  
+	  </section>
   </section>
+
   <section>
-    <title>Deploying with Activiti Probe</title>
-    <para>It's possible to deploy process definitions through probe, this is described in <link linkend="probeDeployments">Activiti Probe - Deployments</link>.</para>  
+    <title>External resources</title>
+    <para>Process definitions live in the Activiti database.  Those process 
+    definitions can reference delegation classes when using serviceTasks or  
+    execution listeners or spring beans from the activiti configuration file.
+    These classes and the spring configuration file have to be available 
+    to all process engines.
+    </para>
+    <section>
+      <title>Java classes</title>
+      <para>All custom classes that are used in your process (eg. JavaDelegates used in servicetaks or event-listeners, TaskListeners, ...) should be 
+      present on the engine's classpath when an instance of the process is started.</para>
+      <para>But during deployment of a business archive, those classes don't have to be present on the classpath.  
+      This means that you're delegation classes don't have to be on the classpath when deploying a new 
+      business archive with ant.
+      </para>
+      <para>When you are using the demo setup and you want to add your custom classes, you should add a jar containing your classes to the activiti-rest webapp lib. Don't forget to include the dependencies of your custom classes (if any) as wel. 
+      This is the same location where the activiti-engine jar is located. You can find this folder inside your distro at 
+      <literal>${activiti.home}/apps/apache-tomcat-6.0.29/webapps/activiti-rest/lib/</literal>
+      </para>
+    </section>
+    <section>
+      <title>Using spring beans from a process</title>
+      <para>When expressions or scripts use spring beans, those spring beans have to be available to the engine.
+      If you are building your own webapp and you configure your process engine in your context as described in 
+      <link linkend="springintegration">the spring integration section</link>, that is straightforward.
+      But bear in mind that you also should update the Activiti rest webapp with that context if you use it.
+      You can do that by replacing the <literal>activiti.cfg.xml</literal> in the <literal>${activiti.home}/apps/apache-tomcat-6.0.29/webapps/activiti-rest/lib/activiti-cfg.jar</literal>
+      with a <literal>activiti-context.xml</literal> containing your spring context configuration.
+      </para>
+    </section>
+    <section>
+      <title>Creating a single app</title>
+      <para>Instead of making sure that all process engines have all the delegation classes 
+      on their classpath and use the right spring configuration, you can consider to 
+      include the Activiti rest webapp inside your own webapp so that there is only
+      one single <literal>ProcessEngine</literal>.
+      </para>
+    </section>
   </section>
-  
+    
   <section id="versioningOfProcessDefinitions">
     <title>Versioning of process definitions</title>
     <para>BPMN doesn't have a notion of versioning.  And that is good because the executable BPMN process 

@@ -16,9 +16,7 @@
     So you can keep a reference to 1 of those for a whole server.
     </para>
     <mediaobject><imageobject><imagedata align="center" fileref="images/api.services.png"/></imageobject></mediaobject>
-    <programlisting>ProcessEngine processEngine = new ProcessEngineBuilder()
-  .configureFromPropertiesResource(configurationResource)
-  .buildProcessEngine();
+    <programlisting>ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
 
 RuntimeService runtimeService = processEngine.getRuntimeService();
 RepositoryService repositoryService = processEngine.getRepositoryService();
@@ -31,6 +29,18 @@ FormService formService = processEngine.getFormService();</programlisting>
     For detailed information on the services and the engine API, see<ulink url="../javadocs/index.html"> the javadocs</ulink>. 
     </para>
     
+    <para><literal>ProcessEngines.getDefaultProcessEngine()</literal> will initialize and build a process 
+    engine the first time it is called and afterwards always return the same process engine.  
+    Proper creation and closing of all process engines can be done with <literal>ProcessEngines.init()</literal> 
+    and <literal>ProcessEngines.destroy()</literal>
+    </para>
+    
+    <para>ProcessEngines will scan for all <literal>activiti.cfg.xml</literal> and <literal>activiti-context.xml</literal> files.
+    For all <literal>activiti.cfg.xml</literal> files, the process engine will be build in the typical Activiti way: <literal>ProcessEngineConfiguration.createProcessEngineConfigurationFromInputStream(inputStream).buildProcessEngine()</literal>.
+    For all <literal>activiti-context.xml</literal> files, the process engine will be build in the Spring way: First
+    the spring application context is created and then the process engine is obtained from that application context. 
+    </para>
+
   </section>
 
   <section>
