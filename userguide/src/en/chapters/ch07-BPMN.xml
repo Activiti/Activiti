@@ -2203,220 +2203,6 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
 		</section>
 	</section>
 
-    <section id="executionListeners">
-      <title>Execution listener</title>
-      <para>Execution listeners allow you to execute external Java code or evaluate an expression when certain events occur
-      during process exevcution. The events that can be captured are:
-      <itemizedlist>
-        <listitem><para>Start and ending of a process instance.</para></listitem>
-        <listitem><para>Taking a transition.</para></listitem>
-        <listitem><para>Start and ending of an activity.</para></listitem>
-      </itemizedlist>
-      </para>
-      <para>
-        The following process definition contains 3 execution listenerss:
-        <programlisting>
-  &lt;process id=&quot;executionListenersProcess&quot;&gt;
-  
-    <emphasis role="bold">&lt;extensionElements&gt;
-      &lt;activiti:executionListener class=&quot;org.activiti.examples.bpmn.executionlistener.ExampleExecutionListenerOne&quot; event=&quot;start&quot; /&gt;
-    &lt;/extensionElements&gt;</emphasis>
-    
-    &lt;startEvent id=&quot;theStart&quot; /&gt;
-    &lt;sequenceFlow sourceRef=&quot;theStart&quot; targetRef=&quot;firstTask&quot; /&gt;
-    
-    &lt;userTask id=&quot;firstTask&quot; /&gt;
-    &lt;sequenceFlow sourceRef=&quot;firstTask&quot; targetRef=&quot;secondTask&quot;&gt;
-    <emphasis role="bold">&lt;extensionElements&gt;
-      &lt;activiti:executionListener class=&quot;org.activiti.examples.bpmn.executionListener.ExampleExecutionListenerTwo&quot; /&gt;
-    &lt;/extensionElements&gt;</emphasis>
-    &lt;/sequenceFlow&gt;
-    
-    &lt;userTask id=&quot;secondTask&quot; &gt;
-    <emphasis role="bold">&lt;extensionElements&gt;
-      &lt;activiti:executionListener expression=&quot;${myPojo.myMethod(execution.event)}&quot; event=&quot;end&quot; /&gt;
-    &lt;/extensionElements&gt;</emphasis>
-    &lt;/userTask&gt;
-    &lt;sequenceFlow sourceRef=&quot;secondTask&quot; targetRef=&quot;thirdTask&quot; /&gt;
-       
-    &lt;userTask id=&quot;thirdTask&quot; /&gt;
-    &lt;sequenceFlow sourceRef=&quot;thirdTask&quot; targetRef=&quot;theEnd&quot; /&gt;
-
-    &lt;endEvent id=&quot;theEnd&quot; /&gt;
-    
-  &lt;/process&gt;</programlisting>
-        </para>
-        <para>The first execution listener is notified when the process starts. The listener is an external Java-class (like <literal>ExampleExecutionListenerOne</literal>) 
-        and should implement <literal>org.activiti.engine.impl.pvm.delegate.ExecutionListener</literal> interface. When the event occurs (in this case <literal>end</literal> event)
-        the method <literal>notify(ExecutionListenerExecution execution)</literal> is called.
-        <programlisting>
-public class ExampleExecutionListenerOne implements <emphasis role="bold">ExecutionListener</emphasis> {
-
-  <emphasis role="bold">public void notify(ExecutionListenerExecution execution) throws Exception {</emphasis>
-    execution.setVariable("variableSetInExecutionListener", "firstValue");
-    execution.setVariable("eventReceived", execution.getevent());
-  }
-}</programlisting>
-        It is also possible to use a delegation class that implements the <literal>org.activiti.engine.delegate.JavaDelegate</literal>
-        interface. These delegation classes can then be reused in other constructs, such as a delegation for a serviceTask.
-        </para>
-        <para>
-           The second execution listener is called when the transition is taken. Note that the <literal>listener</literal> element doesn't define an
-          <literal>event</literal>, since only <literal>take</literal> events are fired on transitions. 
-          <emphasis role="bold">Values in the <literal>event</literal> attribute are ignored when a listener is defined on a transition.</emphasis>
-        </para>
-        <para>
-          The last execution listener is called when activity <literal>secondTask</literal> ends. Instead of using the <literal>class</literal> on the listener declaration,
-          a <literal>expression</literal> is defined instead which is evaluated/invoked when the event is fired. 
-        </para>
-        <programlisting>
-&lt;activiti:executionListener expression=&quot;<emphasis role="bold">${myPojo.myMethod(execution.eventName)}</emphasis>&quot; event=&quot;end&quot; /&gt;</programlisting>
-        <para>
-          As with other expressions, execution variables are resolved and can be used. Because the execution implementation object has a property that exposes the event name, it's
-          possible to pass the event-name to your methods using <literal>execution.eventName</literal>.
-        </para>
-        <para>
-          Execution listeners also support using a <literal>delegateExpression</literal>,
-          <link linkend="bpmnJavaServiceTaskXML">similar to a service task</link>.
-          <programlisting>&lt;activiti:executionListener event=&quot;start&quot; delegateExpression=&quot;${myExecutionListenerBean}&quot; /&gt;</programlisting>         
-        </para>
-        
-      <section id="executionListenerFieldInjection">
-      
-        <title>Field injection on execution listeners</title>
-        <para>
-         When using an execution listener that is configured with the <literal>class</literal> attribute, field injection can be applied. This is exactly the same
-         mechanism as used <link linkend="serviceTaskFieldInjection">Service task field injection</link>, which contains an overview of the possibilities provided by field injection. 
-        </para>
-        <para>
-         The fragment below shows a simple example process with an execution listener with fields injected. 
-        <programlisting>
- &lt;process id=&quot;executionListenersProcess&quot;&gt;
-    <emphasis role="bold">&lt;extensionElements&gt;
-      &lt;activiti:executionListener class=&quot;org.activiti.examples.bpmn.executionListener.ExampleFieldInjectedExecutionListener&quot; event=&quot;start&quot;&gt;
-        &lt;activiti:field name=&quot;fixedValue&quot; stringValue=&quot;Yes, I am &quot; /&gt;
-        &lt;activiti:field name=&quot;dynamicValue&quot; expression=&quot;${myVar}&quot; /&gt;
-      &lt;/activiti:executionListener&gt;
-    &lt;/extensionElements&gt;</emphasis>
-    
-    &lt;startEvent id=&quot;theStart&quot; /&gt;
-    &lt;sequenceFlow sourceRef=&quot;theStart&quot; targetRef=&quot;firstTask&quot; /&gt;
-    
-    &lt;userTask id=&quot;firstTask&quot; /&gt;
-    &lt;sequenceFlow sourceRef=&quot;firstTask&quot; targetRef=&quot;theEnd&quot; /&gt;
-    
-    &lt;endEvent id=&quot;theEnd&quot; /&gt;
-  &lt;/process&gt;
-        </programlisting>
-        </para>
-        <para>
-          <programlisting>
-public class ExampleFieldInjectedExecutionListener implements ExecutionListener {
-
-  <emphasis role="bold">private Expression fixedValue;
-
-  private Expression dynamicValue;</emphasis>
-
-  public void notify(ExecutionListenerExecution execution) throws Exception {
-    execution.setVariable("var", <emphasis role="bold">fixedValue.getValue(execution).toString()</emphasis> + <emphasis role="bold">dynamicValue.getValue(execution).toString()</emphasis>);
-  }
-}
-          </programlisting>
-          The class <literal>ExampleFieldInjectedExecutionListener</literal> concatenates the 2 injected fields (one fixed an the other dynamic) and stores this in the process variable '<literal>var</literal>'.
-        </para>
-        <para>
-        <programlisting>
-@Deployment(resources = {"org/activiti/examples/bpmn/executionListener/ExecutionListenersFieldInjectionProcess.bpmn20.xml"})
-public void testExecutionListenerFieldInjection() {
-  Map&lt;String, Object&gt; variables = new HashMap&lt;String, Object&gt;();
-  <emphasis role="bold">variables.put("myVar", "listening!");</emphasis>
-    
-  ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("executionListenersProcess", variables);
-    
-  Object varSetByListener = runtimeService.getVariable(processInstance.getId(), "var");
-  assertNotNull(varSetByListener);
-  assertTrue(varSetByListener instanceof String);
-    
-  // Result is a concatenation of fixed injected field and injected expression
-  <emphasis role="bold">assertEquals("Yes, I am listening!", varSetByListener);</emphasis>
-}
-        </programlisting>
-        </para>
-        </section>
-         </section>
-         
-  <section id="taskListeners">
-  
-    <title>Task listener</title>
-    
-    <para>
-      A <emphasis>task listener</emphasis> is used to execute custom Java logic or an expression
-      upon the occurrence of a certain task-related event.
-    </para>
-    
-    <para>
-      A task listener can only be added in the process definition as a child element of a <link linkend="bpmnUserTask">user task</link>.
-      Note that this also must happen as a child of the <emphasis>BPMN 2.0 extensionElements</emphasis>
-      and in the <emphasis>activiti</emphasis> namespace, since a task listener is an Activiti-specific construct.      
-      <programlisting>
-&lt;userTask id=&quot;myTask&quot; name=&quot;My Task&quot; &gt;
-  &lt;extensionElements&gt;
-    <emphasis role="bold">&lt;activiti:taskListener event=&quot;create&quot; class=&quot;org.activiti.MyTaskCreateListener&quot; /&gt;</emphasis>
-  &lt;/extensionElements&gt;
-&lt;/userTask&gt;</programlisting>
-      A <emphasis>task listener</emphasis> supports following attributes:
-      <itemizedlist>
-        <listitem>
-          <para>
-            <emphasis role="bold">event</emphasis> (required): the type of task event on which the task listener will
-            be invoked. Possible values are <emphasis role="bold">'create'</emphasis> (occurs when the task 
-            has been created an all task properties are set), <emphasis role="bold">'assignment'</emphasis> 
-            (occurs when the task is assigned to somebody) or <emphasis role="bold">'complete'</emphasis>
-            (occurs when the task is completed and just before the task is deleted from the runtime data).
-          </para>
-        </listitem>
-        <listitem>
-          <para>
-            <emphasis role="bold">class</emphasis>: the delegation class that must be called. 
-            This class must implement the <literal>org.activiti.engine.impl.pvm.delegate.TaskListener</literal>
-            interface.
-            <programlisting>
-public class MyTaskCreateListener implements TaskListener {
-
-  public void notify(DelegateTask delegateTask) {
-    // Custom logic goes here
-  }
-
-}</programlisting>
-            
-            It is also possible to use <link linkend="serviceTaskFieldInjection">field injection</link> to pass
-            process variables or the execution to the delegation class.
-            Note that an instance of the delegation class is created upon process deployment
-            (as is the case with any class delegation in Activiti), which means that the 
-            instance is shared between all process instance executions.
-          </para>
-        </listitem>
-        <listitem>
-          <para>
-            <emphasis role="bold">expression</emphasis>: (cannot be used together with the <emphasis>class</emphasis> attribute):
-            specifies an expression that will be executed when the event happens. 
-            It is possible to pass the <literal>DelegateTask</literal> object and the name
-            of the event (using <literal>task.eventName</literal>) as parameter to the called object. 
-            <programlisting>&lt;activiti:taskListener event=&quot;create&quot; expression=&quot;${myObject.callMethod(task, task.eventName)}&quot; /&gt;</programlisting>
-          </para>
-        </listitem>
-        <listitem>
-          <para>
-            <emphasis role="bold">delegateExpression</emphasis> allows to specify an expression
-            that resolves to an object implementing ther <literal>TaskListener</literal> interface,
-            <link linkend="bpmnJavaServiceTaskXML">similar to a service task</link>. 
-            <programlisting>&lt;activiti:taskListener event=&quot;create&quot; delegateExpression=&quot;${myTaskListenerBean}&quot; /&gt;</programlisting>        
-          </para>
-        </listitem>
-      </itemizedlist>
-    </para>
-    
-  </section>       
 		
   <section id="bpmnEmailTask">
 		
@@ -2697,6 +2483,393 @@ assertNotNull(execution);
       </section>
 		
 		</section>
+		
+		<section id="executionListeners">
+      <title>Execution listener</title>
+      <para>Execution listeners allow you to execute external Java code or evaluate an expression when certain events occur
+      during process exevcution. The events that can be captured are:
+      <itemizedlist>
+        <listitem><para>Start and ending of a process instance.</para></listitem>
+        <listitem><para>Taking a transition.</para></listitem>
+        <listitem><para>Start and ending of an activity.</para></listitem>
+      </itemizedlist>
+      </para>
+      <para>
+        The following process definition contains 3 execution listenerss:
+        <programlisting>
+  &lt;process id=&quot;executionListenersProcess&quot;&gt;
+  
+    <emphasis role="bold">&lt;extensionElements&gt;
+      &lt;activiti:executionListener class=&quot;org.activiti.examples.bpmn.executionlistener.ExampleExecutionListenerOne&quot; event=&quot;start&quot; /&gt;
+    &lt;/extensionElements&gt;</emphasis>
+    
+    &lt;startEvent id=&quot;theStart&quot; /&gt;
+    &lt;sequenceFlow sourceRef=&quot;theStart&quot; targetRef=&quot;firstTask&quot; /&gt;
+    
+    &lt;userTask id=&quot;firstTask&quot; /&gt;
+    &lt;sequenceFlow sourceRef=&quot;firstTask&quot; targetRef=&quot;secondTask&quot;&gt;
+    <emphasis role="bold">&lt;extensionElements&gt;
+      &lt;activiti:executionListener class=&quot;org.activiti.examples.bpmn.executionListener.ExampleExecutionListenerTwo&quot; /&gt;
+    &lt;/extensionElements&gt;</emphasis>
+    &lt;/sequenceFlow&gt;
+    
+    &lt;userTask id=&quot;secondTask&quot; &gt;
+    <emphasis role="bold">&lt;extensionElements&gt;
+      &lt;activiti:executionListener expression=&quot;${myPojo.myMethod(execution.event)}&quot; event=&quot;end&quot; /&gt;
+    &lt;/extensionElements&gt;</emphasis>
+    &lt;/userTask&gt;
+    &lt;sequenceFlow sourceRef=&quot;secondTask&quot; targetRef=&quot;thirdTask&quot; /&gt;
+       
+    &lt;userTask id=&quot;thirdTask&quot; /&gt;
+    &lt;sequenceFlow sourceRef=&quot;thirdTask&quot; targetRef=&quot;theEnd&quot; /&gt;
+
+    &lt;endEvent id=&quot;theEnd&quot; /&gt;
+    
+  &lt;/process&gt;</programlisting>
+        </para>
+        <para>The first execution listener is notified when the process starts. The listener is an external Java-class (like <literal>ExampleExecutionListenerOne</literal>) 
+        and should implement <literal>org.activiti.engine.impl.pvm.delegate.ExecutionListener</literal> interface. When the event occurs (in this case <literal>end</literal> event)
+        the method <literal>notify(ExecutionListenerExecution execution)</literal> is called.
+        <programlisting>
+public class ExampleExecutionListenerOne implements <emphasis role="bold">ExecutionListener</emphasis> {
+
+  <emphasis role="bold">public void notify(ExecutionListenerExecution execution) throws Exception {</emphasis>
+    execution.setVariable("variableSetInExecutionListener", "firstValue");
+    execution.setVariable("eventReceived", execution.getevent());
+  }
+}</programlisting>
+        It is also possible to use a delegation class that implements the <literal>org.activiti.engine.delegate.JavaDelegate</literal>
+        interface. These delegation classes can then be reused in other constructs, such as a delegation for a serviceTask.
+        </para>
+        <para>
+           The second execution listener is called when the transition is taken. Note that the <literal>listener</literal> element doesn't define an
+          <literal>event</literal>, since only <literal>take</literal> events are fired on transitions. 
+          <emphasis role="bold">Values in the <literal>event</literal> attribute are ignored when a listener is defined on a transition.</emphasis>
+        </para>
+        <para>
+          The last execution listener is called when activity <literal>secondTask</literal> ends. Instead of using the <literal>class</literal> on the listener declaration,
+          a <literal>expression</literal> is defined instead which is evaluated/invoked when the event is fired. 
+        </para>
+        <programlisting>
+&lt;activiti:executionListener expression=&quot;<emphasis role="bold">${myPojo.myMethod(execution.eventName)}</emphasis>&quot; event=&quot;end&quot; /&gt;</programlisting>
+        <para>
+          As with other expressions, execution variables are resolved and can be used. Because the execution implementation object has a property that exposes the event name, it's
+          possible to pass the event-name to your methods using <literal>execution.eventName</literal>.
+        </para>
+        <para>
+          Execution listeners also support using a <literal>delegateExpression</literal>,
+          <link linkend="bpmnJavaServiceTaskXML">similar to a service task</link>.
+          <programlisting>&lt;activiti:executionListener event=&quot;start&quot; delegateExpression=&quot;${myExecutionListenerBean}&quot; /&gt;</programlisting>         
+        </para>
+        
+      <section id="executionListenerFieldInjection">
+      
+        <title>Field injection on execution listeners</title>
+        <para>
+         When using an execution listener that is configured with the <literal>class</literal> attribute, field injection can be applied. This is exactly the same
+         mechanism as used <link linkend="serviceTaskFieldInjection">Service task field injection</link>, which contains an overview of the possibilities provided by field injection. 
+        </para>
+        <para>
+         The fragment below shows a simple example process with an execution listener with fields injected. 
+        <programlisting>
+ &lt;process id=&quot;executionListenersProcess&quot;&gt;
+    <emphasis role="bold">&lt;extensionElements&gt;
+      &lt;activiti:executionListener class=&quot;org.activiti.examples.bpmn.executionListener.ExampleFieldInjectedExecutionListener&quot; event=&quot;start&quot;&gt;
+        &lt;activiti:field name=&quot;fixedValue&quot; stringValue=&quot;Yes, I am &quot; /&gt;
+        &lt;activiti:field name=&quot;dynamicValue&quot; expression=&quot;${myVar}&quot; /&gt;
+      &lt;/activiti:executionListener&gt;
+    &lt;/extensionElements&gt;</emphasis>
+    
+    &lt;startEvent id=&quot;theStart&quot; /&gt;
+    &lt;sequenceFlow sourceRef=&quot;theStart&quot; targetRef=&quot;firstTask&quot; /&gt;
+    
+    &lt;userTask id=&quot;firstTask&quot; /&gt;
+    &lt;sequenceFlow sourceRef=&quot;firstTask&quot; targetRef=&quot;theEnd&quot; /&gt;
+    
+    &lt;endEvent id=&quot;theEnd&quot; /&gt;
+  &lt;/process&gt;
+        </programlisting>
+        </para>
+        <para>
+          <programlisting>
+public class ExampleFieldInjectedExecutionListener implements ExecutionListener {
+
+  <emphasis role="bold">private Expression fixedValue;
+
+  private Expression dynamicValue;</emphasis>
+
+  public void notify(ExecutionListenerExecution execution) throws Exception {
+    execution.setVariable("var", <emphasis role="bold">fixedValue.getValue(execution).toString()</emphasis> + <emphasis role="bold">dynamicValue.getValue(execution).toString()</emphasis>);
+  }
+}
+          </programlisting>
+          The class <literal>ExampleFieldInjectedExecutionListener</literal> concatenates the 2 injected fields (one fixed an the other dynamic) and stores this in the process variable '<literal>var</literal>'.
+        </para>
+        <para>
+        <programlisting>
+@Deployment(resources = {"org/activiti/examples/bpmn/executionListener/ExecutionListenersFieldInjectionProcess.bpmn20.xml"})
+public void testExecutionListenerFieldInjection() {
+  Map&lt;String, Object&gt; variables = new HashMap&lt;String, Object&gt;();
+  <emphasis role="bold">variables.put("myVar", "listening!");</emphasis>
+    
+  ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("executionListenersProcess", variables);
+    
+  Object varSetByListener = runtimeService.getVariable(processInstance.getId(), "var");
+  assertNotNull(varSetByListener);
+  assertTrue(varSetByListener instanceof String);
+    
+  // Result is a concatenation of fixed injected field and injected expression
+  <emphasis role="bold">assertEquals("Yes, I am listening!", varSetByListener);</emphasis>
+}
+        </programlisting>
+        </para>
+        </section>
+         </section>
+         
+  <section id="taskListeners">
+  
+    <title>Task listener</title>
+    
+    <para>
+      A <emphasis>task listener</emphasis> is used to execute custom Java logic or an expression
+      upon the occurrence of a certain task-related event.
+    </para>
+    
+    <para>
+      A task listener can only be added in the process definition as a child element of a <link linkend="bpmnUserTask">user task</link>.
+      Note that this also must happen as a child of the <emphasis>BPMN 2.0 extensionElements</emphasis>
+      and in the <emphasis>activiti</emphasis> namespace, since a task listener is an Activiti-specific construct.      
+      <programlisting>
+&lt;userTask id=&quot;myTask&quot; name=&quot;My Task&quot; &gt;
+  &lt;extensionElements&gt;
+    <emphasis role="bold">&lt;activiti:taskListener event=&quot;create&quot; class=&quot;org.activiti.MyTaskCreateListener&quot; /&gt;</emphasis>
+  &lt;/extensionElements&gt;
+&lt;/userTask&gt;</programlisting>
+      A <emphasis>task listener</emphasis> supports following attributes:
+      <itemizedlist>
+        <listitem>
+          <para>
+            <emphasis role="bold">event</emphasis> (required): the type of task event on which the task listener will
+            be invoked. Possible values are <emphasis role="bold">'create'</emphasis> (occurs when the task 
+            has been created an all task properties are set), <emphasis role="bold">'assignment'</emphasis> 
+            (occurs when the task is assigned to somebody) or <emphasis role="bold">'complete'</emphasis>
+            (occurs when the task is completed and just before the task is deleted from the runtime data).
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">class</emphasis>: the delegation class that must be called. 
+            This class must implement the <literal>org.activiti.engine.impl.pvm.delegate.TaskListener</literal>
+            interface.
+            <programlisting>
+public class MyTaskCreateListener implements TaskListener {
+
+  public void notify(DelegateTask delegateTask) {
+    // Custom logic goes here
+  }
+
+}</programlisting>
+            
+            It is also possible to use <link linkend="serviceTaskFieldInjection">field injection</link> to pass
+            process variables or the execution to the delegation class.
+            Note that an instance of the delegation class is created upon process deployment
+            (as is the case with any class delegation in Activiti), which means that the 
+            instance is shared between all process instance executions.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">expression</emphasis>: (cannot be used together with the <emphasis>class</emphasis> attribute):
+            specifies an expression that will be executed when the event happens. 
+            It is possible to pass the <literal>DelegateTask</literal> object and the name
+            of the event (using <literal>task.eventName</literal>) as parameter to the called object. 
+            <programlisting>&lt;activiti:taskListener event=&quot;create&quot; expression=&quot;${myObject.callMethod(task, task.eventName)}&quot; /&gt;</programlisting>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">delegateExpression</emphasis> allows to specify an expression
+            that resolves to an object implementing ther <literal>TaskListener</literal> interface,
+            <link linkend="bpmnJavaServiceTaskXML">similar to a service task</link>. 
+            <programlisting>&lt;activiti:taskListener event=&quot;create&quot; delegateExpression=&quot;${myTaskListenerBean}&quot; /&gt;</programlisting>        
+          </para>
+        </listitem>
+      </itemizedlist>
+    </para>
+    
+  </section> 
+  
+    <section id="bpmnMultiInstance">
+    
+      <title>Multi-instance (for each)</title>
+      
+      <section id="bpmnMultiInstanceDescription">
+      
+        <title>Description</title>
+        
+        <para>
+          A <emphasis>multi-instance activity</emphasis> is a way of defining repetition for 
+          a certain step in a business process. In programming concepts, a multi-instance
+          matches the <emphasis role="bold">for each</emphasis> construct: it allows to execute
+          a certain step or even a complete subprocess for each item in a given collection, 
+          <emphasis role="bold">sequentially or in parallel</emphasis>.
+        </para>
+        
+        <para>
+          A <emphasis>multi-instance</emphasis> is a regular activity that has extra properties
+          defined (so-called <emphasis>'multi-instance</emphasis> characteristics'') which
+          will cause the activity to be executed multiple times at runtime. Following
+          activities can become a <emphasis>multi-instance activity:</emphasis>
+          <itemizedlist>
+            <listitem><para><link linkend="bpmnUserTask">User task</link></para></listitem>
+            <listitem><para><link linkend="bpmnScriptTask">Script task</link></para></listitem>
+            <listitem><para><link linkend="bpmnJavaServiceTask">Java service task</link></para></listitem>
+            <listitem><para><link linkend="bpmnWebserviceTask">Web service task</link></para></listitem>
+            <listitem><para><link linkend="bpmnBusinessRuleTask">Business rule task</link></para></listitem>
+            <listitem><para><link linkend="bpmnEmailTask">Email task</link></para></listitem>
+            <listitem><para><link linkend="bpmnManualTask">Manual task</link></para></listitem>
+            <listitem><para><link linkend="bpmnReceiveTask">Receive task</link></para></listitem>
+            <listitem><para><link linkend="bpmnSubProcess">(embedded) subprocess</link></para></listitem>
+            <listitem><para><link linkend="bpmnCallActivity">Call activity</link></para></listitem>
+          </itemizedlist>
+          A <link linkend="bpmnGateways">gateway</link> or <link linkend="bpmnEvents">event</link>
+          can <emphasis role="bold">not</emphasis> become multi-instance.
+        </para>
+        
+        <para>
+          As required by the spec, each parent execution of the created executions for each instance
+          will have following variables:
+          <itemizedlist>
+            <listitem><para><emphasis role="bold">nrOfInstances</emphasis>: the total number of instances</para></listitem>
+            <listitem><para><emphasis role="bold">nrOfActiveInstances</emphasis>: the number of currently active, ie. not yet finished, instances. For a sequential multi-instance, this will always be 1.</para></listitem>
+            <listitem><para><emphasis role="bold">nrOfCompletedInstances</emphasis>: the number of already completed instances.</para></listitem>
+          </itemizedlist>
+          These values can be retrieved by calling the <literal>execution.getVariable(x)</literal> method.
+        </para>
+        
+        <para>
+          Additionally, each of the created executions will have an execution-local variable (ie. not visible
+          for the other executions, and not stored on process instance level) :
+          <itemizedlist>
+            <listitem><para><emphasis role="bold">loopCounter</emphasis>: indicates the <emphasis>index in the for-each loop</emphasis> of that particular instance.</para></listitem>
+          </itemizedlist>
+        </para>
+      
+      </section>
+      
+      <section id="bpmnMultiInstanceGraphicalNotation">
+      
+        <title>Graphical notation</title>
+        
+        <para>
+          If an activity is multi-instance, this is indictaed by three short lines at the bottom
+          of that activity. Three <emphasis>vertical</emphasis> lines indicates that the instances will be executed
+          in parallel, while three <emphasis>horizontal</emphasis> lines indicate sequential execution.
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.multi.instance.png"/></imageobject></mediaobject>
+        </para>
+      
+      </section>
+      
+      <section id="bpmnMultiInstanceXml">
+      
+        <title>Xml representation</title>
+        
+        <para>
+         To make an activity multi-instance, the activity xml element must have a
+         <literal>multiInstanceLoopCharacteristics</literal> child element.
+         <programlisting>
+&lt;multiInstanceLoopCharacteristics isSequential=&quot;false|true&quot;&gt;
+ ...
+&lt;/multiInstanceLoopCharacteristics&gt;</programlisting>
+         The <emphasis role="bold">isSequential</emphasis> attribute indicates if the 
+         instances of that activity are executed sequentially or parallel.
+        </para>
+        
+        <para>
+          The number of instances are <emphasis role="bold">calculated once, when entering the activity</emphasis>.
+          There are a few ways of configuring this. On way is directly specifying a number, by using
+          the <emphasis role="bold">loopCardinality</emphasis> child element.
+          <programlisting>
+&lt;multiInstanceLoopCharacteristics isSequential=&quot;false|true&quot;&gt;
+  &lt;loopCardinality&gt;5&lt;/loopCardinality&gt;
+&lt;/multiInstanceLoopCharacteristics&gt;</programlisting>
+          Expressions that resolve to a postive number are also possible:
+          <programlisting>
+&lt;multiInstanceLoopCharacteristics isSequential=&quot;false|true&quot;&gt;
+  &lt;loopCardinality&gt;${nrOfOrders-nrOfCancellations}&lt;/loopCardinality&gt;
+&lt;/multiInstanceLoopCharacteristics&gt;</programlisting>
+        </para>
+        
+        <para>
+          Another way to define the number of instances, is to specify the name of a process variable which is a collection using the <literal>loopDataInputRef</literal> 
+          child element. For each item in the collection, an instance will be created.
+          Optionally, it is possible to set that specific item of the collection for the instance
+          using the <literal>inputDataItem</literal> child element. This is shown in the following
+          XML example:
+          <programlisting>
+&lt;userTask id=&quot;miTasks&quot; name=&quot;My Task ${loopCounter}&quot; activiti:assignee=&quot;${assignee}&quot;&gt;
+  &lt;multiInstanceLoopCharacteristics isSequential=&quot;false&quot;&gt;
+    &lt;loopDataInputRef&gt;assigneeList&lt;/loopDataInputRef&gt;
+    &lt;inputDataItem name=&quot;assignee&quot; /&gt;
+  &lt;/multiInstanceLoopCharacteristics&gt;
+&lt;/userTask&gt;</programlisting>
+          Suppose the variable <literal>assigneeList</literal> contains the values <literal>[kermit, gonzo, foziee]</literal>.
+          In the snippet above, three user tasks will be created in parallel. Each of the executions
+          will have a process variable named <literal>assignee</literal> containing one value of the 
+          collection, which is used to assign the user task in this example.
+        </para>
+        
+        <para>
+          The downside of the <literal>loopDataInputRef</literal> and <literal>inputDataItem</literal>
+          is that 1) the names are pretty hard to remember and 2) due to the BPMN 2.0 schema restrictions
+          they can't contain expressions. Activiti solves this by offering the 
+          <emphasis role="bold">collection</emphasis> and <emphasis role="bold">elementVariable</emphasis>
+          attributes on the <literal>multiInstanceCharacteristics</literal>:
+          <programlisting>
+&lt;userTask id=&quot;miTasks&quot; name=&quot;My Task&quot; activiti:assignee=&quot;${assignee}&quot;&gt;
+  &lt;multiInstanceLoopCharacteristics isSequential=&quot;true&quot; 
+     <emphasis role="bold">activiti:collection=&quot;${myService.resolveUsersForTask()}&quot; activiti:elementVariable=&quot;assignee&quot; </emphasis>&gt;
+  &lt;/multiInstanceLoopCharacteristics&gt;
+&lt;/userTask&gt;</programlisting> 
+        </para>
+        
+        <para>
+          A multi-instance activity ends when all instances are finished. However, it is possible
+          to specify an expression that is evaluated every time one instance ends. When this
+          expression evaluates to true, all remaining instances are destroyed and the multi-instance
+          activity ends, continuing the process. Such an expression must be defined in
+          the <emphasis role="bold">completionCondition</emphasis> child element.
+          <programlisting>
+&lt;userTask id=&quot;miTasks&quot; name=&quot;My Task&quot; activiti:assignee=&quot;${assignee}&quot;&gt;
+  &lt;multiInstanceLoopCharacteristics isSequential=&quot;false&quot; 
+     activiti:collection=&quot;assigneeList&quot; activiti:elementVariable=&quot;assignee&quot; &gt;
+    <emphasis role="bold">&lt;completionCondition&gt;${nrOfCompletedInstances/nrOfInstances >= 0.6 }&lt;/completionCondition&gt;</emphasis>
+  &lt;/multiInstanceLoopCharacteristics&gt;
+&lt;/userTask&gt;</programlisting>
+          In this example, there will be parallel instances created for each element of the <literal>assigneeList</literal>
+          collection. However, when 60% of the tasks are completed, the other tasks are deleted
+          and the process continues.       
+        </para>
+      
+      </section>
+      
+      <section id="bpmnMultiInstanceBoundaryEvent">
+      
+        <title>Boundary events and multi-instance</title>
+        
+        <para>
+          Since a multi-instance is a regular activity, it is possible to define a 
+          <link linkend="bpmnBoundaryEvent">boundary event</link> on its boundary.
+          In case of an interrupting boundary event, when the event is catched, <emphasis role="bold">all instances</emphasis>
+          that are still active will be destroyed. Take for example following multi-instance subprocess:
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.multi.instance.boundary.event.png"/></imageobject></mediaobject>
+          Here, all instances of the subprocess will be destroyed when the timer fires, regardless
+          of how many instances there are or which inner activities are currently not yet completed.
+        </para>
+      
+      </section>
+    
+    </section>    
 		
 		<section id="bpmnBoundaryEvent">
 		  
