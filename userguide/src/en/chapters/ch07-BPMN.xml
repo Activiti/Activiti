@@ -2817,7 +2817,7 @@ assertNotNull(execution);
           
           A typical use case is sending an escalation email additionally but not interrupt the normal process flow.
         </para>        
-
+<!-- 
         <para>
           Since BPMn 2.0 there is the difference between the interrupting and non interrupting timer event. The 
           interrupting is the default. The non-interrupting leads to the original activity is <emphasis role="bold">not</emphasis>
@@ -2828,6 +2828,7 @@ assertNotNull(execution);
 &lt;boundaryEvent id=&quot;escalationTimer&quot; cancelActivity=&quot;false&quot; attachedToRef=&quot;firstLineSupport&quot;/&gt;
 </programlisting>
         </para>
+         -->
         
         <para>
           <emphasis role="bold">Note:</emphasis> boundary timer events are only fired when 
