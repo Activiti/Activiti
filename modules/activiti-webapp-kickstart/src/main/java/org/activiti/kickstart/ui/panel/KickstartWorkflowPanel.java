@@ -86,6 +86,9 @@ public class KickstartWorkflowPanel extends Panel {
     initTitle();
 
     GridLayout layout = new GridLayout(2, 7);
+    layout.setSizeFull();
+    layout.setColumnExpandRatio(0, 1.0f);
+    layout.setColumnExpandRatio(1, 9.0f);
     layout.setSpacing(true);
     addComponent(layout);
 

@@ -33,6 +33,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 /**
@@ -49,6 +50,7 @@ public class SelectAdhocWorkflowPanel extends Panel {
 //  protected Resource editImage;
 //  protected Resource xmlImage;
 
+  protected VerticalLayout layout;
   protected ViewManager viewManager;
   protected KickstartService adhocWorkflowService;
 
@@ -59,6 +61,13 @@ public class SelectAdhocWorkflowPanel extends Panel {
 //    this.xmlImage = new ClassResource("images/xml.png", viewManager.getApplication());
 
     setStyleName(Reindeer.PANEL_LIGHT);
+    
+    layout = new VerticalLayout();
+    layout.setMargin(true);
+    layout.setSpacing(true);
+    layout.setSizeFull();
+    setContent(layout);
+    
     initTitle();
     initWorkflowTable();
     initWorkflowTableContents();
@@ -72,7 +81,7 @@ public class SelectAdhocWorkflowPanel extends Panel {
     // add some empty space
     Label emptyLabel = new Label("");
     emptyLabel.setHeight("1.5em");
-    addComponent(emptyLabel);
+    layout.addComponent(emptyLabel);
   }
 
   protected void initWorkflowTable() {
@@ -80,6 +89,8 @@ public class SelectAdhocWorkflowPanel extends Panel {
 
     workflowTable.setSelectable(true);
     workflowTable.setMultiSelect(false);
+    workflowTable.setPageLength(workflowTable.size());
+    workflowTable.setSizeFull();
 
     workflowTable.addContainerProperty("name", Button.class, null);
     workflowTable.addContainerProperty("key", String.class, null);
@@ -100,7 +111,7 @@ public class SelectAdhocWorkflowPanel extends Panel {
     workflowTable.setColumnAlignment("nrOfRunningInstance", Table.ALIGN_CENTER);
     workflowTable.setColumnAlignment("nrOfHistoricInstances", Table.ALIGN_CENTER);
 
-    addComponent(workflowTable);
+    layout.addComponent(workflowTable);
   }
 
   protected void initWorkflowTableContents() {

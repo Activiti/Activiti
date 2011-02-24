@@ -18,6 +18,7 @@ import org.activiti.kickstart.ui.panel.KickstartWorkflowPanel;
 
 import com.vaadin.Application;
 import com.vaadin.ui.CustomLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Window;
@@ -48,12 +49,16 @@ public class KickStartApplication extends Application {
   }
 
   protected void initMainWindow() {
-    mainLayout = new CustomLayout(THEME_NAME); // uses layout defined in webapp/Vaadin/themes/yakalo
-    mainLayout.setSizeFull();
 
     Window mainWindow = new Window(TITLE);
     setMainWindow(mainWindow);
-    mainWindow.setContent(mainLayout);
+    Panel p = new Panel();
+    p.setSizeFull();
+    mainWindow.setContent(p);
+    
+    mainLayout = new CustomLayout(THEME_NAME); // uses layout defined in webapp/Vaadin/themes/yakalo
+    mainLayout.setSizeFull();
+    p.setContent(mainLayout);
 
     initSplitPanel();
     initViewManager();
