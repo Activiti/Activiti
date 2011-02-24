@@ -359,7 +359,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     List<ActivityExecution> inactiveConcurrentExecutionsInActivity = new ArrayList<ActivityExecution>();
     List<ActivityExecution> otherConcurrentExecutions = new ArrayList<ActivityExecution>();
     if (isConcurrent()) {
-      List< ? extends ActivityExecution> concurrentExecutions = getParent().getExecutions();
+      List< ? extends ActivityExecution> concurrentExecutions = getParent().getAllChildExecutions();
       for (ActivityExecution concurrentExecution: concurrentExecutions) {
         if (concurrentExecution.getActivity()==activity) {
           if (!concurrentExecution.isActive()) {
@@ -381,6 +381,15 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
       log.fine("other concurrent executions: "+otherConcurrentExecutions);
     }
     return inactiveConcurrentExecutionsInActivity;
+  }
+  
+  protected List<ExecutionEntity> getAllChildExecutions() {
+    List<ExecutionEntity> childExecutions = new ArrayList<ExecutionEntity>();
+    for (ExecutionEntity childExecution : getExecutions()) {
+      childExecutions.add(childExecution);
+      childExecutions.addAll(childExecution.getAllChildExecutions());
+    }
+    return childExecutions;
   }
   
   @SuppressWarnings("unchecked")
@@ -475,12 +484,17 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     }
   }
   
-  private boolean allExecutionsInSameActivity(List<ExecutionEntity> executions) {
+  protected boolean allExecutionsInSameActivity(List<ExecutionEntity> executions) {
     if (executions.size() > 1) {
       String activityId = executions.get(0).getActivityId();
       for (ExecutionEntity execution : executions) {
-        if (!execution.isEnded && !execution.getActivityId().equals(activityId)) {
-          return false;
+        String otherActivityId = execution.getActivityId();
+        if (!execution.isEnded) {
+          if ( (activityId == null && otherActivityId != null) 
+                  || (activityId != null && otherActivityId == null)
+                  || (activityId != null && otherActivityId!= null && !otherActivityId.equals(activityId))) {
+            return false;
+          }
         }
       }
     }
@@ -930,7 +944,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     if (isProcessInstance()) {
       return "ProcessInstance["+getToStringIdentity()+"]";
     } else {
-      return (isConcurrent? "Concurrent" : "")+(isScope() ? "Scope" : "")+"Execution["+getToStringIdentity()+"]";
+      return (isConcurrent? "Concurrent" : "")+(isScope ? "Scope" : "")+"Execution["+getToStringIdentity()+"]";
     }
   }
 

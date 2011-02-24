@@ -129,5 +129,50 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
     assertProcessEnded(pi.getId());
   }
   
+  @Deployment
+  public void testTimerOnConcurrentTasks() {
+    String procId = runtimeService.startProcessInstanceByKey("nonInterruptingOnConcurrentTasks").getId();
+    assertEquals(2, taskService.createTaskQuery().count());
+    
+    Job timer = managementService.createJobQuery().singleResult();
+    managementService.executeJob(timer.getId());
+    assertEquals(3, taskService.createTaskQuery().count());
+    
+    // Complete task that was reached by non interrupting timer 
+    Task task = taskService.createTaskQuery().taskDefinitionKey("timerFiredTask").singleResult();
+    taskService.complete(task.getId());
+    assertEquals(2, taskService.createTaskQuery().count());
+    
+    // Complete other tasks
+    for (Task t : taskService.createTaskQuery().list()) {
+      taskService.complete(t.getId());
+    }
+    assertProcessEnded(procId);
+  }
+  
+  // Difference with previous test: now the join will be reached first
+  @Deployment(resources = {"org/activiti/engine/test/bpmn/event/timer/BoundaryTimerNonInterruptingEventTest.testTimerOnConcurrentTasks.bpmn20.xml"})
+  public void FAILING_testTimerOnConcurrentTasks2() {
+    String procId = runtimeService.startProcessInstanceByKey("nonInterruptingOnConcurrentTasks").getId();
+    assertEquals(2, taskService.createTaskQuery().count());
+    
+    Job timer = managementService.createJobQuery().singleResult();
+    managementService.executeJob(timer.getId());
+    assertEquals(3, taskService.createTaskQuery().count());
+    
+    // Complete 2 tasks that will trigger the join
+    Task task = taskService.createTaskQuery().taskDefinitionKey("firstTask").singleResult();
+    taskService.complete(task.getId());
+    task = taskService.createTaskQuery().taskDefinitionKey("secondTask").singleResult();
+    taskService.complete(task.getId());
+    assertEquals(1, taskService.createTaskQuery().count());
+    
+    // Finally, complete the task that was created due to the timer 
+    task = taskService.createTaskQuery().taskDefinitionKey("timerFiredTask").singleResult();
+    taskService.complete(task.getId());
+    
+    assertProcessEnded(procId);
+  }
+  
 
 }
