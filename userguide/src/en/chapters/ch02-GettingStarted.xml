@@ -195,6 +195,9 @@
       <listitem><para><emphasis role="bold">activiti-jpa-examples</emphasis>: These examples
       show library dependencies and how you can work with JPA in Activiti.    
       </para></listitem>
+      <listitem><para><emphasis role="bold">activiti-cxf-examples</emphasis>: These examples
+      show library dependencies and how you can work with web services in Activiti.    
+      </para></listitem>
       <listitem><para><emphasis role="bold">activiti-cycle-examples</emphasis>: This is a 
       project containing an demo example project for Activiti Cycle 
       </para></listitem>
