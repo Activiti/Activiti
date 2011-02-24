@@ -2119,10 +2119,90 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
 	&lt;targetRef&gt;OutputVariable&lt;/targetRef&gt;
 &lt;/dataOutputAssociation&gt;</programlisting>
 	</section>
-</section>    
+</section>
 
+	
+	<section id="bpmnBusinessRuleTask">
+		<title>Business Rule Task</title>
+		<link linkend="experimental">
+			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
+		</link>
 
-    
+		<section id="bpmnBusinessRuleTaskDescription">
+
+			<title>Description</title>
+	
+			<para>
+				A Business Rule task is used to synchronously execute one or more ruleset or rules. Activiti uses Drools Expert, the Drools rule engine
+				to execute business rules. For this release, the .drl files containing the business rules have to be deployed together with the process definition
+				that defines a business rule task to execute those rules. This means that all .drl files that are used in a process have to be packaged 
+				in the process BAR file like for example the task forms. For more information about creating business rules for Drools Expert please refer to the Drools
+				documentation at <ulink url="http://www.jboss.org/drools/documentation">JBoss Drools</ulink>
+			</para>
+	
+		</section>
+
+		<section id="bpmnBusinessRuleTaskGraphicalNotation">
+	
+			<title>Graphical Notation</title>
+	
+			<para>
+				A Business Rule task is visualized the with a table icon.
+				<mediaobject>
+					<imageobject>
+						<imagedata align="center" fileref="images/bpmn.business.rule.task.png" />
+					</imageobject>
+				</mediaobject>
+			</para>
+	
+		</section>
+	
+		<section id="bpmnBusinessRuleTaskXML">
+			<title>XML representation</title>
+			<para>
+				To execute one or more business rules that are deployed in the same BAR file as the process definition, we need to define the input and result variables.
+				For the input variable definition a list of process variables can be defined separated by a comma.
+				The output variable definition can only contain one variable name that'll be used to store the output objects of the executed business rules in a process variable.
+				Note that the result variable will contain a List of objects. If no result variable name is specified by default org.activiti.engine.rules.OUTPUT is used.
+	   	</para>
+	   	<para>
+        The following business rule task executes all business rules deployed with the process definition:
+        <programlisting>
+&lt;process id=&quot;simpleBusinessRuleProcess&quot;&gt;
+  
+  &lt;startEvent id=&quot;theStart&quot; /&gt;
+  &lt;sequenceFlow sourceRef=&quot;theStart&quot; targetRef=&quot;businessRuleTask&quot; /&gt;
+  
+  <emphasis role="bold">&lt;businessRuleTask id=&quot;businessRuleTask&quot; activiti:ruleVariablesInput=&quot;${order}&quot;
+      activiti:resultVariable=&quot;rulesOutput&quot; /&gt;</emphasis>
+ 	
+  &lt;sequenceFlow sourceRef=&quot;businessRuleTask&quot; targetRef=&quot;theEnd&quot; /&gt;
+
+  &lt;endEvent id=&quot;theEnd&quot; /&gt;
+ 
+&lt;/process&gt;
+			  </programlisting>
+			</para>
+			<para>
+				The business rule task can also be configured to execute only a defined set of rules from the deployed .drl files.
+				A list of rule names separated by a comma must be specified for this.
+				<programlisting>
+&lt;businessRuleTask id=&quot;businessRuleTask&quot; activiti:ruleVariablesInput=&quot;${order}&quot;
+      activiti:rules=&quot;rule1, rule2&quot; /&gt;
+			  </programlisting>
+			  In this case only rule1 and rule2 are executed.
+	   	</para>
+	   	<para>
+				You can also define a list of rules that should be excluded from execution.
+				<programlisting>
+&lt;businessRuleTask id=&quot;businessRuleTask&quot; activiti:ruleVariablesInput=&quot;${order}&quot;
+      activiti:rules=&quot;rule1, rule2&quot; exclude=&quot;true&quot; /&gt;
+			  </programlisting>
+			  In this case all rules deployed in the same BAR file as the process definition will be executed, except for rule1 and rule2.
+			</para>
+		</section>
+	</section>
+
     <section id="executionListeners">
       <title>Execution listener</title>
       <para>Execution listeners allow you to execute external Java code or evaluate an expression when certain events occur
