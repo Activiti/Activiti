@@ -47,13 +47,10 @@
 
   <repositories>
     <repository>
-      <id>alfresco</id>
-      <url>http://maven.alfresco.com/nexus/content/groups/public</url>
+        <id>activiti</id>
+        <name>Activiti Repository</name>
+        <url>http://maven.alfresco.com/nexus/content/repositories/activiti/</url>
     </repository>
-    <repository>
-        <id>Activiti third party</id>
-        <url>http://maven.alfresco.com/nexus/content/repositories/activiti-thirdparty/</url>
-     </repository>
     <repository>
       <id>spring-extensions-milestone</id>
       <name>Spring Extensions Milestone Repository</name>

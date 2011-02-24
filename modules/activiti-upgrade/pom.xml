@@ -53,16 +53,14 @@
 
   <repositories>
     <repository>
-      <id>Activiti third party</id>
+      <id>activiti-third-party</id>
+      <name>Activiti third party</name>
       <url>http://maven.alfresco.com/nexus/content/repositories/activiti-thirdparty/</url>
     </repository>
     <repository>
-      <id>alfresco</id>
-      <url>http://maven.alfresco.com/nexus/content/groups/public</url>
-    </repository>
-    <repository>
-      <id>alfresco-snapshots</id>
-      <url>http://maven.alfresco.com/nexus/content/groups/public-snapshots</url>
+      <id>activiti</id>
+      <name>Activiti</name>
+      <url>http://maven.alfresco.com/nexus/content/repositories/activiti/</url>
     </repository>
     <repository>
       <id>spring-extensions-milestone</id>

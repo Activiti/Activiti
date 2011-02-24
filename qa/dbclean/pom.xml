@@ -50,8 +50,9 @@
 
   <repositories>
     <repository>
-      <id>alfresco</id>
-      <url>http://maven.alfresco.com/nexus/content/groups/public</url>
+      <id>activiti</id>
+      <name>Activiti</name>
+      <url>http://maven.alfresco.com/nexus/content/repositories/activiti/</url>
     </repository>
   </repositories>
 

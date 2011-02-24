@@ -47,12 +47,13 @@
 	
   <repositories>
        <repository>
-                  <id>Alfresco</id>
-                  <url>http://maven.alfresco.com/nexus/content/groups/public/</url>
+          <id>activiti</id>
+          <name>Activiti Repository</name>
+          <url>http://maven.alfresco.com/nexus/content/repositories/activiti/</url>
        </repository>
        <repository>
-                  <id>camunda</id>
-                  <url>http://fox.camunda.com/mvn/</url>
+          <id>camunda</id>
+          <url>http://fox.camunda.com/mvn/</url>
        </repository>
   </repositories>
 	

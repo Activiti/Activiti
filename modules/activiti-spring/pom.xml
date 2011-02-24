@@ -211,8 +211,9 @@
   <repositories>
     <!-- This repo declaration is here for as this will be part of the distro -->
     <repository>
-      <id>alfresco</id>
-      <url>http://maven.alfresco.com/nexus/content/groups/public</url>
+      <id>activiti</id>
+      <name>Activiti</name>
+      <url>http://maven.alfresco.com/nexus/content/repositories/activiti/</url>
     </repository>
   </repositories>
 

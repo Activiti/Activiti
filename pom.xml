@@ -441,17 +441,15 @@
 
   <repositories>
     <repository>
-      <id>alfresco</id>
-      <url>http://maven.alfresco.com/nexus/content/groups/public</url>
+      <id>activiti</id>
+      <name>Activiti</name>
+      <url>http://maven.alfresco.com/nexus/content/repositories/activiti/</url>
     </repository>
     <repository>
-        <id>Activiti third party</id>
-        <url>http://maven.alfresco.com/nexus/content/repositories/activiti-thirdparty/</url>
-     </repository>
-     <repository>
-      <id>alfresco-snapshots</id>
-      <url>http://maven.alfresco.com/nexus/content/groups/public-snapshots</url>
-  </repository>
+      <id>activiti-third-party</id>
+      <name>Activiti third party</name>
+      <url>http://maven.alfresco.com/nexus/content/repositories/activiti-thirdparty/</url>
+    </repository>
     <repository>
       <id>spring-extensions-milestone</id>
       <name>Spring Extensions Milestone Repository</name>
@@ -463,10 +461,10 @@
       <url>http://repository.jboss.org/nexus/content/groups/public</url>
     </repository>
     <repository>
-         <id>maven-restlet</id>  
-         <name>Public online Restlet repository</name>  
-         <url>http://maven.restlet.org</url>  
-      </repository>
+      <id>maven-restlet</id>  
+      <name>Public online Restlet repository</name>  
+      <url>http://maven.restlet.org</url>  
+    </repository>
   </repositories>
 
   <pluginRepositories>
