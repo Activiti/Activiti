@@ -32,6 +32,16 @@ public interface RepositoryNodeMetadata {
 	 * which can be easily used for a GUI to show the attributes generically
 	 */
 	public Map<String, String> getAsStringMap();
+	
+  public String getMetadata(String key);
+
+  public boolean hasMetadata(String key);
+
+  /** 
+   * we may want to use additional, not pre-defined meta data, 
+   * this can be set here
+   */
+  public void setAdditionalMetadata(String key, String value);	
 
   public void setName(String name);
   public void setParentFolderId(String id);

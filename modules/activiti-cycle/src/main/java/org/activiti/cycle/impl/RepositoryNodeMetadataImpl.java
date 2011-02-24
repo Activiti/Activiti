@@ -39,6 +39,8 @@ public class RepositoryNodeMetadataImpl implements RepositoryNodeMetadata {
 	private String version;
 	 // ...?
 
+	private Map<String, String> additionalMetadata = new HashMap<String, String>();
+
 	/**
 	 * get the metadata as Map containing all attributes as String entries
 	 * which can be easily used for a GUI to show the attributes generically
@@ -57,9 +59,36 @@ public class RepositoryNodeMetadataImpl implements RepositoryNodeMetadata {
 		map.put("lastAuthor", lastAuthor);
 		map.put("version", String.valueOf(version));
 		
+		map.putAll(additionalMetadata);
+		
 		return map;
 	}
 	
+	public String getMetadata(String key) {
+	  if (additionalMetadata.containsKey(key)) {
+	    return additionalMetadata.get(key);
+	  }
+	  else {
+	    // maybe we requested some of the prepared attributes
+	    // otherwise the default is NULL automatically
+	    return getAsStringMap().get(key);
+	  }
+	}
+
+  public boolean hasMetadata(String key) {
+    boolean result = additionalMetadata.containsKey(key);
+    if (result) {
+      return true;
+    }
+    else {
+      return getAsStringMap().containsKey(key);
+    }
+  }
+
+  public void setAdditionalMetadata(String key, String value) {
+	    additionalMetadata.put(key, value);
+	}
+
   public String toString() {
     return "{name=" + name + ";path=" + folderId + ";version=" + version + "}";
   }
@@ -119,4 +148,5 @@ public class RepositoryNodeMetadataImpl implements RepositoryNodeMetadata {
 	public void setVersion(String version) {
 		this.version = version;
 	}
+
 }
