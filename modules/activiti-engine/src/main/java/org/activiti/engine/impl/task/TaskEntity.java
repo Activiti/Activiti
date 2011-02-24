@@ -571,9 +571,22 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   public String getEventName() {
     return eventName;
   }
-  
   public void setEventName(String eventName) {
     this.eventName = eventName;
   }
-
+  public void setExecutionId(String executionId) {
+    this.executionId = executionId;
+  }
+  public ExecutionEntity getProcessInstance() {
+    return processInstance;
+  }
+  public void setProcessInstance(ExecutionEntity processInstance) {
+    this.processInstance = processInstance;
+  }
+  public void setExecution(ExecutionEntity execution) {
+    this.execution = execution;
+  }
+  public void setProcessInstanceId(String processInstanceId) {
+    this.processInstanceId = processInstanceId;
+  }
 }

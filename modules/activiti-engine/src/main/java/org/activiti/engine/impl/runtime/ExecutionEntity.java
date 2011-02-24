@@ -803,9 +803,50 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   public void setReplacedBy(InterpretableExecution replacedBy) {
     this.replacedBy = (ExecutionEntity) replacedBy;
     
-    // update the cached historic activity instances that are open
     CommandContext commandContext = Context.getCommandContext();
     DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
+
+    // update the related tasks
+    List<TaskEntity> tasks = (List) new TaskQueryImpl(commandContext)
+      .executionId(id)
+      .list();
+    for (TaskEntity task: tasks) {
+      task.setExecutionId(replacedBy.getId());
+    }
+    tasks = dbSqlSession.findInCache(TaskEntity.class);
+    for (TaskEntity task: tasks) {
+      if (id.equals(task.getExecutionId())) {
+        task.setExecutionId(replacedBy.getId());
+      }
+    }
+    
+    // update the related jobs
+    List<JobEntity> jobs = (List) new JobQueryImpl(commandContext)
+      .executionId(id)
+      .list();
+    for (JobEntity job: jobs) {
+      job.setExecutionId(replacedBy.getId());
+    }
+    jobs = dbSqlSession.findInCache(JobEntity.class);
+    for (JobEntity job: jobs) {
+      if (id.equals(job.getExecutionId())) {
+        job.setExecutionId(replacedBy.getId());
+      }
+    }
+    
+    // update the related jobs
+    List<VariableInstanceEntity> variables = (List) commandContext.getRuntimeSession().findVariableInstancesByExecutionId(id);
+    for (VariableInstanceEntity variable: variables) {
+      variable.setExecutionId(replacedBy.getId());
+    }
+    variables = dbSqlSession.findInCache(VariableInstanceEntity.class);
+    for (VariableInstanceEntity variable: variables) {
+      if (id.equals(variable.getExecutionId())) {
+        variable.setExecutionId(replacedBy.getId());
+      }
+    }
+    
+    // update the cached historic activity instances that are open
     List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = dbSqlSession.findInCache(HistoricActivityInstanceEntity.class);
     for (HistoricActivityInstanceEntity cachedHistoricActivityInstance: cachedHistoricActivityInstances) {
       if ( (cachedHistoricActivityInstance.getEndTime()==null)
