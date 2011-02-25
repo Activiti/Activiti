@@ -8,7 +8,9 @@
     <title>One minute version</title>
     <para>
       After downloading the Activiti distribution zip file from the Activiti website,
-      follow these steps to get the demo setup running with default settings:
+      follow these steps to get the demo setup running with default settings. 
+      You'll need a working <ulink url="http://java.sun.com/javase/downloads/index.jsp">Java runtime</ulink> and
+      <ulink url="http://ant.apache.org/bindownload.cgi">Ant</ulink> installation.
       <itemizedlist>
         <listitem>
           <para>Unzip the Activiti distribution zip file.</para>
@@ -25,7 +27,11 @@
           browser. Login with kermit/kermit.</para>
         </listitem>
       </itemizedlist>
-      That's it! If you want to know more, read the <link linkend="demo.setup">longer version</link>.
+      That's it! If you want to know more about what actually happened in the steps above, read <link linkend="demo.setup">the longer version</link>.
+    </para>
+    <para>
+      You can also start learning all about Activiti and BPMN 2.0 in the 
+      <link linkend="10minutetutorial">ten minute tutorial</link>.
     </para>
   </section>
   
