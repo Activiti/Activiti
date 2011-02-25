@@ -154,11 +154,12 @@
             </goals>
             <configuration>
               <tasks>
-                <echo message="using activiti configuration for ${database}: ${user.home}/.activiti/server/build.${database}.properties" />
-                <copy tofile="target/classes/activiti.cfg.xml" file="src/main/cfg/standalone.activiti.cfg.xml">
-                  <filterset filtersfile="${user.home}/.activiti/server/build.${database}.properties" />
-                </copy>
-                <copy tofile="target/classes/activiti-engine-testsuite-context.xml" file="src/main/cfg/spring.activiti.cfg.xml">
+                <condition property="cfg.file.name" value="activiti-context.xml" else="activiti.cfg.xml">
+						      <equals arg1="${cfg}" arg2="spring" />
+						    </condition>
+                <echo message="using configuration src/main/cfg/cfg.${cfg}.tx.${tx}.xml as ${cfg.file.name}" />
+                <echo message="using database properties ${user.home}/.activiti/server/build.${database}.properties" />
+                <copy tofile="target/classes/${cfg.file.name}" file="src/main/cfg/cfg.${cfg}.tx.${tx}.xml">
                   <filterset filtersfile="${user.home}/.activiti/server/build.${database}.properties" />
                 </copy>
               </tasks>

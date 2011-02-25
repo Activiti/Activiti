@@ -6,6 +6,8 @@
 	<property name="activiti.home" value="../../distro/target/activiti-${activiti.version}" />
   <property name="database" value="h2" />
   <property name="server" value="tomcat6x" />
+  <property name="cfg" value="activiti" /> <!-- {activiti|spring} -->
+  <property name="tx" value="standalone" /> <!-- {standalone|jta} -->
 	<property name="downloads.dir" value="${user.home}/.activiti/downloads" />
 
 	<property name="tomcat.version" value="6.0.29" />
@@ -85,7 +87,7 @@
     </exec>
     <echo message="Building the activiti-cactus module..." />
     <exec executable="${mvn.executable}" dir="../../modules/activiti-cactus/">
-      <arg line="-Ddatabase=${database} clean install" />
+      <arg line="-Ddatabase=${database} -Dcfg=${cfg} -Dtx=${tx} clean install" />
     </exec>
     <delete>
       <fileset dir="target/cactus/lib">
