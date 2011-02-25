@@ -7,6 +7,8 @@ import java.io.Serializable;
  */
 public class ValueBean implements Serializable {
 
+  private static final long serialVersionUID = 1L;
+  
   private final String value;
 
   public ValueBean(String value) {
