@@ -6,7 +6,7 @@
   <name>Activiti - Upgrade</name>
   <groupId>org.activiti</groupId>
   <artifactId>activiti-upgrade</artifactId>
-  <version>5.2-ALWAYS-SNAPSHOT</version>
+  <version>5.4-ALWAYS-SNAPSHOT</version>
 
   <properties>
     <skipTests>true</skipTests>
