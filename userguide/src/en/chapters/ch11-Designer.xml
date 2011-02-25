@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">
-<chapter>
+<chapter id="activitiDesigner">
   <title>Eclipse Designer</title>
   <para> Activiti comes with an Eclipse plugin, the Activiti Eclipse Designer, that can be used to
     graphically model, test and deploy BPMN 2.0 processes Eclipse. The Activiti Eclipse Designer is

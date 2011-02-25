@@ -43,9 +43,6 @@
       	
         <include name="org/activiti/examples/bpmn/usertask/taskcandidate/TaskCandidateTest.testSingleCandidateGroup.bpmn20.xml"/>
       	
-        <include name="org/activiti/examples/bpmn/usertask/FinancialReportProcess.bpmn20.xml"/>
-      	<include name="org/activiti/examples/bpmn/usertask/FinancialReportProcess.png"/>
-      	
         <include name="org/activiti/examples/bpmn/subprocess/SubProcessTest.fixSystemFailureProcess.bpmn20.xml"/>
         <include name="org/activiti/examples/bpmn/subprocess/SubProcessTest.fixSystemFailureProcess.png"/>
       	
