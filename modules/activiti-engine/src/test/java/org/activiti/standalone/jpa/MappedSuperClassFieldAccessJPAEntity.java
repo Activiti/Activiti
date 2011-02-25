@@ -11,28 +11,30 @@
  * limitations under the License.
  */
 
-package org.activiti.examples.variables.jpa;
+package org.activiti.standalone.jpa;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 
 /**
+ * Mapped superclass containing an
  * @author Frederik Heremans
  */
-@Entity(name = "STRING_ID_ENTITY")
-public class StringIdJPAEntity {
+
+@MappedSuperclass
+public class MappedSuperClassFieldAccessJPAEntity {
 
   @Id
   @Column(name = "ID_")
-  private String stringId;
+  private Long id;
 
-  public String getStringId() {
-    return stringId;
+  public Long getId() {
+    return id;
   }
 
-  public void setStringId(String stringId) {
-    this.stringId = stringId;
+  public void setId(Long id) {
+    this.id = id;
   }
 
 }

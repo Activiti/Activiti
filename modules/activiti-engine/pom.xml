@@ -179,6 +179,7 @@
         <skipTests>true</skipTests>
       </properties>
     </profile>
+    
     <profile>
       <id>create-test-jar</id>
       <build>
@@ -195,6 +196,25 @@
 		          </execution>
 		        </executions>
 		      </plugin>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.4</version>
+            <executions>
+              <execution>
+                <id>remove-meta-inf-persistence-xml</id>
+                <phase>process-test-classes</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <!-- this will prevent that the persistence.xml causes trouble on jboss continuous integration testing -->
+                    <delete dir="target/test-classes/META-INF" />
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
       </build>
     </profile>
@@ -231,39 +251,6 @@
       </build>
     </profile>
     
-    <profile>
-      <id>test</id>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <!--
-              only worked with this version, there might be a bug with antrun
-              see http://jira.codehaus.org/browse/MANTRUN-109
-            -->
-            <version>1.4</version>
-            <executions>
-              <execution>
-                <id>database-test-create-schema</id>
-                <phase>process-test-classes</phase>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <tasks>
-                    <property file="${user.home}/.activiti/jdbc/h2.properties"/>
-                    <echo message="jdbc url ${jdbc.url}" />
-                  </tasks>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    
-    
-
     <!--  database qa profile -->
     <profile>
       <id>database</id>

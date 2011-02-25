@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.examples.variables.jpa;
+package org.activiti.standalone.jpa;
 
 
 
@@ -71,7 +71,7 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
   protected void initializeProcessEngine() {
     if (cachedProcessEngine==null) {
       ProcessEngineConfigurationImpl processEngineConfiguration = (ProcessEngineConfigurationImpl) ProcessEngineConfiguration
-        .createProcessEngineConfigurationFromResource("org/activiti/examples/variables/jpa/activiti.cfg.xml");
+        .createProcessEngineConfigurationFromResource("org/activiti/standalone/jpa/activiti.cfg.xml");
       
       cachedProcessEngine = processEngineConfiguration.buildProcessEngine();
 

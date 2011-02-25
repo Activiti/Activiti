@@ -47,12 +47,6 @@
       <artifactId>cactus.integration.ant</artifactId>
       <version>1.8.1</version>
     </dependency>
-
-    <dependency>
-      <groupId>jaxen</groupId>
-      <artifactId>jaxen</artifactId>
-      <version>1.1.1</version>
-    </dependency>
     
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
@@ -157,9 +151,9 @@
                 <condition property="cfg.file.name" value="activiti-context.xml" else="activiti.cfg.xml">
 						      <equals arg1="${cfg}" arg2="spring" />
 						    </condition>
-                <echo message="using configuration src/main/cfg/cfg.${cfg}.tx.${tx}.xml as ${cfg.file.name}" />
+                <echo message="using configuration src/main/cfg/server.${server}.cfg.${cfg}.tx.${tx}.xml as ${cfg.file.name}" />
                 <echo message="using database properties ${user.home}/.activiti/server/build.${database}.properties" />
-                <copy tofile="target/classes/${cfg.file.name}" file="src/main/cfg/cfg.${cfg}.tx.${tx}.xml">
+                <copy tofile="target/classes/${cfg.file.name}" file="src/main/cfg/server.${server}.cfg.${cfg}.tx.${tx}.xml">
                   <filterset filtersfile="${user.home}/.activiti/server/build.${database}.properties" />
                 </copy>
               </tasks>
@@ -169,5 +163,34 @@
       </plugin>
     </plugins>
   </build>
+  
+  <profiles>
+    <profile>
+     <id>jboss</id>
+     <activation>
+       <property>
+         <name>server</name>
+         <value>jboss</value>
+       </property>
+     </activation>
+     <dependencies>
+	    <dependency>
+	      <groupId>org.apache.cactus</groupId>
+	      <artifactId>cactus.integration.ant</artifactId>
+	      <version>1.8.1</version>
+	      <exclusions>
+	        <exclusion>
+	          <groupId>xerces</groupId>
+	          <artifactId>xercesImpl</artifactId>
+	        </exclusion>
+	        <exclusion>
+	          <groupId>xml-apis</groupId>
+	          <artifactId>xml-apis</artifactId>
+	        </exclusion>
+	      </exclusions>
+	    </dependency>
+     </dependencies>
+    </profile>
+  </profiles>
 
 </project>

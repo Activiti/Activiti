@@ -11,29 +11,33 @@
  * limitations under the License.
  */
 
-package org.activiti.examples.variables.jpa;
+package org.activiti.standalone.jpa;
 
-import javax.persistence.Column;
+import java.util.Calendar;
+
+import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
 
 /**
- * Mapped superclass containing an
+ * 
+ * WARNING: This class cannot be used in JPA-context, since it has an illegal
+ * type of ID.
+ * 
+ * For testing purposes only.
+ * 
  * @author Frederik Heremans
  */
-
-@MappedSuperclass
-public class MappedSuperClassPropertyAccessJPAEntity {
-
-  private Long id;
+@Entity
+public class IllegalIdClassJPAEntity {
 
   @Id
-  @Column(name = "ID_")
-  public Long getId() {
+  private Calendar id;
+
+  public Calendar getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(Calendar id) {
     this.id = id;
   }
 

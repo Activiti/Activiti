@@ -46,7 +46,8 @@
   </target>
 
   <target name="test" depends="build.distribution, build.testing.war">
-    <available property="is.jboss.installed" file="${jboss.home}/bin" />
+  	<delete dir="${activiti.home}/apps" />
+    <delete dir="${activiti.home}/setup/build" />
     <available property="is.jboss.available" file="${jboss.distro}" />
   	<antcall target="${server}.install" />
     <antcall target="${server}.deploy.testing.war" />
@@ -71,7 +72,7 @@
   	<antcall target="h2.stop" />
   </target>
 	
-	<target name="build.distribution">
+	<target name="build.distribution" unless="skipdistro">
     <echo message="Building distribution..." />
     <ant antfile="../../distro/build.xml" inheritall="false">
       <target name="clean" />
@@ -87,7 +88,7 @@
     </exec>
     <echo message="Building the activiti-cactus module..." />
     <exec executable="${mvn.executable}" dir="../../modules/activiti-cactus/">
-      <arg line="-Ddatabase=${database} -Dcfg=${cfg} -Dtx=${tx} clean install" />
+      <arg line="-Ddatabase=${database} -Dcfg=${cfg} -Dtx=${tx} -Dserver=${server} clean install" />
     </exec>
     <delete>
       <fileset dir="target/cactus/lib">
@@ -162,6 +163,19 @@
         <include name="*.bat"/>
       </fileset>
     </chmod>
+  	<condition property="is.datasource.required">
+  		<equals arg1="${tx}" arg2="jta"/>
+  	</condition>
+  	<antcall target="jboss.deploy.datasource" />
+    <copy todir="${jboss.home}/server/default/conf" overwrite="true">
+      <fileset dir="jboss.conf" />
+    </copy>
+  </target>
+
+  <target name="jboss.deploy.datasource" if="is.datasource.required">
+    <copy todir="${jboss.home}/server/default/deploy" file="jboss.datasources/activiti-${database}-ds.xml" overwrite="true">
+      <filterset filtersfile="${user.home}/.activiti/server/build.${database}.properties" />
+    </copy>
   </target>
 
   <target name="jboss.download" unless="is.jboss.available">
@@ -169,7 +183,7 @@
     <get src="${jboss.download.url}" dest="${tomcat.distro}" />
   </target>
 
-  <target name="jboss.unzip" unless="is.jboss.installed">
+  <target name="jboss.unzip">
     <mkdir dir="${activiti.home}/apps" />
     <unzip src="${jboss.distro}" dest="${activiti.home}/apps"/>
   </target>
@@ -191,7 +205,7 @@
   </target>
 
   <target name="jboss.deploy.testing.war">
-    <copy file="target/activiti-server-testing.war" todir="${jboss.home}/deploy" />
+    <copy file="target/activiti-server-testing.war" todir="${jboss.home}/server/default/deploy" />
   </target>
 
   <!-- ### INTERNAL TARGETS ##################################################### -->

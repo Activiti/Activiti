@@ -119,6 +119,7 @@ public abstract class ProcessEngineConfiguration {
   protected String jdbcUrl = "jdbc:h2:tcp://localhost/activiti";
   protected String jdbcUsername = "sa";
   protected String jdbcPassword = "";
+  protected String dataSourceJndiName = null;
   protected int jdbcMaxActiveConnections;
   protected int jdbcMaxIdleConnections;
   protected int jdbcMaxCheckoutTime;
@@ -453,4 +454,11 @@ public abstract class ProcessEngineConfiguration {
     this.jpaPersistenceUnitName = jpaPersistenceUnitName;
   }
 
+  public String getDataSourceJndiName() {
+    return dataSourceJndiName;
+  }
+
+  public void setDataSourceJndiName(String dataSourceJndiName) {
+    this.dataSourceJndiName = dataSourceJndiName;
+  }
 }

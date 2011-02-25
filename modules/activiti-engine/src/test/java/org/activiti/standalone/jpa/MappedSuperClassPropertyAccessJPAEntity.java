@@ -11,30 +11,30 @@
  * limitations under the License.
  */
 
-package org.activiti.examples.variables.jpa;
-
-import java.sql.Date;
+package org.activiti.standalone.jpa;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 
 /**
+ * Mapped superclass containing an
  * @author Frederik Heremans
  */
-@Entity(name = "SQLDATE_ID_ENTITY")
-public class SQLDateIdJPAEntity {
+
+@MappedSuperclass
+public class MappedSuperClassPropertyAccessJPAEntity {
+
+  private Long id;
 
   @Id
   @Column(name = "ID_")
-  private Date dateId;
-
-  public Date getDateId() {
-    return dateId;
+  public Long getId() {
+    return id;
   }
 
-  public void setDateId(Date dateId) {
-    this.dateId = dateId;
+  public void setId(Long id) {
+    this.id = id;
   }
 
 }

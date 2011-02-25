@@ -11,30 +11,30 @@
  * limitations under the License.
  */
 
-package org.activiti.examples.variables.jpa;
+package org.activiti.standalone.jpa;
+
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-
 /**
  * @author Frederik Heremans
  */
-@Entity(name="BYTE_ID_ENTITY")
-public class ByteIdJPAEntity {
+@Entity(name = "DATE_ID_ENTITY")
+public class DateIdJPAEntity {
 
   @Id
-  @Column(name="ID_")
-  private byte byteId;
+  @Column(name = "ID_")
+  private Date dateId;
 
-  
-  public byte getByteId() {
-    return byteId;
+  public Date getDateId() {
+    return dateId;
   }
 
-  
-  public void setByteId(byte byteId) {
-    this.byteId = byteId;
+  public void setDateId(Date dateId) {
+    this.dateId = dateId;
   }
+
 }

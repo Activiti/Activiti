@@ -6,31 +6,31 @@
   <persistence-unit name="activiti-jpa-pu">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     
-    <class>org.activiti.examples.variables.jpa.FieldAccessJPAEntity</class>
-    <class>org.activiti.examples.variables.jpa.PropertyAccessJPAEntity</class>
-    <class>org.activiti.examples.variables.jpa.SubclassFieldAccessJPAEntity</class>
-    <class>org.activiti.examples.variables.jpa.SubclassPropertyAccessJPAEntity</class>
+    <class>org.activiti.standalone.jpa.FieldAccessJPAEntity</class>
+    <class>org.activiti.standalone.jpa.PropertyAccessJPAEntity</class>
+    <class>org.activiti.standalone.jpa.SubclassFieldAccessJPAEntity</class>
+    <class>org.activiti.standalone.jpa.SubclassPropertyAccessJPAEntity</class>
     <!-- Mapped superclasses -->
-    <class>org.activiti.examples.variables.jpa.MappedSuperClassFieldAccessJPAEntity</class>
-    <class>org.activiti.examples.variables.jpa.MappedSuperClassPropertyAccessJPAEntity</class>
+    <class>org.activiti.standalone.jpa.MappedSuperClassFieldAccessJPAEntity</class>
+    <class>org.activiti.standalone.jpa.MappedSuperClassPropertyAccessJPAEntity</class>
     
     <!-- Variable types -->
-    <class>org.activiti.examples.variables.jpa.ByteIdJPAEntity</class>
-    <class>org.activiti.examples.variables.jpa.ShortIdJPAEntity</class>
-    <class>org.activiti.examples.variables.jpa.IntegerIdJPAEntity</class>
-    <class>org.activiti.examples.variables.jpa.LongIdJPAEntity</class>
-    <class>org.activiti.examples.variables.jpa.FloatIdJPAEntity</class>
-    <class>org.activiti.examples.variables.jpa.DoubleIdJPAEntity</class>
-    <class>org.activiti.examples.variables.jpa.CharIdJPAEntity</class>
-    <class>org.activiti.examples.variables.jpa.StringIdJPAEntity</class>
-    <class>org.activiti.examples.variables.jpa.DateIdJPAEntity</class>
-    <class>org.activiti.examples.variables.jpa.SQLDateIdJPAEntity</class>
-    <class>org.activiti.examples.variables.jpa.BigIntegerIdJPAEntity</class>
-    <class>org.activiti.examples.variables.jpa.BigDecimalIdJPAEntity</class>
+    <class>org.activiti.standalone.jpa.ByteIdJPAEntity</class>
+    <class>org.activiti.standalone.jpa.ShortIdJPAEntity</class>
+    <class>org.activiti.standalone.jpa.IntegerIdJPAEntity</class>
+    <class>org.activiti.standalone.jpa.LongIdJPAEntity</class>
+    <class>org.activiti.standalone.jpa.FloatIdJPAEntity</class>
+    <class>org.activiti.standalone.jpa.DoubleIdJPAEntity</class>
+    <class>org.activiti.standalone.jpa.CharIdJPAEntity</class>
+    <class>org.activiti.standalone.jpa.StringIdJPAEntity</class>
+    <class>org.activiti.standalone.jpa.DateIdJPAEntity</class>
+    <class>org.activiti.standalone.jpa.SQLDateIdJPAEntity</class>
+    <class>org.activiti.standalone.jpa.BigIntegerIdJPAEntity</class>
+    <class>org.activiti.standalone.jpa.BigDecimalIdJPAEntity</class>
     
     <!-- Exceptional entities -->
-    <class>org.activiti.examples.variables.jpa.CompoundIdJPAEntity</class>
-    <class>org.activiti.examples.variables.jpa.EmbeddableCompoundId</class>
+    <class>org.activiti.standalone.jpa.CompoundIdJPAEntity</class>
+    <class>org.activiti.standalone.jpa.EmbeddableCompoundId</class>
     
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>

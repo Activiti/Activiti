@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import org.activiti.engine.ActivitiException;
@@ -79,7 +80,12 @@ import org.activiti.engine.impl.interceptor.CommandContextFactory;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.SessionFactory;
-import org.activiti.engine.impl.jobexecutor.*;
+import org.activiti.engine.impl.jobexecutor.JobExecutor;
+import org.activiti.engine.impl.jobexecutor.JobExecutorMessageSessionFactory;
+import org.activiti.engine.impl.jobexecutor.JobExecutorTimerSessionFactory;
+import org.activiti.engine.impl.jobexecutor.JobHandler;
+import org.activiti.engine.impl.jobexecutor.TimerCatchIntermediateEventJobHandler;
+import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
 import org.activiti.engine.impl.repository.Deployer;
 import org.activiti.engine.impl.scripting.BeansResolverFactory;
 import org.activiti.engine.impl.scripting.ResolverFactory;
@@ -341,35 +347,44 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // DataSource ///////////////////////////////////////////////////////////////
   
   protected void initDataSource() {
-    if (dataSource==null && jdbcUrl!=null) {
-      if ( (jdbcDriver==null) || (jdbcUrl==null) || (jdbcUsername==null) ) {
-        throw new ActivitiException("DataSource or JDBC properties have to be specified in a process engine configuration");
+    if (dataSource==null) {
+      if (dataSourceJndiName!=null) {
+        try {
+          dataSource = (DataSource) new InitialContext().lookup(dataSourceJndiName);
+        } catch (Exception e) {
+          throw new ActivitiException("couldn't lookup datasource from "+dataSourceJndiName+": "+e.getMessage(), e);
+        }
+        
+      } else if (jdbcUrl!=null) {
+        if ( (jdbcDriver==null) || (jdbcUrl==null) || (jdbcUsername==null) ) {
+          throw new ActivitiException("DataSource or JDBC properties have to be specified in a process engine configuration");
+        }
+        
+        log.fine("initializing datasource to db: "+jdbcUrl);
+        
+        PooledDataSource pooledDataSource = 
+          new PooledDataSource(ReflectUtil.getClassLoader(), jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword );
+        
+        if (jdbcMaxActiveConnections > 0) {
+          pooledDataSource.setPoolMaximumActiveConnections(jdbcMaxActiveConnections);
+        }
+        if (jdbcMaxIdleConnections > 0) {
+          pooledDataSource.setPoolMaximumIdleConnections(jdbcMaxIdleConnections);
+        }
+        if (jdbcMaxCheckoutTime > 0) {
+          pooledDataSource.setPoolMaximumCheckoutTime(jdbcMaxCheckoutTime);
+        }
+        if (jdbcMaxWaitTime > 0) {
+          pooledDataSource.setPoolTimeToWait(jdbcMaxWaitTime);
+        }
+        
+        dataSource = pooledDataSource;
       }
       
-      log.fine("initializing datasource to db: "+jdbcUrl);
-      
-      PooledDataSource pooledDataSource = 
-        new PooledDataSource(ReflectUtil.getClassLoader(), jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword );
-      
-      if (jdbcMaxActiveConnections > 0) {
-        pooledDataSource.setPoolMaximumActiveConnections(jdbcMaxActiveConnections);
+      if (dataSource instanceof PooledDataSource) {
+        // ACT-233: connection pool of Ibatis is not properely initialized if this is not called!
+        ((PooledDataSource)dataSource).forceCloseAll();
       }
-      if (jdbcMaxIdleConnections > 0) {
-        pooledDataSource.setPoolMaximumIdleConnections(jdbcMaxIdleConnections);
-      }
-      if (jdbcMaxCheckoutTime > 0) {
-        pooledDataSource.setPoolMaximumCheckoutTime(jdbcMaxCheckoutTime);
-      }
-      if (jdbcMaxWaitTime > 0) {
-        pooledDataSource.setPoolTimeToWait(jdbcMaxWaitTime);
-      }
-      
-      dataSource = pooledDataSource;
-    }
-    
-    if (dataSource instanceof PooledDataSource) {
-      // ACT-233: connection pool of Ibatis is not properely initialized if this is not called!
-      ((PooledDataSource)dataSource).forceCloseAll();
     }
 
     initDatabaseType();

@@ -11,27 +11,31 @@
  * limitations under the License.
  */
 
-package org.activiti.examples.variables.jpa;
+package org.activiti.standalone.jpa;
 
-import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
+
 
 /**
  * @author Frederik Heremans
  */
-@Entity(name = "DOUBLE_ID_ENTITY")
-public class DoubleIdJPAEntity {
+@Entity
+public class CompoundIdJPAEntity {
+  
+  @EmbeddedId
+  private EmbeddableCompoundId id;
 
-  @Id
-  @Column(name = "ID_")
-  private double doubleId;
-
-  public double getDoubleId() {
-    return doubleId;
+  public EmbeddableCompoundId getId() {
+    return id;
   }
 
-  public void setDoubleId(double doubleId) {
-    this.doubleId = doubleId;
+  public void setId(EmbeddableCompoundId id) {
+    this.id = id;
+  }
+  
+  @Override
+  public boolean equals(Object obj) {
+    return id.equals(((CompoundIdJPAEntity)obj).getId());
   }
 }

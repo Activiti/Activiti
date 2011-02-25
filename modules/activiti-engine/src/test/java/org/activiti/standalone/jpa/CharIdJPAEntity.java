@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.examples.variables.jpa;
+package org.activiti.standalone.jpa;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,18 +20,19 @@ import javax.persistence.Id;
 /**
  * @author Frederik Heremans
  */
-@Entity(name = "INT_ID_ENTITY")
-public class IntegerIdJPAEntity {
+@Entity(name = "CHAR_ID_ENTITY")
+public class CharIdJPAEntity {
 
   @Id
   @Column(name = "ID_")
-  private int intId;
+  private char charId;
 
-  public int getIntId() {
-    return intId;
+  public char getCharId() {
+    return charId;
   }
 
-  public void setIntId(int intId) {
-    this.intId = intId;
+  public void setCharId(char charId) {
+    this.charId = charId;
   }
+
 }

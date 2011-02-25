@@ -11,7 +11,9 @@
  * limitations under the License.
  */
 
-package org.activiti.examples.variables.jpa;
+package org.activiti.standalone.jpa;
+
+import java.math.BigInteger;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,18 +22,19 @@ import javax.persistence.Id;
 /**
  * @author Frederik Heremans
  */
-@Entity(name = "LONG_ID_ENTITY")
-public class LongIdJPAEntity {
+@Entity(name = "BIGINT_ID_ENTITY")
+public class BigIntegerIdJPAEntity {
 
   @Id
   @Column(name = "ID_")
-  private long longId;
+  private BigInteger bigIntegerId;
 
-  public long getLongId() {
-    return longId;
+  public BigInteger getBigIntegerId() {
+    return bigIntegerId;
   }
 
-  public void setLongId(long longId) {
-    this.longId = longId;
+  public void setBigIntegerId(BigInteger bigIntegerId) {
+    this.bigIntegerId = bigIntegerId;
   }
+
 }
