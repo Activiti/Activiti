@@ -44,6 +44,147 @@
 
   <h1>Activiti Release Notes</h1>
 
+  <h3>Release Notes - Activiti - Version 5.3</h3>
+    
+  <h4>Highlights</h4>
+  <ul>
+    <li>Added BPMN multi instance (==foreach) support</li>
+    <li>Added BPMN intermediate timer catch event</li>
+    <li>Added business rule task with Drools integration</li>
+    <li>Improved Spring integrations: added possibility to limit visibility of beans and also exposed spring beans in scripts</li>
+    <li>Added administrator console to manage users and groups</li>
+    <li>Added automatic DB type discovery</li>
+    <li>Various bug fixes</li>
+  </ul>
+
+<h4>        Bug
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-485'>ACT-485</a>] -         Fields in HistoricTaskInstance aren&#39;t updated when corresponding Task fields are updated using API
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-568'>ACT-568</a>] -         Deleting an gateway does not delete the associated sequence flows
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-575'>ACT-575</a>] -         Name of node in diagram not updated in specific case
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-589'>ACT-589</a>] -         Kickstart does not display properly on 1024x768
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-592'>ACT-592</a>] -         Nullpointer when trying to set variables on process-instance which is waiting in a Task with a timer on it, when history-level is FULL
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-598'>ACT-598</a>] -         Bug in drawing of process diagrams: sequence flow out of gateways can&#39;t have conditional markers
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-599'>ACT-599</a>] -         BPMN20ExportMarshaller generates wrong id for startEvent and endEvent elements of subProcesses
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-603'>ACT-603</a>] -         docs for generated processdefinition id not correct
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-604'>ACT-604</a>] -         Cannot add variables to standalone task when history level is &#39;full&#39;
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-610'>ACT-610</a>] -         ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE does not work with Oracle
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-611'>ACT-611</a>] -         It&#39;s not possible to delete sequenceFlows
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-612'>ACT-612</a>] -         ServiceTask: Switching the type from class to expression doesn&#39;t update BPMN2.0.xml
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-618'>ACT-618</a>] -         Call of setter before null check in file BpmnParse
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-621'>ACT-621</a>] -         When creating HistoricFormPropertyEntity query for HistoricActivityInstance isn&#39;t limited to the active one
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-625'>ACT-625</a>] -         Task form just displays a Failure error when deployed from Eclipse Designer
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-627'>ACT-627</a>] -         Subprocess Start and End event ids incorrectly generated
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-629'>ACT-629</a>] -         BPMN waypoints are not created accurately
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-631'>ACT-631</a>] -         Investigate potential concurrency bug
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-637'>ACT-637</a>] -         Using a call activity with activiti: in extension for variable passing results in null pointer when history level set to &quot;full&quot;
+</li>
+</ul>
+    
+<h4>        Improvement
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-45'>ACT-45</a>] -         Add Spring support in a JTA and appserver environment
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-429'>ACT-429</a>] -         Allow to use expressions in timer duration
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-484'>ACT-484</a>] -         Add task priority to HistoricTaskInstance
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-529'>ACT-529</a>] -         Processimage name does not follow conventions used by explorer/API to show or get image
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-530'>ACT-530</a>] -         Deployment doesn&#39;t export process image
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-549'>ACT-549</a>] -         Need brief documentation of working with Eclipse Designer Sources
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-584'>ACT-584</a>] -         Add ability to delete IdentityLinks using API and DelegateTask
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-585'>ACT-585</a>] -         Limiting/disabling spring-beans in expressions should be possible
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-587'>ACT-587</a>] -         FieldInjection should try public setter first and revert to setting private field
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-600'>ACT-600</a>] -         Review and improve 10 minute tutorial
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-601'>ACT-601</a>] -         Review and improve Designer section in userguide
+</li>
+</ul>
+    
+<h4>        New Feature
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-469'>ACT-469</a>] -         Add support for specifying a Form key for StartEvent in Designer
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-483'>ACT-483</a>] -         Support for specifying a form (form key) on a StartEvent
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-506'>ACT-506</a>] -         For each support (Multi instance)
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-527'>ACT-527</a>] -         Implement a Business Rule Task with Drools integration
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-581'>ACT-581</a>] -         CallActivity with in/out parameters: Add sourceExpression and documentation to User Guide
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-582'>ACT-582</a>] -         Add deleteHistoricProcessInstance() to HistoryService
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-588'>ACT-588</a>] -         Extend TaskQuery to add variableValue querying similar to the ProcessInstanceQuery
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-593'>ACT-593</a>] -         Allow firing of custom events to the active node on a given execution
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-596'>ACT-596</a>] -         Result DTO of KickstartService.findKickstartWorkflowById() is missing Task-ID&#39;s
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-606'>ACT-606</a>] -         Open existing BPMN XML directly in the project with the Designer
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-641'>ACT-641</a>] -         Implement intermediate timer catch event
+</li>
+</ul>
+    
+<h4>        Task
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-97'>ACT-97</a>] -         Expose spring beans in Scripts
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-416'>ACT-416</a>] -         Document how to open mgr of the in memory db
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-422'>ACT-422</a>] -         Make spring parsing dependency optional
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-442'>ACT-442</a>] -         expose root cause for class not found exceptions
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-526'>ACT-526</a>] -         Provide Money tasks example code from userguide in repository
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-540'>ACT-540</a>] -         Distill db name from the datasource
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-571'>ACT-571</a>] -         Upgrade KickStart to Vaadin 6.5.0
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-574'>ACT-574</a>] -         Rename service task resultVariableName to resultVariable
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-623'>ACT-623</a>] -         Simplify access to process engine configuration through Context
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-632'>ACT-632</a>] -         Update repo link
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-642'>ACT-642</a>] -         Include MIT license file in the activiti-modeler.war distribution file
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-645'>ACT-645</a>] -         Merge Administrator branch into trunk
+</li>
+</ul>
+        
+
+  
   <h3>Release Notes - Activiti - Version 5.2</h3>
     
   <h4>Highlights</h4>
