@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">
+
+<chapter>
+  <title>Getting Started</title>
+  
+  <section id="demo.setup.one.minute.version">
+    <title>One minute version</title>
+    <para>
+      After downloading the Activiti distribution zip file from the Activiti website,
+      follow these steps to get the demo setup running with default settings:
+      <itemizedlist>
+        <listitem>
+          <para>Unzip the Activiti distribution zip file.</para>
+        </listitem>
+        <listitem>
+          <para>Open up a terminal window and navigate to the <literal>setup</literal>
+          folder in the unzipped folder.</para>
+        </listitem>
+        <listitem>
+          <para>Type <emphasis role="bold">ant demo.start</emphasis> and hit enter.</para>
+        </listitem>
+        <listitem>
+          <para>When the script finishes, it starts up all the Activiti webapps in your
+          browser. Login with kermit/kermit.</para>
+        </listitem>
+      </itemizedlist>
+      That's it! If you want to know more, read the <link linkend="demo.setup">longer version</link>.
+    </para>
+  </section>
+  
+  <section id="demo.setup">
+    <title>Demo setup</title>
+    <para>'Demo Setup' is an ant script located in directory <literal>setup</literal> that
+    sets up an Activiti environment in no time.
+    </para>
+    <para>To run the script, you'll need a working 
+    <ulink url="http://java.sun.com/javase/downloads/index.jsp">Java runtime</ulink> and
+    <ulink url="http://ant.apache.org/bindownload.cgi">Ant</ulink> installation.
+    Also make sure that the <emphasis>JAVA_HOME</emphasis> and <emphasis>ANT_HOME</emphasis> system
+    variables are correctly set. The way to do this depends on your operating system, but the
+    <ulink url="http://ant.apache.org/manual/install.html">manual of ant</ulink> gives a description
+    on how to do this. The demo setup script is tested with Ant 1.7.1+.
+    </para>
+    <para>If you don't provide any parameters, the demo setup will boot using default settings.
+    To configure the setup for your environment, update the property files <literal>build.properties</literal> 
+    and <literal>build.{your-database}.properties</literal> .  Check those files for more information on 
+    configurable properties and potential values. 
+    </para>
+    <para>The easiest way to get started is open a command prompt in de <literal>setup</literal> folder 
+    and type:
+    </para>
+    <programlisting>ant demo.start</programlisting>
+    <para>This ant target will start a tomcat and a H2 database if you didn't change the default seetings.
+    The first time when the script is executed, it will also perform following installations:  
+    </para>
+    <itemizedlist>
+      <listitem><para>(*) Build the webapps.  All libraries are stored in <literal>${actviti.home}/setup/files/dependencies/libs</literal>
+        The webapps without the libs are stored in <literal>${actviti.home}/setup/files/webapps</literal>. Building the webapps means that
+        webapps are combined with the necessary libraries in <literal>${actviti.home}/setup/build/webapps</literal> 
+      </para></listitem>
+      <listitem><para>(*) Install the H2 in ${activiti.home}/apps/h2.  This only happens if you're using h2 as your database.  
+        H2 is the default database.</para></listitem>
+      <listitem><para>Start the H2 database.  Again, this is only done if using h2 as the database.  If you're using 
+        a different database it is assumed that it is already up and running.</para></listitem>
+      <listitem><para>(*) Create the Activiti tables in the database</para></listitem>
+      <listitem><para>(*) Insert the demo users and groups in the Activiti identity tables (see below)</para></listitem>
+      <listitem><para>(*) Deploy the example processes to the Activiti Engine DB</para></listitem>
+      <listitem><para>(*) Download Tomcat if not available in the ${downloads.dir}</para></listitem>
+      <listitem><para>(*) Install Tomcat in ${activiti.home}/apps/apache-tomcat-${tomcat.version}</para></listitem>
+      <listitem><para>(*) Create an Activiti configuration jar</para></listitem>
+      <listitem><para>(*) Deploy the REST interface webapp into tomcat</para></listitem>
+      <listitem><para>(*) Download the Activiti Modeler webapp to ${activiti.home}/webapps.  The license for the Activiti Modeler 
+      is <ulink url="http://en.wikipedia.org/wiki/MIT_License">MIT</ulink>.</para></listitem>
+      <listitem><para>(*) Deploy the Probe, Explorer and Modeler webapps into tomcat.</para></listitem>
+      <listitem><para>Start tomcat</para></listitem>
+    </itemizedlist>
+    <para>(*) only performed the first time when running <literal>ant demo.start</literal> </para>
+    <para>After running this target H2 and Tomcat will be running in the background.  To stop those 
+    processes run <literal>ant demo.stop</literal>.</para>
+    <para>The other targets in that build script can also be called individually and they will take the 
+    configurable properties into account. Run <literal>ant -p</literal> for more details.
+    </para>
+    <para>These are the demo users:</para>
+    <table>
+      <title>The demo users</title>
+      <tgroup cols='3'>
+        <thead>
+          <row>
+            <entry>UserId</entry>
+            <entry>Password</entry>
+            <entry>Security roles</entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry>kermit</entry>
+            <entry>kermit</entry>
+            <entry>admin</entry>
+          </row>
+          <row>
+            <entry>gonzo</entry>
+            <entry>gonzo</entry>
+            <entry>manager</entry>
+          </row>
+          <row>
+            <entry>fozzie</entry>
+            <entry>fozzie</entry>
+            <entry>user</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+    
+    <para>Now you can access following web applications:</para>
+    <table>
+      <title>The webapp tools</title>
+      <tgroup cols='4'>
+        <thead>
+          <row>
+            <entry>Webapp Name</entry>
+            <entry>URL</entry>
+            <entry>Description</entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry>Activiti Probe</entry>
+            <entry><ulink url="http://localhost:8080/activiti-probe">http://localhost:8080/activiti-probe</ulink> </entry>
+            <entry>The admin management console.  Use this tool to see if the configured process engine is 
+            correctly initialized, DB tables contents.
+            </entry>
+          </row>
+          <row>
+            <entry>Activiti Explorer</entry>
+            <entry><ulink url="http://localhost:8080/activiti-explorer">http://localhost:8080/activiti-explorer</ulink> </entry>
+            <entry>The process engine user console.  Use this tool to view your personal and candidate task lists and to 
+            complete tasks.
+            </entry>
+          </row>
+          <row>
+            <entry>Activiti Cycle</entry>
+            <entry><ulink url="http://localhost:8080/activiti-cycle">http://localhost:8080/activiti-cycle</ulink> </entry>
+            <entry>The Activiti collabotation tool. Use this to browse repositories and execute transformations between model formats.
+            </entry>
+          </row>
+          <row>
+            <entry>Activiti Modeler powered by Signavio</entry>
+            <entry><ulink url="http://localhost:8080/activiti-modeler">http://localhost:8080/activiti-modeler</ulink></entry>
+            <entry>The web based process designer tool.  Use this tool to graphically author BPMN 2.0 compliant process definitions 
+            files.</entry>
+          </row>
+           <row>
+            <entry>Activiti KickStart</entry>
+            <entry><ulink url="http://localhost:8080/activiti-kickstart">http://localhost:8080/activiti-kickstart</ulink></entry>
+            <entry>Allows to specify processes quickly and efficiently in an adhoc way.
+            Simple processes, quick prototypes and adhoc workflow are created in no time using KickStart.</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+    
+    <para>
+      Note that the Activiti demo setup is a way of showing the capabilities and functionality of
+      Activiti as easy and as fast as possible. This does however, <emphasis role="bold">not</emphasis> mean
+      that it is the only way of using Activiti. As Activiti is 'just a jar', it can 
+      be embedded in any Java environment: with swing or on a Tomcat, JBoss, WebSphere, etc.
+      Or you could very well choose to run Activiti as a typical, standalone BPM server.
+      If it is possible in Java, it is possible with Activiti!
+    </para>
+  </section>
+  
+  <section id="examples">
+    <title>Example projects in the workspace</title>
+    <para>The distribution contains a workspace directory containing a couple of example java projects:
+    </para>
+    <itemizedlist>
+      <listitem>
+	      <para><emphasis role="bold">activiti-engine-examples</emphasis>: This set of 
+	      examples show the most common usage of Activiti: BPMN process definitions 
+	      and process executions are stored in a DB and the examples make use of 
+	      the persistent API.</para>
+	      <para>This project contains the eclipse project files, an ant build file 
+	      and a maven pom file.  The ant build file is independent of the maven pom.  Both
+	      are there to show how you can use ant and maven respectively for building and deploying processes
+	      as part of your build.
+	      </para>
+      </listitem>
+      <listitem><para><emphasis role="bold">activiti-spring-examples</emphasis>: These examples
+      show how you can use the Activiti Engine in a Spring environment.    
+      </para></listitem>
+      <listitem><para><emphasis role="bold">activiti-groovy-examples</emphasis>: These examples
+      show the library dependencies for groovy and an example process with groovy scripting.    
+      </para></listitem>
+      <listitem><para><emphasis role="bold">activiti-jpa-examples</emphasis>: These examples
+      show library dependencies and how you can work with JPA in Activiti.    
+      </para></listitem>
+      <listitem><para><emphasis role="bold">activiti-cxf-examples</emphasis>: These examples
+      show library dependencies and how you can work with web services in Activiti.    
+      </para></listitem>
+      <listitem><para><emphasis role="bold">activiti-cycle-examples</emphasis>: This is a 
+      project containing an demo example project for Activiti Cycle 
+      </para></listitem>
+      <listitem><para><emphasis role="bold">activiti-modeler-examples</emphasis>: This is a 
+      file based model repository to which the Activiti Modeler is configured in the 
+      demo setup. 
+      </para></listitem>
+    </itemizedlist>
+    <para><xref linkend="eclipsesetup" /> shows how you can set up your eclipse environment to 
+    play with these example projects.
+    </para>
+    <para>As part of the <literal>demo.start</literal>, the examples will be inflated.  This 
+    means that all the libs and configuration files will be put in place.  If you don't run the <literal>demo.start</literal> 
+    and you want to inflate the examples with libs in the appropriate place,  
+    run this command in the setup directory:
+    </para>
+    <programlisting>ant inflate.examples</programlisting>
+    <para>Once you've done that the <literal>activiti-engine-examples</literal> and 
+    <literal>activiti-spring-examples</literal> will contain <literal>libs-runtime</literal>
+    and <literal>libs-test</literal> directories containing the runtime dependency jars and 
+    test time dependency jars respectively.</para>
+  </section>
+  
+  <section id="librarydependencies">
+    <title>Library dependencies</title>
+    <para>In order to prevent that the distribution file becomes too big by libraries that are included multiple times,
+    all the libraries are grouped into a single directory somewhere in the <literal>setup/files</literal>. 
+    </para>
+    <para>The ant scripts in the <literal>setup/build.xml</literal> can inflate the examples (target <literal>inflate.examples</literal>) with 
+    the libs and they will include the appropriate libs when building the webapps. 
+    </para>
+    <para>All the libs are located in <literal>setup/files/dependencies/libs</literal> 
+    And the following files in <literal>setup/files/dependencies</literal> describe the library dependencies:
+    </para>
+    <itemizedlist>
+      <listitem><para><literal>libs.engine.runtime.txt</literal>: The library runtime dependencies to run 
+        the Activiti Engine.
+      </para></listitem>
+      <listitem><para><literal>libs.engine.runtime.test.txt</literal>: The libraries that need to be added 
+        to the ones in <literal>libs.engine.runtime.txt</literal> to run the tests
+      </para></listitem>
+      <listitem><para><literal>libs.engine.runtime.feature.groovy.txt</literal>: The libraries that need to be added 
+        to the ones in <literal>libs.engine.runtime.txt</literal> to use the groovy scripting capabilities.  
+      </para></listitem>
+      <listitem><para><literal>libs.engine.runtime.txt</literal>: The libraries that need to be added 
+        to the ones in <literal>libs.engine.runtime.txt</literal> to use the JPA variable reference capabilities.
+      </para></listitem>
+      <listitem><para><literal>libs.spring.runtime.txt</literal>: The library runtime dependencies to run 
+        the Activiti Engine in a Spring environment.  (This list includes the libs in <literal>libs.engine.runtime.txt</literal>)
+      </para></listitem>
+      <listitem><para><literal>libs.spring.runtime.test.txt</literal>: The libraries that need to be added 
+        to the ones in <literal>libs.spring.runtime.txt</literal> to run tests in a Spring environment 
+      </para></listitem>
+      <listitem><para><literal>libs.cycle.runtime.test.txt</literal>, <literal>libs.webapp.rest.txt</literal>
+        and <literal>libs.webapp.ui.txt</literal>: The full list of libraries dependencies for the respective components
+        cycle, the rest webapp and the UI webapps like Activiti Explorer, Activiti Probe and Activiti Cycle  
+      </para></listitem>
+    </itemizedlist>
+  </section>
+  
+  <section id="eclipsesetup">
+    <title>Eclipse setup</title>
+    <para>To run and play with the examples in your eclipse, follow these simple instructions:
+    </para>
+    <para>File --> Import...</para>
+    <mediaobject><imageobject><imagedata align="center" fileref="images/eclipsesetup.import.existing.projects.png"/></imageobject></mediaobject>
+    <para>Select <literal>General --> Existing Projects into Workspace</literal> and click <literal>Next</literal> </para>
+    <mediaobject><imageobject><imagedata align="center" fileref="images/eclipsesetup.import.png"/></imageobject></mediaobject>
+    <para>Click 'Browse...', select the directory <literal>${activiti.home}/workspace</literal> and you'll see 
+    the example projects being automatically selected.
+    </para>
+    <para>Then you can click <literal>Finish</literal> in the Import dialog and you're all set.</para>
+    <para>For more convenience, open the ant view (Window --> Show View --> Ant) and drag the 
+    file <literal>activiti-engine-examples/build.xml</literal> into the ant window.  
+    Now you'll be able to activate the build targets by just double clicking on them.</para>
+    <para>If you want BPMN 2.0 XML auto-completion and validation while typing, you can add the BPMN 2.0
+      XML Schema to the XML catalog. Go to <literal>Preferences --> XML --> XML Catalog --> Add</literal>, 
+      and select the XML Schema from the file system in the folder <literal>docs/xsd/BPMN20.xsd</literal>.
+      <mediaobject><imageobject><imagedata align="center" fileref="images/eclipse.setup.xml.catalog.png"/></imageobject></mediaobject>
+    </para>
+  </section>
+  
+  <section id="inspecting.database">
+    <title>Inspecting the database</title>
+    <para>
+      To check out the database while trying out the demo setup, run the following Ant target 
+      in the <emphasis>setup</emphasis> folder:
+      <programlisting>ant h2.console.start</programlisting>
+      This will boot the H2 web console. Note that the Ant target doesn't return, so a <emphasis>'CTRL + C'</emphasis>
+      is required to shutdown the console.
+      Fill in the following URL in the <emphasis>JDBC URL</emphasis> field
+      and click connect:
+      <programlisting>jdbc:h2:tcp://localhost/activiti</programlisting>
+      <mediaobject><imageobject><imagedata align="center" fileref="images/h2.console.login.png"/></imageobject></mediaobject>
+      You are now able to browse the Activiti database schema and check the content of the tables.
+    </para>
+    <para>To change the database, see <xref linkend="changingTheDatabase" />
+    </para>
+  </section>
+  
+  <section id="database.tables.explained">
+    <title>Database table names</title>
+    <para>
+      The database names of Activiti all start with <emphasis role="bold">ACT_</emphasis>. The 
+      second part is a two-character identification of use case of the table. This use case 
+      will also roughly match the service API.
+      <itemizedlist>
+        <listitem>
+          <para>
+            <emphasis role="bold">ACT_RE_*</emphasis>: 'RE' stands for <literal>repository</literal>. 
+            Tables with this prefix will contain 'static'' information such as process definitions and,
+            process resources (images, rules, etc.).
+          </para>
+        </listitem>
+         <listitem>
+          <para>
+            <emphasis role="bold">ACT_RU_*</emphasis>: 'RE' stands for <literal>runtime</literal>.
+            These are the runtime tables, that contain the runtime data of process instances,
+            user tasks,variables, jobs, etc. Activiti only stores the runtime data during process instance
+            execution, and removes the records when a process instance ends. This keeps 
+            the runtime tables small and fast.
+          </para>
+        </listitem>
+         <listitem>
+          <para>
+            <emphasis role="bold">ACT_ID_*</emphasis>: 'ID' stands for <literal>identity</literal>.
+            These tables contain identity information, suchas users, groups, etc.
+          </para>
+        </listitem>
+         <listitem>
+          <para>
+            <emphasis role="bold">ACT_HI_*</emphasis>: 'HI' stands for <literal>history</literal>.
+            These are the tables that contain historic data, such as past process instances,
+            variables, tasks, etc.
+          </para>
+        </listitem>
+         <listitem>
+          <para>
+            <emphasis role="bold">ACT_GE_*</emphasis>: <literal>general</literal> data, which is used
+            in various use cases.
+          </para>
+        </listitem>
+      </itemizedlist>
+    </para>
+  </section>
+  
+</chapter>

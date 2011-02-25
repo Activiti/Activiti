@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<page>
+  <id>jobs</id>
+  <title>Jobs</title>
+  <template-instance>standard</template-instance>
+  <authentication>admin</authentication>
+  <components>
+    <component>
+      <region-id>main1</region-id>
+      <url>/component/jobs</url>
+    </component>
+  </components>
+</page>

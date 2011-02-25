@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions xmlns:activiti="http://activiti.org/bpmn" id="sid-00be6558-49c4-4c46-bb85-c18f49f79820" targetNamespace="http://www.omg.org/bpmn20" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL">
+    <process name="EasyBugFilingProcess" id="EasyBugFilingProcess">
+        
+        <startEvent name="new bug report filed" id="new_bug_report_filed" activiti:formKey="fileBug.form"/>
+        <userTask activiti:assignee="kermit" name="Handle bug" id="Handle_bug" activiti:formKey="handleBug.form"/>
+        <exclusiveGateway gatewayDirection="Diverging" name="is bug?" id="is_bug_"/>
+        <serviceTask activiti:class="com.camunda.training.delegate.FileIssueDelegate" name="insert into issue tracker" id="insert_into_issue_tracker"/>
+        <exclusiveGateway gatewayDirection="Converging" name="" id="Exclusive_Databased_Gateway"/>
+        <serviceTask name="send notification email to customer" id="send_notification_email_to_customer" activiti:type="mail">
+  <extensionElements>
+    <activiti:field name="from" stringValue="activiti@camunda.com" />
+    <activiti:field name="to" expression="${email}" />
+    <activiti:field name="subject" expression="Your issue id ${execution.id} has been worked on" />
+    <activiti:field name="html">
+      <activiti:expression>
+        <![CDATA[
+          <html>
+            <body>
+              Hello from Activiti.
+            </body>
+          </html>
+        ]]>
+      </activiti:expression>
+    </activiti:field>      
+  </extensionElements>
+</serviceTask>               
+        <endEvent name="" id="EndNoneEvent"/>
+        <sequenceFlow targetRef="Handle_bug" sourceRef="new_bug_report_filed" name="" id="SequenceFlow_1"/>
+        <sequenceFlow targetRef="is_bug_" sourceRef="Handle_bug" name="" id="SequenceFlow"/>
+        <sequenceFlow targetRef="insert_into_issue_tracker" sourceRef="is_bug_" name="" id="SequenceFlow_2">
+            <conditionExpression xsi:type="tFormalExpression" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">${isBug}</conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow targetRef="Exclusive_Databased_Gateway" sourceRef="insert_into_issue_tracker" name="" id="SequenceFlow_3"/>
+        <sequenceFlow targetRef="send_notification_email_to_customer" sourceRef="Exclusive_Databased_Gateway" name="" id="SequenceFlow_4"/>
+        <sequenceFlow targetRef="EndNoneEvent" sourceRef="send_notification_email_to_customer" name="" id="SequenceFlow_5"/>
+        <sequenceFlow targetRef="Exclusive_Databased_Gateway" sourceRef="is_bug_" name="" id="SequenceFlow_6">
+            <conditionExpression xsi:type="tFormalExpression" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">${!isBug}</conditionExpression>
+        </sequenceFlow>
+    </process>
+    
+</definitions>

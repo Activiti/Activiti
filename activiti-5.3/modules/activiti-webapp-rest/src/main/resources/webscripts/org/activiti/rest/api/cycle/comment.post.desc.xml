@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Create a cycle repository node comment</shortname>
+  <description>Creates a cycle repository node comment and writes it to the database.</description>
+  <url>/comment</url>
+  <authentication>user</authentication>
+  <format default="json">argument</format>
+</webscript>

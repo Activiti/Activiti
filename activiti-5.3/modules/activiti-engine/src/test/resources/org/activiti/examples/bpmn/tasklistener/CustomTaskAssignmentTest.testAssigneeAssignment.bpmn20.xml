@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="taskListenerExample" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+	targetNamespace="Examples">
+	
+	<process id="setAssigneeInListener" name="Custom task assignment Example">
+	
+		<startEvent id="theStart" />
+		
+		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="task1" />
+
+		<userTask id="task1" name="Schedule meeting" >
+		  <documentation>
+		    Schedule a meeting with management.
+		  </documentation>
+		  <extensionElements>
+		    <activiti:taskListener event="create" class="org.activiti.examples.bpmn.tasklistener.AssigneeAssignment" />
+		  </extensionElements>
+		</userTask>
+		
+		<sequenceFlow id="flow2" sourceRef="task1" targetRef="theEnd" />
+		
+		<endEvent id="theEnd" />
+		
+	</process>
+
+</definitions>

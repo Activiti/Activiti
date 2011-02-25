@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<name>Activiti - JBPM - Migration</name>
+	<groupId>org.activiti</groupId>
+	<artifactId>activiti-jbpm-migration</artifactId>
+
+	<properties>
+		<current.version>5.3-SNAPSHOT</current.version>
+	</properties>
+
+	<parent>
+		<groupId>org.activiti</groupId>
+		<artifactId>activiti-root</artifactId>
+		<relativePath>../..</relativePath>
+		<version>5.3-SNAPSHOT</version>
+	</parent>
+
+	<dependencies>
+		<!-- jBPM 3 -->
+		<dependency>
+			<groupId>org.jbpm.jbpm3</groupId>
+			<artifactId>jbpm-jpdl</artifactId>
+			<version>3.3.1.GA</version>
+			<exclusions>
+				<exclusion>
+					<!-- The asm dependency of hibernate doesnt seem to be correct, so excluding 
+						it here, and including working version below -->
+					<groupId>asm</groupId>
+					<artifactId>asm</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>asm</groupId>
+					<artifactId>asm-attrs</artifactId>
+				</exclusion>
+				<!-- Excluding all other dependencies that we don't need -->
+				<exclusion>
+					<groupId>org.apache.ant</groupId>
+					<artifactId>ant</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.jackrabbit</groupId>
+					<artifactId>jackrabbit-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>asm</groupId>
+			<artifactId>asm</artifactId>
+			<version>3.3</version>
+		</dependency>
+		<!-- Database -->
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+		</dependency>
+		<!-- Activiti -->
+		<dependency>
+			<groupId>org.activiti</groupId>
+			<artifactId>activiti-engine</artifactId>
+		</dependency>
+		<!-- Testing -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+          <appendAssemblyId>false</appendAssemblyId>
+					<descriptors>
+						<descriptor>src/main/assembly.xml</descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">
+
+<chapter>
+
+  <title>Activiti Cycle</title>
+  
+  <para>
+    Activiti Cycle is a web application that provides a collaborative platform for different stakeholders of BPM projects (Business, developers, IT operations, ...).
+    It combines different repositories like the Activiti Modeler repository, Subversion or your local file system into a single view, 
+    which makes it easy to browse all the artifacts that are involved in the process of creating an executable business process. 
+    In addition to this, Activiti Cycle provides built in actions like moving artifacts between repositories or downloading different
+    formats of process models, and a plug-in infrastructure for custom actions. Below is a screen shot of Cycle in a default 
+    configuration as pre-configured in the demo setup.
+    
+    <emphasis role="bold">Please note: Activiti Cycle is still in a "beta" state.</emphasis>
+    With collaborative tools like Activiti Cycle we dont have years of experience yet, like we have with the core engine. Currently
+    most features are already stable, but with adding more use cases and features, we still have to do some tuning of the APIs or database tables. 
+    This means, that for example the Plugin-API is still subject to change, which you have to know when you start writing own Plug-Ins. 
+    Or the database might change without having out-of-the-box database migration scripts ready. But be sure: We work hard on removing the beta status,
+    meaning you will get a stable API and database schema.
+  </para>
+  
+  <mediaobject><imageobject><imagedata align="center" fileref="images/activiti.cycle.png"/></imageobject></mediaobject>
+  
+  <section>
+    <title>Overview</title>  
+    <para>
+      Since Activiti Cycle is meant to be used by people with entirely different roles, backgrounds and requirements, it was build 
+      with customization and extensibility in mind. However, the plug-in infrastructure which is already present in the current release
+       is just a first step to make it possible to tailor Cycle to your specific needs. Future versions will provide a revised plug-in mechanism, 
+       a user interface to configure and plug in repositories, tags to dynamically add meta data to artifacts and a commenting function to 
+       directly collaborate on an artifact level. You can find a brief introduction to the initial version of Activiti Cycle and the vision 
+       behind it in the article <ulink url="http://www.bpm-guide.de/2010/08/27/activiti-cycle-explained/">Activiti Cycle explained</ulink>.
+    </para>
+  </section>
+
+  <section>
+    <title>Repositories</title>
+    <mediaobject><imageobject><imagedata align="center" fileref="images/activiti.cycle.repositories.png"/></imageobject></mediaobject>
+    <para>
+        The above image shows the Activiti Cycle repository tree.
+        By default it provides access to the repository of the Activiti Modeler
+        and a demo Eclipse workspace, which is located at
+        <literal>${activiti.home}/workspace/activiti-cycle-examples</literal>
+        in your local file system.
+        The repositories are plugged in as repository connectors.        
+        You'll find the configuration in
+        the table <literal>CYCLE_CONN_CONFIG</literal> in the Activiti database,
+        which you can access as described in <xref linkend="inspecting.database"/>.        
+    </para>
+    
+    <para>
+    	The database schema has 6 columns:     
+   		<orderedlist>
+    	<listitem>
+			<literal>PLUGIN_ID_</literal>: The plugin-id of the connector (e.g.
+			&quot;org.activiti.cycle.impl.connector.fs.FileSystemConnector&quot;
+			for the filesystem connector and
+			&quot;org.activiti.cycle.impl.connector.signavio.SignavioConnector&quot;
+			for the connector to the activiti modeler.)
+    	</listitem>
+    	<listitem>
+			<literal>INSTANCE_NAME_</literal>: Name of the connector instance. This is the string
+			which is rendered as root folder for this connector in the cycle
+			repository tree. Note that it is possible to use the same connector
+			multiple times, to connect to different repositories
+			of the same type (e.g. to multiple eclipse workspaces using the
+			filesystem connector). In that case the <literal>CYCLE_CONN_CONFIG</literal>
+			will contain multiple lines with the same <literal>PULGIN_ID_</literal> but different
+			<literal>INSTANCE_NAME_</literal>s and different <literal>INSTANCE_ID_</literal>s (see below).
+    	</listitem>
+    	<listitem>
+    		<literal>INSTANCE_ID_</literal>: is used internally to address a connector instance.
+    	</listitem>
+    	<listitem>
+    		<literal>USER_</literal>: the user the current connector instance is configured for.
+			(NOTE: This
+			is not the login-name for the connector, but the Activiti Cycle
+			username, e.g. &quot;kermit&quot; in the demo-configuration.)		
+	   	</listitem>
+	   	<listitem>
+	   		<literal>GROUP_</literal>: a connector instance can be either configured for a single user, or for a group. 
+	   		If the &quot;GROUP_&quot; field is set for a given connector instance, cycle will load this instance for every 
+	   		user belonging to that group. 
+	   	</listitem>
+	   	<listitem>
+	   		<literal>VALUES_</literal>: an XML string containing the values for the current configuration. 
+	   		It is a serialized map of the form <literal>&lt;map&gt;(&lt;entry&gt;&lt;string&gt;KEY&lt;/string&gt;&lt;string&gt;VALUE&lt;/string&gt;&lt;/entry&gt;)*&lt;/map&gt;</literal> 
+	   	</listitem>
+    	</orderedlist>    
+    </para>
+    
+    Executing the following SQL statement sets the default configuration for &quot;kermit&quot;, including an instance of the 
+    filesystem connector and an instance of the signavio connector used to access the activiti modeler repository:
+    	            
+    <programlisting>
+insert into ACT_CY_CONN_CONFIG values ('1', 
+			'org.activiti.cycle.impl.connector.fs.FileSystemConnector',
+			'Eclipse Workspace (File System)',
+			'Workspace',
+			'kermit', '',
+			'&lt;map&gt;&lt;entry&gt;&lt;string&gt;basePath&lt;/string&gt;&lt;string&gt;/path-to-activiti-home/activiti-5.0.beta2/workspace/activiti-cycle-examples&lt;/string&gt;&lt;/entry&gt;&lt;/map&gt;');
+			
+insert into ACT_CY_CONN_CONFIG values ('2', 
+			'org.activiti.cycle.impl.connector.signavio.SignavioConnector',
+			'Activiti Modeler',
+			'Activiti',
+			'kermit', '',
+			'&lt;map&gt;
+				&lt;entry&gt;&lt;string&gt;signavioBaseUrl&lt;/string&gt;&lt;string&gt;http://localhost:8080/activiti-modeler/&lt;/string&gt;&lt;/entry&gt;
+				&lt;entry&gt;&lt;string&gt;loginRequired&lt;/string&gt;&lt;boolean&gt;false&lt;/boolean&gt;&lt;/entry&gt;
+			&lt;/map&gt;');   	  
+</programlisting>
+    
+    <para>
+        Now, if you want to add, e.g., a Signavio Process Modeler repository,
+        you can add a configuration for the <literal>PLUGIN_ID_</literal> 'org.activiti.cycle.impl.connector.signavio.SignavioConnector'.
+        If you need a Signavio account, you can register for a free trial
+        at the <ulink url="http://www.signavio.com">Signavio web site</ulink>.
+        Here is an example configuration:
+    </para>
+    
+    <programlisting>
+&lt;map&gt;
+	&lt;entry&gt;&lt;string&gt;signavioBaseUrl&lt;/string&gt;&lt;string&gt;https://editor.signavio.com/&lt;/string&gt;&lt;/entry&gt;
+	&lt;entry&gt;&lt;string&gt;loginRequired&lt;/string&gt;&lt;boolean&gt;true&lt;/boolean&gt;&lt;/entry&gt;
+	&lt;entry&gt;&lt;string&gt;username&lt;/string&gt;&lt;string&gt;your user name&lt;/string&gt;&lt;/entry&gt;
+	&lt;entry&gt;&lt;string&gt;password&lt;/string&gt;&lt;string&gt;secret&lt;/string&gt;&lt;/entry&gt;
+&lt;/map&gt;
+    </programlisting>
+    
+    <para>
+        You may also choose not to save your username and password in the database
+        and leaving 'username' and 'password' empty. Cycle will then ask you for your credentials when it needs them.
+    </para>
+
+    <para>
+        Another thing you might consider
+        is to add a collection of BPMN examples from
+        the <ulink url="http://oryx-project.org/">Oryx Project</ulink>.
+        In order to do this, you need a connector configuration for the <literal>PLUGIN_ID_</literal> 
+        'org.activiti.cycle.impl.connector.signavio.SignavioConnector':
+    </para>
+    
+    <programlisting>
+&lt;map&gt;
+	&lt;entry&gt;&lt;string&gt;type&lt;/string&gt;&lt;string&gt;oryx&lt;/string&gt;&lt;/entry&gt;
+	&lt;entry&gt;&lt;string&gt;signavioBaseUrl&lt;/string&gt;&lt;string&gt;http://oryx-project.org/&lt;/string&gt;&lt;/entry&gt;
+	&lt;entry&gt;&lt;string&gt;loginRequired&lt;/string&gt;&lt;boolean&gt;false&lt;/boolean&gt;&lt;/entry&gt;
+&lt;/map&gt;
+    </programlisting>
+    	    	
+  </section>
+  
+  <section>
+    <title>Artifacts and Actions</title>
+    <para>
+      When you click an item in the repository tree — in Activiti Cycle we refer to them as artifacts — the details are displayed on the right side. 
+      Currently, not all files are supported, but we aim to provide useful default views for the most common file types. 
+      In addition to the views, there is a set of actions that can be executed on the artifact.      
+    </para>
+    <mediaobject><imageobject><imagedata align="center" fileref="images/activiti.cycle.action.forms.png"/></imageobject></mediaobject>
+    <para>
+      The actions can be seen as examples what Cycle can do for you, will be extended in future and can be a starting point for your additional actions
+      written in your own plugin.
+    </para>
+  </section>
+
+  <section>
+    <title>More Plug-Ins</title>
+    <para>
+      More Cycle Plug-Ins are available, for example SVN and SFTP Connectors or a Maven Project Wizard. These Plug-Ins are available
+      as seperate download to keep the Cycle core small, the dependencies manageable and to allow creating Plug-Ins requiring 
+      dependencies with non Apache compatible licenses.
+     You can find additional Plug-Ins ready for download on this 
+      <ulink url="http://fox.camunda.com/cycle-plugins/">Cycle Plug-In Page</ulink>.
+    </para>
+  </section>  
+  
+</chapter>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="HistoricVariableUpdateProcess">
+  
+    <startEvent id="start" />
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="setVariables" />
+
+    <serviceTask id="setVariables" activiti:class="org.activiti.standalone.history.VariableSetter" />
+    <sequenceFlow id="flow2" sourceRef="setVariables" targetRef="task" />
+    
+    <userTask id="task" name="Schedule meeting" activiti:assignee="kermit" />
+    <sequenceFlow id="flow3" sourceRef="task" targetRef="end" />
+    
+    <endEvent id="end" />
+    
+  </process>
+
+</definitions>
