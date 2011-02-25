@@ -8,14 +8,14 @@
 	<artifactId>activiti-jbpm-migration</artifactId>
 
 	<properties>
-		<current.version>5.3-SNAPSHOT</current.version>
+		<current.version>5.4-SNAPSHOT</current.version>
 	</properties>
 
 	<parent>
 		<groupId>org.activiti</groupId>
 		<artifactId>activiti-root</artifactId>
 		<relativePath>../..</relativePath>
-		<version>5.3-SNAPSHOT</version>
+		<version>5.4-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>
