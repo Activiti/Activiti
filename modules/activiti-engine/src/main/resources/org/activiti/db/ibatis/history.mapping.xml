@@ -490,13 +490,13 @@
         HD.PROC_INST_ID_ = #{processInstanceId}
       </if>
       <if test="activityId != null">
-        HD.ACT_INST_ID_ = #{activityId}
+        and HD.ACT_INST_ID_ = #{activityId}
       </if>
       <if test="activityInstanceId != null">
-        HD.ACT_INST_ID_ = #{activityInstanceId}
+        and HD.ACT_INST_ID_ = #{activityInstanceId}
       </if>
       <if test="taskId != null">
-        HD.TASK_ID_ = #{taskId}
+        and HD.TASK_ID_ = #{taskId}
       </if>
       <if test="type != null">
         and HD.TYPE_ = #{type}

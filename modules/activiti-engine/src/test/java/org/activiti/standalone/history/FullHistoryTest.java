@@ -341,7 +341,11 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     // Query on process-instance
     assertEquals(2, historyService.createHistoricDetailQuery().variableUpdates().processInstanceId(processInstance.getId()).count());
     assertEquals(0, historyService.createHistoricDetailQuery().variableUpdates().processInstanceId("unexisting").count());
-    
+
+    // Query both process-instance and activity-instance
+    assertEquals(2, historyService.createHistoricDetailQuery().variableUpdates()
+            .activityInstanceId(null)
+            .processInstanceId(processInstance.getId()).count());
   }
   
   @Deployment(
