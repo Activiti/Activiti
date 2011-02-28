@@ -603,7 +603,6 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
     <open-html-page url="http://localhost:8080/activiti-modeler" />
     <open-html-page url="http://localhost:8080/activiti-cycle" />
   	<open-html-page url="http://localhost:8080/activiti-kickstart" />
-  	<open-html-page url="http://localhost:8080/activiti-administrator" />  
   </target>
 	
 	<macrodef name="open-html-page">
