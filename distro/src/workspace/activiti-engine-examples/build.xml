@@ -2,7 +2,7 @@
 
 <project name="activiti.engine.examples" default="deploy">
 	
-  <property name="webapp.rest.dir" value="../../apps/apache-tomcat-6.0.29/webapps/activiti-rest" />
+  <property name="webapp.rest.dir" value="../../apps/apache-tomcat-6.0.32/webapps/activiti-rest" />
   
   <target name="clean">
     <delete dir="target" />
