@@ -180,7 +180,7 @@
 
   <target name="jboss.download" unless="is.jboss.available">
     <mkdir dir="${downloads.dir}" />
-    <get src="${jboss.download.url}" dest="${tomcat.distro}" />
+    <get src="${jboss.download.url}" dest="${jboss.distro}" />
   </target>
 
   <target name="jboss.unzip">
