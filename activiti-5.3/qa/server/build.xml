@@ -10,7 +10,7 @@
   <property name="tx" value="standalone" /> <!-- {standalone|jta} -->
 	<property name="downloads.dir" value="${user.home}/.activiti/downloads" />
 
-	<property name="tomcat.version" value="6.0.29" />
+	<property name="tomcat.version" value="6.0.32" />
 	<property name="tomcat.home" value="${activiti.home}/apps/apache-tomcat-${tomcat.version}" />
 	
   <property name="jboss.version" value="5.1.0.GA" />
@@ -26,7 +26,7 @@
     <os family="windows" />
   </condition>
 	
-  <condition property="server.home" value="${activiti.home}/apps/apache-tomcat-6.0.29">
+  <condition property="server.home" value="${activiti.home}/apps/apache-tomcat-6.0.32">
     <equals arg1="${server}" arg2="tomcat6x" />
   </condition>
 
