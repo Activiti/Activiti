@@ -162,6 +162,13 @@
             <entry>Allows to specify processes quickly and efficiently in an adhoc way.
             Simple processes, quick prototypes and adhoc workflow are created in no time using KickStart.</entry>
           </row>
+           <row>
+            <entry>Activiti Administrator</entry>
+            <entry><ulink url="http://localhost:8080/activiti-administrator">http://localhost:8080/activiti-administrator</ulink></entry>
+            <entry>A webapp to administer the users and groups.  Currently this is realized as a seperate app, but we plan to 
+            unify some of the webapps into a single webapp with authorization.
+            </entry>
+          </row>
         </tbody>
       </tgroup>
     </table>
