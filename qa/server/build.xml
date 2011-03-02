@@ -55,13 +55,14 @@
     <antcall target="${server}.start" />
 
     <echo message="Running server tests..." />
-  	
+
   	<mkdir dir="target/junit-reports" />
     <junit fork="yes" failureproperty="tests.failed">
       <jvmarg value="-Xms1024m"/>
       <jvmarg value="-Xmx1024m"/>
       <classpath>
         <pathelement location="../../modules/activiti-cactus/target/classes" />
+        <pathelement location="cactus.conf" />
         <fileset dir="target/cactus/lib" />
       </classpath>
       <formatter type="xml"/>
@@ -95,6 +96,13 @@
         <include name="ant-*" />
       </fileset>
     </delete>
+    <!-- taskdef resource="cactus.tasks">
+      <classpath>
+        <fileset dir="target/cactus/lib">
+          <include name="*.jar"/>
+        </fileset>
+      </classpath>
+    </taskdef -->
     <copy file="../../modules/activiti-cactus/target/activiti-cactus-${activiti.version}.war" 
           tofile="target/activiti-server-testing.war" 
           overwrite="true" />
@@ -180,7 +188,7 @@
 
   <target name="jboss.download" unless="is.jboss.available">
     <mkdir dir="${downloads.dir}" />
-    <get src="${jboss.download.url}" dest="${jboss.distro}" />
+    <get src="${jboss.download.url}" dest="${tomcat.distro}" />
   </target>
 
   <target name="jboss.unzip">

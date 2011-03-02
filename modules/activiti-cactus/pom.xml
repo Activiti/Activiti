@@ -41,6 +41,14 @@
       <version>1.8.1</version>
     </dependency>
 
+    <dependency>
+      <!-- necessary for deploying cactus on tomcat.  excluded for jboss below -->
+      <groupId>jaxen</groupId>
+      <artifactId>jaxen</artifactId>
+      <version>1.1.1</version>
+    </dependency>
+    
+
     <!-- Jar containing cactus targets to use in ant -->
     <dependency>
       <groupId>org.apache.cactus</groupId>
@@ -129,6 +137,7 @@
             </goals>
             <configuration>
               <outputDirectory>../../qa/server/target/cactus/lib</outputDirectory>
+              <includeScope>test</includeScope>
             </configuration>
           </execution>
         </executions>
@@ -189,6 +198,21 @@
 	        </exclusion>
 	      </exclusions>
 	    </dependency>
+      <dependency>
+        <groupId>jaxen</groupId>
+        <artifactId>jaxen</artifactId>
+        <version>1.1.1</version>
+        <exclusions>
+          <exclusion>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
      </dependencies>
     </profile>
   </profiles>
