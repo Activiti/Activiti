@@ -29,7 +29,7 @@ import org.apache.commons.mail.SimpleEmail;
  * @author Joram Barrez
  * @author Frederik Heremans
  */
-public class MailActivityBehavior implements ActivityBehavior {
+public class MailActivityBehavior extends FlowNodeActivityBehavior {
 
   private Expression to;
   private Expression from;
@@ -62,6 +62,7 @@ public class MailActivityBehavior implements ActivityBehavior {
     } catch (EmailException e) {
       throw new ActivitiException("Could not send e-mail", e);
     }
+    leave(execution);
   }
 
   protected Email createEmail(String text, String html) {

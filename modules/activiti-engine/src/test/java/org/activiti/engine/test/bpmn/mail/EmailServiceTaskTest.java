@@ -56,7 +56,7 @@ public class EmailServiceTaskTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testSimpleTextMail() throws Exception {
-    runtimeService.startProcessInstanceByKey("simpleTextOnly");
+    String procId = runtimeService.startProcessInstanceByKey("simpleTextOnly").getId();
     
     List<WiserMessage> messages = wiser.getMessages();
     assertEquals(1, messages.size());
@@ -64,6 +64,7 @@ public class EmailServiceTaskTest extends PluggableActivitiTestCase {
     WiserMessage message = messages.get(0);
     assertEmailSend(message, false, "Hello Kermit!", "This a text only e-mail.", "activiti@localhost",
             Arrays.asList("kermit@activiti.org"), null);
+    assertProcessEnded(procId);
   }
   
   @Deployment
