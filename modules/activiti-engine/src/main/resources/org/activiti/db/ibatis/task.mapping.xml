@@ -112,6 +112,9 @@
     <foreach collection="variables" index="index" item="var">
       inner join ACT_RU_VARIABLE A${index} on T.ID_ = A${index}.TASK_ID_ 
     </foreach>
+    <if test="processDefinitionKey != null || processDefinitionName != null">
+      inner join ACT_RE_PROCDEF D on T.PROC_DEF_ID_ = D.ID_
+    </if>
     <where>
       <if test="taskId != null">
         T.ID_ = #{taskId}
@@ -157,6 +160,15 @@
       </if>
       <if test="keyLike != null">
         and T.TASK_DEF_KEY_ like #{keyLike}
+      </if>
+      <if test="processDefinitionId != null">
+        and T.PROC_DEF_ID_ = #{processDefinitionId}
+      </if>
+      <if test="processDefinitionKey != null">
+        and D.KEY_ = #{processDefinitionKey}
+      </if>
+      <if test="processDefinitionName != null">
+        and D.NAME_ = #{processDefinitionName}
       </if>
       <if test="candidateUser != null || candidateGroups != null">
         and T.ASSIGNEE_ is null

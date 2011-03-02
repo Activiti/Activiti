@@ -94,6 +94,24 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
    */
   TaskQuery taskVariableValueEquals(String variableName, Object variableValue);
   
+  /**
+   * Only select tasks which are part of a process instance which have the given
+   * process definition key.
+   */
+  TaskQuery processDefinitionKey(String processDefinitionKey);
+  
+  /**
+   * Only select tasks which are part of a process instance which have the given
+   * process definition id.
+   */
+  TaskQuery processDefinitionId(String processDefinitionId);
+  
+  /**
+   * Only select tasks which are part of a process instance which have the given
+   * process definition name.
+   */
+  TaskQuery processDefinitionName(String processDefinitionName);
+  
   // ordering ////////////////////////////////////////////////////////////
   
   /** Order by task id (needs to be followed by {@link #asc()} or {@link #desc()}). */

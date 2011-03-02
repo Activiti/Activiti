@@ -49,6 +49,9 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   protected Date createTimeAfter;
   protected String key;
   protected String keyLike;
+  protected String processDefinitionKey;
+  protected String processDefinitionId;
+  protected String processDefinitionName;
   protected List<QueryVariableValue> variables = new ArrayList<QueryVariableValue>();
   
   public TaskQueryImpl(CommandContext commandContext) {
@@ -176,6 +179,21 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   
   public TaskQuery taskVariableValueEquals(String variableName, Object variableValue) {
     variables.add(new QueryVariableValue(variableName, variableValue, QueryOperator.EQUALS));
+    return this;
+  }
+  
+  public TaskQuery processDefinitionKey(String processDefinitionKey) {
+    this.processDefinitionKey = processDefinitionKey;
+    return this;
+  }
+
+  public TaskQuery processDefinitionId(String processDefinitionId) {
+    this.processDefinitionId = processDefinitionId;
+    return this;
+  }
+  
+  public TaskQuery processDefinitionName(String processDefinitionName) {
+    this.processDefinitionName = processDefinitionName;
     return this;
   }
   
@@ -314,5 +332,14 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   }
   public List<QueryVariableValue> getVariables() {
     return variables;
+  }
+  public String getProcessDefinitionKey() {
+    return processDefinitionKey;
+  }
+  public String getProcessDefinitionId() {
+    return processDefinitionId;
+  }
+  public String getProcessDefinitionName() {
+    return processDefinitionName;
   }
 }
