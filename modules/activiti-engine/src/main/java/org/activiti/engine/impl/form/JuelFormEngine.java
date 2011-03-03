@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.form;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.form.FormData;
 import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.form.TaskFormData;
@@ -57,6 +58,10 @@ public class JuelFormEngine implements FormEngine {
       .getCommandContext()
       .getRepositorySession()
       .findResourceByDeploymentIdAndResourceName(deploymentId, formKey);
+    
+    if (resourceStream == null) {
+      throw new ActivitiException("Form with formKey '"+formKey+"' does not exist");
+    }
     
     byte[] resourceBytes = resourceStream.getBytes();
     String formTemplateString = new String(resourceBytes);

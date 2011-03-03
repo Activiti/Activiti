@@ -7,12 +7,12 @@
   
   <process id="FormsProcess">
   
-    <startEvent id="start" activiti:formKey="org/activiti/engine/test/forms/start.form" />
+    <startEvent id="start" activiti:formKey="org/activiti/engine/test/api/form/start.form" />
 
     <sequenceFlow id="flow1" sourceRef="start" targetRef="task" />
     
     <userTask id="task"
-              activiti:formKey="org/activiti/engine/test/forms/task.form"
+              activiti:formKey="org/activiti/engine/test/api/form/task.form"
               activiti:assignee="kermit" />
 
     <sequenceFlow id="flow2" sourceRef="task" targetRef="wait" />

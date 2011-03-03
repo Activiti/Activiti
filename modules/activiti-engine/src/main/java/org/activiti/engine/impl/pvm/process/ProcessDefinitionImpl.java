@@ -31,6 +31,7 @@ public class ProcessDefinitionImpl extends ScopeImpl implements PvmProcessDefini
   private static final long serialVersionUID = 1L;
   
   protected String name;
+  protected String description;
   protected ActivityImpl initial;
   protected List<ActivityImpl> initialActivityStack;
 
@@ -103,4 +104,9 @@ public class ProcessDefinitionImpl extends ScopeImpl implements PvmProcessDefini
   public void setName(String name) {
     this.name = name;
   }
+  
+  public String getDescription() {
+    return (String) getProperty("documentation");
+  }
+  
 }

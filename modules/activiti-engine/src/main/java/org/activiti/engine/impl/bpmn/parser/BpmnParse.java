@@ -89,12 +89,13 @@ public class BpmnParse extends Parse {
 
   protected static final Logger LOGGER = Logger.getLogger(BpmnParse.class.getName());
 
+  public static final String PROPERTYNAME_DOCUMENTATION = "documentation";
+  public static final String PROPERTYNAME_INITIAL = "initial";
+  public static final String PROPERTYNAME_INITIATOR_VARIABLE_NAME = "initiatorVariableName";
   public static final String PROPERTYNAME_CONDITION = "condition";
   public static final String PROPERTYNAME_CONDITION_TEXT = "conditionText";
   public static final String PROPERTYNAME_VARIABLE_DECLARATIONS = "variableDeclarations";
   public static final String PROPERTYNAME_TIMER_DECLARATION = "timerDeclarations";
-  public static final String PROPERTYNAME_INITIAL = "initial";
-  public static final String PROPERTYNAME_INITIATOR_VARIABLE_NAME = "initiatorVariableName";
   public static final String PROPERTYNAME_ISEXPANDED = "isExpanded";
 
   /** The deployment to which the parsed process definitions will be added. */
@@ -378,19 +379,6 @@ public class BpmnParse extends Parse {
       return operation;
     }
   }
-
-  /**
-   * Parses all the process definitions defined within the 'definitions' root
-   * element.
-   * 
-   * @param definitionsElement
-   *          The root element of the XML file.
-   */
-  public void parseProcessDefinitions() {
-    for (Element processElement : rootElement.elements("process")) {
-      processDefinitions.add(parseProcess(processElement));
-    }
-  }
   
   public void parseErrors() {
     for (Element errorElement : rootElement.elements("error")) {
@@ -413,6 +401,19 @@ public class BpmnParse extends Parse {
   }
 
   /**
+   * Parses all the process definitions defined within the 'definitions' root
+   * element.
+   * 
+   * @param definitionsElement
+   *          The root element of the XML file.
+   */
+  public void parseProcessDefinitions() {
+    for (Element processElement : rootElement.elements("process")) {
+      processDefinitions.add(parseProcess(processElement));
+    }
+  }
+  
+  /**
    * Parses one process (ie anything inside a &lt;process&gt; element).
    * 
    * @param processElement
@@ -434,14 +435,9 @@ public class BpmnParse extends Parse {
     processDefinition.setKey(processElement.attribute("id"));
     processDefinition.setName(processElement.attribute("name"));
     processDefinition.setCategory(rootElement.attribute("targetNamespace"));
-    processDefinition.setProperty("documentation", parseDocumentation(processElement));
+    processDefinition.setProperty(PROPERTYNAME_DOCUMENTATION, parseDocumentation(processElement));
     processDefinition.setTaskDefinitions(new HashMap<String, TaskDefinition>());
     processDefinition.setDeploymentId(deployment.getId());
-    
-//    String historyLevelText = processElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "history");
-//    if (historyLevelText!=null) {
-//      processDefinition.setHistoryLevel(ProcessEngineConfigurationImpl.parseHistoryLevel(historyLevelText));
-//    }
 
     if (LOGGER.isLoggable(Level.FINE)) {
       LOGGER.fine("Parsing process " + processDefinition.getKey());

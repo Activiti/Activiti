@@ -211,24 +211,6 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     identityService.deleteUser(user.getId());
   }
 
-  public void testGetTaskFormNullTaskId() {
-    try {
-      formService.getRenderedTaskForm(null);
-      fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
-      // Expected Exception
-    }
-  }
-  
-  public void testGetTaskFormUnexistingTaskId() {
-    try {
-      formService.getRenderedTaskForm("unexistingtask");
-      fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
-      assertTextPresent("Task 'unexistingtask' not found", ae.getMessage());
-    }
-  }
-  
   public void testCompleteTaskNullTaskId() {
     try {
       taskService.complete(null);

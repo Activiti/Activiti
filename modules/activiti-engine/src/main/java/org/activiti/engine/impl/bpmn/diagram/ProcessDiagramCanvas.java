@@ -156,6 +156,7 @@ public class ProcessDiagramCanvas {
     
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     try {
+      // Try to remove white space
       minX = (minX <= 5) ? 5 : minX;
       minY = (minY <= 5) ? 5 : minY;
       BufferedImage imageToSerialize = processDiagram;

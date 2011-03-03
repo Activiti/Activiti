@@ -146,6 +146,10 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   public void setKey(String key) {
     this.key = key;
   }
+  
+  public String getDescription() {
+    return (String) getProperty(BpmnParse.PROPERTYNAME_DOCUMENTATION);
+  }
 
   public String getDeploymentId() {
     return deploymentId;

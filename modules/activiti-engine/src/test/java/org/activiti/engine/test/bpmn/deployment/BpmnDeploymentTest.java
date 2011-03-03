@@ -113,4 +113,11 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
     assertEquals("org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testMultipleDiagramResourcesProvided.c.jpg", processC.getDiagramResourceName());
   }
   
+  @Deployment
+  public void testProcessDefinitionDescription() {
+    String id = repositoryService.createProcessDefinitionQuery().singleResult().getId();
+    ReadOnlyProcessDefinition processDefinition = ((RepositoryServiceImpl) repositoryService).getDeployedProcessDefinition(id);
+    assertEquals("This is really good process documentation!", processDefinition.getDescription());
+  }
+  
 }

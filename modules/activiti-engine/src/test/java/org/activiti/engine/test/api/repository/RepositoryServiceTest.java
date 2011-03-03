@@ -96,59 +96,6 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
     repositoryService.deleteDeployment(processDefinition.getDeploymentId(), true);
   }
   
-  @Deployment(resources = { 
-          "org/activiti/examples/taskforms/VacationRequest.bpmn20.xml", 
-          "org/activiti/examples/taskforms/approve.form", 
-          "org/activiti/examples/taskforms/request.form", 
-          "org/activiti/examples/taskforms/adjustRequest.form" })
-  public void testGetStartFormByProcessDefinitionId() {
-    List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
-    assertEquals(1, processDefinitions.size());
-    ProcessDefinition processDefinition = processDefinitions.get(0);
-    
-    Object startForm = formService.getRenderedStartForm(processDefinition.getId());
-    assertNotNull(startForm);
-  }
-  
-  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
-  public void testGetStartFormByProcessDefinitionIdWithoutStartform() {
-    List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
-    assertEquals(1, processDefinitions.size());
-    ProcessDefinition processDefinition = processDefinitions.get(0);
-    
-    Object startForm = formService.getRenderedStartForm(processDefinition.getId());
-    assertNull(startForm);
-  }
-  
-  public void testGetStartFormByKeyNullKey() {
-    try {
-      formService.getRenderedStartForm(null);    
-      fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
-      // Exception expected
-    }
-  }
-  
-  public void testGetStartFormByIdNullId() {
-    try {
-      formService.getRenderedStartForm(null);    
-      fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
-      // Exception expected
-    }
-  }
-  
-  public void testGetStartFormByIdUnexistingProcessDefinitionId() {
-    try {
-      formService.getRenderedStartForm("unexistingId");    
-      fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
-      assertTextPresent("no deployed process definition found with id", ae.getMessage());
-    }
-  }
-  
-  
-  
   public void testFindDeploymentResourceNamesNullDeploymentId() {
     try {
       repositoryService.getDeploymentResourceNames(null);    

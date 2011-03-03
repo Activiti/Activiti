@@ -16,7 +16,7 @@ import org.activiti.engine.FormService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.runtime.ProcessInstance;
 
-/** Is an object structure representing an executable process composed of 
+/** An object structure representing an executable process composed of 
  * activities and transitions.
  * 
  * Business processes are often created with graphical editors that store the
@@ -54,7 +54,7 @@ public interface ProcessDefinition {
   /** The deployment in which this process definition is contained. */
   String getDeploymentId();
   
-  /** The resource name in the deployment of the diagram image. */
+  /** The resource name in the deployment of the diagram image (if any). */
   String getDiagramResourceName();
 
   /** Does this process definition has a {@link FormService#getStartFormData(String) start form key}. */

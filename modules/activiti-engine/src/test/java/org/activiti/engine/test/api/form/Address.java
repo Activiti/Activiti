@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.test.forms;
+package org.activiti.engine.test.api.form;
 
 import java.io.Serializable;
 

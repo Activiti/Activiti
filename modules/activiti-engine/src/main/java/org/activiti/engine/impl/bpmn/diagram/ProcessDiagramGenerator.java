@@ -247,6 +247,7 @@ public class ProcessDiagramGenerator {
       
     }
     
+    // Outgoing transitions of activity
     for (PvmTransition sequenceFlow : activity.getOutgoingTransitions()) {
       List<Integer> waypoints = ((TransitionImpl) sequenceFlow).getWaypoints();
       for (int i=2; i < waypoints.size(); i+=2) { // waypoints.size() minimally 4: x1, y1, x2, y2 
@@ -262,6 +263,8 @@ public class ProcessDiagramGenerator {
         }
       }
     }
+    
+    // Nested activities (boundary events)
     for (ActivityImpl nestedActivity : activity.getActivities()) {
       drawActivity(processDiagramCanvas, nestedActivity, highLightedActivities);
     }
@@ -302,9 +305,15 @@ public class ProcessDiagramGenerator {
           if (waypoints.get(i) > maxX) {
             maxX = waypoints.get(i);
           }
+          if (waypoints.get(i) < minX) {
+            minX = waypoints.get(i);
+          }
           // height
           if (waypoints.get(i+1) > maxY) {
             maxY = waypoints.get(i+1);
+          }
+          if (waypoints.get(i+1) < minY) {
+            minY = waypoints.get(i+1);
           }
         }
       }
