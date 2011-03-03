@@ -264,7 +264,7 @@
         #{startTime, jdbcType=TIMESTAMP},
         #{endTime, jdbcType=TIMESTAMP},
         #{durationInMillis ,jdbcType=BIGINT},
-        #{deleteReason ,jdbcType=BIGINT},
+        #{deleteReason ,jdbcType=VARCHAR},
         #{taskDefinitionKey ,jdbcType=VARCHAR},
         #{priority, jdbcType=INTEGER}
       )
