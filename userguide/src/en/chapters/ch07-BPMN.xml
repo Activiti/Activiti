@@ -2822,10 +2822,31 @@ public void testExecutionListenerFieldInjection() {
         <listitem>
           <para>
             <emphasis role="bold">event</emphasis> (required): the type of task event on which the task listener will
-            be invoked. Possible values are <emphasis role="bold">'create'</emphasis> (occurs when the task 
-            has been created an all task properties are set), <emphasis role="bold">'assignment'</emphasis> 
-            (occurs when the task is assigned to somebody) or <emphasis role="bold">'complete'</emphasis>
-            (occurs when the task is completed and just before the task is deleted from the runtime data).
+            be invoked. Possible events are 
+            <itemizedlist>
+              <listitem>
+                <para> 
+                  <emphasis role="bold">create</emphasis>: occurs when the task 
+                  has been created an <emphasis role="bold">all task properties are set</emphasis>.
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  <emphasis role="bold">assignment</emphasis>: occurs when the task is assigned to somebody.
+                  Note: when process execution arrives in a userTask, first an 
+                  <emphasis>assignment</emphasis> event will be fired, <emphasis role="bold">before</emphasis>
+                  the <emphasis>create</emphasis> event is fired. This might seem an unnatural order, 
+                  but the reason is pragmatic: when receiving the <emphasis>create</emphasis> event,
+                  we usually want to inspect all properties of the task including the assignee.
+                </para>
+              </listitem>  
+              <listitem>
+                <para>
+                  <emphasis role="bold">complete</emphasis>: occurs when the task is completed 
+                  and just before the task is deleted from the runtime data.
+                </para>
+              </listitem>            
+            </itemizedlist>
           </para>
         </listitem>
         <listitem>
