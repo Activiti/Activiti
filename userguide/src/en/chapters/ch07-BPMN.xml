@@ -3365,7 +3365,7 @@ public class MyTaskCreateListener implements TaskListener {
                 <title>Description</title>
 
         <para>
-          An timer intermediate event acts as a stopwatch. When an execution arrives
+          A timer intermediate event acts as a stopwatch. When an execution arrives
           in catching event activity, a timer is started.
           When the timer fires (e.g. after a specified interval), the sequence flow going out of the timer intermediate event is followed.
         </para>

@@ -102,7 +102,7 @@ public class ActivitiServletTestCase extends TestCase {
     } else if (Test.class.isAssignableFrom(testClass)) {
       // Test case, should be wrapped in TestSuite to have all
       // test-methods turned into a single Test
-      TestSuite testSuite = new TestSuite(testClass);
+      ServletTestSuite testSuite = new ServletTestSuite(testClass);
       suite.addTest(testSuite);
     } else {
       throw new RuntimeException("Class " + classname + " is not a TestCase nor a TestSuite");
