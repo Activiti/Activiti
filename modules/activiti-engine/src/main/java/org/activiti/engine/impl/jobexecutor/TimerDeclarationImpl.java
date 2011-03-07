@@ -14,8 +14,8 @@ package org.activiti.engine.impl.jobexecutor;
 
 import java.io.Serializable;
 
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
-import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.runtime.TimerEntity;
 
 

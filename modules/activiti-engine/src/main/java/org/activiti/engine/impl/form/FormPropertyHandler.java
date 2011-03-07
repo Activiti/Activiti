@@ -16,8 +16,8 @@ package org.activiti.engine.impl.form;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.form.FormProperty;
-import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 
 

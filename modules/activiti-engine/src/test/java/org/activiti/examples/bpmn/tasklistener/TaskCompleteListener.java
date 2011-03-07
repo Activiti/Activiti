@@ -13,7 +13,7 @@
 package org.activiti.examples.bpmn.tasklistener;
 
 import org.activiti.engine.delegate.DelegateTask;
-import org.activiti.engine.impl.el.Expression;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.pvm.delegate.TaskListener;
 
 

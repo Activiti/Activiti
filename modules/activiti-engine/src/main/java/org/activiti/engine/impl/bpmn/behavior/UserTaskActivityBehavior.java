@@ -15,7 +15,7 @@ package org.activiti.engine.impl.bpmn.behavior;
 import java.util.Collection;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.el.Expression;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.TaskListener;

@@ -15,7 +15,7 @@ package org.activiti.engine.impl.bpmn.data;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.impl.el.Expression;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 /**

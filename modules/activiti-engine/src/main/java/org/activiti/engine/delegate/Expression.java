@@ -1,4 +1,3 @@
-
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -11,22 +10,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.examples.bpmn.servicetask;
 
-import org.activiti.engine.delegate.Expression;
-import org.activiti.engine.delegate.JavaDelegate;
-import org.activiti.engine.delegate.DelegateExecution;
+package org.activiti.engine.delegate;
+
 
 
 /**
- * @author Joram Barrez
+ * @author Frederik Heremans
  */
-public class ToUpperCaseFieldInjected implements JavaDelegate {
-  
-  private Expression text;
-  
-  public void execute(DelegateExecution execution) {
-    execution.setVariable("var", ((String)text.getValue(execution)).toUpperCase());
-  }
-  
+public interface Expression {
+
+   Object getValue(VariableScope variableScope);
+   
+   void setValue(Object value, VariableScope variableScope);
+   
+   String getExpressionText();
+   
 }

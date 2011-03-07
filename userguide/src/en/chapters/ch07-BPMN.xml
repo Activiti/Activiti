@@ -1944,7 +1944,7 @@ public class ToUppercase implements JavaDelegate {
           If available, the value is injected through a public setter method on your delegated class, folowing the Java Bean naming conventions (eg. field <literal>fistName</literal> has setter <literal>setFirstName(...)</literal>).
           If no setter is available for that field, the value of private member will be set on the delegate. SecurityManagers in some environments don't allow modifying private fields,
           so it's safer to expose a public setter-method for the fields you want to have injected. <emphasis role="bold">Regardless of the type of value declared in the process-definition, the type of the setter/private field on the injection target should always be 
-          <literal>org.activiti.engine.impl.el.Expression</literal>.</emphasis>
+          <literal>org.activiti.engine.delegate.Expression</literal>.</emphasis>
         </para>
         <para>
           The following code snippet shows how to inject a constant value into a field. Field injection
@@ -1961,7 +1961,7 @@ public class ToUppercase implements JavaDelegate {
   &lt;/extensionElements&gt;</emphasis>           
 &lt;/serviceTask&gt;        
           </programlisting>
-          The class <literal>ToUpperCaseFieldInjected</literal> has a field <literal>text</literal> which is of type <literal>org.activiti.engine.impl.el.Expression</literal>. 
+          The class <literal>ToUpperCaseFieldInjected</literal> has a field <literal>text</literal> which is of type <literal>org.activiti.engine.delegate.Expression</literal>. 
           When calling <literal>text.getValue(execution)</literal>, the configured string value <literal>Hello World</literal> will be returned.
         </para>
         <para>
@@ -1985,7 +1985,7 @@ public class ToUppercase implements JavaDelegate {
         <para>
         To inject values that are dynamically resolved at runtime, expressions can be used. Those expressions can use process variables, or Spring defined beans (if Spring is used).
         As noted in <link linkend="bpmnJavaServiceTaskImplementation">Service Task Implementation</link>, an instance of the Java class is shared among all process-instances in a service task.
-        To have dynamic injection of values in fields, you can inject value and method expressions in a <literal>org.activiti.engine.impl.el.Expression</literal> 
+        To have dynamic injection of values in fields, you can inject value and method expressions in a <literal>org.activiti.engine.delegate.Expression</literal> 
         which can be evaluated/invoked using the <literal>DelegateExecution</literal> passed in the <literal>execute</literal> method.
 <programlisting>
 &lt;serviceTask id=&quot;javaService&quot; name=&quot;Java service invocation&quot; 

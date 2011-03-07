@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.activiti.engine.impl.el.Expression;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.pvm.delegate.TaskListener;
 

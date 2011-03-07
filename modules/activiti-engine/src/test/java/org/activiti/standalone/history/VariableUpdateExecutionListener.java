@@ -14,7 +14,7 @@
 package org.activiti.standalone.history;
 
 
-import org.activiti.engine.impl.el.Expression;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
 
