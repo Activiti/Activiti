@@ -71,6 +71,9 @@ public interface DelegateTask extends VariableScope {
   /** Refers to a {@link User.getId() user} which is the owner or person responsible for completing this task. */
   String getAssignee();
   
+  /** Returns the event name which triggered the task listener to fire for this task. */
+  String getEventName();
+  
   /** Adds the given user as a candidate user to this task. */
   void addCandidateUser(String userId);
   
