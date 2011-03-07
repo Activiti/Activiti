@@ -89,10 +89,16 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   TaskQuery taskDefinitionKeyLike(String keyLike);
   
   /**
-   * Only select tasks with have a local task variable with the given name
+   * Only select tasks which have a local task variable with the given name
    * set to the given value.
    */
   TaskQuery taskVariableValueEquals(String variableName, Object variableValue);
+  
+  /**
+   * Only select tasks which have are part of a process that have a variable
+   * with the given name set to the given value.
+   */
+  TaskQuery processVariableValueEquals(String variableName, Object variableValue);
   
   /**
    * Only select tasks which are part of a process instance which have the given

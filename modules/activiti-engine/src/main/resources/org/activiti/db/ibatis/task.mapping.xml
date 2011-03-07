@@ -110,7 +110,14 @@
       inner join ACT_RU_IDENTITYLINK I on I.TASK_ID_ = T.ID_
     </if>
     <foreach collection="variables" index="index" item="var">
-      inner join ACT_RU_VARIABLE A${index} on T.ID_ = A${index}.TASK_ID_ 
+      <choose>
+        <when test="var.taskVariable">
+          inner join ACT_RU_VARIABLE A${index} on T.ID_ = A${index}.TASK_ID_ 
+        </when>
+        <otherwise>
+          inner join ACT_RU_VARIABLE A${index} on T.PROC_INST_ID_ = A${index}.PROC_INST_ID_ 
+        </otherwise>
+      </choose>       
     </foreach>
     <if test="processDefinitionKey != null || processDefinitionName != null">
       inner join ACT_RE_PROCDEF D on T.PROC_DEF_ID_ = D.ID_
@@ -191,6 +198,10 @@
         )
       </if>
       <foreach item="var" collection="variables" index="index">
+        <if test="!var.taskVariable">
+          <!-- When process instance variable is queried for, taskId should be null -->
+          and A${index}.TASK_ID_ is null
+        </if>
         and A${index}.NAME_= #{var.name}
         <if test="!var.type.equals('null')">
           and A${index}.TYPE_ = #{var.type}
