@@ -1877,16 +1877,7 @@ public class FakeLdapService {
         at this particular step, it will execute this logic defined in that method and leave 
         the activity in the default BPMN 2.0 way.
       </para>  
-      <para><link linkend="experimental"><emphasis role="bold">[EXPERIMENTAL]</emphasis></link>
-        It is also possible to provide a class that implements the 
-        <emphasis>org.activiti.engine.impl.pvm.delegate.ActivityBehavior</emphasis> interface.
-        Implementations have then access to the more powerful <emphasis>ActivityExecution</emphasis>
-        that for example also allows to influence the control flow of the process. Note however
-        that this is not a very good practice, and should be avoided as much as possible.
-        So, it is advised to use the <emphasis>ActivityBehavior</emphasis> interface only for 
-        advanced use cases and if you know exactly what you're doing.
-      </para>
-      
+
       <para>
         Let's create for example a Java class that can be used to change a process variable String
         to uppercase. This class needs to implement the <emphasis>org.activiti.engine.delegate.JavaDelegate</emphasis>
@@ -1907,24 +1898,34 @@ public class ToUppercase implements JavaDelegate {
   
 }
 </programlisting>
-        </para>
-        <para>
-          Note: there will be <emphasis role="bold">only one instance of that Java class created for the serviceTask it is defined on</emphasis>.
-          All process-instances share the same class instance that will be used to call <emphasis>execute(DelegateExecution)</emphasis>. 
-          This means that the class must not use any member variables and must be thread-safe, since it can be executed simultaneously from different threads.
-          This also influences the way <link linkend="serviceTaskFieldInjection">Field injection</link> is handled.
-        </para>
-        <para>
-          The classes that are referenced in the process definition (ie by using <literal>activiti:class</literal>) are <emphasis role="bold">NOT
-          instantiated during deployment</emphasis>. Only when a process execution arrives 
-          for the first time at the point in the process where the class is used, an instance
-          of that class will be created. If the class cannot be found, an <literal>ActivitiException</literal>
-          will be thrown. The reasoning for this is that the environment (and more
-          specifically the <emphasis>classpath</emphasis>) when you are deploying is often
-          different from the actual runtime environment. For example when using <emphasis>ant</emphasis>
-          or the business archive upload in Activiti Probe to deploy processes,
-          the classpath does not contain the referenced classes.  
-        </para>
+      </para>
+      <para>
+        Note: there will be <emphasis role="bold">only one instance of that Java class created for the serviceTask it is defined on</emphasis>.
+        All process-instances share the same class instance that will be used to call <emphasis>execute(DelegateExecution)</emphasis>. 
+        This means that the class must not use any member variables and must be thread-safe, since it can be executed simultaneously from different threads.
+        This also influences the way <link linkend="serviceTaskFieldInjection">Field injection</link> is handled.
+      </para>
+      <para>
+        The classes that are referenced in the process definition (ie by using <literal>activiti:class</literal>) are <emphasis role="bold">NOT
+        instantiated during deployment</emphasis>. Only when a process execution arrives 
+        for the first time at the point in the process where the class is used, an instance
+        of that class will be created. If the class cannot be found, an <literal>ActivitiException</literal>
+        will be thrown. The reasoning for this is that the environment (and more
+        specifically the <emphasis>classpath</emphasis>) when you are deploying is often
+        different from the actual runtime environment. For example when using <emphasis>ant</emphasis>
+        or the business archive upload in Activiti Probe to deploy processes,
+        the classpath does not contain the referenced classes.  
+      </para>
+      <para><link linkend="experimental"><emphasis role="bold">[EXPERIMENTAL]</emphasis></link>
+        It is also possible to provide a class that implements the 
+        <emphasis>org.activiti.engine.impl.pvm.delegate.ActivityBehavior</emphasis> interface.
+        Implementations have then access to the more powerful <emphasis>ActivityExecution</emphasis>
+        that for example also allows to influence the control flow of the process. Note however
+        that this is not a very good practice, and should be avoided as much as possible.
+        So, it is advised to use the <emphasis>ActivityBehavior</emphasis> interface only for 
+        advanced use cases and if you know exactly what you're doing.
+      </para>
+      
      
      </section>
      
