@@ -79,7 +79,6 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     } catch(ActivitiException ae) {
       // Expected exception
     }
-    
   }
   
   @Deployment
@@ -157,6 +156,27 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
   }
   
   @Deployment
+  public void testHistoricTaskInstanceQueryProcessFinished() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("TwoTaskHistoricTaskQueryTest");
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    
+    // Running task on running process should be available
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().processUnfinished().count());
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().processFinished().count());
+    
+    // Finished and running task on running process should be available
+    taskService.complete(task.getId());
+    assertEquals(2, historyService.createHistoricTaskInstanceQuery().processUnfinished().count());
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().processFinished().count());
+    
+    // 2 finished tasks are found for finished process after completing last task of process
+    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    taskService.complete(task.getId());
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().processUnfinished().count());
+    assertEquals(2, historyService.createHistoricTaskInstanceQuery().processFinished().count());
+  }
+  
+  @Deployment
   public void testHistoricTaskInstanceQuerySorting() {
     ProcessInstance instance = runtimeService.startProcessInstanceByKey("HistoricTaskQueryTest");
     
@@ -173,6 +193,8 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByTaskName().asc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByTaskDefinitionKey().asc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByTaskPriority().asc().count());    
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByTaskAssignee().asc().count());    
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByTaskId().asc().count());    
     
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByDeleteReason().desc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByExecutionId().desc().count());    
@@ -184,6 +206,8 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByTaskName().desc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByTaskDefinitionKey().desc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByTaskPriority().desc().count());    
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByTaskAssignee().desc().count());    
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByTaskId().desc().count());    
   }
   
   public void testInvalidSorting() {

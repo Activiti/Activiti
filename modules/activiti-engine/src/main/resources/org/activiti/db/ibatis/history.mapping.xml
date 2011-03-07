@@ -335,6 +335,9 @@
   
   <sql id="selectHistoricTaskInstancesByQueryCriteriaSql">
     from ACT_HI_TASKINST HTI
+    <if test="processFinished || processUnfinished">
+      inner join ACT_HI_PROCINST HPI ON HTI.PROC_INST_ID_ = HPI.ID_
+    </if>
     <where>
       <if test="taskId != null">
         HTI.ID_ = #{taskId}
@@ -382,7 +385,13 @@
         and HTI.END_TIME_ is null
       </if>
       <if test="finished">
-       and HTI.END_TIME_ is not null
+        and HTI.END_TIME_ is not null
+      </if>
+      <if test="processFinished">
+        and HPI.END_TIME_ is not null
+      </if>
+      <if test="processUnfinished">
+        and HPI.END_TIME_ is null
       </if>
     </where>
   </sql>

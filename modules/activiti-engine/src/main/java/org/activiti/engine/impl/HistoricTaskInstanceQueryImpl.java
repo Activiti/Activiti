@@ -42,6 +42,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
   protected Integer taskPriority;
   protected boolean finished;
   protected boolean unfinished;
+  protected boolean processFinished;
+  protected boolean processUnfinished;
 
   public HistoricTaskInstanceQueryImpl(CommandExecutor commandExecutor) {
     super(commandExecutor);
@@ -142,9 +144,24 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
     this.taskPriority = taskPriority;
     return this;
   }
+  
+  public HistoricTaskInstanceQuery processFinished() {
+    this.processFinished = true;
+    return this;
+  }
+  
+  public HistoricTaskInstanceQuery processUnfinished() {
+    this.processUnfinished = true;
+    return this;
+  }
 
   // ordering /////////////////////////////////////////////////////////////////
 
+  public HistoricTaskInstanceQueryImpl orderByTaskId() {
+    orderBy(HistoricTaskInstanceQueryProperty.HISTORIC_TASK_INSTANCE_ID);
+    return this;
+  }
+  
   public HistoricTaskInstanceQueryImpl orderByHistoricActivityInstanceId() {
     orderBy(HistoricTaskInstanceQueryProperty.PROCESS_DEFINITION_ID);
     return this;

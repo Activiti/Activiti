@@ -104,6 +104,21 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
    */
   HistoricTaskInstanceQuery unfinished();
   
+  /**
+   * Only select historic task instances which are part of a process
+   * instance which is already finished. 
+   */
+  HistoricTaskInstanceQuery processFinished();
+  
+  /**
+   * Only select historic task instances which are part of a process
+   * instance which is not finished yet. 
+   */
+  HistoricTaskInstanceQuery processUnfinished();
+  
+  /** Order by task id (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  HistoricTaskInstanceQuery orderByTaskId();
+  
   /** 
    * Order by the historic activity instance id this task was used in
    * (needs to be followed by {@link #asc()} or {@link #desc()}). 
