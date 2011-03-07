@@ -57,7 +57,11 @@ public class FormServiceImpl extends ServiceImpl implements FormService {
   }
 
   public ProcessInstance submitStartFormData(String processDefinitionId, Map<String, String> properties) {
-    return commandExecutor.execute(new SubmitStartFormCmd(processDefinitionId, properties));
+    return commandExecutor.execute(new SubmitStartFormCmd(processDefinitionId, null, properties));
+  }
+  
+  public ProcessInstance submitStartFormData(String processDefinitionId, String businessKey, Map<String, String> properties) {
+	  return commandExecutor.execute(new SubmitStartFormCmd(processDefinitionId, businessKey, properties));
   }
 
   public void submitTaskFormData(String taskId, Map<String, String> properties) {

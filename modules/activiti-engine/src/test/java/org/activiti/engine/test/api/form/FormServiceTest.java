@@ -24,6 +24,7 @@ import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
@@ -273,6 +274,19 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     } catch (ActivitiException e) {
       assertTextPresent("Form with formKey 'IDoNotExist' does not exist", e.getMessage());
     }
+  }
+  
+  @Deployment
+  public void testSubmitStartFormDataWithBusinessKey() {
+    Map<String, String> properties = new HashMap<String, String>();
+    properties.put("duration", "45");
+    properties.put("speaker", "Mike");
+    String procDefId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
+
+    ProcessInstance processInstance = formService.submitStartFormData(procDefId, "123", properties);
+    assertEquals("123", processInstance.getBusinessKey());
+
+    assertEquals(processInstance.getId(), runtimeService.createProcessInstanceQuery().processInstanceBusinessKey("123").singleResult().getId());
   }
 
 }

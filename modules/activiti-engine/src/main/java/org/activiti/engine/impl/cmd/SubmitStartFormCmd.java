@@ -35,10 +35,12 @@ import org.activiti.engine.runtime.ProcessInstance;
 public class SubmitStartFormCmd implements Command<ProcessInstance> {
 
   protected String processDefinitionId;
+  protected final String businessKey;
   protected Map<String, String> properties;
   
-  public SubmitStartFormCmd(String processDefinitionId, Map<String, String> properties) {
+  public SubmitStartFormCmd(String processDefinitionId, String businessKey, Map<String, String> properties) {
     this.processDefinitionId = processDefinitionId;
+	this.businessKey = businessKey;
     this.properties = properties;
   }
 
@@ -50,7 +52,11 @@ public class SubmitStartFormCmd implements Command<ProcessInstance> {
     }
     
     ExecutionEntity processInstance = null;
-    processInstance = processDefinition.createProcessInstance();
+    if (businessKey != null) {
+      processInstance = processDefinition.createProcessInstance(businessKey);
+    } else {
+      processInstance = processDefinition.createProcessInstance();
+    }
 
     int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
     if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY) {

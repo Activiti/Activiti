@@ -37,6 +37,27 @@ public interface FormService {
   
   /** Start a new process instance with the user data that was entered as properties in a start form. */  
   ProcessInstance submitStartFormData(String processDefinitionId, Map<String, String> properties);
+  
+  /** 
+   * Start a new process instance with the user data that was entered as properties in a start form. 
+   * 
+   * A business key can be provided to associate the process instance with a
+   * certain identifier that has a clear business meaning. For example in an
+   * order process, the business key could be an order id. This business key can
+   * then be used to easily look up that process instance , see
+   * {@link ProcessInstanceQuery#processInstanceBusinessKey(String)}. Providing such a business
+   * key is definitely a best practice.
+   * 
+   * Note that a business key MUST be unique for the given process definition.
+   * Process instance from different process definition are allowed to have the
+   * same business key.
+   * 
+   * @param processDefinitionId the id of the process definition, cannot be null.
+   * @param businessKey a key that uniquely identifies the process instance in the context or the
+   *                    given process definition.
+   * @param properties the properties to pass, can be null.
+   */  
+  ProcessInstance submitStartFormData(String processDefinitionId, String businessKey, Map<String, String> properties);
 
   /** Retrieves all data necessary for rendering a form to complete a task.  This can be used to perform rendering of the forms outside of the process engine. */
   TaskFormData getTaskFormData(String taskId);
