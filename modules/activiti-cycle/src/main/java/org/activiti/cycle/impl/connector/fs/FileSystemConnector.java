@@ -281,16 +281,17 @@ public class FileSystemConnector extends AbstractFileSystemBasedRepositoryConnec
   }
 
   private String getLocalPath(String path) {
-    if ("".equals(getBasePath())) {
+    String basePath = getBasePath();
+    if ("".equals(basePath)) {
       // if root is configured in Unix ("/" without trailing slash = "")
       return path;
-    } else if (path.startsWith(getBasePath())) {
-      path = path.replace(getBasePath(), "");
+    } else if (path.startsWith(basePath)) {
+      path = path.replace(basePath, "");
       // replace windows style slashes
       path = path.replace("\\", "/");
       return path;
     }
-    throw new RepositoryException("Unable to determine local path! ('" + path + "')");
+    throw new RepositoryException("Unable to determine local path! (path: '" + path + "', base path: '" + basePath + "')");
   }
 
   public String[] getConfigurationKeys() {
