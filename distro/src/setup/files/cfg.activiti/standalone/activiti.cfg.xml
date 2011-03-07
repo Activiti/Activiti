@@ -12,6 +12,8 @@
     <property name="jdbcDriver" value="@jdbc.driver@" />
     <property name="jdbcUsername" value="@jdbc.username@" />
     <property name="jdbcPassword" value="@jdbc.password@" />
+    
+    <property name="jobExecutorActivate" value="true" />
 
     <property name="dbCycleUsed" value="true" />
     
