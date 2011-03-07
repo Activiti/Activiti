@@ -36,6 +36,18 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
   /** Only select historic task instances for the given process definition. */
   HistoricTaskInstanceQuery processDefinitionId(String processDefinitionId);
   
+  /**
+   * Only select historic task instances which are part of a (historic) process instance 
+   * which has the given process definition key.
+   */
+  HistoricTaskInstanceQuery processDefinitionKey(String processDefinitionKey);
+  
+  /**
+   * Only select historic task instances which are part of a (historic) process instance 
+   * which has the given definition name.
+   */
+  HistoricTaskInstanceQuery processDefinitionName(String processDefinitionName);
+  
   /** 
    * Only select historic task instances with the given task name.
    * This is the last name given to the task. 

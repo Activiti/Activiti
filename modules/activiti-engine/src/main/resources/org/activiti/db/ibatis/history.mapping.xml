@@ -338,12 +338,21 @@
     <if test="processFinished || processUnfinished">
       inner join ACT_HI_PROCINST HPI ON HTI.PROC_INST_ID_ = HPI.ID_
     </if>
+    <if test="processDefinitionKey != null || processDefinitionName != null">
+      inner join ACT_RE_PROCDEF D on HTI.PROC_DEF_ID_ = D.ID_
+    </if>
     <where>
       <if test="taskId != null">
         HTI.ID_ = #{taskId}
       </if>
       <if test="processDefinitionId != null">
         and HTI.PROC_DEF_ID_ = #{processDefinitionId}
+      </if>
+      <if test="processDefinitionKey != null">
+        and D.KEY_ = #{processDefinitionKey}
+      </if>
+      <if test="processDefinitionName != null">
+        and D.NAME_ = #{processDefinitionName}
       </if>
       <if test="processInstanceId != null">
         and HTI.PROC_INST_ID_ = #{processInstanceId}

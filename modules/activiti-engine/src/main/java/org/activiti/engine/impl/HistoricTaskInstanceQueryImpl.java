@@ -27,6 +27,8 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskInstanceQuery, HistoricTaskInstance> implements HistoricTaskInstanceQuery {
   
   protected String processDefinitionId;
+  protected String processDefinitionKey;
+  protected String processDefinitionName;
   protected String processInstanceId;
   protected String executionId;
   protected String taskId;
@@ -78,6 +80,16 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
 
   public HistoricTaskInstanceQueryImpl processDefinitionId(String processDefinitionId) {
     this.processDefinitionId = processDefinitionId;
+    return this;
+  }
+  
+  public HistoricTaskInstanceQuery processDefinitionKey(String processDefinitionKey) {
+    this.processDefinitionKey = processDefinitionKey;
+    return this;
+  }
+  
+  public HistoricTaskInstanceQuery processDefinitionName(String processDefinitionName) {
+    this.processDefinitionName = processDefinitionName;
     return this;
   }
 

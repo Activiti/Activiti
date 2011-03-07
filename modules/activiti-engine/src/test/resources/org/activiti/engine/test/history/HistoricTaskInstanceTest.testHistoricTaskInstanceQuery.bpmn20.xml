@@ -4,7 +4,7 @@
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
   
-  <process id="HistoricTaskQueryTest">
+  <process id="HistoricTaskQueryTest" name="Historic task query test process">
   
     <startEvent id="start" />
     
