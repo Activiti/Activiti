@@ -231,7 +231,7 @@ public class FileSystemConnector extends AbstractFileSystemBasedRepositoryConnec
 
     return getRepositoryArtifact(getRepositoryNodeId(parentFolderId, artifactName));
   }
-  
+
   public RepositoryArtifact createArtifactFromContentRepresentation(String parentFolderId, String artifactName, String artifactType,
           String contentRepresentationName, Content artifactContent) throws RepositoryNodeNotFoundException {
     return createArtifact(parentFolderId, artifactName, artifactType, artifactContent);
@@ -281,16 +281,31 @@ public class FileSystemConnector extends AbstractFileSystemBasedRepositoryConnec
   }
 
   private String getLocalPath(String path) {
-    if ("".equals(getBasePath())) {
+    String basePath = getBasePath();
+
+    if ("".equals(basePath)) {
       // if root is configured in Unix ("/" without trailing slash = "")
       return path;
-    } else if (path.startsWith(getBasePath())) {
-      path = path.replace(getBasePath(), "");
-      // replace windows style slashes
-      path = path.replace("\\", "/");
-      return path;
     }
-    throw new RepositoryException("Unable to determine local path! ('" + path + "')");
+
+    String canonicalBasePath = null;
+    String canonicalPath = null;
+    try {
+      canonicalBasePath = new File(basePath).getCanonicalPath();
+      canonicalPath = new File(path).getCanonicalPath();
+    } catch (IOException e) {
+      throw new RepositoryException("Unable to determine local path: " + e.getMessage(), e);
+    }
+
+    if (!canonicalPath.startsWith(canonicalBasePath)) {
+      throw new RepositoryException("Unable to determine local path (path: '" + path + "' canonicalPath: '" + canonicalPath + "', base path: '" + basePath
+              + "', canonicalBasePath: '" + canonicalBasePath + "'): ");
+    }
+
+    path = canonicalPath.replace(canonicalBasePath, "");
+    path = normalizePath(path);
+    return path;
+
   }
 
   public String[] getConfigurationKeys() {
@@ -315,13 +330,12 @@ public class FileSystemConnector extends AbstractFileSystemBasedRepositoryConnec
 
   private String normalizePath(String path) {
     // exchange it from windows to Java style
-    path.replace("\\", "/");
+    path = path.replace("\\", "/");
     if (path != null && path.endsWith("/")) {
       // remove trailing / to have the ids starting with a slash
       path = path.substring(0, path.length() - 1);
     }
     return path;
   }
- 
 
 }
