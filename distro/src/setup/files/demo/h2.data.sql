@@ -24,11 +24,9 @@ insert into ACT_ID_MEMBERSHIP values ('gonzo', 'management');
 insert into ACT_ID_MEMBERSHIP values ('gonzo', 'accountancy');
 insert into ACT_ID_MEMBERSHIP values ('gonzo', 'sales');
 
-
 update ACT_GE_PROPERTY
 set VALUE_ = '10'
 where NAME_ = 'next.dbid';
-
 
 insert into ACT_CY_CONN_CONFIG values ('1', 
 				'org.activiti.cycle.impl.connector.fs.FileSystemConnector',
@@ -78,3 +76,39 @@ insert into ACT_CY_CONN_CONFIG values ('6',
 					<entry><string>loginRequired</string><boolean>false</boolean></entry>
 				</map>');				
 
+		
+insert  into  ACT_CY_CONFIG values ('1', 
+									'processSolutionTemplates', 
+									'default',
+									'<processSolutionTemplate> 
+										<vFolder type="Management" name="Management" connectorId="Workspace" referencedNodeId="/" /> 
+										<vFolder type="Processes" name="Processes" connectorId="Activiti" referencedNodeId="/root-directory" /> 
+										<vFolder type="Requirements" name="Requirements" connectorId="Workspace" referencedNodeId="/" /> 
+										<vFolder type="Implementation" name="Implementation" connectorId="Workspace" referencedNodeId="/" /> 
+									</processSolutionTemplate>');	
+
+insert 	into ACT_CY_PROCESS_SOLUTION values ('ps1',
+											 'Easy Bugfiling Process',
+											 'IN_SPECIFICATION');
+											 
+insert into ACT_CY_V_FOLDER values('ps1Management',
+								   'Management',
+								   'Workspace',
+								   '/EasyBugFilingProcess/Management',
+								   'ps1',
+								   'Management');
+insert into ACT_CY_V_FOLDER values('ps1Requirements',
+								   'Requirements',
+								   'Workspace',
+								   '/EasyBugFilingProcess/Requirements',
+								   'ps1',
+								   'Requirements');
+insert into ACT_CY_V_FOLDER values('ps1Implementation',
+								   'Implementation',
+								   'Workspace',
+								   '/EasyBugFilingProcess/Implementation',
+								   'ps1',
+								   'Implementation');
+
+											 
+											 
