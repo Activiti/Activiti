@@ -17,10 +17,10 @@ import org.activiti.cycle.service.CycleServiceFactory;
 
 public class CreateNewProcessSolutionTest extends ActivitiCycleDbAwareTest {
 
-  public void testCreateNewProcessSolutionTest() {
-    // store default configuration:
+  public void testCreateNewProcessSolutionTest() throws Exception {
     CycleConfigurationServiceImpl configurationService = (CycleConfigurationServiceImpl) CycleServiceFactory.getConfigurationService();
-    // store defaultConfiguration
+
+    // store defaultConfiguration:
     configurationService.setConfigurationValue("processSolutionTemplates", "default",
             CycleTestUtils.loadResourceAsString("GetDefaultProcessSolutionTemplateTest.xml", this.getClass()));
 
@@ -42,8 +42,7 @@ public class CreateNewProcessSolutionTest extends ActivitiCycleDbAwareTest {
       runtimeConnectorList.registerConnector(connector);
 
       processSolutionServiceImpl.createNewProcessSolution("test process solution");
-    } catch (Exception e) {
-      e.printStackTrace();
+
     } finally {
       CycleTestUtils.deleteFileRec(tmpDir);
     }
