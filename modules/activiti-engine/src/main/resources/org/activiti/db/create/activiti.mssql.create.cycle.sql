@@ -61,3 +61,24 @@ alter table ACT_CY_COMMENT
     add constraint FK_CY_COMMENT_COMMENT 
     foreign key (ANSWERED_COMMENT_ID_) 
     references ACT_CY_COMMENT (ID_);
+    
+create table ACT_CY_PROCESS_SOLUTION (
+	ID_ nvarchar(255) NOT NULL,
+	LABEL_ nvarchar(255) NOT NULL,
+	STATE_ nvarchar(255) NOT NULL,
+	primary key(ID_)
+);
+
+create table ACT_CY_V_FOLDER (
+	ID_ nvarchar(255) NOT NULL,
+	LABEL_ nvarchar(255) NOT NULL,
+	CONNECTOR_ID_ nvarchar(255) NOT NULL,
+	REFERENCED_NODE_ID_ nvarchar(255) NOT NULL,
+	PROCESS_SOLUTION_ID_ nvarchar(255) NOT NULL,
+	TYPE_ nvarchar(255) NOT NULL,
+	primary key(ID_)
+);
+alter table ACT_CY_V_FOLDER 
+    add constraint FK_CY_PROCESS_SOLUTION_ID 
+    foreign key (PROCESS_SOLUTION_ID_) 
+    references ACT_CY_PROCESS_SOLUTION;
