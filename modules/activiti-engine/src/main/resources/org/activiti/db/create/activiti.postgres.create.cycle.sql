@@ -1,4 +1,3 @@
-
 create table ACT_CY_CONN_CONFIG (
 	ID_ varchar(255) NOT NULL,
 	PLUGIN_ID_ varchar(255) NOT NULL,
@@ -84,7 +83,7 @@ create table ACT_CY_PROCESS_SOLUTION (
 
 create table ACT_CY_V_FOLDER (
 	ID_ varchar(128) NOT NULL,
-	LABEL_ v(255) NOT NULL,
+	LABEL_ varchar(255) NOT NULL,
 	CONNECTOR_ID_ varchar(128) NOT NULL,
 	REFERENCED_NODE_ID_ varchar(550) NOT NULL,
 	PROCESS_SOLUTION_ID_ varchar(128) NOT NULL,
@@ -92,7 +91,8 @@ create table ACT_CY_V_FOLDER (
 	primary key(ID_)
 );
 
+create index ACT_CY_IDX_V_FOLDER on ACT_CY_V_FOLDER(PROCESS_SOLUTION_ID_);
 alter table ACT_CY_V_FOLDER 
-    add constraint FK_CY_PROCESS_SOLUTION_ID 
+    add constraint FK_CY_PROCESS_SOLUTION 
     foreign key (PROCESS_SOLUTION_ID_) 
-    references ACT_CY_PROCESS_SOLUTION;
+    references ACT_CY_PROCESS_SOLUTION (ID_);
