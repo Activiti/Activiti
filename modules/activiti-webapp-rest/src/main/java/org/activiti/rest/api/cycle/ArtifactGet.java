@@ -21,6 +21,11 @@ import java.util.Map;
 import org.activiti.cycle.ContentRepresentation;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.action.DownloadContentAction;
+import org.activiti.cycle.context.CycleRequestContext;
+import org.activiti.cycle.impl.processsolution.connector.ProcessSolutionArtifact;
+import org.activiti.cycle.impl.processsolution.connector.ProcessSolutionRepositoryNode;
+import org.activiti.cycle.processsolution.VirtualRepositoryFolder;
+import org.activiti.rest.api.cycle.dto.AddRequirementActionDto;
 import org.activiti.rest.api.cycle.dto.DownloadActionView;
 import org.activiti.rest.util.ActivitiRequest;
 import org.springframework.extensions.webscripts.Cache;
@@ -29,24 +34,50 @@ import org.springframework.extensions.webscripts.Status;
 /**
  * 
  * @author Nils Preusker (nils.preusker@camunda.com)
- * @author Bernd RÃ¼cker
+ * @author Bernd RŸcker
  */
 public class ArtifactGet extends ActivitiCycleWebScript {
 
   @Override
   protected void execute(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
 
-    // Retrieve the artifactId from the request
+    // Retrieve the nodeId from the request
     String connectorId = req.getMandatoryString("connectorId");
-    String artifactId = req.getString("artifactId");
-    String restProxyUri = req.getString("restProxyUri");
+    String nodeId = req.getString("nodeId");
+
+    String vFolderId = req.getString("vFolderId");
+
+    if (vFolderId != null && vFolderId.length() > 0 && !vFolderId.equals("undefined")) {
+      connectorId = "ps-" + processSolutionService.getVirtualRepositoryFolderById(vFolderId).getProcessSolutionId();
+      CycleRequestContext.set("vFolderId", vFolderId);
+    }
 
     // Retrieve the artifact from the repository
-    RepositoryArtifact artifact = repositoryService.getRepositoryArtifact(connectorId, artifactId);
+    RepositoryArtifact artifact = repositoryService.getRepositoryArtifact(connectorId, nodeId);
 
     List<String> contentRepresentations = new ArrayList<String>();
     for (ContentRepresentation representation : contentService.getContentRepresentations(artifact)) {
       contentRepresentations.add(representation.getId());
+    }
+
+    if (artifact instanceof ProcessSolutionArtifact) {
+      ProcessSolutionArtifact psArtifact = (ProcessSolutionArtifact) artifact;
+      if (psArtifact.getVirtualRepositoryFolder() != null && "Processes".equals(psArtifact.getVirtualRepositoryFolder().getType())) {
+        List<VirtualRepositoryFolder> foldersForThisProcessSolution = processSolutionService.getFoldersForProcessSolution(psArtifact.getProcessSolution()
+                .getId());
+        VirtualRepositoryFolder requirementsFolder = null;
+        for (VirtualRepositoryFolder virtualRepositoryFolder : foldersForThisProcessSolution) {
+          if ("Requirements".equals(virtualRepositoryFolder.getType())) {
+            requirementsFolder = virtualRepositoryFolder;
+          }
+        }
+        if (requirementsFolder != null) {
+          AddRequirementActionDto dto = new AddRequirementActionDto();
+          dto.setRequirementsFolderConnectorId("ps-" + psArtifact.getProcessSolution().getId());
+          dto.setRequirementsFolderId(psArtifact.getProcessSolution().getId() + "/" + requirementsFolder.getId());
+          model.put("addRequirementAction", dto);
+        }
+      }
     }
 
     model.put("contentRepresentations", contentRepresentations);
@@ -57,8 +88,8 @@ public class ArtifactGet extends ActivitiCycleWebScript {
     List<DownloadActionView> downloads = new ArrayList<DownloadActionView>();
     for (DownloadContentAction action : pluginService.getDownloadContentActions(artifact)) {
       try {
-        String url = restProxyUri + "content?connectorId=" + URLEncoder.encode(connectorId, "UTF-8") + "&artifactId=" + URLEncoder.encode(artifactId, "UTF-8")
-                + "&contentRepresentationId=" + URLEncoder.encode(action.getContentRepresentation().getId(), "UTF-8");
+        String url = "/content?connectorId=" + URLEncoder.encode(connectorId, "UTF-8") + "&nodeId=" + URLEncoder.encode(nodeId, "UTF-8")
+                + (vFolderId != null ? "&vFolderId=" + URLEncoder.encode(vFolderId, "UTF-8") : "") + "&contentRepresentationId=" + URLEncoder.encode(action.getContentRepresentation().getId(), "UTF-8");
         downloads.add(new DownloadActionView(action.getId(), url, action.getContentRepresentation().getRepresentationMimeType().getContentType(), action
                 .getContentRepresentation().getId()));
       } catch (UnsupportedEncodingException e) {
@@ -70,7 +101,13 @@ public class ArtifactGet extends ActivitiCycleWebScript {
 
     model.put("downloads", downloads);
     model.put("links", pluginService.getArtifactOpenLinkActions(artifact));
-    model.put("artifactId", artifact.getNodeId());
+    model.put("nodeId", artifact.getNodeId());
     model.put("connectorId", artifact.getConnectorId());
+    if (artifact instanceof ProcessSolutionRepositoryNode) {
+      ProcessSolutionRepositoryNode processSolutionRepositoryNode = (ProcessSolutionRepositoryNode) artifact;
+      if (processSolutionRepositoryNode.getVirtualRepositoryFolder() != null) {
+        model.put("vFolderId", processSolutionRepositoryNode.getVirtualRepositoryFolder().getId());
+      }
+    }
   }
 }

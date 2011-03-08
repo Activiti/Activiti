@@ -20,6 +20,7 @@ import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.context.CycleApplicationContext;
 import org.activiti.cycle.impl.connector.signavio.transform.TransformationException;
 import org.activiti.cycle.impl.mimetype.HtmlMimeType;
+import org.activiti.cycle.impl.processsolution.connector.ProcessSolutionArtifact;
 import org.activiti.rest.util.ActivitiRequest;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
@@ -32,16 +33,13 @@ public class ContentRepresentationGet extends ActivitiCycleWebScript {
 
   @Override
   protected void execute(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
-    String connectorId = req.getMandatoryString("connectorId");
-    String artifactId = req.getString("artifactId");
     String representationId = req.getString("representationId");
-
-    RepositoryArtifact artifact = repositoryService.getRepositoryArtifact(connectorId, artifactId);
-
+    RepositoryArtifact artifact = repositoryService.getRepositoryArtifact(req.getMandatoryString("connectorId"), req.getString("nodeId"));
+  
     // Get representation by id to determine whether it is an image...
     try {
-      model.put("connectorId", connectorId);
-      model.put("artifactId", artifactId);
+      model.put("connectorId", artifact.getConnectorId());
+      model.put("nodeId", artifact.getNodeId());
 
       ContentRepresentation contentRepresentation = contentService.getContentRepresentation(artifact, representationId);
       switch (contentRepresentation.getRenderInfo()) {
@@ -66,6 +64,6 @@ public class ContentRepresentationGet extends ActivitiCycleWebScript {
       model.put("renderInfo", RenderInfo.HTML);
       model.put("contentRepresentationId", representationId);
       model.put("contentType", CycleApplicationContext.get(HtmlMimeType.class).getContentType());
-    } 
+    }
   }
 }

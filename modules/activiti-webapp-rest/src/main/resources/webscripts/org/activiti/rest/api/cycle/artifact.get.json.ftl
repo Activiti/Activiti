@@ -6,7 +6,14 @@
 <#escape x as jsonUtils.encodeJSONString(x)>
 {
   "connectorId": "${connectorId}",
-  "artifactId": "${artifactId}",
+  "nodeId": "${nodeId}",
+  "vFolderId": "${vFolderId!''}",
+  <#if addRequirementAction??>
+  	"addRequirementAction": {	
+  		"connectorId": "${addRequirementAction.requirementsFolderConnectorId}",
+  		"parentFolderId": "${addRequirementAction.requirementsFolderId}"
+  	},
+  </#if> 
   "contentRepresentations": [
   <#list contentRepresentations as contentRepresentation>
       "${contentRepresentation}"
@@ -38,7 +45,8 @@
     {
       "name": "${link.id}",
       "label": "${link.id}",
-      "url": "${link.url}"
+      "url": "${link.url}",
+      "warning": "${link.warning!''}"
     }
     <#if link_has_next>,</#if>
   </#list>

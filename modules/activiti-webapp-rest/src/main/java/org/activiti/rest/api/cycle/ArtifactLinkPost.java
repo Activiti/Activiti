@@ -32,7 +32,7 @@ public class ArtifactLinkPost extends ActivitiCycleWebScript {
     ActivitiRequestObject obj = req.getBody();
 
     String sourceConnectorId = req.getMandatoryString(obj, "connectorId");
-    String sourceArtifactId = req.getMandatoryString(obj, "artifactId");
+    String sourcenodeId = req.getMandatoryString(obj, "nodeId");
 
     // String srcElementName = req.getMandatoryString("sourceElementName");
     // String srcElementId = req.getMandatoryString("sourceElementId");
@@ -41,13 +41,13 @@ public class ArtifactLinkPost extends ActivitiCycleWebScript {
     // String tgtElementId = req.getMandatoryString("targetElementId");
 
     String targetConnectorId = req.getMandatoryString(obj, "targetConnectorId");
-    String targetArtifactId = req.getMandatoryString(obj, "targetArtifactId");
+    String targetnodeId = req.getMandatoryString(obj, "targetNodeId");
 
     RepositoryArtifactLinkEntity link = new RepositoryArtifactLinkEntity();
     link.setSourceConnectorId(sourceConnectorId);
-    link.setSourceArtifactId(sourceArtifactId);
+    link.setSourceArtifactId(sourcenodeId);
     link.setTargetConnectorId(targetConnectorId);
-    link.setTargetArtifactId(targetArtifactId);    
+    link.setTargetArtifactId(targetnodeId);
 
     try {
       repositoryService.addArtifactLink(link);

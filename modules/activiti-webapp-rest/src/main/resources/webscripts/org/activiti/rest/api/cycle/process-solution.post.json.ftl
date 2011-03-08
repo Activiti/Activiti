@@ -5,10 +5,10 @@
 
 <#escape x as jsonUtils.encodeJSONString(x)>
 {
-  "nodeId" : "${artifact.nodeId!''}",
-  "connectorId" : "${artifact.connectorId!''}",
-  "vFolderId" : "${vFolderId!''}",
-  "label" : "${artifact.metadata.name!''}"
+  "label": "${folder.label}",
+  "connectorId": "${folder.connectorId}",
+  "nodeId": "${folder.nodeId}",
+  "folder": "true"
 }
 </#escape>
 

@@ -3,6 +3,16 @@
 	<@cycleLib.printAuthenticationException authenticationException/>
 <#else>
 
-<p>success: <#if result??>${result?string}<#else>false</#if></p>
+{
+  "nodeId" : "${artifact.nodeId!''}",
+  "connectorId" : "${artifact.connectorId!''}",
+  "vFolderId" : "${vFolderId!''}",
+  "label" : "${artifact.metadata.name!''}",
+  "openLinks" : [
+  <#list links as link>{
+    "${link.actionId}" : "${link.url!''}"
+  }<#if link_has_next>,</#if></#list>
+  ]
+}
 
 </#if>

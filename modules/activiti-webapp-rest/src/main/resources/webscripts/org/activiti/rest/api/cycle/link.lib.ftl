@@ -19,7 +19,7 @@
 
 <#macro printArtifact artifact>{
   "connectorId": "${artifact.connectorId!''}",
-  "artifactId": "${artifact.nodeId!''}",
+  "nodeId": "${artifact.nodeId!''}",
   "artifactRevision": "${artifact.metadata.revision!''}",
   "contentType": "${artifact.artifactType.name!''}",
   "label": "${artifact.metadata.name!''}"

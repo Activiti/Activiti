@@ -29,8 +29,8 @@ public class ArtifactLinksGet extends ActivitiCycleWebScript {
   @Override
   protected void execute(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     String connectorId = req.getMandatoryString("connectorId");
-    String artifactId = req.getString("artifactId");
-    List<RepositoryArtifactLink> links = repositoryService.getArtifactLinks(connectorId, artifactId);
+    String nodeId = req.getString("nodeId");
+    List<RepositoryArtifactLink> links = repositoryService.getArtifactLinks(connectorId, nodeId);
     model.put("links", links);
   }
 

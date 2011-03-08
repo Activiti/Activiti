@@ -10,7 +10,9 @@
 {
   "label": "${node.label}",
   "connectorId": "${node.connectorId}",
-  "artifactId": "${node.artifactId}",<#if (node.expanded??) && (node.expanded = "true")>
+  "nodeId": "${node.nodeId}",
+  "vFolderId": "${node.vFolderId!''}",
+  "vFolderType": "${node.type!''}",<#if (node.expanded??) && (node.expanded = "true")>
   "expanded": "${node.expanded}",
   </#if>
   <#if node.folder??>"folder": "true"<#if (node.children??) && (node.children?size > 0)>,

@@ -22,7 +22,7 @@ import org.springframework.extensions.webscripts.Status;
 
 /**
  * Creates a new Tag that is associated to the artifact (identified by
- * artifactId and connectorId).
+ * nodeId and connectorId).
  * 
  * @author Nils Preusker (nils.preusker@camunda.com)
  */
@@ -30,7 +30,7 @@ public class TagPost extends ActivitiCycleWebScript {
 
   /**
    * Creates a new Tag that is associated to the artifact (identified by
-   * artifactId and connectorId).
+   * nodeId and connectorId).
    * 
    * @param req The webscripts request
    * @param status The webscripts status

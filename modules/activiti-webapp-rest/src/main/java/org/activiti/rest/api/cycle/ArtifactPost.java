@@ -13,10 +13,17 @@
 
 package org.activiti.rest.api.cycle;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.cycle.Content;
 import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.RepositoryNodeCollection;
+import org.activiti.cycle.action.RepositoryArtifactOpenLinkAction;
+import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity;
+import org.activiti.cycle.impl.processsolution.connector.ProcessSolutionArtifact;
+import org.activiti.rest.api.cycle.dto.UrlActionDto;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiRequestObject;
 import org.springframework.extensions.webscripts.Cache;
@@ -33,24 +40,86 @@ public class ArtifactPost extends ActivitiCycleWebScript {
 
   @Override
   protected void execute(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
-    FormField file = ((WebScriptServletRequest) req.getWebScriptRequest()).getFileField("file");
+    FormField file = null;
+    try {
+      file = ((WebScriptServletRequest) req.getWebScriptRequest()).getFileField("file");
+    } catch (NullPointerException npe) {
+      // We can just ignore this exception since an empty "file" field is valid.
+    }
 
     ActivitiRequestObject obj = req.getBody();
 
     String connectorId = req.getMandatoryString(obj, "connectorId");
     String parentFolderId = req.getMandatoryString(obj, "parentFolderId");
     String artifactName = req.getMandatoryString(obj, "artifactName");
-    // TODO: what are the possible types and where can I get them/ how can I
-    // visualize them in the UI?
+    String linkToNodeId = req.getOptionalString(obj, "linkToNodeId");
+    String linkToConnectorId = req.getOptionalString(obj, "linkToConnectorId");
+    String linkType = req.getOptionalString(obj, "linkType");
+
+    // TODO: set a meaningful value for artifactType
     String artifactType = "";
 
+    artifactName = getNonExistingArtifactName(artifactName, connectorId, parentFolderId);
+
     Content artifactContent = new Content();
-    artifactContent.setValue(file.getInputStream());
+    if (file != null) {
+      artifactContent.setValue(file.getInputStream());
+    }
+    RepositoryArtifact createdArtifact = null;
+
     try {
-      repositoryService.createArtifact(connectorId, parentFolderId, artifactName, artifactType, artifactContent);
+
+      if (artifactContent.isNull()) {
+        createdArtifact = repositoryService.createEmptyArtifact(connectorId, parentFolderId, artifactName, artifactType);
+      } else {
+        createdArtifact = repositoryService.createArtifact(connectorId, parentFolderId, artifactName, artifactType, artifactContent);
+      }
       model.put("result", true);
+      if (createdArtifact instanceof ProcessSolutionArtifact) {
+        model.put("vFolderId", ((ProcessSolutionArtifact) createdArtifact).getVirtualRepositoryFolder().getId());
+      }
+      model.put("artifact", createdArtifact);
+      List<UrlActionDto> link = new ArrayList<UrlActionDto>();
+      for (RepositoryArtifactOpenLinkAction openLinkAction : pluginService.getArtifactOpenLinkActions(createdArtifact)) {
+        link.add(new UrlActionDto(openLinkAction.getId(), openLinkAction.getUrl().toString()));
+      }
+      model.put("links", link);
+
+      if (linkToNodeId != null && linkToNodeId.length() > 0 && !linkToNodeId.equals("undefined") && linkToConnectorId != null && linkToConnectorId.length() > 0
+              && !linkToConnectorId.equals("undefined")) {
+        RepositoryArtifact targetArtifact = repositoryService.getRepositoryArtifact(linkToConnectorId, linkToNodeId);
+        RepositoryArtifactLinkEntity newLink = new RepositoryArtifactLinkEntity();
+        newLink.setLinkType(linkType);
+        newLink.setSourceArtifact(createdArtifact);
+        newLink.setTargetArtifact(targetArtifact);
+        repositoryService.addArtifactLink(newLink);
+      }
+
     } catch (Exception e) {
       model.put("result", false);
     }
+  }
+  protected String getNonExistingArtifactName(String artifactName, String connectorId, String parentFolderId) {
+    String name = "";
+    for (char c : artifactName.toCharArray()) {
+      if (Character.isLetter(c) || Character.isDigit(c) || "_".equals(String.valueOf(c)) || ".".equals(String.valueOf(c))) {
+        name += c;
+      }
+    }
+    artifactName = name;
+    String uniqueName = artifactName;
+    int counter = 0;
+    boolean exists = true;
+    while (exists) {
+      // test if exists:
+      RepositoryNodeCollection collection = repositoryService.getChildren(connectorId, parentFolderId);
+      if (collection.getArtifactByName(uniqueName) == null) {
+        exists = false;
+      } else {
+        uniqueName = counter + artifactName;
+        counter++;
+      }
+    }
+    return uniqueName;
   }
 }

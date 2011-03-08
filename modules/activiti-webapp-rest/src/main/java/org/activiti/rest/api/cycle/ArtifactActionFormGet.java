@@ -15,6 +15,7 @@ package org.activiti.rest.api.cycle;
 import java.util.Map;
 
 import org.activiti.cycle.RepositoryNodeNotFoundException;
+import org.activiti.cycle.context.CycleRequestContext;
 import org.activiti.rest.util.ActivitiRequest;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
@@ -40,16 +41,23 @@ public class ArtifactActionFormGet extends ActivitiCycleWebScript {
    */
   @Override
   protected void execute(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
-    // Retrieve the artifactId from the request
+    // Retrieve the nodeId from the request
     String connectorId = req.getMandatoryString("connectorId");
-    String artifactId = req.getMandatoryString("artifactId");
+    String nodeId = req.getMandatoryString("nodeId");
     String actionId = req.getMandatoryString("actionName");
+    String vFolderId = req.getString("vFolderId");
+
+    // Retrieve the artifact from the repository
+    if (vFolderId != null && vFolderId.length() > 0) {
+      connectorId = "ps-" + processSolutionService.getVirtualRepositoryFolderById(vFolderId).getProcessSolutionId();
+      CycleRequestContext.set("vFolderId", vFolderId);
+    }
 
     String form;
     try {
-      form = repositoryService.getActionFormTemplate(connectorId, artifactId, actionId);
+      form = repositoryService.getActionFormTemplate(connectorId, nodeId, actionId);
     } catch (RepositoryNodeNotFoundException e) {
-      throw new WebScriptException(Status.STATUS_NOT_FOUND, "There is no artifact with id '" + artifactId + "' for connector with id '" + connectorId + "'.");
+      throw new WebScriptException(Status.STATUS_NOT_FOUND, "There is no artifact with id '" + nodeId + "' for connector with id '" + connectorId + "'.");
     }
 
     // Place the form in the response

@@ -18,7 +18,7 @@ import org.activiti.cycle.service.CycleServiceFactory;
 import org.activiti.rest.util.ActivitiRequest;
 
 /**
- * Initializes the Cycle Http-Session. 
+ * Initializes the Cycle Http-Session.
  * 
  * TODO: find a better place for this, a ServletFilter?
  * 
@@ -48,7 +48,7 @@ public class CycleHttpSession {
     CycleSessionContext.setContext(new HttpSessionContext(httpSession));
     // make the current user id available in the session context
     CycleSessionContext.set("cuid", cuid);
-    
+
     // initialize the request context and bind it to his request:
     CycleRequestContext.setContext(new CycleMapContext());
 
@@ -71,7 +71,7 @@ public class CycleHttpSession {
     String password = null;
 
     // try to read credentials from configuration
-    if (connector instanceof PasswordEnabledRepositoryConnector) {     
+    if (connector instanceof PasswordEnabledRepositoryConnector) {
       username = ((PasswordEnabledRepositoryConnector) connector).getUsername();
       password = ((PasswordEnabledRepositoryConnector) connector).getPassword();
     }
@@ -89,7 +89,7 @@ public class CycleHttpSession {
 
   public static void closeSession() {
     CycleRequestContext.clearContext();
-    CycleSessionContext.clearContext();    
+    CycleSessionContext.clearContext();
   }
 
 }

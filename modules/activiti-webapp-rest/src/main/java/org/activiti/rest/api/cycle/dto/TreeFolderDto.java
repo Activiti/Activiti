@@ -25,11 +25,16 @@ import org.activiti.cycle.RepositoryFolder;
  */
 public class TreeFolderDto extends TreeNodeDto {
 
-  private final String folder = String.valueOf(Boolean.TRUE);
+  private String folder = String.valueOf(Boolean.TRUE);
+
   private List<TreeNodeDto> children = new ArrayList<TreeNodeDto>();
 
   public TreeFolderDto(RepositoryFolder folder) {
     super(folder);
+    this.expanded = String.valueOf(Boolean.FALSE);
+  }
+
+  public TreeFolderDto() {
     this.expanded = String.valueOf(Boolean.FALSE);
   }
 
@@ -70,7 +75,7 @@ public class TreeFolderDto extends TreeNodeDto {
           return 1;
         }
         return arg0.getLabel().compareTo(arg1.getLabel());
-      
+
       }
     });
   }
