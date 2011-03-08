@@ -89,6 +89,8 @@
       };
     //]]></script>
     <script type="text/javascript" src="${resource}/js/activiti-app.js"></script>
+	<script type="text/javascript" src="${resource}/js/activiti-app-service.js"></script>
+	<script type="text/javascript" src="${resource}/js/activiti-app-widget.js"></script>
 
     <!-- Activiti constants and user info -->
     <script type="text/javascript">//<![CDATA[

@@ -1383,7 +1383,7 @@ Activiti.widget.PopupManager = function()
 			Dom.addClass(buttonEl, "form-Event-" + inputName + "-button yui-button");
 			buttonEl.innerHTML = buttonEl.title = $msg("button.fileChooser");
 
-			Event.addListener(buttonEl, "click", this.onFormEventButtonClick, this, true);
+			Event.addListener(buttonEl, "click", this.onFormEventButtonClick, {activitiFormWidget: this, inputName: inputName}, true);
 
 			buttonSpan2El.appendChild(buttonEl);
 			buttonSpan1El.appendChild(buttonSpan2El);
@@ -1399,22 +1399,8 @@ Activiti.widget.PopupManager = function()
 			}
 		},
 
-		onFormEventButtonClick: function Form_onFormEventButtonClick(event, inputEl) {
-      var me = this;
-      Activiti.event.fire(Activiti.event.clickFormEventButton, {"callback": function (args) {
-
-        var connectorIdInput = Selector.query("input[name=targetConnectorId]", me.dialog.form, true);
-        connectorIdInput.value = args.connectorId;
-        
-        var targetFolderId = Selector.query("input[name=targetFolderId]", me.dialog.form, true);
-        targetFolderId.value = args.nodeId;
-        targetFolderId.type = "hidden";
-        
-        var formEventValueSpan = Selector.query("span[class=form-Event-value]", me.dialog.form, true);
-        formEventValueSpan.innerHTML = args.nodeName;
-        
-        me.doValidate();
-      }}, null, false);
+		onFormEventButtonClick: function Form_onFormEventButtonClick(event, obj) {
+      Activiti.event.fire(Activiti.event.clickFormEventButton, this, null, false);
 		}
 
   }
