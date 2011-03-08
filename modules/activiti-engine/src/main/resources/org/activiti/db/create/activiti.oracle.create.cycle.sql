@@ -91,7 +91,8 @@ create table ACT_CY_V_FOLDER (
 	primary key(ID_)
 );
 
+create index ACT_CY_IDX_V_FOLDER on ACT_CY_V_FOLDER(PROCESS_SOLUTION_ID_);
 alter table ACT_CY_V_FOLDER 
-    add constraint FK_CY_PROCESS_SOLUTION_ID 
+    add constraint FK_CY_PROCESS_SOLUTION 
     foreign key (PROCESS_SOLUTION_ID_) 
-    references ACT_CY_PROCESS_SOLUTION;
+    references ACT_CY_PROCESS_SOLUTION (ID_);
