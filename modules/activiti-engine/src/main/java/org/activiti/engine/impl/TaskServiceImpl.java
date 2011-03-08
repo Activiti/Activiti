@@ -22,15 +22,16 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cmd.AddIdentityLinkCmd;
 import org.activiti.engine.impl.cmd.ClaimTaskCmd;
 import org.activiti.engine.impl.cmd.CompleteTaskCmd;
+import org.activiti.engine.impl.cmd.DelegateTaskCmd;
+import org.activiti.engine.impl.cmd.DeleteIdentityLinkCmd;
 import org.activiti.engine.impl.cmd.DeleteTaskCmd;
 import org.activiti.engine.impl.cmd.GetIdentityLinksForTaskCmd;
 import org.activiti.engine.impl.cmd.GetTaskVariableCmd;
 import org.activiti.engine.impl.cmd.GetTaskVariablesCmd;
-import org.activiti.engine.impl.cmd.DeleteIdentityLinkCmd;
+import org.activiti.engine.impl.cmd.ResolveTaskCmd;
 import org.activiti.engine.impl.cmd.SaveTaskCmd;
 import org.activiti.engine.impl.cmd.SetTaskPriorityCmd;
 import org.activiti.engine.impl.cmd.SetTaskVariablesCmd;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.task.TaskEntity;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
@@ -126,6 +127,18 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   
   public void complete(String taskId, Map<String, Object> variables) {
     commandExecutor.execute(new CompleteTaskCmd(taskId, variables));
+  }
+
+  public void delegateTask(String taskId, String userId) {
+    commandExecutor.execute(new DelegateTaskCmd(taskId, userId));
+  }
+
+  public void resolveTask(String taskId) {
+    commandExecutor.execute(new ResolveTaskCmd(taskId, null));
+  }
+
+  public void resolve(String taskId, Map<String, Object> variables) {
+    commandExecutor.execute(new ResolveTaskCmd(taskId, variables));
   }
 
   public void setPriority(String taskId, int priority) {

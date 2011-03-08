@@ -7,15 +7,17 @@
   <!-- TASK INSERT -->
   
   <insert id="insertTask" parameterType="org.activiti.engine.impl.task.TaskEntity">
-    insert into ACT_RU_TASK (ID_, REV_, NAME_, DESCRIPTION_, PRIORITY_, CREATE_TIME_,
-                      ASSIGNEE_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_)
+    insert into ACT_RU_TASK (ID_, REV_, NAME_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
+                      ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_)
     values (#{id, jdbcType=VARCHAR},
             1,
             #{name, jdbcType=VARCHAR},
             #{description, jdbcType=VARCHAR},
             #{priority, jdbcType=INTEGER},
             #{createTime, jdbcType=TIMESTAMP},
+            #{owner, jdbcType=VARCHAR},
             #{assignee, jdbcType=VARCHAR},
+            #{delegationStateString, jdbcType=VARCHAR},
             #{executionId, jdbcType=VARCHAR},
             #{processInstanceId, jdbcType=VARCHAR},
             #{processDefinitionId, jdbcType=VARCHAR},
@@ -32,7 +34,9 @@
       NAME_ = #{name, jdbcType=VARCHAR},
       PRIORITY_ = #{priority, jdbcType=INTEGER},
       CREATE_TIME_ = #{createTime, jdbcType=TIMESTAMP},
+      OWNER_ = #{owner, jdbcType=VARCHAR},
       ASSIGNEE_ = #{assignee, jdbcType=VARCHAR},
+      DELEGATION_ = #{delegationStateString, jdbcType=VARCHAR},
       EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR},
       DESCRIPTION_ = #{description, jdbcType=VARCHAR}
     </set>
@@ -54,7 +58,9 @@
     <result property="description" column="DESCRIPTION_" jdbcType="VARCHAR"/>
     <result property="priority" column="PRIORITY_" jdbcType="INTEGER"/>
     <result property="createTime" column="CREATE_TIME_" jdbcType="TIMESTAMP" />
+    <result property="owner" column="OWNER_" jdbcType="VARCHAR"/>
     <result property="assigneeWithoutFireEvent" column="ASSIGNEE_" jdbcType="VARCHAR"/>
+    <result property="delegationStateString" column="DELEGATION_" jdbcType="VARCHAR"/>
     <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR"/>

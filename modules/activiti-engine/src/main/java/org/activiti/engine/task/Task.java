@@ -52,10 +52,22 @@ public interface Task {
 	void setPriority(int priority);
 	
   /** The {@link User.getId() userId} of the person that is responsible for this task. */
+  String getOwner();
+  
+  /** The {@link User.getId() userId} of the person that is responsible for this task. */
+  void setOwner(String owner);
+  
+  /** The {@link User.getId() userId} of the person to which this task is delegated. */
 	String getAssignee();
 	
-	/** The {@link User.getId() userId} of the person that is responsible for this task. */
+	/** The {@link User.getId() userId} of the person to which this task is delegated. */
 	void setAssignee(String assignee);
+	
+	/** The current {@link DelegationState} for this task. */ 
+  DelegationState getDelegationState();
+  
+  /** The current {@link DelegationState} for this task. */ 
+  void setDelegationState(DelegationState delegationState);
 	
   /** Reference to the process instance or null if it is not related to a process instance. */
 	String getProcessInstanceId();
@@ -71,4 +83,7 @@ public interface Task {
 	
 	/** The id of the activity in the process defining this task or null if this is not related to a process */
 	String getTaskDefinitionKey();
+
+	/** delegates this task to the given user and sets the {@link #getDelegationState() delegationState} to {@link DelegationState#PENDING}. */
+  void delegate(String userId);
 }

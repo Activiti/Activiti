@@ -86,7 +86,9 @@ create table ACT_RU_TASK (
     NAME_ varchar(255),
     DESCRIPTION_ varchar(255),
     TASK_DEF_KEY_ varchar(255),
+    OWNER_ varchar(64),
     ASSIGNEE_ varchar(64),
+    DELEGATION_ varchar(64),
     PRIORITY_ integer,
     CREATE_TIME_ timestamp,
     primary key (ID_)

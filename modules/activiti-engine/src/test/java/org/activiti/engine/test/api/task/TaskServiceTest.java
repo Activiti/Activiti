@@ -25,6 +25,7 @@ import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.IdentityLinkType;
@@ -61,6 +62,90 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
     // Finally, delete task
     taskService.deleteTask(task.getId(), true);
+  }
+
+  public void testTaskOwner() {
+    Task task = taskService.newTask();
+    task.setOwner("johndoe");
+    taskService.saveTask(task);
+
+    // Fetch the task again and update
+    task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
+    assertEquals("johndoe", task.getOwner());
+
+    task.setOwner("joesmoe");
+    taskService.saveTask(task);
+
+    task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
+    assertEquals("joesmoe", task.getOwner());
+
+    // Finally, delete task
+    taskService.deleteTask(task.getId(), true);
+  }
+
+  public void testTaskDelegation() {
+    Task task = taskService.newTask();
+    task.setOwner("johndoe");
+    task.delegate("joesmoe");
+    taskService.saveTask(task);
+    String taskId = task.getId();
+
+    task = taskService.createTaskQuery().taskId(taskId).singleResult();
+    assertEquals("johndoe", task.getOwner());
+    assertEquals("joesmoe", task.getAssignee());
+    assertEquals(DelegationState.PENDING, task.getDelegationState());
+
+    taskService.resolveTask(taskId);
+    task = taskService.createTaskQuery().taskId(taskId).singleResult();
+    assertEquals("johndoe", task.getOwner());
+    assertEquals("johndoe", task.getAssignee());
+    assertEquals(DelegationState.RESOLVED, task.getDelegationState());
+
+    task.setAssignee(null);
+    task.setDelegationState(null);
+    taskService.saveTask(task);
+    task = taskService.createTaskQuery().taskId(taskId).singleResult();
+    assertEquals("johndoe", task.getOwner());
+    assertNull(task.getAssignee());
+    assertNull(task.getDelegationState());
+
+    task.setAssignee("jackblack");
+    task.setDelegationState(DelegationState.RESOLVED);
+    taskService.saveTask(task);
+    task = taskService.createTaskQuery().taskId(taskId).singleResult();
+    assertEquals("johndoe", task.getOwner());
+    assertEquals("jackblack", task.getAssignee());
+    assertEquals(DelegationState.RESOLVED, task.getDelegationState());
+
+    // Finally, delete task
+    taskService.deleteTask(taskId, true);
+  }
+
+  public void testTaskDelegationThroughServiceCall() {
+    Task task = taskService.newTask();
+    task.setOwner("johndoe");
+    taskService.saveTask(task);
+    String taskId = task.getId();
+
+    // Fetch the task again and update
+    task = taskService.createTaskQuery().taskId(taskId).singleResult();
+
+    taskService.delegateTask(taskId, "joesmoe");
+    
+    task = taskService.createTaskQuery().taskId(taskId).singleResult();
+    assertEquals("johndoe", task.getOwner());
+    assertEquals("joesmoe", task.getAssignee());
+    assertEquals(DelegationState.PENDING, task.getDelegationState());
+
+    taskService.resolveTask(taskId);
+    
+    task = taskService.createTaskQuery().taskId(taskId).singleResult();
+    assertEquals("johndoe", task.getOwner());
+    assertEquals("johndoe", task.getAssignee());
+    assertEquals(DelegationState.RESOLVED, task.getDelegationState());
+
+    // Finally, delete task
+    taskService.deleteTask(taskId, true);
   }
 
   public void testTaskAssignee() {

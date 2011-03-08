@@ -68,9 +68,6 @@ public interface DelegateTask extends VariableScope {
   /** Returns the execution currently at the task. */
   DelegateExecution getExecution();
   
-  /** Refers to a {@link User.getId() user} which is the owner or person responsible for completing this task. */
-  String getAssignee();
-  
   /** Returns the event name which triggered the task listener to fire for this task. */
   String getEventName();
   
@@ -86,7 +83,16 @@ public interface DelegateTask extends VariableScope {
   /** Adds multiple groups as candidate group to this task. */
   void addCandidateGroups(Collection<String> candidateGroups);
 
-  /** Sets the current assignee of this task to the given user */
+  /** The {@link User.getId() userId} of the person responsible for this task. */
+  String getOwner();
+  
+  /** The {@link User.getId() userId} of the person responsible for this task.*/
+  void setOwner(String owner);
+  
+  /** The {@link User.getId() userId} of the person to which this task is delegated. */
+  String getAssignee();
+  
+  /** The {@link User.getId() userId} of the person to which this task is delegated. */
   void setAssignee(String assignee);
   
   /**

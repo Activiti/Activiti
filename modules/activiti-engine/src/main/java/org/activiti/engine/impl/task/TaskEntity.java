@@ -41,6 +41,7 @@ import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.engine.impl.runtime.VariableInstanceEntity;
 import org.activiti.engine.impl.runtime.VariableScopeImpl;
 import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
@@ -59,7 +60,10 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   protected String id;
   protected int revision;
 
+  protected String owner;
   protected String assignee;
+  protected DelegationState delegationState; 
+  
   protected String name;
   protected String description;
   protected int priority = Task.PRIORITY_NORMAL;
@@ -153,7 +157,9 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   }
 
   public void update(TaskEntity task) {
+    setOwner(task.getOwner());
     setAssignee(task.getAssignee());
+    setDelegationState(task.getDelegationState());
     setName(task.getName());
     setDescription(task.getDescription());
     setPriority(task.getPriority());
@@ -167,10 +173,21 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
       getExecution().signal(null, null);
     }
   }
+  
+  public void delegate(String userId) {
+    setDelegationState(DelegationState.PENDING);
+    setAssignee(userId);
+  }
+
+  public void resolve() {
+    setDelegationState(DelegationState.RESOLVED);
+    setAssignee(this.owner);
+  }
 
   public Object getPersistentState() {
     Map<String, Object> persistentState = new  HashMap<String, Object>();
     persistentState.put("assignee", this.assignee);
+    persistentState.put("owner", this.owner);
     persistentState.put("name", this.name);
     persistentState.put("priority", this.priority);
     if (executionId!=null) {
@@ -588,5 +605,23 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   }
   public void setProcessInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
+  }
+  public String getOwner() {
+    return owner;
+  }
+  public void setOwner(String owner) {
+    this.owner = owner;
+  }
+  public DelegationState getDelegationState() {
+    return delegationState;
+  }
+  public void setDelegationState(DelegationState delegationState) {
+    this.delegationState = delegationState;
+  }
+  public String getDelegationStateString() {
+    return (delegationState!=null ? delegationState.toString() : null);
+  }
+  public void setDelegationStateString(String delegationStateString) {
+    this.delegationState = (delegationStateString!=null ? DelegationState.valueOf(DelegationState.class, delegationStateString) : null);
   }
 }

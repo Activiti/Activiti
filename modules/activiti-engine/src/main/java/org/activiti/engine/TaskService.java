@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
@@ -88,10 +89,28 @@ public interface TaskService {
   /**
    * Called when the task is successfully executed.
    * @param taskId the id of the task to complete, cannot be null.
-   * @throws ActivitiException when no task exists with the given id.
+   * @throws ActivitiException when no task exists with the given id or when this task is {@link DelegationState#PENDING} delegation.
    */
   void complete(String taskId);
   
+  /**
+   * Delegates the task to another user.  This means that the assignee is set 
+   * and the delegation state is set to {@link DelegationState#PENDING} 
+   * @param taskId The id of the task that will be delegated.
+   * @param userId The id of the user that will be set as assignee.
+   * @throws ActivitiException when no task exists with the given id.
+   */
+  void delegateTask(String taskId, String userId);
+  
+  /**
+   * Marks that the assignee is done with this task and that it can be send back to the owner.  
+   * Can only be called when this task is {@link DelegationState#PENDING} delegation.
+   * After this method returns, the {@link Task#getDelegationState() delegationState} is set to {@link DelegationState#RESOLVED}.
+   * @param taskId the id of the task to resolve, cannot be null.
+   * @throws ActivitiException when no task exists with the given id.
+   */
+  void resolveTask(String taskId);
+
   /**
    * Called when the task is successfully executed, 
    * and the required task parameters are given by the end-user.

@@ -10,9 +10,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.cmd;
 
-import java.util.Map;
+package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cfg.TaskSession;
@@ -22,19 +21,20 @@ import org.activiti.engine.impl.task.TaskEntity;
 
 
 /**
- * @author Joram Barrez
+ * @author Tom Baeyens
  */
-public class CompleteTaskCmd implements Command<Void> {
-  
+public class DelegateTaskCmd implements Command<Object> {
+
   protected String taskId;
-  protected Map<String, Object> variables;
+  protected String userId;
   
-  public CompleteTaskCmd(String taskId, Map<String, Object> variables) {
+  public DelegateTaskCmd(String taskId, String userId) {
     this.taskId = taskId;
-    this.variables = variables;
+    this.userId = userId;
   }
-  
-  public Void execute(CommandContext commandContext) {
+
+  @Override
+  public Object execute(CommandContext commandContext) {
     if(taskId == null) {
       throw new ActivitiException("taskId is null");
     }
@@ -44,17 +44,10 @@ public class CompleteTaskCmd implements Command<Void> {
     if (task == null) {
       throw new ActivitiException("Cannot find task with id " + taskId);
     }
-    
-    if (variables!=null) {
-      task.setExecutionVariables(variables);
-    }
-    
-    completeTask(task);
+
+    task.delegate(userId);
     
     return null;
   }
 
-  protected void completeTask(TaskEntity task) {
-    task.complete();
-  }
 }
