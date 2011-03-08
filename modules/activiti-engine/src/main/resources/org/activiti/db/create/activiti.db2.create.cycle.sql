@@ -13,7 +13,7 @@ create table ACT_CY_CONFIG (
   ID_ varchar(255) not null,
   GROUP_ varchar(255) not null,
   KEY_ varchar(255) not null,
-  VALUE_ varchar(255) not null,
+  VALUE_ varchar(1024) not null,
   primary key (ID_)
 );
 

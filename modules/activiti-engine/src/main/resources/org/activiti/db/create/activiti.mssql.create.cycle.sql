@@ -1,8 +1,20 @@
+create table ACT_CY_CONN_CONFIG (
+	ID_ nvarchar(255),
+	PLUGIN_ID_ nvarchar(255),
+	INSTANCE_NAME_ nvarchar(255),
+	INSTANCE_ID_ nvarchar(255),
+	USER_ nvarchar(255),
+	GROUP_ nvarchar(255),
+	VALUES_ nvarchar(1024),
+	primary key (ID_)
+);
+
 create table ACT_CY_CONFIG (
-	ID_ nvarchar(64),
-    VALUE_ nvarchar(1024),
-    REV_ int,
-    primary key (ID_)
+	ID_ nvarchar(255),
+	GROUP_ nvarchar(255),
+	KEY_ nvarchar(255),
+	VALUE_ clob,
+	primary key (ID_)
 );
 
 create table ACT_CY_LINK (

@@ -13,7 +13,7 @@ create table ACT_CY_CONFIG (
 	ID_ varchar NOT NULL,
 	GROUP_ varchar NOT NULL,
 	KEY_ varchar NOT NULL,
-	VALUE_ varchar,
+	VALUE_ clob,
 	primary key (ID_)
 );
 
