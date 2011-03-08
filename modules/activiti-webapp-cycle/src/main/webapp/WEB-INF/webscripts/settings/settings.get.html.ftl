@@ -11,5 +11,5 @@
 </div>
 
 <script type="text/javascript">//<![CDATA[
-   new Activiti.component.Settings("${args.htmlid?js_string}");
+   new Activiti.component.Settings("${args.htmlid?js_string}").setMessages(${messages});
 //]]></script>

@@ -21,6 +21,7 @@
   background-color:#FFFFFF;
   margin:0.5em;
   padding:1.2em;
+  font-size: 1.2em;
 }
 
 .artifact-html iframe, .artifact-html-reference iframe {
@@ -130,4 +131,157 @@
   margin: 0 7px 13px 0;
   line-height:1.3em;
   display: block;
+}
+
+/* Process Solutions "Home Page" */
+
+#Activiti .activiti-component div.home-div fieldset {
+  /*width: 710px;*/
+}
+
+#Activiti h1.home {
+  background: url("/activiti-cycle/res/images/home-black.png") no-repeat scroll 0 -6px transparent;
+  text-indent: 1.7em;
+}
+
+#Activiti #content div.home-div fieldset {
+  color: #333;
+  border: 1px solid #999;
+  margin: 0 2px 0 2px;
+  padding: 4px 8px 9px 8px;
+}
+
+/* State divs */
+#Activiti .activiti-component div.home-div fieldset div.state-div {
+  display: inline-block;
+}
+
+#Activiti .activiti-component div.home-div fieldset div.state-div div div {
+  height: 67px;
+  margin: 0 35px 0 7px;
+  /* Make all state arrows the same size */
+  text-align: center;
+  width: 170px;
+}
+
+#Activiti .activiti-component div.home-div fieldset div.state-div div div div {
+  width: 42px;
+  height: 67px;
+  float: left;
+  margin: 0;
+}
+
+#Activiti .activiti-component div.home-div fieldset div.state-div div div span {
+    font-size: 1.4em;
+    line-height: 3.7em;
+}
+
+/* Active States */
+#Activiti .activiti-component div.home-div fieldset div.active {
+  background: url("/activiti-cycle/res/images/state-bg-left.png") no-repeat 0 0 transparent;
+}
+
+#Activiti .activiti-component div.home-div fieldset div.active div {
+  background: url("/activiti-cycle/res/images/state-bg-right.png") no-repeat right transparent;
+}
+
+#Activiti .activiti-component div.home-div fieldset div.active div div {
+  background: url("/activiti-cycle/res/images/state-bg.png") repeat 0 0 transparent;
+}
+
+#Activiti .activiti-component div.home-div fieldset div.active div div div.specification {
+  background: url("/activiti-cycle/res/images/edit-white.png") no-repeat center center transparent;
+}
+
+#Activiti .activiti-component div.home-div fieldset div.active div div div.implementation {
+  background: url("/activiti-cycle/res/images/computer-white.png") no-repeat center center transparent;
+}
+
+#Activiti .activiti-component div.home-div fieldset div.active div div div.testing {
+  background: url("/activiti-cycle/res/images/lab-white.png") no-repeat center center transparent;
+}
+
+#Activiti .activiti-component div.home-div fieldset div.active div div div.operations {
+  background: url("/activiti-cycle/res/images/happy-face-white.png") no-repeat center center transparent;
+}
+
+#Activiti .activiti-component div.home-div fieldset div.active div div span {
+    color: white;
+}
+
+/* Inactive states */
+#Activiti .activiti-component div.home-div fieldset div.inactive {
+  background: url("/activiti-cycle/res/images/state-bg-left-grey.png") no-repeat 0 0 transparent;
+}
+
+#Activiti .activiti-component div.home-div fieldset div.inactive div {
+  background: url("/activiti-cycle/res/images/state-bg-right-grey.png") no-repeat right transparent;
+}
+
+#Activiti .activiti-component div.home-div fieldset div.inactive div div {
+  background: url("/activiti-cycle/res/images/state-bg-grey.png") repeat 0 0 transparent;
+}
+
+#Activiti .activiti-component div.home-div fieldset div.inactive div div div.specification {
+  background: url("/activiti-cycle/res/images/edit-black.png") no-repeat center center transparent;
+}
+
+#Activiti .activiti-component div.home-div fieldset div.inactive div div div.implementation {
+  background: url("/activiti-cycle/res/images/computer-black.png") no-repeat center center transparent;
+}
+
+#Activiti .activiti-component div.home-div fieldset div.inactive div div div.testing {
+  background: url("/activiti-cycle/res/images/lab-black.png") no-repeat center center transparent;
+}
+
+#Activiti .activiti-component div.home-div fieldset div.inactive div div div.operations {
+  background: url("/activiti-cycle/res/images/happy-face-black.png") no-repeat center center transparent;
+}
+
+#Activiti .activiti-component div.home-div fieldset div.inactive div div span {
+    color: #333333;
+}
+
+/* Solution Artifacts */
+#Activiti .activiti-component div.home-div fieldset .solution-artifact {
+  width: 320px;
+  float: left;
+  margin: 15px 30px 15px 0;
+}
+
+#Activiti .activiti-component div.home-div fieldset .solution-artifact a, #Activiti .activiti-component div.home-div fieldset .solution-artifact span {
+  margin-left: 42px;
+  display: block;
+}
+
+#Activiti .activiti-component div.home-div fieldset .solution-artifact a {
+  font-weight: bold;
+  color: #007DC3;
+  line-height: 1.8em;
+  cursor: pointer;
+}
+
+#Activiti .activiti-component div.home-div fieldset .solution-artifact span {
+  line-height: 1.4em;
+}
+
+#Activiti .activiti-component div.home-div fieldset .management {
+  background: url("/activiti-cycle/res/images/dollar-black.png") no-repeat left top transparent;  
+}
+
+#Activiti .activiti-component div.home-div fieldset .processes {
+  background: url("/activiti-cycle/res/images/processing-black.png") no-repeat left top transparent;  
+}
+
+#Activiti .activiti-component div.home-div fieldset .requirements {
+  background: url("/activiti-cycle/res/images/edit-black.png") no-repeat left top transparent;  
+}
+
+#Activiti .activiti-component div.home-div fieldset .implementation {
+  background: url("/activiti-cycle/res/images/computer-black.png") no-repeat left top transparent;  
+}
+
+/* State Buttons */
+#Activiti .activiti-component div.home-div fieldset span.yui-button {
+  margin: 0 0 0 6px;
 }

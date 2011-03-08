@@ -1,13 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <page>
   <id>start</id>
-  <title>Resources</title>
+  <title>Home</title>
   <template-instance>divided-left</template-instance>
   <authentication>admin</authentication>
   <components>
     <component>
       <region-id>left1</region-id>
-      <url>/component/tree</url>
+      <url>/component/navigation-left</url>
     </component>
     <component>
       <region-id>main1</region-id>

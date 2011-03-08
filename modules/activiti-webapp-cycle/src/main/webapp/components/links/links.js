@@ -16,13 +16,21 @@
    * @return {Activiti.component.Links} The new component.Links instance
    * @constructor
    */
-  Activiti.component.Links = function Links_constructor(htmlId, connectorId, artifactId)
+  Activiti.component.Links = function Links_constructor(htmlId, connectorId, nodeId, vFolderId, activeNavigationTabIndex, activeArtifactViewTabIndex)
   {
     Activiti.component.Links.superclass.constructor.call(this, "Activiti.component.Links", htmlId);
+
+    if (!connectorId || !nodeId) {
+      throw new Error("Mandatory parameters are missing ");
+    }
+
     this.service = new Activiti.service.RepositoryService(this);
 
     this._connectorId = connectorId;
-    this._artifactId = artifactId;
+    this._nodeId = nodeId;
+    this._vFolderId = vFolderId||'';
+    this._activeNavigationTabIndex = activeNavigationTabIndex||0;
+    this._activeArtifactViewTabIndex = activeArtifactViewTabIndex||0;
 
     this._linksDataTable = {};
     this._incomingLinksDataTable = {};
@@ -125,14 +133,15 @@
           
           onActionGoToArtifact: function onActionGoToArtifact(data, datatable) {
             var connectorId = data["targetArtifact.connectorId"],
-            artifactId = data["targetArtifact.artifactId"],
+            nodeId = data["targetArtifact.nodeId"],
             artifactName = data["targetArtifact.label"];
 
+            var eventDescriptor = {activeNavigationTabIndex: 1, activeArtifactViewTabIndex: 0, connectorId: connectorId, nodeId: nodeId, vFolderId: '', label: artifactName, file: true};
             if(datatable.id.indexOf('links-widget')  != -1) {
-              var url = Activiti.constants.URL_CONTEXT + "start#event=" + Activiti.util.eventDescriptorToState('updateArtifactView', {"connectorId": encodeURIComponent(connectorId), "repositoryNodeId": encodeURIComponent(artifactId), "isRepositoryArtifact": true, "name": encodeURIComponent(artifactName), "activeTabIndex": 0});
+              var url = Activiti.constants.URL_CONTEXT + "start#event=" + Activiti.util.eventDescriptorToState('updateArtifactView', eventDescriptor);
               window.open(url);
             } else {
-              me.fireEvent(Activiti.event.updateArtifactView, {"connectorId": connectorId, "repositoryNodeId": artifactId, "isRepositoryArtifact": true, "name": artifactName, "activeTabIndex": 0}, null, true);
+              me.fireEvent(Activiti.event.updateArtifactView, eventDescriptor, null, true);
             }
           }
         },
@@ -148,7 +157,7 @@
         [
           { key:"id" },
           { key:"targetArtifact.connectorId" },
-          { key:"targetArtifact.artifactId" },
+          { key:"targetArtifact.nodeId" },
           { key:"targetArtifact.label" },
           { key:"targetArtifact.contentType"},
           { key:"targetElementName" },
@@ -208,14 +217,15 @@
           
           onActionGoToArtifact: function onActionGoToArtifact(data, datatable) {
             var connectorId = data["sourceArtifact.connectorId"],
-            artifactId = data["sourceArtifact.artifactId"],
+            nodeId = data["sourceArtifact.nodeId"],
             artifactName = data["sourceArtifact.label"];
             
+            var eventDescriptor = {activeNavigationTabIndex: 1, activeArtifactViewTabIndex: 0, connectorId: connectorId, nodeId: nodeId, vFolderId: '', label: artifactName, file: true};
             if(datatable.id.indexOf('links-widget')  != -1) {
-              var url = Activiti.constants.URL_CONTEXT + "start#event=" + Activiti.util.eventDescriptorToState('updateArtifactView', {"connectorId": encodeURIComponent(connectorId), "repositoryNodeId": encodeURIComponent(artifactId), "isRepositoryArtifact": true, "name": encodeURIComponent(artifactName), "activeTabIndex": 0});
+              var url = Activiti.constants.URL_CONTEXT + "start#event=" + Activiti.util.eventDescriptorToState('updateArtifactView', eventDescriptor);
               window.open(url);
             } else {
-              me.fireEvent(Activiti.event.updateArtifactView, {"connectorId": connectorId, "repositoryNodeId": artifactId, "isRepositoryArtifact": true, "name": artifactName, "activeTabIndex": 0}, null, true);
+              me.fireEvent(Activiti.event.updateArtifactView, eventDescriptor, null, true);
             }
           }
         },
@@ -231,7 +241,7 @@
         [
           { key:"id" },
           { key:"sourceArtifact.connectorId" },
-          { key:"sourceArtifact.artifactId" },
+          { key:"sourceArtifact.nodeId" },
           { key:"sourceArtifact.label" },
           { key:"sourceArtifact.contentType"},
           { key:"sourceElementName" },
@@ -241,7 +251,7 @@
 
       // Needed to load data and set up other events
       if (!Activiti.event.isInitEvent(Activiti.event.displayLinks)) {
-        this.fireEvent(Activiti.event.displayLinks, {connectorId: this._connectorId, artifactId: this._artifactId}, null);
+        this.fireEvent(Activiti.event.displayLinks, {connectorId: this._connectorId, nodeId: this._nodeId}, null);
       }
       
       var addLinkButton = new YAHOO.widget.Button(addLinkElId, { label:"Add link", id:"addLinkButton" });
@@ -253,7 +263,7 @@
      * It fires a displayLinks event which will cause the links table to reload its data.
      */
     onDeleteArtifactLinkSuccess: function Links_onDeleteArtifactLinkSuccess(args) {
-      this.fireEvent(Activiti.event.displayLinks, {connectorId: this._connectorId, artifactId: this._artifactId}, null);
+      this.fireEvent(Activiti.event.displayLinks, {connectorId: this._connectorId, nodeId: this._nodeId}, null);
     },
 
     /**
@@ -273,7 +283,7 @@
      * @param obj {object} An object that contains the connector id and the id of the target artifact
      */
     onAddLinkSubmit: function Links_onAddLinkSubmit(obj) {
-      this.service.createArtifactLink({"connectorId": this._connectorId, "artifactId": this._artifactId, "targetConnectorId": obj.connectorId,"targetArtifactId": obj.nodeId});
+      this.service.createArtifactLink({"connectorId": this._connectorId, "nodeId": this._nodeId, "targetConnectorId": obj.connectorId, "targetNodeId": obj.nodeId});
     },
 
     /**
@@ -284,7 +294,7 @@
      */
     onCreateArtifactLinkSuccess: function Links_onCreateArtifactLinkSuccess(args)
     {
-      this.fireEvent(Activiti.event.displayLinks, {connectorId: this._connectorId, artifactId: this._artifactId}, null);
+      this.fireEvent(Activiti.event.displayLinks, {connectorId: this._connectorId, nodeId: this._nodeId}, null);
     },
 
     /**

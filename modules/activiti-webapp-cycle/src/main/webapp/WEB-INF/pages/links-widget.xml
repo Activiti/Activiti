@@ -10,7 +10,10 @@
       <url>/component/links</url>
       <properties>
         <connectorId>{connectorId}</connectorId>
-        <artifactId>{artifactId}</artifactId>
+        <nodeId>{nodeId}</nodeId>
+		<vFolderId>{vFolderId}</vFolderId>
+		<activeNavigationTabIndex>{activeNavigationTabIndex}</activeNavigationTabIndex>
+		<activeArtifactViewTabIndex>{activeArtifactViewTabIndex}</activeArtifactViewTabIndex>
         <!-- Note that the htmlid will there automatically when coming though the "page resolver mechanism" -->
       </properties>
     </component>

@@ -1,0 +1,32 @@
+#Activiti #content #left .activiti-component div.yui-content {
+  overflow: auto;
+}
+
+/* Override padding for YUI tab view headings */
+#Activiti #content #left .activiti-component div.yui-navset li a {
+  padding: 0px;
+}
+
+/* Display a loading gif in the tabs while the contents are loaded */
+#left div.loading {
+  background:url("/activiti-cycle/res/images/loading.gif") no-repeat scroll center center transparent;
+  height:8em;
+}
+
+/* Tree refresh link */
+#Activiti a.tree-refresh-link {
+  position:absolute;
+  right:10px;
+  top:13px;
+  color: #007DC3;
+  /* Without z-index YUI-tab-viewwould overlap the link and cause it not to be clickable */
+  z-index: 1;
+}
+
+#Activiti a.tree-refresh-link:hover {
+  text-decoration: underline;
+}
+
+#left {
+  /*min-width: 330px;*/
+}

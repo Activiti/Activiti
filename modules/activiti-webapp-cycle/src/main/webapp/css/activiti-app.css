@@ -116,9 +116,23 @@ h1 {
   color:#FFF;
 }
 
-#action-waiting-dialog {
+#cycle-navigation-waiting-dialog, #action-waiting-dialog {
   height: 15px;
   background: url("/activiti-cycle/res/images/loading-bar.gif") no-repeat center;
 }
 
 /* STRUCTURE */
+
+html #Activiti #content {
+  min-width: 1200px;
+}
+
+html #Activiti #content div#left {
+  min-width: 320px;
+  width: 26%;
+}
+
+html #Activiti #content.yui-gf div#main.yui-u {
+  min-width: 870px;
+  width: 72%;
+}
