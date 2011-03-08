@@ -66,6 +66,28 @@
     padding-left: 17px; // This way the text starts after the magnifying glass icon
 }
 
+/* ---------
+   Main menu
+   --------- */
+   
+#main-menu {
+  height: 23px;
+  background-color: #323336;
+  background: no-repeat right url(img/main-menu-bg-right.png);
+  text-shadow: 0pt 1px 0pt rgba(0, 0, 0, 0.9);
+  padding-top: 0pt;
+  padding-right: 8px;
+  padding-bottom: 0pt;
+  padding-left: 8px;
+  background-color: black;
+}
+
+.v-button-main-menu .v-button-caption {
+  color: white;
+  text-decoration: none;
+  font-weight: lighter;
+}
+
 
 /* ------------
    Profile page

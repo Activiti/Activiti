@@ -16,12 +16,18 @@
 package org.activiti;
 
 import com.vaadin.Application;
+import com.vaadin.terminal.ClassResource;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.MenuBar;
+import com.vaadin.ui.MenuBar.Command;
+import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
@@ -47,6 +53,7 @@ public class ExplorerApplication extends Application {
 
     initSearch();
     initLogout();
+    initMainMenuBar();
   }
   
   protected void initSearch() {
@@ -90,6 +97,59 @@ public class ExplorerApplication extends Application {
 
     // Add logout grid to header
     mainLayout.addComponent(logoutGrid, "logout");
+  }
+  
+  protected void initMainMenuBar() {
+    HorizontalLayout mainMenuBar = new HorizontalLayout();
+    mainMenuBar.setSpacing(true);
+    mainMenuBar.addStyleName("main-menu");
+    
+    Button taskButton = new Button("Tasks");
+    taskButton.addStyleName(Reindeer.BUTTON_LINK);
+    taskButton.addStyleName("main-menu");
+//    taskButton.setIcon(new ClassResource("images/tasks.gif", this));
+    mainMenuBar.addComponent(taskButton);
+    taskButton.addListener(new ClickListener() {
+      public void buttonClick(ClickEvent event) {
+        mainLayout.addComponent(new Label("This will be the task page"), "content");
+      }
+    });
+    
+    Button flowButton = new Button("Flows");
+    flowButton.addStyleName(Reindeer.BUTTON_LINK);
+    flowButton.addStyleName("main-menu");
+    mainMenuBar.addComponent(flowButton);
+    
+    Button manageButton = new Button("Manager");
+    manageButton.addStyleName(Reindeer.BUTTON_LINK);
+    manageButton.addStyleName("main-menu");
+    mainMenuBar.addComponent(manageButton);
+    
+    Button reportButton = new Button("Reports");
+    reportButton.addStyleName(Reindeer.BUTTON_LINK);
+    reportButton.addStyleName("main-menu");
+    mainMenuBar.addComponent(reportButton);
+    
+    Label remainingSpace = new Label();
+    remainingSpace.setWidth("100%");
+    mainMenuBar.addComponent(remainingSpace);
+    mainMenuBar.setExpandRatio(remainingSpace, 1.0f);
+    
+//   MenuBar mainMenuBar = new MenuBar();
+//   
+//   mainMenuBar.addStyleName("main-menu");
+//   mainMenuBar.setWidth("100%");
+//   
+//   mainMenuBar.addItem("Tasks", new Command() {
+//    public void menuSelected(MenuItem selectedItem) {
+//      mainLayout.addComponent(new Label("Hello World!"), "content");
+//    }
+//   });
+//   mainMenuBar.addItem("Flows", null);
+//   mainMenuBar.addItem("Manage", null);
+//   mainMenuBar.addItem("Reports", null);
+//   
+   mainLayout.addComponent(mainMenuBar, "main-menu");
   }
 
 }
