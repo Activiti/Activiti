@@ -1,5 +1,9 @@
 @import url(../reindeer/styles.css);
 
+/* ---------- 
+   Main layout
+   ----------- */
+
 #header {
 	background: repeat-x left url(img/header-bg.png);
 	height: 44px;
@@ -15,6 +19,12 @@
 	float: left;
 	padding-left: 1em;
 	padding-top: 0.6em;
+}
+
+#header #search {
+  float: right;
+  padding-right: 2em;
+  padding-top: 1em;
 }
 
 #header #logout {
@@ -33,30 +43,75 @@
 	padding-bottom: 25px;
 }
 
+.v-button-user .v-button-caption{
+  color: white;
+  line-height: 18px;
+  margin-right: 0.5em;
+  text-decoration: none;
+}
+
+.v-button-logout .v-button-caption {
+  color: white;
+  line-height: 18px;
+  margin-right: 0.5em;
+  text-decoration: none;
+}
+
+/* Search textfield */
+
+.v-textfield-searchBox {
+  background: white left no-repeat url(img/magnifying-glass.gif);
+}
+.v-app input.v-textfield-searchBox {
+    padding-left: 17px; // This way the text starts after the magnifying glass icon
+}
+
+
+/* ------------
+   Profile page
+   ------------ */
+
+
+.v-label-profile-header {
+  height: 1.1em;
+  padding-top: 0.3em;
+  padding-right: 0.3em;
+  padding-bottom: 0.3em;
+  padding-left: 0.3em;
+  margin-top: 1.5em;
+  margin-right: 1em;
+  margin-bottom: 0em;
+  margin-left: 1em;
+  background-color: #e3eaec;
+  font-weight: bold;
+  font-size: 116%;
+}
+
+.v-gridlayout-profile-layout {
+  padding-top: 0.3em;
+  padding-right: 0.3em;
+  padding-bottom: 0.3em;
+  padding-left: 0.3em;
+  margin-top: 1.5em;
+  margin-right: 1em;
+  margin-bottom: 0em;
+  margin-left: 1.5em;
+}
+
+.v-label-profile-field {
+  font-weight: bold;
+}
+
+.v-gridlayout-profile-layout .v-gridlayout-spacing-on {
+    padding-top: 8px;
+}
+
+/* 
+
 .v-label-icon {
 	margin: 0px;
 	padding: 5px;
 	padding-right: 5px;
-}
-
-.v-label-user {
-	color: white;
-	font-weight: bold;
-	margin: 0px;
-	padding: 0px;
-	padding-left: 5px;
-	padding-right: 3px;
-	text-decoration: none;
-	text-shadow: none;
-}
-
-.v-button-logout .v-button-caption {
-	color: white;
-	font-weight: bold;
-	line-height: 18px;
-	margin: 0px;
-	padding: 0px;
-	text-decoration: none;
 }
 
 .v-tabsheet-tabitem {
@@ -71,3 +126,5 @@
 .v-table-cell-content {
 	vertical-align: middle;
 }
+*/
+
