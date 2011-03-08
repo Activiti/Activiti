@@ -27,7 +27,7 @@ import org.activiti.cycle.impl.connector.signavio.SignavioConnectorInterface;
 import org.activiti.cycle.impl.connector.signavio.repositoryartifacttype.SignavioJpdl4ArtifactType;
 import org.activiti.cycle.impl.mimetype.XmlMimeType;
 import org.activiti.cycle.impl.transform.XmlToTextTransformation;
-import org.restlet.ext.json.JsonRepresentation;
+import org.restlet.Response;
 import org.restlet.ext.xml.DomRepresentation;
 
 @CycleComponent(context = CycleContextType.APPLICATION)
@@ -42,8 +42,8 @@ public class Jpdl4Provider extends SignavioContentRepresentationProvider {
       SignavioConnectorInterface signavioConnector = (SignavioConnectorInterface) CycleSessionContext.get(RuntimeConnectorList.class).getConnectorById(artifact.getConnectorId());
       Content content = new Content();
 
-      String jpdlResponse = getJsonResponse(signavioConnector, artifact, "/jpdl4");
-      DomRepresentation xmlData = new DomRepresentation(new JsonRepresentation( jpdlResponse ));
+      Response jpdlResponse = getJsonResponse(signavioConnector, artifact, "/jpdl4");
+      DomRepresentation xmlData = new DomRepresentation(jpdlResponse.getEntity());
       XmlToTextTransformation transformation = CycleApplicationContext.get(XmlToTextTransformation.class);
       String jpdl4AsString = transformation.getXmlAsString(xmlData.getDomSource());
       // log.finest("JPDL4 String: " + jpdl4AsString);

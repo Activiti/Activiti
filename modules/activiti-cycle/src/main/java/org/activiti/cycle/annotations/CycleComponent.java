@@ -17,6 +17,7 @@ import org.activiti.cycle.context.CycleContext;
 import org.activiti.cycle.context.CycleContextType;
 import org.activiti.cycle.context.CycleRequestContext;
 import org.activiti.cycle.context.CycleSessionContext;
+import org.activiti.cycle.event.CycleEventListener;
 import org.activiti.cycle.transform.ContentArtifactTypeTransformation;
 import org.activiti.cycle.transform.ContentMimeTypeTransformation;
 
@@ -45,6 +46,7 @@ import org.activiti.cycle.transform.ContentMimeTypeTransformation;
  * <li> {@link ContentMimeTypeTransformation}</li>
  * <li> {@link MimeType}</li>
  * <li> {@link RepositoryArtifactType}</li>
+ * <li> {@link CycleEventListener}</li>
  * </ul>
  * </p>
  * <p>

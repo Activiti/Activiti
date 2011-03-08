@@ -19,6 +19,7 @@ import org.activiti.cycle.impl.service.CycleServiceConfiguration;
  * {@link CycleRepositoryService}, the {@link CycleTagService} and the
  * {@link CycleConfigurationService}.
  * 
+ * @author Daniel Meyer
  */
 public class CycleServiceFactory {
 
@@ -35,15 +36,23 @@ public class CycleServiceFactory {
   }
 
   public static CyclePluginService getCyclePluginService() {
-    return CycleServiceConfiguration.getInstance().getCyclePluginService();
+    return CycleServiceConfiguration.getInstance().getPluginService();
   }
 
   public static CycleContentService getContentService() {
-    return CycleServiceConfiguration.getInstance().getCycleContentServiceImpl();
+    return CycleServiceConfiguration.getInstance().getContentService();
   }
-  
+
   public static CycleCommentService getCommentService() {
     return CycleServiceConfiguration.getInstance().getCommentService();
+  }
+
+  public static CycleProcessSolutionService getProcessSolutionService() {
+    return CycleServiceConfiguration.getInstance().getProcessSolutionService();
+  }
+
+  public static CycleEventService getEventService() {
+    return CycleServiceConfiguration.getInstance().getCycleEventService();
   }
 
 }

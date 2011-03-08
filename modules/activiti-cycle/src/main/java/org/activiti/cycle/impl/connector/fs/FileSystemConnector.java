@@ -231,7 +231,7 @@ public class FileSystemConnector extends AbstractFileSystemBasedRepositoryConnec
 
     return getRepositoryArtifact(getRepositoryNodeId(parentFolderId, artifactName));
   }
-
+  
   public RepositoryArtifact createArtifactFromContentRepresentation(String parentFolderId, String artifactName, String artifactType,
           String contentRepresentationName, Content artifactContent) throws RepositoryNodeNotFoundException {
     return createArtifact(parentFolderId, artifactName, artifactType, artifactContent);
@@ -281,17 +281,16 @@ public class FileSystemConnector extends AbstractFileSystemBasedRepositoryConnec
   }
 
   private String getLocalPath(String path) {
-    String basePath = getBasePath();
-    if ("".equals(basePath)) {
+    if ("".equals(getBasePath())) {
       // if root is configured in Unix ("/" without trailing slash = "")
       return path;
-    } else if (path.startsWith(basePath)) {
-      path = path.replace(basePath, "");
+    } else if (path.startsWith(getBasePath())) {
+      path = path.replace(getBasePath(), "");
       // replace windows style slashes
       path = path.replace("\\", "/");
       return path;
     }
-    throw new RepositoryException("Unable to determine local path! (path: '" + path + "', base path: '" + basePath + "')");
+    throw new RepositoryException("Unable to determine local path! ('" + path + "')");
   }
 
   public String[] getConfigurationKeys() {
@@ -323,5 +322,6 @@ public class FileSystemConnector extends AbstractFileSystemBasedRepositoryConnec
     }
     return path;
   }
+ 
 
 }

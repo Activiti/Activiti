@@ -24,10 +24,11 @@ public class Content {
 
   private InputStream contentAsInputStream;
   
-  private byte[] loadBytes(InputStream inputStream) {
-    byte[] bytes = IoUtil.readInputStream(inputStream, "Repository Artifact Content");
-    IoUtil.closeSilently(inputStream);
-    return bytes;
+  private byte[] loadBytes() {
+    contentAsByteArray = IoUtil.readInputStream(contentAsInputStream, "Repository Artifact Content");
+    IoUtil.closeSilently(contentAsInputStream);
+    contentAsInputStream = null;
+    return contentAsByteArray;
   }
   
    public byte[] asByteArray() {
@@ -36,7 +37,7 @@ public class Content {
     } else if (contentAsString != null) {
       return contentAsString.getBytes();
     } else if (contentAsInputStream != null) {
-      return loadBytes(contentAsInputStream);
+      return loadBytes();
     } else {
       throw new RuntimeException("Not yet implemented");
     }
@@ -48,7 +49,7 @@ public class Content {
     } else if (contentAsByteArray != null) {
       return new String(contentAsByteArray);
     } else if (contentAsInputStream != null) {
-      return new String(loadBytes(contentAsInputStream));
+      return new String(loadBytes());
     } else {
       throw new RuntimeException("Not yet implemented");
     }

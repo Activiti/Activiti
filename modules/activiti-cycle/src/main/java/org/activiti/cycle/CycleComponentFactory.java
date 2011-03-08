@@ -27,6 +27,7 @@ import org.activiti.cycle.context.CycleContext;
 import org.activiti.cycle.context.CycleContextType;
 import org.activiti.cycle.context.CycleRequestContext;
 import org.activiti.cycle.context.CycleSessionContext;
+import org.activiti.cycle.event.CycleEventListener;
 import org.activiti.cycle.impl.CycleComponentInvocationHandler;
 import org.activiti.cycle.impl.Interceptor;
 import org.activiti.cycle.transform.ContentArtifactTypeTransformation;
@@ -48,13 +49,13 @@ public abstract class CycleComponentFactory {
     public final String name;
     public final CycleContextType contextType;
     public final Class< ? > clazz;
-    public final Set<Class<?>> types;
+    public final Set<Class< ? >> types;
 
     private CycleComponentDescriptor(String name, CycleContextType type, Class< ? > clazz) {
       this.name = name;
       this.contextType = type;
       this.clazz = clazz;
-      this.types = new HashSet<Class<?>>();
+      this.types = new HashSet<Class< ? >>();
     }
     @Override
     public String toString() {
@@ -216,7 +217,6 @@ public abstract class CycleComponentFactory {
     }
   }
 
- 
   private Object decorateInstance(Object instanceToDecorate, Class< ? extends Interceptor>[] interceptorClasses) throws Exception {
     Set<Class> interfaces = new HashSet<Class>();
     Class< ? > superClass = instanceToDecorate.getClass();
@@ -256,6 +256,7 @@ public abstract class CycleComponentFactory {
     componentTypes.add(ContentMimeTypeTransformation.class);
     componentTypes.add(MimeType.class);
     componentTypes.add(RepositoryArtifactType.class);
+    componentTypes.add(CycleEventListener.class);
 
     // scan for components
     scanForComponents();
@@ -334,7 +335,7 @@ public abstract class CycleComponentFactory {
         componentDescriptor.types.add(componentType);
       }
     }
-    logger.log(Level.INFO, "Registered component  "+componentDescriptor);
+    logger.log(Level.INFO, "Registered component  " + componentDescriptor);
     return name;
   }
 
@@ -363,7 +364,7 @@ public abstract class CycleComponentFactory {
   }
 
   public static <T> T getCycleComponentInstance(Class< ? > clazz, Class<T> castTo) {
-    Object instance = getInstance().getComponentInstance(clazz);
+    Object instance = getInstance().getComponentInstance(clazz.getCanonicalName());
     return castSafely(instance, castTo);
   }
 
@@ -379,8 +380,8 @@ public abstract class CycleComponentFactory {
     return castSafely(instance, castTo);
   }
 
-  public static Object getCycleComponentInstance(Class< ? > clazz) {
-    return getInstance().getComponentInstance(clazz);
+  public static <T> T getCycleComponentInstance(Class<T> clazz) {
+    return getCycleComponentInstance(clazz, clazz);
   }
 
   public static Object getCycleComponentInstance(String name) {

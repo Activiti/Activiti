@@ -129,6 +129,10 @@ public class CycleRepositoryServiceImpl implements CycleRepositoryService {
     return getRepositoryConnector(connectorId).createArtifact(parentFolderId, artifactName, artifactType, artifactContent);
   }
 
+  public RepositoryArtifact createEmptyArtifact(String connectorId, String parentFolderId, String artifactName, String artifactType) {
+    return getRepositoryConnector(connectorId).createEmptyArtifact(parentFolderId, artifactName, artifactType);
+  }
+
   public RepositoryArtifact createArtifactFromContentRepresentation(String connectorId, String parentFolderId, String artifactName, String artifactType,
           String contentRepresentationName, Content artifactContent) throws RepositoryNodeNotFoundException {
     return getRepositoryConnector(connectorId).createArtifactFromContentRepresentation(parentFolderId, artifactName, artifactType, contentRepresentationName,
@@ -163,7 +167,7 @@ public class CycleRepositoryServiceImpl implements CycleRepositoryService {
 
   public void executeParameterizedAction(String connectorId, String artifactId, String actionId, Map<String, Object> parameters) throws Exception {
 
-    ParameterizedAction action = cycleServiceConfiguration.getCyclePluginService().getParameterizedActionById(actionId);
+    ParameterizedAction action = cycleServiceConfiguration.getPluginService().getParameterizedActionById(actionId);
     String form = action.getFormAsHtml();
     FormHandler formHandler = CycleComponentFactory.getCycleComponentInstance(FormHandler.class, FormHandler.class);
     formHandler.setValues(form, parameters);
@@ -173,8 +177,10 @@ public class CycleRepositoryServiceImpl implements CycleRepositoryService {
     // TODO: (Nils Preusker, 20.10.2010), find a better way to solve this!
     for (String key : parameters.keySet()) {
       if (key.equals("targetConnectorId")) {
-        RepositoryConnector targetConnector = getRepositoryConnector((String) parameters.get(key));
-        parameters.put(key, targetConnector);
+        if (parameters.get(key) != null && parameters.get(key) instanceof String) {
+          RepositoryConnector targetConnector = getRepositoryConnector((String) parameters.get(key));
+          parameters.put(key, targetConnector);
+        }
       }
     }
 
@@ -187,7 +193,7 @@ public class CycleRepositoryServiceImpl implements CycleRepositoryService {
 
     // Retrieve the action and its form
     String form = null;
-    for (ParameterizedAction action : cycleServiceConfiguration.getCyclePluginService().getParameterizedActions(artifact)) {
+    for (ParameterizedAction action : cycleServiceConfiguration.getPluginService().getParameterizedActions(artifact)) {
       if (action.getId().equals(actionId)) {
         form = action.getFormAsHtml();
         break;

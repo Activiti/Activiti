@@ -9,6 +9,8 @@ package org.activiti.cycle.impl.connector.signavio.transform.pattern;
  * @author ruecker
  */
 public class RemedyTemporarySignavioIncompatibility {
+  
+  // name="SequenceFlow" --> name=""
 
   public String transformBpmn20Xml(String xml, String processName) {
     // set process id and name
@@ -35,6 +37,9 @@ public class RemedyTemporarySignavioIncompatibility {
     xml = exchangeAttributeText(xml, "gatewayDirection", "converging", "Converging");
     xml = exchangeAttributeText(xml, "gatewayDirection", "mixed", "Mixed");
 
+    // Signavio sets the default name to "SequenceFlow" in the BPMN 2.0 Export, which is a bit annoying in the diagram, so remove it
+    xml = exchangeAttributeText(xml, "sequenceFlow", "SequenceFlow", "");
+    
     xml = removeAttribute(xml, "processType");
 
     // add namespace (yeah, pretty hacky, I know)

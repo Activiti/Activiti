@@ -19,7 +19,7 @@ import java.util.Map;
  * @author bernd.ruecker@camunda.com
  */
 public interface RepositoryConnector {
-
+  
   /**
    * log in given user and return true, if login was successful and false, if
    * the user couldn't be logged in
@@ -227,6 +227,8 @@ public interface RepositoryConnector {
    *          set the name for this {@link RepositoryConnector}
    */
   public void setName(String name);
+
+  public String concatenateNodeId(String prefix, String suffix);
 
   // public String getGlobalId(RepositoryNode node);
 

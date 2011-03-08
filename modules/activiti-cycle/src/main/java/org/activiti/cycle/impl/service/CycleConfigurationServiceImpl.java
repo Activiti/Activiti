@@ -204,8 +204,10 @@ public class CycleConfigurationServiceImpl implements CycleConfigurationService 
     CycleConfigEntity entity = cycleConfigurationDao.selectCycleConfigByGroupAndKey(groupId, key);
     if (entity == null) {
       entity = new CycleConfigEntity();
+      entity.setGroupName(groupId);
+      entity.setKey(key);
     }
-    entity.setValue(value);
+    entity.setValue(value);    
     cycleConfigurationDao.saveCycleConfig(entity);
   }
 
@@ -229,5 +231,9 @@ public class CycleConfigurationServiceImpl implements CycleConfigurationService 
       resultMap.put(cycleConfigEntity.getKey(), cycleConfigEntity.getValue());
     }
     return resultMap;
+  }
+
+  public CycleConfigurationDao getCycleConfigurationDao() {
+    return cycleConfigurationDao;
   }
 }

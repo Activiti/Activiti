@@ -25,7 +25,7 @@ import org.activiti.cycle.RepositoryException;
  * 
  * @author bernd.ruecker@camunda.com
  */
-public class SignavioConnectorConfiguration  {
+public class SignavioConnectorConfiguration {
 
   // these values differ between Oryx and Signavio
   protected static String REPOSITORY_BACKEND_URL_SUFFIX = "p/";
@@ -42,14 +42,15 @@ public class SignavioConnectorConfiguration  {
   public static String STENCILSETS_URL_SUFFIX = "stencilsets/stencilsets.json";
 
   public static String BPMN_20_EXPORT_SERVLET = "bpmn2_0serialization";
-  public static String BPMN_20_IMPORT_SERVLET = "bpmn2_0deserialization";
+  // public static String BPMN_20_IMPORT_SERVLET = "bpmn2_0deserialization";
+  public static String BPMN_20_IMPORT_SERVLET = "bpmn2_0-import";
 
   protected SignavioConnector connector;
-    
+
   public SignavioConnectorConfiguration(SignavioConnector connector) {
     this.connector = connector;
   }
-  
+
   public String getSignavioUrl() {
     return connector.getSignavioUrl();
   }
@@ -172,7 +173,7 @@ public class SignavioConnectorConfiguration  {
   }
 
   public String getBpmn20XmlImportServletUrl() {
-    return getEditorBackendUrl() + BPMN_20_IMPORT_SERVLET;
+    return getSignavioUrl() + REPOSITORY_BACKEND_URL_SUFFIX + BPMN_20_IMPORT_SERVLET;
   }
 
   /**

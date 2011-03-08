@@ -12,6 +12,7 @@ import org.activiti.cycle.RepositoryArtifact;
  */
 public class RepositoryArtifactOpenLinkAction {
 
+  private String warning;
   private String id;
   private URL url;
 
@@ -26,6 +27,14 @@ public class RepositoryArtifactOpenLinkAction {
 
   public URL getUrl() {
     return url;
+  }
+
+  public String getWarning() {
+    return warning;
+  }
+
+  public void setWarning(String warning) {
+    this.warning = warning;
   }
 
 }

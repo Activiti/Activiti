@@ -12,8 +12,15 @@
  */
 package org.activiti.cycle.impl.connector.signavio;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -46,6 +53,18 @@ import org.activiti.cycle.impl.connector.signavio.repositoryartifacttype.Signavi
 import org.activiti.cycle.impl.connector.signavio.repositoryartifacttype.SignavioDefaultArtifactType;
 import org.activiti.cycle.impl.connector.signavio.util.SignavioJsonHelper;
 import org.activiti.cycle.impl.connector.util.RestClientLogHelper;
+import org.activiti.cycle.impl.util.IoUtils;
+import org.apache.http.HttpVersion;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.CoreProtocolPNames;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -60,7 +79,6 @@ import org.restlet.data.Preference;
 import org.restlet.data.Protocol;
 import org.restlet.data.Reference;
 import org.restlet.data.Status;
-import org.restlet.engine.Engine;
 import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.representation.Representation;
 
@@ -130,13 +148,7 @@ public class SignavioConnector extends AbstractRepositoryConnector implements Si
     return restletClient;
   }
 
-  public void sendRequest(Request request) throws IOException {
-    Response response = sendRequestGetResponse(request);
-    response.release();
-    Engine.clearThreadLocalVariables();
-  }
-
-  public Response sendRequestGetResponse(Request request) throws IOException {
+  public Response sendRequest(Request request) throws IOException {
     injectSecurityToken(request);
 
     if (log.isLoggable(Level.FINE)) {
@@ -145,7 +157,6 @@ public class SignavioConnector extends AbstractRepositoryConnector implements Si
 
     Client client = initClient();
     Response response = client.handle(request);
-    request.release();    
 
     if (log.isLoggable(Level.FINE)) {
       RestClientLogHelper.logHttpResponse(log, Level.FINE, response);
@@ -166,25 +177,12 @@ public class SignavioConnector extends AbstractRepositoryConnector implements Si
 
     return request;
   }
-  
-  public static void main(String[] args) throws IOException {
-    SignavioConnector connector = new SignavioConnector();
-    System.out.println(
-            connector.getJsonResponse("http://localhost:8080/activiti-modeler/p/model/C:;Activiti;releases;activiti-5.2;apps;apache-tomcat-6.0.29;bin;..;..;..;workspace;activiti-modeler-examples;TwitterDemoProcess.signavio.xml/info")
-    );
-  }
 
-  public String getJsonResponse(String url) throws IOException {
+  public Response getJsonResponse(String url) throws IOException {
     Request jsonRequest = new Request(Method.GET, new Reference(url));
     jsonRequest.getClientInfo().getAcceptedMediaTypes().add(new Preference<MediaType>(MediaType.APPLICATION_JSON));
 
-    Response response = sendRequestGetResponse(jsonRequest);
-    String responseString = response.getEntityAsText();
-    response.release();
-    
-    Engine.clearThreadLocalVariables();
-    
-    return responseString;
+    return sendRequest(jsonRequest);
   }
 
   protected boolean registerUserWithSignavio(String firstname, String lastname, String email, String password) throws IOException {
@@ -199,12 +197,13 @@ public class SignavioConnector extends AbstractRepositoryConnector implements Si
     Representation registrationRep = registrationForm.getWebRepresentation();
 
     Request registrationRequest = new Request(Method.POST, getConfiguration().getRegistrationUrl(), registrationRep);
-    Response registrationResponse = sendRequestGetResponse(registrationRequest);
-    boolean success = registrationResponse.getStatus().equals(Status.SUCCESS_CREATED);
-    registrationResponse.release();
-    Engine.clearThreadLocalVariables();
-    
-    return success;
+    Response registrationResponse = sendRequest(registrationRequest);
+
+    if (registrationResponse.getStatus().equals(Status.SUCCESS_CREATED)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   public boolean login(String username, String password) {
@@ -224,14 +223,12 @@ public class SignavioConnector extends AbstractRepositoryConnector implements Si
       Representation loginRep = loginForm.getWebRepresentation();
 
       Request loginRequest = new Request(Method.POST, getConfiguration().getLoginUrl(), loginRep);
-      Response loginResponse = sendRequestGetResponse(loginRequest);
-      token =  loginResponse.getEntity().getText();      
-      loginResponse.release();      
+      Response loginResponse = sendRequest(loginRequest);
+
+      Representation representation = loginResponse.getEntity();
+      token = representation.getText();
     } catch (Exception ex) {
       throw new RepositoryException("Error during login to connector '" + getName() + "'", ex);
-    }
-    finally {
-      Engine.clearThreadLocalVariables();      
     }
     if (token.matches("[a-f0-9]{32}")) {
       setSecurityToken(token);
@@ -370,8 +367,8 @@ public class SignavioConnector extends AbstractRepositoryConnector implements Si
       if (getConfiguration() instanceof OryxConnectorConfiguration) {
         nodes = getChildrenFromOryxBackend(id);
       } else {
-        String directoryResponse = getJsonResponse(getConfiguration().getDirectoryUrl(id));
-        JsonRepresentation jsonData = new JsonRepresentation(directoryResponse);
+        Response directoryResponse = getJsonResponse(getConfiguration().getDirectoryUrl(id));
+        JsonRepresentation jsonData = new JsonRepresentation(directoryResponse.getEntity());
         JSONArray relJsonArray = jsonData.getJsonArray();
 
         if (log.isLoggable(Level.FINEST)) {
@@ -433,8 +430,8 @@ public class SignavioConnector extends AbstractRepositoryConnector implements Si
           for (int i = modelRefs.length() - 1; (i >= 0 && i > modelRefs.length() - pageSize); i--) {
             String modelRef = modelRefs.getString(i);
             String modelId = connectorConfiguration.getModelIdFromUrl(modelRef);
-            String infoResponse = getJsonResponse(connectorConfiguration.getModelInfoUrl(modelId));
-            JsonRepresentation jsonRepresentation = new JsonRepresentation(infoResponse);
+            Response infoResponse = getJsonResponse(connectorConfiguration.getModelInfoUrl(modelId));
+            JsonRepresentation jsonRepresentation = new JsonRepresentation(infoResponse.getEntity());
             RepositoryArtifact fileInfo = getArtifactInfoFromFile(modelId, jsonRepresentation.getJsonObject());
             nodes.add(fileInfo);
           }
@@ -458,8 +455,8 @@ public class SignavioConnector extends AbstractRepositoryConnector implements Si
         for (int i = modelRefs.length() - 1 - pageNumber * pageSize; (i >= 0 && i > modelRefs.length() - (pageNumber + 1) * pageSize); i--) {
           String modelRef = modelRefs.getString(i);
           String modelId = connectorConfiguration.getModelIdFromUrl(modelRef);
-          String infoResponse = getJsonResponse(connectorConfiguration.getModelInfoUrl(modelId));
-          JsonRepresentation jsonRepresentation = new JsonRepresentation(infoResponse);
+          Response infoResponse = getJsonResponse(connectorConfiguration.getModelInfoUrl(modelId));
+          JsonRepresentation jsonRepresentation = new JsonRepresentation(infoResponse.getEntity());
           RepositoryArtifact fileInfo = getArtifactInfoFromFile(modelId, jsonRepresentation.getJsonObject());
           nodes.add(fileInfo);
         }
@@ -470,24 +467,24 @@ public class SignavioConnector extends AbstractRepositoryConnector implements Si
 
   private JSONArray getModelIdsFromOryxBackend(String stencilsetNamespace) throws IOException, JSONException {
     String type = URLEncoder.encode(stencilsetNamespace, "UTF-8");
-    String filterResponse = getJsonResponse(getConfiguration().getRepositoryBackendUrl() + "filter?type=" + type + "&sort=rating");
-    JsonRepresentation jsonRepresentation = new JsonRepresentation(filterResponse);
+    Response filterResponse = getJsonResponse(getConfiguration().getRepositoryBackendUrl() + "filter?type=" + type + "&sort=rating");
+    JsonRepresentation jsonRepresentation = new JsonRepresentation(filterResponse.getEntity());
     JSONArray modelRefs = jsonRepresentation.getJsonArray();
     return modelRefs;
   }
 
   private JSONArray getStencilsets() throws IOException, JSONException {
     JSONArray stencilsets;
-    String stencilsetsResponse = getJsonResponse(getConfiguration().getStencilsetsUrl());
-    JsonRepresentation stencilsetsJsonRepresentation = new JsonRepresentation(stencilsetsResponse);
+    Response stencilsetsResponse = getJsonResponse(getConfiguration().getStencilsetsUrl());
+    JsonRepresentation stencilsetsJsonRepresentation = new JsonRepresentation(stencilsetsResponse.getEntity());
     stencilsets = stencilsetsJsonRepresentation.getJsonArray();
     return stencilsets;
   }
 
   public RepositoryFolder getRepositoryFolder(String id) {
     try {
-      String directoryResponse = getJsonResponse(getConfiguration().getDirectoryUrl(id));
-      JsonRepresentation jsonData = new JsonRepresentation(directoryResponse);
+      Response directoryResponse = getJsonResponse(getConfiguration().getDirectoryUrl(id));
+      JsonRepresentation jsonData = new JsonRepresentation(directoryResponse.getEntity());
       JSONArray jsonArray = jsonData.getJsonArray();
 
       // search for rel: "info" in jsonArray to get directory specified by id;
@@ -521,8 +518,8 @@ public class SignavioConnector extends AbstractRepositoryConnector implements Si
     JSONObject jsonObject = null;
 
     try {
-      String modelResponse = getJsonResponse(getConfiguration().getModelUrl(id) + "/info");
-      jsonData = new JsonRepresentation(modelResponse);
+      Response modelResponse = getJsonResponse(getConfiguration().getModelUrl(id) + "/info");
+      jsonData = new JsonRepresentation(modelResponse.getEntity());
       jsonObject = jsonData.getJsonObject();
       return getArtifactInfoFromFile(id, jsonObject);
     } catch (Exception ex) {
@@ -552,6 +549,19 @@ public class SignavioConnector extends AbstractRepositoryConnector implements Si
 
       // TODO: create response object which contains the ID or maybe skip the
       // whole artifact returning?
+
+      // <!> HACK: getting the created folder through iteration of the child
+      // nodes of the parent folder and comparing the names...
+      RepositoryNodeCollection nodes = getChildren(parentFolderId);
+      for (RepositoryNode node : nodes.asList()) {
+        if (!(node instanceof RepositoryFolder)) {
+          continue;
+        }
+        if (node.getMetadata().getName().equals(name)) {
+          return (RepositoryFolder) node;
+        }
+      }
+
       return null;
     } catch (Exception ex) {
       // throw new RepositoryNodeNotFoundException(getConfiguration().getName(),
@@ -624,7 +634,7 @@ public class SignavioConnector extends AbstractRepositoryConnector implements Si
   }
 
   public RepositoryArtifact createEmptyArtifact(String parentFolderId, String artifactName, String artifactType) throws RepositoryNodeNotFoundException {
-    return createArtifactFromJSON(parentFolderId, artifactName, artifactType, "{}");
+    return createArtifactFromJSON(parentFolderId, artifactName, artifactType, SignavioJsonHelper.getEmptypModelTemplate());
   }
 
   public RepositoryArtifact createArtifact(String parentFolderId, String artifactName, String artifactType, Content artifactContent)
@@ -733,29 +743,64 @@ public class SignavioConnector extends AbstractRepositoryConnector implements Si
   }
 
   /**
-   * FIXME: unfinished but maybe it works... method accepts a xml String and
-   * returns the json representation
+   * FIXME: This implementation uses the bpmn2_0-import servlet which returns a
+   * temporary(?) nodeid for which we then retrieve JSon Content.
+   * 
+   * NOTE: I could not make this work using Restlet. Maybe I just dont get it...
+   * (daniel)
    */
-  public String transformBpmn20XmltoJson(String xmlData) {
+  public String transformBpmn20XmltoJson(String xml) {
+    File tmpfile = null;
     try {
-      Form dataForm = new Form();
-      dataForm.add("data", xmlData);
-      Representation xmlDataRep = dataForm.getWebRepresentation();
+      HttpClient client = new DefaultHttpClient();
+      client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+      String postUrl = getConfiguration().getBpmn20XmlImportServletUrl();
+      HttpPost post = new HttpPost(postUrl);
+      post.addHeader("token", getSecurityToken());
+      MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 
-      Request request = new Request(Method.POST, new Reference(getConfiguration().getBpmn20XmlImportServletUrl()), xmlDataRep);
-      request.getClientInfo().getAcceptedMediaTypes().add(new Preference<MediaType>(MediaType.APPLICATION_JSON));
-      Response jsonResponse = sendRequestGetResponse(request);
-      String xml = jsonResponse.getEntity().getText();      
-      jsonResponse.release();
-      Engine.clearThreadLocalVariables();
+      // creating a temporary file
+      tmpfile = File.createTempFile(UUID.randomUUID().toString(), ".xml");
+      OutputStream os = new BufferedOutputStream(new FileOutputStream(tmpfile));
+      InputStream is = new ByteArrayInputStream(xml.getBytes(Charset.forName("utf-8")));
+      IoUtils.copyBytes(is, os);
+      os.flush();
+      os.close();
+      entity.addPart("bpmn2_0file", new FileBody(tmpfile));
+      // apparently this works:
+      entity.addPart("directory", new StringBody("/directory", Charset.forName("UTF-8")));
+      post.setEntity(entity);
 
-      return new JSONObject(xml).toString();
+      // get the response (id of the temporary model)
+      String response = EntityUtils.toString(client.execute(post).getEntity(), "UTF-8");
 
+      // the returned response is of the form ["..."], I suggest this is the
+      // case because an xml-file can contain multiple process definitions. For
+      // the moment we just cut the json-list brackets.
+      String artifactId = response.substring(2);
+      artifactId = artifactId.substring(0, artifactId.length() - 2);
+
+      HttpGet get = new HttpGet(getConfiguration().getEditorUrl(artifactId) + "&data");
+      get.addHeader("token", getSecurityToken());
+      // let's pretend we're Firefox on Windows
+      get.addHeader("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13");
+
+      // get the json Representation for the temporary model
+      response = EntityUtils.toString(client.execute(get).getEntity(), "UTF-8");
+
+      client.getConnectionManager().shutdown();
+      
+      JSONObject jsonObj = new JSONObject(response);      
+      return jsonObj.getString("model");
+      
     } catch (Exception ex) {
       throw new RepositoryException("Error while transforming BPMN2_0_XML to BPMN2_0_JSON", ex);
+    } finally {
+      if (tmpfile != null) {
+        tmpfile.delete();
+      }
     }
   }
-
   public void updateContent(String artifactId, Content content) throws RepositoryNodeNotFoundException {
     throw new RepositoryException("Moving artifacts is not (yet) supported by the Signavio Connector");
   }
@@ -765,7 +810,11 @@ public class SignavioConnector extends AbstractRepositoryConnector implements Si
   }
 
   public boolean isLoggedIn() {
-    return loggedIn || !getConfigValue(CONFIG_KEY_LOGIN_REQUIRED, Boolean.class);
+    Boolean loginRequired = getConfigValue(CONFIG_KEY_LOGIN_REQUIRED, Boolean.class);
+    if (loginRequired==null) {
+      throw new RepositoryException("Configuration of Signavio Connector must contain the configuration attribute '"+CONFIG_KEY_LOGIN_REQUIRED+"'");
+    }
+    return loggedIn || !loginRequired;
   }
 
   public Content getContent(String artifactId) throws RepositoryNodeNotFoundException {
@@ -812,6 +861,10 @@ public class SignavioConnector extends AbstractRepositoryConnector implements Si
 
   public SignavioConnectorConfiguration getConfiguration() {
     return configuration;
+  }
+
+  public String concatenateNodeId(String prefix, String suffix) {
+    return prefix + ";" + suffix;
   }
 
 }

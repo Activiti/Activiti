@@ -12,7 +12,7 @@
     <property name="jdbcPassword" value="" />
        
     <!-- <property name="dbEngineUsed" value="false" /> -->
-    <property name="dbIdentityUsed" value="false" />
+    <property name="dbIdentityUsed" value="true" />
     <property name="dbHistoryUsed" value="false" />
     <property name="dbCycleUsed" value="true" />
     

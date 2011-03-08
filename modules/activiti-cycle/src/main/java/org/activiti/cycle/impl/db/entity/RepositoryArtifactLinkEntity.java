@@ -29,6 +29,7 @@ public class RepositoryArtifactLinkEntity implements PersistentObject, Repositor
   public static final String TYPE_REFINES = "refines";
   public static final String TYPE_UNSPECIFIED = "unspecified link";
   public static final String TYPE_COPY = "copy";
+  public static final String TYPE_REQUIREMENT = "defines requirement";
 
   /**
    * artificial id used as primary key to identify this link auto generated

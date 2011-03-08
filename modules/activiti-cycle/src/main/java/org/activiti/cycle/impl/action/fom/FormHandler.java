@@ -64,6 +64,8 @@ public class FormHandler {
     getExpressions(inputElements, expressionMap);
     NodeList textAreaElements = document.getElementsByTagName("textarea");
     getExpressions(textAreaElements, expressionMap);
+    textAreaElements = document.getElementsByTagName("output");
+    getExpressions(textAreaElements, expressionMap);
     return expressionMap;
   }
 
@@ -86,7 +88,14 @@ public class FormHandler {
         } else if ("checkbox".equals(currentElement.getAttribute("type"))) {
           nameAttribute = currentElement.getAttribute("name");
           valueAttribute = currentElement.getAttribute("property");
+        } else if ("hidden".equals(currentElement.getAttribute("type"))) {
+          nameAttribute = currentElement.getAttribute("name");
+          valueAttribute = currentElement.getAttribute("value");
         }
+      }
+      if ("output".equals(currentElement.getTagName())) {
+        nameAttribute = currentElement.getAttribute("value");
+        valueAttribute = currentElement.getAttribute("value");
       }
       if ("checkbox".equals(currentElement.getTagName())) {
         nameAttribute = currentElement.getAttribute("name");

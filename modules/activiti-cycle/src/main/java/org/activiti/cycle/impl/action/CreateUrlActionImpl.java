@@ -2,6 +2,8 @@ package org.activiti.cycle.impl.action;
 
 import java.net.URL;
 
+import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.action.CreateUrlAction;
 import org.activiti.cycle.impl.AbstractArtifactActionImpl;
 
@@ -21,5 +23,9 @@ public abstract class CreateUrlActionImpl extends AbstractArtifactActionImpl imp
   public CreateUrlActionImpl(String actionId) {
     super(actionId);
   }
+  
+ public String getWarning(RepositoryConnector connector, RepositoryArtifact repositoryArtifact) {
+    return null;
+}
 
 }

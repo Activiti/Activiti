@@ -110,6 +110,7 @@ public class CyclePluginServiceImpl implements CyclePluginService {
     for (CreateUrlAction action : getCreateUrlActions(artifact)) {
       // TODO: Think about id
       RepositoryArtifactOpenLinkAction link = new RepositoryArtifactOpenLinkAction("Open " + action.getId(), action.getUrl(connector, artifact));
+      link.setWarning(action.getWarning(connector, artifact));
       list.add(link);
     }
     return list;

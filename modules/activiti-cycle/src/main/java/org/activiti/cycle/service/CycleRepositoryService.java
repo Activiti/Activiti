@@ -76,9 +76,9 @@ public interface CycleRepositoryService {
   public Content getContent(String connectorId, String artifactId) throws RepositoryNodeNotFoundException;
 
   public List<RepositoryArtifactLink> getIncomingArtifactLinks(String targetConnectorId, String targetArtifactId);
-  
+
   public RepositoryNode getRepositoryNode(String connectorId, String nodeId);
-  
+
   /**
    * load the {@link RepositoryArtifact} including details
    */
@@ -93,12 +93,13 @@ public interface CycleRepositoryService {
 
   public RepositoryFolder getRepositoryFolder(String connectorId, String folderId) throws RepositoryNodeNotFoundException;
 
-//  /**
-//   * return the list of supported {@link ArtifactType}s of this
-//   * {@link RepositoryConnector} for the given folder. Most conenctors doesn't
-//   * make any difference between the folders, but some may do.
-//   */
-//  public List<ArtifactType> getSupportedArtifactTypes(String connectorId, String folderId);
+  // /**
+  // * return the list of supported {@link ArtifactType}s of this
+  // * {@link RepositoryConnector} for the given folder. Most conenctors doesn't
+  // * make any difference between the folders, but some may do.
+  // */
+  // public List<ArtifactType> getSupportedArtifactTypes(String connectorId,
+  // String folderId);
 
   /**
    * update artifact content with default {@link ContentRepresentation}
@@ -132,6 +133,9 @@ public interface CycleRepositoryService {
 
   public String getActionFormTemplate(String connectorId, String artifactId, String actionId);
 
-  
+  /**
+   * Create a new (empty) artifact as a childNode of the provided parentFodlerId
+   */
+  public RepositoryArtifact createEmptyArtifact(String connectorId, String parentFolderId, String artifactName, String artifactType);
 
 }

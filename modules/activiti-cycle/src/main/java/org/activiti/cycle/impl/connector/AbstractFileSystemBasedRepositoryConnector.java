@@ -85,4 +85,12 @@ public abstract class AbstractFileSystemBasedRepositoryConnector extends Abstrac
     RepositoryArtifact artifact = getRepositoryArtifact(artifactId);
     return BasicRepositoryArtifactType.getDefaultContentRepresentation((BasicRepositoryArtifactType) artifact.getArtifactType());
   }
+
+  public String concatenateNodeId(String prefix, String suffix) {
+    String concatChar = "/";
+    if(prefix.endsWith(concatChar) || suffix.startsWith("/")) {
+      concatChar = "";
+    }
+    return prefix + concatChar + suffix;
+  }
 }

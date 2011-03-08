@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+  
+<mapper namespace="org.activiti.cycle">
+
+  <resultMap id="resultMapProcessSolutionEntity" type="org.activiti.cycle.impl.db.entity.ProcessSolutionEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="label" column="LABEL_" jdbcType="VARCHAR" />
+    <result property="stateName" column="STATE_" jdbcType="VARCHAR" /> 
+  </resultMap>
+
+  <select id="selectProcessSolutionById" parameterType="string" resultMap="resultMapProcessSolutionEntity">
+  	select * from ACT_CY_PROCESS_SOLUTION where ID_ = #{id}
+  </select>
+  
+   <select id="selectProcessSolutions" resultMap="resultMapProcessSolutionEntity">
+  	select * from ACT_CY_PROCESS_SOLUTION
+  </select>
+    
+  <insert id="insertProcessSolution" parameterType="org.activiti.cycle.impl.db.entity.ProcessSolutionEntity">
+    insert into ACT_CY_PROCESS_SOLUTION (ID_, LABEL_, STATE_)
+    values (
+    	#{id ,jdbcType=VARCHAR},
+	    #{label, jdbcType=VARCHAR},
+	    #{stateName, jdbcType=VARCHAR}  
+    )
+  </insert>
+  
+    <delete id="deleteProcessSolution">
+    delete from ACT_CY_PROCESS_SOLUTION where ID_ = #{id}
+  </delete>
+  
+    <update id="updateProcessSolution" parameterType="org.activiti.cycle.impl.db.entity.CycleConfigEntity">
+    update ACT_CY_PROCESS_SOLUTION  set
+    	LABEL_ = #{label},
+    	STATE_ = #{stateName}
+    where ID_ = #{id} 	
+  </update>
+  
+</mapper>

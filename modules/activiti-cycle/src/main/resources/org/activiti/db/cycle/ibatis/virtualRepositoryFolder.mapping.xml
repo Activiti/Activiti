@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+  
+<mapper namespace="org.activiti.cycle">
+
+  <resultMap id="resultMapRepositoryFolderEntity" type="org.activiti.cycle.impl.db.entity.VirtualRepositoryFolderEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="label" column="LABEL_" jdbcType="VARCHAR" />
+    <result property="connectorId" column="CONNECTOR_ID_" jdbcType="VARCHAR" />
+    <result property="processSolutionId" column="PROCESS_SOLUTION_ID_" jdbcType="VARCHAR" />
+    <result property="referencedNodeId" column="REFERENCED_NODE_ID_" jdbcType="VARCHAR" />
+    <result property="type" column="TYPE_" jdbcType="VARCHAR" />  
+  </resultMap>
+
+  <select id="selectVirtualRepositoryFolderByProcessSolutionId" parameterType="string" resultMap="resultMapRepositoryFolderEntity">
+  	select * from ACT_CY_V_FOLDER where PROCESS_SOLUTION_ID_ = #{processSolutionId}
+  </select>
+  
+   <select id="selectVirtualRepositoryFolderById" parameterType="string" resultMap="resultMapRepositoryFolderEntity">
+  	select * from ACT_CY_V_FOLDER where ID_ = #{id}
+  </select>
+    
+  <insert id="insertVirtualRepositoryFolder" parameterType="org.activiti.cycle.impl.db.entity.VirtualRepositoryFolderEntity">
+    insert into ACT_CY_V_FOLDER (ID_, LABEL_, CONNECTOR_ID_, PROCESS_SOLUTION_ID_, REFERENCED_NODE_ID_, TYPE_)
+    values (
+    	#{id ,jdbcType=VARCHAR},
+	    #{label, jdbcType=VARCHAR},
+	    #{connectorId, jdbcType=VARCHAR},
+	    #{processSolutionId, jdbcType=VARCHAR},
+	    #{referencedNodeId, jdbcType=VARCHAR},
+	    #{type, jdbcType=VARCHAR}	  
+    )
+  </insert>
+  
+  <delete id="deleteVirtualRepositoryFolder">
+    delete from ACT_CY_V_FOLDER where ID_ = #{id}
+  </delete>
+  
+  <update id="updateVirtualRepositoryFolder" parameterType="org.activiti.cycle.impl.db.entity.VirtualRepositoryFolderEntity">
+    update ACT_CY_V_FOLDER  set
+    	LABEL_ = #{label},
+	    CONNECTOR_ID_= #{connectorId},
+	    PROCESS_SOLUTION_ID_ = #{processSolutionId},
+	    REFERENCED_NODE_ID_ = #{referencedNodeId},
+	    TYPE_ = #{type}	  
+    where ID_ = #{id} 	
+  </update>
+  
+</mapper>

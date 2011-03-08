@@ -14,22 +14,26 @@ import org.activiti.cycle.impl.CycleTagContentImpl;
 import org.activiti.cycle.impl.conf.RepositoryConnectorConfigurationImpl;
 import org.activiti.cycle.impl.db.CycleCommentDao;
 import org.activiti.cycle.impl.db.CycleConfigurationDao;
+import org.activiti.cycle.impl.db.CycleProcessSolutionDao;
 import org.activiti.cycle.impl.db.CycleRepositoryConnectorConfigurationDao;
 import org.activiti.cycle.impl.db.CycleLinkDao;
 import org.activiti.cycle.impl.db.CyclePeopleLinkDao;
 import org.activiti.cycle.impl.db.CycleTagDao;
 import org.activiti.cycle.impl.db.entity.CycleConfigEntity;
 import org.activiti.cycle.impl.db.entity.CycleRepositoryConnectorConfigurationEntity;
+import org.activiti.cycle.impl.db.entity.ProcessSolutionEntity;
 import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity;
 import org.activiti.cycle.impl.db.entity.RepositoryNodeCommentEntity;
 import org.activiti.cycle.impl.db.entity.RepositoryNodePeopleLinkEntity;
 import org.activiti.cycle.impl.db.entity.RepositoryNodeTagEntity;
+import org.activiti.cycle.impl.db.entity.VirtualRepositoryFolderEntity;
+import org.activiti.cycle.processsolution.VirtualRepositoryFolder;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.Group;
 import org.apache.ibatis.session.SqlSession;
 
 public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements CycleCommentDao, CycleRepositoryConnectorConfigurationDao, CycleLinkDao,
-        CyclePeopleLinkDao, CycleTagDao, CycleConfigurationDao {
+        CyclePeopleLinkDao, CycleTagDao, CycleConfigurationDao, CycleProcessSolutionDao {
 
   private static Logger log = Logger.getLogger(CycleDaoMyBatisImpl.class.getName());
 
@@ -403,6 +407,107 @@ public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements 
       throw new RuntimeException(e);
     } finally {
       session.close();
+    }
+  }
+
+  public ProcessSolutionEntity getProcessSolutionById(String id) {
+    SqlSession sqlSession = openSession();
+    try {
+      return (ProcessSolutionEntity) sqlSession.selectOne("selectProcessSolutionById", id);
+    } finally {
+      sqlSession.close();
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<ProcessSolutionEntity> getProcessSolutionList() {
+    SqlSession sqlSession = openSession();
+    try {
+      return (List<ProcessSolutionEntity>) sqlSession.selectList("selectProcessSolutions");
+    } finally {
+      sqlSession.close();
+    }
+  }
+
+  public VirtualRepositoryFolderEntity getVirtualRepositoryFolderById(String id) {
+    SqlSession sqlSession = openSession();
+    try {
+      return (VirtualRepositoryFolderEntity) sqlSession.selectOne("selectVirtualRepositoryFolderById", id);
+    } finally {
+      sqlSession.close();
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<VirtualRepositoryFolderEntity> getVirtualForldersByProcessSolutionId(String id) {
+    SqlSession sqlSession = openSession();
+    try {
+      return (List<VirtualRepositoryFolderEntity>) sqlSession.selectList("selectVirtualRepositoryFolderByProcessSolutionId", id);
+    } finally {
+      sqlSession.close();
+    }
+  }
+
+  public List<VirtualRepositoryFolderEntity> addVirtualFoldersToSolution(String id, List<VirtualRepositoryFolderEntity> folders) {
+    SqlSession sqlSession = openSession();
+    try {
+      for (VirtualRepositoryFolderEntity virtualRepositoryFolderEntity : folders) {
+        virtualRepositoryFolderEntity.setProcessSolutionId(id);
+        virtualRepositoryFolderEntity.setId(UUID.randomUUID().toString());
+        sqlSession.insert("insertVirtualRepositoryFolder", virtualRepositoryFolderEntity);
+      }
+      sqlSession.commit();
+      return folders;
+    } catch (Exception e) {
+      sqlSession.rollback();
+      throw new RuntimeException(e);
+    } finally {
+      sqlSession.close();
+    }
+  }
+
+  public ProcessSolutionEntity saveProcessSolution(ProcessSolutionEntity processSolution) {
+    SqlSession sqlSession = openSession();
+    try {
+      if (processSolution.getId() == null) {
+        processSolution.setId(UUID.randomUUID().toString());
+        sqlSession.insert("insertProcessSolution", processSolution);
+      } else {
+        sqlSession.update("updateProcessSolution", processSolution);
+      }
+      sqlSession.commit();
+      return processSolution;
+    } catch (Exception e) {
+      sqlSession.rollback();
+      throw new RuntimeException(e);
+    } finally {
+      sqlSession.close();
+    }
+  }
+
+  public void deleteProcessSolutionById(String id) {
+    SqlSession sqlSession = openSession();
+    try {
+      sqlSession.delete("deleteProcessSolution", id);
+      sqlSession.commit();
+    } catch (Exception e) {
+      sqlSession.rollback();
+      throw new RuntimeException(e);
+    } finally {
+      sqlSession.close();
+    }
+  }
+
+  public void deleteVirtualRepositoryFolderById(String id) {
+    SqlSession sqlSession = openSession();
+    try {
+      sqlSession.delete("deleteVirtualRepositoryFolder", id);
+      sqlSession.commit();
+    } catch (Exception e) {
+      sqlSession.rollback();
+      throw new RuntimeException(e);
+    } finally {
+      sqlSession.close();
     }
   }
 

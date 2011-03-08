@@ -15,5 +15,7 @@ import org.activiti.cycle.RepositoryConnector;
 public interface CreateUrlAction extends Action {
 
   public URL getUrl(RepositoryConnector connector, RepositoryArtifact repositoryArtifact);
-  
+
+  public String getWarning(RepositoryConnector connector, RepositoryArtifact repositoryArtifact);
+
 }
