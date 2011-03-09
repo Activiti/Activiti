@@ -10,9 +10,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.identity.Picture;
+import org.activiti.engine.impl.identity.UserEntity;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
@@ -20,22 +23,26 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 /**
  * @author Tom Baeyens
  */
-public class DeleteUserCmd implements Command<Void> {
+public class GetUserPictureCmd implements Command<Picture> {
 
-  String userId;
+  protected String userId;
   
-  public DeleteUserCmd(String userId) {
+  public GetUserPictureCmd(String userId) {
     this.userId = userId;
   }
 
-  public Void execute(CommandContext commandContext) {
+  @Override
+  public Picture execute(CommandContext commandContext) {
     if(userId == null) {
       throw new ActivitiException("userId is null");
     }
-    commandContext
+    UserEntity user = (UserEntity) commandContext
       .getIdentitySession()
-      .deleteUser(userId);
-    
-    return null;
+      .findUserById(userId);
+    if(user == null) {
+      throw new ActivitiException("user "+userId+" doesn't exist");
+    }
+    return user.getPicture();
   }
+
 }

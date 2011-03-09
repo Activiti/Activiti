@@ -145,8 +145,8 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Se
     if ((byteArrayValue == null) && (byteArrayValueId != null)) {
       byteArrayValue = Context
         .getCommandContext()
-        .getRuntimeSession()
-        .findByteArrayById(byteArrayValueId);
+        .getDbSqlSession()
+        .selectById(ByteArrayEntity.class, byteArrayValueId);
     }
     return byteArrayValue;
   }

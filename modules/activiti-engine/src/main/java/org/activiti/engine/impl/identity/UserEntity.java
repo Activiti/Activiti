@@ -16,9 +16,12 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.cmd.SaveUserCmd;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.runtime.ByteArrayEntity;
 
 
 /**
@@ -34,6 +37,9 @@ public class UserEntity implements User, Serializable, PersistentObject {
   protected String lastName;
   protected String email;
   protected String password;
+  
+  protected String pictureByteArrayId;
+  protected ByteArrayEntity pictureByteArray;
   
   public UserEntity() {
   }
@@ -57,12 +63,52 @@ public class UserEntity implements User, Serializable, PersistentObject {
     persistentState.put("lastName", lastName);
     persistentState.put("email", email);
     persistentState.put("password", password);
+    persistentState.put("pictureByteArrayId", pictureByteArrayId);
     return persistentState;
   }
   
   public int getRevisionNext() {
     return revision+1;
   }
+  
+  public Picture getPicture() {
+    if (pictureByteArrayId==null) {
+      return null;
+    }
+    ByteArrayEntity pictureByteArray = getPictureByteArray();
+    return new Picture(pictureByteArray.getBytes(), pictureByteArray.getName());
+  }
+  
+  public void setPicture(Picture picture) {
+    if (pictureByteArrayId!=null) {
+      Context
+        .getCommandContext()
+        .getDbSqlSession()
+        .delete(ByteArrayEntity.class, pictureByteArrayId);
+    }
+    if (picture!=null) {
+      pictureByteArray = new ByteArrayEntity(picture.getMimeType(), picture.getBytes());
+      Context
+        .getCommandContext()
+        .getDbSqlSession()
+        .insert(pictureByteArray);
+      pictureByteArrayId = pictureByteArray.getId();
+    } else {
+      pictureByteArrayId = null;
+      pictureByteArray = null;
+    }
+  }
+
+  private ByteArrayEntity getPictureByteArray() {
+    if (pictureByteArrayId!=null && pictureByteArray==null) {
+      pictureByteArray = Context
+        .getCommandContext()
+        .getDbSqlSession()
+        .selectById(ByteArrayEntity.class, pictureByteArrayId);
+    }
+    return pictureByteArray;
+  }
+
 
   public String getId() {
     return id;
@@ -99,5 +145,11 @@ public class UserEntity implements User, Serializable, PersistentObject {
   }
   public void setRevision(int revision) {
     this.revision = revision;
+  }
+  public String getPictureByteArrayId() {
+    return pictureByteArrayId;
+  }
+  public void setPictureByteArrayId(String pictureByteArrayId) {
+    this.pictureByteArrayId = pictureByteArrayId;
   }
 }

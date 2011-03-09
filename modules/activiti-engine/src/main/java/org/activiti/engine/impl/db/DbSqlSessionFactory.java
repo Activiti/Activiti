@@ -42,7 +42,7 @@ public class DbSqlSessionFactory implements SessionFactory {
     //postgres specific
     addDatabaseSpecificStatement("postgres", "insertByteArray", "insertByteArray_postgres");
     addDatabaseSpecificStatement("postgres", "updateByteArray", "updateByteArray_postgres");
-    addDatabaseSpecificStatement("postgres", "selectByteArrayById", "selectByteArrayById_postgres");
+    addDatabaseSpecificStatement("postgres", "selectByteArray", "selectByteArray_postgres");
     addDatabaseSpecificStatement("postgres", "selectResourceByDeploymentIdAndResourceName", "selectResourceByDeploymentIdAndResourceName_postgres");
     addDatabaseSpecificStatement("postgres", "selectResourcesByDeploymentId", "selectResourcesByDeploymentId_postgres");
     addDatabaseSpecificStatement("postgres", "selectHistoricDetailsByQueryCriteria", "selectHistoricDetailsByQueryCriteria_postgres");

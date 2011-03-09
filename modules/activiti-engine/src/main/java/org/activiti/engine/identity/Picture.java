@@ -10,32 +10,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.cmd;
 
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.interceptor.Command;
-import org.activiti.engine.impl.interceptor.CommandContext;
+package org.activiti.engine.identity;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 
 /**
  * @author Tom Baeyens
  */
-public class DeleteUserCmd implements Command<Void> {
+public class Picture {
 
-  String userId;
-  
-  public DeleteUserCmd(String userId) {
-    this.userId = userId;
+  protected byte[] bytes;
+  protected String mimeType;
+
+  public Picture(byte[] bytes, String mimeType) {
+    this.bytes = bytes;
+    this.mimeType = mimeType;
   }
 
-  public Void execute(CommandContext commandContext) {
-    if(userId == null) {
-      throw new ActivitiException("userId is null");
-    }
-    commandContext
-      .getIdentitySession()
-      .deleteUser(userId);
-    
-    return null;
+  public byte[] getBytes() {
+    return bytes;
+  }
+  
+  public InputStream getInputStream() {
+    return new ByteArrayInputStream(bytes);
+  }
+
+  public String getMimeType() {
+    return mimeType;
   }
 }

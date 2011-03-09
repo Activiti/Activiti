@@ -26,7 +26,8 @@
       FIRST_ = #{firstName ,jdbcType=VARCHAR},
       LAST_ = #{lastName ,jdbcType=VARCHAR},
       EMAIL_ = #{email ,jdbcType=VARCHAR},
-      PWD_ = #{password ,jdbcType=VARCHAR}
+      PWD_ = #{password ,jdbcType=VARCHAR},
+      PICTURE_ID_ = #{pictureByteArrayId ,jdbcType=VARCHAR}
     where ID_ = #{id}
       and REV_ = #{revision}
   </update>
@@ -46,6 +47,7 @@
     <result property="lastName" column="LAST_" jdbcType="VARCHAR" />
     <result property="email" column="EMAIL_" jdbcType="VARCHAR" />
     <result property="password" column="PWD_" jdbcType="VARCHAR" />
+    <result property="pictureByteArrayId" column="PICTURE_ID_" jdbcType="VARCHAR" />
   </resultMap>
   
   <!-- USER SELECT -->

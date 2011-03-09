@@ -15,6 +15,7 @@ package org.activiti.engine.impl;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.GroupQuery;
+import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.impl.cmd.CheckPassword;
@@ -26,11 +27,12 @@ import org.activiti.engine.impl.cmd.CreateUserQueryCmd;
 import org.activiti.engine.impl.cmd.DeleteGroupCmd;
 import org.activiti.engine.impl.cmd.DeleteMembershipCmd;
 import org.activiti.engine.impl.cmd.DeleteUserCmd;
+import org.activiti.engine.impl.cmd.GetUserPictureCmd;
 import org.activiti.engine.impl.cmd.SaveGroupCmd;
 import org.activiti.engine.impl.cmd.SaveUserCmd;
+import org.activiti.engine.impl.cmd.SetUserPictureCmd;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.identity.GroupEntity;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
 
 
 /**
@@ -82,13 +84,16 @@ public class IdentityServiceImpl extends ServiceImpl implements IdentityService 
     commandExecutor.execute(new DeleteUserCmd(userId));
   }
 
+  public void setUserPicture(String userId, Picture picture) {
+    commandExecutor.execute(new SetUserPictureCmd(userId, picture));
+  }
+
+  public Picture getUserPicture(String userId) {
+    return commandExecutor.execute(new GetUserPictureCmd(userId));
+  }
+
   public void setAuthenticatedUserId(String authenticatedUserId) {
     Authentication.setAuthenticatedUserId(authenticatedUserId);
   }
 
-  // getters and setters //////////////////////////////////////////////////////
-  
-  public CommandExecutor getCommandExecutor() {
-    return commandExecutor;
-  }
 }

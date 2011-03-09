@@ -531,7 +531,7 @@
     <association property="byteArrayValue" 
                  column="BYTEARRAY_ID_" 
                  javaType="org.activiti.engine.impl.runtime.ByteArrayEntity" 
-                 select="selectByteArrayById" />
+                 select="selectByteArray" />
   </resultMap>
   
   <resultMap id="historicVariableUpdateResultMap_postgres" extends="historicDetailResultMap" type="org.activiti.engine.impl.history.HistoricVariableUpdateEntity">

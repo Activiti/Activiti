@@ -154,7 +154,7 @@ public abstract class ProcessEngines {
       processEngines.put(processEngineName, processEngine);
       processEngineInfosByName.put(processEngineName, processEngineInfo);
     } catch (Throwable e) {
-      log.info("Exception while initializing process engine :" + e.getMessage());
+      log.log(Level.SEVERE, "Exception while initializing process engine :" + e.getMessage(), e);
       processEngineInfo = new ProcessEngineInfoImpl(null, resourceUrlString, getExceptionString(e));
     }
     processEngineInfosByResourceUrl.put(resourceUrlString, processEngineInfo);

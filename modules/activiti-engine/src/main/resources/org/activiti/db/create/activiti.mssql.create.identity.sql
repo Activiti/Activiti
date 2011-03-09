@@ -19,6 +19,7 @@ create table ACT_ID_USER (
     LAST_ nvarchar(255),
     EMAIL_ nvarchar(255),
     PWD_ nvarchar(255),
+    PICTURE_ID_ nvarchar(64),
     primary key (ID_)
 );
 

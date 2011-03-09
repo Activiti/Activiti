@@ -29,6 +29,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.identity.GroupEntity;
 import org.activiti.engine.impl.identity.UserEntity;
 import org.activiti.engine.impl.interceptor.Session;
+import org.activiti.engine.impl.runtime.ByteArrayEntity;
 
 
 /**
@@ -60,8 +61,14 @@ public class DbIdentitySession implements IdentitySession, Session {
   }
 
   public void deleteUser(String userId) {
-    dbSqlSession.delete("deleteMembershipsByUserId", userId);
-    dbSqlSession.delete("deleteUser", userId);
+    UserEntity user = findUserById(userId);
+    if (user!=null) {
+      if (user.getPictureByteArrayId()!=null) {
+        dbSqlSession.delete(ByteArrayEntity.class, user.getPictureByteArrayId());
+      }
+      dbSqlSession.delete("deleteMembershipsByUserId", userId);
+      dbSqlSession.delete("deleteUser", userId);
+    }
   }
 
   public void insertGroup(Group group) {

@@ -118,10 +118,6 @@ public class DbRuntimeSession implements Session, RuntimeSession {
    return (byte[]) temp.get("BYTES_");
   }
 
-  public ByteArrayEntity findByteArrayById(String byteArrayId) {
-    return (ByteArrayEntity) dbSqlSession.selectOne("selectByteArrayById", byteArrayId);
-  }
-
   public JobEntity findJobById(String jobId) {
     return (JobEntity) dbSqlSession.selectOne("selectJob", jobId);
   }

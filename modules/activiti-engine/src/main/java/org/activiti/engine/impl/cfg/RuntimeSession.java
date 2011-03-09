@@ -45,7 +45,6 @@ public interface RuntimeSession {
   List<VariableInstanceEntity> findVariablesByTaskId(String taskId);
 
   byte[] getByteArrayBytes(String byteArrayId);
-  ByteArrayEntity findByteArrayById(String byteArrayId);
 
   JobEntity findJobById(String jobId);
   List<JobEntity> findNextJobsToExecute(Page page);

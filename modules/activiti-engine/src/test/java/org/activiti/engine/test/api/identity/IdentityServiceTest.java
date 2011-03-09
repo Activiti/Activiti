@@ -13,10 +13,12 @@
 
 package org.activiti.engine.test.api.identity;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 
@@ -58,6 +60,25 @@ public class IdentityServiceTest extends PluggableActivitiTestCase {
     assertEquals("Jane", user.getFirstName());
     assertEquals("Donnel", user.getLastName());
     assertEquals("updated@alfresco.com", user.getEmail());
+
+    identityService.deleteUser(user.getId());
+  }
+
+  public void testUserPicture() {
+    // First, create a new user
+    User user = identityService.newUser("johndoe");
+    identityService.saveUser(user);
+    String userId = user.getId();
+
+    Picture picture = new Picture("niceface".getBytes(), "image/string");
+    identityService.setUserPicture(userId, picture);
+    
+    picture = identityService.getUserPicture(userId);
+
+    // Fetch and update the user
+    user = identityService.createUserQuery().userId("johndoe").singleResult();
+    assertTrue("byte arrays differ", Arrays.equals("niceface".getBytes(), picture.getBytes()));
+    assertEquals("image/string", picture.getMimeType());
 
     identityService.deleteUser(user.getId());
   }

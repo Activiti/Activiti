@@ -245,8 +245,8 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject {
     if ((exceptionByteArray == null) && (exceptionByteArrayId != null)) {
       exceptionByteArray = Context
         .getCommandContext()
-        .getRuntimeSession()
-        .findByteArrayById(exceptionByteArrayId);
+        .getDbSqlSession()
+        .selectById(ByteArrayEntity.class, exceptionByteArrayId);
     }
     return exceptionByteArray;
   }

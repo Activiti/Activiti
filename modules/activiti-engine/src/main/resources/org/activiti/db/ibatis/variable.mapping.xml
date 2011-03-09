@@ -131,7 +131,7 @@
 
   <!-- BYTE ARRAY SELECT -->
   
-  <select id="selectByteArrayById" parameterType="string" resultMap="byteArrayResultMap">
+  <select id="selectByteArray" parameterType="string" resultMap="byteArrayResultMap">
    select * from ACT_GE_BYTEARRAY where ID_ = #{id}
   </select>
   
@@ -157,7 +157,7 @@
     <result property="bytes" column="BYTES_" jdbcType="BINARY"/>  
   </resultMap>
   
-  <select id="selectByteArrayById_postgres" parameterType="string" resultMap="byteArrayResultMap_postgres">
+  <select id="selectByteArray_postgres" parameterType="string" resultMap="byteArrayResultMap_postgres">
    select * from ACT_GE_BYTEARRAY where ID_ = #{id}
   </select>
 
