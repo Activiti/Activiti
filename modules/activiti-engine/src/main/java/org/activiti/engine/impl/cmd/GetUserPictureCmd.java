@@ -31,7 +31,6 @@ public class GetUserPictureCmd implements Command<Picture> {
     this.userId = userId;
   }
 
-  @Override
   public Picture execute(CommandContext commandContext) {
     if(userId == null) {
       throw new ActivitiException("userId is null");

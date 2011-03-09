@@ -91,7 +91,6 @@ public class GroupTab extends CustomComponent implements CloseListener, ValueCha
     setCompositionRoot(layout);
   }
 
-  @Override
   public void buttonClick(ClickEvent event) {
 
     Button source = event.getButton();
@@ -132,11 +131,9 @@ public class GroupTab extends CustomComponent implements CloseListener, ValueCha
     }
   }
 
-  @Override
   public void windowClose(CloseEvent e) {
   }
 
-  @Override
   public void valueChange(ValueChangeEvent event) {
   }
 }

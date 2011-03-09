@@ -223,7 +223,6 @@ public class UserTable extends Table implements ClickListener, ItemClickListener
     ConfirmDialog dialog = new ConfirmDialog(app.getMessage(Messages.ConfirmDelete) + id, message, app.getMessage(Messages.OkKey),
             app.getMessage(Messages.CancelKey), new ConfirmDialog.ConfirmationDialogCallback() {
 
-              @Override
               public void response(boolean ok) {
 
                 // Delete user confirmed?
@@ -262,7 +261,6 @@ public class UserTable extends Table implements ClickListener, ItemClickListener
 
   }
 
-  @Override
   public void itemClick(ItemClickEvent event) {
     if (event.isDoubleClick()) {
       // Edit user
@@ -270,14 +268,12 @@ public class UserTable extends Table implements ClickListener, ItemClickListener
     }
   }
 
-  @Override
   public void buttonClick(ClickEvent event) {
 
     // TODO Auto-generated method stub
 
   }
 
-  @Override
   public void windowClose(CloseEvent e) {
     // TODO Auto-generated method stub
 

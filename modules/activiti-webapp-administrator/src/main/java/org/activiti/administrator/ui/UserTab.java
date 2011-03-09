@@ -91,7 +91,6 @@ public class UserTab extends CustomComponent implements CloseListener, ValueChan
     setCompositionRoot(layout);
   }
 
-  @Override
   public void buttonClick(ClickEvent event) {
 
     Button source = event.getButton();
@@ -132,11 +131,9 @@ public class UserTab extends CustomComponent implements CloseListener, ValueChan
     }
   }
 
-  @Override
   public void windowClose(CloseEvent e) {
   }
 
-  @Override
   public void valueChange(ValueChangeEvent event) {
   }
 }

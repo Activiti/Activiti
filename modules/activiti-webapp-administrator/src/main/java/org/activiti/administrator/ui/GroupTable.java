@@ -200,7 +200,6 @@ public class GroupTable extends Table implements CloseListener, ItemClickListene
     ConfirmDialog dialog = new ConfirmDialog(app.getMessage(Messages.ConfirmDelete) + id, message, app.getMessage(Messages.OkKey),
             app.getMessage(Messages.CancelKey), new ConfirmDialog.ConfirmationDialogCallback() {
 
-              @Override
               public void response(boolean ok) {
 
                 // Delete user confirmed?
@@ -242,7 +241,6 @@ public class GroupTable extends Table implements CloseListener, ItemClickListene
 
   }
 
-  @Override
   public void itemClick(ItemClickEvent event) {
     if (event.isDoubleClick()) {
       // Open form for editing the group
@@ -250,7 +248,6 @@ public class GroupTable extends Table implements CloseListener, ItemClickListene
     }
   }
 
-  @Override
   public void windowClose(CloseEvent e) {
     // TODO Auto-generated method stub
 

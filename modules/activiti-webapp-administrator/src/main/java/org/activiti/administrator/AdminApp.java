@@ -214,7 +214,6 @@ public class AdminApp extends Application implements ClickListener {
     return i18nBundle.getString(key);
   }
 
-  @Override
   public void buttonClick(ClickEvent event) {
 
     Button source = event.getButton();

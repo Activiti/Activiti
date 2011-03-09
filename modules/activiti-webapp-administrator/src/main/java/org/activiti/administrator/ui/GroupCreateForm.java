@@ -207,7 +207,6 @@ public class GroupCreateForm extends Form implements ClickListener {
 
   }
 
-  @Override
   public void buttonClick(ClickEvent event) {
 
     // Get source event
