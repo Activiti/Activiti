@@ -104,11 +104,10 @@
 			<artifactId>vaadin</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>javax</groupId>
-			<artifactId>javaee-web-api</artifactId>
-			<version>6.0</version>
-			<scope>provided</scope>
-		</dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
 	</dependencies>
 
 	<build>
