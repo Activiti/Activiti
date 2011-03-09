@@ -11,14 +11,30 @@
  * limitations under the License.
  */
 
-package org.activiti;
+package org.activiti.explorer.ui;
+
+import com.vaadin.ui.VerticalLayout;
 
 
 /**
  * @author Joram Barrez
  */
-public class Constants {
+public class TaskPage extends VerticalLayout {
   
-  public static final String THEME = "activiti";
+  private static final long serialVersionUID = 2310017323549425167L;
+  
+  protected ViewManager viewManager;
+  
+  public TaskPage(ViewManager viewManager) {
+    this.viewManager = viewManager;
+
+    setSizeFull();
+    initTaskMenuBar();
+  }
+  
+  protected void initTaskMenuBar() {
+    TaskMenuBar taskMenuBar = new TaskMenuBar(viewManager);
+    addComponent(taskMenuBar);
+  }
 
 }

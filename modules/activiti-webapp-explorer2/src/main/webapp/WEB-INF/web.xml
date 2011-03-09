@@ -12,7 +12,7 @@
         <init-param>
             <description>Vaadin application class to start</description>
             <param-name>application</param-name>
-            <param-value>org.activiti.ExplorerApplication</param-value>
+            <param-value>org.activiti.explorer.ExplorerApplication</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>
