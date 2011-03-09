@@ -33,7 +33,6 @@ public class DelegateTaskCmd implements Command<Object> {
     this.userId = userId;
   }
 
-  @Override
   public Object execute(CommandContext commandContext) {
     if(taskId == null) {
       throw new ActivitiException("taskId is null");
