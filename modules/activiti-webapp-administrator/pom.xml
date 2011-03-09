@@ -24,11 +24,6 @@
 			<url>http://maven.alfresco.com/nexus/content/repositories/activiti</url>
 		</repository>
 		<repository>
-			<id>java.net2</id>
-			<name>Repository hosting the jee6 artifacts</name>
-			<url>http://download.java.net/maven/2</url>
-		</repository>
-		<repository>
 			<id>vaadin-snapshots</id>
 			<url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
 			<releases>
@@ -117,8 +112,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.1</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.5</source>
+					<target>1.5</target>
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
