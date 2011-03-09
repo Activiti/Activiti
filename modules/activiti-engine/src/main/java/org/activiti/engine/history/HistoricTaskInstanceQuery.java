@@ -128,6 +128,22 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
    */
   HistoricTaskInstanceQuery processUnfinished();
   
+  /**
+   * Only select historic task instances which have a local task variable with the
+   * given name set to the given value. The last variable value in the variable updates 
+   * ({@link HistoricDetail}) will be used, so make sure history-level is configured
+   * to full when this feature is used.
+   */
+  HistoricTaskInstanceQuery taskVariableValueEquals(String variableName, Object variableValue);
+  
+  /**
+   * Only select historic task instances which are part of a process instance which have a variable 
+   * with the given name set to the given value. The last variable value in the variable updates 
+   * ({@link HistoricDetail}) will be used, so make sure history-level is configured
+   * to full when this feature is used.
+   */
+  HistoricTaskInstanceQuery processVariableValueEquals(String variableName, Object variableValue);
+  
   /** Order by task id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricTaskInstanceQuery orderByTaskId();
   

@@ -402,6 +402,47 @@
       <if test="processUnfinished">
         and HPI.END_TIME_ is null
       </if>
+      <foreach collection="variables" index="index" item="var">
+        and exists (
+          select HD.ID_ 
+          from ACT_HI_DETAIL HD 
+          where
+            HD.TYPE_ = 'VariableUpdate' 
+            and HD.NAME_ =  #{var.name}
+            <choose>
+              <when test="var.taskVariable">
+                and HD.TASK_ID_ = HTI.ID_
+                and HD.REV_ = (select max(HDM.REV_) from ACT_HI_DETAIL HDM where HDM.TASK_ID_ = HTI.ID_ and HDM.VAR_TYPE_ = #{var.type} and HDM.NAME_ = #{var.name} and HDM.TYPE_ = 'VariableUpdate')
+                and HD.TIME_ = (select max(HDM.TIME_) from ACT_HI_DETAIL HDM where HDM.TASK_ID_ = HTI.ID_ and HDM.VAR_TYPE_ = #{var.type} and HDM.NAME_ = #{var.name} and HDM.TYPE_ = 'VariableUpdate')
+              </when>
+              <otherwise>
+                and HD.PROC_INST_ID_ = HTI.PROC_INST_ID_ and HD.TASK_ID_ is null
+                and HD.REV_ = (select max(HDM.REV_) from ACT_HI_DETAIL HDM where HDM.PROC_INST_ID_ = HTI.PROC_INST_ID_ and HDM.TASK_ID_ is null and HDM.VAR_TYPE_ = #{var.type} and HDM.NAME_ = #{var.name} and HDM.TYPE_ = 'VariableUpdate')
+                and HD.TIME_ = (select max(HDM.TIME_) from ACT_HI_DETAIL HDM where HDM.PROC_INST_ID_ = HTI.PROC_INST_ID_ and HDM.TASK_ID_ is null and HDM.VAR_TYPE_ = #{var.type} and HDM.NAME_ = #{var.name} and HDM.TYPE_ = 'VariableUpdate')
+              </otherwise>
+            </choose>  
+            <if test="!var.type.equals('null')">
+              and HD.VAR_TYPE_ = #{var.type}
+            </if>
+            <!-- Variable value -->
+            <if test="var.textValue != null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
+              and HD.TEXT_ =  #{var.textValue}
+            </if>
+            <if test="var.textValue2 != null">
+              and HD.TEXT2_ = #{var.textValue2}
+            </if>
+            <if test="var.longValue != null">
+              and HD.LONG_ = #{var.longValue}
+            </if>
+            <if test="var.doubleValue != null">
+              and HD.DOUBLE_ = #{var.doubleValue}
+            </if>
+            <!-- Null variable type -->
+            <if test="var.textValue == null &amp;&amp; var.textValue2 == null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
+              and HD.TEXT_ is null and HD.TEXT2_ is null and HD.LONG_ is null and HD.DOUBLE_ is null and HD.BYTEARRAY_ID_ is null
+            </if>
+        )
+      </foreach>
     </where>
   </sql>
   
@@ -451,7 +492,6 @@
   </delete>
   
   <!-- HISTORIC DETAILS RESULTMAP -->
-  
   <resultMap id="historicDetailResultMap" type="org.activiti.engine.impl.history.HistoricDetailEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
@@ -461,6 +501,19 @@
     <result property="time" column="TIME_" jdbcType="TIMESTAMP" />
     <discriminator javaType="string" column="TYPE_">
       <case value="VariableUpdate" resultMap="historicVariableUpdateResultMap"/> 
+      <case value="FormProperty" resultMap="historicFormPropertyResultMap"/> 
+    </discriminator>
+  </resultMap>
+  
+  <resultMap id="historicDetailResultMap_postgres" type="org.activiti.engine.impl.history.HistoricDetailEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="activityInstanceId" column="ACT_INST_ID_" jdbcType="VARCHAR" />
+    <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
+    <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
+    <result property="time" column="TIME_" jdbcType="TIMESTAMP" />
+    <discriminator javaType="string" column="TYPE_">
+      <case value="VariableUpdate" resultMap="historicVariableUpdateResultMap_postgres"/> 
       <case value="FormProperty" resultMap="historicFormPropertyResultMap"/> 
     </discriminator>
   </resultMap>
@@ -480,6 +533,22 @@
                  javaType="org.activiti.engine.impl.runtime.ByteArrayEntity" 
                  select="selectByteArrayById" />
   </resultMap>
+  
+  <resultMap id="historicVariableUpdateResultMap_postgres" extends="historicDetailResultMap" type="org.activiti.engine.impl.history.HistoricVariableUpdateEntity">
+    <result property="name" column="NAME_" javaType="String" jdbcType="VARCHAR" />
+    <result property="revision" column="REV_" jdbcType="INTEGER" />
+    <result property="variableType" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="VARCHAR"/>
+    <result property="activityId" column="ACTIVITY_ID_" jdbcType="VARCHAR" />
+    <result property="byteArrayValueId" column="BYTEARRAY_ID_" jdbcType="VARCHAR" />
+    <result property="doubleValue" column="DOUBLE_" jdbcType="DOUBLE" />
+    <result property="textValue" column="TEXT_" jdbcType="VARCHAR" />
+    <result property="textValue2" column="TEXT2_" jdbcType="VARCHAR" />
+    <result property="longValue" column="LONG_" jdbcType="BIGINT" />
+    <association property="byteArrayValue" 
+                 column="BYTEARRAY_ID_" 
+                 javaType="org.activiti.engine.impl.runtime.ByteArrayEntity" 
+                 select="selectByteArrayById_postgres" />
+  </resultMap>
 
   <resultMap id="historicFormPropertyResultMap" extends="historicDetailResultMap" type="org.activiti.engine.impl.history.HistoricFormPropertyEntity">
     <result property="propertyId" column="NAME_" javaType="String" jdbcType="VARCHAR" />
@@ -489,6 +558,14 @@
   <!-- HISTORIC VARIABLE UPDATE SELECT -->
 
   <select id="selectHistoricDetailsByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricDetailQueryImpl" resultMap="historicDetailResultMap">
+    select *
+    <include refid="selectHistoricDetailsByQueryCriteriaSql"/>
+    <if test="orderBy != null">
+      order by ${orderBy}
+    </if>
+  </select>
+  
+  <select id="selectHistoricDetailsByQueryCriteria_postgres" parameterType="org.activiti.engine.impl.HistoricDetailQueryImpl" resultMap="historicDetailResultMap_postgres">
     select *
     <include refid="selectHistoricDetailsByQueryCriteriaSql"/>
     <if test="orderBy != null">

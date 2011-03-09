@@ -13,12 +13,15 @@
 
 package org.activiti.engine.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.variable.VariableTypes;
 
 
 /**
@@ -46,6 +49,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
   protected boolean unfinished;
   protected boolean processFinished;
   protected boolean processUnfinished;
+  protected List<TaskQueryVariableValue> variables = new ArrayList<TaskQueryVariableValue>();
 
   public HistoricTaskInstanceQueryImpl(CommandExecutor commandExecutor) {
     super(commandExecutor);
@@ -53,6 +57,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
 
   @Override
   public long executeCount(CommandContext commandContext) {
+    ensureVariablesInitialized();
     checkQueryOk();
     return commandContext
       .getTaskSession()
@@ -61,6 +66,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
 
   @Override
   public List<HistoricTaskInstance> executeList(CommandContext commandContext, Page page) {
+    ensureVariablesInitialized();
     checkQueryOk();
     return commandContext
       .getTaskSession()
@@ -147,6 +153,16 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
     return this;
   }
   
+  public HistoricTaskInstanceQueryImpl taskVariableValueEquals(String variableName, Object variableValue) {
+    variables.add(new TaskQueryVariableValue(variableName, variableValue, QueryOperator.EQUALS, true));
+    return this;
+  }
+  
+  public HistoricTaskInstanceQuery processVariableValueEquals(String variableName, Object variableValue) {
+    variables.add(new TaskQueryVariableValue(variableName, variableValue, QueryOperator.EQUALS, false));
+    return this;
+  }
+  
   public HistoricTaskInstanceQuery taskDefinitionKey(String taskDefinitionKey) {
     this.taskDefinitionKey = taskDefinitionKey;
     return this;
@@ -165,6 +181,13 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
   public HistoricTaskInstanceQuery processUnfinished() {
     this.processUnfinished = true;
     return this;
+  }
+  
+  protected void ensureVariablesInitialized() {    
+    VariableTypes types = Context.getProcessEngineConfiguration().getVariableTypes();
+    for(QueryVariableValue var : variables) {
+      var.initialize(types);
+    }
   }
 
   // ordering /////////////////////////////////////////////////////////////////
@@ -288,5 +311,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
   }
   public String getTaskDefinitionKey() {
     return taskDefinitionKey;
+  }
+  public List<TaskQueryVariableValue> getVariables() {
+    return variables;
   }
 }
