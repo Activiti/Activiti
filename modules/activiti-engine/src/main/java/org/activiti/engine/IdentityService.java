@@ -12,11 +12,14 @@
  */
 package org.activiti.engine;
 
+import java.util.List;
+
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
+import org.activiti.engine.impl.identity.Account;
 
 
 /**
@@ -115,4 +118,28 @@ public interface IdentityService {
    * @throws ActivitiException if the user doesn't exist.
    * @returns null if the user doesn't have a picture. */
   Picture getUserPicture(String userId);
+
+  /** Generic extensibility key-value pairs associated with a user */
+  void setUserInfo(String userId, String key, String value);
+  
+  /** Generic extensibility key-value pairs associated with a user */
+  String getUserInfo(String userId, String key);
+
+  /** Generic extensibility keys associated with a user */
+  List<String> getUserInfoKeys(String userId);
+
+  /** Delete an entry of the generic extensibility key-value pairs associated with a user */
+  void deleteUserInfo(String userId, String key);
+
+  /** Store account information for a remote system */
+  void setUserAccount(String userId, String accountName, String accountUsername, String accountPassword);
+  
+  /** Get account names associated with the given user */
+  List<String> getUserAccountNames(String userId);
+
+  /** Get account information associated with a user */
+  Account getUserAccount(String userId, String accountName);
+
+  /** Delete an entry of the generic extensibility key-value pairs associated with a user */
+  void deleteUserAccount(String userId, String accountName);
 }

@@ -245,11 +245,78 @@
 
   <!-- MEMBERSHIP RESULTMAP -->
   
-  <!-- MEMBERSHIP SELECT -->
+  <!-- MEMBERSHIP DELETE -->
 
   <delete id="deleteMembershipsByGroupId" parameterType="string">
     delete from ACT_ID_MEMBERSHIP 
     where GROUP_ID_ = #{groupId} 
   </delete>
+  
+  <!-- INFO INSERT -->
+
+  <insert id="insertIdentityInfo" parameterType="org.activiti.engine.impl.identity.IdentityInfoEntity">
+    insert into ACT_ID_INFO (ID_, REV_, USER_ID_, TYPE_, KEY_, VALUE_, PASSWORD_)
+    values (
+      #{id ,jdbcType=VARCHAR},
+      1,
+      #{userId ,jdbcType=VARCHAR},
+      #{type ,jdbcType=VARCHAR},
+      #{key ,jdbcType=VARCHAR},
+      #{value ,jdbcType=VARCHAR},
+      #{password ,jdbcType=VARCHAR}
+    )
+  </insert>
+  
+  <!-- INFO UPDATE -->
+  <update id="updateIdentityInfo" parameterType="org.activiti.engine.impl.identity.IdentityInfoEntity">
+    update ACT_ID_INFO 
+    set REV_ = #{revisionNext ,jdbcType=INTEGER},
+        VALUE_ = #{value ,jdbcType=VARCHAR},
+        PASSWORD_ = #{password ,jdbcType=VARCHAR}
+    where ID_ = #{id}
+      and REV_ = #{revision}
+  </update>
+  
+  <!-- INFO DELETE -->
+
+  <delete id="deleteIdentityInfo" parameterType="string">
+    delete from ACT_ID_INFO 
+    where ID_ = #{id} 
+  </delete>
+
+  <delete id="deleteIdentityInfosByUserId" parameterType="string">
+    delete from ACT_ID_INFO 
+    where USER_ID_ = #{userId} 
+  </delete>
+
+  <!-- INFO RESULTMAP -->
+
+  <resultMap id="identityInfoResultMap" type="org.activiti.engine.impl.identity.IdentityInfoEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="revision" column="REV_" jdbcType="INTEGER" />
+    <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />
+    <result property="type" column="TYPE_" jdbcType="VARCHAR" />
+    <result property="key" column="KEY_" jdbcType="VARCHAR" />
+    <result property="value" column="VALUE_" jdbcType="VARCHAR" />
+    <result property="password" column="PASSWORD_" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <!-- INFO SELECT -->
+
+  <select id="selectIdentityInfoById" parameterType="string" resultMap="identityInfoResultMap">
+    select * from ACT_ID_INFO where ID_ = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectIdentityInfoByUserIdAndKey" parameterType="map" resultMap="identityInfoResultMap">
+    select * from ACT_ID_INFO 
+    where USER_ID_ = #{userId,jdbcType=VARCHAR}
+      and KEY_ =  #{key,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectIdentityInfoKeysByUserIdAndType" parameterType="map" resultType="string">
+    select KEY_ from ACT_ID_INFO 
+    where USER_ID_ = #{userId,jdbcType=VARCHAR}
+      and TYPE_ =  #{type,jdbcType=VARCHAR}
+  </select>
   
 </mapper>

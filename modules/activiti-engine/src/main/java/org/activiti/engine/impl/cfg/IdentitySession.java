@@ -20,6 +20,7 @@ import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.identity.IdentityInfoEntity;
 
 
 /**
@@ -53,6 +54,10 @@ public interface IdentitySession {
   /* Membership */
   void createMembership(String userId, String groupId);
   void deleteMembership(String userId, String groupId);
-
-
+  
+  /* UserInfo */
+  IdentityInfoEntity findUserInfoByUserIdAndKey(String userId, String key);
+  void deleteUserInfoByUserIdAndKey(String userId, String key);
+  void setUserInfo(String userId, String type, String key, String value, String password);
+  List<String> findIdentityInfoKeysByUserIdAndType(String userId, String userInfoType);
 }

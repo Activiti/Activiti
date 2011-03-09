@@ -22,6 +22,7 @@ import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cfg.IdentitySession;
+import org.activiti.engine.impl.identity.IdentityInfoEntity;
 import org.activiti.engine.impl.identity.UserEntity;
 import org.activiti.engine.impl.interceptor.Session;
 
@@ -164,4 +165,21 @@ public class CustomIdentitySession implements IdentitySession, Session {
     }
   }
 
+  @Override
+  public void deleteUserInfoByUserIdAndKey(String userId, String key) {
+  }
+
+  @Override
+  public List<String> findIdentityInfoKeysByUserIdAndType(String userId, String userInfoType) {
+    return null;
+  }
+
+  @Override
+  public IdentityInfoEntity findUserInfoByUserIdAndKey(String userId, String key) {
+    return null;
+  }
+
+  @Override
+  public void setUserInfo(String userId, String type, String key, String value, String password) {
+  }
 }

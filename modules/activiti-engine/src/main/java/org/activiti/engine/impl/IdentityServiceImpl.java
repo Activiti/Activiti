@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.impl;
 
+import java.util.List;
+
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.GroupQuery;
@@ -27,12 +29,19 @@ import org.activiti.engine.impl.cmd.CreateUserQueryCmd;
 import org.activiti.engine.impl.cmd.DeleteGroupCmd;
 import org.activiti.engine.impl.cmd.DeleteMembershipCmd;
 import org.activiti.engine.impl.cmd.DeleteUserCmd;
+import org.activiti.engine.impl.cmd.DeleteUserInfoCmd;
+import org.activiti.engine.impl.cmd.GetUserAccountCmd;
+import org.activiti.engine.impl.cmd.GetUserInfoCmd;
+import org.activiti.engine.impl.cmd.GetUserInfoKeysCmd;
 import org.activiti.engine.impl.cmd.GetUserPictureCmd;
 import org.activiti.engine.impl.cmd.SaveGroupCmd;
 import org.activiti.engine.impl.cmd.SaveUserCmd;
+import org.activiti.engine.impl.cmd.SetUserInfoCmd;
 import org.activiti.engine.impl.cmd.SetUserPictureCmd;
+import org.activiti.engine.impl.identity.Account;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.identity.GroupEntity;
+import org.activiti.engine.impl.identity.IdentityInfoEntity;
 
 
 /**
@@ -96,4 +105,35 @@ public class IdentityServiceImpl extends ServiceImpl implements IdentityService 
     Authentication.setAuthenticatedUserId(authenticatedUserId);
   }
 
+  public String getUserInfo(String userId, String key) {
+    return commandExecutor.execute(new GetUserInfoCmd(userId, key));
+  }
+
+  public List<String> getUserInfoKeys(String userId) {
+    return commandExecutor.execute(new GetUserInfoKeysCmd(userId, IdentityInfoEntity.TYPE_USERINFO));
+  }
+
+  public List<String> getUserAccountNames(String userId) {
+    return commandExecutor.execute(new GetUserInfoKeysCmd(userId, IdentityInfoEntity.TYPE_USERACCOUNT));
+  }
+
+  public void setUserInfo(String userId, String key, String value) {
+    commandExecutor.execute(new SetUserInfoCmd(userId, key, value));
+  }
+
+  public void deleteUserInfo(String userId, String key) {
+    commandExecutor.execute(new DeleteUserInfoCmd(userId, key));
+  }
+
+  public void deleteUserAccount(String userId, String accountName) {
+    commandExecutor.execute(new DeleteUserInfoCmd(userId, accountName));
+  }
+
+  public Account getUserAccount(String userId, String accountName) {
+    return commandExecutor.execute(new GetUserAccountCmd(userId, accountName));
+  }
+
+  public void setUserAccount(String userId, String accountName, String accountUsername, String accountPassword) {
+    commandExecutor.execute(new SetUserInfoCmd(userId, accountName, accountUsername, accountPassword));
+  }
 }
