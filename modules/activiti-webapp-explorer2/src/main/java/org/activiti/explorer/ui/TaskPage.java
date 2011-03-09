@@ -13,28 +13,55 @@
 
 package org.activiti.explorer.ui;
 
+import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.Reindeer;
 
 
 /**
  * @author Joram Barrez
  */
-public class TaskPage extends VerticalLayout {
+public class TaskPage extends CustomComponent {
   
   private static final long serialVersionUID = 2310017323549425167L;
   
   protected ViewManager viewManager;
+  protected VerticalLayout mainLayout;
+  protected HorizontalSplitPanel mainSplitPanel;
   
   public TaskPage(ViewManager viewManager) {
     this.viewManager = viewManager;
-
+    
+    // The main layout of this page is a vertical layout:
+    // on top there is the dynamic task menu bar, on the bottom the rest
+    mainLayout = new VerticalLayout();
+    mainLayout.setSizeFull();
+    setCompositionRoot(mainLayout);
     setSizeFull();
+    
     initTaskMenuBar();
+    
+    // The actual content of the page is a HorizontalSplitPanel,
+    // with on the left side the task list
+    mainSplitPanel = new HorizontalSplitPanel();
+    mainSplitPanel.addStyleName(Reindeer.SPLITPANEL_SMALL);
+    mainSplitPanel.setSizeFull();
+    mainSplitPanel.setSplitPosition(20, HorizontalSplitPanel.UNITS_PERCENTAGE);
+    mainLayout.addComponent(mainSplitPanel);
+    mainLayout.setExpandRatio(mainSplitPanel, 1.0f);
+   
+    initTaskList();
   }
   
   protected void initTaskMenuBar() {
     TaskMenuBar taskMenuBar = new TaskMenuBar(viewManager);
-    addComponent(taskMenuBar);
+    mainLayout.addComponent(taskMenuBar);
+  }
+  
+  protected void initTaskList() {
+    mainSplitPanel.setFirstComponent(new Label("Bliep"));
   }
 
 }

@@ -98,10 +98,11 @@ public class ProfilePanel extends Panel {
   
   protected void initContactSection() {
     addProfileHeader(infoPanelLayout, "Contact");
-    GridLayout contactLayout = createInfoSectionLayout(2, 3); 
+    GridLayout contactLayout = createInfoSectionLayout(2, 4); 
     
     addProfileEntry(contactLayout, "Email: ", "kermit@muppets.com");
     addProfileEntry(contactLayout, "Phone: ", "+145893689");
+    addProfileEntry(contactLayout, "twitter", "kermit83");
 
     // The skype entry shows the name + skype icon, laid out in a small grid
     GridLayout skypeLayout = new GridLayout(3,1);
