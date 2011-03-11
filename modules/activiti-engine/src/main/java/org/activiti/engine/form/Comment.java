@@ -13,6 +13,8 @@
 
 package org.activiti.engine.form;
 
+import java.util.Date;
+
 
 /**
  * @author Tom Baeyens
@@ -20,5 +22,8 @@ package org.activiti.engine.form;
 public interface Comment {
 
   String getUserId();
+  Date getTime();
+  String getTaskId();
+  String getProcessInstanceId();
   String getMessage();
 }

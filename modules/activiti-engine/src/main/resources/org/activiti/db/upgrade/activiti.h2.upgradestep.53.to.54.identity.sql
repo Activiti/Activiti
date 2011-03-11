@@ -8,6 +8,7 @@ create table ACT_ID_INFO (
     TYPE_ varchar(64),
     KEY_ varchar(255),
     VALUE_ varchar(255),
-    PASSWORD_ varchar(255),
+    PASSWORD_ longvarbinary,
+    PARENT_ID_ varchar(255),
     primary key (ID_)
 );

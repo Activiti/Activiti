@@ -612,4 +612,46 @@
     </where>
   </sql>
   
+  <!-- COMMENT INSERT -->
+
+  <insert id="insertComment" parameterType="org.activiti.engine.impl.form.CommentEntity">
+    insert into ACT_HI_DETAIL (ID_, TYPE_, NAME_, TIME_, TASK_ID_, PROC_INST_ID_, TEXT_)
+    values (
+      #{id ,jdbcType=VARCHAR},
+      'comment',
+      #{userId ,jdbcType=VARCHAR},
+      #{time ,jdbcType=TIMESTAMP},
+      #{taskId ,jdbcType=VARCHAR},
+      #{processInstanceId ,jdbcType=VARCHAR},
+      #{message ,jdbcType=VARCHAR}
+    )
+  </insert>
+
+  <!-- COMMENT DELETE -->
+
+  <delete id="deleteCommentsByTaskId" parameterType="string">
+    delete from ACT_HI_DETAIL where TASK_ID_ = #{taskId} 
+  </delete>
+
+  <!-- COMMENT RESULTMAP -->
+
+  <resultMap id="commentResultMap" type="org.activiti.engine.impl.form.CommentEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="userId" column="NAME_" jdbcType="VARCHAR" />
+    <result property="time" column="TIME_" jdbcType="TIMESTAMP" />
+    <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="message" column="TEXT_" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <!-- COMMENT SELECT -->
+
+  <select id="selectCommentsByTaskId" parameterType="string" resultMap="commentResultMap">
+    select * from ACT_HI_DETAIL where TASK_ID_ = #{taskId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectCommentsByProcessInstanceId" parameterType="string" resultMap="commentResultMap">
+    select * from ACT_HI_DETAIL where PROC_INST_ID_ = #{processInstanceId,jdbcType=VARCHAR}
+  </select>
+
 </mapper>

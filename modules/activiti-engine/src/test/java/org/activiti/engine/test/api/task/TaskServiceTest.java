@@ -17,10 +17,13 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.form.Comment;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -28,8 +31,8 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.IdentityLink;
-import org.activiti.engine.task.Task;
 import org.activiti.engine.task.IdentityLinkType;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
@@ -88,6 +91,40 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
     // Finally, delete task
     taskService.deleteTask(task.getId(), true);
+  }
+
+  public void testTaskComments() {
+    Task task = taskService.newTask();
+    task.setOwner("johndoe");
+    taskService.saveTask(task);
+    String taskId = task.getId();
+
+    identityService.setAuthenticatedUserId("johndoe");
+    // Fetch the task again and update
+    formService.addComment(taskId, null, "look at this");
+    Comment comment = formService.getTaskComments(taskId).get(0);
+    assertEquals("johndoe", comment.getUserId());
+    assertEquals(taskId, comment.getTaskId());
+    assertNull(comment.getProcessInstanceId());
+    assertEquals("look at this", comment.getMessage());
+    assertNotNull(comment.getTime());
+
+    formService.addComment(taskId, "pid", "one");
+    formService.addComment(taskId, "pid", "two");
+    
+    Set<String> expectedComments = new HashSet<String>();
+    expectedComments.add("one");
+    expectedComments.add("two");
+    
+    Set<String> comments = new HashSet<String>();
+    for (Comment cmt: formService.getProcessInstanceComments("pid")) {
+      comments.add(cmt.getMessage());
+    }
+    
+    assertEquals(expectedComments, comments);
+
+    // Finally, delete task
+    taskService.deleteTask(taskId, true);
   }
 
   public void testTaskDelegation() {

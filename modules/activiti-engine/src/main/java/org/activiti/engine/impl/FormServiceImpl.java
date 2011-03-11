@@ -20,9 +20,12 @@ import org.activiti.engine.FormService;
 import org.activiti.engine.form.Comment;
 import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.form.TaskFormData;
+import org.activiti.engine.impl.cmd.AddCommentCmd;
+import org.activiti.engine.impl.cmd.GetProcessInstanceCommentsCmd;
 import org.activiti.engine.impl.cmd.GetRenderedStartFormCmd;
 import org.activiti.engine.impl.cmd.GetRenderedTaskFormCmd;
 import org.activiti.engine.impl.cmd.GetStartFormCmd;
+import org.activiti.engine.impl.cmd.GetTaskCommentsCmd;
 import org.activiti.engine.impl.cmd.GetTaskFormCmd;
 import org.activiti.engine.impl.cmd.SubmitStartFormCmd;
 import org.activiti.engine.impl.cmd.SubmitTaskFormCmd;
@@ -70,12 +73,15 @@ public class FormServiceImpl extends ServiceImpl implements FormService {
     commandExecutor.execute(new SubmitTaskFormCmd(taskId, properties));
   }
 
-  @Override
-  public void addTaskComment(String taskId, String message) {
+  public void addComment(String taskId, String processInstance, String message) {
+    commandExecutor.execute(new AddCommentCmd(taskId, processInstance, message));
   }
 
-  @Override
   public List<Comment> getTaskComments(String taskId) {
-    return null;
+    return commandExecutor.execute(new GetTaskCommentsCmd(taskId));
+  }
+
+  public List<Comment> getProcessInstanceComments(String processInstanceId) {
+    return commandExecutor.execute(new GetProcessInstanceCommentsCmd(processInstanceId));
   }
 }

@@ -64,6 +64,7 @@ public interface TaskService {
    * Deletes the given task.
    * @param taskId The id of the task that will be deleted, cannot be null. If no task
    * exists with the given taskId, the operation is ignored.
+   * @param cascade If cascade is true, also the historic information related to this task is deleted.
    */
   void deleteTask(String taskId, boolean cascade);
   
@@ -71,6 +72,7 @@ public interface TaskService {
    * Deletes all tasks of the given collection.
    * @param taskIds The id's of the tasks that will be deleted, cannot be null. All
    * id's in the list that don't have an existing task will be ignored.
+   * @param cascade If cascade is true, also the historic information related to this task is deleted.
    */
   void deleteTasks(Collection<String> taskIds, boolean cascade);
   
