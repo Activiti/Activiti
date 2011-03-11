@@ -13,6 +13,7 @@
 package org.activiti.engine.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
@@ -129,11 +130,11 @@ public class IdentityServiceImpl extends ServiceImpl implements IdentityService 
     commandExecutor.execute(new DeleteUserInfoCmd(userId, accountName));
   }
 
-  public Account getUserAccount(String userId, String accountName) {
-    return commandExecutor.execute(new GetUserAccountCmd(userId, accountName));
+  public Account getUserAccount(String userId, String userPassword, String accountName) {
+    return commandExecutor.execute(new GetUserAccountCmd(userId, userPassword, accountName));
   }
 
-  public void setUserAccount(String userId, String accountName, String accountUsername, String accountPassword) {
-    commandExecutor.execute(new SetUserInfoCmd(userId, accountName, accountUsername, accountPassword));
+  public void setUserAccount(String userId, String userPassword, String accountName, String accountUsername, String accountPassword, Map<String, String> accountDetails) {
+    commandExecutor.execute(new SetUserInfoCmd(userId, userPassword, accountName, accountUsername, accountPassword, accountDetails));
   }
 }

@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.util.Map;
+
 import org.activiti.engine.impl.identity.IdentityInfoEntity;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -24,10 +26,12 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 public class SetUserInfoCmd implements Command<Object> {
 
   protected String userId;
+  protected String userPassword;
+  protected String type;
   protected String key;
   protected String value;
-  protected String type;
-  protected String password;
+  protected String accountPassword;
+  protected Map<String, String> accountDetails;
   
   public SetUserInfoCmd(String userId, String key, String value) {
     this.userId = userId;
@@ -36,18 +40,20 @@ public class SetUserInfoCmd implements Command<Object> {
     this.value = value;
   }
 
-  public SetUserInfoCmd(String userId, String accountName, String accountUsername, String accountPassword) {
+  public SetUserInfoCmd(String userId, String userPassword, String accountName, String accountUsername, String accountPassword, Map<String, String> accountDetails) {
     this.userId = userId;
+    this.userPassword = userPassword;
     this.type = IdentityInfoEntity.TYPE_USERACCOUNT;
     this.key = accountName;
     this.value = accountUsername;
-    this.password = accountPassword;
+    this.accountPassword = accountPassword;
+    this.accountDetails = accountDetails;
   }
 
   public Object execute(CommandContext commandContext) {
     commandContext
       .getIdentitySession()
-      .setUserInfo(userId, type, key, value, password);
+      .setUserInfo(userId, userPassword, type, key, value, accountPassword, accountDetails);
     return null;
   }
 }

@@ -13,8 +13,10 @@
 
 package org.activiti.engine;
 
+import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.form.Comment;
 import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -71,4 +73,8 @@ public interface FormService {
   /** Completes a task with the user data that was entered as properties in a task form. */  
   void submitTaskFormData(String taskId, Map<String, String> properties);
   
+  /**  */
+  void addTaskComment(String taskId, String message);
+
+  List<Comment> getTaskComments(String taskId);
 }

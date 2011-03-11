@@ -13,14 +13,9 @@
 
 package org.activiti.engine.impl.test;
 
-import java.io.InputStream;
-import java.util.Properties;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.impl.util.IoUtil;
-import org.activiti.engine.impl.util.ReflectUtil;
 
 
 /** Base class for the activiti test cases.

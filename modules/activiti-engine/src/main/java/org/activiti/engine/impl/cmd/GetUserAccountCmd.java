@@ -24,16 +24,18 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 public class GetUserAccountCmd implements Command<Account> {
 
   protected String userId;
+  protected String userPassword;
   protected String accountName;
   
-  public GetUserAccountCmd(String userId, String accountName) {
+  public GetUserAccountCmd(String userId, String userPassword, String accountName) {
     this.userId = userId;
+    this.userPassword = userPassword;
     this.accountName = accountName;
   }
 
   public Account execute(CommandContext commandContext) {
     return commandContext
       .getIdentitySession()
-      .findUserInfoByUserIdAndKey(userId, accountName);
+      .findUserAccountByUserIdAndKey(userId, userPassword, accountName);
   }
 }

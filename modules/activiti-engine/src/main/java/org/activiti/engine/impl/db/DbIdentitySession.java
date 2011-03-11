@@ -14,8 +14,10 @@
 package org.activiti.engine.impl.db;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.GroupQuery;
@@ -61,13 +63,17 @@ public class DbIdentitySession implements IdentitySession, Session {
     return findUserById(userId) != null;
   }
 
+  @SuppressWarnings("unchecked")
   public void deleteUser(String userId) {
     UserEntity user = findUserById(userId);
     if (user!=null) {
       if (user.getPictureByteArrayId()!=null) {
         dbSqlSession.delete(ByteArrayEntity.class, user.getPictureByteArrayId());
       }
-      dbSqlSession.delete("deleteIdentityInfosByUserId", userId);
+      List<IdentityInfoEntity> identityInfos = dbSqlSession.selectList("selectIdentityInfoByUserId", userId);
+      for (IdentityInfoEntity identityInfo: identityInfos) {
+        deleteIdentityInfo(identityInfo);
+      }
       dbSqlSession.delete("deleteMembershipsByUserId", userId);
       dbSqlSession.delete("deleteUser", userId);
     }
@@ -150,37 +156,121 @@ public class DbIdentitySession implements IdentitySession, Session {
   }
 
   public void deleteUserInfoByUserIdAndKey(String userId, String key) {
-    IdentityInfoEntity identityInfoEntity = findIdentityInfoEntityByUserIdAndKey(userId, key);
+    IdentityInfoEntity identityInfoEntity = findUserInfoByUserIdAndKey(userId, key);
     if (identityInfoEntity!=null) {
-      dbSqlSession.delete(IdentityInfoEntity.class, identityInfoEntity.getId());
+      deleteIdentityInfo(identityInfoEntity);
     }
   }
 
-  public IdentityInfoEntity findUserInfoByUserIdAndKey(String userId, String key) {
-    IdentityInfoEntity identityInfoEntity = findIdentityInfoEntityByUserIdAndKey(userId, key);
-    if (identityInfoEntity!=null) {
-      return identityInfoEntity;
+  public void deleteIdentityInfo(IdentityInfoEntity identityInfo) {
+    dbSqlSession.delete(IdentityInfoEntity.class, identityInfo.getId());
+    if (IdentityInfoEntity.TYPE_USERACCOUNT.equals(identityInfo.getType())) {
+      for (IdentityInfoEntity identityInfoDetail: findIdentityInfoDetails(identityInfo.getId())) {
+        dbSqlSession.delete(IdentityInfoEntity.class, identityInfoDetail.getId());
+      }
     }
-    return null;
   }
 
-  public void setUserInfo(String userId, String type, String key, String value, String password) {
-    IdentityInfoEntity identityInfoEntity = findIdentityInfoEntityByUserIdAndKey(userId, key);
-    if (identityInfoEntity!=null) {
-      identityInfoEntity.setValue(value);
+  public IdentityInfoEntity findUserAccountByUserIdAndKey(String userId, String userPassword, String key) {
+    IdentityInfoEntity identityInfoEntity = findUserInfoByUserIdAndKey(userId, key);
+    if (identityInfoEntity==null) {
+      return null;
+    }
+    
+    Map<String,String> details = new HashMap<String, String>();
+    String identityInfoId = identityInfoEntity.getId();
+    List<IdentityInfoEntity> identityInfoDetails = findIdentityInfoDetails(identityInfoId);
+    for (IdentityInfoEntity identityInfoDetail: identityInfoDetails) {
+      details.put(identityInfoDetail.getKey(), identityInfoDetail.getValue());
+    }
+    identityInfoEntity.setDetails(details);
+      
+    if (identityInfoEntity.getPasswordBytes()!=null) {
+      String password = decryptPassword(identityInfoEntity.getPasswordBytes(), userPassword);
       identityInfoEntity.setPassword(password);
+    }
+    
+    return identityInfoEntity;
+  }
+
+  @SuppressWarnings("unchecked")
+  protected List<IdentityInfoEntity> findIdentityInfoDetails(String identityInfoId) {
+    return Context
+      .getCommandContext()
+      .getDbSqlSession()
+      .getSqlSession()
+      .selectList("selectIdentityInfoDetails", identityInfoId);
+  }
+
+  public void setUserInfo(String userId, String userPassword, String type, String key, String value, String accountPassword, Map<String, String> accountDetails) {
+    byte[] storedPassword = null;
+    if (accountPassword!=null) {
+      storedPassword = encryptPassword(accountPassword, userPassword);
+    }
+    
+    IdentityInfoEntity identityInfoEntity = findUserInfoByUserIdAndKey(userId, key);
+    if (identityInfoEntity!=null) {
+      // update
+      identityInfoEntity.setValue(value);
+      identityInfoEntity.setPasswordBytes(storedPassword);
+      
+      if (accountDetails==null) {
+        accountDetails = new HashMap<String, String>();
+      }
+      
+      Set<String> newKeys = new HashSet<String>(accountDetails.keySet());
+      List<IdentityInfoEntity> identityInfoDetails = findIdentityInfoDetails(identityInfoEntity.getId());
+      for (IdentityInfoEntity identityInfoDetail: identityInfoDetails) {
+        String detailKey = identityInfoDetail.getKey();
+        newKeys.remove(detailKey);
+        String newDetailValue = accountDetails.get(detailKey);
+        if (newDetailValue==null) {
+          deleteIdentityInfo(identityInfoDetail);
+        } else {
+          // update detail
+          identityInfoDetail.setValue(newDetailValue);
+        }
+      }
+      insertAccountDetails(identityInfoEntity, accountDetails, newKeys);
+      
+      
     } else {
+      // insert
       identityInfoEntity = new IdentityInfoEntity();
       identityInfoEntity.setUserId(userId);
       identityInfoEntity.setType(type);
       identityInfoEntity.setKey(key);
       identityInfoEntity.setValue(value);
-      identityInfoEntity.setPassword(password);
+      identityInfoEntity.setPasswordBytes(storedPassword);
       dbSqlSession.insert(identityInfoEntity);
+      if (accountDetails!=null) {
+        insertAccountDetails(identityInfoEntity, accountDetails, accountDetails.keySet());
+      }
     }
   }
 
-  protected IdentityInfoEntity findIdentityInfoEntityByUserIdAndKey(String userId, String key) {
+  private void insertAccountDetails(IdentityInfoEntity identityInfoEntity, Map<String, String> accountDetails, Set<String> keys) {
+    for (String newKey: keys) {
+      // insert detail
+      IdentityInfoEntity identityInfoDetail = new IdentityInfoEntity();
+      identityInfoDetail.setParentId(identityInfoEntity.getId());
+      identityInfoDetail.setKey(newKey);
+      identityInfoDetail.setValue(accountDetails.get(newKey));
+      dbSqlSession.insert(identityInfoDetail);
+    }
+  }
+
+  public byte[] encryptPassword(String accountPassword, String userPassword) {
+    // TODO
+    return accountPassword.getBytes();
+  }
+
+  public String decryptPassword(byte[] storedPassword, String userPassword) {
+    // TODO
+    return new String(storedPassword);
+  }
+
+  public IdentityInfoEntity findUserInfoByUserIdAndKey(String userId, String key) {
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put("userId", userId);
     parameters.put("key", key);
@@ -188,7 +278,7 @@ public class DbIdentitySession implements IdentitySession, Session {
   }
 
   @SuppressWarnings("unchecked")
-  public List<String> findIdentityInfoKeysByUserIdAndType(String userId, String type) {
+  public List<String> findUserInfoKeysByUserIdAndType(String userId, String type) {
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put("userId", userId);
     parameters.put("type", type);

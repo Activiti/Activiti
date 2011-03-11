@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.cfg;
 
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.GroupQuery;
@@ -57,7 +58,8 @@ public interface IdentitySession {
   
   /* UserInfo */
   IdentityInfoEntity findUserInfoByUserIdAndKey(String userId, String key);
+  IdentityInfoEntity findUserAccountByUserIdAndKey(String userId, String userPassword, String key);
   void deleteUserInfoByUserIdAndKey(String userId, String key);
-  void setUserInfo(String userId, String type, String key, String value, String password);
-  List<String> findIdentityInfoKeysByUserIdAndType(String userId, String userInfoType);
+  void setUserInfo(String userId, String userPassword, String type, String key, String value, String accountPassword, Map<String, String> accountDetails);
+  List<String> findUserInfoKeysByUserIdAndType(String userId, String userInfoType);
 }

@@ -14,6 +14,7 @@
 package org.activiti.standalone.cfg.identity;
 
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.activiti.engine.identity.Group;
@@ -168,7 +169,7 @@ public class CustomIdentitySession implements IdentitySession, Session {
   public void deleteUserInfoByUserIdAndKey(String userId, String key) {
   }
 
-  public List<String> findIdentityInfoKeysByUserIdAndType(String userId, String userInfoType) {
+  public List<String> findUserInfoKeysByUserIdAndType(String userId, String userInfoType) {
     return null;
   }
 
@@ -176,6 +177,11 @@ public class CustomIdentitySession implements IdentitySession, Session {
     return null;
   }
 
-  public void setUserInfo(String userId, String type, String key, String value, String password) {
+  public IdentityInfoEntity findUserAccountByUserIdAndKey(String userId, String userPassword, String key) {
+    return null;
   }
+
+  public void setUserInfo(String userId, String userPassword, String type, String key, String value, String accountPassword, Map<String, String> accountDetails) {
+  }
+
 }

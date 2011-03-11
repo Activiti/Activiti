@@ -13,6 +13,7 @@
 package org.activiti.engine;
 
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.GroupQuery;
@@ -132,13 +133,13 @@ public interface IdentityService {
   void deleteUserInfo(String userId, String key);
 
   /** Store account information for a remote system */
-  void setUserAccount(String userId, String accountName, String accountUsername, String accountPassword);
+  void setUserAccount(String userId, String userPassword, String accountName, String accountUsername, String accountPassword, Map<String, String> accountDetails);
   
   /** Get account names associated with the given user */
   List<String> getUserAccountNames(String userId);
 
   /** Get account information associated with a user */
-  Account getUserAccount(String userId, String accountName);
+  Account getUserAccount(String userId, String userPassword, String accountName);
 
   /** Delete an entry of the generic extensibility key-value pairs associated with a user */
   void deleteUserAccount(String userId, String accountName);

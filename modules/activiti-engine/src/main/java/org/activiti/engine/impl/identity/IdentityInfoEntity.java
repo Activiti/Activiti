@@ -34,11 +34,14 @@ public class IdentityInfoEntity implements PersistentObject, Account {
   protected String key;
   protected String value;
   protected String password;
+  protected byte[] passwordBytes;
+  protected String parentId;
+  protected Map<String, String> details;
 
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
     persistentState.put("value", value);
-    persistentState.put("password", password);
+    persistentState.put("password", passwordBytes);
     return persistentState;
   }
   
@@ -94,10 +97,18 @@ public class IdentityInfoEntity implements PersistentObject, Account {
     this.value = value;
   }
 
+  public byte[] getPasswordBytes() {
+    return passwordBytes;
+  }
+
+  public void setPasswordBytes(byte[] passwordBytes) {
+    this.passwordBytes = passwordBytes;
+  }
+  
   public String getPassword() {
     return password;
   }
-
+  
   public void setPassword(String password) {
     this.password = password;
   }
@@ -108,5 +119,21 @@ public class IdentityInfoEntity implements PersistentObject, Account {
 
   public String getUsername() {
     return value;
+  }
+
+  public String getParentId() {
+    return parentId;
+  }
+
+  public void setParentId(String parentId) {
+    this.parentId = parentId;
+  }
+  
+  public Map<String, String> getDetails() {
+    return details;
+  }
+  
+  public void setDetails(Map<String, String> details) {
+    this.details = details;
   }
 }

@@ -13,9 +13,11 @@
 
 package org.activiti.engine.impl;
 
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.FormService;
+import org.activiti.engine.form.Comment;
 import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.impl.cmd.GetRenderedStartFormCmd;
@@ -68,4 +70,12 @@ public class FormServiceImpl extends ServiceImpl implements FormService {
     commandExecutor.execute(new SubmitTaskFormCmd(taskId, properties));
   }
 
+  @Override
+  public void addTaskComment(String taskId, String message) {
+  }
+
+  @Override
+  public List<Comment> getTaskComments(String taskId) {
+    return null;
+  }
 }

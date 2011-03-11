@@ -35,6 +35,6 @@ public class GetUserInfoKeysCmd implements Command<List<String>> {
   public List<String> execute(CommandContext commandContext) {
     return commandContext
       .getIdentitySession()
-      .findIdentityInfoKeysByUserIdAndType(userId, userInfoType);
+      .findUserInfoKeysByUserIdAndType(userId, userInfoType);
   }
 }

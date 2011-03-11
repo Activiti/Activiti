@@ -11,23 +11,14 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.identity;
-
-import java.util.Map;
+package org.activiti.engine.form;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface Account {
+public interface Comment {
 
-  String NAME_ALFRESCO = "Alfresco";
-  String NAME_GOOGLE = "Google";
-  String NAME_SKYPE = "Skype";
-  String NAME_MAIL = "Mail";
-
-  String getName();
-  String getUsername();
-  String getPassword();
-  Map<String, String> getDetails();
+  String getUserId();
+  String getMessage();
 }
