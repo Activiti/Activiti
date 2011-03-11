@@ -118,6 +118,21 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
    */
   TaskQuery processDefinitionName(String processDefinitionName);
   
+  /**
+   * Only select tasks with the given due date.
+   */
+  TaskQuery dueDate(Date dueDate);
+  
+  /**
+   * Only select tasks which have a due date before the given date.
+   */
+  TaskQuery dueBefore(Date dueDate);
+
+  /**
+   * Only select tasks which have a due date after the given date.
+   */
+  TaskQuery dueAfter(Date dueDate);
+  
   // ordering ////////////////////////////////////////////////////////////
   
   /** Order by task id (needs to be followed by {@link #asc()} or {@link #desc()}). */
@@ -143,4 +158,7 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   
   /** Order by execution id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   TaskQuery orderByExecutionId();
+  
+  /** Order by due date (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  TaskQuery orderByDueDate();
 }

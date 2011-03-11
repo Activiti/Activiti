@@ -531,6 +531,83 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertEquals(0, taskService.createTaskQuery().processDefinitionName("unexisting").count());
   }
   
+  @Deployment(resources={"org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml"})
+  public void testTaskDueDate() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    
+    // Set due-date on task
+    Calendar dueDateCal = Calendar.getInstance();
+    task.setDueDate(dueDateCal.getTime());
+    taskService.saveTask(task);
+
+    assertEquals(1, taskService.createTaskQuery().dueDate(dueDateCal.getTime()).count());
+    
+    Calendar otherDate = Calendar.getInstance();
+    otherDate.add(Calendar.YEAR, 1);
+    assertEquals(0, taskService.createTaskQuery().dueDate(otherDate.getTime()).count());
+  }
+  
+  @Deployment(resources={"org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml"})
+  public void testTaskDueBefore() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    
+    // Set due-date on task
+    Calendar dueDateCal = Calendar.getInstance();
+    task.setDueDate(dueDateCal.getTime());
+    taskService.saveTask(task);
+    
+    Calendar oneHourAgo = Calendar.getInstance();
+    oneHourAgo.setTime(dueDateCal.getTime());
+    oneHourAgo.add(Calendar.HOUR, -1);
+    
+    Calendar oneHourLater = Calendar.getInstance();
+    oneHourLater.setTime(dueDateCal.getTime());
+    oneHourLater.add(Calendar.HOUR, 1);
+
+    assertEquals(1, taskService.createTaskQuery().dueBefore(oneHourLater.getTime()).count());
+    assertEquals(0, taskService.createTaskQuery().dueBefore(oneHourAgo.getTime()).count());
+    
+    // Update due-date to null, shouldn't show up anymore in query that matched before
+    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    task.setDueDate(null);
+    taskService.saveTask(task);
+    
+    assertEquals(0, taskService.createTaskQuery().dueBefore(oneHourLater.getTime()).count());
+    assertEquals(0, taskService.createTaskQuery().dueBefore(oneHourAgo.getTime()).count());
+  }
+  
+  @Deployment(resources={"org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml"})
+  public void testTaskDueAfter() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    
+    // Set due-date on task
+    Calendar dueDateCal = Calendar.getInstance();
+    task.setDueDate(dueDateCal.getTime());
+    taskService.saveTask(task);
+    
+    Calendar oneHourAgo = Calendar.getInstance();
+    oneHourAgo.setTime(dueDateCal.getTime());
+    oneHourAgo.add(Calendar.HOUR, -1);
+    
+    Calendar oneHourLater = Calendar.getInstance();
+    oneHourLater.setTime(dueDateCal.getTime());
+    oneHourLater.add(Calendar.HOUR, 1);
+
+    assertEquals(1, taskService.createTaskQuery().dueAfter(oneHourAgo.getTime()).count());
+    assertEquals(0, taskService.createTaskQuery().dueAfter(oneHourLater.getTime()).count());
+    
+    // Update due-date to null, shouldn't show up anymore in query that matched before
+    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    task.setDueDate(null);
+    taskService.saveTask(task);
+    
+    assertEquals(0, taskService.createTaskQuery().dueAfter(oneHourLater.getTime()).count());
+    assertEquals(0, taskService.createTaskQuery().dueAfter(oneHourAgo.getTime()).count());
+  }
+  
   public void testQueryPaging() {
     TaskQuery query = taskService.createTaskQuery().taskCandidateUser("kermit");
 
@@ -560,6 +637,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertEquals(12, taskService.createTaskQuery().orderByProcessInstanceId().asc().list().size());
     assertEquals(12, taskService.createTaskQuery().orderByExecutionId().asc().list().size());
     assertEquals(12, taskService.createTaskQuery().orderByTaskCreateTime().asc().list().size());
+    assertEquals(12, taskService.createTaskQuery().orderByDueDate().asc().list().size());
 
     assertEquals(12, taskService.createTaskQuery().orderByTaskId().desc().list().size());
     assertEquals(12, taskService.createTaskQuery().orderByTaskName().desc().list().size());
@@ -569,6 +647,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertEquals(12, taskService.createTaskQuery().orderByProcessInstanceId().desc().list().size());
     assertEquals(12, taskService.createTaskQuery().orderByExecutionId().desc().list().size());
     assertEquals(12, taskService.createTaskQuery().orderByTaskCreateTime().desc().list().size());
+    assertEquals(12, taskService.createTaskQuery().orderByDueDate().desc().list().size());
     
     assertEquals(6, taskService.createTaskQuery().orderByTaskId().taskName("testTask").asc().list().size());
     assertEquals(6, taskService.createTaskQuery().orderByTaskId().taskName("testTask").desc().list().size());

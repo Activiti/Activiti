@@ -65,4 +65,7 @@ public interface HistoricTaskInstance {
   
   /** Task priority **/
   int getPriority();
+  
+  /** Task due date **/
+  Date getDueDate();
 }

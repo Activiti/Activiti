@@ -165,21 +165,17 @@ public class CustomIdentitySession implements IdentitySession, Session {
     }
   }
 
-  @Override
   public void deleteUserInfoByUserIdAndKey(String userId, String key) {
   }
 
-  @Override
   public List<String> findIdentityInfoKeysByUserIdAndType(String userId, String userInfoType) {
     return null;
   }
 
-  @Override
   public IdentityInfoEntity findUserInfoByUserIdAndKey(String userId, String key) {
     return null;
   }
 
-  @Override
   public void setUserInfo(String userId, String type, String key, String value, String password) {
   }
 }

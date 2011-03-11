@@ -14,6 +14,7 @@
 package org.activiti.engine.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.history.HistoricTaskInstance;
@@ -50,6 +51,9 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
   protected boolean processFinished;
   protected boolean processUnfinished;
   protected List<TaskQueryVariableValue> variables = new ArrayList<TaskQueryVariableValue>();
+  protected Date dueDate;
+  protected Date dueAfter;
+  protected Date dueBefore;
 
   public HistoricTaskInstanceQueryImpl(CommandExecutor commandExecutor) {
     super(commandExecutor);
@@ -188,6 +192,21 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
     for(QueryVariableValue var : variables) {
       var.initialize(types);
     }
+  }
+  
+  public HistoricTaskInstanceQuery taskDueDate(Date dueDate) {
+    this.dueDate = dueDate;
+    return this;
+  }
+  
+  public HistoricTaskInstanceQuery taskDueAfter(Date dueAfter) {
+    this.dueAfter = dueAfter;
+    return this;
+  }
+  
+  public HistoricTaskInstanceQuery taskDueBefore(Date dueBefore) {
+    this.dueBefore = dueBefore;
+    return this;
   }
 
   // ordering /////////////////////////////////////////////////////////////////

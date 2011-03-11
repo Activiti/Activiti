@@ -83,6 +83,12 @@ public interface Task {
 	
 	/** The id of the activity in the process defining this task or null if this is not related to a process */
 	String getTaskDefinitionKey();
+	
+	/** Due date of the task. */
+	Date getDueDate();
+	
+	/** Change due date of the task. */
+	void setDueDate(Date dueDate);
 
 	/** delegates this task to the given user and sets the {@link #getDelegationState() delegationState} to {@link DelegationState#PENDING}. */
   void delegate(String userId);

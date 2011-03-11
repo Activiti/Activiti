@@ -68,6 +68,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   protected String description;
   protected int priority = Task.PRIORITY_NORMAL;
   protected Date createTime; // The time when the task has been created
+  protected Date dueDate;
   
   protected boolean isIdentityLinksInitialized = false;
   protected List<IdentityLinkEntity> taskIdentityLinkEntities = new ArrayList<IdentityLinkEntity>(); 
@@ -164,6 +165,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     setDescription(task.getDescription());
     setPriority(task.getPriority());
     setCreateTime(task.getCreateTime());
+    setDueDate(task.getDueDate());
   }
 
   public void complete() {
@@ -198,6 +200,9 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     }
     if(description != null) {
       persistentState.put("description", this.description);
+    }
+    if(dueDate != null) {
+      persistentState.put("dueDate", this.dueDate);
     }
     return persistentState;
   }
@@ -442,6 +447,24 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     }
   }
   
+  public void setDueDate(Date dueDate) {
+    this.dueDate = dueDate;
+    
+    CommandContext commandContext = Context.getCommandContext();
+    // if there is no command context, then it means that the user is calling the 
+    // setAssignee outside a service method.  E.g. while creating a new task.
+    if (commandContext!=null) {
+      int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
+      if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+        HistoricTaskInstanceEntity historicTaskInstance = commandContext.getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, id);
+        if (historicTaskInstance!=null) {
+          historicTaskInstance.setDueDate(dueDate);
+        }
+      }
+    }
+    
+  }
+  
   public void fireEvent(String taskEventName) {
     TaskDefinition taskDefinition = getTaskDefinition();
     if (taskDefinition != null) {
@@ -509,6 +532,10 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
 
   public String getDescription() {
     return description;
+  }
+  
+  public Date getDueDate() {
+    return dueDate;
   }
   
   public int getPriority() {

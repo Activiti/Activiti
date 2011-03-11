@@ -95,6 +95,12 @@ public interface DelegateTask extends VariableScope {
   /** The {@link User.getId() userId} of the person to which this task is delegated. */
   void setAssignee(String assignee);
   
+  /** Due date of the task. */
+  Date getDueDate();
+  
+  /** Change due date of the task. */
+  void setDueDate(Date dueDate);
+  
   /**
    * Involves a user with a task. The type of identity link is defined by the given identityLinkType.
    * @param userId id of the user involve, cannot be null.

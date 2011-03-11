@@ -53,6 +53,9 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   protected String processDefinitionId;
   protected String processDefinitionName;
   protected List<TaskQueryVariableValue> variables = new ArrayList<TaskQueryVariableValue>();
+  protected Date dueDate;
+  protected Date dueBefore;
+  protected Date dueAfter;
   
   public TaskQueryImpl(CommandContext commandContext) {
     super(commandContext);
@@ -202,6 +205,21 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     return this;
   }
   
+  public TaskQuery dueDate(Date dueDate) {
+    this.dueDate = dueDate;
+    return this;
+  }
+  
+  public TaskQuery dueBefore(Date dueBefore) {
+    this.dueBefore = dueBefore;
+    return this;
+  }
+  
+  public TaskQuery dueAfter(Date dueAfter) {
+    this.dueAfter = dueAfter;
+    return this;
+  }
+  
   public List<String> getCandidateGroups() {
     if (candidateGroup!=null) {
       return Collections.singletonList(candidateGroup);
@@ -262,6 +280,10 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   
   public TaskQuery orderByTaskCreateTime() {
     return orderBy(TaskQueryProperty.CREATE_TIME);
+  }
+  
+  public TaskQuery orderByDueDate() {
+    return orderBy(TaskQueryProperty.DUE_DATE);
   }
   
   //results ////////////////////////////////////////////////////////////////

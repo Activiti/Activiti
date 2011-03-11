@@ -51,6 +51,7 @@ public class TaskQueryProperty implements QueryProperty {
   public static final TaskQueryProperty CREATE_TIME = new TaskQueryProperty("T.CREATE_TIME_");
   public static final TaskQueryProperty PROCESS_INSTANCE_ID = new TaskQueryProperty("T.PROC_INST_ID_");
   public static final TaskQueryProperty EXECUTION_ID = new TaskQueryProperty("T.EXECUTION_ID_");
+  public static final TaskQueryProperty DUE_DATE = new TaskQueryProperty("T.DUE_DATE_");
   
   private String name;
 

@@ -252,7 +252,8 @@
         DURATION_,
         DELETE_REASON_,
         TASK_DEF_KEY_,
-        PRIORITY_
+        PRIORITY_,
+        DUE_DATE_
       ) values (
         #{id ,jdbcType=VARCHAR},
         #{processDefinitionId, jdbcType=VARCHAR},
@@ -266,7 +267,8 @@
         #{durationInMillis ,jdbcType=BIGINT},
         #{deleteReason ,jdbcType=VARCHAR},
         #{taskDefinitionKey ,jdbcType=VARCHAR},
-        #{priority, jdbcType=INTEGER}
+        #{priority, jdbcType=INTEGER},
+        #{dueDate, jdbcType=TIMESTAMP}
       )
   </insert>
 
@@ -282,7 +284,8 @@
       DURATION_ = #{durationInMillis ,jdbcType=BIGINT},
       DELETE_REASON_ = #{deleteReason ,jdbcType=VARCHAR},
       TASK_DEF_KEY_ = #{taskDefinitionKey ,jdbcType=VARCHAR},
-      PRIORITY_ = #{priority, jdbcType=INTEGER} 
+      PRIORITY_ = #{priority, jdbcType=INTEGER},
+      DUE_DATE_ = #{dueDate, jdbcType=TIMESTAMP}
     where ID_ = #{id}
   </update>
 
@@ -312,6 +315,7 @@
     <result property="deleteReason" column="DELETE_REASON_" jdbcType="VARCHAR" />
     <result property="taskDefinitionKey" column="TASK_DEF_KEY_" jdbcType="VARCHAR" />
     <result property="priority" column="PRIORITY_" jdbcType="INTEGER" />
+    <result property="dueDate" column="DUE_DATE_" jdbcType="TIMESTAMP" />
   </resultMap>
 
   <!-- HISTORIC TASK INSTANCE SELECT -->
@@ -401,6 +405,15 @@
       </if>
       <if test="processUnfinished">
         and HPI.END_TIME_ is null
+      </if>
+      <if test="dueDate != null">
+        and HTI.DUE_DATE_ = #{dueDate}
+      </if>
+      <if test="dueBefore != null">
+        and HTI.DUE_DATE_ &lt; #{dueBefore}
+      </if>
+      <if test="dueAfter != null">
+        and HTI.DUE_DATE_ &gt; #{dueAfter}
       </if>
       <foreach collection="variables" index="index" item="var">
         and exists (

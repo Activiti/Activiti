@@ -43,6 +43,7 @@ create table ACT_HI_TASKINST (
     DURATION_ bigint,
     DELETE_REASON_ varchar(255),
     PRIORITY_ integer,
+    DUE_DATE_ timestamp,
     primary key (ID_)
 );
 

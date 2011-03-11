@@ -13,6 +13,8 @@
 
 package org.activiti.engine.history;
 
+import java.util.Date;
+
 import org.activiti.engine.query.Query;
 import org.activiti.engine.task.Task;
 
@@ -143,6 +145,21 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
    * to full when this feature is used.
    */
   HistoricTaskInstanceQuery processVariableValueEquals(String variableName, Object variableValue);
+  
+  /**
+   * Only select select historic task instances with the given due date.
+   */
+  HistoricTaskInstanceQuery taskDueDate(Date dueDate);
+  
+  /**
+   * Only select select historic task instances which have a due date before the given date.
+   */
+  HistoricTaskInstanceQuery taskDueBefore(Date dueDate);
+
+  /**
+   * Only select select historic task instances which have a due date after the given date.
+   */
+  HistoricTaskInstanceQuery taskDueAfter(Date dueDate);
   
   /** Order by task id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricTaskInstanceQuery orderByTaskId();

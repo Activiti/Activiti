@@ -45,7 +45,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
   public void testGetTableMetaData() {
     TableMetaData tableMetaData = managementService.getTableMetaData("ACT_RU_TASK");
     assertEquals(tableMetaData.getColumnNames().size(), tableMetaData.getColumnTypes().size());
-    assertEquals(13, tableMetaData.getColumnNames().size());
+    assertEquals(14, tableMetaData.getColumnNames().size());
 
     int assigneeIndex = tableMetaData.getColumnNames().indexOf("ASSIGNEE_");
     int createTimeIndex = tableMetaData.getColumnNames().indexOf("CREATE_TIME_");

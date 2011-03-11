@@ -13,6 +13,8 @@
 
 package org.activiti.engine.test.history;
 
+import java.util.Calendar;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.task.TaskEntity;
@@ -35,6 +37,10 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     // Set priority to non-default value
     Task runtimeTask = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
     runtimeTask.setPriority(1234);
+    Calendar dueDateCal = Calendar.getInstance();
+    
+    // Set due-date
+    runtimeTask.setDueDate(dueDateCal.getTime());
     taskService.saveTask(runtimeTask);
     
     String taskId = runtimeTask.getId();
@@ -45,6 +51,7 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(1234, historicTaskInstance.getPriority());
     assertEquals("Clean up", historicTaskInstance.getName());
     assertEquals("Schedule an engineering meeting for next week with the new hire.", historicTaskInstance.getDescription());
+    assertEquals(dueDateCal.getTime(), historicTaskInstance.getDueDate());
     assertEquals("kermit", historicTaskInstance.getAssignee());
     assertEquals(taskDefinitionKey, historicTaskInstance.getTaskDefinitionKey());
     assertNull(historicTaskInstance.getEndTime());
@@ -61,6 +68,7 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(1234, historicTaskInstance.getPriority());
     assertEquals("Clean up", historicTaskInstance.getName());
     assertEquals("Schedule an engineering meeting for next week with the new hire.", historicTaskInstance.getDescription());
+    assertEquals(dueDateCal.getTime(), historicTaskInstance.getDueDate());
     assertEquals("kermit", historicTaskInstance.getAssignee());
     assertEquals(TaskEntity.DELETE_REASON_COMPLETED, historicTaskInstance.getDeleteReason());
     assertEquals(taskDefinitionKey, historicTaskInstance.getTaskDefinitionKey());
@@ -89,6 +97,9 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     // Set priority to non-default value
     Task task = taskService.createTaskQuery().processInstanceId(finishedInstance.getId()).singleResult();
     task.setPriority(1234);
+    Calendar dueDateCal = Calendar.getInstance();
+    task.setDueDate(dueDateCal.getTime());
+    
     taskService.saveTask(task);
     
     // Complete the task
@@ -156,6 +167,28 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     // Task priority
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskPriority(1234).count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskPriority(5678).count());
+    
+    
+    // Due date
+    Calendar anHourAgo = Calendar.getInstance();
+    anHourAgo.setTime(dueDateCal.getTime());
+    anHourAgo.add(Calendar.HOUR, -1);
+    
+    Calendar anHourLater = Calendar.getInstance();
+    anHourLater.setTime(dueDateCal.getTime());
+    anHourLater.add(Calendar.HOUR, 1);
+    
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskDueDate(dueDateCal.getTime()).count());
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskDueDate(anHourAgo.getTime()).count());
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskDueDate(anHourLater.getTime()).count());
+    
+    // Due date before
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskDueBefore(anHourLater.getTime()).count());
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskDueBefore(anHourAgo.getTime()).count());
+    
+    // Due date after
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskDueAfter(anHourAgo.getTime()).count());
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskDueAfter(anHourLater.getTime()).count());
     
     // Finished and Unfinished - Add anther other instance that has a running task (unfinished)
     runtimeService.startProcessInstanceByKey("HistoricTaskQueryTest");

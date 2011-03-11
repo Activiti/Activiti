@@ -42,6 +42,7 @@ create table ACT_HI_TASKINST (
     DURATION_ numeric(19,0),
     DELETE_REASON_ nvarchar(255),
     PRIORITY_ int,
+    DUE_DATE_ datetime,
     primary key (ID_)
 );
 

@@ -14,6 +14,7 @@
 package org.activiti.engine.test.api.task;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -42,22 +43,28 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     task.setDescription("description");
     task.setName("taskname");
     task.setPriority(0);
+    Calendar dueDateCal = Calendar.getInstance();
+    task.setDueDate(dueDateCal.getTime());
     taskService.saveTask(task);
 
     // Fetch the task again and update
     task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
     assertEquals("description", task.getDescription());
     assertEquals("taskname", task.getName());
+    assertEquals(dueDateCal.getTime(), task.getDueDate());
     assertEquals(0, task.getPriority());
 
     task.setDescription("updateddescription");
     task.setName("updatedtaskname");
     task.setPriority(1);
+    dueDateCal.add(Calendar.DAY_OF_YEAR, 1);
+    task.setDueDate(dueDateCal.getTime());
     taskService.saveTask(task);
 
     task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
     assertEquals("updateddescription", task.getDescription());
     assertEquals("updatedtaskname", task.getName());
+    assertEquals(dueDateCal.getTime(), task.getDueDate());
     assertEquals(1, task.getPriority());
 
     // Finally, delete task

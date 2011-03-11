@@ -91,6 +91,7 @@ create table ACT_RU_TASK (
     DELEGATION_ nvarchar(64),
     PRIORITY_ int,
     CREATE_TIME_ datetime,
+    DUE_DATE_ datetime,
     primary key (ID_)
 );
 

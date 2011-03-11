@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.history;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +41,7 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
   protected String assignee;
   protected String taskDefinitionKey;
   protected int priority;
+  protected Date dueDate;
 
   public HistoricTaskInstanceEntity() {
   }
@@ -69,6 +71,9 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
     persistentState.put("deleteReason", deleteReason);
     persistentState.put("taskDefinitionKey", taskDefinitionKey);
     persistentState.put("priority", priority);
+    if(dueDate != null) {
+      persistentState.put("dueDate", dueDate);
+    }
     return persistentState;
   }
 
@@ -125,5 +130,11 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
   }
   public void setPriority(int priority) {
     this.priority = priority;
+  }
+  public Date getDueDate() {
+    return dueDate;
+  }
+  public void setDueDate(Date dueDate) {
+    this.dueDate = dueDate;
   }
 }
