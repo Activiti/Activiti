@@ -11,7 +11,9 @@
  * limitations under the License.
  */
 
-package org.activiti.explorer.ui;
+package org.activiti.explorer.ui.flow;
+
+import org.activiti.explorer.ui.ViewManager;
 
 import com.vaadin.ui.VerticalLayout;
 

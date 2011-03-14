@@ -15,6 +15,7 @@ package org.activiti.explorer.ui;
 
 import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ui.profile.ProfilePage;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -69,7 +70,7 @@ public class MainLayout extends CustomLayout {
     
     userButton.addListener(new ClickListener() {
       public void buttonClick(ClickEvent event) {
-        viewManager.switchView(Constants.VIEW_PROFILE, new ProfilePage(viewManager));
+        viewManager.switchView(Constants.VIEW_PROFILE, new ProfilePage(viewManager, "kermit"));
       }
     });
 

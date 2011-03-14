@@ -11,25 +11,31 @@
  * limitations under the License.
  */
 
-package org.activiti.explorer.ui;
+package org.activiti.explorer.ui.task;
 
 import org.activiti.explorer.Constants;
+import org.activiti.explorer.ui.MenuBar;
+import org.activiti.explorer.ui.ViewManager;
 
 
 
 /**
  * @author Joram Barrez
  */
-public class FlowMenuBar extends MenuBar {
+public class TaskMenuBar extends MenuBar {
   
   private static final long serialVersionUID = 7957488256766569264L;
 
-  public FlowMenuBar(ViewManager viewManager) {
+  public TaskMenuBar(ViewManager viewManager) {
     super(viewManager);
     addStyleName(Constants.STYLE_MENUBAR);
     
-    createMenuBarButton("My Flows (23)");
-    createMenuBarButton("Launch Flow");
+    createMenuBarButton("Inbox (12)");
+    createMenuBarButton("Todo (4)");
+    createMenuBarButton("Planned (9)");
+    createMenuBarButton("Queued (58)");
+    createMenuBarButton("Delegated (2)");
+    createMenuBarButton("Archived");
     fillRemainingSpace();
   }
 

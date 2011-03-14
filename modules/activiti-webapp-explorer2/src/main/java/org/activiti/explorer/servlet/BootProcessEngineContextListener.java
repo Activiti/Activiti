@@ -12,6 +12,7 @@
  */
 package org.activiti.explorer.servlet;
 
+import java.util.Date;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContextEvent;
@@ -49,6 +50,7 @@ public class BootProcessEngineContextListener implements ServletContextListener 
     ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
     
     initKermit(processEngine);
+    initRandomUsers(processEngine);
     initTasks(processEngine);
   }
 
@@ -76,8 +78,25 @@ public class BootProcessEngineContextListener implements ServletContextListener 
     
     // Picture
     byte[] pictureBytes = IoUtil.readInputStream(this.getClass().getClassLoader().getResourceAsStream("org/activiti/explorer/images/kermit.jpg"), null);
-    Picture picture = new Picture(pictureBytes, "image/jpg");
+    Picture picture = new Picture(pictureBytes, "image/jpeg");
     identityService.setUserPicture("kermit", picture);
+  }
+  
+  protected void initRandomUsers(ProcessEngine processEngine) {
+    IdentityService identityService = processEngine.getIdentityService();
+    User gonzo = identityService.newUser("gonzo");
+    gonzo.setEmail("gonzo@muppets.com");
+    gonzo.setFirstName("gonzo");
+    gonzo.setLastName("");
+    gonzo.setPassword("gonzo");
+    identityService.saveUser(gonzo);
+    
+    User fozzie = identityService.newUser("fozzie");
+    fozzie.setEmail("fozzie@muppets.com");
+    fozzie.setFirstName("fozzie");
+    fozzie.setLastName("Bear");
+    fozzie.setPassword("fozzie");
+    identityService.saveUser(fozzie);
   }
   
   protected void initTasks(ProcessEngine processEngine) {
@@ -85,9 +104,19 @@ public class BootProcessEngineContextListener implements ServletContextListener 
     for (int i=0; i<100; i++) {
       Task task = taskService.newTask();
       task.setAssignee("kermit");
-      task.setDescription("This is task nr " + i);
+      task.setDescription("This is task nr " + i + ", please do it asap!");
       task.setName("Task [" + i + "]");
       task.setPriority(Task.PRIORITY_NORMAL);
+      task.setDueDate(new Date());
+      
+      if (i%5 == 0) {
+        task.setPriority(99);
+      }
+      
+      if (i%3==0) {
+        task.setOwner("Fozzie");
+      }
+      
       taskService.saveTask(task);
     }
   }

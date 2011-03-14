@@ -19,6 +19,7 @@ import org.activiti.engine.identity.User;
 import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApplication;
 
+import com.vaadin.Application;
 import com.vaadin.terminal.ClassResource;
 import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.ThemeResource;
@@ -63,10 +64,6 @@ public class ViewManager implements Serializable {
     application.getMainWindow().addWindow(popupWindow);
   }
 
-  public ExplorerApplication getApplication() {
-    return application;
-  }
-  
   public Resource getThemeResource(String resourceName) {
     return new ThemeResource(resourceName);
   }
@@ -77,6 +74,10 @@ public class ViewManager implements Serializable {
   
   public User getLoggedInUser() {
     return (User) application.getUser();
+  }
+  
+  public Application getApplication() {
+    return application;
   }
 
 }

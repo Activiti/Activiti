@@ -11,9 +11,10 @@
  * limitations under the License.
  */
 
-package org.activiti.explorer.ui;
+package org.activiti.explorer.ui.task;
 
 import org.activiti.explorer.Constants;
+import org.activiti.explorer.ui.ViewManager;
 
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
@@ -35,7 +36,7 @@ public class TaskListEntry extends CustomComponent {
   protected String taskName;
   
   public TaskListEntry(final ViewManager viewManager, final Table taskTable, 
-          final String taskName, final String taskId) {
+          final String taskId, final String taskName) {
     
     GridLayout grid = new GridLayout(2, 1);
     setCompositionRoot(grid);
@@ -47,7 +48,7 @@ public class TaskListEntry extends CustomComponent {
     Label taskNameLabel = new Label(taskName);
     grid.addComponent(taskNameLabel);
     
-    // Required such that click on component is propagated to parent (bug?)
+    // Required such that click on component is propagated to parent (bug in Vaadin?)
     grid.addListener(new LayoutEvents.LayoutClickListener() {
       private static final long serialVersionUID = 3178252539054165461L;
       public void layoutClick(LayoutClickEvent event) {

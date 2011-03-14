@@ -149,3 +149,25 @@
 .v-table-cell-content {
     vertical-align: middle;
 }
+
+/* ------------
+   Task details
+   ------------ */
+
+.v-label-bold {
+  font-weight: bold;
+}
+
+.v-gridlayout-task-details {
+  margin-top: 6px;
+}
+
+.v-gridlayout-task-details .v-gridlayout-spacing-on {
+  padding-left: 15px;
+  padding-top: 2px;
+}
+
+.v-label-horizontal-separator {
+  margin-top: 0px;
+  padding-top: 0px;
+}

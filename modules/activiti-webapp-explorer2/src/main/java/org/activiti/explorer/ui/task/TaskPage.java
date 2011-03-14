@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.explorer.ui;
+package org.activiti.explorer.ui.task;
 
 import java.util.List;
 
@@ -19,12 +19,12 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Task;
 import org.activiti.explorer.Constants;
+import org.activiti.explorer.ui.ViewManager;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
@@ -97,8 +97,8 @@ public class TaskPage extends CustomComponent {
     taskTable.addListener(new Property.ValueChangeListener() {
       private static final long serialVersionUID = 8811553575319455854L;
       public void valueChange(ValueChangeEvent event) {
-        Integer id = (Integer) event.getProperty().getValue();
-        mainSplitPanel.setSecondComponent(new Label("task " + id));
+        String id = (String) event.getProperty().getValue();
+        mainSplitPanel.setSecondComponent(new TaskDetailPanel(viewManager, id));
       }
     });
     
@@ -112,7 +112,7 @@ public class TaskPage extends CustomComponent {
   }
   
   protected void addTaskListEntry(String taskId, String name) {
-    TaskListEntry entry = new TaskListEntry(viewManager, taskTable, name, taskId);
+    TaskListEntry entry = new TaskListEntry(viewManager, taskTable, taskId, name);
     taskTable.addItem(new Object[] {entry}, taskId);
   }
 

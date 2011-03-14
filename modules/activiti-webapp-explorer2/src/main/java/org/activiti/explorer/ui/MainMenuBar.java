@@ -14,6 +14,8 @@
 package org.activiti.explorer.ui;
 
 import org.activiti.explorer.Constants;
+import org.activiti.explorer.ui.flow.FlowPage;
+import org.activiti.explorer.ui.task.TaskPage;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;

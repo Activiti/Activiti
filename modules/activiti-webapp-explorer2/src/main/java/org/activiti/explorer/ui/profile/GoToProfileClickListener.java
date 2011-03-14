@@ -10,31 +10,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.activiti.explorer.ui;
+package org.activiti.explorer.ui.profile;
 
 import org.activiti.explorer.Constants;
+import org.activiti.explorer.ui.ViewManager;
 
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 
 
 /**
  * @author Joram Barrez
  */
-public class TaskMenuBar extends MenuBar {
+public class GoToProfileClickListener implements ClickListener {
   
-  private static final long serialVersionUID = 7957488256766569264L;
+  private static final long serialVersionUID = 5855232173257669422L;
+  
+  protected ViewManager viewManager;
+  protected String userId;
+  
+  public GoToProfileClickListener(ViewManager viewManager, String userId) {
+    this.viewManager = viewManager;
+  }
 
-  public TaskMenuBar(ViewManager viewManager) {
-    super(viewManager);
-    addStyleName(Constants.STYLE_MENUBAR);
-    
-    createMenuBarButton("Inbox (12)");
-    createMenuBarButton("Todo (4)");
-    createMenuBarButton("Planned (9)");
-    createMenuBarButton("Queued (58)");
-    createMenuBarButton("Delegated (2)");
-    createMenuBarButton("Archived");
-    fillRemainingSpace();
+  public void buttonClick(ClickEvent event) {
+    viewManager.switchView(Constants.VIEW_PROFILE, new ProfilePage(viewManager, userId));
   }
 
 }

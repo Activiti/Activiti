@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.explorer.ui;
+package org.activiti.explorer.ui.profile;
 
 import java.io.InputStream;
 
@@ -20,6 +20,7 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.activiti.explorer.Constants;
+import org.activiti.explorer.ui.ViewManager;
 
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.terminal.StreamResource.StreamSource;
@@ -44,16 +45,24 @@ public class ProfilePage extends Panel {
   protected IdentityService identityService;
   
   // user information
+  protected String userId;
   protected User user;
   protected Picture picture;
+  protected String birthData;
+  protected String jobTitle;
+  protected String location;
+  protected String phone;
+  protected String twitterName;
+  protected String skypeId;
   
   // ui
   protected ViewManager viewManager;
   protected HorizontalLayout profilePanelLayout;
   protected VerticalLayout infoPanelLayout;
   
-  public ProfilePage(ViewManager viewManager) {
+  public ProfilePage(ViewManager viewManager, String userId) {
     this.viewManager = viewManager;
+    this.userId = userId;
     this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
     
     loadProfileData();
@@ -61,8 +70,14 @@ public class ProfilePage extends Panel {
   }
   
   protected void loadProfileData() {
-    this.user = viewManager.getLoggedInUser();
+    this.user = identityService.createUserQuery().userId(userId).singleResult();
     this.picture = identityService.getUserPicture(user.getId());
+    this.birthData = identityService.getUserInfo(user.getId(), "birthDate");
+    this.jobTitle = identityService.getUserInfo(user.getId(), "jobTitle");
+    this.location = identityService.getUserInfo(user.getId(), "location");
+    this.phone = identityService.getUserInfo(user.getId(), "phone");
+    this.twitterName = identityService.getUserInfo(user.getId(), "twitterName");
+    this.skypeId = identityService.getUserInfo(user.getId(), "skype");
   }
 
   protected void initUi() {
@@ -92,8 +107,8 @@ public class ProfilePage extends Panel {
         return picture.getInputStream();
       }
     }, user.getId(), viewManager.getApplication());
-    Embedded image = new Embedded(null, imageresource);
-    image.setMimeType(picture.getMimeType());
+    Embedded image = new Embedded("", imageresource);
+    image.setType(Embedded.TYPE_IMAGE);
     imagePanel.addComponent(image);
     imagePanel.setHeight("100%");
     imagePanel.getContent().setHeight("100%");
@@ -109,7 +124,7 @@ public class ProfilePage extends Panel {
     infoPanel.setSizeFull();
     
     profilePanelLayout.addComponent(infoPanel);
-    profilePanelLayout.setExpandRatio(infoPanel, 1.0f); // info panel should take all the width available
+    profilePanelLayout.setExpandRatio(infoPanel, 1.0f); // info panel should take all the remaining width available
     
     // All the information sections are put under each other in a vertical layout
     this.infoPanelLayout = new VerticalLayout();
@@ -125,9 +140,9 @@ public class ProfilePage extends Panel {
     GridLayout aboutLayout = createInfoSectionLayout(2, 4); 
 
     addProfileEntry(aboutLayout, "Name: ", user.getFirstName() + " " + user.getLastName());
-    addProfileEntry(aboutLayout, "Job title: ", "Activiti core mascot");
-    addProfileEntry(aboutLayout, "Birth date: ", "01/01/1955");
-    addProfileEntry(aboutLayout, "Location: ", "Muppet Country");
+    addProfileEntry(aboutLayout, "Job title: ", jobTitle);
+    addProfileEntry(aboutLayout, "Birth date: ", birthData);
+    addProfileEntry(aboutLayout, "Location: ", location);
   }
   
   protected void initContactSection() {
@@ -135,16 +150,16 @@ public class ProfilePage extends Panel {
     GridLayout contactLayout = createInfoSectionLayout(2, 4); 
     
     addProfileEntry(contactLayout, "Email: ", user.getEmail());
-    addProfileEntry(contactLayout, "Phone: ", "+145893689");
-    addProfileEntry(contactLayout, "twitter", "kermit83");
+    addProfileEntry(contactLayout, "Phone: ", phone);
+    addProfileEntry(contactLayout, "twitter", twitterName);
 
     // The skype entry shows the name + skype icon, laid out in a small grid
     GridLayout skypeLayout = new GridLayout(3,1);
     skypeLayout.setSizeUndefined();
     
-    Label skypeValueLabel = new Label("kermit.frog");
-    skypeValueLabel.setSizeUndefined();
-    skypeLayout.addComponent(skypeValueLabel);
+    Label skypeIdLabel = new Label(skypeId);
+    skypeIdLabel.setSizeUndefined();
+    skypeLayout.addComponent(skypeIdLabel);
     
     Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
     emptySpace.setSizeUndefined();
@@ -162,7 +177,7 @@ public class ProfilePage extends Panel {
     GridLayout accountLayout = createInfoSectionLayout(3, 2); 
 
     // Google
-    Embedded googleImage = new Embedded(null, viewManager.getClassResource(("images/google.png")));
+    Embedded googleImage = new Embedded(null, viewManager.getClassResource("images/google.png"));
     googleImage.setSizeUndefined();
     accountLayout.addComponent(googleImage);
     addProfileEntry(accountLayout, "Google: ", "mr_kermit_frog@gmail.com");

@@ -13,6 +13,9 @@
 
 package org.activiti.explorer;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 
 /**
  * @author Joram Barrez
@@ -44,11 +47,25 @@ public class Constants {
   public static final String STYLE_PROFILE_HEADER = "profile-header";
   public static final String STYLE_PROFILE_FIELD = "profile-field";
   
+  public static final String STYLE_LABEL_BOLD = "bold";
+  
   public static final String STYLE_TASK_LIST = "task-list";
+  public static final String STYLE_TASK_DETAILS = "task-details";
+  public static final String STYLE_TASK_DETAILS_HEADER = "task-details-header";
+  
+  public static final String STYLE_HORIZONTAL_SEPARATOR = "horizontal-separator";
   
   // Image names
   public static final String IMAGE_USER = "img/user-icon.png";
   public static final String IMAGE_DIVIDER = "img/divider-white.png";
   public static final String IMAGE_TASK = "images/task.png";
+  public static final String IMAGE_TIME = "img/time.png";
+  public static final String IMAGE_HOURGLASS = "img/hourglass.png";
+  public static final String IMAGE_CLOCK = "img/clock.png";
+  public static final String IMAGE_PEOPLE = "img/people.png";
+
+  
+  // Date formatting
+  public static final DateFormat DEFAULT_DATE_FORMATTER = new SimpleDateFormat("dd MMM yyyy - hh:mm"); 
   
 }

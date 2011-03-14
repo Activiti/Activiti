@@ -20,15 +20,28 @@
   </properties>
 
   <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-        </configuration>
-      </plugin>
+	<plugins>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<configuration>
+				<source>1.5</source>
+				<target>1.5</target>
+			</configuration>
+		</plugin>
+		<plugin>
+			<groupId>org.zeroturnaround</groupId>
+			<artifactId>jrebel-maven-plugin</artifactId>
+			<executions>
+				<execution>
+					<id>generate-rebel-xml</id>
+					<phase>process-resources</phase>
+					<goals>
+						<goal>generate</goal>
+					</goals>
+				</execution>
+			</executions>
+		</plugin>
 
       <!-- Compile custom GWT components or widget dependencies with the GWT compiler -->
       <!--
@@ -80,7 +93,7 @@
           <stopPort>9966</stopPort>
           <stopKey>activiti-webapp-explorer2</stopKey>
           <!-- Redeploy every x seconds if changes are detected, 0 for no automatic redeployment -->
-          <scanIntervalSeconds>5</scanIntervalSeconds>
+          <scanIntervalSeconds>0</scanIntervalSeconds>
           <!-- make sure Jetty also finds the widgetset -->
           <webAppConfig>
             <contextPath>/activiti-explorer2</contextPath>
