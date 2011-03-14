@@ -29,6 +29,7 @@ import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
@@ -122,6 +123,28 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     }
     
     assertEquals(expectedComments, comments);
+
+    // Finally, delete task
+    taskService.deleteTask(taskId, true);
+  }
+
+  public void testTaskAttachments() {
+    Task task = taskService.newTask();
+    task.setOwner("johndoe");
+    taskService.saveTask(task);
+    String taskId = task.getId();
+
+    identityService.setAuthenticatedUserId("johndoe");
+    // Fetch the task again and update
+    taskService.createAttachment(Attachment.LINK, taskId, "someprocessinstanceid", "weatherforcast", "temperatures and more", "http://weather.com");
+    Attachment attachment = taskService.getTaskAttachments(taskId).get(0);
+    assertEquals("weatherforcast", attachment.getName());
+    assertEquals("temperatures and more", attachment.getDescription());
+    assertEquals(Attachment.LINK, attachment.getType());
+    assertEquals(taskId, attachment.getTaskId());
+    assertEquals("someprocessinstanceid", attachment.getProcessInstanceId());
+    assertEquals("http://weather.com", attachment.getReference());
+    assertNull(taskService.getAttachmentContent(attachment.getId()));
 
     // Finally, delete task
     taskService.deleteTask(taskId, true);

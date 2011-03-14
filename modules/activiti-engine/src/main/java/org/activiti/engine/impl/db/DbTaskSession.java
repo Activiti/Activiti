@@ -28,6 +28,7 @@ import org.activiti.engine.impl.history.HistoricTaskInstanceEntity;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.task.IdentityLinkEntity;
 import org.activiti.engine.impl.task.TaskEntity;
+import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Task;
 
 
@@ -97,6 +98,16 @@ public class DbTaskSession implements TaskSession, Session {
     }
     
     historicTaskInstance.delete();
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<Attachment> findAttachmentsByProcessInstanceId(String processInstanceId) {
+    return dbSqlSession.selectList("selectAttachmentsByProcessInstanceId", processInstanceId);
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<Attachment> findAttachmentsByTaskId(String taskId) {
+    return dbSqlSession.selectList("selectAttachmentsByTaskId", taskId);
   }
 
   public void close() {

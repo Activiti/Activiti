@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.form;
+package org.activiti.engine.impl.task;
 
 import java.util.Date;
 

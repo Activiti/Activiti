@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl;
 
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -24,19 +25,27 @@ import org.activiti.engine.impl.cmd.AddCommentCmd;
 import org.activiti.engine.impl.cmd.AddIdentityLinkCmd;
 import org.activiti.engine.impl.cmd.ClaimTaskCmd;
 import org.activiti.engine.impl.cmd.CompleteTaskCmd;
+import org.activiti.engine.impl.cmd.CreateAttachmentCmd;
 import org.activiti.engine.impl.cmd.DelegateTaskCmd;
+import org.activiti.engine.impl.cmd.DeleteAttachmentCmd;
 import org.activiti.engine.impl.cmd.DeleteIdentityLinkCmd;
 import org.activiti.engine.impl.cmd.DeleteTaskCmd;
+import org.activiti.engine.impl.cmd.GetAttachmentCmd;
+import org.activiti.engine.impl.cmd.GetAttachmentContentCmd;
 import org.activiti.engine.impl.cmd.GetIdentityLinksForTaskCmd;
+import org.activiti.engine.impl.cmd.GetProcessInstanceAttachmentsCmd;
 import org.activiti.engine.impl.cmd.GetProcessInstanceCommentsCmd;
+import org.activiti.engine.impl.cmd.GetTaskAttachmentsCmd;
 import org.activiti.engine.impl.cmd.GetTaskCommentsCmd;
 import org.activiti.engine.impl.cmd.GetTaskVariableCmd;
 import org.activiti.engine.impl.cmd.GetTaskVariablesCmd;
 import org.activiti.engine.impl.cmd.ResolveTaskCmd;
+import org.activiti.engine.impl.cmd.SaveAttachmentCmd;
 import org.activiti.engine.impl.cmd.SaveTaskCmd;
 import org.activiti.engine.impl.cmd.SetTaskPriorityCmd;
 import org.activiti.engine.impl.cmd.SetTaskVariablesCmd;
 import org.activiti.engine.impl.task.TaskEntity;
+import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
@@ -213,5 +222,37 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
 
   public List<Comment> getProcessInstanceComments(String processInstanceId) {
     return commandExecutor.execute(new GetProcessInstanceCommentsCmd(processInstanceId));
+  }
+
+  public Attachment createAttachment(String attachmentType, String taskId, String processInstanceId, String attachmentName, String attachmentDescription, InputStream content) {
+    return commandExecutor.execute(new CreateAttachmentCmd(attachmentType, taskId, processInstanceId, attachmentName, attachmentDescription, content, null));
+  }
+
+  public Attachment createAttachment(String attachmentType, String taskId, String processInstanceId, String attachmentName, String attachmentDescription, String reference) {
+    return commandExecutor.execute(new CreateAttachmentCmd(attachmentType, taskId, processInstanceId, attachmentName, attachmentDescription, null, reference));
+  }
+
+  public InputStream getAttachmentContent(String attachmentId) {
+    return commandExecutor.execute(new GetAttachmentContentCmd(attachmentId));
+  }
+
+  public void deleteAttachment(String attachmentId) {
+    commandExecutor.execute(new DeleteAttachmentCmd(attachmentId));
+  }
+
+  public Attachment getAttachment(String attachmentId) {
+    return commandExecutor.execute(new GetAttachmentCmd(attachmentId));
+  }
+
+  public List<Attachment> getTaskAttachments(String taskId) {
+    return commandExecutor.execute(new GetTaskAttachmentsCmd(taskId));
+  }
+
+  public List<Attachment> getProcessInstanceAttachments(String processInstanceId) {
+    return commandExecutor.execute(new GetProcessInstanceAttachmentsCmd(processInstanceId));
+  }
+
+  public void saveAttachment(Attachment attachment) {
+    commandExecutor.execute(new SaveAttachmentCmd(attachment));
   }
 }

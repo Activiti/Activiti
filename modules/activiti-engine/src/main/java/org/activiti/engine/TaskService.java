@@ -12,11 +12,13 @@
  */
 package org.activiti.engine;
 
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.form.Comment;
+import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
@@ -274,4 +276,27 @@ public interface TaskService {
   /** The comments related to the given process instance. */
   List<Comment> getProcessInstanceComments(String processInstanceId);
 
+  /** Add a new attachment to a task and/or a process instance and use an input stream to provide the content */
+  Attachment createAttachment(String attachmentType, String taskId, String processInstanceId, String attachmentName, String attachmentDescription, InputStream content);
+
+  /** Add a new attachment to a task and/or a process instance and use an url as the content */
+  Attachment createAttachment(String attachmentType, String taskId, String processInstanceId, String attachmentName, String attachmentDescription, String reference);
+  
+  /** Update the name and decription of an attachment */
+  void saveAttachment(Attachment attachment);
+  
+  /** Retrieve a particular attachment */
+  Attachment getAttachment(String attachmentId);
+  
+  /** Retrieve stream content of a particular attachment */
+  InputStream getAttachmentContent(String attachmentId);
+  
+  /** The list of attachments associated to a task */
+  List<Attachment> getTaskAttachments(String taskId);
+
+  /** The list of attachments associated to a process instance */
+  List<Attachment> getProcessInstanceAttachments(String processInstanceId);
+
+  /** Delete an attachment */
+  void deleteAttachment(String attachmentId);
 }

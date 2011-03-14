@@ -13,13 +13,12 @@
 
 package org.activiti.engine;
 
-import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.form.Comment;
 import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.runtime.ProcessInstanceQuery;
 
 
 /** Access to form data and rendered forms for starting new process instances and completing tasks.

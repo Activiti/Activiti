@@ -21,6 +21,7 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.task.IdentityLinkEntity;
 import org.activiti.engine.impl.task.TaskEntity;
+import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Task;
 
 
@@ -42,4 +43,6 @@ public interface TaskSession {
   List<HistoricTaskInstance> findHistoricTaskInstancesByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQueryImpl, Page page);
   void deleteHistoricTaskInstance(String taskId);
 
+  List<Attachment> findAttachmentsByTaskId(String taskId);
+  List<Attachment> findAttachmentsByProcessInstanceId(String processInstanceId);
 }

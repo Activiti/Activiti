@@ -13,40 +13,30 @@
 
 package org.activiti.engine.impl.cmd;
 
-import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.task.CommentEntity;
-import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.impl.task.AttachmentEntity;
+import org.activiti.engine.task.Attachment;
 
 
 /**
  * @author Tom Baeyens
  */
-public class AddCommentCmd implements Command<Object> {
+public class SaveAttachmentCmd implements Command<Object> {
 
-  protected String taskId;
-  protected String processInstanceId;
-  protected String message;
+  protected Attachment attachment;
   
-  public AddCommentCmd(String taskId, String processInstanceId, String message) {
-    this.taskId = taskId;
-    this.processInstanceId = processInstanceId;
-    this.message = message;
+  public SaveAttachmentCmd(Attachment attachment) {
+    this.attachment = attachment;
   }
 
   public Object execute(CommandContext commandContext) {
-    String userId = Authentication.getAuthenticatedUserId();
-    CommentEntity comment = new CommentEntity();
-    comment.setUserId(userId);
-    comment.setTime(ClockUtil.getCurrentTime());
-    comment.setTaskId(taskId);
-    comment.setProcessInstanceId(processInstanceId);
-    comment.setMessage(message);
-    
-    commandContext
+    AttachmentEntity updateAttachment = commandContext
       .getDbSqlSession()
-      .insert(comment);
+      .selectById(AttachmentEntity.class, attachment.getId());
+    
+    updateAttachment.setName(attachment.getName());
+    updateAttachment.setDescription(attachment.getDescription());
     
     return null;
   }

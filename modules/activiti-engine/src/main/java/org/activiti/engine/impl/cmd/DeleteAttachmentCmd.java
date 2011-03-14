@@ -13,41 +13,27 @@
 
 package org.activiti.engine.impl.cmd;
 
-import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.task.CommentEntity;
-import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.impl.task.AttachmentEntity;
 
 
 /**
  * @author Tom Baeyens
  */
-public class AddCommentCmd implements Command<Object> {
+public class DeleteAttachmentCmd implements Command<Object> {
 
-  protected String taskId;
-  protected String processInstanceId;
-  protected String message;
+  protected String attachmentId;
   
-  public AddCommentCmd(String taskId, String processInstanceId, String message) {
-    this.taskId = taskId;
-    this.processInstanceId = processInstanceId;
-    this.message = message;
+  public DeleteAttachmentCmd(String attachmentId) {
+    this.attachmentId = attachmentId;
   }
 
   public Object execute(CommandContext commandContext) {
-    String userId = Authentication.getAuthenticatedUserId();
-    CommentEntity comment = new CommentEntity();
-    comment.setUserId(userId);
-    comment.setTime(ClockUtil.getCurrentTime());
-    comment.setTaskId(taskId);
-    comment.setProcessInstanceId(processInstanceId);
-    comment.setMessage(message);
-    
     commandContext
       .getDbSqlSession()
-      .insert(comment);
-    
+      .delete(AttachmentEntity.class, attachmentId);
     return null;
   }
+
 }

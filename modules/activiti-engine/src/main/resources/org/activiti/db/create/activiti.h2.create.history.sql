@@ -65,6 +65,19 @@ create table ACT_HI_DETAIL (
     primary key (ID_)
 );
 
+create table ACT_HI_ATTACHMENT (
+    ID_ varchar(64) not null,
+    REV_ integer,
+    NAME_ varchar(255),
+    DESCRIPTION_ varchar(255),
+    TYPE_ varchar(255),
+    TASK_ID_ varchar(64),
+    PROC_INST_ID_ varchar(64),
+    REF_ varchar(255),
+    CONTENT_ID_ varchar(64),
+    primary key (ID_)
+);
+
 create index ACT_IDX_HI_PRO_INST_END on ACT_HI_PROCINST(END_TIME_);
 create index ACT_IDX_HI_PRO_I_BUSKEY on ACT_HI_PROCINST(BUSINESS_KEY_);
 create index ACT_IDX_HI_ACT_INST_START on ACT_HI_ACTINST(START_TIME_);

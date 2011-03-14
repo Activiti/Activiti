@@ -614,7 +614,7 @@
   
   <!-- COMMENT INSERT -->
 
-  <insert id="insertComment" parameterType="org.activiti.engine.impl.form.CommentEntity">
+  <insert id="insertComment" parameterType="org.activiti.engine.impl.task.CommentEntity">
     insert into ACT_HI_DETAIL (ID_, TYPE_, NAME_, TIME_, TASK_ID_, PROC_INST_ID_, TEXT_)
     values (
       #{id ,jdbcType=VARCHAR},
@@ -635,7 +635,7 @@
 
   <!-- COMMENT RESULTMAP -->
 
-  <resultMap id="commentResultMap" type="org.activiti.engine.impl.form.CommentEntity">
+  <resultMap id="commentResultMap" type="org.activiti.engine.impl.task.CommentEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="userId" column="NAME_" jdbcType="VARCHAR" />
     <result property="time" column="TIME_" jdbcType="TIMESTAMP" />
@@ -653,5 +653,71 @@
   <select id="selectCommentsByProcessInstanceId" parameterType="string" resultMap="commentResultMap">
     select * from ACT_HI_DETAIL where PROC_INST_ID_ = #{processInstanceId,jdbcType=VARCHAR}
   </select>
+
+  <!-- ATTACHMENT INSERT -->
+
+  <insert id="insertAttachment" parameterType="org.activiti.engine.impl.task.AttachmentEntity">
+    insert into ACT_HI_ATTACHMENT (ID_, REV_, NAME_, DESCRIPTION_, TYPE_, TASK_ID_, PROC_INST_ID_, REF_, CONTENT_ID_)
+    values (
+      #{id ,jdbcType=VARCHAR},
+      1,
+      #{name ,jdbcType=VARCHAR},
+      #{description ,jdbcType=VARCHAR},
+      #{type ,jdbcType=VARCHAR},
+      #{taskId ,jdbcType=VARCHAR},
+      #{processInstanceId ,jdbcType=VARCHAR},
+      #{reference ,jdbcType=VARCHAR},
+      #{contentId ,jdbcType=VARCHAR}
+    )
+  </insert>
+
+  <!-- ATTACHMENT UPDATE -->
+
+  <update id="updateAttachment" parameterType="org.activiti.engine.impl.task.AttachmentEntity">
+    update ACT_HI_ATTACHMENT 
+    set
+      REV_ = #{nextRevision, jdbcType=INTEGER},
+      NAME_ = #{name, jdbcType=VARCHAR},
+      DESCRIPTION_ = #{description, jdbcType=TIMESTAMP}
+    where ID_ = #{id}
+      and REV_ = #{revision, jdbcType=INTEGER}
+  </update>
+
+  <!-- ATTACHMENT DELETE -->
+
+  <delete id="deleteAttachment" parameterType="string">
+    delete from ACT_HI_ATTACHMENT 
+    where ID_ = #{id} 
+  </delete>
+  
+  <!-- ATTACHMENT RESULTMAP -->
+
+  <resultMap id="attachmentResultMap" type="org.activiti.engine.impl.task.AttachmentEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="revision" column="REV_" jdbcType="INTEGER" />
+    <result property="name" column="NAME_" jdbcType="VARCHAR" />
+    <result property="description" column="DESCRIPTION_" jdbcType="VARCHAR" />
+    <result property="type" column="TYPE_" jdbcType="VARCHAR" />
+    <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="reference" column="REF_" jdbcType="VARCHAR" />
+    <result property="contentId" column="CONTENT_ID_" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <!-- ATTACHMENT SELECT -->
+
+  <select id="selectAttachment" parameterType="string" resultMap="attachmentResultMap">
+    select * from ACT_HI_ATTACHMENT where ID_ = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAttachmentsByTaskId" parameterType="string" resultMap="attachmentResultMap">
+    select * from ACT_HI_ATTACHMENT where TASK_ID_ = #{taskId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAttachmentsByProcessInstanceId" parameterType="string" resultMap="attachmentResultMap">
+    select * from ACT_HI_ATTACHMENT where PROC_INST_ID_ = #{processInstanceId,jdbcType=VARCHAR}
+  </select>
+
+
 
 </mapper>

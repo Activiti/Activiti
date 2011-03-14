@@ -25,6 +25,8 @@ import org.activiti.engine.impl.history.HistoricDetailEntity;
 import org.activiti.engine.impl.history.HistoricTaskInstanceEntity;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.runtime.ByteArrayEntity;
+import org.activiti.engine.impl.task.AttachmentEntity;
 import org.activiti.engine.impl.task.TaskEntity;
 
 
@@ -62,6 +64,7 @@ public class DeleteTaskCmd implements Command<Void> {
     return null;
   }
 
+  @SuppressWarnings("unchecked")
   protected void deleteTask(CommandContext commandContext, String taskId) {
     TaskEntity task = commandContext
       .getTaskSession()
@@ -83,6 +86,15 @@ public class DeleteTaskCmd implements Command<Void> {
       }
       if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY) {
         dbSqlSession.delete("deleteCommentsByTaskId", taskId);
+        
+        List<AttachmentEntity> attachments = dbSqlSession.selectList("selectAttachmentsByTaskId", taskId);
+        for (AttachmentEntity attachment: attachments) {
+          String contentId = attachment.getContentId();
+          if (contentId!=null) {
+            dbSqlSession.delete(ByteArrayEntity.class, contentId);
+          }
+          dbSqlSession.delete(AttachmentEntity.class, attachment.getId());
+        }
       }
     }
   }
