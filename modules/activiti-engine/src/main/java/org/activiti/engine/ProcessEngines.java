@@ -227,7 +227,7 @@ public abstract class ProcessEngines {
     return processEngines;
   }
   
-  /** closes all process engines.  This method is called when a server shutsdown by the activiti-rest webapp. */
+  /** closes all process engines.  This method should be called when the server shuts down. */
   public synchronized static void destroy() {
     if (isInitialized) {
       Map<String, ProcessEngine> engines = new HashMap<String, ProcessEngine>(processEngines);

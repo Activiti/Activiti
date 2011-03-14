@@ -69,7 +69,7 @@ public class MainLayout extends CustomLayout {
     
     userButton.addListener(new ClickListener() {
       public void buttonClick(ClickEvent event) {
-        viewManager.switchView(Constants.VIEW_PROFILE, new ProfilePanel(viewManager));
+        viewManager.switchView(Constants.VIEW_PROFILE, new ProfilePage(viewManager));
       }
     });
 

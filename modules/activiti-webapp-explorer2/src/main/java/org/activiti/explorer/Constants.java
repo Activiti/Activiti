@@ -44,8 +44,11 @@ public class Constants {
   public static final String STYLE_PROFILE_HEADER = "profile-header";
   public static final String STYLE_PROFILE_FIELD = "profile-field";
   
+  public static final String STYLE_TASK_LIST = "task-list";
+  
   // Image names
   public static final String IMAGE_USER = "img/user-icon.png";
   public static final String IMAGE_DIVIDER = "img/divider-white.png";
+  public static final String IMAGE_TASK = "images/task.png";
   
 }

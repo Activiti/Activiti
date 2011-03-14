@@ -138,23 +138,14 @@
 
 /* 
 
-.v-label-icon {
-	margin: 0px;
-	padding: 5px;
-	padding-right: 5px;
-}
-
-.v-tabsheet-tabitem {
-	color: grey;
-	font-weight: bold;
-}
-
-.v-tabsheet-tabitem-selected {
-	color: #222222;
+/* ---------
+   Task list
+   --------- */
+   
+.v-table-task-list .v-table-cell-content {
+  height: 54px;
 }
 
 .v-table-cell-content {
-	vertical-align: middle;
+    vertical-align: middle;
 }
-*/
-

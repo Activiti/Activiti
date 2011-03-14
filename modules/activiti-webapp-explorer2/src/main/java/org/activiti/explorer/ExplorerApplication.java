@@ -15,6 +15,7 @@
  */
 package org.activiti.explorer;
 
+import org.activiti.engine.ProcessEngines;
 import org.activiti.explorer.ui.MainLayout;
 
 import com.vaadin.Application;
@@ -31,6 +32,12 @@ public class ExplorerApplication extends Application {
   protected MainLayout mainLayout;
 
   public void init() {
+    
+    // Demo
+    setUser(ProcessEngines.getDefaultProcessEngine().getIdentityService()
+             .createUserQuery().userId("kermit").singleResult());
+    // Demo
+    
     // init window
     mainWindow = new Window("My pretty Vaadin Application");
     setMainWindow(mainWindow);

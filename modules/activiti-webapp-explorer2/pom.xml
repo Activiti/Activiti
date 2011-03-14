@@ -87,7 +87,7 @@
             <baseResource implementation="org.mortbay.resource.ResourceCollection">
               <!-- Workaround for Maven/Jetty issue http://jira.codehaus.org/browse/JETTY-680 -->
               <!-- <resources>src/main/webapp,${project.build.directory}/${project.build.finalName}</resources> -->
-              <resourcesAsCSV>src/main/webapp,${project.build.directory}/${project.build.finalName}</resourcesAsCSV>
+              <resourcesAsCSV>src/main/webapp</resourcesAsCSV>
             </baseResource>
           </webAppConfig>
         </configuration>
@@ -99,6 +99,18 @@
     <dependency>
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-engine</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
     </dependency>
   </dependencies>
 

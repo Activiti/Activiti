@@ -13,8 +13,16 @@
 
 package org.activiti.explorer.ui;
 
+import java.io.InputStream;
+
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.identity.Picture;
+import org.activiti.engine.identity.User;
 import org.activiti.explorer.Constants;
 
+import com.vaadin.terminal.StreamResource;
+import com.vaadin.terminal.StreamResource.StreamSource;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
@@ -28,20 +36,39 @@ import com.vaadin.ui.themes.Reindeer;
 /**
  * @author Joram Barrez
  */
-public class ProfilePanel extends Panel {
+public class ProfilePage extends Panel {
   
   private static final long serialVersionUID = -4274649964206760400L;
   
+  // service
+  protected IdentityService identityService;
+  
+  // user information
+  protected User user;
+  protected Picture picture;
+  
+  // ui
   protected ViewManager viewManager;
   protected HorizontalLayout profilePanelLayout;
   protected VerticalLayout infoPanelLayout;
   
-  public ProfilePanel(ViewManager viewManager) {
+  public ProfilePage(ViewManager viewManager) {
     this.viewManager = viewManager;
+    this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
     
+    loadProfileData();
+    initUi();
+  }
+  
+  protected void loadProfileData() {
+    this.user = viewManager.getLoggedInUser();
+    this.picture = identityService.getUserPicture(user.getId());
+  }
+
+  protected void initUi() {
     addStyleName(Reindeer.LAYOUT_WHITE);
     setSizeFull();
-
+    
     // Profile page is a horizontal layout: left we have a panel with the picture, 
     // and one the right there is another panel the about, contact, etc information
     this.profilePanelLayout = new HorizontalLayout();
@@ -59,7 +86,14 @@ public class ProfilePanel extends Panel {
     imagePanel.setStyleName(Reindeer.PANEL_LIGHT);
     
     // Image
-    Embedded image = new Embedded(null, viewManager.getClassResource("images/kermit.jpg"));
+    StreamResource imageresource = new StreamResource(new StreamSource() {
+      private static final long serialVersionUID = -8875067466181823014L;
+      public InputStream getStream() {
+        return picture.getInputStream();
+      }
+    }, user.getId(), viewManager.getApplication());
+    Embedded image = new Embedded(null, imageresource);
+    image.setMimeType(picture.getMimeType());
     imagePanel.addComponent(image);
     imagePanel.setHeight("100%");
     imagePanel.getContent().setHeight("100%");
@@ -90,7 +124,7 @@ public class ProfilePanel extends Panel {
     addProfileHeader(infoPanelLayout, "About");
     GridLayout aboutLayout = createInfoSectionLayout(2, 4); 
 
-    addProfileEntry(aboutLayout, "Name: ", "Kermit The Frog");
+    addProfileEntry(aboutLayout, "Name: ", user.getFirstName() + " " + user.getLastName());
     addProfileEntry(aboutLayout, "Job title: ", "Activiti core mascot");
     addProfileEntry(aboutLayout, "Birth date: ", "01/01/1955");
     addProfileEntry(aboutLayout, "Location: ", "Muppet Country");
@@ -100,7 +134,7 @@ public class ProfilePanel extends Panel {
     addProfileHeader(infoPanelLayout, "Contact");
     GridLayout contactLayout = createInfoSectionLayout(2, 4); 
     
-    addProfileEntry(contactLayout, "Email: ", "kermit@muppets.com");
+    addProfileEntry(contactLayout, "Email: ", user.getEmail());
     addProfileEntry(contactLayout, "Phone: ", "+145893689");
     addProfileEntry(contactLayout, "twitter", "kermit83");
 

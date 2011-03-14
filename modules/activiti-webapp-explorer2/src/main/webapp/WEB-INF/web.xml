@@ -19,4 +19,8 @@
         <servlet-name>Vaadin Application Servlet</servlet-name>
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
+    <!-- Process engine init/destroy listener -->
+    <listener>
+      <listener-class>org.activiti.explorer.servlet.BootProcessEngineContextListener</listener-class>
+    </listener>
 </web-app>

@@ -15,6 +15,7 @@ package org.activiti.explorer.ui;
 import java.io.Serializable;
 import java.util.HashMap;
 
+import org.activiti.engine.identity.User;
 import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApplication;
 
@@ -72,6 +73,10 @@ public class ViewManager implements Serializable {
   
   public Resource getClassResource(String resourceName) {
     return new ClassResource(resourceName, application);
+  }
+  
+  public User getLoggedInUser() {
+    return (User) application.getUser();
   }
 
 }
