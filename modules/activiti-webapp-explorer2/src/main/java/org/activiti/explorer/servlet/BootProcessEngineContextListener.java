@@ -71,8 +71,8 @@ public class BootProcessEngineContextListener implements ServletContextListener 
     identityService.setUserInfo("kermit", "skype", "kermit.frog");
     
     // Accounts
-    identityService.setUserAccount("kermit", "google", "kermit.frog@gmail.com", "kermit123");
-    identityService.setUserAccount("kermit", "alfresco", "kermit_alf", "kermit_alf_123");
+    identityService.setUserAccount("kermit", "kermit", "google", "kermit.frog@gmail.com", "kermit123", null);
+    identityService.setUserAccount("kermit", "kermit", "alfresco", "kermit_alf", "kermit_alf_123", null);
     
     // Picture
     byte[] pictureBytes = IoUtil.readInputStream(this.getClass().getClassLoader().getResourceAsStream("org/activiti/explorer/images/kermit.jpg"), null);
