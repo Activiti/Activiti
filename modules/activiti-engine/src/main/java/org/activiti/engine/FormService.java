@@ -72,13 +72,4 @@ public interface FormService {
   
   /** Completes a task with the user data that was entered as properties in a task form. */  
   void submitTaskFormData(String taskId, Map<String, String> properties);
-  
-  /** Add a comment to a task and/or process instance. */
-  void addComment(String taskId, String processInstanceId, String message);
-
-  /** The comments related to the given task. */
-  List<Comment> getTaskComments(String taskId);
-
-  /** The comments related to the given process instance. */
-  List<Comment> getProcessInstanceComments(String processInstanceId);
 }

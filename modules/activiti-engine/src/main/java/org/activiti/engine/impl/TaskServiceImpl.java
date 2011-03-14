@@ -19,6 +19,8 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.form.Comment;
+import org.activiti.engine.impl.cmd.AddCommentCmd;
 import org.activiti.engine.impl.cmd.AddIdentityLinkCmd;
 import org.activiti.engine.impl.cmd.ClaimTaskCmd;
 import org.activiti.engine.impl.cmd.CompleteTaskCmd;
@@ -26,6 +28,8 @@ import org.activiti.engine.impl.cmd.DelegateTaskCmd;
 import org.activiti.engine.impl.cmd.DeleteIdentityLinkCmd;
 import org.activiti.engine.impl.cmd.DeleteTaskCmd;
 import org.activiti.engine.impl.cmd.GetIdentityLinksForTaskCmd;
+import org.activiti.engine.impl.cmd.GetProcessInstanceCommentsCmd;
+import org.activiti.engine.impl.cmd.GetTaskCommentsCmd;
 import org.activiti.engine.impl.cmd.GetTaskVariableCmd;
 import org.activiti.engine.impl.cmd.GetTaskVariablesCmd;
 import org.activiti.engine.impl.cmd.ResolveTaskCmd;
@@ -197,5 +201,17 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
 
   public void setVariablesLocal(String executionId, Map<String, ? extends Object> variables) {
     commandExecutor.execute(new SetTaskVariablesCmd(executionId, variables, true));
+  }
+
+  public void addComment(String taskId, String processInstance, String message) {
+    commandExecutor.execute(new AddCommentCmd(taskId, processInstance, message));
+  }
+
+  public List<Comment> getTaskComments(String taskId) {
+    return commandExecutor.execute(new GetTaskCommentsCmd(taskId));
+  }
+
+  public List<Comment> getProcessInstanceComments(String processInstanceId) {
+    return commandExecutor.execute(new GetProcessInstanceCommentsCmd(processInstanceId));
   }
 }

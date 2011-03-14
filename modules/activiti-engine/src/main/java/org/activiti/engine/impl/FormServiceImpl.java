@@ -72,16 +72,4 @@ public class FormServiceImpl extends ServiceImpl implements FormService {
   public void submitTaskFormData(String taskId, Map<String, String> properties) {
     commandExecutor.execute(new SubmitTaskFormCmd(taskId, properties));
   }
-
-  public void addComment(String taskId, String processInstance, String message) {
-    commandExecutor.execute(new AddCommentCmd(taskId, processInstance, message));
-  }
-
-  public List<Comment> getTaskComments(String taskId) {
-    return commandExecutor.execute(new GetTaskCommentsCmd(taskId));
-  }
-
-  public List<Comment> getProcessInstanceComments(String processInstanceId) {
-    return commandExecutor.execute(new GetProcessInstanceCommentsCmd(processInstanceId));
-  }
 }

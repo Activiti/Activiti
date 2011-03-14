@@ -101,23 +101,23 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
     identityService.setAuthenticatedUserId("johndoe");
     // Fetch the task again and update
-    formService.addComment(taskId, null, "look at this");
-    Comment comment = formService.getTaskComments(taskId).get(0);
+    taskService.addComment(taskId, null, "look at this");
+    Comment comment = taskService.getTaskComments(taskId).get(0);
     assertEquals("johndoe", comment.getUserId());
     assertEquals(taskId, comment.getTaskId());
     assertNull(comment.getProcessInstanceId());
     assertEquals("look at this", comment.getMessage());
     assertNotNull(comment.getTime());
 
-    formService.addComment(taskId, "pid", "one");
-    formService.addComment(taskId, "pid", "two");
+    taskService.addComment(taskId, "pid", "one");
+    taskService.addComment(taskId, "pid", "two");
     
     Set<String> expectedComments = new HashSet<String>();
     expectedComments.add("one");
     expectedComments.add("two");
     
     Set<String> comments = new HashSet<String>();
-    for (Comment cmt: formService.getProcessInstanceComments("pid")) {
+    for (Comment cmt: taskService.getProcessInstanceComments("pid")) {
       comments.add(cmt.getMessage());
     }
     

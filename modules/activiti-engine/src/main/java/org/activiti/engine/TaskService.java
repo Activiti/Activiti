@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.form.Comment;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
@@ -263,4 +264,14 @@ public interface TaskService {
 
   /** get a variable on a task */
   Map<String, Object> getVariablesLocal(String taskId, Collection<String> variableNames);
+  
+  /** Add a comment to a task and/or process instance. */
+  void addComment(String taskId, String processInstanceId, String message);
+
+  /** The comments related to the given task. */
+  List<Comment> getTaskComments(String taskId);
+
+  /** The comments related to the given process instance. */
+  List<Comment> getProcessInstanceComments(String processInstanceId);
+
 }
