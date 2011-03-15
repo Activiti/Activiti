@@ -14,8 +14,8 @@
 package org.activiti.engine.impl.history.handler;
 
 import org.activiti.engine.delegate.DelegateTask;
+import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
-import org.activiti.engine.impl.pvm.delegate.TaskListener;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.engine.impl.task.TaskEntity;
 

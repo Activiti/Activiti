@@ -15,9 +15,9 @@ package org.activiti.engine.impl.cmd;
 
 import java.util.List;
 
-import org.activiti.engine.form.Comment;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.task.Comment;
 
 
 /**

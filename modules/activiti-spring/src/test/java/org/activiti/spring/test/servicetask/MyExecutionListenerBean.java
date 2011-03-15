@@ -12,8 +12,8 @@
  */
 package org.activiti.spring.test.servicetask;
 
-import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
-import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.ExecutionListener;
 
 
 /**
@@ -21,7 +21,7 @@ import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
  */
 public class MyExecutionListenerBean implements ExecutionListener {
   
-  public void notify(ExecutionListenerExecution execution) throws Exception {
+  public void notify(DelegateExecution execution) throws Exception {
     execution.setVariable("executionListenerVar", "working");
   }
 

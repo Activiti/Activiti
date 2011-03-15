@@ -21,11 +21,11 @@ import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.CompositeActivityBehavior;
-import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
 import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
@@ -219,7 +219,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
    * it is needed to call the end listeners yourself.
    */
   protected void callActivityEndListeners(ActivityExecution execution) {
-    List<ExecutionListener> listeners = activity.getExecutionListeners(ExecutionListener.EVENTNAME_END);
+    List<ExecutionListener> listeners = activity.getExecutionListeners(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END);
     for (ExecutionListener executionListener : listeners) {
       try {
         executionListener.notify((ExecutionListenerExecution) execution);

@@ -10,19 +10,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.spring.test.servicetask;
 
-import org.activiti.engine.delegate.DelegateTask;
-import org.activiti.engine.delegate.TaskListener;
+package org.activiti.engine.impl.pvm;
 
 
 /**
- * @author Joram Barrez
+ * @author Tom Baeyens
  */
-public class MyTaskListenerBean implements TaskListener {
-  
-  public void notify(DelegateTask delegateTask) {
-    delegateTask.getExecution().setVariable("taskListenerVar", "working");
-  }
+public class PvmEvent {
+
+  public static final String EVENTNAME_START = "start";
+  public static final String EVENTNAME_END = "end";
+  public static final String EVENTNAME_TAKE = "take";
 
 }

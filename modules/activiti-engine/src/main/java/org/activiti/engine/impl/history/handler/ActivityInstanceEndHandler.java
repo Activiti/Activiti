@@ -15,14 +15,14 @@ package org.activiti.engine.impl.history.handler;
 
 import java.util.List;
 
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
-import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 
 
@@ -31,7 +31,7 @@ import org.activiti.engine.impl.runtime.ExecutionEntity;
  */
 public class ActivityInstanceEndHandler implements ExecutionListener {
 
-  public void notify(ExecutionListenerExecution execution) {
+  public void notify(DelegateExecution execution) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(executionEntity);
     if (historicActivityInstance!=null) {

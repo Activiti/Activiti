@@ -17,7 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
 
 
@@ -30,7 +31,12 @@ public class EventCollector implements ExecutionListener {
   
   public List<String> events = new ArrayList<String>(); 
 
+  public void notify(DelegateExecution execution) throws Exception {
+    notify((ExecutionListenerExecution)execution);
+  }
+  
   public void notify(ExecutionListenerExecution execution) {
+    
     log.fine("collecting event: "+execution.getEventName()+" on "+execution.getEventSource());
     events.add(execution.getEventName()+" on "+execution.getEventSource());
   }
@@ -44,4 +50,5 @@ public class EventCollector implements ExecutionListener {
     return text.toString();
 
   }
+
 }

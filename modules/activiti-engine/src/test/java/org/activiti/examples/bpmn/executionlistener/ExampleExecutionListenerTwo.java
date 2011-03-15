@@ -13,8 +13,8 @@
 
 package org.activiti.examples.bpmn.executionlistener;
 
-import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
-import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.ExecutionListener;
 
 /**
  * Simple {@link ExecutionListener} that sets 2 variables on the execution.
@@ -23,7 +23,7 @@ import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
  */
 public class ExampleExecutionListenerTwo implements ExecutionListener {
 
-  public void notify(ExecutionListenerExecution execution) throws Exception {
+  public void notify(DelegateExecution execution) throws Exception {
     execution.setVariable("variableSetInExecutionListener", "secondValue");
     execution.setVariable("eventNameReceived", execution.getEventName());
   }

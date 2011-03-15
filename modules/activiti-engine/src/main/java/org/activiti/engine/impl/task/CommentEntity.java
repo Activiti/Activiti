@@ -15,8 +15,8 @@ package org.activiti.engine.impl.task;
 
 import java.util.Date;
 
-import org.activiti.engine.form.Comment;
 import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.task.Comment;
 
 
 /**

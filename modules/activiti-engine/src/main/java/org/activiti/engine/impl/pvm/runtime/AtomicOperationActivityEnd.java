@@ -15,10 +15,10 @@ package org.activiti.engine.impl.pvm.runtime;
 
 import java.util.List;
 
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.CompositeActivityBehavior;
-import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 
@@ -35,7 +35,7 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
 
   @Override
   protected String getEventName() {
-    return ExecutionListener.EVENTNAME_END;
+    return org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END;
   }
 
   @SuppressWarnings("unchecked")

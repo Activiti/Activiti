@@ -34,12 +34,9 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("executionListenersProcess");
     
     String varSetInExecutionListener = (String) runtimeService.getVariable(processInstance.getId(), "variableSetInExecutionListener");
-    String eventNameReceived = (String) runtimeService.getVariable(processInstance.getId(), "eventNameReceived");
     
     assertNotNull(varSetInExecutionListener);
     assertEquals("firstValue", varSetInExecutionListener);
-    assertNotNull(eventNameReceived);
-    assertEquals("start", eventNameReceived);
     
     // Transition take executionListener will set 2 variables
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
@@ -47,12 +44,9 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
     
     varSetInExecutionListener = (String) runtimeService.getVariable(processInstance.getId(), "variableSetInExecutionListener");
-    eventNameReceived = (String) runtimeService.getVariable(processInstance.getId(), "eventNameReceived");
     
     assertNotNull(varSetInExecutionListener);
     assertEquals("secondValue", varSetInExecutionListener);
-    assertNotNull(eventNameReceived);
-    assertEquals("take", eventNameReceived);
 
     ExampleExecutionListenerPojo myPojo = new ExampleExecutionListenerPojo();
     runtimeService.setVariable(processInstance.getId(), "myPojo", myPojo);

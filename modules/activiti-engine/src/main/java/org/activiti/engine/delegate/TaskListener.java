@@ -10,19 +10,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.spring.test.servicetask;
 
-import org.activiti.engine.delegate.DelegateTask;
-import org.activiti.engine.delegate.TaskListener;
+package org.activiti.engine.delegate;
+
+
 
 
 /**
- * @author Joram Barrez
+ * @author Tom Baeyens
  */
-public class MyTaskListenerBean implements TaskListener {
-  
-  public void notify(DelegateTask delegateTask) {
-    delegateTask.getExecution().setVariable("taskListenerVar", "working");
-  }
+public interface TaskListener {
 
+  String EVENTNAME_CREATE = "create";
+  String EVENTNAME_ASSIGNMENT = "assignment";
+  String EVENTNAME_COMPLETE = "complete";
+  
+  void notify(DelegateTask delegateTask);
 }

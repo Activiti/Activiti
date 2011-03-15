@@ -50,4 +50,12 @@
   </para>
 </section>
 
+<section id="internal">
+  <title>Internal implementation classes</title>
+  <para>In the jar file, all classes in packages that have <literal>.impl.</literal> (e.g. <literal>org.activiti.engine.impl.pvm.delegate</literal>)
+  in them are implementation classes and should be considered internal.  No stability guarantees are given on classes or interfaces 
+  that are in implementation classes.
+  </para>
+</section>
+
 </chapter>

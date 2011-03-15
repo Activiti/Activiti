@@ -13,12 +13,11 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
-import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
 
 
 /**
@@ -40,7 +39,7 @@ public class ServiceTaskJavaDelegateActivityBehavior extends TaskActivityBehavio
     leave(execution);
   }
   
-  public void notify(ExecutionListenerExecution execution) throws Exception {
+  public void notify(DelegateExecution execution) throws Exception {
     execute((DelegateExecution) execution);
   }
   

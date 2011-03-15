@@ -14,7 +14,7 @@
 package org.activiti.engine.test.bpmn.multiinstance;
 
 import org.activiti.engine.delegate.DelegateTask;
-import org.activiti.engine.impl.pvm.delegate.TaskListener;
+import org.activiti.engine.delegate.TaskListener;
 
 
 /**

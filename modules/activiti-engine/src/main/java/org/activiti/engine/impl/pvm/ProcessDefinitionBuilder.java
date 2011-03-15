@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
-import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.impl.pvm.process.ProcessElementImpl;
@@ -30,6 +30,7 @@ import org.activiti.engine.impl.pvm.process.TransitionImpl;
 /**
  * @author Tom Baeyens
  */
+@SuppressWarnings("deprecation")
 public class ProcessDefinitionBuilder {
 
   protected ProcessDefinitionImpl processDefinition;

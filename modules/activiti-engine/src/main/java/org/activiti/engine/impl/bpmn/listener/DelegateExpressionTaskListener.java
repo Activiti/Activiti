@@ -15,7 +15,7 @@ package org.activiti.engine.impl.bpmn.listener;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.Expression;
-import org.activiti.engine.impl.pvm.delegate.TaskListener;
+import org.activiti.engine.delegate.TaskListener;
 
 
 /**

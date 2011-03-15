@@ -13,9 +13,9 @@
 
 package org.activiti.engine.impl.bpmn.listener;
 
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
-import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
-import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
 
 /**
  * An {@link ExecutionListener} that evaluates a {@link Expression} when notified.
@@ -30,7 +30,7 @@ public class ExpressionExecutionListener implements ExecutionListener {
     this.expression = expression;
   }
 
-  public void notify(ExecutionListenerExecution execution) throws Exception {
+  public void notify(DelegateExecution execution) throws Exception {
     // Return value of expression is ignored
     expression.getValue(execution);
   }

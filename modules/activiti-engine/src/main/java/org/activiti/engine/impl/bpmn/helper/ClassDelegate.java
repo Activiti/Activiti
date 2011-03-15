@@ -19,15 +19,15 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.JavaDelegate;
+import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.bpmn.behavior.ServiceTaskJavaDelegateActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
-import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
-import org.activiti.engine.impl.pvm.delegate.TaskListener;
 import org.activiti.engine.impl.util.ReflectUtil;
 
 
@@ -56,7 +56,7 @@ public class ClassDelegate implements ActivityBehavior, TaskListener, ExecutionL
   }
 
   // Execution listener
-  public void notify(ExecutionListenerExecution execution) throws Exception {
+  public void notify(DelegateExecution execution) throws Exception {
     if (executionListenerInstance == null) {
       executionListenerInstance = getExecutionListenerInstance();
     } 

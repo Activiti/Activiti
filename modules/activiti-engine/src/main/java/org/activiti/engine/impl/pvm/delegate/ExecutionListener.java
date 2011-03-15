@@ -13,15 +13,19 @@
 package org.activiti.engine.impl.pvm.delegate;
 
 
+
 /**
+ * @deprecated use {@link org.activiti.delegate.ExecutionListener} instead.
+ * 
  * @author Tom Baeyens
  * @author Joram Barrez
  */
+@Deprecated
 public interface ExecutionListener {
 
   String EVENTNAME_START = "start";
   String EVENTNAME_END = "end";
   String EVENTNAME_TAKE = "take";
-  
+
   void notify(ExecutionListenerExecution execution) throws Exception;
 }

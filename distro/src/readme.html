@@ -46,6 +46,23 @@
 
   <h1>Activiti Release Notes</h1>
 
+  <h3>Release Notes - Activiti - Version 5.4</h3>
+    
+      <p><b>Compatibility note</b>: After releasing 5.3, we discovered that
+      execution listeners and task listeners and expressions were still in non-public api. Those classes were in subpackages 
+      of <code>org.activiti.engine.impl...</code>,  which has <code>impl</code> in it).  
+      <code>org.activiti.engine.impl.pvm.delegate.ExecutionListener</code>, 
+      <code>org.activiti.engine.impl.pvm.delegate.TaskListener</code> and 
+      <code>org.activiti.engine.impl.pvm.el.Expression</code> 
+      have been deprecated. From now on, you should use <code>org.activiti.engine.delegate.ExecutionListener</code>,
+      <code>org.activiti.engine.delegate.TaskListener</code> and <code>org.activiti.engine.delegate.Expression</code>.
+      In the new publicly available API, access to  
+      <code>ExecutionListenerExecution.getEventSource()</code> has been removed.  Apart from the deprecation 
+      compiler warning, the existing code should run fine.  But consider switching to the new public 
+      API interfaces (without .impl. in the package name).
+      </p>
+
+
   <h3>Release Notes - Activiti - Version 5.3</h3>
     
   <h4>Highlights</h4>

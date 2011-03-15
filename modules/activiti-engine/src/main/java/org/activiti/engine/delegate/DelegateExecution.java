@@ -16,14 +16,18 @@ package org.activiti.engine.delegate;
 
 
 /**
- * Execution used in {@link JavaDelegate}.
+ * Execution used in {@link JavaDelegate}s and {@link ExecutionListener}s.
  * 
  * @author Tom Baeyens
  */
 public interface DelegateExecution extends VariableScope {
 
+  /** Unique id of this path of execution that can be used as a handle to provide external signals back into the engine after wait states. */
   String getId();
-  
+
+  /** Reference to the overall process instance */
   String getProcessInstanceId();
-  
+
+  /** The {@link ExecutionListener#EVENTNAME_START event name} in case this execution is passed in for an {@link ExecutionListener}  */
+  String getEventName();
 }

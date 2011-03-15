@@ -10,19 +10,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.spring.test.servicetask;
-
-import org.activiti.engine.delegate.DelegateTask;
-import org.activiti.engine.delegate.TaskListener;
+package org.activiti.engine.delegate;
 
 
-/**
+
+/** Callback interface to be notified of execution events like starting a process instance,
+ * ending an activity instance or taking a transition.
+ *  
+ * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class MyTaskListenerBean implements TaskListener {
-  
-  public void notify(DelegateTask delegateTask) {
-    delegateTask.getExecution().setVariable("taskListenerVar", "working");
-  }
+public interface ExecutionListener {
 
+  String EVENTNAME_START = "start";
+  String EVENTNAME_END = "end";
+  String EVENTNAME_TAKE = "take";
+
+  void notify(DelegateExecution execution) throws Exception;
 }

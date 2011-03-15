@@ -13,11 +13,11 @@
 
 package org.activiti.engine.impl.history.handler;
 
+import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.BpmnParseListener;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
-import org.activiti.engine.impl.pvm.delegate.TaskListener;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
@@ -51,7 +51,7 @@ public class HistoryParseListener implements BpmnParseListener {
   
   public void parseProcess(Element processElement, ProcessDefinitionEntity processDefinition) {
     if (activityHistoryEnabled(processDefinition, historyLevel)) {
-      processDefinition.addExecutionListener(ExecutionListener.EVENTNAME_END, new ProcessInstanceEndHandler());
+      processDefinition.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, new ProcessInstanceEndHandler());
     }
   }
 
@@ -98,7 +98,7 @@ public class HistoryParseListener implements BpmnParseListener {
 
   public void parseStartEvent(Element startEventElement, ScopeImpl scope, ActivityImpl activity) {
     if (fullHistoryEnabled(historyLevel)) {
-      activity.addExecutionListener(ExecutionListener.EVENTNAME_END, START_EVENT_END_HANDLER);
+      activity.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, START_EVENT_END_HANDLER);
     }
   }
   
@@ -138,8 +138,8 @@ public class HistoryParseListener implements BpmnParseListener {
   
   protected void addActivityHandlers(ActivityImpl activity) {
     if (activityHistoryEnabled(activity, historyLevel)) {
-      activity.addExecutionListener(ExecutionListener.EVENTNAME_START, ACTIVITY_INSTANCE_START_LISTENER, 0);
-      activity.addExecutionListener(ExecutionListener.EVENTNAME_END, ACTIVITI_INSTANCE_END_LISTENER);
+      activity.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_START, ACTIVITY_INSTANCE_START_LISTENER, 0);
+      activity.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, ACTIVITI_INSTANCE_END_LISTENER);
     }
   }
   

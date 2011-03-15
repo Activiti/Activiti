@@ -13,10 +13,10 @@
 
 package org.activiti.engine.test.pvm;
 
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.ProcessDefinitionBuilder;
 import org.activiti.engine.impl.pvm.PvmProcessDefinition;
 import org.activiti.engine.impl.pvm.PvmProcessInstance;
-import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
 import org.activiti.engine.impl.test.PvmTestCase;
 import org.activiti.engine.test.pvm.activities.Automatic;
 import org.activiti.engine.test.pvm.activities.WaitState;
@@ -31,8 +31,8 @@ public class PvmProcessInstanceEndTest extends PvmTestCase {
     EventCollector eventCollector = new EventCollector();
     
     PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
-      .executionListener(ExecutionListener.EVENTNAME_START, eventCollector)
-      .executionListener(ExecutionListener.EVENTNAME_END, eventCollector)
+      .executionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector)
+      .executionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector)
       .createActivity("start")
         .initial()
         .behavior(new Automatic())
@@ -40,8 +40,8 @@ public class PvmProcessInstanceEndTest extends PvmTestCase {
       .endActivity()
       .createActivity("wait")
         .behavior(new WaitState())
-        .executionListener(ExecutionListener.EVENTNAME_START, eventCollector)
-        .executionListener(ExecutionListener.EVENTNAME_END, eventCollector)
+        .executionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector)
+        .executionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector)
       .endActivity()
     .buildProcessDefinition();
     

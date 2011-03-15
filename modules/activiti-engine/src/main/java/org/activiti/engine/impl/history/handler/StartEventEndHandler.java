@@ -15,12 +15,12 @@ package org.activiti.engine.impl.history.handler;
 
 import java.util.List;
 
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
-import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 
 
@@ -29,7 +29,7 @@ import org.activiti.engine.impl.runtime.ExecutionEntity;
  */
 public class StartEventEndHandler implements ExecutionListener {
 
-  public void notify(ExecutionListenerExecution execution) throws Exception {
+  public void notify(DelegateExecution execution) throws Exception {
     String executionId = execution.getId();
     String activityId = ((ExecutionEntity)execution).getActivityId();
 

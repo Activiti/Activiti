@@ -16,7 +16,7 @@ package org.activiti.engine.impl.pvm.runtime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
@@ -36,7 +36,7 @@ public class AtomicOperationProcessEnd extends AbstractEventAtomicOperation {
 
   @Override
   protected String getEventName() {
-    return ExecutionListener.EVENTNAME_END;
+    return org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END;
   }
 
   @Override

@@ -13,11 +13,11 @@
 
 package org.activiti.engine.impl.history.handler;
 
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
-import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
-import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 
@@ -27,7 +27,7 @@ import org.activiti.engine.impl.util.ClockUtil;
  */
 public class ActivityInstanceStartHandler implements ExecutionListener {
 
-  public void notify(ExecutionListenerExecution execution) {
+  public void notify(DelegateExecution execution) {
     IdGenerator idGenerator = Context.getProcessEngineConfiguration().getIdGenerator();
     
     ExecutionEntity executionEntity = (ExecutionEntity) execution;

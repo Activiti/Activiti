@@ -1916,7 +1916,7 @@ public class ToUppercase implements JavaDelegate {
         or the business archive upload in Activiti Probe to deploy processes,
         the classpath does not contain the referenced classes.  
       </para>
-      <para><link linkend="experimental"><emphasis role="bold">[EXPERIMENTAL]</emphasis></link>
+      <para><link linkend="internal"><emphasis role="bold">[INTERNAL: non-public implementation classes]</emphasis></link>
         It is also possible to provide a class that implements the 
         <emphasis>org.activiti.engine.impl.pvm.delegate.ActivityBehavior</emphasis> interface.
         Implementations have then access to the more powerful <emphasis>ActivityExecution</emphasis>
@@ -2660,6 +2660,20 @@ assertNotNull(execution);
 		
 		<section id="executionListeners">
       <title>Execution listener</title>
+      <para><emphasis role="bold">Compatibility note</emphasis>: After releasing 5.3, we discovered that
+      execution listeners and task listeners and expressions were still in non-public api. Those classes were in subpackages 
+      of <literal>org.activiti.engine.impl...</literal>,  which has <literal>impl</literal> in it).  
+      <literal>org.activiti.engine.impl.pvm.delegate.ExecutionListener</literal>, 
+      <literal>org.activiti.engine.impl.pvm.delegate.TaskListener</literal> and 
+      <literal>org.activiti.engine.impl.pvm.el.Expression</literal> 
+      have been deprecated. From now on, you should use <literal>org.activiti.engine.delegate.ExecutionListener</literal>,
+      <literal>org.activiti.engine.delegate.TaskListener</literal> and <literal>org.activiti.engine.delegate.Expression</literal>.
+      In the new publicly available API, access to  
+      <literal>ExecutionListenerExecution.getEventSource()</literal> has been removed.  Apart from the deprecation 
+      compiler warning, the existing code should run fine.  But consider switching to the new public 
+      API interfaces (without .impl. in the package name).
+      </para>
+      
       <para>Execution listeners allow you to execute external Java code or evaluate an expression when certain events occur
       during process exevcution. The events that can be captured are:
       <itemizedlist>
@@ -2702,14 +2716,14 @@ assertNotNull(execution);
   &lt;/process&gt;</programlisting>
         </para>
         <para>The first execution listener is notified when the process starts. The listener is an external Java-class (like <literal>ExampleExecutionListenerOne</literal>) 
-        and should implement <literal>org.activiti.engine.impl.pvm.delegate.ExecutionListener</literal> interface. When the event occurs (in this case <literal>end</literal> event)
+        and should implement <literal>org.activiti.engine.delegate.ExecutionListener</literal> interface. When the event occurs (in this case <literal>end</literal> event)
         the method <literal>notify(ExecutionListenerExecution execution)</literal> is called.
         <programlisting>
 public class ExampleExecutionListenerOne implements <emphasis role="bold">ExecutionListener</emphasis> {
 
   <emphasis role="bold">public void notify(ExecutionListenerExecution execution) throws Exception {</emphasis>
     execution.setVariable("variableSetInExecutionListener", "firstValue");
-    execution.setVariable("eventReceived", execution.getevent());
+    execution.setVariable("eventReceived", execution.getEventName());
   }
 }</programlisting>
         It is also possible to use a delegation class that implements the <literal>org.activiti.engine.delegate.JavaDelegate</literal>

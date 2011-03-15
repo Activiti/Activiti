@@ -12,7 +12,7 @@
  */
 package org.activiti.engine.impl.pvm.runtime;
 
-import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 
 
@@ -28,7 +28,7 @@ public class AtomicOperationTransitionNotifyListenerEnd extends AbstractEventAto
 
   @Override
   protected String getEventName() {
-    return ExecutionListener.EVENTNAME_END;
+    return org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END;
   }
 
   @Override

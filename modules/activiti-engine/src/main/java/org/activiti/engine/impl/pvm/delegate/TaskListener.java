@@ -18,6 +18,8 @@ import org.activiti.engine.delegate.DelegateTask;
 
 
 /**
+ * @deprecated use org.activiti.engine.delegate.TaskListener instead
+ * 
  * @author Tom Baeyens
  */
 public interface TaskListener {

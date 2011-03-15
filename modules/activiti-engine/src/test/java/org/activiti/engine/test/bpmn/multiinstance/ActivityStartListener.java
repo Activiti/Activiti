@@ -13,8 +13,8 @@
 
 package org.activiti.engine.test.bpmn.multiinstance;
 
-import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
-import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.ExecutionListener;
 
 
 /**
@@ -22,7 +22,7 @@ import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
  */
 public class ActivityStartListener implements ExecutionListener {
   
-  public void notify(ExecutionListenerExecution execution) throws Exception {
+  public void notify(DelegateExecution execution) throws Exception {
     Integer counter = (Integer) execution.getVariable("executionListenerCounter");
     if (counter == null) {
       counter = 0;

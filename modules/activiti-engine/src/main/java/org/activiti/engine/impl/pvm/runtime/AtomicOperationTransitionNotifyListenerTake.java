@@ -15,8 +15,8 @@ package org.activiti.engine.impl.pvm.runtime;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.PvmException;
-import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
@@ -36,7 +36,7 @@ public class AtomicOperationTransitionNotifyListenerTake implements AtomicOperat
     int executionListenerIndex = execution.getExecutionListenerIndex();
     
     if (executionListeners.size()>executionListenerIndex) {
-      execution.setEventName(ExecutionListener.EVENTNAME_TAKE);
+      execution.setEventName(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_TAKE);
       execution.setEventSource(transition);
       ExecutionListener listener = executionListeners.get(executionListenerIndex);
       try {
