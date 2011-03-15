@@ -25,16 +25,21 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.cfg.RepositorySession;
+import org.activiti.engine.impl.cmd.DeleteJobsCmd;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbRepositorySession;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
+import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.repository.Deployer;
 import org.activiti.engine.impl.repository.DeploymentEntity;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.repository.ResourceEntity;
+import org.activiti.engine.impl.runtime.TimerEntity;
 import org.activiti.engine.impl.util.IoUtil;
+import org.activiti.engine.runtime.Job;
 
 /**
  * @author Tom Baeyens
@@ -122,6 +127,9 @@ public class BpmnDeployer implements Deployer {
         }
         processDefinition.setId(processDefinitionId);
 
+        removeObsoleteTimers(processDefinition);
+        addTimerDeclarations(processDefinition);
+
         dbSqlSession.insert(processDefinition);
         dbRepositorySession.addToProcessDefinitionCache(processDefinition);
 
@@ -135,7 +143,29 @@ public class BpmnDeployer implements Deployer {
       }
     }
   }
-  
+
+  private void addTimerDeclarations(ProcessDefinitionEntity processDefinition) {
+    List<TimerDeclarationImpl> timerDeclarations = (List<TimerDeclarationImpl>) processDefinition.getProperty(BpmnParse.PROPERTYNAME_START_TIMER);
+    if (timerDeclarations!=null) {
+      for (TimerDeclarationImpl timerDeclaration : timerDeclarations) {
+        TimerEntity timer = timerDeclaration.prepareTimerEntity(null);
+        Context
+          .getCommandContext()
+          .getTimerSession()
+          .schedule(timer);
+      }
+    }
+  }
+
+  private void removeObsoleteTimers(ProcessDefinitionEntity processDefinition) {
+    List<Job> jobsToDelete = Context.getCommandContext().getRuntimeSession().
+        findJobsByConfiguration(TimerStartEventJobHandler.TYPE, processDefinition.getKey());
+    for (Job job :jobsToDelete) {
+        new DeleteJobsCmd(job.getId()).execute(Context.getCommandContext());
+    }
+  }
+
+
   /**
    * Returns the default name of the image resource for a certain process.
    * 

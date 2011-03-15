@@ -183,7 +183,19 @@ public class ProcessDiagramCanvas {
   }
   
   public void drawNoneStartEvent(int x, int y, int width, int height) {
+    drawStartEvent(x, y, width, height, null);
+  }
+
+  public void drawTimerStartEvent(int x, int y, int width, int height) {
+    drawStartEvent(x, y, width, height, TIMER_IMAGE);
+  }
+
+  public void drawStartEvent(int x, int y, int width, int height, Image image) {
     g.draw(new Ellipse2D.Double(x, y, width, height));
+    if (image != null) {
+      g.drawImage(image, x, y, width, height, null);
+    }
+
   }
   
   public void drawNoneEndEvent(int x, int y, int width, int height) {

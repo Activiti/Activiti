@@ -63,6 +63,12 @@
       and (LOCK_OWNER_ is not null)
   </select>
 
+  <select id="selectJobsByConfiguration" parameterType="map" resultMap="jobResultMap">
+      select * from ACT_RU_JOB
+      where HANDLER_TYPE_ = #{handlerType}
+      and HANDLER_CFG_ =  #{handlerConfiguration}
+  </select>
+
   <select id="selectJobByQueryCriteria" parameterType="org.activiti.engine.impl.JobQueryImpl" resultMap="jobResultMap">
     select *
     <include refid="selectJobByQueryCriteriaSql"/>

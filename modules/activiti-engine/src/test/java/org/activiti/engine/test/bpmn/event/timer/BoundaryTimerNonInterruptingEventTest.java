@@ -16,12 +16,18 @@ package org.activiti.engine.test.bpmn.event.timer;
 import java.util.Date;
 import java.util.List;
 
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.JavaDelegate;
+import org.activiti.engine.impl.cmd.DeleteJobsCmd;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
 
 /**
@@ -173,6 +179,34 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
     
     assertProcessEnded(procId);
   }
-  
+
+  @Deployment
+  public void testTimerWithCycle() throws Exception {
+    runtimeService.startProcessInstanceByKey("nonInterruptingCycle").getId();
+    TaskQuery tq = taskService.createTaskQuery().taskDefinitionKey("timerFiredTask");
+    assertEquals(0, tq.count());
+    moveByHours(1);
+    assertEquals(1, tq.count());
+    moveByHours(1);
+    assertEquals(2, tq.count());
+
+    Task task = taskService.createTaskQuery().taskDefinitionKey("task").singleResult();
+    taskService.complete(task.getId());
+
+    moveByHours(1);
+    assertEquals(2, tq.count());
+
+  }
+
+  //we cannot use waitForExecutor... method since there will always be one job left
+  private void moveByHours(int hours) throws Exception {
+    ClockUtil.setCurrentTime(new Date(ClockUtil.getCurrentTime().getTime() + ((hours * 60 * 1000 * 60) + 5000)));
+    JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
+    jobExecutor.start();
+    Thread.sleep(1000);
+    jobExecutor.shutdown();
+  }
+
+
 
 }

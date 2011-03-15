@@ -276,16 +276,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     List<TimerDeclarationImpl> timerDeclarations = (List<TimerDeclarationImpl>) scope.getProperty(BpmnParse.PROPERTYNAME_TIMER_DECLARATION);
     if (timerDeclarations!=null) {
       for (TimerDeclarationImpl timerDeclaration : timerDeclarations) {
-        BusinessCalendar businessCalendar = Context
-          .getProcessEngineConfiguration()
-          .getBusinessCalendarManager()
-          .getBusinessCalendar(DurationBusinessCalendar.NAME);
-        Date duedate = businessCalendar.resolveDuedate(timerDeclaration.getDuedateDescriptionValue(this));
-
-        TimerEntity timer = new TimerEntity(timerDeclaration);
-        timer.setDuedate(duedate);
-        timer.setExecution(this);
-
+        TimerEntity timer = timerDeclaration.prepareTimerEntity(this);
         Context
           .getCommandContext()
           .getTimerSession()

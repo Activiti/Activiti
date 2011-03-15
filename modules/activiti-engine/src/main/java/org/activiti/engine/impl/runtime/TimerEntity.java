@@ -12,9 +12,14 @@
  */
 package org.activiti.engine.impl.runtime;
 
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.activiti.engine.impl.calendar.BusinessCalendar;
+import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
+import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
 
@@ -25,9 +30,9 @@ import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
 public class TimerEntity extends JobEntity {
 
   private static final long serialVersionUID = 1L;
-  
+
   private static Logger log = Logger.getLogger(TimerEntity.class.getName());
-  
+
   protected String repeat;
 
   public TimerEntity() {
@@ -41,28 +46,53 @@ public class TimerEntity extends JobEntity {
     retries = timerDeclaration.getRetries();
   }
 
+  private TimerEntity(TimerEntity te) {
+    jobHandlerConfiguration =te.jobHandlerConfiguration;
+    jobHandlerType = te.jobHandlerType;
+    isExclusive = te.isExclusive;
+    repeat = te.repeat;
+    retries = te.retries;
+    executionId = te.executionId;
+    processInstanceId = te.processInstanceId;
+
+  }
+
   @Override
   public void execute(CommandContext commandContext) {
 
     super.execute(commandContext);
 
-    if (repeat==null){
+    if (repeat == null) {
 
       if (log.isLoggable(Level.FINE)) {
         log.fine("Timer " + getId() + " fired. Deleting timer.");
       }
       delete();
     } else {
-
-      // TODO calculate repeat
-      throw new UnsupportedOperationException("repeat not yet supported");
+      delete();
+      TimerEntity te = new TimerEntity(this);
+      te.setDuedate(calculateRepeat());
+      
+      Context
+          .getCommandContext()
+          .getTimerSession()
+          .schedule(te);
     }
-    
+
+  }
+
+  private Date calculateRepeat() {
+    BusinessCalendar businessCalendar = Context
+        .getProcessEngineConfiguration()
+        .getBusinessCalendarManager()
+        .getBusinessCalendar(CycleBusinessCalendar.NAME);
+    return businessCalendar.resolveDuedate(repeat);
   }
 
   public String getRepeat() {
     return repeat;
   }
+
   public void setRepeat(String repeat) {
     this.repeat = repeat;
   }

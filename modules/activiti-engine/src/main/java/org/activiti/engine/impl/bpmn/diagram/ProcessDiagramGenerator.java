@@ -45,7 +45,15 @@ public class ProcessDiagramGenerator {
                 activityImpl.getWidth(), activityImpl.getHeight());
       }
     });
-    
+
+    // start timer event
+    activityDrawInstructions.put("startTimerEvent", new ActivityDrawInstruction() {
+      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
+        processDiagramCreator.drawTimerStartEvent(activityImpl.getX(), activityImpl.getY(),
+                activityImpl.getWidth(), activityImpl.getHeight());
+      }
+    });
+
     // end event
     activityDrawInstructions.put("endEvent", new ActivityDrawInstruction() {
       public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {

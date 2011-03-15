@@ -54,9 +54,7 @@ import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.bpmn.parser.BpmnParseListener;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.bpmn.webservice.MessageInstance;
-import org.activiti.engine.impl.calendar.BusinessCalendarManager;
-import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
-import org.activiti.engine.impl.calendar.MapBusinessCalendarManager;
+import org.activiti.engine.impl.calendar.*;
 import org.activiti.engine.impl.cfg.standalone.StandaloneMybatisTransactionContextFactory;
 import org.activiti.engine.impl.db.DbHistorySessionFactory;
 import org.activiti.engine.impl.db.DbIdGenerator;
@@ -80,12 +78,7 @@ import org.activiti.engine.impl.interceptor.CommandContextFactory;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.SessionFactory;
-import org.activiti.engine.impl.jobexecutor.JobExecutor;
-import org.activiti.engine.impl.jobexecutor.JobExecutorMessageSessionFactory;
-import org.activiti.engine.impl.jobexecutor.JobExecutorTimerSessionFactory;
-import org.activiti.engine.impl.jobexecutor.JobHandler;
-import org.activiti.engine.impl.jobexecutor.TimerCatchIntermediateEventJobHandler;
-import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
+import org.activiti.engine.impl.jobexecutor.*;
 import org.activiti.engine.impl.repository.Deployer;
 import org.activiti.engine.impl.scripting.BeansResolverFactory;
 import org.activiti.engine.impl.scripting.ResolverFactory;
@@ -565,6 +558,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     TimerCatchIntermediateEventJobHandler timerCatchIntermediateEvent = new TimerCatchIntermediateEventJobHandler();
     jobHandlers.put(timerCatchIntermediateEvent.getType(), timerCatchIntermediateEvent);
 
+    TimerStartEventJobHandler timerStartEvent = new TimerStartEventJobHandler();
+    jobHandlers.put(timerStartEvent.getType(), timerStartEvent);
+
 
     jobExecutor.setCommandExecutor(commandExecutorTxRequired);
     jobExecutor.setAutoActivate(jobExecutorActivate);
@@ -689,6 +685,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     if (businessCalendarManager==null) {
       MapBusinessCalendarManager mapBusinessCalendarManager = new MapBusinessCalendarManager();
       mapBusinessCalendarManager.addBusinessCalendar(DurationBusinessCalendar.NAME, new DurationBusinessCalendar());
+      mapBusinessCalendarManager.addBusinessCalendar(DueDateBusinessCalendar.NAME, new DueDateBusinessCalendar());
+      mapBusinessCalendarManager.addBusinessCalendar(CycleBusinessCalendar.NAME, new CycleBusinessCalendar());
+
       businessCalendarManager = mapBusinessCalendarManager;
     }
   }
