@@ -13,11 +13,13 @@
 
 package org.activiti.explorer.ui.task;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.form.Comment;
+import org.activiti.engine.task.Comment;
+import org.activiti.explorer.Constants;
 import org.activiti.explorer.ui.ViewManager;
 
 import com.vaadin.ui.Alignment;
@@ -25,6 +27,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.themes.Reindeer;
@@ -41,6 +44,7 @@ public class TaskCommentPanel extends Panel {
   protected String taskId;
   protected TaskService taskService; 
   protected List<Comment> comments;
+  protected List<TaskComment> taskComments; // ui-version of the comment
 
   public TaskCommentPanel(ViewManager viewManager, String taskId) {
     super();
@@ -56,12 +60,15 @@ public class TaskCommentPanel extends Panel {
   }
   
   protected void addTaskComments() {
+    this.taskComments = new ArrayList<TaskComment>();
     for (Comment comment : comments) {
-      addComponent(new TaskComment(viewManager, comment));
+      TaskComment taskComment = new TaskComment(viewManager, comment);
+      taskComments.add(taskComment);
+      addComponent(taskComment);
     }
   }
   
-  protected void refresh() {
+  protected void refreshAllComments() {
     removeAllComponents();
     this.comments = taskService.getTaskComments(taskId);
     
@@ -70,6 +77,8 @@ public class TaskCommentPanel extends Panel {
   }
   
   protected void addTextArea() {
+    addComponent(new Label("&nbsp", Label.CONTENT_XHTML));
+    
     GridLayout grid = new GridLayout(1, 2);
     grid.setWidth("100%");
     grid.setSpacing(true);
@@ -77,7 +86,7 @@ public class TaskCommentPanel extends Panel {
     
     final TextArea textArea = new TextArea();
     textArea.setWidth("100%");
-    textArea.addStyleName(Reindeer.TEXTFIELD_SMALL);
+    textArea.addStyleName(Constants.STYLE_TASK_COMMENT_TIME);
     grid.addComponent(textArea);
     
     Button addCommentButtom = new Button("Add comment");
@@ -87,7 +96,7 @@ public class TaskCommentPanel extends Panel {
     addCommentButtom.addListener(new ClickListener() {
       public void buttonClick(ClickEvent event) {
         taskService.addComment(taskId, null, (String) textArea.getValue());
-        refresh();
+        refreshAllComments();
       }
     });
   }

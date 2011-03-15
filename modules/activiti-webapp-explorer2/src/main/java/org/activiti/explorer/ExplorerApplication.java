@@ -15,16 +15,22 @@
  */
 package org.activiti.explorer;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.identity.User;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.explorer.ui.MainLayout;
 
 import com.vaadin.Application;
+import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
 import com.vaadin.ui.Window;
 
 /**
  * @author Joram Barrez
  */
-public class ExplorerApplication extends Application {
+public class ExplorerApplication extends Application implements HttpServletRequestListener {
 
   private static final long serialVersionUID = -8923370280251348552L;
   
@@ -48,6 +54,17 @@ public class ExplorerApplication extends Application {
     mainLayout = new MainLayout(this); 
     mainWindow.setContent(mainLayout);
     
+  }
+  
+  public void onRequestStart(HttpServletRequest request, HttpServletResponse response) {
+    User user = (User) getUser();
+    if (user != null) {
+      Authentication.setAuthenticatedUserId("kermit");
+    }
+  }
+  
+  public void onRequestEnd(HttpServletRequest request, HttpServletResponse response) {
+    Authentication.setAuthenticatedUserId(null);
   }
   
 }

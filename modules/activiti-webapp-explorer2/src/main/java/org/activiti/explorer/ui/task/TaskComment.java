@@ -17,16 +17,20 @@ import java.io.InputStream;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.form.Comment;
 import org.activiti.engine.identity.User;
+import org.activiti.engine.task.Comment;
 import org.activiti.explorer.Constants;
 import org.activiti.explorer.ui.ViewManager;
 
+import com.ocpsoft.pretty.time.PrettyTime;
+import com.vaadin.event.LayoutEvents.LayoutClickEvent;
+import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.terminal.StreamResource.StreamSource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Embedded;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
@@ -54,13 +58,20 @@ public class TaskComment extends CustomComponent {
   }
   
   protected void initUi() {
-    addStyleName(Constants.STYLE_TASK_COMMENT);
-    
+    // general layout of component is horizontal: left picture, right author, time and text
     HorizontalLayout layout = new HorizontalLayout();
     setCompositionRoot(layout);
     layout.setSpacing(true);
     layout.setWidth("100%");
     
+    // listener to show popup window with comment 
+    layout.addListener(new LayoutClickListener() {
+      public void layoutClick(LayoutClickEvent event) {
+        viewManager.showPopupWindow(new TaskCommentPopupWindow(viewManager, comment));
+      }
+    });
+    
+    // fill layout
     addPicture(layout);
     addCommentText(layout);
   }
@@ -88,8 +99,17 @@ public class TaskComment extends CustomComponent {
     layout.setExpandRatio(commentLayout, 1.0f); // comment text takes all available space next to picture
     
     // Name
+    GridLayout headerGrid = new GridLayout(2, 1);
+    headerGrid.setSpacing(true);
+    commentLayout.addComponent(headerGrid);
+    
     Label name = new Label(user.getFirstName() + " " + user.getLastName());
-    commentLayout.addComponent(name);
+    name.addStyleName(Constants.STYLE_TASK_COMMENT_AUTHOR);
+    headerGrid.addComponent(name);
+    
+    Label time = new Label(new PrettyTime().format(comment.getTime()));
+    time.addStyleName(Constants.STYLE_TASK_COMMENT_TIME);
+    headerGrid.addComponent(time);
     
     // Actual text
     Label text = new Label(comment.getMessage());

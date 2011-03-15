@@ -179,4 +179,16 @@
    
 .v-customcomponent-task-comment {
   margin-bottom: 5px;
-}   
+}  
+
+.v-label-task-comment-author {
+  color: #44698b;
+  font-weight: bold;
+  padding-top: 10px;
+}
+
+.v-label-task-comment-time {
+  color: #70706f;
+  padding-top: 10px;
+}
+

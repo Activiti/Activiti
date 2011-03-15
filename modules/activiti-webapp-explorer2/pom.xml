@@ -43,20 +43,20 @@
 			</executions>
 		</plugin>
 
-      <!-- Compile custom GWT components or widget dependencies with the GWT compiler -->
-      <!--
+      <!-- Compile custom GWT components or widget dependencies with the GWT compiler 
+           Needed for eg. Animator component 
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
         <version>2.1.0-1</version>
         <configuration>
-          <webappDirectory>${project.build.directory}/${project.build.finalName}/VAADIN/widgetsets</webappDirectory>
+          <webappDirectory>src/main/webapp/VAADIN/widgetsets</webappDirectory>
           <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
-          <runTarget>activiti-webapp-explorer2</runTarget>
-          <hostedWebapp>${project.build.directory}/${project.build.finalName}</hostedWebapp>
+         <runTarget>activiti-webapp-explorer2</runTarget>
+          <hostedWebapp>src/main/webapp</hostedWebapp>
           <noServer>true</noServer>
           <port>8080</port>
-          <soyc>false</soyc>
+          <soyc>false</soyc> 
         </configuration>
         <executions>
           <execution>
@@ -71,17 +71,19 @@
         <groupId>com.vaadin</groupId>
         <artifactId>vaadin-maven-plugin</artifactId>
         <version>1.0.1</version>
+        <configuration>
+          <modules>
+            <module>org.vaadin.jouni.animator.AnimatorWidgetset</module>
+          </modules>
+        </configuration>
         <executions>
           <execution>
-            <configuration>
-            </configuration>
             <goals>
               <goal>update-widgetset</goal>
             </goals>
           </execution>
         </executions>
-      </plugin>
-      -->
+      </plugin> -->
 
       <!-- A simple Jetty test server at http://localhost:8080/activiti-webapp-explorer2 can be launched with the Maven goal jetty:run 
         and stopped with jetty:stop -->
@@ -110,16 +112,16 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.vaadin</groupId>
-      <artifactId>vaadin</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-engine</artifactId>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin</artifactId>
     </dependency>
     <dependency>
       <groupId>com.h2database</groupId>

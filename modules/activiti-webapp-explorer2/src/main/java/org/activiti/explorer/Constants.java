@@ -55,6 +55,9 @@ public class Constants {
   public static final String STYLE_TASK_DETAILS_HEADER = "task-details-header";
   
   public static final String STYLE_TASK_COMMENT = "task-comment";
+  public static final String STYLE_TASK_COMMENT_AUTHOR = "task-comment-author";
+  public static final String STYLE_TASK_COMMENT_TIME = "task-comment-time";
+
   
   public static final String STYLE_HORIZONTAL_SEPARATOR = "horizontal-separator";
   
