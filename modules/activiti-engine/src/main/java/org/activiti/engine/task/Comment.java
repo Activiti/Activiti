@@ -16,14 +16,24 @@ package org.activiti.engine.task;
 import java.util.Date;
 
 
-/**
+/** single comment to facilitate discussions around tasks and process instances.
+ * 
  * @author Tom Baeyens
  */
 public interface Comment {
 
+  /** reference to the user that made the comment */ 
   String getUserId();
+
+  /** time and date when the user made the comment */ 
   Date getTime();
+
+  /** reference to the task on which this comment was made */ 
   String getTaskId();
+
+  /** reference to the process instance on which this comment was made */ 
   String getProcessInstanceId();
+
+  /** the message the user had related to the task and/or process instance */ 
   String getMessage();
 }

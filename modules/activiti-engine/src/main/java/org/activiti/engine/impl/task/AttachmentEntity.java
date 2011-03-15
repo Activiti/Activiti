@@ -32,7 +32,7 @@ public class AttachmentEntity implements Attachment, PersistentObject {
   protected String type;
   protected String taskId;
   protected String processInstanceId;
-  protected String reference;
+  protected String url;
   protected String contentId;
 
   public Object getPersistentState() {
@@ -117,13 +117,13 @@ public class AttachmentEntity implements Attachment, PersistentObject {
   }
 
   
-  public String getReference() {
-    return reference;
+  public String getUrl() {
+    return url;
   }
 
   
-  public void setReference(String reference) {
-    this.reference = reference;
+  public void setUrl(String url) {
+    this.url = url;
   }
 
   

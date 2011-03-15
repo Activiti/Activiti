@@ -657,7 +657,7 @@
   <!-- ATTACHMENT INSERT -->
 
   <insert id="insertAttachment" parameterType="org.activiti.engine.impl.task.AttachmentEntity">
-    insert into ACT_HI_ATTACHMENT (ID_, REV_, NAME_, DESCRIPTION_, TYPE_, TASK_ID_, PROC_INST_ID_, REF_, CONTENT_ID_)
+    insert into ACT_HI_ATTACHMENT (ID_, REV_, NAME_, DESCRIPTION_, TYPE_, TASK_ID_, PROC_INST_ID_, URL_, CONTENT_ID_)
     values (
       #{id ,jdbcType=VARCHAR},
       1,
@@ -666,7 +666,7 @@
       #{type ,jdbcType=VARCHAR},
       #{taskId ,jdbcType=VARCHAR},
       #{processInstanceId ,jdbcType=VARCHAR},
-      #{reference ,jdbcType=VARCHAR},
+      #{url ,jdbcType=VARCHAR},
       #{contentId ,jdbcType=VARCHAR}
     )
   </insert>
@@ -700,7 +700,7 @@
     <result property="type" column="TYPE_" jdbcType="VARCHAR" />
     <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
-    <result property="reference" column="REF_" jdbcType="VARCHAR" />
+    <result property="url" column="URL_" jdbcType="VARCHAR" />
     <result property="contentId" column="CONTENT_ID_" jdbcType="VARCHAR" />
   </resultMap>
   

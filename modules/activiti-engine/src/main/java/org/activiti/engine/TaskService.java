@@ -280,7 +280,7 @@ public interface TaskService {
   Attachment createAttachment(String attachmentType, String taskId, String processInstanceId, String attachmentName, String attachmentDescription, InputStream content);
 
   /** Add a new attachment to a task and/or a process instance and use an url as the content */
-  Attachment createAttachment(String attachmentType, String taskId, String processInstanceId, String attachmentName, String attachmentDescription, String reference);
+  Attachment createAttachment(String attachmentType, String taskId, String processInstanceId, String attachmentName, String attachmentDescription, String url);
   
   /** Update the name and decription of an attachment */
   void saveAttachment(Attachment attachment);

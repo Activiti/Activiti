@@ -9,7 +9,7 @@ create table ACT_HI_ATTACHMENT (
     TYPE_ varchar(255),
     TASK_ID_ varchar(64),
     PROC_INST_ID_ varchar(64),
-    REF_ varchar(255),
+    URL_ varchar(255),
     CONTENT_ID_ varchar(64),
     primary key (ID_)
 );

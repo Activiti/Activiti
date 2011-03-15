@@ -35,16 +35,16 @@ public class CreateAttachmentCmd implements Command<Attachment> {
   protected String attachmentName;
   protected String attachmentDescription;
   protected InputStream content;
-  protected String reference;
+  protected String url;
   
-  public CreateAttachmentCmd(String attachmentType, String taskId, String processInstanceId, String attachmentName, String attachmentDescription, InputStream content, String reference) {
+  public CreateAttachmentCmd(String attachmentType, String taskId, String processInstanceId, String attachmentName, String attachmentDescription, InputStream content, String url) {
     this.attachmentType = attachmentType;
     this.taskId = taskId;
     this.processInstanceId = processInstanceId;
     this.attachmentName = attachmentName;
     this.attachmentDescription = attachmentDescription;
     this.content = content;
-    this.reference = reference;
+    this.url = url;
   }
 
   public Attachment execute(CommandContext commandContext) {
@@ -54,7 +54,7 @@ public class CreateAttachmentCmd implements Command<Attachment> {
     attachment.setType(attachmentType);
     attachment.setTaskId(taskId);
     attachment.setProcessInstanceId(processInstanceId);
-    attachment.setReference(reference);
+    attachment.setUrl(url);
     
     DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
     dbSqlSession.insert(attachment);

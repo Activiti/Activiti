@@ -136,14 +136,14 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
     identityService.setAuthenticatedUserId("johndoe");
     // Fetch the task again and update
-    taskService.createAttachment(Attachment.LINK, taskId, "someprocessinstanceid", "weatherforcast", "temperatures and more", "http://weather.com");
+    taskService.createAttachment("web page", taskId, "someprocessinstanceid", "weatherforcast", "temperatures and more", "http://weather.com");
     Attachment attachment = taskService.getTaskAttachments(taskId).get(0);
     assertEquals("weatherforcast", attachment.getName());
     assertEquals("temperatures and more", attachment.getDescription());
-    assertEquals(Attachment.LINK, attachment.getType());
+    assertEquals("web page", attachment.getType());
     assertEquals(taskId, attachment.getTaskId());
     assertEquals("someprocessinstanceid", attachment.getProcessInstanceId());
-    assertEquals("http://weather.com", attachment.getReference());
+    assertEquals("http://weather.com", attachment.getUrl());
     assertNull(taskService.getAttachmentContent(attachment.getId()));
 
     // Finally, delete task
