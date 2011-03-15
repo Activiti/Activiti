@@ -87,6 +87,15 @@
     </para>
     <mediaobject><imageobject><imagedata align="center" fileref="images/activiti.probe.database.png"/></imageobject></mediaobject>
   </section>
-  
+
+    <section>
+      <title>Processes</title>
+      <para>
+        The processes view shows active process instance details for all deployed processes. If process definition contains Diagram Interchange information, current activities in process instance can be seen after clicking 'Display diagram' button:
+      </para>
+      <mediaobject><imageobject><imagedata align="center" fileref="images/activiti.probe.processes.png"/></imageobject></mediaobject>
+    </section>
+    
+
 </chapter>
 

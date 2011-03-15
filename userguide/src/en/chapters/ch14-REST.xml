@@ -465,6 +465,77 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
         </itemizedlist>
       </section>
 
+        <section>
+          <title>List Process Instances</title>
+          <para>
+            Returns details about the active process instances that can be sorted by "id", "startTime", "businessKey" or
+            "processDefinitionId". You can filter instances by "processDefinitionId" and "businessKey".
+          </para>
+          <itemizedlist>
+            <listitem>
+              <para>
+                <emphasis role="bold">Paginated Request:</emphasis>
+                <literal>GET /process-instances?start={start=0}&amp;size={size=10}&amp;sort={sort=id}&amp;order={order=asc}&amp;businessKey={businessKey}&amp;processDefinitionId={processDefinitionId}</literal>
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                <emphasis role="bold">API:</emphasis>
+                <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getHistoryService().createHistoricProcessInstanceQuery().xxx.listPages()</literal>
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                <emphasis role="bold">Paginated Response:</emphasis>
+                <programlisting>
+  {
+    "data": [
+      {
+        "id": 2,
+        "processDefinitionId": "financialReport:1",
+        "businessKey": 55,
+        "startTime": "12-03-2011",
+        "startUserId": "kermit"
+      }
+    ],
+    "total": 1,
+    "start": 0,
+    "sort": "id",
+    "order": "asc",
+    "size": 1
+  }</programlisting>
+              </para>
+            </listitem>
+          </itemizedlist>
+        </section>
+        <section>
+            <title>Get Process Instance Diagram</title>
+            <para>
+            Returns a png diagram of process with highlighted active executions. Returns 404 if process definition does not contain DI information.
+            </para>
+            <itemizedlist>
+              <listitem>
+                <para>
+                  <emphasis role="bold">Request:</emphasis>
+                  <literal>GET /processInstance/{processInstanceId}/diagram</literal>
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  <emphasis role="bold">API:</emphasis>
+                  <literal>ProcessDiagramGenerator.generateDiagram(pde, "png", getRuntimeService().getActiveActivityIds(processInstanceId));</literal>
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  <emphasis role="bold">Response:</emphasis>
+                  <programlisting>Png diagram of process with highlighted active executions.</programlisting>
+                </para>
+              </listitem>
+            </itemizedlist>
+        </section>
+
+
     </section>
 
 
