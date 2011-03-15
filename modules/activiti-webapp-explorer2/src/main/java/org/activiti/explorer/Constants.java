@@ -46,12 +46,15 @@ public class Constants {
   public static final String STYLE_PROFILE_LAYOUT = "profile-layout";
   public static final String STYLE_PROFILE_HEADER = "profile-header";
   public static final String STYLE_PROFILE_FIELD = "profile-field";
+  public static final String STYLE_PROFILE_PICTURE = "profile-picture";
   
   public static final String STYLE_LABEL_BOLD = "bold";
   
   public static final String STYLE_TASK_LIST = "task-list";
   public static final String STYLE_TASK_DETAILS = "task-details";
   public static final String STYLE_TASK_DETAILS_HEADER = "task-details-header";
+  
+  public static final String STYLE_TASK_COMMENT = "task-comment";
   
   public static final String STYLE_HORIZONTAL_SEPARATOR = "horizontal-separator";
   

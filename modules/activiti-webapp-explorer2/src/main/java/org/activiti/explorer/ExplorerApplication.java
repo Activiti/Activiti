@@ -36,6 +36,7 @@ public class ExplorerApplication extends Application {
     // Demo
     setUser(ProcessEngines.getDefaultProcessEngine().getIdentityService()
              .createUserQuery().userId("kermit").singleResult());
+    ProcessEngines.getDefaultProcessEngine().getIdentityService().setAuthenticatedUserId("kermit");
     // Demo
     
     // init window
@@ -46,6 +47,7 @@ public class ExplorerApplication extends Application {
     // init general look and feel
     mainLayout = new MainLayout(this); 
     mainWindow.setContent(mainLayout);
+    
   }
   
 }

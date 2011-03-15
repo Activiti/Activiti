@@ -125,6 +125,15 @@
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
     </dependency>
+    
+    <!-- TODO: Move dependency to parent if found satisfactory-->
+    <!-- TODO: discuss licence of this dependency (LGPL) -->
+	  <dependency>
+		  <groupId>com.ocpsoft</groupId>
+		  <artifactId>ocpsoft-pretty-time</artifactId>
+		  <version>1.0.6</version>
+	  </dependency>
+	  
   </dependencies>
 
 </project>

@@ -68,7 +68,7 @@ public class TaskPage extends CustomComponent {
     mainSplitPanel = new HorizontalSplitPanel();
     mainSplitPanel.addStyleName(Reindeer.SPLITPANEL_SMALL);
     mainSplitPanel.setSizeFull();
-    mainSplitPanel.setSplitPosition(20, HorizontalSplitPanel.UNITS_PERCENTAGE);
+    mainSplitPanel.setSplitPosition(17, HorizontalSplitPanel.UNITS_PERCENTAGE);
     mainLayout.addComponent(mainSplitPanel);
     mainLayout.setExpandRatio(mainSplitPanel, 1.0f);
   }

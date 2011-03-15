@@ -48,7 +48,7 @@ public class ProfilePage extends Panel {
   protected String userId;
   protected User user;
   protected Picture picture;
-  protected String birthData;
+  protected String birthDate;
   protected String jobTitle;
   protected String location;
   protected String phone;
@@ -72,7 +72,7 @@ public class ProfilePage extends Panel {
   protected void loadProfileData() {
     this.user = identityService.createUserQuery().userId(userId).singleResult();
     this.picture = identityService.getUserPicture(user.getId());
-    this.birthData = identityService.getUserInfo(user.getId(), "birthDate");
+    this.birthDate = identityService.getUserInfo(user.getId(), "birthDate");
     this.jobTitle = identityService.getUserInfo(user.getId(), "jobTitle");
     this.location = identityService.getUserInfo(user.getId(), "location");
     this.phone = identityService.getUserInfo(user.getId(), "phone");
@@ -81,7 +81,7 @@ public class ProfilePage extends Panel {
   }
 
   protected void initUi() {
-    addStyleName(Reindeer.LAYOUT_WHITE);
+    addStyleName(Reindeer.PANEL_LIGHT);
     setSizeFull();
     
     // Profile page is a horizontal layout: left we have a panel with the picture, 
@@ -98,7 +98,7 @@ public class ProfilePage extends Panel {
   protected void initImagePanel() {
     // Panel
     Panel imagePanel = new Panel();
-    imagePanel.setStyleName(Reindeer.PANEL_LIGHT);
+    imagePanel.addStyleName(Reindeer.PANEL_LIGHT);
     
     // Image
     StreamResource imageresource = new StreamResource(new StreamSource() {
@@ -107,20 +107,24 @@ public class ProfilePage extends Panel {
         return picture.getInputStream();
       }
     }, user.getId(), viewManager.getApplication());
+    
     Embedded image = new Embedded("", imageresource);
     image.setType(Embedded.TYPE_IMAGE);
+    image.setHeight("200px");
+    image.setWidth("200px");
+    image.addStyleName(Constants.STYLE_PROFILE_PICTURE);
+    
     imagePanel.addComponent(image);
     imagePanel.setHeight("100%");
     imagePanel.getContent().setHeight("100%");
-    imagePanel.getContent().setWidth(image.getWidth(), image.getWidthUnits());
-    imagePanel.setWidth(image.getWidth(), image.getWidthUnits());
+    imagePanel.setWidth(image.getWidth() + 50, image.getWidthUnits()); // adding 40 to have more whitespace
     
     profilePanelLayout.addComponent(imagePanel);
   }
   
   protected void initInformationPanel() {
     Panel infoPanel = new Panel();
-    infoPanel.setStyleName(Reindeer.PANEL_LIGHT);
+    infoPanel.addStyleName(Reindeer.PANEL_LIGHT);
     infoPanel.setSizeFull();
     
     profilePanelLayout.addComponent(infoPanel);
@@ -140,36 +144,55 @@ public class ProfilePage extends Panel {
     GridLayout aboutLayout = createInfoSectionLayout(2, 4); 
 
     addProfileEntry(aboutLayout, "Name: ", user.getFirstName() + " " + user.getLastName());
-    addProfileEntry(aboutLayout, "Job title: ", jobTitle);
-    addProfileEntry(aboutLayout, "Birth date: ", birthData);
-    addProfileEntry(aboutLayout, "Location: ", location);
+    
+    if (jobTitle != null) {
+      addProfileEntry(aboutLayout, "Job title: ", jobTitle);
+    }
+    
+    if (birthDate != null) {
+      addProfileEntry(aboutLayout, "Birth date: ", birthDate);
+    }
+    
+    if (location != null) {
+      addProfileEntry(aboutLayout, "Location: ", location);
+    }
   }
   
   protected void initContactSection() {
     addProfileHeader(infoPanelLayout, "Contact");
     GridLayout contactLayout = createInfoSectionLayout(2, 4); 
     
-    addProfileEntry(contactLayout, "Email: ", user.getEmail());
-    addProfileEntry(contactLayout, "Phone: ", phone);
-    addProfileEntry(contactLayout, "twitter", twitterName);
+    if (user.getEmail() != null) {
+      addProfileEntry(contactLayout, "Email: ", user.getEmail());
+    }
+    
+    if (phone != null) {
+      addProfileEntry(contactLayout, "Phone: ", phone);
+    }
+    
+    if (twitterName != null) {
+      addProfileEntry(contactLayout, "twitter", twitterName);
+    }
 
-    // The skype entry shows the name + skype icon, laid out in a small grid
-    GridLayout skypeLayout = new GridLayout(3,1);
-    skypeLayout.setSizeUndefined();
-    
-    Label skypeIdLabel = new Label(skypeId);
-    skypeIdLabel.setSizeUndefined();
-    skypeLayout.addComponent(skypeIdLabel);
-    
-    Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
-    emptySpace.setSizeUndefined();
-    skypeLayout.addComponent(emptySpace);
-    
-    Embedded skypeImage = new Embedded(null, viewManager.getClassResource("images/skype.png"));
-    skypeImage.setSizeUndefined();
-    skypeLayout.addComponent(skypeImage);
-    
-    addProfileEntry(contactLayout, "Skype: ", skypeLayout);
+    if (skypeId != null) {
+      // The skype entry shows the name + skype icon, laid out in a small grid
+      GridLayout skypeLayout = new GridLayout(3,1);
+      skypeLayout.setSizeUndefined();
+      
+      Label skypeIdLabel = new Label(skypeId);
+      skypeIdLabel.setSizeUndefined();
+      skypeLayout.addComponent(skypeIdLabel);
+      
+      Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
+      emptySpace.setSizeUndefined();
+      skypeLayout.addComponent(emptySpace);
+      
+      Embedded skypeImage = new Embedded(null, viewManager.getClassResource("images/skype.png"));
+      skypeImage.setSizeUndefined();
+      skypeLayout.addComponent(skypeImage);
+      
+      addProfileEntry(contactLayout, "Skype: ", skypeLayout);
+    }
   }
   
   protected void  initAccountsSection() {

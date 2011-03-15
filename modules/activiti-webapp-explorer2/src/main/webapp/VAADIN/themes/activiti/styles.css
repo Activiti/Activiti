@@ -136,6 +136,11 @@
     padding-top: 8px;
 }
 
+.v-embedded-profile-picture {
+  padding: 1px;
+  border: 1px solid #021a40;
+}
+
 /* 
 
 /* ---------
@@ -158,10 +163,6 @@
   font-weight: bold;
 }
 
-.v-gridlayout-task-details {
-  margin-top: 6px;
-}
-
 .v-gridlayout-task-details .v-gridlayout-spacing-on {
   padding-left: 15px;
   padding-top: 2px;
@@ -171,3 +172,11 @@
   margin-top: 0px;
   padding-top: 0px;
 }
+
+/* -------------
+   Task comments
+   ------------- */
+   
+.v-customcomponent-task-comment {
+  margin-bottom: 5px;
+}   

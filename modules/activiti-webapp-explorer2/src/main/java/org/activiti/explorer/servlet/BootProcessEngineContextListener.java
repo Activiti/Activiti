@@ -13,6 +13,7 @@
 package org.activiti.explorer.servlet;
 
 import java.util.Date;
+import java.util.Random;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContextEvent;
@@ -25,6 +26,7 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
+import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.task.Task;
 
@@ -97,6 +99,10 @@ public class BootProcessEngineContextListener implements ServletContextListener 
     fozzie.setLastName("Bear");
     fozzie.setPassword("fozzie");
     identityService.saveUser(fozzie);
+    
+    byte[] pictureBytes = IoUtil.readInputStream(this.getClass().getClassLoader().getResourceAsStream("org/activiti/explorer/images/fozzie.jpg"), null);
+    Picture picture = new Picture(pictureBytes, "image/jpeg");
+    identityService.setUserPicture("fozzie", picture);
   }
   
   protected void initTasks(ProcessEngine processEngine) {
@@ -107,17 +113,19 @@ public class BootProcessEngineContextListener implements ServletContextListener 
       task.setDescription("This is task nr " + i + ", please do it asap!");
       task.setName("Task [" + i + "]");
       task.setPriority(Task.PRIORITY_NORMAL);
-      task.setDueDate(new Date());
+      task.setDueDate(new Date(new Date().getTime() + new Random().nextInt()));
       
       if (i%5 == 0) {
         task.setPriority(99);
       }
       
       if (i%3==0) {
-        task.setOwner("Fozzie");
+        task.setOwner("fozzie");
       }
       
+      ClockUtil.setCurrentTime(new Date(new Date().getTime() - new Random().nextInt()));
       taskService.saveTask(task);
+      ClockUtil.reset();
     }
   }
 

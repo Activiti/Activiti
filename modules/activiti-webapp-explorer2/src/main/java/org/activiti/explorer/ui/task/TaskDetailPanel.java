@@ -17,11 +17,13 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Task;
 import org.activiti.explorer.Constants;
 import org.activiti.explorer.ui.ViewManager;
-import org.activiti.explorer.ui.profile.ProfilePage;
+import org.activiti.explorer.ui.profile.ProfilePopupWindow;
 
+import com.ocpsoft.pretty.time.PrettyTime;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -33,13 +35,16 @@ import com.vaadin.ui.themes.Reindeer;
 /**
  * @author Joram Barrez
  */
-public class TaskDetailPanel extends Panel {
+public class TaskDetailPanel extends HorizontalLayout {
   
   private static final long serialVersionUID = -2018798598805436750L;
   
   protected ViewManager viewManager;
   protected TaskService taskService;
   protected Task task;
+  
+  protected Panel leftPanel;
+  protected Panel rightPanel;
   
   public TaskDetailPanel(ViewManager viewManager, String taskId) {
     super();
@@ -50,32 +55,45 @@ public class TaskDetailPanel extends Panel {
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
     this.task = taskService.createTaskQuery().taskId(taskId).singleResult();
     
+    // left panel: all details about the task
+    this.leftPanel = new Panel();
+    leftPanel.addStyleName(Reindeer.PANEL_LIGHT);
+    addComponent(leftPanel);
+    setExpandRatio(leftPanel, 75.0f);
+    
     initName();
     initDescription();
     initTimeDetails();
     initPeopleDetails();
+    
+    
+    // Right panel: the task comments
+    this.rightPanel = new TaskCommentPanel(viewManager, taskId);
+    rightPanel.addStyleName(Reindeer.PANEL_LIGHT);
+    addComponent(rightPanel);
+    setExpandRatio(rightPanel, 25.0f);
   }
   
   protected void initName() {
     Label nameLabel = new Label(task.getName());
     nameLabel.addStyleName(Reindeer.LABEL_H1);
-    addComponent(nameLabel);
+    leftPanel.addComponent(nameLabel);
   }
   
   protected void initDescription() {
     Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
     emptySpace.setSizeUndefined();
-    addComponent(emptySpace);
+    leftPanel.addComponent(emptySpace);
     
     if (task.getDescription() != null) {
       Label descriptionLabel = new Label(task.getDescription());
       descriptionLabel.addStyleName(Reindeer.LABEL_SMALL);
-      addComponent(descriptionLabel);
+      leftPanel.addComponent(descriptionLabel);
     }
     
     emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
     emptySpace.setSizeUndefined();
-    addComponent(emptySpace);
+    leftPanel.addComponent(emptySpace);
   }
 
   protected void initTimeDetails() {
@@ -89,7 +107,7 @@ public class TaskDetailPanel extends Panel {
     HorizontalLayout timeDetailsLayout = new HorizontalLayout();
     timeDetailsLayout.setSpacing(true);
     timeDetailsLayout.setSizeUndefined();
-    addComponent(timeDetailsLayout);
+    leftPanel.addComponent(timeDetailsLayout);
 
     Embedded clockImage = new Embedded(null, viewManager.getThemeResource(Constants.IMAGE_CLOCK));
     timeDetailsLayout.addComponent(clockImage);
@@ -99,30 +117,34 @@ public class TaskDetailPanel extends Panel {
     grid.addStyleName(Constants.STYLE_TASK_DETAILS);
     grid.setSpacing(true);
     grid.setColumns(2);
+
     timeDetailsLayout.addComponent(grid);
+    timeDetailsLayout.setComponentAlignment(grid, Alignment.MIDDLE_LEFT);
 
     // create time
     if (task.getCreateTime() != null) {
-      Label createTime = new Label("Created on: ");
+      Label createTime = new Label("Created " + new PrettyTime().format(task.getCreateTime()));
       createTime.addStyleName(Constants.STYLE_LABEL_BOLD);
       createTime.setSizeUndefined();
       grid.addComponent(createTime);
-
-      Label createTimeValue = new Label(Constants.DEFAULT_DATE_FORMATTER.format(task.getCreateTime()));
-      createTimeValue.setSizeUndefined();
-      grid.addComponent(createTimeValue);
+      
+      Label realCreateTime = new Label("(" + task.getCreateTime() + ")");
+      realCreateTime.addStyleName(Reindeer.LABEL_SMALL);
+      realCreateTime.setSizeUndefined();
+      grid.addComponent(realCreateTime);
     }
 
     // due date
     if (task.getDueDate() != null) {
-      Label dueDate = new Label("Finish before:");
+      Label dueDate = new Label("Has to be finished " + new PrettyTime().format(task.getDueDate())); 
       dueDate.addStyleName(Constants.STYLE_LABEL_BOLD);
       dueDate.setSizeUndefined();
       grid.addComponent(dueDate);
 
-      Label dueDateLabel = new Label(Constants.DEFAULT_DATE_FORMATTER.format(task.getDueDate()));
-      dueDateLabel.setSizeUndefined();
-      grid.addComponent(dueDateLabel);
+      Label realDueDateTime = new Label("(" + task.getDueDate() + ")");
+      realDueDateTime.addStyleName(Reindeer.LABEL_SMALL);
+      realDueDateTime.setSizeUndefined();
+      grid.addComponent(realDueDateTime);
     }
   }
 
@@ -130,13 +152,13 @@ public class TaskDetailPanel extends Panel {
     // first add some empty space for aesthetics
     Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
     emptySpace.setSizeUndefined();
-    addComponent(emptySpace);
+    leftPanel.addComponent(emptySpace);
     
     // Layout for involved people
     HorizontalLayout layout = new HorizontalLayout();
     layout.setSpacing(true);
     layout.setSizeUndefined();
-    addComponent(layout);
+    leftPanel.addComponent(layout);
     
     // people icon
     Embedded peopleImage = new Embedded(null, viewManager.getThemeResource(Constants.IMAGE_PEOPLE));
@@ -147,7 +169,9 @@ public class TaskDetailPanel extends Panel {
     grid.addStyleName(Constants.STYLE_TASK_DETAILS);
     grid.setSpacing(true);
     grid.setRows(2);
+    
     layout.addComponent(grid);
+    layout.setComponentAlignment(grid, Alignment.MIDDLE_LEFT);
     
     // owner
     if (task.getOwner() != null) {
@@ -155,7 +179,7 @@ public class TaskDetailPanel extends Panel {
       owner.addStyleName(Reindeer.BUTTON_LINK);
       owner.addListener(new ClickListener() {
         public void buttonClick(ClickEvent event) {
-          viewManager.switchView(Constants.VIEW_PROFILE, new ProfilePage(viewManager, task.getOwner()));
+          viewManager.showPopupWindow(new ProfilePopupWindow(viewManager, task.getOwner()));
         }
       });
       grid.addComponent(owner);
@@ -167,11 +191,11 @@ public class TaskDetailPanel extends Panel {
       assignee.addStyleName(Reindeer.BUTTON_LINK);
       assignee.addListener(new ClickListener() {
         public void buttonClick(ClickEvent event) {
-          viewManager.switchView(Constants.VIEW_PROFILE, new ProfilePage(viewManager, task.getAssignee()));
+          viewManager.showPopupWindow(new ProfilePopupWindow(viewManager, task.getAssignee()));
         }
       });
       grid.addComponent(assignee);
     }
   }
-
+  
 }
