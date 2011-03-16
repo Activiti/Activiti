@@ -205,7 +205,7 @@ repositoryService.createDeployment()
     <title>Providing a process diagram</title>
     <para>
       A process diagram image can be added to a deployment. This image will be stored in 
-      the Activiti repository and is accessible through the API. Tis image is also used
+      the Activiti repository and is accessible through the API. This image is also used
       to visualize the process in Activiti Explorer.
     </para>
     <para>

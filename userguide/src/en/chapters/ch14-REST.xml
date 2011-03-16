@@ -299,7 +299,7 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
           <listitem>
             <para>
               <emphasis role="bold">API:</emphasis>
-              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getProcessService().findProcessDefinitions()</literal>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getProcessService().createProcessDefinitionQuery().listPage()</literal>
             </para>
           </listitem>
           <listitem>
@@ -344,7 +344,7 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
           <listitem>
             <para>
               <emphasis role="bold">API:</emphasis>
-              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getProcessService().findProcessDefinitionById(processDefinitionId)</literal>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getProcessService().createProcessDefinitionQuery().processDefinitionId(processDefinitionId)</literal>
             </para>
           </listitem>
           <listitem>
@@ -437,7 +437,7 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
           </listitem>
           <listitem>
             <para><emphasis role="bold">API:</emphasis>
-              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getProcessService().startProcessInstanceById(processDefinitionId[, businessKey][, variables])</literal>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getRuntimeService().startProcessInstanceById(processDefinitionId[, businessKey][, variables])</literal>
             </para>
           </listitem>
           <listitem>
@@ -653,7 +653,7 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
           <listitem>
             <para>
               <emphasis role="bold">API:</emphasis>
-              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getTaskService().findTask(taskId)</literal>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getTaskService().createTaskQuery().taskId(taskId).singleResult()</literal>
             </para>
           </listitem>
           <listitem>
@@ -792,7 +792,7 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
           <listitem>
             <para>
               <emphasis role="bold">API:</emphasis>
-              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getIdentityService().findUser(userId)</literal>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getIdentityService().createUserQuery().userId(userId).singleResult();</literal>
             </para>
           </listitem>
           <listitem>
@@ -865,7 +865,7 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
           <listitem>
             <para>
               <emphasis role="bold">API:</emphasis>
-              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getIdentityService().findGroup(groupId)</literal>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getIdentityService().createGroupQuery().groupId(groupId).singleResult();</literal>
             </para>
           </listitem>
           <listitem>
@@ -896,7 +896,7 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
           </listitem>
           <listitem>
             <para><emphasis role="bold">API:</emphasis>
-              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getIdentityService().findUsersByGroup(userId)</literal>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getIdentityService().createUserQuery().memberOfGroup(groupId).list()</literal>
             </para>
           </listitem>
           <listitem>
