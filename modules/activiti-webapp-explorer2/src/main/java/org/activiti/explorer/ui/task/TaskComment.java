@@ -112,8 +112,15 @@ public class TaskComment extends CustomComponent {
     headerGrid.addComponent(time);
     
     // Actual text
-    Label text = new Label(comment.getMessage());
-    commentLayout.addComponent(text);
+    if (comment.getMessage().length() < 140) {
+      Label text = new Label(comment.getMessage());
+      commentLayout.addComponent(text);
+    } else {
+      Label text = new Label(comment.getMessage().substring(0, 140) + "...");
+      text.addStyleName(Constants.STYLE_TASK_COMMENT);
+      commentLayout.addComponent(text);
+    }
+    
   }
 
 }

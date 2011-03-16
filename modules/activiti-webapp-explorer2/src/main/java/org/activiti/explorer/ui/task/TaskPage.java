@@ -13,14 +13,17 @@
 
 package org.activiti.explorer.ui.task;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.task.Task;
 import org.activiti.explorer.Constants;
 import org.activiti.explorer.ui.ViewManager;
+import org.vaadin.addons.lazyquerycontainer.BeanQueryFactory;
+import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.ui.CustomComponent;
@@ -89,31 +92,32 @@ public class TaskPage extends CustomComponent {
     taskTable.setNullSelectionAllowed(false);
     taskTable.setSizeFull();
             
-    // Create column header
-    taskTable.addContainerProperty("task", TaskListEntry.class, null);
-    taskTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
-    
     // Listener to change right panel when clicked on a task
     taskTable.addListener(new Property.ValueChangeListener() {
       private static final long serialVersionUID = 8811553575319455854L;
       public void valueChange(ValueChangeEvent event) {
-        String id = (String) event.getProperty().getValue();
-        mainSplitPanel.setSecondComponent(new TaskDetailPanel(viewManager, id));
+        Item item = taskTable.getItem(event.getProperty().getValue()); // the value of the property is the itemId of the table entry
+        TaskListEntry taskListEntry = (TaskListEntry) item.getItemProperty("component").getValue();
+        mainSplitPanel.setSecondComponent(new TaskDetailPanel(viewManager, taskListEntry.getTask().getId()));
       }
     });
     
-    // Populate list with tasks
-    List<Task> tasks = taskService.createTaskQuery().taskAssignee("kermit").list();
-    for (Task task : tasks) {
-      addTaskListEntry(task.getId(), task.getName());
-    }
+    // Set table container to populate list with tasks
+    BeanQueryFactory<TaskListQuery> queryFactory = new BeanQueryFactory<TaskListQuery>(TaskListQuery.class);
+    Map<String,Object> queryConfiguration = new HashMap<String,Object>();
+    queryConfiguration.put("taskService", taskService);
+    queryConfiguration.put("viewManager", viewManager);
+    queryConfiguration.put("taskTable", taskTable);
+    queryFactory.setQueryConfiguration(queryConfiguration);
+
+    LazyQueryContainer container = new LazyQueryContainer(queryFactory, false, 10);
+    taskTable.setContainerDataSource(container);
+    
+    // Create column header
+    taskTable.addContainerProperty("component", TaskListEntry.class, null);
+    taskTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
     
     mainSplitPanel.setFirstComponent(taskTable);
   }
   
-  protected void addTaskListEntry(String taskId, String name) {
-    TaskListEntry entry = new TaskListEntry(viewManager, taskTable, taskId, name);
-    taskTable.addItem(new Object[] {entry}, taskId);
-  }
-
 }

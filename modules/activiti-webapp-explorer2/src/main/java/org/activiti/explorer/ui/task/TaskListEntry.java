@@ -13,6 +13,7 @@
 
 package org.activiti.explorer.ui.task;
 
+import org.activiti.engine.task.Task;
 import org.activiti.explorer.Constants;
 import org.activiti.explorer.ui.ViewManager;
 
@@ -33,10 +34,10 @@ public class TaskListEntry extends CustomComponent {
   private static final long serialVersionUID = -7940890991976505800L;
 
   protected ViewManager viewManager;
-  protected String taskName;
+  protected Task task;
   
-  public TaskListEntry(final ViewManager viewManager, final Table taskTable, 
-          final String taskId, final String taskName) {
+  public TaskListEntry(final ViewManager viewManager, final Table taskTable, final int itemId, final Task task) {
+    this.task = task;
     
     GridLayout grid = new GridLayout(2, 1);
     setCompositionRoot(grid);
@@ -45,20 +46,25 @@ public class TaskListEntry extends CustomComponent {
     taskImage.setType(Embedded.TYPE_IMAGE);
     grid.addComponent(taskImage);
     
-    Label taskNameLabel = new Label(taskName);
+    Label taskNameLabel = new Label(task.getName());
     grid.addComponent(taskNameLabel);
     
     // Required such that click on component is propagated to parent (bug in Vaadin?)
     grid.addListener(new LayoutEvents.LayoutClickListener() {
       private static final long serialVersionUID = 3178252539054165461L;
       public void layoutClick(LayoutClickEvent event) {
-        taskTable.select(taskId);
+        taskTable.select(itemId);
       }
     });
+    
   }
   
-  public String getTaskName() {
-    return taskName;
+  public TaskListEntry getComponent() {
+    return this;
   }
-
+  
+  public Task getTask() {
+    return task;
+  }
+  
 }

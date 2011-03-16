@@ -85,6 +85,7 @@ public class TaskCommentPanel extends Panel {
     addComponent(grid);
     
     final TextArea textArea = new TextArea();
+    textArea.setRows(2);
     textArea.setWidth("100%");
     textArea.addStyleName(Constants.STYLE_TASK_COMMENT_TIME);
     grid.addComponent(textArea);

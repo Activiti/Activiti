@@ -58,9 +58,6 @@ public class Constants {
   public static final String STYLE_TASK_COMMENT_AUTHOR = "task-comment-author";
   public static final String STYLE_TASK_COMMENT_TIME = "task-comment-time";
 
-  
-  public static final String STYLE_HORIZONTAL_SEPARATOR = "horizontal-separator";
-  
   // Image names
   public static final String IMAGE_USER = "img/user-icon.png";
   public static final String IMAGE_DIVIDER = "img/divider-white.png";
