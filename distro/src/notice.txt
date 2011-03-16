@@ -1,0 +1,220 @@
+The activiti software libraries are distributed under the Apache V2.0 license:
+ * activiti-cxf-5.4-SNAPSHOT-sources.jar
+ * activiti-cxf-5.4-SNAPSHOT.jar
+ * activiti-cycle-5.4-SNAPSHOT.jar
+ * activiti-engine-5.4-SNAPSHOT-sources.jar
+ * activiti-engine-5.4-SNAPSHOT.jar
+ * activiti-spring-5.4-SNAPSHOT-sources.jar
+ * activiti-spring-5.4-SNAPSHOT.jar
+
+
+This software package includes changed source code of
+
+JUEL
+ * Location: http://juel.sourceforge.net/
+ * Included in activiti-engine-5.4-SNAPSHOT.jar in package org.activiti.engine.impl.juel
+ * License: Apache V2
+ 
+Quartz
+ * Location: http://www.quartz-scheduler.org/
+ * CronExpression is included in activiti-engine-5.4-SNAPSHOT.jar in package org.activiti.engine.impl.calendar
+ * License: Apache V2
+
+JSON
+ * Location: http://www.JSON.org/java
+ * Included in activiti-engine-5.4-SNAPSHOT.jar in package org.activiti.engine.impl.json
+ * License:
+===============================================================================
+Copyright (c) 2002 JSON.org
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+The Software shall be used for Good, not Evil.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+===============================================================================
+
+
+This software includes unchanged copies of the following libraries:
+
+FastInfoset-1.2.2.jar : http://www.apache.org/licenses/LICENSE-2.0.html
+XmlSchema-1.4.2.jar : http://www.apache.org/licenses/LICENSE-2.0.html
+abdera-client-0.4.0-incubating.jar : http://www.apache.org/licenses/LICENSE-2.0.html
+abdera-core-0.4.0-incubating.jar : http://www.apache.org/licenses/LICENSE-2.0.html
+abdera-extensions-html-0.4.0-incubating.jar : http://www.apache.org/licenses/LICENSE-2.0.html
+abdera-extensions-json-0.4.0-incubating.jar : http://www.apache.org/licenses/LICENSE-2.0.html
+abdera-extensions-main-0.4.0-incubating.jar : http://www.apache.org/licenses/LICENSE-2.0.html
+abdera-i18n-0.4.0-incubating.jar : http://www.apache.org/licenses/LICENSE-2.0.html
+abdera-parser-0.4.0-incubating.jar : http://www.apache.org/licenses/LICENSE-2.0.html
+abdera-server-0.4.0-incubating.jar : http://www.apache.org/licenses/LICENSE-2.0.html
+activation-1.1.jar : http://www.apache.org/licenses/LICENSE-2.0.html
+antlr-2.7.7.jar : http://www.antlr.org/license.html (BSD license)
+antlr-runtime-3.1.3.jar : http://www.antlr.org/license.html (BSD license)
+
+--- below this line still TODO -----------------
+
+aopalliance-1.0.jar
+apache-mime4j-0.6.jar
+asm-3.1.jar
+asm-3.2.jar
+asm-analysis-3.2.jar
+asm-commons-3.2.jar
+asm-tree-3.2.jar
+asm-util-3.2.jar
+axiom-api-1.2.5.jar
+axiom-impl-1.2.5.jar
+cglib-2.2.jar
+commons-beanutils-1.7.0.jar
+commons-codec-1.3.jar
+commons-codec-1.4.jar
+commons-collections-3.1.jar
+commons-collections-3.2.jar
+commons-dbcp-1.4.jar
+commons-digester-1.6.jar
+commons-el-1.0.jar
+commons-email-1.2.jar
+commons-fileupload-1.2.1.jar
+commons-httpclient-3.1.jar
+commons-io-1.4.jar
+commons-lang-2.1.jar
+commons-lang-2.4.jar
+commons-logging-1.0.4.jar
+commons-logging-1.1.1.jar
+commons-pool-1.3.jar
+commons-pool-1.5.4.jar
+cxf-api-2.1.2.jar
+cxf-common-schemas-2.1.2.jar
+cxf-common-utilities-2.1.2.jar
+cxf-rt-bindings-soap-2.1.2.jar
+cxf-rt-bindings-xml-2.1.2.jar
+cxf-rt-core-2.1.2.jar
+cxf-rt-databinding-jaxb-2.1.2.jar
+cxf-rt-frontend-jaxws-2.1.2.jar
+cxf-rt-frontend-simple-2.1.2.jar
+cxf-rt-transports-http-2.1.2.jar
+cxf-rt-transports-http-jetty-2.1.2.jar
+cxf-rt-ws-addr-2.1.2.jar
+cxf-tools-common-2.1.2.jar
+dom4j-1.6.1.jar
+drools-api-5.1.1.jar
+drools-compiler-5.1.1.jar
+drools-core-5.1.1.jar
+ecj-3.5.1.jar
+freemarker-2.3.13.jar
+geronimo-activation_1.0.2_spec-1.1.jar
+geronimo-annotation_1.0_spec-1.1.1.jar
+geronimo-jaxws_2.1_spec-1.0.jar
+geronimo-jms_1.1_spec-1.0.1.jar
+geronimo-jpa_3.0_spec-1.0.jar
+geronimo-jta_1.1_spec-1.1.1.jar
+geronimo-servlet_2.5_spec-1.2.jar
+geronimo-stax-api_1.0_spec-1.0.1.jar
+geronimo-ws-metadata_2.0_spec-1.1.2.jar
+groovy-1.7.5.jar
+h2-1.2.132.jar
+hamcrest-core-1.1.jar
+htmlparser-1.0.5.jar
+htmlparser-1.6.jar
+httpclient-4.0.1.jar
+httpcore-4.0.1.jar
+httpmime-4.0.1.jar
+javassist-3.6.0.GA.jar
+jaxb-api-2.2.1.jar
+jaxb-impl-2.2.1.jar
+jaxb-xjc-2.1.7.jar
+jaxen-1.1.1.jar
+jcip-annotations-1.0.jar
+jetty-6.1.9.jar
+jetty-util-6.1.9.jar
+js-1.6R7.jar
+json-20070829.jar
+jstl-1.1.0.jar
+jtds-1.2.4.jar
+junit-4.8.1.jar
+livetribe-jsr223-2.0.6.jar
+log4j-1.2.14.jar
+mail-1.4.1.jar
+mime-util-2.1.3.jar
+mockito-core-1.8.2.jar
+mvel2-2.0.16.jar
+mybatis-3.0.1.jar
+myfaces-api-1.1.5.jar
+myfaces-impl-1.1.5.jar
+mysql-connector-java-5.1.6.jar
+neethi-2.0.4.jar
+objenesis-1.0.jar
+openjpa-1.2.2.jar
+org.osgi.core-4.2.0.jar
+org.restlet-2.0.4.jar
+org.restlet.ext.httpclient-2.0.4.jar
+org.restlet.ext.json-2.0.4.jar
+org.restlet.ext.xml-2.0.4.jar
+org.restlet.lib.org.json-2.0.jar
+persistence-api-1.0.jar
+postgresql-8.4-701.jdbc4.jar
+saaj-api-1.3.jar
+saaj-impl-1.3.jar
+scannotation-1.0.2.jar
+serp-1.13.1.jar
+servlet-api-2.5.jar
+signavio-core-components-1.0.jar
+slf4j-api-1.5.6.jar
+slf4j-api-1.6.1.jar
+slf4j-jdk14-1.6.1.jar
+slf4j-log4j12-1.5.6.jar
+spring-aop-3.0.3.RELEASE.jar
+spring-asm-3.0.0.RELEASE.jar
+spring-asm-3.0.3.RELEASE.jar
+spring-beans-3.0.0.RELEASE.jar
+spring-beans-3.0.3.RELEASE.jar
+spring-context-3.0.0.RELEASE.jar
+spring-context-3.0.3.RELEASE.jar
+spring-context-support-3.0.0.RELEASE.jar
+spring-core-3.0.0.RELEASE.jar
+spring-core-3.0.3.RELEASE.jar
+spring-expression-3.0.0.RELEASE.jar
+spring-expression-3.0.3.RELEASE.jar
+spring-jdbc-3.0.3.RELEASE.jar
+spring-orm-3.0.3.RELEASE.jar
+spring-surf-1.0.0-RC2.jar
+spring-surf-api-1.0.0-RC2.jar
+spring-surf-core-1.0.0-RC2.jar
+spring-surf-core-configservice-1.0.0-RC2.jar
+spring-test-3.0.3.RELEASE.jar
+spring-tx-3.0.3.RELEASE.jar
+spring-web-2.0.8.jar
+spring-web-3.0.0.RELEASE.jar
+spring-web-3.0.3.RELEASE.jar
+spring-webmvc-3.0.0.RELEASE.jar
+spring-webscripts-1.0.0-RC2.jar
+spring-webscripts-api-1.0.0-RC2.jar
+stax-api-1.0-2.jar
+subethasmtp-smtp-1.2.jar
+subethasmtp-wiser-1.2.jar
+urlrewritefilter-3.1.0.jar
+vaadin-6.5.2.jar
+velocity-1.4.jar
+velocity-dep-1.4.jar
+wsdl4j-1.6.2.jar
+wstx-asl-3.2.1.jar
+wstx-asl-3.2.4.jar
+xercesImpl-2.9.1.jar
+xml-apis-1.0.b2.jar
+xml-apis-1.3.04.jar
+xml-resolver-1.2.jar
+xpp3_min-1.1.4c.jar
+xstream-1.3.1.jar
