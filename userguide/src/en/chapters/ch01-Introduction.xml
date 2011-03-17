@@ -24,10 +24,32 @@
 
 <section id="required.software">
   <title>Required software</title>
-  <itemizedlist>
-    <listitem><para>JVM 5+</para></listitem>
-    <listitem><para>Ant 1.7.1+</para></listitem>
-  </itemizedlist>
+  <section>
+    <title>JDK 5+</title>
+    <para>Activiti runs on a JDK higher then version 5.  Go 
+    to <ulink url="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Oracle Java SE downloads</ulink>
+    and click on button "Download JDK".  There are installation instructions on that page as well.
+    To verify that your installation was successfull, run <literal>java -version</literal> on the 
+    command line.  That should print the installed version of your JDK.
+    </para>
+  </section>
+  <section>
+    <title>Ant 1.8.1+</title>
+    <para>Download the latest stable version of ant from <ulink url="http://ant.apache.org/bindownload.cgi">the Ant download page</ulink>.
+    Unzip the file and make sure that the <literal>bin</literal> folder is
+    in the path of your OS.  Verify with running <literal>ant -version</literal>
+    in the command line.  That should print the installed version ant.
+    </para>
+  </section>
+  <section>
+    <title>Eclipse 3.6.2</title>
+    <para>Download the <emphasis role="bold">Eclipse Classic</emphasis> version of eclipse from <ulink url="http://www.eclipse.org/downloads/">the Eclipse download page</ulink>.
+    Unzip the doanloaded file and then you should be able to start it with the eclipse file in the directory <literal>eclipse</literal>. 
+    Further in this userguide, there is a section on <link linkend="eclipsesetup">setting up the Activiti examples projects in 
+    your eclipse</link> and another one on <link linkend="eclipseDesignerInstallation">installing our eclipse designer 
+    plugin</link>.
+    </para>
+  </section>
 </section>
 
 <section id="reporting.problems">
