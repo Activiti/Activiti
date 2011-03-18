@@ -225,8 +225,31 @@
                   </tasks>
                 </configuration>
               </execution>
+              <execution>
+                <id>generate-activiti-project-template</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                   <target>
+                  	    <zip destfile="target/classes/org/activiti/cycle/impl/connector/signavio/action/activiti-cycle-maven-template.zip">
+							<fileset dir="../modules">
+								<include name="activiti-cycle-maven-template/**/*" />
+								<exclude name="activiti-cycle-maven-template/bin/**/*" />
+								<exclude name="activiti-cycle-maven-template/bin" />
+								<exclude name="activiti-cycle-maven-template/target/**/*" />
+								<exclude name="activiti-cycle-maven-template/target" />
+								<exclude name="activiti-cycle-maven-template/.svn/**/*" />
+								<exclude name="activiti-cycle-maven-template/.svn" />
+							</fileset>
+						</zip>              
+                  	</target>
+                </configuration>
+              </execution>
             </executions>
-          </plugin>
+          </plugin>          
+          
         </plugins>
       </build>
     </profile>
