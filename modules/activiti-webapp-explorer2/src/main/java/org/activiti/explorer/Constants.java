@@ -57,6 +57,7 @@ public class Constants {
   public static final String STYLE_TASK_COMMENT = "task-comment";
   public static final String STYLE_TASK_COMMENT_AUTHOR = "task-comment-author";
   public static final String STYLE_TASK_COMMENT_TIME = "task-comment-time";
+  public static final String STYLE_TASK_COMMENT_PICTURE = "task-comment-picture";
 
   // Image names
   public static final String IMAGE_USER = "img/user-icon.png";

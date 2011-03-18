@@ -20,6 +20,7 @@ import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.task.Comment;
 import org.activiti.explorer.Constants;
+import org.activiti.explorer.ExplorerApplication;
 import org.activiti.explorer.ui.ViewManager;
 
 import com.ocpsoft.pretty.time.PrettyTime;

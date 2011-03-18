@@ -20,10 +20,11 @@ import org.activiti.explorer.ui.ViewManager;
 import org.activiti.explorer.ui.profile.ProfilePopupWindow;
 
 import com.ocpsoft.pretty.time.PrettyTime;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -48,10 +49,10 @@ public class TaskDetailPanel extends HorizontalLayout {
   
   public TaskDetailPanel(ViewManager viewManager, String taskId) {
     super();
+    this.viewManager = viewManager;
     setSizeFull();
     addStyleName(Reindeer.LAYOUT_WHITE);
     
-    this.viewManager = viewManager;
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
     this.task = taskService.createTaskQuery().taskId(taskId).singleResult();
     
@@ -109,7 +110,7 @@ public class TaskDetailPanel extends HorizontalLayout {
     timeDetailsLayout.setSizeUndefined();
     leftPanel.addComponent(timeDetailsLayout);
 
-    Embedded clockImage = new Embedded(null, viewManager.getThemeResource(Constants.IMAGE_CLOCK));
+    Embedded clockImage = new Embedded(null, new ThemeResource(Constants.IMAGE_CLOCK));
     timeDetailsLayout.addComponent(clockImage);
 
     // The other time fields are layed out in a 2 column grid
@@ -161,7 +162,7 @@ public class TaskDetailPanel extends HorizontalLayout {
     leftPanel.addComponent(layout);
     
     // people icon
-    Embedded peopleImage = new Embedded(null, viewManager.getThemeResource(Constants.IMAGE_PEOPLE));
+    Embedded peopleImage = new Embedded(null, new ThemeResource(Constants.IMAGE_PEOPLE));
     layout.addComponent(peopleImage);
     
     // The involved people are layed out in a grid with two rows
@@ -182,6 +183,7 @@ public class TaskDetailPanel extends HorizontalLayout {
           viewManager.showPopupWindow(new ProfilePopupWindow(viewManager, task.getOwner()));
         }
       });
+      
       grid.addComponent(owner);
     }
     

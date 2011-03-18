@@ -15,10 +15,12 @@ package org.activiti.explorer.ui.task;
 
 import org.activiti.engine.task.Task;
 import org.activiti.explorer.Constants;
-import org.activiti.explorer.ui.ViewManager;
+import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.Images;
 
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
+import com.vaadin.terminal.ClassResource;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
@@ -33,16 +35,15 @@ public class TaskListEntry extends CustomComponent {
   
   private static final long serialVersionUID = -7940890991976505800L;
 
-  protected ViewManager viewManager;
   protected Task task;
   
-  public TaskListEntry(final ViewManager viewManager, final Table taskTable, final int itemId, final Task task) {
+  public TaskListEntry(final Table taskTable, final int itemId, final Task task) {
     this.task = task;
     
     GridLayout grid = new GridLayout(2, 1);
     setCompositionRoot(grid);
     
-    Embedded taskImage = new Embedded(null, viewManager.getClassResource(Constants.IMAGE_TASK));
+    Embedded taskImage = new Embedded(null, Images.TASK_IMAGE);
     taskImage.setType(Embedded.TYPE_IMAGE);
     grid.addComponent(taskImage);
     

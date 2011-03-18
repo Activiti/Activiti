@@ -19,7 +19,6 @@ import java.util.Map;
 
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Task;
-import org.activiti.explorer.ui.ViewManager;
 import org.vaadin.addons.lazyquerycontainer.AbstractBeanQuery;
 import org.vaadin.addons.lazyquerycontainer.QueryDefinition;
 
@@ -31,7 +30,6 @@ import com.vaadin.ui.Table;
  */
 public class TaskListQuery extends AbstractBeanQuery<TaskListEntry> {
   
-  protected ViewManager viewManager;
   protected TaskService taskService;
   protected Table taskTable;
   
@@ -39,12 +37,10 @@ public class TaskListQuery extends AbstractBeanQuery<TaskListEntry> {
           Object[] sortPropertyIds, boolean[] sortStates) {
     super(definition, queryConfiguration, sortPropertyIds, sortStates);
     this.taskService = (TaskService) getQueryConfiguration().get("taskService");
-    this.viewManager = (ViewManager) getQueryConfiguration().get("viewManager");
     this.taskTable = (Table) getQueryConfiguration().get("taskTable");
   }
 
   protected List<TaskListEntry> loadBeans(int startIndex, int count) {
-    System.out.println("Loading task list entries from " + startIndex + " count=" + count);
     List<Task> tasks = taskService.createTaskQuery().listPage(startIndex, count);
     return convert(tasks, startIndex, count);
   }
@@ -52,7 +48,7 @@ public class TaskListQuery extends AbstractBeanQuery<TaskListEntry> {
   protected List<TaskListEntry> convert(List<Task> tasks, int startIndex, int count) {
     List<TaskListEntry> taskListEntries = new ArrayList<TaskListEntry>();
     for (int i=0; i<tasks.size(); i++) {
-      taskListEntries.add(new TaskListEntry(viewManager, taskTable, startIndex + i, tasks.get(i))); // item id is the actual numerical index in the container
+      taskListEntries.add(new TaskListEntry(taskTable, startIndex + i, tasks.get(i))); // item id is the actual numerical index in the container
     }
     return taskListEntries;
   }

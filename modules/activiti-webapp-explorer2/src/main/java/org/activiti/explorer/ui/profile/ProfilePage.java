@@ -20,6 +20,7 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.activiti.explorer.Constants;
+import org.activiti.explorer.Images;
 import org.activiti.explorer.ui.ViewManager;
 
 import com.vaadin.terminal.StreamResource;
@@ -200,13 +201,13 @@ public class ProfilePage extends Panel {
     GridLayout accountLayout = createInfoSectionLayout(3, 2); 
 
     // Google
-    Embedded googleImage = new Embedded(null, viewManager.getClassResource("images/google.png"));
+    Embedded googleImage = new Embedded(null, Images.GOOGLE_IMAGE);
     googleImage.setSizeUndefined();
     accountLayout.addComponent(googleImage);
     addProfileEntry(accountLayout, "Google: ", "mr_kermit_frog@gmail.com");
     
     // Alfresco
-    Embedded alfrescoImage = new Embedded(null, viewManager.getClassResource("images/alfresco.gif"));
+    Embedded alfrescoImage = new Embedded(null, Images.ALFRESCO_IMAGE);
     alfrescoImage.setSizeUndefined();
     accountLayout.addComponent(alfrescoImage);
     addProfileEntry(accountLayout, "Alfresco: ", "kermit_alfresco");

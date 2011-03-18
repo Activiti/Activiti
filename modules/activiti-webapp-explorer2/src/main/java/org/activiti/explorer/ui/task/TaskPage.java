@@ -19,6 +19,7 @@ import java.util.Map;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
 import org.activiti.explorer.Constants;
+import org.activiti.explorer.ExplorerApplication;
 import org.activiti.explorer.ui.ViewManager;
 import org.vaadin.addons.lazyquerycontainer.BeanQueryFactory;
 import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
@@ -60,12 +61,13 @@ public class TaskPage extends CustomComponent {
     setCompositionRoot(mainLayout);
     setSizeFull();
     
-    initTaskMenuBar();
-    initMainSplitPanel();
-    initTaskList();
+    // Static UI
+    addTaskMenuBar();
+    addMainSplitPanel();
+    addTaskList();
   }
 
-  protected void initMainSplitPanel() {
+  protected void addMainSplitPanel() {
     // The actual content of the page is a HorizontalSplitPanel,
     // with on the left side the task list
     mainSplitPanel = new HorizontalSplitPanel();
@@ -76,12 +78,12 @@ public class TaskPage extends CustomComponent {
     mainLayout.setExpandRatio(mainSplitPanel, 1.0f);
   }
   
-  protected void initTaskMenuBar() {
+  protected void addTaskMenuBar() {
     TaskMenuBar taskMenuBar = new TaskMenuBar(viewManager);
     mainLayout.addComponent(taskMenuBar);
   }
   
-  protected void initTaskList() {
+  protected void addTaskList() {
     this.taskTable = new Table();
     taskTable.addStyleName(Constants.STYLE_TASK_LIST);
     
@@ -106,7 +108,6 @@ public class TaskPage extends CustomComponent {
     BeanQueryFactory<TaskListQuery> queryFactory = new BeanQueryFactory<TaskListQuery>(TaskListQuery.class);
     Map<String,Object> queryConfiguration = new HashMap<String,Object>();
     queryConfiguration.put("taskService", taskService);
-    queryConfiguration.put("viewManager", viewManager);
     queryConfiguration.put("taskTable", taskTable);
     queryFactory.setQueryConfiguration(queryConfiguration);
 
@@ -118,6 +119,11 @@ public class TaskPage extends CustomComponent {
     taskTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
     
     mainSplitPanel.setFirstComponent(taskTable);
+    
+    // Select first task
+//    if (taskTable.getContainerDataSource().size() > 0) {
+//      taskTable.select(0);
+//    }
   }
   
 }
