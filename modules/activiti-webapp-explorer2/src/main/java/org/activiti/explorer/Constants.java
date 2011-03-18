@@ -45,6 +45,8 @@ public class Constants {
   public static final String STYLE_MENUBAR = "menubar";
   public static final String STYLE_MENUBAR_BUTTON = "menu-button";
   
+  public static final String STYLE_ACTION_BAR = "action-bar";
+  
   public static final String STYLE_PROFILE_LAYOUT = "profile-layout";
   public static final String STYLE_PROFILE_HEADER = "profile-header";
   public static final String STYLE_PROFILE_FIELD = "profile-field";
@@ -61,8 +63,12 @@ public class Constants {
   public static final String STYLE_TASK_COMMENT_TIME = "task-comment-time";
   public static final String STYLE_TASK_COMMENT_PICTURE = "task-comment-picture";
 
+  public static final String STYLE_PROCESS_DEFINITION_LIST = "proc-def-list";
+  
   
   // Date formatting
-  public static final DateFormat DEFAULT_DATE_FORMATTER = new SimpleDateFormat("dd MMM yyyy - hh:mm"); 
+  public static final DateFormat DEFAULT_DATE_FORMATTER = new SimpleDateFormat("dd MMM yyyy - hh:mm");
   
+  // Default diagram image extension, when name cannot be deducted from resource name
+  public static final String DEFAULT_DIAGRAM_IMAGE_EXTENSION = "png";
 }

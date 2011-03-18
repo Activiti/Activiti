@@ -30,5 +30,6 @@ public class Images {
   public static final Resource ALFRESCO = new ThemeResource("img/alfresco.gif");
   public static final Resource CLOCK = new ThemeResource("img/clock.png");
   public static final Resource PEOPLE = new ThemeResource("img/people.png");
+  public static final Resource PROCESS = new ThemeResource("img/process.png");
 
 }

@@ -52,7 +52,7 @@ public class ExplorerApplication extends Application implements HttpServletReque
     mainWindow = new Window("My pretty Vaadin Application");
     setMainWindow(mainWindow);
     setTheme(Constants.THEME);
-
+    
     // init general look and feel
     mainLayout = new MainLayout(this); 
     mainWindow.setContent(mainLayout);
@@ -90,5 +90,5 @@ public class ExplorerApplication extends Application implements HttpServletReque
     current.remove();
     Authentication.setAuthenticatedUserId(null);
   }
-  
+
 }

@@ -97,6 +97,16 @@
   font-weight: lighter;
 }
 
+
+/* ----------
+   Action Bar
+   ---------- */
+.v-horizontallayout-action-bar {
+	border-top: 1px solid #CFCFCF;
+	border-bottom: 1px solid #CFCFCF;
+	padding: 2px 0px;
+}
+
 /* ------------
    Profile page
    ------------ */

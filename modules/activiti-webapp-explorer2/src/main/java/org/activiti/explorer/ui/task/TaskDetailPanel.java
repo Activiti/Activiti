@@ -21,7 +21,6 @@ import org.activiti.explorer.Images;
 import org.activiti.explorer.ui.profile.ProfilePopupWindow;
 
 import com.ocpsoft.pretty.time.PrettyTime;
-import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;

@@ -54,6 +54,7 @@ public class BootProcessEngineContextListener implements ServletContextListener 
     initKermit(processEngine);
     initRandomUsers(processEngine);
     initTasks(processEngine);
+    initProcessDefinitions(processEngine);
   }
 
   protected void initKermit(ProcessEngine processEngine) {
@@ -127,6 +128,15 @@ public class BootProcessEngineContextListener implements ServletContextListener 
       taskService.saveTask(task);
       ClockUtil.reset();
     }
+  }
+  
+  protected void initProcessDefinitions(ProcessEngine processEngine) {
+   processEngine.getRepositoryService()
+     .createDeployment()
+     .name("Demo processes")
+     .addClasspathResource("org/activiti/explorer/demo/process/testProcess.bpmn20.xml")
+     .addClasspathResource("org/activiti/explorer/demo/process/oneTaskProcess.bpmn20.xml")
+     .deploy();
   }
 
   public void contextDestroyed(ServletContextEvent servletContextEvent) {
