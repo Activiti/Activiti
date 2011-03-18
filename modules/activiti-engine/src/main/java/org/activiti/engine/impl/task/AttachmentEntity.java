@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.runtime.ByteArrayEntity;
 import org.activiti.engine.task.Attachment;
 
 
@@ -34,6 +35,7 @@ public class AttachmentEntity implements Attachment, PersistentObject {
   protected String processInstanceId;
   protected String url;
   protected String contentId;
+  protected ByteArrayEntity content;
 
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
@@ -133,5 +135,13 @@ public class AttachmentEntity implements Attachment, PersistentObject {
 
   public void setContentId(String contentId) {
     this.contentId = contentId;
+  }
+  
+  public ByteArrayEntity getContent() {
+    return content;
+  }
+
+  public void setContent(ByteArrayEntity content) {
+    this.content = content;
   }
 }
