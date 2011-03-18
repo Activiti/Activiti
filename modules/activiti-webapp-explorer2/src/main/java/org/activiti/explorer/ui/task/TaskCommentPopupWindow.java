@@ -21,7 +21,6 @@ import org.activiti.engine.identity.User;
 import org.activiti.engine.task.Comment;
 import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApplication;
-import org.activiti.explorer.ui.ViewManager;
 
 import com.ocpsoft.pretty.time.PrettyTime;
 import com.vaadin.terminal.StreamResource;
@@ -41,14 +40,12 @@ public class TaskCommentPopupWindow extends Window {
   
   private static final long serialVersionUID = -5764168454419580506L;
   
-  protected ViewManager viewManager;
   protected Comment comment;
   protected IdentityService identityService;
   protected User user;
 
-  public TaskCommentPopupWindow(ViewManager viewManager, Comment comment) {
+  public TaskCommentPopupWindow(Comment comment) {
     super();
-    this.viewManager = viewManager;
     this.comment = comment;
     this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
     this.user = identityService.createUserQuery().userId(comment.getUserId()).singleResult();
@@ -77,7 +74,7 @@ public class TaskCommentPopupWindow extends Window {
         public InputStream getStream() {
           return picture.getInputStream();
         }
-      }, user.getId(), viewManager.getApplication());
+      }, user.getId(), ExplorerApplication.getCurrent());
       
       Embedded commentAuthor = new Embedded("", imageresource);
       commentAuthor.setType(Embedded.TYPE_IMAGE);

@@ -14,7 +14,6 @@ package org.activiti.explorer.ui.management;
 
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngines;
-import org.activiti.explorer.ui.ViewManager;
 
 import com.vaadin.ui.VerticalLayout;
 
@@ -30,14 +29,11 @@ public class DatabasePage extends ManagementPage {
   protected ManagementService managementService;
   
   // ui
-  protected ViewManager viewManager;
   protected VerticalLayout databasePageLayout;
   
-  public DatabasePage(ViewManager viewManager) {
-    super(viewManager);
+  public DatabasePage() {
+    super();
     this.managementService = ProcessEngines.getDefaultProcessEngine().getManagementService();
-    
-    
   }
 
 }

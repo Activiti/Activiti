@@ -13,8 +13,8 @@
 package org.activiti.explorer.ui.management;
 
 import org.activiti.explorer.Constants;
+import org.activiti.explorer.ExplorerApplication;
 import org.activiti.explorer.ui.MenuBar;
-import org.activiti.explorer.ui.ViewManager;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -29,15 +29,15 @@ public class ManagementMenuBar extends MenuBar {
 
   private static final long serialVersionUID = 529403088210949174L;
   
-  public ManagementMenuBar(final ViewManager viewManager) {
-    super(viewManager);
+  public ManagementMenuBar() {
+    super();
     
     addStyleName(Constants.STYLE_MENUBAR);
     
     Button database = createMenuBarButton("Database");
     database.addListener(new ClickListener() {
       public void buttonClick(ClickEvent event) {
-        viewManager.switchView(Constants.VIEW_DATABASE, new DatabasePage(viewManager));
+        ExplorerApplication.getCurrent().switchView(new DatabasePage());
       }
     });
   }

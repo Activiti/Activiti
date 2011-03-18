@@ -22,8 +22,13 @@ import com.vaadin.terminal.ThemeResource;
  */
 public class Images {
   
-  public static final Resource TASK_IMAGE = new ThemeResource("img/task.png");
-  public static final Resource GOOGLE_IMAGE = new ThemeResource("img/google.png");
-  public static final Resource ALFRESCO_IMAGE = new ThemeResource("img/alfresco.gif");
+  public static final Resource USER = new ThemeResource("img/user-icon.png");
+  public static final Resource WHITE_DIVIDER = new ThemeResource("img/divider-white.png");
+  public static final Resource TASK = new ThemeResource("img/task.png");
+  public static final Resource SKYPE = new ThemeResource("img/skype.png");
+  public static final Resource GOOGLE = new ThemeResource("img/google.png");
+  public static final Resource ALFRESCO = new ThemeResource("img/alfresco.gif");
+  public static final Resource CLOCK = new ThemeResource("img/clock.png");
+  public static final Resource PEOPLE = new ThemeResource("img/people.png");
 
 }

@@ -13,20 +13,9 @@
 
 package org.activiti.explorer.ui.task;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
-import org.activiti.explorer.Constants;
-import org.activiti.explorer.ExplorerApplication;
-import org.activiti.explorer.ui.ViewManager;
-import org.vaadin.addons.lazyquerycontainer.BeanQueryFactory;
-import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Table;
@@ -45,13 +34,11 @@ public class TaskPage extends CustomComponent {
   protected TaskService taskService;
   
   // ui
-  protected ViewManager viewManager;
   protected VerticalLayout taskPageLayout;
   protected HorizontalSplitPanel mainSplitPanel;
   protected Table taskTable;
   
-  public TaskPage(ViewManager viewManager) {
-    this.viewManager = viewManager;
+  public TaskPage() {
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
     
     addTaskPageLayout();
@@ -79,7 +66,7 @@ public class TaskPage extends CustomComponent {
   }
   
   protected void addTaskMenuBar() {
-    TaskMenuBar taskMenuBar = new TaskMenuBar(viewManager);
+    TaskMenuBar taskMenuBar = new TaskMenuBar();
     taskPageLayout.addComponent(taskMenuBar);
   }
   

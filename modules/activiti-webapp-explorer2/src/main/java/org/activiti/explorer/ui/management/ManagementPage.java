@@ -12,8 +12,6 @@
  */
 package org.activiti.explorer.ui.management;
 
-import org.activiti.explorer.ui.ViewManager;
-
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.VerticalLayout;
 
@@ -25,13 +23,9 @@ public class ManagementPage extends CustomComponent {
   
   private static final long serialVersionUID = -138537246412384952L;
   
-  protected ViewManager viewManager;
   protected VerticalLayout managementPageLayout;
   
-  public ManagementPage(ViewManager viewManager) {
-    this.viewManager = viewManager;
-    
-    
+  public ManagementPage() {
     addManagementPageLayout();
     addManagementMenuBar();
   }
@@ -46,7 +40,7 @@ public class ManagementPage extends CustomComponent {
   }
   
   protected void addManagementMenuBar() {
-    managementPageLayout.addComponent(new ManagementMenuBar(viewManager));
+    managementPageLayout.addComponent(new ManagementMenuBar());
   }
 
 }

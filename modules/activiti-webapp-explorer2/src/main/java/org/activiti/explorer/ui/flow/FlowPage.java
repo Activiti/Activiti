@@ -13,8 +13,6 @@
 
 package org.activiti.explorer.ui.flow;
 
-import org.activiti.explorer.ui.ViewManager;
-
 import com.vaadin.ui.VerticalLayout;
 
 
@@ -25,17 +23,13 @@ public class FlowPage extends VerticalLayout {
   
   private static final long serialVersionUID = 2310017323549425167L;
   
-  protected ViewManager viewManager;
-  
-  public FlowPage(ViewManager viewManager) {
-    this.viewManager = viewManager;
-
+  public FlowPage() {
     setSizeFull();
     initFlowMenuBar();
   }
   
   protected void initFlowMenuBar() {
-    FlowMenuBar flowMenuBar = new FlowMenuBar(viewManager);
+    FlowMenuBar flowMenuBar = new FlowMenuBar();
     addComponent(flowMenuBar);
   }
 

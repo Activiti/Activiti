@@ -23,7 +23,6 @@ import org.activiti.engine.identity.User;
 import org.activiti.engine.task.Comment;
 import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApplication;
-import org.activiti.explorer.ui.ViewManager;
 
 import com.ocpsoft.pretty.time.PrettyTime;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
@@ -51,15 +50,13 @@ public class TaskCommentPanel extends Panel {
   
   private static final long serialVersionUID = -1364956575106533335L;
   
-  protected ViewManager viewManager;
   protected String taskId;
   protected TaskService taskService; 
   protected IdentityService identityService;
   protected List<Comment> comments;
 
-  public TaskCommentPanel(ViewManager viewManager, String taskId) {
+  public TaskCommentPanel(String taskId) {
     super();
-    this.viewManager = viewManager;
     this.taskId = taskId;
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
     this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
@@ -89,7 +86,7 @@ public class TaskCommentPanel extends Panel {
       public InputStream getStream() {
         return identityService.getUserPicture(comment.getUserId()).getInputStream();
       }
-    }, comment.getUserId(), viewManager.getApplication());
+    }, comment.getUserId(), ExplorerApplication.getCurrent());
     
     Embedded picture = new Embedded("", imageresource);
     picture.setType(Embedded.TYPE_IMAGE);
@@ -108,7 +105,7 @@ public class TaskCommentPanel extends Panel {
     // listener to show popup window with comment 
     layout.addListener(new LayoutClickListener() {
       public void layoutClick(LayoutClickEvent event) {
-//        viewManager.showPopupWindow(new TaskCommentPopupWindow(viewManager, comment));
+        ExplorerApplication.getCurrent().showPopupWindow(new TaskCommentPopupWindow(comment));
       }
     });
     

@@ -16,7 +16,8 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Task;
 import org.activiti.explorer.Constants;
-import org.activiti.explorer.ui.ViewManager;
+import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.Images;
 import org.activiti.explorer.ui.profile.ProfilePopupWindow;
 
 import com.ocpsoft.pretty.time.PrettyTime;
@@ -40,16 +41,14 @@ public class TaskDetailPanel extends HorizontalLayout {
   
   private static final long serialVersionUID = -2018798598805436750L;
   
-  protected ViewManager viewManager;
   protected TaskService taskService;
   protected Task task;
   
   protected Panel leftPanel;
   protected Panel rightPanel;
   
-  public TaskDetailPanel(ViewManager viewManager, String taskId) {
+  public TaskDetailPanel(String taskId) {
     super();
-    this.viewManager = viewManager;
     setSizeFull();
     addStyleName(Reindeer.LAYOUT_WHITE);
     
@@ -69,7 +68,7 @@ public class TaskDetailPanel extends HorizontalLayout {
     
     
     // Right panel: the task comments
-    this.rightPanel = new TaskCommentPanel(viewManager, taskId);
+    this.rightPanel = new TaskCommentPanel(taskId);
     rightPanel.addStyleName(Reindeer.PANEL_LIGHT);
     addComponent(rightPanel);
     setExpandRatio(rightPanel, 25.0f);
@@ -110,7 +109,7 @@ public class TaskDetailPanel extends HorizontalLayout {
     timeDetailsLayout.setSizeUndefined();
     leftPanel.addComponent(timeDetailsLayout);
 
-    Embedded clockImage = new Embedded(null, new ThemeResource(Constants.IMAGE_CLOCK));
+    Embedded clockImage = new Embedded(null, Images.CLOCK);
     timeDetailsLayout.addComponent(clockImage);
 
     // The other time fields are layed out in a 2 column grid
@@ -162,7 +161,7 @@ public class TaskDetailPanel extends HorizontalLayout {
     leftPanel.addComponent(layout);
     
     // people icon
-    Embedded peopleImage = new Embedded(null, new ThemeResource(Constants.IMAGE_PEOPLE));
+    Embedded peopleImage = new Embedded(null, Images.PEOPLE);
     layout.addComponent(peopleImage);
     
     // The involved people are layed out in a grid with two rows
@@ -180,7 +179,7 @@ public class TaskDetailPanel extends HorizontalLayout {
       owner.addStyleName(Reindeer.BUTTON_LINK);
       owner.addListener(new ClickListener() {
         public void buttonClick(ClickEvent event) {
-          viewManager.showPopupWindow(new ProfilePopupWindow(viewManager, task.getOwner()));
+          ExplorerApplication.getCurrent().showPopupWindow(new ProfilePopupWindow(task.getOwner()));
         }
       });
       
@@ -193,7 +192,7 @@ public class TaskDetailPanel extends HorizontalLayout {
       assignee.addStyleName(Reindeer.BUTTON_LINK);
       assignee.addListener(new ClickListener() {
         public void buttonClick(ClickEvent event) {
-          viewManager.showPopupWindow(new ProfilePopupWindow(viewManager, task.getAssignee()));
+          ExplorerApplication.getCurrent().showPopupWindow(new ProfilePopupWindow(task.getAssignee()));
         }
       });
       grid.addComponent(assignee);

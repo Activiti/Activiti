@@ -25,6 +25,7 @@ import org.activiti.explorer.ui.MainLayout;
 
 import com.vaadin.Application;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Window;
 
 /**
@@ -33,6 +34,8 @@ import com.vaadin.ui.Window;
 public class ExplorerApplication extends Application implements HttpServletRequestListener {
 
   private static final long serialVersionUID = -8923370280251348552L;
+  
+  private static ThreadLocal<ExplorerApplication> current = new ThreadLocal<ExplorerApplication>();
   
   protected Window mainWindow;
   protected MainLayout mainLayout;
@@ -53,10 +56,29 @@ public class ExplorerApplication extends Application implements HttpServletReque
     // init general look and feel
     mainLayout = new MainLayout(this); 
     mainWindow.setContent(mainLayout);
-    
   }
   
+  // View management
+  
+  public void switchView(Component component) {
+    mainLayout.addComponent(component, Constants.LOCATION_CONTENT);
+  }
+  
+  public static ExplorerApplication getCurrent() {
+    return current.get();
+  }
+  
+  public void showPopupWindow(Window window) {
+    getMainWindow().addWindow(window);
+  }
+  
+  // HttpServletRequestListener
+  
   public void onRequestStart(HttpServletRequest request, HttpServletResponse response) {
+    // Set current application object as thread-local to make it easy accessible
+    current.set(this);
+    
+    // Set thread-local userid of logged in user (needed for Activiti user logic)
     User user = (User) getUser();
     if (user != null) {
       Authentication.setAuthenticatedUserId("kermit");
@@ -64,6 +86,8 @@ public class ExplorerApplication extends Application implements HttpServletReque
   }
   
   public void onRequestEnd(HttpServletRequest request, HttpServletResponse response) {
+    // Clean up thread-locals
+    current.remove();
     Authentication.setAuthenticatedUserId(null);
   }
   

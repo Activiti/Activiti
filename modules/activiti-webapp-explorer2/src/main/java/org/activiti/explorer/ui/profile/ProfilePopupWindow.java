@@ -16,7 +16,6 @@ package org.activiti.explorer.ui.profile;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.User;
-import org.activiti.explorer.ui.ViewManager;
 
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
@@ -29,7 +28,7 @@ public class ProfilePopupWindow extends Window {
 
   private static final long serialVersionUID = 3129077881658239761L;
   
-  public ProfilePopupWindow(ViewManager viewManager, String userId) {
+  public ProfilePopupWindow(String userId) {
     super();
     IdentityService identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
     User user = identityService.createUserQuery().userId(userId).singleResult();
@@ -40,7 +39,7 @@ public class ProfilePopupWindow extends Window {
     setWidth("50%");
     center();
     setCaption(user.getFirstName() + " " + user.getLastName());
-    addComponent(new ProfilePage(viewManager, userId));
+    addComponent(new ProfilePage(userId));
   }
   
 

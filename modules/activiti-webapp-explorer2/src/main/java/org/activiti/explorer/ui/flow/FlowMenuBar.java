@@ -15,7 +15,6 @@ package org.activiti.explorer.ui.flow;
 
 import org.activiti.explorer.Constants;
 import org.activiti.explorer.ui.MenuBar;
-import org.activiti.explorer.ui.ViewManager;
 
 
 
@@ -26,8 +25,8 @@ public class FlowMenuBar extends MenuBar {
   
   private static final long serialVersionUID = 7957488256766569264L;
 
-  public FlowMenuBar(ViewManager viewManager) {
-    super(viewManager);
+  public FlowMenuBar() {
+    super();
     addStyleName(Constants.STYLE_MENUBAR);
     
     createMenuBarButton("My Flows (23)");

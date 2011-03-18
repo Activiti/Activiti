@@ -43,7 +43,7 @@ public class TaskListEntry extends CustomComponent {
     GridLayout grid = new GridLayout(2, 1);
     setCompositionRoot(grid);
     
-    Embedded taskImage = new Embedded(null, Images.TASK_IMAGE);
+    Embedded taskImage = new Embedded(null, Images.TASK);
     taskImage.setType(Embedded.TYPE_IMAGE);
     grid.addComponent(taskImage);
     

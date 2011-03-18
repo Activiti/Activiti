@@ -61,15 +61,6 @@ public class Constants {
   public static final String STYLE_TASK_COMMENT_TIME = "task-comment-time";
   public static final String STYLE_TASK_COMMENT_PICTURE = "task-comment-picture";
 
-  // Image names
-  public static final String IMAGE_USER = "img/user-icon.png";
-  public static final String IMAGE_DIVIDER = "img/divider-white.png";
-  public static final String IMAGE_TASK = "images/task.png";
-  public static final String IMAGE_TIME = "img/time.png";
-  public static final String IMAGE_HOURGLASS = "img/hourglass.png";
-  public static final String IMAGE_CLOCK = "img/clock.png";
-  public static final String IMAGE_PEOPLE = "img/people.png";
-
   
   // Date formatting
   public static final DateFormat DEFAULT_DATE_FORMATTER = new SimpleDateFormat("dd MMM yyyy - hh:mm"); 

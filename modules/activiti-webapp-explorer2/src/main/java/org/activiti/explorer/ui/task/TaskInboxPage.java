@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.explorer.Constants;
-import org.activiti.explorer.ui.ViewManager;
 import org.vaadin.addons.lazyquerycontainer.BeanQueryFactory;
 import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
 
@@ -33,8 +32,8 @@ public class TaskInboxPage extends TaskPage {
   
   private static final long serialVersionUID = 652000311912640606L;
 
-  public TaskInboxPage(ViewManager viewManager) {
-    super(viewManager);
+  public TaskInboxPage() {
+    super();
     
     addTaskList();
   }
@@ -56,7 +55,7 @@ public class TaskInboxPage extends TaskPage {
       public void valueChange(ValueChangeEvent event) {
         Item item = taskTable.getItem(event.getProperty().getValue()); // the value of the property is the itemId of the table entry
         TaskListEntry taskListEntry = (TaskListEntry) item.getItemProperty("component").getValue();
-        mainSplitPanel.setSecondComponent(new TaskDetailPanel(viewManager, taskListEntry.getTask().getId()));
+        mainSplitPanel.setSecondComponent(new TaskDetailPanel(taskListEntry.getTask().getId()));
       }
     });
     

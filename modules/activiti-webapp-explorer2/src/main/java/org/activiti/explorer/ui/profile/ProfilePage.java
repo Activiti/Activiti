@@ -20,8 +20,8 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.activiti.explorer.Constants;
+import org.activiti.explorer.ExplorerApplication;
 import org.activiti.explorer.Images;
-import org.activiti.explorer.ui.ViewManager;
 
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.terminal.StreamResource.StreamSource;
@@ -57,12 +57,10 @@ public class ProfilePage extends Panel {
   protected String skypeId;
   
   // ui
-  protected ViewManager viewManager;
   protected HorizontalLayout profilePanelLayout;
   protected VerticalLayout infoPanelLayout;
   
-  public ProfilePage(ViewManager viewManager, String userId) {
-    this.viewManager = viewManager;
+  public ProfilePage(String userId) {
     this.userId = userId;
     this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
     
@@ -107,7 +105,7 @@ public class ProfilePage extends Panel {
       public InputStream getStream() {
         return picture.getInputStream();
       }
-    }, user.getId(), viewManager.getApplication());
+    }, user.getId(), ExplorerApplication.getCurrent());
     
     Embedded image = new Embedded("", imageresource);
     image.setType(Embedded.TYPE_IMAGE);
@@ -188,7 +186,7 @@ public class ProfilePage extends Panel {
       emptySpace.setSizeUndefined();
       skypeLayout.addComponent(emptySpace);
       
-      Embedded skypeImage = new Embedded(null, viewManager.getClassResource("images/skype.png"));
+      Embedded skypeImage = new Embedded(null, Images.SKYPE);
       skypeImage.setSizeUndefined();
       skypeLayout.addComponent(skypeImage);
       
@@ -201,13 +199,13 @@ public class ProfilePage extends Panel {
     GridLayout accountLayout = createInfoSectionLayout(3, 2); 
 
     // Google
-    Embedded googleImage = new Embedded(null, Images.GOOGLE_IMAGE);
+    Embedded googleImage = new Embedded(null, Images.GOOGLE);
     googleImage.setSizeUndefined();
     accountLayout.addComponent(googleImage);
     addProfileEntry(accountLayout, "Google: ", "mr_kermit_frog@gmail.com");
     
     // Alfresco
-    Embedded alfrescoImage = new Embedded(null, Images.ALFRESCO_IMAGE);
+    Embedded alfrescoImage = new Embedded(null, Images.ALFRESCO);
     alfrescoImage.setSizeUndefined();
     accountLayout.addComponent(alfrescoImage);
     addProfileEntry(accountLayout, "Alfresco: ", "kermit_alfresco");

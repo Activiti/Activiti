@@ -28,10 +28,7 @@ public class MenuBar extends HorizontalLayout {
   
   private static final long serialVersionUID = 5643382350306433838L;
   
-  protected ViewManager viewManager;
-  
-  public MenuBar(ViewManager viewManager) {
-    this.viewManager = viewManager;
+  public MenuBar() {
     setSpacing(true);
     setWidth("100%");
   }

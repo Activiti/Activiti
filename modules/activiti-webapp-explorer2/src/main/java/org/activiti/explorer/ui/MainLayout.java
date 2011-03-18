@@ -15,6 +15,7 @@ package org.activiti.explorer.ui;
 
 import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.Images;
 import org.activiti.explorer.ui.profile.ProfilePage;
 
 import com.vaadin.ui.Button;
@@ -33,14 +34,11 @@ public class MainLayout extends CustomLayout {
   
   private static final long serialVersionUID = 4749017534074852514L;
   
-  protected ViewManager viewManager;
   protected MainMenuBar mainMenuBar;
   
   public MainLayout(ExplorerApplication explorerApplication) {
     super(Constants.THEME);
     setSizeFull();
-    
-    this.viewManager = new ViewManager(explorerApplication, this);
     
     // Components visible on every page
     initSearchBox();
@@ -64,13 +62,13 @@ public class MainLayout extends CustomLayout {
 
     // User name + link to profile 
     Button userButton = new Button("Kermit The Frog");
-    userButton.setIcon(viewManager.getThemeResource(Constants.IMAGE_USER));
+    userButton.setIcon(Images.USER);
     userButton.addStyleName(Constants.STYLE_USER_LABEL);
     userButton.addStyleName(Reindeer.BUTTON_LINK);
     
     userButton.addListener(new ClickListener() {
       public void buttonClick(ClickEvent event) {
-        viewManager.switchView(Constants.VIEW_PROFILE, new ProfilePage(viewManager, "kermit"));
+        ExplorerApplication.getCurrent().switchView(new ProfilePage("kermit"));
       }
     });
 
@@ -78,10 +76,10 @@ public class MainLayout extends CustomLayout {
     Button logout = new Button("Logout");
     logout.setStyleName(Reindeer.BUTTON_LINK);
     logout.addStyleName(Constants.STYLE_LOGOUT_BUTTON);
-    logout.setIcon(viewManager.getThemeResource(Constants.IMAGE_DIVIDER));
+    logout.setIcon(Images.WHITE_DIVIDER);
     logout.addListener(new ClickListener() {
       public void buttonClick(ClickEvent event) {
-        viewManager.getApplication().close();
+        ExplorerApplication.getCurrent().close();
       }
     });
 
@@ -94,7 +92,7 @@ public class MainLayout extends CustomLayout {
   }
   
   protected void initMainMenuBar() {
-    this.mainMenuBar = new MainMenuBar(viewManager);
+    this.mainMenuBar = new MainMenuBar();
     addComponent(mainMenuBar, Constants.LOCATION_MAIN_MENU);
   }
 
