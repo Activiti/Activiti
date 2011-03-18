@@ -13,21 +13,71 @@
 
 package org.activiti.engine.impl.mail;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.activiti.engine.impl.interceptor.CommandExecutor;
+
 
 /**
  * @author Tom Baeyens
  */
-public class MailScanner {
+public class MailScanner implements Runnable {
+  
+  private static Logger log = Logger.getLogger(MailScanner.class.getName());
+  
+  protected Thread thread = null;
+  protected boolean isActive;
+  protected Map<String, MailScanCmd> scanCommands = Collections.synchronizedMap(new HashMap<String, MailScanCmd>());
+  protected CommandExecutor commandExecutor;
 
   public void start() {
+    thread = new Thread(this);
   }
   
   public void stop() {
+    isActive = false;
+    thread.interrupt();
   }
   
-  public void addUser(String user) {
+  public void addUser(String userId, String userPassword) {
+    MailScanCmd mailScanCmd = commandExecutor.execute(new CreateMailScanCmd(userId, userPassword));
+    if (mailScanCmd!=null) {
+      scanCommands.put(userId, mailScanCmd);
+    }
   }
 
-  public void removeUser(String user) {
+  public void removeUser(String userId) {
+    scanCommands.remove(userId);
+  }
+
+  public void run() {
+    while (isActive) {
+      List<MailScanCmd> round = new ArrayList<MailScanCmd>(scanCommands.values());
+      for (MailScanCmd mailScanCmd: round) {
+        try {
+          commandExecutor.execute(mailScanCmd);
+        } catch (Exception e) {
+          log.log(Level.SEVERE, "couldn't check todo mail for "+mailScanCmd.getUserId()+": "+e.getMessage(), e);
+        }
+      }
+
+      if (scanCommands.isEmpty()) {
+        try {
+          Thread.sleep(5000);
+        } catch (InterruptedException e) {
+          log.fine("sleep got interrupted");
+        }
+      }
+    }
+  }
+
+  public void setCommandExecutor(CommandExecutor commandExecutor) {
+    this.commandExecutor = commandExecutor;
   }
 }

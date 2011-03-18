@@ -38,17 +38,14 @@ public class MailScanCmd implements Command<Object> {
   
   private static Logger log = Logger.getLogger(MailScanCmd.class.getName());
 
+  protected String userId;
   protected String imapUsername = "tombaeyens3@gmail.com";
   protected String imapPassword = System.getProperty("pwd");
-  protected String host = "imap.gmail.com";
-  protected String protocol = "imaps";
+  protected String imapHost = "imap.gmail.com";
+  protected String imapProtocol = "imaps";
   protected String toDoFolderName = "MyToDos";
   protected String toDoInActivitiFolderName = "MyToDosInActiviti";
   
-  public MailScanCmd(String imapUsername, String imapPassword) {
-    this.imapUsername = imapUsername;
-  }
-
   public Object execute(CommandContext commandContext) {
     Store store = null;
     Folder toDoFolder = null;
@@ -57,9 +54,9 @@ public class MailScanCmd implements Command<Object> {
     try {
 
       Session session = Session.getDefaultInstance(new Properties());
-      store = session.getStore(protocol);
-      log.fine("connecting to "+host+" over "+protocol+" for user "+imapUsername);
-      store.connect(host, imapUsername, imapPassword);
+      store = session.getStore(imapProtocol);
+      log.fine("connecting to "+imapHost+" over "+imapProtocol+" for user "+imapUsername);
+      store.connect(imapHost, imapUsername, imapPassword);
 
       toDoFolder = store.getFolder(toDoFolderName);
       toDoFolder.open(Folder.READ_WRITE);
@@ -122,5 +119,75 @@ public class MailScanCmd implements Command<Object> {
       }
     }
     return null;
+  }
+
+  
+  public String getUserId() {
+    return userId;
+  }
+
+  
+  public void setUserId(String userId) {
+    this.userId = userId;
+  }
+
+  
+  public String getImapUsername() {
+    return imapUsername;
+  }
+
+  
+  public void setImapUsername(String imapUsername) {
+    this.imapUsername = imapUsername;
+  }
+
+  
+  public String getImapPassword() {
+    return imapPassword;
+  }
+
+  
+  public void setImapPassword(String imapPassword) {
+    this.imapPassword = imapPassword;
+  }
+
+  
+  public String getImapHost() {
+    return imapHost;
+  }
+
+  
+  public void setImapHost(String imapHost) {
+    this.imapHost = imapHost;
+  }
+
+  
+  public String getImapProtocol() {
+    return imapProtocol;
+  }
+
+  
+  public void setImapProtocol(String imapProtocol) {
+    this.imapProtocol = imapProtocol;
+  }
+
+  
+  public String getToDoFolderName() {
+    return toDoFolderName;
+  }
+
+  
+  public void setToDoFolderName(String toDoFolderName) {
+    this.toDoFolderName = toDoFolderName;
+  }
+
+  
+  public String getToDoInActivitiFolderName() {
+    return toDoInActivitiFolderName;
+  }
+
+  
+  public void setToDoInActivitiFolderName(String toDoInActivitiFolderName) {
+    this.toDoInActivitiFolderName = toDoInActivitiFolderName;
   }
 }
