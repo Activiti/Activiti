@@ -32,7 +32,9 @@ public class Constants {
   // View names
   public static final String VIEW_PROFILE = "profile";
   public static final String VIEW_TASKS = "tasks";
+  public static final String VIEW_TASKS_INBOX = "tasks-inbox";
   public static final String VIEW_FLOWS = "flows";
+  public static final String VIEW_DATABASE = "database";
 
   // Css styles
   public static final String STYLE_SMALL_TEXTFIELD = "small";

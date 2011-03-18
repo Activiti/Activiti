@@ -15,6 +15,8 @@ package org.activiti.explorer.ui;
 
 import org.activiti.explorer.Constants;
 import org.activiti.explorer.ui.flow.FlowPage;
+import org.activiti.explorer.ui.management.DatabasePage;
+import org.activiti.explorer.ui.task.TaskInboxPage;
 import org.activiti.explorer.ui.task.TaskPage;
 
 import com.vaadin.ui.Button;
@@ -36,7 +38,7 @@ public class MainMenuBar extends MenuBar {
     Button taskButton = createMenuBarButton("Tasks");
     taskButton.addListener(new ClickListener() {
       public void buttonClick(ClickEvent event) {
-        viewManager.switchView(Constants.VIEW_TASKS, new TaskPage(viewManager));
+        viewManager.switchView(Constants.VIEW_TASKS_INBOX, new TaskInboxPage(viewManager));
       }
     });
     
@@ -47,7 +49,14 @@ public class MainMenuBar extends MenuBar {
       }
     });
     
-    createMenuBarButton("Manage");  
+    Button managementButton = createMenuBarButton("Management");
+    managementButton.addListener(new ClickListener() {
+      public void buttonClick(ClickEvent event) {
+        viewManager.switchView(Constants.VIEW_DATABASE, new DatabasePage(viewManager));
+      }
+    });
+    
+    
     createMenuBarButton("Reports");
     fillRemainingSpace();
   }

@@ -46,7 +46,7 @@ public class TaskPage extends CustomComponent {
   
   // ui
   protected ViewManager viewManager;
-  protected VerticalLayout mainLayout;
+  protected VerticalLayout taskPageLayout;
   protected HorizontalSplitPanel mainSplitPanel;
   protected Table taskTable;
   
@@ -54,17 +54,17 @@ public class TaskPage extends CustomComponent {
     this.viewManager = viewManager;
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
     
-    // The main layout of this page is a vertical layout:
-    // on top there is the dynamic task menu bar, on the bottom the rest
-    mainLayout = new VerticalLayout();
-    mainLayout.setSizeFull();
-    setCompositionRoot(mainLayout);
-    setSizeFull();
-    
-    // Static UI
+    addTaskPageLayout();
     addTaskMenuBar();
     addMainSplitPanel();
-    addTaskList();
+  }
+
+  private void addTaskPageLayout() {
+    // The main layout of this page is a vertical layout:
+    // on top there is the dynamic task menu bar, on the bottom the rest
+    taskPageLayout = new VerticalLayout();
+    taskPageLayout.setSizeFull();
+    setCompositionRoot(taskPageLayout);
   }
 
   protected void addMainSplitPanel() {
@@ -74,56 +74,13 @@ public class TaskPage extends CustomComponent {
     mainSplitPanel.addStyleName(Reindeer.SPLITPANEL_SMALL);
     mainSplitPanel.setSizeFull();
     mainSplitPanel.setSplitPosition(17, HorizontalSplitPanel.UNITS_PERCENTAGE);
-    mainLayout.addComponent(mainSplitPanel);
-    mainLayout.setExpandRatio(mainSplitPanel, 1.0f);
+    taskPageLayout.addComponent(mainSplitPanel);
+    taskPageLayout.setExpandRatio(mainSplitPanel, 1.0f);
   }
   
   protected void addTaskMenuBar() {
     TaskMenuBar taskMenuBar = new TaskMenuBar(viewManager);
-    mainLayout.addComponent(taskMenuBar);
-  }
-  
-  protected void addTaskList() {
-    this.taskTable = new Table();
-    taskTable.addStyleName(Constants.STYLE_TASK_LIST);
-    
-    // Set non-editable, selectable and full-size
-    taskTable.setEditable(false);
-    taskTable.setImmediate(true);
-    taskTable.setSelectable(true);
-    taskTable.setNullSelectionAllowed(false);
-    taskTable.setSizeFull();
-            
-    // Listener to change right panel when clicked on a task
-    taskTable.addListener(new Property.ValueChangeListener() {
-      private static final long serialVersionUID = 8811553575319455854L;
-      public void valueChange(ValueChangeEvent event) {
-        Item item = taskTable.getItem(event.getProperty().getValue()); // the value of the property is the itemId of the table entry
-        TaskListEntry taskListEntry = (TaskListEntry) item.getItemProperty("component").getValue();
-        mainSplitPanel.setSecondComponent(new TaskDetailPanel(viewManager, taskListEntry.getTask().getId()));
-      }
-    });
-    
-    // Set table container to populate list with tasks
-    BeanQueryFactory<TaskListQuery> queryFactory = new BeanQueryFactory<TaskListQuery>(TaskListQuery.class);
-    Map<String,Object> queryConfiguration = new HashMap<String,Object>();
-    queryConfiguration.put("taskService", taskService);
-    queryConfiguration.put("taskTable", taskTable);
-    queryFactory.setQueryConfiguration(queryConfiguration);
-
-    LazyQueryContainer container = new LazyQueryContainer(queryFactory, false, 10);
-    taskTable.setContainerDataSource(container);
-    
-    // Create column header
-    taskTable.addContainerProperty("component", TaskListEntry.class, null);
-    taskTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
-    
-    mainSplitPanel.setFirstComponent(taskTable);
-    
-    // Select first task
-//    if (taskTable.getContainerDataSource().size() > 0) {
-//      taskTable.select(0);
-//    }
+    taskPageLayout.addComponent(taskMenuBar);
   }
   
 }
