@@ -12,10 +12,15 @@
  */
 package org.activiti.explorer.ui.management;
 
+import java.util.Map;
+
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngines;
 
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.ui.Table;
 
 
 /**
@@ -29,11 +34,48 @@ public class DatabasePage extends ManagementPage {
   protected ManagementService managementService;
   
   // ui
-  protected VerticalLayout databasePageLayout;
+  protected Table tableList;
   
   public DatabasePage() {
     super();
     this.managementService = ProcessEngines.getDefaultProcessEngine().getManagementService();
+    
+    addTableList();
+    populateTableList();
   }
+  
+  protected void addTableList() {
+    this.tableList = new Table();
+    mainSplitPanel.setFirstComponent(tableList);
+    
+    // Set non-editable, selectable and full-size
+    tableList.setEditable(false);
+    tableList.setImmediate(true);
+    tableList.setSelectable(true);
+    tableList.setNullSelectionAllowed(false);
+    tableList.setSizeFull();
+            
+    // Listener to change right panel when clicked on a task
+    tableList.addListener(new Property.ValueChangeListener() {
+      private static final long serialVersionUID = 8811553575319455854L;
+      public void valueChange(ValueChangeEvent event) {
+        // The itemId of the table list is the tableName
+       mainSplitPanel.setSecondComponent(new DatabaseDetailPanel((String) event.getProperty().getValue()));
+      }
+    });
+    
+    // Create column header
+    tableList.addContainerProperty("tableName", String.class, null);
+    tableList.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
+  }
+  
+  protected void populateTableList() {
+    Map<String, Long> tables = managementService.getTableCount();
+    for (String tableName : tables.keySet()) {
+      Item item = tableList.addItem(tableName);
+      item.getItemProperty("tableName").setValue(tableName + " (" + tables.get(tableName) + ")");
+    }
+  }
+  
 
 }

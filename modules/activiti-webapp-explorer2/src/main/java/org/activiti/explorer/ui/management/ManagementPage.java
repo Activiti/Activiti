@@ -13,7 +13,9 @@
 package org.activiti.explorer.ui.management;
 
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.Reindeer;
 
 
 /**
@@ -24,10 +26,12 @@ public class ManagementPage extends CustomComponent {
   private static final long serialVersionUID = -138537246412384952L;
   
   protected VerticalLayout managementPageLayout;
+  protected HorizontalSplitPanel mainSplitPanel;
   
   public ManagementPage() {
     addManagementPageLayout();
     addManagementMenuBar();
+    addMainSplitPanel();
   }
   
   protected void addManagementPageLayout() {
@@ -41,6 +45,16 @@ public class ManagementPage extends CustomComponent {
   
   protected void addManagementMenuBar() {
     managementPageLayout.addComponent(new ManagementMenuBar());
+  }
+  
+  protected void addMainSplitPanel() {
+    mainSplitPanel = new HorizontalSplitPanel();
+    mainSplitPanel.addStyleName(Reindeer.SPLITPANEL_SMALL);
+    mainSplitPanel.setSizeFull();
+    mainSplitPanel.setSplitPosition(17, HorizontalSplitPanel.UNITS_PERCENTAGE);
+    
+    managementPageLayout.addComponent(mainSplitPanel);
+    managementPageLayout.setExpandRatio(mainSplitPanel, 1.0f);
   }
 
 }

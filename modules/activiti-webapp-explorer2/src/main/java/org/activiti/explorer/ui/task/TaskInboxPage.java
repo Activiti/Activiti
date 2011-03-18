@@ -33,8 +33,6 @@ public class TaskInboxPage extends TaskPage {
   private static final long serialVersionUID = 652000311912640606L;
 
   public TaskInboxPage() {
-    super();
-    
     addTaskList();
   }
   
