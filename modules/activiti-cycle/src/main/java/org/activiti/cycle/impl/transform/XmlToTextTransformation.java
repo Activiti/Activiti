@@ -58,14 +58,14 @@ public class XmlToTextTransformation implements ContentMimeTypeTransformation {
     }
   }
 
-  private Document buildDocument(InputStream is) throws Exception {
+  public static Document buildDocument(InputStream is) throws Exception {
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     DocumentBuilder db;
     db = dbf.newDocumentBuilder();
     return db.parse(is);
   }
 
-  public String getXmlAsString(DOMSource xmlData) throws TransformerFactoryConfigurationError, TransformerConfigurationException, TransformerException,
+  public static String getXmlAsString(DOMSource xmlData) throws TransformerFactoryConfigurationError, TransformerConfigurationException, TransformerException,
           IOException {
     StringWriter stringWriter = new StringWriter();
     StreamResult streamResult = new StreamResult(stringWriter);
