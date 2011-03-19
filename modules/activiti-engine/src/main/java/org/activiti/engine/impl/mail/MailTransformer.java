@@ -57,8 +57,7 @@ public class MailTransformer {
     jsonMail.put("sentDate", message.getSentDate());
     jsonMail.put("receivedDate", message.getReceivedDate());
     jsonMail.put("subject", message.getSubject());
-    String html = (containsHtml ? messageHtml.toString() : messageText.toString());
-    jsonMail.put("htmlContent", html);
+    jsonMail.put("htmlContent", getHtml());
     String jsonMailString = jsonMail.toString(2);
     byte[] bytes = jsonMailString.getBytes();
     attachment.setContent(new ByteArrayEntity(bytes));
@@ -70,6 +69,10 @@ public class MailTransformer {
     for (AttachmentEntity attachmentForLogging: attachments) {
       log.fine(attachmentForLogging.getName()+" | "+attachmentForLogging.getType()+" | "+attachmentForLogging.getContent().getBytes().length);
     }
+  }
+
+  public String getHtml() {
+    return (containsHtml ? messageHtml.toString() : messageText.toString());
   }
 
   public List<AttachmentEntity> getAttachments() {
@@ -138,11 +141,9 @@ public class MailTransformer {
     
   }
   
+  private static final String INDENT_WHITESPACE = "                                                                                ";
   void log(int indent, String msg) {
-    for (int i=0; i<indent; i++) {
-      System.out.print("  ");
-    }
-    log.fine(msg.replaceAll("\\s", " "));
+    log.fine(INDENT_WHITESPACE.substring(0, indent*2)+msg.replaceAll("\\s", " "));
   }
 
   protected void processRecipients(Message message) throws Exception {
@@ -207,5 +208,14 @@ public class MailTransformer {
     mimeType = mimeType.trim();
     mimeType = mimeType.toLowerCase();
     return mimeType;
+  }
+
+  
+  public List<String> getRecipients() {
+    return recipients;
+  }
+  
+  public void setRecipients(List<String> recipients) {
+    this.recipients = recipients;
   }
 }

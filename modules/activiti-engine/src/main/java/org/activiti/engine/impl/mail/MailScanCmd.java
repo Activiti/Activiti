@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import javax.mail.Flags;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -24,6 +25,9 @@ import javax.mail.Session;
 import javax.mail.Store;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.identity.User;
+import org.activiti.engine.impl.UserQueryImpl;
+import org.activiti.engine.impl.cmd.AddIdentityLinkCmd;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -52,7 +56,7 @@ public class MailScanCmd implements Command<Object> {
 
     Store store = null;
     Folder toDoFolder = null;
-    Folder toDoInActiviti = null;
+    Folder toDoInActivitiFolder = null;
     
     try {
 
@@ -63,34 +67,61 @@ public class MailScanCmd implements Command<Object> {
 
       toDoFolder = store.getFolder(toDoFolderName);
       toDoFolder.open(Folder.READ_WRITE);
-      toDoInActiviti = store.getFolder(toDoInActivitiFolderName);
-      toDoInActiviti.open(Folder.READ_WRITE);
+      toDoInActivitiFolder = store.getFolder(toDoInActivitiFolderName);
+      toDoInActivitiFolder.open(Folder.READ_WRITE);
       
       Message[] messages = toDoFolder.getMessages();
       log.fine("getting messages from myToDoFolder");
 
       DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
-      TaskEntity task = new TaskEntity();
-      task.setAssignee(imapUsername);
-      
 
       for (Message message: messages) {
         log.fine("transforming mail into activiti task: "+message.getSubject());
-        MailTransformer messageTransformer = new MailTransformer(message);
-        
-        List<AttachmentEntity> attachments = messageTransformer.getAttachments();
-        for (AttachmentEntity attachment: attachments) {
-          ByteArrayEntity content = attachment.getContent();
-          dbSqlSession.insert(content);
-          
-          // TODO store attachment and attachment.getContent()
-          attachment.setContentId(content.getId());
-          dbSqlSession.insert(attachment);
+        MailTransformer mailTransformer = new MailTransformer(message);
+
+        // distill the task description from the mail body content (without the html tags)
+        String taskDescription = mailTransformer.getHtml();
+        taskDescription = taskDescription.replaceAll("\\<.*?\\>", "");
+        taskDescription = taskDescription.replaceAll("\\s", " ");
+        taskDescription = taskDescription.trim();
+        if (taskDescription.length()>120) {
+          taskDescription = taskDescription.substring(0, 117)+"...";
         }
 
-        // Message[] messagesToCopy = new Message[]{message};
-        // myToDos.copyMessages(messagesToCopy, myToDosInActiviti);
-        // message.setFlag(Flags.Flag.DELETED, true);
+        // create and insert the task
+        TaskEntity task = new TaskEntity();
+        task.setAssignee(userId);
+        task.setName(message.getSubject());
+        task.setDescription(taskDescription);
+        dbSqlSession.insert(task);
+        String taskId = task.getId();
+        
+        // add identity links for all the recipients
+        for (String recipientEmailAddress: mailTransformer.getRecipients()) {
+          User recipient = new UserQueryImpl(commandContext)
+            .userEmail(recipientEmailAddress)
+            .singleResult();
+          if (recipient!=null) {
+            new AddIdentityLinkCmd(taskId, recipient.getId(), null, "Recipient")
+              .execute(commandContext);
+          }
+        }
+        
+        // attach the mail and other attachments to the task
+        List<AttachmentEntity> attachments = mailTransformer.getAttachments();
+        for (AttachmentEntity attachment: attachments) {
+          // insert the bytes as content
+          ByteArrayEntity content = attachment.getContent();
+          dbSqlSession.insert(content);
+          // insert the attachment
+          attachment.setContentId(content.getId());
+          attachment.setTaskId(taskId);
+          dbSqlSession.insert(attachment);
+        }
+        
+        Message[] messagesToCopy = new Message[]{message};
+        toDoFolder.copyMessages(messagesToCopy, toDoInActivitiFolder);
+        message.setFlag(Flags.Flag.DELETED, true);
       }
 
     } catch (RuntimeException e) {
@@ -100,9 +131,9 @@ public class MailScanCmd implements Command<Object> {
       throw new ActivitiException("couldn't scan mail for user "+userId+": "+e.getMessage(), e);
       
     } finally {
-      if (toDoInActiviti!=null) {
+      if (toDoInActivitiFolder!=null) {
         try {
-          toDoInActiviti.close(false);
+          toDoInActivitiFolder.close(false);
         } catch (MessagingException e) {
           e.printStackTrace();
         }
