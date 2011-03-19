@@ -23,6 +23,7 @@ import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Store;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -47,6 +48,8 @@ public class MailScanCmd implements Command<Object> {
   protected String toDoInActivitiFolderName = "MyToDosInActiviti";
   
   public Object execute(CommandContext commandContext) {
+    log.fine("scanning mail for user "+userId);
+
     Store store = null;
     Folder toDoFolder = null;
     Folder toDoInActiviti = null;
@@ -90,10 +93,11 @@ public class MailScanCmd implements Command<Object> {
         // message.setFlag(Flags.Flag.DELETED, true);
       }
 
-      toDoInActiviti.close(false);
+    } catch (RuntimeException e) {
+      throw e;
       
     } catch (Exception e) {
-      e.printStackTrace();
+      throw new ActivitiException("couldn't scan mail for user "+userId+": "+e.getMessage(), e);
       
     } finally {
       if (toDoInActiviti!=null) {

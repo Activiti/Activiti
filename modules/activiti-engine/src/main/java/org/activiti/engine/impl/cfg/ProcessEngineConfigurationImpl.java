@@ -79,6 +79,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.jobexecutor.*;
+import org.activiti.engine.impl.mail.MailScanner;
 import org.activiti.engine.impl.repository.Deployer;
 import org.activiti.engine.impl.scripting.BeansResolverFactory;
 import org.activiti.engine.impl.scripting.ResolverFactory;
@@ -182,6 +183,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected Map<String, JobHandler> jobHandlers;
   protected JobExecutor jobExecutor;
 
+  // MAIL SCANNER /////////////////////////////////////////////////////////////
+  
+  protected MailScanner mailScanner;
+  
   // MYBATIS SQL SESSION FACTORY //////////////////////////////////////////////
   
   protected SqlSessionFactory sqlSessionFactory;
@@ -250,6 +255,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initIdGenerator();
     initDeployers();
     initJobExecutor();
+    initMailScanner();
     initDataSource();
     initTransactionFactory();
     initSqlSessionFactory();
@@ -582,6 +588,13 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
     jobExecutor.setCommandExecutor(commandExecutorTxRequired);
     jobExecutor.setAutoActivate(jobExecutorActivate);
+  }
+  
+  protected void initMailScanner() {
+    if (mailScanner==null) {
+      mailScanner = new MailScanner();
+    }
+    mailScanner.setCommandExecutor(commandExecutorTxRequired);
   }
   
   // history //////////////////////////////////////////////////////////////////
@@ -1363,5 +1376,13 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   public void setResolverFactories(List<ResolverFactory> resolverFactories) {
     this.resolverFactories = resolverFactories;
+  }
+
+  public MailScanner getMailScanner() {
+    return mailScanner;
+  }
+
+  public void setMailScanner(MailScanner mailScanner) {
+    this.mailScanner = mailScanner;
   }
 }

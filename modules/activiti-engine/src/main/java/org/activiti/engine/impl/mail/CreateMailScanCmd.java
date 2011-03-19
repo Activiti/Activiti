@@ -37,7 +37,7 @@ public class CreateMailScanCmd implements Command<MailScanCmd> {
 
   public MailScanCmd execute(CommandContext commandContext) {
     MailScanCmd mailScanCmd = null;
-    Account account = new GetUserAccountCmd(userId, userPassword, "todo-scanner").execute(commandContext);
+    Account account = new GetUserAccountCmd(userId, userPassword, "mailscan").execute(commandContext);
     if (account!=null) {
       Map<String, String> details = account.getDetails();
       

@@ -13,68 +13,170 @@
 
 package org.activiti.engine.impl.mail;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
 
 /**
  * @author Tom Baeyens
  */
-public class MailScanner implements Runnable {
+public class MailScanner {
   
   private static Logger log = Logger.getLogger(MailScanner.class.getName());
   
   protected Thread thread = null;
-  protected boolean isActive;
-  protected Map<String, MailScanCmd> scanCommands = Collections.synchronizedMap(new HashMap<String, MailScanCmd>());
+  protected boolean isActive = false;
   protected CommandExecutor commandExecutor;
-
-  public void start() {
-    thread = new Thread(this);
+  protected boolean isAutoActivate = false;
+  
+  protected MailScanSchedulerThread mailScanSchedulerThread;
+  protected BlockingQueue<Runnable> threadPoolQueue;
+  protected ThreadPoolExecutor threadPoolExecutor;
+  protected int queueSize = 1;
+  protected int corePoolSize = 3;
+  private int maxPoolSize = 10;
+  
+  public synchronized void start() {
+    if(isActive) {
+      // Already started, nothing to do
+      log.info("Ignoring duplicate MailScanner start invocation");
+      return;
+    } else {
+      isActive = true;
+      
+      if (mailScanSchedulerThread==null) {
+        mailScanSchedulerThread = new MailScanSchedulerThread(this);
+      }
+      if (threadPoolQueue==null) {
+        threadPoolQueue = new ArrayBlockingQueue<Runnable>(queueSize);
+      }
+      if (threadPoolExecutor==null) {
+        threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maxPoolSize, 0L, TimeUnit.MILLISECONDS, threadPoolQueue);
+        threadPoolExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+      }
+      
+      // Create the mail scan scheduler
+      log.fine("MailScanner is starting the "+MailScanSchedulerThread.class.getName());
+      mailScanSchedulerThread.start();
+    }
   }
   
-  public void stop() {
+  public void shutdown() {
+    if(!isActive) {
+      log.info("Ignoring request to shut down non-active MailScanner");
+      return;
+    }
+    
+    log.info("Shutting down the MailScanner");
+    
+    // Ask the thread pool to finish and exit
+    threadPoolExecutor.shutdown();
+    
+    // Waits for 1 minute to finish all currently executing scans
+    try {
+      threadPoolExecutor.awaitTermination(60L, TimeUnit.SECONDS);
+    } catch (InterruptedException e) {
+        throw new ActivitiException("Timeout during shutdown of mail scanner. The current running scans could not end withing 60 seconds after shutdown operation.", e);
+    }
+    
+    // Close the pending scans task
+    mailScanSchedulerThread.shutdown();
+    
     isActive = false;
-    thread.interrupt();
+
+    // Clear references
+    threadPoolExecutor = null;
+    mailScanSchedulerThread = null;
   }
   
   public void addUser(String userId, String userPassword) {
-    MailScanCmd mailScanCmd = commandExecutor.execute(new CreateMailScanCmd(userId, userPassword));
-    if (mailScanCmd!=null) {
-      scanCommands.put(userId, mailScanCmd);
+    if (isActive && mailScanSchedulerThread != null) {
+      mailScanSchedulerThread.addUser(userId, userPassword);
     }
   }
 
   public void removeUser(String userId) {
-    scanCommands.remove(userId);
+    if (mailScanSchedulerThread != null) {
+      mailScanSchedulerThread.removeUser(userId);
+    }
   }
 
-  public void run() {
-    while (isActive) {
-      List<MailScanCmd> round = new ArrayList<MailScanCmd>(scanCommands.values());
-      for (MailScanCmd mailScanCmd: round) {
-        try {
-          commandExecutor.execute(mailScanCmd);
-        } catch (Exception e) {
-          log.log(Level.SEVERE, "couldn't check todo mail for "+mailScanCmd.getUserId()+": "+e.getMessage(), e);
-        }
-      }
+  // getters and setters ////////////////////////////////////////////////////// 
 
-      if (scanCommands.isEmpty()) {
-        try {
-          Thread.sleep(5000);
-        } catch (InterruptedException e) {
-          log.fine("sleep got interrupted");
-        }
-      }
-    }
+  public CommandExecutor getCommandExecutor() {
+    return commandExecutor;
+  }
+  
+  public int getQueueSize() {
+    return queueSize;
+  }
+  
+  public void setQueueSize(int queueSize) {
+    this.queueSize = queueSize;
+  }
+  
+  public int getCorePoolSize() {
+    return corePoolSize;
+  }
+  
+  public void setCorePoolSize(int corePoolSize) {
+    this.corePoolSize = corePoolSize;
+  }
+
+  public int getMaxPoolSize() {
+    return maxPoolSize;
+  }
+
+  public void setMaxPoolSize(int maxPoolSize) {
+    this.maxPoolSize = maxPoolSize;
+  }
+  
+  public BlockingQueue<Runnable> getThreadPoolQueue() {
+    return threadPoolQueue;
+  }
+
+  public void setThreadPoolQueue(BlockingQueue<Runnable> threadPoolQueue) {
+    this.threadPoolQueue = threadPoolQueue;
+  }
+
+  public ThreadPoolExecutor getThreadPoolExecutor() {
+    return threadPoolExecutor;
+  }
+  
+  public void setThreadPoolExecutor(ThreadPoolExecutor threadPoolExecutor) {
+    this.threadPoolExecutor = threadPoolExecutor;
+  }
+  
+  public boolean isActive() {
+    return isActive;
+  }
+  
+  public boolean isAutoActivate() {
+    return isAutoActivate;
+  }
+  
+  public void setAutoActivate(boolean isAutoActivate) {
+    this.isAutoActivate = isAutoActivate;
+  }
+
+  public MailScanSchedulerThread getMailScanSchedulerThread() {
+    return mailScanSchedulerThread;
+  }
+
+  
+  public void setMailScanSchedulerThread(MailScanSchedulerThread mailScanScheduler) {
+    this.mailScanSchedulerThread = mailScanScheduler;
+  }
+
+  
+  public void setActive(boolean isActive) {
+    this.isActive = isActive;
   }
 
   public void setCommandExecutor(CommandExecutor commandExecutor) {

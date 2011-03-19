@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.mail.Address;
 import javax.mail.BodyPart;
@@ -30,6 +31,8 @@ import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.json.JSONObject;
 
 public class MailTransformer {
+  
+  private static Logger log = Logger.getLogger(MailTransformer.class.getName());
   
   public static int ATTACHMENT_SIZE_LIMIT = 1024*1024*10; // 10MB 
   
@@ -60,12 +63,12 @@ public class MailTransformer {
     byte[] bytes = jsonMailString.getBytes();
     attachment.setContent(new ByteArrayEntity(bytes));
     
-    System.out.println("=== json ==========================");
-    System.out.println(jsonMailString);
+    log.fine("=== json ==========================");
+    log.fine(jsonMailString);
 
-    System.out.println("=== attachments ==========================");
+    log.fine("=== attachments ==========================");
     for (AttachmentEntity attachmentForLogging: attachments) {
-      System.out.println(attachmentForLogging.getName()+" | "+attachmentForLogging.getType()+" | "+attachmentForLogging.getContent().getBytes().length);
+      log.fine(attachmentForLogging.getName()+" | "+attachmentForLogging.getType()+" | "+attachmentForLogging.getContent().getBytes().length);
     }
   }
 
@@ -139,7 +142,7 @@ public class MailTransformer {
     for (int i=0; i<indent; i++) {
       System.out.print("  ");
     }
-    System.out.println(msg.replaceAll("\\s", " "));
+    log.fine(msg.replaceAll("\\s", " "));
   }
 
   protected void processRecipients(Message message) throws Exception {
