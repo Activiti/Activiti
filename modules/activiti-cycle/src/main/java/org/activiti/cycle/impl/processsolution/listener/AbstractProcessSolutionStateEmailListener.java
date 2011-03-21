@@ -24,8 +24,9 @@ public abstract class AbstractProcessSolutionStateEmailListener<T extends Proces
 
   /**
    * TODO: Make configurable (it is important to have a valid address here, otherwise the sending fails with a 550 error)
+   * Use configuration property from activiti cfg.xml (mailServerDefaultFrom)
    */
-  private String fromEmailAddress = "activiti@camunda.com";
+  public static String fromEmailAddress = "activiti@camunda.com";
 
   protected CycleEmailDispatcher cycleEmailDispatcher = CycleComponentFactory.getCycleComponentInstance(CycleEmailDispatcher.class, CycleEmailDispatcher.class);
 

@@ -131,7 +131,7 @@ public class ImplementationDoneUpdateOperationalProcessModels implements CycleEv
         writer.append("</li>");
       }
       writer.append("</ul>");
-      cycleEmailDispatcher.sendEmail("activiti-cycle@localhost", user.getEmail(), "Operational models updated", writer.toString());
+      cycleEmailDispatcher.sendEmail(AbstractProcessSolutionStateEmailListener.fromEmailAddress, user.getEmail(), "Operational models updated", writer.toString());
     }
   }
 
