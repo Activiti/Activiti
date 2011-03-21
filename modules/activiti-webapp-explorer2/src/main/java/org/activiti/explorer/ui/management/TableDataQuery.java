@@ -12,6 +12,7 @@
  */
 package org.activiti.explorer.ui.management;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +20,7 @@ import org.activiti.engine.ManagementService;
 import org.activiti.engine.management.TablePage;
 import org.activiti.engine.management.TablePageQuery;
 import org.activiti.explorer.data.AbstractLazyLoadingQuery;
+import org.activiti.explorer.data.MapItem;
 
 import com.vaadin.data.Item;
 
@@ -27,7 +29,7 @@ import com.vaadin.data.Item;
 /**
  * @author Joram Barrez
  */
-public class TableDataQuery extends AbstractLazyLoadingQuery<Map<String, Object>> {
+public class TableDataQuery extends AbstractLazyLoadingQuery {
   
   protected String tableName;
   protected ManagementService managementService;
@@ -38,8 +40,8 @@ public class TableDataQuery extends AbstractLazyLoadingQuery<Map<String, Object>
     this.tableName = tableName;
     this.managementService = managementService;
   }
-
-  protected List<Map<String, Object>> loadBeans(int startIndex, int count) {
+  
+  public List<Item> loadItems(int start, int count) {
     TablePageQuery query = managementService.createTablePageQuery().tableName(tableName);
     
     if (sortPropertyIds != null && sortPropertyIds.length > 0) {
@@ -52,7 +54,13 @@ public class TableDataQuery extends AbstractLazyLoadingQuery<Map<String, Object>
         }
       }
     }
-    return query.listPage(startIndex, count).getRows();
+    
+    List<Map<String, Object>> rows = query.listPage(start, count).getRows();
+    List<Item> items = new ArrayList<Item>();
+    for (Map<String, Object> row : rows) {
+      items.add(new MapItem(row));
+    }
+    return items;
   }
 
   public int size() {
@@ -63,12 +71,8 @@ public class TableDataQuery extends AbstractLazyLoadingQuery<Map<String, Object>
     this.sortPropertyIds = propertyId;
     this.sortPropertyIdsAscending = ascending;
   }
-  
-  public int compareTo(Item searched, Item other) {
-    throw new UnsupportedOperationException();
-  }
-  
-  protected Map<String, Object> loadBean(String id) {
+
+  public Item loadSingleResult(String id) {
     throw new UnsupportedOperationException();
   }
   

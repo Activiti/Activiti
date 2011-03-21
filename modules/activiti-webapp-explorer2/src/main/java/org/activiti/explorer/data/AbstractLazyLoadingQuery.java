@@ -12,43 +12,14 @@
  */
 package org.activiti.explorer.data;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import com.vaadin.data.Item;
-import com.vaadin.data.util.BeanItem;
 
 
 /**
  * @author Joram Barrez
  */
-public abstract class AbstractLazyLoadingQuery<T> implements LazyLoadingQuery {
+public abstract class AbstractLazyLoadingQuery implements LazyLoadingQuery {
   
   protected LazyLoadingContainer lazyLoadingContainer;
-  
-  public List<Item> loadItems(int start, int count) {
-    List<Item> items = new ArrayList<Item>();
-    for (T bean : loadBeans(start, count)) {
-      items.add(toItem(bean));
-    }
-    return items;
-  }
-  
-  protected abstract List<T> loadBeans(int start, int count);
-  
-  public Item loadSingleResult(String id) {
-    return toItem(loadBean(id));
-  }
-  
-  protected abstract T loadBean(String id);
-  
-  public <T> Item toItem(final T bean) {
-    if (bean instanceof Map) {
-      return new MapItem((Map<Object, Object>) bean);
-    } 
-    return new BeanItem<T>(bean);
-  }
   
   public void setLazyLoadingContainer(LazyLoadingContainer lazyLoadingContainer) {
     this.lazyLoadingContainer = lazyLoadingContainer;

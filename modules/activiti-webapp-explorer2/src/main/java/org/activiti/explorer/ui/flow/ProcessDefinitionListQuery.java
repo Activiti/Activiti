@@ -13,6 +13,7 @@
 
 package org.activiti.explorer.ui.flow;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.RepositoryService;
@@ -20,43 +21,80 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.explorer.data.AbstractLazyLoadingQuery;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.util.PropertysetItem;
 
 
 /**
  * @author Joram Barrez
  */
-public class ProcessDefinitionListQuery extends AbstractLazyLoadingQuery<ProcessDefinition> {
+public class ProcessDefinitionListQuery extends AbstractLazyLoadingQuery {
   
   protected RepositoryService repositoryService;
   
   public ProcessDefinitionListQuery(RepositoryService repositoryService) {
     this.repositoryService = repositoryService;
   }
-
-  protected List<ProcessDefinition> loadBeans(int startIndex, int count) {
-    return repositoryService.createProcessDefinitionQuery()
+  
+  public List<Item> loadItems(int start, int count) {
+    List<ProcessDefinition> processDefinitions = repositoryService
+      .createProcessDefinitionQuery()
       .latestVersion()
       .orderByProcessDefinitionName().asc()
-      .listPage(startIndex, count);
+      .orderByProcessDefinitionKey().asc() // name is not unique, so we add the order on key (so we can use it in the comparsion of ProcessDefinitionListItem)
+      .listPage(start, count);
+    
+    List<Item> items = new ArrayList<Item>();
+    for (ProcessDefinition processDefinition : processDefinitions) {
+      items.add(createItem(processDefinition));
+    }
+    return items;
+  }
+  
+  public Item loadSingleResult(String id) {
+    return createItem(repositoryService.createProcessDefinitionQuery().processDefinitionId(id).singleResult());
+  }
+  
+  protected ProcessDefinitionListItem createItem(ProcessDefinition processDefinition) {
+    ProcessDefinitionListItem item = new ProcessDefinitionListItem();
+    item.addItemProperty("id", new ObjectProperty<String>(processDefinition.getId()));
+    item.addItemProperty("name", new ObjectProperty<String>(processDefinition.getName()));
+    item.addItemProperty("key", new ObjectProperty<String>(processDefinition.getKey()));
+    return item;
   }
 
   public int size() {
     return (int)repositoryService.createProcessDefinitionQuery().latestVersion().count();
   }
 
-  public int compareTo(Item searched, Item other) {
-    // process definitions are ordered by name (see #loadBeans)
-    String searchedName = (String) searched.getItemProperty("name").getValue();
-    String otherName = (String) other.getItemProperty("name").getValue();
-    return searchedName.compareTo(otherName);
-  }
-
-  protected ProcessDefinition loadBean(String id) {
-    return repositoryService.createProcessDefinitionQuery().processDefinitionId(id).singleResult();
-  }
-  
   public void setSorting(Object[] propertyId, boolean[] ascending) {
     throw new UnsupportedOperationException();
+  }
+  
+  
+  
+  class ProcessDefinitionListItem extends PropertysetItem implements Comparable<ProcessDefinitionListItem>{
+
+    private static final long serialVersionUID = 1L;
+
+    public int compareTo(ProcessDefinitionListItem other) {
+      // process definitions are ordered by name (see #loadItems in query)
+      String name = (String) getItemProperty("name").getValue();
+      String otherName = (String) other.getItemProperty("name").getValue();
+      int comparison = name.compareTo(otherName);
+      
+      // Name is not unique for process definition
+      // But the list is sorted on process definition key also, so we can use it to compare if the name is equal
+      if (comparison != 0) {
+        return comparison;
+      } else {
+        String key = (String) getItemProperty("key").getValue();
+        String otherKey = (String) other.getItemProperty("key").getValue();
+        return key.compareTo(otherKey);
+      }
+      
+    }
+
   }
   
 }

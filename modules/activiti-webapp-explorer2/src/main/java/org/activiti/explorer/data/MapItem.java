@@ -27,9 +27,9 @@ public class MapItem implements Item {
   
   private static final long serialVersionUID = 5079849025046231994L;
   
-  protected Map<Object, Object> map;
+  protected Map<? extends Object, Object> map;
   
-  public MapItem(Map<Object, Object> map) {
+  public MapItem(Map<? extends Object, Object> map) {
     this.map = map;
   }
   

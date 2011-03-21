@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
+
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -191,7 +193,12 @@ public class LazyLoadingContainer implements Container.Indexed, Container.Sortab
       itemCache.put(middle, result);
     }
     
-    int comparison = lazyLoadingQuery.compareTo(searched, result);
+    if (!(searched instanceof Comparable)
+            || !(result instanceof Comparable)) {
+      throw new ActivitiException("Cannot use the getIndexForObjectId method for non-Comparables");
+    }
+    
+    int comparison = ((Comparable) searched).compareTo((Comparable) result); 
     if (comparison < 0) {
       return getIndexForObjectId(searched, low, middle-1);
     } else if (comparison > 0) {

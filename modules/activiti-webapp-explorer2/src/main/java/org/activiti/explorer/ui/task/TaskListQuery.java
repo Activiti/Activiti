@@ -12,6 +12,7 @@
  */
 package org.activiti.explorer.ui.task;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.TaskService;
@@ -21,13 +22,15 @@ import org.activiti.explorer.data.AbstractLazyLoadingQuery;
 import org.activiti.explorer.data.LazyLoadingContainer;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.ui.Table;
 
 
 /**
  * @author Joram Barrez
  */
-public class TaskListQuery extends AbstractLazyLoadingQuery<Task> {
+public class TaskListQuery extends AbstractLazyLoadingQuery {
   
   protected TaskService taskService;
   protected LazyLoadingContainer lazyLoadingContainer;
@@ -40,26 +43,45 @@ public class TaskListQuery extends AbstractLazyLoadingQuery<Task> {
     return (int) taskService.createTaskQuery().count();
   }
   
-  public List<Task> loadBeans(int start, int count) {
-   return createBaseQuery().listPage(start, count);
+  public List<Item> loadItems(int start, int count) {
+    List<Task> tasks = createBaseQuery().listPage(start, count);
+    List<Item> items = new ArrayList<Item>();
+    for (Task task : tasks) {
+      items.add(createTaskListItem(task));
+    }
+    return items;
   }
   
-  protected Task loadBean(String id) {
-    return createBaseQuery().taskId(id).singleResult();
+  public Item loadSingleResult(String id) {
+    return createTaskListItem(createBaseQuery().taskId(id).singleResult());
+  }
+  
+  protected TaskListItem createTaskListItem(Task task) {
+    TaskListItem taskListItem = new TaskListItem();
+    taskListItem.addItemProperty("id", new ObjectProperty<String>(task.getId()));
+    taskListItem.addItemProperty("name", new ObjectProperty<String>(task.getName()));
+    return taskListItem;
   }
   
   protected TaskQuery createBaseQuery() {
     return taskService.createTaskQuery().orderByTaskId().asc();
   }
   
-  public int compareTo(Item searched, Item other) {
-    String searchedTaskId = (String) searched.getItemProperty("id").getValue();
-    String otherTaskId = (String) other.getItemProperty("id").getValue();
-    return searchedTaskId.compareTo(otherTaskId);
-  }
-  
   public void setSorting(Object[] propertyId, boolean[] ascending) {
     throw new UnsupportedOperationException();
+  }
+  
+  
+  class TaskListItem extends PropertysetItem implements Comparable<TaskListItem>{
+
+    private static final long serialVersionUID = 1L;
+
+    public int compareTo(TaskListItem other) {
+      String taskId = (String) getItemProperty("id").getValue();
+      String otherTaskId = (String) other.getItemProperty("id").getValue();
+      return taskId.compareTo(otherTaskId);
+    }
+    
   }
   
 }

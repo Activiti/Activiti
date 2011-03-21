@@ -31,9 +31,6 @@ public interface LazyLoadingQuery {
   
   Item loadSingleResult(String id);
   
-  int compareTo(Item searched, Item other);
-  
-  /** Automatically set by {@link LazyLoadingContainer} */ 
   void setLazyLoadingContainer(LazyLoadingContainer lazyLoadingContainer);
   
   void setSorting(Object[] propertyIds, boolean[] ascending);
