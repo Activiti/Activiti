@@ -28,6 +28,7 @@ public class Constants {
   public static final String LOCATION_CONTENT = "content";
   public static final String LOCATION_SEARCH = "search";
   public static final String LOCATION_MAIN_MENU = "main-menu";
+  public static final String LOCATION_HIDDEN = "hidden";
   
   // View names
   public static final String VIEW_PROFILE = "profile";

@@ -13,6 +13,7 @@
 package org.activiti.explorer.ui.task;
 
 import org.activiti.explorer.Constants;
+import org.activiti.explorer.ExplorerApplication;
 import org.activiti.explorer.Images;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
@@ -65,6 +66,9 @@ public class TaskInboxPage extends TaskPage {
         Item item = taskTable.getItem(event.getProperty().getValue()); // the value of the property is the itemId of the table entry
         String taskId = (String) item.getItemProperty("id").getValue();
         mainSplitPanel.setSecondComponent(new TaskDetailPanel(taskId));
+        
+        // TODO: add utility to set fragments based on page/id's
+        ExplorerApplication.getCurrent().getUriFragmentUtility().setFragment("tasks/" + taskId, false);
       }
     });
     

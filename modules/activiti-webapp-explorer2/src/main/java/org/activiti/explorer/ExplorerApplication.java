@@ -21,11 +21,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.identity.Authentication;
+import org.activiti.explorer.navigation.NavigationFragmentChangeListener;
 import org.activiti.explorer.ui.MainLayout;
 
 import com.vaadin.Application;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.UriFragmentUtility;
 import com.vaadin.ui.Window;
 
 /**
@@ -39,6 +41,7 @@ public class ExplorerApplication extends Application implements HttpServletReque
   
   protected Window mainWindow;
   protected MainLayout mainLayout;
+  protected UriFragmentUtility uriFragmentUtility;
 
   public void init() {
     
@@ -56,6 +59,9 @@ public class ExplorerApplication extends Application implements HttpServletReque
     // init general look and feel
     mainLayout = new MainLayout(this); 
     mainWindow.setContent(mainLayout);
+    
+    // init hidden components
+    initHiddenComponents();
   }
   
   // View management
@@ -90,5 +96,17 @@ public class ExplorerApplication extends Application implements HttpServletReque
     current.remove();
     Authentication.setAuthenticatedUserId(null);
   }
-
+  
+  protected void initHiddenComponents() {
+    // Add the URI Fragent utility
+    uriFragmentUtility = new UriFragmentUtility();
+    mainLayout.addComponent(uriFragmentUtility, Constants.LOCATION_HIDDEN);
+    
+    // Add listener to control page flow based on URI
+    uriFragmentUtility.addListener(new NavigationFragmentChangeListener());
+  }
+  
+  public UriFragmentUtility getUriFragmentUtility() {
+    return uriFragmentUtility;
+  }
 }
