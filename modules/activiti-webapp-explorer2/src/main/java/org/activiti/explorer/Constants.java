@@ -65,6 +65,9 @@ public class Constants {
 
   public static final String STYLE_PROCESS_DEFINITION_LIST = "proc-def-list";
   
+  public static final String STYLE_DATABASE_DETAILS = "database-details";
+  public static final String STYLE_DATABASE_TABLE_ROW = "database-table-row";
+  
   
   // Date formatting
   public static final DateFormat DEFAULT_DATE_FORMATTER = new SimpleDateFormat("dd MMM yyyy - hh:mm");

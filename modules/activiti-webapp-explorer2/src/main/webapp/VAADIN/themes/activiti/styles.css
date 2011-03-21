@@ -202,3 +202,16 @@
   margin-right: 5px;
 }
 
+/* -------------
+   Database page
+   ------------- */
+   
+.database-details {
+  background-color: white;
+  margin: 10px;
+}
+
+.database-table-row .v-table-cell-content {
+  height: 50px;
+}
+

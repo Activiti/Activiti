@@ -12,12 +12,9 @@
  */
 package org.activiti.explorer.ui.task;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.activiti.explorer.Constants;
-import org.vaadin.addons.lazyquerycontainer.BeanQueryFactory;
-import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
+import org.activiti.explorer.data.LazyLoadingContainer;
+import org.activiti.explorer.data.LazyLoadingQuery;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -45,6 +42,7 @@ public class TaskInboxPage extends TaskPage {
     taskTable.setImmediate(true);
     taskTable.setSelectable(true);
     taskTable.setNullSelectionAllowed(false);
+    taskTable.setSortDisabled(true);
     taskTable.setSizeFull();
             
     // Listener to change right panel when clicked on a task
@@ -57,15 +55,9 @@ public class TaskInboxPage extends TaskPage {
       }
     });
     
-    // Set table container to populate list with tasks
-    BeanQueryFactory<TaskListQuery> queryFactory = new BeanQueryFactory<TaskListQuery>(TaskListQuery.class);
-    Map<String,Object> queryConfiguration = new HashMap<String,Object>();
-    queryConfiguration.put("taskService", taskService);
-    queryConfiguration.put("taskTable", taskTable);
-    queryFactory.setQueryConfiguration(queryConfiguration);
-
-    LazyQueryContainer container = new LazyQueryContainer(queryFactory, false, 10);
-    taskTable.setContainerDataSource(container);
+    LazyLoadingQuery lazyLoadingQuery = new TaskQuery(taskService, taskTable);
+    LazyLoadingContainer lazyLoadingContainer = new LazyLoadingContainer(lazyLoadingQuery, 10);
+    taskTable.setContainerDataSource(lazyLoadingContainer);
     
     // Create column header
     taskTable.addContainerProperty("component", TaskListEntry.class, null);

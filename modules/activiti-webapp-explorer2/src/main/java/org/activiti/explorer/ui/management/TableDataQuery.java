@@ -16,46 +16,30 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ManagementService;
-import org.vaadin.addons.lazyquerycontainer.AbstractBeanQuery;
-import org.vaadin.addons.lazyquerycontainer.QueryDefinition;
-
-import com.vaadin.data.Item;
+import org.activiti.explorer.data.AbstractLazyLoadingQuery;
 
 
 
 /**
  * @author Joram Barrez
  */
-public class TableDataQuery extends AbstractBeanQuery<Map<String, Object>> {
+public class TableDataQuery extends AbstractLazyLoadingQuery<Map<String, Object>> {
   
   protected String tableName;
   protected ManagementService managementService;
   
-  public TableDataQuery(QueryDefinition definition, Map<String, Object> queryConfiguration, 
-          Object[] sortPropertyIds, boolean[] sortStates) {
-    super(definition, queryConfiguration, sortPropertyIds, sortStates);
-    this.tableName = (String) queryConfiguration.get("tableName");
-    this.managementService = (ManagementService) queryConfiguration.get("managementService");
+  public TableDataQuery(String tableName, ManagementService managementService) {
+    this.tableName = tableName;
+    this.managementService = managementService;
   }
 
   protected List<Map<String, Object>> loadBeans(int startIndex, int count) {
+    System.out.println("Loading " + startIndex);
     return managementService.createTablePageQuery().tableName(tableName).listPage(startIndex, count).getRows();
-  }
-
-  public  void loadItems() {
   }
 
   public int size() {
     return managementService.getTableCount().get(tableName).intValue();
-  }
-  
-  protected Map<String, Object> constructBean() {
-    throw new UnsupportedOperationException();
-  }
-  
-  protected void saveBeans(List<Map<String, Object>> addedTasks, 
-          List<Map<String, Object>> modifiedTasks, List<Map<String, Object>> removedTasks) {
-    throw new UnsupportedOperationException();
   }
   
 }

@@ -13,8 +13,6 @@
 
 package org.activiti.explorer.ui;
 
-import javax.persistence.Embeddable;
-
 import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Component;

@@ -14,33 +14,24 @@
 package org.activiti.explorer.ui.flow;
 
 import java.util.List;
-import java.util.Map;
 
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.vaadin.addons.lazyquerycontainer.AbstractBeanQuery;
-import org.vaadin.addons.lazyquerycontainer.QueryDefinition;
-
-import com.vaadin.ui.Table;
+import org.activiti.explorer.data.AbstractLazyLoadingQuery;
 
 
 /**
  * @author Joram Barrez
  */
-public class ProcessDefinitionListQuery extends AbstractBeanQuery<ProcessDefinition> {
+public class ProcessDefinitionListQuery extends AbstractLazyLoadingQuery<ProcessDefinition> {
   
   protected RepositoryService repositoryService;
-  protected Table processDefinitionTable;
   
-  public ProcessDefinitionListQuery(QueryDefinition definition, Map<String, Object> queryConfiguration, 
-          Object[] sortPropertyIds, boolean[] sortStates) {
-    super(definition, queryConfiguration, sortPropertyIds, sortStates);
-    this.repositoryService = (RepositoryService) getQueryConfiguration().get("repositoryService");
-    this.processDefinitionTable = (Table) getQueryConfiguration().get("processDefinitionTable");
+  public ProcessDefinitionListQuery(RepositoryService repositoryService) {
+    this.repositoryService = repositoryService;
   }
 
   protected List<ProcessDefinition> loadBeans(int startIndex, int count) {
-    System.out.println("Loading task list entries from " + startIndex + " count=" + count);
     return repositoryService.createProcessDefinitionQuery()
       .latestVersion()
       .orderByProcessDefinitionName().asc()
@@ -51,11 +42,4 @@ public class ProcessDefinitionListQuery extends AbstractBeanQuery<ProcessDefinit
     return (int)repositoryService.createProcessDefinitionQuery().latestVersion().count();
   }
   
-  protected ProcessDefinition constructBean() {
-    throw new UnsupportedOperationException();
-  }
-  
-  protected void saveBeans(List<ProcessDefinition> addedTasks, List<ProcessDefinition> modifiedTasks, List<ProcessDefinition> removedTasks) {
-    throw new UnsupportedOperationException();
-  }
 }

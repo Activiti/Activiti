@@ -13,16 +13,13 @@
 
 package org.activiti.explorer.ui.flow;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.explorer.Constants;
 import org.activiti.explorer.Images;
+import org.activiti.explorer.data.LazyLoadingContainer;
+import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.ui.ThemeImageColumnGenerator;
-import org.vaadin.addons.lazyquerycontainer.BeanQueryFactory;
-import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -67,19 +64,13 @@ public class FlowPage extends VerticalLayout {
     processDefinitionTable.setImmediate(true);
     processDefinitionTable.setSelectable(true);
     processDefinitionTable.setNullSelectionAllowed(false);
+    processDefinitionTable.setSortDisabled(true);
     processDefinitionTable.setSizeFull();
     
-    // Set table container to populate list with tasks
-    BeanQueryFactory<ProcessDefinitionListQuery> queryFactory = 
-        new BeanQueryFactory<ProcessDefinitionListQuery>(ProcessDefinitionListQuery.class);
     
-    Map<String,Object> queryConfiguration = new HashMap<String,Object>();
-    queryConfiguration.put("repositoryService", repositoryService);
-    queryConfiguration.put("processDefinitionTable", processDefinitionTable);
-    queryFactory.setQueryConfiguration(queryConfiguration);
-
-    LazyQueryContainer container = new LazyQueryContainer(queryFactory, false, 10);
-    processDefinitionTable.setContainerDataSource(container);
+    LazyLoadingQuery lazyLoadingQuery = new ProcessDefinitionListQuery(repositoryService);
+    LazyLoadingContainer lazyLoadingContainer = new LazyLoadingContainer(lazyLoadingQuery, 10);
+    processDefinitionTable.setContainerDataSource(lazyLoadingContainer);
     
     // Listener to change right panel when clicked on a task
     processDefinitionTable.addListener(new Property.ValueChangeListener() {

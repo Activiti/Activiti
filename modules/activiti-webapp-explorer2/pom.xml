@@ -128,14 +128,6 @@
       <artifactId>h2</artifactId>
     </dependency>
     
-    <!-- TODO: Move dependency to parent pom if found satisfactory -->
-    <dependency>
-      <groupId>org.vaadin.addons.lazyquerycontainer</groupId>
-      <artifactId>vaadin-lazyquerycontainer</artifactId>
-      <version>1.2.8</version>
-    </dependency>
-    
-    
     <!-- TODO: Move dependency to parent if found satisfactory-->
     <!-- TODO: discuss licence of this dependency (LGPL) -->
 	  <dependency>

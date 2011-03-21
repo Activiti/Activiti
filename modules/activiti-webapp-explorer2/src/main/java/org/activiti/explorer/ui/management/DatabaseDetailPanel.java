@@ -12,25 +12,23 @@
  */
 package org.activiti.explorer.ui.management;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.management.TableMetaData;
-import org.vaadin.addons.lazyquerycontainer.BeanQueryFactory;
-import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
+import org.activiti.explorer.Constants;
+import org.activiti.explorer.data.LazyLoadingContainer;
+import org.activiti.explorer.data.LazyLoadingQuery;
 
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 
 /**
  * @author Joram Barrez
  */
-public class DatabaseDetailPanel extends Panel {
+public class DatabaseDetailPanel extends VerticalLayout {
   
   private static final long serialVersionUID = -1323766637526417129L;
   
@@ -41,7 +39,8 @@ public class DatabaseDetailPanel extends Panel {
     this.tableName = tableName;
     this.managementService = ProcessEngines.getDefaultProcessEngine().getManagementService();
     
-    addStyleName(Reindeer.LAYOUT_WHITE);
+//    addStyleName(Reindeer.LAYOUT_WHITE);
+    addStyleName(Constants.STYLE_DATABASE_DETAILS);
     setSizeFull();
     
     addTableName();
@@ -57,20 +56,19 @@ public class DatabaseDetailPanel extends Panel {
   
   protected void addTableData() {
     Table data = new Table();
-    data.setSizeFull();
     data.setEditable(false);
     data.setSelectable(true);
+    data.setSortDisabled(true);
     addComponent(data);
+    
+    data.setWidth("95%");
+    data.setHeight("80%");
+    data.addStyleName(Constants.STYLE_DATABASE_TABLE_ROW);
+    setExpandRatio(data, 1.0f);
 
-    // Actual data is provided by a lazy loading container
-    BeanQueryFactory<TableDataQuery> queryFactory = new BeanQueryFactory<TableDataQuery>(TableDataQuery.class);
-    Map<String,Object> queryConfiguration = new HashMap<String,Object>();
-    queryConfiguration.put("managementService", managementService);
-    queryConfiguration.put("tableName", tableName);
-    queryFactory.setQueryConfiguration(queryConfiguration);
-
-    LazyQueryContainer container = new LazyQueryContainer(queryFactory, false, 25);
-    data.setContainerDataSource(container);
+    LazyLoadingQuery lazyLoadingQuery = new TableDataQuery(tableName, managementService);
+    LazyLoadingContainer lazyLoadingContainer = new LazyLoadingContainer(lazyLoadingQuery, 10);
+    data.setContainerDataSource(lazyLoadingContainer);
     
     // Create column headers
     TableMetaData metaData = managementService.getTableMetaData(tableName);
