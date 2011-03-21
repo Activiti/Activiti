@@ -21,7 +21,7 @@ import org.activiti.explorer.Constants;
 import org.activiti.explorer.Images;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
-import org.activiti.explorer.ui.ThemeImageColumnGenerator;
+import org.activiti.explorer.ui.util.ThemeImageColumnGenerator;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;

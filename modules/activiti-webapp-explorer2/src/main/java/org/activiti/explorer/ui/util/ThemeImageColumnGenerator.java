@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.explorer.ui;
+package org.activiti.explorer.ui.util;
 
 import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.ThemeResource;

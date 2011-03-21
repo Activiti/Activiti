@@ -55,13 +55,7 @@ public class MainMenuBar extends MenuBar {
       }
     });
     
-    
-    Button reportButton = createMenuBarButton("Reports");
-    reportButton.addListener(new ClickListener() {
-      public void buttonClick(ClickEvent event) {
-        ExplorerApplication.getCurrent().switchView(new FlowPage("coolProcess:1:65"));
-      }
-    });
+    createMenuBarButton("Reports");
     
     fillRemainingSpace();
   }

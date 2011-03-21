@@ -161,8 +161,17 @@ public class LazyLoadingContainer implements Container.Indexed, Container.Sortab
     if (high < low) {
       return -1; // not found
     }
+    
     int middle = low + (high-low)/2;
-    Item result = lazyLoadingQuery.loadItems(middle, 1).get(0);
+    Item result = null;
+    
+    if (itemCache.containsKey(middle)) {
+      result = itemCache.get(middle);
+    } else {
+      result = lazyLoadingQuery.loadItems(middle, 1).get(0);
+      itemCache.put(middle, result);
+    }
+    
     int comparison = lazyLoadingQuery.compareTo(searched, result);
     if (comparison < 0) {
       return getIndexForObjectId(searched, low, middle-1);

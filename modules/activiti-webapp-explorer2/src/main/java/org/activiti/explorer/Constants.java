@@ -29,13 +29,6 @@ public class Constants {
   public static final String LOCATION_SEARCH = "search";
   public static final String LOCATION_MAIN_MENU = "main-menu";
   public static final String LOCATION_HIDDEN = "hidden";
-  
-  // View names
-  public static final String VIEW_PROFILE = "profile";
-  public static final String VIEW_TASKS = "tasks";
-  public static final String VIEW_TASKS_INBOX = "tasks-inbox";
-  public static final String VIEW_FLOWS = "flows";
-  public static final String VIEW_DATABASE = "database";
 
   // Css styles
   public static final String STYLE_SMALL_TEXTFIELD = "small";

@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.explorer.ui;
+package org.activiti.explorer.ui.flow;
 
 import java.io.InputStream;
 
@@ -19,6 +19,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ui.util.InputStreamStreamSource;
 
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.terminal.StreamResource.StreamSource;

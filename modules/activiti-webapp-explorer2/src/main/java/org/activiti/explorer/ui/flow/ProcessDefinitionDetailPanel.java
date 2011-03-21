@@ -19,7 +19,6 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.explorer.Constants;
 import org.activiti.explorer.Images;
-import org.activiti.explorer.ui.ProcessDefinitionImageStreamResourceBuilder;
 import org.activiti.explorer.ui.flow.listener.StartFlowClickListener;
 import org.activiti.explorer.ui.form.FormPropertiesComponent;
 
