@@ -57,7 +57,7 @@ public class DatabaseDetailPanel extends VerticalLayout {
     Table data = new Table();
     data.setEditable(false);
     data.setSelectable(true);
-    data.setSortDisabled(true);
+    data.setColumnReorderingAllowed(true);
     addComponent(data);
     
     data.setWidth("95%");

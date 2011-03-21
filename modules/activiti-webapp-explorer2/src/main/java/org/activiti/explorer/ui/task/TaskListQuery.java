@@ -58,4 +58,8 @@ public class TaskListQuery extends AbstractLazyLoadingQuery<Task> {
     return searchedTaskId.compareTo(otherTaskId);
   }
   
+  public void setSorting(Object[] propertyId, boolean[] ascending) {
+    throw new UnsupportedOperationException();
+  }
+  
 }

@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ManagementService;
+import org.activiti.engine.management.TablePage;
+import org.activiti.engine.management.TablePageQuery;
 import org.activiti.explorer.data.AbstractLazyLoadingQuery;
 
 import com.vaadin.data.Item;
@@ -29,6 +31,8 @@ public class TableDataQuery extends AbstractLazyLoadingQuery<Map<String, Object>
   
   protected String tableName;
   protected ManagementService managementService;
+  protected Object[] sortPropertyIds;
+  protected boolean[] sortPropertyIdsAscending;
   
   public TableDataQuery(String tableName, ManagementService managementService) {
     this.tableName = tableName;
@@ -36,17 +40,34 @@ public class TableDataQuery extends AbstractLazyLoadingQuery<Map<String, Object>
   }
 
   protected List<Map<String, Object>> loadBeans(int startIndex, int count) {
-    return managementService.createTablePageQuery().tableName(tableName).listPage(startIndex, count).getRows();
+    TablePageQuery query = managementService.createTablePageQuery().tableName(tableName);
+    
+    if (sortPropertyIds != null && sortPropertyIds.length > 0) {
+      for (int i=0; i<sortPropertyIds.length; i++) {
+        String column = (String) sortPropertyIds[i]; // all container properties for table data are Strings
+        if (sortPropertyIdsAscending[i] == true) {
+          query.orderAsc(column);
+        } else {
+          query.orderDesc(column);
+        }
+      }
+    }
+    return query.listPage(startIndex, count).getRows();
   }
 
   public int size() {
     return managementService.getTableCount().get(tableName).intValue();
   }
 
+  public void setSorting(Object[] propertyId, boolean[] ascending) {
+    this.sortPropertyIds = propertyId;
+    this.sortPropertyIdsAscending = ascending;
+  }
+  
   public int compareTo(Item searched, Item other) {
     throw new UnsupportedOperationException();
   }
-
+  
   protected Map<String, Object> loadBean(String id) {
     throw new UnsupportedOperationException();
   }

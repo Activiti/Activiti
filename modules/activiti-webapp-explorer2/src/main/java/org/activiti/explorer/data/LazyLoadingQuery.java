@@ -36,4 +36,6 @@ public interface LazyLoadingQuery {
   /** Automatically set by {@link LazyLoadingContainer} */ 
   void setLazyLoadingContainer(LazyLoadingContainer lazyLoadingContainer);
   
+  void setSorting(Object[] propertyIds, boolean[] ascending);
+  
 }

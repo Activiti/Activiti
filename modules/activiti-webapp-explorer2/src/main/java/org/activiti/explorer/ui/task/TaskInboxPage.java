@@ -23,6 +23,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.themes.Reindeer;
 
 
 /**
@@ -50,6 +51,7 @@ public class TaskInboxPage extends TaskPage {
   protected void addTaskList() {
     this.taskTable = new Table();
     taskTable.addStyleName(Constants.STYLE_TASK_LIST);
+    
     
     // Set non-editable, selectable and full-size
     taskTable.setEditable(false);

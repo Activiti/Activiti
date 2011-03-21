@@ -107,6 +107,8 @@ public class LazyLoadingContainer implements Container.Indexed, Container.Sortab
   }
 
   public Collection< ? > getItemIds() {
+    // We don't need an actual list of elements,
+    // so we can just override the get() and save some memory
     return new ArrayList<Integer>() {
       public int size() {
         return size();
@@ -149,7 +151,24 @@ public class LazyLoadingContainer implements Container.Indexed, Container.Sortab
 
   public Object getIdByIndex(int index) {
     return new Integer(index);
-  }  
+  } 
+  
+  public Collection< ? > getSortableContainerPropertyIds() {
+    return containerPropertyIds;
+  }
+  
+  public void sort(Object[] propertyIds, boolean[] ascending) {
+    removeAllItems();
+    lazyLoadingQuery.setSorting(propertyIds, ascending);
+  }
+  
+  public boolean removeAllItems() throws UnsupportedOperationException {
+    itemCache.clear();
+    size = -1;
+    return true;
+  }
+  
+  // binary search using the real id of the object, and map it to an index in the container
   
   // id = real id (eg task id)
   public int getIndexForObjectId(String id) {
@@ -208,18 +227,6 @@ public class LazyLoadingContainer implements Container.Indexed, Container.Sortab
     throw new UnsupportedOperationException();
   }
 
-  public boolean removeAllItems() throws UnsupportedOperationException {
-    throw new UnsupportedOperationException();
-  }
-
-  public void sort(Object[] propertyId, boolean[] ascending) {
-    throw new UnsupportedOperationException();
-  }
-  
-  public Collection< ? > getSortableContainerPropertyIds() {
-    throw new UnsupportedOperationException();
-  }
-  
   public Item addItem(Object itemId) throws UnsupportedOperationException {
     throw new UnsupportedOperationException();
   }

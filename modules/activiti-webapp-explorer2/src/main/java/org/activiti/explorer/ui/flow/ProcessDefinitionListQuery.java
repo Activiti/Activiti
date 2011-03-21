@@ -55,4 +55,8 @@ public class ProcessDefinitionListQuery extends AbstractLazyLoadingQuery<Process
     return repositoryService.createProcessDefinitionQuery().processDefinitionId(id).singleResult();
   }
   
+  public void setSorting(Object[] propertyId, boolean[] ascending) {
+    throw new UnsupportedOperationException();
+  }
+  
 }
