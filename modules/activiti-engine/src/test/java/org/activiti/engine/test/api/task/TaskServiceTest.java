@@ -95,59 +95,63 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
   }
 
   public void testTaskComments() {
-    Task task = taskService.newTask();
-    task.setOwner("johndoe");
-    taskService.saveTask(task);
-    String taskId = task.getId();
+    int historyLevel = processEngineConfiguration.getHistoryLevel();
+    if (historyLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
+      Task task = taskService.newTask();
+      task.setOwner("johndoe");
+      taskService.saveTask(task);
+      String taskId = task.getId();
 
-    identityService.setAuthenticatedUserId("johndoe");
-    // Fetch the task again and update
-    taskService.addComment(taskId, null, "look at this");
-    Comment comment = taskService.getTaskComments(taskId).get(0);
-    assertEquals("johndoe", comment.getUserId());
-    assertEquals(taskId, comment.getTaskId());
-    assertNull(comment.getProcessInstanceId());
-    assertEquals("look at this", comment.getMessage());
-    assertNotNull(comment.getTime());
+      identityService.setAuthenticatedUserId("johndoe");
+      // Fetch the task again and update
+      taskService.addComment(taskId, null, "look at this");
+      Comment comment = taskService.getTaskComments(taskId).get(0);
+      assertEquals("johndoe", comment.getUserId());
+      assertEquals(taskId, comment.getTaskId());
+      assertNull(comment.getProcessInstanceId());
+      assertEquals("look at this", comment.getMessage());
+      assertNotNull(comment.getTime());
 
-    taskService.addComment(taskId, "pid", "one");
-    taskService.addComment(taskId, "pid", "two");
-    
-    Set<String> expectedComments = new HashSet<String>();
-    expectedComments.add("one");
-    expectedComments.add("two");
-    
-    Set<String> comments = new HashSet<String>();
-    for (Comment cmt: taskService.getProcessInstanceComments("pid")) {
-      comments.add(cmt.getMessage());
+      taskService.addComment(taskId, "pid", "one");
+      taskService.addComment(taskId, "pid", "two");
+      
+      Set<String> expectedComments = new HashSet<String>();
+      expectedComments.add("one");
+      expectedComments.add("two");
+      
+      Set<String> comments = new HashSet<String>();
+      for (Comment cmt: taskService.getProcessInstanceComments("pid")) {
+        comments.add(cmt.getMessage());
+      }
+      
+      assertEquals(expectedComments, comments);
+
+      // Finally, delete task
+      taskService.deleteTask(taskId, true);
     }
-    
-    assertEquals(expectedComments, comments);
-
-    // Finally, delete task
-    taskService.deleteTask(taskId, true);
   }
 
   public void testTaskAttachments() {
-    Task task = taskService.newTask();
-    task.setOwner("johndoe");
-    taskService.saveTask(task);
-    String taskId = task.getId();
-
-    identityService.setAuthenticatedUserId("johndoe");
-    // Fetch the task again and update
-    taskService.createAttachment("web page", taskId, "someprocessinstanceid", "weatherforcast", "temperatures and more", "http://weather.com");
-    Attachment attachment = taskService.getTaskAttachments(taskId).get(0);
-    assertEquals("weatherforcast", attachment.getName());
-    assertEquals("temperatures and more", attachment.getDescription());
-    assertEquals("web page", attachment.getType());
-    assertEquals(taskId, attachment.getTaskId());
-    assertEquals("someprocessinstanceid", attachment.getProcessInstanceId());
-    assertEquals("http://weather.com", attachment.getUrl());
-    assertNull(taskService.getAttachmentContent(attachment.getId()));
-
-    // Finally, delete task
-    taskService.deleteTask(taskId, true);
+    int historyLevel = processEngineConfiguration.getHistoryLevel();
+    if (historyLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
+      Task task = taskService.newTask();
+      task.setOwner("johndoe");
+      taskService.saveTask(task);
+      String taskId = task.getId();
+      identityService.setAuthenticatedUserId("johndoe");
+      // Fetch the task again and update
+      taskService.createAttachment("web page", taskId, "someprocessinstanceid", "weatherforcast", "temperatures and more", "http://weather.com");
+      Attachment attachment = taskService.getTaskAttachments(taskId).get(0);
+      assertEquals("weatherforcast", attachment.getName());
+      assertEquals("temperatures and more", attachment.getDescription());
+      assertEquals("web page", attachment.getType());
+      assertEquals(taskId, attachment.getTaskId());
+      assertEquals("someprocessinstanceid", attachment.getProcessInstanceId());
+      assertEquals("http://weather.com", attachment.getUrl());
+      assertNull(taskService.getAttachmentContent(attachment.getId()));
+      // Finally, delete task
+      taskService.deleteTask(taskId, true);
+    }
   }
 
   public void testTaskDelegation() {
