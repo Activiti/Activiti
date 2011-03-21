@@ -762,7 +762,7 @@ public class SignavioConnector extends AbstractRepositoryConnector implements Si
       // creating a temporary file
       tmpfile = File.createTempFile(UUID.randomUUID().toString(), ".xml");
       OutputStream os = new BufferedOutputStream(new FileOutputStream(tmpfile));
-      InputStream is = new ByteArrayInputStream(xml.getBytes(Charset.forName("utf-8")));
+      InputStream is = new ByteArrayInputStream(xml.getBytes("UTF8"));
       IoUtils.copyBytes(is, os);
       os.flush();
       os.close();
