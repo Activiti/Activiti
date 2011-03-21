@@ -25,6 +25,7 @@ import org.activiti.explorer.navigation.NavigationFragmentChangeListener;
 import org.activiti.explorer.ui.MainLayout;
 
 import com.vaadin.Application;
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.UriFragmentUtility;
@@ -52,7 +53,7 @@ public class ExplorerApplication extends Application implements HttpServletReque
     // Demo
     
     // init window
-    mainWindow = new Window("My pretty Vaadin Application");
+    mainWindow = new Window("Explorer - The Next generation");
     setMainWindow(mainWindow);
     setTheme(Constants.THEME);
     
@@ -64,7 +65,23 @@ public class ExplorerApplication extends Application implements HttpServletReque
     initHiddenComponents();
   }
   
-  // View management
+  /**
+   *  Required to support multiple browser windows/tabs, 
+   *  see http://vaadin.com/web/joonas/wiki/-/wiki/Main/Supporting%20Multible%20Tabs
+   */
+//  public Window getWindow(String name) {
+//    Window window = super.getWindow(name);
+//    if (window == null) {
+//      window = new Window("Explorer - The Next generation");
+//      window.setName(name);
+//      addWindow(window);
+//      window.open(new ExternalResource(window.getURL()));
+//    }
+//
+//    return window;
+//  }
+  
+  // View management ------------------------------------------------------------------------------
   
   public void switchView(Component component) {
     mainLayout.addComponent(component, Constants.LOCATION_CONTENT);
@@ -78,7 +95,7 @@ public class ExplorerApplication extends Application implements HttpServletReque
     getMainWindow().addWindow(window);
   }
   
-  // HttpServletRequestListener
+  // HttpServletRequestListener -------------------------------------------------------------------
   
   public void onRequestStart(HttpServletRequest request, HttpServletResponse response) {
     // Set current application object as thread-local to make it easy accessible
@@ -96,6 +113,8 @@ public class ExplorerApplication extends Application implements HttpServletReque
     current.remove();
     Authentication.setAuthenticatedUserId(null);
   }
+  
+  // URL handling ---------------------------------------------------------------------------------
   
   protected void initHiddenComponents() {
     // Add the URI Fragent utility
