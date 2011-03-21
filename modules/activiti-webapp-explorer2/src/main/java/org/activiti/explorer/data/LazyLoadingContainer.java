@@ -151,10 +151,27 @@ public class LazyLoadingContainer implements Container.Indexed, Container.Sortab
     return new Integer(index);
   }  
   
-  // Special operation to support accessing a page straight from an URL
-//  public int getIndexForObjectId(Object id) {
-//    
-//  }
+  // id = real id (eg task id)
+  public int getIndexForObjectId(String id) {
+    Item searched = lazyLoadingQuery.loadSingleResult((String) id); 
+    return getIndexForObjectId(searched, 0, size()-1);
+  }
+  
+  public int getIndexForObjectId(Item searched, int low, int high) {
+    if (high < low) {
+      return -1; // not found
+    }
+    int middle = low + (high-low)/2;
+    Item result = lazyLoadingQuery.loadItems(middle, 1).get(0);
+    int comparison = lazyLoadingQuery.compareTo(searched, result);
+    if (comparison < 0) {
+      return getIndexForObjectId(searched, low, middle-1);
+    } else if (comparison > 0) {
+      return getIndexForObjectId(searched, middle+1, high);
+    } else {
+      return middle;
+    }
+  }
   
   // Unsupported Operations ----------------------------------------------------------------------
   

@@ -29,6 +29,11 @@ public interface LazyLoadingQuery {
   
   List<Item> loadItems(int start, int count);
   
+  Item loadSingleResult(String id);
+  
+  int compareTo(Item searched, Item other);
+  
+  /** Automatically set by {@link LazyLoadingContainer} */ 
   void setLazyLoadingContainer(LazyLoadingContainer lazyLoadingContainer);
   
 }

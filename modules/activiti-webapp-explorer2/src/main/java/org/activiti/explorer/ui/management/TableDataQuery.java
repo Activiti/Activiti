@@ -18,6 +18,8 @@ import java.util.Map;
 import org.activiti.engine.ManagementService;
 import org.activiti.explorer.data.AbstractLazyLoadingQuery;
 
+import com.vaadin.data.Item;
+
 
 
 /**
@@ -39,6 +41,14 @@ public class TableDataQuery extends AbstractLazyLoadingQuery<Map<String, Object>
 
   public int size() {
     return managementService.getTableCount().get(tableName).intValue();
+  }
+
+  public int compareTo(Item searched, Item other) {
+    throw new UnsupportedOperationException();
+  }
+
+  protected Map<String, Object> loadBean(String id) {
+    throw new UnsupportedOperationException();
   }
   
 }

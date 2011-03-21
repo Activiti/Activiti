@@ -70,4 +70,11 @@ public class TaskPage extends CustomComponent {
     taskPageLayout.addComponent(taskMenuBar);
   }
   
+  public void selectTask(int index) {
+    if (taskTable.getContainerDataSource().size() > index) {
+      taskTable.select(index);
+      taskTable.setCurrentPageFirstItemId(index);
+    }
+  }
+  
 }

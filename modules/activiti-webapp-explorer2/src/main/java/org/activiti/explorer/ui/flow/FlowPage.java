@@ -45,6 +45,7 @@ public class FlowPage extends VerticalLayout {
   // UI
   protected VerticalLayout mainLayout;
   protected HorizontalSplitPanel mainSplitPanel;
+  protected LazyLoadingContainer processDefinitionContainer;
   protected Table processDefinitionTable;
   protected ProcessDefinitionDetailPanel detailPanel;
   
@@ -56,6 +57,15 @@ public class FlowPage extends VerticalLayout {
     initFlowMenuBar();
     initMainSplitPanel();
     initProcessDefinitionList();
+  }
+  
+  /**
+   * Used when the page is reached through an URL.
+   * The page will be built and the given process definition will be selected.
+   */
+  public FlowPage(String processDefinitionId) {
+    this();
+    selectProcessDefinition(processDefinitionContainer.getIndexForObjectId(processDefinitionId));
   }
   
   protected void initProcessDefinitionList() {
@@ -72,8 +82,8 @@ public class FlowPage extends VerticalLayout {
     
     
     LazyLoadingQuery lazyLoadingQuery = new ProcessDefinitionListQuery(repositoryService);
-    LazyLoadingContainer lazyLoadingContainer = new LazyLoadingContainer(lazyLoadingQuery, 10);
-    processDefinitionTable.setContainerDataSource(lazyLoadingContainer);
+    this.processDefinitionContainer = new LazyLoadingContainer(lazyLoadingQuery, 10);
+    processDefinitionTable.setContainerDataSource(processDefinitionContainer);
     
     // Listener to change right panel when clicked on a task
     processDefinitionTable.addListener(new Property.ValueChangeListener() {
@@ -121,6 +131,13 @@ public class FlowPage extends VerticalLayout {
       showProcessDefinitionDetail(processDefinition.getId());
     }
     detailPanel.showStartForm(startFormData);
+  }
+  
+  public void selectProcessDefinition(int index) {
+    if (processDefinitionTable.getContainerDataSource().size() > index) {
+      processDefinitionTable.select(index);
+      processDefinitionTable.setCurrentPageFirstItemId(index);
+    }
   }
 
 }

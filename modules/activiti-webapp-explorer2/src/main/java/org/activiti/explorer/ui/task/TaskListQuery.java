@@ -16,9 +16,11 @@ import java.util.List;
 
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
 import org.activiti.explorer.data.AbstractLazyLoadingQuery;
 import org.activiti.explorer.data.LazyLoadingContainer;
 
+import com.vaadin.data.Item;
 import com.vaadin.ui.Table;
 
 
@@ -39,7 +41,21 @@ public class TaskListQuery extends AbstractLazyLoadingQuery<Task> {
   }
   
   public List<Task> loadBeans(int start, int count) {
-   return taskService.createTaskQuery().orderByTaskId().asc().listPage(start, count);
+   return createBaseQuery().listPage(start, count);
+  }
+  
+  protected Task loadBean(String id) {
+    return createBaseQuery().taskId(id).singleResult();
+  }
+  
+  protected TaskQuery createBaseQuery() {
+    return taskService.createTaskQuery().orderByTaskId().asc();
+  }
+  
+  public int compareTo(Item searched, Item other) {
+    String searchedTaskId = (String) searched.getItemProperty("id").getValue();
+    String otherTaskId = (String) other.getItemProperty("id").getValue();
+    return searchedTaskId.compareTo(otherTaskId);
   }
   
 }

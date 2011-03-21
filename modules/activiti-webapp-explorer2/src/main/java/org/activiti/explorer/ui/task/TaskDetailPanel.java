@@ -74,7 +74,7 @@ public class TaskDetailPanel extends HorizontalLayout {
   }
   
   protected void initName() {
-    Label nameLabel = new Label(task.getName());
+    Label nameLabel = new Label(task.getName() + " - " + task.getId());
     nameLabel.addStyleName(Reindeer.LABEL_H1);
     leftPanel.addComponent(nameLabel);
   }

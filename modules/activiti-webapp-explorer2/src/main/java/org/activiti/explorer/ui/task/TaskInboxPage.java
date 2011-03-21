@@ -31,6 +31,8 @@ public class TaskInboxPage extends TaskPage {
   
   private static final long serialVersionUID = 652000311912640606L;
   
+  protected LazyLoadingContainer taskListContainer;
+  
   public TaskInboxPage() {
     addTaskList();
     selectTask(0);
@@ -41,6 +43,7 @@ public class TaskInboxPage extends TaskPage {
    */
   public TaskInboxPage(String taskId) {
     addTaskList();
+    selectTask(taskListContainer.getIndexForObjectId(taskId));
   }
   
   protected void addTaskList() {
@@ -66,8 +69,8 @@ public class TaskInboxPage extends TaskPage {
     });
     
     LazyLoadingQuery lazyLoadingQuery = new TaskListQuery(taskService, taskTable);
-    LazyLoadingContainer lazyLoadingContainer = new LazyLoadingContainer(lazyLoadingQuery, 10);
-    taskTable.setContainerDataSource(lazyLoadingContainer);
+    this.taskListContainer = new LazyLoadingContainer(lazyLoadingQuery, 10);
+    taskTable.setContainerDataSource(taskListContainer);
     
     // Create column header
     taskTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.TASK));
@@ -79,10 +82,4 @@ public class TaskInboxPage extends TaskPage {
     mainSplitPanel.setFirstComponent(taskTable);
   }
   
-  public void selectTask(int index) {
-    if (taskTable.getContainerDataSource().size() > index) {
-      taskTable.select(index);
-    }
-  }
-
 }

@@ -13,12 +13,10 @@
 
 package org.activiti.explorer.ui;
 
-import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApplication;
 import org.activiti.explorer.ui.flow.FlowPage;
 import org.activiti.explorer.ui.management.DatabasePage;
 import org.activiti.explorer.ui.task.TaskInboxPage;
-import org.activiti.explorer.ui.task.TaskPage;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -58,7 +56,13 @@ public class MainMenuBar extends MenuBar {
     });
     
     
-    createMenuBarButton("Reports");
+    Button reportButton = createMenuBarButton("Reports");
+    reportButton.addListener(new ClickListener() {
+      public void buttonClick(ClickEvent event) {
+        ExplorerApplication.getCurrent().switchView(new FlowPage("coolProcess:1:65"));
+      }
+    });
+    
     fillRemainingSpace();
   }
   

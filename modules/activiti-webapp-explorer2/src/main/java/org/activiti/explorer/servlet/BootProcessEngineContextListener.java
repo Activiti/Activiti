@@ -128,7 +128,7 @@ public class BootProcessEngineContextListener implements ServletContextListener 
   
   protected void initTasks(ProcessEngine processEngine) {
     TaskService taskService = processEngine.getTaskService();
-    for (int i=0; i<500; i++) {
+    for (int i=0; i<50; i++) {
       Task task = taskService.newTask();
       task.setAssignee("kermit");
       task.setDescription("This is task nr " + i + ", please do it asap!");

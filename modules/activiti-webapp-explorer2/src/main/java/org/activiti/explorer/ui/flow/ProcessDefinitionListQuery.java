@@ -19,6 +19,8 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.explorer.data.AbstractLazyLoadingQuery;
 
+import com.vaadin.data.Item;
+
 
 /**
  * @author Joram Barrez
@@ -40,6 +42,17 @@ public class ProcessDefinitionListQuery extends AbstractLazyLoadingQuery<Process
 
   public int size() {
     return (int)repositoryService.createProcessDefinitionQuery().latestVersion().count();
+  }
+
+  public int compareTo(Item searched, Item other) {
+    // process definitions are ordered by name (see #loadBeans)
+    String searchedName = (String) searched.getItemProperty("name").getValue();
+    String otherName = (String) other.getItemProperty("name").getValue();
+    return searchedName.compareTo(otherName);
+  }
+
+  protected ProcessDefinition loadBean(String id) {
+    return repositoryService.createProcessDefinitionQuery().processDefinitionId(id).singleResult();
   }
   
 }

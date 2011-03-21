@@ -37,6 +37,12 @@ public abstract class AbstractLazyLoadingQuery<T> implements LazyLoadingQuery {
   
   protected abstract List<T> loadBeans(int start, int count);
   
+  public Item loadSingleResult(String id) {
+    return toItem(loadBean(id));
+  }
+  
+  protected abstract T loadBean(String id);
+  
   public <T> Item toItem(final T bean) {
     if (bean instanceof Map) {
       return new MapItem((Map<Object, Object>) bean);
