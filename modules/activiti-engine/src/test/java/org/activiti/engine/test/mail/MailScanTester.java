@@ -59,11 +59,11 @@ public class MailScanTester {
     mailScanner.addUser("johndoe", null);
     
     try {
-      Thread.sleep(1000);
+      Thread.sleep(2000);
     } catch (Exception e) {
       e.printStackTrace();
     }
-    
+
     mailScanner.shutdown();
   }
 }

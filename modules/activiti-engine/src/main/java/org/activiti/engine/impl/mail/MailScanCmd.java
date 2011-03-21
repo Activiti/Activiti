@@ -27,7 +27,6 @@ import javax.mail.Store;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.UserQueryImpl;
-import org.activiti.engine.impl.cmd.AddIdentityLinkCmd;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -44,12 +43,12 @@ public class MailScanCmd implements Command<Object> {
   private static Logger log = Logger.getLogger(MailScanCmd.class.getName());
 
   protected String userId;
-  protected String imapUsername = "tombaeyens3@gmail.com";
-  protected String imapPassword = System.getProperty("pwd");
-  protected String imapHost = "imap.gmail.com";
-  protected String imapProtocol = "imaps";
-  protected String toDoFolderName = "MyToDos";
-  protected String toDoInActivitiFolderName = "MyToDosInActiviti";
+  protected String imapUsername;
+  protected String imapPassword;
+  protected String imapHost;
+  protected String imapProtocol;
+  protected String toDoFolderName;
+  protected String toDoInActivitiFolderName;
   
   public Object execute(CommandContext commandContext) {
     log.fine("scanning mail for user "+userId);
@@ -79,45 +78,7 @@ public class MailScanCmd implements Command<Object> {
         log.fine("transforming mail into activiti task: "+message.getSubject());
         MailTransformer mailTransformer = new MailTransformer(message);
 
-        // distill the task description from the mail body content (without the html tags)
-        String taskDescription = mailTransformer.getHtml();
-        taskDescription = taskDescription.replaceAll("\\<.*?\\>", "");
-        taskDescription = taskDescription.replaceAll("\\s", " ");
-        taskDescription = taskDescription.trim();
-        if (taskDescription.length()>120) {
-          taskDescription = taskDescription.substring(0, 117)+"...";
-        }
-
-        // create and insert the task
-        TaskEntity task = new TaskEntity();
-        task.setAssignee(userId);
-        task.setName(message.getSubject());
-        task.setDescription(taskDescription);
-        dbSqlSession.insert(task);
-        String taskId = task.getId();
-        
-        // add identity links for all the recipients
-        for (String recipientEmailAddress: mailTransformer.getRecipients()) {
-          User recipient = new UserQueryImpl(commandContext)
-            .userEmail(recipientEmailAddress)
-            .singleResult();
-          if (recipient!=null) {
-            new AddIdentityLinkCmd(taskId, recipient.getId(), null, "Recipient")
-              .execute(commandContext);
-          }
-        }
-        
-        // attach the mail and other attachments to the task
-        List<AttachmentEntity> attachments = mailTransformer.getAttachments();
-        for (AttachmentEntity attachment: attachments) {
-          // insert the bytes as content
-          ByteArrayEntity content = attachment.getContent();
-          dbSqlSession.insert(content);
-          // insert the attachment
-          attachment.setContentId(content.getId());
-          attachment.setTaskId(taskId);
-          dbSqlSession.insert(attachment);
-        }
+        createTask(commandContext, dbSqlSession, mailTransformer);
         
         Message[] messagesToCopy = new Message[]{message};
         toDoFolder.copyMessages(messagesToCopy, toDoInActivitiFolder);
@@ -154,6 +115,48 @@ public class MailScanCmd implements Command<Object> {
       }
     }
     return null;
+  }
+
+
+  public void createTask(CommandContext commandContext, DbSqlSession dbSqlSession, MailTransformer mailTransformer) throws MessagingException {
+    // distill the task description from the mail body content (without the html tags)
+    String taskDescription = mailTransformer.getHtml();
+    taskDescription = taskDescription.replaceAll("\\<.*?\\>", "");
+    taskDescription = taskDescription.replaceAll("\\s", " ");
+    taskDescription = taskDescription.trim();
+    if (taskDescription.length()>120) {
+      taskDescription = taskDescription.substring(0, 117)+"...";
+    }
+
+    // create and insert the task
+    TaskEntity task = new TaskEntity();
+    task.setAssignee(userId);
+    task.setName(mailTransformer.getMessage().getSubject());
+    task.setDescription(taskDescription);
+    dbSqlSession.insert(task);
+    String taskId = task.getId();
+    
+    // add identity links for all the recipients
+    for (String recipientEmailAddress: mailTransformer.getRecipients()) {
+      User recipient = new UserQueryImpl(commandContext)
+        .userEmail(recipientEmailAddress)
+        .singleResult();
+      if (recipient!=null) {
+        task.addUserIdentityLink(recipient.getId(), "Recipient");
+      }
+    }
+    
+    // attach the mail and other attachments to the task
+    List<AttachmentEntity> attachments = mailTransformer.getAttachments();
+    for (AttachmentEntity attachment: attachments) {
+      // insert the bytes as content
+      ByteArrayEntity content = attachment.getContent();
+      dbSqlSession.insert(content);
+      // insert the attachment
+      attachment.setContentId(content.getId());
+      attachment.setTaskId(taskId);
+      dbSqlSession.insert(attachment);
+    }
   }
 
   

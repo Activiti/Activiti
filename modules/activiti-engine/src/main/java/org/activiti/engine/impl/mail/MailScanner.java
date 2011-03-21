@@ -74,6 +74,7 @@ public class MailScanner {
     }
     
     log.info("Shutting down the MailScanner");
+    mailScanSchedulerThread.shutdown();
     
     // Ask the thread pool to finish and exit
     threadPoolExecutor.shutdown();
@@ -84,9 +85,6 @@ public class MailScanner {
     } catch (InterruptedException e) {
         throw new ActivitiException("Timeout during shutdown of mail scanner. The current running scans could not end withing 60 seconds after shutdown operation.", e);
     }
-    
-    // Close the pending scans task
-    mailScanSchedulerThread.shutdown();
     
     isActive = false;
 

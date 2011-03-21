@@ -36,6 +36,7 @@ public class MailTransformer {
   
   public static int ATTACHMENT_SIZE_LIMIT = 1024*1024*10; // 10MB 
   
+  protected Message message;
   protected boolean containsHtml = false;
   protected StringBuilder messageText = new StringBuilder();
   protected StringBuilder messageHtml = new StringBuilder();
@@ -44,6 +45,7 @@ public class MailTransformer {
   protected List<AttachmentEntity> attachments = new ArrayList<AttachmentEntity>();
 
   public MailTransformer(Message message) throws Exception {
+    this.message = message;
     processRecipients(message);
     processContentPart(0, message);
     
@@ -217,5 +219,9 @@ public class MailTransformer {
   
   public void setRecipients(List<String> recipients) {
     this.recipients = recipients;
+  }
+  
+  public Message getMessage() {
+    return message;
   }
 }
