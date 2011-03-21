@@ -20,6 +20,7 @@ import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ui.flow.FlowPage;
 
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -35,28 +36,32 @@ public class StartFlowClickListener implements ClickListener {
   protected ProcessDefinition processDefinition;
   protected RuntimeService runtimeService;
   protected FormService formService;
+  protected FlowPage parentPage;
   
   
-  public StartFlowClickListener(ProcessDefinition processDefinition) {
+  public StartFlowClickListener(ProcessDefinition processDefinition, FlowPage flowPage) {
     this.runtimeService = ProcessEngines.getDefaultProcessEngine().getRuntimeService();
     this.formService = ProcessEngines.getDefaultProcessEngine().getFormService();
     this.processDefinition = processDefinition;
+    parentPage = flowPage;
   }
 
   public void buttonClick(ClickEvent event) {
     // Check if process-definition defines a start-form
     
-    StartFormData data = formService.getStartFormData(processDefinition.getId());
-    if(data != null && ((data.getFormProperties() != null && data.getFormProperties().size() > 0) || data.getFormKey() != null)) {
-      // TODO: Render form based on form-properties
+    StartFormData startFormData = formService.getStartFormData(processDefinition.getId());
+    if(startFormData != null && ((startFormData.getFormProperties() != null && startFormData.getFormProperties().size() > 0) || startFormData.getFormKey() != null)) {
+      parentPage.showStartForm(processDefinition, startFormData);
     } else {
       // Just start the process-instance since it has no form.
       // TODO: Error handling
       ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinition.getId());
+      
+      // Show notification of success
+      ExplorerApplication.getCurrent().getMainWindow().showNotification("Process '" + processDefinition.getName() + "' has been started");
     }
     
-    // Show notification of success
-    ExplorerApplication.getCurrent().getMainWindow().showNotification("Process '" + processDefinition.getName() + "' has been started");
+   
   }
 
 }

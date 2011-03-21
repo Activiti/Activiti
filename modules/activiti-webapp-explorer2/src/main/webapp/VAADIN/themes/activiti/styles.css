@@ -215,3 +215,9 @@
   height: 50px;
 }
 
+/* --------------
+   Form rendering
+   -------------- */
+.formprop-readonly {
+	color: #666666;	
+}

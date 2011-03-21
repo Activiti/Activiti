@@ -29,6 +29,11 @@ import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.task.Task;
+import org.activiti.explorer.ui.form.DateFormPropertyRenderer;
+import org.activiti.explorer.ui.form.EnumFormPropertyRenderer;
+import org.activiti.explorer.ui.form.FormPropertyMapping;
+import org.activiti.explorer.ui.form.LongFormPropertyRenderer;
+import org.activiti.explorer.ui.form.StringFormPropertyRenderer;
 
 /**
  * @author Joram Barrez
@@ -45,9 +50,11 @@ public class BootProcessEngineContextListener implements ServletContextListener 
               + "Please verify that your activiti.cfg.xml configuration is correct.");
     }
     
+    initFormPropertyMapping();
     initDemoData();
   }
   
+
   protected void initDemoData() {
     ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
     
@@ -55,6 +62,19 @@ public class BootProcessEngineContextListener implements ServletContextListener 
     initRandomUsers(processEngine);
     initTasks(processEngine);
     initProcessDefinitions(processEngine);
+  }
+  
+  protected void initFormPropertyMapping() {
+    StringFormPropertyRenderer stringRenderer = new StringFormPropertyRenderer();
+    
+    // Add all supported form property types
+    FormPropertyMapping.addFormPropertyRenderer(stringRenderer);
+    FormPropertyMapping.addFormPropertyRenderer(new EnumFormPropertyRenderer());
+    FormPropertyMapping.addFormPropertyRenderer(new LongFormPropertyRenderer());
+    FormPropertyMapping.addFormPropertyRenderer(new DateFormPropertyRenderer());
+    
+    // Set default renderer when property has null type
+    FormPropertyMapping.setNoTypePropertyRenderer(stringRenderer);
   }
 
   protected void initKermit(ProcessEngine processEngine) {

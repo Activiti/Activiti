@@ -15,6 +15,8 @@ package org.activiti.explorer.ui.flow;
 
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.form.StartFormData;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.explorer.Constants;
 import org.activiti.explorer.Images;
 import org.activiti.explorer.data.LazyLoadingContainer;
@@ -44,6 +46,7 @@ public class FlowPage extends VerticalLayout {
   protected VerticalLayout mainLayout;
   protected HorizontalSplitPanel mainSplitPanel;
   protected Table processDefinitionTable;
+  protected ProcessDefinitionDetailPanel detailPanel;
   
   public FlowPage() {
     this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
@@ -79,7 +82,7 @@ public class FlowPage extends VerticalLayout {
       public void valueChange(ValueChangeEvent event) {
         Item item = processDefinitionTable.getItem(event.getProperty().getValue());
         String processDefinitionId = (String) item.getItemProperty("id").getValue();
-        mainSplitPanel.setSecondComponent(new ProcessDefinitionDetailPanel(processDefinitionId));
+        showProcessDefinitionDetail(processDefinitionId);
       }
     });
     
@@ -106,6 +109,18 @@ public class FlowPage extends VerticalLayout {
   protected void initFlowMenuBar() {
     FlowMenuBar flowMenuBar = new FlowMenuBar();
     addComponent(flowMenuBar);
+  }
+  
+  protected void showProcessDefinitionDetail(String processDefinitionId) {
+    detailPanel = new ProcessDefinitionDetailPanel(processDefinitionId, FlowPage.this);
+    mainSplitPanel.setSecondComponent(detailPanel);
+  }
+  
+  public void showStartForm(ProcessDefinition processDefinition, StartFormData startFormData) {
+    if(detailPanel != null) {
+      showProcessDefinitionDetail(processDefinition.getId());
+    }
+    detailPanel.showStartForm(startFormData);
   }
 
 }

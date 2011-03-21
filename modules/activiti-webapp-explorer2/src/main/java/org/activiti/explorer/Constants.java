@@ -68,6 +68,8 @@ public class Constants {
   public static final String STYLE_DATABASE_DETAILS = "database-details";
   public static final String STYLE_DATABASE_TABLE_ROW = "database-table-row";
   
+  public static final String STYLE_FORMPROPERTY_READONLY = "formprop-readonly";
+  public static final String STYLE_FORMPROPERTY_LABEL = "formprop-label";
   
   // Date formatting
   public static final DateFormat DEFAULT_DATE_FORMATTER = new SimpleDateFormat("dd MMM yyyy - hh:mm");

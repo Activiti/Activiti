@@ -14,12 +14,14 @@ package org.activiti.explorer.ui.flow;
 
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.explorer.Constants;
 import org.activiti.explorer.Images;
 import org.activiti.explorer.ui.ProcessDefinitionImageStreamResourceBuilder;
 import org.activiti.explorer.ui.flow.listener.StartFlowClickListener;
+import org.activiti.explorer.ui.form.FormPropertiesComponent;
 
 import com.ocpsoft.pretty.time.PrettyTime;
 import com.vaadin.terminal.StreamResource;
@@ -46,14 +48,16 @@ public class ProcessDefinitionDetailPanel extends HorizontalLayout {
   protected RepositoryService repositoryService;
   protected ProcessDefinition processDefinition;
   protected Deployment deployment;
+  protected FlowPage flowPage;
   
   protected Panel detailPanel;
   
-  public ProcessDefinitionDetailPanel(String processDefinitionId) {
+  public ProcessDefinitionDetailPanel(String processDefinitionId, FlowPage flowPage) {
     super();
     setSizeFull();
     addStyleName(Reindeer.LAYOUT_WHITE);
     
+    this.flowPage = flowPage;
     this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
     this.processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(processDefinitionId).singleResult();
     
@@ -82,7 +86,7 @@ public class ProcessDefinitionDetailPanel extends HorizontalLayout {
     actionsContainer.setSpacing(true);
     
     Button startFlowAction = new Button("Start flow");
-    startFlowAction.addListener(new StartFlowClickListener(processDefinition));
+    startFlowAction.addListener(new StartFlowClickListener(processDefinition, flowPage));
     
     actionsContainer.addComponent(startFlowAction);
     
@@ -171,5 +175,17 @@ public class ProcessDefinitionDetailPanel extends HorizontalLayout {
     Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
     emptySpace.setSizeUndefined();
     container.addComponent(emptySpace);
+  }
+
+
+  protected void showStartForm(StartFormData startFormData) {
+    // TODO: Create cleaner way of replacing components
+    detailPanel.removeAllComponents();
+    initName();
+    initCategory();
+    
+    FormPropertiesComponent formPropertiesComponent = new FormPropertiesComponent();
+    formPropertiesComponent.setFormProperties(startFormData.getFormProperties());
+    detailPanel.addComponent(formPropertiesComponent);
   }
 }
