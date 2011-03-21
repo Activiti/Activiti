@@ -29,5 +29,10 @@
       <listener-class>org.activiti.explorer.servlet.BootProcessEngineContextListener</listener-class>
     </listener>
     
+    <!-- Session timeout on one day -->
+    <session-config>
+      <session-timeout>480</session-timeout>
+    </session-config>
+    
     
 </web-app>

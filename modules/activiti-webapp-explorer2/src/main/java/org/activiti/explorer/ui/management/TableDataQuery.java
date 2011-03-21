@@ -34,7 +34,6 @@ public class TableDataQuery extends AbstractLazyLoadingQuery<Map<String, Object>
   }
 
   protected List<Map<String, Object>> loadBeans(int startIndex, int count) {
-    System.out.println("Loading " + startIndex);
     return managementService.createTablePageQuery().tableName(tableName).listPage(startIndex, count).getRows();
   }
 

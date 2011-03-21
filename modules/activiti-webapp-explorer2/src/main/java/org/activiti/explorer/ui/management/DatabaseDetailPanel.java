@@ -39,7 +39,6 @@ public class DatabaseDetailPanel extends VerticalLayout {
     this.tableName = tableName;
     this.managementService = ProcessEngines.getDefaultProcessEngine().getManagementService();
     
-//    addStyleName(Reindeer.LAYOUT_WHITE);
     addStyleName(Constants.STYLE_DATABASE_DETAILS);
     setSizeFull();
     
@@ -64,6 +63,7 @@ public class DatabaseDetailPanel extends VerticalLayout {
     data.setWidth("95%");
     data.setHeight("80%");
     data.addStyleName(Constants.STYLE_DATABASE_TABLE_ROW);
+    data.addStyleName(Reindeer.TABLE_STRONG);
     setExpandRatio(data, 1.0f);
 
     LazyLoadingQuery lazyLoadingQuery = new TableDataQuery(tableName, managementService);

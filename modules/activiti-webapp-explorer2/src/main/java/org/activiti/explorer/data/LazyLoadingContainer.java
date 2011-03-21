@@ -151,6 +151,10 @@ public class LazyLoadingContainer implements Container.Indexed, Container.Sortab
     return new Integer(index);
   }  
   
+  // Special operation to support accessing a page straight from an URL
+//  public int getIndexForObjectId(Object id) {
+//    
+//  }
   
   // Unsupported Operations ----------------------------------------------------------------------
   

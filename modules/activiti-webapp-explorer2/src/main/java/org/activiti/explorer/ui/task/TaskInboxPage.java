@@ -13,8 +13,10 @@
 package org.activiti.explorer.ui.task;
 
 import org.activiti.explorer.Constants;
+import org.activiti.explorer.Images;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
+import org.activiti.explorer.ui.ThemeImageColumnGenerator;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -28,8 +30,16 @@ import com.vaadin.ui.Table;
 public class TaskInboxPage extends TaskPage {
   
   private static final long serialVersionUID = 652000311912640606L;
-
+  
   public TaskInboxPage() {
+    addTaskList();
+    selectTask(0);
+  }
+  
+  /**
+   * Constructor called when page is accessed straight through the url, eg. /task/id=123
+   */
+  public TaskInboxPage(String taskId) {
     addTaskList();
   }
   
@@ -50,24 +60,28 @@ public class TaskInboxPage extends TaskPage {
       private static final long serialVersionUID = 8811553575319455854L;
       public void valueChange(ValueChangeEvent event) {
         Item item = taskTable.getItem(event.getProperty().getValue()); // the value of the property is the itemId of the table entry
-        TaskListEntry taskListEntry = (TaskListEntry) item.getItemProperty("component").getValue();
-        mainSplitPanel.setSecondComponent(new TaskDetailPanel(taskListEntry.getTask().getId()));
+        String taskId = (String) item.getItemProperty("id").getValue();
+        mainSplitPanel.setSecondComponent(new TaskDetailPanel(taskId));
       }
     });
     
-    LazyLoadingQuery lazyLoadingQuery = new TaskQuery(taskService, taskTable);
+    LazyLoadingQuery lazyLoadingQuery = new TaskListQuery(taskService, taskTable);
     LazyLoadingContainer lazyLoadingContainer = new LazyLoadingContainer(lazyLoadingQuery, 10);
     taskTable.setContainerDataSource(lazyLoadingContainer);
     
     // Create column header
-    taskTable.addContainerProperty("component", TaskListEntry.class, null);
+    taskTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.TASK));
+    taskTable.setColumnWidth("icon", 32);
+    
+    taskTable.addContainerProperty("name", String.class, null);
     taskTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
     
     mainSplitPanel.setFirstComponent(taskTable);
-    
-    // Select first task
-    if (taskTable.getContainerDataSource().size() > 0) {
-      taskTable.select(0);
+  }
+  
+  public void selectTask(int index) {
+    if (taskTable.getContainerDataSource().size() > index) {
+      taskTable.select(index);
     }
   }
 

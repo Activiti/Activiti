@@ -12,7 +12,7 @@
  */
 package org.activiti.explorer.ui.management;
 
-import java.util.Map;
+import java.util.TreeMap;
 
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngines;
@@ -70,7 +70,7 @@ public class DatabasePage extends ManagementPage {
   }
   
   protected void populateTableList() {
-    Map<String, Long> tables = managementService.getTableCount();
+    TreeMap<String, Long> tables = new TreeMap<String, Long>(managementService.getTableCount()); // treemap because we want to sort it on name
     for (String tableName : tables.keySet()) {
       Item item = tableList.addItem(tableName);
       item.getItemProperty("tableName").setValue(tableName + " (" + tables.get(tableName) + ")");

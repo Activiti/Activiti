@@ -12,7 +12,6 @@
  */
 package org.activiti.explorer.ui.task;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.TaskService;
@@ -26,30 +25,21 @@ import com.vaadin.ui.Table;
 /**
  * @author Joram Barrez
  */
-public class TaskQuery extends AbstractLazyLoadingQuery<TaskListEntry> {
+public class TaskListQuery extends AbstractLazyLoadingQuery<Task> {
   
   protected TaskService taskService;
-  protected Table taskTable;
   protected LazyLoadingContainer lazyLoadingContainer;
   
-  public TaskQuery(TaskService taskService, Table taskTable) {
+  public TaskListQuery(TaskService taskService, Table taskTable) {
     this.taskService = taskService;
-    this.taskTable = taskTable;
   }
 
   public int size() {
     return (int) taskService.createTaskQuery().count();
   }
   
-  public List<TaskListEntry> loadBeans(int start, int count) {
-    List<Task> tasks = taskService.createTaskQuery().listPage(start, count);
-
-    List<TaskListEntry> taskListEntries = new ArrayList<TaskListEntry>();
-    int startIndex = start;
-    for (int i=0; i<tasks.size(); i++) {
-      taskListEntries.add(new TaskListEntry(taskTable, startIndex + i, tasks.get(i))); // item id is the actual numerical index in the container
-    }
-    return taskListEntries;
+  public List<Task> loadBeans(int start, int count) {
+   return taskService.createTaskQuery().orderByTaskId().asc().listPage(start, count);
   }
   
 }
