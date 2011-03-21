@@ -1,6 +1,9 @@
 alter table ACT_HI_DETAIL 
 add DUE_DATE_ timestamp;
 
+alter table ACT_HI_TASKINST 
+add DUE_DATE_ timestamp;
+
 create table ACT_HI_COMMENT (
     ID_ varchar(64) not null,
     TIME_ timestamp not null,
