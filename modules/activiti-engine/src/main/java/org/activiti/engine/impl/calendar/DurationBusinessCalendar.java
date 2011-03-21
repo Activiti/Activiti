@@ -32,14 +32,8 @@ public class DurationBusinessCalendar implements BusinessCalendar {
 
   public Date resolveDuedate(String duedate) {
     try {
-      DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
-      Duration duration = datatypeFactory.newDuration(duedate);
-      
-      Calendar calendar = new GregorianCalendar();
-      calendar.setTime(ClockUtil.getCurrentTime());
-      duration.addTo(calendar);
-      
-      return calendar.getTime();
+      DurationHelper dh = new DurationHelper(duedate);
+      return dh.getDateAfter();
     } catch (Exception e) {
       throw new ActivitiException("couldn't resolve duedate: "+e.getMessage(), e);
     }

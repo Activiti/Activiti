@@ -47,7 +47,7 @@ public class TimerEntity extends JobEntity {
   }
 
   private TimerEntity(TimerEntity te) {
-    jobHandlerConfiguration =te.jobHandlerConfiguration;
+    jobHandlerConfiguration = te.jobHandlerConfiguration;
     jobHandlerType = te.jobHandlerType;
     isExclusive = te.isExclusive;
     repeat = te.repeat;
@@ -70,13 +70,15 @@ public class TimerEntity extends JobEntity {
       delete();
     } else {
       delete();
-      TimerEntity te = new TimerEntity(this);
-      te.setDuedate(calculateRepeat());
-      
-      Context
-          .getCommandContext()
-          .getTimerSession()
-          .schedule(te);
+      Date newTimer = calculateRepeat();
+      if (newTimer != null) {
+        TimerEntity te = new TimerEntity(this);
+        te.setDuedate(newTimer);
+        Context
+            .getCommandContext()
+            .getTimerSession()
+            .schedule(te);
+      }
     }
 
   }

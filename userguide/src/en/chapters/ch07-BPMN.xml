@@ -735,8 +735,86 @@ public class TenMinuteTutorial {
 	     
 	    </para>
 	   
-	  </section>
-	  
+
+      <section id="timerEventDefinitions">
+          <title>Timer events definitions</title>
+          <para>Timer events are events which are triggered by defined timer. They can be used as
+          <link linkend="bpmnTimerStartEvent">start event</link>,
+              <link linkend="bpmnIntermediateCatchingEvent">intermediate event</link>
+          or <link linkend="bpmnTimerBoundaryEvent">boundary event</link></para>
+
+          <para>
+              Timer definition must have exactly one element from the following:
+              <itemizedlist>
+                  <listitem>
+                      <para><emphasis role="bold">timeDate</emphasis>. This format specifies fixed date in <ulink url="http://en.wikipedia.org/wiki/ISO_8601#Dates">ISO 8601</ulink> format, when trigger will be fired. Example:
+
+                      <programlisting>
+&lt;timerEventDefinition&gt;
+    &lt;timeDate&gt;2011-03-11T12:13:14&lt;/timeDate&gt;
+&lt;/timerEventDefinition&gt;</programlisting>
+                      </para>
+                  </listitem>
+                  <listitem>
+                      <para>
+                        <emphasis role="bold">timeDuration</emphasis>. To specify how long the timer should run before it is fired, a <emphasis>timeDuration</emphasis>
+                        can be specified as sub-element of <emphasis>timerEventDefinition</emphasis>. The format
+                        used is the <ulink url="http://en.wikipedia.org/wiki/ISO_8601#Durations">ISO 8601</ulink>
+                        format (as required by the BPMN 2.0 specification). Example (interval lasting 10 days):
+                      <programlisting>
+&lt;timerEventDefinition&gt;
+    &lt;timeDuration&gt;P10D&lt;/timeDuration&gt;
+&lt;/timerEventDefinition&gt;</programlisting>
+
+                      </para>
+                  </listitem>
+                  <listitem>
+                      <para><emphasis role="bold">timeCycle</emphasis>. Specifies repeating interval, which can
+                          be useful for starting process periodically, or for sending multiple reminders for overdue user task. Time cycle element can be in two formats. First is the format of recurring time duration,
+                          as specified by <ulink url="http://en.wikipedia.org/wiki/ISO_8601#Repeating_intervals">ISO 8601</ulink> standard. Example (3 repeating intervals, each lasting 10 hours):
+                          <programlisting>
+&lt;timerEventDefinition&gt;
+    &lt;timeCycle&gt;R3/PT10H&lt;/timeCycle&gt;
+&lt;/timerEventDefinition&gt;</programlisting>
+                      </para>
+                      <para>Additionally, you can specify time cycle using cron expressions, example below shows trigger firing every 5 minutes,
+                          starting at full hour:
+                          <programlisting>
+0 0/5 * * * ?</programlisting>
+                          Please see <ulink url="http://www.quartz-scheduler.org/docs/tutorials/crontrigger.html">tutorial</ulink>
+                          for using cron expressions.
+                      </para>
+                      <para>
+                            <emphasis role="bold">Note:</emphasis> The first symbol denotes seconds, not minutes as in normal Unix cron.
+                      </para>
+                      <para>The recurring time duration is better suited for handling relative timers, which are calculated with respect to
+                      some particular point in time (e.g. time when user task was started), while cron expressions can handle absolute
+                      timers - which is particularly useful for <link linkend="timerStartEventDescription">timer start events</link>.</para>
+                  </listitem>
+              </itemizedlist>
+          </para>
+          <para>
+            You can use expressions for the timer event definitions, by doing so you can influence the timer defintion
+            based on process variables. The process variables must contain the ISO 8601 (or cron for cycle type) string for appropriate timer type.
+  <programlisting>
+  &lt;boundaryEvent id=&quot;escalationTimer&quot; cancelActivity=&quot;true&quot; attachedToRef=&quot;firstLineSupport&quot;&gt;
+     <emphasis role="bold">&lt;timerEventDefinition&gt;
+      &lt;timeDuration&gt;${duration}&lt;/timeDuration&gt;
+    &lt;/timerEventDefinition&gt;</emphasis>
+  &lt;/boundaryEvent&gt;
+  </programlisting>
+          </para>
+
+        <para>
+          <emphasis role="bold">Note:</emphasis> timers are only fired when
+          the job executor is enabled (i.e. <emphasis>jobExecutorActivate</emphasis>
+          needs to be set to <literal>true</literal> in the <literal>activiti.cfg.xml</literal>, since the job
+          executor is disabled by default).
+        </para>
+
+      </section>
+      </section>
+
 	  <section id="bpmnStartEvents">
 	  
 	   <title>Start events</title>
@@ -838,7 +916,72 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
       </section>
 
 		</section>
-		
+
+        <section id="bpmnTimerStartEvent">
+
+            <title>Timer start event</title>
+
+            <section id="timerStartEventDescription">
+
+        <title>Description</title>
+
+        <para>
+            A timer start event is used to create process instance at given time. It can be
+            used both for processes which should start only once and for processes that should
+            start in specific time intervals.
+        </para>
+
+        <para>
+          <emphasis>Note: </emphasis> a subprocess cannot have a timer start event.
+        </para>
+
+      </section>
+
+            <section id="timerStartEventGraphicalNotation">
+
+              <title>Graphical notation</title>
+
+              <para>
+                A none start event is visualized as a circle with clock inner icon.
+                <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.clock.start.event.png"/></imageobject></mediaobject>
+              </para>
+
+            </section>
+
+            <section id="timerStartEventXml">
+
+        <title>XML representation</title>
+
+        <para>
+          The XML representation of a timer start event is the normal
+          start event declaration, with timer definition subelement. Please refer to <link linkend="timerEventDefinitions">timer definitions</link> for configuration details.
+          for details on configuration details.
+         </para>
+           <para>Example: process will start 4 times, in 5 minute intervals, starting on 11th march 2011, 12:13
+           <programlisting>
+        &lt;startEvent id=&quot;theStart&quot;&gt;
+            &lt;timerEventDefinition&gt;
+                &lt;timeCycle&gt;R4/2011-03-11T12:13/PT5M&lt;/timeCycle&gt;
+            &lt;/timerEventDefinition&gt;
+        &lt;/startEvent&gt;
+           </programlisting>
+               </para>
+            <para>
+               Example: process will start once, on selected date
+           <programlisting>
+        &lt;startEvent id=&quot;theStart&quot;&gt;
+            &lt;timerEventDefinition&gt;
+                &lt;timeDate&gt;2011-03-11T12:13:14&lt;/timeDate&gt;
+            &lt;/timerEventDefinition&gt;
+        &lt;/startEvent&gt;
+           </programlisting>
+        </para>
+
+      </section>
+
+        </section>
+
+
 		<section id="bpmnEndEvent">
 		
 		  <title>End events</title>
@@ -3174,25 +3317,11 @@ public class MyTaskCreateListener implements TaskListener {
   &lt;/timerEventDefinition&gt;</emphasis>
 &lt;/boundaryEvent&gt;          
 </programlisting>
+
+        Please refer to <link linkend="timerEventDefinitions">timer event definition</link> for details on timer configuration.
         </para>
-        
+
         <para>
-          To specify how long the timer should run before it is fired, a <emphasis>timeDuration</emphasis>
-          can be specified as sub-element of <emphasis>timerEventDefinition</emphasis>. The format
-          used is the <ulink url="http://en.wikipedia.org/wiki/ISO_8601#Durations">ISO 8601</ulink>
-          format (as required by the BPMN 2.0 specification).
-        </para>
-        
-        <para>
-          You can use expressions for the timer duration, by doing so you can influence the timer duration
-          based on process variables. The process variables must contain the ISO 8601 string for the duration.
-<programlisting>
-&lt;boundaryEvent id=&quot;escalationTimer&quot; cancelActivity=&quot;true&quot; attachedToRef=&quot;firstLineSupport&quot;&gt;
-   <emphasis role="bold">&lt;timerEventDefinition&gt;
-    &lt;timeDuration&gt;${duration}&lt;/timeDuration&gt;
-  &lt;/timerEventDefinition&gt;</emphasis>
-&lt;/boundaryEvent&gt;          
-</programlisting>
           In the grafical representation, the line of the circle is dotted as you can see in this example above:
           
           <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.non.interrupting.boundary.timer.event.png"/></imageobject></mediaobject>
@@ -3415,7 +3544,7 @@ public class MyTaskCreateListener implements TaskListener {
             &lt;/timerEventDefinition&gt;</emphasis>
         &lt;/intermediateCatchEvent&gt;
                  </programlisting>
-              See <link linkend="bpmnTimerBoundaryEventXml">timer boundary event</link> for configuration details.
+              See <link linkend="timerEventDefinitions">timer event definitions</link> for configuration details.
 
               </para>
             </section>

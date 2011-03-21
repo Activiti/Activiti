@@ -99,6 +99,27 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
 
   }
 
+
+  @Deployment
+  public void testCycleWithLimitStartTimerEvent() throws Exception {
+    ClockUtil.setCurrentTime(new Date());
+
+    // After process start, there should be timer created
+    JobQuery jobQuery = managementService.createJobQuery();
+    assertEquals(1, jobQuery.count());
+
+    moveByMinutes(5);
+    ProcessInstanceQuery piq = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExampleCycle");
+    assertEquals(1, piq.count());
+    assertEquals(1, jobQuery.count());
+
+    moveByMinutes(5);
+    assertEquals(2, piq.count());
+    assertEquals(0, jobQuery.count());
+
+  }
+
+
   //we cannot use waitForExecutor... method since there will always be one job left
   private void moveByMinutes(int minutes) throws Exception {
     ClockUtil.setCurrentTime(new Date(ClockUtil.getCurrentTime().getTime() + ((minutes * 60 * 1000) + 5000)));

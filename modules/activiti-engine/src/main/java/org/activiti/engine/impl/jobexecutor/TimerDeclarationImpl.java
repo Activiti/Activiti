@@ -21,9 +21,14 @@ import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.engine.impl.runtime.TimerEntity;
+import org.activiti.engine.impl.util.ClockUtil;
+import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.regex.Pattern;
 
 
 /**
@@ -33,9 +38,8 @@ public class TimerDeclarationImpl implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  protected Expression durationDescription;
-  protected Expression dueDateDescription;
-  protected Expression cycleDescription;
+  protected Expression description;
+  protected TimerDeclarationType type;
 
   protected String jobHandlerType;
   protected String jobHandlerConfiguration = null;
@@ -43,11 +47,10 @@ public class TimerDeclarationImpl implements Serializable {
   protected boolean exclusive = TimerEntity.DEFAULT_EXCLUSIVE;
   protected int retries = TimerEntity.DEFAULT_RETRIES;
 
-  public TimerDeclarationImpl(Expression durationExpression, Expression dueDateExpression, Expression cycleExpression, String jobHandlerType) {
-    this.durationDescription = durationExpression;
-    this.dueDateDescription = dueDateExpression;
+  public TimerDeclarationImpl(Expression expression, TimerDeclarationType type, String jobHandlerType) {
     this.jobHandlerType = jobHandlerType;
-    this.cycleDescription = cycleExpression;
+    this.description = expression;
+    this.type= type;
   }
 
   public String getJobHandlerType() {
@@ -86,31 +89,17 @@ public class TimerDeclarationImpl implements Serializable {
     this.retries = retries;
   }
 
-  public Expression getDuedateDescriptionExpression() {
-    return durationDescription;
-  }
-
-  public String getDuedateDescriptionValue(VariableScope variableScope) {
-    return (String) durationDescription.getValue(variableScope);
-  }
-//  public void setDuedateDescription(String durationDescription) {
-//    this.durationDescription = durationDescription;
-//  }
-
   public void setJobHandlerType(String jobHandlerType) {
     this.jobHandlerType = jobHandlerType;
   }
 
   public TimerEntity prepareTimerEntity(ExecutionEntity executionEntity) {
-    String calendarName = dueDateDescription == null ? (durationDescription == null ? CycleBusinessCalendar.NAME : DurationBusinessCalendar.NAME) : DueDateBusinessCalendar.NAME ;
-    Expression expression = dueDateDescription == null ? (durationDescription == null ? cycleDescription : durationDescription) : dueDateDescription;
-
     BusinessCalendar businessCalendar = Context
         .getProcessEngineConfiguration()
         .getBusinessCalendarManager()
-        .getBusinessCalendar(calendarName);
+        .getBusinessCalendar(type.caledarName);
 
-    String dueDateString = executionEntity == null ? expression.getExpressionText() : (String) expression.getValue(executionEntity);
+    String dueDateString = executionEntity == null ? description.getExpressionText() : (String) description.getValue(executionEntity);
     Date duedate = businessCalendar.resolveDuedate(dueDateString);
 
     TimerEntity timer = new TimerEntity(this);
@@ -118,10 +107,18 @@ public class TimerDeclarationImpl implements Serializable {
     if (executionEntity != null) {
       timer.setExecution(executionEntity);
     }
-    if (cycleDescription != null) {
-      String cycleString = executionEntity == null ? cycleDescription.getExpressionText() : (String) cycleDescription.getValue(executionEntity);
-      timer.setRepeat(cycleString);
+    if (type == TimerDeclarationType.CYCLE) {
+      String prepared = prepareRepeat(dueDateString);
+      timer.setRepeat(prepared);
+
     }
     return timer;
+  }
+  private String prepareRepeat(String dueDate) {
+    if (dueDate.startsWith("R") && dueDate.split("/").length==2) {
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+      return dueDate.replace("/","/"+sdf.format(ClockUtil.getCurrentTime())+"/");
+    }
+    return dueDate;
   }
 }

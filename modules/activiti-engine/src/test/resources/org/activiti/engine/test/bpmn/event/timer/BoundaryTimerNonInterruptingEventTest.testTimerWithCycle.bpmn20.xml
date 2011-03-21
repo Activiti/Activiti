@@ -14,7 +14,7 @@
 
         <boundaryEvent id="timer" attachedToRef="task" cancelActivity="false">
             <timerEventDefinition>
-                <timeCycle>PT1H</timeCycle>
+                <timeCycle>R/PT1H</timeCycle>
             </timerEventDefinition>
         </boundaryEvent>
         <sequenceFlow id="flow3" sourceRef="timer" targetRef="timerFiredTask"/>

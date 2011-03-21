@@ -15,6 +15,7 @@ package org.activiti.engine.impl.calendar;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.util.ClockUtil;
 
+import javax.xml.datatype.Duration;
 import java.text.ParseException;
 import java.util.Date;
 
@@ -25,25 +26,17 @@ public class CycleBusinessCalendar implements BusinessCalendar {
 
   public Date resolveDuedate(String duedateDescription) {
     try {
-      Date period = tryToParsePeriod(duedateDescription);
-      if (period != null) {
-        return period;
+      if (duedateDescription.startsWith("R")) {
+        return new DurationHelper(duedateDescription).getDateAfter();
+      } else {
+        CronExpression ce = new CronExpression(duedateDescription);
+        return ce.getTimeAfter(ClockUtil.getCurrentTime());
       }
-      CronExpression ce = new CronExpression(duedateDescription);
-      return ce.getTimeAfter(ClockUtil.getCurrentTime());
 
-    } catch (ParseException e) {
+    } catch (Exception e) {
       throw new ActivitiException("Failed to parse cron expression: "+duedateDescription, e);
     }
 
-
   }
 
-  private Date tryToParsePeriod(String duedateExpression) {
-    try {
-      return new DurationBusinessCalendar().resolveDuedate(duedateExpression);
-    } catch (ActivitiException e) {
-      return null;
-    }
-  }
 }

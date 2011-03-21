@@ -58,10 +58,7 @@ import org.activiti.engine.impl.form.DefaultStartFormHandler;
 import org.activiti.engine.impl.form.DefaultTaskFormHandler;
 import org.activiti.engine.impl.form.StartFormHandler;
 import org.activiti.engine.impl.form.TaskFormHandler;
-import org.activiti.engine.impl.jobexecutor.TimerCatchIntermediateEventJobHandler;
-import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
-import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
-import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
+import org.activiti.engine.impl.jobexecutor.*;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
@@ -1641,33 +1638,35 @@ public class BpmnParse extends Parse {
 
   private TimerDeclarationImpl parseTimer(Element timerEventDefinition, ScopeImpl timerActivity, String jobHandlerType) {
     // TimeDate
-    Element timeDate = timerEventDefinition.element("timeDate");
-    Expression timeDateExpression = null;
-    if (timeDate != null) {
-      String timeDateText = timeDate.getText().trim();
-      timeDateExpression = expressionManager.createExpression(timeDateText);
-    }
+    TimerDeclarationType type = TimerDeclarationType.DATE;
+    Expression expression = parseExpression(timerEventDefinition, "timeDate");
+
     // TimeCycle
-    Element timeCycle = timerEventDefinition.element("timeCycle");
-    Expression timeCycleExpression = null;
-    if (timeCycle != null) {
-      String timeCycleText = timeCycle.getText().trim();
-      timeCycleExpression = expressionManager.createExpression(timeCycleText);
+    if (expression == null) {
+      type = TimerDeclarationType.CYCLE;
+      expression = parseExpression(timerEventDefinition, "timeCycle");
     }
 
     // TimeDuration
-    Element timeDuration = timerEventDefinition.element("timeDuration");
-    Expression timeDurationExpression = null;
-    if (timeDuration != null) {
-      String timeDurationText = timeDuration.getText().trim();
-      timeDurationExpression = expressionManager.createExpression(timeDurationText);
+    if (expression == null) {
+      type = TimerDeclarationType.DURATION;
+      expression = parseExpression(timerEventDefinition, "timeDuration");
     }
 
     // Parse the timer declaration
     // TODO move the timer declaration into the bpmn activity or next to the TimerSession
-    TimerDeclarationImpl timerDeclaration = new TimerDeclarationImpl(timeDurationExpression, timeDateExpression, timeCycleExpression,  jobHandlerType);
+    TimerDeclarationImpl timerDeclaration = new TimerDeclarationImpl(expression, type,  jobHandlerType);
     timerDeclaration.setJobHandlerConfiguration(timerActivity.getId());
     return timerDeclaration;
+  }
+
+  private Expression parseExpression(Element parent, String name) {
+    Element value = parent.element(name);
+    if (value != null) {
+      String expressionText = value.getText().trim();
+      return expressionManager.createExpression(expressionText);
+    }
+    return null;
   }
 
   public void parseBoundaryErrorEventDefinition(Element errorEventDefinition, boolean interrupting,
