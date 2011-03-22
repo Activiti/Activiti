@@ -13,8 +13,15 @@
 
 package org.activiti.explorer.ui.task;
 
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.TaskService;
 import org.activiti.explorer.Constants;
+import org.activiti.explorer.ExplorerApplication;
 import org.activiti.explorer.ui.MenuBar;
+
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 
 
 
@@ -24,18 +31,22 @@ import org.activiti.explorer.ui.MenuBar;
 public class TaskMenuBar extends MenuBar {
   
   private static final long serialVersionUID = 7957488256766569264L;
+  
+  protected TaskService taskService;
 
   public TaskMenuBar() {
-    super();
+    this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
+    
     addStyleName(Constants.STYLE_MENUBAR);
     
-    createMenuBarButton("Inbox (12)");
-    createMenuBarButton("Todo (4)");
-    createMenuBarButton("Planned (9)");
-    createMenuBarButton("Queued (58)");
-    createMenuBarButton("Delegated (2)");
-    createMenuBarButton("Archived");
+    Button inboxButton = createMenuBarButton("Inbox");
+    inboxButton.addListener(new ClickListener() {
+      public void buttonClick(ClickEvent event) {
+        ExplorerApplication.getCurrent().switchView(new TaskInboxPage());
+      }
+    });
+
     fillRemainingSpace();
   }
-
+  
 }

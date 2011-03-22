@@ -47,7 +47,6 @@ public class TaskDetailPanel extends HorizontalLayout {
   protected Panel rightPanel;
   
   public TaskDetailPanel(String taskId) {
-    super();
     setSizeFull();
     addStyleName(Reindeer.LAYOUT_WHITE);
     
@@ -96,13 +95,6 @@ public class TaskDetailPanel extends HorizontalLayout {
   }
 
   protected void initTimeDetails() {
-    // Label detailsHeader = new Label("Details");
-    // detailsHeader.addStyleName(Reindeer.LABEL_H2);
-    // addComponent(detailsHeader);
-    // Label horizontalLine = new Label("<hr />", Label.CONTENT_XHTML);
-    // horizontalLine.addStyleName(Constants.STYLE_HORIZONTAL_SEPARATOR);
-    // addComponent(horizontalLine);
-
     HorizontalLayout timeDetailsLayout = new HorizontalLayout();
     timeDetailsLayout.setSpacing(true);
     timeDetailsLayout.setSizeUndefined();

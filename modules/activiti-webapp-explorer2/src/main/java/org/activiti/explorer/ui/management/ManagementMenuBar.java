@@ -15,6 +15,8 @@ package org.activiti.explorer.ui.management;
 import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApplication;
 import org.activiti.explorer.ui.MenuBar;
+import org.activiti.explorer.ui.management.db.DatabasePage;
+import org.activiti.explorer.ui.management.deployment.DeploymentPage;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -34,12 +36,21 @@ public class ManagementMenuBar extends MenuBar {
     
     addStyleName(Constants.STYLE_MENUBAR);
     
-    Button database = createMenuBarButton("Database");
-    database.addListener(new ClickListener() {
+    Button databaseButton = createMenuBarButton("Database");
+    databaseButton.addListener(new ClickListener() {
       public void buttonClick(ClickEvent event) {
         ExplorerApplication.getCurrent().switchView(new DatabasePage());
       }
     });
+    
+    Button deploymentButton = createMenuBarButton("Deployments");
+    deploymentButton.addListener(new ClickListener() {
+      public void buttonClick(ClickEvent event) {
+        ExplorerApplication.getCurrent().switchView(new DeploymentPage());
+      }
+    });
+    
+    fillRemainingSpace();
   }
   
 }

@@ -10,13 +10,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.explorer.ui.management;
+package org.activiti.explorer.ui.management.db;
 
 import java.util.TreeMap;
 
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.explorer.Images;
+import org.activiti.explorer.ui.management.ManagementPage;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -40,7 +41,6 @@ public class DatabasePage extends ManagementPage {
   protected Table tableList;
   
   public DatabasePage() {
-    super();
     this.managementService = ProcessEngines.getDefaultProcessEngine().getManagementService();
     
     addTableList();

@@ -47,20 +47,13 @@ public class TaskListQuery extends AbstractLazyLoadingQuery {
     List<Task> tasks = createBaseQuery().listPage(start, count);
     List<Item> items = new ArrayList<Item>();
     for (Task task : tasks) {
-      items.add(createTaskListItem(task));
+      items.add(new TaskListItem(task));
     }
     return items;
   }
   
   public Item loadSingleResult(String id) {
-    return createTaskListItem(createBaseQuery().taskId(id).singleResult());
-  }
-  
-  protected TaskListItem createTaskListItem(Task task) {
-    TaskListItem taskListItem = new TaskListItem();
-    taskListItem.addItemProperty("id", new ObjectProperty<String>(task.getId()));
-    taskListItem.addItemProperty("name", new ObjectProperty<String>(task.getName()));
-    return taskListItem;
+    return new TaskListItem(createBaseQuery().taskId(id).singleResult());
   }
   
   protected TaskQuery createBaseQuery() {
@@ -75,6 +68,11 @@ public class TaskListQuery extends AbstractLazyLoadingQuery {
   class TaskListItem extends PropertysetItem implements Comparable<TaskListItem>{
 
     private static final long serialVersionUID = 1L;
+    
+    public TaskListItem(Task task) {
+      addItemProperty("id", new ObjectProperty<String>(task.getId()));
+      addItemProperty("name", new ObjectProperty<String>(task.getName()));
+    }
 
     public int compareTo(TaskListItem other) {
       String taskId = (String) getItemProperty("id").getValue();

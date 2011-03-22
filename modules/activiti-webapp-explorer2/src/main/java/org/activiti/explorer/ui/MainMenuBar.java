@@ -15,7 +15,7 @@ package org.activiti.explorer.ui;
 
 import org.activiti.explorer.ExplorerApplication;
 import org.activiti.explorer.ui.flow.FlowPage;
-import org.activiti.explorer.ui.management.DatabasePage;
+import org.activiti.explorer.ui.management.db.DatabasePage;
 import org.activiti.explorer.ui.task.TaskInboxPage;
 
 import com.vaadin.ui.Button;

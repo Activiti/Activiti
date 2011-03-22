@@ -28,6 +28,8 @@ public class Images {
   public static final Resource CLOCK = new ThemeResource("img/clock.png");
   public static final Resource PEOPLE = new ThemeResource("img/people.png");
   public static final Resource PROCESS = new ThemeResource("img/process.png");
+  public static final Resource PROCESS_48 = new ThemeResource("img/process_48.png");
+  public static final Resource RESOURCE = new ThemeResource("img/resource.png");
   
   // Accounts
   public static final Resource SKYPE = new ThemeResource("img/skype.png");
