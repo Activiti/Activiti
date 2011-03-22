@@ -16,10 +16,13 @@ import java.util.TreeMap;
 
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngines;
+import org.activiti.explorer.Images;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.terminal.Resource;
+import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Table;
 
 
@@ -64,7 +67,9 @@ public class DatabasePage extends ManagementPage {
       }
     });
     
-    // Create column header
+    // Create column headers
+    tableList.addContainerProperty("icon", Embedded.class, null);
+    tableList.setColumnWidth("icon", 32);
     tableList.addContainerProperty("tableName", String.class, null);
     tableList.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
   }
@@ -73,9 +78,25 @@ public class DatabasePage extends ManagementPage {
     TreeMap<String, Long> tables = new TreeMap<String, Long>(managementService.getTableCount()); // treemap because we want to sort it on name
     for (String tableName : tables.keySet()) {
       Item item = tableList.addItem(tableName);
+      item.getItemProperty("icon").setValue(determineTableIcon(tableName));
       item.getItemProperty("tableName").setValue(tableName + " (" + tables.get(tableName) + ")");
     }
   }
   
-
+  protected Embedded determineTableIcon(String tableName) {
+      Resource image = null;
+      if (tableName.startsWith("ACT_HI")) {
+        image = Images.DATABASE_HISTORY;
+      } else if (tableName.startsWith("ACT_GE")) {
+        image = Images.DATABASE_GENERAL;
+      } else if (tableName.startsWith("ACT_RU")) {
+        image = Images.DATABASE_RUNTIME;
+      } else if (tableName.startsWith("ACT_RE")) {
+        image = Images.DATABASE_REPOSITORY;
+      } else if (tableName.startsWith("ACT_ID")) {
+        image = Images.DATABASE_IDENTITY;
+      }
+      return new Embedded(null, image);
+    } 
+    
 }

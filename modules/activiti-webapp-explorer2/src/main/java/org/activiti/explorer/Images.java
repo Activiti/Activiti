@@ -25,11 +25,20 @@ public class Images {
   public static final Resource USER = new ThemeResource("img/user-icon.png");
   public static final Resource WHITE_DIVIDER = new ThemeResource("img/divider-white.png");
   public static final Resource TASK = new ThemeResource("img/task.png");
-  public static final Resource SKYPE = new ThemeResource("img/skype.png");
-  public static final Resource GOOGLE = new ThemeResource("img/google.png");
-  public static final Resource ALFRESCO = new ThemeResource("img/alfresco.gif");
   public static final Resource CLOCK = new ThemeResource("img/clock.png");
   public static final Resource PEOPLE = new ThemeResource("img/people.png");
   public static final Resource PROCESS = new ThemeResource("img/process.png");
+  
+  // Accounts
+  public static final Resource SKYPE = new ThemeResource("img/skype.png");
+  public static final Resource GOOGLE = new ThemeResource("img/google.png");
+  public static final Resource ALFRESCO = new ThemeResource("img/alfresco.gif");
+  
+  // Database
+  public static final Resource DATABASE_GENERAL = new ThemeResource("img/database_general.png");
+  public static final Resource DATABASE_HISTORY = new ThemeResource("img/database_history.png");
+  public static final Resource DATABASE_IDENTITY = new ThemeResource("img/database_identity.png");
+  public static final Resource DATABASE_REPOSITORY = new ThemeResource("img/database_repository.png");
+  public static final Resource DATABASE_RUNTIME = new ThemeResource("img/database_runtime.png");
 
 }
