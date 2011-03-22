@@ -172,7 +172,7 @@ public class SpecificationDoneGenerateProjectListener implements CycleCompensati
         writer.append("</li>");
       }
       writer.append("</ul>");
-      cycleEmailDispatcher.sendEmail(AbstractProcessSolutionStateEmailListener.fromEmailAddress, user.getEmail(), "Technical Model created", writer.toString());
+      cycleEmailDispatcher.sendEmail(getFromEmailAddress(), user.getEmail(), "Technical Model created", writer.toString());
     }
   }
 
@@ -192,8 +192,12 @@ public class SpecificationDoneGenerateProjectListener implements CycleCompensati
         writer.append("</li>");
       }
       writer.append("</ul>");
-      cycleEmailDispatcher.sendEmail(AbstractProcessSolutionStateEmailListener.fromEmailAddress, user.getEmail(), "Technical Models updated/created", writer.toString());
+      cycleEmailDispatcher.sendEmail(getFromEmailAddress(), user.getEmail(), "Technical Models updated/created", writer.toString());
     }
+  }
+  
+  protected String getFromEmailAddress() {
+    return CycleComponentFactory.getCycleComponentInstance(CycleNotificationEmailAddresses.class).getFromEmailAddress();
   }
 
   public void compensateEvent(SpecificationDoneEvent event) {

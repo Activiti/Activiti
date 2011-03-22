@@ -131,8 +131,12 @@ public class ImplementationDoneUpdateOperationalProcessModels implements CycleEv
         writer.append("</li>");
       }
       writer.append("</ul>");
-      cycleEmailDispatcher.sendEmail(AbstractProcessSolutionStateEmailListener.fromEmailAddress, user.getEmail(), "Operational models updated", writer.toString());
+      cycleEmailDispatcher.sendEmail(getFromEmailAddress(), user.getEmail(), "Operational models updated", writer.toString());
     }
+  }
+  
+  protected String getFromEmailAddress() {
+    return CycleComponentFactory.getCycleComponentInstance(CycleNotificationEmailAddresses.class).getFromEmailAddress();
   }
 
   protected ProcessSolutionUtils getProcessSolutionUtils() {
