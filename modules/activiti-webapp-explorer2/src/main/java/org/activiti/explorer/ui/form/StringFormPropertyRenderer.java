@@ -16,9 +16,8 @@ package org.activiti.explorer.ui.form;
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.impl.form.StringFormType;
 
-import com.vaadin.ui.Component;
+import com.vaadin.ui.Field;
 import com.vaadin.ui.TextField;
-
 
 /**
  * @author Frederik Heremans
@@ -30,19 +29,16 @@ public class StringFormPropertyRenderer extends AbstractFormPropertyRenderer {
   }
 
   @Override
-  public Component getComponentProperty(FormProperty formProperty) {
-    Component component = null;
-    if(formProperty.isWritable()) {
-      // Writable string
-      TextField textField = new TextField();
-      if(formProperty.getValue() != null) {
-        textField.setValue(formProperty.getValue());
-      }
-      component = textField;
-    } else {
-      component = getDefaultReadonlyPropertyComponent(formProperty);
+  public Field getPropertyField(FormProperty formProperty) {
+    TextField textField = new TextField(getPropertyLabel(formProperty));
+    textField.setRequired(formProperty.isRequired());
+    textField.setEnabled(formProperty.isWritable());
+
+    if (formProperty.getValue() != null) {
+      textField.setValue(formProperty.getValue());
     }
-    return component;
+
+    return textField;
   }
 
 }

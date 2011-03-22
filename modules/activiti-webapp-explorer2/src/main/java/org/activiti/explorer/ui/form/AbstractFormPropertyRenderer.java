@@ -15,10 +15,8 @@ package org.activiti.explorer.ui.form;
 
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.form.FormType;
-import org.activiti.explorer.Constants;
 
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
+import com.vaadin.ui.Field;
 
 
 /**
@@ -36,33 +34,23 @@ public abstract class AbstractFormPropertyRenderer implements FormPropertyRender
     return formType;
   }
 
-  /**
-   * Returns a simple {@link Label} with the name of the form-property. Reverts
-   * to the property id if name is null.
-   */
-  public Component getPropertyLabel(FormProperty formProperty) {
-    Label propertyLabel = new Label();
-    propertyLabel.addStyleName(Constants.STYLE_FORMPROPERTY_LABEL);
+  public String getPropertyLabel(FormProperty formProperty) {
     if(formProperty.getName() != null) {
-      propertyLabel.setValue(formProperty.getName());
+      return formProperty.getName();
     } else {
-      propertyLabel.setValue(formProperty.getId());
+      return formProperty.getId();
     }
-    return propertyLabel;
   }
   
-  public abstract Component getComponentProperty(FormProperty formProperty);
-  
-  /**
-   * Gets the default component to render a read-only property value. This is
-   * a simple label with {@link Constants#STYLE_FORMPROPERTY_READONLY} applied.
-   */
-  protected Component getDefaultReadonlyPropertyComponent(FormProperty formProperty) {
-    Label readonlyValue = new Label();
-    readonlyValue.addStyleName(Constants.STYLE_FORMPROPERTY_READONLY);
-    if(formProperty.getValue() != null) {
-      readonlyValue.setValue(formProperty.getValue());
+  public String getFieldValue(FormProperty formProperty, Field field) {
+    // Just returns toString() on the value in the field
+    Object value = field.getValue();
+    if(value != null) {
+      return value.toString();
     }
-    return readonlyValue;
+    return null;
   }
+  
+  public abstract Field getPropertyField(FormProperty formProperty);
+  
 }

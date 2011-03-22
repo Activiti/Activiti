@@ -15,6 +15,8 @@ package org.activiti.engine.impl.form;
 
 import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
+
 
 /**
  * @author Tom Baeyens
@@ -41,14 +43,27 @@ public class EnumFormType extends AbstractFormType {
 
   @Override
   public Object convertFormValueToModelValue(String propertyValue) {
-    // TODO
-    return null;
+    validateValue(propertyValue);
+    return propertyValue;
   }
 
   @Override
   public String convertModelValueToFormValue(Object modelValue) {
-    // TODO
+    if(modelValue != null) {
+      if(!(modelValue instanceof String)) {
+        throw new ActivitiException("Model value should be a String");
+      }
+      validateValue((String) modelValue);
+    }
     return null;
+  }
+  
+  protected void validateValue(String value) {
+    if(value != null) {
+      if(values != null && !values.containsKey(value)) {
+        throw new ActivitiException("Invalid value for enum form property: " + value);
+      }
+    }
   }
 
 }

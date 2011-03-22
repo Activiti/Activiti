@@ -10,7 +10,8 @@
     
       <extensionElements>
         <activiti:formProperty id="string" name="String property" type="string" />
-        <activiti:formProperty id="readonly-string" name="Readonly string property" writable="false" type="string" />
+        <activiti:formProperty id="requiredstring" name="Required string property" type="string" required="true" />
+        <activiti:formProperty id="readonlystring" name="Readonly string property" writable="false" type="string" />
         
         <activiti:formProperty id="enum" name="Enum property" type="enum">
           <activiti:value id="left" name="Go Left" />
@@ -24,26 +25,36 @@
           <activiti:value id="up" name="Go Up" />
           <activiti:value id="down" name="Go Down" />
         </activiti:formProperty>
+         <activiti:formProperty id="requiredenum" name="Required enum property" type="enum" required="true">
+          <activiti:value id="left" name="Go Left" />
+          <activiti:value id="right" name="Go Right" />
+          <activiti:value id="up" name="Go Up" />
+          <activiti:value id="down" name="Go Down" />
+        </activiti:formProperty>
         
         <activiti:formProperty id="long" name="Long property" type="long" />
-        <activiti:formProperty id="readonly-long" name="Readonly long property" writable="false" type="long" />
+        <activiti:formProperty id="requiredlong" name="Required long property" type="long" required="true" />
+        <activiti:formProperty id="readonlylong" name="Readonly long property" writable="false" type="long" />
         
         <activiti:formProperty id="date" name="Date property" datePattern="dd-MM-yyyy" type="date" />
-        <activiti:formProperty id="readonly-date" name="Readonly date property" datePattern="dd-MM-yyyy" type="date" writable="false" />
+        <activiti:formProperty id="requireddate" name="Required date property" datePattern="dd-MM-yyyy" type="date" required="true" />
+        <activiti:formProperty id="readonlydate" name="Readonly date property" datePattern="dd-MM-yyyy" type="date" writable="false" />
       </extensionElements>
       
     </startEvent>
     <userTask id="usertask2" name="First task" activiti:assignee="${initiator}">
-      <documentation textFormat="text/plain">Perform the first task please</documentation>
+      <documentation textFormat="text/plain">${requiredstring} - ${requiredenum}</documentation>
     </userTask>
     <endEvent id="endevent2" name="End"></endEvent>
     <sequenceFlow id="flow3" name="" sourceRef="startevent2" targetRef="usertask2"></sequenceFlow>
     <sequenceFlow id="flow4" name="" sourceRef="usertask2" targetRef="usertask3"></sequenceFlow>
     <userTask id="usertask3" name="Second task" activiti:assignee="${initiator}">
-      <documentation textFormat="text/plain">Perform the second task please</documentation>
+      <documentation textFormat="text/plain">${requiredstring} - ${requiredenum}</documentation>
     </userTask>
     <sequenceFlow id="flow5" name="" sourceRef="usertask3" targetRef="endevent2"></sequenceFlow>
   </process>
+  
+  
   <bpmndi:BPMNDiagram id="BPMNDiagram_coolProcess">
     <bpmndi:BPMNPlane bpmnElement="coolProcess" id="BPMNPlane_coolProcess">
       <bpmndi:BPMNShape bpmnElement="startevent2" id="BPMNShape_startevent2">

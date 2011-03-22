@@ -16,7 +16,7 @@ package org.activiti.explorer.ui.form;
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.form.FormType;
 
-import com.vaadin.ui.Component;
+import com.vaadin.ui.Field;
 
 
 /**
@@ -26,16 +26,27 @@ import com.vaadin.ui.Component;
  */
 public interface FormPropertyRenderer {
 
+  /**
+   * The form type this renderer should be used for.
+   */
   Class<? extends FormType> getFormType();
+  
   /**
    * The component to show for the given form-property. Return null if
    * the form-property (and it's label) shouldn't be rendered. 
    */
-  Component getComponentProperty(FormProperty formProperty);
+  Field getPropertyField(FormProperty formProperty);
   
   /**
    * The label to use for the form-property.
    */
-  Component getPropertyLabel(FormProperty formProperty);
+  String getPropertyLabel(FormProperty formProperty);
   
+  /**
+   * Extract the string representation of the value set in the field, for the 
+   * given form property. This value is used as form property value when submitting
+   * the (start)form to activiti. The field is the one created by 
+   * {@link FormPropertyRenderer#getPropertyField(FormProperty)}.
+   */
+  String getFieldValue(FormProperty formProperty, Field field);
 }

@@ -13,20 +13,25 @@
 
 package org.activiti.explorer.ui.form;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.form.FormType;
 
+import com.vaadin.data.Validator.InvalidValueException;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Field;
+import com.vaadin.ui.Form;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 
 /**
- * A component capable of rendering a form based on form-properties.
+ * A component capable of rendering a form based on form-properties and
+ * extracting values filled in into the writable fields.
  * 
  * @author Frederik Heremans
  */
@@ -37,21 +42,25 @@ public class FormPropertiesComponent extends VerticalLayout {
   protected List<FormProperty> formProperties;
   protected Map<FormProperty, Component> propertyComponents;
   
-  protected GridLayout propertyGrid;
+  protected Form form;
+  protected Button okButton;
   
   public FormPropertiesComponent() {
-    
     super();
-    propertyGrid = new GridLayout();
-    propertyGrid.setColumns(2);
-    propertyGrid.setSpacing(true);
     
     setSizeFull();
     addStyleName(Reindeer.LAYOUT_WHITE);
+
+    initForm();
+  } 
+
+  protected void initForm() {
+    form = new Form();
+    form.setSizeFull();
     
-    addComponent(propertyGrid);
+    addComponent(form);
   }
-  
+
   public List<FormProperty> getFormProperties() {
     return formProperties;
   }
@@ -59,38 +68,53 @@ public class FormPropertiesComponent extends VerticalLayout {
   public void setFormProperties(List<FormProperty> formProperties) {
     this.formProperties = formProperties;
     
-    // Clear current components in the grid
-    propertyGrid.removeAllComponents();
+    form.removeAllProperties();
     
+    // Clear current components in the grid
     if(formProperties != null) {
       for(FormProperty formProperty : formProperties) {
-        FormPropertyRenderer renderer = null;
-        
-        FormType formPropertyType = formProperty.getType();
-        if(formPropertyType == null) {
-          renderer = FormPropertyMapping.getTypeLessFormPropertyRenderer();
-        } else {
-          renderer = FormPropertyMapping.getPropertyRendererForType(formProperty.getType());
-        }
+        FormPropertyRenderer renderer = getRenderer(formProperty);
        
-        Component editorComponent = renderer.getComponentProperty(formProperty);
+        Field editorComponent = renderer.getPropertyField(formProperty);
         if(editorComponent != null) {
           // Get label for editor component.
-          Component propertyLabel = renderer.getPropertyLabel(formProperty);
-          propertyGrid.addComponent(propertyLabel);
-          propertyGrid.addComponent(editorComponent);
+          form.addField(formProperty.getId(), editorComponent);
         }
       }
     }
   }
   
 
-  public Map<String, String> getFormPropertyValues() {
-    // TODO: get values from properties
-    return null;
+  /**
+   * Returns all values filled in in the writable fields on the form.
+   * 
+   * @throws InvalidValueException when a validation error occurs.
+   */
+  public Map<String, String> getFormPropertyValues() throws InvalidValueException {
+    // Commit the form to ensure validation is executed
+    form.commit();
+    
+    Map<String, String> formPropertyValues = new HashMap<String, String>();
+    
+    // Get values from fields defined for each form property
+    for(FormProperty formProperty : formProperties) {
+      if(formProperty.isWritable()) {
+        Field field = form.getField(formProperty.getId());
+        FormPropertyRenderer renderer = getRenderer(formProperty);
+        String fieldValue = renderer.getFieldValue(formProperty, field);
+        
+        formPropertyValues.put(formProperty.getId(), fieldValue);
+      }
+    }
+    return formPropertyValues;
   }
   
-  
-  
-  
+  protected FormPropertyRenderer getRenderer(FormProperty formProperty) {
+    FormType formPropertyType = formProperty.getType();
+    if(formPropertyType == null) {
+      return FormPropertyMapping.getTypeLessFormPropertyRenderer();
+    } else {
+      return FormPropertyMapping.getPropertyRendererForType(formProperty.getType());
+    }
+  }
 }

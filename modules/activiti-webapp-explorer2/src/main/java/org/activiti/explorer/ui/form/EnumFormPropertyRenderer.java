@@ -20,8 +20,7 @@ import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.impl.form.EnumFormType;
 
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Component;
-
+import com.vaadin.ui.Field;
 
 /**
  * @author Frederik Heremans
@@ -34,25 +33,21 @@ public class EnumFormPropertyRenderer extends AbstractFormPropertyRenderer {
 
   @SuppressWarnings("unchecked")
   @Override
-  public Component getComponentProperty(FormProperty formProperty) {
-    Component component = null;
-    if(formProperty.isWritable()) {
-      ComboBox comboBox = new ComboBox();
-      
-      Map<String, String> values = (Map<String, String>) formProperty.getType().getInformation("values");
-      if(values != null) {
-        for(Entry<String, String> enumEntry : values.entrySet()) {
-          // Add value and label (if any)
-          comboBox.addItem(enumEntry.getKey());
-          if(enumEntry.getValue() != null) {
-            comboBox.setItemCaption(enumEntry.getKey(), enumEntry.getValue());
-          }
+  public Field getPropertyField(FormProperty formProperty) {
+    ComboBox comboBox = new ComboBox(getPropertyLabel(formProperty));
+    comboBox.setRequired(formProperty.isRequired());
+    comboBox.setEnabled(formProperty.isWritable());
+
+    Map<String, String> values = (Map<String, String>) formProperty.getType().getInformation("values");
+    if (values != null) {
+      for (Entry<String, String> enumEntry : values.entrySet()) {
+        // Add value and label (if any)
+        comboBox.addItem(enumEntry.getKey());
+        if (enumEntry.getValue() != null) {
+          comboBox.setItemCaption(enumEntry.getKey(), enumEntry.getValue());
         }
       }
-      component = comboBox;
-    } else {
-      component = getDefaultReadonlyPropertyComponent(formProperty);
     }
-    return component;
+    return comboBox;
   }
 }

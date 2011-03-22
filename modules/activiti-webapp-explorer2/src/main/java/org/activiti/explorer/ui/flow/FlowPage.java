@@ -18,6 +18,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.explorer.Constants;
+import org.activiti.explorer.ExplorerApplication;
 import org.activiti.explorer.Images;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
@@ -124,13 +125,16 @@ public class FlowPage extends VerticalLayout {
   protected void showProcessDefinitionDetail(String processDefinitionId) {
     detailPanel = new ProcessDefinitionDetailPanel(processDefinitionId, FlowPage.this);
     mainSplitPanel.setSecondComponent(detailPanel);
+    
+    // Update URI
+    ExplorerApplication.getCurrent().getUriFragmentUtility().setFragment("flow/" + processDefinitionId, false);
   }
   
   public void showStartForm(ProcessDefinition processDefinition, StartFormData startFormData) {
     if(detailPanel != null) {
       showProcessDefinitionDetail(processDefinition.getId());
     }
-    detailPanel.showStartForm(startFormData);
+    detailPanel.showProcessStartForm(startFormData);
   }
   
   public void selectProcessDefinition(int index) {

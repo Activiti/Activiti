@@ -17,9 +17,8 @@ import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.impl.form.LongFormType;
 import org.activiti.explorer.ui.validator.LongValidator;
 
-import com.vaadin.ui.Component;
+import com.vaadin.ui.Field;
 import com.vaadin.ui.TextField;
-
 
 /**
  * @author Frederik Heremans
@@ -31,31 +30,27 @@ public class LongFormPropertyRenderer extends AbstractFormPropertyRenderer {
   }
 
   @Override
-  public Component getComponentProperty(FormProperty formProperty) {
-    Component component = null;
-    if(formProperty.isWritable()) {
-      // Writable string
-      final TextField textField = new TextField();
-      if(formProperty.getValue() != null) {
-        textField.setValue(formProperty.getValue());
-      }
-      
-      // Add validation of numeric value
-      textField.addValidator(new LongValidator("Value must be a long"));
-      textField.setImmediate(true);
-      
-      component = textField;
-    } else {
-      component = getDefaultReadonlyPropertyComponent(formProperty);
+  public Field getPropertyField(FormProperty formProperty) {
+    final TextField textField = new TextField(getPropertyLabel(formProperty));
+    textField.setRequired(formProperty.isRequired());
+    textField.setEnabled(formProperty.isWritable());
+
+    if (formProperty.getValue() != null) {
+      textField.setValue(formProperty.getValue());
     }
-    return component;
+
+    // Add validation of numeric value
+    textField.addValidator(new LongValidator("Value must be a long"));
+    textField.setImmediate(true);
+
+    return textField;
   }
-  
+
   protected boolean isLong(String value) {
     try {
       Long.parseLong(value);
       return true;
-    } catch(NumberFormatException nfe) {
+    } catch (NumberFormatException nfe) {
       return false;
     }
   }
