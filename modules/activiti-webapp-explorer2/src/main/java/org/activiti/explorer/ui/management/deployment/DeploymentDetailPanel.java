@@ -18,14 +18,15 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.explorer.Constants;
 import org.activiti.explorer.Images;
 
 import com.ocpsoft.pretty.time.PrettyTime;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Embedded;
-import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
@@ -33,7 +34,7 @@ import com.vaadin.ui.themes.Reindeer;
 /**
  * @author Joram Barrez
  */
-public class DeploymentDetailPanel extends VerticalLayout {
+public class DeploymentDetailPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
   
@@ -44,7 +45,6 @@ public class DeploymentDetailPanel extends VerticalLayout {
     this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
     this.deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
     
-    setSpacing(true);
     addStyleName(Reindeer.LAYOUT_WHITE);
     
     addDeploymentName();
@@ -82,6 +82,12 @@ public class DeploymentDetailPanel extends VerticalLayout {
       .list();
     
     if (processDefinitions.size() > 0) {
+      
+      Label processDefinitionHeader = new Label("Process Definitions");
+      processDefinitionHeader.addStyleName(Constants.STYLE_DEPLOYMENT_DETAILS_HEADER);
+      processDefinitionHeader.setWidth("90%");
+      addComponent(processDefinitionHeader);
+      
       HorizontalLayout processDefinitionLayout = new HorizontalLayout();
       processDefinitionLayout.setSpacing(true);
       addComponent(processDefinitionLayout);
@@ -93,6 +99,7 @@ public class DeploymentDetailPanel extends VerticalLayout {
       // processes
       VerticalLayout processDefinitionLinksLayout = new VerticalLayout();
       processDefinitionLayout.addComponent(processDefinitionLinksLayout);
+      processDefinitionLayout.setComponentAlignment(processDefinitionLinksLayout, Alignment.MIDDLE_LEFT);
       
       for (ProcessDefinition processDefinition : processDefinitions) {
         Label processDefinitionLabel = new Label(processDefinition.getName());
@@ -105,6 +112,11 @@ public class DeploymentDetailPanel extends VerticalLayout {
     List<String> resourceNames = repositoryService.getDeploymentResourceNames(deployment.getId());
     
     if (resourceNames.size() > 0) {
+      Label resourceHeader = new Label("Resources");
+      resourceHeader.setWidth("90%");
+      resourceHeader.addStyleName(Constants.STYLE_DEPLOYMENT_DETAILS_HEADER);
+      addComponent(resourceHeader);
+      
       HorizontalLayout resourceLayout = new HorizontalLayout();
       addComponent(resourceLayout);
       
@@ -115,6 +127,7 @@ public class DeploymentDetailPanel extends VerticalLayout {
       // resources
       VerticalLayout resourceLinksLayout = new VerticalLayout();
       resourceLayout.addComponent(resourceLinksLayout);
+      resourceLayout.setComponentAlignment(resourceLinksLayout, Alignment.MIDDLE_LEFT);
       
       for (String resourceName : resourceNames) {
         resourceLinksLayout.addComponent(new Label(resourceName));
