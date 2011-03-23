@@ -22,6 +22,8 @@ import org.activiti.explorer.ExplorerApplication;
 import org.activiti.explorer.Images;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
+import org.activiti.explorer.navigation.FlowNavigationHandler;
+import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.util.ThemeImageColumnGenerator;
 
 import com.vaadin.data.Item;
@@ -58,6 +60,10 @@ public class FlowPage extends VerticalLayout {
     initFlowMenuBar();
     initMainSplitPanel();
     initProcessDefinitionList();
+    
+    // Set URL
+    ExplorerApplication.getCurrent().setCurrentUriFragment(
+      new UriFragment(FlowNavigationHandler.FLOW_URI_PART));
   }
   
   /**
@@ -126,8 +132,8 @@ public class FlowPage extends VerticalLayout {
     detailPanel = new ProcessDefinitionDetailPanel(processDefinitionId, FlowPage.this);
     mainSplitPanel.setSecondComponent(detailPanel);
     
-    // Update URI
-    ExplorerApplication.getCurrent().getUriFragmentUtility().setFragment("flow/" + processDefinitionId, false);
+    UriFragment processDefinitionFragment = new UriFragment(FlowNavigationHandler.FLOW_URI_PART, processDefinitionId);
+    ExplorerApplication.getCurrent().setCurrentUriFragment(processDefinitionFragment);
   }
   
   public void showStartForm(ProcessDefinition processDefinition, StartFormData startFormData) {

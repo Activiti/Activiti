@@ -22,10 +22,10 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.explorer.navigation.NavigationFragmentChangeListener;
+import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.MainLayout;
 
 import com.vaadin.Application;
-import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.UriFragmentUtility;
@@ -43,6 +43,7 @@ public class ExplorerApplication extends Application implements HttpServletReque
   protected Window mainWindow;
   protected MainLayout mainLayout;
   protected UriFragmentUtility uriFragmentUtility;
+  protected UriFragment currentUriFragment;
 
   public void init() {
     
@@ -125,7 +126,33 @@ public class ExplorerApplication extends Application implements HttpServletReque
     uriFragmentUtility.addListener(new NavigationFragmentChangeListener());
   }
   
-  public UriFragmentUtility getUriFragmentUtility() {
-    return uriFragmentUtility;
+  public UriFragment getCurrentUriFragment() {
+    return currentUriFragment;
+  }
+
+  /**
+   * Sets the current {@link UriFragment}. 
+   * Won't trigger navigation, just updates the URI fragment in the browser.
+   */
+  public void setCurrentUriFragment(UriFragment fragment) {
+    this.currentUriFragment = fragment;
+    
+    if(fragmentChanged(fragment)) {
+      
+      if(fragment != null) {
+        uriFragmentUtility.setFragment(fragment.toString(), false);      
+      } else {
+        uriFragmentUtility.setFragment("", false);      
+      }
+    }
+  }
+
+  private boolean fragmentChanged(UriFragment fragment) {
+    String fragmentString = fragment.toString();
+    if(fragmentString == null) {
+      return uriFragmentUtility.getFragment() != null;
+    } else {
+      return !fragmentString.equals(uriFragmentUtility.getFragment());
+    }
   }
 }

@@ -16,7 +16,10 @@ import java.util.TreeMap;
 
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngines;
+import org.activiti.explorer.ExplorerApplication;
 import org.activiti.explorer.Images;
+import org.activiti.explorer.navigation.DataBaseNavigationHandler;
+import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.management.ManagementPage;
 
 import com.vaadin.data.Item;
@@ -45,6 +48,16 @@ public class DatabasePage extends ManagementPage {
     
     addTableList();
     populateTableList();
+    
+    ExplorerApplication.getCurrent().setCurrentUriFragment(
+            new UriFragment(DataBaseNavigationHandler.TABLE_URI_PART));
+  }
+  
+  public DatabasePage(String tableName) {
+    this();
+    
+    // Select the requested table
+    tableList.select(tableName);
   }
   
   protected void addTableList() {
@@ -63,7 +76,12 @@ public class DatabasePage extends ManagementPage {
       private static final long serialVersionUID = 8811553575319455854L;
       public void valueChange(ValueChangeEvent event) {
         // The itemId of the table list is the tableName
-       mainSplitPanel.setSecondComponent(new DatabaseDetailPanel((String) event.getProperty().getValue()));
+        String tableName = (String) event.getProperty().getValue();
+       mainSplitPanel.setSecondComponent(new DatabaseDetailPanel(tableName));
+       
+       // Update URL
+       ExplorerApplication.getCurrent().setCurrentUriFragment(
+         new UriFragment(DataBaseNavigationHandler.TABLE_URI_PART, tableName));
       }
     });
     

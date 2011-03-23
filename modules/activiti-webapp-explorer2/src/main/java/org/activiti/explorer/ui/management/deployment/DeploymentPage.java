@@ -12,10 +12,12 @@
  */
 package org.activiti.explorer.ui.management.deployment;
 
+import org.activiti.explorer.ExplorerApplication;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
+import org.activiti.explorer.navigation.DeploymentNavigationHandler;
+import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.management.ManagementPage;
-import org.activiti.explorer.ui.task.TaskDetailPanel;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -32,8 +34,17 @@ public class DeploymentPage extends ManagementPage {
   
   protected Table deploymentTable;
   
+  protected LazyLoadingContainer deploymentListContainer;
+  
   public DeploymentPage() {
     addDeploymentList();
+    ExplorerApplication.getCurrent().setCurrentUriFragment(
+      new UriFragment(DeploymentNavigationHandler.DEPLOYMENT_URI_PART));
+  }
+  
+  public DeploymentPage(String deploymentId) {
+    this();
+    selectDeployment(deploymentListContainer.getIndexForObjectId(deploymentId));
   }
   
   protected void addDeploymentList() {
@@ -48,16 +59,20 @@ public class DeploymentPage extends ManagementPage {
     deploymentTable.setSizeFull();
     
     LazyLoadingQuery deploymentListQuery = new DeploymentListQuery();
-    LazyLoadingContainer deploymentListContainer = new LazyLoadingContainer(deploymentListQuery, 10);
+    deploymentListContainer = new LazyLoadingContainer(deploymentListQuery, 10);
     deploymentTable.setContainerDataSource(deploymentListContainer);
             
-    // Listener to change right panel when clicked on a task
+    // Listener to change right panel when clicked on a deployment
     deploymentTable.addListener(new Property.ValueChangeListener() {
       private static final long serialVersionUID = 8811553575319455854L;
       public void valueChange(ValueChangeEvent event) {
         Item item = deploymentTable.getItem(event.getProperty().getValue()); // the value of the property is the itemId of the table entry
         String deploymentId = (String) item.getItemProperty("id").getValue();
         mainSplitPanel.setSecondComponent(new DeploymentDetailPanel(deploymentId));
+        
+        // Update URL
+        ExplorerApplication.getCurrent().setCurrentUriFragment(
+          new UriFragment(DeploymentNavigationHandler.DEPLOYMENT_URI_PART, deploymentId));
       }
     });
     
@@ -66,5 +81,11 @@ public class DeploymentPage extends ManagementPage {
     deploymentTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
   }
   
+  public void selectDeployment(int index) {
+    if (deploymentTable.getContainerDataSource().size() > index) {
+      deploymentTable.select(index);
+      deploymentTable.setCurrentPageFirstItemId(index);
+    }
+  }
 
 }

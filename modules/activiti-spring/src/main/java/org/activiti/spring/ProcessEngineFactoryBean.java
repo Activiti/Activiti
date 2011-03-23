@@ -74,7 +74,7 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
     }
   }
   
-  public Class< ? > getObjectType() {
+  public Class<ProcessEngine> getObjectType() {
     return ProcessEngine.class;
   }
 

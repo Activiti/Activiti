@@ -29,6 +29,12 @@ import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.task.Task;
+import org.activiti.explorer.navigation.DataBaseNavigationHandler;
+import org.activiti.explorer.navigation.DefaultNavigationHandler;
+import org.activiti.explorer.navigation.DeploymentNavigationHandler;
+import org.activiti.explorer.navigation.FlowNavigationHandler;
+import org.activiti.explorer.navigation.NavigationHandlers;
+import org.activiti.explorer.navigation.TaskNavigationHandler;
 import org.activiti.explorer.ui.form.DateFormPropertyRenderer;
 import org.activiti.explorer.ui.form.EnumFormPropertyRenderer;
 import org.activiti.explorer.ui.form.FormPropertyMapping;
@@ -51,9 +57,9 @@ public class BootProcessEngineContextListener implements ServletContextListener 
     }
     
     initFormPropertyMapping();
+    initUriNavigation();
     initDemoData();
   }
-  
 
   protected void initDemoData() {
     ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
@@ -75,6 +81,17 @@ public class BootProcessEngineContextListener implements ServletContextListener 
     
     // Set default renderer when property has null type
     FormPropertyMapping.setNoTypePropertyRenderer(stringRenderer);
+  }
+  
+  protected void initUriNavigation() {
+    DefaultNavigationHandler defaultHandler = new DefaultNavigationHandler();
+    NavigationHandlers.setDefaultHandler(defaultHandler);
+    
+    // Add other handlers
+    NavigationHandlers.addNavigationHandler(new TaskNavigationHandler());
+    NavigationHandlers.addNavigationHandler(new FlowNavigationHandler());
+    NavigationHandlers.addNavigationHandler(new DeploymentNavigationHandler());
+    NavigationHandlers.addNavigationHandler(new DataBaseNavigationHandler());
   }
 
   protected void initKermit(ProcessEngine processEngine) {

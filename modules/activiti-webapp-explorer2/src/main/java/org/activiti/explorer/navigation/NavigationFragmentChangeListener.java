@@ -14,7 +14,6 @@
 package org.activiti.explorer.navigation;
 
 import org.activiti.explorer.ExplorerApplication;
-import org.activiti.explorer.ui.task.TaskInboxPage;
 
 import com.vaadin.ui.UriFragmentUtility.FragmentChangedEvent;
 import com.vaadin.ui.UriFragmentUtility.FragmentChangedListener;
@@ -31,22 +30,25 @@ public class NavigationFragmentChangeListener implements FragmentChangedListener
   private static final long serialVersionUID = 4797018291237796530L;
 
   public void fragmentChanged(FragmentChangedEvent source) {
+    String fragment = source.getUriFragmentUtility().getFragment();
+
+    UriFragment uriFragment = new UriFragment(fragment);
     
-    // TODO: make more flexible, pluggable fragment-matchers and URL-encoding aware parsing.
-    String fragment = source.getUriFragmentUtility().getFragment().replace("#", "");
-    
-    if(fragment != null && fragment.length() > 0) {
-      String[] fragments = fragment.split("/");
-      System.out.println("Got fragment: " + fragment);
-      if("tasks".equals(fragments[0])) {
-        String taskId = fragments[1];
-        System.out.println("Task ID in fragment: " + fragments[1]);
-        ExplorerApplication.getCurrent().switchView(new TaskInboxPage(taskId));
-      }
+    // Find appropriate handler based on the first part of the URI
+    NavigationHandler navigationHandler = null;
+    if(uriFragment.getUriParts() != null && uriFragment.getUriParts().size() > 0) {
+      navigationHandler = NavigationHandlers.getHandler(uriFragment.getUriParts().get(0));
     }
     
+    if(navigationHandler == null) {
+      navigationHandler = NavigationHandlers.getDefaultHandler();
+    }
     
+    // Delegate navigation to handler
+    navigationHandler.handleNavigation(uriFragment);
     
+    // Set the parameter and parts on the current ExplorerApplication
+    ExplorerApplication.getCurrent().setCurrentUriFragment(uriFragment);
   }
 
 }

@@ -17,13 +17,14 @@ import org.activiti.explorer.ExplorerApplication;
 import org.activiti.explorer.Images;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
+import org.activiti.explorer.navigation.TaskNavigationHandler;
+import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.util.ThemeImageColumnGenerator;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.themes.Reindeer;
 
 
 /**
@@ -68,9 +69,12 @@ public class TaskInboxPage extends TaskPage {
         Item item = taskTable.getItem(event.getProperty().getValue()); // the value of the property is the itemId of the table entry
         String taskId = (String) item.getItemProperty("id").getValue();
         mainSplitPanel.setSecondComponent(new TaskDetailPanel(taskId));
+
         
-        // TODO: add utility to set fragments based on page/id's
-        ExplorerApplication.getCurrent().getUriFragmentUtility().setFragment("tasks/" + taskId, false);
+        UriFragment taskFragment = new UriFragment(TaskNavigationHandler.TASK_URI_PART, taskId);
+        taskFragment.addParameter("category", TaskNavigationHandler.CATEGORY_INBOX);
+        
+        ExplorerApplication.getCurrent().setCurrentUriFragment(taskFragment);
       }
     });
     
