@@ -61,7 +61,10 @@ public class Constants {
   
   public static final String STYLE_DATABASE_DETAILS = "database-details";
   public static final String STYLE_DATABASE_TABLE_ROW = "database-table-row";
+  
   public static final String STYLE_DEPLOYMENT_DETAILS_HEADER = "deployment-details-header";
+  public static final String STYLE_DEPLOYMENT_UPLOAD_DESCRIPTION = "upload-description";
+  public static final String STYLE_DEPLOYMENT_UPLOAD_BUTTON = "upload-button";
   
   public static final String STYLE_FORMPROPERTY_READONLY = "formprop-readonly";
   public static final String STYLE_FORMPROPERTY_LABEL = "formprop-label";

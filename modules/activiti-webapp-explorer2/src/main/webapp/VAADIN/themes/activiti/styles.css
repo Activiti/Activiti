@@ -233,6 +233,15 @@
   font-size: 116%;
 }
 
+.upload-description {
+  margin: 1.5em;
+  padding-right: 3em;
+}
+
+.upload-button {
+  margin-top: 1.5em;
+}
+
 /* --------------
    Form rendering
    -------------- */

@@ -30,6 +30,7 @@ import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.UriFragmentUtility;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.Notification;
 
 /**
  * @author Joram Barrez
@@ -90,6 +91,14 @@ public class ExplorerApplication extends Application implements HttpServletReque
   
   public static ExplorerApplication getCurrent() {
     return current.get();
+  }
+  
+  public void showErrorNotification(String caption, String message) {
+    getMainWindow().showNotification(caption, "<br/>"+message, Notification.TYPE_ERROR_MESSAGE);
+  }
+  
+  public void showInformationNotification(String message) {
+    getMainWindow().showNotification(message, Notification.TYPE_HUMANIZED_MESSAGE);
   }
   
   public void showPopupWindow(Window window) {

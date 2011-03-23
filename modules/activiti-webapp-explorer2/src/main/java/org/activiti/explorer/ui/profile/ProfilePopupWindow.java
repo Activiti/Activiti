@@ -29,7 +29,6 @@ public class ProfilePopupWindow extends Window {
   private static final long serialVersionUID = 3129077881658239761L;
   
   public ProfilePopupWindow(String userId) {
-    super();
     IdentityService identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
     User user = identityService.createUserQuery().userId(userId).singleResult();
     

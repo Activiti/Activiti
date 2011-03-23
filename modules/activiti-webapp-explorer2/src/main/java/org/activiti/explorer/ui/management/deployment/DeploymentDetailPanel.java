@@ -12,6 +12,8 @@
  */
 package org.activiti.explorer.ui.management.deployment;
 
+import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
 
 import org.activiti.engine.ProcessEngines;
@@ -19,13 +21,21 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.explorer.Constants;
+import org.activiti.explorer.ExplorerApplication;
 import org.activiti.explorer.Images;
+import org.activiti.explorer.ui.flow.FlowPage;
 
 import com.ocpsoft.pretty.time.PrettyTime;
+import com.vaadin.terminal.StreamResource;
+import com.vaadin.terminal.StreamResource.StreamSource;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
@@ -47,10 +57,26 @@ public class DeploymentDetailPanel extends Panel {
     
     addStyleName(Reindeer.LAYOUT_WHITE);
     
+    addActions();
     addDeploymentName();
     addDeploymentTime();
     addProcessDefinitionLinks();
     addResourceLinks();
+  }
+  
+  protected void addActions() {
+    HorizontalLayout actionLayout = new HorizontalLayout();
+    actionLayout.setSpacing(true);
+    addComponent(actionLayout);
+    
+    Button newDeploymentButton = new Button("New Deployment");
+    newDeploymentButton.addStyleName(Reindeer.BUTTON_SMALL);
+    actionLayout.addComponent(newDeploymentButton);
+    newDeploymentButton.addListener(new NewDeploymentClickListener());
+    
+    Button deleteButton = new Button("Delete");
+    deleteButton.addStyleName(Reindeer.BUTTON_SMALL);
+    actionLayout.addComponent(deleteButton);
   }
   
   protected void addDeploymentName() {
@@ -79,41 +105,52 @@ public class DeploymentDetailPanel extends Panel {
   protected void addProcessDefinitionLinks() {
     List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery()
       .deploymentId(deployment.getId())
+      .orderByProcessDefinitionName().asc()
       .list();
     
     if (processDefinitions.size() > 0) {
       
+      // Header
       Label processDefinitionHeader = new Label("Process Definitions");
       processDefinitionHeader.addStyleName(Constants.STYLE_DEPLOYMENT_DETAILS_HEADER);
-      processDefinitionHeader.setWidth("90%");
+      processDefinitionHeader.setWidth("95%");
       addComponent(processDefinitionHeader);
       
-      HorizontalLayout processDefinitionLayout = new HorizontalLayout();
-      processDefinitionLayout.setSpacing(true);
-      addComponent(processDefinitionLayout);
+      // layout
+      HorizontalLayout layout = new HorizontalLayout();
+      layout.setSpacing(true);
+      addComponent(layout);
       
       // process icon
       Embedded processIcon = new Embedded(null, Images.PROCESS_48);
-      processDefinitionLayout.addComponent(processIcon);
+      layout.addComponent(processIcon);
       
       // processes
       VerticalLayout processDefinitionLinksLayout = new VerticalLayout();
-      processDefinitionLayout.addComponent(processDefinitionLinksLayout);
-      processDefinitionLayout.setComponentAlignment(processDefinitionLinksLayout, Alignment.MIDDLE_LEFT);
+      processDefinitionLinksLayout.setSpacing(true);
+      layout.addComponent(processDefinitionLinksLayout);
+      layout.setComponentAlignment(processDefinitionLinksLayout, Alignment.MIDDLE_LEFT);
       
-      for (ProcessDefinition processDefinition : processDefinitions) {
-        Label processDefinitionLabel = new Label(processDefinition.getName());
-        processDefinitionLinksLayout.addComponent(processDefinitionLabel);
+      for (final ProcessDefinition processDefinition : processDefinitions) {
+        Button processDefinitionButton = new Button(processDefinition.getName());
+        processDefinitionButton.addListener(new ClickListener() {
+          public void buttonClick(ClickEvent event) {
+            ExplorerApplication.getCurrent().switchView(new FlowPage(processDefinition.getId()));
+          }
+        });
+        processDefinitionButton.addStyleName(Reindeer.BUTTON_LINK);
+        processDefinitionLinksLayout.addComponent(processDefinitionButton);
       }
     }
   }
   
   protected void addResourceLinks() {
     List<String> resourceNames = repositoryService.getDeploymentResourceNames(deployment.getId());
+    Collections.sort(resourceNames); // small nr of elements, so we can do it in-memory
     
     if (resourceNames.size() > 0) {
       Label resourceHeader = new Label("Resources");
-      resourceHeader.setWidth("90%");
+      resourceHeader.setWidth("95%");
       resourceHeader.addStyleName(Constants.STYLE_DEPLOYMENT_DETAILS_HEADER);
       addComponent(resourceHeader);
       
@@ -126,11 +163,18 @@ public class DeploymentDetailPanel extends Panel {
       
       // resources
       VerticalLayout resourceLinksLayout = new VerticalLayout();
+      resourceLayout.setSpacing(true);
       resourceLayout.addComponent(resourceLinksLayout);
       resourceLayout.setComponentAlignment(resourceLinksLayout, Alignment.MIDDLE_LEFT);
       
-      for (String resourceName : resourceNames) {
-        resourceLinksLayout.addComponent(new Label(resourceName));
+      for (final String resourceName : resourceNames) {
+        StreamResource.StreamSource streamSource = new StreamSource() {
+          public InputStream getStream() {
+            return repositoryService.getResourceAsStream(deployment.getId(), resourceName);
+          }
+        };
+        Link resourceLink = new Link(resourceName, new StreamResource(streamSource, resourceName, ExplorerApplication.getCurrent()));
+        resourceLinksLayout.addComponent(resourceLink);
       }
     }
     
