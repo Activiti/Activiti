@@ -67,6 +67,30 @@ create table ACT_HI_DETAIL (
     primary key (ID_)
 );
 
+create table ACT_HI_COMMENT (
+    ID_ varchar(64) not null,
+    TIME_ timestamp not null,
+    USER_ID_ varchar(255),
+    TASK_ID_ varchar(64),
+    PROC_INST_ID_ varchar(64),
+    MESSAGE_ varchar(255),
+    primary key (ID_)
+);
+
+create table ACT_HI_ATTACHMENT (
+    ID_ varchar(64) not null,
+    REV_ integer,
+    USER_ID_ varchar(255),
+    NAME_ varchar(255),
+    DESCRIPTION_ varchar(255),
+    TYPE_ varchar(255),
+    TASK_ID_ varchar(64),
+    PROC_INST_ID_ varchar(64),
+    URL_ varchar(255),
+    CONTENT_ID_ varchar(64),
+    primary key (ID_)
+);
+
 create unique index ACT_UNIQ_HI_BUS_KEY on ACT_HI_PROCINST(UNI_PROC_DEF_ID, UNI_BUSINESS_KEY);
 create index ACT_IDX_HI_PRO_INST_END on ACT_HI_PROCINST(END_TIME_);
 create index ACT_IDX_HI_PRO_I_BUSKEY on ACT_HI_PROCINST(BUSINESS_KEY_);

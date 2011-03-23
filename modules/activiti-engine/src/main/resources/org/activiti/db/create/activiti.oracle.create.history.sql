@@ -65,6 +65,30 @@ create table ACT_HI_DETAIL (
     primary key (ID_)
 );
 
+create table ACT_HI_COMMENT (
+    ID_ NVARCHAR2(64) not null,
+    TIME_ TIMESTAMP(6) not null,
+    USER_ID_ NVARCHAR2(255),
+    TASK_ID_ NVARCHAR2(64),
+    PROC_INST_ID_ NVARCHAR2(64),
+    MESSAGE_ NVARCHAR2(255),
+    primary key (ID_)
+);
+
+create table ACT_HI_ATTACHMENT (
+    ID_ NVARCHAR2(64) not null,
+    REV_ INTEGER,
+    USER_ID_ NVARCHAR2(255),
+    NAME_ NVARCHAR2(255),
+    DESCRIPTION_ NVARCHAR2(255),
+    TYPE_ NVARCHAR2(255),
+    TASK_ID_ NVARCHAR2(64),
+    PROC_INST_ID_ NVARCHAR2(64),
+    URL_ NVARCHAR2(255),
+    CONTENT_ID_ NVARCHAR2(64),
+    primary key (ID_)
+);
+
 create index ACT_IDX_HI_PRO_INST_END on ACT_HI_PROCINST(END_TIME_);
 create index ACT_IDX_HI_PRO_I_BUSKEY on ACT_HI_PROCINST(BUSINESS_KEY_);
 create index ACT_IDX_HI_ACT_INST_START on ACT_HI_ACTINST(START_TIME_);

@@ -111,7 +111,7 @@ create table ACT_RU_VARIABLE (
     TYPE_ nvarchar(255) not null,
     NAME_ nvarchar(255) not null,
     EXECUTION_ID_ nvarchar(64),
-	PROC_INST_ID_ nvarchar(64),
+    PROC_INST_ID_ nvarchar(64),
     TASK_ID_ nvarchar(64),
     BYTEARRAY_ID_ nvarchar(64),
     DOUBLE_ double precision,
