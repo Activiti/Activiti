@@ -85,12 +85,16 @@ public class ExplorerApplication extends Application implements HttpServletReque
   
   // View management ------------------------------------------------------------------------------
   
+  public static ExplorerApplication getCurrent() {
+    return current.get();
+  }
+  
   public void switchView(Component component) {
     mainLayout.addComponent(component, Constants.LOCATION_CONTENT);
   }
   
-  public static ExplorerApplication getCurrent() {
-    return current.get();
+  public User getLoggedInUser() {
+    return (User) getUser();
   }
   
   public void showErrorNotification(String caption, String message) {

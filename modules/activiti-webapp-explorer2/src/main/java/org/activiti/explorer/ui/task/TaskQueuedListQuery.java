@@ -12,28 +12,27 @@
  */
 package org.activiti.explorer.ui.task;
 
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.task.TaskQuery;
 
 
 /**
  * @author Joram Barrez
  */
-public class TaskInboxPage extends TaskPage {
+public class TaskQueuedListQuery extends AbstractTaskListQuery {
   
-  private static final long serialVersionUID = 652000311912640606L;
+  protected String groupId;
+  protected TaskService taskService;
   
-  public TaskInboxPage() {
-    super(new TaskInboxListQuery());
-    addTaskList();
-    selectTask(0);
+  public TaskQueuedListQuery(String groupId) {
+    this.groupId = groupId;
+    this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
   }
   
-  /**
-   * Constructor called when page is accessed straight through the url, eg. /task/id=123
-   */
-  public TaskInboxPage(String taskId) {
-    super(new TaskInboxListQuery());
-    addTaskList();
-    selectTask(taskListContainer.getIndexForObjectId(taskId));
+  @Override
+  protected TaskQuery getQuery() {
+    return taskService.createTaskQuery().taskCandidateGroup(groupId).orderByTaskId().asc();
   }
 
 }

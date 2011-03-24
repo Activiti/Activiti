@@ -17,23 +17,16 @@ package org.activiti.explorer.ui.task;
 /**
  * @author Joram Barrez
  */
-public class TaskInboxPage extends TaskPage {
+public class TaskQueuedPage extends TaskPage {
+
+  private static final long serialVersionUID = 1L;
   
-  private static final long serialVersionUID = 652000311912640606L;
+  protected String groupId;
   
-  public TaskInboxPage() {
-    super(new TaskInboxListQuery());
-    addTaskList();
-    selectTask(0);
+  public TaskQueuedPage(String groupId) {
+    super(new TaskQueuedListQuery(groupId));
+    this.groupId = groupId;
   }
-  
-  /**
-   * Constructor called when page is accessed straight through the url, eg. /task/id=123
-   */
-  public TaskInboxPage(String taskId) {
-    super(new TaskInboxListQuery());
-    addTaskList();
-    selectTask(taskListContainer.getIndexForObjectId(taskId));
-  }
+
 
 }

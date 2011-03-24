@@ -15,55 +15,53 @@ package org.activiti.explorer.ui.task;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
+import org.activiti.explorer.ExplorerApplication;
 import org.activiti.explorer.data.AbstractLazyLoadingQuery;
-import org.activiti.explorer.data.LazyLoadingContainer;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
-import com.vaadin.ui.Table;
 
 
 /**
  * @author Joram Barrez
  */
-public class TaskListQuery extends AbstractLazyLoadingQuery {
+public abstract class AbstractTaskListQuery extends AbstractLazyLoadingQuery {
   
+  protected String userId;
   protected TaskService taskService;
-  protected LazyLoadingContainer lazyLoadingContainer;
   
-  public TaskListQuery(TaskService taskService, Table taskTable) {
-    this.taskService = taskService;
+  public AbstractTaskListQuery() {
+    this.userId = ExplorerApplication.getCurrent().getLoggedInUser().getId();
+    this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
   }
 
   public int size() {
-    return (int) taskService.createTaskQuery().count();
+    return (int) getQuery().count();
   }
-  
+
   public List<Item> loadItems(int start, int count) {
-    List<Task> tasks = createBaseQuery().listPage(start, count);
+    List<Task> tasks = getQuery().listPage(start, count);
     List<Item> items = new ArrayList<Item>();
     for (Task task : tasks) {
       items.add(new TaskListItem(task));
     }
     return items;
   }
-  
+
   public Item loadSingleResult(String id) {
-    return new TaskListItem(createBaseQuery().taskId(id).singleResult());
+    return new TaskListItem(getQuery().taskId(id).singleResult());
   }
-  
-  protected TaskQuery createBaseQuery() {
-    return taskService.createTaskQuery().orderByTaskId().asc();
-  }
-  
+
   public void setSorting(Object[] propertyId, boolean[] ascending) {
     throw new UnsupportedOperationException();
   }
   
+  protected abstract TaskQuery getQuery();
   
   class TaskListItem extends PropertysetItem implements Comparable<TaskListItem>{
 
@@ -81,5 +79,5 @@ public class TaskListQuery extends AbstractLazyLoadingQuery {
     }
     
   }
-  
+
 }

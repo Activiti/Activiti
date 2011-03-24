@@ -24,6 +24,7 @@ import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.util.ClockUtil;
@@ -104,6 +105,30 @@ public class BootProcessEngineContextListener implements ServletContextListener 
     kermit.setPassword("kermit");
     identityService.saveUser(kermit);
     
+    // Groups
+    Group management = identityService.newGroup("management");
+    management.setName("Management");
+    identityService.saveGroup(management);
+    
+    Group sales = identityService.newGroup("sales");
+    sales.setName("Sales");
+    identityService.saveGroup(sales);
+    
+    Group marketing = identityService.newGroup("marketing");
+    marketing.setName("Marketing");
+    identityService.saveGroup(marketing);
+    
+    Group engineering = identityService.newGroup("engineering");
+    engineering.setName("Engineering");
+    identityService.saveGroup(engineering);
+    
+    
+    // Membership
+    identityService.createMembership("kermit", "management");
+    identityService.createMembership("kermit", "sales");
+    identityService.createMembership("kermit", "marketing");
+    identityService.createMembership("kermit", "engineering");
+    
     // Additional details
     identityService.setUserInfo("kermit", "birthDate", "01/01/1955");
     identityService.setUserInfo("kermit", "jobTitle", "Activiti core mascot");
@@ -147,23 +172,49 @@ public class BootProcessEngineContextListener implements ServletContextListener 
     TaskService taskService = processEngine.getTaskService();
     for (int i=0; i<50; i++) {
       Task task = taskService.newTask();
-      task.setAssignee("kermit");
       task.setDescription("This is task nr " + i + ", please do it asap!");
       task.setName("Task [" + i + "]");
       task.setPriority(Task.PRIORITY_NORMAL);
       task.setDueDate(new Date(new Date().getTime() + new Random().nextInt()));
       
+      if (i%3==0) {
+        task.setOwner("fozzie");
+      }
+      
       if (i%5 == 0) {
         task.setPriority(99);
       }
       
-      if (i%3==0) {
-        task.setOwner("fozzie");
+      if (new Random().nextInt(10) < 4) {
+        task.setAssignee("kermit");
       }
       
       ClockUtil.setCurrentTime(new Date(new Date().getTime() - new Random().nextInt()));
       taskService.saveTask(task);
       ClockUtil.reset();
+      
+      task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
+      
+      if (i%4==0) {
+        taskService.addCandidateGroup(task.getId(), "management");
+        taskService.addCandidateGroup(task.getId(), "sales");
+        
+        task.setName(task.getName() + " - for managers and salesdudes");
+        taskService.saveTask(task);
+      }
+      if (i%5==0 || i%6==0) {
+        taskService.addCandidateGroup(task.getId(), "engineering");
+        
+        task.setName(task.getName() + " - for the tech people");
+        taskService.saveTask(task);
+      }
+      if (i%7==0) {
+        taskService.addCandidateGroup(task.getId(), "marketing");
+        
+        task.setName(task.getName() + " - for marketeers");
+        taskService.saveTask(task);
+      }
+
     }
   }
   

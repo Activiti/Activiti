@@ -13,15 +13,15 @@
 
 package org.activiti.explorer.ui.task;
 
+import java.util.List;
+
+import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
-import org.activiti.explorer.Constants;
+import org.activiti.engine.identity.Group;
 import org.activiti.explorer.ExplorerApplication;
-import org.activiti.explorer.ui.MenuBar;
 
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.MenuBar;
 
 
 
@@ -31,22 +31,40 @@ import com.vaadin.ui.Button.ClickListener;
 public class TaskMenuBar extends MenuBar {
   
   private static final long serialVersionUID = 7957488256766569264L;
-  
   protected TaskService taskService;
-
+  protected IdentityService identityService;
+  
   public TaskMenuBar() {
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
+    this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
     
-    addStyleName(Constants.STYLE_MENUBAR);
+    setWidth("100%");
     
-    Button inboxButton = createMenuBarButton("Inbox");
-    inboxButton.addListener(new ClickListener() {
-      public void buttonClick(ClickEvent event) {
+    // TODO: the counts should be done later by eg a Refresher component
+    
+    // Inbox
+    String userId = ExplorerApplication.getCurrent().getLoggedInUser().getId();
+    long inboxCount = taskService.createTaskQuery().taskAssignee(userId).count();
+    addItem("Inbox ("+inboxCount+")", new Command() {
+      public void menuSelected(MenuItem selectedItem) {
         ExplorerApplication.getCurrent().switchView(new TaskInboxPage());
       }
     });
-
-    fillRemainingSpace();
+    
+    // Queued
+    List<Group> groups = identityService.createGroupQuery().groupMember(userId).orderByGroupName().asc().list();
+    MenuItem queuedItem = addItem("Queued", null);
+    long queuedCount = 0;
+    for (final Group group : groups) {
+      long groupCount = taskService.createTaskQuery().taskCandidateGroup(group.getId()).count();
+      queuedCount += groupCount;
+      queuedItem.addItem(group.getName() + " ("+groupCount+")", new Command() {
+        public void menuSelected(MenuItem selectedItem) {
+          ExplorerApplication.getCurrent().switchView(new TaskQueuedPage(group.getId()));
+        }
+      });
+    }
+    queuedItem.setText(queuedItem.getText() + " ("+queuedCount+")");
   }
   
 }
