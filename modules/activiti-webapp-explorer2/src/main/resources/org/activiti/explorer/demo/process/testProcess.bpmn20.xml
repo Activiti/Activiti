@@ -3,51 +3,46 @@
   xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
   xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema"
   expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="Cool Processes">
-  <process id="coolProcess" name="Two task process">
-    <documentation>This is a two task process</documentation>
+  <process id="simpleApprovalProcess" name="Simple approval process">
+    
+    <documentation>This is a simple approval process.</documentation>
+    
     <startEvent id="startevent2" name="Start" activiti:initiator="initiator">
-
       <extensionElements>
-        <activiti:formProperty id="requiredstring" name="Required string property" type="string"
-          required="true" />
-
-        <activiti:formProperty id="requiredenum" name="Required enum property" type="enum"
-          required="true">
-          <activiti:value id="left" name="Go Left" />
-          <activiti:value id="right" name="Go Right" />
-          <activiti:value id="up" name="Go Up" />
-          <activiti:value id="down" name="Go Down" />
-        </activiti:formProperty>
-
-        <activiti:formProperty id="long" name="Long property" type="long" />
-
-        <activiti:formProperty id="date" name="Date property" datePattern="dd-MM-yyyy" type="date" />
+        <activiti:formProperty id="approver" name="Approver" type="string" required="true" />
+        <activiti:formProperty id="duedate" name="Approval due date" datePattern="dd-MM-yyyy hh:mm" type="date" required="true" />
+        <activiti:formProperty id="difficulty" name="Difficulty (number)" type="long" />
+        <activiti:formProperty id="instructions" name="Instructions" type="string" />
       </extensionElements>
-
     </startEvent>
-    <userTask id="usertask2" name="First task" activiti:assignee="${initiator}">
+    
+    <userTask id="usertask2" name="Approval task" activiti:assignee="${approver}" activiti:dueDate="${duedate}">
+      <documentation>Approval request created by ${initiator}: ${instructions} </documentation>
       <extensionElements>
-        <activiti:formProperty id="string" name="String property" type="string" required="true" />
-        <activiti:formProperty id="requiredstring" name="Value filled in at start" type="string"
-          writable="false" />
-        <activiti:formProperty id="date" name="Date property" datePattern="dd-MM-yyyy" type="date" />
+         <activiti:formProperty id="approved" name="Decision" type="enum"
+          required="true">
+          <activiti:value id="true" name="Approve" />
+          <activiti:value id="false" name="Reject" />
+        </activiti:formProperty>
+        <activiti:formProperty id="motivation" name="Motivation" type="string" required="true" />
       </extensionElements>
     </userTask>
     <endEvent id="endevent2" name="End"></endEvent>
     <sequenceFlow id="flow3" name="" sourceRef="startevent2" targetRef="usertask2"></sequenceFlow>
     <sequenceFlow id="flow4" name="" sourceRef="usertask2" targetRef="usertask3"></sequenceFlow>
-    <userTask id="usertask3" name="Second task" activiti:assignee="${initiator}">
-      <documentation textFormat="text/plain">Complete this task please</documentation>
+    
+    <userTask id="usertask3" name="Check outcome" activiti:assignee="${initiator}">
+      <documentation textFormat="text/plain">Task completed by ${approver}: ${(approved.equals('true')) ? 'Approved.' : 'Rejected!'}</documentation>
       <extensionElements>
-        <activiti:formProperty id="string" name="String property" type="string" required="true" />
+         <activiti:formProperty id="motivation" name="Motivation" type="string" writable="false" />
       </extensionElements>
     </userTask>
     <sequenceFlow id="flow5" name="" sourceRef="usertask3" targetRef="endevent2"></sequenceFlow>
   </process>
 
 
-  <bpmndi:BPMNDiagram id="BPMNDiagram_coolProcess">
-    <bpmndi:BPMNPlane bpmnElement="coolProcess" id="BPMNPlane_coolProcess">
+  <bpmndi:BPMNDiagram id="BPMNDiagram_simpleApprovalProcess">
+    <bpmndi:BPMNPlane bpmnElement="simpleApprovalProcess" id="BPMNPlane_simpleApprovalProcess">
       <bpmndi:BPMNShape bpmnElement="startevent2" id="BPMNShape_startevent2">
         <omgdc:Bounds height="55" width="55" x="200" y="180"></omgdc:Bounds>
       </bpmndi:BPMNShape>

@@ -241,6 +241,28 @@ public class TaskDetailPanel extends HorizontalLayout {
       
       // Add component to page
       leftPanel.addComponent(taskForm);
+    } else {
+      // Just add a button to complete the task
+      // TODO: perhaps move to a better place
+      Button completeButton = new Button("Complete");
+      
+      completeButton.addListener(new ClickListener() {
+        
+        private static final long serialVersionUID = 1L;
+
+        public void buttonClick(ClickEvent event) {
+          taskService.complete(task.getId());          
+          ExplorerApplication.getCurrent().getMainWindow().showNotification("Task '" + 
+                  task.getName() + "' completed");
+          parent.refreshCurrentTasks();
+        }
+      });
+      
+      Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
+      emptySpace.setSizeUndefined();
+      leftPanel.addComponent(emptySpace);
+      
+      leftPanel.addComponent(completeButton);
     }
   }
 }
