@@ -14,25 +14,26 @@ package org.activiti.explorer.ui.management.deployment;
 
 import org.activiti.explorer.ExplorerApplication;
 
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.MenuBar.Command;
+import com.vaadin.ui.MenuBar.MenuItem;
 
 
 /**
  * @author Joram Barrez
  */
-public class NewDeploymentClickListener implements ClickListener {
+public class NewDeploymentListener implements Command {
 
   private static final long serialVersionUID = 1L;
-
-  public void buttonClick(ClickEvent event) {
+  
+  public void menuSelected(MenuItem selectedItem) {
     DeploymentUploadReceiver receiver = new DeploymentUploadReceiver();
     UploadPopupWindow uploadPopupWindow = new UploadPopupWindow(
             "Upload new Deployment", 
             "Select a file (.bar, .zip or .bpmn20.xml) or drop a file in the rectangle below",
             receiver);
     
-    // The receiver also acts as a listener for the end of the upload
+    // The receiver also acts as a listener for the end of the upload 
+    // so it can switch to the new deployment page
     uploadPopupWindow.addFinishedListener(receiver);
     ExplorerApplication.getCurrent().showPopupWindow(uploadPopupWindow);
   }

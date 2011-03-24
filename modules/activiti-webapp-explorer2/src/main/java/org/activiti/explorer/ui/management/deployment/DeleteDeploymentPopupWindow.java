@@ -78,7 +78,6 @@ public class DeleteDeploymentPopupWindow extends Window {
       addComponent(noInstancesLabel);
     } else {
       HorizontalLayout warningLayout = new HorizontalLayout();
-      warningLayout.setWidth("100%");
       warningLayout.setSpacing(true);
       addComponent(warningLayout);
       
@@ -123,6 +122,7 @@ public class DeleteDeploymentPopupWindow extends Window {
     
     // Alignment
     HorizontalLayout buttonLayout = new HorizontalLayout();
+    buttonLayout.setSpacing(true);
     buttonLayout.addComponent(cancelButton);
     buttonLayout.addComponent(deleteButton);
     addComponent(buttonLayout);

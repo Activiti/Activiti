@@ -12,17 +12,12 @@
  */
 package org.activiti.explorer.ui.management;
 
-import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApplication;
-import org.activiti.explorer.ui.MenuBar;
 import org.activiti.explorer.ui.management.db.DatabasePage;
 import org.activiti.explorer.ui.management.deployment.DeploymentPage;
+import org.activiti.explorer.ui.management.deployment.NewDeploymentListener;
 
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-
-
+import com.vaadin.ui.MenuBar;
 
 /**
  * @author Joram Barrez
@@ -32,25 +27,25 @@ public class ManagementMenuBar extends MenuBar {
   private static final long serialVersionUID = 529403088210949174L;
   
   public ManagementMenuBar() {
-    super();
+    setWidth("100%");
     
-    addStyleName(Constants.STYLE_MENUBAR);
-    
-    Button databaseButton = createMenuBarButton("Database");
-    databaseButton.addListener(new ClickListener() {
-      public void buttonClick(ClickEvent event) {
+    // Database
+    MenuItem databaseItem = addItem("Database", new Command() {
+      public void menuSelected(MenuItem selectedItem) {
         ExplorerApplication.getCurrent().switchView(new DatabasePage());
       }
     });
     
-    Button deploymentButton = createMenuBarButton("Deployments");
-    deploymentButton.addListener(new ClickListener() {
-      public void buttonClick(ClickEvent event) {
+    // Deployments
+    MenuItem deploymentsItem = addItem("Deployments", null);
+    
+    deploymentsItem.addItem("Show all", new Command() {
+      public void menuSelected(MenuItem selectedItem) {
         ExplorerApplication.getCurrent().switchView(new DeploymentPage());
       }
     });
+    deploymentsItem.addItem("Upload new", new NewDeploymentListener());
     
-    fillRemainingSpace();
   }
   
 }

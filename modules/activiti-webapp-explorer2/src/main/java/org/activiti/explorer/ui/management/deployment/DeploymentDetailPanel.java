@@ -57,37 +57,33 @@ public class DeploymentDetailPanel extends Panel {
     
     addStyleName(Reindeer.LAYOUT_WHITE);
     
-    addActions();
     addDeploymentName();
     addDeploymentTime();
     addProcessDefinitionLinks();
     addResourceLinks();
   }
   
-  protected void addActions() {
-    HorizontalLayout actionLayout = new HorizontalLayout();
-    actionLayout.setSpacing(true);
-    addComponent(actionLayout);
+  protected void addDeploymentName() {
+    HorizontalLayout layout = new HorizontalLayout();
+    layout.setSpacing(true);
+    addComponent(layout);
     
-    Button newDeploymentButton = new Button("New Deployment");
-    newDeploymentButton.addStyleName(Reindeer.BUTTON_SMALL);
-    actionLayout.addComponent(newDeploymentButton);
-    newDeploymentButton.addListener(new NewDeploymentClickListener());
+    // Name
+    Label nameLabel = new Label(deployment.getName());
+    nameLabel.addStyleName(Reindeer.LABEL_H1);
+    layout.addComponent(nameLabel);
     
+    // Delete button
     Button deleteButton = new Button("Delete");
-    deleteButton.addStyleName(Reindeer.BUTTON_SMALL);
-    actionLayout.addComponent(deleteButton);
+    deleteButton.setIcon(Images.DELETE);
+    deleteButton.addStyleName(Reindeer.BUTTON_LINK);
+    layout.addComponent(deleteButton);
+    layout.setComponentAlignment(deleteButton, Alignment.MIDDLE_LEFT);
     deleteButton.addListener(new ClickListener() {
       public void buttonClick(ClickEvent event) {
         ExplorerApplication.getCurrent().showPopupWindow(new DeleteDeploymentPopupWindow(deployment));
       }
     });
-  }
-  
-  protected void addDeploymentName() {
-    Label nameLabel = new Label(deployment.getName());
-    nameLabel.addStyleName(Reindeer.LABEL_H1);
-    addComponent(nameLabel);
   }
   
   protected void addDeploymentTime() {

@@ -31,6 +31,7 @@ public class Images {
   public static final Resource PROCESS_48 = new ThemeResource("img/process_48.png");
   public static final Resource RESOURCE = new ThemeResource("img/resource.png");
   public static final Resource WARNING = new ThemeResource("img/warning.png");
+  public static final Resource DELETE = new ThemeResource("img/delete.png");
   
   // Accounts
   public static final Resource SKYPE = new ThemeResource("img/skype.png");

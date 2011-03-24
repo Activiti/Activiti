@@ -248,3 +248,11 @@
 .formprop-readonly {
 	color: #666666;	
 }
+
+/* --------
+   Menu Bar
+   -------- */
+
+.v-menubar-menuitem-caption {
+  cursor: pointer;
+}
