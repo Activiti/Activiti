@@ -12,6 +12,10 @@
  */
 package org.activiti.explorer.ui.management.deployment;
 
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApplication;
 
@@ -19,8 +23,11 @@ import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptAll;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
+import com.vaadin.terminal.StreamVariable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.DragAndDropWrapper;
+import com.vaadin.ui.DragAndDropWrapper.WrapperTransferable;
+import com.vaadin.ui.Html5File;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.ProgressIndicator;
@@ -46,24 +53,39 @@ public class UploadPopupWindow extends Window
   
   private static final long serialVersionUID = 1L;
   
+  // Ui components
   protected ProgressIndicator progressIndicator;
   protected VerticalLayout layout;
   protected Upload upload;
+  protected Receiver receiver;
+  
+  // Additional listeners
+  protected List<FinishedListener> finishedListeners = new ArrayList<FinishedListener>();
+  protected List<StartedListener> startedListeners = new ArrayList<StartedListener>();
+  protected List<FailedListener> failedListeners = new ArrayList<FailedListener>();
+  protected List<ProgressListener> progressListeners = new ArrayList<ProgressListener>();
+
 
   public UploadPopupWindow(String caption, String description, Receiver receiver) {
+    this.receiver = receiver;
+    initWindow(caption);
+    addDescription(description);
+    addUpload();
+    addOrLabel();
+    addDropPanel();
+  }
+  
+  // UI initialisation ----------------------------------------------------------------------------
+
+  protected void initWindow(String caption) {
+    // Fixed width/height since otherwise the layout can be screwed by the drag and drop
+    setWidth("300px");
+    setHeight("300px");
     addStyleName(Reindeer.WINDOW_LIGHT);
     setModal(true);
     center();
     setCaption(caption);
     
-    initLayout();
-    addDescription(description);
-    addUpload(receiver);
-    addOrLabel();
-    addDropPanel();
-  }
-
-  protected void initLayout() {
     this.layout = new VerticalLayout();
     layout.setSpacing(true);
     layout.setSizeFull();
@@ -77,7 +99,7 @@ public class UploadPopupWindow extends Window
     layout.addComponent(descriptionLabel);
   }
   
-  protected void addUpload(Receiver receiver) {
+  protected void addUpload() {
     this.upload = new Upload(null, receiver);
     upload.addStyleName(Constants.STYLE_DEPLOYMENT_UPLOAD_BUTTON);
     upload.setButtonCaption("Choose a file");
@@ -85,7 +107,7 @@ public class UploadPopupWindow extends Window
     layout.addComponent(upload);
     layout.setComponentAlignment(upload, Alignment.MIDDLE_CENTER);
     
-    // upload listeners
+    // register ourselves as listener for upload events
     upload.addListener((StartedListener) this);
     upload.addListener((FailedListener) this);
     upload.addListener((FinishedListener) this);
@@ -103,6 +125,7 @@ public class UploadPopupWindow extends Window
   protected void addDropPanel() {
     Panel dropPanel = new Panel();
     DragAndDropWrapper dragAndDropWrapper = new DragAndDropWrapper(dropPanel);
+    dragAndDropWrapper.setDropHandler(this);
     dragAndDropWrapper.setWidth("80%");
     layout.addComponent(dragAndDropWrapper);
     layout.setComponentAlignment(dragAndDropWrapper, Alignment.MIDDLE_CENTER);
@@ -111,18 +134,10 @@ public class UploadPopupWindow extends Window
     dropLabel.setSizeUndefined();
     dropPanel.addComponent(dropLabel);
     ((VerticalLayout)dropPanel.getContent()).setComponentAlignment(dropLabel, Alignment.MIDDLE_CENTER);
-    
-   
   }
-
-  public void updateProgress(long readBytes, long contentLength) {
-    progressIndicator.setValue(new Float(readBytes / (float) contentLength));
-  }
-
-  public void uploadFinished(FinishedEvent event) {
-    close();
-  }
-
+  
+  // File upload event handling -------------------------------------------------------------------
+  
   public void uploadStarted(StartedEvent event) {
     removeAllComponents(); // Visible components are replaced by a progress bar
     
@@ -130,38 +145,94 @@ public class UploadPopupWindow extends Window
     progressIndicator.setPollingInterval(500);
     layout.addComponent(progressIndicator);
     layout.setComponentAlignment(progressIndicator, Alignment.MIDDLE_CENTER);
+    
+    for (StartedListener startedListener : startedListeners) {
+      startedListener.uploadStarted(event);
+    }
+  }
+  
+  public void updateProgress(long readBytes, long contentLength) {
+    progressIndicator.setValue(new Float(readBytes / (float) contentLength));
+    
+    for (ProgressListener progressListener : progressListeners) {
+      progressListener.updateProgress(readBytes, contentLength);
+    }
+  }
+
+  public void uploadFinished(FinishedEvent event) {
+    close();
+    
+    for (FinishedListener finishedListener : finishedListeners) {
+      finishedListener.uploadFinished(event);
+    }
   }
 
   public void uploadFailed(FailedEvent event) {
-    ExplorerApplication.getCurrent().showErrorNotification("Upload failed...", event.getReason().getMessage());
+    uploadFailed(event.getReason().getMessage());
+    
+    for (FailedListener failedListener : failedListeners) {
+      failedListener.uploadFailed(event);
+    }
   }
   
-  // Add listeners
-
-  public void addFinishedListener(FinishedListener finishedListener) {
-    upload.addListener(finishedListener);
+  protected void uploadFailed(String errorMessage) {
+    ExplorerApplication.getCurrent().showErrorNotification("Upload failed...", errorMessage);
   }
   
-  public void addStartedListener(StartedListener startedListener) {
-    upload.addListener(startedListener);
-  }
-  
-  public void addFailedListener(FailedListener failedListener) {
-    upload.addListener(failedListener);
-  }
-  
-  public void addProgressListener(ProgressListener progressListener) {
-    upload.addListener(progressListener);
-  }
-  
-  // Drag and Drop support
+  // Drag and drop handling (DropHandler) ---------------------------------------------------------
   
   public void drop(DragAndDropEvent event) {
-    System.out.println("Dropped file !");
+    WrapperTransferable transferable = (WrapperTransferable) event.getTransferable();
+    Html5File[] files = transferable.getFiles();
+    if (files.length > 0) {
+      final Html5File file = files[0]; // only support for one file upload at this moment
+      file.setStreamVariable(new StreamVariable() {
+        public void streamingStarted(StreamingStartEvent event) {
+          uploadStarted(null); // event doesnt matter here
+        }
+        public void streamingFinished(StreamingEndEvent event) {
+          uploadFinished(null); // event doesnt matter here
+        }
+        public void streamingFailed(StreamingErrorEvent event) {
+          uploadFailed(event.getException().getMessage());
+        }
+        public void onProgress(StreamingProgressEvent event) {
+          updateProgress(event.getBytesReceived(), event.getContentLength());
+        }
+        public boolean listenProgress() {
+          return true;
+        }
+        public boolean isInterrupted() {
+          return false;
+        }
+        public OutputStream getOutputStream() {
+          return receiver.receiveUpload(file.getFileName(), file.getType());
+        }
+      });
+    }
   }
   
   public AcceptCriterion getAcceptCriterion() {
-    return AcceptAll.get(); // The receiveUpload() will handle everything
+    return AcceptAll.get();
   }
-
+  
+  // Upload Listeners ----------------------------------------------------------------------------
+  
+  public void addFinishedListener(FinishedListener finishedListener) {
+    finishedListeners.add(finishedListener);
+  }
+  
+  public void addStartedListener(StartedListener startedListener) {
+    startedListeners.add(startedListener);
+  }
+  
+  public void addFailedListener(FailedListener failedListener) {
+    failedListeners.add(failedListener);
+  }
+  
+  public void addProgressListener(ProgressListener progressListener) {
+    progressListeners.add(progressListener);
+  }
+  
+  
 }
