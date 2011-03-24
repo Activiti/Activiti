@@ -584,7 +584,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
     TimerStartEventJobHandler timerStartEvent = new TimerStartEventJobHandler();
     jobHandlers.put(timerStartEvent.getType(), timerStartEvent);
-
+    
+    for (JobHandler customJobHandler : getCustomJobHandlers()) {
+      jobHandlers.put(customJobHandler.getType(), customJobHandler);      
+    }
 
     jobExecutor.setCommandExecutor(commandExecutorTxRequired);
     jobExecutor.setAutoActivate(jobExecutorActivate);
