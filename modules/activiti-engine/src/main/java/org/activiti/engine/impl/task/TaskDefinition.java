@@ -38,6 +38,7 @@ public class TaskDefinition {
   protected Expression assigneeExpression;
   protected Set<Expression> candidateUserIdExpressions = new HashSet<Expression>();
   protected Set<Expression> candidateGroupIdExpressions = new HashSet<Expression>();
+  protected Expression dueDateExpression;
   
   // form fields
   protected TaskFormHandler taskFormHandler;
@@ -105,6 +106,14 @@ public class TaskDefinition {
 
   public void setKey(String key) {
     this.key = key;
+  }
+  
+  public Expression getDueDateExpression() {
+    return dueDateExpression;
+  }
+  
+  public void setDueDateExpression(Expression dueDateExpression) {
+    this.dueDateExpression = dueDateExpression;
   }
 
   public Map<String, List<TaskListener>> getTaskListeners() {

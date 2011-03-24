@@ -13,6 +13,7 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.Collection;
+import java.util.Date;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
@@ -50,6 +51,17 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     if (taskDefinition.getDescriptionExpression() != null) {
       String description = (String) taskDefinition.getDescriptionExpression().getValue(execution);
       task.setDescription(description);
+    }
+    
+    if(taskDefinition.getDueDateExpression() != null) {
+      Object dueDate = taskDefinition.getDueDateExpression().getValue(execution);
+      if(dueDate != null) {
+        if(!(dueDate instanceof Date)) {
+          throw new ActivitiException("Due date expression does not resolve to a Date: " + 
+                  taskDefinition.getDueDateExpression().getExpressionText());
+        }
+        task.setDueDate((Date) dueDate);
+      }
     }
     
     handleAssignments(task, execution);

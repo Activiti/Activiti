@@ -1578,14 +1578,31 @@ assertEquals("Ship Order", task2.getName());</programlisting>
 &lt;userTask id=&quot;theTask&quot; name=&quot;Schedule meeting&quot; &gt;
   &lt;documentation&gt;
 	  Schedule an engineering meeting for next week with the new hire.
-	&lt;/documentation&gt;</programlisting>
+  &lt;/documentation&gt;</programlisting>
 				
 				  The description text can be retrieved from the task in the standard Java way:
 				  <programlisting>task.getDescription()</programlisting>
 				</para>
 			
 			</section>
-
+            <section id="bpmnUserTaskDueDate">
+              <title>Due Date</title>
+              <para>
+                Each task has a field, indicating the due date of that task. The Query API can be used to query for task that are due 
+                on, before or after a certain date.
+              </para>
+              <para>
+                There is an activity extention which allows you to specify an expression in your task-definition to set the initial due
+                date of a task when it is created. The expression <emphasis role="bold">should always resolve to a <literal>java.util.Date</literal> or <literal>null</literal></emphasis>. 
+                For example, you could use a date that was entered in a previous form in the process or calculated in a previous Service Task.
+              </para>
+               <programlisting>
+&lt;userTask id=&quot;theTask&quot; name=&quot;Important task&quot; <emphasis role="bold">activiti:dueDate=&quot;${dateVariable}&quot;</emphasis>/&gt;</programlisting>
+            </section>
+            <para>
+              The due date of a task can also be altered using the <literal>TaskService</literal> or in <literal>TaskListener</literal>s using the passed
+              <literal>DelegateTask</literal>.
+            </para>
 			<section id="bpmnUserTaskAssignment">
 
 				<title>User assignment</title>

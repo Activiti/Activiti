@@ -1259,6 +1259,7 @@ public class BpmnParse extends Parse {
   protected static final String ASSIGNEE_EXTENSION = "assignee";
   protected static final String CANDIDATE_USERS_EXTENSION = "candidateUsers";
   protected static final String CANDIDATE_GROUPS_EXTENSION = "candidateGroups";
+  protected static final String DUE_DATE_EXTENSION = "dueDate";
 
   /**
    * Parses a userTask declaration.
@@ -1403,6 +1404,12 @@ public class BpmnParse extends Parse {
 
     // Task listeners
     parseTaskListeners(taskElement, taskDefinition);
+    
+    // Due date
+    String dueDateExpression = taskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, DUE_DATE_EXTENSION);
+    if(dueDateExpression != null) {
+      taskDefinition.setDueDateExpression(expressionManager.createExpression(dueDateExpression));
+    }
   }
 
   /**
