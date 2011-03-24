@@ -50,10 +50,12 @@ public class DeploymentDetailPanel extends Panel {
   
   protected RepositoryService repositoryService;
   protected Deployment deployment;
+  protected DeploymentPage parent;
   
-  public DeploymentDetailPanel(String deploymentId) {
+  public DeploymentDetailPanel(String deploymentId, DeploymentPage parent) {
     this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
     this.deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
+    this.parent = parent;
     
     addStyleName(Reindeer.LAYOUT_WHITE);
     
@@ -81,7 +83,7 @@ public class DeploymentDetailPanel extends Panel {
     layout.setComponentAlignment(deleteButton, Alignment.MIDDLE_LEFT);
     deleteButton.addListener(new ClickListener() {
       public void buttonClick(ClickEvent event) {
-        ExplorerApplication.getCurrent().showPopupWindow(new DeleteDeploymentPopupWindow(deployment));
+        ExplorerApplication.getCurrent().showPopupWindow(new DeleteDeploymentPopupWindow(deployment, parent));
       }
     });
   }

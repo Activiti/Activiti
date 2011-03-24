@@ -42,11 +42,13 @@ public class DeleteDeploymentPopupWindow extends Window {
   
   protected RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
   protected RuntimeService runtimeService = ProcessEngines.getDefaultProcessEngine().getRuntimeService();
+  protected DeploymentPage deploymentPage;
   protected VerticalLayout windowLayout;
   protected Deployment deployment;
   
-  public DeleteDeploymentPopupWindow(Deployment deployment) {
+  public DeleteDeploymentPopupWindow(Deployment deployment, DeploymentPage deploymentPage) {
     this.deployment = deployment;
+    this.deploymentPage = deploymentPage;
     this.windowLayout = (VerticalLayout) getContent();
     initWindow();
     addDeleteWarning();
@@ -116,7 +118,7 @@ public class DeleteDeploymentPopupWindow extends Window {
         // Delete deployment, close popup window and refresh deployment list
         repositoryService.deleteDeployment(deployment.getId(), true);
         close();
-        
+        deploymentPage.refreshCurrentDeployments();
       }
     });
     

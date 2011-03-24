@@ -54,6 +54,7 @@ public abstract class TaskPage extends CustomComponent {
   public TaskPage(LazyLoadingQuery lazyLoadingQuery) {
     this.lazyLoadingQuery = lazyLoadingQuery;
     initUi();
+    selectTask(0);
   }
   
   protected void initUi() {
@@ -112,7 +113,6 @@ public abstract class TaskPage extends CustomComponent {
           
           UriFragment taskFragment = new UriFragment(TaskNavigationHandler.TASK_URI_PART, taskId);
           taskFragment.addParameter("category", TaskNavigationHandler.CATEGORY_INBOX);
-          
           ExplorerApplication.getCurrent().setCurrentUriFragment(taskFragment);
         } else {
           // Nothing is selected

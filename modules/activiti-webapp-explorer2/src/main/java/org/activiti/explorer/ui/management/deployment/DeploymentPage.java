@@ -16,6 +16,7 @@ import org.activiti.explorer.ExplorerApplication;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.DeploymentNavigationHandler;
+import org.activiti.explorer.navigation.TaskNavigationHandler;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.management.ManagementPage;
 
@@ -33,7 +34,6 @@ public class DeploymentPage extends ManagementPage {
   private static final long serialVersionUID = 1L;
   
   protected Table deploymentTable;
-  
   protected LazyLoadingContainer deploymentListContainer;
   
   public DeploymentPage() {
@@ -67,12 +67,18 @@ public class DeploymentPage extends ManagementPage {
       private static final long serialVersionUID = 8811553575319455854L;
       public void valueChange(ValueChangeEvent event) {
         Item item = deploymentTable.getItem(event.getProperty().getValue()); // the value of the property is the itemId of the table entry
-        String deploymentId = (String) item.getItemProperty("id").getValue();
-        mainSplitPanel.setSecondComponent(new DeploymentDetailPanel(deploymentId));
-        
-        // Update URL
-        ExplorerApplication.getCurrent().setCurrentUriFragment(
-          new UriFragment(DeploymentNavigationHandler.DEPLOYMENT_URI_PART, deploymentId));
+        if(item != null) {
+          String deploymentId = (String) item.getItemProperty("id").getValue();
+          mainSplitPanel.setSecondComponent(new DeploymentDetailPanel(deploymentId, DeploymentPage.this));
+          
+          // Update URL
+          ExplorerApplication.getCurrent().setCurrentUriFragment(
+            new UriFragment(DeploymentNavigationHandler.DEPLOYMENT_URI_PART, deploymentId));
+        } else {
+          // Nothing is selected
+          mainSplitPanel.removeComponent(mainSplitPanel.getSecondComponent());
+          ExplorerApplication.getCurrent().setCurrentUriFragment(new UriFragment(DeploymentNavigationHandler.DEPLOYMENT_URI_PART));
+        }
       }
     });
     
@@ -86,6 +92,26 @@ public class DeploymentPage extends ManagementPage {
       deploymentTable.select(index);
       deploymentTable.setCurrentPageFirstItemId(index);
     }
+  }
+  
+  public void refreshCurrentDeployments() {
+    Integer pageIndex = (Integer) deploymentTable.getCurrentPageFirstItemId();
+    Integer selectedIndex = (Integer) deploymentTable.getValue();
+    deploymentTable.removeAllItems();
+    
+    // Remove all items
+    deploymentListContainer.removeAllItems();
+    
+    // Try to select the next one in the list
+    Integer max = deploymentTable.getContainerDataSource().size();
+    if(pageIndex > max) {
+      pageIndex = max -1;
+    }
+    if(selectedIndex > max) {
+      selectedIndex = max -1;
+    }
+    deploymentTable.setCurrentPageFirstItemIndex(pageIndex);
+    selectDeployment(selectedIndex);
   }
 
 }

@@ -21,11 +21,8 @@ public class TaskQueuedPage extends TaskPage {
 
   private static final long serialVersionUID = 1L;
   
-  protected String groupId;
-  
   public TaskQueuedPage(String groupId) {
     super(new TaskQueuedListQuery(groupId));
-    this.groupId = groupId;
   }
 
 
