@@ -88,17 +88,21 @@ public class LazyLoadingContainer implements Container.Indexed, Container.Sortab
   }
 
   public Item getItem(Object itemId) {
-    if (!itemCache.containsKey(itemId)) {
-      Integer index = (Integer) itemId;
-      int start = index - (index%batchSize);
-      
-      List<Item> batch = lazyLoadingQuery.loadItems(start, batchSize);
-      for (Item batchItem : batch) {
-        itemCache.put(start, batchItem);
-        start++;
+    if(itemId != null) {
+      if (!itemCache.containsKey(itemId)) {
+        Integer index = (Integer) itemId;
+        int start = index - (index%batchSize);
+        
+        List<Item> batch = lazyLoadingQuery.loadItems(start, batchSize);
+        for (Item batchItem : batch) {
+          itemCache.put(start, batchItem);
+          start++;
+        }
       }
+      return itemCache.get(itemId);
     }
-    return itemCache.get(itemId);
+    
+    return null;
   }
   
   public int size() {

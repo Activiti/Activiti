@@ -26,7 +26,7 @@ import com.vaadin.ui.themes.Reindeer;
 /**
  * @author Joram Barrez
  */
-public class TaskPage extends CustomComponent {
+public abstract class TaskPage extends CustomComponent {
   
   private static final long serialVersionUID = 2310017323549425167L;
   
@@ -76,5 +76,11 @@ public class TaskPage extends CustomComponent {
       taskTable.setCurrentPageFirstItemId(index);
     }
   }
+  
+  /**
+   * Clears the current item cache and refreshes
+   * the currently visible items in the task table.
+   */
+  public abstract void refreshCurrentTasks();
   
 }

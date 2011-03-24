@@ -49,6 +49,26 @@ public class TaskInboxPage extends TaskPage {
     selectTask(taskListContainer.getIndexForObjectId(taskId));
   }
   
+  @Override
+  public void refreshCurrentTasks() {
+    Integer pageIndex = (Integer) taskTable.getCurrentPageFirstItemId();
+    Integer selectedIndex = (Integer) taskTable.getValue();
+    taskTable.removeAllItems();
+    
+    // Remove all items
+    taskListContainer.removeAllItems();
+    
+    Integer max = taskTable.getContainerDataSource().size();
+    if(pageIndex > max) {
+      pageIndex = max -1;
+    }
+    if(selectedIndex > max) {
+      selectedIndex = max -1;
+    }
+    taskTable.setCurrentPageFirstItemIndex(pageIndex);
+    selectTask(selectedIndex);
+  }
+  
   protected void addTaskList() {
     this.taskTable = new Table();
     taskTable.addStyleName(Constants.STYLE_TASK_LIST);
@@ -67,14 +87,19 @@ public class TaskInboxPage extends TaskPage {
       private static final long serialVersionUID = 8811553575319455854L;
       public void valueChange(ValueChangeEvent event) {
         Item item = taskTable.getItem(event.getProperty().getValue()); // the value of the property is the itemId of the table entry
-        String taskId = (String) item.getItemProperty("id").getValue();
-        mainSplitPanel.setSecondComponent(new TaskDetailPanel(taskId));
-
-        
-        UriFragment taskFragment = new UriFragment(TaskNavigationHandler.TASK_URI_PART, taskId);
-        taskFragment.addParameter("category", TaskNavigationHandler.CATEGORY_INBOX);
-        
-        ExplorerApplication.getCurrent().setCurrentUriFragment(taskFragment);
+        if(item != null) {
+          String taskId = (String) item.getItemProperty("id").getValue();
+          mainSplitPanel.setSecondComponent(new TaskDetailPanel(taskId, TaskInboxPage.this));
+          
+          UriFragment taskFragment = new UriFragment(TaskNavigationHandler.TASK_URI_PART, taskId);
+          taskFragment.addParameter("category", TaskNavigationHandler.CATEGORY_INBOX);
+          
+          ExplorerApplication.getCurrent().setCurrentUriFragment(taskFragment);
+        } else {
+          // Nothing is selected
+          mainSplitPanel.removeComponent(mainSplitPanel.getSecondComponent());
+          ExplorerApplication.getCurrent().setCurrentUriFragment(new UriFragment(TaskNavigationHandler.TASK_URI_PART));
+        }
       }
     });
     
@@ -91,5 +116,5 @@ public class TaskInboxPage extends TaskPage {
     
     mainSplitPanel.setFirstComponent(taskTable);
   }
-  
+
 }

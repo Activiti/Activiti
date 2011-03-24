@@ -40,12 +40,17 @@ public class GetTaskFormCmd implements Command<TaskFormData> {
       throw new ActivitiException("No task found for taskId '" + taskId +"'");
     }
     
-    TaskFormHandler taskFormHandler = task.getTaskDefinition().getTaskFormHandler();
-    if (taskFormHandler == null) {
-      throw new ActivitiException("No taskFormHandler specified for task '" + taskId +"'");
+    if(task.getTaskDefinition() != null) {
+      TaskFormHandler taskFormHandler = task.getTaskDefinition().getTaskFormHandler();
+      if (taskFormHandler == null) {
+        throw new ActivitiException("No taskFormHandler specified for task '" + taskId +"'");
+      }
+      
+      return taskFormHandler.createTaskForm(task);
+    } else {
+      // Standalone task, no TaskFormData available
+      return null;
     }
-    
-    return taskFormHandler.createTaskForm(task);
   }
 
 }

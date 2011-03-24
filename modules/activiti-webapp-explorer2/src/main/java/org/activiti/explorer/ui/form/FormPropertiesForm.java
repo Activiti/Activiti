@@ -11,19 +11,16 @@
  * limitations under the License.
  */
 
-package org.activiti.explorer.ui.flow;
+package org.activiti.explorer.ui.form;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.activiti.engine.FormService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.form.FormProperty;
-import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.explorer.ExplorerApplication;
-import org.activiti.explorer.ui.form.FormPropertiesComponent;
 
+import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -36,18 +33,16 @@ import com.vaadin.ui.VerticalLayout;
 
 
 /**
- * Form for starting a process-definition using form-properties. Exposes
- * events to listen to OK and CANCEL events.
+ * Form that renders form-properties and allows posting the filled in value. Performs
+ * validation as well. Exposes {@link FormPropertiesEvent}s which allow listening for 
+ * submission and cancellation of the form.
  * 
  * @author Frederik Heremans
  */
-public class ProcessDefinitionStartForm extends VerticalLayout {
+public class FormPropertiesForm extends VerticalLayout {
   
   private static final long serialVersionUID = -3197331726904715949L;
 
-  // Members
-  protected ProcessDefinition processDefinition;
-  
   // Services
   protected FormService formService;
 
@@ -56,10 +51,8 @@ public class ProcessDefinitionStartForm extends VerticalLayout {
   protected Button cancelFormButton;
   protected FormPropertiesComponent formPropertiesComponent;
   
-  public ProcessDefinitionStartForm(ProcessDefinition processDefinition) {
+  public FormPropertiesForm() {
     super();
-    this.processDefinition = processDefinition;
-    
     formService = ProcessEngines.getDefaultProcessEngine().getFormService();
     
     initFormPropertiesComponent();
@@ -68,16 +61,31 @@ public class ProcessDefinitionStartForm extends VerticalLayout {
   }
   
   public void setFormProperties(List<FormProperty> formProperties) {
-    // Component will render all properties
+    // Component will refresh it's components based on the passed properties
     formPropertiesComponent.setFormProperties(formProperties);
   }
   
+  public void setSubmitButtonCaption(String caption) {
+    submitFormButton.setCaption(caption);
+  }
+  
+  public void setCancelButtonCaption(String caption) {
+    cancelFormButton.setCaption(caption);
+  }
+  
+  /**
+   * Clear all (writable) values in the form.
+   */
+  public void clear() {
+    formPropertiesComponent.setFormProperties(formPropertiesComponent.getFormProperties());
+  }
 
   protected void initButtons() {
-    submitFormButton = new Button("Start flow");
-    cancelFormButton = new Button("Cancel");
+    submitFormButton = new Button();
+    cancelFormButton = new Button();
     
     HorizontalLayout buttons = new HorizontalLayout();
+    buttons.setSpacing(true);
     buttons.addComponent(submitFormButton);
     buttons.setComponentAlignment(submitFormButton, Alignment.BOTTOM_RIGHT);
     
@@ -99,17 +107,16 @@ public class ProcessDefinitionStartForm extends VerticalLayout {
     submitFormButton.addListener(new ClickListener() {
       
       private static final long serialVersionUID = -6091586145870618870L;
-      
+    
       public void buttonClick(ClickEvent event) {
-        Map<String, String> formProperties = formPropertiesComponent.getFormPropertyValues();
-        for(Entry<String, String> entry : formProperties.entrySet()) {
-          System.out.println(entry.getKey() + "->" + entry.getValue());
+        // Extract the submitted values from the form. Throws exception when validation fails.
+        try {
+          Map<String, String> formProperties = formPropertiesComponent.getFormPropertyValues();
+          fireEvent(new FormPropertiesEvent(FormPropertiesForm.this, FormPropertiesEvent.TYPE_SUBMIT, formProperties));
+          submitFormButton.setComponentError(null);
+        } catch(InvalidValueException ive) {
+          // Error is presented to user by the form component
         }
-        // Start process instance
-        formService.submitStartFormData(processDefinition.getId(), formProperties);
-        // Show notification of success
-        ExplorerApplication.getCurrent().getMainWindow().showNotification("Process '" + processDefinition.getName() + "' has been started");
-        fireEvent(new FormEvent(ProcessDefinitionStartForm.this, FormEvent.TYPE_SUBMIT));
       }
     });
     
@@ -118,7 +125,8 @@ public class ProcessDefinitionStartForm extends VerticalLayout {
       private static final long serialVersionUID = -8980500491522472381L;
 
       public void buttonClick(ClickEvent event) {
-        fireEvent(new FormEvent(ProcessDefinitionStartForm.this, FormEvent.TYPE_CANCEL));
+        fireEvent(new FormPropertiesEvent(FormPropertiesForm.this, FormPropertiesEvent.TYPE_CANCEL));
+        submitFormButton.setComponentError(null);
       }
     });
   }
@@ -129,23 +137,38 @@ public class ProcessDefinitionStartForm extends VerticalLayout {
     container.addComponent(emptySpace);
   }
   
-  // Event
-  public class FormEvent extends Event {
+  /**
+   * Event indicating a form has been submitted or cancelled. When submitted,
+   * the values of the form-properties are available.
+   * 
+   * @author Frederik Heremans
+   */
+  public class FormPropertiesEvent extends Event {
 
     private static final long serialVersionUID = -410814526942034125L;
     
-    public static final String TYPE_SUBMIT = "submit";
-    public static final String TYPE_CANCEL = "cancel";
+    public static final String TYPE_SUBMIT = "SUBMIT";
+    public static final String TYPE_CANCEL = "CANCEL";
     
     private String type;
+    private Map<String, String> formProperties;
     
-    public FormEvent(Component source, String type) {
+    public FormPropertiesEvent(Component source, String type) {
       super(source);
       this.type = type;
     }
     
+    public FormPropertiesEvent(Component source, String type, Map<String, String> formProperties) {
+      this(source, type);
+      this.formProperties = formProperties;
+    }
+    
     public String getType() {
       return type;
+    }
+    
+    public Map<String, String> getFormProperties() {
+      return formProperties;
     }
   }
 }

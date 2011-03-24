@@ -19,9 +19,11 @@ import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.explorer.Constants;
-import org.activiti.explorer.ui.flow.ProcessDefinitionStartForm.FormEvent;
-import org.activiti.explorer.Images;
+import org.activiti.explorer.ExplorerApplication;
 import org.activiti.explorer.ui.flow.listener.StartFlowClickListener;
+import org.activiti.explorer.ui.form.FormPropertiesForm;
+import org.activiti.explorer.ui.form.FormPropertiesForm.FormPropertiesEvent;
+import org.activiti.explorer.ui.form.FormPropertiesEventListener;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComponentContainer;
@@ -56,7 +58,7 @@ public class ProcessDefinitionDetailPanel extends Panel {
   protected Label categoryLabel;
   protected Button startFlowButton;
   
-  protected ProcessDefinitionStartForm processDefinitionStartForm;
+  protected FormPropertiesForm processDefinitionStartForm;
   protected ProcessDefinitionInfoComponent definitionInfoComponent;
   
   public ProcessDefinitionDetailPanel(String processDefinitionId, FlowPage flowPage) {
@@ -100,16 +102,28 @@ public class ProcessDefinitionDetailPanel extends Panel {
   
   public void showProcessStartForm(StartFormData startFormData) {
     if(processDefinitionStartForm == null) {
-      processDefinitionStartForm = new ProcessDefinitionStartForm(processDefinition);
+      processDefinitionStartForm = new FormPropertiesForm();
+      processDefinitionStartForm.setSubmitButtonCaption("Start process");
+      processDefinitionStartForm.setCancelButtonCaption("Cancel");
+      
       // When form is submitted/cancelled, show the info again
-      processDefinitionStartForm.addListener(new Listener() {
+      processDefinitionStartForm.addListener(new FormPropertiesEventListener() {
         
-        private static final long serialVersionUID = -6481055976243304739L;
+        private static final long serialVersionUID = -1747717959106153970L;
 
-        public void componentEvent(Event event) {
-          if(event instanceof FormEvent) {
-            showProcessDefinitionInfo();
-          }
+        @Override
+        protected void handleFormSubmit(FormPropertiesEvent event) {
+          formService.submitStartFormData(processDefinition.getId(), event.getFormProperties());
+          
+          // Show notification
+          ExplorerApplication.getCurrent().getMainWindow().showNotification("Process '" + 
+            processDefinition.getName() + "' started successfully");
+          showProcessDefinitionInfo();
+        }
+        
+        @Override
+        protected void handleFormCancel(FormPropertiesEvent event) {
+          showProcessDefinitionInfo();
         }
       });
     }

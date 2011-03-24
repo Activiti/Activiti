@@ -12,12 +12,19 @@
  */
 package org.activiti.explorer.ui.task;
 
+import java.util.Map;
+
+import org.activiti.engine.FormService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.task.Task;
 import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApplication;
 import org.activiti.explorer.Images;
+import org.activiti.explorer.ui.form.FormPropertiesEventListener;
+import org.activiti.explorer.ui.form.FormPropertiesForm;
+import org.activiti.explorer.ui.form.FormPropertiesForm.FormPropertiesEvent;
 import org.activiti.explorer.ui.profile.ProfilePopupWindow;
 
 import com.ocpsoft.pretty.time.PrettyTime;
@@ -39,18 +46,28 @@ import com.vaadin.ui.themes.Reindeer;
 public class TaskDetailPanel extends HorizontalLayout {
   
   private static final long serialVersionUID = -2018798598805436750L;
-  
-  protected TaskService taskService;
+
   protected Task task;
   
+  // Services
+  protected TaskService taskService;
+  protected FormService formService;
+  
+  // UI
   protected Panel leftPanel;
   protected Panel rightPanel;
+  protected FormPropertiesForm taskForm;
+  protected TaskPage parent;
   
-  public TaskDetailPanel(String taskId) {
+  
+  public TaskDetailPanel(String taskId, TaskPage parent) {
+    this.parent = parent;
+    
     setSizeFull();
     addStyleName(Reindeer.LAYOUT_WHITE);
     
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
+    this.formService = ProcessEngines.getDefaultProcessEngine().getFormService();
     this.task = taskService.createTaskQuery().taskId(taskId).singleResult();
     
     // left panel: all details about the task
@@ -63,7 +80,7 @@ public class TaskDetailPanel extends HorizontalLayout {
     initDescription();
     initTimeDetails();
     initPeopleDetails();
-    
+    initTaskForm();
     
     // Right panel: the task comments
     this.rightPanel = new TaskCommentPanel(taskId);
@@ -190,4 +207,40 @@ public class TaskDetailPanel extends HorizontalLayout {
     }
   }
   
+  protected void initTaskForm() {
+    // Check if task requires a form
+    TaskFormData formData = formService.getTaskFormData(task.getId());
+    if(formData != null && formData.getFormProperties() != null && formData.getFormProperties().size() > 0) {
+      taskForm = new FormPropertiesForm();
+      taskForm.setSubmitButtonCaption("Complete task");
+      taskForm.setCancelButtonCaption("Reset form");
+      taskForm.setFormProperties(formData.getFormProperties());
+      
+      taskForm.addListener(new FormPropertiesEventListener() {
+        
+        private static final long serialVersionUID = -3893467157397686736L;
+
+        @Override
+        protected void handleFormSubmit(FormPropertiesEvent event) {
+          Map<String, String> properties = event.getFormProperties();
+          
+          formService.submitTaskFormData(task.getId(), properties);
+          
+          ExplorerApplication.getCurrent().getMainWindow().showNotification("Task '" + 
+                  task.getName() + "' completed");
+          
+          parent.refreshCurrentTasks();
+        }
+        
+        @Override
+        protected void handleFormCancel(FormPropertiesEvent event) {
+          // Clear the form values 
+          taskForm.clear();
+        }
+      });
+      
+      // Add component to page
+      leftPanel.addComponent(taskForm);
+    }
+  }
 }
