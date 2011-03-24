@@ -2,8 +2,6 @@ drop index ACT_IDX_BYTEAR_DEPL ;
 drop index ACT_IDX_EXE_PROCINST ;
 drop index ACT_IDX_EXE_PARENT ;
 drop index ACT_IDX_EXE_SUPER;
-drop index ACT_IDX_MEMB_GROUP;
-drop index ACT_IDX_MEMB_USER;
 drop index ACT_IDX_TSKASS_TASK;
 drop index ACT_IDX_TASK_EXEC;
 drop index ACT_IDX_TASK_PROCINST;
