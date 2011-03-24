@@ -16,7 +16,7 @@ public class ProcessTestCase extends ActivitiTestCase {
     assertTrue("Current activities (" + activeActivityIds + ") does not contain " + activityId, activeActivityIds.contains(activityId));
   }
 
-  @Deployment(resources = "activiti.project.template.bpmn20.xml")
+  @Deployment(resources = "diagrams/activiti.project.template.bpmn20.xml")
   public void testHappyPath() {
     HashMap<String, Object> variables = new HashMap<String, Object>();
     
