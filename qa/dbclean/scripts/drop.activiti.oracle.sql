@@ -9,11 +9,14 @@ drop table ACT_RU_EXECUTION cascade constraints;
 drop table ACT_ID_MEMBERSHIP cascade constraints;
 drop table ACT_ID_GROUP cascade constraints;
 drop table ACT_ID_USER cascade constraints;
+drop table ACT_ID_INFO cascade constraints;
 drop table ACT_RU_JOB cascade constraints;
 drop table ACT_HI_PROCINST cascade constraints;
 drop table ACT_HI_ACTINST cascade constraints;
 drop table ACT_HI_TASKINST cascade constraints;
 drop table ACT_HI_DETAIL cascade constraints;
+drop table ACT_HI_COMMENT cascade constraints;
+drop table ACT_HI_ATTACHMENT cascade constraints;
 
 drop table ACT_CY_CONN_CONFIG cascade constraints;
 drop table ACT_CY_CONFIG cascade constraints;
