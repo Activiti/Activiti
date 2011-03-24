@@ -77,6 +77,11 @@ public class DeploymentDetailPanel extends Panel {
     Button deleteButton = new Button("Delete");
     deleteButton.addStyleName(Reindeer.BUTTON_SMALL);
     actionLayout.addComponent(deleteButton);
+    deleteButton.addListener(new ClickListener() {
+      public void buttonClick(ClickEvent event) {
+        ExplorerApplication.getCurrent().showPopupWindow(new DeleteDeploymentPopupWindow(deployment));
+      }
+    });
   }
   
   protected void addDeploymentName() {

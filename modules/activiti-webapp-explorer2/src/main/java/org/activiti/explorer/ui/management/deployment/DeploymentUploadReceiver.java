@@ -20,6 +20,7 @@ import java.util.zip.ZipInputStream;
 
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.explorer.ExplorerApplication;
 
@@ -36,8 +37,14 @@ public class DeploymentUploadReceiver implements Receiver, FinishedListener {
   private static final long serialVersionUID = 1L;
   
   protected RepositoryService repositoryService;
+  
+  // Will be assigned during upload
   protected ByteArrayOutputStream outputStream;
   protected String fileName;
+  
+  // Will be assigned after deployment
+  protected boolean validFile = false;
+  protected Deployment deployment;
   
   public DeploymentUploadReceiver() {
     this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
@@ -50,13 +57,25 @@ public class DeploymentUploadReceiver implements Receiver, FinishedListener {
   }
 
   public void uploadFinished(FinishedEvent event) {
-    // When upload is finished, we should switch the screen to this freshly deployed deployment
+    deployUploadedFile();
+    if (validFile) {
+      showUploadedDeployment();
+    }
+  }
+
+  protected void deployUploadedFile() {
     DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().name(fileName);
     try {
       if (fileName.endsWith(".bpmn20.xml")) {
-        deploymentBuilder.addInputStream(fileName, new ByteArrayInputStream(outputStream.toByteArray())).deploy();
+        validFile = true;
+        deployment = deploymentBuilder
+          .addInputStream(fileName, new ByteArrayInputStream(outputStream.toByteArray()))
+          .deploy();
       } else if (fileName.endsWith(".bar") || fileName.endsWith(".zip")) {
-        deploymentBuilder.addZipInputStream(new ZipInputStream(new ByteArrayInputStream(outputStream.toByteArray()))).deploy();
+        validFile = true;
+        deployment = deploymentBuilder
+          .addZipInputStream(new ZipInputStream(new ByteArrayInputStream(outputStream.toByteArray())))
+          .deploy();
       } else {
         ExplorerApplication.getCurrent().showErrorNotification("Could not upload file",
         		"Only .bar, .zip and .bpmn20.xml files are supported");
@@ -70,9 +89,10 @@ public class DeploymentUploadReceiver implements Receiver, FinishedListener {
         }
       }
     }
-    
-    // Indicate that the deployment has been done
-    ExplorerApplication.getCurrent().showInformationNotification(fileName + " has been successfully deployed");
+  }
+  
+  protected void showUploadedDeployment() {
+    ExplorerApplication.getCurrent().switchView(new DeploymentPage(deployment.getId()));
   }
   
 }
