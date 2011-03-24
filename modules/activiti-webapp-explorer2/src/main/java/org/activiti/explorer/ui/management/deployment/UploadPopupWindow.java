@@ -124,8 +124,7 @@ public class UploadPopupWindow extends Window
   }
 
   public void uploadStarted(StartedEvent event) {
-    // Visible components are replaced by a progress bar
-    removeAllComponents();
+    removeAllComponents(); // Visible components are replaced by a progress bar
     
     this.progressIndicator = new ProgressIndicator();
     progressIndicator.setPollingInterval(500);
@@ -154,6 +153,8 @@ public class UploadPopupWindow extends Window
   public void addProgressListener(ProgressListener progressListener) {
     upload.addListener(progressListener);
   }
+  
+  // Drag and Drop support
   
   public void drop(DragAndDropEvent event) {
     System.out.println("Dropped file !");
