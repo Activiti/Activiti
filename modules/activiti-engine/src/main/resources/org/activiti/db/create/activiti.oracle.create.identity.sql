@@ -23,6 +23,18 @@ create table ACT_ID_USER (
     primary key (ID_)
 );
 
+create table ACT_ID_INFO (
+    ID_ NVARCHAR2(64),
+    REV_ INTEGER,
+    USER_ID_ NVARCHAR2(64),
+    TYPE_ NVARCHAR2(64),
+    KEY_ NVARCHAR2(255),
+    VALUE_ NVARCHAR2(255),
+    PASSWORD_ BLOB,
+    PARENT_ID_ NVARCHAR2(255),
+    primary key (ID_)
+);
+
 create index ACT_IDX_MEMB_GROUP on ACT_ID_MEMBERSHIP(GROUP_ID_);
 alter table ACT_ID_MEMBERSHIP 
     add constraint ACT_FK_MEMB_GROUP 

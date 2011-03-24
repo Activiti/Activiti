@@ -23,6 +23,18 @@ create table ACT_ID_USER (
     primary key (ID_)
 );
 
+create table ACT_ID_INFO (
+    ID_ varchar(64),
+    REV_ integer,
+    USER_ID_ varchar(64),
+    TYPE_ varchar(64),
+    KEY_ varchar(255),
+    VALUE_ varchar(255),
+    PASSWORD_ BLOB,
+    PARENT_ID_ varchar(255),
+    primary key (ID_)
+);
+
 alter table ACT_ID_MEMBERSHIP 
     add constraint ACT_FK_MEMB_GROUP 
     foreign key (GROUP_ID_) 
