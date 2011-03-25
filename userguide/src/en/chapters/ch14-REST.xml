@@ -730,8 +730,46 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
             </para>
           </listitem>
         </itemizedlist>
+      </section>	  
+	  <section>
+        <title>List Form Properties</title>
+        <para>
+          Returns a list of properties of a form of a running task, which is defined by the process.
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis role="bold">Request:</emphasis>
+              <literal>GET /form/{taskId}/properties</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">API:</emphasis>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getFormService().getTaskFormData(taskId).getFormProperties()</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">Response:</emphasis>
+              <programlisting>
+{
+  "data": [
+    {
+      "id": "userName",
+      "name": "User",
+      "value": "foobar",
+      "type": "string",
+      "required": "true",
+      "readable": "true",
+      "writable": "true"
+    }
+]
+}</programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
       </section>
-
     </section>
 
 
