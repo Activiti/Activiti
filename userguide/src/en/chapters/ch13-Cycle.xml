@@ -23,7 +23,7 @@
   
   <mediaobject><imageobject><imagedata align="center" fileref="images/activiti.cycle.png"/></imageobject></mediaobject>
   
-  <section>
+  <section id="cycleOverview">
     <title>Overview</title>  
     <para>
       Since Activiti Cycle is meant to be used by people with entirely different roles, backgrounds and requirements, it was build 
@@ -35,7 +35,7 @@
     </para>
   </section>
 
-  <section>
+  <section id="cycleRepositories">
     <title>Repositories</title>
     <mediaobject><imageobject><imagedata align="center" fileref="images/activiti.cycle.repositories.png"/></imageobject></mediaobject>
     <para>
@@ -153,7 +153,7 @@ insert into ACT_CY_CONN_CONFIG values ('2',
     	    	
   </section>
   
-  <section>
+  <section id="cycleArtifactActions">
     <title>Artifacts and Actions</title>
     <para>
       When you click an item in the repository tree — in Activiti Cycle we refer to them as artifacts — the details are displayed on the right side. 
@@ -167,7 +167,7 @@ insert into ACT_CY_CONN_CONFIG values ('2',
     </para>
   </section>
 
-  <section>
+  <section id="cyclePlugins">
     <title>More Plug-Ins</title>
     <para>
       More Cycle Plug-Ins are available, for example SVN and SFTP Connectors or a Maven Project Wizard. These Plug-Ins are available
