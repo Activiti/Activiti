@@ -1,2 +1,8 @@
 alter table ACT_RU_TASK 
-add column DUE_DATE_ timestamp;
+add OWNER_ varchar(64);
+
+alter table ACT_RU_TASK 
+add DELEGATION_ varchar(64);
+
+alter table ACT_RU_TASK 
+add DUE_DATE_ timestamp;
