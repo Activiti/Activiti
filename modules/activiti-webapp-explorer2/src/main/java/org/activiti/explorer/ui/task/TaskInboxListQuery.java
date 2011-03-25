@@ -20,15 +20,9 @@ import org.activiti.engine.task.TaskQuery;
  */
 public class TaskInboxListQuery extends AbstractTaskListQuery {
   
-  protected TaskQuery query;
-  
-  public TaskInboxListQuery() {
-    this.query = taskService.createTaskQuery().taskAssignee(userId).orderByTaskId().asc();
-  }
-  
   @Override
   protected TaskQuery getQuery() {
-    return query;
+    return taskService.createTaskQuery().taskAssignee(userId).orderByTaskId().asc();
   }
   
 }

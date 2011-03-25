@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.identity.Authentication;
+import org.activiti.engine.impl.util.LogUtil;
 import org.activiti.explorer.navigation.NavigationFragmentChangeListener;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.MainLayout;
@@ -36,8 +37,12 @@ import com.vaadin.ui.Window.Notification;
  * @author Joram Barrez
  */
 public class ExplorerApplication extends Application implements HttpServletRequestListener {
-
+  
   private static final long serialVersionUID = -8923370280251348552L;
+  
+  static {
+    LogUtil.readJavaUtilLoggingConfigFromClasspath();
+  }
   
   private static ThreadLocal<ExplorerApplication> current = new ThreadLocal<ExplorerApplication>();
   

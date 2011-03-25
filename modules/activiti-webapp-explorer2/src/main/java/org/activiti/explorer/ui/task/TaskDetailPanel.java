@@ -229,7 +229,7 @@ public class TaskDetailPanel extends HorizontalLayout {
           ExplorerApplication.getCurrent().getMainWindow().showNotification("Task '" + 
                   task.getName() + "' completed");
           
-          parent.refreshCurrentTasks();
+          parent.refreshList();
         }
         
         @Override
@@ -254,7 +254,7 @@ public class TaskDetailPanel extends HorizontalLayout {
           taskService.complete(task.getId());          
           ExplorerApplication.getCurrent().getMainWindow().showNotification("Task '" + 
                   task.getName() + "' completed");
-          parent.refreshCurrentTasks();
+          parent.refreshList();
         }
       });
       

@@ -12,49 +12,21 @@
  */
 package org.activiti.explorer.ui.management;
 
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.Reindeer;
+import org.activiti.explorer.ui.AbstractPage;
+
+import com.vaadin.ui.Component;
 
 
 /**
  * @author Joram Barrez
  */
-public class ManagementPage extends CustomComponent {
+public abstract class ManagementPage extends AbstractPage {
   
   private static final long serialVersionUID = -138537246412384952L;
   
-  protected VerticalLayout managementPageLayout;
-  protected HorizontalSplitPanel mainSplitPanel;
-  
-  public ManagementPage() {
-    addManagementPageLayout();
-    addManagementMenuBar();
-    addMainSplitPanel();
+  @Override
+  protected Component createMenuBar() {
+    return new ManagementMenuBar();
   }
   
-  protected void addManagementPageLayout() {
-    // The main layout of this page is a vertical layout:
-    // on top there is the dynamic task menu bar, on the bottom the rest
-    managementPageLayout = new VerticalLayout();
-    managementPageLayout.setSizeFull();
-    setCompositionRoot(managementPageLayout);
-    setSizeFull();
-  }
-  
-  protected void addManagementMenuBar() {
-    managementPageLayout.addComponent(new ManagementMenuBar());
-  }
-  
-  protected void addMainSplitPanel() {
-    mainSplitPanel = new HorizontalSplitPanel();
-    mainSplitPanel.addStyleName(Reindeer.SPLITPANEL_SMALL);
-    mainSplitPanel.setSizeFull();
-    mainSplitPanel.setSplitPosition(17, HorizontalSplitPanel.UNITS_PERCENTAGE);
-    
-    managementPageLayout.addComponent(mainSplitPanel);
-    managementPageLayout.setExpandRatio(mainSplitPanel, 1.0f);
-  }
-
 }

@@ -37,47 +37,41 @@ public class DatabasePage extends ManagementPage {
 
   private static final long serialVersionUID = -3989067128946859490L;
   
-  // services
-  protected ManagementService managementService;
-  
-  // ui
-  protected Table tableList;
+  protected ManagementService managementService = ProcessEngines.getDefaultProcessEngine().getManagementService();
+  protected String tableName;
   
   public DatabasePage() {
-    this.managementService = ProcessEngines.getDefaultProcessEngine().getManagementService();
-    
-    addTableList();
-    populateTableList();
-    
     ExplorerApplication.getCurrent().setCurrentUriFragment(
             new UriFragment(DataBaseNavigationHandler.TABLE_URI_PART));
   }
   
   public DatabasePage(String tableName) {
     this();
-    
-    // Select the requested table
-    tableList.select(tableName);
+    this.tableName = tableName;
   }
   
-  protected void addTableList() {
-    this.tableList = new Table();
-    mainSplitPanel.setFirstComponent(tableList);
+  @Override
+  protected void initUi() {
+    super.initUi();
+    populateTableList(); // tablelist is NOT lazy loaded
+    if (tableName == null) {
+      selectListElement(0);
+    } else {
+      table.select(tableName);
+    }
+  }
+  
+  @Override
+  protected Table createList() {
+    final Table tableList = new Table();
     
-    // Set non-editable, selectable and full-size
-    tableList.setEditable(false);
-    tableList.setImmediate(true);
-    tableList.setSelectable(true);
-    tableList.setNullSelectionAllowed(false);
-    tableList.setSizeFull();
-            
     // Listener to change right panel when clicked on a task
     tableList.addListener(new Property.ValueChangeListener() {
       private static final long serialVersionUID = 8811553575319455854L;
       public void valueChange(ValueChangeEvent event) {
         // The itemId of the table list is the tableName
         String tableName = (String) event.getProperty().getValue();
-       mainSplitPanel.setSecondComponent(new DatabaseDetailPanel(tableName));
+       splitPanel.setSecondComponent(new DatabaseDetailPanel(tableName));
        
        // Update URL
        ExplorerApplication.getCurrent().setCurrentUriFragment(
@@ -90,12 +84,14 @@ public class DatabasePage extends ManagementPage {
     tableList.setColumnWidth("icon", 32);
     tableList.addContainerProperty("tableName", String.class, null);
     tableList.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
+    
+    return tableList;
   }
   
   protected void populateTableList() {
     TreeMap<String, Long> tables = new TreeMap<String, Long>(managementService.getTableCount()); // treemap because we want to sort it on name
     for (String tableName : tables.keySet()) {
-      Item item = tableList.addItem(tableName);
+      Item item = table.addItem(tableName);
       item.getItemProperty("icon").setValue(determineTableIcon(tableName));
       item.getItemProperty("tableName").setValue(tableName + " (" + tables.get(tableName) + ")");
     }

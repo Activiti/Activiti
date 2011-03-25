@@ -16,7 +16,6 @@ import org.activiti.explorer.ExplorerApplication;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.DeploymentNavigationHandler;
-import org.activiti.explorer.navigation.TaskNavigationHandler;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.management.ManagementPage;
 
@@ -33,30 +32,33 @@ public class DeploymentPage extends ManagementPage {
 
   private static final long serialVersionUID = 1L;
   
+  protected String deploymentId;
   protected Table deploymentTable;
   protected LazyLoadingContainer deploymentListContainer;
   
   public DeploymentPage() {
-    addDeploymentList();
     ExplorerApplication.getCurrent().setCurrentUriFragment(
       new UriFragment(DeploymentNavigationHandler.DEPLOYMENT_URI_PART));
   }
   
   public DeploymentPage(String deploymentId) {
     this();
-    selectDeployment(deploymentListContainer.getIndexForObjectId(deploymentId));
+    this.deploymentId = deploymentId;
   }
   
-  protected void addDeploymentList() {
-    this.deploymentTable = new Table();
-    mainSplitPanel.setFirstComponent(deploymentTable);
-    
-    // Set non-editable, selectable and full-size
-    deploymentTable.setEditable(false);
-    deploymentTable.setImmediate(true);
-    deploymentTable.setSelectable(true);
-    deploymentTable.setNullSelectionAllowed(false);
-    deploymentTable.setSizeFull();
+  @Override
+  protected void initUi() {
+    super.initUi();
+    if (deploymentId == null) {
+      selectListElement(0);
+    } else {
+      selectListElement(deploymentListContainer.getIndexForObjectId(deploymentId));
+    }
+  }
+  
+  @Override
+  protected Table createList() {
+    final Table deploymentTable = new Table();
     
     LazyLoadingQuery deploymentListQuery = new DeploymentListQuery();
     deploymentListContainer = new LazyLoadingContainer(deploymentListQuery, 10);
@@ -69,14 +71,14 @@ public class DeploymentPage extends ManagementPage {
         Item item = deploymentTable.getItem(event.getProperty().getValue()); // the value of the property is the itemId of the table entry
         if(item != null) {
           String deploymentId = (String) item.getItemProperty("id").getValue();
-          mainSplitPanel.setSecondComponent(new DeploymentDetailPanel(deploymentId, DeploymentPage.this));
+          splitPanel.setSecondComponent(new DeploymentDetailPanel(deploymentId, DeploymentPage.this));
           
           // Update URL
           ExplorerApplication.getCurrent().setCurrentUriFragment(
             new UriFragment(DeploymentNavigationHandler.DEPLOYMENT_URI_PART, deploymentId));
         } else {
           // Nothing is selected
-          mainSplitPanel.removeComponent(mainSplitPanel.getSecondComponent());
+          splitPanel.removeComponent(splitPanel.getSecondComponent());
           ExplorerApplication.getCurrent().setCurrentUriFragment(new UriFragment(DeploymentNavigationHandler.DEPLOYMENT_URI_PART));
         }
       }
@@ -85,33 +87,8 @@ public class DeploymentPage extends ManagementPage {
     // Create column headers
     deploymentTable.addContainerProperty("name", String.class, null);
     deploymentTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
+    
+    return deploymentTable;
   }
   
-  public void selectDeployment(int index) {
-    if (deploymentTable.getContainerDataSource().size() > index) {
-      deploymentTable.select(index);
-      deploymentTable.setCurrentPageFirstItemId(index);
-    }
-  }
-  
-  public void refreshCurrentDeployments() {
-    Integer pageIndex = (Integer) deploymentTable.getCurrentPageFirstItemId();
-    Integer selectedIndex = (Integer) deploymentTable.getValue();
-    deploymentTable.removeAllItems();
-    
-    // Remove all items
-    deploymentListContainer.removeAllItems();
-    
-    // Try to select the next one in the list
-    Integer max = deploymentTable.getContainerDataSource().size();
-    if(pageIndex > max) {
-      pageIndex = max -1;
-    }
-    if(selectedIndex > max) {
-      selectedIndex = max -1;
-    }
-    deploymentTable.setCurrentPageFirstItemIndex(pageIndex);
-    selectDeployment(selectedIndex);
-  }
-
 }

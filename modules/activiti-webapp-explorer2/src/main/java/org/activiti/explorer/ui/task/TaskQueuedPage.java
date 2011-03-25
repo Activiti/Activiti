@@ -12,6 +12,8 @@
  */
 package org.activiti.explorer.ui.task;
 
+import org.activiti.explorer.data.LazyLoadingQuery;
+
 
 
 /**
@@ -21,9 +23,21 @@ public class TaskQueuedPage extends TaskPage {
 
   private static final long serialVersionUID = 1L;
   
+  protected String groupId;
+  
   public TaskQueuedPage(String groupId) {
-    super(new TaskQueuedListQuery(groupId));
+    this.groupId = groupId;
   }
-
+  
+  @Override
+  protected LazyLoadingQuery createLazyLoadingQuery() {
+    return new TaskQueuedListQuery(groupId);
+  }
+  
+  @Override
+  protected void initUi() {
+    super.initUi();
+    selectListElement(0);
+  }
 
 }

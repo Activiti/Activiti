@@ -12,6 +12,9 @@
  */
 package org.activiti.explorer.ui.task;
 
+import org.activiti.explorer.data.LazyLoadingQuery;
+
+
 
 
 /**
@@ -21,19 +24,31 @@ public class TaskInboxPage extends TaskPage {
   
   private static final long serialVersionUID = 652000311912640606L;
   
+  protected String taskId;
+  
   public TaskInboxPage() {
-    super(new TaskInboxListQuery());
-    addTaskList();
-    selectTask(0);
   }
   
   /**
    * Constructor called when page is accessed straight through the url, eg. /task/id=123
    */
   public TaskInboxPage(String taskId) {
-    super(new TaskInboxListQuery());
-    addTaskList();
-    selectTask(taskListContainer.getIndexForObjectId(taskId));
+    this.taskId = taskId;
   }
-
+  
+  @Override
+  protected LazyLoadingQuery createLazyLoadingQuery() {
+    return new TaskInboxListQuery();
+  }
+  
+  @Override
+  protected void initUi() {
+    super.initUi();
+    if (taskId == null) {
+      selectListElement(0);
+    } else {
+      selectListElement(taskListContainer.getIndexForObjectId(taskId));
+    }
+  }
+  
 }

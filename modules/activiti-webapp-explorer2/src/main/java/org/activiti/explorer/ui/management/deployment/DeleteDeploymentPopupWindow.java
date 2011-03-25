@@ -118,7 +118,7 @@ public class DeleteDeploymentPopupWindow extends Window {
         // Delete deployment, close popup window and refresh deployment list
         repositoryService.deleteDeployment(deployment.getId(), true);
         close();
-        deploymentPage.refreshCurrentDeployments();
+        deploymentPage.refreshList();
       }
     });
     

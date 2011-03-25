@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ManagementService;
-import org.activiti.engine.management.TablePage;
 import org.activiti.engine.management.TablePageQuery;
 import org.activiti.explorer.data.AbstractLazyLoadingQuery;
 import org.activiti.explorer.data.MapItem;

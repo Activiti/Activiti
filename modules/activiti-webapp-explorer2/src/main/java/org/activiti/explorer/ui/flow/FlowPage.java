@@ -24,44 +24,33 @@ import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.FlowNavigationHandler;
 import org.activiti.explorer.navigation.UriFragment;
+import org.activiti.explorer.ui.AbstractPage;
 import org.activiti.explorer.ui.util.ThemeImageColumnGenerator;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.Reindeer;
 
 
 /**
  * @author Joram Barrez
  */
-public class FlowPage extends VerticalLayout {
+public class FlowPage extends AbstractPage {
   
-  private static final long serialVersionUID = 2310017323549425167L;
+  private static final long serialVersionUID = 1L;
   
   // Services
-  protected RepositoryService repositoryService;
+  protected RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
   
   // UI
-  protected VerticalLayout mainLayout;
-  protected HorizontalSplitPanel mainSplitPanel;
+  protected String processDefinitionId;
   protected LazyLoadingContainer processDefinitionContainer;
   protected Table processDefinitionTable;
   protected ProcessDefinitionDetailPanel detailPanel;
   
   public FlowPage() {
-    this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
-    
-    setSizeFull();
-    
-    initFlowMenuBar();
-    initMainSplitPanel();
-    initProcessDefinitionList();
-    
-    // Set URL
     ExplorerApplication.getCurrent().setCurrentUriFragment(
       new UriFragment(FlowNavigationHandler.FLOW_URI_PART));
   }
@@ -72,11 +61,27 @@ public class FlowPage extends VerticalLayout {
    */
   public FlowPage(String processDefinitionId) {
     this();
-    selectProcessDefinition(processDefinitionContainer.getIndexForObjectId(processDefinitionId));
+    this.processDefinitionId = processDefinitionId;
   }
   
-  protected void initProcessDefinitionList() {
-    this.processDefinitionTable = new Table();
+  @Override
+  protected void initUi() {
+    super.initUi();
+    if (processDefinitionId == null) {
+      selectListElement(0);
+    } else {
+      selectListElement(processDefinitionContainer.getIndexForObjectId(processDefinitionId));
+    }
+  }
+  
+  @Override
+  protected Component createMenuBar() {
+   return new FlowMenuBar();
+  }
+  
+  @Override
+  protected Table createList() {
+    final Table processDefinitionTable = new Table();
     processDefinitionTable.addStyleName(Constants.STYLE_PROCESS_DEFINITION_LIST);
     
     // Set non-editable, selectable and full-size
@@ -110,27 +115,12 @@ public class FlowPage extends VerticalLayout {
     processDefinitionTable.addContainerProperty("name", String.class, null);
     processDefinitionTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
     
-    
-    mainSplitPanel.setFirstComponent(processDefinitionTable);
+    return processDefinitionTable;
   }
 
-  protected void initMainSplitPanel() {
-    mainSplitPanel = new HorizontalSplitPanel();
-    mainSplitPanel.addStyleName(Reindeer.SPLITPANEL_SMALL);
-    mainSplitPanel.setSizeFull();
-    mainSplitPanel.setSplitPosition(17, HorizontalSplitPanel.UNITS_PERCENTAGE);
-    addComponent(mainSplitPanel);
-    setExpandRatio(mainSplitPanel, 1.0f);
-  }
-
-  protected void initFlowMenuBar() {
-    FlowMenuBar flowMenuBar = new FlowMenuBar();
-    addComponent(flowMenuBar);
-  }
-  
   protected void showProcessDefinitionDetail(String processDefinitionId) {
     detailPanel = new ProcessDefinitionDetailPanel(processDefinitionId, FlowPage.this);
-    mainSplitPanel.setSecondComponent(detailPanel);
+    splitPanel.setSecondComponent(detailPanel);
     
     UriFragment processDefinitionFragment = new UriFragment(FlowNavigationHandler.FLOW_URI_PART, processDefinitionId);
     ExplorerApplication.getCurrent().setCurrentUriFragment(processDefinitionFragment);
@@ -143,11 +133,4 @@ public class FlowPage extends VerticalLayout {
     detailPanel.showProcessStartForm(startFormData);
   }
   
-  public void selectProcessDefinition(int index) {
-    if (processDefinitionTable.getContainerDataSource().size() > index) {
-      processDefinitionTable.select(index);
-      processDefinitionTable.setCurrentPageFirstItemId(index);
-    }
-  }
-
 }

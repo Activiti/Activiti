@@ -59,7 +59,7 @@ public class UploadPopupWindow extends Window
   protected Upload upload;
   protected Receiver receiver;
   
-  // Additional listeners
+  // Additional listeners can be attached to the upload components
   protected List<FinishedListener> finishedListeners = new ArrayList<FinishedListener>();
   protected List<StartedListener> startedListeners = new ArrayList<StartedListener>();
   protected List<FailedListener> failedListeners = new ArrayList<FailedListener>();
