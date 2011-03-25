@@ -8,7 +8,7 @@
 
         <startEvent id="theStart">
             <timerEventDefinition>
-                <timeDate>2100-11-14T11:12:22</timeDate>
+                <timeDate>2036-11-14T11:12:22</timeDate>
             </timerEventDefinition>
         </startEvent>    
 

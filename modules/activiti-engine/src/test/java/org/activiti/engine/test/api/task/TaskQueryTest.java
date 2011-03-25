@@ -537,11 +537,11 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     
     // Set due-date on task
-    Calendar dueDateCal = Calendar.getInstance();
-    task.setDueDate(dueDateCal.getTime());
+    Date dueDate = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("01/02/2003 01:12:13");
+    task.setDueDate(dueDate);
     taskService.saveTask(task);
 
-    assertEquals(1, taskService.createTaskQuery().dueDate(dueDateCal.getTime()).count());
+    assertEquals(1, taskService.createTaskQuery().dueDate(dueDate).count());
     
     Calendar otherDate = Calendar.getInstance();
     otherDate.add(Calendar.YEAR, 1);

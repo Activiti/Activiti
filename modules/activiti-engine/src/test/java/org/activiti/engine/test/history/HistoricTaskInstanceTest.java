@@ -13,7 +13,9 @@
 
 package org.activiti.engine.test.history;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricTaskInstance;
@@ -31,16 +33,18 @@ import org.activiti.engine.test.Deployment;
 public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
 
   @Deployment
-  public void testHistoricTaskInstance() {
+  public void testHistoricTaskInstance() throws Exception {
     String processInstanceId = runtimeService.startProcessInstanceByKey("HistoricTaskInstanceTest").getId();
+    
+    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
     
     // Set priority to non-default value
     Task runtimeTask = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
     runtimeTask.setPriority(1234);
-    Calendar dueDateCal = Calendar.getInstance();
     
     // Set due-date
-    runtimeTask.setDueDate(dueDateCal.getTime());
+    Date dueDate = sdf.parse("01/02/2003 04:05:06");
+    runtimeTask.setDueDate(dueDate);
     taskService.saveTask(runtimeTask);
     
     String taskId = runtimeTask.getId();
@@ -51,7 +55,7 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(1234, historicTaskInstance.getPriority());
     assertEquals("Clean up", historicTaskInstance.getName());
     assertEquals("Schedule an engineering meeting for next week with the new hire.", historicTaskInstance.getDescription());
-    assertEquals(dueDateCal.getTime(), historicTaskInstance.getDueDate());
+    assertEquals(dueDate, historicTaskInstance.getDueDate());
     assertEquals("kermit", historicTaskInstance.getAssignee());
     assertEquals(taskDefinitionKey, historicTaskInstance.getTaskDefinitionKey());
     assertNull(historicTaskInstance.getEndTime());
@@ -68,7 +72,7 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(1234, historicTaskInstance.getPriority());
     assertEquals("Clean up", historicTaskInstance.getName());
     assertEquals("Schedule an engineering meeting for next week with the new hire.", historicTaskInstance.getDescription());
-    assertEquals(dueDateCal.getTime(), historicTaskInstance.getDueDate());
+    assertEquals(dueDate, historicTaskInstance.getDueDate());
     assertEquals("kermit", historicTaskInstance.getAssignee());
     assertEquals(TaskEntity.DELETE_REASON_COMPLETED, historicTaskInstance.getDeleteReason());
     assertEquals(taskDefinitionKey, historicTaskInstance.getTaskDefinitionKey());
@@ -90,15 +94,15 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
   }
   
   @Deployment
-  public void testHistoricTaskInstanceQuery() {
+  public void testHistoricTaskInstanceQuery() throws Exception {
     // First instance is finished
     ProcessInstance finishedInstance = runtimeService.startProcessInstanceByKey("HistoricTaskQueryTest");
     
     // Set priority to non-default value
     Task task = taskService.createTaskQuery().processInstanceId(finishedInstance.getId()).singleResult();
     task.setPriority(1234);
-    Calendar dueDateCal = Calendar.getInstance();
-    task.setDueDate(dueDateCal.getTime());
+    Date dueDate = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("01/02/2003 04:05:06");
+    task.setDueDate(dueDate);
     
     taskService.saveTask(task);
     
@@ -171,14 +175,14 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     
     // Due date
     Calendar anHourAgo = Calendar.getInstance();
-    anHourAgo.setTime(dueDateCal.getTime());
+    anHourAgo.setTime(dueDate);
     anHourAgo.add(Calendar.HOUR, -1);
     
     Calendar anHourLater = Calendar.getInstance();
-    anHourLater.setTime(dueDateCal.getTime());
+    anHourLater.setTime(dueDate);
     anHourLater.add(Calendar.HOUR, 1);
     
-    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskDueDate(dueDateCal.getTime()).count());
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskDueDate(dueDate).count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskDueDate(anHourAgo.getTime()).count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskDueDate(anHourLater.getTime()).count());
     

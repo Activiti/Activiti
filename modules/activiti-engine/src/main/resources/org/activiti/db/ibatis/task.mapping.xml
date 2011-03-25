@@ -195,6 +195,9 @@
       <if test="dueAfter != null">
         and T.DUE_DATE_ &gt; #{dueAfter}
       </if>
+      <if test="dueDate != null || dueBefore != null || dueAfter != null">
+        and T.DUE_DATE_ is not null
+      </if>
       <if test="candidateUser != null || candidateGroups != null">
         and T.ASSIGNEE_ is null
         and I.TYPE_ = 'candidate'
