@@ -445,6 +445,15 @@
   		parent="activitiWebScript">
   </bean>  
 
+  <bean id="webscript.org.activiti.rest.api.form.form-properties.get" 
+  		class="org.activiti.rest.api.form.FormPropertiesGet"
+		parent="activitiWebScript">
+  </bean>
+  <bean id="org.activiti.rest.api.form.form-properties.properties.getjson.builder"
+		class="org.activiti.rest.builder.form.FormPropertiesGetObjectBuilder">
+    <property name="templateName" value="form/form-properties.get.json" />
+  </bean>
+
 <bean parent="webscripts.formatmap">
   <property name="formats">
     <props>

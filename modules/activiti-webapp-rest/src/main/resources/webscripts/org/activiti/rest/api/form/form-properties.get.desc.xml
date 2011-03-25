@@ -1,0 +1,8 @@
+<webscript>
+  <shortname>FormProperties</shortname>
+  <description>
+    Returns Form Properties of the corresponding task.
+  </description>
+  <url>/form/{taskId}/properties</url>
+  <format default="json">argument</format>
+</webscript>
