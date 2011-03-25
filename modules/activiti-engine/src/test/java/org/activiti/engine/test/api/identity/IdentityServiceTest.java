@@ -71,18 +71,31 @@ public class IdentityServiceTest extends PluggableActivitiTestCase {
     expectedUserAccountNames.add("google");
     expectedUserAccountNames.add("alfresco");
     List<String> userAccountNames = identityService.getUserAccountNames("testuser");
-    assertEquals(expectedUserAccountNames, userAccountNames);
+    assertListElementsMatch(expectedUserAccountNames, userAccountNames);
     
     identityService.deleteUserAccount("testuser", "google");
     
     expectedUserAccountNames.remove("google");
     
     userAccountNames = identityService.getUserAccountNames("testuser");
-    assertEquals(expectedUserAccountNames, userAccountNames);
+    assertListElementsMatch(expectedUserAccountNames, userAccountNames);
     
     identityService.deleteUser(user.getId());
   }
   
+  private void assertListElementsMatch(List<String> list1, List<String> list2) {
+    if(list1 != null) {
+      assertNotNull(list2);
+      assertEquals(list1.size(), list2.size());
+      for (String value : list1) {
+        assertTrue(list2.contains(value));
+      }
+    } else {
+      assertNull(list2);
+    }
+    
+  }
+
   public void testUserAccountDetails() {
     User user = identityService.newUser("testuser");
     identityService.saveUser(user);
