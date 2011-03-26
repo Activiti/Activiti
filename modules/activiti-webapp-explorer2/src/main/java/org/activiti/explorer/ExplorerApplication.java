@@ -18,18 +18,14 @@ package org.activiti.explorer;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.util.LogUtil;
-import org.activiti.explorer.navigation.NavigationFragmentChangeListener;
 import org.activiti.explorer.navigation.UriFragment;
-import org.activiti.explorer.ui.MainLayout;
 
 import com.vaadin.Application;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.UriFragmentUtility;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
 
@@ -46,30 +42,12 @@ public class ExplorerApplication extends Application implements HttpServletReque
   
   private static ThreadLocal<ExplorerApplication> current = new ThreadLocal<ExplorerApplication>();
   
-  protected Window mainWindow;
-  protected MainLayout mainLayout;
-  protected UriFragmentUtility uriFragmentUtility;
-  protected UriFragment currentUriFragment;
+  protected MainWindow mainWindow;
 
   public void init() {
-    
-    // Demo
-    setUser(ProcessEngines.getDefaultProcessEngine().getIdentityService()
-             .createUserQuery().userId("kermit").singleResult());
-    ProcessEngines.getDefaultProcessEngine().getIdentityService().setAuthenticatedUserId("kermit");
-    // Demo
-    
-    // init window
-    mainWindow = new Window("Explorer - The Next generation");
+    this.mainWindow = new MainWindow();
     setMainWindow(mainWindow);
-    setTheme(Constants.THEME);
-    
-    // init general look and feel
-    mainLayout = new MainLayout(this); 
-    mainWindow.setContent(mainLayout);
-    
-    // init hidden components
-    initHiddenComponents();
+    mainWindow.showLoginPage();
   }
   
   /**
@@ -95,7 +73,15 @@ public class ExplorerApplication extends Application implements HttpServletReque
   }
   
   public void switchView(Component component) {
-    mainLayout.addComponent(component, Constants.LOCATION_CONTENT);
+    mainWindow.switchView(component);
+  }
+  
+  public void showLoginPage() {
+    mainWindow.showLoginPage();
+  }
+  
+  public void showDefaultContent() {
+    mainWindow.showDefaultContent();
   }
   
   public User getLoggedInUser() {
@@ -120,10 +106,15 @@ public class ExplorerApplication extends Application implements HttpServletReque
     // Set current application object as thread-local to make it easy accessible
     current.set(this);
     
-    // Set thread-local userid of logged in user (needed for Activiti user logic)
+   // Authentication: check if user is found, otherwise send to login page
     User user = (User) getUser();
-    if (user != null) {
-      Authentication.setAuthenticatedUserId("kermit");
+    if (user == null) {
+      if (mainWindow != null && !mainWindow.isShowingLoginPage()) {
+        showLoginPage();
+      }
+    } else {
+      // Set thread-local userid of logged in user (needed for Activiti user logic)
+      Authentication.setAuthenticatedUserId(user.getId());
     }
   }
   
@@ -135,42 +126,7 @@ public class ExplorerApplication extends Application implements HttpServletReque
   
   // URL handling ---------------------------------------------------------------------------------
   
-  protected void initHiddenComponents() {
-    // Add the URI Fragent utility
-    uriFragmentUtility = new UriFragmentUtility();
-    mainLayout.addComponent(uriFragmentUtility, Constants.LOCATION_HIDDEN);
-    
-    // Add listener to control page flow based on URI
-    uriFragmentUtility.addListener(new NavigationFragmentChangeListener());
-  }
-  
-  public UriFragment getCurrentUriFragment() {
-    return currentUriFragment;
-  }
-
-  /**
-   * Sets the current {@link UriFragment}. 
-   * Won't trigger navigation, just updates the URI fragment in the browser.
-   */
   public void setCurrentUriFragment(UriFragment fragment) {
-    this.currentUriFragment = fragment;
-    
-    if(fragmentChanged(fragment)) {
-      
-      if(fragment != null) {
-        uriFragmentUtility.setFragment(fragment.toString(), false);      
-      } else {
-        uriFragmentUtility.setFragment("", false);      
-      }
-    }
-  }
-
-  private boolean fragmentChanged(UriFragment fragment) {
-    String fragmentString = fragment.toString();
-    if(fragmentString == null) {
-      return uriFragmentUtility.getFragment() != null;
-    } else {
-      return !fragmentString.equals(uriFragmentUtility.getFragment());
-    }
+    mainWindow.setCurrentUriFragment(fragment);
   }
 }

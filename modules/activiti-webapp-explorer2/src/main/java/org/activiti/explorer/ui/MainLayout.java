@@ -13,6 +13,7 @@
 
 package org.activiti.explorer.ui;
 
+import org.activiti.engine.identity.User;
 import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApplication;
 import org.activiti.explorer.Images;
@@ -36,7 +37,7 @@ public class MainLayout extends CustomLayout {
   
   protected MainMenuBar mainMenuBar;
   
-  public MainLayout(ExplorerApplication explorerApplication) {
+  public MainLayout() {
     super(Constants.THEME);
     setSizeFull();
     
@@ -61,14 +62,15 @@ public class MainLayout extends CustomLayout {
     logoutGrid.setStyleName(Constants.STYLE_LOGOUT_BUTTON);
 
     // User name + link to profile 
-    Button userButton = new Button("Kermit The Frog");
+    final User user = ExplorerApplication.getCurrent().getLoggedInUser();
+    Button userButton = new Button(user.getFirstName() + " " + user.getLastName());
     userButton.setIcon(Images.USER);
     userButton.addStyleName(Constants.STYLE_USER_LABEL);
     userButton.addStyleName(Reindeer.BUTTON_LINK);
     
     userButton.addListener(new ClickListener() {
       public void buttonClick(ClickEvent event) {
-        ExplorerApplication.getCurrent().switchView(new ProfilePage("kermit"));
+        ExplorerApplication.getCurrent().switchView(new ProfilePage(user.getId()));
       }
     });
 

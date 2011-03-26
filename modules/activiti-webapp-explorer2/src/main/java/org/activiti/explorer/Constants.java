@@ -23,14 +23,18 @@ import java.text.SimpleDateFormat;
 public class Constants {
   
   public static final String THEME = "activiti";
+  public static final String LOGIN_LAYOUT = "login";
   
   // Locations in the general layout
+  public static final String LOCATION_LOGIN = "login-content";
   public static final String LOCATION_CONTENT = "content";
   public static final String LOCATION_SEARCH = "search";
   public static final String LOCATION_MAIN_MENU = "main-menu";
   public static final String LOCATION_HIDDEN = "hidden";
 
   // Css styles
+  public static final String STYLE_LOGIN_PAGE = "login-general";
+  
   public static final String STYLE_SMALL_TEXTFIELD = "small";
   public static final String STYLE_SEARCHBOX = "searchBox";
   public static final String STYLE_LOGOUT_BUTTON = "logout";

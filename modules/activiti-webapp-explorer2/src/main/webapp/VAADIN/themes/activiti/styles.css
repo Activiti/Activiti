@@ -1,5 +1,89 @@
 @import url(../reindeer/styles.css);
 
+/* -----
+   Login
+   ----- */
+   
+/* General backrgound and font settings */
+.login-general {
+  color: white; /* color of text */
+  font-family:  Helvetica, Arial, sans-serif;
+  background: #1b7ec3; /* non-white part of page */
+  font-size: 16px;
+  font-weight: bold;
+}
+
+#login-content {
+  height: 200px;
+}
+      
+/* white part of background */
+#login-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: white;
+  height: 250px;
+  width: 100%;
+  border-bottom: solid 3px #a9b3ba; /* gray-blueish horitzontal line in the middle */
+}
+
+#login-central-components {
+  margin: 0 0 0 -185px;
+  width: 370px;
+  text-align: center;
+  position: absolute;
+  left: 50%;
+  z-index: 1;
+}
+      
+#login-logo {
+  height: 130px;
+  padding-top: 140px;
+}
+
+/* Text fields of input form */     
+input.login-field {
+  font-size: 16px;
+  height:40px;
+  width: 250px;
+  margin-left: 10px;
+  padding-left: 7px; /* To start the typing of the text a bit to the right */
+  float: right;
+  background: white;
+  border: solid 1px transparent;
+  margin-bottom: 2px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+}
+
+.login-field-caption {
+  line-height: 200%
+}
+      
+/* 'Log in' Button */
+.login-button {
+  text-align: center;
+  line-height: 200%;
+  float: right;
+  width: 80px;
+  height: 30px;
+  margin-top: 5px;
+  color: white;
+  font-size: 14px;
+  background-color: #55ba49;
+  border: solid 1px transparent;
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+}
+      
+.login-button:hover {
+  background-color: #86e379;
+}
+
 /* ---------- 
    Main layout
    ----------- */
