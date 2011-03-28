@@ -18,9 +18,9 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.impl.runtime.MessageEntity;
 import org.activiti.engine.impl.runtime.TimerEntity;
 import org.activiti.engine.runtime.Job;
-import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApplication;
 import org.activiti.explorer.Images;
+import org.activiti.explorer.ui.ExplorerLayout;
 
 import com.ocpsoft.pretty.time.PrettyTime;
 import com.vaadin.ui.Alignment;
@@ -139,7 +139,7 @@ public class JobDetailPanel extends Panel {
   
   protected void addJobState() {
     Label processDefinitionHeader = new Label("Job Execution");
-    processDefinitionHeader.addStyleName(Constants.STYLE_JOB_DETAILS_HEADER);
+    processDefinitionHeader.addStyleName(ExplorerLayout.STYLE_JOB_DETAILS_HEADER);
     processDefinitionHeader.setWidth("95%");
     addComponent(processDefinitionHeader);
     
@@ -156,7 +156,7 @@ public class JobDetailPanel extends Panel {
     // Exceptions
     if(job.getExceptionMessage() != null) {
       Label exceptionMessageLabel = new Label("Error during last execution: " + job.getExceptionMessage());
-      exceptionMessageLabel.addStyleName(Constants.STYLE_JOB_EXCEPTION_MESSAGE);
+      exceptionMessageLabel.addStyleName(ExplorerLayout.STYLE_JOB_EXCEPTION_MESSAGE);
       layout.addComponent(exceptionMessageLabel);
       
       // Add Exception stacktrace
@@ -164,7 +164,7 @@ public class JobDetailPanel extends Panel {
       
       Label stackTraceLabel = new Label(stack);
       stackTraceLabel.setContentMode(Label.CONTENT_PREFORMATTED);
-      stackTraceLabel.addStyleName(Constants.STYLE_JOB_EXCEPTION_TRACE);
+      stackTraceLabel.addStyleName(ExplorerLayout.STYLE_JOB_EXCEPTION_TRACE);
       stackTraceLabel.setSizeFull();
       
       Panel stackPanel = new Panel();
