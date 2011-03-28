@@ -15,6 +15,7 @@ package org.activiti.explorer.navigation;
 
 import org.activiti.explorer.ExplorerApplication;
 import org.activiti.explorer.ui.task.TaskInboxPage;
+import org.activiti.explorer.ui.task.TaskQueuedPage;
 
 /**
  * @author Frederik Heremans
@@ -23,6 +24,10 @@ public class TaskNavigationHandler implements NavigationHandler {
 
   public static final String TASK_URI_PART = "tasks";
   public static final String CATEGORY_INBOX = "inbox";
+  public static final String CATEGORY_QUEUED = "queued";
+  
+  public static final String PARAMETER_CATEGORY = "category";
+  public static final String PARAMETER_GROUP = "group";
 
   public String getTrigger() {
     return TASK_URI_PART;
@@ -30,18 +35,35 @@ public class TaskNavigationHandler implements NavigationHandler {
 
   public void handleNavigation(UriFragment uriFragment) {
 
-    // String category = uriFragment.getParameter(CATEGORY_INBOX);
-    String taskId = null;
-    if (uriFragment.getUriParts().size() == 2) {
-      taskId = uriFragment.getUriPart(1);
+    String category = uriFragment.getParameter(PARAMETER_CATEGORY);
+    String taskId = uriFragment.getUriPart(1);
+    
+    if(CATEGORY_QUEUED.equals(category)) {
+      showQueuedTasks(taskId, uriFragment);
+    } else {
+      // Default is the inbox
+      showInbox(taskId, uriFragment);
     }
+  }
 
+  protected void showQueuedTasks(String taskId, UriFragment uriFragment) {
+    String groupId = uriFragment.getParameter(PARAMETER_GROUP);
+    if(groupId != null) {
+      ExplorerApplication.getCurrent().switchView(new TaskQueuedPage(groupId, taskId));      
+    } else {
+      // When no group is available, just show the inbox
+      showInbox(taskId, uriFragment);
+      ExplorerApplication.getCurrent().showErrorNotification(
+              "Cannot view queued tasks", "No groupId was provided, can't show queued tasks");
+    }
+  }
+
+  protected void showInbox(String taskId, UriFragment uriFragment) {
     if (taskId != null) {
       ExplorerApplication.getCurrent().switchView(new TaskInboxPage(taskId));
     } else {
       ExplorerApplication.getCurrent().switchView(new TaskInboxPage());
     }
-
   }
 
 }

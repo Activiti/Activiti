@@ -13,8 +13,8 @@
 package org.activiti.explorer.ui.task;
 
 import org.activiti.explorer.data.LazyLoadingQuery;
-
-
+import org.activiti.explorer.navigation.TaskNavigationHandler;
+import org.activiti.explorer.navigation.UriFragment;
 
 /**
  * @author Joram Barrez
@@ -24,9 +24,15 @@ public class TaskQueuedPage extends TaskPage {
   private static final long serialVersionUID = 1L;
   
   protected String groupId;
+  protected String taskId;
   
   public TaskQueuedPage(String groupId) {
     this.groupId = groupId;
+  }
+  
+  public TaskQueuedPage(String groupId, String taskId) {
+    this.groupId = groupId;
+    this.taskId = taskId;
   }
   
   @Override
@@ -37,7 +43,26 @@ public class TaskQueuedPage extends TaskPage {
   @Override
   protected void initUi() {
     super.initUi();
-    selectListElement(0);
+    
+    if(taskId != null) {
+      selectListElement(taskListContainer.getIndexForObjectId(taskId));
+    } else {
+      selectListElement(0);
+    }
   }
 
+  @Override
+  protected UriFragment getUriFragment(String taskId) {
+    UriFragment taskFragment = new UriFragment(TaskNavigationHandler.TASK_URI_PART);
+    if(taskId != null) {
+      taskFragment.addUriPart(taskId);
+    }
+    
+    taskFragment.addParameter(TaskNavigationHandler.PARAMETER_CATEGORY, TaskNavigationHandler.CATEGORY_QUEUED);
+    
+    if(groupId != null) {
+      taskFragment.addParameter(TaskNavigationHandler.PARAMETER_GROUP, groupId);
+    }
+    return taskFragment;
+  }
 }

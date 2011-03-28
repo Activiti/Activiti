@@ -13,6 +13,7 @@
 
 package org.activiti.explorer.navigation;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -47,17 +48,20 @@ public class UriFragment {
   }
   
   public UriFragment(Map<String, String> parameters, String... uriParts) {
-    this.uriParts = Arrays.asList(uriParts);
+    this.uriParts = new ArrayList<String>(Arrays.asList(uriParts));
     this.parameters = parameters;
   }
   
   public UriFragment(String... uriParts) {
-    this.uriParts = Arrays.asList(uriParts);
-    this.parameters = new LinkedHashMap<String, String>();
+    this(new LinkedHashMap<String, String>(), uriParts);
   }
   
   public void addParameter(String name, String value) {
     parameters.put(name, value);
+  }
+  
+  public void addUriPart(String part) {
+    uriParts.add(part);
   }
 
   public List<String> getUriParts() {

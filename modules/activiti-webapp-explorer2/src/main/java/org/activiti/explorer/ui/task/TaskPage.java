@@ -59,12 +59,12 @@ public abstract class TaskPage extends AbstractPage {
       private static final long serialVersionUID = 8811553575319455854L;
       public void valueChange(ValueChangeEvent event) {
         Item item = taskTable.getItem(event.getProperty().getValue()); // the value of the property is the itemId of the table entry
+        
         if(item != null) {
           String taskId = (String) item.getItemProperty("id").getValue();
           splitPanel.setSecondComponent(new TaskDetailPanel(taskId, TaskPage.this));
           
-          UriFragment taskFragment = new UriFragment(TaskNavigationHandler.TASK_URI_PART, taskId);
-          taskFragment.addParameter("category", TaskNavigationHandler.CATEGORY_INBOX);
+          UriFragment taskFragment = getUriFragment(taskId);
           ExplorerApplication.getCurrent().setCurrentUriFragment(taskFragment);
         } else {
           // Nothing is selected
@@ -89,5 +89,7 @@ public abstract class TaskPage extends AbstractPage {
   }
   
   protected abstract LazyLoadingQuery createLazyLoadingQuery();
+  
+  protected abstract UriFragment getUriFragment(String taskId);
   
 }

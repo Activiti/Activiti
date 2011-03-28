@@ -13,6 +13,8 @@
 package org.activiti.explorer.ui.task;
 
 import org.activiti.explorer.data.LazyLoadingQuery;
+import org.activiti.explorer.navigation.TaskNavigationHandler;
+import org.activiti.explorer.navigation.UriFragment;
 
 
 
@@ -49,6 +51,18 @@ public class TaskInboxPage extends TaskPage {
     } else {
       selectListElement(taskListContainer.getIndexForObjectId(taskId));
     }
+  }
+
+  @Override
+  protected UriFragment getUriFragment(String taskId) {
+    UriFragment taskFragment = new UriFragment(TaskNavigationHandler.TASK_URI_PART, taskId);
+
+    if(taskId != null) {
+      taskFragment.addUriPart(taskId);
+    }
+
+    taskFragment.addParameter(TaskNavigationHandler.PARAMETER_CATEGORY, TaskNavigationHandler.CATEGORY_INBOX);
+    return taskFragment;
   }
   
 }
