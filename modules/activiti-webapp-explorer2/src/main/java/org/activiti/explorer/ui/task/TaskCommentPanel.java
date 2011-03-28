@@ -22,6 +22,7 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.task.Comment;
 import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.ExplorerLayout;
 
 import com.ocpsoft.pretty.time.PrettyTime;
@@ -160,7 +161,7 @@ public class TaskCommentPanel extends Panel {
     textArea.addStyleName(ExplorerLayout.STYLE_TASK_COMMENT_TIME);
     grid.addComponent(textArea);
     
-    Button addCommentButtom = new Button("Add comment");
+    Button addCommentButtom = new Button(ExplorerApplication.getCurrent().getMessage(Messages.TASK_ADD_COMMENT));
     addCommentButtom.addStyleName(Reindeer.BUTTON_SMALL);
     grid.addComponent(addCommentButtom);
     grid.setComponentAlignment(addCommentButtom, Alignment.BOTTOM_RIGHT);

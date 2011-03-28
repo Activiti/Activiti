@@ -15,6 +15,7 @@ package org.activiti.explorer.ui;
 
 import org.activiti.engine.identity.User;
 import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.profile.ProfilePage;
 
 import com.vaadin.ui.Button;
@@ -47,7 +48,7 @@ public class MainLayout extends CustomLayout {
   
   protected void initSearchBox() {
     TextField searchBox = new TextField();
-    searchBox.setInputPrompt("Search tasks");
+    searchBox.setInputPrompt(ExplorerApplication.getCurrent().getMessage(Messages.HEADER_SEARCHBOX));
     searchBox.addStyleName(ExplorerLayout.STYLE_SMALL_TEXTFIELD);
     searchBox.addStyleName(ExplorerLayout.STYLE_SEARCHBOX);
     addComponent(searchBox, ExplorerLayout.LOCATION_SEARCH);
@@ -73,7 +74,7 @@ public class MainLayout extends CustomLayout {
     });
 
     // logout button
-    Button logout = new Button("Logout");
+    Button logout = new Button(ExplorerApplication.getCurrent().getMessage(Messages.HEADER_LOGOUT));
     logout.setStyleName(Reindeer.BUTTON_LINK);
     logout.addStyleName(ExplorerLayout.STYLE_LOGOUT_BUTTON);
     logout.setIcon(Images.WHITE_DIVIDER);
@@ -88,7 +89,7 @@ public class MainLayout extends CustomLayout {
     logoutGrid.addComponent(logout, 1, 0);
 
     // Add logout grid to header
-    addComponent(logoutGrid, "logout");
+    addComponent(logoutGrid, ExplorerLayout.LOCATION_LOGOUT);
   }
   
   protected void initMainMenuBar() {

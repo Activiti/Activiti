@@ -19,6 +19,7 @@ import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.flow.listener.StartFlowClickListener;
 import org.activiti.explorer.ui.form.FormPropertiesForm;
@@ -141,7 +142,7 @@ public class ProcessDefinitionDetailPanel extends Panel {
     actionsContainer.setSizeFull();
     actionsContainer.setSpacing(true);
     
-    startFlowButton = new Button("Start flow");
+    startFlowButton = new Button(ExplorerApplication.getCurrent().getMessage(Messages.FLOW_START));
     startFlowButton.addListener(new StartFlowClickListener(processDefinition, flowPage));
     
     actionsContainer.addComponent(startFlowButton);
@@ -159,7 +160,7 @@ public class ProcessDefinitionDetailPanel extends Panel {
   
   protected void initCategory() {
     if(processDefinition.getCategory() != null) {
-      categoryLabel = new Label("Category: " + processDefinition.getCategory());
+      categoryLabel = new Label(ExplorerApplication.getCurrent().getMessage(Messages.FLOW_CATEGORY) + processDefinition.getCategory());
       categoryLabel.addStyleName(Reindeer.LABEL_SMALL);
       addComponent(categoryLabel);      
     }

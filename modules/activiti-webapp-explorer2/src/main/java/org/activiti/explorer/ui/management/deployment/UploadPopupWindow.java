@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.ExplorerLayout;
 
 import com.vaadin.event.dd.DragAndDropEvent;
@@ -102,7 +103,7 @@ public class UploadPopupWindow extends Window
   protected void addUpload() {
     this.upload = new Upload(null, receiver);
     upload.addStyleName(ExplorerLayout.STYLE_DEPLOYMENT_UPLOAD_BUTTON);
-    upload.setButtonCaption("Choose a file");
+    upload.setButtonCaption(ExplorerApplication.getCurrent().getMessage(Messages.UPLOAD_SELECT));
     upload.setImmediate(true);
     layout.addComponent(upload);
     layout.setComponentAlignment(upload, Alignment.MIDDLE_CENTER);
@@ -130,7 +131,7 @@ public class UploadPopupWindow extends Window
     layout.addComponent(dragAndDropWrapper);
     layout.setComponentAlignment(dragAndDropWrapper, Alignment.MIDDLE_CENTER);
     
-    Label dropLabel = new Label("Drop file here");
+    Label dropLabel = new Label(ExplorerApplication.getCurrent().getMessage(Messages.UPLOAD_DROP));
     dropLabel.setSizeUndefined();
     dropPanel.addComponent(dropLabel);
     ((VerticalLayout)dropPanel.getContent()).setComponentAlignment(dropLabel, Alignment.MIDDLE_CENTER);

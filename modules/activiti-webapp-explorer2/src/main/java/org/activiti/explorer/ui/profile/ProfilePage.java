@@ -20,6 +20,7 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
 
@@ -139,38 +140,38 @@ public class ProfilePage extends Panel {
   }
 
   protected void initAboutSection() {
-    addProfileHeader(infoPanelLayout, "About");
+    addProfileHeader(infoPanelLayout, ExplorerApplication.getCurrent().getMessage(Messages.PROFILE_ABOUT));
     GridLayout aboutLayout = createInfoSectionLayout(2, 4); 
 
-    addProfileEntry(aboutLayout, "Name: ", user.getFirstName() + " " + user.getLastName());
+    addProfileEntry(aboutLayout, ExplorerApplication.getCurrent().getMessage(Messages.PROFILE_NAME), user.getFirstName() + " " + user.getLastName());
     
     if (jobTitle != null) {
-      addProfileEntry(aboutLayout, "Job title: ", jobTitle);
+      addProfileEntry(aboutLayout, ExplorerApplication.getCurrent().getMessage(Messages.PROFILE_JOBTITLE), jobTitle);
     }
     
     if (birthDate != null) {
-      addProfileEntry(aboutLayout, "Birth date: ", birthDate);
+      addProfileEntry(aboutLayout, ExplorerApplication.getCurrent().getMessage(Messages.PROFILE_BIRTHDATE), birthDate);
     }
     
     if (location != null) {
-      addProfileEntry(aboutLayout, "Location: ", location);
+      addProfileEntry(aboutLayout, ExplorerApplication.getCurrent().getMessage(Messages.PROFILE_LOCATION), location);
     }
   }
   
   protected void initContactSection() {
-    addProfileHeader(infoPanelLayout, "Contact");
+    addProfileHeader(infoPanelLayout, ExplorerApplication.getCurrent().getMessage(Messages.PROFILE_CONTACT));
     GridLayout contactLayout = createInfoSectionLayout(2, 4); 
     
     if (user.getEmail() != null) {
-      addProfileEntry(contactLayout, "Email: ", user.getEmail());
+      addProfileEntry(contactLayout, ExplorerApplication.getCurrent().getMessage(Messages.PROFILE_EMAIL), user.getEmail());
     }
     
     if (phone != null) {
-      addProfileEntry(contactLayout, "Phone: ", phone);
+      addProfileEntry(contactLayout, ExplorerApplication.getCurrent().getMessage(Messages.PROFILE_PHONE), phone);
     }
     
     if (twitterName != null) {
-      addProfileEntry(contactLayout, "twitter", twitterName);
+      addProfileEntry(contactLayout, ExplorerApplication.getCurrent().getMessage(Messages.PROFILE_TWITTER), twitterName);
     }
 
     if (skypeId != null) {
@@ -190,25 +191,25 @@ public class ProfilePage extends Panel {
       skypeImage.setSizeUndefined();
       skypeLayout.addComponent(skypeImage);
       
-      addProfileEntry(contactLayout, "Skype: ", skypeLayout);
+      addProfileEntry(contactLayout, ExplorerApplication.getCurrent().getMessage(Messages.PROFILE_SKYPE), skypeLayout);
     }
   }
   
   protected void  initAccountsSection() {
-    addProfileHeader(infoPanelLayout, "Accounts");
+    addProfileHeader(infoPanelLayout, ExplorerApplication.getCurrent().getMessage(Messages.PROFILE_ACCOUNTS));
     GridLayout accountLayout = createInfoSectionLayout(3, 2); 
 
     // Google
     Embedded googleImage = new Embedded(null, Images.GOOGLE);
     googleImage.setSizeUndefined();
     accountLayout.addComponent(googleImage);
-    addProfileEntry(accountLayout, "Google: ", "mr_kermit_frog@gmail.com");
+    addProfileEntry(accountLayout, "Google", "mr_kermit_frog@gmail.com");
     
     // Alfresco
     Embedded alfrescoImage = new Embedded(null, Images.ALFRESCO);
     alfrescoImage.setSizeUndefined();
     accountLayout.addComponent(alfrescoImage);
-    addProfileEntry(accountLayout, "Alfresco: ", "kermit_alfresco");
+    addProfileEntry(accountLayout, "Alfresco", "kermit_alfresco");
   }
   
   protected void addProfileHeader(VerticalLayout infoLayout, String headerName) {
@@ -227,7 +228,7 @@ public class ProfilePage extends Panel {
   }
   
   protected void addProfileEntry(GridLayout layout, String name, String value) {
-    addProfileEntry(layout, name, new Label(value));
+    addProfileEntry(layout, name + ": ", new Label(value));
   }
   
   protected void addProfileEntry(GridLayout layout, String name, Component value) {

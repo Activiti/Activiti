@@ -12,6 +12,8 @@
  */
 package org.activiti.explorer.ui;
 
+import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.Messages;
 import org.activiti.explorer.navigation.NavigationFragmentChangeListener;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.login.LoginPage;
@@ -33,7 +35,7 @@ public class MainWindow extends Window {
   protected boolean showingLoginPage;
 
   public MainWindow() {
-    super("Explorer - The Next generation");
+    super(ExplorerApplication.getCurrent().getMessage(Messages.APP_TITLE));
     setTheme(ExplorerLayout.THEME);
   }
 

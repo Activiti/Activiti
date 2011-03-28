@@ -20,6 +20,7 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.Group;
 import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.Messages;
 
 import com.vaadin.ui.MenuBar;
 
@@ -45,7 +46,7 @@ public class TaskMenuBar extends MenuBar {
     // Inbox
     String userId = ExplorerApplication.getCurrent().getLoggedInUser().getId();
     long inboxCount = taskService.createTaskQuery().taskAssignee(userId).count();
-    addItem("Inbox ("+inboxCount+")", new Command() {
+    addItem(ExplorerApplication.getCurrent().getMessage(Messages.TASK_MENU_INBOX)+ "("+inboxCount+")", new Command() {
       public void menuSelected(MenuItem selectedItem) {
         ExplorerApplication.getCurrent().switchView(new TaskInboxPage());
       }
@@ -53,7 +54,7 @@ public class TaskMenuBar extends MenuBar {
     
     // Queued
     List<Group> groups = identityService.createGroupQuery().groupMember(userId).orderByGroupName().asc().list();
-    MenuItem queuedItem = addItem("Queued", null);
+    MenuItem queuedItem = addItem(ExplorerApplication.getCurrent().getMessage(Messages.TASK_MENU_QUEUED), null);
     long queuedCount = 0;
     for (final Group group : groups) {
       long groupCount = taskService.createTaskQuery().taskCandidateGroup(group.getId()).count();

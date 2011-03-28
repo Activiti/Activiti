@@ -13,6 +13,7 @@
 package org.activiti.explorer.ui.management.deployment;
 
 import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.Messages;
 
 import com.vaadin.ui.MenuBar.Command;
 import com.vaadin.ui.MenuBar.MenuItem;
@@ -28,8 +29,8 @@ public class NewDeploymentListener implements Command {
   public void menuSelected(MenuItem selectedItem) {
     DeploymentUploadReceiver receiver = new DeploymentUploadReceiver();
     UploadPopupWindow uploadPopupWindow = new UploadPopupWindow(
-            "Upload new Deployment", 
-            "Select a file (.bar, .zip or .bpmn20.xml) or drop a file in the rectangle below",
+            ExplorerApplication.getCurrent().getMessage(Messages.DEPLOYMENT_UPLOAD),
+            ExplorerApplication.getCurrent().getMessage(Messages.DEPLOYMENT_UPLOAD_DESCRIPTION),
             receiver);
     
     // The receiver also acts as a listener for the end of the upload 

@@ -165,6 +165,8 @@ public class BootProcessEngineContextListener implements ServletContextListener 
     fozzie.setPassword("fozzie");
     identityService.saveUser(fozzie);
     
+    identityService.createMembership("fozzie", "management");
+    
     byte[] pictureBytes = IoUtil.readInputStream(this.getClass().getClassLoader().getResourceAsStream("org/activiti/explorer/images/fozzie.jpg"), null);
     Picture picture = new Picture(pictureBytes, "image/jpeg");
     identityService.setUserPicture("fozzie", picture);

@@ -13,6 +13,9 @@
 
 package org.activiti.explorer.ui.flow;
 
+import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.Messages;
+
 import com.vaadin.ui.MenuBar;
 
 
@@ -29,8 +32,8 @@ public class FlowMenuBar extends MenuBar {
     
     setWidth("100%");
 
-    addItem("My Flows", null);
-    addItem("Launch Flow", null);
+    addItem(ExplorerApplication.getCurrent().getMessage(Messages.FLOW_MENU_MY_FLOWS), null);
+    addItem(ExplorerApplication.getCurrent().getMessage(Messages.FLOW_MENU_LAUNCH_FLOW), null);
   }
 
 }

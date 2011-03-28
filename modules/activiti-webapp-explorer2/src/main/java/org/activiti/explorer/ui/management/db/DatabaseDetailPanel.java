@@ -15,6 +15,8 @@ package org.activiti.explorer.ui.management.db;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.management.TableMetaData;
+import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.Messages;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.ui.ExplorerLayout;
@@ -81,8 +83,9 @@ public class DatabaseDetailPanel extends VerticalLayout {
       }
       
     } else {
-      Label noDataLabel = new Label("Table contains no rows");
+      Label noDataLabel = new Label(ExplorerApplication.getCurrent().getMessage(Messages.DATABASE_NO_ROWS));
       noDataLabel.addStyleName(ExplorerLayout.STYLE_DATABASE_DETAILS);
+      noDataLabel.addStyleName(Reindeer.LABEL_SMALL);
       addComponent(noDataLabel);
       setExpandRatio(noDataLabel, 1.0f);
     }

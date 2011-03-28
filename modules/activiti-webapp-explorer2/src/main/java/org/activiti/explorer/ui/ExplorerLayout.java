@@ -21,75 +21,76 @@ package org.activiti.explorer.ui;
 public interface ExplorerLayout {
   
   // Application theme
-  public static final String THEME = "activiti";
+  static final String THEME = "activiti";
   
   // Custom layouts (found in /VAADIN/themes/${THEME}/layouyts
-  public static final String CUSTOM_LAYOUT_DEFAULT = "activiti";
-  public static final String CUSTOM_LAYOUT_LOGIN = "login";
+  static final String CUSTOM_LAYOUT_DEFAULT = "activiti";
+  static final String CUSTOM_LAYOUT_LOGIN = "login";
   
   // Locations defined in the layout .html files
-  public static final String LOCATION_LOGIN = "login-content";
-  public static final String LOCATION_CONTENT = "content";
-  public static final String LOCATION_SEARCH = "search";
-  public static final String LOCATION_MAIN_MENU = "main-menu";
-  public static final String LOCATION_HIDDEN = "hidden";
+  static final String LOCATION_LOGIN = "login-content";
+  static final String LOCATION_CONTENT = "content";
+  static final String LOCATION_SEARCH = "search";
+  static final String LOCATION_LOGOUT = "logout";
+  static final String LOCATION_MAIN_MENU = "main-menu";
+  static final String LOCATION_HIDDEN = "hidden";
 
   // ---------- 
   // Css styles
   // ----------
   
   // General
-  public static final String STYLE_SMALL_TEXTFIELD = "small";
-  public static final String STYLE_SEARCHBOX = "searchBox";
-  public static final String STYLE_LOGOUT_BUTTON = "logout";
-  public static final String STYLE_USER_PROFILE = "user";
-  public static final String STYLE_LABEL_BOLD = "bold";
+  static final String STYLE_SMALL_TEXTFIELD = "small";
+  static final String STYLE_SEARCHBOX = "searchBox";
+  static final String STYLE_LOGOUT_BUTTON = "logout";
+  static final String STYLE_USER_PROFILE = "user";
+  static final String STYLE_LABEL_BOLD = "bold";
   
   //Forms
-  public static final String STYLE_FORMPROPERTY_READONLY = "formprop-readonly";
-  public static final String STYLE_FORMPROPERTY_LABEL = "formprop-label";
+  static final String STYLE_FORMPROPERTY_READONLY = "formprop-readonly";
+  static final String STYLE_FORMPROPERTY_LABEL = "formprop-label";
   
   // Login page
-  public static final String STYLE_LOGIN_PAGE = "login-general";
+  static final String STYLE_LOGIN_PAGE = "login-general";
   
   // Menu bar
-  public static final String STYLE_MENUBAR = "menubar";
-  public static final String STYLE_MENUBAR_BUTTON = "menu-button";
+  static final String STYLE_MENUBAR = "menubar";
+  static final String STYLE_MENUBAR_BUTTON = "menu-button";
   
   // Action Bar
-  public static final String STYLE_ACTION_BAR = "action-bar";
+  static final String STYLE_ACTION_BAR = "action-bar";
   
   // Profile page
-  public static final String STYLE_PROFILE_LAYOUT = "profile-layout";
-  public static final String STYLE_PROFILE_HEADER = "profile-header";
-  public static final String STYLE_PROFILE_FIELD = "profile-field";
-  public static final String STYLE_PROFILE_PICTURE = "profile-picture";
+  static final String STYLE_PROFILE_LAYOUT = "profile-layout";
+  static final String STYLE_PROFILE_HEADER = "profile-header";
+  static final String STYLE_PROFILE_FIELD = "profile-field";
+  static final String STYLE_PROFILE_PICTURE = "profile-picture";
   
   // Task pages
-  public static final String STYLE_TASK_LIST = "task-list";
-  public static final String STYLE_TASK_DETAILS = "task-details";
-  public static final String STYLE_TASK_DETAILS_HEADER = "task-details-header";
-  public static final String STYLE_TASK_COMMENT = "task-comment";
-  public static final String STYLE_TASK_COMMENT_AUTHOR = "task-comment-author";
-  public static final String STYLE_TASK_COMMENT_TIME = "task-comment-time";
-  public static final String STYLE_TASK_COMMENT_PICTURE = "task-comment-picture";
+  static final String STYLE_TASK_LIST = "task-list";
+  static final String STYLE_TASK_DETAILS = "task-details";
+  static final String STYLE_TASK_DETAILS_HEADER = "task-details-header";
+  static final String STYLE_TASK_COMMENT = "task-comment";
+  static final String STYLE_TASK_COMMENT_AUTHOR = "task-comment-author";
+  static final String STYLE_TASK_COMMENT_TIME = "task-comment-time";
+  static final String STYLE_TASK_COMMENT_PICTURE = "task-comment-picture";
 
   // Flow pages
-  public static final String STYLE_PROCESS_DEFINITION_LIST = "proc-def-list";
-  public static final String STYLE_PROCESS_DEFINITION_DETAILS_HEADER = "proc-def-details-header";
+  static final String STYLE_PROCESS_DEFINITION_LIST = "proc-def-list";
+  static final String STYLE_PROCESS_DEFINITION_DETAILS_HEADER = "proc-def-details-header";
   
   // Database page
-  public static final String STYLE_DATABASE_DETAILS = "database-details";
-  public static final String STYLE_DATABASE_TABLE_ROW = "database-table-row";
+  static final String STYLE_DATABASE_DETAILS = "database-details";
+  static final String STYLE_DATABASE_TABLE_ROW = "database-table-row";
   
   // Deployment page
-  public static final String STYLE_DEPLOYMENT_DETAILS_HEADER = "deployment-details-header";
-  public static final String STYLE_DEPLOYMENT_UPLOAD_DESCRIPTION = "upload-description";
-  public static final String STYLE_DEPLOYMENT_UPLOAD_BUTTON = "upload-button";
+  static final String STYLE_DEPLOYMENT_DETAILS_HEADER = "deployment-details-header";
+  static final String STYLE_DEPLOYMENT_UPLOAD_DESCRIPTION = "upload-description";
+  static final String STYLE_DEPLOYMENT_UPLOAD_BUTTON = "upload-button";
   
   // Jobs page
-  public static final String STYLE_JOB_DETAILS_HEADER = "job-details-header";
-  public static final String STYLE_JOB_EXCEPTION_MESSAGE = "job-exception-message";
-  public static final String STYLE_JOB_EXCEPTION_TRACE = "job-exception-trace";
+  static final String STYLE_JOB_DETAILS_HEADER = "job-details-header";
+  static final String STYLE_JOB_EXCEPTION_MESSAGE = "job-exception-message";
+  static final String STYLE_JOB_EXCEPTION_TRACE = "job-exception-trace";
   
 }

@@ -20,6 +20,7 @@ import org.activiti.engine.impl.runtime.TimerEntity;
 import org.activiti.engine.runtime.Job;
 import org.activiti.explorer.ExplorerApplication;
 import org.activiti.explorer.Images;
+import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.ExplorerLayout;
 
 import com.ocpsoft.pretty.time.PrettyTime;
@@ -72,7 +73,7 @@ public class JobDetailPanel extends Panel {
     layout.addComponent(nameLabel);
     
     // Execute button
-    Button executeButton = new Button("Execute");
+    Button executeButton = new Button(ExplorerApplication.getCurrent().getMessage(Messages.JOB_EXECUTE));
     executeButton.setIcon(Images.EXECUTE);
     executeButton.addStyleName(Reindeer.BUTTON_LINK);
     layout.addComponent(executeButton);
@@ -97,11 +98,11 @@ public class JobDetailPanel extends Panel {
   protected String getJobLabel(Job theJob) {
     // Try figuring out the type
     if(theJob instanceof TimerEntity) {
-      return "Timer job " + theJob.getId();
+      return ExplorerApplication.getCurrent().getMessage(Messages.JOB_TIMER) + " " + theJob.getId();
     } else if (theJob instanceof MessageEntity) {
-      return "Message job " + theJob.getId();
+      return ExplorerApplication.getCurrent().getMessage(Messages.JOB_MESSAGE) + " " + theJob.getId();
     } else {
-      return "Job " + theJob.getId();
+      return ExplorerApplication.getCurrent().getMessage(Messages.JOB_DEFAULT_NAME) + " " + theJob.getId();
     }
   }
 
@@ -119,9 +120,9 @@ public class JobDetailPanel extends Panel {
     
     String dueDateString = null;
     if(job.getDuedate() != null) {
-      dueDateString = "Due date " + new PrettyTime().format(job.getDuedate());
+      dueDateString = ExplorerApplication.getCurrent().getMessage(Messages.JOB_DUEDATE) + " " + new PrettyTime().format(job.getDuedate());
     } else {
-      dueDateString = "No due date";
+      dueDateString = ExplorerApplication.getCurrent().getMessage(Messages.JOB_NO_DUEDATE);
     }
     Label timeLabel = new Label(dueDateString);
     timeDetails.addComponent(timeLabel);
@@ -138,7 +139,7 @@ public class JobDetailPanel extends Panel {
   }
   
   protected void addJobState() {
-    Label processDefinitionHeader = new Label("Job Execution");
+    Label processDefinitionHeader = new Label(ExplorerApplication.getCurrent().getMessage(Messages.JOB_HEADER_EXECUTION));
     processDefinitionHeader.addStyleName(ExplorerLayout.STYLE_JOB_DETAILS_HEADER);
     processDefinitionHeader.setWidth("95%");
     addComponent(processDefinitionHeader);
@@ -155,7 +156,8 @@ public class JobDetailPanel extends Panel {
     
     // Exceptions
     if(job.getExceptionMessage() != null) {
-      Label exceptionMessageLabel = new Label("Error during last execution: " + job.getExceptionMessage());
+      Label exceptionMessageLabel = new Label(ExplorerApplication.getCurrent().getMessage(Messages.JOB_ERROR) 
+              + ": " + job.getExceptionMessage());
       exceptionMessageLabel.addStyleName(ExplorerLayout.STYLE_JOB_EXCEPTION_MESSAGE);
       layout.addComponent(exceptionMessageLabel);
       
@@ -176,17 +178,19 @@ public class JobDetailPanel extends Panel {
       layout.addComponent(stackPanel);
       layout.setExpandRatio(stackPanel, 1.0f);
     } else {
-      Label noException = new Label("Job hasn't been executed yet");
+      Label noException = new Label(ExplorerApplication.getCurrent().getMessage(Messages.JOB_NOT_EXECUTED));
+      noException.addStyleName(Reindeer.LABEL_SMALL);
       layout.addComponent(noException);
+      layout.setExpandRatio(noException, 1.0f);
     }
   }
   
   protected String getRetriesLabel(Job theJob) {
     String retriesString;
     if(theJob.getRetries() <= 0) {
-      retriesString = "No more retries left";
+      retriesString = ExplorerApplication.getCurrent().getMessage(Messages.JOB_NO_RETRIES);
     } else {
-      retriesString = "Retries: " + theJob.getRetries();
+      retriesString = ExplorerApplication.getCurrent().getMessage(Messages.JOB_RETRIES) + ": " + theJob.getRetries();
     }
     return retriesString;
   }

@@ -21,6 +21,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.flow.FlowPage;
@@ -76,7 +77,7 @@ public class DeploymentDetailPanel extends Panel {
     layout.addComponent(nameLabel);
     
     // Delete button
-    Button deleteButton = new Button("Delete");
+    Button deleteButton = new Button(ExplorerApplication.getCurrent().getMessage(Messages.DEPLOYMENT_DELETE));
     deleteButton.setIcon(Images.DELETE);
     deleteButton.addStyleName(Reindeer.BUTTON_LINK);
     layout.addComponent(deleteButton);
@@ -100,7 +101,7 @@ public class DeploymentDetailPanel extends Panel {
     Embedded clockImage = new Embedded(null, Images.CLOCK);
     timeDetails.addComponent(clockImage);
     
-    Label timeLabel = new Label("Deployed " + new PrettyTime().format(deployment.getDeploymentTime()));
+    Label timeLabel = new Label(ExplorerApplication.getCurrent().getMessage(Messages.DEPLOYMENT_CREATE_TIME) + new PrettyTime().format(deployment.getDeploymentTime()));
     timeDetails.addComponent(timeLabel);
     timeDetails.setComponentAlignment(timeLabel, Alignment.MIDDLE_CENTER);
   }
@@ -114,7 +115,7 @@ public class DeploymentDetailPanel extends Panel {
     if (processDefinitions.size() > 0) {
       
       // Header
-      Label processDefinitionHeader = new Label("Process Definitions");
+      Label processDefinitionHeader = new Label(ExplorerApplication.getCurrent().getMessage(Messages.DEPLOYMENT_HEADER_DEFINITIONS));
       processDefinitionHeader.addStyleName(ExplorerLayout.STYLE_DEPLOYMENT_DETAILS_HEADER);
       processDefinitionHeader.setWidth("95%");
       addComponent(processDefinitionHeader);
@@ -152,7 +153,7 @@ public class DeploymentDetailPanel extends Panel {
     Collections.sort(resourceNames); // small nr of elements, so we can do it in-memory
     
     if (resourceNames.size() > 0) {
-      Label resourceHeader = new Label("Resources");
+      Label resourceHeader = new Label(ExplorerApplication.getCurrent().getMessage(Messages.DEPLOYMENT_HEADER_RESOURCES));
       resourceHeader.setWidth("95%");
       resourceHeader.addStyleName(ExplorerLayout.STYLE_DEPLOYMENT_DETAILS_HEADER);
       addComponent(resourceHeader);

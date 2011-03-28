@@ -12,6 +12,7 @@
  */
 package org.activiti.explorer.ui.task;
 
+import java.text.MessageFormat;
 import java.util.Map;
 
 import org.activiti.engine.FormService;
@@ -20,6 +21,7 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.task.Task;
 import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.form.FormPropertiesEventListener;
@@ -131,7 +133,7 @@ public class TaskDetailPanel extends HorizontalLayout {
 
     // create time
     if (task.getCreateTime() != null) {
-      Label createTime = new Label("Created " + new PrettyTime().format(task.getCreateTime()));
+      Label createTime = new Label(ExplorerApplication.getCurrent().getMessage(Messages.TASK_CREATED) + " " + new PrettyTime().format(task.getCreateTime()));
       createTime.addStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
       createTime.setSizeUndefined();
       grid.addComponent(createTime);
@@ -144,7 +146,7 @@ public class TaskDetailPanel extends HorizontalLayout {
 
     // due date
     if (task.getDueDate() != null) {
-      Label dueDate = new Label("Has to be finished " + new PrettyTime().format(task.getDueDate())); 
+      Label dueDate = new Label(ExplorerApplication.getCurrent().getMessage(Messages.TASK_DUEDATE) + " " + new PrettyTime().format(task.getDueDate())); 
       dueDate.addStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
       dueDate.setSizeUndefined();
       grid.addComponent(dueDate);
@@ -212,8 +214,8 @@ public class TaskDetailPanel extends HorizontalLayout {
     TaskFormData formData = formService.getTaskFormData(task.getId());
     if(formData != null && formData.getFormProperties() != null && formData.getFormProperties().size() > 0) {
       taskForm = new FormPropertiesForm();
-      taskForm.setSubmitButtonCaption("Complete task");
-      taskForm.setCancelButtonCaption("Reset form");
+      taskForm.setSubmitButtonCaption(ExplorerApplication.getCurrent().getMessage(Messages.TASK_COMPLETE));
+      taskForm.setCancelButtonCaption(ExplorerApplication.getCurrent().getMessage(Messages.TASK_RESET_FORM));
       taskForm.setFormProperties(formData.getFormProperties());
       
       taskForm.addListener(new FormPropertiesEventListener() {
@@ -226,9 +228,9 @@ public class TaskDetailPanel extends HorizontalLayout {
           
           formService.submitTaskFormData(task.getId(), properties);
           
-          ExplorerApplication.getCurrent().getMainWindow().showNotification("Task '" + 
-                  task.getName() + "' completed");
-          
+          ExplorerApplication.getCurrent().getMainWindow().showNotification(
+              MessageFormat.format(ExplorerApplication.getCurrent().getMessage(Messages.TASK_COMPLETED),
+              task.getName()));
           parent.refreshList();
         }
         
@@ -244,7 +246,7 @@ public class TaskDetailPanel extends HorizontalLayout {
     } else {
       // Just add a button to complete the task
       // TODO: perhaps move to a better place
-      Button completeButton = new Button("Complete");
+      Button completeButton = new Button(ExplorerApplication.getCurrent().getMessage(Messages.TASK_COMPLETE));
       
       completeButton.addListener(new ClickListener() {
         
@@ -252,8 +254,9 @@ public class TaskDetailPanel extends HorizontalLayout {
 
         public void buttonClick(ClickEvent event) {
           taskService.complete(task.getId());          
-          ExplorerApplication.getCurrent().getMainWindow().showNotification("Task '" + 
-                  task.getName() + "' completed");
+          ExplorerApplication.getCurrent().getMainWindow().showNotification(
+              MessageFormat.format(ExplorerApplication.getCurrent().getMessage(Messages.TASK_COMPLETED),
+              task.getName()));
           parent.refreshList();
         }
       });

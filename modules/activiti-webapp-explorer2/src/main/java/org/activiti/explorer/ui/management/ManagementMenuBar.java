@@ -13,6 +13,7 @@
 package org.activiti.explorer.ui.management;
 
 import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.management.db.DatabasePage;
 import org.activiti.explorer.ui.management.deployment.DeploymentPage;
 import org.activiti.explorer.ui.management.deployment.NewDeploymentListener;
@@ -31,24 +32,24 @@ public class ManagementMenuBar extends MenuBar {
     setWidth("100%");
     
     // Database
-    MenuItem databaseItem = addItem("Database", new Command() {
+    MenuItem databaseItem = addItem(ExplorerApplication.getCurrent().getMessage(Messages.MGMT_MENU_DATABASE), new Command() {
       public void menuSelected(MenuItem selectedItem) {
         ExplorerApplication.getCurrent().switchView(new DatabasePage());
       }
     });
     
     // Deployments
-    MenuItem deploymentsItem = addItem("Deployments", null);
+    MenuItem deploymentsItem = addItem(ExplorerApplication.getCurrent().getMessage(Messages.MGMT_MENU_DEPLOYMENTS), null);
     
-    deploymentsItem.addItem("Show all", new Command() {
+    deploymentsItem.addItem(ExplorerApplication.getCurrent().getMessage(Messages.MGMT_MENU_DEPLOYMENTS_SHOW_ALL), new Command() {
       public void menuSelected(MenuItem selectedItem) {
         ExplorerApplication.getCurrent().switchView(new DeploymentPage());
       }
     });
-    deploymentsItem.addItem("Upload new", new NewDeploymentListener());
+    deploymentsItem.addItem(ExplorerApplication.getCurrent().getMessage(Messages.MGMT_MENU_DEPLOYMENTS_UPLOAD), new NewDeploymentListener());
     
     // Jobs
-    addItem("Jobs", new Command() {
+    addItem(ExplorerApplication.getCurrent().getMessage(Messages.MGMT_MENU_JOBS), new Command() {
       private static final long serialVersionUID = 3038274253757975888L;
 
       public void menuSelected(MenuItem selectedItem) {

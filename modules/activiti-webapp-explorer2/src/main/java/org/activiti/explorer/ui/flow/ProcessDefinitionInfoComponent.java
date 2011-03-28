@@ -17,7 +17,8 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.explorer.Constant;
+import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
 
@@ -82,7 +83,7 @@ public class ProcessDefinitionInfoComponent extends VerticalLayout {
     timeDetails.setComponentAlignment(grid, Alignment.MIDDLE_LEFT);
 
     // Version
-    Label version = new Label("Version " + processDefinition.getVersion());
+    Label version = new Label(ExplorerApplication.getCurrent().getMessage(Messages.FLOW_VERSION) + processDefinition.getVersion());
     version.addStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
     version.setSizeUndefined();
     grid.addComponent(version);
@@ -90,7 +91,7 @@ public class ProcessDefinitionInfoComponent extends VerticalLayout {
     
     // Deployment time
     if (deployment.getDeploymentTime() != null) {
-      Label createTime = new Label("Deployed " + new PrettyTime().format(deployment.getDeploymentTime()));
+      Label createTime = new Label(ExplorerApplication.getCurrent().getMessage(Messages.FLOW_DEPLOY_TIME) + new PrettyTime().format(deployment.getDeploymentTime()));
       createTime.addStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
       createTime.setSizeUndefined();
       grid.addComponent(createTime);
@@ -106,7 +107,7 @@ public class ProcessDefinitionInfoComponent extends VerticalLayout {
   protected void initImage() {
     VerticalLayout processImageContainer = new VerticalLayout();
     
-    Label processTitle = new Label("Flow Image");
+    Label processTitle = new Label(ExplorerApplication.getCurrent().getMessage(Messages.FLOW_HEADER_DIAGRAM));
     processTitle.addStyleName(ExplorerLayout.STYLE_PROCESS_DEFINITION_DETAILS_HEADER);
     processImageContainer.addComponent(processTitle);
     
@@ -119,7 +120,8 @@ public class ProcessDefinitionInfoComponent extends VerticalLayout {
       embedded.setType(Embedded.TYPE_IMAGE);
       processImageContainer.addComponent(embedded);
     } else {
-      Label noImageAvailable = new Label("No image available for this flow");
+      Label noImageAvailable = new Label(ExplorerApplication.getCurrent().getMessage(Messages.FLOW_NO_DIAGRAM));
+      noImageAvailable.addStyleName(Reindeer.LABEL_SMALL);
       processImageContainer.addComponent(noImageAvailable);
     }
     

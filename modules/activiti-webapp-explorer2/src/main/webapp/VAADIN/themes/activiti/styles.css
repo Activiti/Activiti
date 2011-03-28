@@ -9,7 +9,7 @@
   color: white; /* color of text */
   font-family:  Helvetica, Arial, sans-serif;
   background: #1b7ec3; /* non-white part of page */
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
 }
 
@@ -29,8 +29,8 @@
 }
 
 #login-central-components {
-  margin: 0 0 0 -185px;
-  width: 370px;
+  margin: 0 0 0 -180px;
+  width: 360px;
   text-align: center;
   position: absolute;
   left: 50%;
@@ -45,14 +45,14 @@
 /* Text fields of input form */     
 input.login-field {
   font-size: 16px;
-  height:40px;
+  height:30px;
   width: 250px;
   margin-left: 10px;
   padding-left: 7px; /* To start the typing of the text a bit to the right */
   float: right;
   background: white;
   border: solid 1px transparent;
-  margin-bottom: 2px;
+  margin-bottom: 5px;
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
 }
@@ -331,6 +331,7 @@ input.login-field {
 
 /* Shared styles */
 .deployment-details-header, .job-details-header, .proc-def-details-header {
+  width: 95%;
   height: 1.1em;
   padding-top: 0.3em;
   padding-right: 0.3em;

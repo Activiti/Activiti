@@ -12,6 +12,8 @@
  */
 package org.activiti.explorer.ui.login;
 
+import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.ExplorerLayout;
 
 import com.vaadin.ui.LoginForm;
@@ -33,9 +35,9 @@ public class CustomLoginForm extends LoginForm {
   protected static final String STYLE_LOGIN_BUTTON = "login-button";
   
   public CustomLoginForm() {
-    usernameCaption = "User ID";
-    passwordCaption = "Password";
-    submitCaption = "Log in";
+    usernameCaption = ExplorerApplication.getCurrent().getMessage(Messages.LOGIN_USERNAME);
+    passwordCaption = ExplorerApplication.getCurrent().getMessage(Messages.LOGIN_PASSWORD);
+    submitCaption = ExplorerApplication.getCurrent().getMessage(Messages.LOGIN_BUTTON);
   }
   
   // Hack-alert !! See explanation at http://vaadin.com/book/-/page/components.loginform.html

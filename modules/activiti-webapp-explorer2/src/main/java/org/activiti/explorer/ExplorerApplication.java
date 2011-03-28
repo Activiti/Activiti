@@ -15,6 +15,8 @@
  */
 package org.activiti.explorer;
 
+import java.util.ResourceBundle;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -41,14 +43,19 @@ public class ExplorerApplication extends Application implements HttpServletReque
     LogUtil.readJavaUtilLoggingConfigFromClasspath();
   }
   
-  private static ThreadLocal<ExplorerApplication> current = new ThreadLocal<ExplorerApplication>();
-  
+  protected static ThreadLocal<ExplorerApplication> current = new ThreadLocal<ExplorerApplication>();
   protected MainWindow mainWindow;
+  protected ResourceBundle messages;
 
   public void init() {
+    initResourceBundle();
     this.mainWindow = new MainWindow();
     setMainWindow(mainWindow);
     mainWindow.showLoginPage();
+  }
+  
+  protected void initResourceBundle() {
+    this.messages = ResourceBundle.getBundle(Constant.RESOURCE_BUNDLE, getLocale());
   }
   
   /**
@@ -99,6 +106,12 @@ public class ExplorerApplication extends Application implements HttpServletReque
   
   public void showPopupWindow(Window window) {
     getMainWindow().addWindow(window);
+  }
+  
+  // Localisation
+  
+  public String getMessage(String key) {
+    return messages.getString(key);
   }
   
   // HttpServletRequestListener -------------------------------------------------------------------

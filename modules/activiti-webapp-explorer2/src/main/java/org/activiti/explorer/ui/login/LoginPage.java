@@ -16,6 +16,7 @@ import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.User;
 import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.ExplorerLayout;
 
 import com.vaadin.ui.CustomLayout;
@@ -69,7 +70,10 @@ public class LoginPage extends CustomLayout {
         ExplorerApplication.getCurrent().showDefaultContent();
       } else {
         refreshUi();
-        ExplorerApplication.getCurrent().showErrorNotification("Could not log you in", "Invalid user id and/or password");
+        ExplorerApplication.getCurrent().showErrorNotification(
+                ExplorerApplication.getCurrent().getMessage(Messages.LOGIN_FAILED_HEADER),
+                ExplorerApplication.getCurrent().getMessage(Messages.LOGIN_FAILED_INVALID)
+        );
       }
     }
   }

@@ -21,10 +21,13 @@ import java.text.SimpleDateFormat;
  */
 public interface Constant {
   
+  // Resource bundle name
+  static final String RESOURCE_BUNDLE = "messages";
+  
   // Date formatting
-  public static final DateFormat DEFAULT_DATE_FORMATTER = new SimpleDateFormat("dd MMM yyyy - hh:mm");
+ static final DateFormat DEFAULT_DATE_FORMATTER = new SimpleDateFormat("dd MMM yyyy - hh:mm");
   
   // Default diagram image extension, when name cannot be deducted from resource name
-  public static final String DEFAULT_DIAGRAM_IMAGE_EXTENSION = "png";
+ static final String DEFAULT_DIAGRAM_IMAGE_EXTENSION = "png";
 
 }

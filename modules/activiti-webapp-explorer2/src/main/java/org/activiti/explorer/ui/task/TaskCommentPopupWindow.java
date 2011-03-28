@@ -13,6 +13,7 @@
 package org.activiti.explorer.ui.task;
 
 import java.io.InputStream;
+import java.text.MessageFormat;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
@@ -20,6 +21,7 @@ import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.task.Comment;
 import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.ExplorerLayout;
 
 import com.ocpsoft.pretty.time.PrettyTime;
@@ -92,8 +94,10 @@ public class TaskCommentPopupWindow extends Window {
     layout.addComponent(commentLayout);
     layout.setExpandRatio(commentLayout, 1.0f);
     
-    Label header = new Label(new PrettyTime().format(comment.getTime()) 
-            + " " + user.getFirstName() + " " + user.getLastName() + " said");
+    Label header = new Label(MessageFormat.format(
+        ExplorerApplication.getCurrent().getMessage(Messages.TASK_COMMENT_POPUP_HEADER),
+        new PrettyTime().format(comment.getTime()),
+        user.getFirstName() + " " + user.getLastName()));
     header.addStyleName(ExplorerLayout.STYLE_TASK_COMMENT_AUTHOR);
     commentLayout.addComponent(header);
     
