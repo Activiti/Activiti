@@ -13,6 +13,7 @@
 package org.activiti.engine.impl.webservice;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.interceptor.LoggingInInterceptor;
@@ -55,10 +56,11 @@ public class WebServiceTaskTest extends PluggableActivitiTestCase {
 
         assertEquals(-1, counter.getCount());
 
-        runtimeService.startProcessInstanceByKey("webServiceInvocation");
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("webServiceInvocation");
         waitForJobExecutorToProcessAllJobs(10000L, 250L);
 
         assertEquals(0, counter.getCount());
+        assertTrue(processInstance.isEnded());
     }
 
 }

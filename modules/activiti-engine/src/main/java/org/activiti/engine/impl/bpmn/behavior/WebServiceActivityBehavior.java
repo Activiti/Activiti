@@ -20,7 +20,6 @@ import org.activiti.engine.impl.bpmn.data.IOSpecification;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
 import org.activiti.engine.impl.bpmn.webservice.MessageInstance;
 import org.activiti.engine.impl.bpmn.webservice.Operation;
-import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 /**
@@ -28,8 +27,9 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  * 
  * @author Esteban Robles Luna
  * @author Falko Menge
+ * @author Joram Barrez
  */
-public class WebServiceActivityBehavior implements ActivityBehavior {
+public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
   
   public static final String CURRENT_MESSAGE = "org.activiti.engine.impl.bpmn.CURRENT_MESSAGE";
 
@@ -88,6 +88,7 @@ public class WebServiceActivityBehavior implements ActivityBehavior {
     this.returnMessage(receivedMessage, execution);
     
     execution.setVariable(CURRENT_MESSAGE, null);
+    leave(execution);
   }
   
   private void returnMessage(MessageInstance message, ActivityExecution execution) {
