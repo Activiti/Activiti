@@ -51,6 +51,7 @@ public class JobDetailPanel extends Panel {
     this.job = managementService.createJobQuery().jobId(jobId).singleResult();
     this.parent = parent;
     
+    getContent().setSizeFull();
     setSizeFull();
     
     addStyleName(Reindeer.LAYOUT_WHITE);
@@ -146,6 +147,7 @@ public class JobDetailPanel extends Panel {
     layout.setSpacing(true);
     layout.setSizeFull();
     addComponent(layout);
+    ((VerticalLayout) getContent()).setExpandRatio(layout, 1.0f);
     
     // Number of retries
     Label retrieslabel = new Label(getRetriesLabel(job));
@@ -167,11 +169,12 @@ public class JobDetailPanel extends Panel {
       
       Panel stackPanel = new Panel();
       stackPanel.setWidth(100, UNITS_PERCENTAGE);
-      stackPanel.setHeight(300, UNITS_PIXELS);
+      stackPanel.setSizeFull();
       stackPanel.setScrollable(true);
       stackPanel.addComponent(stackTraceLabel);
       
       layout.addComponent(stackPanel);
+      layout.setExpandRatio(stackPanel, 1.0f);
     } else {
       Label noException = new Label("Job hasn't been executed yet");
       layout.addComponent(noException);
