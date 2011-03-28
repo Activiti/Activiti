@@ -13,8 +13,9 @@
 
 package org.activiti.explorer.ui.flow;
 
-import org.activiti.explorer.ui.ExplorerLayout;
-import org.activiti.explorer.ui.MenuBar;
+import org.activiti.explorer.ExplorerApplication;
+
+import com.vaadin.ui.MenuBar;
 
 
 
@@ -26,12 +27,19 @@ public class FlowMenuBar extends MenuBar {
   private static final long serialVersionUID = 7957488256766569264L;
 
   public FlowMenuBar() {
-    super();
-    addStyleName(ExplorerLayout.STYLE_MENUBAR);
+
+    setWidth("100%");
     
-    createMenuBarButton("My Flows (23)");
-    createMenuBarButton("Launch Flow");
-    fillRemainingSpace();
+    MenuItem myFlowsItem = addItem("My Flows (12)", new Command() {
+      public void menuSelected(MenuItem selectedItem) {
+      }
+    });
+    
+    MenuItem flowsItem = addItem("Flows", new Command() {
+      public void menuSelected(MenuItem selectedItem) {
+        ExplorerApplication.getCurrent().switchView(new FlowPage());
+      }
+    });
   }
 
 }

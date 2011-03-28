@@ -54,9 +54,7 @@
     <sequenceFlow id="flow6" sourceRef="longTimerExpire" targetRef="theEnd" />
 
     <userTask id="shortTimerTask" name="my task">
-      <multiInstanceLoopCharacteristics isSequential="false">
-        <loopCardinality>${numberOfTimers}</loopCardinality>
-      </multiInstanceLoopCharacteristics>
+     
     </userTask>
     <boundaryEvent id="shortTimer" cancelActivity="true" attachedToRef="shortTimerTask">
       <timerEventDefinition>

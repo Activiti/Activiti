@@ -89,13 +89,14 @@ input.login-field {
    ----------- */
 
 #header {
-	background: repeat-x left url(img/header-bg.png);
+	/*background: repeat-x left url(img/header-bg.png); */
 	height: 44px;
 	min-width: 410px;
+	background-color: #1b7ec3;
 }
 
 #header #activiti-component {
-	background: top right no-repeat url(img/header-bg-right.png);
+	/* background: top right no-repeat url(img/header-bg-right.png);*/
 	height: 44px;
 }
 
@@ -156,29 +157,19 @@ input.login-field {
    
 #main-menu {
   height: 23px;
-  background: no-repeat right url(img/main-menu-bg-right.png);
+  /*background: no-repeat right url(img/main-menu-bg-right.png);*/
+  background-color: #1b7ec3;
   text-shadow: 0pt 1px 0pt rgba(0, 0, 0, 0.9);
   padding-top: 0pt;
   padding-right: 8px;
   padding-bottom: 0pt;
   padding-left: 8px;
-  background-color: #131313;
-}
-
-.v-horizontallayout-menubar {
-  height: 23px;
-  text-shadow: 0pt 1px 0pt rgba(0, 0, 0, 0.9);
-  padding-top: 0pt;
-  padding-right: 8px;
-  padding-bottom: 6pt;
-  padding-left: 8px;
-  background-color: #131313;
 }
 
 .v-button-menu-button .v-button-caption {
   color: #fefffb;
   text-decoration: none;
-  font-weight: lighter;
+  font-weight: bold;
 }
 
 
@@ -235,16 +226,11 @@ input.login-field {
   border: 1px solid #021a40;
 }
 
-/* 
 
 /* ---------
    Task list
    --------- */
    
-.v-table-task-list .v-table-cell-content {
-  height: 54px;
-}
-
 .v-table-cell-content {
     vertical-align: middle;
 }
@@ -352,3 +338,7 @@ input.login-field {
   font-size: 116%;
 }
 
+.v-table .v-selected {
+	background-image: none;
+	background-color: #1b7ec3;
+}
