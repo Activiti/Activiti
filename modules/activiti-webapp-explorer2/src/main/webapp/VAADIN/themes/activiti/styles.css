@@ -156,20 +156,18 @@ input.login-field {
    --------- */
    
 #main-menu {
-  height: 23px;
   /*background: no-repeat right url(img/main-menu-bg-right.png);*/
   background-color: #1b7ec3;
   text-shadow: 0pt 1px 0pt rgba(0, 0, 0, 0.9);
-  padding-top: 0pt;
+  padding-top: 0px;
   padding-right: 8px;
-  padding-bottom: 0pt;
+  padding-bottom: 3px;
   padding-left: 8px;
 }
 
 .v-button-menu-button .v-button-caption {
   color: #fefffb;
   text-decoration: none;
-  font-weight: bold;
 }
 
 
@@ -317,6 +315,14 @@ input.login-field {
 /* --------
    Menu Bar
    -------- */
+
+.v-menubar {
+  background: #1b7ec3;
+  color: #FEFFFB;
+  text-shadow:none;
+  padding-left: 2px;
+  border-bottom: solid 1px #1b7ec3;
+}
 
 .v-menubar-menuitem-caption {
   cursor: pointer;
