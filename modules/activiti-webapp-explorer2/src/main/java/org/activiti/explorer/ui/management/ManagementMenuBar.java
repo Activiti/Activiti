@@ -16,6 +16,7 @@ import org.activiti.explorer.ExplorerApplication;
 import org.activiti.explorer.ui.management.db.DatabasePage;
 import org.activiti.explorer.ui.management.deployment.DeploymentPage;
 import org.activiti.explorer.ui.management.deployment.NewDeploymentListener;
+import org.activiti.explorer.ui.management.job.JobPage;
 
 import com.vaadin.ui.MenuBar;
 
@@ -46,6 +47,14 @@ public class ManagementMenuBar extends MenuBar {
     });
     deploymentsItem.addItem("Upload new", new NewDeploymentListener());
     
+    // Jobs
+    addItem("Jobs", new Command() {
+      private static final long serialVersionUID = 3038274253757975888L;
+
+      public void menuSelected(MenuItem selectedItem) {
+        ExplorerApplication.getCurrent().switchView(new JobPage());
+      }
+    });
   }
   
 }

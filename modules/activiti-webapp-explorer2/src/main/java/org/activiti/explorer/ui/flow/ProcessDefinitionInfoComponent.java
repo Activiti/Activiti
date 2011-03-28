@@ -100,14 +100,13 @@ public class ProcessDefinitionInfoComponent extends VerticalLayout {
       grid.addComponent(realCreateTime);
     }
     
-    addEmptySpace(this);
   }
   
   protected void initImage() {
     VerticalLayout processImageContainer = new VerticalLayout();
     
     Label processTitle = new Label("Flow Image");
-    processTitle.addStyleName(Reindeer.LABEL_H2);
+    processTitle.addStyleName(Constants.STYLE_PROCESS_DEFINITION_DETAILS_HEADER);
     processImageContainer.addComponent(processTitle);
     
     if(processDefinition.getDiagramResourceName() != null) {

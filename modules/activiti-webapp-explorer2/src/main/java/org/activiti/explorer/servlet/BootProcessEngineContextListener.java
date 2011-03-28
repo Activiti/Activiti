@@ -34,6 +34,7 @@ import org.activiti.explorer.navigation.DataBaseNavigationHandler;
 import org.activiti.explorer.navigation.DefaultNavigationHandler;
 import org.activiti.explorer.navigation.DeploymentNavigationHandler;
 import org.activiti.explorer.navigation.FlowNavigationHandler;
+import org.activiti.explorer.navigation.JobNavigationHandler;
 import org.activiti.explorer.navigation.NavigationHandlers;
 import org.activiti.explorer.navigation.TaskNavigationHandler;
 import org.activiti.explorer.ui.form.DateFormPropertyRenderer;
@@ -93,6 +94,7 @@ public class BootProcessEngineContextListener implements ServletContextListener 
     NavigationHandlers.addNavigationHandler(new FlowNavigationHandler());
     NavigationHandlers.addNavigationHandler(new DeploymentNavigationHandler());
     NavigationHandlers.addNavigationHandler(new DataBaseNavigationHandler());
+    NavigationHandlers.addNavigationHandler(new JobNavigationHandler());
   }
 
   protected void initKermit(ProcessEngine processEngine) {
@@ -224,6 +226,8 @@ public class BootProcessEngineContextListener implements ServletContextListener 
      .name("Demo processes")
      .addClasspathResource("org/activiti/explorer/demo/process/testProcess.bpmn20.xml")
      .addClasspathResource("org/activiti/explorer/demo/process/oneTaskProcess.bpmn20.xml")
+     .addClasspathResource("org/activiti/explorer/demo/process/createTimersProcess.bpmn20.xml")
+     
      .deploy();
   }
 

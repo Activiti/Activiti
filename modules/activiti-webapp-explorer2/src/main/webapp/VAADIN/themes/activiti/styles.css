@@ -303,20 +303,6 @@ input.login-field {
    Deployment
    ---------- */
 
-.deployment-details-header {
-  height: 1.1em;
-  padding-top: 0.3em;
-  padding-right: 0.3em;
-  padding-bottom: 0.3em;
-  padding-left: 0.3em;
-  margin-top: 1.5em;
-  margin-right: 1em;
-  margin-bottom: 1.5em;
-  background-color: #e3eaec;
-  font-weight: bold;
-  font-size: 116%;
-}
-
 .upload-description {
   margin: 1.5em;
   padding-right: 3em;
@@ -324,6 +310,15 @@ input.login-field {
 
 .upload-button {
   margin-top: 1.5em;
+}
+
+/* ----
+   Jobs
+   ---- */
+   
+.job-exception-message {
+	color: #AA0000;
+	font-weight: bold;
 }
 
 /* --------------
@@ -340,3 +335,20 @@ input.login-field {
 .v-menubar-menuitem-caption {
   cursor: pointer;
 }
+
+
+/* Shared styles */
+.deployment-details-header, .job-details-header, .proc-def-details-header {
+  height: 1.1em;
+  padding-top: 0.3em;
+  padding-right: 0.3em;
+  padding-bottom: 0.3em;
+  padding-left: 0.3em;
+  margin-top: 1.5em;
+  margin-right: 1em;
+  margin-bottom: 1.5em;
+  background-color: #e3eaec;
+  font-weight: bold;
+  font-size: 116%;
+}
+

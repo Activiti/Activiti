@@ -62,6 +62,7 @@ public class Constants {
   public static final String STYLE_TASK_COMMENT_PICTURE = "task-comment-picture";
 
   public static final String STYLE_PROCESS_DEFINITION_LIST = "proc-def-list";
+  public static final String STYLE_PROCESS_DEFINITION_DETAILS_HEADER = "proc-def-details-header";
   
   public static final String STYLE_DATABASE_DETAILS = "database-details";
   public static final String STYLE_DATABASE_TABLE_ROW = "database-table-row";
@@ -69,6 +70,10 @@ public class Constants {
   public static final String STYLE_DEPLOYMENT_DETAILS_HEADER = "deployment-details-header";
   public static final String STYLE_DEPLOYMENT_UPLOAD_DESCRIPTION = "upload-description";
   public static final String STYLE_DEPLOYMENT_UPLOAD_BUTTON = "upload-button";
+  
+  public static final String STYLE_JOB_DETAILS_HEADER = "job-details-header";
+  public static final String STYLE_JOB_EXCEPTION_MESSAGE = "job-exception-message";
+  public static final String STYLE_JOB_EXCEPTION_TRACE = "job-exception-trace";
   
   public static final String STYLE_FORMPROPERTY_READONLY = "formprop-readonly";
   public static final String STYLE_FORMPROPERTY_LABEL = "formprop-label";
@@ -78,4 +83,6 @@ public class Constants {
   
   // Default diagram image extension, when name cannot be deducted from resource name
   public static final String DEFAULT_DIAGRAM_IMAGE_EXTENSION = "png";
+
+
 }

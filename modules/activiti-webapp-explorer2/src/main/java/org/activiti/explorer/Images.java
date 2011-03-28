@@ -32,6 +32,7 @@ public class Images {
   public static final Resource RESOURCE = new ThemeResource("img/resource.png");
   public static final Resource WARNING = new ThemeResource("img/warning.png");
   public static final Resource DELETE = new ThemeResource("img/delete.png");
+  public static final Resource EXECUTE = new ThemeResource("img/execute.png");
   
   // Accounts
   public static final Resource SKYPE = new ThemeResource("img/skype.png");
