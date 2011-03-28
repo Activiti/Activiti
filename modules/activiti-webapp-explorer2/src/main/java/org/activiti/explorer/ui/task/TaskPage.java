@@ -18,7 +18,6 @@ import org.activiti.engine.TaskService;
 import org.activiti.explorer.ExplorerApplication;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
-import org.activiti.explorer.navigation.TaskNavigationHandler;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.AbstractPage;
 import org.activiti.explorer.ui.ExplorerLayout;
@@ -69,7 +68,7 @@ public abstract class TaskPage extends AbstractPage {
         } else {
           // Nothing is selected
           splitPanel.removeComponent(splitPanel.getSecondComponent());
-          ExplorerApplication.getCurrent().setCurrentUriFragment(new UriFragment(TaskNavigationHandler.TASK_URI_PART));
+          ExplorerApplication.getCurrent().setCurrentUriFragment(getUriFragment(null));
         }
       }
     });
