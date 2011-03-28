@@ -38,20 +38,20 @@ public abstract class ParameterizedActionImpl extends AbstractArtifactActionImpl
    */
   public abstract String getFormAsHtml();
 
-  public Object getParameter(Map<String, Object> parameters, String name, boolean required, Object defaultValue, Class expectedClass) {
+  public <T> T getParameter(Map<String, Object> parameters, String name, boolean required, Object defaultValue, Class<T> expectedClass) {
     Object value = parameters.get(name);
     if (value == null || (value instanceof String && ((String) value).length() == 0)) {
       if (required) {
         throw new RepositoryException("Required parameter '" + name + "' not set while executing action '" + getId() + "'");
       } else {
-        return defaultValue;
+        return (T) defaultValue;
       }
     }
     if (expectedClass != null && !expectedClass.isAssignableFrom(value.getClass())) {
       throw new RepositoryException("Parameter '" + name + "' with value '" + value + "' has wrong type " + value.getClass() + " instead of " + expectedClass
               + " not set while executing action '" + getId() + "'");
     }
-    return value;
+    return (T) value;
   }
   
   @Override

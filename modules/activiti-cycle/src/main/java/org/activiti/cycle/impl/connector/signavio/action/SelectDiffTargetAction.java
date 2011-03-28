@@ -32,8 +32,8 @@ public class SelectDiffTargetAction extends ParameterizedHtmlFormTemplateAction 
   public void execute(RepositoryConnector connector, RepositoryArtifact artifact, Map<String, Object> parameters) throws Exception {
     // TODO: Check with Nils that we get the object instead of the string in
     // here!
-    String targetNodeId = (String) getParameter(parameters, PARAM_TARGET_ARTIFACT, true, null, String.class);
-    RepositoryConnector targetConnector = (RepositoryConnector) getParameter(parameters, PARAM_TARGET_CONNECTOR, true, null, RepositoryConnector.class);
+    String targetNodeId = getParameter(parameters, PARAM_TARGET_ARTIFACT, true, null, String.class);
+    RepositoryConnector targetConnector = getParameter(parameters, PARAM_TARGET_CONNECTOR, true, null, RepositoryConnector.class);
     RepositoryArtifact targetArtifact = targetConnector.getRepositoryArtifact(targetNodeId);
 
     // yeah, that is pretty hacky! Especially with multiple users. But as a

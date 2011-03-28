@@ -61,11 +61,11 @@ public class CreateMavenProjectAction extends CreateTechnicalBpmnXmlAction {
   }
 
   public void execute(RepositoryConnector connector, RepositoryArtifact artifact, Map<String, Object> parameters) throws Exception {
-    String targetFolderId = (String) getParameter(parameters, PARAM_TARGET_FOLDER, true, null, String.class);
-    String targetName = (String) getParameter(parameters, PARAM_TARGET_NAME, false, getProcessName(artifact), String.class);
-    String comment = (String) getParameter(parameters, PARAM_COMMENT, false, null, String.class);
-    RepositoryConnector targetConnector = (RepositoryConnector) getParameter(parameters, PARAM_TARGET_CONNECTOR, true, null, RepositoryConnector.class);
-    boolean createLink = (Boolean) getParameter(parameters, CREATE_LINK_NAME, true, Boolean.TRUE, Boolean.class);
+    String targetFolderId = getParameter(parameters, PARAM_TARGET_FOLDER, true, null, String.class);
+    String targetName = getParameter(parameters, PARAM_TARGET_NAME, false, getProcessName(artifact), String.class);
+    String comment = getParameter(parameters, PARAM_COMMENT, false, null, String.class);
+    RepositoryConnector targetConnector = getParameter(parameters, PARAM_TARGET_CONNECTOR, true, null, RepositoryConnector.class);
+    boolean createLink = getParameter(parameters, CREATE_LINK_NAME, true, Boolean.TRUE, Boolean.class);
 
     List<RepositoryArtifact> processes = new ArrayList<RepositoryArtifact>();
     processes.add(artifact);

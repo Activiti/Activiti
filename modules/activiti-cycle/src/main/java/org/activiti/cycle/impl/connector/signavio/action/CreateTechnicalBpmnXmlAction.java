@@ -54,11 +54,11 @@ public class CreateTechnicalBpmnXmlAction extends AbstractTechnicalBpmnXmlAction
   public void execute(RepositoryConnector connector, RepositoryArtifact artifact, Map<String, Object> parameters) throws Exception {
     // TODO: Check with Nils that we get the object instead of the string in
     // here!
-    String targetFolderId = (String) getParameter(parameters, PARAM_TARGET_FOLDER, true, null, String.class);
-    String targetName = (String) getParameter(parameters, PARAM_TARGET_NAME, false, getProcessName(artifact), String.class);
-    String comment = (String) getParameter(parameters, PARAM_COMMENT, false, null, String.class);
-    RepositoryConnector targetConnector = (RepositoryConnector) getParameter(parameters, PARAM_TARGET_CONNECTOR, true, null, RepositoryConnector.class);
-    boolean createLink = (Boolean) getParameter(parameters, CREATE_LINK_NAME, true, Boolean.TRUE, Boolean.class);
+    String targetFolderId = getParameter(parameters, PARAM_TARGET_FOLDER, true, null, String.class);
+    String targetName = getParameter(parameters, PARAM_TARGET_NAME, false, getProcessName(artifact), String.class);
+    String comment = getParameter(parameters, PARAM_COMMENT, false, null, String.class);
+    RepositoryConnector targetConnector = getParameter(parameters, PARAM_TARGET_CONNECTOR, true, null, RepositoryConnector.class);
+    boolean createLink = getParameter(parameters, CREATE_LINK_NAME, true, Boolean.TRUE, Boolean.class);
 
     // no transaction required: atomic
     RepositoryArtifact targetArtifact = createArtifact(connector, artifact, targetFolderId, targetName, targetConnector);
