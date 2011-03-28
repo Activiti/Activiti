@@ -79,7 +79,7 @@ public abstract class ActivitiCycleWebScript extends ActivitiWebScript {
 
     } finally {
       // close the CycleHttpSession
-      CycleHttpSession.closeSession();
+      CycleHttpSession.closeSession(req);
     }
   }
 

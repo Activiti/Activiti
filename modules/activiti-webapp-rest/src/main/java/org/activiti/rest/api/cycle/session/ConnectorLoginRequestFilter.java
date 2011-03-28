@@ -13,7 +13,7 @@ import org.activiti.rest.util.ActivitiRequest;
  */
 public class ConnectorLoginRequestFilter implements CycleRequestFilter {
 
-  public void doFilter(ActivitiRequest req) {
+  public void beforeRequest(ActivitiRequest req) {
     Object connectorIdObject = req.getString("connector-login-request");
     if (connectorIdObject == null)
       return;
@@ -35,4 +35,8 @@ public class ConnectorLoginRequestFilter implements CycleRequestFilter {
 
   }
 
+  public void afterRequest(ActivitiRequest req) {
+    // do nothing
+  }
+  
 }

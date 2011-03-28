@@ -16,6 +16,7 @@ import org.activiti.cycle.impl.components.RuntimeConnectorList;
 import org.activiti.cycle.impl.connector.PasswordEnabledRepositoryConnector;
 import org.activiti.cycle.service.CycleServiceFactory;
 import org.activiti.rest.util.ActivitiRequest;
+import org.restlet.engine.Engine;
 
 /**
  * Initializes the Cycle Http-Session.
@@ -28,13 +29,15 @@ public class CycleHttpSession {
 
   public static interface CycleRequestFilter {
 
-    public void doFilter(ActivitiRequest req);
+    public void beforeRequest(ActivitiRequest req);
+    public void afterRequest(ActivitiRequest req);
   }
 
   public static Set<CycleRequestFilter> requestFilters = new HashSet<CycleRequestFilter>();
 
   static {
     requestFilters.add(new ConnectorLoginRequestFilter());
+    requestFilters.add(new RestletThreadLocalReaper());
   }
 
   public static void openSession(ActivitiRequest req) {
@@ -54,7 +57,7 @@ public class CycleHttpSession {
 
     // invoke request filters
     for (CycleRequestFilter requestFilter : requestFilters) {
-      requestFilter.doFilter(req);
+      requestFilter.beforeRequest(req);
     }
   }
 
@@ -87,7 +90,11 @@ public class CycleHttpSession {
     }
   }
 
-  public static void closeSession() {
+  public static void closeSession(ActivitiRequest req) {
+    // invoke request filters
+    for (CycleRequestFilter requestFilter : requestFilters) {
+      requestFilter.afterRequest(req);
+    }   
     CycleRequestContext.clearContext();
     CycleSessionContext.clearContext();
   }

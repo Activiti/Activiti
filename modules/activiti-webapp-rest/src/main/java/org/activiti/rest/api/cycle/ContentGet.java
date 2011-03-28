@@ -87,7 +87,7 @@ public class ContentGet extends ActivitiStreamingWebScript {
       getContent(req, res);
     } finally {
       // close the CycleHttpSession
-      CycleHttpSession.closeSession();
+      CycleHttpSession.closeSession(req);
     }
   }
 
