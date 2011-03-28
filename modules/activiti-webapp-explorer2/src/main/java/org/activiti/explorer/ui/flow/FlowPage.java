@@ -17,14 +17,14 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApplication;
-import org.activiti.explorer.Images;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.FlowNavigationHandler;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.AbstractPage;
+import org.activiti.explorer.ui.ExplorerLayout;
+import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.util.ThemeImageColumnGenerator;
 
 import com.vaadin.data.Item;
@@ -82,7 +82,7 @@ public class FlowPage extends AbstractPage {
   @Override
   protected Table createList() {
     final Table processDefinitionTable = new Table();
-    processDefinitionTable.addStyleName(Constants.STYLE_PROCESS_DEFINITION_LIST);
+    processDefinitionTable.addStyleName(ExplorerLayout.STYLE_PROCESS_DEFINITION_LIST);
     
     // Set non-editable, selectable and full-size
     processDefinitionTable.setEditable(false);

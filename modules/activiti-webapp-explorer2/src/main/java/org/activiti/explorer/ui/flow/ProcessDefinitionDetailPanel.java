@@ -18,8 +18,8 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.flow.listener.StartFlowClickListener;
 import org.activiti.explorer.ui.form.FormPropertiesForm;
 import org.activiti.explorer.ui.form.FormPropertiesForm.FormPropertiesEvent;
@@ -137,7 +137,7 @@ public class ProcessDefinitionDetailPanel extends Panel {
 
   protected void initActions() {
     actionsContainer = new HorizontalLayout();
-    actionsContainer.addStyleName(Constants.STYLE_ACTION_BAR);
+    actionsContainer.addStyleName(ExplorerLayout.STYLE_ACTION_BAR);
     actionsContainer.setSizeFull();
     actionsContainer.setSpacing(true);
     

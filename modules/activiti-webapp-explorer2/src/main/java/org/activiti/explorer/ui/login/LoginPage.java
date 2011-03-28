@@ -15,8 +15,8 @@ package org.activiti.explorer.ui.login;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.User;
-import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ui.ExplorerLayout;
 
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.LoginForm.LoginEvent;
@@ -33,16 +33,16 @@ public class LoginPage extends CustomLayout {
   protected IdentityService identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
 
   public LoginPage() {
-    super(Constants.LOGIN_LAYOUT);  // Layout is defined in /activiti/login.html + styles.css
+    super(ExplorerLayout.CUSTOM_LAYOUT_LOGIN);  // Layout is defined in /activiti/login.html + styles.css
     
-    addStyleName(Constants.STYLE_LOGIN_PAGE);
+    addStyleName(ExplorerLayout.STYLE_LOGIN_PAGE);
     initUi();
   }
   
   protected void initUi() {
     // Login form is an atypical Vaadin component, since we want browsers to fill the password fields
     CustomLoginForm loginForm = new CustomLoginForm();
-    addComponent(loginForm, Constants.LOCATION_LOGIN);
+    addComponent(loginForm, ExplorerLayout.LOCATION_LOGIN);
     
     // Login listener
     loginForm.addListener(new ActivitiLoginListener());

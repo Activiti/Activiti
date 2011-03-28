@@ -16,8 +16,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ui.ExplorerLayout;
 
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
@@ -95,13 +95,13 @@ public class UploadPopupWindow extends Window
   protected void addDescription(String description) {
     Label descriptionLabel = new Label(description);
     descriptionLabel.addStyleName(Reindeer.LABEL_SMALL);
-    descriptionLabel.addStyleName(Constants.STYLE_DEPLOYMENT_UPLOAD_DESCRIPTION);
+    descriptionLabel.addStyleName(ExplorerLayout.STYLE_DEPLOYMENT_UPLOAD_DESCRIPTION);
     layout.addComponent(descriptionLabel);
   }
   
   protected void addUpload() {
     this.upload = new Upload(null, receiver);
-    upload.addStyleName(Constants.STYLE_DEPLOYMENT_UPLOAD_BUTTON);
+    upload.addStyleName(ExplorerLayout.STYLE_DEPLOYMENT_UPLOAD_BUTTON);
     upload.setButtonCaption("Choose a file");
     upload.setImmediate(true);
     layout.addComponent(upload);

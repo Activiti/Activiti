@@ -19,9 +19,9 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.task.Task;
-import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApplication;
-import org.activiti.explorer.Images;
+import org.activiti.explorer.ui.ExplorerLayout;
+import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.form.FormPropertiesEventListener;
 import org.activiti.explorer.ui.form.FormPropertiesForm;
 import org.activiti.explorer.ui.form.FormPropertiesForm.FormPropertiesEvent;
@@ -122,7 +122,7 @@ public class TaskDetailPanel extends HorizontalLayout {
 
     // The other time fields are layed out in a 2 column grid
     GridLayout grid = new GridLayout();
-    grid.addStyleName(Constants.STYLE_TASK_DETAILS);
+    grid.addStyleName(ExplorerLayout.STYLE_TASK_DETAILS);
     grid.setSpacing(true);
     grid.setColumns(2);
 
@@ -132,7 +132,7 @@ public class TaskDetailPanel extends HorizontalLayout {
     // create time
     if (task.getCreateTime() != null) {
       Label createTime = new Label("Created " + new PrettyTime().format(task.getCreateTime()));
-      createTime.addStyleName(Constants.STYLE_LABEL_BOLD);
+      createTime.addStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
       createTime.setSizeUndefined();
       grid.addComponent(createTime);
       
@@ -145,7 +145,7 @@ public class TaskDetailPanel extends HorizontalLayout {
     // due date
     if (task.getDueDate() != null) {
       Label dueDate = new Label("Has to be finished " + new PrettyTime().format(task.getDueDate())); 
-      dueDate.addStyleName(Constants.STYLE_LABEL_BOLD);
+      dueDate.addStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
       dueDate.setSizeUndefined();
       grid.addComponent(dueDate);
 
@@ -174,7 +174,7 @@ public class TaskDetailPanel extends HorizontalLayout {
     
     // The involved people are layed out in a grid with two rows
     GridLayout grid = new GridLayout();
-    grid.addStyleName(Constants.STYLE_TASK_DETAILS);
+    grid.addStyleName(ExplorerLayout.STYLE_TASK_DETAILS);
     grid.setSpacing(true);
     grid.setRows(2);
     

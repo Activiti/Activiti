@@ -10,28 +10,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.activiti.explorer;
 
-package org.activiti.explorer.ui.flow;
-
-import org.activiti.explorer.ui.ExplorerLayout;
-import org.activiti.explorer.ui.MenuBar;
-
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 
 /**
  * @author Joram Barrez
  */
-public class FlowMenuBar extends MenuBar {
+public interface Constant {
   
-  private static final long serialVersionUID = 7957488256766569264L;
-
-  public FlowMenuBar() {
-    super();
-    addStyleName(ExplorerLayout.STYLE_MENUBAR);
-    
-    createMenuBarButton("My Flows (23)");
-    createMenuBarButton("Launch Flow");
-    fillRemainingSpace();
-  }
+  // Date formatting
+  public static final DateFormat DEFAULT_DATE_FORMATTER = new SimpleDateFormat("dd MMM yyyy - hh:mm");
+  
+  // Default diagram image extension, when name cannot be deducted from resource name
+  public static final String DEFAULT_DIAGRAM_IMAGE_EXTENSION = "png";
 
 }

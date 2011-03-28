@@ -19,7 +19,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.explorer.Images;
+import org.activiti.explorer.ui.Images;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;

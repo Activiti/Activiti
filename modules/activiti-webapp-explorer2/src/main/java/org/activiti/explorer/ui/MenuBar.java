@@ -13,7 +13,6 @@
 
 package org.activiti.explorer.ui;
 
-import org.activiti.explorer.Constants;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
@@ -36,7 +35,7 @@ public class MenuBar extends HorizontalLayout {
   protected Button createMenuBarButton(String name) {
     Button button = new Button(name);
     button.addStyleName(Reindeer.BUTTON_LINK);
-    button.addStyleName(Constants.STYLE_MENUBAR_BUTTON);
+    button.addStyleName(ExplorerLayout.STYLE_MENUBAR_BUTTON);
     addComponent(button);
     return button;
   }

@@ -19,9 +19,9 @@ import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
-import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApplication;
-import org.activiti.explorer.Images;
+import org.activiti.explorer.ui.ExplorerLayout;
+import org.activiti.explorer.ui.Images;
 
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.terminal.StreamResource.StreamSource;
@@ -111,7 +111,7 @@ public class ProfilePage extends Panel {
     image.setType(Embedded.TYPE_IMAGE);
     image.setHeight("200px");
     image.setWidth("200px");
-    image.addStyleName(Constants.STYLE_PROFILE_PICTURE);
+    image.addStyleName(ExplorerLayout.STYLE_PROFILE_PICTURE);
     
     imagePanel.addComponent(image);
     imagePanel.setHeight("100%");
@@ -214,14 +214,14 @@ public class ProfilePage extends Panel {
   protected void addProfileHeader(VerticalLayout infoLayout, String headerName) {
     Label aboutLabel = new Label(headerName);
     aboutLabel.setWidth("90%");
-    aboutLabel.addStyleName(Constants.STYLE_PROFILE_HEADER);
+    aboutLabel.addStyleName(ExplorerLayout.STYLE_PROFILE_HEADER);
     infoLayout.addComponent(aboutLabel);
   }
   
   protected GridLayout createInfoSectionLayout(int columns, int rows) {
     GridLayout layout = new GridLayout(columns, rows);
     layout.setSpacing(true);
-    layout.addStyleName(Constants.STYLE_PROFILE_LAYOUT);
+    layout.addStyleName(ExplorerLayout.STYLE_PROFILE_LAYOUT);
     infoPanelLayout.addComponent(layout);
     return layout;
   }
@@ -235,7 +235,7 @@ public class ProfilePage extends Panel {
   }
   
   protected void addProfileEntry(GridLayout layout, Component name, Component value) {
-    name.addStyleName(Constants.STYLE_PROFILE_FIELD);
+    name.addStyleName(ExplorerLayout.STYLE_PROFILE_FIELD);
     name.setSizeUndefined();
     layout.addComponent(name);
     

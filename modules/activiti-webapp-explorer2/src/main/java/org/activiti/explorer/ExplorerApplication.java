@@ -22,6 +22,7 @@ import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.util.LogUtil;
 import org.activiti.explorer.navigation.UriFragment;
+import org.activiti.explorer.ui.MainWindow;
 
 import com.vaadin.Application;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;

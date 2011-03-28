@@ -15,9 +15,9 @@ package org.activiti.explorer.ui.management.db;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.management.TableMetaData;
-import org.activiti.explorer.Constants;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
+import org.activiti.explorer.ui.ExplorerLayout;
 
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
@@ -49,7 +49,7 @@ public class DatabaseDetailPanel extends VerticalLayout {
   protected void addTableName() {
     Label name = new Label(tableName);
     name.addStyleName(Reindeer.LABEL_H1);
-    name.addStyleName(Constants.STYLE_DATABASE_DETAILS);
+    name.addStyleName(ExplorerLayout.STYLE_DATABASE_DETAILS);
     addComponent(name);
     addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
   }
@@ -69,9 +69,9 @@ public class DatabaseDetailPanel extends VerticalLayout {
       
       data.setWidth("95%");
       data.setHeight("80%");
-      data.addStyleName(Constants.STYLE_DATABASE_TABLE_ROW);
+      data.addStyleName(ExplorerLayout.STYLE_DATABASE_TABLE_ROW);
       data.addStyleName(Reindeer.TABLE_STRONG);
-      data.addStyleName(Constants.STYLE_DATABASE_DETAILS);
+      data.addStyleName(ExplorerLayout.STYLE_DATABASE_DETAILS);
       setExpandRatio(data, 1.0f);
       
       // Create column headers
@@ -82,7 +82,7 @@ public class DatabaseDetailPanel extends VerticalLayout {
       
     } else {
       Label noDataLabel = new Label("Table contains no rows");
-      noDataLabel.addStyleName(Constants.STYLE_DATABASE_DETAILS);
+      noDataLabel.addStyleName(ExplorerLayout.STYLE_DATABASE_DETAILS);
       addComponent(noDataLabel);
       setExpandRatio(noDataLabel, 1.0f);
     }

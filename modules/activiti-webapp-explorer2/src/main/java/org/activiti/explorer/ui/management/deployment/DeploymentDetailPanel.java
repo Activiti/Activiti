@@ -20,9 +20,9 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApplication;
-import org.activiti.explorer.Images;
+import org.activiti.explorer.ui.ExplorerLayout;
+import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.flow.FlowPage;
 
 import com.ocpsoft.pretty.time.PrettyTime;
@@ -115,7 +115,7 @@ public class DeploymentDetailPanel extends Panel {
       
       // Header
       Label processDefinitionHeader = new Label("Process Definitions");
-      processDefinitionHeader.addStyleName(Constants.STYLE_DEPLOYMENT_DETAILS_HEADER);
+      processDefinitionHeader.addStyleName(ExplorerLayout.STYLE_DEPLOYMENT_DETAILS_HEADER);
       processDefinitionHeader.setWidth("95%");
       addComponent(processDefinitionHeader);
       
@@ -125,7 +125,7 @@ public class DeploymentDetailPanel extends Panel {
       addComponent(layout);
       
       // process icon
-      Embedded processIcon = new Embedded(null, Images.PROCESS_48);
+      Embedded processIcon = new Embedded(null, Images.PROCESS_48PX);
       layout.addComponent(processIcon);
       
       // processes
@@ -154,7 +154,7 @@ public class DeploymentDetailPanel extends Panel {
     if (resourceNames.size() > 0) {
       Label resourceHeader = new Label("Resources");
       resourceHeader.setWidth("95%");
-      resourceHeader.addStyleName(Constants.STYLE_DEPLOYMENT_DETAILS_HEADER);
+      resourceHeader.addStyleName(ExplorerLayout.STYLE_DEPLOYMENT_DETAILS_HEADER);
       addComponent(resourceHeader);
       
       HorizontalLayout resourceLayout = new HorizontalLayout();

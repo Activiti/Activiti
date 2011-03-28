@@ -14,9 +14,7 @@
 package org.activiti.explorer.ui;
 
 import org.activiti.engine.identity.User;
-import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApplication;
-import org.activiti.explorer.Images;
 import org.activiti.explorer.ui.profile.ProfilePage;
 
 import com.vaadin.ui.Button;
@@ -38,7 +36,7 @@ public class MainLayout extends CustomLayout {
   protected MainMenuBar mainMenuBar;
   
   public MainLayout() {
-    super(Constants.THEME);
+    super(ExplorerLayout.CUSTOM_LAYOUT_DEFAULT);
     setSizeFull();
     
     // Components visible on every page
@@ -50,22 +48,22 @@ public class MainLayout extends CustomLayout {
   protected void initSearchBox() {
     TextField searchBox = new TextField();
     searchBox.setInputPrompt("Search tasks");
-    searchBox.addStyleName(Constants.STYLE_SMALL_TEXTFIELD);
-    searchBox.addStyleName(Constants.STYLE_SEARCHBOX);
-    addComponent(searchBox, Constants.LOCATION_SEARCH);
+    searchBox.addStyleName(ExplorerLayout.STYLE_SMALL_TEXTFIELD);
+    searchBox.addStyleName(ExplorerLayout.STYLE_SEARCHBOX);
+    addComponent(searchBox, ExplorerLayout.LOCATION_SEARCH);
   }
   
   @SuppressWarnings("serial")
   protected void initLogoutButton() {
     // Username + logout button is put into a small grid
     GridLayout logoutGrid = new GridLayout(2, 1);
-    logoutGrid.setStyleName(Constants.STYLE_LOGOUT_BUTTON);
+    logoutGrid.setStyleName(ExplorerLayout.STYLE_LOGOUT_BUTTON);
 
     // User name + link to profile 
     final User user = ExplorerApplication.getCurrent().getLoggedInUser();
     Button userButton = new Button(user.getFirstName() + " " + user.getLastName());
     userButton.setIcon(Images.USER);
-    userButton.addStyleName(Constants.STYLE_USER_LABEL);
+    userButton.addStyleName(ExplorerLayout.STYLE_USER_PROFILE);
     userButton.addStyleName(Reindeer.BUTTON_LINK);
     
     userButton.addListener(new ClickListener() {
@@ -77,7 +75,7 @@ public class MainLayout extends CustomLayout {
     // logout button
     Button logout = new Button("Logout");
     logout.setStyleName(Reindeer.BUTTON_LINK);
-    logout.addStyleName(Constants.STYLE_LOGOUT_BUTTON);
+    logout.addStyleName(ExplorerLayout.STYLE_LOGOUT_BUTTON);
     logout.setIcon(Images.WHITE_DIVIDER);
     logout.addListener(new ClickListener() {
       public void buttonClick(ClickEvent event) {
@@ -95,7 +93,7 @@ public class MainLayout extends CustomLayout {
   
   protected void initMainMenuBar() {
     this.mainMenuBar = new MainMenuBar();
-    addComponent(mainMenuBar, Constants.LOCATION_MAIN_MENU);
+    addComponent(mainMenuBar, ExplorerLayout.LOCATION_MAIN_MENU);
   }
 
 }

@@ -15,14 +15,14 @@ package org.activiti.explorer.ui.task;
 
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
-import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApplication;
-import org.activiti.explorer.Images;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.TaskNavigationHandler;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.AbstractPage;
+import org.activiti.explorer.ui.ExplorerLayout;
+import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.util.ThemeImageColumnGenerator;
 
 import com.vaadin.data.Item;
@@ -52,7 +52,7 @@ public abstract class TaskPage extends AbstractPage {
   @Override
   protected Table createList() {
     final Table taskTable = new Table();
-    taskTable.addStyleName(Constants.STYLE_TASK_LIST);
+    taskTable.addStyleName(ExplorerLayout.STYLE_TASK_LIST);
     
     // Listener to change right panel when clicked on a task
     taskTable.addListener(new Property.ValueChangeListener() {

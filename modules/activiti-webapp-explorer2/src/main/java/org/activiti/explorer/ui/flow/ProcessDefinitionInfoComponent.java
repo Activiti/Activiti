@@ -17,8 +17,9 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.explorer.Constants;
-import org.activiti.explorer.Images;
+import org.activiti.explorer.Constant;
+import org.activiti.explorer.ui.ExplorerLayout;
+import org.activiti.explorer.ui.Images;
 
 import com.ocpsoft.pretty.time.PrettyTime;
 import com.vaadin.terminal.StreamResource;
@@ -73,7 +74,7 @@ public class ProcessDefinitionInfoComponent extends VerticalLayout {
 
     // The other time fields are layed out in a 2 column grid
     GridLayout grid = new GridLayout();
-    grid.addStyleName(Constants.STYLE_TASK_DETAILS);
+    grid.addStyleName(ExplorerLayout.STYLE_TASK_DETAILS);
     grid.setSpacing(true);
     grid.setColumns(2);
 
@@ -82,7 +83,7 @@ public class ProcessDefinitionInfoComponent extends VerticalLayout {
 
     // Version
     Label version = new Label("Version " + processDefinition.getVersion());
-    version.addStyleName(Constants.STYLE_LABEL_BOLD);
+    version.addStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
     version.setSizeUndefined();
     grid.addComponent(version);
     grid.space();
@@ -90,7 +91,7 @@ public class ProcessDefinitionInfoComponent extends VerticalLayout {
     // Deployment time
     if (deployment.getDeploymentTime() != null) {
       Label createTime = new Label("Deployed " + new PrettyTime().format(deployment.getDeploymentTime()));
-      createTime.addStyleName(Constants.STYLE_LABEL_BOLD);
+      createTime.addStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
       createTime.setSizeUndefined();
       grid.addComponent(createTime);
       
@@ -106,7 +107,7 @@ public class ProcessDefinitionInfoComponent extends VerticalLayout {
     VerticalLayout processImageContainer = new VerticalLayout();
     
     Label processTitle = new Label("Flow Image");
-    processTitle.addStyleName(Constants.STYLE_PROCESS_DEFINITION_DETAILS_HEADER);
+    processTitle.addStyleName(ExplorerLayout.STYLE_PROCESS_DEFINITION_DETAILS_HEADER);
     processImageContainer.addComponent(processTitle);
     
     if(processDefinition.getDiagramResourceName() != null) {

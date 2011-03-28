@@ -17,9 +17,9 @@ import java.util.TreeMap;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.explorer.ExplorerApplication;
-import org.activiti.explorer.Images;
 import org.activiti.explorer.navigation.DataBaseNavigationHandler;
 import org.activiti.explorer.navigation.UriFragment;
+import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.management.ManagementPage;
 
 import com.vaadin.data.Item;

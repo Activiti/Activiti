@@ -17,8 +17,9 @@ import java.io.InputStream;
 
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.explorer.Constants;
+import org.activiti.explorer.Constant;
 import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.util.InputStreamStreamSource;
 
 import com.vaadin.terminal.StreamResource;
@@ -60,6 +61,6 @@ public class ProcessDefinitionImageStreamResourceBuilder {
     if(parts.length > 1) {
       return parts[parts.length - 1];
     }
-    return Constants.DEFAULT_DIAGRAM_IMAGE_EXTENSION;
+    return Constant.DEFAULT_DIAGRAM_IMAGE_EXTENSION;
   }
 }

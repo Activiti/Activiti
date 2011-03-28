@@ -19,8 +19,8 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.task.Comment;
-import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ui.ExplorerLayout;
 
 import com.ocpsoft.pretty.time.PrettyTime;
 import com.vaadin.terminal.StreamResource;
@@ -80,7 +80,7 @@ public class TaskCommentPopupWindow extends Window {
       commentAuthor.setType(Embedded.TYPE_IMAGE);
       commentAuthor.setHeight("200px");
       commentAuthor.setWidth("200px");
-      commentAuthor.addStyleName(Constants.STYLE_PROFILE_PICTURE);
+      commentAuthor.addStyleName(ExplorerLayout.STYLE_PROFILE_PICTURE);
       
       layout.addComponent(commentAuthor);
     }
@@ -94,7 +94,7 @@ public class TaskCommentPopupWindow extends Window {
     
     Label header = new Label(new PrettyTime().format(comment.getTime()) 
             + " " + user.getFirstName() + " " + user.getLastName() + " said");
-    header.addStyleName(Constants.STYLE_TASK_COMMENT_AUTHOR);
+    header.addStyleName(ExplorerLayout.STYLE_TASK_COMMENT_AUTHOR);
     commentLayout.addComponent(header);
     
     Label commentText = new Label(comment.getMessage());

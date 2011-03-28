@@ -10,11 +10,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.explorer;
+package org.activiti.explorer.ui;
 
 import org.activiti.explorer.navigation.NavigationFragmentChangeListener;
 import org.activiti.explorer.navigation.UriFragment;
-import org.activiti.explorer.ui.MainLayout;
 import org.activiti.explorer.ui.login.LoginPage;
 
 import com.vaadin.ui.Component;
@@ -35,19 +34,19 @@ public class MainWindow extends Window {
 
   public MainWindow() {
     super("Explorer - The Next generation");
-    setTheme(Constants.THEME);
+    setTheme(ExplorerLayout.THEME);
   }
 
   public void showLoginPage() {
     showingLoginPage = true;
-    addStyleName(Constants.STYLE_LOGIN_PAGE);
+    addStyleName(ExplorerLayout.STYLE_LOGIN_PAGE);
     setContent(new LoginPage());
   }
   
   public void showDefaultContent() {
     showingLoginPage = false;
-    removeStyleName(Constants.STYLE_LOGIN_PAGE);
-    addStyleName("Default style"); // Bug: must set something or old style is not overwritten
+    removeStyleName(ExplorerLayout.STYLE_LOGIN_PAGE);
+    addStyleName("Default style"); // Bug: must set something or old style (eg. login page style) is not overwritten
     
     // init general look and feel
     mainLayout = new MainLayout();
@@ -60,7 +59,7 @@ public class MainWindow extends Window {
   // View handling
   
   public void switchView(Component component) {
-    mainLayout.addComponent(component, Constants.LOCATION_CONTENT);
+    mainLayout.addComponent(component, ExplorerLayout.LOCATION_CONTENT);
   }
   
   // URL handling
@@ -68,7 +67,7 @@ public class MainWindow extends Window {
   protected void initHiddenComponents() {
     // Add the URI Fragent utility
     uriFragmentUtility = new UriFragmentUtility();
-    mainLayout.addComponent(uriFragmentUtility, Constants.LOCATION_HIDDEN);
+    mainLayout.addComponent(uriFragmentUtility, ExplorerLayout.LOCATION_HIDDEN);
     
     // Add listener to control page flow based on URI
     uriFragmentUtility.addListener(new NavigationFragmentChangeListener());

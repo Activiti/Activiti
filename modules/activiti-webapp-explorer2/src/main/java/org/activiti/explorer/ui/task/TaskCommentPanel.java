@@ -21,8 +21,8 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.task.Comment;
-import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ui.ExplorerLayout;
 
 import com.ocpsoft.pretty.time.PrettyTime;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
@@ -92,13 +92,13 @@ public class TaskCommentPanel extends Panel {
     picture.setType(Embedded.TYPE_IMAGE);
     picture.setHeight("48px");
     picture.setWidth("48px");
-    picture.addStyleName(Constants.STYLE_TASK_COMMENT_PICTURE);
+    picture.addStyleName(ExplorerLayout.STYLE_TASK_COMMENT_PICTURE);
     commentGrid.addComponent(picture);
   }
   
   protected void addCommentText(final Comment comment, final GridLayout commentGrid) {
     VerticalLayout layout = new VerticalLayout();
-    layout.addStyleName(Constants.STYLE_TASK_COMMENT);
+    layout.addStyleName(ExplorerLayout.STYLE_TASK_COMMENT);
     layout.setWidth("100%");
     commentGrid.addComponent(layout);
     
@@ -117,12 +117,12 @@ public class TaskCommentPanel extends Panel {
     User user = identityService.createUserQuery().userId(comment.getUserId()).singleResult();
     Label name = new Label(user.getFirstName() + " " + user.getLastName());
     name.setSizeUndefined();
-    name.addStyleName(Constants.STYLE_TASK_COMMENT_AUTHOR);
+    name.addStyleName(ExplorerLayout.STYLE_TASK_COMMENT_AUTHOR);
     commentHeader.addComponent(name);
     
     Label time = new Label(new PrettyTime().format(comment.getTime()));
     time.setSizeUndefined();
-    time.addStyleName(Constants.STYLE_TASK_COMMENT_TIME);
+    time.addStyleName(ExplorerLayout.STYLE_TASK_COMMENT_TIME);
     commentHeader.addComponent(time);
     
     // Actual text
@@ -157,7 +157,7 @@ public class TaskCommentPanel extends Panel {
     final TextArea textArea = new TextArea();
     textArea.setRows(2);
     textArea.setWidth("100%");
-    textArea.addStyleName(Constants.STYLE_TASK_COMMENT_TIME);
+    textArea.addStyleName(ExplorerLayout.STYLE_TASK_COMMENT_TIME);
     grid.addComponent(textArea);
     
     Button addCommentButtom = new Button("Add comment");

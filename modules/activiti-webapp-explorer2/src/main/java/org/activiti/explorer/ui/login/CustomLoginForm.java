@@ -12,7 +12,7 @@
  */
 package org.activiti.explorer.ui.login;
 
-import org.activiti.explorer.Constants;
+import org.activiti.explorer.ui.ExplorerLayout;
 
 import com.vaadin.ui.LoginForm;
 
@@ -78,7 +78,7 @@ public class CustomLoginForm extends LoginForm {
       + "</head>";
     
     b = "<body onload='setTarget();'"
-      + "  class='" + Constants.STYLE_LOGIN_PAGE + "'>" // todo
+      + "  class='" + ExplorerLayout.STYLE_LOGIN_PAGE + "'>" // todo
       + "<div>"
       + "<iframe name='logintarget' style='width:0;height:0;"
       + "border:0;margin:0;padding:0;'></iframe>"
