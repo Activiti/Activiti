@@ -48,7 +48,8 @@
 
   <h3>Release Notes - Activiti - Version 5.4</h3>
     
-      <p><b>Compatibility note</b>: After releasing 5.3, we discovered that
+      <h4>Compatibility note</h4>
+      <p>After releasing 5.3, we discovered that
       execution listeners and task listeners and expressions were still in non-public api. Those classes were in subpackages 
       of <code>org.activiti.engine.impl...</code>,  which has <code>impl</code> in it).  
       <code>org.activiti.engine.impl.pvm.delegate.ExecutionListener</code>, 
@@ -62,6 +63,109 @@
       API interfaces (without .impl. in the package name).
       </p>
 
+      <h4>Highlights</h4>
+<ul>
+  <li>Revamp of Activiti Cycle</li>
+  <li>Started building case management features in the engine: Added dynamic comments, attachments and due dates to tasks in Activiti Engine</li>
+  <li>IMAP folder scanning for new tasks</li>
+  <li>Added accounts to users in Activiti Engine</li>
+  <li>Provided support to specify form properties in Activiti Designer Eclipse plugin</li>
+  <li>Many bug fixes</li>
+</ul>
+
+<h4>        Sub-task
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-692'>ACT-692</a>] -         Activiti Designer 0.8.0 can not show diagram with callActivity tasks
+</li>
+</ul>
+    
+<h4>        Bug
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-607'>ACT-607</a>] -         Developer Friendly BPMN doesn&#39;t remove Pools/Lanes in DI
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-634'>ACT-634</a>] -         Generated Jar file is invalid
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-666'>ACT-666</a>] -         Activiti 5.3 demo setup does not work on JDK 5
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-667'>ACT-667</a>] -         Diagram is cut off in some cases
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-668'>ACT-668</a>] -         Mail task doesnt leave activity
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-670'>ACT-670</a>] -         Designer 0.8.0 generates wrong bpmnElement references for subprocess elements
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-681'>ACT-681</a>] -         Db autodiscovery for DB2 does not work on all installations of DB2
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-685'>ACT-685</a>] -         Executing processes can cause StackOverflows 
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-695'>ACT-695</a>] -         Exception when using HistoricVariables of type ByteArray on Postgres
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-731'>ACT-731</a>] -         Webservice invocation doesnt continue process execution
+</li>
+</ul>
+    
+<h4>        Improvement
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-655'>ACT-655</a>] -         Throw better exception when form is not found
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-669'>ACT-669</a>] -         FormService.submitStartFormData should provide a way to specify businessKey for process instance
+</li>
+</ul>
+    
+<h4>        New Feature
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-459'>ACT-459</a>] -         Query for tasks for a specific process definition
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-564'>ACT-564</a>] -         Add dueDate to tasks
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-661'>ACT-661</a>] -         Parse process definition documentation
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-663'>ACT-663</a>] -         Provide support to specify form properties
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-672'>ACT-672</a>] -         Allow querying task based on process-instance variable
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-673'>ACT-673</a>] -         Extend HistoricTaskInstanceQuery sorting: assignee, taskId
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-675'>ACT-675</a>] -         Allow querying HistoricTaskInstances based on the state of historic process-instance (running/completed)
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-676'>ACT-676</a>] -         Allow querying HistoricTaskInstances based on the value of the last variable-update for a certain task-variable
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-677'>ACT-677</a>] -         Query HistoricTaskInstances based on the process definition key, id and name
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-688'>ACT-688</a>] -         Add comments to tasks and process instances
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-712'>ACT-712</a>] -         Create feature that scans a IMAP-folder and creates task for each email in it.
+</li>
+</ul>
+    
+<h4>        Task
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-628'>ACT-628</a>] -         Resolve publicly exposed implementation classes
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-648'>ACT-648</a>] -         Fix activiti-cycle-maven-template.zip
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-649'>ACT-649</a>] -         Document process instance visualization in Probe &amp; REST 
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-650'>ACT-650</a>] -         Verify links to jdk, eclipse and ant in userguide
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-652'>ACT-652</a>] -         Ensure docs on how to deploy from designer to engine
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-679'>ACT-679</a>] -         Add attachments to tasks and to process instances
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-687'>ACT-687</a>] -         Add owner property to tasks
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-690'>ACT-690</a>] -         Verify activiti dependency versions against the ones used in Alfresco 
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-694'>ACT-694</a>] -         Add photo, skypeid and other account data to identities
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-696'>ACT-696</a>] -         Prototype new Explorer UI
+</li>
+</ul>
+        
 
   <h3>Release Notes - Activiti - Version 5.3</h3>
     
