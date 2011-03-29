@@ -24,3 +24,5 @@ drop table ACT_CY_LINK cascade;
 drop table ACT_CY_PEOPLE_LINK cascade;
 drop table ACT_CY_TAG cascade;
 drop table ACT_CY_COMMENT cascade;
+drop table ACT_CY_V_FOLDER cascade;
+drop table ACT_CY_PROCESS_SOLUTION cascade;
