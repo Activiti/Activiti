@@ -24,5 +24,3 @@ drop table ACT_CY_LINK cascade constraints;
 drop table ACT_CY_PEOPLE_LINK cascade constraints;
 drop table ACT_CY_TAG cascade constraints;
 drop table ACT_CY_COMMENT cascade constraints;
-drop table ACT_CY_V_FOLDER cascade constraints;
-drop table ACT_CY_PROCESS_SOLUTION cascade constraints;
