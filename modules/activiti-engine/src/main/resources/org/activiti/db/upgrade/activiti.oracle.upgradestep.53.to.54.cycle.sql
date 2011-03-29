@@ -1,4 +1,4 @@
-alter table ACT_CY_CONFIG alter VALUE_ clob;
+alter table ACT_CY_CONFIG modify VALUE_ clob;
 
 create table ACT_CY_PROCESS_SOLUTION (
 	ID_ NVARCHAR2(128) NOT NULL,

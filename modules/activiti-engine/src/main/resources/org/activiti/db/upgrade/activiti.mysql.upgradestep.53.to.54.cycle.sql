@@ -1,4 +1,4 @@
-alter table ACT_CY_CONFIG alter VALUE_ text;
+alter table ACT_CY_CONFIG modify VALUE_ text;
 
 create table ACT_CY_PROCESS_SOLUTION (
 	ID_ varchar(128) NOT NULL,
