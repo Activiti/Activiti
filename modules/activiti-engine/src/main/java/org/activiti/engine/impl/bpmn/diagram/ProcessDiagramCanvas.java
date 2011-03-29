@@ -338,8 +338,12 @@ public class ProcessDiagramCanvas {
   
   protected String fitTextToWidth(String original, int width) {
     String text = original;
-    while (fontMetrics.stringWidth(text + "...") > (width - 10)) {
-      text = text.substring(0, text.length() - 2);
+
+    // remove length for "..."
+    int maxWidth = width - 10;
+    
+    while (fontMetrics.stringWidth(text + "...") > maxWidth && text.length()>0) {
+      text = text.substring(0, text.length() - 1);
     }
   
     if (!text.equals(original)) {
