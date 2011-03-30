@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+
+  <!-- IMPORT SPRING SURF/WEBSCRIPT -->
+
+  <!-- Import Web Scripts Framework config files   -->
+  <import resource="classpath:org/springframework/extensions/webscripts/spring-webscripts-application-context.xml" />
+  <import resource="classpath:org/springframework/extensions/webscripts/spring-webscripts-mvc-context.xml" />
+  <import resource="classpath:org/springframework/extensions/webscripts/spring-webscripts-api-application-context.xml" />
+
+
+  <!-- OVERRIDE SURF/WEBSCRIPT SETUP -->
+  <bean id="webscripts.store" class="org.activiti.rest.osgi.OsgiClassPathStore">
+     <property name="mustExist"><value>false</value></property>
+     <property name="classPath"><value>webscripts</value></property>
+  </bean>
+
+  <bean id="webscripts.searchpath" class="org.springframework.extensions.webscripts.SearchPath">
+    <property name="searchPath">
+      <list>
+        <ref bean="webscripts.store" />
+      </list>
+    </property>
+  </bean>
+
+
+
+</beans>

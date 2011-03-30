@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definition" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="miParallelUserTasksCompletionCondition">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="miTasks" />
+    
+    <userTask id="miTasks" name="My Task ${loopCounter}" >
+      <multiInstanceLoopCharacteristics isSequential="false">
+        <loopCardinality>${5}</loopCardinality>
+        <completionCondition>${nrOfCompletedInstances/nrOfInstances >= 0.5}</completionCondition>
+      </multiInstanceLoopCharacteristics>
+    </userTask>
+    
+    <sequenceFlow id="flow3" sourceRef="miTasks" targetRef="theEnd" />
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

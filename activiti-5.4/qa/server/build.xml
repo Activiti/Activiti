@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="activiti.qa.server">
+
+	<property file="${user.home}/.activiti/build.properties" />
+	<property name="activiti.version" value="5.4-SNAPSHOT" />
+	<property name="activiti.home" value="../../distro/target/activiti-${activiti.version}" />
+	<property name="database" value="h2" />
+	<property name="server" value="tomcat6x" />
+	<property name="cfg" value="activiti" />
+	<!-- {activiti|spring} -->
+	<property name="tx" value="standalone" />
+	<!-- {standalone|jta} -->
+	<property name="downloads.dir" value="${user.home}/.activiti/downloads" />
+
+	<property name="tomcat.version" value="6.0.32" />
+	<property name="tomcat.home" value="${activiti.home}/apps/apache-tomcat-${tomcat.version}" />
+
+	<property name="jboss.version" value="5.1.0.GA" />
+	<property name="jboss.home" value="${activiti.home}/apps/jboss-${jboss.version}" />
+	<property name="jboss.distro" value="${downloads.dir}/jboss-${jboss.version}.zip" />
+	<property name="jboss.download.url" value="http://downloads.sourceforge.net/project/jboss/JBoss/JBoss-${jboss.version}/jboss-${jboss.version}.zip" />
+
+	<condition property="is.database.h2">
+		<equals arg1="${database}" arg2="h2" />
+	</condition>
+
+	<condition property="mvn.executable" value="mvn.bat" else="mvn">
+		<os family="windows" />
+	</condition>
+
+	<condition property="server.home" value="${activiti.home}/apps/apache-tomcat-6.0.32">
+		<equals arg1="${server}" arg2="tomcat6x" />
+	</condition>
+
+	<condition property="server.home" value="${jboss.home}">
+		<equals arg1="${server}" arg2="jboss5x" />
+	</condition>
+
+
+	<target name="clean">
+		<delete dir="target" />
+	</target>
+
+	<target name="help">
+		<echo message="Following commands are supported:" />
+		<echo message="  ant -Dserver=tomcat clean test" />
+		<echo message="  ant -Dserver=jboss clean test" />
+	</target>
+
+	<target name="test" depends="build.distribution, build.testing.war">
+		<delete dir="${activiti.home}/apps" />
+		<delete dir="${activiti.home}/setup/build" />
+		<available property="is.jboss.available" file="${jboss.distro}" />
+		<antcall target="${server}.install" />
+		<antcall target="${server}.deploy.testing.war" />
+		<antcall target="h2.start" />
+		<antcall target="${server}.start" />
+
+		<echo message="Running server tests..." />
+
+		<mkdir dir="target/junit-reports" />
+
+		<taskdef resource="cactus.tasks">
+	      <classpath>
+	        <fileset dir="target/cactus/lib">
+	          <include name="*.jar"/>
+	        </fileset>
+	      </classpath>
+	    </taskdef>
+		
+		<cactustests fork="yes" haltonerror="false" haltonfailure="false" 
+			servletport="8080" warfile="target/activiti-server-testing.war" 
+			todir="target/junit-reports"
+			logs="cactus.conf/logging_client.properties">
+	      <jvmarg value="-Xms1024m" />
+		  <jvmarg value="-Xmx1024m" />
+		  <classpath>
+	        <pathelement location="../../modules/activiti-cactus/target/classes" />
+	  	    <pathelement location="cactus.conf" />
+		    <fileset dir="target/cactus/lib" />
+		  </classpath>
+		  <formatter type="xml" />
+		  <test name="org.activiti.test.cactus.ActivitiServletTestCase" todir="target/junit-reports" />
+		</cactustests>
+
+		<antcall target="${server}.stop" />
+		<antcall target="h2.stop" />
+	</target>
+
+	<target name="build.distribution" unless="skipdistro">
+		<echo message="Building distribution..." />
+		<ant antfile="../../distro/build.xml" inheritall="false">
+			<target name="clean" />
+			<target name="distro" />
+			<property name="nodocs" value="true" />
+		</ant>
+	</target>
+
+	<target name="build.testing.war">
+		<echo message="Building the activiti-engine tests..." />
+		<exec executable="${mvn.executable}" dir="../../modules/activiti-engine/">
+			<arg line="-DskipTests -Pcreate-test-jar install" />
+		</exec>
+		<echo message="Building the activiti-cactus module..." />
+		<exec executable="${mvn.executable}" dir="../../modules/activiti-cactus/">
+			<arg line="-Ddatabase=${database} -Dcfg=${cfg} -Dtx=${tx} -Dserver=${server} clean install" />
+		</exec>
+		<delete>
+			<fileset dir="target/cactus/lib">
+				<include name="ant-*" />
+			</fileset>
+		</delete>
+		<!-- taskdef resource="cactus.tasks">
+      <classpath>
+        <fileset dir="target/cactus/lib">
+          <include name="*.jar"/>
+        </fileset>
+      </classpath>
+    </taskdef -->
+		<copy file="../../modules/activiti-cactus/target/activiti-cactus-${activiti.version}.war" 
+          tofile="target/activiti-server-testing.war" 
+          overwrite="true" />
+	</target>
+
+	<!-- ### H2 DATABASE ##################################################### -->
+
+	<target name="h2.install">
+		<ant antfile="${activiti.home}/setup/build.xml" inheritall="false">
+			<target name="h2.install" />
+			<property name="db" value="${database}" />
+		</ant>
+	</target>
+
+	<target name="h2.start"
+          description="Starts the H2 server"
+          depends="h2.install, internal.taskdef.launch" 
+          if="is.database.h2">
+		<launch dir="${activiti.home}/apps/h2"
+            script="h2.start"
+            msg="TCP server running on"/>
+	</target>
+
+	<target name="h2.stop"
+          description="Stops the H2 server"
+          depends="internal.taskdef.launch" 
+          if="is.database.h2">
+		<launch dir="${activiti.home}/apps/h2"
+            script="h2.stop"/>
+	</target>
+
+	<!-- ### TOMCAT ##################################################### -->
+
+	<target name="tomcat.install">
+		<ant antfile="${activiti.home}/setup/build.xml" inheritall="false">
+			<target name="tomcat.install" />
+		</ant>
+		<copy todir="${tomcat.home}/conf" overwrite="true">
+			<fileset dir="tomcat.conf" />
+		</copy>
+	</target>
+
+	<target name="tomcat.start"
+          description="Starts the tomcat server"
+          depends="internal.taskdef.launch">
+		<launch dir="${tomcat.home}/bin"
+            script="startup"
+            msg="Using CLASSPATH:" />
+	</target>
+
+	<target name="tomcat.stop" 
+          description="Stops the tomcat server"
+          depends="internal.taskdef.launch">
+		<launch dir="${tomcat.home}/bin"
+            script="shutdown"
+            msg="Using CLASSPATH:"/>
+	</target>
+
+	<target name="tomcat.deploy.testing.war">
+		<copy file="target/activiti-server-testing.war" todir="${tomcat.home}/webapps" />
+	</target>
+
+	<!-- ### JBOSS ##################################################### -->
+
+	<target name="jboss.install" depends="jboss.download, jboss.unzip">
+		<chmod perm="a+x">
+			<fileset dir="${jboss.home}/bin">
+				<include name="*.sh"/>
+				<include name="*.bat"/>
+			</fileset>
+		</chmod>
+		<condition property="is.datasource.required">
+			<equals arg1="${tx}" arg2="jta"/>
+		</condition>
+		<antcall target="jboss.deploy.datasource" />
+		<copy todir="${jboss.home}/server/default/conf" overwrite="true">
+			<fileset dir="jboss.conf" />
+		</copy>
+	</target>
+
+	<target name="jboss.deploy.datasource" if="is.datasource.required">
+		<copy todir="${jboss.home}/server/default/deploy" file="jboss.datasources/activiti-${database}-ds.xml" overwrite="true">
+			<filterset filtersfile="${user.home}/.activiti/server/build.${database}.properties" />
+		</copy>
+	</target>
+
+	<target name="jboss.download" unless="is.jboss.available">
+		<mkdir dir="${downloads.dir}" />
+		<get src="${jboss.download.url}" dest="${jboss.distro}" />
+	</target>
+
+	<target name="jboss.unzip">
+		<mkdir dir="${activiti.home}/apps" />
+		<unzip src="${jboss.distro}" dest="${activiti.home}/apps"/>
+	</target>
+
+	<target name="jboss.start"
+          description="Starts the JBoss server"
+          depends="internal.taskdef.launch">
+		<launch dir="${jboss.home}/bin"
+            script="run"
+            msg="Started" />
+	</target>
+
+	<target name="jboss.stop" 
+          description="Stops the JBoss server"
+          depends="internal.taskdef.launch">
+		<launch dir="${jboss.home}/bin"
+            script="shutdown"
+    	      args="-S" />
+	</target>
+
+	<target name="jboss.deploy.testing.war">
+		<copy file="target/activiti-server-testing.war" todir="${jboss.home}/server/default/deploy" />
+	</target>
+
+	<!-- ### INTERNAL TARGETS ##################################################### -->
+
+	<target name="internal.taskdef.launch">
+		<taskdef name="launch" classname="org.activiti.engine.impl.ant.LaunchTask">
+			<classpath>
+				<fileset dir="../../modules/activiti-engine/target">
+					<include name="*.jar"/>
+				</fileset>
+			</classpath>
+		</taskdef>
+	</target>
+
+</project>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">
+
+<chapter>
+<title>Introduction</title>
+
+<section id="license">
+  <title>License</title>
+  <para>Activiti is distributed under <ulink url="../../license.txt">the Apache V2 license</ulink>.</para>
+</section>
+  
+<section id="download">
+  <title>Download</title>
+  <para><ulink url="http://activiti.org/download.html">http://activiti.org/download.html</ulink></para>
+</section>
+
+<section id="sources">
+  <title>Sources</title>
+  <para>The distribution contains most of the sources as jar files. 
+  To find and build the full source codebase, please read the  
+  <ulink url="http://docs.codehaus.org/display/ACT/Developers+Guide#DevelopersGuide-Buildingthedistribution">'Building the distribution' wiki page</ulink> 
+  </para>
+</section>
+
+<section id="required.software">
+  <title>Required software</title>
+  <section>
+    <title>JDK 5+</title>
+    <para>Activiti runs on a JDK higher then version 5.  Go 
+    to <ulink url="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Oracle Java SE downloads</ulink>
+    and click on button "Download JDK".  There are installation instructions on that page as well.
+    To verify that your installation was successfull, run <literal>java -version</literal> on the 
+    command line.  That should print the installed version of your JDK.
+    </para>
+  </section>
+  <section>
+    <title>Ant 1.8.1+</title>
+    <para>Download the latest stable version of ant from <ulink url="http://ant.apache.org/bindownload.cgi">the Ant download page</ulink>.
+    Unzip the file and make sure that the <literal>bin</literal> folder is
+    in the path of your OS.  Verify with running <literal>ant -version</literal>
+    in the command line.  That should print the installed version ant.
+    </para>
+  </section>
+  <section>
+    <title>Eclipse 3.6.2</title>
+    <para>Download the <emphasis role="bold">Eclipse Classic</emphasis> version of eclipse from <ulink url="http://www.eclipse.org/downloads/">the Eclipse download page</ulink>.
+    Unzip the doanloaded file and then you should be able to start it with the eclipse file in the directory <literal>eclipse</literal>. 
+    Further in this userguide, there is a section on <link linkend="eclipsesetup">setting up the Activiti examples projects in 
+    your eclipse</link> and another one on <link linkend="eclipseDesignerInstallation">installing our eclipse designer 
+    plugin</link>.
+    </para>
+  </section>
+</section>
+
+<section id="reporting.problems">
+  <title>Reporting problems</title>
+  <para>Every self respecting developer should have read 
+  <ulink url="http://www.catb.org/~esr/faqs/smart-questions.html">How to ask questions the smart way</ulink> 
+  </para>
+  <para>After you've done that you can post questions and comments on <ulink url="http://forums.activiti.org/en/viewforum.php?f=3">the Users forum</ulink> and 
+  create issues in <ulink url="http://jira.codehaus.org/browse/ACT">our JIRA issue tracker</ulink> </para>
+</section>
+
+<section id="experimental">
+  <title>Experimental features</title>
+  <para>Sections marked with <emphasis role="bold">[EXPERIMENTAL]</emphasis> should 
+  not be considered stable.
+  </para>
+  <para>All classes that have <literal>.impl.</literal> in the package name are internal implementation classes 
+  and can not be considered stable.  However, if the userguide mentions those classes as configuration
+  values, they are supported and can be considered stable. 
+  </para>
+</section>
+
+<section id="internal">
+  <title>Internal implementation classes</title>
+  <para>In the jar file, all classes in packages that have <literal>.impl.</literal> (e.g. <literal>org.activiti.engine.impl.pvm.delegate</literal>)
+  in them are implementation classes and should be considered internal.  No stability guarantees are given on classes or interfaces 
+  that are in implementation classes.
+  </para>
+</section>
+
+</chapter>

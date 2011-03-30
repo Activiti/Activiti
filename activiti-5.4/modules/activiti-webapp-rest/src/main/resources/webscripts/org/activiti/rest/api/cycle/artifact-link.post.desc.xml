@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Create an artifact link</shortname>
+  <description>Creates a link between two artifacts</description>
+  <url>/artifact-link</url>
+  <authentication>user</authentication>
+  <format default="json">argument</format>
+</webscript>

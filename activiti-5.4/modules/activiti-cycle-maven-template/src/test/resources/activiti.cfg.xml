@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
+    <!--
+  	<property name="mailServerHost" value="localhost" />
+  	<property name="mailServerUsername" value="activiti" />
+  	<property name="mailServerPassword" value="activiti" />
+  	<property name="mailServerDefaultFrom" value="activiti@localhost" />
+  	<property name="mailServerPort" value="25" />
+  	-->
+  </bean>
+
+</beans>

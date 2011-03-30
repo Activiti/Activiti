@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="unstructuredConcurrencyTwoForks">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="fork1" />
+    
+    <parallelGateway id="fork1" />
+    <sequenceFlow id="flow2" sourceRef="fork1" targetRef="task1" />
+    <sequenceFlow id="flow3" sourceRef="fork1" targetRef="task2" />
+    <sequenceFlow id="flow4" sourceRef="fork1" targetRef="fork2" />
+    
+    
+    <manualTask id="task1" />
+    <sequenceFlow id="flow5" sourceRef="task1" targetRef="join" />
+    
+    
+    <manualTask id="task2" />
+    <sequenceFlow id="flow6" sourceRef="task2" targetRef="join" />
+    
+    
+    <parallelGateway id="fork2" />
+    <sequenceFlow id="flow7" sourceRef="fork2" targetRef="task3" />
+    <sequenceFlow id="flow8" sourceRef="fork2" targetRef="task4" />
+    
+
+    <manualTask id="task3" />
+    <sequenceFlow id="flow9" sourceRef="task3" targetRef="join" />
+    
+    
+    <manualTask id="task4" />
+    <sequenceFlow id="flow10" sourceRef="task4" targetRef="join" />
+    
+    <parallelGateway id="join" />
+    <sequenceFlow id="flow11" sourceRef="join" targetRef="theEnd" />
+   
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

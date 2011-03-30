@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="defaultSeqFlow">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="myTask" />
+    
+    <manualTask id="myTask" default="flow2" />
+    <sequenceFlow id="flow2" sourceRef="myTask" targetRef="task1" />
+    <sequenceFlow id="flow3" sourceRef="myTask" targetRef="task2">
+      <conditionExpression xsi:type="tFormalExpression">
+         <![CDATA[${input == 2}]]>
+      </conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow4" sourceRef="myTask" targetRef="task3">
+      <conditionExpression xsi:type="tFormalExpression">
+         <![CDATA[${input == 3}]]>
+      </conditionExpression>
+    </sequenceFlow>
+    
+    <receiveTask id="task1" />
+    <receiveTask id="task2" />
+    <receiveTask id="task3" />
+    
+  </process>
+
+</definitions>

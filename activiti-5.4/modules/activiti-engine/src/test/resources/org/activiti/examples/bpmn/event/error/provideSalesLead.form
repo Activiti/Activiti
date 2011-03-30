@@ -1,0 +1,29 @@
+<h1>Provide new sales lead</h1>
+<table>
+  <tr>
+    <td>
+      <label>
+        Customer name:<br/>
+        <input type="text" name="customerName" value="" />
+        <input type="hidden" name="customerName_required" value="true" />
+      </label><br/>
+    </td>
+  </tr>
+  <tr>  
+    <td>
+      <label>
+        Potential profit:<br/>
+        <input type="number" name="potentialProfit" value="1" min="0" />
+        <input type="hidden" name="potentialProfit_type" value="Integer" />
+      </label>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <label>
+        Details:<br/>
+       <textarea name="details" value=""></textarea>
+      </label>
+    </td>
+  </tr>
+</table>

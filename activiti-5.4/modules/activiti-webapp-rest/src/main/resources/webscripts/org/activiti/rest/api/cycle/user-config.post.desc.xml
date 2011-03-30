@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Create or update a cycle user configuration</shortname>
+  <description>Creates a cycle user configuration and writes it to the database.</description>
+  <url>/user-config</url>
+  <authentication>user</authentication>
+  <format default="json">argument</format>
+</webscript>

@@ -1,0 +1,15 @@
+html, body {
+	overflow:hidden;
+}
+
+.movi-scollbox {
+	overflow: scroll;
+	width: 100% !important;
+	width: 200px;
+	height: 100% !important;
+	height: 200px;
+}
+
+.movi-node {
+	background: url('../img/s.gif') repeat 0 0;
+}

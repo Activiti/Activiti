@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Comment</shortname>
+  <description>Returns a json representation of a cycle repository artifact comment.</description>
+  <url>/comment?connectorId={connectorId}&amp;artifactId={artifactId}</url>
+  <authentication>user</authentication>
+  <format default="json">argument</format>
+</webscript>

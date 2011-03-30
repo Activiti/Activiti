@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">
+
+<chapter>
+
+  <title>JBPM Migration</title>
+  
+  <para>
+    The jBPM migration is considered <link linkend="experimental">[EXPERIMENTAL]</link>.
+  </para>
+  
+  <para>
+    It is possible to migrate an existing installation of jBPM version 3 to Activiti. The
+    migration includes both process definition conversion (ie. from JPDL 3 to BPMN 2.0)
+    and data migration.
+  </para>
+  
+  <para>
+    <emphasis role="bold">The migration tool is currently offered as a 'preview' only!</emphasis>
+    The migration coverage is at this point in time not sufficient to be usable on production
+    process definitions and databases. Also note that the migration is a <emphasis role="bold">'best effort'</emphasis>,
+    which means that you may need to <link linkend="extendMigration">extend the migration logic</link>
+    to cover all your use cases.
+  </para>
+  
+  <para>
+    The migration tool is separately availbale as a zip file from 
+    <ulink url="http://www.activiti.org/download.html">the activiti.org download site</ulink>.
+    Once you have unzipped this file, you will see following files and folders:
+    <mediaobject><imageobject><imagedata align="center" fileref="images/migration.zip.contents.png"/></imageobject></mediaobject>
+    <itemizedlist>
+      <listitem>
+        <para>
+          <emphasis role="bold">build.xml</emphasis>: This ant buildfile contains the targets
+          to execute the process definition conversion and database migration.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          <emphasis role="bold">activiti.db.properties and jbpm3.db.properties</emphasis>:
+          these properties files contain the database connection parameters for the 
+          jBPM 3 and Activiti database. These properties files must be changed when
+          executing a <link linkend="databaseMigration">database migration</link>.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          <emphasis role="bold">processes</emphasis>: when running a 
+          <link linkend="processConversion">process definition conversion</link>, the jBPM 3 
+          process definition files must be placed in this folder.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          <emphasis role="bold">src</emphasis>: this folder contains the source code of the 
+          migration tool. Read the <link linkend="extendMigration">extension</link> section
+          if you want to tailor or extend the migration code to your needs. 
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          <emphasis role="bold">lib</emphasis>: this folder contains all jars
+          required to execute the migration logic.
+        </para>
+      </listitem>
+    </itemizedlist>
+  </para>
+  
+  <section id="databaseMigration">
+    
+    <title>Database migration</title>
+    
+    <para>
+      It is possible to migrate the data in the jBPM 3 database tables to the Activiti database schema.
+      To do this, following properties files must be changed to point at the right database:
+      <itemizedlist>
+        <listitem>
+          <para>
+            <emphasis role="bold">jbpm3.db.properties</emphasis>: contains the parameters to connect
+            to the jBPM 3 database. Also the Hibernate dialect must be provided.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">activiti.db.properties</emphasis>: contains the parameters to connect
+            to database to which the migrated data will be written. This can be the same database
+            schema as the jBPM schema (ie. there are no name-clashes between jBPM and Activiti tables, indexes, foreign keyes, etc).
+          </para>
+        </listitem>
+      </itemizedlist>
+    </para>
+    
+    <para>
+      The database migration will use the data in the jBPM 3 tables to:
+      <itemizedlist>
+        <listitem>
+          <para>
+            Convert the process definition to the BPMN 2.0 counterpart. This means that the converted
+            process definition will be deployed to the Activiti tables as part of the migration. 
+            As a side-effect, it will also produce the BPMN 2.0 XML files, similar to what happens
+            when executing the <link linkend="processConversion">process conversion</link>. 
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            Migrate runtime and history data of the processes to the Activiti tables.
+            <emphasis role="bold">In this release, this is not yet implemented!</emphasis> 
+          </para>
+        </listitem>
+      </itemizedlist>
+      The data is retrieved from the jBPM 3 tables using Hibernate queries and the 
+      Hibernate mappings of jBPM itself.
+    </para>
+    
+  </section>
+  
+  <section id="processConversion">
+    
+    <title>Process conversion</title>
+    
+    <para>
+      It is possible to only convert the process definitions xml from JPDL to BPMN 2.0 that
+      can be executed on the Activiti engine. To do this, place the jBPM 3 processes 
+      inside the <literal>processes</literal> folder. There can be any number of (nested) subfolders,
+      the tool will scan every (sub)folder inside <literal>processes</literal> 
+      to discover <literal>processdefinition.xml</literal> files (file name must be <literal>processdefinition.xml</literal>!). 
+      <mediaobject><imageobject><imagedata align="center" fileref="images/migration.processes.location.png"/></imageobject></mediaobject>
+    </para>
+    
+    <para>
+      The discovered processes will be parsed and deployed to an in-memory databse, such that the 
+      logic of reverse engineering the process definition from the jBPM deployment tables contained
+      in <link linkend="databaseMigration">the database migration</link> is used for both cases.
+    </para>
+    
+    <para>
+      Once the jBPM 3 processes are placed in the <literal>processes</literal> folder, execute the 
+      <literal>convert.processes</literal> target in the root of the unzipped migration tool folder:
+      <programlisting>ant convert.processes</programlisting>
+      <mediaobject><imageobject><imagedata align="center" fileref="images/migration.ant.convert.processes.png"/></imageobject></mediaobject>
+      During conversion, you will see plenty logging passing by describing where and how
+      the process conversion is being executed. At the end of the conversion, you will see following
+      logging appear:
+      <mediaobject><imageobject><imagedata align="center" fileref="images/migration.process.conversion.completed.png"/></imageobject></mediaobject>
+      As shown in the logging, the resulting BPMN 2.0 processes can be find in the 
+      <literal>converted-process-xxxx</literal> folder, where the <literal>xxxx</literal> is 
+      the timestamp of the conversion.
+    </para>
+    
+    <para>
+      In this release, only limited support for start, end, wait state and task-nodes is implemented.
+      In the future, this coverage will expand.
+    </para>
+        
+  </section>
+  
+  <section id="extendMigration">
+  
+    <title>Extend the migration logic</title>
+  
+    <para>
+      The migration logic is written in such a way, that it is easy to extend to suit your needs.
+      The source code is available as a Maven 2 project in the <literal>src</literal> subfolder of the downloaded
+      zip file. To build a new zip file, after having changed or extended the logic, simply execute a
+      <programlisting>mvn clean install</programlisting> to produce a new zip file in the 
+      <literal>target</literal> folder.
+    </para>
+    
+    <para>
+      Following picture gives a high-level overview of the classes in the migration logic.
+      <mediaobject><imageobject><imagedata align="center" fileref="images/migration.code.overview.png"/></imageobject></mediaobject>
+      <itemizedlist>
+        <listitem>
+          <para>
+            Both the <emphasis role="bold">ProcessConversion</emphasis> and <emphasis role="bold">ProcessDataMigration</emphasis>
+            classes have a <literal>main</literal> method that directly is called from the ant build script
+            in the root of the migration zip.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            These classes construct a <emphasis role="bold">ServiceFactory</emphasis> based on
+            the two properties files, using a static factory method
+            <programlisting>ServiceFactory.configureFromProperties(jbpmDbProperties, activitiDbProperties);</programlisting>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            The services are constructed by the <literal>ServiceFactory</literal> (eg. <literal>getProcessConversionService()</literal>)
+            and are used to execute the migration logic:
+            <programlisting>
+public void execute() throws IOException {
+    
+  // convert processes
+  ServiceFactory serviceFactory = createServiceFactory();
+  ProcessConversionService processConversionService = serviceFactory.getProcessConversionService();
+  Map&lt;String, Document&gt; migratedProcesses = processConversionService.convertAllProcessDefinitions();
+  
+  // write results to bpmn20.xml files
+  writeConvertedProcesses(migratedProcesses, workingDir);
+    
+  // Deploy processes to Activiti
+  ActivitiService activitiService = serviceFactory.getActivitiService();
+  activitiService.deployConvertedProcesses(migratedProcesses);
+    
+  // data migration
+  ...
+}
+            </programlisting>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            The <emphasis role="bold">ProcessConversionService</emphasis> is an interface
+            that contains process conversion and process definition data retrievel operations.
+            It uses an implementation of <emphasis role="bold">Jbpm3Dao</emphasis>. The default 
+            implementation of this class uses a Hibernate <emphasis role="bold">SessionFactory</emphasis>
+            to retrieve all the data from jBPM 3 tables.
+          </para>
+          <para>
+            The <emphasis role="bold">ActivitiService</emphasis> offers operation needed to get the
+            migrated data in the Activiti tables. For example, deploying the converted process
+            definitions is such an operation
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            All these dependencies, <literal>ProcessConversionService, Jbpm3Dao, Sessionfactory,
+            ActivitiService and ProcessEngine</literal>, are interfaces and can be implemented
+            by your own implementation. You can inject them into the <literal>ServiceFactory</literal>
+            using regular JavaBean setters. When no such custom implementation is set, the 
+            <literal>ServiceFactory</literal> will fall back to creating the default implementation:
+            <programlisting>
+public ProcessConversionService getProcessConversionService() {
+  if (processConversionService == null) {
+    this.processConversionService = createDefaultProcessConversionService();
+  } 
+  return processConversionService;
+}
+
+protected ProcessConversionService createDefaultProcessConversionService() {
+  ProcessConversionServiceImpl service = new ProcessConversionServiceImpl(getJbpm3Dao());
+  return service;
+}            
+            </programlisting>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </para>
+    
+  </section>
+
+</chapter>
+

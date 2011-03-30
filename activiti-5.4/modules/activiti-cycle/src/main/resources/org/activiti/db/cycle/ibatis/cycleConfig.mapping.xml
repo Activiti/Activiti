@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+  
+<mapper namespace="org.activiti.cycle">
+
+   <!-- CYCLE CONFIG RESULT MAP -->	
+  
+  <resultMap id="resultMapCycleConfig" type="org.activiti.cycle.impl.db.entity.CycleConfigEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="groupName" column="GROUP_" jdbcType="VARCHAR" />
+    <result property="key" column="KEY_" jdbcType="VARCHAR" />
+     <result property="value" column="VALUE_" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  
+  <select id="selectCycleConfigGroups" resultMap="resultMapCycleConfig">
+  	select distinct GROUP_ from ACT_CY_CONFIG
+  </select>  
+  
+  <select id="selectCycleConfigById" parameterType="string" resultMap="resultMapCycleConfig">
+  	select * from ACT_CY_CONFIG where ID_ = #{id}
+  </select> 
+  
+  <select id="selectCycleConfigByGroup" parameterType="string" resultMap="resultMapCycleConfig">
+  	select * from ACT_CY_CONFIG where GROUP_ = #{groupName}
+  </select>  
+    
+  <select id="selectCycleConfigByGroupAndKey" parameterType="org.activiti.cycle.impl.db.entity.CycleConfigEntity" resultMap="resultMapCycleConfig">
+  	select * from ACT_CY_CONFIG where GROUP_ = #{groupName} and KEY_ = #{key}
+  </select>  
+  
+  <!-- INSERT -->
+  
+  <insert id="insertCycleConfig" parameterType="org.activiti.cycle.impl.db.entity.CycleConfigEntity">
+    insert into ACT_CY_CONFIG  (ID_, GROUP_, KEY_, VALUE_)
+    values (
+    	#{id ,jdbcType=VARCHAR},    	
+	    #{groupName, jdbcType=VARCHAR},
+	    #{key, jdbcType=VARCHAR},
+	    #{value, jdbcType=VARCHAR}
+    )
+  </insert>
+  
+  <!-- CYCLE CONFIG DELETE -->
+  
+  <delete id="deleteConfigById" parameterType="string">
+  	delete from ACT_CY_CONFIG  where ID_ = #{id}
+  </delete>
+
+  <!-- CYCLE CONFIG UPDATE -->
+  
+  <update id="updateCycleConfigById" parameterType="org.activiti.cycle.impl.db.entity.CycleConfigEntity">
+    update ACT_CY_CONFIG  set
+    	GROUP_ = #{groupName},
+    	KEY_ = #{key},
+    	VALUE_ = #{value}
+    where ID_ = #{id} 	
+  </update>
+
+</mapper>
