@@ -55,6 +55,9 @@ public interface Messages {
   static final String TASK_MENU_QUEUED = "task.menu.queued";
   
   // Task details
+  static final String TASK_ID = "task.id";
+  static final String TASK_NAME = "task.name";
+  static final String TASK_ASSIGNEE = "task.assignee";
   static final String TASK_CREATED = "task.created";
   static final String TASK_DUEDATE = "task.duedate";
   static final String TASK_COMPLETE = "task.complete";
@@ -62,6 +65,16 @@ public interface Messages {
   static final String TASK_RESET_FORM = "task.form.reset";
   static final String TASK_ADD_COMMENT = "task.comment.add";
   static final String TASK_COMMENT_POPUP_HEADER = "task.comment.popup.header";
+  static final String TASK_CREATE_TIME = "task.create.time";
+  static final String TASK_COMPLETE_TIME = "task.complete.time";
+  static final String TASK_DURATION = "task.duration";
+  static final String TASK_PRIORITY = "task.priority";
+  static final String TASK_NOT_FINISHED_YET = "task.not.finished.yet";
+  static final String TASK_PART_OF_PROCESS = "task.part.of.process";
+  static final String TASK_JUMP_TO_PROCESS = "task.jump.to.process";
+  static final String TASK_CLAIM_FAILED = "task.claim.failed";
+  static final String TASK_CLAIM_SUCCESS = "task.claim.success";
+  static final String TASK_CLAIM = "task.claim";
   
   // Flow menu
   static final String FLOW_MENU_MY_FLOWS = "flow.menu.my";
@@ -74,7 +87,11 @@ public interface Messages {
   static final String FLOW_HEADER_DIAGRAM = "flow.header.diagram";
   static final String FLOW_NO_DIAGRAM = "flow.no.diagram";
   static final String FLOW_START = "flow.start";
-  static final String FLOW_STARTED_NOTIFICATIOn = "flow.started.notification";
+  static final String FLOW_STARTED_NOTIFICATION = "flow.started.notification";
+  static final String FLOW_INSTANCE_STARTED_ON = "flow.instance.started.on";
+  static final String FLOW_INSTANCE_HEADER_DIAGRAM = "flow.instance.header.diagram";
+  static final String FLOW_INSTANCE_HEADER_TASKS = "flow.instance.header.tasks";
+  static final String FLOW_INSTANCE_NO_TASKS = "flow.instance.no.tasks";
   
   // Management menu
   static final String MGMT_MENU_DATABASE = "management.menu.database";
@@ -110,5 +127,5 @@ public interface Messages {
   // Upload
   static final String UPLOAD_SELECT = "upload.select";
   static final String UPLOAD_DROP = "upload.drop";
-  
+
 }

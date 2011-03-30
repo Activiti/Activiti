@@ -55,7 +55,7 @@ public class TaskInboxPage extends TaskPage {
 
   @Override
   protected UriFragment getUriFragment(String taskId) {
-    UriFragment taskFragment = new UriFragment(TaskNavigationHandler.TASK_URI_PART, taskId);
+    UriFragment taskFragment = new UriFragment(TaskNavigationHandler.TASK_URI_PART);
 
     if(taskId != null) {
       taskFragment.addUriPart(taskId);

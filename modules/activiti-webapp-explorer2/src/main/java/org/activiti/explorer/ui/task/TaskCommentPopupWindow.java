@@ -13,7 +13,6 @@
 package org.activiti.explorer.ui.task;
 
 import java.io.InputStream;
-import java.text.MessageFormat;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
@@ -94,8 +93,8 @@ public class TaskCommentPopupWindow extends Window {
     layout.addComponent(commentLayout);
     layout.setExpandRatio(commentLayout, 1.0f);
     
-    Label header = new Label(MessageFormat.format(
-        ExplorerApplication.getCurrent().getMessage(Messages.TASK_COMMENT_POPUP_HEADER),
+    Label header = new Label(ExplorerApplication.getCurrent().getMessage(
+        Messages.TASK_COMMENT_POPUP_HEADER,
         new PrettyTime().format(comment.getTime()),
         user.getFirstName() + " " + user.getLastName()));
     header.addStyleName(ExplorerLayout.STYLE_TASK_COMMENT_AUTHOR);

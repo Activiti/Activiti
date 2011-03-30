@@ -14,17 +14,21 @@
 package org.activiti.explorer.ui.flow;
 
 import java.io.InputStream;
+import java.util.UUID;
 
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.impl.RepositoryServiceImpl;
+import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
+import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.explorer.Constant;
 import org.activiti.explorer.ExplorerApplication;
-import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.util.InputStreamStreamSource;
 
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.terminal.StreamResource.StreamSource;
-
 
 
 /**
@@ -53,6 +57,28 @@ public class ProcessDefinitionImageStreamResourceBuilder {
       imageResource = new StreamResource(streamSource, fileName, ExplorerApplication.getCurrent());
     }
     
+    return imageResource;
+  }
+
+  public StreamResource buildStreamResource(ProcessInstance processInstance, RepositoryService repositoryService, RuntimeService runtimeService) {
+
+    StreamResource imageResource = null;
+    
+    ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService).getDeployedProcessDefinition(processInstance
+            .getProcessDefinitionId());
+
+    if (processDefinition != null && processDefinition.isGraphicalNotationDefined()) {
+      InputStream definitionImageStream = ProcessDiagramGenerator.generateDiagram(processDefinition, "png", 
+        runtimeService.getActiveActivityIds(processInstance.getId()));
+      
+      StreamSource streamSource = new InputStreamStreamSource(definitionImageStream);
+      
+      // Create image name
+      String imageExtension = extractImageExtension(processDefinition.getDiagramResourceName());
+      String fileName = processInstance.getId() + UUID.randomUUID() + "." + imageExtension;
+      
+      imageResource = new StreamResource(streamSource, fileName, ExplorerApplication.getCurrent()); 
+    }
     return imageResource;
   }
 

@@ -63,7 +63,6 @@ public class ProcessDefinitionDetailPanel extends Panel {
   protected ProcessDefinitionInfoComponent definitionInfoComponent;
   
   public ProcessDefinitionDetailPanel(String processDefinitionId, FlowPage flowPage) {
-    super();
     setSizeFull();
     addStyleName(Reindeer.LAYOUT_WHITE);
     

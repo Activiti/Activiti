@@ -32,8 +32,22 @@ public class FlowMenuBar extends MenuBar {
     
     setWidth("100%");
 
-    addItem(ExplorerApplication.getCurrent().getMessage(Messages.FLOW_MENU_MY_FLOWS), null);
-    addItem(ExplorerApplication.getCurrent().getMessage(Messages.FLOW_MENU_LAUNCH_FLOW), null);
+    addItem(ExplorerApplication.getCurrent().getMessage(Messages.FLOW_MENU_MY_FLOWS), new Command() {
+      
+      private static final long serialVersionUID = 1801881272806784326L;
+
+      public void menuSelected(MenuItem selectedItem) {
+        ExplorerApplication.getCurrent().switchView(new MyFlowsPage());
+      }
+    });
+    addItem(ExplorerApplication.getCurrent().getMessage(Messages.FLOW_MENU_LAUNCH_FLOW), new Command() {
+      
+      private static final long serialVersionUID = -3389463332173619289L;
+
+      public void menuSelected(MenuItem selectedItem) {
+        ExplorerApplication.getCurrent().switchView(new FlowPage());
+      }
+    });
   }
 
 }

@@ -115,7 +115,6 @@ public class ProcessDefinitionInfoComponent extends VerticalLayout {
       StreamResource diagram = new ProcessDefinitionImageStreamResourceBuilder()
         .buildStreamResource(processDefinition, repositoryService);
       
- 
       Embedded embedded = new Embedded("", diagram);
       embedded.setType(Embedded.TYPE_IMAGE);
       processImageContainer.addComponent(embedded);

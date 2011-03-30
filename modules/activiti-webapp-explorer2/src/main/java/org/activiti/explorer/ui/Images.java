@@ -37,6 +37,10 @@ public class Images {
   public static final Resource DELETE = new ThemeResource("img/delete.png");
   public static final Resource EXECUTE = new ThemeResource("img/execute.png");
   
+  // Task
+  public static final Resource TASK_FINISHED = new ThemeResource("img/tick.png");
+  public static final Resource TASK_UNFINISHED = new ThemeResource("img/control_play.png");
+  
   // Accounts
   public static final Resource SKYPE = new ThemeResource("img/skype.png");
   public static final Resource GOOGLE = new ThemeResource("img/google.png");

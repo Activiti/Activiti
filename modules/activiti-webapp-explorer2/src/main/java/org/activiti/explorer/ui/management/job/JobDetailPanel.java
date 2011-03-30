@@ -19,9 +19,9 @@ import org.activiti.engine.impl.runtime.MessageEntity;
 import org.activiti.engine.impl.runtime.TimerEntity;
 import org.activiti.engine.runtime.Job;
 import org.activiti.explorer.ExplorerApplication;
-import org.activiti.explorer.Images;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.ExplorerLayout;
+import org.activiti.explorer.ui.Images;
 
 import com.ocpsoft.pretty.time.PrettyTime;
 import com.vaadin.ui.Alignment;

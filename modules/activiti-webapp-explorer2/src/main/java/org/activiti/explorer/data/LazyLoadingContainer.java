@@ -12,6 +12,7 @@
  */
 package org.activiti.explorer.data;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -115,7 +116,7 @@ public class LazyLoadingContainer implements Container.Indexed, Container.Sortab
   public Collection< ? > getItemIds() {
     // We don't need an actual list of elements,
     // so we can just override the get() and save some memory
-    return new ArrayList<Integer>() {
+    return new AbstractList<Integer>() {
       public int size() {
         return size();
       }
@@ -182,6 +183,7 @@ public class LazyLoadingContainer implements Container.Indexed, Container.Sortab
     return getIndexForObjectId(searched, 0, size()-1);
   }
   
+  @SuppressWarnings({"unchecked", "rawtypes"})
   public int getIndexForObjectId(Item searched, int low, int high) {
     if (high < low) {
       return -1; // not found

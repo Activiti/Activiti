@@ -35,6 +35,7 @@ import org.activiti.explorer.navigation.DefaultNavigationHandler;
 import org.activiti.explorer.navigation.DeploymentNavigationHandler;
 import org.activiti.explorer.navigation.FlowNavigationHandler;
 import org.activiti.explorer.navigation.JobNavigationHandler;
+import org.activiti.explorer.navigation.MyFlowsNavigationHandler;
 import org.activiti.explorer.navigation.NavigationHandlers;
 import org.activiti.explorer.navigation.TaskNavigationHandler;
 import org.activiti.explorer.ui.form.DateFormPropertyRenderer;
@@ -95,6 +96,7 @@ public class BootProcessEngineContextListener implements ServletContextListener 
     NavigationHandlers.addNavigationHandler(new DeploymentNavigationHandler());
     NavigationHandlers.addNavigationHandler(new DataBaseNavigationHandler());
     NavigationHandlers.addNavigationHandler(new JobNavigationHandler());
+    NavigationHandlers.addNavigationHandler(new MyFlowsNavigationHandler());
   }
 
   protected void initKermit(ProcessEngine processEngine) {

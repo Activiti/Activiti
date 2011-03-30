@@ -21,7 +21,6 @@ import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.form.FormType;
 
 import com.vaadin.data.Validator.InvalidValueException;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Form;
@@ -43,7 +42,6 @@ public class FormPropertiesComponent extends VerticalLayout {
   protected Map<FormProperty, Component> propertyComponents;
   
   protected Form form;
-  protected Button okButton;
   
   public FormPropertiesComponent() {
     super();
@@ -53,13 +51,6 @@ public class FormPropertiesComponent extends VerticalLayout {
 
     initForm();
   } 
-
-  protected void initForm() {
-    form = new Form();
-    form.setSizeFull();
-    
-    addComponent(form);
-  }
 
   public List<FormProperty> getFormProperties() {
     return formProperties;
@@ -109,6 +100,20 @@ public class FormPropertiesComponent extends VerticalLayout {
     return formPropertyValues;
   }
   
+  
+  public void setFormEnabled(boolean enabled) {
+    if(enabled) {
+      form.setEnabled(enabled);
+    }  
+  }
+  
+  protected void initForm() {
+    form = new Form();
+    form.setSizeFull();
+    
+    addComponent(form);
+  }
+
   protected FormPropertyRenderer getRenderer(FormProperty formProperty) {
     FormType formPropertyType = formProperty.getType();
     if(formPropertyType == null) {

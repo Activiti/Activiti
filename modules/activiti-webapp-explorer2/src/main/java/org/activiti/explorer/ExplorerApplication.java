@@ -15,6 +15,7 @@
  */
 package org.activiti.explorer;
 
+import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
 import javax.servlet.http.HttpServletRequest;
@@ -109,9 +110,12 @@ public class ExplorerApplication extends Application implements HttpServletReque
   }
   
   // Localisation
-  
   public String getMessage(String key) {
     return messages.getString(key);
+  }
+
+  public String getMessage(String key, Object... arguments) {
+    return MessageFormat.format(messages.getString(key), arguments);
   }
   
   // HttpServletRequestListener -------------------------------------------------------------------

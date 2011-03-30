@@ -329,7 +329,7 @@ input.login-field {
 
 
 /* Shared styles */
-.deployment-details-header, .job-details-header, .proc-def-details-header {
+.deployment-details-header, .job-details-header, .proc-def-details-header, .proc-inst-details-header {
   width: 95%;
   height: 1.1em;
   padding-top: 0.3em;

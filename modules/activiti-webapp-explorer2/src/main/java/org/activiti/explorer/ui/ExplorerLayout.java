@@ -78,6 +78,9 @@ public interface ExplorerLayout {
   // Flow pages
   static final String STYLE_PROCESS_DEFINITION_LIST = "proc-def-list";
   static final String STYLE_PROCESS_DEFINITION_DETAILS_HEADER = "proc-def-details-header";
+  static final String STYLE_PROCESS_INSTANCE_LIST = "proc-inst-list";
+  static final String STYLE_PROCESS_INSTANCE_DETAILS_HEADER = "proc-inst-details-header";
+  static final String STYLE_PROCESS_INSTANCE_TASK_LIST = "proc-inst-task-list";
   
   // Database page
   static final String STYLE_DATABASE_DETAILS = "database-details";
@@ -92,5 +95,6 @@ public interface ExplorerLayout {
   static final String STYLE_JOB_DETAILS_HEADER = "job-details-header";
   static final String STYLE_JOB_EXCEPTION_MESSAGE = "job-exception-message";
   static final String STYLE_JOB_EXCEPTION_TRACE = "job-exception-trace";
+
   
 }

@@ -13,8 +13,6 @@
 
 package org.activiti.explorer.ui.flow.listener;
 
-import java.text.MessageFormat;
-
 import org.activiti.engine.FormService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RuntimeService;
@@ -61,8 +59,8 @@ public class StartFlowClickListener implements ClickListener {
       ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinition.getId());
       
       // Show notification of success
-      ExplorerApplication.getCurrent().getMainWindow().showNotification(MessageFormat.format(
-              ExplorerApplication.getCurrent().getMessage(Messages.FLOW_STARTED_NOTIFICATIOn), processDefinition.getName()));
+      ExplorerApplication.getCurrent().getMainWindow().showNotification(
+              ExplorerApplication.getCurrent().getMessage(Messages.FLOW_STARTED_NOTIFICATION, processDefinition.getName()));
     }
     
    
