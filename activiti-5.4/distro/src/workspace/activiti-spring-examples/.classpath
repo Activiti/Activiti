@@ -5,8 +5,8 @@
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="src" path="src/test/resources"/>
 	<classpathentry kind="lib" path="libs-runtime/activation-1.1.jar"/>
-	<classpathentry kind="lib" path="libs-runtime/activiti-engine-5.4-SNAPSHOT-sources.jar"/>
-	<classpathentry kind="lib" path="libs-runtime/activiti-engine-5.4-SNAPSHOT.jar" sourcepath="libs-runtime/activiti-engine-5.4-SNAPSHOT-sources.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/activiti-engine-5.4-sources.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/activiti-engine-5.4.jar" sourcepath="libs-runtime/activiti-engine-5.4-sources.jar"/>
 	<classpathentry kind="lib" path="libs-runtime/aopalliance-1.0.jar"/>
 	<classpathentry kind="lib" path="libs-runtime/commons-email-1.2.jar"/>
 	<classpathentry kind="lib" path="libs-runtime/commons-logging-1.1.1.jar"/>
@@ -40,8 +40,8 @@
 	<classpathentry kind="lib" path="libs-test/subethasmtp-smtp-1.2.jar"/>
 	<classpathentry kind="lib" path="libs-test/subethasmtp-wiser-1.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="libs-runtime/activiti-spring-5.4-SNAPSHOT-sources.jar"/>
-	<classpathentry kind="lib" path="libs-runtime/activiti-spring-5.4-SNAPSHOT.jar" sourcepath="libs-runtime/activiti-spring-5.4-SNAPSHOT-sources.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/activiti-spring-5.4-sources.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/activiti-spring-5.4.jar" sourcepath="libs-runtime/activiti-spring-5.4-sources.jar"/>
 	<classpathentry kind="lib" path="libs-runtime/persistence-api-1.0.jar"/>
 	<classpathentry kind="lib" path="libs-test/antlr-2.7.7.jar"/>
 	<classpathentry kind="lib" path="libs-test/asm-3.1.jar"/>

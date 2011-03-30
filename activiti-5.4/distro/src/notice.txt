@@ -1,28 +1,28 @@
 The activiti software libraries are distributed under the Apache V2.0 license:
- * activiti-cxf-5.4-SNAPSHOT-sources.jar
- * activiti-cxf-5.4-SNAPSHOT.jar
- * activiti-cycle-5.4-SNAPSHOT.jar
- * activiti-engine-5.4-SNAPSHOT-sources.jar
- * activiti-engine-5.4-SNAPSHOT.jar
- * activiti-spring-5.4-SNAPSHOT-sources.jar
- * activiti-spring-5.4-SNAPSHOT.jar
+ * activiti-cxf-5.4-sources.jar
+ * activiti-cxf-5.4.jar
+ * activiti-cycle-5.4.jar
+ * activiti-engine-5.4-sources.jar
+ * activiti-engine-5.4.jar
+ * activiti-spring-5.4-sources.jar
+ * activiti-spring-5.4.jar
 
 
 This software package includes changed source code of
 
 JUEL
  * Location: http://juel.sourceforge.net/
- * Included in activiti-engine-5.4-SNAPSHOT.jar in package org.activiti.engine.impl.juel
+ * Included in activiti-engine-5.4.jar in package org.activiti.engine.impl.juel
  * License: Apache V2
  
 Quartz
  * Location: http://www.quartz-scheduler.org/
- * CronExpression is included in activiti-engine-5.4-SNAPSHOT.jar in package org.activiti.engine.impl.calendar
+ * CronExpression is included in activiti-engine-5.4.jar in package org.activiti.engine.impl.calendar
  * License: Apache V2
 
 JSON
  * Location: http://www.JSON.org/java
- * Included in activiti-engine-5.4-SNAPSHOT.jar in package org.activiti.engine.impl.json
+ * Included in activiti-engine-5.4.jar in package org.activiti.engine.impl.json
  * License:
 ===============================================================================
 Copyright (c) 2002 JSON.org
