@@ -1,0 +1,1 @@
+see notes in ActivitiComponent-README
