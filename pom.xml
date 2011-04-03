@@ -432,6 +432,22 @@
         <artifactId>camel-spring</artifactId>
         <version>2.5.0</version>
       </dependency>
+	  <!-- cdi integration -->
+	  <dependency>
+		<groupId>javax.enterprise</groupId>
+		<artifactId>cdi-api</artifactId>
+		<version>1.0-SP2</version>
+	  </dependency>
+	  <dependency>
+		<groupId>javax.el</groupId>
+		<artifactId>el-api</artifactId>
+		<version>2.2</version>
+	  </dependency>
+	  <dependency>
+		<groupId>org.jboss.weld.se</groupId>
+		<artifactId>weld-se</artifactId>
+		<version>1.1.0.Beta1</version>
+	</dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -601,6 +617,12 @@
         <module>modules/activiti-spring</module>
       </modules>
     </profile>    
+	<profile>
+	<id>checkcdi</id>
+	<modules>
+		<module>modules/activiti-cdi</module>
+	</modules>	
+	</profile>
     <profile>
       <id>upgradeDatabase</id>
       <activation>
@@ -640,9 +662,10 @@
         <module>modules/activiti-cxf</module>
         <module>modules/activiti-mule</module>
         <module>modules/activiti-osgi</module>
-        <module>modules/activiti-osgi-rest</module>
+        <module>modules/activiti-osgi-rest</module>		
 	<module>modules/activiti-camel</module>
 	<module>modules/activiti-jbpm-migration</module>
+		<module>modules/activiti-cdi</module>
       </modules>
     </profile>
     <profile>
