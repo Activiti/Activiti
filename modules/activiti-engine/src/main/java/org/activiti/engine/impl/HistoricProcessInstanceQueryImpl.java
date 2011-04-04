@@ -32,6 +32,9 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
   protected boolean finished = false;
   protected boolean unfinished = false;
   
+  public HistoricProcessInstanceQueryImpl() {
+  }
+  
   public HistoricProcessInstanceQueryImpl(CommandContext commandContext) {
     super(commandContext);
   }

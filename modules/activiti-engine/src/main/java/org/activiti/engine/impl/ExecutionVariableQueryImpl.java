@@ -33,6 +33,9 @@ public abstract class ExecutionVariableQueryImpl<T extends Query<?,?>, U> extend
 
   protected List<QueryVariableValue> queryVariableValues = new ArrayList<QueryVariableValue>();
   
+  public ExecutionVariableQueryImpl() {
+  }
+
   public ExecutionVariableQueryImpl(CommandContext commandContext) {
     super(commandContext);
   }

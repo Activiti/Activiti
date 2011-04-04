@@ -14,7 +14,6 @@
 package org.activiti.engine.impl.runtime;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +24,6 @@ import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.calendar.BusinessCalendar;
-import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.context.Context;
@@ -299,12 +296,6 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     setScope(false);
   }
 
-  public void deleteCascade(String deleteReason) {
-    this.deleteReason = deleteReason;
-    this.deleteRoot = true;
-    performOperation(AtomicOperation.DELETE_CASCADE);
-  }
-  
   /** removes an execution. if there are nested executions, those will be ended recursively.
    * if there is a parent, this method removes the bidirectional relation 
    * between parent and this execution. */
@@ -592,8 +583,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   protected void ensureProcessDefinitionInitialized() {
     if ((processDefinition == null) && (processDefinitionId != null)) {
       ProcessDefinitionEntity deployedProcessDefinition = Context
-        .getCommandContext()
-        .getRepositorySession()
+        .getProcessEngineConfiguration()
+        .getDeploymentCache()
         .findDeployedProcessDefinitionById(processDefinitionId);
       setProcessDefinition(deployedProcessDefinition);
     }
@@ -920,7 +911,20 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     }
     return persistentState;
   }
-
+  
+  public void insert() {
+    Context
+      .getCommandContext()
+      .getDbSqlSession()
+      .insert(this);
+  }
+  
+  public void deleteCascade(String deleteReason) {
+    this.deleteReason = deleteReason;
+    this.deleteRoot = true;
+    performOperation(AtomicOperation.DELETE_CASCADE);
+  }
+  
   public int getRevisionNext() {
     return revision+1;
   }

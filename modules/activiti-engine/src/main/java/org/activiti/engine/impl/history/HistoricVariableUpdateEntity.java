@@ -95,6 +95,11 @@ public class HistoricVariableUpdateEntity extends HistoricDetailEntity implement
     }
   }
 
+  public ByteArrayEntity getByteArrayValue() {
+    // Aren't we forgetting lazy initialization here?
+    return byteArrayValue;
+  }
+
   public Object getPersistentState() {
     // HistoricVariableUpdateEntity is immutable, so always the same object is returned
     return HistoricVariableUpdateEntity.class;
@@ -176,11 +181,6 @@ public class HistoricVariableUpdateEntity extends HistoricDetailEntity implement
   
   public void setTextValue2(String textValue2) {
     this.textValue2 = textValue2;
-  }
-
-  
-  public ByteArrayEntity getByteArrayValue() {
-    return byteArrayValue;
   }
 
   

@@ -83,6 +83,10 @@ public class ProcessDefinitionImpl extends ScopeImpl implements PvmProcessDefini
     return null;
   }
 
+  public String getDeploymentId() {
+    return null;
+  }
+
   // getters and setters //////////////////////////////////////////////////////
   
   public ActivityImpl getInitial() {
@@ -108,5 +112,4 @@ public class ProcessDefinitionImpl extends ScopeImpl implements PvmProcessDefini
   public String getDescription() {
     return (String) getProperty("documentation");
   }
-  
 }

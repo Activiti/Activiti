@@ -46,7 +46,7 @@ public class ExecutionContext {
     String deploymentId = getProcessDefinition().getDeploymentId();
     DeploymentEntity deployment = Context
       .getCommandContext()
-      .getRepositorySession()
+      .getDeploymentManager()
       .findDeploymentById(deploymentId);
     return deployment;
   }

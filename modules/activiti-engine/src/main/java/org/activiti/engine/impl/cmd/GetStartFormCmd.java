@@ -15,7 +15,7 @@ package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.form.StartFormData;
-import org.activiti.engine.impl.cfg.RepositorySession;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.form.StartFormHandler;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -34,8 +34,10 @@ public class GetStartFormCmd implements Command<StartFormData> {
   }
 
   public StartFormData execute(CommandContext commandContext) {
-    RepositorySession repositorySession = commandContext.getRepositorySession();
-    ProcessDefinitionEntity processDefinition = repositorySession.findDeployedProcessDefinitionById(processDefinitionId);
+    ProcessDefinitionEntity processDefinition = Context
+      .getProcessEngineConfiguration()
+      .getDeploymentCache()
+      .findDeployedProcessDefinitionById(processDefinitionId);
     if (processDefinition == null) {
       throw new ActivitiException("No process definition found for id '" + processDefinitionId +"'");
     }

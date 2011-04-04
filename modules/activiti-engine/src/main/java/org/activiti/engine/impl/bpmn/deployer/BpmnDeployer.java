@@ -24,16 +24,16 @@ import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.cfg.IdGenerator;
-import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.cmd.DeleteJobsCmd;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.DbRepositorySession;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
-import org.activiti.engine.impl.repository.Deployer;
+import org.activiti.engine.impl.persistence.deploy.Deployer;
+import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
+import org.activiti.engine.impl.persistence.mgr.ProcessDefinitionManager;
 import org.activiti.engine.impl.repository.DeploymentEntity;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.repository.ResourceEntity;
@@ -101,13 +101,14 @@ public class BpmnDeployer implements Deployer {
     }
     
     CommandContext commandContext = Context.getCommandContext();
-    DbRepositorySession dbRepositorySession = (DbRepositorySession) commandContext.getSession(RepositorySession.class);
+    ProcessDefinitionManager processDefinitionManager = commandContext.getProcessDefinitionManager();
+    DeploymentCache deploymentCache = Context.getProcessEngineConfiguration().getDeploymentCache();
     DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);
     for (ProcessDefinitionEntity processDefinition : processDefinitions) {
       if (deployment.isNew()) {
         int processDefinitionVersion;
 
-        ProcessDefinitionEntity latestProcessDefinition = dbRepositorySession.findLatestProcessDefinitionByKey(processDefinition.getKey());
+        ProcessDefinitionEntity latestProcessDefinition = processDefinitionManager.findLatestProcessDefinitionByKey(processDefinition.getKey());
         if (latestProcessDefinition != null) {
           processDefinitionVersion = latestProcessDefinition.getVersion() + 1;
         } else {
@@ -131,19 +132,25 @@ public class BpmnDeployer implements Deployer {
         addTimerDeclarations(processDefinition);
 
         dbSqlSession.insert(processDefinition);
-        dbRepositorySession.addToProcessDefinitionCache(processDefinition);
-
+        deploymentCache.addProcessDefinition(processDefinition);
+        
       } else {
         String deploymentId = deployment.getId();
         processDefinition.setDeploymentId(deploymentId);
-        ProcessDefinitionEntity persistedProcessDefinition = dbRepositorySession.findProcessDefinitionByDeploymentAndKey(deploymentId, processDefinition.getKey());
+        ProcessDefinitionEntity persistedProcessDefinition = processDefinitionManager.findProcessDefinitionByDeploymentAndKey(deploymentId, processDefinition.getKey());
         processDefinition.setId(persistedProcessDefinition.getId());
         processDefinition.setVersion(persistedProcessDefinition.getVersion());
-        dbRepositorySession.addToProcessDefinitionCache(processDefinition);
+        deploymentCache.addProcessDefinition(processDefinition);
       }
+
+      Context
+        .getProcessEngineConfiguration()
+        .getDeploymentCache()
+        .addProcessDefinition(processDefinition);
     }
   }
 
+  @SuppressWarnings("unchecked")
   private void addTimerDeclarations(ProcessDefinitionEntity processDefinition) {
     List<TimerDeclarationImpl> timerDeclarations = (List<TimerDeclarationImpl>) processDefinition.getProperty(BpmnParse.PROPERTYNAME_START_TIMER);
     if (timerDeclarations!=null) {

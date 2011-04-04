@@ -61,62 +61,58 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   public ExecutionEntity createProcessInstance(String businessKey) {
 	  ExecutionEntity processInstance = (ExecutionEntity) super.createProcessInstance();
 
-	    CommandContext commandContext = Context.getCommandContext();
+    CommandContext commandContext = Context.getCommandContext();
+  
+    processInstance.setExecutions(new ArrayList<ExecutionEntity>());
+    processInstance.setProcessDefinition(processDefinition);
+    // Do not initialize variable map (let it happen lazily)
 
-	    commandContext
-	      .getDbSqlSession()
-	      .insert(processInstance);
-	  
-	    processInstance.setExecutions(new ArrayList<ExecutionEntity>());
-	    processInstance.setProcessDefinition(processDefinition);
-	    // Do not initialize variable map (let it happen lazily)
+    if (businessKey != null) {
+    	processInstance.setBusinessKey(businessKey);
+    }
+    
+    // reset the process instance in order to have the db-generated process instance id available
+    processInstance.setProcessInstance(processInstance);
+    
+    String initiatorVariableName = (String) getProperty(BpmnParse.PROPERTYNAME_INITIATOR_VARIABLE_NAME);
+    if (initiatorVariableName!=null) {
+      String authenticatedUserId = Authentication.getAuthenticatedUserId();
+      processInstance.setVariable(initiatorVariableName, authenticatedUserId);
+    }
+    
+    int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
+    if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY) {
+      HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity(processInstance);
 
-	    if (businessKey != null) {
-	    	processInstance.setBusinessKey(businessKey);
-	    }
-	    
-	    // reset the process instance in order to have the db-generated process instance id available
-	    processInstance.setProcessInstance(processInstance);
-	    
-	    String initiatorVariableName = (String) getProperty(BpmnParse.PROPERTYNAME_INITIATOR_VARIABLE_NAME);
-	    if (initiatorVariableName!=null) {
-	      String authenticatedUserId = Authentication.getAuthenticatedUserId();
-	      processInstance.setVariable(initiatorVariableName, authenticatedUserId);
-	    }
-	    
-	    int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
-	    if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY) {
-	      HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity(processInstance);
+      commandContext
+        .getSession(DbSqlSession.class)
+        .insert(historicProcessInstance);
+    }
+    
+    if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
+      IdGenerator idGenerator = Context.getProcessEngineConfiguration().getIdGenerator();
+      
+      String processDefinitionId = processInstance.getProcessDefinitionId();
+      String processInstanceId = processInstance.getProcessInstanceId();
+      String executionId = processInstance.getId();
 
-	      commandContext
-	        .getSession(DbSqlSession.class)
-	        .insert(historicProcessInstance);
-	    }
-	    
-	    if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
-	      IdGenerator idGenerator = Context.getProcessEngineConfiguration().getIdGenerator();
-	      
-	      String processDefinitionId = processInstance.getProcessDefinitionId();
-	      String processInstanceId = processInstance.getProcessInstanceId();
-	      String executionId = processInstance.getId();
+      HistoricActivityInstanceEntity historicActivityInstance = new HistoricActivityInstanceEntity();
+      historicActivityInstance.setId(Long.toString(idGenerator.getNextId()));
+      historicActivityInstance.setProcessDefinitionId(processDefinitionId);
+      historicActivityInstance.setProcessInstanceId(processInstanceId);
+      historicActivityInstance.setExecutionId(executionId);
+      historicActivityInstance.setActivityId(processInstance.getActivityId());
+      historicActivityInstance.setActivityName((String) processInstance.getActivity().getProperty("name"));
+      historicActivityInstance.setActivityType((String) processInstance.getActivity().getProperty("type"));
+      Date now = ClockUtil.getCurrentTime();
+      historicActivityInstance.setStartTime(now);
+      
+      commandContext
+        .getDbSqlSession()
+        .insert(historicActivityInstance);
+    }
 
-	      HistoricActivityInstanceEntity historicActivityInstance = new HistoricActivityInstanceEntity();
-	      historicActivityInstance.setId(Long.toString(idGenerator.getNextId()));
-	      historicActivityInstance.setProcessDefinitionId(processDefinitionId);
-	      historicActivityInstance.setProcessInstanceId(processInstanceId);
-	      historicActivityInstance.setExecutionId(executionId);
-	      historicActivityInstance.setActivityId(processInstance.getActivityId());
-	      historicActivityInstance.setActivityName((String) processInstance.getActivity().getProperty("name"));
-	      historicActivityInstance.setActivityType((String) processInstance.getActivity().getProperty("type"));
-	      Date now = ClockUtil.getCurrentTime();
-	      historicActivityInstance.setStartTime(now);
-	      
-	      commandContext
-	        .getDbSqlSession()
-	        .insert(historicActivityInstance);
-	    }
-
-	    return processInstance;
+    return processInstance;
   }
 
   public ExecutionEntity createProcessInstance() {
@@ -125,7 +121,9 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   
   @Override
   protected InterpretableExecution newProcessInstance() {
-    return new ExecutionEntity();
+    ExecutionEntity processInstance = new ExecutionEntity();
+    processInstance.insert();
+    return processInstance;
   }
 
   public String toString() {

@@ -43,7 +43,7 @@ public class GetDeploymentResourceCmd implements Command<InputStream> {
     }
     
     ResourceEntity resource = commandContext
-      .getRepositorySession()
+      .getResourceManager()
       .findResourceByDeploymentIdAndResourceName(deploymentId, resourceName);
     if(resource == null) {
       throw new ActivitiException("no resource found with name '" + resourceName + "' in deployment '" + deploymentId + "'");

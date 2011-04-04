@@ -51,8 +51,8 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
 
   public void execute(ActivityExecution execution) throws Exception {
     ProcessDefinitionImpl processDefinition = Context
-      .getCommandContext()
-      .getRepositorySession()
+      .getProcessEngineConfiguration()
+      .getDeploymentCache()
       .findDeployedLatestProcessDefinitionByKey(processDefinitonKey);
     
     PvmProcessInstance subProcessInstance = execution.createSubProcessInstance(processDefinition);

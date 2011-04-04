@@ -54,13 +54,16 @@ import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.bpmn.parser.BpmnParseListener;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.bpmn.webservice.MessageInstance;
-import org.activiti.engine.impl.calendar.*;
+import org.activiti.engine.impl.calendar.BusinessCalendarManager;
+import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
+import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
+import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
+import org.activiti.engine.impl.calendar.MapBusinessCalendarManager;
 import org.activiti.engine.impl.cfg.standalone.StandaloneMybatisTransactionContextFactory;
 import org.activiti.engine.impl.db.DbHistorySessionFactory;
 import org.activiti.engine.impl.db.DbIdGenerator;
 import org.activiti.engine.impl.db.DbIdentitySessionFactory;
 import org.activiti.engine.impl.db.DbManagementSessionFactory;
-import org.activiti.engine.impl.db.DbRepositorySessionFactory;
 import org.activiti.engine.impl.db.DbRuntimeSessionFactory;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.db.DbTaskSessionFactory;
@@ -78,9 +81,28 @@ import org.activiti.engine.impl.interceptor.CommandContextFactory;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.SessionFactory;
-import org.activiti.engine.impl.jobexecutor.*;
+import org.activiti.engine.impl.jobexecutor.JobExecutor;
+import org.activiti.engine.impl.jobexecutor.JobExecutorMessageSessionFactory;
+import org.activiti.engine.impl.jobexecutor.JobExecutorTimerSessionFactory;
+import org.activiti.engine.impl.jobexecutor.JobHandler;
+import org.activiti.engine.impl.jobexecutor.TimerCatchIntermediateEventJobHandler;
+import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
+import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.mail.MailScanner;
-import org.activiti.engine.impl.repository.Deployer;
+import org.activiti.engine.impl.persistence.deploy.Deployer;
+import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
+import org.activiti.engine.impl.persistence.mgr.DeploymentManager;
+import org.activiti.engine.impl.persistence.mgr.ExecutionManager;
+import org.activiti.engine.impl.persistence.mgr.GenericManagerFactory;
+import org.activiti.engine.impl.persistence.mgr.HistoricActivityInstanceManager;
+import org.activiti.engine.impl.persistence.mgr.HistoricDetailManager;
+import org.activiti.engine.impl.persistence.mgr.HistoricProcessInstanceManager;
+import org.activiti.engine.impl.persistence.mgr.HistoricTaskInstanceManager;
+import org.activiti.engine.impl.persistence.mgr.IdentityLinkManager;
+import org.activiti.engine.impl.persistence.mgr.ProcessDefinitionManager;
+import org.activiti.engine.impl.persistence.mgr.ResourceManager;
+import org.activiti.engine.impl.persistence.mgr.TaskManager;
+import org.activiti.engine.impl.persistence.mgr.VariableInstanceManager;
 import org.activiti.engine.impl.scripting.BeansResolverFactory;
 import org.activiti.engine.impl.scripting.ResolverFactory;
 import org.activiti.engine.impl.scripting.ScriptBindingsFactory;
@@ -176,6 +198,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected List<Deployer> customPreDeployers;
   protected List<Deployer> customPostDeployers;
   protected List<Deployer> deployers;
+  protected DeploymentCache deploymentCache;
 
   // JOB EXECUTOR /////////////////////////////////////////////////////////////
   
@@ -496,10 +519,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       addSessionFactory(new JobExecutorTimerSessionFactory());
       addSessionFactory(new DbHistorySessionFactory());
       
-      DbRepositorySessionFactory dbRepositorySessionFactory = new DbRepositorySessionFactory();
-      dbRepositorySessionFactory.setDeployers(deployers);
-      addSessionFactory(dbRepositorySessionFactory);
-
       JobExecutorMessageSessionFactory jobExecutorMessageSessionFactory = new JobExecutorMessageSessionFactory();
       addSessionFactory(jobExecutorMessageSessionFactory);
       
@@ -511,6 +530,18 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       dbSqlSessionFactory.setDbHistoryUsed(isDbHistoryUsed);
       dbSqlSessionFactory.setDbCycleUsed(isDbCycleUsed);
       addSessionFactory(dbSqlSessionFactory);
+      
+      addSessionFactory(new GenericManagerFactory(DeploymentManager.class));
+      addSessionFactory(new GenericManagerFactory(ResourceManager.class));
+      addSessionFactory(new GenericManagerFactory(ProcessDefinitionManager.class));
+      addSessionFactory(new GenericManagerFactory(ExecutionManager.class));
+      addSessionFactory(new GenericManagerFactory(TaskManager.class));
+      addSessionFactory(new GenericManagerFactory(IdentityLinkManager.class));
+      addSessionFactory(new GenericManagerFactory(VariableInstanceManager.class));
+      addSessionFactory(new GenericManagerFactory(HistoricProcessInstanceManager.class));
+      addSessionFactory(new GenericManagerFactory(HistoricActivityInstanceManager.class));
+      addSessionFactory(new GenericManagerFactory(HistoricTaskInstanceManager.class));
+      addSessionFactory(new GenericManagerFactory(HistoricDetailManager.class));
     }
     if (customSessionFactories!=null) {
       for (SessionFactory sessionFactory: customSessionFactories) {
@@ -526,8 +557,18 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // deployers ////////////////////////////////////////////////////////////////
   
   protected void initDeployers() {
-    if (deployers==null) {
-      deployers = new ArrayList<Deployer>();
+    if (this.deployers==null) {
+      this.deployers = new ArrayList<Deployer>();
+      if (customPreDeployers!=null) {
+        this.deployers.addAll(customPreDeployers);
+      }
+      this.deployers.addAll(getDefaultDeployers());
+      if (customPostDeployers!=null) {
+        this.deployers.addAll(customPostDeployers);
+      }
+    }
+    if (deploymentCache==null) {
+      List<Deployer> deployers = new ArrayList<Deployer>();
       if (customPreDeployers!=null) {
         deployers.addAll(customPreDeployers);
       }
@@ -535,6 +576,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       if (customPostDeployers!=null) {
         deployers.addAll(customPostDeployers);
       }
+
+      deploymentCache = new DeploymentCache();
+      deploymentCache.setDeployers(deployers);
     }
   }
 
@@ -1390,5 +1434,13 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public void setMailScanner(MailScanner mailScanner) {
     this.mailScanner = mailScanner;
+  }
+  
+  public DeploymentCache getDeploymentCache() {
+    return deploymentCache;
+  }
+  
+  public void setDeploymentCache(DeploymentCache deploymentCache) {
+    this.deploymentCache = deploymentCache;
   }
 }

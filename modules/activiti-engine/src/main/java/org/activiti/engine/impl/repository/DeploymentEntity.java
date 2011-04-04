@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.repository.Deployment;
@@ -55,7 +54,7 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
     if (resources==null && id!=null) {
       List<ResourceEntity> resourcesList = Context
         .getCommandContext()
-        .getSession(RepositorySession.class)
+        .getResourceManager()
         .findResourcesByDeploymentId(id);
       resources = new HashMap<String, ResourceEntity>();
       for (ResourceEntity resource: resourcesList) {

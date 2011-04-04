@@ -11,16 +11,18 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.pvm;
+package org.activiti.engine.impl.persistence.mgr;
 
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.context.Context;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface PvmProcessDefinition extends ReadOnlyProcessDefinition {
+public class AbstractHistoricManager extends AbstractManager {
 
-  String getDeploymentId();
-  PvmProcessInstance createProcessInstance();
+  protected int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
+  protected boolean isHistoryEnabled = historyLevel > ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE;
 
 }

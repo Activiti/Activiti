@@ -36,6 +36,9 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
   protected String emailLike;
   protected String groupId;
   
+  public UserQueryImpl() {
+  }
+
   public UserQueryImpl(CommandContext commandContext) {
     super(commandContext);
   }

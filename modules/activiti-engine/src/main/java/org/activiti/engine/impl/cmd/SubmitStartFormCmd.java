@@ -17,7 +17,6 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.form.StartFormHandler;
@@ -45,8 +44,10 @@ public class SubmitStartFormCmd implements Command<ProcessInstance> {
   }
 
   public ProcessInstance execute(CommandContext commandContext) {
-    RepositorySession repositorySession = commandContext.getRepositorySession();
-    ProcessDefinitionEntity processDefinition = repositorySession.findDeployedProcessDefinitionById(processDefinitionId);
+    ProcessDefinitionEntity processDefinition = Context
+      .getProcessEngineConfiguration()
+      .getDeploymentCache()
+      .findDeployedProcessDefinitionById(processDefinitionId);
     if (processDefinition == null) {
       throw new ActivitiException("No process definition found for id = '" + processDefinitionId + "'");
     }

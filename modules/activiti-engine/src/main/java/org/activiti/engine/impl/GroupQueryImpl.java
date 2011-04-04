@@ -33,6 +33,9 @@ public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements 
   protected String type;
   protected String userId;
 
+  public GroupQueryImpl() {
+  }
+
   public GroupQueryImpl(CommandContext commandContext) {
     super(commandContext);
   }

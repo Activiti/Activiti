@@ -28,7 +28,6 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
@@ -501,8 +500,10 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
 
   public TaskDefinition getTaskDefinition() {
     if (taskDefinition==null && taskDefinitionKey!=null) {
-      RepositorySession repositorySession = Context.getCommandContext().getSession(RepositorySession.class);
-      ProcessDefinitionEntity processDefinition = repositorySession.findDeployedProcessDefinitionById(processDefinitionId);
+      ProcessDefinitionEntity processDefinition = Context
+        .getProcessEngineConfiguration()
+        .getDeploymentCache()
+        .findDeployedProcessDefinitionById(processDefinitionId);
       taskDefinition = processDefinition.getTaskDefinitions().get(taskDefinitionKey);
     }
     return taskDefinition;
@@ -650,5 +651,11 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   }
   public void setDelegationStateString(String delegationStateString) {
     this.delegationState = (delegationStateString!=null ? DelegationState.valueOf(DelegationState.class, delegationStateString) : null);
+  }
+  public boolean isDeleted() {
+    return isDeleted;
+  }
+  public void setDeleted(boolean isDeleted) {
+    this.isDeleted = isDeleted;
   }
 }

@@ -15,9 +15,10 @@ package org.activiti.engine.impl.cmd;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.cfg.RepositorySession;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -41,15 +42,18 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance> {
   }
   
   public ProcessInstance execute(CommandContext commandContext) {
-    RepositorySession repositorySession = commandContext.getRepositorySession();
+    DeploymentCache deploymentCache = Context
+      .getProcessEngineConfiguration()
+      .getDeploymentCache();
+    
     ProcessDefinitionEntity processDefinition = null;
     if (processDefinitionId!=null) {
-      processDefinition = repositorySession.findDeployedProcessDefinitionById(processDefinitionId);
+      processDefinition = deploymentCache.findDeployedProcessDefinitionById(processDefinitionId);
       if (processDefinition == null) {
         throw new ActivitiException("No process definition found for id = '" + processDefinitionId + "'");
       }
     } else if(processDefinitionKey != null){
-      processDefinition = repositorySession.findDeployedLatestProcessDefinitionByKey(processDefinitionKey);
+      processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKey(processDefinitionKey);
       if (processDefinition == null) {
         throw new ActivitiException("No process definition found for key '" + processDefinitionKey +"'");
       }

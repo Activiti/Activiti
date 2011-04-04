@@ -11,16 +11,20 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.pvm;
+package org.activiti.engine.impl.persistence.mgr;
 
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface PvmProcessDefinition extends ReadOnlyProcessDefinition {
+public class HistoricTaskInstanceManager extends AbstractHistoricManager {
 
-  String getDeploymentId();
-  PvmProcessInstance createProcessInstance();
+  public void deleteHistoricTaskInstancesByProcessInstanceId(String historicProcessInstanceId) {
+    if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+      getPersistenceSession().delete("deleteHistoricTaskInstancesByProcessInstanceId", historicProcessInstanceId);
+    }
+  }
 
 }

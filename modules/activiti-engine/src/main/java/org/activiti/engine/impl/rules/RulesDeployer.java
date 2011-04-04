@@ -16,10 +16,9 @@ package org.activiti.engine.impl.rules;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.DbRepositorySessionFactory;
-import org.activiti.engine.impl.repository.Deployer;
+import org.activiti.engine.impl.persistence.deploy.Deployer;
+import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
 import org.activiti.engine.impl.repository.DeploymentEntity;
 import org.activiti.engine.impl.repository.ResourceEntity;
 import org.drools.KnowledgeBase;
@@ -39,6 +38,10 @@ public class RulesDeployer implements Deployer {
 
   public void deploy(DeploymentEntity deployment) {
     KnowledgeBuilder knowledgeBuilder = null;
+
+    DeploymentCache deploymentCache = Context
+      .getProcessEngineConfiguration()
+      .getDeploymentCache();
     
     Map<String, ResourceEntity> resources = deployment.getResources();
     for (String resourceName : resources.keySet()) {
@@ -56,14 +59,7 @@ public class RulesDeployer implements Deployer {
     
     if (knowledgeBuilder!=null) {
       KnowledgeBase knowledgeBase = knowledgeBuilder.newKnowledgeBase();
-      
-      DbRepositorySessionFactory repositorySessionFactory = (DbRepositorySessionFactory) Context
-        .getProcessEngineConfiguration()
-        .getSessionFactories()
-        .get(RepositorySession.class);
-      
-      Map<String, Object> knowledgeBaseCache = repositorySessionFactory.getKnowledgeBaseCache();
-      knowledgeBaseCache.put(deployment.getId(), knowledgeBase);
+      deploymentCache.addKnowledgeBase(deployment.getId(), knowledgeBase);
     }
   }
 }

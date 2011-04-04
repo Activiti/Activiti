@@ -11,16 +11,24 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.pvm;
+package org.activiti.engine.impl.persistence.mgr;
 
+import java.util.List;
+
+import org.activiti.engine.impl.task.IdentityLinkEntity;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface PvmProcessDefinition extends ReadOnlyProcessDefinition {
+public class IdentityLinkManager extends AbstractManager {
 
-  String getDeploymentId();
-  PvmProcessInstance createProcessInstance();
+  @SuppressWarnings("unchecked")
+  public List<IdentityLinkEntity> findIdentityLinksByTaskId(String taskId) {
+    return getPersistenceSession().selectList("selectIdentityLinksByTask", taskId);
+  }
 
+  public void deleteIdentityLink(IdentityLinkEntity identityLink) {
+    getPersistenceSession().delete(IdentityLinkEntity.class, identityLink.getId());
+  }
 }

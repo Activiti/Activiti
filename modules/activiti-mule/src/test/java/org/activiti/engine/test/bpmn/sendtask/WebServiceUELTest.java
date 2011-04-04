@@ -18,8 +18,9 @@ import java.util.Map;
 import org.activiti.engine.impl.bpmn.data.FieldBaseStructureInstance;
 import org.activiti.engine.impl.bpmn.data.ItemDefinition;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
-import org.activiti.engine.impl.cfg.RepositorySession;
-import org.activiti.engine.impl.db.DbRepositorySessionFactory;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.test.bpmn.servicetask.AbstractWebServiceTaskTest;
 
@@ -32,11 +33,17 @@ public class WebServiceUELTest extends AbstractWebServiceTaskTest {
   public void testAsyncInvocationWithDataFlowUEL() throws Exception {
     assertEquals(-1, counter.getCount());
 
-    DbRepositorySessionFactory dbRepositorySessionFactory = (DbRepositorySessionFactory) 
-      this.processEngineConfiguration.getSessionFactories().get(RepositorySession.class);
+    ProcessDefinitionEntity processDefinition = processEngineConfiguration
+      .getCommandExecutorTxRequiresNew()
+      .execute(new Command<ProcessDefinitionEntity>() {
+        public ProcessDefinitionEntity execute(CommandContext commandContext) {
+          return Context
+            .getProcessEngineConfiguration()
+            .getDeploymentCache()
+            .findDeployedLatestProcessDefinitionByKey("asyncWebServiceInvocationWithDataFlowUEL");
+        }
+      });
     
-    String processDefinitionId = repositoryService.createProcessDefinitionQuery().processDefinitionKey("asyncWebServiceInvocationWithDataFlowUEL").singleResult().getId();
-    ProcessDefinitionEntity processDefinition = dbRepositorySessionFactory.getProcessDefinitionCache().get(processDefinitionId);
     ItemDefinition itemDefinition = processDefinition.getIoSpecification().getDataInputs().get(0).getDefinition();
 
     ItemInstance itemInstance = itemDefinition.createInstance();

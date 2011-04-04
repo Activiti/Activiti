@@ -15,7 +15,7 @@ package org.activiti.engine.impl.cmd;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.activiti.engine.impl.cfg.RepositorySession;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
@@ -37,12 +37,15 @@ public class DeployCmd<T> implements Command<Deployment> {
 
   public Deployment execute(CommandContext commandContext) {
     DeploymentEntity deployment = deploymentBuilder.getDeployment();
-    RepositorySession repositorySession = commandContext.getRepositorySession();
-    
+
     deployment.setDeploymentTime(ClockUtil.getCurrentTime());
 
     if ( deploymentBuilder.isDuplicateFilterEnabled() ) {
-      DeploymentEntity existingDeployment = repositorySession.findLatestDeploymentByName(deployment.getName());
+      DeploymentEntity existingDeployment = Context
+        .getCommandContext()
+        .getDeploymentManager()
+        .findLatestDeploymentByName(deployment.getName());
+      
       if ( (existingDeployment!=null)
            && !deploymentsDiffer(deployment, existingDeployment)) {
         return existingDeployment;
@@ -50,7 +53,11 @@ public class DeployCmd<T> implements Command<Deployment> {
     }
 
     deployment.setNew(true);
-    repositorySession.deploy(deployment);
+    
+    Context
+      .getCommandContext()
+      .getDeploymentManager()
+      .insertDeployment(deployment);
     
     return deployment;
   }

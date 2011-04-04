@@ -40,6 +40,9 @@ public class ExecutionQueryImpl extends ExecutionVariableQueryImpl<ExecutionQuer
   
   protected CommandExecutor commandExecutor;
   
+  public ExecutionQueryImpl() {
+  }
+  
   public ExecutionQueryImpl(CommandContext commandContext) {
     super(commandContext);
   }

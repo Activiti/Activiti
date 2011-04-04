@@ -34,7 +34,19 @@ import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.ActivitiWrongDbException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.impl.DeploymentQueryImpl;
+import org.activiti.engine.impl.ExecutionQueryImpl;
+import org.activiti.engine.impl.GroupQueryImpl;
+import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
+import org.activiti.engine.impl.HistoricDetailQueryImpl;
+import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
+import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
+import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
+import org.activiti.engine.impl.ProcessInstanceQueryImpl;
+import org.activiti.engine.impl.TaskQueryImpl;
+import org.activiti.engine.impl.UserQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.upgrade.DbUpgradeStep;
@@ -862,7 +874,44 @@ public class DbSqlSession implements Session {
     }
   }
 
-  
+  // query factory methods ////////////////////////////////////////////////////  
+
+  public DeploymentQueryImpl createDeploymentQuery() {
+    return new DeploymentQueryImpl();
+  }
+  public ProcessDefinitionQueryImpl createProcessDefinitionQuery() {
+    return new ProcessDefinitionQueryImpl();
+  }
+  public ProcessInstanceQueryImpl createProcessInstanceQuery() {
+    return new ProcessInstanceQueryImpl();
+  }
+  public ExecutionQueryImpl createExecutionQuery() {
+    return new ExecutionQueryImpl();
+  }
+  public TaskQueryImpl createTaskQuery() {
+    return new TaskQueryImpl();
+  }
+  public JobQueryImpl createJobQuery() {
+    return new JobQueryImpl();
+  }
+  public HistoricProcessInstanceQueryImpl createHistoricProcessInstanceQuery() {
+    return new HistoricProcessInstanceQueryImpl();
+  }
+  public HistoricActivityInstanceQueryImpl createHistoricActivityInstanceQuery() {
+    return new HistoricActivityInstanceQueryImpl();
+  }
+  public HistoricTaskInstanceQueryImpl createHistoricTaskInstanceQuery() {
+    return new HistoricTaskInstanceQueryImpl();
+  }
+  public HistoricDetailQueryImpl createHistoricDetailQuery() {
+    return new HistoricDetailQueryImpl();
+  }
+  public UserQueryImpl createUserQuery() {
+    return new UserQueryImpl();
+  }
+  public GroupQueryImpl createGroupQuery() {
+    return new GroupQueryImpl();
+  }
 
   // getters and setters //////////////////////////////////////////////////////
   

@@ -14,6 +14,7 @@
 package org.activiti.engine.test.bpmn.parse;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -58,7 +59,10 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
     ProcessDefinitionEntity processDefinitionEntity = commandExecutor.execute(new Command<ProcessDefinitionEntity>() {
       public ProcessDefinitionEntity execute(CommandContext commandContext) {
-        return commandContext.getRepositorySession().findDeployedLatestProcessDefinitionByKey("myProcess");
+        return Context
+          .getProcessEngineConfiguration()
+          .getDeploymentCache()
+          .findDeployedLatestProcessDefinitionByKey("myProcess");
       }
     });
     

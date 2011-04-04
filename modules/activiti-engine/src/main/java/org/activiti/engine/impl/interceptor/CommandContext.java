@@ -24,13 +24,23 @@ import org.activiti.engine.impl.cfg.IdentitySession;
 import org.activiti.engine.impl.cfg.ManagementSession;
 import org.activiti.engine.impl.cfg.MessageSession;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.cfg.TaskSession;
 import org.activiti.engine.impl.cfg.TimerSession;
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
+import org.activiti.engine.impl.persistence.mgr.DeploymentManager;
+import org.activiti.engine.impl.persistence.mgr.ExecutionManager;
+import org.activiti.engine.impl.persistence.mgr.HistoricActivityInstanceManager;
+import org.activiti.engine.impl.persistence.mgr.HistoricDetailManager;
+import org.activiti.engine.impl.persistence.mgr.HistoricProcessInstanceManager;
+import org.activiti.engine.impl.persistence.mgr.HistoricTaskInstanceManager;
+import org.activiti.engine.impl.persistence.mgr.IdentityLinkManager;
+import org.activiti.engine.impl.persistence.mgr.ProcessDefinitionManager;
+import org.activiti.engine.impl.persistence.mgr.ResourceManager;
+import org.activiti.engine.impl.persistence.mgr.TaskManager;
+import org.activiti.engine.impl.persistence.mgr.VariableInstanceManager;
 import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 
@@ -167,10 +177,57 @@ public class CommandContext {
 
     return (T) session;
   }
-
-  public RepositorySession getRepositorySession() {
-    return getSession(RepositorySession.class);
+  
+  public DbSqlSession getDbSqlSession() {
+    return getSession(DbSqlSession.class);
   }
+  
+  public DeploymentManager getDeploymentManager() {
+    return getSession(DeploymentManager.class);
+  }
+
+  public ResourceManager getResourceManager() {
+    return getSession(ResourceManager.class);
+  }
+  
+  public ProcessDefinitionManager getProcessDefinitionManager() {
+    return getSession(ProcessDefinitionManager.class);
+  }
+
+  public ExecutionManager getProcessInstanceManager() {
+    return getSession(ExecutionManager.class);
+  }
+
+  public TaskManager getTaskManager() {
+    return getSession(TaskManager.class);
+  }
+
+  public IdentityLinkManager getIdentityLinkManager() {
+    return getSession(IdentityLinkManager.class);
+  }
+
+  public VariableInstanceManager getVariableInstanceManager() {
+    return getSession(VariableInstanceManager.class);
+  }
+
+  public HistoricProcessInstanceManager getHistoricProcessInstanceManager() {
+    return getSession(HistoricProcessInstanceManager.class);
+  }
+
+  public HistoricDetailManager getHistoricDetailManager() {
+    return getSession(HistoricDetailManager.class);
+  }
+
+  public HistoricActivityInstanceManager getHistoricActivityInstanceManager() {
+    return getSession(HistoricActivityInstanceManager.class);
+  }
+  
+  public HistoricTaskInstanceManager getHistoricTaskInstanceManager() {
+    return getSession(HistoricTaskInstanceManager.class);
+  }
+
+
+  
   public RuntimeSession getRuntimeSession() {
     return getSession(RuntimeSession.class);
   }
@@ -191,9 +248,6 @@ public class CommandContext {
   }
   public ManagementSession getManagementSession() {
     return getSession(ManagementSession.class);
-  }
-  public DbSqlSession getDbSqlSession() {
-    return getSession(DbSqlSession.class);
   }
 
   // getters and setters //////////////////////////////////////////////////////

@@ -55,6 +55,9 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
   protected Date dueAfter;
   protected Date dueBefore;
 
+  public HistoricTaskInstanceQueryImpl() {
+  }
+
   public HistoricTaskInstanceQueryImpl(CommandExecutor commandExecutor) {
     super(commandExecutor);
   }

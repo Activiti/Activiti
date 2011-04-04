@@ -15,6 +15,7 @@ package org.activiti.engine.impl;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -43,7 +44,12 @@ public abstract class AbstractQuery<T extends Query<?,?>, U> implements Command<
   protected int firstResult;
   protected int maxResults;
   protected ResultType resultType;
- 
+
+  protected QueryProperty orderProperty;
+
+  protected AbstractQuery() {
+  }
+  
   protected AbstractQuery(CommandExecutor commandExecutor) {
     this.commandExecutor = commandExecutor;
   }
@@ -51,8 +57,11 @@ public abstract class AbstractQuery<T extends Query<?,?>, U> implements Command<
   public AbstractQuery(CommandContext commandContext) {
     this.commandContext = commandContext;
   }
-
-  protected QueryProperty orderProperty;
+  
+  public AbstractQuery<T, U> setCommandExecutor(CommandExecutor commandExecutor) {
+    this.commandExecutor = commandExecutor;
+    return this;
+  }
 
   @SuppressWarnings("unchecked")
   public T orderBy(QueryProperty property) {
@@ -87,19 +96,19 @@ public abstract class AbstractQuery<T extends Query<?,?>, U> implements Command<
   @SuppressWarnings("unchecked")
   public U singleResult() {
     this.resultType = ResultType.SINGLE_RESULT;
-    if (commandContext!=null) {
-      return executeSingleResult(commandContext);
+    if (commandExecutor!=null) {
+      return (U) commandExecutor.execute(this);
     }
-    return (U) commandExecutor.execute(this);
+    return executeSingleResult(Context.getCommandContext());
   }
 
   @SuppressWarnings("unchecked")
   public List<U> list() {
     this.resultType = ResultType.LIST;
-    if (commandContext!=null) {
-      return executeList(commandContext, null);
+    if (commandExecutor!=null) {
+      return (List<U>) commandExecutor.execute(this);
     }
-    return (List<U>) commandExecutor.execute(this);
+    return executeList(Context.getCommandContext(), null);
   }
   
   @SuppressWarnings("unchecked")
@@ -107,18 +116,18 @@ public abstract class AbstractQuery<T extends Query<?,?>, U> implements Command<
     this.firstResult = firstResult;
     this.maxResults = maxResults;
     this.resultType = ResultType.LIST_PAGE;
-    if (commandContext!=null) {
-      return executeList(commandContext, new Page(firstResult, maxResults));
+    if (commandExecutor!=null) {
+      return (List<U>) commandExecutor.execute(this);
     }
-    return (List<U>) commandExecutor.execute(this);
+    return executeList(Context.getCommandContext(), new Page(firstResult, maxResults));
   }
   
   public long count() {
     this.resultType = ResultType.COUNT;
-    if (commandContext!=null) {
-      return executeCount(commandContext);
+    if (commandExecutor!=null) {
+      return (Long) commandExecutor.execute(this);
     }
-    return (Long) commandExecutor.execute(this);
+    return executeCount(Context.getCommandContext());
   }
   
   public Object execute(CommandContext commandContext) {

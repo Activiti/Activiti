@@ -57,6 +57,9 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   protected Date dueBefore;
   protected Date dueAfter;
   
+  public TaskQueryImpl() {
+  }
+  
   public TaskQueryImpl(CommandContext commandContext) {
     super(commandContext);
   }

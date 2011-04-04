@@ -13,7 +13,7 @@
 
 package org.activiti.engine.impl.cmd;
 
-import org.activiti.engine.impl.cfg.RepositorySession;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.pvm.ReadOnlyProcessDefinition;
@@ -31,7 +31,9 @@ public class GetDeploymentProcessDefinitionCmd implements Command<ReadOnlyProces
   }
 
   public ReadOnlyProcessDefinition execute(CommandContext commandContext) {
-    RepositorySession repositorySession = commandContext.getRepositorySession();
-    return repositorySession.findDeployedProcessDefinitionById(processDefinitionId);
+    return Context
+      .getProcessEngineConfiguration()
+      .getDeploymentCache()
+      .findDeployedProcessDefinitionById(processDefinitionId);
   }
 }

@@ -18,8 +18,9 @@ import java.util.Map;
 import org.activiti.engine.impl.bpmn.data.FieldBaseStructureInstance;
 import org.activiti.engine.impl.bpmn.data.ItemDefinition;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
-import org.activiti.engine.impl.cfg.RepositorySession;
-import org.activiti.engine.impl.db.DbRepositorySessionFactory;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.runtime.ProcessInstance;
 
@@ -29,11 +30,18 @@ import org.activiti.engine.runtime.ProcessInstance;
 public class WebServiceUELTest extends AbstractWebServiceTaskTest {
 
   public void testWebServiceInvocationWithDataFlowUEL() throws Exception {
-    DbRepositorySessionFactory dbRepositorySessionFactory = (DbRepositorySessionFactory) 
-      this.processEngineConfiguration.getSessionFactories().get(RepositorySession.class);
-    String processDefinitionId = repositoryService.createProcessDefinitionQuery().processDefinitionKey("webServiceInvocationWithDataFlowUEL").singleResult().getId();
-    ProcessDefinitionEntity processDefinition = dbRepositorySessionFactory.getProcessDefinitionCache().get(processDefinitionId);
-    ItemDefinition itemDefinition = processDefinition.getIoSpecification().getDataInputs().get(0).getDefinition();
+    ProcessDefinitionEntity processDefinition = processEngineConfiguration
+      .getCommandExecutorTxRequiresNew()
+      .execute(new Command<ProcessDefinitionEntity>() {
+        public ProcessDefinitionEntity execute(CommandContext commandContext) {
+          return Context
+            .getProcessEngineConfiguration()
+            .getDeploymentCache()
+            .findDeployedLatestProcessDefinitionByKey("asyncWebServiceInvocationWithDataFlowUEL");
+        }
+      });
+  
+      ItemDefinition itemDefinition = processDefinition.getIoSpecification().getDataInputs().get(0).getDefinition();
 
     ItemInstance itemInstance = itemDefinition.createInstance();
     FieldBaseStructureInstance structureInstance = (FieldBaseStructureInstance) itemInstance.getStructureInstance();

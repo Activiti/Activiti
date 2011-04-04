@@ -32,6 +32,9 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
   protected String activityInstanceId;
   protected String type;
 
+  public HistoricDetailQueryImpl() {
+  }
+
   public HistoricDetailQueryImpl(CommandContext commandContext) {
     super(commandContext);
   }
