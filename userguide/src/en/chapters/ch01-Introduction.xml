@@ -44,7 +44,7 @@
   <section>
     <title>Eclipse 3.6.2</title>
     <para>Download the <emphasis role="bold">Eclipse Classic</emphasis> version of eclipse from <ulink url="http://www.eclipse.org/downloads/">the Eclipse download page</ulink>.
-    Unzip the doanloaded file and then you should be able to start it with the eclipse file in the directory <literal>eclipse</literal>. 
+    Unzip the downloaded file and then you should be able to start it with the eclipse file in the directory <literal>eclipse</literal>. 
     Further in this userguide, there is a section on <link linkend="eclipsesetup">setting up the Activiti examples projects in 
     your eclipse</link> and another one on <link linkend="eclipseDesignerInstallation">installing our eclipse designer 
     plugin</link>.
