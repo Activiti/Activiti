@@ -29,12 +29,10 @@ public class GenericManagerFactory implements SessionFactory {
     this.managerImplementation = managerImplementation;
   }
 
-  @Override
   public Class< ? > getSessionType() {
     return managerImplementation;
   }
 
-  @Override
   public Session openSession() {
     try {
       return managerImplementation.newInstance();
