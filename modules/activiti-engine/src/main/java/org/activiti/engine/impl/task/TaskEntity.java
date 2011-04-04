@@ -28,7 +28,6 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
@@ -231,8 +230,8 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   protected List<VariableInstanceEntity> loadVariableInstances() {
     return Context
       .getCommandContext()
-      .getSession(RuntimeSession.class)
-      .findVariablesByTaskId(id);
+      .getVariableInstanceManager()
+      .findVariableInstancesByTaskId(id);
   }
 
   // execution ////////////////////////////////////////////////////////////////
@@ -241,7 +240,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     if ( (execution==null) && (executionId!=null) ) {
       this.execution = Context
         .getCommandContext()
-        .getRuntimeSession()
+        .getExecutionManager()
         .findExecutionById(executionId);
     }
     return execution;

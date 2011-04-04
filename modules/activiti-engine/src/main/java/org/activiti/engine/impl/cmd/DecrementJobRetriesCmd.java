@@ -16,7 +16,6 @@ package org.activiti.engine.impl.cmd;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.context.Context;
@@ -40,8 +39,10 @@ public class DecrementJobRetriesCmd implements Command<Object> {
   }
 
   public Object execute(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
-    JobEntity job = runtimeSession.findJobById(jobId);
+    JobEntity job = Context
+      .getCommandContext()
+      .getJobManager()
+      .findJobById(jobId);
     job.setRetries(job.getRetries() - 1);
     job.setLockOwner(null);
     job.setLockExpirationTime(null);

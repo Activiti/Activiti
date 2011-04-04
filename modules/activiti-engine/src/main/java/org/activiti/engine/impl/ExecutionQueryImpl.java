@@ -116,7 +116,7 @@ public class ExecutionQueryImpl extends ExecutionVariableQueryImpl<ExecutionQuer
     checkQueryOk();
     ensureVariablesInitialized();
     return commandContext
-      .getRuntimeSession()
+      .getExecutionManager()
       .findExecutionCountByQueryCriteria(this);
   }
 
@@ -125,7 +125,7 @@ public class ExecutionQueryImpl extends ExecutionVariableQueryImpl<ExecutionQuer
     checkQueryOk();
     ensureVariablesInitialized();
     return (List) commandContext
-      .getRuntimeSession()
+      .getExecutionManager()
       .findExecutionsByQueryCriteria(this, page);
   }
   

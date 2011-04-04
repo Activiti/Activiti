@@ -15,7 +15,6 @@ package org.activiti.engine.impl.persistence.mgr;
 
 import java.util.List;
 
-import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;

@@ -24,7 +24,6 @@ import org.activiti.engine.impl.cfg.IdentitySession;
 import org.activiti.engine.impl.cfg.ManagementSession;
 import org.activiti.engine.impl.cfg.MessageSession;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.cfg.TaskSession;
 import org.activiti.engine.impl.cfg.TimerSession;
 import org.activiti.engine.impl.cfg.TransactionContext;
@@ -37,6 +36,7 @@ import org.activiti.engine.impl.persistence.mgr.HistoricDetailManager;
 import org.activiti.engine.impl.persistence.mgr.HistoricProcessInstanceManager;
 import org.activiti.engine.impl.persistence.mgr.HistoricTaskInstanceManager;
 import org.activiti.engine.impl.persistence.mgr.IdentityLinkManager;
+import org.activiti.engine.impl.persistence.mgr.JobManager;
 import org.activiti.engine.impl.persistence.mgr.ProcessDefinitionManager;
 import org.activiti.engine.impl.persistence.mgr.ResourceManager;
 import org.activiti.engine.impl.persistence.mgr.TaskManager;
@@ -194,7 +194,7 @@ public class CommandContext {
     return getSession(ProcessDefinitionManager.class);
   }
 
-  public ExecutionManager getProcessInstanceManager() {
+  public ExecutionManager getExecutionManager() {
     return getSession(ExecutionManager.class);
   }
 
@@ -225,12 +225,15 @@ public class CommandContext {
   public HistoricTaskInstanceManager getHistoricTaskInstanceManager() {
     return getSession(HistoricTaskInstanceManager.class);
   }
+  
+  public JobManager getJobManager() {
+    return getSession(JobManager.class);
+  }
+
 
 
   
-  public RuntimeSession getRuntimeSession() {
-    return getSession(RuntimeSession.class);
-  }
+
   public IdentitySession getIdentitySession() {
     return getSession(IdentitySession.class);
   }

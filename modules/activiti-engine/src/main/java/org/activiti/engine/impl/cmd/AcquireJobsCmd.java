@@ -45,8 +45,9 @@ public class AcquireJobsCmd implements Command<AcquiredJobs> {
     
     AcquiredJobs acquiredJobs = new AcquiredJobs();
     List<JobEntity> jobs = commandContext
-      .getRuntimeSession()
+      .getJobManager()
       .findNextJobsToExecute(new Page(0, maxJobsPerAcquisition));
+    
     for (JobEntity job: jobs) {
       List<String> jobIds = new ArrayList<String>();
 

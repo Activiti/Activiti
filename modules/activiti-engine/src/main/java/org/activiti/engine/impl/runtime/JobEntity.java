@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
@@ -68,10 +67,9 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject {
   protected String exceptionMessage;
 
   public void execute(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
     ExecutionEntity execution = null;
     if (executionId != null) {
-      execution = runtimeSession.findExecutionById(executionId);
+      execution = commandContext.getExecutionManager().findExecutionById(executionId);
     }
 
     Map<String, JobHandler> jobHandlers = Context.getProcessEngineConfiguration().getJobHandlers();

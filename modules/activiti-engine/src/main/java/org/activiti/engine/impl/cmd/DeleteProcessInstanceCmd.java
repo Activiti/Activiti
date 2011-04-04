@@ -36,7 +36,7 @@ public class DeleteProcessInstanceCmd implements Command<Void> {
     }
     
     commandContext
-      .getRuntimeSession()
+      .getExecutionManager()
       .deleteProcessInstance(processInstanceId, deleteReason);
     return null;
   }

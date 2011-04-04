@@ -162,14 +162,14 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
     return commandContext
-      .getRuntimeSession()
+      .getJobManager()
       .findJobCountByQueryCriteria(this);
   }
 
   public List<Job> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     return commandContext
-      .getRuntimeSession()
+      .getJobManager()
       .findJobsByQueryCriteria(this, page);
   }
   

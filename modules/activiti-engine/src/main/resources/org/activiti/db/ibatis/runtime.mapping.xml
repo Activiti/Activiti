@@ -63,7 +63,7 @@
   
   <!-- EXECUTION SELECT -->
   
-  <select id="selectExecutionById" parameterType="string" resultMap="executionResultMap">
+  <select id="selectExecution" parameterType="string" resultMap="executionResultMap">
     select * from ACT_RU_EXECUTION where ID_ = #{id}
   </select>
   

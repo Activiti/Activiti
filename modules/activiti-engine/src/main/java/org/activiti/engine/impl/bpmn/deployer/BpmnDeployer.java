@@ -165,8 +165,11 @@ public class BpmnDeployer implements Deployer {
   }
 
   private void removeObsoleteTimers(ProcessDefinitionEntity processDefinition) {
-    List<Job> jobsToDelete = Context.getCommandContext().getRuntimeSession().
-        findJobsByConfiguration(TimerStartEventJobHandler.TYPE, processDefinition.getKey());
+    List<Job> jobsToDelete = Context
+      .getCommandContext()
+      .getJobManager()
+      .findJobsByConfiguration(TimerStartEventJobHandler.TYPE, processDefinition.getKey());
+    
     for (Job job :jobsToDelete) {
         new DeleteJobsCmd(job.getId()).execute(Context.getCommandContext());
     }

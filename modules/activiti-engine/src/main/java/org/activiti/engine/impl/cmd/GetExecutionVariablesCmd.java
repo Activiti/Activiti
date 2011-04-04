@@ -43,7 +43,7 @@ public class GetExecutionVariablesCmd implements Command<Map<String, Object>> {
     }
     
     ExecutionEntity execution = commandContext
-      .getRuntimeSession()
+      .getExecutionManager()
       .findExecutionById(executionId);
     
     if (execution==null) {

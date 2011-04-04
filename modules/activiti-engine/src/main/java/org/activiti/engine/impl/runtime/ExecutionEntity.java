@@ -25,7 +25,6 @@ import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
@@ -510,7 +509,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     if (executions==null) {
       this.executions = (List) Context
         .getCommandContext()
-        .getRuntimeSession()
+        .getExecutionManager()
         .findChildExecutionsByParentExecutionId(id);
     }
   }
@@ -607,7 +606,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     if ((processInstance == null) && (processInstanceId != null)) {
       processInstance =  Context
         .getCommandContext()
-        .getRuntimeSession()
+        .getExecutionManager()
         .findExecutionById(processInstanceId);
     }
   }
@@ -659,7 +658,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     if (parent == null && parentId != null) {
       parent = Context
         .getCommandContext()
-        .getRuntimeSession()
+        .getExecutionManager()
         .findExecutionById(parentId);
     }
   }
@@ -702,7 +701,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     if (superExecution == null && superExecutionId != null) {
       superExecution = Context
         .getCommandContext()
-        .getRuntimeSession()
+        .getExecutionManager()
         .findExecutionById(superExecutionId);
     }
   }
@@ -720,7 +719,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     if (subProcessInstance == null) {
       subProcessInstance = Context
         .getCommandContext()
-        .getRuntimeSession()
+        .getExecutionManager()
         .findSubProcessInstanceBySuperExecutionId(id);
     }
   }
@@ -831,7 +830,10 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     }
     
     // update the related jobs
-    List<VariableInstanceEntity> variables = (List) commandContext.getRuntimeSession().findVariableInstancesByExecutionId(id);
+    List<VariableInstanceEntity> variables = (List) commandContext
+      .getVariableInstanceManager()
+      .findVariableInstancesByExecutionId(id);
+    
     for (VariableInstanceEntity variable: variables) {
       variable.setExecutionId(replacedBy.getId());
     }
@@ -874,7 +876,9 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
   @Override
   protected List<VariableInstanceEntity> loadVariableInstances() {
-    return Context.getCommandContext().getSession(RuntimeSession.class)
+    return Context
+      .getCommandContext()
+      .getVariableInstanceManager()
       .findVariableInstancesByExecutionId(id);
   }
 

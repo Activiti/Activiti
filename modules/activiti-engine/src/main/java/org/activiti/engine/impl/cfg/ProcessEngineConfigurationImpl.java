@@ -64,7 +64,6 @@ import org.activiti.engine.impl.db.DbHistorySessionFactory;
 import org.activiti.engine.impl.db.DbIdGenerator;
 import org.activiti.engine.impl.db.DbIdentitySessionFactory;
 import org.activiti.engine.impl.db.DbManagementSessionFactory;
-import org.activiti.engine.impl.db.DbRuntimeSessionFactory;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.db.DbTaskSessionFactory;
 import org.activiti.engine.impl.db.IbatisVariableTypeHandler;
@@ -99,6 +98,7 @@ import org.activiti.engine.impl.persistence.mgr.HistoricDetailManager;
 import org.activiti.engine.impl.persistence.mgr.HistoricProcessInstanceManager;
 import org.activiti.engine.impl.persistence.mgr.HistoricTaskInstanceManager;
 import org.activiti.engine.impl.persistence.mgr.IdentityLinkManager;
+import org.activiti.engine.impl.persistence.mgr.JobManager;
 import org.activiti.engine.impl.persistence.mgr.ProcessDefinitionManager;
 import org.activiti.engine.impl.persistence.mgr.ResourceManager;
 import org.activiti.engine.impl.persistence.mgr.TaskManager;
@@ -512,7 +512,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     if (sessionFactories==null) {
       sessionFactories = new HashMap<Class<?>, SessionFactory>();
 
-      addSessionFactory(new DbRuntimeSessionFactory());
       addSessionFactory(new DbTaskSessionFactory());
       addSessionFactory(new DbIdentitySessionFactory());
       addSessionFactory(new DbManagementSessionFactory());
@@ -542,6 +541,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       addSessionFactory(new GenericManagerFactory(HistoricActivityInstanceManager.class));
       addSessionFactory(new GenericManagerFactory(HistoricTaskInstanceManager.class));
       addSessionFactory(new GenericManagerFactory(HistoricDetailManager.class));
+      addSessionFactory(new GenericManagerFactory(JobManager.class));
     }
     if (customSessionFactories!=null) {
       for (SessionFactory sessionFactory: customSessionFactories) {

@@ -46,7 +46,9 @@ public class ExecuteJobsCmd implements Command<Object> {
     if (log.isLoggable(Level.FINE)) {
       log.fine("Executing job " + jobId);
     }
-    JobEntity job = commandContext.getRuntimeSession().findJobById(jobId);
+    JobEntity job = commandContext
+      .getJobManager()
+      .findJobById(jobId);
     
     if (job == null) {
       throw new ActivitiException("No job found with id '" + jobId + "'");

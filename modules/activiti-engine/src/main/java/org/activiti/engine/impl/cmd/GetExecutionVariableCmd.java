@@ -42,7 +42,7 @@ public class GetExecutionVariableCmd implements Command<Object> {
     }
     
     ExecutionEntity execution = commandContext
-      .getRuntimeSession()
+      .getExecutionManager()
       .findExecutionById(executionId);
     
     if (execution==null) {

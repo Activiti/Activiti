@@ -63,7 +63,7 @@ public class JobExecutorTimerSession implements TimerSession, Session {
   public void cancelTimers(ExecutionEntity execution) {
     List<TimerEntity> timers = Context
       .getCommandContext()
-      .getRuntimeSession()
+      .getJobManager()
       .findTimersByExecutionId(execution.getId());
     
     for (TimerEntity timer: timers) {

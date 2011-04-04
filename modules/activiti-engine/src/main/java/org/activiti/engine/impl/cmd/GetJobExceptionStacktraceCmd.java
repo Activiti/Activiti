@@ -36,7 +36,10 @@ public class GetJobExceptionStacktraceCmd implements Command<String>{
       throw new ActivitiException("jobId is null");
     }
     
-    JobEntity job = commandContext.getRuntimeSession().findJobById(jobId);
+    JobEntity job = commandContext
+      .getJobManager()
+      .findJobById(jobId);
+    
     if(job == null) {
       throw new ActivitiException("No job found with id " + jobId);
     }

@@ -38,7 +38,7 @@ public class FindActiveActivityIdsCmd implements Command<List<String>> {
     }
     
     ExecutionEntity execution = commandContext
-      .getRuntimeSession()
+      .getExecutionManager()
       .findExecutionById(executionId);
     
     if (execution==null) {

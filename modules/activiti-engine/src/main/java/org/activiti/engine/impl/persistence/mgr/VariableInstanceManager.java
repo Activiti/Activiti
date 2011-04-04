@@ -24,11 +24,6 @@ import org.activiti.engine.impl.runtime.VariableInstanceEntity;
  */
 public class VariableInstanceManager extends AbstractManager {
 
-  @SuppressWarnings("unchecked")
-  public List<VariableInstanceEntity> findVariableInstancesByTaskId(String taskId) {
-    return getPersistenceSession().selectList("selectVariablesByTaskId", taskId);
-  }
-
   public void deleteVariableInstance(VariableInstanceEntity variableInstance) {
     getPersistenceSession().delete(VariableInstanceEntity.class, variableInstance.getId());
 
@@ -42,4 +37,13 @@ public class VariableInstanceManager extends AbstractManager {
     }
   }
 
+  @SuppressWarnings("unchecked")
+  public List<VariableInstanceEntity> findVariableInstancesByTaskId(String taskId) {
+    return getPersistenceSession().selectList("selectVariablesByTaskId", taskId);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<VariableInstanceEntity> findVariableInstancesByExecutionId(String executionId) {
+    return getPersistenceSession().selectList("selectVariablesByExecutionId", executionId);
+  }
 }

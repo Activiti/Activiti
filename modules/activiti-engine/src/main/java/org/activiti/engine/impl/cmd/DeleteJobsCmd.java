@@ -16,6 +16,7 @@ package org.activiti.engine.impl.cmd;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.runtime.JobEntity;
@@ -40,7 +41,11 @@ public class DeleteJobsCmd implements Command<Void> {
   public Void execute(CommandContext commandContext) {
     JobEntity jobToDelete = null;
     for (String jobId: jobIds) {
-      jobToDelete = commandContext.getRuntimeSession().findJobById(jobId);
+      jobToDelete = Context
+        .getCommandContext()
+        .getJobManager()
+        .findJobById(jobId);
+      
       if(jobToDelete != null) {
         // When given job doesn't exist, ignore
         jobToDelete.delete();
