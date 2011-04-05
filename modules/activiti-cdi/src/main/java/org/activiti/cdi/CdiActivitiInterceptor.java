@@ -58,7 +58,7 @@ public class CdiActivitiInterceptor extends CommandInterceptor {
     if (associationManager.getProcessInstanceId() != null) {
       ExecutionEntity processInstance = Context
         .getCommandContext()
-        .getRuntimeSession()
+        .getExecutionManager()
         .findExecutionById(associationManager.getProcessInstanceId());
       if (processInstance != null && !processInstance.isEnded()) {
         CachingBeanStore beanStore = associationManager.getBeanStore();
