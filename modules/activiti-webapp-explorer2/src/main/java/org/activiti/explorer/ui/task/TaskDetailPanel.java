@@ -69,6 +69,7 @@ public class TaskDetailPanel extends HorizontalLayout {
   protected Panel leftPanel;
   protected Panel rightPanel;
   protected FormPropertiesForm taskForm;
+  protected TaskRelatedContentComponent relatedContent;
   protected Button completeButton;
   protected Button claimButton;
   
@@ -106,7 +107,9 @@ public class TaskDetailPanel extends HorizontalLayout {
     initClaimButton();
     initTimeDetails();
     initPeopleDetails();
+    initRelatedContent();
     initTaskForm();
+    
     
     // Right panel: the task comments
     this.rightPanel = new TaskCommentPanel(taskId);
@@ -312,6 +315,15 @@ public class TaskDetailPanel extends HorizontalLayout {
       completeButton.setEnabled(isCurrentUserAssignee());
       leftPanel.addComponent(completeButton);
     }
+  }
+  
+  protected void initRelatedContent() {
+    addEmptySpace(leftPanel);
+    
+    relatedContent = new TaskRelatedContentComponent();
+    relatedContent.setTask(task);
+    
+    leftPanel.addComponent(relatedContent);
   }
   
   protected boolean isCurrentUserAssignee() {

@@ -329,7 +329,7 @@ input.login-field {
 
 
 /* Shared styles */
-.deployment-details-header, .job-details-header, .proc-def-details-header, .proc-inst-details-header {
+.deployment-details-header, .job-details-header, .proc-def-details-header, .proc-inst-details-header, .related-content-detail-header {
   width: 95%;
   height: 1.1em;
   padding-top: 0.3em;
@@ -348,3 +348,14 @@ input.login-field {
 	background-image: none;
 	background-color: #1b7ec3;
 }
+
+/* Related content */
+
+.related-content-detail-header {
+	margin-top: 0;
+}
+
+.image-action {
+  cursor: pointer;
+}
+

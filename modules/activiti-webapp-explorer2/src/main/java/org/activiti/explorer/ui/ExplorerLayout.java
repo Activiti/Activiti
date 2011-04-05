@@ -96,5 +96,7 @@ public interface ExplorerLayout {
   static final String STYLE_JOB_EXCEPTION_MESSAGE = "job-exception-message";
   static final String STYLE_JOB_EXCEPTION_TRACE = "job-exception-trace";
 
-  
+  // Related content
+  static final String STYLE_RELATED_CONTENT_DETAILS_HEADER = "related-content-detail-header";
+  static final String STYLE_IMAGE_ACTION = "image-action";
 }

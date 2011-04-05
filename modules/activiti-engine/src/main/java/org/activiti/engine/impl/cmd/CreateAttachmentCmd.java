@@ -66,7 +66,7 @@ public class CreateAttachmentCmd implements Command<Attachment> {
       attachment.setContentId(byteArray.getId());
     }
     
-    return null;
+    return attachment;
   }
 
 }

@@ -52,5 +52,7 @@ public class Images {
   public static final Resource DATABASE_IDENTITY = new ThemeResource("img/database_identity.png");
   public static final Resource DATABASE_REPOSITORY = new ThemeResource("img/database_repository.png");
   public static final Resource DATABASE_RUNTIME = new ThemeResource("img/database_runtime.png");
+  public static final Resource ADD_RELATED_CONTENT = new ThemeResource("img/add.png");
+  public static final Resource RELATED_CONTENT_URL = new ThemeResource("img/page_white_world.png");
 
 }

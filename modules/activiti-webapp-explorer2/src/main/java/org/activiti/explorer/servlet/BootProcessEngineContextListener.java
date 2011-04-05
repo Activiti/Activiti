@@ -37,6 +37,8 @@ import org.activiti.explorer.navigation.JobNavigationHandler;
 import org.activiti.explorer.navigation.MyFlowsNavigationHandler;
 import org.activiti.explorer.navigation.NavigationHandlers;
 import org.activiti.explorer.navigation.TaskNavigationHandler;
+import org.activiti.explorer.ui.content.AttachmentRenderers;
+import org.activiti.explorer.ui.content.UrlAttachmentRenderer;
 import org.activiti.explorer.ui.form.DateFormPropertyRenderer;
 import org.activiti.explorer.ui.form.EnumFormPropertyRenderer;
 import org.activiti.explorer.ui.form.FormPropertyMapping;
@@ -60,6 +62,7 @@ public class BootProcessEngineContextListener implements ServletContextListener 
     
     initFormPropertyMapping();
     initUriNavigation();
+    initAttachmentRenderers();
     initDemoData();
   }
 
@@ -81,6 +84,8 @@ public class BootProcessEngineContextListener implements ServletContextListener 
     
     // Set default renderer when property has null type
     FormPropertyMapping.setNoTypePropertyRenderer(stringRenderer);
+    
+    // TODO: include renderes from spring-config
   }
   
   protected void initUriNavigation() {
@@ -94,6 +99,10 @@ public class BootProcessEngineContextListener implements ServletContextListener 
     NavigationHandlers.addNavigationHandler(new DataBaseNavigationHandler());
     NavigationHandlers.addNavigationHandler(new JobNavigationHandler());
     NavigationHandlers.addNavigationHandler(new MyFlowsNavigationHandler());
+  }
+  
+  protected void initAttachmentRenderers() {
+    AttachmentRenderers.addAttachmentRenderer(new UrlAttachmentRenderer());
   }
 
   protected void initKermit(ProcessEngine processEngine) {
@@ -217,7 +226,6 @@ public class BootProcessEngineContextListener implements ServletContextListener 
         task.setName(task.getName() + " - for marketeers");
         taskService.saveTask(task);
       }
-
     }
   }
   

@@ -75,6 +75,7 @@ public interface Messages {
   static final String TASK_CLAIM_FAILED = "task.claim.failed";
   static final String TASK_CLAIM_SUCCESS = "task.claim.success";
   static final String TASK_CLAIM = "task.claim";
+  static final String TASK_RELATED_CONTENT = "task.related.content";
   
   // Flow menu
   static final String FLOW_MENU_MY_FLOWS = "flow.menu.my";
@@ -132,4 +133,15 @@ public interface Messages {
   static final String UPLOAD_DROP = "upload.drop";
   static final String UPLOAD_FAILED = "upload.failed";
 
+  // Related content
+  static final String RELATED_CONTENT_ADD = "related.content.add";
+  static final String RELATED_CONTENT_NAME = "related.content.name";
+  static final String RELATED_CONTENT_NAME_REQUIRED = "related.content.name.required";
+  static final String RELATED_CONTENT_DESCRIPTION = "related.content.description";
+  static final String RELATED_CONTENT_CREATE = "related.content.create";
+  
+  static final String RELATED_CONTENT_TYPE_URL = "related.content.type.url";
+  static final String RELATED_CONTENT_TYPE_URL_URL = "related.content.type.url.url";
+  static final String RELATED_CONTENT_TYPE_URL_URL_REQUIRED = "related.content.type.url.url.required";;
+  static final String RELATED_CONTENT_TYPE_URL_HELP = "related.content.type.url.help";
 }
