@@ -25,7 +25,7 @@ public class CreateUserQueryCmd implements Command<UserQuery> {
   
   public UserQuery execute(CommandContext commandContext) {
     return commandContext
-      .getIdentitySession()
+      .getUserManager()
       .createNewUserQuery();
   }
 

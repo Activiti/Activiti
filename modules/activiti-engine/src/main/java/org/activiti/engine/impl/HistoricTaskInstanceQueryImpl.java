@@ -67,7 +67,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
     ensureVariablesInitialized();
     checkQueryOk();
     return commandContext
-      .getTaskSession()
+      .getHistoricTaskInstanceManager()
       .findHistoricTaskInstanceCountByQueryCriteria(this);
   }
 
@@ -76,7 +76,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
     ensureVariablesInitialized();
     checkQueryOk();
     return commandContext
-      .getTaskSession()
+      .getHistoricTaskInstanceManager()
       .findHistoricTaskInstancesByQueryCriteria(this, page);
   }
 

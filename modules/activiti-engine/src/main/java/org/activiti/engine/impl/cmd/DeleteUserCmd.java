@@ -33,7 +33,7 @@ public class DeleteUserCmd implements Command<Void> {
       throw new ActivitiException("userId is null");
     }
     commandContext
-      .getIdentitySession()
+      .getUserManager()
       .deleteUser(userId);
     
     return null;

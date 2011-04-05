@@ -20,26 +20,29 @@ import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cfg.HistorySession;
-import org.activiti.engine.impl.cfg.IdentitySession;
 import org.activiti.engine.impl.cfg.ManagementSession;
 import org.activiti.engine.impl.cfg.MessageSession;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.cfg.TaskSession;
 import org.activiti.engine.impl.cfg.TimerSession;
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
+import org.activiti.engine.impl.persistence.mgr.AttachmentManager;
 import org.activiti.engine.impl.persistence.mgr.DeploymentManager;
 import org.activiti.engine.impl.persistence.mgr.ExecutionManager;
+import org.activiti.engine.impl.persistence.mgr.GroupManager;
 import org.activiti.engine.impl.persistence.mgr.HistoricActivityInstanceManager;
 import org.activiti.engine.impl.persistence.mgr.HistoricDetailManager;
 import org.activiti.engine.impl.persistence.mgr.HistoricProcessInstanceManager;
 import org.activiti.engine.impl.persistence.mgr.HistoricTaskInstanceManager;
+import org.activiti.engine.impl.persistence.mgr.IdentityInfoManager;
 import org.activiti.engine.impl.persistence.mgr.IdentityLinkManager;
 import org.activiti.engine.impl.persistence.mgr.JobManager;
+import org.activiti.engine.impl.persistence.mgr.MembershipManager;
 import org.activiti.engine.impl.persistence.mgr.ProcessDefinitionManager;
 import org.activiti.engine.impl.persistence.mgr.ResourceManager;
 import org.activiti.engine.impl.persistence.mgr.TaskManager;
+import org.activiti.engine.impl.persistence.mgr.UserManager;
 import org.activiti.engine.impl.persistence.mgr.VariableInstanceManager;
 import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
@@ -230,21 +233,32 @@ public class CommandContext {
     return getSession(JobManager.class);
   }
 
+  public UserManager getUserManager() {
+    return getSession(UserManager.class);
+  }
 
+  public GroupManager getGroupManager() {
+    return getSession(GroupManager.class);
+  }
 
+  public IdentityInfoManager getIdentityInfoManager() {
+    return getSession(IdentityInfoManager.class);
+  }
+
+  public MembershipManager getMembershipManager() {
+    return getSession(MembershipManager.class);
+  }
+  
+  public AttachmentManager getAttachmentManager() {
+    return getSession(AttachmentManager.class);
+  }
   
 
-  public IdentitySession getIdentitySession() {
-    return getSession(IdentitySession.class);
-  }
   public MessageSession getMessageSession() {
     return getSession(MessageSession.class);
   }
   public TimerSession getTimerSession() {
     return getSession(TimerSession.class);
-  }
-  public TaskSession getTaskSession() {
-    return getSession(TaskSession.class);
   }
   public HistorySession getHistorySession() {
     return getSession(HistorySession.class);

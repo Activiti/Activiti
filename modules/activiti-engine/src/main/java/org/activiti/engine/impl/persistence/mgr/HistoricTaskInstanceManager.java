@@ -13,7 +13,14 @@
 
 package org.activiti.engine.impl.persistence.mgr;
 
+import java.util.List;
+
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
+import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.history.HistoricTaskInstanceEntity;
 
 
 /**
@@ -25,6 +32,31 @@ public class HistoricTaskInstanceManager extends AbstractHistoricManager {
     if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
       getPersistenceSession().delete("deleteHistoricTaskInstancesByProcessInstanceId", historicProcessInstanceId);
     }
+  }
+
+  public long findHistoricTaskInstanceCountByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery) {
+    return (Long) getPersistenceSession().selectOne("selectHistoricTaskInstanceCountByQueryCriteria", historicTaskInstanceQuery);
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<HistoricTaskInstance> findHistoricTaskInstancesByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery, Page page) {
+    return getPersistenceSession().selectList("selectHistoricTaskInstancesByQueryCriteria", historicTaskInstanceQuery, page);
+  }
+  
+  public HistoricTaskInstanceEntity findHistoricTaskInstanceById(String id) {
+    if (id == null) {
+      throw new ActivitiException("Invalid historic task id : null");
+    }
+    return (HistoricTaskInstanceEntity) getPersistenceSession().selectOne("selectHistoricTaskInstance", id);
+  }
+  
+  public void deleteHistoricTaskInstance(String taskId) {
+    HistoricTaskInstanceEntity historicTaskInstance = findHistoricTaskInstanceById(taskId);
+    if(historicTaskInstance == null) {
+      throw new ActivitiException("No historic task instance found for id '" + taskId + "'");
+    }
+    
+    historicTaskInstance.delete();
   }
 
 }

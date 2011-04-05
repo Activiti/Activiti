@@ -33,7 +33,9 @@ public class DeleteHistoricTaskInstanceCmd implements Command<Object> {
     if (taskId == null) {
       throw new ActivitiException("taskId is null");
     }
-    commandContext.getTaskSession().deleteHistoricTaskInstance(taskId);
+    commandContext
+      .getHistoricTaskInstanceManager()
+      .deleteHistoricTaskInstance(taskId);
     return null;
   }
 

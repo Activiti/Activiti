@@ -39,7 +39,7 @@ public class SetUserPictureCmd implements Command<Object> {
       throw new ActivitiException("userId is null");
     }
     UserEntity user = (UserEntity) commandContext
-      .getIdentitySession()
+      .getUserManager()
       .findUserById(userId);
     if(user == null) {
       throw new ActivitiException("user "+userId+" doesn't exist");

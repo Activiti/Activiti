@@ -13,7 +13,9 @@
 
 package org.activiti.engine.impl.persistence.mgr;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.impl.task.IdentityLinkEntity;
 
@@ -23,12 +25,22 @@ import org.activiti.engine.impl.task.IdentityLinkEntity;
  */
 public class IdentityLinkManager extends AbstractManager {
 
+  public void deleteIdentityLink(IdentityLinkEntity identityLink) {
+    getPersistenceSession().delete(IdentityLinkEntity.class, identityLink.getId());
+  }
+  
   @SuppressWarnings("unchecked")
   public List<IdentityLinkEntity> findIdentityLinksByTaskId(String taskId) {
     return getPersistenceSession().selectList("selectIdentityLinksByTask", taskId);
   }
 
-  public void deleteIdentityLink(IdentityLinkEntity identityLink) {
-    getPersistenceSession().delete(IdentityLinkEntity.class, identityLink.getId());
+  @SuppressWarnings("unchecked")
+  public List<IdentityLinkEntity> findIdentityLinkByTaskUserGroupAndType(String taskId, String userId, String groupId, String type) {
+    Map<String, String> parameters = new HashMap<String, String>();
+    parameters.put("taskId", taskId);
+    parameters.put("userId", userId);
+    parameters.put("groupId", groupId);
+    parameters.put("type", type);
+    return getPersistenceSession().selectList("selectIdentityLinkByTaskUserGroupAndType", parameters);
   }
 }

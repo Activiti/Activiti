@@ -13,6 +13,7 @@
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.task.TaskEntity;
@@ -38,8 +39,9 @@ public class SaveTaskCmd implements Command<Void> {
       task.insert(null);
       
     } else {
-      TaskEntity persistentTask = commandContext
-        .getTaskSession()
+      TaskEntity persistentTask = Context
+        .getCommandContext()
+        .getTaskManager()
         .findTaskById(task.getId());
       
       persistentTask.update(task);

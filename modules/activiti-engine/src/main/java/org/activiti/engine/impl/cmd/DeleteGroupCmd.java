@@ -33,7 +33,7 @@ public class DeleteGroupCmd implements Command<Void>  {
       throw new ActivitiException("groupId is null");
     }
     commandContext
-      .getIdentitySession()
+      .getGroupManager()
       .deleteGroup(groupId);
     
     return null;

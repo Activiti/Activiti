@@ -35,11 +35,11 @@ public class SaveGroupCmd implements Command<Void> {
     }
     if (group.getRevision()==0) {
       commandContext
-        .getIdentitySession()
+        .getGroupManager()
         .insertGroup(group);
     } else {
       commandContext
-        .getIdentitySession()
+        .getGroupManager()
         .updateGroup(group);
     }
     

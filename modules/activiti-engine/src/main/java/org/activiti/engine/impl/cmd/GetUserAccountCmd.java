@@ -35,7 +35,7 @@ public class GetUserAccountCmd implements Command<Account> {
 
   public Account execute(CommandContext commandContext) {
     return commandContext
-      .getIdentitySession()
+      .getIdentityInfoManager()
       .findUserAccountByUserIdAndKey(userId, userPassword, accountName);
   }
 }

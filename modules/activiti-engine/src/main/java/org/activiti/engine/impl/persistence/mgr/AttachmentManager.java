@@ -11,24 +11,27 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.db;
+package org.activiti.engine.impl.persistence.mgr;
 
-import org.activiti.engine.impl.cfg.IdentitySession;
-import org.activiti.engine.impl.interceptor.Session;
-import org.activiti.engine.impl.interceptor.SessionFactory;
+import java.util.List;
+
+import org.activiti.engine.task.Attachment;
 
 
 /**
  * @author Tom Baeyens
  */
-public class DbIdentitySessionFactory implements SessionFactory {
+public class AttachmentManager extends AbstractManager {
 
-  public Session openSession() {
-    return new DbIdentitySession();
+  @SuppressWarnings("unchecked")
+  public List<Attachment> findAttachmentsByProcessInstanceId(String processInstanceId) {
+    return getPersistenceSession().selectList("selectAttachmentsByProcessInstanceId", processInstanceId);
   }
 
-  public Class< ? > getSessionType() {
-    return IdentitySession.class;
+  @SuppressWarnings("unchecked")
+  public List<Attachment> findAttachmentsByTaskId(String taskId) {
+    return getPersistenceSession().selectList("selectAttachmentsByTaskId", taskId);
   }
+
 
 }

@@ -13,7 +13,7 @@
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.cfg.TaskSession;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.task.TaskEntity;
@@ -38,8 +38,10 @@ public class ClaimTaskCmd implements Command<Void> {
       throw new ActivitiException("taskId is null");
     }
     
-    TaskSession taskSession = commandContext.getTaskSession();
-    TaskEntity task = taskSession.findTaskById(taskId);
+    TaskEntity task = Context
+      .getCommandContext()
+      .getTaskManager()
+      .findTaskById(taskId);
     
     if (task == null) {
       throw new ActivitiException("Cannot find task with id " + taskId);

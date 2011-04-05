@@ -15,6 +15,9 @@ package org.activiti.engine.impl.persistence.mgr;
 
 import java.util.List;
 
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
@@ -23,6 +26,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.runtime.VariableInstanceEntity;
 import org.activiti.engine.impl.task.IdentityLinkEntity;
 import org.activiti.engine.impl.task.TaskEntity;
+import org.activiti.engine.task.Task;
 
 
 /**
@@ -69,5 +73,23 @@ public class TaskManager extends AbstractManager {
       getPersistenceSession().delete(TaskEntity.class, task.getId());
     }
   }
+
+  public TaskEntity findTaskById(String id) {
+    if (id == null) {
+      throw new ActivitiException("Invalid task id : null");
+    }
+    return (TaskEntity) getPersistenceSession().selectOne("selectTask", id);
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<Task> findTasksByQueryCriteria(TaskQueryImpl taskQuery, Page page) {
+    final String query = "selectTaskByQueryCriteria";
+    return getPersistenceSession().selectList(query, taskQuery, page);
+  }
+
+  public long findTaskCountByQueryCriteria(TaskQueryImpl taskQuery) {
+    return (Long) getPersistenceSession().selectOne("selectTaskCountByQueryCriteria", taskQuery);
+  }
+  
 
 }

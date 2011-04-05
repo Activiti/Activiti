@@ -235,7 +235,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   protected List<String> getGroupsForCandidateUser(String candidateUser) {
     List<Group> groups = Context
       .getCommandContext()
-      .getIdentitySession()
+      .getGroupManager()
       .findGroupsByUser(candidateUser);
     List<String> groupIds = new ArrayList<String>();
     for (Group group : groups) {
@@ -295,7 +295,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     ensureVariablesInitialized();
     checkQueryOk();
     return commandContext
-      .getTaskSession()
+      .getTaskManager()
       .findTasksByQueryCriteria(this, page);
   }
   
@@ -303,7 +303,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     ensureVariablesInitialized();
     checkQueryOk();
     return commandContext
-      .getTaskSession()
+      .getTaskManager()
       .findTaskCountByQueryCriteria(this);
   }
   

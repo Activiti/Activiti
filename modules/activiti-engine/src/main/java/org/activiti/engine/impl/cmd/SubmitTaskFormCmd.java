@@ -17,7 +17,6 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.cfg.TaskSession;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.form.TaskFormHandler;
@@ -47,9 +46,10 @@ public class SubmitTaskFormCmd implements Command<Object> {
       throw new ActivitiException("taskId is null");
     }
     
-    TaskSession taskSession = commandContext.getTaskSession();
-    
-    TaskEntity task = taskSession.findTaskById(taskId);
+    TaskEntity task = Context
+      .getCommandContext()
+      .getTaskManager()
+      .findTaskById(taskId);
 
     if (task == null) {
       throw new ActivitiException("Cannot find task with id " + taskId);

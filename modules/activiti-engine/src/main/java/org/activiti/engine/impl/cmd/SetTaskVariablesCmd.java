@@ -16,6 +16,7 @@ package org.activiti.engine.impl.cmd;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.task.TaskEntity;
@@ -41,8 +42,9 @@ public class SetTaskVariablesCmd implements Command<Object> {
       throw new ActivitiException("taskId is null");
     }
     
-    TaskEntity task = commandContext
-      .getTaskSession()
+    TaskEntity task = Context
+      .getCommandContext()
+      .getTaskManager()
       .findTaskById(taskId);
     
     if (task==null) {

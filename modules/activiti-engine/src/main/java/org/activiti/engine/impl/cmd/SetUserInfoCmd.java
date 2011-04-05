@@ -52,7 +52,7 @@ public class SetUserInfoCmd implements Command<Object> {
 
   public Object execute(CommandContext commandContext) {
     commandContext
-      .getIdentitySession()
+      .getIdentityInfoManager()
       .setUserInfo(userId, userPassword, type, key, value, accountPassword, accountDetails);
     return null;
   }

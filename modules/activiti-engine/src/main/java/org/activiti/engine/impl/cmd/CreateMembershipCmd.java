@@ -38,7 +38,7 @@ public class CreateMembershipCmd implements Command<Object> {
       throw new ActivitiException("groupId is null");
     }
     commandContext
-      .getIdentitySession()
+      .getMembershipManager()
       .createMembership(userId, groupId);
     return null;
   }

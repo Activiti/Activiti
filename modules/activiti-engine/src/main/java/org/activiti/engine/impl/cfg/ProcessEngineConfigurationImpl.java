@@ -62,10 +62,8 @@ import org.activiti.engine.impl.calendar.MapBusinessCalendarManager;
 import org.activiti.engine.impl.cfg.standalone.StandaloneMybatisTransactionContextFactory;
 import org.activiti.engine.impl.db.DbHistorySessionFactory;
 import org.activiti.engine.impl.db.DbIdGenerator;
-import org.activiti.engine.impl.db.DbIdentitySessionFactory;
 import org.activiti.engine.impl.db.DbManagementSessionFactory;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
-import org.activiti.engine.impl.db.DbTaskSessionFactory;
 import org.activiti.engine.impl.db.IbatisVariableTypeHandler;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.form.AbstractFormType;
@@ -90,18 +88,23 @@ import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.mail.MailScanner;
 import org.activiti.engine.impl.persistence.deploy.Deployer;
 import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
+import org.activiti.engine.impl.persistence.mgr.AttachmentManager;
 import org.activiti.engine.impl.persistence.mgr.DeploymentManager;
 import org.activiti.engine.impl.persistence.mgr.ExecutionManager;
 import org.activiti.engine.impl.persistence.mgr.GenericManagerFactory;
+import org.activiti.engine.impl.persistence.mgr.GroupManager;
 import org.activiti.engine.impl.persistence.mgr.HistoricActivityInstanceManager;
 import org.activiti.engine.impl.persistence.mgr.HistoricDetailManager;
 import org.activiti.engine.impl.persistence.mgr.HistoricProcessInstanceManager;
 import org.activiti.engine.impl.persistence.mgr.HistoricTaskInstanceManager;
+import org.activiti.engine.impl.persistence.mgr.IdentityInfoManager;
 import org.activiti.engine.impl.persistence.mgr.IdentityLinkManager;
 import org.activiti.engine.impl.persistence.mgr.JobManager;
+import org.activiti.engine.impl.persistence.mgr.MembershipManager;
 import org.activiti.engine.impl.persistence.mgr.ProcessDefinitionManager;
 import org.activiti.engine.impl.persistence.mgr.ResourceManager;
 import org.activiti.engine.impl.persistence.mgr.TaskManager;
+import org.activiti.engine.impl.persistence.mgr.UserManager;
 import org.activiti.engine.impl.persistence.mgr.VariableInstanceManager;
 import org.activiti.engine.impl.scripting.BeansResolverFactory;
 import org.activiti.engine.impl.scripting.ResolverFactory;
@@ -512,8 +515,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     if (sessionFactories==null) {
       sessionFactories = new HashMap<Class<?>, SessionFactory>();
 
-      addSessionFactory(new DbTaskSessionFactory());
-      addSessionFactory(new DbIdentitySessionFactory());
       addSessionFactory(new DbManagementSessionFactory());
       addSessionFactory(new JobExecutorTimerSessionFactory());
       addSessionFactory(new DbHistorySessionFactory());
@@ -542,6 +543,11 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       addSessionFactory(new GenericManagerFactory(HistoricTaskInstanceManager.class));
       addSessionFactory(new GenericManagerFactory(HistoricDetailManager.class));
       addSessionFactory(new GenericManagerFactory(JobManager.class));
+      addSessionFactory(new GenericManagerFactory(UserManager.class));
+      addSessionFactory(new GenericManagerFactory(GroupManager.class));
+      addSessionFactory(new GenericManagerFactory(IdentityInfoManager.class));
+      addSessionFactory(new GenericManagerFactory(MembershipManager.class));
+      addSessionFactory(new GenericManagerFactory(AttachmentManager.class));
     }
     if (customSessionFactories!=null) {
       for (SessionFactory sessionFactory: customSessionFactories) {

@@ -36,11 +36,11 @@ public class SaveUserCmd implements Command<Void> {
     }
     if (user.getRevision()==0) {
       commandContext
-        .getIdentitySession()
+        .getUserManager()
         .insertUser(user);
     } else {
       commandContext
-        .getIdentitySession()
+        .getUserManager()
         .updateUser(user);
     }
     

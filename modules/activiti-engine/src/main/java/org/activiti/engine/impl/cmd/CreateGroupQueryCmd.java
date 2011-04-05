@@ -25,7 +25,7 @@ public class CreateGroupQueryCmd implements Command<GroupQuery> {
 
   public GroupQuery execute(CommandContext commandContext) {
     return commandContext
-      .getIdentitySession()
+      .getGroupManager()
       .createNewGroupQuery();
   }
 

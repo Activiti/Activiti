@@ -66,8 +66,9 @@ public class DeleteTaskCmd implements Command<Void> {
 
   @SuppressWarnings("unchecked")
   protected void deleteTask(CommandContext commandContext, String taskId) {
-    TaskEntity task = commandContext
-      .getTaskSession()
+    TaskEntity task = Context
+      .getCommandContext()
+      .getTaskManager()
       .findTaskById(taskId);
     if (task!=null) {
       task.delete(TaskEntity.DELETE_REASON_DELETED);

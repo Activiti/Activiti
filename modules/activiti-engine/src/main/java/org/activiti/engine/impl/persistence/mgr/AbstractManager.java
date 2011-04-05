@@ -75,6 +75,26 @@ public abstract class AbstractManager implements Session {
     return getSession(HistoricTaskInstanceManager.class);
   }
   
+  protected UserManager getUserManager() {
+    return getSession(UserManager.class);
+  }
+  
+  protected GroupManager getGroupManager() {
+    return getSession(GroupManager.class);
+  }
+  
+  protected IdentityInfoManager getIdentityInfoManager() {
+    return getSession(IdentityInfoManager.class);
+  }
+  
+  protected MembershipManager getMembershipManager() {
+    return getSession(MembershipManager.class);
+  }
+  
+  protected AttachmentManager getAttachmentManager() {
+    return getSession(AttachmentManager.class);
+  }
+  
   public void close() {
   }
 

@@ -35,7 +35,7 @@ public class CreateGroupCmd implements Command<Group> {
 
   public Group execute(CommandContext commandContext) {
     return commandContext
-      .getIdentitySession()
+      .getGroupManager()
       .createNewGroup(groupId);
   }
 

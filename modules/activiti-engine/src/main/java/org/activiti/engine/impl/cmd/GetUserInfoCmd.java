@@ -33,7 +33,7 @@ public class GetUserInfoCmd implements Command<String> {
 
   public String execute(CommandContext commandContext) {
     IdentityInfoEntity identityInfo = commandContext
-      .getIdentitySession()
+      .getIdentityInfoManager()
       .findUserInfoByUserIdAndKey(userId, key);
 
     return (identityInfo!=null ? identityInfo.getValue() : null);

@@ -287,7 +287,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   public void deleteIdentityLink(String userId, String groupId, String type) {
     List<IdentityLinkEntity> identityLinks = Context
       .getCommandContext()
-      .getTaskSession()
+      .getIdentityLinkManager()
       .findIdentityLinkByTaskUserGroupAndType(id, userId, groupId, type);
     
     for (IdentityLinkEntity identityLink: identityLinks) {
@@ -357,7 +357,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     if (!isIdentityLinksInitialized) {
       taskIdentityLinkEntities = Context
         .getCommandContext()
-        .getTaskSession()
+        .getIdentityLinkManager()
         .findIdentityLinksByTaskId(id);
       isIdentityLinksInitialized = true;
     }

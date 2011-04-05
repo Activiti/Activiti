@@ -118,7 +118,7 @@ public class IdentityLinkEntity implements Serializable, IdentityLink, Persisten
     if ( (task==null) && (taskId!=null) ) {
       this.task = Context
         .getCommandContext()
-        .getTaskSession()
+        .getTaskManager()
         .findTaskById(taskId);
     }
     return task;

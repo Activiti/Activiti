@@ -32,7 +32,7 @@ public class DeleteUserInfoCmd implements Command<Object> {
 
   public String execute(CommandContext commandContext) {
     commandContext
-      .getIdentitySession()
+      .getIdentityInfoManager()
       .deleteUserInfoByUserIdAndKey(userId, key);
     return null;
   }

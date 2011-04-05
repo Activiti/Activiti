@@ -103,14 +103,14 @@ public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements 
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
     return commandContext
-      .getIdentitySession()
+      .getGroupManager()
       .findGroupCountByQueryCriteria(this);
   }
   
   public List<Group> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     return commandContext
-      .getIdentitySession()
+      .getGroupManager()
       .findGroupByQueryCriteria(this, page);
   }
   

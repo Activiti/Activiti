@@ -33,7 +33,7 @@ public class GetTaskAttachmentsCmd implements Command<List<Attachment>> {
 
   public List<Attachment> execute(CommandContext commandContext) {
     return commandContext
-      .getTaskSession()
+      .getAttachmentManager()
       .findAttachmentsByTaskId(taskId);
   }
 }

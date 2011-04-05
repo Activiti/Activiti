@@ -14,6 +14,7 @@ package org.activiti.engine.impl.cmd;
 
 import java.util.List;
 
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.task.IdentityLinkEntity;
@@ -35,7 +36,11 @@ public class GetIdentityLinksForTaskCmd implements Command<List<IdentityLink>> {
   
   @SuppressWarnings({"unchecked" })
   public List<IdentityLink> execute(CommandContext commandContext) {
-    TaskEntity task = commandContext.getTaskSession().findTaskById(taskId);
+    TaskEntity task = Context
+      .getCommandContext()
+      .getTaskManager()
+      .findTaskById(taskId);
+
     List<IdentityLink> identityLinks = (List) task.getIdentityLinks();
     
     // assignee is not part of identity links in the db. 

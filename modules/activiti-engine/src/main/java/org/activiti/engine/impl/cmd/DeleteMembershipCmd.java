@@ -13,7 +13,6 @@
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.cfg.IdentitySession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
@@ -38,8 +37,10 @@ public class DeleteMembershipCmd implements Command<Void> {
     if(groupId == null) {
       throw new ActivitiException("groupId is null");
     }
-    IdentitySession identitySession = commandContext.getIdentitySession();
-    identitySession.deleteMembership(userId, groupId);
+    
+    commandContext
+      .getMembershipManager()
+      .deleteMembership(userId, groupId);
     
     return null;    
   }

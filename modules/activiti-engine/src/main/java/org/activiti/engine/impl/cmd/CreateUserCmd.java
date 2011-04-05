@@ -35,8 +35,7 @@ public class CreateUserCmd implements Command<User> {
 
   public User execute(CommandContext commandContext) {
     return commandContext
-      .getIdentitySession()
+      .getUserManager()
       .createNewUser(userId);
   }
-
 }

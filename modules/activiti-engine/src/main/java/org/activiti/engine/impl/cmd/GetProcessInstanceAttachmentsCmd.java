@@ -33,7 +33,7 @@ public class GetProcessInstanceAttachmentsCmd implements Command<List<Attachment
 
   public List<Attachment> execute(CommandContext commandContext) {
     return commandContext
-      .getTaskSession()
+      .getAttachmentManager()
       .findAttachmentsByProcessInstanceId(processInstanceId);
   }
 }

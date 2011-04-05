@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.db;
+package org.activiti.engine.impl.persistence.mgr;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,141 +19,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.activiti.engine.identity.Group;
-import org.activiti.engine.identity.GroupQuery;
-import org.activiti.engine.identity.User;
-import org.activiti.engine.identity.UserQuery;
-import org.activiti.engine.impl.GroupQueryImpl;
-import org.activiti.engine.impl.Page;
-import org.activiti.engine.impl.UserQueryImpl;
-import org.activiti.engine.impl.cfg.IdentitySession;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.identity.GroupEntity;
 import org.activiti.engine.impl.identity.IdentityInfoEntity;
-import org.activiti.engine.impl.identity.UserEntity;
-import org.activiti.engine.impl.interceptor.Session;
-import org.activiti.engine.impl.runtime.ByteArrayEntity;
 
 
 /**
  * @author Tom Baeyens
  */
-public class DbIdentitySession implements IdentitySession, Session {
-
-  protected DbSqlSession dbSqlSession;
-
-  public DbIdentitySession() {
-    this.dbSqlSession = Context.getCommandContext().getSession(DbSqlSession.class);
-  }
-
-  public void insertUser(User user) {
-    dbSqlSession.insert((PersistentObject) user);
-  }
-
-  public UserEntity findUserById(String userId) {
-    return (UserEntity) dbSqlSession.selectOne("selectUserById", userId);
-  }
-
-  @SuppressWarnings("unchecked")
-  public List<User> findUsersByGroupId(String groupId) {
-    return dbSqlSession.selectList("selectUsersByGroupId", groupId);
-  }
-
-  public boolean isValidUser(String userId) {
-    return findUserById(userId) != null;
-  }
-
-  @SuppressWarnings("unchecked")
-  public void deleteUser(String userId) {
-    UserEntity user = findUserById(userId);
-    if (user!=null) {
-      if (user.getPictureByteArrayId()!=null) {
-        dbSqlSession.delete(ByteArrayEntity.class, user.getPictureByteArrayId());
-      }
-      List<IdentityInfoEntity> identityInfos = dbSqlSession.selectList("selectIdentityInfoByUserId", userId);
-      for (IdentityInfoEntity identityInfo: identityInfos) {
-        deleteIdentityInfo(identityInfo);
-      }
-      dbSqlSession.delete("deleteMembershipsByUserId", userId);
-      dbSqlSession.delete("deleteUser", userId);
-    }
-  }
-
-  public void insertGroup(Group group) {
-    dbSqlSession.insert((PersistentObject) group);
-  }
-
-  public GroupEntity findGroupById(String groupId) {
-    return (GroupEntity) dbSqlSession.selectOne("selectGroupById", groupId);
-  }
-
-  @SuppressWarnings("unchecked")
-  public List<Group> findGroupsByUser(String userId) {
-    return dbSqlSession.selectList("selectGroupsByUserId", userId);
-  }
-
-  public void deleteGroup(String groupId) {
-    dbSqlSession.delete("deleteMembershipsByGroupId", groupId);
-    dbSqlSession.delete("deleteGroup", groupId);
-  }
-
-  public void createMembership(String userId, String groupId) {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put("userId", userId);
-    parameters.put("groupId", groupId);
-    dbSqlSession.getSqlSession().insert("insertMembership", parameters);
-  }
-
-  public void deleteMembership(String userId, String groupId) {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put("userId", userId);
-    parameters.put("groupId", groupId);
-    dbSqlSession.delete("deleteMembership", parameters);
-  }
-  
-  @SuppressWarnings("unchecked")
-  public List<User> findUserByQueryCriteria(Object query, Page page) {
-    return dbSqlSession.selectList("selectUserByQueryCriteria", query, page);
-  }
-  
-  public long findUserCountByQueryCriteria(Object query) {
-    return (Long) dbSqlSession.selectOne("selectUserCountByQueryCriteria", query);
-  }
-  
-  @SuppressWarnings("unchecked")
-  public List<Group> findGroupByQueryCriteria(Object query, Page page) {
-    return dbSqlSession.selectList("selectGroupByQueryCriteria", query, page);
-  }
-  
-  public long findGroupCountByQueryCriteria(Object query) {
-    return (Long) dbSqlSession.selectOne("selectGroupCountByQueryCriteria", query);
-  }
-
-  public Group createNewGroup(String groupId) {
-    return new GroupEntity(groupId);
-  }
-
-  public GroupQuery createNewGroupQuery() {
-    return new GroupQueryImpl(Context.getProcessEngineConfiguration().getCommandExecutorTxRequired());
-  }
-
-  public User createNewUser(String userId) {
-    return new UserEntity(userId);
-  }
-
-  public UserQuery createNewUserQuery() {
-    return new UserQueryImpl(Context.getProcessEngineConfiguration().getCommandExecutorTxRequired());
-  }
-
-  public void updateGroup(Group updatedGroup) {
-    GroupEntity persistentGroup = findGroupById(updatedGroup.getId());
-    persistentGroup.update((GroupEntity) updatedGroup);
-  }
-
-  public void updateUser(User updatedUser) {
-    UserEntity persistentUser = findUserById(updatedUser.getId());
-    persistentUser.update((UserEntity) updatedUser);
-  }
+public class IdentityInfoManager extends AbstractManager {
 
   public void deleteUserInfoByUserIdAndKey(String userId, String key) {
     IdentityInfoEntity identityInfoEntity = findUserInfoByUserIdAndKey(userId, key);
@@ -163,10 +36,10 @@ public class DbIdentitySession implements IdentitySession, Session {
   }
 
   public void deleteIdentityInfo(IdentityInfoEntity identityInfo) {
-    dbSqlSession.delete(IdentityInfoEntity.class, identityInfo.getId());
+    getPersistenceSession().delete(IdentityInfoEntity.class, identityInfo.getId());
     if (IdentityInfoEntity.TYPE_USERACCOUNT.equals(identityInfo.getType())) {
       for (IdentityInfoEntity identityInfoDetail: findIdentityInfoDetails(identityInfo.getId())) {
-        dbSqlSession.delete(IdentityInfoEntity.class, identityInfoDetail.getId());
+        getPersistenceSession().delete(IdentityInfoEntity.class, identityInfoDetail.getId());
       }
     }
   }
@@ -242,7 +115,7 @@ public class DbIdentitySession implements IdentitySession, Session {
       identityInfoEntity.setKey(key);
       identityInfoEntity.setValue(value);
       identityInfoEntity.setPasswordBytes(storedPassword);
-      dbSqlSession.insert(identityInfoEntity);
+      getPersistenceSession().insert(identityInfoEntity);
       if (accountDetails!=null) {
         insertAccountDetails(identityInfoEntity, accountDetails, accountDetails.keySet());
       }
@@ -256,7 +129,7 @@ public class DbIdentitySession implements IdentitySession, Session {
       identityInfoDetail.setParentId(identityInfoEntity.getId());
       identityInfoDetail.setKey(newKey);
       identityInfoDetail.setValue(accountDetails.get(newKey));
-      dbSqlSession.insert(identityInfoDetail);
+      getPersistenceSession().insert(identityInfoDetail);
     }
   }
 
@@ -274,7 +147,7 @@ public class DbIdentitySession implements IdentitySession, Session {
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put("userId", userId);
     parameters.put("key", key);
-    return (IdentityInfoEntity) dbSqlSession.selectOne("selectIdentityInfoByUserIdAndKey", parameters);
+    return (IdentityInfoEntity) getPersistenceSession().selectOne("selectIdentityInfoByUserIdAndKey", parameters);
   }
 
   @SuppressWarnings("unchecked")
@@ -282,12 +155,6 @@ public class DbIdentitySession implements IdentitySession, Session {
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put("userId", userId);
     parameters.put("type", type);
-    return (List) dbSqlSession.getSqlSession().selectList("selectIdentityInfoKeysByUserIdAndType", parameters);
-  }
-
-  public void close() {
-  }
-
-  public void flush() {
+    return (List) getPersistenceSession().getSqlSession().selectList("selectIdentityInfoKeysByUserIdAndType", parameters);
   }
 }

@@ -60,13 +60,6 @@
     select * from ACT_ID_USER
   </select>
   
-  <select id="selectUsersByGroupId" parameterType="string" resultMap="userResultMap">
-    select user.*
-    from ACT_ID_USER user, ACT_ID_MEMBERSHIP membership
-    where user.ID_ = membership.USER_ID_
-      and membership.GROUP_ID_ = #{groupId}
-  </select>
-  
   <select id="selectUserByQueryCriteria" parameterType="org.activiti.engine.impl.UserQueryImpl" resultMap="userResultMap">
     select U.*
     <include refid="selectUserByQueryCriteriaSql" />
