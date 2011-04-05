@@ -16,7 +16,7 @@ import java.util.TreeMap;
 
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngines;
-import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.navigation.DataBaseNavigationHandler;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.Images;
@@ -41,7 +41,7 @@ public class DatabasePage extends ManagementPage {
   protected String tableName;
   
   public DatabasePage() {
-    ExplorerApplication.getCurrent().setCurrentUriFragment(
+    ExplorerApp.get().setCurrentUriFragment(
             new UriFragment(DataBaseNavigationHandler.TABLE_URI_PART));
   }
   
@@ -74,7 +74,7 @@ public class DatabasePage extends ManagementPage {
        splitPanel.setSecondComponent(new DatabaseDetailPanel(tableName));
        
        // Update URL
-       ExplorerApplication.getCurrent().setCurrentUriFragment(
+       ExplorerApp.get().setCurrentUriFragment(
          new UriFragment(DataBaseNavigationHandler.TABLE_URI_PART, tableName));
       }
     });

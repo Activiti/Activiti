@@ -11,29 +11,30 @@
  * limitations under the License.
  */
 
-package org.activiti.explorer.navigation;
+package org.activiti.explorer;
 
-import org.activiti.explorer.ExplorerApp;
+import java.text.MessageFormat;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 
 /**
- * @author Frederik Heremans
+ * @author Joram Barrez
  */
-public class JobNavigationHandler implements NavigationHandler {
+public class I18nManager {
 
-  public static final String JOB_URL_PART = "job";
+  protected ResourceBundle messages;
   
-  public String getTrigger() {
-    return JOB_URL_PART;
+  public I18nManager(Locale locale) {
+    this.messages = ResourceBundle.getBundle(Constant.RESOURCE_BUNDLE, locale);
+  }
+  
+  public String getMessage(String key) {
+    return messages.getString(key);
   }
 
-  public void handleNavigation(UriFragment uriFragment) {
-    String jobId = uriFragment.getUriPart(1);
-    if(jobId != null) {
-      ExplorerApp.get().getViewManager().showJobPage(jobId);
-    } else {
-      ExplorerApp.get().getViewManager().showJobPage();
-    }
+  public String getMessage(String key, Object... arguments) {
+    return MessageFormat.format(messages.getString(key), arguments);
   }
-
+  
 }

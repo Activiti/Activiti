@@ -15,7 +15,7 @@ package org.activiti.explorer.ui.task;
 
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
-import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.UriFragment;
@@ -64,11 +64,11 @@ public abstract class TaskPage extends AbstractPage {
           splitPanel.setSecondComponent(new TaskDetailPanel(taskId, TaskPage.this));
           
           UriFragment taskFragment = getUriFragment(taskId);
-          ExplorerApplication.getCurrent().setCurrentUriFragment(taskFragment);
+          ExplorerApp.get().setCurrentUriFragment(taskFragment);
         } else {
           // Nothing is selected
           splitPanel.removeComponent(splitPanel.getSecondComponent());
-          ExplorerApplication.getCurrent().setCurrentUriFragment(getUriFragment(null));
+          ExplorerApp.get().setCurrentUriFragment(getUriFragment(null));
         }
       }
     });

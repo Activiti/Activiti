@@ -16,8 +16,10 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
+import org.activiti.explorer.NotificationManager;
 import org.activiti.explorer.ui.ExplorerLayout;
 
 import com.vaadin.event.dd.DragAndDropEvent;
@@ -54,6 +56,10 @@ public class UploadPopupWindow extends Window
   
   private static final long serialVersionUID = 1L;
   
+  // Services
+  protected I18nManager i18nManager;
+  protected NotificationManager notificationManager;
+  
   // Ui components
   protected ProgressIndicator progressIndicator;
   protected VerticalLayout layout;
@@ -69,14 +75,21 @@ public class UploadPopupWindow extends Window
 
   public UploadPopupWindow(String caption, String description, Receiver receiver) {
     this.receiver = receiver;
+    this.i18nManager = ExplorerApp.get().getI18nManager();
+    this.notificationManager = ExplorerApp.get().getNotificationManager();
+    
+    init(caption, description);
+  }
+
+  // UI initialisation ----------------------------------------------------------------------------
+  
+  protected void init(String caption, String description) {
     initWindow(caption);
     addDescription(description);
     addUpload();
     addOrLabel();
     addDropPanel();
   }
-  
-  // UI initialisation ----------------------------------------------------------------------------
 
   protected void initWindow(String caption) {
     // Fixed width/height since otherwise the layout can be screwed by the drag and drop
@@ -103,7 +116,7 @@ public class UploadPopupWindow extends Window
   protected void addUpload() {
     this.upload = new Upload(null, receiver);
     upload.addStyleName(ExplorerLayout.STYLE_DEPLOYMENT_UPLOAD_BUTTON);
-    upload.setButtonCaption(ExplorerApplication.getCurrent().getMessage(Messages.UPLOAD_SELECT));
+    upload.setButtonCaption(i18nManager.getMessage(Messages.UPLOAD_SELECT));
     upload.setImmediate(true);
     layout.addComponent(upload);
     layout.setComponentAlignment(upload, Alignment.MIDDLE_CENTER);
@@ -131,7 +144,7 @@ public class UploadPopupWindow extends Window
     layout.addComponent(dragAndDropWrapper);
     layout.setComponentAlignment(dragAndDropWrapper, Alignment.MIDDLE_CENTER);
     
-    Label dropLabel = new Label(ExplorerApplication.getCurrent().getMessage(Messages.UPLOAD_DROP));
+    Label dropLabel = new Label(i18nManager.getMessage(Messages.UPLOAD_DROP));
     dropLabel.setSizeUndefined();
     dropPanel.addComponent(dropLabel);
     ((VerticalLayout)dropPanel.getContent()).setComponentAlignment(dropLabel, Alignment.MIDDLE_CENTER);
@@ -177,7 +190,7 @@ public class UploadPopupWindow extends Window
   }
   
   protected void uploadFailed(String errorMessage) {
-    ExplorerApplication.getCurrent().showErrorNotification("Upload failed...", errorMessage);
+    notificationManager.showErrorNotification(Messages.UPLOAD_FAILED, errorMessage);
   }
   
   // Drag and drop handling (DropHandler) ---------------------------------------------------------

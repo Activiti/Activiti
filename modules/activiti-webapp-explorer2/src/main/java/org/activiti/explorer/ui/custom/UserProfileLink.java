@@ -15,7 +15,9 @@ package org.activiti.explorer.ui.custom;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Picture;
-import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.I18nManager;
+import org.activiti.explorer.ViewManager;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.profile.ProfilePopupWindow;
 import org.activiti.explorer.ui.util.InputStreamStreamSource;
@@ -39,23 +41,25 @@ import com.vaadin.ui.themes.Reindeer;
  */
 public class UserProfileLink extends HorizontalLayout {
 
-  private static final long serialVersionUID = -8732380136836785044L;
+  private static final long serialVersionUID = 1L;
   
   protected boolean renderPicture;
   
   protected IdentityService identityService;
+  protected ViewManager viewManager;
   
   public UserProfileLink(IdentityService identityService, boolean renderPicture, final String userName) {
     this.renderPicture = renderPicture;
     this.identityService = identityService;
+    this.viewManager = ExplorerApp.get().getViewManager();
     
     Button owner = new Button(userName);
     
     ClickListener buttonClickListener = new ClickListener() {
-      private static final long serialVersionUID = 4629275955614367780L;
+      private static final long serialVersionUID = 1L;
 
       public void buttonClick(ClickEvent event) {
-        ExplorerApplication.getCurrent().showPopupWindow(new ProfilePopupWindow(userName));
+        viewManager.showProfilePopup(userName);
       }
     };
     owner.addStyleName(Reindeer.BUTTON_LINK);
@@ -66,7 +70,7 @@ public class UserProfileLink extends HorizontalLayout {
       Picture picture = identityService.getUserPicture(userName);
       if(picture != null) {
         Resource imageResource = new StreamResource(new InputStreamStreamSource(picture.getInputStream()), 
-          userName + picture.getMimeType(), ExplorerApplication.getCurrent());
+          userName + picture.getMimeType(), ExplorerApp.get());
         
         Embedded image = new Embedded("", imageResource);
         image.setType(Embedded.TYPE_IMAGE);
@@ -76,7 +80,7 @@ public class UserProfileLink extends HorizontalLayout {
         image.addListener(new MouseEvents.ClickListener() {
           private static final long serialVersionUID = 7341560240277898495L;
           public void click(com.vaadin.event.MouseEvents.ClickEvent event) {
-            ExplorerApplication.getCurrent().showPopupWindow(new ProfilePopupWindow(userName));
+            viewManager.showProfilePopup(userName);
           }
         });
         

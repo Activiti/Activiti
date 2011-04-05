@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
@@ -43,6 +42,7 @@ import org.activiti.explorer.ui.form.EnumFormPropertyRenderer;
 import org.activiti.explorer.ui.form.FormPropertyMapping;
 import org.activiti.explorer.ui.form.LongFormPropertyRenderer;
 import org.activiti.explorer.ui.form.StringFormPropertyRenderer;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  * @author Joram Barrez
@@ -51,13 +51,12 @@ public class BootProcessEngineContextListener implements ServletContextListener 
   
   protected static final Logger LOGGER = Logger.getLogger(BootProcessEngineContextListener.class.getName());
 
+  protected ProcessEngine processEngine;
+  
   public void contextInitialized(ServletContextEvent servletContextEvent) {
-    ProcessEngines.init();
-    
-    if (ProcessEngines.getDefaultProcessEngine() == null) {
-      throw new ActivitiException("Could not construct a process engine. " 
-              + "Please verify that your activiti.cfg.xml configuration is correct.");
-    }
+    this.processEngine = WebApplicationContextUtils
+      .getRequiredWebApplicationContext(servletContextEvent.getServletContext())
+      .getBean(ProcessEngine.class);
     
     initFormPropertyMapping();
     initUriNavigation();
@@ -65,8 +64,6 @@ public class BootProcessEngineContextListener implements ServletContextListener 
   }
 
   protected void initDemoData() {
-    ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
-    
     initKermit(processEngine);
     initRandomUsers(processEngine);
     initTasks(processEngine);

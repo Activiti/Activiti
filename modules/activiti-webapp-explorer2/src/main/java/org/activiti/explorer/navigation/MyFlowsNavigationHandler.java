@@ -13,8 +13,7 @@
 
 package org.activiti.explorer.navigation;
 
-import org.activiti.explorer.ExplorerApplication;
-import org.activiti.explorer.ui.flow.MyFlowsPage;
+import org.activiti.explorer.ExplorerApp;
 
 
 /**
@@ -32,9 +31,9 @@ public class MyFlowsNavigationHandler implements NavigationHandler {
     String processInstanceId = uriFragment.getUriPart(1);
     
     if(processInstanceId != null) {
-      ExplorerApplication.getCurrent().switchView(new MyFlowsPage(processInstanceId));
+      ExplorerApp.get().getViewManager().showMyFlowsPage(processInstanceId);
     } else {
-      ExplorerApplication.getCurrent().switchView(new MyFlowsPage());
+      ExplorerApp.get().getViewManager().showMyFlowsPage();
     }
   }
 

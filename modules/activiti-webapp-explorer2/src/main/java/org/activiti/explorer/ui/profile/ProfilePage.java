@@ -19,7 +19,8 @@ import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
-import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
@@ -45,6 +46,7 @@ public class ProfilePage extends Panel {
   
   // service
   protected IdentityService identityService;
+  protected I18nManager i18nManager;
   
   // user information
   protected String userId;
@@ -64,6 +66,7 @@ public class ProfilePage extends Panel {
   public ProfilePage(String userId) {
     this.userId = userId;
     this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
+    this.i18nManager = ExplorerApp.get().getI18nManager();
     
     loadProfileData();
     initUi();
@@ -106,7 +109,7 @@ public class ProfilePage extends Panel {
       public InputStream getStream() {
         return picture.getInputStream();
       }
-    }, user.getId(), ExplorerApplication.getCurrent());
+    }, user.getId(), ExplorerApp.get());
     
     Embedded image = new Embedded("", imageresource);
     image.setType(Embedded.TYPE_IMAGE);
@@ -140,38 +143,38 @@ public class ProfilePage extends Panel {
   }
 
   protected void initAboutSection() {
-    addProfileHeader(infoPanelLayout, ExplorerApplication.getCurrent().getMessage(Messages.PROFILE_ABOUT));
+    addProfileHeader(infoPanelLayout, i18nManager.getMessage(Messages.PROFILE_ABOUT));
     GridLayout aboutLayout = createInfoSectionLayout(2, 4); 
 
-    addProfileEntry(aboutLayout, ExplorerApplication.getCurrent().getMessage(Messages.PROFILE_NAME), user.getFirstName() + " " + user.getLastName());
+    addProfileEntry(aboutLayout, i18nManager.getMessage(Messages.PROFILE_NAME), user.getFirstName() + " " + user.getLastName());
     
     if (jobTitle != null) {
-      addProfileEntry(aboutLayout, ExplorerApplication.getCurrent().getMessage(Messages.PROFILE_JOBTITLE), jobTitle);
+      addProfileEntry(aboutLayout, i18nManager.getMessage(Messages.PROFILE_JOBTITLE), jobTitle);
     }
     
     if (birthDate != null) {
-      addProfileEntry(aboutLayout, ExplorerApplication.getCurrent().getMessage(Messages.PROFILE_BIRTHDATE), birthDate);
+      addProfileEntry(aboutLayout, i18nManager.getMessage(Messages.PROFILE_BIRTHDATE), birthDate);
     }
     
     if (location != null) {
-      addProfileEntry(aboutLayout, ExplorerApplication.getCurrent().getMessage(Messages.PROFILE_LOCATION), location);
+      addProfileEntry(aboutLayout, i18nManager.getMessage(Messages.PROFILE_LOCATION), location);
     }
   }
   
   protected void initContactSection() {
-    addProfileHeader(infoPanelLayout, ExplorerApplication.getCurrent().getMessage(Messages.PROFILE_CONTACT));
+    addProfileHeader(infoPanelLayout, i18nManager.getMessage(Messages.PROFILE_CONTACT));
     GridLayout contactLayout = createInfoSectionLayout(2, 4); 
     
     if (user.getEmail() != null) {
-      addProfileEntry(contactLayout, ExplorerApplication.getCurrent().getMessage(Messages.PROFILE_EMAIL), user.getEmail());
+      addProfileEntry(contactLayout, i18nManager.getMessage(Messages.PROFILE_EMAIL), user.getEmail());
     }
     
     if (phone != null) {
-      addProfileEntry(contactLayout, ExplorerApplication.getCurrent().getMessage(Messages.PROFILE_PHONE), phone);
+      addProfileEntry(contactLayout, i18nManager.getMessage(Messages.PROFILE_PHONE), phone);
     }
     
     if (twitterName != null) {
-      addProfileEntry(contactLayout, ExplorerApplication.getCurrent().getMessage(Messages.PROFILE_TWITTER), twitterName);
+      addProfileEntry(contactLayout, i18nManager.getMessage(Messages.PROFILE_TWITTER), twitterName);
     }
 
     if (skypeId != null) {
@@ -191,12 +194,12 @@ public class ProfilePage extends Panel {
       skypeImage.setSizeUndefined();
       skypeLayout.addComponent(skypeImage);
       
-      addProfileEntry(contactLayout, ExplorerApplication.getCurrent().getMessage(Messages.PROFILE_SKYPE), skypeLayout);
+      addProfileEntry(contactLayout, i18nManager.getMessage(Messages.PROFILE_SKYPE), skypeLayout);
     }
   }
   
   protected void  initAccountsSection() {
-    addProfileHeader(infoPanelLayout, ExplorerApplication.getCurrent().getMessage(Messages.PROFILE_ACCOUNTS));
+    addProfileHeader(infoPanelLayout, i18nManager.getMessage(Messages.PROFILE_ACCOUNTS));
     GridLayout accountLayout = createInfoSectionLayout(3, 2); 
 
     // Google

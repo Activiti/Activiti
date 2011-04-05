@@ -12,7 +12,7 @@
  */
 package org.activiti.explorer.ui.management.job;
 
-import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.JobNavigationHandler;
@@ -39,7 +39,7 @@ public class JobPage extends ManagementPage {
   protected LazyLoadingContainer jobListContainer;
   
   public JobPage() {
-    ExplorerApplication.getCurrent().setCurrentUriFragment(
+    ExplorerApp.get().setCurrentUriFragment(
       new UriFragment(JobNavigationHandler.JOB_URL_PART));
   }
   
@@ -76,12 +76,12 @@ public class JobPage extends ManagementPage {
 
           splitPanel.setSecondComponent(new JobDetailPanel(jobId, JobPage.this));
           // Update URL
-          ExplorerApplication.getCurrent().setCurrentUriFragment(
+          ExplorerApp.get().setCurrentUriFragment(
             new UriFragment(JobNavigationHandler.JOB_URL_PART, jobId));
         } else {
           // Nothing is selected
           splitPanel.removeComponent(splitPanel.getSecondComponent());
-          ExplorerApplication.getCurrent().setCurrentUriFragment(new UriFragment(JobNavigationHandler.JOB_URL_PART));
+          ExplorerApp.get().setCurrentUriFragment(new UriFragment(JobNavigationHandler.JOB_URL_PART));
         }
       }
     });

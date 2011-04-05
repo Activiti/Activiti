@@ -15,9 +15,6 @@
  */
 package org.activiti.explorer;
 
-import java.text.MessageFormat;
-import java.util.ResourceBundle;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -26,37 +23,56 @@ import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.util.LogUtil;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.MainWindow;
+import org.springframework.context.annotation.Scope;
 
 import com.vaadin.Application;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.Notification;
 
 /**
  * @author Joram Barrez
  */
-public class ExplorerApplication extends Application implements HttpServletRequestListener {
+@org.springframework.stereotype.Component
+@Scope(value="session")
+public class ExplorerApp extends Application implements HttpServletRequestListener {
   
-  private static final long serialVersionUID = -8923370280251348552L;
-  
+  private static final long serialVersionUID = -1L;
+
   static {
     LogUtil.readJavaUtilLoggingConfigFromClasspath();
   }
   
-  protected static ThreadLocal<ExplorerApplication> current = new ThreadLocal<ExplorerApplication>();
+  protected static ThreadLocal<ExplorerApp> current = new ThreadLocal<ExplorerApp>();
+  
   protected MainWindow mainWindow;
-  protected ResourceBundle messages;
+  protected I18nManager i18nManager;
+  protected ViewManager viewManager;
+  protected NotificationManager notificationManager;
 
   public void init() {
-    initResourceBundle();
+    initI18nManager();
+
     this.mainWindow = new MainWindow();
+    initNotificationManager(); // Notifications depend on the mainWindow, so needs to be initialised afterwards
+    initViewManager(); // Changing view depends on mainWindow, so needs to be initialised afterwards
+
+    // UI
     setMainWindow(mainWindow);
     mainWindow.showLoginPage();
   }
   
-  protected void initResourceBundle() {
-    this.messages = ResourceBundle.getBundle(Constant.RESOURCE_BUNDLE, getLocale());
+  protected void initI18nManager() {
+    this.i18nManager = new I18nManager(getLocale());
+  }
+  
+  protected void initViewManager() {
+    if (mainWindow == null) {
+      throw new RuntimeException("Could not initialise ViewManager: null mainWindow");
+    }
+    this.viewManager = new ViewManager(mainWindow);
+  }
+  
+  protected void initNotificationManager() {
+    this.notificationManager = new NotificationManager(mainWindow, i18nManager);
   }
   
   /**
@@ -75,47 +91,26 @@ public class ExplorerApplication extends Application implements HttpServletReque
 //    return window;
 //  }
   
-  // View management ------------------------------------------------------------------------------
-  
-  public static ExplorerApplication getCurrent() {
+  public static ExplorerApp get() {
     return current.get();
-  }
-  
-  public void switchView(Component component) {
-    mainWindow.switchView(component);
-  }
-  
-  public void showLoginPage() {
-    mainWindow.showLoginPage();
-  }
-  
-  public void showDefaultContent() {
-    mainWindow.showDefaultContent();
   }
   
   public User getLoggedInUser() {
     return (User) getUser();
   }
   
-  public void showErrorNotification(String caption, String message) {
-    getMainWindow().showNotification(caption, "<br/>"+message, Notification.TYPE_ERROR_MESSAGE);
+  // Managers
+  
+  public ViewManager getViewManager() {
+    return viewManager;
   }
   
-  public void showInformationNotification(String message) {
-    getMainWindow().showNotification(message, Notification.TYPE_HUMANIZED_MESSAGE);
+  public I18nManager getI18nManager() {
+    return i18nManager;
   }
   
-  public void showPopupWindow(Window window) {
-    getMainWindow().addWindow(window);
-  }
-  
-  // Localisation
-  public String getMessage(String key) {
-    return messages.getString(key);
-  }
-
-  public String getMessage(String key, Object... arguments) {
-    return MessageFormat.format(messages.getString(key), arguments);
+  public NotificationManager getNotificationManager() {
+    return notificationManager;
   }
   
   // HttpServletRequestListener -------------------------------------------------------------------
@@ -128,7 +123,7 @@ public class ExplorerApplication extends Application implements HttpServletReque
     User user = (User) getUser();
     if (user == null) {
       if (mainWindow != null && !mainWindow.isShowingLoginPage()) {
-        showLoginPage();
+        viewManager.showLoginPage();
       }
     } else {
       // Set thread-local userid of logged in user (needed for Activiti user logic)

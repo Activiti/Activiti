@@ -12,8 +12,10 @@
  */
 package org.activiti.explorer.ui.management.deployment;
 
-import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
+import org.activiti.explorer.ViewManager;
 
 import com.vaadin.ui.MenuBar.Command;
 import com.vaadin.ui.MenuBar.MenuItem;
@@ -26,17 +28,25 @@ public class NewDeploymentListener implements Command {
 
   private static final long serialVersionUID = 1L;
   
+  protected I18nManager i18nManager;
+  protected ViewManager viewManager;
+  
+  public NewDeploymentListener() {
+    this.i18nManager = ExplorerApp.get().getI18nManager();
+    this.viewManager = ExplorerApp.get().getViewManager();
+  }
+  
   public void menuSelected(MenuItem selectedItem) {
     DeploymentUploadReceiver receiver = new DeploymentUploadReceiver();
     UploadPopupWindow uploadPopupWindow = new UploadPopupWindow(
-            ExplorerApplication.getCurrent().getMessage(Messages.DEPLOYMENT_UPLOAD),
-            ExplorerApplication.getCurrent().getMessage(Messages.DEPLOYMENT_UPLOAD_DESCRIPTION),
+            i18nManager.getMessage(Messages.DEPLOYMENT_UPLOAD),
+            i18nManager.getMessage(Messages.DEPLOYMENT_UPLOAD_DESCRIPTION),
             receiver);
     
     // The receiver also acts as a listener for the end of the upload 
     // so it can switch to the new deployment page
     uploadPopupWindow.addFinishedListener(receiver);
-    ExplorerApplication.getCurrent().showPopupWindow(uploadPopupWindow);
+    viewManager.showPopupWindow(uploadPopupWindow);
   }
 
 }

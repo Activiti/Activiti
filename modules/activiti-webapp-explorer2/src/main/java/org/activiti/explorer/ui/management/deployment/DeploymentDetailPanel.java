@@ -20,11 +20,12 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
+import org.activiti.explorer.ViewManager;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
-import org.activiti.explorer.ui.flow.FlowPage;
 
 import com.ocpsoft.pretty.time.PrettyTime;
 import com.vaadin.terminal.StreamResource;
@@ -50,14 +51,24 @@ public class DeploymentDetailPanel extends Panel {
   private static final long serialVersionUID = 1L;
   
   protected RepositoryService repositoryService;
+  protected ViewManager viewManager;
+  protected I18nManager i18nManager;
+  
   protected Deployment deployment;
   protected DeploymentPage parent;
   
   public DeploymentDetailPanel(String deploymentId, DeploymentPage parent) {
     this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+    this.i18nManager = ExplorerApp.get().getI18nManager();
+    this.viewManager = ExplorerApp.get().getViewManager();
+    
     this.deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
     this.parent = parent;
     
+    init();
+  }
+  
+  protected void init() {
     addStyleName(Reindeer.LAYOUT_WHITE);
     
     addDeploymentName();
@@ -77,14 +88,14 @@ public class DeploymentDetailPanel extends Panel {
     layout.addComponent(nameLabel);
     
     // Delete button
-    Button deleteButton = new Button(ExplorerApplication.getCurrent().getMessage(Messages.DEPLOYMENT_DELETE));
+    Button deleteButton = new Button(i18nManager.getMessage(Messages.DEPLOYMENT_DELETE));
     deleteButton.setIcon(Images.DELETE);
     deleteButton.addStyleName(Reindeer.BUTTON_LINK);
     layout.addComponent(deleteButton);
     layout.setComponentAlignment(deleteButton, Alignment.MIDDLE_LEFT);
     deleteButton.addListener(new ClickListener() {
       public void buttonClick(ClickEvent event) {
-        ExplorerApplication.getCurrent().showPopupWindow(new DeleteDeploymentPopupWindow(deployment, parent));
+        viewManager.showPopupWindow(new DeleteDeploymentPopupWindow(deployment, parent));
       }
     });
   }
@@ -101,7 +112,7 @@ public class DeploymentDetailPanel extends Panel {
     Embedded clockImage = new Embedded(null, Images.CLOCK);
     timeDetails.addComponent(clockImage);
     
-    Label timeLabel = new Label(ExplorerApplication.getCurrent().getMessage(Messages.DEPLOYMENT_CREATE_TIME) + new PrettyTime().format(deployment.getDeploymentTime()));
+    Label timeLabel = new Label(i18nManager.getMessage(Messages.DEPLOYMENT_CREATE_TIME) + new PrettyTime().format(deployment.getDeploymentTime()));
     timeDetails.addComponent(timeLabel);
     timeDetails.setComponentAlignment(timeLabel, Alignment.MIDDLE_CENTER);
   }
@@ -115,7 +126,7 @@ public class DeploymentDetailPanel extends Panel {
     if (processDefinitions.size() > 0) {
       
       // Header
-      Label processDefinitionHeader = new Label(ExplorerApplication.getCurrent().getMessage(Messages.DEPLOYMENT_HEADER_DEFINITIONS));
+      Label processDefinitionHeader = new Label(i18nManager.getMessage(Messages.DEPLOYMENT_HEADER_DEFINITIONS));
       processDefinitionHeader.addStyleName(ExplorerLayout.STYLE_DEPLOYMENT_DETAILS_HEADER);
       processDefinitionHeader.setWidth("95%");
       addComponent(processDefinitionHeader);
@@ -139,7 +150,7 @@ public class DeploymentDetailPanel extends Panel {
         Button processDefinitionButton = new Button(processDefinition.getName());
         processDefinitionButton.addListener(new ClickListener() {
           public void buttonClick(ClickEvent event) {
-            ExplorerApplication.getCurrent().switchView(new FlowPage(processDefinition.getId()));
+            viewManager.showFlowPage(processDefinition.getId());
           }
         });
         processDefinitionButton.addStyleName(Reindeer.BUTTON_LINK);
@@ -153,7 +164,7 @@ public class DeploymentDetailPanel extends Panel {
     Collections.sort(resourceNames); // small nr of elements, so we can do it in-memory
     
     if (resourceNames.size() > 0) {
-      Label resourceHeader = new Label(ExplorerApplication.getCurrent().getMessage(Messages.DEPLOYMENT_HEADER_RESOURCES));
+      Label resourceHeader = new Label(i18nManager.getMessage(Messages.DEPLOYMENT_HEADER_RESOURCES));
       resourceHeader.setWidth("95%");
       resourceHeader.addStyleName(ExplorerLayout.STYLE_DEPLOYMENT_DETAILS_HEADER);
       addComponent(resourceHeader);
@@ -177,7 +188,7 @@ public class DeploymentDetailPanel extends Panel {
             return repositoryService.getResourceAsStream(deployment.getId(), resourceName);
           }
         };
-        Link resourceLink = new Link(resourceName, new StreamResource(streamSource, resourceName, ExplorerApplication.getCurrent()));
+        Link resourceLink = new Link(resourceName, new StreamResource(streamSource, resourceName, ExplorerApp.get()));
         resourceLinksLayout.addComponent(resourceLink);
       }
     }

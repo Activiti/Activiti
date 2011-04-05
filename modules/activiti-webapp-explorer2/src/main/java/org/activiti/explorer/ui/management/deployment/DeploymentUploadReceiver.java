@@ -22,7 +22,11 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
-import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.I18nManager;
+import org.activiti.explorer.Messages;
+import org.activiti.explorer.NotificationManager;
+import org.activiti.explorer.ViewManager;
 
 import com.vaadin.ui.Upload.FinishedEvent;
 import com.vaadin.ui.Upload.FinishedListener;
@@ -37,6 +41,9 @@ public class DeploymentUploadReceiver implements Receiver, FinishedListener {
   private static final long serialVersionUID = 1L;
   
   protected RepositoryService repositoryService;
+  protected I18nManager i18nManager;
+  protected NotificationManager notificationManager;
+  protected ViewManager viewManager;
   
   // Will be assigned during upload
   protected ByteArrayOutputStream outputStream;
@@ -48,6 +55,9 @@ public class DeploymentUploadReceiver implements Receiver, FinishedListener {
   
   public DeploymentUploadReceiver() {
     this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+    this.i18nManager = ExplorerApp.get().getI18nManager();
+    this.notificationManager = ExplorerApp.get().getNotificationManager();
+    this.viewManager = ExplorerApp.get().getViewManager();
   }
   
   public OutputStream receiveUpload(String filename, String mimeType) {
@@ -77,22 +87,22 @@ public class DeploymentUploadReceiver implements Receiver, FinishedListener {
           .addZipInputStream(new ZipInputStream(new ByteArrayInputStream(outputStream.toByteArray())))
           .deploy();
       } else {
-        ExplorerApplication.getCurrent().showErrorNotification("Could not upload file",
-        		"Only .bar, .zip and .bpmn20.xml files are supported");
+        notificationManager.showErrorNotification(Messages.DEPLOYMENT_UPLOAD_INVALID_FILE,
+        		i18nManager.getMessage(Messages.DEPLOYMENT_UPLOAD_INVALID_FILE_EXPLANATION));
       }
     } finally {
       if (outputStream != null) {
         try {
           outputStream.close();
         } catch (IOException e) {
-          ExplorerApplication.getCurrent().showErrorNotification("Server-side error", e.getMessage());
+          notificationManager.showErrorNotification("Server-side error", e.getMessage());
         }
       }
     }
   }
   
   protected void showUploadedDeployment() {
-    ExplorerApplication.getCurrent().switchView(new DeploymentPage(deployment.getId()));
+    viewManager.showDeploymentPage(deployment.getId());
   }
   
 }

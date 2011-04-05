@@ -15,8 +15,11 @@ package org.activiti.explorer.ui.task;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.TaskService;
-import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
+import org.activiti.explorer.NotificationManager;
+import org.activiti.explorer.ViewManager;
 
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -32,21 +35,27 @@ public class ClaimTaskClickListener implements ClickListener {
   private static final long serialVersionUID = 6322369324898642379L;
   
   protected String taskId;
+
   protected TaskService taskService;
+  protected I18nManager i18nManager;
+  protected ViewManager viewManager;
+  protected NotificationManager notificationManager;
   
   public ClaimTaskClickListener(String taskId, TaskService taskService) {
     this.taskId = taskId;
     this.taskService = taskService;
+    this.viewManager = ExplorerApp.get().getViewManager();
+    this.i18nManager = ExplorerApp.get().getI18nManager();
+    this.notificationManager = ExplorerApp.get().getNotificationManager();
   }
 
   public void buttonClick(ClickEvent event) {
-    ExplorerApplication app = ExplorerApplication.getCurrent();
     try {
-      taskService.claim(taskId, ExplorerApplication.getCurrent().getLoggedInUser().getId());
-      app.showInformationNotification(app.getMessage(Messages.TASK_CLAIM_SUCCESS));
-      app.switchView(new TaskInboxPage(taskId));
+      taskService.claim(taskId, ExplorerApp.get().getLoggedInUser().getId());
+      notificationManager.showInformationNotification(Messages.TASK_CLAIM_SUCCESS);
+      viewManager.showTaskInboxPage(taskId);
     } catch(ActivitiException ae) {
-      app.showErrorNotification(app.getMessage(Messages.TASK_CLAIM_FAILED), ae.getMessage());
+      notificationManager.showErrorNotification(Messages.TASK_CLAIM_FAILED, ae.getMessage());
     }
   }
 

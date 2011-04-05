@@ -12,12 +12,11 @@
  */
 package org.activiti.explorer.ui.management;
 
-import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
-import org.activiti.explorer.ui.management.db.DatabasePage;
-import org.activiti.explorer.ui.management.deployment.DeploymentPage;
+import org.activiti.explorer.ViewManager;
 import org.activiti.explorer.ui.management.deployment.NewDeploymentListener;
-import org.activiti.explorer.ui.management.job.JobPage;
 
 import com.vaadin.ui.MenuBar;
 
@@ -26,34 +25,43 @@ import com.vaadin.ui.MenuBar;
  */
 public class ManagementMenuBar extends MenuBar {
 
-  private static final long serialVersionUID = 529403088210949174L;
+  private static final long serialVersionUID = 1L;
+  
+  protected I18nManager i18nManager;
+  protected ViewManager viewManager;
   
   public ManagementMenuBar() {
+    this.i18nManager = ExplorerApp.get().getI18nManager();
+    this.viewManager = ExplorerApp.get().getViewManager();
+    
+    init();
+  }
+  
+  @SuppressWarnings("serial")
+  protected void init() {
     setWidth("100%");
     
     // Database
-    MenuItem databaseItem = addItem(ExplorerApplication.getCurrent().getMessage(Messages.MGMT_MENU_DATABASE), new Command() {
+    addItem(i18nManager.getMessage(Messages.MGMT_MENU_DATABASE), new Command() {
       public void menuSelected(MenuItem selectedItem) {
-        ExplorerApplication.getCurrent().switchView(new DatabasePage());
+        viewManager.showDatabasePage();
       }
     });
     
     // Deployments
-    MenuItem deploymentsItem = addItem(ExplorerApplication.getCurrent().getMessage(Messages.MGMT_MENU_DEPLOYMENTS), null);
+    MenuItem deploymentsItem = addItem(i18nManager.getMessage(Messages.MGMT_MENU_DEPLOYMENTS), null);
     
-    deploymentsItem.addItem(ExplorerApplication.getCurrent().getMessage(Messages.MGMT_MENU_DEPLOYMENTS_SHOW_ALL), new Command() {
+    deploymentsItem.addItem(i18nManager.getMessage(Messages.MGMT_MENU_DEPLOYMENTS_SHOW_ALL), new Command() {
       public void menuSelected(MenuItem selectedItem) {
-        ExplorerApplication.getCurrent().switchView(new DeploymentPage());
+        viewManager.showDeploymentPage();
       }
     });
-    deploymentsItem.addItem(ExplorerApplication.getCurrent().getMessage(Messages.MGMT_MENU_DEPLOYMENTS_UPLOAD), new NewDeploymentListener());
+    deploymentsItem.addItem(i18nManager.getMessage(Messages.MGMT_MENU_DEPLOYMENTS_UPLOAD), new NewDeploymentListener());
     
     // Jobs
-    addItem(ExplorerApplication.getCurrent().getMessage(Messages.MGMT_MENU_JOBS), new Command() {
-      private static final long serialVersionUID = 3038274253757975888L;
-
+    addItem(i18nManager.getMessage(Messages.MGMT_MENU_JOBS), new Command() {
       public void menuSelected(MenuItem selectedItem) {
-        ExplorerApplication.getCurrent().switchView(new JobPage());
+        viewManager.showJobPage();
       }
     });
   }

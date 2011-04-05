@@ -15,8 +15,11 @@ package org.activiti.explorer.ui.login;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.User;
-import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
+import org.activiti.explorer.NotificationManager;
+import org.activiti.explorer.ViewManager;
 import org.activiti.explorer.ui.ExplorerLayout;
 
 import com.vaadin.ui.CustomLayout;
@@ -32,17 +35,26 @@ public class LoginPage extends CustomLayout {
   private static final long serialVersionUID = 1L;
   
   protected IdentityService identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
+  
+  protected I18nManager i18nManager;
+  protected ViewManager viewManager;
+  protected NotificationManager notificationManager;
 
   public LoginPage() {
     super(ExplorerLayout.CUSTOM_LAYOUT_LOGIN);  // Layout is defined in /activiti/login.html + styles.css
+    
+    this.i18nManager = ExplorerApp.get().getI18nManager();
+    this.viewManager = ExplorerApp.get().getViewManager();
+    this.notificationManager = ExplorerApp.get().getNotificationManager();
     
     addStyleName(ExplorerLayout.STYLE_LOGIN_PAGE);
     initUi();
   }
   
   protected void initUi() {
-    // Login form is an atypical Vaadin component, since we want browsers to fill the password fields
-    CustomLoginForm loginForm = new CustomLoginForm();
+    // Login form is an a-typical Vaadin component, since we want browsers to fill the password fields
+    // which is not the case for ajax-generated UI components
+    ExplorerLoginForm loginForm = new ExplorerLoginForm();
     addComponent(loginForm, ExplorerLayout.LOCATION_LOGIN);
     
     // Login listener
@@ -66,14 +78,11 @@ public class LoginPage extends CustomLayout {
       boolean success = identityService.checkPassword(userName, password);
       if (success) {
         User user = identityService.createUserQuery().userId(userName).singleResult();
-        ExplorerApplication.getCurrent().setUser(user);
-        ExplorerApplication.getCurrent().showDefaultContent();
+        ExplorerApp.get().setUser(user);
+        viewManager.showDefaultContent();
       } else {
         refreshUi();
-        ExplorerApplication.getCurrent().showErrorNotification(
-                ExplorerApplication.getCurrent().getMessage(Messages.LOGIN_FAILED_HEADER),
-                ExplorerApplication.getCurrent().getMessage(Messages.LOGIN_FAILED_INVALID)
-        );
+        notificationManager.showErrorNotification(Messages.LOGIN_FAILED_HEADER, i18nManager.getMessage(Messages.LOGIN_FAILED_INVALID));
       }
     }
   }

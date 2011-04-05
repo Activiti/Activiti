@@ -17,7 +17,7 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.FlowNavigationHandler;
@@ -51,7 +51,7 @@ public class FlowPage extends AbstractPage {
   protected ProcessDefinitionDetailPanel detailPanel;
   
   public FlowPage() {
-    ExplorerApplication.getCurrent().setCurrentUriFragment(
+    ExplorerApp.get().setCurrentUriFragment(
       new UriFragment(FlowNavigationHandler.FLOW_URI_PART));
   }
   
@@ -123,7 +123,7 @@ public class FlowPage extends AbstractPage {
     splitPanel.setSecondComponent(detailPanel);
     
     UriFragment processDefinitionFragment = new UriFragment(FlowNavigationHandler.FLOW_URI_PART, processDefinitionId);
-    ExplorerApplication.getCurrent().setCurrentUriFragment(processDefinitionFragment);
+    ExplorerApp.get().setCurrentUriFragment(processDefinitionFragment);
   }
   
   public void showStartForm(ProcessDefinition processDefinition, StartFormData startFormData) {

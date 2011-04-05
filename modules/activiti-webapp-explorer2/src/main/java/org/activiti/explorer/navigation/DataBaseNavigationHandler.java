@@ -13,8 +13,7 @@
 
 package org.activiti.explorer.navigation;
 
-import org.activiti.explorer.ExplorerApplication;
-import org.activiti.explorer.ui.management.db.DatabasePage;
+import org.activiti.explorer.ExplorerApp;
 
 /**
  * @author Frederik Heremans
@@ -22,7 +21,7 @@ import org.activiti.explorer.ui.management.db.DatabasePage;
 public class DataBaseNavigationHandler implements NavigationHandler {
 
   public static final String TABLE_URI_PART = "database";
-
+  
   public String getTrigger() {
     return TABLE_URI_PART;
   }
@@ -31,9 +30,9 @@ public class DataBaseNavigationHandler implements NavigationHandler {
     String tableName = uriFragment.getUriPart(1);
 
     if (tableName != null) {
-      ExplorerApplication.getCurrent().switchView(new DatabasePage(tableName));
+      ExplorerApp.get().getViewManager().showDatabasePage(tableName);
     } else {
-      ExplorerApplication.getCurrent().switchView(new DatabasePage());
+      ExplorerApp.get().getViewManager().showDatabasePage();
     }
   }
 

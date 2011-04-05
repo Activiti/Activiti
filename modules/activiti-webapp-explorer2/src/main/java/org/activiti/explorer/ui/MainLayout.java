@@ -14,9 +14,10 @@
 package org.activiti.explorer.ui;
 
 import org.activiti.engine.identity.User;
-import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
-import org.activiti.explorer.ui.profile.ProfilePage;
+import org.activiti.explorer.ViewManager;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -32,15 +33,19 @@ import com.vaadin.ui.themes.Reindeer;
  */
 public class MainLayout extends CustomLayout {
   
-  private static final long serialVersionUID = 4749017534074852514L;
+  private static final long serialVersionUID = 1L;
   
+  protected ViewManager viewManager;
+  protected I18nManager i18nManager;
   protected MainMenuBar mainMenuBar;
   
   public MainLayout() {
     super(ExplorerLayout.CUSTOM_LAYOUT_DEFAULT);
-    setSizeFull();
+    this.viewManager = ExplorerApp.get().getViewManager();
+    this.i18nManager = ExplorerApp.get().getI18nManager();
     
     // Components visible on every page
+    setSizeFull();
     initSearchBox();
     initLogoutButton();
     initMainMenuBar();
@@ -48,7 +53,7 @@ public class MainLayout extends CustomLayout {
   
   protected void initSearchBox() {
     TextField searchBox = new TextField();
-    searchBox.setInputPrompt(ExplorerApplication.getCurrent().getMessage(Messages.HEADER_SEARCHBOX));
+    searchBox.setInputPrompt(i18nManager.getMessage(Messages.HEADER_SEARCHBOX));
     searchBox.addStyleName(ExplorerLayout.STYLE_SMALL_TEXTFIELD);
     searchBox.addStyleName(ExplorerLayout.STYLE_SEARCHBOX);
     addComponent(searchBox, ExplorerLayout.LOCATION_SEARCH);
@@ -61,7 +66,7 @@ public class MainLayout extends CustomLayout {
     logoutGrid.setStyleName(ExplorerLayout.STYLE_LOGOUT_BUTTON);
 
     // User name + link to profile 
-    final User user = ExplorerApplication.getCurrent().getLoggedInUser();
+    final User user = ExplorerApp.get().getLoggedInUser();
     Button userButton = new Button(user.getFirstName() + " " + user.getLastName());
     userButton.setIcon(Images.USER);
     userButton.addStyleName(ExplorerLayout.STYLE_USER_PROFILE);
@@ -69,18 +74,18 @@ public class MainLayout extends CustomLayout {
     
     userButton.addListener(new ClickListener() {
       public void buttonClick(ClickEvent event) {
-        ExplorerApplication.getCurrent().switchView(new ProfilePage(user.getId()));
+        viewManager.showProfilePage(user.getId());
       }
     });
 
     // logout button
-    Button logout = new Button(ExplorerApplication.getCurrent().getMessage(Messages.HEADER_LOGOUT));
+    Button logout = new Button(i18nManager.getMessage(Messages.HEADER_LOGOUT));
     logout.setStyleName(Reindeer.BUTTON_LINK);
     logout.addStyleName(ExplorerLayout.STYLE_LOGOUT_BUTTON);
     logout.setIcon(Images.WHITE_DIVIDER);
     logout.addListener(new ClickListener() {
       public void buttonClick(ClickEvent event) {
-        ExplorerApplication.getCurrent().close();
+        ExplorerApp.get().close();
       }
     });
 

@@ -120,6 +120,9 @@ public interface Messages {
   static final String DEPLOYMENT_HEADER_RESOURCES = "deployment.header.resources";
   static final String DEPLOYMENT_UPLOAD = "deployment.upload";
   static final String DEPLOYMENT_UPLOAD_DESCRIPTION = "deployment.upload.description";
+  static final String DEPLOYMENT_UPLOAD_INVALID_FILE = "deployment.upload.invalid.file";
+  static final String DEPLOYMENT_UPLOAD_INVALID_FILE_EXPLANATION = "deployment.upload.invalid.file.explanation";
+  static final String DEPLOYMENT_UPLOAD_SERVER_ERROR = "deployment.upload.server.error";
   
   // Database page
   static final String DATABASE_NO_ROWS = "database.no.rows";
@@ -127,5 +130,6 @@ public interface Messages {
   // Upload
   static final String UPLOAD_SELECT = "upload.select";
   static final String UPLOAD_DROP = "upload.drop";
+  static final String UPLOAD_FAILED = "upload.failed";
 
 }

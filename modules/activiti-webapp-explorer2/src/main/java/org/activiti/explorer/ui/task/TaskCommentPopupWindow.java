@@ -19,7 +19,8 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.task.Comment;
-import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.ExplorerLayout;
 
@@ -41,14 +42,19 @@ public class TaskCommentPopupWindow extends Window {
   
   private static final long serialVersionUID = -5764168454419580506L;
   
-  protected Comment comment;
   protected IdentityService identityService;
+  protected I18nManager i18nManager;
+  
+  protected Comment comment;
   protected User user;
 
   public TaskCommentPopupWindow(Comment comment) {
     super();
-    this.comment = comment;
+
     this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
+    this.i18nManager = ExplorerApp.get().getI18nManager();
+    
+    this.comment = comment;
     this.user = identityService.createUserQuery().userId(comment.getUserId()).singleResult();
     
     initUi();
@@ -75,7 +81,7 @@ public class TaskCommentPopupWindow extends Window {
         public InputStream getStream() {
           return picture.getInputStream();
         }
-      }, user.getId(), ExplorerApplication.getCurrent());
+      }, user.getId(), ExplorerApp.get());
       
       Embedded commentAuthor = new Embedded("", imageresource);
       commentAuthor.setType(Embedded.TYPE_IMAGE);
@@ -93,7 +99,7 @@ public class TaskCommentPopupWindow extends Window {
     layout.addComponent(commentLayout);
     layout.setExpandRatio(commentLayout, 1.0f);
     
-    Label header = new Label(ExplorerApplication.getCurrent().getMessage(
+    Label header = new Label(i18nManager.getMessage(
         Messages.TASK_COMMENT_POPUP_HEADER,
         new PrettyTime().format(comment.getTime()),
         user.getFirstName() + " " + user.getLastName()));

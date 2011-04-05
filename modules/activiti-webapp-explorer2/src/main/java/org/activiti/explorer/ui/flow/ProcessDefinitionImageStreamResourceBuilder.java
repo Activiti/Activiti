@@ -24,7 +24,7 @@ import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.explorer.Constant;
-import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.ui.util.InputStreamStreamSource;
 
 import com.vaadin.terminal.StreamResource;
@@ -54,7 +54,7 @@ public class ProcessDefinitionImageStreamResourceBuilder {
       String imageExtension = extractImageExtension(processDefinition.getDiagramResourceName());
       String fileName = processDefinition.getId() + "." + imageExtension;
       
-      imageResource = new StreamResource(streamSource, fileName, ExplorerApplication.getCurrent());
+      imageResource = new StreamResource(streamSource, fileName, ExplorerApp.get());
     }
     
     return imageResource;
@@ -77,7 +77,7 @@ public class ProcessDefinitionImageStreamResourceBuilder {
       String imageExtension = extractImageExtension(processDefinition.getDiagramResourceName());
       String fileName = processInstance.getId() + UUID.randomUUID() + "." + imageExtension;
       
-      imageResource = new StreamResource(streamSource, fileName, ExplorerApplication.getCurrent()); 
+      imageResource = new StreamResource(streamSource, fileName, ExplorerApp.get()); 
     }
     return imageResource;
   }

@@ -13,8 +13,7 @@
 
 package org.activiti.explorer.navigation;
 
-import org.activiti.explorer.ExplorerApplication;
-import org.activiti.explorer.ui.management.deployment.DeploymentPage;
+import org.activiti.explorer.ExplorerApp;
 
 
 /**
@@ -32,9 +31,9 @@ public class DeploymentNavigationHandler implements NavigationHandler {
     String deploymentId = uriFragment.getUriPart(1);
     
     if(deploymentId != null) {
-      ExplorerApplication.getCurrent().switchView(new DeploymentPage(deploymentId));
+      ExplorerApp.get().getViewManager().showDeploymentPage(deploymentId);
     } else {
-      ExplorerApplication.getCurrent().switchView(new DeploymentPage());
+      ExplorerApp.get().getViewManager().showDeploymentPage();
     }
   }
 

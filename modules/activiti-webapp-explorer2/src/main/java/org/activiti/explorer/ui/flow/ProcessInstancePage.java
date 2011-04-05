@@ -13,7 +13,7 @@
 
 package org.activiti.explorer.ui.flow;
 
-import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.UriFragment;
@@ -59,12 +59,12 @@ public abstract class ProcessInstancePage extends AbstractPage {
           splitPanel.setSecondComponent(new ProcessInstanceDetailPanel(processInstanceId, ProcessInstancePage.this));
           
           UriFragment taskFragment = getUriFragment(processInstanceId);
-          ExplorerApplication.getCurrent().setCurrentUriFragment(taskFragment);
+          ExplorerApp.get().setCurrentUriFragment(taskFragment);
         } else {
           // Nothing is selected
           splitPanel.removeComponent(splitPanel.getSecondComponent());
           UriFragment taskFragment = getUriFragment(null);
-          ExplorerApplication.getCurrent().setCurrentUriFragment(taskFragment);
+          ExplorerApp.get().setCurrentUriFragment(taskFragment);
         }
       }
     });

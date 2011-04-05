@@ -21,15 +21,16 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Task;
-import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
+import org.activiti.explorer.NotificationManager;
+import org.activiti.explorer.ViewManager;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
-import org.activiti.explorer.ui.flow.MyFlowsPage;
 import org.activiti.explorer.ui.form.FormPropertiesEventListener;
 import org.activiti.explorer.ui.form.FormPropertiesForm;
 import org.activiti.explorer.ui.form.FormPropertiesForm.FormPropertiesEvent;
-import org.activiti.explorer.ui.profile.ProfilePopupWindow;
 
 import com.ocpsoft.pretty.time.PrettyTime;
 import com.vaadin.ui.Alignment;
@@ -52,32 +53,46 @@ public class TaskDetailPanel extends HorizontalLayout {
   
   private static final long serialVersionUID = -2018798598805436750L;
 
+  protected String taskId;
   protected Task task;
   
   // Services
   protected TaskService taskService;
   protected FormService formService;
   protected RepositoryService repositoryService;
+  protected ViewManager viewManager;
+  protected I18nManager i18nManager;
+  protected NotificationManager notificationManager;
   
   // UI
+  protected TaskPage parent;
   protected Panel leftPanel;
   protected Panel rightPanel;
   protected FormPropertiesForm taskForm;
-  protected TaskPage parent;
   protected Button completeButton;
   protected Button claimButton;
   
   
   public TaskDetailPanel(String taskId, TaskPage parent) {
     this.parent = parent;
-    
-    setSizeFull();
-    addStyleName(Reindeer.LAYOUT_WHITE);
-    
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
     this.formService = ProcessEngines.getDefaultProcessEngine().getFormService();
     this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+    
+    this.taskId = taskId;
     this.task = taskService.createTaskQuery().taskId(taskId).singleResult();
+    
+    this.viewManager = ExplorerApp.get().getViewManager();
+    this.i18nManager = ExplorerApp.get().getI18nManager();
+    this.notificationManager = ExplorerApp.get().getNotificationManager();
+
+    init();
+  }
+  
+  protected void init() {
+    setSizeFull();
+    addStyleName(Reindeer.LAYOUT_WHITE);
+    
     
     // left panel: all details about the task
     this.leftPanel = new Panel();
@@ -120,7 +135,7 @@ public class TaskDetailPanel extends HorizontalLayout {
   
   protected void initClaimButton() {
     if(!isCurrentUserAssignee() && canUserClaimTask()) {
-      claimButton = new Button(ExplorerApplication.getCurrent().getMessage(Messages.TASK_CLAIM));
+      claimButton = new Button(i18nManager.getMessage(Messages.TASK_CLAIM));
       claimButton.addListener(new ClaimTaskClickListener(task.getId(), taskService));
       
       leftPanel.addComponent(claimButton);
@@ -136,11 +151,11 @@ public class TaskDetailPanel extends HorizontalLayout {
         private static final long serialVersionUID = 7250731154745638326L;
 
         public void buttonClick(ClickEvent event) {
-          ExplorerApplication.getCurrent().switchView(new MyFlowsPage(task.getProcessInstanceId()));
+          viewManager.showMyFlowsPage(task.getProcessInstanceId());
         }
       };
       
-      Button showProcessInstanceButton = new Button(ExplorerApplication.getCurrent().getMessage(
+      Button showProcessInstanceButton = new Button(i18nManager.getMessage(
         Messages.TASK_PART_OF_PROCESS, processDefinition.getName(), task.getProcessInstanceId()), clickListener);
       showProcessInstanceButton.setSizeUndefined();
       showProcessInstanceButton.addStyleName(Reindeer.BUTTON_LINK);
@@ -170,7 +185,7 @@ public class TaskDetailPanel extends HorizontalLayout {
 
     // create time
     if (task.getCreateTime() != null) {
-      Label createTime = new Label(ExplorerApplication.getCurrent().getMessage(Messages.TASK_CREATED) + " " + new PrettyTime().format(task.getCreateTime()));
+      Label createTime = new Label(i18nManager.getMessage(Messages.TASK_CREATED) + " " + new PrettyTime().format(task.getCreateTime()));
       createTime.addStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
       createTime.setSizeUndefined();
       grid.addComponent(createTime);
@@ -183,7 +198,7 @@ public class TaskDetailPanel extends HorizontalLayout {
 
     // due date
     if (task.getDueDate() != null) {
-      Label dueDate = new Label(ExplorerApplication.getCurrent().getMessage(Messages.TASK_DUEDATE) + " " + new PrettyTime().format(task.getDueDate())); 
+      Label dueDate = new Label(i18nManager.getMessage(Messages.TASK_DUEDATE) + " " + new PrettyTime().format(task.getDueDate())); 
       dueDate.addStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
       dueDate.setSizeUndefined();
       grid.addComponent(dueDate);
@@ -224,7 +239,7 @@ public class TaskDetailPanel extends HorizontalLayout {
       owner.addStyleName(Reindeer.BUTTON_LINK);
       owner.addListener(new ClickListener() {
         public void buttonClick(ClickEvent event) {
-          ExplorerApplication.getCurrent().showPopupWindow(new ProfilePopupWindow(task.getOwner()));
+          viewManager.showProfilePopup(task.getOwner());
         }
       });
       
@@ -237,7 +252,7 @@ public class TaskDetailPanel extends HorizontalLayout {
       assignee.addStyleName(Reindeer.BUTTON_LINK);
       assignee.addListener(new ClickListener() {
         public void buttonClick(ClickEvent event) {
-          ExplorerApplication.getCurrent().showPopupWindow(new ProfilePopupWindow(task.getAssignee()));
+          viewManager.showProfilePopup(task.getAssignee());
         }
       });
       grid.addComponent(assignee);
@@ -249,8 +264,8 @@ public class TaskDetailPanel extends HorizontalLayout {
     TaskFormData formData = formService.getTaskFormData(task.getId());
     if(formData != null && formData.getFormProperties() != null && formData.getFormProperties().size() > 0) {
       taskForm = new FormPropertiesForm();
-      taskForm.setSubmitButtonCaption(ExplorerApplication.getCurrent().getMessage(Messages.TASK_COMPLETE));
-      taskForm.setCancelButtonCaption(ExplorerApplication.getCurrent().getMessage(Messages.TASK_RESET_FORM));
+      taskForm.setSubmitButtonCaption(i18nManager.getMessage(Messages.TASK_COMPLETE));
+      taskForm.setCancelButtonCaption(i18nManager.getMessage(Messages.TASK_RESET_FORM));
       taskForm.setFormProperties(formData.getFormProperties());
       
       taskForm.addListener(new FormPropertiesEventListener() {
@@ -260,12 +275,8 @@ public class TaskDetailPanel extends HorizontalLayout {
         @Override
         protected void handleFormSubmit(FormPropertiesEvent event) {
           Map<String, String> properties = event.getFormProperties();
-          
           formService.submitTaskFormData(task.getId(), properties);
-          
-          ExplorerApplication.getCurrent().getMainWindow().showNotification(
-              ExplorerApplication.getCurrent().getMessage(Messages.TASK_COMPLETED,
-              task.getName()));
+          notificationManager.showInformationNotification(Messages.TASK_COMPLETED, task.getName());
           parent.refreshList();
         }
         
@@ -283,17 +294,15 @@ public class TaskDetailPanel extends HorizontalLayout {
     } else {
       // Just add a button to complete the task
       // TODO: perhaps move to a better place
-      completeButton = new Button(ExplorerApplication.getCurrent().getMessage(Messages.TASK_COMPLETE));
+      completeButton = new Button(i18nManager.getMessage(Messages.TASK_COMPLETE));
       
       completeButton.addListener(new ClickListener() {
         
         private static final long serialVersionUID = 1L;
 
         public void buttonClick(ClickEvent event) {
-          taskService.complete(task.getId());          
-          ExplorerApplication.getCurrent().getMainWindow().showNotification(
-              ExplorerApplication.getCurrent().getMessage(Messages.TASK_COMPLETED,
-              task.getName()));
+          taskService.complete(task.getId());     
+          notificationManager.showInformationNotification(Messages.TASK_COMPLETED, task.getName());
           parent.refreshList();
         }
       });
@@ -306,13 +315,13 @@ public class TaskDetailPanel extends HorizontalLayout {
   }
   
   protected boolean isCurrentUserAssignee() {
-    String currentUser = ExplorerApplication.getCurrent().getLoggedInUser().getId();
+    String currentUser = ExplorerApp.get().getLoggedInUser().getId();
     return currentUser.equals(task.getAssignee());
   }
   
   protected boolean canUserClaimTask() {
    return taskService.createTaskQuery()
-     .taskCandidateUser(ExplorerApplication.getCurrent().getLoggedInUser().getId())
+     .taskCandidateUser(ExplorerApp.get().getLoggedInUser().getId())
      .taskId(task.getId())
      .count() == 1; 
   }

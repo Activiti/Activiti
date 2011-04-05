@@ -19,7 +19,7 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
-import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.data.AbstractLazyLoadingQuery;
 
 import com.vaadin.data.Item;
@@ -36,7 +36,7 @@ public abstract class AbstractTaskListQuery extends AbstractLazyLoadingQuery {
   protected TaskService taskService;
   
   public AbstractTaskListQuery() {
-    this.userId = ExplorerApplication.getCurrent().getLoggedInUser().getId();
+    this.userId = ExplorerApp.get().getLoggedInUser().getId();
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
   }
 

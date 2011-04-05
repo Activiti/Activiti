@@ -12,7 +12,7 @@
  */
 package org.activiti.explorer.ui.management.deployment;
 
-import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.DeploymentNavigationHandler;
@@ -37,7 +37,7 @@ public class DeploymentPage extends ManagementPage {
   protected LazyLoadingContainer deploymentListContainer;
   
   public DeploymentPage() {
-    ExplorerApplication.getCurrent().setCurrentUriFragment(
+    ExplorerApp.get().setCurrentUriFragment(
       new UriFragment(DeploymentNavigationHandler.DEPLOYMENT_URI_PART));
   }
   
@@ -74,12 +74,12 @@ public class DeploymentPage extends ManagementPage {
           splitPanel.setSecondComponent(new DeploymentDetailPanel(deploymentId, DeploymentPage.this));
           
           // Update URL
-          ExplorerApplication.getCurrent().setCurrentUriFragment(
+          ExplorerApp.get().setCurrentUriFragment(
             new UriFragment(DeploymentNavigationHandler.DEPLOYMENT_URI_PART, deploymentId));
         } else {
           // Nothing is selected
           splitPanel.removeComponent(splitPanel.getSecondComponent());
-          ExplorerApplication.getCurrent().setCurrentUriFragment(new UriFragment(DeploymentNavigationHandler.DEPLOYMENT_URI_PART));
+          ExplorerApp.get().setCurrentUriFragment(new UriFragment(DeploymentNavigationHandler.DEPLOYMENT_URI_PART));
         }
       }
     });

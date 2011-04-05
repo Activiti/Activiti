@@ -13,8 +13,10 @@
 
 package org.activiti.explorer.ui.flow;
 
-import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
+import org.activiti.explorer.ViewManager;
 
 import com.vaadin.ui.MenuBar;
 
@@ -25,27 +27,35 @@ import com.vaadin.ui.MenuBar;
  */
 public class FlowMenuBar extends MenuBar {
   
-  private static final long serialVersionUID = 7957488256766569264L;
+  private static final long serialVersionUID = 1L;
 
+  protected I18nManager i18nManager;
+  protected ViewManager viewManager;
+  
   public FlowMenuBar() {
-    super();
+    this.i18nManager = ExplorerApp.get().getI18nManager();
+    this.viewManager = ExplorerApp.get().getViewManager();
     
+    init();
+  }
+  
+  protected void init() {
     setWidth("100%");
 
-    addItem(ExplorerApplication.getCurrent().getMessage(Messages.FLOW_MENU_MY_FLOWS), new Command() {
+    addItem(i18nManager.getMessage(Messages.FLOW_MENU_MY_FLOWS), new Command() {
       
       private static final long serialVersionUID = 1801881272806784326L;
 
       public void menuSelected(MenuItem selectedItem) {
-        ExplorerApplication.getCurrent().switchView(new MyFlowsPage());
+        viewManager.showMyFlowsPage();
       }
     });
-    addItem(ExplorerApplication.getCurrent().getMessage(Messages.FLOW_MENU_LAUNCH_FLOW), new Command() {
+    addItem(i18nManager.getMessage(Messages.FLOW_MENU_LAUNCH_FLOW), new Command() {
       
       private static final long serialVersionUID = -3389463332173619289L;
 
       public void menuSelected(MenuItem selectedItem) {
-        ExplorerApplication.getCurrent().switchView(new FlowPage());
+        viewManager.showFlowPage();
       }
     });
   }

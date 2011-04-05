@@ -21,8 +21,10 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.task.Comment;
-import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
+import org.activiti.explorer.ViewManager;
 import org.activiti.explorer.ui.ExplorerLayout;
 
 import com.ocpsoft.pretty.time.PrettyTime;
@@ -51,16 +53,21 @@ public class TaskCommentPanel extends Panel {
   
   private static final long serialVersionUID = -1364956575106533335L;
   
-  protected String taskId;
-  protected TaskService taskService; 
   protected IdentityService identityService;
+  protected TaskService taskService; 
+  protected I18nManager i18nManager;
+  protected ViewManager viewManager;
+  
+  protected String taskId;
   protected List<Comment> comments;
 
   public TaskCommentPanel(String taskId) {
-    super();
-    this.taskId = taskId;
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
     this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
+    this.i18nManager = ExplorerApp.get().getI18nManager();
+    this.viewManager = ExplorerApp.get().getViewManager();
+    
+    this.taskId = taskId;
     this.comments = taskService.getTaskComments(taskId);
     
     setSizeFull();
@@ -87,7 +94,7 @@ public class TaskCommentPanel extends Panel {
       public InputStream getStream() {
         return identityService.getUserPicture(comment.getUserId()).getInputStream();
       }
-    }, comment.getUserId(), ExplorerApplication.getCurrent());
+    }, comment.getUserId(), ExplorerApp.get());
     
     Embedded picture = new Embedded("", imageresource);
     picture.setType(Embedded.TYPE_IMAGE);
@@ -106,7 +113,7 @@ public class TaskCommentPanel extends Panel {
     // listener to show popup window with comment 
     layout.addListener(new LayoutClickListener() {
       public void layoutClick(LayoutClickEvent event) {
-        ExplorerApplication.getCurrent().showPopupWindow(new TaskCommentPopupWindow(comment));
+        viewManager.showTaskCommentPopup(comment);
       }
     });
     
@@ -161,7 +168,7 @@ public class TaskCommentPanel extends Panel {
     textArea.addStyleName(ExplorerLayout.STYLE_TASK_COMMENT_TIME);
     grid.addComponent(textArea);
     
-    Button addCommentButtom = new Button(ExplorerApplication.getCurrent().getMessage(Messages.TASK_ADD_COMMENT));
+    Button addCommentButtom = new Button(i18nManager.getMessage(Messages.TASK_ADD_COMMENT));
     addCommentButtom.addStyleName(Reindeer.BUTTON_SMALL);
     grid.addComponent(addCommentButtom);
     grid.setComponentAlignment(addCommentButtom, Alignment.BOTTOM_RIGHT);

@@ -13,9 +13,7 @@
 
 package org.activiti.explorer.navigation;
 
-import org.activiti.explorer.ExplorerApplication;
-import org.activiti.explorer.ui.task.TaskInboxPage;
-import org.activiti.explorer.ui.task.TaskQueuedPage;
+import org.activiti.explorer.ExplorerApp;
 
 /**
  * @author Frederik Heremans
@@ -28,7 +26,7 @@ public class TaskNavigationHandler implements NavigationHandler {
   
   public static final String PARAMETER_CATEGORY = "category";
   public static final String PARAMETER_GROUP = "group";
-
+  
   public String getTrigger() {
     return TASK_URI_PART;
   }
@@ -49,20 +47,20 @@ public class TaskNavigationHandler implements NavigationHandler {
   protected void showQueuedTasks(String taskId, UriFragment uriFragment) {
     String groupId = uriFragment.getParameter(PARAMETER_GROUP);
     if(groupId != null) {
-      ExplorerApplication.getCurrent().switchView(new TaskQueuedPage(groupId, taskId));      
+      ExplorerApp.get().getViewManager().showTaskQueuedPage(groupId, taskId);
     } else {
       // When no group is available, just show the inbox
       showInbox(taskId, uriFragment);
-      ExplorerApplication.getCurrent().showErrorNotification(
+      ExplorerApp.get().getNotificationManager().showErrorNotification(
               "Cannot view queued tasks", "No groupId was provided, can't show queued tasks");
     }
   }
 
   protected void showInbox(String taskId, UriFragment uriFragment) {
     if (taskId != null) {
-      ExplorerApplication.getCurrent().switchView(new TaskInboxPage(taskId));
+      ExplorerApp.get().getViewManager().showTaskInboxPage(taskId);
     } else {
-      ExplorerApplication.getCurrent().switchView(new TaskInboxPage());
+      ExplorerApp.get().getViewManager().showTaskInboxPage();
     }
   }
 

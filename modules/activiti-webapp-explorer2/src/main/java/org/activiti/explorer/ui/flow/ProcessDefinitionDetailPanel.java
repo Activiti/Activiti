@@ -18,7 +18,8 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.flow.listener.StartFlowClickListener;
@@ -44,13 +45,14 @@ public class ProcessDefinitionDetailPanel extends Panel {
   private static final long serialVersionUID = -2018798598805436750L;
   
   // Members
+  protected ProcessDefinition processDefinition;
   protected Deployment deployment;
   protected FlowPage flowPage;
   
   // Services
   protected RepositoryService repositoryService;
-  protected ProcessDefinition processDefinition;
   protected FormService formService; 
+  protected I18nManager i18nManager;
   
   // UI
   protected HorizontalLayout detailContainer;
@@ -63,13 +65,19 @@ public class ProcessDefinitionDetailPanel extends Panel {
   protected ProcessDefinitionInfoComponent definitionInfoComponent;
   
   public ProcessDefinitionDetailPanel(String processDefinitionId, FlowPage flowPage) {
-    setSizeFull();
-    addStyleName(Reindeer.LAYOUT_WHITE);
-    
-    this.flowPage = flowPage;
     this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
     this.formService = ProcessEngines.getDefaultProcessEngine().getFormService();
+    this.i18nManager = ExplorerApp.get().getI18nManager();
+    
+    this.flowPage = flowPage;
     this.processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(processDefinitionId).singleResult();
+
+    initUi();
+  }
+  
+  protected void initUi() {
+    setSizeFull();
+    addStyleName(Reindeer.LAYOUT_WHITE);
     
     if(processDefinition != null) {
       deployment = repositoryService.createDeploymentQuery().deploymentId(processDefinition.getDeploymentId()).singleResult();
@@ -116,7 +124,7 @@ public class ProcessDefinitionDetailPanel extends Panel {
           formService.submitStartFormData(processDefinition.getId(), event.getFormProperties());
           
           // Show notification
-          ExplorerApplication.getCurrent().getMainWindow().showNotification("Process '" + 
+          ExplorerApp.get().getMainWindow().showNotification("Process '" + 
             processDefinition.getName() + "' started successfully");
           showProcessDefinitionInfo();
         }
@@ -141,7 +149,7 @@ public class ProcessDefinitionDetailPanel extends Panel {
     actionsContainer.setSizeFull();
     actionsContainer.setSpacing(true);
     
-    startFlowButton = new Button(ExplorerApplication.getCurrent().getMessage(Messages.FLOW_START));
+    startFlowButton = new Button(i18nManager.getMessage(Messages.FLOW_START));
     startFlowButton.addListener(new StartFlowClickListener(processDefinition, flowPage));
     
     actionsContainer.addComponent(startFlowButton);
@@ -159,7 +167,7 @@ public class ProcessDefinitionDetailPanel extends Panel {
   
   protected void initCategory() {
     if(processDefinition.getCategory() != null) {
-      categoryLabel = new Label(ExplorerApplication.getCurrent().getMessage(Messages.FLOW_CATEGORY) + processDefinition.getCategory());
+      categoryLabel = new Label(i18nManager.getMessage(Messages.FLOW_CATEGORY) + processDefinition.getCategory());
       categoryLabel.addStyleName(Reindeer.LABEL_SMALL);
       addComponent(categoryLabel);      
     }

@@ -12,7 +12,7 @@
  */
 package org.activiti.explorer.ui;
 
-import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.navigation.NavigationFragmentChangeListener;
 import org.activiti.explorer.navigation.UriFragment;
@@ -35,7 +35,7 @@ public class MainWindow extends Window {
   protected boolean showingLoginPage;
 
   public MainWindow() {
-    super(ExplorerApplication.getCurrent().getMessage(Messages.APP_TITLE));
+    super(ExplorerApp.get().getI18nManager().getMessage(Messages.APP_TITLE));
     setTheme(ExplorerLayout.THEME);
   }
 

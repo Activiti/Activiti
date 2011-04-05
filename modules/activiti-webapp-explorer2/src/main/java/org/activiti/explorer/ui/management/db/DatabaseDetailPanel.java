@@ -15,7 +15,8 @@ package org.activiti.explorer.ui.management.db;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.management.TableMetaData;
-import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
@@ -32,14 +33,17 @@ import com.vaadin.ui.themes.Reindeer;
  */
 public class DatabaseDetailPanel extends VerticalLayout {
   
-  private static final long serialVersionUID = -1323766637526417129L;
+  private static final long serialVersionUID = 1L;
+  
+  protected ManagementService managementService;
+  protected I18nManager i18nManager;
   
   protected String tableName;
-  protected ManagementService managementService;
   
   public DatabaseDetailPanel(String tableName) {
     this.tableName = tableName;
     this.managementService = ProcessEngines.getDefaultProcessEngine().getManagementService();
+    this.i18nManager = ExplorerApp.get().getI18nManager();
     
     addStyleName(Reindeer.LAYOUT_WHITE);
     setSizeFull();
@@ -83,7 +87,7 @@ public class DatabaseDetailPanel extends VerticalLayout {
       }
       
     } else {
-      Label noDataLabel = new Label(ExplorerApplication.getCurrent().getMessage(Messages.DATABASE_NO_ROWS));
+      Label noDataLabel = new Label(i18nManager.getMessage(Messages.DATABASE_NO_ROWS));
       noDataLabel.addStyleName(ExplorerLayout.STYLE_DATABASE_DETAILS);
       noDataLabel.addStyleName(Reindeer.LABEL_SMALL);
       addComponent(noDataLabel);

@@ -29,7 +29,8 @@ import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.explorer.Constant;
-import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
@@ -57,16 +58,17 @@ public class ProcessInstanceDetailPanel extends Panel {
 
   private static final long serialVersionUID = 1705077407829697827L;
 
-  protected ProcessInstancePage myFlowsPage;
-  protected ProcessInstance processInstance;
-  protected HistoricProcessInstance historicProcessInstance;
-  protected ProcessDefinition processDefinition;
-
   protected RuntimeService runtimeService;
   protected RepositoryService repositoryService;
   protected TaskService taskService;
   protected HistoryService historyService;
   protected IdentityService identityService;
+  protected I18nManager i18nManager;
+  
+  protected ProcessInstancePage myFlowsPage;
+  protected ProcessInstance processInstance;
+  protected HistoricProcessInstance historicProcessInstance;
+  protected ProcessDefinition processDefinition;
 
   public ProcessInstanceDetailPanel(String processInstanceId, ProcessInstancePage myFlowsPage) {
     this.myFlowsPage = myFlowsPage;
@@ -76,6 +78,7 @@ public class ProcessInstanceDetailPanel extends Panel {
     taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
     historyService = ProcessEngines.getDefaultProcessEngine().getHistoryService();
     identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
+    this.i18nManager = ExplorerApp.get().getI18nManager();
 
     processInstance = getProcessInstance(processInstanceId);
     processDefinition = getProcessDefinition(processInstance.getProcessDefinitionId());
@@ -92,7 +95,7 @@ public class ProcessInstanceDetailPanel extends Panel {
   }
 
   protected void addTasks() {
-    Label header = new Label(ExplorerApplication.getCurrent().getMessage(Messages.FLOW_INSTANCE_HEADER_TASKS));
+    Label header = new Label(i18nManager.getMessage(Messages.FLOW_INSTANCE_HEADER_TASKS));
     header.addStyleName(ExplorerLayout.STYLE_PROCESS_INSTANCE_DETAILS_HEADER);
     addComponent(header);
     
@@ -114,17 +117,17 @@ public class ProcessInstanceDetailPanel extends Panel {
       taskTable.addContainerProperty("finished", Component.class, null, null, null, Table.ALIGN_CENTER);
       taskTable.setColumnWidth("finished", 16);
       
-      taskTable.addContainerProperty("name", String.class, null, ExplorerApplication.getCurrent().getMessage(Messages.TASK_NAME),
+      taskTable.addContainerProperty("name", String.class, null, i18nManager.getMessage(Messages.TASK_NAME),
               null, Table.ALIGN_LEFT);
-      taskTable.addContainerProperty("priority", Integer.class, null, ExplorerApplication.getCurrent().getMessage(Messages.TASK_PRIORITY),
+      taskTable.addContainerProperty("priority", Integer.class, null, i18nManager.getMessage(Messages.TASK_PRIORITY),
               null, Table.ALIGN_LEFT);
-      taskTable.addContainerProperty("assignee", Component.class, null, ExplorerApplication.getCurrent().getMessage(Messages.TASK_ASSIGNEE),
+      taskTable.addContainerProperty("assignee", Component.class, null, i18nManager.getMessage(Messages.TASK_ASSIGNEE),
               null, Table.ALIGN_LEFT);
-      taskTable.addContainerProperty("dueDate", Component.class, null, ExplorerApplication.getCurrent().getMessage(Messages.TASK_DUEDATE),
+      taskTable.addContainerProperty("dueDate", Component.class, null, i18nManager.getMessage(Messages.TASK_DUEDATE),
               null, Table.ALIGN_LEFT);
-      taskTable.addContainerProperty("startDate", Component.class, null, ExplorerApplication.getCurrent().getMessage(Messages.TASK_CREATE_TIME),
+      taskTable.addContainerProperty("startDate", Component.class, null, i18nManager.getMessage(Messages.TASK_CREATE_TIME),
               null, Table.ALIGN_LEFT);
-      taskTable.addContainerProperty("endDate", Component.class, null, ExplorerApplication.getCurrent().getMessage(Messages.TASK_COMPLETE_TIME),
+      taskTable.addContainerProperty("endDate", Component.class, null, i18nManager.getMessage(Messages.TASK_COMPLETE_TIME),
               null, Table.ALIGN_LEFT);
       
       addComponent(taskTable);
@@ -136,7 +139,7 @@ public class ProcessInstanceDetailPanel extends Panel {
       }
     } else {
       // No tasks
-      Label noTaskLabel = new Label(ExplorerApplication.getCurrent().getMessage(Messages.FLOW_INSTANCE_NO_TASKS));
+      Label noTaskLabel = new Label(i18nManager.getMessage(Messages.FLOW_INSTANCE_NO_TASKS));
       addComponent(noTaskLabel);
     }
   }
@@ -157,8 +160,7 @@ public class ProcessInstanceDetailPanel extends Panel {
     item.getItemProperty("endDate").setValue(new PrettyTimeLabel(task.getEndTime()));
     
     if(task.getDueDate() != null) {
-      Label dueDateLabel = new PrettyTimeLabel(task.getEndTime(), 
-        ExplorerApplication.getCurrent().getMessage(Messages.TASK_NOT_FINISHED_YET)); 
+      Label dueDateLabel = new PrettyTimeLabel(task.getEndTime(), i18nManager.getMessage(Messages.TASK_NOT_FINISHED_YET)); 
       item.getItemProperty("dueDate").setValue(dueDateLabel);
     }
     
@@ -174,7 +176,7 @@ public class ProcessInstanceDetailPanel extends Panel {
 
     // Only show when graphical notation is defined
     if (processDefinitionEntity != null && processDefinitionEntity.isGraphicalNotationDefined()) {
-      Label header = new Label(ExplorerApplication.getCurrent().getMessage(Messages.FLOW_INSTANCE_HEADER_DIAGRAM));
+      Label header = new Label(i18nManager.getMessage(Messages.FLOW_INSTANCE_HEADER_DIAGRAM));
       header.addStyleName(ExplorerLayout.STYLE_PROCESS_INSTANCE_DETAILS_HEADER);
       addComponent(header);
       
@@ -200,7 +202,7 @@ public class ProcessInstanceDetailPanel extends Panel {
     timeDetails.addComponent(clockImage);
 
     String startedOnDate = new PrettyTime().format(historicProcessInstance.getStartTime());
-    String startedOn = ExplorerApplication.getCurrent().getMessage(Messages.FLOW_INSTANCE_STARTED_ON, startedOnDate);
+    String startedOn = i18nManager.getMessage(Messages.FLOW_INSTANCE_STARTED_ON, startedOnDate);
     Label timeLabel = new Label(startedOn);
     timeDetails.addComponent(timeLabel);
 

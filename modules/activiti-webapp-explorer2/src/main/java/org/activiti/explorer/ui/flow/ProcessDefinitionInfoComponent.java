@@ -17,7 +17,8 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.explorer.ExplorerApplication;
+import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
@@ -40,13 +41,14 @@ import com.vaadin.ui.themes.Reindeer;
 public class ProcessDefinitionInfoComponent extends VerticalLayout {
 
   private static final long serialVersionUID = -3523189433414901853L;
+
+  // Services
+  protected RepositoryService repositoryService;
+  protected I18nManager i18nManager;
   
   // Members
   protected ProcessDefinition processDefinition;
   protected Deployment deployment;
-  
-  // Services
-  protected RepositoryService repositoryService;
   
   // UI
   protected HorizontalLayout timeDetails;
@@ -55,10 +57,11 @@ public class ProcessDefinitionInfoComponent extends VerticalLayout {
   
   public ProcessDefinitionInfoComponent(ProcessDefinition processDefinition, Deployment deployment) {
     super();
+    this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+    this.i18nManager = ExplorerApp.get().getI18nManager(); 
+    
     this.processDefinition = processDefinition;
     this.deployment = deployment;
-    
-    repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
     
     initTimeDetails();
     initImage();
@@ -83,7 +86,7 @@ public class ProcessDefinitionInfoComponent extends VerticalLayout {
     timeDetails.setComponentAlignment(grid, Alignment.MIDDLE_LEFT);
 
     // Version
-    Label version = new Label(ExplorerApplication.getCurrent().getMessage(Messages.FLOW_VERSION) + processDefinition.getVersion());
+    Label version = new Label(i18nManager.getMessage(Messages.FLOW_VERSION) + processDefinition.getVersion());
     version.addStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
     version.setSizeUndefined();
     grid.addComponent(version);
@@ -91,7 +94,7 @@ public class ProcessDefinitionInfoComponent extends VerticalLayout {
     
     // Deployment time
     if (deployment.getDeploymentTime() != null) {
-      Label createTime = new Label(ExplorerApplication.getCurrent().getMessage(Messages.FLOW_DEPLOY_TIME) + new PrettyTime().format(deployment.getDeploymentTime()));
+      Label createTime = new Label(i18nManager.getMessage(Messages.FLOW_DEPLOY_TIME) + new PrettyTime().format(deployment.getDeploymentTime()));
       createTime.addStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
       createTime.setSizeUndefined();
       grid.addComponent(createTime);
@@ -107,7 +110,7 @@ public class ProcessDefinitionInfoComponent extends VerticalLayout {
   protected void initImage() {
     VerticalLayout processImageContainer = new VerticalLayout();
     
-    Label processTitle = new Label(ExplorerApplication.getCurrent().getMessage(Messages.FLOW_HEADER_DIAGRAM));
+    Label processTitle = new Label(i18nManager.getMessage(Messages.FLOW_HEADER_DIAGRAM));
     processTitle.addStyleName(ExplorerLayout.STYLE_PROCESS_DEFINITION_DETAILS_HEADER);
     processImageContainer.addComponent(processTitle);
     
@@ -119,7 +122,7 @@ public class ProcessDefinitionInfoComponent extends VerticalLayout {
       embedded.setType(Embedded.TYPE_IMAGE);
       processImageContainer.addComponent(embedded);
     } else {
-      Label noImageAvailable = new Label(ExplorerApplication.getCurrent().getMessage(Messages.FLOW_NO_DIAGRAM));
+      Label noImageAvailable = new Label(i18nManager.getMessage(Messages.FLOW_NO_DIAGRAM));
       noImageAvailable.addStyleName(Reindeer.LABEL_SMALL);
       processImageContainer.addComponent(noImageAvailable);
     }
