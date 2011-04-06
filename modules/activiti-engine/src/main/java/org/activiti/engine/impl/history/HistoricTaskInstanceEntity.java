@@ -58,6 +58,7 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
     this.assignee = task.getAssignee();
     this.startTime = ClockUtil.getCurrentTime();
     this.taskDefinitionKey = task.getTaskDefinitionKey();
+    this.setPriority(task.getPriority());
   }
 
   // persistence //////////////////////////////////////////////////////////////
