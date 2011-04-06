@@ -26,6 +26,7 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
@@ -814,6 +815,17 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     }
     
     assertProcessEnded(procId);
+  }
+  
+  // ACT-764
+  @Deployment
+  public void testSequentialServiceTaskWithClass() {
+    ProcessInstance procInst = runtimeService.startProcessInstanceByKey("multiInstanceServiceTask", CollectionUtil.singletonMap("result", 5));
+    Integer result = (Integer) runtimeService.getVariable(procInst.getId(), "result");
+    assertEquals(160, result.intValue());
+    
+    runtimeService.signal(procInst.getId());
+    assertProcessEnded(procInst.getId());
   }
   
 }

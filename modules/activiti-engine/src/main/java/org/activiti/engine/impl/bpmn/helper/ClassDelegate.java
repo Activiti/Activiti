@@ -24,10 +24,14 @@ import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.ParallelMultiInstanceBehavior;
+import org.activiti.engine.impl.bpmn.behavior.SequentialMultiInstanceBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ServiceTaskJavaDelegateActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.util.ReflectUtil;
 
 
@@ -38,7 +42,7 @@ import org.activiti.engine.impl.util.ReflectUtil;
  * 
  * @author Joram Barrez
  */
-public class ClassDelegate implements ActivityBehavior, TaskListener, ExecutionListener {
+public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskListener, ExecutionListener {
   
   protected String className;
   protected List<FieldDeclaration> fieldDeclarations;
@@ -94,20 +98,33 @@ public class ClassDelegate implements ActivityBehavior, TaskListener, ExecutionL
   // Activity Behavior
   public void execute(ActivityExecution execution) throws Exception {
     if (activityBehaviorInstance == null) {
-      activityBehaviorInstance = getActivityBehaviorInstance();
+      activityBehaviorInstance = getActivityBehaviorInstance(execution);
     }
     activityBehaviorInstance.execute(execution);
   }
 
-  protected ActivityBehavior getActivityBehaviorInstance() {
+  protected ActivityBehavior getActivityBehaviorInstance(ActivityExecution execution) {
     Object delegateInstance = instantiateDelegate(className, fieldDeclarations);
+    
     if (delegateInstance instanceof ActivityBehavior) {
-      return (ActivityBehavior) delegateInstance;
+      return enhanceBehaviour((ActivityBehavior) delegateInstance, execution);
     } else if (delegateInstance instanceof JavaDelegate) {
-      return new ServiceTaskJavaDelegateActivityBehavior((JavaDelegate) delegateInstance);
+      return enhanceBehaviour(new ServiceTaskJavaDelegateActivityBehavior((JavaDelegate) delegateInstance), execution);
     } else {
       throw new ActivitiException(delegateInstance.getClass().getName()+" doesn't implement "+JavaDelegate.class.getName()+" nor "+ActivityBehavior.class.getName());
     }
+  }
+  
+  // Adds properties to the given delegation instance (eg multi instance) if needed
+  protected ActivityBehavior enhanceBehaviour(ActivityBehavior delegateInstance, ActivityExecution execution) {
+    if (hasMultiInstanceCharacteristics()) {
+      if (multiInstanceActivityBehavior instanceof SequentialMultiInstanceBehavior) {
+        return new SequentialMultiInstanceBehavior((ActivityImpl) execution.getActivity(), (AbstractBpmnActivityBehavior) delegateInstance);
+      } else {
+        return new ParallelMultiInstanceBehavior((ActivityImpl) execution.getActivity(), (AbstractBpmnActivityBehavior) delegateInstance);
+      }
+    }
+    return delegateInstance;
   }
   
   // --HELPER METHODS (also usable by external classes) ----------------------------------------
