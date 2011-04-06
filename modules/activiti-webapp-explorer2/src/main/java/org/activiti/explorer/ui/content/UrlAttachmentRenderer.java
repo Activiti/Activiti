@@ -16,15 +16,18 @@ package org.activiti.explorer.ui.content;
 import org.activiti.engine.task.Attachment;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
+import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
-import org.activiti.explorer.ui.task.TaskRelatedContentComponent;
 
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Resource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 /**
@@ -47,16 +50,15 @@ public class UrlAttachmentRenderer implements AttachmentRenderer {
     return Images.RELATED_CONTENT_URL;
   }
 
-  public Component getOverviewLink(final Attachment attachment, final TaskRelatedContentComponent parent) {
+  public Component getOverviewComponent(final Attachment attachment, final RelatedContentComponent parent) {
     Button attachmentLink = new Button(attachment.getName());
     attachmentLink.addStyleName(Reindeer.BUTTON_LINK);
     
     attachmentLink.addListener(new ClickListener() {
-      
       private static final long serialVersionUID = 1L;
 
       public void buttonClick(ClickEvent event) {
-        // TODO: request detail from parent component
+        parent.showAttachmentDetail(attachment);
       }
     });
     return attachmentLink;
@@ -67,8 +69,18 @@ public class UrlAttachmentRenderer implements AttachmentRenderer {
   }
 
   public Component getDetailComponent(Attachment attachment) {
-    // TODO: make nice
-    return new Label(attachment.getUrl());
+    
+    VerticalLayout verticalLayout = new VerticalLayout();
+    verticalLayout.setSpacing(true);
+    verticalLayout.setMargin(true);
+    
+    verticalLayout.addComponent(new Label(attachment.getDescription()));
+    Link link = new Link(attachment.getUrl(), new ExternalResource(attachment.getUrl()));
+    link.setIcon(Images.RELATED_CONTENT_URL);
+    link.setTargetName(ExplorerLayout.LINK_TARGET_BLANK);
+    verticalLayout.addComponent(link);
+    
+    return verticalLayout;
   }
 
 }

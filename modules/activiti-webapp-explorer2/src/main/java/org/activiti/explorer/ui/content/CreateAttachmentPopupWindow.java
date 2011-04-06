@@ -58,6 +58,7 @@ public class CreateAttachmentPopupWindow extends Window {
     this.i18nManager = ExplorerApp.get().getI18nManager();
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
     
+    setCaption(i18nManager.getMessage(Messages.RELATED_CONTENT_ADD));
     setWidth(50, UNITS_PERCENTAGE);
     setHeight(50, UNITS_PERCENTAGE);
     center();

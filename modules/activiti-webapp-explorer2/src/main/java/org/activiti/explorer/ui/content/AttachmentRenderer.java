@@ -15,7 +15,6 @@ package org.activiti.explorer.ui.content;
 
 import org.activiti.engine.task.Attachment;
 import org.activiti.explorer.I18nManager;
-import org.activiti.explorer.ui.task.TaskRelatedContentComponent;
 
 import com.vaadin.terminal.Resource;
 import com.vaadin.ui.Component;
@@ -52,10 +51,10 @@ public interface AttachmentRenderer {
   Resource getImage(Attachment attachment);
   
   /**
-   * Create a link that is used in the related content overview list.
-   * Use the passed parent for wiring events.
+   * Get the component that is used in the related content overview list.
+   * Use the passed parent for calling back to show detail.
    */
-  Component getOverviewLink(Attachment attachment, TaskRelatedContentComponent parent);
+  Component getOverviewComponent(Attachment attachment, RelatedContentComponent parent);
   
   /**
    * Get the component to render when editing or creating related content

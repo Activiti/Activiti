@@ -34,6 +34,8 @@ public interface ExplorerLayout {
   static final String LOCATION_LOGOUT = "logout";
   static final String LOCATION_MAIN_MENU = "main-menu";
   static final String LOCATION_HIDDEN = "hidden";
+  
+  static final String LINK_TARGET_BLANK = "_blank";
 
   // ---------- 
   // Css styles
@@ -99,4 +101,5 @@ public interface ExplorerLayout {
   // Related content
   static final String STYLE_RELATED_CONTENT_DETAILS_HEADER = "related-content-detail-header";
   static final String STYLE_IMAGE_ACTION = "image-action";
+
 }

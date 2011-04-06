@@ -23,9 +23,11 @@ import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
+import org.activiti.explorer.ui.content.AttachmentDetailPopupWindow;
 import org.activiti.explorer.ui.content.AttachmentRenderer;
 import org.activiti.explorer.ui.content.AttachmentRenderers;
 import org.activiti.explorer.ui.content.CreateAttachmentPopupWindow;
+import org.activiti.explorer.ui.content.RelatedContentComponent;
 import org.activiti.explorer.ui.event.GenericFormEvent;
 import org.activiti.explorer.ui.event.GenericFormEventListener;
 
@@ -47,7 +49,7 @@ import com.vaadin.ui.VerticalLayout;
  * 
  * @author Frederik Heremans
  */
-public class TaskRelatedContentComponent extends VerticalLayout {
+public class TaskRelatedContentComponent extends VerticalLayout implements RelatedContentComponent {
 
   private static final long serialVersionUID = -30387794911550066L;
   
@@ -55,10 +57,7 @@ public class TaskRelatedContentComponent extends VerticalLayout {
   protected TaskService taskService;
   protected Table table;
 
-  /**
-   * Set the task to show related content for.
-   */
-  public void setTask(Task task) {
+  public TaskRelatedContentComponent(Task task) {
     this.task = task;
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
     
@@ -66,6 +65,12 @@ public class TaskRelatedContentComponent extends VerticalLayout {
     initAttachmentTable();
   }
   
+  public void showAttachmentDetail(Attachment attachment) {
+    // Show popup window with detail of attachment rendered in in
+    AttachmentDetailPopupWindow popup = new AttachmentDetailPopupWindow(attachment);
+    ExplorerApp.get().getViewManager().showPopupWindow(popup);    
+  }
+ 
   protected void initActions() {
     HorizontalLayout actionsContainer = new HorizontalLayout();
     actionsContainer.setSizeFull();
@@ -152,7 +157,7 @@ public class TaskRelatedContentComponent extends VerticalLayout {
     for (Attachment attachment : attachments) {
       AttachmentRenderer renderer = AttachmentRenderers.getRenderer(attachment);
       Item attachmentItem = table.addItem(attachment.getId());
-      attachmentItem.getItemProperty("name").setValue(renderer.getOverviewLink(attachment, this));
+      attachmentItem.getItemProperty("name").setValue(renderer.getOverviewComponent(attachment, this));
       attachmentItem.getItemProperty("type").setValue(new Embedded(null, renderer.getImage(attachment)));
     }
     
@@ -166,5 +171,6 @@ public class TaskRelatedContentComponent extends VerticalLayout {
     emptySpace.setSizeUndefined();
     container.addComponent(emptySpace);
   }
+
 
 }

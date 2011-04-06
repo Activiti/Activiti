@@ -95,7 +95,7 @@ public class UrlAttachmentEditor extends Form implements AttachmentEditor {
       applyValuesToAttachment();
     } else {
       // Create new attachment based on values
-      // TODO: use ecplorerApp to get service
+      // TODO: use explorerApp to get service
       attachment = taskService.createAttachment(UrlAttachmentRenderer.ATTACHMENT_TYPE, taskId, processInstanceId, 
           getAttachmentName(), getAttachmentDescription(), getAttachmentUrl());
     }

@@ -320,8 +320,7 @@ public class TaskDetailPanel extends HorizontalLayout {
   protected void initRelatedContent() {
     addEmptySpace(leftPanel);
     
-    relatedContent = new TaskRelatedContentComponent();
-    relatedContent.setTask(task);
+    relatedContent = new TaskRelatedContentComponent(task);
     
     leftPanel.addComponent(relatedContent);
   }
