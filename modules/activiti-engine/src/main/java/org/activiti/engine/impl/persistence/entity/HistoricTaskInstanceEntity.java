@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.history;
+package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -25,8 +25,6 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.runtime.ExecutionEntity;
-import org.activiti.engine.impl.task.TaskEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 
 

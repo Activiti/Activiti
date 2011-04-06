@@ -20,7 +20,7 @@
 
   <!-- HISTORIC DETAILS INSERT -->
   
-  <insert id="insertHistoricFormProperty" parameterType="org.activiti.engine.impl.history.HistoricFormPropertyEntity">
+  <insert id="insertHistoricFormProperty" parameterType="org.activiti.engine.impl.persistence.entity.HistoricFormPropertyEntity">
     insert into ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, ACT_INST_ID_, EXECUTION_ID_, TASK_ID_, TIME_, NAME_, TEXT_)
     values (
       #{id, jdbcType=VARCHAR},
@@ -35,7 +35,7 @@
     )
   </insert>
   
-  <insert id="insertHistoricVariableUpdate" parameterType="org.activiti.engine.impl.history.HistoricVariableUpdateEntity">
+  <insert id="insertHistoricVariableUpdate" parameterType="org.activiti.engine.impl.persistence.entity.HistoricVariableUpdateEntity">
     insert into ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, EXECUTION_ID_, ACT_INST_ID_, TASK_ID_, NAME_, REV_, VAR_TYPE_, TIME_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_)
     values (
       #{id, jdbcType=VARCHAR},
@@ -63,7 +63,7 @@
   </delete>
   
   <!-- HISTORIC DETAILS RESULTMAP -->
-  <resultMap id="historicDetailResultMap" type="org.activiti.engine.impl.history.HistoricDetailEntity">
+  <resultMap id="historicDetailResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricDetailEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
     <result property="activityInstanceId" column="ACT_INST_ID_" jdbcType="VARCHAR" />
@@ -76,7 +76,7 @@
     </discriminator>
   </resultMap>
   
-  <resultMap id="historicDetailResultMap_postgres" type="org.activiti.engine.impl.history.HistoricDetailEntity">
+  <resultMap id="historicDetailResultMap_postgres" type="org.activiti.engine.impl.persistence.entity.HistoricDetailEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
     <result property="activityInstanceId" column="ACT_INST_ID_" jdbcType="VARCHAR" />
@@ -89,7 +89,7 @@
     </discriminator>
   </resultMap>
 
-  <resultMap id="historicVariableUpdateResultMap" extends="historicDetailResultMap" type="org.activiti.engine.impl.history.HistoricVariableUpdateEntity">
+  <resultMap id="historicVariableUpdateResultMap" extends="historicDetailResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricVariableUpdateEntity">
     <result property="name" column="NAME_" javaType="String" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
     <result property="variableType" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="VARCHAR"/>
@@ -101,11 +101,11 @@
     <result property="longValue" column="LONG_" jdbcType="BIGINT" />
     <association property="byteArrayValue" 
                  column="BYTEARRAY_ID_" 
-                 javaType="org.activiti.engine.impl.runtime.ByteArrayEntity" 
+                 javaType="org.activiti.engine.impl.persistence.entity.ByteArrayEntity" 
                  select="selectByteArray" />
   </resultMap>
   
-  <resultMap id="historicVariableUpdateResultMap_postgres" extends="historicDetailResultMap" type="org.activiti.engine.impl.history.HistoricVariableUpdateEntity">
+  <resultMap id="historicVariableUpdateResultMap_postgres" extends="historicDetailResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricVariableUpdateEntity">
     <result property="name" column="NAME_" javaType="String" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
     <result property="variableType" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="VARCHAR"/>
@@ -117,11 +117,11 @@
     <result property="longValue" column="LONG_" jdbcType="BIGINT" />
     <association property="byteArrayValue" 
                  column="BYTEARRAY_ID_" 
-                 javaType="org.activiti.engine.impl.runtime.ByteArrayEntity" 
+                 javaType="org.activiti.engine.impl.persistence.entity.ByteArrayEntity" 
                  select="selectByteArrayById_postgres" />
   </resultMap>
 
-  <resultMap id="historicFormPropertyResultMap" extends="historicDetailResultMap" type="org.activiti.engine.impl.history.HistoricFormPropertyEntity">
+  <resultMap id="historicFormPropertyResultMap" extends="historicDetailResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricFormPropertyEntity">
     <result property="propertyId" column="NAME_" javaType="String" jdbcType="VARCHAR" />
     <result property="propertyValue" column="TEXT_" javaType="String" jdbcType="VARCHAR"/>
   </resultMap>

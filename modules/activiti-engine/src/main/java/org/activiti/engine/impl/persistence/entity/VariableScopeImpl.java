@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.runtime;
+package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -24,7 +24,6 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.history.HistoricVariableUpdateEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.javax.el.ELContext;
 import org.activiti.engine.impl.variable.VariableType;

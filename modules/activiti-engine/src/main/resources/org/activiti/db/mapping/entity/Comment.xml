@@ -20,7 +20,7 @@
   
   <!-- COMMENT INSERT -->
   
-  <insert id="insertComment" parameterType="org.activiti.engine.impl.task.CommentEntity">
+  <insert id="insertComment" parameterType="org.activiti.engine.impl.persistence.entity.CommentEntity">
     insert into ACT_HI_COMMENT (ID_, TIME_, USER_ID_, TASK_ID_, PROC_INST_ID_, MESSAGE_)
     values (
       #{id ,jdbcType=VARCHAR},
@@ -40,7 +40,7 @@
 
   <!-- COMMENT RESULTMAP -->
 
-  <resultMap id="commentResultMap" type="org.activiti.engine.impl.task.CommentEntity">
+  <resultMap id="commentResultMap" type="org.activiti.engine.impl.persistence.entity.CommentEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />
     <result property="time" column="TIME_" jdbcType="TIMESTAMP" />

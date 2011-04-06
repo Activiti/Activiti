@@ -20,10 +20,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
-import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 
 /**
  * Class to generate an image based the diagram interchange information in a

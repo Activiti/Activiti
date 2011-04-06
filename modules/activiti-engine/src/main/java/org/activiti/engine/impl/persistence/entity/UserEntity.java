@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.identity;
+package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -21,7 +21,6 @@ import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.cmd.SaveUserCmd;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.runtime.ByteArrayEntity;
 
 
 /**

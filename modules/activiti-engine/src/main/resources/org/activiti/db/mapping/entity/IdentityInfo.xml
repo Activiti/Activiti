@@ -6,7 +6,7 @@
   
   <!-- INFO INSERT -->
 
-  <insert id="insertIdentityInfo" parameterType="org.activiti.engine.impl.identity.IdentityInfoEntity">
+  <insert id="insertIdentityInfo" parameterType="org.activiti.engine.impl.persistence.entity.IdentityInfoEntity">
     insert into ACT_ID_INFO (ID_, REV_, USER_ID_, TYPE_, KEY_, VALUE_, PASSWORD_, PARENT_ID_)
     values (
       #{id ,jdbcType=VARCHAR},
@@ -20,7 +20,7 @@
     )
   </insert>
   
-   <insert id="insertIdentityInfo_postgres" parameterType="org.activiti.engine.impl.identity.IdentityInfoEntity">
+   <insert id="insertIdentityInfo_postgres" parameterType="org.activiti.engine.impl.persistence.entity.IdentityInfoEntity">
     insert into ACT_ID_INFO (ID_, REV_, USER_ID_, TYPE_, KEY_, VALUE_, PASSWORD_, PARENT_ID_)
     values (
       #{id ,jdbcType=VARCHAR},
@@ -35,7 +35,7 @@
   </insert>
   
   <!-- INFO UPDATE -->
-  <update id="updateIdentityInfo" parameterType="org.activiti.engine.impl.identity.IdentityInfoEntity">
+  <update id="updateIdentityInfo" parameterType="org.activiti.engine.impl.persistence.entity.IdentityInfoEntity">
     update ACT_ID_INFO 
     set REV_ = #{revisionNext ,jdbcType=INTEGER},
         VALUE_ = #{value ,jdbcType=VARCHAR},
@@ -44,7 +44,7 @@
       and REV_ = #{revision}
   </update>
   
-  <update id="updateIdentityInfo_postgres" parameterType="org.activiti.engine.impl.identity.IdentityInfoEntity">
+  <update id="updateIdentityInfo_postgres" parameterType="org.activiti.engine.impl.persistence.entity.IdentityInfoEntity">
     update ACT_ID_INFO 
     set REV_ = #{revisionNext ,jdbcType=INTEGER},
         VALUE_ = #{value ,jdbcType=VARCHAR},
@@ -62,7 +62,7 @@
 
   <!-- INFO RESULTMAP -->
 
-  <resultMap id="identityInfoResultMap" type="org.activiti.engine.impl.identity.IdentityInfoEntity">
+  <resultMap id="identityInfoResultMap" type="org.activiti.engine.impl.persistence.entity.IdentityInfoEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
     <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />
@@ -73,7 +73,7 @@
     <result property="parentId" column="PARENT_ID_" jdbcType="VARCHAR" />
   </resultMap>
   
-  <resultMap id="identityInfoResultMap_postgres" type="org.activiti.engine.impl.identity.IdentityInfoEntity">
+  <resultMap id="identityInfoResultMap_postgres" type="org.activiti.engine.impl.persistence.entity.IdentityInfoEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
     <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />

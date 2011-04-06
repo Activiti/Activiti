@@ -25,8 +25,8 @@ import javax.mail.Message;
 import javax.mail.Part;
 import javax.mail.internet.MimeMultipart;
 
-import org.activiti.engine.impl.runtime.ByteArrayEntity;
-import org.activiti.engine.impl.task.AttachmentEntity;
+import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
+import org.activiti.engine.impl.persistence.entity.ByteArrayEntity;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.json.JSONObject;
 

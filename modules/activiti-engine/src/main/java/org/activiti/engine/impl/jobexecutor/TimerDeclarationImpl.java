@@ -19,8 +19,8 @@ import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
 import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.runtime.ExecutionEntity;
-import org.activiti.engine.impl.runtime.TimerEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.springframework.util.StringUtils;
 

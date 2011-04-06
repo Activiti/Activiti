@@ -14,7 +14,7 @@
 package org.activiti.rest.builder.identity;
 
 import org.activiti.engine.identity.User;
-import org.activiti.engine.impl.identity.UserEntity;
+import org.activiti.engine.impl.persistence.entity.UserEntity;
 import org.activiti.rest.builder.JSONConverter;
 import org.activiti.rest.util.JSONUtil;
 import org.json.JSONException;

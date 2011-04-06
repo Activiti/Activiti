@@ -13,10 +13,10 @@
 
 package org.activiti.engine.impl.context;
 
+import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
-import org.activiti.engine.impl.repository.DeploymentEntity;
-import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
-import org.activiti.engine.impl.runtime.ExecutionEntity;
 
 
 /**

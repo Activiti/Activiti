@@ -17,9 +17,9 @@ import org.activiti.engine.form.FormData;
 import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.repository.ResourceEntity;
+import org.activiti.engine.impl.persistence.entity.ResourceEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
-import org.activiti.engine.impl.task.TaskEntity;
 
 
 /**

@@ -3,7 +3,7 @@ package org.activiti.rest.api.task;
 import java.util.Map;
 
 import org.activiti.engine.form.TaskFormData;
-import org.activiti.engine.impl.task.TaskEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.rest.model.RestTask;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiWebScript;

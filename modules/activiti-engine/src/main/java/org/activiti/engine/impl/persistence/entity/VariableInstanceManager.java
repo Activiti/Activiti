@@ -16,8 +16,6 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.List;
 
 import org.activiti.engine.impl.persistence.AbstractManager;
-import org.activiti.engine.impl.runtime.ByteArrayEntity;
-import org.activiti.engine.impl.runtime.VariableInstanceEntity;
 
 
 /**

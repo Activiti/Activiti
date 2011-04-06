@@ -14,8 +14,8 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.repository.DeploymentEntity;
-import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 
 
 public class ValidateActivitiDeployment extends CreateTechnicalBpmnXmlAction {

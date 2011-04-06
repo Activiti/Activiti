@@ -21,10 +21,7 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
-import org.activiti.engine.impl.history.HistoricDetailEntity;
-import org.activiti.engine.impl.history.HistoricVariableUpdateEntity;
 import org.activiti.engine.impl.persistence.AbstractHistoricManager;
-import org.activiti.engine.impl.runtime.ByteArrayEntity;
 
 
 /**

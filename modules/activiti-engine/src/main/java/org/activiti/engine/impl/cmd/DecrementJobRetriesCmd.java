@@ -23,7 +23,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.jobexecutor.MessageAddedNotification;
-import org.activiti.engine.impl.runtime.JobEntity;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 
 /**
  * @author Tom Baeyens

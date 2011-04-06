@@ -20,7 +20,6 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.history.HistoricTaskInstanceEntity;
 import org.activiti.engine.impl.persistence.AbstractHistoricManager;
 
 

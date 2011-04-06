@@ -14,7 +14,7 @@
 package org.activiti.engine.impl.form;
 
 import org.activiti.engine.form.StartFormData;
-import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 
 
 /**

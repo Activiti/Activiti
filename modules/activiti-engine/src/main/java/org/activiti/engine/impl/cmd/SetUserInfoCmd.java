@@ -15,9 +15,9 @@ package org.activiti.engine.impl.cmd;
 
 import java.util.Map;
 
-import org.activiti.engine.impl.identity.IdentityInfoEntity;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.IdentityInfoEntity;
 
 
 /**

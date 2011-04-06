@@ -12,7 +12,7 @@
   
   <!-- JOB RESULTMAP (FOR TIMER AND MESSAGE) -->
 
-  <resultMap id="jobResultMap" type="org.activiti.engine.impl.runtime.JobEntity">
+  <resultMap id="jobResultMap" type="org.activiti.engine.impl.persistence.entity.JobEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
     <result property="lockOwner" column="LOCK_OWNER_" jdbcType="VARCHAR" />
@@ -31,9 +31,9 @@
     </discriminator>
   </resultMap>
 
-  <resultMap id="messageResultMap" type="org.activiti.engine.impl.runtime.MessageEntity" extends="jobResultMap"/>
+  <resultMap id="messageResultMap" type="org.activiti.engine.impl.persistence.entity.MessageEntity" extends="jobResultMap"/>
 
-  <resultMap id="timerResultMap" type="org.activiti.engine.impl.runtime.TimerEntity" extends="jobResultMap">
+  <resultMap id="timerResultMap" type="org.activiti.engine.impl.persistence.entity.TimerEntity" extends="jobResultMap">
     <result property="duedate" column="DUEDATE_" jdbcType="TIMESTAMP" />
     <result property="repeat" column="REPEAT_" jdbcType="VARCHAR" />
   </resultMap>
@@ -135,7 +135,7 @@
 
   <!-- TIMER INSERT -->
   
-  <insert id="insertTimer" parameterType="org.activiti.engine.impl.runtime.TimerEntity">
+  <insert id="insertTimer" parameterType="org.activiti.engine.impl.persistence.entity.TimerEntity">
     insert into ACT_RU_JOB (
             ID_, 
             REV_,
@@ -172,7 +172,7 @@
 
   <!-- TIMER UPDATE -->
 
-  <update id="updateTimer" parameterType="org.activiti.engine.impl.runtime.TimerEntity">
+  <update id="updateTimer" parameterType="org.activiti.engine.impl.persistence.entity.TimerEntity">
     update ACT_RU_JOB
     <set>
        REV_ =  #{revisionNext, jdbcType=INTEGER},
@@ -211,7 +211,7 @@
 
   <!-- MESSAGE INSERT -->
 
-  <insert id="insertMessage" parameterType="org.activiti.engine.impl.runtime.MessageEntity">
+  <insert id="insertMessage" parameterType="org.activiti.engine.impl.persistence.entity.MessageEntity">
     insert into ACT_RU_JOB (
             ID_, 
             REV_, 
@@ -244,7 +244,7 @@
   
   <!-- MESSAGE UPDATE -->
   
-  <update id="updateMessage" parameterType="org.activiti.engine.impl.runtime.MessageEntity">
+  <update id="updateMessage" parameterType="org.activiti.engine.impl.persistence.entity.MessageEntity">
     update ACT_RU_JOB
     <set>
        REV_ =  #{revisionNext, jdbcType=INTEGER},

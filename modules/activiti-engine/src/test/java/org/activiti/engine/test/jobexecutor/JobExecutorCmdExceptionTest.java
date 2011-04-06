@@ -7,7 +7,7 @@ import org.activiti.engine.impl.cmd.DeleteJobsCmd;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.runtime.MessageEntity;
+import org.activiti.engine.impl.persistence.entity.MessageEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 
 /**

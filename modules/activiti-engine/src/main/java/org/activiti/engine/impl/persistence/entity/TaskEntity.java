@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.task;
+package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,13 +31,9 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.history.HistoricTaskInstanceEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
-import org.activiti.engine.impl.runtime.ExecutionEntity;
-import org.activiti.engine.impl.runtime.VariableInstanceEntity;
-import org.activiti.engine.impl.runtime.VariableScopeImpl;
+import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.IdentityLink;

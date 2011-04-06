@@ -18,8 +18,8 @@ import java.util.Iterator;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.javax.el.ELContext;
 import org.activiti.engine.impl.javax.el.ELResolver;
-import org.activiti.engine.impl.runtime.ExecutionEntity;
-import org.activiti.engine.impl.task.TaskEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 
 /**

@@ -19,9 +19,9 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.el.ExpressionManager;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.task.TaskDefinition;
-import org.activiti.engine.impl.task.TaskEntity;
 
 /**
  * activity implementation for the user task.

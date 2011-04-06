@@ -19,7 +19,7 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.runtime.TimerEntity;
+import org.activiti.engine.impl.persistence.entity.TimerEntity;
 
 
 /**

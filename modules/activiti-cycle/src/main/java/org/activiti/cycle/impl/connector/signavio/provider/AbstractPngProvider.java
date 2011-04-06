@@ -32,7 +32,7 @@ import org.activiti.cycle.impl.mimetype.PngMimeType;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 
 public abstract class AbstractPngProvider extends SignavioContentRepresentationProvider {
 

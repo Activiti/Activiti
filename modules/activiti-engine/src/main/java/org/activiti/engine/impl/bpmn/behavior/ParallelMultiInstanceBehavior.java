@@ -17,10 +17,10 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.runtime.ExecutionEntity;
 
 
 /**

@@ -21,7 +21,6 @@ import org.activiti.engine.impl.GroupQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.identity.GroupEntity;
 import org.activiti.engine.impl.persistence.AbstractManager;
 
 

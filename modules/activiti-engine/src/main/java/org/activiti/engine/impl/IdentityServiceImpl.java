@@ -41,8 +41,8 @@ import org.activiti.engine.impl.cmd.SetUserInfoCmd;
 import org.activiti.engine.impl.cmd.SetUserPictureCmd;
 import org.activiti.engine.impl.identity.Account;
 import org.activiti.engine.impl.identity.Authentication;
-import org.activiti.engine.impl.identity.GroupEntity;
-import org.activiti.engine.impl.identity.IdentityInfoEntity;
+import org.activiti.engine.impl.persistence.entity.GroupEntity;
+import org.activiti.engine.impl.persistence.entity.IdentityInfoEntity;
 
 
 /**

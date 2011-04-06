@@ -15,7 +15,7 @@ package org.activiti.engine.impl.db.upgrade;
 
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
-import org.activiti.engine.impl.repository.PropertyEntity;
+import org.activiti.engine.impl.persistence.entity.PropertyEntity;
 
 
 /**

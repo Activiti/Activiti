@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.runtime;
+package org.activiti.engine.impl.persistence.entity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,9 +28,6 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
-import org.activiti.engine.impl.history.HistoricProcessInstanceEntity;
-import org.activiti.engine.impl.history.HistoricVariableUpdateEntity;
 import org.activiti.engine.impl.history.handler.ActivityInstanceEndHandler;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
@@ -51,8 +48,6 @@ import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 import org.activiti.engine.impl.pvm.runtime.OutgoingExecution;
-import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
-import org.activiti.engine.impl.task.TaskEntity;
 import org.activiti.engine.impl.variable.VariableDeclaration;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;

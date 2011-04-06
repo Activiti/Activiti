@@ -16,8 +16,8 @@ package org.activiti.engine.impl.history.handler;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.history.HistoricProcessInstanceEntity;
-import org.activiti.engine.impl.runtime.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity;
 
 
 /**

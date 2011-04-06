@@ -20,9 +20,9 @@ import java.util.Set;
 
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.pvm.PvmProcessDefinition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.repository.DeploymentEntity;
 import org.activiti.engine.impl.rules.RulesAgendaFilter;
 import org.activiti.engine.impl.rules.RulesHelper;
 import org.drools.KnowledgeBase;

@@ -20,7 +20,7 @@
 
   <!-- ATTACHMENT INSERT -->
 
-  <insert id="insertAttachment" parameterType="org.activiti.engine.impl.task.AttachmentEntity">
+  <insert id="insertAttachment" parameterType="org.activiti.engine.impl.persistence.entity.AttachmentEntity">
     insert into ACT_HI_ATTACHMENT (ID_, REV_, NAME_, DESCRIPTION_, TYPE_, TASK_ID_, PROC_INST_ID_, URL_, CONTENT_ID_)
     values (
       #{id ,jdbcType=VARCHAR},
@@ -37,7 +37,7 @@
 
   <!-- ATTACHMENT UPDATE -->
 
-  <update id="updateAttachment" parameterType="org.activiti.engine.impl.task.AttachmentEntity">
+  <update id="updateAttachment" parameterType="org.activiti.engine.impl.persistence.entity.AttachmentEntity">
     update ACT_HI_ATTACHMENT 
     set
       REV_ = #{nextRevision, jdbcType=INTEGER},
@@ -56,7 +56,7 @@
   
   <!-- ATTACHMENT RESULTMAP -->
 
-  <resultMap id="attachmentResultMap" type="org.activiti.engine.impl.task.AttachmentEntity">
+  <resultMap id="attachmentResultMap" type="org.activiti.engine.impl.persistence.entity.AttachmentEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
     <result property="name" column="NAME_" jdbcType="VARCHAR" />

@@ -13,7 +13,7 @@
 
 package org.activiti.rest.model;
 
-import org.activiti.engine.impl.task.TaskEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 
 /**

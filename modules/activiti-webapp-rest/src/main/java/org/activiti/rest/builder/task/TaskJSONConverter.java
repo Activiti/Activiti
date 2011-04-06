@@ -13,7 +13,7 @@
 
 package org.activiti.rest.builder.task;
 
-import org.activiti.engine.impl.task.TaskEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.builder.JSONConverter;
 import org.activiti.rest.model.RestTask;

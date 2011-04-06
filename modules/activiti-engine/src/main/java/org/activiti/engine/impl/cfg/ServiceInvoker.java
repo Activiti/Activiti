@@ -15,8 +15,8 @@ package org.activiti.engine.impl.cfg;
 
 import java.util.Map;
 
-import org.activiti.engine.impl.runtime.ExecutionEntity;
-import org.activiti.engine.impl.task.TaskEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 
 /**

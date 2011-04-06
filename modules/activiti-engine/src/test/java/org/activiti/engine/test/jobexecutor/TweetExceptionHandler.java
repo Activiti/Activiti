@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
-import org.activiti.engine.impl.runtime.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 
 /**

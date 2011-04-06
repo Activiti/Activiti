@@ -13,7 +13,7 @@
 package org.activiti.engine.impl.variable;
 
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.runtime.ByteArrayEntity;
+import org.activiti.engine.impl.persistence.entity.ByteArrayEntity;
 
 /**
  * @author Tom Baeyens

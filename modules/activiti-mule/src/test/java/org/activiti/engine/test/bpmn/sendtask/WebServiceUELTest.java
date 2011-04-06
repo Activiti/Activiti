@@ -21,7 +21,7 @@ import org.activiti.engine.impl.bpmn.data.ItemInstance;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.test.bpmn.servicetask.AbstractWebServiceTaskTest;
 
 /**

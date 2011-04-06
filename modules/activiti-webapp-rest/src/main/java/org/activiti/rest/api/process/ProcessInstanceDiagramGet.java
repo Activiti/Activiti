@@ -2,8 +2,8 @@ package org.activiti.rest.api.process;
 
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
-import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
-import org.activiti.engine.impl.runtime.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiStreamingWebScript;

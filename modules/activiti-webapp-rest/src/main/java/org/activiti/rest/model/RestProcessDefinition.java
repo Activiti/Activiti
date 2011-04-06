@@ -13,7 +13,7 @@
 
 package org.activiti.rest.model;
 
-import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 
 /**
  * Model used in REST-API, adding field startFormResourceKey to task.

@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.repository;
+package org.activiti.engine.impl.persistence.entity;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.db.PersistentObject;

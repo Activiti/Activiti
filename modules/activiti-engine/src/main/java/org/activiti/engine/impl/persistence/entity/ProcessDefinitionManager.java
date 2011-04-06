@@ -20,7 +20,6 @@ import java.util.Map;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.impl.persistence.AbstractManager;
-import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 
 

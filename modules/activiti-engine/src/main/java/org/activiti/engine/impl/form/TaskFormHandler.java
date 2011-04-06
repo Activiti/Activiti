@@ -14,7 +14,7 @@
 package org.activiti.engine.impl.form;
 
 import org.activiti.engine.form.TaskFormData;
-import org.activiti.engine.impl.task.TaskEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 
 /**

@@ -14,9 +14,9 @@ package org.activiti.engine.impl.scripting;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.VariableScope;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.runtime.ExecutionImpl;
-import org.activiti.engine.impl.runtime.ExecutionEntity;
-import org.activiti.engine.impl.task.TaskEntity;
 
 
 /**

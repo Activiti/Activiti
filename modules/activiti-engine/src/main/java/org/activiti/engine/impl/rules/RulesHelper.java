@@ -19,7 +19,7 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.DeploymentQueryImpl;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.repository.DeploymentEntity;
+import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.repository.Deployment;
 import org.drools.KnowledgeBase;
 

@@ -14,7 +14,6 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import org.activiti.engine.impl.persistence.AbstractManager;
-import org.activiti.engine.impl.repository.PropertyEntity;
 
 
 /**

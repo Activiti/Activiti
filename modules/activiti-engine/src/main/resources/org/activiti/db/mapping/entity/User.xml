@@ -6,7 +6,7 @@
 
   <!-- USER INSERT -->
 
-  <insert id="insertUser" parameterType="org.activiti.engine.impl.identity.UserEntity">
+  <insert id="insertUser" parameterType="org.activiti.engine.impl.persistence.entity.UserEntity">
     insert into ACT_ID_USER (ID_, REV_, FIRST_, LAST_, EMAIL_, PWD_)
     values (
       #{id ,jdbcType=VARCHAR},
@@ -20,7 +20,7 @@
 
   <!-- USER UPDATE -->
 
-  <update id="updateUser" parameterType="org.activiti.engine.impl.identity.UserEntity">
+  <update id="updateUser" parameterType="org.activiti.engine.impl.persistence.entity.UserEntity">
     update ACT_ID_USER set
       REV_ = #{revisionNext ,jdbcType=INTEGER},
       FIRST_ = #{firstName ,jdbcType=VARCHAR},
@@ -40,7 +40,7 @@
 
   <!-- USER RESULTMAP -->
 
-  <resultMap id="userResultMap" type="org.activiti.engine.impl.identity.UserEntity">
+  <resultMap id="userResultMap" type="org.activiti.engine.impl.persistence.entity.UserEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
     <result property="firstName" column="FIRST_" jdbcType="VARCHAR" />

@@ -6,7 +6,7 @@
   
   <!-- RESOURCE INSERT -->
 
-  <insert id="insertResource" parameterType="org.activiti.engine.impl.repository.ResourceEntity">
+  <insert id="insertResource" parameterType="org.activiti.engine.impl.persistence.entity.ResourceEntity">
     insert into ACT_GE_BYTEARRAY(ID_, REV_, NAME_, BYTES_, DEPLOYMENT_ID_)
     values (#{id, jdbcType=VARCHAR}, 1, #{name, jdbcType=VARCHAR}, #{bytes, jdbcType=BLOB}, #{deploymentId, jdbcType=VARCHAR})  
   </insert>
@@ -21,7 +21,7 @@
   
   <!-- RESOURCE RESULTMAP -->
 
-  <resultMap id="resourceResultMap" type="org.activiti.engine.impl.repository.ResourceEntity">
+  <resultMap id="resourceResultMap" type="org.activiti.engine.impl.persistence.entity.ResourceEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="name" column="NAME_" jdbcType="VARCHAR"/>
     <result property="bytes" column="BYTES_" jdbcType="BLOB"/>
@@ -44,7 +44,7 @@
   </select>  
 
   <!-- postgresql specific -->
-  <resultMap id="resourceResultMap_postgres" type="org.activiti.engine.impl.repository.ResourceEntity">
+  <resultMap id="resourceResultMap_postgres" type="org.activiti.engine.impl.persistence.entity.ResourceEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="name" column="NAME_" jdbcType="VARCHAR"/>
     <result property="bytes" column="BYTES_" jdbcType="BINARY"/>

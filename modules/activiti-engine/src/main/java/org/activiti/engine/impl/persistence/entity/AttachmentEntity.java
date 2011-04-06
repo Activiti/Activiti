@@ -11,13 +11,12 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.task;
+package org.activiti.engine.impl.persistence.entity;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.runtime.ByteArrayEntity;
 import org.activiti.engine.task.Attachment;
 
 

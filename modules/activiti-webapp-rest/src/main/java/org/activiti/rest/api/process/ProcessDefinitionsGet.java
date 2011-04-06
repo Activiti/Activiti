@@ -19,7 +19,7 @@ import java.util.Map;
 import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.impl.ProcessDefinitionQueryProperty;
 import org.activiti.engine.impl.RepositoryServiceImpl;
-import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.rest.model.RestProcessDefinition;
 import org.activiti.rest.util.ActivitiPagingWebScript;

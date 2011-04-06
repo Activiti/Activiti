@@ -17,8 +17,8 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
-import org.activiti.engine.impl.runtime.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 
 

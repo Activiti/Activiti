@@ -24,10 +24,7 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.UserQueryImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.identity.IdentityInfoEntity;
-import org.activiti.engine.impl.identity.UserEntity;
 import org.activiti.engine.impl.persistence.AbstractManager;
-import org.activiti.engine.impl.runtime.ByteArrayEntity;
 
 
 /**

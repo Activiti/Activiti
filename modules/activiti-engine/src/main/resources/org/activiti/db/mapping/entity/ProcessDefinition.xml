@@ -6,7 +6,7 @@
   
   <!-- PROCESSDEFINITION INSERT -->
 
-  <insert id="insertProcessDefinition" parameterType="org.activiti.engine.impl.repository.ProcessDefinitionEntity">
+  <insert id="insertProcessDefinition" parameterType="org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity">
     insert into ACT_RE_PROCDEF(ID_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_, DGRM_RESOURCE_NAME_, HAS_START_FORM_KEY_)
     values (#{id, jdbcType=VARCHAR},
             #{category, jdbcType=VARCHAR},
@@ -29,7 +29,7 @@
   
   <!-- PROCESSDEFINITION RESULTMAP -->
 
-  <resultMap id="processDefinitionResultMap" type="org.activiti.engine.impl.repository.ProcessDefinitionEntity">
+  <resultMap id="processDefinitionResultMap" type="org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="category" column="CATEGORY_" />
     <result property="name" column="NAME_" />

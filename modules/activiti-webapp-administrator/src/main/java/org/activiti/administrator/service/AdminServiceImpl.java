@@ -24,8 +24,8 @@ import org.activiti.engine.IdentityService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
-import org.activiti.engine.impl.identity.GroupEntity;
-import org.activiti.engine.impl.identity.UserEntity;
+import org.activiti.engine.impl.persistence.entity.GroupEntity;
+import org.activiti.engine.impl.persistence.entity.UserEntity;
 import org.activiti.engine.task.Task;
 
 /**

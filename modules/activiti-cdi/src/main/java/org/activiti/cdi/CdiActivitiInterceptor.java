@@ -21,7 +21,7 @@ import org.activiti.cdi.impl.util.ProgrammaticBeanLookup;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
-import org.activiti.engine.impl.runtime.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
  * CommandInterceptor for flushing the Beanstore before and after executing a

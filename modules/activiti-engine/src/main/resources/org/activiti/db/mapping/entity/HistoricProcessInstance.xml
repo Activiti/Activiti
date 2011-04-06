@@ -20,7 +20,7 @@
 
   <!-- HISTORIC PROCESS INSTANCE INSERT -->
   
-  <insert id="insertHistoricProcessInstance" parameterType="org.activiti.engine.impl.history.HistoricProcessInstanceEntity">
+  <insert id="insertHistoricProcessInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity">
       insert into ACT_HI_PROCINST (
         ID_,
         PROC_INST_ID_,
@@ -48,7 +48,7 @@
 
   <!-- HISTORIC PROCESS INSTANCE UPDATE -->
   
-  <update id="updateHistoricProcessInstance" parameterType="org.activiti.engine.impl.history.HistoricProcessInstanceEntity">
+  <update id="updateHistoricProcessInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity">
     update ACT_HI_PROCINST set
       START_TIME_ = #{startTime, jdbcType=TIMESTAMP},
       END_TIME_ = #{endTime, jdbcType=TIMESTAMP},
@@ -65,7 +65,7 @@
 
   <!-- HISTORIC PROCESS INSTANCE RESULT MAP -->
   
-  <resultMap id="historicProcessInstanceResultMap" type="org.activiti.engine.impl.history.HistoricProcessInstanceEntity">
+  <resultMap id="historicProcessInstanceResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
     <result property="businessKey" column="BUSINESS_KEY_" jdbcType="VARCHAR"/>

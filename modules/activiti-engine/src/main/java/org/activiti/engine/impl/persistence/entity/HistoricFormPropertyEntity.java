@@ -11,11 +11,10 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.history;
+package org.activiti.engine.impl.persistence.entity;
 
 import org.activiti.engine.history.HistoricFormProperty;
 import org.activiti.engine.impl.history.handler.ActivityInstanceEndHandler;
-import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 
 

@@ -15,7 +15,7 @@ import org.activiti.cycle.processsolution.VirtualRepositoryFolder;
 import org.activiti.cycle.service.CycleProcessSolutionService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.User;
-import org.activiti.engine.impl.identity.UserEntity;
+import org.activiti.engine.impl.persistence.entity.UserEntity;
 
 /**
  * Default implementation of the {@link CycleProcessSolutionService}-interface.

@@ -12,7 +12,7 @@
  */
 package org.activiti.engine.impl.persistence.deploy;
 
-import org.activiti.engine.impl.repository.DeploymentEntity;
+import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 
 
 

@@ -26,7 +26,7 @@ import org.activiti.engine.impl.javax.el.ListELResolver;
 import org.activiti.engine.impl.javax.el.MapELResolver;
 import org.activiti.engine.impl.javax.el.ValueExpression;
 import org.activiti.engine.impl.juel.ExpressionFactoryImpl;
-import org.activiti.engine.impl.runtime.VariableScopeImpl;
+import org.activiti.engine.impl.persistence.entity.VariableScopeImpl;
 
 
 /**

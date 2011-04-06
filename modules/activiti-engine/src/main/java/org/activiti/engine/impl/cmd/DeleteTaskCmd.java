@@ -21,13 +21,13 @@ import org.activiti.engine.impl.HistoricDetailQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
-import org.activiti.engine.impl.history.HistoricDetailEntity;
-import org.activiti.engine.impl.history.HistoricTaskInstanceEntity;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.runtime.ByteArrayEntity;
-import org.activiti.engine.impl.task.AttachmentEntity;
-import org.activiti.engine.impl.task.TaskEntity;
+import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
+import org.activiti.engine.impl.persistence.entity.ByteArrayEntity;
+import org.activiti.engine.impl.persistence.entity.HistoricDetailEntity;
+import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 
 /**

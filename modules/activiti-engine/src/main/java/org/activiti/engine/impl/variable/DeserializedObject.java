@@ -14,7 +14,7 @@ package org.activiti.engine.impl.variable;
 
 import java.util.Arrays;
 
-import org.activiti.engine.impl.runtime.VariableInstanceEntity;
+import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 
 
 /**

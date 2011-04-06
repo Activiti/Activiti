@@ -10,73 +10,59 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.identity;
+
+package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.activiti.engine.identity.Group;
 import org.activiti.engine.impl.db.PersistentObject;
 
 
 /**
  * @author Tom Baeyens
  */
-public class GroupEntity implements Group, Serializable, PersistentObject {
+public class ResourceEntity implements Serializable, PersistentObject {
 
   private static final long serialVersionUID = 1L;
 
   protected String id;
-  protected int revision;
   protected String name;
-  protected String type;
+  protected byte[] bytes;
+  protected String deploymentId;
   
-  public GroupEntity() {
-  }
-  
-  public GroupEntity(String id) {
-    this.id = id;
-  }
-  
-  public void update(GroupEntity group) {
-    this.name = group.getName();
-    this.type = group.getType();
-  }
-  
-  public Object getPersistentState() {
-    Map<String, Object> persistentState = new HashMap<String, Object>();
-    persistentState.put("name", name);
-    persistentState.put("type", type);
-    return persistentState;
-  }
-  
-  public int getRevisionNext() {
-    return revision+1;
-  }
-
   public String getId() {
     return id;
   }
+  
   public void setId(String id) {
     this.id = id;
   }
+  
   public String getName() {
     return name;
   }
+  
   public void setName(String name) {
     this.name = name;
   }
-  public String getType() {
-    return type;
+  
+  public byte[] getBytes() {
+    return bytes;
   }
-  public void setType(String type) {
-    this.type = type;
+  
+  public void setBytes(byte[] bytes) {
+    this.bytes = bytes;
   }
-  public int getRevision() {
-    return revision;
+  
+  public String getDeploymentId() {
+    return deploymentId;
   }
-  public void setRevision(int revision) {
-    this.revision = revision;
+  
+  public void setDeploymentId(String deploymentId) {
+    this.deploymentId = deploymentId;
+  }
+
+  public Object getPersistentState() {
+    return ResourceEntity.class;
   }
 }

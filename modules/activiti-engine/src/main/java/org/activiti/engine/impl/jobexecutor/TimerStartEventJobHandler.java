@@ -15,9 +15,9 @@ package org.activiti.engine.impl.jobexecutor;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cmd.StartProcessInstanceCmd;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.runtime.ExecutionEntity;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

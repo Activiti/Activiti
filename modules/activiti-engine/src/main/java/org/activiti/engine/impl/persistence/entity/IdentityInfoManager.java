@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.identity.IdentityInfoEntity;
 import org.activiti.engine.impl.persistence.AbstractManager;
 
 

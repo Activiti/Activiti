@@ -20,7 +20,7 @@
   
   <!-- HISTORIC TASK INSTANCE INSERT -->
   
-  <insert id="insertHistoricTaskInstance" parameterType="org.activiti.engine.impl.history.HistoricTaskInstanceEntity">
+  <insert id="insertHistoricTaskInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity">
       insert into ACT_HI_TASKINST (
         ID_,
         PROC_DEF_ID_,
@@ -56,7 +56,7 @@
 
   <!-- HISTORIC TASK INSTANCE UPDATE -->
   
-  <update id="updateHistoricTaskInstance" parameterType="org.activiti.engine.impl.history.HistoricTaskInstanceEntity">
+  <update id="updateHistoricTaskInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity">
     update ACT_HI_TASKINST set
       EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR},
       NAME_ = #{name, jdbcType=VARCHAR},
@@ -83,7 +83,7 @@
 
   <!-- HISTORIC TASK INSTANCE RESULT MAP -->
 
-  <resultMap id="historicTaskInstanceResultMap" type="org.activiti.engine.impl.history.HistoricTaskInstanceEntity">
+  <resultMap id="historicTaskInstanceResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />

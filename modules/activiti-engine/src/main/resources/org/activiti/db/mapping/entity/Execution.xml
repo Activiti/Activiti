@@ -6,7 +6,7 @@
 
   <!-- EXECUTION INSERT -->
 
-  <insert id="insertExecution" parameterType="org.activiti.engine.impl.runtime.ExecutionEntity">
+  <insert id="insertExecution" parameterType="org.activiti.engine.impl.persistence.entity.ExecutionEntity">
     insert into ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_, IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_, PARENT_ID_, SUPER_EXEC_)
     values (
       #{id ,jdbcType=VARCHAR},
@@ -25,7 +25,7 @@
 
   <!-- EXECUTION UPDATE -->
   
-  <update id="updateExecution" parameterType="org.activiti.engine.impl.runtime.ExecutionEntity">
+  <update id="updateExecution" parameterType="org.activiti.engine.impl.persistence.entity.ExecutionEntity">
     update ACT_RU_EXECUTION set
       REV_ = #{revisionNext, jdbcType=INTEGER},
       PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
@@ -47,7 +47,7 @@
   
   <!-- EXECUTION RESULTMAP -->
   
-  <resultMap id="executionResultMap" type="org.activiti.engine.impl.runtime.ExecutionEntity">
+  <resultMap id="executionResultMap" type="org.activiti.engine.impl.persistence.entity.ExecutionEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />

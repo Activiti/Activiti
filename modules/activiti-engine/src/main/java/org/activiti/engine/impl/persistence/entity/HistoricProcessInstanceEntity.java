@@ -12,14 +12,13 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.history;
+package org.activiti.engine.impl.persistence.entity;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.identity.Authentication;
-import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 
 /**

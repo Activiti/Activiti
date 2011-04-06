@@ -14,7 +14,7 @@
 package org.activiti.engine.impl;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.runtime.VariableInstanceEntity;
+import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.variable.ByteArrayType;
 import org.activiti.engine.impl.variable.JPAEntityVariableType;
 import org.activiti.engine.impl.variable.VariableType;

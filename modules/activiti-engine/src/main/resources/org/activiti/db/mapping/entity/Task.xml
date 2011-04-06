@@ -6,7 +6,7 @@
 
   <!-- TASK INSERT -->
   
-  <insert id="insertTask" parameterType="org.activiti.engine.impl.task.TaskEntity">
+  <insert id="insertTask" parameterType="org.activiti.engine.impl.persistence.entity.TaskEntity">
     insert into ACT_RU_TASK (ID_, REV_, NAME_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
                       ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_)
     values (#{id, jdbcType=VARCHAR},
@@ -28,7 +28,7 @@
   
   <!-- TASK UPDATE -->
   
-  <update id="updateTask" parameterType="org.activiti.engine.impl.task.TaskEntity">
+  <update id="updateTask" parameterType="org.activiti.engine.impl.persistence.entity.TaskEntity">
     update ACT_RU_TASK
     <set>
       REV_ = #{revisionNext, jdbcType=INTEGER},
@@ -53,7 +53,7 @@
   
   <!-- TASK RESULTMAP -->
   
-  <resultMap id="taskResultMap" type="org.activiti.engine.impl.task.TaskEntity">
+  <resultMap id="taskResultMap" type="org.activiti.engine.impl.persistence.entity.TaskEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR"/>
     <result property="revision" column="REV_" jdbcType="INTEGER"/>
     <result property="name" column="NAME_" jdbcType="VARCHAR"/>

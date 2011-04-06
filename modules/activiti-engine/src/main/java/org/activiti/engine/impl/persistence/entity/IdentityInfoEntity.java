@@ -11,12 +11,13 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.identity;
+package org.activiti.engine.impl.persistence.entity;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.identity.Account;
 
 
 /**

@@ -19,8 +19,6 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.AbstractManager;
-import org.activiti.engine.impl.runtime.ExecutionEntity;
-import org.activiti.engine.impl.task.TaskEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 

@@ -2,7 +2,7 @@ package com.camunda.training.delegate;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
-import org.activiti.engine.impl.runtime.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 public class SysoutDelegate implements JavaDelegate {
 

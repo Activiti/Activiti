@@ -18,7 +18,7 @@ import java.util.Map;
 
 import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.impl.TaskQueryProperty;
-import org.activiti.engine.impl.task.TaskEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.rest.model.RestTask;

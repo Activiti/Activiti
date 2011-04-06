@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.runtime;
+package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
 import java.util.logging.Level;

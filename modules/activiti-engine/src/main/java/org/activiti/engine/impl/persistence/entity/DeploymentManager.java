@@ -19,8 +19,6 @@ import org.activiti.engine.impl.DeploymentQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.AbstractManager;
-import org.activiti.engine.impl.repository.DeploymentEntity;
-import org.activiti.engine.impl.repository.ResourceEntity;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 

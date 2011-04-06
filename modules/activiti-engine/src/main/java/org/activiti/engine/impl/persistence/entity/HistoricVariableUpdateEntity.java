@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.history;
+package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
 
@@ -19,8 +19,6 @@ import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.runtime.ByteArrayEntity;
-import org.activiti.engine.impl.runtime.VariableInstanceEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti.engine.impl.variable.VariableType;

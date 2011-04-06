@@ -11,13 +11,13 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.history;
+package org.activiti.engine.impl.persistence.entity;
 
 
 
 /**
  * @author Tom Baeyens
  */
-public class HistoricDetailAssignmentEntity extends HistoricDetailEntity {
+public class HistoricDetailTransitionInstanceEntity extends HistoricDetailEntity {
 
 }

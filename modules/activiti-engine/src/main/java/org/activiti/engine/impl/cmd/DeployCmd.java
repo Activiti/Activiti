@@ -18,9 +18,9 @@ import java.util.Map;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
+import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
-import org.activiti.engine.impl.repository.DeploymentEntity;
-import org.activiti.engine.impl.repository.ResourceEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.repository.Deployment;
 

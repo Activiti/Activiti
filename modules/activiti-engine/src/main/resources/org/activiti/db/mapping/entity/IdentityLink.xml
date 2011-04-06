@@ -6,7 +6,7 @@
 
   <!-- INSERT IDENTITY LINK -->
   
-  <insert id="insertIdentityLink" parameterType="org.activiti.engine.impl.task.IdentityLinkEntity">
+  <insert id="insertIdentityLink" parameterType="org.activiti.engine.impl.persistence.entity.IdentityLinkEntity">
     insert into ACT_RU_IDENTITYLINK (ID_, REV_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_)
     values (#{id, jdbcType=VARCHAR},
             1,
@@ -24,7 +24,7 @@
 
   <!-- IDENTITY LINK RESULTMAP -->
 
-  <resultMap id="identityLinkResultMap" type="org.activiti.engine.impl.task.IdentityLinkEntity">
+  <resultMap id="identityLinkResultMap" type="org.activiti.engine.impl.persistence.entity.IdentityLinkEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="type" column="TYPE_" jdbcType="VARCHAR" />
     <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />

@@ -18,8 +18,8 @@ import java.util.List;
 
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.impl.runtime.MessageEntity;
-import org.activiti.engine.impl.runtime.TimerEntity;
+import org.activiti.engine.impl.persistence.entity.MessageEntity;
+import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.runtime.Job;
 import org.activiti.explorer.data.AbstractLazyLoadingQuery;
 

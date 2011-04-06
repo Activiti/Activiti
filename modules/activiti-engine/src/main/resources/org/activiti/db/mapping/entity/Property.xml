@@ -6,7 +6,7 @@
 
   <!-- PROPERTY INSERT -->
   
-  <insert id="insertProperty" parameterType="org.activiti.engine.impl.repository.PropertyEntity">
+  <insert id="insertProperty" parameterType="org.activiti.engine.impl.persistence.entity.PropertyEntity">
       insert into ACT_GE_PROPERTY (
         NAME_,
         VALUE_,
@@ -20,7 +20,7 @@
 
   <!-- PROPERTY UPDATE -->
   
-  <update id="updateProperty" parameterType="org.activiti.engine.impl.repository.PropertyEntity">
+  <update id="updateProperty" parameterType="org.activiti.engine.impl.persistence.entity.PropertyEntity">
     update ACT_GE_PROPERTY
     <set>
       REV_ = #{revisionNext, jdbcType=INTEGER},
@@ -39,7 +39,7 @@
 
   <!-- PROPERTY SELECT -->
   
-  <resultMap id="propertyResultMap" type="org.activiti.engine.impl.repository.PropertyEntity">
+  <resultMap id="propertyResultMap" type="org.activiti.engine.impl.persistence.entity.PropertyEntity">
     <id property="name" column="NAME_" jdbcType="VARCHAR" />
     <result property="value" column="VALUE_" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />

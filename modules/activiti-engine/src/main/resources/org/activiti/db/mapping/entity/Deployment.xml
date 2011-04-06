@@ -6,7 +6,7 @@
 
   <!-- DEPLOYMENT INSERT -->
   
-  <insert id="insertDeployment" parameterType="org.activiti.engine.impl.repository.DeploymentEntity">
+  <insert id="insertDeployment" parameterType="org.activiti.engine.impl.persistence.entity.DeploymentEntity">
     insert into ACT_RE_DEPLOYMENT(ID_, NAME_, DEPLOY_TIME_)
     values(#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{deploymentTime, jdbcType=TIMESTAMP})
   </insert>
@@ -21,7 +21,7 @@
 
   <!-- DEPLOYMENT RESULTMAP -->
   
-  <resultMap id="deploymentResultMap" type="org.activiti.engine.impl.repository.DeploymentEntity">
+  <resultMap id="deploymentResultMap" type="org.activiti.engine.impl.persistence.entity.DeploymentEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="name" column="NAME_" jdbcType="VARCHAR" />
     <result property="deploymentTime" column="DEPLOY_TIME_" jdbcType="TIMESTAMP"/>

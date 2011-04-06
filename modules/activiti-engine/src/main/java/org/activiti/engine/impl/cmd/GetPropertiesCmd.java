@@ -19,7 +19,7 @@ import java.util.Map;
 
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.repository.PropertyEntity;
+import org.activiti.engine.impl.persistence.entity.PropertyEntity;
 
 
 /**
