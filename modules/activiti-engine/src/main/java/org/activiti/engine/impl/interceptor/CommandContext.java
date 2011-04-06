@@ -19,11 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.cfg.HistorySession;
-import org.activiti.engine.impl.cfg.ManagementSession;
-import org.activiti.engine.impl.cfg.MessageSession;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.cfg.TimerSession;
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
@@ -40,7 +36,9 @@ import org.activiti.engine.impl.persistence.mgr.IdentityLinkManager;
 import org.activiti.engine.impl.persistence.mgr.JobManager;
 import org.activiti.engine.impl.persistence.mgr.MembershipManager;
 import org.activiti.engine.impl.persistence.mgr.ProcessDefinitionManager;
+import org.activiti.engine.impl.persistence.mgr.PropertyManager;
 import org.activiti.engine.impl.persistence.mgr.ResourceManager;
+import org.activiti.engine.impl.persistence.mgr.TableDataManager;
 import org.activiti.engine.impl.persistence.mgr.TaskManager;
 import org.activiti.engine.impl.persistence.mgr.UserManager;
 import org.activiti.engine.impl.persistence.mgr.VariableInstanceManager;
@@ -252,19 +250,13 @@ public class CommandContext {
   public AttachmentManager getAttachmentManager() {
     return getSession(AttachmentManager.class);
   }
-  
 
-  public MessageSession getMessageSession() {
-    return getSession(MessageSession.class);
+  public TableDataManager getTableDataManager() {
+    return getSession(TableDataManager.class);
   }
-  public TimerSession getTimerSession() {
-    return getSession(TimerSession.class);
-  }
-  public HistorySession getHistorySession() {
-    return getSession(HistorySession.class);
-  }
-  public ManagementSession getManagementSession() {
-    return getSession(ManagementSession.class);
+
+  public PropertyManager getPropertyManager() {
+    return getSession(PropertyManager.class);
   }
 
   // getters and setters //////////////////////////////////////////////////////

@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.db;
+package org.activiti.engine.impl.persistence.mgr;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -26,10 +26,6 @@ import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.TablePageQueryImpl;
-import org.activiti.engine.impl.cfg.ManagementSession;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.interceptor.Session;
-import org.activiti.engine.impl.repository.PropertyEntity;
 import org.activiti.engine.management.TableMetaData;
 import org.activiti.engine.management.TablePage;
 import org.apache.ibatis.session.RowBounds;
@@ -38,16 +34,10 @@ import org.apache.ibatis.session.RowBounds;
 /**
  * @author Tom Baeyens
  */
-public class DbManagementSession implements ManagementSession, Session {
+public class TableDataManager extends AbstractManager {
   
-  private static Logger log = Logger.getLogger(DbManagementSession.class.getName());
-  
-  protected DbSqlSession dbSqlSession;
+  private static Logger log = Logger.getLogger(TableDataManager.class.getName());
 
-  public DbManagementSession() {
-    this.dbSqlSession = Context.getCommandContext().getSession(DbSqlSession.class);
-  }
-  
   public Map<String, Long> getTableCount() {
     Map<String, Long> tableCount = new HashMap<String, Long>();
     try {
@@ -65,16 +55,16 @@ public class DbManagementSession implements ManagementSession, Session {
     List<String> tableNames = new ArrayList<String>();
     Connection connection = null;
     try {
-      connection = dbSqlSession.getSqlSession().getConnection();
+      connection = getPersistenceSession().getSqlSession().getConnection();
       DatabaseMetaData databaseMetaData = connection.getMetaData();
       ResultSet tables = null;
       try {
         log.fine("retrieving activiti tables from jdbc metadata");
         String tableNameFilter = "ACT_%";
-        if ("postgres".equals(dbSqlSession.getDbSqlSessionFactory().getDatabaseType())) {
+        if ("postgres".equals(getPersistenceSession().getDbSqlSessionFactory().getDatabaseType())) {
           tableNameFilter = "act_%";
         }
-        tables = databaseMetaData.getTables(null, null, tableNameFilter, DbSqlSession.JDBC_METADATA_TABLE_TYPES);
+        tables = databaseMetaData.getTables(null, null, tableNameFilter, getPersistenceSession().JDBC_METADATA_TABLE_TYPES);
         while (tables.next()) {
           String tableName = tables.getString("TABLE_NAME");
           tableName = tableName.toUpperCase();
@@ -92,7 +82,7 @@ public class DbManagementSession implements ManagementSession, Session {
 
   protected long getTableCount(String tableName) {
     log.fine("selecting table count for "+tableName);
-    Long count = (Long) dbSqlSession.selectOne("selectTableCount",
+    Long count = (Long) getPersistenceSession().selectOne("selectTableCount",
             Collections.singletonMap("tableName", tableName));
     return count;
   }
@@ -102,7 +92,7 @@ public class DbManagementSession implements ManagementSession, Session {
 
     TablePage tablePage = new TablePage();
 
-    List<Map<String, Object>> tableData = (List<Map<String, Object>>) dbSqlSession
+    List<Map<String, Object>> tableData = (List<Map<String, Object>>) getPersistenceSession()
       .getSqlSession()
       .selectList("selectTableData", tablePageQuery, new RowBounds(firstResult, maxResults));
 
@@ -118,12 +108,12 @@ public class DbManagementSession implements ManagementSession, Session {
     TableMetaData result = new TableMetaData();
     try {
       result.setTableName(tableName);
-      DatabaseMetaData metaData = dbSqlSession
+      DatabaseMetaData metaData = getPersistenceSession()
         .getSqlSession()
         .getConnection()
         .getMetaData();
 
-      if ("postgres".equals(dbSqlSession.getDbSqlSessionFactory().getDatabaseType())) {
+      if ("postgres".equals(getPersistenceSession().getDbSqlSessionFactory().getDatabaseType())) {
         tableName = tableName.toLowerCase();
       }
 
@@ -145,17 +135,4 @@ public class DbManagementSession implements ManagementSession, Session {
     return result;
   }
 
-  public IdBlock getNextIdBlock(int idBlockSize) {
-    PropertyEntity property = (PropertyEntity) dbSqlSession.selectById(PropertyEntity.class, "next.dbid");
-    long oldValue = Long.parseLong(property.getValue());
-    long newValue = oldValue+idBlockSize;
-    property.setValue(Long.toString(newValue));
-    return new IdBlock(oldValue, newValue-1);
-  }
-
-  public void close() {
-  }
-
-  public void flush() {
-  }
 }

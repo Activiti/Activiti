@@ -28,7 +28,7 @@ public class ProcessInstanceEndHandler implements ExecutionListener {
   public void notify(DelegateExecution execution) {
     HistoricProcessInstanceEntity historicProcessInstance = Context
       .getCommandContext()
-      .getHistorySession()
+      .getHistoricProcessInstanceManager()
       .findHistoricProcessInstance(execution.getProcessInstanceId());
     
     if (historicProcessInstance!=null) {

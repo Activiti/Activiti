@@ -16,6 +16,8 @@ package org.activiti.engine.impl.persistence.mgr;
 import java.util.List;
 
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
+import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.history.HistoricProcessInstanceEntity;
@@ -27,6 +29,10 @@ import org.activiti.engine.repository.ProcessDefinition;
  * @author Tom Baeyens
  */
 public class HistoricProcessInstanceManager extends AbstractHistoricManager {
+
+  public HistoricProcessInstanceEntity findHistoricProcessInstance(String processInstanceId) {
+    return (HistoricProcessInstanceEntity) getPersistenceSession().selectById(HistoricProcessInstanceEntity.class, processInstanceId);
+  }
 
   public void deleteHistoricProcessInstancesByProcessDefinition(ProcessDefinition processDefinition) {
     List<HistoricProcessInstance> historicProcessInstances = getPersistenceSession()
@@ -58,4 +64,15 @@ public class HistoricProcessInstanceManager extends AbstractHistoricManager {
       getPersistenceSession().delete(HistoricProcessInstanceEntity.class, historicProcessInstanceId);
     }
   }
+  
+  public long findHistoricProcessInstanceCountByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery) {
+    return (Long) getPersistenceSession().selectOne("selectHistoricProcessInstanceCountByQueryCriteria", historicProcessInstanceQuery);
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<HistoricProcessInstance> findHistoricProcessInstancesByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery, Page page) {
+    return getPersistenceSession().selectList("selectHistoricProcessInstancesByQueryCriteria", historicProcessInstanceQuery, page);
+  }
+
+
 }

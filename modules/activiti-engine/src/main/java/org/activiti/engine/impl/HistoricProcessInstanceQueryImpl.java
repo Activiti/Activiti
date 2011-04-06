@@ -95,14 +95,14 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
     return commandContext
-      .getHistorySession()
+      .getHistoricProcessInstanceManager()
       .findHistoricProcessInstanceCountByQueryCriteria(this);
   }
 
   public List<HistoricProcessInstance> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     return commandContext
-      .getHistorySession()
+      .getHistoricProcessInstanceManager()
       .findHistoricProcessInstancesByQueryCriteria(this, page);
   }
   

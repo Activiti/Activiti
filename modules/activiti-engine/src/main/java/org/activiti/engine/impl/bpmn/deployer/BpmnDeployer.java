@@ -158,7 +158,7 @@ public class BpmnDeployer implements Deployer {
         TimerEntity timer = timerDeclaration.prepareTimerEntity(null);
         Context
           .getCommandContext()
-          .getTimerSession()
+          .getJobManager()
           .schedule(timer);
       }
     }

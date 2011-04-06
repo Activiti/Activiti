@@ -15,6 +15,7 @@ package org.activiti.engine.impl.cmd;
 import org.activiti.engine.impl.db.IdBlock;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.repository.PropertyEntity;
 
 
 /**
@@ -29,8 +30,12 @@ public class GetNextIdBlockCmd implements Command<IdBlock> {
   }
 
   public IdBlock execute(CommandContext commandContext) {
-    return commandContext
-      .getManagementSession()
-      .getNextIdBlock(idBlockSize);
+    PropertyEntity property = (PropertyEntity) commandContext
+      .getPropertyManager()
+      .findPropertyById("next.dbid");
+    long oldValue = Long.parseLong(property.getValue());
+    long newValue = oldValue+idBlockSize;
+    property.setValue(Long.toString(newValue));
+    return new IdBlock(oldValue, newValue-1);
   }
 }

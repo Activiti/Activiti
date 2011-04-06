@@ -39,7 +39,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
 
       public String execute(CommandContext commandContext) {
         MessageEntity message = createTweetMessage("i'm coding a test");
-        commandContext.getMessageSession().send(message);
+        commandContext.getJobManager().send(message);
         return message.getId();
       }
     });
@@ -76,7 +76,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
 
       public String execute(CommandContext commandContext) {
         TimerEntity timer = createTweetTimer("i'm coding a test", new Date(SOME_TIME + (10 * SECOND)));
-        commandContext.getTimerSession().schedule(timer);
+        commandContext.getJobManager().schedule(timer);
         return timer.getId();
       }
     });

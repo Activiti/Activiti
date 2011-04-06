@@ -275,7 +275,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
         TimerEntity timer = timerDeclaration.prepareTimerEntity(this);
         Context
           .getCommandContext()
-          .getTimerSession()
+          .getJobManager()
           .schedule(timer);
       }
     }

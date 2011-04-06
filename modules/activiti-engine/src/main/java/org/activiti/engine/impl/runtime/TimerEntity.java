@@ -18,7 +18,6 @@ import java.util.logging.Logger;
 
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
-import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
@@ -76,7 +75,7 @@ public class TimerEntity extends JobEntity {
         te.setDuedate(newTimer);
         Context
             .getCommandContext()
-            .getTimerSession()
+            .getJobManager()
             .schedule(te);
       }
     }

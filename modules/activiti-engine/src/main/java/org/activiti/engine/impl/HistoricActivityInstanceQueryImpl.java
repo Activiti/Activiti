@@ -53,7 +53,7 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
     return commandContext
-      .getHistorySession()
+      .getHistoricActivityInstanceManager()
       .findHistoricActivityInstanceCountByQueryCriteria(this);
   }
 
@@ -61,7 +61,7 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
   public List<HistoricActivityInstance> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     return commandContext
-      .getHistorySession()
+      .getHistoricActivityInstanceManager()
       .findHistoricActivityInstancesByQueryCriteria(this, page);
   }
   

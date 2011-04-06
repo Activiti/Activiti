@@ -11,24 +11,18 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.db;
+package org.activiti.engine.impl.persistence.mgr;
 
-import org.activiti.engine.impl.cfg.ManagementSession;
-import org.activiti.engine.impl.interceptor.Session;
-import org.activiti.engine.impl.interceptor.SessionFactory;
+import org.activiti.engine.impl.repository.PropertyEntity;
 
 
 /**
  * @author Tom Baeyens
  */
-public class DbManagementSessionFactory implements SessionFactory {
+public class PropertyManager extends AbstractManager {
 
-  public Session openSession() {
-    return new DbManagementSession();
-  }
-
-  public Class< ? > getSessionType() {
-    return ManagementSession.class;
+  public PropertyEntity findPropertyById(String propertyId) {
+    return getPersistenceSession().selectById(PropertyEntity.class, propertyId);
   }
 
 }

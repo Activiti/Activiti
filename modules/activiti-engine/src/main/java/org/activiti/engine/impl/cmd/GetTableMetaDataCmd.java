@@ -34,7 +34,7 @@ public class GetTableMetaDataCmd implements Command<TableMetaData> {
       throw new ActivitiException("tableName is null");
     }
     return commandContext
-      .getManagementSession()
+      .getTableDataManager()
       .getTableMetaData(tableName);
   }
 

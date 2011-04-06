@@ -34,7 +34,8 @@ public class DeleteHistoricProcessInstanceCmd implements Command<Object> {
       throw new ActivitiException("processInstanceId is null");
     }
     // Check if process instance is still running
-    HistoricProcessInstance instance = commandContext.getHistorySession()
+    HistoricProcessInstance instance = commandContext
+      .getHistoricProcessInstanceManager()
       .findHistoricProcessInstance(processInstanceId);
     
     if(instance == null) {
@@ -44,7 +45,10 @@ public class DeleteHistoricProcessInstanceCmd implements Command<Object> {
       throw new ActivitiException("Process instance is still running, cannot delete historic process instance: " + processInstanceId);
     }
     
-    commandContext.getHistorySession().deleteHistoricProcessInstance(processInstanceId);
+    commandContext
+      .getHistoricProcessInstanceManager()
+      .deleteHistoricProcessInstance(processInstanceId);
+    
     return null;
   }
 

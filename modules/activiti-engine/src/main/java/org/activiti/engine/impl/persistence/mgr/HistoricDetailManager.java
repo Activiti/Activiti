@@ -15,6 +15,9 @@ package org.activiti.engine.impl.persistence.mgr;
 
 import java.util.List;
 
+import org.activiti.engine.history.HistoricDetail;
+import org.activiti.engine.impl.HistoricDetailQueryImpl;
+import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
@@ -63,4 +66,15 @@ public class HistoricDetailManager extends AbstractHistoricManager {
       }
     }
   }
+  
+  public long findHistoricDetailCountByQueryCriteria(HistoricDetailQueryImpl historicVariableUpdateQuery) {
+    return (Long) getPersistenceSession().selectOne("selectHistoricDetailCountByQueryCriteria", historicVariableUpdateQuery);
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<HistoricDetail> findHistoricDetailsByQueryCriteria(HistoricDetailQueryImpl historicVariableUpdateQuery, Page page) {
+    return getPersistenceSession().selectList("selectHistoricDetailsByQueryCriteria", historicVariableUpdateQuery, page);
+  }
+
+
 }

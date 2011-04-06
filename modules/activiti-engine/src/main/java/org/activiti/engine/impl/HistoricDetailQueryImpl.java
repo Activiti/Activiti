@@ -76,14 +76,14 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
     return commandContext
-      .getHistorySession()
+      .getHistoricDetailManager()
       .findHistoricDetailCountByQueryCriteria(this);
   }
 
   public List<HistoricDetail> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     return commandContext
-      .getHistorySession()
+      .getHistoricDetailManager()
       .findHistoricDetailsByQueryCriteria(this, page);
   }
   

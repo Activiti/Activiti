@@ -16,11 +16,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.activiti.engine.impl.cfg.MessageSession;
-import org.activiti.engine.impl.cfg.TimerSession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.persistence.mgr.JobManager;
 
 
 
@@ -33,15 +32,14 @@ public class JobExecutorTest extends JobExecutorTestCase {
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
     commandExecutor.execute(new Command<Void>() {
       public Void execute(CommandContext commandContext) {
-        MessageSession messageSession = commandContext.getMessageSession();
-        messageSession.send(createTweetMessage("message-one"));
-        messageSession.send(createTweetMessage("message-two"));
-        messageSession.send(createTweetMessage("message-three"));
-        messageSession.send(createTweetMessage("message-four"));
+        JobManager jobManager = commandContext.getJobManager();
+        jobManager.send(createTweetMessage("message-one"));
+        jobManager.send(createTweetMessage("message-two"));
+        jobManager.send(createTweetMessage("message-three"));
+        jobManager.send(createTweetMessage("message-four"));
         
-        TimerSession timerSession = commandContext.getTimerSession();
-        timerSession.schedule(createTweetTimer("timer-one", new Date()));
-        timerSession.schedule(createTweetTimer("timer-two", new Date()));
+        jobManager.schedule(createTweetTimer("timer-one", new Date()));
+        jobManager.schedule(createTweetTimer("timer-two", new Date()));
         return null;
       }
     });

@@ -75,7 +75,7 @@ public class TablePageQueryImpl implements TablePageQuery, Command<TablePage> {
 
   public TablePage execute(CommandContext commandContext) {
     return commandContext
-      .getManagementSession()
+      .getTableDataManager()
       .getTablePage(this, firstResult, maxResults);
   }
 }

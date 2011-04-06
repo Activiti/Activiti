@@ -25,7 +25,7 @@ public class GetTableCountCmd implements Command<Map<String,Long>> {
 
   public Map<String,Long> execute(CommandContext commandContext) {
     return commandContext
-      .getManagementSession()
+      .getTableDataManager()
       .getTableCount();
   }
 }

@@ -88,7 +88,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     messageId = commandExecutor.execute(new Command<String>() {
       public String execute(CommandContext commandContext) {
         MessageEntity message = new MessageEntity();
-        commandContext.getMessageSession().send(message);
+        commandContext.getJobManager().send(message);
         return message.getId();
       }
     });

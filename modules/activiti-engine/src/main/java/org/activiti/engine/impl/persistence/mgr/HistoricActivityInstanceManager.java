@@ -13,7 +13,15 @@
 
 package org.activiti.engine.impl.persistence.mgr;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
+import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
 
 
 /**
@@ -25,5 +33,30 @@ public class HistoricActivityInstanceManager extends AbstractHistoricManager {
     if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY) {
       getPersistenceSession().delete("deleteHistoricActivityInstancesByProcessInstanceId", historicProcessInstanceId);
     }
+  }
+  
+  public void insertHistoricActivityInstance(HistoricActivityInstanceEntity historicActivityInstance) {
+    getPersistenceSession().insert(historicActivityInstance);
+  }
+
+  public void deleteHistoricActivityInstance(String historicActivityInstanceId) {
+    getPersistenceSession().delete(HistoricActivityInstanceEntity.class, historicActivityInstanceId);
+  }
+
+  public HistoricActivityInstanceEntity findHistoricActivityInstance(String activityId, String processInstanceId) {
+    Map<String, String> parameters = new HashMap<String, String>();
+    parameters.put("activityId", activityId);
+    parameters.put("processInstanceId", processInstanceId);
+  
+    return (HistoricActivityInstanceEntity) getPersistenceSession().selectOne("selectHistoricActivityInstance", parameters);
+  }
+
+  public long findHistoricActivityInstanceCountByQueryCriteria(HistoricActivityInstanceQueryImpl historicActivityInstanceQuery) {
+    return (Long) getPersistenceSession().selectOne("selectHistoricActivityInstanceCountByQueryCriteria", historicActivityInstanceQuery);
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<HistoricActivityInstance> findHistoricActivityInstancesByQueryCriteria(HistoricActivityInstanceQueryImpl historicActivityInstanceQuery, Page page) {
+    return getPersistenceSession().selectList("selectHistoricActivityInstancesByQueryCriteria", historicActivityInstanceQuery, page);
   }
 }

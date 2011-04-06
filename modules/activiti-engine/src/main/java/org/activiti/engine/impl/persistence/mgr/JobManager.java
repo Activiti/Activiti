@@ -18,9 +18,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.cfg.TransactionState;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.jobexecutor.JobExecutor;
+import org.activiti.engine.impl.jobexecutor.MessageAddedNotification;
+import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.engine.impl.runtime.JobEntity;
+import org.activiti.engine.impl.runtime.MessageEntity;
 import org.activiti.engine.impl.runtime.TimerEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.Job;
@@ -30,6 +38,57 @@ import org.activiti.engine.runtime.Job;
  * @author Tom Baeyens
  */
 public class JobManager extends AbstractManager {
+
+  public void send(MessageEntity message) {
+    CommandContext commandContext = Context.getCommandContext();
+    
+    commandContext
+      .getDbSqlSession()
+      .insert(message);
+    
+    
+    JobExecutor jobExecutor = Context.getProcessEngineConfiguration().getJobExecutor();
+    commandContext
+      .getTransactionContext()
+      .addTransactionListener(TransactionState.COMMITTED, new MessageAddedNotification(jobExecutor));
+  }
+  
+  public void schedule(TimerEntity timer) {
+    Date duedate = timer.getDuedate();
+    if (duedate==null) {
+      throw new ActivitiException("duedate is null");
+    }
+    
+    CommandContext commandContext = Context.getCommandContext();
+    
+    commandContext
+      .getDbSqlSession()
+      .insert(timer);
+    
+    // Check if this timer fires before the next time the job executor will check for new timers to fire.
+    // This is highly unlikely because normally waitTimeInMillis is 5000 (5 seconds)
+    // and timers are usually set further in the future
+    
+    JobExecutor jobExecutor = Context.getProcessEngineConfiguration().getJobExecutor();
+    int waitTimeInMillis = jobExecutor.getWaitTimeInMillis();
+    if (duedate.getTime() < (ClockUtil.getCurrentTime().getTime()+waitTimeInMillis)) {
+      // then notify the job executor.
+      commandContext
+        .getTransactionContext()
+        .addTransactionListener(TransactionState.COMMITTED, new MessageAddedNotification(jobExecutor));
+    }
+  }
+
+  public void cancelTimers(ExecutionEntity execution) {
+    List<TimerEntity> timers = Context
+      .getCommandContext()
+      .getJobManager()
+      .findTimersByExecutionId(execution.getId());
+    
+    for (TimerEntity timer: timers) {
+      timer.delete();
+    }
+  }
 
   public JobEntity findJobById(String jobId) {
     return (JobEntity) getPersistenceSession().selectOne("selectJob", jobId);

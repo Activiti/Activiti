@@ -60,9 +60,7 @@ import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 import org.activiti.engine.impl.calendar.MapBusinessCalendarManager;
 import org.activiti.engine.impl.cfg.standalone.StandaloneMybatisTransactionContextFactory;
-import org.activiti.engine.impl.db.DbHistorySessionFactory;
 import org.activiti.engine.impl.db.DbIdGenerator;
-import org.activiti.engine.impl.db.DbManagementSessionFactory;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.db.IbatisVariableTypeHandler;
 import org.activiti.engine.impl.el.ExpressionManager;
@@ -79,8 +77,6 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
-import org.activiti.engine.impl.jobexecutor.JobExecutorMessageSessionFactory;
-import org.activiti.engine.impl.jobexecutor.JobExecutorTimerSessionFactory;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerCatchIntermediateEventJobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
@@ -102,7 +98,9 @@ import org.activiti.engine.impl.persistence.mgr.IdentityLinkManager;
 import org.activiti.engine.impl.persistence.mgr.JobManager;
 import org.activiti.engine.impl.persistence.mgr.MembershipManager;
 import org.activiti.engine.impl.persistence.mgr.ProcessDefinitionManager;
+import org.activiti.engine.impl.persistence.mgr.PropertyManager;
 import org.activiti.engine.impl.persistence.mgr.ResourceManager;
+import org.activiti.engine.impl.persistence.mgr.TableDataManager;
 import org.activiti.engine.impl.persistence.mgr.TaskManager;
 import org.activiti.engine.impl.persistence.mgr.UserManager;
 import org.activiti.engine.impl.persistence.mgr.VariableInstanceManager;
@@ -515,13 +513,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     if (sessionFactories==null) {
       sessionFactories = new HashMap<Class<?>, SessionFactory>();
 
-      addSessionFactory(new DbManagementSessionFactory());
-      addSessionFactory(new JobExecutorTimerSessionFactory());
-      addSessionFactory(new DbHistorySessionFactory());
-      
-      JobExecutorMessageSessionFactory jobExecutorMessageSessionFactory = new JobExecutorMessageSessionFactory();
-      addSessionFactory(jobExecutorMessageSessionFactory);
-      
       dbSqlSessionFactory = new DbSqlSessionFactory();
       dbSqlSessionFactory.setDatabaseType(databaseType);
       dbSqlSessionFactory.setIdGenerator(idGenerator);
@@ -548,6 +539,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       addSessionFactory(new GenericManagerFactory(IdentityInfoManager.class));
       addSessionFactory(new GenericManagerFactory(MembershipManager.class));
       addSessionFactory(new GenericManagerFactory(AttachmentManager.class));
+      addSessionFactory(new GenericManagerFactory(TableDataManager.class));
+      addSessionFactory(new GenericManagerFactory(PropertyManager.class));
     }
     if (customSessionFactories!=null) {
       for (SessionFactory sessionFactory: customSessionFactories) {
