@@ -11,30 +11,29 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.cmd;
+package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
 
-import org.activiti.engine.impl.interceptor.Command;
-import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.task.Comment;
+import org.activiti.engine.impl.persistence.AbstractManager;
+import org.activiti.engine.task.Attachment;
 
 
 /**
  * @author Tom Baeyens
  */
-public class GetProcessInstanceCommentsCmd implements Command<List<Comment>> {
+public class AttachmentManager extends AbstractManager {
 
-  protected String processInstanceId;
-  
-  public GetProcessInstanceCommentsCmd(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
+  @SuppressWarnings("unchecked")
+  public List<Attachment> findAttachmentsByProcessInstanceId(String processInstanceId) {
+    return getPersistenceSession().selectList("selectAttachmentsByProcessInstanceId", processInstanceId);
   }
 
   @SuppressWarnings("unchecked")
-  public List<Comment> execute(CommandContext commandContext) {
-    return commandContext
-      .getCommentManager()
-      .findCommentsByProcessInstanceId(processInstanceId);
+  public List<Attachment> findAttachmentsByTaskId(String taskId) {
+    return getPersistenceSession().selectList("selectAttachmentsByTaskId", taskId);
   }
+
+
 }
+

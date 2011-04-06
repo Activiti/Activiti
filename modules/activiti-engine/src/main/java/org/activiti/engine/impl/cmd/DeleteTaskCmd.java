@@ -86,7 +86,10 @@ public class DeleteTaskCmd implements Command<Void> {
         }
       }
       if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY) {
-        dbSqlSession.delete("deleteCommentsByTaskId", taskId);
+        Context
+          .getCommandContext()
+          .getCommentManager()
+          .deleteCommentsByTaskId(taskId);
         
         List<AttachmentEntity> attachments = dbSqlSession.selectList("selectAttachmentsByTaskId", taskId);
         for (AttachmentEntity attachment: attachments) {

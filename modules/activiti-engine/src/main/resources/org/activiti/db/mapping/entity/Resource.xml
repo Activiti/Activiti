@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+  
+<mapper namespace="org.activiti.persistence">
+  
+  <!-- RESOURCE INSERT -->
+
+  <insert id="insertResource" parameterType="org.activiti.engine.impl.repository.ResourceEntity">
+    insert into ACT_GE_BYTEARRAY(ID_, REV_, NAME_, BYTES_, DEPLOYMENT_ID_)
+    values (#{id, jdbcType=VARCHAR}, 1, #{name, jdbcType=VARCHAR}, #{bytes, jdbcType=BLOB}, #{deploymentId, jdbcType=VARCHAR})  
+  </insert>
+  
+  <!-- RESOURCE UPDATE -->
+
+  <!-- RESOURCE DELETE -->
+
+  <delete id="deleteResourcesByDeploymentId" parameterType="string">
+    delete from ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{id}
+  </delete>
+  
+  <!-- RESOURCE RESULTMAP -->
+
+  <resultMap id="resourceResultMap" type="org.activiti.engine.impl.repository.ResourceEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="name" column="NAME_" jdbcType="VARCHAR"/>
+    <result property="bytes" column="BYTES_" jdbcType="BLOB"/>
+  </resultMap>
+  
+  <!-- RESOURCE SELECT -->
+
+  <select id="selectResourceNamesByDeploymentId" parameterType="string" resultType="string">
+    select NAME_ from ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{deploymentId} order by NAME_ asc
+  </select>
+  
+  <select id="selectResourceByDeploymentIdAndResourceName" parameterType="map" resultMap="resourceResultMap">
+    select * from ACT_GE_BYTEARRAY 
+    where DEPLOYMENT_ID_ = #{deploymentId}
+          AND NAME_ = #{resourceName}
+  </select>
+
+  <select id="selectResourcesByDeploymentId" parameterType="string" resultMap="resourceResultMap">
+    select * from ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{deploymentId} order by NAME_ asc
+  </select>  
+
+  <!-- postgresql specific -->
+  <resultMap id="resourceResultMap_postgres" type="org.activiti.engine.impl.repository.ResourceEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="name" column="NAME_" jdbcType="VARCHAR"/>
+    <result property="bytes" column="BYTES_" jdbcType="BINARY"/>
+  </resultMap>
+    
+  <!-- postgresql specific -->
+  <select id="selectResourceByDeploymentIdAndResourceName_postgres" parameterType="map" resultMap="resourceResultMap_postgres">
+    select * from ACT_GE_BYTEARRAY 
+    where DEPLOYMENT_ID_ = #{deploymentId}
+          AND NAME_ = #{resourceName}
+  </select>
+  
+  <!-- postgresql specific -->
+  <select id="selectResourcesByDeploymentId_postgres" parameterType="string" resultMap="resourceResultMap_postgres">
+    select * from ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{deploymentId} order by NAME_ asc
+  </select>  
+  
+</mapper>

@@ -23,25 +23,26 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
-import org.activiti.engine.impl.persistence.mgr.AttachmentManager;
-import org.activiti.engine.impl.persistence.mgr.DeploymentManager;
-import org.activiti.engine.impl.persistence.mgr.ExecutionManager;
-import org.activiti.engine.impl.persistence.mgr.GroupManager;
-import org.activiti.engine.impl.persistence.mgr.HistoricActivityInstanceManager;
-import org.activiti.engine.impl.persistence.mgr.HistoricDetailManager;
-import org.activiti.engine.impl.persistence.mgr.HistoricProcessInstanceManager;
-import org.activiti.engine.impl.persistence.mgr.HistoricTaskInstanceManager;
-import org.activiti.engine.impl.persistence.mgr.IdentityInfoManager;
-import org.activiti.engine.impl.persistence.mgr.IdentityLinkManager;
-import org.activiti.engine.impl.persistence.mgr.JobManager;
-import org.activiti.engine.impl.persistence.mgr.MembershipManager;
-import org.activiti.engine.impl.persistence.mgr.ProcessDefinitionManager;
-import org.activiti.engine.impl.persistence.mgr.PropertyManager;
-import org.activiti.engine.impl.persistence.mgr.ResourceManager;
-import org.activiti.engine.impl.persistence.mgr.TableDataManager;
-import org.activiti.engine.impl.persistence.mgr.TaskManager;
-import org.activiti.engine.impl.persistence.mgr.UserManager;
-import org.activiti.engine.impl.persistence.mgr.VariableInstanceManager;
+import org.activiti.engine.impl.persistence.entity.AttachmentManager;
+import org.activiti.engine.impl.persistence.entity.CommentManager;
+import org.activiti.engine.impl.persistence.entity.DeploymentManager;
+import org.activiti.engine.impl.persistence.entity.ExecutionManager;
+import org.activiti.engine.impl.persistence.entity.GroupManager;
+import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceManager;
+import org.activiti.engine.impl.persistence.entity.HistoricDetailManager;
+import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceManager;
+import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceManager;
+import org.activiti.engine.impl.persistence.entity.IdentityInfoManager;
+import org.activiti.engine.impl.persistence.entity.IdentityLinkManager;
+import org.activiti.engine.impl.persistence.entity.JobManager;
+import org.activiti.engine.impl.persistence.entity.MembershipManager;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionManager;
+import org.activiti.engine.impl.persistence.entity.PropertyManager;
+import org.activiti.engine.impl.persistence.entity.ResourceManager;
+import org.activiti.engine.impl.persistence.entity.TableDataManager;
+import org.activiti.engine.impl.persistence.entity.TaskManager;
+import org.activiti.engine.impl.persistence.entity.UserManager;
+import org.activiti.engine.impl.persistence.entity.VariableInstanceManager;
 import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 
@@ -254,6 +255,11 @@ public class CommandContext {
   public TableDataManager getTableDataManager() {
     return getSession(TableDataManager.class);
   }
+
+  public CommentManager getCommentManager() {
+    return getSession(CommentManager.class);
+  }
+
 
   public PropertyManager getPropertyManager() {
     return getSession(PropertyManager.class);

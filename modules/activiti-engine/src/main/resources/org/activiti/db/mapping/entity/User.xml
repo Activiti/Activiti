@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+  
+<mapper namespace="org.activiti.persistence">
+
+  <!-- USER INSERT -->
+
+  <insert id="insertUser" parameterType="org.activiti.engine.impl.identity.UserEntity">
+    insert into ACT_ID_USER (ID_, REV_, FIRST_, LAST_, EMAIL_, PWD_)
+    values (
+      #{id ,jdbcType=VARCHAR},
+      1,
+      #{firstName ,jdbcType=VARCHAR},
+      #{lastName ,jdbcType=VARCHAR},
+      #{email ,jdbcType=VARCHAR},
+      #{password ,jdbcType=VARCHAR}
+    )
+  </insert>
+
+  <!-- USER UPDATE -->
+
+  <update id="updateUser" parameterType="org.activiti.engine.impl.identity.UserEntity">
+    update ACT_ID_USER set
+      REV_ = #{revisionNext ,jdbcType=INTEGER},
+      FIRST_ = #{firstName ,jdbcType=VARCHAR},
+      LAST_ = #{lastName ,jdbcType=VARCHAR},
+      EMAIL_ = #{email ,jdbcType=VARCHAR},
+      PWD_ = #{password ,jdbcType=VARCHAR},
+      PICTURE_ID_ = #{pictureByteArrayId ,jdbcType=VARCHAR}
+    where ID_ = #{id}
+      and REV_ = #{revision}
+  </update>
+  
+  <!-- USER DELETE -->
+
+  <delete id="deleteUser" parameterType="string">
+    delete from ACT_ID_USER where ID_ = #{userId} 
+  </delete>
+
+  <!-- USER RESULTMAP -->
+
+  <resultMap id="userResultMap" type="org.activiti.engine.impl.identity.UserEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="revision" column="REV_" jdbcType="INTEGER" />
+    <result property="firstName" column="FIRST_" jdbcType="VARCHAR" />
+    <result property="lastName" column="LAST_" jdbcType="VARCHAR" />
+    <result property="email" column="EMAIL_" jdbcType="VARCHAR" />
+    <result property="password" column="PWD_" jdbcType="VARCHAR" />
+    <result property="pictureByteArrayId" column="PICTURE_ID_" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <!-- USER SELECT -->
+
+  <select id="selectUserById" parameterType="string" resultMap="userResultMap">
+    select * from ACT_ID_USER where ID_ = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectUsers" resultMap="userResultMap">
+    select * from ACT_ID_USER
+  </select>
+  
+  <select id="selectUserByQueryCriteria" parameterType="org.activiti.engine.impl.UserQueryImpl" resultMap="userResultMap">
+    select U.*
+    <include refid="selectUserByQueryCriteriaSql" />
+    <if test="orderBy != null">
+      order by ${orderBy}
+    </if>
+  </select>
+  
+   <select id="selectUserCountByQueryCriteria" parameterType="org.activiti.engine.impl.UserQueryImpl" resultType="long">
+    select count(U.ID_)
+    <include refid="selectUserByQueryCriteriaSql" />
+  </select>
+  
+  <sql id="selectUserByQueryCriteriaSql">
+    from ACT_ID_USER U 
+    <if test="groupId != null">
+      inner join ACT_ID_MEMBERSHIP M on U.ID_ = M.USER_ID_
+      inner join ACT_ID_GROUP G on M.GROUP_ID_ = G.ID_
+    </if>
+    <where>
+      <if test="id != null">
+        U.ID_ = #{id}
+      </if>
+      <if test="firstName != null">
+        and U.FIRST_ = #{firstName}
+      </if>
+      <if test="firstNameLike != null">
+        and U.FIRST_ like #{firstNameLike}
+      </if>
+      <if test="lastName != null">
+        and U.LAST_ = #{lastName}
+      </if>
+      <if test="lastNameLike != null">
+        and U.LAST_ like #{lastNameLike}
+      </if>
+      <if test="email != null">
+        and U.EMAIL_ = #{email}
+      </if>
+      <if test="emailLike != null">
+        and U.EMAIL_ like #{emailLike}
+      </if>
+      <if test="groupId != null">
+        and G.ID_ = #{groupId}
+      </if>
+    </where>
+  </sql>
+  
+</mapper>

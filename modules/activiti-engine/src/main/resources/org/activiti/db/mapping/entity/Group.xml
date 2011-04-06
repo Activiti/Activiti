@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+  
+<mapper namespace="org.activiti.persistence">
+
+  <!-- GROUP INSERT -->
+
+  <insert id="insertGroup" parameterType="org.activiti.engine.impl.identity.GroupEntity">
+    insert into ACT_ID_GROUP (ID_, REV_, NAME_, TYPE_)
+    values (
+      #{id ,jdbcType=VARCHAR},
+      1, 
+      #{name ,jdbcType=VARCHAR},
+      #{type ,jdbcType=VARCHAR}
+    )
+  </insert>
+
+  <!-- GROUP UPDATE -->
+  
+  <update id="updateGroup" parameterType="org.activiti.engine.impl.identity.GroupEntity">
+    update ACT_ID_GROUP set
+      REV_ = #{revisionNext ,jdbcType=INTEGER},
+      NAME_ = #{name ,jdbcType=VARCHAR},
+      TYPE_ = #{type ,jdbcType=VARCHAR}
+    where ID_ = #{id}
+       and REV_ = #{revision}
+  </update>
+  
+  <!-- GROUP DELETE -->
+
+  <delete id="deleteGroup" parameterType="string">
+    delete from ACT_ID_GROUP where ID_ = #{groupId} 
+  </delete>
+
+  <!-- GROUP RESULTMAP -->
+
+  <resultMap id="groupResultMap" type="org.activiti.engine.impl.identity.GroupEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="revision" column="REV_" jdbcType="INTEGER" />
+    <result property="name" column="NAME_" jdbcType="VARCHAR" />
+    <result property="type" column="TYPE_" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <!-- GROUP SELECT -->
+
+  <select id="selectGroupById" parameterType="string" resultMap="groupResultMap">
+    select * from ACT_ID_GROUP where ID_ = #{id}
+  </select>
+  
+  <select id="selectGroups" resultMap="groupResultMap">
+    select * from ACT_ID_GROUP
+  </select>
+  
+  <select id="selectGroupsByUserId" parameterType="string" resultMap="groupResultMap">
+    select g.*
+    from ACT_ID_GROUP g, ACT_ID_MEMBERSHIP membership
+    where g.ID_ = membership.GROUP_ID_
+      and membership.USER_ID_ = #{userId}
+  </select>
+
+  <select id="selectGroupsByUserIdAndGroupType" parameterType="map" resultMap="groupResultMap">
+    select g.*
+    from ACT_ID_GROUP g, ACT_ID_MEMBERSHIP membership
+    where g.ID_ = membership.GROUP_ID_
+      and membership.USER_ID_ = #{userId}
+      <if test="groupType != null">
+         and g.TYPE_ = #{groupType}
+      </if>
+  </select>
+  
+  <select id="selectGroupByQueryCriteria" parameterType="org.activiti.engine.impl.GroupQueryImpl" resultMap="groupResultMap">
+    select G.*
+    <include refid="selectGroupByQueryCriteriaSql" />
+    <if test="orderBy != null">
+      order by ${orderBy}
+    </if>
+  </select>
+  
+   <select id="selectGroupCountByQueryCriteria" parameterType="org.activiti.engine.impl.GroupQueryImpl" resultType="long">
+    select count(G.ID_)
+    <include refid="selectGroupByQueryCriteriaSql" />
+  </select>
+  
+  <sql id="selectGroupByQueryCriteriaSql">
+    from ACT_ID_GROUP G
+    <if test="userId != null">
+      inner join ACT_ID_MEMBERSHIP M on G.ID_ = M.GROUP_ID_
+      inner join ACT_ID_USER U on M.USER_ID_ = U.ID_
+    </if>
+    <where>
+      <if test="id != null">
+        G.ID_ = #{id}
+      </if>
+      <if test="name != null">
+        and G.NAME_ = #{name}
+      </if>
+      <if test="nameLike != null">
+        and G.NAME_ like #{nameLike}
+      </if>
+      <if test="type != null">
+        and G.TYPE_ = #{type}
+      </if>
+      <if test="userId != null">
+        and U.ID_ = #{userId}
+      </if>
+    </where>
+  </sql> 
+  
+</mapper>

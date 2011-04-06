@@ -11,29 +11,18 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.cmd;
+package org.activiti.engine.impl.persistence;
 
-import java.util.List;
-
-import org.activiti.engine.impl.interceptor.Command;
-import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.task.Comment;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.context.Context;
 
 
 /**
  * @author Tom Baeyens
  */
-public class GetTaskCommentsCmd implements Command<List<Comment>> {
+public class AbstractHistoricManager extends AbstractManager {
 
-  protected String taskId;
-  
-  public GetTaskCommentsCmd(String taskId) {
-    this.taskId = taskId;
-  }
+  protected int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
+  protected boolean isHistoryEnabled = historyLevel > ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE;
 
-  public List<Comment> execute(CommandContext commandContext) {
-    return commandContext
-      .getCommentManager()
-      .findCommentsByTaskId(taskId);
-  }
 }

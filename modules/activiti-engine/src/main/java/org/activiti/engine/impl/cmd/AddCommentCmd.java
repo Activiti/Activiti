@@ -45,7 +45,7 @@ public class AddCommentCmd implements Command<Object> {
     comment.setMessage(message);
     
     commandContext
-      .getDbSqlSession()
+      .getCommentManager()
       .insert(comment);
     
     return null;

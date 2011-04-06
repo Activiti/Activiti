@@ -33,7 +33,7 @@ import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.persistence.deploy.Deployer;
 import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
-import org.activiti.engine.impl.persistence.mgr.ProcessDefinitionManager;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionManager;
 import org.activiti.engine.impl.repository.DeploymentEntity;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.repository.ResourceEntity;

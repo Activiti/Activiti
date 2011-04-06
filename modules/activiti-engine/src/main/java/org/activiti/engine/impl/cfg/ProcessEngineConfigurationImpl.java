@@ -82,28 +82,29 @@ import org.activiti.engine.impl.jobexecutor.TimerCatchIntermediateEventJobHandle
 import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.mail.MailScanner;
+import org.activiti.engine.impl.persistence.GenericManagerFactory;
 import org.activiti.engine.impl.persistence.deploy.Deployer;
 import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
-import org.activiti.engine.impl.persistence.mgr.AttachmentManager;
-import org.activiti.engine.impl.persistence.mgr.DeploymentManager;
-import org.activiti.engine.impl.persistence.mgr.ExecutionManager;
-import org.activiti.engine.impl.persistence.mgr.GenericManagerFactory;
-import org.activiti.engine.impl.persistence.mgr.GroupManager;
-import org.activiti.engine.impl.persistence.mgr.HistoricActivityInstanceManager;
-import org.activiti.engine.impl.persistence.mgr.HistoricDetailManager;
-import org.activiti.engine.impl.persistence.mgr.HistoricProcessInstanceManager;
-import org.activiti.engine.impl.persistence.mgr.HistoricTaskInstanceManager;
-import org.activiti.engine.impl.persistence.mgr.IdentityInfoManager;
-import org.activiti.engine.impl.persistence.mgr.IdentityLinkManager;
-import org.activiti.engine.impl.persistence.mgr.JobManager;
-import org.activiti.engine.impl.persistence.mgr.MembershipManager;
-import org.activiti.engine.impl.persistence.mgr.ProcessDefinitionManager;
-import org.activiti.engine.impl.persistence.mgr.PropertyManager;
-import org.activiti.engine.impl.persistence.mgr.ResourceManager;
-import org.activiti.engine.impl.persistence.mgr.TableDataManager;
-import org.activiti.engine.impl.persistence.mgr.TaskManager;
-import org.activiti.engine.impl.persistence.mgr.UserManager;
-import org.activiti.engine.impl.persistence.mgr.VariableInstanceManager;
+import org.activiti.engine.impl.persistence.entity.AttachmentManager;
+import org.activiti.engine.impl.persistence.entity.CommentManager;
+import org.activiti.engine.impl.persistence.entity.DeploymentManager;
+import org.activiti.engine.impl.persistence.entity.ExecutionManager;
+import org.activiti.engine.impl.persistence.entity.GroupManager;
+import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceManager;
+import org.activiti.engine.impl.persistence.entity.HistoricDetailManager;
+import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceManager;
+import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceManager;
+import org.activiti.engine.impl.persistence.entity.IdentityInfoManager;
+import org.activiti.engine.impl.persistence.entity.IdentityLinkManager;
+import org.activiti.engine.impl.persistence.entity.JobManager;
+import org.activiti.engine.impl.persistence.entity.MembershipManager;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionManager;
+import org.activiti.engine.impl.persistence.entity.PropertyManager;
+import org.activiti.engine.impl.persistence.entity.ResourceManager;
+import org.activiti.engine.impl.persistence.entity.TableDataManager;
+import org.activiti.engine.impl.persistence.entity.TaskManager;
+import org.activiti.engine.impl.persistence.entity.UserManager;
+import org.activiti.engine.impl.persistence.entity.VariableInstanceManager;
 import org.activiti.engine.impl.scripting.BeansResolverFactory;
 import org.activiti.engine.impl.scripting.ResolverFactory;
 import org.activiti.engine.impl.scripting.ScriptBindingsFactory;
@@ -486,7 +487,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     if (sqlSessionFactory==null) {
       InputStream inputStream = null;
       try {
-        inputStream = ReflectUtil.getResourceAsStream("org/activiti/db/ibatis/activiti.ibatis.mem.conf.xml");
+        inputStream = ReflectUtil.getResourceAsStream("org/activiti/db/mapping/mappings.xml");
 
         // update the jdbc parameters to the configured ones...
         Environment environment = new Environment("default", transactionFactory, dataSource);
@@ -522,25 +523,26 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       dbSqlSessionFactory.setDbCycleUsed(isDbCycleUsed);
       addSessionFactory(dbSqlSessionFactory);
       
-      addSessionFactory(new GenericManagerFactory(DeploymentManager.class));
-      addSessionFactory(new GenericManagerFactory(ResourceManager.class));
-      addSessionFactory(new GenericManagerFactory(ProcessDefinitionManager.class));
-      addSessionFactory(new GenericManagerFactory(ExecutionManager.class));
-      addSessionFactory(new GenericManagerFactory(TaskManager.class));
-      addSessionFactory(new GenericManagerFactory(IdentityLinkManager.class));
-      addSessionFactory(new GenericManagerFactory(VariableInstanceManager.class));
-      addSessionFactory(new GenericManagerFactory(HistoricProcessInstanceManager.class));
-      addSessionFactory(new GenericManagerFactory(HistoricActivityInstanceManager.class));
-      addSessionFactory(new GenericManagerFactory(HistoricTaskInstanceManager.class));
-      addSessionFactory(new GenericManagerFactory(HistoricDetailManager.class));
-      addSessionFactory(new GenericManagerFactory(JobManager.class));
-      addSessionFactory(new GenericManagerFactory(UserManager.class));
-      addSessionFactory(new GenericManagerFactory(GroupManager.class));
-      addSessionFactory(new GenericManagerFactory(IdentityInfoManager.class));
-      addSessionFactory(new GenericManagerFactory(MembershipManager.class));
       addSessionFactory(new GenericManagerFactory(AttachmentManager.class));
-      addSessionFactory(new GenericManagerFactory(TableDataManager.class));
+      addSessionFactory(new GenericManagerFactory(CommentManager.class));
+      addSessionFactory(new GenericManagerFactory(DeploymentManager.class));
+      addSessionFactory(new GenericManagerFactory(ExecutionManager.class));
+      addSessionFactory(new GenericManagerFactory(HistoricActivityInstanceManager.class));
+      addSessionFactory(new GenericManagerFactory(HistoricDetailManager.class));
+      addSessionFactory(new GenericManagerFactory(HistoricProcessInstanceManager.class));
+      addSessionFactory(new GenericManagerFactory(HistoricTaskInstanceManager.class));
+      addSessionFactory(new GenericManagerFactory(IdentityInfoManager.class));
+      addSessionFactory(new GenericManagerFactory(IdentityLinkManager.class));
+      addSessionFactory(new GenericManagerFactory(JobManager.class));
+      addSessionFactory(new GenericManagerFactory(GroupManager.class));
+      addSessionFactory(new GenericManagerFactory(MembershipManager.class));
+      addSessionFactory(new GenericManagerFactory(ProcessDefinitionManager.class));
       addSessionFactory(new GenericManagerFactory(PropertyManager.class));
+      addSessionFactory(new GenericManagerFactory(ResourceManager.class));
+      addSessionFactory(new GenericManagerFactory(TableDataManager.class));
+      addSessionFactory(new GenericManagerFactory(TaskManager.class));
+      addSessionFactory(new GenericManagerFactory(UserManager.class));
+      addSessionFactory(new GenericManagerFactory(VariableInstanceManager.class));
     }
     if (customSessionFactories!=null) {
       for (SessionFactory sessionFactory: customSessionFactories) {

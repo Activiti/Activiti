@@ -19,7 +19,7 @@ import java.util.Set;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.persistence.mgr.JobManager;
+import org.activiti.engine.impl.persistence.entity.JobManager;
 
 
 
