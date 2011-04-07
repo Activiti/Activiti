@@ -101,5 +101,8 @@ public interface ExplorerLayout {
   // Related content
   static final String STYLE_RELATED_CONTENT_DETAILS_HEADER = "related-content-detail-header";
   static final String STYLE_IMAGE_ACTION = "image-action";
+  static final String STYLE_RELATED_CONTENT_CREATE_LIST = "related-content-create-list";
+  static final String STYLE_RELATED_CONTENT_CREATE_DETAIL = "related-content-create-detail";
+  static final String STYLE_RELATED_CONTENT_CREATE_LIST_LAST_COLUMN = "related-last-column";
 
 }

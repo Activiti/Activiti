@@ -11,13 +11,15 @@
  * limitations under the License.
  */
 
-package org.activiti.explorer.ui.content;
+package org.activiti.explorer.ui.content.url;
 
 import org.activiti.engine.task.Attachment;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
+import org.activiti.explorer.ui.content.AttachmentRenderer;
+import org.activiti.explorer.ui.content.RelatedContentComponent;
 
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Resource;
@@ -37,10 +39,6 @@ public class UrlAttachmentRenderer implements AttachmentRenderer {
 
   public static final String ATTACHMENT_TYPE = "url";
   
-  public String getType() {
-    return ATTACHMENT_TYPE;
-  }
-
   public String getName(I18nManager i18nManager) {
     return i18nManager.getMessage(Messages.RELATED_CONTENT_TYPE_URL);
   }
@@ -64,10 +62,6 @@ public class UrlAttachmentRenderer implements AttachmentRenderer {
     return attachmentLink;
   }
 
-  public AttachmentEditor getEditor(Attachment attachment, String taskId, String processInstanceId) {
-    return new UrlAttachmentEditor(taskId, processInstanceId);
-  }
-
   public Component getDetailComponent(Attachment attachment) {
     
     VerticalLayout verticalLayout = new VerticalLayout();
@@ -81,6 +75,10 @@ public class UrlAttachmentRenderer implements AttachmentRenderer {
     verticalLayout.addComponent(link);
     
     return verticalLayout;
+  }
+
+  public boolean canRenderAttachment(String type) {
+    return ATTACHMENT_TYPE.equals(type);
   }
 
 }

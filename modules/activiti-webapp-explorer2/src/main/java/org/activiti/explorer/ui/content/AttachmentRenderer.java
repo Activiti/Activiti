@@ -29,16 +29,15 @@ import com.vaadin.ui.Component;
 public interface AttachmentRenderer {
 
   /**
-   * The type of related content this class is capable of rendering.
+   * Returns true if this renderer is capable of rendering attachments of the given type.
    */
-  String getType();
+  boolean canRenderAttachment(String type);
   
   /**
    * Gets the human-readable name for the type of related content
    * this class is capable of rendering.
    */
   String getName(I18nManager i18nManager);
-  
     
   /**
    * Get the image to display in the list of related content for
@@ -55,15 +54,6 @@ public interface AttachmentRenderer {
    * Use the passed parent for calling back to show detail.
    */
   Component getOverviewComponent(Attachment attachment, RelatedContentComponent parent);
-  
-  /**
-   * Get the component to render when editing or creating related content
-   * for the type this renderer is responsible for.
-   * 
-   * @param attachment the {@link Attachment}. Null if the editor component should create
-   * a new attachment.
-   */
-  AttachmentEditor getEditor(Attachment attachment, String taskId, String processInstanceId);
   
   /**
    * Get the component to render when viewing the details of the

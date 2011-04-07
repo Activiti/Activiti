@@ -38,7 +38,8 @@ import org.activiti.explorer.navigation.MyFlowsNavigationHandler;
 import org.activiti.explorer.navigation.NavigationHandlers;
 import org.activiti.explorer.navigation.TaskNavigationHandler;
 import org.activiti.explorer.ui.content.AttachmentRenderers;
-import org.activiti.explorer.ui.content.UrlAttachmentRenderer;
+import org.activiti.explorer.ui.content.url.UrlAttachmentEditor;
+import org.activiti.explorer.ui.content.url.UrlAttachmentRenderer;
 import org.activiti.explorer.ui.form.DateFormPropertyRenderer;
 import org.activiti.explorer.ui.form.EnumFormPropertyRenderer;
 import org.activiti.explorer.ui.form.FormPropertyMapping;
@@ -102,7 +103,9 @@ public class BootProcessEngineContextListener implements ServletContextListener 
   }
   
   protected void initAttachmentRenderers() {
+    // URL
     AttachmentRenderers.addAttachmentRenderer(new UrlAttachmentRenderer());
+    AttachmentRenderers.addAttachmentEditor(new UrlAttachmentEditor());
   }
 
   protected void initKermit(ProcessEngine processEngine) {

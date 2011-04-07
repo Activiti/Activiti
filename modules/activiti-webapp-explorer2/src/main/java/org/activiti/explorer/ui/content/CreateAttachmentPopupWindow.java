@@ -19,6 +19,7 @@ import org.activiti.engine.task.Attachment;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
+import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.event.GenericFormEvent;
 
 import com.vaadin.data.Item;
@@ -32,9 +33,10 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.CellStyleGenerator;
 import com.vaadin.ui.Window;
-
 
 /**
  * @author Frederik Heremans
@@ -42,60 +44,71 @@ import com.vaadin.ui.Window;
 public class CreateAttachmentPopupWindow extends Window {
 
   private static final long serialVersionUID = 1L;
-  
+
   protected String taskId;
   protected String processInstanceId;
 
   protected I18nManager i18nManager;
   protected TaskService taskService;
 
-  protected GridLayout layout;
-  protected AttachmentEditor currentEditor;
+  protected HorizontalLayout layout;
+  protected GridLayout detailLayout;
+  protected AttachmentEditorComponent currentEditor;
   protected Table attachmentTypes;
   protected Button okButton;
-  
+
   public CreateAttachmentPopupWindow() {
     this.i18nManager = ExplorerApp.get().getI18nManager();
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
-    
+
     setCaption(i18nManager.getMessage(Messages.RELATED_CONTENT_ADD));
     setWidth(50, UNITS_PERCENTAGE);
     setHeight(50, UNITS_PERCENTAGE);
     center();
 
-    layout = new GridLayout(2,2);
-    layout.setSpacing(true);
+    layout = new HorizontalLayout();
+    layout.setSpacing(false);
     layout.setMargin(true);
     layout.setSizeFull();
     setContent(layout);
-    
+
     initTable();
+
+    detailLayout = new GridLayout(1,2);
+    detailLayout.setSizeFull();
+    detailLayout.setMargin(true);
+    detailLayout.setSpacing(true);
+    detailLayout.addStyleName(ExplorerLayout.STYLE_RELATED_CONTENT_CREATE_DETAIL);
+    
+    layout.addComponent(detailLayout);
+    layout.setExpandRatio(detailLayout, 1.0f);
+    
+    detailLayout.setRowExpandRatio(0, 1.0f);
+    detailLayout.setColumnExpandRatio(0, 1.0f);
     initActions();
   }
-  
+
   @Override
   public void attach() {
     super.attach();
-    if(attachmentTypes.size() > 0) {
-      attachmentTypes.select(attachmentTypes.firstItemId());      
+    if (attachmentTypes.size() > 0) {
+      attachmentTypes.select(attachmentTypes.firstItemId());
     }
   }
 
   protected void initActions() {
     okButton = new Button(i18nManager.getMessage(Messages.RELATED_CONTENT_CREATE));
-    layout.addComponent(okButton, 1, 1);
+    detailLayout.addComponent(okButton, 0, 1);
     okButton.setEnabled(false);
-    
     okButton.addListener(new ClickListener() {
-      
+
       private static final long serialVersionUID = 1L;
 
       public void buttonClick(ClickEvent event) {
         saveAttachment();
       }
     });
-    
-    layout.setComponentAlignment(okButton, Alignment.BOTTOM_RIGHT);
+    detailLayout.setComponentAlignment(okButton, Alignment.BOTTOM_RIGHT);
   }
 
   protected void initTable() {
@@ -107,29 +120,41 @@ public class CreateAttachmentPopupWindow extends Window {
     attachmentTypes.setNullSelectionAllowed(false);
     attachmentTypes.setWidth(200, UNITS_PIXELS);
     attachmentTypes.setHeight(100, UNITS_PERCENTAGE);
-    
+
+    attachmentTypes.setCellStyleGenerator(new CellStyleGenerator() {
+      private static final long serialVersionUID = 1L;
+      public String getStyle(Object itemId, Object propertyId) {
+        if("name".equals(propertyId)) {
+          return ExplorerLayout.STYLE_RELATED_CONTENT_CREATE_LIST_LAST_COLUMN;
+        }
+        return null;
+      }
+    });
+
+    attachmentTypes.addStyleName(ExplorerLayout.STYLE_RELATED_CONTENT_CREATE_LIST);
+
     attachmentTypes.addContainerProperty("type", Embedded.class, null);
     attachmentTypes.setColumnWidth("type", 16);
     attachmentTypes.addContainerProperty("name", String.class, null);
-    
+
     // Add all possible attachment types
-    for(AttachmentRenderer renderer : AttachmentRenderers.getAttachmentRenderers()) {
-      String name = renderer.getName(i18nManager);
+    for (AttachmentEditor editor : AttachmentRenderers.getAttachmentEditors()) {
+      String name = editor.getTitle(i18nManager);
       Embedded image = null;
-      
-      Resource resource = renderer.getImage(null);
-      if(resource != null) {
+
+      Resource resource = editor.getImage();
+      if (resource != null) {
         image = new Embedded(null, resource);
       }
-      
-      Item item = attachmentTypes.addItem(renderer.getType());
+
+      Item item = attachmentTypes.addItem(editor.getName());
       item.getItemProperty("type").setValue(image);
       item.getItemProperty("name").setValue(name);
     }
-    
+
     // Add listener to show editor component
     attachmentTypes.addListener(new ValueChangeListener() {
-      
+
       private static final long serialVersionUID = 1L;
 
       public void valueChange(ValueChangeEvent event) {
@@ -137,46 +162,42 @@ public class CreateAttachmentPopupWindow extends Window {
         selectType(type);
       }
     });
-    
-    layout.addComponent(attachmentTypes, 0, 0, 0, 1);
-    layout.setColumnExpandRatio(1, 1.0f);
-    layout.setRowExpandRatio(0, 1.0f);
+
+    layout.addComponent(attachmentTypes);
   }
-  
-  protected void selectType(String typeName) {
-    if(typeName == null) {
-      setCurrentEditor(null);
+
+  protected void selectType(String type) {
+    if (type != null) {
+      setCurrentEditor(AttachmentRenderers.getEditor(type));
     } else {
-      AttachmentRenderer renderer = AttachmentRenderers.getRenderer(typeName);
-      setCurrentEditor(renderer.getEditor(null, taskId, processInstanceId));
+      setCurrentEditor(null);
     }
   }
-  
-  
+
   protected void setCurrentEditor(AttachmentEditor editor) {
-    this.currentEditor = editor;
-    if(layout.getComponent(0, 1) != null) {
-      removeComponent(layout.getComponent(1, 0));
-    }
-    if(currentEditor != null) {
+    AttachmentEditorComponent component = editor.getEditor(null, taskId, processInstanceId);
+    this.currentEditor = component;
+    detailLayout.removeComponent(detailLayout.getComponent(0, 0));
+
+    if (currentEditor != null) {
       currentEditor.setSizeFull();
-      layout.addComponent(currentEditor, 1, 0);
+      detailLayout.addComponent(currentEditor, 0, 0);
       okButton.setEnabled(true);
     } else {
       okButton.setEnabled(false);
     }
   }
-  
+
   protected void saveAttachment() {
     try {
       // Creation and persistence of attachment is done in editor
       Attachment attachment = currentEditor.getAttachment();
-      
+
       fireEvent(new GenericFormEvent(this, GenericFormEvent.FORM_SUBMITTED, attachment));
-      
+
       // Finally, close window
       close();
-    } catch(InvalidValueException ive) {
+    } catch (InvalidValueException ive) {
       // Validation error, Editor UI will handle this.
     }
   }
@@ -184,7 +205,7 @@ public class CreateAttachmentPopupWindow extends Window {
   public void setTaskId(String taskId) {
     this.taskId = taskId;
   }
-  
+
   public void setProcessInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
   }

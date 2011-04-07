@@ -359,3 +359,34 @@ input.login-field {
   cursor: pointer;
 }
 
+.related-content-create-list {
+	margin-right: 0px;	
+}
+
+.related-content-create-list .v-table-body {
+	border: none;	
+}
+
+.related-content-create-list .v-table-body .v-table-table {
+	/*border: 1px solid white;*/
+	border-right: none;
+}
+
+.related-content-create-detail {
+	border: 1px solid #e8e8e3;
+	background-color: #e8e8e3;
+}
+
+.related-content-create-list .v-table-row {
+	height: 50px;
+}
+
+.related-content-create-list .v-selected .v-table-cell-content-related-last-column {
+	background: #1b7ec3 no-repeat url(img/arrow.png) right center;
+	border: none;
+}
+
+.related-content-create-list .v-table-row .v-selected {
+	background: #1b7ec3;
+	border: none;
+}

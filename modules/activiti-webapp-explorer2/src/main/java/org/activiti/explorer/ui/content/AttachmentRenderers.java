@@ -13,8 +13,10 @@
 
 package org.activiti.explorer.ui.content;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
@@ -25,10 +27,18 @@ import org.activiti.engine.task.Attachment;
  */
 public class AttachmentRenderers {
 
-  private static Map<String, AttachmentRenderer> renderers = new LinkedHashMap<String, AttachmentRenderer>();
 
+  private static final List<AttachmentRenderer> renderers = new ArrayList<AttachmentRenderer>();
+  private static final List<AttachmentEditor> editors = new ArrayList<AttachmentEditor>();
+  private static final Map<String, AttachmentEditor> editorMap = new HashMap<String, AttachmentEditor>();
+  
   public static void addAttachmentRenderer(AttachmentRenderer renderer) {
-    renderers.put(renderer.getType(), renderer);
+    renderers.add(renderer);
+  }
+  
+  public static void addAttachmentEditor(AttachmentEditor editor) {
+    editors.add(editor);
+    editorMap.put(editor.getName(), editor);
   }
 
   public static AttachmentRenderer getRenderer(Attachment attachment) {
@@ -36,18 +46,29 @@ public class AttachmentRenderers {
   }
 
   public static AttachmentRenderer getRenderer(String type) {
-    AttachmentRenderer renderer = renderers.get(type);
-    if (renderer == null) {
-      throw new ActivitiException("No renderer found for attachment of type: " + type);
+    for(AttachmentRenderer renderer : renderers) {
+      if(renderer.canRenderAttachment(type)) {
+        return renderer;
+      }
     }
-    return renderer;
+    // TODO: Use default renderer
+    throw new ActivitiException("No renderer found for attachment of type: " + type);
   }
   
+  
   /**
-   * Gets all attachment renderers known. They are returned in the order they 
+   * Gets all attachment editors known. Returned in the order they 
    * were added.
    */
-  public static Collection<AttachmentRenderer> getAttachmentRenderers() {
-    return renderers.values();
+  public static List<AttachmentEditor> getAttachmentEditors() {
+    return Collections.unmodifiableList(editors);
+  }
+
+  public static AttachmentEditor getEditor(String type) {
+    AttachmentEditor editor =  editorMap.get(type);
+    if(editor == null) {
+      throw new ActivitiException("No editor defined with the given name: " + editor);
+    }
+    return editor;
   }
 }

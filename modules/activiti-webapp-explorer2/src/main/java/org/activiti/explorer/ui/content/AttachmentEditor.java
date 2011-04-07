@@ -14,26 +14,37 @@
 package org.activiti.explorer.ui.content;
 
 import org.activiti.engine.task.Attachment;
+import org.activiti.explorer.I18nManager;
 
-import com.vaadin.data.Validator.InvalidValueException;
-import com.vaadin.ui.Component;
+import com.vaadin.terminal.Resource;
 
-/**
- * Component that is capable of rendering an editable piece of related content.
- * 
- * @see AttachmentRenderer
- * 
- * @author Frederik Heremans
- */
-public interface AttachmentEditor extends Component {
 
+public interface AttachmentEditor {
+  
   /**
-   * Get the edited or created attachment based on the values filled in. <b>The
-   * editor should save the attachment when this method is called.</b>
-   * 
-   * @throws InvalidValueException
-   *           when validation of the values failed. Editor should show
-   *           error-message in component.
+   * Get the name of this editor. Only one editor with the same name can e used.
+   * The last one wit the same name added to {@link AttachmentRenderers} will
+   * be used.
    */
-  Attachment getAttachment() throws InvalidValueException;
+  String getName();
+  
+  /**
+   * Gets the human-readable name for the type of related content
+   * this class is capable of rendering.
+   */
+  String getTitle(I18nManager i18nManager);
+    
+  /**
+   * Get the image to display in the list of possible editors.
+   */
+  Resource getImage();
+  
+  /**
+   * Get the component to display to edit the given attachment.
+   * 
+   * @param attachment the attachment to edit. Null if the editor should
+   * create a new attachment when submitted.
+   */
+  AttachmentEditorComponent getEditor(Attachment attachment, String taskId, String processInstanceId);
+
 }

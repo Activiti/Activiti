@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.explorer.ui.content;
+package org.activiti.explorer.ui.content.url;
 
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
@@ -19,6 +19,7 @@ import org.activiti.engine.task.Attachment;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
+import org.activiti.explorer.ui.content.AttachmentEditorComponent;
 
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.ui.Form;
@@ -29,7 +30,7 @@ import com.vaadin.ui.TextField;
 /**
  * @author Frederik Heremans
  */
-public class UrlAttachmentEditor extends Form implements AttachmentEditor {
+public class UrlAttachmentEditorComponent extends Form implements AttachmentEditorComponent {
 
   private static final long serialVersionUID = 1L;
   
@@ -40,11 +41,11 @@ public class UrlAttachmentEditor extends Form implements AttachmentEditor {
   protected I18nManager i18nManager;
   protected TaskService taskService;
   
-  public UrlAttachmentEditor(String taskId, String processInstanceId) {
+  public UrlAttachmentEditorComponent(String taskId, String processInstanceId) {
     this(null, taskId, processInstanceId);
   }
   
-  public UrlAttachmentEditor(Attachment attachment, String taskId, String processInstanceId) {
+  public UrlAttachmentEditorComponent(Attachment attachment, String taskId, String processInstanceId) {
     this.attachment = attachment;
     this.taskId = taskId;
     this.processInstanceId = processInstanceId;
@@ -55,9 +56,9 @@ public class UrlAttachmentEditor extends Form implements AttachmentEditor {
     setSizeFull();
     setDescription(i18nManager.getMessage(Messages.RELATED_CONTENT_TYPE_URL_HELP));
     
+    initUrl();
     initName();
     initDescription();
-    initUrl();
   }
 
   protected void initUrl() {
