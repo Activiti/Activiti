@@ -35,32 +35,31 @@ public class HistoricProcessInstanceManager extends AbstractHistoricManager {
   }
 
   public void deleteHistoricProcessInstancesByProcessDefinition(ProcessDefinition processDefinition) {
-    List<HistoricProcessInstance> historicProcessInstances = getPersistenceSession()
-      .createHistoricProcessInstanceQuery()
-      .processDefinitionId(processDefinition.getId())
-      .list();
-    
-    for (HistoricProcessInstance historicProcessInstance: historicProcessInstances) {
-      deleteHistoricProcessInstance(historicProcessInstance.getId());
+    if (historyLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
+      List<HistoricProcessInstance> historicProcessInstances = getPersistenceSession().createHistoricProcessInstanceQuery().processDefinitionId(
+              processDefinition.getId()).list();
+      for (HistoricProcessInstance historicProcessInstance : historicProcessInstances) {
+        deleteHistoricProcessInstance(historicProcessInstance.getId());
+      }
     }
   }
   
   public void deleteHistoricProcessInstance(String historicProcessInstanceId) {
-    CommandContext commandContext = Context.getCommandContext();
-    
-    commandContext
-      .getHistoricDetailManager()
-      .deleteHistoricDetailsByProcessInstanceId(historicProcessInstanceId);
-    
-    commandContext
-      .getHistoricActivityInstanceManager()
-      .deleteHistoricActivityInstancesByProcessInstanceId(historicProcessInstanceId);
-
-    commandContext
-      .getHistoricTaskInstanceManager()
-      .deleteHistoricTaskInstancesByProcessInstanceId(historicProcessInstanceId);
-
     if (historyLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
+      CommandContext commandContext = Context.getCommandContext();
+      
+      commandContext
+        .getHistoricDetailManager()
+        .deleteHistoricDetailsByProcessInstanceId(historicProcessInstanceId);
+      
+      commandContext
+        .getHistoricActivityInstanceManager()
+        .deleteHistoricActivityInstancesByProcessInstanceId(historicProcessInstanceId);
+
+      commandContext
+        .getHistoricTaskInstanceManager()
+        .deleteHistoricTaskInstancesByProcessInstanceId(historicProcessInstanceId);
+
       getPersistenceSession().delete(HistoricProcessInstanceEntity.class, historicProcessInstanceId);
     }
   }
