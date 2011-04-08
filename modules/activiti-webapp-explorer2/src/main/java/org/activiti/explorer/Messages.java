@@ -62,8 +62,13 @@ public interface Messages {
   static final String TASK_ID = "task.id";
   static final String TASK_NAME = "task.name";
   static final String TASK_OWNER = "task.owner";
+  static final String TASK_OWNER_TRANSFER = "task.owner.transfer";
   static final String TASK_NO_OWNER = "task.no.owner";
   static final String TASK_ASSIGNEE = "task.assignee";
+  static final String TASK_ASSIGNEE_REASSIGN = "task.assignee.reassign";
+  static final String TASK_INVOLVED_REMOVE = "task.involved.remove";
+  static final String TASK_INVOLVED_REMOVE_CONFIRMATION_TITLE = "task.involved.remove.confirmation.title";
+  static final String TASK_INVOLVED_REMOVE_CONFIRMATION_DESCRIPTION = "task.involved.remove.confirmation.description";
   static final String TASK_CREATED = "task.created";
   static final String TASK_DUEDATE = "task.duedate";
   static final String TASK_COMPLETE = "task.complete";

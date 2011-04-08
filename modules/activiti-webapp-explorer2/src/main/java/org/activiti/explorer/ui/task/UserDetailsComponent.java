@@ -23,31 +23,38 @@ import org.activiti.explorer.ViewManager;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
 
-import com.vaadin.event.LayoutEvents.LayoutClickEvent;
-import com.vaadin.event.LayoutEvents.LayoutClickListener;
+import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.terminal.StreamResource.StreamSource;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.Reindeer;
 
 /**
  * @author Joram Barrez
  */
-public class UserDetailsComponent extends HorizontalLayout implements LayoutClickListener {
+public class UserDetailsComponent extends HorizontalLayout {
     
     private static final long serialVersionUID = 1L;
     
     protected IdentityService identityService;
     protected ViewManager viewManager;
     
-    protected String role;
     protected User user;
+    protected String role;
+    protected String buttonCaption;
+    protected ClickListener clickListener;
 
-    public UserDetailsComponent(String userId, String role) {
+    public UserDetailsComponent(String userId, String role, String buttonCaption, ClickListener clickListener) {
       this.role = role;
+      this.buttonCaption = buttonCaption;
+      this.clickListener = clickListener;
+      
       identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
       viewManager = ExplorerApp.get().getViewManager();
       
@@ -59,11 +66,6 @@ public class UserDetailsComponent extends HorizontalLayout implements LayoutClic
       addUserPicture();
       addUserDetails();
       
-      // Init click listener (show profile popup)
-      if (userId != null) {
-        addStyleName(ExplorerLayout.STYLE_CLICKABLE);
-        addListener(this);
-      }
     }
 
     protected void addUserPicture() {
@@ -86,12 +88,21 @@ public class UserDetailsComponent extends HorizontalLayout implements LayoutClic
       picture.setHeight("48px");
       picture.setWidth("48px");
       addComponent(picture);
+      
+      // Add profile popup listener
+      if (user != null) {
+        picture.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
+        picture.addListener(new com.vaadin.event.MouseEvents.ClickListener() {
+          public void click(ClickEvent event) {
+            viewManager.showProfilePopup(user.getId());
+          }
+        });
+      }
     }
     
     protected void addUserDetails() {
-      VerticalLayout layout = new VerticalLayout();
-      addComponent(layout);
-      setExpandRatio(layout, 1.0f);
+      VerticalLayout detailsLayout = new VerticalLayout();
+      addComponent(detailsLayout);
       
       // Name
       Label nameLabel = null;
@@ -101,15 +112,22 @@ public class UserDetailsComponent extends HorizontalLayout implements LayoutClic
       } else {
         nameLabel = new Label("&nbsp;", Label.CONTENT_XHTML);
       }
-      layout.addComponent(nameLabel);
+      detailsLayout.addComponent(nameLabel);
+      
+      // Layout for lower details
+      HorizontalLayout actionsLayout = new HorizontalLayout();
+      actionsLayout.setSpacing(true);
+      detailsLayout.addComponent(actionsLayout);
       
       // Role
       Label roleLabel = new Label(role);
-      layout.addComponent(roleLabel);
-    }
-    
-    public void layoutClick(LayoutClickEvent event) {
-      viewManager.showProfilePopup(user.getId());
+      actionsLayout.addComponent(roleLabel);
+      
+      // Action button
+      Button button = new Button(buttonCaption);
+      button.addStyleName(Reindeer.BUTTON_SMALL);
+      button.addListener(clickListener);
+      actionsLayout.addComponent(button);
     }
     
   }

@@ -28,6 +28,7 @@ import org.activiti.explorer.Messages;
 import org.activiti.explorer.cache.UserCache;
 import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.event.SubmitEvent;
+import org.activiti.explorer.ui.event.SubmitEventListener;
 import org.activiti.explorer.ui.util.ThemeImageColumnGenerator;
 
 import com.vaadin.data.Item;
@@ -48,13 +49,23 @@ import com.vaadin.ui.themes.Reindeer;
 
 
 /**
+ * A popup window that is used to select people. Two possible modes:
+ * - multiselect: displays two tables that allow to select users from the left table 
+ *   to the table on the right
+ * - non-multiselect: one table where only one user can be chosen from.
+ * 
+ * {@link SubmitEventListener} can be attached to listen to completion of the 
+ * selection. 
+ * 
  * @author Joram Barrez
  */
 public class InvolvePeoplePopupWindow extends Window {
 
   private static final long serialVersionUID = 1L;
   
+  protected String title;
   protected Task task;
+  protected boolean multiSelect;
   
   protected UserCache userCache;
   protected I18nManager i18nManager;
@@ -68,8 +79,10 @@ public class InvolvePeoplePopupWindow extends Window {
   protected Table selectedUsersTable;
   protected Button doneButton;
   
-  public InvolvePeoplePopupWindow(Task task) {
+  public InvolvePeoplePopupWindow(String title, Task task, boolean multiSelect) {
+    this.title = title;
     this.task = task;
+    this.multiSelect = multiSelect;
     this.userCache = ExplorerApp.get().getUserCache();
     this.i18nManager = ExplorerApp.get().getI18nManager();
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
@@ -78,7 +91,7 @@ public class InvolvePeoplePopupWindow extends Window {
   }
   
   protected void initUi() {
-    setCaption(i18nManager.getMessage(Messages.PEOPLE_INVOLVE_POPUP_CAPTION));
+    setCaption(title);
     setModal(true);
     addStyleName(Reindeer.WINDOW_LIGHT);
     center();
@@ -86,7 +99,11 @@ public class InvolvePeoplePopupWindow extends Window {
     windowLayout = (VerticalLayout) getContent();
     windowLayout.setSpacing(true);
     
-    setWidth(820, UNITS_PIXELS);
+    if (multiSelect) {
+      setWidth(820, UNITS_PIXELS);
+    } else {
+      setWidth(340, UNITS_PIXELS);
+    }
     setHeight(350, UNITS_PIXELS);
 
     initSearchField();
@@ -115,7 +132,7 @@ public class InvolvePeoplePopupWindow extends Window {
       matchingUsersTable.removeAllItems();
       List<User> results = userCache.findMatchingUsers(searchText);
       for (User user : results) {
-        if (!selectedUsersTable.containsId(user.getId())) {
+        if (!multiSelect || !selectedUsersTable.containsId(user.getId())) {
           Item item = matchingUsersTable.addItem(user.getId());
           item.getItemProperty("userName").setValue(user.getFirstName() + " " + user.getLastName());
         }
@@ -129,8 +146,13 @@ public class InvolvePeoplePopupWindow extends Window {
     addComponent(userSelectionLayout);
     
     initMatchingUsersTable();
-    initSelectUserButton();
-    initSelectedUsersTable();
+    
+    // If multi select: two table to move users from left to the right
+    // non-multi select: only one table
+    if (multiSelect) {
+      initSelectUserButton();
+      initSelectedUsersTable();
+    }
   }
   
   protected void initMatchingUsersTable() {
@@ -139,9 +161,12 @@ public class InvolvePeoplePopupWindow extends Window {
    matchingUsersTable.setSelectable(true);
    matchingUsersTable.setEditable(false);
    matchingUsersTable.setImmediate(true);
-   matchingUsersTable.setMultiSelect(true);
    matchingUsersTable.setNullSelectionAllowed(false);
    matchingUsersTable.setSortDisabled(true);
+   
+   if (multiSelect) {
+     matchingUsersTable.setMultiSelect(true);
+   }
    
    matchingUsersTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.USER));
    matchingUsersTable.setColumnWidth("icon", 16);
@@ -226,33 +251,6 @@ public class InvolvePeoplePopupWindow extends Window {
     return false;
   }
   
-  @SuppressWarnings("unchecked")
-  protected void initDoneButton() {
-    doneButton = new Button("Done");
-    
-    doneButton.addListener(new ClickListener() {
-      public void buttonClick(ClickEvent event) {
-        // create identitylinks for each selected user
-        Collection<String> selectedUserIds = (Collection<String>) selectedUsersTable.getItemIds();
-        for (String userId : selectedUserIds) {
-          String role = (String) ((ComboBox) selectedUsersTable.getItem(userId).getItemProperty("role").getValue()).getValue();
-          taskService.addUserIdentityLink(task.getId(), userId, role);
-        }
-        
-        // close popup window
-        close();
-        
-        // Fire event such that task details panel can be updated
-        if (selectedUserIds.size() > 0) {
-          fireEvent(new SubmitEvent(doneButton, SubmitEvent.SUBMITTED));
-        }
-      }
-    });
-    
-    addComponent(doneButton);
-    windowLayout.setComponentAlignment(doneButton, Alignment.MIDDLE_RIGHT);
-  }
-  
   protected void selectUser(String userId, String userName) {
     Item item = selectedUsersTable.addItem(userId);
     item.getItemProperty("userName").setValue(userName);
@@ -264,6 +262,45 @@ public class InvolvePeoplePopupWindow extends Window {
     comboBox.select(i18nManager.getMessage(Messages.TASK_ROLE_CONTRIBUTOR));
     comboBox.setNewItemsAllowed(true);
     item.getItemProperty("role").setValue(comboBox);
+  }
+  
+  protected void initDoneButton() {
+    doneButton = new Button("Done");
+    
+    doneButton.addListener(new ClickListener() {
+      public void buttonClick(ClickEvent event) {
+        // Fire event such that depending UI's can be updated
+        fireEvent(new SubmitEvent(doneButton, SubmitEvent.SUBMITTED));
+        
+        // close popup window
+        close();
+      }
+    });
+    
+    addComponent(doneButton);
+    windowLayout.setComponentAlignment(doneButton, Alignment.MIDDLE_RIGHT);
+  }
+  
+  public String getSelectedUserId() {
+    if (multiSelect) {
+      throw new RuntimeException("Only use getSelectedUserId in non-multiselect mode");
+    }
+    return (String) matchingUsersTable.getValue();
+  }
+  
+  @SuppressWarnings("unchecked")
+  public Collection<String> getSelectedUserIds() {
+    if (!multiSelect) {
+      throw new RuntimeException("Only use getSelectedUserIds in multiselect mode");
+    }
+    return (Collection<String>) selectedUsersTable.getItemIds();
+  }
+  
+  public String getSelectedUserRole(String userId) {
+    if (!multiSelect) {
+      throw new RuntimeException("Only use getSelectedUserIds in multiselect mode");
+    }
+    return (String) ((ComboBox) selectedUsersTable.getItem(userId).getItemProperty("role").getValue()).getValue();
   }
   
 }

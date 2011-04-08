@@ -13,6 +13,8 @@
 
 package org.activiti.explorer.ui.task;
 
+import java.util.Collection;
+
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.IdentityLink;
@@ -96,10 +98,17 @@ public class TaskInvolvedPeopleComponent extends CustomComponent {
     
     addPeopleButton.addListener(new ClickListener() {
       public void click(ClickEvent event) {
-        InvolvePeoplePopupWindow involvePeoplePopupWindow = new InvolvePeoplePopupWindow(task);
+        final InvolvePeoplePopupWindow involvePeoplePopupWindow = 
+          new InvolvePeoplePopupWindow(i18nManager.getMessage(Messages.PEOPLE_INVOLVE_POPUP_CAPTION), task, true);
+        
         involvePeoplePopupWindow.addListener(new SubmitEventListener() {
           protected void submitted(SubmitEvent event) {
-            // Receiving this event means that some new people were involved, so we refresh 
+            Collection<String> selectedUserIds = involvePeoplePopupWindow.getSelectedUserIds();
+            for (String userId : selectedUserIds) {
+              String role = involvePeoplePopupWindow.getSelectedUserRole(userId);
+              taskService.addUserIdentityLink(task.getId(), userId, role);
+            }
+            
             refreshPeopleGrid();
           }
           protected void cancelled(SubmitEvent event) {
@@ -121,31 +130,69 @@ public class TaskInvolvedPeopleComponent extends CustomComponent {
   }
   
   protected void populatePeopleGrid() {
-    // Owner
-    String roleMessage = task.getOwner() != null ? Messages.TASK_OWNER : Messages.TASK_NO_OWNER;
-    UserDetailsComponent ownerDetails = new UserDetailsComponent(task.getOwner(),
-            i18nManager.getMessage(roleMessage));
+    initOwner();
+    initAssignee();
+    initInvolvedPeople();
+  }
+  
+  protected void initOwner() {
+    UserDetailsComponent ownerDetails = createOwnerComponent();
     peopleGrid.addComponent(ownerDetails);
-    
-    // Assignee
-    UserDetailsComponent assigneeDetails = new UserDetailsComponent(task.getAssignee(),
-              i18nManager.getMessage(Messages.TASK_ASSIGNEE));
+  }
+  
+  protected UserDetailsComponent createOwnerComponent() {
+    String roleMessage = task.getOwner() != null ? Messages.TASK_OWNER : Messages.TASK_NO_OWNER;
+    return new UserDetailsComponent(
+            task.getOwner(),
+            i18nManager.getMessage(roleMessage),
+            i18nManager.getMessage(Messages.TASK_OWNER_TRANSFER),
+            new ChangeOwnershipListener(task, this));
+  }
+  
+  protected void initAssignee() {
+    UserDetailsComponent assigneeDetails = createAssigneeComponent();
     peopleGrid.addComponent(assigneeDetails);
-    
-    // Other involved people
-    for (IdentityLink identityLink : taskService.getIdentityLinksForTask(task.getId())) { 
+  }
+  
+  protected UserDetailsComponent createAssigneeComponent() {
+   return new UserDetailsComponent(
+            task.getAssignee(),
+            i18nManager.getMessage(Messages.TASK_ASSIGNEE),
+            i18nManager.getMessage(Messages.TASK_ASSIGNEE_REASSIGN),
+            new ReassignAssigneeListener(task, this));
+  }
+  
+  protected void initInvolvedPeople() {
+    for (final IdentityLink identityLink : taskService.getIdentityLinksForTask(task.getId())) { 
       if (identityLink.getUserId() != null) { // only user identity links, ignoring the group ids
         if (!IdentityLinkType.ASSIGNEE.equals(identityLink.getType())) {
-          UserDetailsComponent involvedDetails = new UserDetailsComponent(identityLink.getUserId(), identityLink.getType());
+          UserDetailsComponent involvedDetails = new UserDetailsComponent(
+                  identityLink.getUserId(), 
+                  identityLink.getType(),
+                  i18nManager.getMessage(Messages.TASK_INVOLVED_REMOVE),
+                  new RemoveInvolvedPersonListener(identityLink, task, this));
           peopleGrid.addComponent(involvedDetails);
         }
       }
     }
   }
   
-  protected void refreshPeopleGrid() {
+  public void refreshPeopleGrid() {
+    task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
     peopleGrid.removeAllComponents();
     populatePeopleGrid();
   }
-
+  
+  public void refreshAssignee() {
+    task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
+    peopleGrid.removeComponent(1, 0);
+    peopleGrid.addComponent(createAssigneeComponent(), 1, 0);
+  }
+  
+  public void refreshOwner() {
+    task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
+    peopleGrid.removeComponent(0, 0);
+    peopleGrid.addComponent(createOwnerComponent(), 0, 0);
+  }
+  
 }
