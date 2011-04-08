@@ -22,7 +22,7 @@ import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.util.LogUtil;
 import org.activiti.explorer.cache.TrieBasedUserCache;
-import org.activiti.explorer.cache.UserCach;
+import org.activiti.explorer.cache.UserCache;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.MainWindow;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,7 +125,7 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   
   // Application-wide services
   
-  public UserCach getUserCache() {
+  public UserCache getUserCache() {
     return userCache;
   }
   

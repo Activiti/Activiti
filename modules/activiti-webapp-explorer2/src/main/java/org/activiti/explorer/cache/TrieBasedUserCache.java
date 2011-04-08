@@ -40,7 +40,7 @@ import org.springframework.stereotype.Component;
  * @author Joram Barrez
  */
 @Component
-public class TrieBasedUserCache implements UserCach {
+public class TrieBasedUserCache implements UserCache {
   
   protected IdentityService identityService;
   
@@ -97,9 +97,6 @@ public class TrieBasedUserCache implements UserCach {
     }
     
     List<User> returnValue = new ArrayList<User>();
-    System.out.println("Size = " + radixTree.getSize());
-    System.out.println(prefix);
-    System.out.println(radixTree);
     List<List<User>> results = radixTree.searchPrefix(prefix.toLowerCase(), 100); // 100 should be enough for any name
     for (List<User> result : results) {
       for (User userDetail : result) {

@@ -51,7 +51,7 @@ import com.vaadin.ui.themes.Reindeer;
  */
 public class TaskDetailPanel extends HorizontalLayout {
   
-  private static final long serialVersionUID = -2018798598805436750L;
+  private static final long serialVersionUID = 1L;
 
   protected String taskId;
   protected Task task;

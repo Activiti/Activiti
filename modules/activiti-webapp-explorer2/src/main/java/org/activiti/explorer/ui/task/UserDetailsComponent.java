@@ -16,6 +16,7 @@ import java.io.InputStream;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.ViewManager;
@@ -24,6 +25,7 @@ import org.activiti.explorer.ui.Images;
 
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
+import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.terminal.StreamResource.StreamSource;
 import com.vaadin.ui.Embedded;
@@ -58,21 +60,26 @@ public class UserDetailsComponent extends HorizontalLayout implements LayoutClic
       addUserDetails();
       
       // Init click listener (show profile popup)
-      addListener(this);
+      if (userId != null) {
+        addStyleName(ExplorerLayout.STYLE_CLICKABLE);
+        addListener(this);
+      }
     }
 
     protected void addUserPicture() {
-      Embedded picture = null;
+      Resource pictureResource = Images.USER_48; // default icon
       if (user != null) {
-        StreamResource imageresource = new StreamResource(new StreamSource() {        
-          public InputStream getStream() {
-            return identityService.getUserPicture(user.getId()).getInputStream();
-          }
-        }, user.getId(), ExplorerApp.get());
-        picture = new Embedded(null, imageresource);
-      } else {
-        picture = new Embedded(null, Images.USER_48);
+        final Picture userPicture = identityService.getUserPicture(user.getId());
+        if (userPicture != null) {
+          pictureResource = new StreamResource(new StreamSource() {        
+            public InputStream getStream() {
+              return userPicture.getInputStream();
+            }
+          }, user.getId(), ExplorerApp.get());
+          
+        } 
       }
+      Embedded picture = new Embedded(null, pictureResource);
       
       picture.setType(Embedded.TYPE_IMAGE);
       picture.addStyleName(ExplorerLayout.STYLE_TASK_COMMENT_PICTURE);
@@ -90,8 +97,11 @@ public class UserDetailsComponent extends HorizontalLayout implements LayoutClic
       Label nameLabel = null;
       if (user != null) {
         nameLabel = new Label(user.getFirstName() + " " + user.getLastName());
-        layout.addComponent(nameLabel);
+        nameLabel.addStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
+      } else {
+        nameLabel = new Label("&nbsp;", Label.CONTENT_XHTML);
       }
+      layout.addComponent(nameLabel);
       
       // Role
       Label roleLabel = new Label(role);

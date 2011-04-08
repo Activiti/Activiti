@@ -25,7 +25,6 @@ import com.vaadin.terminal.ThemeResource;
 public class Images {
   
   // General
-  public static final Resource USER = new ThemeResource("img/user-icon.png");
   public static final Resource WHITE_DIVIDER = new ThemeResource("img/divider-white.png");
   public static final Resource TASK = new ThemeResource("img/task.png");
   public static final Resource CLOCK = new ThemeResource("img/clock.png");
@@ -36,7 +35,9 @@ public class Images {
   public static final Resource DELETE = new ThemeResource("img/delete.png");
   public static final Resource EXECUTE = new ThemeResource("img/execute.png");
   public static final Resource ADD = new ThemeResource("img/list-add.png");
+  public static final Resource USER = new ThemeResource("img/user-icon.png");
   public static final Resource USER_48 = new ThemeResource("img/user_48.png");
+  public static final Resource USER_ADD = new ThemeResource("img/user_add.png");
   public static final Resource SUCCESS = new ThemeResource("img/tick.png");
   
   // Task

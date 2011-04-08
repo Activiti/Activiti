@@ -84,6 +84,12 @@ public interface Messages {
   static final String TASK_RELATED_CONTENT = "task.related.content";
   static final String TASK_PEOPLE = "task.people";
   
+  // Task roles
+  static final String TASK_ROLE_CONTRIBUTOR = "task.role.contributor";
+  static final String TASK_ROLE_MANAGER = "task.role.manager";
+  static final String TASK_ROLE_SPONSOR = "task.role.sponsor";
+  static final String TASK_ROLE_IMPLEMENTER = "task.role.implementer";
+  
   // Flow menu
   static final String FLOW_MENU_MY_FLOWS = "flow.menu.my";
   static final String FLOW_MENU_LAUNCH_FLOW = "flow.menu.launch";

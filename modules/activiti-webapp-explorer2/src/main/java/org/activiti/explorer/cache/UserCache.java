@@ -28,7 +28,7 @@ import org.activiti.engine.identity.User;
  * 
  * @author Joram Barrez
  */
-public interface UserCach {
+public interface UserCache {
   
   List<User> findMatchingUsers(String prefix);
   

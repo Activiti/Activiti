@@ -48,6 +48,7 @@ public interface ExplorerLayout {
   static final String STYLE_LOGOUT_BUTTON = "logout";
   static final String STYLE_USER_PROFILE = "user";
   static final String STYLE_LABEL_BOLD = "bold";
+  static final String STYLE_CLICKABLE = "clickable";
   
   //Forms
   static final String STYLE_FORMPROPERTY_READONLY = "formprop-readonly";

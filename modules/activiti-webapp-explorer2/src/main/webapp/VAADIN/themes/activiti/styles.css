@@ -359,6 +359,10 @@ input.login-field {
   cursor: pointer;
 }
 
+.clickable {
+  cursor: pointer;
+}
+
 .related-content-create-list {
 	margin-right: 0px;	
 }
