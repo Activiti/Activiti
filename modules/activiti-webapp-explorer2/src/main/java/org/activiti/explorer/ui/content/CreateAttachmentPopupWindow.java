@@ -37,6 +37,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.CellStyleGenerator;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.Reindeer;
 
 /**
  * @author Frederik Heremans
@@ -56,7 +57,7 @@ public class CreateAttachmentPopupWindow extends Window {
   protected AttachmentEditorComponent currentEditor;
   protected Table attachmentTypes;
   protected Button okButton;
-
+  
   public CreateAttachmentPopupWindow() {
     this.i18nManager = ExplorerApp.get().getI18nManager();
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
@@ -65,6 +66,8 @@ public class CreateAttachmentPopupWindow extends Window {
     setWidth(50, UNITS_PERCENTAGE);
     setHeight(50, UNITS_PERCENTAGE);
     center();
+    setModal(true);
+    addStyleName(Reindeer.WINDOW_LIGHT);
 
     layout = new HorizontalLayout();
     layout.setSpacing(false);

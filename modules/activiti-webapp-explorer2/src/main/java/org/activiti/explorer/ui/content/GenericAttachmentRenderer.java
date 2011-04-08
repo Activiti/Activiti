@@ -11,18 +11,21 @@
  * limitations under the License.
  */
 
-package org.activiti.explorer.ui.content.url;
+package org.activiti.explorer.ui.content;
 
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Attachment;
+import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
-import org.activiti.explorer.ui.content.AttachmentRenderer;
-import org.activiti.explorer.ui.content.RelatedContentComponent;
+import org.activiti.explorer.ui.util.InputStreamStreamSource;
 
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Resource;
+import com.vaadin.terminal.StreamResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -32,20 +35,23 @@ import com.vaadin.ui.Link;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
+
 /**
  * @author Frederik Heremans
  */
-public class UrlAttachmentRenderer implements AttachmentRenderer {
+public class GenericAttachmentRenderer implements AttachmentRenderer {
 
-  public static final String ATTACHMENT_TYPE = "url";
-  
+  public boolean canRenderAttachment(String type) {
+    // Render everything
+    return true;
+  }
+
   public String getName(I18nManager i18nManager) {
-    return i18nManager.getMessage(Messages.RELATED_CONTENT_TYPE_URL);
+    return i18nManager.getMessage(Messages.RELATED_CONTENT_TYPE_FILE);
   }
 
   public Resource getImage(Attachment attachment) {
-    // Always return the same image for every attachment
-    return Images.RELATED_CONTENT_URL;
+    return Images.RELATED_CONTENT_FILE;
   }
 
   public Component getOverviewComponent(final Attachment attachment, final RelatedContentComponent parent) {
@@ -68,16 +74,32 @@ public class UrlAttachmentRenderer implements AttachmentRenderer {
     verticalLayout.setMargin(true);
     
     verticalLayout.addComponent(new Label(attachment.getDescription()));
-    Link link = new Link(attachment.getUrl(), new ExternalResource(attachment.getUrl()));
-    link.setIcon(Images.RELATED_CONTENT_URL);
-    link.setTargetName(ExplorerLayout.LINK_TARGET_BLANK);
+    
+    Link link = null;
+    if(attachment.getUrl() != null) {
+      link = new Link(attachment.getUrl(), new ExternalResource(attachment.getUrl()));
+    } else {
+      TaskService taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
+      Resource res = new StreamResource(new InputStreamStreamSource(taskService.getAttachmentContent(attachment.getId())),
+              attachment.getName() + extractExtention(attachment.getType()),ExplorerApp.get());
+      
+      link = new Link(attachment.getName(), res);
+    }
+    
+    // Set generic image and external window 
+    link.setIcon(getImage(attachment));
+    link.setTargetName(ExplorerLayout.LINK_TARGET_BLANK);      
     verticalLayout.addComponent(link);
     
     return verticalLayout;
   }
 
-  public boolean canRenderAttachment(String type) {
-    return ATTACHMENT_TYPE.equals(type);
+  protected String extractExtention(String type) {
+    int lastIndex = type.lastIndexOf('/');
+    if(lastIndex > 0 && lastIndex < type.length() - 1) {
+      return "." + type.substring(lastIndex + 1);
+    }
+    return "." + type;
   }
 
 }

@@ -10,7 +10,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.explorer.ui.management.deployment;
+
+package org.activiti.explorer.ui.custom;
 
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -44,15 +45,19 @@ import com.vaadin.ui.Upload.Receiver;
 import com.vaadin.ui.Upload.StartedEvent;
 import com.vaadin.ui.Upload.StartedListener;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
 
 
 /**
+ * Component that can be used to upload files using file-select and 
+ * HTML5 file dragging. Exposes events to listen to upload start, progress, 
+ * finish and cancel.
+ * 
  * @author Joram Barrez
+ * @author Frederik Heremans
  */
-public class UploadPopupWindow extends Window 
-  implements StartedListener, FinishedListener, FailedListener, ProgressListener, DropHandler {
+public class UploadComponent extends VerticalLayout implements StartedListener, FinishedListener, 
+  FailedListener, ProgressListener, DropHandler {
   
   private static final long serialVersionUID = 1L;
   
@@ -62,7 +67,6 @@ public class UploadPopupWindow extends Window
   
   // Ui components
   protected ProgressIndicator progressIndicator;
-  protected VerticalLayout layout;
   protected Upload upload;
   protected Receiver receiver;
   
@@ -73,53 +77,41 @@ public class UploadPopupWindow extends Window
   protected List<ProgressListener> progressListeners = new ArrayList<ProgressListener>();
 
 
-  public UploadPopupWindow(String caption, String description, Receiver receiver) {
+  public UploadComponent(String description, Receiver receiver) {
     this.receiver = receiver;
     this.i18nManager = ExplorerApp.get().getI18nManager();
     this.notificationManager = ExplorerApp.get().getNotificationManager();
     
-    init(caption, description);
+    init(description);
   }
 
   // UI initialisation ----------------------------------------------------------------------------
   
-  protected void init(String caption, String description) {
-    initWindow(caption);
+  protected void init(String description) {
+    setSpacing(true);
+    setSizeFull();
+    
     addDescription(description);
     addUpload();
     addOrLabel();
     addDropPanel();
   }
 
-  protected void initWindow(String caption) {
-    // Fixed width/height since otherwise the layout can be screwed by the drag and drop
-    setWidth("300px");
-    setHeight("300px");
-    addStyleName(Reindeer.WINDOW_LIGHT);
-    setModal(true);
-    center();
-    setCaption(caption);
-    
-    this.layout = new VerticalLayout();
-    layout.setSpacing(true);
-    layout.setSizeFull();
-    setContent(layout);
-  }
-  
   protected void addDescription(String description) {
-    Label descriptionLabel = new Label(description);
-    descriptionLabel.addStyleName(Reindeer.LABEL_SMALL);
-    descriptionLabel.addStyleName(ExplorerLayout.STYLE_DEPLOYMENT_UPLOAD_DESCRIPTION);
-    layout.addComponent(descriptionLabel);
+    if(description != null) {
+      Label descriptionLabel = new Label(description);
+      descriptionLabel.addStyleName(Reindeer.LABEL_SMALL);
+      descriptionLabel.addStyleName(ExplorerLayout.STYLE_DEPLOYMENT_UPLOAD_DESCRIPTION);
+      addComponent(descriptionLabel);      
+    }
   }
   
   protected void addUpload() {
     this.upload = new Upload(null, receiver);
-    upload.addStyleName(ExplorerLayout.STYLE_DEPLOYMENT_UPLOAD_BUTTON);
     upload.setButtonCaption(i18nManager.getMessage(Messages.UPLOAD_SELECT));
     upload.setImmediate(true);
-    layout.addComponent(upload);
-    layout.setComponentAlignment(upload, Alignment.MIDDLE_CENTER);
+    addComponent(upload);
+    setComponentAlignment(upload, Alignment.MIDDLE_CENTER);
     
     // register ourselves as listener for upload events
     upload.addListener((StartedListener) this);
@@ -132,8 +124,8 @@ public class UploadPopupWindow extends Window
     Label orLabel = new Label("or");
     orLabel.setSizeUndefined();
     orLabel.addStyleName(Reindeer.LABEL_SMALL);
-    layout.addComponent(orLabel);
-    layout.setComponentAlignment(orLabel, Alignment.MIDDLE_CENTER);
+    addComponent(orLabel);
+    setComponentAlignment(orLabel, Alignment.MIDDLE_CENTER);
   }
 
   protected void addDropPanel() {
@@ -141,8 +133,8 @@ public class UploadPopupWindow extends Window
     DragAndDropWrapper dragAndDropWrapper = new DragAndDropWrapper(dropPanel);
     dragAndDropWrapper.setDropHandler(this);
     dragAndDropWrapper.setWidth("80%");
-    layout.addComponent(dragAndDropWrapper);
-    layout.setComponentAlignment(dragAndDropWrapper, Alignment.MIDDLE_CENTER);
+    addComponent(dragAndDropWrapper);
+    setComponentAlignment(dragAndDropWrapper, Alignment.MIDDLE_CENTER);
     
     Label dropLabel = new Label(i18nManager.getMessage(Messages.UPLOAD_DROP));
     dropLabel.setSizeUndefined();
@@ -157,8 +149,8 @@ public class UploadPopupWindow extends Window
     
     this.progressIndicator = new ProgressIndicator();
     progressIndicator.setPollingInterval(500);
-    layout.addComponent(progressIndicator);
-    layout.setComponentAlignment(progressIndicator, Alignment.MIDDLE_CENTER);
+    addComponent(progressIndicator);
+    setComponentAlignment(progressIndicator, Alignment.MIDDLE_CENTER);
     
     for (StartedListener startedListener : startedListeners) {
       startedListener.uploadStarted(event);
@@ -174,8 +166,8 @@ public class UploadPopupWindow extends Window
   }
 
   public void uploadFinished(FinishedEvent event) {
-    close();
-    
+    // Hide progress indicator
+    progressIndicator.setVisible(false);
     for (FinishedListener finishedListener : finishedListeners) {
       finishedListener.uploadFinished(event);
     }
@@ -201,6 +193,9 @@ public class UploadPopupWindow extends Window
     if (files.length > 0) {
       final Html5File file = files[0]; // only support for one file upload at this moment
       file.setStreamVariable(new StreamVariable() {
+        
+        private static final long serialVersionUID = 1L;
+        
         public void streamingStarted(StreamingStartEvent event) {
           uploadStarted(null); // event doesnt matter here
         }
@@ -247,6 +242,7 @@ public class UploadPopupWindow extends Window
   public void addProgressListener(ProgressListener progressListener) {
     progressListeners.add(progressListener);
   }
+  
   
   
 }

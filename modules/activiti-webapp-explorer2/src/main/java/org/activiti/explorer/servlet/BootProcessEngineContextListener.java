@@ -38,6 +38,9 @@ import org.activiti.explorer.navigation.MyFlowsNavigationHandler;
 import org.activiti.explorer.navigation.NavigationHandlers;
 import org.activiti.explorer.navigation.TaskNavigationHandler;
 import org.activiti.explorer.ui.content.AttachmentRenderers;
+import org.activiti.explorer.ui.content.file.FileAttachmentEditor;
+import org.activiti.explorer.ui.content.file.ImageAttachmentRenderer;
+import org.activiti.explorer.ui.content.file.PdfAttachmentRenderer;
 import org.activiti.explorer.ui.content.url.UrlAttachmentEditor;
 import org.activiti.explorer.ui.content.url.UrlAttachmentRenderer;
 import org.activiti.explorer.ui.form.DateFormPropertyRenderer;
@@ -106,6 +109,13 @@ public class BootProcessEngineContextListener implements ServletContextListener 
     // URL
     AttachmentRenderers.addAttachmentRenderer(new UrlAttachmentRenderer());
     AttachmentRenderers.addAttachmentEditor(new UrlAttachmentEditor());
+    
+    // Regular file upload
+    AttachmentRenderers.addAttachmentEditor(new FileAttachmentEditor());
+    
+    // Basic types
+    AttachmentRenderers.addAttachmentRenderer(new PdfAttachmentRenderer());
+    AttachmentRenderers.addAttachmentRenderer(new ImageAttachmentRenderer());
   }
 
   protected void initKermit(ProcessEngine processEngine) {

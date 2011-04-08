@@ -16,10 +16,8 @@ package org.activiti.explorer.ui.custom;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Picture;
 import org.activiti.explorer.ExplorerApp;
-import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.ViewManager;
 import org.activiti.explorer.ui.ExplorerLayout;
-import org.activiti.explorer.ui.profile.ProfilePopupWindow;
 import org.activiti.explorer.ui.util.InputStreamStreamSource;
 
 import com.vaadin.event.MouseEvents;

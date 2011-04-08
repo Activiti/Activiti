@@ -36,6 +36,7 @@ public class Images {
   public static final Resource WARNING = new ThemeResource("img/warning.png");
   public static final Resource DELETE = new ThemeResource("img/delete.png");
   public static final Resource EXECUTE = new ThemeResource("img/execute.png");
+  public static final Resource SUCCESS = new ThemeResource("img/tick.png");
   
   // Task
   public static final Resource TASK_FINISHED = new ThemeResource("img/tick.png");
@@ -52,7 +53,12 @@ public class Images {
   public static final Resource DATABASE_IDENTITY = new ThemeResource("img/database_identity.png");
   public static final Resource DATABASE_REPOSITORY = new ThemeResource("img/database_repository.png");
   public static final Resource DATABASE_RUNTIME = new ThemeResource("img/database_runtime.png");
+  
+  // Related content
   public static final Resource ADD_RELATED_CONTENT = new ThemeResource("img/list-add.png");
   public static final Resource RELATED_CONTENT_URL = new ThemeResource("img/page_white_world.png");
+  public static final Resource RELATED_CONTENT_FILE = new ThemeResource("img/page_white_get.png");
+  public static final Resource RELATED_CONTENT_PDF = new ThemeResource("img/page_white_acrobat.png");
+  public static final Resource RELATED_CONTENT_PICTURE = new ThemeResource("img/picture.png");;
 
 }

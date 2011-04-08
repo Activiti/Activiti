@@ -123,7 +123,8 @@ public class TaskRelatedContentComponent extends VerticalLayout implements Relat
 
   protected void initAttachmentTable() {
     table = new Table();
-    table.setSizeFull();
+    table.setWidth(100, UNITS_PERCENTAGE);
+    
 
     // Invisible by default, only shown when attachments are present
     table.setVisible(false);

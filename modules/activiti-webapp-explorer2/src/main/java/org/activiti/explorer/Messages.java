@@ -144,4 +144,9 @@ public interface Messages {
   static final String RELATED_CONTENT_TYPE_URL_URL = "related.content.type.url.url";
   static final String RELATED_CONTENT_TYPE_URL_URL_REQUIRED = "related.content.type.url.url.required";;
   static final String RELATED_CONTENT_TYPE_URL_HELP = "related.content.type.url.help";
+
+  static final String RELATED_CONTENT_TYPE_FILE = "related.content.type.file";
+  static final String RELATED_CONTENT_TYPE_FILE_HELP = "related.content.type.file.help";
+  static final String RELATED_CONTENT_TYPE_FILE_UPLOADED = "related.content.type.file.uploaded";
+  static final String RELATED_CONTENT_TYPE_FILE_REQUIRED = "related.content.type.file.required";
 }

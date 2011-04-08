@@ -377,7 +377,7 @@ input.login-field {
 	background-color: #e8e8e3;
 }
 
-.related-content-create-list .v-table-row {
+.related-content-create-list .v-table-row, .related-content-create-list .v-table-row-odd, .related-content-create-list .v-table-row-even {
 	height: 50px;
 }
 

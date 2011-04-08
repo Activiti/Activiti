@@ -31,6 +31,7 @@ public class AttachmentRenderers {
   private static final List<AttachmentRenderer> renderers = new ArrayList<AttachmentRenderer>();
   private static final List<AttachmentEditor> editors = new ArrayList<AttachmentEditor>();
   private static final Map<String, AttachmentEditor> editorMap = new HashMap<String, AttachmentEditor>();
+  private static final AttachmentRenderer defaultAttachmentRenderer = new GenericAttachmentRenderer();
   
   public static void addAttachmentRenderer(AttachmentRenderer renderer) {
     renderers.add(renderer);
@@ -51,8 +52,7 @@ public class AttachmentRenderers {
         return renderer;
       }
     }
-    // TODO: Use default renderer
-    throw new ActivitiException("No renderer found for attachment of type: " + type);
+    return defaultAttachmentRenderer;
   }
   
   
