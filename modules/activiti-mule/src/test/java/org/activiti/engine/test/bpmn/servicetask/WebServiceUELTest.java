@@ -37,7 +37,7 @@ public class WebServiceUELTest extends AbstractWebServiceTaskTest {
           return Context
             .getProcessEngineConfiguration()
             .getDeploymentCache()
-            .findDeployedLatestProcessDefinitionByKey("asyncWebServiceInvocationWithDataFlowUEL");
+            .findDeployedLatestProcessDefinitionByKey("webServiceInvocationWithDataFlowUEL");
         }
       });
   

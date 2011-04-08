@@ -19,6 +19,7 @@ import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.impl.util.ClassNameUtil;
+import org.activiti.engine.impl.util.LogUtil;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.test.mule.Counter;
 import org.mule.api.MuleContext;
@@ -34,6 +35,10 @@ import org.mule.context.DefaultMuleContextFactory;
  * @author Esteban Robles Luna
  */
 public abstract class AbstractWebServiceTaskTest extends PluggableActivitiTestCase {
+  
+  static {
+    LogUtil.readJavaUtilLoggingConfigFromClasspath();
+  }
 
   protected MuleContext context;
   protected Counter counter;
