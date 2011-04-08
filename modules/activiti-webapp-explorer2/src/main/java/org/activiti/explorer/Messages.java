@@ -21,6 +21,10 @@ public interface Messages {
   // General
   static final String APP_TITLE = "app.title";
   
+  static final String CONFIRMATION_DIALOG_DEFAULT_TITLE = "confirmation.dialog.default.title";
+  static final String CONFIRMATION_DIALOG_YES = "confirmation.dialog.yes";
+  static final String CONFIRMATION_DIALOG_NO = "confirmation.dialog.no";
+  
   // Login
   static final String LOGIN_USERNAME = "login.username";
   static final String LOGIN_PASSWORD = "login.password";
@@ -152,8 +156,10 @@ public interface Messages {
   static final String RELATED_CONTENT_TYPE_FILE_HELP = "related.content.type.file.help";
   static final String RELATED_CONTENT_TYPE_FILE_UPLOADED = "related.content.type.file.uploaded";
   static final String RELATED_CONTENT_TYPE_FILE_REQUIRED = "related.content.type.file.required";
+  static final String RELATED_CONTENT_CONFIRM_DELETE = "related.content.confirm.delete";
   
   // People involvement
   static final String PEOPLE_SEARCH = "people.search";
   static final String PEOPLE_INVOLVE_POPUP_CAPTION = "people.involve.popup.caption";
+
 }
