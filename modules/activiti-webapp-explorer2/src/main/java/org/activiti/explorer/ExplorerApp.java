@@ -21,8 +21,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.util.LogUtil;
+import org.activiti.explorer.cache.TrieBasedUserCache;
+import org.activiti.explorer.cache.UserCach;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.MainWindow;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
 import com.vaadin.Application;
@@ -37,12 +40,19 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   
   private static final long serialVersionUID = -1L;
 
+  // Initialise logging
   static {
     LogUtil.readJavaUtilLoggingConfigFromClasspath();
   }
   
+  // Thread local storage of instance for each user
   protected static ThreadLocal<ExplorerApp> current = new ThreadLocal<ExplorerApp>();
   
+  // Application-wide services
+  @Autowired
+  protected TrieBasedUserCache userCache;
+  
+  // UI
   protected MainWindow mainWindow;
   protected I18nManager i18nManager;
   protected ViewManager viewManager;
@@ -111,6 +121,12 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   
   public NotificationManager getNotificationManager() {
     return notificationManager;
+  }
+  
+  // Application-wide services
+  
+  public UserCach getUserCache() {
+    return userCache;
   }
   
   // HttpServletRequestListener -------------------------------------------------------------------

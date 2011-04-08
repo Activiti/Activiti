@@ -28,8 +28,8 @@ import org.activiti.explorer.ui.content.AttachmentRenderer;
 import org.activiti.explorer.ui.content.AttachmentRenderers;
 import org.activiti.explorer.ui.content.CreateAttachmentPopupWindow;
 import org.activiti.explorer.ui.content.RelatedContentComponent;
-import org.activiti.explorer.ui.event.GenericFormEvent;
-import org.activiti.explorer.ui.event.GenericFormEventListener;
+import org.activiti.explorer.ui.event.SubmitEvent;
+import org.activiti.explorer.ui.event.SubmitEventListener;
 
 import com.vaadin.data.Item;
 import com.vaadin.event.MouseEvents.ClickEvent;
@@ -95,17 +95,17 @@ public class TaskRelatedContentComponent extends VerticalLayout implements Relat
         popup.setTaskId(task.getId());
         
         // Add listener to update attachments when added
-        popup.addListener(new GenericFormEventListener() {
+        popup.addListener(new SubmitEventListener() {
           
           private static final long serialVersionUID = 1L;
 
           @Override
-          protected void formSubmitted(GenericFormEvent event) {
+          protected void submitted(SubmitEvent event) {
             refreshTaskAttachments();
           }
           
           @Override
-          protected void formCancelled(GenericFormEvent event) {
+          protected void cancelled(SubmitEvent event) {
             // No attachment was added so updating UI isn't needed.
           }
         });

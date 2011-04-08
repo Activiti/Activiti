@@ -20,7 +20,7 @@ import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.ExplorerLayout;
-import org.activiti.explorer.ui.event.GenericFormEvent;
+import org.activiti.explorer.ui.event.SubmitEvent;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -196,7 +196,7 @@ public class CreateAttachmentPopupWindow extends Window {
       // Creation and persistence of attachment is done in editor
       Attachment attachment = currentEditor.getAttachment();
 
-      fireEvent(new GenericFormEvent(this, GenericFormEvent.FORM_SUBMITTED, attachment));
+      fireEvent(new SubmitEvent(this, SubmitEvent.SUBMITTED, attachment));
 
       // Finally, close window
       close();

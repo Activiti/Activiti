@@ -17,37 +17,41 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.IdentityService;
-import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 
 
 /**
- * TEMPORARY cache impl - must be reviewed !
+ * Simple cache of user information, to avoid hitting the database too often for 
+ * information that doesn't change much over time.
  * 
- * TODO: cannot work with duplicated!
+ * Based on a Trie datastructure (http://en.wikipedia.org/wiki/Trie), see {@link RadixTree},
+ * for fast 'telephonebook'-like retrieval based on the first and last name of the users.
+ * Note that we are using the Trie such that we can have multiple results for a given key, by
+ * giving each key a list of matching values:
+ * eg. key='kermit' has a list of values {Kermit The Frog, Kermit The Evil Overlord, ...} 
  * 
- * TODO: in cluster, must be refreshed every x minutes
+ * TODO: In a clustered/cloud environment, this cache must be refreshed each xx minutes,
+ * in case updates have been done on other machines. Alternatively, a solution
+ * such as memcached could replace this implementation later on.
  * 
  * @author Joram Barrez
  */
-public class UserCache {
-  
-  // TODO: Move to ExplorerApp? Or maybe even Spring wired?
-  protected static UserCache INSTANCE = new UserCache();
+@Component
+public class TrieBasedUserCache implements UserCach {
   
   protected IdentityService identityService;
   
-  // TODO: evaluate if this is overkill ...
-  protected RadixTree<List<UserDetails>> radixTree = new RadixTreeImpl<List<UserDetails>>();
+  protected RadixTree<List<User>> radixTree = new RadixTreeImpl<List<User>>();
   
-  protected UserCache() {
-    this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
-    loadUsers();
+  protected TrieBasedUserCache() {
+    
   }
   
   public void refresh() {
-    radixTree = new RadixTreeImpl<List<UserDetails>>();
+    radixTree = new RadixTreeImpl<List<User>>();
     loadUsers();
   }
   
@@ -74,59 +78,41 @@ public class UserCache {
   
   protected void addCacheItem(String key, User user) {
     key = key.toLowerCase();
-    List<UserDetails> value = null;
+    List<User> value = null;
     if (!radixTree.contains(key)) {
-      value = new ArrayList<UserDetails>();
+      value = new ArrayList<User>();
     } else {
       value = radixTree.find(key);
     }
     
-    UserDetails userDetails = new UserDetails(user.getId(), 
-            user.getFirstName().toLowerCase() + " " + user.getLastName().toLowerCase());
-    
-    value.add(userDetails);
+    value.add(user);
     radixTree.delete(key);
     radixTree.insert(key, value);
   }
   
-  public List<UserDetails> findMatchingUsers(String prefix) {
-    List<UserDetails> returnValue = new ArrayList<UserDetails>();
-    List<List<UserDetails>> results = radixTree.searchPrefix(prefix.toLowerCase(), 100);
-    for (List<UserDetails> result : results) {
-      for (UserDetails userDetail : result) {
+  public List<User> findMatchingUsers(String prefix) {
+    
+    if (radixTree.getSize() == 0) {
+      refresh();
+    }
+    
+    List<User> returnValue = new ArrayList<User>();
+    System.out.println("Size = " + radixTree.getSize());
+    System.out.println(prefix);
+    System.out.println(radixTree);
+    List<List<User>> results = radixTree.searchPrefix(prefix.toLowerCase(), 100); // 100 should be enough for any name
+    for (List<User> result : results) {
+      for (User userDetail : result) {
         returnValue.add(userDetail);
       }
     }
     return returnValue;
   }
-  
-  public static UserCache getInstance() {
-    return INSTANCE;
-  }
-  
-  public class UserDetails {
-    
-    protected String userId;
-    protected String fullName;
-    
-    public UserDetails(String userId, String fullName) {
-      this.userId = userId;
-      this.fullName = fullName;
-    }
 
-    public String getUserId() {
-      return userId;
-    }
-    public void setUserId(String userId) {
-      this.userId = userId;
-    }
-    public String getFullName() {
-      return fullName;
-    }
-    public void setFullName(String fullName) {
-      this.fullName = fullName;
-    }
-    
+  @Autowired
+  public void setIdentityService(IdentityService identityService) {
+    this.identityService = identityService;
+    loadUsers();
   }
   
 }

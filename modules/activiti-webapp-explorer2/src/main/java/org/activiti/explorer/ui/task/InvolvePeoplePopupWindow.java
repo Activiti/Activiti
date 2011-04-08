@@ -19,7 +19,7 @@ import org.activiti.engine.identity.User;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
-import org.activiti.explorer.cache.UserCache;
+import org.activiti.explorer.cache.UserCach;
 
 import com.vaadin.data.Item;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
@@ -42,7 +42,7 @@ public class InvolvePeoplePopupWindow extends Window {
 
   private static final long serialVersionUID = 1L;
   
-  protected UserCache userCache;
+  protected UserCach userCache;
   protected I18nManager i18nManager;
   
   protected VerticalLayout windowLayout;
@@ -54,7 +54,7 @@ public class InvolvePeoplePopupWindow extends Window {
   protected Button doneButton;
   
   public InvolvePeoplePopupWindow() {
-    this.userCache = UserCache.getInstance(); // TODO: see UserCache, probably will be refactored
+    this.userCache = ExplorerApp.get().getUserCache();
     this.i18nManager = ExplorerApp.get().getI18nManager();
     
     initUi();
@@ -82,6 +82,7 @@ public class InvolvePeoplePopupWindow extends Window {
     searchField = new TextField();
     searchField.setInputPrompt(i18nManager.getMessage(Messages.PEOPLE_SEARCH));
     searchField.setWidth(250, UNITS_PIXELS);
+    searchField.focus();
     addComponent(searchField);
     
     // Logic to change table according to input
@@ -89,10 +90,10 @@ public class InvolvePeoplePopupWindow extends Window {
       public void textChange(TextChangeEvent event) {
         if (event.getText().length() >= 2) {
           matchingUsersTable.removeAllItems();
-          List<UserCache.UserDetails> results = userCache.findMatchingUsers(event.getText());
-          for (UserCache.UserDetails userDetails : results) {
-            Item item = matchingUsersTable.addItem(userDetails.getUserId());
-            item.getItemProperty("userName").setValue(userDetails.getFullName());
+          List<User> results = userCache.findMatchingUsers(event.getText());
+          for (User user : results) {
+            Item item = matchingUsersTable.addItem(user.getId());
+            item.getItemProperty("userName").setValue(user.getFirstName() + " " + user.getLastName());
           }
         }
       }

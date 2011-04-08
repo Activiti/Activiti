@@ -18,22 +18,22 @@ import com.vaadin.ui.Component.Listener;
 
 
 /**
- * Listener that listens to {@link GenericFormEvent}s and delegates to
- * formSubmitted or formCancelled methods.
+ * Listener that listens to {@link SubmitEvent}s and delegates to
+ * {@link #submitted(SubmitEvent)} or {@link #cancelled(SubmitEvent)} methods.
  * 
  * @author Frederik Heremans
  */
-public abstract class GenericFormEventListener implements Listener {
+public abstract class SubmitEventListener implements Listener {
 
   private static final long serialVersionUID = 1L;
 
   public final void componentEvent(Event event) {
-    if(event instanceof GenericFormEvent) {
-      GenericFormEvent gfe = (GenericFormEvent) event;
-      if(GenericFormEvent.FORM_SUBMITTED.equals(gfe.getType())) {
-         formSubmitted(gfe);
+    if(event instanceof SubmitEvent) {
+      SubmitEvent gfe = (SubmitEvent) event;
+      if(SubmitEvent.SUBMITTED.equals(gfe.getType())) {
+         submitted(gfe);
       } else {
-        formCancelled(gfe);
+        cancelled(gfe);
       }
     }
   }
@@ -41,11 +41,11 @@ public abstract class GenericFormEventListener implements Listener {
   /**
    * Called when form is submitted.
    */
-  protected abstract void formSubmitted(GenericFormEvent event);
+  protected abstract void submitted(SubmitEvent event);
   
   /**
    * Called when form is cancelled.
    */
-  protected abstract void formCancelled(GenericFormEvent event);
+  protected abstract void cancelled(SubmitEvent event);
   
 }

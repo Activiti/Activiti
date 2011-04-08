@@ -18,29 +18,29 @@ import com.vaadin.ui.Component.Event;
 
 
 /**
- * Generic event to use when form is submitted or cancelled. Optionally,
+ * Generic event to use when simething is submitted or cancelled. Optionally,
  * an object can be passed, representing data or state for this event.
  * 
  * @author Frederik Heremans
  */
-public class GenericFormEvent extends Event {
+public class SubmitEvent extends Event {
 
   private static final long serialVersionUID = 1L;
   
-  public static final String FORM_SUBMITTED = "submit";
-  public static final String FORM_CANCELLED = "cancel";
+  public static final String SUBMITTED = "submit";
+  public static final String CANCELLED = "cancel";
   
   private String type;
-  private Object formData;
+  private Object data;
   
   
-  public GenericFormEvent(Component source, String type) {
+  public SubmitEvent(Component source, String type) {
     this(source, type, null);
   }
-  public GenericFormEvent(Component source, String type, Object formData) {
+  public SubmitEvent(Component source, String type, Object data) {
     super(source);
     this.type = type;
-    this.formData = formData;
+    this.data = data;
   }
 
   public String getType() {
@@ -50,8 +50,8 @@ public class GenericFormEvent extends Event {
   /**
    * Additional state or data for this event.
    */
-  public Object getFormData() {
-    return formData;
+  public Object getData() {
+    return data;
   }
   
 }
