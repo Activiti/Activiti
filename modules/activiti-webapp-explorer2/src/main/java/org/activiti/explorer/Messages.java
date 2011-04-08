@@ -57,6 +57,8 @@ public interface Messages {
   // Task details
   static final String TASK_ID = "task.id";
   static final String TASK_NAME = "task.name";
+  static final String TASK_OWNER = "task.owner";
+  static final String TASK_NO_OWNER = "task.no.owner";
   static final String TASK_ASSIGNEE = "task.assignee";
   static final String TASK_CREATED = "task.created";
   static final String TASK_DUEDATE = "task.duedate";
@@ -76,6 +78,7 @@ public interface Messages {
   static final String TASK_CLAIM_SUCCESS = "task.claim.success";
   static final String TASK_CLAIM = "task.claim";
   static final String TASK_RELATED_CONTENT = "task.related.content";
+  static final String TASK_PEOPLE = "task.people";
   
   // Flow menu
   static final String FLOW_MENU_MY_FLOWS = "flow.menu.my";
@@ -144,9 +147,13 @@ public interface Messages {
   static final String RELATED_CONTENT_TYPE_URL_URL = "related.content.type.url.url";
   static final String RELATED_CONTENT_TYPE_URL_URL_REQUIRED = "related.content.type.url.url.required";;
   static final String RELATED_CONTENT_TYPE_URL_HELP = "related.content.type.url.help";
-
+  
   static final String RELATED_CONTENT_TYPE_FILE = "related.content.type.file";
   static final String RELATED_CONTENT_TYPE_FILE_HELP = "related.content.type.file.help";
   static final String RELATED_CONTENT_TYPE_FILE_UPLOADED = "related.content.type.file.uploaded";
   static final String RELATED_CONTENT_TYPE_FILE_REQUIRED = "related.content.type.file.required";
+  
+  // People involvement
+  static final String PEOPLE_SEARCH = "people.search";
+  static final String PEOPLE_INVOLVE_POPUP_CAPTION = "people.involve.popup.caption";
 }

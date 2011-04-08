@@ -191,6 +191,18 @@ public class BootProcessEngineContextListener implements ServletContextListener 
     byte[] pictureBytes = IoUtil.readInputStream(this.getClass().getClassLoader().getResourceAsStream("org/activiti/explorer/images/fozzie.jpg"), null);
     Picture picture = new Picture(pictureBytes, "image/jpeg");
     identityService.setUserPicture("fozzie", picture);
+    
+    createUser(identityService, "mkiekeboe", "Marcel", "Kiekeboe");
+    createUser(identityService, "kkiekeboe", "Konstantinopel", "Kiekeboe");
+    createUser(identityService, "moemoekiekeboe", "Moemoe", "Kiekeboe");
+    createUser(identityService, "fkiekeboe", "Fanny", "Kiekeboe");
+  }
+  
+  protected void createUser(IdentityService identityService, String userId, String firstName, String lastName) {
+    User user = identityService.newUser(userId);
+    user.setFirstName(firstName);
+    user.setLastName(lastName);
+    identityService.saveUser(user);
   }
   
   protected void initTasks(ProcessEngine processEngine) {

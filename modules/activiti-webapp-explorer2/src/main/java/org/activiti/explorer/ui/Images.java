@@ -29,13 +29,14 @@ public class Images {
   public static final Resource WHITE_DIVIDER = new ThemeResource("img/divider-white.png");
   public static final Resource TASK = new ThemeResource("img/task.png");
   public static final Resource CLOCK = new ThemeResource("img/clock.png");
-  public static final Resource PEOPLE = new ThemeResource("img/people.png");
   public static final Resource PROCESS = new ThemeResource("img/process.png");
   public static final Resource PROCESS_48PX = new ThemeResource("img/process_48.png");
   public static final Resource RESOURCE = new ThemeResource("img/resource.png");
   public static final Resource WARNING = new ThemeResource("img/warning.png");
   public static final Resource DELETE = new ThemeResource("img/delete.png");
   public static final Resource EXECUTE = new ThemeResource("img/execute.png");
+  public static final Resource ADD = new ThemeResource("img/list-add.png");
+  public static final Resource USER_48 = new ThemeResource("img/user_48.png");
   public static final Resource SUCCESS = new ThemeResource("img/tick.png");
   
   // Task
@@ -55,7 +56,8 @@ public class Images {
   public static final Resource DATABASE_RUNTIME = new ThemeResource("img/database_runtime.png");
   
   // Related content
-  public static final Resource ADD_RELATED_CONTENT = new ThemeResource("img/list-add.png");
+  
+  // Related content
   public static final Resource RELATED_CONTENT_URL = new ThemeResource("img/page_white_world.png");
   public static final Resource RELATED_CONTENT_FILE = new ThemeResource("img/page_white_get.png");
   public static final Resource RELATED_CONTENT_PDF = new ThemeResource("img/page_white_acrobat.png");

@@ -84,7 +84,7 @@ public class TaskRelatedContentComponent extends VerticalLayout implements Relat
     actionsContainer.setExpandRatio(processTitle, 1.0f);
 
     // Add content button
-    Embedded addRelatedContentButton = new Embedded(null, Images.ADD_RELATED_CONTENT);
+    Embedded addRelatedContentButton = new Embedded(null, Images.ADD);
     addRelatedContentButton.addStyleName(ExplorerLayout.STYLE_IMAGE_ACTION);
     addRelatedContentButton.addListener(new ClickListener() {
       

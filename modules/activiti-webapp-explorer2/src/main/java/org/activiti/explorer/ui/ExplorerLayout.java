@@ -34,6 +34,7 @@ public interface ExplorerLayout {
   static final String LOCATION_LOGOUT = "logout";
   static final String LOCATION_MAIN_MENU = "main-menu";
   static final String LOCATION_HIDDEN = "hidden";
+  static final String STYLE_IMAGE_ACTION = "image-action";
   
   static final String LINK_TARGET_BLANK = "_blank";
 
@@ -100,7 +101,6 @@ public interface ExplorerLayout {
 
   // Related content
   static final String STYLE_RELATED_CONTENT_DETAILS_HEADER = "related-content-detail-header";
-  static final String STYLE_IMAGE_ACTION = "image-action";
   static final String STYLE_RELATED_CONTENT_CREATE_LIST = "related-content-create-list";
   static final String STYLE_RELATED_CONTENT_CREATE_DETAIL = "related-content-create-detail";
   static final String STYLE_RELATED_CONTENT_CREATE_LIST_LAST_COLUMN = "related-last-column";

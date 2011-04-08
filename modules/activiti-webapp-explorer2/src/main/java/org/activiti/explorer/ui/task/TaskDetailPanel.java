@@ -66,8 +66,8 @@ public class TaskDetailPanel extends HorizontalLayout {
   
   // UI
   protected TaskPage parent;
-  protected Panel leftPanel;
-  protected Panel rightPanel;
+  protected Panel centralPanel;
+  protected Panel eventPanel;
   protected FormPropertiesForm taskForm;
   protected TaskRelatedContentComponent relatedContent;
   protected Button completeButton;
@@ -96,10 +96,10 @@ public class TaskDetailPanel extends HorizontalLayout {
     
     
     // left panel: all details about the task
-    this.leftPanel = new Panel();
-    leftPanel.addStyleName(Reindeer.PANEL_LIGHT);
-    addComponent(leftPanel);
-    setExpandRatio(leftPanel, 75.0f);
+    this.centralPanel = new Panel();
+    centralPanel.addStyleName(Reindeer.PANEL_LIGHT);
+    addComponent(centralPanel);
+    setExpandRatio(centralPanel, 75.0f);
     
     initName();
     initDescription();
@@ -112,28 +112,28 @@ public class TaskDetailPanel extends HorizontalLayout {
     
     
     // Right panel: the task comments
-    this.rightPanel = new TaskCommentPanel(taskId);
-    rightPanel.addStyleName(Reindeer.PANEL_LIGHT);
-    addComponent(rightPanel);
-    setExpandRatio(rightPanel, 25.0f);
+    this.eventPanel = new TaskCommentPanel(taskId);
+    eventPanel.addStyleName(Reindeer.PANEL_LIGHT);
+    addComponent(eventPanel);
+    setExpandRatio(eventPanel, 25.0f);
   }
   
   protected void initName() {
     Label nameLabel = new Label(task.getName() + " - " + task.getId());
     nameLabel.addStyleName(Reindeer.LABEL_H1);
-    leftPanel.addComponent(nameLabel);
+    centralPanel.addComponent(nameLabel);
   }
   
   protected void initDescription() {
-    addEmptySpace(leftPanel);
+    addEmptySpace(centralPanel);
     
     if (task.getDescription() != null) {
       Label descriptionLabel = new Label(task.getDescription());
       descriptionLabel.addStyleName(Reindeer.LABEL_SMALL);
-      leftPanel.addComponent(descriptionLabel);
+      centralPanel.addComponent(descriptionLabel);
     }
     
-    addEmptySpace(leftPanel);
+    addEmptySpace(centralPanel);
   }
   
   protected void initClaimButton() {
@@ -141,8 +141,8 @@ public class TaskDetailPanel extends HorizontalLayout {
       claimButton = new Button(i18nManager.getMessage(Messages.TASK_CLAIM));
       claimButton.addListener(new ClaimTaskClickListener(task.getId(), taskService));
       
-      leftPanel.addComponent(claimButton);
-      addEmptySpace(leftPanel);
+      centralPanel.addComponent(claimButton);
+      addEmptySpace(centralPanel);
     }
   }
 
@@ -163,8 +163,8 @@ public class TaskDetailPanel extends HorizontalLayout {
       showProcessInstanceButton.setSizeUndefined();
       showProcessInstanceButton.addStyleName(Reindeer.BUTTON_LINK);
      
-      leftPanel.addComponent(showProcessInstanceButton);
-      addEmptySpace(leftPanel);
+      centralPanel.addComponent(showProcessInstanceButton);
+      addEmptySpace(centralPanel);
     }
   }
   
@@ -172,7 +172,7 @@ public class TaskDetailPanel extends HorizontalLayout {
     HorizontalLayout timeDetailsLayout = new HorizontalLayout();
     timeDetailsLayout.setSpacing(true);
     timeDetailsLayout.setSizeUndefined();
-    leftPanel.addComponent(timeDetailsLayout);
+    centralPanel.addComponent(timeDetailsLayout);
 
     Embedded clockImage = new Embedded(null, Images.CLOCK);
     timeDetailsLayout.addComponent(clockImage);
@@ -214,52 +214,7 @@ public class TaskDetailPanel extends HorizontalLayout {
   }
 
   protected void initPeopleDetails() {
-    // first add some empty space for aesthetics
-    addEmptySpace(leftPanel);
-    
-    // Layout for involved people
-    HorizontalLayout layout = new HorizontalLayout();
-    layout.setSpacing(true);
-    layout.setSizeUndefined();
-    leftPanel.addComponent(layout);
-    
-    // people icon
-    Embedded peopleImage = new Embedded(null, Images.PEOPLE);
-    layout.addComponent(peopleImage);
-    
-    // The involved people are layed out in a grid with two rows
-    GridLayout grid = new GridLayout();
-    grid.addStyleName(ExplorerLayout.STYLE_TASK_DETAILS);
-    grid.setSpacing(true);
-    grid.setRows(2);
-    
-    layout.addComponent(grid);
-    layout.setComponentAlignment(grid, Alignment.MIDDLE_LEFT);
-    
-    // owner
-    if (task.getOwner() != null) {
-      Button owner = new Button(task.getOwner() + " (owner)");
-      owner.addStyleName(Reindeer.BUTTON_LINK);
-      owner.addListener(new ClickListener() {
-        public void buttonClick(ClickEvent event) {
-          viewManager.showProfilePopup(task.getOwner());
-        }
-      });
-      
-      grid.addComponent(owner);
-    }
-    
-    // assignee
-    if (task.getAssignee() != null) {
-      Button assignee = new Button(task.getAssignee() + " (assignee)");
-      assignee.addStyleName(Reindeer.BUTTON_LINK);
-      assignee.addListener(new ClickListener() {
-        public void buttonClick(ClickEvent event) {
-          viewManager.showProfilePopup(task.getAssignee());
-        }
-      });
-      grid.addComponent(assignee);
-    }
+    centralPanel.addComponent(new TaskInvolvedPeopleComponent(task));
   }
   
   protected void initTaskForm() {
@@ -293,7 +248,7 @@ public class TaskDetailPanel extends HorizontalLayout {
       taskForm.setEnabled(isCurrentUserAssignee());
       
       // Add component to page
-      leftPanel.addComponent(taskForm);
+      centralPanel.addComponent(taskForm);
     } else {
       // Just add a button to complete the task
       // TODO: perhaps move to a better place
@@ -310,19 +265,17 @@ public class TaskDetailPanel extends HorizontalLayout {
         }
       });
       
-      addEmptySpace(leftPanel);
+      addEmptySpace(centralPanel);
       
       completeButton.setEnabled(isCurrentUserAssignee());
-      leftPanel.addComponent(completeButton);
+      centralPanel.addComponent(completeButton);
     }
   }
   
   protected void initRelatedContent() {
-    addEmptySpace(leftPanel);
-    
+    addEmptySpace(centralPanel);
     relatedContent = new TaskRelatedContentComponent(task);
-    
-    leftPanel.addComponent(relatedContent);
+    centralPanel.addComponent(relatedContent);
   }
   
   protected boolean isCurrentUserAssignee() {
