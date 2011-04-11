@@ -54,6 +54,18 @@
     <result property="message" column="MESSAGE_" jdbcType="VARCHAR" />
     <result property="fullMessageBytes" column="FULL_MSG_" jdbcType="BLOB" />
   </resultMap>
+
+  <resultMap id="commentResultMap_postgres" type="org.activiti.engine.impl.persistence.entity.CommentEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="type" column="TYPE_" jdbcType="VARCHAR" />
+    <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />
+    <result property="time" column="TIME_" jdbcType="TIMESTAMP" />
+    <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="action" column="ACTION_" jdbcType="VARCHAR" />
+    <result property="message" column="MESSAGE_" jdbcType="VARCHAR" />
+    <result property="fullMessageBytes" column="FULL_MSG_" jdbcType="BINARY" />
+  </resultMap>
   
   <!-- COMMENT SELECT -->
 
