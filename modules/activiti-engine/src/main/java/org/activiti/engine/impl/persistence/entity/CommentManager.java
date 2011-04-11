@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.task.Comment;
+import org.activiti.engine.task.Event;
 
 
 /**
@@ -30,7 +31,7 @@ public class CommentManager extends AbstractManager {
   }
 
   @SuppressWarnings("unchecked")
-  public List<Comment> findEventsByTaskId(String taskId) {
+  public List<Event> findEventsByTaskId(String taskId) {
     return getPersistenceSession().selectList("selectEventsByTaskId", taskId);
   }
 

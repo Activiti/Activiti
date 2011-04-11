@@ -20,14 +20,16 @@ import java.util.StringTokenizer;
 
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.task.Comment;
+import org.activiti.engine.task.Event;
 
 
 /**
  * @author Tom Baeyens
  */
-public class CommentEntity implements Comment, PersistentObject {
+public class CommentEntity implements Comment, Event, PersistentObject {
   
-  public static final String ACTION_ADD_IDENTITY_LINK = "AAIL";
+  public static final String TYPE_EVENT = "event";
+  public static final String TYPE_COMMENT = "comment";
   
   protected String id;
   protected String type;
@@ -35,6 +37,7 @@ public class CommentEntity implements Comment, PersistentObject {
   protected Date time;
   protected String taskId;
   protected String processInstanceId;
+  protected String action;
   protected String message;
   protected String fullMessage;
   
@@ -63,7 +66,9 @@ public class CommentEntity implements Comment, PersistentObject {
         stringBuilder.append(MESSAGE_PARTS_MARKER);
       }
     }
-    stringBuilder.deleteCharAt(stringBuilder.length()-MESSAGE_PARTS_MARKER.length());
+    for (int i=0; i<MESSAGE_PARTS_MARKER.length(); i++) {
+      stringBuilder.deleteCharAt(stringBuilder.length()-1);
+    }
     message = stringBuilder.toString();
   }
   
@@ -148,5 +153,13 @@ public class CommentEntity implements Comment, PersistentObject {
 
   public void setFullMessage(String fullMessage) {
     this.fullMessage = fullMessage;
+  }
+
+  public String getAction() {
+    return action;
+  }
+  
+  public void setAction(String action) {
+    this.action = action;
   }
 }

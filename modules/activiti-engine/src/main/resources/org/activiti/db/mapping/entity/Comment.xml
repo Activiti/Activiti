@@ -21,7 +21,7 @@
   <!-- COMMENT INSERT -->
   
   <insert id="insertComment" parameterType="org.activiti.engine.impl.persistence.entity.CommentEntity">
-    insert into ACT_HI_COMMENT (ID_, TYPE_, TIME_, USER_ID_, TASK_ID_, PROC_INST_ID_, MESSAGE_, FULL_MSG_)
+    insert into ACT_HI_COMMENT (ID_, TYPE_, TIME_, USER_ID_, TASK_ID_, PROC_INST_ID_, ACTION_, MESSAGE_, FULL_MSG_)
     values (
       #{id ,jdbcType=VARCHAR},
       #{type ,jdbcType=VARCHAR},
@@ -29,6 +29,7 @@
       #{userId ,jdbcType=VARCHAR},
       #{taskId ,jdbcType=VARCHAR},
       #{processInstanceId ,jdbcType=VARCHAR},
+      #{action ,jdbcType=VARCHAR},
       #{message ,jdbcType=VARCHAR},
       #{fullMessageBytes ,jdbcType=BLOB}
     )
@@ -49,6 +50,7 @@
     <result property="time" column="TIME_" jdbcType="TIMESTAMP" />
     <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="action" column="ACTION_" jdbcType="VARCHAR" />
     <result property="message" column="MESSAGE_" jdbcType="VARCHAR" />
     <result property="fullMessageBytes" column="FULL_MSG_" jdbcType="BLOB" />
   </resultMap>

@@ -20,7 +20,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.CommentEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.util.ClockUtil;
-import org.activiti.engine.task.Comment;
+import org.activiti.engine.task.Event;
 import org.activiti.engine.task.IdentityLinkType;
 
 
@@ -88,10 +88,11 @@ public class AddIdentityLinkCmd implements Command<Void> {
     String authenticatedUserId = Authentication.getAuthenticatedUserId();
     CommentEntity comment = new CommentEntity();
     comment.setUserId(authenticatedUserId);
-    comment.setType(Comment.TYPE_EVENT);
+    comment.setType(CommentEntity.TYPE_EVENT);
     comment.setTime(ClockUtil.getCurrentTime());
     comment.setTaskId(taskId);
-    comment.setMessage(new String[]{CommentEntity.ACTION_ADD_IDENTITY_LINK, userId, type});
+    comment.setAction(Event.ACTION_ADD_IDENTITY_LINK);
+    comment.setMessage(new String[]{userId, groupId, type});
     commandContext
       .getCommentManager()
       .insert(comment);

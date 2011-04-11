@@ -14,6 +14,7 @@
 package org.activiti.explorer;
 
 import org.activiti.engine.task.Comment;
+import org.activiti.engine.task.Event;
 import org.activiti.explorer.ui.MainWindow;
 import org.activiti.explorer.ui.flow.FlowPage;
 import org.activiti.explorer.ui.flow.MyFlowsPage;
@@ -70,7 +71,7 @@ public class ViewManager {
     mainWindow.switchView(new TaskQueuedPage(groupId, taskId));
   }
   
-  public void showTaskCommentPopup(Comment comment) {
+  public void showTaskCommentPopup(org.activiti.engine.task.Event comment) {
     showPopupWindow(new TaskCommentPopupWindow(comment));
   }
   

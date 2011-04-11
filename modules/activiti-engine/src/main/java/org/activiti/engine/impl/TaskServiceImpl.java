@@ -47,6 +47,7 @@ import org.activiti.engine.impl.cmd.SetTaskVariablesCmd;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Comment;
+import org.activiti.engine.task.Event;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
@@ -221,7 +222,7 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     return commandExecutor.execute(new GetTaskCommentsCmd(taskId));
   }
 
-  public List<Comment> getTaskEvents(String taskId) {
+  public List<Event> getTaskEvents(String taskId) {
     return commandExecutor.execute(new GetTaskEventsCmd(taskId));
   }
 

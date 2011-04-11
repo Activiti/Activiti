@@ -16,6 +16,8 @@ package org.activiti.engine.test.api.task;
 import java.util.List;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.task.Comment;
+import org.activiti.engine.task.Event;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.test.Deployment;
@@ -72,6 +74,13 @@ public class TaskIdentityLinksTest extends PluggableActivitiTestCase {
     assertEquals(taskId, identityLink.getTaskId());
     
     assertEquals(1, identityLinks.size());
+    
+    Event taskEvent = taskService.getTaskEvents(taskId).get(0);
+    assertEquals(Event.ACTION_ADD_IDENTITY_LINK, taskEvent.getAction());
+    List<String> taskEventMessageParts = taskEvent.getMessageParts();
+    assertNull(taskEventMessageParts.get(0));
+    assertEquals("muppets", taskEventMessageParts.get(1));
+    assertEquals(IdentityLinkType.CANDIDATE, taskEventMessageParts.get(2));
 
     taskService.deleteCandidateGroup(taskId, "muppets");
     

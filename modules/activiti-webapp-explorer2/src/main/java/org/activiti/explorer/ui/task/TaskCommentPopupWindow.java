@@ -18,7 +18,6 @@ import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
-import org.activiti.engine.task.Comment;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
@@ -45,10 +44,10 @@ public class TaskCommentPopupWindow extends Window {
   protected IdentityService identityService;
   protected I18nManager i18nManager;
   
-  protected Comment comment;
+  protected org.activiti.engine.task.Event comment;
   protected User user;
 
-  public TaskCommentPopupWindow(Comment comment) {
+  public TaskCommentPopupWindow(org.activiti.engine.task.Event comment) {
     super();
 
     this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();

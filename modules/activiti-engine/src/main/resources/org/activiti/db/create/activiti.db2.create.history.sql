@@ -74,6 +74,7 @@ create table ACT_HI_COMMENT (
     USER_ID_ varchar(255),
     TASK_ID_ varchar(64),
     PROC_INST_ID_ varchar(64),
+    ACTION_ varchar(255),
     MESSAGE_ varchar(255),
     FULL_MSG_ BLOB,
     primary key (ID_)

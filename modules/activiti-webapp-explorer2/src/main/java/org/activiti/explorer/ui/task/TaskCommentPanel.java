@@ -20,7 +20,6 @@ import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.User;
-import org.activiti.engine.task.Comment;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
@@ -34,8 +33,6 @@ import com.vaadin.terminal.StreamResource;
 import com.vaadin.terminal.StreamResource.StreamSource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -43,6 +40,8 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.Reindeer;
 
 
@@ -59,7 +58,7 @@ public class TaskCommentPanel extends Panel {
   protected ViewManager viewManager;
   
   protected String taskId;
-  protected List<Comment> comments;
+  protected List<org.activiti.engine.task.Event> comments;
 
   public TaskCommentPanel(String taskId) {
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
@@ -68,7 +67,7 @@ public class TaskCommentPanel extends Panel {
     this.viewManager = ExplorerApp.get().getViewManager();
     
     this.taskId = taskId;
-    this.comments = taskService.getTaskComments(taskId);
+    this.comments = taskService.getTaskEvents(taskId);
     
     setSizeFull();
     refreshAllComments();
@@ -81,14 +80,14 @@ public class TaskCommentPanel extends Panel {
     commentGrid.setColumnExpandRatio(1, 1.0f);
     addComponent(commentGrid);
     
-    for (final Comment comment : comments) {
+    for (final org.activiti.engine.task.Event comment : comments) {
       addCommentPicture(comment, commentGrid);
       addCommentText(comment, commentGrid);
     }
     
   }
 
-  protected void addCommentPicture(final Comment comment, GridLayout commentGrid) {
+  protected void addCommentPicture(final org.activiti.engine.task.Event comment, GridLayout commentGrid) {
     StreamResource imageresource = new StreamResource(new StreamSource() {
       private static final long serialVersionUID = -8875067466181823014L;
       public InputStream getStream() {
@@ -104,7 +103,7 @@ public class TaskCommentPanel extends Panel {
     commentGrid.addComponent(picture);
   }
   
-  protected void addCommentText(final Comment comment, final GridLayout commentGrid) {
+  protected void addCommentText(final org.activiti.engine.task.Event comment, final GridLayout commentGrid) {
     VerticalLayout layout = new VerticalLayout();
     layout.addStyleName(ExplorerLayout.STYLE_TASK_COMMENT);
     layout.setWidth("100%");
@@ -134,12 +133,7 @@ public class TaskCommentPanel extends Panel {
     commentHeader.addComponent(time);
     
     // Actual text
-    Label text = null;
-    if (comment.getMessage().length() < 140) {
-      text = new Label(comment.getMessage());
-    } else {
-      text = new Label(comment.getMessage().substring(0, 140) + "...");
-    }
+    Label text = new Label(comment.getMessage());
     text.setWidth("100%");
     layout.addComponent(text);
     

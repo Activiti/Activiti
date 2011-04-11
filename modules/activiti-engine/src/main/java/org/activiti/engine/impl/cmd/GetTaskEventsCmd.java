@@ -17,13 +17,13 @@ import java.util.List;
 
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.task.Comment;
+import org.activiti.engine.task.Event;
 
 
 /**
  * @author Tom Baeyens
  */
-public class GetTaskEventsCmd implements Command<List<Comment>> {
+public class GetTaskEventsCmd implements Command<List<Event>> {
 
   protected String taskId;
   
@@ -31,7 +31,7 @@ public class GetTaskEventsCmd implements Command<List<Comment>> {
     this.taskId = taskId;
   }
 
-  public List<Comment> execute(CommandContext commandContext) {
+  public List<Event> execute(CommandContext commandContext) {
     return commandContext
       .getCommentManager()
       .findEventsByTaskId(taskId);

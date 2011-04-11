@@ -14,16 +14,38 @@
 package org.activiti.engine.task;
 
 import java.util.Date;
+import java.util.List;
 
 import org.activiti.engine.TaskService;
 
 
-/** User comments that form discussions around tasks.
+/** Exposes twitter-like feeds for tasks and process instances.
  * 
- * @see {@link TaskService#getTaskComments(String)
+ * @see {@link TaskService#getTaskEvents(String)
  * @author Tom Baeyens
  */
-public interface Comment {
+public interface Event {
+  
+  /** An identity link was added with following message parts:
+   * [0] userId
+   * [1] groupId
+   * [2] identity link type (aka role) */
+  String ACTION_ADD_IDENTITY_LINK = "AddIdentityLink";
+
+  /** An user comment was added with the short version of the comment as message. */
+  String ACTION_ADD_COMMENT = "AddComment";
+
+  /** An attachment was added with the attachment name as message. */
+  String ACTION_ADD_ATTACHMENT = "AddAttachment";
+
+  /** Indicates the type of of action and also indicates the meaning of the parts as exposed in {@link #getMessageParts()}  */ 
+  String getAction();
+
+  /** The meaning of the message parts is defined by the action as you can find in {@link #getAction()} */
+  List<String> getMessageParts();
+
+  /** The message that can be used in case this action only has a single message part. */
+  String getMessage();
 
   /** reference to the user that made the comment */ 
   String getUserId();
@@ -37,7 +59,4 @@ public interface Comment {
   /** reference to the process instance on which this comment was made */ 
   String getProcessInstanceId();
 
-  /** the full comment message the user had related to the task and/or process instance
-   * @see TaskService#getTaskComments(String) */ 
-  String getFullMessage();
 }

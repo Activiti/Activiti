@@ -25,6 +25,7 @@ import org.activiti.engine.impl.persistence.entity.CommentEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.task.Attachment;
+import org.activiti.engine.task.Event;
 
 
 /**
@@ -76,6 +77,7 @@ public class CreateAttachmentCmd implements Command<Attachment> {
     comment.setTime(ClockUtil.getCurrentTime());
     comment.setTaskId(taskId);
     comment.setProcessInstanceId(processInstanceId);
+    comment.setAction(Event.ACTION_ADD_ATTACHMENT);
     comment.setMessage(attachmentName);
     commandContext
       .getCommentManager()
