@@ -45,4 +45,11 @@ public class VariableInstanceManager extends AbstractManager {
   public List<VariableInstanceEntity> findVariableInstancesByExecutionId(String executionId) {
     return getPersistenceSession().selectList("selectVariablesByExecutionId", executionId);
   }
+
+  public void deleteVariableInstanceByTaskId(String taskId) {
+    List<VariableInstanceEntity> variableInstances = findVariableInstancesByTaskId(taskId);
+    for (VariableInstanceEntity variableInstance: variableInstances) {
+      deleteVariableInstance(variableInstance);
+    }
+  }
 }

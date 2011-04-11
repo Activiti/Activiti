@@ -76,23 +76,6 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
     return persistentState;
   }
 
-  public void delete() {
-    CommandContext commandContext = Context.getCommandContext();
-    
-    int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
-    if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
-      HistoricDetailQueryImpl variableQuery = 
-        (HistoricDetailQueryImpl) new HistoricDetailQueryImpl(commandContext).taskId(id);
-      
-      List<HistoricDetail> details = variableQuery.list();
-      for(HistoricDetail detail : details) {
-        ((HistoricDetailEntity) detail).delete();
-      }
-    }
-    
-    commandContext.getDbSqlSession().delete(HistoricTaskInstanceEntity.class, id);
-  }
-  
   // getters and setters //////////////////////////////////////////////////////
   public String getExecutionId() {
     return executionId;

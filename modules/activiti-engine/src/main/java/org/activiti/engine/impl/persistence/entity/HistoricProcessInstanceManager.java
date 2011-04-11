@@ -22,7 +22,6 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.AbstractHistoricManager;
-import org.activiti.engine.repository.ProcessDefinition;
 
 
 /**
@@ -34,17 +33,18 @@ public class HistoricProcessInstanceManager extends AbstractHistoricManager {
     return (HistoricProcessInstanceEntity) getPersistenceSession().selectById(HistoricProcessInstanceEntity.class, processInstanceId);
   }
 
-  public void deleteHistoricProcessInstancesByProcessDefinition(ProcessDefinition processDefinition) {
-    if (historyLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
-      List<HistoricProcessInstance> historicProcessInstances = getPersistenceSession().createHistoricProcessInstanceQuery().processDefinitionId(
-              processDefinition.getId()).list();
-      for (HistoricProcessInstance historicProcessInstance : historicProcessInstances) {
-        deleteHistoricProcessInstance(historicProcessInstance.getId());
-      }
+
+  @SuppressWarnings("unchecked")
+  public void deleteHistoricProcessInstanceByProcessDefinitionId(String processDefinitionId) {
+    List<String> historicProcessInstanceIds = getPersistenceSession()
+      .selectList("selectHistoricProcessInstanceIdsByProcessDefinitionId", processDefinitionId);
+  
+    for (String historicProcessInstanceId: historicProcessInstanceIds) {
+      deleteHistoricProcessInstanceById(historicProcessInstanceId);
     }
   }
   
-  public void deleteHistoricProcessInstance(String historicProcessInstanceId) {
+  public void deleteHistoricProcessInstanceById(String historicProcessInstanceId) {
     if (historyLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
       CommandContext commandContext = Context.getCommandContext();
       
@@ -72,6 +72,4 @@ public class HistoricProcessInstanceManager extends AbstractHistoricManager {
   public List<HistoricProcessInstance> findHistoricProcessInstancesByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery, Page page) {
     return getPersistenceSession().selectList("selectHistoricProcessInstancesByQueryCriteria", historicProcessInstanceQuery, page);
   }
-
-
 }

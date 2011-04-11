@@ -18,9 +18,7 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.TaskQueryImpl;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.task.Task;
@@ -31,42 +29,37 @@ import org.activiti.engine.task.Task;
  */
 public class TaskManager extends AbstractManager {
 
-  public void deleteTask(TaskEntity task, String deleteReason) {
+  @SuppressWarnings("unchecked")
+  public void deleteTasksByProcessInstanceId(String processInstanceId, String deleteReason, boolean cascade) {
+    List<TaskEntity> tasks = (List) getPersistenceSession()
+      .createTaskQuery()
+      .processInstanceId(processInstanceId)
+      .list();
+  
+    for (TaskEntity task: tasks) {
+      deleteTask(task, TaskEntity.DELETE_REASON_DELETED, cascade);
+    }
+  }
+
+  public void deleteTask(TaskEntity task, String deleteReason, boolean cascade) {
     if (!task.isDeleted()) {
       task.setDeleted(true);
       
+      CommandContext commandContext = Context.getCommandContext();
       String taskId = task.getId();
       
-      // cascade deletion to task assignments
-      IdentityLinkManager identityLinkManager = Context
-        .getCommandContext()
-        .getIdentityLinkManager();
-      List<IdentityLinkEntity> identityLinks = identityLinkManager.findIdentityLinksByTaskId(taskId);
-      for (IdentityLinkEntity identityLink: identityLinks) {
-        identityLinkManager.deleteIdentityLink(identityLink);
-      }
+      commandContext
+        .getIdentityLinkManager()
+        .deleteIdentityLinksByTaskId(taskId);
 
-      VariableInstanceManager variableInstanceManager = Context
-        .getCommandContext()
-        .getVariableInstanceManager();
-      
-      List<VariableInstanceEntity> variableInstances = variableInstanceManager.findVariableInstancesByTaskId(taskId);
+      commandContext
+        .getVariableInstanceManager()
+        .deleteVariableInstanceByTaskId(taskId);
+
+      commandContext
+        .getHistoricTaskInstanceManager()
+        .markTaskInstanceEnded(taskId, deleteReason);
         
-      for (VariableInstanceEntity variableInstance: variableInstances) {
-        variableInstanceManager.deleteVariableInstance(variableInstance);
-      }
-
-      CommandContext commandContext = Context.getCommandContext();
-      DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
-      int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
-      if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
-        HistoricTaskInstanceEntity historicTaskInstance = dbSqlSession
-          .selectById(HistoricTaskInstanceEntity.class, task.getId());
-        if (historicTaskInstance!=null) {
-          historicTaskInstance.markEnded(deleteReason);
-        }
-      }
-
       getPersistenceSession().delete(TaskEntity.class, task.getId());
     }
   }
@@ -87,6 +80,4 @@ public class TaskManager extends AbstractManager {
   public long findTaskCountByQueryCriteria(TaskQueryImpl taskQuery) {
     return (Long) getPersistenceSession().selectOne("selectTaskCountByQueryCriteria", taskQuery);
   }
-  
-
 }

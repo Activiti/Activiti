@@ -84,6 +84,13 @@
     select * from ACT_HI_PROCINST where PROC_INST_ID_ = #{processInstanceId}
   </select>
 
+  <select id="selectHistoricProcessInstanceIdsByProcessDefinitionId" parameterType="string" resultType="string">
+    select ID_
+    from ACT_HI_PROCINST 
+    where PROC_DEF_ID_ = #{processDefinitionId}
+  </select>
+  
+
   <select id="selectHistoricProcessInstancesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricProcessInstanceQueryImpl" resultMap="historicProcessInstanceResultMap">
     select *
     <include refid="selectHistoricProcessInstancesByQueryCriteriaSql"/>

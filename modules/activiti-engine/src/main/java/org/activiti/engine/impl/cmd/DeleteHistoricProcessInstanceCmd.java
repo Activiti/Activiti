@@ -47,7 +47,7 @@ public class DeleteHistoricProcessInstanceCmd implements Command<Object> {
     
     commandContext
       .getHistoricProcessInstanceManager()
-      .deleteHistoricProcessInstance(processInstanceId);
+      .deleteHistoricProcessInstanceById(processInstanceId);
     
     return null;
   }

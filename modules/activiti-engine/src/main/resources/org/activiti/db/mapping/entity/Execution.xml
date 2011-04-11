@@ -72,6 +72,12 @@
     where PARENT_ID_ = #{parentExecutionId}
   </select>
   
+  <select id="selectProcessInstanceIdsByProcessDefinitionId" parameterType="string" resultType="string">
+    select ID_
+    from ACT_RU_EXECUTION
+    where PROC_DEF_ID_ = #{processDefinitionId}
+  </select>
+  
   <select id="selectExecutionsByQueryCriteria" parameterType="org.activiti.engine.impl.ExecutionQueryImpl" resultMap="executionResultMap">
     select E.*
     <include refid="selectExecutionsByQueryCriteriaSql"/>

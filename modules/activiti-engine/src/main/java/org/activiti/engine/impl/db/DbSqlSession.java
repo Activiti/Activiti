@@ -215,10 +215,16 @@ public class DbSqlSession implements Session {
   // internal session cache ///////////////////////////////////////////////////
   
   @SuppressWarnings("unchecked")
-  protected List filterLoadedObjects(List<PersistentObject> loadedObjects) {
+  protected List filterLoadedObjects(List<Object> loadedObjects) {
+    if (loadedObjects.isEmpty()) {
+      return loadedObjects;
+    }
+    if (! (PersistentObject.class.isAssignableFrom(loadedObjects.get(0).getClass()))) {
+      return loadedObjects;
+    }
     List<PersistentObject> filteredObjects = new ArrayList<PersistentObject>(loadedObjects.size());
-    for (PersistentObject loadedObject: loadedObjects) {
-      PersistentObject cachedPersistentObject = cacheFilter(loadedObject);
+    for (Object loadedObject: loadedObjects) {
+      PersistentObject cachedPersistentObject = cacheFilter((PersistentObject) loadedObject);
       filteredObjects.add(cachedPersistentObject);
     }
     return filteredObjects;

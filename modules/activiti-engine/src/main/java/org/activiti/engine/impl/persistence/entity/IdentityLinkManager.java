@@ -43,4 +43,11 @@ public class IdentityLinkManager extends AbstractManager {
     parameters.put("type", type);
     return getPersistenceSession().selectList("selectIdentityLinkByTaskUserGroupAndType", parameters);
   }
+
+  public void deleteIdentityLinksByTaskId(String taskId) {
+    List<IdentityLinkEntity> identityLinks = findIdentityLinksByTaskId(taskId);
+    for (IdentityLinkEntity identityLink: identityLinks) {
+      deleteIdentityLink(identityLink);
+    }
+  }
 }

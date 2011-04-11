@@ -148,7 +148,7 @@ public class TaskCommentPanel extends Panel {
   
   protected void refreshAllComments() {
     removeAllComponents();
-    this.comments = taskService.getTaskComments(taskId);
+    this.comments = taskService.getTaskEvents(taskId);
     
     addTaskComments();
     addTextArea();

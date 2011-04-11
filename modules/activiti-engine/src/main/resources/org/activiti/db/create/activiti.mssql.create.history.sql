@@ -67,11 +67,13 @@ create table ACT_HI_DETAIL (
 
 create table ACT_HI_COMMENT (
     ID_ nvarchar(64) not null,
+    TYPE_ nvarchar(255),
     TIME_ datetime not null,
     USER_ID_ nvarchar(255),
     TASK_ID_ nvarchar(64),
     PROC_INST_ID_ nvarchar(64),
     MESSAGE_ nvarchar(255),
+    FULL_MSG_ image,
     primary key (ID_)
 );
 

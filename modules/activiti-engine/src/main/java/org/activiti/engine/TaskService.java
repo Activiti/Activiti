@@ -273,6 +273,9 @@ public interface TaskService {
   /** The comments related to the given task. */
   List<Comment> getTaskComments(String taskId);
 
+  /** The all events related to the given task. */
+  List<Comment> getTaskEvents(String taskId);
+
   /** The comments related to the given process instance. */
   List<Comment> getProcessInstanceComments(String processInstanceId);
 

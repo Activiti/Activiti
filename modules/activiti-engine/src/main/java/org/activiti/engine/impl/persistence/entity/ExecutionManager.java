@@ -18,8 +18,8 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.AbstractManager;
-import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 
 
@@ -28,36 +28,43 @@ import org.activiti.engine.runtime.ProcessInstance;
  */
 public class ExecutionManager extends AbstractManager {
   
-  public void deleteProcessInstancesByProcessDefinition(ProcessDefinition processDefinition, String deleteReason) {
-    List<ProcessInstance> processInstances = getPersistenceSession()
-      .createProcessInstanceQuery()
-      .processDefinitionId(processDefinition.getId())
-      .list();
+  @SuppressWarnings("unchecked")
+  public void deleteProcessInstancesByProcessDefinition(String processDefinitionId, String deleteReason, boolean cascade) {
+    List<String> processInstanceIds = getPersistenceSession()
+      .selectList("selectProcessInstanceIdsByProcessDefinitionId", processDefinitionId);
   
-    for (ProcessInstance processInstance: processInstances) {
-      deleteProcessInstance(processInstance.getId(), deleteReason);
+    for (String processInstanceId: processInstanceIds) {
+      deleteProcessInstance(processInstanceId, deleteReason, cascade);
+    }
+    
+    if (cascade) {
+      Context
+        .getCommandContext()
+        .getHistoricProcessInstanceManager()
+        .deleteHistoricProcessInstanceByProcessDefinitionId(processDefinitionId);
     }
   }
-  
-  @SuppressWarnings("unchecked")
+
   public void deleteProcessInstance(String processInstanceId, String deleteReason) {
+    deleteProcessInstance(processInstanceId, deleteReason, false);
+  }
+
+  public void deleteProcessInstance(String processInstanceId, String deleteReason, boolean cascade) {
     ExecutionEntity execution = findExecutionById(processInstanceId);
     
     if(execution == null) {
       throw new ActivitiException("No process instance found for id '" + processInstanceId + "'");
     }
     
-    List<TaskEntity> tasks = (List) getPersistenceSession()
-      .createTaskQuery()
-      .processInstanceId(processInstanceId)
-      .list();
-    
-    TaskManager taskManager = Context
-      .getCommandContext()
-      .getTaskManager();
-    
-    for (TaskEntity task: tasks) {
-      taskManager.deleteTask(task, TaskEntity.DELETE_REASON_DELETED);
+    CommandContext commandContext = Context.getCommandContext();
+    commandContext
+      .getTaskManager()
+      .deleteTasksByProcessInstanceId(processInstanceId, deleteReason, cascade);
+
+    if (cascade) {
+      commandContext
+      .getHistoricProcessInstanceManager()
+      .deleteHistoricProcessInstanceById(processInstanceId);
     }
     
     execution.deleteCascade(deleteReason);

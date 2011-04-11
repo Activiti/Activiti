@@ -13,7 +13,10 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.StringTokenizer;
 
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.task.Comment;
@@ -23,17 +26,65 @@ import org.activiti.engine.task.Comment;
  * @author Tom Baeyens
  */
 public class CommentEntity implements Comment, PersistentObject {
-
+  
+  public static final String ACTION_ADD_IDENTITY_LINK = "AAIL";
+  
   protected String id;
+  protected String type;
   protected String userId;
   protected Date time;
   protected String taskId;
   protected String processInstanceId;
   protected String message;
+  protected String fullMessage;
   
   public Object getPersistentState() {
     return CommentEntity.class;
   }
+
+  public byte[] getFullMessageBytes() {
+    return (fullMessage!=null ? fullMessage.getBytes() : null);
+  }
+
+  public void setFullMessageBytes(byte[] fullMessageBytes) {
+    fullMessage = (fullMessageBytes!=null ? new String(fullMessageBytes) : null );
+  }
+  
+  public static String MESSAGE_PARTS_MARKER = "_|_";
+  
+  public void setMessage(String[] messageParts) {
+    StringBuilder stringBuilder = new StringBuilder();
+    for (String part: messageParts) {
+      if (part!=null) {
+        stringBuilder.append(part.replace(MESSAGE_PARTS_MARKER, " | "));
+        stringBuilder.append(MESSAGE_PARTS_MARKER);
+      } else {
+        stringBuilder.append("null");
+        stringBuilder.append(MESSAGE_PARTS_MARKER);
+      }
+    }
+    stringBuilder.deleteCharAt(stringBuilder.length()-MESSAGE_PARTS_MARKER.length());
+    message = stringBuilder.toString();
+  }
+  
+  public List<String> getMessageParts() {
+    if (message==null) {
+      return null;
+    }
+    List<String> messageParts = new ArrayList<String>();
+    StringTokenizer tokenizer = new StringTokenizer(message, MESSAGE_PARTS_MARKER);
+    while (tokenizer.hasMoreTokens()) {
+      String nextToken = tokenizer.nextToken();
+      if ("null".equals(nextToken)) {
+        messageParts.add(null);
+      } else {
+        messageParts.add(nextToken);
+      }
+    }
+    return messageParts;
+  }
+  
+  // getters and setters //////////////////////////////////////////////////////
 
   public String getId() {
     return id;
@@ -81,5 +132,21 @@ public class CommentEntity implements Comment, PersistentObject {
   
   public void setProcessInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
+  }
+
+  public String getType() {
+    return type;
+  }
+  
+  public void setType(String type) {
+    this.type = type;
+  }
+
+  public String getFullMessage() {
+    return fullMessage;
+  }
+
+  public void setFullMessage(String fullMessage) {
+    this.fullMessage = fullMessage;
   }
 }

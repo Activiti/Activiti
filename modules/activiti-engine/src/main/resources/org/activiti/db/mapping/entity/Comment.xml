@@ -21,14 +21,16 @@
   <!-- COMMENT INSERT -->
   
   <insert id="insertComment" parameterType="org.activiti.engine.impl.persistence.entity.CommentEntity">
-    insert into ACT_HI_COMMENT (ID_, TIME_, USER_ID_, TASK_ID_, PROC_INST_ID_, MESSAGE_)
+    insert into ACT_HI_COMMENT (ID_, TYPE_, TIME_, USER_ID_, TASK_ID_, PROC_INST_ID_, MESSAGE_, FULL_MSG_)
     values (
       #{id ,jdbcType=VARCHAR},
+      #{type ,jdbcType=VARCHAR},
       #{time ,jdbcType=TIMESTAMP},
       #{userId ,jdbcType=VARCHAR},
       #{taskId ,jdbcType=VARCHAR},
       #{processInstanceId ,jdbcType=VARCHAR},
-      #{message ,jdbcType=VARCHAR}
+      #{message ,jdbcType=VARCHAR},
+      #{fullMessageBytes ,jdbcType=BLOB}
     )
   </insert>
 
@@ -42,17 +44,28 @@
 
   <resultMap id="commentResultMap" type="org.activiti.engine.impl.persistence.entity.CommentEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="type" column="TYPE_" jdbcType="VARCHAR" />
     <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />
     <result property="time" column="TIME_" jdbcType="TIMESTAMP" />
     <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
     <result property="message" column="MESSAGE_" jdbcType="VARCHAR" />
+    <result property="fullMessageBytes" column="FULL_MSG_" jdbcType="BLOB" />
   </resultMap>
   
   <!-- COMMENT SELECT -->
 
   <select id="selectCommentsByTaskId" parameterType="string" resultMap="commentResultMap">
-    select * from ACT_HI_COMMENT where TASK_ID_ = #{taskId,jdbcType=VARCHAR}
+    select * 
+    from ACT_HI_COMMENT 
+    where TASK_ID_ = #{taskId,jdbcType=VARCHAR}
+      and TYPE_ = 'comment'
+  </select>
+
+  <select id="selectEventsByTaskId" parameterType="string" resultMap="commentResultMap">
+    select * 
+    from ACT_HI_COMMENT 
+    where TASK_ID_ = #{taskId,jdbcType=VARCHAR}
   </select>
 
   <select id="selectCommentsByProcessInstanceId" parameterType="string" resultMap="commentResultMap">

@@ -29,6 +29,11 @@ public class CommentManager extends AbstractManager {
     return getPersistenceSession().selectList("selectCommentsByTaskId", taskId);
   }
 
+  @SuppressWarnings("unchecked")
+  public List<Comment> findEventsByTaskId(String taskId) {
+    return getPersistenceSession().selectList("selectEventsByTaskId", taskId);
+  }
+
   public void deleteCommentsByTaskId(String taskId) {
     getPersistenceSession().delete("deleteCommentsByTaskId", taskId);
   }
@@ -37,4 +42,5 @@ public class CommentManager extends AbstractManager {
   public List<Comment> findCommentsByProcessInstanceId(String processInstanceId) {
     return getPersistenceSession().selectList("selectCommentsByProcessInstanceId", processInstanceId);
   }
+
 }

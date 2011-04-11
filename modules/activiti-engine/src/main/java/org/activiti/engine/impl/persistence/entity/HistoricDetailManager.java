@@ -74,5 +74,14 @@ public class HistoricDetailManager extends AbstractHistoricManager {
     return getPersistenceSession().selectList("selectHistoricDetailsByQueryCriteria", historicVariableUpdateQuery, page);
   }
 
-
+  public void deleteHistoricDetailsByTaskId(String taskId) {
+    if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
+      HistoricDetailQueryImpl detailsQuery = 
+        (HistoricDetailQueryImpl) new HistoricDetailQueryImpl().taskId(taskId);
+      List<HistoricDetail> details = detailsQuery.list();
+      for(HistoricDetail detail : details) {
+        ((HistoricDetailEntity) detail).delete();
+      }
+    }
+  }
 }

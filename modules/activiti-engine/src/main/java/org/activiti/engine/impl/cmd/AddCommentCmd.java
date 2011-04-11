@@ -18,6 +18,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.CommentEntity;
 import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.task.Comment;
 
 
 /**
@@ -39,10 +40,18 @@ public class AddCommentCmd implements Command<Object> {
     String userId = Authentication.getAuthenticatedUserId();
     CommentEntity comment = new CommentEntity();
     comment.setUserId(userId);
+    comment.setType(Comment.TYPE_COMMENT);
     comment.setTime(ClockUtil.getCurrentTime());
     comment.setTaskId(taskId);
     comment.setProcessInstanceId(processInstanceId);
-    comment.setMessage(message);
+    
+    String eventMessage = message.replaceAll("\\s+", " ");
+    if (eventMessage.length()>163) {
+      eventMessage = eventMessage.substring(0, 160)+"...";
+    }
+    comment.setMessage(eventMessage);
+    
+    comment.setFullMessage(message);
     
     commandContext
       .getCommentManager()

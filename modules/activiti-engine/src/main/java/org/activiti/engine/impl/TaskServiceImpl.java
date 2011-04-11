@@ -36,6 +36,7 @@ import org.activiti.engine.impl.cmd.GetProcessInstanceAttachmentsCmd;
 import org.activiti.engine.impl.cmd.GetProcessInstanceCommentsCmd;
 import org.activiti.engine.impl.cmd.GetTaskAttachmentsCmd;
 import org.activiti.engine.impl.cmd.GetTaskCommentsCmd;
+import org.activiti.engine.impl.cmd.GetTaskEventsCmd;
 import org.activiti.engine.impl.cmd.GetTaskVariableCmd;
 import org.activiti.engine.impl.cmd.GetTaskVariablesCmd;
 import org.activiti.engine.impl.cmd.ResolveTaskCmd;
@@ -218,6 +219,10 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
 
   public List<Comment> getTaskComments(String taskId) {
     return commandExecutor.execute(new GetTaskCommentsCmd(taskId));
+  }
+
+  public List<Comment> getTaskEvents(String taskId) {
+    return commandExecutor.execute(new GetTaskEventsCmd(taskId));
   }
 
   public List<Comment> getProcessInstanceComments(String processInstanceId) {

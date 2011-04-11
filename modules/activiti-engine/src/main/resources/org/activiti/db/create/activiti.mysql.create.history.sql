@@ -68,11 +68,13 @@ create table ACT_HI_DETAIL (
 
 create table ACT_HI_COMMENT (
     ID_ varchar(64) not null,
+    TYPE_ varchar(255),
     TIME_ datetime not null,
     USER_ID_ varchar(255),
     TASK_ID_ varchar(64),
     PROC_INST_ID_ varchar(64),
     MESSAGE_ varchar(255),
+    FULL_MSG_ LONGBLOB,
     primary key (ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 

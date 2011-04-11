@@ -15,12 +15,20 @@ package org.activiti.engine.task;
 
 import java.util.Date;
 
+import org.activiti.engine.TaskService;
+
 
 /** single comment to facilitate discussions around tasks and process instances.
  * 
  * @author Tom Baeyens
  */
 public interface Comment {
+
+  String TYPE_COMMENT = "comment";
+  String TYPE_EVENT = "event";
+  
+  /** indicates the type of event */ 
+  String getType();
 
   /** reference to the user that made the comment */ 
   String getUserId();
@@ -34,6 +42,11 @@ public interface Comment {
   /** reference to the process instance on which this comment was made */ 
   String getProcessInstanceId();
 
-  /** the message the user had related to the task and/or process instance */ 
+  /** the full comment message the user had related to the task and/or process instance
+   * @see TaskService#getTaskComments(String) */ 
+  String getFullMessage();
+
+  /** the short event message
+   * @see TaskService#getTaskEvents(String) */ 
   String getMessage();
 }

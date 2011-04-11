@@ -13,30 +13,27 @@
 
 package org.activiti.engine.impl.cmd;
 
-import org.activiti.engine.ActivitiException;
+import java.util.List;
+
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.task.Comment;
+
 
 /**
  * @author Tom Baeyens
  */
-public class DeleteHistoricTaskInstanceCmd implements Command<Object> {
+public class GetTaskEventsCmd implements Command<List<Comment>> {
 
   protected String taskId;
-
-  public DeleteHistoricTaskInstanceCmd(String taskId) {
+  
+  public GetTaskEventsCmd(String taskId) {
     this.taskId = taskId;
   }
 
-  public Object execute(CommandContext commandContext) {
-
-    if (taskId == null) {
-      throw new ActivitiException("taskId is null");
-    }
-    commandContext
-      .getHistoricTaskInstanceManager()
-      .deleteHistoricTaskInstanceById(taskId);
-    return null;
+  public List<Comment> execute(CommandContext commandContext) {
+    return commandContext
+      .getCommentManager()
+      .findEventsByTaskId(taskId);
   }
-
 }

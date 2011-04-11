@@ -50,16 +50,15 @@ public class DeploymentManager extends AbstractManager {
         .list();
 
       for (ProcessDefinition processDefinition: processDefinitions) {
-        getHistoricProcessInstanceManager()
-          .deleteHistoricProcessInstancesByProcessDefinition(processDefinition);
+        String processDefinitionId = processDefinition.getId();
         
         getProcessInstanceManager()
-          .deleteProcessInstancesByProcessDefinition(processDefinition, "deleted deployment");
+          .deleteProcessInstancesByProcessDefinition(processDefinitionId, "deleted deployment", cascade);
 
         Context
           .getProcessEngineConfiguration()
           .getDeploymentCache()
-          .removeProcessDefinition(processDefinition.getId());
+          .removeProcessDefinition(processDefinitionId);
       }
     }
     

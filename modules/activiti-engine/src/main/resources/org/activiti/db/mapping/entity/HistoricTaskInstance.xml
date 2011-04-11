@@ -73,10 +73,6 @@
 
   <!-- HISTORIC TASK INSTANCE DELETE -->
   
-  <delete id="deleteHistoricTaskInstancesByProcessInstanceId">
-    delete from ACT_HI_TASKINST where PROC_INST_ID_ = #{processInstanceId}
-  </delete>
-
   <delete id="deleteHistoricTaskInstance">
     delete from ACT_HI_TASKINST where ID_ = #{historicTaskInstanceId}
   </delete>
@@ -104,6 +100,12 @@
   
   <select id="selectHistoricTaskInstance" resultMap="historicTaskInstanceResultMap">
     select * from ACT_HI_TASKINST where ID_ = #{historicTaskInstanceId}
+  </select>
+  
+  <select id="selectHistoricTaskInstanceIdsByProcessInstanceId" resultType="string" parameterType="string" >
+    select ID_ 
+    from ACT_HI_TASKINST 
+    where PROC_INST_ID_ = #{processInstanceId}
   </select>
 
   <select id="selectHistoricTaskInstancesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricTaskInstanceQueryImpl" resultMap="historicTaskInstanceResultMap">
