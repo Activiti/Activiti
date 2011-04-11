@@ -18,15 +18,15 @@ import org.activiti.explorer.ExplorerApp;
 /**
  * @author Frederik Heremans
  */
-public class DataBaseNavigationHandler implements NavigationHandler {
+public class DataBaseNavigationHandler extends ManagementNavigationHandler {
 
   public static final String TABLE_URI_PART = "database";
   
   public String getTrigger() {
     return TABLE_URI_PART;
   }
-
-  public void handleNavigation(UriFragment uriFragment) {
+  
+  public void handleManagementNavigation(UriFragment uriFragment) {
     String tableName = uriFragment.getUriPart(1);
 
     if (tableName != null) {

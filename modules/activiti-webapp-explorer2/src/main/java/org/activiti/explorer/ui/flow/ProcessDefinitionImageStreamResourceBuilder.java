@@ -23,7 +23,7 @@ import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.explorer.Constant;
+import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.ui.util.InputStreamStreamSource;
 
@@ -87,6 +87,6 @@ public class ProcessDefinitionImageStreamResourceBuilder {
     if(parts.length > 1) {
       return parts[parts.length - 1];
     }
-    return Constant.DEFAULT_DIAGRAM_IMAGE_EXTENSION;
+    return Constants.DEFAULT_DIAGRAM_IMAGE_EXTENSION;
   }
 }

@@ -10,24 +10,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.explorer;
+package org.activiti.explorer.navigation;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import org.activiti.explorer.ExplorerApp;
 
 
 /**
  * @author Joram Barrez
  */
-public interface Constant {
+public abstract class ManagementNavigationHandler implements NavigationHandler {
+
+  public void handleNavigation(UriFragment uriFragment) {
+    if (!ExplorerApp.get().getLoggedInUser().isAdmin()) {
+      // If not an admin, just show inbox and act like nothing happened
+      ExplorerApp.get().getViewManager().showTaskInboxPage();
+    } else {
+      handleManagementNavigation(uriFragment);
+    }
+  }
   
-  // Resource bundle name
-  static final String RESOURCE_BUNDLE = "messages";
-  
-  // Date formatting
- static final DateFormat DEFAULT_DATE_FORMATTER = new SimpleDateFormat("dd MMM yyyy - hh:mm");
-  
-  // Default diagram image extension, when name cannot be deducted from resource name
- static final String DEFAULT_DIAGRAM_IMAGE_EXTENSION = "png";
+  public abstract void handleManagementNavigation(UriFragment uriFragment);
 
 }

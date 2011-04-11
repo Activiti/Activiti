@@ -16,7 +16,7 @@ package org.activiti.explorer.ui.custom;
 import java.text.DateFormat;
 import java.util.Date;
 
-import org.activiti.explorer.Constant;
+import org.activiti.explorer.Constants;
 
 import com.ocpsoft.pretty.time.PrettyTime;
 import com.vaadin.ui.Label;
@@ -39,7 +39,7 @@ public class PrettyTimeLabel extends Label {
   public PrettyTimeLabel(Date date, String noDateCaption) {
     
     if (date != null) {
-      DateFormat dateFormat = (DateFormat) Constant.DEFAULT_DATE_FORMATTER.clone();
+      DateFormat dateFormat = (DateFormat) Constants.DEFAULT_DATE_FORMATTER.clone();
       setValue(new PrettyTime().format(date));
       setDescription(dateFormat.format(date));
     } else {

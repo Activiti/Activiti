@@ -21,6 +21,7 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.Group;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
+import org.activiti.explorer.LoggedInUser;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ViewManager;
 
@@ -54,9 +55,10 @@ public class TaskMenuBar extends MenuBar {
     
     // TODO: the counts should be done later by eg a Refresher component
     
+    LoggedInUser user = ExplorerApp.get().getLoggedInUser();
+
     // Inbox
-    String userId = ExplorerApp.get().getLoggedInUser().getId();
-    long inboxCount = taskService.createTaskQuery().taskAssignee(userId).count();
+    long inboxCount = taskService.createTaskQuery().taskAssignee(user.getId()).count();
     addItem(i18nManager.getMessage(Messages.TASK_MENU_INBOX)+ "("+inboxCount+")", new Command() {
       public void menuSelected(MenuItem selectedItem) {
         viewManager.showTaskInboxPage();
@@ -64,7 +66,7 @@ public class TaskMenuBar extends MenuBar {
     });
     
     // Queued
-    List<Group> groups = identityService.createGroupQuery().groupMember(userId).orderByGroupName().asc().list();
+    List<Group> groups = user.getGroups();
     MenuItem queuedItem = addItem(i18nManager.getMessage(Messages.TASK_MENU_QUEUED), null);
     long queuedCount = 0;
     for (final Group group : groups) {

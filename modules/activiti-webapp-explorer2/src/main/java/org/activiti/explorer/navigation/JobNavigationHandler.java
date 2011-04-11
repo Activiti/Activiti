@@ -19,15 +19,15 @@ import org.activiti.explorer.ExplorerApp;
 /**
  * @author Frederik Heremans
  */
-public class JobNavigationHandler implements NavigationHandler {
+public class JobNavigationHandler extends ManagementNavigationHandler {
 
   public static final String JOB_URL_PART = "job";
   
   public String getTrigger() {
     return JOB_URL_PART;
   }
-
-  public void handleNavigation(UriFragment uriFragment) {
+  
+  public void handleManagementNavigation(UriFragment uriFragment) {
     String jobId = uriFragment.getUriPart(1);
     if(jobId != null) {
       ExplorerApp.get().getViewManager().showJobPage(jobId);

@@ -10,31 +10,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.explorer;
 
-import java.text.MessageFormat;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 
 /**
  * @author Joram Barrez
  */
-public class I18nManager {
+public interface Constants {
+  
+  // Resource bundle name
+  static final String RESOURCE_BUNDLE = "messages";
+  
+  // Security roles
+  static final String SECURITY_ROLE = "security-role";
+  static final String SECURITY_ROLE_USER = "user";
+  static final String SECURITY_ROLE_ADMIN = "admin";
+  
+  // Date formatting
+ static final DateFormat DEFAULT_DATE_FORMATTER = new SimpleDateFormat("dd MMM yyyy - hh:mm");
+  
+  // Default diagram image extension, when name cannot be deducted from resource name
+ static final String DEFAULT_DIAGRAM_IMAGE_EXTENSION = "png";
 
-  protected ResourceBundle messages;
-  
-  public I18nManager(Locale locale) {
-    this.messages = ResourceBundle.getBundle(Constants.RESOURCE_BUNDLE, locale);
-  }
-  
-  public String getMessage(String key) {
-    return messages.getString(key);
-  }
-
-  public String getMessage(String key, Object... arguments) {
-    return MessageFormat.format(messages.getString(key), arguments);
-  }
-  
 }

@@ -128,22 +128,36 @@ public class BootProcessEngineContextListener implements ServletContextListener 
     kermit.setPassword("kermit");
     identityService.saveUser(kermit);
     
-    // Groups
+    // Assignment Groups
     Group management = identityService.newGroup("management");
     management.setName("Management");
+    management.setType("assignment");
     identityService.saveGroup(management);
     
     Group sales = identityService.newGroup("sales");
     sales.setName("Sales");
+    sales.setType("assignment");
     identityService.saveGroup(sales);
     
     Group marketing = identityService.newGroup("marketing");
     marketing.setName("Marketing");
+    marketing.setType("assignment");
     identityService.saveGroup(marketing);
     
     Group engineering = identityService.newGroup("engineering");
+    engineering.setType("assignment");
     engineering.setName("Engineering");
     identityService.saveGroup(engineering);
+    
+    // Security groups
+    
+    Group sysAdmin = identityService.newGroup("admin");
+    sysAdmin.setType("security-role");
+    identityService.saveGroup(sysAdmin);
+    
+    Group user = identityService.newGroup("user");
+    user.setType("security-role");
+    identityService.saveGroup(user);
     
     
     // Membership
@@ -151,6 +165,8 @@ public class BootProcessEngineContextListener implements ServletContextListener 
     identityService.createMembership("kermit", "sales");
     identityService.createMembership("kermit", "marketing");
     identityService.createMembership("kermit", "engineering");
+    identityService.createMembership("kermit", "user");
+    identityService.createMembership("kermit", "admin");
     
     // Additional details
     identityService.setUserInfo("kermit", "birthDate", "01/01/1955");
@@ -187,6 +203,7 @@ public class BootProcessEngineContextListener implements ServletContextListener 
     identityService.saveUser(fozzie);
     
     identityService.createMembership("fozzie", "management");
+    identityService.createMembership("fozzie", "user");
     
     byte[] pictureBytes = IoUtil.readInputStream(this.getClass().getClassLoader().getResourceAsStream("org/activiti/explorer/images/fozzie.jpg"), null);
     Picture picture = new Picture(pictureBytes, "image/jpeg");

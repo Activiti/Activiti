@@ -12,11 +12,16 @@
  */
 package org.activiti.explorer.ui.login;
 
+import java.util.List;
+
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
+import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
+import org.activiti.explorer.LoggedInUser;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.NotificationManager;
 import org.activiti.explorer.ViewManager;
@@ -78,7 +83,25 @@ public class LoginPage extends CustomLayout {
       boolean success = identityService.checkPassword(userName, password);
       if (success) {
         User user = identityService.createUserQuery().userId(userName).singleResult();
-        ExplorerApp.get().setUser(user);
+        
+        // Fetch and cache user data
+        LoggedInUser loggedInUser = new LoggedInUser(user);
+        List<Group> groups = identityService.createGroupQuery().groupMember(user.getId()).list();
+        for (Group group : groups) {
+          if (Constants.SECURITY_ROLE.equals(group.getType())) {
+            loggedInUser.addSecurityRoleGroup(group);
+            if (Constants.SECURITY_ROLE_USER.equals(group.getId())) {
+              loggedInUser.setUser(true);
+            }
+            if (Constants.SECURITY_ROLE_ADMIN.equals(group.getId())) {
+              loggedInUser.setAdmin(true);
+            }
+          } else {
+            loggedInUser.addGroup(group);
+          }
+        }
+        
+        ExplorerApp.get().setUser(loggedInUser);
         viewManager.showDefaultContent();
       } else {
         refreshUi();

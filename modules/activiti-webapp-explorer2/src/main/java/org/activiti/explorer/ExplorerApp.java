@@ -105,8 +105,8 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
     return current.get();
   }
   
-  public User getLoggedInUser() {
-    return (User) getUser();
+  public LoggedInUser getLoggedInUser() {
+    return (LoggedInUser) getUser();
   }
   
   // Managers
@@ -136,7 +136,7 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
     current.set(this);
     
    // Authentication: check if user is found, otherwise send to login page
-    User user = (User) getUser();
+    LoggedInUser user = (LoggedInUser) getUser();
     if (user == null) {
       if (mainWindow != null && !mainWindow.isShowingLoginPage()) {
         viewManager.showLoginPage();

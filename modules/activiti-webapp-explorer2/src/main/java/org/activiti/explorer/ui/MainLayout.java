@@ -13,9 +13,9 @@
 
 package org.activiti.explorer.ui;
 
-import org.activiti.engine.identity.User;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
+import org.activiti.explorer.LoggedInUser;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ViewManager;
 
@@ -66,7 +66,7 @@ public class MainLayout extends CustomLayout {
     logoutGrid.setStyleName(ExplorerLayout.STYLE_LOGOUT_BUTTON);
 
     // User name + link to profile 
-    final User user = ExplorerApp.get().getLoggedInUser();
+    final LoggedInUser user = ExplorerApp.get().getLoggedInUser();
     Button userButton = new Button(user.getFirstName() + " " + user.getLastName());
     userButton.setIcon(Images.USER);
     userButton.addStyleName(ExplorerLayout.STYLE_USER_PROFILE);

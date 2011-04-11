@@ -28,7 +28,7 @@ import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.explorer.Constant;
+import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
@@ -206,7 +206,7 @@ public class ProcessInstanceDetailPanel extends Panel {
     Label timeLabel = new Label(startedOn);
     timeDetails.addComponent(timeLabel);
 
-    SimpleDateFormat format = (SimpleDateFormat) Constant.DEFAULT_DATE_FORMATTER.clone();
+    SimpleDateFormat format = (SimpleDateFormat) Constants.DEFAULT_DATE_FORMATTER.clone();
     String dateString = format.format(historicProcessInstance.getStartTime());
 
     Label realCreateTime = new Label("(" + dateString + ")");

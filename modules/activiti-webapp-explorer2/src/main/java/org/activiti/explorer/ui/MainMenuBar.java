@@ -55,12 +55,14 @@ public class MainMenuBar extends MenuBar {
       }
     });
     
-    Button managementButton = createMenuBarButton(i18nManager.getMessage(Messages.MAIN_MENU_MANAGEMENT));
-    managementButton.addListener(new ClickListener() {
-      public void buttonClick(ClickEvent event) {
-        viewManager.showDatabasePage();
-      }
-    });
+    if (ExplorerApp.get().getLoggedInUser().isAdmin()) {
+      Button managementButton = createMenuBarButton(i18nManager.getMessage(Messages.MAIN_MENU_MANAGEMENT));
+      managementButton.addListener(new ClickListener() {
+        public void buttonClick(ClickEvent event) {
+          viewManager.showDatabasePage();
+        }
+      });
+    }
     
     fillRemainingSpace();
   }

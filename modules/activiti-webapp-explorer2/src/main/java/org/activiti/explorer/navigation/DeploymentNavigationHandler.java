@@ -19,15 +19,15 @@ import org.activiti.explorer.ExplorerApp;
 /**
  * @author Frederik Heremans
  */
-public class DeploymentNavigationHandler implements NavigationHandler {
+public class DeploymentNavigationHandler extends ManagementNavigationHandler {
 
   public static final String DEPLOYMENT_URI_PART = "deployment";
   
   public String getTrigger() {
     return DEPLOYMENT_URI_PART;
   }
-
-  public void handleNavigation(UriFragment uriFragment) {
+  
+  public void handleManagementNavigation(UriFragment uriFragment) {
     String deploymentId = uriFragment.getUriPart(1);
     
     if(deploymentId != null) {
