@@ -76,6 +76,13 @@
       and TYPE_ = 'comment'
   </select>
 
+  <select id="selectCommentsByTaskId_postgres" parameterType="string" resultMap="commentResultMap_postgres">
+    select * 
+    from ACT_HI_COMMENT 
+    where TASK_ID_ = #{taskId,jdbcType=VARCHAR}
+      and TYPE_ = 'comment'
+  </select>
+
   <select id="selectEventsByTaskId" parameterType="string" resultMap="commentResultMap">
     select * 
     from ACT_HI_COMMENT 
@@ -83,7 +90,9 @@
   </select>
 
   <select id="selectCommentsByProcessInstanceId" parameterType="string" resultMap="commentResultMap">
-    select * from ACT_HI_COMMENT where PROC_INST_ID_ = #{processInstanceId,jdbcType=VARCHAR}
+    select * 
+    from ACT_HI_COMMENT 
+    where PROC_INST_ID_ = #{processInstanceId,jdbcType=VARCHAR}
   </select>
 
 </mapper>
