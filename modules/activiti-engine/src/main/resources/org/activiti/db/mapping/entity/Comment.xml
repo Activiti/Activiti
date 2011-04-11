@@ -35,6 +35,21 @@
     )
   </insert>
 
+  <insert id="insertComment_postgres" parameterType="org.activiti.engine.impl.persistence.entity.CommentEntity">
+    insert into ACT_HI_COMMENT (ID_, TYPE_, TIME_, USER_ID_, TASK_ID_, PROC_INST_ID_, ACTION_, MESSAGE_, FULL_MSG_)
+    values (
+      #{id ,jdbcType=VARCHAR},
+      #{type ,jdbcType=VARCHAR},
+      #{time ,jdbcType=TIMESTAMP},
+      #{userId ,jdbcType=VARCHAR},
+      #{taskId ,jdbcType=VARCHAR},
+      #{processInstanceId ,jdbcType=VARCHAR},
+      #{action ,jdbcType=VARCHAR},
+      #{message ,jdbcType=VARCHAR},
+      #{fullMessageBytes ,jdbcType=BINARY}
+    )
+  </insert>
+
   <!-- COMMENT DELETE -->
 
   <delete id="deleteCommentsByTaskId" parameterType="string">
