@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
@@ -80,6 +81,60 @@ public class HistoricTaskInstanceManager extends AbstractHistoricManager {
       HistoricTaskInstanceEntity historicTaskInstance = getPersistenceSession().selectById(HistoricTaskInstanceEntity.class, taskId);
       if (historicTaskInstance!=null) {
         historicTaskInstance.markEnded(deleteReason);
+      }
+    }
+  }
+
+  public void setTaskAssignee(String taskId, String assignee) {
+    if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+      HistoricTaskInstanceEntity historicTaskInstance = getPersistenceSession().selectById(HistoricTaskInstanceEntity.class, taskId);
+      if (historicTaskInstance!=null) {
+        historicTaskInstance.setAssignee(assignee);
+      }
+    }
+  }
+
+  public void setTaskOwner(String taskId, String owner) {
+    if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+      HistoricTaskInstanceEntity historicTaskInstance = getPersistenceSession().selectById(HistoricTaskInstanceEntity.class, taskId);
+      if (historicTaskInstance!=null) {
+        historicTaskInstance.setOwner(owner);
+      }
+    }
+  }
+
+  public void setTaskName(String id, String taskName) {
+    if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+      HistoricTaskInstanceEntity historicTaskInstance = getPersistenceSession().selectById(HistoricTaskInstanceEntity.class, id);
+      if (historicTaskInstance!=null) {
+        historicTaskInstance.setName(taskName);
+      }
+    }
+  }
+
+  public void setTaskDescription(String id, String description) {
+    if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+      HistoricTaskInstanceEntity historicTaskInstance = getPersistenceSession().selectById(HistoricTaskInstanceEntity.class, id);
+      if (historicTaskInstance!=null) {
+        historicTaskInstance.setDescription(description);
+      }
+    }
+  }
+
+  public void setTaskDueDate(String id, Date dueDate) {
+    if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+      HistoricTaskInstanceEntity historicTaskInstance = getPersistenceSession().selectById(HistoricTaskInstanceEntity.class, id);
+      if (historicTaskInstance!=null) {
+        historicTaskInstance.setDueDate(dueDate);
+      }
+    }
+  }
+
+  public void setTaskPriority(String id, int priority) {
+    if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+      HistoricTaskInstanceEntity historicTaskInstance = getPersistenceSession().selectById(HistoricTaskInstanceEntity.class, id);
+      if (historicTaskInstance!=null) {
+        historicTaskInstance.setPriority(priority);
       }
     }
   }

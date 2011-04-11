@@ -6,3 +6,6 @@ add ACTION_ varchar(255);
 
 alter table ACT_HI_COMMENT 
 add FULL_MSG_ longvarbinary;
+
+alter table ACT_HI_TASKINST 
+add OWNER_ varchar(64);

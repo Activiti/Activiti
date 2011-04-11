@@ -23,6 +23,7 @@ create table ACT_HI_ACTINST (
     ACT_ID_ varchar(255) not null,
     ACT_NAME_ varchar(255),
     ACT_TYPE_ varchar(255) not null,
+    OWNER_ varchar(64),
     ASSIGNEE_ varchar(64),
     START_TIME_ timestamp not null,
     END_TIME_ timestamp,

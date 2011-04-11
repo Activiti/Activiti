@@ -6,3 +6,6 @@ add ACTION_ nvarchar(255);
 
 alter table ACT_HI_COMMENT 
 add FULL_MSG_ image;
+
+alter table ACT_HI_TASKINST 
+add OWNER_ nvarchar(64);

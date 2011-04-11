@@ -42,6 +42,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
   protected String taskDescriptionLike;
   protected String taskDeleteReason;
   protected String taskDeleteReasonLike;
+  protected String taskOwner;
+  protected String taskOwnerLike;
   protected String taskAssignee;
   protected String taskAssigneeLike;
   protected String taskDefinitionKey;
@@ -147,6 +149,16 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
 
   public HistoricTaskInstanceQueryImpl taskAssigneeLike(String taskAssigneeLike) {
     this.taskAssigneeLike = taskAssigneeLike;
+    return this;
+  }
+  
+  public HistoricTaskInstanceQueryImpl taskOwner(String taskOwner) {
+    this.taskOwner = taskOwner;
+    return this;
+  }
+
+  public HistoricTaskInstanceQueryImpl taskOwnerLike(String taskOwnerLike) {
+    this.taskOwnerLike = taskOwnerLike;
     return this;
   }
   
@@ -269,6 +281,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
     return this;
   }
 
+  public HistoricTaskInstanceQuery orderByTaskOwner() {
+    orderBy(HistoricTaskInstanceQueryProperty.TASK_OWNER);
+    return this;
+  }
+
   public HistoricTaskInstanceQueryImpl orderByDeleteReason() {
     orderBy(HistoricTaskInstanceQueryProperty.DELETE_REASON);
     return this;
@@ -336,5 +353,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
   }
   public List<TaskQueryVariableValue> getVariables() {
     return variables;
+  }
+  public String getTaskOwnerLike() {
+    return taskOwnerLike;
+  }
+  public String getTaskOwner() {
+    return taskOwner;
   }
 }

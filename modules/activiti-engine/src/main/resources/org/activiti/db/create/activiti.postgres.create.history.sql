@@ -37,6 +37,7 @@ create table ACT_HI_TASKINST (
     EXECUTION_ID_ varchar(64),
     NAME_ varchar(255),
     DESCRIPTION_ varchar(255),
+    OWNER_ varchar(64),
     ASSIGNEE_ varchar(64),
     START_TIME_ timestamp not null,
     END_TIME_ timestamp,

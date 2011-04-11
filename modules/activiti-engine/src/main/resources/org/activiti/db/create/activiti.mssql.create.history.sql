@@ -36,6 +36,7 @@ create table ACT_HI_TASKINST (
     EXECUTION_ID_ nvarchar(64),
     NAME_ nvarchar(255),
     DESCRIPTION_ nvarchar(255),
+    OWNER_ nvarchar(64),
     ASSIGNEE_ nvarchar(64),
     START_TIME_ datetime not null,
     END_TIME_ datetime,

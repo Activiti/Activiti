@@ -6,3 +6,6 @@ add ACTION_ NVARCHAR2(255);
 
 alter table ACT_HI_COMMENT 
 add FULL_MSG_ BLOB;
+
+alter table ACT_HI_TASKINST 
+add OWNER_ NVARCHAR2(64);

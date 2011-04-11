@@ -56,18 +56,18 @@
   <resultMap id="taskResultMap" type="org.activiti.engine.impl.persistence.entity.TaskEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR"/>
     <result property="revision" column="REV_" jdbcType="INTEGER"/>
-    <result property="name" column="NAME_" jdbcType="VARCHAR"/>
-    <result property="description" column="DESCRIPTION_" jdbcType="VARCHAR"/>
-    <result property="priority" column="PRIORITY_" jdbcType="INTEGER"/>
+    <result property="nameWithoutCascade" column="NAME_" jdbcType="VARCHAR"/>
+    <result property="descriptionWithoutCascade" column="DESCRIPTION_" jdbcType="VARCHAR"/>
+    <result property="priorityWithoutCascade" column="PRIORITY_" jdbcType="INTEGER"/>
     <result property="createTime" column="CREATE_TIME_" jdbcType="TIMESTAMP" />
-    <result property="owner" column="OWNER_" jdbcType="VARCHAR"/>
-    <result property="assigneeWithoutFireEvent" column="ASSIGNEE_" jdbcType="VARCHAR"/>
+    <result property="ownerWithoutCascade" column="OWNER_" jdbcType="VARCHAR"/>
+    <result property="assigneeWithoutCascade" column="ASSIGNEE_" jdbcType="VARCHAR"/>
     <result property="delegationStateString" column="DELEGATION_" jdbcType="VARCHAR"/>
     <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR"/>
     <result property="taskDefinitionKey" column="TASK_DEF_KEY_" jdbcType="VARCHAR"/>
-    <result property="dueDate" column="DUE_DATE_" jdbcType="TIMESTAMP"/>
+    <result property="dueDateWithoutCascade" column="DUE_DATE_" jdbcType="TIMESTAMP"/>
   </resultMap>
 
   <!-- TASK SELECT -->  

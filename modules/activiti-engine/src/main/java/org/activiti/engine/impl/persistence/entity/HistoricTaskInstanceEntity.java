@@ -15,16 +15,10 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricTaskInstance;
-import org.activiti.engine.impl.HistoricDetailQueryImpl;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.util.ClockUtil;
 
 
@@ -36,6 +30,7 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
   protected String executionId;
   protected String name;
   protected String description;
+  protected String owner;
   protected String assignee;
   protected String taskDefinitionKey;
   protected int priority;
@@ -53,6 +48,7 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
     }
     this.name = task.getName();
     this.description = task.getDescription();
+    this.owner = task.getOwner();
     this.assignee = task.getAssignee();
     this.startTime = ClockUtil.getCurrentTime();
     this.taskDefinitionKey = task.getTaskDefinitionKey();
@@ -64,6 +60,7 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
     persistentState.put("name", name);
+    persistentState.put("owner", owner);
     persistentState.put("assignee", assignee);
     persistentState.put("endTime", endTime);
     persistentState.put("durationInMillis", durationInMillis);
@@ -118,5 +115,11 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
   }
   public void setDueDate(Date dueDate) {
     this.dueDate = dueDate;
+  }
+  public String getOwner() {
+    return owner;
+  }
+  public void setOwner(String owner) {
+    this.owner = owner;
   }
 }

@@ -68,4 +68,7 @@ public interface HistoricTaskInstance {
   
   /** Task due date **/
   Date getDueDate();
+
+  /** Task owner */
+  String getOwner();
 }

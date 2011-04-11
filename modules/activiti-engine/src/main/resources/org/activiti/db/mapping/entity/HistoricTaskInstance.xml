@@ -28,6 +28,7 @@
         EXECUTION_ID_,
         NAME_,
         DESCRIPTION_,
+        OWNER_,
         ASSIGNEE_,
         START_TIME_,
         END_TIME_,
@@ -43,6 +44,7 @@
         #{executionId, jdbcType=VARCHAR},
         #{name ,jdbcType=VARCHAR},
         #{description ,jdbcType=VARCHAR},
+        #{owner ,jdbcType=VARCHAR},
         #{assignee ,jdbcType=VARCHAR},
         #{startTime, jdbcType=TIMESTAMP},
         #{endTime, jdbcType=TIMESTAMP},
@@ -61,6 +63,7 @@
       EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR},
       NAME_ = #{name, jdbcType=VARCHAR},
       DESCRIPTION_ = #{description, jdbcType=VARCHAR},
+      OWNER_ = #{owner, jdbcType=VARCHAR},
       ASSIGNEE_ = #{assignee, jdbcType=VARCHAR},
       END_TIME_ = #{endTime, jdbcType=TIMESTAMP},
       DURATION_ = #{durationInMillis ,jdbcType=BIGINT},
@@ -86,6 +89,7 @@
     <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
     <result property="name" column="NAME_" jdbcType="VARCHAR" />
     <result property="description" column="DESCRIPTION_" jdbcType="VARCHAR" />
+    <result property="owner" column="OWNER_" jdbcType="VARCHAR" />
     <result property="assignee" column="ASSIGNEE_" jdbcType="VARCHAR" />
     <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
     <result property="endTime" column="END_TIME_" jdbcType="TIMESTAMP" />
@@ -168,6 +172,12 @@
       </if>
       <if test="taskDeleteReasonLike != null">
         and HTI.DELETE_REASON_ like #{taskDeleteReasonLike}
+      </if>
+      <if test="taskOwner != null">
+        and HTI.OWNER_ = #{taskOwner}
+      </if>
+      <if test="taskOwnerLike != null">
+        and HTI.OWNER_ like #{taskOwnerLike}
       </if>
       <if test="taskAssignee != null">
         and HTI.ASSIGNEE_ = #{taskAssignee}

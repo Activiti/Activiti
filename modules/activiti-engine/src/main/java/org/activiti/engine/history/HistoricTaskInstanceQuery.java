@@ -104,6 +104,17 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
   HistoricTaskInstanceQuery taskAssigneeLike(String taskAssigneeLike);
   
   /** 
+   * Only select historic task instances which have the given owner.
+   */
+  HistoricTaskInstanceQuery taskOwner(String taskOwner);
+  
+  /** 
+   * Only select historic task instances which have an owner like the one specified.
+   * The syntax that should be used is the same as in SQL, eg. %activiti%.
+   */
+  HistoricTaskInstanceQuery taskOwnerLike(String taskOwnerLike);
+  
+  /** 
    * Only select historic task instances with the given priority.
    */
   HistoricTaskInstanceQuery taskPriority(Integer taskPriority);
@@ -196,6 +207,9 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
   
   /** Order by task assignee (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricTaskInstanceQuery orderByTaskAssignee();
+  
+  /** Order by task owner (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  HistoricTaskInstanceQuery orderByTaskOwner();
   
   /** Order by task delete reason (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricTaskInstanceQuery orderByDeleteReason();

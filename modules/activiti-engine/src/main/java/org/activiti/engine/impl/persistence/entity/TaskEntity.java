@@ -381,38 +381,36 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   
   // special setters //////////////////////////////////////////////////////////
   
-  public void setName(String name) {
-    this.name = name;
+  public void setName(String taskName) {
+    this.name = taskName;
 
     CommandContext commandContext = Context.getCommandContext();
-    // if there is no command context, then it means that the user is calling the 
-    // setAssignee outside a service method.  E.g. while creating a new task.
     if (commandContext!=null) {
-      int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
-      if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
-        HistoricTaskInstanceEntity historicTaskInstance = commandContext.getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, id);
-        if (historicTaskInstance!=null) {
-          historicTaskInstance.setName(name);
-        }
-      }
+      commandContext
+        .getHistoricTaskInstanceManager()
+        .setTaskName(id, taskName);
     }
   }
-  
+
+  /* plain setter for persistence */
+  public void setNameWithoutCascade(String taskName) {
+    this.name = taskName;
+  }
+
   public void setDescription(String description) {
     this.description = description;
 
     CommandContext commandContext = Context.getCommandContext();
-    // if there is no command context, then it means that the user is calling the 
-    // setAssignee outside a service method.  E.g. while creating a new task.
     if (commandContext!=null) {
-      int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
-      if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
-        HistoricTaskInstanceEntity historicTaskInstance = commandContext.getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, id);
-        if (historicTaskInstance!=null) {
-          historicTaskInstance.setDescription(description);
-        }
-      }
+      commandContext
+        .getHistoricTaskInstanceManager()
+        .setTaskDescription(id, description);
     }
+  }
+
+  /* plain setter for persistence */
+  public void setDescriptionWithoutCascade(String description) {
+    this.description = description;
   }
 
   public void setAssignee(String assignee) {
@@ -422,43 +420,79 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     if (assignee!=null && assignee.equals(this.assignee)) {
       return;
     }
-    
     this.assignee = assignee;
 
     CommandContext commandContext = Context.getCommandContext();
-    // if there is no command context, then it means that the user is calling the 
-    // setAssignee outside a service method.  E.g. while creating a new task.
     if (commandContext!=null) {
-      fireEvent(TaskListener.EVENTNAME_ASSIGNMENT);
+      commandContext
+        .getHistoricTaskInstanceManager()
+        .setTaskAssignee(id, assignee);
       
-      int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
-      if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
-        HistoricTaskInstanceEntity historicTaskInstance = commandContext.getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, id);
-        if (historicTaskInstance!=null) {
-          historicTaskInstance.setAssignee(assignee);
-        }
+      // if there is no command context, then it means that the user is calling the 
+      // setAssignee outside a service method.  E.g. while creating a new task.
+      if (commandContext!=null) {
+        fireEvent(TaskListener.EVENTNAME_ASSIGNMENT);
       }
     }
+  }
+
+  /* plain setter for persistence */
+  public void setAssigneeWithoutCascade(String assignee) {
+    this.assignee = assignee;
+  }
+  
+  public void setOwner(String owner) {
+    if (owner==null && this.owner==null) {
+      return;
+    }
+    if (owner!=null && owner.equals(this.owner)) {
+      return;
+    }
+    this.owner = owner;
+
+    CommandContext commandContext = Context.getCommandContext();
+    if (commandContext!=null) {
+      commandContext
+        .getHistoricTaskInstanceManager()
+        .setTaskOwner(id, owner);
+    }
+  }
+
+  /* plain setter for persistence */
+  public void setOwnerWithoutCascade(String owner) {
+    this.owner = owner;
   }
   
   public void setDueDate(Date dueDate) {
     this.dueDate = dueDate;
     
     CommandContext commandContext = Context.getCommandContext();
-    // if there is no command context, then it means that the user is calling the 
-    // setAssignee outside a service method.  E.g. while creating a new task.
     if (commandContext!=null) {
-      int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
-      if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
-        HistoricTaskInstanceEntity historicTaskInstance = commandContext.getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, id);
-        if (historicTaskInstance!=null) {
-          historicTaskInstance.setDueDate(dueDate);
-        }
-      }
+      commandContext
+        .getHistoricTaskInstanceManager()
+        .setTaskDueDate(id, dueDate);
     }
-    
+  }
+
+  public void setDueDateWithoutCascade(Date dueDate) {
+    this.dueDate = dueDate;
   }
   
+  public void setPriority(int priority) {
+    this.priority = priority;
+    
+    CommandContext commandContext = Context.getCommandContext();
+    if (commandContext!=null) {
+      commandContext
+        .getHistoricTaskInstanceManager()
+        .setTaskPriority(id, priority);
+    }
+  }
+
+  public void setPriorityWithoutCascade(int priority) {
+    this.priority = priority;
+  }
+
   public void fireEvent(String taskEventName) {
     TaskDefinition taskDefinition = getTaskDefinition();
     if (taskDefinition != null) {
@@ -538,23 +572,6 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     return priority;
   }
 
-  public void setPriority(int priority) {
-    this.priority = priority;
-    
-    CommandContext commandContext = Context.getCommandContext();
-    // if there is no command context, then it means that the user is calling the 
-    // setAssignee outside a service method.  E.g. while creating a new task.
-    if (commandContext!=null) {
-      int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
-      if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
-        HistoricTaskInstanceEntity historicTaskInstance = commandContext.getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, id);
-        if (historicTaskInstance!=null) {
-          historicTaskInstance.setPriority(priority);
-        }
-      }
-    }
-  }
-
   public Date getCreateTime() {
     return createTime;
   }
@@ -578,12 +595,6 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   public void setProcessDefinitionId(String processDefinitionId) {
     this.processDefinitionId = processDefinitionId;
   }  
-  
-  // used in MyBatis mapping: no need to fire event every time the task is fetched from db and assignee is set by reflection
-  // MyBatis usage:  <result property="assigneeWithoutFireEvent" column="ASSIGNEE_" jdbcType="VARCHAR"/>
-  public void setAssigneeWithoutFireEvent(String assignee) {
-    this.assignee = assignee;
-  }
   
   public String getAssignee() {
     return assignee;
@@ -631,9 +642,6 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   }
   public String getOwner() {
     return owner;
-  }
-  public void setOwner(String owner) {
-    this.owner = owner;
   }
   public DelegationState getDelegationState() {
     return delegationState;
