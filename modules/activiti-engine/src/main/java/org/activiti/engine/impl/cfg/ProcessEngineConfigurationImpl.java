@@ -432,6 +432,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     databaseTypeMappings.setProperty("DB2 UDP","db2");
     databaseTypeMappings.setProperty("DB2/LINUX","db2");
     databaseTypeMappings.setProperty("DB2/LINUX390","db2");
+    databaseTypeMappings.setProperty("DB2/LINUXZ64","db2");
     databaseTypeMappings.setProperty("DB2/400 SQL","db2");
     databaseTypeMappings.setProperty("DB2/6000","db2");
     databaseTypeMappings.setProperty("DB2 UDB iSeries","db2");

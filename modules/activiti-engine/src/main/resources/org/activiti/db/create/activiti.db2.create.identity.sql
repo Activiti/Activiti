@@ -24,7 +24,7 @@ create table ACT_ID_USER (
 );
 
 create table ACT_ID_INFO (
-    ID_ varchar(64),
+    ID_ varchar(64) not null,
     REV_ integer,
     USER_ID_ varchar(64),
     TYPE_ varchar(64),
