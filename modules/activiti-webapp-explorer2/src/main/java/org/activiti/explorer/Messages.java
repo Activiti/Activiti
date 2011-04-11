@@ -173,4 +173,8 @@ public interface Messages {
   static final String PEOPLE_SEARCH = "people.search";
   static final String PEOPLE_INVOLVE_POPUP_CAPTION = "people.involve.popup.caption";
 
+  static final String TASK_AUTHORISATION_ERROR_TITLE = "task.authorisation.error.title";
+  static final String TASK_AUTHORISATION_MEMBERSHIP_ERROR = "task.authorisation.membership.error";
+  static final String TASK_AUTHORISATION_INBOX_ERROR = "task.authorisation.inbox.error";
+
 }

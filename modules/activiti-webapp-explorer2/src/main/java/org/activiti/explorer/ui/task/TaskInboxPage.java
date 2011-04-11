@@ -12,6 +12,8 @@
  */
 package org.activiti.explorer.ui.task;
 
+import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.Messages;
 import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.TaskNavigationHandler;
 import org.activiti.explorer.navigation.UriFragment;
@@ -49,7 +51,14 @@ public class TaskInboxPage extends TaskPage {
     if (taskId == null) {
       selectListElement(0);
     } else {
-      selectListElement(taskListContainer.getIndexForObjectId(taskId));
+      int index = taskListContainer.getIndexForObjectId(taskId);
+      if(index > 0) {
+        selectListElement(index);
+      } else {
+        ExplorerApp.get().getNotificationManager().showErrorNotification(Messages.TASK_AUTHORISATION_ERROR_TITLE, 
+                ExplorerApp.get().getI18nManager().getMessage(Messages.TASK_AUTHORISATION_INBOX_ERROR, taskId));
+        selectListElement(0);
+      }
     }
   }
 

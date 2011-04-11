@@ -34,6 +34,9 @@ public interface NavigationHandler {
    * uri parts that triggered the navigation request (including the one returned by 
    * {@link NavigationHandler#getTrigger()}), as well as the parameters contain 
    * the values of the parameters passed in the query string (if any).
+   * 
+   * The handleNavigation is responsible for setting the current URI-fragment to
+   * the correct value (the passed uriFragment or another on in case URL is invalid).
    */
   void handleNavigation(UriFragment uriFragment);
 }

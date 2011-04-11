@@ -54,7 +54,11 @@ public abstract class AbstractTaskListQuery extends AbstractLazyLoadingQuery {
   }
 
   public Item loadSingleResult(String id) {
-    return new TaskListItem(getQuery().taskId(id).singleResult());
+    Task task = getQuery().taskId(id).singleResult();
+    if(task != null) {
+      return new TaskListItem(task);
+    }
+    return null;
   }
 
   public void setSorting(Object[] propertyId, boolean[] ascending) {

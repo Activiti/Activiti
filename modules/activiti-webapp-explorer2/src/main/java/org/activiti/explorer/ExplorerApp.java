@@ -158,4 +158,8 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   public void setCurrentUriFragment(UriFragment fragment) {
     mainWindow.setCurrentUriFragment(fragment);
   }
+  
+  public UriFragment getCurrentUriFragment() {
+    return mainWindow.getCurrentUriFragment();
+  }
 }

@@ -57,7 +57,11 @@ public class JobListQuery extends AbstractLazyLoadingQuery {
   }
 
   public Item loadSingleResult(String id) {
-    return new JobListItem(repositoryService.createJobQuery().jobId(id).singleResult());
+    Job job = repositoryService.createJobQuery().jobId(id).singleResult();
+    if (job != null) {
+      return new JobListItem(job);      
+    }
+    return null;
   }
   
   public void setSorting(Object[] propertyIds, boolean[] ascending) {

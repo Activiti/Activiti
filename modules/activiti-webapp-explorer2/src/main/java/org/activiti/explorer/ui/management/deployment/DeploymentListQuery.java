@@ -54,7 +54,11 @@ public class DeploymentListQuery extends AbstractLazyLoadingQuery {
   }
 
   public Item loadSingleResult(String id) {
-    return new DeploymentListitem(repositoryService.createDeploymentQuery().deploymentId(id).singleResult());
+    Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(id).singleResult();
+    if(deployment != null) {
+      return new DeploymentListitem(deployment);
+    }
+    return null;
   }
   
   public void setSorting(Object[] propertyIds, boolean[] ascending) {

@@ -58,7 +58,11 @@ public class MyFlowsListQuery extends AbstractLazyLoadingQuery {
   }
   
   public Item loadSingleResult(String id) {
-    return createItem(runtimeService.createProcessInstanceQuery().processInstanceId(id).singleResult());
+    ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(id).singleResult();
+    if (processInstance != null) {
+      return createItem(processInstance);
+    }
+    return null;
   }
   
   protected ProcessInstanceListItem createItem(ProcessInstance processInstance) {

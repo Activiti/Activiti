@@ -13,8 +13,6 @@
 
 package org.activiti.explorer.navigation;
 
-import org.activiti.explorer.ExplorerApp;
-
 import com.vaadin.ui.UriFragmentUtility.FragmentChangedEvent;
 import com.vaadin.ui.UriFragmentUtility.FragmentChangedListener;
 
@@ -46,9 +44,6 @@ public class NavigationFragmentChangeListener implements FragmentChangedListener
     
     // Delegate navigation to handler
     navigationHandler.handleNavigation(uriFragment);
-    
-    // Set the parameter and parts on the current ExplorerApplication
-    ExplorerApp.get().setCurrentUriFragment(uriFragment);
   }
 
 }

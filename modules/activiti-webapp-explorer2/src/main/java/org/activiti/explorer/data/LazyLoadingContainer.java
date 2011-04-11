@@ -180,6 +180,9 @@ public class LazyLoadingContainer implements Container.Indexed, Container.Sortab
   // id = real id (eg task id)
   public int getIndexForObjectId(String id) {
     Item searched = lazyLoadingQuery.loadSingleResult((String) id); 
+    if(searched == null) {
+      return -1;
+    }
     return getIndexForObjectId(searched, 0, size()-1);
   }
   

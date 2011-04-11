@@ -13,7 +13,10 @@
 
 package org.activiti.explorer.navigation;
 
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.ProcessEngines;
 import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.Messages;
 
 /**
  * @author Frederik Heremans
@@ -47,6 +50,21 @@ public class TaskNavigationHandler implements NavigationHandler {
   protected void showQueuedTasks(String taskId, UriFragment uriFragment) {
     String groupId = uriFragment.getParameter(PARAMETER_GROUP);
     if(groupId != null) {
+      // Check if user is part of this group
+      IdentityService identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
+      
+      boolean isMemberOfGroup = identityService.createGroupQuery()
+         .groupMember(ExplorerApp.get().getLoggedInUser().getId())
+         .groupId(groupId)
+         .count() == 1;
+      
+      if(!isMemberOfGroup) {
+        // Show error notification, just show inbox
+        String description = ExplorerApp.get().getI18nManager().getMessage(Messages.TASK_AUTHORISATION_MEMBERSHIP_ERROR, groupId); 
+        ExplorerApp.get().getNotificationManager().showErrorNotification(Messages.TASK_AUTHORISATION_ERROR_TITLE, description);
+        
+        ExplorerApp.get().getViewManager().showTaskInboxPage();
+      }
       ExplorerApp.get().getViewManager().showTaskQueuedPage(groupId, taskId);
     } else {
       // When no group is available, just show the inbox

@@ -52,7 +52,11 @@ public class ProcessDefinitionListQuery extends AbstractLazyLoadingQuery {
   }
   
   public Item loadSingleResult(String id) {
-    return createItem(repositoryService.createProcessDefinitionQuery().processDefinitionId(id).singleResult());
+    ProcessDefinition definition = repositoryService.createProcessDefinitionQuery().processDefinitionId(id).singleResult();
+    if (definition != null) {
+      return createItem(definition);
+    }
+    return null;
   }
   
   protected ProcessDefinitionListItem createItem(ProcessDefinition processDefinition) {
