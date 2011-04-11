@@ -164,6 +164,13 @@
       <version>${spring.framework.version}</version>
     </dependency>
     
+    <!-- TESTING purpose only -->
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    
     <!-- TODO: Move dependency to parent if found satisfactory-->
     <!-- TODO: discuss licence of this dependency (LGPL) -->
 	  <dependency>

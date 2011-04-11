@@ -14,6 +14,8 @@ package org.activiti.explorer;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Collection;
 
 
 /**
@@ -34,5 +36,14 @@ public interface Constants {
   
   // Default diagram image extension, when name cannot be deducted from resource name
  static final String DEFAULT_DIAGRAM_IMAGE_EXTENSION = "png";
+ 
+ // MIMETYPES
+ static final String MIMETYPE_BPM = "image/bpm";
+ static final String MIMETYPE_GIF = "image/gif";
+ static final String MIMETYPE_JPEG = "image/jpeg";
+ static final String MIMETYPE_PNG = "image/png";
+ static final Collection<String> DEFAULT_IMAGE_MIMETYPES = Arrays.asList(
+         MIMETYPE_BPM, MIMETYPE_GIF, MIMETYPE_JPEG, MIMETYPE_PNG);
+ 
 
 }

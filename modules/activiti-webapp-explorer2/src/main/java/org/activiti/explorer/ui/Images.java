@@ -39,6 +39,8 @@ public class Images {
   public static final Resource USER_48 = new ThemeResource("img/user_48.png");
   public static final Resource USER_ADD = new ThemeResource("img/user_add.png");
   public static final Resource SUCCESS = new ThemeResource("img/tick.png");
+  public static final Resource EDIT = new ThemeResource("img/edit.png");
+  public static final Resource SAVE = new ThemeResource("img/save.png");
   
   // Task
   public static final Resource TASK_FINISHED = new ThemeResource("img/tick.png");
@@ -56,7 +58,8 @@ public class Images {
   public static final Resource DATABASE_REPOSITORY = new ThemeResource("img/database_repository.png");
   public static final Resource DATABASE_RUNTIME = new ThemeResource("img/database_runtime.png");
   
-  // Related content
+  // Profile
+  public static final Resource PROFILE_CHANGE_PICTURE = new ThemeResource("img/change_picture.png");
   
   // Related content
   public static final Resource RELATED_CONTENT_URL = new ThemeResource("img/page_white_world.png");

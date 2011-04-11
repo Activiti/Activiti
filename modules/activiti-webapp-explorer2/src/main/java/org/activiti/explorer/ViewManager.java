@@ -21,7 +21,7 @@ import org.activiti.explorer.ui.flow.MyFlowsPage;
 import org.activiti.explorer.ui.management.db.DatabasePage;
 import org.activiti.explorer.ui.management.deployment.DeploymentPage;
 import org.activiti.explorer.ui.management.job.JobPage;
-import org.activiti.explorer.ui.profile.ProfilePage;
+import org.activiti.explorer.ui.profile.ProfilePanel;
 import org.activiti.explorer.ui.profile.ProfilePopupWindow;
 import org.activiti.explorer.ui.task.TaskCommentPopupWindow;
 import org.activiti.explorer.ui.task.TaskInboxPage;
@@ -120,10 +120,6 @@ public class ViewManager {
   }
   
   // Profile
-  
-  public void showProfilePage(String userId) {
-    mainWindow.switchView(new ProfilePage(userId));
-  }
   
   public void showProfilePopup(String userId) {
     showPopupWindow(new ProfilePopupWindow(userId));

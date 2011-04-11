@@ -34,11 +34,31 @@ public class NotificationManager {
   }
   
   public void showErrorNotification(String captionKey, String description) {
-    mainWindow.showNotification(i18nManager.getMessage(captionKey), "<br/>" + description, Notification.TYPE_ERROR_MESSAGE);
+    mainWindow.showNotification(i18nManager.getMessage(captionKey), 
+            "<br/>" + description, 
+            Notification.TYPE_ERROR_MESSAGE);
   }
   
   public void showErrorNotification(String captionKey, Exception exception) {
-    mainWindow.showNotification(i18nManager.getMessage(captionKey), "<br/>" + exception.getMessage(), Notification.TYPE_ERROR_MESSAGE);
+    mainWindow.showNotification(i18nManager.getMessage(captionKey), 
+            "<br/>" + exception.getMessage(), 
+            Notification.TYPE_ERROR_MESSAGE);
+  }
+  
+  public void showWarningNotification(String captionKey, String descriptionKey) {
+    Notification notification = new Notification(i18nManager.getMessage(captionKey), 
+            i18nManager.getMessage(descriptionKey), 
+            Notification.TYPE_WARNING_MESSAGE);
+    notification.setDelayMsec(-1); // click to hide
+    mainWindow.showNotification(notification);
+  }
+  
+  public void showWarningNotification(String captionKey, String descriptionKey, Object ... params) {
+    Notification notification = new Notification(i18nManager.getMessage(captionKey) + "<br/>", 
+            MessageFormat.format(i18nManager.getMessage(descriptionKey), params), 
+            Notification.TYPE_WARNING_MESSAGE);
+    notification.setDelayMsec(5000); // click to hide
+    mainWindow.showNotification(notification);
   }
   
   public void showInformationNotification(String key) {

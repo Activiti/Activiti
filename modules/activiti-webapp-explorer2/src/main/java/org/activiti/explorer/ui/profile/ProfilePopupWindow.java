@@ -37,8 +37,7 @@ public class ProfilePopupWindow extends Window {
     setHeight("80%");
     setWidth("50%");
     center();
-    setCaption(user.getFirstName() + " " + user.getLastName());
-    addComponent(new ProfilePage(userId));
+    addComponent(new ProfilePanel(userId));
   }
   
 

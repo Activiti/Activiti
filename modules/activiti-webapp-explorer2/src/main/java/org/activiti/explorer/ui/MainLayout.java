@@ -74,7 +74,7 @@ public class MainLayout extends CustomLayout {
     
     userButton.addListener(new ClickListener() {
       public void buttonClick(ClickEvent event) {
-        viewManager.showProfilePage(user.getId());
+        viewManager.showProfilePopup(user.getId());
       }
     });
 

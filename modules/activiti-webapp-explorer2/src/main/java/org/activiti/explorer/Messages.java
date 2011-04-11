@@ -44,6 +44,8 @@ public interface Messages {
   // Profile
   static final String PROFILE_ABOUT = "profile.about";
   static final String PROFILE_NAME = "profile.name";
+  static final String PROFILE_FIRST_NAME = "profile.firstname";
+  static final String PROFILE_LAST_NAME = "profile.lastname";
   static final String PROFILE_JOBTITLE = "profile.jobtitle";
   static final String PROFILE_BIRTHDATE = "profile.birthdate";
   static final String PROFILE_LOCATION = "profile.location";
@@ -53,6 +55,9 @@ public interface Messages {
   static final String PROFILE_TWITTER = "profile.twitter";
   static final String PROFILE_SKYPE = "profile.skype";
   static final String PROFILE_ACCOUNTS = "profile.accounts";
+  static final String PROFILE_EDIT = "profile.edit";
+  static final String PROFILE_SAVE = "profile.save";
+  static final String PROFILE_CHANGE_PICTURE = "profile.change.picture";
 
   // Task menu
   static final String TASK_MENU_INBOX = "task.menu.inbox";
@@ -150,6 +155,8 @@ public interface Messages {
   static final String UPLOAD_SELECT = "upload.select";
   static final String UPLOAD_DROP = "upload.drop";
   static final String UPLOAD_FAILED = "upload.failed";
+  static final String UPLOAD_LIMIT = "upload.limit";
+  static final String UPLOAD_INVALID_MIMETYPE = "upload.invalid.mimetype";
 
   // Related content
   static final String RELATED_CONTENT_ADD = "related.content.add";

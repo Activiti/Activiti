@@ -10,28 +10,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.activiti.explorer.ui.util;
 
-package org.activiti.explorer.cache;
-
-import java.util.List;
-
-import org.activiti.engine.identity.User;
+import java.util.Collection;
+import java.util.Iterator;
 
 
 /**
- * Interface for a cache that allows to retrieve cached {@link User} objects,
- * based on a prefix:
- * 
- * eg. 'ke' -> Kermit The Frog
- * eg. 'Th' -> Kermit The Frog
- * eg 'be' -> Fozzie Bear
- * 
- * TODO: Should this functionality be moved to the engine?
- * 
  * @author Joram Barrez
  */
-public interface UserCache {
+public class StringUtil {
   
-  List<User> findMatchingUsers(String prefix);
-  
+  @SuppressWarnings("rawtypes")
+  public static String toReadableString(Collection collection) {
+    Iterator it = collection.iterator();
+    StringBuilder strb = new StringBuilder();
+    while(it.hasNext()) {
+      Object next = it.next();
+      strb.append(next.toString() + ", ");
+    }
+    if (strb.length() > 2) {
+      strb.delete(strb.length()-2, strb.length());
+    }
+    return strb.toString();
+  }
+
 }
