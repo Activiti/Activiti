@@ -92,4 +92,10 @@ public interface Task {
 
 	/** delegates this task to the given user and sets the {@link #getDelegationState() delegationState} to {@link DelegationState#PENDING}. */
   void delegate(String userId);
+  
+  /** the parent task for which this task is a subtask */
+  void setParentTaskId(String parentTaskId);
+
+  /** the parent task for which this task is a subtask */
+  String getParentTaskId();
 }

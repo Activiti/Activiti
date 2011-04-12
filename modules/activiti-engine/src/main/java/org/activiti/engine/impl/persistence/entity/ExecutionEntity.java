@@ -764,7 +764,9 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
       if (replacedBy!=null) {
         task.setExecution(replacedBy);
       } else {
-        task.delete(TaskEntity.DELETE_REASON_DELETED);
+        commandContext
+          .getTaskManager()
+          .deleteTask(task, TaskEntity.DELETE_REASON_DELETED, false);
       }
     }
 

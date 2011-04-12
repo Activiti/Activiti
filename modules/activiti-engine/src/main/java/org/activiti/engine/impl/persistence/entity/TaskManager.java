@@ -48,6 +48,11 @@ public class TaskManager extends AbstractManager {
       CommandContext commandContext = Context.getCommandContext();
       String taskId = task.getId();
       
+      List<Task> subTasks = findTasksByParentTaskId(taskId);
+      for (Task subTask: subTasks) {
+        deleteTask((TaskEntity) subTask, deleteReason, cascade);
+      }
+      
       commandContext
         .getIdentityLinkManager()
         .deleteIdentityLinksByTaskId(taskId);
@@ -57,12 +62,23 @@ public class TaskManager extends AbstractManager {
         .deleteVariableInstanceByTaskId(taskId);
 
       commandContext
-        .getHistoricTaskInstanceManager()
-        .markTaskInstanceEnded(taskId, deleteReason);
+        .getAttachmentManager()
+        .deleteAttachmentsByTaskId(taskId);
+
+      if (cascade) {
+        commandContext
+          .getHistoricTaskInstanceManager()
+          .deleteHistoricTaskInstanceById(taskId);
+      } else {
+        commandContext
+          .getHistoricTaskInstanceManager()
+          .markTaskInstanceEnded(taskId, deleteReason);
+      }
         
       getPersistenceSession().delete(TaskEntity.class, task.getId());
     }
   }
+
 
   public TaskEntity findTaskById(String id) {
     if (id == null) {
@@ -79,5 +95,27 @@ public class TaskManager extends AbstractManager {
 
   public long findTaskCountByQueryCriteria(TaskQueryImpl taskQuery) {
     return (Long) getPersistenceSession().selectOne("selectTaskCountByQueryCriteria", taskQuery);
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<Task> findTasksByParentTaskId(String parentTaskId) {
+    return getPersistenceSession().selectList("selectTasksByParentTaskId", parentTaskId);
+  }
+
+  public void deleteTask(String taskId, boolean cascade) {
+    TaskEntity task = Context
+      .getCommandContext()
+      .getTaskManager()
+      .findTaskById(taskId);
+    
+    if (task!=null) {
+      deleteTask(task, TaskEntity.DELETE_REASON_DELETED, cascade);
+
+    } else if (cascade) {
+      Context
+        .getCommandContext()
+        .getHistoricTaskInstanceManager()
+        .deleteHistoricTaskInstanceById(taskId);
+    }
   }
 }

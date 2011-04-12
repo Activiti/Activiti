@@ -85,12 +85,8 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
   }
   
   public void testDeleteHistoricTaskInstance() throws Exception {
-    try {
-      historyService.deleteHistoricTaskInstance("unexistingId");
-      fail("Excpetion expected when deleting unexisting historic task");
-    } catch(ActivitiException ae) {
-      // Expected exception
-    }
+    // deleting unexisting historic task instance should be silently ignored
+    historyService.deleteHistoricTaskInstance("unexistingId");
   }
   
   @Deployment

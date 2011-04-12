@@ -27,6 +27,7 @@
         PROC_INST_ID_,
         EXECUTION_ID_,
         NAME_,
+        PARENT_TASK_ID_,
         DESCRIPTION_,
         OWNER_,
         ASSIGNEE_,
@@ -43,6 +44,7 @@
         #{processInstanceId, jdbcType=VARCHAR},
         #{executionId, jdbcType=VARCHAR},
         #{name ,jdbcType=VARCHAR},
+        #{parentTaskId ,jdbcType=VARCHAR},
         #{description ,jdbcType=VARCHAR},
         #{owner ,jdbcType=VARCHAR},
         #{assignee ,jdbcType=VARCHAR},
@@ -62,6 +64,7 @@
     update ACT_HI_TASKINST set
       EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR},
       NAME_ = #{name, jdbcType=VARCHAR},
+      PARENT_TASK_ID_ = #{parentTaskId, jdbcType=VARCHAR},
       DESCRIPTION_ = #{description, jdbcType=VARCHAR},
       OWNER_ = #{owner, jdbcType=VARCHAR},
       ASSIGNEE_ = #{assignee, jdbcType=VARCHAR},
@@ -88,6 +91,7 @@
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
     <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
     <result property="name" column="NAME_" jdbcType="VARCHAR" />
+    <result property="parentTaskId" column="PARENT_TASK_ID_" jdbcType="VARCHAR" />
     <result property="description" column="DESCRIPTION_" jdbcType="VARCHAR" />
     <result property="owner" column="OWNER_" jdbcType="VARCHAR" />
     <result property="assignee" column="ASSIGNEE_" jdbcType="VARCHAR" />
@@ -160,6 +164,9 @@
       </if>
       <if test="taskNameLike != null">
         and HTI.NAME_ like #{taskNameLike}
+      </if>
+      <if test="taskParentTaskId != null">
+        and HTI.PARENT_TASK_ID_ = #{taskParentTaskId}
       </if>
       <if test="taskDescription != null">
         and HTI.DESCRIPTION_ = #{taskDescription}

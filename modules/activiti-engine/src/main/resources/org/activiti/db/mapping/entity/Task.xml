@@ -7,11 +7,12 @@
   <!-- TASK INSERT -->
   
   <insert id="insertTask" parameterType="org.activiti.engine.impl.persistence.entity.TaskEntity">
-    insert into ACT_RU_TASK (ID_, REV_, NAME_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
+    insert into ACT_RU_TASK (ID_, REV_, NAME_, PARENT_TASK_ID_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
                       ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_)
     values (#{id, jdbcType=VARCHAR},
             1,
             #{name, jdbcType=VARCHAR},
+            #{parentTaskId, jdbcType=VARCHAR},
             #{description, jdbcType=VARCHAR},
             #{priority, jdbcType=INTEGER},
             #{createTime, jdbcType=TIMESTAMP},
@@ -33,6 +34,7 @@
     <set>
       REV_ = #{revisionNext, jdbcType=INTEGER},
       NAME_ = #{name, jdbcType=VARCHAR},
+      PARENT_TASK_ID_ = #{parentTaskId, jdbcType=VARCHAR},
       PRIORITY_ = #{priority, jdbcType=INTEGER},
       CREATE_TIME_ = #{createTime, jdbcType=TIMESTAMP},
       OWNER_ = #{owner, jdbcType=VARCHAR},
@@ -57,6 +59,7 @@
     <id property="id" column="ID_" jdbcType="VARCHAR"/>
     <result property="revision" column="REV_" jdbcType="INTEGER"/>
     <result property="nameWithoutCascade" column="NAME_" jdbcType="VARCHAR"/>
+    <result property="parentTaskIdWithoutCascade" column="PARENT_TASK_ID_" jdbcType="VARCHAR"/>
     <result property="descriptionWithoutCascade" column="DESCRIPTION_" jdbcType="VARCHAR"/>
     <result property="priorityWithoutCascade" column="PRIORITY_" jdbcType="INTEGER"/>
     <result property="createTime" column="CREATE_TIME_" jdbcType="TIMESTAMP" />
@@ -98,6 +101,10 @@
   
   <select id="selectTasksByAssignee" parameterType="string" resultMap="taskResultMap">
     select * from ACT_RU_TASK where ASSIGNEE_ = #{assignee}
+  </select>
+  
+  <select id="selectTasksByParentTaskId" parameterType="string" resultMap="taskResultMap">
+    select * from ACT_RU_TASK where PARENT_TASK_ID_ = #{parentTaskId}
   </select>
   
   <select id="selectTaskByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultMap="taskResultMap">

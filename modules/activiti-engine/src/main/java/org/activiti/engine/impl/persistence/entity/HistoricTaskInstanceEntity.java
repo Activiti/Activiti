@@ -29,6 +29,7 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
 
   protected String executionId;
   protected String name;
+  protected String parentTaskId;
   protected String description;
   protected String owner;
   protected String assignee;
@@ -47,6 +48,7 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
       this.executionId = execution.getId();
     }
     this.name = task.getName();
+    this.parentTaskId = task.getParentTaskId();
     this.description = task.getDescription();
     this.owner = task.getOwner();
     this.assignee = task.getAssignee();
@@ -67,6 +69,9 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
     persistentState.put("deleteReason", deleteReason);
     persistentState.put("taskDefinitionKey", taskDefinitionKey);
     persistentState.put("priority", priority);
+    if(parentTaskId != null) {
+      persistentState.put("parentTaskId", parentTaskId);
+    }
     if(dueDate != null) {
       persistentState.put("dueDate", dueDate);
     }
@@ -121,5 +126,11 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
   }
   public void setOwner(String owner) {
     this.owner = owner;
+  }
+  public String getParentTaskId() {
+    return parentTaskId;
+  }
+  public void setParentTaskId(String parentTaskId) {
+    this.parentTaskId = parentTaskId;
   }
 }

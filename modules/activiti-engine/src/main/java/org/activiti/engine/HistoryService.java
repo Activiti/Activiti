@@ -49,7 +49,9 @@ public interface HistoryService {
   HistoricDetailQuery createHistoricDetailQuery();
 
   /** Deletes historic task instance.  This might be useful for tasks that are 
-   * {@link TaskService#newTask() dynamically created} and then {@link TaskService#complete(String) completed}. */
+   * {@link TaskService#newTask() dynamically created} and then {@link TaskService#complete(String) completed}. 
+   * If the historic task instance doesn't exist, no exception is thrown and the 
+   * method returns normal.*/
   void deleteHistoricTaskInstance(String taskId);
   
   /**

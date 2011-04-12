@@ -34,6 +34,7 @@ import org.activiti.engine.impl.cmd.GetAttachmentContentCmd;
 import org.activiti.engine.impl.cmd.GetIdentityLinksForTaskCmd;
 import org.activiti.engine.impl.cmd.GetProcessInstanceAttachmentsCmd;
 import org.activiti.engine.impl.cmd.GetProcessInstanceCommentsCmd;
+import org.activiti.engine.impl.cmd.GetSubTasksCmd;
 import org.activiti.engine.impl.cmd.GetTaskAttachmentsCmd;
 import org.activiti.engine.impl.cmd.GetTaskCommentsCmd;
 import org.activiti.engine.impl.cmd.GetTaskEventsCmd;
@@ -260,5 +261,9 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
 
   public void saveAttachment(Attachment attachment) {
     commandExecutor.execute(new SaveAttachmentCmd(attachment));
+  }
+
+  public List<Task> getSubTasks(String parentTaskId) {
+    return commandExecutor.execute(new GetSubTasksCmd(parentTaskId));
   }
 }

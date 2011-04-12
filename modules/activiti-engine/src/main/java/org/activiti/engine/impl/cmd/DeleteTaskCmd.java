@@ -13,21 +13,11 @@
 package org.activiti.engine.impl.cmd;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.history.HistoricDetail;
-import org.activiti.engine.impl.HistoricDetailQueryImpl;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
-import org.activiti.engine.impl.persistence.entity.ByteArrayEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricDetailEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 
 /**
@@ -51,10 +41,10 @@ public class DeleteTaskCmd implements Command<Void> {
 
   public Void execute(CommandContext commandContext) {
     if (taskId != null) {
-      deleteTask(commandContext, taskId);
+      deleteTask(taskId);
     } else if (taskIds != null) {
         for (String taskId : taskIds) {
-          deleteTask(commandContext, taskId);
+          deleteTask(taskId);
         }   
     } else {
       throw new ActivitiException("taskId and taskIds are null");
@@ -64,42 +54,10 @@ public class DeleteTaskCmd implements Command<Void> {
     return null;
   }
 
-  @SuppressWarnings("unchecked")
-  protected void deleteTask(CommandContext commandContext, String taskId) {
-    TaskEntity task = Context
+  protected void deleteTask(String taskId) {
+    Context
       .getCommandContext()
       .getTaskManager()
-      .findTaskById(taskId);
-    if (task!=null) {
-      task.delete(TaskEntity.DELETE_REASON_DELETED);
-    }
-    if (cascade) {
-      int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
-      DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
-      if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
-        dbSqlSession.delete(HistoricTaskInstanceEntity.class, taskId);
-        List<HistoricDetail> historicTaskDetails = new HistoricDetailQueryImpl(commandContext)
-          .taskId(taskId)
-          .list();
-        for (HistoricDetail historicTaskDetail: historicTaskDetails) {
-          dbSqlSession.delete(HistoricDetailEntity.class, historicTaskDetail.getId());
-        }
-      }
-      if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY) {
-        Context
-          .getCommandContext()
-          .getCommentManager()
-          .deleteCommentsByTaskId(taskId);
-        
-        List<AttachmentEntity> attachments = dbSqlSession.selectList("selectAttachmentsByTaskId", taskId);
-        for (AttachmentEntity attachment: attachments) {
-          String contentId = attachment.getContentId();
-          if (contentId!=null) {
-            dbSqlSession.delete(ByteArrayEntity.class, contentId);
-          }
-          dbSqlSession.delete(AttachmentEntity.class, attachment.getId());
-        }
-      }
-    }
+      .deleteTask(taskId, cascade);
   }
 }

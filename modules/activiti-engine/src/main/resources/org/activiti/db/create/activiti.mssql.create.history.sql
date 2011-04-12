@@ -35,6 +35,7 @@ create table ACT_HI_TASKINST (
     PROC_INST_ID_ nvarchar(64),
     EXECUTION_ID_ nvarchar(64),
     NAME_ nvarchar(255),
+    PARENT_TASK_ID_ nvarchar(64),
     DESCRIPTION_ nvarchar(255),
     OWNER_ nvarchar(64),
     ASSIGNEE_ nvarchar(64),

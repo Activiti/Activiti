@@ -14,4 +14,4 @@ create table ACT_HI_TASKINST (
     primary key (ID_)
 );
 
-alter table ACT_HI_DETAIL add TASK_ID_ varchar(64);
+alter table ACT_HI_DETAIL add TASK_ID_ NVARCHAR2(64);

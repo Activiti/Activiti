@@ -84,6 +84,7 @@ create table ACT_RU_TASK (
     PROC_INST_ID_ varchar(64),
     PROC_DEF_ID_ varchar(64),
     NAME_ varchar(255),
+    PARENT_TASK_ID_ varchar(64),
     DESCRIPTION_ varchar(255),
     TASK_DEF_KEY_ varchar(255),
     OWNER_ varchar(64),

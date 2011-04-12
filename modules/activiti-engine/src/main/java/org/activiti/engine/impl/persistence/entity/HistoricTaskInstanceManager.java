@@ -59,21 +59,19 @@ public class HistoricTaskInstanceManager extends AbstractHistoricManager {
   
   public void deleteHistoricTaskInstanceById(String taskId) {
     HistoricTaskInstanceEntity historicTaskInstance = findHistoricTaskInstanceById(taskId);
-    if(historicTaskInstance == null) {
-      throw new ActivitiException("No historic task instance found for id '" + taskId + "'");
-    }
-    
-    CommandContext commandContext = Context.getCommandContext();
-    
-    commandContext
-      .getHistoricDetailManager()
-      .deleteHistoricDetailsByTaskId(taskId);
+    if(historicTaskInstance!=null) {
+      CommandContext commandContext = Context.getCommandContext();
       
-    commandContext
-      .getCommentManager()
-      .deleteCommentsByTaskId(taskId);
-    
-    getPersistenceSession().delete(HistoricTaskInstanceEntity.class, taskId);
+      commandContext
+        .getHistoricDetailManager()
+        .deleteHistoricDetailsByTaskId(taskId);
+        
+      commandContext
+        .getCommentManager()
+        .deleteCommentsByTaskId(taskId);
+      
+      getPersistenceSession().delete(HistoricTaskInstanceEntity.class, taskId);
+    }
   }
 
   public void markTaskInstanceEnded(String taskId, String deleteReason) {
@@ -139,4 +137,12 @@ public class HistoricTaskInstanceManager extends AbstractHistoricManager {
     }
   }
 
+  public void setTaskParentTaskId(String id, String parentTaskId) {
+    if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+      HistoricTaskInstanceEntity historicTaskInstance = getPersistenceSession().selectById(HistoricTaskInstanceEntity.class, id);
+      if (historicTaskInstance!=null) {
+        historicTaskInstance.setParentTaskId(parentTaskId);
+      }
+    }
+  }
 }

@@ -3,7 +3,7 @@ execute java org.activiti.engine.impl.db.upgrade.DbUpgradeStep52To53InsertProper
 -- removing not null constraint from ACT_HI_DETAIL.PROC_INST_ID_ and ACT_HI_DETAIL.EXECUTION_ID_
 
 create table ACT_HI_DETAIL_TMP (
-    ID_ varchar(64) not null,
+    ID_ NVARCHAR2(64) not null,
     TYPE_ NVARCHAR2(255) not null,
     PROC_INST_ID_ NVARCHAR2(64),
     EXECUTION_ID_ NVARCHAR2(64),
@@ -27,7 +27,7 @@ select ID_,TYPE_,PROC_INST_ID_,EXECUTION_ID_,TASK_ID_,ACT_INST_ID_,NAME_,VAR_TYP
 drop table ACT_HI_DETAIL;
 
 create table ACT_HI_DETAIL (
-    ID_ varchar(64) not null,
+    ID_ NVARCHAR2(64) not null,
     TYPE_ NVARCHAR2(255) not null,
     PROC_INST_ID_ NVARCHAR2(64),
     EXECUTION_ID_ NVARCHAR2(64),

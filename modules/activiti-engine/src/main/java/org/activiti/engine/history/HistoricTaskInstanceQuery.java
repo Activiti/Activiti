@@ -149,6 +149,9 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
    */
   HistoricTaskInstanceQuery taskVariableValueEquals(String variableName, Object variableValue);
   
+  /** Only select subtasks of the given parent task */
+  HistoricTaskInstanceQuery taskParentTaskId(String parentTaskId);
+
   /**
    * Only select historic task instances which are part of a process instance which have a variable 
    * with the given name set to the given value. The last variable value in the variable updates 

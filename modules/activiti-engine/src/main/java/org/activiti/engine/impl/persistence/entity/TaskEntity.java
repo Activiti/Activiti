@@ -56,7 +56,9 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
 
   protected String owner;
   protected String assignee;
-  protected DelegationState delegationState; 
+  protected DelegationState delegationState;
+  
+  protected String parentTaskId;
   
   protected String name;
   protected String description;
@@ -122,35 +124,6 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     return task;
   }
 
-  public void delete(String deleteReason) {
-    if (!isDeleted) {
-      isDeleted = true;
-      
-      // cascade deletion to task assignments
-      for (IdentityLinkEntity identityLinkEntities: getIdentityLinks()) {
-        identityLinkEntities.delete();
-      }
-
-      ensureVariableInstancesInitialized();
-      for (VariableInstanceEntity variableInstance: variableInstances.values()) {
-        variableInstance.delete();
-      }
-
-      CommandContext commandContext = Context.getCommandContext();
-      DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
-      int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
-      if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
-        HistoricTaskInstanceEntity historicTaskInstance = dbSqlSession
-          .selectById(HistoricTaskInstanceEntity.class, id);
-        if (historicTaskInstance!=null) {
-          historicTaskInstance.markEnded(deleteReason);
-        }
-      }
-
-      dbSqlSession.delete(TaskEntity.class, id);
-    }
-  }
-
   public void update(TaskEntity task) {
     setOwner(task.getOwner());
     setAssignee(task.getAssignee());
@@ -160,11 +133,17 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     setPriority(task.getPriority());
     setCreateTime(task.getCreateTime());
     setDueDate(task.getDueDate());
+    setParentTaskId(task.getParentTaskId());
   }
 
   public void complete() {
     fireEvent(TaskListener.EVENTNAME_COMPLETE);
-    delete(DELETE_REASON_COMPLETED);
+
+    Context
+      .getCommandContext()
+      .getTaskManager()
+      .deleteTask(this, TaskEntity.DELETE_REASON_COMPLETED, false);
+    
     if (executionId!=null) {
       getExecution().signal(null, null);
     }
@@ -197,6 +176,9 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     }
     if(dueDate != null) {
       persistentState.put("dueDate", this.dueDate);
+    }
+    if (parentTaskId!=null) {
+      persistentState.put("parentTaskId", this.parentTaskId);
     }
     return persistentState;
   }
@@ -492,6 +474,22 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   public void setPriorityWithoutCascade(int priority) {
     this.priority = priority;
   }
+  
+  public void setParentTaskId(String parentTaskId) {
+    this.parentTaskId = parentTaskId;
+    
+    CommandContext commandContext = Context.getCommandContext();
+    if (commandContext!=null) {
+      commandContext
+        .getHistoricTaskInstanceManager()
+        .setTaskParentTaskId(id, parentTaskId);
+    }
+  }
+
+  public void setParentTaskIdWithoutCascade(String parentTaskId) {
+    this.parentTaskId = parentTaskId;
+  }
+
 
   public void fireEvent(String taskEventName) {
     TaskDefinition taskDefinition = getTaskDefinition();
@@ -660,5 +658,8 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   }
   public void setDeleted(boolean isDeleted) {
     this.isDeleted = isDeleted;
+  }
+  public String getParentTaskId() {
+    return parentTaskId;
   }
 }

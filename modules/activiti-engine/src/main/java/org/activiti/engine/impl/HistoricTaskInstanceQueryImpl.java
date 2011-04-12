@@ -38,6 +38,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
   protected String taskId;
   protected String taskName;
   protected String taskNameLike;
+  protected String taskParentTaskId;
   protected String taskDescription;
   protected String taskDescriptionLike;
   protected String taskDeleteReason;
@@ -119,6 +120,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
 
   public HistoricTaskInstanceQueryImpl taskNameLike(String taskNameLike) {
     this.taskNameLike = taskNameLike;
+    return this;
+  }
+  
+  public HistoricTaskInstanceQuery taskParentTaskId(String parentTaskId) {
+    this.taskParentTaskId = parentTaskId;
     return this;
   }
 
@@ -359,5 +365,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
   }
   public String getTaskOwner() {
     return taskOwner;
+  }
+  public String getTaskParentTaskId() {
+    return taskParentTaskId;
   }
 }

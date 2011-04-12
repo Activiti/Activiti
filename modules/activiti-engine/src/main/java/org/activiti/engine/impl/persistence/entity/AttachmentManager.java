@@ -34,6 +34,16 @@ public class AttachmentManager extends AbstractManager {
     return getPersistenceSession().selectList("selectAttachmentsByTaskId", taskId);
   }
 
-
+  @SuppressWarnings("unchecked")
+  public void deleteAttachmentsByTaskId(String taskId) {
+    List<AttachmentEntity> attachments = getPersistenceSession().selectList("selectAttachmentsByTaskId", taskId);
+    for (AttachmentEntity attachment: attachments) {
+      String contentId = attachment.getContentId();
+      if (contentId!=null) {
+        getPersistenceSession().delete(ByteArrayEntity.class, contentId);
+      }
+      getPersistenceSession().delete(AttachmentEntity.class, attachment.getId());
+    }
+  }
 }
 

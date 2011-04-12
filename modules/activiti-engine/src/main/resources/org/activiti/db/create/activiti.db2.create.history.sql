@@ -38,6 +38,7 @@ create table ACT_HI_TASKINST (
     PROC_INST_ID_ varchar(64),
     EXECUTION_ID_ varchar(64),
     NAME_ varchar(255),
+    PARENT_TASK_ID_ varchar(64),
     DESCRIPTION_ varchar(255),
     ASSIGNEE_ varchar(64),
     START_TIME_ timestamp not null,

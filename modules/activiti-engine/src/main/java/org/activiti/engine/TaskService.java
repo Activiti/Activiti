@@ -303,4 +303,7 @@ public interface TaskService {
 
   /** Delete an attachment */
   void deleteAttachment(String attachmentId);
+
+  /** The list of subtasks for this parent task */
+  List<Task> getSubTasks(String parentTaskId);
 }
