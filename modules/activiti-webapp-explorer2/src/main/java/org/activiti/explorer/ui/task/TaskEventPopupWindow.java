@@ -37,24 +37,22 @@ import com.vaadin.ui.themes.Reindeer;
 /**
  * @author Joram Barrez
  */
-public class TaskCommentPopupWindow extends Window {
+public class TaskEventPopupWindow extends Window {
   
-  private static final long serialVersionUID = -5764168454419580506L;
+  private static final long serialVersionUID = 1L;
   
   protected IdentityService identityService;
   protected I18nManager i18nManager;
   
-  protected org.activiti.engine.task.Event comment;
+  protected org.activiti.engine.task.Event taskEvent;
   protected User user;
 
-  public TaskCommentPopupWindow(org.activiti.engine.task.Event comment) {
+  public TaskEventPopupWindow(org.activiti.engine.task.Event taskEvent) {
     super();
-
+    this.taskEvent = taskEvent;
     this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
     this.i18nManager = ExplorerApp.get().getI18nManager();
-    
-    this.comment = comment;
-    this.user = identityService.createUserQuery().userId(comment.getUserId()).singleResult();
+    this.user = identityService.createUserQuery().userId(taskEvent.getUserId()).singleResult();
     
     initUi();
   }
@@ -82,31 +80,30 @@ public class TaskCommentPopupWindow extends Window {
         }
       }, user.getId(), ExplorerApp.get());
       
-      Embedded commentAuthor = new Embedded("", imageresource);
-      commentAuthor.setType(Embedded.TYPE_IMAGE);
-      commentAuthor.setHeight("200px");
-      commentAuthor.setWidth("200px");
-      commentAuthor.addStyleName(ExplorerLayout.STYLE_PROFILE_PICTURE);
+      Embedded author = new Embedded("", imageresource);
+      author.setType(Embedded.TYPE_IMAGE);
+      author.setHeight("200px");
+      author.setWidth("200px");
+      author.addStyleName(ExplorerLayout.STYLE_PROFILE_PICTURE);
       
-      layout.addComponent(commentAuthor);
+      layout.addComponent(author);
     }
     
-    // comment
-    VerticalLayout commentLayout = new VerticalLayout();
-    commentLayout.setSpacing(true);
-    commentLayout.setWidth("70%");
-    layout.addComponent(commentLayout);
-    layout.setExpandRatio(commentLayout, 1.0f);
+    VerticalLayout eventLayout = new VerticalLayout();
+    eventLayout.setSpacing(true);
+    eventLayout.setWidth("70%");
+    layout.addComponent(eventLayout);
+    layout.setExpandRatio(eventLayout, 1.0f);
     
     Label header = new Label(i18nManager.getMessage(
         Messages.TASK_COMMENT_POPUP_HEADER,
-        new PrettyTime().format(comment.getTime()),
+        new PrettyTime().format(taskEvent.getTime()),
         user.getFirstName() + " " + user.getLastName()));
-    header.addStyleName(ExplorerLayout.STYLE_TASK_COMMENT_AUTHOR);
-    commentLayout.addComponent(header);
+    header.addStyleName(ExplorerLayout.STYLE_TASK_EVENT_AUTHOR);
+    eventLayout.addComponent(header);
     
-    Label commentText = new Label(comment.getMessage());
-    commentLayout.addComponent(commentText);
+    Label text = new Label(taskEvent.getMessage());
+    eventLayout.addComponent(text);
   }
 
 }

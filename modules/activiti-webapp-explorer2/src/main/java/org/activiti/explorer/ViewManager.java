@@ -23,7 +23,7 @@ import org.activiti.explorer.ui.management.deployment.DeploymentPage;
 import org.activiti.explorer.ui.management.job.JobPage;
 import org.activiti.explorer.ui.profile.ProfilePanel;
 import org.activiti.explorer.ui.profile.ProfilePopupWindow;
-import org.activiti.explorer.ui.task.TaskCommentPopupWindow;
+import org.activiti.explorer.ui.task.TaskEventPopupWindow;
 import org.activiti.explorer.ui.task.TaskInboxPage;
 import org.activiti.explorer.ui.task.TaskQueuedPage;
 
@@ -71,8 +71,8 @@ public class ViewManager {
     mainWindow.switchView(new TaskQueuedPage(groupId, taskId));
   }
   
-  public void showTaskCommentPopup(org.activiti.engine.task.Event comment) {
-    showPopupWindow(new TaskCommentPopupWindow(comment));
+  public void showTaskEventPopup(org.activiti.engine.task.Event comment) {
+    showPopupWindow(new TaskEventPopupWindow(comment));
   }
   
   // Flows

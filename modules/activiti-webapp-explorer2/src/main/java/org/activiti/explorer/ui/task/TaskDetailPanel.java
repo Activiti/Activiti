@@ -112,7 +112,7 @@ public class TaskDetailPanel extends HorizontalLayout {
     
     
     // Right panel: the task comments
-    this.eventPanel = new TaskCommentPanel(taskId);
+    this.eventPanel = new TaskEventsPanel(taskId);
     eventPanel.addStyleName(Reindeer.PANEL_LIGHT);
     addComponent(eventPanel);
     setExpandRatio(eventPanel, 25.0f);

@@ -84,7 +84,7 @@ public class UserDetailsComponent extends HorizontalLayout {
       Embedded picture = new Embedded(null, pictureResource);
       
       picture.setType(Embedded.TYPE_IMAGE);
-      picture.addStyleName(ExplorerLayout.STYLE_TASK_COMMENT_PICTURE);
+      picture.addStyleName(ExplorerLayout.STYLE_TASK_EVENT_PICTURE);
       picture.setHeight("48px");
       picture.setWidth("48px");
       addComponent(picture);

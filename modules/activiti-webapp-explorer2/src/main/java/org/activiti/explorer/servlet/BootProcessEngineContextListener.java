@@ -64,6 +64,8 @@ public class BootProcessEngineContextListener implements ServletContextListener 
       .getRequiredWebApplicationContext(servletContextEvent.getServletContext())
       .getBean(ProcessEngine.class);
     
+    processEngine.getIdentityService().setAuthenticatedUserId("kermit");
+    
     initFormPropertyMapping();
     initUriNavigation();
     initAttachmentRenderers();
