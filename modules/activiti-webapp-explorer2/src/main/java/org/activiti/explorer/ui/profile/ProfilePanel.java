@@ -31,6 +31,7 @@ import org.activiti.explorer.ViewManager;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.custom.InMemoryUploadReceiver;
+import org.activiti.explorer.ui.custom.SkypeLabel;
 import org.activiti.explorer.ui.event.SubmitEvent;
 import org.activiti.explorer.ui.event.SubmitEventListener;
 
@@ -385,11 +386,7 @@ public class ProfilePanel extends Panel {
       skypeIdLabel.setSizeUndefined();
       skypeLayout.addComponent(skypeIdLabel);
       
-      Label skypeImage = new Label("<script type='text/javascript' " +
-      		"src='http://download.skype.com/share/skypebuttons/js/skypeCheck.js'></script>" +
-      		"<a href='skype:" + skypeId + "?call'>" +
-      		"<img src='VAADIN/themes/activiti/img/skype.png' style='border: none;' /></a>",
-      		Label.CONTENT_XHTML);
+      Label skypeImage = new SkypeLabel(skypeId);
       skypeImage.setSizeUndefined();
       skypeLayout.addComponent(skypeImage);
       
