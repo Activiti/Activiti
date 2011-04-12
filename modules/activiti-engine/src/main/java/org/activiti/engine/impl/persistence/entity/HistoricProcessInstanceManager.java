@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.activiti.engine.history.HistoricProcessInstance;
@@ -30,17 +31,22 @@ import org.activiti.engine.impl.persistence.AbstractHistoricManager;
 public class HistoricProcessInstanceManager extends AbstractHistoricManager {
 
   public HistoricProcessInstanceEntity findHistoricProcessInstance(String processInstanceId) {
-    return (HistoricProcessInstanceEntity) getPersistenceSession().selectById(HistoricProcessInstanceEntity.class, processInstanceId);
+    if (historyLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
+      return (HistoricProcessInstanceEntity) getPersistenceSession().selectById(HistoricProcessInstanceEntity.class, processInstanceId);
+    }
+    return null;
   }
 
 
   @SuppressWarnings("unchecked")
   public void deleteHistoricProcessInstanceByProcessDefinitionId(String processDefinitionId) {
-    List<String> historicProcessInstanceIds = getPersistenceSession()
-      .selectList("selectHistoricProcessInstanceIdsByProcessDefinitionId", processDefinitionId);
-  
-    for (String historicProcessInstanceId: historicProcessInstanceIds) {
-      deleteHistoricProcessInstanceById(historicProcessInstanceId);
+    if (historyLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
+      List<String> historicProcessInstanceIds = getPersistenceSession()
+        .selectList("selectHistoricProcessInstanceIdsByProcessDefinitionId", processDefinitionId);
+    
+      for (String historicProcessInstanceId: historicProcessInstanceIds) {
+        deleteHistoricProcessInstanceById(historicProcessInstanceId);
+      }
     }
   }
   
@@ -65,11 +71,17 @@ public class HistoricProcessInstanceManager extends AbstractHistoricManager {
   }
   
   public long findHistoricProcessInstanceCountByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery) {
-    return (Long) getPersistenceSession().selectOne("selectHistoricProcessInstanceCountByQueryCriteria", historicProcessInstanceQuery);
+    if (historyLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
+      return (Long) getPersistenceSession().selectOne("selectHistoricProcessInstanceCountByQueryCriteria", historicProcessInstanceQuery);
+    }
+    return 0;
   }
 
   @SuppressWarnings("unchecked")
   public List<HistoricProcessInstance> findHistoricProcessInstancesByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery, Page page) {
-    return getPersistenceSession().selectList("selectHistoricProcessInstancesByQueryCriteria", historicProcessInstanceQuery, page);
+    if (historyLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
+      return getPersistenceSession().selectList("selectHistoricProcessInstancesByQueryCriteria", historicProcessInstanceQuery, page);
+    }
+    return Collections.EMPTY_LIST;
   }
 }

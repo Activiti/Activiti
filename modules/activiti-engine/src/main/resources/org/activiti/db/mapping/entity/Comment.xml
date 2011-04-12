@@ -110,4 +110,10 @@
     where PROC_INST_ID_ = #{processInstanceId,jdbcType=VARCHAR}
   </select>
 
+  <select id="selectCommentsByProcessInstanceId_postgres" parameterType="string" resultMap="commentResultMap_postgres">
+    select * 
+    from ACT_HI_COMMENT 
+    where PROC_INST_ID_ = #{processInstanceId,jdbcType=BINARY}
+  </select>
+
 </mapper>

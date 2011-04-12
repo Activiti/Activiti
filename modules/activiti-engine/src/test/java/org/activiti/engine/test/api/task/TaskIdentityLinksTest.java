@@ -16,7 +16,6 @@ package org.activiti.engine.test.api.task;
 import java.util.List;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
