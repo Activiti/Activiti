@@ -48,18 +48,21 @@ public class CdiActivitiInterceptor extends CommandInterceptor {
 
   protected void flushBeanStore() {
     BusinessProcessAssociationManager associationManager = null;
+    String processInstanceId = null;
     try {
       associationManager = ProgrammaticBeanLookup.lookup(BusinessProcessAssociationManager.class);
+      processInstanceId = associationManager.getProcessInstanceId();
+      
     } catch (Exception e) {
       // ignore silently -> CDI is not setup (yet/anymore)
       logger.finest("Not flushing the beanStore, could not lookup "+BusinessProcessAssociationManager.class.getName());
       return;
-    }
-    if (associationManager.getProcessInstanceId() != null) {
+    }    
+    if (processInstanceId != null) {
       ExecutionEntity processInstance = Context
         .getCommandContext()
         .getExecutionManager()
-        .findExecutionById(associationManager.getProcessInstanceId());
+        .findExecutionById(processInstanceId);
       if (processInstance != null && !processInstance.isEnded()) {
         CachingBeanStore beanStore = associationManager.getBeanStore();
         logFlushSummary(beanStore);
