@@ -43,6 +43,7 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 
@@ -67,7 +68,7 @@ public class TaskDetailPanel extends HorizontalLayout {
   // UI
   protected TaskPage parent;
   protected Panel centralPanel;
-  protected Panel eventPanel;
+  protected VerticalLayout eventPanel;
   protected FormPropertiesForm taskForm;
   protected TaskRelatedContentComponent relatedContent;
   protected Button completeButton;

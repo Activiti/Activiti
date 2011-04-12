@@ -29,28 +29,31 @@ import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
 
 import com.ocpsoft.pretty.time.PrettyTime;
+import com.vaadin.event.Action;
+import com.vaadin.event.Action.Handler;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.terminal.StreamResource.StreamSource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.TextArea;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.Reindeer;
 
 
 /**
  * @author Joram Barrez
  */
-public class TaskEventsPanel extends Panel {
+public class TaskEventsPanel extends VerticalLayout {
   
   private static final long serialVersionUID = 1L;
   
@@ -69,7 +72,7 @@ public class TaskEventsPanel extends Panel {
     this.i18nManager = ExplorerApp.get().getI18nManager();
     this.viewManager = ExplorerApp.get().getViewManager();
     
-    setSizeFull();
+    setSpacing(true);
     refreshTaskEvents();
   }
   
@@ -77,8 +80,8 @@ public class TaskEventsPanel extends Panel {
     removeAllComponents();
     this.taskEvents = taskService.getTaskEvents(taskId);
     
+    addInputField();
     addTaskEvents();
-    addTextArea();
   }
   
   protected void addTaskEvents() {
@@ -89,11 +92,12 @@ public class TaskEventsPanel extends Panel {
     eventGrid.setColumnExpandRatio(1, 1.0f);
     addComponent(eventGrid);
     
+    // In the past, we created a custom component for the task event,
+    // however this really had a bad influence on performance
     for (final org.activiti.engine.task.Event event : taskEvents) {
       addTaskEventPicture(event, eventGrid);
       addTaskEventText(event, eventGrid);
     }
-    
   }
 
   protected void addTaskEventPicture(final org.activiti.engine.task.Event taskEvent, GridLayout eventGrid) {
@@ -154,32 +158,48 @@ public class TaskEventsPanel extends Panel {
     layout.addComponent(text);
     
   }
-
   
-  protected void addTextArea() {
+  protected void addInputField() {
     addComponent(new Label("&nbsp", Label.CONTENT_XHTML));
     
-    GridLayout grid = new GridLayout(1, 2);
-    grid.setWidth("100%");
-    grid.setSpacing(true);
-    addComponent(grid);
+    HorizontalLayout layout = new HorizontalLayout();
+    layout.setSpacing(true);
+    addComponent(layout);
     
-    final TextArea textArea = new TextArea();
-    textArea.setRows(2);
-    textArea.setWidth("100%");
-    textArea.addStyleName(ExplorerLayout.STYLE_TASK_EVENT_TIME);
-    grid.addComponent(textArea);
+    Panel textFieldPanel = new Panel(); // Hack: actionHandlers can only be attached to panels or windows
+    textFieldPanel.addStyleName(Reindeer.PANEL_LIGHT);
+    textFieldPanel.setContent(new VerticalLayout());
+    layout.addComponent(textFieldPanel);
+    
+    final TextField textField = new TextField();
+    textField.setWidth(200, UNITS_PIXELS);
+    textFieldPanel.addComponent(textField);
+    
+    // Hack to catch keyboard 'enter'
+    textFieldPanel.addActionHandler(new Handler() {
+      public void handleAction(Action action, Object sender, Object target) {
+        addNewComment(textField.getValue().toString());
+        textField.focus();
+      }
+      public Action[] getActions(Object target, Object sender) {
+        return new Action[] {new ShortcutAction("enter", ShortcutAction.KeyCode.ENTER, null)};
+      }
+    });
     
     Button addCommentButton = new Button(i18nManager.getMessage(Messages.TASK_ADD_COMMENT));
     addCommentButton.addStyleName(Reindeer.BUTTON_SMALL);
-    grid.addComponent(addCommentButton);
-    grid.setComponentAlignment(addCommentButton, Alignment.BOTTOM_RIGHT);
+    layout.addComponent(addCommentButton);
+    layout.setComponentAlignment(addCommentButton, Alignment.MIDDLE_LEFT);
     addCommentButton.addListener(new ClickListener() {
       public void buttonClick(ClickEvent event) {
-        taskService.addComment(taskId, null, (String) textArea.getValue());
-        refreshTaskEvents();
+        addNewComment(textField.getValue().toString());
       }
     });
+  }
+  
+  protected void addNewComment(String text) {
+    taskService.addComment(taskId, null, text);
+    refreshTaskEvents();
   }
 
 }

@@ -89,6 +89,7 @@
     from ACT_HI_COMMENT 
     where TASK_ID_ = #{taskId,jdbcType=VARCHAR}
       and TYPE_ = 'comment'
+    order by TIME_ desc
   </select>
 
   <select id="selectCommentsByTaskId_postgres" parameterType="string" resultMap="commentResultMap_postgres">
@@ -96,24 +97,28 @@
     from ACT_HI_COMMENT 
     where TASK_ID_ = #{taskId,jdbcType=VARCHAR}
       and TYPE_ = 'comment'
+    order by TIME_ desc
   </select>
 
   <select id="selectEventsByTaskId" parameterType="string" resultMap="commentResultMap">
     select * 
     from ACT_HI_COMMENT 
     where TASK_ID_ = #{taskId,jdbcType=VARCHAR}
+    order by TIME_ desc
   </select>
 
   <select id="selectCommentsByProcessInstanceId" parameterType="string" resultMap="commentResultMap">
     select * 
     from ACT_HI_COMMENT 
     where PROC_INST_ID_ = #{processInstanceId,jdbcType=VARCHAR}
+    order by TIME_ desc
   </select>
 
   <select id="selectCommentsByProcessInstanceId_postgres" parameterType="string" resultMap="commentResultMap_postgres">
     select * 
     from ACT_HI_COMMENT 
     where PROC_INST_ID_ = #{processInstanceId,jdbcType=BINARY}
+    order by TIME_ desc
   </select>
 
 </mapper>
