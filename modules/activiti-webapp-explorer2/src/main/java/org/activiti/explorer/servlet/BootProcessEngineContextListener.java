@@ -169,7 +169,7 @@ public class BootProcessEngineContextListener implements ServletContextListener 
     identityService.createMembership("kermit", "admin");
     
     // Additional details
-    identityService.setUserInfo("kermit", "birthDate", "01/01/1955");
+    identityService.setUserInfo("kermit", "birthDate", "10-10-1955");
     identityService.setUserInfo("kermit", "jobTitle", "Activiti core mascot");
     identityService.setUserInfo("kermit", "location", "Muppetland");
     identityService.setUserInfo("kermit", "phone", "+1312323424");
@@ -177,7 +177,7 @@ public class BootProcessEngineContextListener implements ServletContextListener 
     identityService.setUserInfo("kermit", "skype", "kermit.frog");
     
     // Accounts
-    identityService.setUserAccount("kermit", "kermit", "google", "kermit.frog@gmail.com", "kermit123", null);
+    identityService.setUserAccount("kermit", "kermit", "imap", "kermit.frog@gmail.com", "kermit123", null);
     identityService.setUserAccount("kermit", "kermit", "alfresco", "kermit_alf", "kermit_alf_123", null);
     
     // Picture

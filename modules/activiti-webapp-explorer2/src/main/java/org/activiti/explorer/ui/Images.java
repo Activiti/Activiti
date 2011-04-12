@@ -50,6 +50,7 @@ public class Images {
   public static final Resource SKYPE = new ThemeResource("img/skype.png");
   public static final Resource GOOGLE = new ThemeResource("img/google.png");
   public static final Resource ALFRESCO = new ThemeResource("img/alfresco.gif");
+  public static final Resource IMAP = new ThemeResource("img/imap.png");
   
   // Database
   public static final Resource DATABASE_GENERAL = new ThemeResource("img/database_general.png");

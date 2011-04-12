@@ -30,7 +30,7 @@ import com.vaadin.ui.Label;
  */
 public class PrettyTimeLabel extends Label {
   
-  private static final long serialVersionUID = 5839316455889287370L;
+  private static final long serialVersionUID = 1L;
   
   public PrettyTimeLabel(Date date) {
     this(date, "");

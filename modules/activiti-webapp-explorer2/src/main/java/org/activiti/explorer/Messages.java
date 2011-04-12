@@ -24,6 +24,7 @@ public interface Messages {
   static final String CONFIRMATION_DIALOG_DEFAULT_TITLE = "confirmation.dialog.default.title";
   static final String CONFIRMATION_DIALOG_YES = "confirmation.dialog.yes";
   static final String CONFIRMATION_DIALOG_NO = "confirmation.dialog.no";
+  static final String BUTTON_OK = "button.ok";
   
   // Login
   static final String LOGIN_USERNAME = "login.username";
@@ -58,6 +59,28 @@ public interface Messages {
   static final String PROFILE_EDIT = "profile.edit";
   static final String PROFILE_SAVE = "profile.save";
   static final String PROFILE_CHANGE_PICTURE = "profile.change.picture";
+  static final String PROFILE_ACCOUNT_USER_NAME = "profile.account.username";
+  static final String PROFILE_ACCOUNT_PASWORD = "profile.account.password";
+  static final String PROFILE_DELETE_ACCOUNT_TITLE = "profile.delete.account.title";
+  static final String PROFILE_DELETE_ACCOUNT_DESCRIPTION = "profile.delete.account.description";
+  static final String PROFILE_ADD_ACCOUNT = "profile.add.account";
+  static final String PROFILE_ACCOUNT_IMAP_DESCRIPTION = "profile.account.imap.description";
+  static final String PROFILE_ACCOUNT_IMAP = "profile.account.imap";
+  static final String PROFILE_ACCOUNT_ALFRESCO = "profile.account.alfresco";
+  
+  // Imap
+  static final String IMAP_SERVER = "imap.server";
+  static final String IMAP_PORT = "imap.port";
+  static final String IMAP_SSL = "imap.ssl";
+  static final String IMAP_USERNAME = "imap.username";
+  static final String IMAP_PASSWORD = "imap.password";
+  static final String IMAP_DESCRIPTION = "imap.description";
+  
+  //Alfresco
+  static final String ALFRESCO_SERVER = "alfresco.server";
+  static final String ALFRESCO_USERNAME = "alfresco.username";
+  static final String ALFRESCO_PASSWORD = "alfresco.password";
+  static final String ALFRESCO_DESCRIPTION = "alfresco.description";
 
   // Task menu
   static final String TASK_MENU_INBOX = "task.menu.inbox";

@@ -28,13 +28,15 @@ import org.activiti.engine.identity.User;
 public class LoggedInUser {
   
   protected User user;
+  protected String password;
   protected boolean isUser;
   protected boolean isAdmin;
   protected List<Group> securityRoles = new ArrayList<Group>();
   protected List<Group> groups = new ArrayList<Group>();
   
-  public LoggedInUser(User user) {
+  public LoggedInUser(User user, String password) {
     this.user = user;
+    this.password = password;
   }
   
   public String getId() {
@@ -45,6 +47,12 @@ public class LoggedInUser {
   }
   public String getLastName() {
     return user.getLastName();
+  }
+  public String getPassword() {
+    return password;
+  }
+  public void setPassword(String password) {
+    this.password = password;
   }
   public boolean isUser() {
     return isUser;

@@ -80,12 +80,11 @@ public class LoginPage extends CustomLayout {
       String userName = event.getLoginParameter("username"); // see the input field names in CustomLoginForm
       String password = event.getLoginParameter("password");  // see the input field names in CustomLoginForm
       
-      boolean success = identityService.checkPassword(userName, password);
-      if (success) {
+      if (identityService.checkPassword(userName, password)) {
         User user = identityService.createUserQuery().userId(userName).singleResult();
         
         // Fetch and cache user data
-        LoggedInUser loggedInUser = new LoggedInUser(user);
+        LoggedInUser loggedInUser = new LoggedInUser(user, password);
         List<Group> groups = identityService.createGroupQuery().groupMember(user.getId()).list();
         for (Group group : groups) {
           if (Constants.SECURITY_ROLE.equals(group.getType())) {

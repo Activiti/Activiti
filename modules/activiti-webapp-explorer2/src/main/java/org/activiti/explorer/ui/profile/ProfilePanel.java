@@ -14,37 +14,47 @@
 package org.activiti.explorer.ui.profile;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
+import org.activiti.engine.impl.identity.Account;
 import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
+import org.activiti.explorer.ViewManager;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.custom.InMemoryUploadReceiver;
+import org.activiti.explorer.ui.event.SubmitEvent;
+import org.activiti.explorer.ui.event.SubmitEventListener;
 
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.terminal.StreamResource.StreamSource;
+import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.DateField;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.FinishedEvent;
 import com.vaadin.ui.Upload.FinishedListener;
-import com.vaadin.ui.Upload.Receiver;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
@@ -59,6 +69,7 @@ public class ProfilePanel extends Panel {
   // services
   protected IdentityService identityService;
   protected I18nManager i18nManager;
+  protected ViewManager viewManager;
   
   // user information
   protected String userId;
@@ -72,6 +83,7 @@ public class ProfilePanel extends Panel {
   protected String skypeId;
   
   // ui
+  protected boolean isCurrentLoggedInUser;
   protected boolean editable = false;
   protected HorizontalLayout profilePanelLayout;
   protected VerticalLayout imageLayout;
@@ -80,12 +92,13 @@ public class ProfilePanel extends Panel {
   protected TextField lastNameField;
   protected PasswordField passwordField;
   protected TextField jobTitleField;
-  protected TextField birthDateField;
+  protected DateField birthDateField;
   protected TextField locationField;
   protected TextField emailField;
   protected TextField phoneField;
   protected TextField twitterField;
   protected TextField skypeField;
+  protected GridLayout accountLayout;
   
   // keys for storing user info
   protected static final String KEY_BIRTH_DATE = "birthDate";
@@ -97,8 +110,10 @@ public class ProfilePanel extends Panel {
   
   public ProfilePanel(String userId) {
     this.userId = userId;
+    this.isCurrentLoggedInUser = userId.equals(ExplorerApp.get().getLoggedInUser().getId());
     this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
     this.i18nManager = ExplorerApp.get().getI18nManager();
+    this.viewManager = ExplorerApp.get().getViewManager();
     
     loadProfileData();
     initUi();
@@ -146,7 +161,7 @@ public class ProfilePanel extends Panel {
   
   protected void initPicture() {
     StreamResource imageresource = new StreamResource(new StreamSource() {
-      private static final long serialVersionUID = -8875067466181823014L;
+      private static final long serialVersionUID = 1L;
       public InputStream getStream() {
         return picture.getInputStream();
       }
@@ -163,7 +178,7 @@ public class ProfilePanel extends Panel {
     imageLayout.setWidth(picture.getWidth() + 5, picture.getWidthUnits());
     
     // Change picture button
-    if (userId.equals(ExplorerApp.get().getLoggedInUser().getId())) {
+    if (isCurrentLoggedInUser) {
       Upload changePictureButton = initChangePictureButton();
       imageLayout.addComponent(changePictureButton);
       imageLayout.setComponentAlignment(changePictureButton, Alignment.MIDDLE_CENTER);
@@ -177,6 +192,7 @@ public class ProfilePanel extends Panel {
     
     final InMemoryUploadReceiver receiver = initPictureReceiver(changePictureUpload);
     changePictureUpload.addListener(new FinishedListener() {
+      private static final long serialVersionUID = 1L;
       public void uploadFinished(FinishedEvent event) {
         if (!receiver.isInterruped()) {
           picture = new Picture(receiver.getBytes(), receiver.getMimeType());
@@ -215,7 +231,10 @@ public class ProfilePanel extends Panel {
     
     initAboutSection();
     initContactSection();
-    initAccountsSection();
+    
+    if (isCurrentLoggedInUser) {
+      initAccountsSection();
+    }
   }
 
   protected void initAboutSection() {
@@ -229,7 +248,7 @@ public class ProfilePanel extends Panel {
     header.setExpandRatio(aboutLabel, 1.0f);
     
     // only show edit/save buttons if current user matches
-    if (userId.equals(ExplorerApp.get().getLoggedInUser().getId())) {
+    if (isCurrentLoggedInUser) {
       Button actionButton = null;
       if (!editable) {
         actionButton = initEditProfileButton();
@@ -243,15 +262,18 @@ public class ProfilePanel extends Panel {
     // 'About' fields
     GridLayout aboutLayout = createInfoSectionLayout(2, 4); 
     
+    // Name
     if (!editable && (isDefined(user.getFirstName()) || isDefined(user.getLastName()) )) {
       addProfileEntry(aboutLayout, i18nManager.getMessage(Messages.PROFILE_NAME), user.getFirstName() + " " + user.getLastName());
     } else if (editable) {
       firstNameField = new TextField();
+      firstNameField.focus();
       addProfileInputField(aboutLayout, i18nManager.getMessage(Messages.PROFILE_FIRST_NAME), firstNameField, user.getFirstName());
       lastNameField = new TextField();
       addProfileInputField(aboutLayout, i18nManager.getMessage(Messages.PROFILE_LAST_NAME), lastNameField, user.getLastName());
     }
     
+    // Job title
     if (!editable && isDefined(jobTitle)) {
       addProfileEntry(aboutLayout, i18nManager.getMessage(Messages.PROFILE_JOBTITLE), jobTitle);
     } else if (editable) {
@@ -259,13 +281,20 @@ public class ProfilePanel extends Panel {
       addProfileInputField(aboutLayout, i18nManager.getMessage(Messages.PROFILE_JOBTITLE), jobTitleField, jobTitle);
     }
     
+    // Birthdate
     if (!editable && isDefined(birthDate)) {
       addProfileEntry(aboutLayout, i18nManager.getMessage(Messages.PROFILE_BIRTHDATE), birthDate);
     } else if (editable) {
-      birthDateField = new TextField();
-      addProfileInputField(aboutLayout, i18nManager.getMessage(Messages.PROFILE_BIRTHDATE), birthDateField, birthDate);
+      birthDateField = new DateField();
+      birthDateField.setDateFormat(Constants.DEFAULT_DATE_FORMAT);
+      birthDateField.setResolution(DateField.RESOLUTION_DAY);
+      try {
+        birthDateField.setValue(Constants.DEFAULT_DATE_FORMATTER.parse(birthDate));
+      } catch (Exception e) {} // do nothing
+      addProfileInputField(aboutLayout, i18nManager.getMessage(Messages.PROFILE_BIRTHDATE), birthDateField, null);
     }
     
+    // Location
     if (!editable && isDefined(location)) {
       addProfileEntry(aboutLayout, i18nManager.getMessage(Messages.PROFILE_LOCATION), location);
     } else if (editable) {
@@ -298,12 +327,12 @@ public class ProfilePanel extends Panel {
         user.setEmail((String) emailField.getValue());
         identityService.saveUser(user);
         
-        identityService.setUserInfo(user.getId(), KEY_JOB_TITLE, (String) jobTitleField.getValue());
-        identityService.setUserInfo(user.getId(), KEY_BIRTH_DATE, (String) birthDateField.getValue());
-        identityService.setUserInfo(user.getId(), KEY_LOCATION, (String) locationField.getValue());
-        identityService.setUserInfo(user.getId(), KEY_PHONE, (String) phoneField.getValue());
-        identityService.setUserInfo(user.getId(), KEY_TWITTER, (String) twitterField.getValue());
-        identityService.setUserInfo(user.getId(), KEY_SKYPE, (String) skypeField.getValue());
+        identityService.setUserInfo(user.getId(), KEY_JOB_TITLE, jobTitleField.getValue().toString());
+        identityService.setUserInfo(user.getId(), KEY_BIRTH_DATE, Constants.DEFAULT_DATE_FORMATTER.format(birthDateField.getValue()));
+        identityService.setUserInfo(user.getId(), KEY_LOCATION, locationField.getValue().toString());
+        identityService.setUserInfo(user.getId(), KEY_PHONE, phoneField.getValue().toString());
+        identityService.setUserInfo(user.getId(), KEY_TWITTER, twitterField.getValue().toString());
+        identityService.setUserInfo(user.getId(), KEY_SKYPE, skypeField.getValue().toString());
         
         // UI
         editable = false;
@@ -320,6 +349,7 @@ public class ProfilePanel extends Panel {
     
     GridLayout contactLayout = createInfoSectionLayout(2, 4);
     
+    // Email
     if (!editable && isDefined(user.getEmail())) {
       addProfileEntry(contactLayout, i18nManager.getMessage(Messages.PROFILE_EMAIL), user.getEmail());
     } else if (editable) {
@@ -327,6 +357,7 @@ public class ProfilePanel extends Panel {
       addProfileInputField(contactLayout, i18nManager.getMessage(Messages.PROFILE_EMAIL), emailField, user.getEmail());
     }
     
+    // Phone
     if (!editable && isDefined(phone)) {
       addProfileEntry(contactLayout, i18nManager.getMessage(Messages.PROFILE_PHONE), phone);
     } else if (editable) {
@@ -334,27 +365,31 @@ public class ProfilePanel extends Panel {
       addProfileInputField(contactLayout, i18nManager.getMessage(Messages.PROFILE_PHONE), phoneField, phone);
     }
     
+    // Twitter
     if (!editable && isDefined(twitterName)) {
-      addProfileEntry(contactLayout, i18nManager.getMessage(Messages.PROFILE_TWITTER), twitterName);
+      Link twitterLink = new Link(twitterName, new ExternalResource("http://www.twitter.com/"+twitterName)); 
+      addProfileEntry(contactLayout, i18nManager.getMessage(Messages.PROFILE_TWITTER), twitterLink);
     } else if (editable) {
       twitterField = new TextField();
       addProfileInputField(contactLayout, i18nManager.getMessage(Messages.PROFILE_TWITTER), twitterField, twitterName);
     }
     
+    // Skype
     if (!editable && isDefined(skypeId)) {
       // The skype entry shows the name + skype icon, laid out in a small grid
-      GridLayout skypeLayout = new GridLayout(3,1);
+      GridLayout skypeLayout = new GridLayout(2,1);
+      skypeLayout.setSpacing(true);
       skypeLayout.setSizeUndefined();
       
       Label skypeIdLabel = new Label(skypeId);
       skypeIdLabel.setSizeUndefined();
       skypeLayout.addComponent(skypeIdLabel);
       
-      Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
-      emptySpace.setSizeUndefined();
-      skypeLayout.addComponent(emptySpace);
-      
-      Embedded skypeImage = new Embedded(null, Images.SKYPE);
+      Label skypeImage = new Label("<script type='text/javascript' " +
+      		"src='http://download.skype.com/share/skypebuttons/js/skypeCheck.js'></script>" +
+      		"<a href='skype:" + skypeId + "?call'>" +
+      		"<img src='VAADIN/themes/activiti/img/skype.png' style='border: none;' /></a>",
+      		Label.CONTENT_XHTML);
       skypeImage.setSizeUndefined();
       skypeLayout.addComponent(skypeImage);
       
@@ -369,23 +404,83 @@ public class ProfilePanel extends Panel {
     return information != null && !"".equals(information);
   }
   
-  protected void  initAccountsSection() {
+  protected void initAccountsSection() {
+    // Header
     Label header = createProfileHeader(infoPanelLayout, i18nManager.getMessage(Messages.PROFILE_ACCOUNTS));
     infoPanelLayout.addComponent(header);
     
-    GridLayout accountLayout = createInfoSectionLayout(3, 2); 
-
-    // Google
-    Embedded googleImage = new Embedded(null, Images.GOOGLE);
-    googleImage.setSizeUndefined();
-    accountLayout.addComponent(googleImage);
-    addProfileEntry(accountLayout, "Google", "mr_kermit_frog@gmail.com");
+    // Actual account data
+    accountLayout = createInfoSectionLayout(4, 2); 
+    populateAccounts();
     
-    // Alfresco
-    Embedded alfrescoImage = new Embedded(null, Images.ALFRESCO);
-    alfrescoImage.setSizeUndefined();
-    accountLayout.addComponent(alfrescoImage);
-    addProfileEntry(accountLayout, "Alfresco", "kermit_alfresco");
+    // Add account button
+    Button addAccountButton = new Button(i18nManager.getMessage(Messages.PROFILE_ADD_ACCOUNT));
+    addAccountButton.addStyleName(Reindeer.BUTTON_SMALL);
+    infoPanelLayout.addComponent(addAccountButton);
+    
+    addAccountButton.addListener(new ClickListener() {
+      public void buttonClick(ClickEvent event) {
+        AccountSelectionPopup popup = new AccountSelectionPopup(i18nManager.getMessage(Messages.PROFILE_ADD_ACCOUNT));
+        
+        // Adds a listener that listens to submit events when a account is selected
+        popup.addListener(new SubmitEventListener() {
+          @SuppressWarnings("unchecked")
+          protected void submitted(SubmitEvent event) {
+            Map<String, Object> accountDetails = (Map<String, Object>) event.getData();
+            identityService.setUserAccount(userId, 
+                    ExplorerApp.get().getLoggedInUser().getPassword(),
+                    (String) accountDetails.get("accountName"),
+                    (String) accountDetails.get("userName"),
+                    (String) accountDetails.get("password"),
+                    (Map<String, String>) accountDetails.get("additional"));
+            refreshAccounts();
+          }
+          protected void cancelled(SubmitEvent event) {
+          }
+        });
+        viewManager.showPopupWindow(popup);
+      }
+    });
+  }
+  
+  protected void populateAccounts() {
+    List<Account> accounts = loadAccounts();
+    
+    for (Account account : accounts) {
+      Embedded image = null;
+      if (account.getName().equals("imap")) {
+        image = new Embedded(null, Images.IMAP);
+      } else if (account.getName().equals("alfresco")) {
+        image = new Embedded(null, Images.ALFRESCO);
+      }
+      
+      if (image != null) {
+      image.setSizeUndefined();
+      accountLayout.addComponent(image);
+      }
+      addProfileEntry(accountLayout, account.getName(), account.getUsername());
+      
+      Embedded deleteIcon = new Embedded(null, Images.DELETE);
+      deleteIcon.setType(Embedded.TYPE_IMAGE);
+      deleteIcon.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
+      deleteIcon.addListener(new DeleteAccountClickListener(userId, account.getName(), this));
+      accountLayout.addComponent(deleteIcon);
+    }
+  }
+  
+  public void refreshAccounts() {
+    accountLayout.removeAllComponents();
+    populateAccounts();
+  }
+  
+  protected List<Account> loadAccounts() {
+    List<String> accountNames = identityService.getUserAccountNames(userId);
+    List<Account> accounts = new ArrayList<Account>(accountNames.size());
+    for (String accountName : accountNames) {
+      accounts.add(identityService.getUserAccount(
+              userId, ExplorerApp.get().getLoggedInUser().getPassword(), accountName));
+    }
+    return accounts;
   }
   
   protected Label createProfileHeader(VerticalLayout infoLayout, String headerName) {
@@ -404,11 +499,11 @@ public class ProfilePanel extends Panel {
   }
   
   protected void addProfileEntry(GridLayout layout, String name, String value) {
-    addProfileEntry(layout, name + ": ", new Label(value));
+    addProfileEntry(layout, name, new Label(value));
   }
   
   protected void addProfileEntry(GridLayout layout, String name, Component value) {
-    addProfileEntry(layout, new Label(name), value);
+    addProfileEntry(layout, new Label(name + ": "), value);
   }
   
   protected void addProfileEntry(GridLayout layout, Component name, Component value) {
@@ -420,7 +515,7 @@ public class ProfilePanel extends Panel {
     layout.addComponent(value);
   }
   
-  protected void addProfileInputField(GridLayout layout, String name, TextField inputField, String inputFieldValue) {
+  protected void addProfileInputField(GridLayout layout, String name, AbstractField inputField, String inputFieldValue) {
     Label label = new Label(name + ": ");
     label.addStyleName(ExplorerLayout.STYLE_PROFILE_FIELD);
     label.setSizeUndefined();
@@ -433,5 +528,5 @@ public class ProfilePanel extends Panel {
     layout.addComponent(inputField);
     layout.setComponentAlignment(inputField, Alignment.MIDDLE_LEFT);
   }
-
+  
 }

@@ -32,7 +32,8 @@ public interface Constants {
   static final String SECURITY_ROLE_ADMIN = "admin";
   
   // Date formatting
- static final DateFormat DEFAULT_DATE_FORMATTER = new SimpleDateFormat("dd MMM yyyy - hh:mm");
+ static final String DEFAULT_DATE_FORMAT = "dd-MM-yyyy";
+ static final DateFormat DEFAULT_DATE_FORMATTER = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
   
   // Default diagram image extension, when name cannot be deducted from resource name
  static final String DEFAULT_DIAGRAM_IMAGE_EXTENSION = "png";
