@@ -32,11 +32,22 @@ import org.restlet.Response;
 @CycleComponent(context = CycleContextType.APPLICATION)
 public class JsonProvider extends SignavioContentRepresentationProvider {
 
+  private SignavioConnectorInterface signavioConnector;
+
+  public JsonProvider() {
+  }
+  
+  public JsonProvider(SignavioConnectorInterface signavioConnector) {
+    this.signavioConnector = signavioConnector;
+  }
+
   private static final long serialVersionUID = 1L;
 
   public Content getContent(RepositoryArtifact artifact) {
     try {
-      SignavioConnectorInterface signavioConnector = (SignavioConnectorInterface) CycleSessionContext.get(RuntimeConnectorList.class).getConnectorById(artifact.getConnectorId());
+      if (signavioConnector==null) {
+        signavioConnector = (SignavioConnectorInterface) CycleSessionContext.get(RuntimeConnectorList.class).getConnectorById(artifact.getConnectorId());        
+      }
       Content content = new Content();
       Response jsonResponse = getJsonResponse(signavioConnector, artifact, "/json");
 
@@ -52,7 +63,7 @@ public class JsonProvider extends SignavioContentRepresentationProvider {
   public String getId() {
     return "JSON";
   }
-  
+
   public MimeType getRepresentationMimeType() {
     return CycleApplicationContext.get(JsonMimeType.class);
   }
@@ -60,7 +71,7 @@ public class JsonProvider extends SignavioContentRepresentationProvider {
   public RenderInfo getRenderInfo() {
     return RenderInfo.CODE;
   }
-  
+
   public boolean isForDownload() {
     return true;
   }
