@@ -2,7 +2,7 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.activiti.persistence">
+<mapper namespace="org.activiti.engine.impl.persistence.entity.VariableInstanceEntity">
 
   <!-- VARIABLE INSTANCE INSERT -->
   
@@ -138,10 +138,6 @@
   <select id="selectByteArraysForDeployment" parameterType="string" resultMap="byteArrayResultMap">
     select * from ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{deploymentId} order by NAME_ asc
   </select>  
-  
-  <select id="selectResourceNamesForDeployment" parameterType="string" resultType="string">
-    select NAME_ from ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{deploymentId} order by NAME_ asc
-  </select>
   
   <select id="selectDeploymentResource" parameterType="map" resultMap="byteArrayResultMap">
     select * from ACT_GE_BYTEARRAY 
