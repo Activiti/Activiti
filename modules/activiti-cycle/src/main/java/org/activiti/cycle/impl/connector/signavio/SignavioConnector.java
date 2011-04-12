@@ -166,8 +166,7 @@ public class SignavioConnector extends AbstractRepositoryConnector implements Si
       return response;
     }
 
-    throw new RepositoryException("Encountered error while retrieving response (HttpStatus: " + response.getStatus() + ", Body: "
-            + response.getEntity().getText() + ")");
+    throw new RepositoryException("Encountered error while retrieving response: " + response);
   }
 
   private Request injectSecurityToken(Request request) {
