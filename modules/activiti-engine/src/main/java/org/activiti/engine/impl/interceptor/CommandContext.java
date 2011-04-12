@@ -23,6 +23,7 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
+import org.activiti.engine.impl.persistence.AbstractHistoricManager;
 import org.activiti.engine.impl.persistence.entity.AttachmentManager;
 import org.activiti.engine.impl.persistence.entity.CommentManager;
 import org.activiti.engine.impl.persistence.entity.DeploymentManager;

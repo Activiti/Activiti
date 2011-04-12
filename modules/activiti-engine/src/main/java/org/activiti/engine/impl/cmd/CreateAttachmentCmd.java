@@ -22,6 +22,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntity;
 import org.activiti.engine.impl.persistence.entity.CommentEntity;
+import org.activiti.engine.impl.persistence.entity.CommentManager;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.task.Attachment;
@@ -69,19 +70,20 @@ public class CreateAttachmentCmd implements Command<Attachment> {
       dbSqlSession.insert(byteArray);
       attachment.setContentId(byteArray.getId());
     }
-    
-    String userId = Authentication.getAuthenticatedUserId();
-    CommentEntity comment = new CommentEntity();
-    comment.setUserId(userId);
-    comment.setType(CommentEntity.TYPE_EVENT);
-    comment.setTime(ClockUtil.getCurrentTime());
-    comment.setTaskId(taskId);
-    comment.setProcessInstanceId(processInstanceId);
-    comment.setAction(Event.ACTION_ADD_ATTACHMENT);
-    comment.setMessage(attachmentName);
-    commandContext
-      .getCommentManager()
-      .insert(comment);
+
+    CommentManager commentManager = commandContext.getCommentManager();
+    if (commentManager.isHistoryEnabled()) {
+      String userId = Authentication.getAuthenticatedUserId();
+      CommentEntity comment = new CommentEntity();
+      comment.setUserId(userId);
+      comment.setType(CommentEntity.TYPE_EVENT);
+      comment.setTime(ClockUtil.getCurrentTime());
+      comment.setTaskId(taskId);
+      comment.setProcessInstanceId(processInstanceId);
+      comment.setAction(Event.ACTION_ADD_ATTACHMENT);
+      comment.setMessage(attachmentName);
+      commentManager.insert(comment);
+    }
     
     return attachment;
   }

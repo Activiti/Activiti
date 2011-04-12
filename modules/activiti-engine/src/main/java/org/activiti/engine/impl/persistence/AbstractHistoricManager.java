@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.persistence;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 
@@ -24,5 +25,14 @@ public class AbstractHistoricManager extends AbstractManager {
 
   protected int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
   protected boolean isHistoryEnabled = historyLevel > ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE;
+  
+  protected void checkHistoryEnabled() {
+    if (!isHistoryEnabled) {
+      throw new ActivitiException("history is not enabled");
+    }
+  }
 
+  public boolean isHistoryEnabled() {
+    return isHistoryEnabled;
+  }
 }

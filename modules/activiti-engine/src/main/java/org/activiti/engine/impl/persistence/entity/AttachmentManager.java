@@ -15,27 +15,30 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
 
-import org.activiti.engine.impl.persistence.AbstractManager;
+import org.activiti.engine.impl.persistence.AbstractHistoricManager;
 import org.activiti.engine.task.Attachment;
 
 
 /**
  * @author Tom Baeyens
  */
-public class AttachmentManager extends AbstractManager {
+public class AttachmentManager extends AbstractHistoricManager {
 
   @SuppressWarnings("unchecked")
   public List<Attachment> findAttachmentsByProcessInstanceId(String processInstanceId) {
+    checkHistoryEnabled();
     return getPersistenceSession().selectList("selectAttachmentsByProcessInstanceId", processInstanceId);
   }
 
   @SuppressWarnings("unchecked")
   public List<Attachment> findAttachmentsByTaskId(String taskId) {
+    checkHistoryEnabled();
     return getPersistenceSession().selectList("selectAttachmentsByTaskId", taskId);
   }
 
   @SuppressWarnings("unchecked")
   public void deleteAttachmentsByTaskId(String taskId) {
+    checkHistoryEnabled();
     List<AttachmentEntity> attachments = getPersistenceSession().selectList("selectAttachmentsByTaskId", taskId);
     for (AttachmentEntity attachment: attachments) {
       String contentId = attachment.getContentId();

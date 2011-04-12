@@ -15,7 +15,8 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
 
-import org.activiti.engine.impl.persistence.AbstractManager;
+import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.persistence.AbstractHistoricManager;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
 
@@ -23,24 +24,38 @@ import org.activiti.engine.task.Event;
 /**
  * @author Tom Baeyens
  */
-public class CommentManager extends AbstractManager {
+public class CommentManager extends AbstractHistoricManager {
+  
+  public void delete(PersistentObject persistentObject) {
+    checkHistoryEnabled();
+    super.delete(persistentObject);
+  }
+
+  public void insert(PersistentObject persistentObject) {
+    checkHistoryEnabled();
+    super.insert(persistentObject);
+  }
 
   @SuppressWarnings("unchecked")
   public List<Comment> findCommentsByTaskId(String taskId) {
+    checkHistoryEnabled();
     return getPersistenceSession().selectList("selectCommentsByTaskId", taskId);
   }
 
   @SuppressWarnings("unchecked")
   public List<Event> findEventsByTaskId(String taskId) {
+    checkHistoryEnabled();
     return getPersistenceSession().selectList("selectEventsByTaskId", taskId);
   }
 
   public void deleteCommentsByTaskId(String taskId) {
+    checkHistoryEnabled();
     getPersistenceSession().delete("deleteCommentsByTaskId", taskId);
   }
 
   @SuppressWarnings("unchecked")
   public List<Comment> findCommentsByProcessInstanceId(String processInstanceId) {
+    checkHistoryEnabled();
     return getPersistenceSession().selectList("selectCommentsByProcessInstanceId", processInstanceId);
   }
 
