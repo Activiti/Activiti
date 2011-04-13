@@ -10,24 +10,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.explorer.servlet;
+
+package org.activiti.explorer.demo;
 
 import java.util.Date;
 import java.util.Random;
 import java.util.logging.Logger;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.util.IoUtil;
+import org.activiti.engine.impl.util.LogUtil;
 import org.activiti.engine.task.Task;
 import org.activiti.explorer.navigation.DataBaseNavigationHandler;
 import org.activiti.explorer.navigation.DefaultNavigationHandler;
@@ -48,22 +46,30 @@ import org.activiti.explorer.ui.form.EnumFormPropertyRenderer;
 import org.activiti.explorer.ui.form.FormPropertyMapping;
 import org.activiti.explorer.ui.form.LongFormPropertyRenderer;
 import org.activiti.explorer.ui.form.StringFormPropertyRenderer;
-import org.springframework.web.context.support.WebApplicationContextUtils;
+
 
 /**
+ * Note that this class is not autowired through @Component, 
+ * as we want it to be easy to remove the demo data.
+ * 
  * @author Joram Barrez
  */
-public class BootProcessEngineContextListener implements ServletContextListener {
+public class DemoDataGenerator {
   
-  protected static final Logger LOGGER = Logger.getLogger(BootProcessEngineContextListener.class.getName());
+  static {
+    LogUtil.readJavaUtilLoggingConfigFromClasspath();
+  }
+  
+  protected static final Logger LOGGER = Logger.getLogger(DemoDataGenerator.class.getName());
 
   protected ProcessEngine processEngine;
   
-  public void contextInitialized(ServletContextEvent servletContextEvent) {
-    this.processEngine = WebApplicationContextUtils
-      .getRequiredWebApplicationContext(servletContextEvent.getServletContext())
-      .getBean(ProcessEngine.class);
-    
+  public void setProcessEngine(ProcessEngine processEngine) {
+    this.processEngine = processEngine;
+    init();
+  }
+
+  public void init() {
     processEngine.getIdentityService().setAuthenticatedUserId("kermit");
     
     initFormPropertyMapping();
@@ -284,8 +290,5 @@ public class BootProcessEngineContextListener implements ServletContextListener 
      .deploy();
   }
 
-  public void contextDestroyed(ServletContextEvent servletContextEvent) {
-    ProcessEngines.destroy();
-  }
 
 }

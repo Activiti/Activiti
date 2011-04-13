@@ -32,6 +32,8 @@ import org.activiti.explorer.ui.custom.ToolbarPopupEntry;
 
 
 /**
+ * The menu bar which is shown when 'Tasks' is selected in the main menu.
+ * 
  * @author Joram Barrez
  * @author Frederik Heremans
  */

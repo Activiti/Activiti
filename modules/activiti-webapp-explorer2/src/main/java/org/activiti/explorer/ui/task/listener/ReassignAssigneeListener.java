@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.explorer.ui.task;
+package org.activiti.explorer.ui.task.listener;
 
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.task.Task;
@@ -20,6 +20,8 @@ import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.event.SubmitEvent;
 import org.activiti.explorer.ui.event.SubmitEventListener;
+import org.activiti.explorer.ui.task.InvolvePeoplePopupWindow;
+import org.activiti.explorer.ui.task.TaskDetailPanel;
 
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -33,12 +35,12 @@ public class ReassignAssigneeListener implements ClickListener {
   private static final long serialVersionUID = 1L;
   
   protected Task task;
-  protected TaskInvolvedPeopleComponent taskInvolvedPeopleComponent;
+  protected TaskDetailPanel taskDetailPanel;
   protected I18nManager i18nManager;
   
-  public ReassignAssigneeListener(Task task, TaskInvolvedPeopleComponent taskInvolvedPeopleComponent) { // changeAssigne == false -> changing owner
+  public ReassignAssigneeListener(Task task, TaskDetailPanel taskDetailPanel) {
     this.task = task;
-    this.taskInvolvedPeopleComponent = taskInvolvedPeopleComponent;
+    this.taskDetailPanel = taskDetailPanel;
     this.i18nManager = ExplorerApp.get().getI18nManager();
   }
   
@@ -53,7 +55,7 @@ public class ReassignAssigneeListener implements ClickListener {
         ProcessEngines.getDefaultProcessEngine().getTaskService().setAssignee(task.getId(), selectedUser);
         
         // Update UI
-        taskInvolvedPeopleComponent.refreshAssignee();
+        taskDetailPanel.notifyAssigneeChanged();
       }
       protected void cancelled(SubmitEvent event) {
       }

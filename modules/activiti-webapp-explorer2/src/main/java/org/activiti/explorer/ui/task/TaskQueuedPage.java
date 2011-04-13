@@ -15,8 +15,11 @@ package org.activiti.explorer.ui.task;
 import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.TaskNavigationHandler;
 import org.activiti.explorer.navigation.UriFragment;
+import org.activiti.explorer.ui.task.data.TaskQueuedListQuery;
 
 /**
+ * Page showing all the queued tasks of one person.
+ * 
  * @author Joram Barrez
  */
 public class TaskQueuedPage extends TaskPage {

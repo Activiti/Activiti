@@ -125,6 +125,13 @@ public interface Messages {
   static final String TASK_ROLE_SPONSOR = "task.role.sponsor";
   static final String TASK_ROLE_IMPLEMENTER = "task.role.implementer";
   
+  // Events
+  static final String EVENT_ADD_IDENTITYLINK = "event.add.identitylink";
+  static final String EVENT_ADD_ATTACHMENT = "event.add.attachment";
+  static final String EVENT_COMMENT = "event.comment";
+  static final String EVENT_DEFAULT = "event.default";
+
+  
   // Flow menu
   static final String FLOW_MENU_MY_FLOWS = "flow.menu.my";
   static final String FLOW_MENU_LAUNCH_FLOW = "flow.menu.launch";

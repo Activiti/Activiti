@@ -17,16 +17,19 @@ import org.activiti.explorer.Messages;
 import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.TaskNavigationHandler;
 import org.activiti.explorer.navigation.UriFragment;
+import org.activiti.explorer.ui.task.data.TaskInboxListQuery;
 
 
 
 
 /**
+ * The page displaying all tasks currently in ones inbox.
+ * 
  * @author Joram Barrez
  */
 public class TaskInboxPage extends TaskPage {
   
-  private static final long serialVersionUID = 652000311912640606L;
+  private static final long serialVersionUID = 1L;
   
   protected String taskId;
   

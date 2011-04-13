@@ -31,6 +31,7 @@ import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.form.FormPropertiesEventListener;
 import org.activiti.explorer.ui.form.FormPropertiesForm;
 import org.activiti.explorer.ui.form.FormPropertiesForm.FormPropertiesEvent;
+import org.activiti.explorer.ui.task.listener.ClaimTaskClickListener;
 
 import com.ocpsoft.pretty.time.PrettyTime;
 import com.vaadin.ui.Alignment;
@@ -43,11 +44,12 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 
 /**
+ * The central panel on the task page, showing all the details of a task.
+ * 
  * @author Joram Barrez
  */
 public class TaskDetailPanel extends HorizontalLayout {
@@ -68,12 +70,12 @@ public class TaskDetailPanel extends HorizontalLayout {
   // UI
   protected TaskPage parent;
   protected Panel centralPanel;
-  protected VerticalLayout eventPanel;
+  protected TaskEventsPanel eventPanel;
   protected FormPropertiesForm taskForm;
+  protected TaskInvolvedPeopleComponent involvedPeople;
   protected TaskRelatedContentComponent relatedContent;
   protected Button completeButton;
   protected Button claimButton;
-  
   
   public TaskDetailPanel(String taskId, TaskPage parent) {
     this.parent = parent;
@@ -95,12 +97,17 @@ public class TaskDetailPanel extends HorizontalLayout {
     setSizeFull();
     addStyleName(Reindeer.LAYOUT_WHITE);
     
-    
-    // left panel: all details about the task
+    // Central panel: all task data
     this.centralPanel = new Panel();
     centralPanel.addStyleName(Reindeer.PANEL_LIGHT);
     addComponent(centralPanel);
     setExpandRatio(centralPanel, 75.0f);
+    
+    // Right panel: the task comments
+    this.eventPanel = new TaskEventsPanel(task);
+    eventPanel.addStyleName(Reindeer.PANEL_LIGHT);
+    addComponent(eventPanel);
+    setExpandRatio(eventPanel, 25.0f);
     
     initName();
     initDescription();
@@ -110,13 +117,6 @@ public class TaskDetailPanel extends HorizontalLayout {
     initPeopleDetails();
     initRelatedContent();
     initTaskForm();
-    
-    
-    // Right panel: the task comments
-    this.eventPanel = new TaskEventsPanel(taskId);
-    eventPanel.addStyleName(Reindeer.PANEL_LIGHT);
-    addComponent(eventPanel);
-    setExpandRatio(eventPanel, 25.0f);
   }
   
   protected void initName() {
@@ -215,7 +215,8 @@ public class TaskDetailPanel extends HorizontalLayout {
   }
 
   protected void initPeopleDetails() {
-    centralPanel.addComponent(new TaskInvolvedPeopleComponent(task));
+    involvedPeople = new TaskInvolvedPeopleComponent(task, this);
+    centralPanel.addComponent(involvedPeople);
   }
   
   protected void initTaskForm() {
@@ -275,7 +276,7 @@ public class TaskDetailPanel extends HorizontalLayout {
   
   protected void initRelatedContent() {
     addEmptySpace(centralPanel);
-    relatedContent = new TaskRelatedContentComponent(task);
+    relatedContent = new TaskRelatedContentComponent(task, this);
     centralPanel.addComponent(relatedContent);
   }
   
@@ -302,4 +303,25 @@ public class TaskDetailPanel extends HorizontalLayout {
       .processDefinitionId(processDefinitionId)
       .singleResult();
   }
+  
+  public void notifyPeopleInvolvedChanged() {
+    involvedPeople.refreshPeopleGrid();
+    eventPanel.refreshTaskEvents();
+  }
+  
+  public void notifyAssigneeChanged() {
+    involvedPeople.refreshAssignee();
+    eventPanel.refreshTaskEvents();
+  }
+  
+  public void notifyOwnerChanged() {
+    involvedPeople.refreshOwner();
+    eventPanel.refreshTaskEvents();
+  }
+  
+  public void notifyRelatedContentChanged() {
+    relatedContent.refreshTaskAttachments();
+    eventPanel.refreshTaskEvents();
+  }
+  
 }

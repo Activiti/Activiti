@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.explorer.ui.task;
+package org.activiti.explorer.ui.task.listener;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.TaskService;

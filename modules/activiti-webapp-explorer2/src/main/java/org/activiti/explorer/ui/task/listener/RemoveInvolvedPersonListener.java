@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.explorer.ui.task;
+package org.activiti.explorer.ui.task.listener;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
@@ -26,6 +26,8 @@ import org.activiti.explorer.ViewManager;
 import org.activiti.explorer.ui.custom.ConfirmationDialogPopupWindow;
 import org.activiti.explorer.ui.event.ConfirmationEvent;
 import org.activiti.explorer.ui.event.ConfirmationEventListener;
+import org.activiti.explorer.ui.task.TaskDetailPanel;
+import org.activiti.explorer.ui.task.TaskInvolvedPeopleComponent;
 
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -39,16 +41,16 @@ public class RemoveInvolvedPersonListener implements ClickListener {
   private static final long serialVersionUID = 1L;
   protected IdentityLink identityLink;
   protected Task task;
-  protected TaskInvolvedPeopleComponent taskInvolvedPeopleComponent;
+  protected TaskDetailPanel taskDetailPanel;
   protected I18nManager i18nManager;
   protected ViewManager viewManager;
   protected IdentityService identityService;
   protected TaskService taskService;
   
-  public RemoveInvolvedPersonListener(IdentityLink identityLink, Task task, TaskInvolvedPeopleComponent taskInvolvedPeopleComponent) {
+  public RemoveInvolvedPersonListener(IdentityLink identityLink, Task task, TaskDetailPanel taskDetailPanel) {
     this.identityLink = identityLink;
     this.task = task;
-    this.taskInvolvedPeopleComponent = taskInvolvedPeopleComponent;
+    this.taskDetailPanel = taskDetailPanel;
     this.i18nManager = ExplorerApp.get().getI18nManager();
     this.viewManager = ExplorerApp.get().getViewManager();
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
@@ -69,7 +71,7 @@ public class RemoveInvolvedPersonListener implements ClickListener {
       }
       protected void confirmed(ConfirmationEvent event) {
         taskService.deleteUserIdentityLink(identityLink.getTaskId(), identityLink.getUserId(), identityLink.getType());
-        taskInvolvedPeopleComponent.refreshPeopleGrid();
+        taskDetailPanel.notifyPeopleInvolvedChanged();
       }
     });
     viewManager.showPopupWindow(confirmationPopup);

@@ -13,17 +13,13 @@
 
 package org.activiti.explorer;
 
-import org.activiti.engine.task.Comment;
-import org.activiti.engine.task.Event;
 import org.activiti.explorer.ui.MainWindow;
 import org.activiti.explorer.ui.flow.FlowPage;
 import org.activiti.explorer.ui.flow.MyFlowsPage;
 import org.activiti.explorer.ui.management.db.DatabasePage;
 import org.activiti.explorer.ui.management.deployment.DeploymentPage;
 import org.activiti.explorer.ui.management.job.JobPage;
-import org.activiti.explorer.ui.profile.ProfilePanel;
 import org.activiti.explorer.ui.profile.ProfilePopupWindow;
-import org.activiti.explorer.ui.task.TaskEventPopupWindow;
 import org.activiti.explorer.ui.task.TaskInboxPage;
 import org.activiti.explorer.ui.task.TaskQueuedPage;
 
@@ -78,10 +74,6 @@ public class ViewManager {
   public void showTaskQueuedPage(String groupId, String taskId) {
     mainWindow.setMainNavigation(MAIN_NAVIGATION_TASKS);
     mainWindow.switchView(new TaskQueuedPage(groupId, taskId));
-  }
-  
-  public void showTaskEventPopup(org.activiti.engine.task.Event comment) {
-    showPopupWindow(new TaskEventPopupWindow(comment));
   }
   
   // Flows

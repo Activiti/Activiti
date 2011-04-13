@@ -21,11 +21,6 @@
     <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
   </listener>
   
-  <!-- Process engine init/destroy listener -->
-  <listener>
-    <listener-class>org.activiti.explorer.servlet.BootProcessEngineContextListener</listener-class>
-  </listener>
-
 	<servlet>
 		<servlet-name>Vaadin Application Servlet</servlet-name>
 		<servlet-class>org.activiti.explorer.servlet.ExplorerApplicationServlet</servlet-class>

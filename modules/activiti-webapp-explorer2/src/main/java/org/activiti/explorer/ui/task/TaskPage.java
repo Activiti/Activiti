@@ -33,6 +33,9 @@ import com.vaadin.ui.Table;
 
 
 /**
+ * Abstract super class for all task pages (inbox, queued, archived, etc.),
+ * Builds up the default UI: task list on the left, central panel and events on the right.
+ * 
  * @author Joram Barrez
  */
 public abstract class TaskPage extends AbstractPage {

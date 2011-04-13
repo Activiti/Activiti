@@ -20,7 +20,7 @@ import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.Picture;
-import org.activiti.engine.identity.User;
+import org.activiti.engine.task.Task;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
@@ -31,8 +31,6 @@ import org.activiti.explorer.ui.Images;
 import com.ocpsoft.pretty.time.PrettyTime;
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
-import com.vaadin.event.LayoutEvents.LayoutClickEvent;
-import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.terminal.StreamResource.StreamSource;
@@ -51,9 +49,11 @@ import com.vaadin.ui.themes.Reindeer;
 
 
 /**
+ * Component containing all events for a given task.
+ * 
  * @author Joram Barrez
  */
-public class TaskEventsPanel extends VerticalLayout {
+public class TaskEventsPanel extends Panel {
   
   private static final long serialVersionUID = 1L;
   
@@ -61,31 +61,37 @@ public class TaskEventsPanel extends VerticalLayout {
   protected TaskService taskService; 
   protected I18nManager i18nManager;
   protected ViewManager viewManager;
-  
-  protected String taskId;
-  protected List<org.activiti.engine.task.Event> taskEvents;
+  protected TaskEventTextResolver taskEventTextResolver;
 
-  public TaskEventsPanel(String taskId) {
-    this.taskId = taskId;
+  protected Task task;
+  protected List<org.activiti.engine.task.Event> taskEvents;
+  protected TextField commentInputField;
+  protected GridLayout eventGrid;
+
+  public TaskEventsPanel(Task task) {
+    this.task = task;
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
     this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
     this.i18nManager = ExplorerApp.get().getI18nManager();
     this.viewManager = ExplorerApp.get().getViewManager();
+    this.taskEventTextResolver = new TaskEventTextResolver();
     
-    setSpacing(true);
-    refreshTaskEvents();
-  }
-  
-  protected void refreshTaskEvents() {
-    removeAllComponents();
-    this.taskEvents = taskService.getTaskEvents(taskId);
+    ((VerticalLayout) getContent()).setSpacing(true);
+    setHeight(100, UNITS_PERCENTAGE);
     
     addInputField();
     addTaskEvents();
   }
   
+  public void refreshTaskEvents() {
+    eventGrid.removeAllComponents();
+    addTaskEvents();
+  }
+  
   protected void addTaskEvents() {
-    GridLayout eventGrid = new GridLayout();
+    taskEvents = taskService.getTaskEvents(task.getId());
+    
+    eventGrid = new GridLayout();
     eventGrid.setColumns(2);
     eventGrid.setSpacing(true);
     eventGrid.setWidth("100%");
@@ -110,7 +116,7 @@ public class TaskEventsPanel extends VerticalLayout {
         public InputStream getStream() {
           return userPicture.getInputStream();
         }
-      }, taskEvent.getUserId(), ExplorerApp.get());
+      }, "event_" + taskEvent.getUserId(), ExplorerApp.get());
       authorPicture = new Embedded(null, imageresource);
     } else {
       authorPicture = new Embedded(null, Images.USER_48);
@@ -129,33 +135,16 @@ public class TaskEventsPanel extends VerticalLayout {
     layout.setWidth("100%");
     eventGrid.addComponent(layout);
     
-    // listener to show popup window with event details 
-    layout.addListener(new LayoutClickListener() {
-      public void layoutClick(LayoutClickEvent event) {
-        viewManager.showTaskEventPopup(taskEvent);
-      }
-    });
+    // Actual text
+    Label text = taskEventTextResolver.resolveText(taskEvent);
+    text.setWidth("100%");
+    layout.addComponent(text);
     
-    HorizontalLayout header = new HorizontalLayout();
-    header.setSpacing(true);
-    layout.addComponent(header);
-
-    // Name
-    User user = identityService.createUserQuery().userId(taskEvent.getUserId()).singleResult();
-    Label name = new Label(user.getFirstName() + " " + user.getLastName());
-    name.setSizeUndefined();
-    name.addStyleName(ExplorerLayout.STYLE_TASK_EVENT_AUTHOR);
-    header.addComponent(name);
-    
+    // Time
     Label time = new Label(new PrettyTime().format(taskEvent.getTime()));
     time.setSizeUndefined();
     time.addStyleName(ExplorerLayout.STYLE_TASK_EVENT_TIME);
-    header.addComponent(time);
-    
-    // Actual text
-    Label text = new Label(taskEvent.getMessage());
-    text.setWidth("100%");
-    layout.addComponent(text);
+    layout.addComponent(time);
     
   }
   
@@ -171,15 +160,16 @@ public class TaskEventsPanel extends VerticalLayout {
     textFieldPanel.setContent(new VerticalLayout());
     layout.addComponent(textFieldPanel);
     
-    final TextField textField = new TextField();
-    textField.setWidth(200, UNITS_PIXELS);
-    textFieldPanel.addComponent(textField);
+    commentInputField = new TextField();
+    commentInputField.setWidth(180, UNITS_PIXELS);
+    textFieldPanel.addComponent(commentInputField);
     
     // Hack to catch keyboard 'enter'
     textFieldPanel.addActionHandler(new Handler() {
       public void handleAction(Action action, Object sender, Object target) {
-        addNewComment(textField.getValue().toString());
-        textField.focus();
+        addNewComment(commentInputField.getValue().toString());
+        commentInputField.setValue("");
+        commentInputField.focus();
       }
       public Action[] getActions(Object target, Object sender) {
         return new Action[] {new ShortcutAction("enter", ShortcutAction.KeyCode.ENTER, null)};
@@ -192,13 +182,13 @@ public class TaskEventsPanel extends VerticalLayout {
     layout.setComponentAlignment(addCommentButton, Alignment.MIDDLE_LEFT);
     addCommentButton.addListener(new ClickListener() {
       public void buttonClick(ClickEvent event) {
-        addNewComment(textField.getValue().toString());
+        addNewComment(commentInputField.getValue().toString());
       }
     });
   }
   
   protected void addNewComment(String text) {
-    taskService.addComment(taskId, null, text);
+    taskService.addComment(task.getId(), null, text);
     refreshTaskEvents();
   }
 

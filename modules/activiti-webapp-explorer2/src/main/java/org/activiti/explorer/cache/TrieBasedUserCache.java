@@ -14,7 +14,11 @@
 package org.activiti.explorer.cache;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.User;
@@ -42,62 +46,90 @@ import org.springframework.stereotype.Component;
 @Component
 public class TrieBasedUserCache implements UserCache {
   
+  private static final Logger LOGGER = Logger.getLogger(TrieBasedUserCache.class.getName());
+  
   protected IdentityService identityService;
-  
-  protected RadixTree<List<User>> radixTree = new RadixTreeImpl<List<User>>();
-  
-  protected TrieBasedUserCache() {
-    
-  }
+  protected RadixTree<List<User>> userTrie = new RadixTreeImpl<List<User>>();
+  protected Map<String, User> userCache = new HashMap<String, User>();
   
   public void refresh() {
-    radixTree = new RadixTreeImpl<List<User>>();
+    userTrie = new RadixTreeImpl<List<User>>();
     loadUsers();
   }
   
-  public void loadUsers() {
-    List<User> users = identityService.createUserQuery().list();
-    for (User user : users) {
-      String firstName = user.getFirstName();
-      String lastName = user.getLastName();
-      
-      if (firstName != null && !"".equals(firstName)) {
-        for (String firstNameToken : user.getFirstName().split(" ")) {
-          addCacheItem(firstNameToken, user);
-        }
+  public synchronized void loadUsers() {
+    long nrOfUsers = identityService.createUserQuery().count();
+    long usersAdded = 0;
+    
+    userTrie = new RadixTreeImpl<List<User>>();
+    userCache = new HashMap<String, User>();
+    
+    while (usersAdded < nrOfUsers) {
+
+      if (LOGGER.isLoggable(Level.INFO)) {
+        LOGGER.info("Caching users " + usersAdded + " to " + (usersAdded+25));
       }
       
-      if (lastName != null && !"".equals(lastName)) {
-        for (String lastNameToken : user.getLastName().split(" ")) {
-          addCacheItem(lastNameToken, user);
+      List<User> users = identityService.createUserQuery().listPage((int) usersAdded, 25);
+      for (User user : users) {
+        String firstName = user.getFirstName();
+        String lastName = user.getLastName();
+        
+        // firstname for dictionary lookup
+        if (firstName != null && !"".equals(firstName)) {
+          for (String firstNameToken : user.getFirstName().split(" ")) {
+            addTrieCacheItem(firstNameToken, user);
+          }
         }
+        
+        // lastname for dictionary lookup
+        if (lastName != null && !"".equals(lastName)) {
+          for (String lastNameToken : user.getLastName().split(" ")) {
+            addTrieCacheItem(lastNameToken, user);
+          }
+        }
+        
+        // User cache
+        addUserCacheItem(user);
+        
+        usersAdded++;
       }
-      
     }
   }
   
-  protected void addCacheItem(String key, User user) {
+  protected void addTrieCacheItem(String key, User user) {
     key = key.toLowerCase();
     List<User> value = null;
-    if (!radixTree.contains(key)) {
+    if (!userTrie.contains(key)) {
       value = new ArrayList<User>();
     } else {
-      value = radixTree.find(key);
+      value = userTrie.find(key);
     }
     
     value.add(user);
-    radixTree.delete(key);
-    radixTree.insert(key, value);
+    userTrie.delete(key);
+    userTrie.insert(key, value);
+  }
+  
+  protected void addUserCacheItem(User user) {
+    userCache.put(user.getId(), user);
+  }
+  
+  public User findUser(String userId) {
+    if (userCache.isEmpty()) {
+      loadUsers();
+    }
+    return userCache.get(userId);
   }
   
   public List<User> findMatchingUsers(String prefix) {
     
-    if (radixTree.getSize() == 0) {
+    if (userTrie.getSize() == 0) {
       refresh();
     }
     
     List<User> returnValue = new ArrayList<User>();
-    List<List<User>> results = radixTree.searchPrefix(prefix.toLowerCase(), 100); // 100 should be enough for any name
+    List<List<User>> results = userTrie.searchPrefix(prefix.toLowerCase(), 100); // 100 should be enough for any name
     for (List<User> result : results) {
       for (User userDetail : result) {
         returnValue.add(userDetail);

@@ -36,6 +36,8 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 /**
+ * Component for one user (picture + name + action) in the {@link TaskInvolvedPeopleComponent}
+ * 
  * @author Joram Barrez
  */
 public class UserDetailsComponent extends HorizontalLayout {

@@ -10,19 +10,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.explorer.ui.task;
+package org.activiti.explorer.ui.task.data;
 
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.task.TaskQuery;
 
 
 /**
  * @author Joram Barrez
  */
-public class TaskInboxListQuery extends AbstractTaskListQuery {
+public class TaskQueuedListQuery extends AbstractTaskListQuery {
+  
+  protected String groupId;
+  protected TaskService taskService;
+  
+  public TaskQueuedListQuery(String groupId) {
+    this.groupId = groupId;
+    this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
+  }
   
   @Override
   protected TaskQuery getQuery() {
-    return taskService.createTaskQuery().taskAssignee(userId).orderByTaskId().asc();
+    return taskService.createTaskQuery().taskCandidateGroup(groupId).orderByTaskId().asc();
   }
-  
+
 }

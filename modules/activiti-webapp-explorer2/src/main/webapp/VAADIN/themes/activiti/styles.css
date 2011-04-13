@@ -224,18 +224,17 @@ input.login-field {
    Task events
    ------------- */
    
-.v-label-task-event-author {
+.task-event-author {
   color: #44698b;
   font-weight: bold;
   padding-top: 10px;
 }
 
-.v-label-task-event-time {
+.task-event-time {
   color: #70706f;
-  padding-top: 10px;
 }
 
-.v-embedded-task-event-picture {
+.task-event-picture {
   margin-right: 5px;
 }
 

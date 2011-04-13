@@ -52,17 +52,20 @@ import com.vaadin.ui.VerticalLayout;
  * and opening related content.
  * 
  * @author Frederik Heremans
+ * @author Joram Barrez
  */
 public class TaskRelatedContentComponent extends VerticalLayout implements RelatedContentComponent {
 
-  private static final long serialVersionUID = -30387794911550066L;
+  private static final long serialVersionUID = 1L;
   
   protected Task task;
   protected TaskService taskService;
   protected Table table;
+  protected TaskDetailPanel taskDetailPanel;
 
-  public TaskRelatedContentComponent(Task task) {
+  public TaskRelatedContentComponent(Task task, TaskDetailPanel taskDetailPanel) {
     this.task = task;
+    this.taskDetailPanel = taskDetailPanel;
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
     
     initActions();
@@ -105,7 +108,7 @@ public class TaskRelatedContentComponent extends VerticalLayout implements Relat
 
           @Override
           protected void submitted(SubmitEvent event) {
-            refreshTaskAttachments();
+            taskDetailPanel.notifyRelatedContentChanged();
           }
           
           @Override
@@ -151,7 +154,7 @@ public class TaskRelatedContentComponent extends VerticalLayout implements Relat
     table.setColumnWidth("delete", 16);
   }
   
-  protected void refreshTaskAttachments() {
+  public void refreshTaskAttachments() {
     if(table.size() > 0) {
       table.removeAllItems();
     }
@@ -206,7 +209,7 @@ public class TaskRelatedContentComponent extends VerticalLayout implements Relat
     @Override
     protected void confirmed(ConfirmationEvent event) {
       taskService.deleteAttachment(attachment.getId());
-      refreshTaskAttachments();
+      taskDetailPanel.notifyRelatedContentChanged();
     }
 
     @Override

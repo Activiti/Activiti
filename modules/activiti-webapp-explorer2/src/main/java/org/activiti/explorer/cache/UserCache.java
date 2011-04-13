@@ -34,4 +34,6 @@ public interface UserCache {
   
   List<User> findMatchingUsers(String prefix);
   
+  User findUser(String userId);
+  
 }

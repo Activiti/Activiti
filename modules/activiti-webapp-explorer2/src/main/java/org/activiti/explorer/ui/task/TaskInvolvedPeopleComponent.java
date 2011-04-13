@@ -28,6 +28,9 @@ import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.event.SubmitEvent;
 import org.activiti.explorer.ui.event.SubmitEventListener;
+import org.activiti.explorer.ui.task.listener.ChangeOwnershipListener;
+import org.activiti.explorer.ui.task.listener.ReassignAssigneeListener;
+import org.activiti.explorer.ui.task.listener.RemoveInvolvedPersonListener;
 
 import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.event.MouseEvents.ClickListener;
@@ -40,6 +43,8 @@ import com.vaadin.ui.VerticalLayout;
 
 
 /**
+ * Component for a {@link TaskPage} that displays all people involved with the task.
+ * 
  * @author Joram Barrez
  */
 public class TaskInvolvedPeopleComponent extends CustomComponent {
@@ -51,13 +56,15 @@ public class TaskInvolvedPeopleComponent extends CustomComponent {
   protected TaskService taskService;
   
   protected Task task;
+  protected TaskDetailPanel taskDetailPanel;
   protected VerticalLayout layout;
   protected Label title;
   protected Embedded addPeopleButton;
   protected GridLayout peopleGrid;
   
-  public TaskInvolvedPeopleComponent(Task task) {
+  public TaskInvolvedPeopleComponent(Task task, TaskDetailPanel taskDetailPanel) {
     this.task = task;
+    this.taskDetailPanel = taskDetailPanel;
     this.i18nManager = ExplorerApp.get().getI18nManager();
     this.viewManager = ExplorerApp.get().getViewManager();
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
@@ -109,7 +116,7 @@ public class TaskInvolvedPeopleComponent extends CustomComponent {
               taskService.addUserIdentityLink(task.getId(), userId, role);
             }
             
-            refreshPeopleGrid();
+            taskDetailPanel.notifyPeopleInvolvedChanged();
           }
           protected void cancelled(SubmitEvent event) {
           }
@@ -124,9 +131,9 @@ public class TaskInvolvedPeopleComponent extends CustomComponent {
     peopleGrid = new GridLayout();
     peopleGrid.setColumns(2);
     peopleGrid.setSpacing(true);
+    layout.addComponent(peopleGrid);
     
     populatePeopleGrid();
-    layout.addComponent(peopleGrid);
   }
   
   protected void populatePeopleGrid() {
@@ -146,7 +153,7 @@ public class TaskInvolvedPeopleComponent extends CustomComponent {
             task.getOwner(),
             i18nManager.getMessage(roleMessage),
             i18nManager.getMessage(Messages.TASK_OWNER_TRANSFER),
-            new ChangeOwnershipListener(task, this));
+            new ChangeOwnershipListener(task, taskDetailPanel));
   }
   
   protected void initAssignee() {
@@ -159,7 +166,7 @@ public class TaskInvolvedPeopleComponent extends CustomComponent {
             task.getAssignee(),
             i18nManager.getMessage(Messages.TASK_ASSIGNEE),
             i18nManager.getMessage(Messages.TASK_ASSIGNEE_REASSIGN),
-            new ReassignAssigneeListener(task, this));
+            new ReassignAssigneeListener(task, taskDetailPanel));
   }
   
   protected void initInvolvedPeople() {
@@ -170,7 +177,7 @@ public class TaskInvolvedPeopleComponent extends CustomComponent {
                   identityLink.getUserId(), 
                   identityLink.getType(),
                   i18nManager.getMessage(Messages.TASK_INVOLVED_REMOVE),
-                  new RemoveInvolvedPersonListener(identityLink, task, this));
+                  new RemoveInvolvedPersonListener(identityLink, task, taskDetailPanel));
           peopleGrid.addComponent(involvedDetails);
         }
       }
