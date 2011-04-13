@@ -36,8 +36,7 @@ import java.lang.annotation.RetentionPolicy;
  *   &#64;Deployment(resources = { 
  *     "org/example/processOne.bpmn20.xml",
  *     "org/example/processTwo.bpmn20.xml",
- *     "org/example/some.other.resource" },
- *     validateSchema = true )
+ *     "org/example/some.other.resource" })
  *   public void testForADeploymentWithASingleResource() {
  *     // a deployment will be available in the engine repository
  *     // containing the three resources
