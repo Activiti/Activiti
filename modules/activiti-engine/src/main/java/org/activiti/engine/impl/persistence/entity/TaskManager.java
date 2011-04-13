@@ -31,7 +31,7 @@ public class TaskManager extends AbstractManager {
 
   @SuppressWarnings("unchecked")
   public void deleteTasksByProcessInstanceId(String processInstanceId, String deleteReason, boolean cascade) {
-    List<TaskEntity> tasks = (List) getPersistenceSession()
+    List<TaskEntity> tasks = (List) getDbSqlSession()
       .createTaskQuery()
       .processInstanceId(processInstanceId)
       .list();
@@ -75,7 +75,7 @@ public class TaskManager extends AbstractManager {
           .markTaskInstanceEnded(taskId, deleteReason);
       }
         
-      getPersistenceSession().delete(TaskEntity.class, task.getId());
+      getDbSqlSession().delete(TaskEntity.class, task.getId());
     }
   }
 
@@ -84,22 +84,22 @@ public class TaskManager extends AbstractManager {
     if (id == null) {
       throw new ActivitiException("Invalid task id : null");
     }
-    return (TaskEntity) getPersistenceSession().selectOne("selectTask", id);
+    return (TaskEntity) getDbSqlSession().selectOne("selectTask", id);
   }
 
   @SuppressWarnings("unchecked")
   public List<Task> findTasksByQueryCriteria(TaskQueryImpl taskQuery, Page page) {
     final String query = "selectTaskByQueryCriteria";
-    return getPersistenceSession().selectList(query, taskQuery, page);
+    return getDbSqlSession().selectList(query, taskQuery, page);
   }
 
   public long findTaskCountByQueryCriteria(TaskQueryImpl taskQuery) {
-    return (Long) getPersistenceSession().selectOne("selectTaskCountByQueryCriteria", taskQuery);
+    return (Long) getDbSqlSession().selectOne("selectTaskCountByQueryCriteria", taskQuery);
   }
 
   @SuppressWarnings("unchecked")
   public List<Task> findTasksByParentTaskId(String parentTaskId) {
-    return getPersistenceSession().selectList("selectTasksByParentTaskId", parentTaskId);
+    return getDbSqlSession().selectList("selectTasksByParentTaskId", parentTaskId);
   }
 
   public void deleteTask(String taskId, boolean cascade) {

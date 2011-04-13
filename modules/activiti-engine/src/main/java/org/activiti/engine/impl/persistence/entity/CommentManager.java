@@ -39,24 +39,24 @@ public class CommentManager extends AbstractHistoricManager {
   @SuppressWarnings("unchecked")
   public List<Comment> findCommentsByTaskId(String taskId) {
     checkHistoryEnabled();
-    return getPersistenceSession().selectList("selectCommentsByTaskId", taskId);
+    return getDbSqlSession().selectList("selectCommentsByTaskId", taskId);
   }
 
   @SuppressWarnings("unchecked")
   public List<Event> findEventsByTaskId(String taskId) {
     checkHistoryEnabled();
-    return getPersistenceSession().selectList("selectEventsByTaskId", taskId);
+    return getDbSqlSession().selectList("selectEventsByTaskId", taskId);
   }
 
   public void deleteCommentsByTaskId(String taskId) {
     checkHistoryEnabled();
-    getPersistenceSession().delete("deleteCommentsByTaskId", taskId);
+    getDbSqlSession().delete("deleteCommentsByTaskId", taskId);
   }
 
   @SuppressWarnings("unchecked")
   public List<Comment> findCommentsByProcessInstanceId(String processInstanceId) {
     checkHistoryEnabled();
-    return getPersistenceSession().selectList("selectCommentsByProcessInstanceId", processInstanceId);
+    return getDbSqlSession().selectList("selectCommentsByProcessInstanceId", processInstanceId);
   }
 
 }

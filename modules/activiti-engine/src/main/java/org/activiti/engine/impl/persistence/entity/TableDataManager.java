@@ -56,16 +56,16 @@ public class TableDataManager extends AbstractManager {
     List<String> tableNames = new ArrayList<String>();
     Connection connection = null;
     try {
-      connection = getPersistenceSession().getSqlSession().getConnection();
+      connection = getDbSqlSession().getSqlSession().getConnection();
       DatabaseMetaData databaseMetaData = connection.getMetaData();
       ResultSet tables = null;
       try {
         log.fine("retrieving activiti tables from jdbc metadata");
         String tableNameFilter = "ACT_%";
-        if ("postgres".equals(getPersistenceSession().getDbSqlSessionFactory().getDatabaseType())) {
+        if ("postgres".equals(getDbSqlSession().getDbSqlSessionFactory().getDatabaseType())) {
           tableNameFilter = "act_%";
         }
-        tables = databaseMetaData.getTables(null, null, tableNameFilter, getPersistenceSession().JDBC_METADATA_TABLE_TYPES);
+        tables = databaseMetaData.getTables(null, null, tableNameFilter, getDbSqlSession().JDBC_METADATA_TABLE_TYPES);
         while (tables.next()) {
           String tableName = tables.getString("TABLE_NAME");
           tableName = tableName.toUpperCase();
@@ -83,7 +83,7 @@ public class TableDataManager extends AbstractManager {
 
   protected long getTableCount(String tableName) {
     log.fine("selecting table count for "+tableName);
-    Long count = (Long) getPersistenceSession().selectOne("selectTableCount",
+    Long count = (Long) getDbSqlSession().selectOne("selectTableCount",
             Collections.singletonMap("tableName", tableName));
     return count;
   }
@@ -93,7 +93,7 @@ public class TableDataManager extends AbstractManager {
 
     TablePage tablePage = new TablePage();
 
-    List<Map<String, Object>> tableData = (List<Map<String, Object>>) getPersistenceSession()
+    List<Map<String, Object>> tableData = (List<Map<String, Object>>) getDbSqlSession()
       .getSqlSession()
       .selectList("selectTableData", tablePageQuery, new RowBounds(firstResult, maxResults));
 
@@ -109,12 +109,12 @@ public class TableDataManager extends AbstractManager {
     TableMetaData result = new TableMetaData();
     try {
       result.setTableName(tableName);
-      DatabaseMetaData metaData = getPersistenceSession()
+      DatabaseMetaData metaData = getDbSqlSession()
         .getSqlSession()
         .getConnection()
         .getMetaData();
 
-      if ("postgres".equals(getPersistenceSession().getDbSqlSessionFactory().getDatabaseType())) {
+      if ("postgres".equals(getDbSqlSession().getDbSqlSessionFactory().getDatabaseType())) {
         tableName = tableName.toLowerCase();
       }
 

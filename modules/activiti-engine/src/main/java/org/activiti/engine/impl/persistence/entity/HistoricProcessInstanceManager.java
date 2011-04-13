@@ -32,7 +32,7 @@ public class HistoricProcessInstanceManager extends AbstractHistoricManager {
 
   public HistoricProcessInstanceEntity findHistoricProcessInstance(String processInstanceId) {
     if (historyLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
-      return (HistoricProcessInstanceEntity) getPersistenceSession().selectById(HistoricProcessInstanceEntity.class, processInstanceId);
+      return (HistoricProcessInstanceEntity) getDbSqlSession().selectById(HistoricProcessInstanceEntity.class, processInstanceId);
     }
     return null;
   }
@@ -41,7 +41,7 @@ public class HistoricProcessInstanceManager extends AbstractHistoricManager {
   @SuppressWarnings("unchecked")
   public void deleteHistoricProcessInstanceByProcessDefinitionId(String processDefinitionId) {
     if (historyLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
-      List<String> historicProcessInstanceIds = getPersistenceSession()
+      List<String> historicProcessInstanceIds = getDbSqlSession()
         .selectList("selectHistoricProcessInstanceIdsByProcessDefinitionId", processDefinitionId);
     
       for (String historicProcessInstanceId: historicProcessInstanceIds) {
@@ -66,13 +66,13 @@ public class HistoricProcessInstanceManager extends AbstractHistoricManager {
         .getHistoricTaskInstanceManager()
         .deleteHistoricTaskInstancesByProcessInstanceId(historicProcessInstanceId);
 
-      getPersistenceSession().delete(HistoricProcessInstanceEntity.class, historicProcessInstanceId);
+      getDbSqlSession().delete(HistoricProcessInstanceEntity.class, historicProcessInstanceId);
     }
   }
   
   public long findHistoricProcessInstanceCountByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery) {
     if (historyLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
-      return (Long) getPersistenceSession().selectOne("selectHistoricProcessInstanceCountByQueryCriteria", historicProcessInstanceQuery);
+      return (Long) getDbSqlSession().selectOne("selectHistoricProcessInstanceCountByQueryCriteria", historicProcessInstanceQuery);
     }
     return 0;
   }
@@ -80,7 +80,7 @@ public class HistoricProcessInstanceManager extends AbstractHistoricManager {
   @SuppressWarnings("unchecked")
   public List<HistoricProcessInstance> findHistoricProcessInstancesByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery, Page page) {
     if (historyLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
-      return getPersistenceSession().selectList("selectHistoricProcessInstancesByQueryCriteria", historicProcessInstanceQuery, page);
+      return getDbSqlSession().selectList("selectHistoricProcessInstancesByQueryCriteria", historicProcessInstanceQuery, page);
     }
     return Collections.EMPTY_LIST;
   }

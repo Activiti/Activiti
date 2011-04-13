@@ -41,14 +41,14 @@ import org.activiti.engine.impl.persistence.entity.VariableInstanceManager;
 public abstract class AbstractManager implements Session {
   
   public void insert(PersistentObject persistentObject) {
-    getPersistenceSession().insert(persistentObject);
+    getDbSqlSession().insert(persistentObject);
   }
 
   public void delete(PersistentObject persistentObject) {
-    getPersistenceSession().delete(persistentObject.getClass(), persistentObject.getId());
+    getDbSqlSession().delete(persistentObject.getClass(), persistentObject.getId());
   }
 
-  protected DbSqlSession getPersistenceSession() {
+  protected DbSqlSession getDbSqlSession() {
     return getSession(DbSqlSession.class);
   }
 

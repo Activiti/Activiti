@@ -37,7 +37,7 @@ public class UserManager extends AbstractManager {
   }
 
   public void insertUser(User user) {
-    getPersistenceSession().insert((PersistentObject) user);
+    getDbSqlSession().insert((PersistentObject) user);
   }
   
   public void updateUser(User updatedUser) {
@@ -46,7 +46,7 @@ public class UserManager extends AbstractManager {
   }
 
   public UserEntity findUserById(String userId) {
-    return (UserEntity) getPersistenceSession().selectOne("selectUserById", userId);
+    return (UserEntity) getDbSqlSession().selectOne("selectUserById", userId);
   }
 
   @SuppressWarnings("unchecked")
@@ -54,29 +54,29 @@ public class UserManager extends AbstractManager {
     UserEntity user = findUserById(userId);
     if (user!=null) {
       if (user.getPictureByteArrayId()!=null) {
-        getPersistenceSession().delete(ByteArrayEntity.class, user.getPictureByteArrayId());
+        getDbSqlSession().delete(ByteArrayEntity.class, user.getPictureByteArrayId());
       }
-      List<IdentityInfoEntity> identityInfos = getPersistenceSession().selectList("selectIdentityInfoByUserId", userId);
+      List<IdentityInfoEntity> identityInfos = getDbSqlSession().selectList("selectIdentityInfoByUserId", userId);
       for (IdentityInfoEntity identityInfo: identityInfos) {
         getIdentityInfoManager().deleteIdentityInfo(identityInfo);
       }
-      getPersistenceSession().delete("deleteMembershipsByUserId", userId);
-      getPersistenceSession().delete("deleteUser", userId);
+      getDbSqlSession().delete("deleteMembershipsByUserId", userId);
+      getDbSqlSession().delete("deleteUser", userId);
     }
   }
   
   @SuppressWarnings("unchecked")
   public List<User> findUserByQueryCriteria(Object query, Page page) {
-    return getPersistenceSession().selectList("selectUserByQueryCriteria", query, page);
+    return getDbSqlSession().selectList("selectUserByQueryCriteria", query, page);
   }
   
   public long findUserCountByQueryCriteria(Object query) {
-    return (Long) getPersistenceSession().selectOne("selectUserCountByQueryCriteria", query);
+    return (Long) getDbSqlSession().selectOne("selectUserCountByQueryCriteria", query);
   }
   
   @SuppressWarnings("unchecked")
   public List<Group> findGroupsByUser(String userId) {
-    return getPersistenceSession().selectList("selectGroupsByUserId", userId);
+    return getDbSqlSession().selectList("selectGroupsByUserId", userId);
   }
 
   public UserQuery createNewUserQuery() {
@@ -87,7 +87,7 @@ public class UserManager extends AbstractManager {
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put("userId", userId);
     parameters.put("key", key);
-    return (IdentityInfoEntity) getPersistenceSession().selectOne("selectIdentityInfoByUserIdAndKey", parameters);
+    return (IdentityInfoEntity) getDbSqlSession().selectOne("selectIdentityInfoByUserIdAndKey", parameters);
   }
 
   @SuppressWarnings("unchecked")
@@ -95,6 +95,6 @@ public class UserManager extends AbstractManager {
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put("userId", userId);
     parameters.put("type", type);
-    return (List) getPersistenceSession().getSqlSession().selectList("selectIdentityInfoKeysByUserIdAndType", parameters);
+    return (List) getDbSqlSession().getSqlSession().selectList("selectIdentityInfoKeysByUserIdAndType", parameters);
   }
 }

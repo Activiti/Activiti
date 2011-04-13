@@ -22,7 +22,7 @@ import org.activiti.engine.impl.persistence.AbstractManager;
 public class PropertyManager extends AbstractManager {
 
   public PropertyEntity findPropertyById(String propertyId) {
-    return getPersistenceSession().selectById(PropertyEntity.class, propertyId);
+    return getDbSqlSession().selectById(PropertyEntity.class, propertyId);
   }
 
 }

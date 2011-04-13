@@ -34,7 +34,7 @@ public class HistoricTaskInstanceManager extends AbstractHistoricManager {
   @SuppressWarnings("unchecked")
   public void deleteHistoricTaskInstancesByProcessInstanceId(String processInstanceId) {
     if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
-      List<String> taskInstanceIds = (List<String>) getPersistenceSession().selectList("selectHistoricTaskInstanceIdsByProcessInstanceId", processInstanceId);
+      List<String> taskInstanceIds = (List<String>) getDbSqlSession().selectList("selectHistoricTaskInstanceIdsByProcessInstanceId", processInstanceId);
       for (String taskInstanceId: taskInstanceIds) {
         deleteHistoricTaskInstanceById(taskInstanceId);
       }
@@ -42,19 +42,19 @@ public class HistoricTaskInstanceManager extends AbstractHistoricManager {
   }
 
   public long findHistoricTaskInstanceCountByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery) {
-    return (Long) getPersistenceSession().selectOne("selectHistoricTaskInstanceCountByQueryCriteria", historicTaskInstanceQuery);
+    return (Long) getDbSqlSession().selectOne("selectHistoricTaskInstanceCountByQueryCriteria", historicTaskInstanceQuery);
   }
 
   @SuppressWarnings("unchecked")
   public List<HistoricTaskInstance> findHistoricTaskInstancesByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery, Page page) {
-    return getPersistenceSession().selectList("selectHistoricTaskInstancesByQueryCriteria", historicTaskInstanceQuery, page);
+    return getDbSqlSession().selectList("selectHistoricTaskInstancesByQueryCriteria", historicTaskInstanceQuery, page);
   }
   
   public HistoricTaskInstanceEntity findHistoricTaskInstanceById(String taskId) {
     if (taskId == null) {
       throw new ActivitiException("Invalid historic task id : null");
     }
-    return (HistoricTaskInstanceEntity) getPersistenceSession().selectOne("selectHistoricTaskInstance", taskId);
+    return (HistoricTaskInstanceEntity) getDbSqlSession().selectOne("selectHistoricTaskInstance", taskId);
   }
   
   public void deleteHistoricTaskInstanceById(String taskId) {
@@ -70,13 +70,13 @@ public class HistoricTaskInstanceManager extends AbstractHistoricManager {
         .getCommentManager()
         .deleteCommentsByTaskId(taskId);
       
-      getPersistenceSession().delete(HistoricTaskInstanceEntity.class, taskId);
+      getDbSqlSession().delete(HistoricTaskInstanceEntity.class, taskId);
     }
   }
 
   public void markTaskInstanceEnded(String taskId, String deleteReason) {
     if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
-      HistoricTaskInstanceEntity historicTaskInstance = getPersistenceSession().selectById(HistoricTaskInstanceEntity.class, taskId);
+      HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
       if (historicTaskInstance!=null) {
         historicTaskInstance.markEnded(deleteReason);
       }
@@ -85,7 +85,7 @@ public class HistoricTaskInstanceManager extends AbstractHistoricManager {
 
   public void setTaskAssignee(String taskId, String assignee) {
     if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
-      HistoricTaskInstanceEntity historicTaskInstance = getPersistenceSession().selectById(HistoricTaskInstanceEntity.class, taskId);
+      HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
       if (historicTaskInstance!=null) {
         historicTaskInstance.setAssignee(assignee);
       }
@@ -94,7 +94,7 @@ public class HistoricTaskInstanceManager extends AbstractHistoricManager {
 
   public void setTaskOwner(String taskId, String owner) {
     if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
-      HistoricTaskInstanceEntity historicTaskInstance = getPersistenceSession().selectById(HistoricTaskInstanceEntity.class, taskId);
+      HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
       if (historicTaskInstance!=null) {
         historicTaskInstance.setOwner(owner);
       }
@@ -103,7 +103,7 @@ public class HistoricTaskInstanceManager extends AbstractHistoricManager {
 
   public void setTaskName(String id, String taskName) {
     if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
-      HistoricTaskInstanceEntity historicTaskInstance = getPersistenceSession().selectById(HistoricTaskInstanceEntity.class, id);
+      HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, id);
       if (historicTaskInstance!=null) {
         historicTaskInstance.setName(taskName);
       }
@@ -112,7 +112,7 @@ public class HistoricTaskInstanceManager extends AbstractHistoricManager {
 
   public void setTaskDescription(String id, String description) {
     if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
-      HistoricTaskInstanceEntity historicTaskInstance = getPersistenceSession().selectById(HistoricTaskInstanceEntity.class, id);
+      HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, id);
       if (historicTaskInstance!=null) {
         historicTaskInstance.setDescription(description);
       }
@@ -121,7 +121,7 @@ public class HistoricTaskInstanceManager extends AbstractHistoricManager {
 
   public void setTaskDueDate(String id, Date dueDate) {
     if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
-      HistoricTaskInstanceEntity historicTaskInstance = getPersistenceSession().selectById(HistoricTaskInstanceEntity.class, id);
+      HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, id);
       if (historicTaskInstance!=null) {
         historicTaskInstance.setDueDate(dueDate);
       }
@@ -130,7 +130,7 @@ public class HistoricTaskInstanceManager extends AbstractHistoricManager {
 
   public void setTaskPriority(String id, int priority) {
     if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
-      HistoricTaskInstanceEntity historicTaskInstance = getPersistenceSession().selectById(HistoricTaskInstanceEntity.class, id);
+      HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, id);
       if (historicTaskInstance!=null) {
         historicTaskInstance.setPriority(priority);
       }
@@ -139,7 +139,7 @@ public class HistoricTaskInstanceManager extends AbstractHistoricManager {
 
   public void setTaskParentTaskId(String id, String parentTaskId) {
     if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
-      HistoricTaskInstanceEntity historicTaskInstance = getPersistenceSession().selectById(HistoricTaskInstanceEntity.class, id);
+      HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, id);
       if (historicTaskInstance!=null) {
         historicTaskInstance.setParentTaskId(parentTaskId);
       }

@@ -31,16 +31,16 @@ public class HistoricActivityInstanceManager extends AbstractHistoricManager {
 
   public void deleteHistoricActivityInstancesByProcessInstanceId(String historicProcessInstanceId) {
     if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY) {
-      getPersistenceSession().delete("deleteHistoricActivityInstancesByProcessInstanceId", historicProcessInstanceId);
+      getDbSqlSession().delete("deleteHistoricActivityInstancesByProcessInstanceId", historicProcessInstanceId);
     }
   }
   
   public void insertHistoricActivityInstance(HistoricActivityInstanceEntity historicActivityInstance) {
-    getPersistenceSession().insert(historicActivityInstance);
+    getDbSqlSession().insert(historicActivityInstance);
   }
 
   public void deleteHistoricActivityInstance(String historicActivityInstanceId) {
-    getPersistenceSession().delete(HistoricActivityInstanceEntity.class, historicActivityInstanceId);
+    getDbSqlSession().delete(HistoricActivityInstanceEntity.class, historicActivityInstanceId);
   }
 
   public HistoricActivityInstanceEntity findHistoricActivityInstance(String activityId, String processInstanceId) {
@@ -48,15 +48,15 @@ public class HistoricActivityInstanceManager extends AbstractHistoricManager {
     parameters.put("activityId", activityId);
     parameters.put("processInstanceId", processInstanceId);
   
-    return (HistoricActivityInstanceEntity) getPersistenceSession().selectOne("selectHistoricActivityInstance", parameters);
+    return (HistoricActivityInstanceEntity) getDbSqlSession().selectOne("selectHistoricActivityInstance", parameters);
   }
 
   public long findHistoricActivityInstanceCountByQueryCriteria(HistoricActivityInstanceQueryImpl historicActivityInstanceQuery) {
-    return (Long) getPersistenceSession().selectOne("selectHistoricActivityInstanceCountByQueryCriteria", historicActivityInstanceQuery);
+    return (Long) getDbSqlSession().selectOne("selectHistoricActivityInstanceCountByQueryCriteria", historicActivityInstanceQuery);
   }
 
   @SuppressWarnings("unchecked")
   public List<HistoricActivityInstance> findHistoricActivityInstancesByQueryCriteria(HistoricActivityInstanceQueryImpl historicActivityInstanceQuery, Page page) {
-    return getPersistenceSession().selectList("selectHistoricActivityInstancesByQueryCriteria", historicActivityInstanceQuery, page);
+    return getDbSqlSession().selectList("selectHistoricActivityInstancesByQueryCriteria", historicActivityInstanceQuery, page);
   }
 }

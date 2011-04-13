@@ -36,10 +36,10 @@ public class IdentityInfoManager extends AbstractManager {
   }
 
   public void deleteIdentityInfo(IdentityInfoEntity identityInfo) {
-    getPersistenceSession().delete(IdentityInfoEntity.class, identityInfo.getId());
+    getDbSqlSession().delete(IdentityInfoEntity.class, identityInfo.getId());
     if (IdentityInfoEntity.TYPE_USERACCOUNT.equals(identityInfo.getType())) {
       for (IdentityInfoEntity identityInfoDetail: findIdentityInfoDetails(identityInfo.getId())) {
-        getPersistenceSession().delete(IdentityInfoEntity.class, identityInfoDetail.getId());
+        getDbSqlSession().delete(IdentityInfoEntity.class, identityInfoDetail.getId());
       }
     }
   }
@@ -115,7 +115,7 @@ public class IdentityInfoManager extends AbstractManager {
       identityInfoEntity.setKey(key);
       identityInfoEntity.setValue(value);
       identityInfoEntity.setPasswordBytes(storedPassword);
-      getPersistenceSession().insert(identityInfoEntity);
+      getDbSqlSession().insert(identityInfoEntity);
       if (accountDetails!=null) {
         insertAccountDetails(identityInfoEntity, accountDetails, accountDetails.keySet());
       }
@@ -129,7 +129,7 @@ public class IdentityInfoManager extends AbstractManager {
       identityInfoDetail.setParentId(identityInfoEntity.getId());
       identityInfoDetail.setKey(newKey);
       identityInfoDetail.setValue(accountDetails.get(newKey));
-      getPersistenceSession().insert(identityInfoDetail);
+      getDbSqlSession().insert(identityInfoDetail);
     }
   }
 
@@ -147,7 +147,7 @@ public class IdentityInfoManager extends AbstractManager {
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put("userId", userId);
     parameters.put("key", key);
-    return (IdentityInfoEntity) getPersistenceSession().selectOne("selectIdentityInfoByUserIdAndKey", parameters);
+    return (IdentityInfoEntity) getDbSqlSession().selectOne("selectIdentityInfoByUserIdAndKey", parameters);
   }
 
   @SuppressWarnings("unchecked")
@@ -155,6 +155,6 @@ public class IdentityInfoManager extends AbstractManager {
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put("userId", userId);
     parameters.put("type", type);
-    return (List) getPersistenceSession().getSqlSession().selectList("selectIdentityInfoKeysByUserIdAndType", parameters);
+    return (List) getDbSqlSession().getSqlSession().selectList("selectIdentityInfoKeysByUserIdAndType", parameters);
   }
 }

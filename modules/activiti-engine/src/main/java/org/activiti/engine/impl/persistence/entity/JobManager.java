@@ -88,30 +88,30 @@ public class JobManager extends AbstractManager {
   }
 
   public JobEntity findJobById(String jobId) {
-    return (JobEntity) getPersistenceSession().selectOne("selectJob", jobId);
+    return (JobEntity) getDbSqlSession().selectOne("selectJob", jobId);
   }
   
   @SuppressWarnings("unchecked")
   public List<JobEntity> findNextJobsToExecute(Page page) {
     Date now = ClockUtil.getCurrentTime();
-    return getPersistenceSession().selectList("selectNextJobsToExecute", now, page);
+    return getDbSqlSession().selectList("selectNextJobsToExecute", now, page);
   }
 
   @SuppressWarnings("unchecked")
   public List<TimerEntity> findUnlockedTimersByDuedate(Date duedate, Page page) {
     final String query = "selectUnlockedTimersByDuedate";
-    return getPersistenceSession().selectList(query, duedate, page);
+    return getDbSqlSession().selectList(query, duedate, page);
   }
 
   @SuppressWarnings("unchecked")
   public List<TimerEntity> findTimersByExecutionId(String executionId) {
-    return getPersistenceSession().selectList("selectTimersByExecutionId", executionId);
+    return getDbSqlSession().selectList("selectTimersByExecutionId", executionId);
   }
 
   @SuppressWarnings("unchecked")
   public List<Job> findJobsByQueryCriteria(JobQueryImpl jobQuery, Page page) {
     final String query = "org.activiti.persistence.selectJobByQueryCriteria";
-    return getPersistenceSession().selectList(query, jobQuery, page);
+    return getDbSqlSession().selectList(query, jobQuery, page);
   }
 
   @SuppressWarnings("unchecked")
@@ -119,11 +119,11 @@ public class JobManager extends AbstractManager {
     Map<String, String> params = new HashMap<String, String>();
     params.put("handlerType", jobHandlerType);
     params.put("handlerConfiguration", jobHandlerConfiguration);
-    return getPersistenceSession().selectList("org.activiti.persistence.selectJobsByConfiguration", params);
+    return getDbSqlSession().selectList("org.activiti.persistence.selectJobsByConfiguration", params);
   }
 
   public long findJobCountByQueryCriteria(JobQueryImpl jobQuery) {
-    return (Long) getPersistenceSession().selectOne("org.activiti.persistence.selectJobCountByQueryCriteria", jobQuery);
+    return (Long) getDbSqlSession().selectOne("org.activiti.persistence.selectJobCountByQueryCriteria", jobQuery);
   }
 
 }

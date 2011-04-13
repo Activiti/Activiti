@@ -24,7 +24,7 @@ import org.activiti.engine.impl.persistence.AbstractManager;
 public class VariableInstanceManager extends AbstractManager {
 
   public void deleteVariableInstance(VariableInstanceEntity variableInstance) {
-    getPersistenceSession().delete(VariableInstanceEntity.class, variableInstance.getId());
+    getDbSqlSession().delete(VariableInstanceEntity.class, variableInstance.getId());
 
     String byteArrayValueId = variableInstance.getByteArrayValueId();
     if (byteArrayValueId != null) {
@@ -32,18 +32,18 @@ public class VariableInstanceManager extends AbstractManager {
       // cache, but should be checked and docced here (or removed if it turns out to be unnecessary)
       // @see also HistoricVariableUpdateEntity
       variableInstance.getByteArrayValue();
-      getPersistenceSession().delete(ByteArrayEntity.class, byteArrayValueId);
+      getDbSqlSession().delete(ByteArrayEntity.class, byteArrayValueId);
     }
   }
 
   @SuppressWarnings("unchecked")
   public List<VariableInstanceEntity> findVariableInstancesByTaskId(String taskId) {
-    return getPersistenceSession().selectList("selectVariablesByTaskId", taskId);
+    return getDbSqlSession().selectList("selectVariablesByTaskId", taskId);
   }
   
   @SuppressWarnings("unchecked")
   public List<VariableInstanceEntity> findVariableInstancesByExecutionId(String executionId) {
-    return getPersistenceSession().selectList("selectVariablesByExecutionId", executionId);
+    return getDbSqlSession().selectList("selectVariablesByExecutionId", executionId);
   }
 
   public void deleteVariableInstanceByTaskId(String taskId) {

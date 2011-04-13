@@ -28,14 +28,14 @@ public class MembershipManager extends AbstractManager {
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put("userId", userId);
     parameters.put("groupId", groupId);
-    getPersistenceSession().getSqlSession().insert("insertMembership", parameters);
+    getDbSqlSession().getSqlSession().insert("insertMembership", parameters);
   }
 
   public void deleteMembership(String userId, String groupId) {
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put("userId", userId);
     parameters.put("groupId", groupId);
-    getPersistenceSession().delete("deleteMembership", parameters);
+    getDbSqlSession().delete("deleteMembership", parameters);
   }
   
 

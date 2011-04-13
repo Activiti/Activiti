@@ -29,7 +29,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 public class DeploymentManager extends AbstractManager {
   
   public void insertDeployment(DeploymentEntity deployment) {
-    getPersistenceSession().insert(deployment);
+    getDbSqlSession().insert(deployment);
     
     for (ResourceEntity resource : deployment.getResources().values()) {
       resource.setDeploymentId(deployment.getId());
@@ -44,7 +44,7 @@ public class DeploymentManager extends AbstractManager {
   
   public void deleteDeployment(String deploymentId, boolean cascade) {
     if (cascade) {
-      List<ProcessDefinition> processDefinitions = getPersistenceSession()
+      List<ProcessDefinition> processDefinitions = getDbSqlSession()
         .createProcessDefinitionQuery()
         .deploymentId(deploymentId)
         .list();
@@ -68,12 +68,12 @@ public class DeploymentManager extends AbstractManager {
     getResourceManager()
       .deleteResourcesByDeploymentId(deploymentId);
     
-    getPersistenceSession().delete("deleteDeployment", deploymentId);
+    getDbSqlSession().delete("deleteDeployment", deploymentId);
   }
 
 
   public DeploymentEntity findLatestDeploymentByName(String deploymentName) {
-    List<?> list = getPersistenceSession().selectList("selectDeploymentsByName", deploymentName, new Page(0, 1));
+    List<?> list = getDbSqlSession().selectList("selectDeploymentsByName", deploymentName, new Page(0, 1));
     if (list!=null && !list.isEmpty()) {
       return (DeploymentEntity) list.get(0);
     }
@@ -81,22 +81,22 @@ public class DeploymentManager extends AbstractManager {
   }
   
   public DeploymentEntity findDeploymentById(String deploymentId) {
-    return (DeploymentEntity) getPersistenceSession().selectOne("selectDeploymentById", deploymentId);
+    return (DeploymentEntity) getDbSqlSession().selectOne("selectDeploymentById", deploymentId);
   }
   
   public long findDeploymentCountByQueryCriteria(DeploymentQueryImpl deploymentQuery) {
-    return (Long) getPersistenceSession().selectOne("selectDeploymentCountByQueryCriteria", deploymentQuery);
+    return (Long) getDbSqlSession().selectOne("selectDeploymentCountByQueryCriteria", deploymentQuery);
   }
 
   @SuppressWarnings("unchecked")
   public List<Deployment> findDeploymentsByQueryCriteria(DeploymentQueryImpl deploymentQuery, Page page) {
     final String query = "selectDeploymentsByQueryCriteria";
-    return getPersistenceSession().selectList(query, deploymentQuery, page);
+    return getDbSqlSession().selectList(query, deploymentQuery, page);
   }
   
   @SuppressWarnings("unchecked")
   public List<String> getDeploymentResourceNames(String deploymentId) {
-    return getPersistenceSession().getSqlSession().selectList("selectResourceNamesByDeploymentId", deploymentId);
+    return getDbSqlSession().getSqlSession().selectList("selectResourceNamesByDeploymentId", deploymentId);
   }
 
   public void close() {

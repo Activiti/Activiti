@@ -29,31 +29,31 @@ import org.activiti.engine.repository.ProcessDefinition;
 public class ProcessDefinitionManager extends AbstractManager {
 
   public ProcessDefinitionEntity findLatestProcessDefinitionByKey(String processDefinitionKey) {
-    return (ProcessDefinitionEntity) getPersistenceSession().selectOne("selectLatestProcessDefinitionByKey", processDefinitionKey);
+    return (ProcessDefinitionEntity) getDbSqlSession().selectOne("selectLatestProcessDefinitionByKey", processDefinitionKey);
   }
 
   public void deleteProcessDefinitionsByDeploymentId(String deploymentId) {
-    getPersistenceSession().delete("deleteProcessDefinitionsByDeploymentId", deploymentId);
+    getDbSqlSession().delete("deleteProcessDefinitionsByDeploymentId", deploymentId);
   }
 
   public ProcessDefinitionEntity findLatestProcessDefinitionById(String processDefinitionId) {
-    return (ProcessDefinitionEntity) getPersistenceSession().selectOne("selectProcessDefinitionById", processDefinitionId);
+    return (ProcessDefinitionEntity) getDbSqlSession().selectOne("selectProcessDefinitionById", processDefinitionId);
   }
   
   @SuppressWarnings("unchecked")
   public List<ProcessDefinition> findProcessDefinitionsByQueryCriteria(ProcessDefinitionQueryImpl processDefinitionQuery, Page page) {
     final String query = "selectProcessDefinitionsByQueryCriteria";
-    return getPersistenceSession().selectList(query, processDefinitionQuery, page);
+    return getDbSqlSession().selectList(query, processDefinitionQuery, page);
   }
 
   public long findProcessDefinitionCountByQueryCriteria(ProcessDefinitionQueryImpl processDefinitionQuery) {
-    return (Long) getPersistenceSession().selectOne("selectProcessDefinitionCountByQueryCriteria", processDefinitionQuery);
+    return (Long) getDbSqlSession().selectOne("selectProcessDefinitionCountByQueryCriteria", processDefinitionQuery);
   }
   
   public ProcessDefinitionEntity findProcessDefinitionByDeploymentAndKey(String deploymentId, String processDefinitionKey) {
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put("deploymentId", deploymentId);
     parameters.put("processDefinitionKey", processDefinitionKey);
-    return (ProcessDefinitionEntity) getPersistenceSession().selectOne("selectProcessDefinitionByDeploymentAndKey", parameters);
+    return (ProcessDefinitionEntity) getDbSqlSession().selectOne("selectProcessDefinitionByDeploymentAndKey", parameters);
   }
 }

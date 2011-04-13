@@ -34,7 +34,7 @@ public class GroupManager extends AbstractManager {
   }
 
   public void insertGroup(Group group) {
-    getPersistenceSession().insert((PersistentObject) group);
+    getDbSqlSession().insert((PersistentObject) group);
   }
 
   public void updateGroup(Group updatedGroup) {
@@ -44,8 +44,8 @@ public class GroupManager extends AbstractManager {
 
 
   public void deleteGroup(String groupId) {
-    getPersistenceSession().delete("deleteMembershipsByGroupId", groupId);
-    getPersistenceSession().delete("deleteGroup", groupId);
+    getDbSqlSession().delete("deleteMembershipsByGroupId", groupId);
+    getDbSqlSession().delete("deleteGroup", groupId);
   }
 
   public GroupQuery createNewGroupQuery() {
@@ -54,19 +54,19 @@ public class GroupManager extends AbstractManager {
 
   @SuppressWarnings("unchecked")
   public List<Group> findGroupByQueryCriteria(Object query, Page page) {
-    return getPersistenceSession().selectList("selectGroupByQueryCriteria", query, page);
+    return getDbSqlSession().selectList("selectGroupByQueryCriteria", query, page);
   }
   
   public long findGroupCountByQueryCriteria(Object query) {
-    return (Long) getPersistenceSession().selectOne("selectGroupCountByQueryCriteria", query);
+    return (Long) getDbSqlSession().selectOne("selectGroupCountByQueryCriteria", query);
   }
 
   public GroupEntity findGroupById(String groupId) {
-    return (GroupEntity) getPersistenceSession().selectOne("selectGroupById", groupId);
+    return (GroupEntity) getDbSqlSession().selectOne("selectGroupById", groupId);
   }
 
   @SuppressWarnings("unchecked")
   public List<Group> findGroupsByUser(String userId) {
-    return getPersistenceSession().selectList("selectGroupsByUserId", userId);
+    return getDbSqlSession().selectList("selectGroupsByUserId", userId);
   }
 }

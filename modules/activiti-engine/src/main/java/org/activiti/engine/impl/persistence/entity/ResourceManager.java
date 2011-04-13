@@ -26,23 +26,23 @@ import org.activiti.engine.impl.persistence.AbstractManager;
 public class ResourceManager extends AbstractManager {
 
   public void insertResource(ResourceEntity resource) {
-    getPersistenceSession().insert(resource);
+    getDbSqlSession().insert(resource);
   }
 
   public void deleteResourcesByDeploymentId(String deploymentId) {
-    getPersistenceSession().delete("deleteResourcesByDeploymentId", deploymentId);
+    getDbSqlSession().delete("deleteResourcesByDeploymentId", deploymentId);
   }
   
   public ResourceEntity findResourceByDeploymentIdAndResourceName(String deploymentId, String resourceName) {
     Map<String, Object> params = new HashMap<String, Object>();
     params.put("deploymentId", deploymentId);
     params.put("resourceName", resourceName);
-    return (ResourceEntity) getPersistenceSession().selectOne("selectResourceByDeploymentIdAndResourceName", params);
+    return (ResourceEntity) getDbSqlSession().selectOne("selectResourceByDeploymentIdAndResourceName", params);
   }
   
   @SuppressWarnings("unchecked")
   public List<ResourceEntity> findResourcesByDeploymentId(String deploymentId) {
-    return getPersistenceSession().selectList("selectResourcesByDeploymentId", deploymentId);
+    return getDbSqlSession().selectList("selectResourcesByDeploymentId", deploymentId);
   }
   
 

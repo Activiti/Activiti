@@ -26,12 +26,12 @@ import org.activiti.engine.impl.persistence.AbstractManager;
 public class IdentityLinkManager extends AbstractManager {
 
   public void deleteIdentityLink(IdentityLinkEntity identityLink) {
-    getPersistenceSession().delete(IdentityLinkEntity.class, identityLink.getId());
+    getDbSqlSession().delete(IdentityLinkEntity.class, identityLink.getId());
   }
   
   @SuppressWarnings("unchecked")
   public List<IdentityLinkEntity> findIdentityLinksByTaskId(String taskId) {
-    return getPersistenceSession().selectList("selectIdentityLinksByTask", taskId);
+    return getDbSqlSession().selectList("selectIdentityLinksByTask", taskId);
   }
 
   @SuppressWarnings("unchecked")
@@ -41,7 +41,7 @@ public class IdentityLinkManager extends AbstractManager {
     parameters.put("userId", userId);
     parameters.put("groupId", groupId);
     parameters.put("type", type);
-    return getPersistenceSession().selectList("selectIdentityLinkByTaskUserGroupAndType", parameters);
+    return getDbSqlSession().selectList("selectIdentityLinkByTaskUserGroupAndType", parameters);
   }
 
   public void deleteIdentityLinksByTaskId(String taskId) {

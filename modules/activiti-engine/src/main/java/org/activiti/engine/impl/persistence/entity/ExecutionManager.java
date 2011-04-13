@@ -30,7 +30,7 @@ public class ExecutionManager extends AbstractManager {
   
   @SuppressWarnings("unchecked")
   public void deleteProcessInstancesByProcessDefinition(String processDefinitionId, String deleteReason, boolean cascade) {
-    List<String> processInstanceIds = getPersistenceSession()
+    List<String> processInstanceIds = getDbSqlSession()
       .selectList("selectProcessInstanceIdsByProcessDefinitionId", processDefinitionId);
   
     for (String processInstanceId: processInstanceIds) {
@@ -71,34 +71,34 @@ public class ExecutionManager extends AbstractManager {
   }
 
   public ExecutionEntity findSubProcessInstanceBySuperExecutionId(String superExecutionId) {
-    return (ExecutionEntity) getPersistenceSession().selectOne("selectSubProcessInstanceBySuperExecutionId", superExecutionId);
+    return (ExecutionEntity) getDbSqlSession().selectOne("selectSubProcessInstanceBySuperExecutionId", superExecutionId);
   }
   
   @SuppressWarnings("unchecked")
   public List<ExecutionEntity> findChildExecutionsByParentExecutionId(String parentExecutionId) {
-    return getPersistenceSession().selectList("selectExecutionsByParentExecutionId", parentExecutionId);
+    return getDbSqlSession().selectList("selectExecutionsByParentExecutionId", parentExecutionId);
   }
 
   public ExecutionEntity findExecutionById(String executionId) {
-    return (ExecutionEntity) getPersistenceSession().selectById(ExecutionEntity.class, executionId);
+    return (ExecutionEntity) getDbSqlSession().selectById(ExecutionEntity.class, executionId);
   }
   
   public long findExecutionCountByQueryCriteria(Object executionQuery) {
-    return (Long) getPersistenceSession().selectOne("selectExecutionCountByQueryCriteria", executionQuery);
+    return (Long) getDbSqlSession().selectOne("selectExecutionCountByQueryCriteria", executionQuery);
   }
 
   @SuppressWarnings("unchecked")
   public List<ExecutionEntity> findExecutionsByQueryCriteria(Object executionQuery, Page page) {
-    return getPersistenceSession().selectList("selectExecutionsByQueryCriteria", executionQuery, page);
+    return getDbSqlSession().selectList("selectExecutionsByQueryCriteria", executionQuery, page);
   }
 
   public long findProcessInstanceCountByQueryCriteria(Object executionQuery) {
-    return (Long) getPersistenceSession().selectOne("selectProcessInstanceCountByQueryCriteria", executionQuery);
+    return (Long) getDbSqlSession().selectOne("selectProcessInstanceCountByQueryCriteria", executionQuery);
   }
   
   @SuppressWarnings("unchecked")
   public List<ProcessInstance> findProcessInstanceByQueryCriteria(Object executionQuery, Page page) {
-    return getPersistenceSession().selectList("selectProcessInstanceByQueryCriteria", executionQuery, page);
+    return getDbSqlSession().selectList("selectProcessInstanceByQueryCriteria", executionQuery, page);
   }
 
 }

@@ -44,13 +44,13 @@ public class HistoricDetailManager extends AbstractHistoricManager {
           .delete(ByteArrayEntity.class, byteArrayValueId);
       }
     }
-    getPersistenceSession().delete(HistoricDetailEntity.class, historicDetail.getId());
+    getDbSqlSession().delete(HistoricDetailEntity.class, historicDetail.getId());
   }
 
   @SuppressWarnings("unchecked")
   public void deleteHistoricDetailsByProcessInstanceId(String historicProcessInstanceId) {
     if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
-      List<HistoricDetailEntity> historicDetails = (List) getPersistenceSession()
+      List<HistoricDetailEntity> historicDetails = (List) getDbSqlSession()
         .createHistoricDetailQuery()
         .processInstanceId(historicProcessInstanceId)
         .list();
@@ -66,12 +66,12 @@ public class HistoricDetailManager extends AbstractHistoricManager {
   }
   
   public long findHistoricDetailCountByQueryCriteria(HistoricDetailQueryImpl historicVariableUpdateQuery) {
-    return (Long) getPersistenceSession().selectOne("selectHistoricDetailCountByQueryCriteria", historicVariableUpdateQuery);
+    return (Long) getDbSqlSession().selectOne("selectHistoricDetailCountByQueryCriteria", historicVariableUpdateQuery);
   }
 
   @SuppressWarnings("unchecked")
   public List<HistoricDetail> findHistoricDetailsByQueryCriteria(HistoricDetailQueryImpl historicVariableUpdateQuery, Page page) {
-    return getPersistenceSession().selectList("selectHistoricDetailsByQueryCriteria", historicVariableUpdateQuery, page);
+    return getDbSqlSession().selectList("selectHistoricDetailsByQueryCriteria", historicVariableUpdateQuery, page);
   }
 
   public void deleteHistoricDetailsByTaskId(String taskId) {
