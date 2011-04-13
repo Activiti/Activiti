@@ -16,16 +16,14 @@ import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ViewManager;
+import org.activiti.explorer.ui.custom.ToolbarEntry.ToolbarCommand;
 import org.activiti.explorer.ui.custom.UploadPopupWindow;
-
-import com.vaadin.ui.MenuBar.Command;
-import com.vaadin.ui.MenuBar.MenuItem;
 
 
 /**
  * @author Joram Barrez
  */
-public class NewDeploymentListener implements Command {
+public class NewDeploymentListener implements ToolbarCommand {
 
   private static final long serialVersionUID = 1L;
   
@@ -37,7 +35,7 @@ public class NewDeploymentListener implements Command {
     this.viewManager = ExplorerApp.get().getViewManager();
   }
   
-  public void menuSelected(MenuItem selectedItem) {
+  public void toolBarItemSelected() {
     DeploymentUploadReceiver receiver = new DeploymentUploadReceiver();
     UploadPopupWindow uploadPopupWindow = new UploadPopupWindow(
             i18nManager.getMessage(Messages.DEPLOYMENT_UPLOAD),
@@ -49,5 +47,4 @@ public class NewDeploymentListener implements Command {
     uploadPopupWindow.addFinishedListener(receiver);
     viewManager.showPopupWindow(uploadPopupWindow);
   }
-
 }

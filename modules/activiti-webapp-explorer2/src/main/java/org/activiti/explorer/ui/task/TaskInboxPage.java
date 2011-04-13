@@ -48,6 +48,7 @@ public class TaskInboxPage extends TaskPage {
   @Override
   protected void initUi() {
     super.initUi();
+    getToolBar().setActiveEntry(TaskMenuBar.ENTRY_INBOX);
     if (taskId == null) {
       selectListElement(0);
     } else {

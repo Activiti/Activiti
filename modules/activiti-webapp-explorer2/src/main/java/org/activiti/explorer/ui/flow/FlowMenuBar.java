@@ -17,17 +17,20 @@ import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ViewManager;
-
-import com.vaadin.ui.MenuBar;
+import org.activiti.explorer.ui.custom.ToolBar;
+import org.activiti.explorer.ui.custom.ToolbarEntry.ToolbarCommand;
 
 
 
 /**
  * @author Joram Barrez
  */
-public class FlowMenuBar extends MenuBar {
+public class FlowMenuBar extends ToolBar {
   
   private static final long serialVersionUID = 1L;
+  
+  public static final String ENTRY_MY_FLOWS = "myflows"; 
+  public static final String ENTRY_LAUNCH_FLOWS = "flows"; 
 
   protected I18nManager i18nManager;
   protected ViewManager viewManager;
@@ -42,22 +45,16 @@ public class FlowMenuBar extends MenuBar {
   protected void init() {
     setWidth("100%");
 
-    addItem(i18nManager.getMessage(Messages.FLOW_MENU_MY_FLOWS), new Command() {
-      
-      private static final long serialVersionUID = 1801881272806784326L;
-
-      public void menuSelected(MenuItem selectedItem) {
+    addToolbarEntry(ENTRY_MY_FLOWS, i18nManager.getMessage(Messages.FLOW_MENU_MY_FLOWS), new ToolbarCommand() {
+      public void toolBarItemSelected() {
         viewManager.showMyFlowsPage();
       }
     });
-    addItem(i18nManager.getMessage(Messages.FLOW_MENU_LAUNCH_FLOW), new Command() {
-      
-      private static final long serialVersionUID = -3389463332173619289L;
-
-      public void menuSelected(MenuItem selectedItem) {
+    
+    addToolbarEntry(ENTRY_LAUNCH_FLOWS, i18nManager.getMessage(Messages.FLOW_MENU_LAUNCH_FLOW), new ToolbarCommand() {
+      public void toolBarItemSelected() {
         viewManager.showFlowPage();
       }
     });
   }
-
 }

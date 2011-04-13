@@ -35,6 +35,11 @@ import com.vaadin.ui.Window;
  */
 public class ViewManager {
   
+  public static final String MAIN_NAVIGATION_TASKS = "tasks";
+  public static final String MAIN_NAVIGATION_FLOWS = "flows";
+  public static final String MAIN_NAVIGATION_MANAGE = "manage";
+  public static final String MAIN_NAVIGATION_REPORTS = "reports";
+  
   protected MainWindow mainWindow;
   
   public ViewManager(MainWindow mainWindow) {
@@ -56,18 +61,22 @@ public class ViewManager {
   // Tasks
   
   public void showTaskInboxPage() {
+    mainWindow.setMainNavigation(MAIN_NAVIGATION_TASKS);
     mainWindow.switchView(new TaskInboxPage());
   }
   
   public void showTaskInboxPage(String taskId) {
+    mainWindow.setMainNavigation(MAIN_NAVIGATION_TASKS);
     mainWindow.switchView(new TaskInboxPage(taskId));
   }
   
   public void showTaskQueuedPage(String groupId) {
+    mainWindow.setMainNavigation(MAIN_NAVIGATION_TASKS);
     mainWindow.switchView(new TaskQueuedPage(groupId));
   }
   
   public void showTaskQueuedPage(String groupId, String taskId) {
+    mainWindow.setMainNavigation(MAIN_NAVIGATION_TASKS);
     mainWindow.switchView(new TaskQueuedPage(groupId, taskId));
   }
   
@@ -78,44 +87,54 @@ public class ViewManager {
   // Flows
   
   public void showFlowPage() {
+    mainWindow.setMainNavigation(MAIN_NAVIGATION_FLOWS);
     mainWindow.switchView(new FlowPage());
   }
   
   public void showFlowPage(String processDefinitionId) {
+    mainWindow.setMainNavigation(MAIN_NAVIGATION_FLOWS);
     mainWindow.switchView(new FlowPage(processDefinitionId));
   }
   
   public void showMyFlowsPage() {
+    mainWindow.setMainNavigation(MAIN_NAVIGATION_FLOWS);
     mainWindow.switchView(new MyFlowsPage());
   }
   
   public void showMyFlowsPage(String processInstanceId) {
+    mainWindow.setMainNavigation(MAIN_NAVIGATION_FLOWS);
     mainWindow.switchView(new MyFlowsPage(processInstanceId));
   }
   
   // Management
   
   public void showDatabasePage() {
+    mainWindow.setMainNavigation(MAIN_NAVIGATION_MANAGE);
     mainWindow.switchView(new DatabasePage());
   }
   
   public void showDatabasePage(String tableName) {
+    mainWindow.setMainNavigation(MAIN_NAVIGATION_MANAGE);
     mainWindow.switchView(new DatabasePage(tableName));
   }
   
   public void showDeploymentPage() {
+    mainWindow.setMainNavigation(MAIN_NAVIGATION_MANAGE);
     mainWindow.switchView(new DeploymentPage());
   }
   
   public void showDeploymentPage(String deploymentId) {
+    mainWindow.setMainNavigation(MAIN_NAVIGATION_MANAGE);
     mainWindow.switchView(new DeploymentPage(deploymentId));
   }
   
   public void showJobPage() {
+    mainWindow.setMainNavigation(MAIN_NAVIGATION_MANAGE);
     mainWindow.switchView(new JobPage());
   }
   
   public void showJobPage(String jobId) {
+    mainWindow.setMainNavigation(MAIN_NAVIGATION_MANAGE);
     mainWindow.switchView(new JobPage(jobId));
   }
   

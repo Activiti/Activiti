@@ -64,6 +64,10 @@ public class MainWindow extends Window {
     mainLayout.addComponent(component, ExplorerLayout.LOCATION_CONTENT);
   }
   
+  public void setMainNavigation(String navigation) {
+    mainLayout.setMainNavigation(navigation);
+  }
+  
   // URL handling
   
   protected void initHiddenComponents() {

@@ -13,6 +13,7 @@
 package org.activiti.explorer.ui.management;
 
 import org.activiti.explorer.ui.AbstractPage;
+import org.activiti.explorer.ui.custom.ToolBar;
 
 import com.vaadin.ui.Component;
 
@@ -27,6 +28,10 @@ public abstract class ManagementPage extends AbstractPage {
   @Override
   protected Component createMenuBar() {
     return new ManagementMenuBar();
+  }
+  
+  protected ToolBar getToolBar() {
+    return (ToolBar) menuBar;
   }
   
 }

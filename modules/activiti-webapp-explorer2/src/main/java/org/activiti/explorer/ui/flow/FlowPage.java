@@ -25,6 +25,7 @@ import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.AbstractPage;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
+import org.activiti.explorer.ui.custom.ToolBar;
 import org.activiti.explorer.ui.util.ThemeImageColumnGenerator;
 
 import com.vaadin.data.Item;
@@ -67,6 +68,8 @@ public class FlowPage extends AbstractPage {
   @Override
   protected void initUi() {
     super.initUi();
+    
+    getToolBar().setActiveEntry(FlowMenuBar.ENTRY_LAUNCH_FLOWS);
     if (processDefinitionId == null) {
       selectListElement(0);
     } else {
@@ -77,6 +80,10 @@ public class FlowPage extends AbstractPage {
   @Override
   protected Component createMenuBar() {
    return new FlowMenuBar();
+  }
+  
+  protected ToolBar getToolBar() {
+    return (ToolBar) menuBar;
   }
   
   @Override

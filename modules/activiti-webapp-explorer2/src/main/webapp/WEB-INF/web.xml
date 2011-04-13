@@ -28,7 +28,7 @@
 
 	<servlet>
 		<servlet-name>Vaadin Application Servlet</servlet-name>
-		<servlet-class>org.activiti.explorer.servlet.SpringApplicationServlet</servlet-class>
+		<servlet-class>org.activiti.explorer.servlet.ExplorerApplicationServlet</servlet-class>
 	</servlet>
 	
 	<servlet-mapping>

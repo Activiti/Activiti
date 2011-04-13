@@ -42,6 +42,11 @@ public class Images {
   public static final Resource EDIT = new ThemeResource("img/edit.png");
   public static final Resource SAVE = new ThemeResource("img/save.png");
   
+  public static final Resource MAIN_MENU_TASKS = new ThemeResource("img/mm-tasks.png");
+  public static final Resource MAIN_MENU_FLOWS = new ThemeResource("img/mm-flows.png");
+  public static final Resource MAIN_MENU_MANAGE = new ThemeResource("img/mm-manage.png");
+  public static final Resource MAIN_MENU_REPORTS = new ThemeResource("img/mm-reports.png");
+  
   // Task
   public static final Resource TASK_FINISHED = new ThemeResource("img/tick.png");
   public static final Resource TASK_UNFINISHED = new ThemeResource("img/control_play.png");
@@ -66,6 +71,6 @@ public class Images {
   public static final Resource RELATED_CONTENT_URL = new ThemeResource("img/page_white_world.png");
   public static final Resource RELATED_CONTENT_FILE = new ThemeResource("img/page_white_get.png");
   public static final Resource RELATED_CONTENT_PDF = new ThemeResource("img/page_white_acrobat.png");
-  public static final Resource RELATED_CONTENT_PICTURE = new ThemeResource("img/picture.png");;
+  public static final Resource RELATED_CONTENT_PICTURE = new ThemeResource("img/picture.png");
 
 }

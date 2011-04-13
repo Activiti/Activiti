@@ -15,17 +15,9 @@ package org.activiti.explorer.ui;
 
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
-import org.activiti.explorer.LoggedInUser;
-import org.activiti.explorer.Messages;
 import org.activiti.explorer.ViewManager;
 
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CustomLayout;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.themes.Reindeer;
 
 
 /**
@@ -46,60 +38,15 @@ public class MainLayout extends CustomLayout {
     
     // Components visible on every page
     setSizeFull();
-    initSearchBox();
-    initLogoutButton();
     initMainMenuBar();
-  }
-  
-  protected void initSearchBox() {
-    TextField searchBox = new TextField();
-    searchBox.setInputPrompt(i18nManager.getMessage(Messages.HEADER_SEARCHBOX));
-    searchBox.addStyleName(ExplorerLayout.STYLE_SMALL_TEXTFIELD);
-    searchBox.addStyleName(ExplorerLayout.STYLE_SEARCHBOX);
-    addComponent(searchBox, ExplorerLayout.LOCATION_SEARCH);
-  }
-  
-  @SuppressWarnings("serial")
-  protected void initLogoutButton() {
-    // Username + logout button is put into a small grid
-    GridLayout logoutGrid = new GridLayout(2, 1);
-    logoutGrid.setStyleName(ExplorerLayout.STYLE_LOGOUT_BUTTON);
-
-    // User name + link to profile 
-    final LoggedInUser user = ExplorerApp.get().getLoggedInUser();
-    Button userButton = new Button(user.getFirstName() + " " + user.getLastName());
-    userButton.setIcon(Images.USER);
-    userButton.addStyleName(ExplorerLayout.STYLE_USER_PROFILE);
-    userButton.addStyleName(Reindeer.BUTTON_LINK);
-    
-    userButton.addListener(new ClickListener() {
-      public void buttonClick(ClickEvent event) {
-        viewManager.showProfilePopup(user.getId());
-      }
-    });
-
-    // logout button
-    Button logout = new Button(i18nManager.getMessage(Messages.HEADER_LOGOUT));
-    logout.setStyleName(Reindeer.BUTTON_LINK);
-    logout.addStyleName(ExplorerLayout.STYLE_LOGOUT_BUTTON);
-    logout.setIcon(Images.WHITE_DIVIDER);
-    logout.addListener(new ClickListener() {
-      public void buttonClick(ClickEvent event) {
-        ExplorerApp.get().close();
-      }
-    });
-
-    // Add components to grid layout
-    logoutGrid.addComponent(userButton, 0, 0);
-    logoutGrid.addComponent(logout, 1, 0);
-
-    // Add logout grid to header
-    addComponent(logoutGrid, ExplorerLayout.LOCATION_LOGOUT);
   }
   
   protected void initMainMenuBar() {
     this.mainMenuBar = new MainMenuBar();
     addComponent(mainMenuBar, ExplorerLayout.LOCATION_MAIN_MENU);
   }
-
+  
+  public void setMainNavigation(String navigation) {
+    mainMenuBar.setMainNavigation(navigation);
+  }
 }

@@ -41,6 +41,7 @@ public interface Messages {
   static final String MAIN_MENU_TASKS = "main.menu.tasks";
   static final String MAIN_MENU_FLOWS = "main.menu.flows";
   static final String MAIN_MENU_MANAGEMENT = "main.menu.management";
+  static final String MAIN_MENU_REPORTS = "main.menu.reports";
   
   // Profile
   static final String PROFILE_ABOUT = "profile.about";
@@ -56,6 +57,7 @@ public interface Messages {
   static final String PROFILE_TWITTER = "profile.twitter";
   static final String PROFILE_SKYPE = "profile.skype";
   static final String PROFILE_ACCOUNTS = "profile.accounts";
+  static final String PROFILE_SHOW = "profile.show";
   static final String PROFILE_EDIT = "profile.edit";
   static final String PROFILE_SAVE = "profile.save";
   static final String PROFILE_CHANGE_PICTURE = "profile.change.picture";
@@ -206,5 +208,4 @@ public interface Messages {
   static final String TASK_AUTHORISATION_ERROR_TITLE = "task.authorisation.error.title";
   static final String TASK_AUTHORISATION_MEMBERSHIP_ERROR = "task.authorisation.membership.error";
   static final String TASK_AUTHORISATION_INBOX_ERROR = "task.authorisation.inbox.error";
-
 }

@@ -20,6 +20,7 @@ import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.navigation.DataBaseNavigationHandler;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.Images;
+import org.activiti.explorer.ui.management.ManagementMenuBar;
 import org.activiti.explorer.ui.management.ManagementPage;
 
 import com.vaadin.data.Item;
@@ -53,6 +54,8 @@ public class DatabasePage extends ManagementPage {
   @Override
   protected void initUi() {
     super.initUi();
+    getToolBar().setActiveEntry(ManagementMenuBar.ENTRY_DATABASE);
+    
     populateTableList(); // tablelist is NOT lazy loaded
     if (tableName == null) {
       selectListElement(0);

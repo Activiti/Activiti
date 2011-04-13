@@ -16,16 +16,21 @@ import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ViewManager;
+import org.activiti.explorer.ui.custom.ToolBar;
+import org.activiti.explorer.ui.custom.ToolbarEntry.ToolbarCommand;
+import org.activiti.explorer.ui.custom.ToolbarPopupEntry;
 import org.activiti.explorer.ui.management.deployment.NewDeploymentListener;
-
-import com.vaadin.ui.MenuBar;
 
 /**
  * @author Joram Barrez
  */
-public class ManagementMenuBar extends MenuBar {
+public class ManagementMenuBar extends ToolBar {
 
   private static final long serialVersionUID = 1L;
+  
+  public static final String ENTRY_DATABASE = "database"; 
+  public static final String ENTRY_DEPLOYMENTS = "deployments"; 
+  public static final String ENTRY_JOBS = "jobs"; 
   
   protected I18nManager i18nManager;
   protected ViewManager viewManager;
@@ -37,30 +42,29 @@ public class ManagementMenuBar extends MenuBar {
     init();
   }
   
-  @SuppressWarnings("serial")
   protected void init() {
     setWidth("100%");
     
     // Database
-    addItem(i18nManager.getMessage(Messages.MGMT_MENU_DATABASE), new Command() {
-      public void menuSelected(MenuItem selectedItem) {
+    addToolbarEntry(ENTRY_DATABASE, i18nManager.getMessage(Messages.MGMT_MENU_DATABASE), new ToolbarCommand() {
+      public void toolBarItemSelected() {
         viewManager.showDatabasePage();
       }
     });
     
     // Deployments
-    MenuItem deploymentsItem = addItem(i18nManager.getMessage(Messages.MGMT_MENU_DEPLOYMENTS), null);
+    ToolbarPopupEntry deploymentEntry = addPopupEntry(ENTRY_DEPLOYMENTS, i18nManager.getMessage(Messages.MGMT_MENU_DEPLOYMENTS));
     
-    deploymentsItem.addItem(i18nManager.getMessage(Messages.MGMT_MENU_DEPLOYMENTS_SHOW_ALL), new Command() {
-      public void menuSelected(MenuItem selectedItem) {
+    deploymentEntry.addMenuItem(i18nManager.getMessage(Messages.MGMT_MENU_DEPLOYMENTS_SHOW_ALL), new ToolbarCommand() {
+      public void toolBarItemSelected() {
         viewManager.showDeploymentPage();
       }
     });
-    deploymentsItem.addItem(i18nManager.getMessage(Messages.MGMT_MENU_DEPLOYMENTS_UPLOAD), new NewDeploymentListener());
+    deploymentEntry.addMenuItem(i18nManager.getMessage(Messages.MGMT_MENU_DEPLOYMENTS_UPLOAD), new NewDeploymentListener());
     
     // Jobs
-    addItem(i18nManager.getMessage(Messages.MGMT_MENU_JOBS), new Command() {
-      public void menuSelected(MenuItem selectedItem) {
+    addToolbarEntry(ENTRY_JOBS, i18nManager.getMessage(Messages.MGMT_MENU_JOBS), new ToolbarCommand() {
+      public void toolBarItemSelected() {
         viewManager.showJobPage();
       }
     });

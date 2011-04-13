@@ -22,6 +22,7 @@ import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.AbstractPage;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
+import org.activiti.explorer.ui.custom.ToolBar;
 import org.activiti.explorer.ui.util.ThemeImageColumnGenerator;
 
 import com.vaadin.data.Item;
@@ -85,6 +86,10 @@ public abstract class TaskPage extends AbstractPage {
     taskTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
     
     return taskTable;
+  }
+  
+  protected ToolBar getToolBar() {
+    return (ToolBar) menuBar;
   }
   
   protected abstract LazyLoadingQuery createLazyLoadingQuery();
