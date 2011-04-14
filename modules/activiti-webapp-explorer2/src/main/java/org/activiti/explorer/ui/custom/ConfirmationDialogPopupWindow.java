@@ -106,7 +106,7 @@ public class ConfirmationDialogPopupWindow extends Window {
   }
 
   protected void initLabel(String description) {
-    descriptionLabel = new Label(description);
+    descriptionLabel = new Label(description, Label.CONTENT_XHTML);
     descriptionLabel.setSizeFull();
     layout.addComponent(descriptionLabel, 0, 0 , 1, 0);
     layout.setRowExpandRatio(0, 1.0f);

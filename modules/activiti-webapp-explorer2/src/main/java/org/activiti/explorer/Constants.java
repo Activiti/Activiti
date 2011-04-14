@@ -49,12 +49,12 @@ public class Constants {
  public static final Collection<String> DEFAULT_IMAGE_MIMETYPES = Arrays.asList(
          MIMETYPE_BPM, MIMETYPE_GIF, MIMETYPE_JPEG, MIMETYPE_PNG);
  
- static Map<String, String> MIMETYPE_EXTENSION_MAPPING;
+ public static Map<String, String> MIMETYPE_EXTENSION_MAPPING;
  static {
    Map<String, String> mapping = new HashMap<String, String>();   
    mapping.put(MIMETYPE_BPM, ".bpm");
    mapping.put(MIMETYPE_GIF, ".gif");
-   mapping.put(MIMETYPE_JPEG, "jpg");
+   mapping.put(MIMETYPE_JPEG, ".jpg");
    mapping.put(MIMETYPE_PNG, ".png");
    MIMETYPE_EXTENSION_MAPPING = Collections.unmodifiableMap(mapping);
  }

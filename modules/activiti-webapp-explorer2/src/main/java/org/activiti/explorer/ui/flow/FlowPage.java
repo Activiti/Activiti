@@ -68,8 +68,6 @@ public class FlowPage extends AbstractPage {
   @Override
   protected void initUi() {
     super.initUi();
-    
-    getToolBar().setActiveEntry(FlowMenuBar.ENTRY_LAUNCH_FLOWS);
     if (processDefinitionId == null) {
       selectListElement(0);
     } else {
@@ -78,12 +76,8 @@ public class FlowPage extends AbstractPage {
   }
   
   @Override
-  protected Component createMenuBar() {
+  protected ToolBar createMenuBar() {
    return new FlowMenuBar();
-  }
-  
-  protected ToolBar getToolBar() {
-    return (ToolBar) menuBar;
   }
   
   @Override

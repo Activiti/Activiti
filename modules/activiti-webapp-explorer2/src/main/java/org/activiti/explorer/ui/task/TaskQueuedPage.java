@@ -49,8 +49,6 @@ public class TaskQueuedPage extends TaskPage {
   protected void initUi() {
     super.initUi();
     
-    getToolBar().setActiveEntry(TaskMenuBar.ENTRY_QUEUED);
-    
     if(taskId != null) {
       selectListElement(taskListContainer.getIndexForObjectId(taskId));
     } else {

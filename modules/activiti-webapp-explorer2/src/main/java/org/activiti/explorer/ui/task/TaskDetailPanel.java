@@ -237,7 +237,7 @@ public class TaskDetailPanel extends HorizontalLayout {
           Map<String, String> properties = event.getFormProperties();
           formService.submitTaskFormData(task.getId(), properties);
           notificationManager.showInformationNotification(Messages.TASK_COMPLETED, task.getName());
-          parent.refreshList();
+          parent.refreshListSelectNext();
         }
         
         @Override
@@ -263,7 +263,7 @@ public class TaskDetailPanel extends HorizontalLayout {
         public void buttonClick(ClickEvent event) {
           taskService.complete(task.getId());     
           notificationManager.showInformationNotification(Messages.TASK_COMPLETED, task.getName());
-          parent.refreshList();
+          parent.refreshListSelectNext();
         }
       });
       

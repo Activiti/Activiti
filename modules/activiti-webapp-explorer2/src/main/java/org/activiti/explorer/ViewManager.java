@@ -13,14 +13,19 @@
 
 package org.activiti.explorer;
 
+import org.activiti.explorer.ui.AbstractPage;
 import org.activiti.explorer.ui.MainWindow;
+import org.activiti.explorer.ui.flow.FlowMenuBar;
 import org.activiti.explorer.ui.flow.FlowPage;
 import org.activiti.explorer.ui.flow.MyFlowsPage;
+import org.activiti.explorer.ui.management.ManagementMenuBar;
 import org.activiti.explorer.ui.management.db.DatabasePage;
 import org.activiti.explorer.ui.management.deployment.DeploymentPage;
+import org.activiti.explorer.ui.management.identity.UserPage;
 import org.activiti.explorer.ui.management.job.JobPage;
 import org.activiti.explorer.ui.profile.ProfilePopupWindow;
 import org.activiti.explorer.ui.task.TaskInboxPage;
+import org.activiti.explorer.ui.task.TaskMenuBar;
 import org.activiti.explorer.ui.task.TaskQueuedPage;
 
 import com.vaadin.ui.Window;
@@ -57,77 +62,67 @@ public class ViewManager {
   // Tasks
   
   public void showTaskInboxPage() {
-    mainWindow.setMainNavigation(MAIN_NAVIGATION_TASKS);
-    mainWindow.switchView(new TaskInboxPage());
+    switchView(new TaskInboxPage(), MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_INBOX);
   }
   
   public void showTaskInboxPage(String taskId) {
-    mainWindow.setMainNavigation(MAIN_NAVIGATION_TASKS);
-    mainWindow.switchView(new TaskInboxPage(taskId));
+    switchView(new TaskInboxPage(), MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_INBOX);
   }
   
   public void showTaskQueuedPage(String groupId) {
-    mainWindow.setMainNavigation(MAIN_NAVIGATION_TASKS);
-    mainWindow.switchView(new TaskQueuedPage(groupId));
+    switchView(new TaskQueuedPage(groupId), MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_QUEUED);
   }
   
   public void showTaskQueuedPage(String groupId, String taskId) {
-    mainWindow.setMainNavigation(MAIN_NAVIGATION_TASKS);
-    mainWindow.switchView(new TaskQueuedPage(groupId, taskId));
+    switchView(new TaskQueuedPage(groupId, taskId), MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_QUEUED);
   }
   
   // Flows
   
   public void showFlowPage() {
-    mainWindow.setMainNavigation(MAIN_NAVIGATION_FLOWS);
-    mainWindow.switchView(new FlowPage());
+    switchView(new FlowPage(), MAIN_NAVIGATION_FLOWS, FlowMenuBar.ENTRY_LAUNCH_FLOWS);
   }
   
   public void showFlowPage(String processDefinitionId) {
-    mainWindow.setMainNavigation(MAIN_NAVIGATION_FLOWS);
-    mainWindow.switchView(new FlowPage(processDefinitionId));
+    switchView(new FlowPage(processDefinitionId), MAIN_NAVIGATION_FLOWS, FlowMenuBar.ENTRY_LAUNCH_FLOWS);
   }
   
   public void showMyFlowsPage() {
-    mainWindow.setMainNavigation(MAIN_NAVIGATION_FLOWS);
-    mainWindow.switchView(new MyFlowsPage());
+    switchView(new MyFlowsPage(), MAIN_NAVIGATION_FLOWS, FlowMenuBar.ENTRY_MY_FLOWS);
   }
   
   public void showMyFlowsPage(String processInstanceId) {
-    mainWindow.setMainNavigation(MAIN_NAVIGATION_FLOWS);
-    mainWindow.switchView(new MyFlowsPage(processInstanceId));
+    switchView(new MyFlowsPage(processInstanceId), MAIN_NAVIGATION_FLOWS, FlowMenuBar.ENTRY_MY_FLOWS);
   }
   
   // Management
   
   public void showDatabasePage() {
-    mainWindow.setMainNavigation(MAIN_NAVIGATION_MANAGE);
-    mainWindow.switchView(new DatabasePage());
+    switchView(new DatabasePage(), MAIN_NAVIGATION_MANAGE, ManagementMenuBar.ENTRY_DATABASE);
   }
   
   public void showDatabasePage(String tableName) {
-    mainWindow.setMainNavigation(MAIN_NAVIGATION_MANAGE);
-    mainWindow.switchView(new DatabasePage(tableName));
+    switchView(new DatabasePage(tableName), MAIN_NAVIGATION_MANAGE, ManagementMenuBar.ENTRY_DATABASE);
   }
   
   public void showDeploymentPage() {
-    mainWindow.setMainNavigation(MAIN_NAVIGATION_MANAGE);
-    mainWindow.switchView(new DeploymentPage());
+    switchView(new DeploymentPage(), MAIN_NAVIGATION_MANAGE, ManagementMenuBar.ENTRY_DEPLOYMENTS);
   }
   
   public void showDeploymentPage(String deploymentId) {
-    mainWindow.setMainNavigation(MAIN_NAVIGATION_MANAGE);
-    mainWindow.switchView(new DeploymentPage(deploymentId));
+    switchView(new DeploymentPage(deploymentId), MAIN_NAVIGATION_MANAGE, ManagementMenuBar.ENTRY_DEPLOYMENTS);
   }
   
   public void showJobPage() {
-    mainWindow.setMainNavigation(MAIN_NAVIGATION_MANAGE);
-    mainWindow.switchView(new JobPage());
+    switchView(new JobPage(), MAIN_NAVIGATION_MANAGE, ManagementMenuBar.ENTRY_JOBS);
   }
   
   public void showJobPage(String jobId) {
-    mainWindow.setMainNavigation(MAIN_NAVIGATION_MANAGE);
-    mainWindow.switchView(new JobPage(jobId));
+    switchView(new JobPage(jobId), MAIN_NAVIGATION_MANAGE, ManagementMenuBar.ENTRY_JOBS);
+  }
+  
+  public void showUserPage() {
+    switchView(new UserPage(), MAIN_NAVIGATION_MANAGE, ManagementMenuBar.ENTRY_USERS);
   }
   
   // Profile
@@ -135,5 +130,13 @@ public class ViewManager {
   public void showProfilePopup(String userId) {
     showPopupWindow(new ProfilePopupWindow(userId));
   }
-
+  
+  // Helper
+  
+  protected void switchView(AbstractPage page, String mainMenuActive, String subMenuActive) {
+    mainWindow.setMainNavigation(mainMenuActive);
+    mainWindow.switchView(page);
+    page.getToolBar().setActiveEntry(subMenuActive); // Must be set AFTER adding page to window (toolbar will be created in atach())
+  }
+  
 }

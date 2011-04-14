@@ -130,7 +130,6 @@ public interface Messages {
   static final String EVENT_ADD_ATTACHMENT = "event.add.attachment";
   static final String EVENT_COMMENT = "event.comment";
   static final String EVENT_DEFAULT = "event.default";
-
   
   // Flow menu
   static final String FLOW_MENU_MY_FLOWS = "flow.menu.my";
@@ -155,6 +154,7 @@ public interface Messages {
   static final String MGMT_MENU_JOBS = "management.menu.jobs";
   static final String MGMT_MENU_DEPLOYMENTS_SHOW_ALL = "management.menu.deployments.show.all";
   static final String MGMT_MENU_DEPLOYMENTS_UPLOAD = "management.menu.deployments.upload";
+  static final String MGMT_MENU_USERS = "management.menu.users";
   
   // Job page
   static final String JOB_EXECUTE = "job.execute";
@@ -182,6 +182,23 @@ public interface Messages {
   
   // Database page
   static final String DATABASE_NO_ROWS = "database.no.rows";
+  
+  // User page
+  static final String USER_HEADER_DETAILS = "user.header.details";
+  static final String USER_HEADER_GROUPS = "user.header.groups";
+  static final String USER_ID = "user.id";
+  static final String USER_FIRSTNAME = "user.firstname";
+  static final String USER_LASTNAME = "user.lastname";
+  static final String USER_EMAIL = "user.email";
+  static final String USER_EDIT = "user.edit";
+  static final String USER_DELETE = "user.delete";
+  static final String USER_SAVE = "user.save";
+  static final String USER_NO_PICTURE = "user.no.picture";
+  static final String USER_NO_GROUPS = "user.no.groups";
+  static final String USER_CONFIRM_DELETE = "user.confirm.delete";
+  static final String USER_CONFIRM_DELETE_GROUP = "user.confirm.delete.group";
+  static final String USER_SELECT_GROUPS = "user.select.groups";
+  static final String USER_SELECT_GROUPS_POPUP = "user.select.groups.popup";
   
   // Upload
   static final String UPLOAD_SELECT = "upload.select";

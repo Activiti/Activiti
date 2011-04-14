@@ -71,7 +71,7 @@ public class UserDetailsComponent extends HorizontalLayout {
     }
 
     protected void addUserPicture() {
-      Resource pictureResource = Images.USER_48; // default icon
+      Resource pictureResource = Images.USER_32; // default icon
       if (user != null) {
         final Picture userPicture = identityService.getUserPicture(user.getId());
         if (userPicture != null) {

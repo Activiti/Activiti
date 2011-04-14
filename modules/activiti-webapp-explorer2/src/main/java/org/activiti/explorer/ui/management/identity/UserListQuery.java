@@ -10,14 +10,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.explorer.ui.management.deployment;
+
+package org.activiti.explorer.ui.management.identity;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.identity.User;
 import org.activiti.explorer.data.AbstractLazyLoadingQuery;
 
 import com.vaadin.data.Item;
@@ -28,54 +29,52 @@ import com.vaadin.data.util.PropertysetItem;
 /**
  * @author Joram Barrez
  */
-public class DeploymentListQuery extends AbstractLazyLoadingQuery {
+public class UserListQuery extends AbstractLazyLoadingQuery {
   
-  protected RepositoryService repositoryService;
+  protected IdentityService identityService;
   
-  public DeploymentListQuery() {
-    this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+  public UserListQuery() {
+    this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
   }
 
   public int size() {
-    return (int) repositoryService.createDeploymentQuery().count();
+    return (int) identityService.createUserQuery().count();
   }
 
   public List<Item> loadItems(int start, int count) {
-    List<Deployment> deployments = repositoryService.createDeploymentQuery()
-      .orderByDeploymentName().asc()
-      .orderByDeploymentId().asc()
+    List<User> users = identityService.createUserQuery()
+      .orderByUserFirstName().asc()
+      .orderByUserLastName().asc()
+      .orderByUserId().asc()
       .listPage(start, count);
     
-    List<Item> items = new ArrayList<Item>();
-    for (Deployment deployment : deployments) {
-      items.add(new DeploymentListitem(deployment));
+    List<Item> userListItems = new ArrayList<Item>();
+    for (User user : users) {
+      userListItems.add(new UserListItem(user));
     }
-    return items;
+    return userListItems;
   }
 
   public Item loadSingleResult(String id) {
-    Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(id).singleResult();
-    if(deployment != null) {
-      return new DeploymentListitem(deployment);
-    }
-    return null;
+    return new UserListItem(identityService.createUserQuery().userId(id).singleResult());
   }
-  
+
   public void setSorting(Object[] propertyIds, boolean[] ascending) {
     throw new UnsupportedOperationException();
   }
   
-  class DeploymentListitem extends PropertysetItem implements Comparable<DeploymentListitem> {
+  class UserListItem extends PropertysetItem implements Comparable<UserListItem> {
     
     private static final long serialVersionUID = 1L;
-    
-    public DeploymentListitem(Deployment deployment) {
-      addItemProperty("id", new ObjectProperty<String>(deployment.getId()));
-      addItemProperty("name", new ObjectProperty<String>(deployment.getName()));
+
+    public UserListItem(User user) {
+      addItemProperty("id", new ObjectProperty<String>(user.getId()));
+      addItemProperty("name", new ObjectProperty<String>(user.getFirstName() 
+              + " " + user.getLastName() + " (" + user.getId() + ")"));
     }
 
-    public int compareTo(DeploymentListitem other) {
-      // Deployments are ordered first on name, then on id
+    public int compareTo(UserListItem other) {
+      // Users are ordered by default by firstname + lastname, and then on id
       String name = (String) getItemProperty("name").getValue();
       String otherName = (String) other.getItemProperty("name").getValue();
       
@@ -90,5 +89,5 @@ public class DeploymentListQuery extends AbstractLazyLoadingQuery {
     }
     
   }
-  
+
 }

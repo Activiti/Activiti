@@ -54,7 +54,6 @@ public class MyFlowsPage extends ProcessInstancePage {
   protected void initUi() {
     super.initUi();
     
-    getToolBar().setActiveEntry(FlowMenuBar.ENTRY_MY_FLOWS);
     if(processInstanceId != null) {
       selectListElement(processInstanceListContainer.getIndexForObjectId(processInstanceId));
     } else {

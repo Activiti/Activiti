@@ -21,6 +21,7 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.task.Task;
+import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
@@ -116,10 +117,10 @@ public class TaskEventsPanel extends Panel {
         public InputStream getStream() {
           return userPicture.getInputStream();
         }
-      }, "event_" + taskEvent.getUserId(), ExplorerApp.get());
+      }, "event_" + taskEvent.getUserId() + Constants.MIMETYPE_EXTENSION_MAPPING.get(userPicture.getMimeType()), ExplorerApp.get());
       authorPicture = new Embedded(null, imageresource);
     } else {
-      authorPicture = new Embedded(null, Images.USER_48);
+      authorPicture = new Embedded(null, Images.USER_32);
     }
     
     authorPicture.setType(Embedded.TYPE_IMAGE);

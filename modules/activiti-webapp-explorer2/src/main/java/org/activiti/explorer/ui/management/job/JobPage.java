@@ -18,7 +18,6 @@ import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.JobNavigationHandler;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.Images;
-import org.activiti.explorer.ui.management.ManagementMenuBar;
 import org.activiti.explorer.ui.management.ManagementPage;
 import org.activiti.explorer.ui.util.ThemeImageColumnGenerator;
 
@@ -53,7 +52,6 @@ public class JobPage extends ManagementPage {
   @Override
   protected void initUi() {
     super.initUi();
-    getToolBar().setActiveEntry(ManagementMenuBar.ENTRY_JOBS);
     
     if (jobId == null) {
       selectListElement(0);

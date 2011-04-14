@@ -36,7 +36,7 @@ public class Images {
   public static final Resource EXECUTE = new ThemeResource("img/execute.png");
   public static final Resource ADD = new ThemeResource("img/list-add.png");
   public static final Resource USER = new ThemeResource("img/user-icon.png");
-  public static final Resource USER_48 = new ThemeResource("img/user_48.png");
+  public static final Resource USER_32 = new ThemeResource("img/user_32.png");
   public static final Resource USER_ADD = new ThemeResource("img/user_add.png");
   public static final Resource SUCCESS = new ThemeResource("img/tick.png");
   public static final Resource EDIT = new ThemeResource("img/edit.png");

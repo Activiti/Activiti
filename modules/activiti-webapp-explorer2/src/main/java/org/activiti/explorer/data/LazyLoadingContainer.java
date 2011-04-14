@@ -35,7 +35,7 @@ import com.vaadin.data.Property;
  */
 public class LazyLoadingContainer implements Container.Indexed, Container.Sortable{
 
-  private static final long serialVersionUID = -3173261287161090288L;
+  private static final long serialVersionUID = 1L;
   
   protected LazyLoadingQuery lazyLoadingQuery;
   protected int batchSize;
@@ -114,7 +114,8 @@ public class LazyLoadingContainer implements Container.Indexed, Container.Sortab
   }
 
   public Collection< ? > getItemIds() {
-    // We don't need an actual list of elements,
+    // We don't need an actual list of elements, 
+    // since we map the ids in natural integer order (0,1,2,3, etc)
     // so we can just override the get() and save some memory
     return new AbstractList<Integer>() {
       public int size() {

@@ -17,7 +17,6 @@ import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.DeploymentNavigationHandler;
 import org.activiti.explorer.navigation.UriFragment;
-import org.activiti.explorer.ui.management.ManagementMenuBar;
 import org.activiti.explorer.ui.management.ManagementPage;
 
 import com.vaadin.data.Item;
@@ -51,7 +50,6 @@ public class DeploymentPage extends ManagementPage {
   @Override
   protected void initUi() {
     super.initUi();
-    getToolBar().setActiveEntry(ManagementMenuBar.ENTRY_DEPLOYMENTS);
     
     if (deploymentId == null) {
       selectListElement(0);

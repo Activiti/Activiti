@@ -28,7 +28,6 @@ import org.activiti.explorer.ui.util.ThemeImageColumnGenerator;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 
 
@@ -48,7 +47,7 @@ public abstract class TaskPage extends AbstractPage {
   protected LazyLoadingQuery lazyLoadingQuery;
   
   @Override
-  protected Component createMenuBar() {
+  protected ToolBar createMenuBar() {
     return new TaskMenuBar();
   }
   
@@ -90,10 +89,6 @@ public abstract class TaskPage extends AbstractPage {
     taskTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
     
     return taskTable;
-  }
-  
-  protected ToolBar getToolBar() {
-    return (ToolBar) menuBar;
   }
   
   protected abstract LazyLoadingQuery createLazyLoadingQuery();

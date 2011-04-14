@@ -12,6 +12,8 @@
  */
 package org.activiti.explorer.ui;
 
+import org.activiti.explorer.ui.custom.ToolBar;
+
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.GridLayout;
@@ -28,7 +30,7 @@ public abstract class AbstractPage extends CustomComponent {
 
   private static final long serialVersionUID = 1L;
   
-  protected Component menuBar;
+  protected ToolBar toolBar;
   protected GridLayout grid;
   protected Table table;
   
@@ -56,9 +58,15 @@ public abstract class AbstractPage extends CustomComponent {
    * Subclasses are expected to provide their own menuBar.
    */
   protected void addMenuBar() {
-    menuBar = createMenuBar();
-    grid.addComponent(menuBar, 0, 0 , 1, 0);
+    toolBar = createMenuBar();
+    grid.addComponent(toolBar, 0, 0 , 1, 0);
   }
+  
+  public ToolBar getToolBar() {
+    return toolBar;
+  }
+  
+  protected abstract ToolBar createMenuBar();
   
   protected void addMainLayout() {
     // The actual content of the page is a HorizontalSplitPanel,
@@ -98,7 +106,11 @@ public abstract class AbstractPage extends CustomComponent {
     }
   }
   
-  public void refreshList() {
+  /**
+   * Refresh the list on the left side and selects the next element in the table.
+   * (useful when element of the list is deleted)
+   */
+  public void refreshListSelectNext() {
     Integer pageIndex = (Integer) table.getCurrentPageFirstItemId();
     Integer selectedIndex = (Integer) table.getValue();
     table.removeAllItems();
@@ -140,8 +152,6 @@ public abstract class AbstractPage extends CustomComponent {
   
   
   protected abstract Table createList();
-  
-  protected abstract Component createMenuBar();
   
   /**
    * Gets the search component to display above the table. Return null
