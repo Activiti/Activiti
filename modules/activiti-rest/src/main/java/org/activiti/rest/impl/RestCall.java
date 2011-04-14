@@ -23,6 +23,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.util.json.JSONArray;
+import org.activiti.engine.impl.util.json.JSONObject;
+
+import com.mongodb.DBObject;
 
 
 /**
@@ -43,11 +46,26 @@ public class RestCall {
     this.httpServletResponse = httpServletResponse;
   }
 
-  public void sendResponse(JSONArray json) {
+  public void sendResponse(DBObject jsonObject) {
+    // add some nice formatting
+    String json = jsonObject.toString();
+    String formattedJson = new JSONObject(json).toString(2);
+    sendResponse(formattedJson);
+  }
+  
+  public void sendResponse(List<DBObject> jsonObjects) {
+    // add some nice formatting
+    String json = jsonObjects.toString();
+    String formattedJson = new JSONArray(json).toString(2);
+    sendResponse(formattedJson);
+  }
+
+  public void sendResponse(String json) {
+    httpServletResponse.setContentType("text/json");
     try {
       httpServletResponse
         .getOutputStream()
-        .println(json.toString(2));
+        .println(json);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }

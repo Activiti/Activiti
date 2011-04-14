@@ -25,40 +25,60 @@ public abstract class Parameter <T> {
   protected Class<T> type;
   protected String name;
   protected String description;
-
+  protected int maxLength = Integer.MAX_VALUE;
+  protected boolean isParameter = true;
   /** defaultValue==null means this parameter is required */
   protected T defaultValue;
+
+  public Parameter(Class<T> type) {
+    this.type = type;
+  }
 
   public Parameter(Class<T> type, String name, String description) {
     this.type = type;
     this.name = name;
     this.description = description;
   }
+  
+  public Parameter<T> setName(String name) {
+    this.name = name;
+    return this;
+  }
 
-  public abstract T convert(String parameterValue);
-  public abstract String getTypeDescription();
+  public Parameter<T> setDescription(String description) {
+    this.description = description;
+    return this;
+  }
+
+  public Parameter<T> setMaxLength(int maxLength) {
+    this.maxLength = maxLength;
+    return this;
+  }
+
+  public Parameter<T> setUrlVariable() {
+    this.isParameter = false;
+    return this;
+  }
 
   public Parameter<T> setDefaultValue(T defaultValue) {
     this.defaultValue = defaultValue;
     return this;
   }
   
-  public Class<T> getType() {
-    return type;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
+  public abstract T convert(String parameterValue);
+  public abstract String getTypeDescription();
 
   public T get(RestCall call) {
-    String textValue = call
-      .getHttpServletRequest()
-      .getParameter(name);
+    String textValue = null;
+    if (isParameter) {
+      textValue = call
+        .getHttpServletRequest()
+        .getParameter(name);
+    } else {
+      textValue = call
+        .getUrlVariables()
+        .get(name);
+    }
     
     if (textValue==null) {
       if (defaultValue!=null) {
@@ -70,11 +90,27 @@ public abstract class Parameter <T> {
     return convert(textValue);
   }
 
+  public Class<T> getType() {
+    return type;
+  }
+
+  public String getName() {
+    return name;
+  }
+
   public boolean isRequired() {
     return defaultValue==null;
   }
 
   public String getDescription() {
     return description;
+  }
+  
+  public int getMaxLength() {
+    return maxLength;
+  }
+  
+  public boolean isParameter() {
+    return isParameter;
   }
 }

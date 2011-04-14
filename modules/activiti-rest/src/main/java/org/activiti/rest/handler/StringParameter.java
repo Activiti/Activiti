@@ -11,19 +11,26 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.impl;
+package org.activiti.rest.handler;
 
-
+import org.activiti.rest.impl.Parameter;
 
 
 /**
  * @author Tom Baeyens
  */
-public abstract class RestHandler {
-  
-  public abstract String getUrlPattern();
+public class StringParameter extends Parameter<String> {
 
-  public abstract void handle(RestCall call);
+  public StringParameter() {
+    super(String.class);
+  }
 
-  public abstract HttpServletMethod getMethod();
+  public String convert(String parameterValue) {
+    return parameterValue;
+  }
+
+  public String getTypeDescription() {
+    return "string";
+  }
+
 }

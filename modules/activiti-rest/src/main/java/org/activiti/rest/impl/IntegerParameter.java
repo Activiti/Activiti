@@ -19,6 +19,10 @@ public class IntegerParameter extends Parameter<Integer> {
   int minValue = Integer.MIN_VALUE;
   int maxValue = Integer.MAX_VALUE;
 
+  public IntegerParameter() {
+    super(Integer.class);
+  }
+
   public IntegerParameter(String name, String description) {
     super(Integer.class, name, description);
   }
@@ -29,6 +33,42 @@ public class IntegerParameter extends Parameter<Integer> {
     this.maxValue = maxValue;
   }
   
+  
+  public IntegerParameter setMinValue(int minValue) {
+    this.minValue = minValue;
+    return this;
+  }
+  
+  public IntegerParameter setMaxValue(int maxValue) {
+    this.maxValue = maxValue;
+    return this;
+  }
+  
+  public IntegerParameter setDefaultValue(Integer defaultValue) {
+    super.setDefaultValue(defaultValue);
+    return this;
+  }
+
+  public IntegerParameter setDescription(String description) {
+    super.setDescription(description);
+    return this;
+  }
+
+  public IntegerParameter setMaxLength(int maxLength) {
+    super.setMaxLength(maxLength);
+    return this;
+  }
+
+  public IntegerParameter setName(String name) {
+    super.setName(name);
+    return this;
+  }
+
+  public IntegerParameter setUrlVariable() {
+    super.setUrlVariable();
+    return this;
+  }
+
   public Integer convert(String textValue) {
     try {
       Integer intValue = new Integer(textValue);
@@ -45,6 +85,6 @@ public class IntegerParameter extends Parameter<Integer> {
   }
 
   public String getTypeDescription() {
-    return "an integer between "+minValue+" and "+maxValue;
+    return "integer ["+minValue+".."+maxValue+"]";
   }
 }

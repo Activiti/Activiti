@@ -19,21 +19,24 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
-import org.activiti.engine.identity.User;
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.test.PvmTestCase;
 import org.activiti.engine.impl.util.IoUtil;
-import org.activiti.engine.task.Task;
+import org.activiti.persistence.Persistence;
+import org.activiti.persistence.entity.Task;
+import org.activiti.persistence.entity.User;
 import org.activiti.rest.RestServlet;
 import org.apache.commons.codec.binary.Base64;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
-
 /**
  * @author Tom Baeyens
  */
-public class RestTestCase extends PluggableActivitiTestCase {
+public class RestTestCase extends PvmTestCase {
+  
+  private static Logger log = Logger.getLogger(RestTestCase.class.getName());
   
   static int serverPort = 8765;
   static String baseContextUrl = "http://localhost:"+serverPort+"/activiti";
@@ -42,36 +45,50 @@ public class RestTestCase extends PluggableActivitiTestCase {
   protected String username = "kermit";
   protected String password = "kermit";
   protected List<String> createdUsers = new ArrayList<String>();
+  protected List<String> createdTaskIds = new ArrayList<String>();
   
   public void setUp() throws Exception {
     super.setUp();
-  
+    
     if (server==null) {
       server = new Server(serverPort);
       ServletContextHandler servletContextHandler = new ServletContextHandler(server, "/", true, false);
       servletContextHandler.addServlet(RestServlet.class, "/activiti/*");
       server.start();
       
-      createUser(username, password);
+      User defaultUser = new User()
+        .setUserId(username)
+        .setPassword(password);
+      
+      createUser(defaultUser);
     }
   }
   
   protected void tearDown() throws Exception {
-    for (String createdUser: createdUsers) {
-      identityService.deleteUser(createdUser);
-    }
+    log.info("=== cleaning db at teardown =================================");
+    Persistence.clean();
     
     super.tearDown();
   }
 
-
-
-  protected void createUser(String username, String password) {
-    User user = identityService.newUser(username);
-    user.setPassword(password);
-    identityService.saveUser(user);
+  protected void createUser(User user) {
+    Persistence.getUsers().insertUser(user);
     createdUsers.add(username);
   }
+
+  protected void deleteUser(String userId) {
+    Persistence.getUsers().deleteUser(userId);
+  }
+
+  protected void createTask(Task task) {
+    Persistence.getTasks().createTask(task);
+    createdTaskIds.add(task.getId());
+  }
+
+  protected void deleteTask(String taskId) {
+    Persistence.getTasks().deleteTask(taskId);
+  }
+
   
   protected void setUser(String username, String password) {
     setUser(username, password, false);
@@ -79,7 +96,10 @@ public class RestTestCase extends PluggableActivitiTestCase {
   
   protected void setUser(String username, String password, boolean create) {
     if (create) {
-      createUser(username, password);
+      User user = new User()
+        .setUserId(username)
+        .setPassword(password);
+      createUser(user);
     }
     this.username = username;
     this.password = password;

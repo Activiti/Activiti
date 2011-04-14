@@ -13,34 +13,51 @@
 
 package org.activiti.rest.test;
 
-import org.activiti.engine.task.Task;
+import java.util.logging.Logger;
+
+import org.activiti.persistence.entity.Task;
+
 
 
 /**
  * @author Tom Baeyens
  */
 public class TasksTest extends RestTestCase {
+  
+  private static Logger log = Logger.getLogger(TasksTest.class.getName());
 
   public void testTasks() throws Exception {
     // the default user is kermit
     
-    Task taskOne = taskService.newTask();
-    taskOne.setName("helloworld");
-    taskOne.setAssignee("kermit");
-    taskService.saveTask(taskOne);
+    Task taskOne = new Task()
+      .setTitle("helloworld")
+      .setAssignee("kermit");
+    createTask(taskOne);
     
-    Task taskTwo = taskService.newTask();
-    taskTwo.setName("hiuniverse");
-    taskTwo.setAssignee("kermit");
-    taskService.saveTask(taskTwo);
+    Task taskTwo = new Task()
+      .setTitle("hiuniverse")
+      .setAssignee("kermit");
+    createTask(taskTwo);
     
-    System.out.println(get("/tasks?first=0&max=10"));
+    Task taskThree= new Task()
+      .setTitle("yowwhatsup")
+      .setAssignee("fozzie");
+    createTask(taskThree);
+
+    log.info("tasks of default user kermit:");
+    log.info(get("/tasks?first=0&max=10"));
     
     setUser("fozzie", "fozzie", true);
 
-    System.out.println(get("/tasks?first=0&max=10"));
+    log.info("tasks of default user fozzie:");
+    log.info(get("/tasks?first=0&max=10"));
     
-    taskService.deleteTask(taskOne.getId(), true);
-    taskService.deleteTask(taskTwo.getId(), true);
+    setUser("misspiggy", "misspiggy", true);
+
+    log.info("tasks of default user misspiggy:");
+    log.info(get("/tasks?first=0&max=10"));
+
+    log.info("task two");
+    log.info(get("/task/"+taskTwo.getId()));
   }
 }
