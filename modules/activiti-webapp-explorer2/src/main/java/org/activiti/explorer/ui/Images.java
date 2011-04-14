@@ -26,7 +26,7 @@ public class Images {
   
   // General
   public static final Resource WHITE_DIVIDER = new ThemeResource("img/divider-white.png");
-  public static final Resource TASK = new ThemeResource("img/task.png");
+  public static final Resource TASK = new ThemeResource("img/task-22.png");
   public static final Resource CLOCK = new ThemeResource("img/clock.png");
   public static final Resource PROCESS = new ThemeResource("img/process.png");
   public static final Resource PROCESS_48PX = new ThemeResource("img/process_48.png");

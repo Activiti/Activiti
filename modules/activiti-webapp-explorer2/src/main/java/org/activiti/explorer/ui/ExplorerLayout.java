@@ -44,7 +44,10 @@ public interface ExplorerLayout {
   
   // General
   static final String STYLE_SMALL_TEXTFIELD = "small";
-  static final String STYLE_SEARCHBOX = "searchBox";
+  static final String STYLE_SEARCHBOX = "searchbox";
+  static final String STYLE_SEARCHBOX_LEFT = "searchbox-left";
+  static final String STYLE_SEARCHBOX_RIGHT = "searchbox-right";
+  static final String STYLE_SEARCHBOX_SORTMENU = "searchbox-sortmenu";
   static final String STYLE_HEADER_PROFILE_BOX = "person";
   static final String STYLE_HEADER_PROFILE_MENU = "person-menu";
   static final String STYLE_USER_PROFILE = "user";
@@ -54,6 +57,7 @@ public interface ExplorerLayout {
   static final String STYLE_TOOLBAR = "toolbar";
   static final String STYLE_TOOLBAR_COUNT = "toolbar-count";
   static final String STYLE_TOOLBAR_POPUP = "toolbar-popup";
+  static final String STYLE_SCROLLABLE = "scrollable";
   
   static final String STYLE_APPLICATION_LOGO = "logo";
   static final String STYLE_MAIN_MENU_BUTTON = "main-menu-button";
@@ -113,4 +117,5 @@ public interface ExplorerLayout {
   static final String STYLE_RELATED_CONTENT_CREATE_LIST = "related-content-create-list";
   static final String STYLE_RELATED_CONTENT_CREATE_DETAIL = "related-content-create-detail";
   static final String STYLE_RELATED_CONTENT_CREATE_LIST_LAST_COLUMN = "related-last-column";
+
 }

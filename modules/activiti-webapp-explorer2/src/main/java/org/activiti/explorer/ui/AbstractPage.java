@@ -14,9 +14,8 @@ package org.activiti.explorer.ui;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 
@@ -29,9 +28,8 @@ public abstract class AbstractPage extends CustomComponent {
 
   private static final long serialVersionUID = 1L;
   
-  protected VerticalLayout pageLayout;
   protected Component menuBar;
-  protected HorizontalSplitPanel splitPanel;
+  protected GridLayout grid;
   protected Table table;
   
 
@@ -46,40 +44,37 @@ public abstract class AbstractPage extends CustomComponent {
    * Override this method (and call super()) when you want to influence the UI.
    */
   protected void initUi() {
+    addMainLayout();
     setSizeFull();
-    addPageLayout();
     addMenuBar();
-    addMainSplitPanel();
+    addSearch();
     addList();
   }
   
-  protected void addPageLayout() {
-    // The main layout of this page is a vertical layout:
-    // on top there is the dynamic task menu bar, on the bottom the rest
-    pageLayout = new VerticalLayout();
-    pageLayout.setSizeFull();
-    setCompositionRoot(pageLayout);
-  }
   
   /**
    * Subclasses are expected to provide their own menuBar.
    */
   protected void addMenuBar() {
     menuBar = createMenuBar();
-    pageLayout.addComponent(menuBar);
+    grid.addComponent(menuBar, 0, 0 , 1, 0);
   }
   
-  protected abstract Component createMenuBar();
-  
-  protected void addMainSplitPanel() {
+  protected void addMainLayout() {
     // The actual content of the page is a HorizontalSplitPanel,
     // with on the left side the task list
-    splitPanel = new HorizontalSplitPanel();
-    splitPanel.addStyleName(Reindeer.SPLITPANEL_SMALL);
-    splitPanel.setSizeFull();
-    splitPanel.setSplitPosition(17, HorizontalSplitPanel.UNITS_PERCENTAGE);
-    pageLayout.addComponent(splitPanel);
-    pageLayout.setExpandRatio(splitPanel, 1.0f);
+    grid = new GridLayout(2, 3);
+    grid.addStyleName(Reindeer.SPLITPANEL_SMALL);
+    grid.setSizeFull();
+    
+    // column division
+    grid.setColumnExpandRatio(0, .25f);
+    grid.setColumnExpandRatio(1, .75f);
+    
+    // Height division
+    grid.setRowExpandRatio(2, 1.0f);
+    
+    setCompositionRoot(grid);
   }
   
   protected void addList() {
@@ -93,10 +88,15 @@ public abstract class AbstractPage extends CustomComponent {
     table.setSortDisabled(true);
     table.setSizeFull();
     
-    splitPanel.setFirstComponent(table);
+    grid.addComponent(table, 0, 2);
   }
   
-  protected abstract Table createList();
+  protected void addSearch() {
+    Component searchComponent = getSearchComponent();
+    if(searchComponent != null) {
+      grid.addComponent(searchComponent, 0, 1);
+    }
+  }
   
   public void refreshList() {
     Integer pageIndex = (Integer) table.getCurrentPageFirstItemId();
@@ -124,5 +124,29 @@ public abstract class AbstractPage extends CustomComponent {
       table.setCurrentPageFirstItemId(index);
     }
   }
+  
+  protected void setDetailComponent(Component detail) {
+    if(grid.getComponent(1, 1) != null) {
+      grid.removeComponent(1, 1);
+    }
+    if(detail != null) {
+      grid.addComponent(detail, 1, 1, 1, 2);
+    }
+  }
+  
+  protected Component getDetailComponent() {
+    return grid.getComponent(1, 0);
+  }
+  
+  
+  protected abstract Table createList();
+  
+  protected abstract Component createMenuBar();
+  
+  /**
+   * Gets the search component to display above the table. Return null
+   * when no search should be displayed.
+   */
+  protected abstract Component getSearchComponent();
 
 }

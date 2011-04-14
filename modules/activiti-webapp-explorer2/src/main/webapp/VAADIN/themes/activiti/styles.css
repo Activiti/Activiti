@@ -112,15 +112,6 @@ input.login-field {
   text-decoration: none;
 }
 
-/* Search textfield */
-
-.v-textfield-searchBox {
-  background: white left no-repeat url(img/magnifying-glass.gif);
-}
-.v-app input.v-textfield-searchBox {
-    padding-left: 17px; // This way the text starts after the magnifying glass icon
-}
-
 /* ---------
    Main menu
    --------- */
@@ -310,11 +301,6 @@ input.login-field {
   background-color: #e3eaec;
   font-weight: bold;
   font-size: 116%;
-}
-
-.v-table .v-selected {
-	background-image: none;
-	background-color: #1b7ec3;
 }
 
 /* Related content */
@@ -540,7 +526,97 @@ OLD CSS ABOVE THIS LINE
 	text-shadow: none;	
 }
   
-  
+/**
+ * Table - default style
+ */
+.v-table-row-odd, .v-table-row {
+ 	background-color: #fff;
+	overflow:hidden;
+	font:12px/14px Arial, Helvetica, sans-serif;
+}
+
+.v-table-row-odd.v-selected, .v-table-row.v-selected {
+	background: #dff5ff;
+	color: #000000;
+	font-weight: bold;
+	text-shadow: none;
+}
+ 
+.v-table-row-odd .v-table-cell-content, .v-table-row .v-table-cell-content {
+	border: none;
+	border-bottom: 1px solid #c5c5c5;
+	height: 35px;
+}
+
+.v-table-body {
+	border: 1px solid #c5c5c5;
+}
+.v-table-body.focused {
+	border: 1px solid #c5c5c5;
+}
+ 
+ 
+/**
+ * Search box - Textfield
+ */
+div.searchbox {
+	border-right: 1px solid #c5c5c5;
+	margin-left: -1px;	
+}
+
+.v-textfield.v-textfield-searchbox.searchbox, .v-textfield-focus.v-textfield-searchbox.searchbox  {
+	margin:0;
+	padding:3px 0 3px;
+	height:19px;
+	color:#666;
+	font:11px/14px Arial, Helvetica, sans-serif;
+	background:none;
+	border:0;
+}
+
+.searchbox .v-csslayout-margin {
+	background:url(img/bg-input-l-1.gif) no-repeat;
+	padding-left: 25px;
+}
+.searchbox .v-csslayout-container {
+	background:url(img/bg-input-r-1.gif) 100% 0 no-repeat;
+}
+
+.searchbox .v-csslayout {
+	background:url(img/bg-input-c-1.gif) repeat-x;	
+}
+
+/**
+ * Search box - Sort menu
+ */
+.searchbox-sortmenu {
+	background:url(img/bullet-2.gif) no-repeat 100% 50%;
+	border: none;
+	color:#3c3c3c;
+}
+
+.v-menubar-searchbox-sortmenu .v-menubar-menuitem:hover,
+.v-menubar-searchbox-sortmenu .v-menubar-menuitem-selected {
+	color:#3c3c3c;
+	background: none;
+	text-shadow: none;
+}
+
+.v-menubar-popup .v-menubar-submenu-searchbox-sortmenu {
+   background-color: #fff;
+   color:#3c3c3c;
+   text-shadow: none;
+ }
+ 
+ .v-menubar-popup .v-menubar-submenu-searchbox-sortmenu .v-menubar-menuitem-selected {
+ 	background: #eaeaea;
+ 	color: #464646;
+ 	text-shadow: none;
+ }
+
+
+
+
  /*
  *************
  NEW CSS BELOW THIS LINE
@@ -837,75 +913,7 @@ fieldset{
 .aside-frame {
 	border-right:1px solid #c5c5c5;
 }
-/* search-form */
-.search-form {
-	width:100%;
-	border-bottom:1px solid #c5c5c5;
-}
-.search-form:after,
-.aside-frame:after {
-	clear:both;
-	display:block;
-	content:"";
-}
-.search-form fieldset {
-	margin:0 65px 0 0;
-	padding:5px 10px;
-}
-/* submit-holder */
-.search-form .submit-holder {
-	float:right;
-	width:65px;
-	display:inline;
-	margin:0 -65px 0 0;
-}
-/* text */
-.search-form .text {
-	float: left;
-	height: auto;
-	width: 100%;
-	overflow:hidden;
-}
-/* text-holder */
-.search-form .text-holder {
-	overflow: hidden;
-	padding: 0 25px;
-	height:24px;
-}
-.search-form .text .l {
-	float:left;
-	width:25px;
-	height:24px;
-	margin:0 0 0 -25px;
-	display:inline;
-	background:url(img/bg-input-l-1.gif) no-repeat;
-}
-.search-form .text .r {
-	float:right;
-	width:25px;
-	height:24px;
-	display:inline;
-	margin:0 -25px 0 0;
-	background:url(img/bg-input-r-1.gif) no-repeat;
-}
-.search-form .text .c {
-	overflow: hidden;
-	float: left;
-	height:24px;
-	width: 100%;
-	background:url(img/bg-input-c-1.gif) repeat-x;
-}
-/* text-input */
-.search-form .text-input {
-	margin:0;
-	padding:3px 0 3px;
-	width:100%;
-	height:19px;
-	color:#666;
-	font:11px/14px Arial, Helvetica, sans-serif;
-	background:none;
-	border:0;
-}
+
 /* submit */
 .search-form .submit {
 	float:left;
@@ -921,35 +929,8 @@ fieldset{
 	padding:0;
 	margin:0;
 }
-/* sort */
-.sort {
-	float:right;
-	margin: 4px 0 0;
-	position: relative;
-}
-.sort a {
-	color:#3c3c3c;
-	float:left;
-	font-size:11px;
-	background:url(img/bullet-2.gif) no-repeat 100% 50%;
-	padding:0 11px 0 0;
-}
-#twocolumns .sort.hover ul,
-#twocolumns .sort:hover ul {display: block;}
-/* sort ul */
-.sort ul {
-	width:80px;
-	position:absolute;
-	left:-10px;
-	top:100%;
-	z-index:100;
-	list-style:none;
-	display:none;
-	margin:0;
-	padding:0 0 0 10px;
-	text-align:right;
-	background:#fff;
-}
+
+
 /* information-list */
 .information-list {
 	overflow:hidden;

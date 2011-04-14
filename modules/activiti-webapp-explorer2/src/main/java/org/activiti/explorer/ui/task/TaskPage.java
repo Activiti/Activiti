@@ -56,6 +56,7 @@ public abstract class TaskPage extends AbstractPage {
   protected Table createList() {
     final Table taskTable = new Table();
     taskTable.addStyleName(ExplorerLayout.STYLE_TASK_LIST);
+    taskTable.addStyleName(ExplorerLayout.STYLE_SCROLLABLE);
     
     // Listener to change right panel when clicked on a task
     taskTable.addListener(new Property.ValueChangeListener() {
@@ -65,13 +66,13 @@ public abstract class TaskPage extends AbstractPage {
         
         if(item != null) {
           String taskId = (String) item.getItemProperty("id").getValue();
-          splitPanel.setSecondComponent(new TaskDetailPanel(taskId, TaskPage.this));
+          setDetailComponent(new TaskDetailPanel(taskId, TaskPage.this));
           
           UriFragment taskFragment = getUriFragment(taskId);
           ExplorerApp.get().setCurrentUriFragment(taskFragment);
         } else {
           // Nothing is selected
-          splitPanel.removeComponent(splitPanel.getSecondComponent());
+          setDetailComponent(null);
           ExplorerApp.get().setCurrentUriFragment(getUriFragment(null));
         }
       }
@@ -83,7 +84,7 @@ public abstract class TaskPage extends AbstractPage {
     
     // Create column header
     taskTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.TASK));
-    taskTable.setColumnWidth("icon", 32);
+    taskTable.setColumnWidth("icon", 22);
     
     taskTable.addContainerProperty("name", String.class, null);
     taskTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);

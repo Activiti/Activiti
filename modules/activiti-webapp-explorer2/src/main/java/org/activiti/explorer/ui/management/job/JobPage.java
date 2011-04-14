@@ -25,6 +25,7 @@ import org.activiti.explorer.ui.util.ThemeImageColumnGenerator;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 
 
@@ -77,13 +78,13 @@ public class JobPage extends ManagementPage {
         if(item != null) {
           String jobId = (String) item.getItemProperty("id").getValue();
 
-          splitPanel.setSecondComponent(new JobDetailPanel(jobId, JobPage.this));
+          setDetailComponent(new JobDetailPanel(jobId, JobPage.this));
           // Update URL
           ExplorerApp.get().setCurrentUriFragment(
             new UriFragment(JobNavigationHandler.JOB_URL_PART, jobId));
         } else {
           // Nothing is selected
-          splitPanel.removeComponent(splitPanel.getSecondComponent());
+          setDetailComponent(null);
           ExplorerApp.get().setCurrentUriFragment(new UriFragment(JobNavigationHandler.JOB_URL_PART));
         }
       }
@@ -102,7 +103,13 @@ public class JobPage extends ManagementPage {
   public void refreshCurrentJobDetails() {
     if(table.getValue() != null) {
       Item selectedJob = table.getItem(table.getValue());
-      splitPanel.setSecondComponent(new JobDetailPanel((String) selectedJob.getItemProperty("id").getValue(), this));
+      setDetailComponent(new JobDetailPanel((String) selectedJob.getItemProperty("id").getValue(), this));
     }
   }
+  
+  @Override
+  protected Component getSearchComponent() {
+    return null;
+  } 
+
 }

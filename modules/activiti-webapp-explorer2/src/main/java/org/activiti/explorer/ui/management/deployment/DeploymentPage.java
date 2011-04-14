@@ -23,6 +23,7 @@ import org.activiti.explorer.ui.management.ManagementPage;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 
 
@@ -74,14 +75,14 @@ public class DeploymentPage extends ManagementPage {
         Item item = deploymentTable.getItem(event.getProperty().getValue()); // the value of the property is the itemId of the table entry
         if(item != null) {
           String deploymentId = (String) item.getItemProperty("id").getValue();
-          splitPanel.setSecondComponent(new DeploymentDetailPanel(deploymentId, DeploymentPage.this));
+          setDetailComponent(new DeploymentDetailPanel(deploymentId, DeploymentPage.this));
           
           // Update URL
           ExplorerApp.get().setCurrentUriFragment(
             new UriFragment(DeploymentNavigationHandler.DEPLOYMENT_URI_PART, deploymentId));
         } else {
           // Nothing is selected
-          splitPanel.removeComponent(splitPanel.getSecondComponent());
+          setDetailComponent(null);
           ExplorerApp.get().setCurrentUriFragment(new UriFragment(DeploymentNavigationHandler.DEPLOYMENT_URI_PART));
         }
       }
@@ -94,4 +95,8 @@ public class DeploymentPage extends ManagementPage {
     return deploymentTable;
   }
   
+  @Override
+  protected Component getSearchComponent() {
+    return null;
+  } 
 }

@@ -27,6 +27,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.terminal.Resource;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Table;
 
@@ -74,7 +75,7 @@ public class DatabasePage extends ManagementPage {
       public void valueChange(ValueChangeEvent event) {
         // The itemId of the table list is the tableName
         String tableName = (String) event.getProperty().getValue();
-       splitPanel.setSecondComponent(new DatabaseDetailPanel(tableName));
+        setDetailComponent(new DatabaseDetailPanel(tableName));
        
        // Update URL
        ExplorerApp.get().setCurrentUriFragment(
@@ -114,6 +115,10 @@ public class DatabasePage extends ManagementPage {
         image = Images.DATABASE_IDENTITY;
       }
       return new Embedded(null, image);
-    } 
-    
+    }
+
+  @Override
+  protected Component getSearchComponent() {
+    return null;
+  } 
 }

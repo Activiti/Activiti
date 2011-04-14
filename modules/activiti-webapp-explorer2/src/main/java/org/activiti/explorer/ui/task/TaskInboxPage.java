@@ -17,7 +17,10 @@ import org.activiti.explorer.Messages;
 import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.TaskNavigationHandler;
 import org.activiti.explorer.navigation.UriFragment;
+import org.activiti.explorer.ui.custom.ListSearchBox;
 import org.activiti.explorer.ui.task.data.TaskInboxListQuery;
+
+import com.vaadin.ui.Component;
 
 
 
@@ -77,5 +80,12 @@ public class TaskInboxPage extends TaskPage {
     taskFragment.addParameter(TaskNavigationHandler.PARAMETER_CATEGORY, TaskNavigationHandler.CATEGORY_INBOX);
     return taskFragment;
   }
+  
+  @Override
+  protected Component getSearchComponent() {
+    ListSearchBox searchBox = new ListSearchBox();
+    return searchBox;
+  } 
+
   
 }

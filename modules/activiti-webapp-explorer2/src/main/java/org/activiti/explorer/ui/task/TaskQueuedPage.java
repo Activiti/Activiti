@@ -17,6 +17,8 @@ import org.activiti.explorer.navigation.TaskNavigationHandler;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.task.data.TaskQueuedListQuery;
 
+import com.vaadin.ui.Component;
+
 /**
  * Page showing all the queued tasks of one person.
  * 
@@ -54,8 +56,6 @@ public class TaskQueuedPage extends TaskPage {
     } else {
       selectListElement(0);
     }
-    
-    
   }
 
   @Override
@@ -72,4 +72,9 @@ public class TaskQueuedPage extends TaskPage {
     }
     return taskFragment;
   }
+  
+  @Override
+  protected Component getSearchComponent() {
+    return null;
+  } 
 }

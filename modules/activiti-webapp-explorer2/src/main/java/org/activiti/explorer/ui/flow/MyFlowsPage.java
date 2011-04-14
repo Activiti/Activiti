@@ -20,6 +20,8 @@ import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.MyFlowsNavigationHandler;
 import org.activiti.explorer.navigation.UriFragment;
 
+import com.vaadin.ui.Component;
+
 
 /**
  * @author Frederik Heremans
@@ -68,4 +70,10 @@ public class MyFlowsPage extends ProcessInstancePage {
     }
     return fragment;
   }
+  
+  @Override
+  protected Component getSearchComponent() {
+    return null;
+  } 
+
 }

@@ -57,13 +57,13 @@ public abstract class ProcessInstancePage extends AbstractPage {
         Item item = processInstanceTable.getItem(event.getProperty().getValue()); // the value of the property is the itemId of the table entry
         if(item != null) {
           String processInstanceId = (String) item.getItemProperty("id").getValue();
-          splitPanel.setSecondComponent(new ProcessInstanceDetailPanel(processInstanceId, ProcessInstancePage.this));
+          setDetailComponent(new ProcessInstanceDetailPanel(processInstanceId, ProcessInstancePage.this));
           
           UriFragment taskFragment = getUriFragment(processInstanceId);
           ExplorerApp.get().setCurrentUriFragment(taskFragment);
         } else {
           // Nothing is selected
-          splitPanel.removeComponent(splitPanel.getSecondComponent());
+          setDetailComponent(null);
           UriFragment taskFragment = getUriFragment(null);
           ExplorerApp.get().setCurrentUriFragment(taskFragment);
         }

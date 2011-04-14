@@ -127,7 +127,7 @@ public class FlowPage extends AbstractPage {
 
   protected void showProcessDefinitionDetail(String processDefinitionId) {
     detailPanel = new ProcessDefinitionDetailPanel(processDefinitionId, FlowPage.this);
-    splitPanel.setSecondComponent(detailPanel);
+    setDetailComponent(detailPanel);
     
     UriFragment processDefinitionFragment = new UriFragment(FlowNavigationHandler.FLOW_URI_PART, processDefinitionId);
     ExplorerApp.get().setCurrentUriFragment(processDefinitionFragment);
@@ -139,5 +139,11 @@ public class FlowPage extends AbstractPage {
     }
     detailPanel.showProcessStartForm(startFormData);
   }
+  
+  @Override
+  protected Component getSearchComponent() {
+    return null;
+  } 
+
   
 }
