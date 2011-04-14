@@ -40,12 +40,12 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -70,6 +70,7 @@ public class UserDetailPanel extends Panel {
   protected TextField firstNameField;
   protected TextField lastNameField;
   protected TextField emailField;
+  protected PasswordField passwordField;
   protected HorizontalLayout groupLayout;
   protected Table groupTable;
   protected LazyLoadingContainer groupContainer;
@@ -168,12 +169,23 @@ public class UserDetailPanel extends Panel {
     } else {
       firstNameField = new TextField(null, user.getFirstName() != null ? user.getFirstName() : "");
       addUserDetail(detailGrid, i18nManager.getMessage(Messages.USER_FIRSTNAME), firstNameField);
+      firstNameField.focus();
       
       lastNameField = new TextField(null, user.getLastName() != null ? user.getLastName() : "");
       addUserDetail(detailGrid, i18nManager.getMessage(Messages.USER_LASTNAME), lastNameField);
       
       emailField = new TextField(null, user.getEmail() != null ? user.getEmail() : "");
       addUserDetail(detailGrid, i18nManager.getMessage(Messages.USER_EMAIL), emailField);
+      
+      passwordField = new PasswordField();
+      Label cautionLabel = new Label(i18nManager.getMessage(Messages.USER_RESET_PASSWORD));
+      cautionLabel.addStyleName(Reindeer.LABEL_SMALL);
+      HorizontalLayout passwordLayout = new HorizontalLayout();
+      passwordLayout.setSpacing(true);
+      passwordLayout.addComponent(passwordField);
+      passwordLayout.addComponent(cautionLabel);
+      passwordLayout.setComponentAlignment(cautionLabel, Alignment.MIDDLE_LEFT);
+      addUserDetail(detailGrid, i18nManager.getMessage(Messages.USER_PASSWORD), passwordLayout);
     }
   }
   
@@ -226,6 +238,9 @@ public class UserDetailPanel extends Panel {
         user.setFirstName(firstNameField.getValue().toString());
         user.setLastName(lastNameField.getValue().toString());
         user.setEmail(emailField.getValue().toString());
+        if (passwordField.getValue() != null && !"".equals(passwordField.getValue().toString())) {
+          user.setPassword(passwordField.getValue().toString());
+        }
         identityService.saveUser(user);
         
         // Refresh detail panel
@@ -333,6 +348,7 @@ public class UserDetailPanel extends Panel {
     groupsForUserQuery = new GroupsForUserQuery(identityService, this, user.getId());
     if (groupsForUserQuery.size() > 0) {
       groupTable = new Table();
+      groupTable.setSortDisabled(true);
       groupTable.setHeight(150, UNITS_PIXELS);
       groupLayout.addComponent(groupTable);
       

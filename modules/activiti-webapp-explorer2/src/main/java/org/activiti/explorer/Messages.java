@@ -190,6 +190,8 @@ public interface Messages {
   static final String USER_FIRSTNAME = "user.firstname";
   static final String USER_LASTNAME = "user.lastname";
   static final String USER_EMAIL = "user.email";
+  static final String USER_PASSWORD = "user.password";
+  static final String USER_RESET_PASSWORD = "user.reset.password";
   static final String USER_EDIT = "user.edit";
   static final String USER_DELETE = "user.delete";
   static final String USER_SAVE = "user.save";
