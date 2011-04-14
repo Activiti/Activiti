@@ -21,6 +21,7 @@ import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.LoggedInUser;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ViewManager;
+import org.activiti.explorer.ui.profile.ChangePasswordPopupWindow;
 
 import com.vaadin.terminal.Resource;
 import com.vaadin.ui.Alignment;
@@ -145,6 +146,13 @@ public class MainMenuBar extends HorizontalLayout {
       public void menuSelected(MenuItem selectedItem) {
         // TODO: Show in edit-mode
         ExplorerApp.get().getViewManager().showProfilePopup(user.getId());
+      }
+    });
+    
+    // Change password
+    rootItem.addItem(i18nManager.getMessage(Messages.PROFILE_CHANGE_PASSWORD), new Command() {
+      public void menuSelected(MenuItem selectedItem) {
+        ExplorerApp.get().getViewManager().showPopupWindow(new ChangePasswordPopupWindow());
       }
     });
     

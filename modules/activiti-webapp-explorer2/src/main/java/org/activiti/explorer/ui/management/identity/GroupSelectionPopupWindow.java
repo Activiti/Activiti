@@ -55,6 +55,7 @@ public class GroupSelectionPopupWindow extends Window {
     
     setCaption(i18nManager.getMessage(Messages.USER_SELECT_GROUPS_POPUP, userId));
     setModal(true);
+    center();
     setWidth(500, UNITS_PIXELS);
     setHeight(400, UNITS_PIXELS);
     addStyleName(Reindeer.WINDOW_LIGHT);

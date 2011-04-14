@@ -69,6 +69,9 @@ public interface Messages {
   static final String PROFILE_ACCOUNT_IMAP_DESCRIPTION = "profile.account.imap.description";
   static final String PROFILE_ACCOUNT_IMAP = "profile.account.imap";
   static final String PROFILE_ACCOUNT_ALFRESCO = "profile.account.alfresco";
+  static final String PROFILE_NEW_PASSWORD = "profile.new.password";
+  static final String PROFILE_CONFIRM_PASSWORD = "profile.confirm.password";
+  static final String PROFILE_CHANGE_PASSWORD = "profile.change.password";
   
   // Imap
   static final String IMAP_SERVER = "imap.server";
