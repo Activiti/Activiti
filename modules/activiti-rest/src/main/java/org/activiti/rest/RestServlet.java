@@ -71,8 +71,8 @@ public class RestServlet extends HttpServlet {
   }
 
   public void handle(RestCall restCall) {
-    RestHandler staticHandler = getRestHandler(restCall);
-    staticHandler.handle(restCall);
+    RestHandler restHandler = getRestHandler(restCall);
+    restHandler.handle(restCall);
   }
 
   private RestHandler getRestHandler(RestCall restCall) {
