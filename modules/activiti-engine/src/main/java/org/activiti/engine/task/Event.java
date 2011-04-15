@@ -26,17 +26,34 @@ import org.activiti.engine.TaskService;
  */
 public interface Event {
   
-  /** An identity link was added with following message parts:
+  /** A user identity link was added with following message parts:
    * [0] userId
-   * [1] groupId
-   * [2] identity link type (aka role) */
-  String ACTION_ADD_IDENTITY_LINK = "AddIdentityLink";
+   * [1] identity link type (aka role) */
+  String ACTION_ADD_USER_LINK = "AddUserLink";
+
+  /** A user identity link was added with following message parts:
+   * [0] userId
+   * [1] identity link type (aka role) */
+  String ACTION_DELETE_USER_LINK = "DeleteUserLink";
+
+  /** A group identity link was added with following message parts:
+   * [0] groupId
+   * [1] identity link type (aka role) */
+  String ACTION_ADD_GROUP_LINK = "AddGroupLink";
+
+  /** A group identity link was added with following message parts:
+   * [0] groupId
+   * [1] identity link type (aka role) */
+  String ACTION_DELETE_GROUP_LINK = "DeleteGroupLink";
 
   /** An user comment was added with the short version of the comment as message. */
   String ACTION_ADD_COMMENT = "AddComment";
 
   /** An attachment was added with the attachment name as message. */
   String ACTION_ADD_ATTACHMENT = "AddAttachment";
+
+  /** An attachment was deleted with the attachment name as message. */
+  String ACTION_DELETE_ATTACHMENT = "DeleteAttachment";
 
   /** Indicates the type of of action and also indicates the meaning of the parts as exposed in {@link #getMessageParts()}  */ 
   String getAction();

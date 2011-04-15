@@ -13,9 +13,14 @@
 
 package org.activiti.engine.impl.cmd;
 
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
+import org.activiti.engine.impl.persistence.entity.CommentEntity;
+import org.activiti.engine.impl.persistence.entity.CommentManager;
+import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.task.Event;
 
 
 /**
@@ -30,9 +35,29 @@ public class DeleteAttachmentCmd implements Command<Object> {
   }
 
   public Object execute(CommandContext commandContext) {
+    AttachmentEntity attachment = commandContext
+      .getDbSqlSession()
+      .selectById(AttachmentEntity.class, attachmentId);
+
     commandContext
       .getDbSqlSession()
       .delete(AttachmentEntity.class, attachmentId);
+    
+    if (attachment.getTaskId()!=null) {
+      CommentManager commentManager = commandContext.getCommentManager();
+      if (commentManager.isHistoryEnabled()) {
+        String authenticatedUserId = Authentication.getAuthenticatedUserId();
+        CommentEntity comment = new CommentEntity();
+        comment.setUserId(authenticatedUserId);
+        comment.setType(CommentEntity.TYPE_EVENT);
+        comment.setTime(ClockUtil.getCurrentTime());
+        comment.setAction(Event.ACTION_DELETE_ATTACHMENT);
+        comment.setMessage(attachment.getName());
+        comment.setTaskId(attachment.getTaskId());
+        commentManager.insert(comment);
+      }
+    }
+
     return null;
   }
 

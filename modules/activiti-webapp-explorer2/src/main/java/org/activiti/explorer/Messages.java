@@ -13,6 +13,7 @@
 package org.activiti.explorer;
 
 
+
 /**
  * @author Joram Barrez
  */
@@ -132,10 +133,14 @@ public interface Messages {
   static final String TASK_ROLE_MANAGER = "task.role.manager";
   static final String TASK_ROLE_SPONSOR = "task.role.sponsor";
   static final String TASK_ROLE_IMPLEMENTER = "task.role.implementer";
-  
+        
   // Events
-  static final String EVENT_ADD_IDENTITYLINK = "event.add.identitylink";
+  static final String EVENT_ADD_USER_LINK = "event.add.user.link";
+  static final String EVENT_DELETE_USER_LINK = "event.delete.user.link";
+  static final String EVENT_ADD_GROUP_LINK = "event.add.group.link";
+  static final String EVENT_DELETE_GROUP_LINK = "event.delete.group.link";
   static final String EVENT_ADD_ATTACHMENT = "event.add.attachment";
+  static final String EVENT_DELETE_ATTACHMENT = "event.delete.attachment";
   static final String EVENT_COMMENT = "event.comment";
   static final String EVENT_DEFAULT = "event.default";
   static final String EVENT_TITLE = "event.title";

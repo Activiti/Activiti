@@ -32,4 +32,6 @@ public class IdentityLinkType {
   
   public static final String CANDIDATE = "candidate";
 
+  public static final String OWNER = "owner";
+
 }

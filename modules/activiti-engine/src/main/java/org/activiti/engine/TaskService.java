@@ -136,6 +136,15 @@ public interface TaskService {
   void setAssignee(String taskId, String userId);
   
   /**
+   * Transfers ownership of this task to another user.
+   * No check is done whether the user is known by the identity component.
+   * @param taskId id of the task, cannot be null.
+   * @param userId of the person that is receiving ownership.
+   * @throws ActivitiException when the task or user doesn't exist.
+   */
+  void setOwner(String taskId, String userId);
+  
+  /**
    * Retrieves the {@link IdentityLink}s associated with the given task.
    * Such an {@link IdentityLink} informs how a certain identity (eg. group or user)
    * is associated with a certain task (eg. as candidate, assignee, etc.)

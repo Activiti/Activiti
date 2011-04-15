@@ -92,8 +92,11 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   }
 
   public void setAssignee(String taskId, String userId) {
-    commandExecutor.execute(new AddIdentityLinkCmd(taskId, userId, null, 
-            IdentityLinkType.ASSIGNEE));
+    commandExecutor.execute(new AddIdentityLinkCmd(taskId, userId, null, IdentityLinkType.ASSIGNEE));
+  }
+  
+  public void setOwner(String taskId, String userId) {
+    commandExecutor.execute(new AddIdentityLinkCmd(taskId, userId, null, IdentityLinkType.OWNER));
   }
   
   public void addCandidateUser(String taskId, String userId) {

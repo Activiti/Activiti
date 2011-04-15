@@ -13,8 +13,6 @@
 
 package org.activiti.engine.test.bpmn.usertask;
 
-import java.util.Date;
-
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -41,6 +39,9 @@ public class UserTaskTest extends PluggableActivitiTestCase {
     assertNotNull(task.getProcessDefinitionId());
     assertNotNull(task.getTaskDefinitionKey());
     assertNotNull(task.getCreateTime());
+    
+    // the next test verifies that if an execution creates a task, that no events are created during creation of the task. 
+    assertEquals(0, taskService.getTaskEvents(task.getId()).size());
   }
 
 }

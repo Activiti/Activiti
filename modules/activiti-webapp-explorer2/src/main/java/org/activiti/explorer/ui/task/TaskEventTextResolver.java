@@ -46,19 +46,28 @@ public class TaskEventTextResolver {
           + user.getFirstName() + " " + user.getLastName() + "</span> ";
     
     String text = null;
-    if (Event.ACTION_ADD_IDENTITY_LINK.equals(event.getAction())) {
+    if (Event.ACTION_ADD_USER_LINK.equals(event.getAction())) {
       User involvedUser = userCache.findUser(event.getMessageParts().get(0));
-      if (involvedUser != null) {
-        text = i18nManager.getMessage(Messages.EVENT_ADD_IDENTITYLINK, 
+      text = i18nManager.getMessage(Messages.EVENT_ADD_USER_LINK, 
               eventAuthor, 
               involvedUser.getFirstName() + " " + involvedUser.getLastName(),
-              event.getMessageParts().get(2)); // third msg part = role
-      } else { // group
-        text = i18nManager.getMessage(Messages.EVENT_ADD_IDENTITYLINK, 
+              event.getMessageParts().get(1)); // second msg part = role
+    } else if (Event.ACTION_DELETE_USER_LINK.equals(event.getAction())) {
+      User involvedUser = userCache.findUser(event.getMessageParts().get(0));
+      text = i18nManager.getMessage(Messages.EVENT_DELETE_USER_LINK, 
+              eventAuthor, 
+              involvedUser.getFirstName() + " " + involvedUser.getLastName(),
+              event.getMessageParts().get(1)); // second msg part = role
+    } else if (Event.ACTION_ADD_GROUP_LINK.equals(event.getAction())) {
+      text = i18nManager.getMessage(Messages.EVENT_ADD_GROUP_LINK, 
+              eventAuthor, 
+              event.getMessageParts().get(0),
+              event.getMessageParts().get(1)); // second msg part = role
+    } else if (Event.ACTION_DELETE_GROUP_LINK.equals(event.getAction())) {
+        text = i18nManager.getMessage(Messages.EVENT_DELETE_GROUP_LINK, 
                 eventAuthor, 
-                event.getMessageParts().get(1),
-                event.getMessageParts().get(2)); // third msg part = role
-      }
+                event.getMessageParts().get(0),
+                event.getMessageParts().get(1)); // second msg part = role
     } else if (Event.ACTION_ADD_ATTACHMENT.equals(event.getAction())) {
       text = i18nManager.getMessage(Messages.EVENT_ADD_ATTACHMENT, eventAuthor, event.getMessage());
     } else if (Event.ACTION_ADD_COMMENT.equals(event.getAction())) {

@@ -74,15 +74,26 @@ public class TaskIdentityLinksTest extends PluggableActivitiTestCase {
     
     assertEquals(1, identityLinks.size());
     
-    Event taskEvent = taskService.getTaskEvents(taskId).get(0);
-    assertEquals(Event.ACTION_ADD_IDENTITY_LINK, taskEvent.getAction());
+    List<Event> taskEvents = taskService.getTaskEvents(taskId);
+    assertEquals(1, taskEvents.size());
+    Event taskEvent = taskEvents.get(0);
+    assertEquals(Event.ACTION_ADD_GROUP_LINK, taskEvent.getAction());
     List<String> taskEventMessageParts = taskEvent.getMessageParts();
-    assertNull(taskEventMessageParts.get(0));
-    assertEquals("muppets", taskEventMessageParts.get(1));
-    assertEquals(IdentityLinkType.CANDIDATE, taskEventMessageParts.get(2));
-
-    taskService.deleteCandidateGroup(taskId, "muppets");
+    assertEquals("muppets", taskEventMessageParts.get(0));
+    assertEquals(IdentityLinkType.CANDIDATE, taskEventMessageParts.get(1));
+    assertEquals(2, taskEventMessageParts.size());
     
+    taskService.deleteCandidateGroup(taskId, "muppets");
+
+    taskEvents = taskService.getTaskEvents(taskId);
+    taskEvent = taskEvents.get(0);
+    assertEquals(Event.ACTION_DELETE_GROUP_LINK, taskEvent.getAction());
+    taskEventMessageParts = taskEvent.getMessageParts();
+    assertEquals("muppets", taskEventMessageParts.get(0));
+    assertEquals(IdentityLinkType.CANDIDATE, taskEventMessageParts.get(1));
+    assertEquals(2, taskEventMessageParts.size());
+    assertEquals(2, taskEvents.size());
+
     assertEquals(0, taskService.getIdentityLinksForTask(taskId).size());
   }
 

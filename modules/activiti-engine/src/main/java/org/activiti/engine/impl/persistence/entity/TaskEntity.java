@@ -269,7 +269,10 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
       .findIdentityLinkByTaskUserGroupAndType(id, userId, groupId, type);
     
     for (IdentityLinkEntity identityLink: identityLinks) {
-      identityLink.delete();
+      Context
+        .getCommandContext()
+        .getDbSqlSession()
+        .delete(IdentityLinkEntity.class, identityLink.getId());
     }
   }
   

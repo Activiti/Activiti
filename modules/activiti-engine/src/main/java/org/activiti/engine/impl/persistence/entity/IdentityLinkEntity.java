@@ -51,15 +51,6 @@ public class IdentityLinkEntity implements Serializable, IdentityLink, Persisten
     return identityLinkEntity;
   }
   
-  public void delete() {
-    Context
-      .getCommandContext()
-      .getDbSqlSession()
-      .delete(IdentityLinkEntity.class, id);
-    
-    // TODO remove this task assignment from the task
-  }
-
   public boolean isUser() {
     return userId != null;
   }

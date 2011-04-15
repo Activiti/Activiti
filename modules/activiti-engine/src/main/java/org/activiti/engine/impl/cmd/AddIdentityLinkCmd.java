@@ -55,8 +55,6 @@ public class AddIdentityLinkCmd implements Command<Void> {
       throw new ActivitiException("type is required when adding a new task identity link");
     }
     
-    
-    
     // Special treatment for assignee, group cannot be used an userId may be null
     if (IdentityLinkType.ASSIGNEE.equals(type)) {
       if (groupId != null) {
@@ -82,6 +80,8 @@ public class AddIdentityLinkCmd implements Command<Void> {
     
     if (IdentityLinkType.ASSIGNEE.equals(type)) {
       task.setAssignee(userId);
+    } else if (IdentityLinkType.OWNER.equals(type)) {
+      task.setOwner(userId);
     } else {
       task.addIdentityLink(userId, groupId, type);
     }
@@ -94,8 +94,13 @@ public class AddIdentityLinkCmd implements Command<Void> {
       comment.setType(CommentEntity.TYPE_EVENT);
       comment.setTime(ClockUtil.getCurrentTime());
       comment.setTaskId(taskId);
-      comment.setAction(Event.ACTION_ADD_IDENTITY_LINK);
-      comment.setMessage(new String[]{userId, groupId, type});
+      if (userId!=null) {
+        comment.setAction(Event.ACTION_ADD_USER_LINK);
+        comment.setMessage(new String[]{userId, type});
+      } else {
+        comment.setAction(Event.ACTION_ADD_GROUP_LINK);
+        comment.setMessage(new String[]{groupId, type});
+      }
       commentManager.insert(comment);
     }
     
