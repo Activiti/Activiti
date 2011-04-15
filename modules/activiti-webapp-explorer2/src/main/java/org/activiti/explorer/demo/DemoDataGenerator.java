@@ -35,6 +35,7 @@ import org.activiti.explorer.navigation.JobNavigationHandler;
 import org.activiti.explorer.navigation.MyFlowsNavigationHandler;
 import org.activiti.explorer.navigation.NavigationHandlers;
 import org.activiti.explorer.navigation.TaskNavigationHandler;
+import org.activiti.explorer.navigation.UserNavigationHandler;
 import org.activiti.explorer.ui.content.AttachmentRenderers;
 import org.activiti.explorer.ui.content.file.FileAttachmentEditor;
 import org.activiti.explorer.ui.content.file.ImageAttachmentRenderer;
@@ -110,6 +111,7 @@ public class DemoDataGenerator {
     NavigationHandlers.addNavigationHandler(new DeploymentNavigationHandler());
     NavigationHandlers.addNavigationHandler(new DataBaseNavigationHandler());
     NavigationHandlers.addNavigationHandler(new JobNavigationHandler());
+    NavigationHandlers.addNavigationHandler(new UserNavigationHandler());
     NavigationHandlers.addNavigationHandler(new MyFlowsNavigationHandler());
   }
   
