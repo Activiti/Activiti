@@ -339,6 +339,9 @@ public class ProfilePanel extends Panel {
         editable = false;
         loadProfileData();
         initUi();
+        
+        // Update user cache
+        ExplorerApp.get().getUserCache().notifyUserDataChanged(user.getId());
       }
     });
     return saveProfileButton;

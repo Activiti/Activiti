@@ -265,7 +265,9 @@ public class UserDetailPanel extends Panel {
        if (nameChanged(originalFirstName, originalLastName)) {
          userPage.notifyUserChanged(user.getId());
        }
-        
+       
+       // Update user cache
+       ExplorerApp.get().getUserCache().notifyUserDataChanged(user.getId());
       }
     });
   }
@@ -301,8 +303,14 @@ public class UserDetailPanel extends Panel {
           protected void rejected(ConfirmationEvent event) {
           }
           protected void confirmed(ConfirmationEvent event) {
+            // Delete user from database
             identityService.deleteUser(user.getId());
+
+            // Update ui
             userPage.refreshListSelectNext();
+            
+            // Update user cache
+            ExplorerApp.get().getUserCache().notifyUserDataChanged(user.getId());
           }
         });
         

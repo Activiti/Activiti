@@ -158,6 +158,10 @@ public class NewUserPopupWindow extends Window {
       // close popup and navigate to fresh user
       close();
       ExplorerApp.get().getViewManager().showUserPage(user.getId());
+      
+      // Update user cache
+      ExplorerApp.get().getUserCache().notifyUserDataChanged(user.getId());
+      
     } catch (InvalidValueException e) {
       // Do nothing: the Form component will render the errormsgs automatically
     }

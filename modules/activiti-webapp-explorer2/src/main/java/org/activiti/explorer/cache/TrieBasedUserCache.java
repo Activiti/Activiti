@@ -15,6 +15,7 @@ package org.activiti.explorer.cache;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -50,6 +51,7 @@ public class TrieBasedUserCache implements UserCache {
   
   protected IdentityService identityService;
   protected RadixTree<List<User>> userTrie = new RadixTreeImpl<List<User>>();
+  protected Map<String, List<String>> keyCache = new HashMap<String, List<String>>();
   protected Map<String, User> userCache = new HashMap<String, User>();
   
   public void refresh() {
@@ -63,6 +65,7 @@ public class TrieBasedUserCache implements UserCache {
     
     userTrie = new RadixTreeImpl<List<User>>();
     userCache = new HashMap<String, User>();
+    keyCache = new HashMap<String, List<String>>();
     
     while (usersAdded < nrOfUsers) {
 
@@ -72,33 +75,36 @@ public class TrieBasedUserCache implements UserCache {
       
       List<User> users = identityService.createUserQuery().listPage((int) usersAdded, 25);
       for (User user : users) {
-        String firstName = user.getFirstName();
-        String lastName = user.getLastName();
-        
-        // firstname for dictionary lookup
-        if (firstName != null && !"".equals(firstName)) {
-          for (String firstNameToken : user.getFirstName().split(" ")) {
-            addTrieCacheItem(firstNameToken, user);
-          }
-        }
-        
-        // lastname for dictionary lookup
-        if (lastName != null && !"".equals(lastName)) {
-          for (String lastNameToken : user.getLastName().split(" ")) {
-            addTrieCacheItem(lastNameToken, user);
-          }
-        }
-        
-        // User cache
+        addTrieItem(user);
         addUserCacheItem(user);
         
         usersAdded++;
       }
     }
   }
+
+  protected void addTrieItem(User user) {
+    for (String key : getKeys(user)) {
+      addTrieCacheItem(key, user);
+    }
+  }
+  
+  protected String[] getKeys(User user) {
+    String fullname = "";
+    if (user.getFirstName() != null) {
+      fullname += user.getFirstName();
+    }
+    if (user.getLastName() != null) {
+      fullname += " " + user.getLastName();
+    }
+    
+    return fullname.split(" ");
+  }
   
   protected void addTrieCacheItem(String key, User user) {
     key = key.toLowerCase();
+
+    // Trie update
     List<User> value = null;
     if (!userTrie.contains(key)) {
       value = new ArrayList<User>();
@@ -109,6 +115,12 @@ public class TrieBasedUserCache implements UserCache {
     value.add(user);
     userTrie.delete(key);
     userTrie.insert(key, value);
+    
+    // Key map update
+    if (!keyCache.containsKey(user.getId())) {
+      keyCache.put(user.getId(), new ArrayList<String>());
+    }
+    keyCache.get(user.getId()).add(key);
   }
   
   protected void addUserCacheItem(User user) {
@@ -136,6 +148,37 @@ public class TrieBasedUserCache implements UserCache {
       }
     }
     return returnValue;
+  }
+  
+  public void notifyUserDataChanged(String userId) {
+    User newData = identityService.createUserQuery().userId(userId).singleResult();
+    
+    // Update user trie: first remove old values
+    if (keyCache.containsKey(userId)) {
+      for (String key : keyCache.get(userId)) {
+        List<User> users = userTrie.find(key);
+        if (users != null && !users.isEmpty()) {
+          Iterator<User> userIterator = users.iterator();
+          while (userIterator.hasNext()) {
+            User next = userIterator.next();
+            if (next.getId().equals(userId)) {
+              userIterator.remove();
+            }
+          }
+        }
+      }
+    }
+    
+    // Update key cache
+    keyCache.remove(userId);
+    
+    if (newData != null) {
+      // Update user trie: add new value
+      addTrieItem(newData);
+      
+      // Update user cache
+      userCache.put(newData.getId(), newData);
+    }
   }
 
   @Autowired

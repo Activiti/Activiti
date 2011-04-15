@@ -36,4 +36,6 @@ public interface UserCache {
   
   User findUser(String userId);
   
+  void notifyUserDataChanged(String userId);
+  
 }
