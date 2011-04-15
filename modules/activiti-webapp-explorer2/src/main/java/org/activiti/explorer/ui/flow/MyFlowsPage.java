@@ -74,5 +74,10 @@ public class MyFlowsPage extends ProcessInstancePage {
   protected Component getSearchComponent() {
     return null;
   } 
+  
+  @Override
+  protected Component getEventComponent() {
+    return null;
+  } 
 
 }

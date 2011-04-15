@@ -70,7 +70,6 @@ public class TaskDetailPanel extends HorizontalLayout {
   // UI
   protected TaskPage parent;
   protected Panel centralPanel;
-  protected TaskEventsPanel eventPanel;
   protected FormPropertiesForm taskForm;
   protected TaskInvolvedPeopleComponent involvedPeople;
   protected TaskRelatedContentComponent relatedContent;
@@ -103,12 +102,6 @@ public class TaskDetailPanel extends HorizontalLayout {
     addComponent(centralPanel);
     setExpandRatio(centralPanel, 75.0f);
     
-    // Right panel: the task comments
-    this.eventPanel = new TaskEventsPanel(task);
-    eventPanel.addStyleName(Reindeer.PANEL_LIGHT);
-    addComponent(eventPanel);
-    setExpandRatio(eventPanel, 25.0f);
-    
     initName();
     initDescription();
     initProcessLink();
@@ -117,6 +110,8 @@ public class TaskDetailPanel extends HorizontalLayout {
     initPeopleDetails();
     initRelatedContent();
     initTaskForm();
+    
+    parent.getTaskEventPanel().setTask(task);
   }
   
   protected void initName() {
@@ -306,22 +301,22 @@ public class TaskDetailPanel extends HorizontalLayout {
   
   public void notifyPeopleInvolvedChanged() {
     involvedPeople.refreshPeopleGrid();
-    eventPanel.refreshTaskEvents();
+    parent.getTaskEventPanel().refreshTaskEvents();
   }
   
   public void notifyAssigneeChanged() {
     involvedPeople.refreshAssignee();
-    eventPanel.refreshTaskEvents();
+    parent.getTaskEventPanel().refreshTaskEvents();
   }
   
   public void notifyOwnerChanged() {
     involvedPeople.refreshOwner();
-    eventPanel.refreshTaskEvents();
+    parent.getTaskEventPanel().refreshTaskEvents();
   }
   
   public void notifyRelatedContentChanged() {
     relatedContent.refreshTaskAttachments();
-    eventPanel.refreshTaskEvents();
+    parent.getTaskEventPanel().refreshTaskEvents();
   }
   
 }

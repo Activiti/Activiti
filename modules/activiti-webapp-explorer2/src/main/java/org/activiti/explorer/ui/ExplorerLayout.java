@@ -87,10 +87,12 @@ public interface ExplorerLayout {
   static final String STYLE_TASK_LIST = "task-list";
   static final String STYLE_TASK_DETAILS = "task-details";
   static final String STYLE_TASK_DETAILS_HEADER = "task-details-header";
+  static final String STYLE_TASK_EVENT_PANEL = "task-event-panel";
   static final String STYLE_TASK_EVENT = "task-event";
   static final String STYLE_TASK_EVENT_AUTHOR = "task-event-author";
   static final String STYLE_TASK_EVENT_TIME = "task-event-time";
   static final String STYLE_TASK_EVENT_PICTURE = "task-event-picture";
+  static final String STYLE_TASK_EVENT_GRID = "event-grid";
 
   // Flow pages
   static final String STYLE_PROCESS_DEFINITION_LIST = "proc-def-list";

@@ -220,24 +220,6 @@ input.login-field {
 }
 
 /* -------------
-   Task events
-   ------------- */
-   
-.task-event-author {
-  color: #44698b;
-  font-weight: bold;
-  padding-top: 10px;
-}
-
-.task-event-time {
-  color: #70706f;
-}
-
-.task-event-picture {
-  margin-right: 5px;
-}
-
-/* -------------
    Database page
    ------------- */
    
@@ -541,6 +523,7 @@ OLD CSS ABOVE THIS LINE
  	background-color: #fff;
 	overflow:hidden;
 	font:12px/14px Arial, Helvetica, sans-serif;
+	
 }
 
 .v-table-row-odd.v-selected, .v-table-row.v-selected {
@@ -622,9 +605,134 @@ div.searchbox {
  	text-shadow: none;
  }
 
+/*
+ * Event box
+ */
+
+.v-panel-task-event-panel .v-panel-content > div {
+	background:#f2f2f2 url(img/bg-sidebar.gif) repeat-y;
+}
+
+.v-panel-task-event-panel .v-label-h2 {
+	color:#007dc3;
+	font:18px Arial, Helvetica, sans-serif;
+}
+
+.v-panel-task-event-panel .v-verticallayout .v-verticallayout-margin-top {
+	padding-top: 5px; 
+}
+
+.v-gridlayout-event-grid .v-gridlayout-spacing-on {
+	padding-top: 15px;
+    padding-left: 8px;
+}
+
+.v-gridlayout-event-grid .v-gridlayout-margin-top {
+	padding-top: 10px;	
+}
+
+.task-event-author {
+  color:#3c3c3c;
+  font-weight: bold;
+}
+
+.task-event-time {
+  display:block;
+  font:10px Arial, Helvetica, sans-serif;
+  color:#8c8c8c;
+}
 
 
+/*
+ * Buttons - Normal button
+ */
+ 
+.v-button:focus {
+    background-position: 0 0;
+    background-image: url(img/button-bg-left-active.gif);
+}
 
+.v-button:focus .v-button-wrap {
+    background-position: right 0;
+    background-image: url(img/button-bg-right-active.gif);
+}
+
+.v-button:active,
+.v-button.v-pressed {
+    background-position: 0 0;
+    background-image: url(img/button-bg-left-down.gif);
+}
+
+.v-button:active .v-button-wrap,
+.v-button.v-pressed .v-button-wrap {
+    background-position: right 0;
+    background-image: url(img/button-bg-right-down.gif);
+}
+
+.v-button,
+.v-disabled.v-button {
+    height: 24px;
+    padding: 0 0 0 5px;
+    background: transparent url(img/button-bg-left.gif) 0 0;
+    cursor: pointer;
+}
+
+.v-button-wrap,
+.v-disabled.v-button .v-button-wrap {
+    height: 24px;
+    padding: 4px 15px 0 9px;
+    background: transparent url(img/button-bg-right.gif) right 0;
+    cursor: pointer;
+}
+
+.v-button-caption {
+    color: #464646;
+}
+
+.v-button.v-disabled .v-button-wrap .v-button-caption {
+	color: #646464;	
+	cursor: default;
+}
+/*
+ * Buttons - Small button
+ */
+.v-button-small,
+.v-disabled.v-button-small,
+.v-button-small:active,
+.v-pressed.v-button-small,
+.v-button-small:focus {
+    height: 17px;
+    padding: 0 0 0 6px;
+    background: transparent url(img/button-bg-small-left.gif) repeat-x 0 0;
+    font:bold 10px/12px Arial, Helvetica, sans-serif;
+    cursor: pointer;
+}
+
+.v-button-small .v-button-wrap,
+.v-button-small.v-disabled .v-button-wrap,
+.v-button-small:active .v-button-wrap,
+.v-button-small.v-pressed .v-button-wrap {
+    height: 17px;
+    padding: 1px 12px 0 6px;
+    background: transparent url(img/button-bg-small-right.gif) repeat-x right 0;
+    font:bold 10px/12px Arial, Helvetica, sans-serif;
+    cursor: pointer;
+}
+
+.v-button-small:focus .v-button-wrap {
+	background: transparent url(img/button-bg-small-right-focus.gif) repeat-x right 0;	
+}
+
+.v-button-small:focus {
+	background: transparent url(img/button-bg-small-left-focus.gif) repeat-x 0 0;	
+}
+
+.v-button-small .v-button-wrap .v-button-caption {
+	font:bold 10px/12px Arial, Helvetica, sans-serif;
+}
+
+
+ 
  /*
  *************
  NEW CSS BELOW THIS LINE
@@ -837,45 +945,7 @@ fieldset{
 	cursor:pointer;
 	position:relative;
 }
-/* list-customer */
-.list-customer {
-	margin:0;
-	padding:0;
-	list-style:none;
-	overflow:hidden;
-	width:100%;
-}
-.list-customer li {
-	overflow:hidden;
-	width:100%;
-	padding:0 0 17px;
-}
-/* image */
-.list-customer li .image {
-	float:left;
-	width:48px;
-	margin:3px 9px 0 0;
-}
-/* block-about */
-.list-customer li .block-about {
-	height:1%;
-	overflow:hidden;
-}
-.list-customer li .image img {display:block;}
-.list-customer li strong {color:#3c3c3c;}
-.list-customer li p {margin:0;}
-.list-customer li .date {
-	display:block;
-	font:10px Arial, Helvetica, sans-serif;
-	color:#8c8c8c;
-}
-/* text-box */
-.text-box {
-	overflow:hidden;
-	position:relative;
-	height:714px;
-	margin-bottom:12px;
-}
+
 .vscroll-bar {width:7px !important;}
 .vscroll-up,
 .vscroll-down {display:none;}
@@ -939,35 +1009,6 @@ fieldset{
 }
 
 
-/* information-list */
-.information-list {
-	overflow:hidden;
-	width:100%;
-	margin:0;
-	padding:0;
-	list-style:none;
-}
-.information-list li {
-	border-bottom:1px solid #c5c5c5;
-	overflow:hidden;
-	height:1%;
-	font:12px/14px Arial, Helvetica, sans-serif;
-}
-.information-list li.active a {
-	background:#dff5ff;
-	font-weight:bold;
-}
-.information-list li a {
-	color:#3c3c3c;
-	display:block;
-	padding:10px 11px	 11px 9px;
-}
-/* image */
-.information-list li .image {
-	float:left;
-	margin:0 9px 0 0;
-}
-.information-list li .image img {display:block;}
 /* content-frame */
 .content-frame {
 	overflow:hidden;

@@ -25,6 +25,7 @@ import com.vaadin.ui.themes.Reindeer;
  * Superclass for all Explorer pages
  * 
  * @author Joram Barrez
+ * @author Frederik Heremans
  */
 public abstract class AbstractPage extends CustomComponent {
 
@@ -33,8 +34,8 @@ public abstract class AbstractPage extends CustomComponent {
   protected ToolBar toolBar;
   protected GridLayout grid;
   protected Table table;
+  protected boolean showEvents;
   
-
   // Overriding attach(), so we can construct the components first, before the UI is built,
   // that way, all member fields of subclasses are initialized properly
   @Override
@@ -46,14 +47,22 @@ public abstract class AbstractPage extends CustomComponent {
    * Override this method (and call super()) when you want to influence the UI.
    */
   protected void initUi() {
+    showEvents = getEventComponent() != null;
+    
     addMainLayout();
     setSizeFull();
     addMenuBar();
     addSearch();
     addList();
+    if(showEvents) {
+      addEventComponent();
+    }
   }
   
-  
+  protected void addEventComponent() {
+    grid.addComponent(getEventComponent(), 2, 0, 2, 2);
+  }
+
   /**
    * Subclasses are expected to provide their own menuBar.
    */
@@ -69,15 +78,20 @@ public abstract class AbstractPage extends CustomComponent {
   protected abstract ToolBar createMenuBar();
   
   protected void addMainLayout() {
-    // The actual content of the page is a HorizontalSplitPanel,
-    // with on the left side the task list
-    grid = new GridLayout(2, 3);
+    if(showEvents) {
+      grid = new GridLayout(3, 3);
+      grid.setColumnExpandRatio(0, .25f);
+      grid.setColumnExpandRatio(1, .52f);
+      grid.setColumnExpandRatio(2, .23f);
+    } else {
+      grid = new GridLayout(2, 3);
+
+      grid.setColumnExpandRatio(0, .25f);
+      grid.setColumnExpandRatio(1, .75f);
+    }
+    
     grid.addStyleName(Reindeer.SPLITPANEL_SMALL);
     grid.setSizeFull();
-    
-    // column division
-    grid.setColumnExpandRatio(0, .25f);
-    grid.setColumnExpandRatio(1, .75f);
     
     // Height division
     grid.setRowExpandRatio(2, 1.0f);
@@ -154,9 +168,16 @@ public abstract class AbstractPage extends CustomComponent {
   protected abstract Table createList();
   
   /**
-   * Gets the search component to display above the table. Return null
+   * Get the search component to display above the table. Return null
    * when no search should be displayed.
    */
   protected abstract Component getSearchComponent();
+  
+  /**
+   * Get the component to display the events in. Return null when
+   * no event-component should be used, main UI will be 2 columns instead
+   * of three.
+   */
+  protected abstract Component getEventComponent();
 
 }

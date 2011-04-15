@@ -39,12 +39,11 @@ public class ListSearchBox extends HorizontalLayout {
     
     addStyleName(ExplorerLayout.STYLE_SEARCHBOX);
     setSpacing(true);
+    setMargin(false, true, false, true);
     
-    addSpacer();
     initSearchBox();
     initSortMenu();
     
-    addSpacer();
   }   
 
   protected void initSortMenu() {

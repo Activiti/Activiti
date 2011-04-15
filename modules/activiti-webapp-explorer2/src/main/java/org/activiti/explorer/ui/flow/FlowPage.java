@@ -139,5 +139,8 @@ public class FlowPage extends AbstractPage {
     return null;
   } 
 
-  
+  @Override
+  protected Component getEventComponent() {
+    return null;
+  } 
 }

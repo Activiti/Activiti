@@ -69,6 +69,10 @@ public class TaskEventsPanel extends Panel {
   protected TextField commentInputField;
   protected GridLayout eventGrid;
 
+  public TaskEventsPanel() {
+    this(null);
+  }
+  
   public TaskEventsPanel(Task task) {
     this.task = task;
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
@@ -78,32 +82,59 @@ public class TaskEventsPanel extends Panel {
     this.taskEventTextResolver = new TaskEventTextResolver();
     
     ((VerticalLayout) getContent()).setSpacing(true);
+    ((VerticalLayout) getContent()).setMargin(true);
     setHeight(100, UNITS_PERCENTAGE);
     
+    addStyleName(ExplorerLayout.STYLE_TASK_EVENT_PANEL);
+    
+    addTitle();
     addInputField();
+    initEventGrid();
     addTaskEvents();
   }
   
+
   public void refreshTaskEvents() {
     eventGrid.removeAllComponents();
     addTaskEvents();
   }
   
-  protected void addTaskEvents() {
-    taskEvents = taskService.getTaskEvents(task.getId());
-    
+  /**
+   * Set the task this component is showing the events for. Triggers
+   * an update of the UI.
+   */
+  public void setTask(Task taks) {
+    this.task = taks;
+    refreshTaskEvents();
+  }
+
+  protected void addTitle() {
+    Label eventTitle = new Label(i18nManager.getMessage(Messages.EVENT_TITLE));
+    eventTitle.addStyleName(Reindeer.LABEL_H2);
+    addComponent(eventTitle);
+  }
+  
+  protected void initEventGrid() {
     eventGrid = new GridLayout();
     eventGrid.setColumns(2);
     eventGrid.setSpacing(true);
+    eventGrid.setMargin(true, false, false, false);
     eventGrid.setWidth("100%");
     eventGrid.setColumnExpandRatio(1, 1.0f);
-    addComponent(eventGrid);
+    eventGrid.addStyleName(ExplorerLayout.STYLE_TASK_EVENT_GRID);
     
-    // In the past, we created a custom component for the task event,
-    // however this really had a bad influence on performance
-    for (final org.activiti.engine.task.Event event : taskEvents) {
-      addTaskEventPicture(event, eventGrid);
-      addTaskEventText(event, eventGrid);
+    addComponent(eventGrid);
+  }
+  
+  protected void addTaskEvents() {
+    if(task != null) {
+      taskEvents = taskService.getTaskEvents(task.getId());
+      // In the past, we created a custom component for the task event,
+      // however this really had a bad influence on performance
+      for (final org.activiti.engine.task.Event event : taskEvents) {
+        addTaskEventPicture(event, eventGrid);
+        addTaskEventText(event, eventGrid);
+      }
     }
   }
 
@@ -150,19 +181,20 @@ public class TaskEventsPanel extends Panel {
   }
   
   protected void addInputField() {
-    addComponent(new Label("&nbsp", Label.CONTENT_XHTML));
-    
     HorizontalLayout layout = new HorizontalLayout();
     layout.setSpacing(true);
+    layout.setWidth(100, UNITS_PERCENTAGE);
     addComponent(layout);
     
     Panel textFieldPanel = new Panel(); // Hack: actionHandlers can only be attached to panels or windows
     textFieldPanel.addStyleName(Reindeer.PANEL_LIGHT);
     textFieldPanel.setContent(new VerticalLayout());
+    textFieldPanel.setWidth(100, UNITS_PERCENTAGE);
     layout.addComponent(textFieldPanel);
+    layout.setExpandRatio(textFieldPanel, 1.0f);
     
     commentInputField = new TextField();
-    commentInputField.setWidth(180, UNITS_PIXELS);
+    commentInputField.setWidth(100, UNITS_PERCENTAGE);
     textFieldPanel.addComponent(commentInputField);
     
     // Hack to catch keyboard 'enter'
@@ -178,7 +210,6 @@ public class TaskEventsPanel extends Panel {
     });
     
     Button addCommentButton = new Button(i18nManager.getMessage(Messages.TASK_ADD_COMMENT));
-    addCommentButton.addStyleName(Reindeer.BUTTON_SMALL);
     layout.addComponent(addCommentButton);
     layout.setComponentAlignment(addCommentButton, Alignment.MIDDLE_LEFT);
     addCommentButton.addListener(new ClickListener() {

@@ -16,7 +16,6 @@ package org.activiti.explorer.ui.management.identity;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
-import org.activiti.explorer.navigation.DeploymentNavigationHandler;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.navigation.UserNavigationHandler;
 import org.activiti.explorer.ui.Images;
@@ -115,4 +114,8 @@ public class UserPage extends ManagementPage {
     return null;
   }
   
+  @Override
+  protected Component getEventComponent() {
+    return null;
+  }
 }

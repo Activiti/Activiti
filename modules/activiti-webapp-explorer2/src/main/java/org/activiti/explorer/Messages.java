@@ -138,6 +138,7 @@ public interface Messages {
   static final String EVENT_ADD_ATTACHMENT = "event.add.attachment";
   static final String EVENT_COMMENT = "event.comment";
   static final String EVENT_DEFAULT = "event.default";
+  static final String EVENT_TITLE = "event.title";
   
   // Flow menu
   static final String FLOW_MENU_MY_FLOWS = "flow.menu.my";

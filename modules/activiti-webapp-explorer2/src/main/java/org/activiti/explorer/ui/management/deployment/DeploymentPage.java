@@ -97,4 +97,9 @@ public class DeploymentPage extends ManagementPage {
   protected Component getSearchComponent() {
     return null;
   } 
+  
+  @Override
+  protected Component getEventComponent() {
+    return null;
+  } 
 }
