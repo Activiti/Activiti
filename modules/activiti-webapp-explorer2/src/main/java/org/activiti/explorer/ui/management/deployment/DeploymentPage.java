@@ -15,7 +15,7 @@ package org.activiti.explorer.ui.management.deployment;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
-import org.activiti.explorer.navigation.DeploymentNavigationHandler;
+import org.activiti.explorer.navigation.DeploymentNavigator;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.management.ManagementPage;
 
@@ -39,7 +39,7 @@ public class DeploymentPage extends ManagementPage {
   
   public DeploymentPage() {
     ExplorerApp.get().setCurrentUriFragment(
-      new UriFragment(DeploymentNavigationHandler.DEPLOYMENT_URI_PART));
+      new UriFragment(DeploymentNavigator.DEPLOYMENT_URI_PART));
   }
   
   public DeploymentPage(String deploymentId) {
@@ -77,11 +77,11 @@ public class DeploymentPage extends ManagementPage {
           
           // Update URL
           ExplorerApp.get().setCurrentUriFragment(
-            new UriFragment(DeploymentNavigationHandler.DEPLOYMENT_URI_PART, deploymentId));
+            new UriFragment(DeploymentNavigator.DEPLOYMENT_URI_PART, deploymentId));
         } else {
           // Nothing is selected
           setDetailComponent(null);
-          ExplorerApp.get().setCurrentUriFragment(new UriFragment(DeploymentNavigationHandler.DEPLOYMENT_URI_PART));
+          ExplorerApp.get().setCurrentUriFragment(new UriFragment(DeploymentNavigator.DEPLOYMENT_URI_PART));
         }
       }
     });

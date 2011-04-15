@@ -17,7 +17,7 @@ package org.activiti.explorer.navigation;
 /**
  * @author Frederik Heremans
  */
-public class DefaultNavigationHandler implements NavigationHandler {
+public class DefaultNavigator implements Navigator {
 
   public String getTrigger() {
     // Handles all non-matched navigation events, we can return null.

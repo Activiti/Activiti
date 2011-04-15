@@ -26,7 +26,7 @@ import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.content.AttachmentDetailPopupWindow;
 import org.activiti.explorer.ui.content.AttachmentRenderer;
-import org.activiti.explorer.ui.content.AttachmentRenderers;
+import org.activiti.explorer.ui.content.AttachmentRendererManager;
 import org.activiti.explorer.ui.content.CreateAttachmentPopupWindow;
 import org.activiti.explorer.ui.content.RelatedContentComponent;
 import org.activiti.explorer.ui.custom.ConfirmationDialogPopupWindow;
@@ -58,15 +58,19 @@ public class TaskRelatedContentComponent extends VerticalLayout implements Relat
 
   private static final long serialVersionUID = 1L;
   
-  protected Task task;
   protected TaskService taskService;
+  protected AttachmentRendererManager attachmentRendererManager;
+  
+  protected Task task;
   protected Table table;
   protected TaskDetailPanel taskDetailPanel;
 
   public TaskRelatedContentComponent(Task task, TaskDetailPanel taskDetailPanel) {
+    this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
+    this.attachmentRendererManager = ExplorerApp.get().getAttachmentRendererManager();
+    
     this.task = task;
     this.taskDetailPanel = taskDetailPanel;
-    this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
     
     initActions();
     initAttachmentTable();
@@ -166,7 +170,7 @@ public class TaskRelatedContentComponent extends VerticalLayout implements Relat
   protected void addAttachmentsToTable(List<Attachment> attachments) {
     
     for (Attachment attachment : attachments) {
-      AttachmentRenderer renderer = AttachmentRenderers.getRenderer(attachment);
+      AttachmentRenderer renderer = attachmentRendererManager.getRenderer(attachment);
       Item attachmentItem = table.addItem(attachment.getId());
       attachmentItem.getItemProperty("name").setValue(renderer.getOverviewComponent(attachment, this));
       attachmentItem.getItemProperty("type").setValue(new Embedded(null, renderer.getImage(attachment)));

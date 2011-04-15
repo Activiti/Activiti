@@ -16,34 +16,52 @@ package org.activiti.explorer.navigation;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.stereotype.Component;
+
 /**
  * @author Frederik Heremans
+ * @author Joram Barrez
  */
-public class NavigationHandlers {
+@Component
+public class NavigatorManager implements InitializingBean {
 
-  protected static Map<String, NavigationHandler> navigationHandlers = new HashMap<String, NavigationHandler>();
-  protected static NavigationHandler defaultHandler;
+  protected Map<String, Navigator> navigationHandlers = new HashMap<String, Navigator>();
+  protected Navigator defaultHandler;
 
-  public static void addNavigationHandler(NavigationHandler handler) {
+  public void addNavigationHandler(Navigator handler) {
     navigationHandlers.put(handler.getTrigger(), handler);
   }
 
-  public static NavigationHandler getHandler(String trigger) {
+  public Navigator getHandler(String trigger) {
     if (trigger != null) {
       return navigationHandlers.get(trigger);
     }
     return null;
   }
 
-  public static NavigationHandler getDefaultHandler() {
+  public Navigator getDefaultHandler() {
     if(defaultHandler == null) {
       throw new IllegalStateException("No default navigation handler has been set");
     }
     return defaultHandler;
   }
 
-  public static void setDefaultHandler(NavigationHandler handler) {
+  public void setDefaultHandler(Navigator handler) {
     defaultHandler = handler;
+  }
+  
+  public void afterPropertiesSet() throws Exception {
+    // Initialising all navigators
+    setDefaultHandler(defaultHandler);
+    
+    addNavigationHandler(new TaskNavigator());
+    addNavigationHandler(new FlowNavigator());
+    addNavigationHandler(new DeploymentNavigator());
+    addNavigationHandler(new DatabaseNavigator());
+    addNavigationHandler(new JobNavigator());
+    addNavigationHandler(new UserNavigator());
+    addNavigationHandler(new MyFlowsNavigator());
   }
 
 }

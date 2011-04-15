@@ -16,6 +16,9 @@ package org.activiti.explorer;
 import java.text.MessageFormat;
 
 import org.activiti.explorer.ui.MainWindow;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import com.vaadin.ui.Window.Notification;
 
@@ -23,15 +26,15 @@ import com.vaadin.ui.Window.Notification;
 /**
  * @author Joram Barrez
  */
+@Component
+@Scope(value="session")
 public class NotificationManager {
   
+  @Autowired
   protected MainWindow mainWindow;
-  protected I18nManager i18nManager;
   
-  public NotificationManager(MainWindow mainWindow, I18nManager i18nManager) {
-    this.mainWindow = mainWindow;
-    this.i18nManager = i18nManager;
-  }
+  @Autowired
+  protected I18nManager i18nManager;
   
   public void showErrorNotification(String captionKey, String description) {
     mainWindow.showNotification(i18nManager.getMessage(captionKey), 

@@ -17,22 +17,23 @@ import org.activiti.explorer.ExplorerApp;
 
 
 /**
- * @author Frederik Heremans
+ * @author Joram Barrez
  */
-public class JobNavigationHandler extends ManagementNavigationHandler {
+public class UserNavigator extends ManagementNavigator {
 
-  public static final String JOB_URL_PART = "job";
+  public static final String USER_URI_PART = "user";
   
   public String getTrigger() {
-    return JOB_URL_PART;
+    return USER_URI_PART;
   }
   
   public void handleManagementNavigation(UriFragment uriFragment) {
-    String jobId = uriFragment.getUriPart(1);
-    if(jobId != null) {
-      ExplorerApp.get().getViewManager().showJobPage(jobId);
+    String userId = uriFragment.getUriPart(1);
+    
+    if(userId != null) {
+      ExplorerApp.get().getViewManager().showUserPage(userId);
     } else {
-      ExplorerApp.get().getViewManager().showJobPage();
+      ExplorerApp.get().getViewManager().showUserPage();
     }
   }
 

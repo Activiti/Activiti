@@ -17,7 +17,7 @@ import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.UriFragment;
-import org.activiti.explorer.navigation.UserNavigationHandler;
+import org.activiti.explorer.navigation.UserNavigator;
 import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.management.ManagementPage;
 import org.activiti.explorer.ui.util.ThemeImageColumnGenerator;
@@ -44,7 +44,7 @@ public class UserPage extends ManagementPage {
   
   public UserPage() {
     ExplorerApp.get().setCurrentUriFragment(
-            new UriFragment(UserNavigationHandler.USER_URI_PART));
+            new UriFragment(UserNavigator.USER_URI_PART));
   }
   
   public UserPage(String userId) {
@@ -86,11 +86,11 @@ public class UserPage extends ManagementPage {
           
           // Update URL
           ExplorerApp.get().setCurrentUriFragment(
-            new UriFragment(UserNavigationHandler.USER_URI_PART, userId));
+            new UriFragment(UserNavigator.USER_URI_PART, userId));
         } else {
           // Nothing is selected
           setDetailComponent(null);
-          ExplorerApp.get().setCurrentUriFragment(new UriFragment(UserNavigationHandler.USER_URI_PART));
+          ExplorerApp.get().setCurrentUriFragment(new UriFragment(UserNavigator.USER_URI_PART));
         }
       }
     });

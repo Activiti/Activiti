@@ -14,6 +14,7 @@
 package org.activiti.explorer.ui.content;
 
 import org.activiti.engine.task.Attachment;
+import org.activiti.explorer.ExplorerApp;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
@@ -34,7 +35,7 @@ public class AttachmentDetailPopupWindow extends Window {
     setHeight(50, UNITS_PERCENTAGE);
     center();
     
-    AttachmentRenderer renderer = AttachmentRenderers.getRenderer(attachment.getType());
+    AttachmentRenderer renderer = ExplorerApp.get().getAttachmentRendererManager().getRenderer(attachment.getType());
     Component detail = renderer.getDetailComponent(attachment);
     
     if(detail instanceof ComponentContainer) {

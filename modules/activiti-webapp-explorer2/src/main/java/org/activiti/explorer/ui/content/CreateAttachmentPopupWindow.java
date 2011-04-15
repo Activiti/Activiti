@@ -50,6 +50,7 @@ public class CreateAttachmentPopupWindow extends Window {
   protected String processInstanceId;
 
   protected I18nManager i18nManager;
+  protected AttachmentRendererManager attachmentRendererManager;
   protected TaskService taskService;
 
   protected HorizontalLayout layout;
@@ -60,6 +61,7 @@ public class CreateAttachmentPopupWindow extends Window {
   
   public CreateAttachmentPopupWindow() {
     this.i18nManager = ExplorerApp.get().getI18nManager();
+    this.attachmentRendererManager = ExplorerApp.get().getAttachmentRendererManager();
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
 
     setCaption(i18nManager.getMessage(Messages.RELATED_CONTENT_ADD));
@@ -141,7 +143,7 @@ public class CreateAttachmentPopupWindow extends Window {
     attachmentTypes.addContainerProperty("name", String.class, null);
 
     // Add all possible attachment types
-    for (AttachmentEditor editor : AttachmentRenderers.getAttachmentEditors()) {
+    for (AttachmentEditor editor : attachmentRendererManager.getAttachmentEditors()) {
       String name = editor.getTitle(i18nManager);
       Embedded image = null;
 
@@ -171,7 +173,7 @@ public class CreateAttachmentPopupWindow extends Window {
 
   protected void selectType(String type) {
     if (type != null) {
-      setCurrentEditor(AttachmentRenderers.getEditor(type));
+      setCurrentEditor(attachmentRendererManager.getEditor(type));
     } else {
       setCurrentEditor(null);
     }

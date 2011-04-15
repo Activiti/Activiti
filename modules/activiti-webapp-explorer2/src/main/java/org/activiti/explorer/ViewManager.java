@@ -27,6 +27,9 @@ import org.activiti.explorer.ui.profile.ProfilePopupWindow;
 import org.activiti.explorer.ui.task.TaskInboxPage;
 import org.activiti.explorer.ui.task.TaskMenuBar;
 import org.activiti.explorer.ui.task.TaskQueuedPage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import com.vaadin.ui.Window;
 
@@ -34,6 +37,8 @@ import com.vaadin.ui.Window;
 /**
  * @author Joram Barrez
  */
+@Component
+@Scope(value="session")
 public class ViewManager {
   
   public static final String MAIN_NAVIGATION_TASKS = "tasks";
@@ -41,10 +46,10 @@ public class ViewManager {
   public static final String MAIN_NAVIGATION_MANAGE = "manage";
   public static final String MAIN_NAVIGATION_REPORTS = "reports";
   
+  @Autowired
   protected MainWindow mainWindow;
   
-  public ViewManager(MainWindow mainWindow) {
-    this.mainWindow = mainWindow;
+  public ViewManager() {
   }
   
   public void showLoginPage() {

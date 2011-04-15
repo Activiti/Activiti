@@ -17,7 +17,7 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.explorer.data.LazyLoadingQuery;
-import org.activiti.explorer.navigation.MyFlowsNavigationHandler;
+import org.activiti.explorer.navigation.MyFlowsNavigator;
 import org.activiti.explorer.navigation.UriFragment;
 
 import com.vaadin.ui.Component;
@@ -63,7 +63,7 @@ public class MyFlowsPage extends ProcessInstancePage {
 
   @Override
   protected UriFragment getUriFragment(String processInstanceId) {
-    UriFragment fragment = new UriFragment(MyFlowsNavigationHandler.MY_FLOWS_URI_PART);
+    UriFragment fragment = new UriFragment(MyFlowsNavigator.MY_FLOWS_URI_PART);
     if(processInstanceId != null) {
       fragment.addUriPart(processInstanceId);
     }

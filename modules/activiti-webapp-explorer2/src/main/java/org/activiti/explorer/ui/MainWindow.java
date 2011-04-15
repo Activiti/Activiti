@@ -12,11 +12,13 @@
  */
 package org.activiti.explorer.ui;
 
-import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.navigation.NavigationFragmentChangeListener;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.login.LoginPage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.UriFragmentUtility;
@@ -25,18 +27,32 @@ import com.vaadin.ui.Window;
 /**
  * @author Joram Barrez
  */
+@org.springframework.stereotype.Component
+@Scope(value="session")
 public class MainWindow extends Window {
 
   private static final long serialVersionUID = 1L;
   
+  @Autowired
+  protected I18nManager i18nManager;
+  
+  @Autowired
+  protected NavigationFragmentChangeListener navigationFragmentChangeListener;
+  
+  // UI
   protected MainLayout mainLayout;
   protected UriFragmentUtility uriFragmentUtility;
   protected UriFragment currentUriFragment;
   protected boolean showingLoginPage;
 
   public MainWindow() {
-    super(ExplorerApp.get().getI18nManager().getMessage(Messages.APP_TITLE));
     setTheme(ExplorerLayout.THEME);
+  }
+  
+  @Override
+  public void attach() {
+    super.attach();
+    setCaption(i18nManager.getMessage(Messages.APP_TITLE));
   }
 
   public void showLoginPage() {
@@ -76,7 +92,7 @@ public class MainWindow extends Window {
     mainLayout.addComponent(uriFragmentUtility, ExplorerLayout.LOCATION_HIDDEN);
     
     // Add listener to control page flow based on URI
-    uriFragmentUtility.addListener(new NavigationFragmentChangeListener());
+    uriFragmentUtility.addListener(navigationFragmentChangeListener);
   }
   
   public UriFragment getCurrentUriFragment() {

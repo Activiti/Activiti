@@ -21,7 +21,7 @@ import org.activiti.explorer.Messages;
 /**
  * @author Frederik Heremans
  */
-public class TaskNavigationHandler implements NavigationHandler {
+public class TaskNavigator implements Navigator {
 
   public static final String TASK_URI_PART = "tasks";
   public static final String CATEGORY_INBOX = "inbox";

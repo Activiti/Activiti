@@ -10,25 +10,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.explorer.navigation;
 
 import org.activiti.explorer.ExplorerApp;
 
-
 /**
- * @author Joram Barrez
+ * @author Frederik Heremans
  */
-public abstract class ManagementNavigationHandler implements NavigationHandler {
+public class DatabaseNavigator extends ManagementNavigator {
 
-  public void handleNavigation(UriFragment uriFragment) {
-    if (!ExplorerApp.get().getLoggedInUser().isAdmin()) {
-      // If not an admin, just show inbox and act like nothing happened
-      ExplorerApp.get().getViewManager().showTaskInboxPage();
-    } else {
-      handleManagementNavigation(uriFragment);
-    }
+  public static final String TABLE_URI_PART = "database";
+  
+  public String getTrigger() {
+    return TABLE_URI_PART;
   }
   
-  public abstract void handleManagementNavigation(UriFragment uriFragment);
+  public void handleManagementNavigation(UriFragment uriFragment) {
+    String tableName = uriFragment.getUriPart(1);
+
+    if (tableName != null) {
+      ExplorerApp.get().getViewManager().showDatabasePage(tableName);
+    } else {
+      ExplorerApp.get().getViewManager().showDatabasePage();
+    }
+  }
 
 }

@@ -17,23 +17,23 @@ import org.activiti.explorer.ExplorerApp;
 
 
 /**
- * @author Joram Barrez
+ * @author Frederik Heremans
  */
-public class UserNavigationHandler extends ManagementNavigationHandler {
+public class DeploymentNavigator extends ManagementNavigator {
 
-  public static final String USER_URI_PART = "user";
+  public static final String DEPLOYMENT_URI_PART = "deployment";
   
   public String getTrigger() {
-    return USER_URI_PART;
+    return DEPLOYMENT_URI_PART;
   }
   
   public void handleManagementNavigation(UriFragment uriFragment) {
-    String userId = uriFragment.getUriPart(1);
+    String deploymentId = uriFragment.getUriPart(1);
     
-    if(userId != null) {
-      ExplorerApp.get().getViewManager().showUserPage(userId);
+    if(deploymentId != null) {
+      ExplorerApp.get().getViewManager().showDeploymentPage(deploymentId);
     } else {
-      ExplorerApp.get().getViewManager().showUserPage();
+      ExplorerApp.get().getViewManager().showDeploymentPage();
     }
   }
 

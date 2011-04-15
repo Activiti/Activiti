@@ -20,7 +20,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
-import org.activiti.explorer.navigation.FlowNavigationHandler;
+import org.activiti.explorer.navigation.FlowNavigator;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.AbstractPage;
 import org.activiti.explorer.ui.ExplorerLayout;
@@ -53,7 +53,7 @@ public class FlowPage extends AbstractPage {
   
   public FlowPage() {
     ExplorerApp.get().setCurrentUriFragment(
-      new UriFragment(FlowNavigationHandler.FLOW_URI_PART));
+      new UriFragment(FlowNavigator.FLOW_URI_PART));
   }
   
   /**
@@ -123,7 +123,7 @@ public class FlowPage extends AbstractPage {
     detailPanel = new ProcessDefinitionDetailPanel(processDefinitionId, FlowPage.this);
     setDetailComponent(detailPanel);
     
-    UriFragment processDefinitionFragment = new UriFragment(FlowNavigationHandler.FLOW_URI_PART, processDefinitionId);
+    UriFragment processDefinitionFragment = new UriFragment(FlowNavigator.FLOW_URI_PART, processDefinitionId);
     ExplorerApp.get().setCurrentUriFragment(processDefinitionFragment);
   }
   

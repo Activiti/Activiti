@@ -15,7 +15,7 @@ package org.activiti.explorer.ui.task;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.data.LazyLoadingQuery;
-import org.activiti.explorer.navigation.TaskNavigationHandler;
+import org.activiti.explorer.navigation.TaskNavigator;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.custom.ListSearchBox;
 import org.activiti.explorer.ui.task.data.TaskInboxListQuery;
@@ -70,13 +70,13 @@ public class TaskInboxPage extends TaskPage {
 
   @Override
   protected UriFragment getUriFragment(String taskId) {
-    UriFragment taskFragment = new UriFragment(TaskNavigationHandler.TASK_URI_PART);
+    UriFragment taskFragment = new UriFragment(TaskNavigator.TASK_URI_PART);
 
     if(taskId != null) {
       taskFragment.addUriPart(taskId);
     }
 
-    taskFragment.addParameter(TaskNavigationHandler.PARAMETER_CATEGORY, TaskNavigationHandler.CATEGORY_INBOX);
+    taskFragment.addParameter(TaskNavigator.PARAMETER_CATEGORY, TaskNavigator.CATEGORY_INBOX);
     return taskFragment;
   }
   

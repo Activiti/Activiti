@@ -18,15 +18,16 @@ package org.activiti.explorer;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.util.LogUtil;
-import org.activiti.explorer.cache.TrieBasedUserCache;
 import org.activiti.explorer.cache.UserCache;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.MainWindow;
+import org.activiti.explorer.ui.content.AttachmentRendererManager;
+import org.activiti.explorer.ui.form.FormPropertyRendererManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import com.vaadin.Application;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
@@ -34,7 +35,7 @@ import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
 /**
  * @author Joram Barrez
  */
-@org.springframework.stereotype.Component
+@Component
 @Scope(value="session")
 public class ExplorerApp extends Application implements HttpServletRequestListener {
   
@@ -48,41 +49,30 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   // Thread local storage of instance for each user
   protected static ThreadLocal<ExplorerApp> current = new ThreadLocal<ExplorerApp>();
   
-  // Application-wide services
   @Autowired
-  protected TrieBasedUserCache userCache;
-  
-  // UI
+  protected UserCache userCache;
+
+  @Autowired
   protected MainWindow mainWindow;
-  protected I18nManager i18nManager;
+  
+  @Autowired
   protected ViewManager viewManager;
+  
+  @Autowired
   protected NotificationManager notificationManager;
-
+  
+  @Autowired
+  protected I18nManager i18nManager;
+  
+  @Autowired
+  protected AttachmentRendererManager attachmentRendererManager;
+  
+  @Autowired
+  protected FormPropertyRendererManager formPropertyRendererManager;
+  
   public void init() {
-    initI18nManager();
-
-    this.mainWindow = new MainWindow();
-    initNotificationManager(); // Notifications depend on the mainWindow, so needs to be initialised afterwards
-    initViewManager(); // Changing view depends on mainWindow, so needs to be initialised afterwards
-
-    // UI
     setMainWindow(mainWindow);
     mainWindow.showLoginPage();
-  }
-  
-  protected void initI18nManager() {
-    this.i18nManager = new I18nManager(getLocale());
-  }
-  
-  protected void initViewManager() {
-    if (mainWindow == null) {
-      throw new RuntimeException("Could not initialise ViewManager: null mainWindow");
-    }
-    this.viewManager = new ViewManager(mainWindow);
-  }
-  
-  protected void initNotificationManager() {
-    this.notificationManager = new NotificationManager(mainWindow, i18nManager);
   }
   
   /**
@@ -123,8 +113,20 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
     return notificationManager;
   }
   
+  public AttachmentRendererManager getAttachmentRendererManager() {
+    return attachmentRendererManager;
+  }
+  
+  public FormPropertyRendererManager getFormPropertyRendererManager() {
+    return formPropertyRendererManager;
+  }
+  
   // Application-wide services
   
+  public void setFormPropertyRendererManager(FormPropertyRendererManager formPropertyRendererManager) {
+    this.formPropertyRendererManager = formPropertyRendererManager;
+  }
+
   public UserCache getUserCache() {
     return userCache;
   }

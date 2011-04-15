@@ -17,24 +17,36 @@ import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 
 /**
  * @author Joram Barrez
  */
+@Component
+@Scope(value="session")
 public class I18nManager {
 
   protected ResourceBundle messages;
   
-  public I18nManager(Locale locale) {
-    this.messages = ResourceBundle.getBundle(Constants.RESOURCE_BUNDLE, locale);
-  }
-  
   public String getMessage(String key) {
+    if (messages == null) {
+      createResourceBundle();
+    }
     return messages.getString(key);
   }
 
   public String getMessage(String key, Object... arguments) {
+    if (messages == null) {
+      createResourceBundle();
+    }
     return MessageFormat.format(messages.getString(key), arguments);
+  }
+  
+  public void createResourceBundle() {
+    Locale locale = ExplorerApp.get().getLocale();
+    this.messages = ResourceBundle.getBundle(Constants.RESOURCE_BUNDLE, locale);
   }
   
 }

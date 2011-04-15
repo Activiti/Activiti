@@ -15,24 +15,24 @@ package org.activiti.explorer.navigation;
 
 import org.activiti.explorer.ExplorerApp;
 
+
 /**
  * @author Frederik Heremans
  */
-public class DataBaseNavigationHandler extends ManagementNavigationHandler {
+public class JobNavigator extends ManagementNavigator {
 
-  public static final String TABLE_URI_PART = "database";
+  public static final String JOB_URL_PART = "job";
   
   public String getTrigger() {
-    return TABLE_URI_PART;
+    return JOB_URL_PART;
   }
   
   public void handleManagementNavigation(UriFragment uriFragment) {
-    String tableName = uriFragment.getUriPart(1);
-
-    if (tableName != null) {
-      ExplorerApp.get().getViewManager().showDatabasePage(tableName);
+    String jobId = uriFragment.getUriPart(1);
+    if(jobId != null) {
+      ExplorerApp.get().getViewManager().showJobPage(jobId);
     } else {
-      ExplorerApp.get().getViewManager().showDatabasePage();
+      ExplorerApp.get().getViewManager().showJobPage();
     }
   }
 

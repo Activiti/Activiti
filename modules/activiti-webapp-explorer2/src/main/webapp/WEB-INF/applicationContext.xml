@@ -54,5 +54,22 @@
 	<bean id="historyService" factory-bean="processEngine" factory-method="getHistoryService" />
 	<bean id="managementService" factory-bean="processEngine" factory-method="getManagementService" />
 	<bean id="identityService" factory-bean="processEngine" factory-method="getIdentityService" />
+
+	<!-- Form renderers. Custom renderers can be plugged in here -->
+	<bean id="formPropertyRendererManager" class="org.activiti.explorer.ui.form.FormPropertyRendererManager" lazy-init="true">
+		<!-- Default renderer -->
+		<property name="noTypePropertyRenderer">
+			<bean class="org.activiti.explorer.ui.form.StringFormPropertyRenderer" />
+		</property>
+		<!-- Renderers by property type -->
+		<property name="propertyRenderers">
+			<list>
+				<bean class="org.activiti.explorer.ui.form.StringFormPropertyRenderer" />
+				<bean class="org.activiti.explorer.ui.form.EnumFormPropertyRenderer" />
+				<bean class="org.activiti.explorer.ui.form.LongFormPropertyRenderer" />
+				<bean class="org.activiti.explorer.ui.form.DateFormPropertyRenderer" />
+			</list>
+		</property>
+	</bean>
 	
 </beans>

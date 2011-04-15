@@ -10,31 +10,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.explorer.navigation;
 
 import org.activiti.explorer.ExplorerApp;
 
 
 /**
- * @author Frederik Heremans
+ * @author Joram Barrez
  */
-public class DeploymentNavigationHandler extends ManagementNavigationHandler {
+public abstract class ManagementNavigator implements Navigator {
 
-  public static final String DEPLOYMENT_URI_PART = "deployment";
-  
-  public String getTrigger() {
-    return DEPLOYMENT_URI_PART;
-  }
-  
-  public void handleManagementNavigation(UriFragment uriFragment) {
-    String deploymentId = uriFragment.getUriPart(1);
-    
-    if(deploymentId != null) {
-      ExplorerApp.get().getViewManager().showDeploymentPage(deploymentId);
+  public void handleNavigation(UriFragment uriFragment) {
+    if (!ExplorerApp.get().getLoggedInUser().isAdmin()) {
+      // If not an admin, just show inbox and act like nothing happened
+      ExplorerApp.get().getViewManager().showTaskInboxPage();
     } else {
-      ExplorerApp.get().getViewManager().showDeploymentPage();
+      handleManagementNavigation(uriFragment);
     }
   }
+  
+  public abstract void handleManagementNavigation(UriFragment uriFragment);
 
 }

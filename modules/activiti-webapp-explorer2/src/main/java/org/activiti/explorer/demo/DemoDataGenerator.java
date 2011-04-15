@@ -27,26 +27,6 @@ import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.LogUtil;
 import org.activiti.engine.task.Task;
-import org.activiti.explorer.navigation.DataBaseNavigationHandler;
-import org.activiti.explorer.navigation.DefaultNavigationHandler;
-import org.activiti.explorer.navigation.DeploymentNavigationHandler;
-import org.activiti.explorer.navigation.FlowNavigationHandler;
-import org.activiti.explorer.navigation.JobNavigationHandler;
-import org.activiti.explorer.navigation.MyFlowsNavigationHandler;
-import org.activiti.explorer.navigation.NavigationHandlers;
-import org.activiti.explorer.navigation.TaskNavigationHandler;
-import org.activiti.explorer.navigation.UserNavigationHandler;
-import org.activiti.explorer.ui.content.AttachmentRenderers;
-import org.activiti.explorer.ui.content.file.FileAttachmentEditor;
-import org.activiti.explorer.ui.content.file.ImageAttachmentRenderer;
-import org.activiti.explorer.ui.content.file.PdfAttachmentRenderer;
-import org.activiti.explorer.ui.content.url.UrlAttachmentEditor;
-import org.activiti.explorer.ui.content.url.UrlAttachmentRenderer;
-import org.activiti.explorer.ui.form.DateFormPropertyRenderer;
-import org.activiti.explorer.ui.form.EnumFormPropertyRenderer;
-import org.activiti.explorer.ui.form.FormPropertyMapping;
-import org.activiti.explorer.ui.form.LongFormPropertyRenderer;
-import org.activiti.explorer.ui.form.StringFormPropertyRenderer;
 
 
 /**
@@ -72,10 +52,6 @@ public class DemoDataGenerator {
 
   public void init() {
     processEngine.getIdentityService().setAuthenticatedUserId("kermit");
-    
-    initFormPropertyMapping();
-    initUriNavigation();
-    initAttachmentRenderers();
     initDemoData();
   }
 
@@ -86,48 +62,6 @@ public class DemoDataGenerator {
     initProcessDefinitions(processEngine);
   }
   
-  protected void initFormPropertyMapping() {
-    StringFormPropertyRenderer stringRenderer = new StringFormPropertyRenderer();
-    
-    // Add all supported form property types
-    FormPropertyMapping.addFormPropertyRenderer(stringRenderer);
-    FormPropertyMapping.addFormPropertyRenderer(new EnumFormPropertyRenderer());
-    FormPropertyMapping.addFormPropertyRenderer(new LongFormPropertyRenderer());
-    FormPropertyMapping.addFormPropertyRenderer(new DateFormPropertyRenderer());
-    
-    // Set default renderer when property has null type
-    FormPropertyMapping.setNoTypePropertyRenderer(stringRenderer);
-    
-    // TODO: include renderes from spring-config
-  }
-  
-  protected void initUriNavigation() {
-    DefaultNavigationHandler defaultHandler = new DefaultNavigationHandler();
-    NavigationHandlers.setDefaultHandler(defaultHandler);
-    
-    // Add other handlers
-    NavigationHandlers.addNavigationHandler(new TaskNavigationHandler());
-    NavigationHandlers.addNavigationHandler(new FlowNavigationHandler());
-    NavigationHandlers.addNavigationHandler(new DeploymentNavigationHandler());
-    NavigationHandlers.addNavigationHandler(new DataBaseNavigationHandler());
-    NavigationHandlers.addNavigationHandler(new JobNavigationHandler());
-    NavigationHandlers.addNavigationHandler(new UserNavigationHandler());
-    NavigationHandlers.addNavigationHandler(new MyFlowsNavigationHandler());
-  }
-  
-  protected void initAttachmentRenderers() {
-    // URL
-    AttachmentRenderers.addAttachmentRenderer(new UrlAttachmentRenderer());
-    AttachmentRenderers.addAttachmentEditor(new UrlAttachmentEditor());
-    
-    // Regular file upload
-    AttachmentRenderers.addAttachmentEditor(new FileAttachmentEditor());
-    
-    // Basic types
-    AttachmentRenderers.addAttachmentRenderer(new PdfAttachmentRenderer());
-    AttachmentRenderers.addAttachmentRenderer(new ImageAttachmentRenderer());
-  }
-
   protected void initKermit(ProcessEngine processEngine) {
     // Create Kermit demo user
     IdentityService identityService = processEngine.getIdentityService();

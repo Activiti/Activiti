@@ -13,6 +13,10 @@
 
 package org.activiti.explorer.navigation;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import com.vaadin.ui.UriFragmentUtility.FragmentChangedEvent;
 import com.vaadin.ui.UriFragmentUtility.FragmentChangedListener;
 
@@ -23,9 +27,14 @@ import com.vaadin.ui.UriFragmentUtility.FragmentChangedListener;
  * 
  * @author Frederik Heremans
  */
+@Component
+@Scope(value="session")
 public class NavigationFragmentChangeListener implements FragmentChangedListener {
 
-  private static final long serialVersionUID = 4797018291237796530L;
+  private static final long serialVersionUID = 1L;
+  
+  @Autowired
+  protected NavigatorManager navigatorManager;
 
   public void fragmentChanged(FragmentChangedEvent source) {
     String fragment = source.getUriFragmentUtility().getFragment();
@@ -33,13 +42,13 @@ public class NavigationFragmentChangeListener implements FragmentChangedListener
     UriFragment uriFragment = new UriFragment(fragment);
     
     // Find appropriate handler based on the first part of the URI
-    NavigationHandler navigationHandler = null;
+    Navigator navigationHandler = null;
     if(uriFragment.getUriParts() != null && uriFragment.getUriParts().size() > 0) {
-      navigationHandler = NavigationHandlers.getHandler(uriFragment.getUriParts().get(0));
+      navigationHandler = navigatorManager.getHandler(uriFragment.getUriParts().get(0));
     }
     
     if(navigationHandler == null) {
-      navigationHandler = NavigationHandlers.getDefaultHandler();
+      navigationHandler = navigatorManager.getDefaultHandler();
     }
     
     // Delegate navigation to handler

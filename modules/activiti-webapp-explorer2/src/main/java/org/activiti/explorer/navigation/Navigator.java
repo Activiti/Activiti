@@ -20,7 +20,7 @@ package org.activiti.explorer.navigation;
  * 
  * @author Frederik Heremans
  */
-public interface NavigationHandler {
+public interface Navigator {
 
   /**
    * Gets the string that triggers this handler to be used
@@ -32,7 +32,7 @@ public interface NavigationHandler {
   /**
    * Handle the incoming navigation request. The url-fragment passed contains all
    * uri parts that triggered the navigation request (including the one returned by 
-   * {@link NavigationHandler#getTrigger()}), as well as the parameters contain 
+   * {@link Navigator#getTrigger()}), as well as the parameters contain 
    * the values of the parameters passed in the query string (if any).
    * 
    * The handleNavigation is responsible for setting the current URI-fragment to

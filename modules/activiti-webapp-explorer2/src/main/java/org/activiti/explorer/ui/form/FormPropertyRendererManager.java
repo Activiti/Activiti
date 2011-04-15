@@ -14,6 +14,7 @@
 package org.activiti.explorer.ui.form;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
@@ -22,17 +23,21 @@ import org.activiti.engine.form.FormType;
 
 /**
  * @author Frederik Heremans
+ * @author Joram Barrez
+ * 
+ * Note: NOT configured by @Component, but in Spring XML config, to make it
+ * easy for users to extends with custom renderers.
  */
-public class FormPropertyMapping {
+public class FormPropertyRendererManager {
 
-  private static Map<Class<? extends FormType>, FormPropertyRenderer> propertyRenderers =  new HashMap<Class<? extends FormType>, FormPropertyRenderer>();
-  private static FormPropertyRenderer noTypePropertyRenderer;
+  protected Map<Class<? extends FormType>, FormPropertyRenderer> propertyRenderers = new HashMap<Class<? extends FormType>, FormPropertyRenderer>();
+  protected FormPropertyRenderer noTypePropertyRenderer;
   
   /**
    * Add a property-renderer for the given type. Overrides the existing
    * render (if present) for that type.
    */
-  public static void addFormPropertyRenderer(FormPropertyRenderer renderer) {
+  public void addFormPropertyRenderer(FormPropertyRenderer renderer) {
     propertyRenderers.put(renderer.getFormType(), renderer);
   }
   
@@ -41,7 +46,7 @@ public class FormPropertyMapping {
    * 
    * @throws ActivitiException when no renderer is found for the given type.
    */
-  public static FormPropertyRenderer getPropertyRendererForType(FormType formType) {
+  public FormPropertyRenderer getPropertyRendererForType(FormType formType) {
     Class<? extends FormType> clazz = formType.getClass();
     FormPropertyRenderer renderer = propertyRenderers.get(clazz);
     
@@ -52,11 +57,19 @@ public class FormPropertyMapping {
     return renderer;
   }
   
-  public static FormPropertyRenderer getTypeLessFormPropertyRenderer() {
+  public FormPropertyRenderer getTypeLessFormPropertyRenderer() {
     return noTypePropertyRenderer;
   }
   
-  public static void setNoTypePropertyRenderer(FormPropertyRenderer noTypePropertyRenderer) {
-    FormPropertyMapping.noTypePropertyRenderer = noTypePropertyRenderer;
+  public void setNoTypePropertyRenderer(FormPropertyRenderer noTypePropertyRenderer) {
+    this.noTypePropertyRenderer = noTypePropertyRenderer;
   }
+
+  
+  public void setPropertyRenderers(List<FormPropertyRenderer> propertyRenderers) {
+    for (FormPropertyRenderer propertyRenderer : propertyRenderers) {
+      addFormPropertyRenderer(propertyRenderer);
+    }
+  }
+  
 }

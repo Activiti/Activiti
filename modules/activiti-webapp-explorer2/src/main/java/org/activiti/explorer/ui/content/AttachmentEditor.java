@@ -23,7 +23,7 @@ public interface AttachmentEditor {
   
   /**
    * Get the name of this editor. Only one editor with the same name can e used.
-   * The last one wit the same name added to {@link AttachmentRenderers} will
+   * The last one wit the same name added to {@link AttachmentRendererManager} will
    * be used.
    */
   String getName();

@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.form.FormType;
+import org.activiti.explorer.ExplorerApp;
 
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.ui.Component;
@@ -36,15 +37,16 @@ import com.vaadin.ui.themes.Reindeer;
  */
 public class FormPropertiesComponent extends VerticalLayout {
   
-  private static final long serialVersionUID = -6553042418486758961L;
+  private static final long serialVersionUID = 1L;
   
+  protected FormPropertyRendererManager formPropertyRendererManager;
   protected List<FormProperty> formProperties;
   protected Map<FormProperty, Component> propertyComponents;
   
   protected Form form;
   
   public FormPropertiesComponent() {
-    super();
+    this.formPropertyRendererManager = ExplorerApp.get().getFormPropertyRendererManager();
     
     setSizeFull();
     addStyleName(Reindeer.LAYOUT_WHITE);
@@ -117,9 +119,9 @@ public class FormPropertiesComponent extends VerticalLayout {
   protected FormPropertyRenderer getRenderer(FormProperty formProperty) {
     FormType formPropertyType = formProperty.getType();
     if(formPropertyType == null) {
-      return FormPropertyMapping.getTypeLessFormPropertyRenderer();
+      return formPropertyRendererManager.getTypeLessFormPropertyRenderer();
     } else {
-      return FormPropertyMapping.getPropertyRendererForType(formProperty.getType());
+      return formPropertyRendererManager.getPropertyRendererForType(formProperty.getType());
     }
   }
 }

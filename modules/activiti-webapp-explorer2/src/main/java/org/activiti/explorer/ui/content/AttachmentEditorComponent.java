@@ -22,7 +22,7 @@ import com.vaadin.ui.Component;
 /**
  * Component that is capable of rendering an editable piece of related content.
  * 
- * @see AttachmentRenderers
+ * @see AttachmentRendererManager
  * 
  * @author Frederik Heremans
  */
