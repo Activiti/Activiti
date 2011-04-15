@@ -15,10 +15,16 @@ package org.activiti.explorer.ui.profile;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.identity.User;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
+import org.activiti.explorer.LoggedInUser;
 import org.activiti.explorer.Messages;
+import org.activiti.explorer.ui.ExplorerLayout;
 
+import com.vaadin.event.Action;
+import com.vaadin.event.Action.Handler;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -38,20 +44,21 @@ public class ChangePasswordPopupWindow extends Window {
   
   private static final long serialVersionUID = 1L;
   protected IdentityService identityService;
-  protected String userId;
+  protected LoggedInUser currentUser;
   protected I18nManager i18nManager;
   
   protected VerticalLayout layout;
   protected GridLayout inputGrid;
   protected PasswordField passwordField1;
   protected PasswordField passwordField2;
+  protected Label errorLabel;
   
   public ChangePasswordPopupWindow() {
     this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
-    this.userId = ExplorerApp.get().getLoggedInUser().getId();
+    this.currentUser = ExplorerApp.get().getLoggedInUser();
     this.i18nManager = ExplorerApp.get().getI18nManager();
     
-    setCaption(i18nManager.getMessage(Messages.PROFILE_CHANGE_PASSWORD));
+    setCaption(i18nManager.getMessage(Messages.PASSWORD_CHANGE));
     setModal(true);
     center();
     addStyleName(Reindeer.WINDOW_LIGHT);
@@ -61,6 +68,7 @@ public class ChangePasswordPopupWindow extends Window {
     initLayout();
     initPasswordFields();
     initChangePasswordButton();
+    initEnterKeyListener();
   }
   
   protected void initLayout() {
@@ -81,6 +89,7 @@ public class ChangePasswordPopupWindow extends Window {
     passwordField1 = new PasswordField();
     passwordField1.setWidth(150, UNITS_PIXELS);
     inputGrid.addComponent(passwordField1);
+    passwordField1.focus();
 
     Label confirmPasswordLabel = new Label(i18nManager.getMessage(Messages.PROFILE_CONFIRM_PASSWORD));
     inputGrid.addComponent(confirmPasswordLabel);
@@ -90,21 +99,55 @@ public class ChangePasswordPopupWindow extends Window {
   }
   
   protected void initChangePasswordButton() {
-    Label emptySpace = new Label("&nbsp", Label.CONTENT_XHTML);
-    emptySpace.setHeight(15, UNITS_PIXELS);
-    layout.addComponent(emptySpace);
+    errorLabel = new Label("&nbsp", Label.CONTENT_XHTML);
+    errorLabel.addStyleName(Reindeer.LABEL_SMALL);
+    errorLabel.addStyleName(ExplorerLayout.STYLE_LABEL_RED);
+    layout.addComponent(errorLabel);
     
-    Button changePasswordButton = new Button(i18nManager.getMessage(Messages.PROFILE_CHANGE_PASSWORD));
+    Button changePasswordButton = new Button(i18nManager.getMessage(Messages.PASSWORD_CHANGE));
     layout.addComponent(changePasswordButton);
     layout.setComponentAlignment(changePasswordButton, Alignment.MIDDLE_CENTER);
     
     changePasswordButton.addListener(new ClickListener() {
       public void buttonClick(ClickEvent event) {
-        if (passwordField1.getValue() == null || "".equals(passwordField1.getValue().toString())) {
-          
-        }
+        handlePasswordChange();
       }
     });
+  }
+  
+  protected void initEnterKeyListener() {
+    addActionHandler(new Handler() {
+      public void handleAction(Action action, Object sender, Object target) {
+        handlePasswordChange();
+      }
+      public Action[] getActions(Object target, Object sender) {
+        return new Action[] {new ShortcutAction("enter", ShortcutAction.KeyCode.ENTER, null)};
+      }
+    });
+  }
+  
+  protected void handlePasswordChange() {
+    if (passwordField1.getValue() == null || "".equals(passwordField1.getValue().toString())
+            || passwordField2.getValue() == null || "".equals(passwordField2.getValue().toString())) {
+      errorLabel.setValue(i18nManager.getMessage(Messages.PASSWORD_CHANGE_INPUT_REQUIRED));
+    } else if (!passwordField1.getValue().equals(passwordField2.getValue())){
+      errorLabel.setValue(i18nManager.getMessage(Messages.PASSWORD_CHANGE_INPUT_MATCH));
+    } else {
+      String password = passwordField1.getValue().toString();
+      // Change data
+      User user = identityService.createUserQuery().userId(currentUser.getId()).singleResult();
+      user.setPassword(password);
+      identityService.saveUser(user);
+      
+      // Changed session data
+      currentUser.setPassword(password);
+      
+      // Close popup
+      close();
+      
+      // Show notification
+      ExplorerApp.get().getNotificationManager().showInformationNotification(Messages.PASSWORD_CHANGED_NOTIFICATION);
+    }
   }
 
 }

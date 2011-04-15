@@ -52,6 +52,7 @@ public interface ExplorerLayout {
   static final String STYLE_HEADER_PROFILE_MENU = "person-menu";
   static final String STYLE_USER_PROFILE = "user";
   static final String STYLE_LABEL_BOLD = "bold";
+  static final String STYLE_LABEL_RED = "red";
   static final String STYLE_CLICKABLE = "clickable";
   static final String STYLE_ACTIVE = "active";
   static final String STYLE_TOOLBAR = "toolbar";

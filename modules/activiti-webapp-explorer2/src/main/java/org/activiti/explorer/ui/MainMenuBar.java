@@ -150,7 +150,7 @@ public class MainMenuBar extends HorizontalLayout {
     });
     
     // Change password
-    rootItem.addItem(i18nManager.getMessage(Messages.PROFILE_CHANGE_PASSWORD), new Command() {
+    rootItem.addItem(i18nManager.getMessage(Messages.PASSWORD_CHANGE), new Command() {
       public void menuSelected(MenuItem selectedItem) {
         ExplorerApp.get().getViewManager().showPopupWindow(new ChangePasswordPopupWindow());
       }

@@ -43,6 +43,12 @@ public interface Messages {
   static final String MAIN_MENU_MANAGEMENT = "main.menu.management";
   static final String MAIN_MENU_REPORTS = "main.menu.reports";
   
+  // Password
+  static final String PASSWORD_CHANGE = "password.change";
+  static final String PASSWORD_CHANGE_INPUT_REQUIRED = "password.change.input.required";
+  static final String PASSWORD_CHANGE_INPUT_MATCH = "password.change.input.match";
+  static final String PASSWORD_CHANGED_NOTIFICATION = "password.changed.notification";
+  
   // Profile
   static final String PROFILE_ABOUT = "profile.about";
   static final String PROFILE_NAME = "profile.name";
@@ -71,7 +77,6 @@ public interface Messages {
   static final String PROFILE_ACCOUNT_ALFRESCO = "profile.account.alfresco";
   static final String PROFILE_NEW_PASSWORD = "profile.new.password";
   static final String PROFILE_CONFIRM_PASSWORD = "profile.confirm.password";
-  static final String PROFILE_CHANGE_PASSWORD = "profile.change.password";
   
   // Imap
   static final String IMAP_SERVER = "imap.server";

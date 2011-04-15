@@ -52,6 +52,7 @@ public class LoggedInUser {
     return password;
   }
   public void setPassword(String password) {
+    user.setPassword(password);
     this.password = password;
   }
   public boolean isUser() {

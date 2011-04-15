@@ -1,5 +1,13 @@
 @import url(../reindeer/styles.css);
 
+/* ------
+   Generic
+   ------- */
+   
+.v-label-red {
+  color: red;
+}
+
 /* -----
    Login
    ----- */
