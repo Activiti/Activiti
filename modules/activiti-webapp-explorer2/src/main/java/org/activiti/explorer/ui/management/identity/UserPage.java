@@ -34,9 +34,29 @@ import com.vaadin.ui.Table;
 public class UserPage extends ManagementPage {
 
   private static final long serialVersionUID = 1L;
+  protected String userId;
   protected Table userTable;
   protected LazyLoadingQuery userListQuery;
   protected LazyLoadingContainer userListContainer;
+  
+  public UserPage() {
+    
+  }
+  
+  public UserPage(String userId) {
+    this.userId = userId;
+  }
+  
+  @Override
+  protected void initUi() {
+    super.initUi();
+    
+    if (userId == null) {
+      selectListElement(0);
+    } else {
+      selectListElement(userListContainer.getIndexForObjectId(userId));
+    }
+  }
 
   protected Table createList() {
     userTable = new Table();

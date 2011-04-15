@@ -125,6 +125,10 @@ public class ViewManager {
     switchView(new UserPage(), MAIN_NAVIGATION_MANAGE, ManagementMenuBar.ENTRY_USERS);
   }
   
+  public void showUserPage(String userId) {
+    switchView(new UserPage(userId), MAIN_NAVIGATION_MANAGE, ManagementMenuBar.ENTRY_USERS);
+  }
+  
   // Profile
   
   public void showProfilePopup(String userId) {

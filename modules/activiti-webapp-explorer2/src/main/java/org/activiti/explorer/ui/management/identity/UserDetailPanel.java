@@ -98,6 +98,7 @@ public class UserDetailPanel extends Panel {
   
   protected void initPageTitle() {
     HorizontalLayout layout = new HorizontalLayout();
+    layout.setWidth(100, UNITS_PERCENTAGE);
     layout.setSpacing(true);
     addComponent(layout);
     
@@ -107,9 +108,21 @@ public class UserDetailPanel extends Panel {
     layout.addComponent(userImage);
     
     Label userName = new Label(user.getFirstName() + " " + user.getLastName());
+    userName.setSizeUndefined();
     userName.addStyleName(Reindeer.LABEL_H1);
     layout.addComponent(userName);
     layout.setComponentAlignment(userName, Alignment.MIDDLE_LEFT);
+    
+    Button createUserButton = new Button(i18nManager.getMessage(Messages.USER_CREATE));
+    layout.addComponent(createUserButton);
+    layout.setComponentAlignment(createUserButton, Alignment.MIDDLE_RIGHT);
+    layout.setExpandRatio(createUserButton, 1.0f);
+    createUserButton.addListener(new ClickListener() {
+      public void buttonClick(ClickEvent event) {
+        NewUserPopupWindow newUserPopupWindow = new NewUserPopupWindow();
+        ExplorerApp.get().getViewManager().showPopupWindow(newUserPopupWindow);
+      }
+    });
   }
   
   protected void initUserDetails() {

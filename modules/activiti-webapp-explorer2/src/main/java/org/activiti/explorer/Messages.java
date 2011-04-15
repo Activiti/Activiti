@@ -195,11 +195,16 @@ public interface Messages {
   static final String USER_HEADER_DETAILS = "user.header.details";
   static final String USER_HEADER_GROUPS = "user.header.groups";
   static final String USER_ID = "user.id";
+  static final String USER_ID_REQUIRED = "user.id.required";
+  static final String USER_ID_UNIQUE = "user.id.unique";
   static final String USER_FIRSTNAME = "user.firstname";
   static final String USER_LASTNAME = "user.lastname";
   static final String USER_EMAIL = "user.email";
   static final String USER_PASSWORD = "user.password";
+  static final String USER_PASSWORD_REQUIRED = "user.password.required";
+  static final String USER_PASSWORD_MIN_LENGTH = "user.password.min.lenth";
   static final String USER_RESET_PASSWORD = "user.reset.password";
+  static final String USER_CREATE = "user.create";
   static final String USER_EDIT = "user.edit";
   static final String USER_DELETE = "user.delete";
   static final String USER_SAVE = "user.save";
