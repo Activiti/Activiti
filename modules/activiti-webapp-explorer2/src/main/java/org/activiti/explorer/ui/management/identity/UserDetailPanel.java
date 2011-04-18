@@ -55,7 +55,7 @@ import com.vaadin.ui.themes.Reindeer;
 /**
  * @author Joram Barrez
  */
-public class UserDetailPanel extends Panel {
+public class UserDetailPanel extends Panel implements MemberShipChangeListener {
 
   private static final long serialVersionUID = 1L;
   
@@ -218,8 +218,7 @@ public class UserDetailPanel extends Panel {
     if (!editingDetails) {
       initEditButton(actionLayout);
       initDeleteButton(actionLayout);
-    }
-    if (editingDetails) {
+    } else {
       initSaveButton(actionLayout);
     }
   }
@@ -261,7 +260,7 @@ public class UserDetailPanel extends Panel {
         userDetailsLayout.removeAllComponents();
         populateUserDetails();
         
-        // Refresh task list (only if name was changed)
+       // Refresh task list (only if name was changed)
        if (nameChanged(originalFirstName, originalLastName)) {
          userPage.notifyUserChanged(user.getId());
        }
@@ -329,7 +328,7 @@ public class UserDetailPanel extends Panel {
     
     groupLayout = new HorizontalLayout(); // we wrap the table in a simple layout so we can remove the table easy later on
     addComponent(groupLayout);
-    initGroupTable();
+    initGroupsTable();
   }
 
   protected void initGroupTitle(HorizontalLayout groupHeader) {
@@ -354,7 +353,7 @@ public class UserDetailPanel extends Panel {
               for (String groupId : selectedGroups) {
                 identityService.createMembership(user.getId(), groupId);
               }
-              notifyGroupsForUserChanged();
+              notifyMembershipChanged();
             }
           }
           protected void cancelled(SubmitEvent event) {
@@ -365,7 +364,7 @@ public class UserDetailPanel extends Panel {
     });
   }
   
-  protected void initGroupTable() {
+  protected void initGroupsTable() {
     groupsForUserQuery = new GroupsForUserQuery(identityService, this, user.getId());
     if (groupsForUserQuery.size() > 0) {
       groupTable = new Table();
@@ -376,7 +375,7 @@ public class UserDetailPanel extends Panel {
       groupContainer = new LazyLoadingContainer(groupsForUserQuery, 10);
       groupTable.setContainerDataSource(groupContainer);
       
-      groupTable.addContainerProperty("id", String.class, null);
+      groupTable.addContainerProperty("id", Button.class, null);
       groupTable.setColumnWidth("id", 100);
       groupTable.addContainerProperty("name", String.class, null);
       groupTable.setColumnWidth("name", 175);
@@ -392,9 +391,9 @@ public class UserDetailPanel extends Panel {
     }
   }
   
-  public void notifyGroupsForUserChanged() {
+  public void notifyMembershipChanged() {
     groupLayout.removeAllComponents();
-    initGroupTable();
+    initGroupsTable();
   }
   
 }

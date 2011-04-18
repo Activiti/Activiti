@@ -29,39 +29,40 @@ public class NavigatorManager implements InitializingBean {
   protected Map<String, Navigator> navigationHandlers = new HashMap<String, Navigator>();
   protected Navigator defaultHandler;
 
-  public void addNavigationHandler(Navigator handler) {
+  public void addNavigator(Navigator handler) {
     navigationHandlers.put(handler.getTrigger(), handler);
   }
 
-  public Navigator getHandler(String trigger) {
+  public Navigator getNavigator(String trigger) {
     if (trigger != null) {
       return navigationHandlers.get(trigger);
     }
     return null;
   }
 
-  public Navigator getDefaultHandler() {
+  public Navigator getDefaultNavigator() {
     if(defaultHandler == null) {
       throw new IllegalStateException("No default navigation handler has been set");
     }
     return defaultHandler;
   }
 
-  public void setDefaultHandler(Navigator handler) {
+  public void setDefaultNavigator(Navigator handler) {
     defaultHandler = handler;
   }
   
   public void afterPropertiesSet() throws Exception {
     // Initialising all navigators
-    setDefaultHandler(defaultHandler);
+    //setDefaultNavigator(defaultHandler);
     
-    addNavigationHandler(new TaskNavigator());
-    addNavigationHandler(new FlowNavigator());
-    addNavigationHandler(new DeploymentNavigator());
-    addNavigationHandler(new DatabaseNavigator());
-    addNavigationHandler(new JobNavigator());
-    addNavigationHandler(new UserNavigator());
-    addNavigationHandler(new MyFlowsNavigator());
+    addNavigator(new TaskNavigator());
+    addNavigator(new FlowNavigator());
+    addNavigator(new DeploymentNavigator());
+    addNavigator(new DatabaseNavigator());
+    addNavigator(new JobNavigator());
+    addNavigator(new UserNavigator());
+    addNavigator(new GroupNavigator());
+    addNavigator(new MyFlowsNavigator());
   }
 
 }

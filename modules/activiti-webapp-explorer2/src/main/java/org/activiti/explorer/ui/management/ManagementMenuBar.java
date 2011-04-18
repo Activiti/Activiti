@@ -32,6 +32,7 @@ public class ManagementMenuBar extends ToolBar {
   public static final String ENTRY_DEPLOYMENTS = "deployments"; 
   public static final String ENTRY_JOBS = "jobs"; 
   public static final String ENTRY_USERS = "users";
+  public static final String ENTRY_GROUPS = "groups";
   
   protected I18nManager i18nManager;
   protected ViewManager viewManager;
@@ -74,6 +75,13 @@ public class ManagementMenuBar extends ToolBar {
     addToolbarEntry(ENTRY_USERS, i18nManager.getMessage(Messages.MGMT_MENU_USERS), new ToolbarCommand() {
       public void toolBarItemSelected() {
         viewManager.showUserPage();
+      }
+    });
+    
+    // Groups
+    addToolbarEntry(ENTRY_GROUPS, i18nManager.getMessage(Messages.MGMT_MENU_GROUPS), new ToolbarCommand() {
+      public void toolBarItemSelected() {
+        viewManager.showGroupPage();
       }
     });
   }

@@ -26,6 +26,7 @@ import org.activiti.explorer.Messages;
 import org.activiti.explorer.ViewManager;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
+import org.activiti.explorer.ui.custom.SelectUsersPopupWindow;
 import org.activiti.explorer.ui.event.SubmitEvent;
 import org.activiti.explorer.ui.event.SubmitEventListener;
 import org.activiti.explorer.ui.task.listener.ChangeOwnershipListener;
@@ -105,8 +106,8 @@ public class TaskInvolvedPeopleComponent extends CustomComponent {
     
     addPeopleButton.addListener(new ClickListener() {
       public void click(ClickEvent event) {
-        final InvolvePeoplePopupWindow involvePeoplePopupWindow = 
-          new InvolvePeoplePopupWindow(i18nManager.getMessage(Messages.PEOPLE_INVOLVE_POPUP_CAPTION), task, true);
+        final SelectUsersPopupWindow involvePeoplePopupWindow = 
+          new SelectUsersPopupWindow(i18nManager.getMessage(Messages.PEOPLE_INVOLVE_POPUP_CAPTION), true);
         
         involvePeoplePopupWindow.addListener(new SubmitEventListener() {
           protected void submitted(SubmitEvent event) {

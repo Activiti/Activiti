@@ -100,7 +100,7 @@ public class FlowPage extends AbstractPage {
     
     // Listener to change right panel when clicked on a task
     processDefinitionTable.addListener(new Property.ValueChangeListener() {
-      private static final long serialVersionUID = 8378856103392135871L;
+      private static final long serialVersionUID = 1L;
 
       public void valueChange(ValueChangeEvent event) {
         Item item = processDefinitionTable.getItem(event.getProperty().getValue());

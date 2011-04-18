@@ -75,19 +75,21 @@ public class TaskMenuBar extends ToolBar {
     inboxEntry.setCount(inboxCount);
     
     // Queued
-    List<Group> groups = user.getGroups();
+    List<Group> groups = identityService.createGroupQuery().groupMember(user.getId()).list();
     ToolbarPopupEntry queuedItem = addPopupEntry(ENTRY_QUEUED, (i18nManager.getMessage(Messages.TASK_MENU_QUEUED)));
     long queuedCount = 0;
     for (final Group group : groups) {
-      long groupCount = taskService.createTaskQuery().taskCandidateGroup(group.getId()).count();
-      
-      queuedItem.addMenuItem(group.getName() + " (" + groupCount + ")", new ToolbarCommand() {
-        public void toolBarItemSelected() {
-          viewManager.showTaskQueuedPage(group.getId());
-        }
-      });
-      
-      queuedCount += groupCount;
+      if (group.getType().equals("assignment")) {
+        long groupCount = taskService.createTaskQuery().taskCandidateGroup(group.getId()).count();
+        
+        queuedItem.addMenuItem(group.getName() + " (" + groupCount + ")", new ToolbarCommand() {
+          public void toolBarItemSelected() {
+            viewManager.showTaskQueuedPage(group.getId());
+          }
+        });
+        
+        queuedCount += groupCount;
+      }
     }
     queuedItem.setCount(queuedCount);
   }

@@ -169,6 +169,7 @@ public interface Messages {
   static final String MGMT_MENU_DEPLOYMENTS_SHOW_ALL = "management.menu.deployments.show.all";
   static final String MGMT_MENU_DEPLOYMENTS_UPLOAD = "management.menu.deployments.upload";
   static final String MGMT_MENU_USERS = "management.menu.users";
+  static final String MGMT_MENU_GROUPS = "management.menu.groups";
   
   // Job page
   static final String JOB_EXECUTE = "job.execute";
@@ -220,6 +221,19 @@ public interface Messages {
   static final String USER_CONFIRM_DELETE_GROUP = "user.confirm.delete.group";
   static final String USER_SELECT_GROUPS = "user.select.groups";
   static final String USER_SELECT_GROUPS_POPUP = "user.select.groups.popup";
+  
+  // Group page
+  static final String GROUP_HEADER_DETAILS = "group.header.details";
+  static final String GROUP_HEADER_USERS = "group.header.users";
+  static final String GROUP_CREATE = "group.create";
+  static final String GROUP_ID = "group.id";
+  static final String GROUP_NAME = "group.name";
+  static final String GROUP_TYPE = "group.type";
+  static final String GROUP_CONFIRM_DELETE = "group.confirm.delete";
+  static final String GROUP_ID_REQUIRED = "group.id.required";
+  static final String GROUP_ID_UNIQUE = "group.id.unique";
+  static final String GROUP_NO_MEMBERS = "group.no.members";
+  static final String GROUP_SELECT_MEMBERS = "group.select.members";
   
   // Upload
   static final String UPLOAD_SELECT = "upload.select";

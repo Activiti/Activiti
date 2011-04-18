@@ -44,11 +44,11 @@ public class NavigationFragmentChangeListener implements FragmentChangedListener
     // Find appropriate handler based on the first part of the URI
     Navigator navigationHandler = null;
     if(uriFragment.getUriParts() != null && uriFragment.getUriParts().size() > 0) {
-      navigationHandler = navigatorManager.getHandler(uriFragment.getUriParts().get(0));
+      navigationHandler = navigatorManager.getNavigator(uriFragment.getUriParts().get(0));
     }
     
     if(navigationHandler == null) {
-      navigationHandler = navigatorManager.getDefaultHandler();
+      navigationHandler = navigatorManager.getDefaultNavigator();
     }
     
     // Delegate navigation to handler

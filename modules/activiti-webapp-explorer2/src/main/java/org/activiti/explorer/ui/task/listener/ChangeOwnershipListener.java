@@ -18,9 +18,9 @@ import org.activiti.engine.task.Task;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
+import org.activiti.explorer.ui.custom.SelectUsersPopupWindow;
 import org.activiti.explorer.ui.event.SubmitEvent;
 import org.activiti.explorer.ui.event.SubmitEventListener;
-import org.activiti.explorer.ui.task.InvolvePeoplePopupWindow;
 import org.activiti.explorer.ui.task.TaskDetailPanel;
 
 import com.vaadin.ui.Button.ClickEvent;
@@ -45,8 +45,8 @@ public class ChangeOwnershipListener implements ClickListener {
   }
   
   public void buttonClick(ClickEvent event) {
-    final InvolvePeoplePopupWindow involvePeoplePopupWindow = 
-        new InvolvePeoplePopupWindow(i18nManager.getMessage(Messages.TASK_OWNER_TRANSFER), task, false);
+    final SelectUsersPopupWindow involvePeoplePopupWindow = 
+        new SelectUsersPopupWindow(i18nManager.getMessage(Messages.TASK_OWNER_TRANSFER), false);
     
     involvePeoplePopupWindow.addListener(new SubmitEventListener() {
       protected void submitted(SubmitEvent event) {

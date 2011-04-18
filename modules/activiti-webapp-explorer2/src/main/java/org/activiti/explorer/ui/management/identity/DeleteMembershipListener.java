@@ -35,13 +35,14 @@ public class DeleteMembershipListener implements ClickListener {
   protected IdentityService identityService;
   protected String userId;
   protected String groupId;
-  protected UserDetailPanel userDetailPanel;
+  protected MemberShipChangeListener membershipChangeListener;
 
-  public DeleteMembershipListener(IdentityService identityService, String userId, String groupId, UserDetailPanel userDetailPanel) {
+  public DeleteMembershipListener(IdentityService identityService, String userId,
+          String groupId, MemberShipChangeListener memberShipChangeListener ) {
     this.identityService = identityService;
     this.userId = userId;
     this.groupId = groupId;
-    this.userDetailPanel = userDetailPanel;
+    this.membershipChangeListener = memberShipChangeListener;
   }
   
   public void click(ClickEvent event) {
@@ -56,7 +57,7 @@ public class DeleteMembershipListener implements ClickListener {
       }
       protected void confirmed(ConfirmationEvent event) {
         identityService.deleteMembership(userId, groupId);
-        userDetailPanel.notifyGroupsForUserChanged();
+        membershipChangeListener.notifyMembershipChanged();
       }
     });
     

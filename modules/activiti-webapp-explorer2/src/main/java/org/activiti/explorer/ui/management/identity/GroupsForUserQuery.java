@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
+import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.data.AbstractLazyLoadingQuery;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
@@ -25,7 +26,11 @@ import org.activiti.explorer.ui.Images;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Embedded;
+import com.vaadin.ui.themes.Reindeer;
 
 
 /**
@@ -74,8 +79,15 @@ public class GroupsForUserQuery extends AbstractLazyLoadingQuery {
     
     private static final long serialVersionUID = 1L;
 
-    public GroupItem(Group group) {
-      addItemProperty("id", new ObjectProperty<String>(group.getId()));
+    public GroupItem(final Group group) {
+      Button idButton = new Button(group.getId());
+      idButton.addStyleName(Reindeer.BUTTON_LINK);
+      idButton.addListener(new ClickListener() {
+        public void buttonClick(ClickEvent event) {
+          ExplorerApp.get().getViewManager().showGroupPage(group.getId());
+        }
+      });
+      addItemProperty("id", new ObjectProperty<Button>(idButton));
       
       if (group.getName() != null) {
         addItemProperty("name", new ObjectProperty<String>(group.getName()));

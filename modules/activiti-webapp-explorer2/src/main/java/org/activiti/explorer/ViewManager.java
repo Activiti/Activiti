@@ -21,6 +21,7 @@ import org.activiti.explorer.ui.flow.MyFlowsPage;
 import org.activiti.explorer.ui.management.ManagementMenuBar;
 import org.activiti.explorer.ui.management.db.DatabasePage;
 import org.activiti.explorer.ui.management.deployment.DeploymentPage;
+import org.activiti.explorer.ui.management.identity.GroupPage;
 import org.activiti.explorer.ui.management.identity.UserPage;
 import org.activiti.explorer.ui.management.job.JobPage;
 import org.activiti.explorer.ui.profile.ProfilePopupWindow;
@@ -132,6 +133,14 @@ public class ViewManager {
   
   public void showUserPage(String userId) {
     switchView(new UserPage(userId), MAIN_NAVIGATION_MANAGE, ManagementMenuBar.ENTRY_USERS);
+  }
+  
+  public void showGroupPage() {
+    switchView(new GroupPage(), MAIN_NAVIGATION_MANAGE, ManagementMenuBar.ENTRY_GROUPS);
+  }
+  
+  public void showGroupPage(String groupId) {
+    switchView(new GroupPage(groupId), MAIN_NAVIGATION_MANAGE, ManagementMenuBar.ENTRY_GROUPS);
   }
   
   // Profile

@@ -11,17 +11,14 @@
  * limitations under the License.
  */
 
-package org.activiti.explorer.ui.task;
+package org.activiti.explorer.ui.custom;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.User;
-import org.activiti.engine.task.Task;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
@@ -59,17 +56,16 @@ import com.vaadin.ui.themes.Reindeer;
  * 
  * @author Joram Barrez
  */
-public class InvolvePeoplePopupWindow extends Window {
+public class SelectUsersPopupWindow extends Window {
 
   private static final long serialVersionUID = 1L;
   
   protected String title;
-  protected Task task;
   protected boolean multiSelect;
+  protected Collection<String> ignoredUserIds;
   
   protected UserCache userCache;
   protected I18nManager i18nManager;
-  protected TaskService taskService;
   
   protected VerticalLayout windowLayout;
   protected TextField searchField;
@@ -79,15 +75,18 @@ public class InvolvePeoplePopupWindow extends Window {
   protected Table selectedUsersTable;
   protected Button doneButton;
   
-  public InvolvePeoplePopupWindow(String title, Task task, boolean multiSelect) {
+  public SelectUsersPopupWindow(String title, boolean multiSelect) {
     this.title = title;
-    this.task = task;
     this.multiSelect = multiSelect;
     this.userCache = ExplorerApp.get().getUserCache();
     this.i18nManager = ExplorerApp.get().getI18nManager();
-    this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
     
     initUi();
+  }
+  
+  public SelectUsersPopupWindow(String title, boolean multiSelect, Collection<String> ignoredUserIds) {
+    this(title, multiSelect);
+    this.ignoredUserIds = ignoredUserIds;
   }
   
   protected void initUi() {
@@ -132,9 +131,11 @@ public class InvolvePeoplePopupWindow extends Window {
       matchingUsersTable.removeAllItems();
       List<User> results = userCache.findMatchingUsers(searchText);
       for (User user : results) {
-        if (!multiSelect || !selectedUsersTable.containsId(user.getId())) {
-          Item item = matchingUsersTable.addItem(user.getId());
-          item.getItemProperty("userName").setValue(user.getFirstName() + " " + user.getLastName());
+        if (ignoredUserIds != null && !ignoredUserIds.contains(user.getId())) {
+          if (!multiSelect || !selectedUsersTable.containsId(user.getId())) {
+            Item item = matchingUsersTable.addItem(user.getId());
+            item.getItemProperty("userName").setValue(user.getFirstName() + " " + user.getLastName());
+          }
         }
       }
     }
