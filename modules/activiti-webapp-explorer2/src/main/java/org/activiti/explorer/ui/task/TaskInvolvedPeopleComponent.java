@@ -25,7 +25,6 @@ import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ViewManager;
 import org.activiti.explorer.ui.ExplorerLayout;
-import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.custom.SelectUsersPopupWindow;
 import org.activiti.explorer.ui.event.SubmitEvent;
 import org.activiti.explorer.ui.event.SubmitEventListener;
@@ -33,10 +32,10 @@ import org.activiti.explorer.ui.task.listener.ChangeOwnershipListener;
 import org.activiti.explorer.ui.task.listener.ReassignAssigneeListener;
 import org.activiti.explorer.ui.task.listener.RemoveInvolvedPersonListener;
 
-import com.vaadin.event.MouseEvents.ClickEvent;
-import com.vaadin.event.MouseEvents.ClickListener;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -60,7 +59,7 @@ public class TaskInvolvedPeopleComponent extends CustomComponent {
   protected TaskDetailPanel taskDetailPanel;
   protected VerticalLayout layout;
   protected Label title;
-  protected Embedded addPeopleButton;
+  protected Button addPeopleButton;
   protected GridLayout peopleGrid;
   
   public TaskInvolvedPeopleComponent(Task task, TaskDetailPanel taskDetailPanel) {
@@ -74,6 +73,9 @@ public class TaskInvolvedPeopleComponent extends CustomComponent {
   }
   
   protected void initUi() {
+    addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
+    addStyleName(ExplorerLayout.STYLE_INVOLVE_PEOPLE);
+    
     initLayout();
     initHeader();
     initPeopleGrid();
@@ -86,26 +88,25 @@ public class TaskInvolvedPeopleComponent extends CustomComponent {
   
   protected void initHeader() {
     
-    layout.addComponent(new Label("&nbsp;", Label.CONTENT_XHTML)); // TODO: remove
-    
     HorizontalLayout headerLayout = new HorizontalLayout();
     headerLayout.setWidth(100, UNITS_PERCENTAGE);
     layout.addComponent(headerLayout);
     
     // Title
     title = new Label(i18nManager.getMessage(Messages.TASK_PEOPLE));
-    title.addStyleName(ExplorerLayout.STYLE_RELATED_CONTENT_DETAILS_HEADER); // TODO: make style generic
+    title.addStyleName(ExplorerLayout.STYLE_H3);
     title.setWidth(100, UNITS_PERCENTAGE);
     headerLayout.addComponent(title);
     headerLayout.setExpandRatio(title, 1.0f);
 
     // Add button
-    addPeopleButton = new Embedded(null, Images.ADD);
-    addPeopleButton.addStyleName(ExplorerLayout.STYLE_IMAGE_ACTION);
+    addPeopleButton = new Button();
+    addPeopleButton.addStyleName(ExplorerLayout.STYLE_ADD);
     headerLayout.addComponent(addPeopleButton);
     
     addPeopleButton.addListener(new ClickListener() {
-      public void click(ClickEvent event) {
+      
+      public void buttonClick(ClickEvent event) {
         final SelectUsersPopupWindow involvePeoplePopupWindow = 
           new SelectUsersPopupWindow(i18nManager.getMessage(Messages.PEOPLE_INVOLVE_POPUP_CAPTION), true);
         
@@ -132,6 +133,8 @@ public class TaskInvolvedPeopleComponent extends CustomComponent {
     peopleGrid = new GridLayout();
     peopleGrid.setColumns(2);
     peopleGrid.setSpacing(true);
+    peopleGrid.setMargin(true, false, false, false);
+    peopleGrid.setWidth(100, UNITS_PERCENTAGE);
     layout.addComponent(peopleGrid);
     
     populatePeopleGrid();

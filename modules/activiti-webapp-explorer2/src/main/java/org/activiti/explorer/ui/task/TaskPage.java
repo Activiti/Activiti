@@ -42,11 +42,16 @@ public abstract class TaskPage extends AbstractPage {
   
   private static final long serialVersionUID = 1L;
   
-  protected TaskService taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
+  protected TaskService taskService;
   
   protected LazyLoadingContainer taskListContainer;
   protected LazyLoadingQuery lazyLoadingQuery;
   protected TaskEventsPanel taskEventPanel;
+  
+  
+  public TaskPage() {
+    taskService =  ProcessEngines.getDefaultProcessEngine().getTaskService();
+  }
   
   @Override
   protected ToolBar createMenuBar() {
@@ -92,7 +97,6 @@ public abstract class TaskPage extends AbstractPage {
     
     return taskTable;
   }
-  
   
   @Override
   protected Component getEventComponent() {

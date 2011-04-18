@@ -14,6 +14,7 @@
 package org.activiti.explorer.ui.custom;
 
 import java.text.DateFormat;
+import java.text.MessageFormat;
 import java.util.Date;
 
 import org.activiti.explorer.Constants;
@@ -37,10 +38,30 @@ public class PrettyTimeLabel extends Label {
   }
   
   public PrettyTimeLabel(Date date, String noDateCaption) {
-    
+   this(null, date, noDateCaption);
+  }
+  
+
+  /**
+   * Constructor for pretty time label.
+   * 
+   * @param labelTemplate
+   *          template to use for date, eg. "Date: {0}". Null, if date/time
+   *          should just be shown.
+   * @param date
+   *          to show
+   * @param noDateCaption
+   *          caption of label to show when dat is null. Empty label is shown
+   *          when null.
+   */
+  public PrettyTimeLabel(String labelTemplate, Date date, String noDateCaption) {
     if (date != null) {
       DateFormat dateFormat = (DateFormat) Constants.DEFAULT_DATE_FORMATTER.clone();
-      setValue(new PrettyTime().format(date));
+      if(labelTemplate != null) {
+        setValue(MessageFormat.format(labelTemplate, new PrettyTime().format(date)));
+      } else {
+        setValue( new PrettyTime().format(date));
+      }
       setDescription(dateFormat.format(date));
     } else {
       setValue(noDateCaption);

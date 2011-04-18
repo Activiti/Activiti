@@ -108,8 +108,10 @@ public interface Messages {
   static final String TASK_INVOLVED_REMOVE = "task.involved.remove";
   static final String TASK_INVOLVED_REMOVE_CONFIRMATION_TITLE = "task.involved.remove.confirmation.title";
   static final String TASK_INVOLVED_REMOVE_CONFIRMATION_DESCRIPTION = "task.involved.remove.confirmation.description";
-  static final String TASK_CREATED = "task.created";
+  static final String TASK_CREATED_SHORT = "task.created.short";
   static final String TASK_DUEDATE = "task.duedate";
+  static final String TASK_DUEDATE_UNKNOWN = "task.duedate.unknown";
+  static final String TASK_DUEDATE_SHORT = "task.duedate.short";
   static final String TASK_COMPLETE = "task.complete";
   static final String TASK_COMPLETED = "task.task.completed";
   static final String TASK_RESET_FORM = "task.form.reset";
@@ -119,6 +121,9 @@ public interface Messages {
   static final String TASK_COMPLETE_TIME = "task.complete.time";
   static final String TASK_DURATION = "task.duration";
   static final String TASK_PRIORITY = "task.priority";
+  static final String TASK_PRIORITY_LOW = "task.priority.low";
+  static final String TASK_PRIORITY_MEDIUM = "task.priority.medium";
+  static final String TASK_PRIORITY_HIGH = "task.priority.high";
   static final String TASK_NOT_FINISHED_YET = "task.not.finished.yet";
   static final String TASK_PART_OF_PROCESS = "task.part.of.process";
   static final String TASK_JUMP_TO_PROCESS = "task.jump.to.process";
@@ -127,6 +132,8 @@ public interface Messages {
   static final String TASK_CLAIM = "task.claim";
   static final String TASK_RELATED_CONTENT = "task.related.content";
   static final String TASK_PEOPLE = "task.people";
+  static final String TASK_FORM_HELP = "task.form.help";
+  static final String TASK_NEW = "task.new";
   
   // Task roles
   static final String TASK_ROLE_CONTRIBUTOR = "task.role.contributor";
@@ -267,4 +274,5 @@ public interface Messages {
   static final String TASK_AUTHORISATION_ERROR_TITLE = "task.authorisation.error.title";
   static final String TASK_AUTHORISATION_MEMBERSHIP_ERROR = "task.authorisation.membership.error";
   static final String TASK_AUTHORISATION_INBOX_ERROR = "task.authorisation.inbox.error";
+
 }

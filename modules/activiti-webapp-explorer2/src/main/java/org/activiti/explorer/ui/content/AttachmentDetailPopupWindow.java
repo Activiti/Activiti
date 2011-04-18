@@ -19,6 +19,7 @@ import org.activiti.explorer.ExplorerApp;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.Reindeer;
 
 
 /**
@@ -30,6 +31,8 @@ public class AttachmentDetailPopupWindow extends Window {
   
   public AttachmentDetailPopupWindow(Attachment attachment) {
     super(attachment.getName());
+    
+    addStyleName(Reindeer.PANEL_LIGHT);
     
     setWidth(50, UNITS_PERCENTAGE);
     setHeight(50, UNITS_PERCENTAGE);

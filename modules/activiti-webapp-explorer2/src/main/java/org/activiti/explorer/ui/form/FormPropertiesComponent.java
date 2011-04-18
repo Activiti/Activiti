@@ -22,11 +22,11 @@ import org.activiti.engine.form.FormType;
 import org.activiti.explorer.ExplorerApp;
 
 import com.vaadin.data.Validator.InvalidValueException;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Form;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.Reindeer;
 
 
 /**
@@ -49,8 +49,6 @@ public class FormPropertiesComponent extends VerticalLayout {
     this.formPropertyRendererManager = ExplorerApp.get().getFormPropertyRendererManager();
     
     setSizeFull();
-    addStyleName(Reindeer.LAYOUT_WHITE);
-
     initForm();
   } 
 
@@ -114,6 +112,7 @@ public class FormPropertiesComponent extends VerticalLayout {
     form.setSizeFull();
     
     addComponent(form);
+    setComponentAlignment(form, Alignment.TOP_CENTER);
   }
 
   protected FormPropertyRenderer getRenderer(FormProperty formProperty) {

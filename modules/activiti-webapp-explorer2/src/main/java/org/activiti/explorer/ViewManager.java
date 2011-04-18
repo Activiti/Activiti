@@ -72,7 +72,7 @@ public class ViewManager {
   }
   
   public void showTaskInboxPage(String taskId) {
-    switchView(new TaskInboxPage(), MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_INBOX);
+    switchView(new TaskInboxPage(taskId), MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_INBOX);
   }
   
   public void showTaskQueuedPage(String groupId) {

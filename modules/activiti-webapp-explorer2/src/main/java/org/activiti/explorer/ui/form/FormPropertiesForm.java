@@ -19,6 +19,10 @@ import java.util.Map;
 import org.activiti.engine.FormService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.form.FormProperty;
+import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.I18nManager;
+import org.activiti.explorer.Messages;
+import org.activiti.explorer.ui.ExplorerLayout;
 
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.ui.Alignment;
@@ -45,8 +49,10 @@ public class FormPropertiesForm extends VerticalLayout {
 
   // Services
   protected FormService formService;
+  protected I18nManager i18nManager;
 
   // UI
+  protected Label formTitle;
   protected Button submitFormButton;
   protected Button cancelFormButton;
   protected FormPropertiesComponent formPropertiesComponent;
@@ -54,7 +60,12 @@ public class FormPropertiesForm extends VerticalLayout {
   public FormPropertiesForm() {
     super();
     formService = ProcessEngines.getDefaultProcessEngine().getFormService();
+    i18nManager = ExplorerApp.get().getI18nManager();
     
+    addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
+    addStyleName(ExplorerLayout.STYLE_FORM_PROPERTIES);
+    
+    initTitle();
     initFormPropertiesComponent();
     initButtons();
     initListeners();
@@ -80,27 +91,35 @@ public class FormPropertiesForm extends VerticalLayout {
     formPropertiesComponent.setFormProperties(formPropertiesComponent.getFormProperties());
   }
 
+  protected void initTitle() {
+    formTitle = new Label(i18nManager.getMessage(Messages.TASK_FORM_HELP));
+    formTitle.addStyleName(ExplorerLayout.STYLE_H4);
+    addComponent(formTitle);
+  }
+ 
   protected void initButtons() {
     submitFormButton = new Button();
     cancelFormButton = new Button();
     
     HorizontalLayout buttons = new HorizontalLayout();
     buttons.setSpacing(true);
+    buttons.setWidth(100, UNITS_PERCENTAGE);
+    buttons.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
     buttons.addComponent(submitFormButton);
     buttons.setComponentAlignment(submitFormButton, Alignment.BOTTOM_RIGHT);
     
     buttons.addComponent(cancelFormButton);
     buttons.setComponentAlignment(cancelFormButton, Alignment.BOTTOM_RIGHT);
     
+    Label buttonSpacer = new Label();
+    buttons.addComponent(buttonSpacer);
+    buttons.setExpandRatio(buttonSpacer, 1.0f);
     addComponent(buttons);
   }
 
   protected void initFormPropertiesComponent() {
     formPropertiesComponent = new FormPropertiesComponent();
     addComponent(formPropertiesComponent);    
-    
-    // Add whitespace
-    addEmptySpace(this);
   }
   
   protected void initListeners() {

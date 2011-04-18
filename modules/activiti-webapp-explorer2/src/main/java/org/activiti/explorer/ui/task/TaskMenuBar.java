@@ -24,10 +24,13 @@ import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.LoggedInUser;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ViewManager;
+import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.custom.ToolBar;
 import org.activiti.explorer.ui.custom.ToolbarEntry;
 import org.activiti.explorer.ui.custom.ToolbarEntry.ToolbarCommand;
 import org.activiti.explorer.ui.custom.ToolbarPopupEntry;
+
+import com.vaadin.ui.Button;
 
 
 
@@ -55,10 +58,18 @@ public class TaskMenuBar extends ToolBar {
     this.viewManager = ExplorerApp.get().getViewManager();
     this.i18nManager = ExplorerApp.get().getI18nManager();
     
-    init();
+    initItems();
+    initTools();
   }
   
-  protected void init() {
+  protected void initTools() {
+    Button newTaskButton = new Button();
+    newTaskButton.setCaption(i18nManager.getMessage(Messages.TASK_NEW));
+    newTaskButton.setIcon(Images.TASK_16);
+    addButton(newTaskButton);
+  }
+
+  protected void initItems() {
     setWidth("100%");
     
     // TODO: the counts should be done later by eg a Refresher component

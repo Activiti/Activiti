@@ -96,11 +96,6 @@ input.login-field {
    Main layout
    ----------- */
 
-#content {
-	float: bottom;
-	height: 100%;
-}
-
 .footer {
 	margin-bottom: 25px;
 	padding-bottom: 25px;
@@ -307,15 +302,15 @@ input.login-field {
   cursor: pointer;
 }
 
-.related-content-create-list {
+.v-table-related-content-create-list {
 	margin-right: 0px;	
 }
 
-.related-content-create-list .v-table-body {
+.v-table-related-content-create-list .v-table-body {
 	border: none;	
 }
 
-.related-content-create-list .v-table-body .v-table-table {
+.v-table-related-content-create-list .v-table-body .v-table-table {
 	/*border: 1px solid white;*/
 	border-right: none;
 }
@@ -325,18 +320,31 @@ input.login-field {
 	background-color: #e8e8e3;
 }
 
-.related-content-create-list .v-table-row, .related-content-create-list .v-table-row-odd, .related-content-create-list .v-table-row-even {
+.v-table-related-content-create-list .v-table-row,
+.v-table-related-content-create-list .v-table-row-odd {
 	height: 50px;
+	background: none;
 }
 
-.related-content-create-list .v-selected .v-table-cell-content-related-last-column {
-	background: #1b7ec3 no-repeat url(img/arrow.png) right center;
+.v-table-related-content-create-list .v-table-row .v-table-cell-content,
+.v-table-related-content-create-list .v-table-row-odd .v-table-cell-content {
+	background: none;
 	border: none;
 }
 
-.related-content-create-list .v-table-row .v-selected {
-	background: #1b7ec3;
-	border: none;
+.v-table-related-content-create-list .v-table-row.v-selected .v-table-cell-content,
+.v-table-related-content-create-list .v-table-row-odd.v-selected .v-table-cell-content {
+	border-top: 1px solid #c5c5c5; 
+	border-bottom: 1px solid #c5c5c5; 
+}
+
+.v-table-related-content-create-list .v-selected .v-table-cell-content-related-last-column {
+	background: #DFF5FF no-repeat url(img/arrow.png) right center;
+}
+
+.v-table-related-content-create-list .v-table-row.v-selected,
+.v-table-related-content-create-list .v-table-row-odd.v-selected {
+	background: #DFF5FF;
 }
 
 
@@ -410,11 +418,18 @@ OLD CSS ABOVE THIS LINE
  /*
   * Toolbar
   */
-/* toolbar */
+
 .toolbar {
 	width:100%;
-	padding:0 0 0 10px;
 	background:#fff url(img/bg-toolbar.gif) repeat-x 0 100%;
+}
+
+.v-horizontallayout-toolbar .v-horizontallayout-margin-left {
+	padding-left: 10px;
+}
+
+.v-horizontallayout-toolbar .v-horizontallayout-margin-right {
+	padding-right: 10px;
 }
 
 .toolbar .v-button-toolbar-count.link.v-button-link {
@@ -448,6 +463,12 @@ OLD CSS ABOVE THIS LINE
 	padding:0 5px 0 0;	
 	text-decoration: none;
 	color: #8e8e8e;
+}
+
+.toolbar .toolbar-button .v-button-wrap .v-button-caption {
+	font:11px Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	color:#464646;
 }
 
 .toolbar .v-button-wrap .v-button-caption:hover {
@@ -673,15 +694,15 @@ div.searchbox {
 .v-disabled.v-button {
     height: 24px;
     padding: 0 0 0 5px;
-    background: transparent url(img/button-bg-left.gif) 0 0;
+    background: transparent url(img/button-bg-left.gif) repeat-x 0 0;
     cursor: pointer;
 }
 
 .v-button-wrap,
 .v-disabled.v-button .v-button-wrap {
     height: 24px;
-    padding: 4px 15px 0 9px;
-    background: transparent url(img/button-bg-right.gif) right 0;
+    padding: 4px 10px 0 4px;
+    background: transparent url(img/button-bg-right.gif) repeat-x right 0;
     cursor: pointer;
 }
 
@@ -732,7 +753,107 @@ div.searchbox {
 }
 
 
+/*
+ * Detail - Title block
+ */
+ .title-block .v-gridlayout-spacing-on {
+ 	padding-top: 5px;
+ }
  
+.title-block .h2 {
+	color:#007dc3;
+	font:24px/26px Arial, Helvetica, sans-serif;
+}
+
+.title-block .task-duedate {
+	padding-left: 20px;
+	background: transparent url(img/duedate-16.png) no-repeat 0 0; 	
+}
+
+.title-block .task-priority-low {
+	padding-left: 20px;
+	background: transparent url(img/priority-low-16.png) no-repeat 0 0; 	
+}
+.title-block .task-priority-medium {
+	padding-left: 20px;
+	background: transparent url(img/priority-medium-16.png) no-repeat 0 0; 	
+}
+.title-block .task-priority-high {
+	padding-left: 20px;
+	background: transparent url(img/priority-high-16.png) no-repeat 0 0; 	
+}
+
+.title-block .task-create-time {
+	padding-left: 20px;
+	background: transparent url(img/create-time-16.png) no-repeat 0 0; 	
+}
+
+.block-holder {
+	overflow:hidden;
+	margin:0 0 8px;
+	padding-top:10px;
+	border-top:1px solid #dcdcdc;
+}
+
+.block-holder .h3 {
+	margin:0;
+	color:#007dc3;
+	font:16px Arial, Helvetica, sans-serif;
+}
+
+.involve-people .v-gridlayout .v-gridlayout-margin-top {
+	padding-top: 5px;	
+}
+
+/**
+ * Buttons - Add button
+ */
+ .v-button-add,
+.v-disabled.v-button-add,
+.v-button-add:active,
+.v-pressed.v-button-add,
+.v-button-add:focus
+{
+    height: 25px;
+    width:  26px;
+    background: transparent background:url(img/ico-8.gif) no-repeat 0 0;
+    cursor: pointer;
+}
+
+.v-button-add .v-button-wrap,
+.v-button-add.v-disabled .v-button-wrap,
+.v-button-add:active .v-button-wrap,
+.v-button-add.v-pressed .v-button-wrap,
+.v-button-add:focus .v-button-wrap {
+    background: none;
+}
+ 
+/**
+ * Related content - list
+ */
+.v-table-related-content-list,
+.v-table-related-content-list .v-table-body {
+	background: none;
+	border: none;	
+}
+
+.v-table-related-content-list .v-table-body .v-table-row, 
+.v-table-related-content-list .v-table-body .v-table-row-odd, 
+.v-table-related-content-list .v-table-body .v-table-row .v-table-cell-content,
+.v-table-related-content-list .v-table-body .v-table-row-odd .v-table-cell-content{
+	background: none;
+	border: none;	
+}
+ 
+/**
+ * Form
+ */
+.formprops .h4 {
+	color:#3c3c3c;
+	font:bold 12px Arial, Helvetica, sans-serif;
+}
+
+
  /*
  *************
  NEW CSS BELOW THIS LINE
@@ -845,8 +966,7 @@ fieldset{
 }
 /* content */
 #content {
-	width:66%;
-	float:right;
+	padding-left: 15px;
 }
 /* c1 */
 #content .c1 {
@@ -1031,26 +1151,9 @@ fieldset{
 	height:588px;
 	overflow:hidden;
 }
-/* .block-holder  */
-.block-holder {
-	overflow:hidden;
-	width:100%;
-	margin:0 0 8px;
-	padding-top:10px;
-	border-top:1px solid #dcdcdc;
-}
 .block-holder p {margin:0;}
 /* title-block */
-.title-block {
-	background:url(img/ico-6.gif) no-repeat 0 50%;
-	padding-left:51px;
-	border:0;
-}
-.title-block h2 {
-	margin:0 0 7px;
-	color:#007dc3;
-	font:24px/26px Arial, Helvetica, sans-serif;
-}
+
 /* title-block ul */
 .title-block ul {
 	margin:0;
@@ -1073,12 +1176,7 @@ fieldset{
 .title-block ul li.day a {background-position:0 0;}
 .title-block ul li.medium a {background-position:0 -18px;}
 .title-block ul li.created a {background-position:0 -39px;}
-.block-holder h3 {
-	margin:0;
-	float:left;
-	color:#007dc3;
-	font:16px Arial, Helvetica, sans-serif;
-}
+
 /* add */
 .block-holder .add {
 	float:right;
@@ -1201,11 +1299,6 @@ fieldset{
 	overflow:hidden;
 	width:100%;
 	padding:5px 0 0;
-}
-.some-form h4 {
-	margin:0 0 15px;
-	color:#3c3c3c;
-	font:bold 12px Arial, Helvetica, sans-serif;
 }
 /* row */
 .some-form .row {

@@ -65,6 +65,7 @@ public class UserDetailsComponent extends HorizontalLayout {
       }
       
       // init UI
+      setSpacing(true);
       addUserPicture();
       addUserDetails();
       
@@ -87,8 +88,8 @@ public class UserDetailsComponent extends HorizontalLayout {
       
       picture.setType(Embedded.TYPE_IMAGE);
       picture.addStyleName(ExplorerLayout.STYLE_TASK_EVENT_PICTURE);
-      picture.setHeight("48px");
-      picture.setWidth("48px");
+      picture.setHeight("32px");
+      picture.setWidth("32px");
       addComponent(picture);
       
       // Add profile popup listener

@@ -28,22 +28,24 @@ import org.activiti.explorer.NotificationManager;
 import org.activiti.explorer.ViewManager;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
+import org.activiti.explorer.ui.custom.DetailPanel;
+import org.activiti.explorer.ui.custom.PrettyTimeLabel;
 import org.activiti.explorer.ui.form.FormPropertiesEventListener;
 import org.activiti.explorer.ui.form.FormPropertiesForm;
 import org.activiti.explorer.ui.form.FormPropertiesForm.FormPropertiesEvent;
 import org.activiti.explorer.ui.task.listener.ClaimTaskClickListener;
 
-import com.ocpsoft.pretty.time.PrettyTime;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 
@@ -52,7 +54,7 @@ import com.vaadin.ui.themes.Reindeer;
  * 
  * @author Joram Barrez
  */
-public class TaskDetailPanel extends HorizontalLayout {
+public class TaskDetailPanel extends DetailPanel {
   
   private static final long serialVersionUID = 1L;
 
@@ -69,7 +71,7 @@ public class TaskDetailPanel extends HorizontalLayout {
   
   // UI
   protected TaskPage parent;
-  protected Panel centralPanel;
+  protected VerticalLayout centralLayout;
   protected FormPropertiesForm taskForm;
   protected TaskInvolvedPeopleComponent involvedPeople;
   protected TaskRelatedContentComponent relatedContent;
@@ -97,16 +99,13 @@ public class TaskDetailPanel extends HorizontalLayout {
     addStyleName(Reindeer.LAYOUT_WHITE);
     
     // Central panel: all task data
-    this.centralPanel = new Panel();
-    centralPanel.addStyleName(Reindeer.PANEL_LIGHT);
-    addComponent(centralPanel);
-    setExpandRatio(centralPanel, 75.0f);
+    this.centralLayout = new VerticalLayout();
+    centralLayout.setMargin(true);
+    setDetailContent(centralLayout);
     
-    initName();
-    initDescription();
+    initHeader();
+    initDescriptionAndClaimButton();
     initProcessLink();
-    initClaimButton();
-    initTimeDetails();
     initPeopleDetails();
     initRelatedContent();
     initTaskForm();
@@ -114,32 +113,89 @@ public class TaskDetailPanel extends HorizontalLayout {
     parent.getTaskEventPanel().setTask(task);
   }
   
-  protected void initName() {
-    Label nameLabel = new Label(task.getName() + " - " + task.getId());
-    nameLabel.addStyleName(Reindeer.LABEL_H1);
-    centralPanel.addComponent(nameLabel);
-  }
-  
-  protected void initDescription() {
-    addEmptySpace(centralPanel);
+  protected void initHeader() {
+    GridLayout taskDetails = new GridLayout(5, 2);
+    taskDetails.setWidth(100, UNITS_PERCENTAGE);
+    taskDetails.addStyleName(ExplorerLayout.STYLE_TITLE_BLOCK);
+    taskDetails.setSpacing(true);
     
-    if (task.getDescription() != null) {
-      Label descriptionLabel = new Label(task.getDescription());
-      descriptionLabel.addStyleName(Reindeer.LABEL_SMALL);
-      centralPanel.addComponent(descriptionLabel);
+    // Add image
+    Embedded image = new Embedded(null, Images.TASK_BIG);
+    taskDetails.addComponent(image, 0, 0, 0, 1);
+    image.setWidth(40, UNITS_PIXELS);
+    
+    // Add task name
+    Label nameLabel = new Label(task.getName());
+    nameLabel.addStyleName(Reindeer.LABEL_H2);
+    taskDetails.addComponent(nameLabel, 1, 0, 4,0);
+
+    // Add due date
+    PrettyTimeLabel dueDateLabel = new PrettyTimeLabel(i18nManager.getMessage(Messages.TASK_DUEDATE_SHORT),
+      task.getDueDate(), i18nManager.getMessage(Messages.TASK_DUEDATE_UNKNOWN));
+    dueDateLabel.addStyleName(ExplorerLayout.STYLE_TASK_HEADER_DUEDATE);
+    taskDetails.addComponent(dueDateLabel, 1, 1);
+    
+    // Add priority
+    Integer lowMedHighPriority = convertPriority(task.getPriority());
+    Label priorityLabel = new Label();
+    switch(lowMedHighPriority) {
+    case 1:
+      priorityLabel.setValue(i18nManager.getMessage(Messages.TASK_PRIORITY_LOW));
+      priorityLabel.addStyleName(ExplorerLayout.STYLE_TASK_HEADER_PRIORITY_LOW);
+      break;
+    case 2:
+      priorityLabel.setValue(i18nManager.getMessage(Messages.TASK_PRIORITY_MEDIUM));
+      priorityLabel.addStyleName(ExplorerLayout.STYLE_TASK_HEADER_PRIORITY_MEDIUM);
+      break;
+    case 3:
+    default:
+      priorityLabel.setValue(i18nManager.getMessage(Messages.TASK_PRIORITY_HIGH));
+      priorityLabel.addStyleName(ExplorerLayout.STYLE_TASK_HEADER_PRIORITY_HIGH);
     }
+    taskDetails.addComponent(priorityLabel, 2, 1);
     
-    addEmptySpace(centralPanel);
+    // Add create date
+    PrettyTimeLabel createLabel = new PrettyTimeLabel(i18nManager.getMessage(Messages.TASK_CREATED_SHORT),
+      task.getCreateTime(), "");
+    createLabel.addStyleName(ExplorerLayout.STYLE_TASK_HEADER_CREATE_TIME);
+    taskDetails.addComponent(createLabel, 3, 1);
+    
+    // Add label to fill excess space
+    Label spacer = new Label();
+    spacer.setContentMode(Label.CONTENT_XHTML);
+    spacer.setValue("&nbsp;");
+    spacer.setSizeUndefined();
+    taskDetails.addComponent(spacer);
+    
+    taskDetails.setColumnExpandRatio(1, 1.0f);
+    taskDetails.setColumnExpandRatio(2, 1.0f);
+    taskDetails.setColumnExpandRatio(3, 1.0f);
+    taskDetails.setColumnExpandRatio(4, 1.0f);
+    centralLayout.addComponent(taskDetails);
   }
   
-  protected void initClaimButton() {
+  protected void initDescriptionAndClaimButton() {
+    addEmptySpace(centralLayout);
+    HorizontalLayout descriptionLayout = new HorizontalLayout();
+    descriptionLayout.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
+    descriptionLayout.setWidth(100, UNITS_PERCENTAGE);
+    descriptionLayout.setSpacing(true);
+    
     if(!isCurrentUserAssignee() && canUserClaimTask()) {
       claimButton = new Button(i18nManager.getMessage(Messages.TASK_CLAIM));
       claimButton.addListener(new ClaimTaskClickListener(task.getId(), taskService));
-      
-      centralPanel.addComponent(claimButton);
-      addEmptySpace(centralPanel);
+      descriptionLayout.addComponent(claimButton);
+      descriptionLayout.setComponentAlignment(claimButton, Alignment.MIDDLE_LEFT);
     }
+    
+    if (task.getDescription() != null) {
+      Label descriptionLabel = new Label(task.getDescription());
+      descriptionLayout.addComponent(descriptionLabel);
+      descriptionLayout.setExpandRatio(descriptionLabel, 1.0f);
+      descriptionLayout.setComponentAlignment(descriptionLabel, Alignment.MIDDLE_LEFT);
+    }
+    
+    centralLayout.addComponent(descriptionLayout);
   }
 
   protected void initProcessLink() {
@@ -159,59 +215,14 @@ public class TaskDetailPanel extends HorizontalLayout {
       showProcessInstanceButton.setSizeUndefined();
       showProcessInstanceButton.addStyleName(Reindeer.BUTTON_LINK);
      
-      centralPanel.addComponent(showProcessInstanceButton);
-      addEmptySpace(centralPanel);
+      centralLayout.addComponent(showProcessInstanceButton);
+      addEmptySpace(centralLayout);
     }
   }
   
-  protected void initTimeDetails() {
-    HorizontalLayout timeDetailsLayout = new HorizontalLayout();
-    timeDetailsLayout.setSpacing(true);
-    timeDetailsLayout.setSizeUndefined();
-    centralPanel.addComponent(timeDetailsLayout);
-
-    Embedded clockImage = new Embedded(null, Images.CLOCK);
-    timeDetailsLayout.addComponent(clockImage);
-
-    // The other time fields are layed out in a 2 column grid
-    GridLayout grid = new GridLayout();
-    grid.addStyleName(ExplorerLayout.STYLE_TASK_DETAILS);
-    grid.setSpacing(true);
-    grid.setColumns(2);
-
-    timeDetailsLayout.addComponent(grid);
-    timeDetailsLayout.setComponentAlignment(grid, Alignment.MIDDLE_LEFT);
-
-    // create time
-    if (task.getCreateTime() != null) {
-      Label createTime = new Label(i18nManager.getMessage(Messages.TASK_CREATED) + " " + new PrettyTime().format(task.getCreateTime()));
-      createTime.addStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
-      createTime.setSizeUndefined();
-      grid.addComponent(createTime);
-      
-      Label realCreateTime = new Label("(" + task.getCreateTime() + ")");
-      realCreateTime.addStyleName(Reindeer.LABEL_SMALL);
-      realCreateTime.setSizeUndefined();
-      grid.addComponent(realCreateTime);
-    }
-
-    // due date
-    if (task.getDueDate() != null) {
-      Label dueDate = new Label(i18nManager.getMessage(Messages.TASK_DUEDATE) + " " + new PrettyTime().format(task.getDueDate())); 
-      dueDate.addStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
-      dueDate.setSizeUndefined();
-      grid.addComponent(dueDate);
-
-      Label realDueDateTime = new Label("(" + task.getDueDate() + ")");
-      realDueDateTime.addStyleName(Reindeer.LABEL_SMALL);
-      realDueDateTime.setSizeUndefined();
-      grid.addComponent(realDueDateTime);
-    }
-  }
-
   protected void initPeopleDetails() {
     involvedPeople = new TaskInvolvedPeopleComponent(task, this);
-    centralPanel.addComponent(involvedPeople);
+    centralLayout.addComponent(involvedPeople);
   }
   
   protected void initTaskForm() {
@@ -245,10 +256,16 @@ public class TaskDetailPanel extends HorizontalLayout {
       taskForm.setEnabled(isCurrentUserAssignee());
       
       // Add component to page
-      centralPanel.addComponent(taskForm);
+      centralLayout.addComponent(taskForm);
     } else {
       // Just add a button to complete the task
       // TODO: perhaps move to a better place
+      
+      CssLayout buttonLayout = new CssLayout();
+      buttonLayout.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
+      buttonLayout.setWidth(100, UNITS_PERCENTAGE);
+      centralLayout.addComponent(buttonLayout);
+      
       completeButton = new Button(i18nManager.getMessage(Messages.TASK_COMPLETE));
       
       completeButton.addListener(new ClickListener() {
@@ -262,17 +279,15 @@ public class TaskDetailPanel extends HorizontalLayout {
         }
       });
       
-      addEmptySpace(centralPanel);
-      
       completeButton.setEnabled(isCurrentUserAssignee());
-      centralPanel.addComponent(completeButton);
+      buttonLayout.addComponent(completeButton);
     }
   }
   
   protected void initRelatedContent() {
-    addEmptySpace(centralPanel);
+    addEmptySpace(centralLayout);
     relatedContent = new TaskRelatedContentComponent(task, this);
-    centralPanel.addComponent(relatedContent);
+    centralLayout.addComponent(relatedContent);
   }
   
   protected boolean isCurrentUserAssignee() {
@@ -297,6 +312,15 @@ public class TaskDetailPanel extends HorizontalLayout {
     return repositoryService.createProcessDefinitionQuery()
       .processDefinitionId(processDefinitionId)
       .singleResult();
+  }
+  
+  /**
+   * Returns a numeric priority - low (1), medium (2) or high (3) - 
+   * based on the given numeric priority value.
+   */
+  protected Integer convertPriority(int priority) {
+    // TODO: define thresholds
+    return 1;
   }
   
   public void notifyPeopleInvolvedChanged() {

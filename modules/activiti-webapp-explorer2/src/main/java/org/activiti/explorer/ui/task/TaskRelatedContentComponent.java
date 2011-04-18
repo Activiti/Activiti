@@ -39,6 +39,7 @@ import com.vaadin.data.Item;
 import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.event.MouseEvents.ClickListener;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.Embedded;
@@ -72,6 +73,8 @@ public class TaskRelatedContentComponent extends VerticalLayout implements Relat
     this.task = task;
     this.taskDetailPanel = taskDetailPanel;
     
+    addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
+    
     initActions();
     initAttachmentTable();
   }
@@ -88,20 +91,19 @@ public class TaskRelatedContentComponent extends VerticalLayout implements Relat
 
     // Title
     Label processTitle = new Label(ExplorerApp.get().getI18nManager().getMessage(Messages.TASK_RELATED_CONTENT));
-    processTitle.addStyleName(ExplorerLayout.STYLE_RELATED_CONTENT_DETAILS_HEADER);
+    processTitle.addStyleName(ExplorerLayout.STYLE_H3);
     processTitle.setSizeFull();
     actionsContainer.addComponent(processTitle);
     actionsContainer.setComponentAlignment(processTitle, Alignment.MIDDLE_LEFT);
     actionsContainer.setExpandRatio(processTitle, 1.0f);
 
     // Add content button
-    Embedded addRelatedContentButton = new Embedded(null, Images.ADD);
-    addRelatedContentButton.addStyleName(ExplorerLayout.STYLE_IMAGE_ACTION);
-    addRelatedContentButton.addListener(new ClickListener() {
-      
+    Button addRelatedContentButton = new Button();
+    addRelatedContentButton.addStyleName(ExplorerLayout.STYLE_ADD);
+    addRelatedContentButton.addListener(new com.vaadin.ui.Button.ClickListener() {
       private static final long serialVersionUID = 1L;
 
-      public void click(ClickEvent event) {
+      public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
         CreateAttachmentPopupWindow popup = new CreateAttachmentPopupWindow();
         popup.setTaskId(task.getId());
         
@@ -135,6 +137,7 @@ public class TaskRelatedContentComponent extends VerticalLayout implements Relat
   protected void initAttachmentTable() {
     table = new Table();
     table.setWidth(100, UNITS_PERCENTAGE);
+    table.addStyleName(ExplorerLayout.STYLE_RELATED_CONTENT_LIST);
     
     // Invisible by default, only shown when attachments are present
     table.setVisible(false);
@@ -183,6 +186,7 @@ public class TaskRelatedContentComponent extends VerticalLayout implements Relat
     if(table.getItemIds().size() > 0) {
       table.setVisible(true);
     }
+    table.setPageLength(table.size());
   }
   
   protected void addEmptySpace(ComponentContainer container) {

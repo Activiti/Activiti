@@ -25,7 +25,7 @@ public interface ExplorerLayout {
   // Custom layouts (found in /VAADIN/themes/${THEME}/layouyts
   static final String CUSTOM_LAYOUT_DEFAULT = "activiti";
   static final String CUSTOM_LAYOUT_LOGIN = "login";
-  static final String CUSTOM_LAYOUT_MAIN_NAVIGATION = "main-navigation";
+  static final String CUSTOM_LAYOUT_CONTENT_DETAIL = "detail";
   
   // Locations defined in the layout .html files
   static final String LOCATION_LOGIN = "login-content";
@@ -56,16 +56,22 @@ public interface ExplorerLayout {
   static final String STYLE_CLICKABLE = "clickable";
   static final String STYLE_ACTIVE = "active";
   static final String STYLE_TOOLBAR = "toolbar";
+  static final String STYLE_TOOLBAR_BUTTON = "toolbar-button";
   static final String STYLE_TOOLBAR_COUNT = "toolbar-count";
   static final String STYLE_TOOLBAR_POPUP = "toolbar-popup";
   static final String STYLE_SCROLLABLE = "scrollable";
+  static final String STYLE_TITLE_BLOCK = "title-block";
+  static final String STYLE_DETAIL_BLOCK = "block-holder";
+  static final String STYLE_H3 = "h3";
+  static final String STYLE_H4 = "h4";
+  static final String STYLE_ADD = "add";
+  
   
   static final String STYLE_APPLICATION_LOGO = "logo";
   static final String STYLE_MAIN_MENU_BUTTON = "main-menu-button";
   
   //Forms
-  static final String STYLE_FORMPROPERTY_READONLY = "formprop-readonly";
-  static final String STYLE_FORMPROPERTY_LABEL = "formprop-label";
+  static final String STYLE_FORM_PROPERTIES = "formprops";
   
   // Login page
   static final String STYLE_LOGIN_PAGE = "login-general";
@@ -93,6 +99,12 @@ public interface ExplorerLayout {
   static final String STYLE_TASK_EVENT_TIME = "task-event-time";
   static final String STYLE_TASK_EVENT_PICTURE = "task-event-picture";
   static final String STYLE_TASK_EVENT_GRID = "event-grid";
+  static final String STYLE_TASK_HEADER_DUEDATE = "task-duedate";
+  static final String STYLE_TASK_HEADER_PRIORITY_LOW = "task-priority-low";
+  static final String STYLE_TASK_HEADER_PRIORITY_MEDIUM = "task-priority-medium";
+  static final String STYLE_TASK_HEADER_PRIORITY_HIGH = "task-priority-high";
+  static final String STYLE_TASK_HEADER_CREATE_TIME = "task-create-time";
+  static final String STYLE_INVOLVE_PEOPLE = "involve-people";
 
   // Flow pages
   static final String STYLE_PROCESS_DEFINITION_LIST = "proc-def-list";
@@ -116,7 +128,7 @@ public interface ExplorerLayout {
   static final String STYLE_JOB_EXCEPTION_TRACE = "job-exception-trace";
 
   // Related content
-  static final String STYLE_RELATED_CONTENT_DETAILS_HEADER = "related-content-detail-header";
+  static final String STYLE_RELATED_CONTENT_LIST = "related-content-list";
   static final String STYLE_RELATED_CONTENT_CREATE_LIST = "related-content-create-list";
   static final String STYLE_RELATED_CONTENT_CREATE_DETAIL = "related-content-create-detail";
   static final String STYLE_RELATED_CONTENT_CREATE_LIST_LAST_COLUMN = "related-last-column";

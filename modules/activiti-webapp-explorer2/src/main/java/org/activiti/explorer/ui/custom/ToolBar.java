@@ -13,13 +13,16 @@
 
 package org.activiti.explorer.ui.custom;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.custom.ToolbarEntry.ToolbarCommand;
 
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 
@@ -34,14 +37,17 @@ public class ToolBar extends HorizontalLayout {
   
   protected Map<String, ToolbarEntry> entryMap;
   protected ToolbarEntry currentEntry;
+  protected List<Button> toolButtons;
 
   public ToolBar() {
     entryMap = new HashMap<String, ToolbarEntry>();
+    toolButtons = new ArrayList<Button>();
     
     setWidth("100%");
     setHeight(36, UNITS_PIXELS);
     addStyleName(ExplorerLayout.STYLE_TOOLBAR);
     setSpacing(true);
+    setMargin(false, true, false, true);
     
     // Add label to fill excess space
     Label spacer = new Label();
@@ -83,6 +89,19 @@ public class ToolBar extends HorizontalLayout {
     addEntryComponent(entry);
     return entry;
   }
+  
+  /**
+   * Add a button to the toolbar. The buttons are rendered on the right of the 
+   * toolbar.
+   */
+  public void addButton(Button button) {
+    button.addStyleName(ExplorerLayout.STYLE_TOOLBAR_BUTTON);
+    
+    toolButtons.add(button);
+    // Button is added after the spacer
+    addComponent(button);
+    setComponentAlignment(button, Alignment.MIDDLE_RIGHT);
+  }
  
   /**
    * Update the count field on the entry with the given key.
@@ -118,7 +137,7 @@ public class ToolBar extends HorizontalLayout {
   }
   
   protected void addEntryComponent(ToolbarEntry entry) {
-    addComponent(entry, getComponentCount() - 1);
+    addComponent(entry, getComponentCount() - 1 - toolButtons.size());
     setComponentAlignment(entry, Alignment.MIDDLE_LEFT);
   }
   
