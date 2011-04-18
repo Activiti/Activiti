@@ -290,7 +290,7 @@ public class GroupDetailPanel extends Panel implements MemberShipChangeListener 
       public void click(com.vaadin.event.MouseEvents.ClickEvent event) {
         final SelectUsersPopupWindow selectUsersPopup =  new SelectUsersPopupWindow(
                 i18nManager.getMessage(Messages.GROUP_SELECT_MEMBERS, group.getId()), 
-                true, getCurrentMembers());
+                true, false, getCurrentMembers());
         ExplorerApp.get().getViewManager().showPopupWindow(selectUsersPopup);
         
         // Listen to submit events (that contain the selected users)

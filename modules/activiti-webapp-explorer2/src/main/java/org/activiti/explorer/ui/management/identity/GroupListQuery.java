@@ -42,8 +42,8 @@ public class GroupListQuery extends AbstractLazyLoadingQuery {
 
   public List<Item> loadItems(int start, int count) {
     List<Group> groups = identityService.createGroupQuery()
-      .orderByGroupName().asc()
       .orderByGroupId().asc()
+      .orderByGroupName().asc()
       .listPage(start, count);
     
     List<Item> groupListItems = new ArrayList<Item>();

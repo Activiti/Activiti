@@ -52,7 +52,8 @@ import com.vaadin.ui.themes.Reindeer;
  * - non-multiselect: one table where only one user can be chosen from.
  * 
  * {@link SubmitEventListener} can be attached to listen to completion of the 
- * selection. 
+ * selection. The selected user(s) can be retrieved using {@link #getSelectedUserId()}
+ * ,{@link #getSelectedUserIds()} and {@link #getSelectedUserRole(String)}.  
  * 
  * @author Joram Barrez
  */
@@ -61,7 +62,8 @@ public class SelectUsersPopupWindow extends Window {
   private static final long serialVersionUID = 1L;
   
   protected String title;
-  protected boolean multiSelect;
+  protected boolean multiSelect = true;
+  protected boolean showRoles = true;
   protected Collection<String> ignoredUserIds;
   
   protected UserCache userCache;
@@ -80,13 +82,23 @@ public class SelectUsersPopupWindow extends Window {
     this.multiSelect = multiSelect;
     this.userCache = ExplorerApp.get().getUserCache();
     this.i18nManager = ExplorerApp.get().getI18nManager();
-    
-    initUi();
   }
   
   public SelectUsersPopupWindow(String title, boolean multiSelect, Collection<String> ignoredUserIds) {
     this(title, multiSelect);
     this.ignoredUserIds = ignoredUserIds;
+  }
+  
+  public SelectUsersPopupWindow(String title, boolean multiSelect, boolean showRoles, Collection<String> ignoredUserIds) {
+    this(title, multiSelect);
+    this.showRoles = showRoles;
+    this.ignoredUserIds = ignoredUserIds;
+  }
+  
+  @Override
+  public void attach() {
+    super.attach();
+    initUi();
   }
   
   protected void initUi() {
@@ -98,8 +110,10 @@ public class SelectUsersPopupWindow extends Window {
     windowLayout = (VerticalLayout) getContent();
     windowLayout.setSpacing(true);
     
-    if (multiSelect) {
+    if (multiSelect && showRoles) {
       setWidth(820, UNITS_PIXELS);
+    } else if (multiSelect && !showRoles) { 
+      setWidth(685, UNITS_PIXELS);
     } else {
       setWidth(340, UNITS_PIXELS);
     }
@@ -131,8 +145,8 @@ public class SelectUsersPopupWindow extends Window {
       matchingUsersTable.removeAllItems();
       List<User> results = userCache.findMatchingUsers(searchText);
       for (User user : results) {
-        if (ignoredUserIds != null && !ignoredUserIds.contains(user.getId())) {
-          if (!multiSelect || !selectedUsersTable.containsId(user.getId())) {
+        if (!multiSelect || !selectedUsersTable.containsId(user.getId())) {
+          if (ignoredUserIds == null || !ignoredUserIds.contains(user.getId())) {
             Item item = matchingUsersTable.addItem(user.getId());
             item.getItemProperty("userName").setValue(user.getFirstName() + " " + user.getLastName());
           }
@@ -214,7 +228,9 @@ public class SelectUsersPopupWindow extends Window {
     selectedUsersTable.addContainerProperty("userName", String.class, null);
     
     // Role column
-    selectedUsersTable.addContainerProperty("role", ComboBox.class, null);
+    if (showRoles) {
+      selectedUsersTable.addContainerProperty("role", ComboBox.class, null);
+    }
     
     // Delete icon column
     selectedUsersTable.addGeneratedColumn("delete", new ThemeImageColumnGenerator(Images.DELETE, 
@@ -238,7 +254,11 @@ public class SelectUsersPopupWindow extends Window {
     }));
     selectedUsersTable.setColumnWidth("icon", 16);
 
-    selectedUsersTable.setWidth(420, UNITS_PIXELS);
+    if (showRoles) {
+      selectedUsersTable.setWidth(420, UNITS_PIXELS);
+    } else {
+      selectedUsersTable.setWidth(300, UNITS_PIXELS);
+    }
     selectedUsersTable.setHeight(200, UNITS_PIXELS);
     userSelectionLayout.addComponent(selectedUsersTable);
   }
@@ -255,14 +275,17 @@ public class SelectUsersPopupWindow extends Window {
   protected void selectUser(String userId, String userName) {
     Item item = selectedUsersTable.addItem(userId);
     item.getItemProperty("userName").setValue(userName);
-    ComboBox comboBox = new ComboBox(null, Arrays.asList(
-            i18nManager.getMessage(Messages.TASK_ROLE_CONTRIBUTOR),
-            i18nManager.getMessage(Messages.TASK_ROLE_IMPLEMENTER),
-            i18nManager.getMessage(Messages.TASK_ROLE_MANAGER),
-            i18nManager.getMessage(Messages.TASK_ROLE_SPONSOR)));
-    comboBox.select(i18nManager.getMessage(Messages.TASK_ROLE_CONTRIBUTOR));
-    comboBox.setNewItemsAllowed(true);
-    item.getItemProperty("role").setValue(comboBox);
+    
+    if (showRoles) {
+      ComboBox comboBox = new ComboBox(null, Arrays.asList(
+              i18nManager.getMessage(Messages.TASK_ROLE_CONTRIBUTOR),
+              i18nManager.getMessage(Messages.TASK_ROLE_IMPLEMENTER),
+              i18nManager.getMessage(Messages.TASK_ROLE_MANAGER),
+              i18nManager.getMessage(Messages.TASK_ROLE_SPONSOR)));
+      comboBox.select(i18nManager.getMessage(Messages.TASK_ROLE_CONTRIBUTOR));
+      comboBox.setNewItemsAllowed(true);
+      item.getItemProperty("role").setValue(comboBox);
+    }
   }
   
   protected void initDoneButton() {
