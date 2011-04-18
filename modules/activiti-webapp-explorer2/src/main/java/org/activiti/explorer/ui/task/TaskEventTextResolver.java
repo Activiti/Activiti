@@ -29,6 +29,7 @@ import com.vaadin.ui.Label;
  * that contains all the information in the event.
  * 
  * @author Joram Barrez
+ * @author Tom Baeyens
  */
 public class TaskEventTextResolver {
   
@@ -56,8 +57,7 @@ public class TaskEventTextResolver {
       User involvedUser = userCache.findUser(event.getMessageParts().get(0));
       text = i18nManager.getMessage(Messages.EVENT_DELETE_USER_LINK, 
               eventAuthor, 
-              involvedUser.getFirstName() + " " + involvedUser.getLastName(),
-              event.getMessageParts().get(1)); // second msg part = role
+              involvedUser.getFirstName() + " " + involvedUser.getLastName());
     } else if (Event.ACTION_ADD_GROUP_LINK.equals(event.getAction())) {
       text = i18nManager.getMessage(Messages.EVENT_ADD_GROUP_LINK, 
               eventAuthor, 
@@ -70,6 +70,8 @@ public class TaskEventTextResolver {
                 event.getMessageParts().get(1)); // second msg part = role
     } else if (Event.ACTION_ADD_ATTACHMENT.equals(event.getAction())) {
       text = i18nManager.getMessage(Messages.EVENT_ADD_ATTACHMENT, eventAuthor, event.getMessage());
+    } else if (Event.ACTION_DELETE_ATTACHMENT.equals(event.getAction())) {
+      text = i18nManager.getMessage(Messages.EVENT_DELETE_ATTACHMENT, eventAuthor, event.getMessage());
     } else if (Event.ACTION_ADD_COMMENT.equals(event.getAction())) {
       text = i18nManager.getMessage(Messages.EVENT_COMMENT, eventAuthor, event.getMessage());
     } else { // default: just show the message
