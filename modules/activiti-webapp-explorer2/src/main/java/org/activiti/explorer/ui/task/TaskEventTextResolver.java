@@ -57,7 +57,8 @@ public class TaskEventTextResolver {
       User involvedUser = userCache.findUser(event.getMessageParts().get(0));
       text = i18nManager.getMessage(Messages.EVENT_DELETE_USER_LINK, 
               eventAuthor, 
-              involvedUser.getFirstName() + " " + involvedUser.getLastName());
+              involvedUser.getFirstName() + " " + involvedUser.getLastName(),
+              event.getMessageParts().get(1));
     } else if (Event.ACTION_ADD_GROUP_LINK.equals(event.getAction())) {
       text = i18nManager.getMessage(Messages.EVENT_ADD_GROUP_LINK, 
               eventAuthor, 

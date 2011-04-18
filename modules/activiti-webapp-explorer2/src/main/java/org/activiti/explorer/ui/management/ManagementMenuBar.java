@@ -56,7 +56,6 @@ public class ManagementMenuBar extends ToolBar {
     
     // Deployments
     ToolbarPopupEntry deploymentEntry = addPopupEntry(ENTRY_DEPLOYMENTS, i18nManager.getMessage(Messages.MGMT_MENU_DEPLOYMENTS));
-    
     deploymentEntry.addMenuItem(i18nManager.getMessage(Messages.MGMT_MENU_DEPLOYMENTS_SHOW_ALL), new ToolbarCommand() {
       public void toolBarItemSelected() {
         viewManager.showDeploymentPage();

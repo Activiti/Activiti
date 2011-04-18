@@ -8,6 +8,10 @@
   color: red;
 }
 
+.v-panel-nocaption.v-panel-nocaption-light {  
+  border: none;
+}
+
 /* -----
    Login
    ----- */

@@ -134,6 +134,7 @@ public interface Messages {
   static final String TASK_PEOPLE = "task.people";
   static final String TASK_FORM_HELP = "task.form.help";
   static final String TASK_NEW = "task.new";
+  static final String TASK_SUBTASKS = "task.subtasks";
   
   // Task roles
   static final String TASK_ROLE_CONTRIBUTOR = "task.role.contributor";

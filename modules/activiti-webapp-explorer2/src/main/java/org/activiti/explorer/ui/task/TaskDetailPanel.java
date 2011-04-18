@@ -74,6 +74,7 @@ public class TaskDetailPanel extends DetailPanel {
   protected VerticalLayout centralLayout;
   protected FormPropertiesForm taskForm;
   protected TaskInvolvedPeopleComponent involvedPeople;
+  protected SubTaskComponent subTaskComponent;
   protected TaskRelatedContentComponent relatedContent;
   protected Button completeButton;
   protected Button claimButton;
@@ -107,6 +108,7 @@ public class TaskDetailPanel extends DetailPanel {
     initDescriptionAndClaimButton();
     initProcessLink();
     initPeopleDetails();
+    initSubTasks();
     initRelatedContent();
     initTaskForm();
     
@@ -225,6 +227,17 @@ public class TaskDetailPanel extends DetailPanel {
     centralLayout.addComponent(involvedPeople);
   }
   
+  
+  protected void initSubTasks() {
+    subTaskComponent = new SubTaskComponent(task);
+    centralLayout.addComponent(subTaskComponent);
+  }
+  
+  protected void initRelatedContent() {
+    relatedContent = new TaskRelatedContentComponent(task, this);
+    centralLayout.addComponent(relatedContent);
+  }
+  
   protected void initTaskForm() {
     // Check if task requires a form
     TaskFormData formData = formService.getTaskFormData(task.getId());
@@ -283,13 +296,7 @@ public class TaskDetailPanel extends DetailPanel {
       buttonLayout.addComponent(completeButton);
     }
   }
-  
-  protected void initRelatedContent() {
-    addEmptySpace(centralLayout);
-    relatedContent = new TaskRelatedContentComponent(task, this);
-    centralLayout.addComponent(relatedContent);
-  }
-  
+
   protected boolean isCurrentUserAssignee() {
     String currentUser = ExplorerApp.get().getLoggedInUser().getId();
     return currentUser.equals(task.getAssignee());
