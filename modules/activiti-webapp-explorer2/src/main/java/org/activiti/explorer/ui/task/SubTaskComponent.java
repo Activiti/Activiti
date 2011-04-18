@@ -12,6 +12,8 @@
  */
 package org.activiti.explorer.ui.task;
 
+import java.util.List;
+
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Task;
@@ -19,6 +21,7 @@ import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.ExplorerLayout;
+import org.activiti.explorer.ui.Images;
 
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
@@ -26,7 +29,10 @@ import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
@@ -54,6 +60,7 @@ public class SubTaskComponent extends CustomComponent {
   protected Panel addSubTaskPanel;
   protected Button addSubTaskButton;
   protected TextField newTaskTextField;
+  protected GridLayout subTaskLayout;
 
   public SubTaskComponent(Task parentTask) {
     this.parentTask = parentTask;
@@ -69,6 +76,7 @@ public class SubTaskComponent extends CustomComponent {
     
     initLayout();
     initHeader();
+    initSubTasks();
   }
   
   protected void initLayout() {
@@ -110,16 +118,24 @@ public class SubTaskComponent extends CustomComponent {
     addSubTaskPanel.addActionHandler(new Handler() {
       public void handleAction(Action action, Object sender, Object target) {
         if ("escape".equals(action.getCaption())) {
-          addSubTaskPanel.removeAllComponents();
-          initAddButton();
+          resetAddButton();
         } else if ("enter".equals(action.getCaption())) {
           if (newTaskTextField != null && newTaskTextField.getValue() != null
                   && !"".equals(newTaskTextField.getValue().toString())) {
+            
+            // save task
             Task newTask = taskService.newTask();
+            newTask.setParentTaskId(parentTask.getId());
             newTask.setAssignee(parentTask.getAssignee());
             newTask.setOwner(parentTask.getOwner());
             newTask.setName(newTaskTextField.getValue().toString());
             taskService.saveTask(newTask);
+            
+            // Reset the add button to its original state
+            resetAddButton();
+            
+            // refresh sub tasks section
+            refreshSubTasks();
           }
         }
       }
@@ -150,6 +166,49 @@ public class SubTaskComponent extends CustomComponent {
         addSubTaskPanel.addComponent(newTaskTextField);
       }
     });
+  }
+  
+  protected void resetAddButton() {
+    addSubTaskPanel.removeAllComponents();
+    initAddButton();
+  }
+  
+  protected void initSubTasks() {
+    initSubTasksLayout();
+    populateSubTasks();
+  }
+  
+  protected void initSubTasksLayout() {
+    subTaskLayout = new GridLayout();
+    subTaskLayout.setColumns(3);
+    layout.addComponent(subTaskLayout);
+  }
+  
+  protected void populateSubTasks() {
+    List<Task> subTasks = taskService.getSubTasks(parentTask.getId());
+    for (final Task subTask : subTasks) {
+      // icon
+      Embedded icon = new Embedded(null, Images.TASK);
+      icon.setWidth(22, UNITS_PIXELS);
+      icon.setWidth(22, UNITS_PIXELS);
+      subTaskLayout.addComponent(icon);
+      
+      // Link to subtask
+      Button subTaskLink = new Button(subTask.getName());
+      subTaskLink.addStyleName(Reindeer.BUTTON_LINK);
+      subTaskLink.addListener(new ClickListener() {
+        public void buttonClick(ClickEvent event) {
+          ExplorerApp.get().getViewManager().showTaskInboxPage(subTask.getId());
+        }
+      });
+      subTaskLayout.addComponent(subTaskLink);
+      subTaskLayout.setComponentAlignment(subTaskLink, Alignment.MIDDLE_LEFT);
+    }
+  }
+  
+  protected void refreshSubTasks() {
+    subTaskLayout.removeAllComponents();
+    populateSubTasks();
   }
 
 }
