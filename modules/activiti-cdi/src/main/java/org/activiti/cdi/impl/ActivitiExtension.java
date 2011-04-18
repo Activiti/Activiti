@@ -83,7 +83,8 @@ public class ActivitiExtension implements Extension {
   }
 
   public void beforeShutdown(@Observes BeforeShutdown event) {
-    processEngine.close();
+    ProcessEngineLookup processEngineProvisionStrategy = ProgrammaticBeanLookup.lookup(ProcessEngineLookup.class);
+    processEngineProvisionStrategy.ungetProcessEngine();   
     processEngine = null;
     logger.info("Activiti-cdi extension shutdown.");
   }

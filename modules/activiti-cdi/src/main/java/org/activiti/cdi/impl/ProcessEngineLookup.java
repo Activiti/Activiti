@@ -23,11 +23,16 @@ import org.activiti.engine.ProcessEngine;
 public interface ProcessEngineLookup {
 
   /**
-   * This method will only be called once by the {@link ActivitiExtension}.
+   * This method will only be called once by the {@link ActivitiExtension}, at startup
    * 
    * @return a {@link ProcessEngine}
    * 
    */
   ProcessEngine getProcessEngine();
+
+  /**
+   * * This method will only be called once by the {@link ActivitiExtension}, at shutdown
+   */
+  void ungetProcessEngine();
 
 }

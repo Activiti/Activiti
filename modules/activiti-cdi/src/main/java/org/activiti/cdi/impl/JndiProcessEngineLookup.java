@@ -73,4 +73,10 @@ public class JndiProcessEngineLookup implements ProcessEngineLookup {
   public void setJndiName(String jndiName) {
     this.jndiName = jndiName;
   }
+  
+  @Override
+  public void ungetProcessEngine() {
+    // do nothing    
+  }
+
 }

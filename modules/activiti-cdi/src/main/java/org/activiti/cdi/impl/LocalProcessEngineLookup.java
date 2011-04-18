@@ -14,6 +14,7 @@ package org.activiti.cdi.impl;
 
 import javax.enterprise.inject.Alternative;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
 
@@ -38,7 +39,7 @@ public class LocalProcessEngineLookup implements ProcessEngineLookup {
 
   @Override
   public ProcessEngine getProcessEngine() {
-    return ProcessEngines.getProcessEngine(processEngineName);
+    return ProcessEngines.getProcessEngine(getProcessEngineName());
   }
 
   public String getProcessEngineName() {
@@ -47,5 +48,14 @@ public class LocalProcessEngineLookup implements ProcessEngineLookup {
 
   public void setProcessEngineName(String processEngineName) {
     this.processEngineName = processEngineName;
+  }
+
+  @Override
+  public void ungetProcessEngine() {
+    try {
+      ProcessEngines.getProcessEngine(getProcessEngineName()).close();
+    } catch (Exception e) {
+      throw new ActivitiException("Unable to close the local ProcessEngine", e);
+    }
   }
 }

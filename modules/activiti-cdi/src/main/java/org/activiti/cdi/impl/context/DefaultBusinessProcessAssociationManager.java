@@ -109,7 +109,7 @@ public class DefaultBusinessProcessAssociationManager implements BusinessProcess
   public void associateProcessInstance(String processInstanceId) {
     ScopedAssociation scopedAssociation = getScopedAssociation();
     if (log.isLoggable(Level.FINE)) {
-      log.fine("Assossating ProcessInstance[" + processInstanceId + "] (@" 
+      log.fine("Associating ProcessInstance[" + processInstanceId + "] (@" 
                 + scopedAssociation.getClass().getAnnotations()[0].annotationType().getSimpleName() + ")");
     }
     scopedAssociation.setProcessInstanceId(processInstanceId);
@@ -135,7 +135,7 @@ public class DefaultBusinessProcessAssociationManager implements BusinessProcess
   public void associateTask(String taskId) {
     ScopedAssociation scopedAssociation = getScopedAssociation();
     if (log.isLoggable(Level.FINE)) {
-      log.fine("Assossating Task[" + taskId + "] (@" 
+      log.fine("Associating Task[" + taskId + "] (@" 
                 + scopedAssociation.getClass().getAnnotations()[0].annotationType().getSimpleName() + ")");
     }
     scopedAssociation.setTaskId(taskId);
