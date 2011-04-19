@@ -77,7 +77,7 @@ public class MainWindow extends Window {
   // View handling
   
   public void switchView(Component component) {
-    mainLayout.addComponent(component, ExplorerLayout.LOCATION_CONTENT);
+    mainLayout.setMainContent(component);
   }
   
   public void setMainNavigation(String navigation) {
@@ -89,7 +89,7 @@ public class MainWindow extends Window {
   protected void initHiddenComponents() {
     // Add the URI Fragent utility
     uriFragmentUtility = new UriFragmentUtility();
-    mainLayout.addComponent(uriFragmentUtility, ExplorerLayout.LOCATION_HIDDEN);
+    mainLayout.addComponent(uriFragmentUtility);
     
     // Add listener to control page flow based on URI
     uriFragmentUtility.addListener(navigationFragmentChangeListener);

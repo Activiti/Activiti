@@ -77,6 +77,8 @@ public class MainMenuBar extends HorizontalLayout {
     setHeight(54, UNITS_PIXELS);
     setWidth(100, UNITS_PERCENTAGE);
     
+    setMargin(false, true, false, false);
+    
     initTitle();
     initButtons();
     initProfileButton();

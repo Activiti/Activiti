@@ -22,10 +22,8 @@ public interface ExplorerLayout {
   // Application theme
   static final String THEME = "activiti";
   
-  // Custom layouts (found in /VAADIN/themes/${THEME}/layouyts
-  static final String CUSTOM_LAYOUT_DEFAULT = "activiti";
+  // Custom layouts (found in /VAADIN/themes/${THEME}/layouts
   static final String CUSTOM_LAYOUT_LOGIN = "login";
-  static final String CUSTOM_LAYOUT_CONTENT_DETAIL = "detail";
   
   // Locations defined in the layout .html files
   static final String LOCATION_LOGIN = "login-content";
@@ -42,6 +40,12 @@ public interface ExplorerLayout {
   // Css styles
   // ----------
   
+  // Skeleton
+  static final String STYLE_MAIN_WRAPPER = "main";
+  static final String STYLE_HEADER = "header";
+  static final String STYLE_MAIN_CONTENT = "main-content";
+  static final String STYLE_MAIN_FOOTER = "footer";
+
   // General
   static final String STYLE_SMALL_TEXTFIELD = "small";
   static final String STYLE_SEARCHBOX = "searchbox";
@@ -62,6 +66,7 @@ public interface ExplorerLayout {
   static final String STYLE_SCROLLABLE = "scrollable";
   static final String STYLE_TITLE_BLOCK = "title-block";
   static final String STYLE_DETAIL_BLOCK = "block-holder";
+  static final String STYLE_DETAIL_PANEL = "detail-panel";
   static final String STYLE_H3 = "h3";
   static final String STYLE_H4 = "h4";
   static final String STYLE_ADD = "add";

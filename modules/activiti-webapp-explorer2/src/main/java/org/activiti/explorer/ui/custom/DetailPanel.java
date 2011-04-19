@@ -16,7 +16,11 @@ package org.activiti.explorer.ui.custom;
 import org.activiti.explorer.ui.ExplorerLayout;
 
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomLayout;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.Reindeer;
 
 
 /**
@@ -24,20 +28,33 @@ import com.vaadin.ui.CustomLayout;
  * 
  * @author Frederik Heremans
  */
-public class DetailPanel extends CustomLayout {
+public class DetailPanel extends VerticalLayout {
 
   private static final long serialVersionUID = 1L;
   
+  protected Panel mainPanel;
+  
   public DetailPanel() {
-    super(ExplorerLayout.CUSTOM_LAYOUT_CONTENT_DETAIL);
     setSizeFull();
+    addStyleName(ExplorerLayout.STYLE_DETAIL_PANEL);
+    setMargin(true);
+    
+    CssLayout cssLayout = new CssLayout();
+    cssLayout.addStyleName(ExplorerLayout.STYLE_DETAIL_PANEL);
+    cssLayout.setSizeFull();
+    addComponent(cssLayout);
+    
+    mainPanel = new Panel();
+    mainPanel.addStyleName(Reindeer.PANEL_LIGHT);
+    mainPanel.setSizeFull();
+    cssLayout.addComponent(mainPanel);
   }
   
   /**
    * Set the actual content of the panel.
    */
-  public void setDetailContent(Component component) {
-    addComponent(component, "content");
+  public void setDetailContent(ComponentContainer component) {
+    mainPanel.setContent(component);
   }
   
   /**
@@ -46,7 +63,8 @@ public class DetailPanel extends CustomLayout {
    * stays visible all the time.
    */
   public void setFixedButtons(Component component) {
-    addComponent(component, "buttons-bottom");
+    // TODO
+    //addComponent(component);
   }
   
 }

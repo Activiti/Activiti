@@ -15,15 +15,20 @@ package org.activiti.explorer.ui;
 
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
+import org.activiti.explorer.Messages;
 import org.activiti.explorer.ViewManager;
 
-import com.vaadin.ui.CustomLayout;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
 
 
 /**
  * @author Joram Barrez
+ * @author Frederik Heremans
  */
-public class MainLayout extends CustomLayout {
+public class MainLayout extends VerticalLayout {
   
   private static final long serialVersionUID = 1L;
   
@@ -31,22 +36,67 @@ public class MainLayout extends CustomLayout {
   protected I18nManager i18nManager;
   protected MainMenuBar mainMenuBar;
   
+  protected CssLayout header;
+  protected CssLayout main;
+  protected CssLayout footer;
+  
   public MainLayout() {
-    super(ExplorerLayout.CUSTOM_LAYOUT_DEFAULT);
     this.viewManager = ExplorerApp.get().getViewManager();
     this.i18nManager = ExplorerApp.get().getI18nManager();
     
-    // Components visible on every page
     setSizeFull();
+    addStyleName(ExplorerLayout.STYLE_MAIN_WRAPPER);
+    
+    initHeader();
     initMainMenuBar();
+    initMain();
+    initFooter();
   }
   
-  protected void initMainMenuBar() {
-    this.mainMenuBar = new MainMenuBar();
-    addComponent(mainMenuBar, ExplorerLayout.LOCATION_MAIN_MENU);
+  public void setMainContent(Component mainContent) {
+    main.removeAllComponents();
+    main.addComponent(mainContent);
+  }
+  
+  public void setFooter(Component footerContent) {
+    footer.removeAllComponents();
+    footer.addComponent(footerContent);
   }
   
   public void setMainNavigation(String navigation) {
     mainMenuBar.setMainNavigation(navigation);
+  }
+  
+  protected void initHeader() {
+    header = new CssLayout();
+    header.addStyleName(ExplorerLayout.STYLE_HEADER);
+    header.setWidth(100, UNITS_PERCENTAGE);
+    addComponent(header);
+  }
+
+  protected void initMain() {
+    main = new CssLayout();
+    main.setSizeFull();
+    main.addStyleName(ExplorerLayout.STYLE_MAIN_CONTENT);
+    addComponent(main);
+    setExpandRatio(main, 1.0f);
+  }
+
+  protected void initFooter() {
+    footer = new CssLayout();
+    footer.setWidth(100, UNITS_PERCENTAGE);
+    footer.addStyleName(ExplorerLayout.STYLE_MAIN_FOOTER);
+    addComponent(footer);
+    
+    Label footerLabel = new Label();
+    footerLabel.setContentMode(Label.CONTENT_XHTML);
+    footerLabel.setValue(i18nManager.getMessage(Messages.FOOTER_MESSAGE));
+    footerLabel.setWidth(100, UNITS_PERCENTAGE);
+    footer.addComponent(footerLabel);
+  }
+
+  protected void initMainMenuBar() {
+    this.mainMenuBar = new MainMenuBar();
+    header.addComponent(mainMenuBar);
   }
 }

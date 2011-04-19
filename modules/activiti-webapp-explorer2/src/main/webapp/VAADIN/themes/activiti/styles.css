@@ -96,14 +96,6 @@ input.login-field {
   background-color: #86e379;
 }
 
-/* ---------- 
-   Main layout
-   ----------- */
-
-.footer {
-	margin-bottom: 25px;
-	padding-bottom: 25px;
-}
 
 .v-button-user .v-button-caption{
   color: white;
@@ -326,7 +318,6 @@ input.login-field {
 
 .v-table-related-content-create-list .v-table-row,
 .v-table-related-content-create-list .v-table-row-odd {
-	height: 50px;
 	background: none;
 }
 
@@ -357,18 +348,61 @@ input.login-field {
 OLD CSS ABOVE THIS LINE
  *******************************
  */
- 
+
+body{
+	margin:0;
+	font:12px/14px Arial, Helvetica, sans-serif;
+	color:#3c3c3c;
+	position:relative;
+	min-width:980px;
+	background:#f9f9f9;
+	max-width:1920px;
+}
+
+/*
+ * Main content
+ */
+.main {
+	background-color: #fff;	
+}
+
+.main-content {
+	background-color: #fff;	
+}
+
+/*
+ * Footer
+ */
+.footer {
+	background:#f9f9f9;
+	border-top:1px solid #ababab;
+	font:bold 11px Arial, Helvetica, sans-serif;
+	color:#666;
+	padding:10px 0;
+}
+
+.footer .v-label {
+	text-align: center;	
+}
 /*
  * Header - main menu
  */
-#header .holder-nav .v-button .v-button-wrap {
+.header {
+	padding:0 12px 0 10px;
+	height:1%;
+	position:relative;
+	z-index:10;
+	background:#007dc3 url(img/bg-header.gif) repeat-x;
+}
+
+.header .v-button .v-button-wrap {
 	display: block;
 	height: 100%;
 	width: 100%;	
 	background:url(img/separator-1.gif) no-repeat 100% 50%;	
 }
 
-#header .holder-nav .v-button:hover, #header .holder-nav .v-button.active {
+.header .v-button:hover, .header .v-button.active {
 	background:url(img/bg-nav-hover.gif) no-repeat 50% 0;
 	text-decoration:none;
 }
@@ -577,7 +611,8 @@ OLD CSS ABOVE THIS LINE
  */
 div.searchbox {
 	border-right: 1px solid #c5c5c5;
-	margin-left: -1px;	
+	margin-left: -1px;
+	background: none;	
 }
 
 .v-textfield.v-textfield-searchbox.searchbox, .v-textfield-focus.v-textfield-searchbox.searchbox  {
@@ -846,7 +881,21 @@ div.searchbox {
 .v-table-related-content-list .v-table-body .v-table-row .v-table-cell-content,
 .v-table-related-content-list .v-table-body .v-table-row-odd .v-table-cell-content{
 	background: none;
-	border: none;	
+	border: none;
+	height: 28px;
+}
+
+.v-table-related-content-list .v-button-link .v-button-caption {
+	color: #464646;
+	text-decoration: none;
+}
+
+.v-table-related-content-list .v-button-link .v-button-caption:focus,
+.v-table-related-content-list .v-button-link .v-button-caption:hover
+.v-table-related-content-list .v-button-link .v-button-caption:active
+{
+	color: #464646;
+	text-decoration: underline;
 }
  
 /**
@@ -857,24 +906,26 @@ div.searchbox {
 	font:bold 12px Arial, Helvetica, sans-serif;
 }
 
+/**
+ * Detail panel
+ */
+.v-csslayout-detail-panel >.v-csslayout-margin {
+	background:#f2f2f2 url(img/bg-c.gif) repeat-x;
+	padding-top: 1px;
+	padding-left: 1px;
+	border: 1px solid #cecece;
+	-moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    -khtml-border-radius: 6px;
+    border-radius: 6px;
+}
 
+ 
  /*
  *************
  NEW CSS BELOW THIS LINE
  */
- html {
-	height:100%;
-	background:#f9f9f9;
-}
-body{
-	margin:0;
-	font:12px/14px Arial, Helvetica, sans-serif;
-	color:#3c3c3c;
-	position:relative;
-	min-width:980px;
-	background:#f9f9f9;
-	max-width:1920px;
-}
+
 a{
 	text-decoration:none;
 	color:#007dc3;
@@ -896,25 +947,6 @@ fieldset{
 	margin:0;
 	padding:0;
 	border-style:none;
-}
-/* wrapper */
-#wrapper {
-	overflow:hidden;
-	width:100%;
-	background:#fff;
-}
-/* header */
-#header {
-	padding:0 12px 0 10px;
-	height:1%;
-	position:relative;
-	z-index:10;
-	background:#007dc3 url(img/bg-header.gif) repeat-x;
-}
-#header:after {
-	clear:both;
-	display:block;
-	content:"";
 }
 /* logo */
 .logo {
@@ -1362,24 +1394,7 @@ a.button span {
 	height:19px;
 }
 /* footer */
-#footer {
-	overflow:hidden;
-	background:#f9f9f9;
-	border-top:1px solid #ababab;
-	text-align:center;
-	font:bold 11px Arial, Helvetica, sans-serif;
-	color:#666;
-	padding:10px 0;
-	position:relative;
-	z-index:1;
-}
-#footer p {margin:0;}
-.box {
-	overflow:hidden;
-	width:100%;
-	margin:0 0 11px;
-	background:#f2f2f2 url(img/bg-c.gif) repeat-x;
-}
+
 .box .t {background:url(img/bg-t.gif) repeat-x;}
 .box .b {background:url(img/bg-b.gif) repeat-x 0 100%;}
 .box .tl {background:url(img/bg-tl.gif) no-repeat;}

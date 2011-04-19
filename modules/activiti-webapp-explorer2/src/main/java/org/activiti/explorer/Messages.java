@@ -37,6 +37,10 @@ public interface Messages {
   // Header
   static final String HEADER_SEARCHBOX = "header.searchbox";
   static final String HEADER_LOGOUT = "header.logout";
+  
+  // Footer
+  static final String FOOTER_MESSAGE = "footer.message";
+  
 
   // Main menu
   static final String MAIN_MENU_TASKS = "main.menu.tasks";
