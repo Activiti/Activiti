@@ -31,6 +31,7 @@ import org.activiti.engine.impl.bpmn.behavior.ServiceTaskJavaDelegateActivityBeh
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.util.ReflectUtil;
 
@@ -101,6 +102,19 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
       activityBehaviorInstance = getActivityBehaviorInstance(execution);
     }
     activityBehaviorInstance.execute(execution);
+  }
+  
+  // Signallable activity behavior
+  public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+    if (activityBehaviorInstance == null) {
+      activityBehaviorInstance = getActivityBehaviorInstance(execution);
+    }
+    
+    if (activityBehaviorInstance instanceof SignallableActivityBehavior) {
+      ((SignallableActivityBehavior) activityBehaviorInstance).signal(execution, signalName, signalData);
+    } else {
+      throw new ActivitiException("signal() can only be called on a " + SignallableActivityBehavior.class.getName() + " instance");
+    }
   }
 
   protected ActivityBehavior getActivityBehaviorInstance(ActivityExecution execution) {
