@@ -18,7 +18,7 @@ import org.activiti.engine.task.TaskQuery;
 /**
  * @author Joram Barrez
  */
-public class TaskInboxListQuery extends AbstractTaskListQuery {
+public class InboxListQuery extends AbstractTaskListQuery {
   
   @Override
   protected TaskQuery getQuery() {

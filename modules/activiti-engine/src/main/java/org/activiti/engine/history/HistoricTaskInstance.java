@@ -47,6 +47,9 @@ public interface HistoricTaskInstance {
 
   /** The reason why this task was deleted {'completed' | 'deleted' | any other user defined string }. */
   String getDeleteReason();
+  
+  /** Task owner */
+  String getOwner();
 
   /** The latest assignee given to this task. */
   String getAssignee();
@@ -69,6 +72,4 @@ public interface HistoricTaskInstance {
   /** Task due date **/
   Date getDueDate();
 
-  /** Task owner */
-  String getOwner();
 }

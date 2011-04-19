@@ -39,6 +39,8 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   protected String descriptionLike;
   protected Integer priority;
   protected String assignee;
+  protected String involvedUser;
+  protected String owner;
   protected boolean unassigned = false;
   protected String candidateUser;
   protected String candidateGroup;
@@ -121,6 +123,14 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     return this;
   }
   
+  public TaskQueryImpl taskOwner(String owner) {
+    if (owner == null) {
+      throw new ActivitiException("Owner is null");
+    }
+    this.owner = owner;
+    return this;
+  }
+  
   public TaskQuery taskUnnassigned() {
     this.unassigned = true;
     return this;
@@ -134,6 +144,14 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
       throw new ActivitiException("Invalid query usage: cannot set both candidateUser and candidateGroup");
     }
     this.candidateUser = candidateUser;
+    return this;
+  }
+  
+  public TaskQueryImpl taskInvolvedUser(String involvedUser) {
+    if (involvedUser == null) {
+      throw new ActivitiException("Involved user is null");
+    }
+    this.involvedUser = involvedUser;
     return this;
   }
   

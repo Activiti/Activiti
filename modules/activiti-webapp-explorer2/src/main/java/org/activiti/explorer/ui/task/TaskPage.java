@@ -42,9 +42,9 @@ import com.vaadin.ui.Table;
 public abstract class TaskPage extends AbstractPage {
   
   private static final long serialVersionUID = 1L;
-  
+
+  protected String taskId;
   protected TaskService taskService;
-  
   protected LazyLoadingContainer taskListContainer;
   protected LazyLoadingQuery lazyLoadingQuery;
   protected TaskEventsPanel taskEventPanel;
@@ -52,6 +52,22 @@ public abstract class TaskPage extends AbstractPage {
   
   public TaskPage() {
     taskService =  ProcessEngines.getDefaultProcessEngine().getTaskService();
+  }
+  
+  public TaskPage(String taskId) {
+    this();
+    this.taskId = taskId;
+  }
+  
+  @Override
+  protected void initUi() {
+    super.initUi();
+    if (taskId == null) {
+      selectListElement(0);
+    } else {
+      int index = taskListContainer.getIndexForObjectId(taskId);
+      selectListElement(index);
+    }
   }
   
   @Override

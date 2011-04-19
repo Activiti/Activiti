@@ -202,7 +202,7 @@ public class SubTaskComponent extends CustomComponent {
       subTaskLink.addStyleName(Reindeer.BUTTON_LINK);
       subTaskLink.addListener(new ClickListener() {
         public void buttonClick(ClickEvent event) {
-          ExplorerApp.get().getViewManager().showTaskInboxPage(subTask.getId());
+          ExplorerApp.get().getViewManager().showInboxPage(subTask.getId());
         }
       });
       subTaskLayout.addComponent(subTaskLink);

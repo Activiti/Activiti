@@ -98,8 +98,10 @@ public interface Messages {
   static final String ALFRESCO_DESCRIPTION = "alfresco.description";
 
   // Task menu
+  static final String TASK_MENU_CASES = "task.menu.cases";
   static final String TASK_MENU_INBOX = "task.menu.inbox";
   static final String TASK_MENU_QUEUED = "task.menu.queued";
+  static final String TASK_MENU_INVOLVED = "task.menu.involved";
   
   // Task details
   static final String TASK_ID = "task.id";

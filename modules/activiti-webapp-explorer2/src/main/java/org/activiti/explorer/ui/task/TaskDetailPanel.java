@@ -226,7 +226,7 @@ public class TaskDetailPanel extends DetailPanel {
       showParentTaskButton.addStyleName(Reindeer.BUTTON_LINK);
       showParentTaskButton.addListener(new ClickListener() {
         public void buttonClick(ClickEvent event) {
-          viewManager.showTaskInboxPage(parentTask.getId());
+          viewManager.showInboxPage(parentTask.getId());
         }
       });
       

@@ -12,6 +12,7 @@
  */
 package org.activiti.explorer;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +26,9 @@ import org.activiti.engine.identity.User;
  * 
  * @author Joram Barrez
  */
-public class LoggedInUser {
+public class LoggedInUser implements Serializable {
+  
+  private static final long serialVersionUID = 1L;
   
   protected User user;
   protected String password;

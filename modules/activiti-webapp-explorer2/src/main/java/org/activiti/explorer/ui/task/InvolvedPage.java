@@ -15,64 +15,55 @@ package org.activiti.explorer.ui.task;
 import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.TaskNavigator;
 import org.activiti.explorer.navigation.UriFragment;
-import org.activiti.explorer.ui.task.data.TaskQueuedListQuery;
+import org.activiti.explorer.ui.custom.ListSearchBox;
+import org.activiti.explorer.ui.task.data.InvolvedListQuery;
 
 import com.vaadin.ui.Component;
 
+
+
+
 /**
- * Page showing all the queued tasks of one person.
+ * The page displaying all tasks for where the logged in user is involved with.
  * 
  * @author Joram Barrez
  */
-public class TaskQueuedPage extends TaskPage {
-
+public class InvolvedPage extends TaskPage {
+  
   private static final long serialVersionUID = 1L;
   
-  protected String groupId;
-  protected String taskId;
-  
-  public TaskQueuedPage(String groupId) {
-    this.groupId = groupId;
+  public InvolvedPage() {
   }
   
-  public TaskQueuedPage(String groupId, String taskId) {
-    this.groupId = groupId;
-    this.taskId = taskId;
+  /**
+   * Constructor called when page is accessed straight through the url, eg. /task/id=123
+   */
+  public InvolvedPage(String taskId) {
+    super(taskId);
   }
   
   @Override
   protected LazyLoadingQuery createLazyLoadingQuery() {
-    return new TaskQueuedListQuery(groupId);
-  }
-  
-  @Override
-  protected void initUi() {
-    super.initUi();
-    
-    if(taskId != null) {
-      selectListElement(taskListContainer.getIndexForObjectId(taskId));
-    } else {
-      selectListElement(0);
-    }
+    return new InvolvedListQuery();
   }
 
   @Override
   protected UriFragment getUriFragment(String taskId) {
     UriFragment taskFragment = new UriFragment(TaskNavigator.TASK_URI_PART);
+
     if(taskId != null) {
       taskFragment.addUriPart(taskId);
     }
-    
-    taskFragment.addParameter(TaskNavigator.PARAMETER_CATEGORY, TaskNavigator.CATEGORY_QUEUED);
-    
-    if(groupId != null) {
-      taskFragment.addParameter(TaskNavigator.PARAMETER_GROUP, groupId);
-    }
+
+    taskFragment.addParameter(TaskNavigator.PARAMETER_CATEGORY, TaskNavigator.CATEGORY_INVOLVED);
     return taskFragment;
   }
   
   @Override
   protected Component getSearchComponent() {
-    return null;
+    ListSearchBox searchBox = new ListSearchBox();
+    return searchBox;
   } 
+
+  
 }

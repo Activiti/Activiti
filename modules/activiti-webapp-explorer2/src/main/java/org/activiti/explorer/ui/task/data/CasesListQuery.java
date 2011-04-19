@@ -12,27 +12,17 @@
  */
 package org.activiti.explorer.ui.task.data;
 
-import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.TaskService;
 import org.activiti.engine.task.TaskQuery;
 
 
 /**
  * @author Joram Barrez
  */
-public class TaskQueuedListQuery extends AbstractTaskListQuery {
-  
-  protected String groupId;
-  protected TaskService taskService;
-  
-  public TaskQueuedListQuery(String groupId) {
-    this.groupId = groupId;
-    this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
-  }
+public class CasesListQuery extends AbstractTaskListQuery {
   
   @Override
   protected TaskQuery getQuery() {
-    return taskService.createTaskQuery().taskCandidateGroup(groupId).orderByTaskId().asc();
+    return taskService.createTaskQuery().taskOwner(userId).orderByTaskId().asc();
   }
-
+  
 }

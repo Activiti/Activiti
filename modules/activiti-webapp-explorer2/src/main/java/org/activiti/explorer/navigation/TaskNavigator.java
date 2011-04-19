@@ -20,12 +20,15 @@ import org.activiti.explorer.Messages;
 
 /**
  * @author Frederik Heremans
+ * @author Joram Barrez
  */
 public class TaskNavigator implements Navigator {
 
   public static final String TASK_URI_PART = "tasks";
+  public static final String CATEGORY_CASES = "cases";
   public static final String CATEGORY_INBOX = "inbox";
   public static final String CATEGORY_QUEUED = "queued";
+  public static final String CATEGORY_INVOLVED = "involved";
   
   public static final String PARAMETER_CATEGORY = "category";
   public static final String PARAMETER_GROUP = "group";
@@ -63,9 +66,9 @@ public class TaskNavigator implements Navigator {
         String description = ExplorerApp.get().getI18nManager().getMessage(Messages.TASK_AUTHORISATION_MEMBERSHIP_ERROR, groupId); 
         ExplorerApp.get().getNotificationManager().showErrorNotification(Messages.TASK_AUTHORISATION_ERROR_TITLE, description);
         
-        ExplorerApp.get().getViewManager().showTaskInboxPage();
+        ExplorerApp.get().getViewManager().showInboxPage();
       }
-      ExplorerApp.get().getViewManager().showTaskQueuedPage(groupId, taskId);
+      ExplorerApp.get().getViewManager().showQueuedPage(groupId, taskId);
     } else {
       // When no group is available, just show the inbox
       showInbox(taskId, uriFragment);
@@ -76,9 +79,9 @@ public class TaskNavigator implements Navigator {
 
   protected void showInbox(String taskId, UriFragment uriFragment) {
     if (taskId != null) {
-      ExplorerApp.get().getViewManager().showTaskInboxPage(taskId);
+      ExplorerApp.get().getViewManager().showInboxPage(taskId);
     } else {
-      ExplorerApp.get().getViewManager().showTaskInboxPage();
+      ExplorerApp.get().getViewManager().showInboxPage();
     }
   }
 

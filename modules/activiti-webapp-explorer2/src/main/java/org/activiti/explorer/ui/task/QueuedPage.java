@@ -12,79 +12,55 @@
  */
 package org.activiti.explorer.ui.task;
 
-import org.activiti.explorer.ExplorerApp;
-import org.activiti.explorer.Messages;
 import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.TaskNavigator;
 import org.activiti.explorer.navigation.UriFragment;
-import org.activiti.explorer.ui.custom.ListSearchBox;
-import org.activiti.explorer.ui.task.data.TaskInboxListQuery;
+import org.activiti.explorer.ui.task.data.QueuedListQuery;
 
 import com.vaadin.ui.Component;
 
-
-
-
 /**
- * The page displaying all tasks currently in ones inbox.
+ * Page showing all the queued tasks of one person.
  * 
  * @author Joram Barrez
  */
-public class TaskInboxPage extends TaskPage {
-  
+public class QueuedPage extends TaskPage {
+
   private static final long serialVersionUID = 1L;
   
-  protected String taskId;
+  protected String groupId;
   
-  public TaskInboxPage() {
+  public QueuedPage(String groupId) {
+    this.groupId = groupId;
   }
   
-  /**
-   * Constructor called when page is accessed straight through the url, eg. /task/id=123
-   */
-  public TaskInboxPage(String taskId) {
-    this.taskId = taskId;
+  public QueuedPage(String groupId, String taskId) {
+    super(taskId);
+    this.groupId = groupId;
   }
   
   @Override
   protected LazyLoadingQuery createLazyLoadingQuery() {
-    return new TaskInboxListQuery();
+    return new QueuedListQuery(groupId);
   }
   
   @Override
-  protected void initUi() {
-    super.initUi();
-    if (taskId == null) {
-      selectListElement(0);
-    } else {
-      int index = taskListContainer.getIndexForObjectId(taskId);
-      if(index > 0) {
-        selectListElement(index);
-      } else {
-        ExplorerApp.get().getNotificationManager().showErrorNotification(Messages.TASK_AUTHORISATION_ERROR_TITLE, 
-                ExplorerApp.get().getI18nManager().getMessage(Messages.TASK_AUTHORISATION_INBOX_ERROR, taskId));
-        selectListElement(0);
-      }
-    }
-  }
-
-  @Override
   protected UriFragment getUriFragment(String taskId) {
     UriFragment taskFragment = new UriFragment(TaskNavigator.TASK_URI_PART);
-
     if(taskId != null) {
       taskFragment.addUriPart(taskId);
     }
-
-    taskFragment.addParameter(TaskNavigator.PARAMETER_CATEGORY, TaskNavigator.CATEGORY_INBOX);
+    
+    taskFragment.addParameter(TaskNavigator.PARAMETER_CATEGORY, TaskNavigator.CATEGORY_QUEUED);
+    
+    if(groupId != null) {
+      taskFragment.addParameter(TaskNavigator.PARAMETER_GROUP, groupId);
+    }
     return taskFragment;
   }
   
   @Override
   protected Component getSearchComponent() {
-    ListSearchBox searchBox = new ListSearchBox();
-    return searchBox;
+    return null;
   } 
-
-  
 }

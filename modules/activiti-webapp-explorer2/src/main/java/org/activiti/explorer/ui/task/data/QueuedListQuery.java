@@ -10,25 +10,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.explorer.navigation;
+package org.activiti.explorer.ui.task.data;
 
-import org.activiti.explorer.ExplorerApp;
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.task.TaskQuery;
 
 
 /**
  * @author Joram Barrez
  */
-public abstract class ManagementNavigator implements Navigator {
-
-  public void handleNavigation(UriFragment uriFragment) {
-    if (!ExplorerApp.get().getLoggedInUser().isAdmin()) {
-      // If not an admin, just show inbox and act like nothing happened
-      ExplorerApp.get().getViewManager().showInboxPage();
-    } else {
-      handleManagementNavigation(uriFragment);
-    }
+public class QueuedListQuery extends AbstractTaskListQuery {
+  
+  protected String groupId;
+  protected TaskService taskService;
+  
+  public QueuedListQuery(String groupId) {
+    this.groupId = groupId;
+    this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
   }
   
-  public abstract void handleManagementNavigation(UriFragment uriFragment);
+  @Override
+  protected TaskQuery getQuery() {
+    return taskService.createTaskQuery().taskCandidateGroup(groupId).orderByTaskId().asc();
+  }
 
 }

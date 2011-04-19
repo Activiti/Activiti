@@ -53,7 +53,7 @@ public class ClaimTaskClickListener implements ClickListener {
     try {
       taskService.claim(taskId, ExplorerApp.get().getLoggedInUser().getId());
       notificationManager.showInformationNotification(Messages.TASK_CLAIM_SUCCESS);
-      viewManager.showTaskInboxPage(taskId);
+      viewManager.showInboxPage(taskId);
     } catch(ActivitiException ae) {
       notificationManager.showErrorNotification(Messages.TASK_CLAIM_FAILED, ae.getMessage());
     }

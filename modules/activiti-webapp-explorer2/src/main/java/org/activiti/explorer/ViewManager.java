@@ -25,9 +25,11 @@ import org.activiti.explorer.ui.management.identity.GroupPage;
 import org.activiti.explorer.ui.management.identity.UserPage;
 import org.activiti.explorer.ui.management.job.JobPage;
 import org.activiti.explorer.ui.profile.ProfilePopupWindow;
-import org.activiti.explorer.ui.task.TaskInboxPage;
+import org.activiti.explorer.ui.task.CasesPage;
+import org.activiti.explorer.ui.task.InboxPage;
+import org.activiti.explorer.ui.task.InvolvedPage;
+import org.activiti.explorer.ui.task.QueuedPage;
 import org.activiti.explorer.ui.task.TaskMenuBar;
-import org.activiti.explorer.ui.task.TaskQueuedPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -67,20 +69,36 @@ public class ViewManager {
   
   // Tasks
   
-  public void showTaskInboxPage() {
-    switchView(new TaskInboxPage(), MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_INBOX);
+  public void showCasesPage() {
+    switchView(new CasesPage(), MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_CASES);
   }
   
-  public void showTaskInboxPage(String taskId) {
-    switchView(new TaskInboxPage(taskId), MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_INBOX);
+  public void showCasesPage(String taskId) {
+    switchView(new CasesPage(taskId), MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_CASES);
   }
   
-  public void showTaskQueuedPage(String groupId) {
-    switchView(new TaskQueuedPage(groupId), MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_QUEUED);
+  public void showInboxPage() {
+    switchView(new InboxPage(), MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_INBOX);
   }
   
-  public void showTaskQueuedPage(String groupId, String taskId) {
-    switchView(new TaskQueuedPage(groupId, taskId), MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_QUEUED);
+  public void showInboxPage(String taskId) {
+    switchView(new InboxPage(taskId), MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_INBOX);
+  }
+  
+  public void showQueuedPage(String groupId) {
+    switchView(new QueuedPage(groupId), MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_QUEUED);
+  }
+  
+  public void showQueuedPage(String groupId, String taskId) {
+    switchView(new QueuedPage(groupId, taskId), MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_QUEUED);
+  }
+  
+  public void showInvolvedPage() {
+    switchView(new InvolvedPage(), MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_INVOLVED);
+  }
+  
+  public void showInvolvedPage(String taskId) {
+    switchView(new InvolvedPage(taskId), MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_INVOLVED);
   }
   
   // Flows
