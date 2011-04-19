@@ -126,6 +126,7 @@ public interface Messages {
   static final String TASK_PRIORITY_HIGH = "task.priority.high";
   static final String TASK_NOT_FINISHED_YET = "task.not.finished.yet";
   static final String TASK_PART_OF_PROCESS = "task.part.of.process";
+  static final String TASK_SUBTASK_OF_PARENT_TASK = "task.subtask.of.parent.task";
   static final String TASK_JUMP_TO_PROCESS = "task.jump.to.process";
   static final String TASK_CLAIM_FAILED = "task.claim.failed";
   static final String TASK_CLAIM_SUCCESS = "task.claim.success";
@@ -135,6 +136,7 @@ public interface Messages {
   static final String TASK_FORM_HELP = "task.form.help";
   static final String TASK_NEW = "task.new";
   static final String TASK_SUBTASKS = "task.subtasks";
+  static final String TASK_CONFIRM_DELETE_SUBTASK = "task.confirm.delete.subtask";
   
   // Task roles
   static final String TASK_ROLE_CONTRIBUTOR = "task.role.contributor";

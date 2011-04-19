@@ -34,7 +34,6 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.CellStyleGenerator;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
 
 /**
@@ -49,7 +48,7 @@ import com.vaadin.ui.themes.Reindeer;
  * @author Frederik Heremans
  * @author Joram Barrez
  */
-public class TabbedSelectionWindow extends Window {
+public class TabbedSelectionWindow extends PopupWindow {
 
   private static final long serialVersionUID = 1L;
 

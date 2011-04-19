@@ -35,7 +35,7 @@ import com.vaadin.ui.Window;
  * 
  * @author Frederik Heremans
  */
-public class ConfirmationDialogPopupWindow extends Window {
+public class ConfirmationDialogPopupWindow extends PopupWindow {
 
   private static final long serialVersionUID = 1L;
   

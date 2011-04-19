@@ -58,7 +58,6 @@ public class TaskDetailPanel extends DetailPanel {
   
   private static final long serialVersionUID = 1L;
 
-  protected String taskId;
   protected Task task;
   
   // Services
@@ -70,7 +69,7 @@ public class TaskDetailPanel extends DetailPanel {
   protected NotificationManager notificationManager;
   
   // UI
-  protected TaskPage parent;
+  protected TaskPage taskPage;
   protected VerticalLayout centralLayout;
   protected FormPropertiesForm taskForm;
   protected TaskInvolvedPeopleComponent involvedPeople;
@@ -79,15 +78,13 @@ public class TaskDetailPanel extends DetailPanel {
   protected Button completeButton;
   protected Button claimButton;
   
-  public TaskDetailPanel(String taskId, TaskPage parent) {
-    this.parent = parent;
+  public TaskDetailPanel(Task task, TaskPage taskPage) {
+    this.task = task;
+    this.taskPage = taskPage;
+    
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
     this.formService = ProcessEngines.getDefaultProcessEngine().getFormService();
     this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
-    
-    this.taskId = taskId;
-    this.task = taskService.createTaskQuery().taskId(taskId).singleResult();
-    
     this.viewManager = ExplorerApp.get().getViewManager();
     this.i18nManager = ExplorerApp.get().getI18nManager();
     this.notificationManager = ExplorerApp.get().getNotificationManager();
@@ -107,12 +104,12 @@ public class TaskDetailPanel extends DetailPanel {
     initHeader();
     initDescriptionAndClaimButton();
     initProcessLink();
+    initParentTaskLink();
     initPeopleDetails();
     initSubTasks();
     initRelatedContent();
     initTaskForm();
     
-    parent.getTaskEventPanel().setTask(task);
   }
   
   protected void initHeader() {
@@ -202,22 +199,39 @@ public class TaskDetailPanel extends DetailPanel {
 
   protected void initProcessLink() {
     if(task.getProcessInstanceId() != null) {
-      ProcessDefinition processDefinition = getProcessDefinition(task.getProcessDefinitionId());
+      ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+        .processDefinitionId(task.getProcessDefinitionId())
+        .singleResult();
       
-      ClickListener clickListener = new ClickListener() {
-        private static final long serialVersionUID = 7250731154745638326L;
-
+      Button showProcessInstanceButton = new Button(i18nManager.getMessage(
+        Messages.TASK_PART_OF_PROCESS, processDefinition.getName()));
+      showProcessInstanceButton.addStyleName(Reindeer.BUTTON_LINK);
+      showProcessInstanceButton.addListener(new ClickListener() {
         public void buttonClick(ClickEvent event) {
           viewManager.showMyFlowsPage(task.getProcessInstanceId());
         }
-      };
-      
-      Button showProcessInstanceButton = new Button(i18nManager.getMessage(
-        Messages.TASK_PART_OF_PROCESS, processDefinition.getName(), task.getProcessInstanceId()), clickListener);
-      showProcessInstanceButton.setSizeUndefined();
-      showProcessInstanceButton.addStyleName(Reindeer.BUTTON_LINK);
+      });
      
       centralLayout.addComponent(showProcessInstanceButton);
+      addEmptySpace(centralLayout);
+    }
+  }
+  
+  protected void initParentTaskLink() {
+    if (task.getParentTaskId() != null) {
+      final Task parentTask = taskService.createTaskQuery()
+        .taskId(task.getParentTaskId()).singleResult();
+      
+      Button showParentTaskButton = new Button(i18nManager.getMessage(
+              Messages.TASK_SUBTASK_OF_PARENT_TASK, parentTask.getName()));
+      showParentTaskButton.addStyleName(Reindeer.BUTTON_LINK);
+      showParentTaskButton.addListener(new ClickListener() {
+        public void buttonClick(ClickEvent event) {
+          viewManager.showTaskInboxPage(parentTask.getId());
+        }
+      });
+      
+      centralLayout.addComponent(showParentTaskButton);
       addEmptySpace(centralLayout);
     }
   }
@@ -256,7 +270,7 @@ public class TaskDetailPanel extends DetailPanel {
           Map<String, String> properties = event.getFormProperties();
           formService.submitTaskFormData(task.getId(), properties);
           notificationManager.showInformationNotification(Messages.TASK_COMPLETED, task.getName());
-          parent.refreshListSelectNext();
+          taskPage.refreshListSelectNext();
         }
         
         @Override
@@ -288,7 +302,7 @@ public class TaskDetailPanel extends DetailPanel {
         public void buttonClick(ClickEvent event) {
           taskService.complete(task.getId());     
           notificationManager.showInformationNotification(Messages.TASK_COMPLETED, task.getName());
-          parent.refreshListSelectNext();
+          taskPage.refreshListSelectNext();
         }
       });
       
@@ -315,12 +329,6 @@ public class TaskDetailPanel extends DetailPanel {
     container.addComponent(emptySpace);
   }
   
-  protected ProcessDefinition getProcessDefinition(String processDefinitionId) {
-    return repositoryService.createProcessDefinitionQuery()
-      .processDefinitionId(processDefinitionId)
-      .singleResult();
-  }
-  
   /**
    * Returns a numeric priority - low (1), medium (2) or high (3) - 
    * based on the given numeric priority value.
@@ -332,22 +340,22 @@ public class TaskDetailPanel extends DetailPanel {
   
   public void notifyPeopleInvolvedChanged() {
     involvedPeople.refreshPeopleGrid();
-    parent.getTaskEventPanel().refreshTaskEvents();
+    taskPage.getTaskEventPanel().refreshTaskEvents();
   }
   
   public void notifyAssigneeChanged() {
     involvedPeople.refreshAssignee();
-    parent.getTaskEventPanel().refreshTaskEvents();
+    taskPage.getTaskEventPanel().refreshTaskEvents();
   }
   
   public void notifyOwnerChanged() {
     involvedPeople.refreshOwner();
-    parent.getTaskEventPanel().refreshTaskEvents();
+    taskPage.getTaskEventPanel().refreshTaskEvents();
   }
   
   public void notifyRelatedContentChanged() {
     relatedContent.refreshTaskAttachments();
-    parent.getTaskEventPanel().refreshTaskEvents();
+    taskPage.getTaskEventPanel().refreshTaskEvents();
   }
   
 }

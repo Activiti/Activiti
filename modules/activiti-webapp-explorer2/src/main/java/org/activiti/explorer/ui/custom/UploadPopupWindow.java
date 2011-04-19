@@ -21,14 +21,13 @@ import com.vaadin.ui.Upload.FinishedListener;
 import com.vaadin.ui.Upload.ProgressListener;
 import com.vaadin.ui.Upload.Receiver;
 import com.vaadin.ui.Upload.StartedListener;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
 
 
 /**
  * @author Joram Barrez
  */
-public class UploadPopupWindow extends Window { 
+public class UploadPopupWindow extends PopupWindow { 
   
   private static final long serialVersionUID = 1L;
   

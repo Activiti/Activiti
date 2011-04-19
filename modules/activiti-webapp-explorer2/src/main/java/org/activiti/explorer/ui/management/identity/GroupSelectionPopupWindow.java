@@ -21,16 +21,16 @@ import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.data.LazyLoadingContainer;
+import org.activiti.explorer.ui.custom.PopupWindow;
 import org.activiti.explorer.ui.event.SubmitEvent;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.themes.Reindeer;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.Reindeer;
 
 
 /**
@@ -40,7 +40,7 @@ import com.vaadin.ui.Window;
  * 
  * @author Joram Barrez
  */
-public class GroupSelectionPopupWindow extends Window {
+public class GroupSelectionPopupWindow extends PopupWindow {
   
   private static final long serialVersionUID = 1L;
   protected IdentityService identityService;

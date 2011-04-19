@@ -13,25 +13,19 @@
 
 package org.activiti.explorer.ui.profile;
 
-import org.activiti.engine.IdentityService;
-import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.identity.User;
+import org.activiti.explorer.ui.custom.PopupWindow;
 
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
 
 
 /**
  * @author Joram Barrez
  */
-public class ProfilePopupWindow extends Window {
+public class ProfilePopupWindow extends PopupWindow {
 
   private static final long serialVersionUID = 3129077881658239761L;
   
   public ProfilePopupWindow(String userId) {
-    IdentityService identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
-    User user = identityService.createUserQuery().userId(userId).singleResult();
-    
     addStyleName(Reindeer.WINDOW_LIGHT);
     setModal(true);
     setHeight("80%");

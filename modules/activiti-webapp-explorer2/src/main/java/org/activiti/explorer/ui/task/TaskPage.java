@@ -15,6 +15,7 @@ package org.activiti.explorer.ui.task;
 
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.task.Task;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
@@ -72,7 +73,9 @@ public abstract class TaskPage extends AbstractPage {
         
         if(item != null) {
           String taskId = (String) item.getItemProperty("id").getValue();
-          setDetailComponent(new TaskDetailPanel(taskId, TaskPage.this));
+          Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+          setDetailComponent(new TaskDetailPanel(task, TaskPage.this));
+          taskEventPanel.setTask(task);
           
           UriFragment taskFragment = getUriFragment(taskId);
           ExplorerApp.get().setCurrentUriFragment(taskFragment);

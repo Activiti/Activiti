@@ -21,6 +21,7 @@ import org.activiti.engine.identity.Group;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
+import org.activiti.explorer.ui.custom.PopupWindow;
 
 import com.vaadin.data.Validator;
 import com.vaadin.data.Validator.InvalidValueException;
@@ -36,7 +37,6 @@ import com.vaadin.ui.Form;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
 
 
@@ -45,7 +45,7 @@ import com.vaadin.ui.themes.Reindeer;
  * 
  * @author Joram Barrez
  */
-public class NewGroupPopupWindow extends Window {
+public class NewGroupPopupWindow extends PopupWindow {
   
   private static final long serialVersionUID = 1L;
   protected IdentityService identityService;

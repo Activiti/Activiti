@@ -15,17 +15,17 @@ package org.activiti.explorer.ui.content;
 
 import org.activiti.engine.task.Attachment;
 import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.ui.custom.PopupWindow;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
 
 
 /**
  * @author Frederik Heremans
  */
-public class AttachmentDetailPopupWindow extends Window {
+public class AttachmentDetailPopupWindow extends PopupWindow {
 
   private static final long serialVersionUID = 1L;
   

@@ -20,6 +20,7 @@ import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.ExplorerLayout;
+import org.activiti.explorer.ui.custom.PopupWindow;
 import org.activiti.explorer.ui.event.SubmitEvent;
 
 import com.vaadin.data.Item;
@@ -36,13 +37,12 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.CellStyleGenerator;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
 
 /**
  * @author Frederik Heremans
  */
-public class CreateAttachmentPopupWindow extends Window {
+public class CreateAttachmentPopupWindow extends PopupWindow {
 
   private static final long serialVersionUID = 1L;
 

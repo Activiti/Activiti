@@ -21,6 +21,7 @@ import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.LoggedInUser;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.ExplorerLayout;
+import org.activiti.explorer.ui.custom.PopupWindow;
 
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
@@ -33,14 +34,13 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
 
 
 /**
  * @author Joram Barrez
  */
-public class ChangePasswordPopupWindow extends Window {
+public class ChangePasswordPopupWindow extends PopupWindow {
   
   private static final long serialVersionUID = 1L;
   protected IdentityService identityService;

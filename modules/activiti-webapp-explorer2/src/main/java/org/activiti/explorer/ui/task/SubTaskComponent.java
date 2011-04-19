@@ -22,6 +22,7 @@ import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
+import org.activiti.explorer.ui.task.listener.DeleteSubTaskClickListener;
 
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
@@ -55,6 +56,7 @@ public class SubTaskComponent extends CustomComponent {
   protected TaskService taskService;
   
   protected Task parentTask;
+  protected TaskDetailPanel taskDetailPanel;
   protected VerticalLayout layout;
   protected Label title;
   protected Panel addSubTaskPanel;
@@ -181,6 +183,8 @@ public class SubTaskComponent extends CustomComponent {
   protected void initSubTasksLayout() {
     subTaskLayout = new GridLayout();
     subTaskLayout.setColumns(3);
+    subTaskLayout.setWidth(99, UNITS_PERCENTAGE);
+    subTaskLayout.setColumnExpandRatio(2, 1.0f);
     layout.addComponent(subTaskLayout);
   }
   
@@ -203,10 +207,18 @@ public class SubTaskComponent extends CustomComponent {
       });
       subTaskLayout.addComponent(subTaskLink);
       subTaskLayout.setComponentAlignment(subTaskLink, Alignment.MIDDLE_LEFT);
+      
+      // Delete icon
+      Embedded deleteIcon = new Embedded(null, Images.DELETE);
+      deleteIcon.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
+      deleteIcon.addListener(new DeleteSubTaskClickListener(subTask, this));
+      subTaskLayout.addComponent(deleteIcon);
+      subTaskLayout.setComponentAlignment(deleteIcon, Alignment.MIDDLE_RIGHT);
     }
+    
   }
   
-  protected void refreshSubTasks() {
+  public void refreshSubTasks() {
     subTaskLayout.removeAllComponents();
     populateSubTasks();
   }

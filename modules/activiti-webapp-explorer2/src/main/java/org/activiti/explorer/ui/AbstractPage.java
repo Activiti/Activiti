@@ -164,7 +164,11 @@ public abstract class AbstractPage extends CustomComponent {
     return grid.getComponent(1, 0);
   }
   
-  
+  /**
+   * Concrete pages must implement this.
+   * The table that is returned will be used for the 
+   * list on the left side.
+   */
   protected abstract Table createList();
   
   /**

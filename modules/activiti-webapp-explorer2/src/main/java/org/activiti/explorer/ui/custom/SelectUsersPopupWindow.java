@@ -41,7 +41,6 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
 
 
@@ -57,7 +56,7 @@ import com.vaadin.ui.themes.Reindeer;
  * 
  * @author Joram Barrez
  */
-public class SelectUsersPopupWindow extends Window {
+public class SelectUsersPopupWindow extends PopupWindow {
 
   private static final long serialVersionUID = 1L;
   
