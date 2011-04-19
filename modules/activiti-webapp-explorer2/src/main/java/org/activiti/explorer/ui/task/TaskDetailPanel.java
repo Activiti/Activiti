@@ -119,9 +119,8 @@ public class TaskDetailPanel extends DetailPanel {
     taskDetails.setSpacing(true);
     
     // Add image
-    Embedded image = new Embedded(null, Images.TASK_BIG);
+    Embedded image = new Embedded(null, Images.TASK_50);
     taskDetails.addComponent(image, 0, 0, 0, 1);
-    image.setWidth(40, UNITS_PIXELS);
     
     // Add task name
     Label nameLabel = new Label(task.getName());
