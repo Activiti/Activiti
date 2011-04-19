@@ -89,7 +89,7 @@
 	<target name="deploy.jar" depends="package">
 		<!-- A bit hacky, but quickest way to deploy classes to your Tomcat -->
 		<copy file="${target.dir}/${ant.project.name}.jar" todir="${activiti.tomcat.lib}"/>
-		<echo message="Resart your Tomcat that the changes in the classpath can take effect" />
+		<echo message="Restart your Tomcat that the changes in the classpath can take effect" />
 	</target>
 
 	<target name="print">
