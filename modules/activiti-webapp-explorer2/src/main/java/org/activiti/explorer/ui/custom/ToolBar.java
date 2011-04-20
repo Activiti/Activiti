@@ -30,6 +30,7 @@ import com.vaadin.ui.Label;
  * Container for holding {@link ToolbarEntry}s.
  * 
  * @author Frederik Heremans
+ * @author Joram Barrez
  */
 public class ToolBar extends HorizontalLayout {
   
@@ -37,11 +38,11 @@ public class ToolBar extends HorizontalLayout {
   
   protected Map<String, ToolbarEntry> entryMap;
   protected ToolbarEntry currentEntry;
-  protected List<Button> toolButtons;
+  protected List<Button> actionButtons;
 
   public ToolBar() {
     entryMap = new HashMap<String, ToolbarEntry>();
-    toolButtons = new ArrayList<Button>();
+    actionButtons = new ArrayList<Button>();
     
     setWidth("100%");
     setHeight(36, UNITS_PIXELS);
@@ -97,7 +98,7 @@ public class ToolBar extends HorizontalLayout {
   public void addButton(Button button) {
     button.addStyleName(ExplorerLayout.STYLE_TOOLBAR_BUTTON);
     
-    toolButtons.add(button);
+    actionButtons.add(button);
     // Button is added after the spacer
     addComponent(button);
     setComponentAlignment(button, Alignment.MIDDLE_RIGHT);
@@ -107,6 +108,14 @@ public class ToolBar extends HorizontalLayout {
     for(Button b : toolButtons) {
       removeComponent(b);
     }
+  }
+  
+  public long getCount(String key) {
+    ToolbarEntry toolbarEntry = entryMap.get(key);
+    if(toolbarEntry == null) {
+      throw new IllegalArgumentException("Toolbar doesn't contain an entry for key: " + key);
+    }
+    return toolbarEntry.getCount();
   }
  
   /**
@@ -143,7 +152,7 @@ public class ToolBar extends HorizontalLayout {
   }
   
   protected void addEntryComponent(ToolbarEntry entry) {
-    addComponent(entry, getComponentCount() - 1 - toolButtons.size());
+    addComponent(entry, getComponentCount() - 1 - actionButtons.size());
     setComponentAlignment(entry, Alignment.MIDDLE_LEFT);
   }
   

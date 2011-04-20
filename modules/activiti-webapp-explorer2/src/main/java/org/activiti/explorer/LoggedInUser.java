@@ -51,6 +51,9 @@ public class LoggedInUser implements Serializable {
   public String getLastName() {
     return user.getLastName();
   }
+  public String getFullName() {
+    return getFirstName() + " " + getLastName();
+  }
   public String getPassword() {
     return password;
   }

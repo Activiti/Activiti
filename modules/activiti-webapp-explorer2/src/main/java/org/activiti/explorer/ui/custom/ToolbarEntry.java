@@ -28,6 +28,7 @@ import com.vaadin.ui.themes.Reindeer;
  * Entry to use in a tool bar. Shows label and optional count.
  * 
  * @author Frederik Heremans
+ * @author Joram Barrez
  */
 public class ToolbarEntry extends CustomComponent {
 
@@ -69,6 +70,10 @@ public class ToolbarEntry extends CustomComponent {
     } else {
       countButton.setVisible(true);
     }
+  }
+  
+  public Long getCount() {
+    return count;
   }
   
   public void setActive(boolean active) {

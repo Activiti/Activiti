@@ -13,6 +13,9 @@
 
 package org.activiti.explorer.ui.task.listener;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.task.Task;
 import org.activiti.explorer.ExplorerApp;
@@ -45,13 +48,19 @@ public class ReassignAssigneeListener implements ClickListener {
   }
   
   public void buttonClick(ClickEvent event) {
+    List<String> ignoredIds = null;
+    if (task.getAssignee() != null) {
+      ignoredIds = Arrays.asList(task.getAssignee());
+    }
+    
     final SelectUsersPopupWindow involvePeoplePopupWindow = 
-        new SelectUsersPopupWindow(i18nManager.getMessage(Messages.TASK_ASSIGNEE_REASSIGN), false);
+        new SelectUsersPopupWindow(i18nManager.getMessage(Messages.TASK_ASSIGNEE_REASSIGN), false, ignoredIds);
     
     involvePeoplePopupWindow.addListener(new SubmitEventListener() {
       protected void submitted(SubmitEvent event) {
         // Update assignee
         String selectedUser = involvePeoplePopupWindow.getSelectedUserId();
+        task.setAssignee(selectedUser);
         ProcessEngines.getDefaultProcessEngine().getTaskService().setAssignee(task.getId(), selectedUser);
         
         // Update UI

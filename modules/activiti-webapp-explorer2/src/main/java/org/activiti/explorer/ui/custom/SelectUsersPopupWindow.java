@@ -21,6 +21,7 @@ import java.util.Set;
 import org.activiti.engine.identity.User;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
+import org.activiti.explorer.LoggedInUser;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.cache.UserCache;
 import org.activiti.explorer.ui.Images;
@@ -124,12 +125,16 @@ public class SelectUsersPopupWindow extends PopupWindow {
   }
   
   protected void initSearchField() {
+    HorizontalLayout searchLayout = new HorizontalLayout();
+    searchLayout.setSpacing(true);
+    addComponent(searchLayout);
+    
     // textfield
     searchField = new TextField();
     searchField.setInputPrompt(i18nManager.getMessage(Messages.PEOPLE_SEARCH));
-    searchField.setWidth(250, UNITS_PIXELS);
+    searchField.setWidth(180, UNITS_PIXELS);
     searchField.focus();
-    addComponent(searchField);
+    searchLayout.addComponent(searchField);
     
     // Logic to change table according to input
     searchField.addListener(new TextChangeListener() {
@@ -137,6 +142,35 @@ public class SelectUsersPopupWindow extends PopupWindow {
         searchPeople(event.getText());
       }
     });
+    
+    initSelectMyselfButton(searchLayout);
+  }
+
+  protected void initSelectMyselfButton(HorizontalLayout searchLayout) {
+    final LoggedInUser loggedInUser = ExplorerApp.get().getLoggedInUser();
+    if (ignoredUserIds == null || !ignoredUserIds.contains(loggedInUser.getId())) {
+      Button meButton = new Button(i18nManager.getMessage(Messages.PEOPLE_SELECT_MYSELF));
+      meButton.setIcon(Images.USER);
+      searchLayout.addComponent(meButton);
+      searchLayout.setComponentAlignment(meButton, Alignment.MIDDLE_LEFT);
+      
+      if (multiSelect) {
+        meButton.addListener(new ClickListener() {
+          public void buttonClick(ClickEvent event) {
+            selectUser(loggedInUser.getId(), loggedInUser.getFullName());
+          }
+        });
+      } else {
+        meButton.addListener(new ClickListener() {
+          public void buttonClick(ClickEvent event) {
+            addMatchingUser(loggedInUser.getId(), loggedInUser.getFullName());
+            matchingUsersTable.select(loggedInUser.getId());
+            fireEvent(new SubmitEvent(doneButton, SubmitEvent.SUBMITTED));
+            close();
+          }
+        });
+      }
+    }
   }
   
   protected void searchPeople(String searchText) {
@@ -146,11 +180,17 @@ public class SelectUsersPopupWindow extends PopupWindow {
       for (User user : results) {
         if (!multiSelect || !selectedUsersTable.containsId(user.getId())) {
           if (ignoredUserIds == null || !ignoredUserIds.contains(user.getId())) {
-            Item item = matchingUsersTable.addItem(user.getId());
-            item.getItemProperty("userName").setValue(user.getFirstName() + " " + user.getLastName());
+            addMatchingUser(user.getId(), user.getFirstName() + " " + user.getLastName());
           }
         }
       }
+    }
+  }
+  
+  protected void addMatchingUser(String userId, String name) {
+    if (!matchingUsersTable.containsId(userId)) {
+      Item item = matchingUsersTable.addItem(userId);
+      item.getItemProperty("userName").setValue(name);
     }
   }
   
@@ -272,18 +312,20 @@ public class SelectUsersPopupWindow extends PopupWindow {
   }
   
   protected void selectUser(String userId, String userName) {
-    Item item = selectedUsersTable.addItem(userId);
-    item.getItemProperty("userName").setValue(userName);
-    
-    if (showRoles) {
-      ComboBox comboBox = new ComboBox(null, Arrays.asList(
-              i18nManager.getMessage(Messages.TASK_ROLE_CONTRIBUTOR),
-              i18nManager.getMessage(Messages.TASK_ROLE_IMPLEMENTER),
-              i18nManager.getMessage(Messages.TASK_ROLE_MANAGER),
-              i18nManager.getMessage(Messages.TASK_ROLE_SPONSOR)));
-      comboBox.select(i18nManager.getMessage(Messages.TASK_ROLE_CONTRIBUTOR));
-      comboBox.setNewItemsAllowed(true);
-      item.getItemProperty("role").setValue(comboBox);
+    if (!selectedUsersTable.containsId(userId)) {
+      Item item = selectedUsersTable.addItem(userId);
+      item.getItemProperty("userName").setValue(userName);
+      
+      if (showRoles) {
+        ComboBox comboBox = new ComboBox(null, Arrays.asList(
+                i18nManager.getMessage(Messages.TASK_ROLE_CONTRIBUTOR),
+                i18nManager.getMessage(Messages.TASK_ROLE_IMPLEMENTER),
+                i18nManager.getMessage(Messages.TASK_ROLE_MANAGER),
+                i18nManager.getMessage(Messages.TASK_ROLE_SPONSOR)));
+        comboBox.select(i18nManager.getMessage(Messages.TASK_ROLE_CONTRIBUTOR));
+        comboBox.setNewItemsAllowed(true);
+        item.getItemProperty("role").setValue(comboBox);
+      }
     }
   }
   

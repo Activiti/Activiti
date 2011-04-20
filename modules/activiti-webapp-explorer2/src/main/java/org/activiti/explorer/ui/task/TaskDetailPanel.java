@@ -344,13 +344,21 @@ public class TaskDetailPanel extends DetailPanel {
   }
   
   public void notifyAssigneeChanged() {
-    involvedPeople.refreshAssignee();
-    taskPage.getTaskEventPanel().refreshTaskEvents();
+    if (ExplorerApp.get().getLoggedInUser().getId().equals(task.getAssignee())) { // switch view to inbox if assignee is current user
+      viewManager.showInboxPage(task.getId());
+    } else {
+      involvedPeople.refreshAssignee();
+      taskPage.getTaskEventPanel().refreshTaskEvents();
+    }
   }
   
   public void notifyOwnerChanged() {
-    involvedPeople.refreshOwner();
-    taskPage.getTaskEventPanel().refreshTaskEvents();
+    if (ExplorerApp.get().getLoggedInUser().getId().equals(task.getOwner())) { // switch view to cases if owner is current user
+      viewManager.showCasesPage(task.getId());
+    } else {
+      involvedPeople.refreshOwner();
+      taskPage.getTaskEventPanel().refreshTaskEvents();
+    }
   }
   
   public void notifyRelatedContentChanged() {

@@ -166,9 +166,10 @@ public class TaskInvolvedPeopleComponent extends CustomComponent {
   }
   
   protected UserDetailsComponent createAssigneeComponent() {
+    String roleMessage = task.getAssignee() != null ? Messages.TASK_ASSIGNEE : Messages.TASK_NO_ASSIGNEE;
    return new UserDetailsComponent(
             task.getAssignee(),
-            i18nManager.getMessage(Messages.TASK_ASSIGNEE),
+            i18nManager.getMessage(roleMessage),
             i18nManager.getMessage(Messages.TASK_ASSIGNEE_REASSIGN),
             new ReassignAssigneeListener(task, taskDetailPanel));
   }

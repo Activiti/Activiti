@@ -109,6 +109,7 @@ public interface Messages {
   static final String TASK_OWNER_TRANSFER = "task.owner.transfer";
   static final String TASK_NO_OWNER = "task.no.owner";
   static final String TASK_ASSIGNEE = "task.assignee";
+  static final String TASK_NO_ASSIGNEE = "task.no.assignee";
   static final String TASK_ASSIGNEE_REASSIGN = "task.assignee.reassign";
   static final String TASK_INVOLVED_REMOVE = "task.involved.remove";
   static final String TASK_INVOLVED_REMOVE_CONFIRMATION_TITLE = "task.involved.remove.confirmation.title";
@@ -279,6 +280,7 @@ public interface Messages {
   // People involvement
   static final String PEOPLE_SEARCH = "people.search";
   static final String PEOPLE_INVOLVE_POPUP_CAPTION = "people.involve.popup.caption";
+  static final String PEOPLE_SELECT_MYSELF = "people.select.myself";
 
   static final String TASK_AUTHORISATION_ERROR_TITLE = "task.authorisation.error.title";
   static final String TASK_AUTHORISATION_MEMBERSHIP_ERROR = "task.authorisation.membership.error";

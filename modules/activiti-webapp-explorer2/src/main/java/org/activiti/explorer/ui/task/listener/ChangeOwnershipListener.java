@@ -13,6 +13,9 @@
 
 package org.activiti.explorer.ui.task.listener;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.task.Task;
 import org.activiti.explorer.ExplorerApp;
@@ -45,8 +48,14 @@ public class ChangeOwnershipListener implements ClickListener {
   }
   
   public void buttonClick(ClickEvent event) {
+    
+    List<String> ignoredIds = null;
+    if (task.getOwner() != null) {
+      ignoredIds = Arrays.asList(task.getOwner());
+    }
+    
     final SelectUsersPopupWindow involvePeoplePopupWindow = 
-        new SelectUsersPopupWindow(i18nManager.getMessage(Messages.TASK_OWNER_TRANSFER), false);
+        new SelectUsersPopupWindow(i18nManager.getMessage(Messages.TASK_OWNER_TRANSFER), false, ignoredIds);
     
     involvePeoplePopupWindow.addListener(new SubmitEventListener() {
       protected void submitted(SubmitEvent event) {
