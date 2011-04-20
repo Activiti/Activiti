@@ -27,6 +27,10 @@ public interface Messages {
   static final String CONFIRMATION_DIALOG_NO = "confirmation.dialog.no";
   static final String BUTTON_OK = "button.ok";
   
+  // Navigation
+  static final String NAVIGATION_ERROR_NOT_INVOLVED_TITLE = "navigation.error.not.involved.title";
+  static final String NAVIGATION_ERROR_NOT_INVOLVED = "navigation.error.not.involved";
+  
   // Login
   static final String LOGIN_USERNAME = "login.username";
   static final String LOGIN_PASSWORD = "login.password";

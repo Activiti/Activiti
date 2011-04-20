@@ -13,10 +13,20 @@
 
 package org.activiti.explorer.navigation;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.identity.Group;
+import org.activiti.engine.task.IdentityLink;
+import org.activiti.engine.task.Task;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.Messages;
+import org.activiti.explorer.ViewManager;
 
 /**
  * @author Frederik Heremans
@@ -33,56 +43,141 @@ public class TaskNavigator implements Navigator {
   public static final String PARAMETER_CATEGORY = "category";
   public static final String PARAMETER_GROUP = "group";
   
+  protected TaskService taskService;
+  protected IdentityService identityService;
+  
+  public TaskNavigator() {
+    this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
+    this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
+  }
+  
   public String getTrigger() {
     return TASK_URI_PART;
   }
 
   public void handleNavigation(UriFragment uriFragment) {
-
     String category = uriFragment.getParameter(PARAMETER_CATEGORY);
     String taskId = uriFragment.getUriPart(1);
     
-    if(CATEGORY_QUEUED.equals(category)) {
-      showQueuedTasks(taskId, uriFragment);
+    if (taskId == null) {
+      directToCategoryPage(category, uriFragment);
     } else {
-      // Default is the inbox
-      showInbox(taskId, uriFragment);
+      Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+     directToSpecificTaskPage(category, task, uriFragment);
     }
   }
-
-  protected void showQueuedTasks(String taskId, UriFragment uriFragment) {
-    String groupId = uriFragment.getParameter(PARAMETER_GROUP);
-    if(groupId != null) {
-      // Check if user is part of this group
-      IdentityService identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
-      
-      boolean isMemberOfGroup = identityService.createGroupQuery()
-         .groupMember(ExplorerApp.get().getLoggedInUser().getId())
-         .groupId(groupId)
-         .count() == 1;
-      
-      if(!isMemberOfGroup) {
-        // Show error notification, just show inbox
-        String description = ExplorerApp.get().getI18nManager().getMessage(Messages.TASK_AUTHORISATION_MEMBERSHIP_ERROR, groupId); 
-        ExplorerApp.get().getNotificationManager().showErrorNotification(Messages.TASK_AUTHORISATION_ERROR_TITLE, description);
-        
-        ExplorerApp.get().getViewManager().showInboxPage();
+  
+  protected void directToCategoryPage(String category, UriFragment uriFragment) {
+    ViewManager viewManager = ExplorerApp.get().getViewManager();
+    if (CATEGORY_CASES.equals(category)) {
+      viewManager.showCasesPage();
+    } else if (CATEGORY_INBOX.equals(category)) {
+      viewManager.showInboxPage();
+    } else if(CATEGORY_QUEUED.equals(category)) {
+      viewManager.showQueuedPage(uriFragment.getParameter(PARAMETER_GROUP));
+    } else if (CATEGORY_INVOLVED.equals(category)){
+      viewManager.showInvolvedPage();
+    } else {
+      throw new ActivitiException("Couldn't find a matching category");
+    }
+  }
+  
+  protected void directToSpecificTaskPage(String category, Task task, UriFragment uriFragment) {
+    ViewManager viewManager = ExplorerApp.get().getViewManager();
+    String loggedInUserId = ExplorerApp.get().getLoggedInUser().getId();
+    
+    boolean pageFound = false;
+    if (CATEGORY_CASES.equals(category)) {
+      if (loggedInUserId.equals(task.getOwner())) {
+        viewManager.showCasesPage(task.getId());
+        pageFound = true;
       }
-      ExplorerApp.get().getViewManager().showQueuedPage(groupId, taskId);
+    } else if (CATEGORY_INBOX.equals(category)) {
+      if (loggedInUserId.equals(task.getAssignee())) {
+        viewManager.showInboxPage(task.getId());
+        pageFound = true;
+      }
+    } else if(CATEGORY_QUEUED.equals(category)) {
+      String groupId = uriFragment.getParameter(PARAMETER_GROUP);
+      
+      boolean isTaskAssignedToGroup = taskService.createTaskQuery()
+        .taskId(task.getId())
+        .taskCandidateGroup(groupId)
+        .count() == 1;
+      
+      boolean isUserMemberOfGroup = identityService.createGroupQuery()
+        .groupMember(loggedInUserId)
+        .groupId(groupId)
+        .count() == 1;
+      
+      if (isTaskAssignedToGroup && isUserMemberOfGroup) {
+        viewManager.showQueuedPage(groupId, task.getId());
+        pageFound = true;
+      }
+        
+    } else if (CATEGORY_INVOLVED.equals(category)){
+      boolean isUserInvolved = taskService.createTaskQuery()
+        .taskInvolvedUser(loggedInUserId)
+        .count() == 1;
+      
+      if (isUserInvolved) {
+        viewManager.showInvolvedPage(task.getId());
+        pageFound = true;
+      }
     } else {
-      // When no group is available, just show the inbox
-      showInbox(taskId, uriFragment);
-      ExplorerApp.get().getNotificationManager().showErrorNotification(
-              "Cannot view queued tasks", "No groupId was provided, can't show queued tasks");
+      throw new ActivitiException("Couldn't find a matching category");
+    }
+    
+    if (!pageFound) {
+      // If URL doesnt match anymore, we must use the task data to redirect to the right page
+      directToPageBasedOnTaskData(viewManager, task, loggedInUserId);
     }
   }
-
-  protected void showInbox(String taskId, UriFragment uriFragment) {
-    if (taskId != null) {
-      ExplorerApp.get().getViewManager().showInboxPage(taskId);
+  
+  protected void directToPageBasedOnTaskData(ViewManager viewManager, Task task, String loggedInUserId) {
+    if (loggedInUserId.equals(task.getOwner())) {
+      viewManager.showCasesPage(task.getId());
+    } else if (loggedInUserId.equals(task.getAssignee())) {
+      viewManager.showInboxPage(task.getId());
     } else {
-      ExplorerApp.get().getViewManager().showInboxPage();
+      boolean pageFound = false;
+      
+      // First check involved
+      boolean userInvolved = taskService.createTaskQuery().taskInvolvedUser(loggedInUserId).count() == 1;
+      if (userInvolved) {
+        viewManager.showInvolvedPage(task.getId());
+        pageFound = true;
+      } else {
+        // Then check queued
+        List<String> groupIds = getGroupIds(loggedInUserId);
+        List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(task.getId());
+        Iterator<IdentityLink> identityLinkIterator = identityLinks.iterator();
+        
+        while (!pageFound && identityLinkIterator.hasNext()) {
+          IdentityLink identityLink = identityLinkIterator.next();
+          if (identityLink.getGroupId() != null && groupIds.contains(identityLink.getGroupId())) {
+            viewManager.showQueuedPage(identityLink.getGroupId(), task.getId());
+            pageFound = true;
+          }
+        }
+      }
+      
+      // We've tried hard enough, the user now gets a notification. He deserves it.
+      if (!pageFound) {
+        String description = ExplorerApp.get().getI18nManager().getMessage(Messages.NAVIGATION_ERROR_NOT_INVOLVED, task.getId());
+        ExplorerApp.get().getNotificationManager().showErrorNotification(Messages.NAVIGATION_ERROR_NOT_INVOLVED_TITLE, description);
+      }
     }
+  }
+  
+  protected List<String> getGroupIds(String userId) {
+    List<String> groupIds = new ArrayList<String>();
+    List<Group> groups = identityService.createGroupQuery().groupMember(userId).list();
+    for (Group group : groups) {
+      groupIds.add(group.getId());
+    }
+    
+    return groupIds;
   }
 
 }

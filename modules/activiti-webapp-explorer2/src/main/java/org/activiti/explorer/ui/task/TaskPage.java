@@ -68,6 +68,10 @@ public abstract class TaskPage extends AbstractPage {
       int index = taskListContainer.getIndexForObjectId(taskId);
       selectListElement(index);
     }
+    
+    if (taskListContainer.size() == 0) {
+      ExplorerApp.get().setCurrentUriFragment(getUriFragment(null));
+    }
   }
   
   @Override

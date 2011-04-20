@@ -82,8 +82,5 @@ public class LoggedInUser implements Serializable {
   public void addGroup(Group group) {
     groups.add(group);
   }
-  public List<Group> getGroups() {
-    return groups;
-  }
   
 }

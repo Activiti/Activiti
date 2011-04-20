@@ -105,7 +105,7 @@ public class ToolBar extends HorizontalLayout {
   }
   
   public void removeAllButtons() {
-    for(Button b : toolButtons) {
+    for(Button b : actionButtons) {
       removeComponent(b);
     }
   }
