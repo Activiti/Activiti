@@ -110,8 +110,8 @@ public class FlowPage extends AbstractPage {
     });
     
     // Create columns
-    processDefinitionTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.PROCESS));
-    processDefinitionTable.setColumnWidth("icon", 32);
+    processDefinitionTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.FLOW_22));
+    processDefinitionTable.setColumnWidth("icon", 22);
     
     processDefinitionTable.addContainerProperty("name", String.class, null);
     processDefinitionTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);

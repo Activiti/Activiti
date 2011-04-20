@@ -13,7 +13,6 @@
 
 package org.activiti.explorer.ui.flow;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.activiti.engine.HistoryService;
@@ -28,24 +27,21 @@ import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
+import org.activiti.explorer.ui.custom.DetailPanel;
 import org.activiti.explorer.ui.custom.PrettyTimeLabel;
 import org.activiti.explorer.ui.custom.UserProfileLink;
 
-import com.ocpsoft.pretty.time.PrettyTime;
 import com.vaadin.data.Item;
 import com.vaadin.terminal.StreamResource;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
-import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
@@ -54,7 +50,7 @@ import com.vaadin.ui.themes.Reindeer;
  * @author Frederik Heremans
  * 
  */
-public class ProcessInstanceDetailPanel extends Panel {
+public class ProcessInstanceDetailPanel extends DetailPanel {
 
   private static final long serialVersionUID = 1705077407829697827L;
 
@@ -69,6 +65,8 @@ public class ProcessInstanceDetailPanel extends Panel {
   protected ProcessInstance processInstance;
   protected HistoricProcessInstance historicProcessInstance;
   protected ProcessDefinition processDefinition;
+  
+  protected VerticalLayout verticalLayout;
 
   public ProcessInstanceDetailPanel(String processInstanceId, ProcessInstancePage myFlowsPage) {
     this.myFlowsPage = myFlowsPage;
@@ -87,22 +85,31 @@ public class ProcessInstanceDetailPanel extends Panel {
     // Initialize UI
     addStyleName(Reindeer.LAYOUT_WHITE);
     setSizeFull();
+    
+    verticalLayout = new VerticalLayout();
+    verticalLayout.setWidth(100, UNITS_PERCENTAGE);
+    verticalLayout.setMargin(true);
+    setDetailContent(verticalLayout);
 
     addName();
-    addTimeDetails();
     addFlowImage();
     addTasks();
   }
 
   protected void addTasks() {
     Label header = new Label(i18nManager.getMessage(Messages.FLOW_INSTANCE_HEADER_TASKS));
-    header.addStyleName(ExplorerLayout.STYLE_PROCESS_INSTANCE_DETAILS_HEADER);
-    addComponent(header);
+    header.addStyleName(ExplorerLayout.STYLE_H3);
+    header.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
+    verticalLayout.addComponent(header);
+    
+    Label spacer = new Label();
+    spacer.setValue("&nbsp");
+    spacer.setContentMode(Label.CONTENT_XHTML);
+    verticalLayout.addComponent(spacer);
     
     Table taskTable = new Table();
     taskTable.addStyleName(ExplorerLayout.STYLE_PROCESS_INSTANCE_TASK_LIST);
     taskTable.setWidth(100, UNITS_PERCENTAGE);
-    taskTable.setHeight(100, UNITS_PERCENTAGE);
     
     // Fetch all tasks
     List<HistoricTaskInstance> tasks = historyService.createHistoricTaskInstanceQuery()
@@ -114,7 +121,7 @@ public class ProcessInstanceDetailPanel extends Panel {
     if(tasks.size() > 0) {
       
       // Finished icon
-      taskTable.addContainerProperty("finished", Component.class, null, null, null, Table.ALIGN_CENTER);
+      taskTable.addContainerProperty("finished", Component.class, null, "", null, Table.ALIGN_CENTER);
       taskTable.setColumnWidth("finished", 16);
       
       taskTable.addContainerProperty("name", String.class, null, i18nManager.getMessage(Messages.TASK_NAME),
@@ -130,17 +137,18 @@ public class ProcessInstanceDetailPanel extends Panel {
       taskTable.addContainerProperty("endDate", Component.class, null, i18nManager.getMessage(Messages.TASK_COMPLETE_TIME),
               null, Table.ALIGN_LEFT);
       
-      addComponent(taskTable);
-      ((VerticalLayout) getContent()).setExpandRatio(taskTable, 1.0f);
-      ((VerticalLayout) getContent()).setSizeFull();
+      verticalLayout.addComponent(taskTable);
+      verticalLayout.setExpandRatio(taskTable, 1.0f);
       
       for(HistoricTaskInstance task : tasks) {
         addTaskItem(task, taskTable);
       }
+      
+      taskTable.setPageLength(taskTable.size());
     } else {
       // No tasks
       Label noTaskLabel = new Label(i18nManager.getMessage(Messages.FLOW_INSTANCE_NO_TASKS));
-      addComponent(noTaskLabel);
+      verticalLayout.addComponent(noTaskLabel);
     }
   }
   
@@ -177,50 +185,45 @@ public class ProcessInstanceDetailPanel extends Panel {
     // Only show when graphical notation is defined
     if (processDefinitionEntity != null && processDefinitionEntity.isGraphicalNotationDefined()) {
       Label header = new Label(i18nManager.getMessage(Messages.FLOW_INSTANCE_HEADER_DIAGRAM));
-      header.addStyleName(ExplorerLayout.STYLE_PROCESS_INSTANCE_DETAILS_HEADER);
-      addComponent(header);
+      header.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
+      header.addStyleName(ExplorerLayout.STYLE_H3);
+      verticalLayout.addComponent(header);
       
       StreamResource diagram = new ProcessDefinitionImageStreamResourceBuilder()
         .buildStreamResource(processInstance, repositoryService, runtimeService);
 
       Embedded embedded = new Embedded("", diagram);
       embedded.setType(Embedded.TYPE_IMAGE);
-      addComponent(embedded);
+      verticalLayout.addComponent(embedded);
     }
   }
 
-  protected void addTimeDetails() {
-    Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
-    emptySpace.setSizeUndefined();
-    addComponent(emptySpace);
-
-    HorizontalLayout timeDetails = new HorizontalLayout();
-    timeDetails.setSpacing(true);
-    addComponent(timeDetails);
-
-    Embedded clockImage = new Embedded(null, Images.CLOCK);
-    timeDetails.addComponent(clockImage);
-
-    String startedOnDate = new PrettyTime().format(historicProcessInstance.getStartTime());
-    String startedOn = i18nManager.getMessage(Messages.FLOW_INSTANCE_STARTED_ON, startedOnDate);
-    Label timeLabel = new Label(startedOn);
-    timeDetails.addComponent(timeLabel);
-
-    SimpleDateFormat format = (SimpleDateFormat) Constants.DEFAULT_DATE_FORMATTER.clone();
-    String dateString = format.format(historicProcessInstance.getStartTime());
-
-    Label realCreateTime = new Label("(" + dateString + ")");
-    realCreateTime.addStyleName(Reindeer.LABEL_SMALL);
-    realCreateTime.setSizeUndefined();
-    timeDetails.addComponent(realCreateTime);
-    timeDetails.setComponentAlignment(realCreateTime, Alignment.MIDDLE_CENTER);
-    timeDetails.setComponentAlignment(timeLabel, Alignment.MIDDLE_CENTER);
-  }
-
   protected void addName() {
-    Label nameLabel = new Label(processDefinition.getName() + " (" + processInstance.getId() + ")");
-    nameLabel.addStyleName(Reindeer.LABEL_H1);
-    addComponent(nameLabel);
+    GridLayout header = new GridLayout(3, 2);
+    header.setWidth(100, UNITS_PERCENTAGE);
+    header.addStyleName(ExplorerLayout.STYLE_TITLE_BLOCK);
+    header.setSpacing(true);
+    header.setMargin(false, false, true, false);
+    
+    // Add image
+    Embedded image = new Embedded(null, Images.FLOW_50);
+    header.addComponent(image, 0, 0, 0, 1);
+    
+    // Add task name
+    Label nameLabel = new Label(processDefinition.getName() + " (" + processInstance.getId() +")");
+    nameLabel.addStyleName(Reindeer.LABEL_H2);
+    header.addComponent(nameLabel, 1, 0, 2, 0);
+
+    // Add start time
+    PrettyTimeLabel startTimeLabel = new PrettyTimeLabel(i18nManager.getMessage(Messages.FLOW_START_TIME),
+      historicProcessInstance.getStartTime(), null);
+    startTimeLabel.addStyleName(ExplorerLayout.STYLE_FLOW_HEADER_START_TIME);
+    header.addComponent(startTimeLabel, 1, 1);
+    
+    header.setColumnExpandRatio(1, 1.0f);
+    header.setColumnExpandRatio(2, 1.0f);
+    
+    verticalLayout.addComponent(header);
   }
   
 

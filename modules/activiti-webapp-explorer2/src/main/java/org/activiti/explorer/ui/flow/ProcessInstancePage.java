@@ -74,8 +74,8 @@ public abstract class ProcessInstancePage extends AbstractPage {
     processInstanceTable.setContainerDataSource(processInstanceListContainer);
     
     // Create column header
-    processInstanceTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.PROCESS));
-    processInstanceTable.setColumnWidth("icon", 32);
+    processInstanceTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.FLOW_22));
+    processInstanceTable.setColumnWidth("icon", 22);
     
     processInstanceTable.addContainerProperty("name", String.class, null);
     processInstanceTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);

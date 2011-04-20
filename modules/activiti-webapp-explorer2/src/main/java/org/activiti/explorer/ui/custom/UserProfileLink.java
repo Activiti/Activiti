@@ -51,6 +51,7 @@ public class UserProfileLink extends HorizontalLayout {
     this.identityService = identityService;
     this.viewManager = ExplorerApp.get().getViewManager();
     
+    addStyleName(ExplorerLayout.STYLE_PROFILE_LINK);
     Button owner = new Button(userName);
     
     ClickListener buttonClickListener = new ClickListener() {
@@ -70,11 +71,10 @@ public class UserProfileLink extends HorizontalLayout {
         Resource imageResource = new StreamResource(new InputStreamStreamSource(picture.getInputStream()), 
           userName + picture.getMimeType(), ExplorerApp.get());
         
-        Embedded image = new Embedded("", imageResource);
+        Embedded image = new Embedded(null, imageResource);
         image.setType(Embedded.TYPE_IMAGE);
         image.setHeight(30, Embedded.UNITS_PIXELS);
         image.setWidth(30, Embedded.UNITS_PIXELS);
-        image.addStyleName(ExplorerLayout.STYLE_PROFILE_PICTURE);
         image.addListener(new MouseEvents.ClickListener() {
           private static final long serialVersionUID = 7341560240277898495L;
           public void click(com.vaadin.event.MouseEvents.ClickEvent event) {

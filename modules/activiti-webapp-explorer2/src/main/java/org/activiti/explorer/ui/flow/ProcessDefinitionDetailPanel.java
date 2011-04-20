@@ -22,16 +22,21 @@ import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.ExplorerLayout;
+import org.activiti.explorer.ui.Images;
+import org.activiti.explorer.ui.custom.DetailPanel;
+import org.activiti.explorer.ui.custom.PrettyTimeLabel;
 import org.activiti.explorer.ui.flow.listener.StartFlowClickListener;
+import org.activiti.explorer.ui.form.FormPropertiesEventListener;
 import org.activiti.explorer.ui.form.FormPropertiesForm;
 import org.activiti.explorer.ui.form.FormPropertiesForm.FormPropertiesEvent;
-import org.activiti.explorer.ui.form.FormPropertiesEventListener;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 
@@ -40,7 +45,7 @@ import com.vaadin.ui.themes.Reindeer;
  * 
  * @author Frederik Heremans
  */
-public class ProcessDefinitionDetailPanel extends Panel {
+public class ProcessDefinitionDetailPanel extends DetailPanel {
   
   private static final long serialVersionUID = -2018798598805436750L;
   
@@ -55,10 +60,10 @@ public class ProcessDefinitionDetailPanel extends Panel {
   protected I18nManager i18nManager;
   
   // UI
+  protected VerticalLayout verticalLayout;
   protected HorizontalLayout detailContainer;
   protected HorizontalLayout actionsContainer;
   protected Label nameLabel;
-  protected Label categoryLabel;
   protected Button startFlowButton;
   
   protected FormPropertiesForm processDefinitionStartForm;
@@ -72,6 +77,10 @@ public class ProcessDefinitionDetailPanel extends Panel {
     this.flowPage = flowPage;
     this.processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(processDefinitionId).singleResult();
 
+    if(processDefinition != null) {
+      deployment = repositoryService.createDeploymentQuery().deploymentId(processDefinition.getDeploymentId()).singleResult();
+    }
+    
     initUi();
   }
   
@@ -79,22 +88,32 @@ public class ProcessDefinitionDetailPanel extends Panel {
     setSizeFull();
     addStyleName(Reindeer.LAYOUT_WHITE);
     
-    if(processDefinition != null) {
-      deployment = repositoryService.createDeploymentQuery().deploymentId(processDefinition.getDeploymentId()).singleResult();
-    }
+    verticalLayout = new VerticalLayout();
+    verticalLayout.setWidth(100, UNITS_PERCENTAGE);
+    verticalLayout.setMargin(true);
+    setDetailContent(verticalLayout);
     
     // All details about the process definition
-    initName();
-    initCategory();
-    initActions();
+    initHeader();
     
     detailContainer = new HorizontalLayout();
     detailContainer.addStyleName(Reindeer.PANEL_LIGHT);
-    addComponent(detailContainer);
+    verticalLayout.addComponent(detailContainer);
     detailContainer.setSizeFull();
+    
+    initActions();
     
     // Show details
     showProcessDefinitionInfo();
+  }
+  
+  protected void initActions() {
+    startFlowButton = new Button(i18nManager.getMessage(Messages.FLOW_START));
+    startFlowButton.addListener(new StartFlowClickListener(processDefinition, flowPage));
+    
+    // Clear toolbar and add "start flow" button
+    flowPage.getToolBar().removeAllButtons();
+    flowPage.getToolBar().addButton(startFlowButton);
   }
   
 
@@ -142,40 +161,41 @@ public class ProcessDefinitionDetailPanel extends Panel {
     detailContainer.addComponent(processDefinitionStartForm);
   }
 
-
-  protected void initActions() {
-    actionsContainer = new HorizontalLayout();
-    actionsContainer.addStyleName(ExplorerLayout.STYLE_ACTION_BAR);
-    actionsContainer.setSizeFull();
-    actionsContainer.setSpacing(true);
+  protected void initHeader() {
+    GridLayout taskDetails = new GridLayout(4, 2);
+    taskDetails.setWidth(100, UNITS_PERCENTAGE);
+    taskDetails.addStyleName(ExplorerLayout.STYLE_TITLE_BLOCK);
+    taskDetails.setSpacing(true);
+    taskDetails.setMargin(false, false, true, false);
     
-    startFlowButton = new Button(i18nManager.getMessage(Messages.FLOW_START));
-    startFlowButton.addListener(new StartFlowClickListener(processDefinition, flowPage));
+    // Add image
+    Embedded image = new Embedded(null, Images.FLOW_50);
+    taskDetails.addComponent(image, 0, 0, 0, 1);
     
-    actionsContainer.addComponent(startFlowButton);
+    // Add task name
+    Label nameLabel = new Label(processDefinition.getName());
+    nameLabel.addStyleName(Reindeer.LABEL_H2);
+    taskDetails.addComponent(nameLabel, 1, 0, 3,0);
+
+    // Add version
+    String versionString = i18nManager.getMessage(Messages.FLOW_VERSION, processDefinition.getVersion());
+    Label versionLabel = new Label(versionString);
+    versionLabel.addStyleName(ExplorerLayout.STYLE_FLOW_HEADER_VERSION);
+    taskDetails.addComponent(versionLabel, 1, 1);
     
-    addComponent(actionsContainer);
-    addEmptySpace(this);
-  }
-
-
-  protected void initName() {
-    nameLabel = new Label(processDefinition.getName());
-    nameLabel.addStyleName(Reindeer.LABEL_H1);
-    addComponent(nameLabel);
+    // Add deploy time
+    PrettyTimeLabel deployTimeLabel = new PrettyTimeLabel(i18nManager.getMessage(Messages.FLOW_DEPLOY_TIME),
+      deployment.getDeploymentTime(), null);
+    deployTimeLabel.addStyleName(ExplorerLayout.STYLE_FLOW_HEADER_DEPLOY_TIME);
+    taskDetails.addComponent(deployTimeLabel, 2, 1);
+    
+    taskDetails.setColumnExpandRatio(1, 1.0f);
+    taskDetails.setColumnExpandRatio(2, 1.0f);
+    taskDetails.setColumnExpandRatio(3, 1.0f);
+    
+    verticalLayout.addComponent(taskDetails);
   }
   
-  protected void initCategory() {
-    if(processDefinition.getCategory() != null) {
-      categoryLabel = new Label(i18nManager.getMessage(Messages.FLOW_CATEGORY) + processDefinition.getCategory());
-      categoryLabel.addStyleName(Reindeer.LABEL_SMALL);
-      addComponent(categoryLabel);      
-    }
-    
-    addEmptySpace(this);
-  }
-  
- 
   protected void addEmptySpace(ComponentContainer container) {
     Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
     emptySpace.setSizeUndefined();

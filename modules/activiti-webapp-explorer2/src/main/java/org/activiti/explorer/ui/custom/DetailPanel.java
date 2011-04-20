@@ -24,7 +24,8 @@ import com.vaadin.ui.themes.Reindeer;
 
 
 /**
- * Panel that should be used for main-content.
+ * Panel that should be used for main-content. Only use {@link #setDetailContent(ComponentContainer)}
+ * and {@link #setFixedButtons(Component)} to add components.
  * 
  * @author Frederik Heremans
  */
@@ -42,7 +43,7 @@ public class DetailPanel extends VerticalLayout {
     CssLayout cssLayout = new CssLayout();
     cssLayout.addStyleName(ExplorerLayout.STYLE_DETAIL_PANEL);
     cssLayout.setSizeFull();
-    addComponent(cssLayout);
+    super.addComponent(cssLayout);
     
     mainPanel = new Panel();
     mainPanel.addStyleName(Reindeer.PANEL_LIGHT);
@@ -63,8 +64,24 @@ public class DetailPanel extends VerticalLayout {
    * stays visible all the time.
    */
   public void setFixedButtons(Component component) {
-    // TODO
-    //addComponent(component);
+    if(getComponentCount() == 2) {
+      removeComponent(getComponent(1));
+    }
+    addComponent(component);
   }
   
+  @Override
+  public void addComponent(Component c) {
+    throw new UnsupportedOperationException("Cannot add components manually. Use setDetailContent or setFixedButtons");
+  }
+  
+  @Override
+  public void addComponent(Component c, int index) {
+     throw new UnsupportedOperationException("Cannot add components manually. Use setDetailContent or setFixedButtons");
+  }
+  
+  @Override
+  public void addComponentAsFirst(Component c) {
+    throw new UnsupportedOperationException("Cannot add components manually. Use setDetailContent or setFixedButtons");
+  }
 }

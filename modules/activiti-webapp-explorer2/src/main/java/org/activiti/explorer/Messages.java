@@ -40,7 +40,6 @@ public interface Messages {
   
   // Footer
   static final String FOOTER_MESSAGE = "footer.message";
-  
 
   // Main menu
   static final String MAIN_MENU_TASKS = "main.menu.tasks";
@@ -172,6 +171,7 @@ public interface Messages {
   static final String FLOW_HEADER_DIAGRAM = "flow.header.diagram";
   static final String FLOW_NO_DIAGRAM = "flow.no.diagram";
   static final String FLOW_START = "flow.start";
+  static final String FLOW_START_TIME = "flow.start.time";
   static final String FLOW_STARTED_NOTIFICATION = "flow.started.notification";
   static final String FLOW_INSTANCE_STARTED_ON = "flow.instance.started.on";
   static final String FLOW_INSTANCE_HEADER_DIAGRAM = "flow.instance.header.diagram";

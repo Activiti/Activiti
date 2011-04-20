@@ -28,7 +28,6 @@ public class Images {
   public static final Resource WHITE_DIVIDER = new ThemeResource("img/divider-white.png");
   public static final Resource TASK = new ThemeResource("img/task-22.png");
   public static final Resource CLOCK = new ThemeResource("img/clock.png");
-  public static final Resource PROCESS = new ThemeResource("img/process.png");
   public static final Resource PROCESS_48PX = new ThemeResource("img/process_48.png");
   public static final Resource RESOURCE = new ThemeResource("img/resource.png");
   public static final Resource WARNING = new ThemeResource("img/warning.png");
@@ -76,4 +75,7 @@ public class Images {
   public static final Resource RELATED_CONTENT_PDF = new ThemeResource("img/page_white_acrobat.png");
   public static final Resource RELATED_CONTENT_PICTURE = new ThemeResource("img/picture.png");
 
+  // Flows
+  public static final Resource FLOW_50 = new ThemeResource("img/flow-50.png");
+  public static final Resource FLOW_22 = new ThemeResource("img/flow-22.png");
 }

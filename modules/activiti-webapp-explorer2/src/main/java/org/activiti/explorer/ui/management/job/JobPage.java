@@ -89,8 +89,8 @@ public class JobPage extends ManagementPage {
     });
     
     // Create column headers
-    jobTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.PROCESS));
-    jobTable.setColumnWidth("icon", 32);
+    jobTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.FLOW_22));
+    jobTable.setColumnWidth("icon", 22);
     
     jobTable.addContainerProperty("name", String.class, null);
     jobTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);

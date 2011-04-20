@@ -21,7 +21,6 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.form.FormProperty;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
-import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.ExplorerLayout;
 
 import com.vaadin.data.Validator.InvalidValueException;
@@ -84,6 +83,11 @@ public class FormPropertiesForm extends VerticalLayout {
     cancelFormButton.setCaption(caption);
   }
   
+  public void setFormHelp(String caption) {
+    formTitle.setValue(caption);
+    formTitle.setVisible(caption != null);
+  }
+  
   /**
    * Clear all (writable) values in the form.
    */
@@ -92,8 +96,9 @@ public class FormPropertiesForm extends VerticalLayout {
   }
 
   protected void initTitle() {
-    formTitle = new Label(i18nManager.getMessage(Messages.TASK_FORM_HELP));
+    formTitle = new Label();
     formTitle.addStyleName(ExplorerLayout.STYLE_H4);
+    formTitle.setVisible(false);
     addComponent(formTitle);
   }
  

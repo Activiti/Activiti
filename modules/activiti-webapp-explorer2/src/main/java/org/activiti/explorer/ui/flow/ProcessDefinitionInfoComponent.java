@@ -21,18 +21,13 @@ import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.ExplorerLayout;
-import org.activiti.explorer.ui.Images;
 
-import com.ocpsoft.pretty.time.PrettyTime;
 import com.vaadin.terminal.StreamResource;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.Embedded;
-import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.Reindeer;
 
 
 /**
@@ -63,55 +58,16 @@ public class ProcessDefinitionInfoComponent extends VerticalLayout {
     this.processDefinition = processDefinition;
     this.deployment = deployment;
     
-    initTimeDetails();
+    addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
+    
     initImage();
-  }
-  
-  protected void initTimeDetails() {
-    timeDetails = new HorizontalLayout();
-    timeDetails.setSpacing(true);
-    timeDetails.setSizeUndefined();
-    addComponent(timeDetails);
-
-    Embedded clockImage = new Embedded(null, Images.CLOCK);
-    timeDetails.addComponent(clockImage);
-
-    // The other time fields are layed out in a 2 column grid
-    GridLayout grid = new GridLayout();
-    grid.addStyleName(ExplorerLayout.STYLE_TASK_DETAILS);
-    grid.setSpacing(true);
-    grid.setColumns(2);
-
-    timeDetails.addComponent(grid);
-    timeDetails.setComponentAlignment(grid, Alignment.MIDDLE_LEFT);
-
-    // Version
-    Label version = new Label(i18nManager.getMessage(Messages.FLOW_VERSION) + processDefinition.getVersion());
-    version.addStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
-    version.setSizeUndefined();
-    grid.addComponent(version);
-    grid.space();
-    
-    // Deployment time
-    if (deployment.getDeploymentTime() != null) {
-      Label createTime = new Label(i18nManager.getMessage(Messages.FLOW_DEPLOY_TIME) + new PrettyTime().format(deployment.getDeploymentTime()));
-      createTime.addStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
-      createTime.setSizeUndefined();
-      grid.addComponent(createTime);
-      
-      Label realCreateTime = new Label("(" + deployment.getDeploymentTime() + ")");
-      realCreateTime.addStyleName(Reindeer.LABEL_SMALL);
-      realCreateTime.setSizeUndefined();
-      grid.addComponent(realCreateTime);
-    }
-    
   }
   
   protected void initImage() {
     VerticalLayout processImageContainer = new VerticalLayout();
     
     Label processTitle = new Label(i18nManager.getMessage(Messages.FLOW_HEADER_DIAGRAM));
-    processTitle.addStyleName(ExplorerLayout.STYLE_PROCESS_DEFINITION_DETAILS_HEADER);
+    processTitle.addStyleName(ExplorerLayout.STYLE_H3);
     processImageContainer.addComponent(processTitle);
     
     if(processDefinition.getDiagramResourceName() != null) {
@@ -123,10 +79,8 @@ public class ProcessDefinitionInfoComponent extends VerticalLayout {
       processImageContainer.addComponent(embedded);
     } else {
       Label noImageAvailable = new Label(i18nManager.getMessage(Messages.FLOW_NO_DIAGRAM));
-      noImageAvailable.addStyleName(Reindeer.LABEL_SMALL);
       processImageContainer.addComponent(noImageAvailable);
     }
-    
     addComponent(processImageContainer);
   }
   

@@ -102,6 +102,12 @@ public class ToolBar extends HorizontalLayout {
     addComponent(button);
     setComponentAlignment(button, Alignment.MIDDLE_RIGHT);
   }
+  
+  public void removeAllButtons() {
+    for(Button b : toolButtons) {
+      removeComponent(b);
+    }
+  }
  
   /**
    * Update the count field on the entry with the given key.

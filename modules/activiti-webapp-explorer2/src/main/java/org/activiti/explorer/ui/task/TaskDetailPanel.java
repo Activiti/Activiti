@@ -117,6 +117,7 @@ public class TaskDetailPanel extends DetailPanel {
     taskDetails.setWidth(100, UNITS_PERCENTAGE);
     taskDetails.addStyleName(ExplorerLayout.STYLE_TITLE_BLOCK);
     taskDetails.setSpacing(true);
+    taskDetails.setMargin(false, false, true, false);
     
     // Add image
     Embedded image = new Embedded(null, Images.TASK_50);
@@ -173,7 +174,6 @@ public class TaskDetailPanel extends DetailPanel {
   }
   
   protected void initDescriptionAndClaimButton() {
-    addEmptySpace(centralLayout);
     HorizontalLayout descriptionLayout = new HorizontalLayout();
     descriptionLayout.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
     descriptionLayout.setWidth(100, UNITS_PERCENTAGE);
@@ -258,6 +258,7 @@ public class TaskDetailPanel extends DetailPanel {
       taskForm = new FormPropertiesForm();
       taskForm.setSubmitButtonCaption(i18nManager.getMessage(Messages.TASK_COMPLETE));
       taskForm.setCancelButtonCaption(i18nManager.getMessage(Messages.TASK_RESET_FORM));
+      taskForm.setFormHelp(i18nManager.getMessage(Messages.TASK_FORM_HELP));
       taskForm.setFormProperties(formData.getFormProperties());
       
       taskForm.addListener(new FormPropertiesEventListener() {
