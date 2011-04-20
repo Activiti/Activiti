@@ -706,7 +706,7 @@ public class SignavioConnector extends AbstractRepositoryConnector implements Si
       sendRequest(jsonRequest);
 
       // TODO: return the object
-      return getRepositoryArtifact(id);
+      return getRepositoryArtifact("/"+id);
     } catch (Exception je) {
       throw new RepositoryException("Unable to create model '" + artifactName + "' in parent folder '" + parentFolderId + "'", je);
     }
