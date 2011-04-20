@@ -19,6 +19,7 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Task;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
+import org.activiti.explorer.LoggedInUser;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
@@ -125,11 +126,21 @@ public class SubTaskComponent extends CustomComponent {
           if (newTaskTextField != null && newTaskTextField.getValue() != null
                   && !"".equals(newTaskTextField.getValue().toString())) {
             
+            LoggedInUser loggedInUser = ExplorerApp.get().getLoggedInUser();
+            
             // save task
             Task newTask = taskService.newTask();
             newTask.setParentTaskId(parentTask.getId());
-            newTask.setAssignee(parentTask.getAssignee());
-            newTask.setOwner(parentTask.getOwner());
+            if (parentTask.getAssignee() != null) {
+              newTask.setAssignee(parentTask.getAssignee());
+            } else {
+              newTask.setAssignee(loggedInUser.getId());
+            }
+            if (parentTask.getOwner() != null) {
+              newTask.setOwner(parentTask.getOwner());
+            } else {
+              newTask.setOwner(loggedInUser.getId());
+            }
             newTask.setName(newTaskTextField.getValue().toString());
             taskService.saveTask(newTask);
             
@@ -202,7 +213,7 @@ public class SubTaskComponent extends CustomComponent {
       subTaskLink.addStyleName(Reindeer.BUTTON_LINK);
       subTaskLink.addListener(new ClickListener() {
         public void buttonClick(ClickEvent event) {
-          ExplorerApp.get().getViewManager().showInboxPage(subTask.getId());
+          ExplorerApp.get().getViewManager().showTaskPage(subTask.getId());
         }
       });
       subTaskLayout.addComponent(subTaskLink);

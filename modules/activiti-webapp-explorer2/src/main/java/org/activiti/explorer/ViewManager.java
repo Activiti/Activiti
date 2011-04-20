@@ -13,6 +13,9 @@
 
 package org.activiti.explorer;
 
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.task.Task;
 import org.activiti.explorer.ui.AbstractPage;
 import org.activiti.explorer.ui.MainWindow;
 import org.activiti.explorer.ui.flow.FlowMenuBar;
@@ -51,8 +54,11 @@ public class ViewManager {
   
   @Autowired
   protected MainWindow mainWindow;
+
+  protected TaskService taskService;
   
   public ViewManager() {
+    this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
   }
   
   public void showLoginPage() {
@@ -68,6 +74,29 @@ public class ViewManager {
   }
   
   // Tasks
+  
+  /**
+   * Generic method which will figure out to which
+   * task page must be jumped, based on the task data.
+   * 
+   * Note that, if possible, it is always more
+   * performant to use the more specific showXXXPage() methods.
+   */
+  public void showTaskPage(String taskId) {
+    Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+    String loggedInUserId = ExplorerApp.get().getLoggedInUser().getId();
+    if (loggedInUserId.equals(task.getOwner())) {
+      showCasesPage(taskId);
+    } else if (loggedInUserId.equals(task.getAssignee())) {
+      showInboxPage(taskId);
+    } else if (taskService.createTaskQuery().taskInvolvedUser(loggedInUserId).count() == 1) {
+      showInvolvedPage(taskId);
+    } else {
+      ExplorerApp.get().getNotificationManager().showErrorNotification(
+              Messages.NAVIGATION_ERROR_NOT_INVOLVED_TITLE, 
+              ExplorerApp.get().getI18nManager().getMessage(Messages.NAVIGATION_ERROR_NOT_INVOLVED, taskId));
+    }
+  }
   
   public void showCasesPage() {
     switchView(new CasesPage(), MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_CASES);
