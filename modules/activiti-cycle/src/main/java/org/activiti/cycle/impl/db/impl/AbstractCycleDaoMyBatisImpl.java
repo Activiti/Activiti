@@ -15,6 +15,7 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.db.IbatisVariableTypeHandler;
 import org.activiti.engine.impl.util.IoUtil;
+import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.impl.variable.VariableType;
 import org.apache.ibatis.builder.xml.XMLConfigBuilder;
 import org.apache.ibatis.mapping.Environment;
@@ -36,7 +37,7 @@ public abstract class AbstractCycleDaoMyBatisImpl {
 	protected SqlSessionFactory getSessionFactory() {
 		if (dbFactories.get(processEngineName) == null) {
 			synchronized (dbFactories) {
-				// lazy initialization, only done once per proces engine!
+				// lazy initialization, only done once per process engine!
 				if (dbFactories.get(processEngineName) == null) {
 
 					ProcessEngineImpl engineImpl = (ProcessEngineImpl) ProcessEngines.getProcessEngine(processEngineName);
@@ -46,7 +47,7 @@ public abstract class AbstractCycleDaoMyBatisImpl {
 					TransactionFactory transactionFactory = processEngineConfiguration.getTransactionFactory();
 					SqlSessionFactory sqlSessionFactory = createSessionFactory(dataSource, transactionFactory);
 
-					DbSqlSessionFactory factory = new DbSqlSessionFactory();
+					DbSqlSessionFactory factory = new DbSqlSessionFactory();					
 					factory.setDatabaseType(processEngineConfiguration.getDatabaseType());
 					factory.setIdGenerator(processEngineConfiguration.getIdGenerator());
 					factory.setSqlSessionFactory(sqlSessionFactory);
@@ -60,17 +61,15 @@ public abstract class AbstractCycleDaoMyBatisImpl {
 
 	public SqlSessionFactory createSessionFactory(DataSource dataSource, TransactionFactory transactionFactory) {
 		InputStream inputStream = null;
-		try {
-			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-			inputStream = classLoader.getResourceAsStream("org/activiti/db/cycle/ibatis/activiti.ibatis.mem.conf.xml");
+		try {			
+		  inputStream =	ReflectUtil.getResourceAsStream("org/activiti/db/cycle/ibatis/activiti.ibatis.mem.conf.xml");
 
 			// update the jdbc parameters to the configured ones...
 			Environment environment = new Environment("default", transactionFactory, dataSource);
-			Reader reader = new InputStreamReader(inputStream);
-			XMLConfigBuilder parser = new XMLConfigBuilder(reader);
+			XMLConfigBuilder parser = new XMLConfigBuilder(inputStream);
 			Configuration configuration = parser.getConfiguration();
 			configuration.setEnvironment(environment);
-			configuration.getTypeHandlerRegistry().register(VariableType.class, JdbcType.VARCHAR, new IbatisVariableTypeHandler());
+//			configuration.getTypeHandlerRegistry().register(VariableType.class, JdbcType.VARCHAR, new IbatisVariableTypeHandler());
 			configuration = parser.parse();
 
 			return new DefaultSqlSessionFactory(configuration);

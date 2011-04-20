@@ -2,7 +2,7 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
   
-<mapper namespace="org.activiti.cycle">
+<mapper namespace="org.activiti.cycle.impl.db.entity.RepositoryNodePeopleLinkEntity">
 
   <resultMap id="resultMapPeopleLink" type="org.activiti.cycle.impl.db.entity.RepositoryNodePeopleLinkEntity">
     <id property="id" column="ID_"/>
