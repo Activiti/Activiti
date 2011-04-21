@@ -61,10 +61,6 @@ public class TaskManager extends AbstractManager {
         .getVariableInstanceManager()
         .deleteVariableInstanceByTaskId(taskId);
 
-      commandContext
-        .getAttachmentManager()
-        .deleteAttachmentsByTaskId(taskId);
-
       if (cascade) {
         commandContext
           .getHistoricTaskInstanceManager()

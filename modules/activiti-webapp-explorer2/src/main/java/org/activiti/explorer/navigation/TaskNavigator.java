@@ -149,57 +149,10 @@ public class TaskNavigator implements Navigator {
     
     if (!pageFound) {
       // If URL doesnt match anymore, we must use the task data to redirect to the right page
-      directToPageBasedOnTaskData(viewManager, taskId, task, loggedInUserId);
+      viewManager.showTaskPage(taskId);
     }
   }
-  
-  protected void directToPageBasedOnTaskData(ViewManager viewManager, String taskId, Task task, String loggedInUserId) {
-    if (task == null) {
-      // If task is not found, our only hope is the archived page
-      boolean isOwner = historyService.createHistoricTaskInstanceQuery()
-        .taskId(taskId)
-        .taskOwner(loggedInUserId)
-        .finished()
-        .count() == 1;
-      if (isOwner) {
-        viewManager.showArchivedPage(taskId);
-      } else {
-        showNavigationError(taskId);
-      }
-    } else if (loggedInUserId.equals(task.getOwner())) {
-      viewManager.showCasesPage(task.getId());
-    } else if (loggedInUserId.equals(task.getAssignee())) {
-      viewManager.showInboxPage(task.getId());
-    } else {
-      boolean pageFound = false;
-      
-      // First check involved
-      boolean userInvolved = taskService.createTaskQuery().taskInvolvedUser(loggedInUserId).count() == 1;
-      if (userInvolved) {
-        viewManager.showInvolvedPage(task.getId());
-        pageFound = true;
-      } else {
-        // Then check queued
-        List<String> groupIds = getGroupIds(loggedInUserId);
-        List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(task.getId());
-        Iterator<IdentityLink> identityLinkIterator = identityLinks.iterator();
-        
-        while (!pageFound && identityLinkIterator.hasNext()) {
-          IdentityLink identityLink = identityLinkIterator.next();
-          if (identityLink.getGroupId() != null && groupIds.contains(identityLink.getGroupId())) {
-            viewManager.showQueuedPage(identityLink.getGroupId(), task.getId());
-            pageFound = true;
-          }
-        }
-      }
-      
-      // We've tried hard enough, the user now gets a notification. He deserves it.
-      if (!pageFound) {
-        showNavigationError(taskId);
-      }
-    }
-  }
-  
+ 
   protected void showNavigationError(String taskId) {
     String description = ExplorerApp.get().getI18nManager().getMessage(Messages.NAVIGATION_ERROR_NOT_INVOLVED, taskId);
     ExplorerApp.get().getNotificationManager().showErrorNotification(Messages.NAVIGATION_ERROR_NOT_INVOLVED_TITLE, description);

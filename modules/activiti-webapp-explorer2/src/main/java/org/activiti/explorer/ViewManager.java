@@ -13,9 +13,16 @@
 
 package org.activiti.explorer;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.activiti.engine.HistoryService;
+import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.identity.Group;
+import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.activiti.explorer.ui.AbstractPage;
 import org.activiti.explorer.ui.MainWindow;
@@ -59,10 +66,12 @@ public class ViewManager {
 
   protected TaskService taskService;
   protected HistoryService historyService;
+  protected IdentityService identityService;
   
   public ViewManager() {
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
     this.historyService = ProcessEngines.getDefaultProcessEngine().getHistoryService();
+    this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
   }
   
   public void showLoginPage() {
@@ -106,8 +115,35 @@ public class ViewManager {
     } else if (taskService.createTaskQuery().taskInvolvedUser(loggedInUserId).count() == 1) {
       showInvolvedPage(taskId);
     } else {
-     showNavigationError(taskId);
+      // queued
+      List<String> groupIds = getGroupIds(loggedInUserId);
+      List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(task.getId());
+      Iterator<IdentityLink> identityLinkIterator = identityLinks.iterator();
+        
+      boolean pageFound = false;
+      while (!pageFound && identityLinkIterator.hasNext()) {
+        IdentityLink identityLink = identityLinkIterator.next();
+        if (identityLink.getGroupId() != null && groupIds.contains(identityLink.getGroupId())) {
+          showQueuedPage(identityLink.getGroupId(), task.getId());
+          pageFound = true;
+        }
+      }
+      
+      // We've tried hard enough, the user now gets a notification. He deserves it.
+      if (!pageFound) {
+        showNavigationError(taskId);
+      }
     }
+  }
+
+  protected List<String> getGroupIds(String userId) {
+    List<String> groupIds = new ArrayList<String>();
+    List<Group> groups = identityService.createGroupQuery().groupMember(userId).list();
+    for (Group group : groups) {
+      groupIds.add(group.getId());
+    }
+    
+    return groupIds;
   }
   
   protected void showNavigationError(String taskId) {

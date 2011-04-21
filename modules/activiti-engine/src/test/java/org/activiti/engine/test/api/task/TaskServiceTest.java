@@ -174,8 +174,10 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
       assertEquals("someprocessinstanceid", attachment.getProcessInstanceId());
       assertEquals("http://weather.com", attachment.getUrl());
       assertNull(taskService.getAttachmentContent(attachment.getId()));
-      // Finally, delete task
+      
+      // Finally, clean up
       taskService.deleteTask(taskId, true);
+      taskService.deleteAttachment(attachment.getId());
     }
   }
 
