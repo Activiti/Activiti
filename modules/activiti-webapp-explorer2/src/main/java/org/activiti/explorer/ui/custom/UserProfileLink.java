@@ -15,9 +15,13 @@ package org.activiti.explorer.ui.custom;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Picture;
+import org.activiti.engine.identity.User;
+import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.ViewManager;
+import org.activiti.explorer.cache.UserCache;
 import org.activiti.explorer.ui.ExplorerLayout;
+import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.util.InputStreamStreamSource;
 
 import com.vaadin.event.MouseEvents;
@@ -36,36 +40,32 @@ import com.vaadin.ui.themes.Reindeer;
  * the profile picture (if available).
  * 
  * @author Frederik Heremans
+ * @author Joram Barrez
  */
 public class UserProfileLink extends HorizontalLayout {
 
   private static final long serialVersionUID = 1L;
   
-  protected boolean renderPicture;
-  
   protected IdentityService identityService;
   protected ViewManager viewManager;
+  protected UserCache userCache;
   
-  public UserProfileLink(IdentityService identityService, boolean renderPicture, final String userName) {
-    this.renderPicture = renderPicture;
+  public UserProfileLink(IdentityService identityService, boolean renderPicture, final String userId) {
     this.identityService = identityService;
     this.viewManager = ExplorerApp.get().getViewManager();
+    this.userCache = ExplorerApp.get().getUserCache();
     
+    setSizeUndefined();
+    setSpacing(true);
     addStyleName(ExplorerLayout.STYLE_PROFILE_LINK);
-    Button owner = new Button(userName);
     
-    ClickListener buttonClickListener = new ClickListener() {
-      private static final long serialVersionUID = 1L;
+    initPicture(identityService, renderPicture, userId);
+    initUserLink(userId);
+    initSkypeButton(userId);
+  }
 
-      public void buttonClick(ClickEvent event) {
-        viewManager.showProfilePopup(userName);
-      }
-    };
-    owner.addStyleName(Reindeer.BUTTON_LINK);
-    owner.addListener(buttonClickListener);
-    
+  protected void initPicture(IdentityService identityService, boolean renderPicture, final String userName) {
     if(renderPicture) {
-      // Also add the user's picture
       Picture picture = identityService.getUserPicture(userName);
       if(picture != null) {
         Resource imageResource = new StreamResource(new InputStreamStreamSource(picture.getInputStream()), 
@@ -88,10 +88,29 @@ public class UserProfileLink extends HorizontalLayout {
        // TODO: what when no image is available?
       }
     }
-    addComponent(owner);
-    setComponentAlignment(owner, Alignment.MIDDLE_LEFT);
-    
-    setSizeUndefined();
-    setSpacing(true);
   }
+  
+  protected void initUserLink(final String userId) {
+    User user = userCache.findUser(userId);
+    Button userButton = new Button(user.getFirstName() + " " + user.getLastName());
+    ClickListener buttonClickListener = new ClickListener() {
+      public void buttonClick(ClickEvent event) {
+        viewManager.showProfilePopup(userId);
+      }
+    };
+    userButton.addStyleName(Reindeer.BUTTON_LINK);
+    userButton.addListener(buttonClickListener);
+    addComponent(userButton);
+    setComponentAlignment(userButton, Alignment.MIDDLE_LEFT);
+  }
+  
+  protected void initSkypeButton(String userId) {
+    String skypeId = identityService.getUserInfo(userId, Constants.USER_INFO_SKYPE);
+    if (skypeId != null) {
+      SkypeLabel skypeLabel = new SkypeLabel(skypeId);
+      addComponent(skypeLabel);
+      setComponentAlignment(skypeLabel, Alignment.MIDDLE_LEFT);
+    }
+  }
+  
 }

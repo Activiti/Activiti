@@ -34,7 +34,7 @@ import com.vaadin.ui.Table;
  */
 public abstract class ProcessInstancePage extends AbstractPage {
 
-  private static final long serialVersionUID = -2014219712718372355L;
+  private static final long serialVersionUID = 1L;
 
   protected LazyLoadingContainer processInstanceListContainer;
   protected LazyLoadingQuery lazyLoadingQuery;

@@ -122,7 +122,7 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
       
       // Finished icon
       taskTable.addContainerProperty("finished", Component.class, null, "", null, Table.ALIGN_CENTER);
-      taskTable.setColumnWidth("finished", 16);
+      taskTable.setColumnWidth("finished", 22);
       
       taskTable.addContainerProperty("name", String.class, null, i18nManager.getMessage(Messages.TASK_NAME),
               null, Table.ALIGN_LEFT);

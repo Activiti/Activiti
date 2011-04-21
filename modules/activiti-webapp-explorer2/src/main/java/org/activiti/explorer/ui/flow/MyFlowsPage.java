@@ -28,7 +28,7 @@ import com.vaadin.ui.Component;
  */
 public class MyFlowsPage extends ProcessInstancePage {
 
-  private static final long serialVersionUID = 8859037187001514376L;
+  private static final long serialVersionUID = 1L;
 
   protected String processInstanceId;
   
