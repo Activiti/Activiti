@@ -794,11 +794,11 @@
      * @param dialog the authentication dialog that is being submitted
      */
     onSubmit: function AuthenticationDialog_onSubmit(event, dialog) {
-      this.service.loadTree(dialog.getData());
+      this.service.loadTree(YAHOO.lang.merge(dialog.getData(), {treeId: 'repo'}));
       if (this._dialog) {
         this._dialog.destroy();
       }
-      location.reload();
+      //location.reload();
     },
 
     /**
@@ -814,6 +814,11 @@
       }
       this.service.loadTree(data);
       this._dialog.cancel();
+      location.reload();
+    },
+    
+    onLoadTreeSuccess: function AuthenticationDialog_onLoadTreeSuccess(response, obj)
+    {
       location.reload();
     }
 
