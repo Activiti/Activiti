@@ -29,6 +29,7 @@ import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.custom.ConfirmationDialogPopupWindow;
+import org.activiti.explorer.ui.custom.DetailPanel;
 import org.activiti.explorer.ui.custom.SelectUsersPopupWindow;
 import org.activiti.explorer.ui.event.ConfirmationEvent;
 import org.activiti.explorer.ui.event.ConfirmationEventListener;
@@ -45,7 +46,6 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -55,7 +55,7 @@ import com.vaadin.ui.themes.Reindeer;
 /**
  * @author Joram Barrez
  */
-public class GroupDetailPanel extends Panel implements MemberShipChangeListener {
+public class GroupDetailPanel extends DetailPanel implements MemberShipChangeListener {
 
   private static final long serialVersionUID = 1L;
   
@@ -85,52 +85,65 @@ public class GroupDetailPanel extends Panel implements MemberShipChangeListener 
   
   protected void init() {
     setSizeFull();
-    panelLayout = ((VerticalLayout) getContent());
-    panelLayout.setSpacing(true);
     addStyleName(Reindeer.PANEL_LIGHT);
     
     initPageTitle();
     initGroupDetails();
     initMembers();
+    
+    initActions();
   }
   
-  protected void initPageTitle() {
-    HorizontalLayout layout = new HorizontalLayout();
-    layout.setWidth(100, UNITS_PERCENTAGE);
-    layout.setSpacing(true);
-    addComponent(layout);
-    
-    Embedded groupImage = new Embedded(null, Images.USER_32);
-    groupImage.setWidth(48, UNITS_PIXELS);
-    groupImage.setHeight(48, UNITS_PIXELS);
-    layout.addComponent(groupImage);
-    
-    Label groupName = new Label(group.getName());
-    groupName.setSizeUndefined();
-    groupName.addStyleName(Reindeer.LABEL_H1);
-    layout.addComponent(groupName);
-    layout.setComponentAlignment(groupName, Alignment.MIDDLE_LEFT);
-    
-    Button createUserButton = new Button(i18nManager.getMessage(Messages.GROUP_CREATE));
-    layout.addComponent(createUserButton);
-    layout.setComponentAlignment(createUserButton, Alignment.MIDDLE_RIGHT);
-    layout.setExpandRatio(createUserButton, 1.0f);
-    createUserButton.addListener(new ClickListener() {
+  protected void initActions() {
+    Button createGroupButton = new Button(i18nManager.getMessage(Messages.GROUP_CREATE));
+    createGroupButton.setIcon(Images.GROUP_16);
+    createGroupButton.addListener(new ClickListener() {
       public void buttonClick(ClickEvent event) {
         NewGroupPopupWindow popup = new NewGroupPopupWindow();
         ExplorerApp.get().getViewManager().showPopupWindow(popup);
       }
     });
+    groupPage.getToolBar().removeAllButtons();
+    groupPage.getToolBar().addButton(createGroupButton);
+  }
+
+  protected void initPageTitle() {
+    HorizontalLayout layout = new HorizontalLayout();
+    layout.setWidth(100, UNITS_PERCENTAGE);
+    layout.addStyleName(ExplorerLayout.STYLE_TITLE_BLOCK);
+    layout.setSpacing(true);
+    layout.setMargin(false, false, true, false);
+    addDetailComponent(layout);
+    
+    Embedded groupImage = new Embedded(null, Images.GROUP_50);
+    layout.addComponent(groupImage);
+    
+    Label groupName = new Label(getGroupName(group));
+    groupName.setSizeUndefined();
+    groupName.addStyleName(Reindeer.LABEL_H2);
+    layout.addComponent(groupName);
+    layout.setComponentAlignment(groupName, Alignment.MIDDLE_LEFT);
+    layout.setExpandRatio(groupName, 1.0f);
   }
   
+  protected String getGroupName(Group theGroup) {
+    if(theGroup.getName() == null) {
+      return theGroup.getId();
+    }
+    return group.getName();
+  }
+
   protected void initGroupDetails() {
     Label groupDetailsHeader = new Label(i18nManager.getMessage(Messages.GROUP_HEADER_DETAILS));
-    groupDetailsHeader.addStyleName(Reindeer.LABEL_H1);
-    addComponent(groupDetailsHeader);
+    groupDetailsHeader.addStyleName(ExplorerLayout.STYLE_H3);
+    groupDetailsHeader.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
+    
+    addDetailComponent(groupDetailsHeader);
     
     detailLayout = new HorizontalLayout();
     detailLayout.setSpacing(true);
-    addComponent(detailLayout);
+    detailLayout.setMargin(true, false, true, false);
+    addDetailComponent(detailLayout);
     
     populateGroupDetails();
   }
@@ -143,7 +156,7 @@ public class GroupDetailPanel extends Panel implements MemberShipChangeListener 
   protected void initGroupProperties() {
     detailsGrid = new GridLayout(2, 3);
     detailsGrid.setSpacing(true);
-    detailLayout.setMargin(false, true, false, false);
+    detailLayout.setMargin(true, true, true, false);
     detailLayout.addComponent(detailsGrid);
     
     // id
@@ -236,7 +249,7 @@ public class GroupDetailPanel extends Panel implements MemberShipChangeListener 
   }
   
   protected void initDeleteButton(VerticalLayout actionsLayout) {
-    Button deleteButton = new Button(i18nManager.getMessage(Messages.USER_DELETE));
+    Button deleteButton = new Button(i18nManager.getMessage(Messages.GROUP_DELETE));
     deleteButton.addStyleName(Reindeer.BUTTON_SMALL);
     actionsLayout.addComponent(deleteButton);
     
@@ -264,30 +277,33 @@ public class GroupDetailPanel extends Panel implements MemberShipChangeListener 
   protected void initMembers() {
     HorizontalLayout membersHeader = new HorizontalLayout();
     membersHeader.setSpacing(true);
-    addComponent(membersHeader);
+    membersHeader.setWidth(100, UNITS_PERCENTAGE);
+    membersHeader.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
+    addDetailComponent(membersHeader);
     
     initMembersTitle(membersHeader);
     initAddMembersButton(membersHeader);
     
     membersLayout = new HorizontalLayout();
-    addComponent(membersLayout);
+    membersLayout.setWidth(100, UNITS_PERCENTAGE);
+    addDetailComponent(membersLayout);
     initMembersTable();
   }
   
   protected void initMembersTitle(HorizontalLayout membersHeader) {
     Label usersHeader = new Label(i18nManager.getMessage(Messages.GROUP_HEADER_USERS));
-    usersHeader.addStyleName(Reindeer.LABEL_H1);
+    usersHeader.addStyleName(ExplorerLayout.STYLE_H3);
     membersHeader.addComponent(usersHeader);
   }
   
   protected void initAddMembersButton(HorizontalLayout membersHeader) {
-    Embedded addButton = new Embedded(null, Images.ADD);
-    addButton.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
+    Button addButton = new Button();
+    addButton.addStyleName(ExplorerLayout.STYLE_ADD);
     membersHeader.addComponent(addButton);
-    membersHeader.setComponentAlignment(addButton, Alignment.MIDDLE_LEFT);
+    membersHeader.setComponentAlignment(addButton, Alignment.MIDDLE_RIGHT);
     
-    addButton.addListener(new com.vaadin.event.MouseEvents.ClickListener() {
-      public void click(com.vaadin.event.MouseEvents.ClickEvent event) {
+    addButton.addListener(new ClickListener() {
+      public void buttonClick(ClickEvent event) {
         final SelectUsersPopupWindow selectUsersPopup =  new SelectUsersPopupWindow(
                 i18nManager.getMessage(Messages.GROUP_SELECT_MEMBERS, group.getId()), 
                 true, false, getCurrentMembers());
@@ -325,7 +341,7 @@ public class GroupDetailPanel extends Panel implements MemberShipChangeListener 
     LazyLoadingQuery query = new GroupMembersQuery(group.getId(), this);
     if (query.size() > 0) {
       membersTable = new Table();
-      membersTable.setWidth(500, UNITS_PIXELS);
+      membersTable.setWidth(100, UNITS_PERCENTAGE);
       membersTable.setHeight(400, UNITS_PIXELS);
       
       membersTable.setEditable(false);

@@ -151,7 +151,7 @@ public class TaskEventsPanel extends Panel {
       }, "event_" + taskEvent.getUserId() + Constants.MIMETYPE_EXTENSION_MAPPING.get(userPicture.getMimeType()), ExplorerApp.get());
       authorPicture = new Embedded(null, imageresource);
     } else {
-      authorPicture = new Embedded(null, Images.USER_32);
+      authorPicture = new Embedded(null, Images.USER_50);
     }
     
     authorPicture.setType(Embedded.TYPE_IMAGE);

@@ -153,17 +153,6 @@ public class CreateAttachmentPopupWindow extends PopupWindow {
       }
 
       Item item = attachmentTypes.addItem(editor.getName());
-      if(item == null) {
-        throw new IllegalArgumentException("Item is null");
-      }
-      
-      if(item.getItemProperty("type") == null) {
-        throw new IllegalArgumentException("Item type is null");
-      }
-      if(item.getItemProperty("name") == null) {
-        throw new IllegalArgumentException("Item name is null");
-      }
-      
       item.getItemProperty("type").setValue(image);
       item.getItemProperty("name").setValue(name);
     }

@@ -77,8 +77,8 @@ public class GroupPage extends ManagementPage {
     groupTable.setContainerDataSource(groupListContainer);
     
     // Column headers
-    groupTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.USER_32));
-    groupTable.setColumnWidth("icon", 32);
+    groupTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.GROUP_22));
+    groupTable.setColumnWidth("icon", 22);
     groupTable.addContainerProperty("name", String.class, null);
     groupTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
             

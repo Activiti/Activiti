@@ -116,7 +116,6 @@ public class DatabaseDetailPanel extends DetailPanel {
     } else {
       Label noDataLabel = new Label(i18nManager.getMessage(Messages.DATABASE_NO_ROWS));
       noDataLabel.addStyleName(ExplorerLayout.STYLE_DATABASE_DETAILS);
-      noDataLabel.addStyleName(Reindeer.LABEL_SMALL);
       addDetailComponent(noDataLabel);
       setDetailExpandRatio(noDataLabel, 1.0f);
     }

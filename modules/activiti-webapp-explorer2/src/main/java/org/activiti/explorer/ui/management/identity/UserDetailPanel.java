@@ -28,6 +28,7 @@ import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.custom.ConfirmationDialogPopupWindow;
+import org.activiti.explorer.ui.custom.DetailPanel;
 import org.activiti.explorer.ui.event.ConfirmationEvent;
 import org.activiti.explorer.ui.event.ConfirmationEventListener;
 import org.activiti.explorer.ui.event.SubmitEvent;
@@ -44,7 +45,6 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
@@ -55,7 +55,7 @@ import com.vaadin.ui.themes.Reindeer;
 /**
  * @author Joram Barrez
  */
-public class UserDetailPanel extends Panel implements MemberShipChangeListener {
+public class UserDetailPanel extends DetailPanel implements MemberShipChangeListener {
 
   private static final long serialVersionUID = 1L;
   
@@ -88,52 +88,61 @@ public class UserDetailPanel extends Panel implements MemberShipChangeListener {
   
   protected void init() {
     setSizeFull();
-    ((VerticalLayout) getContent()).setSpacing(true);
     addStyleName(Reindeer.PANEL_LIGHT);
     
     initPageTitle();
     initUserDetails();
     initGroups();
+    
+    initActions();
   }
   
-  protected void initPageTitle() {
-    HorizontalLayout layout = new HorizontalLayout();
-    layout.setWidth(100, UNITS_PERCENTAGE);
-    layout.setSpacing(true);
-    addComponent(layout);
-    
-    Embedded userImage = new Embedded(null, Images.USER_32);
-    userImage.setWidth(48, UNITS_PIXELS);
-    userImage.setHeight(48, UNITS_PIXELS);
-    layout.addComponent(userImage);
-    
-    Label userName = new Label(user.getFirstName() + " " + user.getLastName());
-    userName.setSizeUndefined();
-    userName.addStyleName(Reindeer.LABEL_H1);
-    layout.addComponent(userName);
-    layout.setComponentAlignment(userName, Alignment.MIDDLE_LEFT);
-    
+  protected void initActions() {
     Button createUserButton = new Button(i18nManager.getMessage(Messages.USER_CREATE));
-    layout.addComponent(createUserButton);
-    layout.setComponentAlignment(createUserButton, Alignment.MIDDLE_RIGHT);
-    layout.setExpandRatio(createUserButton, 1.0f);
+    createUserButton.setIcon(Images.USER_16);
+    
     createUserButton.addListener(new ClickListener() {
+      private static final long serialVersionUID = 1L;
       public void buttonClick(ClickEvent event) {
         NewUserPopupWindow newUserPopupWindow = new NewUserPopupWindow();
         ExplorerApp.get().getViewManager().showPopupWindow(newUserPopupWindow);
       }
     });
+    
+    userPage.getToolBar().removeAllButtons();
+    userPage.getToolBar().addButton(createUserButton);
+  }
+
+  protected void initPageTitle() {
+    HorizontalLayout layout = new HorizontalLayout();
+    layout.setWidth(100, UNITS_PERCENTAGE);
+    layout.setSpacing(true);
+    layout.setMargin(false, false, true, false);
+    layout.addStyleName(ExplorerLayout.STYLE_TITLE_BLOCK);
+    addDetailComponent(layout);
+    
+    Embedded userImage = new Embedded(null, Images.USER_50);
+    layout.addComponent(userImage);
+    
+    Label userName = new Label(user.getFirstName() + " " + user.getLastName());
+    userName.setSizeUndefined();
+    userName.addStyleName(Reindeer.LABEL_H2);
+    layout.addComponent(userName);
+    layout.setComponentAlignment(userName, Alignment.MIDDLE_LEFT);
+    layout.setExpandRatio(userName, 1.0f);
   }
   
   protected void initUserDetails() {
     Label userDetailsHeader = new Label(i18nManager.getMessage(Messages.USER_HEADER_DETAILS));
-    userDetailsHeader.addStyleName(Reindeer.LABEL_H1);
-    addComponent(userDetailsHeader);
+    userDetailsHeader.addStyleName(ExplorerLayout.STYLE_H3);
+    userDetailsHeader.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
+    addDetailComponent(userDetailsHeader);
     
     // Details: picture and basic info
     userDetailsLayout = new HorizontalLayout();
     userDetailsLayout.setSpacing(true);
-    addComponent(userDetailsLayout);
+    userDetailsLayout.setMargin(false, false, true, false);
+    addDetailComponent(userDetailsLayout);
     
     populateUserDetails();
   }
@@ -320,33 +329,40 @@ public class UserDetailPanel extends Panel implements MemberShipChangeListener {
   
   protected void initGroups() {
     HorizontalLayout groupHeader = new HorizontalLayout();
+    groupHeader.setWidth(100, UNITS_PERCENTAGE);
     groupHeader.setSpacing(true);
-    addComponent(groupHeader);
+    groupHeader.setMargin(false, false, true, false);
+    groupHeader.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
+    addDetailComponent(groupHeader);
     
     initGroupTitle(groupHeader);
     initAddGroupsButton(groupHeader);
     
     groupLayout = new HorizontalLayout(); // we wrap the table in a simple layout so we can remove the table easy later on
-    addComponent(groupLayout);
+    groupLayout.setWidth(100, UNITS_PERCENTAGE);
+    addDetailComponent(groupLayout);
     initGroupsTable();
   }
 
   protected void initGroupTitle(HorizontalLayout groupHeader) {
     Label groupsTitle = new Label(i18nManager.getMessage(Messages.USER_HEADER_GROUPS));
-    groupsTitle.addStyleName(Reindeer.LABEL_H1);
+    groupsTitle.addStyleName(ExplorerLayout.STYLE_H3);
     groupHeader.addComponent(groupsTitle);
   }
 
   protected void initAddGroupsButton(HorizontalLayout groupHeader) {
-    Embedded addButton = new Embedded(null, Images.ADD);
-    addButton.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
-    groupHeader.addComponent(addButton);
-    groupHeader.setComponentAlignment(addButton, Alignment.MIDDLE_LEFT);
+    Button addRelatedContentButton = new Button();
+    addRelatedContentButton.addStyleName(ExplorerLayout.STYLE_ADD);
+    groupHeader.addComponent(addRelatedContentButton);
+    groupHeader.setComponentAlignment(addRelatedContentButton, Alignment.MIDDLE_RIGHT);
     
-    addButton.addListener(new com.vaadin.event.MouseEvents.ClickListener() {
-      public void click(com.vaadin.event.MouseEvents.ClickEvent event) {
+    addRelatedContentButton.addListener(new ClickListener() {
+      private static final long serialVersionUID = 1L;
+
+      public void buttonClick(ClickEvent event) {
         final GroupSelectionPopupWindow selectionPopup = new GroupSelectionPopupWindow(identityService, user.getId());
         selectionPopup.addListener(new SubmitEventListener() {
+          private static final long serialVersionUID = 1L;
           protected void submitted(SubmitEvent event) {
             Set<String> selectedGroups = selectionPopup.getSelectedGroupIds();
             if (selectedGroups.size() > 0) {
@@ -370,19 +386,20 @@ public class UserDetailPanel extends Panel implements MemberShipChangeListener {
       groupTable = new Table();
       groupTable.setSortDisabled(true);
       groupTable.setHeight(150, UNITS_PIXELS);
+      groupTable.setWidth(100, UNITS_PERCENTAGE);
       groupLayout.addComponent(groupTable);
       
       groupContainer = new LazyLoadingContainer(groupsForUserQuery, 10);
       groupTable.setContainerDataSource(groupContainer);
       
       groupTable.addContainerProperty("id", Button.class, null);
-      groupTable.setColumnWidth("id", 100);
+      groupTable.setColumnExpandRatio("id", 22);
       groupTable.addContainerProperty("name", String.class, null);
-      groupTable.setColumnWidth("name", 175);
+      groupTable.setColumnExpandRatio("name", 45);
       groupTable.addContainerProperty("type", String.class, null);
-      groupTable.setColumnWidth("type", 100);
+      groupTable.setColumnExpandRatio("type", 22);
       groupTable.addContainerProperty("actions", Component.class, null);
-      groupTable.setColumnWidth("actions", 50);
+      groupTable.setColumnExpandRatio("actions", 11);
       groupTable.setColumnAlignment("actions", Table.ALIGN_CENTER);
 
     } else {

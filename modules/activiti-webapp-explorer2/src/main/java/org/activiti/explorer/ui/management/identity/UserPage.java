@@ -70,8 +70,8 @@ public class UserPage extends ManagementPage {
     userTable.setContainerDataSource(userListContainer);
     
     // Column headers
-    userTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.USER_32));
-    userTable.setColumnWidth("icon", 32);
+    userTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.USER_22));
+    userTable.setColumnWidth("icon", 22);
     userTable.addContainerProperty("name", String.class, null);
     userTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
             

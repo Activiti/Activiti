@@ -826,7 +826,6 @@ div.searchbox {
 	font:bold 10px/12px Arial, Helvetica, sans-serif;
 }
 
-
 /*
  * Detail - Title block
  */
@@ -837,6 +836,19 @@ div.searchbox {
 .title-block .v-gridlayout-margin-bottom {
  	padding-bottom: 5px;
 }
+
+.title-block .v-horizontallayout-margin-bottom {
+ 	padding-bottom: 5px;
+}
+
+.profile-layout .v-gridlayout-margin-bottom {
+	padding-bottom: 5px;
+}
+
+.profile-layout .v-gridlayout-margin-top {
+	padding-top: 5px;
+}
+
 .title-block .h2 {
 	color:#007dc3;
 	font:24px/26px Arial, Helvetica, sans-serif;

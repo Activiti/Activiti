@@ -88,13 +88,16 @@ public class UserDetailsComponent extends HorizontalLayout {
           }, user.getId(), ExplorerApp.get());
           
         } 
-      }
+      } 
       Embedded picture = new Embedded(null, pictureResource);
       
       picture.setType(Embedded.TYPE_IMAGE);
       picture.addStyleName(ExplorerLayout.STYLE_TASK_EVENT_PICTURE);
-      picture.setHeight("32px");
-      picture.setWidth("32px");
+      if (user != null) {
+        // Only set fixed height and width when user has image, otherwise icon's dimensions will be used
+        picture.setHeight("32px");
+        picture.setWidth("32px");
+      }
       addComponent(picture);
       
       // Add profile popup listener

@@ -259,6 +259,7 @@ public interface Messages {
   static final String GROUP_ID_UNIQUE = "group.id.unique";
   static final String GROUP_NO_MEMBERS = "group.no.members";
   static final String GROUP_SELECT_MEMBERS = "group.select.members";
+  static final String GROUP_DELETE = "group.delete";
   
   // Upload
   static final String UPLOAD_SELECT = "upload.select";

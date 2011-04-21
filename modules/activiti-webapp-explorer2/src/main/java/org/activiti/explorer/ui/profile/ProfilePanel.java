@@ -134,6 +134,7 @@ public class ProfilePanel extends Panel {
   protected void initUi() {
     removeAllComponents();
     addStyleName(Reindeer.PANEL_LIGHT);
+    addStyleName(ExplorerLayout.STYLE_PROFILE_LAYOUT);
     setSizeFull();
     
     // Profile page is a horizontal layout: left we have a panel with the picture, 
@@ -169,10 +170,10 @@ public class ProfilePanel extends Panel {
     }, user.getId(), ExplorerApp.get());
     imageresource.setCacheTime(0);
     
-    Embedded picture = new Embedded("", imageresource);
+    Embedded picture = new Embedded(null, imageresource);
     picture.setType(Embedded.TYPE_IMAGE);
-    picture.setHeight("200px");
-    picture.setWidth("200px");
+    picture.setHeight(200, UNITS_PIXELS);
+    picture.setWidth(200, UNITS_PIXELS);
     picture.addStyleName(ExplorerLayout.STYLE_PROFILE_PICTURE);
     
     imageLayout.addComponent(picture);
@@ -242,6 +243,7 @@ public class ProfilePanel extends Panel {
     // Header
     HorizontalLayout header = new HorizontalLayout();
     header.setWidth(100, UNITS_PERCENTAGE);
+    header.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
     infoPanelLayout.addComponent(header);
     
     Label aboutLabel = createProfileHeader(infoPanelLayout, i18nManager.getMessage(Messages.PROFILE_ABOUT));
@@ -307,7 +309,6 @@ public class ProfilePanel extends Panel {
   protected Button initEditProfileButton() {
     Button editProfileButton = new Button(i18nManager.getMessage(Messages.PROFILE_EDIT));
     editProfileButton.setIcon(Images.EDIT);
-    editProfileButton.addStyleName(Reindeer.BUTTON_SMALL);
     editProfileButton.addListener(new ClickListener() {
       public void buttonClick(ClickEvent event) {
         editable = true;
@@ -320,7 +321,6 @@ public class ProfilePanel extends Panel {
   protected Button initSaveProfileButton() {
     Button saveProfileButton = new Button(i18nManager.getMessage(Messages.PROFILE_SAVE));
     saveProfileButton.setIcon(Images.SAVE);
-    saveProfileButton.addStyleName(Reindeer.BUTTON_SMALL);
     saveProfileButton.addListener(new ClickListener() {
       public void buttonClick(ClickEvent event) {
         user.setFirstName((String) firstNameField.getValue());
@@ -349,10 +349,11 @@ public class ProfilePanel extends Panel {
   
   protected void initContactSection() {
     Label header = createProfileHeader(infoPanelLayout, i18nManager.getMessage(Messages.PROFILE_CONTACT));
+    header.addStyleName(ExplorerLayout.STYLE_H3);
+    header.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
     infoPanelLayout.addComponent(header);
     
     GridLayout contactLayout = createInfoSectionLayout(2, 4);
-    
     // Email
     if (!editable && isDefined(user.getEmail())) {
       addProfileEntry(contactLayout, i18nManager.getMessage(Messages.PROFILE_EMAIL), user.getEmail());
@@ -407,6 +408,8 @@ public class ProfilePanel extends Panel {
   protected void initAccountsSection() {
     // Header
     Label header = createProfileHeader(infoPanelLayout, i18nManager.getMessage(Messages.PROFILE_ACCOUNTS));
+    header.addStyleName(ExplorerLayout.STYLE_H3);
+    header.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
     infoPanelLayout.addComponent(header);
     
     // Actual account data
@@ -485,15 +488,16 @@ public class ProfilePanel extends Panel {
   
   protected Label createProfileHeader(VerticalLayout infoLayout, String headerName) {
     Label label = new Label(headerName);
-    label.setWidth("50%");
-    label.addStyleName(ExplorerLayout.STYLE_PROFILE_HEADER);
+    label.setWidth(100, UNITS_PERCENTAGE);
+    label.addStyleName(ExplorerLayout.STYLE_H3);
     return label;
   }
   
   protected GridLayout createInfoSectionLayout(int columns, int rows) {
     GridLayout layout = new GridLayout(columns, rows);
     layout.setSpacing(true);
-    layout.addStyleName(ExplorerLayout.STYLE_PROFILE_LAYOUT);
+    layout.setWidth(100, UNITS_PERCENTAGE);
+    layout.setMargin(true, false, true, false);
     infoPanelLayout.addComponent(layout);
     return layout;
   }

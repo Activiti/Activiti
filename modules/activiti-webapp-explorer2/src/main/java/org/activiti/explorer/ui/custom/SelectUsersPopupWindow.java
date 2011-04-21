@@ -150,7 +150,7 @@ public class SelectUsersPopupWindow extends PopupWindow {
     final LoggedInUser loggedInUser = ExplorerApp.get().getLoggedInUser();
     if (ignoredUserIds == null || !ignoredUserIds.contains(loggedInUser.getId())) {
       Button meButton = new Button(i18nManager.getMessage(Messages.PEOPLE_SELECT_MYSELF));
-      meButton.setIcon(Images.USER);
+      meButton.setIcon(Images.USER_16);
       searchLayout.addComponent(meButton);
       searchLayout.setComponentAlignment(meButton, Alignment.MIDDLE_LEFT);
       
@@ -222,7 +222,7 @@ public class SelectUsersPopupWindow extends PopupWindow {
      matchingUsersTable.setMultiSelect(true);
    }
    
-   matchingUsersTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.USER));
+   matchingUsersTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.USER_16));
    matchingUsersTable.setColumnWidth("icon", 16);
    matchingUsersTable.addContainerProperty("userName", String.class, null);
 

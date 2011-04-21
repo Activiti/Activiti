@@ -34,8 +34,6 @@ public class Images {
   public static final Resource DELETE = new ThemeResource("img/delete.png");
   public static final Resource EXECUTE = new ThemeResource("img/execute.png");
   public static final Resource ADD = new ThemeResource("img/list-add.png");
-  public static final Resource USER = new ThemeResource("img/user-icon.png");
-  public static final Resource USER_32 = new ThemeResource("img/user_32.png");
   public static final Resource USER_ADD = new ThemeResource("img/user_add.png");
   public static final Resource SUCCESS = new ThemeResource("img/tick.png");
   public static final Resource EDIT = new ThemeResource("img/edit.png");
@@ -77,6 +75,17 @@ public class Images {
   
   // Profile
   public static final Resource PROFILE_CHANGE_PICTURE = new ThemeResource("img/change_picture.png");
+  
+  // User administration
+  public static final Resource USER_16 = new ThemeResource("img/user-16.png");
+  public static final Resource USER_22 = new ThemeResource("img/user-22.png");
+  public static final Resource USER_32 = new ThemeResource("img/user-32.png");
+  public static final Resource USER_50 = new ThemeResource("img/user-50.png");
+  
+  public static final Resource GROUP_16 = new ThemeResource("img/group-16.png");
+  public static final Resource GROUP_22 = new ThemeResource("img/group-22.png");
+  public static final Resource GROUP_32 = new ThemeResource("img/group-32.png");
+  public static final Resource GROUP_50 = new ThemeResource("img/group-50.png");
   
   // Related content
   public static final Resource RELATED_CONTENT_URL = new ThemeResource("img/page_white_world.png");

@@ -23,10 +23,9 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.themes.Reindeer;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.Reindeer;
 
 
 /**
@@ -80,6 +79,7 @@ public class ConfirmationDialogPopupWindow extends PopupWindow {
     yesButton.focus();
     ExplorerApp.get().getViewManager().showPopupWindow(this);
   }
+  
   
   protected void initButtons(I18nManager i18nManager) {
     yesButton = new Button(i18nManager.getMessage(Messages.CONFIRMATION_DIALOG_YES));
