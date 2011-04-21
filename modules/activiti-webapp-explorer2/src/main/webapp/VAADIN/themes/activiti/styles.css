@@ -207,11 +207,6 @@ input.login-field {
    Database page
    ------------- */
    
-.database-details {
-  background-color: white;
-  margin: 10px;
-}
-
 .database-table-row .v-table-cell-content {
   height: 50px;
 }
@@ -351,6 +346,14 @@ body {
 	max-width:1920px;
 }
 
+/*
+ * Generic styles
+ */
+.v-button-link .v-button-caption, .v-link a:link span, .v-link a:visited span  {
+  color:#3c3c3c;
+}
+ 
+ 
 /*
  * Main content
  */
@@ -857,7 +860,8 @@ div.searchbox {
 	background: transparent url(img/priority-high-16.png) no-repeat 0 0; 	
 }
 
-.title-block .task-create-time, .title-block .flow-deploy-time, .title-block .flow-start-time {
+.title-block .task-create-time, .title-block .flow-deploy-time,
+.title-block .flow-start-time, .title-block .deployment-deploy-time {
 	padding-left: 20px;
 	background: transparent url(img/create-time-16.png) no-repeat 0 0; 	
 }

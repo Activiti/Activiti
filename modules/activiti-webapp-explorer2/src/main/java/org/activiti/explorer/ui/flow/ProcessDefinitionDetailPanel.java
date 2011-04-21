@@ -91,7 +91,7 @@ public class ProcessDefinitionDetailPanel extends DetailPanel {
     verticalLayout = new VerticalLayout();
     verticalLayout.setWidth(100, UNITS_PERCENTAGE);
     verticalLayout.setMargin(true);
-    setDetailContent(verticalLayout);
+    setDetailContainer(verticalLayout);
     
     // All details about the process definition
     initHeader();

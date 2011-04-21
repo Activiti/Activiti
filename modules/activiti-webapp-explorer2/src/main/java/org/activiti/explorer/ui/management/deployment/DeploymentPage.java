@@ -17,7 +17,9 @@ import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.DeploymentNavigator;
 import org.activiti.explorer.navigation.UriFragment;
+import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.management.ManagementPage;
+import org.activiti.explorer.ui.util.ThemeImageColumnGenerator;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -87,6 +89,9 @@ public class DeploymentPage extends ManagementPage {
     });
     
     // Create column headers
+    deploymentTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.DEPLOYMENT_22));
+    deploymentTable.setColumnWidth("icon", 22);
+    
     deploymentTable.addContainerProperty("name", String.class, null);
     deploymentTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
     

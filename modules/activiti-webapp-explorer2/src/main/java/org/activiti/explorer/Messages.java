@@ -215,6 +215,7 @@ public interface Messages {
   static final String DEPLOYMENT_UPLOAD_INVALID_FILE = "deployment.upload.invalid.file";
   static final String DEPLOYMENT_UPLOAD_INVALID_FILE_EXPLANATION = "deployment.upload.invalid.file.explanation";
   static final String DEPLOYMENT_UPLOAD_SERVER_ERROR = "deployment.upload.server.error";
+  static final String DEPLOYMENT_DEPLOY_TIME = "deployment.deploy.time";
   
   // Database page
   static final String DATABASE_NO_ROWS = "database.no.rows";

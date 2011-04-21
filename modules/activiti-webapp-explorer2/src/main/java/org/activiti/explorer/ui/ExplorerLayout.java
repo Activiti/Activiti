@@ -125,9 +125,9 @@ public interface ExplorerLayout {
   static final String STYLE_DATABASE_TABLE_ROW = "database-table-row";
   
   // Deployment page
-  static final String STYLE_DEPLOYMENT_DETAILS_HEADER = "deployment-details-header";
   static final String STYLE_DEPLOYMENT_UPLOAD_DESCRIPTION = "upload-description";
   static final String STYLE_DEPLOYMENT_UPLOAD_BUTTON = "upload-button";
+  static final String STYLE_DEPLOYMENT_HEADER_DEPLOY_TIME = "deployment-deploy-time";
   
   // Jobs page
   static final String STYLE_JOB_DETAILS_HEADER = "job-details-header";

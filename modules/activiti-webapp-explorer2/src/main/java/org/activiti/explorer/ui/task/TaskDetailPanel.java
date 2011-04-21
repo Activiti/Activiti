@@ -99,7 +99,7 @@ public class TaskDetailPanel extends DetailPanel {
     // Central panel: all task data
     this.centralLayout = new VerticalLayout();
     centralLayout.setMargin(true);
-    setDetailContent(centralLayout);
+    setDetailContainer(centralLayout);
     
     initHeader();
     initDescriptionAndClaimButton();

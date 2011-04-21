@@ -15,6 +15,7 @@ package org.activiti.explorer.ui.custom;
 
 import org.activiti.explorer.ui.ExplorerLayout;
 
+import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.CssLayout;
@@ -24,8 +25,10 @@ import com.vaadin.ui.themes.Reindeer;
 
 
 /**
- * Panel that should be used for main-content. Only use {@link #setDetailContent(ComponentContainer)}
- * and {@link #setFixedButtons(Component)} to add components.
+ * Panel that should be used for main-content. Use {@link #setDetailContainer(ComponentContainer)}
+ * and {@link #setFixedButtons(Component)} to add main components. By default, the detailContent will 
+ * be a verticallayout which has 100% width and undefined height and margins enabled. Add components
+ * to detail container using {@link #addDetailComponent(Component)} etc.
  * 
  * @author Frederik Heremans
  */
@@ -49,12 +52,18 @@ public class DetailPanel extends VerticalLayout {
     mainPanel.addStyleName(Reindeer.PANEL_LIGHT);
     mainPanel.setSizeFull();
     cssLayout.addComponent(mainPanel);
+    
+    // Use default layout
+    VerticalLayout verticalLayout = new VerticalLayout();
+    verticalLayout.setWidth(100, UNITS_PERCENTAGE);
+    verticalLayout.setMargin(true);
+    mainPanel.setContent(verticalLayout);
   }
   
   /**
    * Set the actual content of the panel.
    */
-  public void setDetailContent(ComponentContainer component) {
+  public void setDetailContainer(ComponentContainer component) {
     mainPanel.setContent(component);
   }
   
@@ -72,16 +81,45 @@ public class DetailPanel extends VerticalLayout {
   
   @Override
   public void addComponent(Component c) {
-    throw new UnsupportedOperationException("Cannot add components manually. Use setDetailContent or setFixedButtons");
+     mainPanel.addComponent(c);
   }
+  
+  /**
+   * Add component to detail-container.
+   */
+  public void addDetailComponent(Component c) {
+    mainPanel.addComponent(c);
+ }
   
   @Override
   public void addComponent(Component c, int index) {
-     throw new UnsupportedOperationException("Cannot add components manually. Use setDetailContent or setFixedButtons");
+    throw new UnsupportedOperationException("Cannot add components directly. Use addDetailComponent or setDetailContainer");
+  }
+  
+  /**
+   * Add component to detail-container.
+   */
+  public void addDetailComponent(Component c, int index) {
+    if(mainPanel.getContent() instanceof AbstractOrderedLayout) {
+      ((AbstractOrderedLayout) mainPanel.getContent()).addComponent(c, index);      
+    } else {
+      throw new UnsupportedOperationException("Cannot add components indexed component, detail content is not AbstractOrderedLayout");
+    }
+  }
+  
+  /**
+   * Set expand-ratio of detail-component
+   */
+  public void setDetailExpandRatio(Component component, float ratio) {
+    if(mainPanel.getContent() instanceof AbstractOrderedLayout) {
+      ((AbstractOrderedLayout) mainPanel.getContent()).setExpandRatio(component, ratio);      
+    } else {
+      throw new UnsupportedOperationException("Cannot set ExpandRatio, detail content is not AbstractOrderedLayout");
+    }
   }
   
   @Override
   public void addComponentAsFirst(Component c) {
-    throw new UnsupportedOperationException("Cannot add components manually. Use setDetailContent or setFixedButtons");
+    addComponent(c, 0);
   }
 }

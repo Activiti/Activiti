@@ -65,6 +65,11 @@ public class Images {
   public static final Resource DATABASE_IDENTITY = new ThemeResource("img/database_identity.png");
   public static final Resource DATABASE_REPOSITORY = new ThemeResource("img/database_repository.png");
   public static final Resource DATABASE_RUNTIME = new ThemeResource("img/database_runtime.png");
+  public static final Resource DATABASE_50 = new ThemeResource("img/database-50.png");
+  
+  // Deployment
+  public static final Resource DEPLOYMENT_50 = new ThemeResource("img/deployment-50.png");
+  public static final Resource DEPLOYMENT_22 = new ThemeResource("img/deployment-22.png");
   
   // Profile
   public static final Resource PROFILE_CHANGE_PICTURE = new ThemeResource("img/change_picture.png");

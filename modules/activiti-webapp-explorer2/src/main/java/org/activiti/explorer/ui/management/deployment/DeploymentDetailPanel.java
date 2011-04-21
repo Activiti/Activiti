@@ -26,27 +26,27 @@ import org.activiti.explorer.Messages;
 import org.activiti.explorer.ViewManager;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
+import org.activiti.explorer.ui.custom.DetailPanel;
+import org.activiti.explorer.ui.custom.PrettyTimeLabel;
 
-import com.ocpsoft.pretty.time.PrettyTime;
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.terminal.StreamResource.StreamSource;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Embedded;
-import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 
 /**
  * @author Joram Barrez
+ * @author Frederik Heremans
  */
-public class DeploymentDetailPanel extends Panel {
+public class DeploymentDetailPanel extends DetailPanel {
 
   private static final long serialVersionUID = 1L;
   
@@ -69,52 +69,58 @@ public class DeploymentDetailPanel extends Panel {
   }
   
   protected void init() {
-    addStyleName(Reindeer.LAYOUT_WHITE);
+    
+    setWidth(100, UNITS_PERCENTAGE);
     
     addDeploymentName();
-    addDeploymentTime();
     addProcessDefinitionLinks();
     addResourceLinks();
+    
+    addActions();
   }
   
-  protected void addDeploymentName() {
-    HorizontalLayout layout = new HorizontalLayout();
-    layout.setSpacing(true);
-    addComponent(layout);
-    
-    // Name
-    Label nameLabel = new Label(deployment.getName());
-    nameLabel.addStyleName(Reindeer.LABEL_H1);
-    layout.addComponent(nameLabel);
-    
+  protected void addActions() {
     // Delete button
     Button deleteButton = new Button(i18nManager.getMessage(Messages.DEPLOYMENT_DELETE));
     deleteButton.setIcon(Images.DELETE);
-    deleteButton.addStyleName(Reindeer.BUTTON_LINK);
-    layout.addComponent(deleteButton);
-    layout.setComponentAlignment(deleteButton, Alignment.MIDDLE_LEFT);
     deleteButton.addListener(new ClickListener() {
+
       public void buttonClick(ClickEvent event) {
         viewManager.showPopupWindow(new DeleteDeploymentPopupWindow(deployment, parent));
       }
     });
+    
+    parent.getToolBar().removeAllButtons();
+    parent.getToolBar().addButton(deleteButton);
   }
-  
-  protected void addDeploymentTime() {
-    Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
-    emptySpace.setSizeUndefined();
-    addComponent(emptySpace);
+
+  protected void addDeploymentName() {
+
+    GridLayout taskDetails = new GridLayout(3, 2);
+    taskDetails.setWidth(100, UNITS_PERCENTAGE);
+    taskDetails.addStyleName(ExplorerLayout.STYLE_TITLE_BLOCK);
+    taskDetails.setSpacing(true);
+    taskDetails.setMargin(false, false, true, false);
     
-    HorizontalLayout timeDetails = new HorizontalLayout();
-    timeDetails.setSpacing(true);
-    addComponent(timeDetails);
+    // Add image
+    Embedded image = new Embedded(null, Images.DEPLOYMENT_50);
+    taskDetails.addComponent(image, 0, 0, 0, 1);
     
-    Embedded clockImage = new Embedded(null, Images.CLOCK);
-    timeDetails.addComponent(clockImage);
+    // Add deployment name
+    Label nameLabel = new Label(deployment.getName());
+    nameLabel.addStyleName(Reindeer.LABEL_H2);
+    taskDetails.addComponent(nameLabel, 1, 0, 2, 0);
     
-    Label timeLabel = new Label(i18nManager.getMessage(Messages.DEPLOYMENT_CREATE_TIME) + new PrettyTime().format(deployment.getDeploymentTime()));
-    timeDetails.addComponent(timeLabel);
-    timeDetails.setComponentAlignment(timeLabel, Alignment.MIDDLE_CENTER);
+    // Add deploy time
+    PrettyTimeLabel deployTimeLabel = new PrettyTimeLabel(i18nManager.getMessage(Messages.DEPLOYMENT_DEPLOY_TIME),
+      deployment.getDeploymentTime(), null);
+    deployTimeLabel.addStyleName(ExplorerLayout.STYLE_DEPLOYMENT_HEADER_DEPLOY_TIME);
+    taskDetails.addComponent(deployTimeLabel, 1, 1);
+    
+    taskDetails.setColumnExpandRatio(1, 1.0f);
+    taskDetails.setColumnExpandRatio(2, 1.0f);
+    
+    addDetailComponent(taskDetails);
   }
   
   protected void addProcessDefinitionLinks() {
@@ -127,24 +133,16 @@ public class DeploymentDetailPanel extends Panel {
       
       // Header
       Label processDefinitionHeader = new Label(i18nManager.getMessage(Messages.DEPLOYMENT_HEADER_DEFINITIONS));
-      processDefinitionHeader.addStyleName(ExplorerLayout.STYLE_DEPLOYMENT_DETAILS_HEADER);
-      processDefinitionHeader.setWidth("95%");
-      addComponent(processDefinitionHeader);
-      
-      // layout
-      HorizontalLayout layout = new HorizontalLayout();
-      layout.setSpacing(true);
-      addComponent(layout);
-      
-      // process icon
-      Embedded processIcon = new Embedded(null, Images.PROCESS_48PX);
-      layout.addComponent(processIcon);
+      processDefinitionHeader.addStyleName(ExplorerLayout.STYLE_H3);
+      processDefinitionHeader.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
+      processDefinitionHeader.setWidth(100, UNITS_PERCENTAGE);
+      addDetailComponent(processDefinitionHeader);
       
       // processes
       VerticalLayout processDefinitionLinksLayout = new VerticalLayout();
       processDefinitionLinksLayout.setSpacing(true);
-      layout.addComponent(processDefinitionLinksLayout);
-      layout.setComponentAlignment(processDefinitionLinksLayout, Alignment.MIDDLE_LEFT);
+      processDefinitionLinksLayout.setMargin(true, false, true, false);
+      addDetailComponent(processDefinitionLinksLayout);
       
       for (final ProcessDefinition processDefinition : processDefinitions) {
         Button processDefinitionButton = new Button(processDefinition.getName());
@@ -166,21 +164,15 @@ public class DeploymentDetailPanel extends Panel {
     if (resourceNames.size() > 0) {
       Label resourceHeader = new Label(i18nManager.getMessage(Messages.DEPLOYMENT_HEADER_RESOURCES));
       resourceHeader.setWidth("95%");
-      resourceHeader.addStyleName(ExplorerLayout.STYLE_DEPLOYMENT_DETAILS_HEADER);
-      addComponent(resourceHeader);
-      
-      HorizontalLayout resourceLayout = new HorizontalLayout();
-      addComponent(resourceLayout);
-      
-      // resource icon
-      Embedded resourceIcon = new Embedded(null, Images.RESOURCE);
-      resourceLayout.addComponent(resourceIcon);
+      resourceHeader.addStyleName(ExplorerLayout.STYLE_H3);
+      resourceHeader.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
+      addDetailComponent(resourceHeader);
       
       // resources
       VerticalLayout resourceLinksLayout = new VerticalLayout();
-      resourceLayout.setSpacing(true);
-      resourceLayout.addComponent(resourceLinksLayout);
-      resourceLayout.setComponentAlignment(resourceLinksLayout, Alignment.MIDDLE_LEFT);
+      resourceLinksLayout.setSpacing(true);
+      resourceLinksLayout.setMargin(true, false, false, false);
+      addDetailComponent(resourceLinksLayout);
       
       for (final String resourceName : resourceNames) {
         StreamResource.StreamSource streamSource = new StreamSource() {
@@ -192,7 +184,5 @@ public class DeploymentDetailPanel extends Panel {
         resourceLinksLayout.addComponent(resourceLink);
       }
     }
-    
   }
-
 }

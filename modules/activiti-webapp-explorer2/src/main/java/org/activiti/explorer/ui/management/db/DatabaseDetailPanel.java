@@ -21,17 +21,21 @@ import org.activiti.explorer.Messages;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.ui.ExplorerLayout;
+import org.activiti.explorer.ui.Images;
+import org.activiti.explorer.ui.custom.DetailPanel;
 
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 
 /**
  * @author Joram Barrez
  */
-public class DatabaseDetailPanel extends VerticalLayout {
+public class DatabaseDetailPanel extends DetailPanel {
   
   private static final long serialVersionUID = 1L;
   
@@ -40,11 +44,12 @@ public class DatabaseDetailPanel extends VerticalLayout {
   
   protected String tableName;
   
+  
   public DatabaseDetailPanel(String tableName) {
     this.tableName = tableName;
     this.managementService = ProcessEngines.getDefaultProcessEngine().getManagementService();
     this.i18nManager = ExplorerApp.get().getI18nManager();
-    
+  
     addStyleName(Reindeer.LAYOUT_WHITE);
     setSizeFull();
     
@@ -53,11 +58,30 @@ public class DatabaseDetailPanel extends VerticalLayout {
   }
   
   protected void addTableName() {
+    
+    HorizontalLayout header = new HorizontalLayout();
+    header.setWidth(100, UNITS_PERCENTAGE);
+    header.addStyleName(ExplorerLayout.STYLE_TITLE_BLOCK);
+    header.setSpacing(true);
+    
+    // TODO: use right image
+    Embedded image = new Embedded(null, Images.DATABASE_50);
+    header.addComponent(image);
+    header.setComponentAlignment(image, Alignment.MIDDLE_LEFT);
+    header.setMargin(false, false, true, false);
+    
     Label name = new Label(tableName);
-    name.addStyleName(Reindeer.LABEL_H1);
-    name.addStyleName(ExplorerLayout.STYLE_DATABASE_DETAILS);
-    addComponent(name);
-    addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
+    name.addStyleName(Reindeer.LABEL_H2);
+    header.addComponent(name);
+
+    header.setExpandRatio(name, 1.0f);
+    header.setComponentAlignment(name, Alignment.MIDDLE_LEFT);
+    addDetailComponent(header);
+    
+    Label spacer = new Label();
+    spacer.setWidth(100, UNITS_PERCENTAGE);
+    spacer.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
+    addDetailComponent(spacer);
   }
   
   protected void addTableData() {
@@ -71,14 +95,13 @@ public class DatabaseDetailPanel extends VerticalLayout {
       data.setEditable(false);
       data.setSelectable(true);
       data.setColumnReorderingAllowed(true);
-      addComponent(data);
+      addDetailComponent(data);
       
-      data.setWidth("95%");
-      data.setHeight("80%");
+      data.setWidth(100, UNITS_PERCENTAGE);
+      data.setHeight(100, UNITS_PERCENTAGE);
       data.addStyleName(ExplorerLayout.STYLE_DATABASE_TABLE_ROW);
-      data.addStyleName(Reindeer.TABLE_STRONG);
       data.addStyleName(ExplorerLayout.STYLE_DATABASE_DETAILS);
-      setExpandRatio(data, 1.0f);
+      setDetailExpandRatio(data, 1.0f);
       
       // Create column headers
       TableMetaData metaData = managementService.getTableMetaData(tableName);
@@ -90,8 +113,8 @@ public class DatabaseDetailPanel extends VerticalLayout {
       Label noDataLabel = new Label(i18nManager.getMessage(Messages.DATABASE_NO_ROWS));
       noDataLabel.addStyleName(ExplorerLayout.STYLE_DATABASE_DETAILS);
       noDataLabel.addStyleName(Reindeer.LABEL_SMALL);
-      addComponent(noDataLabel);
-      setExpandRatio(noDataLabel, 1.0f);
+      addDetailComponent(noDataLabel);
+      setDetailExpandRatio(noDataLabel, 1.0f);
     }
   }
 
