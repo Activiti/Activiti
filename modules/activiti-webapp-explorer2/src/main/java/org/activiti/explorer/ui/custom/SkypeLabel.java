@@ -25,12 +25,17 @@ public class SkypeLabel extends Label {
 
   private static final long serialVersionUID = 1L;
   
+  /**
+   * Constructs a {@link SkypeLabel} based on the given Skype id
+   */
   public SkypeLabel(String skypeId) {
     super("<script type='text/javascript' " +
             "src='http://download.skype.com/share/skypebuttons/js/skypeCheck.js'></script>" +
             "<a href='skype:" + skypeId + "?call'>" +
             "<img src='VAADIN/themes/activiti/img/skype.png' style='border: none;' /></a>",
             Label.CONTENT_XHTML);
+    setWidth(16, UNITS_PIXELS);
+    setHeight(16, UNITS_PIXELS);
   }
 
 }

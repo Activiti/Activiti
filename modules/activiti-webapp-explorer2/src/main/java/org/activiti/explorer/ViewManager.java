@@ -13,6 +13,7 @@
 
 package org.activiti.explorer;
 
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Task;
@@ -57,9 +58,11 @@ public class ViewManager {
   protected MainWindow mainWindow;
 
   protected TaskService taskService;
+  protected HistoryService historyService;
   
   public ViewManager() {
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
+    this.historyService = ProcessEngines.getDefaultProcessEngine().getHistoryService();
   }
   
   public void showLoginPage() {
@@ -86,17 +89,31 @@ public class ViewManager {
   public void showTaskPage(String taskId) {
     Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
     String loggedInUserId = ExplorerApp.get().getLoggedInUser().getId();
-    if (loggedInUserId.equals(task.getOwner())) {
+    
+    if (task == null) {
+      // If no runtime task exists, our only hope is the archive page
+      boolean isOwner = historyService.createHistoricTaskInstanceQuery()
+        .taskId(taskId).taskOwner(loggedInUserId).count() == 1;
+      if (isOwner) {
+        showArchivedPage(taskId);
+      } else {
+        showNavigationError(taskId);
+      }
+    } else if (loggedInUserId.equals(task.getOwner())) {
       showCasesPage(taskId);
     } else if (loggedInUserId.equals(task.getAssignee())) {
       showInboxPage(taskId);
     } else if (taskService.createTaskQuery().taskInvolvedUser(loggedInUserId).count() == 1) {
       showInvolvedPage(taskId);
     } else {
-      ExplorerApp.get().getNotificationManager().showErrorNotification(
-              Messages.NAVIGATION_ERROR_NOT_INVOLVED_TITLE, 
-              ExplorerApp.get().getI18nManager().getMessage(Messages.NAVIGATION_ERROR_NOT_INVOLVED, taskId));
+     showNavigationError(taskId);
     }
+  }
+  
+  protected void showNavigationError(String taskId) {
+    ExplorerApp.get().getNotificationManager().showErrorNotification(
+            Messages.NAVIGATION_ERROR_NOT_INVOLVED_TITLE, 
+            ExplorerApp.get().getI18nManager().getMessage(Messages.NAVIGATION_ERROR_NOT_INVOLVED, taskId));
   }
   
   public void showCasesPage() {

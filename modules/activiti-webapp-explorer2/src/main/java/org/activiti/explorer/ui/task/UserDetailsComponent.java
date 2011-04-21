@@ -18,10 +18,12 @@ import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
+import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.ViewManager;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
+import org.activiti.explorer.ui.custom.SkypeLabel;
 
 import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.terminal.Resource;
@@ -48,6 +50,7 @@ public class UserDetailsComponent extends HorizontalLayout {
     protected ViewManager viewManager;
     
     protected User user;
+    protected String skypeId;
     protected String role;
     protected String buttonCaption;
     protected ClickListener clickListener;
@@ -59,6 +62,7 @@ public class UserDetailsComponent extends HorizontalLayout {
       
       if (userId != null) {
         user = identityService.createUserQuery().userId(userId).singleResult();
+        skypeId = identityService.getUserInfo(userId, Constants.USER_INFO_SKYPE);
       }
     }
 
@@ -115,7 +119,12 @@ public class UserDetailsComponent extends HorizontalLayout {
       VerticalLayout detailsLayout = new VerticalLayout();
       addComponent(detailsLayout);
       
-      // Name
+      // Layout for name + skype
+      HorizontalLayout nameLayout = new HorizontalLayout();
+      nameLayout.setSpacing(true);
+      detailsLayout.addComponent(nameLayout);
+      
+      // Name 
       Label nameLabel = null;
       if (user != null) {
         nameLabel = new Label(user.getFirstName() + " " + user.getLastName());
@@ -123,7 +132,13 @@ public class UserDetailsComponent extends HorizontalLayout {
       } else {
         nameLabel = new Label("&nbsp;", Label.CONTENT_XHTML);
       }
-      detailsLayout.addComponent(nameLabel);
+      nameLayout.addComponent(nameLabel);
+      
+      //Skype icon
+      if (skypeId != null) {
+        SkypeLabel skype = new SkypeLabel(skypeId);
+        nameLayout.addComponent(skype);
+      }
       
       // Layout for lower details
       HorizontalLayout actionsLayout = new HorizontalLayout();

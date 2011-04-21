@@ -188,7 +188,7 @@ public class HistoricTaskDetailPanel extends DetailPanel {
   protected void initParentTaskLink() {
     if (historicTask.getParentTaskId() != null) {
       final HistoricTaskInstance parentTask = historyService.createHistoricTaskInstanceQuery()
-        .taskParentTaskId(historicTask.getParentTaskId())
+        .taskId(historicTask.getParentTaskId())
         .singleResult();
         
       Button showParentTaskButton = new Button(i18nManager.getMessage(
@@ -271,9 +271,7 @@ public class HistoricTaskDetailPanel extends DetailPanel {
 
   protected void initSubTaskGrid() {
     subTaskGrid = new GridLayout();
-    subTaskGrid.setColumns(3);
-    subTaskGrid.setWidth(99, UNITS_PERCENTAGE);
-    subTaskGrid.setColumnExpandRatio(2, 1.0f);
+    subTaskGrid.setColumns(2);
     subTasksLayout.addComponent(subTaskGrid);
   }
 

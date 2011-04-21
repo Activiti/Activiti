@@ -101,14 +101,6 @@ public class ProfilePanel extends Panel {
   protected TextField skypeField;
   protected GridLayout accountLayout;
   
-  // keys for storing user info
-  protected static final String KEY_BIRTH_DATE = "birthDate";
-  protected static final String KEY_JOB_TITLE = "jobTitle";
-  protected static final String KEY_LOCATION = "location";
-  protected static final String KEY_PHONE = "phone";
-  protected static final String KEY_TWITTER = "twitterName";
-  protected static final String KEY_SKYPE = "skype";
-  
   public ProfilePanel(String userId) {
     this.userId = userId;
     this.isCurrentLoggedInUser = userId.equals(ExplorerApp.get().getLoggedInUser().getId());
@@ -123,12 +115,12 @@ public class ProfilePanel extends Panel {
   protected void loadProfileData() {
     this.user = identityService.createUserQuery().userId(userId).singleResult();
     this.picture = identityService.getUserPicture(user.getId());
-    this.birthDate = identityService.getUserInfo(user.getId(), KEY_BIRTH_DATE);
-    this.jobTitle = identityService.getUserInfo(user.getId(), KEY_JOB_TITLE);
-    this.location = identityService.getUserInfo(user.getId(), KEY_LOCATION);
-    this.phone = identityService.getUserInfo(user.getId(), KEY_PHONE);
-    this.twitterName = identityService.getUserInfo(user.getId(), KEY_TWITTER);
-    this.skypeId = identityService.getUserInfo(user.getId(), KEY_SKYPE);
+    this.birthDate = identityService.getUserInfo(user.getId(), Constants.USER_INFO_BIRTH_DATE);
+    this.jobTitle = identityService.getUserInfo(user.getId(), Constants.USER_INFO_JOB_TITLE);
+    this.location = identityService.getUserInfo(user.getId(), Constants.USER_INFO_LOCATION);
+    this.phone = identityService.getUserInfo(user.getId(), Constants.USER_INFO_PHONE);
+    this.twitterName = identityService.getUserInfo(user.getId(), Constants.USER_INFO_TWITTER);
+    this.skypeId = identityService.getUserInfo(user.getId(), Constants.USER_INFO_SKYPE);
   }
 
   protected void initUi() {
@@ -328,12 +320,14 @@ public class ProfilePanel extends Panel {
         user.setEmail((String) emailField.getValue());
         identityService.saveUser(user);
         
-        identityService.setUserInfo(user.getId(), KEY_JOB_TITLE, jobTitleField.getValue().toString());
-        identityService.setUserInfo(user.getId(), KEY_BIRTH_DATE, Constants.DEFAULT_DATE_FORMATTER.format(birthDateField.getValue()));
-        identityService.setUserInfo(user.getId(), KEY_LOCATION, locationField.getValue().toString());
-        identityService.setUserInfo(user.getId(), KEY_PHONE, phoneField.getValue().toString());
-        identityService.setUserInfo(user.getId(), KEY_TWITTER, twitterField.getValue().toString());
-        identityService.setUserInfo(user.getId(), KEY_SKYPE, skypeField.getValue().toString());
+        identityService.setUserInfo(user.getId(), Constants.USER_INFO_JOB_TITLE, jobTitleField.getValue().toString());
+        if (birthDateField.getValue() != null && !"".equals(birthDateField.getValue().toString())) {
+          identityService.setUserInfo(user.getId(), Constants.USER_INFO_BIRTH_DATE, Constants.DEFAULT_DATE_FORMATTER.format(birthDateField.getValue()));
+        }
+        identityService.setUserInfo(user.getId(), Constants.USER_INFO_LOCATION, locationField.getValue().toString());
+        identityService.setUserInfo(user.getId(), Constants.USER_INFO_PHONE, phoneField.getValue().toString());
+        identityService.setUserInfo(user.getId(), Constants.USER_INFO_TWITTER, twitterField.getValue().toString());
+        identityService.setUserInfo(user.getId(), Constants.USER_INFO_SKYPE, skypeField.getValue().toString());
         
         // UI
         editable = false;
