@@ -47,6 +47,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.Reindeer;
 
 /**
  * Component for showing related content of a task. Also allows adding, removing
@@ -60,14 +61,18 @@ public class TaskRelatedContentComponent extends VerticalLayout implements Relat
   private static final long serialVersionUID = 1L;
   
   protected TaskService taskService;
+  protected I18nManager i18nManager;
   protected AttachmentRendererManager attachmentRendererManager;
   
   protected Task task;
+  protected VerticalLayout contentLayout;
   protected Table table;
   protected TaskDetailPanel taskDetailPanel;
+  protected Label noContentLabel;
 
   public TaskRelatedContentComponent(Task task, TaskDetailPanel taskDetailPanel) {
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
+    this.i18nManager = ExplorerApp.get().getI18nManager();
     this.attachmentRendererManager = ExplorerApp.get().getAttachmentRendererManager();
     
     this.task = task;
@@ -90,7 +95,7 @@ public class TaskRelatedContentComponent extends VerticalLayout implements Relat
     actionsContainer.setSizeFull();
 
     // Title
-    Label processTitle = new Label(ExplorerApp.get().getI18nManager().getMessage(Messages.TASK_RELATED_CONTENT));
+    Label processTitle = new Label(i18nManager.getMessage(Messages.TASK_RELATED_CONTENT));
     processTitle.addStyleName(ExplorerLayout.STYLE_H3);
     processTitle.setSizeFull();
     actionsContainer.addComponent(processTitle);
@@ -135,6 +140,9 @@ public class TaskRelatedContentComponent extends VerticalLayout implements Relat
   }
 
   protected void initAttachmentTable() {
+    contentLayout = new VerticalLayout();
+    addComponent(contentLayout);
+    
     table = new Table();
     table.setWidth(100, UNITS_PERCENTAGE);
     table.addStyleName(ExplorerLayout.STYLE_RELATED_CONTENT_LIST);
@@ -147,14 +155,13 @@ public class TaskRelatedContentComponent extends VerticalLayout implements Relat
 
     // Get the related content for this task
     refreshTaskAttachments();
-
-    addComponent(table);
+    contentLayout.addComponent(table);
   }
 
   protected void addContainerProperties() {
     table.addContainerProperty("type", Embedded.class, null);
     table.setColumnWidth("type", 16);
-    
+
     table.addContainerProperty("name", Component.class, null);
     
     table.addContainerProperty("delete", Embedded.class, null);
@@ -162,16 +169,23 @@ public class TaskRelatedContentComponent extends VerticalLayout implements Relat
   }
   
   public void refreshTaskAttachments() {
-    if(table.size() > 0) {
-      table.removeAllItems();
+    table.removeAllItems();
+    if (noContentLabel != null) {
+      contentLayout.removeComponent(noContentLabel);
     }
-
+    
     List<Attachment> attachments = taskService.getTaskAttachments(task.getId());
-    addAttachmentsToTable(attachments);
+    if(attachments.size() > 0) {
+      addAttachmentsToTable(attachments);
+    } else {
+      table.setVisible(false);
+      noContentLabel = new Label(i18nManager.getMessage(Messages.TASK_NO_RELATED_CONTENT));
+      noContentLabel.addStyleName(Reindeer.LABEL_SMALL);
+      contentLayout.addComponent(noContentLabel);
+    }
   }
 
   protected void addAttachmentsToTable(List<Attachment> attachments) {
-    
     for (Attachment attachment : attachments) {
       AttachmentRenderer renderer = attachmentRendererManager.getRenderer(attachment);
       Item attachmentItem = table.addItem(attachment.getId());
@@ -179,6 +193,7 @@ public class TaskRelatedContentComponent extends VerticalLayout implements Relat
       attachmentItem.getItemProperty("type").setValue(new Embedded(null, renderer.getImage(attachment)));
       
       Embedded deleteButton = new Embedded(null, Images.DELETE);
+      deleteButton.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
       deleteButton.addListener((ClickListener) new DeleteClickedListener(attachment));
       attachmentItem.getItemProperty("delete").setValue(deleteButton);
     }
@@ -205,8 +220,6 @@ public class TaskRelatedContentComponent extends VerticalLayout implements Relat
     }
 
     public void click(ClickEvent event) {
-      I18nManager i18nManager = ExplorerApp.get().getI18nManager();
-      
       ConfirmationDialogPopupWindow confirm = new ConfirmationDialogPopupWindow(
         i18nManager.getMessage(Messages.RELATED_CONTENT_CONFIRM_DELETE, attachment.getName()));
       

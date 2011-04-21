@@ -58,7 +58,6 @@ public class DatabaseDetailPanel extends DetailPanel {
   }
   
   protected void addTableName() {
-    
     HorizontalLayout header = new HorizontalLayout();
     header.setWidth(100, UNITS_PERCENTAGE);
     header.addStyleName(ExplorerLayout.STYLE_TITLE_BLOCK);
@@ -95,6 +94,11 @@ public class DatabaseDetailPanel extends DetailPanel {
       data.setEditable(false);
       data.setSelectable(true);
       data.setColumnReorderingAllowed(true);
+      if (lazyLoadingQuery.size() < 10) {
+        data.setPageLength(0);
+      } else {
+        data.setPageLength(10);
+      }
       addDetailComponent(data);
       
       data.setWidth(100, UNITS_PERCENTAGE);

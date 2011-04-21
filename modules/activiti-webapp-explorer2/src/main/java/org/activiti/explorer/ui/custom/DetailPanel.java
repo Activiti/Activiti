@@ -43,7 +43,7 @@ public class DetailPanel extends VerticalLayout {
     addStyleName(ExplorerLayout.STYLE_DETAIL_PANEL);
     setMargin(true);
     
-    CssLayout cssLayout = new CssLayout();
+    CssLayout cssLayout = new CssLayout(); // Needed for rounded corners
     cssLayout.addStyleName(ExplorerLayout.STYLE_DETAIL_PANEL);
     cssLayout.setSizeFull();
     super.addComponent(cssLayout);

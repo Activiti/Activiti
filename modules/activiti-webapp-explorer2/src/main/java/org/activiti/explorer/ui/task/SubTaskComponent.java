@@ -187,8 +187,9 @@ public class SubTaskComponent extends CustomComponent {
   }
   
   protected void initSubTasks() {
+    List<Task> subTasks = taskService.getSubTasks(parentTask.getId());
     initSubTasksLayout();
-    populateSubTasks();
+    populateSubTasks(subTasks);
   }
   
   protected void initSubTasksLayout() {
@@ -199,39 +200,46 @@ public class SubTaskComponent extends CustomComponent {
     layout.addComponent(subTaskLayout);
   }
   
-  protected void populateSubTasks() {
-    List<Task> subTasks = taskService.getSubTasks(parentTask.getId());
-    for (final Task subTask : subTasks) {
-      // icon
-      Embedded icon = new Embedded(null, Images.TASK);
-      icon.setWidth(22, UNITS_PIXELS);
-      icon.setWidth(22, UNITS_PIXELS);
-      subTaskLayout.addComponent(icon);
-      
-      // Link to subtask
-      Button subTaskLink = new Button(subTask.getName());
-      subTaskLink.addStyleName(Reindeer.BUTTON_LINK);
-      subTaskLink.addListener(new ClickListener() {
-        public void buttonClick(ClickEvent event) {
-          ExplorerApp.get().getViewManager().showTaskPage(subTask.getId());
-        }
-      });
-      subTaskLayout.addComponent(subTaskLink);
-      subTaskLayout.setComponentAlignment(subTaskLink, Alignment.MIDDLE_LEFT);
-      
-      // Delete icon
-      Embedded deleteIcon = new Embedded(null, Images.DELETE);
-      deleteIcon.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
-      deleteIcon.addListener(new DeleteSubTaskClickListener(subTask, this));
-      subTaskLayout.addComponent(deleteIcon);
-      subTaskLayout.setComponentAlignment(deleteIcon, Alignment.MIDDLE_RIGHT);
+  protected void populateSubTasks(List<Task> subTasks) {
+    if (subTasks.size() > 0) {
+      for (final Task subTask : subTasks) {
+        // icon
+        Embedded icon = new Embedded(null, Images.TASK);
+        icon.setWidth(22, UNITS_PIXELS);
+        icon.setWidth(22, UNITS_PIXELS);
+        subTaskLayout.addComponent(icon);
+        
+        // Link to subtask
+        Button subTaskLink = new Button(subTask.getName());
+        subTaskLink.addStyleName(Reindeer.BUTTON_LINK);
+        subTaskLink.addListener(new ClickListener() {
+          public void buttonClick(ClickEvent event) {
+            ExplorerApp.get().getViewManager().showTaskPage(subTask.getId());
+          }
+        });
+        subTaskLayout.addComponent(subTaskLink);
+        subTaskLayout.setComponentAlignment(subTaskLink, Alignment.MIDDLE_LEFT);
+        
+        // Delete icon
+        Embedded deleteIcon = new Embedded(null, Images.DELETE);
+        deleteIcon.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
+        deleteIcon.addListener(new DeleteSubTaskClickListener(subTask, this));
+        subTaskLayout.addComponent(deleteIcon);
+        subTaskLayout.setComponentAlignment(deleteIcon, Alignment.MIDDLE_RIGHT);
+      }
+    } else {
+      Label noSubTasksLabel = new Label(i18nManager.getMessage(Messages.TASK_NO_SUBTASKS));
+      noSubTasksLabel.setSizeUndefined();
+      noSubTasksLabel.addStyleName(Reindeer.LABEL_SMALL);
+      subTaskLayout.addComponent(noSubTasksLabel);
     }
     
   }
   
   public void refreshSubTasks() {
     subTaskLayout.removeAllComponents();
-    populateSubTasks();
+    List<Task> subTasks = taskService.getSubTasks(parentTask.getId());
+    populateSubTasks(subTasks);
   }
 
 }

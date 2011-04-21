@@ -39,6 +39,7 @@ public class TaskNavigator implements Navigator {
   public static final String CATEGORY_INBOX = "inbox";
   public static final String CATEGORY_QUEUED = "queued";
   public static final String CATEGORY_INVOLVED = "involved";
+  public static final String CATEGORY_ARCHIVED = "archived";
   
   public static final String PARAMETER_CATEGORY = "category";
   public static final String PARAMETER_GROUP = "group";

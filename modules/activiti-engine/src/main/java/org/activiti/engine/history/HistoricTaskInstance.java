@@ -71,5 +71,8 @@ public interface HistoricTaskInstance {
   
   /** Task due date **/
   Date getDueDate();
+  
+  /** The parent task of this task, in case this task was a subtask */
+  String getParentTaskId();
 
 }

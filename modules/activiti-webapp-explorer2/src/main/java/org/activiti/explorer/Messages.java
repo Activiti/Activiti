@@ -105,6 +105,7 @@ public interface Messages {
   static final String TASK_MENU_INBOX = "task.menu.inbox";
   static final String TASK_MENU_QUEUED = "task.menu.queued";
   static final String TASK_MENU_INVOLVED = "task.menu.involved";
+  static final String TASK_MENU_ARCHIVED = "task.menu.archived";
   
   // Task details
   static final String TASK_ID = "task.id";
@@ -142,10 +143,12 @@ public interface Messages {
   static final String TASK_CLAIM_SUCCESS = "task.claim.success";
   static final String TASK_CLAIM = "task.claim";
   static final String TASK_RELATED_CONTENT = "task.related.content";
+  static final String TASK_NO_RELATED_CONTENT = "task.no.related.content";
   static final String TASK_PEOPLE = "task.people";
   static final String TASK_FORM_HELP = "task.form.help";
   static final String TASK_NEW = "task.new";
   static final String TASK_SUBTASKS = "task.subtasks";
+  static final String TASK_NO_SUBTASKS = "task.no.subtasks";
   static final String TASK_CONFIRM_DELETE_SUBTASK = "task.confirm.delete.subtask";
   
   // Task roles

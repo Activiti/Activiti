@@ -36,7 +36,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 /**
- * Component for one user (picture + name + action) in the {@link TaskInvolvedPeopleComponent}
+ * Component for one user (picture + name + optional action).
  * 
  * @author Joram Barrez
  */
@@ -51,24 +51,29 @@ public class UserDetailsComponent extends HorizontalLayout {
     protected String role;
     protected String buttonCaption;
     protected ClickListener clickListener;
-
-    public UserDetailsComponent(String userId, String role, String buttonCaption, ClickListener clickListener) {
+    
+    public UserDetailsComponent(String userId, String role) {
       this.role = role;
-      this.buttonCaption = buttonCaption;
-      this.clickListener = clickListener;
-      
-      identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
-      viewManager = ExplorerApp.get().getViewManager();
+      this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
+      this.viewManager = ExplorerApp.get().getViewManager();
       
       if (userId != null) {
         user = identityService.createUserQuery().userId(userId).singleResult();
       }
-      
-      // init UI
+    }
+
+    public UserDetailsComponent(String userId, String role, String buttonCaption, ClickListener clickListener) {
+      this(userId, role);
+      this.buttonCaption = buttonCaption;
+      this.clickListener = clickListener;
+    }
+    
+    @Override
+    public void attach() {
+      super.attach();
       setSpacing(true);
       addUserPicture();
       addUserDetails();
-      
     }
 
     protected void addUserPicture() {
@@ -127,10 +132,12 @@ public class UserDetailsComponent extends HorizontalLayout {
       actionsLayout.addComponent(roleLabel);
       
       // Action button
-      Button button = new Button(buttonCaption);
-      button.addStyleName(Reindeer.BUTTON_SMALL);
-      button.addListener(clickListener);
-      actionsLayout.addComponent(button);
+      if (clickListener != null) {
+        Button button = new Button(buttonCaption);
+        button.addStyleName(Reindeer.BUTTON_SMALL);
+        button.addListener(clickListener);
+        actionsLayout.addComponent(button);
+      }
     }
     
   }

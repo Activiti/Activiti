@@ -14,6 +14,7 @@
 package org.activiti.explorer.ui.task;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
@@ -87,19 +88,23 @@ public class TaskInvolvedPeopleComponent extends CustomComponent {
   }
   
   protected void initHeader() {
-    
     HorizontalLayout headerLayout = new HorizontalLayout();
     headerLayout.setWidth(100, UNITS_PERCENTAGE);
     layout.addComponent(headerLayout);
     
-    // Title
+    initTitle(headerLayout);
+    initAddPeopleButton(headerLayout);
+  }
+
+  protected void initTitle(HorizontalLayout headerLayout) {
     title = new Label(i18nManager.getMessage(Messages.TASK_PEOPLE));
     title.addStyleName(ExplorerLayout.STYLE_H3);
     title.setWidth(100, UNITS_PERCENTAGE);
     headerLayout.addComponent(title);
     headerLayout.setExpandRatio(title, 1.0f);
+  }
 
-    // Add button
+  protected void initAddPeopleButton(HorizontalLayout headerLayout) {
     addPeopleButton = new Button();
     addPeopleButton.addStyleName(ExplorerLayout.STYLE_ADD);
     headerLayout.addComponent(addPeopleButton);
@@ -166,7 +171,7 @@ public class TaskInvolvedPeopleComponent extends CustomComponent {
   }
   
   protected UserDetailsComponent createAssigneeComponent() {
-    String roleMessage = task.getAssignee() != null ? Messages.TASK_ASSIGNEE : Messages.TASK_NO_ASSIGNEE;
+   String roleMessage = task.getAssignee() != null ? Messages.TASK_ASSIGNEE : Messages.TASK_NO_ASSIGNEE;
    return new UserDetailsComponent(
             task.getAssignee(),
             i18nManager.getMessage(roleMessage),
@@ -175,7 +180,8 @@ public class TaskInvolvedPeopleComponent extends CustomComponent {
   }
   
   protected void initInvolvedPeople() {
-    for (final IdentityLink identityLink : taskService.getIdentityLinksForTask(task.getId())) { 
+    List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(task.getId());
+    for (final IdentityLink identityLink : identityLinks) { 
       if (identityLink.getUserId() != null) { // only user identity links, ignoring the group ids
         if (!IdentityLinkType.ASSIGNEE.equals(identityLink.getType())) {
           UserDetailsComponent involvedDetails = new UserDetailsComponent(

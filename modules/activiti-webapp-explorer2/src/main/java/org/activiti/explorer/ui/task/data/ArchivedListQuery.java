@@ -15,54 +15,55 @@ package org.activiti.explorer.ui.task.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.TaskService;
-import org.activiti.engine.task.Task;
-import org.activiti.engine.task.TaskQuery;
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.data.AbstractLazyLoadingQuery;
+import org.activiti.explorer.data.LazyLoadingQuery;
 
 import com.vaadin.data.Item;
 
 
 /**
+ * {@link LazyLoadingQuery} for the Archived tasks page.
+ * 
  * @author Joram Barrez
  */
-public abstract class AbstractTaskListQuery extends AbstractLazyLoadingQuery {
-  
+public class ArchivedListQuery extends AbstractLazyLoadingQuery {
+
   protected String userId;
-  protected TaskService taskService;
+  protected HistoryService historyService;
   
-  public AbstractTaskListQuery() {
+  public ArchivedListQuery() {
     this.userId = ExplorerApp.get().getLoggedInUser().getId();
-    this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
+    this.historyService = ProcessEngines.getDefaultProcessEngine().getHistoryService();
   }
 
   public int size() {
-    return (int) getQuery().count();
+    return (int) createQuery().count();
   }
 
   public List<Item> loadItems(int start, int count) {
-    List<Task> tasks = getQuery().listPage(start, count);
+    List<HistoricTaskInstance> historicTaskInstances = createQuery().listPage(start, count);
     List<Item> items = new ArrayList<Item>();
-    for (Task task : tasks) {
-      items.add(new TaskListItem(task));
+    for (HistoricTaskInstance historicTaskInstance : historicTaskInstances) {
+      items.add(new TaskListItem(historicTaskInstance));
     }
     return items;
   }
 
   public Item loadSingleResult(String id) {
-    Task task = getQuery().taskId(id).singleResult();
-    if(task != null) {
-      return new TaskListItem(task);
-    }
-    return null;
+    return new TaskListItem(createQuery().taskId(id).singleResult());
   }
 
-  public void setSorting(Object[] propertyId, boolean[] ascending) {
+  public void setSorting(Object[] propertyIds, boolean[] ascending) {
     throw new UnsupportedOperationException();
   }
   
-  protected abstract TaskQuery getQuery();
+  protected HistoricTaskInstanceQuery createQuery() {
+    return historyService.createHistoricTaskInstanceQuery().taskOwner(userId).finished();
+  }
   
 }

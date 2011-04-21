@@ -88,7 +88,11 @@ public class TaskDetailPanel extends DetailPanel {
     this.viewManager = ExplorerApp.get().getViewManager();
     this.i18nManager = ExplorerApp.get().getI18nManager();
     this.notificationManager = ExplorerApp.get().getNotificationManager();
-
+  }
+  
+  @Override
+  public void attach() {
+    super.attach();
     init();
   }
   

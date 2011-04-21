@@ -29,6 +29,7 @@ import org.activiti.explorer.ui.util.ThemeImageColumnGenerator;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 
@@ -45,6 +46,7 @@ public abstract class TaskPage extends AbstractPage {
 
   protected String taskId;
   protected TaskService taskService;
+  protected Table taskTable;
   protected LazyLoadingContainer taskListContainer;
   protected LazyLoadingQuery lazyLoadingQuery;
   protected TaskEventsPanel taskEventPanel;
@@ -81,31 +83,12 @@ public abstract class TaskPage extends AbstractPage {
   
   @Override
   protected Table createList() {
-    final Table taskTable = new Table();
+    taskTable = new Table();
     taskTable.addStyleName(ExplorerLayout.STYLE_TASK_LIST);
     taskTable.addStyleName(ExplorerLayout.STYLE_SCROLLABLE);
     
     // Listener to change right panel when clicked on a task
-    taskTable.addListener(new Property.ValueChangeListener() {
-      private static final long serialVersionUID = 8811553575319455854L;
-      public void valueChange(ValueChangeEvent event) {
-        Item item = taskTable.getItem(event.getProperty().getValue()); // the value of the property is the itemId of the table entry
-        
-        if(item != null) {
-          String taskId = (String) item.getItemProperty("id").getValue();
-          Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-          setDetailComponent(new TaskDetailPanel(task, TaskPage.this));
-          taskEventPanel.setTask(task);
-          
-          UriFragment taskFragment = getUriFragment(taskId);
-          ExplorerApp.get().setCurrentUriFragment(taskFragment);
-        } else {
-          // Nothing is selected
-          setDetailComponent(null);
-          ExplorerApp.get().setCurrentUriFragment(getUriFragment(null));
-        }
-      }
-    });
+    taskTable.addListener(getListSelectionListener());
     
     this.lazyLoadingQuery = createLazyLoadingQuery();
     this.taskListContainer = new LazyLoadingContainer(lazyLoadingQuery, 10);
@@ -119,6 +102,34 @@ public abstract class TaskPage extends AbstractPage {
     taskTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
     
     return taskTable;
+  }
+  
+  protected ValueChangeListener getListSelectionListener() {
+    return new Property.ValueChangeListener() {
+      private static final long serialVersionUID = 1L;
+      public void valueChange(ValueChangeEvent event) {
+        Item item = taskTable.getItem(event.getProperty().getValue()); // the value of the property is the itemId of the table entry
+        
+        if(item != null) {
+          String id = (String) item.getItemProperty("id").getValue();
+          setDetailComponent(createDetailComponent(id));
+          
+          UriFragment taskFragment = getUriFragment(id);
+          ExplorerApp.get().setCurrentUriFragment(taskFragment);
+        } else {
+          // Nothing is selected
+          setDetailComponent(null);
+          ExplorerApp.get().setCurrentUriFragment(getUriFragment(null));
+        }
+      }
+    };
+  }
+  
+  protected Component createDetailComponent(String id) {
+    Task task = taskService.createTaskQuery().taskId(id).singleResult();
+    Component detailComponent = new TaskDetailPanel(task, TaskPage.this);
+    taskEventPanel.setTask(task);
+    return detailComponent;
   }
   
   @Override

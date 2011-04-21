@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.Group;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
@@ -29,10 +28,13 @@ import org.activiti.explorer.ui.custom.ToolBar;
 import org.activiti.explorer.ui.custom.ToolbarEntry;
 import org.activiti.explorer.ui.custom.ToolbarEntry.ToolbarCommand;
 import org.activiti.explorer.ui.custom.ToolbarPopupEntry;
+import org.activiti.explorer.ui.task.data.ArchivedListQuery;
+import org.activiti.explorer.ui.task.data.CasesListQuery;
+import org.activiti.explorer.ui.task.data.InboxListQuery;
+import org.activiti.explorer.ui.task.data.InvolvedListQuery;
+import org.activiti.explorer.ui.task.data.QueuedListQuery;
 
 import com.vaadin.ui.Button;
-
-
 
 /**
  * The menu bar which is shown when 'Tasks' is selected in the main menu.
@@ -48,14 +50,13 @@ public class TaskMenuBar extends ToolBar {
   public static final String ENTRY_INBOX = "inbox";
   public static final String ENTRY_QUEUED = "queued";
   public static final String ENTRY_INVOLVED = "involved";
+  public static final String ENTRY_ARCHIVED = "archived";
   
-  protected TaskService taskService;
   protected IdentityService identityService;
   protected ViewManager viewManager;
   protected I18nManager i18nManager;
   
   public TaskMenuBar() {
-    this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
     this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
     this.viewManager = ExplorerApp.get().getViewManager();
     this.i18nManager = ExplorerApp.get().getI18nManager();
@@ -67,12 +68,11 @@ public class TaskMenuBar extends ToolBar {
   protected void initItems() {
     setWidth("100%");
 
-
     // TODO: the counts should be done later by eg a Refresher component
 
     // Cases
     LoggedInUser user = ExplorerApp.get().getLoggedInUser();
-    long casesCount = taskService.createTaskQuery().taskOwner(user.getId()).count();
+    long casesCount = new CasesListQuery().size(); 
     ToolbarEntry casesEntry = addToolbarEntry(ENTRY_CASES, i18nManager.getMessage(Messages.TASK_MENU_CASES), new ToolbarCommand() {
       public void toolBarItemSelected() {
         viewManager.showCasesPage();
@@ -81,7 +81,7 @@ public class TaskMenuBar extends ToolBar {
     casesEntry.setCount(casesCount);
     
     // Inbox
-    long inboxCount = taskService.createTaskQuery().taskAssignee(user.getId()).count();
+    long inboxCount = new InboxListQuery().size(); 
     ToolbarEntry inboxEntry = addToolbarEntry(ENTRY_INBOX, i18nManager.getMessage(Messages.TASK_MENU_INBOX), new ToolbarCommand() {
       public void toolBarItemSelected() {
         viewManager.showInboxPage();
@@ -95,7 +95,7 @@ public class TaskMenuBar extends ToolBar {
     long queuedCount = 0;
     for (final Group group : groups) {
       if (group.getType().equals("assignment")) {
-        long groupCount = taskService.createTaskQuery().taskCandidateGroup(group.getId()).count();
+        long groupCount = new QueuedListQuery(group.getId()).size(); 
         
         queuedItem.addMenuItem(group.getName() + " (" + groupCount + ")", new ToolbarCommand() {
           public void toolBarItemSelected() {
@@ -109,13 +109,22 @@ public class TaskMenuBar extends ToolBar {
     queuedItem.setCount(queuedCount);
     
     // Involved
-    long involvedCount = taskService.createTaskQuery().taskInvolvedUser(user.getId()).count();
+    long involvedCount = new InvolvedListQuery().size(); 
     ToolbarEntry involvedEntry = addToolbarEntry(ENTRY_INVOLVED, i18nManager.getMessage(Messages.TASK_MENU_INVOLVED), new ToolbarCommand() {
       public void toolBarItemSelected() {
         viewManager.showInvolvedPage();
       }
     });
     involvedEntry.setCount(involvedCount);
+    
+    // Archived
+    long archivedCount = new ArchivedListQuery().size(); 
+    ToolbarEntry archivedEntry = addToolbarEntry(ENTRY_ARCHIVED, i18nManager.getMessage(Messages.TASK_MENU_ARCHIVED), new ToolbarCommand() {
+      public void toolBarItemSelected() {
+        viewManager.showArchivedPage();
+      }
+    });
+    archivedEntry.setCount(archivedCount);
   }
   
   protected void initActions() {

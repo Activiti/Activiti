@@ -28,6 +28,7 @@ import org.activiti.explorer.ui.management.identity.GroupPage;
 import org.activiti.explorer.ui.management.identity.UserPage;
 import org.activiti.explorer.ui.management.job.JobPage;
 import org.activiti.explorer.ui.profile.ProfilePopupWindow;
+import org.activiti.explorer.ui.task.ArchivedPage;
 import org.activiti.explorer.ui.task.CasesPage;
 import org.activiti.explorer.ui.task.InboxPage;
 import org.activiti.explorer.ui.task.InvolvedPage;
@@ -128,6 +129,14 @@ public class ViewManager {
   
   public void showInvolvedPage(String taskId) {
     switchView(new InvolvedPage(taskId), MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_INVOLVED);
+  }
+  
+  public void showArchivedPage() {
+    switchView(new ArchivedPage(), MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_ARCHIVED);
+  }
+  
+  public void showArchivedPage(String taskId) {
+    switchView(new ArchivedPage(taskId), MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_ARCHIVED);
   }
   
   // Flows
