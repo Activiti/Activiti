@@ -92,7 +92,7 @@ public class FormHandler {
           nameAttribute = currentElement.getAttribute("name");
           valueAttribute = currentElement.getAttribute("value");
         }
-      }
+      }      
       if ("output".equals(currentElement.getTagName())) {
         nameAttribute = currentElement.getAttribute("value");
         valueAttribute = currentElement.getAttribute("value");
@@ -100,6 +100,11 @@ public class FormHandler {
       if ("checkbox".equals(currentElement.getTagName())) {
         nameAttribute = currentElement.getAttribute("name");
         valueAttribute = currentElement.getAttribute("property");
+      }
+      
+      if("textarea".equals(currentElement.getTagName())) {
+        nameAttribute = currentElement.getAttribute("name");
+        valueAttribute = currentElement.getTextContent();
       }
 
       if (nameAttribute == null || nameAttribute.length() == 0 || valueAttribute == null) {
