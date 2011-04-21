@@ -304,6 +304,12 @@ public class TaskDetailPanel extends DetailPanel {
         private static final long serialVersionUID = 1L;
 
         public void buttonClick(ClickEvent event) {
+          // If no owner, make assignee owner (will go into archived then)
+          if (task.getOwner() == null) {
+            task.setOwner(task.getAssignee());
+            taskService.setOwner(task.getId(), task.getAssignee());
+          }
+          
           taskService.complete(task.getId());     
           notificationManager.showInformationNotification(Messages.TASK_COMPLETED, task.getName());
           taskPage.refreshListSelectNext();

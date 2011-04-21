@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
@@ -45,11 +46,13 @@ public class TaskNavigator implements Navigator {
   public static final String PARAMETER_GROUP = "group";
   
   protected TaskService taskService;
+  protected HistoryService historyService;
   protected IdentityService identityService;
   
   public TaskNavigator() {
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
     this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
+    this.historyService = ProcessEngines.getDefaultProcessEngine().getHistoryService();
   }
   
   public String getTrigger() {
@@ -63,8 +66,7 @@ public class TaskNavigator implements Navigator {
     if (taskId == null) {
       directToCategoryPage(category, uriFragment);
     } else {
-      Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-     directToSpecificTaskPage(category, task, uriFragment);
+      directToSpecificTaskPage(category, taskId, uriFragment);
     }
   }
   
@@ -78,12 +80,15 @@ public class TaskNavigator implements Navigator {
       viewManager.showQueuedPage(uriFragment.getParameter(PARAMETER_GROUP));
     } else if (CATEGORY_INVOLVED.equals(category)){
       viewManager.showInvolvedPage();
+    } else if (CATEGORY_ARCHIVED.equals(category)) {
+      viewManager.showArchivedPage();
     } else {
       throw new ActivitiException("Couldn't find a matching category");
     }
   }
   
-  protected void directToSpecificTaskPage(String category, Task task, UriFragment uriFragment) {
+  protected void directToSpecificTaskPage(String category, String taskId, UriFragment uriFragment) {
+    Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
     ViewManager viewManager = ExplorerApp.get().getViewManager();
     String loggedInUserId = ExplorerApp.get().getLoggedInUser().getId();
     
@@ -125,18 +130,43 @@ public class TaskNavigator implements Navigator {
         viewManager.showInvolvedPage(task.getId());
         pageFound = true;
       }
+    } else if (CATEGORY_ARCHIVED.equals(category)) {
+      if (task == null) {
+        boolean isOwner = historyService.createHistoricTaskInstanceQuery()
+          .taskId(taskId)
+          .taskOwner(loggedInUserId)
+          .finished()
+          .count() == 1;
+        
+        if (isOwner) {
+          viewManager.showArchivedPage(taskId);
+          pageFound = true;
+        }
+      }
     } else {
       throw new ActivitiException("Couldn't find a matching category");
     }
     
     if (!pageFound) {
       // If URL doesnt match anymore, we must use the task data to redirect to the right page
-      directToPageBasedOnTaskData(viewManager, task, loggedInUserId);
+      directToPageBasedOnTaskData(viewManager, taskId, task, loggedInUserId);
     }
   }
   
-  protected void directToPageBasedOnTaskData(ViewManager viewManager, Task task, String loggedInUserId) {
-    if (loggedInUserId.equals(task.getOwner())) {
+  protected void directToPageBasedOnTaskData(ViewManager viewManager, String taskId, Task task, String loggedInUserId) {
+    if (task == null) {
+      // If task is not found, our only hope is the archived page
+      boolean isOwner = historyService.createHistoricTaskInstanceQuery()
+        .taskId(taskId)
+        .taskOwner(loggedInUserId)
+        .finished()
+        .count() == 1;
+      if (isOwner) {
+        viewManager.showArchivedPage(taskId);
+      } else {
+        showNavigationError(taskId);
+      }
+    } else if (loggedInUserId.equals(task.getOwner())) {
       viewManager.showCasesPage(task.getId());
     } else if (loggedInUserId.equals(task.getAssignee())) {
       viewManager.showInboxPage(task.getId());
@@ -165,10 +195,14 @@ public class TaskNavigator implements Navigator {
       
       // We've tried hard enough, the user now gets a notification. He deserves it.
       if (!pageFound) {
-        String description = ExplorerApp.get().getI18nManager().getMessage(Messages.NAVIGATION_ERROR_NOT_INVOLVED, task.getId());
-        ExplorerApp.get().getNotificationManager().showErrorNotification(Messages.NAVIGATION_ERROR_NOT_INVOLVED_TITLE, description);
+        showNavigationError(taskId);
       }
     }
+  }
+  
+  protected void showNavigationError(String taskId) {
+    String description = ExplorerApp.get().getI18nManager().getMessage(Messages.NAVIGATION_ERROR_NOT_INVOLVED, taskId);
+    ExplorerApp.get().getNotificationManager().showErrorNotification(Messages.NAVIGATION_ERROR_NOT_INVOLVED_TITLE, description);
   }
   
   protected List<String> getGroupIds(String userId) {

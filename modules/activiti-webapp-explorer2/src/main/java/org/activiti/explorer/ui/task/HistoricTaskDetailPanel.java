@@ -257,6 +257,8 @@ public class HistoricTaskDetailPanel extends DetailPanel {
     if (subTasks.size() > 0) {
       initSubTaskGrid();
       populateSubTasks(subTasks);
+    } else {
+      initNoSubTasksLabel();
     }
   }
 
@@ -296,6 +298,12 @@ public class HistoricTaskDetailPanel extends DetailPanel {
     }
   }
   
+  protected void initNoSubTasksLabel() {
+    Label noSubTasksLabel = new Label(i18nManager.getMessage(Messages.TASK_NO_SUBTASKS));
+    noSubTasksLabel.addStyleName(Reindeer.LABEL_SMALL);
+    subTasksLayout.addComponent(noSubTasksLabel);
+  }
+  
   protected void initRelatedContent() {
     relatedContentLayout = new VerticalLayout();
     relatedContentLayout.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
@@ -306,6 +314,8 @@ public class HistoricTaskDetailPanel extends DetailPanel {
     if (attachments.size() > 0) {
       Table table = initRelatedContentTable();
       populateRelatedContent(table, attachments);
+    } else {
+      initNoRelatedContentLabel();
     }
   }
 
@@ -329,7 +339,7 @@ public class HistoricTaskDetailPanel extends DetailPanel {
     table.setColumnWidth("type", 16);
     table.addContainerProperty("name", Component.class, null);
     
-    addComponent(table);
+    relatedContentLayout.addComponent(table);
     return table;
   }
 
@@ -350,6 +360,12 @@ public class HistoricTaskDetailPanel extends DetailPanel {
       attachmentItem.getItemProperty("type").setValue(new Embedded(null, renderer.getImage(attachment)));
     }
     table.setPageLength(table.size());
+  }
+  
+  protected void initNoRelatedContentLabel() {
+    Label noContentLabel = new Label(i18nManager.getMessage(Messages.TASK_NO_RELATED_CONTENT));
+    noContentLabel.addStyleName(Reindeer.LABEL_SMALL);
+    relatedContentLayout.addComponent(noContentLabel);
   }
   
   /**
