@@ -88,7 +88,7 @@ public class FileAttachmentEditorComponent extends VerticalLayout implements Att
 
   protected void initSuccessIndicator() {
     successIndicator = new Label();
-    successIndicator.setIcon(Images.TASK_FINISHED);
+    successIndicator.setIcon(Images.SUCCESS);
     successIndicator.setVisible(false);
     
     addComponent(successIndicator);

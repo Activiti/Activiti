@@ -278,7 +278,7 @@ public class HistoricTaskDetailPanel extends DetailPanel {
   protected void populateSubTasks(List<HistoricTaskInstance> subTasks) {
     for (final HistoricTaskInstance subTask : subTasks) {
       // icon
-      Embedded icon = new Embedded(null, Images.TASK);
+      Embedded icon = new Embedded(null, Images.TASK_22);
       icon.setWidth(22, UNITS_PIXELS);
       icon.setWidth(22, UNITS_PIXELS);
       subTaskGrid.addComponent(icon);

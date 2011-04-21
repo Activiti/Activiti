@@ -1,15 +1,210 @@
 @import url(../reindeer/styles.css);
 
-/* ------
+body {
+	margin:0;
+	font:12px/14px Arial, Helvetica, sans-serif;
+	color:#3c3c3c;
+	min-width:980px;
+	background:#f9f9f9;
+	max-width:1920px;
+}
+
+/* -------
    Generic
    ------- */
-   
+
 .v-label-red {
   color: red;
 }
 
 .v-panel-nocaption.v-panel-nocaption-light {  
   border: none;
+}
+
+.v-label-bold {
+  font-weight: bold;
+}
+
+.v-label-caption,
+.v-button-caption {
+	text-shadow: none;	
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.v-button-link .v-button-caption, .v-link a:link span, .v-link a:visited span  {
+  color:#3c3c3c;
+}
+
+/* -------------
+   Popup windows
+   ------------- */
+.v-window-light .v-window-header {
+	color:#007dc3;
+	font:18px Arial, Helvetica, sans-serif;
+}
+ 
+/* ---------------
+   Form Properties
+   --------------- */
+.formprops .h4 {
+	color:#3c3c3c;
+	font:bold 12px Arial, Helvetica, sans-serif;
+}
+
+/* -----------------------
+   Buttons - Normal button
+   ----------------------- */
+ 
+.v-button:focus {
+    background-position: 0 0;
+    background-image: url(img/button-bg-left-active.gif);
+}
+
+.v-button:focus .v-button-wrap {
+    background-position: right 0;
+    background-image: url(img/button-bg-right-active.gif);
+}
+
+.v-button:active,
+.v-button.v-pressed {
+    background-position: 0 0;
+    background-image: url(img/button-bg-left-down.gif);
+}
+
+.v-button:active .v-button-wrap,
+.v-button.v-pressed .v-button-wrap {
+    background-position: right 0;
+    background-image: url(img/button-bg-right-down.gif);
+}
+
+.v-button,
+.v-disabled.v-button {
+    height: 24px;
+    padding: 0 0 0 5px;
+    background: transparent url(img/button-bg-left.gif) repeat-x 0 0;
+    cursor: pointer;
+}
+
+.v-button-wrap,
+.v-disabled.v-button .v-button-wrap {
+    height: 24px;
+    padding: 4px 10px 0 4px;
+    background: transparent url(img/button-bg-right.gif) repeat-x right 0;
+    cursor: pointer;
+}
+
+.v-button-caption {
+    color: #464646;
+}
+
+.v-button.v-disabled .v-button-wrap .v-button-caption {
+	color: #646464;	
+	cursor: default;
+}
+/* ----------------------
+   Buttons - Small button
+   ---------------------- */
+.v-button-small,
+.v-disabled.v-button-small,
+.v-button-small:active,
+.v-pressed.v-button-small,
+.v-button-small:focus {
+    height: 17px;
+    padding: 0 0 0 6px;
+    background: transparent url(img/button-bg-small-left.gif) repeat-x 0 0;
+    font:bold 10px/12px Arial, Helvetica, sans-serif;
+    cursor: pointer;
+}
+
+.v-button-small .v-button-wrap,
+.v-button-small.v-disabled .v-button-wrap,
+.v-button-small:active .v-button-wrap,
+.v-button-small.v-pressed .v-button-wrap {
+    height: 17px;
+    padding: 1px 12px 0 6px;
+    background: transparent url(img/button-bg-small-right.gif) repeat-x right 0;
+    font:bold 10px/12px Arial, Helvetica, sans-serif;
+    cursor: pointer;
+}
+
+.v-button-small:focus .v-button-wrap {
+	background: transparent url(img/button-bg-small-right-focus.gif) repeat-x right 0;	
+}
+
+.v-button-small:focus {
+	background: transparent url(img/button-bg-small-left-focus.gif) repeat-x 0 0;	
+}
+
+.v-button-small .v-button-wrap .v-button-caption {
+	font:bold 10px/12px Arial, Helvetica, sans-serif;
+}
+
+/* --------------------
+   Buttons - Add button
+   -------------------- */
+ .v-button-add,
+.v-disabled.v-button-add,
+.v-button-add:active,
+.v-pressed.v-button-add,
+.v-button-add:focus
+{
+    height: 25px;
+    width:  26px;
+    background: transparent background:url(img/ico-8.gif) no-repeat 0 0;
+    cursor: pointer;
+}
+
+.v-button-add .v-button-wrap,
+.v-button-add.v-disabled .v-button-wrap,
+.v-button-add:active .v-button-wrap,
+.v-button-add.v-pressed .v-button-wrap,
+.v-button-add:focus .v-button-wrap {
+    background: none;
+}
+
+/* ---------------------
+   Table - default style
+   --------------------- */
+.v-table-row-odd, .v-table-row {
+ 	background-color: #fff;
+	overflow:hidden;
+	font:12px/14px Arial, Helvetica, sans-serif;
+}
+
+.v-table-row-odd.v-selected, .v-table-row.v-selected {
+	background: #dff5ff;
+	color: #000000;
+	font-weight: bold;
+	text-shadow: none;
+}
+ 
+.v-table-row-odd .v-table-cell-content, .v-table-row .v-table-cell-content {
+	border: none;
+	height: 35px;
+	border-bottom: 1px solid #c5c5c5;	
+}
+
+.v-table-cell-content {
+    vertical-align: middle;
+}
+
+.v-table-body {
+	border: 1px solid #c5c5c5;
+}
+.v-table-body.focused {
+	border: 1px solid #c5c5c5;
+}
+
+.v-table .v-table-caption-container {
+	padding-right: 0px;
+	text-shadow: none;
+}
+
+.v-table .v-table-header-wrap {
+	background:#fff url(img/bg-table.png) repeat-x 0 100%;
 }
 
 /* -----
@@ -112,251 +307,9 @@ input.login-field {
   text-decoration: none;
 }
 
-/* ---------
-   Main menu
-   --------- */
-   
-#main-menu {
-  /*background: no-repeat right url(img/main-menu-bg-right.png);*/
-  background-color: #1b7ec3;
-  text-shadow: 0pt 1px 0pt rgba(0, 0, 0, 0.9);
-  padding-top: 0px;
-  padding-right: 8px;
-  padding-bottom: 3px;
-  padding-left: 8px;
-}
-
-.v-button-menu-button .v-button-caption {
-  color: #fefffb;
-  text-decoration: none;
-}
-
-
-/* ----------
-   Action Bar
-   ---------- */
-.v-horizontallayout-action-bar {
-	border-top: 1px solid #CFCFCF;
-	border-bottom: 1px solid #CFCFCF;
-	padding: 2px 0px;
-}
-
 /* ------------
-   Profile page
+   Main content
    ------------ */
-
-
-.v-label-profile-header {
-  height: 1.1em;
-  padding-right: 0.3em;
-  padding-bottom: 0.3em;
-  padding-left: 0.3em;
-  margin-right: 1em;
-  margin-bottom: 0em;
-  margin-left: 1em;
-  background-color: #e3eaec;
-  font-weight: bold;
-  font-size: 116%;
-}
-
-.v-gridlayout-profile-layout {
-  padding-top: 0.3em;
-  padding-right: 0.3em;
-  padding-bottom: 0.3em;
-  padding-left: 0.3em;
-  margin-top: 1.5em;
-  margin-right: 1em;
-  margin-bottom: 0em;
-  margin-left: 1.5em;
-}
-
-.v-label-profile-field {
-  font-weight: bold;
-}
-
-.v-gridlayout-profile-layout .v-gridlayout-spacing-on {
-    padding-top: 8px;
-}
-
-.profile-picture {
-  margin-top: 6px;
-  padding: 1px;
-  border: 1px solid #021a40;
-}
-
-
-/* ------------
-   Task details
-   ------------ */
-
-.v-label-bold {
-  font-weight: bold;
-}
-
-.v-gridlayout-task-details .v-gridlayout-spacing-on {
-  padding-left: 15px;
-  padding-top: 2px;
-}
-
-.v-label-horizontal-separator {
-  margin-top: 0px;
-  padding-top: 0px;
-}
-
-/* -------------
-   Database page
-   ------------- */
-   
-.database-table-row .v-table-cell-content {
-  height: 50px;
-}
-
-/* ----------
-   Deployment
-   ---------- */
-
-.upload-description {
-  margin: 1.5em;
-  padding-right: 3em;
-}
-
-.upload-button {
-  margin-top: 1.5em;
-}
-
-/* ----
-   Jobs
-   ---- */
-   
-.job-exception-message {
-	color: #AA0000;
-	font-weight: bold;
-}
-
-/* --------------
-   Form rendering
-   -------------- */
-.formprop-readonly {
-	color: #666666;	
-}
-
-/* --------
-   Menu Bar
-   -------- */
-
-.v-menubar {
-  color: #FEFFFB;
-  text-shadow:none;
-  padding-left: 2px;
-  border-bottom: solid 1px #1b7ec3;
-}
-
-.v-menubar-menuitem-caption {
-  cursor: pointer;
-}
-
-
-/* Shared styles */
-.deployment-details-header, .job-details-header, .proc-def-details-header, .proc-inst-details-header, .related-content-detail-header {
-  width: 95%;
-  height: 1.1em;
-  padding-top: 0.3em;
-  padding-right: 0.3em;
-  padding-bottom: 0.3em;
-  padding-left: 0.3em;
-  margin-top: 1.5em;
-  margin-right: 1em;
-  margin-bottom: 1.5em;
-  background-color: #e3eaec;
-  font-weight: bold;
-  font-size: 116%;
-}
-
-/* Related content */
-
-.related-content-detail-header {
-	margin-top: 0;
-}
-
-.image-action {
-  cursor: pointer;
-}
-
-.clickable {
-  cursor: pointer;
-}
-
-.v-table-related-content-create-list {
-	margin-right: 0px;	
-}
-
-.v-table-related-content-create-list .v-table-body {
-	border: none;	
-}
-
-.v-table-related-content-create-list .v-table-body .v-table-table {
-	/*border: 1px solid white;*/
-	border-right: none;
-}
-
-.related-content-create-detail {
-	border: 1px solid #e8e8e3;
-	background-color: #e8e8e3;
-}
-
-.v-table-related-content-create-list .v-table-row,
-.v-table-related-content-create-list .v-table-row-odd {
-	background: none;
-}
-
-.v-table-related-content-create-list .v-table-row .v-table-cell-content,
-.v-table-related-content-create-list .v-table-row-odd .v-table-cell-content {
-	background: none;
-	border: none;
-}
-
-.v-table-related-content-create-list .v-table-row.v-selected .v-table-cell-content,
-.v-table-related-content-create-list .v-table-row-odd.v-selected .v-table-cell-content {
-	border-top: 1px solid #c5c5c5; 
-	border-bottom: 1px solid #c5c5c5; 
-}
-
-.v-table-related-content-create-list .v-selected .v-table-cell-content-related-last-column {
-	background: #DFF5FF no-repeat url(img/arrow.png) right center;
-}
-
-.v-table-related-content-create-list .v-table-row.v-selected,
-.v-table-related-content-create-list .v-table-row-odd.v-selected {
-	background: #DFF5FF;
-}
-
-
-
-/*
-OLD CSS ABOVE THIS LINE
- *******************************
- */
-
-body {
-	margin:0;
-	font:12px/14px Arial, Helvetica, sans-serif;
-	color:#3c3c3c;
-	min-width:980px;
-	background:#f9f9f9;
-	max-width:1920px;
-}
-
-/*
- * Generic styles
- */
-.v-button-link .v-button-caption, .v-link a:link span, .v-link a:visited span  {
-  color:#3c3c3c;
-}
- 
- 
-/*
- * Main content
- */
 .main {
 	background-color: #fff;	
 }
@@ -365,24 +318,9 @@ body {
 	background-color: #fff;	
 }
 
-/*
- * Footer
- */
-.footer {
-	background:#f9f9f9;
-	border-top:1px solid #ababab;
-	font:bold 11px Arial, Helvetica, sans-serif;
-	color:#666;
-	padding:10px 0;
-}
-
-.footer .v-label {
-	text-align: center;	
-}
-
-/*
- * Header
- */
+/* ------
+   Header
+   ------ */
 .header {
 	padding:0 12px 0 10px;
 	height:1%;
@@ -412,9 +350,9 @@ body {
 	float:left;
 }
 
-/*
- * Header, Main menu
- */
+/* -----------------
+   Header, Main menu
+   ----------------- */
  .main-menu-button .v-button-wrap {
 	text-align: center;
 }
@@ -434,9 +372,9 @@ body {
 	margin: 0px;
 }
  
-/*
- * Header - profile link
- */
+/* ---------------------
+   Header - Profile link
+   --------------------- */
 .person {
 	float:right;
 	margin:18px 0 0;
@@ -455,31 +393,15 @@ body {
 .v-menubar-popup .v-menubar-submenu-person {
    background-color: #005eab;
    color: #fff;
- }
+}
  
- .v-menubar-popup .v-menubar-submenu-person .v-menubar-menuitem-selected {
+.v-menubar-popup .v-menubar-submenu-person .v-menubar-menuitem-selected {
  	background: #1B7EC3;
- }
- 
-/*
- * Profile link
- */
-.profile-link .v-button-link .v-button-caption {
-  color:#3c3c3c;
-  font-weight: bold;
 }
 
-/*
- * Popup windows
- */
-.v-window-light .v-window-header {
-	color:#007dc3;
-	font:18px Arial, Helvetica, sans-serif;
-}
- 
- /*
-  * Toolbar
-  */
+/* -------
+   Toolbar
+   ------- */
 .toolbar {
 	width:100%;
 	background:#fff url(img/bg-toolbar.gif) repeat-x 0 100%;
@@ -491,6 +413,10 @@ body {
 
 .v-horizontallayout-toolbar .v-horizontallayout-margin-right {
 	padding-right: 10px;
+}
+
+.v-horizontallayout-toolbar .v-horizontallayout-spacing-on {
+	padding-right: 15px;	
 }
 
 .toolbar .v-button-toolbar-count.link.v-button-link {
@@ -560,7 +486,7 @@ body {
 	background: none;	
 	border: none;
 	font:16px/18px Arial, Helvetica, sans-serif;
-	padding:0 0 0 5px;	
+	padding: 0px;	
 	text-decoration: none;
 	color: #8e8e8e;
 }
@@ -587,8 +513,20 @@ body {
    font:14px Arial, Helvetica, sans-serif;
    background-color: #fff;
    color: #464646;
- }
+}
+
+.v-menubar-toolbar-popup .v-menubar-menuitem .v-menubar-menuitem-caption {
+	text-shadow: none;	
+}
  
+div.v-menubar-toolbar-popup {
+	padding-left: 0px;	
+}
+
+.v-menubar-toolbar-popup .v-menubar-menuitem {
+	 padding-left: 0px;
+	 padding-right: 5px;
+}
 .v-menubar-popup .v-menubar-submenu-toolbar-popup .v-menubar-menuitem-selected {
  	background: #eaeaea;
  	color: #464646;
@@ -597,53 +535,25 @@ body {
 .v-menubar-popup .v-menubar-submenu-toolbar-popup .v-menubar-menuitem-selected .v-menubar-menuitem-caption {
 	text-shadow: none;	
 }
-  
-/**
- * Table - default style
- */
-.v-table-row-odd, .v-table-row {
- 	background-color: #fff;
-	overflow:hidden;
-	font:12px/14px Arial, Helvetica, sans-serif;
+
+/* ------
+   Footer
+   ------ */
+.footer {
+	background:#f9f9f9;
+	border-top:1px solid #ababab;
+	font:bold 11px Arial, Helvetica, sans-serif;
+	color:#666;
+	padding:10px 0;
 }
 
-.v-table-row-odd.v-selected, .v-table-row.v-selected {
-	background: #dff5ff;
-	color: #000000;
-	font-weight: bold;
-	text-shadow: none;
-}
- 
-.v-table-row-odd .v-table-cell-content, .v-table-row .v-table-cell-content {
-	border: none;
-	height: 35px;
-	border-bottom: 1px solid #c5c5c5;	
+.footer .v-label {
+	text-align: center;	
 }
 
-.v-table-cell-content {
-    vertical-align: middle;
-}
-
-.v-table-body {
-	border: 1px solid #c5c5c5;
-}
-.v-table-body.focused {
-	border: 1px solid #c5c5c5;
-}
-
-.v-table .v-table-caption-container {
-	padding-right: 0px;
-	text-shadow: none;
-}
-
-.v-table .v-table-header-wrap {
-	background:#fff url(img/bg-table.png) repeat-x 0 100%;
-}
- 
- 
-/**
- * Search box - Textfield
- */
+/* ----------------------
+   Search box - Textfield
+   ---------------------- */
 div.searchbox {
 	border-right: 1px solid #c5c5c5;
 	margin-left: -1px;
@@ -672,15 +582,16 @@ div.searchbox {
 	background:url(img/bg-input-c-1.gif) repeat-x;	
 }
 
-/**
- * Search box - Sort menu
- */
+/* ----------------------
+   Search box - Sort menu
+   ---------------------- */
 .searchbox-sortmenu {
 	background:url(img/bullet-2.gif) no-repeat 100% 50%;
 	border: none;
 	color:#3c3c3c;
 }
 
+.v-menubar-searchbox-sortmenu .v-menubar-menuitem,
 .v-menubar-searchbox-sortmenu .v-menubar-menuitem:hover,
 .v-menubar-searchbox-sortmenu .v-menubar-menuitem-selected {
 	color:#3c3c3c;
@@ -692,17 +603,17 @@ div.searchbox {
    background-color: #fff;
    color:#3c3c3c;
    text-shadow: none;
- }
+}
  
- .v-menubar-popup .v-menubar-submenu-searchbox-sortmenu .v-menubar-menuitem-selected {
+.v-menubar-popup .v-menubar-submenu-searchbox-sortmenu .v-menubar-menuitem-selected {
  	background: #eaeaea;
  	color: #464646;
  	text-shadow: none;
- }
+}
 
-/*
- * Event box
- */
+/* ---------
+   Event box
+   --------- */
 
 .v-panel-task-event-panel .v-panel-content > div {
 	background:#f2f2f2 url(img/bg-sidebar.gif) repeat-y;
@@ -737,101 +648,26 @@ div.searchbox {
   color:#8c8c8c;
 }
 
-
-/*
- * Buttons - Normal button
- */
- 
-.v-button:focus {
-    background-position: 0 0;
-    background-image: url(img/button-bg-left-active.gif);
+/* ---------------------
+   Detail - Detail panel
+   ---------------------  */
+.v-csslayout-detail-panel >.v-csslayout-margin {
+	background:#f2f2f2 url(img/bg-c.gif) repeat-x;
+	padding-top: 1px;
+	padding-left: 1px;
+	border: 1px solid #cecece;
+	-moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    -khtml-border-radius: 6px;
+    border-radius: 6px;
 }
 
-.v-button:focus .v-button-wrap {
-    background-position: right 0;
-    background-image: url(img/button-bg-right-active.gif);
-}
-
-.v-button:active,
-.v-button.v-pressed {
-    background-position: 0 0;
-    background-image: url(img/button-bg-left-down.gif);
-}
-
-.v-button:active .v-button-wrap,
-.v-button.v-pressed .v-button-wrap {
-    background-position: right 0;
-    background-image: url(img/button-bg-right-down.gif);
-}
-
-.v-button,
-.v-disabled.v-button {
-    height: 24px;
-    padding: 0 0 0 5px;
-    background: transparent url(img/button-bg-left.gif) repeat-x 0 0;
-    cursor: pointer;
-}
-
-.v-button-wrap,
-.v-disabled.v-button .v-button-wrap {
-    height: 24px;
-    padding: 4px 10px 0 4px;
-    background: transparent url(img/button-bg-right.gif) repeat-x right 0;
-    cursor: pointer;
-}
-
-.v-button-caption {
-    color: #464646;
-}
-
-.v-button.v-disabled .v-button-wrap .v-button-caption {
-	color: #646464;	
-	cursor: default;
-}
-/*
- * Buttons - Small button
- */
-.v-button-small,
-.v-disabled.v-button-small,
-.v-button-small:active,
-.v-pressed.v-button-small,
-.v-button-small:focus {
-    height: 17px;
-    padding: 0 0 0 6px;
-    background: transparent url(img/button-bg-small-left.gif) repeat-x 0 0;
-    font:bold 10px/12px Arial, Helvetica, sans-serif;
-    cursor: pointer;
-}
-
-.v-button-small .v-button-wrap,
-.v-button-small.v-disabled .v-button-wrap,
-.v-button-small:active .v-button-wrap,
-.v-button-small.v-pressed .v-button-wrap {
-    height: 17px;
-    padding: 1px 12px 0 6px;
-    background: transparent url(img/button-bg-small-right.gif) repeat-x right 0;
-    font:bold 10px/12px Arial, Helvetica, sans-serif;
-    cursor: pointer;
-}
-
-.v-button-small:focus .v-button-wrap {
-	background: transparent url(img/button-bg-small-right-focus.gif) repeat-x right 0;	
-}
-
-.v-button-small:focus {
-	background: transparent url(img/button-bg-small-left-focus.gif) repeat-x 0 0;	
-}
-
-.v-button-small .v-button-wrap .v-button-caption {
-	font:bold 10px/12px Arial, Helvetica, sans-serif;
-}
-
-/*
- * Detail - Title block
- */
+/* --------------------
+   Detail - Title block
+   -------------------- */
  .title-block .v-gridlayout-spacing-on {
  	padding-top: 5px;
- }
+}
  
 .title-block .v-gridlayout-margin-bottom {
  	padding-bottom: 5px;
@@ -839,14 +675,6 @@ div.searchbox {
 
 .title-block .v-horizontallayout-margin-bottom {
  	padding-bottom: 5px;
-}
-
-.profile-layout .v-gridlayout-margin-bottom {
-	padding-bottom: 5px;
-}
-
-.profile-layout .v-gridlayout-margin-top {
-	padding-top: 5px;
 }
 
 .title-block .h2 {
@@ -883,6 +711,9 @@ div.searchbox {
 	background: transparent url(img/version-16.png) no-repeat 0 0; 	
 }
 
+/* --------------------
+   Detail - Block
+   -------------------- */
 .block-holder {
 	overflow:hidden;
 	margin:0 0 8px;
@@ -905,36 +736,77 @@ div.searchbox {
 	overflow:hidden;
 }
 
+/* -------------
+   Task - Detail
+   ------------- */	
 .involve-people .v-gridlayout .v-gridlayout-margin-top {
 	padding-top: 5px;	
 }
 
-/**
- * Buttons - Add button
- */
- .v-button-add,
-.v-disabled.v-button-add,
-.v-button-add:active,
-.v-pressed.v-button-add,
-.v-button-add:focus
-{
-    height: 25px;
-    width:  26px;
-    background: transparent background:url(img/ico-8.gif) no-repeat 0 0;
-    cursor: pointer;
+.subtasks .v-gridlayout-spacing-on {
+	padding-top: 3px;
+	padding-left: 5px;
 }
 
-.v-button-add .v-button-wrap,
-.v-button-add.v-disabled .v-button-wrap,
-.v-button-add:active .v-button-wrap,
-.v-button-add.v-pressed .v-button-wrap,
-.v-button-add:focus .v-button-wrap {
-    background: none;
+/* ------------
+   Profile page
+   ------------ */
+
+.profile-picture {
+  margin-top: 6px;
+  padding: 1px;
+  border: 1px solid #021a40;
 }
- 
-/**
- * Related content - list
- */
+
+.profile-layout .v-gridlayout-margin-bottom {
+	padding-bottom: 20px;
+}
+
+.profile-layout .v-gridlayout-margin-top {
+	padding-top: 5px;
+}
+
+/* ------------
+   Profile link
+   ------------ */
+.profile-link .v-button-link .v-button-caption {
+  color:#3c3c3c;
+  font-weight: bold;
+}
+
+/* -------------
+   Database page
+   ------------- */
+   
+.database-table .v-table-cell-content {
+  height: 50px;
+}
+
+/* ----------
+   Deployment
+   ---------- */
+
+.upload-description {
+  margin: 1.5em;
+  padding-right: 3em;
+}
+
+.upload-button {
+  margin-top: 1.5em;
+}
+
+/* ----
+   Jobs
+   ---- */
+   
+.job-exception-message {
+	color: #AA0000;
+	font-weight: bold;
+}
+
+/* ----------------------
+   Related content - list
+   ---------------------- */
 .v-table-related-content-list,
 .v-table-related-content-list .v-table-body {
 	background: none;
@@ -962,34 +834,57 @@ div.searchbox {
 	color: #464646;
 	text-decoration: underline;
 }
- 
-/**
- * Form
- */
-.formprops .h4 {
-	color:#3c3c3c;
-	font:bold 12px Arial, Helvetica, sans-serif;
+
+/* ------------------------
+   Related content - Create
+   ------------------------ */
+
+.v-table-related-content-create-list {
+	margin-right: 0px;	
 }
 
-/**
- * Detail panel
- */
-.v-csslayout-detail-panel >.v-csslayout-margin {
-	background:#f2f2f2 url(img/bg-c.gif) repeat-x;
-	padding-top: 1px;
-	padding-left: 1px;
-	border: 1px solid #cecece;
-	-moz-border-radius: 6px;
-    -webkit-border-radius: 6px;
-    -khtml-border-radius: 6px;
-    border-radius: 6px;
+.v-table-related-content-create-list .v-table-body {
+	border: none;	
 }
 
+.v-table-related-content-create-list .v-table-body .v-table-table {
+	border-right: none;
+}
+
+.related-content-create-detail {
+	border: 1px solid #e8e8e3;
+	background-color: #e8e8e3;
+}
+
+.v-table-related-content-create-list .v-table-row,
+.v-table-related-content-create-list .v-table-row-odd {
+	background: none;
+}
+
+.v-table-related-content-create-list .v-table-row .v-table-cell-content,
+.v-table-related-content-create-list .v-table-row-odd .v-table-cell-content {
+	background: none;
+	border: none;
+}
+
+.v-table-related-content-create-list .v-table-row.v-selected .v-table-cell-content,
+.v-table-related-content-create-list .v-table-row-odd.v-selected .v-table-cell-content {
+	border-top: 1px solid #c5c5c5; 
+	border-bottom: 1px solid #c5c5c5; 
+}
+
+.v-table-related-content-create-list .v-selected .v-table-cell-content-related-last-column {
+	background: #DFF5FF no-repeat url(img/arrow.png) right center;
+}
+
+.v-table-related-content-create-list .v-table-row.v-selected,
+.v-table-related-content-create-list .v-table-row-odd.v-selected {
+	background: #DFF5FF;
+}
  
- /*
- *************
- NEW CSS BELOW THIS LINE
- */
+/**********************
+* Custom Scrollbar CSS
+**********************/
 
 .vscroll-bar {width:7px !important;}
 .vscroll-up,
@@ -1025,23 +920,4 @@ div.searchbox {
 .scroll-block  {
 	height:588px;
 	overflow:hidden;
-}
-.past {
-	float:right;
-	background:url(img/ico-8.gif) no-repeat 0 -53px;
-	text-indent:-9999px;
-	width:26px;
-	height:25px;
-	overflow:hidden;
-}
-/* send */
-.send {
-	float:right;
-	background:url(img/ico-8.gif) no-repeat 0 -79px;
-	text-indent:-9999px;
-	width:26px;
-	height:25px;
-	overflow:hidden;
-	margin:0 0 0 10px;
-	display:inline;
 }

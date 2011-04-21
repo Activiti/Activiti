@@ -26,7 +26,6 @@ public class Images {
   
   // General
   public static final Resource WHITE_DIVIDER = new ThemeResource("img/divider-white.png");
-  public static final Resource TASK = new ThemeResource("img/task-22.png");
   public static final Resource CLOCK = new ThemeResource("img/clock.png");
   public static final Resource PROCESS_48PX = new ThemeResource("img/process_48.png");
   public static final Resource RESOURCE = new ThemeResource("img/resource.png");
@@ -45,11 +44,11 @@ public class Images {
   public static final Resource MAIN_MENU_REPORTS = new ThemeResource("img/mm-reports.png");
   
   // Task
-  public static final Resource TASK_50 = new ThemeResource("img/task-50.png");
-  public static final Resource TASK_FINISHED = new ThemeResource("img/tick.png");
-  public static final Resource TASK_UNFINISHED = new ThemeResource("img/control_play.png");
-  public static final Resource TASK_DUE_DATE_16 = new ThemeResource("img/duedate-16.png");
   public static final Resource TASK_16 =  new ThemeResource("img/task-16.png");;
+  public static final Resource TASK_22 = new ThemeResource("img/task-22.png");
+  public static final Resource TASK_50 = new ThemeResource("img/task-50.png");
+  public static final Resource TASK_FINISHED_22 = new ThemeResource("img/task-finished-22.png");
+  public static final Resource TASK_DUE_DATE_16 = new ThemeResource("img/duedate-16.png");
   
   // Accounts
   public static final Resource SKYPE = new ThemeResource("img/skype.png");

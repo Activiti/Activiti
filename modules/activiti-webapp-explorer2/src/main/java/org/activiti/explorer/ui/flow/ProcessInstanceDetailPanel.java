@@ -156,9 +156,9 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
     Item item = taskTable.addItem(task.getId());
     
     if(task.getEndTime() != null) {
-      item.getItemProperty("finished").setValue(new Embedded(null, Images.TASK_FINISHED));
+      item.getItemProperty("finished").setValue(new Embedded(null, Images.TASK_22));
     } else {
-      item.getItemProperty("finished").setValue(new Embedded(null, Images.TASK_UNFINISHED));
+      item.getItemProperty("finished").setValue(new Embedded(null, Images.TASK_FINISHED_22));
     }
     
     item.getItemProperty("name").setValue(task.getName());

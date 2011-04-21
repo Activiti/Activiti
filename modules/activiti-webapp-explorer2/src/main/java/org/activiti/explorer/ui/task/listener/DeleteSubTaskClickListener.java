@@ -15,7 +15,7 @@ package org.activiti.explorer.ui.task.listener;
 
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.task.Task;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
@@ -39,10 +39,10 @@ public class DeleteSubTaskClickListener implements ClickListener {
   
   private static final long serialVersionUID = 1L;
   
-  protected Task subTask;
+  protected HistoricTaskInstance subTask;
   protected SubTaskComponent subTaskComponent;
   
-  public DeleteSubTaskClickListener(Task subTask, SubTaskComponent subTaskComponent) {
+  public DeleteSubTaskClickListener(HistoricTaskInstance subTask, SubTaskComponent subTaskComponent) {
     this.subTask = subTask;
     this.subTaskComponent = subTaskComponent;
   }
@@ -55,6 +55,7 @@ public class DeleteSubTaskClickListener implements ClickListener {
     ConfirmationDialogPopupWindow popup = new ConfirmationDialogPopupWindow(
             i18nManager.getMessage(Messages.TASK_CONFIRM_DELETE_SUBTASK, subTask.getName()));
     popup.addListener(new ConfirmationEventListener() {
+      private static final long serialVersionUID = 1L;
       protected void rejected(ConfirmationEvent event) {
       }
       protected void confirmed(ConfirmationEvent event) {

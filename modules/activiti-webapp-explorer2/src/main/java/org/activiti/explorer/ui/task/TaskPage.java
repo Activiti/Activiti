@@ -95,7 +95,7 @@ public abstract class TaskPage extends AbstractPage {
     taskTable.setContainerDataSource(taskListContainer);
     
     // Create column header
-    taskTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.TASK));
+    taskTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.TASK_22));
     taskTable.setColumnWidth("icon", 22);
     
     taskTable.addContainerProperty("name", String.class, null);

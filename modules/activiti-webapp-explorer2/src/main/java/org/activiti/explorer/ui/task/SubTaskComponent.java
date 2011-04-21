@@ -14,8 +14,10 @@ package org.activiti.explorer.ui.task;
 
 import java.util.List;
 
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
@@ -28,10 +30,10 @@ import org.activiti.explorer.ui.task.listener.DeleteSubTaskClickListener;
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.event.ShortcutAction;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
@@ -55,6 +57,7 @@ public class SubTaskComponent extends CustomComponent {
   
   protected I18nManager i18nManager;
   protected TaskService taskService;
+  protected HistoryService historyService;
   
   protected Task parentTask;
   protected TaskDetailPanel taskDetailPanel;
@@ -69,6 +72,7 @@ public class SubTaskComponent extends CustomComponent {
     this.parentTask = parentTask;
     this.i18nManager = ExplorerApp.get().getI18nManager();
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
+    this.historyService = ProcessEngines.getDefaultProcessEngine().getHistoryService();
     
     initUi();
   }
@@ -187,7 +191,9 @@ public class SubTaskComponent extends CustomComponent {
   }
   
   protected void initSubTasks() {
-    List<Task> subTasks = taskService.getSubTasks(parentTask.getId());
+    List<HistoricTaskInstance> subTasks = historyService.createHistoricTaskInstanceQuery()
+      .taskParentTaskId(parentTask.getId())
+      .list();
     initSubTasksLayout();
     populateSubTasks(subTasks);
   }
@@ -195,16 +201,24 @@ public class SubTaskComponent extends CustomComponent {
   protected void initSubTasksLayout() {
     subTaskLayout = new GridLayout();
     subTaskLayout.setColumns(3);
+    subTaskLayout.addStyleName(ExplorerLayout.STYLE_TASK_SUBTASKS_LIST);
     subTaskLayout.setWidth(99, UNITS_PERCENTAGE);
     subTaskLayout.setColumnExpandRatio(2, 1.0f);
+    subTaskLayout.setSpacing(true);
     layout.addComponent(subTaskLayout);
   }
   
-  protected void populateSubTasks(List<Task> subTasks) {
+  protected void populateSubTasks(List<HistoricTaskInstance> subTasks) {
     if (subTasks.size() > 0) {
-      for (final Task subTask : subTasks) {
+      for (final HistoricTaskInstance subTask : subTasks) {
         // icon
-        Embedded icon = new Embedded(null, Images.TASK);
+        Embedded icon = null;
+        
+        if(subTask.getEndTime() != null) {
+          icon = new Embedded(null, Images.TASK_FINISHED_22);
+        } else {
+          icon = new Embedded(null, Images.TASK_22);
+        }
         icon.setWidth(22, UNITS_PIXELS);
         icon.setWidth(22, UNITS_PIXELS);
         subTaskLayout.addComponent(icon);
@@ -220,12 +234,17 @@ public class SubTaskComponent extends CustomComponent {
         subTaskLayout.addComponent(subTaskLink);
         subTaskLayout.setComponentAlignment(subTaskLink, Alignment.MIDDLE_LEFT);
         
-        // Delete icon
-        Embedded deleteIcon = new Embedded(null, Images.DELETE);
-        deleteIcon.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
-        deleteIcon.addListener(new DeleteSubTaskClickListener(subTask, this));
-        subTaskLayout.addComponent(deleteIcon);
-        subTaskLayout.setComponentAlignment(deleteIcon, Alignment.MIDDLE_RIGHT);
+        if(subTask.getEndTime() == null) {
+          // Delete icon only appears when task is not finished yet
+          Embedded deleteIcon = new Embedded(null, Images.DELETE);
+          deleteIcon.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
+          deleteIcon.addListener(new DeleteSubTaskClickListener(subTask, this));
+          subTaskLayout.addComponent(deleteIcon);
+          subTaskLayout.setComponentAlignment(deleteIcon, Alignment.MIDDLE_RIGHT);
+        } else {
+          // Next line of grid
+          subTaskLayout.newLine();
+        }
       }
     } else {
       Label noSubTasksLabel = new Label(i18nManager.getMessage(Messages.TASK_NO_SUBTASKS));
@@ -238,7 +257,9 @@ public class SubTaskComponent extends CustomComponent {
   
   public void refreshSubTasks() {
     subTaskLayout.removeAllComponents();
-    List<Task> subTasks = taskService.getSubTasks(parentTask.getId());
+    List<HistoricTaskInstance> subTasks = historyService.createHistoricTaskInstanceQuery()
+      .taskParentTaskId(parentTask.getId())
+      .list();
     populateSubTasks(subTasks);
   }
 

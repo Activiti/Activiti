@@ -81,24 +81,14 @@ public interface ExplorerLayout {
   // Login page
   static final String STYLE_LOGIN_PAGE = "login-general";
   
-  // Menu bar
-  static final String STYLE_MENUBAR = "menubar";
-  static final String STYLE_MENUBAR_BUTTON = "menu-button";
-  
-  // Action Bar
-  static final String STYLE_ACTION_BAR = "action-bar";
-  
   // Profile page
   static final String STYLE_PROFILE_LAYOUT = "profile-layout";
-  static final String STYLE_PROFILE_HEADER = "profile-header";
   static final String STYLE_PROFILE_FIELD = "profile-field";
   static final String STYLE_PROFILE_PICTURE = "profile-picture";
   static final String STYLE_PROFILE_LINK = "profile-link";
   
   // Task pages
   static final String STYLE_TASK_LIST = "task-list";
-  static final String STYLE_TASK_DETAILS = "task-details";
-  static final String STYLE_TASK_DETAILS_HEADER = "task-details-header";
   static final String STYLE_TASK_EVENT_PANEL = "task-event-panel";
   static final String STYLE_TASK_EVENT = "task-event";
   static final String STYLE_TASK_EVENT_AUTHOR = "task-event-author";
@@ -111,6 +101,7 @@ public interface ExplorerLayout {
   static final String STYLE_TASK_HEADER_PRIORITY_HIGH = "task-priority-high";
   static final String STYLE_TASK_HEADER_CREATE_TIME = "task-create-time";
   static final String STYLE_INVOLVE_PEOPLE = "involve-people";
+  static final String STYLE_TASK_SUBTASKS_LIST = "subtasks";
 
   // Flow pages
   static final String STYLE_PROCESS_DEFINITION_LIST = "proc-def-list";
@@ -121,8 +112,8 @@ public interface ExplorerLayout {
   static final String STYLE_FLOW_HEADER_START_TIME = "flow-start-time";
   
   // Database page
-  static final String STYLE_DATABASE_DETAILS = "database-details";
-  static final String STYLE_DATABASE_TABLE_ROW = "database-table-row";
+  static final String STYLE_DATABASE_TABLE = "database-table";
+  
   
   // Deployment page
   static final String STYLE_DEPLOYMENT_UPLOAD_DESCRIPTION = "upload-description";

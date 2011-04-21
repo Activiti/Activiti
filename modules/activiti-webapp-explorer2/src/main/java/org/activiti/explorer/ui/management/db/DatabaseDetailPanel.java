@@ -103,8 +103,7 @@ public class DatabaseDetailPanel extends DetailPanel {
       
       data.setWidth(100, UNITS_PERCENTAGE);
       data.setHeight(100, UNITS_PERCENTAGE);
-      data.addStyleName(ExplorerLayout.STYLE_DATABASE_TABLE_ROW);
-      data.addStyleName(ExplorerLayout.STYLE_DATABASE_DETAILS);
+      data.addStyleName(ExplorerLayout.STYLE_DATABASE_TABLE);
       setDetailExpandRatio(data, 1.0f);
       
       // Create column headers
@@ -115,7 +114,7 @@ public class DatabaseDetailPanel extends DetailPanel {
       
     } else {
       Label noDataLabel = new Label(i18nManager.getMessage(Messages.DATABASE_NO_ROWS));
-      noDataLabel.addStyleName(ExplorerLayout.STYLE_DATABASE_DETAILS);
+      noDataLabel.addStyleName(Reindeer.LABEL_SMALL);
       addDetailComponent(noDataLabel);
       setDetailExpandRatio(noDataLabel, 1.0f);
     }
