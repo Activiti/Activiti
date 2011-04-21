@@ -71,6 +71,10 @@ public class Images {
   public static final Resource DEPLOYMENT_50 = new ThemeResource("img/deployment-50.png");
   public static final Resource DEPLOYMENT_22 = new ThemeResource("img/deployment-22.png");
   
+  // Jobs
+  public static final Resource JOB_50 = new ThemeResource("img/job-50.png");
+  public static final Resource JOB_22 = new ThemeResource("img/job-22.png");
+  
   // Profile
   public static final Resource PROFILE_CHANGE_PICTURE = new ThemeResource("img/change_picture.png");
   

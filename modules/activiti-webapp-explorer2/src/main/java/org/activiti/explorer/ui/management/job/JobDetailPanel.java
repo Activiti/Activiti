@@ -24,14 +24,14 @@ import org.activiti.explorer.Messages;
 import org.activiti.explorer.NotificationManager;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
+import org.activiti.explorer.ui.custom.DetailPanel;
+import org.activiti.explorer.ui.custom.PrettyTimeLabel;
 
-import com.ocpsoft.pretty.time.PrettyTime;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Embedded;
-import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
@@ -41,7 +41,7 @@ import com.vaadin.ui.themes.Reindeer;
 /**
  * @author Frederik Heremans
  */
-public class JobDetailPanel extends Panel {
+public class JobDetailPanel extends DetailPanel {
 
   private static final long serialVersionUID = 1L;
   
@@ -64,47 +64,60 @@ public class JobDetailPanel extends Panel {
   }
   
   protected void init() {
-    getContent().setSizeFull();
-    setSizeFull();
-    
-    addStyleName(Reindeer.LAYOUT_WHITE);
-    
-    addJobName();
-    addJobTime();
+    addHeader();
     addJobState();
+    
+    addActions();
   }
   
-  protected void addJobName() {
-    HorizontalLayout layout = new HorizontalLayout();
-    layout.setSpacing(true);
-    addComponent(layout);
-    
-    // Name
-    Label nameLabel = new Label(getJobLabel(job));
-    nameLabel.addStyleName(Reindeer.LABEL_H1);
-    layout.addComponent(nameLabel);
-    
-    // Execute button
+  protected void addActions() {
     Button executeButton = new Button(i18nManager.getMessage(Messages.JOB_EXECUTE));
     executeButton.setIcon(Images.EXECUTE);
-    executeButton.addStyleName(Reindeer.BUTTON_LINK);
-    layout.addComponent(executeButton);
-    layout.setComponentAlignment(executeButton, Alignment.MIDDLE_LEFT);
     executeButton.addListener(new ClickListener() {
-      private static final long serialVersionUID = 2916889209278497696L;
-      
+      private static final long serialVersionUID = 1L;
       public void buttonClick(ClickEvent event) {
         try {
           managementService.executeJob(job.getId());
-        } catch(ActivitiException ae) {
+        } catch (ActivitiException ae) {
           String errorMessage = ae.getMessage() + (ae.getCause() != null ? " (" + ae.getCause().getClass().getName() + ")" : "");
           notificationManager.showErrorNotification(Messages.JOB_ERROR, errorMessage);
-          
+
           // Refresh the current job
           parent.refreshCurrentJobDetails();
         }
       }
     });
+
+    parent.getToolBar().removeAllButtons();
+    parent.getToolBar().addButton(executeButton);
+  }
+
+  protected void addHeader() {
+    GridLayout taskDetails = new GridLayout(3, 2);
+    taskDetails.setWidth(100, UNITS_PERCENTAGE);
+    taskDetails.addStyleName(ExplorerLayout.STYLE_TITLE_BLOCK);
+    taskDetails.setSpacing(true);
+    taskDetails.setMargin(false, false, true, false);
+    
+    // Add image
+    Embedded image = new Embedded(null, Images.JOB_50);
+    taskDetails.addComponent(image, 0, 0, 0, 1);
+    
+    // Add job name
+    Label nameLabel = new Label(getJobLabel(job));
+    nameLabel.addStyleName(Reindeer.LABEL_H2);
+    taskDetails.addComponent(nameLabel, 1, 0, 2, 0);
+    
+    // Add due date
+    PrettyTimeLabel dueDateLabel = new PrettyTimeLabel(i18nManager.getMessage(Messages.JOB_DUEDATE),
+      job.getDuedate(), i18nManager.getMessage(Messages.JOB_NO_DUEDATE));
+    dueDateLabel.addStyleName(ExplorerLayout.STYLE_JOB_HEADER_DUE_DATE);
+    taskDetails.addComponent(dueDateLabel, 1, 1);
+    
+    taskDetails.setColumnExpandRatio(1, 1.0f);
+    taskDetails.setColumnExpandRatio(2, 1.0f);
+    
+    addDetailComponent(taskDetails);
   }
   
   protected String getJobLabel(Job theJob) {
@@ -118,56 +131,29 @@ public class JobDetailPanel extends Panel {
     }
   }
 
-  protected void addJobTime() {
-    Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
-    emptySpace.setSizeUndefined();
-    addComponent(emptySpace);
-    
-    HorizontalLayout timeDetails = new HorizontalLayout();
-    timeDetails.setSpacing(true);
-    addComponent(timeDetails);
-    
-    Embedded clockImage = new Embedded(null, Images.CLOCK);
-    timeDetails.addComponent(clockImage);
-    
-    String dueDateString = null;
-    if(job.getDuedate() != null) {
-      dueDateString = i18nManager.getMessage(Messages.JOB_DUEDATE, new PrettyTime().format(job.getDuedate()));
-    } else {
-      dueDateString = i18nManager.getMessage(Messages.JOB_NO_DUEDATE);
-    }
-    Label timeLabel = new Label(dueDateString);
-    timeDetails.addComponent(timeLabel);
-    
-    if(job.getDuedate() != null) {
-      Label realCreateTime = new Label("(" + job.getDuedate() + ")");
-      realCreateTime.addStyleName(Reindeer.LABEL_SMALL);
-      realCreateTime.setSizeUndefined();
-      timeDetails.addComponent(realCreateTime);
-      timeDetails.setComponentAlignment(realCreateTime, Alignment.MIDDLE_CENTER);
-    }
-    
-    timeDetails.setComponentAlignment(timeLabel, Alignment.MIDDLE_CENTER);
-  }
-  
+   
   protected void addJobState() {
     Label processDefinitionHeader = new Label(i18nManager.getMessage(Messages.JOB_HEADER_EXECUTION));
-    processDefinitionHeader.addStyleName(ExplorerLayout.STYLE_JOB_DETAILS_HEADER);
-    processDefinitionHeader.setWidth("95%");
+    processDefinitionHeader.addStyleName(ExplorerLayout.STYLE_H3);
+    processDefinitionHeader.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
+    processDefinitionHeader.setWidth(100, UNITS_PERCENTAGE);
     addComponent(processDefinitionHeader);
     
     VerticalLayout layout = new VerticalLayout();
     layout.setSpacing(true);
     layout.setSizeFull();
-    addComponent(layout);
-    ((VerticalLayout) getContent()).setExpandRatio(layout, 1.0f);
+    layout.setMargin(true,false, true, false);
     
-    // Number of retries
-    Label retrieslabel = new Label(getRetriesLabel(job));
-    layout.addComponent(retrieslabel);
+    addDetailComponent(layout);
+    setDetailExpandRatio(layout, 1.0f);
     
     // Exceptions
     if(job.getExceptionMessage() != null) {
+      // Number of retries
+      Label retrieslabel = new Label(getRetriesLabel(job));
+      layout.addComponent(retrieslabel);
+      
+      // Exception
       Label exceptionMessageLabel = new Label(i18nManager.getMessage(Messages.JOB_ERROR) 
               + ": " + job.getExceptionMessage());
       exceptionMessageLabel.addStyleName(ExplorerLayout.STYLE_JOB_EXCEPTION_MESSAGE);
@@ -191,7 +177,6 @@ public class JobDetailPanel extends Panel {
       layout.setExpandRatio(stackPanel, 1.0f);
     } else {
       Label noException = new Label(i18nManager.getMessage(Messages.JOB_NOT_EXECUTED));
-      noException.addStyleName(Reindeer.LABEL_SMALL);
       layout.addComponent(noException);
       layout.setExpandRatio(noException, 1.0f);
     }

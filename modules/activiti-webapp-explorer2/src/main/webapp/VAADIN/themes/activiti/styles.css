@@ -842,7 +842,7 @@ div.searchbox {
 	font:24px/26px Arial, Helvetica, sans-serif;
 }
 
-.title-block .task-duedate {
+.title-block .task-duedate, .title-block .job-duedate {
 	padding-left: 20px;
 	background: transparent url(img/duedate-16.png) no-repeat 0 0; 	
 }

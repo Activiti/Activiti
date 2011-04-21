@@ -133,6 +133,7 @@ public interface ExplorerLayout {
   static final String STYLE_JOB_DETAILS_HEADER = "job-details-header";
   static final String STYLE_JOB_EXCEPTION_MESSAGE = "job-exception-message";
   static final String STYLE_JOB_EXCEPTION_TRACE = "job-exception-trace";
+  static final String STYLE_JOB_HEADER_DUE_DATE = "job-duedate";
 
   // Related content
   static final String STYLE_RELATED_CONTENT_LIST = "related-content-list";
