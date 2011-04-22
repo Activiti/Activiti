@@ -74,8 +74,6 @@ public class FileAttachmentEditorComponent extends VerticalLayout implements Att
     this.i18nManager = ExplorerApp.get().getI18nManager();
     taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
     
-    setSizeFull();
-    
     form = new Form();
     form.setDescription(i18nManager.getMessage(Messages.RELATED_CONTENT_TYPE_FILE_HELP));
     setSizeFull();
@@ -146,7 +144,7 @@ public class FileAttachmentEditorComponent extends VerticalLayout implements Att
   protected void initDescription() {
     TextArea descriptionField = new TextArea(i18nManager.getMessage(Messages.RELATED_CONTENT_DESCRIPTION));
     descriptionField.setWidth(100, UNITS_PERCENTAGE);
-    descriptionField.setHeight(100, UNITS_PIXELS);
+    descriptionField.setHeight(50, UNITS_PIXELS);
     form.addField("description", descriptionField);
   }
 

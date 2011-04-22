@@ -15,7 +15,7 @@ package org.activiti.explorer.ui.task;
 import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.TaskNavigator;
 import org.activiti.explorer.navigation.UriFragment;
-import org.activiti.explorer.ui.custom.ListSearchBox;
+import org.activiti.explorer.ui.custom.TaskListHeader;
 import org.activiti.explorer.ui.task.data.CasesListQuery;
 
 import com.vaadin.ui.Component;
@@ -59,12 +59,5 @@ public class CasesPage extends TaskPage {
     taskFragment.addParameter(TaskNavigator.PARAMETER_CATEGORY, TaskNavigator.CATEGORY_CASES);
     return taskFragment;
   }
-  
-  @Override
-  protected Component getSearchComponent() {
-    ListSearchBox searchBox = new ListSearchBox();
-    return searchBox;
-  } 
-
   
 }

@@ -49,7 +49,6 @@ public class NewUserPopupWindow extends PopupWindow {
   private static final long serialVersionUID = 1L;
   protected IdentityService identityService;
   protected I18nManager i18nManager;
-  protected VerticalLayout layout;
   protected Form form;
   
   public NewUserPopupWindow() {
@@ -60,17 +59,11 @@ public class NewUserPopupWindow extends PopupWindow {
     setModal(true);
     center();
     setWidth(275, UNITS_PIXELS);
-    setHeight(340, UNITS_PIXELS);
+    setHeight(300, UNITS_PIXELS);
     addStyleName(Reindeer.WINDOW_LIGHT);
     
-    initLayout();
     initEnterKeyListener();
     initForm();
-  }
-  
-  protected void initLayout() {
-    layout = new VerticalLayout();
-    layout.setMargin(true);
   }
   
   protected void initEnterKeyListener() {
@@ -144,7 +137,7 @@ public class NewUserPopupWindow extends PopupWindow {
     
     createButton.addListener(new ClickListener() {
       public void buttonClick(ClickEvent event) {
-      handleFormSubmit();
+        handleFormSubmit();
       }
     });
   }
@@ -164,6 +157,7 @@ public class NewUserPopupWindow extends PopupWindow {
       
     } catch (InvalidValueException e) {
       // Do nothing: the Form component will render the errormsgs automatically
+      setHeight(340, UNITS_PIXELS);
     }
   }
   

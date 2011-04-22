@@ -65,8 +65,8 @@ public class CreateAttachmentPopupWindow extends PopupWindow {
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
 
     setCaption(i18nManager.getMessage(Messages.RELATED_CONTENT_ADD));
-    setWidth(50, UNITS_PERCENTAGE);
-    setHeight(50, UNITS_PERCENTAGE);
+    setWidth(700, UNITS_PIXELS);
+    setHeight(430, UNITS_PIXELS);
     center();
     setModal(true);
     addStyleName(Reindeer.WINDOW_LIGHT);

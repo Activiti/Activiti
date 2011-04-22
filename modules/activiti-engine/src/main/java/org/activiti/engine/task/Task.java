@@ -22,7 +22,9 @@ import java.util.Date;
  */
 public interface Task {
   
-  int PRIORITY_NORMAL = 50; 
+  int PRIORITY_MINIUM = 0; 
+  int PRIORITY_NORMAL = 50;
+  int PRIORITY_MAXIMUM = 100;
 	
   /** DB id of the task. */
 	String getId();

@@ -27,6 +27,8 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.VerticalLayout;
@@ -68,10 +70,18 @@ public class UrlAttachmentRenderer implements AttachmentRenderer {
     verticalLayout.setMargin(true);
     
     verticalLayout.addComponent(new Label(attachment.getDescription()));
+    
+    HorizontalLayout linkLayout = new HorizontalLayout();
+    linkLayout.setSpacing(true);
+    verticalLayout.addComponent(linkLayout);
+    
+    // Icon
+    linkLayout.addComponent(new Embedded(null, Images.RELATED_CONTENT_URL));
+    
+    // Link
     Link link = new Link(attachment.getUrl(), new ExternalResource(attachment.getUrl()));
-    link.setIcon(Images.RELATED_CONTENT_URL);
     link.setTargetName(ExplorerLayout.LINK_TARGET_BLANK);
-    verticalLayout.addComponent(link);
+    linkLayout.addComponent(link);
     
     return verticalLayout;
   }

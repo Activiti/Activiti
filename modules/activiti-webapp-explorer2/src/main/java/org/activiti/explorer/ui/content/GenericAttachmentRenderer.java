@@ -30,6 +30,8 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.VerticalLayout;
@@ -70,11 +72,22 @@ public class GenericAttachmentRenderer implements AttachmentRenderer {
 
   public Component getDetailComponent(Attachment attachment) {
     VerticalLayout verticalLayout = new VerticalLayout();
+    verticalLayout.setSizeUndefined();
     verticalLayout.setSpacing(true);
     verticalLayout.setMargin(true);
     
-    verticalLayout.addComponent(new Label(attachment.getDescription()));
+    Label description = new Label(attachment.getDescription());
+    description.setSizeUndefined();
+    verticalLayout.addComponent(description);
     
+    HorizontalLayout linkLayout = new HorizontalLayout();
+    linkLayout.setSpacing(true);
+    verticalLayout.addComponent(linkLayout);
+    
+    // Image
+    linkLayout.addComponent(new Embedded(null, getImage(attachment)));
+    
+    // Link
     Link link = null;
     if(attachment.getUrl() != null) {
       link = new Link(attachment.getUrl(), new ExternalResource(attachment.getUrl()));
@@ -87,9 +100,8 @@ public class GenericAttachmentRenderer implements AttachmentRenderer {
     }
     
     // Set generic image and external window 
-    link.setIcon(getImage(attachment));
     link.setTargetName(ExplorerLayout.LINK_TARGET_BLANK);      
-    verticalLayout.addComponent(link);
+    linkLayout.addComponent(link);
     
     return verticalLayout;
   }

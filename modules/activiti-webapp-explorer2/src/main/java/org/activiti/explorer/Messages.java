@@ -26,6 +26,7 @@ public interface Messages {
   static final String CONFIRMATION_DIALOG_YES = "confirmation.dialog.yes";
   static final String CONFIRMATION_DIALOG_NO = "confirmation.dialog.no";
   static final String BUTTON_OK = "button.ok";
+  static final String BUTTON_CREATE = "button.create";
   
   // Navigation
   static final String NAVIGATION_ERROR_NOT_INVOLVED_TITLE = "navigation.error.not.involved.title";
@@ -99,6 +100,11 @@ public interface Messages {
   static final String ALFRESCO_USERNAME = "alfresco.username";
   static final String ALFRESCO_PASSWORD = "alfresco.password";
   static final String ALFRESCO_DESCRIPTION = "alfresco.description";
+  
+  // Case
+  static final String CASE_CREATE_NEW = "case.create.new";
+  static final String CASE_NEW = "case.new";
+  static final String CASE_NAME_REQUIRED = "case.name.required";
 
   // Task menu
   static final String TASK_MENU_CASES = "task.menu.cases";
@@ -110,6 +116,7 @@ public interface Messages {
   // Task details
   static final String TASK_ID = "task.id";
   static final String TASK_NAME = "task.name";
+  static final String TASK_DESCRIPTION = "task.description";
   static final String TASK_OWNER = "task.owner";
   static final String TASK_OWNER_TRANSFER = "task.owner.transfer";
   static final String TASK_NO_OWNER = "task.no.owner";
@@ -146,7 +153,6 @@ public interface Messages {
   static final String TASK_NO_RELATED_CONTENT = "task.no.related.content";
   static final String TASK_PEOPLE = "task.people";
   static final String TASK_FORM_HELP = "task.form.help";
-  static final String TASK_NEW = "task.new";
   static final String TASK_SUBTASKS = "task.subtasks";
   static final String TASK_NO_SUBTASKS = "task.no.subtasks";
   static final String TASK_CONFIRM_DELETE_SUBTASK = "task.confirm.delete.subtask";

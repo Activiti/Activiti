@@ -24,6 +24,7 @@ import com.vaadin.ui.themes.Reindeer;
 
 /**
  * @author Frederik Heremans
+ * @author Joram Barrez
  */
 public class AttachmentDetailPopupWindow extends PopupWindow {
 
@@ -33,9 +34,6 @@ public class AttachmentDetailPopupWindow extends PopupWindow {
     super(attachment.getName());
     
     addStyleName(Reindeer.PANEL_LIGHT);
-    
-    setWidth(50, UNITS_PERCENTAGE);
-    setHeight(50, UNITS_PERCENTAGE);
     center();
     
     AttachmentRenderer renderer = ExplorerApp.get().getAttachmentRendererManager().getRenderer(attachment.getType());
@@ -46,5 +44,7 @@ public class AttachmentDetailPopupWindow extends PopupWindow {
     } else {
       addComponent(detail);
     }
+    getContent().setSizeUndefined();
   }
+  
 }

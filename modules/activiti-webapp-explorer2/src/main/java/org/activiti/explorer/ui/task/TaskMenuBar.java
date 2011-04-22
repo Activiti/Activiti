@@ -35,6 +35,8 @@ import org.activiti.explorer.ui.task.data.InvolvedListQuery;
 import org.activiti.explorer.ui.task.data.QueuedListQuery;
 
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 
 /**
  * The menu bar which is shown when 'Tasks' is selected in the main menu.
@@ -128,10 +130,17 @@ public class TaskMenuBar extends ToolBar {
   }
   
   protected void initActions() {
-    Button newTaskButton = new Button();
-    newTaskButton.setCaption(i18nManager.getMessage(Messages.TASK_NEW));
-    newTaskButton.setIcon(Images.TASK_16);
-    addButton(newTaskButton);
+    Button newCaseButton = new Button();
+    newCaseButton.setCaption(i18nManager.getMessage(Messages.CASE_NEW));
+    newCaseButton.setIcon(Images.TASK_16);
+    addButton(newCaseButton);
+    
+    newCaseButton.addListener(new ClickListener() {
+      public void buttonClick(ClickEvent event) {
+        NewCasePopupWindow newTaskPopupWindow = new NewCasePopupWindow();
+        viewManager.showPopupWindow(newTaskPopupWindow);
+      }
+    });
   }
   
 }

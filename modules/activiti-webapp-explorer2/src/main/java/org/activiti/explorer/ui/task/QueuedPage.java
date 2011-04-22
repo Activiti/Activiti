@@ -59,8 +59,4 @@ public class QueuedPage extends TaskPage {
     return taskFragment;
   }
   
-  @Override
-  protected Component getSearchComponent() {
-    return null;
-  } 
 }

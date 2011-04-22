@@ -23,6 +23,7 @@ import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.AbstractPage;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
+import org.activiti.explorer.ui.custom.TaskListHeader;
 import org.activiti.explorer.ui.custom.ToolBar;
 import org.activiti.explorer.ui.util.ThemeImageColumnGenerator;
 
@@ -143,6 +144,11 @@ public abstract class TaskPage extends AbstractPage {
     }
     return taskEventPanel;
   }
+  
+  @Override
+  public Component getSearchComponent() {
+    return new TaskListHeader();
+  } 
   
   protected abstract LazyLoadingQuery createLazyLoadingQuery();
   

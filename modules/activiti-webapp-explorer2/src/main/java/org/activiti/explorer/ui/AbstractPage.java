@@ -172,10 +172,12 @@ public abstract class AbstractPage extends CustomComponent {
   protected abstract Table createList();
   
   /**
-   * Get the search component to display above the table. Return null
+   * Override to get the search component to display above the table. Return null
    * when no search should be displayed.
    */
-  protected abstract Component getSearchComponent();
+  public Component getSearchComponent() {
+    return null;
+  }
   
   /**
    * Get the component to display the events in. Return null when

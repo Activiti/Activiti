@@ -139,27 +139,23 @@ public class TaskDetailPanel extends DetailPanel {
     taskDetails.addComponent(dueDateLabel, 1, 1);
     
     // Add priority
-    Integer lowMedHighPriority = convertPriority(task.getPriority());
+    int priority = task.getPriority();
     Label priorityLabel = new Label();
-    switch(lowMedHighPriority) {
-    case 1:
+    if (priority < Task.PRIORITY_NORMAL) {
       priorityLabel.setValue(i18nManager.getMessage(Messages.TASK_PRIORITY_LOW));
       priorityLabel.addStyleName(ExplorerLayout.STYLE_TASK_HEADER_PRIORITY_LOW);
-      break;
-    case 2:
+    } else if (priority == Task.PRIORITY_NORMAL) {
       priorityLabel.setValue(i18nManager.getMessage(Messages.TASK_PRIORITY_MEDIUM));
       priorityLabel.addStyleName(ExplorerLayout.STYLE_TASK_HEADER_PRIORITY_MEDIUM);
-      break;
-    case 3:
-    default:
+    } else if (priority > Task.PRIORITY_NORMAL) {
       priorityLabel.setValue(i18nManager.getMessage(Messages.TASK_PRIORITY_HIGH));
       priorityLabel.addStyleName(ExplorerLayout.STYLE_TASK_HEADER_PRIORITY_HIGH);
     }
     taskDetails.addComponent(priorityLabel, 2, 1);
     
     // Add create date
-    PrettyTimeLabel createLabel = new PrettyTimeLabel(i18nManager.getMessage(Messages.TASK_CREATED_SHORT),
-      task.getCreateTime(), "");
+    PrettyTimeLabel createLabel = new PrettyTimeLabel(
+            i18nManager.getMessage(Messages.TASK_CREATED_SHORT), task.getCreateTime(), "");
     createLabel.addStyleName(ExplorerLayout.STYLE_TASK_HEADER_CREATE_TIME);
     taskDetails.addComponent(createLabel, 3, 1);
     
@@ -337,15 +333,6 @@ public class TaskDetailPanel extends DetailPanel {
     Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
     emptySpace.setSizeUndefined();
     container.addComponent(emptySpace);
-  }
-  
-  /**
-   * Returns a numeric priority - low (1), medium (2) or high (3) - 
-   * based on the given numeric priority value.
-   */
-  protected Integer convertPriority(int priority) {
-    // TODO: define thresholds
-    return 1;
   }
   
   public void notifyPeopleInvolvedChanged() {

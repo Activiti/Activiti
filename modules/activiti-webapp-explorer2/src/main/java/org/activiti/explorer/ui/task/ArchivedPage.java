@@ -18,7 +18,7 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.TaskNavigator;
 import org.activiti.explorer.navigation.UriFragment;
-import org.activiti.explorer.ui.custom.ListSearchBox;
+import org.activiti.explorer.ui.custom.TaskListHeader;
 import org.activiti.explorer.ui.task.data.ArchivedListQuery;
 import org.activiti.explorer.ui.task.data.HistoricTaskWrapper;
 
@@ -66,12 +66,5 @@ public class ArchivedPage extends TaskPage {
     taskFragment.addParameter(TaskNavigator.PARAMETER_CATEGORY, TaskNavigator.CATEGORY_ARCHIVED);
     return taskFragment;
   }
-  
-  @Override
-  protected Component getSearchComponent() {
-    ListSearchBox searchBox = new ListSearchBox();
-    return searchBox;
-  } 
-
   
 }

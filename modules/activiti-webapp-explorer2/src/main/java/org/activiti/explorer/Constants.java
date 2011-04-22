@@ -59,12 +59,12 @@ public class Constants {
    MIMETYPE_EXTENSION_MAPPING = Collections.unmodifiableMap(mapping);
  }
  
- // User INFO
+ // User Info
  public static final String USER_INFO_BIRTH_DATE = "birthDate";
  public static final String USER_INFO_JOB_TITLE = "jobTitle";
  public static final String USER_INFO_LOCATION = "location";
  public static final String USER_INFO_PHONE = "phone";
  public static final String USER_INFO_TWITTER = "twitterName";
  public static final String USER_INFO_SKYPE = "skype";
-
+ 
 }

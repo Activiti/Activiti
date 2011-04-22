@@ -110,11 +110,6 @@ public class UserPage extends ManagementPage {
   }
   
   @Override
-  protected Component getSearchComponent() {
-    return null;
-  }
-  
-  @Override
   protected Component getEventComponent() {
     return null;
   }

@@ -36,7 +36,6 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Form;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 
@@ -50,7 +49,6 @@ public class NewGroupPopupWindow extends PopupWindow {
   private static final long serialVersionUID = 1L;
   protected IdentityService identityService;
   protected I18nManager i18nManager;
-  protected VerticalLayout layout;
   protected Form form;
   
   public NewGroupPopupWindow() {
@@ -64,14 +62,8 @@ public class NewGroupPopupWindow extends PopupWindow {
     setHeight(240, UNITS_PIXELS);
     addStyleName(Reindeer.WINDOW_LIGHT);
     
-    initLayout();
     initEnterKeyListener();
     initForm();
-  }
-  
-  protected void initLayout() {
-    layout = new VerticalLayout();
-    layout.setMargin(true);
   }
   
   protected void initEnterKeyListener() {
@@ -155,6 +147,7 @@ public class NewGroupPopupWindow extends PopupWindow {
       
     } catch (InvalidValueException e) {
       // Do nothing: the Form component will render the errormsgs automatically
+      setHeight(270, UNITS_PIXELS);
     }
   }
   

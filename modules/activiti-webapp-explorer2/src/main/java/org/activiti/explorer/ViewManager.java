@@ -61,6 +61,8 @@ public class ViewManager {
   public static final String MAIN_NAVIGATION_MANAGE = "manage";
   public static final String MAIN_NAVIGATION_REPORTS = "reports";
   
+  protected AbstractPage currentPage;
+  
   @Autowired
   protected MainWindow mainWindow;
 
@@ -261,9 +263,14 @@ public class ViewManager {
   // Helper
   
   protected void switchView(AbstractPage page, String mainMenuActive, String subMenuActive) {
+    currentPage = page;
     mainWindow.setMainNavigation(mainMenuActive);
     mainWindow.switchView(page);
     page.getToolBar().setActiveEntry(subMenuActive); // Must be set AFTER adding page to window (toolbar will be created in atach())
+  }
+  
+  public AbstractPage getCurrentPage() {
+    return currentPage;
   }
   
 }
