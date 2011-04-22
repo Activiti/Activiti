@@ -28,10 +28,15 @@ import com.vaadin.ui.Label;
  * contains the date, using the default date formatting.
  * 
  * @author Frederik Heremans
+ * @author Joram Barrez
  */
 public class PrettyTimeLabel extends Label {
   
   private static final long serialVersionUID = 1L;
+  
+  protected String labelTemplate;
+  protected Date date;
+  protected String noDateCaption;
   
   public PrettyTimeLabel(Date date) {
     this(date, "");
@@ -55,17 +60,39 @@ public class PrettyTimeLabel extends Label {
    *          when null.
    */
   public PrettyTimeLabel(String labelTemplate, Date date, String noDateCaption) {
+    this.labelTemplate = labelTemplate;
+    this.date = date;
+    this.noDateCaption = noDateCaption;
+    
+    init();
+  }
+  
+  protected void init() {
     if (date != null) {
       DateFormat dateFormat = (DateFormat) Constants.DEFAULT_DATE_FORMATTER.clone();
       if(labelTemplate != null) {
-        setValue(MessageFormat.format(labelTemplate, new PrettyTime().format(date)));
+        super.setValue(MessageFormat.format(labelTemplate, new PrettyTime().format(date)));
       } else {
-        setValue( new PrettyTime().format(date));
+        super.setValue(new PrettyTime().format(date));
       }
       setDescription(dateFormat.format(date));
     } else {
-      setValue(noDateCaption);
+      super.setValue(noDateCaption);
       setDescription(noDateCaption);
     }
   }
+  
+  @Override
+  public void setValue(Object newValue) {
+    if (newValue instanceof Date) {
+      date = (Date) newValue;
+      init();
+    } else if (newValue instanceof String) {
+      date = null;
+      init();
+    } else {
+      throw new IllegalArgumentException("Can only set " + Date.class + " as new value for prettyTimeLabel");
+    }
+  }
+  
 }

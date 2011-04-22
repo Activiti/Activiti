@@ -117,6 +117,7 @@ public interface Messages {
   static final String TASK_ID = "task.id";
   static final String TASK_NAME = "task.name";
   static final String TASK_DESCRIPTION = "task.description";
+  static final String TASK_NO_DESCRIPTION = "task.no.description";
   static final String TASK_OWNER = "task.owner";
   static final String TASK_OWNER_TRANSFER = "task.owner.transfer";
   static final String TASK_NO_OWNER = "task.no.owner";

@@ -58,7 +58,7 @@ public class NewCasePopupWindow extends PopupWindow {
   protected TextField nameField;
   protected TextArea descriptionArea;
   protected DateField dueDateField;
-  protected ComboBox priorityComboBox;
+  protected PriorityComboBox priorityComboBox;
   protected Button createTaskButton;
   
   public NewCasePopupWindow() {
@@ -101,13 +101,7 @@ public class NewCasePopupWindow extends PopupWindow {
     form.addField("duedate", dueDateField);
     
     // priority
-    priorityComboBox = new ComboBox(i18nManager.getMessage(Messages.TASK_PRIORITY), Arrays.asList(
-            i18nManager.getMessage(Messages.TASK_PRIORITY_LOW),
-            i18nManager.getMessage(Messages.TASK_PRIORITY_MEDIUM),
-            i18nManager.getMessage(Messages.TASK_PRIORITY_HIGH)));
-    priorityComboBox.setInvalidAllowed(false);
-    priorityComboBox.setNullSelectionAllowed(false);
-    priorityComboBox.setValue(i18nManager.getMessage(Messages.TASK_PRIORITY_LOW));
+    priorityComboBox = new PriorityComboBox(i18nManager);
     form.addField("priority", priorityComboBox);
   }
   
@@ -149,7 +143,7 @@ public class NewCasePopupWindow extends PopupWindow {
       task.setName(nameField.getValue().toString());
       task.setDescription(descriptionArea.getValue().toString());
       task.setDueDate((Date) dueDateField.getValue());
-      task.setPriority(getPriority());
+      task.setPriority(priorityComboBox.getPriority());
       task.setOwner(ExplorerApp.get().getLoggedInUser().getId());
       taskService.saveTask(task);
       
@@ -160,17 +154,6 @@ public class NewCasePopupWindow extends PopupWindow {
     } catch (InvalidValueException e) {
       // Do nothing: the Form component will render the errormsgs automatically
       setHeight(350, UNITS_PIXELS);
-    }
-  }
-  
-  protected int getPriority() {
-    String value = priorityComboBox.getValue().toString();
-    if (i18nManager.getMessage(Messages.TASK_PRIORITY_LOW).equals(value)) {
-      return Task.PRIORITY_MINIUM;
-    } else if (i18nManager.getMessage(Messages.TASK_PRIORITY_MEDIUM).equals(value)) {
-      return Task.PRIORITY_NORMAL;
-    } else {
-      return Task.PRIORITY_MAXIMUM;
     }
   }
   

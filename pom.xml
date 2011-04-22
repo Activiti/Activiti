@@ -424,7 +424,7 @@
       <dependency>
         <groupId>com.vaadin</groupId>
         <artifactId>vaadin</artifactId>
-        <version>6.5.5</version>
+        <version>6.5.6</version>
       </dependency>
       <!-- Camel integration -->
       <dependency>

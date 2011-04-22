@@ -12,6 +12,7 @@
  */
 package org.activiti.explorer.ui.task;
 
+import java.util.Date;
 import java.util.Map;
 
 import org.activiti.engine.FormService;
@@ -35,16 +36,22 @@ import org.activiti.explorer.ui.form.FormPropertiesForm;
 import org.activiti.explorer.ui.form.FormPropertiesForm.FormPropertiesEvent;
 import org.activiti.explorer.ui.task.listener.ClaimTaskClickListener;
 
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.event.LayoutEvents.LayoutClickEvent;
+import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.DateField;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
@@ -117,11 +124,13 @@ public class TaskDetailPanel extends DetailPanel {
   }
   
   protected void initHeader() {
-    GridLayout taskDetails = new GridLayout(5, 2);
+    GridLayout taskDetails = new GridLayout(2, 2);
     taskDetails.setWidth(100, UNITS_PERCENTAGE);
     taskDetails.addStyleName(ExplorerLayout.STYLE_TITLE_BLOCK);
     taskDetails.setSpacing(true);
     taskDetails.setMargin(false, false, true, false);
+    taskDetails.setColumnExpandRatio(1, 1.0f);
+    centralLayout.addComponent(taskDetails);
     
     // Add image
     Embedded image = new Embedded(null, Images.TASK_50);
@@ -130,70 +139,100 @@ public class TaskDetailPanel extends DetailPanel {
     // Add task name
     Label nameLabel = new Label(task.getName());
     nameLabel.addStyleName(Reindeer.LABEL_H2);
-    taskDetails.addComponent(nameLabel, 1, 0, 4,0);
+    taskDetails.addComponent(nameLabel, 1, 0);
+    taskDetails.setComponentAlignment(nameLabel, Alignment.MIDDLE_LEFT);
 
-    // Add due date
-    PrettyTimeLabel dueDateLabel = new PrettyTimeLabel(i18nManager.getMessage(Messages.TASK_DUEDATE_SHORT),
-      task.getDueDate(), i18nManager.getMessage(Messages.TASK_DUEDATE_UNKNOWN));
-    dueDateLabel.addStyleName(ExplorerLayout.STYLE_TASK_HEADER_DUEDATE);
-    taskDetails.addComponent(dueDateLabel, 1, 1);
+    // Properties
+    HorizontalLayout propertiesLayout = new HorizontalLayout();
+    propertiesLayout.setSpacing(true);
+    taskDetails.addComponent(propertiesLayout);
     
-    // Add priority
-    int priority = task.getPriority();
-    Label priorityLabel = new Label();
-    if (priority < Task.PRIORITY_NORMAL) {
-      priorityLabel.setValue(i18nManager.getMessage(Messages.TASK_PRIORITY_LOW));
-      priorityLabel.addStyleName(ExplorerLayout.STYLE_TASK_HEADER_PRIORITY_LOW);
-    } else if (priority == Task.PRIORITY_NORMAL) {
-      priorityLabel.setValue(i18nManager.getMessage(Messages.TASK_PRIORITY_MEDIUM));
-      priorityLabel.addStyleName(ExplorerLayout.STYLE_TASK_HEADER_PRIORITY_MEDIUM);
-    } else if (priority > Task.PRIORITY_NORMAL) {
-      priorityLabel.setValue(i18nManager.getMessage(Messages.TASK_PRIORITY_HIGH));
-      priorityLabel.addStyleName(ExplorerLayout.STYLE_TASK_HEADER_PRIORITY_HIGH);
-    }
-    taskDetails.addComponent(priorityLabel, 2, 1);
+    propertiesLayout.addComponent(new DueDateComponent(task, i18nManager, taskService));
+    propertiesLayout.addComponent(new PriorityComponent(task, i18nManager, taskService));
     
-    // Add create date
+    initCreateTime(propertiesLayout);
+  }
+  
+  protected void initCreateTime(HorizontalLayout propertiesLayout) {
     PrettyTimeLabel createLabel = new PrettyTimeLabel(
             i18nManager.getMessage(Messages.TASK_CREATED_SHORT), task.getCreateTime(), "");
     createLabel.addStyleName(ExplorerLayout.STYLE_TASK_HEADER_CREATE_TIME);
-    taskDetails.addComponent(createLabel, 3, 1);
-    
-    // Add label to fill excess space
-    Label spacer = new Label();
-    spacer.setContentMode(Label.CONTENT_XHTML);
-    spacer.setValue("&nbsp;");
-    spacer.setSizeUndefined();
-    taskDetails.addComponent(spacer);
-    
-    taskDetails.setColumnExpandRatio(1, 1.0f);
-    taskDetails.setColumnExpandRatio(2, 1.0f);
-    taskDetails.setColumnExpandRatio(3, 1.0f);
-    taskDetails.setColumnExpandRatio(4, 1.0f);
-    centralLayout.addComponent(taskDetails);
+    propertiesLayout.addComponent(createLabel);
   }
   
   protected void initDescriptionAndClaimButton() {
-    HorizontalLayout descriptionLayout = new HorizontalLayout();
-    descriptionLayout.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
-    descriptionLayout.setWidth(100, UNITS_PERCENTAGE);
-    descriptionLayout.setSpacing(true);
+    HorizontalLayout layout = new HorizontalLayout();
+    layout.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
+    layout.setWidth(100, UNITS_PERCENTAGE);
+    layout.setSpacing(true);
+    centralLayout.addComponent(layout);
     
+    initClaimButton(layout);
+    initDescription(layout);
+  }
+
+  protected void initClaimButton(HorizontalLayout layout) {
     if(!isCurrentUserAssignee() && canUserClaimTask()) {
       claimButton = new Button(i18nManager.getMessage(Messages.TASK_CLAIM));
       claimButton.addListener(new ClaimTaskClickListener(task.getId(), taskService));
-      descriptionLayout.addComponent(claimButton);
-      descriptionLayout.setComponentAlignment(claimButton, Alignment.MIDDLE_LEFT);
+      layout.addComponent(claimButton);
+      layout.setComponentAlignment(claimButton, Alignment.MIDDLE_LEFT);
     }
-    
-    if (task.getDescription() != null) {
-      Label descriptionLabel = new Label(task.getDescription());
-      descriptionLayout.addComponent(descriptionLabel);
-      descriptionLayout.setExpandRatio(descriptionLabel, 1.0f);
-      descriptionLayout.setComponentAlignment(descriptionLabel, Alignment.MIDDLE_LEFT);
+  }
+
+  protected void initDescription(HorizontalLayout layout) {
+    final CssLayout descriptionLayout = new CssLayout();
+    descriptionLayout.setWidth(100, UNITS_PERCENTAGE);
+    layout.addComponent(descriptionLayout);
+    layout.setExpandRatio(descriptionLayout, 1.0f);
+    layout.setComponentAlignment(descriptionLayout, Alignment.MIDDLE_LEFT);
+
+    String descriptionText = null;
+    if (task.getDescription() != null && !"".equals(task.getDescription())) {
+      descriptionText = task.getDescription();
+    } else {
+      descriptionText = i18nManager.getMessage(Messages.TASK_NO_DESCRIPTION);
     }
+    final Label descriptionLabel = new Label(descriptionText);
+    descriptionLabel.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
+    descriptionLayout.addComponent(descriptionLabel);
     
-    centralLayout.addComponent(descriptionLayout);
+    descriptionLayout.addListener(new LayoutClickListener() {
+      public void layoutClick(LayoutClickEvent event) {
+        if (event.getClickedComponent() != null && event.getClickedComponent().equals(descriptionLabel)) {
+          // layout for textarea + ok button
+          final VerticalLayout editLayout = new VerticalLayout();
+          editLayout.setSpacing(true);
+          
+          // textarea
+          final TextArea descriptionTextArea = new TextArea();
+          descriptionTextArea.setWidth(100, UNITS_PERCENTAGE);
+          descriptionTextArea.setValue(task.getDescription());
+          editLayout.addComponent(descriptionTextArea);
+          
+          // ok button
+          Button okButton = new Button(i18nManager.getMessage(Messages.BUTTON_OK));
+          editLayout.addComponent(okButton);
+          editLayout.setComponentAlignment(okButton, Alignment.BOTTOM_RIGHT);
+          
+          // replace
+          descriptionLayout.replaceComponent(descriptionLabel, editLayout);
+          
+          // When OK is clicked -> update task data + ui
+          okButton.addListener(new ClickListener() {
+            public void buttonClick(ClickEvent event) {
+              // Update data
+              task.setDescription(descriptionTextArea.getValue().toString());
+              taskService.saveTask(task);
+              
+              // Update UI
+              descriptionLabel.setValue(task.getDescription());
+              descriptionLayout.replaceComponent(editLayout, descriptionLabel);
+            }
+          });
+        }
+      }
+    });
   }
 
   protected void initProcessLink() {
@@ -226,7 +265,7 @@ public class TaskDetailPanel extends DetailPanel {
       showParentTaskButton.addStyleName(Reindeer.BUTTON_LINK);
       showParentTaskButton.addListener(new ClickListener() {
         public void buttonClick(ClickEvent event) {
-          viewManager.showInboxPage(parentTask.getId());
+          viewManager.showTaskPage(parentTask.getId());
         }
       });
       
