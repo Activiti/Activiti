@@ -25,14 +25,9 @@ import com.vaadin.terminal.ThemeResource;
 public class Images {
   
   // General
-  public static final Resource WHITE_DIVIDER = new ThemeResource("img/divider-white.png");
-  public static final Resource CLOCK = new ThemeResource("img/clock.png");
-  public static final Resource PROCESS_48PX = new ThemeResource("img/process_48.png");
-  public static final Resource RESOURCE = new ThemeResource("img/resource.png");
   public static final Resource WARNING = new ThemeResource("img/warning.png");
   public static final Resource DELETE = new ThemeResource("img/delete.png");
   public static final Resource EXECUTE = new ThemeResource("img/execute.png");
-  public static final Resource ADD = new ThemeResource("img/list-add.png");
   public static final Resource USER_ADD = new ThemeResource("img/user_add.png");
   public static final Resource SUCCESS = new ThemeResource("img/tick.png");
   public static final Resource EDIT = new ThemeResource("img/edit.png");
@@ -71,9 +66,6 @@ public class Images {
   // Jobs
   public static final Resource JOB_50 = new ThemeResource("img/job-50.png");
   public static final Resource JOB_22 = new ThemeResource("img/job-22.png");
-  
-  // Profile
-  public static final Resource PROFILE_CHANGE_PICTURE = new ThemeResource("img/change_picture.png");
   
   // User administration
   public static final Resource USER_16 = new ThemeResource("img/user-16.png");
