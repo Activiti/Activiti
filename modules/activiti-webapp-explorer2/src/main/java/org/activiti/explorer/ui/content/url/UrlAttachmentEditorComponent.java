@@ -63,6 +63,7 @@ public class UrlAttachmentEditorComponent extends Form implements AttachmentEdit
 
   protected void initUrl() {
     TextField urlField = new TextField(i18nManager.getMessage(Messages.RELATED_CONTENT_TYPE_URL_URL));
+    urlField.focus();
     urlField.setRequired(true);
     urlField.setRequiredError(i18nManager.getMessage(Messages.RELATED_CONTENT_TYPE_URL_URL_REQUIRED));
     urlField.setWidth(100, UNITS_PERCENTAGE);

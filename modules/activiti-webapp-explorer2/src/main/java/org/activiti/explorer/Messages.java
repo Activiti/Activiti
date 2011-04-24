@@ -292,6 +292,7 @@ public interface Messages {
   static final String RELATED_CONTENT_TYPE_FILE_UPLOADED = "related.content.type.file.uploaded";
   static final String RELATED_CONTENT_TYPE_FILE_REQUIRED = "related.content.type.file.required";
   static final String RELATED_CONTENT_CONFIRM_DELETE = "related.content.confirm.delete";
+  static final String RELATED_CONTENT_SHOW_FULL_SIZE = "related.content.show.full.size";
   
   // People involvement
   static final String PEOPLE_SEARCH = "people.search";

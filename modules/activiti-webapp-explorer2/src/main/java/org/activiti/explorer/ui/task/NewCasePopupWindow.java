@@ -67,6 +67,7 @@ public class NewCasePopupWindow extends PopupWindow {
     
     setModal(true);
     center();
+    setResizable(false);
     setCaption(i18nManager.getMessage(Messages.CASE_NEW));
     addStyleName(Reindeer.WINDOW_LIGHT);
     setWidth(430, UNITS_PIXELS);

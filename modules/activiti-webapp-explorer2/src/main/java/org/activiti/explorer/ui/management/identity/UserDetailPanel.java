@@ -162,7 +162,7 @@ public class UserDetailPanel extends DetailPanel implements MemberShipChangeList
         public InputStream getStream() {
           return userPicture.getInputStream();
         }
-      }, user.getId() + Constants.MIMETYPE_EXTENSION_MAPPING.get(userPicture.getMimeType()), ExplorerApp.get());
+      }, user.getId() + "." + Constants.MIMETYPE_EXTENSION_MAPPING.get(userPicture.getMimeType()), ExplorerApp.get());
       pictureComponent = new Embedded(null, imageresource);
     } else {
       pictureComponent = new Label("");

@@ -151,7 +151,6 @@ public class CreateAttachmentPopupWindow extends PopupWindow {
       if (resource != null) {
         image = new Embedded(null, resource);
       }
-
       Item item = attachmentTypes.addItem(editor.getName());
       item.getItemProperty("type").setValue(image);
       item.getItemProperty("name").setValue(name);

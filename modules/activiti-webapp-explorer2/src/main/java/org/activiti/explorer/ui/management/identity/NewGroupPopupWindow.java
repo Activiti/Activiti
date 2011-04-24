@@ -58,6 +58,7 @@ public class NewGroupPopupWindow extends PopupWindow {
     setCaption(i18nManager.getMessage(Messages.GROUP_CREATE));
     setModal(true);
     center();
+    setResizable(false);
     setWidth(265, UNITS_PIXELS);
     setHeight(240, UNITS_PIXELS);
     addStyleName(Reindeer.WINDOW_LIGHT);

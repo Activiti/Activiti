@@ -150,6 +150,7 @@ public class FileAttachmentEditorComponent extends VerticalLayout implements Att
 
   protected void initName() {
     TextField nameField = new TextField(i18nManager.getMessage(Messages.RELATED_CONTENT_NAME));
+    nameField.focus();
     nameField.setRequired(true);
     nameField.setRequiredError(i18nManager.getMessage(Messages.RELATED_CONTENT_NAME_REQUIRED));
     nameField.setWidth(100, UNITS_PERCENTAGE);

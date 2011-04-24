@@ -179,6 +179,20 @@
 		  <version>1.0.6</version>
 	  </dependency>
 	  
+	  <!-- TODO: include in main pom if found adequate -->
+	  <dependency>
+      <groupId>com.thebuzzmedia</groupId>
+      <artifactId>imgscalr-lib</artifactId>
+      <version>3.1</version>
+    </dependency>
+    
   </dependencies>
+  
+  <repositories>
+    <repository>
+      <id>buzzmedia</id>
+      <url>http://maven.thebuzzmedia.com</url> <!-- ImageScalr -->
+    </repository>
+  </repositories>
 
 </project>
