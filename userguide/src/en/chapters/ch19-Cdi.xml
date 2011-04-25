@@ -16,6 +16,15 @@
   </para>
   Please note that the activiti-cdi module is considered an <link linkend="experimental"><emphasis role="bold">&lt;EXPERIMENTAL&gt;</emphasis></link> feature of activiti.
   
+  In order to include activiti-cdi in a maven project, we add the following maven dependency:
+<programlisting>
+&lt;dependency&gt;
+	&lt;groupId&gt;org.activiti&lt;/groupId&gt;
+	&lt;artifactId&gt;activiti-cdi&lt;/artifactId&gt;
+	&lt;version&gt;5.5&lt;/version&gt;
+&lt;/dependency&gt;
+</programlisting>
+	This will pull-in activiti-engine and spring.   
   <section>
     <title>Setting up activiti-cdi</title>  
     <para>
@@ -51,7 +60,7 @@
     			makes the ProcessEngine built for testcases available to the cdi beans.
     		</listitem>
     	</itemizedlist> 
-    	Usually we enable the LocalProcessEngineLookup-class in the beans.xml like this:
+    	In a &quot;beans.xml&quot;, LocalProcessEngineLookup can be enabled in the following way: 
     	<programlisting>
 &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;beans xmlns=&quot;http://java.sun.com/xml/ns/javaee&quot;
@@ -65,11 +74,11 @@
      </section>
      <section>
      	<title>Configuring the Process Engine</title>
-     	<para>The way activiti is configured, depends on the selected ProcessEngineLookup-Strategy (cf. previous section).
-     	We focus on the configuration options in combination with the LocalProcessEngineLookup, which requires us to provide 
-     	a Spring activiti.cfg.xml file on the classpath. 
+     	<para>Conciguration depends on the selected ProcessEngineLookup-Strategy (cf. previous section).
+     	Here, we focus on the configuration options available in combination with the LocalProcessEngineLookup, which requires us to provide 
+     	a Spring activiti.cfg.xml file on the classpath.</para> 
      	
-     	Activiti offers different ProcessEngineConfiguration implementations mostly dependent on the underlying transaction management strategy. The
+     	<para>Activiti offers different ProcessEngineConfiguration implementations mostly dependent on the underlying transaction management strategy. The
      	activiti-cdi module is not concerned with transactions, which means that potentially any transaction management strategy 
      	can be used (even the Spring transaction abstraction). As a convenience, the cdi-module provides two custom ProcessEngineConfiguration
      	implementations: 
@@ -78,8 +87,7 @@
      		can be used if Jta-managed transactions should be used for activiti</listitem>
      		<listitem><literal>org.activiti.cdi.CdiStandaloneProcessEngineConfiguration</literal>: a subclass of the activiti StandaloneProcessEngineConfiguration, 
      		can be used if plain Jdbc transactions should be used for activiti</listitem>
-     	</itemizedlist>
-     	As already noted, activiti-cdi could also be used with Spring. 
+     	</itemizedlist>     	
      	The following is an example activiti.cfg.xml file using externally managed Jta-transactions, 
      	looking up the default Jboss datasource:
      	<programlisting>
@@ -107,20 +115,22 @@
 	&lt;/bean&gt;
 &lt;/beans&gt;
      	</programlisting>
-     	The configuration in a JavaSE environment looks exactly like the example provided in section <link linkend="configuration">Creating a ProcessEngine</link>, 
-     	substitute &quot;CdiStandaloneProcessEngineConfiguration&quot; to &quot;StandaloneProcessEngineConfiguration&quot;.     	 
+     	(Note that the above configuration requires the &quot;spring-context&quot; module.) The configuration in a Java SE environment looks exactly 
+     	like the examples provided in section <link linkend="configuration">Creating a ProcessEngine</link>, 
+     	substitute &quot;CdiStandaloneProcessEngineConfiguration&quot; for &quot;StandaloneProcessEngineConfiguration&quot;.     	 
      	</para>    	
      </section>
      <section>
      <title>Deploying Processes</title>
-     <para>Processes can be deployed using standard activiti-api, i.e. the <literal>RepositoryService</literal>. In addition, activiti-cdi offers the possibility to 
+     <para>Processes can be deployed using standard activiti-api (<literal>RepositoryService</literal>). In addition, activiti-cdi offers the possibility to 
      auto-deploy processes listed in a file named <literal>processes.xml</literal> located top-level in the classpath. This is an example 
      processes.xml file:
      <programlisting>
 &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
 &lt;!-- list the processes to be deployed --&gt;
 &lt;processes&gt;
-	&lt;process resource=&quot;diagrams/myProcess.bpmn20.xml&quot; /&gt; 
+	&lt;process resource=&quot;diagrams/myProcess.bpmn20.xml&quot; /&gt;
+	&lt;process resource=&quot;diagrams/myOtherProcess.bpmn20.xml&quot; /&gt;  
 &lt;/processes&gt;
      </programlisting>     
      </para>    
@@ -130,48 +140,48 @@
   	<title>Contextual Process Execution with Cdi</title>
   	<para>
 	In this section we briefly look at the contextual process execution model used by the activiti cdi extension.
-	A bpmn business process is typically a long-running interaction, comprised of both user and system tasks. Activiti-cdi
-	allows to split up such a process into a set of individual units of work, performed by individual users and/or 
-	application logic. To perform such a unit of work, a process instance can be temporarily associated with a cdi scope.	
-	In the default configuration process instances will be associated with the &quot;broadest&quot; active scope, starting with 
-	the conversation and falling back to the request, if the conversation context is not active.	 
+	A bpmn business process is typically a long-running interaction, comprised of both user and system tasks. At runtime,
+	a process is split-up into a set of individual units of work, performed by users and/or 
+	application logic. In activiti-cdi, a process instance can be associated with a cdi scope, the association representing a 
+	unit of work. This is particularly usefull, if a unit of work is complex, for instance if the implementation of 
+    a UserTask is a complex sequence of differnt forms and &quot;non-process-scoped&quot; state needs to be kept during this interaction.    
+		
+	In the default configuration, process instances are associated with the &quot;broadest&quot; active scope, starting with 
+	the conversation and falling back to the request if the conversation context is not active.	 
 	</para> 
 	<section>
 		<title>Associating a Conversation with a Process Instance </title>	
 		<para>		
-		When resolving @BusinessProcessScoped beans, or Injecting the current ProcessInstance, we rely on an existing association 
+		When resolving @BusinessProcessScoped beans, or injecting process variables, we rely on an existing association 
 		between an active cdi scope and a process instance. Activiti-cdi provides the <literal>org.activiti.cdi.BusinessProcess</literal> bean 
-		for controlling the association, most prominently the methods:
+		for controlling the association, most prominently:
 		<itemizedlist>
-			<listitem><literal>startProcessBy*(...)</literal>-methods, mirroring the respective methods exposed by the activiti <literal>RuntimeService</literal>
+			<listitem>the <literal>startProcessBy*(...)</literal>-methods, mirroring the respective methods exposed by the activiti <literal>RuntimeService</literal>
 			allowing to start and subsequently associating a busniess process,</listitem>
 			<listitem><literal>resumeProcessById(String processInstanceId)</literal>, allowing to associate the process instance with the provided id,</listitem>
 			<listitem><literal>resumeTaskById(String taskId)</literal>, allowing to associate the task with the provided id (and by extension, the corresponding 
 			process instance),</listitem>			
 		</itemizedlist>		  
-		Once a unit of work (i.e. a UserTask) is completed, the <literal>completeTask()</literal> method can be called to disassociate the 
+		Once a unit of work (for example a UserTask) is completed, the <literal>completeTask()</literal> method can be called to disassociate the 
 		conversation/request from the process instance. This signals activiti that the current task is completed and makes 
-		the process instance proceed. 
-		
-		The contextual process execution model is particularly suited, if the units of work are complex, i.e. if the implementation of 
-		a UserTask cannot be done using a single TaskForm, but if a complex sequence of differnt forms and validation are involved.
-		
-		Note that the <literal>BusinessProcess</literal>-bean is a <literal>@Named</literal> bean, which means that the exposed methods can 
-		be invoked using expression language, for example form a Jsf page. The following Jsf2 snippet begins a new conversation and associates it with the process instance, the 
-		id of which is passed as a request parameter:
+		the process instance proceed. </para>
+				
+		<para>Note that the <literal>BusinessProcess</literal>-bean is a <literal>@Named</literal> bean, which means that the exposed methods can 
+		be invoked using expression language, for example from a Jsf page. The following Jsf2 snippet begins a new conversation and associates it 
+		with the process instance, the id of which is passed as a request parameter (e.g. <literal>pageName.jsf?processId=XX</literal>):
 <programlisting>
 &lt;f:viewParam name=&quot;processId&quot; /&gt;
 &lt;f:event type=&quot;preRenderView&quot; listener=&quot;#{javax.enterprise.context.conversation.begin()}&quot; /&gt;
 &lt;f:event type=&quot;preRenderView&quot; listener=&quot;#{businessProcess.resumeProcessById(processId)}&quot; /&gt;
-</programlisting>	
-		Such a page could be called using a link of the form <literal>pageName.jsf?processId=XX</literal>.	
+</programlisting>		
 		</para>
 	</section>
 	<section>
-		<title>Declarative Control over the Process</title>
+		<title>Declaratively controlling the Process</title>
 		<para>
 		Activiti-cdi allows declaratively starting process instances and completing tasks using annotations. The 
-		<literal>@org.activiti.cdi.annotations.StartProcess</literal> annotation allows to start a process instance either by &quot;key&quot; or by &quot;name&quot;.
+		<literal>@org.activiti.cdi.annotations.StartProcess</literal> annotation allows to start a process instance 
+		either by &quot;key&quot; or by &quot;name&quot;. 
 		Note that the process instance is started <emphasis>after</emphasis> the annotated method returns. Example:
 		<programlisting>
 @StartProcess("authorizeBusinessTripRequest")
@@ -180,7 +190,8 @@ public String submitRequest(BusinessTripRequest request) {
 	return "success";
 }		
 		</programlisting>		
-		Depending on the configuration of activiti, the code of the annotated method and the starting of the process instance will be combined in the same transaction.
+		Depending on the configuration of activiti, the code of the annotated method and the starting of the 
+		process instance will be combined in the same transaction.
 		The <literal>@org.activiti.cdi.annotations.CompleteTask</literal>-annotation works in the same way:
 <programlisting>
 @CompleteTask(endConversation=false)
@@ -189,8 +200,9 @@ public String authorizeBusinessTrip() {
 	return "success";
 }
 </programlisting>
-		As shown above, the <literal>@CompleteTask</literal> annotation offers the possibility to end the current conversation. The 
-		default behavior is to end the conversation after the call to activiti returns. Ending the conversation can be disabled, as shown above.  	
+		The <literal>@CompleteTask</literal> annotation offers the possibility to end the current conversation. The 
+		default behavior is to end the conversation after the call to activiti returns. Ending the conversation can be disabled, 
+		as shown in the example above.  	
 		</para>
 	</section>	  
 	<section>
@@ -235,9 +247,9 @@ public class BusinessTripRequest implements Serializable {
 }
 </programlisting>
 		Sometimes, we want to work with process scoped beans, in the absence of an association with a process instance, for example before starting a process. 
-	  	If no ProcessInstance is currently managed, instances of BusinessProcessScoped beans are temporarily stored in a local scope (I.e. the Conversation or 
+	  	If no process instance is currently active, instances of BusinessProcessScoped beans are temporarily stored in a local scope (I.e. the Conversation or 
 	  	the Request, depending on the context. If this scope is later associated with a business process instance, the bean instances are flushed to 
-	  	the ProcessInstance.  	
+	  	the process instance.  	
 	</section>	
 	<section>
 	  	<title>Injecting Process Variables</title>
@@ -274,13 +286,13 @@ public class BusinessTripRequest implements Serializable {
 	</section>		  	
   </section>
   <section>
-  	<title>Writing Test</title>
+  	<title>Writing Tests</title>
   	<para>
-  	The activiti-cdi module makes it possible to write testcases using by extending <literal>org.activiti.cdi.test.CdiActivitiTestCase</literal>, which is an extension of
-  	<literal>PluggableActivitiTestCase</literal>. The base class takes care of bootstrapping Weld SE as a test-container and doing housekeeping between tests.
-  	In order to setup a maven project for activiti-cdi tests, the following additional configuration is needed:
+  	The activiti-cdi module makes it possible to write testcases using <literal>org.activiti.cdi.test.CdiActivitiTestCase</literal>, 
+  	which is an extension of <literal>PluggableActivitiTestCase</literal>. The base class takes care of bootstrapping Weld SE as a test-container 
+  	and doing housekeeping between tests. In order to setup a maven project for activiti-cdi tests, the following additional configuration is needed:
   	<itemizedlist>
-  		<listitem>Include Weld-SE as a maven dependency (usually in the test-scope)</listitem>
+  		<listitem>Include Weld-SE as a maven dependency (usually in the test-scope, we need to make sure to put it before any javaee-api reference in the &lt;dependencies ... /&gt; list).</listitem>
   		<listitem>Under <literal>src/test/resources/META-INF</literal>, include a beans.xml file, enabling the <literal>ProcessEngineLookupForTestsuite</literal> alternative bean class,
 <programlisting>
 &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
@@ -302,13 +314,7 @@ public class BusinessProcessBeanTest extends CdiActivitiTestCase {
 
   @Deployment
   public void test() throws Exception {
-
-    BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
-    getBeanInstance(Actor.class).setActorId("kermit");
-
-    // start the process
-    businessProcess.startProcessByKey("businessProcessBeanTest").getId();
-    ...
+	// ... do testing
     }
 }
 </programlisting>
