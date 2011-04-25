@@ -12,9 +12,9 @@
  */
 package org.activiti.cdi.test.beans;
 
-import org.activiti.engine.annotations.CompleteTask;
-import org.activiti.engine.annotations.ProcessVariable;
-import org.activiti.engine.annotations.StartProcess;
+import org.activiti.cdi.annotations.CompleteTask;
+import org.activiti.cdi.annotations.ProcessVariable;
+import org.activiti.cdi.annotations.StartProcess;
 
 /**
  * 
