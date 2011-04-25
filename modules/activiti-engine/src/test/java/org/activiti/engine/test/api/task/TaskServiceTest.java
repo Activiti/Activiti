@@ -176,8 +176,11 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
       assertNull(taskService.getAttachmentContent(attachment.getId()));
       
       // Finally, clean up
+      taskService.deleteTask(taskId);
+      
+      assertEquals(0, taskService.getTaskComments(taskId).size());
+
       taskService.deleteTask(taskId, true);
-      taskService.deleteAttachment(attachment.getId());
     }
   }
 

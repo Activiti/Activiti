@@ -70,6 +70,10 @@ public class HistoricTaskInstanceManager extends AbstractHistoricManager {
         .getCommentManager()
         .deleteCommentsByTaskId(taskId);
       
+      commandContext
+        .getAttachmentManager()
+        .deleteAttachmentsByTaskId(taskId);
+    
       getDbSqlSession().delete(HistoricTaskInstanceEntity.class, taskId);
     }
   }
