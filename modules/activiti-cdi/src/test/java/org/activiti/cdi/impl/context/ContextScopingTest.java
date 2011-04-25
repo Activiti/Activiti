@@ -13,7 +13,7 @@
 package org.activiti.cdi.impl.context;
 
 import org.activiti.cdi.BusinessProcess;
-import org.activiti.cdi.CdiActivitiTestCase;
+import org.activiti.cdi.test.CdiActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
 /**

@@ -13,8 +13,8 @@
 package org.activiti.cdi.annotation;
 
 import org.activiti.cdi.BusinessProcess;
-import org.activiti.cdi.CdiActivitiTestCase;
 import org.activiti.cdi.impl.annotation.StartProcessInterceptor;
+import org.activiti.cdi.test.CdiActivitiTestCase;
 import org.activiti.cdi.test.beans.DeclarativeProcessController;
 import org.activiti.engine.test.Deployment;
 

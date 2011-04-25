@@ -13,6 +13,7 @@
 package org.activiti.cdi;
 
 import org.activiti.cdi.BusinessProcess;
+import org.activiti.cdi.test.CdiActivitiTestCase;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;

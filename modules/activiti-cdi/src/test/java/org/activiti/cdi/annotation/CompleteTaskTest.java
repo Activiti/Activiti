@@ -16,8 +16,8 @@ import javax.enterprise.context.Conversation;
 
 import org.activiti.cdi.Actor;
 import org.activiti.cdi.BusinessProcess;
-import org.activiti.cdi.CdiActivitiTestCase;
 import org.activiti.cdi.impl.annotation.CompleteTaskInterceptor;
+import org.activiti.cdi.test.CdiActivitiTestCase;
 import org.activiti.cdi.test.beans.DeclarativeProcessController;
 import org.activiti.engine.test.Deployment;
 

@@ -17,7 +17,7 @@ import java.util.Map;
 
 import org.activiti.cdi.Actor;
 import org.activiti.cdi.BusinessProcess;
-import org.activiti.cdi.CdiActivitiTestCase;
+import org.activiti.cdi.test.CdiActivitiTestCase;
 import org.activiti.cdi.test.beans.InjectProcessVariable;
 import org.activiti.engine.test.Deployment;
 

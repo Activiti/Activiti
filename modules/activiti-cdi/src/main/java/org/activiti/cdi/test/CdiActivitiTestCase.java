@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cdi;
+package org.activiti.cdi.test;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.inject.spi.BeanManager;
 
+import org.activiti.cdi.BusinessProcess;
 import org.activiti.cdi.impl.util.BeanManagerLookup;
 import org.activiti.cdi.impl.util.ProgrammaticBeanLookup;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -33,9 +34,6 @@ import org.jboss.weld.environment.se.WeldContainer;
 /**
  * Abstract base class for executing activiti-cdi tests in a Java SE
  * environment, using Weld-SE.
- * 
- * TODO: if I move this to the main-sources, I need a dependency on weld-se,
- * there :(
  * 
  * @author Daniel Meyer
  */

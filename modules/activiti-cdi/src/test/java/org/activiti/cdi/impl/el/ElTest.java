@@ -12,7 +12,7 @@
  */
 package org.activiti.cdi.impl.el;
 
-import org.activiti.cdi.CdiActivitiTestCase;
+import org.activiti.cdi.test.CdiActivitiTestCase;
 import org.activiti.cdi.test.beans.MessageBean;
 import org.activiti.engine.test.Deployment;
 
