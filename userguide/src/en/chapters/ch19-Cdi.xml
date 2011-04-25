@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">
+
+<chapter id="cdiintegration">
+  <title>Cdi integration</title>
+
+  <para>The activiti-cdi modules leverages both the configurability of activiti and the extensibiltity of cdi. 
+  The most promenent features of activiti-cdi are:
+   <itemizedlist>
+        <listitem><para>Support for @BusinessProcessScoped beans (Cdi beans the lifecycle of which is bound to a process instance),</para></listitem>
+        <listitem><para>A custom El-Resolver for resolving Cdi beans (including Ejbs) from the process,</para></listitem>
+        <listitem><para>Declarative control over a process instance using annotations,</para></listitem>
+        <listitem><para>Works with both Java EE and Java SE, works with Spring,</para></listitem>
+        <listitem><para>Support for unit testing.</para></listitem>
+   </itemizedlist>   
+  </para>
+  Please note that the activiti-cdi module is considered an <link linkend="experimental"><emphasis role="bold">&lt;EXPERIMENTAL&gt;</emphasis></link> feature of activiti.
+  
+  <section>
+    <title>Setting up activiti-cdi</title>  
+    <para>
+    Activiti cdi can be setup in different environments. In this section we briefly walk through the configuration options.
+    </para>
+    <section>
+    	<title>Looking up a process engine</title>
+    	<para> 
+    	The cdi extension needs to get access to a ProcessEngine. To this extend, an implementation of the interface 
+    	<literal>org.activiti.cdi.impl.ProcessEngineLookup</literal>
+    	is looked up at runtime. The cdi module ships with the following <literal>@Alternative</literal> implementations,
+    	one of which needs to be enabled in the <literal>beans.xml</literal>:
+    	<itemizedlist>
+    		<listitem>
+				<literal>org.activiti.cdi.impl.LocalProcessEngineLookup</literal>: 
+				this implementation uses the <literal>ProcessEngines</literal>-Utilty class for looking
+				up the ProcessEngine. In the default configurtion
+				<literal>ProcessEngines#NAME_DEFAULT</literal>
+				is used to lookup the ProcessEngine. This class might be subclassed to
+				set a custom name. We can enable this implementation if we want to
+				build and manage our own ProcessEngine in an application. NOTE: needs an
+				<literal>activiti.cfg.xml</literal>
+				configuration on the classpath.
+			</listitem>
+    		<listitem>
+    			<literal>org.activiti.cdi.impl.JndiProcessEngineLookup</literal>:
+    			looks up a ProcessEngine in Jndi using an InitialContext. By default the String
+    			&quot;activiti/default&quot; is used to look up the ProcessEngine. This class can be subclassed 
+    			in order to set a custom jndi name.    			
+    		</listitem>
+    		<listitem>
+    			<literal>org.activiti.cdi.test.ProcessEngineLookupForTestsuite</literal>:
+    			makes the ProcessEngine built for testcases available to the cdi beans.
+    		</listitem>
+    	</itemizedlist> 
+    	Usually we enable the LocalProcessEngineLookup-class in the beans.xml like this:
+    	<programlisting>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://java.sun.com/xml/ns/javaee&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd&quot;&gt;
+  &lt;alternatives&gt;
+	&lt;class&gt;org.activiti.cdi.impl.LocalProcessEngineLookup&lt;/class&gt;
+  &lt;/alternatives&gt;
+&lt;/beans&gt;
+    	</programlisting>     
+     </para>     
+     </section>
+     <section>
+     	<title>Configuring the ProcessEngine</title>
+     	<para>The way activiti is configured, depends on the selected ProcessEngineLookup-Strategy (cf. previous section).
+     	We focus on the configuration options in combination with the LocalProcessEngineLookup, which requires us to provide 
+     	a Spring activiti.cfg.xml file on the classpath. 
+     	
+     	Activiti offers different ProcessEngineConfiguration implementations mostly dependent on the underlying transaction-management strategy. The
+     	activiti-cdi module is not concerned with transactions, which means that potentially any transactionmanagement strategy 
+     	can be used (even the Spring transaction abstraction). As a convenience, the cdi-module provides two custom ProcessEngineConfiguration
+     	implementations: 
+     	<itemizedlist>
+     		<listitem><literal>org.activiti.cdi.CdiJtaProcessEngineConfiguration</literal>: a subclass of the activiti JtaProcessEngineConfiguration, 
+     		can be used if Jta-managed transactions should be used for activiti</listitem>
+     		<listitem><literal>org.activiti.cdi.CdiStandaloneProcessEngineConfiguration</literal>: a subclass of the activiti StandaloneProcessEngineConfiguration, 
+     		can be used if plain Jdbc transactions should be used for activiti</listitem>
+     	</itemizedlist>
+     	As already noted, activiti-cdi could also be used with Spring. 
+     	The following is an example activiti.cfg.xml file using externally managed Jta-transactions, 
+     	looking up the default Jboss datasource:
+     	<programlisting>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+	xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+	xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&gt;
+
+	&lt;!-- lookup the JTA-Transaction manager --&gt;
+	&lt;bean id=&quot;transactionManager&quot; class=&quot;org.springframework.jndi.JndiObjectFactoryBean&quot;&gt;
+		&lt;property name=&quot;jndiName&quot; value=&quot;java:/TransactionManager&quot;&gt;&lt;/property&gt;
+		&lt;property name=&quot;resourceRef&quot; value=&quot;true&quot; /&gt;
+	&lt;/bean&gt;
+
+	&lt;!-- process engine configuration --&gt;
+	&lt;bean id=&quot;processEngineConfiguration&quot;
+		class=&quot;org.activiti.cdi.CdiJtaProcessEngineConfiguration&quot;&gt;
+		&lt;!-- lookup the default Jboss datasource --&gt;
+		&lt;property name=&quot;dataSourceJndiName&quot; value=&quot;java:/DefaultDS&quot; /&gt;
+		&lt;property name=&quot;databaseType&quot; value=&quot;h2&quot; /&gt;
+		&lt;property name=&quot;transactionManager&quot; ref=&quot;transactionManager&quot; /&gt;
+		&lt;!-- using externally managed transactions --&gt;
+		&lt;property name=&quot;transactionsExternallyManaged&quot; value=&quot;true&quot; /&gt;
+		&lt;property name=&quot;databaseSchemaUpdate&quot; value=&quot;true&quot; /&gt;
+	&lt;/bean&gt;
+&lt;/beans&gt;
+     	</programlisting>
+     	
+     	 
+     	</para>
+     	
+     	
+     </section>
+    
+  </section>
+</chapter>

@@ -18,6 +18,7 @@
   <!ENTITY ch16 SYSTEM "chapters/ch16-Probe.xml">
   <!ENTITY ch17 SYSTEM "chapters/ch17-KickStart.xml">
   <!ENTITY ch18 SYSTEM "chapters/ch18-Migration.xml">
+  <!ENTITY ch19 SYSTEM "chapters/ch19-Cdi.xml">
 ]>
 
 <book>
@@ -44,5 +45,6 @@
 &ch16;
 &ch17;
 &ch18;
+&ch19;
   
 </book>
