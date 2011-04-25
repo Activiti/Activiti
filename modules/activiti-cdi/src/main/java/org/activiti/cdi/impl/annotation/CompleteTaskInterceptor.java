@@ -23,9 +23,9 @@ import javax.interceptor.InvocationContext;
 
 import org.activiti.cdi.Actor;
 import org.activiti.cdi.BusinessProcess;
+import org.activiti.cdi.annotations.CompleteTask;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.annotations.CompleteTask;
 import org.activiti.engine.task.Task;
 
 /**

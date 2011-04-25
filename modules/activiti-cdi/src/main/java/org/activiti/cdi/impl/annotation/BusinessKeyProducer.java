@@ -15,7 +15,7 @@ package org.activiti.cdi.impl.annotation;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 
-import org.activiti.engine.annotations.BusinessKey;
+import org.activiti.cdi.annotations.BusinessKey;
 import org.activiti.engine.runtime.ProcessInstance;
 
 /**

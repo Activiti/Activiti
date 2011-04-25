@@ -22,12 +22,12 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.activiti.cdi.annotations.ProcessId;
+import org.activiti.cdi.annotations.TaskId;
 import org.activiti.cdi.impl.AbstractProcessResuming;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
-import org.activiti.engine.annotations.ProcessId;
-import org.activiti.engine.annotations.TaskId;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;

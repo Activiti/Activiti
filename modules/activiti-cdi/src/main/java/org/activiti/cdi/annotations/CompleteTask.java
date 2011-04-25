@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.annotations;
+package org.activiti.cdi.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -20,39 +20,40 @@ import java.lang.annotation.Target;
 import javax.enterprise.util.Nonbinding;
 import javax.interceptor.InterceptorBinding;
 
-import org.activiti.cdi.BusinessProcess;
-import org.activiti.cdi.annotation.BusinessProcessScoped;
+import org.activiti.cdi.Actor;
 
 /**
- * Starts a new process instance after the annotated method returns. The process
- * instance is subsequently managed.
- * <p/>
- * Each process variable set through
- * {@link BusinessProcess#setProcessVariable(String, Object)} within this
- * conversation is flushed to the process instance at process instantiation. The
- * same is true for instances of {@link BusinessProcessScoped} beans.
- * <p />
- * TODO: explain transaction demarcations
+ * Annotation signaling that a task is to be completed after the annotated
+ * method returns. Requires a ProcessInstance to be managed. 
+ * 
+ * If neither an id ("key") nor a name is specified, we try to resolve a single
+ * task assigned to the current user (see {@link Actor}) in the current process
+ * instance.
+ * 
+ * TODO: explain implications for transaction handling.
  * 
  * @author Daniel Meyer
  */
 @InterceptorBinding
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD, ElementType.TYPE })
-public @interface StartProcess {
+public @interface CompleteTask {
 
   /**
-   * The key of the process definition to start, as provided in the 'id'
-   * attribute of a bpmn20.xml process definition.
+   * The id of the task to complete.
    */
   @Nonbinding
   String value() default "";
 
   /**
-   * The name of the process definition to start, as provided in the 'name'
-   * attribute of a bpmn20.xml process definition.
+   * The name of the task to complete.
    */
   @Nonbinding
   String name() default "";
 
+  /**
+   * Specifies whether the current conversation should be ended.
+   */
+  @Nonbinding
+  boolean endConversation() default true;
 }
