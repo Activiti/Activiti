@@ -21,7 +21,6 @@ import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.ViewManager;
 import org.activiti.explorer.cache.UserCache;
 import org.activiti.explorer.ui.ExplorerLayout;
-import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.util.InputStreamStreamSource;
 
 import com.vaadin.event.MouseEvents;
@@ -72,6 +71,7 @@ public class UserProfileLink extends HorizontalLayout {
           userName + picture.getMimeType(), ExplorerApp.get());
         
         Embedded image = new Embedded(null, imageResource);
+        image.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
         image.setType(Embedded.TYPE_IMAGE);
         image.setHeight(30, Embedded.UNITS_PIXELS);
         image.setWidth(30, Embedded.UNITS_PIXELS);

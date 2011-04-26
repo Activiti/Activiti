@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
   <process id="expenseProcess" name="Expense Process">
-    <serviceTask id="servicetask1" name="Store expense (CMIS)" activiti:expression="${test}"></serviceTask>
     <startEvent id="startevent1" name="Start" activiti:initiator="initiator"></startEvent>
     <userTask id="usertask1" name="Request refund" activiti:assignee="${initiator}">
       <documentation>
@@ -13,7 +12,12 @@
         <activiti:formProperty id="motivation" name="Motivation" type="string" required="false" readable="true" writable="true"></activiti:formProperty>
       </extensionElements>
     </userTask>
-    <userTask id="usertask2" name="Approve expense" activiti:assignee="${johnP}"></userTask>
+    <serviceTask id="servicetask1" name="Store expense (CMIS)" activiti:class="demo.CmisStoreExpense"></serviceTask>
+    <userTask id="usertask2" name="Approve expense" activiti:assignee="johnP">
+      <documentation>
+        ${initiator} has requested the refund of ${amount} EUR.
+      </documentation>
+    </userTask>
     <sequenceFlow id="flow1" name="" sourceRef="startevent1" targetRef="usertask1"></sequenceFlow>
     <sequenceFlow id="flow2" name="" sourceRef="usertask1" targetRef="servicetask1"></sequenceFlow>
     <sequenceFlow id="flow3" name="" sourceRef="servicetask1" targetRef="usertask2"></sequenceFlow>
