@@ -187,6 +187,8 @@ public class GroupDetailPanel extends DetailPanel implements MemberShipChangeLis
       detailsGrid.addComponent(typeValueLabel);
     } else {
       typeCombobox = new ComboBox(null, Arrays.asList("assignment", "security-role"));
+      typeCombobox.setNullSelectionAllowed(false);
+      typeCombobox.setInvalidAllowed(false);
       typeCombobox.select(group.getType());
       detailsGrid.addComponent(typeCombobox);
     }
@@ -230,8 +232,10 @@ public class GroupDetailPanel extends DetailPanel implements MemberShipChangeLis
         String originalName = group.getName();
         
         // Update data
+        if (nameTextField.getValue() != null) {
         group.setName(nameTextField.getValue().toString());
         group.setType(typeCombobox.getValue().toString());
+        }
         identityService.saveGroup(group);
         
         // Update UI
