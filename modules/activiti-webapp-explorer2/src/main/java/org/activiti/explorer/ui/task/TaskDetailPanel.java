@@ -351,7 +351,7 @@ public class TaskDetailPanel extends DetailPanel {
         }
       });
       
-      completeButton.setEnabled(isCurrentUserAssignee());
+      completeButton.setEnabled(isCurrentUserAssignee() || isCurrentUserOwner());
       buttonLayout.addComponent(completeButton);
     }
   }
@@ -359,6 +359,11 @@ public class TaskDetailPanel extends DetailPanel {
   protected boolean isCurrentUserAssignee() {
     String currentUser = ExplorerApp.get().getLoggedInUser().getId();
     return currentUser.equals(task.getAssignee());
+  }
+  
+  protected boolean isCurrentUserOwner() {
+    String currentUser = ExplorerApp.get().getLoggedInUser().getId();
+    return currentUser.equals(task.getOwner());
   }
   
   protected boolean canUserClaimTask() {
