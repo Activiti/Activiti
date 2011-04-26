@@ -65,6 +65,7 @@ import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.db.IbatisVariableTypeHandler;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.form.AbstractFormType;
+import org.activiti.engine.impl.form.BooleanFormType;
 import org.activiti.engine.impl.form.DateFormType;
 import org.activiti.engine.impl.form.FormEngine;
 import org.activiti.engine.impl.form.FormTypes;
@@ -739,6 +740,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       formTypes.addFormType(new StringFormType());
       formTypes.addFormType(new LongFormType());
       formTypes.addFormType(new DateFormType("dd/MM/yyyy"));
+      formTypes.addFormType(new BooleanFormType());
     }
     if (customFormTypes!=null) {
       for (AbstractFormType customFormType: customFormTypes) {

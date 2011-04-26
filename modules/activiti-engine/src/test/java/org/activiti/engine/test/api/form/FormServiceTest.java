@@ -158,6 +158,7 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     properties.put("room", "5b"); // default
     properties.put("speaker", "Mike"); // variable name mapping
     properties.put("duration", "45"); // type conversion
+    properties.put("free", "true"); // type conversion
 
     String procDefId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
     String processInstanceId = formService.submitStartFormData(procDefId, properties).getId();
@@ -166,6 +167,7 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     expectedVariables.put("room", "5b");
     expectedVariables.put("SpeakerName", "Mike");
     expectedVariables.put("duration", new Long(45));
+    expectedVariables.put("free", Boolean.TRUE);
 
     Map<String, Object> variables = runtimeService.getVariables(processInstanceId);
     assertEquals(expectedVariables, variables);
@@ -193,8 +195,12 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     FormProperty propertyStreet = formProperties.get(3);
     assertEquals("street", propertyStreet.getId());
     assertEquals("broadway", propertyStreet.getValue());
+    
+    FormProperty propertyFree = formProperties.get(4);
+    assertEquals("free", propertyFree.getId());
+    assertEquals("true", propertyFree.getValue());
 
-    assertEquals(4, formProperties.size());
+    assertEquals(5, formProperties.size());
 
     try {
       formService.submitTaskFormData(taskId, new HashMap<String, String>());
@@ -220,6 +226,7 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     expectedVariables.put("room", "5b");
     expectedVariables.put("SpeakerName", "Mike");
     expectedVariables.put("duration", new Long(45));
+    expectedVariables.put("free", Boolean.TRUE);
 
     variables = runtimeService.getVariables(processInstanceId);
     address = (Address) variables.remove("address");
@@ -256,7 +263,7 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     assertTrue(property.isWritable());
     assertFalse(property.isRequired());
     assertEquals("enum", property.getType().getName());
-    Map<String, String> values = (Map) property.getType().getInformation("values");
+    Map<String, String> values = (Map<String, String>) property.getType().getInformation("values");
 
     Map<String, String> expectedValues = new HashMap<String, String>();
     expectedValues.put("left", "Go Left");
