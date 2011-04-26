@@ -9,7 +9,7 @@
     
     <startEvent id="startevent2" name="Start" activiti:initiator="initiator">
       <extensionElements>
-        <activiti:formProperty id="approver" name="Approver" type="string" required="true" />
+        <activiti:formProperty id="approver" name="Approver" type="user" required="true" />
         <activiti:formProperty id="duedate" name="Approval due date" datePattern="dd-MM-yyyy hh:mm" type="date" required="true" />
         <activiti:formProperty id="difficulty" name="Difficulty (number)" type="long" />
         <activiti:formProperty id="instructions" name="Instructions" type="string" />

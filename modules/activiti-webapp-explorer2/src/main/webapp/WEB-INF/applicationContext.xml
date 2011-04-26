@@ -42,6 +42,11 @@
 		<property name="transactionManager" ref="transactionManager" />
 		<property name="databaseSchemaUpdate" value="true" />
 		<property name="jobExecutorActivate" value="true" />
+        <property name="customFormTypes">
+          <list>
+            <ref bean="userFormType"/>
+          </list>
+        </property>
 	</bean>
 
 	<bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean" destroy-method="destroy">
@@ -68,8 +73,13 @@
 				<bean class="org.activiti.explorer.ui.form.EnumFormPropertyRenderer" />
 				<bean class="org.activiti.explorer.ui.form.LongFormPropertyRenderer" />
 				<bean class="org.activiti.explorer.ui.form.DateFormPropertyRenderer" />
+				<bean class="org.activiti.explorer.ui.form.UserFormPropertyRenderer" />
+				<bean class="org.activiti.explorer.ui.form.BooleanFormPropertyRenderer" />
 			</list>
 		</property>
 	</bean>
+  
+    <!--  Custom form types -->
+    <bean id="userFormType" class="org.activiti.explorer.form.UserFormType"/>
 	
 </beans>

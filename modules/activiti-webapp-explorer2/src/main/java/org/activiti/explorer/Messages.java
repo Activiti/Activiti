@@ -58,6 +58,10 @@ public interface Messages {
   static final String PASSWORD_CHANGE_INPUT_MATCH = "password.change.input.match";
   static final String PASSWORD_CHANGED_NOTIFICATION = "password.changed.notification";
   
+  // Forms
+  static final String FORM_USER_NO_USER_SELECTED = "form.user.no.user.selected";
+  static final String FORM_USER_SELECT = "form.user.select";
+  
   // Profile
   static final String PROFILE_ABOUT = "profile.about";
   static final String PROFILE_NAME = "profile.name";

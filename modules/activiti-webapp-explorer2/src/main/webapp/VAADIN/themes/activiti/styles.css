@@ -54,6 +54,16 @@ body {
 	font:bold 12px Arial, Helvetica, sans-serif;
 }
 
+.formprop-user-selected {
+	font-weight: bold;	
+	padding-left: 20px;
+	background: url(img/user-16.png) no-repeat;
+}
+
+.formprop-no-user-selected {
+	color: #848484;
+}
+
 /* -----------------------
    Buttons - Normal button
    ----------------------- */

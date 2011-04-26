@@ -77,6 +77,8 @@ public interface ExplorerLayout {
   
   //Forms
   static final String STYLE_FORM_PROPERTIES = "formprops";
+  static final String STYLE_FORM_USER_SELECTED = "formprop-user-selected";
+  static final String STYLE_FORM_NO_USER_SELECTED = "formprop-no-user-selected";
   
   // Login page
   static final String STYLE_LOGIN_PAGE = "login-general";

@@ -8,12 +8,13 @@
         Any receipts can be attached as related content.
       </documentation>
       <extensionElements>
+        <activiti:formProperty id="approver" name="Approver of expense" type="user" required="true" readable="true" writable="true"></activiti:formProperty>
         <activiti:formProperty id="amount" name="Amount" type="long" required="true" readable="true" writable="true"></activiti:formProperty>
         <activiti:formProperty id="motivation" name="Motivation" type="string" required="false" readable="true" writable="true"></activiti:formProperty>
       </extensionElements>
     </userTask>
     <serviceTask id="servicetask1" name="Store expense (CMIS)" activiti:class="demo.CmisStoreExpense"></serviceTask>
-    <userTask id="usertask2" name="Approve expense" activiti:assignee="johnP">
+    <userTask id="usertask2" name="Approve expense" activiti:assignee="${approver}">
       <documentation>
         ${initiator} has requested the refund of ${amount} EUR.
       </documentation>
