@@ -83,7 +83,7 @@ public class DatabasePage extends ManagementPage {
     
     // Create column headers
     tableList.addContainerProperty("icon", Embedded.class, null);
-    tableList.setColumnWidth("icon", 32);
+    tableList.setColumnWidth("icon", 22);
     tableList.addContainerProperty("tableName", String.class, null);
     tableList.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
     
@@ -104,7 +104,7 @@ public class DatabasePage extends ManagementPage {
       if (tableName.startsWith("ACT_HI")) {
         image = Images.DATABASE_HISTORY;
       } else if (tableName.startsWith("ACT_GE")) {
-        image = Images.DATABASE_GENERAL;
+        image = Images.DATABASE_22;
       } else if (tableName.startsWith("ACT_RU")) {
         image = Images.DATABASE_RUNTIME;
       } else if (tableName.startsWith("ACT_RE")) {

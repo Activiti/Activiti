@@ -52,12 +52,12 @@ public class Images {
   public static final Resource IMAP = new ThemeResource("img/imap.png");
   
   // Database
-  public static final Resource DATABASE_GENERAL = new ThemeResource("img/database_general.png");
-  public static final Resource DATABASE_HISTORY = new ThemeResource("img/database_history.png");
-  public static final Resource DATABASE_IDENTITY = new ThemeResource("img/database_identity.png");
-  public static final Resource DATABASE_REPOSITORY = new ThemeResource("img/database_repository.png");
-  public static final Resource DATABASE_RUNTIME = new ThemeResource("img/database_runtime.png");
+  public static final Resource DATABASE_HISTORY = new ThemeResource("img/database-history-22.png");
+  public static final Resource DATABASE_IDENTITY = new ThemeResource("img/database-identity-22.png");
+  public static final Resource DATABASE_REPOSITORY = new ThemeResource("img/database-repository-22.png");
+  public static final Resource DATABASE_RUNTIME = new ThemeResource("img/database-runtime-22.png");
   public static final Resource DATABASE_50 = new ThemeResource("img/database-50.png");
+  public static final Resource DATABASE_22 = new ThemeResource("img/database-22.png");
   
   // Deployment
   public static final Resource DEPLOYMENT_50 = new ThemeResource("img/deployment-50.png");
