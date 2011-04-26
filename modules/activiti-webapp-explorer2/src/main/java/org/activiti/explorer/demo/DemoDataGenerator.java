@@ -190,7 +190,6 @@ public class DemoDataGenerator {
       .createDeployment()
       .name("Expense process")
       .addClasspathResource("org/activiti/explorer/demo/process/expense_process.bpmn20.xml")
-      .addClasspathResource("org/activiti/explorer/demo/process/expense_process.png")
       .deploy();
   }
 
