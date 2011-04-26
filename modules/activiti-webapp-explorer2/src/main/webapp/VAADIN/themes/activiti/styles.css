@@ -827,12 +827,20 @@ div.searchbox {
 	text-decoration: none;
 }
 
-.v-table-related-content-list .v-button-link .v-button-caption:focus,
-.v-table-related-content-list .v-button-link .v-button-caption:hover
-.v-table-related-content-list .v-button-link .v-button-caption:active
+.v-table-related-content-list .v-button-link:focus .v-button-caption,
+.v-table-related-content-list .v-button-link:hover .v-button-caption,
+.v-table-related-content-list .v-button-link:active .v-button-caption
 {
 	color: #464646;
 	text-decoration: underline;
+}
+
+.v-table-related-content-list a span {
+	text-decoration: none;	
+}
+
+.v-table-related-content-list a:hover span {
+	text-decoration: underline;	
 }
 
 /* ------------------------

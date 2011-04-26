@@ -84,8 +84,6 @@ public class UrlAttachmentEditorComponent extends Form implements AttachmentEdit
 
   protected void initName() {
     TextField nameField = new TextField(i18nManager.getMessage(Messages.RELATED_CONTENT_NAME));
-    nameField.setRequired(true);
-    nameField.setRequiredError(i18nManager.getMessage(Messages.RELATED_CONTENT_NAME_REQUIRED));
     nameField.setWidth(100, UNITS_PERCENTAGE);
     addField("name", nameField);
   }
@@ -105,15 +103,27 @@ public class UrlAttachmentEditorComponent extends Form implements AttachmentEdit
   }
   
   protected String getAttachmentUrl() {
-    return (String) getField("url").getValue();
+    return (String) getFieldValue("url");
   }
   
   protected String getAttachmentName() {
-    return (String) getField("name").getValue();
+    String name = (String) getFieldValue("name");
+    if(name == null) {
+      name = getAttachmentUrl();
+    }
+    return name;
   }
   
   protected String getAttachmentDescription() {
-    return (String) getField("description").getValue();
+    return getFieldValue("description");
+  }
+  
+  protected String getFieldValue(String key) {
+    String value = (String) getField(key).getValue();
+    if("".equals(value)) {
+      return null;
+    }
+    return value;
   }
   
   private void applyValuesToAttachment() {

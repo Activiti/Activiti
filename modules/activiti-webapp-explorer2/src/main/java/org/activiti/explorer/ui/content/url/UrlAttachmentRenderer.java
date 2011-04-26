@@ -51,17 +51,24 @@ public class UrlAttachmentRenderer implements AttachmentRenderer {
   }
 
   public Component getOverviewComponent(final Attachment attachment, final RelatedContentComponent parent) {
-    Button attachmentLink = new Button(attachment.getName());
-    attachmentLink.addStyleName(Reindeer.BUTTON_LINK);
     
-    attachmentLink.addListener(new ClickListener() {
-      private static final long serialVersionUID = 1L;
-
-      public void buttonClick(ClickEvent event) {
-        parent.showAttachmentDetail(attachment);
-      }
-    });
-    return attachmentLink;
+    // If the attachment has no description, overview link is link to actual page
+    // instead of showing popup with details.
+    if(attachment.getDescription() != null && !"".equals(attachment.getDescription())) {
+      Button attachmentLink = new Button(attachment.getName());
+      attachmentLink.addStyleName(Reindeer.BUTTON_LINK);
+      
+      attachmentLink.addListener(new ClickListener() {
+        private static final long serialVersionUID = 1L;
+        
+        public void buttonClick(ClickEvent event) {
+          parent.showAttachmentDetail(attachment);
+        }
+      });
+      return attachmentLink;
+    } else {
+      return new Link(attachment.getName(), new ExternalResource(attachment.getUrl()));
+    }
   }
 
   public Component getDetailComponent(Attachment attachment) {
