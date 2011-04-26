@@ -176,7 +176,7 @@ public class MainMenuBar extends HorizontalLayout {
   private class ShowTasksClickListener implements ClickListener {
 
     public void buttonClick(ClickEvent event) {
-      ExplorerApp.get().getViewManager().showCasesPage();
+      ExplorerApp.get().getViewManager().showInboxPage();
     }
   }
   

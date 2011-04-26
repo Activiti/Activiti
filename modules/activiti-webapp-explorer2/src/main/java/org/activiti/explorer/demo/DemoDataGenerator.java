@@ -183,8 +183,15 @@ public class DemoDataGenerator {
      .addClasspathResource("org/activiti/explorer/demo/process/testProcess.bpmn20.xml")
      .addClasspathResource("org/activiti/explorer/demo/process/oneTaskProcess.bpmn20.xml")
      .addClasspathResource("org/activiti/explorer/demo/process/createTimersProcess.bpmn20.xml")
-     
      .deploy();
+   
+    // Expense process
+    processEngine.getRepositoryService()
+      .createDeployment()
+      .name("Expense process")
+      .addClasspathResource("org/activiti/explorer/demo/process/expense_process.bpmn20.xml")
+      .addClasspathResource("org/activiti/explorer/demo/process/expense_process.png")
+      .deploy();
   }
 
 

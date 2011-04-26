@@ -110,7 +110,12 @@ public class TaskRelatedContentComponent extends VerticalLayout implements Relat
 
       public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
         CreateAttachmentPopupWindow popup = new CreateAttachmentPopupWindow();
-        popup.setTaskId(task.getId());
+        
+        if (task.getProcessInstanceId() != null) {
+          popup.setProcessInstanceId(task.getProcessInstanceId());
+        } else {
+          popup.setTaskId(task.getId());
+        }
         
         // Add listener to update attachments when added
         popup.addListener(new SubmitEventListener() {
@@ -174,7 +179,13 @@ public class TaskRelatedContentComponent extends VerticalLayout implements Relat
       contentLayout.removeComponent(noContentLabel);
     }
     
-    List<Attachment> attachments = taskService.getTaskAttachments(task.getId());
+    List<Attachment> attachments = null;
+    if (task.getProcessInstanceId() != null){
+      attachments = (taskService.getProcessInstanceAttachments(task.getProcessInstanceId()));
+    } else {
+      attachments = taskService.getTaskAttachments(task.getId());
+    }
+    
     if(attachments.size() > 0) {
       addAttachmentsToTable(attachments);
     } else {
