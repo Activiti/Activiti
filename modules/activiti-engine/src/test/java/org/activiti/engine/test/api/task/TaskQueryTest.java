@@ -208,6 +208,18 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertNull(query.singleResult());
     assertEquals(0, query.list().size());
     assertEquals(0, query.count());
+
+    query = taskService.createTaskQuery().taskMinPriority(50);
+    assertEquals(3, query.list().size());
+
+    query = taskService.createTaskQuery().taskMinPriority(10);
+    assertEquals(5, query.list().size());
+
+    query = taskService.createTaskQuery().taskMaxPriority(10);
+    assertEquals(9, query.list().size());
+
+    query = taskService.createTaskQuery().taskMaxPriority(3);
+    assertEquals(6, query.list().size());
   }
   
   public void testQueryByInvalidPriority() {
@@ -546,6 +558,15 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     Calendar otherDate = Calendar.getInstance();
     otherDate.add(Calendar.YEAR, 1);
     assertEquals(0, taskService.createTaskQuery().dueDate(otherDate.getTime()).count());
+
+    Calendar priorDate = Calendar.getInstance();
+    priorDate.setTime(dueDate);
+    priorDate.roll(Calendar.YEAR, -1);
+    assertEquals(1, taskService.createTaskQuery().dueAfter(priorDate.getTime())
+        .count());
+
+    assertEquals(1, taskService.createTaskQuery()
+        .dueBefore(otherDate.getTime()).count());
   }
   
   @Deployment(resources={"org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml"})

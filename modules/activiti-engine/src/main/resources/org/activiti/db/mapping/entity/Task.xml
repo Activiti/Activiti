@@ -157,6 +157,12 @@
       <if test="priority != null">
         and T.PRIORITY_ = #{priority}
       </if> 
+      <if test="minPriority != null">
+        and T.PRIORITY_ &gt;= #{minPriority}
+      </if> 
+      <if test="maxPriority != null">
+        and T.PRIORITY_ &lt;= #{maxPriority}
+      </if> 
       <if test="assignee != null">
         and T.ASSIGNEE_ = #{assignee}
       </if>

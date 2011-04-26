@@ -46,6 +46,12 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   /** Only select tasks with the given priority. */
   TaskQuery taskPriority(Integer priority);
 
+  /** Only select tasks with the given priority or higher. */
+  TaskQuery taskMinPriority(Integer minPriority);
+
+  /** Only select tasks with the given priority or lower. */
+  TaskQuery taskMaxPriority(Integer maxPriority);
+
   /** Only select tasks which are assigned to the given user. */
   TaskQuery taskAssignee(String assignee);
   

@@ -38,6 +38,8 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   protected String description;
   protected String descriptionLike;
   protected Integer priority;
+  protected Integer minPriority;
+  protected Integer maxPriority;
   protected String assignee;
   protected String involvedUser;
   protected String owner;
@@ -112,6 +114,22 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
       throw new ActivitiException("Priority is null");
     }
     this.priority = priority;
+    return this;
+  }
+
+  public TaskQuery taskMinPriority(Integer minPriority) {
+    if (minPriority == null) {
+      throw new ActivitiException("Min Priority is null");
+    }
+    this.minPriority = minPriority;
+    return this;
+  }
+
+  public TaskQuery taskMaxPriority(Integer maxPriority) {
+    if (maxPriority == null) {
+      throw new ActivitiException("Max Priority is null");
+    }
+    this.maxPriority = maxPriority;
     return this;
   }
 
