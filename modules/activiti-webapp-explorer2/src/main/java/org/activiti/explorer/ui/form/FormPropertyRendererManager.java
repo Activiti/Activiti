@@ -13,6 +13,7 @@
 
 package org.activiti.explorer.ui.form;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,8 +29,9 @@ import org.activiti.engine.form.FormType;
  * Note: NOT configured by @Component, but in Spring XML config, to make it
  * easy for users to extends with custom renderers.
  */
-public class FormPropertyRendererManager {
+public class FormPropertyRendererManager implements Serializable {
 
+  private static final long serialVersionUID = 1L;
   protected Map<Class<? extends FormType>, FormPropertyRenderer> propertyRenderers = new HashMap<Class<? extends FormType>, FormPropertyRenderer>();
   protected FormPropertyRenderer noTypePropertyRenderer;
   

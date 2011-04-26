@@ -13,6 +13,7 @@
 
 package org.activiti.explorer;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -54,8 +55,9 @@ import com.vaadin.ui.Window;
  */
 @Component
 @Scope(value="session")
-public class ViewManager {
+public class ViewManager implements Serializable {
   
+  private static final long serialVersionUID = 1L;
   public static final String MAIN_NAVIGATION_TASKS = "tasks";
   public static final String MAIN_NAVIGATION_FLOWS = "flows";
   public static final String MAIN_NAVIGATION_MANAGE = "manage";
@@ -82,6 +84,7 @@ public class ViewManager {
   
   public void showDefaultContent() {
     mainWindow.showDefaultContent();
+    showInboxPage();
   }
   
   public void showPopupWindow(Window window) {

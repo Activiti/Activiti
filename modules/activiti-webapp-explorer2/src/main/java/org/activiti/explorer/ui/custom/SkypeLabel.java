@@ -13,7 +13,19 @@
 
 package org.activiti.explorer.ui.custom;
 
+import java.awt.Image;
+
+import org.activiti.explorer.ui.ExplorerLayout;
+import org.activiti.explorer.ui.Images;
+
+import com.vaadin.event.MouseEvents.ClickEvent;
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
 
 
 /**
@@ -21,7 +33,7 @@ import com.vaadin.ui.Label;
  * 
  * @author Joram Barrez
  */
-public class SkypeLabel extends Label {
+public class SkypeLabel extends CustomComponent {
 
   private static final long serialVersionUID = 1L;
   
@@ -29,11 +41,16 @@ public class SkypeLabel extends Label {
    * Constructs a {@link SkypeLabel} based on the given Skype id
    */
   public SkypeLabel(String skypeId) {
-    super("<script type='text/javascript' " +
-            "src='http://download.skype.com/share/skypebuttons/js/skypeCheck.js'></script>" +
-            "<a href='skype:" + skypeId + "?call'>" +
-            "<img src='VAADIN/themes/activiti/img/skype.png' style='border: none;' /></a>",
-            Label.CONTENT_XHTML);
+    CssLayout layout = new CssLayout();
+    setCompositionRoot(layout);
+    
+    Label label = new Label("<script type='text/javascript' src='http://download.skype.com/share/skypebuttons/js/skypeCheck.js'></script>", Label.CONTENT_XHTML);
+    layout.addComponent(label);
+    
+    Link link = new Link(null, new ExternalResource("skype:" + skypeId + "?call"));
+    link.setIcon(Images.SKYPE);
+    layout.addComponent(link);
+    
     setWidth(16, UNITS_PIXELS);
     setHeight(16, UNITS_PIXELS);
   }

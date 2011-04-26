@@ -44,7 +44,7 @@
 		<property name="jobExecutorActivate" value="true" />
 	</bean>
 
-	<bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
+	<bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean" destroy-method="destroy">
 		<property name="processEngineConfiguration" ref="processEngineConfiguration" />
 	</bean>
 

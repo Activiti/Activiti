@@ -13,20 +13,15 @@
 
 package org.activiti.explorer.demo;
 
-import java.util.Date;
-import java.util.Random;
 import java.util.logging.Logger;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.LogUtil;
-import org.activiti.engine.task.Task;
 
 
 /**
@@ -57,8 +52,7 @@ public class DemoDataGenerator {
 
   protected void initDemoData() {
     initKermit(processEngine);
-    initRandomUsers(processEngine);
-    initTasks(processEngine);
+    initAlfrescoMembers(processEngine);
     initProcessDefinitions(processEngine);
   }
   
@@ -128,91 +122,58 @@ public class DemoDataGenerator {
     byte[] pictureBytes = IoUtil.readInputStream(this.getClass().getClassLoader().getResourceAsStream("org/activiti/explorer/images/kermit.jpg"), null);
     Picture picture = new Picture(pictureBytes, "image/jpeg");
     identityService.setUserPicture("kermit", picture);
+    
+    // Create other muppets 
+    createUser(identityService, "gonzo", "Gonzo", "The Great", "gonzo", "gonzo@muppets.con", null);
+    createUser(identityService, "fozzie", "Fozzie", "Bear", "fozzie", "fozzie@muppets.com", "org/activiti/explorer/images/fozzie.jpg");
   }
   
-  protected void initRandomUsers(ProcessEngine processEngine) {
+  protected void initAlfrescoMembers(ProcessEngine processEngine) {
     IdentityService identityService = processEngine.getIdentityService();
-    User gonzo = identityService.newUser("gonzo");
-    gonzo.setEmail("gonzo@muppets.com");
-    gonzo.setFirstName("gonzo");
-    gonzo.setLastName("");
-    gonzo.setPassword("gonzo");
-    identityService.saveUser(gonzo);
+    createUser(identityService, "joram", "Joram", "Barrez", "joram", "joram.barrez@alfresco.com", "org/activiti/explorer/images/joram.jpg");
+    createUser(identityService, "frederik", "Frederik", "Heremans", "frederik", "pluisje@alfresco.com", "org/activiti/explorer/images/fred.jpg");
+    createUser(identityService, "tom", "Tom", "Baeyens", "tom", "tom@alfresco.com", "org/activiti/explorer/images/tom.jpg");
+    createUser(identityService, "tijs", "Tijs", "Rademakers", "tijs", "tijs.rademakers@alfresco.com", "org/activiti/explorer/images/tijs.jpg");
+    createUser(identityService, "linton", "Linton", "Baddeley", "linton", "linton.baddeley@alfresco.com", "org/activiti/explorer/images/linton.jpg");
     
-    User fozzie = identityService.newUser("fozzie");
-    fozzie.setEmail("fozzie@muppets.com");
-    fozzie.setFirstName("fozzie");
-    fozzie.setLastName("Bear");
-    fozzie.setPassword("fozzie");
-    identityService.saveUser(fozzie);
+    createUser(identityService, "david", "David", "Caruana", "david", "david.caruana@alfresco.com", "org/activiti/explorer/images/david.jpg");
+    createUser(identityService, "gavin", "Gavin", "Cornwell", "gavin", "gavin.cornwell@alfresco.com", "org/activiti/explorer/images/gavin.jpg");
+    createUser(identityService, "johnN", "John", "Newton", "johnN", "john.newton@alfresco.com", "org/activiti/explorer/images/john_newton.jpg");
+    createUser(identityService, "johnP", "John", "Powell", "johnP", "john.powell@alfresco.com", "org/activiti/explorer/images/john_powell.jpg");
+    createUser(identityService, "paul", "Paul", "Holmes-Higgin", "paul", "paulhh@alfresco.com", "org/activiti/explorer/images/paul.jpg");
+    createUser(identityService, "julie", "Julie", "Hall", "julie", "julie.hall@alfresco.com", "org/activiti/explorer/images/julie.jpg");
+    createUser(identityService, "erik", "Erik", "Winlof", "erik", "erik.witloof@alfresco.com", "org/activiti/explorer/images/erik.jpg");
     
-    identityService.createMembership("fozzie", "management");
-    identityService.createMembership("fozzie", "user");
-    
-    byte[] pictureBytes = IoUtil.readInputStream(this.getClass().getClassLoader().getResourceAsStream("org/activiti/explorer/images/fozzie.jpg"), null);
-    Picture picture = new Picture(pictureBytes, "image/jpeg");
-    identityService.setUserPicture("fozzie", picture);
-    
-    createUser(identityService, "mkiekeboe", "Marcel", "Kiekeboe");
-    createUser(identityService, "kkiekeboe", "Konstantinopel", "Kiekeboe");
-    createUser(identityService, "moemoekiekeboe", "Moemoe", "Kiekeboe");
-    createUser(identityService, "fkiekeboe", "Fanny", "Kiekeboe");
+    // Additional info 
+    identityService.setUserInfo("joram", "birthDate", "10-10-1985");
+    identityService.setUserInfo("joram", "jobTitle", "Activiti core developer");
+    identityService.setUserInfo("joram", "location", "Welle, Belgium");
+    identityService.setUserInfo("joram", "phone", "+32485869655");
+    identityService.setUserInfo("joram", "twitterName", "jbarrez");
+    identityService.setUserInfo("joram", "skype", "joram.barrez");
   }
   
-  protected void createUser(IdentityService identityService, String userId, String firstName, String lastName) {
+  protected void createUser(IdentityService identityService, String userId, String firstName, String lastName, 
+          String password, String email, String imageResource) {
     User user = identityService.newUser(userId);
     user.setFirstName(firstName);
     user.setLastName(lastName);
+    user.setPassword(password);
+    user.setEmail(email);
     identityService.saveUser(user);
-  }
-  
-  protected void initTasks(ProcessEngine processEngine) {
-    TaskService taskService = processEngine.getTaskService();
-    for (int i=0; i<50; i++) {
-      Task task = taskService.newTask();
-      task.setDescription("This is task nr " + i + ", please do it asap!");
-      task.setName("Task [" + i + "]");
-      task.setPriority(Task.PRIORITY_NORMAL);
-      task.setDueDate(new Date(new Date().getTime() + new Random().nextInt()));
-      
-      if (i%3==0) {
-        task.setOwner("fozzie");
-      }
-      
-      if (i%5 == 0) {
-        task.setPriority(99);
-      }
-      
-      if (new Random().nextInt(10) < 4) {
-        task.setAssignee("kermit");
-      }
-      
-      ClockUtil.setCurrentTime(new Date(new Date().getTime() - new Random().nextInt()));
-      taskService.saveTask(task);
-      ClockUtil.reset();
-      
-      task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
-      
-      if (i%4==0) {
-        taskService.addCandidateGroup(task.getId(), "management");
-        taskService.addCandidateGroup(task.getId(), "sales");
-        
-        task.setName(task.getName() + " - for managers and salesdudes");
-        taskService.saveTask(task);
-      }
-      if (i%5==0 || i%6==0) {
-        taskService.addCandidateGroup(task.getId(), "engineering");
-        
-        task.setName(task.getName() + " - for the tech people");
-        taskService.saveTask(task);
-      }
-      if (i%7==0) {
-        taskService.addCandidateGroup(task.getId(), "marketing");
-        
-        task.setName(task.getName() + " - for marketeers");
-        taskService.saveTask(task);
-      }
+    
+    if (imageResource != null) {
+      byte[] pictureBytes = IoUtil.readInputStream(this.getClass().getClassLoader().getResourceAsStream(imageResource), null);
+      Picture picture = new Picture(pictureBytes, "image/jpeg");
+      identityService.setUserPicture(userId, picture);
     }
+    
+    identityService.createMembership(userId, "management");
+    identityService.createMembership(userId, "sales");
+    identityService.createMembership(userId, "marketing");
+    identityService.createMembership(userId, "engineering");
+    identityService.createMembership(userId, "user");
+    identityService.createMembership(userId, "admin");
   }
   
   protected void initProcessDefinitions(ProcessEngine processEngine) {

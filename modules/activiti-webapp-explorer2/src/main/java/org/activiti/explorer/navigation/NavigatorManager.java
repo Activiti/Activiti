@@ -13,6 +13,7 @@
 
 package org.activiti.explorer.navigation;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,8 +25,9 @@ import org.springframework.stereotype.Component;
  * @author Joram Barrez
  */
 @Component
-public class NavigatorManager implements InitializingBean {
+public class NavigatorManager implements InitializingBean, Serializable {
 
+  private static final long serialVersionUID = 1L;
   protected Map<String, Navigator> navigationHandlers = new HashMap<String, Navigator>();
   protected Navigator defaultHandler;
 

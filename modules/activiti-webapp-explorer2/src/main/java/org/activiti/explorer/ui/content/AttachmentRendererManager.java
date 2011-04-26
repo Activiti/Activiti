@@ -13,6 +13,7 @@
 
 package org.activiti.explorer.ui.content;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,8 +35,9 @@ import org.springframework.stereotype.Component;
  * @author Joram Barrez
  */
 @Component
-public class AttachmentRendererManager implements InitializingBean {
+public class AttachmentRendererManager implements InitializingBean, Serializable {
 
+  private static final long serialVersionUID = 1L;
   private final List<AttachmentRenderer> renderers = new ArrayList<AttachmentRenderer>();
   private final List<AttachmentEditor> editors = new ArrayList<AttachmentEditor>();
   

@@ -38,21 +38,24 @@ public class NavigationFragmentChangeListener implements FragmentChangedListener
 
   public void fragmentChanged(FragmentChangedEvent source) {
     String fragment = source.getUriFragmentUtility().getFragment();
-
-    UriFragment uriFragment = new UriFragment(fragment);
     
-    // Find appropriate handler based on the first part of the URI
-    Navigator navigationHandler = null;
-    if(uriFragment.getUriParts() != null && uriFragment.getUriParts().size() > 0) {
-      navigationHandler = navigatorManager.getNavigator(uriFragment.getUriParts().get(0));
+    if (fragment != null && !"".equals(fragment)) {
+      UriFragment uriFragment = new UriFragment(fragment);
+      
+      // Find appropriate handler based on the first part of the URI
+      Navigator navigationHandler = null;
+      if(uriFragment.getUriParts() != null && uriFragment.getUriParts().size() > 0) {
+        navigationHandler = navigatorManager.getNavigator(uriFragment.getUriParts().get(0));
+      }
+      
+      if(navigationHandler == null) {
+        navigationHandler = navigatorManager.getDefaultNavigator();
+      }
+      
+      // Delegate navigation to handler
+      navigationHandler.handleNavigation(uriFragment);
     }
     
-    if(navigationHandler == null) {
-      navigationHandler = navigatorManager.getDefaultNavigator();
-    }
-    
-    // Delegate navigation to handler
-    navigationHandler.handleNavigation(uriFragment);
   }
 
 }

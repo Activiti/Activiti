@@ -13,6 +13,7 @@
 
 package org.activiti.explorer;
 
+import java.io.Serializable;
 import java.text.MessageFormat;
 
 import org.activiti.explorer.ui.MainWindow;
@@ -28,8 +29,10 @@ import com.vaadin.ui.Window.Notification;
  */
 @Component
 @Scope(value="session")
-public class NotificationManager {
+public class NotificationManager implements Serializable {
   
+  private static final long serialVersionUID = 1L;
+
   @Autowired
   protected MainWindow mainWindow;
   

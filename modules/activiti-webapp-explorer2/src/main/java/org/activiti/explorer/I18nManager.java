@@ -13,6 +13,7 @@
 
 package org.activiti.explorer;
 
+import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -26,8 +27,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope(value="session")
-public class I18nManager {
+public class I18nManager implements Serializable {
 
+  private static final long serialVersionUID = 1L;
   protected ResourceBundle messages;
   
   public String getMessage(String key) {

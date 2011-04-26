@@ -72,6 +72,15 @@ public class TaskMenuBar extends ToolBar {
 
     // TODO: the counts should be done later by eg a Refresher component
 
+    // Inbox
+    long inboxCount = new InboxListQuery().size(); 
+    ToolbarEntry inboxEntry = addToolbarEntry(ENTRY_INBOX, i18nManager.getMessage(Messages.TASK_MENU_INBOX), new ToolbarCommand() {
+      public void toolBarItemSelected() {
+        viewManager.showInboxPage();
+      }
+    });
+    inboxEntry.setCount(inboxCount);
+    
     // Cases
     LoggedInUser user = ExplorerApp.get().getLoggedInUser();
     long casesCount = new CasesListQuery().size(); 
@@ -81,15 +90,6 @@ public class TaskMenuBar extends ToolBar {
       }
     });
     casesEntry.setCount(casesCount);
-    
-    // Inbox
-    long inboxCount = new InboxListQuery().size(); 
-    ToolbarEntry inboxEntry = addToolbarEntry(ENTRY_INBOX, i18nManager.getMessage(Messages.TASK_MENU_INBOX), new ToolbarCommand() {
-      public void toolBarItemSelected() {
-        viewManager.showInboxPage();
-      }
-    });
-    inboxEntry.setCount(inboxCount);
     
     // Queued
     List<Group> groups = identityService.createGroupQuery().groupMember(user.getId()).list();

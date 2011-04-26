@@ -384,8 +384,7 @@ public class ProfilePanel extends Panel {
       skypeIdLabel.setSizeUndefined();
       skypeLayout.addComponent(skypeIdLabel);
       
-      Label skypeImage = new SkypeLabel(skypeId);
-      skypeImage.setSizeUndefined();
+      Component skypeImage = new SkypeLabel(skypeId);
       skypeLayout.addComponent(skypeImage);
       
       addProfileEntry(contactLayout, i18nManager.getMessage(Messages.PROFILE_SKYPE), skypeLayout);
