@@ -43,12 +43,12 @@ public class MailScanTester {
     String accountUsername = System.getProperty("user");
     String accountPassword = System.getProperty("pwd");
     Map<String, String> accountDetails = new HashMap<String, String>();
-    accountDetails.put("toDoFolderName", "MyToDos");
-    accountDetails.put("toDoInActivitiFolderName", "MyToDosInActiviti");
+    accountDetails.put("toDoFolderName", "Cases");
+    accountDetails.put("toDoInActivitiFolderName", "CasesInActiviti");
     accountDetails.put("imapHost", "imap.gmail.com");
     accountDetails.put("imapProtocol", "imaps");
     
-    identityService.setUserAccount("johndoe", null, "mailscan", accountUsername, accountPassword, accountDetails);
+    identityService.setUserAccount("tom", null, "mailscan", accountUsername, accountPassword, accountDetails);
     
     MailScanner mailScanner = processEngine
       .getProcessEngineConfiguration()
@@ -56,10 +56,10 @@ public class MailScanTester {
     
     mailScanner.start();
     
-    mailScanner.addUser("johndoe", null);
+    mailScanner.addUser("tom", null);
     
     try {
-      Thread.sleep(2000);
+      Thread.sleep(1000);
     } catch (Exception e) {
       e.printStackTrace();
     }
