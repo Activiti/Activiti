@@ -15,6 +15,8 @@ package org.activiti.engine.test.api.task;
 
 import java.util.List;
 
+import junit.framework.AssertionFailedError;
+
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Event;
 import org.activiti.engine.task.IdentityLink;
@@ -86,7 +88,7 @@ public class TaskIdentityLinksTest extends PluggableActivitiTestCase {
     taskService.deleteCandidateGroup(taskId, "muppets");
 
     taskEvents = taskService.getTaskEvents(taskId);
-    taskEvent = taskEvents.get(0);
+    taskEvent = findTaskEvent(taskEvents, Event.ACTION_DELETE_GROUP_LINK);
     assertEquals(Event.ACTION_DELETE_GROUP_LINK, taskEvent.getAction());
     taskEventMessageParts = taskEvent.getMessageParts();
     assertEquals("muppets", taskEventMessageParts.get(0));
@@ -95,6 +97,15 @@ public class TaskIdentityLinksTest extends PluggableActivitiTestCase {
     assertEquals(2, taskEvents.size());
 
     assertEquals(0, taskService.getIdentityLinksForTask(taskId).size());
+  }
+
+  private Event findTaskEvent(List<Event> taskEvents, String action) {
+    for (Event event: taskEvents) {
+      if (action.equals(event.getAction())) {
+        return event;
+      }
+    }
+    throw new AssertionFailedError("no task event found with action "+action);
   }
 
   @Deployment(resources="org/activiti/engine/test/api/task/IdentityLinksProcess.bpmn20.xml")
