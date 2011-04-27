@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Task;
 
@@ -56,24 +57,26 @@ public class SubTaskTest extends PluggableActivitiTestCase {
     for (Task subTask: subTasks) {
       subTaskNames.add(subTask.getName());
     }
-    
-    Set<String> expectedSubTaskNames = new HashSet<String>();
-    expectedSubTaskNames.add("subtask one");
-    expectedSubTaskNames.add("subtask two");
 
-    assertEquals(expectedSubTaskNames, subTaskNames);
-    
-    List<HistoricTaskInstance> historicSubTasks = historyService
-      .createHistoricTaskInstanceQuery()
-      .taskParentTaskId(gonzoTaskId)
-      .list();
-    
-    subTaskNames = new HashSet<String>();
-    for (HistoricTaskInstance historicSubTask: historicSubTasks) {
-      subTaskNames.add(historicSubTask.getName());
+    if (processEngineConfiguration.getHistoryLevel()>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+      Set<String> expectedSubTaskNames = new HashSet<String>();
+      expectedSubTaskNames.add("subtask one");
+      expectedSubTaskNames.add("subtask two");
+
+      assertEquals(expectedSubTaskNames, subTaskNames);
+      
+      List<HistoricTaskInstance> historicSubTasks = historyService
+        .createHistoricTaskInstanceQuery()
+        .taskParentTaskId(gonzoTaskId)
+        .list();
+      
+      subTaskNames = new HashSet<String>();
+      for (HistoricTaskInstance historicSubTask: historicSubTasks) {
+        subTaskNames.add(historicSubTask.getName());
+      }
+      
+      assertEquals(expectedSubTaskNames, subTaskNames);
     }
-    
-    assertEquals(expectedSubTaskNames, subTaskNames);
 
     taskService.deleteTask(gonzoTaskId, true);
   }

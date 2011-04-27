@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -42,39 +43,50 @@ public class HistoricTaskInstanceManager extends AbstractHistoricManager {
   }
 
   public long findHistoricTaskInstanceCountByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery) {
-    return (Long) getDbSqlSession().selectOne("selectHistoricTaskInstanceCountByQueryCriteria", historicTaskInstanceQuery);
+    if (historyLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
+      return (Long) getDbSqlSession().selectOne("selectHistoricTaskInstanceCountByQueryCriteria", historicTaskInstanceQuery);
+    }
+    return 0;
   }
 
   @SuppressWarnings("unchecked")
   public List<HistoricTaskInstance> findHistoricTaskInstancesByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery, Page page) {
-    return getDbSqlSession().selectList("selectHistoricTaskInstancesByQueryCriteria", historicTaskInstanceQuery, page);
+    if (historyLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
+      return getDbSqlSession().selectList("selectHistoricTaskInstancesByQueryCriteria", historicTaskInstanceQuery, page);
+    }
+    return Collections.EMPTY_LIST;
   }
   
   public HistoricTaskInstanceEntity findHistoricTaskInstanceById(String taskId) {
     if (taskId == null) {
       throw new ActivitiException("Invalid historic task id : null");
     }
-    return (HistoricTaskInstanceEntity) getDbSqlSession().selectOne("selectHistoricTaskInstance", taskId);
+    if (historyLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
+      return (HistoricTaskInstanceEntity) getDbSqlSession().selectOne("selectHistoricTaskInstance", taskId);
+    }
+    return null;
   }
   
   public void deleteHistoricTaskInstanceById(String taskId) {
-    HistoricTaskInstanceEntity historicTaskInstance = findHistoricTaskInstanceById(taskId);
-    if(historicTaskInstance!=null) {
-      CommandContext commandContext = Context.getCommandContext();
-      
-      commandContext
-        .getHistoricDetailManager()
-        .deleteHistoricDetailsByTaskId(taskId);
+    if (historyLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
+      HistoricTaskInstanceEntity historicTaskInstance = findHistoricTaskInstanceById(taskId);
+      if(historicTaskInstance!=null) {
+        CommandContext commandContext = Context.getCommandContext();
         
-      commandContext
-        .getCommentManager()
-        .deleteCommentsByTaskId(taskId);
+        commandContext
+          .getHistoricDetailManager()
+          .deleteHistoricDetailsByTaskId(taskId);
+          
+        commandContext
+          .getCommentManager()
+          .deleteCommentsByTaskId(taskId);
+        
+        commandContext
+          .getAttachmentManager()
+          .deleteAttachmentsByTaskId(taskId);
       
-      commandContext
-        .getAttachmentManager()
-        .deleteAttachmentsByTaskId(taskId);
-    
-      getDbSqlSession().delete(HistoricTaskInstanceEntity.class, taskId);
+        getDbSqlSession().delete(HistoricTaskInstanceEntity.class, taskId);
+      }
     }
   }
 

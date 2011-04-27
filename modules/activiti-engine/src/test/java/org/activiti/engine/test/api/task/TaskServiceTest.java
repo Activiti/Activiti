@@ -84,16 +84,18 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     assertEquals(dueDate, task.getDueDate());
     assertEquals(1, task.getPriority());
     
-    HistoricTaskInstance historicTaskInstance = historyService
-      .createHistoricTaskInstanceQuery()
-      .taskId(task.getId())
-      .singleResult();
-    assertEquals("updatedtaskname", historicTaskInstance.getName());
-    assertEquals("updateddescription", historicTaskInstance.getDescription());
-    assertEquals("updatedassignee", historicTaskInstance.getAssignee());
-    assertEquals("updatedowner", historicTaskInstance.getOwner());
-    assertEquals(dueDate, historicTaskInstance.getDueDate());
-    assertEquals(1, historicTaskInstance.getPriority());
+    if (processEngineConfiguration.getHistoryLevel()>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+      HistoricTaskInstance historicTaskInstance = historyService
+        .createHistoricTaskInstanceQuery()
+        .taskId(task.getId())
+        .singleResult();
+      assertEquals("updatedtaskname", historicTaskInstance.getName());
+      assertEquals("updateddescription", historicTaskInstance.getDescription());
+      assertEquals("updatedassignee", historicTaskInstance.getAssignee());
+      assertEquals("updatedowner", historicTaskInstance.getOwner());
+      assertEquals(dueDate, historicTaskInstance.getDueDate());
+      assertEquals(1, historicTaskInstance.getPriority());
+    }
     
     // Finally, delete task
     taskService.deleteTask(task.getId(), true);

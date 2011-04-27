@@ -17,6 +17,7 @@ import java.util.List;
 
 import junit.framework.AssertionFailedError;
 
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Event;
 import org.activiti.engine.task.IdentityLink;
@@ -76,25 +77,29 @@ public class TaskIdentityLinksTest extends PluggableActivitiTestCase {
     
     assertEquals(1, identityLinks.size());
     
-    List<Event> taskEvents = taskService.getTaskEvents(taskId);
-    assertEquals(1, taskEvents.size());
-    Event taskEvent = taskEvents.get(0);
-    assertEquals(Event.ACTION_ADD_GROUP_LINK, taskEvent.getAction());
-    List<String> taskEventMessageParts = taskEvent.getMessageParts();
-    assertEquals("muppets", taskEventMessageParts.get(0));
-    assertEquals(IdentityLinkType.CANDIDATE, taskEventMessageParts.get(1));
-    assertEquals(2, taskEventMessageParts.size());
-    
+    if (processEngineConfiguration.getHistoryLevel()>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+      List<Event> taskEvents = taskService.getTaskEvents(taskId);
+      assertEquals(1, taskEvents.size());
+      Event taskEvent = taskEvents.get(0);
+      assertEquals(Event.ACTION_ADD_GROUP_LINK, taskEvent.getAction());
+      List<String> taskEventMessageParts = taskEvent.getMessageParts();
+      assertEquals("muppets", taskEventMessageParts.get(0));
+      assertEquals(IdentityLinkType.CANDIDATE, taskEventMessageParts.get(1));
+      assertEquals(2, taskEventMessageParts.size());
+    }
+      
     taskService.deleteCandidateGroup(taskId, "muppets");
 
-    taskEvents = taskService.getTaskEvents(taskId);
-    taskEvent = findTaskEvent(taskEvents, Event.ACTION_DELETE_GROUP_LINK);
-    assertEquals(Event.ACTION_DELETE_GROUP_LINK, taskEvent.getAction());
-    taskEventMessageParts = taskEvent.getMessageParts();
-    assertEquals("muppets", taskEventMessageParts.get(0));
-    assertEquals(IdentityLinkType.CANDIDATE, taskEventMessageParts.get(1));
-    assertEquals(2, taskEventMessageParts.size());
-    assertEquals(2, taskEvents.size());
+    if (processEngineConfiguration.getHistoryLevel()>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+      List<Event> taskEvents = taskService.getTaskEvents(taskId);
+      Event taskEvent = findTaskEvent(taskEvents, Event.ACTION_DELETE_GROUP_LINK);
+      assertEquals(Event.ACTION_DELETE_GROUP_LINK, taskEvent.getAction());
+      List<String> taskEventMessageParts = taskEvent.getMessageParts();
+      assertEquals("muppets", taskEventMessageParts.get(0));
+      assertEquals(IdentityLinkType.CANDIDATE, taskEventMessageParts.get(1));
+      assertEquals(2, taskEventMessageParts.size());
+      assertEquals(2, taskEvents.size());
+    }
 
     assertEquals(0, taskService.getIdentityLinksForTask(taskId).size());
   }
