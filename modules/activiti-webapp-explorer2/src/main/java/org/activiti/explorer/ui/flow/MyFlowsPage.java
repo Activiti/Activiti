@@ -13,9 +13,9 @@
 
 package org.activiti.explorer.ui.flow;
 
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
 import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.MyFlowsNavigator;
 import org.activiti.explorer.navigation.UriFragment;
@@ -32,11 +32,11 @@ public class MyFlowsPage extends ProcessInstancePage {
 
   protected String processInstanceId;
   
-  protected RuntimeService runtimeService;
   protected RepositoryService repositoryService;
+  protected HistoryService historyService;
   
   public MyFlowsPage() {
-    runtimeService = ProcessEngines.getDefaultProcessEngine().getRuntimeService();
+    historyService = ProcessEngines.getDefaultProcessEngine().getHistoryService();
     repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
   }
   
@@ -47,7 +47,7 @@ public class MyFlowsPage extends ProcessInstancePage {
 
   @Override
   protected LazyLoadingQuery createLazyLoadingQuery() {
-    return new MyFlowsListQuery(runtimeService, repositoryService);
+    return new MyFlowsListQuery(historyService, repositoryService);
   }
   
   @Override

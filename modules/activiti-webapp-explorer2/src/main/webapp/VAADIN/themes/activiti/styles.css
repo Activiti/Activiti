@@ -335,7 +335,6 @@ input.login-field {
 	padding:0 12px 0 10px;
 	height:1%;
 	position:relative;
-	z-index:10;
 	background:#007dc3 url(img/bg-header.gif) repeat-x;
 }
 

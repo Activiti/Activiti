@@ -40,6 +40,9 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   /** Only select historic process instance that are not yet finished. */
   HistoricProcessInstanceQuery unfinished();
   
+  /** Only select historic process instance that are started by the given user. */
+  HistoricProcessInstanceQuery startedBy(String userId);
+  
   /** Order by the process instance id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricProcessInstanceQuery orderByProcessInstanceId();
   

@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
   <process id="expenseProcess" name="Expense Process">
+    <extensionElements>
+         <activiti:executionListener event="start" expression="${execution.setVariable('approved', 'true')}" /> 
+    </extensionElements>
     <startEvent id="startevent1" name="Start" activiti:initiator="initiator"></startEvent>
     <userTask id="usertask1" name="Request refund" activiti:assignee="${initiator}">
       <documentation>
-        Please fill in the form below as detailed as possible. 
-        Any receipts can be attached as related content.
+        ${(approved == 'true') ? 'Please fill in the form below as detailed as possible. Any receipts can be attached as related content.' : 'Your claim was rejected: '.concat(decisionMotivation)}
       </documentation>
       <extensionElements>
         <activiti:formProperty id="approver" name="Approver of expense" type="user" required="true" readable="true" writable="true"></activiti:formProperty>
@@ -18,6 +20,14 @@
       <documentation>
         ${initiator} has requested the refund of ${amount} EUR.
       </documentation>
+      <extensionElements>
+         <activiti:formProperty id="approved" name="Decision" type="enum"
+          required="true">
+          <activiti:value id="true" name="Approve" />
+          <activiti:value id="false" name="Reject" />
+        </activiti:formProperty>
+        <activiti:formProperty id="decisionMotivation" name="Motivation of decision" type="string" required="true" />
+      </extensionElements>
     </userTask>
     <sequenceFlow id="flow1" name="" sourceRef="startevent1" targetRef="usertask1"></sequenceFlow>
     <sequenceFlow id="flow2" name="" sourceRef="usertask1" targetRef="servicetask1"></sequenceFlow>
@@ -26,10 +36,10 @@
     <sequenceFlow id="flow4" name="" sourceRef="usertask2" targetRef="exclusivegateway1"></sequenceFlow>
     <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
     <sequenceFlow id="flow5" name="" sourceRef="exclusivegateway1" targetRef="endevent1">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approved}]]></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approved == 'true'}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="flow6" name="" sourceRef="exclusivegateway1" targetRef="usertask1">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[{!approved}]]></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approved != 'true'}]]></conditionExpression>
     </sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_process">

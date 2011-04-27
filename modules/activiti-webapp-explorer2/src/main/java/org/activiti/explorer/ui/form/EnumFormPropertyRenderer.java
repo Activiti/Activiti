@@ -18,6 +18,7 @@ import java.util.Map.Entry;
 
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.impl.form.EnumFormType;
+import org.activiti.explorer.Messages;
 
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Field;
@@ -36,6 +37,7 @@ public class EnumFormPropertyRenderer extends AbstractFormPropertyRenderer {
   public Field getPropertyField(FormProperty formProperty) {
     ComboBox comboBox = new ComboBox(getPropertyLabel(formProperty));
     comboBox.setRequired(formProperty.isRequired());
+    comboBox.setRequiredError(getMessage(Messages.FORM_FIELD_REQUIRED, getPropertyLabel(formProperty)));
     comboBox.setEnabled(formProperty.isWritable());
 
     Map<String, String> values = (Map<String, String>) formProperty.getType().getInformation("values");

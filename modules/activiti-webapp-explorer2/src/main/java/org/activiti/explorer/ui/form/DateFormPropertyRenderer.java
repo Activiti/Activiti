@@ -19,6 +19,7 @@ import java.util.Date;
 
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.impl.form.DateFormType;
+import org.activiti.explorer.Messages;
 
 import com.vaadin.ui.Field;
 import com.vaadin.ui.PopupDateField;
@@ -39,6 +40,7 @@ public class DateFormPropertyRenderer extends AbstractFormPropertyRenderer {
     String datePattern = (String) formProperty.getType().getInformation("datePattern");
     dateField.setDateFormat(datePattern);
     dateField.setRequired(formProperty.isRequired());
+    dateField.setRequiredError(getMessage(Messages.FORM_FIELD_REQUIRED, getPropertyLabel(formProperty)));
     dateField.setEnabled(formProperty.isWritable());
 
     if (formProperty.getValue() != null) {

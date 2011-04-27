@@ -31,6 +31,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
   protected String businessKey;
   protected boolean finished = false;
   protected boolean unfinished = false;
+  protected String startedBy;
   
   public HistoricProcessInstanceQueryImpl() {
   }
@@ -65,6 +66,11 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
   
   public HistoricProcessInstanceQuery unfinished() {
     this.unfinished = true;
+    return this;
+  }
+  
+  public HistoricProcessInstanceQuery startedBy(String userId) {
+    this.startedBy = userId;
     return this;
   }
   
@@ -118,4 +124,8 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
   public String getProcessInstanceId() {
     return processInstanceId;
   }
+  public String getStartedBy() {
+    return startedBy;
+  }
+  
 }

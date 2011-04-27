@@ -14,6 +14,7 @@
 package org.activiti.explorer.ui.form;
 
 import org.activiti.engine.form.FormProperty;
+import org.activiti.explorer.Messages;
 import org.activiti.explorer.form.UserFormType;
 
 import com.vaadin.ui.Field;
@@ -31,6 +32,7 @@ public class UserFormPropertyRenderer extends AbstractFormPropertyRenderer {
   public Field getPropertyField(FormProperty formProperty) {
     SelectUserField selectUserField = new SelectUserField(getPropertyLabel(formProperty));
     selectUserField.setRequired(formProperty.isRequired());
+    selectUserField.setRequiredError(getMessage(Messages.FORM_FIELD_REQUIRED, getPropertyLabel(formProperty)));
     selectUserField.setEnabled(formProperty.isWritable());
 
     if (formProperty.getValue() != null) {

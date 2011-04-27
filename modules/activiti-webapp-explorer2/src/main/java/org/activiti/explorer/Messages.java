@@ -61,6 +61,7 @@ public interface Messages {
   // Forms
   static final String FORM_USER_NO_USER_SELECTED = "form.user.no.user.selected";
   static final String FORM_USER_SELECT = "form.user.select";
+  static final String FORM_FIELD_REQUIRED = "form.field.required";
   
   // Profile
   static final String PROFILE_ABOUT = "profile.about";

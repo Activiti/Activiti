@@ -18,10 +18,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.data.AbstractLazyLoadingQuery;
 
 import com.vaadin.data.Item;
@@ -34,38 +35,43 @@ import com.vaadin.data.util.PropertysetItem;
  */
 public class MyFlowsListQuery extends AbstractLazyLoadingQuery {
   
-  protected RuntimeService runtimeService;
+  protected HistoryService historyService;
   protected RepositoryService repositoryService;
   
   protected Map<String, ProcessDefinition> cachedProcessDefinitions;
   
-  public MyFlowsListQuery(RuntimeService runtimeService, RepositoryService repositoryService) {
-    this.runtimeService = runtimeService;
+  public MyFlowsListQuery(HistoryService historyService, RepositoryService repositoryService) {
+    this.historyService = historyService;
     this.repositoryService = repositoryService;
     cachedProcessDefinitions = new HashMap<String, ProcessDefinition>();
   }
   
   public List<Item> loadItems(int start, int count) {
-    List<ProcessInstance> processInstances = runtimeService
-      .createProcessInstanceQuery()
+    List<HistoricProcessInstance> processInstances = historyService
+      .createHistoricProcessInstanceQuery()
+      .startedBy(ExplorerApp.get().getLoggedInUser().getId())
+      .unfinished()
       .list();
     
     List<Item> items = new ArrayList<Item>();
-    for (ProcessInstance processInstance : processInstances) {
+    for (HistoricProcessInstance processInstance : processInstances) {
       items.add(createItem(processInstance));
     }
     return items;
   }
   
   public Item loadSingleResult(String id) {
-    ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(id).singleResult();
+    HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery()
+      .startedBy(ExplorerApp.get().getLoggedInUser().getId())
+      .unfinished()
+      .processInstanceId(id).singleResult();
     if (processInstance != null) {
       return createItem(processInstance);
     }
     return null;
   }
   
-  protected ProcessInstanceListItem createItem(ProcessInstance processInstance) {
+  protected ProcessInstanceListItem createItem(HistoricProcessInstance processInstance) {
     ProcessInstanceListItem item = new ProcessInstanceListItem();
     item.addItemProperty("id", new ObjectProperty<String>(processInstance.getId()));
 
@@ -86,7 +92,10 @@ public class MyFlowsListQuery extends AbstractLazyLoadingQuery {
   }
 
   public int size() {
-    return (int) runtimeService.createProcessInstanceQuery().count();
+    return (int) historyService.createHistoricProcessInstanceQuery()
+    .startedBy(ExplorerApp.get().getLoggedInUser().getId())
+    .unfinished()
+    .count();
   }
 
   public void setSorting(Object[] propertyId, boolean[] ascending) {

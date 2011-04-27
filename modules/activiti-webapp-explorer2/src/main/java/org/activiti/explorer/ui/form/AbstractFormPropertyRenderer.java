@@ -15,6 +15,7 @@ package org.activiti.explorer.ui.form;
 
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.form.FormType;
+import org.activiti.explorer.ExplorerApp;
 
 import com.vaadin.ui.Field;
 
@@ -52,5 +53,9 @@ public abstract class AbstractFormPropertyRenderer implements FormPropertyRender
   }
   
   public abstract Field getPropertyField(FormProperty formProperty);
+  
+  protected String getMessage(String key, Object ... params) {
+    return ExplorerApp.get().getI18nManager().getMessage(key, params);
+  }
   
 }

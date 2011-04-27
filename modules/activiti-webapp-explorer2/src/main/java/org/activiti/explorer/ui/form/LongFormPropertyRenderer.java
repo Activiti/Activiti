@@ -15,6 +15,7 @@ package org.activiti.explorer.ui.form;
 
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.impl.form.LongFormType;
+import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.validator.LongValidator;
 
 import com.vaadin.ui.Field;
@@ -34,7 +35,8 @@ public class LongFormPropertyRenderer extends AbstractFormPropertyRenderer {
     final TextField textField = new TextField(getPropertyLabel(formProperty));
     textField.setRequired(formProperty.isRequired());
     textField.setEnabled(formProperty.isWritable());
-
+    textField.setRequiredError(getMessage(Messages.FORM_FIELD_REQUIRED, getPropertyLabel(formProperty)));
+    
     if (formProperty.getValue() != null) {
       textField.setValue(formProperty.getValue());
     }

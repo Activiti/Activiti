@@ -122,6 +122,9 @@
       <if test="finished">
         and HPI.END_TIME_ is not NULL
       </if>
+      <if test="startedBy != null">
+        and HPI.START_USER_ID_ = #{startedBy}
+      </if>
     </where>
   </sql>
 
