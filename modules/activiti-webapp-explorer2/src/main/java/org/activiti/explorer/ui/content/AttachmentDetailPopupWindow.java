@@ -35,6 +35,7 @@ public class AttachmentDetailPopupWindow extends PopupWindow {
     
     addStyleName(Reindeer.PANEL_LIGHT);
     center();
+    setModal(true);
     setResizable(false);
     
     AttachmentRenderer renderer = ExplorerApp.get().getAttachmentRendererManager().getRenderer(attachment.getType());

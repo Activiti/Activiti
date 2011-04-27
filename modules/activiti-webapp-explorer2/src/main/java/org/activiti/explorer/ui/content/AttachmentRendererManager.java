@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.task.Attachment;
+import org.activiti.explorer.ui.content.email.EmailAttachmentRenderer;
 import org.activiti.explorer.ui.content.file.FileAttachmentEditor;
 import org.activiti.explorer.ui.content.file.ImageAttachmentRenderer;
 import org.activiti.explorer.ui.content.file.PdfAttachmentRenderer;
@@ -93,5 +94,6 @@ public class AttachmentRendererManager implements InitializingBean, Serializable
     // Basic types
     addAttachmentRenderer(new PdfAttachmentRenderer());
     addAttachmentRenderer(new ImageAttachmentRenderer());
+    addAttachmentRenderer(new EmailAttachmentRenderer());
   }
 }

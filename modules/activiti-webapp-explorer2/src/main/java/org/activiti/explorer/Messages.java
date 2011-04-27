@@ -299,6 +299,8 @@ public interface Messages {
   static final String RELATED_CONTENT_CONFIRM_DELETE = "related.content.confirm.delete";
   static final String RELATED_CONTENT_SHOW_FULL_SIZE = "related.content.show.full.size";
   
+  static final String RELATED_CONTENT_TYPE_EMAIL = "related.content.type.email";
+  
   // People involvement
   static final String PEOPLE_SEARCH = "people.search";
   static final String PEOPLE_INVOLVE_POPUP_CAPTION = "people.involve.popup.caption";
@@ -307,5 +309,11 @@ public interface Messages {
   static final String TASK_AUTHORISATION_ERROR_TITLE = "task.authorisation.error.title";
   static final String TASK_AUTHORISATION_MEMBERSHIP_ERROR = "task.authorisation.membership.error";
   static final String TASK_AUTHORISATION_INBOX_ERROR = "task.authorisation.inbox.error";
+
+  static final String EMAIL_SUBJECT = "email.subject";
+  static final String EMAIL_SENT_DATE = "email.sent.date";
+  static final String EMAIL_RECEIVED_DATE = "email.received.date";
+  static final String EMAIL_HTML_CONTENT = "email.html.content";
+  static final String EMAIL_RECIPIENTS = "email.recipients";
 
 }

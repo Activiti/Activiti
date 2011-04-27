@@ -67,4 +67,10 @@ public class Constants {
  public static final String USER_INFO_TWITTER = "twitterName";
  public static final String USER_INFO_SKYPE = "skype";
  
+ public static final String EMAIL_RECIPIENT = "recipients";
+ public static final String EMAIL_SENT_DATE = "sentDate";
+ public static final String EMAIL_RECEIVED_DATE = "receivedDate";
+ public static final String EMAIL_SUBJECT = "subject";
+ public static final String EMAIL_HTML_CONTENT = "htmlContent";
+ 
 }
