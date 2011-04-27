@@ -32,7 +32,7 @@ public class MailScanSchedulerThread extends Thread {
   private static Logger log = Logger.getLogger(MailScanSchedulerThread.class.getName());
 
   protected boolean isActive = false;
-  protected int idleWaitInMillis = 2000;
+  protected int idleWaitInMillis = 10000;
   protected MailScanner mailScanner;
   protected CommandExecutor commandExecutor;
   protected Map<String, MailScanCmd> allMailScansCmds = Collections.synchronizedMap(new HashMap<String, MailScanCmd>());
@@ -58,15 +58,17 @@ public class MailScanSchedulerThread extends Thread {
   public void run() {
     isActive = true;
     log.fine(getClass().getName()+" is started");
-    while (mailScanner.isActive()) {
+    while (isActive) {
       MailScanCmd mailScanCmd = getNextMailScanCmd();
-      try {
-        commandExecutor.execute(mailScanCmd);
-      } catch (Exception e) {
-        // users need to logout and login if they want to re-enable mail scanning after a failure
-        String userId = mailScanCmd.getUserId();
-        allMailScansCmds.remove(userId);
-        log.log(Level.SEVERE, "couldn't check todo mail for "+userId+": "+e.getMessage(), e);
+      if (mailScanCmd != null) {
+        try {
+          commandExecutor.execute(mailScanCmd);
+        } catch (Exception e) {
+          // users need to logout and login if they want to re-enable mail scanning after a failure
+          String userId = mailScanCmd.getUserId();
+          allMailScansCmds.remove(userId);
+          log.log(Level.SEVERE, "couldn't check todo mail for "+userId+": "+e.getMessage(), e);
+        }
       }
     }
     log.fine(getClass().getName()+" is stopping");
@@ -81,6 +83,7 @@ public class MailScanSchedulerThread extends Thread {
           Thread.sleep(idleWaitInMillis);
         } catch (InterruptedException e) {
           log.fine("sleep got interrupted");
+          return null;
         }
       }
       if (nextMailScanCmds.isEmpty()) {

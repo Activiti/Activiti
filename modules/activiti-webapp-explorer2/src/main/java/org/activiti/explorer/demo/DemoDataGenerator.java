@@ -13,6 +13,8 @@
 
 package org.activiti.explorer.demo;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.activiti.engine.IdentityService;
@@ -144,13 +146,26 @@ public class DemoDataGenerator {
     createUser(identityService, "julie", "Julie", "Hall", "julie", "julie.hall@alfresco.com", "org/activiti/explorer/images/julie.jpg");
     createUser(identityService, "erik", "Erik", "Winlof", "erik", "erik.witloof@alfresco.com", "org/activiti/explorer/images/erik.jpg");
     
-    // Additional info 
+    // Joram
     identityService.setUserInfo("joram", "birthDate", "10-10-1985");
     identityService.setUserInfo("joram", "jobTitle", "Activiti core developer");
     identityService.setUserInfo("joram", "location", "Welle, Belgium");
     identityService.setUserInfo("joram", "phone", "+32485869655");
     identityService.setUserInfo("joram", "twitterName", "jbarrez");
     identityService.setUserInfo("joram", "skype", "joram.barrez");
+    
+    // Tim
+    String accountUsername = System.getProperty("user");
+    String accountPassword = System.getProperty("pwd");
+    if (accountUsername == null || accountPassword == null) {
+      throw new RuntimeException("'user' and 'pwd' system property must be set");
+    }
+    Map<String, String> accountDetails = new HashMap<String, String>();
+    accountDetails.put("toDoFolderName", "Cases");
+    accountDetails.put("toDoInActivitiFolderName", "CasesInActiviti");
+    accountDetails.put("imapHost", "imap.gmail.com");
+    accountDetails.put("imapProtocol", "imaps");
+    identityService.setUserAccount("tom", null, "mailscan", accountUsername, accountPassword, accountDetails);
   }
   
   protected void createUser(IdentityService identityService, String userId, String firstName, String lastName, 
