@@ -146,13 +146,24 @@ public class DemoDataGenerator {
     createUser(identityService, "julie", "Julie", "Hall", "julie", "julie.hall@alfresco.com", "org/activiti/explorer/images/julie.jpg");
     createUser(identityService, "erik", "Erik", "Winlof", "erik", "erik.witloof@alfresco.com", "org/activiti/explorer/images/erik.jpg");
     
+    // Skype
+    identityService.setUserInfo("joram", "skype", "joram.barrez");
+    identityService.setUserInfo("frederik", "skype", "frederik.heremans");
+    identityService.setUserInfo("david", "skype", "david.caruana");
+    identityService.setUserInfo("gavin", "skype", "gavincornwell");
+    identityService.setUserInfo("johnN", "skype", "john_newton_uk");
+    identityService.setUserInfo("johnP", "skype", "john_n_powell");
+    identityService.setUserInfo("paul", "skype", "paulhh");
+    identityService.setUserInfo("erik", "skype", "wineleaf");
+    identityService.setUserInfo("tom", "skype", "tombaeyens");
+    
+    
     // Joram
     identityService.setUserInfo("joram", "birthDate", "10-10-1985");
     identityService.setUserInfo("joram", "jobTitle", "Activiti core developer");
     identityService.setUserInfo("joram", "location", "Welle, Belgium");
     identityService.setUserInfo("joram", "phone", "+32485869655");
     identityService.setUserInfo("joram", "twitterName", "jbarrez");
-    identityService.setUserInfo("joram", "skype", "joram.barrez");
     
     // Tim
     String accountUsername = System.getProperty("user");
