@@ -92,14 +92,14 @@ public class MailScanCmd implements Command<Object> {
       throw new ActivitiException("couldn't scan mail for user "+userId+": "+e.getMessage(), e);
       
     } finally {
-      if (toDoInActivitiFolder!=null) {
+      if (toDoInActivitiFolder!=null && toDoInActivitiFolder.isOpen()) {
         try {
           toDoInActivitiFolder.close(false);
         } catch (MessagingException e) {
           e.printStackTrace();
         }
       }
-      if (toDoFolder!=null) {
+      if (toDoFolder!=null && toDoFolder.isOpen()) {
         try {
           toDoFolder.close(true); // true means that all messages that are flagged for deletion are permanently removed 
         } catch (Exception e) {

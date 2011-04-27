@@ -66,9 +66,15 @@ public class MailScanSchedulerThread extends Thread {
         } catch (Exception e) {
           // users need to logout and login if they want to re-enable mail scanning after a failure
           String userId = mailScanCmd.getUserId();
-          allMailScansCmds.remove(userId);
+          // allMailScansCmds.remove(userId);
           log.log(Level.SEVERE, "couldn't check todo mail for "+userId+": "+e.getMessage(), e);
         }
+      }
+      
+      try {
+        Thread.sleep(5*1000);
+      } catch (InterruptedException e1) {
+        e1.printStackTrace();
       }
     }
     log.fine(getClass().getName()+" is stopping");

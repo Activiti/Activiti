@@ -57,13 +57,5 @@ public class MailScanTester {
     mailScanner.start();
     
     mailScanner.addUser("tom", null);
-    
-    try {
-      Thread.sleep(1000);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-    mailScanner.shutdown();
   }
 }
