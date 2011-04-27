@@ -129,7 +129,7 @@ public abstract class TaskPage extends AbstractPage {
   protected Component createDetailComponent(String id) {
     Task task = taskService.createTaskQuery().taskId(id).singleResult();
     Component detailComponent = new TaskDetailPanel(task, TaskPage.this);
-    taskEventPanel.setTask(task);
+    taskEventPanel.setTaskId(task.getId());
     return detailComponent;
   }
   
@@ -140,7 +140,7 @@ public abstract class TaskPage extends AbstractPage {
   
   public TaskEventsPanel getTaskEventPanel() {
     if(taskEventPanel == null) {
-      taskEventPanel = new TaskEventsPanel(null);
+      taskEventPanel = new TaskEventsPanel();
     }
     return taskEventPanel;
   }

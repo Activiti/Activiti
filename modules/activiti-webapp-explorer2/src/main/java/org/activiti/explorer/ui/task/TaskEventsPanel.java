@@ -19,6 +19,7 @@ import java.util.List;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.task.Task;
 import org.activiti.explorer.Constants;
@@ -64,17 +65,12 @@ public class TaskEventsPanel extends Panel {
   protected ViewManager viewManager;
   protected TaskEventTextResolver taskEventTextResolver;
 
-  protected Task task;
+  protected String taskId;
   protected List<org.activiti.engine.task.Event> taskEvents;
   protected TextField commentInputField;
   protected GridLayout eventGrid;
 
   public TaskEventsPanel() {
-    this(null);
-  }
-  
-  public TaskEventsPanel(Task task) {
-    this.task = task;
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
     this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
     this.i18nManager = ExplorerApp.get().getI18nManager();
@@ -103,11 +99,11 @@ public class TaskEventsPanel extends Panel {
    * Set the task this component is showing the events for. Triggers
    * an update of the UI.
    */
-  public void setTask(Task taks) {
-    this.task = taks;
+  public void setTaskId(String taskId) {
+    this.taskId = taskId;
     refreshTaskEvents();
   }
-
+  
   protected void addTitle() {
     Label eventTitle = new Label(i18nManager.getMessage(Messages.EVENT_TITLE));
     eventTitle.addStyleName(Reindeer.LABEL_H2);
@@ -127,10 +123,8 @@ public class TaskEventsPanel extends Panel {
   }
   
   protected void addTaskEvents() {
-    if(task != null) {
-      taskEvents = taskService.getTaskEvents(task.getId());
-      // In the past, we created a custom component for the task event,
-      // however this really had a bad influence on performance
+    if(taskId != null) {
+      taskEvents = taskService.getTaskEvents(taskId);
       for (final org.activiti.engine.task.Event event : taskEvents) {
         addTaskEventPicture(event, eventGrid);
         addTaskEventText(event, eventGrid);
@@ -201,8 +195,6 @@ public class TaskEventsPanel extends Panel {
     textFieldPanel.addActionHandler(new Handler() {
       public void handleAction(Action action, Object sender, Object target) {
         addNewComment(commentInputField.getValue().toString());
-        commentInputField.setValue("");
-        commentInputField.focus();
       }
       public Action[] getActions(Object target, Object sender) {
         return new Action[] {new ShortcutAction("enter", ShortcutAction.KeyCode.ENTER, null)};
@@ -220,8 +212,10 @@ public class TaskEventsPanel extends Panel {
   }
   
   protected void addNewComment(String text) {
-    taskService.addComment(task.getId(), null, text);
+    taskService.addComment(taskId, null, text);
     refreshTaskEvents();
+    commentInputField.setValue("");
+    commentInputField.focus();
   }
 
 }
