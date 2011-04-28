@@ -32,22 +32,13 @@ import org.restlet.Response;
 @CycleComponent(context = CycleContextType.APPLICATION)
 public class JsonProvider extends SignavioContentRepresentationProvider {
 
-  private SignavioConnectorInterface signavioConnector;
-
-  public JsonProvider() {
-  }
-  
-  public JsonProvider(SignavioConnectorInterface signavioConnector) {
-    this.signavioConnector = signavioConnector;
-  }
-
   private static final long serialVersionUID = 1L;
 
   public Content getContent(RepositoryArtifact artifact) {
     try {
-      if (signavioConnector==null) {
-        signavioConnector = (SignavioConnectorInterface) CycleSessionContext.get(RuntimeConnectorList.class).getConnectorById(artifact.getConnectorId());        
-      }
+     
+      SignavioConnectorInterface signavioConnector = (SignavioConnectorInterface) CycleSessionContext.get(RuntimeConnectorList.class).getConnectorById(artifact.getConnectorId());        
+      
       Content content = new Content();
       Response jsonResponse = getJsonResponse(signavioConnector, artifact, "/json");
 
