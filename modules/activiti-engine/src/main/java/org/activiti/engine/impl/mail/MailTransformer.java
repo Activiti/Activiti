@@ -118,10 +118,10 @@ public class MailTransformer {
             if (attachmentName.startsWith("<") && attachmentName.endsWith(">")) {
               attachmentName = attachmentName.substring(1, attachmentName.length()-2).trim();
             }
-            attachmentType = "email-inline-image";
+            attachmentType = getImageMimeType(attachmentName);
           } else if (Part.INLINE.equalsIgnoreCase(part.getDisposition())) {
             attachmentName = fileName;
-            attachmentType = "email-inline-image";
+            attachmentType = getImageMimeType(attachmentName);
             messageText.append("<img id=\"cid:"+fileName+"\" src=\"cid:"+fileName+"\" />");
             messageHtml.append("<img id=\"cid:"+fileName+"\" src=\"cid:"+fileName+"\" />");
           }
@@ -143,6 +143,18 @@ public class MailTransformer {
     
   }
   
+  protected String getImageMimeType(String attachmentName) {
+    int lastDotIndex = attachmentName.lastIndexOf('.');
+    if (lastDotIndex!=-1) {
+      String extension = attachmentName.substring(lastDotIndex+1);
+      if ("jpg".equals(extension)) {
+        extension = "jpeg";
+      }
+      return "image/"+extension;
+    } 
+    return "email-inline-image";
+  }
+
   private static final String INDENT_WHITESPACE = "                                                                                ";
   void log(int indent, String msg) {
     log.fine(INDENT_WHITESPACE.substring(0, indent*2)+msg.replaceAll("\\s", " "));
