@@ -46,6 +46,108 @@
 
   <h1>Activiti Release Notes</h1>
 
+  <h3>Release Notes - Activiti - Version 5.5</h3>
+  
+      <h4>Highlights</h4>
+<ul>
+  <li>Added CDI support</li>
+  <li>Added dynamic sub task capabilities</li>
+  <li>Added support for event/activity streams</li>
+  <li>In the eclipse process designer,added support for default value for CustomServiceTask fields</li>
+  <li>Simplified persistence</li>
+  <li>Performance improvements</li>
+  <li>Many bug fixes</li>
+</ul>
+
+<h4>        Bug
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-477'>ACT-477</a>] -         Creating new diagram using wizard with existing name overwrites without warning
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-718'>ACT-718</a>] -         Ternary operator not working in Listener field expression
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-757'>ACT-757</a>] -         calledElement missing from call activity in generated bpmn
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-764'>ACT-764</a>] -         MultiInstance doesn&#39;t work for serviceTask
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-765'>ACT-765</a>] -         Initial priority from task is not stored on HistoricTaskInstanceEntity
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-766'>ACT-766</a>] -         Querying tasks causes HistoricTaskInstanceEntity to be loaded for each result
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-782'>ACT-782</a>] -         Javadoc of org.activiti.engine.test.Deployment is inconsistent with its implementation
+</li>
+</ul>
+    
+<h4>        Improvement
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-653'>ACT-653</a>] -         When folders src/test/java and src/test/resources are missing my unittests are not generated
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-725'>ACT-725</a>] -         Expose task query criteria for priority &gt;= and &lt;= in addition to =
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-728'>ACT-728</a>] -         When creating a process model not in src/main/resources (e.g. test), the activiti file is created in the src/main/resources anyway
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-732'>ACT-732</a>] -         Upgrade to iBatis 3.04
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-735'>ACT-735</a>] -         Task owner is not stored on the HistoricTaskInstance
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-742'>ACT-742</a>] -         Use spring to wire explorer 2 application
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-744'>ACT-744</a>] -         Management pages should only be visible for admins
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-750'>ACT-750</a>] -         Refactor task-lists in explorer 2
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-752'>ACT-752</a>] -         Add more demo-data to explorer 2
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-753'>ACT-753</a>] -         Navigate to task URL for task where user is not involved should be forbidden
+</li>
+</ul>
+    
+<h4>        New Feature
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-559'>ACT-559</a>] -         Allow default value for CustomServiceTask fields
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-644'>ACT-644</a>] -         Add support for dynamic subtasks
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-743'>ACT-743</a>] -         Add screen to edit user profile
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-746'>ACT-746</a>] -         Add people involvement in task UI
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-747'>ACT-747</a>] -         Add support for dynamic tasks in explorer UI
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-748'>ACT-748</a>] -         Add support for showing/adding subtasks in UI
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-751'>ACT-751</a>] -         Show event-stream in new explorer
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-755'>ACT-755</a>] -         Add/remove related URL to task
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-759'>ACT-759</a>] -         Allow user assignable Id for process elements.
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-760'>ACT-760</a>] -         Add Skype buttons
+</li>
+</ul>
+    
+<h4>        Task
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-741'>ACT-741</a>] -         Refactoring persistence
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-754'>ACT-754</a>] -         Apply styling to vaadin-components
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-767'>ACT-767</a>] -         Add support for Events
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-790'>ACT-790</a>] -         Look at cycle persistence
+</li>
+</ul>
+    
+<h4>        Test
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-745'>ACT-745</a>] -         Incorporate user/group administration into explorer 2
+</li>
+</ul>
+        
   <h3>Release Notes - Activiti - Version 5.4</h3>
     
       <h4>Compatibility note</h4>
