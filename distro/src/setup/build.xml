@@ -9,7 +9,7 @@
   <property file="build.${db}.properties" />
 
   <property name="activiti.home" value=".." /> 
-  <property name="activiti.version" value="5.5-SNAPSHOT" />   
+  <property name="activiti.version" value="5.6-SNAPSHOT" />   
   <property name="tomcat.url" value="http://activiti.org/downloads/" />
   
   <property name="cycle.workspace" location="${activiti.home}/workspace/activiti-cycle-examples"/>
