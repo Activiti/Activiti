@@ -16,7 +16,7 @@
    * @return {Activiti.component.Tree} The new component.Tree instance
    * @constructor
    */
-  Activiti.component.Tree = function Tree_constructor(htmlId, nodesJson, containingNavigationTabIndex, connectorId, nodeId, vFolderId, treeId)
+  Activiti.component.Tree = function Tree_constructor(htmlId, nodesJson, containingNavigationTabIndex, connectorId, nodeId, vFolderId, treeId, tab)
   {
     Activiti.component.Tree.superclass.constructor.call(this, "Activiti.component.Tree", htmlId);
 
@@ -33,6 +33,8 @@
 
     this._treeView = {};
     this._dialog = {};
+    
+    this._tab = tab;
 
     this._activeNavigationTabIndex = 0;
 
@@ -123,6 +125,11 @@
       // set iconMode to 1 to use the leaf node icon when a node has no children. 
       this._treeView.setDynamicLoad(loadTreeNodes, 1);
       this._treeView.render();
+      
+      if(this._treeView.getNodeCount() == 0) {
+    	  // select the repository tree if the process solution tree has no nodes:
+    	  this._tab._tabView.selectTab(1);   	  
+      }
 
       // Subscribe to the click event of the tree
       this._treeView.subscribe("clickEvent", this.onClickEvent, null, this);

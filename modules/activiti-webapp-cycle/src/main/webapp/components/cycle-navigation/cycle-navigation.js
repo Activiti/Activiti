@@ -363,7 +363,7 @@
     {
       var responseJson = YAHOO.lang.JSON.parse(response.responseText);
       tab.set('content', "<div id='process-solutions-tree-" + this.id + "'></div>");
-      this._processSolutionsTree = new Activiti.component.Tree("process-solutions-tree-" + this.id, responseJson, 0, this._connectorId, this._nodeId, this._vFolderId, "ps").setMessages(this.messages);
+      this._processSolutionsTree = new Activiti.component.Tree("process-solutions-tree-" + this.id, responseJson, 0, this._connectorId, this._nodeId, this._vFolderId, "ps", this).setMessages(this.messages);
     },
 
     onLoadProcessSolutionsTabFailure: function Artifact_onLoadProcessSolutionsTabFailure(tab, response) 
@@ -385,7 +385,7 @@
     {
       var responseJson = YAHOO.lang.JSON.parse(response.responseText);
       tab.set('content', "<div id='repositories-tree-" + this.id + "'></div>");
-      this._repoTree = new Activiti.component.Tree("repositories-tree-" + this.id, responseJson, 1, this._connectorId, this._nodeId, this._vFolderId, "repo").setMessages(this.messages);
+      this._repoTree = new Activiti.component.Tree("repositories-tree-" + this.id, responseJson, 1, this._connectorId, this._nodeId, this._vFolderId, "repo", this).setMessages(this.messages);
     },
 
     onLoadRepositoriesTabFailure: function Artifact_onLoadRepositoriesTabFailure(tab, response) 
