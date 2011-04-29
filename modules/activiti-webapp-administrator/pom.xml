@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>activiti-root</artifactId>
 		<groupId>org.activiti</groupId>
-		<version>5.5-SNAPSHOT</version>
+		<version>5.5</version>
 		<relativePath>../..</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
