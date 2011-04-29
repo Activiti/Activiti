@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>Retrieve a list of outgoing and incoming links for an artifact </shortname>
+  <description>Displays a list of outgoing and incoming links for an artifact.</description>
+  <url>/component/links?connectorId={connectorId}&amp;nodeId={nodeId}</url>
+</webscript>

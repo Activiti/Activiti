@@ -1,0 +1,45 @@
+<div>
+<h1>Create Maven Project from default template</h1>
+
+<table>
+  <tr>
+    <td>
+      <label>
+        Target folder:<br/>
+        <input type="text" name="targetFolderId" value="" />
+        <input type="hidden" name="targetFolderId_required" value="true" />
+        <input type="hidden" name="targetFolderId_type" value="Event" />
+        <input type="hidden" name="targetConnectorId" value="" />
+      </label><br/>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <label>
+        Name of process file (same as model if skipped):<br/>
+        <input type="text" name="targetName" value="" />
+        <input type="hidden" name="targetName_required" value="false" />
+        <input type="hidden" name="targetName_type" value="String" />
+      </label>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <label>
+        Keep link between models:<br/>
+        <input type="checkbox" name="createLink" value="true" checked="checked"/>
+        <input type="hidden" name="createLink_required" value="true" />
+        <input type="hidden" name="createLink_type" value="Boolean" />
+      </label><br/>
+    </td>
+  </tr>  
+  <tr>
+    <td>
+      <label>
+        Comment:<br/>
+       <textarea name="comment" value=""></textarea>
+      </label>
+    </td>
+  </tr>
+</table>
+</div>

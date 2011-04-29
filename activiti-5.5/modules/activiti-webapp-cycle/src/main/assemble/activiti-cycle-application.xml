@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly>
+  <id>activiti-cycle</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <baseDirectory>/</baseDirectory>
+  <fileSets>
+    <fileSet>
+      <directory>${basedir}/src/main/webapp</directory>
+      <outputDirectory>/</outputDirectory>
+	  <excludes>
+			<exclude>WEB-INF/lib</exclude>
+			<exclude>WEB-INF/classes/surf/site/configurations/default.site.configuration.xml</exclude>
+	  </excludes>
+    </fileSet>
+    <fileSet>
+      <directory>${basedir}/src/main/resources</directory>
+      <outputDirectory>/WEB-INF/classes</outputDirectory>
+    </fileSet>
+  </fileSets>
+</assembly>

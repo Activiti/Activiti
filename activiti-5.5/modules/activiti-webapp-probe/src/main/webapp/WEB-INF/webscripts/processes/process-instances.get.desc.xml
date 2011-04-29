@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>Probe Process Instances</shortname>
+  <description>Displays process instances</description>
+  <url>/component/process-instances</url>
+</webscript>

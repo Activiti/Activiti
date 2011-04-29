@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definition" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="miParallelSubprocess">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="miSubProcess" />
+    
+    <subProcess id="miSubProcess">
+      <multiInstanceLoopCharacteristics isSequential="false">
+        <loopCardinality>2</loopCardinality>
+      </multiInstanceLoopCharacteristics>
+      
+      <startEvent id="subProcessStart" />
+      <sequenceFlow id="subFlow1" sourceRef="subProcessStart" targetRef="subProcessFork" />
+      
+      <parallelGateway id="subProcessFork" />
+      <sequenceFlow id="subFlow2" sourceRef="subProcessFork" targetRef="subProcessTask1" />
+      <sequenceFlow id="subFlow3" sourceRef="subProcessFork" targetRef="subProcessTask2" />
+      
+      <userTask id="subProcessTask1" name="task one" />
+      <sequenceFlow id="subFlow4" sourceRef="subProcessTask1" targetRef="join" />
+      
+      <userTask id="subProcessTask2" name="task two" />
+      <sequenceFlow id="subFlow5" sourceRef="subProcessTask2" targetRef="join" />
+      
+      <parallelGateway id="join" />
+      <sequenceFlow id="subFlow6" sourceRef="join" targetRef="subProcessEnd" />
+      
+      <endEvent id="subProcessEnd" />  
+       
+      
+    </subProcess>
+    
+    <sequenceFlow id="flow3" sourceRef="miSubProcess" targetRef="theEnd" />
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

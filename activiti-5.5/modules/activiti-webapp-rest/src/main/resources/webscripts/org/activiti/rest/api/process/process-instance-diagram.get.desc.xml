@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Process instance diagram</shortname>
+  <description>Returns a png diagram of process with highlighted active executions</description>
+  <url>/processInstance/{processInstanceId}/diagram</url>
+  <authentication>user</authentication>
+  <format default="png">argument</format>
+</webscript>

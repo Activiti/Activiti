@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>User</shortname>
+  <description>Returns details about the user</description>
+  <url>/user/{userId}</url>
+  <authentication>user</authentication>
+  <format default="json">argument</format>
+</webscript>

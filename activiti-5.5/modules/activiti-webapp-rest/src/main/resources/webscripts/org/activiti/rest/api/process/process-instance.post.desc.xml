@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Creates a Process Instance</shortname>
+  <description>Starts a process instance based on a process definition</description>
+  <url>/process-instance</url>
+  <authentication>user</authentication>
+  <format default="json">argument</format>
+</webscript>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="activiti.qa.upgrade" default="upgrade">
+	
+  <property file="${user.home}/.activiti/build.properties" />
+  <property name="activiti.version" value="5.5-SNAPSHOT" />
+  <property name="database" value="h2" />
+  <property name="activiti.old.version" value="5.0" />
+  <property name="downloads.dir" value="${user.home}/.activiti/downloads" />
+  <property name="download.old.distro.url" value="http://activiti.org/downloads/activiti-${activiti.old.version}.zip" />
+
+	<condition property="mvn.executable" value="mvn.bat" else="mvn">
+     <os family="windows"/>
+  </condition>
+	
+	<target name="clean">
+		<delete dir="target" />
+	</target>
+	
+	<target name="upgrade" depends="get.old.distro,
+		                              install.old.distro,
+		                              build.engine.module,
+		                              clean.db">
+    <copy file="${user.home}/.activiti/upgrade/build.${database}.properties" todir="target/activiti-${activiti.old.version}/setup" overwrite="true" />
+    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.start" inheritall="false">
+    	<property name="db" value="${database}" />
+    </ant>
+		<echo message="creating activiti tables" />
+    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="db.create" inheritall="false">
+      <property name="db" value="${database}" />
+    	<property name="feature.cycle" value="disabled" />
+     </ant>
+    <echo message="unpacking upgrade before test classes" />
+    <exec executable="${mvn.executable}">
+      <arg line="dependency:unpack-dependencies -Dactiviti.upgrade.version=${activiti.old.version}-ALWAYS-SNAPSHOT -DoutputDirectory=target/activiti-${activiti.old.version}-upgrade-before-classes -DexcludeTransitive=true" />
+    </exec>
+    <echo message="updating activiti cfg fir the tests before migration" />
+    <copy file="activiti.cfg.xml" todir="target/activiti-${activiti.old.version}-upgrade-before-classes" overwrite="true">
+      <filterset filtersfile="${user.home}/.activiti/upgrade/build.${database}.properties" />
+    </copy>
+    <mkdir dir="target/test-results-before" />
+    <echo message="running before tests" />
+		<junit>
+			<classpath>
+				<pathelement location="target/activiti-${activiti.old.version}-upgrade-before-classes" />
+				<fileset dir="target/activiti-${activiti.old.version}/workspace/activiti-engine-examples/libs-runtime" />
+        <fileset dir="target/activiti-${activiti.old.version}/workspace/activiti-engine-examples/libs-test" />
+			</classpath>
+			<batchtest todir="target/test-results-before" fork="yes">
+				<fileset dir="target/activiti-${activiti.old.version}-upgrade-before-classes">
+					<include name="**/*BeforeTest.class"/>
+			  </fileset>
+				<formatter type="xml" />
+			</batchtest>
+		</junit>
+    <condition property="optional.debug.property" value="-Dmaven.surefire.debug" else="">
+      <equals arg1="${debug}" arg2="true"/>
+    </condition>
+    <echo message="running after tests" />
+    <exec executable="${mvn.executable}" dir="../../modules/activiti-upgrade">
+      <arg line="-Ddatabase=${database} ${optional.debug.property} clean prepare-package" />
+    </exec>
+    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.stop" inheritall="false">
+      <property name="db" value="${database}" />
+    </ant>
+	</target>
+
+	<target name="get.old.distro">
+	  <available property="old.distro.available" file="${downloads.dir}/activiti-${activiti.old.version}.zip"/>
+    <antcall target="internal.get.old.distro" />
+  </target>
+	
+  <target name="internal.get.old.distro" unless="old.distro.available">
+  	<mkdir dir="${downloads.dir}" />
+		<get src="${download.old.distro.url}" dest="${downloads.dir}/activiti-${activiti.old.version}.zip" />
+	</target>
+
+  <target name="install.old.distro">
+    <available property="old.installation.available" file="target/activiti-${activiti.old.version}"/>
+  	<antcall target="internal.install.old.distro" />
+  </target>
+	
+  <target name="internal.install.old.distro" unless="old.installation.available">
+  	<mkdir dir="target/activiti-${activiti.old.version}" />
+    <unzip src="${downloads.dir}/activiti-${activiti.old.version}.zip" dest="target" />
+  	<copy file="${user.home}/.activiti/upgrade/build.${database}.properties" todir="target/activiti-${activiti.old.version}/setup" overwrite="true" />
+    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="inflate.examples" inheritall="false" />
+    <exec executable="${mvn.executable}">
+      <arg line="dependency:copy-dependencies -X -Dactiviti.upgrade.version=${activiti.old.version}-ALWAYS-SNAPSHOT -DincludeGroupIds=com.oracle.jdbc -DoutputDirectory=target/activiti-${activiti.old.version}/workspace/activiti-engine-examples/libs-test" />
+    </exec>
+    <copy todir="target/activiti-${activiti.old.version}/setup/files/dependencies/libs">
+      <fileset dir="target/activiti-${activiti.old.version}/workspace/activiti-engine-examples/libs-test">
+      	<include name="ojdbc5*.jar" />
+      </fileset>
+    </copy>
+    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.install" inheritall="false">
+      <property name="db" value="${database}" />
+    </ant>
+  </target>
+	
+	<target name="build.engine.module">
+    <exec executable="${mvn.executable}" dir="../..">
+      <arg line="-DskipTests clean install" />
+    </exec>
+	</target>
+
+  <condition property="is.database.mysql">
+	 	 <equals arg1="${database}" arg2="mysql" />
+	</condition>
+	<target name="clean.db" if="is.database.mysql" depends="install.old.distro">
+	  <property file="${user.home}/.activiti/upgrade/build.${database}.properties" />
+		<echo message="cleaning db ${jdbc.url}" />
+	  <sql driver="${jdbc.driver}" password="${jdbc.password}" url="${jdbc.url}" userid="${jdbc.username}">
+      <classpath>
+        <fileset dir="target/activiti-${activiti.old.version}/workspace/activiti-engine-examples/libs-test" />
+      </classpath>
+	 	  <transaction src="clean.mysql.sql" />
+	 	</sql>
+	</target>
+
+</project>

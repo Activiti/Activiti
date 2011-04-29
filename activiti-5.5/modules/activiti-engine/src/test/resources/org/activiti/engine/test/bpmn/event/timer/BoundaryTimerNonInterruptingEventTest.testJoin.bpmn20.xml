@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:activiti="http://activiti.org/bpmn" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:signavio="http://www.signavio.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="" id="sid-2852a21b-8c85-49e4-b859-2d7aaaf2e7fc" targetNamespace="http://www.signavio.com/bpmn20" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
+   <process name="testJoin" id="testJoin">
+      <startEvent id="StartNoneEvent" name="StartNoneEvent" />
+      <sequenceFlow id="SequenceFlow_3" name="SequenceFlow" sourceRef="StartNoneEvent" targetRef="Main_Task" />
+      
+      <userTask id="Main_Task" name="Main Task" />
+      <sequenceFlow id="SequenceFlow_4" name="SequenceFlow" sourceRef="Main_Task" targetRef="ParallelGateway" />
+      
+      <boundaryEvent attachedToRef="Main_Task" cancelActivity="false" id="IntermediateTimerEvent" name="IntermediateTimerEvent">
+			<timerEventDefinition>
+				<timeDuration>PT1H</timeDuration>
+			</timerEventDefinition>      
+      </boundaryEvent>
+      <sequenceFlow id="SequenceFlow" name="SequenceFlow" sourceRef="IntermediateTimerEvent" targetRef="Escalation_Task" />
+      
+      <userTask id="Escalation_Task" name="Escalation Task" />
+      <sequenceFlow id="SequenceFlow_2" name="SequenceFlow" sourceRef="Escalation_Task" targetRef="ParallelGateway" />
+      
+      <parallelGateway gatewayDirection="Converging" id="ParallelGateway" name="ParallelGateway" />
+      <sequenceFlow id="SequenceFlow_5" name="SequenceFlow" sourceRef="ParallelGateway" targetRef="EndNoneEvent" />
+      
+      <endEvent id="EndNoneEvent" name="EndNoneEvent" />
+   </process>
+   <bpmndi:BPMNDiagram id="sid-48d6e871-e3e2-4875-b12a-e97fe63571ea">
+      <bpmndi:BPMNPlane bpmnElement="testJoin" id="sid-8d449e0f-122f-42c3-9b56-23b77df13364">
+         <bpmndi:BPMNShape bpmnElement="StartNoneEvent" id="StartNoneEvent_gui">
+            <omgdc:Bounds height="30.0" width="30.0" x="111.5" y="120.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="Main_Task" id="Main_Task_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="200.5" y="95.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="ParallelGateway" id="ParallelGateway_gui">
+            <omgdc:Bounds height="40.0" width="40.0" x="410.75" y="115.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="Escalation_Task" id="Escalation_Task_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="283.0" y="224.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="IntermediateTimerEvent" id="IntermediateTimerEvent_gui">
+            <omgdc:Bounds height="30.0" width="30.0" x="238.85770368297875" y="160.29244419574488"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="EndNoneEvent" id="EndNoneEvent_gui">
+            <omgdc:Bounds height="28.0" width="28.0" x="530.5" y="121.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNEdge bpmnElement="SequenceFlow" id="SequenceFlow_gui">
+            <omgdi:waypoint x="253.0" y="190.0"/>
+            <omgdi:waypoint x="253.85770368297875" y="264.0"/>
+            <omgdi:waypoint x="283.0" y="264.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="SequenceFlow_4" id="SequenceFlow_4_gui">
+            <omgdi:waypoint x="300.0" y="135.0"/>
+            <omgdi:waypoint x="410.0" y="135.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="SequenceFlow_5" id="SequenceFlow_5_gui">
+            <omgdi:waypoint x="450.0" y="135.0"/>
+            <omgdi:waypoint x="530.0" y="135.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="SequenceFlow_2" id="SequenceFlow_2_gui">
+            <omgdi:waypoint x="383.0" y="264.0"/>
+            <omgdi:waypoint x="430.75" y="264.0"/>
+            <omgdi:waypoint x="430.0" y="155.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="SequenceFlow_3" id="SequenceFlow_3_gui">
+            <omgdi:waypoint x="141.0" y="135.0"/>
+            <omgdi:waypoint x="200.0" y="135.0"/>
+         </bpmndi:BPMNEdge>
+      </bpmndi:BPMNPlane>
+   </bpmndi:BPMNDiagram>
+</definitions>

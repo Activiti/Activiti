@@ -1,0 +1,32 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<name>Activiti - Upgrade Fetcher</name>
+	<groupId>org.activiti</groupId>
+	<artifactId>activiti-upgrade-fetcher</artifactId>
+	<version>5.5-SNAPSHOT</version>
+
+	<dependencies>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-upgrade</artifactId>
+      <version>${activiti.upgrade.version}</version>
+      <type>test-jar</type>
+    </dependency>
+  </dependencies>
+
+  <repositories>
+    <repository>
+      <id>alfresco.snapshot.repo</id>
+      <url>http://maven.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
+      <snapshots><enabled /></snapshots>
+    </repository>
+    <repository>
+      <id>alfresco</id>
+      <url>http://maven.alfresco.com/nexus/content/repositories/activiti/</url>
+    </repository>
+  </repositories>
+  
+</project>

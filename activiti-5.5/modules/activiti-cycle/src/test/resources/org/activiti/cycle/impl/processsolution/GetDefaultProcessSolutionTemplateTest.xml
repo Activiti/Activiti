@@ -1,0 +1,6 @@
+<processSolutionTemplate>
+	<vFolder type="Management" name="Management" connectorId="Workspace" referencedNodeId="/" />
+	<vFolder type="Processes" name="Processes" connectorId="Workspace" referencedNodeId="/" />
+	<vFolder type="Requirements" name="Requirements" connectorId="Workspace" referencedNodeId="/" />
+	<vFolder type="Implementation" name="Implementation" connectorId="Workspace" referencedNodeId="/" />	
+</processSolutionTemplate>

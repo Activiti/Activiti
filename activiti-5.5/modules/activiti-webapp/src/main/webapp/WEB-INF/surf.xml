@@ -1,0 +1,94 @@
+<activiti-config>
+
+  <!-- Global config section -->
+  <config>
+    <flags>
+      <!--
+         Developer debugging setting to turn on DEBUG mode for client scripts in the browser
+      -->
+      <client-debug>true</client-debug>      
+    </flags>
+  </config>
+
+  <config evaluator="string-compare" condition="WebFramework">
+
+    <web-framework>
+
+      <!-- Autowire Runtime Settings -->
+      <autowire>
+
+        <!-- The webscript runtime: classpath, webapp, local, alfresco -->
+        <runtime>webapp</runtime>
+
+        <!-- Pick the mode: development, preview, production -->
+        <mode>production</mode>
+
+      </autowire>
+
+      <defaults>
+
+        <!-- login and logout pages -->
+        <page-type>
+          <id>login</id>
+          <page-instance-id>login</page-instance-id>
+        </page-type>
+        <page-type>
+          <id>logout</id>
+          <page-instance-id>logout</page-instance-id>
+        </page-type>
+
+        <!-- Activiti chromes -->
+        <region-chrome>empty.region</region-chrome>
+        <component-chrome>discrete.component</component-chrome>
+
+        <!-- Reference the ActivitiUserFactory bean id that will create User objects from the engine -->
+        <user-factory>webframework.factory.user.activiti</user-factory>
+
+      </defaults>
+
+    </web-framework>
+
+  </config>
+
+  <config evaluator="string-compare" condition="Remote">
+    <remote>
+
+      <!-- Activiti REST API connector -->
+      <connector>
+        <id>activiti-rest</id>
+        <name>Activiti REST Connector</name>
+        <description>Activiti REST Connector</description>
+        <class>org.springframework.extensions.webscripts.connector.HttpConnector</class>
+        <authenticator-id>activiti-rest-authenticator</authenticator-id>
+      </connector>
+
+      <!-- Activiti REST API authenticator -->
+      <authenticator>
+        <id>activiti-rest-authenticator</id>
+        <name>Activiti REST Authenticator</name>
+        <description>Activiti REST Authenticator</description>
+        <class>org.activiti.surf.ActivitiRESTAuthenticator</class>
+      </authenticator>
+
+      <!-- The activiti REST API endpoint -->
+      <endpoint>
+        <id>activiti-rest-endpoint</id>
+        <name>Activiti REST Endpoint</name>
+        <description>Access to Activiti REST webapp</description>
+        <connector-id>activiti-rest</connector-id>
+        <endpoint-url>http://localhost:8080/activiti-rest/service</endpoint-url>
+        <basic-auth>true</basic-auth>
+        <identity>user</identity>
+      </endpoint>
+
+      <!-- The default endpoint -->
+      <default-endpoint-id>activiti-rest-endpoint</default-endpoint-id>
+
+      <!-- The default credential vault -->
+      <default-credential-vault-provider-id>credential.vault.provider</default-credential-vault-provider-id>
+
+    </remote>
+
+  </config>
+
+</activiti-config>

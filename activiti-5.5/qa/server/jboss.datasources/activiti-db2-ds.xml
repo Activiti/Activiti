@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<datasources>
+  <local-tx-datasource>
+    <jndi-name>ActivitiDS</jndi-name>
+    <connection-url>@jdbc.url@</connection-url>
+    <driver-class>@jdbc.driver@</driver-class>
+    <user-name>@jdbc.username@</user-name>
+    <password>@jdbc.password@</password>
+    <min-pool-size>0</min-pool-size>
+      <metadata>
+         <type-mapping>DB2</type-mapping>
+      </metadata>
+  </local-tx-datasource>
+</datasources>
