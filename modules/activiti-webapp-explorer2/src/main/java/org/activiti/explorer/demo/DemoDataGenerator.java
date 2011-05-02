@@ -168,9 +168,6 @@ public class DemoDataGenerator {
     // Tim
     String accountUsername = System.getProperty("user");
     String accountPassword = System.getProperty("pwd");
-    if (accountUsername == null || accountPassword == null) {
-      throw new RuntimeException("'user' and 'pwd' system property must be set");
-    }
     Map<String, String> accountDetails = new HashMap<String, String>();
     accountDetails.put("toDoFolderName", "Cases");
     accountDetails.put("toDoInActivitiFolderName", "CasesInActiviti");

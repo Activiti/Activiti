@@ -10,10 +10,6 @@
   <bean id="demoDataGenerator" class="org.activiti.explorer.demo.DemoDataGenerator">
     <property name="processEngine" ref="processEngine" />
   </bean>
-  
-  <bean id="demoMailScanner" class="demo.DemoMailScanner" destroy-method="shutdown">
-    <property name="processEngine" ref="processEngine" />
-  </bean>
 
 	<context:component-scan base-package="org.activiti.explorer" />
 	
