@@ -12,11 +12,14 @@
  */
 package org.activiti.engine.test.bpmn.servicetask;
 
+import org.activiti.engine.test.Deployment;
+
 /**
  * @author Esteban Robles Luna
  */
 public class WebServiceTaskTest extends AbstractWebServiceTaskTest {
 
+  @Deployment
   public void testWebServiceInvocationWithoutDataFlow() throws Exception {
     assertEquals(-1, counter.getCount());
     

@@ -49,7 +49,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.activiti</groupId>
-			<artifactId>activiti-cxf</artifactId>
+			<artifactId>activiti-spring</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -58,8 +58,8 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.mule.transports</groupId>
-			<artifactId>mule-transport-cxf</artifactId>
+			<groupId>org.mule.modules</groupId>
+			<artifactId>mule-module-cxf</artifactId>
 			<exclusions>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
@@ -130,7 +130,6 @@
 		  <groupId>commons-logging</groupId>
 		  <artifactId>commons-logging</artifactId>
         </dependency>
-		  
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
@@ -140,6 +139,17 @@
 			<artifactId>h2</artifactId>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>org.mule.transports</groupId>
+            <artifactId>mule-transport-vm</artifactId>
+            <version>${mule.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mule.modules</groupId>
+            <artifactId>mule-module-scripting</artifactId>
+            <version>${mule.version}</version>
+            <scope>test</scope>
+        </dependency>
 	</dependencies>
 
 	<profiles>

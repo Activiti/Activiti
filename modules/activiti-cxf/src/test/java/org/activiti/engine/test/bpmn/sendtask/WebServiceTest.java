@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.test.bpmn.sendtask;
 
+import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.bpmn.servicetask.AbstractWebServiceTaskTest;
 
 
@@ -21,6 +22,7 @@ import org.activiti.engine.test.bpmn.servicetask.AbstractWebServiceTaskTest;
  */
 public class WebServiceTest extends AbstractWebServiceTaskTest {
 
+  @Deployment
   public void testAsyncInvocationWithoutDataFlow() throws Exception {
     assertEquals(-1, counter.getCount());
     

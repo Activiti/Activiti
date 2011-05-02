@@ -23,12 +23,14 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.test.Deployment;
 
 /**
  * @author Esteban Robles Luna
  */
 public class WebServiceUELTest extends AbstractWebServiceTaskTest {
 
+  @Deployment
   public void testWebServiceInvocationWithDataFlowUEL() throws Exception {
     ProcessDefinitionEntity processDefinition = processEngineConfiguration
       .getCommandExecutorTxRequiresNew()

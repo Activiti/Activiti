@@ -16,33 +16,25 @@
           location="http://localhost:63081/counter?wsdl"
           namespace="http://webservice.activiti.org/" />
           
-  <process id="webServiceInvocationWithSimplisticDataFlow">
+  <process id="asyncWebServiceInvocationWithSimplisticDataFlow">
   
     <startEvent id="theStart" />
     
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="webService" />
     
-    <serviceTask id="webService" 
+    <sendTask id="webService" 
                  name="Web service invocation"
                  implementation="##WebService"
-                 operationRef="tns:prettyPrintCountOperation">
+                 operationRef="tns:setToOperation">
       <!--
         Warning: The following code abuses the syntax of Data Associations
         for a radical shortcut.
       -->
       <dataInputAssociation>
-        <sourceRef>PrefixVariable</sourceRef><!-- name of an Activiti variable -->
-        <targetRef>prefix</targetRef><!-- name of an element of the input message -->
+        <sourceRef>NewCounterValueVariable</sourceRef><!-- name of an Activiti variable -->
+        <targetRef>value</targetRef><!-- name of an element of the input message -->
       </dataInputAssociation>
-      <dataInputAssociation>
-        <sourceRef>SuffixVariable</sourceRef><!-- name of an Activiti variable -->
-        <targetRef>suffix</targetRef><!-- name of an element of the input message -->
-      </dataInputAssociation>
-      <dataOutputAssociation>
-      	<sourceRef>prettyPrint</sourceRef><!-- name of an element of the output message -->
-      	<targetRef>OutputVariable</targetRef><!-- name of an Activiti variable -->
-      </dataOutputAssociation>
-    </serviceTask>
+    </sendTask>
     
     <sequenceFlow id="flow2" sourceRef="webService" targetRef="waitState" />
     
@@ -57,16 +49,15 @@
   <!-- Interface: implementationRef = QName of WSDL Port Type -->
   <interface name="Counter Interface" implementationRef="counter:Counter">
     <!-- Operation: implementationRef = QName of WSDL Operation -->
-    <operation id="prettyPrintCountOperation" name="prettyPrintCount Operation" implementationRef="counter:prettyPrintCount">
-      <inMessageRef>tns:prettyPrintCountRequestMessage</inMessageRef>
-      <outMessageRef>tns:prettyPrintCountResponseMessage</outMessageRef>
+    <operation id="setToOperation" name="setTo Operation" implementationRef="counter:setTo">
+      <inMessageRef>tns:setToRequestMessage</inMessageRef>
     </operation>
   </interface>
   
-  <message id="prettyPrintCountRequestMessage" itemRef="tns:prettyPrintCountRequestItem" />
-  <message id="prettyPrintCountResponseMessage" itemRef="tns:prettyPrintCountResponseItem" />
+  <message id="setToRequestMessage" itemRef="tns:setToRequestItem" />
   
-  <itemDefinition id="prettyPrintCountRequestItem" structureRef="counter:prettyPrintCount" /><!-- QName of input element -->
-  <itemDefinition id="prettyPrintCountResponseItem" structureRef="counter:prettyPrintCountResponse" /><!-- QName of output element -->
+  <itemDefinition id="setToRequestItem" structureRef="counter:setTo" /><!-- QName of input element -->
   
+  <itemDefinition id="NewCounterValueVariable" structureRef="string" />
+  <itemDefinition id="value" structureRef="string" />
 </definitions>

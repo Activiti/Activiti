@@ -22,6 +22,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.bpmn.servicetask.AbstractWebServiceTaskTest;
 
 /**
@@ -30,6 +31,7 @@ import org.activiti.engine.test.bpmn.servicetask.AbstractWebServiceTaskTest;
  */
 public class WebServiceUELTest extends AbstractWebServiceTaskTest {
 
+  @Deployment
   public void testAsyncInvocationWithDataFlowUEL() throws Exception {
     assertEquals(-1, counter.getCount());
 

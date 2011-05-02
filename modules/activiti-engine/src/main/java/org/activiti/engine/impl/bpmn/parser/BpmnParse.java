@@ -885,6 +885,8 @@ public class BpmnParse extends Parse {
     if (type != null) {
       if (type.equalsIgnoreCase("mail")) {
         parseEmailServiceTask(activity, serviceTaskElement, parseFieldDeclarations(serviceTaskElement));
+      } else if (type.equalsIgnoreCase("mule")) {
+        parseMuleServiceTask(activity, serviceTaskElement, parseFieldDeclarations(serviceTaskElement));
       } else {
         addError("Invalid usage of type attribute: '" + type + "'", serviceTaskElement);
       }
@@ -1023,6 +1025,8 @@ public class BpmnParse extends Parse {
     if (type != null) {
       if (type.equalsIgnoreCase("mail")) {
         parseEmailServiceTask(activity, sendTaskElement, parseFieldDeclarations(sendTaskElement));
+      } else if (type.equalsIgnoreCase("mule")) {
+        parseMuleServiceTask(activity, sendTaskElement, parseFieldDeclarations(sendTaskElement));
       } else {
         addError("Invalid usage of type attribute: '" + type + "'", sendTaskElement);
       }
@@ -1075,6 +1079,15 @@ public class BpmnParse extends Parse {
       Expression transformation = this.expressionManager.createExpression(dataAssociationElement.element("transformation").getText());
       AbstractDataAssociation dataOutputAssociation = new TransformationDataOutputAssociation(null, targetRef, transformation);
       return dataOutputAssociation;
+    }
+  }
+
+  protected void parseMuleServiceTask(ActivityImpl activity, Element serviceTaskElement, List<FieldDeclaration> fieldDeclarations) {
+    try {
+      Class<?> theClass = Class.forName("org.activiti.mule.MuleSendActivitiBehavior");
+      activity.setActivityBehavior((ActivityBehavior) ClassDelegate.instantiateDelegate(theClass , fieldDeclarations));
+    } catch (ClassNotFoundException e) {
+      addError("Could not find org.activiti.mule.MuleSendActivitiBehavior", serviceTaskElement);
     }
   }
 

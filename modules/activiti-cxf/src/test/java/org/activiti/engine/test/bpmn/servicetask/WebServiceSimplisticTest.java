@@ -10,16 +10,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.test.bpmn.sendtask;
+package org.activiti.engine.test.bpmn.servicetask;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.test.bpmn.servicetask.AbstractWebServiceTaskTest;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.test.Deployment;
 
 /**
  * @author Esteban Robles Luna
- * @author Falko Menge
  */
 public class WebServiceSimplisticTest extends AbstractWebServiceTaskTest {
 
@@ -27,15 +27,16 @@ public class WebServiceSimplisticTest extends AbstractWebServiceTaskTest {
     return false;
   }
   
-  public void testAsyncInvocationWithSimplisticDataFlow() throws Exception {
-    assertEquals(-1, counter.getCount());
-
+  @Deployment
+  public void testWebServiceInvocationWithSimplisticDataFlow() throws Exception {
     Map<String, Object> variables = new HashMap<String, Object>();
-    variables.put("NewCounterValueVariable", 23);
+    variables.put("PrefixVariable", "The counter has the value ");
+    variables.put("SuffixVariable", ". Good news");
 
-    processEngine.getRuntimeService().startProcessInstanceByKey("asyncWebServiceInvocationWithSimplisticDataFlow", variables);
+    ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByKey("webServiceInvocationWithSimplisticDataFlow", variables);
     waitForJobExecutorToProcessAllJobs(10000L, 250L);
 
-    assertEquals(23, counter.getCount());
+    String response = (String) processEngine.getRuntimeService().getVariable(instance.getId(), "OutputVariable");
+    assertEquals("The counter has the value -1. Good news", response);
   }
 }
