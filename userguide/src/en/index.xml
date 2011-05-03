@@ -17,8 +17,7 @@
   <!ENTITY ch15 SYSTEM "chapters/ch15-Explorer.xml">
   <!ENTITY ch16 SYSTEM "chapters/ch16-Probe.xml">
   <!ENTITY ch17 SYSTEM "chapters/ch17-KickStart.xml">
-  <!ENTITY ch18 SYSTEM "chapters/ch18-Migration.xml">
-  <!ENTITY ch19 SYSTEM "chapters/ch19-Cdi.xml">
+  <!ENTITY ch18 SYSTEM "chapters/ch18-Cdi.xml">
 ]>
 
 <book>
