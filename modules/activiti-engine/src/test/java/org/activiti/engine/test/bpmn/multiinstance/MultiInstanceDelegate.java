@@ -23,7 +23,13 @@ public class MultiInstanceDelegate implements JavaDelegate {
   
   public void execute(DelegateExecution execution) throws Exception {
     Integer result = (Integer) execution.getVariable("result");
-    result = result * 2;
+    
+    Integer item = (Integer) execution.getVariable("item");
+    if (item != null) {
+      result = result * item;
+    } else {
+      result = result * 2;
+    }
     execution.setVariable("result", result);
   }
 

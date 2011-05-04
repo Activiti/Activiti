@@ -121,22 +121,19 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
     Object delegateInstance = instantiateDelegate(className, fieldDeclarations);
     
     if (delegateInstance instanceof ActivityBehavior) {
-      return enhanceBehaviour((ActivityBehavior) delegateInstance, execution);
+      return determineBehaviour((ActivityBehavior) delegateInstance, execution);
     } else if (delegateInstance instanceof JavaDelegate) {
-      return enhanceBehaviour(new ServiceTaskJavaDelegateActivityBehavior((JavaDelegate) delegateInstance), execution);
+      return determineBehaviour(new ServiceTaskJavaDelegateActivityBehavior((JavaDelegate) delegateInstance), execution);
     } else {
       throw new ActivitiException(delegateInstance.getClass().getName()+" doesn't implement "+JavaDelegate.class.getName()+" nor "+ActivityBehavior.class.getName());
     }
   }
   
   // Adds properties to the given delegation instance (eg multi instance) if needed
-  protected ActivityBehavior enhanceBehaviour(ActivityBehavior delegateInstance, ActivityExecution execution) {
+  protected ActivityBehavior determineBehaviour(ActivityBehavior delegateInstance, ActivityExecution execution) {
     if (hasMultiInstanceCharacteristics()) {
-      if (multiInstanceActivityBehavior instanceof SequentialMultiInstanceBehavior) {
-        return new SequentialMultiInstanceBehavior((ActivityImpl) execution.getActivity(), (AbstractBpmnActivityBehavior) delegateInstance);
-      } else {
-        return new ParallelMultiInstanceBehavior((ActivityImpl) execution.getActivity(), (AbstractBpmnActivityBehavior) delegateInstance);
-      }
+      multiInstanceActivityBehavior.setInnerActivityBehavior((AbstractBpmnActivityBehavior) delegateInstance);
+      return multiInstanceActivityBehavior;
     }
     return delegateInstance;
   }

@@ -14,6 +14,7 @@
 package org.activiti.engine.test.bpmn.multiinstance;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -823,6 +824,21 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     ProcessInstance procInst = runtimeService.startProcessInstanceByKey("multiInstanceServiceTask", CollectionUtil.singletonMap("result", 5));
     Integer result = (Integer) runtimeService.getVariable(procInst.getId(), "result");
     assertEquals(160, result.intValue());
+    
+    runtimeService.signal(procInst.getId());
+    assertProcessEnded(procInst.getId());
+  }
+  
+  @Deployment
+  public void testSequentialServiceTaskWithClassAndCollection() {
+    Collection<Integer> items = Arrays.asList(1,2,3,4,5,6);
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("result", 1);
+    vars.put("items", items);
+    
+    ProcessInstance procInst = runtimeService.startProcessInstanceByKey("multiInstanceServiceTask", vars);
+    Integer result = (Integer) runtimeService.getVariable(procInst.getId(), "result");
+    assertEquals(720, result.intValue());
     
     runtimeService.signal(procInst.getId());
     assertProcessEnded(procInst.getId());

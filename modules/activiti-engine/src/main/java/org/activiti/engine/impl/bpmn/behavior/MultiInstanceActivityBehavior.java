@@ -73,8 +73,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
    */
   public MultiInstanceActivityBehavior(ActivityImpl activity, AbstractBpmnActivityBehavior innerActivityBehavior) {
     this.activity = activity;
-    this.innerActivityBehavior = innerActivityBehavior;
-    this.innerActivityBehavior.setMultiInstanceActivityBehavior(this);
+    setInnerActivityBehavior(innerActivityBehavior);
   }
   
   public void execute(ActivityExecution execution) throws Exception {
@@ -274,6 +273,10 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   }
   public void setCollectionElementVariable(String collectionElementVariable) {
     this.collectionElementVariable = collectionElementVariable;
+  }
+  public void setInnerActivityBehavior(AbstractBpmnActivityBehavior innerActivityBehavior) {
+    this.innerActivityBehavior = innerActivityBehavior;
+    this.innerActivityBehavior.setMultiInstanceActivityBehavior(this);
   }
   
 }
