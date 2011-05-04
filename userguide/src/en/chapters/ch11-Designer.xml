@@ -139,9 +139,9 @@
         </listitem>
         <listitem>
           <para>
-          	The BPMN 2.0 XML is opened in a Activiti XML editor which provides content assist.
+          	The BPMN 2.0 XML is opened in the Activiti XML editor, which provides content assist.
             Note that there are 2 main XSDs configured, the BPMN 2.0 spec XSD and the Activiti
-            extensions XSD. These two XSDs are not yet alligned in a good manneer.
+            extensions XSD. These two XSDs are not yet alligned in a good manner.
             
             <mediaobject>
               <imageobject>
@@ -152,8 +152,8 @@
         </listitem>
         <listitem>
           <para>
-          	A basic validation is performed after each save of the Activiti diagram and the
-            errors are mentioned in the Eclipse problem view.
+          	A basic validation is performed every time an Activiti diagram is saved and possible
+            errors are displayed in the Eclipse problem view.
             
             <mediaobject>
               <imageobject>
@@ -167,7 +167,7 @@
           	The Activiti project is generated as a Maven project. To configure the dependencies
             you need to run <emphasis>mvn eclipse:eclipse</emphasis> and the Maven dependencies
             will be configured as expected. Note that for process design Maven dependencies are not needed.
-            This is only needed to run unit tests.
+            They are only needed to run unit tests.
             
             <mediaobject>
               <imageobject>
