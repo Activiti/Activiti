@@ -2467,8 +2467,8 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
 			<title>Description</title>
 	
 			<para>
-				A Business Rule task is used to synchronously execute one or more ruleset or rules. Activiti uses Drools Expert, the Drools rule engine
-				to execute business rules. For this release, the .drl files containing the business rules have to be deployed together with the process definition
+				A Business Rule task is used to synchronously execute one or more rules. Activiti uses Drools Expert, the Drools rule engine
+				to execute business rules. Currently, the .drl files containing the business rules have to be deployed together with the process definition
 				that defines a business rule task to execute those rules. This means that all .drl files that are used in a process have to be packaged 
 				in the process BAR file like for example the task forms. For more information about creating business rules for Drools Expert please refer to the Drools
 				documentation at <ulink url="http://www.jboss.org/drools/documentation">JBoss Drools</ulink>
