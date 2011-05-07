@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.impl.persistence.AbstractManager;
 
@@ -46,10 +47,12 @@ public class VariableInstanceManager extends AbstractManager {
     return getDbSqlSession().selectList("selectVariablesByExecutionId", executionId);
   }
 
-  public void deleteVariableInstanceByTaskId(String taskId) {
-    List<VariableInstanceEntity> variableInstances = findVariableInstancesByTaskId(taskId);
-    for (VariableInstanceEntity variableInstance: variableInstances) {
-      deleteVariableInstance(variableInstance);
+  public void deleteVariableInstanceByTask(TaskEntity task) {
+    Map<String, VariableInstanceEntity> variableInstances = task.getVariableInstances();
+    if (variableInstances!=null) {
+      for (VariableInstanceEntity variableInstance: variableInstances.values()) {
+        deleteVariableInstance(variableInstance);
+      }
     }
   }
 }

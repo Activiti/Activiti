@@ -59,7 +59,7 @@ public class TaskManager extends AbstractManager {
 
       commandContext
         .getVariableInstanceManager()
-        .deleteVariableInstanceByTaskId(taskId);
+        .deleteVariableInstanceByTask(task);
 
       if (cascade) {
         commandContext
