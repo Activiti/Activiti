@@ -2656,6 +2656,13 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
                  <entry>no</entry>
                  <entry>The bcc's of the e-mail. Multiple recipients are defined in a comma-separated list</entry>
                </row>
+               <row>
+                 <entry>charset</entry>
+                 <entry>no</entry>
+                 <entry>Allows to change the charset of the email, which is necessary for many
+                 non-English languages.
+                 </entry>
+               </row>
                 <row>
                  <entry>html</entry>
                  <entry>no</entry>

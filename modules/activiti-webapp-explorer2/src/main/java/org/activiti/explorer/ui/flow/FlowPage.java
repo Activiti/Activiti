@@ -22,7 +22,7 @@ import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.FlowNavigator;
 import org.activiti.explorer.navigation.UriFragment;
-import org.activiti.explorer.ui.AbstractPage;
+import org.activiti.explorer.ui.AbstractTablePage;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.custom.ToolBar;
@@ -38,7 +38,7 @@ import com.vaadin.ui.Table;
 /**
  * @author Joram Barrez
  */
-public class FlowPage extends AbstractPage {
+public class FlowPage extends AbstractTablePage {
   
   private static final long serialVersionUID = 1L;
   
@@ -69,9 +69,9 @@ public class FlowPage extends AbstractPage {
   protected void initUi() {
     super.initUi();
     if (processDefinitionId == null) {
-      selectListElement(0);
+      selectElement(0);
     } else {
-      selectListElement(processDefinitionContainer.getIndexForObjectId(processDefinitionId));
+      selectElement(processDefinitionContainer.getIndexForObjectId(processDefinitionId));
     }
   }
   
@@ -134,8 +134,4 @@ public class FlowPage extends AbstractPage {
     detailPanel.showProcessStartForm(startFormData);
   }
   
-  @Override
-  protected Component getEventComponent() {
-    return null;
-  } 
 }

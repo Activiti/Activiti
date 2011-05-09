@@ -56,9 +56,9 @@ public class UserPage extends ManagementPage {
     super.initUi();
     
     if (userId == null) {
-      selectListElement(0);
+      selectElement(0);
     } else {
-      selectListElement(userListContainer.getIndexForObjectId(userId));
+      selectElement(userListContainer.getIndexForObjectId(userId));
     }
   }
 
@@ -109,8 +109,4 @@ public class UserPage extends ManagementPage {
     userTable.select(userListContainer.getIndexForObjectId(userId));
   }
   
-  @Override
-  protected Component getEventComponent() {
-    return null;
-  }
 }

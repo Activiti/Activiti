@@ -37,6 +37,7 @@ public class Images {
   public static final Resource MAIN_MENU_FLOWS = new ThemeResource("img/mm-flows.png");
   public static final Resource MAIN_MENU_MANAGE = new ThemeResource("img/mm-manage.png");
   public static final Resource MAIN_MENU_REPORTS = new ThemeResource("img/mm-reports.png");
+  public static final Resource MAIN_MENU_REPOSITORIES = new ThemeResource("img/mm-repository.png");
   
   // Task
   public static final Resource TASK_16 =  new ThemeResource("img/task-16.png");;
@@ -87,4 +88,5 @@ public class Images {
   // Flows
   public static final Resource FLOW_50 = new ThemeResource("img/flow-50.png");
   public static final Resource FLOW_22 = new ThemeResource("img/flow-22.png");
+  
 }

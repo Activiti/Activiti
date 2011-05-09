@@ -60,7 +60,7 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
       PvmTransition seqFlow = transitionIterator.next();
       
       Condition condition = (Condition) seqFlow.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
-      if ( (condition == null && !seqFlow.getId().equals(defaultSequenceFlow)) 
+      if ( (condition == null && (defaultSequenceFlow == null || !defaultSequenceFlow.equals(seqFlow.getId())) ) 
               || (condition != null && condition.evaluate(execution)) ) {
         if (log.isLoggable(Level.FINE)) {
           log.fine("Sequence flow '" + seqFlow.getId() + " '"

@@ -57,7 +57,7 @@ public class DatabasePage extends ManagementPage {
     
     populateTableList(); // tablelist is NOT lazy loaded, since there are only a few tables
     if (tableName == null) {
-      selectListElement(0);
+      selectElement(0);
     } else {
       table.select(tableName);
     }
@@ -115,8 +115,4 @@ public class DatabasePage extends ManagementPage {
       return new Embedded(null, image);
     }
 
-  @Override
-  protected Component getEventComponent() {
-    return null;
-  } 
 }

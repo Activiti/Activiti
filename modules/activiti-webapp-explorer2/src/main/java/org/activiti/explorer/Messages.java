@@ -51,6 +51,7 @@ public interface Messages {
   static final String MAIN_MENU_FLOWS = "main.menu.flows";
   static final String MAIN_MENU_MANAGEMENT = "main.menu.management";
   static final String MAIN_MENU_REPORTS = "main.menu.reports";
+  static final String MAIN_MENU_REPOSITOTIES = "main.menu.repositories";
   
   // Password
   static final String PASSWORD_CHANGE = "password.change";

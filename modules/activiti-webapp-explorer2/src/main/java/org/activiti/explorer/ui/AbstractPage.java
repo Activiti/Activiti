@@ -14,10 +14,10 @@ package org.activiti.explorer.ui;
 
 import org.activiti.explorer.ui.custom.ToolBar;
 
+import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.Table;
 import com.vaadin.ui.themes.Reindeer;
 
 
@@ -33,7 +33,7 @@ public abstract class AbstractPage extends CustomComponent {
   
   protected ToolBar toolBar;
   protected GridLayout grid;
-  protected Table table;
+  protected AbstractSelect select;
   protected boolean showEvents;
   
   // Overriding attach(), so we can construct the components first, before the UI is built,
@@ -53,7 +53,7 @@ public abstract class AbstractPage extends CustomComponent {
     setSizeFull();
     addMenuBar();
     addSearch();
-    addList();
+    addSelectComponent();
     if(showEvents) {
       addEventComponent();
     }
@@ -99,20 +99,6 @@ public abstract class AbstractPage extends CustomComponent {
     setCompositionRoot(grid);
   }
   
-  protected void addList() {
-    table = createList();
-    
-    // Set non-editable, selectable and full-size
-    table.setEditable(false);
-    table.setImmediate(true);
-    table.setSelectable(true);
-    table.setNullSelectionAllowed(false);
-    table.setSortDisabled(true);
-    table.setSizeFull();
-    
-    grid.addComponent(table, 0, 2);
-  }
-  
   protected void addSearch() {
     Component searchComponent = getSearchComponent();
     if(searchComponent != null) {
@@ -120,36 +106,28 @@ public abstract class AbstractPage extends CustomComponent {
     }
   }
   
+  protected void addSelectComponent() {
+    AbstractSelect select = createSelectComponent();
+    grid.addComponent(select, 0, 2);
+  }
+
   /**
-   * Refresh the list on the left side and selects the next element in the table.
-   * (useful when element of the list is deleted)
+   * Returns an implementation of {@link AbstractSelect},
+   * which will be displayed on the left side of the page,
+   * allowing to select elements from eg. a list, tree, etc.
    */
-  public void refreshListSelectNext() {
-    Integer pageIndex = (Integer) table.getCurrentPageFirstItemId();
-    Integer selectedIndex = (Integer) table.getValue();
-    table.removeAllItems();
-    
-    // Remove all items
-    table.getContainerDataSource().removeAllItems();
-    
-    // Try to select the next one in the list
-    Integer max = table.getContainerDataSource().size();
-    if(pageIndex > max) {
-      pageIndex = max -1;
-    }
-    if(selectedIndex > max) {
-      selectedIndex = max -1;
-    }
-    table.setCurrentPageFirstItemIndex(pageIndex);
-    selectListElement(selectedIndex);
-  }
+  protected abstract AbstractSelect createSelectComponent();
   
-  public void selectListElement(int index) {
-    if (table.getContainerDataSource().size() > index) {
-      table.select(index);
-      table.setCurrentPageFirstItemId(index);
-    }
-  }
+  /**
+   * Refreshes the elements of the list, and selects the next
+   * one (useful when the selected element is deleted).
+   */
+  public abstract void refreshSelectNext();
+  
+  /**
+   * Select a specific element from the selection component.
+   */
+  public abstract void selectElement(int index);
   
   protected void setDetailComponent(Component detail) {
     if(grid.getComponent(1, 1) != null) {
@@ -165,13 +143,6 @@ public abstract class AbstractPage extends CustomComponent {
   }
   
   /**
-   * Concrete pages must implement this.
-   * The table that is returned will be used for the 
-   * list on the left side.
-   */
-  protected abstract Table createList();
-  
-  /**
    * Override to get the search component to display above the table. Return null
    * when no search should be displayed.
    */
@@ -180,10 +151,16 @@ public abstract class AbstractPage extends CustomComponent {
   }
   
   /**
-   * Get the component to display the events in. Return null when
-   * no event-component should be used, main UI will be 2 columns instead
-   * of three.
+   * Get the component to display the events in. 
+   * 
+   * Return null by default: no event-component will be used,
+   * in that case the main UI will be two columns instead of three.
+   * 
+   * Override in case the event component must be shown:
+   * three columns will be used then. 
    */
-  protected abstract Component getEventComponent();
+  protected Component getEventComponent() {
+    return null;
+  }
 
 }

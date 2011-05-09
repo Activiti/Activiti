@@ -269,7 +269,7 @@ public class GroupDetailPanel extends DetailPanel implements MemberShipChangeLis
             identityService.deleteGroup(group.getId());
 
             // Update ui
-            groupPage.refreshListSelectNext();
+            groupPage.refreshSelectNext();
           }
         });
         

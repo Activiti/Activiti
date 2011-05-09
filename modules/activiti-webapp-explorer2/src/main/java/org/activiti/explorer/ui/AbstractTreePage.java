@@ -10,22 +10,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.explorer.ui.management;
 
-import org.activiti.explorer.ui.AbstractTablePage;
-import org.activiti.explorer.ui.custom.ToolBar;
+package org.activiti.explorer.ui;
+
+import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.Tree;
 
 
 /**
+ * Superclass for all pages that have a tree on the left side of the page.
+ * 
  * @author Joram Barrez
  */
-public abstract class ManagementPage extends AbstractTablePage {
-  
+public abstract class AbstractTreePage extends AbstractPage {
+
   private static final long serialVersionUID = 1L;
-  
+
   @Override
-  protected ToolBar createMenuBar() {
-    return new ManagementMenuBar();
+  protected AbstractSelect createSelectComponent() {
+    Tree tree = createTree();
+    tree.setSizeFull();
+    return tree;
   }
   
+  protected abstract Tree createTree();
+
+  @Override
+  public void refreshSelectNext() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public void selectElement(int index) {
+    throw new UnsupportedOperationException();
+  }
+
 }

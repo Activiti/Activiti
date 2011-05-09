@@ -315,7 +315,7 @@ public class UserDetailPanel extends DetailPanel implements MemberShipChangeList
             identityService.deleteUser(user.getId());
 
             // Update ui
-            userPage.refreshListSelectNext();
+            userPage.refreshSelectNext();
             
             // Update user cache
             ExplorerApp.get().getUserCache().notifyUserDataChanged(user.getId());

@@ -30,13 +30,14 @@ import org.apache.commons.mail.SimpleEmail;
  */
 public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
 
-  private Expression to;
-  private Expression from;
-  private Expression cc;
-  private Expression bcc;
-  private Expression subject;
-  private Expression text;
-  private Expression html;
+  protected Expression to;
+  protected Expression from;
+  protected Expression cc;
+  protected Expression bcc;
+  protected Expression subject;
+  protected Expression text;
+  protected Expression html;
+  protected String charset;
 
   public void execute(ActivityExecution execution) {
     String toStr = getStringFromField(to, execution);
@@ -55,6 +56,7 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
     addBcc(email, bccStr);
     setSubject(email, subjectStr);
     setMailServerProperties(email);
+    setCharset(email);
 
     try {
       email.send();
@@ -174,6 +176,12 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
     String password = processEngineConfiguration.getMailServerPassword();
     if (user != null && password != null) {
       email.setAuthentication(user, password);
+    }
+  }
+  
+  protected void setCharset(Email email) {
+    if (charset != null) {
+      email.setCharset(charset);
     }
   }
 

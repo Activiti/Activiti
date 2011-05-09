@@ -54,9 +54,9 @@ public class DeploymentPage extends ManagementPage {
     super.initUi();
     
     if (deploymentId == null) {
-      selectListElement(0);
+      selectElement(0);
     } else {
-      selectListElement(deploymentListContainer.getIndexForObjectId(deploymentId));
+      selectElement(deploymentListContainer.getIndexForObjectId(deploymentId));
     }
   }
   
@@ -98,8 +98,4 @@ public class DeploymentPage extends ManagementPage {
     return deploymentTable;
   }
   
-  @Override
-  protected Component getEventComponent() {
-    return null;
-  } 
 }

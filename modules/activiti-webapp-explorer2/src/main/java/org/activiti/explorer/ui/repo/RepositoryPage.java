@@ -10,22 +10,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.explorer.ui.management;
 
-import org.activiti.explorer.ui.AbstractTablePage;
+package org.activiti.explorer.ui.repo;
+
+import org.activiti.explorer.ui.AbstractTreePage;
 import org.activiti.explorer.ui.custom.ToolBar;
+
+import com.vaadin.ui.Tree;
 
 
 /**
  * @author Joram Barrez
  */
-public abstract class ManagementPage extends AbstractTablePage {
+public class RepositoryPage extends AbstractTreePage {
   
   private static final long serialVersionUID = 1L;
-  
+
   @Override
   protected ToolBar createMenuBar() {
-    return new ManagementMenuBar();
+    return null;
   }
-  
+
+  @Override
+  protected Tree createTree() {
+    return null;
+  }
+
 }

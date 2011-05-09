@@ -154,5 +154,12 @@ public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
     task = taskService.createTaskQuery().singleResult();
     assertEquals("Default input", task.getName());
   }
+
+  @Deployment
+  public void testNoIdOnSequenceFlow() {
+    runtimeService.startProcessInstanceByKey("noIdOnSequenceFlow", CollectionUtil.singletonMap("input", 3));
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("Input is more than one", task.getName());
+  }
   
 }

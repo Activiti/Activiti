@@ -20,8 +20,6 @@ import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.MyFlowsNavigator;
 import org.activiti.explorer.navigation.UriFragment;
 
-import com.vaadin.ui.Component;
-
 
 /**
  * @author Frederik Heremans
@@ -55,9 +53,9 @@ public class MyFlowsPage extends ProcessInstancePage {
     super.initUi();
     
     if(processInstanceId != null) {
-      selectListElement(processInstanceListContainer.getIndexForObjectId(processInstanceId));
+      selectElement(processInstanceListContainer.getIndexForObjectId(processInstanceId));
     } else {
-      selectListElement(0);
+      selectElement(0);
     }
   }
 
@@ -70,9 +68,4 @@ public class MyFlowsPage extends ProcessInstancePage {
     return fragment;
   }
   
-  @Override
-  protected Component getEventComponent() {
-    return null;
-  } 
-
 }

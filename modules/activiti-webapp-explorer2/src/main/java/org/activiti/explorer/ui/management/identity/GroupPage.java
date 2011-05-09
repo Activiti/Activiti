@@ -56,9 +56,9 @@ public class GroupPage extends ManagementPage {
     super.initUi();
     
     if (groupId == null) {
-      selectListElement(0);
+      selectElement(0);
     } else {
-      selectListElement(groupListContainer.getIndexForObjectId(groupId));
+      selectElement(groupListContainer.getIndexForObjectId(groupId));
     }
   }
 
@@ -114,8 +114,4 @@ public class GroupPage extends ManagementPage {
     groupTable.select(groupListContainer.getIndexForObjectId(groupId));
   }
   
-  @Override
-  protected Component getEventComponent() {
-    return null;
-  }
 }

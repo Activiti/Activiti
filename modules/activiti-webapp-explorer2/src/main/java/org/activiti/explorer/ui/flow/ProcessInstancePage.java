@@ -17,7 +17,7 @@ import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.UriFragment;
-import org.activiti.explorer.ui.AbstractPage;
+import org.activiti.explorer.ui.AbstractTablePage;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.custom.ToolBar;
@@ -32,7 +32,7 @@ import com.vaadin.ui.Table;
 /**
  * @author Frederik Heremans
  */
-public abstract class ProcessInstancePage extends AbstractPage {
+public abstract class ProcessInstancePage extends AbstractTablePage {
 
   private static final long serialVersionUID = 1L;
 

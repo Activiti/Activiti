@@ -54,9 +54,9 @@ public class JobPage extends ManagementPage {
     super.initUi();
     
     if (jobId == null) {
-      selectListElement(0);
+      selectElement(0);
     } else {
-      selectListElement(jobListContainer.getIndexForObjectId(jobId));
+      selectElement(jobListContainer.getIndexForObjectId(jobId));
     }
   }
   
@@ -105,9 +105,4 @@ public class JobPage extends ManagementPage {
     }
   }
   
-  @Override
-  protected Component getEventComponent() {
-    return null;
-  } 
-
 }

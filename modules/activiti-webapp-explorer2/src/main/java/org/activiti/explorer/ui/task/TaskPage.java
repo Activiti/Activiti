@@ -20,7 +20,7 @@ import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.UriFragment;
-import org.activiti.explorer.ui.AbstractPage;
+import org.activiti.explorer.ui.AbstractTablePage;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.custom.TaskListHeader;
@@ -41,7 +41,7 @@ import com.vaadin.ui.Table;
  * 
  * @author Joram Barrez
  */
-public abstract class TaskPage extends AbstractPage {
+public abstract class TaskPage extends AbstractTablePage {
   
   private static final long serialVersionUID = 1L;
 
@@ -66,10 +66,10 @@ public abstract class TaskPage extends AbstractPage {
   protected void initUi() {
     super.initUi();
     if (taskId == null) {
-      selectListElement(0);
+      selectElement(0);
     } else {
       int index = taskListContainer.getIndexForObjectId(taskId);
-      selectListElement(index);
+      selectElement(index);
     }
     
     if (taskListContainer.size() == 0) {

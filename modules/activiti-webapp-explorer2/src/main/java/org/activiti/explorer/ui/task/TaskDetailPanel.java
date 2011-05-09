@@ -309,7 +309,7 @@ public class TaskDetailPanel extends DetailPanel {
           Map<String, String> properties = event.getFormProperties();
           formService.submitTaskFormData(task.getId(), properties);
           notificationManager.showInformationNotification(Messages.TASK_COMPLETED, task.getName());
-          taskPage.refreshListSelectNext();
+          taskPage.refreshSelectNext();
         }
         
         @Override
@@ -347,7 +347,7 @@ public class TaskDetailPanel extends DetailPanel {
           
           taskService.complete(task.getId());     
           notificationManager.showInformationNotification(Messages.TASK_COMPLETED, task.getName());
-          taskPage.refreshListSelectNext();
+          taskPage.refreshSelectNext();
         }
       });
       

@@ -25,7 +25,7 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
-import org.activiti.explorer.ui.AbstractPage;
+import org.activiti.explorer.ui.AbstractTablePage;
 import org.activiti.explorer.ui.MainWindow;
 import org.activiti.explorer.ui.flow.FlowMenuBar;
 import org.activiti.explorer.ui.flow.FlowPage;
@@ -62,8 +62,9 @@ public class ViewManager implements Serializable {
   public static final String MAIN_NAVIGATION_FLOWS = "flows";
   public static final String MAIN_NAVIGATION_MANAGE = "manage";
   public static final String MAIN_NAVIGATION_REPORTS = "reports";
+  public static final String MAIN_NAVIGATION_REPOSITORIES = "repositories";
   
-  protected AbstractPage currentPage;
+  protected AbstractTablePage currentPage;
   
   @Autowired
   protected MainWindow mainWindow;
@@ -257,6 +258,12 @@ public class ViewManager implements Serializable {
     switchView(new GroupPage(groupId), MAIN_NAVIGATION_MANAGE, ManagementMenuBar.ENTRY_GROUPS);
   }
   
+  // Repositories
+  
+  public void showRepositoryPage() {
+    
+  }
+  
   // Profile
   
   public void showProfilePopup(String userId) {
@@ -265,14 +272,14 @@ public class ViewManager implements Serializable {
   
   // Helper
   
-  protected void switchView(AbstractPage page, String mainMenuActive, String subMenuActive) {
+  protected void switchView(AbstractTablePage page, String mainMenuActive, String subMenuActive) {
     currentPage = page;
     mainWindow.setMainNavigation(mainMenuActive);
     mainWindow.switchView(page);
     page.getToolBar().setActiveEntry(subMenuActive); // Must be set AFTER adding page to window (toolbar will be created in atach())
   }
   
-  public AbstractPage getCurrentPage() {
+  public AbstractTablePage getCurrentPage() {
     return currentPage;
   }
   
