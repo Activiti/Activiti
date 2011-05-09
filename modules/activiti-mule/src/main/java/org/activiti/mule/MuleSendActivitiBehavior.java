@@ -48,12 +48,11 @@ public class MuleSendActivitiBehavior extends AbstractBpmnActivityBehavior {
     LocalMuleClient client = this.getMuleContext().getClient();
 
     ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
-
     Object payload = scriptingEngines.evaluate(payloadExpressionValue, languageValue, execution);
 
     MuleMessage message = new DefaultMuleMessage(payload, this.getMuleContext());
 
-    switch (mep) {
+    switch (this.mep) {
     case REQUEST_RESPONSE:
       MuleMessage resultMessage = client.send(endpointUrlValue, message);
       Object result = resultMessage.getPayload();

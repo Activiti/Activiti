@@ -257,7 +257,7 @@ public class BpmnParse extends Parse {
       if (importType.equals("http://schemas.xmlsoap.org/wsdl/")) {
         Class< ? > wsdlImporterClass;
         try {
-          wsdlImporterClass = Class.forName("org.activiti.engine.impl.webservice.WSDLImporter", true, Thread.currentThread().getContextClassLoader());
+          wsdlImporterClass = Class.forName("org.activiti.engine.impl.webservice.CxfWSDLImporter", true, Thread.currentThread().getContextClassLoader());
           XMLImporter newInstance = (XMLImporter) wsdlImporterClass.newInstance();
           this.importers.put(importType, newInstance);
           return newInstance;

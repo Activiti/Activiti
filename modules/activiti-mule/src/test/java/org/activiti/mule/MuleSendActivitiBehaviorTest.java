@@ -27,7 +27,7 @@ public class MuleSendActivitiBehaviorTest extends FunctionalTestCase {
   @Deployment
   public void testSend() {
     ProcessEngine processEngine = muleContext.getRegistry().get("processEngine");
-    String deploymentId = TestHelper.annotationDeploymentSetUp(processEngine, getClass(), getName());
+    TestHelper.annotationDeploymentSetUp(processEngine, getClass(), getName());
 
     RuntimeService runtimeService = muleContext.getRegistry().get("runtimeService");
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("muleProcess");
