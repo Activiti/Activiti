@@ -12,7 +12,7 @@
   <properties>
     <spring.framework.version>3.0.3.RELEASE</spring.framework.version>
     <spring.surf.version>1.0.0-RC2</spring.surf.version>
-    <mule.version>3.1.1</mule.version>
+    <mule.version>3.1.0</mule.version>
     <cxf.version>2.3.1</cxf.version>
 
       <!-- OSGi bundles properties -->
