@@ -452,7 +452,7 @@
 	  <dependency>
 		<groupId>org.jboss.weld.se</groupId>
 		<artifactId>weld-se</artifactId>
-		<version>1.1.0.Beta1</version>
+		<version>1.1.1.Final</version>
 	</dependency>
     </dependencies>
   </dependencyManagement>
@@ -602,6 +602,7 @@
         <module>modules/activiti-cycle</module>
         <module>modules/activiti-webapp-rest</module>
         <module>modules/activiti-cxf</module>
+        <module>modules/activiti-cdi</module>
       </modules>
     </profile>
     <profile>
