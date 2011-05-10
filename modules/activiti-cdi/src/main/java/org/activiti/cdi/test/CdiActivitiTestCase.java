@@ -184,8 +184,8 @@ public abstract class CdiActivitiTestCase extends PluggableActivitiTestCase {
     endConversation();
     endRequest();
     endSession();
-//    waiting for https://issues.jboss.org/browse/WELD-891
-//    weld.shutdown();    
+//   https://issues.jboss.org/browse/WELD-891
+    weld.shutdown();    
   }
 
   protected void endConversationAndBeginNew() {
