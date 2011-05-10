@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.BeforeShutdown;
@@ -51,24 +52,29 @@ public class ActivitiExtension implements Extension {
   }
 
   public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager manager) {
-    logger.info("Initializing activiti-cdi extension.");
-    try {
-      BeanManagerLookup.localInstance = manager;
+       
+    BeanManagerLookup.localInstance = manager;
 
+    // register custom CDI context implementation business process scoped
+    // beans
+    event.addContext(new BusinessProcessContext());
+
+  }
+
+  public void afterDeploymentValidation(@Observes AfterDeploymentValidation event) {
+    try {
+      logger.info("Initializing activiti-cdi.");
+            
       // initialize the process engine
       initializeProcessEngine();
-
-      // register custom CDI context implementation business process scoped
-      // beans
-      event.addContext(new BusinessProcessContext());
-
+      
       // deploy the processes
       deployProcesses();
 
     } catch (Exception e) {
       // interpret engine initialization problems as definition errors
       // TODO: lookup process engine earlier?
-      event.addDefinitionError(e);
+      event.addDeploymentProblem(e);
       return;
     }
   }
@@ -84,7 +90,7 @@ public class ActivitiExtension implements Extension {
 
   public void beforeShutdown(@Observes BeforeShutdown event) {
     ProcessEngineLookup processEngineProvisionStrategy = ProgrammaticBeanLookup.lookup(ProcessEngineLookup.class);
-    processEngineProvisionStrategy.ungetProcessEngine();   
+    processEngineProvisionStrategy.ungetProcessEngine();
     processEngine = null;
     logger.info("Activiti-cdi extension shutdown.");
   }

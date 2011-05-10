@@ -49,7 +49,7 @@ public class StartProcessInterceptor {
       String key = startProcessAnnotation.value();
 
       Map<String, Object> variables = extractVariables(startProcessAnnotation, ctx);
-
+      
       if (name.length() > 0) {
         businessProcess.startProcessByName(name, variables);
       } else {
@@ -66,7 +66,7 @@ public class StartProcessInterceptor {
 
   private Map<String, Object> extractVariables(StartProcess startProcessAnnotation, InvocationContext ctx) throws Exception {
     Map<String, Object> variables = new HashMap<String, Object>();
-    for (Field field : ctx.getTarget().getClass().getDeclaredFields()) {
+    for (Field field : ctx.getMethod().getDeclaringClass().getDeclaredFields()) {
       if (!field.isAnnotationPresent(ProcessVariable.class)) {
         continue;
       }

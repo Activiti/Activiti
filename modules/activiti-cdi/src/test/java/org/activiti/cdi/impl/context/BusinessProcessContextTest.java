@@ -16,7 +16,6 @@ import org.activiti.cdi.BusinessProcess;
 import org.activiti.cdi.test.CdiActivitiTestCase;
 import org.activiti.cdi.test.beans.CreditCard;
 import org.activiti.cdi.test.beans.ProcessScopedMessageBean;
-import org.activiti.engine.runtime.Job;
 import org.activiti.engine.test.Deployment;
 
 /**

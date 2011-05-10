@@ -12,6 +12,7 @@
  */
 package org.activiti.cdi.test;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 
 import org.activiti.cdi.impl.ProcessEngineLookup;
@@ -26,6 +27,7 @@ import org.activiti.engine.ProcessEngine;
  * @author Daniel Meyer
  */
 @Alternative
+@ApplicationScoped
 public class ProcessEngineLookupForTestsuite implements ProcessEngineLookup {
 
   public static ProcessEngine processEngine;

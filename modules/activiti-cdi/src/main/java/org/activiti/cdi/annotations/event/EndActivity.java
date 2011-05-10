@@ -10,24 +10,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cdi.test;
+package org.activiti.cdi.annotations.event;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.BeforeBeanDiscovery;
-import javax.enterprise.inject.spi.Extension;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-import org.jboss.weld.conversation.ConversationImpl;
+import javax.inject.Qualifier;
 
 /**
- * Register additional beans for the testcases 
+ * Can be used to qualify events fired when an activity is ended / left
+ * 
+ * <pre>
+ * public void onCreditAccountCompleted(@Observes @EndActivity(&quot;creditAccount&quot;) BusinessProcessEvent evt) {
+ *   // ...
+ * }
+ * </pre>
  * 
  * @author Daniel Meyer
  */
-public class CdiActivitiTestExtension implements Extension {
-
-  public void registerAdditionalBeans(@Observes BeforeBeanDiscovery event, BeanManager manager) {
-    event.addAnnotatedType(manager.createAnnotatedType(ConversationImpl.class));
-  }
- 
+@Retention(RetentionPolicy.RUNTIME)
+@Qualifier
+public @interface EndActivity {
+  /** the id of the activity that is being left / was left */
+  public String value();
 }

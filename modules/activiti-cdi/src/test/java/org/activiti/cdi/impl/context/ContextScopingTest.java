@@ -21,30 +21,32 @@ import org.activiti.engine.test.Deployment;
  * @author Daniel Meyer
  */
 public class ContextScopingTest extends CdiActivitiTestCase {
-  
+
   @Override
-  protected void activateConversationContext() {
-   // do nothing -> deacivated
+  public void beginConversation() {
+    // do not activate conversation
   }
   
+  @Override
+  public void endConversation() {
+    // do not deactivate conversation
+  }
+
   @Deployment
-  public void testFallbackToRequestContext() {    
+  public void testFallbackToRequestContext() {
     BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
-    
-    beginRequest();
-    
-    String pid = businessProcess.startProcessByKey("processkey").getId();    
+
+    String pid = businessProcess.startProcessByKey("processkey").getId();
     assertEquals(pid, businessProcess.getProcessInstanceId());
-    
+
     endRequest();
     beginRequest();
-    
+
     // assert that now the process is not associated with the new request.
     assertNull(businessProcess.getProcessInstanceId());
     businessProcess.resumeProcessById(pid);
     businessProcess.completeTask();
-    
-    endRequest();    
+
   }
-  
+
 }

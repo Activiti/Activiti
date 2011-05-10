@@ -317,11 +317,20 @@ public class BusinessProcess extends AbstractProcessResuming implements Serializ
   /* Also makes the current ProcessInstance available for injection */
   @Produces @Named public ProcessInstance getProcessInstance() {
     assertProcessIdSet();    
-    return processEngine
+    ProcessInstance instance = processEngine
       .getRuntimeService()
       .createProcessInstanceQuery()
       .processInstanceId(associationManager.getProcessInstanceId())
       .singleResult();
+    if(instance != null) {
+      return instance;
+    }
+    // in the first transaction, the ProcessInstance is not yet committed, try to access it from the context:
+    try {
+      return Context.getExecutionContext().getProcessInstance();
+    }catch (Exception e) {
+      return null;
+    }
   }
 
 }

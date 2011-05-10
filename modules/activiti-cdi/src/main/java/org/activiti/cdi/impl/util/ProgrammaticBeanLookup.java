@@ -35,7 +35,7 @@ public class ProgrammaticBeanLookup {
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public static Object lookup(String name) {
     BeanManager bm = BeanManagerLookup.getBeanManager();
-    Bean bean = (Bean) bm.getBeans(name).iterator().next();
+    Bean bean = bm.getBeans(name).iterator().next();
     CreationalContext ctx = bm.createCreationalContext(bean);
     return bm.getReference(bean, bean.getBeanClass(), ctx);
   }

@@ -12,8 +12,6 @@
  */
 package org.activiti.cdi.annotation;
 
-import javax.enterprise.context.Conversation;
-
 import org.activiti.cdi.Actor;
 import org.activiti.cdi.BusinessProcess;
 import org.activiti.cdi.impl.annotation.CompleteTaskInterceptor;
@@ -79,22 +77,5 @@ public class CompleteTaskTest extends CdiActivitiTestCase {
     assertNull(taskService.createTaskQuery().singleResult());
   }
 
-  @Deployment(resources = "org/activiti/cdi/annotation/CompleteTaskTest.bpmn20.xml")
-  public void testCompleteTaskAndEndConversation() {
-    beginConversation();
-    getBeanInstance(Actor.class).setActorId("kermit");
-    BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
-
-    businessProcess.startProcessByKey("keyOfTheProcess");
-
-    // assert that the conversation is long-running
-    assertFalse(getBeanInstance(Conversation.class).isTransient());
-
-    getBeanInstance(DeclarativeProcessController.class).completeTaskEndConversation();
-
-    // assert that the conversation is ended
-    assertTrue(getBeanInstance(Conversation.class).isTransient());
-
-  }
   
 }

@@ -12,22 +12,22 @@
  */
 package org.activiti.cdi.test;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.enterprise.context.Conversation;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.activiti.cdi.BusinessProcess;
 import org.activiti.cdi.impl.util.BeanManagerLookup;
 import org.activiti.cdi.impl.util.ProgrammaticBeanLookup;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.jboss.weld.Container;
-import org.jboss.weld.context.ContextLifecycle;
-import org.jboss.weld.context.ConversationContext;
-import org.jboss.weld.context.RequestContext;
-import org.jboss.weld.context.SessionContext;
-import org.jboss.weld.context.beanstore.HashMapBeanStore;
+import org.jboss.weld.context.bound.BoundConversationContext;
+import org.jboss.weld.context.bound.BoundRequestContext;
+import org.jboss.weld.context.bound.BoundSessionContext;
+import org.jboss.weld.context.bound.MutableBoundRequest;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 
@@ -47,6 +47,10 @@ public abstract class CdiActivitiTestCase extends PluggableActivitiTestCase {
 
   protected Weld weld;
 
+  // hide from subclasses
+  private HashMap<String, Object> currentRequestMap;
+  private HashMap<String, Object> currentSessionMap;
+
   @Override
   protected void setUp() throws Exception {
     // set the process engine in the TestProcessEngineLookup-bean.
@@ -54,69 +58,134 @@ public abstract class CdiActivitiTestCase extends PluggableActivitiTestCase {
     // bootstrap the CDI container
     weld = new Weld();
     weldContainer = weld.initialize();
-
-    activateRequestContext();
-    activateConversationContext();
-    activateSessionContext();
-
     beanManager = weldContainer.getBeanManager();
     BeanManagerLookup.localInstance = beanManager;
+    
+    beginRequest();
+    beginSession();
+    beginConversation();    
+    
+  }
+  
+  public void beginSession() {
+    currentSessionMap = new HashMap<String, Object>();
+    beginSession(currentSessionMap);
   }
 
-  protected void activateSessionContext() {
-    SessionContext sessionContext = Container.instance().services().get(ContextLifecycle.class).getSessionContext();
-    sessionContext.setBeanStore(new HashMapBeanStore());
-    sessionContext.setActive(true);
+  public void beginSession(Map<String, Object> sessionDataMap) {    
+    BoundSessionContext sessionContext = getSessionContext();
+    sessionContext.associate(currentSessionMap);
+    sessionContext.activate();
+    if (logger.isLoggable(Level.FINE)) {
+      logger.fine("     ----------------------------- Started a new Session -----------------------");
+    }
+  }
+  
+  public void endSession() {
+    endSession(currentSessionMap);
+    currentSessionMap = null;
   }
 
-  protected void activateConversationContext() {
-    ConversationContext conversationContext = getConversationContext();
-    conversationContext.setBeanStore(new HashMapBeanStore());
-    conversationContext.setActive(true);
+  public void endSession(Map<String, Object> sessionDataMap) {
+    BoundSessionContext sessionContext = getSessionContext();
+    try {
+      sessionContext.invalidate();
+      sessionContext.deactivate();
+      if (logger.isLoggable(Level.FINE)) {
+        logger.fine("     ----------------------------- Ended the current Session -----------------------");
+      }
+    } finally {
+      sessionContext.dissociate(sessionDataMap);
+    }
   }
 
-  protected void activateRequestContext() {
-    RequestContext requestContext = Container.instance().services().get(ContextLifecycle.class).getRequestContext();
-    requestContext.setBeanStore(new HashMapBeanStore());
-    requestContext.setActive(true);
+  public void beginRequest() {
+    currentRequestMap = new HashMap<String, Object>();
+    beginRequest(currentRequestMap);
+  }
+
+  public void beginRequest(Map<String, Object> requestDataStore) {
+    // Associate the store with the context and acticate the context
+    BoundRequestContext requestContext = getRequestContext();
+    requestContext.associate(requestDataStore);
+    requestContext.activate();
+    if (logger.isLoggable(Level.FINE)) {
+      logger.fine("     ----------------------------- Started a new Request -----------------------");
+    }
+  }
+
+  public void endRequest() {
+    endRequest(currentRequestMap);
+    currentRequestMap = null;
+  }
+
+  public void endRequest(Map<String, Object> requestDataStore) {
+    BoundRequestContext requestContext = getRequestContext();
+    try {
+      requestContext.invalidate();
+      requestContext.deactivate();
+      if (logger.isLoggable(Level.FINE)) {
+        logger.fine("     ----------------------------- Ended the current Request -----------------------");
+      }
+    } finally {
+      requestContext.dissociate(requestDataStore);
+    }
+  }
+
+  public void beginConversation() {
+    if (currentRequestMap == null) {
+      throw new ActivitiException("Cannot start conversation: no request active.");
+    }
+    if(currentSessionMap == null) {
+      throw new ActivitiException("Cannot start conversation: no session active.");
+    }
+    currentSessionMap = new HashMap<String, Object>();
+    startTransientConversation(currentRequestMap, currentSessionMap);
+  }
+
+  public void endConversation() {
+    if (currentRequestMap == null) {
+      throw new ActivitiException("Cannot end conversation: no request active.");
+    }
+    if(currentSessionMap == null) {
+      throw new ActivitiException("Cannot end conversation: no session active.");
+    }
+    endOrPassivateConversation(currentRequestMap, currentSessionMap);    
+  }
+
+  public void startTransientConversation(Map<String, Object> requestDataStore, Map<String, Object> sessionDataStore) {
+    resumeOrStartConversation(requestDataStore, sessionDataStore, null);
+  }
+
+  public void resumeOrStartConversation(Map<String, Object> requestDataStore, Map<String, Object> sessionDataStore, String cid) {
+    BoundConversationContext conversationContext = getConversationContext();
+    conversationContext.associate(new MutableBoundRequest(requestDataStore, sessionDataStore));
+    conversationContext.activate(cid);
+    if (logger.isLoggable(Level.FINE)) {
+      logger.fine("---------------------------------------- Started a new Conversation -----------------------");
+    }
+  }
+
+  public void endOrPassivateConversation(Map<String, Object> requestDataStore, Map<String, Object> sessionDataStore) {
+    BoundConversationContext conversationContext = getConversationContext();
+    try {
+      conversationContext.invalidate();
+      conversationContext.deactivate();
+      if (logger.isLoggable(Level.FINE)) {
+        logger.fine("---------------------------------------- Ended the current Conversation -----------------------");
+      }
+    } finally {
+      conversationContext.dissociate(new MutableBoundRequest(requestDataStore, sessionDataStore));
+    }
   }
 
   @Override
   protected void tearDown() throws Exception {
-    weld.shutdown();
-  }
-
-  protected void beginConversation() {
-    if (getBeanInstance(Conversation.class).isTransient()) {
-      getBeanInstance(Conversation.class).begin();
-      if (logger.isLoggable(Level.FINE)) {
-        logger.fine("---------------------------------------- Started a new Conversation -----------------------");
-      }
-    }
-  }
-
-  protected void endConversation() {
-    if (!getBeanInstance(Conversation.class).isTransient()) {
-      getBeanInstance(Conversation.class).end();
-      getConversationContext().getBeanStore().clear();
-      if (logger.isLoggable(Level.FINE)) {
-        logger.fine("---------------------------------------- Ended the current Conversation -----------------------");
-      }
-    }
-  }
-
-  protected void beginRequest() {
-    if (logger.isLoggable(Level.FINE)) {
-      logger.fine("     ----------------------------- Started a new Request -----------------------");
-    }
-
-  }
-
-  protected void endRequest() {
-    getRequestContext().getBeanStore().clear();
-    if (logger.isLoggable(Level.FINE)) {
-      logger.fine("     ----------------------------- Ended the current Request -----------------------");
-    }
+    endConversation();
+    endRequest();
+    endSession();
+//    waiting for https://issues.jboss.org/browse/WELD-891
+//    weld.shutdown();    
   }
 
   protected void endConversationAndBeginNew() {
@@ -130,18 +199,22 @@ public abstract class CdiActivitiTestCase extends PluggableActivitiTestCase {
     getBeanInstance(BusinessProcess.class).resumeProcessById(processInstanceId);
   }
 
-  protected ConversationContext getConversationContext() {
-    return Container.instance().services().get(ContextLifecycle.class).getConversationContext();
+  protected BoundConversationContext getConversationContext() {
+    return getBeanInstance(BoundConversationContext.class);
   }
 
-  protected RequestContext getRequestContext() {
-    return Container.instance().services().get(ContextLifecycle.class).getRequestContext();
+  protected BoundSessionContext getSessionContext() {
+    return getBeanInstance(BoundSessionContext.class);
+  }
+
+  protected BoundRequestContext getRequestContext() {
+    return getBeanInstance(BoundRequestContext.class);
   }
 
   protected <T> T getBeanInstance(Class<T> clazz) {
     return ProgrammaticBeanLookup.lookup(clazz);
   }
-  
+
   protected Object getBeanInstance(String name) {
     return ProgrammaticBeanLookup.lookup(name);
   }
