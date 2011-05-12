@@ -2723,6 +2723,101 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
 		
 		</section>
 		
+  <section id="bpmnMuleTask">
+		
+		  <title>Mule Task</title>
+		  
+		  <para>
+		    The mule task allows to send messages to Mule enhancing the integration features of Activiti.
+		    Note that the mule task is <emphasis role="bold">not</emphasis> an 'official' task 
+		    of the BPMN 2.0 spec (and it does not have a dedicated icon as a consequence).
+		    Hence, in Activiti the mule task is implemented as a dedicated service task.
+		  </para>
+		  		  
+		  <section id="bpmnMuleTaskUsage">
+		  
+		    <title>Defining an Mule Task</title>
+		    
+		    <para>
+		      The Mule task is implemented as a dedicated <link linkend="bpmnJavaServiceTask">Service Task</link>
+		      and is defined by setting <emphasis>'mule'</emphasis> for the <emphasis>type</emphasis> of the service task.
+		      <programlisting>
+&lt;serviceTask id=&quot;sendMule&quot; <emphasis role="bold">activiti:type=&quot;mule&quot;</emphasis>&gt;		      
+		      </programlisting>
+		    </para>
+		    
+        <para>
+		      The Mule task is configured by <link linkend="serviceTaskFieldInjection">field injection</link>.
+		      All the values for these properties can contain EL expression, which are resolved at runtime
+		      during process execution.
+		      Following properties can be set:
+		      <table>
+	         <title>Mule server configuration</title>
+	         <tgroup cols='3'>
+	           <thead>
+	             <row>
+	               <entry>Property</entry>
+	               <entry>Required?</entry>
+	               <entry>Description</entry>
+	             </row>
+	           </thead>
+	           <tbody>
+	             <row>
+	               <entry>endpointUrl</entry>
+	               <entry>yes</entry>
+	               <entry>The Mule endpoint you want to invoke.</entry>
+	             </row>
+	             <row>
+                 <entry>language</entry>
+                 <entry>yes</entry>
+                 <entry>The language you want to use to evaluate the payloadExpression field.</entry>
+               </row>
+                <row>
+                 <entry>payloadExpression</entry>
+                 <entry>yes</entry>
+                 <entry>An expression that will be the message's payload.</entry>
+               </row>
+                <row>
+                 <entry>resultVariable</entry>
+                 <entry>no</entry>
+                 <entry>The name of the variable which will store the result of the invocation.</entry>
+               </row>
+             </tbody>
+	         </tgroup>
+	        </table>
+        </para>
+        
+		  </section>
+		  
+		  <section id="bpmnMuleTaskExampleUsage">
+		  
+		    <title>Example usage</title>
+		  
+		  
+		    <para>
+		      The following XML snippet shows an example of using the Mule Task.
+		      <programlisting>
+      &lt;extensionElements&gt;
+        &lt;activiti:field name=&quot;endpointUrl&quot;&gt;
+          &lt;activiti:string&gt;vm://in&lt;/activiti:string&gt;
+        &lt;/activiti:field&gt;
+        &lt;activiti:field name=&quot;language&quot;&gt;
+          &lt;activiti:string&gt;juel&lt;/activiti:string&gt;
+        &lt;/activiti:field&gt;
+        &lt;activiti:field name=&quot;payloadExpression&quot;&gt;
+          &lt;activiti:string&gt;&quot;hi&quot;&lt;/activiti:string&gt;
+        &lt;/activiti:field&gt;
+        &lt;activiti:field name=&quot;resultVariable&quot;&gt;
+          &lt;activiti:string&gt;theVariable&lt;/activiti:string&gt;
+        &lt;/activiti:field&gt;
+      &lt;/extensionElements&gt;	      
+		      </programlisting>
+		    </para>
+		  </section>
+		
+		</section>
+
+
 		<section id="bpmnManualTask">
 		
 		  <title>Manual Task</title>
