@@ -17,7 +17,7 @@ import org.activiti.cycle.action.ParameterizedAction;
  * to attempt to list instances of this component <em>after</em> instances of
  * the components referenced using this annotation. If this annotation is set
  * for a cycle component and no parameters are given, cycle will try to list the
- * corresponding component instances as first items in the list.
+ * corresponding component instances as last items in the list.
  * 
  * <p>
  * Note: the sorting on components using {@link ListBeforeComponents} and

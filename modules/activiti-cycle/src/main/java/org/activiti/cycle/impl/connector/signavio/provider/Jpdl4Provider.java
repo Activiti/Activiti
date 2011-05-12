@@ -30,7 +30,7 @@ import org.activiti.cycle.impl.transform.XmlToTextTransformation;
 import org.restlet.Response;
 import org.restlet.ext.xml.DomRepresentation;
 
-@CycleComponent(context = CycleContextType.APPLICATION)
+//@CycleComponent(context = CycleContextType.APPLICATION)
 public class Jpdl4Provider extends SignavioContentRepresentationProvider {
 
   private static final long serialVersionUID = 1L;

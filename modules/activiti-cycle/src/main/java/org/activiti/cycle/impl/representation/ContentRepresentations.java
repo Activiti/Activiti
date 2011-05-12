@@ -21,6 +21,7 @@ import org.activiti.cycle.context.CycleContextType;
 public class ContentRepresentations {
 
   private Map<RepositoryArtifactType, Set<ContentRepresentation>> contentRepMap;
+  private Set<ContentRepresentation> globalRepresentations;
 
   private void ensureMapLoaded() {
     if (contentRepMap != null) {
@@ -31,16 +32,21 @@ public class ContentRepresentations {
         return;
       }
       contentRepMap = new HashMap<RepositoryArtifactType, Set<ContentRepresentation>>();
+      globalRepresentations = new HashSet<ContentRepresentation>();
       Set<Class<ContentRepresentation>> contentRepresentationClasses = CycleComponentFactory.getAllImplementations(ContentRepresentation.class);
       for (Class<ContentRepresentation> clazz : contentRepresentationClasses) {
         ContentRepresentation representation = CycleApplicationContext.get(clazz);
         RepositoryArtifactType type = representation.getRepositoryArtifactType();
-        Set<ContentRepresentation> representationsForThisType = contentRepMap.get(type);
-        if (representationsForThisType == null) {
-          representationsForThisType = new HashSet<ContentRepresentation>();
-          contentRepMap.put(type, representationsForThisType);
+        if (type == null) {
+          globalRepresentations.add(representation);
+        } else {
+          Set<ContentRepresentation> representationsForThisType = contentRepMap.get(type);
+          if (representationsForThisType == null) {
+            representationsForThisType = new HashSet<ContentRepresentation>();
+            contentRepMap.put(type, representationsForThisType);
+          }
+          representationsForThisType.add(representation);
         }
-        representationsForThisType.add(representation);
       }
     }
   }
@@ -52,6 +58,7 @@ public class ContentRepresentations {
     if (availableRepresenatioRepresentations != null) {
       representations.addAll(availableRepresenatioRepresentations);
     }
+    representations.addAll(globalRepresentations);
     return representations;
   }
 
