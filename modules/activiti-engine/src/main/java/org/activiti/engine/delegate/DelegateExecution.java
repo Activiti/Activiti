@@ -30,4 +30,7 @@ public interface DelegateExecution extends VariableScope {
 
   /** The {@link ExecutionListener#EVENTNAME_START event name} in case this execution is passed in for an {@link ExecutionListener}  */
   String getEventName();
+  
+  /** The business key that was associated with the process this execution is part of. */
+  String getBusinessKey();
 }

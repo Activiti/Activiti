@@ -31,12 +31,16 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
   public void testExecutionListenersOnAllPossibleElements() {
 
     // Process start executionListener will have executionListener class that sets 2 variables
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("executionListenersProcess");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("executionListenersProcess", "businessKey123");
     
     String varSetInExecutionListener = (String) runtimeService.getVariable(processInstance.getId(), "variableSetInExecutionListener");
-    
     assertNotNull(varSetInExecutionListener);
     assertEquals("firstValue", varSetInExecutionListener);
+    
+    // Check if business key was available in execution listener
+    String businessKey = (String) runtimeService.getVariable(processInstance.getId(), "businessKeyInExecution");
+    assertNotNull(businessKey);
+    assertEquals("businessKey123", businessKey);
     
     // Transition take executionListener will set 2 variables
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();

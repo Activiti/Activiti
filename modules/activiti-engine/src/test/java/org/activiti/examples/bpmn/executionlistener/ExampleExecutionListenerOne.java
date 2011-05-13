@@ -26,5 +26,6 @@ public class ExampleExecutionListenerOne implements ExecutionListener {
   public void notify(DelegateExecution execution) throws Exception {
     execution.setVariable("variableSetInExecutionListener", "firstValue");
     execution.setVariable("eventNameReceived", execution.getEventName());
+    execution.setVariable("businessKeyInExecution", execution.getBusinessKey());
   }
 }
