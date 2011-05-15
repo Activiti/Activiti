@@ -10,27 +10,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cdi.annotations.event;
+package org.activiti.cdi.annotation;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 import javax.inject.Qualifier;
 
+import org.activiti.engine.task.Task;
+
 /**
- * Can be used to qualify events fired when an activity is ended / left
- * 
+ * Qualifier annotation for injecting the current taskId.
+ * <p />
+ * Example:
  * <pre>
- * public void onCreditAccountCompleted(@Observes @EndActivity(&quot;creditAccount&quot;) BusinessProcessEvent evt) {
- *   // ...
- * }
+ * {@code @Inject} @TaskId String currentTaskId
  * </pre>
  * 
+ * Note that the current {@link Task} is also available for injection:
+ * <pre>
+ * {@code @Inject} Task task;
+ * </pre>
+ *
  * @author Daniel Meyer
  */
-@Retention(RetentionPolicy.RUNTIME)
 @Qualifier
-public @interface EndActivity {
-  /** the id of the activity that is being left / was left */
-  public String value();
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE })
+public @interface TaskId {
+
 }

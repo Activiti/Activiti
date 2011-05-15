@@ -10,18 +10,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cdi.annotations.event;
+package org.activiti.cdi.annotation.event;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import javax.inject.Qualifier;
 
+import org.activiti.engine.repository.ProcessDefinition;
+
 /**
- * Can be used to qualify events fired when a transition is taken
+ * Can be used to qualify events with details about a {@link ProcessDefinition}:
  * 
  * <pre>
- * public void onTakeT1(@Observes @TakeTransition(&quot;t1&quot;) BusinessProcessEvent evt) {
+ * public void onSthRelatedToBilling(@Observes @BusinessProcess(&quot;billingProcess&quot;) BusinessProcessEvent evt) {
  *   // ...
  * }
  * </pre>
@@ -30,7 +32,7 @@ import javax.inject.Qualifier;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Qualifier
-public @interface TakeTransition {
-  /** the id of the transition that is being taken */
-  public String value();
+public @interface BusinessProcess {
+  /** the key of the process */  
+  String value() default "";
 }

@@ -23,8 +23,8 @@ import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
 import org.activiti.cdi.BusinessProcess;
-import org.activiti.cdi.annotations.ProcessVariable;
-import org.activiti.cdi.annotations.StartProcess;
+import org.activiti.cdi.annotation.ProcessVariable;
+import org.activiti.cdi.annotation.StartProcess;
 import org.activiti.engine.ActivitiException;
 
 /**

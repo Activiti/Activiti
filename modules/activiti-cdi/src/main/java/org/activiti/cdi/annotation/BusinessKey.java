@@ -10,27 +10,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cdi.annotations.event;
+package org.activiti.cdi.annotation;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 import javax.inject.Qualifier;
 
 /**
- * Can be used to qualify events fired when an activity is started
- * 
+ * Qualifier annotation for injecting a business key:
  * <pre>
- * public void beforeCreditAccount(@Observes @StartActivity(&quot;creditAccount&quot;) BusinessProcessEvent evt) {
- *   // ...
- * }
+ *  {@code @Inject} {@code @BusinessKey} String bky;
  * </pre>
  * 
  * @author Daniel Meyer
  */
-@Retention(RetentionPolicy.RUNTIME)
 @Qualifier
-public @interface StartActivity {
-  /** the id of the activity that is being entered / was entered */
-  public String value();
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE })
+public @interface BusinessKey {
+
 }

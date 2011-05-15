@@ -10,23 +10,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cdi.annotations;
+package org.activiti.cdi.annotation.event;
 
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
 import javax.inject.Qualifier;
 
 /**
- * Qualifier annotation for injecting a business key.
+ * Can be used to qualify events fired when a transition is taken
+ * 
+ * <pre>
+ * public void onTakeT1(@Observes @TakeTransition(&quot;t1&quot;) BusinessProcessEvent evt) {
+ *   // ...
+ * }
+ * </pre>
  * 
  * @author Daniel Meyer
  */
-@Qualifier
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE })
-public @interface BusinessKey {
-
+@Qualifier
+public @interface TakeTransition {
+  /** the id of the transition that is being taken */
+  public String value();
 }

@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cdi.annotations;
+package org.activiti.cdi.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -31,9 +31,9 @@ import javax.inject.Qualifier;
  * In both cases, the process variable with the name 'accountNumber' is
  * injected. NOTE: injection points must be of type 'object'.
  * <p />
- * Can also be used to declare bean-properties to hold process variables in
- * combination with the {@link StartProcess} annotation:
  * 
+ * Can also be used to declare bean-properties to hold process variables in
+ * combination with the {@link StartProcess} annotation: 
  * <pre>
  * {@code @ProcessVariable }
  * String accountNumber;  // will be added as a process 
@@ -48,8 +48,8 @@ import javax.inject.Qualifier;
  * @author Daniel Meyer
  */
 @Qualifier
+@Target({ ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD })
 public @interface ProcessVariable {
 
   /**

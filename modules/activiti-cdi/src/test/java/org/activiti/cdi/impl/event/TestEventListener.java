@@ -19,10 +19,10 @@ import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 
 import org.activiti.cdi.BusinessProcessEvent;
-import org.activiti.cdi.annotations.event.BusinessProcess;
-import org.activiti.cdi.annotations.event.EndActivity;
-import org.activiti.cdi.annotations.event.StartActivity;
-import org.activiti.cdi.annotations.event.TakeTransition;
+import org.activiti.cdi.annotation.event.BusinessProcess;
+import org.activiti.cdi.annotation.event.EndActivity;
+import org.activiti.cdi.annotation.event.StartActivity;
+import org.activiti.cdi.annotation.event.TakeTransition;
 
 @RequestScoped
 public class TestEventListener {

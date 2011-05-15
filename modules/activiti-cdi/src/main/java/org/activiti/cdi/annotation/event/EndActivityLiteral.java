@@ -10,20 +10,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cdi.annotations.event;
+package org.activiti.cdi.annotation.event;
 
 import javax.enterprise.util.AnnotationLiteral;
 
 
-public class TakeTransitionLiteral extends AnnotationLiteral<TakeTransition> implements TakeTransition {  
+public class EndActivityLiteral extends AnnotationLiteral<EndActivity> implements EndActivity {
   
-  protected final String transitionName;   
+  protected final String activityId;   
   
-  public TakeTransitionLiteral(String transitionName) {
-    this.transitionName = transitionName;
+  public EndActivityLiteral(String activityId) {
+    this.activityId = activityId;
   }
   @Override
   public String value() {
-    return transitionName != null ? transitionName : "";
+    return activityId != null ? activityId : "";
   }
 }

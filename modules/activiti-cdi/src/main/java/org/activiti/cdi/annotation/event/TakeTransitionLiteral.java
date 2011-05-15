@@ -10,23 +10,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cdi.annotations;
+package org.activiti.cdi.annotation.event;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import javax.enterprise.util.AnnotationLiteral;
 
-import javax.inject.Qualifier;
 
-/**
- * Qualifier annotation for injecting the current taskId
- * 
- * @author Daniel Meyer
- */
-@Qualifier
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE })
-public @interface TaskId {
-
+public class TakeTransitionLiteral extends AnnotationLiteral<TakeTransition> implements TakeTransition {  
+  
+  protected final String transitionName;   
+  
+  public TakeTransitionLiteral(String transitionName) {
+    this.transitionName = transitionName;
+  }
+  @Override
+  public String value() {
+    return transitionName != null ? transitionName : "";
+  }
 }

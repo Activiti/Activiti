@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cdi.annotations.event;
+package org.activiti.cdi.annotation.event;
 
 import javax.enterprise.util.AnnotationLiteral;
 

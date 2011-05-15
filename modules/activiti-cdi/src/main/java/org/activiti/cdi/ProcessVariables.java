@@ -20,7 +20,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.activiti.cdi.annotations.ProcessVariable;
+import org.activiti.cdi.annotation.ProcessVariable;
 
 /**
  * Allows to access the process variables of the managed process instance. A

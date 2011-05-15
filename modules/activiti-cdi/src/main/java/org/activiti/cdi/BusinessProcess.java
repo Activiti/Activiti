@@ -22,8 +22,8 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.activiti.cdi.annotations.ProcessId;
-import org.activiti.cdi.annotations.TaskId;
+import org.activiti.cdi.annotation.ProcessInstanceId;
+import org.activiti.cdi.annotation.TaskId;
 import org.activiti.cdi.impl.AbstractProcessResuming;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
@@ -272,7 +272,7 @@ public class BusinessProcess extends AbstractProcessResuming implements Serializ
    * Returns the id of the process instance associated with the current conversation or 'null'.
    */
   /* Also makes the processId available for injection */
-  @Produces @Named("processId") @ProcessId public String getProcessInstanceId() {
+  @Produces @Named("processId") @ProcessInstanceId public String getProcessInstanceId() {
     resumeProcess();
     return associationManager.getProcessInstanceId();
   }

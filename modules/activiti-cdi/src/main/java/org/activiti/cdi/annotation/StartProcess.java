@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cdi.annotations;
+package org.activiti.cdi.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -21,7 +21,6 @@ import javax.enterprise.util.Nonbinding;
 import javax.interceptor.InterceptorBinding;
 
 import org.activiti.cdi.BusinessProcess;
-import org.activiti.cdi.annotation.BusinessProcessScoped;
 
 /**
  * Starts a new process instance after the annotated method returns. The process
@@ -31,8 +30,6 @@ import org.activiti.cdi.annotation.BusinessProcessScoped;
  * {@link BusinessProcess#setProcessVariable(String, Object)} within this
  * conversation is flushed to the process instance at process instantiation. The
  * same is true for instances of {@link BusinessProcessScoped} beans.
- * <p />
- * TODO: explain transaction demarcations
  * 
  * @author Daniel Meyer
  */

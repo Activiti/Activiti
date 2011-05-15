@@ -10,20 +10,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cdi.annotations.event;
+package org.activiti.cdi.annotation.event;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import javax.inject.Qualifier;
 
-import org.activiti.engine.repository.ProcessDefinition;
-
 /**
- * Can be used to qualify events with details about a {@link ProcessDefinition}:
+ * Can be used to qualify events fired when an activity is started
  * 
  * <pre>
- * public void onSthRelatedToBilling(@Observes @BusinessProcess(&quot;billingProcess&quot;) BusinessProcessEvent evt) {
+ * public void beforeCreditAccount(@Observes @StartActivity(&quot;creditAccount&quot;) BusinessProcessEvent evt) {
  *   // ...
  * }
  * </pre>
@@ -32,7 +30,7 @@ import org.activiti.engine.repository.ProcessDefinition;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Qualifier
-public @interface BusinessProcess {
-  /** the key of the process */  
-  String value() default "";
+public @interface StartActivity {
+  /** the id of the activity that is being entered / was entered */
+  public String value();
 }

@@ -34,7 +34,14 @@ import javax.enterprise.inject.spi.PassivationCapable;
  * on {@link ConversationScoped} and {@link RequestScoped} to find out when
  * either context is active). If this scope is later associated with a business
  * process instance, the bean instances are flushed to the ProcessInstance.
- * 
+ * <p />
+ * Example:
+ * <pre>
+ * {@code @BusinessProcessScoped}
+ * public class Authorization implements Serializable {
+ *    ...
+ * }
+ * </pre>
  * 
  * @author Daniel Meyer
  */

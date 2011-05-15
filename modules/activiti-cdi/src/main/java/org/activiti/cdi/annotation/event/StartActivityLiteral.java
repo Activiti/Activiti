@@ -10,16 +10,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cdi.annotations.event;
+package org.activiti.cdi.annotation.event;
 
 import javax.enterprise.util.AnnotationLiteral;
 
 
-public class EndActivityLiteral extends AnnotationLiteral<EndActivity> implements EndActivity {
+public class StartActivityLiteral extends AnnotationLiteral<StartActivity> implements StartActivity {
   
-  protected final String activityId;   
+  protected final String activityId;    
   
-  public EndActivityLiteral(String activityId) {
+  public StartActivityLiteral(String activityId) {
     this.activityId = activityId;
   }
   @Override

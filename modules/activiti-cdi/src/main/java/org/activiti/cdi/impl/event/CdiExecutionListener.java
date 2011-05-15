@@ -20,10 +20,10 @@ import javax.enterprise.inject.spi.BeanManager;
 
 import org.activiti.cdi.BusinessProcessEvent;
 import org.activiti.cdi.BusinessProcessEventType;
-import org.activiti.cdi.annotations.event.BusinessProcessLiteral;
-import org.activiti.cdi.annotations.event.EndActivityLiteral;
-import org.activiti.cdi.annotations.event.StartActivityLiteral;
-import org.activiti.cdi.annotations.event.TakeTransitionLiteral;
+import org.activiti.cdi.annotation.event.BusinessProcessLiteral;
+import org.activiti.cdi.annotation.event.EndActivityLiteral;
+import org.activiti.cdi.annotation.event.StartActivityLiteral;
+import org.activiti.cdi.annotation.event.TakeTransitionLiteral;
 import org.activiti.cdi.impl.util.BeanManagerLookup;
 import org.activiti.cdi.impl.util.ProgrammaticBeanLookup;
 import org.activiti.engine.ActivitiException;

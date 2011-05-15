@@ -12,7 +12,7 @@
  */
 package org.activiti.cdi.test.beans;
 
-import org.activiti.cdi.annotations.ProcessVariable;
+import org.activiti.cdi.annotation.ProcessVariable;
 
 import javax.inject.Inject;
 

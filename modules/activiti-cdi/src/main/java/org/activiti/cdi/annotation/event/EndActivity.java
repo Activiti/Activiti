@@ -10,23 +10,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cdi.annotations;
+package org.activiti.cdi.annotation.event;
 
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
 import javax.inject.Qualifier;
 
 /**
- * Qualifier annotation for injecting the id of the current process instance
+ * Can be used to qualify events fired when an activity is ended / left
+ * 
+ * <pre>
+ * public void onCreditAccountCompleted(@Observes @EndActivity(&quot;creditAccount&quot;) BusinessProcessEvent evt) {
+ *   // ...
+ * }
+ * </pre>
  * 
  * @author Daniel Meyer
  */
-@Qualifier
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE })
-public @interface ProcessId {
-
+@Qualifier
+public @interface EndActivity {
+  /** the id of the activity that is being left / was left */
+  public String value();
 }

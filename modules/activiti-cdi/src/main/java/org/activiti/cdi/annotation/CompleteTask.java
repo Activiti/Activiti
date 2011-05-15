@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cdi.annotations;
+package org.activiti.cdi.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -25,12 +25,20 @@ import org.activiti.cdi.Actor;
 /**
  * Annotation signaling that a task is to be completed after the annotated
  * method returns. Requires a ProcessInstance to be managed. 
- * 
+ * <p/>
  * If neither an id ("key") nor a name is specified, we try to resolve a single
  * task assigned to the current user (see {@link Actor}) in the current process
  * instance.
+ * <p />
+ * Example: after this method returns, the current task is completed 
+ * and the current conversation is ended:
+ * <pre>
+ * {@code @CompleteTask} 
+ * public void respond(String response, Message message) {
+ *  message.setResponse(response);
+ * } 
+ * </pre>
  * 
- * TODO: explain implications for transaction handling.
  * 
  * @author Daniel Meyer
  */
