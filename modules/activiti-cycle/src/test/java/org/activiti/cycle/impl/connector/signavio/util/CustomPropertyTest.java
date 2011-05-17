@@ -38,5 +38,11 @@ public class CustomPropertyTest extends ActivitiCycleTest {
     actual = CustomProperty.ORIGINAL_NAME.getValue(propertyContainer);
     assertEquals(expected, actual);
   }
+  
+  @Test
+  public void testSetValueUnlessPropertyExists() {
+    String propertyContainer = "Original ID: \"sid-9DFFCBB5-DA6F-4981-BEC5-68D4B24700E9\" Original Type: \"SequenceFlow\"";
+    assertEquals(propertyContainer, CustomProperty.ORIGINAL_ID.setValueUnlessPropertyExists(propertyContainer, "sid-9DFFCBB5-DA6F-4981-BEC5-68D4B24700E9-copy-1"));
+  }
 
 }
