@@ -35,7 +35,9 @@ public class SignavioFileSystemConnector extends FileSystemConnector {
    * system.
    */
   public Content getContent(String artifactId) throws RepositoryNodeNotFoundException {
-    artifactId = (String) artifactId.subSequence(15, artifactId.lastIndexOf(".signavio.xml"));
+    if (artifactId.endsWith(".signavio.xml")) {
+      artifactId = (String) artifactId.subSequence(15, artifactId.lastIndexOf(".signavio.xml"));
+    }
     artifactId = "/" + artifactId + ".json";
     return super.getContent(artifactId);
   }
