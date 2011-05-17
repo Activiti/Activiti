@@ -3,12 +3,15 @@ package org.activiti.cycle.impl.connector.signavio.transform.pattern;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.impl.connector.signavio.transform.JsonTransformationException;
+import org.activiti.cycle.impl.connector.signavio.util.CustomProperty;
 import org.oryxeditor.server.diagram.Diagram;
 import org.oryxeditor.server.diagram.DiagramBuilder;
 import org.oryxeditor.server.diagram.Shape;
@@ -25,15 +28,20 @@ public class SubProcessExpansion extends OryxTransformation {
   public static final String PROPERTY_NAME = "name";
   public static final String PROPERTY_ENTRY = "entry";
   public static final String PROPERTY_IS_CALL_ACTIVITY = "callacitivity";
+  private static final String PROPERTY_DOCUMENTATION = "documentation";
 
   private RepositoryConnector connector;
   
+  private Set<String> shapeIds;
+
   public SubProcessExpansion(RepositoryConnector repositoryConnector) {
     this.connector = repositoryConnector;
   }
 
   @Override
   public Diagram transform(Diagram diagram) {
+    shapeIds = new HashSet<String>();
+    ensureUniqueIds(diagram); // collect shapeIds of parent process
     expandSubProcesses(diagram);
     return diagram;
   }
@@ -54,6 +62,8 @@ public class SubProcessExpansion extends OryxTransformation {
             Diagram subProcess = DiagramBuilder.parseJson(subProcessJson);
 
             // FIXME subProcess = new ExtractProcessOfParticipant("Process Engine").transform(subProcess); 
+            
+            ensureUniqueIds(subProcess);
             
             expandSubProcesses(subProcess);
             
@@ -85,6 +95,27 @@ public class SubProcessExpansion extends OryxTransformation {
       }
     }
     return modelId;
+  }
+
+  private void ensureUniqueIds(Diagram diagram) {
+    for (Shape shape : diagram.getShapes()) {
+      String id = shape.getResourceId();
+      Integer numberOfDuplicates = 0;
+      while (shapeIds.contains(id)) {
+        id = shape.getResourceId() + "-copy-" + (++numberOfDuplicates); 
+      }
+      shapeIds.add(id);
+      if (id != shape.getResourceId()) {
+        changeShapeID(shape, id);
+      }
+    }
+  }
+
+  private void changeShapeID(Shape shape, String id) {
+    String documentation = shape.getProperty(PROPERTY_DOCUMENTATION);
+    documentation = CustomProperty.ORIGINAL_ID.setValueUnlessPropertyExists(documentation, shape.getResourceId());
+    shape.getProperties().put(PROPERTY_DOCUMENTATION, documentation);
+    shape.setResourceId(id);
   }
 
 }
