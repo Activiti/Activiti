@@ -118,7 +118,7 @@
     <association property="byteArrayValue" 
                  column="BYTEARRAY_ID_" 
                  javaType="org.activiti.engine.impl.persistence.entity.ByteArrayEntity" 
-                 select="selectByteArrayById_postgres" />
+                 select="selectByteArray_postgres" />
   </resultMap>
 
   <resultMap id="historicFormPropertyResultMap" extends="historicDetailResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricFormPropertyEntity">
