@@ -39,7 +39,7 @@
 	<classpathentry kind="lib" path="libs-runtime/junit-4.8.1.jar"/>
 	<classpathentry kind="lib" path="libs-runtime/livetribe-jsr223-2.0.6.jar"/>
 	<classpathentry kind="lib" path="libs-runtime/mail-1.4.1.jar"/>
-	<classpathentry kind="lib" path="libs-runtime/mybatis-3.0.1.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/mybatis-3.0.4.jar"/>
 	<classpathentry kind="lib" path="libs-runtime/neethi-2.0.4.jar"/>
 	<classpathentry kind="lib" path="libs-runtime/saaj-api-1.3.jar"/>
 	<classpathentry kind="lib" path="libs-runtime/saaj-impl-1.3.jar"/>
