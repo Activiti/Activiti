@@ -292,6 +292,10 @@
         Repeat this step with <literal>${activiti.home}/docs/xsd/activiti-bpmn-extensions-5.4.xsd</literal>.
       <mediaobject><imageobject><imagedata align="center" fileref="images/eclipse.setup.xml.catalog.png"/></imageobject></mediaobject>
     </para>
+    <para>
+        Have a look at <xref linkend="activitiDesigner" /> for instructions on how
+        to install the Activiti Designer plugin into Eclipse.
+    </para>
   </section>
   
   <section id="inspecting.database">
