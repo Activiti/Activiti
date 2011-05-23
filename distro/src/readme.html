@@ -46,6 +46,55 @@
 
   <h1>Activiti Release Notes</h1>
 
+  <h3>Release Notes - Activiti - Version 5.6</h3>
+  <h4>Highlights</h4>
+	<ul>
+	  <li>Added direct Mule integration</li>
+	  <li></li>
+	  <li></li>
+	  <li></li>
+	  <li></li>
+	</ul>
+
+  <h4>Known upgrade limitation</h4>
+  <p>In the DB schema creation scripts, we've enlarged the max size of certain varchar columns from 255 to 4000.
+  See <a href="http://jira.codehaus.org/browse/ACT-236">ACT-236</a>.  These schema updates are not part of the 
+  automatic upgrade procedure.
+  </p>
+  
+  <p>Max length of following columns has been set to 4000:
+  </p>
+  
+  <ul>
+    <li>ACT_RU_JOB.EXCEPTION_MSG_</li>
+    <li>ACT_RU_JOB.HANDLER_CFG_</li>
+    <li>ACT_RE_PROCDEF.RESOURCE_NAME_</li>
+    <li>ACT_RE_PROCDEF.DGRM_RESOURCE_NAME_</li>
+    <li>ACT_RU_TASK.DESCRIPTION_</li>
+    <li>ACT_RU_VARIABLE.TEXT_</li>
+    <li>ACT_RU_VARIABLE.TEXT2_</li>
+    <li>ACT_HI_TASKINST.DESCRIPTION_</li>
+    <li>ACT_HI_TASKINST.DELETE_REASON_</li>
+    <li>ACT_HI_DETAIL.TEXT_</li>
+    <li>ACT_HI_DETAIL.TEXT2_</li>
+    <li>ACT_HI_COMMENT.MESSAGE_</li>
+    <li>ACT_HI_ATTACHMENT.DESCRIPTION_</li>
+    <li>ACT_HI_ATTACHMENT.URL_</li>
+  </ul>
+  
+  <p>If you want to perform these changes, you can do that manually.  Check your database capabilities for the
+  easiest way on changing the type of columns from varchar(255) to varchar(4000).  As a fall back, 
+  for each table affected, you can: 
+  </p>
+  <ol>
+    <li>create a new temporary table</li>
+    <li>copy the contents from the original to the temporary table</li>
+    <li>delete the original table</li>
+    <li>recreate the original table using the new create script with the proper lengths</li>
+    <li>copy the contents from the temporary table back to the new original table</li>
+    <li>drop the temporary table</li>
+  </ol>
+  
   <h3>Release Notes - Activiti - Version 5.5</h3>
   
       <h4>Highlights</h4>

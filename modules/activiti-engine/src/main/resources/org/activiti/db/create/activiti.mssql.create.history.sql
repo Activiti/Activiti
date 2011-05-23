@@ -36,13 +36,13 @@ create table ACT_HI_TASKINST (
     EXECUTION_ID_ nvarchar(64),
     NAME_ nvarchar(255),
     PARENT_TASK_ID_ nvarchar(64),
-    DESCRIPTION_ nvarchar(255),
+    DESCRIPTION_ nvarchar(4000),
     OWNER_ nvarchar(64),
     ASSIGNEE_ nvarchar(64),
     START_TIME_ datetime not null,
     END_TIME_ datetime,
     DURATION_ numeric(19,0),
-    DELETE_REASON_ nvarchar(255),
+    DELETE_REASON_ nvarchar(4000),
     PRIORITY_ int,
     DUE_DATE_ datetime,
     primary key (ID_)
@@ -62,8 +62,8 @@ create table ACT_HI_DETAIL (
     BYTEARRAY_ID_ nvarchar(64),
     DOUBLE_ double precision,
     LONG_ numeric(19,0),
-    TEXT_ nvarchar(255),
-    TEXT2_ nvarchar(255),
+    TEXT_ nvarchar(4000),
+    TEXT2_ nvarchar(4000),
     primary key (ID_)
 );
 
@@ -75,7 +75,7 @@ create table ACT_HI_COMMENT (
     TASK_ID_ nvarchar(64),
     PROC_INST_ID_ nvarchar(64),
     ACTION_ nvarchar(255),
-    MESSAGE_ nvarchar(255),
+    MESSAGE_ nvarchar(4000),
     FULL_MSG_ image,
     primary key (ID_)
 );
@@ -85,11 +85,11 @@ create table ACT_HI_ATTACHMENT (
     REV_ integer,
     USER_ID_ nvarchar(255),
     NAME_ nvarchar(255),
-    DESCRIPTION_ nvarchar(255),
+    DESCRIPTION_ nvarchar(4000),
     TYPE_ nvarchar(255),
     TASK_ID_ nvarchar(64),
     PROC_INST_ID_ nvarchar(64),
-    URL_ nvarchar(255),
+    URL_ nvarchar(4000),
     CONTENT_ID_ nvarchar(64),
     primary key (ID_)
 );

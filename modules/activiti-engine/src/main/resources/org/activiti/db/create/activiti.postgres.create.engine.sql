@@ -57,11 +57,11 @@ create table ACT_RU_JOB (
     PROCESS_INSTANCE_ID_ varchar(64),
     RETRIES_ integer,
     EXCEPTION_STACK_ID_ varchar(64),
-    EXCEPTION_MSG_ varchar(255),
+    EXCEPTION_MSG_ varchar(4000),
     DUEDATE_ timestamp,
     REPEAT_ varchar(255),
     HANDLER_TYPE_ varchar(255),
-    HANDLER_CFG_ varchar(255),
+    HANDLER_CFG_ varchar(4000),
     primary key (ID_)
 );
 
@@ -72,8 +72,8 @@ create table ACT_RE_PROCDEF (
     KEY_ varchar(255),
     VERSION_ integer,
     DEPLOYMENT_ID_ varchar(64),
-    RESOURCE_NAME_ varchar(255),
-    DGRM_RESOURCE_NAME_ varchar(255),
+    RESOURCE_NAME_ varchar(4000),
+    DGRM_RESOURCE_NAME_ varchar(4000),
     HAS_START_FORM_KEY_ boolean,
     primary key (ID_)
 );
@@ -86,7 +86,7 @@ create table ACT_RU_TASK (
     PROC_DEF_ID_ varchar(64),
     NAME_ varchar(255),
     PARENT_TASK_ID_ varchar(64),
-    DESCRIPTION_ varchar(255),
+    DESCRIPTION_ varchar(4000),
     TASK_DEF_KEY_ varchar(255),
     OWNER_ varchar(64),
     ASSIGNEE_ varchar(64),
@@ -118,8 +118,8 @@ create table ACT_RU_VARIABLE (
     BYTEARRAY_ID_ varchar(64),
     DOUBLE_ double precision,
     LONG_ bigint,
-    TEXT_ varchar(255),
-    TEXT2_ varchar(255),
+    TEXT_ varchar(4000),
+    TEXT2_ varchar(4000),
     primary key (ID_)
 );
 
