@@ -1,0 +1,33 @@
+<assembly>
+  <id>ui-jar</id>
+   <formats>
+    <format>jar</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <fileSets>
+  
+    <!-- Include classes -->
+    <fileSet>
+      <directory>target/activiti-webapp-explorer2-${version}/WEB-INF/classes</directory>
+      <outputDirectory></outputDirectory>
+      <excludes>
+        <exclude>rebel.xml</exclude>
+      </excludes>
+    </fileSet>
+    
+    <!-- Include UI app context -->
+    <fileSet>
+      <directory>src/main/webapp/WEB-INF</directory>
+      <outputDirectory></outputDirectory>
+      <includes>
+        <include>activiti-ui-context.xml</include>
+      </includes>
+    </fileSet>
+    
+    <!-- Include VAADIN static resources -->
+    <fileSet>
+      <directory>src/main/webapp/VAADIN</directory>
+      <outputDirectory>VAADIN</outputDirectory>
+    </fileSet>
+  </fileSets>
+</assembly>
