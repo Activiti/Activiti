@@ -14,8 +14,6 @@
 package org.activiti.explorer.navigation;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import com.vaadin.ui.UriFragmentUtility.FragmentChangedEvent;
 import com.vaadin.ui.UriFragmentUtility.FragmentChangedListener;
@@ -27,8 +25,6 @@ import com.vaadin.ui.UriFragmentUtility.FragmentChangedListener;
  * 
  * @author Frederik Heremans
  */
-@Component
-@Scope(value="session")
 public class NavigationFragmentChangeListener implements FragmentChangedListener {
 
   private static final long serialVersionUID = 1L;
@@ -56,6 +52,11 @@ public class NavigationFragmentChangeListener implements FragmentChangedListener
       navigationHandler.handleNavigation(uriFragment);
     }
     
+  }
+  
+  
+  public void setNavigatorManager(NavigatorManager navigatorManager) {
+    this.navigatorManager = navigatorManager;
   }
 
 }

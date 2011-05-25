@@ -23,8 +23,6 @@ import org.activiti.explorer.ui.MainWindow;
 import org.activiti.explorer.ui.content.AttachmentRendererManager;
 import org.activiti.explorer.ui.form.FormPropertyRendererManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import com.vaadin.Application;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
@@ -32,8 +30,6 @@ import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
 /**
  * @author Joram Barrez
  */
-@Component
-@Scope(value="session")
 public class ExplorerApp extends Application implements HttpServletRequestListener {
   
   private static final long serialVersionUID = -1L;
@@ -161,4 +157,35 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   public UriFragment getCurrentUriFragment() {
     return mainWindow.getCurrentUriFragment();
   }
+
+  
+  public void setUserCache(UserCache userCache) {
+    this.userCache = userCache;
+  }
+
+  
+  public void setApplicationMainWindow(MainWindow mainWindow) {
+    this.mainWindow = mainWindow;
+  }
+
+  
+  public void setViewManager(ViewManager viewManager) {
+    this.viewManager = viewManager;
+  }
+
+  
+  public void setNotificationManager(NotificationManager notificationManager) {
+    this.notificationManager = notificationManager;
+  }
+
+  
+  public void setI18nManager(I18nManager i18nManager) {
+    this.i18nManager = i18nManager;
+  }
+
+  
+  public void setAttachmentRendererManager(AttachmentRendererManager attachmentRendererManager) {
+    this.attachmentRendererManager = attachmentRendererManager;
+  }
+  
 }

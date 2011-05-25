@@ -107,7 +107,12 @@ public class DeploymentDetailPanel extends DetailPanel {
     taskDetails.addComponent(image, 0, 0, 0, 1);
     
     // Add deployment name
-    Label nameLabel = new Label(deployment.getName());
+    Label nameLabel = new Label();
+    if(deployment.getName() != null) {
+      nameLabel.setValue(deployment.getName());
+    } else {
+      nameLabel.setValue(i18nManager.getMessage(Messages.DEPLOYMENT_NO_NAME));
+    }
     nameLabel.addStyleName(Reindeer.LABEL_H2);
     taskDetails.addComponent(nameLabel, 1, 0, 2, 0);
     

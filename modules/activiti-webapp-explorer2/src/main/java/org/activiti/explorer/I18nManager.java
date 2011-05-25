@@ -18,15 +18,10 @@ import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
 
 /**
  * @author Joram Barrez
  */
-@Component
-@Scope(value="session")
 public class I18nManager implements Serializable {
 
   private static final long serialVersionUID = 1L;

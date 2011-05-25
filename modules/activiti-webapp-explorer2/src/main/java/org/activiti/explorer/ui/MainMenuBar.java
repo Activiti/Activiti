@@ -99,10 +99,6 @@ public class MainMenuBar extends HorizontalLayout {
       manageButton.addListener(new ShowManagementClickListener());
       menuItemButtons.put(ViewManager.MAIN_NAVIGATION_MANAGE, manageButton);
     }
-    
-    Button repositoryButton = addMenuButton(ViewManager.MAIN_NAVIGATION_REPOSITORIES, i18nManager.getMessage(Messages.MAIN_MENU_REPOSITOTIES), Images.MAIN_MENU_REPOSITORIES, false, 80);
-    repositoryButton.addListener(new ShowRepositoriesClickListener());
-    menuItemButtons.put(ViewManager.MAIN_NAVIGATION_REPOSITORIES, repositoryButton);
   }
 
   protected void initTitle() {
@@ -193,13 +189,5 @@ public class MainMenuBar extends HorizontalLayout {
     public void buttonClick(ClickEvent event) {
       ExplorerApp.get().getViewManager().showDatabasePage();
     }
-  }
-  
-  private class ShowRepositoriesClickListener implements ClickListener {
-    public void buttonClick(ClickEvent event) {
-      ExplorerApp.get().getViewManager().showRepositoryPage();
-    }
-  }
-  
-  
+  }  
 }

@@ -13,8 +13,6 @@
 
 package org.activiti.explorer.demo;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import org.activiti.engine.IdentityService;
@@ -166,14 +164,17 @@ public class DemoDataGenerator {
     identityService.setUserInfo("joram", "twitterName", "jbarrez");
     
     // Tim
-    String accountUsername = System.getProperty("user");
-    String accountPassword = System.getProperty("pwd");
-    Map<String, String> accountDetails = new HashMap<String, String>();
-    accountDetails.put("toDoFolderName", "Cases");
-    accountDetails.put("toDoInActivitiFolderName", "CasesInActiviti");
-    accountDetails.put("imapHost", "imap.gmail.com");
-    accountDetails.put("imapProtocol", "imaps");
-    identityService.setUserAccount("tom", null, "mailscan", accountUsername, accountPassword, accountDetails);
+//    String accountUsername = System.getProperty("user");
+//    String accountPassword = System.getProperty("pwd");
+//    if (accountUsername == null || accountPassword == null) {
+//      throw new RuntimeException("'user' and 'pwd' system property must be set");
+//    }
+//    Map<String, String> accountDetails = new HashMap<String, String>();
+//    accountDetails.put("toDoFolderName", "Cases");
+//    accountDetails.put("toDoInActivitiFolderName", "CasesInActiviti");
+//    accountDetails.put("imapHost", "imap.gmail.com");
+//    accountDetails.put("imapProtocol", "imaps");
+//    identityService.setUserAccount("tom", null, "mailscan", accountUsername, accountPassword, accountDetails);
   }
   
   protected void createUser(IdentityService identityService, String userId, String firstName, String lastName, 
@@ -207,13 +208,6 @@ public class DemoDataGenerator {
      .addClasspathResource("org/activiti/explorer/demo/process/oneTaskProcess.bpmn20.xml")
      .addClasspathResource("org/activiti/explorer/demo/process/createTimersProcess.bpmn20.xml")
      .deploy();
-   
-    // Expense process
-    processEngine.getRepositoryService()
-      .createDeployment()
-      .name("Expense process")
-      .addClasspathResource("org/activiti/explorer/demo/process/expense_process.bpmn20.xml")
-      .deploy();
   }
 
 

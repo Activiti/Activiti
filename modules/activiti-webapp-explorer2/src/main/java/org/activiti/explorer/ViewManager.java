@@ -44,8 +44,6 @@ import org.activiti.explorer.ui.task.InvolvedPage;
 import org.activiti.explorer.ui.task.QueuedPage;
 import org.activiti.explorer.ui.task.TaskMenuBar;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import com.vaadin.ui.Window;
 
@@ -53,8 +51,6 @@ import com.vaadin.ui.Window;
 /**
  * @author Joram Barrez
  */
-@Component
-@Scope(value="session")
 public class ViewManager implements Serializable {
   
   private static final long serialVersionUID = 1L;
@@ -62,7 +58,6 @@ public class ViewManager implements Serializable {
   public static final String MAIN_NAVIGATION_FLOWS = "flows";
   public static final String MAIN_NAVIGATION_MANAGE = "manage";
   public static final String MAIN_NAVIGATION_REPORTS = "reports";
-  public static final String MAIN_NAVIGATION_REPOSITORIES = "repositories";
   
   protected AbstractTablePage currentPage;
   
@@ -281,6 +276,10 @@ public class ViewManager implements Serializable {
   
   public AbstractTablePage getCurrentPage() {
     return currentPage;
+  }
+  
+  public void setMainWindow(MainWindow mainWindow) {
+    this.mainWindow = mainWindow;
   }
   
 }

@@ -65,7 +65,7 @@
     <sequenceFlow id="flow7" sourceRef="shortTimerTask" targetRef="theEnd" />
     <sequenceFlow id="flow8" sourceRef="shortTimer" targetRef="shortTimerExpire" />
     
-    <scriptTask id="shortTimerExpire" name="Execute script" scriptFormat="groovy">
+    <scriptTask id="shortTimerExpire" name="Execute script" scriptFormat="js">
       <script>
         if(throwException == 'true') {
           throw new java.lang.RuntimeException('Activiti Engine Rocks!');

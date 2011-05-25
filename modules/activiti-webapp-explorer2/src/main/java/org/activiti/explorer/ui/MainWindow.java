@@ -18,7 +18,6 @@ import org.activiti.explorer.navigation.NavigationFragmentChangeListener;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.login.LoginPage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.UriFragmentUtility;
@@ -27,8 +26,6 @@ import com.vaadin.ui.Window;
 /**
  * @author Joram Barrez
  */
-@org.springframework.stereotype.Component
-@Scope(value="session")
 public class MainWindow extends Window {
 
   private static final long serialVersionUID = 1L;
@@ -128,5 +125,12 @@ public class MainWindow extends Window {
   public boolean isShowingLoginPage() {
     return showingLoginPage;
   }
-
+  
+  public void setNavigationFragmentChangeListener(NavigationFragmentChangeListener navigationFragmentChangeListener) {
+    this.navigationFragmentChangeListener = navigationFragmentChangeListener;
+  }
+  
+  public void setI18nManager(I18nManager i18nManager) {
+    this.i18nManager = i18nManager;
+  }
 }

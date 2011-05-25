@@ -18,8 +18,6 @@ import java.text.MessageFormat;
 
 import org.activiti.explorer.ui.MainWindow;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import com.vaadin.ui.Window.Notification;
 
@@ -27,8 +25,6 @@ import com.vaadin.ui.Window.Notification;
 /**
  * @author Joram Barrez
  */
-@Component
-@Scope(value="session")
 public class NotificationManager implements Serializable {
   
   private static final long serialVersionUID = 1L;
@@ -74,6 +70,14 @@ public class NotificationManager implements Serializable {
   public void showInformationNotification(String key, Object ... params) {
     mainWindow.showNotification(MessageFormat.format(i18nManager.getMessage(key), params),
             Notification.TYPE_HUMANIZED_MESSAGE);
+  }
+  
+  public void setMainWindow(MainWindow mainWindow) {
+    this.mainWindow = mainWindow;
+  }
+  
+  public void setI18nManager(I18nManager i18nManager) {
+    this.i18nManager = i18nManager;
   }
   
 }
