@@ -3,14 +3,17 @@
 
 	<property file="build.properties" />
 
-	<property name="lib.dir" value="lib" />
 	<property name="target.dir" value="target" />
 
 	<property name="activiti.cfg.jar" value="${activiti.tomcat.home.lib}/activiti-cfg.jar" />
 
-	<property name="maven.ant.tasks.jar" value="${lib.dir}/maven-ant-tasks.jar" />
+	<property name="maven.repo.local" value="${user.home}/.m2/repository" />
+	<property name="maven.ant.tasks.version" value="2.1.3" />
+	<property name="maven.ant.tasks.dir" value="${maven.repo.local}/org/apache/maven/maven-ant-tasks/${maven.ant.tasks.version}/" />
+	<property name="maven.ant.tasks.jar" value="${maven.ant.tasks.dir}/maven-ant-tasks-${maven.ant.tasks.version}.jar" />
 	<property name="maven.ant.tasks.bootstrap.location"
-		value="http://www.apache.org/dist//maven/binaries/maven-ant-tasks-2.1.1.jar" />
+		value="http://repo1.maven.org/maven2/org/apache/maven/maven-ant-tasks/${maven.ant.tasks.version}/maven-ant-tasks-${maven.ant.tasks.version}.jar" />
+
 	<available property="maven.ant.tasks.jar.exists" file="${maven.ant.tasks.jar}" />
 
 	<!--
@@ -18,7 +21,7 @@
 		needed
 	-->
 	<target name="bootstrap.maven.tasks" unless="maven.ant.tasks.jar.exists">
-		<mkdir dir="${lib.dir}" />
+		<mkdir dir="${maven.ant.tasks.dir}" />
 		<get src="${maven.ant.tasks.bootstrap.location}" dest="${maven.ant.tasks.jar}" />
 	</target>
 
@@ -88,7 +91,7 @@
 	<target name="deploy.jar" depends="package">
 		<!-- A bit hacky, but quickest way to deploy classes to your Tomcat -->
 		<copy file="${target.dir}/${ant.project.name}.jar" todir="${activiti.tomcat.lib}"/>
-		<echo message="Resart your Tomcat that the changes in the classpath can take effect" />
+		<echo message="Restart your Tomcat that the changes in the classpath can take effect" />
 	</target>
 
 	<target name="print">
