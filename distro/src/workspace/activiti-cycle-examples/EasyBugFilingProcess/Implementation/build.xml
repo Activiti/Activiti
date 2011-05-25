@@ -26,7 +26,7 @@
 	</target>
 
 	<!-- This will make the connection of ANT to your maven project -->
-	<target name="mvn-init" unless="compile.classpath" depends="bootstrap.maven.tasks"
+	<target name="mvn.init" unless="compile.classpath" depends="bootstrap.maven.tasks"
 		xmlns:artifact="urn:maven-artifact-ant">
 		<typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="urn:maven-artifact-ant" classpath="${maven.ant.tasks.jar}" />
 		<condition property="maven.repo.local" value="${maven.repo.local}" else="${user.home}/.m2/repository">
@@ -53,7 +53,7 @@
 		<delete dir="target" />
 	</target>
 
-	<target name="compile" depends="mvn-init">
+	<target name="compile" depends="mvn.init">
 		<mkdir dir="target/classes" />
 		<javac srcdir="src/main/java" destdir="target/classes"
 			classpathref="compile.classpath" />
@@ -77,7 +77,7 @@
 		</jar>
 	</target>
 
-	<target name="deploy.bar" depends="package, mvn-init">
+	<target name="deploy.bar" depends="package, mvn.init">
 		<taskdef name="deploy-bar" classname="org.activiti.engine.impl.ant.DeployBarTask">
 			<classpath>
 				<!-- add activiti.cfg.xml for database connection -->
