@@ -19,7 +19,7 @@ import java.util.Collection;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.NotificationManager;
-import org.activiti.explorer.ui.util.StringUtil;
+import org.activiti.explorer.util.StringUtil;
 
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.ProgressListener;
