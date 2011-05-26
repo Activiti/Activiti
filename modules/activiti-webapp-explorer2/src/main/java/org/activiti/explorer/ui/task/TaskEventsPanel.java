@@ -19,9 +19,7 @@ import java.util.List;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.identity.Picture;
-import org.activiti.engine.task.Task;
 import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
@@ -29,8 +27,8 @@ import org.activiti.explorer.Messages;
 import org.activiti.explorer.ViewManager;
 import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
+import org.activiti.explorer.util.time.HumanTime;
 
-import com.ocpsoft.pretty.time.PrettyTime;
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.event.ShortcutAction;
@@ -167,7 +165,7 @@ public class TaskEventsPanel extends Panel {
     layout.addComponent(text);
     
     // Time
-    Label time = new Label(new PrettyTime().format(taskEvent.getTime()));
+    Label time = new Label(new HumanTime(i18nManager).format(taskEvent.getTime()));
     time.setSizeUndefined();
     time.addStyleName(ExplorerLayout.STYLE_TASK_EVENT_TIME);
     layout.addComponent(time);

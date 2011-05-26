@@ -318,4 +318,23 @@ public interface Messages {
   static final String EMAIL_HTML_CONTENT = "email.html.content";
   static final String EMAIL_RECIPIENTS = "email.recipients";
 
+  // Time formatting
+  static final String TIME_UNIT_MOMENTS = "time.unit.moments";
+  static final String TIME_UNIT_PAST = "time.unit.past";
+  static final String TIME_UNIT_FUTURE = "time.unit.future";
+  
+  static final String TIME_UNIT_MINUTE = "time.unit.minute";
+  static final String TIME_UNIT_MINUTES = "time.unit.minutes";
+  static final String TIME_UNIT_HOUR = "time.unit.hour";
+  static final String TIME_UNIT_HOURS = "time.unit.hours";
+  static final String TIME_UNIT_DAY = "time.unit.day";
+  static final String TIME_UNIT_DAYS = "time.unit.days";
+  static final String TIME_UNIT_WEEK = "time.unit.week";
+  static final String TIME_UNIT_WEEKS = "time.unit.weeks";
+  static final String TIME_UNIT_MONTH = "time.unit.month";
+  static final String TIME_UNIT_MONTHS = "time.unit.months";
+  static final String TIME_UNIT_YEAR = "time.unit.year";
+  static final String TIME_UNIT_YEARS = "time.unit.years";
+  static final String TIME_UNIT_JUST_NOW = "time.unit.just.now";
+
 }

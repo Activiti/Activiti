@@ -18,8 +18,10 @@ import java.text.MessageFormat;
 import java.util.Date;
 
 import org.activiti.explorer.Constants;
+import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.I18nManager;
+import org.activiti.explorer.util.time.HumanTime;
 
-import com.ocpsoft.pretty.time.PrettyTime;
 import com.vaadin.ui.Label;
 
 
@@ -68,12 +70,14 @@ public class PrettyTimeLabel extends Label {
   }
   
   protected void init() {
+    
+    final I18nManager i18nManager = ExplorerApp.get().getI18nManager();
     if (date != null) {
       DateFormat dateFormat = (DateFormat) Constants.DEFAULT_DATE_FORMATTER.clone();
       if(labelTemplate != null) {
-        super.setValue(MessageFormat.format(labelTemplate, new PrettyTime().format(date)));
+        super.setValue(MessageFormat.format(labelTemplate, new HumanTime(i18nManager).format(date)));
       } else {
-        super.setValue(new PrettyTime().format(date));
+        super.setValue(new HumanTime(i18nManager).format(date));
       }
       setDescription(dateFormat.format(date));
     } else {
