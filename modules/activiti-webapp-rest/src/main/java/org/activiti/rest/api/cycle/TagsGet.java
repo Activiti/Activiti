@@ -29,7 +29,7 @@ public class TagsGet extends ActivitiCycleWebScript {
   void execute(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
 
     String connectorId = req.getString("connectorId");
-    String repositoryNodeId = req.getString("repositoryNodeId");
+    String repositoryNodeId = req.getString("nodeId");
     String tag = req.getString("tag");
 
     List<String> tags;
