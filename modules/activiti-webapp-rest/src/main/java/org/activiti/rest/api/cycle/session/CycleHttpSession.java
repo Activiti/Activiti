@@ -42,6 +42,11 @@ public class CycleHttpSession {
 
   public static void openSession(ActivitiRequest req) {
     HttpSession httpSession = req.getHttpServletRequest().getSession(true);
+    // augmenting inactive time for cycle sessions
+    int sessionTimeout = httpSession.getMaxInactiveInterval();
+    if(sessionTimeout < 7200) {
+      httpSession.setMaxInactiveInterval(7200);
+    }
     String cuid = req.getCurrentUserId();
 
     // TODO: find a better place for this ?
