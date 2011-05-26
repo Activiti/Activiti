@@ -19,7 +19,7 @@ import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.cache.UserCache;
-import org.activiti.explorer.ui.ExplorerLayout;
+import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 
 import com.vaadin.ui.Label;
 

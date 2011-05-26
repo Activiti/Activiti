@@ -54,15 +54,20 @@ import com.vaadin.ui.Window;
 public class ViewManager implements Serializable {
   
   private static final long serialVersionUID = 1L;
+  
   public static final String MAIN_NAVIGATION_TASKS = "tasks";
   public static final String MAIN_NAVIGATION_FLOWS = "flows";
   public static final String MAIN_NAVIGATION_MANAGE = "manage";
   public static final String MAIN_NAVIGATION_REPORTS = "reports";
   
+  protected static final String DEFAULT_PAGE_INBOX = "inbox";
+  protected static final String DEFAULT_PAGE_DATABASE = "mgmt-database";
+  
   protected AbstractTablePage currentPage;
   
   @Autowired
   protected MainWindow mainWindow;
+  protected String defaultPage;
 
   protected TaskService taskService;
   protected HistoryService historyService;
@@ -80,14 +85,19 @@ public class ViewManager implements Serializable {
   
   public void showDefaultContent() {
     mainWindow.showDefaultContent();
-    showInboxPage();
+    
+    if (defaultPage.equals(DEFAULT_PAGE_DATABASE)) {
+      showDatabasePage();
+    } else { // default = inbox page
+      showInboxPage();
+    }
   }
   
   public void showPopupWindow(Window window) {
     mainWindow.addWindow(window);
   }
   
-  // Tasks
+  // Tasks 
   
   /**
    * Generic method which will figure out to which
@@ -253,12 +263,6 @@ public class ViewManager implements Serializable {
     switchView(new GroupPage(groupId), MAIN_NAVIGATION_MANAGE, ManagementMenuBar.ENTRY_GROUPS);
   }
   
-  // Repositories
-  
-  public void showRepositoryPage() {
-    
-  }
-  
   // Profile
   
   public void showProfilePopup(String userId) {
@@ -280,6 +284,10 @@ public class ViewManager implements Serializable {
   
   public void setMainWindow(MainWindow mainWindow) {
     this.mainWindow = mainWindow;
+  }
+  
+  public void setDefaultPage(String defaultPage) {
+    this.defaultPage = defaultPage;
   }
   
 }

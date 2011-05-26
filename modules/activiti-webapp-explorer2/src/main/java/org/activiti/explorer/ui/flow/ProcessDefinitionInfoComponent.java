@@ -20,7 +20,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
-import org.activiti.explorer.ui.ExplorerLayout;
+import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.ui.ComponentContainer;

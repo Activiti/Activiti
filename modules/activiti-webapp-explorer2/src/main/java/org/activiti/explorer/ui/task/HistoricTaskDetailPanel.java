@@ -24,7 +24,6 @@ import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.NotificationManager;
 import org.activiti.explorer.ViewManager;
-import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.content.AttachmentDetailPopupWindow;
 import org.activiti.explorer.ui.content.AttachmentRenderer;
@@ -32,6 +31,7 @@ import org.activiti.explorer.ui.content.AttachmentRendererManager;
 import org.activiti.explorer.ui.content.RelatedContentComponent;
 import org.activiti.explorer.ui.custom.DetailPanel;
 import org.activiti.explorer.ui.custom.PrettyTimeLabel;
+import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Alignment;

@@ -21,7 +21,7 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.form.FormProperty;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
-import org.activiti.explorer.ui.ExplorerLayout;
+import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.ui.Alignment;

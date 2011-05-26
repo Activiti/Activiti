@@ -25,7 +25,7 @@ import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
-import org.activiti.explorer.ui.ExplorerLayout;
+import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 
 import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.Alignment;

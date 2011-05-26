@@ -19,10 +19,10 @@ import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.util.LogUtil;
 import org.activiti.explorer.cache.UserCache;
 import org.activiti.explorer.navigation.UriFragment;
+import org.activiti.explorer.ui.ComponentFactory;
 import org.activiti.explorer.ui.MainWindow;
 import org.activiti.explorer.ui.content.AttachmentRendererManager;
 import org.activiti.explorer.ui.form.FormPropertyRendererManager;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.Application;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
@@ -42,26 +42,14 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   // Thread local storage of instance for each user
   protected static ThreadLocal<ExplorerApp> current = new ThreadLocal<ExplorerApp>();
   
-  @Autowired
   protected UserCache userCache;
-
-  @Autowired
   protected MainWindow mainWindow;
-  
-  @Autowired
   protected ViewManager viewManager;
-  
-  @Autowired
   protected NotificationManager notificationManager;
-  
-  @Autowired
   protected I18nManager i18nManager;
-  
-  @Autowired
   protected AttachmentRendererManager attachmentRendererManager;
-  
-  @Autowired
   protected FormPropertyRendererManager formPropertyRendererManager;
+  protected ComponentFactories componentFactories;
   
   public void init() {
     setMainWindow(mainWindow);
@@ -92,7 +80,7 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
     return (LoggedInUser) getUser();
   }
   
-  // Managers
+  // Managers (session scoped)
   
   public ViewManager getViewManager() {
     return viewManager;
@@ -106,6 +94,8 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
     return notificationManager;
   }
   
+  // Application-wide services
+  
   public AttachmentRendererManager getAttachmentRendererManager() {
     return attachmentRendererManager;
   }
@@ -114,14 +104,16 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
     return formPropertyRendererManager;
   }
   
-  // Application-wide services
-  
   public void setFormPropertyRendererManager(FormPropertyRendererManager formPropertyRendererManager) {
     this.formPropertyRendererManager = formPropertyRendererManager;
   }
 
   public UserCache getUserCache() {
     return userCache;
+  }
+  
+  public <T> ComponentFactory<T> getComponentFactory(Class<? extends ComponentFactory<T>> clazz) {
+    return componentFactories.get(clazz);
   }
   
   // HttpServletRequestListener -------------------------------------------------------------------
@@ -148,44 +140,37 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
     Authentication.setAuthenticatedUserId(null);
   }
   
-  // URL handling ---------------------------------------------------------------------------------
+  // URL Handling ---------------------------------------------------------------------------------
   
   public void setCurrentUriFragment(UriFragment fragment) {
     mainWindow.setCurrentUriFragment(fragment);
   }
-  
   public UriFragment getCurrentUriFragment() {
     return mainWindow.getCurrentUriFragment();
   }
-
+  
+  // Injection setters
   
   public void setUserCache(UserCache userCache) {
     this.userCache = userCache;
   }
-
-  
   public void setApplicationMainWindow(MainWindow mainWindow) {
     this.mainWindow = mainWindow;
   }
-
-  
   public void setViewManager(ViewManager viewManager) {
     this.viewManager = viewManager;
   }
-
-  
   public void setNotificationManager(NotificationManager notificationManager) {
     this.notificationManager = notificationManager;
   }
-
-  
   public void setI18nManager(I18nManager i18nManager) {
     this.i18nManager = i18nManager;
   }
-
-  
   public void setAttachmentRendererManager(AttachmentRendererManager attachmentRendererManager) {
     this.attachmentRendererManager = attachmentRendererManager;
+  }
+  public void setComponentFactories(ComponentFactories componentFactories) {
+    this.componentFactories = componentFactories;
   }
   
 }

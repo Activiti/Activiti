@@ -20,7 +20,7 @@ import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.ViewManager;
 import org.activiti.explorer.cache.UserCache;
-import org.activiti.explorer.ui.ExplorerLayout;
+import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 import org.activiti.explorer.ui.util.InputStreamStreamSource;
 
 import com.vaadin.event.MouseEvents;

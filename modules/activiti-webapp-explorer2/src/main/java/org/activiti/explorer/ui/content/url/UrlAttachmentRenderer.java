@@ -16,10 +16,10 @@ package org.activiti.explorer.ui.content.url;
 import org.activiti.engine.task.Attachment;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
-import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.content.AttachmentRenderer;
 import org.activiti.explorer.ui.content.RelatedContentComponent;
+import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Resource;

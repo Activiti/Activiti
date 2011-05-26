@@ -15,8 +15,8 @@ package org.activiti.explorer.ui.custom;
 
 import java.awt.Image;
 
-import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
+import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 
 import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.terminal.ExternalResource;

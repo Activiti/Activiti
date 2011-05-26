@@ -10,30 +10,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.activiti.explorer.ui.repo;
-
-import org.activiti.explorer.ui.AbstractTreePage;
-import org.activiti.explorer.ui.custom.ToolBar;
-
-import com.vaadin.ui.Tree;
+package org.activiti.explorer;
 
 
 /**
  * @author Joram Barrez
  */
-public class RepositoryPage extends AbstractTreePage {
+public interface Environments {
   
-  private static final long serialVersionUID = 1L;
-
-  @Override
-  protected ToolBar createMenuBar() {
-    return null;
-  }
-
-  @Override
-  protected Tree createTree() {
-    return null;
-  }
+  String ACTIVITI = "activiti";
+  String ALFRESCO = "alfresco";
 
 }

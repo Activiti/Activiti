@@ -20,8 +20,8 @@ import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.data.AbstractLazyLoadingQuery;
-import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
+import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.ObjectProperty;

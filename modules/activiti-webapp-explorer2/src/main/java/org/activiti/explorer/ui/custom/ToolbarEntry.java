@@ -13,7 +13,7 @@
 
 package org.activiti.explorer.ui.custom;
 
-import org.activiti.explorer.ui.ExplorerLayout;
+import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;

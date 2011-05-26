@@ -21,9 +21,9 @@ import org.activiti.engine.identity.User;
 import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.ViewManager;
-import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.custom.SkypeLabel;
+import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 
 import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.terminal.Resource;

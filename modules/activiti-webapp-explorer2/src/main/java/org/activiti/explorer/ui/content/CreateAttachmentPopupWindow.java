@@ -19,9 +19,9 @@ import org.activiti.engine.task.Attachment;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
-import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.custom.PopupWindow;
 import org.activiti.explorer.ui.event.SubmitEvent;
+import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;

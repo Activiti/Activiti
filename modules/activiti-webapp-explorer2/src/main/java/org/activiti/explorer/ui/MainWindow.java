@@ -17,6 +17,8 @@ import org.activiti.explorer.Messages;
 import org.activiti.explorer.navigation.NavigationFragmentChangeListener;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.login.LoginPage;
+import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
+import org.activiti.explorer.ui.mainlayout.MainLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.ui.Component;
@@ -61,7 +63,7 @@ public class MainWindow extends Window {
   public void showDefaultContent() {
     showingLoginPage = false;
     removeStyleName(ExplorerLayout.STYLE_LOGIN_PAGE);
-    addStyleName("Default style"); // Bug: must set something or old style (eg. login page style) is not overwritten
+    addStyleName("Default style"); // Vaadin bug: must set something or old style (eg. login page style) is not overwritten
     
     // init general look and feel
     mainLayout = new MainLayout();

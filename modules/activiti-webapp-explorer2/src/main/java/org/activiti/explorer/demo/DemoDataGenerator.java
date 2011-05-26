@@ -25,9 +25,6 @@ import org.activiti.engine.impl.util.LogUtil;
 
 
 /**
- * Note that this class is not autowired through @Component, 
- * as we want it to be easy to remove the demo data.
- * 
  * @author Joram Barrez
  */
 public class DemoDataGenerator {

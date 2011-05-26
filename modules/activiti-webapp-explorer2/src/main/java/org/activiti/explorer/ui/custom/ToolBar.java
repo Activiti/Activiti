@@ -18,8 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.explorer.ui.ExplorerLayout;
 import org.activiti.explorer.ui.custom.ToolbarEntry.ToolbarCommand;
+import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;

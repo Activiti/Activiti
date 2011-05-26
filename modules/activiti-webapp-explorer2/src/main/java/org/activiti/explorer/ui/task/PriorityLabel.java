@@ -15,7 +15,7 @@ package org.activiti.explorer.ui.task;
 import org.activiti.engine.task.Task;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
-import org.activiti.explorer.ui.ExplorerLayout;
+import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 
 import com.vaadin.ui.Label;
 

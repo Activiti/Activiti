@@ -10,29 +10,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.explorer.ui.util;
+package org.activiti.explorer.ui.alfresco;
 
-import java.util.Collection;
-import java.util.Iterator;
+import org.activiti.explorer.ui.mainlayout.MainMenuBar;
 
 
 /**
  * @author Joram Barrez
  */
-public class StringUtil {
+public class AlfrescoMainMenuBar extends MainMenuBar {
+
+  private static final long serialVersionUID = 1L;
   
-  @SuppressWarnings("rawtypes")
-  public static String toReadableString(Collection collection) {
-    Iterator it = collection.iterator();
-    StringBuilder strb = new StringBuilder();
-    while(it.hasNext()) {
-      Object next = it.next();
-      strb.append(next.toString() + ", ");
-    }
-    if (strb.length() > 2) {
-      strb.delete(strb.length()-2, strb.length());
-    }
-    return strb.toString();
+  @Override
+  protected void initButtons() {
+    // In Alfresco admin console, only mgmt should be accessible
+    // so there is no point in offering any buttons
   }
 
 }

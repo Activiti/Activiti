@@ -13,7 +13,7 @@
 
 package org.activiti.explorer.ui.util;
 
-import org.activiti.explorer.ui.ExplorerLayout;
+import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 
 import com.vaadin.event.MouseEvents.ClickListener;
 import com.vaadin.terminal.Resource;

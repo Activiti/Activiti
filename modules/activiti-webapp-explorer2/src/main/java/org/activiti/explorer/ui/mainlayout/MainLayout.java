@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.explorer.ui;
+package org.activiti.explorer.ui.mainlayout;
 
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
@@ -96,7 +96,7 @@ public class MainLayout extends VerticalLayout {
   }
 
   protected void initMainMenuBar() {
-    this.mainMenuBar = new MainMenuBar();
+    this.mainMenuBar = ExplorerApp.get().getComponentFactory(MainMenuBarFactory.class).create(); 
     header.addComponent(mainMenuBar);
   }
 }

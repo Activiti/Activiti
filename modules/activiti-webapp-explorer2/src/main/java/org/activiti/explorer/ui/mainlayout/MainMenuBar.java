@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.explorer.ui;
+package org.activiti.explorer.ui.mainlayout;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +21,7 @@ import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.LoggedInUser;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ViewManager;
+import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.profile.ChangePasswordPopupWindow;
 
 import com.vaadin.terminal.Resource;

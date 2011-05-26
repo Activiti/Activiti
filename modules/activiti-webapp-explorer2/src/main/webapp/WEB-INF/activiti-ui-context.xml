@@ -7,7 +7,11 @@
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
 
-  <!-- Shared UI beans -->
+  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="location" value="classpath:ui.properties" />
+  </bean>
+
+  <!-- Global scoped beans -->
   
   <bean name="navigatorManager" class="org.activiti.explorer.navigation.NavigatorManager" />
   
@@ -32,6 +36,10 @@
     </property>
   </bean>
   
+  <bean name="componentFactories" class="org.activiti.explorer.ComponentFactories">
+    <property name="environment" value="${environment}" />
+  </bean>
+  
   <!-- Session scoped UI beans -->
   
   <bean name="navigationFragmentChangeListener" class="org.activiti.explorer.navigation.NavigationFragmentChangeListener" scope="session">
@@ -52,6 +60,7 @@
     <property name="attachmentRendererManager" ref="attachmentRendererManager" />
     <property name="formPropertyRendererManager" ref="formPropertyRendererManager" />
     <property name="applicationMainWindow" ref="mainWindow" />
+    <property name="componentFactories" ref="componentFactories" />
   </bean>
   
   <bean name="i18nManager" class="org.activiti.explorer.I18nManager" scope="session" />
@@ -63,6 +72,7 @@
   
   <bean name="viewManager" class="org.activiti.explorer.ViewManager" scope="session">
     <property name="mainWindow" ref="mainWindow" />
+    <property name="defaultPage" value="${default.page}" />
   </bean>
-
+  
 </beans>
