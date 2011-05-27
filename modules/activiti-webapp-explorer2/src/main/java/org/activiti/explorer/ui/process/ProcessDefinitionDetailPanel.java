@@ -47,7 +47,7 @@ import com.vaadin.ui.themes.Reindeer;
  */
 public class ProcessDefinitionDetailPanel extends DetailPanel {
   
-  private static final long serialVersionUID = -2018798598805436750L;
+  private static final long serialVersionUID = 1L;
   
   // Members
   protected ProcessDefinition processDefinition;
@@ -122,7 +122,10 @@ public class ProcessDefinitionDetailPanel extends DetailPanel {
       definitionInfoComponent = new ProcessDefinitionInfoComponent(processDefinition, deployment);
     }
     
-    startProcessInstanceButton.setEnabled(true);
+    if (startProcessInstanceButton != null) {
+      startProcessInstanceButton.setEnabled(true);
+    }
+    
     detailContainer.removeAllComponents();
     detailContainer.addComponent(definitionInfoComponent);
   }
@@ -162,38 +165,39 @@ public class ProcessDefinitionDetailPanel extends DetailPanel {
   }
 
   protected void initHeader() {
-    GridLayout taskDetails = new GridLayout(4, 2);
-    taskDetails.setWidth(100, UNITS_PERCENTAGE);
-    taskDetails.addStyleName(ExplorerLayout.STYLE_TITLE_BLOCK);
-    taskDetails.setSpacing(true);
-    taskDetails.setMargin(false, false, true, false);
+    GridLayout details = new GridLayout(2, 2);
+    details.setWidth(100, UNITS_PERCENTAGE);
+    details.addStyleName(ExplorerLayout.STYLE_TITLE_BLOCK);
+    details.setSpacing(true);
+    details.setMargin(false, false, true, false);
+    details.setColumnExpandRatio(1, 1.0f);
+    verticalLayout.addComponent(details);
     
-    // Add image
+    // Image
     Embedded image = new Embedded(null, Images.PROCESS_50);
-    taskDetails.addComponent(image, 0, 0, 0, 1);
+    details.addComponent(image, 0, 0, 0, 1);
     
-    // Add task name
+    // Name
     Label nameLabel = new Label(processDefinition.getName());
     nameLabel.addStyleName(Reindeer.LABEL_H2);
-    taskDetails.addComponent(nameLabel, 1, 0, 3,0);
+    details.addComponent(nameLabel, 1, 0);
 
-    // Add version
+    // Properties
+    HorizontalLayout propertiesLayout = new HorizontalLayout();
+    propertiesLayout.setSpacing(true);
+    details.addComponent(propertiesLayout);
+    
+    // Version
     String versionString = i18nManager.getMessage(Messages.PROCESS_VERSION, processDefinition.getVersion());
     Label versionLabel = new Label(versionString);
     versionLabel.addStyleName(ExplorerLayout.STYLE_PROCESS_HEADER_VERSION);
-    taskDetails.addComponent(versionLabel, 1, 1);
+    propertiesLayout.addComponent(versionLabel);
     
     // Add deploy time
     PrettyTimeLabel deployTimeLabel = new PrettyTimeLabel(i18nManager.getMessage(Messages.PROCESS_DEPLOY_TIME),
       deployment.getDeploymentTime(), null);
     deployTimeLabel.addStyleName(ExplorerLayout.STYLE_PROCESS_HEADER_DEPLOY_TIME);
-    taskDetails.addComponent(deployTimeLabel, 2, 1);
-    
-    taskDetails.setColumnExpandRatio(1, 1.0f);
-    taskDetails.setColumnExpandRatio(2, 1.0f);
-    taskDetails.setColumnExpandRatio(3, 1.0f);
-    
-    verticalLayout.addComponent(taskDetails);
+    propertiesLayout.addComponent(deployTimeLabel);
   }
   
   protected void addEmptySpace(ComponentContainer container) {

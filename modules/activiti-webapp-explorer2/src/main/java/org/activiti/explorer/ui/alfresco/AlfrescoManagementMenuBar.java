@@ -13,6 +13,8 @@
 
 package org.activiti.explorer.ui.alfresco;
 
+import org.activiti.explorer.Messages;
+import org.activiti.explorer.ui.custom.ToolbarEntry.ToolbarCommand;
 import org.activiti.explorer.ui.management.ManagementMenuBar;
 
 
@@ -22,11 +24,22 @@ import org.activiti.explorer.ui.management.ManagementMenuBar;
 public class AlfrescoManagementMenuBar extends ManagementMenuBar {
 
   private static final long serialVersionUID = 1L;
+  
+  public static final String ENTRY_PROCESS_DEFINITIONS = "processDefinitions"; 
 
   protected void initToolbarEntries() {
-    addDatabaseToolbarEntry();
     addDeploymentsToolbarEntry();
     addJobsToolbarEntry();
+    addDatabaseToolbarEntry();
+    addProcessDefinitionsEntry();
+  }
+  
+  protected void addProcessDefinitionsEntry() {
+    addToolbarEntry(ENTRY_PROCESS_DEFINITIONS, i18nManager.getMessage(Messages.PROCESS_MENU_DEFINITIONS), new ToolbarCommand() {
+      public void toolBarItemSelected() {
+        viewManager.showProcessDefinitionPage();
+      }
+    });
   }
 
 }

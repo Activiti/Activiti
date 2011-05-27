@@ -14,6 +14,7 @@
 package org.activiti.explorer.ui.alfresco;
 
 import org.activiti.explorer.DefaultViewManager;
+import org.activiti.explorer.ViewManager;
 
 
 /**
@@ -23,7 +24,17 @@ public class AlfrescoViewManager extends DefaultViewManager {
   
   public void showDefaultPage() {
     mainWindow.showDefaultContent();
-    showDatabasePage();
+    showDeploymentPage();
+  }
+  
+  @Override
+  public void showProcessDefinitionPage() {
+    switchView(new AlfrescoProcessDefinitionPage(), ViewManager.MAIN_NAVIGATION_PROCESS, AlfrescoManagementMenuBar.ENTRY_PROCESS_DEFINITIONS);
+  }
+  
+  @Override
+  public void showProcessDefinitionPage(String processDefinitionId) {
+    switchView(new AlfrescoProcessDefinitionPage(processDefinitionId), ViewManager.MAIN_NAVIGATION_PROCESS, AlfrescoManagementMenuBar.ENTRY_PROCESS_DEFINITIONS);
   }
 
 }

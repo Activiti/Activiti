@@ -182,8 +182,8 @@ public interface Messages {
   static final String EVENT_TITLE = "event.title";
   
   // Process menu
-  static final String PROCESS_MENU_MY_INSTANCES = "process.menu.my";
-  static final String PROCESS_MENU_LAUNCH = "process.menu.launch";
+  static final String PROCESS_MENU_MY_INSTANCES = "process.menu.my.instances";
+  static final String PROCESS_MENU_DEFINITIONS = "process.menu.definitions";
   
   // Process page
   static final String PROCESS_CATEGORY = "process.category";

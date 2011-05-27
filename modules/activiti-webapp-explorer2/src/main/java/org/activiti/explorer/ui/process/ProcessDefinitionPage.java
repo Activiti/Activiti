@@ -119,9 +119,12 @@ public class ProcessDefinitionPage extends AbstractTablePage {
   }
 
   protected void showProcessDefinitionDetail(String processDefinitionId) {
-    detailPanel = new ProcessDefinitionDetailPanel(processDefinitionId, ProcessDefinitionPage.this);
+    detailPanel = new ProcessDefinitionDetailPanel(processDefinitionId, this);
     setDetailComponent(detailPanel);
-    
+    changeUrl(processDefinitionId);
+  }
+
+  protected void changeUrl(String processDefinitionId) {
     UriFragment processDefinitionFragment = new UriFragment(ProcessNavigator.process_URI_PART, processDefinitionId);
     ExplorerApp.get().setCurrentUriFragment(processDefinitionFragment);
   }

@@ -191,11 +191,11 @@ public class DefaultViewManager implements ViewManager {
   // Process
   
   public void showProcessDefinitionPage() {
-    switchView(new ProcessDefinitionPage(), ViewManager.MAIN_NAVIGATION_PROCESS, ProcessMenuBar.ENTRY_LAUNCH_PROCESS_INSTANCE);
+    switchView(new ProcessDefinitionPage(), ViewManager.MAIN_NAVIGATION_PROCESS, ProcessMenuBar.PROCESS_DEFINITIONS);
   }
   
   public void showProcessDefinitionPage(String processDefinitionId) {
-    switchView(new ProcessDefinitionPage(processDefinitionId), ViewManager.MAIN_NAVIGATION_PROCESS, ProcessMenuBar.ENTRY_LAUNCH_PROCESS_INSTANCE);
+    switchView(new ProcessDefinitionPage(processDefinitionId), ViewManager.MAIN_NAVIGATION_PROCESS, ProcessMenuBar.PROCESS_DEFINITIONS);
   }
   
   public void showMyProcessInstancesPage() {

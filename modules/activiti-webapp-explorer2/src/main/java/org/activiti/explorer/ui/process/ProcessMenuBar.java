@@ -30,7 +30,7 @@ public class ProcessMenuBar extends ToolBar {
   private static final long serialVersionUID = 1L;
   
   public static final String ENTRY_MY_PROCESS_INSTANCES = "myProcessInstances"; 
-  public static final String ENTRY_LAUNCH_PROCESS_INSTANCE = "launchProcessInstance"; 
+  public static final String PROCESS_DEFINITIONS = "processDefinitions"; 
 
   protected I18nManager i18nManager;
   protected ViewManager viewManager;
@@ -51,7 +51,7 @@ public class ProcessMenuBar extends ToolBar {
       }
     });
     
-    addToolbarEntry(ENTRY_LAUNCH_PROCESS_INSTANCE, i18nManager.getMessage(Messages.PROCESS_MENU_LAUNCH), new ToolbarCommand() {
+    addToolbarEntry(PROCESS_DEFINITIONS, i18nManager.getMessage(Messages.PROCESS_MENU_DEFINITIONS), new ToolbarCommand() {
       public void toolBarItemSelected() {
         viewManager.showProcessDefinitionPage();
       }
