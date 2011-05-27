@@ -34,9 +34,9 @@ public class UserCacheFactoryBean implements FactoryBean<UserCache>, Application
 
   protected ApplicationContext applicationContext;
   
-  private String environment;
+  protected String environment;
   
-  private UserCache userCache = null;
+  protected UserCache userCache = null;
   
   public UserCache getObject() throws Exception {
     if(userCache == null) {
@@ -47,9 +47,12 @@ public class UserCacheFactoryBean implements FactoryBean<UserCache>, Application
 
   private void initUserCache() {
     if (environment.equals(Environments.ALFRESCO)) {
-      userCache = new DummyUserCache();
+      userCache = new DummyUserCache(); // User cache is not needed in Alfresco since we hook in Alfresco's ID mgmt
     } else {
       userCache = new TrieBasedUserCache();
+      
+      // indentityService is not injected in this factory bean because 
+      // we don't want to expose it in Alfresco context.xml. So we inject it manually here.
       ((TrieBasedUserCache)userCache).setIdentityService(applicationContext.getBean(IdentityService.class));
     }
   }

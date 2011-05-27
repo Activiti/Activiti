@@ -101,7 +101,7 @@ public class LoginPage extends CustomLayout {
         }
         
         ExplorerApp.get().setUser(loggedInUser);
-        viewManager.showDefaultContent();
+        viewManager.showDefaultPage();
       } else {
         refreshUi();
         notificationManager.showErrorNotification(Messages.LOGIN_FAILED_HEADER, i18nManager.getMessage(Messages.LOGIN_FAILED_INVALID));

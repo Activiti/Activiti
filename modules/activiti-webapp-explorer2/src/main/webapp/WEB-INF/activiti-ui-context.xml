@@ -9,7 +9,7 @@
 
   <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" name="activitiUiPropertyPlaceholder">
     <property name="location" value="classpath:ui.properties" />
-    <!-- Allow other PropertyPlaceholderConfigurer to run aswel -->
+    <!-- Allow other PropertyPlaceholderConfigurer to run as well -->
     <property name="ignoreUnresolvablePlaceholders" value="true"/>
   </bean>
 
@@ -42,6 +42,7 @@
     <property name="environment" value="${activiti.ui.environment}" />
   </bean>
   
+  <!-- User cache usage depends on environment, hence the faactory approach -->
   <bean name="userCache" class="org.activiti.explorer.cache.UserCacheFactoryBean">
     <property name="environment" value="${activiti.ui.environment}" />
   </bean>
@@ -51,7 +52,6 @@
   <bean name="navigationFragmentChangeListener" class="org.activiti.explorer.navigation.NavigationFragmentChangeListener" scope="session">
     <property name="navigatorManager" ref="navigatorManager" />
   </bean>
-  
   
   <bean name="mainWindow" class="org.activiti.explorer.ui.MainWindow" scope="session">
     <property name="navigationFragmentChangeListener" ref="navigationFragmentChangeListener" />
@@ -76,9 +76,9 @@
     <property name="i18nManager" ref="i18nManager" />
   </bean>
   
-  <bean name="viewManager" class="org.activiti.explorer.ViewManager" scope="session">
+  <bean name="viewManager" class="org.activiti.explorer.ViewManagerFactoryBean" scope="session">
     <property name="mainWindow" ref="mainWindow" />
-    <property name="defaultPage" value="${activiti.ui.default.page}" />
+    <property name="environment" value="${environment}" />
   </bean>
   
 </beans>
