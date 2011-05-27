@@ -32,5 +32,10 @@ public class AlfrescoMainMenuBar extends MainMenuBar {
   public synchronized void setMainNavigation(String navigation) {
     // Not needed since there are no buttons in the menu
   }
+  
+  @Override
+  protected void initProfileButton() {
+    // No profile button is needed
+  }
 
 }

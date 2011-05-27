@@ -14,13 +14,9 @@ package org.activiti.explorer.ui.login;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.identity.Group;
-import org.activiti.engine.identity.User;
-import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.LoggedInUser;
@@ -46,6 +42,7 @@ public class LoginPage extends CustomLayout {
   protected I18nManager i18nManager;
   protected ViewManager viewManager;
   protected NotificationManager notificationManager;
+  protected LoginHandler loginHandler;
 
   public LoginPage() {
     super();  
@@ -68,6 +65,7 @@ public class LoginPage extends CustomLayout {
     this.i18nManager = ExplorerApp.get().getI18nManager();
     this.viewManager = ExplorerApp.get().getViewManager();
     this.notificationManager = ExplorerApp.get().getNotificationManager();
+    this.loginHandler = ExplorerApp.get().getLoginHandler();
     
     addStyleName(ExplorerLayout.STYLE_LOGIN_PAGE);
     initUi();
@@ -96,27 +94,10 @@ public class LoginPage extends CustomLayout {
     public void onLogin(LoginEvent event) {
       String userName = event.getLoginParameter("username"); // see the input field names in CustomLoginForm
       String password = event.getLoginParameter("password");  // see the input field names in CustomLoginForm
-      
-      if (identityService.checkPassword(userName, password)) {
-        User user = identityService.createUserQuery().userId(userName).singleResult();
-        
-        // Fetch and cache user data
-        LoggedInUser loggedInUser = new LoggedInUser(user, password);
-        List<Group> groups = identityService.createGroupQuery().groupMember(user.getId()).list();
-        for (Group group : groups) {
-          if (Constants.SECURITY_ROLE.equals(group.getType())) {
-            loggedInUser.addSecurityRoleGroup(group);
-            if (Constants.SECURITY_ROLE_USER.equals(group.getId())) {
-              loggedInUser.setUser(true);
-            }
-            if (Constants.SECURITY_ROLE_ADMIN.equals(group.getId())) {
-              loggedInUser.setAdmin(true);
-            }
-          } else {
-            loggedInUser.addGroup(group);
-          }
-        }
-        
+      // TODO: create interface for loggedin user
+      // Delegate authentication to handler
+      LoggedInUser loggedInUser = loginHandler.authenticate(userName, password);
+      if (loggedInUser != null) {
         ExplorerApp.get().setUser(loggedInUser);
         viewManager.showDefaultPage();
       } else {

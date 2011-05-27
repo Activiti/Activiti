@@ -32,6 +32,8 @@ public class LoggedInUser implements Serializable {
   
   protected User user;
   protected String password;
+  protected String alternativeId;
+  
   protected boolean isUser;
   protected boolean isAdmin;
   protected List<Group> securityRoles = new ArrayList<Group>();
@@ -42,17 +44,35 @@ public class LoggedInUser implements Serializable {
     this.password = password;
   }
   
+  
+  public LoggedInUser(String userId, String password) {
+    this.alternativeId = userId;
+    this.password = password;
+  }
+  
   public String getId() {
-    return user.getId();
+    if(user != null) {
+      return user.getId();
+    }
+    return alternativeId;
   }
   public String getFirstName() {
-    return user.getFirstName();
+    if(user != null) {
+      return user.getFirstName();
+    }
+    return null;
   }
   public String getLastName() {
-    return user.getLastName();
+    if(user != null) {
+      return user.getLastName();
+    }
+    return null;
   }
   public String getFullName() {
-    return getFirstName() + " " + getLastName();
+    if(user != null) {
+      return getFirstName() + " " + getLastName();
+    }
+    return null;
   }
   public String getPassword() {
     return password;

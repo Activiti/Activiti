@@ -54,6 +54,10 @@
   <bean id="managementService" factory-bean="processEngine" factory-method="getManagementService" />
   <bean id="identityService" factory-bean="processEngine" factory-method="getIdentityService" />
   
+  <bean id="activitiLoginHandler" class="org.activiti.explorer.ui.login.DefaultLoginHandler">
+    <property name="identityService" ref="identityService" />
+  </bean>
+  
   <!-- Include the UI-related wiring. This UI context will be used in the alfresco activiti admin UI -->
   <import resource="activiti-ui-context.xml" />
   

@@ -23,6 +23,7 @@ import org.activiti.explorer.ui.ComponentFactory;
 import org.activiti.explorer.ui.MainWindow;
 import org.activiti.explorer.ui.content.AttachmentRendererManager;
 import org.activiti.explorer.ui.form.FormPropertyRendererManager;
+import org.activiti.explorer.ui.login.LoginHandler;
 
 import com.vaadin.Application;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
@@ -49,6 +50,7 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   protected I18nManager i18nManager;
   protected AttachmentRendererManager attachmentRendererManager;
   protected FormPropertyRendererManager formPropertyRendererManager;
+  protected LoginHandler loginHandler;
   protected ComponentFactories componentFactories;
   
   public void init() {
@@ -116,6 +118,10 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
     return componentFactories.get(clazz);
   }
   
+  public LoginHandler getLoginHandler() {
+    return loginHandler;
+  }
+  
   // HttpServletRequestListener -------------------------------------------------------------------
   
   public void onRequestStart(HttpServletRequest request, HttpServletResponse response) {
@@ -172,5 +178,7 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   public void setComponentFactories(ComponentFactories componentFactories) {
     this.componentFactories = componentFactories;
   }
-  
+  public void setLoginHandler(LoginHandler loginHandler) {
+    this.loginHandler = loginHandler;
+  }
 }
