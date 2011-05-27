@@ -18,6 +18,8 @@ import java.util.List;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
+import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.Messages;
 import org.activiti.explorer.data.AbstractLazyLoadingQuery;
 
 import com.vaadin.data.Item;
@@ -71,7 +73,11 @@ public class DeploymentListQuery extends AbstractLazyLoadingQuery {
     
     public DeploymentListitem(Deployment deployment) {
       addItemProperty("id", new ObjectProperty<String>(deployment.getId()));
-      addItemProperty("name", new ObjectProperty<String>(deployment.getName()));
+      if(deployment.getName() != null) {
+        addItemProperty("name", new ObjectProperty<String>(deployment.getName()));
+      } else {
+        addItemProperty("name", new ObjectProperty<String>(ExplorerApp.get().getI18nManager().getMessage(Messages.DEPLOYMENT_NO_NAME)));
+      }
     }
 
     public int compareTo(DeploymentListitem other) {
