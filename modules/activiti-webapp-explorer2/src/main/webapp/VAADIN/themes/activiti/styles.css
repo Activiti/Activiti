@@ -709,13 +709,13 @@ div.searchbox {
 	background: transparent url(img/priority-high-16.png) no-repeat 0 0; 	
 }
 
-.title-block .task-create-time, .title-block .flow-deploy-time,
-.title-block .flow-start-time, .title-block .deployment-deploy-time {
+.title-block .task-create-time, .title-block .process-deploy-time,
+.title-block .process-start-time, .title-block .deployment-deploy-time {
 	padding-left: 20px;
 	background: transparent url(img/create-time-16.png) no-repeat 0 0; 	
 }
 
-.title-block .flow-version {
+.title-block .process-version {
 	padding-left: 20px;
 	background: transparent url(img/version-16.png) no-repeat 0 0; 	
 }

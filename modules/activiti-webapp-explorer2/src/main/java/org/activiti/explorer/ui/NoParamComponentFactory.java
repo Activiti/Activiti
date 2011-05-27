@@ -36,7 +36,7 @@ public abstract class NoParamComponentFactory<T> implements ComponentFactory<T>{
     try {
       return clazz.newInstance();
     } catch (Exception e) {
-      throw new ActivitiException("Couldn't instantiate class " + clazz); 
+      throw new ActivitiException("Couldn't instantiate class " + clazz, e); 
     }
   }
   

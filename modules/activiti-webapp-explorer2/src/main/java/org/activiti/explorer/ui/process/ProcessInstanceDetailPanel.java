@@ -61,15 +61,15 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
   protected IdentityService identityService;
   protected I18nManager i18nManager;
   
-  protected ProcessInstancePage myFlowsPage;
+  protected ProcessInstancePage myProcessInstancesPage;
   protected ProcessInstance processInstance;
   protected HistoricProcessInstance historicProcessInstance;
   protected ProcessDefinition processDefinition;
   
   protected VerticalLayout verticalLayout;
 
-  public ProcessInstanceDetailPanel(String processInstanceId, ProcessInstancePage myFlowsPage) {
-    this.myFlowsPage = myFlowsPage;
+  public ProcessInstanceDetailPanel(String processInstanceId, ProcessInstancePage myProcessInstancesPage) {
+    this.myProcessInstancesPage = myProcessInstancesPage;
 
     runtimeService = ProcessEngines.getDefaultProcessEngine().getRuntimeService();
     repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
@@ -92,7 +92,7 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
     setDetailContainer(verticalLayout);
 
     addName();
-    addFlowImage();
+    addProcessImage();
     addTasks();
   }
 
@@ -178,7 +178,7 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
     }
   }
 
-  protected void addFlowImage() {
+  protected void addProcessImage() {
     ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService)
       .getDeployedProcessDefinition(processDefinition.getId());
 
@@ -217,7 +217,7 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
     // Add start time
     PrettyTimeLabel startTimeLabel = new PrettyTimeLabel(i18nManager.getMessage(Messages.PROCESS_START_TIME),
       historicProcessInstance.getStartTime(), null);
-    startTimeLabel.addStyleName(ExplorerLayout.STYLE_FLOW_HEADER_START_TIME);
+    startTimeLabel.addStyleName(ExplorerLayout.STYLE_PROCESS_HEADER_START_TIME);
     header.addComponent(startTimeLabel, 1, 1);
     
     header.setColumnExpandRatio(1, 1.0f);

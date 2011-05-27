@@ -34,7 +34,7 @@ public class Images {
   public static final Resource SAVE = new ThemeResource("img/save.png");
   
   public static final Resource MAIN_MENU_TASKS = new ThemeResource("img/mm-tasks.png");
-  public static final Resource MAIN_MENU_FLOWS = new ThemeResource("img/mm-flows.png");
+  public static final Resource MAIN_MENU_PROCESS = new ThemeResource("img/mm-process.png");
   public static final Resource MAIN_MENU_MANAGE = new ThemeResource("img/mm-manage.png");
   public static final Resource MAIN_MENU_REPORTS = new ThemeResource("img/mm-reports.png");
   

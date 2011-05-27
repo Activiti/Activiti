@@ -33,14 +33,14 @@ import com.vaadin.data.util.PropertysetItem;
 /**
  * @author Frederik Heremans
  */
-public class MyFlowsListQuery extends AbstractLazyLoadingQuery {
+public class MyProcessInstancesListQuery extends AbstractLazyLoadingQuery {
   
   protected HistoryService historyService;
   protected RepositoryService repositoryService;
   
   protected Map<String, ProcessDefinition> cachedProcessDefinitions;
   
-  public MyFlowsListQuery(HistoryService historyService, RepositoryService repositoryService) {
+  public MyProcessInstancesListQuery(HistoryService historyService, RepositoryService repositoryService) {
     this.historyService = historyService;
     this.repositoryService = repositoryService;
     cachedProcessDefinitions = new HashMap<String, ProcessDefinition>();

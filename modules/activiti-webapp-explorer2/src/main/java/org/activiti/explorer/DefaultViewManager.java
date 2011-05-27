@@ -32,7 +32,7 @@ import org.activiti.explorer.ui.management.deployment.DeploymentPage;
 import org.activiti.explorer.ui.management.identity.GroupPage;
 import org.activiti.explorer.ui.management.identity.UserPage;
 import org.activiti.explorer.ui.management.job.JobPage;
-import org.activiti.explorer.ui.process.MyFlowsPage;
+import org.activiti.explorer.ui.process.MyProcessInstancesPage;
 import org.activiti.explorer.ui.process.ProcessDefinitionPage;
 import org.activiti.explorer.ui.process.ProcessMenuBar;
 import org.activiti.explorer.ui.profile.ProfilePopupWindow;
@@ -188,7 +188,7 @@ public class DefaultViewManager implements ViewManager {
     switchView(new ArchivedPage(taskId), ViewManager.MAIN_NAVIGATION_TASK, TaskMenuBar.ENTRY_ARCHIVED);
   }
   
-  // Flows
+  // Process
   
   public void showProcessDefinitionPage() {
     switchView(new ProcessDefinitionPage(), ViewManager.MAIN_NAVIGATION_PROCESS, ProcessMenuBar.ENTRY_LAUNCH_PROCESS_INSTANCE);
@@ -199,11 +199,11 @@ public class DefaultViewManager implements ViewManager {
   }
   
   public void showMyProcessInstancesPage() {
-    switchView(new MyFlowsPage(), ViewManager.MAIN_NAVIGATION_PROCESS, ProcessMenuBar.ENTRY_MY_PROCESS_INSTANCES);
+    switchView(new MyProcessInstancesPage(), ViewManager.MAIN_NAVIGATION_PROCESS, ProcessMenuBar.ENTRY_MY_PROCESS_INSTANCES);
   }
   
   public void showMyProcessInstancesPage(String processInstanceId) {
-    switchView(new MyFlowsPage(processInstanceId), ViewManager.MAIN_NAVIGATION_PROCESS, ProcessMenuBar.ENTRY_MY_PROCESS_INSTANCES);
+    switchView(new MyProcessInstancesPage(processInstanceId), ViewManager.MAIN_NAVIGATION_PROCESS, ProcessMenuBar.ENTRY_MY_PROCESS_INSTANCES);
   }
   
   // Management

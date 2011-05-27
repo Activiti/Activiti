@@ -91,9 +91,9 @@ public class MainMenuBar extends HorizontalLayout {
     taskButton.addListener(new ShowTasksClickListener());
     menuItemButtons.put(ViewManager.MAIN_NAVIGATION_TASK, taskButton);
     
-    Button flowsButton = addMenuButton(ViewManager.MAIN_NAVIGATION_PROCESS, i18nManager.getMessage(Messages.MAIN_MENU_PROCESS), Images.MAIN_MENU_FLOWS, false, 80);
-    flowsButton.addListener(new ShowFlowsClickListener());
-    menuItemButtons.put(ViewManager.MAIN_NAVIGATION_PROCESS, flowsButton);
+    Button processButton = addMenuButton(ViewManager.MAIN_NAVIGATION_PROCESS, i18nManager.getMessage(Messages.MAIN_MENU_PROCESS), Images.MAIN_MENU_PROCESS, false, 80);
+    processButton.addListener(new ShowProcessDefinitionsClickListener());
+    menuItemButtons.put(ViewManager.MAIN_NAVIGATION_PROCESS, processButton);
 
     if (ExplorerApp.get().getLoggedInUser().isAdmin()) {
       Button manageButton = addMenuButton(ViewManager.MAIN_NAVIGATION_MANAGE, i18nManager.getMessage(Messages.MAIN_MENU_MANAGEMENT), Images.MAIN_MENU_MANAGE, false, 90);
@@ -180,7 +180,7 @@ public class MainMenuBar extends HorizontalLayout {
     }
   }
   
-  private class ShowFlowsClickListener implements ClickListener {
+  private class ShowProcessDefinitionsClickListener implements ClickListener {
     public void buttonClick(ClickEvent event) {
       ExplorerApp.get().getViewManager().showProcessDefinitionPage();
     }

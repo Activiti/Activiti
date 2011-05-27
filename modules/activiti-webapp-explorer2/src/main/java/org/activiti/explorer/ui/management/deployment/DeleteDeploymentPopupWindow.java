@@ -75,7 +75,7 @@ public class DeleteDeploymentPopupWindow extends PopupWindow {
     }
     
     if (nrOfProcessInstances == 0) {
-      Label noInstancesLabel = new Label("No runtime flows found for this deployment");
+      Label noInstancesLabel = new Label("No runtime process instances found for this deployment");
       noInstancesLabel.addStyleName(Reindeer.LABEL_SMALL);
       addComponent(noInstancesLabel);
     } else {
@@ -88,7 +88,7 @@ public class DeleteDeploymentPopupWindow extends PopupWindow {
       warningLayout.addComponent(warningIcon);
       
       Label warningLabel = new Label("Found <b>" + nrOfProcessInstances 
-              + " running flows</b> for this deployment.<br/>Are you sure you want to go ahead?"
+              + " running process instances</b> for this deployment.<br/>Are you sure you want to go ahead?"
               , Label.CONTENT_XHTML);
       warningLabel.setSizeUndefined();
       warningLabel.addStyleName(Reindeer.LABEL_SMALL);

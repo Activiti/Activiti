@@ -52,7 +52,7 @@ public class ProcessDefinitionDetailPanel extends DetailPanel {
   // Members
   protected ProcessDefinition processDefinition;
   protected Deployment deployment;
-  protected ProcessDefinitionPage flowPage;
+  protected ProcessDefinitionPage processDefinitionPage;
   
   // Services
   protected RepositoryService repositoryService;
@@ -64,17 +64,17 @@ public class ProcessDefinitionDetailPanel extends DetailPanel {
   protected HorizontalLayout detailContainer;
   protected HorizontalLayout actionsContainer;
   protected Label nameLabel;
-  protected Button startFlowButton;
+  protected Button startProcessInstanceButton;
   
   protected FormPropertiesForm processDefinitionStartForm;
   protected ProcessDefinitionInfoComponent definitionInfoComponent;
   
-  public ProcessDefinitionDetailPanel(String processDefinitionId, ProcessDefinitionPage flowPage) {
+  public ProcessDefinitionDetailPanel(String processDefinitionId, ProcessDefinitionPage processDefinitionPage) {
     this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
     this.formService = ProcessEngines.getDefaultProcessEngine().getFormService();
     this.i18nManager = ExplorerApp.get().getI18nManager();
     
-    this.flowPage = flowPage;
+    this.processDefinitionPage = processDefinitionPage;
     this.processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(processDefinitionId).singleResult();
 
     if(processDefinition != null) {
@@ -108,12 +108,12 @@ public class ProcessDefinitionDetailPanel extends DetailPanel {
   }
   
   protected void initActions() {
-    startFlowButton = new Button(i18nManager.getMessage(Messages.PROCESS_START));
-    startFlowButton.addListener(new StartProcessInstanceClickListener(processDefinition, flowPage));
+    startProcessInstanceButton = new Button(i18nManager.getMessage(Messages.PROCESS_START));
+    startProcessInstanceButton.addListener(new StartProcessInstanceClickListener(processDefinition, processDefinitionPage));
     
-    // Clear toolbar and add "start flow" button
-    flowPage.getToolBar().removeAllButtons();
-    flowPage.getToolBar().addButton(startFlowButton);
+    // Clear toolbar and add 'start' button
+    processDefinitionPage.getToolBar().removeAllButtons();
+    processDefinitionPage.getToolBar().addButton(startProcessInstanceButton);
   }
   
 
@@ -122,7 +122,7 @@ public class ProcessDefinitionDetailPanel extends DetailPanel {
       definitionInfoComponent = new ProcessDefinitionInfoComponent(processDefinition, deployment);
     }
     
-    startFlowButton.setEnabled(true);
+    startProcessInstanceButton.setEnabled(true);
     detailContainer.removeAllComponents();
     detailContainer.addComponent(definitionInfoComponent);
   }
@@ -156,7 +156,7 @@ public class ProcessDefinitionDetailPanel extends DetailPanel {
     }
     processDefinitionStartForm.setFormProperties(startFormData.getFormProperties());
     
-    startFlowButton.setEnabled(false);
+    startProcessInstanceButton.setEnabled(false);
     detailContainer.removeAllComponents();
     detailContainer.addComponent(processDefinitionStartForm);
   }
@@ -180,13 +180,13 @@ public class ProcessDefinitionDetailPanel extends DetailPanel {
     // Add version
     String versionString = i18nManager.getMessage(Messages.PROCESS_VERSION, processDefinition.getVersion());
     Label versionLabel = new Label(versionString);
-    versionLabel.addStyleName(ExplorerLayout.STYLE_FLOW_HEADER_VERSION);
+    versionLabel.addStyleName(ExplorerLayout.STYLE_PROCESS_HEADER_VERSION);
     taskDetails.addComponent(versionLabel, 1, 1);
     
     // Add deploy time
     PrettyTimeLabel deployTimeLabel = new PrettyTimeLabel(i18nManager.getMessage(Messages.PROCESS_DEPLOY_TIME),
       deployment.getDeploymentTime(), null);
-    deployTimeLabel.addStyleName(ExplorerLayout.STYLE_FLOW_HEADER_DEPLOY_TIME);
+    deployTimeLabel.addStyleName(ExplorerLayout.STYLE_PROCESS_HEADER_DEPLOY_TIME);
     taskDetails.addComponent(deployTimeLabel, 2, 1);
     
     taskDetails.setColumnExpandRatio(1, 1.0f);

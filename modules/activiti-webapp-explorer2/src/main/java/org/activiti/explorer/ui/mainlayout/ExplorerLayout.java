@@ -105,13 +105,13 @@ public interface ExplorerLayout {
   static final String STYLE_INVOLVE_PEOPLE = "involve-people";
   static final String STYLE_TASK_SUBTASKS_LIST = "subtasks";
 
-  // Flow pages
+  // Process pages
   static final String STYLE_PROCESS_DEFINITION_LIST = "proc-def-list";
   static final String STYLE_PROCESS_INSTANCE_LIST = "proc-inst-list";
   static final String STYLE_PROCESS_INSTANCE_TASK_LIST = "proc-inst-task-list";
-  static final String STYLE_FLOW_HEADER_DEPLOY_TIME = "flow-deploy-time";
-  static final String STYLE_FLOW_HEADER_VERSION = "flow-version";
-  static final String STYLE_FLOW_HEADER_START_TIME = "flow-start-time";
+  static final String STYLE_PROCESS_HEADER_DEPLOY_TIME = "process-deploy-time";
+  static final String STYLE_PROCESS_HEADER_VERSION = "process-version";
+  static final String STYLE_PROCESS_HEADER_START_TIME = "process-start-time";
   
   // Database page
   static final String STYLE_DATABASE_TABLE = "database-table";

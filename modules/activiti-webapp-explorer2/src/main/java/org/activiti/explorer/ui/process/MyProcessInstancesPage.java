@@ -24,7 +24,7 @@ import org.activiti.explorer.navigation.UriFragment;
 /**
  * @author Frederik Heremans
  */
-public class MyFlowsPage extends ProcessInstancePage {
+public class MyProcessInstancesPage extends ProcessInstancePage {
 
   private static final long serialVersionUID = 1L;
 
@@ -33,19 +33,19 @@ public class MyFlowsPage extends ProcessInstancePage {
   protected RepositoryService repositoryService;
   protected HistoryService historyService;
   
-  public MyFlowsPage() {
+  public MyProcessInstancesPage() {
     historyService = ProcessEngines.getDefaultProcessEngine().getHistoryService();
     repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
   }
   
-  public MyFlowsPage(String processInstanceId) {
+  public MyProcessInstancesPage(String processInstanceId) {
     this();
     this.processInstanceId = processInstanceId;
   }
 
   @Override
   protected LazyLoadingQuery createLazyLoadingQuery() {
-    return new MyFlowsListQuery(historyService, repositoryService);
+    return new MyProcessInstancesListQuery(historyService, repositoryService);
   }
   
   @Override
