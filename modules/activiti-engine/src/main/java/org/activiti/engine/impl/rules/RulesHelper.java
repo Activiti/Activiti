@@ -13,14 +13,11 @@
 
 package org.activiti.engine.impl.rules;
 
-import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.DeploymentQueryImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
-import org.activiti.engine.repository.Deployment;
 import org.drools.KnowledgeBase;
 
 
@@ -54,18 +51,5 @@ public class RulesHelper {
       }
     }
     return knowledgeBase;
-  }
-
-  public static KnowledgeBase findLatestKnowledgeBaseByDeploymentName(String deploymentName) {
-    DeploymentQueryImpl deploymentQuery = new DeploymentQueryImpl(Context.getCommandContext());
-    deploymentQuery
-      .deploymentName(deploymentName)
-      .orderByDeploymenTime().asc();
-    List<Deployment> deployments = deploymentQuery.listPage(0, 1);
-    if (deployments.isEmpty()) {
-      throw new ActivitiException("no deployments with name "+deploymentName);
-    }
-    String deploymentId = deployments.get(0).getId();
-    return findKnowledgeBaseByDeploymentId(deploymentId);
   }
 }
