@@ -23,7 +23,7 @@ public class AlfrescoViewManager extends DefaultViewManager {
   
   public void showDefaultPage() {
     mainWindow.showDefaultContent();
-    showInboxPage();
+    showDatabasePage();
   }
 
 }

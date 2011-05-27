@@ -10,27 +10,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.explorer.ui.alfresco;
 
-import org.activiti.explorer.ui.mainlayout.MainMenuBar;
+package org.activiti.explorer.ui.management;
+
+import org.activiti.explorer.ui.NoParamComponentFactory;
+import org.activiti.explorer.ui.alfresco.AlfrescoManagementMenuBar;
+import org.activiti.explorer.ui.custom.ToolBar;
 
 
 /**
  * @author Joram Barrez
  */
-public class AlfrescoMainMenuBar extends MainMenuBar {
+public class ManagementMenuBarFactory extends NoParamComponentFactory<ToolBar> {
 
-  private static final long serialVersionUID = 1L;
-  
-  @Override
-  protected void initButtons() {
-    // In Alfresco admin console, only mgmt should be accessible
-    // so there is no point in offering any buttons
+  protected Class< ? extends ToolBar> getAlfrescoComponentClass() {
+    return AlfrescoManagementMenuBar.class; 
   }
-  
-  @Override
-  public synchronized void setMainNavigation(String navigation) {
-    // Not needed since there are no buttons in the menu
+
+  protected Class< ? extends ToolBar> getDefaultComponentClass() {
+    return ManagementMenuBar.class;
   }
 
 }

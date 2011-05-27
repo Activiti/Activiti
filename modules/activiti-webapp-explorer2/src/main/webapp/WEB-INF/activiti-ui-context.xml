@@ -78,7 +78,7 @@
   
   <bean name="viewManager" class="org.activiti.explorer.ViewManagerFactoryBean" scope="session">
     <property name="mainWindow" ref="mainWindow" />
-    <property name="environment" value="${environment}" />
+    <property name="environment" value="${activiti.ui.environment}" />
   </bean>
   
 </beans>

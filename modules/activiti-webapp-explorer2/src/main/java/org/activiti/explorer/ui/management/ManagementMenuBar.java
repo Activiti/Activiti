@@ -40,21 +40,28 @@ public class ManagementMenuBar extends ToolBar {
   public ManagementMenuBar() {
     this.i18nManager = ExplorerApp.get().getI18nManager();
     this.viewManager = ExplorerApp.get().getViewManager();
-    
-    init();
-  }
-  
-  protected void init() {
     setWidth("100%");
     
-    // Database
+    initToolbarEntries();
+  }
+  
+  protected void initToolbarEntries() {
+    addDatabaseToolbarEntry();
+    addDeploymentsToolbarEntry();
+    addJobsToolbarEntry();
+    addUsersToolbarEntry();
+    addGroupToolbarEntry();
+  }
+
+  protected void addDatabaseToolbarEntry() {
     addToolbarEntry(ENTRY_DATABASE, i18nManager.getMessage(Messages.MGMT_MENU_DATABASE), new ToolbarCommand() {
       public void toolBarItemSelected() {
         viewManager.showDatabasePage();
       }
     });
-    
-    // Deployments
+  }
+
+  protected void addDeploymentsToolbarEntry() {
     ToolbarPopupEntry deploymentEntry = addPopupEntry(ENTRY_DEPLOYMENTS, i18nManager.getMessage(Messages.MGMT_MENU_DEPLOYMENTS));
     deploymentEntry.addMenuItem(i18nManager.getMessage(Messages.MGMT_MENU_DEPLOYMENTS_SHOW_ALL), new ToolbarCommand() {
       public void toolBarItemSelected() {
@@ -62,22 +69,25 @@ public class ManagementMenuBar extends ToolBar {
       }
     });
     deploymentEntry.addMenuItem(i18nManager.getMessage(Messages.MGMT_MENU_DEPLOYMENTS_UPLOAD), new NewDeploymentListener());
-    
-    // Jobs
+  }
+
+  protected void addJobsToolbarEntry() {
     addToolbarEntry(ENTRY_JOBS, i18nManager.getMessage(Messages.MGMT_MENU_JOBS), new ToolbarCommand() {
       public void toolBarItemSelected() {
         viewManager.showJobPage();
       }
     });
-    
-    // Users
+  }
+
+  protected void addUsersToolbarEntry() {
     addToolbarEntry(ENTRY_USERS, i18nManager.getMessage(Messages.MGMT_MENU_USERS), new ToolbarCommand() {
       public void toolBarItemSelected() {
         viewManager.showUserPage();
       }
     });
-    
-    // Groups
+  }
+
+  protected void addGroupToolbarEntry() {
     addToolbarEntry(ENTRY_GROUPS, i18nManager.getMessage(Messages.MGMT_MENU_GROUPS), new ToolbarCommand() {
       public void toolBarItemSelected() {
         viewManager.showGroupPage();

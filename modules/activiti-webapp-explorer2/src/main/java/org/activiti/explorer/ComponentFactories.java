@@ -17,8 +17,7 @@ import java.util.Map;
 
 import org.activiti.explorer.ui.ComponentFactory;
 import org.activiti.explorer.ui.mainlayout.MainMenuBarFactory;
-
-
+import org.activiti.explorer.ui.management.ManagementMenuBarFactory;
 
 /**
  * @author Joram Barrez
@@ -38,6 +37,7 @@ public class ComponentFactories {
   public ComponentFactories() {
     // Add custom component factories to this list
     factories.put(MainMenuBarFactory.class, new MainMenuBarFactory());
+    factories.put(ManagementMenuBarFactory.class, new ManagementMenuBarFactory());
   }
   
   public <T> ComponentFactory<T> get(Class<? extends ComponentFactory<T>> clazz) {

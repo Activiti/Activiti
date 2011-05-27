@@ -27,9 +27,6 @@ public class ViewManagerFactoryBean implements FactoryBean<ViewManager> {
   protected MainWindow mainWindow;
   
   public ViewManager getObject() throws Exception {
-    
-    System.out.println("Creating new ViewManager impl");
-    
     DefaultViewManager viewManagerImpl;
     if (environment.equals(Environments.ALFRESCO)) {
       viewManagerImpl = new AlfrescoViewManager();

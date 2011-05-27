@@ -10,27 +10,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.explorer.ui.alfresco;
 
-import org.activiti.explorer.ui.mainlayout.MainMenuBar;
+import org.activiti.explorer.ui.management.ManagementMenuBar;
 
 
 /**
  * @author Joram Barrez
  */
-public class AlfrescoMainMenuBar extends MainMenuBar {
+public class AlfrescoManagementMenuBar extends ManagementMenuBar {
 
   private static final long serialVersionUID = 1L;
-  
-  @Override
-  protected void initButtons() {
-    // In Alfresco admin console, only mgmt should be accessible
-    // so there is no point in offering any buttons
-  }
-  
-  @Override
-  public synchronized void setMainNavigation(String navigation) {
-    // Not needed since there are no buttons in the menu
+
+  protected void initToolbarEntries() {
+    addDatabaseToolbarEntry();
+    addDeploymentsToolbarEntry();
+    addJobsToolbarEntry();
   }
 
 }
