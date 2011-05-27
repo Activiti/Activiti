@@ -7,8 +7,10 @@
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
 
-  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" name="activitiUiPropertyPlaceholder">
     <property name="location" value="classpath:ui.properties" />
+    <!-- Allow other PropertyPlaceholderConfigurer to run aswel -->
+    <property name="ignoreUnresolvablePlaceholders" value="true"/>
   </bean>
 
   <!-- Global scoped beans -->
@@ -37,7 +39,11 @@
   </bean>
   
   <bean name="componentFactories" class="org.activiti.explorer.ComponentFactories">
-    <property name="environment" value="${environment}" />
+    <property name="environment" value="${activiti.ui.environment}" />
+  </bean>
+  
+  <bean name="userCache" class="org.activiti.explorer.cache.UserCacheFactoryBean">
+    <property name="environment" value="${activiti.ui.environment}" />
   </bean>
   
   <!-- Session scoped UI beans -->
@@ -72,7 +78,7 @@
   
   <bean name="viewManager" class="org.activiti.explorer.ViewManager" scope="session">
     <property name="mainWindow" ref="mainWindow" />
-    <property name="defaultPage" value="${default.page}" />
+    <property name="defaultPage" value="${activiti.ui.default.page}" />
   </bean>
   
 </beans>
