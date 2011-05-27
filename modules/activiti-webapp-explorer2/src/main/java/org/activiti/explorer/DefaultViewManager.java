@@ -26,15 +26,15 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.activiti.explorer.ui.AbstractTablePage;
 import org.activiti.explorer.ui.MainWindow;
-import org.activiti.explorer.ui.flow.FlowMenuBar;
-import org.activiti.explorer.ui.flow.FlowPage;
-import org.activiti.explorer.ui.flow.MyFlowsPage;
 import org.activiti.explorer.ui.management.ManagementMenuBar;
 import org.activiti.explorer.ui.management.db.DatabasePage;
 import org.activiti.explorer.ui.management.deployment.DeploymentPage;
 import org.activiti.explorer.ui.management.identity.GroupPage;
 import org.activiti.explorer.ui.management.identity.UserPage;
 import org.activiti.explorer.ui.management.job.JobPage;
+import org.activiti.explorer.ui.process.MyFlowsPage;
+import org.activiti.explorer.ui.process.ProcessDefinitionPage;
+import org.activiti.explorer.ui.process.ProcessMenuBar;
 import org.activiti.explorer.ui.profile.ProfilePopupWindow;
 import org.activiti.explorer.ui.task.ArchivedPage;
 import org.activiti.explorer.ui.task.CasesPage;
@@ -149,61 +149,61 @@ public class DefaultViewManager implements ViewManager {
   }
   
   public void showCasesPage() {
-    switchView(new CasesPage(), ViewManager.MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_CASES);
+    switchView(new CasesPage(), ViewManager.MAIN_NAVIGATION_TASK, TaskMenuBar.ENTRY_CASES);
   }
   
   public void showCasesPage(String taskId) {
-    switchView(new CasesPage(taskId), ViewManager.MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_CASES);
+    switchView(new CasesPage(taskId), ViewManager.MAIN_NAVIGATION_TASK, TaskMenuBar.ENTRY_CASES);
   }
   
   public void showInboxPage() {
-    switchView(new InboxPage(), ViewManager.MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_INBOX);
+    switchView(new InboxPage(), ViewManager.MAIN_NAVIGATION_TASK, TaskMenuBar.ENTRY_INBOX);
   }
   
   public void showInboxPage(String taskId) {
-    switchView(new InboxPage(taskId), ViewManager.MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_INBOX);
+    switchView(new InboxPage(taskId), ViewManager.MAIN_NAVIGATION_TASK, TaskMenuBar.ENTRY_INBOX);
   }
   
   public void showQueuedPage(String groupId) {
-    switchView(new QueuedPage(groupId), ViewManager.MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_QUEUED);
+    switchView(new QueuedPage(groupId), ViewManager.MAIN_NAVIGATION_TASK, TaskMenuBar.ENTRY_QUEUED);
   }
   
   public void showQueuedPage(String groupId, String taskId) {
-    switchView(new QueuedPage(groupId, taskId), ViewManager.MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_QUEUED);
+    switchView(new QueuedPage(groupId, taskId), ViewManager.MAIN_NAVIGATION_TASK, TaskMenuBar.ENTRY_QUEUED);
   }
   
   public void showInvolvedPage() {
-    switchView(new InvolvedPage(), ViewManager.MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_INVOLVED);
+    switchView(new InvolvedPage(), ViewManager.MAIN_NAVIGATION_TASK, TaskMenuBar.ENTRY_INVOLVED);
   }
   
   public void showInvolvedPage(String taskId) {
-    switchView(new InvolvedPage(taskId), ViewManager.MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_INVOLVED);
+    switchView(new InvolvedPage(taskId), ViewManager.MAIN_NAVIGATION_TASK, TaskMenuBar.ENTRY_INVOLVED);
   }
   
   public void showArchivedPage() {
-    switchView(new ArchivedPage(), ViewManager.MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_ARCHIVED);
+    switchView(new ArchivedPage(), ViewManager.MAIN_NAVIGATION_TASK, TaskMenuBar.ENTRY_ARCHIVED);
   }
   
   public void showArchivedPage(String taskId) {
-    switchView(new ArchivedPage(taskId), ViewManager.MAIN_NAVIGATION_TASKS, TaskMenuBar.ENTRY_ARCHIVED);
+    switchView(new ArchivedPage(taskId), ViewManager.MAIN_NAVIGATION_TASK, TaskMenuBar.ENTRY_ARCHIVED);
   }
   
   // Flows
   
-  public void showFlowPage() {
-    switchView(new FlowPage(), ViewManager.MAIN_NAVIGATION_FLOWS, FlowMenuBar.ENTRY_LAUNCH_FLOWS);
+  public void showProcessDefinitionPage() {
+    switchView(new ProcessDefinitionPage(), ViewManager.MAIN_NAVIGATION_PROCESS, ProcessMenuBar.ENTRY_LAUNCH_PROCESS_INSTANCE);
   }
   
-  public void showFlowPage(String processDefinitionId) {
-    switchView(new FlowPage(processDefinitionId), ViewManager.MAIN_NAVIGATION_FLOWS, FlowMenuBar.ENTRY_LAUNCH_FLOWS);
+  public void showProcessDefinitionPage(String processDefinitionId) {
+    switchView(new ProcessDefinitionPage(processDefinitionId), ViewManager.MAIN_NAVIGATION_PROCESS, ProcessMenuBar.ENTRY_LAUNCH_PROCESS_INSTANCE);
   }
   
-  public void showMyFlowsPage() {
-    switchView(new MyFlowsPage(), ViewManager.MAIN_NAVIGATION_FLOWS, FlowMenuBar.ENTRY_MY_FLOWS);
+  public void showMyProcessInstancesPage() {
+    switchView(new MyFlowsPage(), ViewManager.MAIN_NAVIGATION_PROCESS, ProcessMenuBar.ENTRY_MY_PROCESS_INSTANCES);
   }
   
-  public void showMyFlowsPage(String processInstanceId) {
-    switchView(new MyFlowsPage(processInstanceId), ViewManager.MAIN_NAVIGATION_FLOWS, FlowMenuBar.ENTRY_MY_FLOWS);
+  public void showMyProcessInstancesPage(String processInstanceId) {
+    switchView(new MyFlowsPage(processInstanceId), ViewManager.MAIN_NAVIGATION_PROCESS, ProcessMenuBar.ENTRY_MY_PROCESS_INSTANCES);
   }
   
   // Management

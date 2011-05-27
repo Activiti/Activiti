@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.explorer.ui.flow;
+package org.activiti.explorer.ui.process;
 
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
@@ -66,7 +66,7 @@ public class ProcessDefinitionInfoComponent extends VerticalLayout {
   protected void initImage() {
     VerticalLayout processImageContainer = new VerticalLayout();
     
-    Label processTitle = new Label(i18nManager.getMessage(Messages.FLOW_HEADER_DIAGRAM));
+    Label processTitle = new Label(i18nManager.getMessage(Messages.PROCESS_HEADER_DIAGRAM));
     processTitle.addStyleName(ExplorerLayout.STYLE_H3);
     processImageContainer.addComponent(processTitle);
     
@@ -78,7 +78,7 @@ public class ProcessDefinitionInfoComponent extends VerticalLayout {
       embedded.setType(Embedded.TYPE_IMAGE);
       processImageContainer.addComponent(embedded);
     } else {
-      Label noImageAvailable = new Label(i18nManager.getMessage(Messages.FLOW_NO_DIAGRAM));
+      Label noImageAvailable = new Label(i18nManager.getMessage(Messages.PROCESS_NO_DIAGRAM));
       processImageContainer.addComponent(noImageAvailable);
     }
     addComponent(processImageContainer);

@@ -246,7 +246,7 @@ public class TaskDetailPanel extends DetailPanel {
       showProcessInstanceButton.addStyleName(Reindeer.BUTTON_LINK);
       showProcessInstanceButton.addListener(new ClickListener() {
         public void buttonClick(ClickEvent event) {
-          viewManager.showMyFlowsPage(task.getProcessInstanceId());
+          viewManager.showMyProcessInstancesPage(task.getProcessInstanceId());
         }
       });
      

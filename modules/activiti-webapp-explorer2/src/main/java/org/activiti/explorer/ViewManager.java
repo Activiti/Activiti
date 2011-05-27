@@ -21,10 +21,10 @@ import com.vaadin.ui.Window;
  */
 public interface ViewManager {
   
-  static final String MAIN_NAVIGATION_TASKS = "tasks";
-  static final String MAIN_NAVIGATION_FLOWS = "flows";
+  static final String MAIN_NAVIGATION_TASK = "task";
+  static final String MAIN_NAVIGATION_PROCESS = "process";
   static final String MAIN_NAVIGATION_MANAGE = "manage";
-  static final String MAIN_NAVIGATION_REPORTS = "reports";
+  static final String MAIN_NAVIGATION_REPORT = "report";
   
   // Generic
   
@@ -65,13 +65,15 @@ public interface ViewManager {
   
   void showArchivedPage(String taskId);
   
-  void showFlowPage();
+  // Process
   
-  void showFlowPage(String processDefinitionId);
+  void showProcessDefinitionPage();
   
-  void showMyFlowsPage();
+  void showProcessDefinitionPage(String processDefinitionId);
   
-  void showMyFlowsPage(String processInstanceId);
+  void showMyProcessInstancesPage();
+  
+  void showMyProcessInstancesPage(String processInstanceId);
   
   // Management
   

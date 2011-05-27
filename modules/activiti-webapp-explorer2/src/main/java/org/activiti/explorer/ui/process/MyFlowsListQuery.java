@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.explorer.ui.flow;
+package org.activiti.explorer.ui.process;
 
 import java.util.ArrayList;
 import java.util.HashMap;

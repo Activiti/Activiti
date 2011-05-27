@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.explorer.ui.flow;
+package org.activiti.explorer.ui.process;
 
 import org.activiti.engine.FormService;
 import org.activiti.engine.ProcessEngines;
@@ -24,11 +24,11 @@ import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.custom.DetailPanel;
 import org.activiti.explorer.ui.custom.PrettyTimeLabel;
-import org.activiti.explorer.ui.flow.listener.StartFlowClickListener;
 import org.activiti.explorer.ui.form.FormPropertiesEventListener;
 import org.activiti.explorer.ui.form.FormPropertiesForm;
 import org.activiti.explorer.ui.form.FormPropertiesForm.FormPropertiesEvent;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
+import org.activiti.explorer.ui.process.listener.StartProcessInstanceClickListener;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComponentContainer;
@@ -52,7 +52,7 @@ public class ProcessDefinitionDetailPanel extends DetailPanel {
   // Members
   protected ProcessDefinition processDefinition;
   protected Deployment deployment;
-  protected FlowPage flowPage;
+  protected ProcessDefinitionPage flowPage;
   
   // Services
   protected RepositoryService repositoryService;
@@ -69,7 +69,7 @@ public class ProcessDefinitionDetailPanel extends DetailPanel {
   protected FormPropertiesForm processDefinitionStartForm;
   protected ProcessDefinitionInfoComponent definitionInfoComponent;
   
-  public ProcessDefinitionDetailPanel(String processDefinitionId, FlowPage flowPage) {
+  public ProcessDefinitionDetailPanel(String processDefinitionId, ProcessDefinitionPage flowPage) {
     this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
     this.formService = ProcessEngines.getDefaultProcessEngine().getFormService();
     this.i18nManager = ExplorerApp.get().getI18nManager();
@@ -108,8 +108,8 @@ public class ProcessDefinitionDetailPanel extends DetailPanel {
   }
   
   protected void initActions() {
-    startFlowButton = new Button(i18nManager.getMessage(Messages.FLOW_START));
-    startFlowButton.addListener(new StartFlowClickListener(processDefinition, flowPage));
+    startFlowButton = new Button(i18nManager.getMessage(Messages.PROCESS_START));
+    startFlowButton.addListener(new StartProcessInstanceClickListener(processDefinition, flowPage));
     
     // Clear toolbar and add "start flow" button
     flowPage.getToolBar().removeAllButtons();
@@ -169,7 +169,7 @@ public class ProcessDefinitionDetailPanel extends DetailPanel {
     taskDetails.setMargin(false, false, true, false);
     
     // Add image
-    Embedded image = new Embedded(null, Images.FLOW_50);
+    Embedded image = new Embedded(null, Images.PROCESS_50);
     taskDetails.addComponent(image, 0, 0, 0, 1);
     
     // Add task name
@@ -178,13 +178,13 @@ public class ProcessDefinitionDetailPanel extends DetailPanel {
     taskDetails.addComponent(nameLabel, 1, 0, 3,0);
 
     // Add version
-    String versionString = i18nManager.getMessage(Messages.FLOW_VERSION, processDefinition.getVersion());
+    String versionString = i18nManager.getMessage(Messages.PROCESS_VERSION, processDefinition.getVersion());
     Label versionLabel = new Label(versionString);
     versionLabel.addStyleName(ExplorerLayout.STYLE_FLOW_HEADER_VERSION);
     taskDetails.addComponent(versionLabel, 1, 1);
     
     // Add deploy time
-    PrettyTimeLabel deployTimeLabel = new PrettyTimeLabel(i18nManager.getMessage(Messages.FLOW_DEPLOY_TIME),
+    PrettyTimeLabel deployTimeLabel = new PrettyTimeLabel(i18nManager.getMessage(Messages.PROCESS_DEPLOY_TIME),
       deployment.getDeploymentTime(), null);
     deployTimeLabel.addStyleName(ExplorerLayout.STYLE_FLOW_HEADER_DEPLOY_TIME);
     taskDetails.addComponent(deployTimeLabel, 2, 1);

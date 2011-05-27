@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.explorer.ui.flow;
+package org.activiti.explorer.ui.process;
 
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
@@ -20,7 +20,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
-import org.activiti.explorer.navigation.FlowNavigator;
+import org.activiti.explorer.navigation.ProcessNavigator;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.AbstractTablePage;
 import org.activiti.explorer.ui.Images;
@@ -31,14 +31,13 @@ import org.activiti.explorer.ui.util.ThemeImageColumnGenerator;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 
 
 /**
  * @author Joram Barrez
  */
-public class FlowPage extends AbstractTablePage {
+public class ProcessDefinitionPage extends AbstractTablePage {
   
   private static final long serialVersionUID = 1L;
   
@@ -51,16 +50,16 @@ public class FlowPage extends AbstractTablePage {
   protected Table processDefinitionTable;
   protected ProcessDefinitionDetailPanel detailPanel;
   
-  public FlowPage() {
+  public ProcessDefinitionPage() {
     ExplorerApp.get().setCurrentUriFragment(
-      new UriFragment(FlowNavigator.FLOW_URI_PART));
+      new UriFragment(ProcessNavigator.process_URI_PART));
   }
   
   /**
    * Used when the page is reached through an URL.
    * The page will be built and the given process definition will be selected.
    */
-  public FlowPage(String processDefinitionId) {
+  public ProcessDefinitionPage(String processDefinitionId) {
     this();
     this.processDefinitionId = processDefinitionId;
   }
@@ -77,7 +76,7 @@ public class FlowPage extends AbstractTablePage {
   
   @Override
   protected ToolBar createMenuBar() {
-   return new FlowMenuBar();
+   return new ProcessMenuBar();
   }
   
   @Override
@@ -110,7 +109,7 @@ public class FlowPage extends AbstractTablePage {
     });
     
     // Create columns
-    processDefinitionTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.FLOW_22));
+    processDefinitionTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.PROCESS_22));
     processDefinitionTable.setColumnWidth("icon", 22);
     
     processDefinitionTable.addContainerProperty("name", String.class, null);
@@ -120,10 +119,10 @@ public class FlowPage extends AbstractTablePage {
   }
 
   protected void showProcessDefinitionDetail(String processDefinitionId) {
-    detailPanel = new ProcessDefinitionDetailPanel(processDefinitionId, FlowPage.this);
+    detailPanel = new ProcessDefinitionDetailPanel(processDefinitionId, ProcessDefinitionPage.this);
     setDetailComponent(detailPanel);
     
-    UriFragment processDefinitionFragment = new UriFragment(FlowNavigator.FLOW_URI_PART, processDefinitionId);
+    UriFragment processDefinitionFragment = new UriFragment(ProcessNavigator.process_URI_PART, processDefinitionId);
     ExplorerApp.get().setCurrentUriFragment(processDefinitionFragment);
   }
   

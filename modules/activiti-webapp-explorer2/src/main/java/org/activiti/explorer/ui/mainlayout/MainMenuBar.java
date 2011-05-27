@@ -87,13 +87,13 @@ public class MainMenuBar extends HorizontalLayout {
  
   protected void initButtons() {
     // TODO: fixed widths based on i18n strings?
-    Button taskButton = addMenuButton(ViewManager.MAIN_NAVIGATION_TASKS, i18nManager.getMessage(Messages.MAIN_MENU_TASKS), Images.MAIN_MENU_TASKS, false, 80);
+    Button taskButton = addMenuButton(ViewManager.MAIN_NAVIGATION_TASK, i18nManager.getMessage(Messages.MAIN_MENU_TASKS), Images.MAIN_MENU_TASKS, false, 80);
     taskButton.addListener(new ShowTasksClickListener());
-    menuItemButtons.put(ViewManager.MAIN_NAVIGATION_TASKS, taskButton);
+    menuItemButtons.put(ViewManager.MAIN_NAVIGATION_TASK, taskButton);
     
-    Button flowsButton = addMenuButton(ViewManager.MAIN_NAVIGATION_FLOWS, i18nManager.getMessage(Messages.MAIN_MENU_FLOWS), Images.MAIN_MENU_FLOWS, false, 80);
+    Button flowsButton = addMenuButton(ViewManager.MAIN_NAVIGATION_PROCESS, i18nManager.getMessage(Messages.MAIN_MENU_PROCESS), Images.MAIN_MENU_FLOWS, false, 80);
     flowsButton.addListener(new ShowFlowsClickListener());
-    menuItemButtons.put(ViewManager.MAIN_NAVIGATION_FLOWS, flowsButton);
+    menuItemButtons.put(ViewManager.MAIN_NAVIGATION_PROCESS, flowsButton);
 
     if (ExplorerApp.get().getLoggedInUser().isAdmin()) {
       Button manageButton = addMenuButton(ViewManager.MAIN_NAVIGATION_MANAGE, i18nManager.getMessage(Messages.MAIN_MENU_MANAGEMENT), Images.MAIN_MENU_MANAGE, false, 90);
@@ -182,7 +182,7 @@ public class MainMenuBar extends HorizontalLayout {
   
   private class ShowFlowsClickListener implements ClickListener {
     public void buttonClick(ClickEvent event) {
-      ExplorerApp.get().getViewManager().showFlowPage();
+      ExplorerApp.get().getViewManager().showProcessDefinitionPage();
     }
   }
   

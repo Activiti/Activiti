@@ -11,13 +11,13 @@
  * limitations under the License.
  */
 
-package org.activiti.explorer.ui.flow;
+package org.activiti.explorer.ui.process;
 
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.explorer.data.LazyLoadingQuery;
-import org.activiti.explorer.navigation.MyFlowsNavigator;
+import org.activiti.explorer.navigation.MyProcessesNavigator;
 import org.activiti.explorer.navigation.UriFragment;
 
 
@@ -61,7 +61,7 @@ public class MyFlowsPage extends ProcessInstancePage {
 
   @Override
   protected UriFragment getUriFragment(String processInstanceId) {
-    UriFragment fragment = new UriFragment(MyFlowsNavigator.MY_FLOWS_URI_PART);
+    UriFragment fragment = new UriFragment(MyProcessesNavigator.MY_PROCESSES_URI_PART);
     if(processInstanceId != null) {
       fragment.addUriPart(processInstanceId);
     }

@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.explorer.ui.flow;
+package org.activiti.explorer.ui.process;
 
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
@@ -25,17 +25,17 @@ import org.activiti.explorer.ui.custom.ToolbarEntry.ToolbarCommand;
 /**
  * @author Joram Barrez
  */
-public class FlowMenuBar extends ToolBar {
+public class ProcessMenuBar extends ToolBar {
   
   private static final long serialVersionUID = 1L;
   
-  public static final String ENTRY_MY_FLOWS = "myflows"; 
-  public static final String ENTRY_LAUNCH_FLOWS = "flows"; 
+  public static final String ENTRY_MY_PROCESS_INSTANCES = "myProcessInstances"; 
+  public static final String ENTRY_LAUNCH_PROCESS_INSTANCE = "launchProcessInstance"; 
 
   protected I18nManager i18nManager;
   protected ViewManager viewManager;
   
-  public FlowMenuBar() {
+  public ProcessMenuBar() {
     this.i18nManager = ExplorerApp.get().getI18nManager();
     this.viewManager = ExplorerApp.get().getViewManager();
     
@@ -45,15 +45,15 @@ public class FlowMenuBar extends ToolBar {
   protected void init() {
     setWidth("100%");
 
-    addToolbarEntry(ENTRY_MY_FLOWS, i18nManager.getMessage(Messages.FLOW_MENU_MY_FLOWS), new ToolbarCommand() {
+    addToolbarEntry(ENTRY_MY_PROCESS_INSTANCES, i18nManager.getMessage(Messages.PROCESS_MENU_MY_INSTANCES), new ToolbarCommand() {
       public void toolBarItemSelected() {
-        viewManager.showMyFlowsPage();
+        viewManager.showMyProcessInstancesPage();
       }
     });
     
-    addToolbarEntry(ENTRY_LAUNCH_FLOWS, i18nManager.getMessage(Messages.FLOW_MENU_LAUNCH_FLOW), new ToolbarCommand() {
+    addToolbarEntry(ENTRY_LAUNCH_PROCESS_INSTANCE, i18nManager.getMessage(Messages.PROCESS_MENU_LAUNCH), new ToolbarCommand() {
       public void toolBarItemSelected() {
-        viewManager.showFlowPage();
+        viewManager.showProcessDefinitionPage();
       }
     });
   }

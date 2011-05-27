@@ -48,7 +48,7 @@ public interface Messages {
 
   // Main menu
   static final String MAIN_MENU_TASKS = "main.menu.tasks";
-  static final String MAIN_MENU_FLOWS = "main.menu.flows";
+  static final String MAIN_MENU_PROCESS = "main.menu.process";
   static final String MAIN_MENU_MANAGEMENT = "main.menu.management";
   static final String MAIN_MENU_REPORTS = "main.menu.reports";
   
@@ -180,23 +180,23 @@ public interface Messages {
   static final String EVENT_DEFAULT = "event.default";
   static final String EVENT_TITLE = "event.title";
   
-  // Flow menu
-  static final String FLOW_MENU_MY_FLOWS = "flow.menu.my";
-  static final String FLOW_MENU_LAUNCH_FLOW = "flow.menu.launch";
+  // Process menu
+  static final String PROCESS_MENU_MY_INSTANCES = "process.menu.my";
+  static final String PROCESS_MENU_LAUNCH = "process.menu.launch";
   
-  // Flow page
-  static final String FLOW_CATEGORY = "flow.category";
-  static final String FLOW_VERSION = "flow.version"; 
-  static final String FLOW_DEPLOY_TIME = "flow.deploy.time";
-  static final String FLOW_HEADER_DIAGRAM = "flow.header.diagram";
-  static final String FLOW_NO_DIAGRAM = "flow.no.diagram";
-  static final String FLOW_START = "flow.start";
-  static final String FLOW_START_TIME = "flow.start.time";
-  static final String FLOW_STARTED_NOTIFICATION = "flow.started.notification";
-  static final String FLOW_INSTANCE_STARTED_ON = "flow.instance.started.on";
-  static final String FLOW_INSTANCE_HEADER_DIAGRAM = "flow.instance.header.diagram";
-  static final String FLOW_INSTANCE_HEADER_TASKS = "flow.instance.header.tasks";
-  static final String FLOW_INSTANCE_NO_TASKS = "flow.instance.no.tasks";
+  // Process page
+  static final String PROCESS_CATEGORY = "process.category";
+  static final String PROCESS_VERSION = "process.version"; 
+  static final String PROCESS_DEPLOY_TIME = "process.deploy.time";
+  static final String PROCESS_HEADER_DIAGRAM = "process.header.diagram";
+  static final String PROCESS_NO_DIAGRAM = "process.no.diagram";
+  static final String PROCESS_START = "process.start";
+  static final String PROCESS_START_TIME = "process.start.time";
+  static final String PROCESS_STARTED_NOTIFICATION = "process.started.notification";
+  static final String PROCESS_INSTANCE_STARTED_ON = "process.instance.started.on";
+  static final String PROCESS_INSTANCE_HEADER_DIAGRAM = "process.instance.header.diagram";
+  static final String PROCESS_INSTANCE_HEADER_TASKS = "process.instance.header.tasks";
+  static final String PROCESS_INSTANCE_NO_TASKS = "process.instance.no.tasks";
   
   // Management menu
   static final String MGMT_MENU_DATABASE = "management.menu.database";

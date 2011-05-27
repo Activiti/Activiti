@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.explorer.ui.flow.listener;
+package org.activiti.explorer.ui.process.listener;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.NotificationManager;
-import org.activiti.explorer.ui.flow.FlowPage;
+import org.activiti.explorer.ui.process.ProcessDefinitionPage;
 
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -36,7 +36,7 @@ import com.vaadin.ui.Button.ClickListener;
  * @author Frederik Heremans
  * @author Joram Barrez
  */
-public class StartFlowClickListener implements ClickListener {
+public class StartProcessInstanceClickListener implements ClickListener {
 
   private static final long serialVersionUID = 1L;
   
@@ -46,17 +46,17 @@ public class StartFlowClickListener implements ClickListener {
   protected NotificationManager notificationManager;
   
   protected ProcessDefinition processDefinition;
-  protected FlowPage parentPage;
+  protected ProcessDefinitionPage parentPage;
   
   
-  public StartFlowClickListener(ProcessDefinition processDefinition, FlowPage flowPage) {
+  public StartProcessInstanceClickListener(ProcessDefinition processDefinition, ProcessDefinitionPage processDefinitionPage) {
     this.runtimeService = ProcessEngines.getDefaultProcessEngine().getRuntimeService();
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
     this.formService = ProcessEngines.getDefaultProcessEngine().getFormService();
     this.notificationManager = ExplorerApp.get().getNotificationManager(); 
     
     this.processDefinition = processDefinition;
-    this.parentPage = flowPage;
+    this.parentPage = processDefinitionPage;
   }
 
   public void buttonClick(ClickEvent event) {
@@ -71,7 +71,7 @@ public class StartFlowClickListener implements ClickListener {
       ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinition.getId());
       
       // Show notification of success
-      notificationManager.showInformationNotification(Messages.FLOW_STARTED_NOTIFICATION, processDefinition.getName());
+      notificationManager.showInformationNotification(Messages.PROCESS_STARTED_NOTIFICATION, processDefinition.getName());
       
       // Switch to inbox page in case a task of this process was created
       List<Task> loggedInUsersTasks = taskService.createTaskQuery()

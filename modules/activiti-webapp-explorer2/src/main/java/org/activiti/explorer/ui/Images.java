@@ -84,8 +84,8 @@ public class Images {
   public static final Resource RELATED_CONTENT_PDF = new ThemeResource("img/page_white_acrobat.png");
   public static final Resource RELATED_CONTENT_PICTURE = new ThemeResource("img/picture.png");
 
-  // Flows
-  public static final Resource FLOW_50 = new ThemeResource("img/flow-50.png");
-  public static final Resource FLOW_22 = new ThemeResource("img/flow-22.png");
+  // Process
+  public static final Resource PROCESS_50 = new ThemeResource("img/process-50.png");
+  public static final Resource PROCESS_22 = new ThemeResource("img/process-22.png");
   
 }

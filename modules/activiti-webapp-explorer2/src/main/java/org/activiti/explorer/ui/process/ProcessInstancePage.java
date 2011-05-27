@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.explorer.ui.flow;
+package org.activiti.explorer.ui.process;
 
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.data.LazyLoadingContainer;
@@ -41,7 +41,7 @@ public abstract class ProcessInstancePage extends AbstractTablePage {
   
   @Override
   protected ToolBar createMenuBar() {
-    return new FlowMenuBar();
+    return new ProcessMenuBar();
   }
 
   @Override
@@ -74,7 +74,7 @@ public abstract class ProcessInstancePage extends AbstractTablePage {
     processInstanceTable.setContainerDataSource(processInstanceListContainer);
     
     // Create column header
-    processInstanceTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.FLOW_22));
+    processInstanceTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.PROCESS_22));
     processInstanceTable.setColumnWidth("icon", 22);
     
     processInstanceTable.addContainerProperty("name", String.class, null);

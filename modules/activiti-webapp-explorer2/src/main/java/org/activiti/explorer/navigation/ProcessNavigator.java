@@ -19,21 +19,21 @@ import org.activiti.explorer.ExplorerApp;
 /**
  * @author Frederik Heremans
  */
-public class FlowNavigator implements Navigator {
+public class ProcessNavigator implements Navigator {
 
-  public static final String FLOW_URI_PART = "flows";
+  public static final String process_URI_PART = "process";
   
   public String getTrigger() {
-    return FLOW_URI_PART;
+    return process_URI_PART;
   }
 
   public void handleNavigation(UriFragment uriFragment) {
     String processDefinitionId = uriFragment.getUriPart(1);
     
     if(processDefinitionId != null) {
-      ExplorerApp.get().getViewManager().showFlowPage(processDefinitionId);
+      ExplorerApp.get().getViewManager().showProcessDefinitionPage(processDefinitionId);
     } else {
-      ExplorerApp.get().getViewManager().showFlowPage();
+      ExplorerApp.get().getViewManager().showProcessDefinitionPage();
     }
   }
 

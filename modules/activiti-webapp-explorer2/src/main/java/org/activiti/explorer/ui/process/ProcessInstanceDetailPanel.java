@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.explorer.ui.flow;
+package org.activiti.explorer.ui.process;
 
 import java.util.List;
 
@@ -97,7 +97,7 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
   }
 
   protected void addTasks() {
-    Label header = new Label(i18nManager.getMessage(Messages.FLOW_INSTANCE_HEADER_TASKS));
+    Label header = new Label(i18nManager.getMessage(Messages.PROCESS_INSTANCE_HEADER_TASKS));
     header.addStyleName(ExplorerLayout.STYLE_H3);
     header.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
     verticalLayout.addComponent(header);
@@ -147,7 +147,7 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
       taskTable.setPageLength(taskTable.size());
     } else {
       // No tasks
-      Label noTaskLabel = new Label(i18nManager.getMessage(Messages.FLOW_INSTANCE_NO_TASKS));
+      Label noTaskLabel = new Label(i18nManager.getMessage(Messages.PROCESS_INSTANCE_NO_TASKS));
       verticalLayout.addComponent(noTaskLabel);
     }
   }
@@ -184,7 +184,7 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
 
     // Only show when graphical notation is defined
     if (processDefinitionEntity != null && processDefinitionEntity.isGraphicalNotationDefined()) {
-      Label header = new Label(i18nManager.getMessage(Messages.FLOW_INSTANCE_HEADER_DIAGRAM));
+      Label header = new Label(i18nManager.getMessage(Messages.PROCESS_INSTANCE_HEADER_DIAGRAM));
       header.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
       header.addStyleName(ExplorerLayout.STYLE_H3);
       verticalLayout.addComponent(header);
@@ -206,7 +206,7 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
     header.setMargin(false, false, true, false);
     
     // Add image
-    Embedded image = new Embedded(null, Images.FLOW_50);
+    Embedded image = new Embedded(null, Images.PROCESS_50);
     header.addComponent(image, 0, 0, 0, 1);
     
     // Add task name
@@ -215,7 +215,7 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
     header.addComponent(nameLabel, 1, 0, 2, 0);
 
     // Add start time
-    PrettyTimeLabel startTimeLabel = new PrettyTimeLabel(i18nManager.getMessage(Messages.FLOW_START_TIME),
+    PrettyTimeLabel startTimeLabel = new PrettyTimeLabel(i18nManager.getMessage(Messages.PROCESS_START_TIME),
       historicProcessInstance.getStartTime(), null);
     startTimeLabel.addStyleName(ExplorerLayout.STYLE_FLOW_HEADER_START_TIME);
     header.addComponent(startTimeLabel, 1, 1);
