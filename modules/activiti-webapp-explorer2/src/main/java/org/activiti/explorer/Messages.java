@@ -27,6 +27,7 @@ public interface Messages {
   static final String CONFIRMATION_DIALOG_NO = "confirmation.dialog.no";
   static final String BUTTON_OK = "button.ok";
   static final String BUTTON_CREATE = "button.create";
+  static final String BUTTON_CANCEL = "button.cancel";
   
   // Navigation
   static final String NAVIGATION_ERROR_NOT_INVOLVED_TITLE = "navigation.error.not.involved.title";
@@ -232,6 +233,10 @@ public interface Messages {
   static final String DEPLOYMENT_UPLOAD_SERVER_ERROR = "deployment.upload.server.error";
   static final String DEPLOYMENT_DEPLOY_TIME = "deployment.deploy.time";
   static final String DEPLOYMENT_NO_NAME = "deployment.no.name";
+  static final String DEPLOYMENT_NO_INSTANCES = "deployment.no.instances";
+  static final String DEPLOYMENT_DELETE_POPUP_CAPTION = "deployment.delete.popup.caption";
+  static final String DEPLOYMENT_DELETE_POPUP_WARNING = "deployment.delete.popup.warning";
+  static final String DEPLOYMENT_DELETE_POPUP_DELETE_BUTTON = "deployment.delete.popup.delete.button";
   
   // Database page
   static final String DATABASE_NO_ROWS = "database.no.rows";

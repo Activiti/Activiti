@@ -19,6 +19,9 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.I18nManager;
+import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.custom.PopupWindow;
 
@@ -40,6 +43,7 @@ public class DeleteDeploymentPopupWindow extends PopupWindow {
   
   private static final long serialVersionUID = 1L;
   
+  protected I18nManager i18nManager;
   protected RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
   protected RuntimeService runtimeService = ProcessEngines.getDefaultProcessEngine().getRuntimeService();
   protected DeploymentPage deploymentPage;
@@ -50,6 +54,8 @@ public class DeleteDeploymentPopupWindow extends PopupWindow {
     this.deployment = deployment;
     this.deploymentPage = deploymentPage;
     this.windowLayout = (VerticalLayout) getContent();
+    this.i18nManager = ExplorerApp.get().getI18nManager();
+    
     initWindow();
     addDeleteWarning();
     addButtons();
@@ -60,7 +66,7 @@ public class DeleteDeploymentPopupWindow extends PopupWindow {
     addStyleName(Reindeer.WINDOW_LIGHT);
     setModal(true);
     center();
-    setCaption("Delete deployment " + deployment.getName() + "?");
+    setCaption(i18nManager.getMessage(Messages.DEPLOYMENT_DELETE_POPUP_CAPTION, deployment.getName()));
   }
   
   protected void addDeleteWarning() {
@@ -75,7 +81,7 @@ public class DeleteDeploymentPopupWindow extends PopupWindow {
     }
     
     if (nrOfProcessInstances == 0) {
-      Label noInstancesLabel = new Label("No runtime process instances found for this deployment");
+      Label noInstancesLabel = new Label(i18nManager.getMessage(Messages.DEPLOYMENT_NO_INSTANCES));
       noInstancesLabel.addStyleName(Reindeer.LABEL_SMALL);
       addComponent(noInstancesLabel);
     } else {
@@ -87,9 +93,7 @@ public class DeleteDeploymentPopupWindow extends PopupWindow {
       warningIcon.setType(Embedded.TYPE_IMAGE);
       warningLayout.addComponent(warningIcon);
       
-      Label warningLabel = new Label("Found <b>" + nrOfProcessInstances 
-              + " running process instances</b> for this deployment.<br/>Are you sure you want to go ahead?"
-              , Label.CONTENT_XHTML);
+      Label warningLabel = new Label(i18nManager.getMessage(Messages.DEPLOYMENT_DELETE_POPUP_WARNING, nrOfProcessInstances), Label.CONTENT_XHTML);
       warningLabel.setSizeUndefined();
       warningLabel.addStyleName(Reindeer.LABEL_SMALL);
       warningLayout.addComponent(warningLabel);
@@ -102,7 +106,7 @@ public class DeleteDeploymentPopupWindow extends PopupWindow {
   
   protected void addButtons() {
     // Cancel
-    Button cancelButton = new Button("Cancel");
+    Button cancelButton = new Button(i18nManager.getMessage(Messages.BUTTON_CANCEL));
     cancelButton.addStyleName(Reindeer.BUTTON_SMALL);
     cancelButton.addListener(new ClickListener() {
       public void buttonClick(ClickEvent event) {
@@ -111,7 +115,7 @@ public class DeleteDeploymentPopupWindow extends PopupWindow {
     });
     
     // Delete
-    Button deleteButton = new Button("Delete deployment");
+    Button deleteButton = new Button(i18nManager.getMessage(Messages.DEPLOYMENT_DELETE_POPUP_DELETE_BUTTON));
     deleteButton.addStyleName(Reindeer.BUTTON_SMALL);
     deleteButton.addListener(new ClickListener() {
       public void buttonClick(ClickEvent event) {
