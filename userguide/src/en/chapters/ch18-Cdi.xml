@@ -10,6 +10,7 @@
         <listitem><para>Support for @BusinessProcessScoped beans (Cdi beans the lifecycle of which is bound to a process instance),</para></listitem>
         <listitem><para>A custom El-Resolver for resolving Cdi beans (including Ejbs) from the process,</para></listitem>
         <listitem><para>Declarative control over a process instance using annotations,</para></listitem>
+        <listitem><para>Activiti is hooked-up to the cdi event bus,</para></listitem>
         <listitem><para>Works with both Java EE and Java SE, works with Spring,</para></listitem>
         <listitem><para>Support for unit testing.</para></listitem>
    </itemizedlist>   
@@ -21,10 +22,10 @@
 &lt;dependency&gt;
 	&lt;groupId&gt;org.activiti&lt;/groupId&gt;
 	&lt;artifactId&gt;activiti-cdi&lt;/artifactId&gt;
-	&lt;version&gt;5.5&lt;/version&gt;
+	&lt;version&gt;5.x&lt;/version&gt;
 &lt;/dependency&gt;
 </programlisting>
-	This will pull-in activiti-engine and spring.   
+	Replace 'x' with your activiti-version (>=5.6). This will pull-in activiti-engine and spring.   
   <section>
     <title>Setting up activiti-cdi</title>  
     <para>
@@ -180,7 +181,7 @@
 		<title>Declaratively controlling the Process</title>
 		<para>
 		Activiti-cdi allows declaratively starting process instances and completing tasks using annotations. The 
-		<literal>@org.activiti.cdi.annotations.StartProcess</literal> annotation allows to start a process instance 
+		<literal>@org.activiti.cdi.annotation.StartProcess</literal> annotation allows to start a process instance 
 		either by &quot;key&quot; or by &quot;name&quot;. 
 		Note that the process instance is started <emphasis>after</emphasis> the annotated method returns. Example:
 		<programlisting>
@@ -192,7 +193,7 @@ public String submitRequest(BusinessTripRequest request) {
 		</programlisting>		
 		Depending on the configuration of activiti, the code of the annotated method and the starting of the 
 		process instance will be combined in the same transaction.
-		The <literal>@org.activiti.cdi.annotations.CompleteTask</literal>-annotation works in the same way:
+		The <literal>@org.activiti.cdi.annotation.CompleteTask</literal>-annotation works in the same way:
 <programlisting>
 @CompleteTask(endConversation=false)
 public String authorizeBusinessTrip() {
@@ -276,12 +277,68 @@ public class BusinessTripRequest implements Serializable {
 	  	</para>
 	</section>	
 	<section>
+	  	<title>Receiving Process Events</title>
+	  	<para>
+	  	Activiti can be hooked-up to the cdi event-bus. This allows us to be notified of process events using standard cdi event mechanisms. 
+	  	In order to enable cdi event support for activiti, enable the corresponding parse listener in the configuration:
+<programlisting>
+&lt;property name=&quot;customPostBPMNParseListeners&quot;&gt;
+	&lt;list&gt;
+		&lt;bean class=&quot;org.activiti.cdi.impl.event.CdiEventSupportBpmnParseListener&quot; /&gt;
+	&lt;/list&gt;
+&lt;/property&gt;
+</programlisting>
+Now activiti is configured for publishing events using the cdi event bus. The following gives an overview of how process events can be received in cdi beans.
+In cdi, we can declaratively specify event observers using the <literal>@Observes</literal>-annotation. Event notification is typesafe. The type of 
+process events is <literal>org.activiti.cdi.BusinessProcessEvent</literal>.
+The following is an example of a simple event observer method:
+<programlisting>
+public void onProcessEvent(@Observes BusinessProcessEvent businessProcessEvent) {
+	// handle event
+}
+</programlisting>
+This observer would be notified of all events. If we want to restrict the set of events the observer receives, we can add qualifier annotations:
+		<itemizedlist>
+	  		<listitem><literal>@BusinessProcess</literal>: restricts the set of events to a certain 
+	  		process definition. Example: <literal>@Observes @BusinessProcess(&quot;billingProcess&quot;) BusinessProcessEvent evt</literal>
+	  		</listitem>
+	  		<listitem><literal>@StartActivity</literal>: restricts the set of events by a certain activity. For example: 
+	  		<literal>@Observes @StartActivity(&quot;shipGoods&quot;) BusinessProcessEvent evt</literal> is invoke whenever an activity with the 
+	  		id &quot;shipGoods&quot; is entered. 
+	  		</listitem>
+	  		<listitem><literal>@EndActivity</literal>: restricts the set of events by a certain activity. For example: 
+	  		<literal>@Observes @EndActivity(&quot;shipGoods&quot;) BusinessProcessEvent evt</literal> is invoke whenever an activity with the 
+	  		id &quot;shipGoods&quot; is left. 
+	  		</listitem>
+	  		<listitem><literal>@TakeTransition</literal>: restricts the set of events by a certain transition.
+	  		</listitem>
+	  	</itemizedlist>
+	  	The qualifiers named above can be combined freely. For example, in oder to receive all events generated when 
+	  	leaving the &quot;shipGoods&quot; activity in the &quot;shipmentProcess&quot;, we could write the following observer method:
+<programlisting>
+public void beforeShippingGoods(@Observes @BusinessProcess(&quot;shippingProcess&quot;) @EndActivity(&quot;shipGoods&quot;) BusinessProcessEvent evt) {
+	// handle event
+}	  	
+	  	</programlisting>
+	  	In the default configuration, event listeners are invoked synchronously and in the context of the same transaction.
+	  	Cdi transactional observers (only available in combination with JavaEE / EJB), allow to control 
+	  	when the event is handed to the observer method. Using transactional observers, we can for example assure that an observer is only 
+	  	notified if the transaction in which the event is fired suceeds: 
+<programlisting>
+public void onShipmentSuceeded(@Observes(during=TransactionPhase.AFTER_SUCCESS) @BusinessProcess(&quot;shippingProcess&quot;) @EndActivity(&quot;shipGoods&quot;) BusinessProcessEvent evt) {
+	// send email to customer.
+}	  	
+</programlisting>	  	
+	  		  	
+	  	</para>
+	</section>	
+	<section>
 	  	<title>Additional Features</title>
 	  	<itemizedlist>
 	  		<listitem>The ProcessEngine as well as the services are available for injection: <literal>@Inject ProcessEngine, RepositoryService, TaskService</literal>, ...</listitem>
 	  		<listitem>The current process instance and task can be injected: <literal>@Inject ProcessInstance, Task</literal>,</listitem>
 	  		<listitem>The current business key can be injected:  <literal>@Inject @BusinessKey String businessKey</literal>,</listitem>
-	  		<listitem>The current process instance id be injected:  <literal>@Inject @ProcessId String pid</literal>,</listitem>
+	  		<listitem>The current process instance id be injected:  <literal>@Inject @ProcessInstanceId String pid</literal>,</listitem>
 	  	</itemizedlist>
 	</section>		  	
   </section>
@@ -303,10 +360,7 @@ public class BusinessTripRequest implements Serializable {
   &lt;/alternatives&gt;
 &lt;/beans&gt;
 </programlisting>  		
-  		</listitem>
-  		<listitem>Under <literal>src/test/resources/META-INF/services</literal>, include a file named &quot;javax.enterprise.inject.spi.Extension&quot; containing
-  		the line <literal>org.activiti.cdi.test.CdiActivitiTestExtension</literal>. This enables the cdi conversation scope in the absence of a Http-Session.  		
-  		</listitem>
+  		</listitem>  	
   	</itemizedlist>    
   	The following is an example of a cdi-aware activiti test:
 <programlisting>  	
