@@ -43,12 +43,6 @@ public class LoggedInUserImpl implements LoggedInUser {
     this.password = password;
   }
   
-  
-  public LoggedInUserImpl(String userId, String password) {
-    this.alternativeId = userId;
-    this.password = password;
-  }
-  
   public String getId() {
     if(user != null) {
       return user.getId();
