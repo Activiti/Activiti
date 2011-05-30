@@ -49,11 +49,12 @@
   <h3>Release Notes - Activiti - Version 5.6</h3>
   <h4>Highlights</h4>
 	<ul>
-	  <li>Added direct Mule integration</li>
-	  <li></li>
-	  <li></li>
-	  <li></li>
-	  <li></li>
+	  <li>Added direct <a href="http://bpmn20inaction.blogspot.com/2011/05/supersize-activiti-with-mule-esb-and.html">Mule and Camel integration</a></li>
+	  <li>Easier way to retrieve businessKey from task listeners</li>
+    <li>Improved support for Alfresco processes</li>
+	  <li>Added support for delegateExpressions in tasklistener</li>
+	  <li>Added support for BPMN multi instance in the eclipse designer</li>
+	  <li>Extended length of all user defined text columns to 4000</li>
 	</ul>
 
   <h4>Known upgrade limitation</h4>
@@ -95,6 +96,68 @@
     <li>drop the temporary table</li>
   </ol>
   
+<h4>        Bug
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-665'>ACT-665</a>] -         Activiti Designer 0.8.0 can not delete by keyboard
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-691'>ACT-691</a>] -         Cannot see property changes when clicking on new tasks (Activiti Engine)
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-786'>ACT-786</a>] -         NPE on default sequenceFlow without id
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-803'>ACT-803</a>] -         Activiti-Designer creates activiti:field for empty field-values which causes an error on deployment of bar on activiti-probe
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-806'>ACT-806</a>] -         Bug: multi instance service task with collection doesnt inject collection element
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-808'>ACT-808</a>] -         Support for default sequence flow in Activiti Designer
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-809'>ACT-809</a>] -         Deploying Webservice
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-813'>ACT-813</a>] -         deleting task cascading problem for new variable instances 
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-826'>ACT-826</a>] -         Rules Filter in Business Rules Task
+</li>
+</ul>
+    
+<h4>        Improvement
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-730'>ACT-730</a>] -         Easier way to retrieve businessKey from task listeners
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-795'>ACT-795</a>] -         Refactor BPMN 2.0 validation to worker list
+</li>
+</ul>
+    
+<h4>        New Feature
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-236'>ACT-236</a>] -         Introduce new variable type text
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-781'>ACT-781</a>] -         Allow to set charset when sending email
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-797'>ACT-797</a>] -         Set a userTask priority on the bpmn20.xml
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-799'>ACT-799</a>] -         Implement support for specifying timer event definitions other than timeDuration
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-805'>ACT-805</a>] -         Add Ant view to Activiti perspective
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-807'>ACT-807</a>] -         support definition of delegateExpressions in tasklistener
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-811'>ACT-811</a>] -         Support BPMN Multi-instance 
+</li>
+</ul>
+    
+<h4>        Task
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-703'>ACT-703</a>] -         Complement palette
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-780'>ACT-780</a>] -         Enhancing the create task input field
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-788'>ACT-788</a>] -         Enable Alfresco user repository integration in the new webapp
+</li>
+</ul>
+        
   <h3>Release Notes - Activiti - Version 5.5</h3>
   
       <h4>Highlights</h4>
