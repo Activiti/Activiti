@@ -27,7 +27,6 @@ import org.activiti.explorer.data.AbstractLazyLoadingQuery;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.data.util.PropertysetItem;
 
 
 /**
@@ -71,8 +70,8 @@ public class MyProcessInstancesListQuery extends AbstractLazyLoadingQuery {
     return null;
   }
   
-  protected ProcessInstanceListItem createItem(HistoricProcessInstance processInstance) {
-    ProcessInstanceListItem item = new ProcessInstanceListItem();
+  protected ProcessInstanceItem createItem(HistoricProcessInstance processInstance) {
+    ProcessInstanceItem item = new ProcessInstanceItem();
     item.addItemProperty("id", new ObjectProperty<String>(processInstance.getId()));
 
     ProcessDefinition processDefinition = getProcessDefinition(processInstance.getProcessDefinitionId());
@@ -100,18 +99,6 @@ public class MyProcessInstancesListQuery extends AbstractLazyLoadingQuery {
 
   public void setSorting(Object[] propertyId, boolean[] ascending) {
     throw new UnsupportedOperationException();
-  }
-  
-  class ProcessInstanceListItem extends PropertysetItem implements Comparable<ProcessInstanceListItem>{
-
-    private static final long serialVersionUID = 1L;
-
-    public int compareTo(ProcessInstanceListItem other) {
-      // process instances are ordered by id
-      String id = (String) getItemProperty("id").getValue();
-      String otherId = (String) other.getItemProperty("id").getValue();
-      return id.compareTo(otherId);
-    }
   }
   
 }

@@ -13,8 +13,15 @@
 
 package org.activiti.explorer.ui.alfresco;
 
+import org.activiti.explorer.Messages;
+import org.activiti.explorer.data.LazyLoadingContainer;
+import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 import org.activiti.explorer.ui.process.ProcessDefinitionDetailPanel;
 import org.activiti.explorer.ui.process.ProcessDefinitionPage;
+
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Table;
 
 
 /**
@@ -28,8 +35,61 @@ public class AlfrescoProcessDefinitionDetailPanel extends ProcessDefinitionDetai
     super(processDefinitionId, processDefinitionPage);
   }
   
-  protected void initActions() {
-    // no actions (start process instance) needed for Alfresco
+//  protected void initActions() {
+//    // no actions (start process instance) needed for Alfresco
+//  }
+  
+  protected void initUi() {
+    super.initUi();
+    
+    // Adding a table for process instances
+    initProcessInstancesTable();
+  }
+  
+  protected void initProcessInstancesTable() {
+    ProcessInstanceTableLazyQuery lazyQuery = new ProcessInstanceTableLazyQuery(processDefinition.getId());
+    
+    // Header
+    Label instancesTitle = new Label(i18nManager.getMessage(Messages.PROCESS_INSTANCES) + " (" + lazyQuery.size() + ")");
+    instancesTitle.addStyleName(ExplorerLayout.STYLE_H3);
+    instancesTitle.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
+    detailPanelLayout.addComponent(instancesTitle);
+
+    if (lazyQuery.size() > 0) {
+      
+      Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
+      detailPanelLayout.addComponent(emptySpace);
+      
+      Table instancesTable = new Table();
+      instancesTable.setHeight(250, UNITS_PIXELS);
+      instancesTable.setWidth(400, UNITS_PIXELS);
+      
+      LazyLoadingContainer container = new LazyLoadingContainer(lazyQuery);
+      instancesTable.setContainerDataSource(container);
+      
+      // container props
+      instancesTable.addContainerProperty(AlfrescoProcessInstanceTableItem.PROPERTY_ID, String.class, null);
+      instancesTable.addContainerProperty(AlfrescoProcessInstanceTableItem.PROPERTY_BUSINESSKEY, String.class, null);
+      instancesTable.addContainerProperty(AlfrescoProcessInstanceTableItem.PROPERTY_ACTIONS, Component.class, null);
+      
+      // column alignment
+      instancesTable.setColumnAlignment(AlfrescoProcessInstanceTableItem.PROPERTY_ACTIONS, Table.ALIGN_CENTER);
+      
+      // column header
+      instancesTable.setColumnHeader(AlfrescoProcessInstanceTableItem.PROPERTY_ID, i18nManager.getMessage(Messages.PROCESS_INSTANCE_ID));
+      instancesTable.setColumnHeader(AlfrescoProcessInstanceTableItem.PROPERTY_BUSINESSKEY, i18nManager.getMessage(Messages.PROCESS_INSTANCE_BUSINESSKEY));
+      instancesTable.setColumnHeader(AlfrescoProcessInstanceTableItem.PROPERTY_ACTIONS, i18nManager.getMessage(Messages.PROCESS_INSTANCE_ACTIONS));
+      
+      instancesTable.setEditable(false);
+      instancesTable.setSelectable(true);
+      instancesTable.setNullSelectionAllowed(false);
+      instancesTable.setSortDisabled(true);
+      detailPanelLayout.addComponent(instancesTable);
+      
+    } else {
+      Label noInstances = new Label(i18nManager.getMessage(Messages.PROCESS_NO_INSTANCES));
+      detailPanelLayout.addComponent(noInstances);
+    }
   }
   
 }

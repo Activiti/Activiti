@@ -15,6 +15,7 @@ package org.activiti.explorer.ui.alfresco;
 
 import org.activiti.explorer.DefaultViewManager;
 import org.activiti.explorer.ViewManager;
+import org.activiti.explorer.ui.management.process.ProcessInstancePage;
 
 
 /**
@@ -36,5 +37,15 @@ public class AlfrescoViewManager extends DefaultViewManager {
   public void showProcessDefinitionPage(String processDefinitionId) {
     switchView(new AlfrescoProcessDefinitionPage(processDefinitionId), ViewManager.MAIN_NAVIGATION_PROCESS, AlfrescoManagementMenuBar.ENTRY_PROCESS_DEFINITIONS);
   }
-
+  
+  @Override
+  public void showProcessInstancePage() {
+    switchView(new ProcessInstancePage(), ViewManager.MAIN_NAVIGATION_MANAGE, AlfrescoManagementMenuBar.ENTRY_PROCESS_INSTANCES);
+  }
+  
+  @Override
+  public void showProcessInstancePage(String processInstanceId) {
+    switchView(new ProcessInstancePage(), ViewManager.MAIN_NAVIGATION_MANAGE, AlfrescoManagementMenuBar.ENTRY_PROCESS_INSTANCES);
+  }
+  
 }

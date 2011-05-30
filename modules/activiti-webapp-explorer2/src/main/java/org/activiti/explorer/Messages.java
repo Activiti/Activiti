@@ -184,6 +184,7 @@ public interface Messages {
   // Process menu
   static final String PROCESS_MENU_MY_INSTANCES = "process.menu.my.instances";
   static final String PROCESS_MENU_DEFINITIONS = "process.menu.definitions";
+  static final String PROCESS_MENU_INSTANCES = "process.menu.instances";
   
   // Process page
   static final String PROCESS_CATEGORY = "process.category";
@@ -198,6 +199,12 @@ public interface Messages {
   static final String PROCESS_INSTANCE_HEADER_DIAGRAM = "process.instance.header.diagram";
   static final String PROCESS_INSTANCE_HEADER_TASKS = "process.instance.header.tasks";
   static final String PROCESS_INSTANCE_NO_TASKS = "process.instance.no.tasks";
+  static final String PROCESS_INSTANCES = "process.instances";
+  static final String PROCESS_NO_INSTANCES = "process.no.instances";
+  static final String PROCESS_ACTION_VIEW = "process.action.view";
+  static final String PROCESS_INSTANCE_ID = "process.instance.id";
+  static final String PROCESS_INSTANCE_BUSINESSKEY = "process.instance.businesskey";
+  static final String PROCESS_INSTANCE_ACTIONS = "process.instance.actions";
   
   // Management menu
   static final String MGMT_MENU_DATABASE = "management.menu.database";

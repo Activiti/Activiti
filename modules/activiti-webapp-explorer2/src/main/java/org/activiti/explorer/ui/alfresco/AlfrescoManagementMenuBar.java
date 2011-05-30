@@ -26,18 +26,28 @@ public class AlfrescoManagementMenuBar extends ManagementMenuBar {
   private static final long serialVersionUID = 1L;
   
   public static final String ENTRY_PROCESS_DEFINITIONS = "processDefinitions"; 
+  public static final String ENTRY_PROCESS_INSTANCES = "processInstances";
 
   protected void initToolbarEntries() {
     addDeploymentsToolbarEntry();
     addJobsToolbarEntry();
-    addDatabaseToolbarEntry();
     addProcessDefinitionsEntry();
+    addProcessInstancesEntry();
+    addDatabaseToolbarEntry();
   }
   
   protected void addProcessDefinitionsEntry() {
     addToolbarEntry(ENTRY_PROCESS_DEFINITIONS, i18nManager.getMessage(Messages.PROCESS_MENU_DEFINITIONS), new ToolbarCommand() {
       public void toolBarItemSelected() {
         viewManager.showProcessDefinitionPage();
+      }
+    });
+  }
+  
+  protected void addProcessInstancesEntry() {
+    addToolbarEntry(ENTRY_PROCESS_INSTANCES, i18nManager.getMessage(Messages.PROCESS_MENU_INSTANCES), new ToolbarCommand() {
+      public void toolBarItemSelected() {
+        viewManager.showProcessInstancePage();
       }
     });
   }

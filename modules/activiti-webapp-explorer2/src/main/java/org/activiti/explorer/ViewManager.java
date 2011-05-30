@@ -97,6 +97,10 @@ public interface ViewManager {
   
   void showGroupPage(String groupId);
   
+  void showProcessInstancePage();
+  
+  void showProcessInstancePage(String processInstanceId);
+  
   // Profile
   
   void showProfilePopup(String userId);

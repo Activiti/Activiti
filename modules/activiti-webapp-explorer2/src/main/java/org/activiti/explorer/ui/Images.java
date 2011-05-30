@@ -32,6 +32,7 @@ public class Images {
   public static final Resource SUCCESS = new ThemeResource("img/tick.png");
   public static final Resource EDIT = new ThemeResource("img/edit.png");
   public static final Resource SAVE = new ThemeResource("img/save.png");
+  public static final Resource MAGNIFIER_16 = new ThemeResource("img/magnifier-16.png");
   
   public static final Resource MAIN_MENU_TASKS = new ThemeResource("img/mm-tasks.png");
   public static final Resource MAIN_MENU_PROCESS = new ThemeResource("img/mm-process.png");

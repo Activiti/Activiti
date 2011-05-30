@@ -60,7 +60,7 @@ public class ProcessDefinitionDetailPanel extends DetailPanel {
   protected I18nManager i18nManager;
   
   // UI
-  protected VerticalLayout verticalLayout;
+  protected VerticalLayout detailPanelLayout;
   protected HorizontalLayout detailContainer;
   protected HorizontalLayout actionsContainer;
   protected Label nameLabel;
@@ -88,17 +88,17 @@ public class ProcessDefinitionDetailPanel extends DetailPanel {
     setSizeFull();
     addStyleName(Reindeer.LAYOUT_WHITE);
     
-    verticalLayout = new VerticalLayout();
-    verticalLayout.setWidth(100, UNITS_PERCENTAGE);
-    verticalLayout.setMargin(true);
-    setDetailContainer(verticalLayout);
+    detailPanelLayout = new VerticalLayout();
+    detailPanelLayout.setWidth(100, UNITS_PERCENTAGE);
+    detailPanelLayout.setMargin(true);
+    setDetailContainer(detailPanelLayout);
     
     // All details about the process definition
     initHeader();
     
     detailContainer = new HorizontalLayout();
     detailContainer.addStyleName(Reindeer.PANEL_LIGHT);
-    verticalLayout.addComponent(detailContainer);
+    detailPanelLayout.addComponent(detailContainer);
     detailContainer.setSizeFull();
     
     initActions();
@@ -171,7 +171,7 @@ public class ProcessDefinitionDetailPanel extends DetailPanel {
     details.setSpacing(true);
     details.setMargin(false, false, true, false);
     details.setColumnExpandRatio(1, 1.0f);
-    verticalLayout.addComponent(details);
+    detailPanelLayout.addComponent(details);
     
     // Image
     Embedded image = new Embedded(null, Images.PROCESS_50);

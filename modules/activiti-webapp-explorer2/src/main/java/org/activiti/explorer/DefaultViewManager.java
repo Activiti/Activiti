@@ -26,12 +26,14 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.activiti.explorer.ui.AbstractTablePage;
 import org.activiti.explorer.ui.MainWindow;
+import org.activiti.explorer.ui.alfresco.AlfrescoManagementMenuBar;
 import org.activiti.explorer.ui.management.ManagementMenuBar;
 import org.activiti.explorer.ui.management.db.DatabasePage;
 import org.activiti.explorer.ui.management.deployment.DeploymentPage;
 import org.activiti.explorer.ui.management.identity.GroupPage;
 import org.activiti.explorer.ui.management.identity.UserPage;
 import org.activiti.explorer.ui.management.job.JobPage;
+import org.activiti.explorer.ui.management.process.ProcessInstancePage;
 import org.activiti.explorer.ui.process.MyProcessInstancesPage;
 import org.activiti.explorer.ui.process.ProcessDefinitionPage;
 import org.activiti.explorer.ui.process.ProcessMenuBar;
@@ -246,6 +248,14 @@ public class DefaultViewManager implements ViewManager {
   
   public void showGroupPage(String groupId) {
     switchView(new GroupPage(groupId), ViewManager.MAIN_NAVIGATION_MANAGE, ManagementMenuBar.ENTRY_GROUPS);
+  }
+  
+  public void showProcessInstancePage() {
+    throw new UnsupportedOperationException(); // Only for alfresco admin app
+  }
+  
+  public void showProcessInstancePage(String processInstanceId) {
+    throw new UnsupportedOperationException(); // Only for alfresco admin app
   }
   
   // Profile

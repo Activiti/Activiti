@@ -53,6 +53,10 @@ public class LazyLoadingContainer implements Container.Indexed, Container.Sortab
     lazyLoadingQuery.setLazyLoadingContainer(this);
   }
   
+  public LazyLoadingContainer(LazyLoadingQuery lazyLoadingQuery) {
+    this(lazyLoadingQuery, 15);
+  }
+  
   public boolean addContainerProperty(Object propertyId, Class< ? > type, Object defaultValue) throws UnsupportedOperationException {
     containerPropertyIds.add(propertyId);
     containerPropertyTypes.put(propertyId, type);
