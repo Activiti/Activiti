@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="activiti.distro" default="distro">
+  
+  <property file="${user.home}/.activiti/build.properties" />
+
+  <property name="activiti.version" value="5.6-SNAPSHOT" /> 
+  <property name="target.distro.root" value="target/activiti-${activiti.version}" />
+	<property name="activiti.website" value="../../activiti-website" />
+
+  <condition property="mvn.executable" value="mvn.bat" else="mvn">
+     <os family="windows"/>
+  </condition>
+
+  <condition property="ls.executable" value="cmd" else="ls">
+     <os family="windows"/>
+  </condition>
+
+	<condition property="ls.executable.options" value="/c dir /B" else="">
+     <os family="windows"/>
+  </condition>
+	<condition property="ls.executable.path.seperator" value="\" else="/">
+     <os family="windows"/>
+  </condition>
+
+  <target name="clean">
+    <delete dir="target" />
+  </target>
+  
+  <target name="distro" depends="build.modules, 
+  	                             copy.static.resources,
+  	                             copy.dependencies,
+                                 copy.webapps,
+  	                             copy.examples,
+  	                             copy.docs">
+  	<zip destfile="${target.distro.root}.zip">
+      <fileset dir="target">
+        <include name="activiti-${activiti.version}/**" />
+      </fileset>
+  	</zip>
+  </target>
+  
+  <target name="build.modules">
+  	<condition property="nodocs.profile" value=",nodocs -Dskiptests" else="">
+  		<equals arg1="${nodocs}" arg2="true" />
+  	</condition>
+    <exec executable="${mvn.executable}" dir=".." failonerror="true">
+    	<env key="MAVEN_OPTS" value="-Xmx1024m -Xms512m"/>
+      <arg line="-Pdistro${nodocs.profile} clean install" />
+    </exec>
+  </target>
+  
+	<target name="copy.static.resources">
+    <copy todir="${target.distro.root}">
+      <fileset dir="src" />
+    </copy>
+	</target>
+	
+	<target name="copy.dependencies">
+		<!-- FETCH DEPENDENCIES FROM MAVEN -->
+    <exec executable="${mvn.executable}" dir="../modules/activiti-engine">
+      <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-engine-runtime"/>
+    </exec>
+    <exec executable="${mvn.executable}" dir="../modules/activiti-cxf">
+      <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-engine-runtime-feature-cxf"/>
+    </exec>
+    <exec executable="${mvn.executable}" dir="../modules/activiti-engine">
+      <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-engine-test -DexcludeScope=runtime"/>
+    </exec>
+    <exec executable="${mvn.executable}" dir="../modules/activiti-spring">
+      <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-spring-runtime"/>
+    </exec>
+    <exec executable="${mvn.executable}" dir="../modules/activiti-spring">
+      <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-spring-test -DexcludeScope=runtime"/>
+    </exec>
+    <exec executable="${mvn.executable}" dir="../modules/activiti-cycle">
+      <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-cycle-runtime"/>
+    </exec>
+    <exec executable="${mvn.executable}" dir="../modules/activiti-webapp-rest">
+      <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-webapp-rest"/>
+    </exec>
+    <exec executable="${mvn.executable}" dir="../modules/activiti-webapp">
+      <arg line="dependency:unpack-dependencies -DoutputDirectory=../../distro/target/spring-surf-application-war -DincludeArtifactIds=spring-surf-application"/>
+    </exec>
+		<exec executable="${mvn.executable}" dir="../modules/activiti-webapp-kickstart">
+		  <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-webapp-kickstart"/>
+		</exec>
+		<exec executable="${mvn.executable}" dir="../modules/activiti-webapp-administrator">
+		  <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-webapp-administrator" />
+		</exec>
+    <!-- ADD ACTIVITI JARS -->
+		<copy todir="target/libs-engine-runtime">
+			<fileset dir="../modules/activiti-engine/target">
+				<include name="activiti-engine-*.jar" />
+			</fileset>
+		</copy>
+    <copy todir="target/libs-spring-runtime">
+      <fileset dir="../modules/activiti-spring/target">
+        <include name="activiti-spring-*.jar" />
+      </fileset>
+    </copy>
+	    <copy todir="target/libs-engine-runtime-feature-cxf">
+	      <fileset dir="../modules/activiti-cxf/target">
+	        <include name="activiti-cxf-*.jar" />
+	      </fileset>
+	    </copy>
+    <!-- DELETE UNNECESSARY ANT JARS -->
+    <delete>
+       <fileset dir="target/libs-engine-runtime">
+         <include name="ant-*.jar" />
+       </fileset>
+      <fileset dir="target/libs-engine-test">
+        <include name="ant-*.jar" />
+      </fileset>
+     </delete>
+    <mkdir dir="target/libs-engine-runtime-feature-groovy" />
+		<move todir="target/libs-engine-runtime-feature-groovy">
+			<fileset dir="target/libs-engine-test">
+        <include name="antlr-*.jar" />
+        <include name="asm-*.jar" />
+				<include name="groovy-*.jar" />
+			</fileset>
+	  </move>
+    <mkdir dir="target/libs-engine-runtime-feature-jpa" />
+    <move todir="target/libs-engine-runtime-feature-jpa">
+      <fileset dir="target/libs-engine-test">
+        <include name="persistence-api-*.jar" />
+        <include name="openjpa-*.jar" />
+        <include name="serp-*.jar" />
+        <include name="commons-lang-*.jar" />
+        <include name="commons-collections-*.jar" />
+        <include name="commons-pool-*.jar" />
+        <include name="geronimo-jms*.jar" />
+        <include name="geronimo-jpa*.jar" />
+      </fileset>
+    </move>
+    
+		<!-- CREATE DEPENDENCY LIST FILES -->
+    <mkdir dir="${target.distro.root}/setup/files/dependencies/libs" />
+    <exec output="${target.distro.root}/setup/files/dependencies/libs.engine.test.txt" executable="${ls.executable}">
+      <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-engine-test"/>
+    </exec>
+	<!-- Add manual entry for oracle driver jar in libs.engine.test,  so it can be added by the user and will be picked-up in the demo -->
+	<echo file="${target.distro.root}/setup/files/dependencies/libs.engine.test.txt" append="true">ojdbc5.jar</echo>
+		
+    <exec output="${target.distro.root}/setup/files/dependencies/libs.engine.runtime.feature.groovy.txt" executable="${ls.executable}">
+      <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-engine-runtime-feature-groovy"/>
+    </exec>
+    <exec output="${target.distro.root}/setup/files/dependencies/libs.engine.runtime.feature.jpa.txt" executable="${ls.executable}">
+      <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-engine-runtime-feature-jpa"/>
+    </exec>
+    <delete>
+      <fileset dir="target/libs-engine-runtime" 
+               includesfile="${target.distro.root}/setup/files/dependencies/libs.engine.test.txt" />
+      <fileset dir="target/libs-engine-runtime" 
+               includesfile="${target.distro.root}/setup/files/dependencies/libs.engine.runtime.feature.groovy.txt" />
+      <fileset dir="target/libs-engine-runtime" 
+               includesfile="${target.distro.root}/setup/files/dependencies/libs.engine.runtime.feature.jpa.txt" />
+    </delete>
+    <exec output="${target.distro.root}/setup/files/dependencies/libs.engine.runtime.txt" executable="${ls.executable}">
+      <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-engine-runtime"/>
+    </exec>
+    <exec output="${target.distro.root}/setup/files/dependencies/libs.engine.runtime.feature.cxf.txt" executable="${ls.executable}">
+      <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-engine-runtime-feature-cxf"/>
+    </exec>
+    <exec output="${target.distro.root}/setup/files/dependencies/libs.spring.test.txt" executable="${ls.executable}">
+      <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-spring-test"/>
+    </exec>
+    <delete>
+      <fileset dir="target/libs-spring-runtime" 
+               includesfile="${target.distro.root}/setup/files/dependencies/libs.spring.test.txt" />
+      <fileset dir="target/libs-spring-test" 
+               includesfile="${target.distro.root}/setup/files/dependencies/libs.engine.test.txt" />
+      <fileset dir="target/libs-cycle-runtime" 
+               includesfile="${target.distro.root}/setup/files/dependencies/libs.engine.runtime.txt" />
+    </delete>    
+    <exec output="${target.distro.root}/setup/files/dependencies/libs.spring.test.txt" executable="${ls.executable}">
+       <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-spring-test"/>
+    </exec>
+    <exec output="${target.distro.root}/setup/files/dependencies/libs.spring.runtime.txt" executable="${ls.executable}">
+      <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-spring-runtime"/>
+    </exec>
+    <exec output="${target.distro.root}/setup/files/dependencies/libs.cycle.runtime.txt" executable="${ls.executable}">
+      <arg line='${ls.executable.options} "target${ls.executable.path.seperator}libs-cycle-runtime"'/>
+    </exec>
+    <exec output="${target.distro.root}/setup/files/dependencies/libs.webapp.rest.txt" executable="${ls.executable}">
+      <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-webapp-rest"/>
+    </exec>
+		<exec output="${target.distro.root}/setup/files/dependencies/libs.webapp.kickstart.txt" executable="${ls.executable}">
+		  <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-webapp-kickstart"/>
+		</exec>
+		<exec output="${target.distro.root}/setup/files/dependencies/libs.webapp.administrator.txt" executable="${ls.executable}">
+		  <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-webapp-administrator" />
+		</exec>
+    <exec output="${target.distro.root}/setup/files/dependencies/libs.webapp.ui.txt" executable="${ls.executable}">
+      <arg line="${ls.executable.options} target${ls.executable.path.seperator}spring-surf-application-war${ls.executable.path.seperator}WEB-INF${ls.executable.path.seperator}lib"/>
+    </exec>
+    <!-- MOVE ALL LIBS TO setup/files/dependencies/libs -->
+		<mkdir dir="${target.distro.root}/setup/files/dependencies/libs" />
+    <move todir="${target.distro.root}/setup/files/dependencies/libs">
+      <fileset dir="target/libs-engine-runtime" />
+      <fileset dir="target/libs-engine-runtime-feature-groovy" />
+      <fileset dir="target/libs-engine-runtime-feature-jpa" />
+      <fileset dir="target/libs-engine-runtime-feature-cxf" />
+      <fileset dir="target/libs-engine-test" />
+      <fileset dir="target/libs-spring-runtime" />
+      <fileset dir="target/libs-spring-test" />
+      <fileset dir="target/libs-cycle-runtime" />
+      <fileset dir="target/libs-webapp-rest" />
+    	<fileset dir="target/libs-webapp-kickstart" />
+    	<fileset dir="target/libs-webapp-administrator" />
+      <fileset dir="target/spring-surf-application-war/WEB-INF/lib" />
+    </move>
+	</target>
+	
+	<target name="copy.webapps">
+    <mkdir dir="${target.distro.root}/setup/files/webapps/activiti-probe.war" />
+    <unzip dest="${target.distro.root}/setup/files/webapps/activiti-probe.war" 
+           src="../modules/activiti-webapp-probe/target/activiti-webapp-probe-${activiti.version}.war"/>
+    <mkdir dir="${target.distro.root}/setup/files/webapps/activiti-cycle.war" />
+    <unzip dest="${target.distro.root}/setup/files/webapps/activiti-cycle.war" 
+           src="../modules/activiti-webapp-cycle/target/activiti-webapp-cycle-${activiti.version}.war"/>
+    <mkdir dir="${target.distro.root}/setup/files/webapps/activiti-explorer.war" />
+    <unzip dest="${target.distro.root}/setup/files/webapps/activiti-explorer.war" 
+           src="../modules/activiti-webapp-explorer/target/activiti-webapp-explorer-${activiti.version}.war"/>
+    <mkdir dir="${target.distro.root}/setup/files/webapps/activiti-rest.war" />
+    <unzip dest="${target.distro.root}/setup/files/webapps/activiti-rest.war" 
+           src="../modules/activiti-webapp-rest/target/activiti-webapp-rest-${activiti.version}.war"/>
+		<mkdir dir="${target.distro.root}/setup/files/webapps/activiti-kickstart.war" />
+	  <unzip dest="${target.distro.root}/setup/files/webapps/activiti-kickstart.war" 
+		       src="../modules/activiti-webapp-kickstart/target/activiti-webapp-kickstart-${activiti.version}.war"/>
+		<mkdir dir="${target.distro.root}/setup/files/webapps/activiti-administrator.war" />
+		<unzip dest="${target.distro.root}/setup/files/webapps/activiti-administrator.war" 
+			     src="../modules/activiti-webapp-administrator/target/activiti-webapp-administrator-${activiti.version}.war" />
+    <mkdir dir="${target.distro.root}/setup/files/webapps/activiti-init.war" />
+    <unzip dest="${target.distro.root}/setup/files/webapps/activiti-init.war" 
+           src="../modules/activiti-webapp-init/target/activiti-webapp-init-${activiti.version}.war"/>
+		<delete>
+      <fileset dir="${target.distro.root}/setup/files/webapps/activiti-cycle.war/WEB-INF/lib" />
+      <fileset dir="${target.distro.root}/setup/files/webapps/activiti-explorer.war/WEB-INF/lib" />
+      <fileset dir="${target.distro.root}/setup/files/webapps/activiti-rest.war/WEB-INF/lib" />
+			<fileset dir="${target.distro.root}/setup/files/webapps/activiti-kickstart.war/WEB-INF/lib">
+			  <exclude name="activiti-cfg.jar"/>	
+			</fileset>
+      <fileset dir="${target.distro.root}/setup/files/webapps/activiti-probe.war/WEB-INF/lib" />
+			<fileset dir="${target.distro.root}/setup/files/webapps/activiti-administrator.war/WEB-INF/lib" />
+    </delete>
+	</target>
+	
+	<target name="copy.examples">
+		<!-- ENGINE EXAMPLES -->
+    <mkdir dir="${target.distro.root}/workspace/activiti-engine-examples/src/main/java" />
+    <copy todir="${target.distro.root}/workspace/activiti-engine-examples/src/main/java" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-engine/src/test/java">
+        <include name="org/activiti/examples/**" />
+        <exclude name="**/*Test.java" />
+        <exclude name="org/activiti/examples/variables/jpa/**" />
+      </fileset>
+    </copy>
+    <mkdir dir="${target.distro.root}/workspace/activiti-engine-examples/src/main/process" />
+    <copy todir="${target.distro.root}/workspace/activiti-engine-examples/src/main/process" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-engine/src/test/resources">
+        <include name="org/activiti/examples/**/*.bpmn20.xml" />
+        <include name="org/activiti/examples/**/*.form" />
+      	<include name="org/activiti/examples/**/*.png" />
+      	<include name="org/activiti/examples/**/*.internal" /> <!-- needed for KickStart examples -->
+        <exclude name="org/activiti/examples/groovy/*.bpmn20.xml" />
+        <exclude name="org/activiti/examples/variables/jpa/*.bpmn20.xml" />
+      </fileset>
+    </copy>
+    <mkdir dir="${target.distro.root}/workspace/activiti-engine-examples/src/test/java" />
+    <copy todir="${target.distro.root}/workspace/activiti-engine-examples/src/test/java" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-engine/src/test/java">
+        <include name="org/activiti/examples/**/*Test.java" />
+        <exclude name="org/activiti/examples/groovy/*Test.java" />
+        <exclude name="org/activiti/examples/variables/jpa/*Test.java" />
+      </fileset>
+    </copy>
+    <mkdir dir="${target.distro.root}/workspace/activiti-engine-examples/src/test/resources" />
+    <copy todir="${target.distro.root}/workspace/activiti-engine-examples/src/test/resources" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-engine/src/test/resources">
+        <include name="activiti.cfg.xml" />
+        <include name="logging.properties" />
+      </fileset>
+    </copy>
+    <!-- GROOVY EXAMPLES -->
+    <mkdir dir="${target.distro.root}/workspace/activiti-groovy-examples/src/main/process" />
+    <copy todir="${target.distro.root}/workspace/activiti-groovy-examples/src/main/process" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-engine/src/test/resources">
+        <include name="org/activiti/examples/groovy/*.bpmn20.xml" />
+      </fileset>
+    </copy>
+    <mkdir dir="${target.distro.root}/workspace/activiti-groovy-examples/src/test/java" />
+    <copy todir="${target.distro.root}/workspace/activiti-groovy-examples/src/test/java" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-engine/src/test/java">
+        <include name="org/activiti/examples/groovy/*Test.java" />
+      </fileset>
+    </copy>
+    <mkdir dir="${target.distro.root}/workspace/activiti-groovy-examples/src/test/resources" />
+    <copy todir="${target.distro.root}/workspace/activiti-groovy-examples/src/test/resources" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-engine/src/test/resources">
+        <include name="activiti.cfg.xml" />
+        <include name="logging.properties" />
+      </fileset>
+    </copy>
+    <!-- JPA EXAMPLES -->
+    <mkdir dir="${target.distro.root}/workspace/activiti-jpa-examples/src/main/java" />
+    <copy todir="${target.distro.root}/workspace/activiti-jpa-examples/src/main/java" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-engine/src/test/java">
+        <include name="org/activiti/examples/variables/jpa/**" />
+        <exclude name="**/*Test.java" />
+      </fileset>
+    </copy>
+    <mkdir dir="${target.distro.root}/workspace/activiti-jpa-examples/src/main/process" />
+    <copy todir="${target.distro.root}/workspace/activiti-jpa-examples/src/main/process" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-engine/src/test/resources">
+        <include name="org/activiti/examples/variables/jpa/*.bpmn20.xml" />
+      </fileset>
+    </copy>
+    <mkdir dir="${target.distro.root}/workspace/activiti-jpa-examples/src/test/java" />
+    <copy todir="${target.distro.root}/workspace/activiti-jpa-examples/src/test/java" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-engine/src/test/java">
+        <include name="org/activiti/examples/variables/jpa/*Test.java" />
+      </fileset>
+    </copy>
+    <mkdir dir="${target.distro.root}/workspace/activiti-jpa-examples/src/test/resources" />
+    <copy todir="${target.distro.root}/workspace/activiti-jpa-examples/src/test/resources" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-engine/src/test/resources">
+        <include name="org/activiti/examples/variables/jpa/activiti.cfg.xml" />
+        <include name="activiti.cfg.xml" />
+        <include name="logging.properties" />
+        <include name="META-INF/persistence.xml" />
+      </fileset>
+    </copy>
+    <!-- SPRING EXAMPLES -->
+    <mkdir dir="${target.distro.root}/workspace/activiti-spring-examples/src/main/java" />
+    <copy todir="${target.distro.root}/workspace/activiti-spring-examples/src/main/java" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-spring/src/test/java">
+        <exclude name="**/*Test.java" />
+      </fileset>
+    </copy>
+    <mkdir dir="${target.distro.root}/workspace/activiti-spring-examples/src/main/process" />
+    <copy todir="${target.distro.root}/workspace/activiti-spring-examples/src/main/process" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-spring/src/test/resources">
+        <include name="**/*.bpmn20.xml" />
+        <include name="**/*.form" />
+        <exclude name="**/custom-persistence.xml" />
+        <exclude name="**/*-context.xml" />
+        <exclude name="logging.properties" />
+      </fileset>
+    </copy>
+    <mkdir dir="${target.distro.root}/workspace/activiti-spring-examples/src/test/java" />
+    <copy todir="${target.distro.root}/workspace/activiti-spring-examples/src/test/java" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-spring/src/test/java">
+        <include name="**/*Test.java" />
+      </fileset>
+    </copy>
+    <mkdir dir="${target.distro.root}/workspace/activiti-spring-examples/src/test/resources" />
+    <copy todir="${target.distro.root}/workspace/activiti-spring-examples/src/test/resources" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-spring/src/test/resources">
+        <include name="**/custom-persistence.xml" />
+        <include name="**/*-context.xml" />
+        <include name="logging.properties" />
+      </fileset>
+    </copy>
+    <!-- CXF EXAMPLES -->
+    <mkdir dir="${target.distro.root}/workspace/activiti-cxf-examples/src/test/java" />
+    <copy todir="${target.distro.root}/workspace/activiti-cxf-examples/src/test/java" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-cxf/src/test/java">
+        <exclude name="**/WSDLImporterTest.java" />
+      </fileset>
+    </copy>
+    <mkdir dir="${target.distro.root}/workspace/activiti-cxf-examples/src/test/resources" />
+    <copy todir="${target.distro.root}/workspace/activiti-cxf-examples/src/test/resources" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-cxf/src/test/resources">
+      </fileset>
+    </copy>
+	</target>
+
+	<target name="build.docs" unless="nodocs">
+    <!-- JAVADOCS -->
+    <exec executable="${mvn.executable}" dir="../modules/activiti-engine">
+      <arg line="javadoc:javadoc" />
+    </exec>
+    <mkdir dir="${target.distro.root}/docs/javadocs" />
+    <copy todir="${target.distro.root}/docs/javadocs">
+      <fileset dir="../modules/activiti-engine/target/site/apidocs" />
+    </copy>
+    <!-- USERGUIDE -->
+    <echo message="On failure, make sure that you have installed the Xalan libs by executing the 'install.xalan.libs' target in the 'userguide' folder."></echo>
+    <ant antfile="../userguide/build.xml" inheritall="false" />
+    <mkdir dir="${target.distro.root}/docs/userguide" />
+    <copy todir="${target.distro.root}/docs/userguide">
+      <fileset dir="../userguide/target/html/en" />
+    </copy>
+	</target>
+
+	<target name="copy.docs" depends="build.docs" unless="nodocs">
+		<!-- COPY XSD -->
+    <copy todir="${target.distro.root}/docs/xsd">
+      <fileset dir="../modules/activiti-engine/src/main/resources/org/activiti/impl/bpmn/parser">
+        <include name="*.xsd" />
+      </fileset>
+      <fileset dir="../modules/activiti-engine/src/main/resources/org/activiti/impl/cfg">
+        <include name="*.xsd" />
+      </fileset>
+    </copy>
+	</target>
+	
+	<target name="publish.docs" depends="build.docs">
+		<mkdir dir="${activiti.website}/javadocs" />
+    <copy todir="${activiti.website}/javadocs" overwrite="true">
+      <fileset dir="../modules/activiti-engine/target/site/apidocs" />
+    </copy>
+    <mkdir dir="${activiti.website}/userguide" />
+    <copy todir="${activiti.website}/userguide" overwrite="true">
+      <fileset dir="../userguide/target/html/en" />
+    </copy>
+    <copy todir="${activiti.website}" overwrite="true">
+      <fileset dir="src">
+      	<include name="readme.html" />
+     </fileset>
+    </copy>
+	</target>
+	
+	<!-- ##### ACTIVITI MODELER PATCHING ##########################################
+	
+	     Note that this target is NOT executed during a distro build, because the 
+	     Modeler is not shipped with the final zip.
+	     
+	     This target exists to be called to add the Activiti stencil set and Cycle plugins,
+	     when a new version of the Modeler is built from the Signavio source repository. 
+	  -->
+	
+	<property name="modeler.patch.folder" value="${modeler.target.folder}/patched" />
+  <property name="modeler.extracted-war.folder" value="${modeler.target.folder}/extracted-from-war" />
+	<property name="modeler.src.files.folder" value="src/setup/files/cfg.modeler" />
+	
+	<target name="patch.activiti.modeler"
+        depends="internal.modeler.stencilsets.patch" /><!-- internal.modeler.plugin.cycle.patch, -->
+		
+  <target name="internal.modeler.patches.init">
+  	<delete dir="${modeler.patch.folder}" />
+    <mkdir dir="${modeler.patch.folder}" />
+	  <delete dir="${modeler.extracted-war.folder}" />
+    <mkdir dir="${modeler.extracted-war.folder}" />
+    <!-- extract files to be patched from the war -->
+    <unzip src="${modeler.target.folder}/activiti-modeler.war"
+           dest="${modeler.extracted-war.folder}">
+      <patternset>
+        <include name="editor/oryx.debug.js" />
+        <include name="editor/oryx.js" />
+        <include name="editor/plugins.xml" />
+      </patternset>
+      <mapper type="flatten" />
+    </unzip>
+    <!-- copy files to be patched in the internal.modeler.xx targets -->
+    <copy todir="${modeler.patch.folder}" overwrite="true">
+      <fileset dir="${modeler.extracted-war.folder}" />
+    </copy>
+  	<!-- copy war to be patched to the patch folder -->
+  	<copy file="${modeler.target.folder}/activiti-modeler.war" tofile="${modeler.patch.folder}/activiti-modeler-${activiti.version}.war" />
+  </target>
+
+  <target name="internal.modeler.plugin.cycle.patch" depends="internal.modeler.patches.init">
+    <!-- add plugin code -->
+    <concat destfile="${modeler.patch.folder}/oryx.debug.js" append="true">
+      <fileset file="${modeler.src.files.folder}/ActivitiCycle.js" />
+    </concat>
+    <concat destfile="${modeler.patch.folder}/oryx.js" append="true">
+      <fileset file="${modeler.src.files.folder}/ActivitiCycle.js" />
+    </concat>
+    <!-- register Activiti Cycle Plugin -->
+    <replace file="${modeler.patch.folder}/plugins.xml">
+      <replacetoken><![CDATA[</plugins>]]></replacetoken>
+    <replacevalue><![CDATA[
+    <plugin source="ActivitiCycle.js" name="ORYX.Plugins.ActivitiCycle" />
+  </plugins>]]></replacevalue>
+    </replace>
+    <!-- fix line endings in patched plugins.xml -->
+    <fixcrlf file="${modeler.patch.folder}/plugins.xml" eol="dos" />
+  	
+  	<!-- Touch is required, see http://stackoverflow.com/questions/2210041/updating-files-inside-an-existing-war-file -->
+  	<tstamp> <format property="touch.time" pattern="MM/dd/yyyy hh:mm aa"/></tstamp>
+  	<touch datetime="${touch.time}" file="${modeler.patch.folder}/oryx.debug.js"/>
+  	<touch datetime="${touch.time}" file="${modeler.patch.folder}/oryx.js"/>
+  	<touch datetime="${touch.time}" file="${modeler.patch.folder}/plugins.xml"/>
+  	<touch datetime="${touch.time}" file="${modeler.src.files.folder}/activiti_logo_16x16.png"/>
+  	
+  	<!-- Update war with patched files -->
+  	<war destfile="${modeler.patch.folder}/activiti-modeler-${activiti.version}.war" update="true">
+      <zipfileset file="${modeler.patch.folder}/oryx.debug.js"       fullpath="editor/oryx.debug.js" />
+      <zipfileset file="${modeler.patch.folder}/oryx.js"             fullpath="editor/oryx.js" />
+      <zipfileset file="${modeler.patch.folder}/plugins.xml"         fullpath="editor/plugins.xml" />
+      <zipfileset file="${modeler.patch.folder}/plugins.xml"         fullpath="WEB-INF/xml/editor/plugins.xml" />
+      <zipfileset file="${modeler.src.files.folder}/activiti_logo_16x16.png" fullpath="editor/images/activiti_logo_16x16.png" />
+    </war>
+  </target>
+
+  <target name="internal.modeler.stencilsets.patch" depends="internal.modeler.patches.init">
+  	<!-- Touch is required, see http://stackoverflow.com/questions/2210041/updating-files-inside-an-existing-war-file -->
+  	<tstamp> <format property="touch.time" pattern="MM/dd/yyyy hh:mm aa"/></tstamp>
+    <touch datetime="${touch.time}" file="${modeler.src.files.folder}/extensions.json"/>
+    <touch datetime="${touch.time}" file="${modeler.src.files.folder}/bpmn2.0activiti.json"/>
+  	
+  	<!-- Update war with patched files --> 
+  	<war destfile="${modeler.patch.folder}/activiti-modeler-${activiti.version}.war" update="true">
+  	  <zipfileset file="${modeler.src.files.folder}/extensions.json"         fullpath="WEB-INF/json/extensions.json" />
+  	  <zipfileset file="${modeler.src.files.folder}/extensions.json"         fullpath="editor/stencilsets/extensions/extensions.json" />
+  	  <zipfileset file="${modeler.src.files.folder}/bpmn2.0activiti.json"    fullpath="editor/stencilsets/extensions/bpmn2.0activiti/bpmn2.0activiti.json" />
+  	</war>
+  </target>
+  	
+</project>

@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Deployments</shortname>
+  <description>Returns a list of deployments</description>
+  <url>/deployments</url>
+  <authentication>user</authentication>
+  <format default="json">argument</format>
+</webscript>

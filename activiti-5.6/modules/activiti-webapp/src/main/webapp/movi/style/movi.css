@@ -1,0 +1,250 @@
+/* MOVI ModelViewer styles */
+
+.movi-scrollbox {
+	overflow: auto;
+	height: 100%;
+	width: 100%;
+	min-width: 200px;
+	min-height: 200px;
+	position: relative;
+	cursor: move;
+}
+
+.movi-modelimg {
+	top: 0px;
+	left: 0px;
+	border: none;
+	max-width: none;
+	max-height: none;
+}
+
+.movi-canvas {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+
+.movi-node {
+	position: absolute;
+	z-index: 4;
+}
+
+.movi-edge {
+	position: absolute;
+	z-index: 4;
+}
+
+
+/* MOVI Marker styles */
+
+.movi-marker {
+    position: absolute;
+    z-index: 1;
+}
+
+.movi-marker-icon {
+    position: absolute;
+    z-index: 5;
+}
+
+
+/* MOVI Annotation styles */
+
+.movi-bubble-hidden {
+	display:none;
+}
+
+.movi-bubble-visible {
+	display:block;
+	position:absolute;
+	min-width: 100px;
+	margin-top: -46px; margin-left: 13px;
+	margin-right: 11px;
+	KHTMLOpacity: 0.95;
+	MozOpacity: 0.95;
+	opacity: 0.95;
+	z-index: 6;
+}
+
+.movi-bubble-ul {
+	background: url('../img/bubble-ul.png') no-repeat 0 0;
+}
+
+.movi-bubble-ur {
+	background: url('../img/bubble-ur.png') no-repeat 100% 0;
+}
+
+.movi-bubble-ll {
+	background: url('../img/bubble-ll.png') no-repeat 0 100%;
+	
+}
+
+.movi-bubble-lr {
+	background: url('../img/bubble-lr.png') no-repeat 100% 100%;
+}
+
+.movi-bubble-bt {
+	margin-left: 16px; margin-right: 16px;
+	height: 16px;
+	background: url('../img/bubble-bt.png') repeat-x; 
+}
+
+.movi-bubble-bb {
+	margin-left: 16px; margin-right: 16px;
+	height: 16px;
+	background: url('../img/bubble-bb.png') repeat-x; 
+}
+
+.movi-bubble-bl {
+	background: url('../img/bubble-bl.png') repeat-y 0 0; 
+}
+
+.movi-bubble-br {
+	background: url('../img/bubble-br.png') repeat-y 100% 0; 
+}
+
+.movi-bubble-al {
+	position: absolute;
+	left: -16px; top: 20px;
+	width: 26px; height: 46px;
+	background: url('../img/bubble-al.png') no-repeat 0 0;
+}
+
+.movi-bubble-right .movi-bubble-al {
+	left: auto;
+	right: -16px;
+	background: url('../img/bubble-ar.png') no-repeat 0 0;
+}
+
+.movi-bubble-bc {
+	margin: 0px 8px 0 8px;
+	padding: 3px 8px;
+	background-color: #FFFFFF; 
+	min-height: 100px;
+	min-width: 100px;
+	cursor: default;
+}
+
+.movi-bubble-closebutton {
+	position: absolute;
+	right: 12px; top: 12px;
+	width: 10px; height: 10px;
+	background: url('../img/bubble-closebutton.png') no-repeat 0 0;
+	cursor: pointer;
+}
+
+
+/* MOVI ModelNavigator styles */
+
+.movi-navigator {
+    position: relative;
+    cursor: crosshair;
+}
+
+.movi-navigator-clippingrect {
+	position: absolute;
+	border: 1px solid black;
+	cursor: move;
+}
+
+.movi-navigator-img {
+	width: 100%;
+	height: 100%;
+}
+
+
+/* MOVI ShapeSelect styles */
+
+.movi-select-rect {
+	position: absolute;
+	border: 2px solid red;
+	z-index: 3;
+}
+
+.movi-highlight-rect {
+	position: absolute;
+	border: 1px dotted red;
+	z-index: 2;
+}
+
+
+/* MOVI Toolbar styles */
+
+.movi-toolbar {
+   border: 1px solid #ccc;
+   height: inherit;
+}
+
+.movi-toolbar-group {
+    width: inherit;
+    float: left;
+    padding: 0 2px;
+    border-right: 1px solid #ccc;
+    margin: 2px 0;
+}
+
+.movi-toolbar-group .movi-toolbar-group-label {
+    font-size: 6pt;
+    margin-bottom: 2px;
+}
+
+.movi-toolbar-button {
+    margin: 0px 1px;
+    padding: 2px;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    float: left;
+    cursor: pointer;
+    width: inherit; height: inherit;
+    line-height: 0px; font-size: 0pt;
+}
+.movi-toolbar-button:hover {
+    background-color: #fff;
+    border-bottom-color: #aaa;
+    border-right-color: #aaa;
+}
+
+
+/* MOVI Zoom Slider styles */
+
+.movi-zoomslider-horizontal {
+    background: transparent url('../img/slider-track-horz.gif') no-repeat scroll 7px 12px;
+    height:28px;
+    position:relative;
+    width:114px;
+}
+
+.movi-zoomslider-horizontal .movi-zoomslider-thumb {
+    position: absolute;
+    width: 17px; height: 21px;
+    background: transparent url('../img/slider-thumb-horz.gif') no-repeat 0 0;
+}
+
+.movi-zoomslider-vertical {
+    background: transparent url('../img/slider-track-vert.gif') no-repeat scroll 7px 7px;
+    height:114px;
+    position:relative;
+    width:28px;
+}
+
+.movi-zoomslider-vertical .movi-zoomslider-thumb {
+    position: absolute;
+    width: 21px; height: 17px;
+    background: transparent url('../img/slider-thumb-vert.gif') no-repeat 0 0;
+}
+
+
+/* MOVI Fullscreen Viewer styles */
+
+.movi-fullscreen-lightbox {
+    text-align: left;
+}
+
+.movi-fullscreen-lightbox .bd, .movi-fullscreen-lightbox .ft {
+    background-color: #FFFFFF ! important;
+}
+
+.movi-fullscreen-modelcontainer {
+    height: 100%;
+    margin: 10px 0;
+}

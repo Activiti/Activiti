@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="taskAssigneeExample"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn"
+	targetNamespace="Examples">
+
+	<process id="testConversationalBeanStoreFlush">
+
+		<startEvent id="startEvent" />
+
+		<userTask id="wait" />
+		
+		<userTask id="wait2" />
+
+		<endEvent id="endEvent" />
+
+		<sequenceFlow targetRef="wait" sourceRef="startEvent" />
+		<sequenceFlow targetRef="wait2" sourceRef="wait" />
+		<sequenceFlow targetRef="endEvent" sourceRef="wait2" />
+
+	</process>
+</definitions>

@@ -1,0 +1,44 @@
+<h1>Adjust vacation Request</h1>
+
+<p>
+  Your manager has disapproved your vacation request for ${numberOfDays} days. <br/>
+  Reason: ${managerMotivation}
+</p>
+
+<p>
+  <table>
+    <tr>
+      <td>
+        <label>
+          Number of days:<br/>
+          <input type="text" name="numberOfDays" value="${numberOfDays}" />
+          <input type="hidden" name="numberOfDays_type" value="Integer" />
+        </label>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label>
+          <input type="checkbox" name="vacationPay"/> Vacation pay requested
+          <input type="hidden" name="vacationPay_boolean" value="${vacationPay}"/>
+        </label>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label>
+          Motivation:<br/>
+          <textarea name="vacationMotivation" value=""></textarea>
+        </label>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Resend vacation request to manager?<br/>
+        <input type="radio" name="resendRequest" value="true" checked>Yes<br/>
+        <input type="radio" name="resendRequest" value="false">No 
+        <input type="hidden" name="resendRequest_type" value="Boolean"/>
+      </td>
+    <tr>
+  </table>
+</p>

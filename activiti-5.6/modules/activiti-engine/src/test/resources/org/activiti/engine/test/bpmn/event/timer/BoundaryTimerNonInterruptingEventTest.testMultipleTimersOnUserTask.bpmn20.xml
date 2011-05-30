@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn"
+	targetNamespace="Examples">
+
+	<process id="nonInterruptingTimersOnUserTask">
+
+		<startEvent id="theStart" />
+
+		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="firstTask" />
+
+		<userTask id="firstTask" name="First Task" />
+
+		<sequenceFlow id="flow2" sourceRef="firstTask" targetRef="theEnd" />
+
+		<endEvent id="theEnd" />
+
+		<!-- Non Interrupting timer -->
+
+		<boundaryEvent id="escalationTimer1" cancelActivity="false" attachedToRef="firstTask">
+			<timerEventDefinition>
+				<timeDuration>PT1H</timeDuration>
+			</timerEventDefinition>
+		</boundaryEvent>
+
+		<sequenceFlow id="flow3" sourceRef="escalationTimer1" targetRef="secondTask" />
+
+		<userTask id="secondTask" name="Escalation Task 1" />
+
+		<sequenceFlow id="flow4" sourceRef="secondTask" targetRef="escalatedEnd" />
+
+		<!-- Second timer non interrupting -->
+
+		<boundaryEvent id="escalationTimer2" cancelActivity="false" attachedToRef="firstTask">
+			<timerEventDefinition>
+				<timeDuration>PT2H</timeDuration>
+			</timerEventDefinition>
+		</boundaryEvent>
+
+		<sequenceFlow id="flow5" sourceRef="escalationTimer2" targetRef="thirdTask" />
+
+		<userTask id="thirdTask" name="Escalation Task 2" />
+
+		<sequenceFlow id="flow6" sourceRef="thirdTask" targetRef="escalatedEnd" />
+
+		<endEvent id="escalatedEnd" />
+
+	</process>
+</definitions>

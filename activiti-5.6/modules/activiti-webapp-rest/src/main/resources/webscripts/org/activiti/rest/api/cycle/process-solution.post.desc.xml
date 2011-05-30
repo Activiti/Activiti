@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Create a new ProcessSolution using the provided name</shortname>
+  <description>Create a new ProcessSolution using the provided name</description>
+  <url>/process-solution</url>
+  <authentication>user</authentication>
+  <format default="json">argument</format>
+</webscript>

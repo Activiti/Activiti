@@ -1,0 +1,39 @@
+{
+    "bounds": {
+        "lowerRight": {
+            "y": 0,
+            "x": 0
+        },
+        "upperLeft": {
+            "y": 0,
+            "x": 0
+        }
+    },
+    "resourceId": "canvas",
+    "childShapes": [],
+    "properties": {
+        "monitoring": "",
+        "modificationdate": "",
+        "namespaces": "",
+        "creationdate": "",
+        "version": "",
+        "author": "",
+        "targetnamespace": "http://www.signavio.com/bpmn20",
+        "name": "",
+        "documentation": "",
+        "language": "English",
+        "auditing": "",
+        "expressionlanguage": "http://www.w3.org/1999/XPath",
+        "typelanguage": "http://www.w3.org/2001/XMLSchema"
+    },
+    "stencilset": {
+        "url": "/activiti-modeler/editor/stencilsets//bpmn2.0/bpmn2.0.json",
+        "namespace": "http://b3mn.org/stencilset/bpmn2.0#"
+    },
+    "ssextensions": [
+        
+    ],
+    "stencil": {
+        "id": "BPMNDiagram"
+    }
+}

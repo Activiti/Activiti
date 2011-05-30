@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="callSimpleSubProcess">
+  
+    <startEvent id="theStart" />
+    
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="taskBeforeSubProcess" />
+    
+    <userTask id="taskBeforeSubProcess" name="Task before subprocess" />
+    
+    <sequenceFlow id="flow2" sourceRef="taskBeforeSubProcess" targetRef="callSubProcess" />
+  
+    <callActivity id="callSubProcess" calledElement="simpleSubProcess" />
+    
+    <sequenceFlow id="flow3" sourceRef="callSubProcess" targetRef="taskAfterSubProcess" />
+    
+    <userTask id="taskAfterSubProcess" name="Task after subprocess" />
+    
+    <sequenceFlow id="flow4" sourceRef="taskAfterSubProcess" targetRef="theEnd" />
+     
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

@@ -1,0 +1,41 @@
+<definitions 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="sendMailExample" >
+
+    <startEvent id="theStart" />
+    <sequenceFlow sourceRef="theStart" targetRef="sendMail" />
+    
+    <sendTask id="sendMail" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="from" expression="${sender}" />
+        <activiti:field name="to" expression="${recipient}" />
+        <activiti:field name="subject" expression="Your order ${orderId} has been shipped" />
+        <activiti:field name="html">
+          <activiti:expression>
+            <![CDATA[
+              <html>
+                <body>
+                  Hello ${male ? 'Mr.' : 'Mrs.' } ${recipientName},<br/><br/>
+                  
+                  As of ${now}, your order <b>has been processed and shipped</b>.<br/><br/>
+                  
+                  Kind regards,<br/>
+                  
+                  TheCompany.
+                </body>
+              </html>
+            ]]>
+          </activiti:expression>
+        </activiti:field>      
+      </extensionElements>
+    </sendTask>
+    <sequenceFlow sourceRef="sendMail" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+
+  </process>
+
+</definitions>

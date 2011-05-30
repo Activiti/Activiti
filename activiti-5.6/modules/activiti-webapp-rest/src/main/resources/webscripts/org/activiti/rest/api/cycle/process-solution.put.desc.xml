@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Update a ProcessSolution</shortname>
+  <description>Executes an action for updating a ProcessSolution</description>
+  <url>/process-solution</url>
+  <authentication>user</authentication>
+  <format default="json">argument</format>
+</webscript>

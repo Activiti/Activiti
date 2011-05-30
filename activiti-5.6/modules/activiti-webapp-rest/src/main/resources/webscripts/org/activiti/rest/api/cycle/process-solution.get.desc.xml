@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Get the properties of a ProcessSolution</shortname>
+  <description>Get the properties of the ProcessSolution with the provided Id</description>
+  <url>/process-solution</url>
+  <authentication>user</authentication>
+  <format default="json">argument</format>
+</webscript>

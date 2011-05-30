@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+	xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+	xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+	targetNamespace="Examples">
+
+	<process id="orderProcess" name="Order process with call activity">
+
+		<startEvent id="theStart" />
+		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="receiveOrder" />
+
+    <manualTask id="receiveOrder" name="Receive Order" />
+    <sequenceFlow id="flow2" sourceRef="receiveOrder" targetRef="callCheckCreditProcess" />
+    
+    <callActivity id="callCheckCreditProcess" name="Check credit" calledElement="checkCreditProcess" />
+    <sequenceFlow id="flow3" sourceRef="callCheckCreditProcess" targetRef="prepareAndShipTask" />
+   
+    <userTask id="prepareAndShipTask" name="Prepare and Ship" />
+    <sequenceFlow id="flow4" sourceRef="prepareAndShipTask" targetRef="theEnd" />
+		
+		<endEvent id="theEnd" />
+
+	</process>
+
+	<bpmndi:BPMNDiagram id="diagram">
+		<bpmndi:BPMNPlane bpmnElement="orderProcess" id="plane">
+			<bpmndi:BPMNShape bpmnElement="theStart" id="theStart_gui">
+				<omgdc:Bounds height="30.0" width="30.0" x="75.0" y="270.0" />
+			</bpmndi:BPMNShape>
+			<bpmndi:BPMNShape bpmnElement="receiveOrder" id="receiveOrder_gui">
+				<omgdc:Bounds height="80.0" width="100.0" x="155.0" y="245.0" />
+			</bpmndi:BPMNShape>
+			<bpmndi:BPMNShape bpmnElement="callCheckCreditProcess" id="callCheckCreditProcess_gui" isExpanded="false">
+				<omgdc:Bounds height="80.0" width="100.0" x="315.0" y="245.0" />
+			</bpmndi:BPMNShape>
+			<bpmndi:BPMNShape bpmnElement="prepareAndShipTask" id="prepareAndShipTask_gui">
+				<omgdc:Bounds height="80.0" width="100.0" x="480.0" y="245.0" />
+			</bpmndi:BPMNShape>
+			<bpmndi:BPMNShape bpmnElement="theEnd" id="theEnd_gui">
+				<omgdc:Bounds height="28.0" width="28.0" x="630.0" y="271.0" />
+			</bpmndi:BPMNShape>
+			<bpmndi:BPMNEdge bpmnElement="flow1" id="flow1_gui">
+				<omgdi:waypoint x="105.0" y="285.0" />
+				<omgdi:waypoint x="155.0" y="285.0" />
+			</bpmndi:BPMNEdge>
+			<bpmndi:BPMNEdge bpmnElement="flow2" id="flow2_gui">
+				<omgdi:waypoint x="255.0" y="285.0" />
+				<omgdi:waypoint x="315.0" y="285.0" />
+			</bpmndi:BPMNEdge>
+			<bpmndi:BPMNEdge bpmnElement="flow3" id="flow3_gui">
+				<omgdi:waypoint x="415.0" y="285.0" />
+				<omgdi:waypoint x="480.0" y="285.0" />
+			</bpmndi:BPMNEdge>
+			<bpmndi:BPMNEdge bpmnElement="flow4" id="flow4_gui">
+				<omgdi:waypoint x="580.0" y="285.0" />
+				<omgdi:waypoint x="630.0" y="285.0" />
+			</bpmndi:BPMNEdge>
+		</bpmndi:BPMNPlane>
+	</bpmndi:BPMNDiagram>
+
+</definitions>

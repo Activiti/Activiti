@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity">
+
+  <!-- HISTORIC ACTIVITY INSTANCE INSERT -->
+  
+  <insert id="insertHistoricActivityInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity">
+      insert into ACT_HI_ACTINST (
+        ID_,
+        PROC_DEF_ID_,
+        PROC_INST_ID_,
+        EXECUTION_ID_,
+        ACT_ID_,
+        ACT_NAME_,
+        ACT_TYPE_,
+        ASSIGNEE_,
+        START_TIME_,
+        END_TIME_,
+        DURATION_
+      ) values (
+        #{id ,jdbcType=VARCHAR},
+        #{processDefinitionId, jdbcType=VARCHAR},
+        #{processInstanceId, jdbcType=VARCHAR},
+        #{executionId, jdbcType=VARCHAR},
+        #{activityId ,jdbcType=VARCHAR},
+        #{activityName ,jdbcType=VARCHAR},
+        #{activityType ,jdbcType=VARCHAR},
+        #{assignee ,jdbcType=VARCHAR},
+        #{startTime, jdbcType=TIMESTAMP},
+        #{endTime, jdbcType=TIMESTAMP},
+        #{durationInMillis ,jdbcType=BIGINT}
+      )
+  </insert>
+
+  <!-- HISTORIC ACTIVITY INSTANCE UPDATE -->
+  
+  <update id="updateHistoricActivityInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity">
+    update ACT_HI_ACTINST set
+      EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR},
+      ASSIGNEE_ = #{assignee, jdbcType=VARCHAR},
+      END_TIME_ = #{endTime, jdbcType=TIMESTAMP},
+      DURATION_ = #{durationInMillis ,jdbcType=BIGINT}
+    where ID_ = #{id}
+  </update>
+
+  <!-- HISTORIC ACTIVITY INSTANCE DELETE -->
+  
+  <delete id="deleteHistoricActivityInstancesByProcessInstanceId">
+    delete from ACT_HI_ACTINST where PROC_INST_ID_ = #{processInstanceId}
+  </delete>
+
+  <!-- HISTORIC ACTIVITY INSTANCE RESULT MAP -->
+
+  <resultMap id="historicActivityInstanceResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
+    <result property="activityId" column="ACT_ID_" jdbcType="VARCHAR" />
+    <result property="activityName" column="ACT_NAME_" jdbcType="VARCHAR" />
+    <result property="activityType" column="ACT_TYPE_" jdbcType="VARCHAR" />
+    <result property="assignee" column="ASSIGNEE_" jdbcType="VARCHAR" />
+    <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
+    <result property="endTime" column="END_TIME_" jdbcType="TIMESTAMP" />
+    <result property="durationInMillis" column="DURATION_" jdbcType="BIGINT" />
+  </resultMap>
+
+  <!-- HISTORIC ACTIVITY INSTANCE SELECT -->
+  
+  <select id="selectHistoricActivityInstance" resultMap="historicActivityInstanceResultMap">
+    select * from ACT_HI_ACTINST where ACT_ID_ = #{activityId} and PROC_INST_ID_ = #{processInstanceId}
+  </select>
+
+  <select id="selectHistoricActivityInstancesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricActivityInstanceQueryImpl" resultMap="historicActivityInstanceResultMap">
+    select *
+    <include refid="selectHistoricActivityInstancesByQueryCriteriaSql"/>
+    <if test="orderBy != null">
+      order by ${orderBy}
+    </if>
+  </select>
+  
+  <select id="selectHistoricActivityInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricActivityInstanceQueryImpl" resultType="long">
+    select count(*)
+    <include refid="selectHistoricActivityInstancesByQueryCriteriaSql"/>
+  </select>
+  
+  <sql id="selectHistoricActivityInstancesByQueryCriteriaSql">
+    from ACT_HI_ACTINST HAI
+    <where>
+      <if test="processInstanceId != null">
+        HAI.PROC_INST_ID_ = #{processInstanceId}
+      </if>
+      <if test="activityInstanceId != null">
+        and HAI.ID_ = #{activityInstanceId}
+      </if>
+      <if test="executionId != null">
+        and HAI.EXECUTION_ID_ = #{executionId}
+      </if>
+      <if test="processDefinitionId != null">
+        and HAI.PROC_DEF_ID_ = #{processDefinitionId}
+      </if>
+      <if test="activityId != null">
+        and HAI.ACT_ID_ = #{activityId}
+      </if>
+      <if test="activityName != null">
+        and HAI.ACT_NAME_ = #{activityName}
+      </if>
+      <if test="activityType != null">
+        and HAI.ACT_TYPE_ = #{activityType}
+      </if>
+      <if test="assignee != null">
+        and HAI.ASSIGNEE_ = #{assignee}
+      </if>
+      <if test="unfinished">
+        and HAI.END_TIME_ is null
+      </if>
+      <if test="finished">
+       and HAI.END_TIME_ is not null
+      </if>
+    </where>
+  </sql>
+  
+</mapper>

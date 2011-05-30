@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="taskAssigneeExample"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn"
+	targetNamespace="Examples">
+
+	<process id="keyOfTheProcess" name="Name of the Process">
+	
+		<startEvent id="startEvent" name="StartEvent" />
+		
+		<userTask id="userTask" name="Usertask" activiti:assignee="kermit" />
+		
+		<endEvent id="endEvent" name="EndEvent" />
+		
+		<sequenceFlow targetRef="userTask" sourceRef="startEvent" />
+		
+		<sequenceFlow targetRef="endEvent" sourceRef="userTask" />
+
+	</process>
+
+
+</definitions>

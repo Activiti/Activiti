@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Execute Job</shortname>
+  <description>Executes the job</description>
+  <url>/management/job/{jobId}/execute</url>
+  <authentication>admin</authentication>
+  <format default="json">argument</format>
+</webscript>

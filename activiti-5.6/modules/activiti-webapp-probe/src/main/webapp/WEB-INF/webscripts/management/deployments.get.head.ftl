@@ -1,0 +1,2 @@
+<script type="text/javascript" src="${url.context}/res/components/management/deployments.js"></script>
+<link rel="stylesheet" type="text/css" href="${url.context}/res/components/management/database-table.css" />

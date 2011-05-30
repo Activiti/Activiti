@@ -1,0 +1,73 @@
+@import url(../reindeer/styles.css);
+
+#header {
+	background: repeat-x left url(img/header-bg.png);
+	height: 44px;
+	min-width: 410px;
+}
+
+#header #activiti-component {
+	background: top right no-repeat url(img/header-bg-right.png);
+	height: 44px;
+}
+
+#header #application-info {
+	float: left;
+	padding-left: 1em;
+	padding-top: 0.6em;
+}
+
+#header #logout {
+	float: right;
+	padding-right: 1em;
+	padding-top: 1em;
+}
+
+#content {
+	float: bottom;
+	height: 100%;
+}
+
+.footer {
+	margin-bottom: 25px;
+	padding-bottom: 25px;
+}
+
+.v-label-icon {
+	margin: 0px;
+	padding: 5px;
+	padding-right: 5px;
+}
+
+.v-label-user {
+	color: white;
+	font-weight: bold;
+	margin: 0px;
+	padding: 0px;
+	padding-left: 5px;
+	padding-right: 3px;
+	text-decoration: none;
+	text-shadow: none;
+}
+
+.v-button-logout .v-button-caption {
+	color: white;
+	font-weight: bold;
+	line-height: 18px;
+	margin: 0px;
+	padding: 0px;
+	text-decoration: none;
+}
+
+.v-tabsheet-tabitem {
+	color: grey;
+	font-weight: bold;
+}
+
+.v-tabsheet-tabitem-selected {
+	color: #222222;
+}
+
+.v-table-cell-content {
+	vertical-align: middle;
+}

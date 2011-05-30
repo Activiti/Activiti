@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<datasources>
+   <local-tx-datasource>
+      <jndi-name>ActivitiDS</jndi-name>
+      <connection-url>@jdbc.url@</connection-url>
+      <driver-class>@jdbc.driver@</driver-class>
+      <user-name>@jdbc.username@</user-name>
+      <password>@jdbc.password@</password>
+      <min-pool-size>5</min-pool-size>
+      <max-pool-size>20</max-pool-size>
+      <idle-timeout-minutes>0</idle-timeout-minutes>
+      <track-statements/>
+      <security-domain>HsqlDbRealm</security-domain>
+      <prepared-statement-cache-size>32</prepared-statement-cache-size>
+      <metadata>
+         <type-mapping>Hypersonic SQL</type-mapping>
+      </metadata>
+      <depends>jboss:service=Hypersonic,database=localDB</depends>
+   </local-tx-datasource>
+</datasources>
