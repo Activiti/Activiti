@@ -19,10 +19,10 @@ import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
-import org.activiti.explorer.LoggedInUser;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.NotificationManager;
 import org.activiti.explorer.ViewManager;
+import org.activiti.explorer.identity.LoggedInUser;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 
 import com.vaadin.ui.CustomLayout;

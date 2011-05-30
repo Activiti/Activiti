@@ -10,9 +10,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.explorer;
+package org.activiti.explorer.identity;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +25,7 @@ import org.activiti.engine.identity.User;
  * 
  * @author Joram Barrez
  */
-public class LoggedInUser implements Serializable {
+public class LoggedInUserImpl implements LoggedInUser {
   
   private static final long serialVersionUID = 1L;
   
@@ -39,13 +38,13 @@ public class LoggedInUser implements Serializable {
   protected List<Group> securityRoles = new ArrayList<Group>();
   protected List<Group> groups = new ArrayList<Group>();
   
-  public LoggedInUser(User user, String password) {
+  public LoggedInUserImpl(User user, String password) {
     this.user = user;
     this.password = password;
   }
   
   
-  public LoggedInUser(String userId, String password) {
+  public LoggedInUserImpl(String userId, String password) {
     this.alternativeId = userId;
     this.password = password;
   }

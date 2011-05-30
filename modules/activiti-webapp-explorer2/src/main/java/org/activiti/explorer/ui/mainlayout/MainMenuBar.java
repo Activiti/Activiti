@@ -18,9 +18,9 @@ import java.util.Map;
 
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
-import org.activiti.explorer.LoggedInUser;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ViewManager;
+import org.activiti.explorer.identity.LoggedInUser;
 import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.profile.ChangePasswordPopupWindow;
 
@@ -136,30 +136,33 @@ public class MainMenuBar extends HorizontalLayout {
     MenuItem rootItem = profileMenu.addItem(user.getFirstName() + " " + user.getLastName(), null);
     rootItem.setStyleName(ExplorerLayout.STYLE_HEADER_PROFILE_MENU);
     
-    // Show profile
-    rootItem.addItem(i18nManager.getMessage(Messages.PROFILE_SHOW), new Command() {
-      public void menuSelected(MenuItem selectedItem) {
-        ExplorerApp.get().getViewManager().showProfilePopup(user.getId());
-      }
-    });
-    
-    // Edit profile
-    rootItem.addItem(i18nManager.getMessage(Messages.PROFILE_EDIT), new Command() {
+    if(useProfile()) {
+      // Show profile
+      rootItem.addItem(i18nManager.getMessage(Messages.PROFILE_SHOW), new Command() {
+        public void menuSelected(MenuItem selectedItem) {
+          ExplorerApp.get().getViewManager().showProfilePopup(user.getId());
+        }
+      });
       
-      public void menuSelected(MenuItem selectedItem) {
-        // TODO: Show in edit-mode
-        ExplorerApp.get().getViewManager().showProfilePopup(user.getId());
-      }
-    });
-    
-    // Change password
-    rootItem.addItem(i18nManager.getMessage(Messages.PASSWORD_CHANGE), new Command() {
-      public void menuSelected(MenuItem selectedItem) {
-        ExplorerApp.get().getViewManager().showPopupWindow(new ChangePasswordPopupWindow());
-      }
-    });
-    
-    rootItem.addSeparator();
+      // Edit profile
+      rootItem.addItem(i18nManager.getMessage(Messages.PROFILE_EDIT), new Command() {
+        
+        public void menuSelected(MenuItem selectedItem) {
+          // TODO: Show in edit-mode
+          ExplorerApp.get().getViewManager().showProfilePopup(user.getId());
+        }
+      });
+      
+      // Change password
+      rootItem.addItem(i18nManager.getMessage(Messages.PASSWORD_CHANGE), new Command() {
+        public void menuSelected(MenuItem selectedItem) {
+          ExplorerApp.get().getViewManager().showPopupWindow(new ChangePasswordPopupWindow());
+        }
+      });
+      
+      rootItem.addSeparator();
+    }
+   
     // Logout
     rootItem.addItem(i18nManager.getMessage(Messages.HEADER_LOGOUT), new Command() {
       public void menuSelected(MenuItem selectedItem) {
@@ -172,6 +175,9 @@ public class MainMenuBar extends HorizontalLayout {
     setExpandRatio(profileMenu, 1.0f);
   }
   
+  protected boolean useProfile() {
+    return true;
+  }
   
   // Listener classes
   private class ShowTasksClickListener implements ClickListener {

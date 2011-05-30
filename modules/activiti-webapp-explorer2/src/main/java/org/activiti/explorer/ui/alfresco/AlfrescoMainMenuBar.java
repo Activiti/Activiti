@@ -34,8 +34,8 @@ public class AlfrescoMainMenuBar extends MainMenuBar {
   }
   
   @Override
-  protected void initProfileButton() {
-    // No profile button is needed
+  protected boolean useProfile() {
+    // Only show logout button, profile is not used in alfresco
+    return false;
   }
-
 }

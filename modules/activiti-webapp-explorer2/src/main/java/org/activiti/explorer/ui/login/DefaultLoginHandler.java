@@ -19,7 +19,7 @@ import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.explorer.Constants;
-import org.activiti.explorer.LoggedInUser;
+import org.activiti.explorer.identity.LoggedInUserImpl;
 
 /**
  * Default login handler, using activiti's {@link IdentityService}.
@@ -30,12 +30,12 @@ public class DefaultLoginHandler implements LoginHandler {
 
   private IdentityService identityService;
 
-  public LoggedInUser authenticate(String userName, String password) {
-    LoggedInUser loggedInUser = null;
+  public LoggedInUserImpl authenticate(String userName, String password) {
+    LoggedInUserImpl loggedInUser = null;
     if (identityService.checkPassword(userName, password)) {
       User user = identityService.createUserQuery().userId(userName).singleResult();
       // Fetch and cache user data
-      loggedInUser = new LoggedInUser(user, password);
+      loggedInUser = new LoggedInUserImpl(user, password);
       List<Group> groups = identityService.createGroupQuery().groupMember(user.getId()).list();
       for (Group group : groups) {
         if (Constants.SECURITY_ROLE.equals(group.getType())) {

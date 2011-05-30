@@ -11,22 +11,29 @@
  * limitations under the License.
  */
 
-package org.activiti.explorer.ui.login;
+package org.activiti.explorer.identity;
 
-import org.activiti.explorer.identity.LoggedInUser;
+import java.io.Serializable;
 
 
 /**
- * Class handling authentication for the explorer ui.
+ * Interface describing the logged in user.
  * 
  * @author Frederik Heremans
  */
-public interface LoginHandler {
+public interface LoggedInUser extends Serializable {
 
-  /**
-   * Authenticate the user with the given username and given password.
-   * 
-   * @return the logged in user. Return null of authentication failed. 
-   */
-  LoggedInUser authenticate(String userName, String password);
+  String getId();
+  
+  String getFirstName();
+  
+  String getLastName();
+  
+  String getFullName();
+  
+  String getPassword();
+  
+  boolean isAdmin();
+  
+  boolean isUser();
 }

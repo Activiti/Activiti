@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.util.LogUtil;
 import org.activiti.explorer.cache.UserCache;
+import org.activiti.explorer.identity.LoggedInUser;
+import org.activiti.explorer.identity.LoggedInUserImpl;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.ComponentFactory;
 import org.activiti.explorer.ui.MainWindow;

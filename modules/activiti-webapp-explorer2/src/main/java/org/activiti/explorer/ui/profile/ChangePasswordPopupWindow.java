@@ -18,8 +18,8 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.User;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
-import org.activiti.explorer.LoggedInUser;
 import org.activiti.explorer.Messages;
+import org.activiti.explorer.identity.LoggedInUser;
 import org.activiti.explorer.ui.custom.PopupWindow;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 
@@ -139,8 +139,9 @@ public class ChangePasswordPopupWindow extends PopupWindow {
       user.setPassword(password);
       identityService.saveUser(user);
       
-      // Changed session data
-      currentUser.setPassword(password);
+      // Refresh logged in user session data
+      ExplorerApp.get().setUser(ExplorerApp.get().getLoginHandler().authenticate(
+          user.getId(), user.getPassword()));
       
       // Close popup
       close();
