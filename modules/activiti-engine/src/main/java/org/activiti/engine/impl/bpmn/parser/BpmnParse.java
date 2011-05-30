@@ -27,7 +27,29 @@ import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.Condition;
-import org.activiti.engine.impl.bpmn.behavior.*;
+import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.BusinessRuleTaskActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.CallActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.ErrorEndEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.ExclusiveGatewayActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchEventActivitiBehaviour;
+import org.activiti.engine.impl.bpmn.behavior.MailActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.ManualTaskActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.NoneEndEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.NoneStartEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.ParallelGatewayActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.ParallelMultiInstanceBehavior;
+import org.activiti.engine.impl.bpmn.behavior.ReceiveTaskActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.ScriptTaskActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.SequentialMultiInstanceBehavior;
+import org.activiti.engine.impl.bpmn.behavior.ServiceTaskDelegateExpressionActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.ServiceTaskExpressionActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.SubProcessActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.TaskActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.WebServiceActivityBehavior;
 import org.activiti.engine.impl.bpmn.data.AbstractDataAssociation;
 import org.activiti.engine.impl.bpmn.data.Assignment;
 import org.activiti.engine.impl.bpmn.data.ClassStructureDefinition;
@@ -58,7 +80,11 @@ import org.activiti.engine.impl.form.DefaultStartFormHandler;
 import org.activiti.engine.impl.form.DefaultTaskFormHandler;
 import org.activiti.engine.impl.form.StartFormHandler;
 import org.activiti.engine.impl.form.TaskFormHandler;
-import org.activiti.engine.impl.jobexecutor.*;
+import org.activiti.engine.impl.jobexecutor.TimerCatchIntermediateEventJobHandler;
+import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
+import org.activiti.engine.impl.jobexecutor.TimerDeclarationType;
+import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
+import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
@@ -951,7 +977,7 @@ public class BpmnParse extends Parse {
 
     BusinessRuleTaskActivityBehavior ruleActivity = new BusinessRuleTaskActivityBehavior();
 
-    String ruleInputString = businessRuleTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "ruleVariablesInput");
+    String ruleVariableInputString = businessRuleTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "ruleVariablesInput");
     String rulesString = businessRuleTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "rules");
     String excludeString = businessRuleTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "exclude");
     String resultVariableNameString = businessRuleTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "resultVariable");
@@ -959,15 +985,15 @@ public class BpmnParse extends Parse {
       resultVariableNameString = businessRuleTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "resultVariableName");
     }
 
-    if (ruleInputString != null) {
-      String[] ruleInputObjects = ruleInputString.split(",");
-      for (String ruleInputObject : ruleInputObjects) {
-        ruleActivity.addRuleVariableInputIdExpression(expressionManager.createExpression(ruleInputObject.trim()));
+    if (ruleVariableInputString != null) {
+      String[] ruleVariableInputObjects = ruleVariableInputString.split(",");
+      for (String ruleVariableInputObject : ruleVariableInputObjects) {
+        ruleActivity.addRuleVariableInputIdExpression(expressionManager.createExpression(ruleVariableInputObject.trim()));
       }
     }
 
     if (rulesString != null) {
-      String[] rules = ruleInputString.split(",");
+      String[] rules = rulesString.split(",");
       for (String rule : rules) {
         ruleActivity.addRuleIdExpression(expressionManager.createExpression(rule.trim()));
       }
