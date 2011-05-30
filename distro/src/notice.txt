@@ -141,8 +141,11 @@ jaxb-impl-2.2.1.jar : http://www.apache.org/licenses/LICENSE-2.0.html
 jaxb-xjc-2.1.7.jar : http://www.apache.org/licenses/LICENSE-2.0.html
 jaxen-1.1.1.jar : http://jaxen.codehaus.org/license.html (modified apache license)
 jcip-annotations-1.0.jar : Creative Commons Attribution License http://creativecommons.org/licenses/by/2.5
-jetty-6.1.9.jar : http://www.apache.org/licenses/LICENSE-2.0.html
-jetty-util-6.1.9.jar : http://www.apache.org/licenses/LICENSE-2.0.html
+jetty-continuation-7.2.0.v20101020.jar : http://www.apache.org/licenses/LICENSE-2.0.html
+jetty-http-7.2.0.v20101020.jar : http://www.apache.org/licenses/LICENSE-2.0.html
+jetty-io-7.2.0.v20101020.jar : http://www.apache.org/licenses/LICENSE-2.0.html
+jetty-server-7.2.0.v20101020.jar : http://www.apache.org/licenses/LICENSE-2.0.html
+jetty-util-7.2.0.v20101020.jar : http://www.apache.org/licenses/LICENSE-2.0.html
 js-1.6R7.jar : Mozilla Public License version 1.1 http://www.mozilla.org/MPL/MPL-1.1.html
 json-20070829.jar : http://www.json.org/java/ free software
 jstl-1.1.0.jar : http://www.apache.org/licenses/LICENSE-2.0.html
