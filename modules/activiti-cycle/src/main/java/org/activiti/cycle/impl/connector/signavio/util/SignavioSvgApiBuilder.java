@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnectorInterface;
+import org.activiti.cycle.service.CycleServiceFactory;
 
 public class SignavioSvgApiBuilder {
 
@@ -76,7 +77,7 @@ public class SignavioSvgApiBuilder {
     if (template == null)
       return "";
     // set properties
-    template = template.replaceAll("SIGNAVIO_EDITOR_SRC", SVGAPI_URL_LOCAL);
+    template = template.replaceAll("SIGNAVIO_EDITOR_SRC", CycleServiceFactory.getConfigurationService().getConfigurationValue("SignavioSvgApiBuilder", "svgApiUrl", SVGAPI_URL_LOCAL));
     template = template.replaceAll("SIGNAVIO_MODEL_URL", connectorConfiguration.getModelUrl(artifact.getNodeId()));
     template = template.replaceAll("SIGNAVIO_SERVER_URL", connectorConfiguration.getSignavioUrl());
     template = template.replaceAll("SIGNAVIO_ZOOM", zoomLevel);
