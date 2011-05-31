@@ -14,7 +14,7 @@
     configuration as pre-configured in the demo setup.
     
     <emphasis role="bold">Please note: Activiti Cycle is still in a "beta" state.</emphasis>
-    With collaborative tools like Activiti Cycle we dont have years of experience yet, like we have with the core engine. Currently
+    With collaborative tools like Activiti Cycle we don't have years of experience yet, like we have with the core engine. Currently
     most features are already stable, but with adding more use cases and features, we still have to do some tuning of the APIs or database tables. 
     This means, that for example the Plugin-API is still subject to change, which you have to know when you start writing own Plug-Ins. 
     Or the database might change without having out-of-the-box database migration scripts ready. But be sure: We work hard on removing the beta status,
@@ -58,7 +58,7 @@
 			&quot;org.activiti.cycle.impl.connector.fs.FileSystemConnector&quot;
 			for the filesystem connector and
 			&quot;org.activiti.cycle.impl.connector.signavio.SignavioConnector&quot;
-			for the connector to the activiti modeler.)
+			for the connector to the Activiti Modeler.)
     	</listitem>
     	<listitem>
 			<literal>INSTANCE_NAME_</literal>: Name of the connector instance. This is the string
@@ -92,7 +92,7 @@
     </para>
     
     Executing the following SQL statement sets the default configuration for &quot;kermit&quot;, including an instance of the 
-    filesystem connector and an instance of the signavio connector used to access the activiti modeler repository:
+    filesystem connector and an instance of the Signavio connector used to access the Activiti Modeler repository:
     	            
     <programlisting>
 insert into ACT_CY_CONN_CONFIG values ('1', 
@@ -132,7 +132,8 @@ insert into ACT_CY_CONN_CONFIG values ('2',
     
     <para>
         You may also choose not to save your username and password in the database
-        and leaving 'username' and 'password' empty. Cycle will then ask you for your credentials when it needs them.
+        by leaving 'username' and 'password' empty.
+        Cycle will then ask you for your credentials when it needs them.
     </para>
 
     <para>
@@ -156,14 +157,15 @@ insert into ACT_CY_CONN_CONFIG values ('2',
   <section id="cycleArtifactActions">
     <title>Artifacts and Actions</title>
     <para>
-      When you click an item in the repository tree — in Activiti Cycle we refer to them as artifacts — the details are displayed on the right side. 
-      Currently, not all files are supported, but we aim to provide useful default views for the most common file types. 
-      In addition to the views, there is a set of actions that can be executed on the artifact.      
+      When you click an item in the repository tree — in Activiti Cycle we refer to them as artifacts — the details are displayed on the right. 
+      Currently, not all file types are supported, but we aim to provide useful default views for the most common file types. 
+      In addition to the views, there is a set of actions that can be executed on the artifact.
     </para>
     <mediaobject><imageobject><imagedata align="center" fileref="images/activiti.cycle.action.forms.png"/></imageobject></mediaobject>
     <para>
-      The actions can be seen as examples what Cycle can do for you, will be extended in future and can be a starting point for your additional actions
-      written in your own plugin.
+      The actions can be seen as examples what Cycle can do for you.
+      They will be extended in future and can be a starting point
+      for your additional actions written in your own plugin.
     </para>
   </section>
 
@@ -171,7 +173,7 @@ insert into ACT_CY_CONN_CONFIG values ('2',
     <title>More Plug-Ins</title>
     <para>
       More Cycle Plug-Ins are available, for example SVN and SFTP Connectors or a Maven Project Wizard. These Plug-Ins are available
-      as seperate download to keep the Cycle core small, the dependencies manageable and to allow creating Plug-Ins requiring 
+      as separate download to keep the Cycle core small, the dependencies manageable and to allow creating Plug-Ins requiring 
       dependencies with non Apache compatible licenses.
      You can find additional Plug-Ins ready for download on this 
       <ulink url="http://fox.camunda.com/cycle-plugins/">Cycle Plug-In Page</ulink>.
