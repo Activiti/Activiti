@@ -94,7 +94,6 @@ public class LoginPage extends CustomLayout {
     public void onLogin(LoginEvent event) {
       String userName = event.getLoginParameter("username"); // see the input field names in CustomLoginForm
       String password = event.getLoginParameter("password");  // see the input field names in CustomLoginForm
-      // TODO: create interface for loggedin user
       // Delegate authentication to handler
       LoggedInUser loggedInUser = loginHandler.authenticate(userName, password);
       if (loggedInUser != null) {

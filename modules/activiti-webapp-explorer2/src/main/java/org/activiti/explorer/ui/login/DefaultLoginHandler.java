@@ -18,7 +18,9 @@ import java.util.List;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.explorer.Constants;
+import org.activiti.explorer.identity.LoggedInUser;
 import org.activiti.explorer.identity.LoggedInUserImpl;
 
 /**
@@ -54,6 +56,17 @@ public class DefaultLoginHandler implements LoginHandler {
     
     return loggedInUser;
   }
+  
+  public LoggedInUser authenticate() {
+    // No automatic authentication is used by default, always through credentials.
+    return null;
+  }
+  
+  public void logout(LoggedInUser userToLogout) {
+    // Clear activiti authentication context
+    Authentication.setAuthenticatedUserId(null);
+  }
+  
   public void setIdentityService(IdentityService identityService) {
     this.identityService = identityService;
   }

@@ -19,7 +19,6 @@ import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.util.LogUtil;
 import org.activiti.explorer.cache.UserCache;
 import org.activiti.explorer.identity.LoggedInUser;
-import org.activiti.explorer.identity.LoggedInUserImpl;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.ComponentFactory;
 import org.activiti.explorer.ui.MainWindow;
@@ -76,6 +75,18 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
 //    return window;
 //  }
   
+  @Override
+  public void close() {
+    super.close();
+    final LoggedInUser theUser = getLoggedInUser();
+    
+    // Clear the logged in user
+    setUser(null);
+    
+    // Call loginhandler
+    ExplorerApp.get().getLoginHandler().logout(theUser);
+    
+  }
   public static ExplorerApp get() {
     return current.get();
   }
@@ -130,21 +141,34 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
     // Set current application object as thread-local to make it easy accessible
     current.set(this);
     
-   // Authentication: check if user is found, otherwise send to login page
+    // Authentication: check if user is found, otherwise send to login page
     LoggedInUser user = (LoggedInUser) getUser();
     if (user == null) {
-      if (mainWindow != null && !mainWindow.isShowingLoginPage()) {
-        viewManager.showLoginPage();
+      // First, try automatic login
+      user = loginHandler.authenticate();
+      if(user == null) {
+        if (mainWindow != null && !mainWindow.isShowingLoginPage()) {
+          viewManager.showLoginPage();
+        }
+      } else {
+        setUser(user);
       }
-    } else {
-      // Set thread-local userid of logged in user (needed for Activiti user logic)
+    } 
+
+    if(user != null) {
       Authentication.setAuthenticatedUserId(user.getId());
+      
+      if (mainWindow != null && mainWindow.isShowingLoginPage()) {
+        viewManager.showDefaultPage();
+      }
     }
   }
   
   public void onRequestEnd(HttpServletRequest request, HttpServletResponse response) {
-    // Clean up thread-locals
+    // Clean up thread-local app
     current.remove();
+    
+    // Clear authentication context
     Authentication.setAuthenticatedUserId(null);
   }
   

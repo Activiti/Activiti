@@ -29,4 +29,21 @@ public interface LoginHandler {
    * @return the logged in user. Return null of authentication failed. 
    */
   LoggedInUser authenticate(String userName, String password);
+  
+  /**
+   * Authenticate the current user. Use this to eg. shared autentication, 
+   * which can be done without the user actually having to provide 
+   * credentials.
+   * 
+   * @return The logged in user. Return null, if no user can be logged in
+   * automatically. When null is returned, user will be requested to provide
+   * credentials.
+   */
+  LoggedInUser authenticate();
+    
+  /**
+   * Called when the user is logged out, should clear all context related
+   * to authorization and authentication for the current logged in user.
+   */
+  void logout(LoggedInUser userTologout);
 }
