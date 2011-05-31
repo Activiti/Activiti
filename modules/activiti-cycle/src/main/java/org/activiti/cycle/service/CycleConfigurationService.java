@@ -125,7 +125,7 @@ public interface CycleConfigurationService {
   public void setConfigurationValue(String groupId, String key, String value);
 
   /**
-   * set a global configuration value, providing a default value
+   * get a global configuration value, providing a default value
    */
   public String getConfigurationValue(String groupId, String key, String defaultValue);
 
@@ -136,7 +136,7 @@ public interface CycleConfigurationService {
 
   /**
    * @param groupId
-   *          the groupId to retreive the configuration values for.
+   *          the groupId to retrieve the configuration values for.
    * @return an map of configuration Key/Value pairs for the provided groupid
    */
   public Map<String, String> getConfigurationValuesForGroup(String groupId);
