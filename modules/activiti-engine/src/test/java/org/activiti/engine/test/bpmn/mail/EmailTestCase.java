@@ -37,9 +37,7 @@ public class EmailTestCase extends PluggableActivitiTestCase {
     wiser.stop();
     
     // Fix for slow Jenkins
-    while (wiser.getServer().isRunning()) {
-      Thread.sleep(100L);
-    }
+    Thread.sleep(250L);
     
     super.tearDown();
   }
