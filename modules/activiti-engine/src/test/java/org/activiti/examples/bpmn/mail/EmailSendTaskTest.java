@@ -38,9 +38,21 @@ public class EmailSendTaskTest extends PluggableActivitiTestCase {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    wiser = new Wiser();
-    wiser.setPort(5025);
-    wiser.start();
+    
+    boolean serverUpAndRunning = false;
+    while (!serverUpAndRunning) {
+      wiser = new Wiser();
+      wiser.setPort(5025);
+      
+      try {
+        wiser.start();
+        serverUpAndRunning = true;
+      } catch (RuntimeException e) { // Fix for slow port-closing Jenkins
+        if (e.getMessage().toLowerCase().contains("BindException")) {
+          Thread.sleep(250L);
+        }
+      }
+    }
   }
   
   @Override
