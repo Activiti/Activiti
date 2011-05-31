@@ -44,7 +44,7 @@ public class OverwriteTechnicalBpmnXmlAction extends AbstractTechnicalBpmnXmlAct
 
   public OverwriteTechnicalBpmnXmlAction() {
     // TODO: remove when real labels are introduced in the GUI
-    this("Overwrite technical model(s)");
+    this("Update technical BPMN model(s)");
   }
 
   public OverwriteTechnicalBpmnXmlAction(String name) {

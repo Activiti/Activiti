@@ -49,7 +49,7 @@ public class CreateMavenProjectAction extends CreateTechnicalBpmnXmlAction {
 
   public CreateMavenProjectAction() {
     // TODO: remove when real labels are introduced in the GUI
-    super("Create default maven project");
+    super("Create Maven project for Activiti");
     try {
       ACTIVITI_HOME_PATH = new File("../../../").getCanonicalPath();
     } catch (IOException e) {

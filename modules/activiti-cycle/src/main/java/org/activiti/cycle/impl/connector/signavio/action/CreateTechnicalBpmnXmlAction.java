@@ -40,7 +40,7 @@ public class CreateTechnicalBpmnXmlAction extends AbstractTechnicalBpmnXmlAction
 
   public CreateTechnicalBpmnXmlAction() {
     // TODO: remove when real labels are introduced in the GUI
-    this("Create technical model");
+    this("Create technical BPMN model");
   }
   
   private Set<RepositoryArtifactType> types = new HashSet<RepositoryArtifactType>();
