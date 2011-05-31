@@ -12,18 +12,15 @@ import java.util.Map.Entry;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnectorInterface;
+import org.activiti.cycle.service.CycleServiceFactory;
 
 public class SignavioSvgApiBuilder {
 
   public static String SIGNAVIO_SVG_API_SCRIPT_TEMPLATE = "SignavioSvgApiScriptTemplate.xml";
   public static String SIGNAVIO_SVG_API_HTML_TEMPLATE = "SignavioSvgApiHtmlTemplate.xml";
-  // TODO: fix absolute paths
-  public static final String SVGAPI_URL_LOCAL = "http://localhost:8080/activiti-modeler/api/signavio-svg.js";
-  // TODO: fix absolute paths
-  public static final String SERVER_SCRIPT_URL = "http://localhost:8080/activiti-modeler";
 
-  private SignavioConnectorInterface connector;
-  
+  public static final String SVGAPI_URL_LOCAL = "/activiti-modeler/api/signavio-svg.js";
+
   private SignavioConnectorConfiguration connectorConfiguration;
 
   private RepositoryArtifact artifact;
@@ -37,7 +34,6 @@ public class SignavioSvgApiBuilder {
   private String script;
 
   public SignavioSvgApiBuilder(SignavioConnectorInterface connector, RepositoryArtifact artifact) {
-    this.connector = connector;
     this.connectorConfiguration = (SignavioConnectorConfiguration) connector.getConfiguration();
     this.artifact = artifact;
   }
@@ -76,7 +72,9 @@ public class SignavioSvgApiBuilder {
     if (template == null)
       return "";
     // set properties
-    template = template.replaceAll("SIGNAVIO_EDITOR_SRC", SVGAPI_URL_LOCAL);
+    // example SQL: insert into ACT_CY_CONFIG set ID_=2, GROUP_='SignavioSvgApiBuilder', KEY_='svgApiUrl', VALUE_='/activiti-cycle/res/signavio-svg.js';
+    String svgApiUrl = CycleServiceFactory.getConfigurationService().getConfigurationValue("SignavioSvgApiBuilder", "svgApiUrl", SVGAPI_URL_LOCAL);
+    template = template.replaceAll("SIGNAVIO_EDITOR_SRC", svgApiUrl);
     template = template.replaceAll("SIGNAVIO_MODEL_URL", connectorConfiguration.getModelUrl(artifact.getNodeId()));
     template = template.replaceAll("SIGNAVIO_SERVER_URL", connectorConfiguration.getSignavioUrl());
     template = template.replaceAll("SIGNAVIO_ZOOM", zoomLevel);

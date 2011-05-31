@@ -180,4 +180,23 @@ insert into ACT_CY_CONN_CONFIG values ('2',
     </para>
   </section>  
   
+  <section id="cycleConfigurationOptions">
+    <title>Other Configuration Options</title>
+    <para>
+        If you want to run Activiti Cycle standalone without the
+        Activiti Modeler, you need to configure an alternative URL for the
+        Signavio SVG API, e.g., '/activiti-cycle/res/signavio-svg.js' if you
+        placed it inside the Activiti Cycle web application.
+        Here is an SQL statement for configuring this option:
+    </para>
+    <programlisting>
+insert into ACT_CY_CONFIG values (
+    '2', 
+    'SignavioSvgApiBuilder',
+    'svgApiUrl',
+    '/activiti-cycle/res/signavio-svg.js'
+);
+</programlisting>
+  </section>
+
 </chapter>
