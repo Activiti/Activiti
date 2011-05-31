@@ -26,33 +26,15 @@ import javax.activation.DataHandler;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.test.Deployment;
-import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 
 
 /**
  * @author Joram Barrez
  */
-public class EmailServiceTaskTest extends PluggableActivitiTestCase {
-  
-  private Wiser wiser;
-  
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-    wiser = new Wiser();
-    wiser.setPort(5025);
-    wiser.start();
-  }
-  
-  @Override
-  protected void tearDown() throws Exception {
-    wiser.stop();
-    super.tearDown();
-  }
+public class EmailServiceTaskTest extends EmailTestCase {
   
   @Deployment
   public void testSimpleTextMail() throws Exception {
