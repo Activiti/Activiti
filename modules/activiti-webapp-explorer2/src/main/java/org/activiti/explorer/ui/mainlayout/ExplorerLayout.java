@@ -70,6 +70,7 @@ public interface ExplorerLayout {
   static final String STYLE_H3 = "h3";
   static final String STYLE_H4 = "h4";
   static final String STYLE_ADD = "add";
+  static final String STYLE_NO_LINE = "no-line";
   
   
   static final String STYLE_APPLICATION_LOGO = "logo";

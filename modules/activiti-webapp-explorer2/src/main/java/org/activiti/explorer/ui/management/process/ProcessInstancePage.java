@@ -59,21 +59,21 @@ public class ProcessInstancePage extends ManagementPage {
       selectElement(processInstanceContainer.getIndexForObjectId(processInstanceId));
     }
   }
-
+  
   protected Table createList() {
     final Table table = new Table();
     
     LazyLoadingQuery query = new ProcessInstanceListQuery();
     processInstanceContainer = new LazyLoadingContainer(query);
     table.setContainerDataSource(processInstanceContainer);
-            
+    
     table.addListener(new Property.ValueChangeListener() {
       private static final long serialVersionUID = 1L;
       public void valueChange(ValueChangeEvent event) {
         Item item = table.getItem(event.getProperty().getValue()); // the value of the property is the itemId of the table entry
         if(item != null) {
           String processInstanceId = (String) item.getItemProperty("id").getValue();
-//          setDetailComponent(new DeploymentDetailPanel(deploymentId, ProcessInstancePage.this));
+          setDetailComponent(new ProcessInstanceDetailPanel(processInstanceId, ProcessInstancePage.this));
           
           // Update URL
           ExplorerApp.get().setCurrentUriFragment(

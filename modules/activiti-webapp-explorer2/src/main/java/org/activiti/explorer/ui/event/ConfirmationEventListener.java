@@ -41,11 +41,13 @@ public abstract class ConfirmationEventListener implements Listener {
   /**
    * Called when confirmation is given.
    */
-  protected abstract void confirmed(ConfirmationEvent event);
+  protected void confirmed(ConfirmationEvent event) {
+  }
   
   /**
    * Called  when rejection is given.
    */
-  protected abstract void rejected(ConfirmationEvent event);
+  protected void rejected(ConfirmationEvent event) {
+  }
   
 }

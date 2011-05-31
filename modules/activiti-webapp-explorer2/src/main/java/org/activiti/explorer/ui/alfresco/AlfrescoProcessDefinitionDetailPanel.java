@@ -35,36 +35,39 @@ public class AlfrescoProcessDefinitionDetailPanel extends ProcessDefinitionDetai
     super(processDefinitionId, processDefinitionPage);
   }
   
-//  protected void initActions() {
-//    // no actions (start process instance) needed for Alfresco
-//  }
+  protected void initActions() {
+    // no actions (start process instance) needed for Alfresco
+  }
   
   protected void initUi() {
-    super.initUi();
-    
-    // Adding a table for process instances
+    super.initUi(); // diagram etc.
     initProcessInstancesTable();
   }
   
   protected void initProcessInstancesTable() {
-    ProcessInstanceTableLazyQuery lazyQuery = new ProcessInstanceTableLazyQuery(processDefinition.getId());
+    ProcessInstanceTableLazyQuery query = new ProcessInstanceTableLazyQuery(processDefinition.getId());
     
     // Header
-    Label instancesTitle = new Label(i18nManager.getMessage(Messages.PROCESS_INSTANCES) + " (" + lazyQuery.size() + ")");
+    Label instancesTitle = new Label(i18nManager.getMessage(Messages.PROCESS_INSTANCES) + " (" + query.size() + ")");
     instancesTitle.addStyleName(ExplorerLayout.STYLE_H3);
     instancesTitle.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
+    instancesTitle.addStyleName(ExplorerLayout.STYLE_NO_LINE);
     detailPanelLayout.addComponent(instancesTitle);
 
-    if (lazyQuery.size() > 0) {
+    if (query.size() > 0) {
       
       Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
       detailPanelLayout.addComponent(emptySpace);
       
       Table instancesTable = new Table();
-      instancesTable.setHeight(250, UNITS_PIXELS);
       instancesTable.setWidth(400, UNITS_PIXELS);
+      if (query.size() > 6) {
+        instancesTable.setPageLength(6);
+      } else {
+        instancesTable.setPageLength(query.size());
+      }
       
-      LazyLoadingContainer container = new LazyLoadingContainer(lazyQuery);
+      LazyLoadingContainer container = new LazyLoadingContainer(query);
       instancesTable.setContainerDataSource(container);
       
       // container props

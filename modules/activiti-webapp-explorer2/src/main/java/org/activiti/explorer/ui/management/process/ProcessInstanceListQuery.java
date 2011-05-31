@@ -36,7 +36,6 @@ public class ProcessInstanceListQuery extends AbstractLazyLoadingQuery {
   protected RuntimeService runtimeService;
   protected RepositoryService repositoryService;
   
-  protected int cachedCount = -1;
   protected Map<String, String> cachedProcessDefinitionNames = new HashMap<String, String>();
   
   public ProcessInstanceListQuery() {
@@ -45,10 +44,7 @@ public class ProcessInstanceListQuery extends AbstractLazyLoadingQuery {
   }
 
   public int size() {
-    if (cachedCount == -1) {
-      cachedCount = (int) constructQuery().count();
-    }
-    return cachedCount;
+    return (int) constructQuery().count();
   }
 
   public List<Item> loadItems(int start, int count) {

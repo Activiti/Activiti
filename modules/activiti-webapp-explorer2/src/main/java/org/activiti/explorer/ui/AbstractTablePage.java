@@ -62,14 +62,16 @@ public abstract class AbstractTablePage extends AbstractPage {
     
     // Try to select the next one in the list
     Integer max = table.getContainerDataSource().size();
-    if(pageIndex > max) {
-      pageIndex = max -1;
+    if (max != 0) {
+      if(pageIndex > max) {
+        pageIndex = max -1;
+      }
+      if(selectedIndex > max) {
+        selectedIndex = max -1;
+      }
+      table.setCurrentPageFirstItemIndex(pageIndex);
+      selectElement(selectedIndex);
     }
-    if(selectedIndex > max) {
-      selectedIndex = max -1;
-    }
-    table.setCurrentPageFirstItemIndex(pageIndex);
-    selectElement(selectedIndex);
   }
   
   public void selectElement(int index) {

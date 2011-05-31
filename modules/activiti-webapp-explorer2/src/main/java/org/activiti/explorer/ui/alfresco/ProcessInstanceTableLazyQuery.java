@@ -32,7 +32,6 @@ public class ProcessInstanceTableLazyQuery extends AbstractLazyLoadingQuery {
   
   protected RuntimeService runtimeService;
   protected String processDefinitionId;
-  protected int cachedSize = -1; 
   
   public ProcessInstanceTableLazyQuery() {
     this.runtimeService = ProcessEngines.getDefaultProcessEngine().getRuntimeService();
@@ -44,10 +43,7 @@ public class ProcessInstanceTableLazyQuery extends AbstractLazyLoadingQuery {
   }
 
   public int size() {
-    if (cachedSize == -1) {
-      cachedSize = (int) constructQuery().count();
-    }
-    return cachedSize;
+    return (int) constructQuery().count();
   }
   
   public Item loadSingleResult(String id) {

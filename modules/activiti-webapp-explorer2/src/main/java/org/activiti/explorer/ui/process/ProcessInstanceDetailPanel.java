@@ -184,7 +184,7 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
 
     // Only show when graphical notation is defined
     if (processDefinitionEntity != null && processDefinitionEntity.isGraphicalNotationDefined()) {
-      Label header = new Label(i18nManager.getMessage(Messages.PROCESS_INSTANCE_HEADER_DIAGRAM));
+      Label header = new Label(i18nManager.getMessage(Messages.PROCESS_HEADER_DIAGRAM));
       header.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
       header.addStyleName(ExplorerLayout.STYLE_H3);
       verticalLayout.addComponent(header);

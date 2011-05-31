@@ -193,18 +193,24 @@ public interface Messages {
   static final String PROCESS_HEADER_DIAGRAM = "process.header.diagram";
   static final String PROCESS_NO_DIAGRAM = "process.no.diagram";
   static final String PROCESS_START = "process.start";
+  static final String PROCESS_INSTANCE_DELETE = "process.instance.delete";
+  static final String PROCESS_INSTANCE_DELETE_POPUP_TITLE = "process.instance.delete.popup.title";
+  static final String PROCESS_INSTANCE_DELETE_POPUP_DESCRIPTION = "process.instance.delete.popup.description";
   static final String PROCESS_START_TIME = "process.start.time";
   static final String PROCESS_STARTED_NOTIFICATION = "process.started.notification";
   static final String PROCESS_INSTANCE_STARTED_ON = "process.instance.started.on";
-  static final String PROCESS_INSTANCE_HEADER_DIAGRAM = "process.instance.header.diagram";
   static final String PROCESS_INSTANCE_HEADER_TASKS = "process.instance.header.tasks";
   static final String PROCESS_INSTANCE_NO_TASKS = "process.instance.no.tasks";
+  static final String PROCESS_INSTANCE_HEADER_VARIABLES = "process.instance.header.variables";
+  static final String PROCESS_INSTANCE_NO_VARIABLES = "process.instance.no.variables";
   static final String PROCESS_INSTANCES = "process.instances";
   static final String PROCESS_NO_INSTANCES = "process.no.instances";
   static final String PROCESS_ACTION_VIEW = "process.action.view";
   static final String PROCESS_INSTANCE_ID = "process.instance.id";
   static final String PROCESS_INSTANCE_BUSINESSKEY = "process.instance.businesskey";
   static final String PROCESS_INSTANCE_ACTIONS = "process.instance.actions";
+  static final String PROCESS_INSTANCE_VARIABLE_NAME = "process.instance.variable.name";
+  static final String PROCESS_INSTANCE_VARIABLE_VALUE = "process.instance.variable.value";
   
   // Management menu
   static final String MGMT_MENU_DATABASE = "management.menu.database";

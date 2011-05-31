@@ -736,6 +736,10 @@ div.searchbox {
 	font:16px Arial, Helvetica, sans-serif;
 }
 
+.block-holder.no-line  {
+  border: none;
+}
+
 .block-holder .add {
 	float:right;
 	background:url(img/ico-8.gif) no-repeat;
