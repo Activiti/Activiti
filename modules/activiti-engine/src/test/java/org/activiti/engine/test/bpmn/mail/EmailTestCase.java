@@ -22,14 +22,26 @@ import org.subethamail.wiser.Wiser;
  */
 public class EmailTestCase extends PluggableActivitiTestCase {
   
- protected Wiser wiser;
+  protected Wiser wiser;
   
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    wiser = new Wiser();
-    wiser.setPort(5025);
-    wiser.start();
+    
+    boolean serverUpAndRunning = false;
+    while (!serverUpAndRunning) {
+      wiser = new Wiser();
+      wiser.setPort(5025);
+      
+      try {
+        wiser.start();
+        serverUpAndRunning = true;
+      } catch (RuntimeException e) { // Fix for slow port-closing Jenkins
+        if (e.getMessage().toLowerCase().contains("BindException")) {
+          Thread.sleep(250L);
+        }
+      }
+    }
   }
   
   @Override
