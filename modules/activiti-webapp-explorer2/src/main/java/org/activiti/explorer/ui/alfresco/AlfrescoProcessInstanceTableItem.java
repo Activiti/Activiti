@@ -53,10 +53,8 @@ class AlfrescoProcessInstanceTableItem extends PropertysetItem implements Compar
       }
     });
     
-    HorizontalLayout actionLayout = new HorizontalLayout();
-    actionLayout.addComponent(new Embedded(null, Images.MAGNIFIER_16));
-    actionLayout.addComponent(viewProcessInstanceButton);
-    addItemProperty(PROPERTY_ACTIONS, new ObjectProperty<Component>(actionLayout));
+    viewProcessInstanceButton.setIcon(Images.MAGNIFIER_16);
+    addItemProperty(PROPERTY_ACTIONS, new ObjectProperty<Component>(viewProcessInstanceButton));
   }
 
   public int compareTo(AlfrescoProcessInstanceTableItem other) {
