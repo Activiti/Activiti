@@ -15,6 +15,9 @@ package org.activiti.explorer.ui.login;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
@@ -55,6 +58,14 @@ public class DefaultLoginHandler implements LoginHandler {
     }
     
     return loggedInUser;
+  }
+  
+  public void onRequestStart(HttpServletRequest request, HttpServletResponse response) {
+    // Noting to do here
+  }
+
+  public void onRequestEnd(HttpServletRequest request, HttpServletResponse response) {
+    // Noting to do here
   }
   
   public LoggedInUser authenticate() {

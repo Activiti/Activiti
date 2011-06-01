@@ -13,6 +13,9 @@
 
 package org.activiti.explorer.ui.login;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.activiti.explorer.identity.LoggedInUser;
 
 
@@ -46,4 +49,16 @@ public interface LoginHandler {
    * to authorization and authentication for the current logged in user.
    */
   void logout(LoggedInUser userTologout);
+  
+  /**
+   * Called when request started. Allows eg. validating of authentication or
+   * renewing.
+   */
+  void onRequestStart(HttpServletRequest request, HttpServletResponse response);
+  
+  /**
+   * Called when request started. Allows eg. validating of authentication or
+   * renewing.
+   */
+  void onRequestEnd(HttpServletRequest request, HttpServletResponse response);
 }

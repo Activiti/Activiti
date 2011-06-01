@@ -77,15 +77,14 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   
   @Override
   public void close() {
-    super.close();
     final LoggedInUser theUser = getLoggedInUser();
     
     // Clear the logged in user
     setUser(null);
     
     // Call loginhandler
-    ExplorerApp.get().getLoginHandler().logout(theUser);
-    
+    getLoginHandler().logout(theUser);
+    super.close();
   }
   public static ExplorerApp get() {
     return current.get();
@@ -162,6 +161,9 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
         viewManager.showDefaultPage();
       }
     }
+    
+ // Callback to the login handler
+    loginHandler.onRequestStart(request, response);
   }
   
   public void onRequestEnd(HttpServletRequest request, HttpServletResponse response) {
@@ -170,6 +172,9 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
     
     // Clear authentication context
     Authentication.setAuthenticatedUserId(null);
+    
+    // Callback to the login handler
+    loginHandler.onRequestEnd(request, response);
   }
   
   // URL Handling ---------------------------------------------------------------------------------
