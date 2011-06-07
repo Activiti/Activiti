@@ -12,8 +12,6 @@
  */
 package org.activiti.explorer;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -36,7 +34,7 @@ public class Constants {
   
   // Date formatting
   public static final String DEFAULT_DATE_FORMAT = "dd-MM-yyyy";
-  public static final DateFormat DEFAULT_DATE_FORMATTER = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
+  public static final String DEFAULT_TIME_FORMAT = "dd-MM-yyyy hh:mm:ss";
   
   // Default diagram image extension, when name cannot be deducted from resource name
  public static final String DEFAULT_DIAGRAM_IMAGE_EXTENSION = "png";

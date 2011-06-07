@@ -14,6 +14,7 @@
 package org.activiti.explorer.ui.profile;
 
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -284,7 +285,7 @@ public class ProfilePanel extends Panel {
       birthDateField.setDateFormat(Constants.DEFAULT_DATE_FORMAT);
       birthDateField.setResolution(DateField.RESOLUTION_DAY);
       try {
-        birthDateField.setValue(Constants.DEFAULT_DATE_FORMATTER.parse(birthDate));
+        birthDateField.setValue(new SimpleDateFormat(Constants.DEFAULT_DATE_FORMAT).parse(birthDate));
       } catch (Exception e) {} // do nothing
       addProfileInputField(aboutLayout, i18nManager.getMessage(Messages.PROFILE_BIRTHDATE), birthDateField, null);
     }
@@ -322,7 +323,7 @@ public class ProfilePanel extends Panel {
         
         identityService.setUserInfo(user.getId(), Constants.USER_INFO_JOB_TITLE, jobTitleField.getValue().toString());
         if (birthDateField.getValue() != null && !"".equals(birthDateField.getValue().toString())) {
-          identityService.setUserInfo(user.getId(), Constants.USER_INFO_BIRTH_DATE, Constants.DEFAULT_DATE_FORMATTER.format(birthDateField.getValue()));
+          identityService.setUserInfo(user.getId(), Constants.USER_INFO_BIRTH_DATE, new SimpleDateFormat(Constants.DEFAULT_DATE_FORMAT).format(birthDateField.getValue()));
         }
         identityService.setUserInfo(user.getId(), Constants.USER_INFO_LOCATION, locationField.getValue().toString());
         identityService.setUserInfo(user.getId(), Constants.USER_INFO_PHONE, phoneField.getValue().toString());

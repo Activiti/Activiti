@@ -15,6 +15,7 @@ package org.activiti.explorer.ui.custom;
 
 import java.text.DateFormat;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.activiti.explorer.Constants;
@@ -39,13 +40,14 @@ public class PrettyTimeLabel extends Label {
   protected String labelTemplate;
   protected Date date;
   protected String noDateCaption;
+  protected boolean showTime;
   
-  public PrettyTimeLabel(Date date) {
-    this(date, "");
+  public PrettyTimeLabel(Date date, boolean showTime) {
+    this(date, "",  showTime);
   }
   
-  public PrettyTimeLabel(Date date, String noDateCaption) {
-   this(null, date, noDateCaption);
+  public PrettyTimeLabel(Date date, String noDateCaption,  boolean showTime) {
+   this(null, date, noDateCaption, showTime);
   }
   
 
@@ -61,10 +63,11 @@ public class PrettyTimeLabel extends Label {
    *          caption of label to show when dat is null. Empty label is shown
    *          when null.
    */
-  public PrettyTimeLabel(String labelTemplate, Date date, String noDateCaption) {
+  public PrettyTimeLabel(String labelTemplate, Date date, String noDateCaption, boolean showTime) {
     this.labelTemplate = labelTemplate;
     this.date = date;
     this.noDateCaption = noDateCaption;
+    this.showTime = showTime;
     
     init();
   }
@@ -73,7 +76,13 @@ public class PrettyTimeLabel extends Label {
     
     final I18nManager i18nManager = ExplorerApp.get().getI18nManager();
     if (date != null) {
-      DateFormat dateFormat = (DateFormat) Constants.DEFAULT_DATE_FORMATTER.clone();
+      DateFormat dateFormat = null;
+      if(showTime) {
+        dateFormat = new SimpleDateFormat(Constants.DEFAULT_TIME_FORMAT);
+      } else {
+        dateFormat = new SimpleDateFormat(Constants.DEFAULT_DATE_FORMAT);
+      }
+      
       if(labelTemplate != null) {
         super.setValue(MessageFormat.format(labelTemplate, new HumanTime(i18nManager).format(date)));
       } else {

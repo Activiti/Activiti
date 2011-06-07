@@ -118,7 +118,7 @@ public class DeploymentDetailPanel extends DetailPanel {
     
     // Add deploy time
     PrettyTimeLabel deployTimeLabel = new PrettyTimeLabel(i18nManager.getMessage(Messages.DEPLOYMENT_DEPLOY_TIME),
-      deployment.getDeploymentTime(), null);
+      deployment.getDeploymentTime(), null, true);
     deployTimeLabel.addStyleName(ExplorerLayout.STYLE_DEPLOYMENT_HEADER_DEPLOY_TIME);
     taskDetails.addComponent(deployTimeLabel, 1, 1);
     

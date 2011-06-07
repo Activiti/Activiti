@@ -58,7 +58,7 @@ public class DueDateComponent extends CssLayout {
   
   protected void initDueDateLabel() {
     dueDateLabel = new PrettyTimeLabel(i18nManager.getMessage(Messages.TASK_DUEDATE_SHORT),
-            task.getDueDate(), i18nManager.getMessage(Messages.TASK_DUEDATE_UNKNOWN));
+            task.getDueDate(), i18nManager.getMessage(Messages.TASK_DUEDATE_UNKNOWN), false);
     dueDateLabel.addStyleName(ExplorerLayout.STYLE_TASK_HEADER_DUEDATE);
     dueDateLabel.setSizeUndefined();
     dueDateLabel.addStyleName(ExplorerLayout.STYLE_CLICKABLE);

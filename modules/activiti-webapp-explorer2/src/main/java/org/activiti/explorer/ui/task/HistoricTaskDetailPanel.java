@@ -129,7 +129,7 @@ public class HistoricTaskDetailPanel extends DetailPanel {
 
     // Add due date
     PrettyTimeLabel dueDateLabel = new PrettyTimeLabel(i18nManager.getMessage(Messages.TASK_DUEDATE_SHORT),
-      historicTask.getDueDate(), i18nManager.getMessage(Messages.TASK_DUEDATE_UNKNOWN));
+      historicTask.getDueDate(), i18nManager.getMessage(Messages.TASK_DUEDATE_UNKNOWN), false);
     dueDateLabel.addStyleName(ExplorerLayout.STYLE_TASK_HEADER_DUEDATE);
     taskDetails.addComponent(dueDateLabel, 1, 1);
     
@@ -154,7 +154,7 @@ public class HistoricTaskDetailPanel extends DetailPanel {
     
     // Add create date
     PrettyTimeLabel createLabel = new PrettyTimeLabel(i18nManager.getMessage(Messages.TASK_CREATED_SHORT),
-      historicTask.getStartTime(), "");
+      historicTask.getStartTime(), "", true);
     createLabel.addStyleName(ExplorerLayout.STYLE_TASK_HEADER_CREATE_TIME);
     taskDetails.addComponent(createLabel, 3, 1);
     

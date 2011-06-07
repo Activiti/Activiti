@@ -13,9 +13,8 @@
 
 package org.activiti.explorer.ui.custom;
 
-import com.vaadin.event.Action;
-import com.vaadin.event.Action.Handler;
 import com.vaadin.event.ShortcutAction;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Window;
 
 
@@ -40,16 +39,12 @@ public class PopupWindow extends Window {
   @Override
   public void attach() {
     super.attach();
-    
-    addActionHandler(new Handler() {
-      public void handleAction(Action action, Object sender, Object target) {
-        close();
-      }
-      
-      public Action[] getActions(Object target, Object sender) {
-        return new Action[] {new ShortcutAction("escape", ShortcutAction.KeyCode.ESCAPE, null)};
-      }
-    });
+    // setCloseShortcut(ShortcutAction.KeyCode.ESCAPE, null);
+  }
+  
+  @Override
+  public void setParent(Component parent) {
+    super.setParent(parent);
   }
   
 }

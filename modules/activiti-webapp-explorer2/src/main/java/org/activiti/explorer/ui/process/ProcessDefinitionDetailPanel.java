@@ -195,7 +195,7 @@ public class ProcessDefinitionDetailPanel extends DetailPanel {
     
     // Add deploy time
     PrettyTimeLabel deployTimeLabel = new PrettyTimeLabel(i18nManager.getMessage(Messages.PROCESS_DEPLOY_TIME),
-      deployment.getDeploymentTime(), null);
+      deployment.getDeploymentTime(), null, true);
     deployTimeLabel.addStyleName(ExplorerLayout.STYLE_PROCESS_HEADER_DEPLOY_TIME);
     propertiesLayout.addComponent(deployTimeLabel);
   }

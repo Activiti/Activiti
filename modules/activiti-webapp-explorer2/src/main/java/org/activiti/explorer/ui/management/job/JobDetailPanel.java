@@ -110,7 +110,7 @@ public class JobDetailPanel extends DetailPanel {
     
     // Add due date
     PrettyTimeLabel dueDateLabel = new PrettyTimeLabel(i18nManager.getMessage(Messages.JOB_DUEDATE),
-      job.getDuedate(), i18nManager.getMessage(Messages.JOB_NO_DUEDATE));
+      job.getDuedate(), i18nManager.getMessage(Messages.JOB_NO_DUEDATE), false);
     dueDateLabel.addStyleName(ExplorerLayout.STYLE_JOB_HEADER_DUE_DATE);
     taskDetails.addComponent(dueDateLabel, 1, 1);
     

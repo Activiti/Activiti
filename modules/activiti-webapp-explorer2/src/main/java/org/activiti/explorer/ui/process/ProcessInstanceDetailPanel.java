@@ -164,11 +164,11 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
     item.getItemProperty("name").setValue(task.getName());
     item.getItemProperty("priority").setValue(task.getPriority());
     
-    item.getItemProperty("startDate").setValue(new PrettyTimeLabel(task.getStartTime()));
-    item.getItemProperty("endDate").setValue(new PrettyTimeLabel(task.getEndTime()));
+    item.getItemProperty("startDate").setValue(new PrettyTimeLabel(task.getStartTime(), true));
+    item.getItemProperty("endDate").setValue(new PrettyTimeLabel(task.getEndTime(), true));
     
     if(task.getDueDate() != null) {
-      Label dueDateLabel = new PrettyTimeLabel(task.getEndTime(), i18nManager.getMessage(Messages.TASK_NOT_FINISHED_YET)); 
+      Label dueDateLabel = new PrettyTimeLabel(task.getEndTime(), i18nManager.getMessage(Messages.TASK_NOT_FINISHED_YET), false); 
       item.getItemProperty("dueDate").setValue(dueDateLabel);
     }
     
@@ -216,7 +216,7 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
 
     // Add start time
     PrettyTimeLabel startTimeLabel = new PrettyTimeLabel(i18nManager.getMessage(Messages.PROCESS_START_TIME),
-      historicProcessInstance.getStartTime(), null);
+      historicProcessInstance.getStartTime(), null, true);
     startTimeLabel.addStyleName(ExplorerLayout.STYLE_PROCESS_HEADER_START_TIME);
     header.addComponent(startTimeLabel, 1, 1);
     

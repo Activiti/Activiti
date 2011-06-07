@@ -151,7 +151,7 @@ public class TaskDetailPanel extends DetailPanel {
   
   protected void initCreateTime(HorizontalLayout propertiesLayout) {
     PrettyTimeLabel createLabel = new PrettyTimeLabel(
-            i18nManager.getMessage(Messages.TASK_CREATED_SHORT), task.getCreateTime(), "");
+            i18nManager.getMessage(Messages.TASK_CREATED_SHORT), task.getCreateTime(), "", true);
     createLabel.addStyleName(ExplorerLayout.STYLE_TASK_HEADER_CREATE_TIME);
     propertiesLayout.addComponent(createLabel);
   }
