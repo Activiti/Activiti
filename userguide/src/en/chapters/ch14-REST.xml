@@ -299,7 +299,7 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
           <listitem>
             <para>
               <emphasis role="bold">API:</emphasis>
-              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getProcessService().createProcessDefinitionQuery().listPage()</literal>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getRepositoryService().createProcessDefinitionQuery().listPage()</literal>
             </para>
           </listitem>
           <listitem>
@@ -344,7 +344,7 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
           <listitem>
             <para>
               <emphasis role="bold">API:</emphasis>
-              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getProcessService().createProcessDefinitionQuery().processDefinitionId(processDefinitionId)</literal>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getRepositoryService().createProcessDefinitionQuery().processDefinitionId(processDefinitionId)</literal>
             </para>
           </listitem>
           <listitem>
