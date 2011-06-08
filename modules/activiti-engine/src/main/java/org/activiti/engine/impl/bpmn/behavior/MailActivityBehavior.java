@@ -37,7 +37,7 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
   protected Expression subject;
   protected Expression text;
   protected Expression html;
-  protected String charset;
+  protected Expression charset;
 
   public void execute(ActivityExecution execution) {
     String toStr = getStringFromField(to, execution);
@@ -47,6 +47,7 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
     String subjectStr = getStringFromField(subject, execution);
     String textStr = getStringFromField(text, execution);
     String htmlStr = getStringFromField(html, execution);
+    String charSetStr = getStringFromField(charset, execution);
 
     Email email = createEmail(textStr, htmlStr);
 
@@ -56,7 +57,7 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
     addBcc(email, bccStr);
     setSubject(email, subjectStr);
     setMailServerProperties(email);
-    setCharset(email);
+    setCharset(email, charSetStr);
 
     try {
       email.send();
@@ -179,12 +180,12 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
     }
   }
   
-  protected void setCharset(Email email) {
+  protected void setCharset(Email email, String charSetStr) {
     if (charset != null) {
-      email.setCharset(charset);
+      email.setCharset(charSetStr);
     }
   }
-
+  
   protected String[] splitAndTrim(String str) {
     if (str != null) {
       String[] splittedStrings = str.split(",");
