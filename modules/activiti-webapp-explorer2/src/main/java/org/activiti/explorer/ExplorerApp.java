@@ -25,6 +25,7 @@ import org.activiti.explorer.ui.MainWindow;
 import org.activiti.explorer.ui.content.AttachmentRendererManager;
 import org.activiti.explorer.ui.form.FormPropertyRendererManager;
 import org.activiti.explorer.ui.login.LoginHandler;
+import org.activiti.explorer.ui.variable.VariableRendererManager;
 
 import com.vaadin.Application;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
@@ -51,6 +52,7 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   protected I18nManager i18nManager;
   protected AttachmentRendererManager attachmentRendererManager;
   protected FormPropertyRendererManager formPropertyRendererManager;
+  protected VariableRendererManager variableRendererManager;
   protected LoginHandler loginHandler;
   protected ComponentFactories componentFactories;
   
@@ -132,6 +134,14 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   
   public LoginHandler getLoginHandler() {
     return loginHandler;
+  }
+  
+  public void setVariableRendererManager(VariableRendererManager variableRendererManager) {
+    this.variableRendererManager = variableRendererManager;
+  }
+  
+  public VariableRendererManager getVariableRendererManager() {
+    return variableRendererManager;
   }
   
   // HttpServletRequestListener -------------------------------------------------------------------

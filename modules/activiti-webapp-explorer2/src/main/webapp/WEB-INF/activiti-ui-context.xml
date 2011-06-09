@@ -38,6 +38,9 @@
     </property>
   </bean>
   
+  <!-- Variable value rendering -->
+  <bean id="variableRendererManager" class="org.activiti.explorer.ui.variable.VariableRendererManager" />
+  
   <bean name="componentFactories" class="org.activiti.explorer.ComponentFactories">
     <property name="environment" value="${activiti.ui.environment}" />
   </bean>
@@ -65,6 +68,7 @@
     <property name="notificationManager" ref="notificationManager" />
     <property name="attachmentRendererManager" ref="attachmentRendererManager" />
     <property name="formPropertyRendererManager" ref="formPropertyRendererManager" />
+    <property name="variableRendererManager" ref="variableRendererManager" />
     <property name="applicationMainWindow" ref="mainWindow" />
     <property name="componentFactories" ref="componentFactories" />
     <property name="loginHandler" ref="activitiLoginHandler" />

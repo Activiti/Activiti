@@ -19,6 +19,7 @@ import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ViewManager;
+import org.activiti.explorer.ui.AbstractTablePage;
 import org.activiti.explorer.ui.custom.ConfirmationDialogPopupWindow;
 import org.activiti.explorer.ui.event.ConfirmationEvent;
 import org.activiti.explorer.ui.event.ConfirmationEventListener;
@@ -35,9 +36,9 @@ public class DeleteProcessInstanceClickListener implements ClickListener {
   private static final long serialVersionUID = 1L;
   
   protected String processInstanceId;
-  protected ProcessInstancePage processInstancePage;
+  protected AbstractTablePage processInstancePage;
   
-  public DeleteProcessInstanceClickListener(String processInstanceId, ProcessInstancePage processInstancePage) {
+  public DeleteProcessInstanceClickListener(String processInstanceId, AbstractTablePage processInstancePage) {
     this.processInstanceId = processInstanceId;
     this.processInstancePage = processInstancePage;
   }

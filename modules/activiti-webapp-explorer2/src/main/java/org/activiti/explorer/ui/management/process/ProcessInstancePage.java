@@ -73,7 +73,7 @@ public class ProcessInstancePage extends ManagementPage {
         Item item = table.getItem(event.getProperty().getValue()); // the value of the property is the itemId of the table entry
         if(item != null) {
           String processInstanceId = (String) item.getItemProperty("id").getValue();
-          setDetailComponent(new ProcessInstanceDetailPanel(processInstanceId, ProcessInstancePage.this));
+          setDetailComponent(new AlfrescoProcessInstanceDetailPanel(processInstanceId, ProcessInstancePage.this));
           
           // Update URL
           ExplorerApp.get().setCurrentUriFragment(

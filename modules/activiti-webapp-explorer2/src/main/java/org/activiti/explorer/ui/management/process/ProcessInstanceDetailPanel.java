@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.activiti.engine.HistoryService;
+import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
@@ -31,11 +32,14 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
+import org.activiti.explorer.ui.AbstractTablePage;
 import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.custom.DetailPanel;
 import org.activiti.explorer.ui.custom.PrettyTimeLabel;
+import org.activiti.explorer.ui.custom.UserProfileLink;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 import org.activiti.explorer.ui.process.ProcessDefinitionImageStreamResourceBuilder;
+import org.activiti.explorer.ui.variable.VariableRendererManager;
 
 import com.vaadin.data.Item;
 import com.vaadin.terminal.StreamResource;
@@ -51,6 +55,7 @@ import com.vaadin.ui.themes.Reindeer;
 
 /**
  * @author Joram Barrez
+ * @author Frederik Heremans
  */
 public class ProcessInstanceDetailPanel extends DetailPanel {
 
@@ -60,16 +65,18 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
   protected RepositoryService repositoryService;
   protected TaskService taskService;
   protected HistoryService historyService;
+  protected IdentityService identityService;
   protected I18nManager i18nManager;
+  protected VariableRendererManager variableRendererManager;
   
   protected ProcessInstance processInstance;
-  protected ProcessInstancePage processInstancePage;
+  protected AbstractTablePage processInstancePage;
   protected HistoricProcessInstance historicProcessInstance;
   protected ProcessDefinition processDefinition;
   
   protected VerticalLayout panelLayout;
 
-  public ProcessInstanceDetailPanel(String processInstanceId, ProcessInstancePage processInstancePage) {
+  public ProcessInstanceDetailPanel(String processInstanceId, AbstractTablePage processInstancePage) {
     
     // Member initialization
     this.processInstancePage = processInstancePage;
@@ -79,10 +86,12 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
     this.historyService = ProcessEngines.getDefaultProcessEngine().getHistoryService();
     this.i18nManager = ExplorerApp.get().getI18nManager();
+    this.variableRendererManager = ExplorerApp.get().getVariableRendererManager();
 
     this.processInstance = getProcessInstance(processInstanceId);
     this.processDefinition = getProcessDefinition(processInstance.getProcessDefinitionId());
     this.historicProcessInstance = getHistoricProcessInstance(processInstanceId);
+    this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
 
     init();
   }
@@ -228,10 +237,17 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
     }
     
     if(task.getAssignee() != null) {
-      item.getItemProperty("assignee").setValue(new Label(task.getAssignee()));
+      Component taskAssigneeComponent = getTaskAssigneeComponent(task.getAssignee());
+      if(taskAssigneeComponent != null) {
+        item.getItemProperty("assignee").setValue(taskAssigneeComponent);
+      }
     }
   }
   
+  protected Component getTaskAssigneeComponent(String assignee) {
+    return new UserProfileLink(identityService, true, assignee);
+  }
+
   protected void addVariables() {
     Label header = new Label(i18nManager.getMessage(Messages.PROCESS_INSTANCE_HEADER_VARIABLES));
     header.addStyleName(ExplorerLayout.STYLE_H3);
@@ -256,7 +272,10 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
       for (String variable : variables.keySet()) {
         Item variableItem = variablesTable.addItem(variable);
         variableItem.getItemProperty("name").setValue(variable);
-        variableItem.getItemProperty("value").setValue(variables.get(variable));
+        
+        // Get string value to show
+        String theValue = variableRendererManager.getStringRepresentation(variables.get(variable));
+        variableItem.getItemProperty("value").setValue(theValue);
       }
       
       variablesTable.setPageLength(variables.size());
