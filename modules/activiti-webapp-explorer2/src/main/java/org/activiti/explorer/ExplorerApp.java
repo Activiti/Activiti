@@ -55,6 +55,9 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   protected VariableRendererManager variableRendererManager;
   protected LoginHandler loginHandler;
   protected ComponentFactories componentFactories;
+
+  // Flag to see if the session has been invalidated, when the application was closed
+  protected boolean invalidatedSession = false;
   
   public void init() {
     setMainWindow(mainWindow);
@@ -86,8 +89,11 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
     
     // Call loginhandler
     getLoginHandler().logout(theUser);
+    
+    invalidatedSession = false;
     super.close();
   }
+  
   public static ExplorerApp get() {
     return current.get();
   }
@@ -185,6 +191,16 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
     
     // Callback to the login handler
     loginHandler.onRequestEnd(request, response);
+    
+    if(!isRunning() && !invalidatedSession) {
+      // Clear the session context, the application has been closed during this request, otherwise
+      // the application will be stuck on the spring-session scope and will be reused on the next
+      // request, which will lead to problems
+      if(request.getSession(false) != null) {
+        request.getSession().invalidate();
+        invalidatedSession = true;
+      }
+    }
   }
   
   // URL Handling ---------------------------------------------------------------------------------
