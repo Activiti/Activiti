@@ -97,4 +97,12 @@ public class UserManager extends AbstractManager {
     parameters.put("type", type);
     return (List) getDbSqlSession().getSqlSession().selectList("selectIdentityInfoKeysByUserIdAndType", parameters);
   }
+  
+  public Boolean checkPassword(String userId, String password) {
+    User user = findUserById(userId);
+    if ((user != null) && (password != null) && (password.equals(user.getPassword()))) {
+      return true;
+    }
+    return false;
+  }
 }

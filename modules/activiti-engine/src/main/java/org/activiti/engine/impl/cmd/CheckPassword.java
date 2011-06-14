@@ -30,16 +30,8 @@ public class CheckPassword implements Command<Boolean> {
     this.password = password;
   }
 
-
   public Boolean execute(CommandContext commandContext) {
-    User user = commandContext.getUserManager().findUserById(userId);
-    if ( (user!=null)
-         && (password!=null)
-         && (password.equals(user.getPassword()))
-       ) {
-      return true;
-    }
-    return false;
+    return commandContext.getUserManager().checkPassword(userId, password);
   }
 
 }
