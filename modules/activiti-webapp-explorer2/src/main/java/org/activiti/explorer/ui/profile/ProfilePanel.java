@@ -100,7 +100,6 @@ public class ProfilePanel extends Panel {
   protected TextField phoneField;
   protected TextField twitterField;
   protected TextField skypeField;
-  protected GridLayout accountLayout;
   
   public ProfilePanel(String userId) {
     this.userId = userId;
@@ -227,9 +226,6 @@ public class ProfilePanel extends Panel {
     initAboutSection();
     initContactSection();
     
-    if (isCurrentLoggedInUser) {
-      initAccountsSection();
-    }
   }
 
   protected void initAboutSection() {
@@ -397,87 +393,6 @@ public class ProfilePanel extends Panel {
   
   protected boolean isDefined(String information) {
     return information != null && !"".equals(information);
-  }
-  
-  protected void initAccountsSection() {
-    // Header
-    Label header = createProfileHeader(infoPanelLayout, i18nManager.getMessage(Messages.PROFILE_ACCOUNTS));
-    header.addStyleName(ExplorerLayout.STYLE_H3);
-    header.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
-    infoPanelLayout.addComponent(header);
-    
-    // Actual account data
-    accountLayout = createInfoSectionLayout(4, 2); 
-    populateAccounts();
-    
-    // Add account button
-    Button addAccountButton = new Button(i18nManager.getMessage(Messages.PROFILE_ADD_ACCOUNT));
-    addAccountButton.addStyleName(Reindeer.BUTTON_SMALL);
-    infoPanelLayout.addComponent(addAccountButton);
-    
-    addAccountButton.addListener(new ClickListener() {
-      public void buttonClick(ClickEvent event) {
-        AccountSelectionPopup popup = new AccountSelectionPopup(i18nManager.getMessage(Messages.PROFILE_ADD_ACCOUNT));
-        
-        // Adds a listener that listens to submit events when a account is selected
-        popup.addListener(new SubmitEventListener() {
-          @SuppressWarnings("unchecked")
-          protected void submitted(SubmitEvent event) {
-            Map<String, Object> accountDetails = (Map<String, Object>) event.getData();
-            identityService.setUserAccount(userId, 
-                    ExplorerApp.get().getLoggedInUser().getPassword(),
-                    (String) accountDetails.get("accountName"),
-                    (String) accountDetails.get("userName"),
-                    (String) accountDetails.get("password"),
-                    (Map<String, String>) accountDetails.get("additional"));
-            refreshAccounts();
-          }
-          protected void cancelled(SubmitEvent event) {
-          }
-        });
-        viewManager.showPopupWindow(popup);
-      }
-    });
-  }
-  
-  protected void populateAccounts() {
-    List<Account> accounts = loadAccounts();
-    
-    for (Account account : accounts) {
-      Embedded image = null;
-      if (account.getName().equals("imap")) {
-        image = new Embedded(null, Images.IMAP);
-      } else if (account.getName().equals("alfresco")) {
-        image = new Embedded(null, Images.ALFRESCO);
-      }
-      
-      if (image != null) {
-      image.setSizeUndefined();
-      accountLayout.addComponent(image);
-      }
-      addProfileEntry(accountLayout, account.getName(), account.getUsername());
-      
-      Embedded deleteIcon = new Embedded(null, Images.DELETE);
-      deleteIcon.setType(Embedded.TYPE_IMAGE);
-      deleteIcon.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
-      deleteIcon.addListener(new DeleteAccountClickListener(userId, account.getName(), this));
-      accountLayout.addComponent(deleteIcon);
-    }
-  }
-  
-  public void refreshAccounts() {
-    accountLayout.removeAllComponents();
-    populateAccounts();
-  }
-  
-  protected List<Account> loadAccounts() {
-    List<String> accountNames = identityService.getUserAccountNames(userId);
-    List<Account> accounts = new ArrayList<Account>(accountNames.size());
-    for (String accountName : accountNames) {
-      accounts.add(identityService.getUserAccount(
-              userId, ExplorerApp.get().getLoggedInUser().getPassword(), accountName));
-    }
-    return accounts;
   }
   
   protected Label createProfileHeader(VerticalLayout infoLayout, String headerName) {

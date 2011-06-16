@@ -172,13 +172,12 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
 
     if(user != null) {
       Authentication.setAuthenticatedUserId(user.getId());
-      
       if (mainWindow != null && mainWindow.isShowingLoginPage()) {
         viewManager.showDefaultPage();
       }
     }
     
- // Callback to the login handler
+    // Callback to the login handler
     loginHandler.onRequestStart(request, response);
   }
   

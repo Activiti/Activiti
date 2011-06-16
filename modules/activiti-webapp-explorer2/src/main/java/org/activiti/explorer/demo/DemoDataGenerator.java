@@ -13,6 +13,8 @@
 
 package org.activiti.explorer.demo;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.activiti.engine.IdentityService;
@@ -21,7 +23,6 @@ import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.util.IoUtil;
-import org.activiti.engine.impl.util.LogUtil;
 
 
 /**
@@ -29,172 +30,94 @@ import org.activiti.engine.impl.util.LogUtil;
  */
 public class DemoDataGenerator {
   
-  static {
-    LogUtil.readJavaUtilLoggingConfigFromClasspath();
-  }
-  
   protected static final Logger LOGGER = Logger.getLogger(DemoDataGenerator.class.getName());
 
   protected ProcessEngine processEngine;
+  protected IdentityService identityService;
   
   public void setProcessEngine(ProcessEngine processEngine) {
     this.processEngine = processEngine;
-    init();
+    this.identityService = processEngine.getIdentityService();
+    
+    initDemoGroups();
+    initDemoUsers();
+  }
+  
+  protected void initDemoGroups() {
+    String[] assignmentGroups = new String[] {"management", "sales", "marketing", "engineering"};
+    for (String groupId : assignmentGroups) {
+      createGroup(groupId, "assignment");
+    }
+    
+    String[] securityGroups = new String[] {"user", "admin"}; 
+    for (String groupId : securityGroups) {
+      createGroup(groupId, "security-role");
+    }
+  }
+  
+  protected void createGroup(String groupId, String type) {
+    if (identityService.createGroupQuery().groupId(groupId).count() == 0) {
+      Group newGroup = identityService.newGroup(groupId);
+      newGroup.setName(groupId.substring(0, 1).toUpperCase() + groupId.substring(1));
+      newGroup.setType(type);
+      identityService.saveGroup(newGroup);
+    }
   }
 
-  public void init() {
-    processEngine.getIdentityService().setAuthenticatedUserId("kermit");
-    initDemoData();
-  }
-
-  protected void initDemoData() {
-    initKermit(processEngine);
-    initAlfrescoMembers(processEngine);
-    initProcessDefinitions(processEngine);
-  }
-  
-  protected void initKermit(ProcessEngine processEngine) {
-    // Create Kermit demo user
-    IdentityService identityService = processEngine.getIdentityService();
-    User kermit = identityService.newUser("kermit");
-    kermit.setEmail("kermit@muppets.com");
-    kermit.setFirstName("Kermit");
-    kermit.setLastName("The Frog");
-    kermit.setPassword("kermit");
-    identityService.saveUser(kermit);
+  protected void initDemoUsers() {
+    createUser("kermit", "Kermit", "The Frog", "kermit", "kermit@activiti.org", 
+            "org/activiti/explorer/images/kermit.jpg",
+            Arrays.asList("management", "sales", "marketing", "engineering", "user", "admin"),
+            Arrays.asList("birthDate", "10-10-1955", "jobTitle", "Muppet", "location", "Hollywoord",
+                          "phone", "+123456789", "twitterName", "alfresco", "skype", "activiti_kermit_frog"));
     
-    // Assignment Groups
-    Group management = identityService.newGroup("management");
-    management.setName("Management");
-    management.setType("assignment");
-    identityService.saveGroup(management);
-    
-    Group sales = identityService.newGroup("sales");
-    sales.setName("Sales");
-    sales.setType("assignment");
-    identityService.saveGroup(sales);
-    
-    Group marketing = identityService.newGroup("marketing");
-    marketing.setName("Marketing");
-    marketing.setType("assignment");
-    identityService.saveGroup(marketing);
-    
-    Group engineering = identityService.newGroup("engineering");
-    engineering.setType("assignment");
-    engineering.setName("Engineering");
-    identityService.saveGroup(engineering);
-    
-    // Security groups
-    
-    Group sysAdmin = identityService.newGroup("admin");
-    sysAdmin.setType("security-role");
-    identityService.saveGroup(sysAdmin);
-    
-    Group user = identityService.newGroup("user");
-    user.setType("security-role");
-    identityService.saveGroup(user);
-    
-    
-    // Membership
-    identityService.createMembership("kermit", "management");
-    identityService.createMembership("kermit", "sales");
-    identityService.createMembership("kermit", "marketing");
-    identityService.createMembership("kermit", "engineering");
-    identityService.createMembership("kermit", "user");
-    identityService.createMembership("kermit", "admin");
-    
-    // Additional details
-    identityService.setUserInfo("kermit", "birthDate", "10-10-1955");
-    identityService.setUserInfo("kermit", "jobTitle", "Activiti core mascot");
-    identityService.setUserInfo("kermit", "location", "Muppetland");
-    identityService.setUserInfo("kermit", "phone", "+1312323424");
-    identityService.setUserInfo("kermit", "twitterName", "kermit007");
-    identityService.setUserInfo("kermit", "skype", "kermit.frog");
-    
-    // Accounts
-    identityService.setUserAccount("kermit", "kermit", "imap", "kermit.frog@gmail.com", "kermit123", null);
-    identityService.setUserAccount("kermit", "kermit", "alfresco", "kermit_alf", "kermit_alf_123", null);
-    
-    // Picture
-    byte[] pictureBytes = IoUtil.readInputStream(this.getClass().getClassLoader().getResourceAsStream("org/activiti/explorer/images/kermit.jpg"), null);
-    Picture picture = new Picture(pictureBytes, "image/jpeg");
-    identityService.setUserPicture("kermit", picture);
-    
-    // Create other muppets 
-    createUser(identityService, "gonzo", "Gonzo", "The Great", "gonzo", "gonzo@muppets.con", null);
-    createUser(identityService, "fozzie", "Fozzie", "Bear", "fozzie", "fozzie@muppets.com", "org/activiti/explorer/images/fozzie.jpg");
+    createUser("gonzo", "Gonzo", "The Great", "gonzo", "gonzo@activiti.org", 
+            "org/activiti/explorer/images/gonzo.jpg",
+            Arrays.asList("management", "sales", "marketing", "user"),
+            null);
+    createUser("fozzie", "Fozzie", "Bear", "fozzie", "fozzie@activiti.org", 
+            "org/activiti/explorer/images/fozzie.jpg",
+            Arrays.asList("marketing", "engineering", "user"),
+            null);
   }
   
-  protected void initAlfrescoMembers(ProcessEngine processEngine) {
-    IdentityService identityService = processEngine.getIdentityService();
-    createUser(identityService, "joram", "Joram", "Barrez", "joram", "joram.barrez@alfresco.com", "org/activiti/explorer/images/joram.jpg");
-    createUser(identityService, "frederik", "Frederik", "Heremans", "frederik", "pluisje@alfresco.com", "org/activiti/explorer/images/fred.jpg");
-    createUser(identityService, "tom", "Tom", "Baeyens", "tom", "tom@alfresco.com", "org/activiti/explorer/images/tom.jpg");
-    createUser(identityService, "tijs", "Tijs", "Rademakers", "tijs", "tijs.rademakers@alfresco.com", "org/activiti/explorer/images/tijs.jpg");
-    createUser(identityService, "linton", "Linton", "Baddeley", "linton", "linton.baddeley@alfresco.com", "org/activiti/explorer/images/linton.jpg");
+  protected void createUser(String userId, String firstName, String lastName, String password, 
+          String email, String imageResource, List<String> groups, List<String> userInfo) {
     
-    createUser(identityService, "david", "David", "Caruana", "david", "david.caruana@alfresco.com", "org/activiti/explorer/images/david.jpg");
-    createUser(identityService, "gavin", "Gavin", "Cornwell", "gavin", "gavin.cornwell@alfresco.com", "org/activiti/explorer/images/gavin.jpg");
-    createUser(identityService, "johnN", "John", "Newton", "johnN", "john.newton@alfresco.com", "org/activiti/explorer/images/john_newton.jpg");
-    createUser(identityService, "johnP", "John", "Powell", "johnP", "john.powell@alfresco.com", "org/activiti/explorer/images/john_powell.jpg");
-    createUser(identityService, "paul", "Paul", "Holmes-Higgin", "paul", "paulhh@alfresco.com", "org/activiti/explorer/images/paul.jpg");
-    createUser(identityService, "julie", "Julie", "Hall", "julie", "julie.hall@alfresco.com", "org/activiti/explorer/images/julie.jpg");
-    createUser(identityService, "erik", "Erik", "Winlof", "erik", "erik.witloof@alfresco.com", "org/activiti/explorer/images/erik.jpg");
+    if (identityService.createUserQuery().userId(userId).count() == 0) {
+      
+      // Following data can already be set by demo setup script
+      
+      User user = identityService.newUser(userId);
+      user.setFirstName(firstName);
+      user.setLastName(lastName);
+      user.setPassword(password);
+      user.setEmail(email);
+      identityService.saveUser(user);
+      
+      if (groups != null) {
+        for (String group : groups) {
+          identityService.createMembership(userId, group);
+        }
+      }
+    }
     
-    // Skype
-    identityService.setUserInfo("joram", "skype", "joram.barrez");
-    identityService.setUserInfo("frederik", "skype", "frederik.heremans");
-    identityService.setUserInfo("david", "skype", "david.caruana");
-    identityService.setUserInfo("gavin", "skype", "gavincornwell");
-    identityService.setUserInfo("johnN", "skype", "john_newton_uk");
-    identityService.setUserInfo("johnP", "skype", "john_n_powell");
-    identityService.setUserInfo("paul", "skype", "paulhh");
-    identityService.setUserInfo("erik", "skype", "wineleaf");
-    identityService.setUserInfo("tom", "skype", "tombaeyens");
-    
-    
-    // Joram
-    identityService.setUserInfo("joram", "birthDate", "10-10-1985");
-    identityService.setUserInfo("joram", "jobTitle", "Activiti core developer");
-    identityService.setUserInfo("joram", "location", "Welle, Belgium");
-    identityService.setUserInfo("joram", "phone", "+32485869655");
-    identityService.setUserInfo("joram", "twitterName", "jbarrez");
-    
-    // Tim
-//    String accountUsername = System.getProperty("user");
-//    String accountPassword = System.getProperty("pwd");
-//    if (accountUsername == null || accountPassword == null) {
-//      throw new RuntimeException("'user' and 'pwd' system property must be set");
-//    }
-//    Map<String, String> accountDetails = new HashMap<String, String>();
-//    accountDetails.put("toDoFolderName", "Cases");
-//    accountDetails.put("toDoInActivitiFolderName", "CasesInActiviti");
-//    accountDetails.put("imapHost", "imap.gmail.com");
-//    accountDetails.put("imapProtocol", "imaps");
-//    identityService.setUserAccount("tom", null, "mailscan", accountUsername, accountPassword, accountDetails);
-  }
-  
-  protected void createUser(IdentityService identityService, String userId, String firstName, String lastName, 
-          String password, String email, String imageResource) {
-    User user = identityService.newUser(userId);
-    user.setFirstName(firstName);
-    user.setLastName(lastName);
-    user.setPassword(password);
-    user.setEmail(email);
-    identityService.saveUser(user);
-    
+    // Following data is not set by demo script
+      
+    // image
     if (imageResource != null) {
       byte[] pictureBytes = IoUtil.readInputStream(this.getClass().getClassLoader().getResourceAsStream(imageResource), null);
       Picture picture = new Picture(pictureBytes, "image/jpeg");
       identityService.setUserPicture(userId, picture);
     }
+      
+    // user info
+    if (userInfo != null) {
+      for(int i=0; i<userInfo.size(); i+=2) {
+        identityService.setUserInfo(userId, userInfo.get(i), userInfo.get(i+1));
+      }
+    }
     
-    identityService.createMembership(userId, "management");
-    identityService.createMembership(userId, "sales");
-    identityService.createMembership(userId, "marketing");
-    identityService.createMembership(userId, "engineering");
-    identityService.createMembership(userId, "user");
-    identityService.createMembership(userId, "admin");
   }
   
   protected void initProcessDefinitions(ProcessEngine processEngine) {

@@ -432,10 +432,8 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
           depends="build.webapps, 
                    internal.deploy.activiti.rest.into.tomcat,
                    internal.deploy.activiti.explorer.into.tomcat,
-                   internal.deploy.activiti.probe.into.tomcat,
                    internal.deploy.activiti.cycle.into.tomcat,
                    internal.deploy.activiti.kickstart.into.tomcat,
-  	               internal.deploy.activiti.administrator.into.tomcat,
                    internal.deploy.activiti.modeler.into.tomcat" />
 
   <target name="build.webapps"
@@ -445,25 +443,33 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
     <copy todir="${activiti.home}/setup/build/webapps">
       <fileset dir="${activiti.home}/setup/files/webapps" />
     </copy>
+  	
+  	<!-- Activiti Explorer -->
     <copy todir="${activiti.home}/setup/build/webapps/activiti-explorer.war/WEB-INF/lib">
       <fileset dir="${activiti.home}/setup/files/dependencies/libs" 
-               includesfile="${activiti.home}/setup/files/dependencies/libs.webapp.ui.txt" />
+               includesfile="${activiti.home}/setup/files/dependencies/libs.webapp.explorer.txt" />
     </copy>
-    <copy todir="${activiti.home}/setup/build/webapps/activiti-probe.war/WEB-INF/lib">
-      <fileset dir="${activiti.home}/setup/files/dependencies/libs" 
-               includesfile="${activiti.home}/setup/files/dependencies/libs.webapp.ui.txt" />
-    </copy>
+  	<propertyfile file="${activiti.home}/setup/build/webapps/activiti-explorer.war/WEB-INF/classes/db.properties">
+  	  <entry key="db" value="${db}" />
+  		<entry key="jdbc.driver" value="${jdbc.driver}" />
+  	  <entry key="jdbc.url" value="${jdbc.url}" />
+  		<entry key="jdbc.username" value="${jdbc.username}" />
+  	  <entry key="jdbc.password" value="${jdbc.password}" />
+  	</propertyfile>
+  	
+  	<!-- Activiti Cycle -->
     <copy todir="${activiti.home}/setup/build/webapps/activiti-cycle.war/WEB-INF/lib">
       <fileset dir="${activiti.home}/setup/files/dependencies/libs" 
                includesfile="${activiti.home}/setup/files/dependencies/libs.webapp.ui.txt" />
     </copy>
+  	
+  	<!-- Activiti KickStart -->
   	<copy todir="${activiti.home}/setup/build/webapps/activiti-kickstart.war/WEB-INF/lib">
   	  <fileset dir="${activiti.home}/setup/files/dependencies/libs" 
   	           includesfile="${activiti.home}/setup/files/dependencies/libs.webapp.kickstart.txt" />
   	</copy>
-  	<copy todir="${activiti.home}/setup/build/webapps/activiti-administrator.war/WEB-INF/lib">
-  	  <fileset dir="${activiti.home}/setup/files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.webapp.administrator.txt" />
-    </copy>
+  	
+  	<!-- Activiti Rest -->
     <copy todir="${activiti.home}/setup/build/webapps/activiti-rest.war/WEB-INF/lib">
       <fileset dir="${activiti.home}/setup/files/dependencies/libs" 
                includesfile="${activiti.home}/setup/files/dependencies/libs.webapp.rest.txt" />
@@ -496,13 +502,6 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
     </copy>
   </target>
 
-  <target name="internal.deploy.activiti.probe.into.tomcat">
-    <mkdir dir="${tomcat.home}/webapps/activiti-probe" />
-    <copy todir="${tomcat.home}/webapps/activiti-probe">
-      <fileset dir="${activiti.home}/setup/build/webapps/activiti-probe.war" />
-    </copy>
-  </target>
-
   <target name="internal.deploy.activiti.modeler.into.tomcat" 
           if="modeler.is.enabled">
     <antcall target="internal.download.activiti.modeler" /> <!-- Can't use depends for this, due to http://ant.apache.org/faq.html#stop-dependency -->
@@ -528,15 +527,6 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
 		 </copy>
 	</target>
 	
-	<target name="internal.deploy.activiti.administrator.into.tomcat">
-	  <mkdir dir="${tomcat.home}/webapps/activiti-administrator" />
-	  <copy todir="${tomcat.home}/webapps/activiti-administrator">
-	    <fileset dir="${activiti.home}/setup/build/webapps/activiti-administrator.war" />
-	  </copy>
-	</target>
-
-
-  
   <!-- ### LAUNCH TASKDEF AND CLASSPATH #################################################################### -->
 
   <target name="internal.taskdef.launch" 
@@ -599,7 +589,6 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
     <!-- Sleep for 5 second to be sure tomcat coyote http-connector is ready to accept connections -->
     <sleep seconds="5"/>
     <open-html-page url="http://localhost:8080/activiti-explorer" />
-    <open-html-page url="http://localhost:8080/activiti-probe" />
     <open-html-page url="http://localhost:8080/activiti-modeler" />
     <open-html-page url="http://localhost:8080/activiti-cycle" />
   	<open-html-page url="http://localhost:8080/activiti-kickstart" />
