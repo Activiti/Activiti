@@ -68,7 +68,7 @@ public class TaskListHeader extends Panel {
     
     initInputField();
     initKeyboardListener();
-    initSortMenu();
+//    initSortMenu();
   }   
 
   protected void initInputField() {

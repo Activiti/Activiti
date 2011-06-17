@@ -82,7 +82,7 @@ public class ExplorerLoginForm extends LoginForm {
       + "</head>";
     
     b = "<body onload='setTarget();'"
-      + "  class='" + ExplorerLayout.STYLE_LOGIN_PAGE + "'>" // todo
+      + "  class='" + ExplorerLayout.STYLE_LOGIN_PAGE + "'>" 
       + "<div>"
       + "<iframe name='logintarget' style='width:0;height:0;"
       + "border:0;margin:0;padding:0;'></iframe>"

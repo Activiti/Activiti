@@ -22,7 +22,6 @@ import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.ViewManager;
 import org.activiti.explorer.ui.Images;
-import org.activiti.explorer.ui.custom.SkypeLabel;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 
 import com.vaadin.event.MouseEvents.ClickEvent;
@@ -133,12 +132,6 @@ public class UserDetailsComponent extends HorizontalLayout {
         nameLabel = new Label("&nbsp;", Label.CONTENT_XHTML);
       }
       nameLayout.addComponent(nameLabel);
-      
-      //Skype icon
-      if (skypeId != null) {
-        SkypeLabel skype = new SkypeLabel(skypeId);
-        nameLayout.addComponent(skype);
-      }
       
       // Layout for lower details
       HorizontalLayout actionsLayout = new HorizontalLayout();

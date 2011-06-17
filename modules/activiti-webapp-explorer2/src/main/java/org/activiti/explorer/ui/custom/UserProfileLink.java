@@ -16,7 +16,6 @@ package org.activiti.explorer.ui.custom;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
-import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.ViewManager;
 import org.activiti.explorer.cache.UserCache;
@@ -60,7 +59,6 @@ public class UserProfileLink extends HorizontalLayout {
     
     initPicture(identityService, renderPicture, userId);
     initUserLink(userId);
-    initSkypeButton(userId);
   }
 
   protected void initPicture(IdentityService identityService, boolean renderPicture, final String userName) {
@@ -102,15 +100,6 @@ public class UserProfileLink extends HorizontalLayout {
     userButton.addListener(buttonClickListener);
     addComponent(userButton);
     setComponentAlignment(userButton, Alignment.MIDDLE_LEFT);
-  }
-  
-  protected void initSkypeButton(String userId) {
-    String skypeId = identityService.getUserInfo(userId, Constants.USER_INFO_SKYPE);
-    if (skypeId != null) {
-      SkypeLabel skypeLabel = new SkypeLabel(skypeId);
-      addComponent(skypeLabel);
-      setComponentAlignment(skypeLabel, Alignment.MIDDLE_LEFT);
-    }
   }
   
 }

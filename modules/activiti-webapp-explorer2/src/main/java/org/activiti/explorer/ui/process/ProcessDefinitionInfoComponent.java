@@ -27,15 +27,17 @@ import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.Reindeer;
 
 
 /**
- * @author 'Frederik Heremans'
+ * @author Frederik Heremans
  */
 public class ProcessDefinitionInfoComponent extends VerticalLayout {
 
-  private static final long serialVersionUID = -3523189433414901853L;
+  private static final long serialVersionUID = 1L;
 
   // Services
   protected RepositoryService repositoryService;
@@ -64,7 +66,7 @@ public class ProcessDefinitionInfoComponent extends VerticalLayout {
   }
   
   protected void initImage() {
-    VerticalLayout processImageContainer = new VerticalLayout();
+    processImageContainer = new VerticalLayout();
     
     Label processTitle = new Label(i18nManager.getMessage(Messages.PROCESS_HEADER_DIAGRAM));
     processTitle.addStyleName(ExplorerLayout.STYLE_H3);
@@ -74,9 +76,20 @@ public class ProcessDefinitionInfoComponent extends VerticalLayout {
       StreamResource diagram = new ProcessDefinitionImageStreamResourceBuilder()
         .buildStreamResource(processDefinition, repositoryService);
       
-      Embedded embedded = new Embedded("", diagram);
+      Embedded embedded = new Embedded(null, diagram);
       embedded.setType(Embedded.TYPE_IMAGE);
-      processImageContainer.addComponent(embedded);
+      embedded.setSizeUndefined();
+      
+      Panel imagePanel = new Panel(); // using panel for scrollbars
+      imagePanel.addStyleName(Reindeer.PANEL_LIGHT);
+      imagePanel.setWidth(100, UNITS_PERCENTAGE);
+      imagePanel.setHeight(400, UNITS_PIXELS);
+      HorizontalLayout panelLayout = new HorizontalLayout();
+      panelLayout.setSizeUndefined();
+      imagePanel.setContent(panelLayout);
+      imagePanel.addComponent(embedded);
+      
+      processImageContainer.addComponent(imagePanel);
     } else {
       Label noImageAvailable = new Label(i18nManager.getMessage(Messages.PROCESS_NO_DIAGRAM));
       processImageContainer.addComponent(noImageAvailable);

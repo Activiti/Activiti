@@ -41,6 +41,7 @@ public class DemoDataGenerator {
     
     initDemoGroups();
     initDemoUsers();
+    initProcessDefinitions();
   }
   
   protected void initDemoGroups() {
@@ -102,7 +103,7 @@ public class DemoDataGenerator {
       }
     }
     
-    // Following data is not set by demo script
+    // Following data is not set by demo setup script
       
     // image
     if (imageResource != null) {
@@ -120,15 +121,15 @@ public class DemoDataGenerator {
     
   }
   
-  protected void initProcessDefinitions(ProcessEngine processEngine) {
-   processEngine.getRepositoryService()
-     .createDeployment()
-     .name("Demo processes")
-     .addClasspathResource("org/activiti/explorer/demo/process/testProcess.bpmn20.xml")
-     .addClasspathResource("org/activiti/explorer/demo/process/oneTaskProcess.bpmn20.xml")
-     .addClasspathResource("org/activiti/explorer/demo/process/createTimersProcess.bpmn20.xml")
-     .deploy();
+  protected void initProcessDefinitions() {
+    processEngine.getRepositoryService()
+      .createDeployment()
+      .name("Demo processes")
+      .addClasspathResource("org/activiti/explorer/demo/process/testProcess.bpmn20.xml")
+      .addClasspathResource("org/activiti/explorer/demo/process/oneTaskProcess.bpmn20.xml")
+      .addClasspathResource("org/activiti/explorer/demo/process/createTimersProcess.bpmn20.xml")
+      .addClasspathResource("org/activiti/explorer/demo/process/createTimersProcess.png")
+      .deploy();
   }
-
 
 }

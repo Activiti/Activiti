@@ -102,9 +102,7 @@ public class ProcessDefinitionDetailPanel extends DetailPanel {
     detailContainer.setSizeFull();
     
     initActions();
-    
-    // Show details
-    showProcessDefinitionInfo();
+    initProcessDefinitionInfo();
   }
   
   protected void initActions() {
@@ -117,7 +115,7 @@ public class ProcessDefinitionDetailPanel extends DetailPanel {
   }
   
 
-  public void showProcessDefinitionInfo() {
+  public void initProcessDefinitionInfo() {
     if(definitionInfoComponent == null) {
       definitionInfoComponent = new ProcessDefinitionInfoComponent(processDefinition, deployment);
     }
@@ -138,22 +136,17 @@ public class ProcessDefinitionDetailPanel extends DetailPanel {
       
       // When form is submitted/cancelled, show the info again
       processDefinitionStartForm.addListener(new FormPropertiesEventListener() {
-        
-        private static final long serialVersionUID = -1747717959106153970L;
-
-        @Override
+        private static final long serialVersionUID = 1L;
         protected void handleFormSubmit(FormPropertiesEvent event) {
           formService.submitStartFormData(processDefinition.getId(), event.getFormProperties());
           
           // Show notification
           ExplorerApp.get().getMainWindow().showNotification("Process '" + 
             processDefinition.getName() + "' started successfully");
-          showProcessDefinitionInfo();
+          initProcessDefinitionInfo();
         }
-        
-        @Override
         protected void handleFormCancel(FormPropertiesEvent event) {
-          showProcessDefinitionInfo();
+          initProcessDefinitionInfo();
         }
       });
     }

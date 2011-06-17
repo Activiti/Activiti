@@ -15,15 +15,11 @@ package org.activiti.explorer.ui.profile;
 
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
-import org.activiti.engine.impl.identity.Account;
 import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
@@ -31,9 +27,6 @@ import org.activiti.explorer.Messages;
 import org.activiti.explorer.ViewManager;
 import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.custom.InMemoryUploadReceiver;
-import org.activiti.explorer.ui.custom.SkypeLabel;
-import org.activiti.explorer.ui.event.SubmitEvent;
-import org.activiti.explorer.ui.event.SubmitEventListener;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 
 import com.vaadin.terminal.ExternalResource;
@@ -380,9 +373,6 @@ public class ProfilePanel extends Panel {
       Label skypeIdLabel = new Label(skypeId);
       skypeIdLabel.setSizeUndefined();
       skypeLayout.addComponent(skypeIdLabel);
-      
-      Component skypeImage = new SkypeLabel(skypeId);
-      skypeLayout.addComponent(skypeImage);
       
       addProfileEntry(contactLayout, i18nManager.getMessage(Messages.PROFILE_SKYPE), skypeLayout);
     } else if (editable) {
