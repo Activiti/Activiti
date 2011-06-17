@@ -60,7 +60,7 @@ public class KickstartWorkflowPanel extends Panel {
 
   // dependencies
   protected ViewManager viewManager;
-  protected KickstartService adhocWorkflowService;
+  protected KickstartService kickStartService;
   protected KickstartWorkflowDto existingAdhocWorkflow;
 
   public KickstartWorkflowPanel(ViewManager viewManager, KickstartWorkflowDto existingAdhocWorkflow) {
@@ -78,7 +78,7 @@ public class KickstartWorkflowPanel extends Panel {
   protected void init() {
     setSizeFull();
     setStyleName(Reindeer.PANEL_LIGHT);
-    this.adhocWorkflowService = ServiceLocator.getAdhocWorkflowService();
+    this.kickStartService = ServiceLocator.getAdhocWorkflowService();
     initUi();
   }
 
@@ -161,11 +161,11 @@ public class KickstartWorkflowPanel extends Panel {
     saveButton.setIcon(saveImage);
     saveButton.addListener(new Button.ClickListener() {
 
-      private static final long serialVersionUID = 3546324122090420533L;
+      private static final long serialVersionUID = 1L;
 
       public void buttonClick(ClickEvent event) {
         try {
-          adhocWorkflowService.deployKickstartWorkflow(createAdhocWorkflow());
+          kickStartService.deployKickstartWorkflow(createAdhocWorkflow());
           Panel successPanel = new Panel();
           successPanel.setStyleName(Reindeer.PANEL_LIGHT);
           Label successLabel = new Label("Process successfully deployed");
@@ -180,7 +180,7 @@ public class KickstartWorkflowPanel extends Panel {
     
     // Dependending on namefield value, save button is enabled
     nameField.addListener(new ValueChangeListener() {
-        private static final long serialVersionUID = -4357300368046546003L;
+        private static final long serialVersionUID = 1L;
         public void valueChange(ValueChangeEvent event) {
           if (nameField.getValue() != null 
                   && !"".equals((String) nameField.getValue())) {

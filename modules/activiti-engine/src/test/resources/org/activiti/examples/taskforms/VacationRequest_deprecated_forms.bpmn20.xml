@@ -8,70 +8,56 @@
   
   <process id="vacationRequest" name="Vacation request">
   
-    <startEvent id="request" activiti:initiator="employeeName">
-      <extensionElements>
-        <activiti:formProperty id="numberOfDays" name="Number of days" type="long" value="1" required="true"/>
-        <activiti:formProperty id="startDate" name="First day of holiday (dd-MM-yyy)" datePattern="dd-MM-yyyy hh:mm" type="date" required="true" />
-        <activiti:formProperty id="vacationMotivation" name="Motivation" type="string" />
-      </extensionElements>
-    </startEvent>
+    <startEvent id="request" activiti:formKey="org/activiti/examples/taskforms/request.form" />
+
     <sequenceFlow id="flow1" sourceRef="request" targetRef="handleRequest" />
     
-    <userTask id="handleRequest" name="Handle vacation request" >
+    <userTask id="handleRequest" name="Handle vacation request"
+              activiti:formKey="org/activiti/examples/taskforms/approve.form" >
       <documentation>
-        ${employeeName} would like to take ${numberOfDays} day(s) of vacation (Motivation: ${vacationMotivation}).
+        Vacation request by ${employeeName}
       </documentation> 
-      <extensionElements>
-         <activiti:formProperty id="vacationApproved" name="Do you approve this vacation" type="enum" required="true">
-          <activiti:value id="true" name="Approve" />
-          <activiti:value id="false" name="Reject" />
-        </activiti:formProperty>
-        <activiti:formProperty id="motivation" name="managerMotivation" type="string" />
-      </extensionElements>
       <potentialOwner>
         <resourceAssignmentExpression>
           <formalExpression>management</formalExpression>
         </resourceAssignmentExpression>
       </potentialOwner>         
     </userTask>
+
     <sequenceFlow id="flow2" sourceRef="handleRequest" targetRef="requestApprovedDecision" />
     
     <exclusiveGateway id="requestApprovedDecision" name="Request approved?" />
+    
     <sequenceFlow id="flow3" sourceRef="requestApprovedDecision" targetRef="sendApprovalMail">
       <conditionExpression xsi:type="tFormalExpression">${vacationApproved}</conditionExpression>
     </sequenceFlow>
     
     <task id="sendApprovalMail" name="Send confirmation e-mail" />
+    
     <sequenceFlow id="flow4" sourceRef="sendApprovalMail" targetRef="theEnd1" />
+    
     <endEvent id="theEnd1" />
     
     <sequenceFlow id="flow5" sourceRef="requestApprovedDecision" targetRef="adjustVacationRequestTask">
       <conditionExpression xsi:type="tFormalExpression">${!vacationApproved}</conditionExpression>
     </sequenceFlow>
     
-    <userTask id="adjustVacationRequestTask" name="Adjust vacation request">
+    <userTask id="adjustVacationRequestTask" name="Adjust vacation request" 
+              activiti:formKey="org/activiti/examples/taskforms/adjustRequest.form">
       <documentation>
-        Your manager has disapproved your vacation request for ${numberOfDays} days.
-        Reason: ${managerMotivation}
+        Your manager has not approved your vacation request.
       </documentation>
-      <extensionElements>
-        <activiti:formProperty id="numberOfDays" name="Number of days" value="${numberOfDays}" type="long" required="true"/>
-        <activiti:formProperty id="startDate" name="First day of holiday (dd-MM-yyy)" value="${startDate}" datePattern="dd-MM-yyyy hh:mm" type="date" required="true" />
-        <activiti:formProperty id="vacationMotivation" name="Motivation" value="${vacationMotivation}" type="string" />
-        <activiti:formProperty id="resendRequest" name="Resend vacation request to manager?" type="enum" required="true">
-          <activiti:value id="true" name="Yes" />
-          <activiti:value id="false" name="No" />
-        </activiti:formProperty>
-      </extensionElements>
       <humanPerformer>
         <resourceAssignmentExpression>
           <formalExpression>${employeeName}</formalExpression>
         </resourceAssignmentExpression>
       </humanPerformer>  
     </userTask>
+     
     <sequenceFlow id="flow6" sourceRef="adjustVacationRequestTask" targetRef="resendRequestDecision" />
     
     <exclusiveGateway id="resendRequestDecision" name="Resend request?" />
+    
     <sequenceFlow id="flow7" sourceRef="resendRequestDecision" targetRef="handleRequest">
       <conditionExpression xsi:type="tFormalExpression">${resendRequest}</conditionExpression>
     </sequenceFlow>
@@ -79,6 +65,7 @@
      <sequenceFlow id="flow8" sourceRef="resendRequestDecision" targetRef="theEnd2">
       <conditionExpression xsi:type="tFormalExpression">${!resendRequest}</conditionExpression>
     </sequenceFlow>
+          
     <endEvent id="theEnd2" />
       
   </process>

@@ -41,7 +41,6 @@ public class DemoDataGenerator {
     
     initDemoGroups();
     initDemoUsers();
-    initProcessDefinitions();
   }
   
   protected void initDemoGroups() {
@@ -128,7 +127,6 @@ public class DemoDataGenerator {
       .addClasspathResource("org/activiti/explorer/demo/process/testProcess.bpmn20.xml")
       .addClasspathResource("org/activiti/explorer/demo/process/oneTaskProcess.bpmn20.xml")
       .addClasspathResource("org/activiti/explorer/demo/process/createTimersProcess.bpmn20.xml")
-      .addClasspathResource("org/activiti/explorer/demo/process/createTimersProcess.png")
       .deploy();
   }
 

@@ -4,7 +4,7 @@
 	xmlns:activiti="http://activiti.org/bpmn" 
 	targetNamespace="Examples">
 
-	<process id="escalationExample" name="Timer escalation example">
+	<process id="escalationExample" name="Helpdesk process">
 
 		<startEvent id="theStart" />
 		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="firstLineSupport" />

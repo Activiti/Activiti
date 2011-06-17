@@ -78,6 +78,8 @@ public class KickstartWorkflowDto {
 
   public void addTask(BaseTaskDto task) {
     tasks.add(task);
+    
+    // Reset any previously generated taskblocks
     this.taskBlocks = null;
     this.definitions = null;
   }

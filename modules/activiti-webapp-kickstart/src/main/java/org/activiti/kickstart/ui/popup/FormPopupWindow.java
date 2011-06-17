@@ -18,14 +18,13 @@ import org.activiti.kickstart.model.TaskFormModel;
 import org.activiti.kickstart.ui.table.PropertyTable;
 
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Button.ClickEvent;
 
 /**
  * @author Joram Barrez
@@ -35,15 +34,10 @@ public class FormPopupWindow extends Window {
   protected static final long serialVersionUID = -1754225937375971709L;
 
   protected static final String TITLE = "Define form";
-  protected static final String FORM_TITLE = "Form title";
-  protected static final String DESCRIPTION = "Description";
-  protected static final String DATA = "Data";
+  protected static final String DESCRIPTION = "Define the form properties that will be shown with the task";
 
   protected Object taskItemId;
   protected TaskFormModel formModel;
-
-  protected TextField titleField;
-  protected TextField descriptionField;
   protected PropertyTable propertyTable;
 
   public FormPopupWindow(Object taskItemId, TaskFormModel formModel) {
@@ -59,25 +53,15 @@ public class FormPopupWindow extends Window {
   }
 
   protected void initUi() {
-    GridLayout layout = new GridLayout(2, 4);
+    VerticalLayout layout = new VerticalLayout();
     layout.setSpacing(true);
     addComponent(layout);
 
-    // Title
-    layout.addComponent(new Label(FORM_TITLE));
-    titleField = new TextField();
-    layout.addComponent(titleField);
-
     // Description
     layout.addComponent(new Label(DESCRIPTION));
-    descriptionField = new TextField();
-    descriptionField.setRows(2);
-    descriptionField.setColumns(25);
-    layout.addComponent(descriptionField);
 
     // Property table
     propertyTable = new PropertyTable();
-    layout.addComponent(new Label(DATA));
     layout.addComponent(propertyTable);
     fillFormFields();
 
@@ -118,8 +102,6 @@ public class FormPopupWindow extends Window {
 
   public FormDto createForm() {
     FormDto formDto = new FormDto();
-    formDto.setTitle((String) titleField.getValue());
-    formDto.setDescription((String) descriptionField.getValue());
     for (Object itemId : propertyTable.getItemIds()) {
       FormPropertyDto formProperty = new FormPropertyDto();
       formProperty.setProperty((String) propertyTable.getItem(itemId).getItemProperty("property").getValue());
@@ -135,8 +117,6 @@ public class FormPopupWindow extends Window {
     if (form == null) {
       propertyTable.addPropertyRow();
     } else {
-      titleField.setValue(form.getTitle());
-      descriptionField.setValue(form.getDescription());
       for (FormPropertyDto property : form.getFormProperties()) {
         propertyTable.addPropertyRow(property.getProperty(), property.getType(), property.isRequired());
       }

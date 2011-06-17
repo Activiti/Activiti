@@ -38,7 +38,7 @@ public class TaskFormsTest extends PluggableActivitiTestCase {
   }
 
   @Deployment(resources = { 
-    "org/activiti/examples/taskforms/VacationRequest.bpmn20.xml", 
+    "org/activiti/examples/taskforms/VacationRequest_deprecated_forms.bpmn20.xml", 
     "org/activiti/examples/taskforms/approve.form", 
     "org/activiti/examples/taskforms/request.form", 
     "org/activiti/examples/taskforms/adjustRequest.form" })

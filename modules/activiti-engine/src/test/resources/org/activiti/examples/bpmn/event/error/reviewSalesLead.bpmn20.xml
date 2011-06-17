@@ -15,9 +15,13 @@
       <startEvent id="theStart" activiti:initiator="initiator" />
       <sequenceFlow id="flow1" sourceRef="theStart" targetRef="provideNewSalesLead"/>
       
-      <userTask id="provideNewSalesLead" name="Provide new sales lead" 
-                activiti:assignee="${initiator}"
-                activiti:formKey="org/activiti/examples/bpmn/event/error/provideSalesLead.form" />
+      <userTask id="provideNewSalesLead" name="Provide new sales lead" activiti:assignee="${initiator}">
+        <extensionElements>
+          <activiti:formProperty id="customerName" name="Customer name" type="string" required="true"/>
+          <activiti:formProperty id="potentialProfit" name="Potential profit" type="long" />
+          <activiti:formProperty id="details" name="Details" type="string"/>
+        </extensionElements>
+      </userTask>
       <sequenceFlow id="flow2" sourceRef="provideNewSalesLead" targetRef="reviewSalesLeadSubProcess"/>
       
       <subProcess id="reviewSalesLeadSubProcess" name="Review sales lead">
@@ -34,9 +38,17 @@
          
          <endEvent id="subProcessEnd1" />
          
-         <userTask id="reviewProfitability" name="Review profitability"
-                   activiti:candidateGroups="management"
-                   activiti:formKey="org/activiti/examples/bpmn/event/error/reviewProfitability.form" />
+         <userTask id="reviewProfitability" name="Review profitability" activiti:candidateGroups="management">
+           <documentation>
+             ${initiator} has published a new sales lead: ${customerName}. Details: ${details}
+           </documentation> 
+            <extensionElements>
+			        <activiti:formProperty id="notEnoughInformation" name="Do you believe this customer is profitable?" type="enum" required="true">
+			          <activiti:value id="true" name="Yes" />
+			          <activiti:value id="false" name="No (= request more info)" />
+			        </activiti:formProperty>
+			      </extensionElements>
+         </userTask>
          <sequenceFlow id="flow7" sourceRef="reviewProfitability" targetRef="enoughInformationCheck"/>
          
          <exclusiveGateway id="enoughInformationCheck" name="Enough information?" />
@@ -60,9 +72,12 @@
       </boundaryEvent>
       <sequenceFlow id="flow11" sourceRef="catchNotEnoughInformationError" targetRef="provideAdditionalDetails"/>
       
-      <userTask id="provideAdditionalDetails" name="Provide additional details"
-                activiti:assignee="${initiator}"
-                activiti:formKey="org/activiti/examples/bpmn/event/error/provideAdditionalDetails.form" />
+      <userTask id="provideAdditionalDetails" name="Provide additional details" activiti:assignee="${initiator}">
+        <documentation>Provide additional details for ${customerName}.</documentation>
+        <extensionElements>
+          <activiti:formProperty id="details" name="Additional details" type="string" required="true"/>
+        </extensionElements>
+      </userTask>
       <sequenceFlow id="flow12" sourceRef="provideAdditionalDetails" targetRef="reviewSalesLeadSubProcess"/>
       
       <task id="storeLeadInCrmSystem" name="Store lead in CRM system" />

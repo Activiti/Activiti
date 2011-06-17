@@ -73,9 +73,9 @@ public class PropertyTable extends Table {
 
     // type
     ComboBox typeComboBox = new ComboBox("types", Arrays.asList("text", "number", "date"));
+    typeComboBox.setNullSelectionAllowed(false);
     if (propertyType == null) {
       typeComboBox.setValue(typeComboBox.getItemIds().iterator().next());
-      typeComboBox.setNullSelectionAllowed(false);
     } else {
       typeComboBox.setValue(propertyType);
     }

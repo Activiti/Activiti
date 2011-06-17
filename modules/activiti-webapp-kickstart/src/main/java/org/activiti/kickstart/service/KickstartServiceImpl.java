@@ -45,10 +45,12 @@ import org.activiti.kickstart.bpmn20.model.activity.type.UserTask;
 import org.activiti.kickstart.bpmn20.model.connector.SequenceFlow;
 import org.activiti.kickstart.bpmn20.model.extension.AbstractExtensionElement;
 import org.activiti.kickstart.bpmn20.model.extension.activiti.ActivitFieldExtensionElement;
+import org.activiti.kickstart.bpmn20.model.extension.activiti.ActivitiFormProperty;
 import org.activiti.kickstart.bpmn20.model.gateway.ParallelGateway;
 import org.activiti.kickstart.diagram.ProcessDiagramGenerator;
 import org.activiti.kickstart.dto.BaseTaskDto;
 import org.activiti.kickstart.dto.FormDto;
+import org.activiti.kickstart.dto.FormPropertyDto;
 import org.activiti.kickstart.dto.KickstartWorkflowDto;
 import org.activiti.kickstart.dto.KickstartWorkflowInfo;
 import org.activiti.kickstart.dto.MailTaskDto;
@@ -80,20 +82,6 @@ public class KickstartServiceImpl implements KickstartService {
 
     // bpmn 2.0 xml
     deploymentBuilder.addString(bpmn20XmlResourceName, createBpmn20Xml(adhocWorkflow));
-
-    // forms
-    for (BaseTaskDto task : adhocWorkflow.getTasks()) {
-      if (task instanceof UserTaskDto) {
-        UserTaskDto userTask = (UserTaskDto) task;
-
-        FormDto form = userTask.getForm();
-        if (form != null) {
-          deploymentBuilder.addString(userTask.generateDefaultFormName(), form.toHtml());
-          deploymentBuilder.addString(userTask.generateDefaultFormName() + ".internal",
-                  form.toString());
-        }
-      }
-    }
 
     // deploy the whole package
     Deployment deployment = deploymentBuilder.deploy();
@@ -325,11 +313,30 @@ public class KickstartServiceImpl implements KickstartService {
     }
 
     // Task form
-    if (userTask.getFormKey() != null) {
-      InputStream is = repositoryService.getResourceAsStream(deploymentId, userTask.getFormKey() + ".internal");
-      String serializedForm = new String(IoUtil.readInputStream(is, ""));
-      IoUtil.closeSilently(is);
-      task.setForm(FormDto.createFromSerialized(serializedForm));
+    List<FormPropertyDto> formPropertyDtos = new ArrayList<FormPropertyDto>();
+    if (userTask.getExtensionElements() != null) {
+      for (AbstractExtensionElement extensionElement : userTask.getExtensionElements().getAllElementOfType(ActivitiFormProperty.class)) {
+        ActivitiFormProperty formProperty = (ActivitiFormProperty) extensionElement;
+        FormPropertyDto formPropertyDto = new FormPropertyDto();
+        formPropertyDto.setProperty(formProperty.getName());
+        
+        String formType = formProperty.getType();
+        String type = "text";
+        if ("date".equals(formType)) {
+          type = "date";
+        } else if ("long".equals(formType)) {
+          type = "number";
+        }
+        formPropertyDto.setType(type);
+        formPropertyDto.setRequired("true".equals(formProperty.getRequired()));
+        formPropertyDtos.add(formPropertyDto);
+      }
+    }
+    
+    if (formPropertyDtos.size() > 0) {
+      FormDto formDto = new FormDto();
+      formDto.setFormProperties(formPropertyDtos);
+      task.setForm(formDto);
     }
   }
 

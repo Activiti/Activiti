@@ -26,8 +26,6 @@ public class KickstartServiceImplTest extends ActivitiTestCase {
         //System.out.println(bpmn);
 
         assertTrue(bpmn.indexOf("userTask ") > - 1);
-        assertTrue(bpmn.indexOf(":formKey") > - 1);
-
         assertFalse(bpmn.indexOf("serviceTask ") > - 1);
     }
 
@@ -53,8 +51,6 @@ public class KickstartServiceImplTest extends ActivitiTestCase {
         taskDto.setDescription("Desc first User task");
 
         FormDto form = new FormDto();
-        form.setTitle("myForm");
-        form.setDescription("My first form");
         FormPropertyDto property = new FormPropertyDto();
         property.setProperty("name");
         property.setType("text");
@@ -285,8 +281,6 @@ public class KickstartServiceImplTest extends ActivitiTestCase {
         assertEquals("task_1", task.getId());
         assertEquals("My First User task", task.getName());
         assertEquals("Desc first User task", task.getDescription());
-        assertEquals("myForm", task.getForm().getTitle());
-        assertEquals("My first form", task.getForm().getDescription());
     }
 
     @Test

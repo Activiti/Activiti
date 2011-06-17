@@ -46,8 +46,9 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     
     // After starting the process, a task should be assigned to the 'initiator' (normally set by GUI)
     Map<String, Object> variables = new HashMap<String, Object>();
-    variables.put("initiator", "kermit");
-    String procId = runtimeService.startProcessInstanceByKey("reviewSaledLead").getId();
+    variables.put("details", "very interesting");
+    variables.put("customerName", "Alfresco");
+    String procId = runtimeService.startProcessInstanceByKey("reviewSaledLead", variables).getId();
     Task task = taskService.createTaskQuery().taskAssignee("kermit").singleResult();
     assertEquals("Provide new sales lead", task.getName());
     

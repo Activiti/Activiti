@@ -12,12 +12,17 @@
  */
 package org.activiti.kickstart.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.activiti.kickstart.bpmn20.model.FlowElement;
 import org.activiti.kickstart.bpmn20.model.FormalExpression;
 import org.activiti.kickstart.bpmn20.model.activity.resource.HumanPerformer;
 import org.activiti.kickstart.bpmn20.model.activity.resource.PotentialOwner;
 import org.activiti.kickstart.bpmn20.model.activity.resource.ResourceAssignmentExpression;
 import org.activiti.kickstart.bpmn20.model.activity.type.UserTask;
+import org.activiti.kickstart.bpmn20.model.extension.ExtensionElements;
+import org.activiti.kickstart.bpmn20.model.extension.activiti.ActivitiFormProperty;
 
 /**
  * @author Joram Barrez
@@ -61,9 +66,6 @@ public class UserTaskDto extends BaseTaskDto {
   @Override
   public FlowElement createFlowElement() {
     UserTask userTask = new UserTask();
-    if (getForm() != null) {
-      userTask.setFormKey(generateDefaultFormName());
-    }
 
     // assignee
     if (getAssignee() != null && !"".equals(getAssignee())) {
@@ -97,6 +99,36 @@ public class UserTaskDto extends BaseTaskDto {
       potentialOwner.setResourceAssignmentExpression(assignmentExpression);
       userTask.getActivityResource().add(potentialOwner);
     }
+    
+    // form
+    if (getForm() != null) {
+      List<ActivitiFormProperty> formProperties = new ArrayList<ActivitiFormProperty>();
+      for (FormPropertyDto formPropertyDto : getForm().getFormProperties()) {
+        ActivitiFormProperty formProperty = new ActivitiFormProperty();
+        formProperty.setId(formPropertyDto.getProperty());
+        formProperty.setName(formPropertyDto.getProperty());
+        formProperty.setRequired(formPropertyDto.isRequired() ? "true" : "false");
+        
+        String dtoType = formPropertyDto.getType();
+        String type = "string";
+        if ("number".equals(dtoType)) {
+          type = "long";
+        } else if ("date".equals(dtoType)) {
+          type = "date";
+        }
+        formProperty.setType(type);
+        
+        formProperties.add(formProperty);
+      }
+      
+      if (formProperties.size() > 0) {
+        userTask.setExtensionElements(new ExtensionElements());
+        for (ActivitiFormProperty formProperty : formProperties) {
+          userTask.getExtensionElements().add(formProperty);
+        }
+      }
+    }
+    
     return userTask;
   }
 
