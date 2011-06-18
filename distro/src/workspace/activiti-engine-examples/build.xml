@@ -47,11 +47,6 @@
       	<include name="org/activiti/examples/bpmn/event/error/provideAdditionalDetails.form" />
       	
         <include name="org/activiti/examples/adhoc/Expense_process.bpmn20.xml"/>
-      	<include name="org/activiti/examples/adhoc/Expense_process.png"/>
-      	<include name="org/activiti/examples/adhoc/Handle_expense_request.form"/>
-      	<include name="org/activiti/examples/adhoc/Handle_expense_request.form.internal"/>
-        <include name="org/activiti/examples/adhoc/Request_expense_refund.form"/>
-      	<include name="org/activiti/examples/adhoc/Request_expense_refund.form.internal"/>
       	
       </fileset>
     </zip>

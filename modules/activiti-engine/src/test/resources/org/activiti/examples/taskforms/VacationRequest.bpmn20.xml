@@ -26,7 +26,7 @@
           <activiti:value id="true" name="Approve" />
           <activiti:value id="false" name="Reject" />
         </activiti:formProperty>
-        <activiti:formProperty id="motivation" name="managerMotivation" type="string" />
+        <activiti:formProperty id="managerMotivation" name="Motivation" type="string" />
       </extensionElements>
       <potentialOwner>
         <resourceAssignmentExpression>
@@ -73,11 +73,11 @@
     
     <exclusiveGateway id="resendRequestDecision" name="Resend request?" />
     <sequenceFlow id="flow7" sourceRef="resendRequestDecision" targetRef="handleRequest">
-      <conditionExpression xsi:type="tFormalExpression">${resendRequest}</conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression">${resendRequest == 'true'}</conditionExpression>
     </sequenceFlow>
     
      <sequenceFlow id="flow8" sourceRef="resendRequestDecision" targetRef="theEnd2">
-      <conditionExpression xsi:type="tFormalExpression">${!resendRequest}</conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression">${resendRequest == 'false'}</conditionExpression>
     </sequenceFlow>
     <endEvent id="theEnd2" />
       

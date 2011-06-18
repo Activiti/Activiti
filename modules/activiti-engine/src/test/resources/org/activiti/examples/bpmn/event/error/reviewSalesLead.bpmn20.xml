@@ -53,10 +53,10 @@
          
          <exclusiveGateway id="enoughInformationCheck" name="Enough information?" />
          <sequenceFlow id="flow8" sourceRef="enoughInformationCheck" targetRef="notEnoughInformationEnd">
-           <conditionExpression>${notEnoughInformation}</conditionExpression>
+           <conditionExpression>${notEnoughInformation == 'true'}</conditionExpression>
          </sequenceFlow>
          <sequenceFlow id="flow9" sourceRef="enoughInformationCheck" targetRef="subProcessEnd2">
-           <conditionExpression>${!notEnoughInformation}</conditionExpression>
+           <conditionExpression>${notEnoughInformation == 'false'}</conditionExpression>
          </sequenceFlow>
          
          <endEvent id="subProcessEnd2" />
