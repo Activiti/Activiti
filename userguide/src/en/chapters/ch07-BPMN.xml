@@ -406,7 +406,7 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().taskCandidateGroup(&quot;
 </para>
       
       <para>
-        Since we've configured our ProcessEngine to use the same database as the demo setup is using,
+        Since we've configured our ProcessEngine to use the same database as the demo setup is using (run the <link linkend="demo.setup">demo setup</link> if you haven't done it yet'),
         we can now log into <ulink url="http://localhost:8080/activiti-explorer/">Activiti Explorer</ulink> 
         (login with fozzie/fozzie), and we fill find that we can start our business process after
         selecting the <emphasis>Processes</emphasis> page and
@@ -444,7 +444,7 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().taskCandidateGroup(&quot;
       <para>
         In the Activiti Explorer UI, clicking the <emphasis>claim</emphasis> button will
         call the same operation. The task will now move to the personal task list of the logged
-        on user.
+        on user. You also see that the assignee of the task changed to the current logged in user.
         
        <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.financial.report.example.claim.task.png"/></imageobject></mediaobject>
       </para>
@@ -477,8 +477,6 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().taskCandidateGroup(&quot;
         button in the task list. Since Fozzie isn't an accountant, we need to log out of
         the Activiti Explorer and login in as <emphasis>kermit</emphasis> (which is a manager).
         The second task is now visible in the unassigned task lists.
-        
-        <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.financial.report.example.complete.task.png"/></imageobject></mediaobject>
       </para>
       
     </section>
@@ -495,7 +493,7 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().taskCandidateGroup(&quot;
       </para>
       
       <para>
-        When you log into Activiti Probe you can verify this, since no records will be 
+        When you log into Activiti Explorer you can verify this, since no records will be 
         found in the table where the process executions are stored.
         
          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.financial.report.example.process.ended.png"/></imageobject></mediaobject> 
@@ -588,7 +586,8 @@ public class TenMinuteTutorial {
       </para>
       
       <para>
-        This code is also available as a unit test shipped with the examples (yes, you should unit test processed!).
+        This code is also available as a unit test shipped with the examples (yes, you should unit test your processes! 
+        Read all about it in <link linkend="apiUnitTesting">the unit testing section</link>).
       </para>
     
     </section>
@@ -2073,7 +2072,7 @@ public class ToUppercase implements JavaDelegate {
         will be thrown. The reasoning for this is that the environment (and more
         specifically the <emphasis>classpath</emphasis>) when you are deploying is often
         different from the actual runtime environment. For example when using <emphasis>ant</emphasis>
-        or the business archive upload in Activiti Probe to deploy processes,
+        or the business archive upload in Activiti Explorer to deploy processes,
         the classpath does not contain the referenced classes.  
       </para>
       <para><link linkend="internal"><emphasis role="bold">[INTERNAL: non-public implementation classes]</emphasis></link>

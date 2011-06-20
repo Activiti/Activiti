@@ -40,6 +40,7 @@ import com.vaadin.ui.themes.Reindeer;
 
 /**
  * @author Frederik Heremans
+ * @author Joram Barrez
  */
 public class JobDetailPanel extends DetailPanel {
 
@@ -50,15 +51,15 @@ public class JobDetailPanel extends DetailPanel {
   protected NotificationManager notificationManager;
   
   protected Job job;
-  protected JobPage parent;
+  protected JobPage jobPage;
   
-  public JobDetailPanel(String jobId, JobPage parent) {
+  public JobDetailPanel(String jobId, JobPage jobPage) {
     this.managementService = ProcessEngines.getDefaultProcessEngine().getManagementService();
     this.i18nManager = ExplorerApp.get().getI18nManager();
     this.notificationManager = ExplorerApp.get().getNotificationManager();
     
     this.job = managementService.createJobQuery().jobId(jobId).singleResult();
-    this.parent = parent;
+    this.jobPage = jobPage;
     
     init();
   }
@@ -66,7 +67,6 @@ public class JobDetailPanel extends DetailPanel {
   protected void init() {
     addHeader();
     addJobState();
-    
     addActions();
   }
   
@@ -78,18 +78,19 @@ public class JobDetailPanel extends DetailPanel {
       public void buttonClick(ClickEvent event) {
         try {
           managementService.executeJob(job.getId());
+          jobPage.refreshSelectNext();
         } catch (ActivitiException ae) {
           String errorMessage = ae.getMessage() + (ae.getCause() != null ? " (" + ae.getCause().getClass().getName() + ")" : "");
           notificationManager.showErrorNotification(Messages.JOB_ERROR, errorMessage);
 
           // Refresh the current job
-          parent.refreshCurrentJobDetails();
+          jobPage.refreshCurrentJobDetails();
         }
       }
     });
 
-    parent.getToolBar().removeAllButtons();
-    parent.getToolBar().addButton(executeButton);
+    jobPage.getToolBar().removeAllButtons();
+    jobPage.getToolBar().addButton(executeButton);
   }
 
   protected void addHeader() {

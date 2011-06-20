@@ -32,7 +32,7 @@
   querying these tables in order to minimize access to the runtime process instance data 
   and that way keeping the runtime execution performant.
   </para>
-  <para>Later on, this information will be exposed in Activiti Explorer and Activiti Probe.
+  <para>Later on, this information will be exposed in Activiti Explorer.
   Also, it will be the information from which the reports will be generated.
   </para>
   

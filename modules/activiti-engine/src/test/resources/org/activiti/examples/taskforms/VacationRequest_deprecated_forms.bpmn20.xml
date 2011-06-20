@@ -29,7 +29,7 @@
     <exclusiveGateway id="requestApprovedDecision" name="Request approved?" />
     
     <sequenceFlow id="flow3" sourceRef="requestApprovedDecision" targetRef="sendApprovalMail">
-      <conditionExpression xsi:type="tFormalExpression">${vacationApproved}</conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression">${vacationApproved == 'true'}</conditionExpression>
     </sequenceFlow>
     
     <task id="sendApprovalMail" name="Send confirmation e-mail" />
@@ -39,7 +39,7 @@
     <endEvent id="theEnd1" />
     
     <sequenceFlow id="flow5" sourceRef="requestApprovedDecision" targetRef="adjustVacationRequestTask">
-      <conditionExpression xsi:type="tFormalExpression">${!vacationApproved}</conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression">${vacationApproved == 'false'}</conditionExpression>
     </sequenceFlow>
     
     <userTask id="adjustVacationRequestTask" name="Adjust vacation request" 
@@ -59,11 +59,11 @@
     <exclusiveGateway id="resendRequestDecision" name="Resend request?" />
     
     <sequenceFlow id="flow7" sourceRef="resendRequestDecision" targetRef="handleRequest">
-      <conditionExpression xsi:type="tFormalExpression">${resendRequest}</conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression">${resendRequest == 'true'}</conditionExpression>
     </sequenceFlow>
     
      <sequenceFlow id="flow8" sourceRef="resendRequestDecision" targetRef="theEnd2">
-      <conditionExpression xsi:type="tFormalExpression">${!resendRequest}</conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression">${resendRequest == 'false'}</conditionExpression>
     </sequenceFlow>
           
     <endEvent id="theEnd2" />

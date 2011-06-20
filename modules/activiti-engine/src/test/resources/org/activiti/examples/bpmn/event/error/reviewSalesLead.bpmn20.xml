@@ -44,8 +44,8 @@
            </documentation> 
             <extensionElements>
 			        <activiti:formProperty id="notEnoughInformation" name="Do you believe this customer is profitable?" type="enum" required="true">
-			          <activiti:value id="true" name="Yes" />
-			          <activiti:value id="false" name="No (= request more info)" />
+			          <activiti:value id="false" name="Yes" />
+			          <activiti:value id="true" name="No (= request more info)" />
 			        </activiti:formProperty>
 			      </extensionElements>
          </userTask>

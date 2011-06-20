@@ -20,13 +20,6 @@
     </para>
 
 	  <section>
-	    <title>Deploying with Activiti Probe</title>
-	    <para>In <link linkend="probeDeployments">page 'Deployments' in Activiti Probe</link>, you can upload a
-	    business archive to deploy it in the Activiti Engine.  
-	    </para>
-	  </section>
-	  
-	  <section>
 	    <title>Deploying programmatically</title>
 	    <para>Deploying a business archive from a zip file can be done like this: 
 	    </para>
@@ -61,10 +54,19 @@ repositoryService.createDeployment()
 &lt;/taskdef&gt;
 &lt;deploy-bar file=&quot;.../yourprocess.bar&quot; /&gt;</programlisting>
     </section>
-	  <section>
-	    <title>Deploying with Activiti Probe</title>
-	    <para>It's possible to deploy process definitions through probe, this is described in <link linkend="probeDeployments">Activiti Probe - Deployments</link>.</para>  
-	  </section>
+    
+    <section id="deploymentWithExplorer">
+      <title>Deploying with Activiti Explorer</title>
+      <para>
+        The Activiti Explorer webapp allows to upload bar files (and single bpmn20.xml files) through the webapp user interface.
+        Choose the <emphasis>Management tab</emphasis> and click on <emphasis>Deployment</emphasis>:
+        <mediaobject><imageobject><imagedata align="center" fileref="images/deployment.explorer.png"/></imageobject></mediaobject>
+        A popup window now allows to select a file from your computer, or you can simply drag and drop
+        to the designated area (if your browser supports it).
+        <mediaobject><imageobject><imagedata align="center" fileref="images/deployment.explorer.2.png"/></imageobject></mediaobject>
+      </para>
+    </section>
+
   </section>
 
   <section>

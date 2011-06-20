@@ -17,7 +17,7 @@
     
     <para>
       KickStart integrates perfectly with the Activiti engine. As such, processes created with KickStart
-      are immediataly usable in Activiti Explorer and are visible in Probe.
+      are immediataly usable in Activiti Explorer.
     </para>
     
     <para>
@@ -95,7 +95,7 @@
     <title>Changing the database</title>  
     <para>
       Activiti KickStart is currently not yet using the REST API, but uses the service API by including the Activiti engine
-      as a library. While Explorer, Probe and Cycle use the same mechanism for changing the database 
+      as a library. While Explorer Cycle use the same mechanism for changing the database 
       (see <link linkend="changingTheDatabase">here</link>), the same does not yet apply for KickStart.
     </para>
     <para>

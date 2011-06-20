@@ -78,7 +78,7 @@
       <listitem><para>(*) Deploy the REST interface webapp into tomcat</para></listitem>
       <listitem><para>(*) Download the Activiti Modeler webapp to ${activiti.home}/webapps.  The license for the Activiti Modeler 
       is <ulink url="http://en.wikipedia.org/wiki/MIT_License">MIT</ulink>.</para></listitem>
-      <listitem><para>(*) Deploy the Probe, Explorer and Modeler webapps into tomcat.</para></listitem>
+      <listitem><para>(*) Deploy the Activiti webapps into tomcat.</para></listitem>
       <listitem><para>Start tomcat</para></listitem>
     </itemizedlist>
     <para>(*) only performed the first time when running <literal>ant demo.start</literal> </para>
@@ -131,17 +131,10 @@
         </thead>
         <tbody>
           <row>
-            <entry>Activiti Probe</entry>
-            <entry><ulink url="http://localhost:8080/activiti-probe">http://localhost:8080/activiti-probe</ulink> </entry>
-            <entry>The admin management console.  Use this tool to see if the configured process engine is 
-            correctly initialized, DB tables contents.
-            </entry>
-          </row>
-          <row>
             <entry>Activiti Explorer</entry>
             <entry><ulink url="http://localhost:8080/activiti-explorer">http://localhost:8080/activiti-explorer</ulink> </entry>
-            <entry>The process engine user console.  Use this tool to view your personal and candidate task lists and to 
-            complete tasks.
+            <entry>The process engine user console.  Use this tool to start new processes, assign
+            tasks, view and claim tasks, etc. This tool also allows to administrate the Activiti engine. 
             </entry>
           </row>
           <row>
@@ -161,13 +154,6 @@
             <entry><ulink url="http://localhost:8080/activiti-kickstart">http://localhost:8080/activiti-kickstart</ulink></entry>
             <entry>Allows to specify processes quickly and efficiently in an adhoc way.
             Simple processes, quick prototypes and adhoc workflow are created in no time using KickStart.</entry>
-          </row>
-           <row>
-            <entry>Activiti Administrator</entry>
-            <entry><ulink url="http://localhost:8080/activiti-administrator">http://localhost:8080/activiti-administrator</ulink></entry>
-            <entry>A webapp to administer the users and groups.  Currently this is realized as a seperate app, but we plan to 
-            unify some of the webapps into a single webapp with authorization.
-            </entry>
           </row>
         </tbody>
       </tgroup>
@@ -265,8 +251,8 @@
         to the ones in <literal>libs.spring.runtime.txt</literal> to run tests in a Spring environment 
       </para></listitem>
       <listitem><para><literal>libs.cycle.runtime.test.txt</literal>, <literal>libs.webapp.rest.txt</literal>
-        and <literal>libs.webapp.ui.txt</literal>: The full list of libraries dependencies for the respective components
-        cycle, the rest webapp and the UI webapps like Activiti Explorer, Activiti Probe and Activiti Cycle  
+        and <literal>libs.webapp.explorer.txt</literal>: The full list of libraries dependencies for the respective components
+        cycle, the rest webapp and the UI webapps.
       </para></listitem>
     </itemizedlist>
   </section>

@@ -11,13 +11,12 @@
   <!ENTITY ch09 SYSTEM "chapters/ch09-JPA.xml">
   <!ENTITY ch10 SYSTEM "chapters/ch10-History.xml">
   <!ENTITY ch11 SYSTEM "chapters/ch11-Designer.xml">
-  <!ENTITY ch12 SYSTEM "chapters/ch12-Modeler.xml">
-  <!ENTITY ch13 SYSTEM "chapters/ch13-Cycle.xml">
-  <!ENTITY ch14 SYSTEM "chapters/ch14-REST.xml">
-  <!ENTITY ch15 SYSTEM "chapters/ch15-Explorer.xml">
-  <!ENTITY ch16 SYSTEM "chapters/ch16-Probe.xml">
-  <!ENTITY ch17 SYSTEM "chapters/ch17-KickStart.xml">
-  <!ENTITY ch18 SYSTEM "chapters/ch18-Cdi.xml">
+  <!ENTITY ch12 SYSTEM "chapters/ch12-Explorer.xml">
+  <!ENTITY ch13 SYSTEM "chapters/ch13-Modeler.xml">
+  <!ENTITY ch14 SYSTEM "chapters/ch14-Cycle.xml">
+  <!ENTITY ch15 SYSTEM "chapters/ch15-REST.xml">
+  <!ENTITY ch16 SYSTEM "chapters/ch16-KickStart.xml">
+  <!ENTITY ch17 SYSTEM "chapters/ch17-Cdi.xml">
 ]>
 
 <book>
@@ -43,6 +42,5 @@
 &ch15;
 &ch16;
 &ch17;
-&ch18;
   
 </book>

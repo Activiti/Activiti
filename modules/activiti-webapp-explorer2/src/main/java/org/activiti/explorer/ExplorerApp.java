@@ -71,7 +71,7 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
 //  public Window getWindow(String name) {
 //    Window window = super.getWindow(name);
 //    if (window == null) {
-//      window = new Window("Explorer - The Next generation");
+//      window = new Window("Activiti Explorer");
 //      window.setName(name);
 //      addWindow(window);
 //      window.open(new ExternalResource(window.getURL()));

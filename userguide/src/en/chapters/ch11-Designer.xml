@@ -297,18 +297,13 @@
        </mediaobject>
     </para>
     <para>
-    	This file can now be uploaded to the Activiti Engine using the deployments tab in Activiti Probe, and you are ready to go.
+    	This file can now be uploaded to the Activiti Engine using the deployments tab in Activiti Explorer, and you are ready to go.
     	
-    	<mediaobject>
-         <imageobject>
-           <imagedata align="center" fileref="images/designer.deployment.probe.png"/>
-         </imageobject>
-       </mediaobject>
     </para>
     <para>
     	When your project contains Java classes, the deployment is a bit more work. In that case the 
     	<emphasis role="bold">Create deployment artifacts</emphasis> step in the Activiti Designer will also generate a JAR
-    	file containing the compiled classes. This JAR file must be deployed to the webapps/activiti-rest/WEB-INF/lib directory
+    	file containing the compiled classes. This JAR file must be deployed to the activiti-XXX/WEB-INF/lib directory
     	in your Activiti Tomcat installation directory. This makes the classes available on the classpath of the Activiti Engine.
     </para>
   </section>

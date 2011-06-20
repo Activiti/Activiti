@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -66,6 +67,10 @@ public class TaskFormsTest extends PluggableActivitiTestCase {
     Object taskForm = formService.getRenderedTaskForm(task.getId());
     assertNotNull(taskForm);
 
+    // Rejecting the task should put the process back to first task
+    taskService.complete(task.getId(), CollectionUtil.singletonMap("vacationApproved", "false"));
+    task = taskService.createTaskQuery().singleResult();
+    assertEquals("Adjust vacation request", task.getName());
   }
 
   @Deployment

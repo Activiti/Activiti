@@ -8,10 +8,12 @@
 	<para>
 	 Activiti provides a convenient and flexible way to add forms for the manual steps of 
 	 your business processes.  We support two strategies to work with forms:
-	 Build-in form rendering and external form rendering
+	 Build-in form rendering with form properties and external form rendering.
 	</para>
 
-  <section id="buildInFormRendering">
+<!-- Deprecated, but contains good examples. We should do the same for the form properties.
+  
+   <section id="buildInFormRendering">
   
     <title>Build-in form rendering</title>
 
@@ -275,48 +277,9 @@
     </para>
   </section>
     
-  <section id="externalFormRendering">
-  
-    <title>External form rendering</title>
+    -->
     
-    <para>Above we showed the build-in task form rendering.  But the API also allows for you to perform your 
-    own task form rendering outside of the Activiti Engine. These steps explain the hooks that you can use to
-    render your task forms yourself.  </para>
-
-    <para>Essentially, all the data that's needed to render a form is assembled in one of these two service methods:
-    <literal>StartFormData FormService.getStartFormData(String processDefinitionId)</literal>
-    and <literal>TaskFormdata FormService.getTaskFormData(String taskId)</literal>. 
-    </para>
     
-    <para>Submitting form properties can be done with 
-    <literal>ProcessInstance FormService.submitStartFormData(String processDefinitionId, Map&lt;String,String&gt; properties)</literal>
-    and <literal>void FormService.submitStartFormData(String taskId, Map&lt;String,String&gt; properties)</literal></para>
-    
-    <para>To learn about how form properties map to process variables, see <xref linkend="formProperties"/> </para>
-    
-    <para>You can place any form template resource inside the business archives that you deploy (in case 
-    you want to store them versioned with the process).  It will be available as a resource in the deployment, which you can retrieve using: <literal>String ProcessDefinition.getDeploymentId()</literal> and 
-    <literal>InputStream RepositoryService.getResourceAsStream(String deploymentId, String resourceName);</literal>
-    This could be your template definition file, which you can use to render/show the form in your
-    own application.
-    </para>
-    
-    <para>You can use this capability of accessing the deployment resources beyond task forms for any other 
-    purposes as well. </para>
-    
-    <para>The attribute <literal>&lt;userTask activiti:formKey=&quot;...&quot;</literal> is exposed by the API through 
-    <literal>String FormService.getStartFormData(String processDefinitionId).getFormKey()</literal>
-    and <literal>String FormService.getTaskFormData(String taskId).getFormKey()</literal>. You could use this to
-    store the full name of the template within your deployment (eg. <literal>org/activiti/example/form/my-custom-form.xml</literal>), but this is not required at all.
-    For instance, you could also store a generic key in the form 
-    attribute and apply an algorithm or transformation to get to the actual template that needs to be used.
-    This might be handy when you want to render different forms for different UI technologies like e.g. 
-    one form for usage in a web app of normal screen size, one form for mobile phone's small screens and 
-    maybe even a template for a IM form or an email form.
-    </para>
-    
-  </section>
-  
   <section id="formProperties">
     <title>Form properties</title>
     
@@ -326,29 +289,29 @@
     objects, JPA entities or whole XML documents as <literal>String</literal>s.
     </para>
     
-    <para>Starting a process and completing tasks is where people are involved into a process.
+    <para>Starting a process and completing user tasks is where people are involved into a process.
     Communicating with people requires forms to be rendered in some UI technology.  
     In order to facilitate multiple UI technologies easy, the process definition 
-    can includes the logic of transforming of the complex Java typed objects in the process variables 
-    to a <literal>Map&lt;String,String&gt;</literal> of properties.
+    can include the logic of transforming of the complex Java typed objects in the process variables 
+    to a <literal>Map&lt;String,String&gt;</literal> of <emphasis role="bold">'properties'</emphasis>.
     </para>
     
-    <para>Any UI technology can then build a form on top of those properties.  
+    <para>Any UI technology can then build a form on top of those properties, using the Activiti API 
+    methods that expose the property information.  
     The properties can provide a dedicated (and more limited) view on the process variables.
-    The properties needed to display a form are available in the FormData returnvalues of
-    <literal>StartFormData FormService.getStartFormData(String processDefinitionId)</literal>
-    and <literal>TaskFormdata FormService.getTaskFormData(String taskId)</literal>.
-    Those properties are obtained from the process variables.
+    The properties needed to display a form are available in the <emphasis role="bold">FormData</emphasis> return values of for example
+    <programlisting>StartFormData FormService.getStartFormData(String processDefinitionId)</programlisting>
+    or <programlisting>TaskFormdata FormService.getTaskFormData(String taskId)</programlisting>.
     </para>
     
-    <para>By default, the build-in form engines, will 'see' the properties as well 
+    <para>By default, the build-in form engines, 'sees' the properties as well 
     as the process variables.  So there is no need to declare task form properties 
     if they match 1-1 with the process variables.  For example, with the following 
     declaration:  
     <programlisting>&lt;startEvent id=&quot;start&quot; /&gt;</programlisting>
-    A form will see all the process variables but the 
-    <literal>formService.getStartFormData(String processDefinitionId).getFormProperties()</literal>
-    will be empty.
+    All process variables are available when execution arrives in the startEvent, but 
+    <programlisting>formService.getStartFormData(String processDefinitionId).getFormProperties()</programlisting>
+    will be empty since no speficic mapping was defined.
     </para>
     <para>In the above case, all the submitted properties will be stored as process variables.  
     This means that by simply adding a new inputfield in the form, a new variable can be stored.
@@ -390,7 +353,7 @@
       process variable <literal>duration</literal> as a java.lang.Long</para></listitem>
       <listitem><para>Form property <literal>speaker</literal> will be mapped to 
       process variable <literal>SpeakerName</literal>.  It will only be available 
-      in the TaskFormData.  If property speaker is submitted, an ActivitiException will be thrown.
+      in the TaskFormData object.  If property speaker is submitted, an ActivitiException will be thrown.
       Analogue, with attribute <literal>readable=&quot;false&quot;</literal>, a 
       property can be excluded from the FormData, but still be processed in the submit.
       </para></listitem>
@@ -467,6 +430,64 @@
     and the enumeration values are accessible with
     <literal>formProperty.getType().getInformation(&quot;values&quot;)</literal> </para>
 
+    <para>
+      Activiti explorer supports the form properties and will render the form accordingly to the form definition.
+      The following xml snippet
+      <programlisting>
+&lt;startEvent ... &gt;
+  &lt;extensionElements&gt;
+    &lt;activiti:formProperty id=&quot;numberOfDays&quot; name=&quot;Number of days&quot; value=&quot;${numberOfDays}&quot; type=&quot;long&quot; required=&quot;true&quot;/&gt;
+    &lt;activiti:formProperty id=&quot;startDate&quot; name=&quot;First day of holiday (dd-MM-yyy)&quot; value=&quot;${startDate}&quot; datePattern=&quot;dd-MM-yyyy hh:mm&quot; type=&quot;date&quot; required=&quot;true&quot; /&gt;
+    &lt;activiti:formProperty id=&quot;vacationMotivation&quot; name=&quot;Motivation&quot; value=&quot;${vacationMotivation}&quot; type=&quot;string&quot; /&gt;
+  &lt;/extensionElements&gt;
+&lt;/userTask&gt;
+      </programlisting>
+      will render to a process start form when used in Activiti Explorer
+     <mediaobject><imageobject><imagedata align="center" fileref="images/forms.explorer.png"/></imageobject></mediaobject>
+    </para>
+
+  </section>
+  
+  <section id="externalFormRendering">
+  
+    <title>External form rendering</title>
+    
+    <para>The API also allows for you to perform your 
+    own task form rendering outside of the Activiti Engine. These steps explain the hooks that you can use to
+    render your task forms yourself.  </para>
+
+    <para>Essentially, all the data that's needed to render a form is assembled in one of these two service methods:
+    <literal>StartFormData FormService.getStartFormData(String processDefinitionId)</literal>
+    and <literal>TaskFormdata FormService.getTaskFormData(String taskId)</literal>. 
+    </para>
+    
+    <para>Submitting form properties can be done with 
+    <literal>ProcessInstance FormService.submitStartFormData(String processDefinitionId, Map&lt;String,String&gt; properties)</literal>
+    and <literal>void FormService.submitStartFormData(String taskId, Map&lt;String,String&gt; properties)</literal></para>
+    
+    <para>To learn about how form properties map to process variables, see <xref linkend="formProperties"/> </para>
+    
+    <para>You can place any form template resource inside the business archives that you deploy (in case 
+    you want to store them versioned with the process).  It will be available as a resource in the deployment, which you can retrieve using: <literal>String ProcessDefinition.getDeploymentId()</literal> and 
+    <literal>InputStream RepositoryService.getResourceAsStream(String deploymentId, String resourceName);</literal>
+    This could be your template definition file, which you can use to render/show the form in your
+    own application.
+    </para>
+    
+    <para>You can use this capability of accessing the deployment resources beyond task forms for any other 
+    purposes as well. </para>
+    
+    <para>The attribute <literal>&lt;userTask activiti:formKey=&quot;...&quot;</literal> is exposed by the API through 
+    <literal>String FormService.getStartFormData(String processDefinitionId).getFormKey()</literal>
+    and <literal>String FormService.getTaskFormData(String taskId).getFormKey()</literal>. You could use this to
+    store the full name of the template within your deployment (eg. <literal>org/activiti/example/form/my-custom-form.xml</literal>), but this is not required at all.
+    For instance, you could also store a generic key in the form 
+    attribute and apply an algorithm or transformation to get to the actual template that needs to be used.
+    This might be handy when you want to render different forms for different UI technologies like e.g. 
+    one form for usage in a web app of normal screen size, one form for mobile phone's small screens and 
+    maybe even a template for a IM form or an email form.
+    </para>
+    
   </section>
 
 </chapter>

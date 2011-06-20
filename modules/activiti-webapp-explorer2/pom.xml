@@ -175,6 +175,12 @@
       <version>3.1</version>
     </dependency>
     
+    <!-- Running example processes -->
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy</artifactId>
+    </dependency>
+    
     <!-- TESTING purpose only -->
 	  <dependency>
 	    <groupId>mysql</groupId>

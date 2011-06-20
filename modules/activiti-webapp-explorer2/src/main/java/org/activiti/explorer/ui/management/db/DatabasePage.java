@@ -26,7 +26,6 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.terminal.Resource;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Table;
 
@@ -103,14 +102,14 @@ public class DatabasePage extends ManagementPage {
       Resource image = null;
       if (tableName.startsWith("ACT_HI")) {
         image = Images.DATABASE_HISTORY;
-      } else if (tableName.startsWith("ACT_GE")) {
-        image = Images.DATABASE_22;
       } else if (tableName.startsWith("ACT_RU")) {
         image = Images.DATABASE_RUNTIME;
       } else if (tableName.startsWith("ACT_RE")) {
         image = Images.DATABASE_REPOSITORY;
       } else if (tableName.startsWith("ACT_ID")) {
         image = Images.DATABASE_IDENTITY;
+      } else {
+        image = Images.DATABASE_22;
       }
       return new Embedded(null, image);
     }
