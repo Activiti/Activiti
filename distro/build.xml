@@ -59,13 +59,13 @@
 	<target name="copy.dependencies">
 		<!-- FETCH DEPENDENCIES FROM MAVEN -->
     <exec executable="${mvn.executable}" dir="../modules/activiti-engine">
-      <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-engine-runtime"/>
+      <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-engine-runtime -DexcludeArtifactIds=mysql-connector-java,postgresql,jtds"/>
     </exec>
     <exec executable="${mvn.executable}" dir="../modules/activiti-cxf">
       <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-engine-runtime-feature-cxf"/>
     </exec>
     <exec executable="${mvn.executable}" dir="../modules/activiti-engine">
-      <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-engine-test -DexcludeScope=runtime"/>
+      <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-engine-test -DexcludeScope=runtime -DexcludeArtifactIds=mysql-connector-java,postgresql,jtds"/>
     </exec>
     <exec executable="${mvn.executable}" dir="../modules/activiti-spring">
       <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-spring-runtime"/>
@@ -74,7 +74,7 @@
       <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-spring-test -DexcludeScope=runtime"/>
     </exec>
     <exec executable="${mvn.executable}" dir="../modules/activiti-cycle">
-      <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-cycle-runtime"/>
+      <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-cycle-runtime -DexcludeArtifactIds=mysql-connector-java,postgresql,jtds"/>
     </exec>
     <exec executable="${mvn.executable}" dir="../modules/activiti-webapp-rest">
       <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-webapp-rest"/>
@@ -113,6 +113,8 @@
         <include name="ant-*.jar" />
       </fileset>
      </delete>
+		
+		<!-- GROOVY SCRIPTING FEATURE -->
     <mkdir dir="target/libs-engine-runtime-feature-groovy" />
 		<move todir="target/libs-engine-runtime-feature-groovy">
 			<fileset dir="target/libs-engine-test">
@@ -121,6 +123,8 @@
 				<include name="groovy-*.jar" />
 			</fileset>
 	  </move>
+		
+		<!-- JPA FEATURE -->
     <mkdir dir="target/libs-engine-runtime-feature-jpa" />
     <move todir="target/libs-engine-runtime-feature-jpa">
       <fileset dir="target/libs-engine-test">
@@ -140,9 +144,6 @@
     <exec output="${target.distro.root}/setup/files/dependencies/libs.engine.test.txt" executable="${ls.executable}">
       <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-engine-test"/>
     </exec>
-	<!-- Add manual entry for oracle driver jar in libs.engine.test,  so it can be added by the user and will be picked-up in the demo -->
-	<echo file="${target.distro.root}/setup/files/dependencies/libs.engine.test.txt" append="true">ojdbc5.jar</echo>
-		
     <exec output="${target.distro.root}/setup/files/dependencies/libs.engine.runtime.feature.groovy.txt" executable="${ls.executable}">
       <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-engine-runtime-feature-groovy"/>
     </exec>
@@ -195,6 +196,7 @@
     <exec output="${target.distro.root}/setup/files/dependencies/libs.webapp.ui.txt" executable="${ls.executable}">
       <arg line="${ls.executable.options} target${ls.executable.path.seperator}spring-surf-application-war${ls.executable.path.seperator}WEB-INF${ls.executable.path.seperator}lib"/>
     </exec>
+		
     <!-- MOVE ALL LIBS TO setup/files/dependencies/libs -->
 		<mkdir dir="${target.distro.root}/setup/files/dependencies/libs" />
     <move todir="${target.distro.root}/setup/files/dependencies/libs">
@@ -211,6 +213,7 @@
     	<fileset dir="target/libs-webapp-explorer" />
       <fileset dir="target/spring-surf-application-war/WEB-INF/lib" />
     </move>
+		
 	</target>
 	
 	<target name="copy.webapps">

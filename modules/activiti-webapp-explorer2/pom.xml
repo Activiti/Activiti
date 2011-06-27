@@ -181,12 +181,7 @@
       <artifactId>groovy</artifactId>
     </dependency>
     
-    <!-- TESTING purpose only -->
-	  <dependency>
-	    <groupId>mysql</groupId>
-	    <artifactId>mysql-connector-java</artifactId>
-	    <scope>runtime</scope>
-	  </dependency>
+    <!-- Testing -->
 	  <dependency>
 	    <groupId>junit</groupId>
 	    <artifactId>junit</artifactId>

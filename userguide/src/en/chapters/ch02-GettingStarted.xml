@@ -38,7 +38,7 @@
   <section id="demo.setup">
     <title>Demo setup</title>
     <para>'Demo Setup' is an ant script located in directory <literal>setup</literal> that
-    sets up an Activiti environment in no time.
+    sets up an Activiti environment in no time. 
     </para>
     <para>To run the script, you'll need a working 
     <ulink url="http://java.sun.com/javase/downloads/index.jsp">Java runtime</ulink> and
@@ -48,28 +48,20 @@
     <ulink url="http://ant.apache.org/manual/install.html">manual of ant</ulink> gives a description
     on how to do this. The demo setup script is tested with Ant 1.7.1+.
     </para>
-    <para>If you don't provide any parameters, the demo setup will boot using default settings.
-    To configure the setup for your environment, update the property files <literal>build.properties</literal> 
-    and <literal>build.{your-database}.properties</literal> .  Check those files for more information on 
-    configurable properties and potential values. 
-    </para>
-    <para>The easiest way to get started is open a command prompt in de <literal>setup</literal> folder 
+    <para>To get started, open a command prompt/terminal in de <literal>setup</literal> folder of the unzipped Activiti distribution
     and type:
     </para>
     <programlisting>ant demo.start</programlisting>
-    <para>This ant target will start a tomcat and a H2 database if you didn't change the default seetings.
-    The first time when the script is executed, it will also perform following installations:  
+    <para>This ant script will execute following steps: 
     </para>
     <itemizedlist>
       <listitem><para>(*) Build the webapps.  All libraries are stored in <literal>${actviti.home}/setup/files/dependencies/libs</literal>
         The webapps without the libs are stored in <literal>${actviti.home}/setup/files/webapps</literal>. Building the webapps means that
         webapps are combined with the necessary libraries in <literal>${actviti.home}/setup/build/webapps</literal> 
       </para></listitem>
-      <listitem><para>(*) Install the H2 in ${activiti.home}/apps/h2.  This only happens if you're using h2 as your database.  
-        H2 is the default database.</para></listitem>
-      <listitem><para>Start the H2 database.  Again, this is only done if using h2 as the database.  If you're using 
-        a different database it is assumed that it is already up and running.</para></listitem>
-      <listitem><para>(*) Create the Activiti tables in the database</para></listitem>
+      <listitem><para>(*) Install the H2 in ${activiti.home}/apps/h2.</para></listitem>
+      <listitem><para>Start the H2 database.</para></listitem>
+      <listitem><para>(*) Create the Activiti tables in the H2 database</para></listitem>
       <listitem><para>(*) Insert the demo users and groups in the Activiti identity tables (see below)</para></listitem>
       <listitem><para>(*) Deploy the example processes to the Activiti Engine DB</para></listitem>
       <listitem><para>(*) Download Tomcat if not available in the ${downloads.dir}</para></listitem>
@@ -84,8 +76,8 @@
     <para>(*) only performed the first time when running <literal>ant demo.start</literal> </para>
     <para>After running this target H2 and Tomcat will be running in the background.  To stop those 
     processes run <literal>ant demo.stop</literal>.</para>
-    <para>The other targets in that build script can also be called individually and they will take the 
-    configurable properties into account. Run <literal>ant -p</literal> for more details.
+    <para>The other targets in that build script can also be called individually.
+    Run <literal>ant -p</literal> for more details.
     </para>
     <para>These are the demo users:</para>
     <table>
@@ -223,13 +215,12 @@
   <section id="librarydependencies">
     <title>Library dependencies</title>
     <para>In order to prevent that the distribution file becomes too big by libraries that are included multiple times,
-    all the libraries are grouped into a single directory somewhere in the <literal>setup/files</literal>. 
+    all the libraries are grouped into the <literal>setup/files/dependencies/libs/</literal> folder. 
     </para>
     <para>The ant scripts in the <literal>setup/build.xml</literal> can inflate the examples (target <literal>inflate.examples</literal>) with 
     the libs and they will include the appropriate libs when building the webapps. 
     </para>
-    <para>All the libs are located in <literal>setup/files/dependencies/libs</literal> 
-    And the following files in <literal>setup/files/dependencies</literal> describe the library dependencies:
+    <para>The following files in <literal>setup/files/dependencies</literal> describe the library dependencies:
     </para>
     <itemizedlist>
       <listitem><para><literal>libs.engine.runtime.txt</literal>: The library runtime dependencies to run 
@@ -303,7 +294,7 @@
   </section>
   
   <section id="database.tables.explained">
-    <title>Database table names</title>
+    <title>Database table names explained</title>
     <para>
       The database names of Activiti all start with <emphasis role="bold">ACT_</emphasis>. The 
       second part is a two-character identification of use case of the table. This use case 
