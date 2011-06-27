@@ -160,7 +160,7 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
     LoggedInUser user = (LoggedInUser) getUser();
     if (user == null) {
       // First, try automatic login
-      user = loginHandler.authenticate();
+      user = loginHandler.authenticate(request, response);
       if(user == null) {
         if (mainWindow != null && !mainWindow.isShowingLoginPage()) {
           viewManager.showLoginPage();

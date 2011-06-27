@@ -42,7 +42,7 @@ public interface LoginHandler {
    * automatically. When null is returned, user will be requested to provide
    * credentials.
    */
-  LoggedInUser authenticate();
+  LoggedInUser authenticate(HttpServletRequest request, HttpServletResponse response);
     
   /**
    * Called when the user is logged out, should clear all context related

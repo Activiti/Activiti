@@ -68,7 +68,7 @@ public class DefaultLoginHandler implements LoginHandler {
     // Noting to do here
   }
   
-  public LoggedInUser authenticate() {
+  public LoggedInUser authenticate(HttpServletRequest request, HttpServletResponse response) {
     // No automatic authentication is used by default, always through credentials.
     return null;
   }
