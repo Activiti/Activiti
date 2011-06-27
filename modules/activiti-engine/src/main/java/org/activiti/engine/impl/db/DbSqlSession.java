@@ -751,6 +751,11 @@ public class DbSqlSession implements Session {
     String exceptionSqlStatement = null;
     try {
       Connection connection = sqlSession.getConnection();
+      
+      // Some Databases don't allow DDL-statement to be executed in a non-autocommit
+      // connection -> set the auto-commit attribute to true.
+      connection.setAutoCommit(true);
+      
       Exception exception = null;
       byte[] bytes = IoUtil.readInputStream(inputStream, resourceName);
       String ddlStatements = new String(bytes);
