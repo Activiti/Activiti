@@ -31,6 +31,17 @@ public interface DelegateExecution extends VariableScope {
   /** The {@link ExecutionListener#EVENTNAME_START event name} in case this execution is passed in for an {@link ExecutionListener}  */
   String getEventName();
   
-  /** The business key that was associated with the process this execution is part of. */
+  /** The business key for this execution. Only returns a value if the delegate execution
+   * is a process instance.
+   *  
+   * @deprecated use {@link #getProcessBusinessKey()} to get the business key for the process
+   *             associated with this execution, regardless whether or not this execution is a 
+   *             process-instance. 
+   */
   String getBusinessKey();
+  
+  /**
+   * The business key for the process instance this execution is associated with.
+   */
+  String getProcessBusinessKey();
 }

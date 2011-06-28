@@ -325,6 +325,9 @@ public class ExecutionImpl implements
     return getProcessInstance().getBusinessKey();
   }
   
+  public String getProcessBusinessKey() {
+    return getProcessInstance().getBusinessKey();
+  }
   
   /** for setting the process instance, this setter must be used as subclasses can override */  
   public void setProcessInstance(InterpretableExecution processInstance) {

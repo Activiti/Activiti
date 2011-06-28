@@ -11,21 +11,21 @@
  * limitations under the License.
  */
 
-package org.activiti.examples.bpmn.executionlistener;
+package org.activiti.examples.bpmn.servicetask;
 
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.JavaDelegate;
+
 
 /**
- * Simple {@link ExecutionListener} that sets 2 variables on the execution.
+ * Delegate that gets the business-key from the delegate-execution and puts the
+ * value in a variable.
  * 
  * @author Frederik Heremans
  */
-public class ExampleExecutionListenerOne implements ExecutionListener {
+public class BusinessKeyCheckJavaDelegate implements JavaDelegate {
 
-  public void notify(DelegateExecution execution) throws Exception {
-    execution.setVariable("variableSetInExecutionListener", "firstValue");
-    execution.setVariable("eventNameReceived", execution.getEventName());
-    execution.setVariable("businessKeyInExecution", execution.getProcessBusinessKey());
+  public void execute(DelegateExecution execution) throws Exception {
+    execution.setVariable("businessKeySetOnExecution", execution.getProcessBusinessKey());
   }
 }

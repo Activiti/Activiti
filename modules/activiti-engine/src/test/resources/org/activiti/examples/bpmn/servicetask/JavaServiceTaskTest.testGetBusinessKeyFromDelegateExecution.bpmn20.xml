@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="businessKeyProcess">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="fork" />
+    
+    <parallelGateway id="fork" />
+    <sequenceFlow sourceRef="fork" targetRef="receivePayment" />
+    <sequenceFlow sourceRef="fork" targetRef="shipOrder" />
+    
+    <serviceTask id="receivePayment" name="Receive Payment" activiti:class="org.activiti.examples.bpmn.servicetask.BusinessKeyCheckJavaDelegate"/>  
+    <sequenceFlow sourceRef="receivePayment" targetRef="join" />
+    
+    <userTask id="shipOrder" name="Ship Order" /> 
+    <sequenceFlow sourceRef="shipOrder" targetRef="join" />
+    
+    <parallelGateway id="join" />
+    <sequenceFlow sourceRef="join" targetRef="archiveOrder" />
+    
+    <userTask id="archiveOrder" name="Archive Order" /> 
+    <sequenceFlow sourceRef="archiveOrder" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

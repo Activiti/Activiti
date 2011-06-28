@@ -556,6 +556,10 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   public void setBusinessKey(String businessKey) {
     this.businessKey = businessKey;
   }
+  
+  public String getProcessBusinessKey() {
+    return getProcessInstance().getBusinessKey();
+  }
 
   // process definition ///////////////////////////////////////////////////////
 
