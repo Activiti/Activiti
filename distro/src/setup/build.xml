@@ -549,7 +549,7 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
 	<target name="internal.cfg.create">
 	  <mkdir dir="${activiti.home}/setup/build/activiti-cfg" />
 	  <copy todir="${activiti.home}/setup/build/activiti-cfg" overwrite="true">
-	    <filterset filtersfile="build.${db}.properties" />
+	    <filterset filtersfile="build.db.properties" />
 	    <fileset dir="files/cfg.activiti/${tx}" />
 	  </copy>
 	  <zip destfile="${activiti.home}/setup/build/activiti-cfg.jar">

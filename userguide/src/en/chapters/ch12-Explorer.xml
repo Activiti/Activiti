@@ -164,4 +164,12 @@
   
   </section>
   
+  <section id="explorer.change.database">
+    <title>Changing the database</title>  
+    <para>
+      To change the database that Explorer uses in the demo setup, change the properties file <literal>apps/apache-timcat-6.x/webapps/activiti-explorer/WEB-INF/classes/db.properties</literal>.
+      Also, place a suitable database driver on the classpath (Tomcat shared libs or in <literal>apps/apache-timcat-6.x/webapps/activiti-explorer/WEB-INF/lib/</literal>).
+    </para>
+  </section>
+  
 </chapter>

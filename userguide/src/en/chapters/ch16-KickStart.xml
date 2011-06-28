@@ -4,7 +4,7 @@
 <chapter>
 
   <title>Activiti KickStart</title>
-  <section>
+  <section id="kickstartOverview">
     <title>Overview</title>  
     <para>
       Activiti KickStart is a webbased tool to quickly create 'adhoc' business processes using
@@ -94,15 +94,9 @@
   <section id="kickstart.change.database">
     <title>Changing the database</title>  
     <para>
-      Activiti KickStart is currently not yet using the REST API, but uses the service API by including the Activiti engine
-      as a library. While Explorer Cycle use the same mechanism for changing the database 
-      (see <link linkend="changingTheDatabase">here</link>), the same does not yet apply for KickStart.
-    </para>
-    <para>
-      To change the database that KickStart uses in the demo setup, generate a new activiti.cfg.jar, and place it
+      To change the database that KickStart uses in the demo setup, create a new Activiti configuration file (activiti.cfg.xml), and place it
       in the <literal>apps/apache-tomcat-6.x/webapps/activiti-kickstart/WEB-INF/lib</literal> folder.
-      Likewise, you must also place your database driver in the same folder. You can find
-      the driver for your database (except Oracle) in <literal>setup/files/dependencies/libs/</literal>.
+      Likewise, you must also place a suitable database driver in the same folder.
     </para>
   </section>
   

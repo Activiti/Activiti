@@ -375,9 +375,15 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
       <itemizedlist>
         <listitem>
           <para>Add the activiti engine jars to your classpath</para>
+        </listitem>
+        <listitem>
           <para>Add a suitable database driver</para>
+        </listitem>
+        <listitem>
           <para>Add an Activiti configuration file (<emphasis>activiti.cfg.xml</emphasis>) to your classpath, 
-          pointing to your database (see <link linkend="databaseConfiguration">database config sections</link>)</para>
+          pointing to your database (see <link linkend="databaseConfiguration">database configuration section</link>)</para>
+        </listitem>
+        <listitem>
           <para>Execute the main method of the <emphasis>DbSchemaCreate</emphasis> class</para>
         </listitem>
       </itemizedlist>
@@ -390,7 +396,7 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
       The sql files are of the form
       <programlisting>activiti.{db}.{create|drop}.{type}.sql</programlisting>
       Where <emphasis>db</emphasis> is any of the <link linkend="supporteddatabases">supported databases</link>
-      and type is 
+      and <emphasis>type</emphasis> is 
       <itemizedlist>
         <listitem>
           <para><emphasis role="bold">engine:</emphasis> the tables needed for engine execution. Required.</para>

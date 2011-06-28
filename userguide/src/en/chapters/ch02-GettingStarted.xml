@@ -7,7 +7,7 @@
   <section id="demo.setup.one.minute.version">
     <title>One minute version</title>
     <para>
-      After downloading the Activiti distribution zip file from the Activiti website,
+      After downloading the Activiti distribution zip file from the <ulink url="http://www.activiti.org">Activiti website</ulink>,
       follow these steps to get the demo setup running with default settings. 
       You'll need a working <ulink url="http://java.sun.com/javase/downloads/index.jsp">Java runtime</ulink> and
       <ulink url="http://ant.apache.org/bindownload.cgi">Ant</ulink> installation.
