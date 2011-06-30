@@ -40,6 +40,7 @@ create table ACT_HI_TASKINST (
     NAME_ varchar(255),
     PARENT_TASK_ID_ varchar(64),
     DESCRIPTION_ varchar(4000),
+    OWNER_ varchar(64),
     ASSIGNEE_ varchar(64),
     START_TIME_ timestamp not null,
     END_TIME_ timestamp,

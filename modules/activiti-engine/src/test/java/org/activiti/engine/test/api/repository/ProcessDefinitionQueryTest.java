@@ -117,7 +117,7 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
   }
   
   public void testQueryByNameLike() {
-    ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().processDefinitionNameLike("%o%");
+    ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().processDefinitionNameLike("%w%");
     verifyQueryResults(query, 1);
   }
   
