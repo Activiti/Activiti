@@ -247,17 +247,18 @@ body {
 }
 
 #login-central-components {
-  margin: 0 0 0 -180px;
+  margin: 0 auto;
   width: 360px;
+  padding-top: 300px;
   text-align: center;
-  position: absolute;
-  left: 50%;
   z-index: 1;
 }
       
 #login-logo {
+  margin: 0 auto;
   height: 130px;
-  padding-top: 140px;
+  padding-top: 110px;
+  text-align: center;
 }
 
 /* Text fields of input form */     
