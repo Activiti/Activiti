@@ -73,6 +73,7 @@ public class UploadComponent extends VerticalLayout implements StartedListener, 
   // Additional listeners can be attached to the upload components
   protected List<FinishedListener> finishedListeners = new ArrayList<FinishedListener>();
   protected List<StartedListener> startedListeners = new ArrayList<StartedListener>();
+  protected boolean showGenericFailureMessage = true;
   protected List<FailedListener> failedListeners = new ArrayList<FailedListener>();
   protected List<ProgressListener> progressListeners = new ArrayList<ProgressListener>();
 
@@ -174,15 +175,9 @@ public class UploadComponent extends VerticalLayout implements StartedListener, 
   }
 
   public void uploadFailed(FailedEvent event) {
-    uploadFailed(event.getReason().getMessage());
-    
     for (FailedListener failedListener : failedListeners) {
       failedListener.uploadFailed(event);
     }
-  }
-  
-  protected void uploadFailed(String errorMessage) {
-    notificationManager.showErrorNotification(Messages.UPLOAD_FAILED, errorMessage);
   }
   
   // Drag and drop handling (DropHandler) ---------------------------------------------------------
@@ -203,7 +198,7 @@ public class UploadComponent extends VerticalLayout implements StartedListener, 
           uploadFinished(null); // event doesnt matter here
         }
         public void streamingFailed(StreamingErrorEvent event) {
-          uploadFailed(event.getException().getMessage());
+          uploadFailed(null);
         }
         public void onProgress(StreamingProgressEvent event) {
           updateProgress(event.getBytesReceived(), event.getContentLength());

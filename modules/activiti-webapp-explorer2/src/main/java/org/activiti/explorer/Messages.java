@@ -241,6 +241,7 @@ public interface Messages {
   static final String DEPLOYMENT_HEADER_RESOURCES = "deployment.header.resources";
   static final String DEPLOYMENT_UPLOAD = "deployment.upload";
   static final String DEPLOYMENT_UPLOAD_DESCRIPTION = "deployment.upload.description";
+  static final String DEPLOYMENT_UPLOAD_FAILED = "deployment.upload.failed";
   static final String DEPLOYMENT_UPLOAD_INVALID_FILE = "deployment.upload.invalid.file";
   static final String DEPLOYMENT_UPLOAD_INVALID_FILE_EXPLANATION = "deployment.upload.invalid.file.explanation";
   static final String DEPLOYMENT_UPLOAD_SERVER_ERROR = "deployment.upload.server.error";

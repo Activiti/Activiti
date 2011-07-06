@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.zip.ZipInputStream;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
@@ -76,19 +77,24 @@ public class DeploymentUploadReceiver implements Receiver, FinishedListener {
   protected void deployUploadedFile() {
     DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().name(fileName);
     try {
-      if (fileName.endsWith(".bpmn20.xml")) {
-        validFile = true;
-        deployment = deploymentBuilder
-          .addInputStream(fileName, new ByteArrayInputStream(outputStream.toByteArray()))
-          .deploy();
-      } else if (fileName.endsWith(".bar") || fileName.endsWith(".zip")) {
-        validFile = true;
-        deployment = deploymentBuilder
-          .addZipInputStream(new ZipInputStream(new ByteArrayInputStream(outputStream.toByteArray())))
-          .deploy();
-      } else {
-        notificationManager.showErrorNotification(Messages.DEPLOYMENT_UPLOAD_INVALID_FILE,
-        		i18nManager.getMessage(Messages.DEPLOYMENT_UPLOAD_INVALID_FILE_EXPLANATION));
+      try {
+        if (fileName.endsWith(".bpmn20.xml")) {
+          validFile = true;
+          deployment = deploymentBuilder
+            .addInputStream(fileName, new ByteArrayInputStream(outputStream.toByteArray()))
+            .deploy();
+        } else if (fileName.endsWith(".bar") || fileName.endsWith(".zip")) {
+          validFile = true;
+          deployment = deploymentBuilder
+            .addZipInputStream(new ZipInputStream(new ByteArrayInputStream(outputStream.toByteArray())))
+            .deploy();
+        } else {
+          notificationManager.showErrorNotification(Messages.DEPLOYMENT_UPLOAD_INVALID_FILE,
+          		i18nManager.getMessage(Messages.DEPLOYMENT_UPLOAD_INVALID_FILE_EXPLANATION));
+        }
+      } catch (ActivitiException e) {
+        String errorMsg = e.getMessage().replace(System.getProperty("line.separator"), "<br/>");
+        notificationManager.showErrorNotification(Messages.DEPLOYMENT_UPLOAD_FAILED, errorMsg);
       }
     } finally {
       if (outputStream != null) {
