@@ -261,6 +261,9 @@ public class CommandContext {
     return getSession(CommentManager.class);
   }
 
+  public Map<Class< ? >, SessionFactory> getSessionFactories() {
+    return sessionFactories;
+  }
 
   public PropertyManager getPropertyManager() {
     return getSession(PropertyManager.class);

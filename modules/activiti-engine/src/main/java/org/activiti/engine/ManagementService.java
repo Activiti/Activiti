@@ -12,6 +12,7 @@
  */
 package org.activiti.engine;
 
+import java.sql.Connection;
 import java.util.Map;
 
 import org.activiti.engine.management.TableMetaData;
@@ -74,4 +75,7 @@ public interface ManagementService {
 
   /** get the list of properties. */
   Map<String, String> getProperties();
+  
+  /** programmatic schema update on a given connection returning feedback about what happened */
+  String databaseSchemaUpgrade(Connection connection, String catalog, String schema);
 }

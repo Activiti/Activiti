@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl;
 
+import java.sql.Connection;
 import java.util.Map;
 
 import org.activiti.engine.ManagementService;
@@ -20,6 +21,11 @@ import org.activiti.engine.impl.cmd.GetJobExceptionStacktraceCmd;
 import org.activiti.engine.impl.cmd.GetPropertiesCmd;
 import org.activiti.engine.impl.cmd.GetTableCountCmd;
 import org.activiti.engine.impl.cmd.GetTableMetaDataCmd;
+import org.activiti.engine.impl.db.DbSqlSession;
+import org.activiti.engine.impl.db.DbSqlSessionFactory;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.management.TableMetaData;
 import org.activiti.engine.management.TablePageQuery;
 import org.activiti.engine.runtime.JobQuery;
@@ -57,5 +63,16 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
 
   public Map<String, String> getProperties() {
     return commandExecutor.execute(new GetPropertiesCmd());
+  }
+
+  public String databaseSchemaUpgrade(final Connection connection, final String catalog, final String schema) {
+    return commandExecutor.execute(new Command<String>(){
+      public String execute(CommandContext commandContext) {
+        DbSqlSessionFactory dbSqlSessionFactory = (DbSqlSessionFactory) commandContext.getSessionFactories().get(DbSqlSessionFactory.class);
+        DbSqlSession dbSqlSession = new DbSqlSession(dbSqlSessionFactory, connection, catalog, schema);
+        commandContext.getSessions().put(DbSqlSession.class, dbSqlSession);
+        return dbSqlSession.dbSchemaUpdate();
+      }
+    });
   }
 }

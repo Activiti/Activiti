@@ -78,12 +78,23 @@ public class DbSqlSession implements Session {
   protected Map<Class<?>, Map<String, CachedObject>> cachedObjects = new HashMap<Class<?>, Map<String,CachedObject>>();
   protected List<DeleteOperation> deletedObjects = new ArrayList<DeleteOperation>();
   protected List<DeserializedObject> deserializedObjects = new ArrayList<DeserializedObject>();
+  protected String connectionMetadataDefaultCatalog = null;
+  protected String connectionMetadataDefaultSchema = null;
 
   public DbSqlSession(DbSqlSessionFactory dbSqlSessionFactory) {
     this.dbSqlSessionFactory = dbSqlSessionFactory;
     this.sqlSession = dbSqlSessionFactory
       .getSqlSessionFactory()
       .openSession();
+  }
+
+  public DbSqlSession(DbSqlSessionFactory dbSqlSessionFactory, Connection connection, String catalog, String schema) {
+    this.dbSqlSessionFactory = dbSqlSessionFactory;
+    this.sqlSession = dbSqlSessionFactory
+      .getSqlSessionFactory()
+      .openSession(connection);
+    this.connectionMetadataDefaultCatalog = catalog;
+    this.connectionMetadataDefaultSchema = schema;
   }
 
   // insert ///////////////////////////////////////////////////////////////////
@@ -609,9 +620,9 @@ public class DbSqlSession implements Session {
 
   public static String[] JDBC_METADATA_TABLE_TYPES = {"TABLE"};
 
-  public void dbSchemaUpdate() {
+  public String dbSchemaUpdate() {
+    String feedback = null;
     String dbVersion = null;
-    
     boolean isUpgradeNeeded = false;
       
     if (isEngineTablePresent()) {
@@ -635,6 +646,8 @@ public class DbSqlSession implements Session {
         dbHistoryProperty.setValue(dbHistoryValue);
         
         dbSchemaUpgrade("engine", dbVersion);
+
+        feedback = "upgraded Activiti from "+dbVersion+" to "+ProcessEngine.VERSION;
       }
     } else {
       dbSchemaCreateEngine();
@@ -663,6 +676,7 @@ public class DbSqlSession implements Session {
     } else if (dbSqlSessionFactory.isDbCycleUsed()) {
       dbSchemaCreateCycle();
     }
+    return feedback;
   }
 
   public boolean isEngineTablePresent(){
@@ -690,7 +704,7 @@ public class DbSqlSession implements Session {
       }
       
       try {
-        tables = databaseMetaData.getTables(null, null, tableName, JDBC_METADATA_TABLE_TYPES);
+        tables = databaseMetaData.getTables(this.connectionMetadataDefaultCatalog, this.connectionMetadataDefaultSchema, tableName, JDBC_METADATA_TABLE_TYPES);
         return tables.next();
       } finally {
         tables.close();
