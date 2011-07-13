@@ -25,11 +25,14 @@ import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.ParallelMultiInstanceBehavior;
+import org.activiti.engine.impl.bpmn.behavior.SequentialMultiInstanceBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ServiceTaskJavaDelegateActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.util.ReflectUtil;
 
 
@@ -44,6 +47,9 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
   
   protected String className;
   protected List<FieldDeclaration> fieldDeclarations;
+  protected ExecutionListener executionListenerInstance;
+  protected TaskListener taskListenerInstance;
+  protected ActivityBehavior activityBehaviorInstance;
   
   public ClassDelegate(String className, List<FieldDeclaration> fieldDeclarations) {
     this.className = className;
@@ -55,8 +61,10 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
   }
 
   // Execution listener
-  public void notify(DelegateExecution execution) throws Exception {    
-    ExecutionListener executionListenerInstance = getExecutionListenerInstance();    
+  public void notify(DelegateExecution execution) throws Exception {
+    if (executionListenerInstance == null) {
+      executionListenerInstance = getExecutionListenerInstance();
+    } 
     executionListenerInstance.notify(execution);
   }
 
@@ -73,7 +81,9 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
   
   // Task listener
   public void notify(DelegateTask delegateTask) {
-    TaskListener taskListenerInstance = getTaskListenerInstance();    
+    if (taskListenerInstance == null) {
+      taskListenerInstance = getTaskListenerInstance();
+    }
     taskListenerInstance.notify(delegateTask);
   }
   
@@ -87,14 +97,18 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
   }
 
   // Activity Behavior
-  public void execute(ActivityExecution execution) throws Exception {    
-    ActivityBehavior activityBehaviorInstance = getActivityBehaviorInstance(execution);    
+  public void execute(ActivityExecution execution) throws Exception {
+    if (activityBehaviorInstance == null) {
+      activityBehaviorInstance = getActivityBehaviorInstance(execution);
+    }
     activityBehaviorInstance.execute(execution);
   }
   
   // Signallable activity behavior
-  public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {    
-    ActivityBehavior activityBehaviorInstance = getActivityBehaviorInstance(execution);    
+  public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+    if (activityBehaviorInstance == null) {
+      activityBehaviorInstance = getActivityBehaviorInstance(execution);
+    }
     
     if (activityBehaviorInstance instanceof SignallableActivityBehavior) {
       ((SignallableActivityBehavior) activityBehaviorInstance).signal(execution, signalName, signalData);
