@@ -13,7 +13,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
@@ -58,17 +57,5 @@ public class GetExecutionVariablesCmd implements Command<Map<String, Object>> {
     }
     
     return executionVariables;
-    
-    /*if (variableNames==null) {
-      variableNames = executionVariables.keySet();
-    }*/
-    
-    // this copy is made to avoid lazy initialization outside a command context
-    /*Map<String, Object> variables = new HashMap<String, Object>();
-    for (String variableName: variableNames) {
-      variables.put(variableName, execution.getVariable(variableName));
-    }
-    
-    return variables;*/
   }
 }
