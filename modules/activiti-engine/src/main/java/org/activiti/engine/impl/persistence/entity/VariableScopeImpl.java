@@ -76,12 +76,12 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
 
   protected Map<String, Object> collectVariables(HashMap<String, Object> variables) {
     ensureVariableInstancesInitialized();
-    for (VariableInstanceEntity variableInstance: variableInstances.values()) {
-      variables.put(variableInstance.getName(), variableInstance.getValue());
-    }
     VariableScopeImpl parentScope = getParentVariableScope();
     if (parentScope!=null) {
-      return parentScope.collectVariables(variables);
+      variables.putAll(parentScope.collectVariables(variables));
+    }
+    for (VariableInstanceEntity variableInstance: variableInstances.values()) {
+      variables.put(variableInstance.getName(), variableInstance.getValue());
     }
     return variables;
   }
