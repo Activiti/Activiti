@@ -40,8 +40,8 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
     assertEquals("Task in subprocess", subProcessTask.getName());
     
     // get variables for execution id user task, should return the new value of variable test --> test2
-    assertEquals("test2", runtimeService.getVariableLocal(subProcessTask.getExecutionId(), "test"));
-    assertEquals("test2", runtimeService.getVariablesLocal(subProcessTask.getExecutionId()).get("test"));
+    assertEquals("test2", runtimeService.getVariable(subProcessTask.getExecutionId(), "test"));
+    assertEquals("test2", runtimeService.getVariables(subProcessTask.getExecutionId()).get("test"));
     
     // get variables for process instance id, should return the initial value of variable test --> test
     assertEquals("test", runtimeService.getVariable(pi.getId(), "test"));

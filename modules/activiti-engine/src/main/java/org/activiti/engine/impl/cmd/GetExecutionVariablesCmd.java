@@ -57,16 +57,18 @@ public class GetExecutionVariablesCmd implements Command<Map<String, Object>> {
       executionVariables = execution.getVariables();
     }
     
-    if (variableNames==null) {
+    return executionVariables;
+    
+    /*if (variableNames==null) {
       variableNames = executionVariables.keySet();
-    }
+    }*/
     
     // this copy is made to avoid lazy initialization outside a command context
-    Map<String, Object> variables = new HashMap<String, Object>();
+    /*Map<String, Object> variables = new HashMap<String, Object>();
     for (String variableName: variableNames) {
       variables.put(variableName, execution.getVariable(variableName));
     }
     
-    return variables;
+    return variables;*/
   }
 }
