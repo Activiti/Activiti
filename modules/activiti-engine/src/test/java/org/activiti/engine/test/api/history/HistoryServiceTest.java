@@ -17,8 +17,10 @@ import java.util.List;
 
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
 
 /**
@@ -57,4 +59,27 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     historicProcessInstance = historyService.createHistoricProcessInstanceQuery().singleResult();
     assertEquals("theEnd", historicProcessInstance.getEndActivityId());
   }
+  
+  @Deployment(resources={
+    "org/activiti/examples/bpmn/callactivity/orderProcess.bpmn20.xml",
+    "org/activiti/examples/bpmn/callactivity/checkCreditProcess.bpmn20.xml"       
+  })
+  public void testOrderProcessWithCallActivity() {
+    // After the process has started, the 'verify credit history' task should be active
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("orderProcess");
+    TaskQuery taskQuery = taskService.createTaskQuery();
+    Task verifyCreditTask = taskQuery.singleResult();
+    
+    // Completing the task with approval, will end the subprocess and continue the original process
+    taskService.complete(verifyCreditTask.getId(), CollectionUtil.singletonMap("creditApproved", true));
+    Task prepareAndShipTask = taskQuery.singleResult();
+    assertEquals("Prepare and Ship", prepareAndShipTask.getName());
+    
+     //verify
+    HistoricProcessInstance historicProcessInstance = 
+    	  historyService.createHistoricProcessInstanceQuery().superProcessInstanceId(pi.getId()).singleResult();
+    assertNotNull(historicProcessInstance);
+    assertTrue(historicProcessInstance.getProcessDefinitionId().contains("checkCreditProcess"));
+  }
+  
 }

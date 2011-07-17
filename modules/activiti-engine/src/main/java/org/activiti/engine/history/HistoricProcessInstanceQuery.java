@@ -60,4 +60,6 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   
   /** Order by the duration of the process instance (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricProcessInstanceQuery orderByProcessInstanceDuration();
+  
+  HistoricProcessInstanceQuery superProcessInstanceId(String superProcessInstanceId); 
 }

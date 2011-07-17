@@ -31,6 +31,7 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
   protected String businessKey;
   protected String startUserId;
   protected String startActivityId;
+  protected String superProcessInstanceId;
 
   public HistoricProcessInstanceEntity() {
   }
@@ -43,6 +44,7 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
     startTime = ClockUtil.getCurrentTime();
     startUserId = Authentication.getAuthenticatedUserId();
     startActivityId = processInstance.getActivityId();
+    superProcessInstanceId = processInstance.getSuperExecution() != null ? processInstance.getSuperExecution().getProcessInstanceId() : null;
   }
 
   
@@ -52,6 +54,7 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
     persistentState.put("durationInMillis", durationInMillis);
     persistentState.put("deleteReason", deleteReason);
     persistentState.put("endStateName", endActivityId);
+    persistentState.put("superProcessInstanceId", superProcessInstanceId);
     return persistentState;
   }
 
@@ -82,4 +85,11 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
   public void setStartActivityId(String startUserId) {
     this.startActivityId = startUserId;
   }
+  public String getSuperProcessInstanceId() {
+	return superProcessInstanceId;
+  }
+  public void setSuperProcessInstanceId(String superProcessInstanceId) {
+	this.superProcessInstanceId = superProcessInstanceId;
+  }
+  
 }

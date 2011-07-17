@@ -9,6 +9,7 @@ create table ACT_HI_PROCINST (
     START_USER_ID_ NVARCHAR2(255),
     START_ACT_ID_ NVARCHAR2(255),
     END_ACT_ID_ NVARCHAR2(255),
+    SUPER_PROCESS_INSTANCE_ID_ NVARCHAR2(64),
     primary key (ID_),
     unique (PROC_INST_ID_)
 );

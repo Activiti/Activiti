@@ -31,7 +31,8 @@
         DURATION_,
         START_USER_ID_,
         START_ACT_ID_,
-        END_ACT_ID_
+        END_ACT_ID_,
+        SUPER_PROCESS_INSTANCE_ID_
       ) values (
         #{id ,jdbcType=VARCHAR},
         #{processInstanceId, jdbcType=VARCHAR},
@@ -42,7 +43,8 @@
         #{durationInMillis ,jdbcType=BIGINT},
         #{startUserId, jdbcType=VARCHAR},
         #{startActivityId, jdbcType=VARCHAR},
-        #{endActivityId, jdbcType=VARCHAR}
+        #{endActivityId, jdbcType=VARCHAR},
+        #{superProcessInstanceId, jdbcType=VARCHAR},
       )
   </insert>
 
@@ -76,6 +78,7 @@
     <result property="startUserId" column="START_USER_ID_" jdbcType="VARCHAR" />
     <result property="startActivityId" column="START_ACT_ID_" jdbcType="VARCHAR" />
     <result property="endActivityId" column="END_ACT_ID_" jdbcType="VARCHAR" />
+    <result property="superProcessInstanceId" column="SUPER_PROCESS_INSTANCE_ID_" jdbcType="VARCHAR" />
   </resultMap>
 
   <!-- HISTORIC PROCESS INSTANCE SELECT -->
@@ -125,6 +128,10 @@
       <if test="startedBy != null">
         and HPI.START_USER_ID_ = #{startedBy}
       </if>
+      <if test="superProcessInstanceId != null">
+        and HPI.SUPER_PROCESS_INSTANCE_ID_ = #{superProcessInstanceId}
+      </if>
+       
     </where>
   </sql>
 

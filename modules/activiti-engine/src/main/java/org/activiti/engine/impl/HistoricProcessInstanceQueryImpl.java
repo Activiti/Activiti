@@ -32,6 +32,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
   protected boolean finished = false;
   protected boolean unfinished = false;
   protected String startedBy;
+  protected String superProcessInstanceId;
   
   public HistoricProcessInstanceQueryImpl() {
   }
@@ -72,6 +73,11 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
   public HistoricProcessInstanceQuery startedBy(String userId) {
     this.startedBy = userId;
     return this;
+  }
+  
+  public HistoricProcessInstanceQuery superProcessInstanceId(String superProcessInstanceId) {
+	 this.superProcessInstanceId = superProcessInstanceId;
+	 return this;
   }
   
   public HistoricProcessInstanceQuery orderByProcessInstanceBusinessKey() {
@@ -126,6 +132,12 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
   }
   public String getStartedBy() {
     return startedBy;
+  }
+  public String getSuperProcessInstanceId() {
+	return superProcessInstanceId;
+  }
+  public void setSuperProcessInstanceId(String superProcessInstanceId) {
+	this.superProcessInstanceId = superProcessInstanceId;
   }
   
 }
