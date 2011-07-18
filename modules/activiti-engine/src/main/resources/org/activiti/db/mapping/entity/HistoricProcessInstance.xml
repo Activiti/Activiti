@@ -44,7 +44,7 @@
         #{startUserId, jdbcType=VARCHAR},
         #{startActivityId, jdbcType=VARCHAR},
         #{endActivityId, jdbcType=VARCHAR},
-        #{superProcessInstanceId, jdbcType=VARCHAR},
+        #{superProcessInstanceId, jdbcType=VARCHAR}
       )
   </insert>
 
