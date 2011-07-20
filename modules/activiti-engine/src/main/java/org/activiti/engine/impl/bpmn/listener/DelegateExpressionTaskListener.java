@@ -16,6 +16,8 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.delegate.TaskListenerInvocation;
 
 
 /**
@@ -35,7 +37,13 @@ public class DelegateExpressionTaskListener implements TaskListener {
     Object delegate = expression.getValue(delegateTask.getExecution());
     
     if (delegate instanceof TaskListener) {
-      ((TaskListener) delegate).notify(delegateTask);
+      try {
+        Context.getProcessEngineConfiguration()
+          .getDelegateInterceptor()
+          .handleInvocation(new TaskListenerInvocation((TaskListener)delegate, delegateTask));
+      }catch (Exception e) {
+        throw new ActivitiException("Exception while invoking TaskListener: "+e.getMessage(), e);
+      }
     } else {
       throw new ActivitiException("Delegate expression " + expression 
               + " did not resolve to an implementation of " + TaskListener.class );

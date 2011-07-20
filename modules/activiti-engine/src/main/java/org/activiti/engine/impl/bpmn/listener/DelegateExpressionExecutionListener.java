@@ -17,6 +17,9 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.delegate.ExecutionListenerInvocation;
+import org.activiti.engine.impl.delegate.JavaDelegateInvocation;
 
 
 /**
@@ -36,9 +39,13 @@ public class DelegateExpressionExecutionListener implements ExecutionListener {
     Object delegate = expression.getValue(execution);
     
     if (delegate instanceof ExecutionListener) {
-      ((ExecutionListener) delegate).notify(execution);
+      Context.getProcessEngineConfiguration()
+        .getDelegateInterceptor()
+        .handleInvocation(new ExecutionListenerInvocation((ExecutionListener) delegate, execution));
     } else if (delegate instanceof JavaDelegate) {
-      ((JavaDelegate) delegate).execute(execution);
+      Context.getProcessEngineConfiguration()
+        .getDelegateInterceptor()
+        .handleInvocation(new JavaDelegateInvocation((JavaDelegate) delegate, execution));
     } else {
       throw new ActivitiException("Delegate expression " + expression 
               + " did not resolve to an implementation of " + ExecutionListener.class 

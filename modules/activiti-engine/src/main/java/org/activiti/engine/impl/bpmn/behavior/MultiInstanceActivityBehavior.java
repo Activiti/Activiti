@@ -23,6 +23,8 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.delegate.ExecutionListenerInvocation;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.CompositeActivityBehavior;
@@ -221,7 +223,9 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     List<ExecutionListener> listeners = activity.getExecutionListeners(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END);
     for (ExecutionListener executionListener : listeners) {
       try {
-        executionListener.notify((ExecutionListenerExecution) execution);
+        Context.getProcessEngineConfiguration()
+          .getDelegateInterceptor()
+          .handleInvocation(new ExecutionListenerInvocation(executionListener, execution));
       } catch (Exception e) {
         throw new ActivitiException("Couldn't execute end listener", e);
       }

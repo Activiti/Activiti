@@ -15,6 +15,9 @@ package org.activiti.engine.impl.el;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.VariableScope;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.delegate.ExpressionGetInvocation;
+import org.activiti.engine.impl.delegate.ExpressionSetInvocation;
 import org.activiti.engine.impl.javax.el.ELContext;
 import org.activiti.engine.impl.javax.el.ELException;
 import org.activiti.engine.impl.javax.el.MethodNotFoundException;
@@ -43,19 +46,32 @@ public class JuelExpression implements Expression {
   public Object getValue(VariableScope variableScope) {
     ELContext elContext = expressionManager.getElContext(variableScope);
     try {
-      return valueExpression.getValue(elContext);
+      ExpressionGetInvocation invocation = new ExpressionGetInvocation(valueExpression, elContext);
+      Context.getProcessEngineConfiguration()
+        .getDelegateInterceptor()
+        .handleInvocation(invocation);
+      return invocation.getInvocationResult();      
     } catch (PropertyNotFoundException pnfe) {
       throw new ActivitiException("Unknown property used in expression", pnfe);
     } catch (MethodNotFoundException mnfe) {
       throw new ActivitiException("Unknown method used in expression", mnfe);
     } catch(ELException ele) {
       throw new ActivitiException("Error while evalutaing expression", ele);
+    } catch (Exception e) {
+      throw new ActivitiException("Error while evalutaing expression", e);
     }
   }
   
   public void setValue(Object value, VariableScope variableScope) {
     ELContext elContext = expressionManager.getElContext(variableScope);
-    valueExpression.setValue(elContext, value);
+    try {
+      ExpressionSetInvocation invocation = new ExpressionSetInvocation(valueExpression, elContext, value);
+      Context.getProcessEngineConfiguration()
+        .getDelegateInterceptor()
+        .handleInvocation(invocation);
+    }catch (Exception e) {
+      throw new ActivitiException("Error while evalutaing expression", e);
+    }
   }
   
   @Override

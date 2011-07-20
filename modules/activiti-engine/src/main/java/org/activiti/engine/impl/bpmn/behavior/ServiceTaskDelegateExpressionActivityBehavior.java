@@ -15,6 +15,9 @@ package org.activiti.engine.impl.bpmn.behavior;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.delegate.ActivityBehaviorInvocation;
+import org.activiti.engine.impl.delegate.JavaDelegateInvocation;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
@@ -50,10 +53,14 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
     Object delegate = expression.getValue(execution);
     
     if (delegate instanceof ActivityBehavior) {
-      ((ActivityBehavior) delegate).execute(execution);
+      Context.getProcessEngineConfiguration()
+        .getDelegateInterceptor()
+        .handleInvocation(new ActivityBehaviorInvocation((ActivityBehavior) delegate, execution));
 
     } else if (delegate instanceof JavaDelegate) {
-      ((JavaDelegate) delegate).execute(execution);
+      Context.getProcessEngineConfiguration()
+        .getDelegateInterceptor()
+        .handleInvocation(new JavaDelegateInvocation((JavaDelegate) delegate, execution));
       leave(execution);
     
     } else {

@@ -63,6 +63,7 @@ import org.activiti.engine.impl.cfg.standalone.StandaloneMybatisTransactionConte
 import org.activiti.engine.impl.db.DbIdGenerator;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.db.IbatisVariableTypeHandler;
+import org.activiti.engine.impl.delegate.DefaultDelegateInterceptor;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.form.AbstractFormType;
 import org.activiti.engine.impl.form.BooleanFormType;
@@ -76,6 +77,7 @@ import org.activiti.engine.impl.history.handler.HistoryParseListener;
 import org.activiti.engine.impl.interceptor.CommandContextFactory;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
+import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
@@ -256,6 +258,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected boolean isDbHistoryUsed = true;
   protected boolean isDbCycleUsed = false;
   
+  protected DelegateInterceptor delegateInterceptor;
+  
   // buildProcessEngine ///////////////////////////////////////////////////////
   
   public ProcessEngine buildProcessEngine() {
@@ -287,6 +291,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initSqlSessionFactory();
     initSessionFactories();
     initJpa();
+    initDelegateInterceptor();
   }
 
   // command executors ////////////////////////////////////////////////////////
@@ -780,6 +785,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       mapBusinessCalendarManager.addBusinessCalendar(CycleBusinessCalendar.NAME, new CycleBusinessCalendar());
 
       businessCalendarManager = mapBusinessCalendarManager;
+    }
+  }
+  
+  protected void initDelegateInterceptor() {
+    if(delegateInterceptor == null) {
+      delegateInterceptor = new DefaultDelegateInterceptor();
     }
   }
   
@@ -1469,6 +1480,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   public void setDeploymentCache(DeploymentCache deploymentCache) {
     this.deploymentCache = deploymentCache;
+  }
+    
+  public ProcessEngineConfigurationImpl setDelegateInterceptor(DelegateInterceptor delegateInterceptor) {
+    this.delegateInterceptor = delegateInterceptor;
+    return this;
+  }
+    
+  public DelegateInterceptor getDelegateInterceptor() {
+    return delegateInterceptor;
   }
 
 }

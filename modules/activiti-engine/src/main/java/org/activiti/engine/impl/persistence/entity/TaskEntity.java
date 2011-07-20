@@ -31,6 +31,7 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.delegate.TaskListenerInvocation;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.task.TaskDefinition;
@@ -504,7 +505,13 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
           if (execution != null) {
             setEventName(taskEventName);
           }
-          taskListener.notify(this);
+          try {
+            Context.getProcessEngineConfiguration()
+              .getDelegateInterceptor()
+              .handleInvocation(new TaskListenerInvocation(taskListener, (DelegateTask)this));
+          }catch (Exception e) {
+            throw new ActivitiException("Exception while invoking TaskListener: "+e.getMessage(), e);
+          }
         }
       }
     }

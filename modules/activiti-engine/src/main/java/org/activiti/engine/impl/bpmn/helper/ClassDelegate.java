@@ -25,14 +25,14 @@ import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ParallelMultiInstanceBehavior;
-import org.activiti.engine.impl.bpmn.behavior.SequentialMultiInstanceBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ServiceTaskJavaDelegateActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.delegate.ExecutionListenerInvocation;
+import org.activiti.engine.impl.delegate.TaskListenerInvocation;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.util.ReflectUtil;
 
 
@@ -64,8 +64,10 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
   public void notify(DelegateExecution execution) throws Exception {
     if (executionListenerInstance == null) {
       executionListenerInstance = getExecutionListenerInstance();
-    } 
-    executionListenerInstance.notify(execution);
+    }
+    Context.getProcessEngineConfiguration()
+      .getDelegateInterceptor()
+      .handleInvocation(new ExecutionListenerInvocation(executionListenerInstance, execution));
   }
 
   protected ExecutionListener getExecutionListenerInstance() {
@@ -84,7 +86,13 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
     if (taskListenerInstance == null) {
       taskListenerInstance = getTaskListenerInstance();
     }
-    taskListenerInstance.notify(delegateTask);
+    try {
+      Context.getProcessEngineConfiguration()
+        .getDelegateInterceptor()
+        .handleInvocation(new TaskListenerInvocation(taskListenerInstance, delegateTask));
+    }catch (Exception e) {
+      throw new ActivitiException("Exception while invoking TaskListener: "+e.getMessage(), e);
+    }
   }
   
   protected TaskListener getTaskListenerInstance() {
