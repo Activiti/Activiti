@@ -36,8 +36,9 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<excludes>			
-            <exclude>**/AdjustShapeNamesForXmlNCNameTest.java</exclude>
-            <exclude>**/FileSystemConnectorTest.java</exclude>
+					<exclude>**/*</exclude>
+          <!-- <exclude>**/AdjustShapeNamesForXmlNCNameTest.java</exclude> -->
+          <!-- <exclude>**/FileSystemConnectorTest.java</exclude> -->
           <!--   <exclude>**/CycleDaoMyBatisImplTest.java</exclude> -->
 					</excludes>
 				</configuration>
