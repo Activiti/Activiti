@@ -163,11 +163,6 @@
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
-        <artifactId>activiti-cycle</artifactId>
-        <version>${version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
         <artifactId>activiti-webapp</artifactId>
         <type>war</type>
         <version>${version}</version>
@@ -573,12 +568,12 @@
     <profile>
       <id>deploy</id>
       <modules>
-        <module>modules/activiti-cycle</module>
         <module>modules/activiti-spring</module>
         <module>modules/activiti-cxf</module>
         <module>modules/activiti-mule</module>
         <module>modules/activiti-camel</module>
         <module>modules/activiti-cdi</module>
+        <module>modules/activiti-osgi</module>
       </modules>
       <build>
         <plugins>
@@ -600,17 +595,9 @@
       <id>check</id>
       <modules>
         <module>modules/activiti-spring</module>
-        <module>modules/activiti-cycle</module>
         <module>modules/activiti-webapp-rest</module>
         <module>modules/activiti-cxf</module>
         <module>modules/activiti-cdi</module>
-      </modules>
-    </profile>
-    <profile>
-      <id>checkcycle</id>
-      <modules>
-        <module>modules/activiti-cycle</module>
-        <module>modules/activiti-webapp-rest</module>
       </modules>
     </profile>
     <profile>
@@ -659,13 +646,9 @@
       <id>distro</id>
       <modules>
         <module>modules/activiti-spring</module>
-        <module>modules/activiti-cycle</module>
         <module>modules/activiti-webapp</module>
         <module>modules/activiti-webapp-rest</module>
-        <module>modules/activiti-webapp-init</module>
-        <module>modules/activiti-webapp-cycle</module>
         <module>modules/activiti-webapp-explorer2</module>
-        <module>modules/activiti-webapp-kickstart</module>
         <module>modules/activiti-cxf</module>
         <module>modules/activiti-osgi</module>
         <module>modules/activiti-osgi-rest</module>		

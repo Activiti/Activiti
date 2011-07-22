@@ -73,18 +73,12 @@
     <exec executable="${mvn.executable}" dir="../modules/activiti-spring">
       <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-spring-test -DexcludeScope=runtime"/>
     </exec>
-    <exec executable="${mvn.executable}" dir="../modules/activiti-cycle">
-      <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-cycle-runtime -DexcludeArtifactIds=mysql-connector-java,postgresql,jtds"/>
-    </exec>
     <exec executable="${mvn.executable}" dir="../modules/activiti-webapp-rest">
       <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-webapp-rest"/>
     </exec>
     <exec executable="${mvn.executable}" dir="../modules/activiti-webapp">
       <arg line="dependency:unpack-dependencies -DoutputDirectory=../../distro/target/spring-surf-application-war -DincludeArtifactIds=spring-surf-application"/>
     </exec>
-		<exec executable="${mvn.executable}" dir="../modules/activiti-webapp-kickstart">
-		  <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-webapp-kickstart"/>
-		</exec>
 		<exec executable="${mvn.executable}" dir="../modules/activiti-webapp-explorer2">
 		  <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-webapp-explorer" />
 		</exec>
@@ -172,8 +166,6 @@
                includesfile="${target.distro.root}/setup/files/dependencies/libs.spring.test.txt" />
       <fileset dir="target/libs-spring-test" 
                includesfile="${target.distro.root}/setup/files/dependencies/libs.engine.test.txt" />
-      <fileset dir="target/libs-cycle-runtime" 
-               includesfile="${target.distro.root}/setup/files/dependencies/libs.engine.runtime.txt" />
     </delete>    
     <exec output="${target.distro.root}/setup/files/dependencies/libs.spring.test.txt" executable="${ls.executable}">
        <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-spring-test"/>
@@ -181,15 +173,9 @@
     <exec output="${target.distro.root}/setup/files/dependencies/libs.spring.runtime.txt" executable="${ls.executable}">
       <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-spring-runtime"/>
     </exec>
-    <exec output="${target.distro.root}/setup/files/dependencies/libs.cycle.runtime.txt" executable="${ls.executable}">
-      <arg line='${ls.executable.options} "target${ls.executable.path.seperator}libs-cycle-runtime"'/>
-    </exec>
     <exec output="${target.distro.root}/setup/files/dependencies/libs.webapp.rest.txt" executable="${ls.executable}">
       <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-webapp-rest"/>
     </exec>
-		<exec output="${target.distro.root}/setup/files/dependencies/libs.webapp.kickstart.txt" executable="${ls.executable}">
-		  <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-webapp-kickstart"/>
-		</exec>
 		<exec output="${target.distro.root}/setup/files/dependencies/libs.webapp.explorer.txt" executable="${ls.executable}">
 		  <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-webapp-explorer" />
 		</exec>
@@ -207,9 +193,7 @@
       <fileset dir="target/libs-engine-test" />
       <fileset dir="target/libs-spring-runtime" />
       <fileset dir="target/libs-spring-test" />
-      <fileset dir="target/libs-cycle-runtime" />
       <fileset dir="target/libs-webapp-rest" />
-    	<fileset dir="target/libs-webapp-kickstart" />
     	<fileset dir="target/libs-webapp-explorer" />
       <fileset dir="target/spring-surf-application-war/WEB-INF/lib" />
     </move>
@@ -220,25 +204,12 @@
 		<mkdir dir="${target.distro.root}/setup/files/webapps/activiti-explorer.war" />
 		<unzip dest="${target.distro.root}/setup/files/webapps/activiti-explorer.war" 
 		       src="../modules/activiti-webapp-explorer2/target/activiti-webapp-explorer2-${activiti.version}.war"/>
-    <mkdir dir="${target.distro.root}/setup/files/webapps/activiti-cycle.war" />
-    <unzip dest="${target.distro.root}/setup/files/webapps/activiti-cycle.war" 
-           src="../modules/activiti-webapp-cycle/target/activiti-webapp-cycle-${activiti.version}.war"/>
     <mkdir dir="${target.distro.root}/setup/files/webapps/activiti-rest.war" />
     <unzip dest="${target.distro.root}/setup/files/webapps/activiti-rest.war" 
            src="../modules/activiti-webapp-rest/target/activiti-webapp-rest-${activiti.version}.war"/>
-		<mkdir dir="${target.distro.root}/setup/files/webapps/activiti-kickstart.war" />
-	  <unzip dest="${target.distro.root}/setup/files/webapps/activiti-kickstart.war" 
-		       src="../modules/activiti-webapp-kickstart/target/activiti-webapp-kickstart-${activiti.version}.war"/>
-    <mkdir dir="${target.distro.root}/setup/files/webapps/activiti-init.war" />
-    <unzip dest="${target.distro.root}/setup/files/webapps/activiti-init.war" 
-           src="../modules/activiti-webapp-init/target/activiti-webapp-init-${activiti.version}.war"/>
 		<delete>
 			<fileset dir="${target.distro.root}/setup/files/webapps/activiti-explorer.war/WEB-INF/lib" />
-      <fileset dir="${target.distro.root}/setup/files/webapps/activiti-cycle.war/WEB-INF/lib" />
       <fileset dir="${target.distro.root}/setup/files/webapps/activiti-rest.war/WEB-INF/lib" />
-			<fileset dir="${target.distro.root}/setup/files/webapps/activiti-kickstart.war/WEB-INF/lib">
-			  <exclude name="activiti-cfg.jar"/>	
-			</fileset>
     </delete>
 	</target>
 	
@@ -419,10 +390,8 @@
 	</target>
 	
 	<!-- ##### ACTIVITI MODELER PATCHING ##########################################
-	
 	     Note that this target is NOT executed during a distro build, because the 
 	     Modeler is not shipped with the final zip.
-	     
 	     This target exists to be called to add the Activiti stencil set and Cycle plugins,
 	     when a new version of the Modeler is built from the Signavio source repository. 
 	  -->
