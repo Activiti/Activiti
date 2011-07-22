@@ -1,8 +1,0 @@
-target
-*.iml
-*.ipr
-*.iws
-.idea
-.classpath
-.settings
-.springBeans
