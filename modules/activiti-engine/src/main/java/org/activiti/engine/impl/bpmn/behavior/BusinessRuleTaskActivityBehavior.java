@@ -63,7 +63,7 @@ public class BusinessRuleTaskActivityBehavior extends TaskActivityBehavior {
         Expression ruleName = itRuleNames.next();
         filter.addSuffic(ruleName.getValue(execution).toString());
       }
-      filter.setAccept(exclude);
+      filter.setAccept(!exclude);
       ksession.fireAllRules(filter);
       
     } else {
