@@ -373,10 +373,7 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
   <target name="deploy.activiti.webapps.into.tomcat" 
           depends="internal.build.webapps, 
                    internal.deploy.activiti.rest.into.tomcat,
-                   internal.deploy.activiti.explorer.into.tomcat,
-                   internal.deploy.activiti.cycle.into.tomcat,
-                   internal.deploy.activiti.kickstart.into.tomcat,
-                   internal.deploy.activiti.modeler.into.tomcat" />
+                   internal.deploy.activiti.explorer.into.tomcat" />
 
   <target name="internal.build.webapps"
           depends="internal.define.jdbc.driver.libs">
@@ -398,18 +395,6 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
   	  <entry key="jdbc.password" value="${jdbc.password}" />
   	</propertyfile>
   	
-  	<!-- Activiti Cycle -->
-    <copy todir="${activiti.home}/setup/build/webapps/activiti-cycle.war/WEB-INF/lib">
-      <fileset dir="${activiti.home}/setup/files/dependencies/libs" 
-               includesfile="${activiti.home}/setup/files/dependencies/libs.webapp.ui.txt" />
-    </copy>
-  	
-  	<!-- Activiti KickStart -->
-  	<copy todir="${activiti.home}/setup/build/webapps/activiti-kickstart.war/WEB-INF/lib">
-  	  <fileset dir="${activiti.home}/setup/files/dependencies/libs" 
-  	           includesfile="${activiti.home}/setup/files/dependencies/libs.webapp.kickstart.txt" />
-  	</copy>
-  	
   	<!-- Activiti Rest -->
     <copy todir="${activiti.home}/setup/build/webapps/activiti-rest.war/WEB-INF/lib">
       <fileset dir="${activiti.home}/setup/files/dependencies/libs" 
@@ -419,13 +404,6 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
       <fileset dir="${activiti.home}/setup/files/dependencies/libs" 
                includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.feature.cxf.txt" />
       <fileset refid="jdbc.driver.libs" />
-    </copy>
-  </target>
-  
-  <target name="internal.deploy.activiti.init.into.tomcat">
-    <mkdir dir="${tomcat.home}/webapps/activiti-init" />
-    <copy todir="${tomcat.home}/webapps/activiti-init">
-      <fileset dir="${activiti.home}/setup/build/webapps/activiti-init.war"/>
     </copy>
   </target>
   
@@ -442,31 +420,6 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
       <fileset dir="${activiti.home}/setup/build/webapps/activiti-explorer.war" />
     </copy>
   </target>
-
-  <target name="internal.deploy.activiti.modeler.into.tomcat" 
-          if="modeler.is.enabled">
-    <antcall target="internal.download.activiti.modeler" /> <!-- Can't use depends for this, due to http://ant.apache.org/faq.html#stop-dependency -->
-    
-    <mkdir dir="${activiti.modeler.repository.home}"/>
-    <copy file="${downloads.dir}/activiti-modeler-${activiti.version}.war"
-          tofile="${tomcat.home}/webapps/activiti-modeler.war"/>
-  </target>
-  
-  <target name="internal.deploy.activiti.cycle.into.tomcat" 
-          depends="internal.build.webapps" 
-          if="cycle.is.enabled">   
-    <mkdir dir="${tomcat.home}/webapps/activiti-cycle" />
-    <copy todir="${tomcat.home}/webapps/activiti-cycle">
-      <fileset dir="${activiti.home}/setup/build/webapps/activiti-cycle.war" />
-    </copy>
-  </target>
-	
-	<target name="internal.deploy.activiti.kickstart.into.tomcat">
-    <mkdir dir="${tomcat.home}/webapps/activiti-kickstart" />
-		<copy todir="${tomcat.home}/webapps/activiti-kickstart">
-		  <fileset dir="${activiti.home}/setup/build/webapps/activiti-kickstart.war" />
-		 </copy>
-	</target>
 	
   <!-- ### LAUNCH TASKDEF AND CLASSPATH #################################################################### -->
 
@@ -493,27 +446,6 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
   </target>
 
   
-  <!-- ### MODELER #################################################################### -->
-  
-  <!-- 
-  to work with Activiti Modeler or Activiti Cycle on trunk, set property activiti.modeler.download.url
-  in your ${user.home}/.activiti/build.properties
-  -->  
-  <property name="activiti.modeler.download.url" value="http://activiti.org/downloads/activiti-modeler-${activiti.version}.war" />
-  <available property="is.activiti.modeler.available" file="${downloads.dir}/activiti-modeler-${activiti.version}.war" />
-  <property name="activiti.modeler.repository.home" value="${activiti.home}/workspace/activiti-modeler-examples" />
-
-  <condition property="modeler.is.enabled">
-    <equals arg1="${feature.modeler}" arg2="enabled"/>
-  </condition>
-  
-  <target name="internal.download.activiti.modeler" unless="is.activiti.modeler.available">
-    <echo message="You're downloading the Activiti Modeler, distributed under MIT license.  For more info, see the user guide" />
-    <echo message="This could take a while. Set the 'feature.modeler' property to 'disabled' in the build.properties or in your user.home/.activiti/build.properties to skip this step" />
-    <mkdir dir="${downloads.dir}"/>
-    <get src="${activiti.modeler.download.url}" dest="${downloads.dir}/activiti-modeler-${activiti.version}.war"/>
-  </target>
-  
   <!-- ### OPEN BROWSER #################################################################### -->
   
   <property name="macos.browser" value="/usr/bin/open" />
@@ -524,9 +456,6 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
     <!-- Sleep for 5 second to be sure tomcat coyote http-connector is ready to accept connections -->
     <sleep seconds="5"/>
     <open-html-page url="http://localhost:8080/activiti-explorer" />
-    <open-html-page url="http://localhost:8080/activiti-modeler" />
-    <open-html-page url="http://localhost:8080/activiti-cycle" />
-  	<open-html-page url="http://localhost:8080/activiti-kickstart" />
   </target>
 	
 	<macrodef name="open-html-page">
