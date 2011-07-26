@@ -1,7 +1,0 @@
-<webscript>
-  <shortname>Streams an image</shortname>
-  <description>Streams back the content of an image</description>
-  <url>/content?connectorId={connectorId}&amp;artifactId={artifactId}</url>
-  <authentication>user</authentication>
-  <format default="">argument</format>
-</webscript>

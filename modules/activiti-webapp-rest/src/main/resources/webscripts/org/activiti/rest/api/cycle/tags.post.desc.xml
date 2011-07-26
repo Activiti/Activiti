@@ -1,7 +1,0 @@
-<webscript>
-  <shortname>Create tags for a given artifact</shortname>
-  <description>Creates tags with the given names for the artifact identified by connectorId and artifactId.</description>
-  <url>/tags</url>
-  <authentication>user</authentication>
-  <format default="json">argument</format>
-</webscript>

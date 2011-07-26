@@ -1,7 +1,0 @@
-<webscript>
-  <shortname>Create a folder</shortname>
-  <description>Creates a new folder in the specified repository</description>
-  <url>/folder</url>
-  <authentication>user</authentication>
-  <format default="json">argument</format>
-</webscript>

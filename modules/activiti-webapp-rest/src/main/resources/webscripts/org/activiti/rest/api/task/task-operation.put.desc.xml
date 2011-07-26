@@ -1,7 +1,0 @@
-<webscript>
-  <shortname>Apply an operation on a task</shortname>
-  <description>Applies an operation on a task</description>
-  <url>/task/{taskId}/{operation}</url>
-  <authentication>user</authentication>
-  <format default="json">argument</format>
-</webscript>
