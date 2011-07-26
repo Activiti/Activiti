@@ -13,10 +13,6 @@
     <relativePath>../..</relativePath>
     <version>5.7-SNAPSHOT</version>
   </parent>
-  
-  <properties>
-    <restlet.version>2.0.8</restlet.version>
-  </properties>
 
 	<build>
 		<plugins>
@@ -62,45 +58,30 @@
     </dependency>
     
     <dependency>  
-       <groupId>org.restlet.jee</groupId>  
-       <artifactId>org.restlet</artifactId>  
-       <version>${restlet.version}</version>  
+      <groupId>org.restlet.jee</groupId>  
+      <artifactId>org.restlet</artifactId>   
     </dependency>  
     <dependency>  
-       <groupId>org.restlet.jee</groupId>  
-       <artifactId>org.restlet.ext.servlet</artifactId>  
-       <version>${restlet.version}</version>  
+      <groupId>org.restlet.jee</groupId>  
+      <artifactId>org.restlet.ext.servlet</artifactId>   
     </dependency>
     <dependency>  
-       <groupId>org.restlet.jee</groupId>  
-       <artifactId>org.restlet.ext.jackson</artifactId>  
-       <version>${restlet.version}</version>  
+      <groupId>org.restlet.jee</groupId>  
+      <artifactId>org.restlet.ext.jackson</artifactId>  
     </dependency>
     <dependency>  
-       <groupId>org.restlet.jee</groupId>  
-       <artifactId>org.restlet.ext.fileupload</artifactId>  
-       <version>${restlet.version}</version>  
+      <groupId>org.restlet.jee</groupId>  
+      <artifactId>org.restlet.ext.fileupload</artifactId>   
     </dependency>
     
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>2.0.1</version>
     </dependency>
     <dependency>
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
-      <version>1.2.2</version>
     </dependency>
 
   </dependencies>
-  
-  <repositories>
-    <repository>  
-     <id>maven-restlet</id>  
-     <name>Public online Restlet repository</name>  
-     <url>http://maven.restlet.org</url>  
-    </repository>
-  </repositories>
-
 </project>
