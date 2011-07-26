@@ -73,11 +73,8 @@
     <exec executable="${mvn.executable}" dir="../modules/activiti-spring">
       <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-spring-test -DexcludeScope=runtime"/>
     </exec>
-    <exec executable="${mvn.executable}" dir="../modules/activiti-webapp-rest">
+    <exec executable="${mvn.executable}" dir="../modules/activiti-webapp-rest2">
       <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-webapp-rest"/>
-    </exec>
-    <exec executable="${mvn.executable}" dir="../modules/activiti-webapp">
-      <arg line="dependency:unpack-dependencies -DoutputDirectory=../../distro/target/spring-surf-application-war -DincludeArtifactIds=spring-surf-application"/>
     </exec>
 		<exec executable="${mvn.executable}" dir="../modules/activiti-webapp-explorer2">
 		  <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-webapp-explorer" />
@@ -179,9 +176,6 @@
 		<exec output="${target.distro.root}/setup/files/dependencies/libs.webapp.explorer.txt" executable="${ls.executable}">
 		  <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-webapp-explorer" />
 		</exec>
-    <exec output="${target.distro.root}/setup/files/dependencies/libs.webapp.ui.txt" executable="${ls.executable}">
-      <arg line="${ls.executable.options} target${ls.executable.path.seperator}spring-surf-application-war${ls.executable.path.seperator}WEB-INF${ls.executable.path.seperator}lib"/>
-    </exec>
 		
     <!-- MOVE ALL LIBS TO setup/files/dependencies/libs -->
 		<mkdir dir="${target.distro.root}/setup/files/dependencies/libs" />
@@ -195,7 +189,6 @@
       <fileset dir="target/libs-spring-test" />
       <fileset dir="target/libs-webapp-rest" />
     	<fileset dir="target/libs-webapp-explorer" />
-      <fileset dir="target/spring-surf-application-war/WEB-INF/lib" />
     </move>
 		
 	</target>
@@ -206,7 +199,7 @@
 		       src="../modules/activiti-webapp-explorer2/target/activiti-webapp-explorer2-${activiti.version}.war"/>
     <mkdir dir="${target.distro.root}/setup/files/webapps/activiti-rest.war" />
     <unzip dest="${target.distro.root}/setup/files/webapps/activiti-rest.war" 
-           src="../modules/activiti-webapp-rest/target/activiti-webapp-rest-${activiti.version}.war"/>
+           src="../modules/activiti-webapp-rest2/target/activiti-webapp-rest2-${activiti.version}.war"/>
 		<delete>
 			<fileset dir="${target.distro.root}/setup/files/webapps/activiti-explorer.war/WEB-INF/lib" />
       <fileset dir="${target.distro.root}/setup/files/webapps/activiti-rest.war/WEB-INF/lib" />
