@@ -36,7 +36,7 @@ public class CdiStandaloneProcessEngineConfiguration extends StandaloneProcessEn
   @Override
   public Collection<? extends CommandInterceptor> getDefaultCommandInterceptorsTxRequired() {
     List<CommandInterceptor> interceptorChain = new ArrayList<CommandInterceptor>(super.getDefaultCommandInterceptorsTxRequired());
-    interceptorChain.add(interceptorChain.size()-1, new CdiActivitiInterceptor());
+    interceptorChain.add(new CdiActivitiInterceptor());
     return interceptorChain;
   }
     

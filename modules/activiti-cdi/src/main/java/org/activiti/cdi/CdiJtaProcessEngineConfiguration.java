@@ -36,14 +36,14 @@ public class CdiJtaProcessEngineConfiguration extends JtaProcessEngineConfigurat
   @Override
   public Collection<? extends CommandInterceptor> getDefaultCommandInterceptorsTxRequired() {
     List<CommandInterceptor> interceptorChain = new ArrayList<CommandInterceptor>(super.getDefaultCommandInterceptorsTxRequired());
-    interceptorChain.add(interceptorChain.size()-1, new CdiActivitiInterceptor());
+    interceptorChain.add(new CdiActivitiInterceptor());
     return interceptorChain;
   }
   
   @Override
   public Collection<? extends CommandInterceptor> getDefaultCommandInterceptorsTxRequiresNew() {
     List<CommandInterceptor> interceptorChain = new ArrayList<CommandInterceptor>(super.getDefaultCommandInterceptorsTxRequiresNew());
-    interceptorChain.add(interceptorChain.size()-1, new CdiActivitiInterceptor());
+    interceptorChain.add(new CdiActivitiInterceptor());
     return interceptorChain;
   }
   
