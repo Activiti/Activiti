@@ -104,6 +104,11 @@
       <artifactId>jtds</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+		<groupId>com.fasterxml.uuid</groupId>
+		<artifactId>java-uuid-generator</artifactId>
+		<scope>provided</scope>
+	</dependency>
   </dependencies>
 
   <properties>

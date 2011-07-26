@@ -413,6 +413,11 @@
 				<artifactId>weld-se</artifactId>
 				<version>1.1.1.Final</version>
 			</dependency>
+		<dependency>
+		    <groupId>com.fasterxml.uuid</groupId>
+		    <artifactId>java-uuid-generator</artifactId>
+		    <version>3.1.2</version>
+		</dependency>
     </dependencies>
   </dependencyManagement>
 
