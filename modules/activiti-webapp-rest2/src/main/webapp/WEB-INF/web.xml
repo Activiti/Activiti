@@ -25,6 +25,6 @@
   <!-- Catch all requests -->  
   <servlet-mapping>  
     <servlet-name>RestletServlet</servlet-name>  
-    <url-pattern>/*</url-pattern>  
+    <url-pattern>/service/*</url-pattern>  
   </servlet-mapping>  
 </web-app>
