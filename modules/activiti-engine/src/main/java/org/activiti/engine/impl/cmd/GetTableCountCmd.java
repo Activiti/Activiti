@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.activiti.engine.impl.interceptor.Command;
@@ -21,7 +22,9 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 /**
  * @author Tom Baeyens
  */
-public class GetTableCountCmd implements Command<Map<String,Long>> {
+public class GetTableCountCmd implements Command<Map<String,Long>>, Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   public Map<String,Long> execute(CommandContext commandContext) {
     return commandContext

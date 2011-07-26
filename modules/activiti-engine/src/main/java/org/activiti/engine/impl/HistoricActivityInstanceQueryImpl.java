@@ -27,6 +27,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricActivityInstanceQuery, HistoricActivityInstance> 
     implements HistoricActivityInstanceQuery {
   
+  private static final long serialVersionUID = 1L;
   protected String activityInstanceId;
   protected String processInstanceId;
   protected String executionId;

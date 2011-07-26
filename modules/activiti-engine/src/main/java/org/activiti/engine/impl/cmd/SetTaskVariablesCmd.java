@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
@@ -25,8 +26,9 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 /**
  * @author Tom Baeyens
  */
-public class SetTaskVariablesCmd implements Command<Object> {
+public class SetTaskVariablesCmd implements Command<Object>, Serializable {
 
+  private static final long serialVersionUID = 1L;
   protected String taskId;
   protected Map<String, ? extends Object> variables;
   protected boolean isLocal;

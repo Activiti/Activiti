@@ -27,6 +27,8 @@ import org.activiti.engine.runtime.ProcessInstanceQuery;
  */
 public class ProcessInstanceQueryProperty implements QueryProperty {
   
+  private static final long serialVersionUID = 1L;
+
   private static final Map<String, ProcessInstanceQueryProperty> properties = new HashMap<String, ProcessInstanceQueryProperty>();
 
   public static final ProcessInstanceQueryProperty PROCESS_INSTANCE_ID = new ProcessInstanceQueryProperty("E.ID_");

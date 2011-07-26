@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
+
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
@@ -22,8 +24,9 @@ import org.activiti.engine.task.Attachment;
 /**
  * @author Tom Baeyens
  */
-public class SaveAttachmentCmd implements Command<Object> {
+public class SaveAttachmentCmd implements Command<Object>, Serializable {
 
+  private static final long serialVersionUID = 1L;
   protected Attachment attachment;
   
   public SaveAttachmentCmd(Attachment attachment) {

@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.identity.Authentication;
@@ -28,8 +30,10 @@ import org.activiti.engine.task.IdentityLinkType;
 /**
  * @author Joram Barrez
  */
-public class AddIdentityLinkCmd implements Command<Void> {
+public class AddIdentityLinkCmd implements Command<Void>, Serializable {
   
+  private static final long serialVersionUID = 1L;
+
   protected String taskId;
   
   protected String userId;

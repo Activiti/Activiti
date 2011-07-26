@@ -12,7 +12,8 @@
  */
 package org.activiti.engine.impl.cmd;
 
-import org.activiti.engine.identity.User;
+import java.io.Serializable;
+
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
@@ -20,8 +21,10 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 /**
  * @author Tom Baeyens
  */
-public class CheckPassword implements Command<Boolean> {
+public class CheckPassword implements Command<Boolean>, Serializable {
 
+  private static final long serialVersionUID = 1L;
+  
   String userId;
   String password;
   

@@ -25,7 +25,6 @@ import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.management.TableMetaData;
 import org.activiti.engine.management.TablePageQuery;
 import org.activiti.engine.runtime.JobQuery;

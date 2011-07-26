@@ -29,6 +29,7 @@ import org.activiti.engine.repository.ProcessDefinitionQuery;
 public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQuery, ProcessDefinition> 
   implements ProcessDefinitionQuery {
   
+  private static final long serialVersionUID = 1L;
   protected String id;
   protected String category;
   protected String categoryLike;

@@ -26,6 +26,8 @@ import org.activiti.engine.query.QueryProperty;
  */
 public class HistoricProcessInstanceQueryProperty implements QueryProperty {
   
+  private static final long serialVersionUID = 1L;
+
   private static final Map<String, HistoricProcessInstanceQueryProperty> properties = new HashMap<String, HistoricProcessInstanceQueryProperty>();
 
   public static final HistoricProcessInstanceQueryProperty PROCESS_INSTANCE_ID_ = new HistoricProcessInstanceQueryProperty("PROC_INST_ID_");

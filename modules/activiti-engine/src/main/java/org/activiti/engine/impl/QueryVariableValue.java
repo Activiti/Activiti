@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl;
 
+import java.io.Serializable;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.variable.ByteArrayType;
@@ -26,7 +28,8 @@ import org.activiti.engine.impl.variable.VariableTypes;
  * 
  * @author Frederik Heremans
  */
-public class QueryVariableValue {
+public class QueryVariableValue implements Serializable {
+  private static final long serialVersionUID = 1L;
   private String name;
   private Object value;
   private QueryOperator operator;

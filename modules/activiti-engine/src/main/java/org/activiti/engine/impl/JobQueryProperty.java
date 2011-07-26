@@ -26,6 +26,8 @@ import org.activiti.engine.runtime.JobQuery;
  */
 public class JobQueryProperty implements QueryProperty {
   
+  private static final long serialVersionUID = 1L;
+
   private static final Map<String, JobQueryProperty> properties = new HashMap<String, JobQueryProperty>();
 
   public static final JobQueryProperty JOB_ID = new JobQueryProperty("ID_");

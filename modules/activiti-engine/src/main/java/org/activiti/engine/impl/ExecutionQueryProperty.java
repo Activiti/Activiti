@@ -26,6 +26,8 @@ import org.activiti.engine.runtime.ExecutionQuery;
  */
 public class ExecutionQueryProperty implements QueryProperty {
   
+  private static final long serialVersionUID = 1L;
+
   private static final Map<String, ExecutionQueryProperty> properties = new HashMap<String, ExecutionQueryProperty>();
 
   public static final ExecutionQueryProperty PROCESS_INSTANCE_ID = new ExecutionQueryProperty("E.ID_");

@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
@@ -24,8 +25,9 @@ import org.activiti.engine.impl.interceptor.CommandContext;
  * @author Joram Barrez
  */
 @SuppressWarnings("unchecked")
-public class GetDeploymentResourceNamesCmd implements Command<List> {
+public class GetDeploymentResourceNamesCmd implements Command<List>, Serializable {
   
+  private static final long serialVersionUID = 1L;
   protected String deploymentId;
   
   public GetDeploymentResourceNamesCmd(String deploymentId) {

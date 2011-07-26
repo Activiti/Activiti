@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
+
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -22,8 +24,9 @@ import org.activiti.engine.impl.pvm.ReadOnlyProcessDefinition;
 /**
  * @author Tom Baeyens
  */
-public class GetDeploymentProcessDefinitionCmd implements Command<ReadOnlyProcessDefinition> {
+public class GetDeploymentProcessDefinitionCmd implements Command<ReadOnlyProcessDefinition>, Serializable {
 
+  private static final long serialVersionUID = 1L;
   protected String processDefinitionId;
   
   public GetDeploymentProcessDefinitionCmd(String processDefinitionId) {

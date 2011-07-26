@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
@@ -23,8 +25,9 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 /**
  * @author Tom Baeyens
  */
-public class GetTaskVariableCmd implements Command<Object> {
+public class GetTaskVariableCmd implements Command<Object>, Serializable {
 
+  private static final long serialVersionUID = 1L;
   protected String taskId;
   protected String variableName;
   protected boolean isLocal;

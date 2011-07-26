@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,8 +28,9 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 /**
  * @author Tom Baeyens
  */
-public class GetTaskVariablesCmd implements Command<Map<String, Object>> {
+public class GetTaskVariablesCmd implements Command<Map<String, Object>>, Serializable {
 
+  private static final long serialVersionUID = 1L;
   protected String taskId;
   protected Collection<String> variableNames;
   protected boolean isLocal;

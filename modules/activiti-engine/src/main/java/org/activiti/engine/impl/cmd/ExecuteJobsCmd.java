@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,7 +29,9 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 /**
  * @author Tom Baeyens
  */
-public class ExecuteJobsCmd implements Command<Object> {
+public class ExecuteJobsCmd implements Command<Object>, Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   private static Logger log = Logger.getLogger(ExecuteJobsCmd.class.getName());
   

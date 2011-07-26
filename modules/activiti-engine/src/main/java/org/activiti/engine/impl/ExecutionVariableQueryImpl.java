@@ -31,6 +31,8 @@ import org.activiti.engine.query.Query;
  */
 public abstract class ExecutionVariableQueryImpl<T extends Query<?,?>, U> extends AbstractQuery<T, U> {
 
+  private static final long serialVersionUID = 1L;
+  
   protected List<QueryVariableValue> queryVariableValues = new ArrayList<QueryVariableValue>();
   
   public ExecutionVariableQueryImpl() {

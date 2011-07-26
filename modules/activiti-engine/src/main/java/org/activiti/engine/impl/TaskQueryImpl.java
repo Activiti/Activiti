@@ -32,6 +32,7 @@ import org.activiti.engine.task.TaskQuery;
  */
 public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements TaskQuery {
   
+  private static final long serialVersionUID = 1L;
   protected String taskId;
   protected String name;
   protected String nameLike;

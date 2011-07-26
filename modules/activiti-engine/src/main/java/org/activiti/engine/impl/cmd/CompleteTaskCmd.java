@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
@@ -24,8 +25,9 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 /**
  * @author Joram Barrez
  */
-public class CompleteTaskCmd implements Command<Void> {
-  
+public class CompleteTaskCmd implements Command<Void>, Serializable {
+      
+  private static final long serialVersionUID = 1L;
   protected String taskId;
   protected Map<String, Object> variables;
   

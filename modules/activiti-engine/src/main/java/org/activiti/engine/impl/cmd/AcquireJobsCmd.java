@@ -31,6 +31,8 @@ import org.activiti.engine.impl.util.ClockUtil;
  */
 public class AcquireJobsCmd implements Command<AcquiredJobs> {
 
+  private static final long serialVersionUID = 1L;
+  
   private final JobExecutor jobExecutor;
 
   public AcquireJobsCmd(JobExecutor jobExecutor) {

@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.impl.context.Context;
@@ -26,8 +28,9 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class GetRenderedStartFormCmd implements Command<Object> {
+public class GetRenderedStartFormCmd implements Command<Object>, Serializable {
 
+  private static final long serialVersionUID = 1L;
   protected String processDefinitionId;
   protected String formEngineName;
   

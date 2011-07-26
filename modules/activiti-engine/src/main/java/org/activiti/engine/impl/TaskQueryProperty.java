@@ -41,6 +41,8 @@ import org.activiti.engine.task.TaskQuery;
  */
 public class TaskQueryProperty implements QueryProperty {
   
+  private static final long serialVersionUID = 1L;
+
   private static final Map<String, TaskQueryProperty> properties = new HashMap<String, TaskQueryProperty>();
 
   public static final TaskQueryProperty TASK_ID = new TaskQueryProperty("T.ID_");

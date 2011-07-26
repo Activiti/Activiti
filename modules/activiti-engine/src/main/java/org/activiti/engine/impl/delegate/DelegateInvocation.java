@@ -42,5 +42,10 @@ public abstract class DelegateInvocation {
   public Object[] getInvocationParameters() {
     return invocationParameters;
   }
+  
+  /**
+   * returns the target of the current invocation, ie. JavaDelegate, ValueExpression ... 
+   */
+  public abstract Object getTarget();
 
 }

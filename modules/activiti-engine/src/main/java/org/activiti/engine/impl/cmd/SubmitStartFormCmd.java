@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
@@ -31,8 +32,9 @@ import org.activiti.engine.runtime.ProcessInstance;
 /**
  * @author Tom Baeyens
  */
-public class SubmitStartFormCmd implements Command<ProcessInstance> {
+public class SubmitStartFormCmd implements Command<ProcessInstance>, Serializable {
 
+  private static final long serialVersionUID = 1L;
   protected String processDefinitionId;
   protected final String businessKey;
   protected Map<String, String> properties;

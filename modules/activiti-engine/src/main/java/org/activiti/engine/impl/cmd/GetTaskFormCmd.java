@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.impl.context.Context;
@@ -25,8 +27,9 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 /**
  * @author Tom Baeyens
  */
-public class GetTaskFormCmd implements Command<TaskFormData> {
+public class GetTaskFormCmd implements Command<TaskFormData>, Serializable {
 
+  private static final long serialVersionUID = 1L;
   protected String taskId;
 
   public GetTaskFormCmd(String taskId) {

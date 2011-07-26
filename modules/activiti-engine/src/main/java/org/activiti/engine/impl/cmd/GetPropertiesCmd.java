@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,9 @@ import org.activiti.engine.impl.persistence.entity.PropertyEntity;
 /**
  * @author Tom Baeyens
  */
-public class GetPropertiesCmd implements Command<Map<String, String>> {
+public class GetPropertiesCmd implements Command<Map<String, String>>, Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   @SuppressWarnings("unchecked")
   public Map<String, String> execute(CommandContext commandContext) {

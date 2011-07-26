@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
+
 import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -21,7 +23,9 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 /**
  * @author Tom Baeyens
  */
-public class CreateGroupQueryCmd implements Command<GroupQuery> {
+public class CreateGroupQueryCmd implements Command<GroupQuery>, Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   public GroupQuery execute(CommandContext commandContext) {
     return commandContext

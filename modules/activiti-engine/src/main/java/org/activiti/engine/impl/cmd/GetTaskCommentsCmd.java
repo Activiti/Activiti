@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.activiti.engine.impl.interceptor.Command;
@@ -23,8 +24,9 @@ import org.activiti.engine.task.Comment;
 /**
  * @author Tom Baeyens
  */
-public class GetTaskCommentsCmd implements Command<List<Comment>> {
+public class GetTaskCommentsCmd implements Command<List<Comment>>, Serializable {
 
+  private static final long serialVersionUID = 1L;
   protected String taskId;
   
   public GetTaskCommentsCmd(String taskId) {

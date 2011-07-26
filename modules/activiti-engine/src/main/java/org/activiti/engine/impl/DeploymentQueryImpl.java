@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
@@ -26,8 +27,9 @@ import org.activiti.engine.repository.DeploymentQuery;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployment> implements DeploymentQuery {
+public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployment> implements DeploymentQuery, Serializable {
 
+  private static final long serialVersionUID = 1L;  
   protected String deploymentId;
   protected String name;
   protected String nameLike;

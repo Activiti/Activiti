@@ -29,6 +29,7 @@ import org.activiti.engine.repository.Deployment;
  */
 public class DeployCmd<T> implements Command<Deployment> {
 
+  private static final long serialVersionUID = 1L;
   protected DeploymentBuilderImpl deploymentBuilder;
 
   public DeployCmd(DeploymentBuilderImpl deploymentBuilder) {

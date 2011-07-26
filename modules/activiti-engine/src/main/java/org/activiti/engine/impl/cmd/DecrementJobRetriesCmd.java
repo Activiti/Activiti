@@ -30,6 +30,7 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
  */
 public class DecrementJobRetriesCmd implements Command<Object> {
 
+  private static final long serialVersionUID = 1L;
   protected String jobId;
   protected Throwable exception;
 

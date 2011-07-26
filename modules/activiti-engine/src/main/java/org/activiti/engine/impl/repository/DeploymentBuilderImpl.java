@@ -13,6 +13,7 @@
 package org.activiti.engine.impl.repository;
 
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -28,11 +29,11 @@ import org.activiti.engine.repository.DeploymentBuilder;
 /**
  * @author Tom Baeyens
  */
-public class DeploymentBuilderImpl implements DeploymentBuilder {
+public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  protected RepositoryServiceImpl repositoryService;
+  protected transient RepositoryServiceImpl repositoryService;
   protected DeploymentEntity deployment = new DeploymentEntity();
   protected boolean isDuplicateFilterEnabled = false;
 

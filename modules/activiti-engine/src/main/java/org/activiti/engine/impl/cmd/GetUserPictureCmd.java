@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.impl.interceptor.Command;
@@ -23,8 +25,9 @@ import org.activiti.engine.impl.persistence.entity.UserEntity;
 /**
  * @author Tom Baeyens
  */
-public class GetUserPictureCmd implements Command<Picture> {
+public class GetUserPictureCmd implements Command<Picture>, Serializable {
 
+  private static final long serialVersionUID = 1L;
   protected String userId;
   
   public GetUserPictureCmd(String userId) {

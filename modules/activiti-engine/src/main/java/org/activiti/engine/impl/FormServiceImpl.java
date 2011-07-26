@@ -13,23 +13,18 @@
 
 package org.activiti.engine.impl;
 
-import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.FormService;
 import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.form.TaskFormData;
-import org.activiti.engine.impl.cmd.AddCommentCmd;
-import org.activiti.engine.impl.cmd.GetProcessInstanceCommentsCmd;
 import org.activiti.engine.impl.cmd.GetRenderedStartFormCmd;
 import org.activiti.engine.impl.cmd.GetRenderedTaskFormCmd;
 import org.activiti.engine.impl.cmd.GetStartFormCmd;
-import org.activiti.engine.impl.cmd.GetTaskCommentsCmd;
 import org.activiti.engine.impl.cmd.GetTaskFormCmd;
 import org.activiti.engine.impl.cmd.SubmitStartFormCmd;
 import org.activiti.engine.impl.cmd.SubmitTaskFormCmd;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.Comment;
 
 
 /**

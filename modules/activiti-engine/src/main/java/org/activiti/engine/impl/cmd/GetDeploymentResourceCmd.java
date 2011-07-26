@@ -14,6 +14,7 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.Serializable;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -24,8 +25,9 @@ import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 /**
  * @author Joram Barrez
  */
-public class GetDeploymentResourceCmd implements Command<InputStream> {
+public class GetDeploymentResourceCmd implements Command<InputStream>, Serializable {
   
+  private static final long serialVersionUID = 1L;
   protected String deploymentId;
   protected String resourceName;
   

@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 
@@ -24,8 +25,9 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 /**
  * @author Tom Baeyens
  */
-public class GetExecutionVariablesCmd implements Command<Map<String, Object>> {
+public class GetExecutionVariablesCmd implements Command<Map<String, Object>>, Serializable {
 
+  private static final long serialVersionUID = 1L;
   protected String executionId;
   protected Collection<String> variableNames;
   protected boolean isLocal;

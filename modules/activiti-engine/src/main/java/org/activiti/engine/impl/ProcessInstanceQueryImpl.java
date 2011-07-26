@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
@@ -27,8 +28,9 @@ import org.activiti.engine.runtime.ProcessInstanceQuery;
  * @author Joram Barrez
  * @author Frederik Heremans
  */
-public class ProcessInstanceQueryImpl extends ExecutionVariableQueryImpl<ProcessInstanceQuery, ProcessInstance> implements ProcessInstanceQuery {
+public class ProcessInstanceQueryImpl extends ExecutionVariableQueryImpl<ProcessInstanceQuery, ProcessInstance> implements ProcessInstanceQuery, Serializable {
 
+  private static final long serialVersionUID = 1L;
   protected String executionId;
   protected String businessKey;
   protected String processDefinitionId;
@@ -38,8 +40,6 @@ public class ProcessInstanceQueryImpl extends ExecutionVariableQueryImpl<Process
   
   // Unused, see dynamic query
   protected String activityId; 
-  
-  protected CommandExecutor commandExecutor;
   
   public ProcessInstanceQueryImpl() {
   }

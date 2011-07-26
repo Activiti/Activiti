@@ -30,6 +30,7 @@ import org.activiti.engine.impl.variable.VariableTypes;
  */
 public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskInstanceQuery, HistoricTaskInstance> implements HistoricTaskInstanceQuery {
   
+  private static final long serialVersionUID = 1L;
   protected String processDefinitionId;
   protected String processDefinitionKey;
   protected String processDefinitionName;

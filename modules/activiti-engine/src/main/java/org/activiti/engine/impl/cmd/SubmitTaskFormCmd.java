@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
@@ -31,8 +32,9 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class SubmitTaskFormCmd implements Command<Object> {
+public class SubmitTaskFormCmd implements Command<Object>, Serializable {
 
+  private static final long serialVersionUID = 1L;
   protected String taskId;
   protected Map<String, String> properties;
   

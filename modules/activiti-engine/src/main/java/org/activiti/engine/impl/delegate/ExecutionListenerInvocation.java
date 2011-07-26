@@ -21,5 +21,9 @@ public class ExecutionListenerInvocation extends DelegateInvocation {
   protected void invoke() throws Exception {
     executionListenerInstance.notify(execution);
   }
+  
+  public Object getTarget() {
+    return executionListenerInstance;
+  }
 
 }

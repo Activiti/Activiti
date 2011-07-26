@@ -27,6 +27,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
  */
 public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements UserQuery {
   
+  private static final long serialVersionUID = 1L;
   protected String id;
   protected String firstName;
   protected String firstNameLike;

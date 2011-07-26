@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
+
 import org.activiti.engine.impl.identity.Account;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -21,8 +23,9 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 /**
  * @author Tom Baeyens
  */
-public class GetUserAccountCmd implements Command<Account> {
+public class GetUserAccountCmd implements Command<Account>, Serializable {
 
+  private static final long serialVersionUID = 1L;
   protected String userId;
   protected String userPassword;
   protected String accountName;

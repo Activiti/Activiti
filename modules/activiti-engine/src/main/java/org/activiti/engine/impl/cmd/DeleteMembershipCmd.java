@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -20,8 +22,9 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 /**
  * @author Tom Baeyens
  */
-public class DeleteMembershipCmd implements Command<Void> {
+public class DeleteMembershipCmd implements Command<Void>, Serializable {
 
+  private static final long serialVersionUID = 1L;
   String userId;
   String groupId;
 

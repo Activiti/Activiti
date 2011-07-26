@@ -27,6 +27,8 @@ import org.activiti.engine.query.QueryProperty;
  */
 public class HistoricActivityInstanceQueryProperty implements QueryProperty {
 
+  private static final long serialVersionUID = 1L;
+
   private static final Map<String, HistoricActivityInstanceQueryProperty> properties = new HashMap<String, HistoricActivityInstanceQueryProperty>();
 
   public static final HistoricActivityInstanceQueryProperty HISTORIC_ACTIVITY_INSTANCE_ID = new HistoricActivityInstanceQueryProperty("ID_");

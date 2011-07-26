@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
@@ -21,7 +22,9 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 /**
  * @author Tom Baeyens
  */
-public class ResolveTaskCmd extends CompleteTaskCmd {
+public class ResolveTaskCmd extends CompleteTaskCmd implements Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   public ResolveTaskCmd(String taskId, Map<String, Object> variables) {
     super(taskId, variables);

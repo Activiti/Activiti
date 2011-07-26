@@ -22,4 +22,8 @@ public class ActivityBehaviorInvocation extends DelegateInvocation {
     behaviorInstance.execute(execution);
   }
 
+  public Object getTarget() {
+    return behaviorInstance;
+  }
+
 }

@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -22,8 +24,9 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 /**
  * @author Tom Baeyens
  */
-public class SignalCmd implements Command<Object> {
+public class SignalCmd implements Command<Object>, Serializable {
 
+  private static final long serialVersionUID = 1L;
   protected String executionId;
   protected String signalName;
   protected Object signalData;

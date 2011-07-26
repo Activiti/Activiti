@@ -41,6 +41,8 @@ import org.activiti.engine.repository.DeploymentQuery;
  */
 public class DeploymentQueryProperty implements QueryProperty {
 
+  private static final long serialVersionUID = 1L;
+
   private static final Map<String, DeploymentQueryProperty> properties = new HashMap<String, DeploymentQueryProperty>();
 
   public static final DeploymentQueryProperty DEPLOYMENT_ID = new DeploymentQueryProperty("D.ID_");

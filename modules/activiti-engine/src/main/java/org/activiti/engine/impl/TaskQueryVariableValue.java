@@ -22,6 +22,7 @@ package org.activiti.engine.impl;
  */
 public class TaskQueryVariableValue extends QueryVariableValue {
 
+  private static final long serialVersionUID = 1L;
   protected boolean taskVariable;
   
   public TaskQueryVariableValue(String name, Object value, QueryOperator operator, boolean isTaskVariable) {

@@ -27,6 +27,7 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
  */
 public class DeleteJobsCmd implements Command<Void> {
 
+  private static final long serialVersionUID = 1L;
   List<String> jobIds;
   
   public DeleteJobsCmd(List<String> jobIds) {

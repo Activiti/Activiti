@@ -24,6 +24,8 @@ import org.activiti.engine.query.QueryProperty;
  */
 public class HistoricTaskInstanceQueryProperty implements QueryProperty {
 
+  private static final long serialVersionUID = 1L;
+
   private static final Map<String, HistoricTaskInstanceQueryProperty> properties = new HashMap<String, HistoricTaskInstanceQueryProperty>();
 
   public static final HistoricTaskInstanceQueryProperty HISTORIC_TASK_INSTANCE_ID = new HistoricTaskInstanceQueryProperty("ID_");

@@ -28,6 +28,7 @@ import org.activiti.engine.runtime.ExecutionQuery;
 public class ExecutionQueryImpl extends ExecutionVariableQueryImpl<ExecutionQuery, Execution> 
   implements ExecutionQuery {
 
+  private static final long serialVersionUID = 1L;
   protected String processDefinitionId;
   protected String processDefinitionKey;
   protected String activityId;
@@ -37,8 +38,6 @@ public class ExecutionQueryImpl extends ExecutionVariableQueryImpl<ExecutionQuer
   // Not used by end-users, but needed for dynamic ibatis query
   protected String superProcessInstanceId;
   protected String subProcessInstanceId;
-  
-  protected CommandExecutor commandExecutor;
   
   public ExecutionQueryImpl() {
   }

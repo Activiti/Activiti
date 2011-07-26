@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
@@ -28,7 +29,9 @@ import org.activiti.engine.query.QueryProperty;
  *  
  * @author Joram Barrez
  */
-public abstract class AbstractQuery<T extends Query<?,?>, U> implements Command<Object>, Query<T,U>{
+public abstract class AbstractQuery<T extends Query<?,?>, U> implements Command<Object>, Query<T,U>, Serializable {
+      
+  private static final long serialVersionUID = 1L;
   
   public static final String SORTORDER_ASC = "asc";
   public static final String SORTORDER_DESC = "desc";
@@ -37,8 +40,8 @@ public abstract class AbstractQuery<T extends Query<?,?>, U> implements Command<
     LIST, LIST_PAGE, SINGLE_RESULT, COUNT
   }
     
-  protected CommandExecutor commandExecutor;
-  protected CommandContext commandContext;
+  protected transient CommandExecutor commandExecutor;
+  protected transient CommandContext commandContext;
   protected String orderBy;
   
   protected int firstResult;

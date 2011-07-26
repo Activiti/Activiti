@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.activiti.engine.impl.context.Context;
@@ -24,8 +25,9 @@ import org.activiti.engine.task.Task;
 /**
  * @author Tom Baeyens
  */
-public class GetSubTasksCmd implements Command<List<Task>> {
+public class GetSubTasksCmd implements Command<List<Task>>, Serializable {
 
+  private static final long serialVersionUID = 1L;
   protected String parentTaskId;
   
   public GetSubTasksCmd(String parentTaskId) {

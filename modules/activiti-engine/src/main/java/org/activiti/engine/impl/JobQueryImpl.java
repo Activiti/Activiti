@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -28,8 +29,9 @@ import org.activiti.engine.runtime.JobQuery;
  * @author Joram Barrez
  * @author Tom Baeyens
  */
-public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQuery {
+public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQuery, Serializable {
   
+  private static final long serialVersionUID = 1L;
   protected String id;
   protected String processInstanceId;
   protected String executionId;

@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 import org.activiti.engine.ActivitiException;
@@ -23,8 +24,9 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 /**
  * @author Joram Barrez
  */
-public class DeleteTaskCmd implements Command<Void> {
+public class DeleteTaskCmd implements Command<Void>, Serializable {
   
+  private static final long serialVersionUID = 1L;
   protected String taskId;
   protected Collection<String> taskIds;
   protected boolean cascade;

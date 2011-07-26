@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
+
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.IdentityInfoEntity;
@@ -21,8 +23,9 @@ import org.activiti.engine.impl.persistence.entity.IdentityInfoEntity;
 /**
  * @author Tom Baeyens
  */
-public class GetUserInfoCmd implements Command<String> {
+public class GetUserInfoCmd implements Command<String>, Serializable {
 
+  private static final long serialVersionUID = 1L;
   protected String userId;
   protected String key;
   

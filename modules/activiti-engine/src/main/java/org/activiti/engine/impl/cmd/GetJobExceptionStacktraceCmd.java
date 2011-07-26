@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -22,8 +24,9 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 /**
  * @author Frederik Heremans
  */
-public class GetJobExceptionStacktraceCmd implements Command<String>{
+public class GetJobExceptionStacktraceCmd implements Command<String>, Serializable{
 
+  private static final long serialVersionUID = 1L;
   private String jobId;
     
   public GetJobExceptionStacktraceCmd(String jobId) {

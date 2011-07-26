@@ -26,6 +26,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
  */
 public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, HistoricDetail> implements HistoricDetailQuery {
 
+  private static final long serialVersionUID = 1L;
   protected String taskId;
   protected String processInstanceId;
   protected String activityId;

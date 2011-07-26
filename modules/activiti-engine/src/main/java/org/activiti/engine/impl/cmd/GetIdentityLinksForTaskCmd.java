@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.activiti.engine.impl.context.Context;
@@ -26,8 +27,9 @@ import org.activiti.engine.task.IdentityLinkType;
 /**
  * @author Joram Barrez
  */
-public class GetIdentityLinksForTaskCmd implements Command<List<IdentityLink>> {
+public class GetIdentityLinksForTaskCmd implements Command<List<IdentityLink>>, Serializable {
   
+  private static final long serialVersionUID = 1L;
   protected String taskId;
 
   public GetIdentityLinksForTaskCmd(String taskId) {

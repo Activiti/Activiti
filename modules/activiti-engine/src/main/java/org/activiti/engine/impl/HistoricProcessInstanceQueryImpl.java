@@ -26,6 +26,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
  */
 public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProcessInstanceQuery, HistoricProcessInstance> implements HistoricProcessInstanceQuery {
 
+  private static final long serialVersionUID = 1L;
   protected String processInstanceId;
   protected String processDefinitionId;
   protected String businessKey;

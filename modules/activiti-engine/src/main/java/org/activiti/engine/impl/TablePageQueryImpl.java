@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.impl;
 
+import java.io.Serializable;
+
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -23,9 +25,11 @@ import org.activiti.engine.management.TablePageQuery;
  * 
  * @author Joram Barrez
  */
-public class TablePageQueryImpl implements TablePageQuery, Command<TablePage> {
+public class TablePageQueryImpl implements TablePageQuery, Command<TablePage>, Serializable {
   
-  CommandExecutor commandExecutor;
+  private static final long serialVersionUID = 1L;
+
+  transient CommandExecutor commandExecutor;
   
   protected String tableName;
   protected String orderBy;

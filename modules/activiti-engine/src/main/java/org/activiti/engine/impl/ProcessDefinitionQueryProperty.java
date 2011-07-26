@@ -27,6 +27,8 @@ import org.activiti.engine.repository.ProcessDefinitionQuery;
  */
 public class ProcessDefinitionQueryProperty implements QueryProperty {
   
+  private static final long serialVersionUID = 1L;
+
   private static final Map<String, ProcessDefinitionQueryProperty> properties = new HashMap<String, ProcessDefinitionQueryProperty>();
   
   public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_KEY = new ProcessDefinitionQueryProperty("PD.KEY_");

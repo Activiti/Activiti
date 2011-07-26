@@ -28,6 +28,8 @@ import org.activiti.engine.query.QueryProperty;
  */
 public class GroupQueryProperty implements QueryProperty {
   
+  private static final long serialVersionUID = 1L;
+
   private static final Map<String, GroupQueryProperty> properties = new HashMap<String, GroupQueryProperty>();
 
   public static final GroupQueryProperty GROUP_ID = new GroupQueryProperty("G.ID_");

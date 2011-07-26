@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
+
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -26,8 +28,9 @@ import org.activiti.engine.task.Event;
 /**
  * @author Tom Baeyens
  */
-public class DeleteAttachmentCmd implements Command<Object> {
+public class DeleteAttachmentCmd implements Command<Object>, Serializable {
 
+  private static final long serialVersionUID = 1L;
   protected String attachmentId;
   
   public DeleteAttachmentCmd(String attachmentId) {

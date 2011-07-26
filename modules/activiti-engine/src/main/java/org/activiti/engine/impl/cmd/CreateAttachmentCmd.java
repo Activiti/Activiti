@@ -32,8 +32,9 @@ import org.activiti.engine.task.Event;
 /**
  * @author Tom Baeyens
  */
-public class CreateAttachmentCmd implements Command<Attachment> {
-
+// Not Serializable
+public class CreateAttachmentCmd implements Command<Attachment> {  
+  
   protected String attachmentType;
   protected String taskId;
   protected String processInstanceId;

@@ -27,6 +27,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
  */
 public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements GroupQuery {
   
+  private static final long serialVersionUID = 1L;
   protected String id;
   protected String name;
   protected String nameLike;

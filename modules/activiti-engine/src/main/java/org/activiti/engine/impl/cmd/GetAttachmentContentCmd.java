@@ -15,6 +15,7 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.Serializable;
 
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.Command;
@@ -26,8 +27,9 @@ import org.activiti.engine.impl.persistence.entity.ByteArrayEntity;
 /**
  * @author Tom Baeyens
  */
-public class GetAttachmentContentCmd implements Command<InputStream> {
+public class GetAttachmentContentCmd implements Command<InputStream>, Serializable {
 
+  private static final long serialVersionUID = 1L;
   protected String attachmentId;
   
   public GetAttachmentContentCmd(String attachmentId) {

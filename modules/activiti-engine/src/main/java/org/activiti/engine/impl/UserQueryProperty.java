@@ -28,6 +28,8 @@ import org.activiti.engine.query.QueryProperty;
  */
 public class UserQueryProperty implements QueryProperty {
   
+  private static final long serialVersionUID = 1L;
+
   private static final Map<String, UserQueryProperty> properties = new HashMap<String, UserQueryProperty>();
 
   public static final UserQueryProperty USER_ID = new UserQueryProperty("U.ID_");

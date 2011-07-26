@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
+
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -24,8 +26,10 @@ import org.activiti.engine.task.Event;
 /**
  * @author Tom Baeyens
  */
-public class AddCommentCmd implements Command<Object> {
+public class AddCommentCmd implements Command<Object>, Serializable {
 
+  private static final long serialVersionUID = 1L;
+  
   protected String taskId;
   protected String processInstanceId;
   protected String message;
