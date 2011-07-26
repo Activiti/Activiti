@@ -140,9 +140,9 @@ public class JtaTransactionInterceptor extends CommandInterceptor {
     private void doRollback(boolean isNew) {
         try {
             if (isNew) {
-                transactionManager.setRollbackOnly();
+              transactionManager.rollback();
             } else {
-                transactionManager.rollback();
+              transactionManager.setRollbackOnly();
             }
         } catch (SystemException e) {
             LOGGER.log(Level.FINE, "Error when rolling back transaction", e);
