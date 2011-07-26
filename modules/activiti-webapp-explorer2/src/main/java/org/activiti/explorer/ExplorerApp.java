@@ -45,6 +45,7 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   // Thread local storage of instance for each user
   protected static ThreadLocal<ExplorerApp> current = new ThreadLocal<ExplorerApp>();
   
+  protected String environment;
   protected UserCache userCache;
   protected MainWindow mainWindow;
   protected ViewManager viewManager;
@@ -100,6 +101,10 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   
   public LoggedInUser getLoggedInUser() {
     return (LoggedInUser) getUser();
+  }
+  
+  public String getEnvironment() {
+    return environment;
   }
   
   // Managers (session scoped)
@@ -213,6 +218,9 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   
   // Injection setters
   
+  public void setEnvironment(String environment) {
+    this.environment = environment;
+  }
   public void setUserCache(UserCache userCache) {
     this.userCache = userCache;
   }

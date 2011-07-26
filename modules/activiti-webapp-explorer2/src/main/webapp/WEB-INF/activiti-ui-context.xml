@@ -62,6 +62,7 @@
   </bean>
   
   <bean name="explorerApp" class="org.activiti.explorer.ExplorerApp" scope="session">
+    <property name="environment" value="${activiti.ui.environment}" />
     <property name="userCache" ref="userCache" />
     <property name="i18nManager" ref="i18nManager" />
     <property name="viewManager" ref="viewManager" />

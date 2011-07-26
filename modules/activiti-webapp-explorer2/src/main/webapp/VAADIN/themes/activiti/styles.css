@@ -361,6 +361,15 @@ input.login-field {
 	float:left;
 }
 
+.workflow-console-logo {
+  margin:12px 0;
+  background:url(img/workflow-console-logo.png) no-repeat;
+  text-indent:-9999px;
+  width:337px;
+  height:30px;
+  float:left;
+}
+
 /* -----------------
    Header, Main menu
    ----------------- */

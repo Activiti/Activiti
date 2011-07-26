@@ -74,6 +74,7 @@ public interface ExplorerLayout {
   
   
   static final String STYLE_APPLICATION_LOGO = "logo";
+  static final String STYLE_WORKFLOW_CONSOLE_LOGO = "workflow-console-logo";
   static final String STYLE_MAIN_MENU_BUTTON = "main-menu-button";
   
   //Forms

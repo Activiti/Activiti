@@ -16,6 +16,7 @@ package org.activiti.explorer.ui.mainlayout;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.explorer.Environments;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
@@ -105,7 +106,12 @@ public class MainMenuBar extends HorizontalLayout {
   protected void initTitle() {
     Label title = new Label();
     title.addStyleName(Reindeer.LABEL_H1);
-    title.addStyleName(ExplorerLayout.STYLE_APPLICATION_LOGO);
+    
+    if (ExplorerApp.get().getEnvironment().equals(Environments.ALFRESCO)) {
+      title.addStyleName(ExplorerLayout.STYLE_WORKFLOW_CONSOLE_LOGO);
+    } else {
+      title.addStyleName(ExplorerLayout.STYLE_APPLICATION_LOGO);
+    }
     
     addComponent(title);
     
