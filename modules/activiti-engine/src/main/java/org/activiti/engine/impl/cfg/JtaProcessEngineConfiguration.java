@@ -20,7 +20,6 @@ import java.util.List;
 import javax.transaction.TransactionManager;
 
 import org.activiti.engine.impl.interceptor.CommandContextInterceptor;
-import org.activiti.engine.impl.interceptor.CommandExecutorImpl;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.JtaTransactionInterceptor;
 import org.activiti.engine.impl.interceptor.LogInterceptor;

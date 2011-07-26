@@ -16,6 +16,10 @@ package org.activiti.engine.test.concurrency;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiOptimisticLockingException;
+import org.activiti.engine.impl.RuntimeServiceImpl;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.interceptor.CommandInterceptor;
+import org.activiti.engine.impl.interceptor.RetryInterceptor;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -85,5 +89,39 @@ public class CompetingSignalsTest extends PluggableActivitiTestCase {
     threadTwo.proceedAndWaitTillDone();
     assertNotNull(threadTwo.exception);
     assertTextPresent("was updated by another transaction concurrently", threadTwo.exception.getMessage());
+  }
+  
+  @Deployment(resources={"org/activiti/engine/test/concurrency/CompetingSignalsTest.testCompetingSignals.bpmn20.xml"})
+  public void testCompetingSignalsWithRetry() throws Exception {
+    RuntimeServiceImpl runtimeServiceImpl = (RuntimeServiceImpl)runtimeService;        
+    CommandExecutor before = runtimeServiceImpl.getCommandExecutor();
+    try {
+      CommandInterceptor retryInterceptor = new RetryInterceptor();
+      retryInterceptor.setNext(before);
+      runtimeServiceImpl.setCommandExecutor(retryInterceptor);
+      
+      ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("CompetingSignalsProcess");
+      String processInstanceId = processInstance.getId();
+  
+      log.fine("test thread starts thread one");
+      SignalThread threadOne = new SignalThread(processInstanceId);
+      threadOne.startAndWaitUntilControlIsReturned();
+      
+      log.fine("test thread continues to start thread two");
+      SignalThread threadTwo = new SignalThread(processInstanceId);
+      threadTwo.startAndWaitUntilControlIsReturned();
+  
+      log.fine("test thread notifies thread 1");
+      threadOne.proceedAndWaitTillDone();
+      assertNull(threadOne.exception);
+  
+      log.fine("test thread notifies thread 2");
+      threadTwo.proceedAndWaitTillDone();
+      assertNull(threadTwo.exception);
+    } finally {
+      // reset the command executor
+      runtimeServiceImpl.setCommandExecutor(before);
+    }
+    
   }
 }
