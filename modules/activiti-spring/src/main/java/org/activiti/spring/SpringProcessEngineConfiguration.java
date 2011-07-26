@@ -27,7 +27,6 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti.engine.impl.interceptor.CommandContextInterceptor;
-import org.activiti.engine.impl.interceptor.CommandExecutorImpl;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.LogInterceptor;
 import org.activiti.engine.impl.variable.EntityManagerSession;
@@ -73,7 +72,6 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
     defaultCommandInterceptorsTxRequired.add(new SpringTransactionInterceptor(transactionManager, TransactionTemplate.PROPAGATION_REQUIRED));
     CommandContextInterceptor commandContextInterceptor = new CommandContextInterceptor(commandContextFactory, this);
     defaultCommandInterceptorsTxRequired.add(commandContextInterceptor);
-    defaultCommandInterceptorsTxRequired.add(new CommandExecutorImpl());
     return defaultCommandInterceptorsTxRequired;
   }
   
@@ -83,7 +81,6 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
     defaultCommandInterceptorsTxRequiresNew.add(new SpringTransactionInterceptor(transactionManager, TransactionTemplate.PROPAGATION_REQUIRES_NEW));
     CommandContextInterceptor commandContextInterceptor = new CommandContextInterceptor(commandContextFactory, this);
     defaultCommandInterceptorsTxRequiresNew.add(commandContextInterceptor);
-    defaultCommandInterceptorsTxRequiresNew.add(new CommandExecutorImpl());
     return defaultCommandInterceptorsTxRequiresNew;
   }
   

@@ -39,7 +39,6 @@ public class JtaProcessEngineConfiguration extends ProcessEngineConfigurationImp
     defaultCommandInterceptorsTxRequired.add(new LogInterceptor());
     defaultCommandInterceptorsTxRequired.add(new JtaTransactionInterceptor(transactionManager, false));
     defaultCommandInterceptorsTxRequired.add(new CommandContextInterceptor(commandContextFactory, this));
-    defaultCommandInterceptorsTxRequired.add(new CommandExecutorImpl());
     return defaultCommandInterceptorsTxRequired;
   }
 
@@ -49,7 +48,6 @@ public class JtaProcessEngineConfiguration extends ProcessEngineConfigurationImp
     defaultCommandInterceptorsTxRequiresNew.add(new LogInterceptor());
     defaultCommandInterceptorsTxRequiresNew.add(new JtaTransactionInterceptor(transactionManager, true));
     defaultCommandInterceptorsTxRequiresNew.add(new CommandContextInterceptor(commandContextFactory, this));
-    defaultCommandInterceptorsTxRequiresNew.add(new CommandExecutorImpl());
     return defaultCommandInterceptorsTxRequiresNew;
   }
 

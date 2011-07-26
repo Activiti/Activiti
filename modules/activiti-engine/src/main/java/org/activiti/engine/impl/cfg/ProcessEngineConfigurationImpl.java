@@ -76,6 +76,7 @@ import org.activiti.engine.impl.form.StringFormType;
 import org.activiti.engine.impl.history.handler.HistoryParseListener;
 import org.activiti.engine.impl.interceptor.CommandContextFactory;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.interceptor.CommandExecutorImpl;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 import org.activiti.engine.impl.interceptor.SessionFactory;
@@ -259,6 +260,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected boolean isDbCycleUsed = false;
   
   protected DelegateInterceptor delegateInterceptor;
+
+  protected CommandInterceptor actualCommandExecutor;
   
   // buildProcessEngine ///////////////////////////////////////////////////////
   
@@ -300,10 +303,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected abstract Collection< ? extends CommandInterceptor> getDefaultCommandInterceptorsTxRequiresNew();
   
   protected void initCommandExecutors() {
+    initActualCommandExecutor();
     initCommandInterceptorsTxRequired();
     initCommandExecutorTxRequired();
     initCommandInterceptorsTxRequiresNew();
     initCommandExecutorTxRequiresNew();
+  }
+
+  protected void initActualCommandExecutor() {
+    actualCommandExecutor = new CommandExecutorImpl();
   }
 
   protected void initCommandInterceptorsTxRequired() {
@@ -317,6 +325,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       if (customPostCommandInterceptorsTxRequired!=null) {
         commandInterceptorsTxRequired.addAll(customPostCommandInterceptorsTxRequired);
       }
+      commandInterceptorsTxRequired.add(actualCommandExecutor);
     }
   }
 
@@ -331,6 +340,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       if (customPostCommandInterceptorsTxRequiresNew!=null) {
         commandInterceptorsTxRequiresNew.addAll(customPostCommandInterceptorsTxRequiresNew);
       }
+      commandInterceptorsTxRequiresNew.add(actualCommandExecutor);
     }
   }
 

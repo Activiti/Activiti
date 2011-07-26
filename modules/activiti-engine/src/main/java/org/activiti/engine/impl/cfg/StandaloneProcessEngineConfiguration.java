@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.activiti.engine.impl.interceptor.CommandContextInterceptor;
-import org.activiti.engine.impl.interceptor.CommandExecutorImpl;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.LogInterceptor;
 
@@ -32,7 +31,6 @@ public class StandaloneProcessEngineConfiguration extends ProcessEngineConfigura
     List<CommandInterceptor> defaultCommandInterceptorsTxRequired = new ArrayList<CommandInterceptor>();
     defaultCommandInterceptorsTxRequired.add(new LogInterceptor());
     defaultCommandInterceptorsTxRequired.add(new CommandContextInterceptor(commandContextFactory, this));
-    defaultCommandInterceptorsTxRequired.add(new CommandExecutorImpl());
     return defaultCommandInterceptorsTxRequired;
   }
   
