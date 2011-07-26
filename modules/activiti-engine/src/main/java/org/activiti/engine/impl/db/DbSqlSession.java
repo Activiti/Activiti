@@ -101,8 +101,7 @@ public class DbSqlSession implements Session {
   
   public void insert(PersistentObject persistentObject) {
     if (persistentObject.getId()==null) {
-      long nextId = dbSqlSessionFactory.getIdGenerator().getNextId();
-      String id = Long.toString(nextId);
+      String id = dbSqlSessionFactory.getIdGenerator().getNextId();  
       persistentObject.setId(id);
     }
     insertedObjects.add(persistentObject);

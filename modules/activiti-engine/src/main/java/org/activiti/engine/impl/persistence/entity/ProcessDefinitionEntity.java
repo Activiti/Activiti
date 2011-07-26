@@ -94,7 +94,7 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
       String executionId = processInstance.getId();
 
       HistoricActivityInstanceEntity historicActivityInstance = new HistoricActivityInstanceEntity();
-      historicActivityInstance.setId(Long.toString(idGenerator.getNextId()));
+      historicActivityInstance.setId(idGenerator.getNextId());
       historicActivityInstance.setProcessDefinitionId(processDefinitionId);
       historicActivityInstance.setProcessInstanceId(processInstanceId);
       historicActivityInstance.setExecutionId(executionId);

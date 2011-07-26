@@ -29,11 +29,12 @@ public class DbIdGenerator implements IdGenerator {
   
   protected CommandExecutor commandExecutor;
   
-  public synchronized long getNextId() {
+  public synchronized String getNextId() {
     if (lastId<nextId) {
       getNewBlock();
     }
-    return nextId++;
+    long _nextId = nextId++;
+    return Long.toString(_nextId);
   }
 
   protected synchronized void getNewBlock() {

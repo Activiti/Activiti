@@ -36,7 +36,7 @@ public class ActivityInstanceStartHandler implements ExecutionListener {
     String executionId = execution.getId();
 
     HistoricActivityInstanceEntity historicActivityInstance = new HistoricActivityInstanceEntity();
-    historicActivityInstance.setId(Long.toString(idGenerator.getNextId()));
+    historicActivityInstance.setId(idGenerator.getNextId());
     historicActivityInstance.setProcessDefinitionId(processDefinitionId);
     historicActivityInstance.setProcessInstanceId(processInstanceId);
     historicActivityInstance.setExecutionId(executionId);
