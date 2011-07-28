@@ -5,17 +5,22 @@
 
   <title>Activiti add-on components</title>
   
-  <section>
-    <title>Camunda Fox</title>
+  <section id="cycle">
+    <title>Cycle</title>
 	  <para>
-	    <ulink url="http://fox.camunda.com/doc/#cycle">Camunda Fox</ulink> started off as Activiti Cycle and now has turned into a fully 
-	    fledged individual project at <ulink url="http://camunda.com">Camunda</ulink>. 
-	    Camunda Fox is a web application that provides a collaborative platform for different stakeholders 
-	    of BPM projects (Business, developers, IT operations, ...).
-	    It combines different repositories like the Activiti Modeler repository, Subversion or your local file system into a single view, 
-	    which makes it easy to browse all the artifacts that are involved in the process of creating an executable business process. 
-	    In addition to this, Camunda Fox provides built in actions like moving artifacts between repositories or downloading different
-	    formats of process models, and a plug-in infrastructure for custom actions. 
+	    Started off as Activiti Cycle and now moved to the camunda fox BPM Platform, 
+	    <ulink url="http://fox.camunda.com/doc/#cycle">Cycle</ulink> is web application that provides a collaborative platform for different stakeholders 
+	    of BPM projects (Business, analysts, developers, managers, IT operations, ...).
+	    It combines different data sources like the Activiti Modeler repository, Subversion or your local file system into a single view 
+	    which makes it easy to browse all the artifacts (process models, development projects, requirements, ...)
+	    that are involved in such a project. Additionally you can maintain relationships between them and Cycle
+	    provides built in actions like moving artifacts between repositories or downloading different
+	    formats of process models. A plug-in infrastructure is provided to hook in own repositories, actions or functionality.
+	  </para>
+	  <para>
+	    The concept of Cycle, especially with the philosophie of Business-IT-Alignment ist brand new. You might best compare it 
+	    to Application Lifecycle Management (ALM) tools. Cycle is developed by <ulink url="http://camunda.com">camunda</ulink>
+	    and the documentation can be found in the <ulink url="http://fox.camunda.com/doc/#cycle">camunda fox documentation</ulink>.	    
 	  </para>
   </section>
 
