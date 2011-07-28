@@ -175,9 +175,9 @@
     </plugin>
     </plugins>
   </build>
-
-  <profiles>
   
+  <profiles>
+
     <profile>
       <id>checkspring</id>
       <properties>
@@ -535,17 +535,5 @@
       </dependencies>
     </profile>
   </profiles>
-
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <excludePackageNames>org.activiti.impl*,org.activiti.engine.impl*</excludePackageNames>
-        </configuration>
-      </plugin>
-    </plugins>
-  </reporting>
 
 </project>

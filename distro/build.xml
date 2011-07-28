@@ -339,7 +339,7 @@
 	<target name="build.docs" unless="nodocs">
     <!-- JAVADOCS -->
     <exec executable="${mvn.executable}" dir="../modules/activiti-engine">
-      <arg line="javadoc:javadoc" />
+      <arg line="-DexcludePackageNames=org.activiti.engine.impl* javadoc:javadoc" />
     </exec>
     <mkdir dir="${target.distro.root}/docs/javadocs" />
     <copy todir="${target.distro.root}/docs/javadocs">
