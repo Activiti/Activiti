@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">
+
+<chapter>
+
+  <title>Activiti add-on components</title>
+  
+  <section>
+    <title>Camunda Fox</title>
+	  <para>
+	    <ulink url="http://fox.camunda.com/doc/#cycle">Camunda Fox</ulink> started off as Activiti Cycle and now has turned into a fully 
+	    fledged individual project at <ulink url="http://camunda.com">Camunda</ulink>. 
+	    Camunda Fox is a web application that provides a collaborative platform for different stakeholders 
+	    of BPM projects (Business, developers, IT operations, ...).
+	    It combines different repositories like the Activiti Modeler repository, Subversion or your local file system into a single view, 
+	    which makes it easy to browse all the artifacts that are involved in the process of creating an executable business process. 
+	    In addition to this, Camunda Fox provides built in actions like moving artifacts between repositories or downloading different
+	    formats of process models, and a plug-in infrastructure for custom actions. 
+	  </para>
+  </section>
+
+  <section id="activitiModeler">
+    <title>Activiti Modeler based on Signavio Core components</title>
+    <para>Signavio has a web based BPMN process modeler.  There is a tweaked version for 
+    easy development with a file based backend.  That can be found in 
+    the Google project <ulink url="http://code.google.com/p/signavio-core-components/">Signavio core components</ulink>
+    </para> 
+    <para>We've documented some instructions on how to build it and how to use it with Activiti in the wiki page 
+    <ulink url="http://docs.codehaus.org/display/ACT/How+to+build+Activiti+Modeler+from+Signavio">How to build Activiti Modeler from Signavio</ulink> 
+    </para>
+  </section>
+
+</chapter>

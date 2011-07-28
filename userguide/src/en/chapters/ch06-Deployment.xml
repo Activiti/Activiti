@@ -262,7 +262,7 @@ repositoryService.createDeployment()
       In case no image is provided in the deployment, as described in the <link linkend="providingProcessDiagram">previous section</link>,
       the Activiti engine will generate a diagram image when the process definition
       contains the necessary 'diagram interchange' information. This is the case when using the
-      Activiti Modeler (and in the near future when using the Activiti Eclipse Designer).
+      <link linkend="activitiModeler">Activiti Modeler</link> (and in the near future when using the Activiti Eclipse Designer).
     </para>
     <para>
       The resource can be retrieved in exactly the same way as when <link linkend="providingProcessDiagram">

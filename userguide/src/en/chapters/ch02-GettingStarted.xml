@@ -68,9 +68,7 @@
       <listitem><para>(*) Install Tomcat in ${activiti.home}/apps/apache-tomcat-${tomcat.version}</para></listitem>
       <listitem><para>(*) Create an Activiti configuration jar</para></listitem>
       <listitem><para>(*) Deploy the REST interface webapp into tomcat</para></listitem>
-      <listitem><para>(*) Download the Activiti Modeler webapp to ${activiti.home}/webapps.  The license for the Activiti Modeler 
-      is <ulink url="http://en.wikipedia.org/wiki/MIT_License">MIT</ulink>.</para></listitem>
-      <listitem><para>(*) Deploy the Activiti webapps into tomcat.</para></listitem>
+      <listitem><para>(*) Deploy the Activiti webapp into tomcat.</para></listitem>
       <listitem><para>Start tomcat</para></listitem>
     </itemizedlist>
     <para>(*) only performed the first time when running <literal>ant demo.start</literal> </para>
@@ -129,24 +127,6 @@
             tasks, view and claim tasks, etc. This tool also allows to administrate the Activiti engine. 
             </entry>
           </row>
-          <row>
-            <entry>Activiti Cycle</entry>
-            <entry><ulink url="http://localhost:8080/activiti-cycle">http://localhost:8080/activiti-cycle</ulink> </entry>
-            <entry>The Activiti collabotation tool. Use this to browse repositories and execute transformations between model formats.
-            </entry>
-          </row>
-          <row>
-            <entry>Activiti Modeler powered by Signavio</entry>
-            <entry><ulink url="http://localhost:8080/activiti-modeler">http://localhost:8080/activiti-modeler</ulink></entry>
-            <entry>The web based process designer tool.  Use this tool to graphically author BPMN 2.0 compliant process definitions 
-            files.</entry>
-          </row>
-           <row>
-            <entry>Activiti KickStart</entry>
-            <entry><ulink url="http://localhost:8080/activiti-kickstart">http://localhost:8080/activiti-kickstart</ulink></entry>
-            <entry>Allows to specify processes quickly and efficiently in an adhoc way.
-            Simple processes, quick prototypes and adhoc workflow are created in no time using KickStart.</entry>
-          </row>
         </tbody>
       </tgroup>
     </table>
@@ -188,13 +168,6 @@
       </para></listitem>
       <listitem><para><emphasis role="bold">activiti-cxf-examples</emphasis>: These examples
       show library dependencies and how you can work with web services in Activiti.    
-      </para></listitem>
-      <listitem><para><emphasis role="bold">activiti-cycle-examples</emphasis>: This is a 
-      project containing an demo example project for Activiti Cycle 
-      </para></listitem>
-      <listitem><para><emphasis role="bold">activiti-modeler-examples</emphasis>: This is a 
-      file based model repository to which the Activiti Modeler is configured in the 
-      demo setup. 
       </para></listitem>
     </itemizedlist>
     <para><xref linkend="eclipsesetup" /> shows how you can set up your eclipse environment to 
@@ -240,10 +213,6 @@
       </para></listitem>
       <listitem><para><literal>libs.spring.runtime.test.txt</literal>: The libraries that need to be added 
         to the ones in <literal>libs.spring.runtime.txt</literal> to run tests in a Spring environment 
-      </para></listitem>
-      <listitem><para><literal>libs.cycle.runtime.test.txt</literal>, <literal>libs.webapp.rest.txt</literal>
-        and <literal>libs.webapp.explorer.txt</literal>: The full list of libraries dependencies for the respective components
-        cycle, the rest webapp and the UI webapps.
       </para></listitem>
     </itemizedlist>
   </section>

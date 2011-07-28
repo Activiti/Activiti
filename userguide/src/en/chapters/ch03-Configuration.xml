@@ -407,9 +407,6 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
         <listitem>
           <para><emphasis role="bold">history:</emphasis> contain the history and audit information. Optional: not needed when history level is set to <emphasis>none</emphasis></para>
         </listitem>
-        <listitem>
-          <para><emphasis role="bold">cycle:</emphasis> tables required when running Activiti Cycle</para>
-        </listitem>
       </itemizedlist>
     </para>
   

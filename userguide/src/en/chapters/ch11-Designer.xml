@@ -6,7 +6,7 @@
   <para>
   	Activiti comes with an Eclipse plugin, the Activiti Eclipse Designer, that can be used to
     graphically model, test and deploy BPMN 2.0 processes. The Activiti tool stack offers two modeling / design tools
-    with the Activiti Modeler and the Activiti Designer. You can of course use these tools in your own way, but a common way 
+    with the <link linkend="activitiModeler">Activiti Modeler</link> and the Activiti Designer. You can of course use these tools in your own way, but a common way 
     of working is to use the Activiti Modeler for high level modeling. There should be no technical knowledge necessary to
     model a process definition with the Activiti Modeler. The Activiti Designer can then be used to add the necessary
     technical details, like Java service tasks, execution listeners etc. With the import functionality of the Activiti Designer
