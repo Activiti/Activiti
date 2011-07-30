@@ -8,7 +8,7 @@
   <section id="cycle">
     <title>Cycle</title>
 	  <para>
-	    Started off as Activiti Cycle and now moved to the camunda fox BPM Platform, 
+	    Started off as Activiti Cycle and now moved to the <ulink url="http://www.camunda.com/fox">camunda fox BPM Platform</ulink>, 
 	    <ulink url="http://fox.camunda.com/doc/#cycle">Cycle</ulink> is web application that provides a collaborative platform for different stakeholders 
 	    of BPM projects (Business, analysts, developers, managers, IT operations, ...).
 	    It combines different data sources like the Activiti Modeler repository, Subversion or your local file system into a single view 
