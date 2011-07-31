@@ -308,7 +308,7 @@
     </para>
   </section>
   
-  <section>
+  <section id="eclipseDesignerExtending">
     <title>Extending Activiti Designer</title>
     <para><emphasis role="bold">[EXPERIMENTAL]</emphasis> You can extend the default functionality
       offered by Activiti Designer. This section documents which extensions are available, how they
@@ -326,7 +326,7 @@
           SWT.</para>
       </note>
     </para>
-    <section>
+    <section id="eclipseDesignerCustomizingPalette">
       <title>Customizing the palette</title>
       <para>You can customize the palette that is offered to users when modelling processes. The
         palette is the collection of shapes that can be dragged onto the canvas in a process diagram
@@ -343,7 +343,7 @@
           </listitem>
         </itemizedlist></para>
       <para>In order to customize the palette, you create a JAR file that is added to a specific
-        installation of Activiti Designer (more on <link linkend="applyingExtensionToDesigner">how
+        installation of Activiti Designer (more on <link linkend="eclipseDesignerApplyingExtension">how
           to do that</link> later). Such a JAR file is called an <emphasis>extension</emphasis>. By
         writing classes that are included in your extension, Activiti Designer understands which
         customizations you wish to make. In order for this to work, your classes should implement
@@ -402,7 +402,7 @@
   &lt;dependency&gt;
     &lt;groupId&gt;org.activiti&lt;/groupId&gt;
     &lt;artifactId&gt;activiti-designer-integration&lt;/artifactId&gt;
-    &lt;version&gt;0.7.0&lt;/version&gt; &lt;!-- Current Activiti Designer Version --&gt;
+    &lt;version&gt;5.7&lt;/version&gt; &lt;!-- Current Activiti Designer Version --&gt;
     &lt;scope&gt;compile&lt;/scope&gt;
   &lt;/dependency&gt;
 &lt;/dependencies&gt;
@@ -477,7 +477,7 @@
         <para>That's it for the setup. Now you're ready to start creating customizations to Activiti
           Designer!</para>
       </section>
-      <section id="applyingExtensionToDesigner">
+      <section id="eclipseDesignerApplyingExtension">
         <title>Applying your extension to Activiti Designer</title>
         <para>You might be wondering how you can add your extension to Activiti Designer so your
           customizations are applied. These are the steps to do just that: <itemizedlist>
@@ -598,7 +598,7 @@ public class AcmeMoneyTask extends AbstractCustomServiceTask {
 private String accountNumber;</programlisting>
         </para>
         <para>There are several <literal>PropertyType</literal> values you can use, which are
-          described in more detail in <link linkend="designerPropertyTypes">this section</link>. You
+          described in more detail in <link linkend="eclipseDesignerPropertyTypes">this section</link>. You
           can make a field required by setting the required attribute to true. A message and red
           background will appear if the user doesn't fill out the field.</para>
         <para>If you want to ensure the order of the various properties in your class as they appear
@@ -694,7 +694,7 @@ public class AcmeMoneyTask extends AbstractCustomServiceTask {
           <programlisting>@Runtime(delegationClass = "org.acme.runtime.AcmeMoneyJavaDelegation")</programlisting>
         </para>
       </section>
-      <section id="designerPropertyTypes">
+      <section id="eclipseDesignerPropertyTypes">
         <title>Property types </title>
         <para>This section describes the property types you can use for a
             <literal>CustomServiceTask</literal> by setting its type to a
