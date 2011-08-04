@@ -12,6 +12,8 @@
  */
 package org.activiti.cdi.impl.util;
 
+import java.util.Iterator;
+
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -26,7 +28,11 @@ public class ProgrammaticBeanLookup {
   @SuppressWarnings("unchecked")
   public static <T> T lookup(Class<T> clazz) {
     BeanManager bm = BeanManagerLookup.getBeanManager();
-    Bean<T> bean = (Bean<T>) bm.getBeans(clazz).iterator().next();
+    Iterator<Bean< ? >> iter = bm.getBeans(clazz).iterator();
+    if (!iter.hasNext()) {
+      throw new IllegalStateException("CDI BeanManager cannot find an instance of requested type " + clazz.getName());
+    }
+    Bean<T> bean = (Bean<T>) iter.next();
     CreationalContext<T> ctx = bm.createCreationalContext(bean);
     T dao = (T) bm.getReference(bean, clazz, ctx);
     return dao;
@@ -35,7 +41,11 @@ public class ProgrammaticBeanLookup {
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public static Object lookup(String name) {
     BeanManager bm = BeanManagerLookup.getBeanManager();
-    Bean bean = bm.getBeans(name).iterator().next();
+    Iterator<Bean< ? >> iter = bm.getBeans(name).iterator();
+    if (!iter.hasNext()) {
+      throw new IllegalStateException("CDI BeanManager cannot find an instance of requested type '" + name + "'");
+    }
+    Bean bean = iter.next();
     CreationalContext ctx = bm.createCreationalContext(bean);
     return bm.getReference(bean, bean.getBeanClass(), ctx);
   }
