@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/main/process"/>
+	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="src" path="src/test/resources"/>
+	<classpathentry kind="lib" path="libs-runtime/activation-1.1.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/activiti-engine-5.7-SNAPSHOT-sources.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/activiti-engine-5.7-SNAPSHOT.jar" sourcepath="libs-runtime/activiti-engine-5.7-SNAPSHOT-sources.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/commons-email-1.2.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/livetribe-jsr223-2.0.6.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/mail-1.4.1.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/mybatis-3.0.4.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/spring-asm-3.0.3.RELEASE.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/spring-beans-3.0.3.RELEASE.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/spring-core-3.0.3.RELEASE.jar"/>
+	<classpathentry kind="lib" path="libs-test/geronimo-jta_1.1_spec-1.1.1.jar"/>
+	<classpathentry kind="lib" path="libs-test/h2-1.2.132.jar"/>
+	<classpathentry kind="lib" path="libs-test/hamcrest-core-1.1.jar"/>
+	<classpathentry kind="lib" path="libs-test/junit-4.8.1.jar"/>
+	<classpathentry kind="lib" path="libs-test/mockito-core-1.8.2.jar"/>
+	<classpathentry kind="lib" path="libs-test/objenesis-1.0.jar"/>
+	<classpathentry kind="lib" path="libs-test/subethasmtp-smtp-1.2.jar"/>
+	<classpathentry kind="lib" path="libs-test/subethasmtp-wiser-1.2.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="libs-test/drools-api-5.1.1.jar"/>
+	<classpathentry kind="lib" path="libs-test/drools-compiler-5.1.1.jar"/>
+	<classpathentry kind="lib" path="libs-test/drools-core-5.1.1.jar"/>
+	<classpathentry kind="lib" path="libs-test/ecj-3.5.1.jar"/>
+	<classpathentry kind="lib" path="libs-test/jtds-1.2.4.jar"/>
+	<classpathentry kind="lib" path="libs-test/mvel2-2.0.16.jar"/>
+	<classpathentry kind="lib" path="libs-test/mysql-connector-java-5.1.6.jar"/>
+	<classpathentry kind="lib" path="libs-test/postgresql-8.4-701.jdbc4.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

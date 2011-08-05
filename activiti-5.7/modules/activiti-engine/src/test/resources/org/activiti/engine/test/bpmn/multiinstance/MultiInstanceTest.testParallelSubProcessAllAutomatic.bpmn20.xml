@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definition" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="miParallelSubprocessAllAutomatics">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="miSubProcess" />
+    
+    <subProcess id="miSubProcess">
+      <multiInstanceLoopCharacteristics isSequential="false">
+        <loopCardinality>${nrOfLoops}</loopCardinality>
+        <completionCondition>${nrOfCompletedInstances == 6}</completionCondition>
+      </multiInstanceLoopCharacteristics>
+      
+      <startEvent id="subProcessStart" />
+      <sequenceFlow id="subFlow1" sourceRef="subProcessStart" targetRef="subProcessFork" />
+      
+      <parallelGateway id="subProcessFork" />
+      <sequenceFlow id="subFlow2" sourceRef="subProcessFork" targetRef="subProcessTask1" />
+      <sequenceFlow id="subFlow3" sourceRef="subProcessFork" targetRef="subProcessTask2" />
+      
+       <scriptTask id="subProcessTask1" scriptFormat="groovy">
+	      <script>
+	        <![CDATA[
+	          def processInstance = execution.getProcessInstance()
+	          def Object value = processInstance.getVariable("sum")
+	          def int sum 
+	          if (value == null) {
+	            sum = 0         
+	          } else {
+	           sum = value
+	          }
+	          processInstance.setVariable("sum", sum + 1)
+	        ]]>
+	      </script>
+	    </scriptTask>
+      <sequenceFlow id="subFlow4" sourceRef="subProcessTask1" targetRef="join" />
+      
+       <scriptTask id="subProcessTask2" scriptFormat="groovy">
+        <script>
+          <![CDATA[
+            def processInstance = execution.getProcessInstance()
+            def Object value = processInstance.getVariable("sum")
+            def int sum 
+            if (value == null) {
+              sum = 0         
+            } else {
+             sum = value
+            }
+            processInstance.setVariable("sum", sum + 1)
+          ]]>
+        </script>
+      </scriptTask>
+      <sequenceFlow id="subFlow5" sourceRef="subProcessTask2" targetRef="join" />
+      
+      <parallelGateway id="join" />
+      <sequenceFlow id="subFlow6" sourceRef="join" targetRef="subProcessEnd" />
+      
+      <endEvent id="subProcessEnd" />  
+       
+      
+    </subProcess>
+    
+    <sequenceFlow id="flow3" sourceRef="miSubProcess" targetRef="waitState" />
+    <receiveTask id="waitState" />
+    
+  </process>
+
+</definitions>

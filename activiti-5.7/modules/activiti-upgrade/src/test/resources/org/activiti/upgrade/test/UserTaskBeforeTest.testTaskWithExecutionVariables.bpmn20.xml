@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions id="taskAssigneeExample" 
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="Upgrade">
+  
+  <process id="taskWithExecutionVariablesProcess">
+  
+    <startEvent id="start"/>
+    
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="taskWithExecutionVariables" />
+
+    <userTask id="taskWithExecutionVariables" name="taskWithExecutionVariables" />
+    
+    <sequenceFlow id="flow2" sourceRef="taskWithExecutionVariables" targetRef="end" />
+    
+    <endEvent id="end" />
+    
+  </process>
+
+</definitions>

@@ -1,0 +1,33 @@
+{
+	"extensions": [
+		{
+			"title" : "Activiti",
+			"title_de":"Activiti",
+			"namespace" : "http://oryx-editor.org/stencilsets/extensions/bpmn2.0activiti#",
+			"description":"The subset of BPMN 2.0 supported by Activiti.",
+			"description_de":"Die von Activiti unterstützte Untermenge von BPMN 2.0.",
+			"definition":"bpmn2.0activiti/bpmn2.0activiti.json",
+			"extends":"http://b3mn.org/stencilset/bpmn2.0#"
+		}
+	],
+	"perspectives": [
+		{
+			"title":"BPMN (Complete)",
+			"title_de":"BPMN (Vollständig)",
+			"namespace":"http://oryx-editor.org/stencilsets/perspectives/academicbpmn2#",
+			"description":"BPMN complete. Features the whole standard and all elements from the specification.",
+			"description_de":"BPMN in dem kompletten standardisierten Umfang (sämtliche Modellierungskonstrukte).",
+			"stencilset":"http://b3mn.org/stencilset/bpmn2.0#",
+			"extensions" : []
+		},
+		{
+			"title":"BPMN (Activiti)",
+			"title_de":"BPMN (Activiti)",
+			"namespace" : "http://oryx-editor.org/stencilsets/perspectives/activitibpmn2#",
+			"description":"The subset of BPMN 2.0 supported by Activiti.",
+			"description_de":"Die von Activiti unterstützte Untermenge von BPMN 2.0.",
+			"stencilset" : "http://b3mn.org/stencilset/bpmn2.0#",
+			"extensions" : ["http://oryx-editor.org/stencilsets/extensions/bpmn2.0activiti#"]
+		}
+	]
+}

@@ -1,0 +1,1234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">
+
+<chapter>
+
+  <title>REST API</title>
+  
+  <para><link linkend="experimental"><emphasis role="bold">&lt;EXPERIMENTAL&gt;</emphasis></link>... the whole REST interface is still experimental</para>
+
+  <para>
+    Activiti includes a REST API to the engine that will be deployed to your server when you run the setup script.
+    The REST API uses JSON format (http://www.json.org) and is built upon the Spring Webscripts (http://www.springsurf.org).
+  </para>
+
+  <para>
+    It is possible to browse the REST API if you point your browser to http://localhost:8080/activiti-rest/service/index
+    and login as one of the admin users (kermit). If you click the "Browse by Web Script Package" link you will get an overview
+    of the packages that are deployed on the server and you can easily navigate into a package to see the REST API calls
+    that are defined for that package. The "Alfresco JavaScript Debugger" can be ignored since Java is used instead of
+    JavaScript to implement the logic.
+  </para>
+
+  <para>
+    Each REST API call has its individual authorization level and you must be logged in as a user to invoke a REST API
+    call (except for the /login service). Authentication is done using Basic HTTP Authentication, so if you logged in as
+    an admin (i.e. kermit) to browse the REST API, as described above, you should be able to perform all calls as
+    described below.
+  </para>
+
+  <para>
+    The API follows normal REST API conventions using GET for read operations, POST for creating objects, PUT for updating and
+    performing operations on already created objects and finally DELETE for deleting objects. When performing a call
+    that affects multiple objects POST is used on all such operations for consistency and making sure that an unlimited
+    number of objects may be used. The reason for using POST is that the HTTP DELETE method doesn't implicitly allow
+    request bodies and therefore, a call using DELETE, in theory, could get it's request body stripped out by a proxy.
+    So to be certain this doesn't happen we use POST, even when PUT could have been used to update multiple objects,
+    for consistency.  
+  </para>
+
+  <para>
+    All rest calls use a content type of "application/json" (except for upload requests which uses "multipart/form-data").
+  </para>
+
+  <para>
+    The base URL for invoking a REST call is http://localhost:8080/activiti-rest/service/.
+    So for example to list the process definitions in the engine point your browser to:
+    http://localhost:8080/activiti-rest/service/process-engine
+  </para>
+
+  <para>
+    Please look below to see what REST API calls that currently are available.
+    Please consider the "API" sections as a "one line hint" to what functionality of the core API that is used to implement the REST API call.
+  </para>
+
+  <section>
+
+    <!-- REPOSITORY -->
+
+    <title>Repository</title>
+
+    <section>
+      <title>Upload Deployment</title>
+      <para>
+        Uploads and installs a deployment of format .bpmn20.xml, .bar or .zip using normal "html form upload"
+        (enctype=multipart/form-data) in other words not a json-request. To make it possible for the ui to react when
+        the upload is complete it is possible to submit success/failure callbacks as parameters.
+        I.e. Sending "success=alert" will result in that the string "alert" will be placed inside a js script block with
+        "();" appended to the end, in other words "alert();". Sending "failure=alert" will result in "alert('Some error message if any');"
+        inside a script block. The actual deployment file shall be placed in a parameter named "deployment".
+      </para>
+      <itemizedlist>
+        <listitem>
+          <para>
+            <emphasis role="bold">Request: </emphasis>
+            <literal>POST /deployment</literal>
+            <programlisting>
+success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">API: </emphasis>
+            <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getRepositoryService().createDeployment().name(fileName).deploymentBuilder.deploy()</literal>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">Response:</emphasis>
+            <programlisting>
+&lt;html&gt;
+  &lt;script type="text/javascript"&gt;
+      alert();
+  &lt;/script&gt;
+&lt;/html&gt;</programlisting>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Get Deployments</title>
+      <para>
+        Returns a paginated list deployments that can be sorted by "id", "name" or "deploymentTime".
+      </para>
+      <itemizedlist>
+        <listitem>
+          <para>
+            <emphasis role="bold">Request: </emphasis>
+            <literal>GET /deployments?start={start=0}&amp;size={size=10}&amp;sort={sort=id}&amp;order={order=asc}</literal>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">API: </emphasis>
+            <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getRepositoryService().createDeploymentQuery().listPage()</literal>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">Response:</emphasis>
+            <programlisting>
+{
+  "data": [
+    {
+      "id": "10",
+      "name": "activiti-examples.bar",
+      "deploymentTime": "2010-10-13T14:54:26.750+02:00"
+    }
+  ],
+  "total": 1,
+  "start": 0,
+  "sort": "id",
+  "order": "asc",
+  "size": 1
+}</programlisting>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Get Deployment Resource</title>
+      <para>
+        Returns a resource from the deployment.
+        Example: /deployment/10/resource/org/activiti/examples/bpmn/usertask/FinancialReportProcess.bpmn20.xml
+      </para>
+      <itemizedlist>
+        <listitem>
+          <para>
+            <emphasis role="bold">Request: </emphasis>
+            <literal>GET /deployment/{deploymentId}/resource/{resourceName}</literal>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">API: </emphasis>
+            <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getRepositoryService().getResourceAsStream(deploymentId, resourceName)</literal>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">Response:</emphasis>
+            <programlisting>I.e a .bpmn20.xml file, an image or whatever type of file the deployment resource contained.</programlisting>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Delete Deployment</title>
+      <para>
+        Deletes a deployment.
+      </para>
+      <itemizedlist>
+        <listitem>
+          <para>
+            <emphasis role="bold">Request: </emphasis>
+            <literal>DELETE /deployment/{deploymentId}?cascade={cascade?}</literal>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">API: </emphasis>
+            <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getRepositoryService().deleteDeployment(deploymentId)</literal>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">Response:</emphasis>
+            <programlisting>
+{
+  "success": true
+}</programlisting>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Delete Deployments</title>
+      <para>
+        Deletes multiple deployment.
+      </para>
+      <itemizedlist>
+        <listitem>
+          <para>
+            <emphasis role="bold">Request: </emphasis>
+            <literal>POST /deployments?cascade={cascade?}</literal>
+            <programlisting>
+{
+"deploymentIds": [ "10", "11" ]
+}</programlisting>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">API: </emphasis>
+            <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getRepositoryService().deleteDeployment(deploymentId)</literal>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">Response:</emphasis>
+            <programlisting>
+{
+  "success": true
+}</programlisting>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+  </section>
+
+  <!-- ENGINE -->
+
+    <section>
+
+      <title>Engine</title>
+
+      <section>
+        <title>Get Process Engine</title>
+        <para>
+          Returns the process engine initialization details. If something went wrong during startup, details
+          about the error will be given in the "exception" attribute in the response.
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis role="bold">Request: </emphasis>
+              <literal>GET /process-engine</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">API: </emphasis>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName)</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">Response:</emphasis>
+              <programlisting>
+{
+  "name": "default",
+  "resourceUrl": "jar:file:\//&lt;path-to-deployment&gt;\/activiti-cfg.jar!\/activiti.properties",
+  "exception": null,
+  "version": "5.7-SNAPSHOT"
+}</programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+    </section>
+
+    <!-- PROCESSES -->
+
+    <section>
+
+      <title>Processes</title>
+
+      <section>
+        <title>List Process Definitions</title>
+        <para>
+          Returns details about the deployed process definitions that can be sorted by "id", "name", "version" or
+          "deploymentTime". The name of the BPMN2.0 XML process diagram is given in the "resourceName" attribute and can,
+          in combination with the "deploymentId" attribute, be retrieved from the GET Deployment Resource REST API call
+          above. If the process has a start form it is given in the "startFormResourceKey" attribute.
+          The start form for a process can be retrieved from the GET Start Process Form REST API call.
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis role="bold">Paginated Request:</emphasis>
+              <literal>GET /process-definitions?start={start=0}&amp;size={size=10}&amp;sort={sort=id}&amp;order={order=asc}</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">API:</emphasis>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getRepositoryService().createProcessDefinitionQuery().listPage()</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">Paginated Response:</emphasis>
+              <programlisting>
+{
+  "data": [
+    {
+      "id": "financialReport:1",
+      "key": "financialReport",
+      "version": 1,
+      "name": "Monthly financial report",
+      "resourceName": "org/activiti/examples/bpmn/usertask/FinancialReportProcess.bpmn20.xml",
+      "deploymentId": "10",
+      "startFormResourceKey": null                 
+    }
+  ],
+  "total": 1,
+  "start": 0,
+  "sort": "id",
+  "order": "asc",
+  "size": 1
+}</programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Get Process Definition</title>
+        <para>
+          Returns details about a deployed process definition.
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis role="bold">Request:</emphasis>
+              <literal>GET /process-definition/{processDefinitionId}</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">API:</emphasis>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getRepositoryService().createProcessDefinitionQuery().processDefinitionId(processDefinitionId)</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">Response:</emphasis>
+              <programlisting>
+{
+  "id": "financialReport:1",
+  "key": "financialReport",
+  "version": 1,
+  "name": "Monthly financial report",
+  "resourceName": "org/activiti/examples/bpmn/usertask/FinancialReportProcess.bpmn20.xml",
+  "deploymentId": "10",
+  "startFormResourceKey": null
+}</programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Get Process Definition Form</title>
+        <para>
+          Returns a process definition's form.
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis role="bold">Request:</emphasis>
+              <literal>GET /process-definition/{processDefinitionId}/form[?format=html|json]</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">API:</emphasis>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getTaskService().getRenderedStartFormById(processDefinitionId)</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">Response:</emphasis>
+              <programlisting>&lt;user-defined-response&gt;</programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Start Process Instance</title>
+        <para>
+          Creates a process instance based on a process definition and returns details about the newly created process instance.
+          Additional variables (from a form) may be passed using the body object. In other words placing attributes
+          next to the "processDefinitionId" attribute.
+        </para>
+        <para>
+          These additional variables may also be described using "meta data fields".
+          A variable named "numberOfDays" with value "2" may be described as an int using
+          an extra variable named "numberOfDays_type" set to "Integer" and to describe it as a required variable use
+          an extra variable named "numberOfDays_required" set to "true". If no type descriptor is used the value will
+          be treated as a String as long as its surrounded by '"'-characters. Its also possible to set the
+          type to "Boolean".
+        </para>
+        <para>
+          Note that if a value is submitted as true (instead of "true") it will be treated as a
+          Boolean even if no descriptor is used. The same is also valid for number, i.e., 123 will become an Integer
+          but "123" will become a String (unless a descriptor is defined). Note that no variables containing "_" in
+          the name will be saved, they are only treated as meta data fields.
+        </para>
+        <para>
+          The reason for using these meta data fields is to make it possible using a standard HTML form to
+          submit the values (since an HTML form submits everything as strings its not possible to distinguish the
+          type of a value as in JSON). HTML submission will be supported in the near future.
+          It is of course not an optimal solution to let the client send instructions to the server about which
+          variables that are required and what type they have, but this is a temporary solution to enable simple form
+          handling.
+          We are currently looking for more proper solutions for forms, containing real meta models that can be used on
+          the server to avoid using meta data fields like above. Please feel free to give suggestions or tips in the Activiti Forum.
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis role="bold">Request:</emphasis>
+              <literal>POST /process-instance</literal>
+              <programlisting>
+{
+  "processDefinitionId":"financialReport:1:1700",
+  "businessKey":"order-4711"
+}</programlisting>
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis role="bold">API:</emphasis>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getRuntimeService().startProcessInstanceById(processDefinitionId[, businessKey][, variables])</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis role="bold">Response:</emphasis>
+              <programlisting>
+{
+  "id": "217",
+  "processDefinitionId": "financialReport:1:1700",
+  "activityNames": ["writeReportTask"],
+  "ended": true
+}</programlisting>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">Request providing processDefinitionKey instead of Id:</emphasis>
+              <literal>POST /process-instance</literal>
+              <programlisting>
+{
+  "processDefinitionKey":"financialReport:1",
+  "businessKey":"order-4711"
+}</programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+        <section>
+          <title>List Process Instances</title>
+          <para>
+            Returns details about the active process instances that can be sorted by "id", "startTime", "businessKey" or
+            "processDefinitionId". You can filter instances by "processDefinitionId" and "businessKey".
+          </para>
+          <itemizedlist>
+            <listitem>
+              <para>
+                <emphasis role="bold">Paginated Request:</emphasis>
+                <literal>GET /process-instances?start={start=0}&amp;size={size=10}&amp;sort={sort=id}&amp;order={order=asc}&amp;businessKey={businessKey}&amp;processDefinitionId={processDefinitionId}</literal>
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                <emphasis role="bold">API:</emphasis>
+                <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getHistoryService().createHistoricProcessInstanceQuery().xxx.listPages()</literal>
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                <emphasis role="bold">Paginated Response:</emphasis>
+                <programlisting>
+  {
+    "data": [
+      {
+        "id": 2,
+        "processDefinitionId": "financialReport:1",
+        "businessKey": 55,
+        "startTime": "12-03-2011",
+        "startUserId": "kermit"
+      }
+    ],
+    "total": 1,
+    "start": 0,
+    "sort": "id",
+    "order": "asc",
+    "size": 1
+  }</programlisting>
+              </para>
+            </listitem>
+          </itemizedlist>
+        </section>
+        <section>
+            <title>Get Process Instance Diagram</title>
+            <para>
+            Returns a png diagram of process with highlighted active executions. Returns 404 if process definition does not contain DI information.
+            </para>
+            <itemizedlist>
+              <listitem>
+                <para>
+                  <emphasis role="bold">Request:</emphasis>
+                  <literal>GET /processInstance/{processInstanceId}/diagram</literal>
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  <emphasis role="bold">API:</emphasis>
+                  <literal>ProcessDiagramGenerator.generateDiagram(pde, "png", getRuntimeService().getActiveActivityIds(processInstanceId));</literal>
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  <emphasis role="bold">Response:</emphasis>
+                  <programlisting>Png diagram of process with highlighted active executions.</programlisting>
+                </para>
+              </listitem>
+            </itemizedlist>
+        </section>
+
+
+    </section>
+
+
+
+    <!-- TASKS -->
+
+    <section>
+
+      <title>Tasks</title>
+
+      <section>
+        <title>Get Task Summary</title>
+        <para>
+          Returns a task summary for a specific user: The number of tasks assigned the user, how many unassigned tasks
+          that the user may claim and how many unassigned tasks there are per group that the user is a member of.
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis role="bold">Request:</emphasis>
+              <literal>GET /tasks-summary?user={userId}</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">API:</emphasis>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getTaskService().createTaskQuery().xxx().count()</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">Response:</emphasis>
+              <programlisting>
+{
+  "assigned": {
+    "total": 0
+  },
+  "unassigned": {
+    "total": 1,
+    "groups":
+    {
+      "accountancy": 1,
+      "sales": 0,
+      "engineering": 0,
+      "management": 0
+    }
+  }
+}</programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>List Tasks</title>
+        <para>
+          Returns a paginated list of tasks that can be sorted by: "id", "name", "description", "priority", "assignee",
+          "executionId" or "processInstanceId". The list must be based on a user of a specific role: assignee
+          (lists the tasks assigned to the user) or candidate (lists the tasks that the user may claim) or a candidate
+          group (lists tasks that the members of the group may claim). If the task has a form it is given in the
+          "formResourceKey" attribute. The form for a task can be retrieved from the GET Task Form REST API call.
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis role="bold">Paginated Request:</emphasis>
+              <literal>GET /tasks?[assignee={userId}|candidate={userId}|candidate-group={groupId}]&amp;start={start=0}&amp;size={size=10}&amp;sort={sort=id}&amp;order={order=asc}</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">API:</emphasis>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getTaskService().createTaskQuery().xxx().listPage()</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">Paginated Response:</emphasis>
+              <programlisting>
+{
+  "data": [
+    {
+      "id": 127,
+      "name": "Handle vacation request",
+      "description": "Vacation request by Kermit",
+      "priority": 50,
+      "assignee": null,
+      "executionId": 118,
+      "formResourceKey": "org/activiti/examples/taskforms/approve.form"
+    }
+  ],
+  "total": 1,
+  "start": 0,
+  "sort": "id",
+  "order": "asc",
+  "size": 1
+}</programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Get Task</title>
+        <para>
+          Returns details about the task with the task id.
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis role="bold">Request:</emphasis>
+              <literal>GET /task/{taskId}</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">API:</emphasis>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getTaskService().createTaskQuery().taskId(taskId).singleResult()</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">Response:</emphasis>
+              <programlisting>
+{
+      "id": 127,
+      "name": "Handle vacation request",
+      "description": "Vacation request by Kermit",
+      "priority": 50,
+      "assignee": null,
+      "executionId": 118,
+      "formResourceKey": "org/activiti/examples/taskforms/approve.form"
+}</programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Get Task Form</title>
+        <para>
+          Returns a task's form.
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis role="bold">Request:</emphasis>
+              <literal>GET /task/{taskId}/form</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">API:</emphasis>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getTaskService().getRenderedTaskForm(taskId)</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">Response:</emphasis>
+              <programlisting>&lt;user-defined-response&gt;</programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Perform Task Operation</title>
+        <para>
+          Performs an operation (claim or complete) on a task.
+          For the "complete" operation additional variables (from a form) may be passed in the body.
+          To read more about additional variables from forms, visit the Start Process Instance section
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis role="bold">Request:</emphasis>
+              <literal>PUT /task/{taskId}/[claim|complete]</literal>
+              <programlisting>{}</programlisting>
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis role="bold">API:</emphasis>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getTaskService().xxx(taskId ...)</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis role="bold">Response:</emphasis>
+              <programlisting>
+{
+  "success": true
+}</programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+      </section>	  
+	  <section>
+        <title>List Form Properties</title>
+        <para>
+          Returns a list of properties of a form of a running task, which is defined by the process.
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis role="bold">Request:</emphasis>
+              <literal>GET /form/{taskId}/properties</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">API:</emphasis>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getFormService().getTaskFormData(taskId).getFormProperties()</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">Response:</emphasis>
+              <programlisting>
+{
+  "data": [
+    {
+      "id": "userName",
+      "name": "User",
+      "value": "foobar",
+      "type": "string",
+      "required": "true",
+      "readable": "true",
+      "writable": "true"
+    }
+]
+}</programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+      </section>
+    </section>
+
+
+    <!-- IDENTITY -->
+
+    <section>
+
+      <title>Identity</title>
+
+      <section>
+        <title>Login</title>
+        <para>
+          Authenticates a user. If user and password doesn't match a response with status 403 is returned.
+          If authentication is successful, a response with status 200 is returned.
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis role="bold">Request:</emphasis>
+              <literal>POST /login</literal>
+              <programlisting>
+{
+  "userId": "kermit",
+  "password": "kermit"
+}</programlisting>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">API:</emphasis>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getIdentityService().checkPassword(userId, password)</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">Response:</emphasis>
+              <programlisting>
+{
+  "success": true
+}</programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Get User</title>
+        <para>
+          Returns details about a user.
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis role="bold">Request:</emphasis>
+              <literal>GET /user/{userId}</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">API:</emphasis>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getIdentityService().createUserQuery().userId(userId).singleResult();</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">Response:</emphasis>
+              <programlisting>
+{
+  "id": "kermit",
+  "firstName": "Kermit",
+  "lastName": "the Frog",
+  "email": "kermit@server.com"
+}</programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>List User's Groups</title>
+        <para>
+          Returns a paginated list groups belonging to a user that can be sort by "id", "name" or "type".
+          To only get groups of a certain type use the "type" parameter.
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis role="bold">Paginated Request:</emphasis>
+              <literal>GET /user/{userId}/groups[?type=groupType]?start={start=0}&amp;size={size=10}&amp;sort={sort=id}&amp;order={order=asc}</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis role="bold">API:</emphasis>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getIdentityService().xxx(userId[, groupType])</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis role="bold">Paginated Response:</emphasis>
+              <programlisting>
+{
+  data: [
+    {
+      "id": "admin",
+      "name": "System administrator",
+      "type": "security-role"
+    }
+  ],
+  "total": 1,
+  "start": 0,
+  "sort": "id",
+  "order": "asc",
+  "size": 1
+}</programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Get Group</title>
+        <para>
+          Returns details about a group.
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis role="bold">Request:</emphasis>
+              <literal>GET /group/{groupId}</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">API:</emphasis>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getIdentityService().createGroupQuery().groupId(groupId).singleResult();</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">Response:</emphasis>
+              <programlisting>
+{
+  "id": "admin",
+  "name": "System administrator",
+  "type": "security-role"
+}</programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>List Group Users</title>
+        <para>
+          Returns details about a group's users that can be sorted by "id", "firstName", "lastName" or "email".
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis role="bold">Paginated Request:</emphasis>
+              <literal>GET /groups/{groupId}/users</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis role="bold">API:</emphasis>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getIdentityService().createUserQuery().memberOfGroup(groupId).list()</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis role="bold">Paginated Response:</emphasis>
+              <programlisting>
+{
+  data: [
+    {
+      "id": "kermit",
+      "firstName": "Kermit",
+      "lastName": "the Frog",
+      "email": "kermit@server.com"
+    }
+  ],
+  "total": 1,
+  "start": 0,
+  "sort": "id",
+  "order": "asc",
+  "size": 1
+}</programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+      </section>
+    </section>
+
+
+    <!-- MANAGEMENT -->
+
+    <section>
+
+      <title>Management</title>
+
+      <section>
+        <title>List Jobs</title>
+        <para>
+          Returns a paginated list of jobs that can be sorted by "id", "process-instance-id", "execution-id",
+          "due-date", "retries" or some custom arbitrary property id. The list can also be filtered by
+          process instance id, due date or if the jobs have retries, are executable or only have messages or timers.
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis role="bold">Paginated Request:</emphasis>
+              <literal>GET /management/jobs?process-instance={processInstanceId?}&amp;with-retries-left={withRetriesLeft=false}&amp;executable={axecutable=false}&amp;only-timers={onlyTimers=false}&amp;only-messages={onlyMessage=false}&amp;duedate-lt={iso8601Date}&amp;duedate-ltoe={iso8601Date}&amp;duedate-ht={iso8601Date}&amp;duedate-htoe={iso8601Date}&amp;start={start=0}&amp;size={size=10}&amp;sort={sort=id}&amp;order={order=asc}</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">API:</emphasis>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).createJobQuery().xxx().listPage()</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">Paginated Response:</emphasis>
+              <programlisting>
+{
+  "data": [
+    {
+      "id": "212",
+      "executionId": "211",
+      "retries": -1,
+      "processInstanceId": "210",
+      "dueDate": null,
+      "assignee": null,
+      "exceptionMessage": "Can\'t find scripting engine for \'groovy\'"
+    }
+  ],
+  "total": 1,
+  "start": 0,
+  "sort": "id",
+  "order": "asc",
+  "size": 1
+}</programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Get Job</title>
+        <para>
+          Returns details about a job.
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis role="bold">Request:</emphasis>
+              <literal>GET /management/job({jobId}</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">API:</emphasis>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).createJobQuery().id(jobId).singleResult()</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">Response:</emphasis>
+              <programlisting>
+{
+  "id": "212",
+  "executionId": "211",
+  "retries": -1,
+  "processInstanceId": "210",
+  "dueDate": null,
+  "assignee": null,
+  "exceptionMessage": "Can\'t find scripting engine for \'groovy\'",
+  "stacktrace": "org.activiti.engine.ActivitiException: Can't find scripting engine for 'groovy'\n\tat ..."
+}</programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Execute Job</title>
+        <para>
+          Executes a job.
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis role="bold">Request:</emphasis>
+              <literal>PUT /management/job/{jobId}/execute</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">API:</emphasis>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getManagementService().executeJob(jobId)</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">Response:</emphasis>
+              <programlisting>
+{
+  "success": true
+}</programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Execute Jobs</title>
+        <para>
+          Executes multiple job.
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis role="bold">Request:</emphasis>
+              <literal>POST /management/jobs/execute</literal>
+              <programlisting>
+{
+  "jobIds": [ "212" ]
+}</programlisting>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">API:</emphasis>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getManagementService().executeJob(jobId)</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">Response:</emphasis>
+              <programlisting>
+{
+  "success": true
+}</programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>List Database Tables</title>
+        <para>
+          Returns meta data information about all database tables in the engine.
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis role="bold">Request:</emphasis>
+              <literal>GET /management/tables</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">API:</emphasis>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getManagementService().getTableCount()</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">Response:</emphasis>
+              <programlisting>
+{
+  "data": [
+    {
+      "tableName": "ACT_GE_PROPERTY",
+      "noOfResults": 2
+    }
+  ]
+}</programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Get Table Meta Data</title>
+        <para>
+          Returns meta data about a database table.
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis role="bold">Request:</emphasis>
+              <literal>GET /management/table/{tableName}</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis role="bold">API:</emphasis>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getManagementService().getTableMetaData(tableName))</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis role="bold">Response:</emphasis>
+              <programlisting>
+{
+  "tableName": "ACT_GE_PROPERTY",
+  "columnNames": ["REV_","NAME_","VALUE_"],
+  "columnNames": ["class java.lang.Integer", "class java.lang.String", "class java.lang.String"]
+}</programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+
+      <section>
+        <title>Get Table Data</title>
+        <para>
+          Returns a paginated list of database table data.
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis role="bold">Paginated Request:</emphasis>
+              <literal>GET /management/table/{tableName}/data</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis role="bold">API:</emphasis>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getManagementService().createTablePageQuery().tableName(tableName).start(start).size(size).orderXXX(sort).singleResult();
+              </literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis role="bold">Paginated Response:</emphasis>
+              <programlisting>
+{
+  "data": [
+    {
+      "NAME_": "schema.version",
+      "REV_": "1",
+      "VALUE_": "5.7-SNAPSHOT"
+    },
+    {
+      "NAME_": "next.dbid",
+      "REV_": "4",
+      "VALUE_": "310"
+    }
+  ],
+  "total": 2,
+  "start": 0,
+  "sort": "NAME_",
+  "order": "asc",
+  "size": 2
+}</programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+    </section>
+
+  <para>The whole REST interface is still experimental ...<link linkend="experimental"><emphasis role="bold">&lt;/EXPERIMENTAL&gt;</emphasis></link></para>
+
+</chapter>

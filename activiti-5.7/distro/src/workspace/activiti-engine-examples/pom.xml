@@ -1,0 +1,106 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <name>Activiti Engine Examples</name>
+  <description>BPM and workflow engine</description>
+  <groupId>org.activiti</groupId>
+  <artifactId>activiti-engine-examples</artifactId>
+
+  <packaging>jar</packaging>
+  <version>5.7-SNAPSHOT</version>
+
+  <dependencies>
+  
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-engine</artifactId>
+      <version>${version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>1.2.132</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>1.8.2</version>
+      <scope>test</scope>
+    </dependency -->
+    <dependency>
+      <groupId>org.subethamail</groupId>
+      <artifactId>subethasmtp-wiser</artifactId>
+      <version>1.2</version>
+      <scope>test</scope>
+    </dependency>
+    
+  </dependencies>
+
+  <repositories>
+    <repository>
+        <id>activiti</id>
+        <name>Activiti Repository</name>
+        <url>http://maven.alfresco.com/nexus/content/repositories/activiti/</url>
+    </repository>
+    <repository>
+      <id>spring-extensions-milestone</id>
+      <name>Spring Extensions Milestone Repository</name>
+      <url>http://extensions.springframework.org/milestone</url>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>maven2.java.net</id>
+      <name>Java.net Repository for Maven 2</name>
+      <url>http://download.java.net/maven/2/</url>
+    </pluginRepository>
+  </pluginRepositories>
+
+  <build>
+    <testResources>
+      <testResource><directory>src/test/resources</directory></testResource>
+      <testResource><directory>src/main/process</directory></testResource>
+    </testResources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+          <showDeprecation>true</showDeprecation>
+          <showWarnings>true</showWarnings>
+          <optimize>true</optimize>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <failIfNoTests>false</failIfNoTests>
+          <trimStackTrace>false</trimStackTrace>
+          <redirectTestOutputToFile>true</redirectTestOutputToFile>
+          <excludes>
+            <exclude>**/*TestCase.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <licenses>
+    <license>
+      <name>Apache v2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+    </license>
+  </licenses>
+
+</project>

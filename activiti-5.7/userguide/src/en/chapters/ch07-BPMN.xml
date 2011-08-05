@@ -1,0 +1,3924 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">
+
+<chapter id="bpmn20">
+	<title>BPMN</title>
+
+	<section id="whatIsBpmn">
+
+		<title>What is BPMN?</title>
+
+		<para>
+		  See our <ulink url="http://activiti.org/faq.html#WhatIsBpmn20">FAQ entry on BPMN 2.0</ulink>.
+		</para>
+
+	</section>
+
+	<section id="bpmnExamples">
+
+		<title>Examples</title>
+
+		<para>
+		  Examples for the BPMN 2.0 constructs described in the following sections can be 
+		  found in the <emphasis>workspace/activiti-x-examples</emphasis> folders of the Activiti distribution. 
+	  </para>
+	  
+	  <para>	  
+		  See the specific section on <link linkend="examples">examples</link> for more information.
+		</para>
+
+	</section>
+
+	<section id="bpmnDefiningProcess">
+
+		<title>Defining a process</title>
+
+		<para>
+      To create a new BPMN 2.0 process definition, it's best to have your Eclipse
+      <link linkend="eclipsesetup">properly set up</link>.		  
+		</para>
+		
+		<para>
+		  Create a new XML file (<emphasis>rightclick on any project and select New->Other->XML-XML File</emphasis>) and give it a name.
+		  Make sure that the file <emphasis role="bold">ends with .bpmn20.xml</emphasis>, since
+		  otherwise the engine won't pick up this file for deployment.
+		  <mediaobject><imageobject><imagedata align="center" fileref="images/new.bpmn.procdef.png"/></imageobject></mediaobject>
+		</para>
+		
+		<para>
+		  The root element of the BPMN 2.0 schema is the <emphasis role="bold">definitions</emphasis> element.
+		  Within this element, multiple process definitions can be defined (although we advise to have only one
+		  process definition in each file, since this simplifies maintenance later in the development process).
+		  An empty process definition looks as follows. Note that the minimal definitions element
+		  only needs the <emphasis>xmlns</emphasis> and <emphasis>targetNamespace</emphasis> declaration.
+		  The targetNamespace can be anything, and is useful for categorizing process definitions.
+		  <programlisting>
+&lt;definitions 
+  xmlns=&quot;http://www.omg.org/spec/BPMN/20100524/MODEL&quot;
+  xmlns:activiti=&quot;http://activiti.org/bpmn&quot;
+  targetNamespace=&quot;Examples&quot;&gt;
+
+  &lt;process id=&quot;myProcess&quot; name=&quot;My First Process&quot;&gt;
+    ..
+  &lt;/process&gt;
+
+&lt;/definitions&gt;</programlisting>
+		</para>
+		
+		<para>
+		  Optionally you can also add the online schemalocation of the BPMN 2.0 xsd schema,
+		  as an alternative to the  <link linkend="eclipsesetup">XML catalog configuration in Eclipse</link>.
+		  <programlisting>
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL 
+                    http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd</programlisting>
+		</para>
+		
+		<para>
+		  The process element has two attributes:
+		  <itemizedlist>
+		    <listitem>
+		      <para>
+		        <emphasis role="bold">id</emphasis>: this attribute is <emphasis role="bold">required</emphasis>
+		        and maps to the <emphasis role="bold">key</emphasis> property of an Activiti <emphasis>
+		        ProcessDefinition</emphasis> object.
+		        This id can then be used to start a new process instance of the process definition, through the 
+		        <emphasis>startProcessInstanceByKey</emphasis> method on the <literal>RuntimeService</literal>.
+		        This method will always take the <emphasis role="bold">latest deployed version</emphasis>
+		        of the process definition.
+		        <programlisting>ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("myProcess");</programlisting>
+		        Important to note here is that this is not the same as calling the 
+		        <emphasis>startProcessInstanceById</emphasis> method. This method expects the String id 
+		        that was generated at deploy time by the Activiti engine, and can be retrieved by calling the
+		        <emphasis>processDefinition.getId()</emphasis> method.
+		        The format of the generated id is <emphasis role="bold">'key:version'</emphasis>, 
+		        and the length is <emphasis role="bold">constrained to 64 characters</emphasis>.
+		        If you get an <emphasis>ActivitiException</emphasis> stating that the generated id
+		        is too long, limit the text in the <emphasis>key</emphasis> field of the process.
+		      </para>
+		    </listitem>
+		    <listitem>
+          <para>
+            <emphasis role="bold">name</emphasis>: this attribute is <emphasis role="bold">optional</emphasis>
+            and maps to the <emphasis>name</emphasis> property of a <emphasis>ProcessDefinition</emphasis>.
+            The engine itself doesn't use this property, so it can for example be used for displaying a more
+            human-friendly name in a user interface.
+          </para>
+        </listitem>
+		  </itemizedlist>
+		</para>
+
+	</section>
+	
+	<section id="10minutetutorial">
+	
+    <title>Getting started: 10 minute tutorial</title>
+    
+    <para>
+      In this section we will cover a (very simple) business process that we will use to introduce
+      some basic Activiti concepts and the Activiti API. 
+    </para>
+    
+    <section id="bpmn10MinuteTutorialPrerequisites">
+    
+      <title>Prerequisites</title>
+      
+      <para>
+        This tutorial assumes that you have the <link linkend="demo.setup.one.minute.version">Activiti demo setup running</link>.
+        Optionally, you should also have an Eclipse installed and <link linkend="eclipsesetup">imported the Activiti examples</link>.
+      </para>
+    
+    </section>
+    
+    <section id="bpmn10MinuteTutorialGoal">
+    
+      <title>Goal</title>
+      
+      <para>
+        The goal of this tutorial is to learn about Activiti and some basic BPMN 2.0 concepts.
+        The end result will be a simple Java SE program that deploys a process definition,
+        and interacts with this process through the Activiti engine API. We'll also touch
+        some of the tooling around Activiti. Of course, what you'll learn in this tutorial can 
+        also be used when building your own web applications around your business processes.
+      </para>
+    
+    </section>
+    
+    <section id="bpmnFirstExampleUseCase">
+      
+      <title>Use case</title>
+      
+      <para>
+				The use case is straightfoward: we have a company, let's call it BPMCorp.
+				In BPMCorp, a financial report needs to be written every month for the
+				company shareholders. This is the responsibility of the accountancy
+				department. When the report is finished, one of the members of the
+				upper management needs to approve the document before it is sent to all
+				the shareholders.
+      </para> 
+      
+      <para>
+        All files and code snippets used through the next sections can be found
+        in the <link linkend="examples">examples</link> shipped with the Activiti distribution.
+        Look for the package <emphasis>org.activiti.examples.bpmn.usertask</emphasis>.
+      </para>   
+    
+    </section>
+    
+    <section id="bpmnFirstExampleDiagram">
+    
+      <title>Process diagram</title>
+    
+      <para>
+				The business process as described above, can be graphically visualized
+				using the <link linkend="activitiModeler">Activiti Modeler</link> or the 
+				<link linkend="activitiDesigner">Activiti Designer</link>. However, for this tutorial
+				we'll type the XML ourselves, as this learns us the most at this point. 
+				The graphical BPMN 2.0 notation of our process looks like this:
+			  <mediaobject><imageobject><imagedata align="center" fileref="images/financial.report.example.diagram.png"/></imageobject></mediaobject>
+        What we see is a <link linkend="bpmnNoneStartEvent">none start event</link> (circle on the left),
+        followed by two <link linkend="bpmnUserTask">user tasks</link>:
+        <emphasis>'Write monthly financial report'</emphasis> and 
+        <emphasis>'Verify monthly financial report'</emphasis>, ending in
+        a <link linkend="bpmnNoneEndEvent">none end event</link> (circle with thick border on the right).
+      </para>
+    
+    </section>
+    
+    <section id="bpmnFirstExampleXml">
+    
+      <title>XML representation</title>
+      
+      <para>
+        The XML version of this business process (<emphasis>FinancialReportProcess.bpmn20.xml</emphasis>) looks as shown below.
+        It's easy to recognize the main elements of our process (click on the links
+        for going to the detailed section of that BPMN 2.0 construct):
+        <itemizedlist>
+          <listitem>
+            <para>
+              The <link linkend="bpmnNoneStartEvent">(none) start event</link>
+              learns us what the <emphasis>entry point</emphasis> to the process is.
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              The <link linkend="bpmnUserTask">user tasks</link> declarations are the representation
+              of the human tasks of our process. Note that the first task is assigned
+              to the <emphasis>accountancy</emphasis> group, while the second task is 
+              assigned to the <emphasis>management</emphasis> group.
+              See <link linkend="bpmnUserTaskAssignment">the section on user task assignment</link>
+              for more information on how users and groups can be assigned
+              to user tasks.
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              The process ends when the <link linkend="bpmnNoneEndEvent">none end event</link>
+              is reached.
+            </para> 
+          </listitem>
+          <listitem>
+            <para>
+              The elements are connected with each other through <link linkend="bpmnSequenceFlow">sequence flows</link>.
+              These sequence flow have a <emphasis>source</emphasis> and <emphasis>target</emphasis>,
+              defining the <emphasis>direction</emphasis> of the sequence flow.
+            </para>
+          </listitem>
+        </itemizedlist>
+        <programlisting>
+&lt;definitions id=&quot;definitions&quot;
+  targetNamespace=&quot;http://activiti.org/bpmn20&quot; 
+  xmlns:activiti=&quot;http://activiti.org/bpmn&quot;
+  xmlns=&quot;http://www.omg.org/spec/BPMN/20100524/MODEL&quot;&gt;
+	
+	&lt;process id=&quot;financialReport&quot; name=&quot;Monthly financial report reminder process&quot;&gt;
+	  
+	  &lt;startEvent id=&quot;theStart&quot; /&gt;
+	    
+	  &lt;sequenceFlow id='flow1' sourceRef='theStart' targetRef='writeReportTask' /&gt;
+	    
+	  &lt;userTask id=&quot;writeReportTask&quot; name=&quot;Write monthly financial report&quot; &gt;
+	    &lt;documentation&gt;
+	      Write monthly financial report for publication to shareholders.
+	    &lt;/documentation&gt;
+	    &lt;potentialOwner&gt;
+	      &lt;resourceAssignmentExpression&gt;
+	        &lt;formalExpression&gt;accountancy&lt;/formalExpression&gt;
+	      &lt;/resourceAssignmentExpression&gt;
+	    &lt;/potentialOwner&gt;
+	  &lt;/userTask&gt;
+	    
+	  &lt;sequenceFlow id='flow2' sourceRef='writeReportTask' targetRef='verifyReportTask' /&gt;
+	      
+	  &lt;userTask id=&quot;verifyReportTask&quot; name=&quot;Verify monthly financial report&quot; &gt;
+	    &lt;documentation&gt;
+	      Verify monthly financial report composed by the accountancy department.
+	      This financial report is going to be sent to all the company shareholders.  
+	    &lt;/documentation&gt;
+	    &lt;potentialOwner&gt;
+	      &lt;resourceAssignmentExpression&gt;
+	        &lt;formalExpression&gt;management&lt;/formalExpression&gt;
+	      &lt;/resourceAssignmentExpression&gt;
+	    &lt;/potentialOwner&gt;
+	  &lt;/userTask&gt;
+	    
+	  &lt;sequenceFlow id='flow3' sourceRef='verifyReportTask' targetRef='theEnd' /&gt;
+	      
+	  &lt;endEvent id=&quot;theEnd&quot; /&gt;
+	      
+	&lt;/process&gt;
+	
+&lt;/definitions&gt;</programlisting>        
+      </para>
+    
+    </section>
+    
+    <section id="bpmnFirstExamplStartProcess">
+    
+      <title>Starting a process instance</title>
+      
+      <para>
+        We now have created the <emphasis role="bold">process definition</emphasis> of our
+        business process. From such a process
+        definition, we can create <emphasis role="bold">process instances</emphasis>.
+        In this case, one process instance would match with the creation and verification
+        of the financial report every month. All the process instances share the same process definition.
+      </para>
+      
+      <para>
+        To be able to create process instances from a given process definition,
+        we must first <emphasis role="bold">deploy</emphasis> this process definition.
+        Deploying a process definition means two things:
+        <itemizedlist>
+          <listitem>
+            <para>
+              The process definition will be stored in the persistent datastore that
+              is configured for your Activiti engine. So by deploying our business process,
+              we make sure that the engine will find the process definition after an engine reboot.
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              The BPMN 2.0 process file will be parsed to an in-memory object model
+              that can be manipulated through the Activiti API.
+            </para>
+          </listitem>
+        </itemizedlist>
+        More information on deployment can be found <link linkend="chDeployment">in the dedicated section on deployment</link>.
+      </para>
+      
+      <para>
+        As described in that section, deployment can happen in several
+        ways. One way is through the API as follows. Note that all interaction with the Activiti
+        engine happens through its <emphasis>services</emphasis>.
+        <programlisting>Deployment deployment = repositoryService.createDeployment()
+  .addClasspathResource("FinancialReportProcess.bpmn20.xml")
+  .deploy();</programlisting>
+      </para>
+      
+      <para>
+        Now we can start a new process instance using 
+        the <emphasis>id</emphasis> we defined in the process definition (see process element in the XML file).
+        Note that this <emphasis>id</emphasis> in Activiti terminology
+        is called the <emphasis role="bold">key</emphasis>.
+        <programlisting>ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("financialReport");</programlisting>
+        This will create a process instance that
+        will go first through the start event. After the start event, it follows all the outgoing
+        sequence flow (only one in this case) and the first task ('write monthly financial report')
+        is reached. The Activiti engine will now store a task in the persistent database. 
+        At this point, the user or group assignments attached to the task are resolved and also stored in the 
+        database. It's important to note that the Activiti engine will continue process execution steps
+        until it reaches a <emphasis>wait state</emphasis>, such as the user task. At such a wait state,
+        the current state of the process instance is stored in the database. It remains in that
+        state until a user decides to complete its task. At that point, the engine will continue 
+        until it reaches a new wait state or the end of the process. When the engine reboots or crashes
+        in the meantime, the state of the process is safe and well in the database.
+      </para>
+      
+      <para>
+        After the task is created, the <emphasis>startProcessInstanceByKey</emphasis> method will return
+        since the user task activity is a <emphasis>wait state</emphasis>, In this case, the task is assigned to a group, which means that the every
+        member of the group is a <emphasis role="bold">candidate</emphasis> to perform the task.
+      </para>
+      
+      <para>
+        We can now throw this all together and create a simple Java program. Create a new 
+        Eclipse project and add the Activiti jars and dependencies to its classpath 
+        (these can be found <emphasis>setup/files/dependencies/libs</emphasis>).
+        Before we can call the Activiti services, we must first construct a <literal>ProcessEngine</literal>
+        that gives us access to the services. Here we use the <emphasis>'standalone'</emphasis> configuration,
+        that constructs a ProcessEngine that uses the database also used in the demo setup.
+      </para>
+      
+      <para>
+        You can download the process definition XML <ulink url="images/FinancialReportProcess.bpmn20.xml">here</ulink>. This file
+        contains the XML as shown above, but contains also the necessary BPMN 
+        <link linkend="generatingProcessDiagram">diagram interchange information</link> to
+        visualize the process in the Activiti tools.
+      </para>
+      
+      <para>
+        <programlisting>
+public static void main(String[] args) {
+    
+  // Create Activiti process engine
+  ProcessEngine processEngine = ProcessEngineConfiguration
+    .createStandaloneProcessEngineConfiguration()
+    .buildProcessEngine();
+  
+  // Get Activiti services
+  RepositoryService repositoryService = processEngine.getRepositoryService();
+  RuntimeService runtimeService = processEngine.getRuntimeService();
+  
+  // Deploy the process definition
+  repositoryService.createDeployment()
+    .addClasspathResource(&quot;FinancialReportProcess.bpmn20.xml&quot;)
+    .deploy();
+    
+  // Start a process instance
+  runtimeService.startProcessInstanceByKey(&quot;financialReport&quot;);
+}</programlisting>
+      </para>
+    
+    </section>
+    
+    <section id="bpmnFirstExampleCandidateList">
+    
+      <title>Task lists</title>  
+      
+      <para>
+        We can now retrieve this task through the <emphasis>taskService</emphasis> by adding following logic:
+        <programlisting>List&lt;Task&gt; tasks = taskService.createTaskQuery().taskCandidateUser(&quot;kermit&quot;).list();</programlisting>
+        Note that the user we pass to this operation needs to be a member of 
+        the <emphasis>accountancy</emphasis> group, since that was declared in the process definition:
+        <programlisting>
+&lt;potentialOwner&gt;
+  &lt;resourceAssignmentExpression&gt;
+    &lt;formalExpression&gt;<emphasis role="bold">accountancy</emphasis>&lt;/formalExpression&gt;
+  &lt;/resourceAssignmentExpression&gt;
+&lt;/potentialOwner&gt;</programlisting>
+     
+        We could also use the task query API to get the same results using the name of the group.
+        We can now add following logic to our code:
+         <programlisting>
+TaskService taskService = processEngine.getTaskService();
+List&lt;Task&gt; tasks = taskService.createTaskQuery().taskCandidateGroup(&quot;accountancy&quot;).list();</programlisting>
+</para>
+      
+      <para>
+        Since we've configured our ProcessEngine to use the same database as the demo setup is using (run the <link linkend="demo.setup">demo setup</link> if you haven't done it yet'),
+        we can now log into <ulink url="http://localhost:8080/activiti-explorer/">Activiti Explorer</ulink> 
+        (login with fozzie/fozzie), and we fill find that we can start our business process after
+        selecting the <emphasis>Processes</emphasis> page and
+        and clicking on the <emphasis>'Start Process'</emphasis> link in the <emphasis>'Actions'</emphasis> column corresponding to the <emphasis>'Monthly financial report'</emphasis> process.
+        
+        <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.financial.report.example.start.process.png"/></imageobject></mediaobject>
+        
+        As explained, the process will execute up to the first user task. Since we're logged in
+        as kermit, we can see that there is a new candidate task available for him after we've started
+        a process instance. Select the <emphasis>Tasks</emphasis> page to view this new task. 
+        Note that even if the process was started by someone else, the task would still
+        be visible as a candidate task to everyone in the accountancy group.
+        
+        <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.financial.report.example.task.assigned.png"/></imageobject></mediaobject>
+        
+      </para>
+      
+    </section>
+    
+    <section id="bpmnFirstExampleClaimTask">
+    
+      <title>Claiming the task</title>
+      
+      <para>
+        An accountant now needs to <emphasis role="bold">claim the task</emphasis>. By claiming the
+        task, the specific user will become the <emphasis role="bold">assignee</emphasis> of the task
+        and the task will disappear from every task list of the other members of the accountancy group.
+        Claiming a task is programmatically done as follows:
+        <programlisting>taskService.claim(task.getId(), &quot;fozzie&quot;);</programlisting>
+        The task is now in the <emphasis role="bold">personal task list of the one
+        that claimed the task</emphasis>.
+        <programlisting>List&lt;Task&gt; tasks = taskService.createTaskQuery().taskAssignee(&quot;fozzie&quot;).list();</programlisting>
+      </para>
+      
+      <para>
+        In the Activiti Explorer UI, clicking the <emphasis>claim</emphasis> button will
+        call the same operation. The task will now move to the personal task list of the logged
+        on user. You also see that the assignee of the task changed to the current logged in user.
+        
+       <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.financial.report.example.claim.task.png"/></imageobject></mediaobject>
+      </para>
+      
+    </section>
+      
+    <section id="bpmnFirstExampleCompleteTask">
+    
+      <title>Completing the task</title>
+      
+      <para>
+        The accountant can now start working on the financial report. Once the report is finished,
+        he can <emphasis role="bold">complete the task</emphasis>, which means that all
+        work for that task is done.
+        <programlisting>taskService.complete(task.getId());</programlisting>
+      </para>
+      
+      <para>
+        For the Activiti engine, this is an external signal that the process instance execution
+        must be continued. The task itself is removed from the runtime data.
+        The single outgoing transition out of the task is followed, bringing
+        the execution in the second task (<emphasis>'verification of the report'</emphasis>). 
+        The same mechanism as described for the first task will now
+        happen, with the small difference that the task will be assigned to the 
+        <emphasis>management</emphasis> group.
+      </para>
+      
+      <para>
+        In the demo setup, completing the task is done by clicking the <emphasis>complete</emphasis>
+        button in the task list. Since Fozzie isn't an accountant, we need to log out of
+        the Activiti Explorer and login in as <emphasis>kermit</emphasis> (which is a manager).
+        The second task is now visible in the unassigned task lists.
+      </para>
+      
+    </section>
+      
+    <section id="bpmnFirstExampleEndingProcess">
+
+      <title>Ending the process</title>
+        
+      <para>
+        The verification task can be retrieved and claimed in exactly the same way as before.
+        Completing this second task, will bring process execution at the end event, which finishes
+        the process instance. The process instance and all related runtime execution data
+        is removed from the datastore.
+      </para>
+      
+      <para>
+        When you log into Activiti Explorer you can verify this, since no records will be 
+        found in the table where the process executions are stored.
+        
+         <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.financial.report.example.process.ended.png"/></imageobject></mediaobject> 
+      </para>
+      
+      <para>
+        Programmatically, you can also verify that the process is ended using the <literal>historyService</literal>
+        <programlisting>
+HistoryService historyService = processEngine.getHistoryService();
+HistoricProcessInstance historicProcessInstance = 
+historyService.createHistoricProcessInstanceQuery().processInstanceId(procId).singleResult();
+System.out.println(&quot;Process instance end time: &quot; + historicProcessInstance.getEndTime());</programlisting>
+      </para>
+      
+    </section>
+    
+    <section id="bpmnFirstExampleCode">
+    
+      <title>Code overview</title>
+      
+      <para>
+        Taking all the snippets from previous sections, and you should have something like this
+        (this code takes in account that you probably will have started a few process instances
+        through the Activiti Explorer UI. As such, it always retrieves a list of tasks instead
+        of one task, so it works always):
+        <programlisting>
+public class TenMinuteTutorial {
+  
+  public static void main(String[] args) {
+    
+    // Create Activiti process engine
+    ProcessEngine processEngine = ProcessEngineConfiguration
+      .createStandaloneProcessEngineConfiguration()
+      .buildProcessEngine();
+    
+    // Get Activiti services
+    RepositoryService repositoryService = processEngine.getRepositoryService();
+    RuntimeService runtimeService = processEngine.getRuntimeService();
+    
+    // Deploy the process definition
+    repositoryService.createDeployment()
+      .addClasspathResource(&quot;FinancialReportProcess.bpmn20.xml&quot;)
+      .deploy();
+    
+    // Start a process instance
+    String procId = runtimeService.startProcessInstanceByKey(&quot;financialReport&quot;).getId();
+    
+    // Get the first task
+    TaskService taskService = processEngine.getTaskService();
+    List&lt;Task&gt; tasks = taskService.createTaskQuery().taskCandidateGroup(&quot;accountancy&quot;).list();
+    for (Task task : tasks) {
+      System.out.println(&quot;Following task is available for accountancy group: &quot; + task.getName());
+      
+      // claim it
+      taskService.claim(task.getId(), &quot;fozzie&quot;);
+    }
+    
+    // Verify Fozzie can now retrieve the task
+    tasks = taskService.createTaskQuery().taskAssignee(&quot;fozzie&quot;).list();
+    for (Task task : tasks) {
+      System.out.println(&quot;Task for fozzie: &quot; + task.getName());
+      
+      // Complete the task
+      taskService.complete(task.getId());
+    }
+    
+    System.out.println(&quot;Number of tasks for fozzie: &quot; 
+            + taskService.createTaskQuery().taskAssignee(&quot;fozzie&quot;).count());
+    
+    // Retrieve and claim the second task
+    tasks = taskService.createTaskQuery().taskCandidateGroup(&quot;management&quot;).list();
+    for (Task task : tasks) {
+      System.out.println(&quot;Following task is available for accountancy group: &quot; + task.getName());
+      taskService.claim(task.getId(), &quot;kermit&quot;);
+    }
+    
+    // Completing the second task ends the process
+    for (Task task : tasks) {
+      taskService.complete(task.getId());
+    }
+    
+    // verify that the process is actually finished
+    HistoryService historyService = processEngine.getHistoryService();
+    HistoricProcessInstance historicProcessInstance = 
+      historyService.createHistoricProcessInstanceQuery().processInstanceId(procId).singleResult();
+    System.out.println(&quot;Process instance end time: &quot; + historicProcessInstance.getEndTime());
+  }
+
+}</programlisting>
+      </para>
+      
+      <para>
+        This code is also available as a unit test shipped with the examples (yes, you should unit test your processes! 
+        Read all about it in <link linkend="apiUnitTesting">the unit testing section</link>).
+      </para>
+    
+    </section>
+    
+    <section id="bpmnFirstExampleFutureEnhancements">
+    
+      <title>Future enhancements</title>
+      
+      <para>
+        It's easy to see that this business process is too simple to be usable in reality.
+        However, as you are going through the BPMN 2.0 constructs available in Activiti, 
+        you will be able to enhance the business process by 
+        
+        <itemizedlist>
+          <listitem>
+            <para>
+              defining <emphasis role="bold">gateways</emphasis> that act as decisions.
+              This way, a manager could reject the financial report which would recreate
+              the task for the accountant. 
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              declaring and using <emphasis role="bold">variables</emphasis>,
+              such that we can store or reference the report so that it can 
+              be visualized in the form.
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              defining a <emphasis role="bold">service task</emphasis> at the end of
+              the process that will send the report to every shareholder.
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              etc.
+            </para>
+          </listitem>
+        </itemizedlist>
+      </para>
+    
+    </section>
+  	
+	</section>
+
+	<section id="bpmnConstructs">
+
+		<title>BPMN 2.0 constructs</title>
+		
+			<section id="bpmnCustomExtensions">
+	
+	    <title>Custom extensions</title>
+	
+	    <para>
+	      The BPMN 2.0 standard is a good thing for all parties involved. End-users don't suffer
+	      from a vendor lock-in that comes by depending on a proprietary solution. Frameworks,
+	      and particularly open-source frameworks such as Activiti, can implement a solution
+	      that has the same (and often better implemented ;-) features as those of a big vendor. 
+	      Due to the BPMN 2.0 standard, the transition from such a big vendor solution towards
+	      Activiti is an easy and smooth path.  
+	    </para>
+	    
+	    <para>
+	      The downside of a standard however, is the fact that it is always the result of 
+	      many discussions and compromises between different companies (and often visions). 
+	      As a developer reading the BPMN 2.0 XML of a process definition, sometimes it feels like 
+	      certain constructs or way to do things are too cumbersome.
+	      Since Activiti puts ease of development as a top-priority, we introduced something called the
+	      <emphasis role="bold">'Activiti BPMN extensions'</emphasis>.
+	      These 'extensions' are new constructs or ways to simplify certain constructs, that
+	      are not in the BPMN 2.0 specification.
+	    </para>
+	    
+	    <para>
+	      Although the BPMN 2.0 specification clearly states that it was made for custom extension,
+	      we make sure that:
+	      <itemizedlist>
+	        <listitem>
+	          <para>
+	            The prerequisite of such a custom extension is that there 
+	            <emphasis role="bold">always</emphasis> must be a simple transformation to
+	            the <emphasis role="bold">standard way of doing things</emphasis>.
+	            So when you decide to use a custom extension, you don't have to be afraid 
+	            that there is no way back.
+	          </para>
+	        </listitem>
+	        <listitem>
+	          <para>
+	            When using a custom extension, this is always clearly indicated by giving
+	            the new XML element, attribute, etc. the <emphasis role="bold">activiti:</emphasis> 
+	            namespace prefix.
+	          </para>
+	        </listitem>
+	        <listitem>
+	          <para>
+	            The goal of these extensions is to eventually push them back into a next version
+	            of the BPMN specification, or at least trigger a discussion that can lead to a revision
+	            of that specific BPMN construct. 
+	          </para>
+	        </listitem>
+	      </itemizedlist> 
+	    </para>
+	    
+	    <para>
+	      So whether you want to use a custom extension or not, is completely up to you. 
+	      Several factors will influence this decision (graphical editor usage, company policy, etc.).
+	      We only provide them since we believe that some points in the standard can be done
+	      simpler or more efficient. Feel free to give us (positive and/or negative) feedback on 
+	      our extensions, or to post new ideas for custom extensions. Who knows, some day your idea
+	      might pop up in the specification!.
+	    </para>
+	  
+	  </section>
+	  
+	  <section id="bpmnEvents">
+	   
+	    <title>Events</title>
+	    
+	    <para>
+	     Events are used to model something that happens during the lifetime process.
+	     Events are always visualized as a circle.
+	     
+	     In BPMN 2.0, there exist
+	     two main event categories: <emphasis>catching</emphasis> or <emphasis>throwing</emphasis> event.
+       <itemizedlist>
+         <listitem>
+           <para>
+             <emphasis role="bold">Catching: </emphasis>when process execution arrives in the event,
+             it will wait for a trigger to happen. The type of trigger is defined by the inner icon
+             or the type declaration in the XML. Catching events are visually differentiated from a 
+             throwing event by the inner icon that is not filled (i.e. it is white).
+           </para>
+         </listitem>
+         <listitem>
+           <para>
+             <emphasis role="bold">Throwing: </emphasis>when process execution arrives in the event, a 
+              trigger is fired. The type of trigger is defined by the inner icon or the type declaration
+              in the XML. Throwing events are visually differentiated from a catching event by
+              the inner icon that is filled with black.
+           </para>
+         </listitem>
+       </itemizedlist>
+	     
+	    </para>
+	   
+
+      <section id="timerEventDefinitions">
+          <title>Timer events definitions</title>
+          <para>Timer events are events which are triggered by defined timer. They can be used as
+          <link linkend="bpmnTimerStartEvent">start event</link>,
+              <link linkend="bpmnIntermediateCatchingEvent">intermediate event</link>
+          or <link linkend="bpmnTimerBoundaryEvent">boundary event</link></para>
+
+          <para>
+              Timer definition must have exactly one element from the following:
+              <itemizedlist>
+                  <listitem>
+                      <para><emphasis role="bold">timeDate</emphasis>. This format specifies fixed date in <ulink url="http://en.wikipedia.org/wiki/ISO_8601#Dates">ISO 8601</ulink> format, when trigger will be fired. Example:
+
+                      <programlisting>
+&lt;timerEventDefinition&gt;
+    &lt;timeDate&gt;2011-03-11T12:13:14&lt;/timeDate&gt;
+&lt;/timerEventDefinition&gt;</programlisting>
+                      </para>
+                  </listitem>
+                  <listitem>
+                      <para>
+                        <emphasis role="bold">timeDuration</emphasis>. To specify how long the timer should run before it is fired, a <emphasis>timeDuration</emphasis>
+                        can be specified as sub-element of <emphasis>timerEventDefinition</emphasis>. The format
+                        used is the <ulink url="http://en.wikipedia.org/wiki/ISO_8601#Durations">ISO 8601</ulink>
+                        format (as required by the BPMN 2.0 specification). Example (interval lasting 10 days):
+                      <programlisting>
+&lt;timerEventDefinition&gt;
+    &lt;timeDuration&gt;P10D&lt;/timeDuration&gt;
+&lt;/timerEventDefinition&gt;</programlisting>
+
+                      </para>
+                  </listitem>
+                  <listitem>
+                      <para><emphasis role="bold">timeCycle</emphasis>. Specifies repeating interval, which can
+                          be useful for starting process periodically, or for sending multiple reminders for overdue user task. Time cycle element can be in two formats. First is the format of recurring time duration,
+                          as specified by <ulink url="http://en.wikipedia.org/wiki/ISO_8601#Repeating_intervals">ISO 8601</ulink> standard. Example (3 repeating intervals, each lasting 10 hours):
+                          <programlisting>
+&lt;timerEventDefinition&gt;
+    &lt;timeCycle&gt;R3/PT10H&lt;/timeCycle&gt;
+&lt;/timerEventDefinition&gt;</programlisting>
+                      </para>
+                      <para>Additionally, you can specify time cycle using cron expressions, example below shows trigger firing every 5 minutes,
+                          starting at full hour:
+                          <programlisting>
+0 0/5 * * * ?</programlisting>
+                          Please see <ulink url="http://www.quartz-scheduler.org/docs/tutorials/crontrigger.html">tutorial</ulink>
+                          for using cron expressions.
+                      </para>
+                      <para>
+                            <emphasis role="bold">Note:</emphasis> The first symbol denotes seconds, not minutes as in normal Unix cron.
+                      </para>
+                      <para>The recurring time duration is better suited for handling relative timers, which are calculated with respect to
+                      some particular point in time (e.g. time when user task was started), while cron expressions can handle absolute
+                      timers - which is particularly useful for <link linkend="timerStartEventDescription">timer start events</link>.</para>
+                  </listitem>
+              </itemizedlist>
+          </para>
+          <para>
+            You can use expressions for the timer event definitions, by doing so you can influence the timer defintion
+            based on process variables. The process variables must contain the ISO 8601 (or cron for cycle type) string for appropriate timer type.
+  <programlisting>
+  &lt;boundaryEvent id=&quot;escalationTimer&quot; cancelActivity=&quot;true&quot; attachedToRef=&quot;firstLineSupport&quot;&gt;
+     <emphasis role="bold">&lt;timerEventDefinition&gt;
+      &lt;timeDuration&gt;${duration}&lt;/timeDuration&gt;
+    &lt;/timerEventDefinition&gt;</emphasis>
+  &lt;/boundaryEvent&gt;
+  </programlisting>
+          </para>
+
+        <para>
+          <emphasis role="bold">Note:</emphasis> timers are only fired when
+          the job executor is enabled (i.e. <emphasis>jobExecutorActivate</emphasis>
+          needs to be set to <literal>true</literal> in the <literal>activiti.cfg.xml</literal>, since the job
+          executor is disabled by default).
+        </para>
+
+      </section>
+      </section>
+
+	  <section id="bpmnStartEvents">
+	  
+	   <title>Start events</title>
+	  
+	   <para>
+	     A start event indicates where a process starts. The type of start event (process starts on arrival of 
+	     message, on specific time intervals, etc.), defining <emphasis>how</emphasis> the process is
+	     started is shown as a small icon in the visual representation of the event. In the XML representation,
+	     the type is given by the declaration of a sub-element.
+	   </para>
+	   
+	   <para>
+	     Start events <emphasis role="bold">are always catching</emphasis>: conceptually
+	     the event is (at any time) waiting until a certain trigger happens.
+	   </para>
+	   
+	   <para>
+	     In a start event, following activiti-specific properties can be specified:
+	   </para>
+	   
+	   <itemizedlist>
+       <listitem>
+         <para>
+           <emphasis role="bold">formKey</emphasis>: references to a form template that users have to fill in
+           when starting a new process instance.  More information can be found in 
+           <link linkend="forms">the forms section</link> Example:
+           <programlisting>&lt;startEvent id=&quot;request&quot; activiti:formKey=&quot;org/activiti/examples/taskforms/request.form&quot; /&gt;</programlisting>
+         </para>
+       </listitem>
+       <listitem>
+         <para>
+           <emphasis role="bold">initiator</emphasis>: identifies the variable name in which the authenticated 
+           user id will be stored when the process is started.  Example:
+           <programlisting>&lt;startEvent id=&quot;request&quot; activiti:initiator=&quot;initiator&quot; /&gt;</programlisting>
+           The authenticated user must be set with the method <literal>IdentityService.setAuthenticatedUserId(String)</literal>
+           in a try-finally block like this:
+           <programlisting>try {
+  identityService.setAuthenticatedUserId(&quot;bono&quot;);
+  runtimeService.startProcessInstanceByKey(&quot;someProcessKey&quot;);
+} finally {
+  identityService.setAuthenticatedUserId(null);
+}
+</programlisting>
+           This code is baked into the Activiti Explorer application.  So it works in combination with 
+           <xref linkend="forms" />
+         </para>
+       </listitem>
+     </itemizedlist>
+	   
+	  
+	  </section>
+
+		<section id="bpmnNoneStartEvent">
+
+			<title>None start event</title>
+			
+			<section id="noneStartEventDescription">
+       
+        <title>Description</title>
+        
+        <para>
+          A 'none' start event technically means that the trigger for starting the process instance
+          is unspecified. This means that the engine cannot anticipate when the process instance must
+          be started. The none start event is used when the process instance is started through the API
+          by calling one of the <emphasis>startProcessInstanceByXXX</emphasis> methods.
+          <programlisting>
+ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</programlisting>
+        </para>
+        
+        <para>
+          <emphasis>Note: </emphasis> a subprocess always has a none start event.
+        </para>
+       
+      </section>
+
+			<section id="noneStartEventGraphicalNotation">
+			 
+			  <title>Graphical notation</title>
+			  
+			  <para>
+			    A none start event is visualized as a circle with no inner icon (i.e. no trigger type). 
+			    <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.none.start.event.png"/></imageobject></mediaobject>
+			  </para>
+			 
+			</section>
+			
+			<section id="noneStartEventXml">
+       
+        <title>XML representation</title>
+        
+        <para>
+          The XML representation of a none start event is the normal
+          start event declaration, without any sub-element (other start event types
+          all have a sub-element declaring the type).
+          <programlisting>
+&lt;startEvent id=&quot;start&quot; name=&quot;my start event&quot; /&gt;</programlisting>
+        </para>
+       
+      </section>
+
+		</section>
+
+        <section id="bpmnTimerStartEvent">
+
+            <title>Timer start event</title>
+
+            <section id="timerStartEventDescription">
+
+        <title>Description</title>
+
+        <para>
+            A timer start event is used to create process instance at given time. It can be
+            used both for processes which should start only once and for processes that should
+            start in specific time intervals.
+        </para>
+
+        <para>
+          <emphasis>Note: </emphasis> a subprocess cannot have a timer start event.
+        </para>
+
+      </section>
+
+            <section id="timerStartEventGraphicalNotation">
+
+              <title>Graphical notation</title>
+
+              <para>
+                A none start event is visualized as a circle with clock inner icon.
+                <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.clock.start.event.png"/></imageobject></mediaobject>
+              </para>
+
+            </section>
+
+            <section id="timerStartEventXml">
+
+        <title>XML representation</title>
+
+        <para>
+          The XML representation of a timer start event is the normal
+          start event declaration, with timer definition subelement. Please refer to <link linkend="timerEventDefinitions">timer definitions</link> for configuration details.
+          for details on configuration details.
+         </para>
+           <para>Example: process will start 4 times, in 5 minute intervals, starting on 11th march 2011, 12:13
+           <programlisting>
+        &lt;startEvent id=&quot;theStart&quot;&gt;
+            &lt;timerEventDefinition&gt;
+                &lt;timeCycle&gt;R4/2011-03-11T12:13/PT5M&lt;/timeCycle&gt;
+            &lt;/timerEventDefinition&gt;
+        &lt;/startEvent&gt;
+           </programlisting>
+               </para>
+            <para>
+               Example: process will start once, on selected date
+           <programlisting>
+        &lt;startEvent id=&quot;theStart&quot;&gt;
+            &lt;timerEventDefinition&gt;
+                &lt;timeDate&gt;2011-03-11T12:13:14&lt;/timeDate&gt;
+            &lt;/timerEventDefinition&gt;
+        &lt;/startEvent&gt;
+           </programlisting>
+        </para>
+
+      </section>
+
+        </section>
+
+
+		<section id="bpmnEndEvent">
+		
+		  <title>End events</title>
+		  
+		  <para>
+		    An end event signifies the end (of a path) of a (sub)process. An end event is 
+		    <emphasis role="bold">always throwing</emphasis>. This means that when process execution
+		    arrives in the end event, a <emphasis>result</emphasis> is thrown. The type of result 
+		    is depicted by the inner black icon of the event. In the XML representation,
+		    the type is given by the declaration of a sub-element.
+		  </para>
+		
+		</section>
+
+		<section id="bpmnNoneEndEvent">
+		
+		  <title>None end event</title>
+
+      <section id="noneEndEventDescription">
+
+			 <title>Description</title>
+        
+        <para>
+          A 'none' end event means that the <emphasis>result</emphasis> thrown when
+          the event is reached is unspecified. As such, the engine will not do anything
+          extra besides ending the current path of execution.
+        </para>
+       
+      </section>
+
+      <section id="bpmnNoneEndEventDescription">
+       
+        <title>Graphical notation</title>
+        
+        <para>
+          A none end event is visualized as a circle with a thick border with no inner icon (no result type).
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.none.end.event.png"/></imageobject></mediaobject>
+        </para>
+       
+      </section>
+      
+      <section id="bpmnNoneStartEventXml">
+       
+        <title>XML representation</title>
+        
+        <para>
+          The XML representation of a none end event is the normal
+          end event declaration, without any sub-element (other end event types
+          all have a sub-element declaring the type).
+          <programlisting>
+&lt;endEvent id=&quot;end&quot; name=&quot;my end event&quot; /&gt;</programlisting>
+        </para>
+       
+      </section>
+
+		</section>
+		
+		<section id="bpmnErrorEndEvent">
+		  
+		  <title>Error end event</title>
+		  
+		  <section id="bpmnErrorEndEventDescription">
+		    <title>Description</title>
+		    <para>
+		      When process execution arrives in an <emphasis role="bold">error end event</emphasis>, 
+		      the, the current path of execution is ended and an error is thrown. This error
+		      can <link linkend="bpmnBoundaryErrorEvent">catched by a matching intermediate boundary error event</link>.
+		      In case no matching boundary error event is found, the execution semantics default to the 
+		      <link linkend="bpmnNoneEndEvent">none end event</link> semantics.
+		    </para>
+		    
+		    <para>
+		      <emphasis role="bold">Important note:</emphasis> a BPMN error is NOT the same as a 
+		      Java exception. In fact, the two have nothing in common. BPMN error events are a way
+		      of modeling <emphasis>business exceptions</emphasis>. Java exceptions are handled 
+		      in <link linkend="serviceTaskExceptionHandling">their own specific way</link>.
+		    </para>
+		  </section>
+		  
+		  <section id="bpmnErrorEndEventGraphicalNotation">
+        <title>Graphical notation</title>
+        <para>
+          An error end event is visualized as a typical end event (circle with thick border), with the
+          error icon inside. The error icon is completely black, to indicate the throwing semantics.
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.error.end.event.png"/></imageobject></mediaobject>
+        </para>
+      </section>
+      
+      <section id="bpmnErrorEndEventXml">
+        <title>XML representation</title>
+        <para>
+          And error end event is represented as an end event, with a <emphasis>errorEventDefinition</emphasis>
+          child element.
+          <programlisting>
+&lt;endEvent id=&quot;myErrorEndEvent&quot;&gt;
+  &lt;errorEventDefinition errorRef=&quot;myError&quot; /&gt;
+&lt;/endEvent&gt;          
+          </programlisting>
+          The <emphasis>errorRef</emphasis> attribute can reference an <emphasis>error</emphasis>
+          element that is defined outside the process:
+          <programlisting>
+&lt;error id=&quot;myError&quot; errorCode=&quot;123&quot; /&gt;
+...
+&lt;process id=&quot;myProcess&quot;&gt;  
+...        
+          </programlisting>
+          The <emphasis role="bold">errorCode</emphasis> of the <emphasis>error</emphasis>
+          will be used to find the matching catching boundary error event.
+          If the <emphasis>errorRef</emphasis> does not match any defined <emphasis>error</emphasis>,
+          then the <emphasis>errorRef</emphasis> is used as a shortcut for the <emphasis>errorCode</emphasis>.
+          This is an Activiti specific shortcut.
+          More concretely, following snippets are equivalent in functionality. 
+                    <programlisting>
+&lt;error id=&quot;myError&quot; errorCode=&quot;error123&quot; /&gt;
+...
+&lt;process id=&quot;myProcess&quot;&gt;  
+...  
+  &lt;endEvent id=&quot;myErrorEndEvent&quot;&gt;
+    &lt;errorEventDefinition errorRef=&quot;myError&quot; /&gt;
+  &lt;/endEvent&gt;          
+          </programlisting>
+          is equivalent with
+                    <programlisting>
+&lt;endEvent id=&quot;myErrorEndEvent&quot;&gt;
+  &lt;errorEventDefinition errorRef=&quot;error123&quot; /&gt;
+&lt;/endEvent&gt;          
+          </programlisting>
+        </para>
+        Note that the <literal>errorRef</literal> must comply with the BPMN 2.0 schema, and must
+        be a valid QName.
+      </section>
+		  
+		</section>
+		
+	  <section id="bpmnSequenceFlow">
+    
+      <title>Sequence flow</title>
+      
+      <section id="sequenceFlowDescription">
+      
+        <title>Description</title>
+        
+        <para>
+          A sequence flow is the connector between two elements of a process.
+          After an element is visited during process execution, all outgoing sequence flow
+          will be followed. This means that the default nature of BPMN 2.0 is to be parallel:
+          two outgoing sequence flow will create two separate, parallel paths of execution.
+        </para>
+      
+      </section>
+      
+      <section id="sequenceFlowGraphicalNotation">
+      
+        <title>Graphical notation</title>
+        
+        <para>
+          A sequence flow is visualized as an arrow going from the source element towards
+          the target element. The arrow always points towards the target.
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.sequence.flow.png"/></imageobject></mediaobject>
+        </para>
+      
+      </section>
+      
+      <section id="sequenceFlowXml">
+      
+        <title>XML representation</title>
+        
+        <para>
+          Sequence flow need to have a process-unique <emphasis role="bold">id</emphasis>,
+          and a reference to an existing <emphasis role="bold">source</emphasis>
+          and <emphasis role="bold">target</emphasis> element.
+          <programlisting>
+&lt;sequenceFlow id=&quot;flow1&quot; sourceRef=&quot;theStart&quot; targetRef=&quot;theTask&quot; /&gt;</programlisting>
+        </para>
+      
+      </section>
+    
+    </section>
+    
+    <section id="bpmnConditionalSequenceFlow">
+    
+      <title>Conditional sequence flow</title>
+      
+      <section id="condSeqFlowDescription">
+      
+        <title>Description</title>
+        
+        <para>
+          A sequence flow can have a condition defined on it. When a BPMN 2.0 activity
+          is left, the default behavior is to evaluate the conditions on the outgoing
+          sequence flow. When a condition evaluates to <emphasis>true</emphasis>, that
+          outgoing sequence flow is selected. When multiple sequence flow are selected
+          that way, multiple <emphasis>executions</emphasis> will be generated
+          and the process will be continued in a parallel way.
+        </para>
+        
+        <para>
+          <emphasis role="bold">Note:</emphasis> the above holds for BPMN 2.0 activities (and events),
+          but not for gateways. Gateways will handle sequence flow with conditions in specific ways,
+          depending on the gateway type.
+        </para>
+      
+      </section>
+      
+      <section id="conditionalSequenceFlowGraphicalNotation">
+      
+        <title>Graphical notation</title>
+        
+        <para>
+          A conditional sequence flow is visualized as a regular sequence flow,
+          with a small diamond at the beginning. The condition expression is shown
+          next to the sequence flow.
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.conditional.sequence.flow.png"/></imageobject></mediaobject>
+        </para>
+      
+      </section>
+      
+      <section id="conditionalSequenceFlowXml">
+      
+        <title>XML representation</title>
+        
+        <para>
+          A conditional sequence flow is represented in XML as a regular sequence flow,
+          containing a <emphasis role="bold">conditionExpression</emphasis> sub-element.
+          Note that for the moment only <emphasis>tFormalExpressions</emphasis> are supported,
+          Omitting the <emphasis>xsi:type=&quot;&quot;</emphasis> definition will simply
+          default to this only supported type of expressions. 
+          <programlisting>&lt;sequenceFlow id=&quot;flow&quot; sourceRef=&quot;theStart&quot; targetRef=&quot;theTask&quot;&gt;
+  &lt;conditionExpression xsi:type=&quot;tFormalExpression&quot;&gt;
+    &lt;![CDATA[${order.price &gt; 100 &amp;&amp; order.price &lt; 250}]]&gt;
+  &lt;/conditionExpression&gt;
+&lt;/sequenceFlow&gt;</programlisting>
+        </para>
+        <para> 
+          Currently conditionalExpressions can <emphasis role="bold">only be used with UEL</emphasis>, detailed info about these can be found in section <link linkend="apiExpressions">Expressions</link>.
+          The expression used should resolve to a boolean value, otherwise an exception is thrown while evaluating the condition.  
+          <itemizedlist>
+            <listitem>
+              <para>
+                The example below references data of a process 
+                variable, in the typical JavaBean style through getters. 
+              </para>
+              <para>
+<programlisting>&lt;conditionExpression xsi:type=&quot;tFormalExpression&quot;&gt;
+  &lt;![CDATA[${order.price &gt; 100 &amp;&amp; order.price &lt; 250}]]&gt;
+&lt;/conditionExpression&gt;</programlisting>
+              </para>
+            </listitem>
+             <listitem>
+              <para>
+                This example invokes a method that resolves to a boolean value.
+<programlisting>&lt;conditionExpression xsi:type=&quot;tFormalExpression&quot;&gt;
+  &lt;![CDATA[${order.isStandardOrder()}]]&gt;
+&lt;/conditionExpression&gt;</programlisting>                
+              </para>
+            </listitem>
+          </itemizedlist>
+          
+        </para>
+        
+        <para>
+          The Activiti distribution contains the following example process using value and method expressions
+          (see <emphasis>org.activiti.examples.bpmn.expression)</emphasis>:
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.uel-expression.on.seq.flow.png"/></imageobject></mediaobject>
+        </para>
+      
+      </section>
+      
+    </section>
+    
+    <section id="bpmnDefaultSequenceFlow">
+      
+      <title>Default sequence flow</title>
+      
+      <section id="bpmnDefaultSequenceFlowDescription">
+        <title>Description</title>
+        <para>
+          All BPMN 2.0 tasks and gateways can have a <emphasis role="bold">default sequence flow</emphasis>.
+          This sequence flow is only selected as the outgoing sequence flow for that activity 
+          if and only if none of the other sequence flow could be selected. Conditions
+          on a default sequence flow are always ignored.
+        </para>
+      </section>
+      
+      <section id="bpmnDefaultSequenceFlowGraphicalNotation">
+        <title>Graphical notation</title>
+        <para>
+          A default sequence flow is visualized as a regular sequence flow, with a 'slash' marker
+          at the beginning.
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.default.sequence.flow.png"/></imageobject></mediaobject>
+        </para>
+      </section>
+      
+      <section id="bpmnDefaultSequenceFlowXmlRepresentation">
+        <title>XML representation</title>
+        <para>
+          A default sequence flow for a certain activity is defined by the <emphasis role="bold">default attribute</emphasis>
+          on that activity. The following XML snippet shows for example an exclusive gateway that
+          has as default sequence flow <emphasis>flow 2</emphasis>. Only when <emphasis>conditionA</emphasis>
+          and <emphasis>conditionB</emphasis> both evaluate to false, will it be chosen as outgoing 
+          sequence flow for the gateway.
+          <programlisting>
+&lt;exclusiveGateway id=&quot;exclusiveGw&quot; name=&quot;Exclusive Gateway&quot; <emphasis role="bold">default=&quot;flow2&quot;</emphasis> /&gt;
+&lt;sequenceFlow id=&quot;flow1&quot; sourceRef=&quot;exclusiveGw&quot; targetRef=&quot;task1&quot;&gt;
+  &lt;conditionExpression xsi:type=&quot;tFormalExpression&quot;&gt;${conditionA}&lt;/conditionExpression&gt;
+&lt;/sequenceFlow&gt;
+&lt;sequenceFlow id=&quot;flow2&quot; sourceRef=&quot;exclusiveGw&quot; targetRef=&quot;task2&quot;/&gt;
+&lt;sequenceFlow id=&quot;flow3&quot; sourceRef=&quot;exclusiveGw&quot; targetRef=&quot;task3&quot;&gt;
+  &lt;conditionExpression xsi:type=&quot;tFormalExpression&quot;&gt;${conditionB}&lt;/conditionExpression&gt;
+&lt;/sequenceFlow&gt;          
+          </programlisting>
+          Which corresponds with the following graphical representation:
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.default.sequence.flow.example.png"/></imageobject></mediaobject>
+        </para>
+      </section>
+      
+    </section>
+    
+    <section id="bpmnGateways">
+    
+      <title>Gateways</title>
+      
+      <para>
+        A gateway is used to control the flow of execution (or as the BPMN 2.0 describes,
+        the <emphasis>tokens</emphasis> of execution). A gateway is capable of <emphasis>consuming</emphasis>
+        or <emphasis>generating</emphasis> tokens.
+      </para>
+        
+      <para>  
+        A gateway is graphically visualized as a diamond shape, with an icon inside. 
+        The icon shows the type of gateway.
+        <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.gateway.png"/></imageobject></mediaobject>
+      </para>
+    
+    </section>
+    
+    <section id="bpmnExclusiveGateway">
+    
+      <title>Exclusive gateway</title>
+      
+      <section id="exclusiveGatewayDescription">
+      
+        <title>Description</title>
+        
+        <para>
+          An exclusive gateway (also called the <emphasis>XOR gateway</emphasis> 
+          or more technical the <emphasis>exclusive data-based gateway</emphasis>),
+          is used to model a <emphasis role="bold">decision</emphasis> in the process.
+          When the execution arrives at this gateway, all outgoing sequence flow are
+          evaluated in the order in which they are defined. The sequence flow
+          which condition evaluates to true (or which doesn't have a condition set, 
+          conceptually having a <emphasis>'true'</emphasis> defined on the sequence flow)
+          is selected for continuing the process. 
+        </para>
+        
+        <para>
+          <emphasis role="bold">Note that the semantics of outgoing sequence flow is 
+          different to that of the general case in BPMN 2.0. While in general all sequence
+          flow which condition evaluates to true are selected to continue in a parallel way,
+          only one sequence flow is selected when using the exclusive gateway. 
+          In case multiple sequence flow have a condition that evaluates to true, the 
+          first one defined in the XML (and only that one!) is selected for continuing the process.
+          If no sequence flow can be selected, an exception will be thrown.</emphasis>
+        </para>
+        
+      </section>
+      
+      <section id="exclusiveGatewayGraphNotation">
+      
+        <title>Graphical notation</title>
+        
+        <para>
+          An exclusive gateway is visualized as a typical gateway (i.e. a diamond shape)
+          with an 'X' icon inside, referring to the <emphasis>XOR</emphasis> semantics.
+          Note that a gateway without an icon inside defaults to an exclusive gateway.
+          The BPMN 2.0 specification does not allow mixing the diamond with and without an X
+          in the same process definition.
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.exclusive.gateway.notation.png"/></imageobject></mediaobject>
+        </para>
+      
+      </section>
+      
+      <section id="exclusiveGatewayXML">
+      
+        <title>XML representation</title>
+        
+        <para>
+          The XML representation of an exclusive gateway is straight-forward: one line defining
+          the gateway and condition expressions defined on the outgoing sequence flow. 
+          See the section on <link linkend="bpmnConditionalSequenceFlow">conditional sequence flow</link>
+          to see which options are available for such expressions.
+       </para>
+       
+       <para>   
+          Take for example the following model:
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.exclusive.gateway.png"/></imageobject></mediaobject> 
+          Which is represented in XML as follows:
+          <programlisting>&lt;exclusiveGateway id=&quot;exclusiveGw&quot; name=&quot;Exclusive Gateway&quot; /&gt;
+    
+&lt;sequenceFlow id=&quot;flow2&quot; sourceRef=&quot;exclusiveGw&quot; targetRef=&quot;theTask1&quot;&gt;
+  &lt;conditionExpression xsi:type=&quot;tFormalExpression&quot;&gt;${input == 1}&lt;/conditionExpression&gt;
+&lt;/sequenceFlow&gt;
+    
+&lt;sequenceFlow id=&quot;flow3&quot; sourceRef=&quot;exclusiveGw&quot; targetRef=&quot;theTask2&quot;&gt;
+  &lt;conditionExpression xsi:type=&quot;tFormalExpression&quot;&gt;${input == 2}&lt;/conditionExpression&gt;
+&lt;/sequenceFlow&gt;
+    
+&lt;sequenceFlow id=&quot;flow4&quot; sourceRef=&quot;exclusiveGw&quot; targetRef=&quot;theTask3&quot;&gt;
+  &lt;conditionExpression xsi:type=&quot;tFormalExpression&quot;&gt;${input == 3}&lt;/conditionExpression&gt;
+&lt;/sequenceFlow&gt;</programlisting>
+        </para>
+        
+      </section>
+    
+    </section>
+    
+    <section id="bpmnParallelGateway">
+      
+      <title>Parallel Gateway</title>
+      
+      <section id="bpmnParallelGatewayDescription">
+        
+        <title>Description</title>
+        
+        <para>
+          Gateways can also be used to model concurrency in a process. The most straightforward
+          gateway to introduce concurrency in a process model, is the 
+          <emphasis role="bold">Parallel Gateway</emphasis>, which allows to <emphasis>fork</emphasis> 
+          into multiple paths of execution or <emphasis>join</emphasis> multiple incoming paths
+          of execution.
+        </para>
+        
+        <para>
+          The functionality of the parallel gateway is based on the incoming and outgoing sequence flow:
+          <itemizedlist>
+            <listitem>
+              <para>
+                <emphasis role="bold">fork:</emphasis>
+                all outgoing sequence flow are followed in parallel, creating one concurrent
+                execution for each sequence flow.
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                <emphasis role="bold">join:</emphasis>   
+                all concurrent executions arriving at the parallel gateway wait in the gateway
+                until an execution has arrived for each of the incoming sequence flow. Then the 
+                process continues past the joining gateway.
+              </para>
+            </listitem>
+          </itemizedlist>
+          Note that a parallel gateway can have <emphasis role="bold">both fork and join behavior</emphasis>,
+          if there are multiple incoming and outgoing sequence flow for the same parallel gateway.
+          In that case, the gateway will first join all incoming sequence flow, before splitting
+          into multiple concurrent paths of executions.
+        </para>
+        
+        <para>
+          <emphasis role="bold">An important difference with other gateway types is that
+          the parallel gateway does not evaluate conditions. If conditions are defined
+          on the sequence flow connected with the parallel gateway, they are simply neglected.</emphasis>  
+        </para>
+      
+      </section>
+      
+      <section id="bpmnParallelGatewayGraphicalNotation">
+        
+        <title>Graphical Notation</title>
+        
+        <para>
+          A parallel gateway is visualized as a gateway (diamond shape) with the 'plus' symbol inside,
+          referring to the 'AND' semantics.
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.parallel.gateway.png"/></imageobject></mediaobject>
+        </para>
+      
+      </section>
+      
+      <section id="bpmnParallelGatewayyXML">
+        
+        <title>XML representation</title>
+        
+        <para>
+          Defining a parallel gateway needs one line of XML:
+          <programlisting>&lt;parallelGateway id=&quot;myParallelGateway&quot; /></programlisting>
+          The actual behavior (fork, join or both), is defined by 
+          the sequence flow connected to the parallel gateway.
+        </para>
+      
+        <para>
+          For example, the model above comes down to the following XML:
+<programlisting>
+    &lt;startEvent id=&quot;theStart&quot; /&gt;
+    &lt;sequenceFlow id=&quot;flow1&quot; sourceRef=&quot;theStart&quot; targetRef=&quot;fork&quot; /&gt;
+    
+    <emphasis role="bold">&lt;parallelGateway id=&quot;fork&quot; /&gt;</emphasis>
+    &lt;sequenceFlow sourceRef=&quot;fork&quot; targetRef=&quot;receivePayment&quot; /&gt;
+    &lt;sequenceFlow sourceRef=&quot;fork&quot; targetRef=&quot;shipOrder&quot; /&gt;
+    
+    &lt;userTask id=&quot;receivePayment&quot; name=&quot;Receive Payment&quot; /&gt;  
+    &lt;sequenceFlow sourceRef=&quot;receivePayment&quot; targetRef=&quot;join&quot; /&gt;
+    
+    &lt;userTask id=&quot;shipOrder&quot; name=&quot;Ship Order&quot; /&gt; 
+    &lt;sequenceFlow sourceRef=&quot;shipOrder&quot; targetRef=&quot;join&quot; /&gt;
+    
+    <emphasis role="bold">&lt;parallelGateway id=&quot;join&quot; /&gt;</emphasis>
+    &lt;sequenceFlow sourceRef=&quot;join&quot; targetRef=&quot;archiveOrder&quot; /&gt;
+    
+    &lt;userTask id=&quot;archiveOrder&quot; name=&quot;Archive Order&quot; /&gt; 
+    &lt;sequenceFlow sourceRef=&quot;archiveOrder&quot; targetRef=&quot;theEnd&quot; /&gt;
+    
+    &lt;endEvent id=&quot;theEnd&quot; /&gt;
+</programlisting>
+        </para>
+        
+        <para>
+          In the above example, after the process is started, two tasks will be created:
+          <programlisting>ProcessInstance pi = runtimeService.startProcessInstanceByKey("forkJoin");
+TaskQuery query = taskService.createTaskQuery()
+                         .processInstanceId(pi.getId())
+                         .orderByTaskName()
+                         .asc();
+
+List&lt;Task&gt; tasks = query.list();
+assertEquals(2, tasks.size());
+
+Task task1 = tasks.get(0);
+assertEquals("Receive Payment", task1.getName());
+Task task2 = tasks.get(1);
+assertEquals("Ship Order", task2.getName());</programlisting>
+          When these two tasks are completed, the second parallel gateway will join the two
+          executions and since there is only one outgoing sequence flow, no concurrent paths
+          of execution will be created, and only the <emphasis>Archive Order</emphasis>
+          task will be active.
+        </para>
+        
+        <para>
+          Note that a parallel gateway does not need to be 'balanced' (i.e. a matching number
+          of incoming/outgoing sequence flow for corresponding parallel gateways). 
+          A parallel gateway will simply wait for all incoming sequence flow and create 
+          a concurrent path of execution for each outgoing sequence flow, not influenced by
+          other constructs in the process model. So, the following process is legal in BPMN 2.0:
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.unbalanced.parallel.gateway.png"/></imageobject></mediaobject>
+        </para>
+      
+      </section>
+   
+    </section> 
+
+		<section id="bpmnUserTask">
+
+			<title>User task</title>
+
+			<section id="bpmnUserTaskDescription">
+			
+			 <title>Description</title>
+			 
+			 <para>
+			   A 'user task' is used to model work that needs to be done by a human actor. 
+			   When the process execution arrives at such a user task, a new task is created in the 
+			   task list of the user(s) or group(s) assigned to that task.
+			 </para>
+			
+			</section>
+			
+			<section id="bpmnUserTaskGraphicalNotation">
+			
+			 <title>Graphical notation</title>
+			 
+			 <para>
+			   A user task is visualized as a typical task (rounded rectangle), with a small
+			   user icon in the left upper corner.
+			   <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.user.task.png"/></imageobject></mediaobject>
+			 </para>
+			
+			</section>
+			
+			<section id="bpmnUserTaskXml">
+			
+				<title>XML representation</title>
+				
+				<para>
+				  A user task is defined in XML as follows. The <emphasis>id</emphasis> attribute
+				  is required, the <emphasis>name</emphasis> attribute is optional.
+				  <programlisting>
+&lt;userTask id=&quot;theTask&quot; name=&quot;Important task&quot; /&gt;			  
+				  </programlisting>
+				</para>
+				
+				<para>
+			    A user task can have also a description. In fact any BPMN 2.0 element can have
+				  a description. A description is defined by adding
+				  the <emphasis role="bold">documentation</emphasis> element.
+				  <programlisting>
+&lt;userTask id=&quot;theTask&quot; name=&quot;Schedule meeting&quot; &gt;
+  &lt;documentation&gt;
+	  Schedule an engineering meeting for next week with the new hire.
+  &lt;/documentation&gt;</programlisting>
+				
+				  The description text can be retrieved from the task in the standard Java way:
+				  <programlisting>task.getDescription()</programlisting>
+				</para>
+			
+			</section>
+            <section id="bpmnUserTaskDueDate">
+              <title>Due Date</title>
+              <para>
+                Each task has a field, indicating the due date of that task. The Query API can be used to query for task that are due 
+                on, before or after a certain date.
+              </para>
+              <para>
+                There is an activity extention which allows you to specify an expression in your task-definition to set the initial due
+                date of a task when it is created. The expression <emphasis role="bold">should always resolve to a <literal>java.util.Date</literal> or <literal>null</literal></emphasis>. 
+                For example, you could use a date that was entered in a previous form in the process or calculated in a previous Service Task.
+              </para>
+               <programlisting>
+&lt;userTask id=&quot;theTask&quot; name=&quot;Important task&quot; <emphasis role="bold">activiti:dueDate=&quot;${dateVariable}&quot;</emphasis>/&gt;</programlisting>
+            </section>
+            <para>
+              The due date of a task can also be altered using the <literal>TaskService</literal> or in <literal>TaskListener</literal>s using the passed
+              <literal>DelegateTask</literal>.
+            </para>
+			<section id="bpmnUserTaskAssignment">
+
+				<title>User assignment</title>
+
+				<para>
+				  A user task can be directly assigned to a user. This is done by defining a
+				  <emphasis role="bold">humanPerformer</emphasis> sub element.
+				  Such a <emphasis>humanPerformer</emphasis> definition needs a 
+				  <emphasis role="bold">resourceAssignmentExpression</emphasis> that actually defines
+				  the user. Currently, only <emphasis role="bold">formalExpressions</emphasis> are supported.
+				  <programlisting>
+&lt;process ... &gt;
+  
+  ...
+  
+  &lt;userTask id='theTask' name='important task' &gt;
+    &lt;humanPerformer&gt;
+      &lt;resourceAssignmentExpression&gt;
+        &lt;formalExpression&gt;kermit&lt;/formalExpression&gt;
+      &lt;/resourceAssignmentExpression&gt;
+    &lt;/humanPerformer&gt;
+  &lt;/userTask&gt;</programlisting>
+				</para>
+				
+				<para>
+				  <emphasis role="bold">Only one</emphasis> user can be assigned as human performer to the task.
+				  In Activiti terminology, this user is called the <emphasis role="bold">assignee</emphasis>.
+				  Task that have an assignee are not visible in the task lists of other people, and
+				  are found in the so-called <emphasis role="bold">personal task list</emphasis> of the assignee. 
+				</para>
+				
+				<para>
+				  Tasks directly assigned to users can be retrieved through the TaskService as follows:
+				  <programlisting>List&lt;Task&gt; tasks = taskService.createTaskQuery().taskAssignee(&quot;kermit&quot;).list();</programlisting>
+				</para>
+
+        <para>
+          Tasks can also be put in the so-called <emphasis role="bold">candidate task list</emphasis>
+          of people. In that case, the <emphasis role="bold">potentialOwner</emphasis> construct must be used.
+          The usage is similar to the <emphasis>humanPerformer</emphasis> construct. Do note that it is 
+          required to define for each element in the formal expression to specify if it is
+          a user or a group (the engine cannot guess this).
+          <programlisting>
+&lt;process ... &gt;
+  
+  ...
+  
+  &lt;userTask id='theTask' name='important task' &gt;
+    &lt;potentialOwner&gt;
+      &lt;resourceAssignmentExpression&gt;
+        <emphasis role="bold">&lt;formalExpression&gt;user(kermit), group(management)&lt;/formalExpression&gt;</emphasis>
+      &lt;/resourceAssignmentExpression&gt;
+    &lt;/potentialOwner&gt;
+  &lt;/userTask&gt;</programlisting>
+        </para>
+        
+        <para>
+          Tasks defines with the <emphasis>potential owner</emphasis> construct, can be retrieved as follows
+          (or a similar <emphasis>TaskQuery</emphasis> usage as for the tasks with an assignee):
+          <programlisting>
+ List&lt;Task&gt; tasks = taskService.createTaskQuery().taskCandidateUser(&quot;kermit&quot;);</programlisting>
+          
+          This will retrieve all tasks where kermit is a <emphasis role="bold">candidate user</emphasis>,
+          i.e. the formal expression contains <emphasis>user(kermit)</emphasis>. This will also
+          retrieve all tasks that are <emphasis role="bold">assigned to a group where kermit is
+          a member of</emphasis> (e.g. <emphasis>group(management)</emphasis>, if kermit is a member of that group
+          and the Activiti identity component is used).
+          The groups of the user are resolved at runtime and these can be 
+          managed through the <emphasis>IdentityService</emphasis>.
+        </para>
+        
+        <para>
+          If no specifics are given whether the given text string is a user or group, 
+          the engine defaults to group. So the following would be the same as when
+          <emphasis>group(accountancy) was declared</emphasis>.
+          <programlisting>
+&lt;formalExpression&gt;accountancy&lt;/formalExpression&gt;</programlisting>
+        </para>
+        
+			</section> <!-- task assignment -->
+			
+			<section id="bpmnUserTaskUserAssignmentExtension">
+          
+          <title>Activiti extensions for task assignment</title>
+          
+          <para>
+            It is clear that user and group assignments are quite cumbersome
+            for use cases where the assignment is not complex. 
+            To avoid these complexities, <link linkend="bpmnCustomExtensions">custom extensions</link>
+            on the user task are possible.
+          </para>
+          
+          <para>
+            <itemizedlist>
+              <listitem>
+                <para>
+                  <emphasis role="bold">assignee attribute</emphasis>: this custom extension allows to
+                  directly assign a user task to a given user.
+                  <programlisting>
+&lt;userTask id=&quot;theTask&quot; name=&quot;my task&quot; activiti:assignee=&quot;kermit&quot; /&gt;</programlisting>
+
+                  This is exactly the same as using a <emphasis role="bold">humanPerformer</emphasis> 
+                  construct as defined <link linkend="bpmnUserTaskAssignment">above</link>.
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  <emphasis role="bold">candidateUsers attribute</emphasis>: this custom extension allows to
+                  make a user a candidate for a task.
+                  <programlisting>
+&lt;userTask id=&quot;theTask&quot; name=&quot;my task&quot; activiti:candidateUsers=&quot;kermit, gonzo&quot; /&gt;</programlisting>
+
+                  This is exactly the same as using a <emphasis role="bold">potentialOwner</emphasis> 
+                  construct as defined <link linkend="bpmnUserTaskAssignment">above</link>.
+                  Note that it is not required to use the <emphasis>user(kermit)</emphasis> declaration
+                  as is the case with the <emphasis>potential owner</emphasis> construct, since the attribute 
+                  can only be used for users.
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  <emphasis role="bold">candidateGroups attribute</emphasis>: this custom extension allows to
+                  make a group a candidate for a task.
+                  <programlisting>
+&lt;userTask id=&quot;theTask&quot; name=&quot;my task&quot; activiti:candidateGroups=&quot;management, accountancy&quot; /&gt;</programlisting>
+
+                  This is exactly the same as using a <emphasis role="bold">potentialOwner</emphasis> 
+                  construct as defined <link linkend="bpmnUserTaskAssignment">above</link>.
+                  Note that it is not required to use the <emphasis>group(management)</emphasis> declaration
+                  as is the case with the <emphasis>potential owner</emphasis> construct, since the attribute 
+                  can only be used for groups.
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  <emphasis>candidateUsers</emphasis> and <emphasis>candidateGroups</emphasis> can both
+                  be defined on the same user task.
+                </para>
+              </listitem>
+            </itemizedlist>
+          </para>
+          
+          <para>
+            In case the previous approaches are not sufficient, it is possible to delegate to 
+            custom assignment logic using a <link linkend="taskListeners">task listener</link>
+            on the create event:
+            <programlisting>
+&lt;userTask id=&quot;task1&quot; name=&quot;My task&quot; &gt;
+  &lt;extensionElements&gt;
+    &lt;activiti:taskListener event=&quot;create&quot; class=&quot;org.activiti.MyAssignmentHandler&quot; /&gt;
+  &lt;/extensionElements&gt;
+&lt;/userTask&gt;</programlisting>
+            The <literal>DelegateTask</literal> that is passed to the <literal>TaskListener</literal>
+            implementation, allows to set the assignee and candidate-users/groups:
+            <programlisting>
+public class MyAssignmentHandler implements TaskListener {
+
+  public void notify(DelegateTask delegateTask) {
+    // Execute custom identity lookups here
+    
+    // and then for example call following methods:
+    delegateTask.setAssignee(&quot;kermit&quot;);
+    delegateTask.addCandidateUser(&quot;fozzie&quot;);
+    delegateTask.addCandidateGroup(&quot;management&quot;);
+    ...
+  }
+  
+}</programlisting>
+          </para>
+          
+          <para>
+            When using Spring it is possible to use the custom assignment attirbutes as described in the section above,
+            and delegate to a Spring bean using a <link linkend="taskListeners">task listener</link>
+            with an <link linkend="springExpressions">expression</link> that listens to task <emphasis>create</emphasis> events.
+            In the following example, the assignee will be set by calling the <literal>findManagerOfEmployee</literal>
+            on the <literal>ldapService</literal> Spring bean. The <emphasis>emp</emphasis> parameter
+            that is passed, is a process variable>.
+            <programlisting>&lt;userTask id=&quot;task&quot; name=&quot;My Task&quot; activiti:assignee=&quot;${ldapService.findManagerForEmployee(emp)}&quot;/&gt;</programlisting>
+            This also works similar for candidate users and groups:
+            <programlisting>&lt;userTask id=&quot;task&quot; name=&quot;My Task&quot; activiti:candidateUsers=&quot;${ldapService.findAllSales()}&quot;/&gt;</programlisting>
+            Note that this will only work if the return type of the invoked methods is <literal>String</literal>
+            or <literal>Collection&lt;String&gt;</literal> (for candidate users and groups):
+            <programlisting>            
+public class FakeLdapService {
+  
+  public String findManagerForEmployee(String employee) {
+    return &quot;Kermit The Frog&quot;;
+  }
+  
+  public List&lt;String&gt; findAllSales() {
+    return Arrays.asList(&quot;kermit&quot;, &quot;gonzo&quot;, &quot;fozzie&quot;);
+  }
+
+}</programlisting>
+          </para>
+          
+        </section> <!-- task assignment extensions -->
+
+		</section>
+		
+		<section id="bpmnScriptTask">
+		
+		  <title>Script Task</title>
+		  
+		  <section id="bpmnScriptTaskDescription">
+		  
+		    <title>Description</title>
+		    
+		    <para>
+		      A script task is an automatic activity. When a process execution arrives at the 
+		      script task, the corresponding script is executed. 
+		    </para>
+		  
+		  </section>
+		  
+		  <section id="bpmnScriptTaskGraphicalNotation">
+		  
+		    <title>Graphical Notation</title>
+		    
+		    <para>
+		      A script task is visualized as a typical BPMN 2.0 task (rounded rectangle),
+		      with a small 'script' icon in the top-left corner of the rectangle.
+		      <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.scripttask.png"/></imageobject></mediaobject>
+		    </para>
+		  
+		  </section>
+		  
+		  <section id="bpmnScriptTaskXml">
+		  
+		    <title>XML representation</title>
+		    
+		    <para>
+		      A script task is defined by specifying the <emphasis role="bold">script</emphasis>
+		      and the <emphasis role="bold">scriptFormat</emphasis>.
+<programlisting>
+&lt;scriptTask id=&quot;theScriptTask&quot; name=&quot;Execute script&quot; scriptFormat=&quot;groovy&quot;&gt;
+  &lt;script&gt;
+    sum = 0
+    for ( i in inputArray ) {
+      sum += i
+    }
+  &lt;/script&gt;
+&lt;/scriptTask&gt;</programlisting>
+		    </para>
+		    
+		    <para>
+		      The value of the <emphasis role="bold">scriptFormat</emphasis> attribute must be a
+		      name that is compatible with the <ulink url="http://jcp.org/en/jsr/detail?id=223">JSR-223</ulink>
+		      (scripting for the Java platform). The Groovy jar is shipped by default with the
+		      Activiti distribution. If you want to use another (JSR-223 compatible) scripting
+		      engine, it is sufficient to add the corresponding jar to the classpath and use
+		      the appropriate name.
+		    </para>
+		    
+		  </section>
+		  
+		  <section id="bpmnScriptTaskVariables">
+		  
+		    <title>Variables in scripts</title>
+		    
+		    <para>
+		      All process variables that are accessible through the execution that arrives in the
+		      script task, can be used within the script. In the example, the script variable
+		      <emphasis>'inputArray'</emphasis> is in fact a process variable (an array of integers).
+<programlisting>
+&lt;script&gt;
+    sum = 0
+    for ( i in <emphasis role="bold">inputArray</emphasis> ) {
+      sum += i
+    }
+&lt;/script&gt;</programlisting>
+		    </para>
+		    
+		    <para>
+		      It's also possible to set process variables in a script, simply by using an assignment
+		      statement. In the example above, the <emphasis>'sum'</emphasis> variable will be
+		      stored as a process variable after the script task has been executed. To avoid 
+		      this behavior, script-local variables can be used. In Groovy, the keyword 
+		      <emphasis>'def'</emphasis> must then be used: <emphasis>'def sum = 0'</emphasis>.
+		      In that case, no process variable will be stored.
+		    </para>
+		    
+		    <para>
+		      An alternative is to set variables through the current execution, which is available
+		      as a reserved variable called <emphasis>'execution'</emphasis>.
+<programlisting>
+&lt;script&gt;
+    def scriptVar = &quot;test123&quot;
+    execution.setVariable(&quot;myVar&quot;, scriptVar)
+&lt;/script&gt;</programlisting>
+		    </para>
+		    
+		    <para>
+		      Note: the following names are reserved and <emphasis role="bold">cannot be used</emphasis> 
+		      as variable names: <emphasis role="bold">out, out:print, lang:import, context, elcontext</emphasis>.
+		    </para>
+		  
+		  </section>
+
+		  <section id="bpmnScriptTaskResultValue">
+
+		    <title>Script results</title>
+
+		    <para>
+		      The return value of a script task can be assigned to an already existing or to a new process variable by
+              specifying the process variable name as a literal value for the <emphasis>'activiti:resultVariable'</emphasis> attribute
+              of a script task definition. Any existing value for a specific process variable will be overwritten by the result
+              value of the script execution. When not specifying a result variable name, the script result value gets ignored.
+<programlisting>
+&lt;scriptTask id=&quot;theScriptTask&quot; name=&quot;Execute script&quot; scriptFormat=&quot;juel&quot; activiti:resultVariable=&quot;myVar&quot;&gt;
+  &lt;script&gt;#{echo}&lt;/script&gt;
+&lt;/scriptTask&gt;</programlisting>
+
+              In the above example, the result of the script execution (the value of the resolved expression <emphasis>'#{echo}'</emphasis>) is set
+              to the process variable named <emphasis>'myVar'</emphasis> after the script completes.
+		    </para>
+		
+		  </section>
+
+		</section> 
+		
+		<section id="bpmnJavaServiceTask">
+	
+	   <title>Java Service Task</title>
+	   
+	   <section id="bpmnJavaServiceTaskDescription">
+	   
+	     <title>Description</title>
+	     
+	     <para>
+	       A Java service task is used to invoke an external Java class.
+	     </para>
+	   
+	   </section>	
+	   
+	   <section id="bpmnJavaServiceTaskGraphicalNotation">
+     
+       <title>Graphical Notation</title>
+       
+       <para>
+        A service task is visualized as a rounded rectangle with a small gear icon in the top-left corner.
+        <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.java.service.task.png"/></imageobject></mediaobject>
+       </para>
+     
+     </section> 
+     
+     <section id="bpmnJavaServiceTaskXML">
+     
+       <title>XML representation</title>
+       
+       <para>
+         There are 4 ways of declaring how to invoke Java logic:
+       </para>
+       
+       <itemizedlist>
+         <listitem><para>Specifying a class that implements JavaDelegate or ActivityBehavior</para></listitem>
+         <listitem><para>Evaluating an expression that resolves to a delegation object</para></listitem>
+         <listitem><para>Invoking a method expression</para></listitem>
+         <listitem><para>Evaluating a value expression</para></listitem>
+       </itemizedlist>
+       
+       <para>
+         To specify a class that is called during process execution, the fully qualified classname 
+         needs to be provided by the <emphasis role="bold">'activiti:class'</emphasis>
+         attribute.
+<programlisting>
+&lt;serviceTask id=&quot;javaService&quot; 
+             name=&quot;My Java Service Task&quot; 
+             activiti:class=&quot;org.activiti.MyJavaDelegate&quot; /&gt;
+</programlisting>
+         See <link linkend="bpmnJavaServiceTaskImplementation">the <emphasis>implementation</emphasis> section</link>
+         for more details on how to use such a class.
+       </para>
+       
+       <para>
+         It is also possible to use an expression that resolves to an object. This object must follow
+         the same rules as objects that are created when the <literal>activiti:class</literal>
+         attribute is used (see <link linkend="bpmnJavaServiceTaskImplementation">further</link>).
+         <programlisting> &lt;serviceTask id=&quot;serviceTask&quot; <emphasis role="bold">activiti:delegateExpression=&quot;${delegateExpressionBean}&quot;</emphasis> /&gt;</programlisting> 
+         Here, the <literal>delegateExpressionBean</literal> is a bean that implements the <literal>JavaDelegate</literal> interface,
+         defined in for example the Spring container.
+       </para>
+       
+       <para>
+         To specify a UEL method expression that should be evaluated, use 
+         attribute <emphasis role="bold">activiti:expression</emphasis>.
+<programlisting>
+&lt;serviceTask id=&quot;javaService&quot; 
+             name=&quot;My Java Service Task&quot; 
+             activiti:expression=&quot;#{printer.printMessage()}&quot; /&gt;
+</programlisting>
+         Method <literal>printMessage</literal> (without parameters) will 
+         be called on the named object called <literal>printer</literal>.
+       </para>
+       <para>
+       	It's also possible to pass parameters with an method used in the expression.
+       	<programlisting>
+&lt;serviceTask id=&quot;javaService&quot; 
+             name=&quot;My Java Service Task&quot; 
+             activiti:expression=&quot;#{printer.printMessage(execution, myVar)}&quot; /&gt;
+</programlisting>
+		Method <literal>printMessage</literal> will be called on the object named <literal>printer</literal>. The first
+		parameter passed is the <literal>DelegateExecution</literal>, which is available in the expression context by default
+		available as <literal>execution</literal>. The second parameter passed, is the value of the variable with name <literal>myVar</literal>
+		in the current execution. 
+       </para>
+       
+       <para>
+         To specify a UEL value expression that should be evaluated, use 
+         attribute <emphasis role="bold">activiti:expression</emphasis>.
+<programlisting>
+&lt;serviceTask id=&quot;javaService&quot; 
+             name=&quot;My Java Service Task&quot; 
+             activiti:expression=&quot;#{split.ready}&quot; /&gt;
+</programlisting>
+         The getter method of property <literal>ready</literal>, <literal>getReady</literal> (without parameters), will 
+         be called on the named bean called <literal>split</literal>.
+         The named objects are resolved in the execution's process variables and 
+         (if applicable) in the Spring context.
+       </para>
+       
+     </section> 
+     
+     <section id="bpmnJavaServiceTaskImplementation">
+     
+      <title>Implementation</title>
+      
+      <para>
+        To implement a class that can be called during process execution, this class needs to
+        implement the <emphasis>org.activiti.engine.delegate.JavaDelegate</emphasis> interface and provide the required
+        logic in the <emphasis>execute</emphasis> method. When process execution arrives
+        at this particular step, it will execute this logic defined in that method and leave 
+        the activity in the default BPMN 2.0 way.
+      </para>  
+
+      <para>
+        Let's create for example a Java class that can be used to change a process variable String
+        to uppercase. This class needs to implement the <emphasis>org.activiti.engine.delegate.JavaDelegate</emphasis>
+        interface, which requires us to implement the <emphasis>execute(DelegateExecution)</emphasis>
+        method. It's this operation that will be called by the engine and which needs to contain
+        the business logic. Process instance information such as process variables  and other
+        can be accessed and manipulated through the 
+        <ulink url="http://activiti.org/javadocs/org/activiti/engine/delegate/DelegateExecution.html">DelegateExecution</ulink>
+        interface (click on the link for a detailed Javadoc of its operations).
+<programlisting>
+public class ToUppercase implements JavaDelegate {
+  
+  public void execute(DelegateExecution execution) throws Exception {
+    String var = (String) execution.getVariable(&quot;input&quot;);
+    var = var.toUpperCase();
+    execution.setVariable(&quot;input&quot;, var);
+  }
+  
+}
+</programlisting>
+      </para>
+      <para>
+        Note: there will be <emphasis role="bold">only one instance of that Java class created for the serviceTask it is defined on</emphasis>.
+        All process-instances share the same class instance that will be used to call <emphasis>execute(DelegateExecution)</emphasis>. 
+        This means that the class must not use any member variables and must be thread-safe, since it can be executed simultaneously from different threads.
+        This also influences the way <link linkend="serviceTaskFieldInjection">Field injection</link> is handled.
+      </para>
+      <para>
+        The classes that are referenced in the process definition (ie by using <literal>activiti:class</literal>) are <emphasis role="bold">NOT
+        instantiated during deployment</emphasis>. Only when a process execution arrives 
+        for the first time at the point in the process where the class is used, an instance
+        of that class will be created. If the class cannot be found, an <literal>ActivitiException</literal>
+        will be thrown. The reasoning for this is that the environment (and more
+        specifically the <emphasis>classpath</emphasis>) when you are deploying is often
+        different from the actual runtime environment. For example when using <emphasis>ant</emphasis>
+        or the business archive upload in Activiti Explorer to deploy processes,
+        the classpath does not contain the referenced classes.  
+      </para>
+      <para><link linkend="internal"><emphasis role="bold">[INTERNAL: non-public implementation classes]</emphasis></link>
+        It is also possible to provide a class that implements the 
+        <emphasis>org.activiti.engine.impl.pvm.delegate.ActivityBehavior</emphasis> interface.
+        Implementations have then access to the more powerful <emphasis>ActivityExecution</emphasis>
+        that for example also allows to influence the control flow of the process. Note however
+        that this is not a very good practice, and should be avoided as much as possible.
+        So, it is advised to use the <emphasis>ActivityBehavior</emphasis> interface only for 
+        advanced use cases and if you know exactly what you're doing.
+      </para>
+      
+     
+     </section>
+     
+     <section id="serviceTaskFieldInjection">
+     
+      <title>Field injection</title>
+      
+        <para>
+          It's possible to inject values into the fields of the delegated classes. The following types of injection are supported:
+          <itemizedlist>
+            <listitem><para>Fixed string values</para></listitem>
+            <listitem><para>Expressions</para></listitem>
+          </itemizedlist>
+        </para>
+        <para>
+          If available, the value is injected through a public setter method on your delegated class, folowing the Java Bean naming conventions (eg. field <literal>fistName</literal> has setter <literal>setFirstName(...)</literal>).
+          If no setter is available for that field, the value of private member will be set on the delegate. SecurityManagers in some environments don't allow modifying private fields,
+          so it's safer to expose a public setter-method for the fields you want to have injected. <emphasis role="bold">Regardless of the type of value declared in the process-definition, the type of the setter/private field on the injection target should always be 
+          <literal>org.activiti.engine.delegate.Expression</literal>.</emphasis>
+        </para>
+        <para>
+          The following code snippet shows how to inject a constant value into a field. Field injection
+          is supported when using the <emphasis>'class'</emphasis> attribute.
+          Note that we need to <emphasis role="bold">declare a 'extensionElements' XML element
+          before the actual field injection declarations</emphasis>, which is a requirement of
+          the BPMN 2.0 XML Schema.
+          <programlisting>
+&lt;serviceTask id=&quot;javaService&quot; 
+    name=&quot;Java service invocation&quot; 
+    activiti:class=&quot;org.activiti.examples.bpmn.servicetask.ToUpperCaseFieldInjected&quot;&gt;
+    <emphasis role="bold">&lt;extensionElements&gt;
+      &lt;activiti:field name=&quot;text&quot; stringValue=&quot;Hello World&quot; /&gt;
+  &lt;/extensionElements&gt;</emphasis>           
+&lt;/serviceTask&gt;        
+          </programlisting>
+          The class <literal>ToUpperCaseFieldInjected</literal> has a field <literal>text</literal> which is of type <literal>org.activiti.engine.delegate.Expression</literal>. 
+          When calling <literal>text.getValue(execution)</literal>, the configured string value <literal>Hello World</literal> will be returned.
+        </para>
+        <para>
+          Alternatively, for longs texts (e.g. an inline e-mail) the <emphasis>'activiti:string'</emphasis>
+          sub element can be used:
+          <programlisting>
+&lt;serviceTask id=&quot;javaService&quot; 
+    name=&quot;Java service invocation&quot; 
+    activiti:class=&quot;org.activiti.examples.bpmn.servicetask.ToUpperCaseFieldInjected&quot;&gt;
+  &lt;extensionElements&gt;   
+    &lt;activiti:field name=&quot;text&quot;&gt;
+        <emphasis role="bold">&lt;activiti:string&gt;
+          Hello World
+      &lt;/activiti:string&gt;</emphasis>
+    &lt;/activiti:field&gt;
+  &lt;/extensionElements&gt;        
+&lt;/serviceTask&gt;        
+          </programlisting>
+        </para>
+
+        <para>
+        To inject values that are dynamically resolved at runtime, expressions can be used. Those expressions can use process variables, or Spring defined beans (if Spring is used).
+        As noted in <link linkend="bpmnJavaServiceTaskImplementation">Service Task Implementation</link>, an instance of the Java class is shared among all process-instances in a service task.
+        To have dynamic injection of values in fields, you can inject value and method expressions in a <literal>org.activiti.engine.delegate.Expression</literal> 
+        which can be evaluated/invoked using the <literal>DelegateExecution</literal> passed in the <literal>execute</literal> method.
+<programlisting>
+&lt;serviceTask id=&quot;javaService&quot; name=&quot;Java service invocation&quot; 
+  activiti:class=&quot;org.activiti.examples.bpmn.servicetask.ReverseStringsFieldInjected&quot;&gt;
+  
+  &lt;extensionElements&gt;
+    &lt;activiti:field name=&quot;text1&quot;&gt;
+      <emphasis role="bold">&lt;activiti:expression&gt;${genderBean.getGenderString(gender)}&lt;/activiti:expression&gt;</emphasis>
+    &lt;/activiti:field&gt;
+    &lt;activiti:field name=&quot;text2&quot;&gt;
+       <emphasis role="bold">&lt;activiti:expression&gt;Hello ${gender == 'male' ? 'Mr.' : 'Mrs.'} ${name}&lt;/activiti:expression&gt;</emphasis>
+    &lt;/activiti:field&gt;
+  &lt;/ extensionElements&gt;
+&lt;/ serviceTask&gt;
+</programlisting>
+  </para>
+  <para>
+  The example class below uses the injected expressions and resolves them using the current <literal>DelegateExecution</literal>.
+  Full code and test can be found in <literal>org.activiti.examples.bpmn.servicetask.JavaServiceTaskTest.testExpressionFieldInjection</literal>
+<programlisting>
+
+public class ReverseStringsFieldInjected implements JavaDelegate {
+
+  private Expression text1;
+  private Expression text2;
+
+  public void execute(DelegateExecution execution) {
+    String value1 = (String) text1.getValue(execution);
+    execution.setVariable("var1", new StringBuffer(value1).reverse().toString());
+
+    String value2 = (String) text2.getValue(execution);
+    execution.setVariable("var2", new StringBuffer(value2).reverse().toString());
+  }
+}
+</programlisting>
+  </para>
+  <para>
+  Alternatively, you can also set the expressions as an attribute instead of a child-element, to make the XML less verbose.
+<programlisting>
+&lt;activiti:field name=&quot;text1&quot; <emphasis role="bold">expression=&quot;${genderBean.getGenderString(gender)}&quot;</emphasis> /&gt;
+&lt;activiti:field name=&quot;text1&quot; <emphasis role="bold">expression=&quot;Hello ${gender == 'male' ? 'Mr.' : 'Mrs.'} ${name}&quot;</emphasis> /&gt;
+</programlisting>
+        </para>
+        <para>
+          <emphasis role="bold">
+            Since the Java class instance is reused, the injection only happens once, when the serviceTask is called the first time. When the fields are altered by your code,
+            the values won't be re-injected so you should treat them as immutable and don't make any changes to them.
+          </emphasis>
+        </para>
+     
+     </section>
+
+     <section id="serviceTaskResultValue">
+         
+         <title>Service task results</title>
+
+         <para>
+           The return value of a service execution (for service task using expression only) can be assigned to an already existing or to a new process variable by
+           specifying the process variable name as a literal value for the <emphasis>'activiti:resultVariable'</emphasis> attribute
+           of a service task definition. Any existing value for a specific process variable will be overwritten by the result
+           value of the service execution. When not specifying a result variable name, the service execution result value gets ignored.
+<programlisting>
+&lt;serviceTask id=&quot;aMethodExpressionServiceTask&quot;
+    activiti:expression=&quot;#{myService.doSomething()}&quot;
+    activiti:resultVariable=&quot;myVar&quot; /&gt;
+</programlisting>
+             
+           In the example above, the result of the service execution (the return value of the <emphasis>'doSomething()'</emphasis> method invocation on an object that is made available
+           under the name <emphasis>'myService'</emphasis> either in the process variables or as a Spring bean) is set to the process variable named <emphasis>'myVar'</emphasis> after the service execution completes.
+         </para>
+
+     </section>
+     
+     <section id="serviceTaskExceptionHandling">
+      
+      <title>Handling exceptions</title>
+      
+       <para>
+        When custom logic is executed, it is often required to catch certain exceptions.
+        One common use case is to route process execution through another path
+        in case some exception occurs. The following example shows how this is done.
+        <programlisting>
+&lt;serviceTask id=&quot;javaService&quot; 
+  name=&quot;Java service invocation&quot; 
+  activiti:class=&quot;org.activiti.ThrowsExceptionBehavior&quot;&gt;            
+&lt;/serviceTask&gt;
+    
+&lt;sequenceFlow id=&quot;no-exception&quot; sourceRef=&quot;javaService&quot; targetRef=&quot;theEnd&quot; /&gt;
+&lt;sequenceFlow id=&quot;exception&quot; sourceRef=&quot;javaService&quot; targetRef=&quot;fixException&quot; /&gt;</programlisting>
+        Here, the service task has two outgoing sequence flow, called <literal>exception</literal>
+        and <literal>no-exception</literal>. This sequence flow id will be used to direct
+        process flow in case of an exception:
+        <programlisting>
+public class ThrowsExceptionBehavior implements ActivityBehavior {
+
+  public void execute(ActivityExecution execution) throws Exception {
+    String var = (String) execution.getVariable(&quot;var&quot;);
+
+    PvmTransition transition = null;
+    try {
+      executeLogic(var);
+      transition = execution.getActivity().findOutgoingTransition(&quot;no-exception&quot;);
+    } catch (Exception e) {
+      transition = execution.getActivity().findOutgoingTransition(&quot;exception&quot;);
+    }
+    execution.take(transition);
+  }
+  
+}</programlisting>
+       </para>
+      
+     </section>
+  		
+		</section>
+  
+<section id="bpmnWebserviceTask">
+	<title>WebService Task</title><link linkend="experimental">
+		<emphasis role="bold">[EXPERIMENTAL]</emphasis>
+	</link>
+
+	<section id="bpmnWebserviceTaskDescription">
+
+		<title>Description</title>
+
+		<para>
+			A WebService task is used to synchronously invoke an external web service.
+		</para>
+
+	</section>
+
+	<section id="bpmnWebserviceTaskGraphicalNotation">
+
+		<title>Graphical Notation</title>
+
+		<para>
+			A WebService task is visualized the same as a Java service task.
+			<mediaobject>
+				<imageobject>
+					<imagedata align="center" fileref="images/bpmn.web.service.task.png" />
+				</imageobject>
+			</mediaobject>
+		</para>
+
+	</section>
+
+	<section id="bpmnWebserviceTaskXML">
+
+		<title>XML representation</title>
+
+		<para>
+			To use a WebService we need to import its operations and complex types. This can be done
+			automatically by using the import tag pointing to the WSDL of the WebService:
+       </para>
+
+		<programlisting>
+&lt;import importType=&quot;http://schemas.xmlsoap.org/wsdl/&quot;
+	location=&quot;http://localhost:63081/counter?wsdl&quot;
+	namespace=&quot;http://webservice.activiti.org/&quot; /&gt;</programlisting>
+		
+		<para>
+			The previous declaration tells Activiti to import the definitions but it doesn't create
+			the item definitions and messages for you. Let's suppose we want to invoke a specific method called
+			'prettyPrint', therefore we will need to create the corresponding message and item definitions for
+			the request and response messages:
+		</para>
+
+		<programlisting>
+&lt;message id=&quot;prettyPrintCountRequestMessage&quot; itemRef=&quot;tns:prettyPrintCountRequestItem&quot; /&gt;
+&lt;message id=&quot;prettyPrintCountResponseMessage&quot; itemRef=&quot;tns:prettyPrintCountResponseItem&quot; /&gt;
+  
+&lt;itemDefinition id=&quot;prettyPrintCountRequestItem&quot; structureRef=&quot;counter:prettyPrintCount&quot; /&gt;
+&lt;itemDefinition id=&quot;prettyPrintCountResponseItem&quot; structureRef=&quot;counter:prettyPrintCountResponse&quot; /&gt;</programlisting>
+		
+		<para>
+			Before declaring the service task, we have to define the BPMN interfaces and operations that actually reference the WebService ones.
+			Basically, we define and 'interface' and the required 'operation's'. For each operation we reuse the previous defined
+			message for in and out. For example, the following declaration defines the 'counter' interface and the 'prettyPrintCountOperation' operation:
+		</para>
+		
+		<programlisting>
+&lt;interface name=&quot;Counter Interface&quot; implementationRef=&quot;counter:Counter&quot;&gt;
+	&lt;operation id=&quot;prettyPrintCountOperation&quot; name=&quot;prettyPrintCount Operation&quot; 
+			implementationRef=&quot;counter:prettyPrintCount&quot;&gt;
+		&lt;inMessageRef&gt;tns:prettyPrintCountRequestMessage&lt;/inMessageRef&gt;
+		&lt;outMessageRef&gt;tns:prettyPrintCountResponseMessage&lt;/outMessageRef&gt;
+	&lt;/operation&gt;
+&lt;/interface&gt;</programlisting>
+		
+		<para>
+			Then we can declare a WebService task by using the ##WebService implementation 
+			and a reference to the WebService operation. 
+		</para>
+		
+		<programlisting>
+&lt;serviceTask id=&quot;webService&quot; 
+	name=&quot;Web service invocation&quot;
+	implementation=&quot;##WebService&quot;
+	operationRef=&quot;tns:prettyPrintCountOperation&quot;&gt;</programlisting>
+	</section>
+
+	<section id="bpmnWebserviceTaskIOSpecification">
+		<title>WebService task IO Specification</title>
+
+		<para>
+			Unless we are using the simplistic approach for data input and output associations (See below), each WebService task
+			needs to declare an IO Specification which states which are the inputs and outputs of the task. The approach is pretty
+			straightforward and BPMN 2.0 complaint, for our prettyPrint example we define the input and output sets according to
+			the previously declared item definitions:  
+		</para>
+		
+		<programlisting>
+&lt;ioSpecification&gt;
+	&lt;dataInput itemSubjectRef=&quot;tns:prettyPrintCountRequestItem&quot; id=&quot;dataInputOfServiceTask&quot; /&gt;
+	&lt;dataOutput itemSubjectRef=&quot;tns:prettyPrintCountResponseItem&quot; id=&quot;dataOutputOfServiceTask&quot; /&gt;
+	&lt;inputSet&gt;
+		&lt;dataInputRefs&gt;dataInputOfServiceTask&lt;/dataInputRefs&gt;
+	&lt;/inputSet&gt;
+	&lt;outputSet&gt;
+		&lt;dataOutputRefs&gt;dataOutputOfServiceTask&lt;/dataOutputRefs&gt;
+	&lt;/outputSet&gt;
+&lt;/ioSpecification&gt;</programlisting>
+	</section>
+
+	<section id="bpmnWebserviceTaskDataInputAssociation">
+		<title>WebService task data input associations</title>
+
+		<para>
+			There are 2 ways of specifying data input associations:
+		</para>
+		
+		<itemizedlist>
+         	<listitem><para>Using expressions</para></listitem>
+         	<listitem><para>Using the simplistic approach</para></listitem>
+        </itemizedlist>
+       
+       <para>
+       		To specify the data input association using expressions we need to define the source and target items
+       		and specify the corresponding assignments between the fields of each item. In the following example we assign
+       		prefix and suffix fields of the items:
+       </para>
+       
+       <programlisting>
+&lt;dataInputAssociation&gt;
+	&lt;sourceRef&gt;dataInputOfProcess&lt;/sourceRef&gt;
+	&lt;targetRef&gt;dataInputOfServiceTask&lt;/targetRef&gt;
+	&lt;assignment&gt;
+		&lt;from&gt;${dataInputOfProcess.prefix}&lt;/from&gt;
+		&lt;to&gt;${dataInputOfServiceTask.prefix}&lt;/to&gt;
+	&lt;/assignment&gt;
+	&lt;assignment&gt;
+		&lt;from&gt;${dataInputOfProcess.suffix}&lt;/from&gt;
+		&lt;to&gt;${dataInputOfServiceTask.suffix}&lt;/to&gt;
+	&lt;/assignment&gt;
+&lt;/dataInputAssociation&gt;</programlisting>
+       
+       <para>
+       		On the other hand we can use the simplistic approach which is much more simple. The 'sourceRef' element is an Activiti
+       		variable name and the 'targetRef' element is a property of the item definition. In the following example we assign to
+       		the 'prefix' field the value of the variable 'PrefixVariable' and to the 'suffix' field the value of the variable 'SuffixVariable'.
+       </para>
+       
+       <programlisting>
+&lt;dataInputAssociation&gt;
+	&lt;sourceRef&gt;PrefixVariable&lt;/sourceRef&gt;
+	&lt;targetRef&gt;prefix&lt;/targetRef&gt;
+&lt;/dataInputAssociation&gt;
+&lt;dataInputAssociation&gt;
+	&lt;sourceRef&gt;SuffixVariable&lt;/sourceRef&gt;
+	&lt;targetRef&gt;suffix&lt;/targetRef&gt;
+&lt;/dataInputAssociation&gt;</programlisting>
+	</section>
+
+	<section id="bpmnWebserviceTaskDataOutputAssociation">
+		<title>WebService task data output associations</title>
+
+		<para>
+			There are 2 ways of specifying data out associations:
+		</para>
+		
+		<itemizedlist>
+         	<listitem><para>Using expressions</para></listitem>
+         	<listitem><para>Using the simplistic approach</para></listitem>
+        </itemizedlist>
+        
+        <para>
+       		To specify the data out association using expressions we need to define the target variable and the source expression. The approach is pretty
+			straightforward and similar data input associations:
+       </para>
+       
+       <programlisting>
+&lt;dataOutputAssociation&gt;
+	&lt;targetRef&gt;dataOutputOfProcess&lt;/targetRef&gt;
+	&lt;transformation&gt;${dataOutputOfServiceTask.prettyPrint}&lt;/transformation&gt;
+&lt;/dataOutputAssociation&gt;</programlisting>
+       
+       <para>
+       		On the other hand we can use the simplistic approach which is much more simple. The 'sourceRef' element is a property
+       		of the item definition and the 'targetRef' element is an Activiti variable name. The approach is pretty
+			straightforward and similar data input associations: 
+       </para>
+       
+       <programlisting>
+&lt;dataOutputAssociation&gt;
+	&lt;sourceRef&gt;prettyPrint&lt;/sourceRef&gt;
+	&lt;targetRef&gt;OutputVariable&lt;/targetRef&gt;
+&lt;/dataOutputAssociation&gt;</programlisting>
+	</section>
+</section>
+
+	
+	<section id="bpmnBusinessRuleTask">
+		<title>Business Rule Task</title>
+		<link linkend="experimental">
+			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
+		</link>
+
+		<section id="bpmnBusinessRuleTaskDescription">
+
+			<title>Description</title>
+	
+			<para>
+				A Business Rule task is used to synchronously execute one or more rules. Activiti uses Drools Expert, the Drools rule engine
+				to execute business rules. Currently, the .drl files containing the business rules have to be deployed together with the process definition
+				that defines a business rule task to execute those rules. This means that all .drl files that are used in a process have to be packaged 
+				in the process BAR file like for example the task forms. For more information about creating business rules for Drools Expert please refer to the Drools
+				documentation at <ulink url="http://www.jboss.org/drools/documentation">JBoss Drools</ulink>
+			</para>
+	
+		</section>
+
+		<section id="bpmnBusinessRuleTaskGraphicalNotation">
+	
+			<title>Graphical Notation</title>
+	
+			<para>
+				A Business Rule task is visualized the with a table icon.
+				<mediaobject>
+					<imageobject>
+						<imagedata align="center" fileref="images/bpmn.business.rule.task.png" />
+					</imageobject>
+				</mediaobject>
+			</para>
+	
+		</section>
+	
+		<section id="bpmnBusinessRuleTaskXML">
+			<title>XML representation</title>
+			<para>
+				To execute one or more business rules that are deployed in the same BAR file as the process definition, we need to define the input and result variables.
+				For the input variable definition a list of process variables can be defined separated by a comma.
+				The output variable definition can only contain one variable name that'll be used to store the output objects of the executed business rules in a process variable.
+				Note that the result variable will contain a List of objects. If no result variable name is specified by default org.activiti.engine.rules.OUTPUT is used.
+	   	</para>
+	   	<para>
+        The following business rule task executes all business rules deployed with the process definition:
+        <programlisting>
+&lt;process id=&quot;simpleBusinessRuleProcess&quot;&gt;
+  
+  &lt;startEvent id=&quot;theStart&quot; /&gt;
+  &lt;sequenceFlow sourceRef=&quot;theStart&quot; targetRef=&quot;businessRuleTask&quot; /&gt;
+  
+  <emphasis role="bold">&lt;businessRuleTask id=&quot;businessRuleTask&quot; activiti:ruleVariablesInput=&quot;${order}&quot;
+      activiti:resultVariable=&quot;rulesOutput&quot; /&gt;</emphasis>
+ 	
+  &lt;sequenceFlow sourceRef=&quot;businessRuleTask&quot; targetRef=&quot;theEnd&quot; /&gt;
+
+  &lt;endEvent id=&quot;theEnd&quot; /&gt;
+ 
+&lt;/process&gt;
+			  </programlisting>
+			</para>
+			<para>
+				The business rule task can also be configured to execute only a defined set of rules from the deployed .drl files.
+				A list of rule names separated by a comma must be specified for this.
+				<programlisting>
+&lt;businessRuleTask id=&quot;businessRuleTask&quot; activiti:ruleVariablesInput=&quot;${order}&quot;
+      activiti:rules=&quot;rule1, rule2&quot; /&gt;
+			  </programlisting>
+			  In this case only rule1 and rule2 are executed.
+	   	</para>
+	   	<para>
+				You can also define a list of rules that should be excluded from execution.
+				<programlisting>
+&lt;businessRuleTask id=&quot;businessRuleTask&quot; activiti:ruleVariablesInput=&quot;${order}&quot;
+      activiti:rules=&quot;rule1, rule2&quot; exclude=&quot;true&quot; /&gt;
+			  </programlisting>
+			  In this case all rules deployed in the same BAR file as the process definition will be executed, except for rule1 and rule2.
+			</para>
+		</section>
+	</section>
+
+		
+  <section id="bpmnEmailTask">
+		
+		  <title>Email task</title>
+		  
+		  <para>
+		    Activiti allows to enhance business processes with automatic mail service tasks that send
+		    e-mails to one or more recipients, including support for cc, bcc, html content, ... etc.
+		    Note that the mail task is <emphasis role="bold">not</emphasis> an 'official' task 
+		    of the BPMN 2.0 spec (and it does not have a dedicated icon as a consequence).
+		    Hence, in Activiti the mail task is implemented as a dedicated service task.
+		  </para>
+		  
+		  
+		  <section id="bpmnEmailTaskServerConfiguration">
+		  
+		    <title>Mail server configuration</title>
+		    
+		    <para>
+		      The Activiti engine sends e-mails trough an external mail server with SMTP capabilities.
+		      To actually send e-mails, the engine needs to know how to reach the mail server.
+		      Following properties can be set in the <emphasis>activiti.cfg.xml</emphasis> 
+		      configuration file:
+		      <table>
+		        <title>Mail server configuration</title>
+            <tgroup cols='3'>
+            <thead>
+              <row>
+                <entry>Property</entry>
+                <entry>Required?</entry>
+                <entry>Description</entry>
+              </row>
+            </thead>
+            <tbody>
+		          <row>
+		            <entry>mailServerHost</entry>
+		            <entry>no</entry>
+		            <entry>The hostname of your mail server (e.g. mail.mycorp.com). Default is <literal>localhost</literal></entry>
+		          </row>
+		          <row>
+                <entry>mailServerPort</entry>
+                <entry>yes, if not on the default port</entry>
+                <entry>The port for SMTP traffic on the mail server. The default is <emphasis>25</emphasis></entry>
+              </row>
+              <row>
+                <entry>mailServerDefaultFrom</entry>
+                <entry>no</entry>
+                <entry>The default e-mail address of the sender of e-mails, when none is provided by the user. By default this is <emphasis>activiti@activiti.org</emphasis></entry>
+              </row>
+              <row>
+                <entry>mailServerUsername</entry>
+                <entry>if applicable for your server</entry>
+                <entry>Some mail servers require credentials for sending e-mail. By default not set.</entry>
+              </row>
+              <row>
+                <entry>mailServerPassword</entry>
+                <entry>if applicable for your server</entry>
+                <entry>Some mail servers require credentials for sending e-mail. By default not set.</entry>
+              </row>
+            </tbody>
+            </tgroup>
+          </table>
+		    </para>		  
+		  
+		  </section>
+		  
+		  <section id="bpmnEmailTaskUsage">
+		  
+		    <title>Defining an Email Task</title>
+		    
+		    <para>
+		      The Email task is implemented as a dedicated <link linkend="bpmnJavaServiceTask">Service Task</link>
+		      and is defined by setting <emphasis>'mail'</emphasis> for the <emphasis>type</emphasis> of the service task.
+		      <programlisting>
+&lt;serviceTask id=&quot;sendMail&quot; <emphasis role="bold">activiti:type=&quot;mail&quot;</emphasis>&gt;		      
+		      </programlisting>
+		    </para>
+		    
+        <para>
+		      The Email task is configured by <link linkend="serviceTaskFieldInjection">field injection</link>.
+		      All the values for these properties can contain EL expression, which are resolved at runtime
+		      during process execution.
+		      Following properties can be set:
+		      <table>
+	         <title>Mail server configuration</title>
+	         <tgroup cols='3'>
+	           <thead>
+	             <row>
+	               <entry>Property</entry>
+	               <entry>Required?</entry>
+	               <entry>Description</entry>
+	             </row>
+	           </thead>
+	           <tbody>
+	             <row>
+	               <entry>to</entry>
+	               <entry>yes</entry>
+	               <entry>The recipients if the e-mail. Multiple recipients are defined in a comma-separated list</entry>
+	             </row>
+	             <row>
+                 <entry>from</entry>
+                 <entry>no</entry>
+                 <entry>The sender e-mail address. If not provided, the <link linkend="bpmnEmailTaskServerConfiguration">default configured</link> from address is used.</entry>
+               </row>
+                <row>
+                 <entry>subject</entry>
+                 <entry>no</entry>
+                 <entry>The subject of the e-mail.</entry>
+               </row>
+                <row>
+                 <entry>cc</entry>
+                 <entry>no</entry>
+                 <entry>The cc's of the e-mail. Multiple recipients are defined in a comma-separated list</entry>
+               </row>
+                <row>
+                 <entry>bcc</entry>
+                 <entry>no</entry>
+                 <entry>The bcc's of the e-mail. Multiple recipients are defined in a comma-separated list</entry>
+               </row>
+               <row>
+                 <entry>charset</entry>
+                 <entry>no</entry>
+                 <entry>Allows to change the charset of the email, which is necessary for many
+                 non-English languages.
+                 </entry>
+               </row>
+                <row>
+                 <entry>html</entry>
+                 <entry>no</entry>
+                 <entry>A piece of HTML that is the content of the e-mail.</entry>
+               </row>
+               <row>
+                 <entry>text</entry>
+                 <entry>no</entry>
+                 <entry>The content of the e-mail, in case one needs to send plain none-rich e-mails.
+                   Can be used in combination with <emphasis>html</emphasis>, for e-mail clients
+                   that don't support rich content. The client will then fall back to this text-only alternative.
+                 </entry>
+               </row>
+             </tbody>
+	         </tgroup>
+	        </table>
+        </para>
+        
+		  </section>
+		  
+		  <section id="bpmnEmailTaskExampleUsage">
+		  
+		    <title>Example usage</title>
+		  
+		  
+		    <para>
+		      The following XML snippet shows an example of using the Email Task.
+		      <programlisting>
+&lt;serviceTask id=&quot;sendMail&quot; activiti:type=&quot;mail&quot;&gt;
+  &lt;extensionElements&gt;
+    &lt;activiti:field name=&quot;from&quot; stringValue=&quot;order-shipping@thecompany.com&quot; /&gt;
+    &lt;activiti:field name=&quot;to&quot; expression=&quot;${recipient}&quot; /&gt;
+    &lt;activiti:field name=&quot;subject&quot; expression=&quot;Your order ${orderId} has been shipped&quot; /&gt;
+    &lt;activiti:field name=&quot;html&quot;&gt;
+      &lt;activiti:expression&gt;
+        &lt;![CDATA[
+          &lt;html&gt;
+            &lt;body&gt;
+              Hello ${male ? 'Mr.' : 'Mrs.' } ${recipientName},&lt;br/&gt;&lt;br/&gt;
+                 
+              As of ${now}, your order has been &lt;b&gt;processed and shipped&lt;/b&gt;.&lt;br/&gt;&lt;br/&gt;
+                  
+              Kind regards,&lt;br/&gt;
+                  
+              TheCompany.
+            &lt;/body&gt;
+          &lt;/html&gt;
+        ]]&gt;
+      &lt;/activiti:expression&gt;
+    &lt;/activiti:field&gt;      
+  &lt;/extensionElements&gt;
+&lt;/serviceTask&gt;		      
+		      </programlisting>
+		      with the following result:
+		      <mediaobject><imageobject><imagedata align="center" fileref="images/email.task.result.png"/></imageobject></mediaobject>
+		    </para>
+		  </section>
+		
+		</section>
+		
+  <section id="bpmnMuleTask">
+		
+		  <title>Mule Task</title>
+		  
+		  <para>
+		    The mule task allows to send messages to Mule enhancing the integration features of Activiti.
+		    Note that the mule task is <emphasis role="bold">not</emphasis> an 'official' task 
+		    of the BPMN 2.0 spec (and it does not have a dedicated icon as a consequence).
+		    Hence, in Activiti the mule task is implemented as a dedicated service task.
+		  </para>
+		  		  
+		  <section id="bpmnMuleTaskUsage">
+		  
+		    <title>Defining an Mule Task</title>
+		    
+		    <para>
+		      The Mule task is implemented as a dedicated <link linkend="bpmnJavaServiceTask">Service Task</link>
+		      and is defined by setting <emphasis>'mule'</emphasis> for the <emphasis>type</emphasis> of the service task.
+		      <programlisting>
+&lt;serviceTask id=&quot;sendMule&quot; <emphasis role="bold">activiti:type=&quot;mule&quot;</emphasis>&gt;		      
+		      </programlisting>
+		    </para>
+		    
+        <para>
+		      The Mule task is configured by <link linkend="serviceTaskFieldInjection">field injection</link>.
+		      All the values for these properties can contain EL expression, which are resolved at runtime
+		      during process execution.
+		      Following properties can be set:
+		      <table>
+	         <title>Mule server configuration</title>
+	         <tgroup cols='3'>
+	           <thead>
+	             <row>
+	               <entry>Property</entry>
+	               <entry>Required?</entry>
+	               <entry>Description</entry>
+	             </row>
+	           </thead>
+	           <tbody>
+	             <row>
+	               <entry>endpointUrl</entry>
+	               <entry>yes</entry>
+	               <entry>The Mule endpoint you want to invoke.</entry>
+	             </row>
+	             <row>
+                 <entry>language</entry>
+                 <entry>yes</entry>
+                 <entry>The language you want to use to evaluate the payloadExpression field.</entry>
+               </row>
+                <row>
+                 <entry>payloadExpression</entry>
+                 <entry>yes</entry>
+                 <entry>An expression that will be the message's payload.</entry>
+               </row>
+                <row>
+                 <entry>resultVariable</entry>
+                 <entry>no</entry>
+                 <entry>The name of the variable which will store the result of the invocation.</entry>
+               </row>
+             </tbody>
+	         </tgroup>
+	        </table>
+        </para>
+        
+		  </section>
+		  
+		  <section id="bpmnMuleTaskExampleUsage">
+		  
+		    <title>Example usage</title>
+		  
+		  
+		    <para>
+		      The following XML snippet shows an example of using the Mule Task.
+		      <programlisting>
+      &lt;extensionElements&gt;
+        &lt;activiti:field name=&quot;endpointUrl&quot;&gt;
+          &lt;activiti:string&gt;vm://in&lt;/activiti:string&gt;
+        &lt;/activiti:field&gt;
+        &lt;activiti:field name=&quot;language&quot;&gt;
+          &lt;activiti:string&gt;juel&lt;/activiti:string&gt;
+        &lt;/activiti:field&gt;
+        &lt;activiti:field name=&quot;payloadExpression&quot;&gt;
+          &lt;activiti:string&gt;&quot;hi&quot;&lt;/activiti:string&gt;
+        &lt;/activiti:field&gt;
+        &lt;activiti:field name=&quot;resultVariable&quot;&gt;
+          &lt;activiti:string&gt;theVariable&lt;/activiti:string&gt;
+        &lt;/activiti:field&gt;
+      &lt;/extensionElements&gt;	      
+		      </programlisting>
+		    </para>
+		  </section>
+		
+		</section>
+
+
+		<section id="bpmnManualTask">
+		
+		  <title>Manual Task</title>
+		  
+		  <section id="bpmnManualTaskDescription">
+		  
+		    <title>Description</title>
+		    
+		    <para>
+		      A <emphasis>Manual Task</emphasis> defines a task that is external to the BPM engine.
+		      It is used to model work that is done by somebody, which the engine
+		      does not need to know of, nor is there a system or UI interface.
+		      For the engine, a manual task is handled as a <emphasis role="bold">pass-through activity</emphasis>,
+		      automatically continuing the process from the moment process execution arrives into it.
+		    </para>
+		  
+		  </section>
+		  
+		  <section id="bpmnManualTaskGraphicalNotation">
+		  
+		    <title>Graphical Notation</title>
+		    
+		    <para>
+		      A manual task is visualized as a rounded rectangle, with a little 'hand' icon 
+		      in the upper left corner
+		      <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.manual.task.png"/></imageobject></mediaobject>
+		    </para>
+		  
+		  </section>
+		  
+		  <section id="bpmnManualTaskXml">
+		  
+		    <title>XML representation</title>
+		    
+		    <para>
+		      <programlisting>&lt;manualTask id=&quot;myManualTask&quot; name=&quot;Call client for more information&quot; /></programlisting>
+		    </para>
+		  
+		  </section>
+		
+		</section>
+		
+		<section id="bpmnReceiveTask">
+		
+		  <title>Java receive task</title>
+		  
+		  <section id="bpmnReceiveTaskDescription">
+		  
+		    <title>Description</title>
+		    
+		    <para>
+          A receive task is a simple task that waits for the arrival of a certain message.
+          Currently, we have only implemented Java semantics for this task. When process
+          execution arrives at a receive task, the process state is committed to the 
+          persistence store. This means that the process will stay in this wait state, 
+          until a specific message is received by the engine, which triggers the continuation
+          of the process past the receive task.
+		    </para>
+		  
+		  </section>
+		  
+		  <section>
+		  
+		    <title>Graphical notation</title>
+        
+        <para>
+          A receive task is visualized as a task (rounded rectangle) with a message icon in
+          the top left corner. The message is white (a black message icon would have send semantics)
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.receive.task.png"/></imageobject></mediaobject>
+        </para>
+      
+      </section>
+      
+      <section>
+      
+        <title>XML representation</title>
+        
+        <para>
+          <programlisting>&lt;receiveTask id=&quot;waitState&quot; name=&quot;wait&quot; />    </programlisting>
+        </para>
+        
+        <para>
+          To continue a process instance that is currently waiting at such a receive task,
+          the <emphasis>runtimeService.signal(executionId)</emphasis> must be called using
+          the id of the execution that arrived in the receive task.
+          The following code snippet shows how this works in practice:
+          <programlisting>
+ProcessInstance pi = runtimeService.startProcessInstanceByKey(&quot;receiveTask&quot;);
+Execution execution = runtimeService.createExecutionQuery()
+  .processInstanceId(pi.getId())
+  .activityId(&quot;wait&quot;)
+  .singleResult();
+assertNotNull(execution);
+    
+<emphasis role="bold">runtimeService.signal(execution.getId());</emphasis>   
+          </programlisting>
+        </para>
+      
+      </section>
+		
+		</section>
+		
+		<section id="executionListeners">
+      <title>Execution listener</title>
+      <para><emphasis role="bold">Compatibility note</emphasis>: After releasing 5.3, we discovered that
+      execution listeners and task listeners and expressions were still in non-public api. Those classes were in subpackages 
+      of <literal>org.activiti.engine.impl...</literal>,  which has <literal>impl</literal> in it).  
+      <literal>org.activiti.engine.impl.pvm.delegate.ExecutionListener</literal>, 
+      <literal>org.activiti.engine.impl.pvm.delegate.TaskListener</literal> and 
+      <literal>org.activiti.engine.impl.pvm.el.Expression</literal> 
+      have been deprecated. From now on, you should use <literal>org.activiti.engine.delegate.ExecutionListener</literal>,
+      <literal>org.activiti.engine.delegate.TaskListener</literal> and <literal>org.activiti.engine.delegate.Expression</literal>.
+      In the new publicly available API, access to  
+      <literal>ExecutionListenerExecution.getEventSource()</literal> has been removed.  Apart from the deprecation 
+      compiler warning, the existing code should run fine.  But consider switching to the new public 
+      API interfaces (without .impl. in the package name).
+      </para>
+      
+      <para>Execution listeners allow you to execute external Java code or evaluate an expression when certain events occur
+      during process exevcution. The events that can be captured are:
+      <itemizedlist>
+        <listitem><para>Start and ending of a process instance.</para></listitem>
+        <listitem><para>Taking a transition.</para></listitem>
+        <listitem><para>Start and ending of an activity.</para></listitem>
+      </itemizedlist>
+      </para>
+      <para>
+        The following process definition contains 3 execution listenerss:
+        <programlisting>
+  &lt;process id=&quot;executionListenersProcess&quot;&gt;
+  
+    <emphasis role="bold">&lt;extensionElements&gt;
+      &lt;activiti:executionListener class=&quot;org.activiti.examples.bpmn.executionlistener.ExampleExecutionListenerOne&quot; event=&quot;start&quot; /&gt;
+    &lt;/extensionElements&gt;</emphasis>
+    
+    &lt;startEvent id=&quot;theStart&quot; /&gt;
+    &lt;sequenceFlow sourceRef=&quot;theStart&quot; targetRef=&quot;firstTask&quot; /&gt;
+    
+    &lt;userTask id=&quot;firstTask&quot; /&gt;
+    &lt;sequenceFlow sourceRef=&quot;firstTask&quot; targetRef=&quot;secondTask&quot;&gt;
+    <emphasis role="bold">&lt;extensionElements&gt;
+      &lt;activiti:executionListener class=&quot;org.activiti.examples.bpmn.executionListener.ExampleExecutionListenerTwo&quot; /&gt;
+    &lt;/extensionElements&gt;</emphasis>
+    &lt;/sequenceFlow&gt;
+    
+    &lt;userTask id=&quot;secondTask&quot; &gt;
+    <emphasis role="bold">&lt;extensionElements&gt;
+      &lt;activiti:executionListener expression=&quot;${myPojo.myMethod(execution.event)}&quot; event=&quot;end&quot; /&gt;
+    &lt;/extensionElements&gt;</emphasis>
+    &lt;/userTask&gt;
+    &lt;sequenceFlow sourceRef=&quot;secondTask&quot; targetRef=&quot;thirdTask&quot; /&gt;
+       
+    &lt;userTask id=&quot;thirdTask&quot; /&gt;
+    &lt;sequenceFlow sourceRef=&quot;thirdTask&quot; targetRef=&quot;theEnd&quot; /&gt;
+
+    &lt;endEvent id=&quot;theEnd&quot; /&gt;
+    
+  &lt;/process&gt;</programlisting>
+        </para>
+        <para>The first execution listener is notified when the process starts. The listener is an external Java-class (like <literal>ExampleExecutionListenerOne</literal>) 
+        and should implement <literal>org.activiti.engine.delegate.ExecutionListener</literal> interface. When the event occurs (in this case <literal>end</literal> event)
+        the method <literal>notify(ExecutionListenerExecution execution)</literal> is called.
+        <programlisting>
+public class ExampleExecutionListenerOne implements <emphasis role="bold">ExecutionListener</emphasis> {
+
+  <emphasis role="bold">public void notify(ExecutionListenerExecution execution) throws Exception {</emphasis>
+    execution.setVariable("variableSetInExecutionListener", "firstValue");
+    execution.setVariable("eventReceived", execution.getEventName());
+  }
+}</programlisting>
+        It is also possible to use a delegation class that implements the <literal>org.activiti.engine.delegate.JavaDelegate</literal>
+        interface. These delegation classes can then be reused in other constructs, such as a delegation for a serviceTask.
+        </para>
+        <para>
+           The second execution listener is called when the transition is taken. Note that the <literal>listener</literal> element doesn't define an
+          <literal>event</literal>, since only <literal>take</literal> events are fired on transitions. 
+          <emphasis role="bold">Values in the <literal>event</literal> attribute are ignored when a listener is defined on a transition.</emphasis>
+        </para>
+        <para>
+          The last execution listener is called when activity <literal>secondTask</literal> ends. Instead of using the <literal>class</literal> on the listener declaration,
+          a <literal>expression</literal> is defined instead which is evaluated/invoked when the event is fired. 
+        </para>
+        <programlisting>
+&lt;activiti:executionListener expression=&quot;<emphasis role="bold">${myPojo.myMethod(execution.eventName)}</emphasis>&quot; event=&quot;end&quot; /&gt;</programlisting>
+        <para>
+          As with other expressions, execution variables are resolved and can be used. Because the execution implementation object has a property that exposes the event name, it's
+          possible to pass the event-name to your methods using <literal>execution.eventName</literal>.
+        </para>
+        <para>
+          Execution listeners also support using a <literal>delegateExpression</literal>,
+          <link linkend="bpmnJavaServiceTaskXML">similar to a service task</link>.
+          <programlisting>&lt;activiti:executionListener event=&quot;start&quot; delegateExpression=&quot;${myExecutionListenerBean}&quot; /&gt;</programlisting>         
+        </para>
+        
+      <section id="executionListenerFieldInjection">
+      
+        <title>Field injection on execution listeners</title>
+        <para>
+         When using an execution listener that is configured with the <literal>class</literal> attribute, field injection can be applied. This is exactly the same
+         mechanism as used <link linkend="serviceTaskFieldInjection">Service task field injection</link>, which contains an overview of the possibilities provided by field injection. 
+        </para>
+        <para>
+         The fragment below shows a simple example process with an execution listener with fields injected. 
+        <programlisting>
+ &lt;process id=&quot;executionListenersProcess&quot;&gt;
+    <emphasis role="bold">&lt;extensionElements&gt;
+      &lt;activiti:executionListener class=&quot;org.activiti.examples.bpmn.executionListener.ExampleFieldInjectedExecutionListener&quot; event=&quot;start&quot;&gt;
+        &lt;activiti:field name=&quot;fixedValue&quot; stringValue=&quot;Yes, I am &quot; /&gt;
+        &lt;activiti:field name=&quot;dynamicValue&quot; expression=&quot;${myVar}&quot; /&gt;
+      &lt;/activiti:executionListener&gt;
+    &lt;/extensionElements&gt;</emphasis>
+    
+    &lt;startEvent id=&quot;theStart&quot; /&gt;
+    &lt;sequenceFlow sourceRef=&quot;theStart&quot; targetRef=&quot;firstTask&quot; /&gt;
+    
+    &lt;userTask id=&quot;firstTask&quot; /&gt;
+    &lt;sequenceFlow sourceRef=&quot;firstTask&quot; targetRef=&quot;theEnd&quot; /&gt;
+    
+    &lt;endEvent id=&quot;theEnd&quot; /&gt;
+  &lt;/process&gt;
+        </programlisting>
+        </para>
+        <para>
+          <programlisting>
+public class ExampleFieldInjectedExecutionListener implements ExecutionListener {
+
+  <emphasis role="bold">private Expression fixedValue;
+
+  private Expression dynamicValue;</emphasis>
+
+  public void notify(ExecutionListenerExecution execution) throws Exception {
+    execution.setVariable("var", <emphasis role="bold">fixedValue.getValue(execution).toString()</emphasis> + <emphasis role="bold">dynamicValue.getValue(execution).toString()</emphasis>);
+  }
+}
+          </programlisting>
+          The class <literal>ExampleFieldInjectedExecutionListener</literal> concatenates the 2 injected fields (one fixed an the other dynamic) and stores this in the process variable '<literal>var</literal>'.
+        </para>
+        <para>
+        <programlisting>
+@Deployment(resources = {"org/activiti/examples/bpmn/executionListener/ExecutionListenersFieldInjectionProcess.bpmn20.xml"})
+public void testExecutionListenerFieldInjection() {
+  Map&lt;String, Object&gt; variables = new HashMap&lt;String, Object&gt;();
+  <emphasis role="bold">variables.put("myVar", "listening!");</emphasis>
+    
+  ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("executionListenersProcess", variables);
+    
+  Object varSetByListener = runtimeService.getVariable(processInstance.getId(), "var");
+  assertNotNull(varSetByListener);
+  assertTrue(varSetByListener instanceof String);
+    
+  // Result is a concatenation of fixed injected field and injected expression
+  <emphasis role="bold">assertEquals("Yes, I am listening!", varSetByListener);</emphasis>
+}
+        </programlisting>
+        </para>
+        </section>
+         </section>
+         
+  <section id="taskListeners">
+  
+    <title>Task listener</title>
+    
+    <para>
+      A <emphasis>task listener</emphasis> is used to execute custom Java logic or an expression
+      upon the occurrence of a certain task-related event.
+    </para>
+    
+    <para>
+      A task listener can only be added in the process definition as a child element of a <link linkend="bpmnUserTask">user task</link>.
+      Note that this also must happen as a child of the <emphasis>BPMN 2.0 extensionElements</emphasis>
+      and in the <emphasis>activiti</emphasis> namespace, since a task listener is an Activiti-specific construct.      
+      <programlisting>
+&lt;userTask id=&quot;myTask&quot; name=&quot;My Task&quot; &gt;
+  &lt;extensionElements&gt;
+    <emphasis role="bold">&lt;activiti:taskListener event=&quot;create&quot; class=&quot;org.activiti.MyTaskCreateListener&quot; /&gt;</emphasis>
+  &lt;/extensionElements&gt;
+&lt;/userTask&gt;</programlisting>
+      A <emphasis>task listener</emphasis> supports following attributes:
+      <itemizedlist>
+        <listitem>
+          <para>
+            <emphasis role="bold">event</emphasis> (required): the type of task event on which the task listener will
+            be invoked. Possible events are 
+            <itemizedlist>
+              <listitem>
+                <para> 
+                  <emphasis role="bold">create</emphasis>: occurs when the task 
+                  has been created an <emphasis role="bold">all task properties are set</emphasis>.
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  <emphasis role="bold">assignment</emphasis>: occurs when the task is assigned to somebody.
+                  Note: when process execution arrives in a userTask, first an 
+                  <emphasis>assignment</emphasis> event will be fired, <emphasis role="bold">before</emphasis>
+                  the <emphasis>create</emphasis> event is fired. This might seem an unnatural order, 
+                  but the reason is pragmatic: when receiving the <emphasis>create</emphasis> event,
+                  we usually want to inspect all properties of the task including the assignee.
+                </para>
+              </listitem>  
+              <listitem>
+                <para>
+                  <emphasis role="bold">complete</emphasis>: occurs when the task is completed 
+                  and just before the task is deleted from the runtime data.
+                </para>
+              </listitem>            
+            </itemizedlist>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">class</emphasis>: the delegation class that must be called. 
+            This class must implement the <literal>org.activiti.engine.impl.pvm.delegate.TaskListener</literal>
+            interface.
+            <programlisting>
+public class MyTaskCreateListener implements TaskListener {
+
+  public void notify(DelegateTask delegateTask) {
+    // Custom logic goes here
+  }
+
+}</programlisting>
+            
+            It is also possible to use <link linkend="serviceTaskFieldInjection">field injection</link> to pass
+            process variables or the execution to the delegation class.
+            Note that an instance of the delegation class is created upon process deployment
+            (as is the case with any class delegation in Activiti), which means that the 
+            instance is shared between all process instance executions.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">expression</emphasis>: (cannot be used together with the <emphasis>class</emphasis> attribute):
+            specifies an expression that will be executed when the event happens. 
+            It is possible to pass the <literal>DelegateTask</literal> object and the name
+            of the event (using <literal>task.eventName</literal>) as parameter to the called object. 
+            <programlisting>&lt;activiti:taskListener event=&quot;create&quot; expression=&quot;${myObject.callMethod(task, task.eventName)}&quot; /&gt;</programlisting>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">delegateExpression</emphasis> allows to specify an expression
+            that resolves to an object implementing ther <literal>TaskListener</literal> interface,
+            <link linkend="bpmnJavaServiceTaskXML">similar to a service task</link>. 
+            <programlisting>&lt;activiti:taskListener event=&quot;create&quot; delegateExpression=&quot;${myTaskListenerBean}&quot; /&gt;</programlisting>        
+          </para>
+        </listitem>
+      </itemizedlist>
+    </para>
+    
+  </section> 
+  
+    <section id="bpmnMultiInstance">
+    
+      <title>Multi-instance (for each)</title>
+      
+      <section id="bpmnMultiInstanceDescription">
+      
+        <title>Description</title>
+        
+        <para>
+          A <emphasis>multi-instance activity</emphasis> is a way of defining repetition for 
+          a certain step in a business process. In programming concepts, a multi-instance
+          matches the <emphasis role="bold">for each</emphasis> construct: it allows to execute
+          a certain step or even a complete subprocess for each item in a given collection, 
+          <emphasis role="bold">sequentially or in parallel</emphasis>.
+        </para>
+        
+        <para>
+          A <emphasis>multi-instance</emphasis> is a regular activity that has extra properties
+          defined (so-called <emphasis>'multi-instance</emphasis> characteristics'') which
+          will cause the activity to be executed multiple times at runtime. Following
+          activities can become a <emphasis>multi-instance activity:</emphasis>
+          <itemizedlist>
+            <listitem><para><link linkend="bpmnUserTask">User task</link></para></listitem>
+            <listitem><para><link linkend="bpmnScriptTask">Script task</link></para></listitem>
+            <listitem><para><link linkend="bpmnJavaServiceTask">Java service task</link></para></listitem>
+            <listitem><para><link linkend="bpmnWebserviceTask">Web service task</link></para></listitem>
+            <listitem><para><link linkend="bpmnBusinessRuleTask">Business rule task</link></para></listitem>
+            <listitem><para><link linkend="bpmnEmailTask">Email task</link></para></listitem>
+            <listitem><para><link linkend="bpmnManualTask">Manual task</link></para></listitem>
+            <listitem><para><link linkend="bpmnReceiveTask">Receive task</link></para></listitem>
+            <listitem><para><link linkend="bpmnSubProcess">(embedded) subprocess</link></para></listitem>
+            <listitem><para><link linkend="bpmnCallActivity">Call activity</link></para></listitem>
+          </itemizedlist>
+          A <link linkend="bpmnGateways">gateway</link> or <link linkend="bpmnEvents">event</link>
+          can <emphasis role="bold">not</emphasis> become multi-instance.
+        </para>
+        
+        <para>
+          As required by the spec, each parent execution of the created executions for each instance
+          will have following variables:
+          <itemizedlist>
+            <listitem><para><emphasis role="bold">nrOfInstances</emphasis>: the total number of instances</para></listitem>
+            <listitem><para><emphasis role="bold">nrOfActiveInstances</emphasis>: the number of currently active, ie. not yet finished, instances. For a sequential multi-instance, this will always be 1.</para></listitem>
+            <listitem><para><emphasis role="bold">nrOfCompletedInstances</emphasis>: the number of already completed instances.</para></listitem>
+          </itemizedlist>
+          These values can be retrieved by calling the <literal>execution.getVariable(x)</literal> method.
+        </para>
+        
+        <para>
+          Additionally, each of the created executions will have an execution-local variable (ie. not visible
+          for the other executions, and not stored on process instance level) :
+          <itemizedlist>
+            <listitem><para><emphasis role="bold">loopCounter</emphasis>: indicates the <emphasis>index in the for-each loop</emphasis> of that particular instance.</para></listitem>
+          </itemizedlist>
+        </para>
+      
+      </section>
+      
+      <section id="bpmnMultiInstanceGraphicalNotation">
+      
+        <title>Graphical notation</title>
+        
+        <para>
+          If an activity is multi-instance, this is indictaed by three short lines at the bottom
+          of that activity. Three <emphasis>vertical</emphasis> lines indicates that the instances will be executed
+          in parallel, while three <emphasis>horizontal</emphasis> lines indicate sequential execution.
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.multi.instance.png"/></imageobject></mediaobject>
+        </para>
+      
+      </section>
+      
+      <section id="bpmnMultiInstanceXml">
+      
+        <title>Xml representation</title>
+        
+        <para>
+         To make an activity multi-instance, the activity xml element must have a
+         <literal>multiInstanceLoopCharacteristics</literal> child element.
+         <programlisting>
+&lt;multiInstanceLoopCharacteristics isSequential=&quot;false|true&quot;&gt;
+ ...
+&lt;/multiInstanceLoopCharacteristics&gt;</programlisting>
+         The <emphasis role="bold">isSequential</emphasis> attribute indicates if the 
+         instances of that activity are executed sequentially or parallel.
+        </para>
+        
+        <para>
+          The number of instances are <emphasis role="bold">calculated once, when entering the activity</emphasis>.
+          There are a few ways of configuring this. On way is directly specifying a number, by using
+          the <emphasis role="bold">loopCardinality</emphasis> child element.
+          <programlisting>
+&lt;multiInstanceLoopCharacteristics isSequential=&quot;false|true&quot;&gt;
+  &lt;loopCardinality&gt;5&lt;/loopCardinality&gt;
+&lt;/multiInstanceLoopCharacteristics&gt;</programlisting>
+          Expressions that resolve to a postive number are also possible:
+          <programlisting>
+&lt;multiInstanceLoopCharacteristics isSequential=&quot;false|true&quot;&gt;
+  &lt;loopCardinality&gt;${nrOfOrders-nrOfCancellations}&lt;/loopCardinality&gt;
+&lt;/multiInstanceLoopCharacteristics&gt;</programlisting>
+        </para>
+        
+        <para>
+          Another way to define the number of instances, is to specify the name of a process variable which is a collection using the <literal>loopDataInputRef</literal> 
+          child element. For each item in the collection, an instance will be created.
+          Optionally, it is possible to set that specific item of the collection for the instance
+          using the <literal>inputDataItem</literal> child element. This is shown in the following
+          XML example:
+          <programlisting>
+&lt;userTask id=&quot;miTasks&quot; name=&quot;My Task ${loopCounter}&quot; activiti:assignee=&quot;${assignee}&quot;&gt;
+  &lt;multiInstanceLoopCharacteristics isSequential=&quot;false&quot;&gt;
+    &lt;loopDataInputRef&gt;assigneeList&lt;/loopDataInputRef&gt;
+    &lt;inputDataItem name=&quot;assignee&quot; /&gt;
+  &lt;/multiInstanceLoopCharacteristics&gt;
+&lt;/userTask&gt;</programlisting>
+          Suppose the variable <literal>assigneeList</literal> contains the values <literal>[kermit, gonzo, foziee]</literal>.
+          In the snippet above, three user tasks will be created in parallel. Each of the executions
+          will have a process variable named <literal>assignee</literal> containing one value of the 
+          collection, which is used to assign the user task in this example.
+        </para>
+        
+        <para>
+          The downside of the <literal>loopDataInputRef</literal> and <literal>inputDataItem</literal>
+          is that 1) the names are pretty hard to remember and 2) due to the BPMN 2.0 schema restrictions
+          they can't contain expressions. Activiti solves this by offering the 
+          <emphasis role="bold">collection</emphasis> and <emphasis role="bold">elementVariable</emphasis>
+          attributes on the <literal>multiInstanceCharacteristics</literal>:
+          <programlisting>
+&lt;userTask id=&quot;miTasks&quot; name=&quot;My Task&quot; activiti:assignee=&quot;${assignee}&quot;&gt;
+  &lt;multiInstanceLoopCharacteristics isSequential=&quot;true&quot; 
+     <emphasis role="bold">activiti:collection=&quot;${myService.resolveUsersForTask()}&quot; activiti:elementVariable=&quot;assignee&quot; </emphasis>&gt;
+  &lt;/multiInstanceLoopCharacteristics&gt;
+&lt;/userTask&gt;</programlisting> 
+        </para>
+        
+        <para>
+          A multi-instance activity ends when all instances are finished. However, it is possible
+          to specify an expression that is evaluated every time one instance ends. When this
+          expression evaluates to true, all remaining instances are destroyed and the multi-instance
+          activity ends, continuing the process. Such an expression must be defined in
+          the <emphasis role="bold">completionCondition</emphasis> child element.
+          <programlisting>
+&lt;userTask id=&quot;miTasks&quot; name=&quot;My Task&quot; activiti:assignee=&quot;${assignee}&quot;&gt;
+  &lt;multiInstanceLoopCharacteristics isSequential=&quot;false&quot; 
+     activiti:collection=&quot;assigneeList&quot; activiti:elementVariable=&quot;assignee&quot; &gt;
+    <emphasis role="bold">&lt;completionCondition&gt;${nrOfCompletedInstances/nrOfInstances >= 0.6 }&lt;/completionCondition&gt;</emphasis>
+  &lt;/multiInstanceLoopCharacteristics&gt;
+&lt;/userTask&gt;</programlisting>
+          In this example, there will be parallel instances created for each element of the <literal>assigneeList</literal>
+          collection. However, when 60% of the tasks are completed, the other tasks are deleted
+          and the process continues.       
+        </para>
+      
+      </section>
+      
+      <section id="bpmnMultiInstanceBoundaryEvent">
+      
+        <title>Boundary events and multi-instance</title>
+        
+        <para>
+          Since a multi-instance is a regular activity, it is possible to define a 
+          <link linkend="bpmnBoundaryEvent">boundary event</link> on its boundary.
+          In case of an interrupting boundary event, when the event is catched, <emphasis role="bold">all instances</emphasis>
+          that are still active will be destroyed. Take for example following multi-instance subprocess:
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.multi.instance.boundary.event.png"/></imageobject></mediaobject>
+          Here, all instances of the subprocess will be destroyed when the timer fires, regardless
+          of how many instances there are or which inner activities are currently not yet completed.
+        </para>
+      
+      </section>
+    
+    </section>    
+		
+		<section id="bpmnBoundaryEvent">
+		  
+		  <title>Boundary events</title>
+		  
+		  <para>
+		    Boundary events are <emphasis>catching</emphasis> events that are attached to an activity
+		    (a boundary event can never be throwing). This means that while the activity is
+		    running, the event is <emphasis>listening</emphasis> for a certain type of trigger. 
+		    When the event is <emphasis>caught</emphasis>, the activity is interrupted and the 
+		    sequence flow going out of the event are followed.
+		  </para>
+		  
+		  <para>
+		    All boundary events are defined in the same way:
+<programlisting>
+&lt;boundaryEvent id=&quot;myBoundaryEvent&quot; attachedToRef=&quot;theActivity&quot;&gt;
+      &lt;XXXEventDefinition/&gt;
+&lt;/boundaryEvent&gt;</programlisting>
+		  </para>
+		  
+		  <para>
+		    A boundary event is defined with
+		    <itemizedlist>
+		      <listitem>
+		        <para>
+		          A unique identifier (process-wide)
+		        </para>
+		      </listitem>
+		      <listitem>
+		        <para>
+		          A reference to the activity to which the event is attached through the
+		          <emphasis role="bold">attachedToRef</emphasis> attribute.
+		          Note that a boundary event is defined on the same level as the activities
+		          to which they are attached
+		          (i.e. no inclusion of the boundary event inside the activity).
+		        </para>
+		      </listitem>
+		      <listitem>
+		        <para>
+		          An XML sub-element of the form <emphasis>XXXEventDefinition</emphasis> 
+		          (e.g. <emphasis>TimerEventDefinition</emphasis>, <emphasis>ErrorEventDefinition</emphasis>, etc.)
+		          defining the type of the boundary event. See the specific boundary event types
+		          for more details.
+		        </para>
+		      </listitem>
+		    </itemizedlist>
+		  </para>
+		  
+		</section>
+		  
+		<section id="bpmnTimerBoundaryEvent">
+      
+      <title>Timer Boundary Event</title>
+        
+      <section id="timerBoundaryEventDescription">
+        
+        <title>Description</title>
+          
+        <para>
+          A timer boundary event acts as a stopwatch and alarm clock. When an execution arrives
+          in the activity where the boundary event is attached to, a timer is started.
+          When the timer fires (e.g. after a specified interval), the activity is interrupted
+          and the sequence flow going out of the timer boundary event are followed.
+        </para>
+        
+      </section>
+        
+      <section id="bpmnTimerBoundaryEventGraphicalNotation">
+        
+        <title>Graphical Notation</title>
+          
+        <para>
+          A timer boundary event is visualized as a typical boundary event (i.e. circle
+          on the border), with the timer icon on the inside.
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.boundary.timer.event.png"/></imageobject></mediaobject>
+        </para>
+        
+      </section>
+      
+      <section id="bpmnTimerBoundaryEventXml">
+      
+        <title>XML Representation</title>
+        
+        <para>
+          A timer boundary event is defined as a <link linkend="bpmnBoundaryEvent">regular boundary event</link>.
+          The specific type sub-element is in this case a <emphasis role="bold">timerEventDefinition</emphasis>
+          element.
+<programlisting>
+&lt;boundaryEvent id=&quot;escalationTimer&quot; cancelActivity=&quot;true&quot; attachedToRef=&quot;firstLineSupport&quot;&gt;
+   <emphasis role="bold">&lt;timerEventDefinition&gt;
+    &lt;timeDuration&gt;PT4H&lt;/timeDuration&gt;
+  &lt;/timerEventDefinition&gt;</emphasis>
+&lt;/boundaryEvent&gt;          
+</programlisting>
+
+        Please refer to <link linkend="timerEventDefinitions">timer event definition</link> for details on timer configuration.
+        </para>
+
+        <para>
+          In the grafical representation, the line of the circle is dotted as you can see in this example above:
+          
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.non.interrupting.boundary.timer.event.png"/></imageobject></mediaobject>
+          
+          A typical use case is sending an escalation email additionally but not interrupt the normal process flow.
+        </para>        
+<!-- 
+        <para>
+          Since BPMn 2.0 there is the difference between the interrupting and non interrupting timer event. The 
+          interrupting is the default. The non-interrupting leads to the original activity is <emphasis role="bold">not</emphasis>
+          interrupted but the activity stays there. Instead an additional executions is created and send over the
+          outgoing transition of the event. In the XML representation, the <emphasis>cancelActivity</emphasis> attribute
+          is set to false:
+<programlisting>
+&lt;boundaryEvent id=&quot;escalationTimer&quot; cancelActivity=&quot;false&quot; attachedToRef=&quot;firstLineSupport&quot;/&gt;
+</programlisting>
+        </para>
+         -->
+        
+        <para>
+          <emphasis role="bold">Note:</emphasis> boundary timer events are only fired when 
+          the job executor is enabled (i.e. <emphasis>jobExecutorActivate</emphasis>
+          needs to be set to <literal>true</literal> in the <literal>activiti.cfg.xml</literal>, since the job
+          executor is disabled by default). 
+        </para>
+      
+      </section>
+      
+      <section id="bpmnKnownIssueBoundaryEvent">
+    
+      <title>Known issue with boundary events</title>
+      
+      <para>
+        There is a known issue regarding concurrency when using boundary events of any type.
+        Currently, it is not possible to have multiple outgoing sequence flow attached to 
+        a boundary event (see issue <ulink url="http://jira.codehaus.org/browse/ACT-47">ACT-47</ulink>).
+        A solution to this problem is to use one outgoing sequence flow that goes to a parallel gateway.
+        <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.known.issue.boundary.event.png"/></imageobject></mediaobject>
+      </para>
+    
+    </section>
+		
+		</section> 
+		
+		<section id="bpmnBoundaryErrorEvent">
+		  <title>Error Boundary event</title>
+		  
+		  <section id="bpmnBoundaryErrorEventDescription">
+		    <title>Description</title>
+		    <para>
+		      An intermediate <emphasis>catching</emphasis> error on the boundary of an activity,
+		      or <emphasis role="bold">boundary error event</emphasis> for short, catches errors that are thrown within the scope
+		      of the activity on which it is defined.
+		    </para>
+		    
+		    <para>
+		      Defining a boundary error event makes most sense on an <link linkend="bpmnSubProcess">embedded subprocess</link>,
+		      or a <link linkend="bpmnCallActivity">call activity</link>, as a subprocess creates a scope for all activities inside the subprocess. 
+		      Errors are thrown by <link linkend="bpmnErrorEndEvent">error end events</link>. Such an error will propagate its
+		      parent scopes upwards until a scope is found on which a boundary error event is defined
+		      that matches the error event definition.
+		    </para>
+		    
+		    <para>
+		      When an error event is caught, the activity on which the boundary event is defined
+		      is destroyed, also destroying all current executions within
+		      (eg. concurrent activities, nested subprocesses, etc.). Process execution continues
+		      following the outgoing sequence flow of the boundary event. 
+		    </para>
+		    
+		  </section>
+		  
+		  <section id="bpmnBoundaryErrorEventgraphicalNotation">
+        <title>Graphical notation</title>
+        <para>
+          A boundary error event is visualized as a typical intermediate event (Circle with smaller circle inside)
+          on the boundary, with the error icon inside. The error icon is white, to indicate
+          the <emphasis>catch</emphasis> semantics.
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.boundary.error.event.png"/></imageobject></mediaobject>
+        </para>
+      </section>
+      
+      <section id="bpmnBoundaryErrorEventXml">
+        <title>Xml representation</title>
+        <para>
+          A boundary error event is defined as a typical <link linkend="bpmnBoundaryEvent">boundary event</link>:
+          <programlisting>
+&lt;boundaryEvent id=&quot;catchError&quot; attachedToRef=&quot;mySubProcess&quot;&gt;
+  &lt;errorEventDefinition errorRef=&quot;myError&quot;/&gt;
+&lt;/boundaryEvent&gt;
+          </programlisting>
+          As with the <link linkend="bpmnErrorEndEvent">error end event</link>, the <emphasis>errorRef</emphasis>
+          references an error defined outside the process element:
+          <programlisting>
+&lt;error id=&quot;myError&quot; errorCode=&quot;123&quot; /&gt;
+...
+&lt;process id=&quot;myProcess&quot;&gt;  
+...              
+          </programlisting>
+        </para>
+        
+        <para>
+          The <emphasis role="bold">errorCode</emphasis> is used to match the errors that are catched:
+          <itemizedlist>
+            <listitem>
+              <para>
+                If <emphasis>errorRef</emphasis> is omitted, the boundary error event will catch
+                <emphasis role="bold">any error event</emphasis>, regardless of the errorCode of the <emphasis>error</emphasis>.
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                In case an <emphasis>errorRef</emphasis> is provided and it references an existing <emphasis>error</emphasis>,
+                the boundary event will <emphasis role="bold">only catch errors with the same error code</emphasis>.
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                In case an <emphasis>errorRef</emphasis> is provided, but no <emphasis>error</emphasis>
+                is defined in the BPMN 2.0 file, then the <emphasis role="bold">errorRef is used
+                as errorCode</emphasis> (similar for with error end events).
+              </para>
+            </listitem>
+          </itemizedlist>
+        </para>
+      </section>
+      
+      <section id="bpmnBoundaryErrorEventExample">
+        <title>Example</title>
+        <para>
+          Following example process shows how an error end event can be used. When the 
+          <emphasis>'Review profitability'</emphasis> user task is completed by stating that
+          not enough information is provided, an error is thrown. When this error is catched on
+          the boundary of the subprocess, all active activities within the <emphasis>'Review sales lead'</emphasis>
+          subprocess are destroyed (even if <emphasis>'Review customer rating'</emphasis> was not yet completed),
+          and the <emphasis>'Provide additional details'</emphasis> user task is created.
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.boundary.error.example.png"/></imageobject></mediaobject>
+        </para>
+        
+        <para>
+          This process is shipped as example in the demo setup. The process XML and unit test can
+          be found in the <emphasis>org.activiti.examples.bpmn.event.error</emphasis> package.
+        </para>
+      </section>
+		  
+		</section>
+
+        <section id="bpmnIntermediateCatchingEvent">
+
+          <title>Intermediate catching events</title>
+
+		  <para>
+		    All intermediate catching events events are defined in the same way:
+<programlisting>
+&lt;intermediateCatchEvent id=&quot;myIntermediateCatchEvent&quot; &gt;
+      &lt;XXXEventDefinition/&gt;
+&lt;/intermediateCatchEvent&gt;</programlisting>
+		  </para>
+
+		  <para>
+		    An intermediate catching event is defined with
+		    <itemizedlist>
+		      <listitem>
+		        <para>
+		          A unique identifier (process-wide)
+		        </para>
+		      </listitem>
+		      <listitem>
+		        <para>
+		          An XML sub-element of the form <emphasis>XXXEventDefinition</emphasis>
+		          (e.g. <emphasis>TimerEventDefinition</emphasis>, etc.)
+		          defining the type of the intermediate catching event. See the specific catching event types
+		          for more details.
+		        </para>
+		      </listitem>
+		    </itemizedlist>
+		  </para>
+
+        </section>
+
+        <section id="bpmnTimerIntermediateEvent">
+
+            <title>Timer intermediate catching event</title>
+
+            <section id="bpmnTimerIntermediateEventDescription">
+                <title>Description</title>
+
+        <para>
+          A timer intermediate event acts as a stopwatch. When an execution arrives
+          in catching event activity, a timer is started.
+          When the timer fires (e.g. after a specified interval), the sequence flow going out of the timer intermediate event is followed.
+        </para>
+
+            </section>
+
+            <section id="bpmnTimerIntermediateEventGraphicalNotation">
+
+              <title>Graphical Notation</title>
+
+              <para>
+                A timer intermediate event is visualized as a intermediate catching event, with the timer icon on the inside.
+                <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.intermediate.timer.event.png"/></imageobject></mediaobject>
+              </para>
+
+            </section>
+
+            <section id="bpmnTimerIntermediateEventXml">
+
+              <title>XML Representation</title>
+
+              <para>
+
+          A timer intermediate event is defined as a <link linkend="bpmnIntermediateCatchingEvent">intermediate catching event</link>.
+          The specific type sub-element is in this case a <emphasis role="bold">timerEventDefinition</emphasis>
+          element.
+                 <programlisting>
+        &lt;intermediateCatchEvent id=&quot;timer&quot;&gt;
+            <emphasis role="bold">&lt;timerEventDefinition&gt;
+                &lt;timeDuration&gt;PT5M&lt;/timeDuration&gt;
+            &lt;/timerEventDefinition&gt;</emphasis>
+        &lt;/intermediateCatchEvent&gt;
+                 </programlisting>
+              See <link linkend="timerEventDefinitions">timer event definitions</link> for configuration details.
+
+              </para>
+            </section>
+
+        </section>
+
+		<section id="bpmnSubProcess">
+		
+		  <title>SubProcess</title>
+		  
+		  <section id="bpmnSubProcessDescription">
+		  
+		    <title>Description</title>
+		    
+		    <para>
+		      A <emphasis>subprocess</emphasis> is an activity that contains other activities, gateways,
+		      events, etc. which on itself form a process that is part of the bigger process. 
+		      A <emphasis>subprocess</emphasis> is completely defined inside a parent process
+		      (that's why it's often called an <emphasis>embedded</emphasis> subprocess).
+		    </para>
+		    
+		    <para>
+		      Subprocesses have two major use cases:
+		      <itemizedlist>
+		        <listitem>
+		          <para>
+		            Subprocesses allow <emphasis role="bold">hierarchical modeling</emphasis>.
+		            Many modeling tools allow that subprocesses can be <emphasis>collapsed</emphasis>, 
+		            hiding all the details of the subprocess and displaying a high-level end-to-end
+		            overview of the business process.
+		          </para>
+		        </listitem>
+		        <listitem>
+		          <para>
+		            A subprocess creates a new <emphasis role="bold">scope for events</emphasis>.
+		            Events that are thrown during execution of the subprocess, can be caught by
+		            <link linkend="bpmnBoundaryEvent">a boundary event</link> on the boundary 
+		            of the subprocess, thus creating a scope for that event limited to the subprocess.
+		          </para>
+		        </listitem>
+		      </itemizedlist>
+		    </para>
+		    
+		    <para>
+		      Using a subprocess does impose some constraints:
+		      <itemizedlist>
+		        <listitem>
+		          <para>
+		            A subprocess can only have <emphasis role="bold">one none start event</emphasis>, no other
+		            start event types are allowed. A subprocess must <emphasis role="bold">
+		            at least have one end event</emphasis>. Note that the BPMN 2.0 specification
+		            allows to omit the start and end events in a subprocess, but the current
+		            Activiti implementation does not support this.
+		          </para>
+		        </listitem>
+		        <listitem>
+		          <para>
+		            <emphasis role="bold">Sequence flow can not cross subprocess boundaries.</emphasis>
+		          </para>
+		        </listitem>
+		      </itemizedlist>
+		    </para>
+		  
+		  </section>
+		  
+		  <section id="bpmnSubProcessGraphicalNotation">
+      
+        <title>Graphical Notation</title>
+        
+        <para>
+          A subprocess is visualized as a typical activity, i.e. a rounded rectangle.
+          In case the subprocess is <emphasis>collapsed</emphasis>, only the name and a plus-sign are displayed,
+          giving a high-level overview of the process:
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.collapsed.subprocess.png"/></imageobject></mediaobject>
+        </para>
+        
+        <para>  
+          In case the subprocess is <emphasis>expanded</emphasis>, the steps of the subprocess
+          are displayed within the subprocess boundaries:
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.expanded.subprocess.png"/></imageobject></mediaobject>
+        </para>
+        
+        <para>
+          One of the main reasons to use a subprocess, is to define a scope for a certain event.
+          The following process model shows this: both the <emphasis>investigate software/investigate hardware</emphasis>
+          tasks need to be done in parallel, but both tasks need to be done within a certain time,
+          before <emphasis>Level 2 support</emphasis> is consulted.
+          Here, the scope of the timer (i.e. which activities must be done in time) is constrained by the subprocess. 
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.subprocess.with.boundary.timer.png"/></imageobject></mediaobject>
+        </para>
+      
+      </section>
+      
+      <section id="bpmnSubProcessXML">
+      
+        <title>XML representation</title>
+        
+        <para>
+          A subprocess is defined by the <emphasis>subprocess</emphasis> element.
+          All activities, gateways, events, etc. that are part of the subprocess, need
+          to be enclosed within this element.
+          <programlisting>
+&lt;subProcess id=&quot;subProcess&quot;&gt;
+    
+  &lt;startEvent id=&quot;subProcessStart&quot; /&gt;
+  
+  ... other subprocess elements ...
+
+  &lt;endEvent id=&quot;subProcessEnd&quot; /&gt;
+    
+ &lt;/subProcess&gt;          
+          </programlisting> 
+        </para>
+      
+      </section>
+		
+		</section>
+		
+		<section id="bpmnCallActivity">
+		
+		  <title>Call activity (subprocess)</title>
+		  
+		  <section id="bpmnCallActivityDescription">
+		  
+		    <title>Description</title>
+		    
+		    <para>
+		      BPMN 2.0 makes a distinction between a regular <emphasis><link linkend="bpmnSubProcess">subprocess</link></emphasis>,
+		      often also called <emphasis>embedded subprocess</emphasis>, and the call activity, which
+		      looks very similar. From a conceptual point of view, both will call a subprocess when
+		      process execution arrives at the activity.
+		    </para>
+		    
+		    <para>
+		      The difference is that the call activity references a process that is external to
+		      the process definition, whereas the <emphasis><link linkend="bpmnSubProcess">subprocess</link></emphasis>
+		      is embedded within the original process definition. The main use case for the call
+		      activity is to have a reusable process definition that can be called from multiple
+		      other process definitions.
+		    </para>
+		    
+		    <para>
+		      When process execution arrives in the <emphasis>call activity</emphasis>, a new 
+		      execution is created that is a sub-execution of the execution that arrives in the
+		      call activity. This sub-execution is then used to execute the subprocess, potentially
+		      creating parallel child execution as within a regular process. The super-execution
+		      waits until the subprocess is completely ended, and continues the original 
+		      process afterwards.
+		    </para>
+		    
+		  </section>
+		  
+		  <section id="bpmnCallActivityGraphicalNotation">
+      
+        <title>Graphical Notation</title>
+        
+        <para>
+          A call activity is visualized the same as a <link linkend="bpmnSubProcessGraphicalNotation">subprocess</link>,
+          however with a thick border (collapsed and expanded).
+          Depending on the modeling tool, a call activity can also be expanded, but the default
+          visualization is the collapsed subprocess representation.
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.collapsed.call.activity.png"/></imageobject></mediaobject>
+        </para>
+        
+      </section>
+      
+      <section id="bpmnCallActivityXMLRepresentation">
+      
+        <title>XML representation</title>
+        
+        <para>
+          A call activity is a regular activity, that requires a <emphasis>calledElement</emphasis>
+          that references a process definition by its <emphasis role="bold">key</emphasis>.
+          In practice, this means that the <emphasis role="bold">id of the process</emphasis> is
+          used in the <emphasis>calledElement</emphasis>.
+<programlisting>
+&lt;callActivity id=&quot;callCheckCreditProcess&quot; name=&quot;Check credit&quot; calledElement=&quot;checkCreditProcess&quot; /&gt;
+</programlisting>
+        </para>
+        
+        <para>
+          Note that the process definition of the subprocess is <emphasis role="bold">resolved 
+          at runtime</emphasis>. This means that the subprocess can be deployed independently
+          from the calling process, if needed.
+        </para>
+        
+      </section>
+
+      <section id="bpmnCallActivityPassVariables">
+        <title>Passing variables</title>
+        <para>
+          You can pass process variables to the sub process and vice versa. The data is copied into the subprocess when it is
+          started and copied back into the main process when it ends.
+<programlisting>
+&lt;callActivity id=&quot;callSubProcess&quot; calledElement=&quot;checkCreditProcess&quot; &gt;
+  &lt;extensionElements&gt;
+	  &lt;activiti:in source=&quot;someVariableInMainProcess&quot; target=&quot;nameOfVariableInSubProcess&quot; /&gt;
+	  &lt;activiti:out source=&quot;someVariableInSubProcss&quot; target=&quot;nameOfVariableInMainProcess&quot; /&gt;
+  &lt;/extensionElements&gt;
+&lt;/callActivity&gt;
+</programlisting>
+          We use an Activiti Extension as a shortcut for the BPMN standard elements called <emphasis>dataInputAssociation</emphasis>
+          and <emphasis>dataOutputAssociation</emphasis>, which only work if you declare process variables in the BPMN 2.0
+          standard way.
+        </para>
+        
+        <para>
+          It is possible to use expressions here as well:
+<programlisting>
+&lt;callActivity id=&quot;callSubProcess&quot; calledElement=&quot;checkCreditProcess&quot; &gt;
+	&lt;extensionElements&gt;
+	  &lt;activiti:in sourceExpression=&quot;${x+5}"&quot; target=&quot;y&quot; /&gt;
+	  &lt;activiti:out source=&quot;${y+5}&quot; target=&quot;z&quot; /&gt;
+	&lt;/extensionElements&gt;
+&lt;/callActivity&gt;
+</programlisting>
+          So in the end z = y+5 = x+5+5 
+        </para>
+        
+      </section>
+      
+      <section id="bpmnCallActivityExample">
+      
+        <title>Example</title>
+        
+        <para>
+          The following process diagram shows a simple handling of an order. Since the
+          checking of the customer's credit could be common to many other processes, the 
+          <emphasis>check credit step</emphasis> is modeled here as a call activity.
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.call.activity.super.process.png"/></imageobject></mediaobject>
+          The process looks as follows:
+<programlisting>
+&lt;startEvent id=&quot;theStart&quot; /&gt;
+&lt;sequenceFlow id=&quot;flow1&quot; sourceRef=&quot;theStart&quot; targetRef=&quot;receiveOrder&quot; /&gt;
+
+&lt;manualTask id=&quot;receiveOrder&quot; name=&quot;Receive Order&quot; /&gt;
+&lt;sequenceFlow id=&quot;flow2&quot; sourceRef=&quot;receiveOrder&quot; targetRef=&quot;callCheckCreditProcess&quot; /&gt;
+    
+<emphasis role="bold">&lt;callActivity id=&quot;callCheckCreditProcess&quot; name=&quot;Check credit&quot; calledElement=&quot;checkCreditProcess&quot; /&gt;</emphasis>
+&lt;sequenceFlow id=&quot;flow3&quot; sourceRef=&quot;callCheckCreditProcess&quot; targetRef=&quot;prepareAndShipTask&quot; /&gt;
+   
+&lt;userTask id=&quot;prepareAndShipTask&quot; name=&quot;Prepare and Ship&quot; /&gt;
+&lt;sequenceFlow id=&quot;flow4&quot; sourceRef=&quot;prepareAndShipTask&quot; targetRef=&quot;end&quot; /&gt;
+    
+&lt;endEvent id=&quot;end&quot; /&gt;
+</programlisting>
+          The subprocess looks as follows:
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.call.activity.sub.process.png"/></imageobject></mediaobject>
+          There is nothing special to the process definition of the subprocess. It could as well
+          be used without being called from another process.
+        </para>
+      
+      </section>
+		
+		</section>
+
+	</section>
+
+</chapter>
