@@ -37,7 +37,7 @@ import org.activiti.explorer.ui.process.ProcessDefinitionPage;
 import org.activiti.explorer.ui.process.ProcessMenuBar;
 import org.activiti.explorer.ui.profile.ProfilePopupWindow;
 import org.activiti.explorer.ui.task.ArchivedPage;
-import org.activiti.explorer.ui.task.CasesPage;
+import org.activiti.explorer.ui.task.TasksPage;
 import org.activiti.explorer.ui.task.InboxPage;
 import org.activiti.explorer.ui.task.InvolvedPage;
 import org.activiti.explorer.ui.task.QueuedPage;
@@ -107,7 +107,7 @@ public class DefaultViewManager implements ViewManager {
         showNavigationError(taskId);
       }
     } else if (loggedInUserId.equals(task.getOwner())) {
-      showCasesPage(taskId);
+      showTasksPage(taskId);
     } else if (loggedInUserId.equals(task.getAssignee())) {
       showInboxPage(taskId);
     } else if (taskService.createTaskQuery().taskInvolvedUser(loggedInUserId).count() == 1) {
@@ -150,12 +150,12 @@ public class DefaultViewManager implements ViewManager {
             ExplorerApp.get().getI18nManager().getMessage(Messages.NAVIGATION_ERROR_NOT_INVOLVED, taskId));
   }
   
-  public void showCasesPage() {
-    switchView(new CasesPage(), ViewManager.MAIN_NAVIGATION_TASK, TaskMenuBar.ENTRY_CASES);
+  public void showTasksPage() {
+    switchView(new TasksPage(), ViewManager.MAIN_NAVIGATION_TASK, TaskMenuBar.ENTRY_TASKS);
   }
   
-  public void showCasesPage(String taskId) {
-    switchView(new CasesPage(taskId), ViewManager.MAIN_NAVIGATION_TASK, TaskMenuBar.ENTRY_CASES);
+  public void showTasksPage(String taskId) {
+    switchView(new TasksPage(taskId), ViewManager.MAIN_NAVIGATION_TASK, TaskMenuBar.ENTRY_TASKS);
   }
   
   public void showInboxPage() {

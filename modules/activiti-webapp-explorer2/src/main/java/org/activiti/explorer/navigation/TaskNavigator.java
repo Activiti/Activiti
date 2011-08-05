@@ -36,7 +36,7 @@ import org.activiti.explorer.ViewManager;
 public class TaskNavigator implements Navigator {
 
   public static final String TASK_URI_PART = "tasks";
-  public static final String CATEGORY_CASES = "cases";
+  public static final String CATEGORY_TASKS = "tasks";
   public static final String CATEGORY_INBOX = "inbox";
   public static final String CATEGORY_QUEUED = "queued";
   public static final String CATEGORY_INVOLVED = "involved";
@@ -72,8 +72,8 @@ public class TaskNavigator implements Navigator {
   
   protected void directToCategoryPage(String category, UriFragment uriFragment) {
     ViewManager viewManager = ExplorerApp.get().getViewManager();
-    if (CATEGORY_CASES.equals(category)) {
-      viewManager.showCasesPage();
+    if (CATEGORY_TASKS.equals(category)) {
+      viewManager.showTasksPage();
     } else if (CATEGORY_INBOX.equals(category)) {
       viewManager.showInboxPage();
     } else if(CATEGORY_QUEUED.equals(category)) {
@@ -93,9 +93,9 @@ public class TaskNavigator implements Navigator {
     String loggedInUserId = ExplorerApp.get().getLoggedInUser().getId();
     
     boolean pageFound = false;
-    if (CATEGORY_CASES.equals(category)) {
+    if (CATEGORY_TASKS.equals(category)) {
       if (loggedInUserId.equals(task.getOwner())) {
-        viewManager.showCasesPage(task.getId());
+        viewManager.showTasksPage(task.getId());
         pageFound = true;
       }
     } else if (CATEGORY_INBOX.equals(category)) {

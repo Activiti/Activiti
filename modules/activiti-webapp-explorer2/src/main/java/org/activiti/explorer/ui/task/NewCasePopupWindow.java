@@ -68,7 +68,7 @@ public class NewCasePopupWindow extends PopupWindow {
     setModal(true);
     center();
     setResizable(false);
-    setCaption(i18nManager.getMessage(Messages.CASE_NEW));
+    setCaption(i18nManager.getMessage(Messages.TASK_NEW));
     addStyleName(Reindeer.WINDOW_LIGHT);
     setWidth(430, UNITS_PIXELS);
     setHeight(320, UNITS_PIXELS);
@@ -88,7 +88,7 @@ public class NewCasePopupWindow extends PopupWindow {
     nameField = new TextField(i18nManager.getMessage(Messages.TASK_NAME));
     nameField.focus();
     nameField.setRequired(true);
-    nameField.setRequiredError(i18nManager.getMessage(Messages.CASE_NAME_REQUIRED));
+    nameField.setRequiredError(i18nManager.getMessage(Messages.TASK_NAME_REQUIRED));
     form.addField("name", nameField);
     
     // description
@@ -150,7 +150,7 @@ public class NewCasePopupWindow extends PopupWindow {
       
       // close popup and navigate to new group
       close();
-      ExplorerApp.get().getViewManager().showCasesPage(task.getId());
+      ExplorerApp.get().getViewManager().showTasksPage(task.getId());
       
     } catch (InvalidValueException e) {
       // Do nothing: the Form component will render the errormsgs automatically

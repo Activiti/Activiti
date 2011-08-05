@@ -81,7 +81,7 @@ public class TaskListHeader extends Panel {
     inputField = new TextField();
     inputField.setWidth(100, UNITS_PERCENTAGE);
     inputField.addStyleName(ExplorerLayout.STYLE_SEARCHBOX);
-    inputField.setInputPrompt(i18nManager.getMessage(Messages.CASE_CREATE_NEW));
+    inputField.setInputPrompt(i18nManager.getMessage(Messages.TASK_CREATE_NEW));
     inputField.focus();
     csslayout.addComponent(inputField);
     
@@ -101,7 +101,7 @@ public class TaskListHeader extends Panel {
           taskService.saveTask(task);
           
           // Switch to the new task
-          ExplorerApp.get().getViewManager().showCasesPage(task.getId());
+          ExplorerApp.get().getViewManager().showTasksPage(task.getId());
         }
       }
       public Action[] getActions(Object target, Object sender) {

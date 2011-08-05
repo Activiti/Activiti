@@ -16,7 +16,7 @@ import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.TaskNavigator;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.custom.TaskListHeader;
-import org.activiti.explorer.ui.task.data.CasesListQuery;
+import org.activiti.explorer.ui.task.data.TasksListQuery;
 
 import com.vaadin.ui.Component;
 
@@ -29,23 +29,23 @@ import com.vaadin.ui.Component;
  * 
  * @author Joram Barrez
  */
-public class CasesPage extends TaskPage {
+public class TasksPage extends TaskPage {
   
   private static final long serialVersionUID = 1L;
   
-  public CasesPage() {
+  public TasksPage() {
   }
   
   /**
    * Constructor called when page is accessed straight through the url, eg. /task/id=123
    */
-  public CasesPage(String taskId) {
+  public TasksPage(String taskId) {
     super(taskId);
   }
   
   @Override
   protected LazyLoadingQuery createLazyLoadingQuery() {
-    return new CasesListQuery();
+    return new TasksListQuery();
   }
 
   @Override
@@ -56,7 +56,7 @@ public class CasesPage extends TaskPage {
       taskFragment.addUriPart(taskId);
     }
 
-    taskFragment.addParameter(TaskNavigator.PARAMETER_CATEGORY, TaskNavigator.CATEGORY_CASES);
+    taskFragment.addParameter(TaskNavigator.PARAMETER_CATEGORY, TaskNavigator.CATEGORY_TASKS);
     return taskFragment;
   }
   

@@ -108,12 +108,12 @@ public interface Messages {
   static final String ALFRESCO_DESCRIPTION = "alfresco.description";
   
   // Case
-  static final String CASE_CREATE_NEW = "case.create.new";
-  static final String CASE_NEW = "case.new";
-  static final String CASE_NAME_REQUIRED = "case.name.required";
+  static final String TASK_CREATE_NEW = "task.create.new";
+  static final String TASK_NEW = "task.new";
+  static final String TASK_NAME_REQUIRED = "task.name.required";
 
   // Task menu
-  static final String TASK_MENU_CASES = "task.menu.cases";
+  static final String TASK_MENU_TASKS = "task.menu.tasks";
   static final String TASK_MENU_INBOX = "task.menu.inbox";
   static final String TASK_MENU_QUEUED = "task.menu.queued";
   static final String TASK_MENU_INVOLVED = "task.menu.involved";

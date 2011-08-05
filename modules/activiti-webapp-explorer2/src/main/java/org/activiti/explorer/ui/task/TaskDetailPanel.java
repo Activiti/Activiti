@@ -390,8 +390,8 @@ public class TaskDetailPanel extends DetailPanel {
   }
   
   public void notifyOwnerChanged() {
-    if (ExplorerApp.get().getLoggedInUser().getId().equals(task.getOwner())) { // switch view to cases if owner is current user
-      viewManager.showCasesPage(task.getId());
+    if (ExplorerApp.get().getLoggedInUser().getId().equals(task.getOwner())) { // switch view to tasks if owner is current user
+      viewManager.showTasksPage(task.getId());
     } else {
       involvedPeople.refreshOwner();
       taskPage.getTaskEventPanel().refreshTaskEvents();

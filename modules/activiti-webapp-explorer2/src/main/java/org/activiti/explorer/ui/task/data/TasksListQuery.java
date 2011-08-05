@@ -18,7 +18,7 @@ import org.activiti.engine.task.TaskQuery;
 /**
  * @author Joram Barrez
  */
-public class CasesListQuery extends AbstractTaskListQuery {
+public class TasksListQuery extends AbstractTaskListQuery {
   
   @Override
   protected TaskQuery getQuery() {

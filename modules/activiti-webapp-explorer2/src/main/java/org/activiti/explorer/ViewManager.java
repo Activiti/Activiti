@@ -45,9 +45,9 @@ public interface ViewManager {
    */
   void showTaskPage(String taskId);
   
-  void showCasesPage();
+  void showTasksPage();
   
-  void showCasesPage(String taskId);
+  void showTasksPage(String taskId);
   
   void showInboxPage();
   

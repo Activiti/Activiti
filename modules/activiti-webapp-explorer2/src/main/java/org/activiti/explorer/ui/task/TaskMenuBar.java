@@ -29,7 +29,7 @@ import org.activiti.explorer.ui.custom.ToolbarEntry;
 import org.activiti.explorer.ui.custom.ToolbarEntry.ToolbarCommand;
 import org.activiti.explorer.ui.custom.ToolbarPopupEntry;
 import org.activiti.explorer.ui.task.data.ArchivedListQuery;
-import org.activiti.explorer.ui.task.data.CasesListQuery;
+import org.activiti.explorer.ui.task.data.TasksListQuery;
 import org.activiti.explorer.ui.task.data.InboxListQuery;
 import org.activiti.explorer.ui.task.data.InvolvedListQuery;
 import org.activiti.explorer.ui.task.data.QueuedListQuery;
@@ -48,7 +48,7 @@ public class TaskMenuBar extends ToolBar {
   
   private static final long serialVersionUID = 1L;
   
-  public static final String ENTRY_CASES = "cases";
+  public static final String ENTRY_TASKS = "tasks";
   public static final String ENTRY_INBOX = "inbox";
   public static final String ENTRY_QUEUED = "queued";
   public static final String ENTRY_INVOLVED = "involved";
@@ -81,15 +81,15 @@ public class TaskMenuBar extends ToolBar {
     });
     inboxEntry.setCount(inboxCount);
     
-    // Cases
+    // Tasks
     LoggedInUser user = ExplorerApp.get().getLoggedInUser();
-    long casesCount = new CasesListQuery().size(); 
-    ToolbarEntry casesEntry = addToolbarEntry(ENTRY_CASES, i18nManager.getMessage(Messages.TASK_MENU_CASES), new ToolbarCommand() {
+    long tasksCount = new TasksListQuery().size(); 
+    ToolbarEntry tasksEntry = addToolbarEntry(ENTRY_TASKS, i18nManager.getMessage(Messages.TASK_MENU_TASKS), new ToolbarCommand() {
       public void toolBarItemSelected() {
-        viewManager.showCasesPage();
+        viewManager.showTasksPage();
       }
     });
-    casesEntry.setCount(casesCount);
+    tasksEntry.setCount(tasksCount);
     
     // Queued
     List<Group> groups = identityService.createGroupQuery().groupMember(user.getId()).list();
@@ -131,7 +131,7 @@ public class TaskMenuBar extends ToolBar {
   
   protected void initActions() {
     Button newCaseButton = new Button();
-    newCaseButton.setCaption(i18nManager.getMessage(Messages.CASE_NEW));
+    newCaseButton.setCaption(i18nManager.getMessage(Messages.TASK_NEW));
     newCaseButton.setIcon(Images.TASK_16);
     addButton(newCaseButton);
     
