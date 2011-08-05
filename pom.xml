@@ -8,7 +8,7 @@
   <artifactId>activiti-root</artifactId>
 
   <packaging>pom</packaging>
-  <version>5.7-SNAPSHOT</version>
+  <version>5.8-SNAPSHOT</version>
   <properties>
     <spring.framework.version>3.0.3.RELEASE</spring.framework.version>
     <mule.version>3.1.0</mule.version>

@@ -16,17 +16,17 @@ This software package includes changed source code of the following libraries:
 
 JUEL
  * Location: http://juel.sourceforge.net/
- * Included in activiti-engine-5.7-SNAPSHOT.jar in package org.activiti.engine.impl.juel
+ * Included in activiti-engine-5.8-SNAPSHOT.jar in package org.activiti.engine.impl.juel
  * License: Apache V2
  
 Quartz
  * Location: http://www.quartz-scheduler.org/
- * CronExpression is included in activiti-engine-5.7-SNAPSHOT.jar in package org.activiti.engine.impl.calendar
+ * CronExpression is included in activiti-engine-5.8-SNAPSHOT.jar in package org.activiti.engine.impl.calendar
  * License: Apache V2
 
 JSON
  * Location: http://www.JSON.org/java
- * Included in activiti-engine-5.7-SNAPSHOT.jar in package org.activiti.engine.impl.json
+ * Included in activiti-engine-5.8-SNAPSHOT.jar in package org.activiti.engine.impl.json
  * License:
 ===============================================================================
 Copyright (c) 2002 JSON.org
