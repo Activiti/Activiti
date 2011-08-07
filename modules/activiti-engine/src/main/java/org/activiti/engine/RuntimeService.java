@@ -169,7 +169,7 @@ public interface RuntimeService {
    */
   void signal(String executionId);
   
-  /** All variables visible from the given execution scope.
+  /** All variables visible from the given execution scope (including parent scopes).
    * @param executionId id of execution, cannot be null.
    * @return the variables or an empty map if no such variables are found.
    * @throws ActivitiException when no execution is found for the given executionId. */
@@ -183,7 +183,7 @@ public interface RuntimeService {
    * @throws ActivitiException when no execution is found for the given executionId. */
    Map<String, Object> getVariablesLocal(String executionId);
 
-   /** The variable values for all given variableNames only taking the given execution scope into account. 
+   /** The variable values for all given variableNames, takes all variables into account which are visible from the given execution scope (including parent scopes). 
    * @param executionId id of execution, cannot be null.
    * @param variableNames the collection of variable names that should be retrieved.
    * @return the variables or an empty map if no such variables are found.
@@ -197,7 +197,7 @@ public interface RuntimeService {
    * @throws ActivitiException when no execution is found for the given executionId.  */
    Map<String, Object> getVariablesLocal(String executionId, Collection<String> variableNames);
 
-  /** The variable value.  Searching for the variable is done in all scopes that are visible to the given execution.
+  /** The variable value.  Searching for the variable is done in all scopes that are visible to the given execution (including parent scopes).
    * Returns null when no variable value is found with the given name or when the value is set to null.
    * @param executionId id of execution, cannot be null.
    * @param variableName name of variable, cannot be null.
@@ -206,10 +206,11 @@ public interface RuntimeService {
   Object getVariable(String executionId, String variableName);
 
   /** The variable value for an execution. Returns the value when the variable is set 
-   * for the execution. Returns null when no variable value is found with the given name or when the value is set to null.  */
+   * for the execution (and not searching parent scopes). Returns null when no variable value is found with the given name or when the value is set to null.  */
   Object getVariableLocal(String executionId, String variableName);
 
-  /** Update or create a variable for an execution.  If the variable is not already existing, it will be created in the process instance.
+  /** Update or create a variable for an execution.  If the variable is not already existing somewhere in the execution hierarchy,
+   * it will be created in the process instance (which is the root execution). 
    * @param executionId id of execution to set variable in, cannot be null.
    * @param variableName name of variable to set, cannot be null.
    * @param value value to set. When null is passed, the variable is not removed,
@@ -218,7 +219,8 @@ public interface RuntimeService {
    */
   void setVariable(String executionId, String variableName, Object value);
 
-  /** Update or create a variable for an execution.  If the variable is not already existing, it will be created in the given execution.
+  /** Update or create a variable for an execution (not considering parent scopes). 
+   * If the variable is not already existing, it will be created in the given execution.
    * @param executionId id of execution to set variable in, cannot be null.
    * @param variableName name of variable to set, cannot be null.
    * @param value value to set. When null is passed, the variable is not removed,
@@ -226,13 +228,14 @@ public interface RuntimeService {
    * @throws ActivitiException when no execution is found for the given executionId.  */
   void setVariableLocal(String executionId, String variableName, Object value);
 
-  /** Update or create given variables for an execution.  If the variables are not already existing, they will be created in the process instance.
+  /** Update or create given variables for an execution (including parent scopes). If the variables are not already existing, they will be created in the process instance 
+   * (which is the root execution).
    * @param executionId id of the execution, cannot be null.
    * @param variables map containing name (key) and value of variables, can be null.
    * @throws ActivitiException when no execution is found for the given executionId.  */
   void setVariables(String executionId, Map<String, ? extends Object> variables);
   
-  /** Update or create given variables for an execution.  If the variables are not already existing, it will be created in the given execution.
+  /** Update or create given variables for an execution (not considering parent scopes). If the variables are not already existing, it will be created in the given execution.
    * @param executionId id of the execution, cannot be null.
    * @param variables map containing name (key) and value of variables, can be null.
    * @throws ActivitiException when no execution is found for the given executionId. */
