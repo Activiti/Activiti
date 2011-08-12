@@ -43,14 +43,6 @@ public class ActivitiExtension implements Extension {
 
   private static ProcessEngine processEngine;
   
-  /**
-   * temporary hack to indicate that we want to 
-   * skip the ProcessEngine setup, used by Cycle at the moment.
-   * 
-   * TODO: Improve test infrastructure to avoid the problem in the first place!
-   */
-  public static boolean skipProcessEngineSetup = false;
-
   public static ProcessEngine getProcessEngine() {
     return processEngine;
   }
@@ -70,10 +62,7 @@ public class ActivitiExtension implements Extension {
   }
 
   public void afterDeploymentValidation(@Observes AfterDeploymentValidation event) {
-    try {
-      if (skipProcessEngineSetup) {
-        return;
-      }      
+    try {   
       logger.info("Initializing activiti-cdi.");
       
       // initialize the process engine
