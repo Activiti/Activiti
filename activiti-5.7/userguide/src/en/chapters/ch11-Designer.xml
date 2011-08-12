@@ -12,18 +12,12 @@
     technical details, like Java service tasks, execution listeners etc. With the import functionality of the Activiti Designer
     this workflow is well supported.
   </para>
-  <para>
-    <emphasis role="bold">Please note: Activiti Designer is still in a "beta" state.</emphasis> This means that we don't yet
-    support version compatibility. Although, with the BPMN 2.0 XML support of the Activiti Designer you should be able to
-    upgrade your process definitions to new versions of the Activiti Designer quite easily. Also note that not all BPMN 2.0 
-    constructs that are supported by the Activiti Engine are supported in the Activiti Designer.
-  </para>
   
   <section id="eclipseDesignerInstallation">
     <title>Installation</title>
     <para>
     	The following installation instructions are verified on <ulink
-        url="http://www.eclipse.org/downloads/">Eclipse Classic Helios</ulink>.
+        url="http://www.eclipse.org/downloads/">Eclipse Indigo and Helios</ulink>.
     </para>
     <para>
     	Go to <emphasis role="bold">Help -> Install New Software</emphasis>. In the following
@@ -44,8 +38,7 @@
         </imageobject>
       </mediaobject>
       Make sure the <emphasis role="bold">"Contact all updates sites.."</emphasis>
-      checkbox is not checked, because all the necessary plugins can be downloaded from the Activiti
-      update site.
+      checkbox is <emphasis role="bold">checked</emphasis>, because all the necessary plugins will then be downloaded by Eclipse.
     </para>
   </section>
   
@@ -73,21 +66,6 @@
             <mediaobject>
               <imageobject>
                 <imagedata align="center" fileref="images/designer.export.to.bpmn20.png"/>
-              </imageobject>
-            </mediaobject>
-          </para>
-        </listitem>
-        <listitem>
-          <para>
-          	The Activiti editor is implemented as a multipage editor. This means that on the first page the process diagram
-          	is shown and on the second page the BPMN 2.0 XML. Changes to the diagram are exported to the BPMN 2.0 XML file
-          	each time the diagram is saved. And the same goes for the BPMN 2.0 XML file. When you edit the BPMN 2.0 XML file
-          	the changes are saved in the diagram as well when you save that file. Note that this is only supported for constructs
-          	and attributes that can be edited and created in the diagram view.
-            
-            <mediaobject>
-              <imageobject>
-                <imagedata align="center" fileref="images/designer.multipage.editor.png"/>
               </imageobject>
             </mediaobject>
           </para>
@@ -188,11 +166,33 @@
           <para>
           	Support for start event, end event, sequence flow, parallel gateway, exclusive
             gateway, embedded subprocess, call activity, script task, user task, service task, mail task, manual
-            task and timer boundary events.
+            task, timer boundary event and error boundary event.
             
             <mediaobject>
               <imageobject>
                 <imagedata align="center" fileref="images/designer.model.process.png"/>
+              </imageobject>
+            </mediaobject>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            You can quickly change the type of a task by hovering over the element and choosing the new task type.
+            
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center" fileref="images/designer.model.quick.change.png"/>
+              </imageobject>
+            </mediaobject>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            You can quickly add new elements hovering over an element and choosing a new element type.
+            
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center" fileref="images/designer.model.quick.new.png"/>
               </imageobject>
             </mediaobject>
           </para>
