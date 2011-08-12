@@ -1,0 +1,2 @@
+http\://www.activiti.org/schema/spring/components/activiti-5.0.xsd=org/activiti/spring/components/config/xml/activit-5.0.xsd
+http\://www.activiti.org/schema/spring/components/activiti.xsd=org/activiti/spring/components/config/xml/activiti-5.0.xsd
