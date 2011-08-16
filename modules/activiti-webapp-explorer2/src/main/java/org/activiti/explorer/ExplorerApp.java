@@ -12,6 +12,8 @@
  */
 package org.activiti.explorer;
 
+import java.util.Locale;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -153,6 +155,13 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   
   public VariableRendererManager getVariableRendererManager() {
     return variableRendererManager;
+  }
+  
+  public void setLocale(Locale locale) {
+    super.setLocale(locale);
+    if(i18nManager != null) {
+      i18nManager.createResourceBundle();
+    }
   }
   
   // HttpServletRequestListener -------------------------------------------------------------------
