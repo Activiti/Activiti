@@ -13,14 +13,6 @@
   </para>
 
   <para>
-    It is possible to browse the REST API if you point your browser to http://localhost:8080/activiti-rest/service/index
-    and login as one of the admin users (kermit). If you click the "Browse by Web Script Package" link you will get an overview
-    of the packages that are deployed on the server and you can easily navigate into a package to see the REST API calls
-    that are defined for that package. The "Alfresco JavaScript Debugger" can be ignored since Java is used instead of
-    JavaScript to implement the logic.
-  </para>
-
-  <para>
     Each REST API call has its individual authorization level and you must be logged in as a user to invoke a REST API
     call (except for the /login service). Authentication is done using Basic HTTP Authentication, so if you logged in as
     an admin (i.e. kermit) to browse the REST API, as described above, you should be able to perform all calls as
