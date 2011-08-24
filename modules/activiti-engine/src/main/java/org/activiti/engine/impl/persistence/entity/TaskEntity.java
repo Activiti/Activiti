@@ -493,7 +493,10 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   public void setParentTaskIdWithoutCascade(String parentTaskId) {
     this.parentTaskId = parentTaskId;
   }
-
+  
+  public void setTaskDefinitionKeyWithoutCascade(String taskDefinitionKey) {
+       this.taskDefinitionKey = taskDefinitionKey;
+  }       
 
   public void fireEvent(String taskEventName) {
     TaskDefinition taskDefinition = getTaskDefinition();
