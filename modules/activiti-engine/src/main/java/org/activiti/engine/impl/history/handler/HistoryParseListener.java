@@ -13,7 +13,6 @@
 
 package org.activiti.engine.impl.history.handler;
 
-import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.BpmnParseListener;
@@ -26,14 +25,13 @@ import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.impl.util.xml.Element;
 import org.activiti.engine.impl.variable.VariableDeclaration;
 
-
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  * @author Falko Menge
  */
 public class HistoryParseListener implements BpmnParseListener {
-  
+
   protected static final StartEventEndHandler START_EVENT_END_HANDLER = new StartEventEndHandler();
 
   protected static final ActivityInstanceEndHandler ACTIVITI_INSTANCE_END_LISTENER = new ActivityInstanceEndHandler();
@@ -44,11 +42,11 @@ public class HistoryParseListener implements BpmnParseListener {
 
   // The history level set in the Activiti configuration
   protected int historyLevel;
-  
+
   public HistoryParseListener(int historyLevel) {
     this.historyLevel = historyLevel;
   }
-  
+
   public void parseProcess(Element processElement, ProcessDefinitionEntity processDefinition) {
     if (activityHistoryEnabled(processDefinition, historyLevel)) {
       processDefinition.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, new ProcessInstanceEndHandler());
@@ -56,6 +54,10 @@ public class HistoryParseListener implements BpmnParseListener {
   }
 
   public void parseExclusiveGateway(Element exclusiveGwElement, ScopeImpl scope, ActivityImpl activity) {
+    addActivityHandlers(activity);
+  }
+
+  public void parseInclusiveGateway(Element inclusiveGwElement, ScopeImpl scope, ActivityImpl activity) {
     addActivityHandlers(activity);
   }
 
@@ -77,7 +79,7 @@ public class HistoryParseListener implements BpmnParseListener {
 
   public void parseUserTask(Element userTaskElement, ScopeImpl scope, ActivityImpl activity) {
     addActivityHandlers(activity);
-    
+
     if (activityHistoryEnabled(scope, historyLevel)) {
       TaskDefinition taskDefinition = ((UserTaskActivityBehavior) activity.getActivityBehavior()).getTaskDefinition();
       taskDefinition.addTaskListener(TaskListener.EVENTNAME_ASSIGNMENT, USER_TASK_ASSIGNMENT_HANDLER);
@@ -87,7 +89,7 @@ public class HistoryParseListener implements BpmnParseListener {
   public void parseServiceTask(Element serviceTaskElement, ScopeImpl scope, ActivityImpl activity) {
     addActivityHandlers(activity);
   }
-  
+
   public void parseBusinessRuleTask(Element businessRuleTaskElement, ScopeImpl scope, ActivityImpl activity) {
     addActivityHandlers(activity);
   }
@@ -101,7 +103,7 @@ public class HistoryParseListener implements BpmnParseListener {
       activity.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, START_EVENT_END_HANDLER);
     }
   }
-  
+
   public void parseSendTask(Element sendTaskElement, ScopeImpl scope, ActivityImpl activity) {
     addActivityHandlers(activity);
   }
@@ -114,7 +116,7 @@ public class HistoryParseListener implements BpmnParseListener {
 
   public void parseBoundaryTimerEventDefinition(Element timerEventDefinition, boolean interrupting, ActivityImpl timerActivity) {
   }
-  
+
   public void parseBoundaryErrorEventDefinition(Element errorEventDefinition, boolean interrupting, ActivityImpl activity, ActivityImpl nestedErrorEventActivity) {
   }
 
@@ -126,31 +128,31 @@ public class HistoryParseListener implements BpmnParseListener {
 
   public void parseSequenceFlow(Element sequenceFlowElement, ScopeImpl scopeElement, TransitionImpl transition) {
   }
-  
-  public void parseMultiInstanceLoopCharacteristics(Element activityElement, 
-          Element multiInstanceLoopCharacteristicsElement, ActivityImpl activity) {
-    // Remove any history parse listeners already attached: the Multi instance behavior will
+
+  public void parseMultiInstanceLoopCharacteristics(Element activityElement, Element multiInstanceLoopCharacteristicsElement, ActivityImpl activity) {
+    // Remove any history parse listeners already attached: the Multi instance
+    // behavior will
     // call them for every instance that will be created
 
   }
 
   // helper methods ///////////////////////////////////////////////////////////
-  
+
   protected void addActivityHandlers(ActivityImpl activity) {
     if (activityHistoryEnabled(activity, historyLevel)) {
       activity.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_START, ACTIVITY_INSTANCE_START_LISTENER, 0);
       activity.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, ACTIVITI_INSTANCE_END_LISTENER);
     }
   }
-  
+
   public static boolean fullHistoryEnabled(int historyLevel) {
     return historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL;
   }
-  
+
   public static boolean auditHistoryEnabled(ScopeImpl scopeElement, int historyLevel) {
     return historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT;
   }
-  
+
   public static boolean activityHistoryEnabled(ScopeImpl scopeElement, int historyLevel) {
     return historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY;
   }

@@ -33,7 +33,7 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  * @author Joram Barrez
  */
 public class BpmnActivityBehavior {
-  
+
   private static Logger log = Logger.getLogger(BpmnActivityBehavior.class.getName());
 
   /**
@@ -41,14 +41,14 @@ public class BpmnActivityBehavior {
    * paths of executions for the outgoing sequence flow.
    * 
    * More precisely: every sequence flow that has a condition which evaluates to
-   * true (or which doesn't have a condition), is selected for continuation
-   * of the process instance. If multiple sequencer flow are selected, 
-   * multiple, parallel paths of executions are created.
+   * true (or which doesn't have a condition), is selected for continuation of
+   * the process instance. If multiple sequencer flow are selected, multiple,
+   * parallel paths of executions are created.
    */
   public void performDefaultOutgoingBehavior(ActivityExecution activityExceution) {
     performOutgoingBehavior(activityExceution, true);
   }
-  
+
   /**
    * Performs the default outgoing BPMN 2.0 behavior (@see
    * {@link #performDefaultOutgoingBehavior(ActivityExecution)}), but without
@@ -62,59 +62,77 @@ public class BpmnActivityBehavior {
   public void performIgnoreConditionsOutgoingBehavior(ActivityExecution activityExecution) {
     performOutgoingBehavior(activityExecution, false);
   }
-  
+
   /**
    * Actual implementation of leaving an activity.
    */
   protected void performOutgoingBehavior(ActivityExecution execution, boolean checkConditions) {
+    performOutgoingBehavior(execution, checkConditions, false);
+  }
+
+  /**
+   * Actual implementation of leaving an activity.
+   * 
+   * @param execution
+   *          The current execution context
+   * @param checkConditions
+   *          Whether or not to check conditions before determining whether or
+   *          not to take a transition.
+   * @param failWithNoTransition
+   *          If <code>true</code> Activiti will fail with an exception when no
+   *          outgoing path can be found. If <code>false</code>, Activiti will
+   *          simply log a FINE message and end the execution (
+   *          <code>false</code> was default behavior originally).
+   */
+  protected void performOutgoingBehavior(ActivityExecution execution, boolean checkConditions, boolean failWithNoTransition) {
 
     if (log.isLoggable(Level.FINE)) {
-        log.fine("Leaving activity '" + execution.getActivity().getId() + "'");
-      }
+      log.fine("Leaving activity '" + execution.getActivity().getId() + "'");
+    }
 
-      String defaultSequenceFlow = (String) execution.getActivity().getProperty("default");
-      List<PvmTransition> transitionsToTake = new ArrayList<PvmTransition>();
+    String defaultSequenceFlow = (String) execution.getActivity().getProperty("default");
+    List<PvmTransition> transitionsToTake = new ArrayList<PvmTransition>();
 
-      List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();   
-      for (PvmTransition outgoingTransition: outgoingTransitions) {
-        if (defaultSequenceFlow == null 
-                || !outgoingTransition.getId().equals(defaultSequenceFlow) ) {
-          Condition condition = (Condition) outgoingTransition.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
-          if (condition == null 
-                  || !checkConditions 
-                  || condition.evaluate(execution)) {
-            transitionsToTake.add(outgoingTransition);
-          }
+    List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
+    for (PvmTransition outgoingTransition : outgoingTransitions) {
+      if (defaultSequenceFlow == null || !outgoingTransition.getId().equals(defaultSequenceFlow)) {
+        Condition condition = (Condition) outgoingTransition.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
+        if (condition == null || !checkConditions || condition.evaluate(execution)) {
+          transitionsToTake.add(outgoingTransition);
         }
       }
-      
-      if (transitionsToTake.size() == 1) {
-        execution.take(transitionsToTake.get(0));
-        
-      } else if (transitionsToTake.size() >= 1)  {
-        execution.inactivate();
-        
-        List<ActivityExecution> joinedExecutions = new ArrayList<ActivityExecution>();
-        joinedExecutions.add(execution);
-        
-        execution.takeAll(transitionsToTake, joinedExecutions);
-          
-      } else {
-        
-        if (defaultSequenceFlow != null) {
-          PvmTransition defaultTransition = execution.getActivity().findOutgoingTransition(defaultSequenceFlow);
-          if (defaultTransition != null) {
-            execution.take(defaultTransition);
-          } else {
-            throw new ActivitiException("Default sequence flow '" + defaultSequenceFlow + "' could not be not found");
-          }
+    }
+
+    if (transitionsToTake.size() == 1) {
+      execution.take(transitionsToTake.get(0));
+
+    } else if (transitionsToTake.size() >= 1) {
+      execution.inactivate();
+
+      List<ActivityExecution> joinedExecutions = new ArrayList<ActivityExecution>();
+      joinedExecutions.add(execution);
+
+      execution.takeAll(transitionsToTake, joinedExecutions);
+
+    } else {
+
+      if (defaultSequenceFlow != null) {
+        PvmTransition defaultTransition = execution.getActivity().findOutgoingTransition(defaultSequenceFlow);
+        if (defaultTransition != null) {
+          execution.take(defaultTransition);
         } else {
-          if (log.isLoggable(Level.FINE)) {
-            log.fine("No outgoing sequence flow found for " + execution.getActivity().getId() 
-                    + ". Ending execution.");
-          }
-        execution.end();
+          throw new ActivitiException("Default sequence flow '" + defaultSequenceFlow + "' could not be not found");
         }
+      } else {
+        if (failWithNoTransition) {
+          // No sequence flow could be found, not even a default one
+          throw new ActivitiException("No outgoing sequence flow of the inclusive gateway '" + execution.getActivity().getId()
+                  + "' could be selected for continuing the process");
+        } else if (log.isLoggable(Level.FINE)) {
+          log.fine("No outgoing sequence flow found for " + execution.getActivity().getId() + ". Ending execution.");
+        }
+        execution.end();
       }
-   }
+    }
+  }
 }

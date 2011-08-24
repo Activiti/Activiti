@@ -20,7 +20,6 @@ import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.activiti.engine.impl.util.xml.Element;
 import org.activiti.engine.impl.variable.VariableDeclaration;
 
-
 /**
  * @author Tom Baeyens
  * @author Falko Menge
@@ -31,6 +30,7 @@ public interface BpmnParseListener {
   void parseProcess(Element processElement, ProcessDefinitionEntity processDefinition);
   void parseStartEvent(Element startEventElement, ScopeImpl scope, ActivityImpl startEventActivity);
   void parseExclusiveGateway(Element exclusiveGwElement, ScopeImpl scope, ActivityImpl activity);
+  void parseInclusiveGateway(Element inclusiveGwElement, ScopeImpl scope, ActivityImpl activity);
   void parseParallelGateway(Element parallelGwElement, ScopeImpl scope, ActivityImpl activity);
   void parseScriptTask(Element scriptTaskElement, ScopeImpl scope, ActivityImpl activity);
   void parseServiceTask(Element serviceTaskElement, ScopeImpl scope, ActivityImpl activity);

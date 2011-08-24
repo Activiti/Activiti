@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="inclusiveInvalidMethodExpression">
+  
+    <startEvent id="theStart" />
+    
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="inclusiveGw" />
+    
+    <inclusiveGateway id="inclusiveGw" name="Inclusive Gateway" />
+    
+    <sequenceFlow id="flow2" sourceRef="inclusiveGw" targetRef="basicService">
+      <conditionExpression xsi:type="tFormalExpression">
+        <![CDATA[${order.invalidMethod()}]]>
+      </conditionExpression>
+    </sequenceFlow>
+    
+    <sequenceFlow id="flow3" sourceRef="inclusiveGw" targetRef="standardService">
+      <conditionExpression xsi:type="tFormalExpression">
+        <![CDATA[${order.isStandard()}]]>
+      </conditionExpression>
+    </sequenceFlow>
+    
+    <userTask id="basicService" name="Basic service" />
+    
+    <userTask id="standardService" name="Standard service" />
+    
+  </process>
+
+</definitions>
