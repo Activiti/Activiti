@@ -151,4 +151,10 @@ public class CdiEventSupportBpmnParseListener implements BpmnParseListener {
     addEndEventListener(timerActivity);
   }
 
+  @Override
+  public void parseInclusiveGateway(Element inclusiveGwElement, ScopeImpl scope, ActivityImpl activity) {
+    addStartEventListener(activity);
+    addEndEventListener(activity);
+  }
+
 }
