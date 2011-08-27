@@ -12,30 +12,96 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.Condition;
+import org.activiti.engine.impl.bpmn.parser.BpmnParse;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.pvm.PvmActivity;
+import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 /**
  * Implementation of the Inclusive Gateway/OR gateway/inclusive data-based
  * gateway as defined in the BPMN specification.
  * 
- * Note: The default implementation of the "leave" method inside
- * GatewayActivitiBehavior is to check all conditions and take all outgoing
- * transitions wherein the condition evaluates to <code>true</code> (or
- * condition checking is disabled).
- * 
- * This suits the purpose of the Inclusive Gateway nicely ... therefore
- * implementation of this class simply extends from the parent class for now.
- * 
+ * @author Tijs Rademakers
  * @author Tom Van Buskirk
  */
 public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
+  
+  private static Logger log = Logger.getLogger(InclusiveGatewayActivityBehavior.class.getName());
+  
+  public void execute(ActivityExecution execution) throws Exception { 
+    PvmActivity activity = execution.getActivity();
+    List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
+    
+    execution.inactivate();
+    lockConcurrentRoot(execution);
+    
+    boolean activeExecutionFound = execution.activeConcurrentExecutions(activity);
+    
+    if (activeExecutionFound == false) {
+      if (log.isLoggable(Level.FINE)) {
+        log.fine("inclusive gateway '"+activity.getId()+"' activates");
+      }
+      
+      List<ActivityExecution> joinedExecutions = execution.findInactiveConcurrentExecutions(activity);
+      
+      String defaultSequenceFlow = (String) execution.getActivity().getProperty("default");
+      List<PvmTransition> transitionsToTake = new ArrayList<PvmTransition>();
 
-  /**
-   * Leave the BPMN 2.0 activity, ensuring that conditions are validated and
-   * that if no path is found an ActivitiException will be thrown.
-   */
-  @Override
-  protected void leave(ActivityExecution execution) {
-    bpmnActivityBehavior.performOutgoingBehavior(execution, true, true);
+      for (PvmTransition outgoingTransition : outgoingTransitions) {
+        if (defaultSequenceFlow == null || !outgoingTransition.getId().equals(defaultSequenceFlow)) {
+          Condition condition = (Condition) outgoingTransition.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
+          if (condition == null || condition.evaluate(execution)) {
+            transitionsToTake.add(outgoingTransition);
+          }
+        }
+      }
+
+      if (transitionsToTake.size() == 1) {
+        execution.take(transitionsToTake.get(0));
+
+      } else if (transitionsToTake.size() >= 1) {
+        execution.inactivate();
+
+        execution.takeAll(transitionsToTake, joinedExecutions);
+
+      } else {
+
+        if (defaultSequenceFlow != null) {
+          PvmTransition defaultTransition = execution.getActivity().findOutgoingTransition(defaultSequenceFlow);
+          if (defaultTransition != null) {
+            execution.take(defaultTransition);
+          } else {
+            throw new ActivitiException("Default sequence flow '" + defaultSequenceFlow + "' could not be not found");
+          }
+        } else {
+          // No sequence flow could be found, not even a default one
+          throw new ActivitiException("No outgoing sequence flow of the inclusive gateway '" + execution.getActivity().getId()
+                  + "' could be selected for continuing the process");
+        }
+      }
+      
+    } else {
+      if (log.isLoggable(Level.FINE)) {
+        log.fine("inclusive gateway '"+activity.getId()+"' does not activate");
+      }
+    }
+  }
+
+  protected void lockConcurrentRoot(ActivityExecution execution) {
+    ActivityExecution concurrentRoot = null; 
+    if (execution.isConcurrent()) {
+      concurrentRoot = execution.getParent();
+    } else {
+      concurrentRoot = execution;
+    }
+    ((ExecutionEntity)concurrentRoot).forceUpdate();
   }
 }

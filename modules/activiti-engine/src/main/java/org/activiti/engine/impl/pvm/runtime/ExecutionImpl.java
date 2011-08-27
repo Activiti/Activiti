@@ -433,6 +433,32 @@ public class ExecutionImpl implements
     }
     return inactiveConcurrentExecutionsInActivity;
   }
+  
+  public boolean activeConcurrentExecutions(PvmActivity activity) {
+    boolean active = false;
+    if (isConcurrent()) {
+      List< ? extends ActivityExecution> concurrentExecutions = getParent().getExecutions();
+      for (ActivityExecution concurrentExecution: concurrentExecutions) {
+        if (concurrentExecution.getActivity() != activity) {
+          if (log.isLoggable(Level.FINE)) {
+            log.fine("an active concurrent execution found: '"+concurrentExecution.getActivity());
+          }
+          active = true;
+        }
+      }
+    } else {
+      if (isActive() == true) {
+        if (log.isLoggable(Level.FINE)) {
+          log.fine("an active concurrent execution found: '"+this);
+        }
+        active = true;
+      }
+    }
+    if (log.isLoggable(Level.FINE)) {
+      log.fine("an active concurrent execution found in '"+activity);
+    }
+    return active;
+  }
 
   @SuppressWarnings("unchecked")
   public void takeAll(List<PvmTransition> transitions, List<ActivityExecution> recyclableExecutions) {

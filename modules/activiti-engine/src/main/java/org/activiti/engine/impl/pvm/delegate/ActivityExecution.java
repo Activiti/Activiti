@@ -124,6 +124,11 @@ public interface ActivityExecution extends DelegateExecution {
    * Retrieves all executions which are concurrent and inactive at the given activity.
    */
   List<ActivityExecution> findInactiveConcurrentExecutions(PvmActivity activity);
+  
+  /**
+   * Checks if there is an active concurrent execution
+   */
+  boolean activeConcurrentExecutions(PvmActivity activity);
 
   /**
    * Takes the given outgoing transitions, and potentially reusing

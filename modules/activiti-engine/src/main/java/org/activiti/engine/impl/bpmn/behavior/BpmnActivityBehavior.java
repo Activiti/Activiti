@@ -65,26 +65,14 @@ public class BpmnActivityBehavior {
 
   /**
    * Actual implementation of leaving an activity.
-   */
-  protected void performOutgoingBehavior(ActivityExecution execution, boolean checkConditions) {
-    performOutgoingBehavior(execution, checkConditions, false);
-  }
-
-  /**
-   * Actual implementation of leaving an activity.
    * 
    * @param execution
    *          The current execution context
    * @param checkConditions
    *          Whether or not to check conditions before determining whether or
    *          not to take a transition.
-   * @param failWithNoTransition
-   *          If <code>true</code> Activiti will fail with an exception when no
-   *          outgoing path can be found. If <code>false</code>, Activiti will
-   *          simply log a FINE message and end the execution (
-   *          <code>false</code> was default behavior originally).
    */
-  protected void performOutgoingBehavior(ActivityExecution execution, boolean checkConditions, boolean failWithNoTransition) {
+  protected void performOutgoingBehavior(ActivityExecution execution, boolean checkConditions) {
 
     if (log.isLoggable(Level.FINE)) {
       log.fine("Leaving activity '" + execution.getActivity().getId() + "'");
@@ -124,11 +112,7 @@ public class BpmnActivityBehavior {
           throw new ActivitiException("Default sequence flow '" + defaultSequenceFlow + "' could not be not found");
         }
       } else {
-        if (failWithNoTransition) {
-          // No sequence flow could be found, not even a default one
-          throw new ActivitiException("No outgoing sequence flow of the inclusive gateway '" + execution.getActivity().getId()
-                  + "' could be selected for continuing the process");
-        } else if (log.isLoggable(Level.FINE)) {
+        if (log.isLoggable(Level.FINE)) {
           log.fine("No outgoing sequence flow found for " + execution.getActivity().getId() + ". Ending execution.");
         }
         execution.end();

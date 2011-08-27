@@ -27,6 +27,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * @author Joram Barrez
  * @author Tom Van Buskirk
+ * @author Tijs Rademakers
  */
 public class InclusiveGatewayTest extends PluggableActivitiTestCase {
 
@@ -43,14 +44,17 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     for (int i = 1; i <= 3; i++) {
       ProcessInstance pi = runtimeService.startProcessInstanceByKey("inclusiveGwDiverging", CollectionUtil.singletonMap("input", i));
       List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
-      Map<String, String> expectedNames = new HashMap<String, String>();
+      List<String> expectedNames = new ArrayList<String>();
       if (i == 1) {
-        expectedNames.put(TASK1_NAME, TASK1_NAME);
+        expectedNames.add(TASK1_NAME);
       }
       if (i <= 2) {
-        expectedNames.put(TASK2_NAME, TASK2_NAME);
+        expectedNames.add(TASK2_NAME);
       }
-      expectedNames.put(TASK3_NAME, TASK3_NAME);
+      expectedNames.add(TASK3_NAME);
+      for (Task task : tasks) {
+        System.out.println("task " + task.getName());
+      }
       assertEquals(4 - i, tasks.size());
       for (Task task : tasks) {
         expectedNames.remove(task.getName());
@@ -63,7 +67,7 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
   @Deployment
   public void testMergingInclusiveGateway() {
     runtimeService.startProcessInstanceByKey("inclusiveGwMerging");
-    assertEquals(3, taskService.createTaskQuery().count());
+    assertEquals(1, taskService.createTaskQuery().count());
   }
 
   @Deployment
@@ -138,9 +142,9 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
     assertNotNull(tasks);
     assertEquals(2, tasks.size());
-    Map<String, String> expectedNames = new HashMap<String, String>();
-    expectedNames.put(BEAN_TASK2_NAME, BEAN_TASK2_NAME);
-    expectedNames.put(BEAN_TASK3_NAME, BEAN_TASK3_NAME);
+    List<String> expectedNames = new ArrayList<String>();
+    expectedNames.add(BEAN_TASK2_NAME);
+    expectedNames.add(BEAN_TASK3_NAME);
     for (Task t : tasks) {
       expectedNames.remove(t.getName());
     }
@@ -153,10 +157,10 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
     assertNotNull(tasks);
     assertEquals(3, tasks.size());
-    expectedNames = new HashMap<String, String>();
-    expectedNames.put(BEAN_TASK1_NAME, BEAN_TASK1_NAME);
-    expectedNames.put(BEAN_TASK2_NAME, BEAN_TASK2_NAME);
-    expectedNames.put(BEAN_TASK3_NAME, BEAN_TASK3_NAME);
+    expectedNames.clear();
+    expectedNames.add(BEAN_TASK1_NAME);
+    expectedNames.add(BEAN_TASK2_NAME);
+    expectedNames.add(BEAN_TASK3_NAME);
     for (Task t : tasks) {
       expectedNames.remove(t.getName());
     }
@@ -175,9 +179,9 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
             CollectionUtil.singletonMap("order", new InclusiveGatewayTestOrder(125)));
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
     assertEquals(2, tasks.size());
-    Map<String, String> expectedNames = new HashMap<String, String>();
-    expectedNames.put(BEAN_TASK2_NAME, BEAN_TASK2_NAME);
-    expectedNames.put(BEAN_TASK3_NAME, BEAN_TASK3_NAME);
+    List<String> expectedNames = new ArrayList<String>();
+    expectedNames.add(BEAN_TASK2_NAME);
+    expectedNames.add(BEAN_TASK3_NAME);
     for (Task t : tasks) {
       expectedNames.remove(t.getName());
     }
