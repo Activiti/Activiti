@@ -28,13 +28,15 @@ public class SecuredResource extends ServerResource {
   protected static final String USER = "user";
   protected static final String ADMIN = "admin";
   
+  protected String loggedInUser;
+  
   protected boolean authenticate() {
     return authenticate(null);
   }
   
   protected boolean authenticate(String group) {
-    String user = ((ActivitiRestApplication) getApplication()).authenticate(getRequest(), getResponse());
-    if(user == null) {
+    loggedInUser = ((ActivitiRestApplication) getApplication()).authenticate(getRequest(), getResponse());
+    if(loggedInUser == null) {
       // Not authenticated
       setStatus(Status.CLIENT_ERROR_FORBIDDEN, "Authentication is required");
       return false;
@@ -44,7 +46,7 @@ public class SecuredResource extends ServerResource {
     
     } else {
       boolean allowed = false;
-      List<Group> groupList = ActivitiUtil.getIdentityService().createGroupQuery().groupMember(user).list();
+      List<Group> groupList = ActivitiUtil.getIdentityService().createGroupQuery().groupMember(loggedInUser).list();
       if(groupList != null) {
         for (Group groupObject : groupList) {
           if(groupObject.getId().equals(group)) {

@@ -50,9 +50,9 @@ public class TaskOperationResource extends SecuredResource {
           variables.put(name, valueNode.getTextValue());
         }
       }
-      String currentUserId = "kermit";
+      
       if ("claim".equals(operation)) {
-        ActivitiUtil.getTaskService().claim(taskId, currentUserId);
+        ActivitiUtil.getTaskService().claim(taskId, loggedInUser);
       } else if ("complete".equals(operation)) {
         variables.remove("taskId");
         ActivitiUtil.getTaskService().complete(taskId, variables);
