@@ -22,6 +22,7 @@ import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Put;
 
@@ -31,8 +32,8 @@ import org.restlet.resource.Put;
 public class TaskOperationResource extends SecuredResource {
   
   @Put
-  public void executeTaskOperation(Representation entity) {
-    if(authenticate() == false) return;
+  public ObjectNode executeTaskOperation(Representation entity) {
+    if(authenticate() == false) return null;
     
     String taskId = (String) getRequest().getAttributes().get("taskId");
     String operation = (String) getRequest().getAttributes().get("operation");
@@ -63,5 +64,9 @@ public class TaskOperationResource extends SecuredResource {
     } catch(Exception e) {
       throw new ActivitiException("Did not receive the operation parameters", e);
     }
+    
+    ObjectNode successNode = new ObjectMapper().createObjectNode();
+    successNode.put("success", true);
+    return successNode;
   }
 }
