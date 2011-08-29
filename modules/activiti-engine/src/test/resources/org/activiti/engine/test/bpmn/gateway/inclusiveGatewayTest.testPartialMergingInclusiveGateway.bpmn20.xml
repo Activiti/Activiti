@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="partialInclusiveGwMerging">
+  
+    <startEvent id="theStart" />
+    
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="partialInclusiveGw">
+      <conditionExpression xsi:type="tFormalExpression">
+        <![CDATA[${input <= 1}]]>
+      </conditionExpression>
+    </sequenceFlow>
+    
+    <sequenceFlow id="flow2" sourceRef="theStart" targetRef="partialInclusiveGw">
+      <conditionExpression xsi:type="tFormalExpression">
+        <![CDATA[${input <= 2}]]>
+      </conditionExpression>
+    </sequenceFlow>
+    
+    <sequenceFlow id="flow3" sourceRef="theStart" targetRef="partialTask">
+      <conditionExpression xsi:type="tFormalExpression">
+        <![CDATA[${input <= 3}]]>
+      </conditionExpression>
+    </sequenceFlow>
+    
+    <inclusiveGateway id="partialInclusiveGw" name="Inclusive Gateway" />
+    
+    <sequenceFlow id="flow4" sourceRef="partialInclusiveGw" targetRef="fullInclusiveGw" />
+    
+    <userTask id="partialTask" name="my partial task" />
+    
+    <sequenceFlow id="flow5" sourceRef="partialTask" targetRef="fullInclusiveGw" />
+    
+    <inclusiveGateway id="fullInclusiveGw" name="Inclusive Gateway" />
+    
+    <sequenceFlow id="flow6" sourceRef="fullInclusiveGw" targetRef="theTask" /> 
+    
+    <userTask id="theTask" name="my task" />
+    
+    <sequenceFlow id="flow7" sourceRef="theTask" targetRef="theEnd" />    
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

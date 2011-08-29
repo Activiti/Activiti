@@ -73,6 +73,9 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   
   /** current transition.  is null when there is no transition being taken. */
   protected TransitionImpl transition = null;
+  
+  /** transition that will be taken.  is null when there is no transition being taken. */
+  protected TransitionImpl transitionBeingTaken = null;
 
   /** the process instance.  this is the root of the execution tree.  
    * the processInstance of a process instance is a self reference. */
@@ -365,10 +368,24 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
       List< ? extends ActivityExecution> concurrentExecutions = getParent().getExecutions();
       for (ActivityExecution concurrentExecution: concurrentExecutions) {
         if (concurrentExecution.getActivity() != activity) {
-          if (log.isLoggable(Level.FINE)) {
-            log.fine("an active concurrent execution found: '"+concurrentExecution.getActivity());
+          
+          // transition being taken should be set
+          PvmTransition pvmTransition = ((ExecutionEntity) concurrentExecution).getTransitionBeingTaken();
+          boolean reachable = false;
+          if(pvmTransition.getDestination() == activity) {
+            reachable = true;
+          } else {
+            reachable = isReachable(pvmTransition.getDestination(), activity);
           }
-          active = true;
+          
+          if(reachable == true) {
+          
+            if (log.isLoggable(Level.FINE)) {
+              log.fine("an active concurrent execution found: '"+concurrentExecution.getActivity());
+            }
+            active = true;
+            break;
+          }
         }
       }
     } else {
@@ -383,6 +400,25 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
       log.fine("an active concurrent execution found in '"+activity);
     }
     return active;
+  }
+  
+  protected boolean isReachable(PvmActivity activity, PvmActivity reachableActivity) {
+    List<PvmTransition> transitionList = activity.getOutgoingTransitions();
+    if(transitionList != null && transitionList.size() > 0) {
+      for (PvmTransition pvmTransition : transitionList) {
+        if(pvmTransition.getDestination() == reachableActivity) {
+          return true;
+        }
+        PvmActivity destinationActivity = pvmTransition.getDestination();
+        if(destinationActivity != null) {
+          boolean reachable = isReachable(destinationActivity, reachableActivity);
+          if(reachable) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
   }
   
   protected List<ExecutionEntity> getAllChildExecutions() {
@@ -470,6 +506,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
         outgoingExecution.setActive(true);
         outgoingExecution.setScope(false);
         outgoingExecution.setConcurrent(true);
+        outgoingExecution.setTransitionBeingTaken((TransitionImpl) outgoingTransition);
         outgoingExecutions.add(new OutgoingExecution(outgoingExecution, outgoingTransition, true));
       }
 
@@ -1010,6 +1047,12 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   }
   public void setTransition(TransitionImpl transition) {
     this.transition = transition;
+  }
+  public TransitionImpl getTransitionBeingTaken() {
+    return transitionBeingTaken;
+  }
+  public void setTransitionBeingTaken(TransitionImpl transitionBeingTaken) {
+    this.transitionBeingTaken = transitionBeingTaken;
   }
   public Integer getExecutionListenerIndex() {
     return executionListenerIndex;

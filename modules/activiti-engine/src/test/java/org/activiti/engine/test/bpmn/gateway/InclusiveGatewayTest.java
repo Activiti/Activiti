@@ -66,8 +66,24 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testMergingInclusiveGateway() {
-    runtimeService.startProcessInstanceByKey("inclusiveGwMerging", CollectionUtil.singletonMap("input", 2));
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("inclusiveGwMerging", CollectionUtil.singletonMap("input", 2));
     assertEquals(1, taskService.createTaskQuery().count());
+    
+    runtimeService.deleteProcessInstance(pi.getId(), "testing deletion");
+  }
+  
+  @Deployment
+  public void testPartialMergingInclusiveGateway() {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("partialInclusiveGwMerging", CollectionUtil.singletonMap("input", 2));
+    Task partialTask = taskService.createTaskQuery().singleResult();
+    assertEquals("partialTask", partialTask.getTaskDefinitionKey());
+    
+    taskService.complete(partialTask.getId());
+    
+    Task fullTask = taskService.createTaskQuery().singleResult();
+    assertEquals("theTask", fullTask.getTaskDefinitionKey());
+    
+    runtimeService.deleteProcessInstance(pi.getId(), "testing deletion");
   }
 
   @Deployment
