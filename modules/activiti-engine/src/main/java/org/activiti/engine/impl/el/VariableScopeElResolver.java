@@ -16,6 +16,7 @@ import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 
 import org.activiti.engine.delegate.VariableScope;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.javax.el.ELContext;
 import org.activiti.engine.impl.javax.el.ELResolver;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -25,13 +26,17 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 /**
  * Implementation of an {@link ELResolver} that resolves expressions 
  * with the process variables of a given {@link VariableScope} as context.
+ * <br>
+ * Also exposes the currently logged in username to be used in expressions (if any)
  * 
  * @author Joram Barrez
+ * @author Frederik Heremans
  */
 public class VariableScopeElResolver extends ELResolver {
   
   public static final String EXECUTION_KEY = "execution";
   public static final String TASK_KEY = "task";
+  public static final String LOGGED_IN_USER_KEY = "authenticatedUserId";
   
   protected VariableScope variableScope;
   
@@ -51,6 +56,9 @@ public class VariableScopeElResolver extends ELResolver {
       } else if (EXECUTION_KEY.equals(property) && variableScope instanceof TaskEntity) {
         context.setPropertyResolved(true);
         return ((TaskEntity) variableScope).getExecution();
+      } else if(LOGGED_IN_USER_KEY.equals(property)){
+        context.setPropertyResolved(true);
+        return Authentication.getAuthenticatedUserId();
       } else {
         if (variableScope.hasVariable(variable)) {
           context.setPropertyResolved(true); // if not set, the next elResolver in the CompositeElResolver will be called

@@ -16,6 +16,7 @@ package org.activiti.engine.test.el;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
@@ -53,5 +54,22 @@ public class ExpressionManagerTest extends PluggableActivitiTestCase {
     String value = (String) runtimeService.getVariable(processInstance.getId(), "testVar");
     assertNotNull(value);
     assertEquals("myValue", value);
+  }
+  
+  @Deployment
+  public void testAuthenticatedUserIdAvailable() {
+    try {
+      // Setup authentication
+      Authentication.setAuthenticatedUserId("frederik");
+      ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testAuthenticatedUserIdAvailableProcess");
+      
+      // Check if the variable that has been set in service-task is the authenticated user
+      String value = (String) runtimeService.getVariable(processInstance.getId(), "theUser");
+      assertNotNull(value);
+      assertEquals("frederik", value);
+    } finally {
+      // Cleanup
+      Authentication.setAuthenticatedUserId(null);
+    }
   }
 }

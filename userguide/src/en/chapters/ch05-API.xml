@@ -294,8 +294,7 @@ assertNotNull(activityInstance);</programlisting>
         <listitem>
           <para>
             <emphasis role="bold">Value expression</emphasis>: resolves to a value. By default, all process variables are available to use. Also all spring-beans (if using Spring) are available to use in expressions. 
-            On top of that, the <literal>DelegateExecution</literal> is also available in the expression-context and can be accessed using the name <literal>execution</literal>. 
-            <emphasis role="bold">Since the execution is exposed as <literal>execution</literal>, all variables and spring-beans with name <literal>execution</literal> are hidden and cannot be used in an expression.</emphasis>
+            
             Some examples:
 <programlisting>${myVar}
 ${myBean.myProperty}</programlisting>
@@ -312,7 +311,16 @@ ${myBean.doSomething(myVar, execution)}
           </para>
         </listitem>
       </itemizedlist>
+      
       Note that these expressions support resolving primitives (incl. comparing them), beans, lists, arrays and maps.
+    </para>
+    <para>
+      On top of all process-variables, there are a few object exposed that you can use in expressions:
+      <itemizedlist>
+        <listitem><para><literal>execution</literal>: The <literal>DelegateExecution</literal> that holds additional information about the ongoing execution.</para></listitem>
+        <listitem><para><literal>task</literal>: The <literal>DelegateTask</literal> that holds additional information about the current Task.<emphasis role="bold">Note: Only works in expressions evaluated from task-listeners.</emphasis></para></listitem>
+        <listitem><para><literal>authenticatedUserId</literal>: The id of the user that is currently authenticated. If no user is authenticated, variable is not available.</para></listitem>
+      </itemizedlist>
     </para>
     <para>
       For more concrete usage and examples, check out <link linkend="springExpressions">Expressions in Spring</link>, <link linkend="bpmnJavaServiceTaskXML">Java Service tasks</link>, <link linkend="executionListeners">Execution Listeners</link>,  <link linkend="taskListeners">Task Listeners</link> or <link linkend="conditionalSequenceFlowXml">Conditional sequence flows</link>.
