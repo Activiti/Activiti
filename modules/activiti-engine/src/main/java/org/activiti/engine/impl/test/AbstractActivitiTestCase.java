@@ -170,7 +170,7 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
       .singleResult();
     
     if (processInstance!=null) {
-      throw new AssertionFailedError("expected finished process instance '"+processInstanceId+"' but it was still in the db"); 
+      throw new AssertionFailedError("Expected finished process instance '"+processInstanceId+"' but it was still in the db"); 
     }
   }
 

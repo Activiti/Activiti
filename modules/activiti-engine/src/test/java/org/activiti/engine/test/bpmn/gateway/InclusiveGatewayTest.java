@@ -18,8 +18,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
+import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -266,4 +268,31 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     }
     assertEquals(0, expectedNames.size());
   }
+  
+  /** This test the isReachable() check thaty is done to check if 
+   * upstream tokens can reach the inclusive gateway.
+   * 
+   * In case of loops, special care needs to be taken in the algorithm,
+   * or else stackoverflows will happen very quickly.
+   */
+  @Deployment
+  public void testLoop() {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("inclusiveTestLoop", 
+            CollectionUtil.singletonMap("counter", 1));
+    
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("task C", task.getName());
+    
+    taskService.complete(task.getId());
+    assertEquals(0, taskService.createTaskQuery().count());
+    
+
+    for (Execution execution : runtimeService.createExecutionQuery().list()) {
+      System.out.println(((ExecutionEntity) execution).getActivityId());
+    }
+    
+    assertEquals("Found executions: " + runtimeService.createExecutionQuery().list(), 0, runtimeService.createExecutionQuery().count());
+    assertProcessEnded(pi.getId());
+  }
+  
 }

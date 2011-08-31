@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="inclusiveTestLoop">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="A" />
+    <sequenceFlow id="flow2" sourceRef="theStart" targetRef="B" />
+    <sequenceFlow id="flow3" sourceRef="theStart" targetRef="C" />
+    
+    <scriptTask id="A" scriptFormat="groovy">
+      <script>
+        <![CDATA[
+          def processInstance = execution.getProcessInstance()
+          def int sum = processInstance.getVariable("counter")
+          processInstance.setVariable("counter", sum + 1)
+        ]]>
+      </script>
+    </scriptTask> 
+    <sequenceFlow id="flow4" sourceRef="A" targetRef="exclusiveGw" />
+    
+    <exclusiveGateway id="exclusiveGw" />
+    <sequenceFlow id="flow5" sourceRef="exclusiveGw" targetRef="A">
+      <conditionExpression xsi:type="tFormalExpression">
+        <![CDATA[${counter <= 5}]]>
+      </conditionExpression>
+    </sequenceFlow>   
+    <sequenceFlow id="flow6" sourceRef="exclusiveGw" targetRef="inclusiveJoin1">
+      <conditionExpression xsi:type="tFormalExpression">
+        <![CDATA[${counter > 5}]]>
+      </conditionExpression>
+    </sequenceFlow>   
+    
+    <task id="B"/>
+    <sequenceFlow id="flow7" sourceRef="B" targetRef="inclusiveJoin1" />
+    
+    <userTask id="C" name="task C" />
+    <sequenceFlow id="flow8" sourceRef="C" targetRef="inclusiveJoin2" />
+    
+    <inclusiveGateway id="inclusiveJoin1" />
+    <sequenceFlow id="flow9" sourceRef="inclusiveJoin1" targetRef="inclusiveJoin2" />
+    
+    <inclusiveGateway id="inclusiveJoin2" />
+    <sequenceFlow id="flow10" sourceRef="inclusiveJoin2" targetRef="theEnd" />    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

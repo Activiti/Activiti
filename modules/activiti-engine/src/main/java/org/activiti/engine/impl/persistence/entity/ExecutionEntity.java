@@ -362,65 +362,6 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     return inactiveConcurrentExecutionsInActivity;
   }
   
-  public boolean activeConcurrentExecutions(PvmActivity activity) {
-    boolean active = false;
-    if (isConcurrent()) {
-      List< ? extends ActivityExecution> concurrentExecutions = getParent().getExecutions();
-      for (ActivityExecution concurrentExecution: concurrentExecutions) {
-        if (concurrentExecution.getActivity() != activity) {
-          
-          // transition being taken should be set
-          PvmTransition pvmTransition = ((ExecutionEntity) concurrentExecution).getTransitionBeingTaken();
-          boolean reachable = false;
-          if(pvmTransition.getDestination() == activity) {
-            reachable = true;
-          } else {
-            reachable = isReachable(pvmTransition.getDestination(), activity);
-          }
-          
-          if(reachable == true) {
-          
-            if (log.isLoggable(Level.FINE)) {
-              log.fine("an active concurrent execution found: '"+concurrentExecution.getActivity());
-            }
-            active = true;
-            break;
-          }
-        }
-      }
-    } else {
-      if (isActive() == true) {
-        if (log.isLoggable(Level.FINE)) {
-          log.fine("an active concurrent execution found: '"+this);
-        }
-        active = true;
-      }
-    }
-    if (log.isLoggable(Level.FINE)) {
-      log.fine("an active concurrent execution found in '"+activity);
-    }
-    return active;
-  }
-  
-  protected boolean isReachable(PvmActivity activity, PvmActivity reachableActivity) {
-    List<PvmTransition> transitionList = activity.getOutgoingTransitions();
-    if(transitionList != null && transitionList.size() > 0) {
-      for (PvmTransition pvmTransition : transitionList) {
-        if(pvmTransition.getDestination() == reachableActivity) {
-          return true;
-        }
-        PvmActivity destinationActivity = pvmTransition.getDestination();
-        if(destinationActivity != null) {
-          boolean reachable = isReachable(destinationActivity, reachableActivity);
-          if(reachable) {
-            return true;
-          }
-        }
-      }
-    }
-    return false;
-  }
-  
   protected List<ExecutionEntity> getAllChildExecutions() {
     List<ExecutionEntity> childExecutions = new ArrayList<ExecutionEntity>();
     for (ExecutionEntity childExecution : getExecutions()) {
@@ -465,6 +406,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
        ) {
 
       List<ExecutionEntity> recyclableExecutionImpls = (List) recyclableExecutions;
+      recyclableExecutions.remove(concurrentRoot);
       for (ExecutionEntity prunedExecution: recyclableExecutionImpls) {
         // End the pruned executions if necessary.
         // Some recyclable executions are inactivated (joined executions)

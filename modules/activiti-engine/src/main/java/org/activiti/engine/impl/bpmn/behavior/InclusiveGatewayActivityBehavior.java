@@ -13,7 +13,9 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,77 +33,122 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  * 
  * @author Tijs Rademakers
  * @author Tom Van Buskirk
+ * @author Joram Barrez
  */
 public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
   
   private static Logger log = Logger.getLogger(InclusiveGatewayActivityBehavior.class.getName());
   
   public void execute(ActivityExecution execution) throws Exception { 
-    PvmActivity activity = execution.getActivity();
-    List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
-    
+
     execution.inactivate();
     lockConcurrentRoot(execution);
     
-    boolean activeExecutionFound = execution.activeConcurrentExecutions(activity);
-    
-    if (activeExecutionFound == false) {
+    PvmActivity activity = execution.getActivity();
+    if (!activeConcurrentExecutionsExist(execution)) {
+      
       if (log.isLoggable(Level.FINE)) {
-        log.fine("inclusive gateway '"+activity.getId()+"' activates");
+        log.fine("inclusive gateway '" + activity.getId() + "' activates");
       }
       
       List<ActivityExecution> joinedExecutions = execution.findInactiveConcurrentExecutions(activity);
-      
-      String defaultSequenceFlow = (String) execution.getActivity().getProperty("default");
-      List<PvmTransition> transitionsToTake = new ArrayList<PvmTransition>();
+        String defaultSequenceFlow = (String) execution.getActivity().getProperty("default");
+        List<PvmTransition> transitionsToTake = new ArrayList<PvmTransition>();
 
-      for (PvmTransition outgoingTransition : outgoingTransitions) {
-        if (defaultSequenceFlow == null || !outgoingTransition.getId().equals(defaultSequenceFlow)) {
-          Condition condition = (Condition) outgoingTransition.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
-          if (condition == null || condition.evaluate(execution)) {
-            transitionsToTake.add(outgoingTransition);
+        for (PvmTransition outgoingTransition : execution.getActivity().getOutgoingTransitions()) {
+          if (defaultSequenceFlow == null || !outgoingTransition.getId().equals(defaultSequenceFlow)) {
+            Condition condition = (Condition) outgoingTransition.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
+            if (condition == null || condition.evaluate(execution)) {
+              transitionsToTake.add(outgoingTransition);
+            }
           }
         }
-      }
+        
+        if (transitionsToTake.size() > 0) {
+          execution.takeAll(transitionsToTake, joinedExecutions);
 
-      if (transitionsToTake.size() == 1) {
-        execution.take(transitionsToTake.get(0));
-
-      } else if (transitionsToTake.size() >= 1) {
-        execution.inactivate();
-
-        execution.takeAll(transitionsToTake, joinedExecutions);
-
-      } else {
-
-        if (defaultSequenceFlow != null) {
-          PvmTransition defaultTransition = execution.getActivity().findOutgoingTransition(defaultSequenceFlow);
-          if (defaultTransition != null) {
-            execution.take(defaultTransition);
-          } else {
-            throw new ActivitiException("Default sequence flow '" + defaultSequenceFlow + "' could not be not found");
-          }
         } else {
-          // No sequence flow could be found, not even a default one
-          throw new ActivitiException("No outgoing sequence flow of the inclusive gateway '" + execution.getActivity().getId()
-                  + "' could be selected for continuing the process");
+
+          if (defaultSequenceFlow != null) {
+            PvmTransition defaultTransition = execution.getActivity().findOutgoingTransition(defaultSequenceFlow);
+            if (defaultTransition != null) {
+              execution.take(defaultTransition);
+            } else {
+              throw new ActivitiException("Default sequence flow '" + defaultSequenceFlow + "' could not be not found");
+            }
+          } else {
+            // No sequence flow could be found, not even a default one
+            throw new ActivitiException("No outgoing sequence flow of the inclusive gateway '" + execution.getActivity().getId()
+                    + "' could be selected for continuing the process");
+          }
         }
-      }
       
     } else {
       if (log.isLoggable(Level.FINE)) {
-        log.fine("inclusive gateway '"+activity.getId()+"' does not activate");
+        log.fine("Inclusive gateway '"+activity.getId()+"' does not activate");
       }
     }
   }
-
-  protected void lockConcurrentRoot(ActivityExecution execution) {
-    ActivityExecution concurrentRoot = null; 
+  
+  public boolean activeConcurrentExecutionsExist(ActivityExecution execution) {
+    PvmActivity activity = execution.getActivity();
     if (execution.isConcurrent()) {
-      concurrentRoot = execution.getParent();
-    } else {
-      concurrentRoot = execution;
+      for (ActivityExecution concurrentExecution: execution.getParent().getExecutions()) {
+        if (concurrentExecution.isActive() && concurrentExecution.getActivity() != activity) {
+          
+          // TODO: when is transitionBeingTaken cleared? Should we clear it?
+          boolean reachable = false;
+          PvmTransition pvmTransition = ((ExecutionEntity) concurrentExecution).getTransitionBeingTaken();
+          if (pvmTransition != null) {
+            reachable = isReachable(pvmTransition.getDestination(), activity, new HashSet<PvmActivity>());
+          } else {
+            reachable = isReachable(concurrentExecution.getActivity(), activity, new HashSet<PvmActivity>()); 
+          }
+          
+          if(reachable) {
+            if (log.isLoggable(Level.FINE)) {
+              log.fine("an active concurrent execution found: '"+concurrentExecution.getActivity());
+            }
+            return true;
+          }
+        }
+      }
+    } else if (execution.isActive()) { // is this ever true?
+      if (log.isLoggable(Level.FINE)) {
+        log.fine("an active concurrent execution found: '"+execution.getActivity());
+      }
+      return true;
     }
-    ((ExecutionEntity)concurrentRoot).forceUpdate();
+    
+    return false;
   }
+  
+  protected boolean isReachable(PvmActivity srcActivity, PvmActivity targetActivity, Set<PvmActivity> visitedActivities) {
+
+    if (srcActivity.equals(targetActivity)) {
+      return true;
+    }
+    
+    // To avoid infinite looping, we must capture every node we visit
+    // and check before going further in the graph if we have already visitied the node.
+    visitedActivities.add(srcActivity);
+
+    List<PvmTransition> transitionList = srcActivity.getOutgoingTransitions();
+    if(transitionList != null && transitionList.size() > 0) {
+      for (PvmTransition pvmTransition : transitionList) {
+        PvmActivity destinationActivity = pvmTransition.getDestination();
+        if(destinationActivity != null && !visitedActivities.contains(destinationActivity)) {
+          boolean reachable = isReachable(destinationActivity, targetActivity, visitedActivities);
+          
+          // If false, we should investigate other paths, and not yet return the result
+          if(reachable) {
+            return true;
+          }
+          
+        }
+      }
+    }
+    return false;
+  }
+  
 }

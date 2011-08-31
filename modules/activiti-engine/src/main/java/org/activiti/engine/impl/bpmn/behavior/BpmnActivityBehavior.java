@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,6 +22,7 @@ import java.util.logging.Logger;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.Condition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
@@ -46,7 +48,7 @@ public class BpmnActivityBehavior {
    * parallel paths of executions are created.
    */
   public void performDefaultOutgoingBehavior(ActivityExecution activityExceution) {
-    performOutgoingBehavior(activityExceution, true);
+    performOutgoingBehavior(activityExceution, true, false, null);
   }
 
   /**
@@ -60,7 +62,7 @@ public class BpmnActivityBehavior {
    * be created.
    */
   public void performIgnoreConditionsOutgoingBehavior(ActivityExecution activityExecution) {
-    performOutgoingBehavior(activityExecution, false);
+    performOutgoingBehavior(activityExecution, false, false, null);
   }
 
   /**
@@ -71,8 +73,12 @@ public class BpmnActivityBehavior {
    * @param checkConditions
    *          Whether or not to check conditions before determining whether or
    *          not to take a transition.
+   * @param throwExceptionIfExecutionStuck
+   *          If true, an {@link ActivitiException} will be thrown in case no
+   *          transition could be found to leave the activity.
    */
-  protected void performOutgoingBehavior(ActivityExecution execution, boolean checkConditions) {
+  protected void performOutgoingBehavior(ActivityExecution execution, 
+          boolean checkConditions, boolean throwExceptionIfExecutionStuck, List<ActivityExecution> reusableExecutions) {
 
     if (log.isLoggable(Level.FINE)) {
       log.fine("Leaving activity '" + execution.getActivity().getId() + "'");
@@ -92,15 +98,17 @@ public class BpmnActivityBehavior {
     }
 
     if (transitionsToTake.size() == 1) {
+      
       execution.take(transitionsToTake.get(0));
 
     } else if (transitionsToTake.size() >= 1) {
+
       execution.inactivate();
-
-      List<ActivityExecution> joinedExecutions = new ArrayList<ActivityExecution>();
-      joinedExecutions.add(execution);
-
-      execution.takeAll(transitionsToTake, joinedExecutions);
+      if (reusableExecutions == null || reusableExecutions.isEmpty()) {
+        execution.takeAll(transitionsToTake, Arrays.asList(execution));
+      } else {
+        execution.takeAll(transitionsToTake, reusableExecutions);
+      }
 
     } else {
 
@@ -116,6 +124,12 @@ public class BpmnActivityBehavior {
           log.fine("No outgoing sequence flow found for " + execution.getActivity().getId() + ". Ending execution.");
         }
         execution.end();
+        
+        if (throwExceptionIfExecutionStuck) {
+          throw new ActivitiException("No outgoing sequence flow of the inclusive gateway '" + execution.getActivity().getId()
+                + "' could be selected for continuing the process");
+        }
+        
       }
     }
   }

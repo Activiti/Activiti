@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 
 /**
@@ -21,6 +23,14 @@ package org.activiti.engine.impl.bpmn.behavior;
  */
 public abstract class GatewayActivityBehavior extends FlowNodeActivityBehavior {
   
-  // TODO: implement diverging/converging 
+  protected void lockConcurrentRoot(ActivityExecution execution) {
+    ActivityExecution concurrentRoot = null; 
+    if (execution.isConcurrent()) {
+      concurrentRoot = execution.getParent();
+    } else {
+      concurrentRoot = execution;
+    }
+    ((ExecutionEntity)concurrentRoot).forceUpdate();
+  }
 
 }
