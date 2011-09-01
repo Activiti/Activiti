@@ -20,6 +20,8 @@ import java.util.List;
  * @author Tom Baeyens
  */
 public interface PvmActivity extends PvmScope {
+  
+  boolean isAsync();
 
   PvmScope getParent();
 

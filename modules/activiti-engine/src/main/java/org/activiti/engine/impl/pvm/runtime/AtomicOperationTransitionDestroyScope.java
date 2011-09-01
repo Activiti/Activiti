@@ -26,6 +26,10 @@ import org.activiti.engine.impl.pvm.process.TransitionImpl;
 public class AtomicOperationTransitionDestroyScope implements AtomicOperation {
   
   private static Logger log = Logger.getLogger(AtomicOperationTransitionDestroyScope.class.getName());
+  
+  public boolean isAsync(InterpretableExecution execution) {
+    return false;
+  }
 
   @SuppressWarnings("unchecked")
   public void execute(InterpretableExecution execution) {

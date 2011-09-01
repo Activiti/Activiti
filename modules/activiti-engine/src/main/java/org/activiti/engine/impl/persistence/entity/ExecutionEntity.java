@@ -14,12 +14,14 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.TaskQueryImpl;
@@ -30,6 +32,7 @@ import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.history.handler.ActivityInstanceEndHandler;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.jobexecutor.AsyncContinuationJobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
 import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmException;
@@ -483,11 +486,32 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   }
   
   public void performOperation(AtomicOperation executionOperation) {
+    if(executionOperation.isAsync(this)) {
+      scheduleAtomicOperationAsync(executionOperation);
+    } else {
+      performOperationSync(executionOperation);
+    }    
+  }
+  
+  protected void performOperationSync(AtomicOperation executionOperation) {
     Context
       .getCommandContext()
       .performOperation(executionOperation, this);
   }
-  
+
+  protected void scheduleAtomicOperationAsync(AtomicOperation executionOperation) {
+    MessageEntity message = new MessageEntity();
+    message.setExecution(this);
+    message.setJobHandlerType(AsyncContinuationJobHandler.TYPE);
+    // At the moment, only AtomicOperationTransitionCreateScope can be performed asynchronously,
+    // so there is no need to pass it to the handler
+
+    Context
+      .getCommandContext()
+      .getJobManager()
+      .send(message);
+  }
+
   public boolean isActive(String activityId) {
     return findExecution(activityId)!=null;
   }

@@ -80,6 +80,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutorImpl;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 import org.activiti.engine.impl.interceptor.SessionFactory;
+import org.activiti.engine.impl.jobexecutor.AsyncContinuationJobHandler;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerCatchIntermediateEventJobHandler;
@@ -652,6 +653,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
     TimerStartEventJobHandler timerStartEvent = new TimerStartEventJobHandler();
     jobHandlers.put(timerStartEvent.getType(), timerStartEvent);
+    
+    AsyncContinuationJobHandler asyncContinuationJobHandler = new AsyncContinuationJobHandler();
+    jobHandlers.put(asyncContinuationJobHandler.getType(), asyncContinuationJobHandler);
     
     // if we have custom job handlers, register them
     if (getCustomJobHandlers()!=null) {

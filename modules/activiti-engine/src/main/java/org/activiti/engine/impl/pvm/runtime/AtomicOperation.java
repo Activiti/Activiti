@@ -16,6 +16,7 @@ package org.activiti.engine.impl.pvm.runtime;
 
 /**
  * @author Tom Baeyens
+ * @author Daniel Meyer
  */
 public interface AtomicOperation {
   
@@ -35,4 +36,6 @@ public interface AtomicOperation {
   AtomicOperation DELETE_CASCADE_FIRE_ACTIVITY_END = new AtomicOperationDeleteCascadeFireActivityEnd();
 
   void execute(InterpretableExecution execution);
+  
+  boolean isAsync(InterpretableExecution execution);
 }

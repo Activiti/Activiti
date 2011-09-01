@@ -24,6 +24,10 @@ import org.activiti.engine.impl.pvm.process.ScopeImpl;
  * @author Tom Baeyens
  */
 public abstract class AbstractEventAtomicOperation implements AtomicOperation {
+  
+  public boolean isAsync(InterpretableExecution execution) {
+    return false;
+  }
 
   public void execute(InterpretableExecution execution) {
     ScopeImpl scope = getScope(execution);

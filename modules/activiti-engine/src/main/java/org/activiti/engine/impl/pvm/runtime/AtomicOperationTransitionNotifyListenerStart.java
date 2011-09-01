@@ -12,7 +12,6 @@
  */
 package org.activiti.engine.impl.pvm.runtime;
 
-import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
@@ -22,7 +21,7 @@ import org.activiti.engine.impl.pvm.process.TransitionImpl;
  * @author Tom Baeyens
  */
 public class AtomicOperationTransitionNotifyListenerStart extends AbstractEventAtomicOperation {
-
+  
   @Override
   protected ScopeImpl getScope(InterpretableExecution execution) {
     return (ScopeImpl) execution.getActivity();
@@ -36,7 +35,12 @@ public class AtomicOperationTransitionNotifyListenerStart extends AbstractEventA
   @Override
   protected void eventNotificationsCompleted(InterpretableExecution execution) {
     TransitionImpl transition = execution.getTransition();
-    ActivityImpl destination = transition.getDestination();
+    ActivityImpl destination = null;
+    if(transition == null) { // this is null after async cont. -> transition is not stored in execution
+      destination = (ActivityImpl) execution.getActivity();
+    } else {
+      destination = transition.getDestination();
+    }    
     ActivityImpl activity = (ActivityImpl) execution.getActivity();
     if (activity!=destination) {
       ActivityImpl nextScope = AtomicOperationTransitionNotifyListenerTake.findNextScope(activity, destination);

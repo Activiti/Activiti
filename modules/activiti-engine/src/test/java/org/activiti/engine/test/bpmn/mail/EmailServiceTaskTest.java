@@ -117,7 +117,7 @@ public class EmailServiceTaskTest extends EmailTestCase {
   
   // Helper 
   
-  private void assertEmailSend(WiserMessage emailMessage, boolean htmlMail, String subject, String message, 
+  public static void assertEmailSend(WiserMessage emailMessage, boolean htmlMail, String subject, String message, 
           String from, List<String> to, List<String> cc) throws IOException {
     try {
       MimeMessage mimeMessage = emailMessage.getMimeMessage();
@@ -148,7 +148,7 @@ public class EmailServiceTaskTest extends EmailTestCase {
 
   }
   
-  private String getMessage(MimeMessage mimeMessage) throws MessagingException, IOException {
+  public static String getMessage(MimeMessage mimeMessage) throws MessagingException, IOException {
     DataHandler dataHandler = mimeMessage.getDataHandler();
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     dataHandler.writeTo(baos);

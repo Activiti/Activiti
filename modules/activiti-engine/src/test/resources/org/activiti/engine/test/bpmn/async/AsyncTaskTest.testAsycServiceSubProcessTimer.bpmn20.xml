@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="asyncService">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow sourceRef="theStart" targetRef="subProcess" />
+    
+    <subProcess id="subProcess">    
+    	<startEvent id="subStart" />
+    	<sequenceFlow sourceRef="subStart" targetRef="service" />
+    	<serviceTask id="service" activiti:class="org.activiti.engine.test.bpmn.async.AsyncService" activiti:async="true" />
+    	<sequenceFlow sourceRef="service" targetRef="subEnd" />
+    	<endEvent id="subEnd" />    
+    </subProcess>
+    
+    <boundaryEvent attachedToRef="subProcess" id="timer">
+    	<timerEventDefinition>
+    		<timeDuration>PT10S</timeDuration>
+    	</timerEventDefinition>
+    </boundaryEvent>
+    
+    <sequenceFlow sourceRef="timer" targetRef="theEnd" />
+    <sequenceFlow sourceRef="subProcess" targetRef="theEnd" />
+        
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

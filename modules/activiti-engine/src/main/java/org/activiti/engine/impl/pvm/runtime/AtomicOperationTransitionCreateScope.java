@@ -23,6 +23,11 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 public class AtomicOperationTransitionCreateScope implements AtomicOperation {
   
   private static Logger log = Logger.getLogger(AtomicOperationTransitionCreateScope.class.getName());
+  
+  public boolean isAsync(InterpretableExecution execution) {
+    ActivityImpl activity = (ActivityImpl) execution.getActivity();
+    return activity.isAsync();
+  }
 
   public void execute(InterpretableExecution execution) {
     InterpretableExecution propagatingExecution = null;

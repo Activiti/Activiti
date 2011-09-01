@@ -25,7 +25,11 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 public class AtomicOperationActivityExecute implements AtomicOperation {
   
   private static Logger log = Logger.getLogger(AtomicOperationActivityExecute.class.getName());
-  
+
+  public boolean isAsync(InterpretableExecution execution) {
+    return false;
+  }
+
   public void execute(InterpretableExecution execution) {
     ActivityImpl activity = (ActivityImpl) execution.getActivity();
     

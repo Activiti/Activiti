@@ -36,6 +36,7 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity {
   protected ActivityBehavior activityBehavior;
   protected ScopeImpl parent;
   protected boolean isScope;
+  protected boolean isAsync;
   
   // Graphical information
   protected int x = -1;
@@ -158,6 +159,14 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity {
 
   public void setHeight(int height) {
     this.height = height;
+  }
+  
+  public boolean isAsync() {
+    return isAsync;
+  }
+  
+  public void setAsync(boolean isAsync) {
+    this.isAsync = isAsync;
   }
   
 }

@@ -28,6 +28,10 @@ import org.activiti.engine.impl.pvm.process.TransitionImpl;
 public class AtomicOperationTransitionNotifyListenerTake implements AtomicOperation {
   
   private static Logger log = Logger.getLogger(AtomicOperationTransitionNotifyListenerTake.class.getName());
+  
+  public boolean isAsync(InterpretableExecution execution) {
+    return false;
+  }
 
   public void execute(InterpretableExecution execution) {
     TransitionImpl transition = execution.getTransition();
