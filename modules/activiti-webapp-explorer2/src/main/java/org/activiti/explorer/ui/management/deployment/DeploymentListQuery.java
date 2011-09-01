@@ -72,11 +72,11 @@ public class DeploymentListQuery extends AbstractLazyLoadingQuery {
     private static final long serialVersionUID = 1L;
     
     public DeploymentListitem(Deployment deployment) {
-      addItemProperty("id", new ObjectProperty<String>(deployment.getId()));
+      addItemProperty("id", new ObjectProperty<String>(deployment.getId(), String.class));
       if(deployment.getName() != null) {
-        addItemProperty("name", new ObjectProperty<String>(deployment.getName()));
+        addItemProperty("name", new ObjectProperty<String>(deployment.getName(), String.class));
       } else {
-        addItemProperty("name", new ObjectProperty<String>(ExplorerApp.get().getI18nManager().getMessage(Messages.DEPLOYMENT_NO_NAME)));
+        addItemProperty("name", new ObjectProperty<String>(ExplorerApp.get().getI18nManager().getMessage(Messages.DEPLOYMENT_NO_NAME), String.class));
       }
     }
 

@@ -61,10 +61,18 @@ public class ProcessDefinitionListQuery extends AbstractLazyLoadingQuery {
   
   protected ProcessDefinitionListItem createItem(ProcessDefinition processDefinition) {
     ProcessDefinitionListItem item = new ProcessDefinitionListItem();
-    item.addItemProperty("id", new ObjectProperty<String>(processDefinition.getId()));
-    item.addItemProperty("name", new ObjectProperty<String>(processDefinition.getName()));
-    item.addItemProperty("key", new ObjectProperty<String>(processDefinition.getKey()));
+    item.addItemProperty("id", new ObjectProperty<String>(processDefinition.getId(), String.class));
+    item.addItemProperty("name", new ObjectProperty<String>(getProcessDisplayName(processDefinition), String.class));
+    item.addItemProperty("key", new ObjectProperty<String>(processDefinition.getKey(), String.class));
     return item;
+  }
+  
+  protected String getProcessDisplayName(ProcessDefinition processDefinition) {
+    if(processDefinition.getName() != null) {
+      return processDefinition.getName();
+    } else {
+      return processDefinition.getKey();
+    }
   }
 
   public int size() {

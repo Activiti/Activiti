@@ -74,9 +74,9 @@ public class JobListQuery extends AbstractLazyLoadingQuery {
     
     
     public JobListItem(Job job) {
-      addItemProperty("id", new ObjectProperty<String>(job.getId()));
-      addItemProperty("dueDate", new ObjectProperty<Date>(job.getDuedate()));
-      addItemProperty("name", new ObjectProperty<String>(getName(job)));
+      addItemProperty("id", new ObjectProperty<String>(job.getId(), String.class));
+      addItemProperty("dueDate", new ObjectProperty<Date>(job.getDuedate(), Date.class));
+      addItemProperty("name", new ObjectProperty<String>(getName(job), String.class));
     }
     
     private String getName(Job theJob) {

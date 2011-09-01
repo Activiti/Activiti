@@ -68,9 +68,9 @@ public class UserListQuery extends AbstractLazyLoadingQuery {
     private static final long serialVersionUID = 1L;
 
     public UserListItem(User user) {
-      addItemProperty("id", new ObjectProperty<String>(user.getId()));
+      addItemProperty("id", new ObjectProperty<String>(user.getId(), String.class));
       addItemProperty("name", new ObjectProperty<String>(user.getFirstName() 
-              + " " + user.getLastName() + " (" + user.getId() + ")"));
+              + " " + user.getLastName() + " (" + user.getId() + ")", String.class));
     }
 
     public int compareTo(UserListItem other) {

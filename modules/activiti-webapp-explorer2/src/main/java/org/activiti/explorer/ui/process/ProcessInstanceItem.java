@@ -29,8 +29,8 @@ class ProcessInstanceItem extends PropertysetItem implements Comparable<ProcessI
   }
   
   public ProcessInstanceItem(ProcessInstance processInstance) {
-    addItemProperty("id", new ObjectProperty<String>(processInstance.getId()));
-    addItemProperty("businessKey", new ObjectProperty<String>(processInstance.getBusinessKey()));
+    addItemProperty("id", new ObjectProperty<String>(processInstance.getId(), String.class));
+    addItemProperty("businessKey", new ObjectProperty<String>(processInstance.getBusinessKey(), String.class));
   }
 
   public int compareTo(ProcessInstanceItem other) {

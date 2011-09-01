@@ -87,19 +87,19 @@ public class GroupsForUserQuery extends AbstractLazyLoadingQuery {
           ExplorerApp.get().getViewManager().showGroupPage(group.getId());
         }
       });
-      addItemProperty("id", new ObjectProperty<Button>(idButton));
+      addItemProperty("id", new ObjectProperty<Button>(idButton, Button.class));
       
       if (group.getName() != null) {
-        addItemProperty("name", new ObjectProperty<String>(group.getName()));
+        addItemProperty("name", new ObjectProperty<String>(group.getName(), String.class));
       }
       if (group.getType() != null) {
-        addItemProperty("type", new ObjectProperty<String>(group.getType()));
+        addItemProperty("type", new ObjectProperty<String>(group.getType(), String.class));
       }
       
       Embedded deleteIcon = new Embedded(null, Images.DELETE);
       deleteIcon.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
       deleteIcon.addListener(new DeleteMembershipListener(identityService, userId, group.getId(), userDetailPanel));
-      addItemProperty("actions", new ObjectProperty<Embedded>(deleteIcon));
+      addItemProperty("actions", new ObjectProperty<Embedded>(deleteIcon, Embedded.class));
     }
     
   }

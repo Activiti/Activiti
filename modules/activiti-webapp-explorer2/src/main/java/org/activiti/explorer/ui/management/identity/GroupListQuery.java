@@ -66,12 +66,12 @@ public class GroupListQuery extends AbstractLazyLoadingQuery {
     private static final long serialVersionUID = 1L;
     
     public GroupListItem(Group group) {
-      addItemProperty("id", new ObjectProperty<String>(group.getId()));
+      addItemProperty("id", new ObjectProperty<String>(group.getId(), String.class));
       if (group.getName() != null) {
         addItemProperty("name", new ObjectProperty<String>(group.getName()
-                + " (" + group.getName() + ")"));
+                + " (" + group.getName() + ")", String.class));
       } else {
-        addItemProperty("name", new ObjectProperty<String>("(" + group.getId() + ")"));
+        addItemProperty("name", new ObjectProperty<String>("(" + group.getId() + ")", String.class));
       }
     }
 

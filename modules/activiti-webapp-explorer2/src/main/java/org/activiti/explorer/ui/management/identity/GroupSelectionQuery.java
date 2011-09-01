@@ -96,12 +96,12 @@ public class GroupSelectionQuery extends AbstractLazyLoadingQuery {
     private static final long serialVersionUID = 1L;
 
     public GroupSelectionItem(Group group) {
-      addItemProperty("id", new ObjectProperty<String>(group.getId()));
+      addItemProperty("id", new ObjectProperty<String>(group.getId(), String.class));
       if (group.getName() != null) {
-        addItemProperty("name", new ObjectProperty<String>(group.getName()));
+        addItemProperty("name", new ObjectProperty<String>(group.getName(), String.class));
       }
       if (group.getType() != null) {
-        addItemProperty("type", new ObjectProperty<String>(group.getType()));
+        addItemProperty("type", new ObjectProperty<String>(group.getType(), String.class));
       }
     }
     

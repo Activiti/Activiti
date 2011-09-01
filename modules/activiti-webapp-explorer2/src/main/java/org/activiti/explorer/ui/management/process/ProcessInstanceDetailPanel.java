@@ -124,7 +124,7 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
     header.addComponent(image, 0, 0, 0, 1);
     
     // Add task name
-    Label nameLabel = new Label(processDefinition.getName() + " (" + processInstance.getId() +")");
+    Label nameLabel = new Label(getProcessDisplayName(processDefinition, processInstance));
     nameLabel.addStyleName(Reindeer.LABEL_H2);
     header.addComponent(nameLabel, 1, 0, 2, 0);
 
@@ -161,6 +161,13 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
     }
   }
 
+  protected String getProcessDisplayName(ProcessDefinition processDefinition, ProcessInstance processInstance) {
+    if(processDefinition.getName() != null) {
+      return processDefinition.getName() + " (" + processInstance.getId() +")";
+    } else {
+      return processDefinition.getKey() + " (" + processInstance.getId() +")";
+    }
+  }
 
   protected void addTasks() {
     Label header = new Label(i18nManager.getMessage(Messages.PROCESS_INSTANCE_HEADER_TASKS));

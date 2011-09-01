@@ -150,7 +150,7 @@ public class DeploymentDetailPanel extends DetailPanel {
       addDetailComponent(processDefinitionLinksLayout);
       
       for (final ProcessDefinition processDefinition : processDefinitions) {
-        Button processDefinitionButton = new Button(processDefinition.getName());
+        Button processDefinitionButton = new Button(getProcessDisplayName(processDefinition));
         processDefinitionButton.addListener(new ClickListener() {
           public void buttonClick(ClickEvent event) {
             viewManager.showProcessDefinitionPage(processDefinition.getId());
@@ -159,6 +159,14 @@ public class DeploymentDetailPanel extends DetailPanel {
         processDefinitionButton.addStyleName(Reindeer.BUTTON_LINK);
         processDefinitionLinksLayout.addComponent(processDefinitionButton);
       }
+    }
+  }
+  
+  protected String getProcessDisplayName(ProcessDefinition processDefinition) {
+    if(processDefinition.getName() != null) {
+      return processDefinition.getName();
+    } else {
+      return processDefinition.getKey();
     }
   }
   

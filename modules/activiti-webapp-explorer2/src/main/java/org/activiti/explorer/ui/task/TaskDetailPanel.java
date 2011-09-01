@@ -202,6 +202,7 @@ public class TaskDetailPanel extends DetailPanel {
           
           // textarea
           final TextArea descriptionTextArea = new TextArea();
+          descriptionTextArea.setNullRepresentation("");
           descriptionTextArea.setWidth(100, UNITS_PERCENTAGE);
           descriptionTextArea.setValue(task.getDescription());
           editLayout.addComponent(descriptionTextArea);
@@ -238,7 +239,7 @@ public class TaskDetailPanel extends DetailPanel {
         .singleResult();
       
       Button showProcessInstanceButton = new Button(i18nManager.getMessage(
-        Messages.TASK_PART_OF_PROCESS, processDefinition.getName()));
+        Messages.TASK_PART_OF_PROCESS, getProcessDisplayName(processDefinition)));
       showProcessInstanceButton.addStyleName(Reindeer.BUTTON_LINK);
       showProcessInstanceButton.addListener(new ClickListener() {
         public void buttonClick(ClickEvent event) {
@@ -248,6 +249,14 @@ public class TaskDetailPanel extends DetailPanel {
      
       centralLayout.addComponent(showProcessInstanceButton);
       addEmptySpace(centralLayout);
+    }
+  }
+  
+  protected String getProcessDisplayName(ProcessDefinition processDefinition) {
+    if(processDefinition.getName() != null) {
+      return processDefinition.getName();
+    } else {
+      return processDefinition.getKey();
     }
   }
   

@@ -21,6 +21,7 @@ import java.util.Map;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.explorer.data.AbstractLazyLoadingQuery;
@@ -72,8 +73,13 @@ public class ProcessInstanceListQuery extends AbstractLazyLoadingQuery {
   
   protected String getProcessDefinitionName(String processDefinitionId) {
     if (!cachedProcessDefinitionNames.containsKey(processDefinitionId)) {
-      String name = repositoryService.createProcessDefinitionQuery()
-        .processDefinitionId(processDefinitionId).singleResult().getName();
+      ProcessDefinition definition =  repositoryService.createProcessDefinitionQuery()
+      .processDefinitionId(processDefinitionId).singleResult();
+      
+      String name =definition.getName();
+      if(name != null) {
+        name = definition.getKey();
+      }
       cachedProcessDefinitionNames.put(processDefinitionId, name);
     }
     return cachedProcessDefinitionNames.get(processDefinitionId);

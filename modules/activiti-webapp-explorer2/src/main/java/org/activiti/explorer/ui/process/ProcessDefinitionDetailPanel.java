@@ -142,7 +142,7 @@ public class ProcessDefinitionDetailPanel extends DetailPanel {
           
           // Show notification
           ExplorerApp.get().getMainWindow().showNotification("Process '" + 
-            processDefinition.getName() + "' started successfully");
+                  getProcessDisplayName(processDefinition) + "' started successfully");
           initProcessDefinitionInfo();
         }
         protected void handleFormCancel(FormPropertiesEvent event) {
@@ -156,7 +156,7 @@ public class ProcessDefinitionDetailPanel extends DetailPanel {
     detailContainer.removeAllComponents();
     detailContainer.addComponent(processDefinitionStartForm);
   }
-
+  
   protected void initHeader() {
     GridLayout details = new GridLayout(2, 2);
     details.setWidth(100, UNITS_PERCENTAGE);
@@ -171,7 +171,7 @@ public class ProcessDefinitionDetailPanel extends DetailPanel {
     details.addComponent(image, 0, 0, 0, 1);
     
     // Name
-    Label nameLabel = new Label(processDefinition.getName());
+    Label nameLabel = new Label(getProcessDisplayName(processDefinition));
     nameLabel.addStyleName(Reindeer.LABEL_H2);
     details.addComponent(nameLabel, 1, 0);
 
@@ -191,6 +191,14 @@ public class ProcessDefinitionDetailPanel extends DetailPanel {
       deployment.getDeploymentTime(), null, true);
     deployTimeLabel.addStyleName(ExplorerLayout.STYLE_PROCESS_HEADER_DEPLOY_TIME);
     propertiesLayout.addComponent(deployTimeLabel);
+  }
+  
+  protected String getProcessDisplayName(ProcessDefinition processDefinition) {
+    if(processDefinition.getName() != null) {
+      return processDefinition.getName();
+    } else {
+      return processDefinition.getKey();
+    }
   }
   
   protected void addEmptySpace(ComponentContainer container) {

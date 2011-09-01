@@ -71,7 +71,7 @@ public class StartProcessInstanceClickListener implements ClickListener {
       ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinition.getId());
       
       // Show notification of success
-      notificationManager.showInformationNotification(Messages.PROCESS_STARTED_NOTIFICATION, processDefinition.getName());
+      notificationManager.showInformationNotification(Messages.PROCESS_STARTED_NOTIFICATION, getProcessDisplayName(processDefinition));
       
       // Switch to inbox page in case a task of this process was created
       List<Task> loggedInUsersTasks = taskService.createTaskQuery()
@@ -82,8 +82,14 @@ public class StartProcessInstanceClickListener implements ClickListener {
         ExplorerApp.get().getViewManager().showInboxPage(loggedInUsersTasks.get(0).getId());
       }
     }
-    
-   
+  }
+  
+  protected String getProcessDisplayName(ProcessDefinition processDefinition) {
+    if(processDefinition.getName() != null) {
+      return processDefinition.getName();
+    } else {
+      return processDefinition.getKey();
+    }
   }
 
 }

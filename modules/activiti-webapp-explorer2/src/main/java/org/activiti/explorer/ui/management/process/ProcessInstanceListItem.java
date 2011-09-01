@@ -28,8 +28,8 @@ class ProcessInstanceListItem extends PropertysetItem implements Comparable<Proc
   public static final String PROPERTY_NAME = "name";
   
   public ProcessInstanceListItem(final ProcessInstance processInstance, final String processDefinitionName) {
-    addItemProperty(PROPERTY_ID, new ObjectProperty<String>(processInstance.getId()));
-    addItemProperty(PROPERTY_NAME, new ObjectProperty<String>(processDefinitionName + " (id=" + processInstance.getId() +")"));
+    addItemProperty(PROPERTY_ID, new ObjectProperty<String>(processInstance.getId(), String.class));
+    addItemProperty(PROPERTY_NAME, new ObjectProperty<String>(processDefinitionName + " (id=" + processInstance.getId() +")", String.class));
   }
 
   public int compareTo(ProcessInstanceListItem other) {
