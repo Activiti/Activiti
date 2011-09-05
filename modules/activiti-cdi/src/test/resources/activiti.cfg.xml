@@ -9,7 +9,7 @@
 
 		<property name="jdbcUrl" value="jdbc:h2:mem:activiti" />
 		<property name="databaseSchemaUpdate" value="true" />				
-		<property name="jobExecutorActivate" value="true" />
+		<property name="jobExecutorActivate" value="false" />
 		<property name="mailServerPort" value="5025" />
 		
 		<property name="customPostBPMNParseListeners">

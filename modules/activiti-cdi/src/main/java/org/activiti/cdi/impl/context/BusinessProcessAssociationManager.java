@@ -53,7 +53,7 @@ public interface BusinessProcessAssociationManager {
    * @throws ActivitiException if no process instance is currently associated
    */
   public void disAssociateTask();
-  
+    
   /**
    * @return the id of the process instance currently associated or null.
    */
@@ -68,4 +68,15 @@ public interface BusinessProcessAssociationManager {
    * @return the beanstore for storing process variables between flushes
    */
   public CachingBeanStore getBeanStore();
+  
+  /**
+   * set this to true if you want the beanstrore flushed in the next command / transaction
+   */
+  public void setFlushBeanStore(boolean value);
+  
+  /**
+   * returns true if the beanstore should be flushed in the next command
+   */
+  public boolean isFlushBeanStore();
+
 }

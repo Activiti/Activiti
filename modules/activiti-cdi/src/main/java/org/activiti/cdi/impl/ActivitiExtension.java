@@ -19,11 +19,12 @@ import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
-import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.Extension;
 
 import org.activiti.cdi.annotation.BusinessProcessScoped;
 import org.activiti.cdi.impl.context.BusinessProcessContext;
+import org.activiti.cdi.impl.context.ThreadContext;
+import org.activiti.cdi.impl.context.ThreadScoped;
 import org.activiti.cdi.impl.util.ActivitiServices;
 import org.activiti.cdi.impl.util.BeanManagerLookup;
 import org.activiti.cdi.impl.util.ProgrammaticBeanLookup;
@@ -45,22 +46,18 @@ public class ActivitiExtension implements Extension {
 
   public void beforeBeanDiscovery(@Observes final BeforeBeanDiscovery event) {
     event.addScope(BusinessProcessScoped.class, true, true);
+    event.addScope(ThreadScoped.class, true, false);
   }
 
-  public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager manager) {
-       
+  public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager manager) {       
     BeanManagerLookup.localInstance = manager;
-
-    // register custom CDI context implementation business process scoped
-    // beans
     event.addContext(new BusinessProcessContext());
-
+    event.addContext(new ThreadContext());
   }
 
   public void afterDeploymentValidation(@Observes AfterDeploymentValidation event) {
     try {   
-      logger.info("Initializing activiti-cdi.");
-      
+      logger.info("Initializing activiti-cdi.");      
       // initialize the process engine
       initializeProcessEngine();      
       // deploy the processes if engine was set up correctly
@@ -82,11 +79,12 @@ public class ActivitiExtension implements Extension {
     new ProcessDeployer(processEngine).deployProcesses();
   }
 
-  public void beforeShutdown(@Observes BeforeShutdown event) {
-    ProcessEngineLookup processEngineProvisionStrategy = ProgrammaticBeanLookup.lookup(ProcessEngineLookup.class);
-    processEngineProvisionStrategy.ungetProcessEngine();
-    processEngine = null;
-    logger.info("Activiti-cdi extension shutdown.");
-  }
+  // this does not work until https://issues.jboss.org/browse/WELD-891 is fixed
+//  public void beforeShutdown(@Observes BeforeShutdown event) {
+//    ProcessEngineLookup processEngineProvisionStrategy = ProgrammaticBeanLookup.lookup(ProcessEngineLookup.class);
+//    processEngineProvisionStrategy.ungetProcessEngine();
+//    processEngine = null;
+//    logger.info("Activiti-cdi extension shutdown.");
+//  }
 
 }

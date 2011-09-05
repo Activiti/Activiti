@@ -15,6 +15,7 @@ package org.activiti.cdi;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.activiti.cdi.annotation.BusinessProcessScoped;
 import org.activiti.cdi.impl.context.BusinessProcessAssociationManager;
 import org.activiti.cdi.impl.context.CachingBeanStore;
 import org.activiti.cdi.impl.util.ProgrammaticBeanLookup;
@@ -24,66 +25,83 @@ import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
- * CommandInterceptor for flushing the Beanstore before and after executing a
- * command.
+ * CommandInterceptor for flushing process variables retrieved / created in the current unit of work.
  * 
- * TODO: open a context if not active. 
+ * NOTE: process variables are only flushed, if the unit of work is controlled using the methods exposed on
+ * the {@link BusinessProcess} bean. 
+ * I.e. in order for this interceptor to flush changes to {@link BusinessProcessScoped} beans or process variables 
+ * set using {@link BusinessProcess#setProcessVariable(String, Object)} the unit of work needs to be completed using 
+ * {@link BusinessProcess#completeTask()} or  
  * 
  * @author Daniel Meyer
  */
 public class CdiActivitiInterceptor extends CommandInterceptor {
   
-  Logger logger = Logger.getLogger(CdiActivitiInterceptor.class.getName());
-
+  private final static Logger log = Logger.getLogger(CdiActivitiInterceptor.class.getName());
+  
   @Override
   public <T> T execute(Command<T> command) {
-    // Under certain circumstances we might need to setup a context here. 
-    // (I think this might be the case when Activiti calls clientcode, for example when executing a job.)
-    // TODO: how can we open a context in a cdi-implementation agnostic way here?
-    flushBeanStore(); 
-    T result = next.execute(command);
-    flushBeanStore();
-    return result;
+    if(isCdiActive()) {
+      return executeInCdiEnv(command);
+    } else {
+      return next.execute(command);
+    }
   }
 
-  protected void flushBeanStore() {
-    BusinessProcessAssociationManager associationManager = null;
-    String processInstanceId = null;
+  private boolean isCdiActive() {
     try {
-      associationManager = ProgrammaticBeanLookup.lookup(BusinessProcessAssociationManager.class);
-      processInstanceId = associationManager.getProcessInstanceId();
-      
+      return getAssociationManager() != null;
     } catch (Exception e) {
-      // ignore silently -> CDI is not setup (yet/anymore)
-      logger.finest("Not flushing the beanStore, could not lookup "+BusinessProcessAssociationManager.class.getName());
-      return;
-    }    
-    if (processInstanceId != null) {
+      return false;
+    }
+  }
+
+  public <T> T executeInCdiEnv(Command<T> command) {
+    boolean flush = getAssociationManager().isFlushBeanStore();
+    if (flush) {
+      flushBeanStore();
+    }
+    T result = next.execute(command);
+    if (flush) {
+      flushBeanStore();
+      getAssociationManager().setFlushBeanStore(false);
+    }
+    return result;
+  }
+ 
+  protected void flushBeanStore() {
+    BusinessProcessAssociationManager associationManager = getAssociationManager();
+    String executionId = associationManager.getProcessInstanceId();
+
+    if (executionId != null) {
       ExecutionEntity processInstance = Context
         .getCommandContext()
         .getExecutionManager()
-        .findExecutionById(processInstanceId);
+        .findExecutionById(executionId);
       if (processInstance != null && !processInstance.isEnded()) {
         CachingBeanStore beanStore = associationManager.getBeanStore();
-        logFlushSummary(beanStore);
+        if (log.isLoggable(Level.FINE)) {
+          logFlushSummary(beanStore);
+        }
         processInstance.setVariables(beanStore.getAll());
         beanStore.clear();
       }
     }
-
+  }
+  
+  protected BusinessProcessAssociationManager getAssociationManager() {
+    return ProgrammaticBeanLookup.lookup(BusinessProcessAssociationManager.class);
   }
 
   protected void logFlushSummary(CachingBeanStore beanStore) {
-    if (logger.isLoggable(Level.FINE)) {
-      if (beanStore.getVariableNames().size() == 0) {
-        logger.finest("Cdi context flush summary: nothing to flush");
-      } else {
-        logger.fine("------------------ Cdi context flush summary:");
-        for (String variable : beanStore.getVariableNames()) {
-          logger.fine("   - " + variable + ": " + beanStore.getContextualInstance(variable));
-        }
-        logger.fine("-----------------------------------------------");
-      }      
+    if (beanStore.getVariableNames().size() == 0) {
+      log.finest("Cdi context flush summary: nothing to flush");
+    } else {
+      log.fine("------------------ Cdi context flush summary:");
+      for (String variable : beanStore.getVariableNames()) {
+        log.fine("   - " + variable + ": " + beanStore.getContextualInstance(variable));
+      }
+      log.fine("-----------------------------------------------");
     }
   }
 

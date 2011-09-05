@@ -43,12 +43,13 @@ import org.activiti.engine.ActivitiException;
 @SuppressWarnings("serial")
 public class DefaultBusinessProcessAssociationManager implements BusinessProcessAssociationManager, Serializable {
   
-  Logger log = Logger.getLogger(DefaultBusinessProcessAssociationManager.class.getName());
+  private final static Logger log = Logger.getLogger(DefaultBusinessProcessAssociationManager.class.getName());
   
   protected static class ScopedAssociation { 
     protected String processInstanceId;
     protected String taskId;        
-    @Inject CachingBeanStore beanStore;
+    protected CachingBeanStore beanStore = new CachingBeanStore();
+    protected boolean isFlushBeanStore;
     public void setProcessInstanceId(String processInstanceId) {
       this.processInstanceId = processInstanceId;
     }    
@@ -63,12 +64,25 @@ public class DefaultBusinessProcessAssociationManager implements BusinessProcess
     }    
     public CachingBeanStore getBeanStore() {
       return beanStore;
+    }   
+    public boolean isFlushBeanStore() {
+      return isFlushBeanStore;
+    }    
+    public void setFlushBeanStore(boolean isFlushBeanStore) {
+      this.isFlushBeanStore = isFlushBeanStore;
     }
   }
   
   @ConversationScoped protected static class ConversationScopedAssociation extends ScopedAssociation implements Serializable {}
   @RequestScoped protected static class RequestScopedAssociation extends ScopedAssociation implements Serializable {}
+  @ThreadScoped protected static class ThreadScopedAssociation extends ScopedAssociation implements Serializable {     
+    public boolean isFlushBeanStore() {
+      // the thread context is always flushed
+      return true;
+    }  
+  }
   
+  @Inject BeanManager beanManager;
 
   protected Class< ? extends ScopedAssociation> getBroadestActiveContext() {
     BeanManager beanManager = BeanManagerLookup.getBeanManager();
@@ -98,6 +112,7 @@ public class DefaultBusinessProcessAssociationManager implements BusinessProcess
     ArrayList<Class< ? extends ScopedAssociation>> scopeTypes = new ArrayList<Class< ? extends ScopedAssociation>>();
     scopeTypes.add(ConversationScopedAssociation.class);
     scopeTypes.add(RequestScopedAssociation.class);
+    scopeTypes.add(ThreadScopedAssociation.class);
     return scopeTypes;
   }
   
@@ -126,9 +141,9 @@ public class DefaultBusinessProcessAssociationManager implements BusinessProcess
     if (log.isLoggable(Level.FINE)) {
       log.fine("Disassociating the current task");
     }
-    getScopedAssociation().setProcessInstanceId(null);
-    getScopedAssociation().setTaskId(null);
-    getBeanStore().clear();
+    scopedAssociation.setProcessInstanceId(null);
+    scopedAssociation.setTaskId(null);
+    scopedAssociation.getBeanStore().clear();
   }
 
   @Override
@@ -169,6 +184,16 @@ public class DefaultBusinessProcessAssociationManager implements BusinessProcess
   @Override
   public CachingBeanStore getBeanStore() {
     return getScopedAssociation().getBeanStore();
+  }
+  
+  @Override
+  public void setFlushBeanStore(boolean value) {
+    getScopedAssociation().setFlushBeanStore(value);
+  }
+  
+  @Override
+  public boolean isFlushBeanStore() {
+    return getScopedAssociation().isFlushBeanStore();
   }
 
 }

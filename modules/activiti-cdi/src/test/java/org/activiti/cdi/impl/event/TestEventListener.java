@@ -15,7 +15,7 @@ package org.activiti.cdi.impl.event;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 
 import org.activiti.cdi.BusinessProcessEvent;
@@ -24,7 +24,7 @@ import org.activiti.cdi.annotation.event.EndActivity;
 import org.activiti.cdi.annotation.event.StartActivity;
 import org.activiti.cdi.annotation.event.TakeTransition;
 
-@RequestScoped
+@ApplicationScoped
 public class TestEventListener {
 
   private final Set<BusinessProcessEvent> eventsReceivedByKey = new HashSet<BusinessProcessEvent>();

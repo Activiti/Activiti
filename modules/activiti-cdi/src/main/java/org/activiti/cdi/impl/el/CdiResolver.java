@@ -87,7 +87,6 @@ public class CdiResolver extends ELResolver {
       context.setPropertyResolved(result != null);
       return result;
     } catch (IllegalStateException e) {
-      e.printStackTrace();
       // dependent scoped / EJBs
       Object result = ProgrammaticBeanLookup.lookup(property.toString(), getBeanManager());
       context.setPropertyResolved(result != null);

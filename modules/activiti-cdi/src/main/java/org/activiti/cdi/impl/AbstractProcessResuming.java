@@ -12,12 +12,12 @@
  */
 package org.activiti.cdi.impl;
 
-import java.util.EmptyStackException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
+import org.activiti.cdi.ActivitiCdiException;
 import org.activiti.cdi.Actor;
 import org.activiti.cdi.impl.context.BusinessProcessAssociationManager;
 import org.activiti.cdi.impl.context.CachingBeanStore;
@@ -35,7 +35,7 @@ import org.activiti.engine.task.Task;
  */
 public abstract class AbstractProcessResuming {
   
-  private Logger logger = Logger.getLogger(AbstractProcessResuming.class.getName());
+  private static Logger logger = Logger.getLogger(AbstractProcessResuming.class.getName());
   
   @Inject protected BusinessProcessAssociationManager associationManager;
   
@@ -58,16 +58,11 @@ public abstract class AbstractProcessResuming {
     if (associationManager.getProcessInstanceId() != null) {
       return;
     }
-    try {
-      if (Context.getExecutionContext() != null) {
-        ProcessInstance instance = Context.getExecutionContext().getProcessInstance();
-        if (instance != null) {
-          associationManager.associateProcessInstance(instance.getId());         
-        }
+    if (Context.getCommandContext() != null) {
+      ProcessInstance instance = Context.getExecutionContext().getProcessInstance();
+      if (instance != null) {
+        associationManager.associateProcessInstance(instance.getId());
       }
-    } catch (EmptyStackException e) {
-      // means that no execution context is available
-      return;
     }
   }
   
@@ -120,8 +115,8 @@ public abstract class AbstractProcessResuming {
       resumeProcess();
     }
     if (associationManager.getProcessInstanceId() == null) {
-      logger.log(Level.SEVERE, "No business process associated with this conversation.");
-      throw new ActivitiException("No business process associated with this conversation.");
+      logger.log(Level.SEVERE, "No business process associated.");
+      throw new ActivitiCdiException("No business process associated.");
     }
   }
 
@@ -130,8 +125,8 @@ public abstract class AbstractProcessResuming {
       resumeTask();
     }
     if (associationManager.getTaskId() == null) {
-      logger.log(Level.SEVERE, "No task associated with this conversation.");
-      throw new ActivitiException("No task associated with this conversation.");
+      logger.log(Level.SEVERE, "No task associated.");
+      throw new ActivitiCdiException("No task associated.");
     }
   }
   

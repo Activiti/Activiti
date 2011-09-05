@@ -22,13 +22,16 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.activiti.cdi.annotation.BusinessProcessScoped;
 import org.activiti.cdi.annotation.ProcessInstanceId;
 import org.activiti.cdi.annotation.TaskId;
 import org.activiti.cdi.impl.AbstractProcessResuming;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -53,7 +56,7 @@ public class BusinessProcess extends AbstractProcessResuming implements Serializ
 
   private static final long serialVersionUID = 1L;
   
-  protected Logger logger = Logger.getLogger(BusinessProcess.class.getName());
+  private static Logger logger = Logger.getLogger(BusinessProcess.class.getName());
 
   @Inject BeanManager beanManager;
 
@@ -67,12 +70,14 @@ public class BusinessProcess extends AbstractProcessResuming implements Serializ
    */
 
   public ProcessInstance startProcessById(String processDefinitionId) {
+    associationManager.setFlushBeanStore(true);
     ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceById(processDefinitionId, getBeanStore().getAll());
     associateBusinessProcessInstance(instance.getProcessInstanceId());
     return instance;
   }
 
   public ProcessInstance startProcessById(String processDefinitionId, Map<String, Object> variables) {
+    associationManager.setFlushBeanStore(true);
     getBeanStore().putAll(variables);
     ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceById(processDefinitionId, getBeanStore().getAll());
     associateBusinessProcessInstance(instance.getProcessInstanceId());
@@ -80,12 +85,14 @@ public class BusinessProcess extends AbstractProcessResuming implements Serializ
   }
 
   public ProcessInstance startProcessByKey(String key) {
+    associationManager.setFlushBeanStore(true);
     ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByKey(key, getBeanStore().getAll());
     associateBusinessProcessInstance(instance.getProcessInstanceId());
     return instance;
   }
 
   public ProcessInstance startProcessByKey(String key, Map<String, Object> variables) {
+    associationManager.setFlushBeanStore(true);
     getBeanStore().putAll(variables);
     ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByKey(key, getBeanStore().getAll());
     associateBusinessProcessInstance(instance.getProcessInstanceId());
@@ -93,6 +100,7 @@ public class BusinessProcess extends AbstractProcessResuming implements Serializ
   }
 
   public ProcessInstance startProcessByName(String string) {
+    associationManager.setFlushBeanStore(true);
     ProcessDefinition definition = processEngine.getRepositoryService().createProcessDefinitionQuery().processDefinitionName(string).singleResult();
     if (definition == null) {
       logger.log(Level.SEVERE, "No process definition found for name: " + string);
@@ -104,6 +112,7 @@ public class BusinessProcess extends AbstractProcessResuming implements Serializ
   }
 
   public ProcessInstance startProcessByName(String string, Map<String, Object> variables) {
+    associationManager.setFlushBeanStore(true);
     ProcessDefinition definition = processEngine.getRepositoryService().createProcessDefinitionQuery().processDefinitionName(string).singleResult();
     if (definition == null) {
       logger.log(Level.SEVERE, "No process definition found for name: " + string);
@@ -142,11 +151,14 @@ public class BusinessProcess extends AbstractProcessResuming implements Serializ
 
   /**
    * Associates the task with the provided taskId with the current conversation.
+   * <p/>
    * 
-   * @param the
-   *          id of the task
+   * @param taskId
+   *          the id of the task
+   * 
    * @return the resumed task
-   * @throws ActivitiException
+   * 
+   * @throws ActivitiCdiException
    *           if no such task is found
    */
   public Task resumeTaskById(String taskId) {
@@ -154,7 +166,7 @@ public class BusinessProcess extends AbstractProcessResuming implements Serializ
     Task task = getTask();
     if (task == null) {
       associationManager.disAssociateTask();
-      throw new ActivitiException("No task with id '" + taskId + "' found.");
+      throw new ActivitiCdiException("No task with id '" + taskId + "' found.");
     }
     resumeProcessById(task.getProcessInstanceId());
     if (logger.isLoggable(Level.FINE)) {
@@ -164,10 +176,20 @@ public class BusinessProcess extends AbstractProcessResuming implements Serializ
   }
 
   /**
-   * Complete the task associated with the current conversation.
+   * Completes the current UserTask, see {@link TaskService#complete(String)}
+   * <p/>
+   * Ends the current unit of work (flushes changes to process variables set
+   * using {@link #setProcessVariable(String, Object)} or made on
+   * {@link BusinessProcessScoped @BusinessProcessScoped} beans).
+   * 
+   * @throws ActivitiCdiException
+   *           if no task is currently associated
+   * @throws ActivitiException
+   *           if the activiti command fails
    */
   public void completeTask() {
     assertTaskIdSet();
+    associationManager.setFlushBeanStore(true); // this ends a unit of work
     processEngine.getTaskService().complete(associationManager.getTaskId());
     associationManager.disAssociateTask();
   }
@@ -175,6 +197,25 @@ public class BusinessProcess extends AbstractProcessResuming implements Serializ
   public boolean hasTask() {
     resumeTask();
     return associationManager.getTaskId() != null;
+  }
+  
+  /**
+   * Signals the current execution, see {@link RuntimeService#signal(String)}
+   * <p/>
+   * Ends the current unit of work (flushes changes to process variables set
+   * using {@link #setProcessVariable(String, Object)} or made on
+   * {@link BusinessProcessScoped @BusinessProcessScoped} beans).
+   * 
+   * @throws ActivitiCdiException
+   *           if no execution is currently associated
+   * @throws ActivitiException
+   *           if the activiti command fails
+   */
+  public void signalExecution() {
+    assertProcessIdSet();
+    associationManager.setFlushBeanStore(true); // this ends a unit of work
+    processEngine.getRuntimeService().signal(associationManager.getProcessInstanceId());
+    associationManager.disAssociateProcessInstance();
   }
 
   // -------------------------------------------------
@@ -201,21 +242,16 @@ public class BusinessProcess extends AbstractProcessResuming implements Serializ
   @SuppressWarnings("unchecked")
   public <T> T getProcessVariable(String variableName, Class<T> ofClazz) {
     resumeProcess();
-    Object value = null;
-    
-    if (!isActive() || 
-              // TODO: think about concurrent processes
-              getBeanStore().holdsValue(variableName) 
-       ) {
+    Object value = null;    
+    if (!isActive() || getBeanStore().holdsValue(variableName)) {
       value = getBeanStore().getContextualInstance(variableName);
     } else {
-      try {
-        // this allows us to retrieve process variables before the first
-        // transaction is completed.
+      if(Context.getCommandContext() != null) {      
         value = Context.getExecutionContext().getExecution().getVariable(variableName);
-      } catch (Exception e) {
-        value = processEngine.getRuntimeService().getVariable(associationManager.getProcessInstanceId(), variableName);
+      }else {
+        value = processEngine.getRuntimeService().getVariable(associationManager.getProcessInstanceId(), variableName);   
       }
+      // cache the value in the bean store.
       getBeanStore().put(variableName, value);
     }
     if (value == null) {
@@ -229,9 +265,9 @@ public class BusinessProcess extends AbstractProcessResuming implements Serializ
    * Set a value for a process variable.
    * <p />
    * 
-   * <strong>NOTE:</strong> If no processInstance is associated with the current
-   * conversation, the value is added to a temporary conversational bean store
-   * and flushed to the process instance at process instantiation time.
+   * <strong>NOTE:</strong> If no execution is currently associated, 
+   * the value is temporarily cached and flushed to the process instance 
+   * at the end of the unit of work
    * 
    * @param variableName
    *          the name of the process variable for which a value is to be set
@@ -240,22 +276,8 @@ public class BusinessProcess extends AbstractProcessResuming implements Serializ
    * 
    */
   public void setProcessVariable(String variableName, Object value) {
-    resumeProcess();
-    // this allows us to flush the bean store to update the values of changed beans when a task is completed:
-    getBeanStore().put(variableName, value);
-    if (isActive()) {
-      setProcessVariableInExecution(variableName,value);
-    }
-  }
-  
-  protected void setProcessVariableInExecution(String variableName, Object value) {
-    try {
-      // this allows us to store process variables before the first
-      // transaction is completed (RuntimeService.setVariable(...) does not work then
-      Context.getExecutionContext().getExecution().setVariable(variableName, value);
-    } catch (Exception e) {
-      processEngine.getRuntimeService().setVariable(associationManager.getProcessInstanceId(), variableName, value);
-    }
+    resumeProcess();    
+    getBeanStore().put(variableName, value);   
   }
   
   // ----------------------------------- Getters / Setters and Producers
@@ -316,21 +338,20 @@ public class BusinessProcess extends AbstractProcessResuming implements Serializ
    */
   /* Also makes the current ProcessInstance available for injection */
   @Produces @Named public ProcessInstance getProcessInstance() {
+    // participate in current command:
+    if(Context.getCommandContext() != null) {
+      ExecutionEntity processInstance = Context.getExecutionContext().getProcessInstance();
+      if(processInstance != null) {
+        return processInstance;
+      }
+    }
     assertProcessIdSet();    
     ProcessInstance instance = processEngine
       .getRuntimeService()
       .createProcessInstanceQuery()
       .processInstanceId(associationManager.getProcessInstanceId())
       .singleResult();
-    if(instance != null) {
-      return instance;
-    }
-    // in the first transaction, the ProcessInstance is not yet committed, try to access it from the context:
-    try {
-      return Context.getExecutionContext().getProcessInstance();
-    }catch (Exception e) {
-      return null;
-    }
+    return instance;   
   }
 
 }
