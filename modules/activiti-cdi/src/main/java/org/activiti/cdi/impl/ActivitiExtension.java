@@ -24,6 +24,7 @@ import javax.enterprise.inject.spi.Extension;
 
 import org.activiti.cdi.annotation.BusinessProcessScoped;
 import org.activiti.cdi.impl.context.BusinessProcessContext;
+import org.activiti.cdi.impl.util.ActivitiServices;
 import org.activiti.cdi.impl.util.BeanManagerLookup;
 import org.activiti.cdi.impl.util.ProgrammaticBeanLookup;
 import org.activiti.engine.ProcessEngine;
@@ -40,12 +41,7 @@ import org.activiti.engine.ProcessEngine;
 public class ActivitiExtension implements Extension {
 
   private static Logger logger = Logger.getLogger(ActivitiExtension.class.getName());
-
-  private static ProcessEngine processEngine;
-  
-  public static ProcessEngine getProcessEngine() {
-    return processEngine;
-  }
+  private ProcessEngine processEngine;
 
   public void beforeBeanDiscovery(@Observes final BeforeBeanDiscovery event) {
     event.addScope(BusinessProcessScoped.class, true, true);
@@ -71,7 +67,6 @@ public class ActivitiExtension implements Extension {
       deployProcesses();      
     } catch (Exception e) {
       // interpret engine initialization problems as definition errors
-      // TODO: lookup process engine earlier?
       event.addDeploymentProblem(e);
     }
   }
@@ -79,10 +74,12 @@ public class ActivitiExtension implements Extension {
   protected void initializeProcessEngine() {
     ProcessEngineLookup processEngineProvisionStrategy = ProgrammaticBeanLookup.lookup(ProcessEngineLookup.class);
     processEngine = processEngineProvisionStrategy.getProcessEngine();
+    ActivitiServices activitiServices = ProgrammaticBeanLookup.lookup(ActivitiServices.class);
+    activitiServices.setProcessEngine(processEngine);
   }
 
   private void deployProcesses() {
-    new ProcessDeployer().deployProcesses();
+    new ProcessDeployer(processEngine).deployProcesses();
   }
 
   public void beforeShutdown(@Observes BeforeShutdown event) {

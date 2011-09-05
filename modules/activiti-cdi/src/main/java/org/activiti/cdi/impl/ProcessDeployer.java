@@ -44,7 +44,11 @@ public class ProcessDeployer {
 
   private static Logger logger = Logger.getLogger(ProcessDeployer.class.getName());
 
-  ProcessEngine processEngine = ActivitiExtension.getProcessEngine();
+  protected final ProcessEngine processEngine;
+    
+  public ProcessDeployer(ProcessEngine processEngine) {
+    this.processEngine = processEngine;
+  }
 
   /**
    * Deploys a single process
@@ -71,7 +75,7 @@ public class ProcessDeployer {
     // build a single deployment containing all discovered processes
     Set<String> resourceNames = getResourceNames();
     if (resourceNames.size() == 0) {
-      logger.info("Not creating a deployment");
+      logger.fine("Not creating a deployment");
       return;
     }
     logger.fine("Start deploying processes.");
@@ -89,7 +93,7 @@ public class ProcessDeployer {
     Set<String> result = new HashSet<String>();
     URL processFileUrl = getClass().getClassLoader().getResource(PROCESSES_FILE_NAME);
     if (processFileUrl == null) {
-      logger.info("No '" + PROCESSES_FILE_NAME + "'-file provided.");
+      logger.fine("No '" + PROCESSES_FILE_NAME + "'-file provided.");
       // return empty set
       return result;
     }

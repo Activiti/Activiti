@@ -17,7 +17,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 
-import org.activiti.cdi.impl.ActivitiExtension;
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
@@ -32,9 +31,16 @@ import org.activiti.engine.TaskService;
  * 
  * @author Daniel Meyer
  */
-public class ProcessEngineProducer {
+@ApplicationScoped
+public class ActivitiServices {
+  
+  private ProcessEngine processEngine;
+  
+  public void setProcessEngine(ProcessEngine processEngine) {
+    this.processEngine = processEngine;
+  }
 
-  @Produces @Named @ApplicationScoped public ProcessEngine processEngine() { return ActivitiExtension.getProcessEngine(); }
+  @Produces @Named @ApplicationScoped public ProcessEngine processEngine() { return processEngine; }
 
   @Produces @Named @ApplicationScoped public RuntimeService runtimeService() { return processEngine().getRuntimeService(); }
 
