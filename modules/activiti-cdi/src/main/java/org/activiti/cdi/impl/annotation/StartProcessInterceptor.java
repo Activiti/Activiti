@@ -12,6 +12,7 @@
  */
 package org.activiti.cdi.impl.annotation;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -34,8 +35,10 @@ import org.activiti.engine.ActivitiException;
  */
 @Interceptor 
 @StartProcess("")
-public class StartProcessInterceptor {
+public class StartProcessInterceptor implements Serializable {
 
+  private static final long serialVersionUID = 1L;
+  
   @Inject BusinessProcess businessProcess;
 
   @AroundInvoke

@@ -12,6 +12,7 @@
  */
 package org.activiti.cdi.impl.annotation;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.enterprise.context.Conversation;
@@ -35,7 +36,9 @@ import org.activiti.engine.task.Task;
  */
 @Interceptor
 @CompleteTask
-public class CompleteTaskInterceptor {
+public class CompleteTaskInterceptor implements Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   @Inject BusinessProcess businessProcess;
 
