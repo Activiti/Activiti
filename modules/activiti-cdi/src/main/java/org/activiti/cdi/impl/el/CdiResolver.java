@@ -87,15 +87,9 @@ public class CdiResolver extends ELResolver {
       context.setPropertyResolved(result != null);
       return result;
     } catch (IllegalStateException e) {
-      // this can happen when we try to resolve a bean which has no
-      // CDI-scope assigned. Example: EJB without additional scope annotation.
-      // see also:
-      // http://docs.jboss.org/weld/reference/latest/en-US/html/ri-spi.html
-
-      // The following code might have issues with remote EJBs and EJBs
-      // from other deployment archives then this BeanManager's deployment
-
-      Object result = ProgrammaticBeanLookup.lookup(property.toString());
+      e.printStackTrace();
+      // dependent scoped / EJBs
+      Object result = ProgrammaticBeanLookup.lookup(property.toString(), getBeanManager());
       context.setPropertyResolved(result != null);
       return result;
     }
