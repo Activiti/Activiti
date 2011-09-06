@@ -16,7 +16,7 @@ package org.activiti.explorer.ui.form;
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.impl.form.BooleanFormType;
 
-import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Field;
 
 /**
@@ -31,15 +31,15 @@ public class BooleanFormPropertyRenderer extends AbstractFormPropertyRenderer {
   @Override
   public Field getPropertyField(FormProperty formProperty) {
     
-    Button button = new Button(getPropertyLabel(formProperty));
-    button.setRequired(formProperty.isRequired());
-    button.setEnabled(formProperty.isWritable());
+    CheckBox checkBox = new CheckBox(getPropertyLabel(formProperty));
+    checkBox.setRequired(formProperty.isRequired());
+    checkBox.setEnabled(formProperty.isWritable());
 
     if (formProperty.getValue() != null) {
-      button.setValue(formProperty.getValue());
+      checkBox.setValue(formProperty.getValue());
     }
 
-    return button;
+    return checkBox;
   }
 
 }
