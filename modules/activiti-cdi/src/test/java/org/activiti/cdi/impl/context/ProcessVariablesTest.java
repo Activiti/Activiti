@@ -15,7 +15,6 @@ package org.activiti.cdi.impl.context;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.cdi.Actor;
 import org.activiti.cdi.BusinessProcess;
 import org.activiti.cdi.test.CdiActivitiTestCase;
 import org.activiti.cdi.test.beans.InjectProcessVariable;
@@ -26,11 +25,11 @@ public class ProcessVariablesTest extends CdiActivitiTestCase {
   @Deployment(resources = "org/activiti/cdi/BusinessProcessBeanTest.test.bpmn20.xml")
   public void testResolveString() {
     BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
-    getBeanInstance(Actor.class).setActorId("kermit");
 
     Map<String, Object> processVariables = new HashMap<String, Object>();
     businessProcess.setProcessVariable("testKeyString", "testValue");
-    businessProcess.startProcessByKey("businessProcessBeanTest", processVariables);
+    businessProcess.startProcessByKey("businessProcessBeanTest", processVariables);    
+    businessProcess.startTask(taskService.createTaskQuery().singleResult().getId());
     
     InjectProcessVariable injectProcessVariables = getBeanInstance(InjectProcessVariable.class);
     assertEquals("testValue", injectProcessVariables.testKeyString);

@@ -35,14 +35,6 @@ public class DeclarativeProcessController {
     name = "Activiti";
   }
 
-  @CompleteTask(value = "userTask", endConversation = false)
-  public void completeTaskByKey() {
-  }
-
-  @CompleteTask(name = "Usertask", endConversation = false)
-  public void completeTaskByName() {
-  }
-
   @CompleteTask(endConversation = false)
   public void completeTask() {
   }

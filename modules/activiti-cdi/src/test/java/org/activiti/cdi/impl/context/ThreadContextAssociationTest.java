@@ -52,17 +52,6 @@ public class ThreadContextAssociationTest extends CdiActivitiTestCase {
     // do not deactivate
   }
   
-  @Deployment
-  public void testFallbacktoThreadContext() {
-    BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
-
-    String pid = businessProcess.startProcessByKey("processkey").getId();
-    
-    assertEquals(pid, businessProcess.getProcessInstanceId());
-    
-    businessProcess.completeTask();
-
-  }
   
   @Deployment
   public void testBusinessProcessScopedWithJobExecutor() throws InterruptedException {

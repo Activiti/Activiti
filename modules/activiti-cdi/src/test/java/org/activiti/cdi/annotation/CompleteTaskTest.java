@@ -17,6 +17,7 @@ import org.activiti.cdi.BusinessProcess;
 import org.activiti.cdi.impl.annotation.CompleteTaskInterceptor;
 import org.activiti.cdi.test.CdiActivitiTestCase;
 import org.activiti.cdi.test.beans.DeclarativeProcessController;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
@@ -28,39 +29,6 @@ import org.activiti.engine.test.Deployment;
 public class CompleteTaskTest extends CdiActivitiTestCase {
 
   @Deployment(resources = "org/activiti/cdi/annotation/CompleteTaskTest.bpmn20.xml")
-  public void testCompleteTaskByKey() {
-    getBeanInstance(Actor.class).setActorId("kermit");
-    BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
-
-    businessProcess.startProcessByKey("keyOfTheProcess");
-
-    // assert that a single task is waiting
-    assertNotNull(taskService.createTaskQuery().singleResult());
-
-    getBeanInstance(DeclarativeProcessController.class).completeTaskByKey();
-
-    // assert that now the task is completed
-    assertNull(taskService.createTaskQuery().singleResult());
-  }
-
-  @Deployment(resources = "org/activiti/cdi/annotation/CompleteTaskTest.bpmn20.xml")
-  public void testCompleteTaskByName() {
-
-    getBeanInstance(Actor.class).setActorId("kermit");
-    BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
-
-    businessProcess.startProcessByKey("keyOfTheProcess");
-
-    // assert that a single task is waiting
-    assertNotNull(taskService.createTaskQuery().singleResult());
-
-    getBeanInstance(DeclarativeProcessController.class).completeTaskByName();
-
-    // assert that now the task is completed
-    assertNull(taskService.createTaskQuery().singleResult());
-  }
-
-  @Deployment(resources = "org/activiti/cdi/annotation/CompleteTaskTest.bpmn20.xml")
   public void testCompleteTask() {
 
     getBeanInstance(Actor.class).setActorId("kermit");
@@ -68,8 +36,10 @@ public class CompleteTaskTest extends CdiActivitiTestCase {
 
     businessProcess.startProcessByKey("keyOfTheProcess");
 
-    // assert that a single task is waiting
-    assertNotNull(taskService.createTaskQuery().singleResult());
+    Task task = taskService.createTaskQuery().singleResult();
+    
+    // associate current unit of work with the task:
+    businessProcess.startTask(task.getId());
 
     getBeanInstance(DeclarativeProcessController.class).completeTask();
 

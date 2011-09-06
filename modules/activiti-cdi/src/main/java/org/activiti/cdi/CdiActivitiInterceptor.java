@@ -16,10 +16,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.cdi.annotation.BusinessProcessScoped;
+import org.activiti.cdi.impl.ActorReference;
 import org.activiti.cdi.impl.context.BusinessProcessAssociationManager;
 import org.activiti.cdi.impl.context.CachingBeanStore;
 import org.activiti.cdi.impl.util.ProgrammaticBeanLookup;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -57,6 +59,7 @@ public class CdiActivitiInterceptor extends CommandInterceptor {
   }
 
   public <T> T executeInCdiEnv(Command<T> command) {
+    setActor();
     boolean flush = getAssociationManager().isFlushBeanStore();
     if (flush) {
       flushBeanStore();
@@ -68,29 +71,43 @@ public class CdiActivitiInterceptor extends CommandInterceptor {
     }
     return result;
   }
- 
+
   protected void flushBeanStore() {
     BusinessProcessAssociationManager associationManager = getAssociationManager();
-    String executionId = associationManager.getProcessInstanceId();
+    String executionId = associationManager.getExecutionId();
 
     if (executionId != null) {
-      ExecutionEntity processInstance = Context
+      ExecutionEntity execution = Context
         .getCommandContext()
         .getExecutionManager()
         .findExecutionById(executionId);
-      if (processInstance != null && !processInstance.isEnded()) {
+      if (execution != null && !execution.isEnded()) {
         CachingBeanStore beanStore = associationManager.getBeanStore();
         if (log.isLoggable(Level.FINE)) {
           logFlushSummary(beanStore);
         }
-        processInstance.setVariables(beanStore.getAll());
+        execution.setVariables(beanStore.getAll());
         beanStore.clear();
       }
     }
   }
   
+  protected void setActor() {
+    ActorReference actorReference = getBeanInstance(ActorReference.class);
+    if(actorReference.isAvailable()) {
+      Actor actor = actorReference.getActor();
+      if(actor.getActorId() != null) {
+        Authentication.setAuthenticatedUserId(actor.getActorId());
+      }
+    }
+  }
+  
   protected BusinessProcessAssociationManager getAssociationManager() {
-    return ProgrammaticBeanLookup.lookup(BusinessProcessAssociationManager.class);
+    return getBeanInstance(BusinessProcessAssociationManager.class);
+  }
+  
+  protected <T> T getBeanInstance(Class<T> clazz) {
+    return ProgrammaticBeanLookup.lookup(clazz);           
   }
 
   protected void logFlushSummary(CachingBeanStore beanStore) {

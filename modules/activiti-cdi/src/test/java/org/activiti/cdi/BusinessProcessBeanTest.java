@@ -15,6 +15,7 @@ package org.activiti.cdi;
 import org.activiti.cdi.BusinessProcess;
 import org.activiti.cdi.test.CdiActivitiTestCase;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -46,7 +47,7 @@ public class BusinessProcessBeanTest extends CdiActivitiTestCase {
     assertEquals(value, businessProcess.getProcessVariable("key"));
 
     // complete the task
-    assertEquals(task.getId(), businessProcess.resumeTaskById(task.getId()).getId());
+    assertEquals(task.getId(), businessProcess.startTask(task.getId()).getId());
     businessProcess.completeTask();
 
     // assert the task is completed
@@ -58,70 +59,42 @@ public class BusinessProcessBeanTest extends CdiActivitiTestCase {
   }
 
   @Deployment(resources = "org/activiti/cdi/BusinessProcessBeanTest.test.bpmn20.xml")
-  public void testResumeTask() throws Exception {
-    BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
-    getBeanInstance(Actor.class).setActorId("kermit");
-
-    String pid = runtimeService.startProcessInstanceByKey("businessProcessBeanTest").getId();
-    businessProcess.resumeProcessById(pid);
-
-    // assert that the business process bean resumes a task, if one task is
-    // active in the current process instance.
-    businessProcess.completeTask();
-
-    assertNull(processEngine.getRuntimeService().createProcessInstanceQuery().singleResult());
-  }
-
-  @Deployment(resources = "org/activiti/cdi/BusinessProcessBeanTest.test.bpmn20.xml")
-  public void testCompleteTask() throws Exception {
-    BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
-    getBeanInstance(Actor.class).setActorId("kermit");
-
-    businessProcess.startProcessByKey("businessProcessBeanTest");
-    businessProcess.completeTask();
-
-    // assert that the taskId is null after completing a task.
-    assertNull(businessProcess.getTaskId());
-  }
-  
-  @Deployment(resources = "org/activiti/cdi/BusinessProcessBeanTest.test.bpmn20.xml")
   public void testResolveProcessInstanceBean() {
     BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
-    getBeanInstance(Actor.class).setActorId("kermit");
 
-    try {
-      getBeanInstance(ProcessInstance.class);
-      fail();
-    } catch (ActivitiException e) {
-      // this should happen
-    }
+    assertNull(getBeanInstance(ProcessInstance.class));
+    assertNull(getBeanInstance("processInstanceId"));
+    assertNull(getBeanInstance(Execution.class));
+    assertNull(getBeanInstance("executionId"));
 
     String pid = businessProcess.startProcessByKey("businessProcessBeanTest").getId();
 
     // assert that now we can resolve the ProcessInstance-bean
     assertEquals(pid, getBeanInstance(ProcessInstance.class).getId());
+    assertEquals(pid, getBeanInstance("processInstanceId"));
+    assertEquals(pid, getBeanInstance(Execution.class).getId());
+    assertEquals(pid, getBeanInstance("executionId"));
 
-    businessProcess.completeTask();
+    taskService.complete(taskService.createTaskQuery().singleResult().getId());
   }
 
   @Deployment(resources = "org/activiti/cdi/BusinessProcessBeanTest.test.bpmn20.xml")
   public void testResolveTaskBean() {
     BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
-    getBeanInstance(Actor.class).setActorId("kermit");
 
-    try {
-      getBeanInstance(ProcessInstance.class);
-      fail();
-    } catch (ActivitiException e) {
-      // this should happen
-    }
+    assertNull(getBeanInstance(Task.class));
+    assertNull(getBeanInstance("taskId"));
+    
 
     businessProcess.startProcessByKey("businessProcessBeanTest");
     String taskId = taskService.createTaskQuery().singleResult().getId();
+    
+    businessProcess.startTask(taskId);
 
     // assert that now we can resolve the Task-bean
     assertEquals(taskId, getBeanInstance(Task.class).getId());
+    assertEquals(taskId, getBeanInstance("taskId"));
 
-    businessProcess.completeTask();
+    taskService.complete(taskService.createTaskQuery().singleResult().getId());
   }
 }

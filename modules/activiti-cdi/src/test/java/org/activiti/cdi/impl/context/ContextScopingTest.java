@@ -41,11 +41,10 @@ public class ContextScopingTest extends CdiActivitiTestCase {
 
     endRequest();
     beginRequest();
-
     // assert that now the process is not associated with the new request.
     assertNull(businessProcess.getProcessInstanceId());
-    businessProcess.resumeProcessById(pid);
-    businessProcess.completeTask();
+    
+    runtimeService.deleteProcessInstance(pid, null);
 
   }
 

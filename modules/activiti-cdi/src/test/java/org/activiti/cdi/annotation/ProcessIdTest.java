@@ -24,10 +24,8 @@ public class ProcessIdTest extends CdiActivitiTestCase {
 
   @Deployment
   public void testProcessIdInjectable() {
-    getBeanInstance(BusinessProcess.class).startProcessByKey("keyOfTheProcess");  
-    
-    // assert that now the 'taskId'-bean can be looked up
-    assertNotNull(getBeanInstance("processId"));
+    getBeanInstance(BusinessProcess.class).startProcessByKey("keyOfTheProcess");    
+    assertNotNull(getBeanInstance("processInstanceId"));
   }
   
 }

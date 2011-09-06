@@ -54,7 +54,7 @@ public class BusinessProcessContextTest extends CdiActivitiTestCase {
     assertEquals("Hello from Activiti", getBeanInstance(ProcessScopedMessageBean.class).getMessage());
 
     // complete the task to allow the process instance to terminate
-    getBeanInstance(BusinessProcess.class).completeTask();
+    taskService.complete(taskService.createTaskQuery().singleResult().getId());
   }
 
   @Deployment
@@ -64,7 +64,9 @@ public class BusinessProcessContextTest extends CdiActivitiTestCase {
     getBeanInstance(CreditCard.class).setCreditcardNumber("123");
     String pid = getBeanInstance(BusinessProcess.class).startProcessByKey("testConversationalBeanStoreFlush").getId();
 
-    endConversationAndBeginNew(pid); ///////////////////////////////////////////// 2nd Conversation
+    endConversationAndBeginNew(); ///////////////////////////////////////////// 2nd Conversation
+    
+    getBeanInstance(BusinessProcess.class).startTask(taskService.createTaskQuery().singleResult().getId());
         
     // assert that the value of creditCardNumber is '123'
     assertEquals("123", getBeanInstance(CreditCard.class).getCreditcardNumber());
@@ -79,7 +81,7 @@ public class BusinessProcessContextTest extends CdiActivitiTestCase {
     assertEquals("321", getBeanInstance(CreditCard.class).getCreditcardNumber());
     
     // complete the task to allow the process instance to terminate
-    getBeanInstance(BusinessProcess.class).completeTask();
+    taskService.complete(taskService.createTaskQuery().singleResult().getId());
     
   }
     

@@ -27,7 +27,6 @@ import org.activiti.cdi.BusinessProcess;
 import org.activiti.cdi.annotation.CompleteTask;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.task.Task;
 
 /**
  * {@link Interceptor} for handling the {@link CompleteTask}-Annotation
@@ -57,32 +56,8 @@ public class CompleteTaskInterceptor implements Serializable {
 
       CompleteTask completeTaskAnnotation = ctx.getMethod().getAnnotation(CompleteTask.class);
 
-      String taskKey = completeTaskAnnotation.value();
-      String taskName = completeTaskAnnotation.name();
       boolean endConversation = completeTaskAnnotation.endConversation();
-
-      Task task = null;
-      if (taskName.length() > 0) {        
-        task = taskService.createTaskQuery()
-                            .processInstanceId(businessProcess.getProcessInstanceId())
-                            .taskName(taskName)                            
-                            .taskAssignee(actor.getActorId())
-                          .singleResult();
-        
-      } else if (taskKey.length() > 0) {
-        task = taskService.createTaskQuery()
-                            .processInstanceId(businessProcess.getProcessInstanceId())
-                            .taskDefinitionKey(taskKey)
-                            .taskAssignee(actor.getActorId())
-                          .singleResult();
-      } else {
-        task = taskService.createTaskQuery()
-                            .processInstanceId(businessProcess.getProcessInstanceId())                         
-                            .taskAssignee(actor.getActorId())
-                          .singleResult();
-      }
-
-      businessProcess.resumeTaskById(task.getId());
+    
       businessProcess.completeTask();
 
       if (endConversation) {   

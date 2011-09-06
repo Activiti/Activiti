@@ -21,10 +21,15 @@ import java.util.Set;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
+import org.activiti.engine.IdentityService;
+
 
 /**
- * Holds the id and groups of the current actor. Is used in contextual task
- * queries by the {@link BusinessProcess} bean.
+ * Holds the id and groups of the current actor.
+ * If this is set, activiti-cdi automatically executes all activiti 
+ * commands on behalf of the current actor.
+ * 
+ * @see IdentityService#setAuthenticatedUserId(String)
  * 
  * @author Daniel Meyer
  */

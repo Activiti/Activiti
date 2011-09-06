@@ -26,7 +26,7 @@ public class BusinessKeyTest extends CdiActivitiTestCase {
   public void testBusinessKeyInjectable() {
     String businessKey = "Activiti";
     String pid = runtimeService.startProcessInstanceByKey("keyOfTheProcess", businessKey).getId();
-    getBeanInstance(BusinessProcess.class).resumeProcessById(pid);
+    getBeanInstance(BusinessProcess.class).associateExecutionById(pid);
     
     // assert that now the businessKey-Bean can be looked up:
     assertEquals(businessKey, getBeanInstance("businessKey"));

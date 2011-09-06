@@ -13,10 +13,10 @@
 package org.activiti.cdi.impl.context;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.task.Task;
 
 /**
- * Represents a means for associating a business process instance and / or a
- * task instance with a context.
+ * Represents a means for associating an execution with a context.
  * <p />
  * This enables activiti-cdi to provide contextual business process management
  * services, without relying on a specific context like i.e. the conversation
@@ -27,43 +27,25 @@ import org.activiti.engine.ActivitiException;
 public interface BusinessProcessAssociationManager {
   
   /**
-   * Associates a processInstanceId with a context/scope
+   * Associates an executionId
    * 
    * @param processInstanceId
    */
-  public void associateProcessInstance(String processInstanceId);
+  public void associate(String executionId);
     
   /**
    * Disassociates the current process instance with a context / scope
    * 
    * @throws ActivitiException if no process instance is currently associated
    */
-  public void disAssociateProcessInstance();
-  
-  /**
-   * Associates a task with a context/scope
-   * 
-   * @param processInstanceId
-   */
-  public void associateTask(String taskId);
+  public void disAssociate();
+    
     
   /**
-   * Disassociates the current process instance with a context / scope
-   * 
-   * @throws ActivitiException if no process instance is currently associated
+   * @return the id of the execution currently associated or null
    */
-  public void disAssociateTask();
-    
-  /**
-   * @return the id of the process instance currently associated or null.
-   */
-  public String getProcessInstanceId();
-  
-  /**
-   * @return get the id of the task currently associated or null.
-   */
-  public String getTaskId();
-  
+  public String getExecutionId();
+   
   /**
    * @return the beanstore for storing process variables between flushes
    */
@@ -78,5 +60,15 @@ public interface BusinessProcessAssociationManager {
    * returns true if the beanstore should be flushed in the next command
    */
   public boolean isFlushBeanStore();
+  
+  /**
+   * set a current task
+   */
+  public void setTask(Task task);
+  
+  /**
+   * get the current task
+   */
+  public Task getTask();  
 
 }

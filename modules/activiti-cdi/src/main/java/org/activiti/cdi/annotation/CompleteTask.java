@@ -20,26 +20,27 @@ import java.lang.annotation.Target;
 import javax.enterprise.util.Nonbinding;
 import javax.interceptor.InterceptorBinding;
 
-import org.activiti.cdi.Actor;
+import org.activiti.cdi.BusinessProcess;
 
 /**
  * Annotation signaling that a task is to be completed after the annotated
- * method returns. Requires a ProcessInstance to be managed. 
- * <p/>
- * If neither an id ("key") nor a name is specified, we try to resolve a single
- * task assigned to the current user (see {@link Actor}) in the current process
- * instance.
+ * method returns. Requires that the current unit of work (conversation 
+ * or request) is associated with a task. This has the same effect as
+ * calling {@link BusinessProcess#completeTask()}.
+ * 
  * <p />
  * Example: after this method returns, the current task is completed 
- * and the current conversation is ended:
  * <pre>
  * {@code @CompleteTask} 
  * public void respond(String response, Message message) {
  *  message.setResponse(response);
  * } 
  * </pre>
+ * If the annotated method throws an exception, the task is not completed.
  * 
- * 
+ * @see BusinessProcess#startTask(String)
+ * @see BusinessProcess#completeTask()
+ *  
  * @author Daniel Meyer
  */
 @InterceptorBinding
@@ -48,20 +49,8 @@ import org.activiti.cdi.Actor;
 public @interface CompleteTask {
 
   /**
-   * The id of the task to complete.
-   */
-  @Nonbinding
-  String value() default "";
-
-  /**
-   * The name of the task to complete.
-   */
-  @Nonbinding
-  String name() default "";
-
-  /**
    * Specifies whether the current conversation should be ended.
    */
   @Nonbinding
-  boolean endConversation() default true;
+  boolean endConversation() default false;
 }

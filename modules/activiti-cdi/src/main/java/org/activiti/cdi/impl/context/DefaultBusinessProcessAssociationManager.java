@@ -26,9 +26,9 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.inject.Scope;
 
-import org.activiti.cdi.impl.util.BeanManagerLookup;
 import org.activiti.cdi.impl.util.ProgrammaticBeanLookup;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.task.Task;
 
 /**
  * Default implementation of the business process association manager. Uses a
@@ -46,21 +46,15 @@ public class DefaultBusinessProcessAssociationManager implements BusinessProcess
   private final static Logger log = Logger.getLogger(DefaultBusinessProcessAssociationManager.class.getName());
   
   protected static class ScopedAssociation { 
-    protected String processInstanceId;
-    protected String taskId;        
+    protected String executionId;     
+    protected Task task;
     protected CachingBeanStore beanStore = new CachingBeanStore();
     protected boolean isFlushBeanStore;
-    public void setProcessInstanceId(String processInstanceId) {
-      this.processInstanceId = processInstanceId;
-    }    
-    public void setTaskId(String taskId) {
-      this.taskId = taskId;
-    }    
-    public String getTaskId() {
-      return taskId;
-    }    
-    public String getProcessInstanceId() {
-      return processInstanceId;
+    public void setExecutionId(String executionId) {
+      this.executionId = executionId;
+    }      
+    public String getExecutionId() {
+      return executionId;
     }    
     public CachingBeanStore getBeanStore() {
       return beanStore;
@@ -70,22 +64,34 @@ public class DefaultBusinessProcessAssociationManager implements BusinessProcess
     }    
     public void setFlushBeanStore(boolean isFlushBeanStore) {
       this.isFlushBeanStore = isFlushBeanStore;
+    }    
+    public Task getTask() {
+      return task;
+    }        
+    public void setTask(Task task) {
+      this.task = task;
     }
   }
   
   @ConversationScoped protected static class ConversationScopedAssociation extends ScopedAssociation implements Serializable {}
   @RequestScoped protected static class RequestScopedAssociation extends ScopedAssociation implements Serializable {}
-  @ThreadScoped protected static class ThreadScopedAssociation extends ScopedAssociation implements Serializable {     
+  @ThreadScoped protected static class ThreadScopedAssociation extends ScopedAssociation implements Serializable {  
+    @Inject private BeanManager beanManager;    
     public boolean isFlushBeanStore() {
       // the thread context is always flushed
       return true;
     }  
+    @Override
+    public void setFlushBeanStore(boolean isFlushBeanStore) {
+      if(!isFlushBeanStore) {
+        ((ThreadContext)beanManager.getContext(ThreadScoped.class)).clear();
+      }
+    }
   }
   
-  @Inject BeanManager beanManager;
+  @Inject private BeanManager beanManager;
 
   protected Class< ? extends ScopedAssociation> getBroadestActiveContext() {
-    BeanManager beanManager = BeanManagerLookup.getBeanManager();
     for (Class< ? extends ScopedAssociation> scopeType : getAvailableScopedAssociationClasses()) {
       Annotation scopeAnnotation = scopeType.getAnnotations().length > 0 ? scopeType.getAnnotations()[0] : null;
       if (scopeAnnotation == null || !beanManager.isScope(scopeAnnotation.annotationType())) {
@@ -121,64 +127,34 @@ public class DefaultBusinessProcessAssociationManager implements BusinessProcess
   }
 
   @Override
-  public void associateProcessInstance(String processInstanceId) {
+  public void associate(String executionId) {
     ScopedAssociation scopedAssociation = getScopedAssociation();
     if (log.isLoggable(Level.FINE)) {
-      log.fine("Associating ProcessInstance[" + processInstanceId + "] (@" 
+      log.fine("Associating Execution[" + executionId + "] (@" 
                 + scopedAssociation.getClass().getAnnotations()[0].annotationType().getSimpleName() + ")");
     }
-    scopedAssociation.setProcessInstanceId(processInstanceId);
+    scopedAssociation.setExecutionId(executionId);
   }
 
   @Override
-  public void disAssociateProcessInstance() {
+  public void disAssociate() {
     ScopedAssociation scopedAssociation = getScopedAssociation();
-    if (scopedAssociation.getProcessInstanceId() == null) {
-      throw new ActivitiException("Cannot dissasociate process instance, no " 
+    if (scopedAssociation.getExecutionId() == null) {
+      throw new ActivitiException("Cannot dissasociate execution, no " 
                 + scopedAssociation.getClass().getAnnotations()[0].annotationType().getSimpleName()
-                + " processinstance associated. ");
+                + " execution associated. ");
     }
     if (log.isLoggable(Level.FINE)) {
-      log.fine("Disassociating the current task");
+      log.fine("Disassociating");
     }
-    scopedAssociation.setProcessInstanceId(null);
-    scopedAssociation.setTaskId(null);
+    scopedAssociation.setExecutionId(null);
+    scopedAssociation.setTask(null);
     scopedAssociation.getBeanStore().clear();
   }
-
+  
   @Override
-  public void associateTask(String taskId) {
-    ScopedAssociation scopedAssociation = getScopedAssociation();
-    if (log.isLoggable(Level.FINE)) {
-      log.fine("Associating Task[" + taskId + "] (@" 
-                + scopedAssociation.getClass().getAnnotations()[0].annotationType().getSimpleName() + ")");
-    }
-    scopedAssociation.setTaskId(taskId);
-  }
-
-  @Override
-  public void disAssociateTask() {
-    ScopedAssociation scopedAssociation = getScopedAssociation();
-    if (scopedAssociation.getTaskId() == null) {
-      throw new ActivitiException("Cannot dissasociate task, no " 
-                + scopedAssociation.getClass().getAnnotations()[0].annotationType().getSimpleName()
-                + " task associated. ");
-    }
-    if (log.isLoggable(Level.FINE)) {
-      log.fine("Disassociating the current task");
-    }
-    getScopedAssociation().setTaskId(null);
-    getBeanStore().clear();
-  }
-
-  @Override
-  public String getProcessInstanceId() {        
-    return getScopedAssociation().getProcessInstanceId();
-  }
-
-  @Override
-  public String getTaskId() {
-    return getScopedAssociation().getTaskId();
+  public String getExecutionId() {
+    return getScopedAssociation().getExecutionId();
   }
 
   @Override
@@ -194,6 +170,16 @@ public class DefaultBusinessProcessAssociationManager implements BusinessProcess
   @Override
   public boolean isFlushBeanStore() {
     return getScopedAssociation().isFlushBeanStore();
+  }
+  
+  @Override
+  public Task getTask() {    
+    return getScopedAssociation().getTask();
+  }
+  
+  @Override
+  public void setTask(Task task) {
+    getScopedAssociation().setTask(task);
   }
 
 }

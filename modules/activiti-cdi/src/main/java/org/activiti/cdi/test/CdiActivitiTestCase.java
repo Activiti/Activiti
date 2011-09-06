@@ -196,7 +196,7 @@ public abstract class CdiActivitiTestCase extends PluggableActivitiTestCase {
   protected void endConversationAndBeginNew(String processInstanceId) {
     endConversation();
     beginConversation();
-    getBeanInstance(BusinessProcess.class).resumeProcessById(processInstanceId);
+    getBeanInstance(BusinessProcess.class).associateExecutionById(processInstanceId);
   }
 
   protected BoundConversationContext getConversationContext() {

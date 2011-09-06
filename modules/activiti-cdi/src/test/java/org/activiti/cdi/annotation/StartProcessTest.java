@@ -37,7 +37,8 @@ public class StartProcessTest extends CdiActivitiTestCase {
     assertNotNull(runtimeService.createProcessInstanceQuery().singleResult());
 
     assertEquals("Activiti", businessProcess.getProcessVariable("name"));
-
+    
+    businessProcess.startTask(taskService.createTaskQuery().singleResult().getId());
     businessProcess.completeTask();
   }
 
@@ -54,6 +55,7 @@ public class StartProcessTest extends CdiActivitiTestCase {
 
     assertEquals("Activiti", businessProcess.getProcessVariable("name"));
 
+    businessProcess.startTask(taskService.createTaskQuery().singleResult().getId());  
     businessProcess.completeTask();
   }
 

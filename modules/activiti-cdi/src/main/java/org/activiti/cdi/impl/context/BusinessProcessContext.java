@@ -54,8 +54,11 @@ public class BusinessProcessContext implements Context {
     if (variable != null) {
 
       if (logger.isLoggable(Level.FINE)) {
-        logger.fine("Getting instance of bean '" + variableName + "' in business process context representing ProcessInstance["
-                + businessProcess.getProcessInstanceId() + "].");
+        if(businessProcess.isAssociated()) {        
+          logger.fine("Getting instance of bean '" + variableName + "' from Execution[" + businessProcess.getExecutionId() + "].");
+        } else {
+          logger.fine("Getting instance of bean '" + variableName + "' from transient bean store");
+        }
       }
 
       return (T) variable;
@@ -76,16 +79,22 @@ public class BusinessProcessContext implements Context {
     if (variable != null) {
 
       if (logger.isLoggable(Level.FINE)) {
-        logger.fine("Getting instance of bean '" + variableName + "' in business process context representing ProcessInstance["
-                + businessProcess.getProcessInstanceId() + "].");
+        if(businessProcess.isAssociated()) {        
+          logger.fine("Getting instance of bean '" + variableName + "' from Execution[" + businessProcess.getExecutionId() + "].");
+        } else {
+          logger.fine("Getting instance of bean '" + variableName + "' from transient bean store");
+        }
       }
 
       return (T) variable;
     } else {
-
       if (logger.isLoggable(Level.FINE)) {
-        logger.fine("Creating instance of bean '" + variableName + "' in business process context representing ProcessInstance["
-                + businessProcess.getProcessInstanceId() + "].");
+        if(businessProcess.isAssociated()) {        
+          logger.fine("Creating instance of bean '" + variableName + "' in business process context representing Execution["
+                  + businessProcess.getExecutionId() + "].");
+        } else {
+          logger.fine("Creating instance of bean '" + variableName + "' in transient bean store");
+        }
       }
 
       T beanInstance = bean.create(arg1);
@@ -97,10 +106,9 @@ public class BusinessProcessContext implements Context {
 
   @Override
   public boolean isActive() {
-    // we assume the business process is always 'active'. If no actual
-    // business process is associated with the conversation, the
-    // conversationalBeanStore is used to store temporary instances of
-    // @BusinessProcesScoped Beans.
+    // we assume the business process is always 'active'. If no task/execution is 
+    // associated, temporary instances of @BusinessProcesScoped beans are cached in the 
+    // conversation / request / tread 
     return true;
   }
 
