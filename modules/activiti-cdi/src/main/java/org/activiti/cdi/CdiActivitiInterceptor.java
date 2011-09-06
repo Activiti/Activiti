@@ -15,10 +15,14 @@ package org.activiti.cdi;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.enterprise.inject.spi.BeanManager;
+
 import org.activiti.cdi.annotation.BusinessProcessScoped;
 import org.activiti.cdi.impl.ActorReference;
 import org.activiti.cdi.impl.context.BusinessProcessAssociationManager;
 import org.activiti.cdi.impl.context.CachingBeanStore;
+import org.activiti.cdi.impl.context.ThreadContext;
+import org.activiti.cdi.impl.context.ThreadScoped;
 import org.activiti.cdi.impl.util.ProgrammaticBeanLookup;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.identity.Authentication;
@@ -33,7 +37,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
  * the {@link BusinessProcess} bean. 
  * I.e. in order for this interceptor to flush changes to {@link BusinessProcessScoped} beans or process variables 
  * set using {@link BusinessProcess#setProcessVariable(String, Object)} the unit of work needs to be completed using 
- * {@link BusinessProcess#completeTask()} or  
+ * {@link BusinessProcess#completeTask()} or {@link BusinessProcess#signalExecution()}.
  * 
  * @author Daniel Meyer
  */
@@ -59,6 +63,7 @@ public class CdiActivitiInterceptor extends CommandInterceptor {
   }
 
   public <T> T executeInCdiEnv(Command<T> command) {
+    resetThreadContext();
     setActor();
     boolean flush = getAssociationManager().isFlushBeanStore();
     if (flush) {
@@ -67,9 +72,14 @@ public class CdiActivitiInterceptor extends CommandInterceptor {
     T result = next.execute(command);
     if (flush) {
       flushBeanStore();
-      getAssociationManager().setFlushBeanStore(false);
     }
+    resetThreadContext();
     return result;
+  }
+
+  protected void resetThreadContext() {
+    ThreadContext threadContext = (ThreadContext) getBeanInstance(BeanManager.class).getContext(ThreadScoped.class);
+    threadContext.clear();
   }
 
   protected void flushBeanStore() {

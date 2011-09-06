@@ -15,18 +15,14 @@ package org.activiti.cdi.impl.annotation;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 
-import javax.enterprise.context.Conversation;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
-import org.activiti.cdi.Actor;
+import org.activiti.cdi.ActivitiCdiException;
 import org.activiti.cdi.BusinessProcess;
 import org.activiti.cdi.annotation.CompleteTask;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.TaskService;
 
 /**
  * {@link Interceptor} for handling the {@link CompleteTask}-Annotation
@@ -41,34 +37,18 @@ public class CompleteTaskInterceptor implements Serializable {
 
   @Inject BusinessProcess businessProcess;
 
-  @Inject Instance<Conversation> conversation;
-
-  @Inject TaskService taskService;
-  
-  @Inject RepositoryService repositoryService;
-  
-  @Inject Actor actor;
-
   @AroundInvoke
   public Object invoke(InvocationContext ctx) throws Throwable {
     try {
       Object result = ctx.proceed();
 
       CompleteTask completeTaskAnnotation = ctx.getMethod().getAnnotation(CompleteTask.class);
-
-      boolean endConversation = completeTaskAnnotation.endConversation();
-    
-      businessProcess.completeTask();
-
-      if (endConversation) {   
-        if(!conversation.isUnsatisfied()) {
-          conversation.get().end();
-        }
-      }
+      boolean endConversation = completeTaskAnnotation.endConversation();    
+      businessProcess.completeTask(endConversation);     
 
       return result;
     } catch (InvocationTargetException e) {
-      throw e.getCause();
+      throw new ActivitiCdiException("Error while completing task: "+e.getCause().getMessage(), e.getCause());
     }
   }
 

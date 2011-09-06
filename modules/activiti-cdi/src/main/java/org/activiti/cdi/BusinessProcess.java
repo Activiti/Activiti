@@ -17,7 +17,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.enterprise.context.Conversation;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -91,6 +93,8 @@ public class BusinessProcess implements Serializable {
   @Inject private ProcessEngine processEngine;
 
   @Inject private BusinessProcessAssociationManager associationManager;
+  
+  @Inject Instance<Conversation> conversationInstance;
 
   /*
    * TODO: Discuss/think about whether to provide the start* methods here: an
@@ -101,6 +105,7 @@ public class BusinessProcess implements Serializable {
     associationManager.setFlushBeanStore(true);
     ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceById(processDefinitionId, getBeanStore().getAll());
     associate(instance.getProcessInstanceId());
+    associationManager.setFlushBeanStore(false);
     return instance;
   }
 
@@ -109,6 +114,7 @@ public class BusinessProcess implements Serializable {
     getBeanStore().putAll(variables);
     ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceById(processDefinitionId, getBeanStore().getAll());
     associate(instance.getProcessInstanceId());
+    associationManager.setFlushBeanStore(false);
     return instance;
   }
 
@@ -116,6 +122,7 @@ public class BusinessProcess implements Serializable {
     associationManager.setFlushBeanStore(true);
     ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByKey(key, getBeanStore().getAll());
     associate(instance.getProcessInstanceId());
+    associationManager.setFlushBeanStore(false);
     return instance;
   }
 
@@ -124,6 +131,7 @@ public class BusinessProcess implements Serializable {
     getBeanStore().putAll(variables);
     ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByKey(key, getBeanStore().getAll());
     associate(instance.getProcessInstanceId());
+    associationManager.setFlushBeanStore(false);
     return instance;
   }
 
@@ -136,6 +144,7 @@ public class BusinessProcess implements Serializable {
     }
     ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceById(definition.getId(), getBeanStore().getAll());
     associate(instance.getProcessInstanceId());
+    associationManager.setFlushBeanStore(false);
     return instance;
   }
 
@@ -149,6 +158,7 @@ public class BusinessProcess implements Serializable {
     getBeanStore().putAll(variables);
     ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceById(definition.getId(), getBeanStore().getAll());
     associate(instance.getProcessInstanceId());
+    associationManager.setFlushBeanStore(false);
     return instance;
   }
 
@@ -196,7 +206,20 @@ public class BusinessProcess implements Serializable {
     assertAssociated();
     associationManager.setFlushBeanStore(true); // this ends a unit of work
     processEngine.getRuntimeService().signal(associationManager.getExecutionId());
+    associationManager.setFlushBeanStore(false);
     associationManager.disAssociate();
+  }
+  
+  /**
+   * @see #signalExecution()
+   * 
+   * In addition, this method allows to end the current conversation
+   */
+  public void signalExecution(boolean endConversation) {
+    signalExecution();
+    if(endConversation) {
+      conversationInstance.get().end();
+    }
   }
 
   // -------------------------------------
@@ -239,7 +262,21 @@ public class BusinessProcess implements Serializable {
     assertTaskAssociated();
     associationManager.setFlushBeanStore(true); // this ends a unit of work
     processEngine.getTaskService().complete(getTask().getId());
+    associationManager.setFlushBeanStore(false);
     associationManager.disAssociate();
+  }
+  
+  /**
+   * @see BusinessProcess#completeTask()
+   * 
+   * In addition this allows to end the current conversation.
+   * 
+   */
+  public void completeTask(boolean endConversation) {
+    completeTask();
+    if(endConversation) {
+      conversationInstance.get().end();
+    }
   }
 
   public boolean isTaskAssociated() {
