@@ -51,15 +51,15 @@ public class ActivitiExtension implements Extension {
 
   public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager manager) {       
     BeanManagerLookup.localInstance = manager;
-    event.addContext(new BusinessProcessContext());
+    event.addContext(new BusinessProcessContext(manager));
     event.addContext(new ThreadContext());
   }
 
-  public void afterDeploymentValidation(@Observes AfterDeploymentValidation event) {
+  public void afterDeploymentValidation(@Observes AfterDeploymentValidation event, BeanManager beanManager) {
     try {   
       logger.info("Initializing activiti-cdi.");      
       // initialize the process engine
-      initializeProcessEngine();      
+      initializeProcessEngine(beanManager);      
       // deploy the processes if engine was set up correctly
       deployProcesses();      
     } catch (Exception e) {
@@ -68,10 +68,10 @@ public class ActivitiExtension implements Extension {
     }
   }
 
-  protected void initializeProcessEngine() {
-    ProcessEngineLookup processEngineProvisionStrategy = ProgrammaticBeanLookup.lookup(ProcessEngineLookup.class);
+  protected void initializeProcessEngine(BeanManager beanManager) {
+    ProcessEngineLookup processEngineProvisionStrategy = ProgrammaticBeanLookup.lookup(ProcessEngineLookup.class, beanManager);
     processEngine = processEngineProvisionStrategy.getProcessEngine();
-    ActivitiServices activitiServices = ProgrammaticBeanLookup.lookup(ActivitiServices.class);
+    ActivitiServices activitiServices = ProgrammaticBeanLookup.lookup(ActivitiServices.class, beanManager);
     activitiServices.setProcessEngine(processEngine);
   }
 

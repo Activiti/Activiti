@@ -20,6 +20,7 @@ import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
 
 import org.activiti.cdi.BusinessProcess;
 import org.activiti.cdi.annotation.BusinessProcessScoped;
@@ -34,9 +35,15 @@ import org.activiti.cdi.impl.util.ProgrammaticBeanLookup;
 public class BusinessProcessContext implements Context {
 
   final static Logger logger = Logger.getLogger(BusinessProcessContext.class.getName());
+  
+  private final BeanManager beanManager;  
+  
+  public BusinessProcessContext(BeanManager beanManager) {
+    this.beanManager = beanManager;
+  }
 
   protected BusinessProcess getBusinessProcess() {
-    return ProgrammaticBeanLookup.lookup(BusinessProcess.class);
+    return ProgrammaticBeanLookup.lookup(BusinessProcess.class, beanManager);
   }
 
   @Override

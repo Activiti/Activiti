@@ -105,7 +105,7 @@ public class DefaultBusinessProcessAssociationManager implements BusinessProcess
   }
   
   protected ScopedAssociation getScopedAssociation() {
-    return ProgrammaticBeanLookup.lookup(getBroadestActiveContext());
+    return ProgrammaticBeanLookup.lookup(getBroadestActiveContext(), beanManager);
   }
 
   @Override
