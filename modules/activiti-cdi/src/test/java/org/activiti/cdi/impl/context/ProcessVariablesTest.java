@@ -27,7 +27,7 @@ public class ProcessVariablesTest extends CdiActivitiTestCase {
     BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
 
     Map<String, Object> processVariables = new HashMap<String, Object>();
-    businessProcess.setProcessVariable("testKeyString", "testValue");
+    businessProcess.setVariable("testKeyString", "testValue");
     businessProcess.startProcessByKey("businessProcessBeanTest", processVariables);    
     businessProcess.startTask(taskService.createTaskQuery().singleResult().getId());
     

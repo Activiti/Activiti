@@ -12,7 +12,6 @@
  */
 package org.activiti.cdi.annotation;
 
-import org.activiti.cdi.Actor;
 import org.activiti.cdi.BusinessProcess;
 import org.activiti.cdi.impl.annotation.CompleteTaskInterceptor;
 import org.activiti.cdi.test.CdiActivitiTestCase;
@@ -31,7 +30,6 @@ public class CompleteTaskTest extends CdiActivitiTestCase {
   @Deployment(resources = "org/activiti/cdi/annotation/CompleteTaskTest.bpmn20.xml")
   public void testCompleteTask() {
 
-    getBeanInstance(Actor.class).setActorId("kermit");
     BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
 
     businessProcess.startProcessByKey("keyOfTheProcess");

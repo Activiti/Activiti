@@ -13,7 +13,7 @@
 
 		<endEvent id="endEvent" />
 
-		<sequenceFlow targetRef="serviceTask" sourceRef="startEvent" />
+		<sequenceFlow targetRef="serviceTask" sourceRef="startEvent" />	
 		<sequenceFlow targetRef="wait" sourceRef="serviceTask" />
 		<sequenceFlow targetRef="endEvent" sourceRef="wait" />
 

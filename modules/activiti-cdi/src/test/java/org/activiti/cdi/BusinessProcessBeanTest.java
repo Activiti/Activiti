@@ -12,9 +12,7 @@
  */
 package org.activiti.cdi;
 
-import org.activiti.cdi.BusinessProcess;
 import org.activiti.cdi.test.CdiActivitiTestCase;
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -30,7 +28,6 @@ public class BusinessProcessBeanTest extends CdiActivitiTestCase {
   public void test() throws Exception {
 
     BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
-    getBeanInstance(Actor.class).setActorId("kermit");
 
     // start the process
     businessProcess.startProcessByKey("businessProcessBeanTest").getId();
@@ -43,8 +40,8 @@ public class BusinessProcessBeanTest extends CdiActivitiTestCase {
     assertNotNull(task);
 
     String value = "value";
-    businessProcess.setProcessVariable("key", value);
-    assertEquals(value, businessProcess.getProcessVariable("key"));
+    businessProcess.setVariable("key", value);
+    assertEquals(value, businessProcess.getVariable("key"));
 
     // complete the task
     assertEquals(task.getId(), businessProcess.startTask(task.getId()).getId());

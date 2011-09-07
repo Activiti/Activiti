@@ -42,7 +42,7 @@ public class BusinessProcessContextTest extends CdiActivitiTestCase {
   @Deployment
   public void testConversationalBeanStoreFlush() throws Exception {
     
-    getBeanInstance(BusinessProcess.class).setProcessVariable("testVariable", "testValue");
+    getBeanInstance(BusinessProcess.class).setVariable("testVariable", "testValue");
     String pid =  getBeanInstance(BusinessProcess.class).startProcessByKey("testConversationalBeanStoreFlush").getId();
 
     endConversationAndBeginNew(pid); ///////////////////////////////////////////// 2nd Conversation
@@ -52,7 +52,7 @@ public class BusinessProcessContextTest extends CdiActivitiTestCase {
 
     // assert that the value set to the message bean in the first service task is flushed
     assertEquals("Hello from Activiti", getBeanInstance(ProcessScopedMessageBean.class).getMessage());
-
+    
     // complete the task to allow the process instance to terminate
     taskService.complete(taskService.createTaskQuery().singleResult().getId());
   }

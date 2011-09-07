@@ -12,18 +12,10 @@
  */
 package org.activiti.cdi;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
+import org.activiti.cdi.impl.CdiProcessVariableFlushingDelegateInterceptor;
 import org.activiti.engine.impl.cfg.JtaProcessEngineConfiguration;
-import org.activiti.engine.impl.interceptor.CommandInterceptor;
 
 /**
- * We need to do it like this, until http://jira.codehaus.org/browse/ACT-715 is
- * resolved. Then we can make CDI support pluggable and configurable for any
- * configuration.
- * 
  * @author Daniel Meyer
  */
 public class CdiJtaProcessEngineConfiguration extends JtaProcessEngineConfiguration {
@@ -34,17 +26,8 @@ public class CdiJtaProcessEngineConfiguration extends JtaProcessEngineConfigurat
   }
   
   @Override
-  public Collection<? extends CommandInterceptor> getDefaultCommandInterceptorsTxRequired() {
-    List<CommandInterceptor> interceptorChain = new ArrayList<CommandInterceptor>(super.getDefaultCommandInterceptorsTxRequired());
-    interceptorChain.add(new CdiActivitiInterceptor());
-    return interceptorChain;
-  }
-  
-  @Override
-  public Collection<? extends CommandInterceptor> getDefaultCommandInterceptorsTxRequiresNew() {
-    List<CommandInterceptor> interceptorChain = new ArrayList<CommandInterceptor>(super.getDefaultCommandInterceptorsTxRequiresNew());
-    interceptorChain.add(new CdiActivitiInterceptor());
-    return interceptorChain;
+  protected void initDelegateInterceptor() {
+    delegateInterceptor = new CdiProcessVariableFlushingDelegateInterceptor();
   }
   
 }

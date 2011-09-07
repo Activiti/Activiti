@@ -12,6 +12,7 @@
  */
 package org.activiti.cdi;
 
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,6 +22,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.activiti.cdi.annotation.ProcessVariable;
+import org.activiti.cdi.impl.ProcessVariableMap;
 
 /**
  * Allows to access the process variables of the managed process instance. A
@@ -28,12 +30,12 @@ import org.activiti.cdi.annotation.ProcessVariable;
  * 
  * @author Daniel Meyer
  */
-@Named
 public class ProcessVariables {
 
   private Logger logger = Logger.getLogger(ProcessVariables.class.getName());
 
-  @Inject BusinessProcess businessProcess;
+  @Inject private BusinessProcess businessProcess;
+  @Inject private ProcessVariableMap processVariableMap;
 
   protected String getVariableName(InjectionPoint ip) {
     String variableName = ip.getAnnotated().getAnnotation(ProcessVariable.class).value();
@@ -52,19 +54,14 @@ public class ProcessVariables {
       logger.fine("Getting process variable '" + processVariableName + "' from ProcessInstance[" + businessProcess.getProcessInstanceId() + "].");
     }
 
-    return businessProcess.getProcessVariable(processVariableName);
+    return businessProcess.getVariable(processVariableName);
   }
 
-  /**
-   * Intended to be used in El:
-   * <code>#{processVariables.get('variableName')}</code>
-   * 
-   */
-  public Object get(String processVariable) {
-    if (logger.isLoggable(Level.FINE)) {
-      logger.fine("Getting process variable '" + processVariable + "' from ProcessInstance[" + businessProcess.getProcessInstanceId() + "].");
-    }
-    return businessProcess.getProcessVariable(processVariable);
+  @Produces
+  @Named
+  protected Map<String, Object> processVariables() {
+    return processVariableMap;     
   }
+  
 
 }

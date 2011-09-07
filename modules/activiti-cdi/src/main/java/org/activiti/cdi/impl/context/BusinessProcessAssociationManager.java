@@ -52,16 +52,6 @@ public interface BusinessProcessAssociationManager {
   public CachingBeanStore getBeanStore();
   
   /**
-   * set this to true if you want the beanstrore flushed in the next command / transaction
-   */
-  public void setFlushBeanStore(boolean value);
-  
-  /**
-   * returns true if the beanstore should be flushed in the next command
-   */
-  public boolean isFlushBeanStore();
-  
-  /**
    * set a current task
    */
   public void setTask(Task task);

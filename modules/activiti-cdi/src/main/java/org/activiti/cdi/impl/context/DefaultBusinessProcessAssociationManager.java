@@ -49,7 +49,6 @@ public class DefaultBusinessProcessAssociationManager implements BusinessProcess
     protected String executionId;     
     protected Task task;
     protected CachingBeanStore beanStore = new CachingBeanStore();
-    protected boolean isFlushBeanStore;
     public void setExecutionId(String executionId) {
       this.executionId = executionId;
     }      
@@ -59,12 +58,7 @@ public class DefaultBusinessProcessAssociationManager implements BusinessProcess
     public CachingBeanStore getBeanStore() {
       return beanStore;
     }   
-    public boolean isFlushBeanStore() {
-      return isFlushBeanStore;
-    }    
-    public void setFlushBeanStore(boolean isFlushBeanStore) {
-      this.isFlushBeanStore = isFlushBeanStore;
-    }    
+
     public Task getTask() {
       return task;
     }        
@@ -75,19 +69,7 @@ public class DefaultBusinessProcessAssociationManager implements BusinessProcess
   
   @ConversationScoped protected static class ConversationScopedAssociation extends ScopedAssociation implements Serializable {}
   @RequestScoped protected static class RequestScopedAssociation extends ScopedAssociation implements Serializable {}
-  @ThreadScoped protected static class ThreadScopedAssociation extends ScopedAssociation implements Serializable {  
-    @Inject private BeanManager beanManager;    
-    public boolean isFlushBeanStore() {
-      // the thread context is always flushed
-      return true;
-    }  
-    @Override
-    public void setFlushBeanStore(boolean isFlushBeanStore) {
-      if(!isFlushBeanStore) {
-        ((ThreadContext)beanManager.getContext(ThreadScoped.class)).clear();
-      }
-    }
-  }
+  @ThreadScoped protected static class ThreadScopedAssociation extends ScopedAssociation implements Serializable {}
   
   @Inject private BeanManager beanManager;
 
@@ -161,17 +143,7 @@ public class DefaultBusinessProcessAssociationManager implements BusinessProcess
   public CachingBeanStore getBeanStore() {
     return getScopedAssociation().getBeanStore();
   }
-  
-  @Override
-  public void setFlushBeanStore(boolean value) {
-    getScopedAssociation().setFlushBeanStore(value);
-  }
-  
-  @Override
-  public boolean isFlushBeanStore() {
-    return getScopedAssociation().isFlushBeanStore();
-  }
-  
+    
   @Override
   public Task getTask() {    
     return getScopedAssociation().getTask();

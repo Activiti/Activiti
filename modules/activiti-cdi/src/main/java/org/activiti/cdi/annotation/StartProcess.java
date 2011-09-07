@@ -27,7 +27,7 @@ import org.activiti.cdi.BusinessProcess;
  * instance is subsequently managed.
  * <p/>
  * Each process variable set through
- * {@link BusinessProcess#setProcessVariable(String, Object)} within this
+ * {@link BusinessProcess#setVariable(String, Object)} within this
  * conversation is flushed to the process instance at process instantiation. The
  * same is true for instances of {@link BusinessProcessScoped} beans.
  * 

@@ -50,7 +50,7 @@ public class BusinessProcessContext implements Context {
     String variableName = bean.getName();
 
     BusinessProcess businessProcess = getBusinessProcess();
-    Object variable = businessProcess.getProcessVariable(variableName);
+    Object variable = businessProcess.getVariable(variableName);
     if (variable != null) {
 
       if (logger.isLoggable(Level.FINE)) {
@@ -75,7 +75,7 @@ public class BusinessProcessContext implements Context {
     String variableName = bean.getName();
 
     BusinessProcess businessProcess = getBusinessProcess();
-    Object variable = businessProcess.getProcessVariable(variableName);
+    Object variable = businessProcess.getVariable(variableName);
     if (variable != null) {
 
       if (logger.isLoggable(Level.FINE)) {
@@ -98,7 +98,7 @@ public class BusinessProcessContext implements Context {
       }
 
       T beanInstance = bean.create(arg1);
-      businessProcess.setProcessVariable(bean.getName(), beanInstance);
+      businessProcess.setVariable(bean.getName(), beanInstance);
       return beanInstance;
     }
 

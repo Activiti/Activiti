@@ -12,8 +12,8 @@
  */
 package org.activiti.cdi.impl.context;
 
-import org.activiti.cdi.BusinessProcess;
 import org.activiti.cdi.test.CdiActivitiTestCase;
+import org.activiti.cdi.test.beans.ProcessScopedMessageBean;
 import org.activiti.engine.test.Deployment;
 
 /**
@@ -55,13 +55,16 @@ public class ThreadContextAssociationTest extends CdiActivitiTestCase {
   
   @Deployment
   public void testBusinessProcessScopedWithJobExecutor() throws InterruptedException {
-    BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
-
-    businessProcess.startProcessByKey("processkey").getId();
+    String pid = runtimeService.startProcessInstanceByKey("processkey").getId();
         
     waitForJobExecutorToProcessAllJobs(5000l, 25l);
-    
+        
     assertNull(managementService.createJobQuery().singleResult());
+    
+    ProcessScopedMessageBean messageBean = (ProcessScopedMessageBean) runtimeService.getVariable(pid, "processScopedMessageBean");
+    assertEquals("test", messageBean.getMessage());
+    
+    runtimeService.signal(pid);
     
   }
 
