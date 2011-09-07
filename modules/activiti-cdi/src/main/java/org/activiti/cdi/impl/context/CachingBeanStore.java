@@ -30,7 +30,7 @@ public class CachingBeanStore implements Serializable {
 	
 	private Map<String, Object> beanStore = new HashMap<String, Object>();
 
-	public void put(String name, Object instance) {
+	public synchronized void put(String name, Object instance) {
 		beanStore.put(name, instance);
 	}
 
@@ -42,7 +42,7 @@ public class CachingBeanStore implements Serializable {
 		return beanStore.keySet();
 	}
 
-	public void putAll(Map<String, Object> variables) {
+	public synchronized void putAll(Map<String, Object> variables) {
 		beanStore.putAll(variables);
 	}
 
@@ -50,12 +50,18 @@ public class CachingBeanStore implements Serializable {
 		return new HashMap<String, Object>(beanStore);
 	}
 
-	public void clear() {
+	public synchronized void clear() {
 		beanStore.clear();
 	}
 	
 	public boolean holdsValue(String name) {
 	  return beanStore.containsKey(name);
 	}
+
+  public synchronized Map<String,Object> getAllAndClear() {
+     HashMap<String, Object> hashMap = new HashMap<String, Object>(beanStore);
+     beanStore.clear();
+     return hashMap;
+  }
 
 }

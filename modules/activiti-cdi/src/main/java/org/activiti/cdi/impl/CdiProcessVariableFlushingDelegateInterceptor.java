@@ -35,8 +35,7 @@ public class CdiProcessVariableFlushingDelegateInterceptor implements DelegateIn
     
     CachingBeanStore beanStore = getAssociationManager().getBeanStore();
     ExecutionEntity execution = Context.getExecutionContext().getExecution();
-    execution.setVariables(beanStore.getAll());
-    beanStore.clear();
+    execution.setVariables(beanStore.getAllAndClear());
   }
 
   protected BusinessProcessAssociationManager getAssociationManager() {

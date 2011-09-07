@@ -95,11 +95,6 @@ public class BusinessProcess implements Serializable {
   @Inject private BusinessProcessAssociationManager associationManager;
   
   @Inject private Instance<Conversation> conversationInstance;
-  
-  /*
-   * TODO: Discuss/think about whether to provide the start* methods here: an
-   * alternative would be to proxy the RuntimeService (?)
-   */
 
   public ProcessInstance startProcessById(String processDefinitionId) {        
     ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceById(processDefinitionId, getBeanStore().getAll());
@@ -196,7 +191,7 @@ public class BusinessProcess implements Serializable {
     assertAssociated();
     // TODO: add a map of process variables to the signal command 
     // (here we rely on both commands being combined in a single transaction)
-    processEngine.getRuntimeService().setVariables(associationManager.getExecutionId(), associationManager.getBeanStore().getAll());
+    processEngine.getRuntimeService().setVariables(associationManager.getExecutionId(), associationManager.getBeanStore().getAllAndClear());
     processEngine.getRuntimeService().signal(associationManager.getExecutionId());
     associationManager.disAssociate();
   }
@@ -268,7 +263,7 @@ public class BusinessProcess implements Serializable {
    */
   public void completeTask() {
     assertTaskAssociated();
-    processEngine.getTaskService().complete(getTask().getId(), associationManager.getBeanStore().getAll());
+    processEngine.getTaskService().complete(getTask().getId(), associationManager.getBeanStore().getAllAndClear());
     associationManager.disAssociate();
   }
   
