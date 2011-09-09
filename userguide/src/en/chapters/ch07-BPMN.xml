@@ -1527,6 +1527,140 @@ assertEquals("Ship Order", task2.getName());</programlisting>
       
       </section>
    
+    </section>
+    
+    <section id="bpmnInclusiveGateway">
+      
+      <title>Inclusive Gateway</title>
+      
+      <section id="bpmnInclusiveGatewayDescription">
+        
+        <title>Description</title>
+        
+        <para>
+          The <emphasis role="bold">Inclusive Gateway</emphasis> can be seen as a combination of an exclusive
+          and a parallel gateway. Like an exclusive gatway you can define conditions on outgoing sequence flows
+          and the inclusive gateway will evaluate them. But the main difference is that the inclusive gateway can take
+          more than one sequence flow, like the parallel gateway.
+        </para>
+        
+        <para>
+          The functionality of the inclusive gateway is based on the incoming and outgoing sequence flow:
+          <itemizedlist>
+            <listitem>
+              <para>
+                <emphasis role="bold">fork:</emphasis>
+                all outgoing sequence flow conditions are evaluated and for the sequence flow conditions that 
+                evaluate to true the flows are followed in parallel, creating one concurrent
+                execution for each sequence flow.
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                <emphasis role="bold">join:</emphasis>   
+                all concurrent executions arriving at the inclusive gateway wait in the gateway
+                until an execution has arrived for each of the incoming sequence flows that have a process token. 
+                This is an important difference with the parallel gatway. So in other words, the inclusive gateway will only wait
+                for the incoming sequence flows that will be executed.
+                After the join, the process continues past the joining inclusive gateway.
+              </para>
+            </listitem>
+          </itemizedlist>
+          Note that an inclusive gateway can have <emphasis role="bold">both fork and join behavior</emphasis>,
+          if there are multiple incoming and outgoing sequence flow for the same inclusive gateway.
+          In that case, the gateway will first join all incoming sequence flows that have a process token, before splitting
+          into multiple concurrent paths of executions for the outgoing sequence flows that have a condition that evaluates to true.
+        </para>
+        
+      </section>
+      
+      <section id="bpmnInclusiveGatewayGraphicalNotation">
+        
+        <title>Graphical Notation</title>
+        
+        <para>
+          A parallel gateway is visualized as a gateway (diamond shape) with the 'circle' symbol inside.
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.inclusive.gateway.png"/></imageobject></mediaobject>
+        </para>
+      
+      </section>
+      
+      <section id="bpmnInclusiveGatewayXML">
+        
+        <title>XML representation</title>
+        
+        <para>
+          Defining an inclusive gateway needs one line of XML:
+          <programlisting>&lt;inclusiveGateway id=&quot;myInclusiveGateway&quot; /></programlisting>
+          The actual behavior (fork, join or both), is defined by 
+          the sequence flows connected to the inclusive gateway.
+        </para>
+      
+        <para>
+          For example, the model above comes down to the following XML:
+<programlisting>
+    &lt;startEvent id=&quot;theStart&quot; /&gt;
+    &lt;sequenceFlow id=&quot;flow1&quot; sourceRef=&quot;theStart&quot; targetRef=&quot;fork&quot; /&gt;
+    
+    <emphasis role="bold">&lt;inclusiveGateway id=&quot;fork&quot; /&gt;</emphasis>
+    &lt;sequenceFlow sourceRef=&quot;fork&quot; targetRef=&quot;receivePayment&quot; &gt;
+    &lt;conditionExpression xsi:type=&quot;tFormalExpression&quot;&gt;${paymentReceived == false}&lt;/conditionExpression&gt;
+    &lt;/sequenceFlow&gt;
+    &lt;sequenceFlow sourceRef=&quot;fork&quot; targetRef=&quot;shipOrder&quot; &gt;
+    &lt;conditionExpression xsi:type=&quot;tFormalExpression&quot;&gt;${shipOrder == true}&lt;/conditionExpression&gt;
+    &lt;/sequenceFlow&gt;
+    
+    &lt;userTask id=&quot;receivePayment&quot; name=&quot;Receive Payment&quot; /&gt;  
+    &lt;sequenceFlow sourceRef=&quot;receivePayment&quot; targetRef=&quot;join&quot; /&gt;
+    
+    &lt;userTask id=&quot;shipOrder&quot; name=&quot;Ship Order&quot; /&gt; 
+    &lt;sequenceFlow sourceRef=&quot;shipOrder&quot; targetRef=&quot;join&quot; /&gt;
+    
+    <emphasis role="bold">&lt;inclusiveGateway id=&quot;join&quot; /&gt;</emphasis>
+    &lt;sequenceFlow sourceRef=&quot;join&quot; targetRef=&quot;archiveOrder&quot; /&gt;
+    
+    &lt;userTask id=&quot;archiveOrder&quot; name=&quot;Archive Order&quot; /&gt; 
+    &lt;sequenceFlow sourceRef=&quot;archiveOrder&quot; targetRef=&quot;theEnd&quot; /&gt;
+    
+    &lt;endEvent id=&quot;theEnd&quot; /&gt;
+</programlisting>
+        </para>
+        
+        <para>
+          In the above example, after the process is started, two tasks will be created if the process variables
+          paymentReceived == false and shipOrder == true. In case only one of these process variables equals to true
+          only one task will be created. If no condition evaluates to true and exception is thrown. This can be prevented
+          by specifying a default outgoing sequence flow. In the following example one task will be created, the ship order task:
+          <programlisting>HashMap&lt;String, Object&gt; variableMap = new HashMap&lt;String, Object&gt;();
+          variableMap.put("receivedPayment", true);
+          variableMap.put("shipOrder", true);
+          ProcessInstance pi = runtimeService.startProcessInstanceByKey("forkJoin");
+TaskQuery query = taskService.createTaskQuery()
+                         .processInstanceId(pi.getId())
+                         .orderByTaskName()
+                         .asc();
+
+List&lt;Task&gt; tasks = query.list();
+assertEquals(1, tasks.size());
+
+Task task = tasks.get(0);
+assertEquals("Ship Order", task.getName());</programlisting>
+          When this task is completed, the second inclusive gateway will join the two
+          executions and since there is only one outgoing sequence flow, no concurrent paths
+          of execution will be created, and only the <emphasis>Archive Order</emphasis>
+          task will be active.
+        </para>
+        
+        <para>
+          Note that an inclusive gateway does not need to be 'balanced' (i.e. a matching number
+          of incoming/outgoing sequence flow for corresponding inclusive gateways). 
+          An inclusive gateway will simply wait for all incoming sequence flow and create 
+          a concurrent path of execution for each outgoing sequence flow, not influenced by
+          other constructs in the process model.
+        </para>
+      
+      </section>
+   
     </section> 
 
 		<section id="bpmnUserTask">
