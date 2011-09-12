@@ -127,7 +127,6 @@
     <antcall target="internal.db.demo.data" />
     <antcall target="h2.stop" />
     <antcall target="tomcat.install" />
-    <antcall target="deploy.activiti.cfg.into.tomcat" />
     <antcall target="deploy.activiti.webapps.into.tomcat" />
   </target>
 
@@ -359,16 +358,6 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
 
   
   <!-- ### DEPLOY TO TOMCAT #################################################################### -->
-  
-  <target name="deploy.activiti.cfg.into.tomcat" 
-          depends="internal.cfg.create, internal.define.jdbc.driver.libs">
-    <copy todir="${tomcat.home}/webapps/activiti-rest/WEB-INF/lib">
-      <fileset dir="build">
-        <include name="activiti-cfg.jar"/>
-      </fileset>
-      <fileset refid="jdbc.driver.libs" />
-    </copy>
-  </target>
 
   <target name="deploy.activiti.webapps.into.tomcat" 
           depends="internal.build.webapps, 
