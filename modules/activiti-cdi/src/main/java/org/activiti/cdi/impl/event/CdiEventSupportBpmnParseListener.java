@@ -12,6 +12,8 @@
  */
 package org.activiti.cdi.impl.event;
 
+import java.util.List;
+
 import org.activiti.cdi.BusinessProcessEventType;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.bpmn.parser.BpmnParseListener;
@@ -143,6 +145,10 @@ public class CdiEventSupportBpmnParseListener implements BpmnParseListener {
 
   @Override
   public void parseMultiInstanceLoopCharacteristics(Element activityElement, Element multiInstanceLoopCharacteristicsElement, ActivityImpl activity) {
+  }
+  
+  @Override
+  public void parseRootElement(Element rootElement, List<ProcessDefinitionEntity> processDefinitions) {
   }
 
   @Override

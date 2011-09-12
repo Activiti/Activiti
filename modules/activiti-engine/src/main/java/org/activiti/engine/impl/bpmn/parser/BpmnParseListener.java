@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.bpmn.parser;
 
+import java.util.List;
+
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
@@ -48,4 +50,5 @@ public interface BpmnParseListener {
   void parseSendTask(Element sendTaskElement, ScopeImpl scope, ActivityImpl activity);
   void parseMultiInstanceLoopCharacteristics(Element activityElement, Element multiInstanceLoopCharacteristicsElement, ActivityImpl activity);
   void parseIntermediateTimerEventDefinition(Element timerEventDefinition, ActivityImpl timerActivity);
+  void parseRootElement(Element rootElement, List<ProcessDefinitionEntity> processDefinitions);
 }

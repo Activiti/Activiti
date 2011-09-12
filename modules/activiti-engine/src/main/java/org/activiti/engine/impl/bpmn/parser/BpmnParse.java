@@ -217,6 +217,10 @@ public class BpmnParse extends Parse {
     // Diagram interchange parsing must be after parseProcessDefinitions, 
     // since it depends and sets values on existing process definition objects
     parseDiagramInterchangeElements();
+    
+    for (BpmnParseListener parseListener : parseListeners) {
+      parseListener.parseRootElement(rootElement, getProcessDefinitions());
+    }
   }
 
   protected void parseDefinitionsAttributes() {
@@ -1658,6 +1662,7 @@ public class BpmnParse extends Parse {
     }
   }
 
+  @SuppressWarnings("unchecked")
   private void parseTimerStartEventDefinition(Element timerEventDefinition, ActivityImpl timerActivity, ProcessDefinitionEntity processDefinition) {
     timerActivity.setProperty("type", "startTimerEvent");
     TimerDeclarationImpl timerDeclaration = parseTimer(timerEventDefinition, timerActivity, TimerStartEventJobHandler.TYPE);

@@ -13,7 +13,8 @@
 
 package org.activiti.engine.impl.history.handler;
 
-import org.activiti.engine.delegate.ExecutionListener;
+import java.util.List;
+
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.BpmnParseListener;
@@ -125,6 +126,9 @@ public class HistoryParseListener implements BpmnParseListener {
   }
 
   public void parseSequenceFlow(Element sequenceFlowElement, ScopeImpl scopeElement, TransitionImpl transition) {
+  }
+  
+  public void parseRootElement(Element rootElement, List<ProcessDefinitionEntity> processDefinitions) {
   }
   
   public void parseMultiInstanceLoopCharacteristics(Element activityElement, 
