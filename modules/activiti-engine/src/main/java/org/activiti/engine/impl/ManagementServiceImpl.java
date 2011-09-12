@@ -67,7 +67,7 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
   public String databaseSchemaUpgrade(final Connection connection, final String catalog, final String schema) {
     return commandExecutor.execute(new Command<String>(){
       public String execute(CommandContext commandContext) {
-        DbSqlSessionFactory dbSqlSessionFactory = (DbSqlSessionFactory) commandContext.getSessionFactories().get(DbSqlSessionFactory.class);
+        DbSqlSessionFactory dbSqlSessionFactory = (DbSqlSessionFactory) commandContext.getSessionFactories().get(DbSqlSession.class);
         DbSqlSession dbSqlSession = new DbSqlSession(dbSqlSessionFactory, connection, catalog, schema);
         commandContext.getSessions().put(DbSqlSession.class, dbSqlSession);
         return dbSqlSession.dbSchemaUpdate();
