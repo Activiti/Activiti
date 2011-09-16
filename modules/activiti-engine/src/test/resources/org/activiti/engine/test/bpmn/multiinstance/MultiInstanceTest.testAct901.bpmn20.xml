@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="multiInstanceSubProcess" name="multi-instance-subprocess">
+    <documentation>Place documentation for the 'multi-instance-subprocess' process here.</documentation>
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <subProcess id="subprocess1" name="Sub Process">
+      <multiInstanceLoopCharacteristics isSequential="false">
+        <loopCardinality>5</loopCardinality>
+      </multiInstanceLoopCharacteristics>
+      <startEvent id="subprocess1startevent2" name="Start"></startEvent>
+      <userTask id="subprocess1usertask1" name="First Task" activiti:candidateGroups="ROLE_USER"></userTask>
+      <userTask id="subprocess1usertask2" name="Second Task" activiti:candidateGroups="ROLE_USER" activiti:formKey="/sdrTask/create"></userTask>
+      <task id="subprocess1mailtask1" />
+      <boundaryEvent id="subprocess1boundarytimer1" name="" cancelActivity="true" attachedToRef="subprocess1usertask1">
+        <timerEventDefinition>
+          <timeDuration>PT1M</timeDuration>
+        </timerEventDefinition>
+      </boundaryEvent>
+      <sequenceFlow id="subprocess1flow3" name="" sourceRef="subprocess1boundarytimer1" targetRef="subprocess1mailtask1"></sequenceFlow>
+      <endEvent id="subprocess1endevent2" name="End"></endEvent>
+      <sequenceFlow id="subprocess1flow4" name="" sourceRef="subprocess1mailtask1" targetRef="subprocess1endevent2"></sequenceFlow>
+      <sequenceFlow id="subprocess1flow5" name="" sourceRef="subprocess1usertask1" targetRef="subprocess1endevent2"></sequenceFlow>
+      <sequenceFlow id="subprocess1flow6" name="" sourceRef="subprocess1startevent2" targetRef="subprocess1usertask1"></sequenceFlow>
+    </subProcess>
+    <sequenceFlow id="flow1" name="" sourceRef="startevent1" targetRef="subprocess1"></sequenceFlow>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <sequenceFlow id="flow2" name="" sourceRef="subprocess1" targetRef="endevent1"></sequenceFlow>
+  </process>
+</definitions>

@@ -15,6 +15,7 @@ package org.activiti.engine.test.bpmn.multiinstance;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
@@ -842,6 +844,37 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     
     runtimeService.signal(procInst.getId());
     assertProcessEnded(procInst.getId());
+  }
+  
+  // ACT-901
+  @Deployment
+  public void testAct901() {
+    
+    // FAILING!
+
+//    Date startTime = ClockUtil.getCurrentTime();
+//    
+//    ProcessInstance pi = runtimeService.startProcessInstanceByKey("multiInstanceSubProcess");
+//    List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc().list();
+//    
+//    ClockUtil.setCurrentTime(new Date(startTime.getTime() + 61000L)); // timer is set to one minute
+//    waitForJobExecutorToProcessAllJobs(5000L, 25L);
+//    
+//    // All tasks should be canceled
+//    tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc().list();
+//    assertEquals(0, tasks.size());
+//    
+    // Note: works when changing task with receive task 
+    
+//    // 5 receive tasks should exist
+//    List<Execution> executions = runtimeService.createExecutionQuery().activityId("subprocess1mailtask1").list();
+//    assertEquals(5, executions.size());
+//
+//    // Firing them should end the process
+//    for (Execution execution : executions) {
+//      runtimeService.signal(execution.getId());
+//    }
+//    assertProcessEnded(pi.getId());
   }
   
 }
