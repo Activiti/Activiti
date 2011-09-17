@@ -121,6 +121,7 @@
           org.apache.commons.mail;resolution:=optional,
           org.apache.tools.ant*;resolution:=optional,
           org.apache.xerces*;resolution:=optional,
+          org.activiti.osgi*;resolution:=optional,
       </activiti.osgi.import.additional>
   </properties>
 
