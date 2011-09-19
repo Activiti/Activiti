@@ -14,6 +14,11 @@
 		<relativePath>../..</relativePath>
 		<version>5.8-SNAPSHOT</version>
 	</parent>
+	<properties>
+		<atomikos.version>3.7.0</atomikos.version>
+		<openjpa.version>2.1.0</openjpa.version>
+		<seam.version>3.0.0.Final</seam.version>
+	</properties>
 
 	<dependencies>
 		<dependency>
@@ -49,7 +54,44 @@
 			<groupId>javax.el</groupId>
 			<artifactId>el-api</artifactId>
 			<scope>provided</scope>
-		</dependency>	
+		</dependency>
+		<!-- new stuff from C.L. & F.B. for test infrastructure -->
+		<!-- ========== Atomikos transaction manager for tests ========== -->
+		<dependency>
+			<groupId>com.atomikos</groupId>
+			<artifactId>transactions-jta</artifactId>
+			<version>${atomikos.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.atomikos</groupId>
+			<artifactId>transactions-jdbc</artifactId>
+			<version>${atomikos.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- ========== JPA Dependencies ========== -->
+		<dependency>
+			<groupId>org.apache.openjpa</groupId>
+			<artifactId>openjpa-all</artifactId>
+			<version>${openjpa.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-mock</artifactId>
+			<version>2.0.8</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.seam.config</groupId>
+			<artifactId>seam-config-xml</artifactId>
+			<version>${seam.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.seam.persistence</groupId>
+			<artifactId>seam-persistence</artifactId>
+			<version>${seam.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -68,11 +110,23 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.2</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
-	<profiles>		
-		<profile>		
+	<profiles>
+		<profile>
 			<id>distro</id>
 			<build>
 				<plugins>
