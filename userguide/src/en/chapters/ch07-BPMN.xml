@@ -4054,5 +4054,53 @@ public class MyTaskCreateListener implements TaskListener {
 		</section>
 
 	</section>
-
+	<section id="asyncContinuations">
+      
+        <title>Asynchronous Continuations</title>
+                
+        <para>(Available since activiti 5.8)</para>
+        <para>
+        Activiti executes processes in a transactional way. This means that a process instance is composed of a series of steps which are executed in different transactions. 
+        Inbetween these steps/transactions we can wait for an arbitrary amount of time before we continue with the executon (the execution is
+        persisted to the database). In practice, it proves to be useful to be able to control the scope of these steps / transactions.         
+        </para>
+        <para>
+        Lets start by looking at how activiti scopes transactions normally. If you trigger activiti (i.e. start a process, complete a task, singnal an execution),
+        activiti is going to advance in the process, until it reaches wait states on each active path of execution. More concretely speaking it performs a depth-first seach through 
+        the process graph and returns if it has reached wait states on every branch of execution. A wait state is a task which is performed &quot;later&quot; which means that activiti
+        persits the current execution and waits to be triggerd again. The trigger can either come from an external source for example if we have a user task or a receive message task, 
+        or from activiti itself, if we have a timer event.
+        This is illustrated in the following picture:
+        <mediaobject><imageobject><imagedata align="center" fileref="images/activiti.async.example.no.async.PNG"/></imageobject></mediaobject>
+		We see a segment of a BPMN processes with a usertask, a service task and a timer event. Completing the usertask and validating the address is part of the 
+		same unit of work, so it should succeed or fail atomically. That means that if the service task throws an exception we want to rollback the current transaction, 
+		such that the execution tracks back to the user task and the the user task is still
+		present in the database. This is also the default behavior of activiti. In (1) an application or client thread completes the task. In that same thread activiti is now 
+		executing the service and advances until it reaches a wait state, in this case the timer event (2). Then it returns the control to the caller (3) potentially committing 
+		the transaction (if it was started by activiti).
+		</para>
+		<para>
+		In some cases this is not what we want. Sometimes we need custom control over transaction boundaries in a process, in order to be able to scope logical units of work.
+		This is where asynchronous continuations come into play. Consider the following process (fragment): 
+		<mediaobject><imageobject><imagedata align="center" fileref="images/activiti.async.example.async.PNG"/></imageobject></mediaobject>
+		This time we are completing the user task, generating an invoice and then send that invoice to the customer.
+		This time the generation of the invoice is not part of the same unit of work so we do not want to rollback the completion of the usertask if generating an invoice fails.
+		So what we want activiti to do is complete the user task (1), commit the transaction and return the control to the calling application. Then we want to generate the invoice 
+		asynchronously, in a background thread. This background thread is the activiti job executor (actually a thread pool) which periodically polls the database for jobs. So behind 
+		the scenes, when we reach the &quot;gnerate invoice&quot; task, we are creating a job &quot;message&quot; for activiti to continue the process later and persiting it into the database. 
+		This job is then picked up by the job executor and executed. We are also giving the local job executor a little hint that there is a new job, to improve performance.		   
+		</para>
+		<para>
+		In order to use this feature, we can use the <emphasis>activiti:async="true"</emphasis> extension. So for example, the service task would look like this:
+		<programlisting>
+&lt;serviceTask id=&quot;service1&quot; name=&quot;Generate Invoice&quot; activiti:class=&quot;my.custom.Delegate&quot; activiti:async=&quot;true&quot; /&gt; 
+        </programlisting>
+        activiti:async ca be specified on the followng bpmn task types:
+        task, serviceTask, scriptTask, businessRuleTask, sendTask, receiveTask, userTask, subProcess, callActivity
+        </para>
+        <para>
+        On a userTask, receiveTask or other wait states, the async continuation allows us to execute the start execution listeners in a separate thread/transaction.
+        </para>
+        
+	</section>
 </chapter>
