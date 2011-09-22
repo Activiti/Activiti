@@ -29,7 +29,10 @@ public class PdfAttachmentRenderer extends GenericAttachmentRenderer {
   
   @Override
   public boolean canRenderAttachment(String type) {
-    return PDF_ATTACHMENT_TYPE.equals(type);
+    if(type != null) {
+      return type.startsWith(PDF_ATTACHMENT_TYPE);
+    }
+    return false;
   }
   
   @Override

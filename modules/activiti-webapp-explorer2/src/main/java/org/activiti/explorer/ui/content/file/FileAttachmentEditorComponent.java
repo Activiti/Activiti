@@ -44,6 +44,8 @@ import com.vaadin.ui.VerticalLayout;
 public class FileAttachmentEditorComponent extends VerticalLayout implements AttachmentEditorComponent {
 
   private static final long serialVersionUID = 1L;
+
+  public static final String MIME_TYPE_EXTENTION_SPLIT_CHAR = ";";
   
   protected Attachment attachment;
   protected String taskId;
@@ -98,7 +100,14 @@ public class FileAttachmentEditorComponent extends VerticalLayout implements Att
       
       public OutputStream receiveUpload(String filename, String mType) {
         fileName = filename;
-        mimeType = mType;
+        
+        // Try extracting the extention as well, and append it to the mime-type
+        String extention = extractExtention(filename);
+        if(extention != null) {
+          mimeType = mType + MIME_TYPE_EXTENTION_SPLIT_CHAR + extention;
+        } else {
+          mimeType = mType;
+        }
         
         // TODO: Refactor, don't use BAOS!!
         byteArrayOutputStream = new ByteArrayOutputStream();
@@ -125,6 +134,14 @@ public class FileAttachmentEditorComponent extends VerticalLayout implements Att
     
     addComponent(uploadComponent);
     setExpandRatio(uploadComponent, 1.0f);
+  }
+  
+  protected String extractExtention(String fileName) {
+    int lastIndex = fileName.lastIndexOf('.');
+    if(lastIndex > 0 && lastIndex < fileName.length() - 1) {
+      return fileName.substring(lastIndex + 1);
+    }
+    return null;
   }
 
   protected String getFriendlyName(String name) {

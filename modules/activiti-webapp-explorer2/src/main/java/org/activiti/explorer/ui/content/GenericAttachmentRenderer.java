@@ -20,6 +20,7 @@ import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.Images;
+import org.activiti.explorer.ui.content.file.FileAttachmentEditorComponent;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 import org.activiti.explorer.ui.util.InputStreamStreamSource;
 
@@ -107,7 +108,14 @@ public class GenericAttachmentRenderer implements AttachmentRenderer {
   }
 
   protected String extractExtention(String type) {
-    int lastIndex = type.lastIndexOf('/');
+    // Check if the extention is appended at the end
+    int lastIndex = type.lastIndexOf(FileAttachmentEditorComponent.MIME_TYPE_EXTENTION_SPLIT_CHAR);
+    if(lastIndex > 0 && lastIndex < type.length() - 1) {
+      return "." + type.substring(lastIndex + 1);
+    }
+    
+    // No extention added to end of mime-type, used second part of mime-type (eg. image/png -> .png)
+    lastIndex = type.lastIndexOf('/');
     if(lastIndex > 0 && lastIndex < type.length() - 1) {
       return "." + type.substring(lastIndex + 1);
     }

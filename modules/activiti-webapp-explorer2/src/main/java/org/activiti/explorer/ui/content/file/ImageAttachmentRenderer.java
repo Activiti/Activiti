@@ -66,7 +66,10 @@ public class ImageAttachmentRenderer extends GenericAttachmentRenderer {
     
     // Image
     TaskService taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
-    InputStream imageStream = ImageUtil.smallify(taskService.getAttachmentContent(attachment.getId()), attachment.getType(), 900, 550);
+    
+    String mimeType = extractMineType(attachment.getType());
+    
+    InputStream imageStream = ImageUtil.smallify(taskService.getAttachmentContent(attachment.getId()), mimeType, 900, 550);
     Resource resource = new StreamResource(new InputStreamStreamSource(imageStream),
             attachment.getName() + extractExtention(attachment.getType()),ExplorerApp.get());
     Embedded image = new Embedded(null, resource);
@@ -97,6 +100,16 @@ public class ImageAttachmentRenderer extends GenericAttachmentRenderer {
     LinkLayout.addComponent(link);
     
     return verticalLayout;
+  }
+
+  protected String extractMineType(String type) {
+    if(type != null) {
+      int index = type.lastIndexOf(FileAttachmentEditorComponent.MIME_TYPE_EXTENTION_SPLIT_CHAR);
+      if(index >= 0){
+        return type.substring(0, index);
+      }
+    }
+    return type;
   }
   
 }
