@@ -69,7 +69,7 @@
     <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR"/>
-    <result property="taskDefinitionKey" column="TASK_DEF_KEY_" jdbcType="VARCHAR"/>
+    <result property="taskDefinitionKeyWithoutCascade" column="TASK_DEF_KEY_" jdbcType="VARCHAR"/>
     <result property="dueDateWithoutCascade" column="DUE_DATE_" jdbcType="TIMESTAMP"/>
   </resultMap>
 
