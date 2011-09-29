@@ -16,6 +16,7 @@ package org.activiti.engine.test.api.mgmt;
 import junit.framework.Assert;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.management.TableMetaData;
 import org.activiti.engine.runtime.Job;
@@ -25,6 +26,7 @@ import org.activiti.engine.test.Deployment;
 
 /**
  * @author Frederik Heremans
+ * @author Falko Menge
  */
 public class ManagementServiceTest extends PluggableActivitiTestCase {
 
@@ -110,6 +112,63 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
       fail("ActivitiException expected");
     } catch (ActivitiException re) {
       assertTextPresent("jobId is null", re.getMessage());
+    }
+  }
+  
+  @Deployment(resources = {"org/activiti/engine/test/api/mgmt/ManagementServiceTest.testGetJobExceptionStacktrace.bpmn20.xml"})
+  public void testSetJobRetries() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("exceptionInJobExecution");
+
+    // The execution is waiting in the first usertask. This contains a boundry
+    // timer event.
+    Job timerJob = managementService.createJobQuery()
+      .processInstanceId(processInstance.getId())
+      .singleResult();
+    
+    assertNotNull("No job found for process instance", timerJob);
+    assertEquals(JobEntity.DEFAULT_RETRIES, timerJob.getRetries());
+
+    managementService.setJobRetries(timerJob.getId(), 5);
+
+    timerJob = managementService.createJobQuery()
+      .processInstanceId(processInstance.getId())
+      .singleResult();
+    assertEquals(5, timerJob.getRetries());
+  }
+  
+  public void testSetJobRetriesUnexistingJobId() {
+    try {
+      managementService.setJobRetries("unexistingjob", 5);
+      fail("ActivitiException expected");
+    } catch (ActivitiException re) {
+      assertTextPresent("No job found with id 'unexistingjob'.", re.getMessage());
+    }
+  }
+  
+  public void testSetJobRetriesEmptyJobId() {
+    try {
+      managementService.setJobRetries("", 5);
+      fail("ActivitiException expected");
+    } catch (ActivitiException re) {
+      assertTextPresent("The job id is mandatory, but '' has been provided.", re.getMessage());
+    }
+  }
+  
+  public void testSetJobRetriesJobIdNull() {
+    try {
+      managementService.setJobRetries(null, 5);
+      fail("ActivitiException expected");
+    } catch (ActivitiException re) {
+      assertTextPresent("The job id is mandatory, but 'null' has been provided.", re.getMessage());
+    }
+  }
+  
+  public void testSetJobRetriesNegativeNumberOfRetries() {
+    try {
+      managementService.setJobRetries("unexistingjob", -1);
+      fail("ActivitiException expected");
+    } catch (ActivitiException re) {
+      assertTextPresent("The number of job retries must be a non-negative Integer, but '-1' has been provided.", re.getMessage());
     }
   }
 }

@@ -30,11 +30,12 @@ import org.activiti.engine.runtime.JobQuery;
  * 
  * @author Tom Baeyens
  * @author Joram Barrez
+ * @author Falko Menge
  */
 public interface ManagementService {
 
   /**
-   * Get he mapping containing {table name, row count} entries of the
+   * Get the mapping containing {table name, row count} entries of the
    * Activiti database schema.
    */
   Map<String, Long> getTableCount();
@@ -65,7 +66,18 @@ public interface ManagementService {
   void executeJob(String jobId);
   
   /**
-   * Returns the full stacktrace of the exception that occures when the job
+   * Sets the number of retries that a job has left.
+   *
+   * Whenever the JobExecutor fails to execute a job, this value is decremented. 
+   * When it hits zero, the job is supposed to be dead and not retried again.
+   * In that case, this method can be used to increase the number of retries. 
+   * @param jobId id of the job to modify, cannot be null.
+   * @param retries number of retries.
+   */
+  void setJobRetries(String jobId, int retries);
+
+  /**
+   * Returns the full stacktrace of the exception that occurs when the job
    * with the given id was last executed. Returns null when the job has no
    * exception stacktrace.
    * @param jobId id of the job, cannot be null.

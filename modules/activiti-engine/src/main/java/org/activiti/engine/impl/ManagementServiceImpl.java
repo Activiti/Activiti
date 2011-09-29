@@ -21,6 +21,7 @@ import org.activiti.engine.impl.cmd.GetJobExceptionStacktraceCmd;
 import org.activiti.engine.impl.cmd.GetPropertiesCmd;
 import org.activiti.engine.impl.cmd.GetTableCountCmd;
 import org.activiti.engine.impl.cmd.GetTableMetaDataCmd;
+import org.activiti.engine.impl.cmd.SetJobRetriesCmd;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.interceptor.Command;
@@ -33,6 +34,7 @@ import org.activiti.engine.runtime.JobQuery;
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
+ * @author Falko Menge
  */
 public class ManagementServiceImpl extends ServiceImpl implements ManagementService {
 
@@ -46,6 +48,10 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
 
   public void executeJob(String jobId) {
     commandExecutor.execute(new ExecuteJobsCmd(jobId));
+  }
+
+  public void setJobRetries(String jobId, int retries) {
+    commandExecutor.execute(new SetJobRetriesCmd(jobId, retries));
   }
 
   public TablePageQuery createTablePageQuery() {
