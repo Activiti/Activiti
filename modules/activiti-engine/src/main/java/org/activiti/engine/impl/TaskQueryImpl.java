@@ -47,6 +47,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   protected boolean unassigned = false;
   protected String candidateUser;
   protected String candidateGroup;
+  private List<String> candidateGroups;
   protected String processInstanceId;
   protected String executionId;
   protected Date createTime;
@@ -162,6 +163,9 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     if (candidateGroup != null) {
       throw new ActivitiException("Invalid query usage: cannot set both candidateUser and candidateGroup");
     }
+    if (candidateGroups != null) {
+      throw new ActivitiException("Invalid query usage: cannot set both candidateUser and candidateGroupIn");
+    }
     this.candidateUser = candidateUser;
     return this;
   }
@@ -179,9 +183,31 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
       throw new ActivitiException("Candidate group is null");
     }
     if (candidateUser != null) {
-      throw new ActivitiException("Invalid query usage: cannot set both candidateUser and candidateGroup");
+      throw new ActivitiException("Invalid query usage: cannot set both candidateGroup and candidateUser");
+    }
+    if (candidateGroups != null) {
+      throw new ActivitiException("Invalid query usage: cannot set both candidateGroup and candidateGroupIn");
     }
     this.candidateGroup = candidateGroup;
+    return this;
+  }
+  
+  public TaskQuery taskCandidateGroupIn(List<String> candidateGroups) {
+    if(candidateGroups == null) {
+      throw new ActivitiException("Candidate group list is null");
+    }
+    if(candidateGroups.size()== 0) {
+      throw new ActivitiException("Candidate group list is empty");
+    }
+    
+    if (candidateUser != null) {
+      throw new ActivitiException("Invalid query usage: cannot set both candidateGroupIn and candidateUser");
+    }
+    if (candidateGroup != null) {
+      throw new ActivitiException("Invalid query usage: cannot set both candidateGroupIn and candidateGroup");
+    }
+    
+    this.candidateGroups = candidateGroups;
     return this;
   }
   
@@ -265,6 +291,8 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
       return Collections.singletonList(candidateGroup);
     } else if (candidateUser != null) {
       return getGroupsForCandidateUser(candidateUser);
+    } else if(candidateGroups != null) {
+      return candidateGroups;
     }
     return null;
   }
