@@ -34,7 +34,7 @@ public class GetPropertiesCmd implements Command<Map<String, String>>, Serializa
   public Map<String, String> execute(CommandContext commandContext) {
     List<PropertyEntity> propertyEntities = commandContext
       .getDbSqlSession()
-      .selectList("org.activiti.persistence.selectProperties");
+      .selectList("selectProperties");
     
     Map<String, String> properties = new HashMap<String, String>();
     for (PropertyEntity propertyEntity: propertyEntities) {

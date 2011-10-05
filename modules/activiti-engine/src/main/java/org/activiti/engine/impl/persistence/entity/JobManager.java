@@ -110,7 +110,7 @@ public class JobManager extends AbstractManager {
 
   @SuppressWarnings("unchecked")
   public List<Job> findJobsByQueryCriteria(JobQueryImpl jobQuery, Page page) {
-    final String query = "org.activiti.persistence.selectJobByQueryCriteria";
+    final String query = "selectJobByQueryCriteria";
     return getDbSqlSession().selectList(query, jobQuery, page);
   }
 
@@ -119,11 +119,11 @@ public class JobManager extends AbstractManager {
     Map<String, String> params = new HashMap<String, String>();
     params.put("handlerType", jobHandlerType);
     params.put("handlerConfiguration", jobHandlerConfiguration);
-    return getDbSqlSession().selectList("org.activiti.persistence.selectJobsByConfiguration", params);
+    return getDbSqlSession().selectList("selectJobsByConfiguration", params);
   }
 
   public long findJobCountByQueryCriteria(JobQueryImpl jobQuery) {
-    return (Long) getDbSqlSession().selectOne("org.activiti.persistence.selectJobCountByQueryCriteria", jobQuery);
+    return (Long) getDbSqlSession().selectOne("selectJobCountByQueryCriteria", jobQuery);
   }
 
 }
