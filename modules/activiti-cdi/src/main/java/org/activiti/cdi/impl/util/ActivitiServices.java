@@ -25,11 +25,14 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
 
 /**
  * Makes the managed process engine and the provided services available for injection
  * 
  * @author Daniel Meyer
+ * @author Falko Menge
  */
 @ApplicationScoped
 public class ActivitiServices {
@@ -55,4 +58,9 @@ public class ActivitiServices {
   @Produces @Named @ApplicationScoped public IdentityService identityService() { return processEngine().getIdentityService(); }
 
   @Produces @Named @ApplicationScoped public ManagementService managementService() { return processEngine().getManagementService(); }
+
+  @Produces @Named @ApplicationScoped public CommandExecutor commandExecutor() {
+    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) processEngine();
+    return processEngineImpl.getProcessEngineConfiguration().getCommandExecutorTxRequired();
+  }
 }
