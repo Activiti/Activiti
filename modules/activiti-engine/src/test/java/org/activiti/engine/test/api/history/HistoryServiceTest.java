@@ -126,15 +126,13 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     }
   }
 
-  @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
   public void testHistoricProcessInstanceQueryByProcessInstanceIdsEmpty() {
-    runtimeService.startProcessInstanceByKey("oneTaskProcess");
-
-    HistoricProcessInstanceQuery processInstanceQuery = historyService.createHistoricProcessInstanceQuery().processInstanceIds(new HashSet<String>());
-    assertEquals(0, processInstanceQuery.count());
-
-    List<HistoricProcessInstance> processInstances = processInstanceQuery.list();
-    assertTrue(processInstances.isEmpty());
+    try {
+      historyService.createHistoricProcessInstanceQuery().processInstanceIds(new HashSet<String>());
+      fail("ActivitiException expected");
+    } catch (ActivitiException re) {
+      assertTextPresent("Set of process instance ids is empty", re.getMessage());
+    }
   }
 
   public void testHistoricProcessInstanceQueryByProcessInstanceIdsNull() {

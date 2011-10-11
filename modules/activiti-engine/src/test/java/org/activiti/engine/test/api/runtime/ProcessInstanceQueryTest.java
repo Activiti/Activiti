@@ -1082,13 +1082,12 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
   }
 
   public void testQueryByProcessInstanceIdsEmpty() {
-    Set<String> processInstanceIds = new HashSet<String>();
-
-    ProcessInstanceQuery processInstanceQuery = runtimeService.createProcessInstanceQuery().processInstanceIds(processInstanceIds);
-    assertEquals(0, processInstanceQuery.count());
-    
-    List<ProcessInstance> processInstances = processInstanceQuery.list();
-    assertTrue(processInstances.isEmpty());
+    try {
+      runtimeService.createProcessInstanceQuery().processInstanceIds(new HashSet<String>());
+      fail("ActivitiException expected");
+    } catch (ActivitiException re) {
+      assertTextPresent("Set of process instance ids is empty", re.getMessage());
+    }
   }
 
   public void testQueryByProcessInstanceIdsNull() {

@@ -67,6 +67,9 @@ public class ProcessInstanceQueryImpl extends ExecutionVariableQueryImpl<Process
     if (processInstanceIds == null) {
       throw new ActivitiException("Set of process instance ids is null");
     }
+    if (processInstanceIds.isEmpty()) {
+      throw new ActivitiException("Set of process instance ids is empty");
+    }
     this.processInstanceIds = processInstanceIds;
     return this;
   }
