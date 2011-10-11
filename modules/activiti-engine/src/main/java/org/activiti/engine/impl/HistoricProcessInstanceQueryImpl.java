@@ -16,6 +16,7 @@ package org.activiti.engine.impl;
 import java.util.List;
 import java.util.Set;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -56,6 +57,9 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
   }
 
   public HistoricProcessInstanceQuery processInstanceIds(Set<String> processInstanceIds) {
+    if (processInstanceIds == null) {
+      throw new ActivitiException("Set of process instance ids is null");
+    }
     this.processInstanceIds = processInstanceIds;
     return this;
   }

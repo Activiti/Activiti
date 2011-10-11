@@ -16,6 +16,7 @@ package org.activiti.engine.test.api.history;
 import java.util.HashSet;
 import java.util.List;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -122,6 +123,26 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     
     for (HistoricProcessInstance historicProcessInstance : processInstances) {
       assertTrue(processInstanceIds.contains(historicProcessInstance.getId()));
+    }
+  }
+
+  @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+  public void testHistoricProcessInstanceQueryByProcessInstanceIdsEmpty() {
+    runtimeService.startProcessInstanceByKey("oneTaskProcess");
+
+    HistoricProcessInstanceQuery processInstanceQuery = historyService.createHistoricProcessInstanceQuery().processInstanceIds(new HashSet<String>());
+    assertEquals(0, processInstanceQuery.count());
+
+    List<HistoricProcessInstance> processInstances = processInstanceQuery.list();
+    assertTrue(processInstances.isEmpty());
+  }
+
+  public void testHistoricProcessInstanceQueryByProcessInstanceIdsNull() {
+    try {
+      historyService.createHistoricProcessInstanceQuery().processInstanceIds(null);
+      fail("ActivitiException expected");
+    } catch (ActivitiException re) {
+      assertTextPresent("Set of process instance ids is null", re.getMessage());
     }
   }
 }
