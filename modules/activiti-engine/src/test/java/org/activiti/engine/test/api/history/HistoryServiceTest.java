@@ -25,6 +25,7 @@ import org.activiti.engine.test.Deployment;
 
 /**
  * @author Frederik Heremans
+ * @author Falko Menge
  */
 public class HistoryServiceTest extends PluggableActivitiTestCase {
   
@@ -45,7 +46,6 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
   public void testHistoricProcessInstanceUserIdAndActivityId() {
-    // With a clean ProcessEngine, no instances should be available
     identityService.setAuthenticatedUserId("johndoe");
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
     HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().singleResult();
@@ -82,4 +82,19 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     assertTrue(historicProcessInstance.getProcessDefinitionId().contains("checkCreditProcess"));
   }
   
+  @Deployment(resources = {
+    "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml",
+    "org/activiti/examples/bpmn/callactivity/orderProcess.bpmn20.xml",
+    "org/activiti/examples/bpmn/callactivity/checkCreditProcess.bpmn20.xml"       
+  })
+  public void testHistoricProcessInstanceUserQueryByProcessDefinitionKey() {
+    String processDefinitionKey = "oneTaskProcess";
+    runtimeService.startProcessInstanceByKey(processDefinitionKey);
+    runtimeService.startProcessInstanceByKey("orderProcess");
+    HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processDefinitionKey(processDefinitionKey).singleResult();
+    assertNotNull(historicProcessInstance);
+    assertTrue(historicProcessInstance.getProcessDefinitionId().startsWith(processDefinitionKey));
+    assertEquals("theStart", historicProcessInstance.getStartActivityId());
+  }
+
 }

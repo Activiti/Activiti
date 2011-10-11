@@ -116,6 +116,9 @@
       <if test="processDefinitionId != null">
         and HPI.PROC_DEF_ID_ = #{processDefinitionId}
       </if>
+      <if test="processDefinitionKey != null">
+        and HPI.PROC_DEF_ID_ like #{processDefinitionIdLike}
+      </if>
       <if test="businessKey != null">
         and HPI.BUSINESS_KEY_ = #{businessKey}
       </if>

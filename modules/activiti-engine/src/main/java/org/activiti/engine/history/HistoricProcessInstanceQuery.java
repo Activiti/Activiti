@@ -21,6 +21,7 @@ import org.activiti.engine.query.Query;
  *  
  * @author Tom Baeyens
  * @author Joram Barrez
+ * @author Falko Menge
  */
 public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInstanceQuery, HistoricProcessInstance>{
 
@@ -30,6 +31,10 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   
   /** Only select historic process instances for the given process definition */
   HistoricProcessInstanceQuery processDefinitionId(String processDefinitionId);
+  
+  /** Only select historic process instances that are defined by a process
+   * definition with the given key. */
+  HistoricProcessInstanceQuery processDefinitionKey(String processDefinitionKey);
   
   /** Only select historic process instances with the given business key */
   HistoricProcessInstanceQuery processInstanceBusinessKey(String processInstanceBusinessKey);
@@ -61,5 +66,7 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   /** Order by the duration of the process instance (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricProcessInstanceQuery orderByProcessInstanceDuration();
   
-  HistoricProcessInstanceQuery superProcessInstanceId(String superProcessInstanceId); 
+  /** Only select historic process instances started by the given process instance.
+   * {@link ProcessInstance) ids and {@link HistoricProcessInstance} ids match. */
+  HistoricProcessInstanceQuery superProcessInstanceId(String superProcessInstanceId);
 }

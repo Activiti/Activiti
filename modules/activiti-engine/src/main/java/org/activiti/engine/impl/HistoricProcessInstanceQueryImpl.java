@@ -23,6 +23,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 
 /**
  * @author Tom Baeyens
+ * @author Falko Menge
  */
 public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProcessInstanceQuery, HistoricProcessInstance> implements HistoricProcessInstanceQuery {
 
@@ -34,6 +35,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
   protected boolean unfinished = false;
   protected String startedBy;
   protected String superProcessInstanceId;
+  protected String processDefinitionKey;
   
   public HistoricProcessInstanceQueryImpl() {
   }
@@ -53,6 +55,11 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
 
   public HistoricProcessInstanceQueryImpl processDefinitionId(String processDefinitionId) {
     this.processDefinitionId = processDefinitionId;
+    return this;
+  }
+  
+  public HistoricProcessInstanceQuery processDefinitionKey(String processDefinitionKey) {
+    this.processDefinitionKey = processDefinitionKey;
     return this;
   }
   
@@ -127,6 +134,12 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
   }
   public String getProcessDefinitionId() {
     return processDefinitionId;
+  }
+  public String getProcessDefinitionKey() {
+    return processDefinitionKey;
+  }
+  public String getProcessDefinitionIdLike() {
+    return processDefinitionKey + ":%:%";
   }
   public String getProcessInstanceId() {
     return processInstanceId;
