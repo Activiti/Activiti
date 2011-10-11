@@ -13,6 +13,7 @@
 package org.activiti.engine.runtime;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.query.Query;
@@ -22,11 +23,15 @@ import org.activiti.engine.query.Query;
  * 
  * @author Joram Barrez
  * @author Frederik Heremans
+ * @author Falko Menge
  */
 public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, ProcessInstance> {
 
   /** Select the process instance with the given id */
   ProcessInstanceQuery processInstanceId(String processInstanceId);
+  
+  /** Select process instances whose id is in the given set of ids */
+  ProcessInstanceQuery processInstanceIds(Set<String> processInstanceIds);
   
   /** Select process instances with the given business key */
   ProcessInstanceQuery processInstanceBusinessKey(String processInstanceBusinessKey);

@@ -15,6 +15,7 @@ package org.activiti.engine.impl;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -27,6 +28,7 @@ import org.activiti.engine.runtime.ProcessInstanceQuery;
  * @author Tom Baeyens
  * @author Joram Barrez
  * @author Frederik Heremans
+ * @author Falko Menge
  */
 public class ProcessInstanceQueryImpl extends ExecutionVariableQueryImpl<ProcessInstanceQuery, ProcessInstance> implements ProcessInstanceQuery, Serializable {
 
@@ -34,12 +36,13 @@ public class ProcessInstanceQueryImpl extends ExecutionVariableQueryImpl<Process
   protected String executionId;
   protected String businessKey;
   protected String processDefinitionId;
+  protected Set<String> processInstanceIds; 
   protected String processDefinitionKey;
   protected String superProcessInstanceId;
   protected String subProcessInstanceId;
   
   // Unused, see dynamic query
-  protected String activityId; 
+  protected String activityId;
   
   public ProcessInstanceQueryImpl() {
   }
@@ -60,6 +63,14 @@ public class ProcessInstanceQueryImpl extends ExecutionVariableQueryImpl<Process
     return this;
   }
   
+  public ProcessInstanceQuery processInstanceIds(Set<String> processInstanceIds) {
+    if (processInstanceIds == null) {
+      throw new ActivitiException("Set of process instance ids is null");
+    }
+    this.processInstanceIds = processInstanceIds;
+    return this;
+  }
+
   public ProcessInstanceQuery processInstanceBusinessKey(String businessKey) {
     if (businessKey == null) {
       throw new ActivitiException("Business key is null");
@@ -144,6 +155,9 @@ public class ProcessInstanceQueryImpl extends ExecutionVariableQueryImpl<Process
   }
   public String getProcessInstanceId() {
     return executionId;
+  }
+  public Set<String> getProcessInstanceIds() {
+    return processInstanceIds;
   }
   public String getBusinessKey() {
     return businessKey;

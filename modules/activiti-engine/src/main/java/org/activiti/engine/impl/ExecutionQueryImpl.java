@@ -145,6 +145,9 @@ public class ExecutionQueryImpl extends ExecutionVariableQueryImpl<ExecutionQuer
   public String getProcessInstanceId() {
     return processInstanceId;
   }
+  public String getProcessInstanceIds() {
+    return null;
+  }
   public String getBusinessKey() {
     return null;
   }

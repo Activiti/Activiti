@@ -18,8 +18,10 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -33,6 +35,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * @author Joram Barrez
  * @author Frederik Heremans
+ * @author Falko Menge
  */
 public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
 
@@ -1060,5 +1063,10 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
       runtimeService.deleteProcessInstance(processInstance2.getId(), "test");
   }
 
+  public void testQueryByProcessInstanceIds() {
+    Set<String> processInstanceIds = new HashSet<String>(this.processInstanceIds);
+    assertNotNull(runtimeService.createProcessInstanceQuery().processInstanceIds(processInstanceIds).list());
+    assertEquals(5, runtimeService.createProcessInstanceQuery().processInstanceIds(processInstanceIds).list().size());
+  }
 
 }
