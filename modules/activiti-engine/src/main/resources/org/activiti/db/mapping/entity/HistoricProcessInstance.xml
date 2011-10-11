@@ -113,6 +113,12 @@
       <if test="processInstanceId != null">
         HPI.PROC_INST_ID_ = #{processInstanceId}
       </if>
+      <if test="processInstanceIds != null and !processInstanceIds.isEmpty()">
+        and HPI.PROC_INST_ID_ in
+        <foreach item="item" index="index" collection="processInstanceIds" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
       <if test="processDefinitionId != null">
         and HPI.PROC_DEF_ID_ = #{processDefinitionId}
       </if>

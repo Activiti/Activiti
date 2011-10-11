@@ -14,6 +14,7 @@
 package org.activiti.engine.impl;
 
 import java.util.List;
+import java.util.Set;
 
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
@@ -36,6 +37,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
   protected String startedBy;
   protected String superProcessInstanceId;
   protected String processDefinitionKey;
+  protected Set<String> processInstanceIds;
   
   public HistoricProcessInstanceQueryImpl() {
   }
@@ -50,6 +52,11 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
 
   public HistoricProcessInstanceQueryImpl processInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
+    return this;
+  }
+
+  public HistoricProcessInstanceQuery processInstanceIds(Set<String> processInstanceIds) {
+    this.processInstanceIds = processInstanceIds;
     return this;
   }
 
@@ -143,6 +150,9 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
   }
   public String getProcessInstanceId() {
     return processInstanceId;
+  }
+  public Set<String> getProcessInstanceIds() {
+    return processInstanceIds;
   }
   public String getStartedBy() {
     return startedBy;

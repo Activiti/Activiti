@@ -13,9 +13,11 @@
 
 package org.activiti.engine.test.api.history;
 
+import java.util.HashSet;
 import java.util.List;
 
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -87,7 +89,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     "org/activiti/examples/bpmn/callactivity/orderProcess.bpmn20.xml",
     "org/activiti/examples/bpmn/callactivity/checkCreditProcess.bpmn20.xml"       
   })
-  public void testHistoricProcessInstanceUserQueryByProcessDefinitionKey() {
+  public void testHistoricProcessInstanceQueryByProcessDefinitionKey() {
     String processDefinitionKey = "oneTaskProcess";
     runtimeService.startProcessInstanceByKey(processDefinitionKey);
     runtimeService.startProcessInstanceByKey("orderProcess");
@@ -97,4 +99,29 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     assertEquals("theStart", historicProcessInstance.getStartActivityId());
   }
 
+  @Deployment(resources = {
+          "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml",
+          "org/activiti/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml"       
+        })
+  public void testHistoricProcessInstanceQueryByProcessInstanceIds() {
+    HashSet<String> processInstanceIds = new HashSet<String>();
+    for (int i = 0; i < 4; i++) {
+      processInstanceIds.add(runtimeService.startProcessInstanceByKey("oneTaskProcess", i + "").getId());
+    }
+    processInstanceIds.add(runtimeService.startProcessInstanceByKey("oneTaskProcess2", "1").getId());
+    
+    // start an instance that will not be part of the query
+    runtimeService.startProcessInstanceByKey("oneTaskProcess2", "2");
+            
+    HistoricProcessInstanceQuery processInstanceQuery = historyService.createHistoricProcessInstanceQuery().processInstanceIds(processInstanceIds);
+    assertEquals(5, processInstanceQuery.count());
+    
+    List<HistoricProcessInstance> processInstances = processInstanceQuery.list();
+    assertNotNull(processInstances);
+    assertEquals(5, processInstances.size());
+    
+    for (HistoricProcessInstance historicProcessInstance : processInstances) {
+      assertTrue(processInstanceIds.contains(historicProcessInstance.getId()));
+    }
+  }
 }
