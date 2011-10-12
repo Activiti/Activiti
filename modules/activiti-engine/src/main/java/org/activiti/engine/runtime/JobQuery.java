@@ -22,6 +22,7 @@ import org.activiti.engine.query.Query;
  * Allows programmatic querying of {@link Job}s.
  * 
  * @author Joram Barrez
+ * @author Falko Menge
  */
 public interface JobQuery extends Query<JobQuery, Job> {
   
@@ -61,6 +62,9 @@ public interface JobQuery extends Query<JobQuery, Job> {
   /** Only select jobs where the duedate is higher then or equals the given date. */
   JobQuery duedateHigherThenOrEquals(Date date);
   
+  /** Only select jobs that failed due to an exception. */
+  JobQuery withException();
+
   //sorting //////////////////////////////////////////
   
   /** Order by job id (needs to be followed by {@link #asc()} or {@link #desc()}). */

@@ -119,7 +119,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
   public void testSetJobRetries() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("exceptionInJobExecution");
 
-    // The execution is waiting in the first usertask. This contains a boundry
+    // The execution is waiting in the first usertask. This contains a boundary
     // timer event.
     Job timerJob = managementService.createJobQuery()
       .processInstanceId(processInstance.getId())

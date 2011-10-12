@@ -119,6 +119,9 @@
       <if test="duedateLowerThenOrEqual != null">
         and J.DUEDATE_ &lt;= #{duedateLowerThenOrEqual}
       </if>
+      <if test="withException">
+      	and J.EXCEPTION_MSG_ is not null
+      </if>
     </where>
   </sql>
 

@@ -16,6 +16,8 @@ package org.activiti.engine.test.api.mgmt;
 import java.util.Date;
 import java.util.List;
 
+import junit.framework.Assert;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cmd.DeleteJobsCmd;
 import org.activiti.engine.impl.interceptor.Command;
@@ -27,10 +29,13 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.JobQuery;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.test.Deployment;
 
 
 /**
  * @author Joram Barrez
+ * @author Falko Menge
  */
 public class JobQueryTest extends PluggableActivitiTestCase {
   
@@ -237,6 +242,39 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     
     query = managementService.createJobQuery().duedateHigherThenOrEquals(new Date(timerThreeFireTime.getTime() + ONE_SECOND));
     verifyQueryResults(query, 0);
+  }
+  
+  @Deployment(resources = {"org/activiti/engine/test/api/mgmt/ManagementServiceTest.testGetJobExceptionStacktrace.bpmn20.xml"})
+  public void testQueryByException() {
+    JobQuery query = managementService.createJobQuery().withException();
+    verifyQueryResults(query, 0);
+    
+    // start a process with a failing job
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("exceptionInJobExecution");
+    
+    // The execution is waiting in the first usertask. This contains a boundary
+    // timer event which we will execute manual for testing purposes.
+    Job timerJob = managementService.createJobQuery()
+      .processInstanceId(processInstance.getId())
+      .singleResult();
+    
+    assertNotNull("No job found for process instance", timerJob);
+    
+    try {
+      managementService.executeJob(timerJob.getId());
+      fail("RuntimeException from within the script task expected");
+    } catch(RuntimeException re) {
+      assertTextPresent("This is an exception thrown from scriptTask", re.getMessage());
+    }
+    
+    query = managementService.createJobQuery().withException();
+    verifyQueryResults(query, 1);
+    
+    timerJob = query.singleResult();
+    Assert.assertNotNull(timerJob);
+    assertEquals(processInstance.getId(), timerJob.getProcessInstanceId());
+    Assert.assertNotNull(timerJob.getExceptionMessage());
+    assertTextPresent("This is an exception thrown from scriptTask", timerJob.getExceptionMessage());
   }
   
   public void testQuerySorting() {

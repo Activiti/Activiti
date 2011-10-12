@@ -28,6 +28,7 @@ import org.activiti.engine.runtime.JobQuery;
 /**
  * @author Joram Barrez
  * @author Tom Baeyens
+ * @author Falko Menge
  */
 public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQuery, Serializable {
   
@@ -43,6 +44,7 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
   protected Date duedateLowerThen;
   protected Date duedateHigherThenOrEqual;
   protected Date duedateLowerThenOrEqual;
+  private boolean withException;
   
   public JobQueryImpl() {
   }
@@ -137,6 +139,11 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
     return this;
   }
   
+  public JobQuery withException() {
+    this.withException = true;
+    return this;
+  }
+
   //sorting //////////////////////////////////////////
   
   public JobQuery orderByJobDuedate() {
@@ -191,5 +198,8 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
   }
   public Date getNow() {
     return ClockUtil.getCurrentTime();
+  }
+  public boolean isWithException() {
+    return withException;
   }
 }
