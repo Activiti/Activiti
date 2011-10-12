@@ -41,11 +41,6 @@
       <artifactId>activiti-engine</artifactId>
       <version>${version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-cycle</artifactId>
-      <version>${version}</version>
-    </dependency>
   </dependencies>
 
   <repositories>
