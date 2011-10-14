@@ -54,6 +54,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
   
   private static final long ONE_HOUR = 60L * 60L * 1000L;
   private static final long ONE_SECOND = 1000L;
+  private static final String EXCEPTION_MESSAGE = "problem evaluating script: javax.script.ScriptException: java.lang.RuntimeException: This is an exception thrown from scriptTask";
 
   /**
    * Setup will create
@@ -249,33 +250,44 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     JobQuery query = managementService.createJobQuery().withException();
     verifyQueryResults(query, 0);
     
-    // start a process with a failing job
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("exceptionInJobExecution");
-    
-    // The execution is waiting in the first usertask. This contains a boundary
-    // timer event which we will execute manual for testing purposes.
-    Job timerJob = managementService.createJobQuery()
-      .processInstanceId(processInstance.getId())
-      .singleResult();
-    
-    assertNotNull("No job found for process instance", timerJob);
-    
-    try {
-      managementService.executeJob(timerJob.getId());
-      fail("RuntimeException from within the script task expected");
-    } catch(RuntimeException re) {
-      assertTextPresent("This is an exception thrown from scriptTask", re.getMessage());
-    }
+    ProcessInstance processInstance = startProcessInstanceWithFailingJob();
     
     query = managementService.createJobQuery().withException();
-    verifyQueryResults(query, 1);
-    
-    timerJob = query.singleResult();
-    Assert.assertNotNull(timerJob);
-    assertEquals(processInstance.getId(), timerJob.getProcessInstanceId());
-    Assert.assertNotNull(timerJob.getExceptionMessage());
-    assertTextPresent("This is an exception thrown from scriptTask", timerJob.getExceptionMessage());
+    verifyFailedJob(query, processInstance);
   }
+  
+  @Deployment(resources = {"org/activiti/engine/test/api/mgmt/ManagementServiceTest.testGetJobExceptionStacktrace.bpmn20.xml"})
+  public void testQueryByExceptionMessage() {
+    JobQuery query = managementService.createJobQuery().exceptionMessage(EXCEPTION_MESSAGE);
+    verifyQueryResults(query, 0);
+    
+    ProcessInstance processInstance = startProcessInstanceWithFailingJob();
+    
+    query = managementService.createJobQuery().exceptionMessage(EXCEPTION_MESSAGE);
+    verifyFailedJob(query, processInstance);
+  }
+
+  @Deployment(resources = {"org/activiti/engine/test/api/mgmt/ManagementServiceTest.testGetJobExceptionStacktrace.bpmn20.xml"})
+  public void testQueryByExceptionMessageEmpty() {
+    JobQuery query = managementService.createJobQuery().exceptionMessage("");
+    verifyQueryResults(query, 0);
+    
+    startProcessInstanceWithFailingJob();
+    
+    query = managementService.createJobQuery().exceptionMessage("");
+    verifyQueryResults(query, 0);
+  }
+
+  public void testQueryByExceptionMessageNull() {
+    try {
+      managementService.createJobQuery().exceptionMessage(null);
+      fail("ActivitiException expected");
+    } catch (ActivitiException e) {
+      assertEquals("Provided exception message is null", e.getMessage());
+    }
+  }
+
+  //sorting //////////////////////////////////////////
   
   public void testQuerySorting() {
     // asc
@@ -345,6 +357,37 @@ public class JobQueryTest extends PluggableActivitiTestCase {
       }
       
     });
+  }
+
+  private ProcessInstance startProcessInstanceWithFailingJob() {
+    // start a process with a failing job
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("exceptionInJobExecution");
+    
+    // The execution is waiting in the first usertask. This contains a boundary
+    // timer event which we will execute manual for testing purposes.
+    Job timerJob = managementService.createJobQuery()
+      .processInstanceId(processInstance.getId())
+      .singleResult();
+    
+    assertNotNull("No job found for process instance", timerJob);
+    
+    try {
+      managementService.executeJob(timerJob.getId());
+      fail("RuntimeException from within the script task expected");
+    } catch(RuntimeException re) {
+      assertTextPresent(EXCEPTION_MESSAGE, re.getMessage());
+    }
+    return processInstance;
+  }
+
+  private void verifyFailedJob(JobQuery query, ProcessInstance processInstance) {
+    verifyQueryResults(query, 1);
+    
+    Job failedJob = query.singleResult();
+    Assert.assertNotNull(failedJob);
+    assertEquals(processInstance.getId(), failedJob.getProcessInstanceId());
+    Assert.assertNotNull(failedJob.getExceptionMessage());
+    assertTextPresent(EXCEPTION_MESSAGE, failedJob.getExceptionMessage());
   }
 
   private void verifyQueryResults(JobQuery query, int countExpected) {

@@ -122,6 +122,9 @@
       <if test="withException">
       	and J.EXCEPTION_MSG_ is not null
       </if>
+      <if test="exceptionMessage">
+      	and J.EXCEPTION_MSG_ = #{exceptionMessage}
+      </if>
     </where>
   </sql>
 

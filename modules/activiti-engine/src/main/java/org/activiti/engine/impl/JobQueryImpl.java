@@ -44,7 +44,8 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
   protected Date duedateLowerThen;
   protected Date duedateHigherThenOrEqual;
   protected Date duedateLowerThenOrEqual;
-  private boolean withException;
+  protected boolean withException;
+  protected String exceptionMessage;
   
   public JobQueryImpl() {
   }
@@ -144,6 +145,14 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
     return this;
   }
 
+  public JobQuery exceptionMessage(String exceptionMessage) {
+    if (exceptionMessage == null) {
+      throw new ActivitiException("Provided exception message is null");
+    }
+    this.exceptionMessage = exceptionMessage;
+    return this;
+  }
+  
   //sorting //////////////////////////////////////////
   
   public JobQuery orderByJobDuedate() {
@@ -201,5 +210,8 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
   }
   public boolean isWithException() {
     return withException;
+  }
+  public String getExceptionMessage() {
+    return exceptionMessage;
   }
 }

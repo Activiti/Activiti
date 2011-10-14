@@ -65,6 +65,9 @@ public interface JobQuery extends Query<JobQuery, Job> {
   /** Only select jobs that failed due to an exception. */
   JobQuery withException();
 
+  /** Only select jobs that failed due to an exception with the given message. */
+  JobQuery exceptionMessage(String exceptionMessage);
+
   //sorting //////////////////////////////////////////
   
   /** Order by job id (needs to be followed by {@link #asc()} or {@link #desc()}). */
