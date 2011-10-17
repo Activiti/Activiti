@@ -123,6 +123,7 @@
           org.apache.xerces*;resolution:=optional,
           org.activiti.osgi*;resolution:=optional,
       </activiti.osgi.import.additional>
+      <activiti.osgi.dynamic>*</activiti.osgi.dynamic>
   </properties>
 
   <repositories>
