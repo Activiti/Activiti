@@ -6,7 +6,7 @@
   <name>Activiti - Upgrade</name>
   <groupId>org.activiti</groupId>
   <artifactId>activiti-upgrade</artifactId>
-  <version>5.7-ALWAYS-SNAPSHOT</version>
+  <version>5.8-ALWAYS-SNAPSHOT</version>
 
   <properties>
     <skipTests>true</skipTests>
@@ -16,7 +16,7 @@
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-engine</artifactId>
-      <version>5.8-SNAPSHOT</version>
+      <version>5.8</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
