@@ -5,8 +5,8 @@
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="src" path="src/test/resources"/>
 	<classpathentry kind="lib" path="libs-runtime/activation-1.1.jar"/>
-	<classpathentry kind="lib" path="libs-runtime/activiti-engine-5.8-SNAPSHOT-sources.jar"/>
-	<classpathentry kind="lib" path="libs-runtime/activiti-engine-5.8-SNAPSHOT.jar" sourcepath="libs-runtime/activiti-engine-5.8-SNAPSHOT-sources.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/activiti-engine-5.9-SNAPSHOT-sources.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/activiti-engine-5.9-SNAPSHOT.jar" sourcepath="libs-runtime/activiti-engine-5.9-SNAPSHOT-sources.jar"/>
 	<classpathentry kind="lib" path="libs-runtime/commons-email-1.2.jar"/>
 	<classpathentry kind="lib" path="libs-runtime/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="libs-runtime/livetribe-jsr223-2.0.6.jar"/>

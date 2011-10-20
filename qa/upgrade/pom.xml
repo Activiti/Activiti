@@ -6,7 +6,7 @@
 	<name>Activiti - Upgrade Fetcher</name>
 	<groupId>org.activiti</groupId>
 	<artifactId>activiti-upgrade-fetcher</artifactId>
-	<version>5.8-SNAPSHOT</version>
+	<version>5.9-SNAPSHOT</version>
 
 	<dependencies>
     <dependency>
