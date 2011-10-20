@@ -1,33 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-  <classpathentry kind="src" path="src/main/java" including="**/*.java"/>
-  <classpathentry kind="src" path="src/main/resources" excluding="**/*.java"/>
-  <classpathentry kind="output" path="target/classes"/>
-  <classpathentry kind="var" path="M2_REPO/javax/activation/activation/1.1.1/activation-1.1.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/javax/xml/bind/jaxb-api/2.2.1/jaxb-api-2.2.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/javax/ws/rs/jsr311-api/1.0/jsr311-api-1.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/javax/mail/mail/1.4.1/mail-1.4.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/javax/servlet/servlet-api/2.5/servlet-api-2.5.jar"/>
-  <classpathentry kind="var" path="M2_REPO/javax/xml/stream/stax-api/1.0-2/stax-api-1.0-2.jar"/>
-  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
-  <classpathentry kind="src" path="/activiti-engine"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/commons/commons-email/1.2/commons-email-1.2.jar"/>
-  <classpathentry kind="var" path="M2_REPO/commons-fileupload/commons-fileupload/1.2.2/commons-fileupload-1.2.2.jar"/>
-  <classpathentry kind="var" path="M2_REPO/commons-io/commons-io/2.0.1/commons-io-2.0.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/h2database/h2/1.2.132/h2-1.2.132.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/codehaus/jackson/jackson-core-asl/1.4.3/jackson-core-asl-1.4.3.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/codehaus/jackson/jackson-mapper-asl/1.4.3/jackson-mapper-asl-1.4.3.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/sun/xml/bind/jaxb-impl/2.1.7/jaxb-impl-2.1.7.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/livetribe/livetribe-jsr223/2.0.6/livetribe-jsr223-2.0.6.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/mybatis/mybatis/3.0.4/mybatis-3.0.4.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/osgi/org.osgi.core/4.2.0/org.osgi.core-4.2.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/restlet/jee/org.restlet/2.0.8/org.restlet-2.0.8.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/restlet/jee/org.restlet.ext.fileupload/2.0.8/org.restlet.ext.fileupload-2.0.8.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/restlet/jee/org.restlet.ext.jackson/2.0.8/org.restlet.ext.jackson-2.0.8.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/restlet/jee/org.restlet.ext.jaxrs/2.0.8/org.restlet.ext.jaxrs-2.0.8.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/restlet/jee/org.restlet.ext.servlet/2.0.8/org.restlet.ext.servlet-2.0.8.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/restlet/jee/org.restlet.lib.org.json/2.0/org.restlet.lib.org.json-2.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/springframework/spring-asm/3.0.3.RELEASE/spring-asm-3.0.3.RELEASE.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/springframework/spring-beans/3.0.3.RELEASE/spring-beans-3.0.3.RELEASE.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/springframework/spring-core/3.0.3.RELEASE/spring-core-3.0.3.RELEASE.jar"/>
+	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
+	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER"/>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>
