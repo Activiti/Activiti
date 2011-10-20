@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="activiti.setup" default="demo.start">
+  
+  <!-- ### PROPERTIES #################################################################### -->
+
+  <property file="${user.home}/.activiti/build.properties" />
+  <property file="build.properties" />
+  <property file="build.db.properties" />
+
+  <property name="activiti.home" value=".." /> 
+  <property name="activiti.version" value="5.8-SNAPSHOT" />   
+  <property name="tomcat.url" value="http://activiti.org/downloads/" />
+  
+  <property name="cycle.workspace" location="${activiti.home}/workspace/activiti-cycle-examples"/>
+  <property name="activiti.modeler.base.url" value="http://localhost:8080/activiti-modeler/" />
+
+  <!-- ### OS PROPERTIES #################################################################### -->
+  
+  <condition property="is.windows">
+    <os family="Windows"/>
+  </condition>
+  
+  <condition property="is.not.windows">
+    <not>
+      <os family="Windows"/>
+    </not>
+  </condition>
+	
+	<!-- ### DEMO SETUP OPTIONAL FEATURES #################################################################### -->	
+  
+  <condition property="cycle.is.enabled">
+    <equals arg1="${feature.cycle}" arg2="enabled" />
+  </condition>
+  
+  <condition property="modeler.is.enabled">
+    <equals arg1="${feature.modeler}" arg2="enabled" />
+  </condition>
+  
+  <!-- ### EXAMPLES #################################################################### -->
+
+  <target name="inflate.examples"
+          description="Inflates the ${activiti.home}/workspace example projects with the required dependency libs"
+          depends="internal.cfg.create">
+  	
+    <mkdir dir="${activiti.home}/workspace/activiti-engine-examples/libs-runtime" />
+    <copy todir="${activiti.home}/workspace/activiti-engine-examples/libs-runtime">
+      <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.txt" />
+    </copy>
+    <mkdir dir="${activiti.home}/workspace/activiti-engine-examples/libs-test" />
+    <copy todir="${activiti.home}/workspace/activiti-engine-examples/libs-test">
+      <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.test.txt" />
+    </copy>
+
+    <mkdir dir="${activiti.home}/workspace/activiti-groovy-examples/libs-runtime" />
+    <copy todir="${activiti.home}/workspace/activiti-groovy-examples/libs-runtime">
+      <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.txt" />
+    </copy>
+    <mkdir dir="${activiti.home}/workspace/activiti-groovy-examples/libs-test" />
+    <copy todir="${activiti.home}/workspace/activiti-groovy-examples/libs-test">
+      <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.test.txt" />
+      <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.feature.groovy.txt" />
+    </copy>
+
+    <mkdir dir="${activiti.home}/workspace/activiti-jpa-examples/libs-runtime" />
+    <copy todir="${activiti.home}/workspace/activiti-jpa-examples/libs-runtime">
+      <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.txt" />
+    </copy>
+    <mkdir dir="${activiti.home}/workspace/activiti-jpa-examples/libs-test" />
+    <copy todir="${activiti.home}/workspace/activiti-jpa-examples/libs-test">
+      <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.test.txt" />
+      <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.feature.jpa.txt" />
+    </copy>
+    <move todir="${activiti.home}/workspace/activiti-jpa-examples/libs-runtime">
+      <fileset dir="${activiti.home}/workspace/activiti-jpa-examples/libs-test">
+        <include name="persistence-api-*.jar" />
+      </fileset>
+    </move>
+
+    <mkdir dir="${activiti.home}/workspace/activiti-spring-examples/libs-runtime" />
+    <copy todir="${activiti.home}/workspace/activiti-spring-examples/libs-runtime">
+      <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.spring.runtime.txt" />
+      <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.txt" />
+    </copy>
+    <mkdir dir="${activiti.home}/workspace/activiti-spring-examples/libs-test" />
+    <copy todir="${activiti.home}/workspace/activiti-spring-examples/libs-test">
+      <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.test.txt" />
+      <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.feature.jpa.txt" />
+      <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.spring.test.txt" />
+    </copy>
+    <move todir="${activiti.home}/workspace/activiti-spring-examples/libs-runtime">
+      <fileset dir="${activiti.home}/workspace/activiti-spring-examples/libs-test">
+        <include name="persistence-api-*.jar" />
+      </fileset>
+    </move>
+
+    <mkdir dir="${activiti.home}/workspace/activiti-cxf-examples/libs-runtime" />
+    <copy todir="${activiti.home}/workspace/activiti-cxf-examples/libs-runtime">
+      <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.txt" />
+      <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.feature.cxf.txt" />
+    </copy>
+    <mkdir dir="${activiti.home}/workspace/activiti-cxf-examples/libs-test" />
+    <copy todir="${activiti.home}/workspace/activiti-cxf-examples/libs-test">
+      <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.test.txt" />
+    </copy>
+  </target>
+  
+  <!-- ### DEMO SETUP #################################################################### -->
+  
+  <target name="demo.start"
+          description="Starts the demo setup and installs all components (if necessary)"
+          depends="demo.install,
+                   h2.start,
+                   tomcat.start,
+                   explorer.browser.open" />
+
+  <available property="demo.is.installed" file="${activiti.home}/apps"/>
+  
+  <target name="demo.install" 
+          description="Installs Tomcat and H2 database, deploys the Activiti webapps, creates the db schema and deploys example processes" 
+          unless="demo.is.installed">
+    <echo message="installing demo..." />
+    <antcall target="internal.build.webapps" />
+    <antcall target="h2.install" />
+    <antcall target="h2.start" />
+    <antcall target="internal.db.create" />
+    <antcall target="internal.db.demo.data" />
+    <antcall target="h2.stop" />
+    <antcall target="tomcat.install" />
+    <antcall target="deploy.activiti.webapps.into.tomcat" />
+  </target>
+
+  <target name="demo.clean" 
+          description="Deletes the setup/apps directory including Tomcat and H2 installations">
+    <delete dir="${activiti.home}/apps" />
+    <delete dir="${activiti.home}/setup/build" />
+  </target>
+
+  <target name="demo.stop" 
+          description="Stops tomcat and h2 database" 
+          depends="tomcat.stop, h2.stop"/>
+
+  <!-- ### DB #################################################################### -->
+  
+  <target name="internal.db.create" 
+  	      depends="internal.classpath.libs">
+    <echo message="creating db" />
+    <java classname="org.activiti.engine.impl.db.DbSchemaUpdate" classpathref="classpath.libs" />
+  </target>
+
+  <target name="internal.db.drop"
+          depends="internal.classpath.libs">
+    <java classname="org.activiti.engine.impl.db.DbSchemaDrop" classpathref="classpath.libs" />
+  </target>
+
+  <target name="internal.db.demo.data" 
+          depends="internal.cfg.create, internal.classpath.libs">
+
+    <echo message="populating demo data" />
+    
+    <mkdir dir="build/demo" />
+    <copy file="files/demo/${db}.data.sql" todir="build/demo" />
+    
+    <!-- replace some properties currently needed/used for cycle config -->
+    <replace file="build/demo/${db}.data.sql">
+      <replacefilter token="@activiti.modeler.base.url@" value="${activiti.modeler.base.url}" />
+      <replacefilter token="@cycle.base.file.path@" value="${cycle.workspace}" />
+    </replace>
+    <sql driver="${jdbc.driver}" 
+         password="${jdbc.password}" 
+         url="${jdbc.url}" 
+         userid="${jdbc.username}"
+         classpathref="classpath.libs" 
+         src="build/demo/${db}.data.sql"/>
+
+    <ant antfile="../workspace/activiti-engine-examples/build.xml" target="deploy" inheritall="false" />
+  </target>
+
+  <!-- ### DB #################################################################### -->
+  
+  <condition property="h2.not.installed">
+    <not><available file="${activiti.home}/apps/h2"/></not>
+  </condition>
+  
+  <condition property="db.install.supported">
+    <equals arg1="${db}" arg2="h2" />
+  </condition>
+
+	<target name="h2.install"
+          description="Installs the H2 db in the ${activiti.home}/apps/h2 directory"
+  	      depends="internal.db.install.h2, internal.db.install.h2.unnecessary, internal.db.install.unsupported" />
+
+	<target name="internal.db.install.h2"
+          if="h2.not.installed">
+		<echo message="Installing H2 database in ${activiti.home}/apps/h2" />
+    <mkdir dir="${activiti.home}/apps/h2" />
+    <copy todir="${activiti.home}/apps/h2">
+      <fileset dir="${activiti.home}/setup/files/dependencies/libs">
+        <include name="h2*.jar"/>
+      </fileset>
+      <fileset dir="files/h2" />
+    </copy>
+    <chmod perm="a+x">
+      <fileset dir="${activiti.home}/apps/h2">
+        <include name="*.sh"/>
+      </fileset>
+    </chmod>
+  </target>
+
+  <target name="internal.db.install.h2.unnecessary"
+	        unless="h2.not.installed">
+  	<echo message="H2 is already installed" />
+  </target>
+
+  <target name="internal.db.install.unsupported"
+          unless="db.install.supported">
+    <echo message="Automatic installation of ${db} DB not supported.  It is assumed to be installed and running" />
+  </target>
+
+  <target name="h2.start"
+          description="Starts the H2 server"
+          depends="internal.taskdef.launch">
+  	<echo message="starting H2 database..." />
+    <launch dir="${activiti.home}/apps/h2"
+            script="h2.start"
+            msg="TCP server running on"/>
+  	<echo message="H2 database started" />
+  </target>
+  
+  <target name="h2.stop"
+          description="Stops the H2 server"
+          depends="internal.taskdef.launch">
+    <launch dir="${activiti.home}/apps/h2"
+            script="h2.stop"/>
+  </target>
+
+  <target name="h2.console.start"
+          description="Launches the H2 web console and opens a browser on the page"
+          depends="internal.taskdef.launch">
+    <echo message="H2 Web Console" />
+    <echo message="==============" />
+    <echo message="JDBC URL: jdbc:h2:tcp://localhost/activiti" />
+    <echo message="Press CTRL+C to shutdown the console." />
+    <echo message="" />
+    <launch dir="${activiti.home}/apps/h2"
+            script="h2.console.start" /> <!-- Not using a launch complete msg, since there is no way
+                                              of stopping the h2 console later on,
+                                              so we don't want to let the ant task return--> 
+  </target>
+
+
+  <!-- ### TOMCAT #################################################################### -->
+
+  <property name="tomcat.home" value="${activiti.home}/apps/apache-tomcat-${tomcat.version}" /> 
+  <property name="tomcat.filename" value="apache-tomcat-${tomcat.version}.zip" /> 
+  <property name="tomcat.download.url" value="${tomcat.url}${tomcat.filename}" />    
+  <property name="tomcat.java.opts" value="-server -Xms128m -Xmx512m -XX:NewSize=64m -XX:MaxNewSize=64m -XX:PermSize=256m -XX:MaxPermSize=512m -Dfile.encoding=UTF-8" /> 
+  <property name="tomcat.distro" value="${downloads.dir}/${tomcat.filename}" />
+  <available property="is.tomcat.installed" file="${tomcat.home}/bin" />
+  <available property="is.tomcat.available" file="${tomcat.distro}" />
+  <available file="${user.home}/.activiti/tomcat-users.xml" property="tomcat.users.available" />
+
+  <target name="tomcat.install"
+          description="Installs apache tomcat in ${activiti.home}/apps/apache-tomcat-${tomcat.version}"
+          unless="is.tomcat.installed">
+    <antcall target="internal.tomcat.download" />
+    <antcall target="internal.tomcat.unzip" />
+    <antcall target="internal.tomcat.copy.users" />
+    <antcall target="internal.tomcat.enable.debug" />
+    <antcall target="internal.tomcat.apply.javaopts.other" />
+    <antcall target="internal.tomcat.apply.javaopts.windows" />
+    <copy file="${activiti.home}/setup/files/tomcat/logging.properties" todir="${tomcat.home}/conf" overwrite="true" /> 
+  </target>
+
+  <target name="internal.tomcat.download" unless="is.tomcat.available">
+    <mkdir dir="${downloads.dir}" />
+    <get src="${tomcat.download.url}" dest="${tomcat.distro}" />
+  </target>
+
+  <target name="internal.tomcat.unzip">
+    <mkdir dir="${activiti.home}/apps" />
+    <unzip src="${tomcat.distro}" dest="${activiti.home}/apps"/>
+  </target>
+
+  <target name="internal.download.tomcat" unless="is.tomcat.available">
+    <mkdir dir="${downloads.dir}" />
+    <get src="${tomcat.download.url}" dest="${tomcat.distro}" />
+  </target>
+
+  <target name="internal.tomcat.copy.users" if="tomcat.users.available">
+    <copy file="${user.home}/.activiti/tomcat-users.xml" 
+          todir="${tomcat.home}/conf" 
+          overwrite="true"/>
+  </target>
+
+  <target name="internal.tomcat.enable.debug" if="tomcat.enable.debug">
+    <echo>Enabling tomcat remote debugging ... </echo>
+    <replace file="${tomcat.home}/bin/startup.sh">
+      <replacetoken><![CDATA[exec "$PRGDIR"/"$EXECUTABLE" start "$@"]]></replacetoken>
+      <replacevalue><![CDATA[exec "$PRGDIR"/"$EXECUTABLE" jpda start "$@"]]></replacevalue>
+    </replace>
+    <replace file="${tomcat.home}/bin/startup.bat">
+      <replacetoken><![CDATA[call "%EXECUTABLE%" start %CMD_LINE_ARGS%]]></replacetoken>
+      <replacevalue><![CDATA[call "%EXECUTABLE%" jpda start %CMD_LINE_ARGS%]]></replacevalue>
+    </replace>
+  </target>
+  
+  <target name="internal.tomcat.apply.javaopts.other" if="is.not.windows">
+    <replace file="${tomcat.home}/bin/catalina.sh">
+      <replacetoken><![CDATA[#!/bin/sh]]></replacetoken>
+      <replacevalue><![CDATA[#!/bin/sh
+
+JAVA_OPTS=$JAVA_OPTS" @tomcat.java.opts@"
+]]></replacevalue>
+    </replace>
+    <replace file="${tomcat.home}/conf/server.xml">
+      <replacetoken><![CDATA[port="8080"]]></replacetoken>
+      <replacevalue><![CDATA[port="8080" URIEncoding="UTF-8"]]></replacevalue>
+    </replace>
+    <replace file="${tomcat.home}/bin/catalina.sh" token="@tomcat.java.opts@" value="${tomcat.java.opts}" />
+    <chmod perm="a+x" os="Linux, Mac OS X">
+      <fileset dir="${tomcat.home}/bin">
+        <include name="*.sh" />
+      </fileset>
+    </chmod>
+  </target>
+
+  <target name="internal.tomcat.apply.javaopts.windows" if="is.windows">
+    <replace file="${tomcat.home}/bin/catalina.bat">
+      <replacetoken><![CDATA[rem ----- Execute The Requested Command ---------------------------------------]]></replacetoken>
+      <replacevalue><![CDATA[rem ----- Execute The Requested Command ---------------------------------------
+
+set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
+]]></replacevalue>
+    </replace> 
+    <replace file="${tomcat.home}/conf/server.xml">
+      <replacetoken><![CDATA[port="8080"]]></replacetoken>
+      <replacevalue><![CDATA[port="8080" URIEncoding="UTF-8"]]></replacevalue>
+    </replace>    
+    <replace file="${tomcat.home}/bin/catalina.bat" token="@tomcat.java.opts@" value="${tomcat.java.opts}"/>
+  </target>
+
+  <target name="tomcat.start"
+          description="Starts the tomcat server"
+          depends="internal.taskdef.launch">
+    <launch dir="${activiti.home}/apps/apache-tomcat-${tomcat.version}/bin"
+            script="startup"
+            msg="Using CLASSPATH:" />
+  </target>
+
+  <target name="tomcat.stop" 
+          description="Stops the tomcat server"
+          depends="internal.taskdef.launch">
+    <launch dir="${activiti.home}/apps/apache-tomcat-${tomcat.version}/bin"
+            script="shutdown"
+            msg="Using CLASSPATH:"/>
+  </target>
+
+  
+  <!-- ### DEPLOY TO TOMCAT #################################################################### -->
+
+  <target name="deploy.activiti.webapps.into.tomcat" 
+          depends="internal.build.webapps, 
+                   internal.deploy.activiti.rest.into.tomcat,
+                   internal.deploy.activiti.explorer.into.tomcat" />
+
+  <target name="internal.build.webapps"
+          depends="internal.define.jdbc.driver.libs">
+    <mkdir dir="${activiti.home}/setup/build/webapps" />
+    <copy todir="${activiti.home}/setup/build/webapps">
+      <fileset dir="${activiti.home}/setup/files/webapps" />
+    </copy>
+  	
+  	<!-- Activiti Explorer -->
+    <copy todir="${activiti.home}/setup/build/webapps/activiti-explorer.war/WEB-INF/lib">
+      <fileset dir="${activiti.home}/setup/files/dependencies/libs" 
+               includesfile="${activiti.home}/setup/files/dependencies/libs.webapp.explorer.txt" />
+    </copy>
+  	<propertyfile file="${activiti.home}/setup/build/webapps/activiti-explorer.war/WEB-INF/classes/db.properties">
+  	  <entry key="db" value="${db}" />
+  		<entry key="jdbc.driver" value="${jdbc.driver}" />
+  	  <entry key="jdbc.url" value="${jdbc.url}" />
+  		<entry key="jdbc.username" value="${jdbc.username}" />
+  	  <entry key="jdbc.password" value="${jdbc.password}" />
+  	</propertyfile>
+  	
+  	<!-- Activiti Rest -->
+    <copy todir="${activiti.home}/setup/build/webapps/activiti-rest.war/WEB-INF/lib">
+      <fileset dir="${activiti.home}/setup/files/dependencies/libs" 
+               includesfile="${activiti.home}/setup/files/dependencies/libs.webapp.rest.txt" />
+      <fileset dir="${activiti.home}/setup/files/dependencies/libs" 
+               includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.feature.groovy.txt" />
+      <fileset dir="${activiti.home}/setup/files/dependencies/libs" 
+               includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.feature.cxf.txt" />
+      <fileset refid="jdbc.driver.libs" />
+    </copy>
+  </target>
+  
+  <target name="internal.deploy.activiti.rest.into.tomcat">
+    <mkdir dir="${tomcat.home}/webapps/activiti-rest" />
+    <copy todir="${tomcat.home}/webapps/activiti-rest">
+      <fileset dir="${activiti.home}/setup/build/webapps/activiti-rest.war"/>
+    </copy>
+  </target>
+  
+  <target name="internal.deploy.activiti.explorer.into.tomcat">
+    <mkdir dir="${tomcat.home}/webapps/activiti-explorer" />
+    <copy todir="${tomcat.home}/webapps/activiti-explorer">
+      <fileset dir="${activiti.home}/setup/build/webapps/activiti-explorer.war" />
+    </copy>
+  </target>
+	
+  <!-- ### LAUNCH TASKDEF AND CLASSPATH #################################################################### -->
+
+  <target name="internal.taskdef.launch" 
+          depends="internal.classpath.libs">
+    <taskdef name="launch" classname="org.activiti.engine.impl.ant.LaunchTask" classpathref="classpath.libs" />
+  </target>
+  
+  <target name="internal.classpath.libs" depends="internal.cfg.create">
+    <path id="classpath.libs">
+      <fileset dir="${activiti.home}/setup/files/dependencies/libs">
+        <include name="*.jar" />
+      </fileset>
+      <fileset dir="${activiti.home}/setup/build">
+        <include name="activiti-cfg.jar" />
+      </fileset>
+    </path>
+  </target>
+  
+  <target name="internal.define.jdbc.driver.libs">
+    <fileset id="jdbc.driver.libs" dir="${activiti.home}/setup/files/dependencies/libs">
+      <include name="h2-*.jar" />
+    </fileset>
+  </target>
+
+  
+  <!-- ### OPEN BROWSER #################################################################### -->
+  
+  <property name="macos.browser" value="/usr/bin/open" />
+  <property name="windows.browser" value="C:/Program Files/Mozilla Firefox/firefox.exe" />
+  <property name="linux.browser" value="firefox" />
+
+  <target name="explorer.browser.open">
+    <!-- Sleep for 5 second to be sure tomcat coyote http-connector is ready to accept connections -->
+    <sleep seconds="5"/>
+    <open-html-page url="http://localhost:8080/activiti-explorer" />
+  </target>
+	
+	<macrodef name="open-html-page">
+		<attribute name="url" />
+		<sequential>
+	    <exec executable="${macos.browser}" os="Mac OS X" failifexecutionfails="false" failonerror="false">
+	      <arg value="@{url}" />
+	    </exec>
+	    <exec executable="cmd" os="Windows Vista, Windows XP,Windows 2000,Windows 98" failifexecutionfails="false" failonerror="false">
+	      <arg value="/C start &quot;${windows.browser}&quot; &quot;@{url}&quot;" />
+	    </exec>
+	      <exec executable="${linux.browser}" os="Linux" failifexecutionfails="false" failonerror="false">
+	      <arg value="@{url}" />
+	    </exec>
+		</sequential>
+	</macrodef>
+	
+	<!-- ### CFG #################################################################### -->
+
+	<target name="internal.cfg.create">
+	  <mkdir dir="${activiti.home}/setup/build/activiti-cfg" />
+	  <copy todir="${activiti.home}/setup/build/activiti-cfg" overwrite="true">
+	    <filterset filtersfile="build.db.properties" />
+	    <fileset dir="files/cfg.activiti/${tx}" />
+	  </copy>
+	  <zip destfile="${activiti.home}/setup/build/activiti-cfg.jar">
+	    <fileset dir="${activiti.home}/setup/build/activiti-cfg" />
+	  </zip>
+	  <echo message="copying configuration to ${activiti.home}/workspace/activiti-engine-examples/src/main/config" />
+	  <mkdir dir="${activiti.home}/workspace/activiti-engine-examples/src/main/config" />
+	  <unzip src="${activiti.home}/setup/build/activiti-cfg.jar" dest="${activiti.home}/workspace/activiti-engine-examples/src/main/config" />
+	  <replace file="${activiti.home}/workspace/activiti-engine-examples/src/main/config/activiti.cfg.xml">
+	    <replacetoken><![CDATA[<!-- Database configurations -->]]></replacetoken>
+	    <replacevalue><![CDATA[<!-- 
+	    This configuration file is used by the deploy target 
+	    in the build.xml in the root of the activiti-engine-examples 
+	    project
+	    
+	    This configuration is generated by the setup script
+	    If you run the cfg.create target in the setup, keep 
+	    in mind that this file might be overwritten.
+	    -->
+	    
+	    <!-- Database configurations  -->]]></replacevalue>
+	  </replace>
+	</target>
+
+</project>

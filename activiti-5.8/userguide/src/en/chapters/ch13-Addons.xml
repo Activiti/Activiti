@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">
+
+<chapter>
+
+  <title>Activiti add-on components</title>
+  
+  <section id="cycle">
+    <title>Cycle</title>
+	  <para>
+	    Started off as Activiti Cycle and now moved to the <ulink url="http://www.camunda.com/fox">camunda fox BPM Platform</ulink>, 
+	    <ulink url="http://fox.camunda.com/doc/#cycle">Cycle</ulink> is web application that provides a collaborative platform for different stakeholders 
+	    of BPM projects (Business, analysts, developers, managers, IT operations, ...).
+	    It combines different data sources like the Activiti Modeler repository, Subversion or your local file system into a single view 
+	    which makes it easy to browse all the artifacts (process models, development projects, requirements, ...)
+	    that are involved in such a project. Additionally you can maintain relationships between them and Cycle
+	    provides built in actions like moving artifacts between repositories or downloading different
+	    formats of process models. A plug-in infrastructure is provided to hook in own repositories, actions or functionality.
+	  </para>
+	  <para>
+	    The concept of Cycle, especially with the philosophie of Business-IT-Alignment is new. You might best compare it 
+	    to Application Lifecycle Management (ALM) tools. Cycle is developed by <ulink url="http://camunda.com">camunda</ulink>
+	    and the documentation can be found in the <ulink url="http://fox.camunda.com/doc/#cycle">camunda fox documentation</ulink>.	    
+	  </para>
+  </section>
+
+  <section id="activitiModeler">
+    <title>Activiti Modeler based on Signavio Core components</title>
+    <para>Signavio has a web based BPMN process modeler.  There is a tweaked version for 
+    easy development with a file based backend.  That can be found in 
+    the Google project <ulink url="http://code.google.com/p/signavio-core-components/">Signavio core components</ulink>
+    </para> 
+    <para>We've documented some instructions on how to build it and how to use it with Activiti in the wiki page 
+    <ulink url="http://docs.codehaus.org/display/ACT/How+to+build+Activiti+Modeler+from+Signavio">How to build Activiti Modeler from Signavio</ulink> 
+    </para>
+  </section>
+
+</chapter>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="repeating">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="service" />
+    
+    <serviceTask id="service" activiti:class="org.activiti.engine.test.bpmn.servicetask.DummyServiceTask" />
+    <sequenceFlow id="flow2" sourceRef="service" targetRef="exclusive" />
+    
+    <exclusiveGateway id="exclusive" default="flow4" />
+    <sequenceFlow id="flow3" sourceRef="exclusive" targetRef="theEnd">
+      <conditionExpression>
+         <![CDATA[${count > 1000}]]>
+      </conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow4" sourceRef="exclusive" targetRef="service" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="CompetingSignalsProcess">
+  
+    <startEvent id="start" />
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="waitOne" />
+
+    <receiveTask id="waitOne" />
+    <sequenceFlow id="flow2" sourceRef="waitOne" targetRef="controlledConcurrency" />
+    
+    <serviceTask id="controlledConcurrency" activiti:class="org.activiti.engine.test.concurrency.CompetingSignalsTest$ControlledConcurrencyBehavior"/>
+    <sequenceFlow id="flow3" sourceRef="controlledConcurrency" targetRef="waitTwo" />
+
+    <receiveTask id="waitTwo" />
+    
+  </process>
+
+</definitions>

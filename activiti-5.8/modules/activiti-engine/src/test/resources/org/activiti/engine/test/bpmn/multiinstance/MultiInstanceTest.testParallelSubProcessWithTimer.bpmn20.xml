@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definition" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="miParallelSubprocessWithTimer">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="miSubProcess" />
+    
+    <subProcess id="miSubProcess">
+      <multiInstanceLoopCharacteristics isSequential="false">
+        <loopCardinality>3</loopCardinality>
+      </multiInstanceLoopCharacteristics>
+      
+      <startEvent id="subProcessStart" />
+      <sequenceFlow id="subFlow1" sourceRef="subProcessStart" targetRef="subProcessFork" />
+      
+      <parallelGateway id="subProcessFork" />
+      <sequenceFlow id="subFlow2" sourceRef="subProcessFork" targetRef="subProcessTask1" />
+      <sequenceFlow id="subFlow3" sourceRef="subProcessFork" targetRef="subProcessTask2" />
+      
+      <userTask id="subProcessTask1" name="task one" />
+      <sequenceFlow id="subFlow4" sourceRef="subProcessTask1" targetRef="subProcessEnd1" />
+      <endEvent id="subProcessEnd1" />  
+      
+      <userTask id="subProcessTask2" name="task two" />
+      <sequenceFlow id="subFlow5" sourceRef="subProcessTask2" targetRef="subProcessEnd2" />
+      <endEvent id="subProcessEnd2" />  
+      
+    </subProcess>
+    
+    <boundaryEvent id="timer" attachedToRef="miSubProcess">
+      <timerEventDefinition>
+        <timeDuration>PT1H</timeDuration>
+      </timerEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="flow3" sourceRef="timer" targetRef="taskAfterTimer" />
+    <userTask id="taskAfterTimer" />
+    
+    <sequenceFlow id="flow4" sourceRef="miSubProcess" targetRef="theEnd" />
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

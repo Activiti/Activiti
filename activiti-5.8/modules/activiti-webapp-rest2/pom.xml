@@ -1,0 +1,87 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<name>Activiti - Rest</name>
+	<groupId>org.activiti</groupId>
+	<artifactId>activiti-webapp-rest2</artifactId>
+	<packaging>war</packaging>
+
+  <parent>
+    <groupId>org.activiti</groupId>
+    <artifactId>activiti-root</artifactId>
+    <relativePath>../..</relativePath>
+    <version>5.8-SNAPSHOT</version>
+  </parent>
+
+	<build>
+		<plugins>
+			<!-- A simple Jetty test server at http://localhost:8080/activiti-webapp-rest can be launched with the Maven goal jetty:run 
+        and stopped with jetty:stop -->
+      <plugin>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>maven-jetty-plugin</artifactId>
+        <version>6.1.24</version>
+        <configuration>
+          
+          <stopPort>9966</stopPort>
+          <stopKey>activiti-webapp-rest</stopKey>
+          <!-- Redeploy every x seconds if changes are detected, 0 for no automatic redeployment -->
+          <scanIntervalSeconds>0</scanIntervalSeconds>
+          <!-- make sure Jetty also finds the widgetset -->
+          <webAppConfig>
+            <contextPath>/activiti-rest</contextPath>
+            <baseResource implementation="org.mortbay.resource.ResourceCollection">
+              <resourcesAsCSV>src/main/webapp</resourcesAsCSV>
+            </baseResource>
+          </webAppConfig>
+        </configuration>
+      </plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.activiti</groupId>
+			<artifactId>activiti-engine</artifactId>
+		</dependency>
+    
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+    </dependency>
+    
+    <dependency>  
+      <groupId>org.restlet.jee</groupId>  
+      <artifactId>org.restlet</artifactId>   
+    </dependency>  
+    <dependency>  
+      <groupId>org.restlet.jee</groupId>  
+      <artifactId>org.restlet.ext.servlet</artifactId>   
+    </dependency>
+    <dependency>  
+      <groupId>org.restlet.jee</groupId>  
+      <artifactId>org.restlet.ext.jackson</artifactId>  
+    </dependency>
+    <dependency>  
+      <groupId>org.restlet.jee</groupId>  
+      <artifactId>org.restlet.ext.fileupload</artifactId>   
+    </dependency>
+    
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-fileupload</groupId>
+      <artifactId>commons-fileupload</artifactId>
+    </dependency>
+
+  </dependencies>
+</project>

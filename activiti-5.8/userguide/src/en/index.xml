@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book [
+  <!ENTITY ch01 SYSTEM "chapters/ch01-Introduction.xml">
+  <!ENTITY ch02 SYSTEM "chapters/ch02-GettingStarted.xml">
+  <!ENTITY ch03 SYSTEM "chapters/ch03-Configuration.xml">
+  <!ENTITY ch04 SYSTEM "chapters/ch04-Spring.xml">
+  <!ENTITY ch05 SYSTEM "chapters/ch05-API.xml">
+  <!ENTITY ch06 SYSTEM "chapters/ch06-Deployment.xml">
+  <!ENTITY ch07 SYSTEM "chapters/ch07-BPMN.xml">
+  <!ENTITY ch08 SYSTEM "chapters/ch08-Forms.xml">
+  <!ENTITY ch09 SYSTEM "chapters/ch09-JPA.xml">
+  <!ENTITY ch10 SYSTEM "chapters/ch10-History.xml">
+  <!ENTITY ch11 SYSTEM "chapters/ch11-Designer.xml">
+  <!ENTITY ch12 SYSTEM "chapters/ch12-Explorer.xml">
+  <!ENTITY ch13 SYSTEM "chapters/ch13-Addons.xml">
+  <!ENTITY ch14 SYSTEM "chapters/ch14-REST.xml">
+  <!ENTITY ch15 SYSTEM "chapters/ch15-Cdi.xml">
+]>
+
+<book>
+
+  <bookinfo><title>Activiti 5.8-SNAPSHOT User Guide</title></bookinfo>
+  
+  <toc />
+  
+&ch01;
+&ch02;
+&ch03;
+&ch04;
+&ch05;
+&ch06;
+&ch07;
+&ch08;
+&ch09;
+&ch10;
+&ch11;
+&ch12;
+&ch13;
+&ch14;
+&ch15;
+
+</book>

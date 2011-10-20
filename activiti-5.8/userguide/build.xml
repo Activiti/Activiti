@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="activiti.userguide" default="build.userguide">
+
+	<!-- 
+	Special thanks to Las Vogel for his great online instructions
+	http://www.vogella.de/articles/DocBook/article.html
+	-->
+	
+  <property name="docbooktool.version" value="1.0" />
+  <property name="docbooktool.dir" value="target/docbook-tool-${docbooktool.version}" />
+  <property name="docbook.xsl.dir" value="${docbooktool.dir}/docbook-xsl" />
+	<property name="html.stylesheet" value="${docbook.xsl.dir}/html/docbook.xsl" />
+  <property name="fo.stylesheet" value="${docbook.xsl.dir}/fo/docbook.xsl" />
+  <condition property="mvn.executable" value="mvn.bat" else="mvn">
+     <os family="windows"/>
+  </condition>
+
+	<available file="${docbooktool.dir}" property="docbooktool.is.available" />
+
+	<condition property="is.windows">
+		<os family="windows"/>
+	</condition>
+
+	<property name="ant.libs" value="${user.home}/.ant/lib" />
+  <condition property="xalan.libs.installed">
+    <and>
+    	<available file="${ant.libs}/" property="one" />
+    	<available file="${docbooktool.dir}" property="two" />
+    </and>
+  </condition>
+
+	<target name="build.userguide" depends="install.docbooktool, build.html" />
+	
+  <path id="xslt.classpath">
+    <fileset dir="${docbooktool.dir}/xalan">
+        <include name="*.jar"/>
+    </fileset>
+  </path>
+
+  <path id="fop.classpath">
+    <fileset dir="${docbooktool.dir}/fop">
+        <include name="*.jar"/>
+    </fileset>
+  </path>
+
+	<target name="clean" description="Cleans up generated files.">
+    <delete dir="target/html" />
+    <delete dir="target/pdf" />
+    <delete dir="target/tmp" />
+	</target>
+
+  <target name="install.docbooktool" unless="docbooktool.is.available">
+  	<mkdir dir="target" />
+    <exec executable="${mvn.executable}">
+      <arg line="compile" />
+    </exec>
+  </target>
+	
+	<!-- 
+	     Fix for a known bug in ant:
+	     Normally, when executing XSLT with JAXP (eg for generating docbook), a JAXP implementation jar will have 
+	     precedence on the classes shipped in the JDK (com.sun.org.apache.xalan..., which is an old version of Xalan)
+	     However, providing such jars in the classpath element of the xslt task DOES NOT WORK,
+	     and hence the internal sun classes will ALWAYS be used (and they are crap).
+	     Therefore, the xalan libs must be installed in user.home/.ant/lib, which 
+	     will make the xslt task use these jars instead of the internal JDK ones.
+  -->
+	<target name="install.xalan.libs" depends="install.docbooktool">
+    <mkdir dir="${user.home}/.ant/lib"/>
+	  <copy todir="${user.home}/.ant/lib">
+	    <fileset dir="${docbooktool.dir}/xalan">
+	      <include name="*.jar" />
+	    </fileset>
+	  </copy>
+	</target>
+
+	<target name="prepare.src">
+		<mkdir dir="target/prepared-src" />
+		<copy todir="target/prepared-src" overwrite="true">
+			<fileset dir="src" />
+		</copy>
+		<antcall target="windows.convert.line.endings"/>
+		<replace value="" dir="target/prepared-src/en/chapters">
+			<include name="*.xml"/>
+			<replacetoken><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">]]></replacetoken>
+		</replace>
+	</target>
+
+	<target name="windows.convert.line.endings" if="is.windows">
+		<echo message="CONVERTING CRLF for windows"/>
+		<fixcrlf srcdir="target/prepared-src/en/chapters" includes="*.xml"
+         eol="crlf" eof="remove" />	
+	</target>
+
+	<target name="build.html"
+		      depends="prepare.src"
+		      description="Generates HTML files from DocBook XML">
+    <mkdir dir="target/html" />
+		<echo message="Executing docbook XSLT on userguide source files." />
+		<echo message="On failure, make sure that you have installed the Xalan libs by executing the 'install.xalan.libs' target in the 'userguide' folder."></echo>
+		<xslt style="${html.stylesheet}" extension=".html" basedir="target/prepared-src" destdir="target/html">
+			<include name="en/index.xml" />
+			<param name="html.stylesheet" expression="style.css" />
+			<!-- <classpath refid="xslt.classpath" /> 
+			      Does not work -> known bug!! 
+			      Will NEVER use the xalan libs, but always the com.sun.xslt stuff (==crap). 
+			      Call the 'install.xalan.libs' first to get it working.-->
+		</xslt>
+		<copy todir="target/html/en">
+			<fileset dir="target/prepared-src">
+				<include name="style.css" />
+			</fileset>
+      <fileset dir="src/en">
+        <include name="images/**" />
+      </fileset>
+			<fileset dir="src/en/js">
+		    <include name="**" />
+			</fileset>
+		</copy>
+		
+		<!-- post html generation prettifying -->
+		<!-- TODO: replace with something more intelligent -->
+		<replace file="target/html/en/index.html">
+		  <replacetoken><![CDATA[<link href="style.css" rel="stylesheet" type="text/css">]]></replacetoken>
+			<replacevalue><![CDATA[<link href="style.css" rel="stylesheet" type="text/css">
+				<script type="text/javascript" src="prettify.js"></script>]]></replacevalue>
+		</replace>
+		<replace file="target/html/en/index.html">
+		  <replacetoken><![CDATA[<body bgcolor="white"]]></replacetoken>
+		  <replacevalue><![CDATA[<body onload="prettyPrint()" bgcolor="white"]]></replacevalue>
+		</replace>
+		<replace file="target/html/en/index.html">
+		  <replacetoken><![CDATA[programlisting]]></replacetoken>
+		  <replacevalue><![CDATA[prettyprint]]></replacevalue>
+		</replace>
+		
+	</target>
+	
+	<target name="build.pdf">
+		<mkdir dir="target/tmp" />
+		<xslt style="${fo.stylesheet}" extension=".fo" basedir="src" destdir="target/tmp">
+      <include name="en/index.xml" />
+	    <param name="section.autolabel" expression="1" />
+	  </xslt>
+    <taskdef name="fop" 
+             classname="org.apache.fop.tools.anttasks.Fop" 
+             classpathref="fop.classpath"/>
+	  <fop format="application/pdf" outdir="target/pdf">
+	    <fileset dir="target/tmp">
+	      <include name="**/*.fo" />
+	    </fileset>
+	  </fop>
+	</target>
+
+</project>

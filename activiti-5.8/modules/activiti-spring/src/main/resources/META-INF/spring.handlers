@@ -1,0 +1,1 @@
+http\://www.activiti.org/schema/spring/components=org.activiti.spring.components.config.xml.ActivitiNamespaceHandler

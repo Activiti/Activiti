@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions id="definitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="Examples">
+
+    <process id="BackwardsCompatibleExpressionProcess">
+
+        <startEvent id="theStart"/>
+
+        <sequenceFlow sourceRef="theStart"
+                      targetRef="delegate"/>
+
+        <serviceTask id="delegate"
+                     activiti:class="org.activiti.examples.bpmn.servicetask.BackwardsCompatibleExpressionDelegate">
+		      <extensionElements>
+		        <activiti:field name="expression">
+		          <activiti:expression>...${var}...</activiti:expression>
+		        </activiti:field>
+          </extensionElements>
+        </serviceTask>
+
+        <sequenceFlow sourceRef="delegate"
+                      targetRef="wait"/>
+
+        <receiveTask id="wait"/>
+
+    </process>
+
+</definitions>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  targetNamespace="Examples">
+
+  <process id="createTimersProcess" name="Create timers process">
+    <documentation>Test process to create a number of timers.</documentation>
+    <startEvent id="theStart">
+      <extensionElements>
+        <activiti:formProperty id="throwException" name="Throw exception when executing timer"
+          type="enum" required="true">
+          <activiti:value id="true" name="Yes, please" />
+          <activiti:value id="false" name="No thanks" />
+        </activiti:formProperty>
+        <activiti:formProperty id="duration" name="Timer duration" type="enum" required="true">
+          <activiti:value id="long" name="One hour" />
+          <activiti:value id="short" name="10 seconds" />
+        </activiti:formProperty>
+      </extensionElements>
+    </startEvent>
+
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="exclusiveGw" />
+
+    <exclusiveGateway id="exclusiveGw" name="Exclusive Timer duration gateway" />
+
+    <sequenceFlow id="flow2" sourceRef="exclusiveGw" targetRef="longTimerTask">
+      <conditionExpression xsi:type="tFormalExpression">${duration == 'long'}</conditionExpression>
+    </sequenceFlow>
+
+    <sequenceFlow id="flow3" sourceRef="exclusiveGw" targetRef="shortTimerTask">
+      <conditionExpression xsi:type="tFormalExpression">${duration == 'short'}</conditionExpression>
+    </sequenceFlow>
+
+    <userTask id="longTimerTask" name="Task with timer on it">
+      <documentation>This task has a timer on it</documentation>
+    </userTask>
+    <boundaryEvent id="longTimer" cancelActivity="true" attachedToRef="longTimerTask">
+      <timerEventDefinition>
+        <timeDuration>PT1H</timeDuration>
+      </timerEventDefinition>
+    </boundaryEvent>
+
+    <sequenceFlow id="flow4" sourceRef="longTimerTask" targetRef="theEnd" />
+    <sequenceFlow id="flow5" sourceRef="longTimer" targetRef="longTimerExpire" />
+
+    <scriptTask id="longTimerExpire" name="Execute script" scriptFormat="groovy">
+      <script>
+        if(throwException == 'true') {
+          throw new java.lang.RuntimeException('Activiti Engine Rocks!');
+        }
+      </script>
+    </scriptTask>
+
+    <sequenceFlow id="flow6" sourceRef="longTimerExpire" targetRef="theEnd" />
+
+    <userTask id="shortTimerTask" name="my task">
+     
+    </userTask>
+    <boundaryEvent id="shortTimer" cancelActivity="true" attachedToRef="shortTimerTask">
+      <timerEventDefinition>
+        <timeDuration>PT10S</timeDuration>
+      </timerEventDefinition>
+    </boundaryEvent>
+
+    <sequenceFlow id="flow7" sourceRef="shortTimerTask" targetRef="theEnd" />
+    <sequenceFlow id="flow8" sourceRef="shortTimer" targetRef="shortTimerExpire" />
+    
+    <scriptTask id="shortTimerExpire" name="Execute script" scriptFormat="js">
+      <script>
+        if(throwException == 'true') {
+          throw new java.lang.RuntimeException('Activiti Engine Rocks!');
+        }
+      </script>
+    </scriptTask>
+
+    <sequenceFlow id="flow9" sourceRef="shortTimerExpire" targetRef="theEnd" />
+
+    <endEvent id="theEnd" />
+
+  </process>
+
+</definitions>

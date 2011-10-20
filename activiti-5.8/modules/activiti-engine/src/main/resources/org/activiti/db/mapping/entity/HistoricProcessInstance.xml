@@ -1,0 +1,147 @@
+
+<!--
+<?xml version="1.0" encoding="UTF-8" ?>
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity">
+
+  <!-- HISTORIC PROCESS INSTANCE INSERT -->
+  
+  <insert id="insertHistoricProcessInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity">
+      insert into ACT_HI_PROCINST (
+        ID_,
+        PROC_INST_ID_,
+        BUSINESS_KEY_,
+        PROC_DEF_ID_,
+        START_TIME_,
+        END_TIME_,
+        DURATION_,
+        START_USER_ID_,
+        START_ACT_ID_,
+        END_ACT_ID_,
+        SUPER_PROCESS_INSTANCE_ID_
+      ) values (
+        #{id ,jdbcType=VARCHAR},
+        #{processInstanceId, jdbcType=VARCHAR},
+        #{businessKey, jdbcType=VARCHAR},
+        #{processDefinitionId, jdbcType=VARCHAR},
+        #{startTime, jdbcType=TIMESTAMP},
+        #{endTime, jdbcType=TIMESTAMP},
+        #{durationInMillis ,jdbcType=BIGINT},
+        #{startUserId, jdbcType=VARCHAR},
+        #{startActivityId, jdbcType=VARCHAR},
+        #{endActivityId, jdbcType=VARCHAR},
+        #{superProcessInstanceId, jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <!-- HISTORIC PROCESS INSTANCE UPDATE -->
+  
+  <update id="updateHistoricProcessInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity">
+    update ACT_HI_PROCINST set
+      START_TIME_ = #{startTime, jdbcType=TIMESTAMP},
+      END_TIME_ = #{endTime, jdbcType=TIMESTAMP},
+      DURATION_ = #{durationInMillis ,jdbcType=BIGINT},
+      END_ACT_ID_ = #{endActivityId, jdbcType=VARCHAR}        
+    where ID_ = #{id}
+  </update>
+
+  <!-- HISTORIC PROCESS INSTANCE DELETE -->
+  
+  <delete id="deleteHistoricProcessInstance">
+    delete from ACT_HI_PROCINST where PROC_INST_ID_ = #{processInstanceId}
+  </delete>
+
+  <!-- HISTORIC PROCESS INSTANCE RESULT MAP -->
+  
+  <resultMap id="historicProcessInstanceResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="businessKey" column="BUSINESS_KEY_" jdbcType="VARCHAR"/>
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
+    <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
+    <result property="endTime" column="END_TIME_" jdbcType="TIMESTAMP" />
+    <result property="durationInMillis" column="DURATION_" jdbcType="BIGINT" />
+    <result property="startUserId" column="START_USER_ID_" jdbcType="VARCHAR" />
+    <result property="startActivityId" column="START_ACT_ID_" jdbcType="VARCHAR" />
+    <result property="endActivityId" column="END_ACT_ID_" jdbcType="VARCHAR" />
+    <result property="superProcessInstanceId" column="SUPER_PROCESS_INSTANCE_ID_" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <!-- HISTORIC PROCESS INSTANCE SELECT -->
+  
+  <select id="selectHistoricProcessInstance" resultMap="historicProcessInstanceResultMap">
+    select * from ACT_HI_PROCINST where PROC_INST_ID_ = #{processInstanceId}
+  </select>
+
+  <select id="selectHistoricProcessInstanceIdsByProcessDefinitionId" parameterType="string" resultType="string">
+    select ID_
+    from ACT_HI_PROCINST 
+    where PROC_DEF_ID_ = #{processDefinitionId}
+  </select>
+  
+
+  <select id="selectHistoricProcessInstancesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricProcessInstanceQueryImpl" resultMap="historicProcessInstanceResultMap">
+    select *
+    <include refid="selectHistoricProcessInstancesByQueryCriteriaSql"/>
+    <if test="orderBy != null">
+      order by ${orderBy}
+    </if>
+  </select>
+  
+  <select id="selectHistoricProcessInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricProcessInstanceQueryImpl" resultType="long">
+    select count(*)
+    <include refid="selectHistoricProcessInstancesByQueryCriteriaSql"/>
+  </select>
+  
+  <sql id="selectHistoricProcessInstancesByQueryCriteriaSql">
+    from ACT_HI_PROCINST HPI
+    <where>
+      <if test="processInstanceId != null">
+        HPI.PROC_INST_ID_ = #{processInstanceId}
+      </if>
+      <if test="processInstanceIds != null and !processInstanceIds.isEmpty()">
+        and HPI.PROC_INST_ID_ in
+        <foreach item="item" index="index" collection="processInstanceIds" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+      <if test="processDefinitionId != null">
+        and HPI.PROC_DEF_ID_ = #{processDefinitionId}
+      </if>
+      <if test="processDefinitionKey != null">
+        and HPI.PROC_DEF_ID_ like #{processDefinitionIdLike}
+      </if>
+      <if test="businessKey != null">
+        and HPI.BUSINESS_KEY_ = #{businessKey}
+      </if>
+      <if test="unfinished">
+        and HPI.END_TIME_ IS NULL
+      </if>
+      <if test="finished">
+        and HPI.END_TIME_ is not NULL
+      </if>
+      <if test="startedBy != null">
+        and HPI.START_USER_ID_ = #{startedBy}
+      </if>
+      <if test="superProcessInstanceId != null">
+        and HPI.SUPER_PROCESS_INSTANCE_ID_ = #{superProcessInstanceId}
+      </if>
+       
+    </where>
+  </sql>
+
+</mapper>
