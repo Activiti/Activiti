@@ -41,6 +41,68 @@
 
   <h1>Activiti Release Notes</h1>
   
+  
+  <h3>Release Notes - Activiti - Version 5.8</h3>
+
+  <h4>Highlights</h4>
+  <ul>
+    <li>Asynchronous continations (tech preview)</li>
+    <li>Added BPMN inclusive gateway</li>
+    <li>Improved Spring support</li>
+    <li>CDI integration improvements</li>
+    <li>Bug fixes</li>
+  </ul>
+            
+<h4>        Bug
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-908'>ACT-908</a>] -         Designer .activiti file won&#39;t compile and generate a BPMN 2.0 xml file
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-910'>ACT-910</a>] -         duplication of flownodes when nodes are out of order 
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-919'>ACT-919</a>] -         Activiti-cdi: make interceptors serializable
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-922'>ACT-922</a>] -         Activiti-cdi: make sure to use the right BeanManager in ProgrammaticLookups
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-924'>ACT-924</a>] -         BPMN Export fails for Sequence Flows under IBM JDK because of wrong namespace definition in SequenceFlowExport.java
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-937'>ACT-937</a>] -         Desiger form property editor flips ID and Name fields
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-939'>ACT-939</a>] -         Mime-type and extension of uploaded attachments isn&#39;t handled correctly
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-943'>ACT-943</a>] -         ReceiveTask with TimerBoundaryEvent not working as expected !
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-957'>ACT-957</a>] -         Unable to add 2 timerBoundaryEvents in sub process
+</li>
+</ul>
+        
+<h4>        Improvement
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-288'>ACT-288</a>] -         Variable with authenticated user for be used inside form
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-909'>ACT-909</a>] -         Null-check for process name in explorer2 ui
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-918'>ACT-918</a>] -         Activiti-cdi: revisit process variable handling and interceptor
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-926'>ACT-926</a>] -         Add method that is called when root-element of BPMN is parsed to BPMNParseListener
+</li>
+</ul>
+    
+<h4>        New Feature
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-126'>ACT-126</a>] -         Asynchronous continuations
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-890'>ACT-890</a>] -         Add Inclusive Gateway Support
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-916'>ACT-916</a>] -         Activiti-cdi: add thread context for thread-scoped associations
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-917'>ACT-917</a>] -         Activiti-cdi: add execution-based associations.
+</li>
+</ul>
+                
+  
   <h3>Release Notes - Activiti - Version 5.7</h3>
 
   <h4>Highlights</h4>
