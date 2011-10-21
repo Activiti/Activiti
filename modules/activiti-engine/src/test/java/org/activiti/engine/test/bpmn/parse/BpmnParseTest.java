@@ -13,6 +13,8 @@
 
 package org.activiti.engine.test.bpmn.parse;
 
+import java.util.List;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
@@ -54,7 +56,7 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testParseDiagramInterchangeElements() {
-    
+
     // Graphical information is not yet exposed publicly, so we need to do some plumbing
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
     ProcessDefinitionEntity processDefinitionEntity = commandExecutor.execute(new Command<ProcessDefinitionEntity>() {
@@ -68,6 +70,10 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
     
     assertNotNull(processDefinitionEntity);
     assertEquals(7, processDefinitionEntity.getActivities().size());
+    
+    // Check if diagram has been created based on Diagram Interchange
+    List<String> resourceNames = repositoryService.getDeploymentResourceNames(processDefinitionEntity.getDeploymentId());
+    assertEquals(2, resourceNames.size());
     
     for (ActivityImpl activity : processDefinitionEntity.getActivities()) {
       
@@ -110,6 +116,7 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
       }
     }
   }
+  
   
   protected void assertActivityBounds(ActivityImpl activity, int x, int y, int width, int height) {
     assertEquals(x, activity.getX());

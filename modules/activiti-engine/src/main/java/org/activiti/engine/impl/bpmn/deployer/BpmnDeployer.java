@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.bpmn.deployer;
 
+import java.awt.GraphicsEnvironment;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
@@ -86,11 +86,16 @@ public class BpmnDeployer implements Deployer {
           String diagramResourceName = getDiagramResourceForProcess(resourceName, processDefinition.getKey(), resources);
           if (diagramResourceName==null && processDefinition.isGraphicalNotationDefined()) {
             try {
-              byte[] diagramBytes = IoUtil.readInputStream(ProcessDiagramGenerator.generatePngDiagram(processDefinition), null);
-              diagramResourceName = getProcessImageResourceName(resourceName, processDefinition.getKey(), "png");
-              createResource(diagramResourceName, diagramBytes, deployment);
-            } catch (Exception e) { // if anything goes wrong, we don't store the image (the process will still be executable).
-              LOG.log(Level.WARNING, "Error while generating process diagram, image will not be stored in repository", e);
+              GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+              if(!ge.isHeadlessInstance()) {
+                byte[] diagramBytes = IoUtil.readInputStream(ProcessDiagramGenerator.generatePngDiagram(processDefinition), null);
+                diagramResourceName = getProcessImageResourceName(resourceName, processDefinition.getKey(), "png");
+                createResource(diagramResourceName, diagramBytes, deployment);
+              } else {
+                LOG.log(Level.WARNING, "Cannot generate process diagram while running in AWT headless-mode");
+              }
+            } catch (Throwable t) { // if anything goes wrong, we don't store the image (the process will still be executable).
+              LOG.log(Level.WARNING, "Error while generating process diagram, image will not be stored in repository", t);
             }
           } 
           
