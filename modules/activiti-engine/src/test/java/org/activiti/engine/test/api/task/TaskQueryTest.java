@@ -14,6 +14,7 @@ package org.activiti.engine.test.api.task;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -306,6 +307,40 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
   public void testQueryByNullCandidateGroup() {
     try {
       taskService.createTaskQuery().taskCandidateGroup(null).list();
+      fail("expected exception");
+    } catch (ActivitiException e) {
+      // OK
+    }
+  }
+  
+  public void testQueryByCandidateGroupIn() {
+    List<String> groups = Arrays.asList("management", "accountancy");
+    TaskQuery query = taskService.createTaskQuery().taskCandidateGroupIn(groups);
+    assertEquals(5, query.count());
+    assertEquals(5, query.list().size());
+    try {
+      query.singleResult();
+      fail("expected exception");
+    } catch (ActivitiException e) {
+      // OK
+    }
+
+    // Unexisting groups or groups that don't have candidate tasks shouldn't influence other results
+    groups = Arrays.asList("management", "accountancy", "sales", "unexising");
+    query = taskService.createTaskQuery().taskCandidateGroupIn(groups);
+    assertEquals(5, query.count());
+    assertEquals(5, query.list().size());
+  }
+  
+  public void testQueryByNullCandidateGroupIn() {
+    try {
+      taskService.createTaskQuery().taskCandidateGroupIn(null).list();
+      fail("expected exception");
+    } catch (ActivitiException e) {
+      // OK
+    }
+    try {
+      taskService.createTaskQuery().taskCandidateGroupIn(new ArrayList<String>()).list();
       fail("expected exception");
     } catch (ActivitiException e) {
       // OK
