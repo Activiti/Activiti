@@ -43,7 +43,11 @@ public class TaskPropertiesResource extends SecuredResource {
       propertyJSON.put("id", property.getId());
       propertyJSON.put("name", property.getName());
       propertyJSON.put("value", property.getValue());
-      propertyJSON.put("type", property.getType().getName());
+      if(property.getType() != null) {
+        propertyJSON.put("type", property.getType().getName());
+      } else {
+        propertyJSON.put("type", "String");
+      }
       propertyJSON.put("required", property.isRequired());
       propertyJSON.put("readable", property.isReadable());
       propertyJSON.put("writable", property.isWritable());
