@@ -532,6 +532,7 @@
     <profile>
       <id>deploy</id>
       <modules>
+        <module>modules/activiti-webapp-explorer2</module>
         <module>modules/activiti-spring</module>
         <module>modules/activiti-cxf</module>
         <module>modules/activiti-mule</module>
