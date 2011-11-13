@@ -39,6 +39,7 @@ public class TaskDefinition {
   protected Set<Expression> candidateUserIdExpressions = new HashSet<Expression>();
   protected Set<Expression> candidateGroupIdExpressions = new HashSet<Expression>();
   protected Expression dueDateExpression;
+  protected Expression priorityExpression;
   
   // form fields
   protected TaskFormHandler taskFormHandler;
@@ -90,6 +91,14 @@ public class TaskDefinition {
 
   public void addCandidateGroupIdExpression(Expression groupId) {
     candidateGroupIdExpressions.add(groupId);
+  }
+
+  public Expression getPriorityExpression() {
+    return priorityExpression;
+  }
+
+  public void setPriorityExpression(Expression priorityExpression) {
+    this.priorityExpression = priorityExpression;
   }
 
   public TaskFormHandler getTaskFormHandler() {

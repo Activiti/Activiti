@@ -63,6 +63,24 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
         task.setDueDate((Date) dueDate);
       }
     }
+
+    if (taskDefinition.getPriorityExpression() != null) {
+      final Object priority = taskDefinition.getPriorityExpression().getValue(execution);
+      if (priority != null) {
+        if (priority instanceof String) {
+          try {
+            task.setPriority(Integer.valueOf((String) priority));
+          } catch (NumberFormatException e) {
+            throw new ActivitiException("Priority does not resolve to a number: " + priority, e);
+          }
+        } else if (priority instanceof Number) {
+          task.setPriority(((Number) priority).intValue());
+        } else {
+          throw new ActivitiException("Priority expression does not resolve to a number: " + 
+                  taskDefinition.getPriorityExpression().getExpressionText());
+        }
+      }
+    }
     
     handleAssignments(task, execution);
    

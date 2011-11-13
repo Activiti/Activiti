@@ -1342,6 +1342,7 @@ public class BpmnParse extends Parse {
   protected static final String CANDIDATE_USERS_EXTENSION = "candidateUsers";
   protected static final String CANDIDATE_GROUPS_EXTENSION = "candidateGroups";
   protected static final String DUE_DATE_EXTENSION = "dueDate";
+  protected static final String PRIORITY_EXTENSION = "priority";
 
   /**
    * Parses a userTask declaration.
@@ -1493,6 +1494,12 @@ public class BpmnParse extends Parse {
     String dueDateExpression = taskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, DUE_DATE_EXTENSION);
     if (dueDateExpression != null) {
       taskDefinition.setDueDateExpression(expressionManager.createExpression(dueDateExpression));
+    }
+
+    // Priority
+    final String priorityExpression = taskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, PRIORITY_EXTENSION);
+    if (priorityExpression != null) {
+      taskDefinition.setPriorityExpression(expressionManager.createExpression(priorityExpression));
     }
   }
 
