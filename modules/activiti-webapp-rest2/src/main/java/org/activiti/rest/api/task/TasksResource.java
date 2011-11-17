@@ -22,6 +22,7 @@ import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.DataResponse;
+import org.activiti.rest.api.RequestUtil;
 import org.activiti.rest.api.SecuredResource;
 import org.restlet.resource.Get;
 
@@ -46,22 +47,52 @@ public class TasksResource extends SecuredResource {
   public DataResponse getTasks() {
     if(authenticate() == false) return null;
     
-    String personalTaskUserId = (String) getQuery().getValues("assignee");
-    String candidateTaskUserId = (String) getQuery().getValues("candidate");
-    String candidateGroupId = (String) getQuery().getValues("candidate-group");
+    String personalTaskUserId = getQuery().getValues("assignee");
+    String ownerTaskUserId = getQuery().getValues("owner");
+    String involvedTaskUserId = getQuery().getValues("involved");
+    String candidateTaskUserId = getQuery().getValues("candidate");
+    String candidateGroupId = getQuery().getValues("candidate-group");
+    
+    String strPriority = getQuery().getValues("priority");
+    String strMinPriority = getQuery().getValues("minPriority");
+    String strMaxPriority = getQuery().getValues("maxPriority");
+    
+    String strDueDate = getQuery().getValues("dueDate");
+    String strMinDueDate = getQuery().getValues("minDueDate");
+    String strMaxDueDate = getQuery().getValues("maxDueDate");
+    
     TaskQuery taskQuery = ActivitiUtil.getTaskService().createTaskQuery();
     if (personalTaskUserId != null) {
       taskQuery.taskAssignee(personalTaskUserId);
+    } else if (ownerTaskUserId != null) {
+      taskQuery.taskOwner(ownerTaskUserId);
+    } else if (involvedTaskUserId != null) {
+      taskQuery.taskInvolvedUser(involvedTaskUserId);
     } else if (candidateTaskUserId != null) {
       taskQuery.taskCandidateUser(candidateTaskUserId);
     } else if (candidateGroupId != null) {
       taskQuery.taskCandidateGroup(candidateGroupId);
     } else {
-      throw new ActivitiException("Tasks must be filtered with 'assignee', 'candidate' or 'candidate-group'");
+      throw new ActivitiException("Tasks must be filtered with 'assignee', 'owner', 'involved', 'candidate' or 'candidate-group'");
+    }
+    
+    if (strPriority != null) {
+      taskQuery.taskPriority(RequestUtil.parseToInteger(strPriority));
+    } else if (strMinPriority != null) {
+      taskQuery.taskMinPriority(RequestUtil.parseToInteger(strMinPriority));
+    } else if (strMaxPriority != null) {
+      taskQuery.taskMaxPriority(RequestUtil.parseToInteger(strMaxPriority));
+    }
+    
+    if (strDueDate != null) {
+      taskQuery.dueDate(RequestUtil.parseToDate(strDueDate));
+    } else if (strMinDueDate != null) {
+      taskQuery.dueAfter(RequestUtil.parseToDate(strMinDueDate));
+    } else if (strMaxDueDate != null) {
+      taskQuery.dueBefore(RequestUtil.parseToDate(strMaxDueDate));
     }
     
     DataResponse dataResponse = new TasksPaginateList().paginateList(getQuery(), taskQuery, "id", properties);
     return dataResponse;
   }
-
 }

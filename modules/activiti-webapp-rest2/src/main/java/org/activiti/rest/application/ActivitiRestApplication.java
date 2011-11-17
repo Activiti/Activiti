@@ -37,6 +37,9 @@ import org.activiti.rest.api.repository.DeploymentDeleteResource;
 import org.activiti.rest.api.repository.DeploymentUploadResource;
 import org.activiti.rest.api.repository.DeploymentsDeleteResource;
 import org.activiti.rest.api.repository.DeploymentsResource;
+import org.activiti.rest.api.task.TaskAddResource;
+import org.activiti.rest.api.task.TaskAttachmentAddResource;
+import org.activiti.rest.api.task.TaskAttachmentResource;
 import org.activiti.rest.api.task.TaskFormResource;
 import org.activiti.rest.api.task.TaskOperationResource;
 import org.activiti.rest.api.task.TaskPropertiesResource;
@@ -108,9 +111,13 @@ public class ActivitiRestApplication extends Application {
     
     router.attach("/tasks", TasksResource.class);
     router.attach("/tasks-summary", TasksSummaryResource.class);
+    router.attach("/task", TaskAddResource.class);
     router.attach("/task/{taskId}", TaskResource.class);
     router.attach("/task/{taskId}/form", TaskFormResource.class);
     router.attach("/task/{taskId}/{operation}", TaskOperationResource.class);
+    
+    router.attach("/attachment", TaskAttachmentAddResource.class);
+    router.attach("/attachment/{attachmentId}", TaskAttachmentResource.class);
     
     router.attach("/form/{taskId}/properties", TaskPropertiesResource.class);
     

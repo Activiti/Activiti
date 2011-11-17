@@ -10,11 +10,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package org.activiti.rest.api.task;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.Task;
@@ -23,7 +32,7 @@ import org.activiti.rest.api.RequestUtil;
 /**
  * @author Tijs Rademakers
  */
-public class TaskResponse {
+public class SubTaskResponse {
   
   String assignee;
   String createTime;
@@ -36,15 +45,8 @@ public class TaskResponse {
   String owner;
   String parentTaskId;
   int priority;
-  String processDefinitionId;
-  String processInstanceId;
-  String taskDefinitionKey;
-  String formResourceKey;
-  List<SubTaskResponse> subTaskList = new ArrayList<SubTaskResponse>();
-  List<IdentityLinkResponse> identityLinkList = new ArrayList<IdentityLinkResponse>();
-  List<AttachmentResponse> attachmentList = new ArrayList<AttachmentResponse>();
   
-  public TaskResponse(Task task) {
+  public SubTaskResponse(Task task) {
     setAssignee(task.getAssignee());
     setCreateTime(RequestUtil.dateToString(task.getCreateTime()));
     setDelegationState(task.getDelegationState());
@@ -56,9 +58,6 @@ public class TaskResponse {
     setOwner(task.getOwner());
     setParentTaskId(task.getParentTaskId());
     setPriority(task.getPriority());
-    setProcessDefinitionId(task.getProcessDefinitionId());
-    setProcessInstanceId(task.getProcessInstanceId());
-    setTaskDefinitionKey(task.getTaskDefinitionKey());
   }
 
   public String getAssignee() {
@@ -147,73 +146,5 @@ public class TaskResponse {
 
   public void setPriority(int priority) {
     this.priority = priority;
-  }
-
-  public String getProcessDefinitionId() {
-    return processDefinitionId;
-  }
-
-  public void setProcessDefinitionId(String processDefinitionId) {
-    this.processDefinitionId = processDefinitionId;
-  }
-
-  public String getProcessInstanceId() {
-    return processInstanceId;
-  }
-
-  public void setProcessInstanceId(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
-  }
-
-  public String getTaskDefinitionKey() {
-    return taskDefinitionKey;
-  }
-
-  public void setTaskDefinitionKey(String taskDefinitionKey) {
-    this.taskDefinitionKey = taskDefinitionKey;
-  }
-
-  public String getFormResourceKey() {
-    return formResourceKey;
-  }
-
-  public void setFormResourceKey(String formResourceKey) {
-    this.formResourceKey = formResourceKey;
-  }
-
-  public List<SubTaskResponse> getSubTaskList() {
-    return subTaskList;
-  }
-
-  public void setSubTaskList(List<SubTaskResponse> subTaskList) {
-    this.subTaskList = subTaskList;
-  }
-  
-  public void addSubTask(SubTaskResponse subTask) {
-    this.subTaskList.add(subTask);
-  }
-
-  public List<IdentityLinkResponse> getIdentityLinkList() {
-    return identityLinkList;
-  }
-
-  public void setIdentityLinkList(List<IdentityLinkResponse> identityLinkList) {
-    this.identityLinkList = identityLinkList;
-  }
-  
-  public void addIdentityLink(IdentityLinkResponse link) {
-    this.identityLinkList.add(link);
-  }
-
-  public List<AttachmentResponse> getAttachmentList() {
-    return attachmentList;
-  }
-
-  public void setAttachmentList(List<AttachmentResponse> attachmentList) {
-    this.attachmentList = attachmentList;
-  }
-  
-  public void addAttachment(AttachmentResponse attachment) {
-    this.attachmentList.add(attachment);
   }
 }

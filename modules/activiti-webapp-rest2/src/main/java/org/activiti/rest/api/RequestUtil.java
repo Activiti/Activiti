@@ -24,7 +24,8 @@ import org.restlet.data.Form;
  */
 public class RequestUtil {
   
-  private static final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssz");
+  private static final SimpleDateFormat shortDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+  private static final SimpleDateFormat longDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssz");
 
   public static boolean getBoolean(Form form, String name, boolean defaultValue) {
     boolean value = defaultValue;
@@ -61,7 +62,7 @@ public class RequestUtil {
       }
       
       try {
-        value = df.parse(input);
+        value = longDateFormat.parse(input);
       } catch(Exception e) {
         throw new ActivitiException("Failed to parse date " + input);
       }
@@ -72,9 +73,25 @@ public class RequestUtil {
   public static String dateToString(Date date) {
     String dateString = null;
     if(date != null) {
-      dateString = df.format(date);
+      dateString = longDateFormat.format(date);
     }
     
     return dateString;
+  }
+  
+  public static Integer parseToInteger(String integer) {
+    Integer parsedInteger = null;
+    try {
+      parsedInteger = Integer.parseInt(integer);
+    } catch(Exception e) {}
+    return parsedInteger;
+  }
+  
+  public static Date parseToDate(String date) {
+    Date parsedDate = null;
+    try {
+      parsedDate = shortDateFormat.parse(date);
+    } catch(Exception e) {}
+    return parsedDate;
   }
 }
