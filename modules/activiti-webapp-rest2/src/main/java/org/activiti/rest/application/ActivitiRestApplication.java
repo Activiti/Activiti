@@ -115,8 +115,8 @@ public class ActivitiRestApplication extends Application {
     router.attach("/task/{taskId}", TaskResource.class);
     router.attach("/task/{taskId}/form", TaskFormResource.class);
     router.attach("/task/{taskId}/{operation}", TaskOperationResource.class);
+    router.attach("/task/{taskId}/attachment", TaskAttachmentAddResource.class);
     
-    router.attach("/attachment", TaskAttachmentAddResource.class);
     router.attach("/attachment/{attachmentId}", TaskAttachmentResource.class);
     
     router.attach("/form/{taskId}/properties", TaskPropertiesResource.class);
