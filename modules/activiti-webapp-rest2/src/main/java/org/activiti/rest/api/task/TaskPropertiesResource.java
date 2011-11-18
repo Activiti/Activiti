@@ -47,12 +47,19 @@ public class TaskPropertiesResource extends SecuredResource {
         ObjectNode propertyJSON = new ObjectMapper().createObjectNode();
         propertyJSON.put("id", property.getId());
         propertyJSON.put("name", property.getName());
-        propertyJSON.put("value", property.getValue());
+        
+        if(property.getValue() != null) {
+          propertyJSON.put("value", property.getValue());
+        } else {
+          propertyJSON.put("value", "null");
+        }
+        
         if(property.getType() != null) {
           propertyJSON.put("type", property.getType().getName());
         } else {
           propertyJSON.put("type", "String");
         }
+        
         propertyJSON.put("required", property.isRequired());
         propertyJSON.put("readable", property.isReadable());
         propertyJSON.put("writable", property.isWritable());
