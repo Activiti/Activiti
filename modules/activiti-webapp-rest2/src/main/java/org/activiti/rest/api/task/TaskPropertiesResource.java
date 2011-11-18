@@ -16,6 +16,7 @@ package org.activiti.rest.api.task;
 import java.util.List;
 
 import org.activiti.engine.form.FormProperty;
+import org.activiti.engine.form.TaskFormData;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -32,27 +33,32 @@ public class TaskPropertiesResource extends SecuredResource {
   public ObjectNode getTaskProperties() {
     if(authenticate() == false) return null;
     String taskId = (String) getRequest().getAttributes().get("taskId");
-    List<FormProperty> properties = ActivitiUtil.getFormService().getTaskFormData(taskId).getFormProperties();
+    TaskFormData taskFormData = ActivitiUtil.getFormService().getTaskFormData(taskId);
     
     ObjectNode responseJSON = new ObjectMapper().createObjectNode();
     
     ArrayNode propertiesJSON = new ObjectMapper().createArrayNode();
     
-    for (FormProperty property : properties) {
-      ObjectNode propertyJSON = new ObjectMapper().createObjectNode();
-      propertyJSON.put("id", property.getId());
-      propertyJSON.put("name", property.getName());
-      propertyJSON.put("value", property.getValue());
-      if(property.getType() != null) {
-        propertyJSON.put("type", property.getType().getName());
-      } else {
-        propertyJSON.put("type", "String");
+    if(taskFormData != null) {
+    
+      List<FormProperty> properties = taskFormData.getFormProperties();
+      
+      for (FormProperty property : properties) {
+        ObjectNode propertyJSON = new ObjectMapper().createObjectNode();
+        propertyJSON.put("id", property.getId());
+        propertyJSON.put("name", property.getName());
+        propertyJSON.put("value", property.getValue());
+        if(property.getType() != null) {
+          propertyJSON.put("type", property.getType().getName());
+        } else {
+          propertyJSON.put("type", "String");
+        }
+        propertyJSON.put("required", property.isRequired());
+        propertyJSON.put("readable", property.isReadable());
+        propertyJSON.put("writable", property.isWritable());
+  
+        propertiesJSON.add(propertyJSON);
       }
-      propertyJSON.put("required", property.isRequired());
-      propertyJSON.put("readable", property.isReadable());
-      propertyJSON.put("writable", property.isWritable());
-
-      propertiesJSON.add(propertyJSON);
     }
   
     responseJSON.put("data", propertiesJSON);
