@@ -11,42 +11,33 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.task;
-
-import java.io.InputStream;
+package org.activiti.rest.api.identity;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.task.Attachment;
+import org.activiti.engine.identity.Picture;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
 import org.restlet.data.CacheDirective;
 import org.restlet.data.MediaType;
 import org.restlet.representation.InputRepresentation;
-import org.restlet.representation.Representation;
-import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 
 /**
  * @author Tijs Rademakers
  */
-public class TaskAttachmentResource extends SecuredResource {
+public class UserPictureResource extends SecuredResource {
   
   @Get
-  public InputRepresentation getAttachment() {
+  public InputRepresentation getPicture() {
     if(authenticate() == false) return null;
     
-    String attachmentId = (String) getRequest().getAttributes().get("attachmentId");
-    
-    if(attachmentId == null) {
-      throw new ActivitiException("No attachment id provided");
+    String userId = (String) getRequest().getAttributes().get("userId");
+    if(userId == null) {
+      throw new ActivitiException("No userId provided");
     }
-
-    Attachment attachment = ActivitiUtil.getTaskService().getAttachment(attachmentId);
-    if(attachment == null) {
-      throw new ActivitiException("No attachment found for " + attachmentId);
-    }
+    Picture picture = ActivitiUtil.getIdentityService().getUserPicture(userId);
     
-    String contentType = attachment.getType();
+    String contentType = picture.getMimeType();
     MediaType mediatType = MediaType.IMAGE_PNG;
     if(contentType != null) {
       if(contentType.contains(";")) {
@@ -54,21 +45,10 @@ public class TaskAttachmentResource extends SecuredResource {
       }
       mediatType = MediaType.valueOf(contentType);
     }
-    InputStream resource = ActivitiUtil.getTaskService().getAttachmentContent(attachmentId);
-    InputRepresentation output = new InputRepresentation(resource, mediatType);
+    InputRepresentation output = new InputRepresentation(picture.getInputStream(), mediatType);
     getResponse().getCacheDirectives().add(CacheDirective.maxAge(28800));
+    
     return output;
   }
-  
-  @Delete
-  public void deleteAttachment(Representation entity) {
-    if(authenticate() == false) return;
-    String attachmentId = (String) getRequest().getAttributes().get("attachmentId");
-    
-    if(attachmentId == null) {
-      throw new ActivitiException("No attachment id provided");
-    }
-    
-    ActivitiUtil.getTaskService().deleteAttachment(attachmentId);
-  }
+
 }

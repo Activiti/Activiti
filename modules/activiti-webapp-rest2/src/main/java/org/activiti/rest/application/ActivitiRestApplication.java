@@ -20,6 +20,7 @@ import org.activiti.rest.api.identity.GroupResource;
 import org.activiti.rest.api.identity.GroupUsersResource;
 import org.activiti.rest.api.identity.LoginResource;
 import org.activiti.rest.api.identity.UserGroupsResource;
+import org.activiti.rest.api.identity.UserPictureResource;
 import org.activiti.rest.api.identity.UserResource;
 import org.activiti.rest.api.management.JobExecuteResource;
 import org.activiti.rest.api.management.JobResource;
@@ -100,6 +101,8 @@ public class ActivitiRestApplication extends Application {
     
     router.attach("/user/{userId}", UserResource.class);
     router.attach("/user/{userId}/groups", UserGroupsResource.class);
+    router.attach("/user/{userId}/picture", UserPictureResource.class);
+    
     router.attach("/group/{groupId}", GroupResource.class);
     router.attach("/groups/{groupId}/users", GroupUsersResource.class);
     
