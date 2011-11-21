@@ -36,7 +36,7 @@ import org.restlet.resource.Post;
 public class TaskResource extends SecuredResource {
   
   @Get
-  public TaskResponse getTasks() {
+  public TaskResponse getTask() {
     if(authenticate() == false) return null;
     String taskId = (String) getRequest().getAttributes().get("taskId");
     Task task = ActivitiUtil.getTaskService().createTaskQuery().taskId(taskId).singleResult();
@@ -68,7 +68,13 @@ public class TaskResource extends SecuredResource {
       }
     }
     
-    List<Attachment> attachmentList = ActivitiUtil.getTaskService().getTaskAttachments(task.getId());
+    List<Attachment> attachmentList = null;
+    if(task.getProcessInstanceId() != null && task.getProcessInstanceId().length() > 0) {
+      attachmentList = ActivitiUtil.getTaskService().getProcessInstanceAttachments(task.getProcessInstanceId());
+    } else {
+      attachmentList = ActivitiUtil.getTaskService().getTaskAttachments(task.getId());
+    }
+    
     if(attachmentList != null) {
       for (Attachment attachment : attachmentList) {
         AttachmentResponse attachmentResponse = new AttachmentResponse(attachment);

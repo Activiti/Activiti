@@ -22,6 +22,7 @@ import org.activiti.rest.api.identity.LoginResource;
 import org.activiti.rest.api.identity.UserGroupsResource;
 import org.activiti.rest.api.identity.UserPictureResource;
 import org.activiti.rest.api.identity.UserResource;
+import org.activiti.rest.api.identity.UserSearchResource;
 import org.activiti.rest.api.management.JobExecuteResource;
 import org.activiti.rest.api.management.JobResource;
 import org.activiti.rest.api.management.JobsExecuteResource;
@@ -45,6 +46,7 @@ import org.activiti.rest.api.task.TaskFormResource;
 import org.activiti.rest.api.task.TaskOperationResource;
 import org.activiti.rest.api.task.TaskPropertiesResource;
 import org.activiti.rest.api.task.TaskResource;
+import org.activiti.rest.api.task.TaskUrlAddResource;
 import org.activiti.rest.api.task.TasksResource;
 import org.activiti.rest.api.task.TasksSummaryResource;
 import org.restlet.Application;
@@ -102,6 +104,7 @@ public class ActivitiRestApplication extends Application {
     router.attach("/user/{userId}", UserResource.class);
     router.attach("/user/{userId}/groups", UserGroupsResource.class);
     router.attach("/user/{userId}/picture", UserPictureResource.class);
+    router.attach("/users/{searchText}", UserSearchResource.class);
     
     router.attach("/group/{groupId}", GroupResource.class);
     router.attach("/groups/{groupId}/users", GroupUsersResource.class);
@@ -117,8 +120,9 @@ public class ActivitiRestApplication extends Application {
     router.attach("/task", TaskAddResource.class);
     router.attach("/task/{taskId}", TaskResource.class);
     router.attach("/task/{taskId}/form", TaskFormResource.class);
-    router.attach("/task/{taskId}/{operation}", TaskOperationResource.class);
     router.attach("/task/{taskId}/attachment", TaskAttachmentAddResource.class);
+    router.attach("/task/{taskId}/url", TaskUrlAddResource.class);
+    router.attach("/task/{taskId}/{operation}", TaskOperationResource.class);
     
     router.attach("/attachment/{attachmentId}", TaskAttachmentResource.class);
     
