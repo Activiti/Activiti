@@ -12,6 +12,8 @@
  */
 package org.activiti.cdi.impl;
 
+import java.util.EmptyStackException;
+
 import org.activiti.cdi.annotation.BusinessProcessScoped;
 import org.activiti.cdi.impl.context.BusinessProcessAssociationManager;
 import org.activiti.cdi.impl.context.CachingBeanStore;
@@ -33,9 +35,16 @@ public class CdiProcessVariableFlushingDelegateInterceptor implements DelegateIn
     
     invocation.proceed();
     
+    ExecutionEntity execution = null;
+    try {
+      execution = Context.getExecutionContext().getExecution();
+    } catch (EmptyStackException e) {
+      // silently ignore, not called in the context of an execution.
+      return;
+    }
     CachingBeanStore beanStore = getAssociationManager().getBeanStore();
-    ExecutionEntity execution = Context.getExecutionContext().getExecution();
     execution.setVariables(beanStore.getAllAndClear());
+
   }
 
   protected BusinessProcessAssociationManager getAssociationManager() {
