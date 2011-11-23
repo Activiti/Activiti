@@ -13,10 +13,13 @@
 
 package org.activiti.engine.test.db;
 
+import java.util.List;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.cmd.SetProcessDefinitionVersionCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
@@ -29,6 +32,7 @@ import org.activiti.engine.test.Deployment;
  */
 public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
   
+  private static final String TEST_PROCESS_WITH_PARALLEL_GATEWAY = "org/activiti/examples/bpmn/gateway/ParallelGatewayTest.testForkJoin.bpmn20.xml";
   private static final String TEST_PROCESS = "org/activiti/engine/test/db/ProcessInstanceMigrationTest.testSetProcessDefinitionVersion.bpmn20.xml";
   private static final String TEST_PROCESS_ACTIVITY_MISSING = "org/activiti/engine/test/db/ProcessInstanceMigrationTest.testSetProcessDefinitionVersionActivityMissing.bpmn20.xml";
 
@@ -72,6 +76,24 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     }
   }
   
+  @Deployment(resources = {TEST_PROCESS_WITH_PARALLEL_GATEWAY})
+  public void testSetProcessDefinitionVersionPIIsSubExecution() {
+    // start process instance
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("forkJoin");
+
+    Execution execution = runtimeService.createExecutionQuery()
+      .activityId("receivePayment")
+      .singleResult();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    SetProcessDefinitionVersionCmd command = new SetProcessDefinitionVersionCmd(execution.getId(), 1);
+    try {
+      commandExecutor.execute(command);
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+      assertTextPresent("A process instance id is required, but the provided id '"+execution.getId()+"' points to a child execution of process instance '"+pi.getId()+"'. Please invoke the "+command.getClass().getSimpleName()+" with a root execution id.", ae.getMessage());
+    }
+  }
+
   @Deployment(resources = {TEST_PROCESS})
   public void testSetProcessDefinitionVersionNonExistingPD() {
     // start process instance
@@ -93,7 +115,6 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
 
     // check that receive task has been reached
     Execution execution = runtimeService.createExecutionQuery()
-      .processInstanceId(pi.getId())
       .activityId("waitState1")
       .singleResult();
     assertNotNull(execution);
@@ -139,10 +160,6 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     assertEquals(2, repositoryService.createProcessDefinitionQuery().count());
 
     // migrate process instance to new process definition version
-    ProcessDefinition newProcessDefinition = repositoryService
-      .createProcessDefinitionQuery()
-      .processDefinitionVersion(2)
-      .singleResult();
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
     commandExecutor.execute(new SetProcessDefinitionVersionCmd(pi.getId(), 2));
 
@@ -150,11 +167,58 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     runtimeService.signal(execution.getId());
 
     // check that the instance now uses the new process definition version
+    ProcessDefinition newProcessDefinition = repositoryService
+      .createProcessDefinitionQuery()
+      .processDefinitionVersion(2)
+      .singleResult();
     pi = runtimeService
       .createProcessInstanceQuery()
       .processInstanceId(pi.getId())
       .singleResult();
     assertEquals(newProcessDefinition.getId(), pi.getProcessDefinitionId());
+    
+    // check history
+    HistoricProcessInstance historicPI = historyService
+      .createHistoricProcessInstanceQuery()
+      .processInstanceId(pi.getId())
+      .singleResult();
+    assertEquals(newProcessDefinition.getId(), historicPI.getProcessDefinitionId());
+
+    // undeploy "manually" deployed process definition
+    repositoryService.deleteDeployment(deployment.getId(), true);
+  }
+
+  @Deployment(resources = {TEST_PROCESS_WITH_PARALLEL_GATEWAY})
+  public void testSetProcessDefinitionVersionSubExecutions() {
+    // start process instance
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("forkJoin");
+
+    // check that the user tasks have been reached
+    assertEquals(2, taskService.createTaskQuery().count());
+    
+    // deploy new version of the process definition
+    org.activiti.engine.repository.Deployment deployment = repositoryService
+      .createDeployment()
+      .addClasspathResource(TEST_PROCESS_WITH_PARALLEL_GATEWAY)
+      .deploy();
+    assertEquals(2, repositoryService.createProcessDefinitionQuery().count());
+
+    // migrate process instance to new process definition version
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    commandExecutor.execute(new SetProcessDefinitionVersionCmd(pi.getId(), 2));
+
+    // check that all executions of the instance now use the new process definition version
+    ProcessDefinition newProcessDefinition = repositoryService
+      .createProcessDefinitionQuery()
+      .processDefinitionVersion(2)
+      .singleResult();
+    List<Execution> executions = runtimeService
+      .createExecutionQuery()
+      .processInstanceId(pi.getId())
+      .list();
+    for (Execution execution : executions) {
+      assertEquals(newProcessDefinition.getId(), ((ExecutionEntity) execution).getProcessDefinitionId());
+    }
     
     // check history
     HistoricProcessInstance historicPI = historyService
