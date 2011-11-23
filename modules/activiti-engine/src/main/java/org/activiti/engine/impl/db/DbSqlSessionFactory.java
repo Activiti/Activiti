@@ -56,6 +56,9 @@ public class DbSqlSessionFactory implements SessionFactory {
     addDatabaseSpecificStatement("postgres", "insertComment", "insertComment_postgres");
     addDatabaseSpecificStatement("postgres", "selectCommentsByTaskId", "selectCommentsByTaskId_postgres");
     addDatabaseSpecificStatement("postgres", "selectCommentsByProcessInstanceId", "selectCommentsByProcessInstanceId_postgres");
+    
+    // oracle
+    addDatabaseSpecificStatement("oracle", "selectNextJobsToExecute", "selectNextJobsToExecute_oracle");
   }
   
   protected String databaseType;
