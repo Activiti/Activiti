@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="receiveTask">
+  
+    <startEvent id="theStart" />
+    
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="renamedWaitState1" />
+    
+    <receiveTask id="renamedWaitState1" name="Renamed Wait State 1" />
+    
+    <sequenceFlow id="flow3" sourceRef="renamedWaitState1" targetRef="waitState2" />
+    
+    <receiveTask id="waitState2" name="Wait State 2" />
+    
+    <sequenceFlow id="flow4" sourceRef="waitState2" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

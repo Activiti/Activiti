@@ -55,6 +55,7 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
     persistentState.put("deleteReason", deleteReason);
     persistentState.put("endStateName", endActivityId);
     persistentState.put("superProcessInstanceId", superProcessInstanceId);
+    persistentState.put("processDefinitionId", processDefinitionId);
     return persistentState;
   }
 

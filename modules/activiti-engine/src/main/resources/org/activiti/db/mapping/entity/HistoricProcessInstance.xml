@@ -1,6 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
 
 <!--
-<?xml version="1.0" encoding="UTF-8" ?>
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
   ~ You may obtain a copy of the License at
@@ -52,6 +52,7 @@
   
   <update id="updateHistoricProcessInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity">
     update ACT_HI_PROCINST set
+      PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
       START_TIME_ = #{startTime, jdbcType=TIMESTAMP},
       END_TIME_ = #{endTime, jdbcType=TIMESTAMP},
       DURATION_ = #{durationInMillis ,jdbcType=BIGINT},
