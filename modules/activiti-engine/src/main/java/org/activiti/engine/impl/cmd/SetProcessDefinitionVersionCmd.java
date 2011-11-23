@@ -53,17 +53,20 @@ public class SetProcessDefinitionVersionCmd implements Command<Void>, Serializab
   private static final long serialVersionUID = 1L;
 
   private final String processInstanceId;
-  private final String newProcessDefinitionId;
+  private final Integer processDefinitionVersion;
 
-  public SetProcessDefinitionVersionCmd(String processInstanceId, String newProcessDefinitionId) {
+  public SetProcessDefinitionVersionCmd(String processInstanceId, Integer processDefinitionVersion) {
     if (processInstanceId == null || processInstanceId.length() < 1) {
       throw new ActivitiException("The process instance id is mandatory, but '" + processInstanceId + "' has been provided.");
     }
-    if (newProcessDefinitionId == null || newProcessDefinitionId.length() < 1) {
-      throw new ActivitiException("The process definition id is mandatory, but '" + newProcessDefinitionId + "' has been provided.");
+    if (processDefinitionVersion == null) {
+      throw new ActivitiException("The process definition version is mandatory, but 'null' has been provided.");
+    }
+    if (processDefinitionVersion < 1) {
+      throw new ActivitiException("The process definition version must be positive, but '" + processDefinitionVersion + "' has been provided.");
     }
     this.processInstanceId = processInstanceId;
-    this.newProcessDefinitionId = newProcessDefinitionId;
+    this.processDefinitionVersion = processDefinitionVersion;
   }
 
   public Void execute(CommandContext commandContext) {
@@ -86,21 +89,9 @@ public class SetProcessDefinitionVersionCmd implements Command<Void>, Serializab
     } else {
       currentProcessDefinition = deploymentCache.findDeployedProcessDefinitionById(currentProcessDefinitionImpl.getId());
     }
-    
-    ProcessDefinitionEntity newProcessDefinition = deploymentCache.findDeployedProcessDefinitionById(newProcessDefinitionId);
-    if (newProcessDefinition == null) {
-      throw new ActivitiException("No process definition found for id = '" + newProcessDefinitionId + "'.");
-    }
-    
-    if (!newProcessDefinition.getKey().equals(currentProcessDefinition.getKey())) {
-      throw new ActivitiException(
-        "The key of the new process definition " +
-        "(key = '" + newProcessDefinition.getKey() + "') " +
-        "is not equal to that of the process definition " +
-        "(key = '" + currentProcessDefinition.getKey() + "') " +
-        "currently used by the process instance " +
-        "(id = '" + processInstanceId + "').");
-    }
+
+    ProcessDefinitionEntity newProcessDefinition = deploymentCache
+      .findDeployedProcessDefinitionByKeyAndVersion(currentProcessDefinition.getKey(), processDefinitionVersion);
     
     // check that the new process definition version contains the current activity
     if (!newProcessDefinition.contains(processInstance.getActivity())) {
@@ -120,7 +111,7 @@ public class SetProcessDefinitionVersionCmd implements Command<Void>, Serializab
     HistoricProcessInstanceManager historicProcessInstanceManager = commandContext.getHistoricProcessInstanceManager();
     if (historicProcessInstanceManager.isHistoryEnabled()) {
       HistoricProcessInstanceEntity historicProcessInstance = historicProcessInstanceManager.findHistoricProcessInstance(processInstanceId);
-      historicProcessInstance.setProcessDefinitionId(newProcessDefinitionId);
+      historicProcessInstance.setProcessDefinitionId(newProcessDefinition.getId());
     }
 
     return null;

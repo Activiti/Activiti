@@ -25,6 +25,7 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 
 /**
  * @author Tom Baeyens
+ * @author Falko Menge
  */
 public class DeploymentCache {
 
@@ -42,7 +43,7 @@ public class DeploymentCache {
     if (processDefinitionId == null) {
       throw new ActivitiException("Invalid process definition id : null");
     }
-    ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) Context
+    ProcessDefinitionEntity processDefinition = Context
       .getCommandContext()
       .getProcessDefinitionManager()
       .findLatestProcessDefinitionById(processDefinitionId);
@@ -54,12 +55,24 @@ public class DeploymentCache {
   }
 
   public ProcessDefinitionEntity findDeployedLatestProcessDefinitionByKey(String processDefinitionKey) {
-    ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) Context
+    ProcessDefinitionEntity processDefinition = Context
       .getCommandContext()
       .getProcessDefinitionManager()
       .findLatestProcessDefinitionByKey(processDefinitionKey);
     if (processDefinition==null) {
       throw new ActivitiException("no processes deployed with key '"+processDefinitionKey+"'");
+    }
+    processDefinition = resolveProcessDefinition(processDefinition);
+    return processDefinition;
+  }
+
+  public ProcessDefinitionEntity findDeployedProcessDefinitionByKeyAndVersion(String processDefinitionKey, Integer processDefinitionVersion) {
+    ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) Context
+      .getCommandContext()
+      .getProcessDefinitionManager()
+      .findProcessDefinitionByKeyAndVersion(processDefinitionKey, processDefinitionVersion);
+    if (processDefinition==null) {
+      throw new ActivitiException("no processes deployed with key = '" + processDefinitionKey + "' and version = '" + processDefinitionVersion + "'");
     }
     processDefinition = resolveProcessDefinition(processDefinition);
     return processDefinition;
@@ -79,7 +92,7 @@ public class DeploymentCache {
       processDefinition = processDefinitionCache.get(processDefinitionId);
       
       if (processDefinition==null) {
-        throw new ActivitiException("deploying "+deploymentId+" didn't put process definition "+processDefinitionId+" in the cache");
+        throw new ActivitiException("deployment '"+deploymentId+"' didn't put process definition '"+processDefinitionId+"' in the cache");
       }
     }
     return processDefinition;
