@@ -37,6 +37,7 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity {
   protected ScopeImpl parent;
   protected boolean isScope;
   protected boolean isAsync;
+  protected boolean isExclusive;
   
   // Graphical information
   protected int x = -1;
@@ -167,6 +168,14 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity {
   
   public void setAsync(boolean isAsync) {
     this.isAsync = isAsync;
+  }
+  
+  public boolean isExclusive() {
+    return isExclusive;
+  }
+    
+  public void setExclusive(boolean isExclusive) {
+    this.isExclusive = isExclusive;
   }
   
 }

@@ -37,7 +37,7 @@ import org.activiti.engine.runtime.Job;
  */
 public abstract class JobEntity implements Serializable, Job, PersistentObject {
 
-  public static final boolean DEFAULT_EXCLUSIVE = false;
+  public static final boolean DEFAULT_EXCLUSIVE = true;
   public static final int DEFAULT_RETRIES = 3;
   private static final int MAX_EXCEPTION_MESSAGE_LENGTH = 255;
 

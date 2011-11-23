@@ -28,6 +28,7 @@ import org.activiti.engine.impl.util.ClockUtil;
 
 /**
  * @author Nick Burch
+ * @author Daniel Meyer
  */
 public class AcquireJobsCmd implements Command<AcquiredJobs> {
 
@@ -40,34 +41,55 @@ public class AcquireJobsCmd implements Command<AcquiredJobs> {
   }
   
   public AcquiredJobs execute(CommandContext commandContext) {
+    
     String lockOwner = jobExecutor.getLockOwner();
     int lockTimeInMillis = jobExecutor.getLockTimeInMillis();
-    int maxJobsPerAcquisition = jobExecutor.getMaxJobsPerAcquisition();
-    
+    int maxJobsPerAcquisition = jobExecutor.getMaxJobsPerAcquisition();    
+    int jobsInThisAcquisition = 0;
     
     AcquiredJobs acquiredJobs = new AcquiredJobs();
     List<JobEntity> jobs = commandContext
       .getJobManager()
       .findNextJobsToExecute(new Page(0, maxJobsPerAcquisition));
-    
+        
     for (JobEntity job: jobs) {
       List<String> jobIds = new ArrayList<String>();
 
-      if (job != null) {
-        job.setLockOwner(lockOwner);
-        GregorianCalendar gregorianCalendar = new GregorianCalendar();
-        gregorianCalendar.setTime(ClockUtil.getCurrentTime());
-        gregorianCalendar.add(Calendar.MILLISECOND, lockTimeInMillis);
-        job.setLockExpirationTime(gregorianCalendar.getTime());
-        jobIds.add(job.getId());
-        if (job.isExclusive()) {
-          // TODO acquire other exclusive jobs for the same process instance.
+      if (job != null && !acquiredJobs.contains(job.getId())) {     
+        if (job.isExclusive() && job.getProcessInstanceId() != null) {
+          // acquire all exclusive jobs in the same process instance
+          // (includes the current job)
+          List<JobEntity> exclusiveJobs = commandContext.getJobManager()
+            .findExclusiveJobsToExecute(job.getProcessInstanceId());
+          for (JobEntity exclusiveJob : exclusiveJobs) {   
+            if(exclusiveJob != null) {
+              lockJob(exclusiveJob, lockOwner, lockTimeInMillis);
+              jobIds.add(exclusiveJob.getId());
+            }
+          }
+        } else {
+          lockJob(job, lockOwner, lockTimeInMillis);
+          jobIds.add(job.getId());        
         }
-      }
+        
+      } 
+
+      acquiredJobs.addJobIdBatch(jobIds);
       
-      acquiredJobs.addJobIds(jobIds);
+      jobsInThisAcquisition += jobIds.size();
+      if(jobsInThisAcquisition >= maxJobsPerAcquisition) {
+        break;
+      }      
     }
     
     return acquiredJobs;
+  }
+
+  protected void lockJob(JobEntity job, String lockOwner, int lockTimeInMillis) {    
+    job.setLockOwner(lockOwner);
+    GregorianCalendar gregorianCalendar = new GregorianCalendar();
+    gregorianCalendar.setTime(ClockUtil.getCurrentTime());
+    gregorianCalendar.add(Calendar.MILLISECOND, lockTimeInMillis);
+    job.setLockExpirationTime(gregorianCalendar.getTime());    
   }
 }

@@ -62,13 +62,13 @@ public class JobAcquisitionThread extends Thread {
       try {
         AcquiredJobs acquiredJobs = commandExecutor.execute(acquireJobsCmd);
 
-        for (List<String> jobIds : acquiredJobs.getJobIdsList()) {
+        for (List<String> jobIds : acquiredJobs.getJobIdBatches()) {
           jobExecutor.executeJobs(jobIds);
         }
 
         // if all jobs were executed
         millisToWait = jobExecutor.getWaitTimeInMillis();
-        int jobsAcquired = acquiredJobs.getJobIdsList().size();
+        int jobsAcquired = acquiredJobs.getJobIdBatches().size();
         if (jobsAcquired < maxJobsPerAcquisition) {
         	
           isJobAdded = false;

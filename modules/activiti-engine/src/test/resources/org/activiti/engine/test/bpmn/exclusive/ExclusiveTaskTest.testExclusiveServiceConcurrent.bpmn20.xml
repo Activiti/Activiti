@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="exclusive">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow sourceRef="theStart" targetRef="fork" />
+    
+    <parallelGateway id="fork" />
+    
+    <sequenceFlow sourceRef="fork" targetRef="service" />    
+    <sequenceFlow sourceRef="fork" targetRef="service2" />
+    <sequenceFlow sourceRef="fork" targetRef="service3" />
+    
+    <serviceTask id="service" activiti:expression="${true}" activiti:exclusive="true" />    
+    <serviceTask id="service2" activiti:expression="${true}" activiti:exclusive="true" />    
+    <serviceTask id="service3" activiti:expression="${true}" activiti:exclusive="true" />
+    
+    <sequenceFlow sourceRef="service" targetRef="join" />
+    <sequenceFlow sourceRef="service2" targetRef="join" />
+    <sequenceFlow sourceRef="service3" targetRef="join" />
+    
+    <parallelGateway id="join" />
+    
+    <sequenceFlow sourceRef="join" targetRef="theEnd" />
+        
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

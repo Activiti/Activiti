@@ -56,6 +56,17 @@
       and (RETRIES_ &gt; 0)
   </select>
   
+  <select id="selectExclusiveJobsToExecute" parameterType="map" resultMap="jobResultMap">
+    select * 
+    from ACT_RU_JOB 
+    where (RETRIES_ &gt; 0)
+      and (DUEDATE_ is null or DUEDATE_ &lt; #{now, jdbcType=TIMESTAMP})
+      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt; #{now, jdbcType=TIMESTAMP})
+      and (RETRIES_ &gt; 0)
+      and (EXCLUSIVE_ = TRUE)
+      and (PROCESS_INSTANCE_ID_ = #{pid})
+  </select>
+  
   <select id="selectLockedJobs" resultMap="jobResultMap">
     select * 
     from ACT_RU_JOB
@@ -135,6 +146,16 @@
     where (RETRIES_ &gt; 0)
       and (DUEDATE_ is null or DUEDATE_ &lt;= #{now, jdbcType=TIMESTAMP})
       and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt;= #{now, jdbcType=TIMESTAMP})
+  </select>
+  
+  <select id="selectExclusiveJobsToExecute_mysql" parameterType="map" resultMap="jobResultMap">
+    select * 
+    from ACT_RU_JOB 
+    where (RETRIES_ &gt; 0)
+      and (DUEDATE_ is null or DUEDATE_ &lt;= #{now, jdbcType=TIMESTAMP})
+      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt;= #{now, jdbcType=TIMESTAMP})
+      and (EXCLUSIVE_ = TRUE)
+      and (PROCESS_INSTANCE_ID_ = #{pid})
   </select>
   
 

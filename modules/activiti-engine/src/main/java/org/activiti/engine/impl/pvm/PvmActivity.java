@@ -22,6 +22,8 @@ import java.util.List;
 public interface PvmActivity extends PvmScope {
   
   boolean isAsync();
+  
+  boolean isExclusive();
 
   PvmScope getParent();
 

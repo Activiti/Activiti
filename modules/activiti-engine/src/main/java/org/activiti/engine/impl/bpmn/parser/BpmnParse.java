@@ -87,6 +87,7 @@ import org.activiti.engine.impl.jobexecutor.TimerDeclarationType;
 import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
@@ -903,9 +904,9 @@ public class BpmnParse extends Parse {
         resultVariableName = scriptTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "resultVariableName");
       }
     }
-    
-    String async = scriptTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "async");
-    activity.setAsync("true".equals(async));
+        
+    activity.setAsync(isAsync(scriptTaskElement));
+    activity.setExclusive(isExclusive(scriptTaskElement));
 
     activity.setActivityBehavior(new ScriptTaskActivityBehavior(script, language, resultVariableName));
 
@@ -927,15 +928,15 @@ public class BpmnParse extends Parse {
     String className = serviceTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "class");
     String expression = serviceTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "expression");
     String delegateExpression = serviceTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "delegateExpression");
-    String resultVariableName = serviceTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "resultVariable");
-    String async = serviceTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "async");
+    String resultVariableName = serviceTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "resultVariable");    
     if (resultVariableName == null) {
       resultVariableName = serviceTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "resultVariableName");
     }
     String implementation = serviceTaskElement.attribute("implementation");
     String operationRef = this.resolveName(serviceTaskElement.attribute("operationRef"));
     
-    activity.setAsync("true".equals(async));
+    activity.setAsync(isAsync(serviceTaskElement));
+    activity.setExclusive(isExclusive(serviceTaskElement));
 
     if (type != null) {
       if (type.equalsIgnoreCase("mail")) {
@@ -1011,8 +1012,8 @@ public class BpmnParse extends Parse {
     String excludeString = businessRuleTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "exclude");
     String resultVariableNameString = businessRuleTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "resultVariable");
     
-    String async = businessRuleTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "async");
-    activity.setAsync("true".equals(async));
+    activity.setAsync(isAsync(businessRuleTaskElement));
+    activity.setExclusive(isExclusive(businessRuleTaskElement));
     
     if (resultVariableNameString == null) {
       resultVariableNameString = businessRuleTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "resultVariableName");
@@ -1073,8 +1074,8 @@ public class BpmnParse extends Parse {
   public ActivityImpl parseSendTask(Element sendTaskElement, ScopeImpl scope) {
     ActivityImpl activity = createActivityOnScope(sendTaskElement, scope);
     
-    String async = sendTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "async");
-    activity.setAsync("true".equals(async));
+    activity.setAsync(isAsync(sendTaskElement));
+    activity.setExclusive(isExclusive(sendTaskElement));
 
     // for e-mail
     String type = sendTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "type");
@@ -1283,8 +1284,8 @@ public class BpmnParse extends Parse {
     ActivityImpl activity = createActivityOnScope(taskElement, scope);
     activity.setActivityBehavior(new TaskActivityBehavior());
     
-    String async = taskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "async");
-    activity.setAsync("true".equals(async));
+    activity.setAsync(isAsync(taskElement));
+    activity.setExclusive(isExclusive(taskElement));
 
     parseExecutionListenersOnScope(taskElement, activity);
 
@@ -1316,8 +1317,8 @@ public class BpmnParse extends Parse {
     ActivityImpl activity = createActivityOnScope(receiveTaskElement, scope);
     activity.setActivityBehavior(new ReceiveTaskActivityBehavior());
     
-    String async = receiveTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "async");
-    activity.setAsync("true".equals(async));
+    activity.setAsync(isAsync(receiveTaskElement));
+    activity.setExclusive(isExclusive(receiveTaskElement));
 
     parseExecutionListenersOnScope(receiveTaskElement, activity);
 
@@ -1350,8 +1351,8 @@ public class BpmnParse extends Parse {
   public ActivityImpl parseUserTask(Element userTaskElement, ScopeImpl scope) {
     ActivityImpl activity = createActivityOnScope(userTaskElement, scope);
     
-    String async = userTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "async");
-    activity.setAsync("true".equals(async));    
+    activity.setAsync(isAsync(userTaskElement));
+    activity.setExclusive(isExclusive(userTaskElement)); 
     
     TaskDefinition taskDefinition = parseTaskDefinition(userTaskElement, activity.getId(), (ProcessDefinitionEntity) scope.getProcessDefinition());
 
@@ -1495,7 +1496,7 @@ public class BpmnParse extends Parse {
     if (dueDateExpression != null) {
       taskDefinition.setDueDateExpression(expressionManager.createExpression(dueDateExpression));
     }
-
+    
     // Priority
     final String priorityExpression = taskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, PRIORITY_EXTENSION);
     if (priorityExpression != null) {
@@ -1712,7 +1713,7 @@ public class BpmnParse extends Parse {
   private void parseTimerStartEventDefinition(Element timerEventDefinition, ActivityImpl timerActivity, ProcessDefinitionEntity processDefinition) {
     timerActivity.setProperty("type", "startTimerEvent");
     TimerDeclarationImpl timerDeclaration = parseTimer(timerEventDefinition, timerActivity, TimerStartEventJobHandler.TYPE);
-    timerDeclaration.setJobHandlerConfiguration(processDefinition.getKey());
+    timerDeclaration.setJobHandlerConfiguration(processDefinition.getKey());    
 
     List<TimerDeclarationImpl> timerDeclarations = (List<TimerDeclarationImpl>) processDefinition.getProperty(PROPERTYNAME_START_TIMER);
     if (timerDeclarations == null) {
@@ -1755,6 +1756,7 @@ public class BpmnParse extends Parse {
     // TimerSession
     TimerDeclarationImpl timerDeclaration = new TimerDeclarationImpl(expression, type, jobHandlerType);
     timerDeclaration.setJobHandlerConfiguration(timerActivity.getId());
+    timerDeclaration.setExclusive("true".equals(timerEventDefinition.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "exclusive", String.valueOf(JobEntity.DEFAULT_EXCLUSIVE))));
     return timerDeclaration;
   }
 
@@ -1868,8 +1870,8 @@ public class BpmnParse extends Parse {
   public ActivityImpl parseSubProcess(Element subProcessElement, ScopeImpl scope) {
     ActivityImpl activity = createActivityOnScope(subProcessElement, scope);
     
-    String async = subProcessElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "async");
-    activity.setAsync("true".equals(async));
+    activity.setAsync(isAsync(subProcessElement));
+    activity.setExclusive(isExclusive(subProcessElement));
     
     activity.setScope(true);
     activity.setActivityBehavior(new SubProcessActivityBehavior());
@@ -1892,8 +1894,8 @@ public class BpmnParse extends Parse {
   public ActivityImpl parseCallActivity(Element callActivityElement, ScopeImpl scope) {
     ActivityImpl activity = createActivityOnScope(callActivityElement, scope);
     
-    String async = callActivityElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "async");
-    activity.setAsync("true".equals(async));
+    activity.setAsync(isAsync(callActivityElement));
+    activity.setExclusive(isExclusive(callActivityElement));
     
     String calledElement = callActivityElement.attribute("calledElement");
     if (calledElement == null) {
@@ -2427,6 +2429,14 @@ public class BpmnParse extends Parse {
       }
     }
     return -1.0;
+  }
+  
+  protected boolean isExclusive(Element element) {   
+    return "true".equals(element.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "exclusive", String.valueOf(JobEntity.DEFAULT_EXCLUSIVE)));              
+  }
+
+  protected boolean isAsync(Element element) {
+    return "true".equals(element.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "async"));
   }
 
 }

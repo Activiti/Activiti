@@ -96,6 +96,15 @@ public class JobManager extends AbstractManager {
     Date now = ClockUtil.getCurrentTime();
     return getDbSqlSession().selectList("selectNextJobsToExecute", now, page);
   }
+  
+  @SuppressWarnings("unchecked")
+  public List<JobEntity> findExclusiveJobsToExecute(String processInstanceId) {
+    Map<String,Object> params = new HashMap<String, Object>();
+    params.put("pid", processInstanceId);
+    params.put("now",ClockUtil.getCurrentTime());
+    return getDbSqlSession().selectList("selectExclusiveJobsToExecute", params);
+  }
+
 
   @SuppressWarnings("unchecked")
   public List<TimerEntity> findUnlockedTimersByDuedate(Date duedate, Page page) {

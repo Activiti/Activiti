@@ -13,22 +13,31 @@
 package org.activiti.engine.impl.jobexecutor;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
  * @author Tom Baeyens
+ * @author Daniel Meyer
  */
 public class AcquiredJobs {
 
-  protected List<List<String>> acquiredJobs = new ArrayList<List<String>>();
+  protected List<List<String>> acquiredJobBatches = new ArrayList<List<String>>();
+  protected Set<String> acquiredJobs = new HashSet<String>();
 
-  public List<List<String>> getJobIdsList() {
-    return acquiredJobs;
+  public List<List<String>> getJobIdBatches() {
+    return acquiredJobBatches;
   }
 
-  public void addJobIds(List<String> jobIds) {
-    acquiredJobs.add(jobIds);
+  public void addJobIdBatch(List<String> jobIds) {
+    acquiredJobBatches.add(jobIds);
+    acquiredJobs.addAll(jobIds);
+  }
+  
+  public boolean contains(String jobId) {
+    return acquiredJobs.contains(jobId);    
   }
   
   

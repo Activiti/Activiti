@@ -1099,34 +1099,4 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     }
   }
 
-  public void testQueryByFloatThrowsException() {
-    try {
-      runtimeService.createProcessInstanceQuery()
-              .variableValueEquals("floatVar", (float) 0.5).list();
-      fail("ActivitiException expected");
-    } catch (ActivitiException re) {
-      assertTextPresent("Variables of type ByteArray cannot be used to query", re.getMessage());
-    }
-  }
-
-  public void testQueryByByteThrowsException() {
-    try {
-      runtimeService.createProcessInstanceQuery()
-              .variableValueEquals("byteVar", (byte) 0).list();
-      fail("ActivitiException expected");
-    } catch (ActivitiException re) {
-      assertTextPresent("Variables of type ByteArray cannot be used to query", re.getMessage());
-    }
-  }
-
-  public void testQueryByCharThrowsException() {
-    try {
-      runtimeService.createProcessInstanceQuery()
-              .variableValueEquals("charVar", (char) 'A').list();
-      fail("ActivitiException expected");
-    } catch (ActivitiException re) {
-      assertTextPresent("Variables of type ByteArray cannot be used to query", re.getMessage());
-    }
-  }
-
 }

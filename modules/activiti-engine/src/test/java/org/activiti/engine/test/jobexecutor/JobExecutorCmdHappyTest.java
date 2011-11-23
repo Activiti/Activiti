@@ -45,7 +45,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
     });
 
     AcquiredJobs acquiredJobs = commandExecutor.execute(new AcquireJobsCmd(jobExecutor));
-    List<List<String>> jobIdsList = acquiredJobs.getJobIdsList();
+    List<List<String>> jobIdsList = acquiredJobs.getJobIdBatches();
     assertEquals(1, jobIdsList.size());
 
     List<String> jobIds = jobIdsList.get(0);
@@ -82,7 +82,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
     });
 
     AcquiredJobs acquiredJobs = commandExecutor.execute(new AcquireJobsCmd(jobExecutor));
-    List<List<String>> jobIdsList = acquiredJobs.getJobIdsList();
+    List<List<String>> jobIdsList = acquiredJobs.getJobIdBatches();
     assertEquals(0, jobIdsList.size());
 
     List<String> expectedJobIds = new ArrayList<String>();
@@ -90,7 +90,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
     ClockUtil.setCurrentTime(new Date(SOME_TIME + (20 * SECOND)));
 
     acquiredJobs = commandExecutor.execute(new AcquireJobsCmd(jobExecutor));
-    jobIdsList = acquiredJobs.getJobIdsList();
+    jobIdsList = acquiredJobs.getJobIdBatches();
     assertEquals(1, jobIdsList.size());
 
     List<String> jobIds = jobIdsList.get(0);

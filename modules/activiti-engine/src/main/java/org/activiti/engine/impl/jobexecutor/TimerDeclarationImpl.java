@@ -21,6 +21,7 @@ import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.springframework.util.StringUtils;
 
@@ -112,6 +113,7 @@ public class TimerDeclarationImpl implements Serializable {
       timer.setRepeat(prepared);
 
     }
+    
     return timer;
   }
   private String prepareRepeat(String dueDate) {
