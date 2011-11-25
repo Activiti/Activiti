@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cmd.SetProcessDefinitionVersionCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -178,11 +179,13 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     assertEquals(newProcessDefinition.getId(), pi.getProcessDefinitionId());
     
     // check history
-    HistoricProcessInstance historicPI = historyService
-      .createHistoricProcessInstanceQuery()
-      .processInstanceId(pi.getId())
-      .singleResult();
-    assertEquals(newProcessDefinition.getId(), historicPI.getProcessDefinitionId());
+    if (processEngineConfiguration.getHistoryLevel() > ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
+      HistoricProcessInstance historicPI = historyService
+        .createHistoricProcessInstanceQuery()
+        .processInstanceId(pi.getId())
+        .singleResult();
+      assertEquals(newProcessDefinition.getId(), historicPI.getProcessDefinitionId());
+    }
 
     // undeploy "manually" deployed process definition
     repositoryService.deleteDeployment(deployment.getId(), true);
@@ -220,13 +223,6 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
       assertEquals(newProcessDefinition.getId(), ((ExecutionEntity) execution).getProcessDefinitionId());
     }
     
-    // check history
-    HistoricProcessInstance historicPI = historyService
-      .createHistoricProcessInstanceQuery()
-      .processInstanceId(pi.getId())
-      .singleResult();
-    assertEquals(newProcessDefinition.getId(), historicPI.getProcessDefinitionId());
-
     // undeploy "manually" deployed process definition
     repositoryService.deleteDeployment(deployment.getId(), true);
   }
