@@ -14,9 +14,11 @@
 package org.activiti.rest.api.task;
 
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.form.TaskFormData;
+import org.activiti.engine.impl.form.EnumFormType;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -56,6 +58,23 @@ public class TaskPropertiesResource extends SecuredResource {
         
         if(property.getType() != null) {
           propertyJSON.put("type", property.getType().getName());
+          
+          if(property.getType() instanceof EnumFormType) {
+            @SuppressWarnings("unchecked")
+            Map<String, String> valuesMap = (Map<String, String>) property.getType().getInformation("values");
+            if(valuesMap != null) {
+              ArrayNode valuesArray = new ObjectMapper().createArrayNode();
+              propertyJSON.put("enumValues", valuesArray);
+              
+              for (String key : valuesMap.keySet()) {
+                ObjectNode valueJSON = new ObjectMapper().createObjectNode();
+                valueJSON.put("id", key);
+                valueJSON.put("name", valuesMap.get(key));
+                valuesArray.add(valueJSON);
+              }
+            }
+          }
+          
         } else {
           propertyJSON.put("type", "String");
         }
