@@ -18,14 +18,14 @@ import org.activiti.engine.runtime.ProcessInstance;
 /**
  * @author Tijs Rademakers
  */
-public class ProcessInstanceResponse {
+public class StartProcessInstanceResponse {
   
   String id;
   String businessKey;
   String processInstanceId;
   String processDefinitionId;
   
-  public ProcessInstanceResponse(ProcessInstance processInstance) {
+  public StartProcessInstanceResponse(ProcessInstance processInstance) {
     this.setId(processInstance.getId());
     this.setBusinessKey(processInstance.getBusinessKey());
     this.setProcessInstanceId(processInstance.getProcessInstanceId());

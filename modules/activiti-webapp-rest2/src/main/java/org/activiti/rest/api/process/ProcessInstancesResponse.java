@@ -13,13 +13,17 @@
 
 package org.activiti.rest.api.process;
 
+import java.io.Serializable;
+
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.rest.api.RequestUtil;
 
 /**
  * @author Tijs Rademakers
  */
-public class ProcessInstancesResponse {
+public class ProcessInstancesResponse implements Serializable {
+  
+  private static final long serialVersionUID = 1L;
   
   String id;
   String businessKey;

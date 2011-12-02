@@ -13,12 +13,14 @@
 
 package org.activiti.rest.api.process;
 
+import java.io.Serializable;
+
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 
 /**
  * @author Tijs Rademakers
  */
-public class ProcessDefinitionResponse {
+public class ProcessDefinitionResponse implements Serializable {
   
   private static final long serialVersionUID = 1L;
   
