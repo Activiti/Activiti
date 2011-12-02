@@ -51,7 +51,9 @@ public class BarTransformer {
             while ((e = jis.getNextEntry()) != null) {
                 String n = e.getName();
                 int i = n.lastIndexOf('/');
-                if (i < n.length() - 1) {
+                if (-1 == i) {// Add root path if the .bpmn20.xml is in the root of the bar file and the value is example.bpmn20.xml
+                    paths.add("/"); //Extender#checkBundle calls the HeaderParser#parseHeader and it does not parse an empty string
+                } else if (i < n.length() - 1) {
                     paths.add(n.substring(0, i + 1));
                 }
             }
