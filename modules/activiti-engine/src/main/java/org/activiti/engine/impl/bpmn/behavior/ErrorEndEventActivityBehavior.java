@@ -69,7 +69,8 @@ public class ErrorEndEventActivityBehavior extends FlowNodeActivityBehavior {
       if (outgoingExecution != null && catchingActivity != null) {
         for (ActivityImpl nestedActivity : catchingActivity.getActivities()) {
           if ("boundaryError".equals(nestedActivity.getProperty("type"))
-                  && errorCode.equals(nestedActivity.getProperty("errorCode"))) {
+                  && (nestedActivity.getProperty("errorCode") == null 
+                      || errorCode.equals(nestedActivity.getProperty("errorCode")))) {
             found = true;
             catchingActivity = nestedActivity;
           }
