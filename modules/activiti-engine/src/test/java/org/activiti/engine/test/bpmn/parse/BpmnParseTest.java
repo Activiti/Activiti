@@ -13,6 +13,7 @@
 
 package org.activiti.engine.test.bpmn.parse;
 
+import java.awt.GraphicsEnvironment;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
@@ -71,9 +72,15 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
     assertNotNull(processDefinitionEntity);
     assertEquals(7, processDefinitionEntity.getActivities().size());
     
-    // Check if diagram has been created based on Diagram Interchange
+    // Check if diagram has been created based on Diagram Interchange when it's not a headless instance
     List<String> resourceNames = repositoryService.getDeploymentResourceNames(processDefinitionEntity.getDeploymentId());
-    assertEquals(2, resourceNames.size());
+    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    if(!ge.isHeadlessInstance()) {
+      assertEquals(2, resourceNames.size());
+    } else {
+      // diagram is not generated on headless instances
+      assertEquals(1, resourceNames.size());
+    }
     
     for (ActivityImpl activity : processDefinitionEntity.getActivities()) {
       
