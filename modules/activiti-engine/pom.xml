@@ -20,6 +20,10 @@
       <artifactId>commons-email</artifactId>
     </dependency>
     <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
+    <dependency>
       <!-- required for building with JDK 5 -->
       <groupId>org.livetribe</groupId>
       <artifactId>livetribe-jsr223</artifactId>
@@ -200,6 +204,7 @@
     								</versionRange>
     								<goals>
     									<goal>cleanVersions</goal>
+    									<goal>manifest</goal>
     								</goals>
     							</pluginExecutionFilter>
     							<action>

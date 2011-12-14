@@ -13,14 +13,20 @@
 
 package org.activiti.engine.impl;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.variable.VariableTypes;
+import org.apache.commons.lang.time.DateUtils;
 
 
 /**
@@ -39,6 +45,15 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
   protected String superProcessInstanceId;
   protected String processDefinitionKey;
   protected Set<String> processInstanceIds;
+  protected Date startDateBy;
+  protected Date startDateOn;
+  protected Date finishDateBy;
+  protected Date finishDateOn;
+  protected Date startDateOnBegin;
+  protected Date startDateOnEnd;
+  protected Date finishDateOnBegin;
+  protected Date finishDateOnEnd;
+  protected List<QueryVariableValue> variables = new ArrayList<QueryVariableValue>();
   
   public HistoricProcessInstanceQueryImpl() {
   }
@@ -102,7 +117,54 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
 	 return this;
   }
   
-  public HistoricProcessInstanceQuery orderByProcessInstanceBusinessKey() {
+	public HistoricProcessInstanceQuery startDateBy(Date date) {
+		this.startDateBy = this.calculateMidnight(date);;
+		return this;
+	}
+
+	public HistoricProcessInstanceQuery startDateOn(Date date) {
+		this.startDateOn = date;
+		this.startDateOnBegin = this.calculateMidnight(date);
+		this.startDateOnEnd = this.calculateBeforeMidnight(date);
+		return this;
+	}
+
+	public HistoricProcessInstanceQuery finishDateBy(Date date) {
+		this.finishDateBy = this.calculateBeforeMidnight(date);
+		return this;
+	}
+
+	public HistoricProcessInstanceQuery finishDateOn(Date date) {
+		this.finishDateOn = date;
+		this.finishDateOnBegin = this.calculateMidnight(date);
+		this.finishDateOnEnd = this.calculateBeforeMidnight(date);
+		return this;
+	}
+	
+	private Date calculateBeforeMidnight(Date date){
+		Date calc = DateUtils.truncate(date, Calendar.DATE);
+		calc = DateUtils.addDays(calc, 1);
+		
+		return DateUtils.addSeconds(calc, -1);
+	}
+	
+	private Date calculateMidnight(Date date){
+		return DateUtils.truncate(date, Calendar.DATE);
+	}
+	
+	public HistoricProcessInstanceQuery processVariableEquals(String variableName, Object variableValue) {
+		variables.add(new QueryVariableValue(variableName, variableValue, QueryOperator.EQUALS));
+		return this;
+	}
+	
+	  protected void ensureVariablesInitialized() {    
+		    VariableTypes types = Context.getProcessEngineConfiguration().getVariableTypes();
+		    for(QueryVariableValue var : variables) {
+		      var.initialize(types);
+		    }
+		  }
+
+public HistoricProcessInstanceQuery orderByProcessInstanceBusinessKey() {
     return orderBy(HistoricProcessInstanceQueryProperty.BUSINESS_KEY);
   }
   
@@ -128,6 +190,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
   
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
+    ensureVariablesInitialized();
     return commandContext
       .getHistoricProcessInstanceManager()
       .findHistoricProcessInstanceCountByQueryCriteria(this);
@@ -135,6 +198,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
 
   public List<HistoricProcessInstance> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
+    ensureVariablesInitialized();
     return commandContext
       .getHistoricProcessInstanceManager()
       .findHistoricProcessInstancesByQueryCriteria(this, page);

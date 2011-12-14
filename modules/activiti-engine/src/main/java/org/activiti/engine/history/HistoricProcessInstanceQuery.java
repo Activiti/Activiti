@@ -13,6 +13,7 @@
 
 package org.activiti.engine.history;
 
+import java.util.Date;
 import java.util.Set;
 
 import org.activiti.engine.query.Query;
@@ -50,6 +51,21 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   
   /** Only select historic process instance that are not yet finished. */
   HistoricProcessInstanceQuery unfinished();
+  
+  /** Only select historic process instances with variables that satisfies the provided condition */
+  HistoricProcessInstanceQuery processVariableEquals(String variableName, Object variableValue);
+  
+  /** Only select historic process instances that were started as of the provided date. (Date will be adjusted to reflect midnight) */
+  HistoricProcessInstanceQuery startDateBy(Date date);
+  
+  /** Only select historic process instances that were started on the provided date. */
+  HistoricProcessInstanceQuery startDateOn(Date date);
+  
+  /** Only select historic process instances that were finished as of the provided date. (Date will be adjusted to reflect one second before midnight) */
+  HistoricProcessInstanceQuery finishDateBy(Date date);
+  
+  /** Only select historic process instances that were finished on provided date. */
+  HistoricProcessInstanceQuery finishDateOn(Date date);
   
   /** Only select historic process instance that are started by the given user. */
   HistoricProcessInstanceQuery startedBy(String userId);

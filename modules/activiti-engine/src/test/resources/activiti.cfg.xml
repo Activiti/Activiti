@@ -19,6 +19,7 @@
     
     <!-- mail server configurations -->
     <property name="mailServerPort" value="5025" />    
+    <property name="history" value="full" />
   </bean>
 
 </beans>

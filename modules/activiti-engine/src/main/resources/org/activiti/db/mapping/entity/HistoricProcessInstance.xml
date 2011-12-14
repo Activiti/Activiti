@@ -129,6 +129,20 @@
       <if test="businessKey != null">
         and HPI.BUSINESS_KEY_ = #{businessKey}
       </if>
+      <if test="startDateOn">
+        and HPI.START_TIME_ &gt;= #{startDateOnBegin}
+        and HPI.START_TIME_ &lt;= #{startDateOnEnd}
+      </if>
+      <if test="finishDateOn">
+        and HPI.END_TIME_ &gt;= #{finishDateOnBegin}
+        and HPI.END_TIME_ &lt;= #{finishDateOnEnd}
+      </if>
+      <if test="finishDateBy">
+        and HPI.END_TIME_ &lt;= #{finishDateBy}
+      </if>
+      <if test="startDateBy">
+        and HPI.START_TIME_ &gt;= #{startDateBy}
+      </if>
       <if test="unfinished">
         and HPI.END_TIME_ IS NULL
       </if>
@@ -141,7 +155,39 @@
       <if test="superProcessInstanceId != null">
         and HPI.SUPER_PROCESS_INSTANCE_ID_ = #{superProcessInstanceId}
       </if>
-       
+       <foreach collection="variables" index="index" item="var">
+        and exists (
+          select HD.ID_ 
+          from ACT_HI_DETAIL HD 
+          where
+            HD.TYPE_ = 'VariableUpdate' 
+            and HD.NAME_ =  #{var.name}
+            and HD.PROC_INST_ID_ = HPI.PROC_INST_ID_ and HD.TASK_ID_ is null
+            and HD.REV_ = (select max(HDM.REV_) from ACT_HI_DETAIL HDM where HDM.PROC_INST_ID_ = HPI.PROC_INST_ID_ and HDM.TASK_ID_ is null and HDM.VAR_TYPE_ = #{var.type} and HDM.NAME_ = #{var.name} and HDM.TYPE_ = 'VariableUpdate')
+            and HD.TIME_ = (select max(HDM.TIME_) from ACT_HI_DETAIL HDM where HDM.PROC_INST_ID_ = HPI.PROC_INST_ID_ and HDM.TASK_ID_ is null and HDM.VAR_TYPE_ = #{var.type} and HDM.NAME_ = #{var.name} and HDM.TYPE_ = 'VariableUpdate')
+
+            <if test="!var.type.equals('null')">
+              and HD.VAR_TYPE_ = #{var.type}
+            </if>
+            <!-- Variable value -->
+            <if test="var.textValue != null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
+              and HD.TEXT_ =  #{var.textValue}
+            </if>
+            <if test="var.textValue2 != null">
+              and HD.TEXT2_ = #{var.textValue2}
+            </if>
+            <if test="var.longValue != null">
+              and HD.LONG_ = #{var.longValue}
+            </if>
+            <if test="var.doubleValue != null">
+              and HD.DOUBLE_ = #{var.doubleValue}
+            </if>
+            <!-- Null variable type -->
+            <if test="var.textValue == null &amp;&amp; var.textValue2 == null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
+              and HD.TEXT_ is null and HD.TEXT2_ is null and HD.LONG_ is null and HD.DOUBLE_ is null and HD.BYTEARRAY_ID_ is null
+            </if>
+        )
+      </foreach>      
     </where>
   </sql>
 
