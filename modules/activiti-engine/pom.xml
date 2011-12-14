@@ -122,6 +122,9 @@
           org.apache.tools.ant*;resolution:=optional,
           org.apache.xerces*;resolution:=optional,
           org.activiti.osgi*;resolution:=optional,
+          org.springframework*;resolution:=optional,
+          org.drools*;resolution:=optional,
+          com.fasterxml*;resolution:=optional,
       </activiti.osgi.import.additional>
   </properties>
 
