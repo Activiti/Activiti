@@ -152,19 +152,19 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
 		return DateUtils.truncate(date, Calendar.DATE);
 	}
 	
-	public HistoricProcessInstanceQuery processVariableEquals(String variableName, Object variableValue) {
+	/* public HistoricProcessInstanceQuery processVariableEquals(String variableName, Object variableValue) {
 		variables.add(new QueryVariableValue(variableName, variableValue, QueryOperator.EQUALS));
 		return this;
-	}
+	} */
 	
-	  protected void ensureVariablesInitialized() {    
-		    VariableTypes types = Context.getProcessEngineConfiguration().getVariableTypes();
-		    for(QueryVariableValue var : variables) {
-		      var.initialize(types);
-		    }
-		  }
+	protected void ensureVariablesInitialized() {    
+	  VariableTypes types = Context.getProcessEngineConfiguration().getVariableTypes();
+	  for(QueryVariableValue var : variables) {
+	    var.initialize(types);
+	  }
+	}
 
-public HistoricProcessInstanceQuery orderByProcessInstanceBusinessKey() {
+	public HistoricProcessInstanceQuery orderByProcessInstanceBusinessKey() {
     return orderBy(HistoricProcessInstanceQueryProperty.BUSINESS_KEY);
   }
   

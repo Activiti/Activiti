@@ -53,7 +53,7 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   HistoricProcessInstanceQuery unfinished();
   
   /** Only select historic process instances with variables that satisfies the provided condition */
-  HistoricProcessInstanceQuery processVariableEquals(String variableName, Object variableValue);
+  //HistoricProcessInstanceQuery processVariableEquals(String variableName, Object variableValue);
   
   /** Only select historic process instances that were started as of the provided date. (Date will be adjusted to reflect midnight) */
   HistoricProcessInstanceQuery startDateBy(Date date);
