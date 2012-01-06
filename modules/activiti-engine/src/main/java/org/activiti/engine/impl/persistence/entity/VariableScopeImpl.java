@@ -74,12 +74,16 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     return variables;
   }
 
-  protected Map<String, Object> collectVariables(HashMap<String, Object> variables) {
-    ensureVariableInstancesInitialized();
+  private void collectParentVariables(HashMap<String, Object> variables) {
     VariableScopeImpl parentScope = getParentVariableScope();
     if (parentScope!=null) {
       variables.putAll(parentScope.collectVariables(variables));
     }
+  }
+  
+  protected Map<String, Object> collectVariables(HashMap<String, Object> variables) {
+    ensureVariableInstancesInitialized();
+    collectParentVariables(variables);
     for (VariableInstanceEntity variableInstance: variableInstances.values()) {
       variables.put(variableInstance.getName(), variableInstance.getValue());
     }
@@ -143,7 +147,7 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
 
   public Set<String> getVariableNames() {
     ensureVariableInstancesInitialized();
-    return variableInstances.keySet();
+    return collectVariables(new HashMap<String, Object>()).keySet();
   }
 
   public Set<String> getVariableNamesLocal() {
