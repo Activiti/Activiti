@@ -11,19 +11,19 @@
 	<classpathentry kind="lib" path="libs-runtime/commons-email-1.2.jar"/>
 	<classpathentry kind="lib" path="libs-runtime/commons-lang-2.4.jar"/>
 	<classpathentry kind="lib" path="libs-runtime/commons-logging-1.1.1.jar"/>
-	<classpathentry kind="lib" path="libs-runtime/cxf-api-2.1.2.jar"/>
-	<classpathentry kind="lib" path="libs-runtime/cxf-common-schemas-2.1.2.jar"/>
-	<classpathentry kind="lib" path="libs-runtime/cxf-common-utilities-2.1.2.jar"/>
-	<classpathentry kind="lib" path="libs-runtime/cxf-rt-bindings-soap-2.1.2.jar"/>
-	<classpathentry kind="lib" path="libs-runtime/cxf-rt-bindings-xml-2.1.2.jar"/>
-	<classpathentry kind="lib" path="libs-runtime/cxf-rt-core-2.1.2.jar"/>
-	<classpathentry kind="lib" path="libs-runtime/cxf-rt-databinding-jaxb-2.1.2.jar"/>
-	<classpathentry kind="lib" path="libs-runtime/cxf-rt-frontend-jaxws-2.1.2.jar"/>
-	<classpathentry kind="lib" path="libs-runtime/cxf-rt-frontend-simple-2.1.2.jar"/>
-	<classpathentry kind="lib" path="libs-runtime/cxf-rt-transports-http-2.1.2.jar"/>
-	<classpathentry kind="lib" path="libs-runtime/cxf-rt-transports-http-jetty-2.1.2.jar"/>
-	<classpathentry kind="lib" path="libs-runtime/cxf-rt-ws-addr-2.1.2.jar"/>
-	<classpathentry kind="lib" path="libs-runtime/cxf-tools-common-2.1.2.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/cxf-api-2.3.1.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/cxf-common-schemas-2.3.1.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/cxf-common-utilities-2.3.1.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/cxf-rt-bindings-soap-2.3.1.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/cxf-rt-bindings-xml-2.3.1.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/cxf-rt-core-2.3.1.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/cxf-rt-databinding-jaxb-2.3.1.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/cxf-rt-frontend-jaxws-2.3.1.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/cxf-rt-frontend-simple-2.3.1.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/cxf-rt-transports-http-2.3.1.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/cxf-rt-transports-http-jetty-2.3.1.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/cxf-rt-ws-addr-2.3.1.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/cxf-tools-common-2.3.1.jar"/>
 	<classpathentry kind="lib" path="libs-runtime/FastInfoset-1.2.2.jar"/>
 	<classpathentry kind="lib" path="libs-runtime/geronimo-annotation_1.0_spec-1.1.1.jar"/>
 	<classpathentry kind="lib" path="libs-runtime/geronimo-jaxws_2.1_spec-1.0.jar"/>
@@ -68,13 +68,10 @@
 	<classpathentry kind="lib" path="libs-test/geronimo-jta_1.1_spec-1.1.1.jar"/>
 	<classpathentry kind="lib" path="libs-test/h2-1.2.132.jar"/>
 	<classpathentry kind="lib" path="libs-test/hamcrest-core-1.1.jar"/>
-	<classpathentry kind="lib" path="libs-test/jtds-1.2.4.jar"/>
 	<classpathentry kind="lib" path="libs-test/junit-4.8.1.jar"/>
 	<classpathentry kind="lib" path="libs-test/mockito-core-1.8.2.jar"/>
 	<classpathentry kind="lib" path="libs-test/mvel2-2.0.16.jar"/>
-	<classpathentry kind="lib" path="libs-test/mysql-connector-java-5.1.6.jar"/>
 	<classpathentry kind="lib" path="libs-test/objenesis-1.0.jar"/>
-	<classpathentry kind="lib" path="libs-test/postgresql-8.4-701.jdbc4.jar"/>
 	<classpathentry kind="lib" path="libs-test/subethasmtp-smtp-1.2.jar"/>
 	<classpathentry kind="lib" path="libs-test/subethasmtp-wiser-1.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
