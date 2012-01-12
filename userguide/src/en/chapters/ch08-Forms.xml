@@ -367,7 +367,7 @@
     returned from methods <literal>StartFormData FormService.getStartFormData(String processDefinitionId)</literal>
     and <literal>TaskFormdata FormService.getTaskFormData(String taskId)</literal></para>
     
-    <para>We support following form property types:</para>
+    <para>We support the following form property types:</para>
     <itemizedlist>
       <listitem><para><literal>string</literal> (org.activiti.engine.impl.form.StringFormType)</para></listitem>
       <listitem><para><literal>long</literal> (org.activiti.engine.impl.form.LongFormType)</para></listitem>
