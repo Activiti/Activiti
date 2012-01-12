@@ -165,8 +165,13 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
     waitForJobExecutorOnCondition(10000, 100, new Callable<Boolean>() {
       public Boolean call() throws Exception {
         //we check that correct version was started
-        String pi = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExample").singleResult().getProcessInstanceId();        
-        return "changed".equals(runtimeService.getActiveActivityIds(pi).get(0));
+        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExample").singleResult();
+        if(processInstance != null) {
+          String pi = processInstance.getProcessInstanceId();        
+          return "changed".equals(runtimeService.getActiveActivityIds(pi).get(0));
+        }else {
+          return false;
+        }
       }      
     });
     assertEquals(1, jobQuery.count());
