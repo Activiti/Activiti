@@ -18,21 +18,15 @@ import org.activiti.engine.ProcessEngine;
 /**
  * Represents a strategy for building or looking up a {@link ProcessEngine}.
  * 
+ * Deprecated since 5.9. Use {@link org.activiti.cdi.spi.ProcessEngineLookup} 
+ * 
+ * 
  * @author Daniel Meyer
+ * @see org.activiti.cdi.spi.ProcessEngineLookup
+ * 
  */
-public interface ProcessEngineLookup {
+@Deprecated
+public interface ProcessEngineLookup extends org.activiti.cdi.spi.ProcessEngineLookup {
 
-  /**
-   * This method will only be called once by the {@link ActivitiExtension}, at startup
-   * 
-   * @return a {@link ProcessEngine}
-   * 
-   */
-  ProcessEngine getProcessEngine();
-
-  /**
-   * * This method will only be called once by the {@link ActivitiExtension}, at shutdown
-   */
-  void ungetProcessEngine();
 
 }

@@ -32,8 +32,11 @@ import org.activiti.engine.ProcessEngines;
  * 
  * @author Daniel Meyer
  */
-@Alternative
-public class LocalProcessEngineLookup implements ProcessEngineLookup {
+public class LocalProcessEngineLookup implements org.activiti.cdi.spi.ProcessEngineLookup {
+  
+  public int getPrecedence() {
+    return 10;
+  }
 
   protected String processEngineName = ProcessEngines.NAME_DEFAULT;
 
