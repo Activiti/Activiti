@@ -34,44 +34,23 @@
     <section>
     	<title>Looking up a Process Engine</title>
     	<para> 
-    	The cdi extension needs to get access to a ProcessEngine. To this extend, an implementation of the interface 
-    	<literal>org.activiti.cdi.impl.ProcessEngineLookup</literal>
-    	is looked up at runtime. The cdi module ships with the following <literal>@Alternative</literal> implementations,
-    	one of which needs to be enabled in the <literal>beans.xml</literal>:
-    	<itemizedlist>
-    		<listitem>
-				<literal>org.activiti.cdi.impl.LocalProcessEngineLookup</literal>: 
-				this implementation uses the <literal>ProcessEngines</literal>-Utilty class for looking
-				up the ProcessEngine. In the default configuration
-				<literal>ProcessEngines#NAME_DEFAULT</literal>
-				is used to lookup the ProcessEngine. This class might be subclassed to
-				set a custom name. We can enable this implementation if we want to
-				build and manage our own ProcessEngine in an application. NOTE: needs an
-				<literal>activiti.cfg.xml</literal>
-				configuration on the classpath.
-			</listitem>
-    		<listitem>
-    			<literal>org.activiti.cdi.impl.JndiProcessEngineLookup</literal>:
-    			looks up a ProcessEngine in Jndi using an InitialContext. By default the String
-    			&quot;activiti/default&quot; is used to look up the ProcessEngine. This class can be subclassed 
-    			in order to set a custom jndi name.    			
-    		</listitem>
-    		<listitem>
-    			<literal>org.activiti.cdi.test.ProcessEngineLookupForTestsuite</literal>:
-    			makes the ProcessEngine built for testcases available to the cdi beans.
-    		</listitem>
-    	</itemizedlist> 
-    	In a &quot;beans.xml&quot;, LocalProcessEngineLookup can be enabled in the following way: 
-    	<programlisting>
-&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;beans xmlns=&quot;http://java.sun.com/xml/ns/javaee&quot;
-       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd&quot;&gt;
-  &lt;alternatives&gt;
-	&lt;class&gt;org.activiti.cdi.impl.LocalProcessEngineLookup&lt;/class&gt;
-  &lt;/alternatives&gt;
-&lt;/beans&gt;
-    	</programlisting>     
-     </para>     
+    	The cdi extension needs to get access to a ProcessEngine. To achieve this, an implementation of the interface 
+    	<literal>org.activiti.cdi.spi.ProcessEngineLookup</literal> is looked up at runtime. The cdi module ships with 
+    	a default implementation named <literal>org.activiti.cdi.impl.LocalProcessEngineLookup</literal>, which uses 
+    	the <literal>ProcessEngines</literal>-Utilty class for looking up the ProcessEngine. In the default configuration
+		<literal>ProcessEngines#NAME_DEFAULT</literal> is used to lookup the ProcessEngine. This class might be subclassed to
+		set a custom name. NOTE: needs an <literal>activiti.cfg.xml</literal> configuration on the classpath.		 
+    	</para>
+    	<para>
+    	Activiti cdi uses a java.util.ServiceLoader SPI for resolving an instance of <literal>org.activiti.cdi.spi.ProcessEngineLookup</literal>.
+    	In order to provide a custom implementation of the interface, we need to add a plain text file named 
+    	<literal>META-INF/services/org.activiti.cdi.spi.ProcessEngineLookup</literal> to our deployment, in which we specify the fully 
+    	qualified classname of the implementation. 
+    	</para>     
+    	<note>If you do not provide a custom <literal>org.activiti.cdi.spi.ProcessEngineLookup</literal> implementation, activiti
+    	will use the default <literal>LocalProcessEngineLookup</literal> implementation. In that case, all you need to do is providing a
+    	activiti.cfg.xml file on the classpath (see next section).
+    	</note>
      </section>
      <section>
      	<title>Configuring the Process Engine</title>
@@ -89,8 +68,7 @@
      		<listitem><literal>org.activiti.cdi.CdiStandaloneProcessEngineConfiguration</literal>: a subclass of the activiti StandaloneProcessEngineConfiguration, 
      		can be used if plain Jdbc transactions should be used for activiti</listitem>
      	</itemizedlist>     	
-     	The following is an example activiti.cfg.xml file using externally managed Jta-transactions, 
-     	looking up the default Jboss datasource:
+     	The following is an example activiti.cfg.xml file for Jboss 7:
      	<programlisting>
 &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
@@ -99,7 +77,7 @@
 
 	&lt;!-- lookup the JTA-Transaction manager --&gt;
 	&lt;bean id=&quot;transactionManager&quot; class=&quot;org.springframework.jndi.JndiObjectFactoryBean&quot;&gt;
-		&lt;property name=&quot;jndiName&quot; value=&quot;java:/TransactionManager&quot;&gt;&lt;/property&gt;
+		&lt;property name=&quot;jndiName&quot; value=&quot;java:jboss/TransactionManager&quot;&gt;&lt;/property&gt;
 		&lt;property name=&quot;resourceRef&quot; value=&quot;true&quot; /&gt;
 	&lt;/bean&gt;
 
@@ -107,8 +85,32 @@
 	&lt;bean id=&quot;processEngineConfiguration&quot;
 		class=&quot;org.activiti.cdi.CdiJtaProcessEngineConfiguration&quot;&gt;
 		&lt;!-- lookup the default Jboss datasource --&gt;
-		&lt;property name=&quot;dataSourceJndiName&quot; value=&quot;java:/DefaultDS&quot; /&gt;
+		&lt;property name=&quot;dataSourceJndiName&quot; value=&quot;java:jboss/datasources/ExampleDS&quot; /&gt;
 		&lt;property name=&quot;databaseType&quot; value=&quot;h2&quot; /&gt;
+		&lt;property name=&quot;transactionManager&quot; ref=&quot;transactionManager&quot; /&gt;
+		&lt;!-- using externally managed transactions --&gt;
+		&lt;property name=&quot;transactionsExternallyManaged&quot; value=&quot;true&quot; /&gt;
+		&lt;property name=&quot;databaseSchemaUpdate&quot; value=&quot;true&quot; /&gt;
+	&lt;/bean&gt;
+&lt;/beans&gt;
+     	</programlisting>
+     		And this is how it would look like for Glassfish 3.1.1 (assuming a datasource named jdbc/activiti is properly configured):
+     	<programlisting>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+	xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+	xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&gt;
+
+	&lt;!-- lookup the JTA-Transaction manager --&gt;
+	&lt;bean id=&quot;transactionManager&quot; class=&quot;org.springframework.jndi.JndiObjectFactoryBean&quot;&gt;
+		&lt;property name=&quot;jndiName&quot; value=&quot;java:appserver/TransactionManager&quot;&gt;&lt;/property&gt;
+		&lt;property name=&quot;resourceRef&quot; value=&quot;true&quot; /&gt;
+	&lt;/bean&gt;
+
+	&lt;!-- process engine configuration --&gt;
+	&lt;bean id=&quot;processEngineConfiguration&quot;
+		class=&quot;org.activiti.cdi.CdiJtaProcessEngineConfiguration&quot;&gt;
+		&lt;property name=&quot;dataSourceJndiName&quot; value=&quot;jdbc/activiti&quot; /&gt;
 		&lt;property name=&quot;transactionManager&quot; ref=&quot;transactionManager&quot; /&gt;
 		&lt;!-- using externally managed transactions --&gt;
 		&lt;property name=&quot;transactionsExternallyManaged&quot; value=&quot;true&quot; /&gt;
@@ -169,11 +171,12 @@
 				
 		<para>Note that the <literal>BusinessProcess</literal>-bean is a <literal>@Named</literal> bean, which means that the exposed methods can 
 		be invoked using expression language, for example from a Jsf page. The following Jsf2 snippet begins a new conversation and associates it 
-		with the process instance, the id of which is passed as a request parameter (e.g. <literal>pageName.jsf?processId=XX</literal>):
+		with a user task instance, the id of which is passed as a request parameter (e.g. <literal>pageName.jsf?taskId=XX</literal>):
 <programlisting>
-&lt;f:viewParam name=&quot;processId&quot; /&gt;
-&lt;f:event type=&quot;preRenderView&quot; listener=&quot;#{javax.enterprise.context.conversation.begin()}&quot; /&gt;
-&lt;f:event type=&quot;preRenderView&quot; listener=&quot;#{businessProcess.resumeProcessById(processId)}&quot; /&gt;
+&lt;f:metadata&gt;
+&lt;f:viewParam name=&quot;taskId&quot; /&gt;
+&lt;f:event type=&quot;preRenderView&quot; listener=&quot;#{businessProcess.startTask(taskId, true)}&quot; /&gt;
+&lt;/f:metadata&gt;
 </programlisting>		
 		</para>
 	</section>
@@ -270,7 +273,7 @@ public class BusinessTripRequest implements Serializable {
 	  		<listitem><literal>@Named @BusinessProcessScoped</literal> beans can be referenced directly,</listitem>
 	  		<listitem>other process variables can be referenced using the <literal>ProcessVariables</literal>-bean:
 <programlisting>
-#{processVariables.get('variableName')}
+#{processVariables['accountNumber']}
 </programlisting>
 	  		</listitem>
 	  	</itemizedlist> 	  	
@@ -341,53 +344,11 @@ public void onShipmentSuceeded(@Observes(during=TransactionPhase.AFTER_SUCCESS) 
 	  		<listitem>The current process instance id be injected:  <literal>@Inject @ProcessInstanceId String pid</literal>,</listitem>
 	  	</itemizedlist>
 	</section>		  	
-  </section>
-  <section>
-  	<title>Writing Tests</title>
-  	<para>
-  	The activiti-cdi module makes it possible to write testcases using <literal>org.activiti.cdi.test.CdiActivitiTestCase</literal>, 
-  	which is an extension of <literal>PluggableActivitiTestCase</literal>. The base class takes care of bootstrapping Weld SE as a test-container 
-  	and doing housekeeping between tests. In order to setup a maven project for activiti-cdi tests, the following additional configuration is needed:
-  	<itemizedlist>
-  		<listitem>Include Weld-SE as a maven dependency (usually in the test-scope, we need to make sure to put it before any javaee-api reference in the &lt;dependencies ... /&gt; list).</listitem>
-  		<listitem>Under <literal>src/test/resources/META-INF</literal>, include a beans.xml file, enabling the <literal>ProcessEngineLookupForTestsuite</literal> alternative bean class,
-<programlisting>
-&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;beans xmlns=&quot;http://java.sun.com/xml/ns/javaee&quot;
-       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd&quot;&gt;
-  &lt;alternatives&gt;
-	&lt;class&gt;org.activiti.cdi.test.ProcessEngineLookupForTestsuite&lt;/class&gt;
-  &lt;/alternatives&gt;
-&lt;/beans&gt;
-</programlisting>  		
-  		</listitem>  	
-  	</itemizedlist>    
-  	The following is an example of a cdi-aware activiti test:
-<programlisting>  	
-public class BusinessProcessBeanTest extends CdiActivitiTestCase {
-
-  @Deployment
-  public void test() throws Exception {
-	// ... do testing
-    }
-}
-</programlisting>
-Note that beans can be resolved programmatically using the utility methods <literal>getBeanInstance(Class clazz)</literal> and <literal>getBeanInstance(String name)</literal>.
-Conversations and requests can be started / ended using begin/endRequest() and begin/endConversation() methods. 
-  	</para>
-  </section>
+  </section>  
   <section>
 	  	<title>Known Limitations</title>
 	  	<para>
-	  	The activiti-cdi module is <link linkend="experimental"><emphasis role="bold">&lt;EXPERIMENTAL&gt;</emphasis></link> as a whole and not considered 
-	  	stable. In addition, the following known limitations apply:
-	  	<itemizedlist>
-	  		<listitem>The activiti cdi module is currently only tested in a Java SE enviroment, the continuous integration does not test Java EE features</listitem>
-	  		<listitem>Referencing cdi beans from the process using EL is not supported, if the unit of work is triggered by a Job (i.e. timer event). 
-	  		Then no cdi context is active.</listitem>
-	  		<listitem>Although activiti-cdi is implemented against the SPI and designed to be a "portable-extension" it is only tested using Weld.</listitem>
-	  	</itemizedlist>
-	  	 
+		Although activiti-cdi is implemented against the SPI and designed to be a "portable-extension" it is only tested using Weld.	  	 
 	  	</para>
 	</section>	
 </chapter>
