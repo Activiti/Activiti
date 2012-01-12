@@ -39,6 +39,10 @@ public class AcquiredJobs {
   public boolean contains(String jobId) {
     return acquiredJobs.contains(jobId);    
   }
+
+  public int size() {
+    return acquiredJobs.size();
+  }
   
   
 }

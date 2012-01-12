@@ -81,6 +81,7 @@ import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.jobexecutor.AsyncContinuationJobHandler;
+import org.activiti.engine.impl.jobexecutor.DefaultJobExecutor;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerCatchIntermediateEventJobHandler;
@@ -642,7 +643,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   protected void initJobExecutor() {
     if (jobExecutor==null) {
-      jobExecutor = new JobExecutor();
+      jobExecutor = new DefaultJobExecutor();
     }
 
     jobHandlers = new HashMap<String, JobHandler>();
