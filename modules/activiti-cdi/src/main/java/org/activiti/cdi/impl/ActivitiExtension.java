@@ -19,6 +19,7 @@ import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
+import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.Extension;
 
 import org.activiti.cdi.annotation.BusinessProcessScoped;
@@ -79,12 +80,11 @@ public class ActivitiExtension implements Extension {
     new ProcessDeployer(processEngine).deployProcesses();
   }
 
-  // this does not work until https://issues.jboss.org/browse/WELD-891 is fixed
-//  public void beforeShutdown(@Observes BeforeShutdown event) {
-//    ProcessEngineLookup processEngineProvisionStrategy = ProgrammaticBeanLookup.lookup(ProcessEngineLookup.class);
-//    processEngineProvisionStrategy.ungetProcessEngine();
-//    processEngine = null;
-//    logger.info("Activiti-cdi extension shutdown.");
-//  }
+  public void beforeShutdown(@Observes BeforeShutdown event) {
+    ProcessEngineLookup processEngineProvisionStrategy = ProgrammaticBeanLookup.lookup(ProcessEngineLookup.class);
+    processEngineProvisionStrategy.ungetProcessEngine();
+    processEngine = null;
+    logger.info("Shutting down activiti-cdi");    
+  }
 
 }
