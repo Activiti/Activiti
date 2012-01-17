@@ -242,8 +242,50 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
   @Deployment
   public void testCatchErrorThrownByJavaDelegateOnServiceTask() {
     String procId = runtimeService.startProcessInstanceByKey("catchErrorThrownByJavaDelegateOnServiceTask").getId();
-    
-    // The service task will throw and error event,
+    assertThatErrorHasBeenCaught(procId);
+  }
+
+  @Deployment
+  public void testCatchErrorThrownByJavaDelegateOnServiceTaskWithErrorCode() {
+    String procId = runtimeService.startProcessInstanceByKey("catchErrorThrownByJavaDelegateOnServiceTaskWithErrorCode").getId();
+    assertThatErrorHasBeenCaught(procId);
+  }
+
+  @Deployment
+  public void testCatchErrorThrownByJavaDelegateOnEmbeddedSubProcess() {
+    String procId = runtimeService.startProcessInstanceByKey("catchErrorThrownByJavaDelegateOnEmbeddedSubProcess").getId();
+    assertThatErrorHasBeenCaught(procId);
+  }
+
+  @Deployment
+  public void testCatchErrorThrownByJavaDelegateOnEmbeddedSubProcessInduction() {
+    String procId = runtimeService.startProcessInstanceByKey("catchErrorThrownByJavaDelegateOnEmbeddedSubProcessInduction").getId();
+    assertThatErrorHasBeenCaught(procId);
+  }
+
+  @Deployment(resources = {
+          "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorThrownByJavaDelegateOnCallActivity-parent.bpmn20.xml",
+          "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorThrownByJavaDelegateOnCallActivity-child.bpmn20.xml"
+  })
+  public void testCatchErrorThrownByJavaDelegateOnCallActivity() {
+    String procId = runtimeService.startProcessInstanceByKey("catchErrorThrownByJavaDelegateOnCallActivity-parent").getId();
+    assertThatErrorHasBeenCaught(procId);
+  }
+
+  @Deployment(resources = {
+          "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testUncaughtErrorThrownByJavaDelegateOnCallActivity-parent.bpmn20.xml",
+          "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorThrownByJavaDelegateOnCallActivity-child.bpmn20.xml"
+  })
+  public void testUncaughtErrorThrownByJavaDelegateOnCallActivity() {
+    try {
+      runtimeService.startProcessInstanceByKey("uncaughtErrorThrownByJavaDelegateOnCallActivity-parent");
+    } catch (ActivitiException e) {
+      assertTextPresent("No catching boundary event found for error with errorCode '23', neither in same process nor in parent process", e.getMessage());
+    }
+  }
+  
+  private void assertThatErrorHasBeenCaught(String procId) {
+    // The service task will throw an error event,
     // which is caught on the service task boundary
     assertEquals("No tasks found in task list.", 1, taskService.createTaskQuery().count());
     Task task = taskService.createTaskQuery().singleResult();
@@ -253,5 +295,5 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
     assertProcessEnded(procId);
   }
-  
+
 }

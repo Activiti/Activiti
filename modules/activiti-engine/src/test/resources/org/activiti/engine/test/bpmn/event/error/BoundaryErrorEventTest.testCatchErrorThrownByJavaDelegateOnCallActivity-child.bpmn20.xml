@@ -4,20 +4,13 @@
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
   
-  <process id="catchErrorThrownByJavaDelegateOnServiceTask">
+  <process id="catchErrorThrownByJavaDelegateOnCallActivity-child">
   
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="serviceTask" />
     
     <serviceTask id="serviceTask" activiti:class="org.activiti.engine.test.bpmn.event.error.ThrowBpmnErrorDelegate" />
     
-    <boundaryEvent id="catchError" attachedToRef="serviceTask">
-      <errorEventDefinition />
-    </boundaryEvent>
-    
-    <sequenceFlow id="flow3" sourceRef="catchError" targetRef="escalatedTask" />
-    
-    <userTask id="escalatedTask" name="Escalated Task" />
     <sequenceFlow id="flow4" sourceRef="serviceTask" targetRef="theEnd" />
     
     <endEvent id="theEnd" />

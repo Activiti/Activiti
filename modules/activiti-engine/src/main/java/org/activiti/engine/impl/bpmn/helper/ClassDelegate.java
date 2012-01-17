@@ -34,6 +34,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ExecutionListenerInvocation;
 import org.activiti.engine.impl.delegate.TaskListenerInvocation;
 import org.activiti.engine.impl.pvm.PvmActivity;
+import org.activiti.engine.impl.pvm.PvmScope;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
@@ -120,25 +121,43 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
     } catch (BpmnError error) {
       // find error handler
       PvmActivity errorEventHandler = null;
-      for (PvmActivity activity : execution.getActivity().getActivities()) {
-        if (((ActivityImpl) activity).getActivityBehavior() instanceof BoundaryEventActivityBehavior) {
-          // TODO check error code of error handler
-          errorEventHandler = activity;
-          break;
+      // search for error handler with same error code as thrown Error
+      PvmScope scope = execution.getActivity();
+      while (errorEventHandler == null && scope != null) {
+        for (PvmActivity activity : scope.getActivities()) {
+          if (((ActivityImpl) activity).getActivityBehavior() instanceof BoundaryEventActivityBehavior
+                  && error.getErrorCode().equals(activity.getProperty("errorCode"))) {
+            errorEventHandler = activity;
+            break;
+          }
+        }
+        // search for generic error handler if no error handler with that error code has been found
+        if (errorEventHandler == null) {
+          for (PvmActivity activity : scope.getActivities()) {
+            if (((ActivityImpl) activity).getActivityBehavior() instanceof BoundaryEventActivityBehavior
+                    && (activity.getProperty("errorCode") == null || "".equals(activity.getProperty("errorCode")))) {
+              errorEventHandler = activity;
+              break;
+            }
+          }
+          
+        }
+        // search for error handlers in parent scopes 
+        if (errorEventHandler == null) {
+          if (scope instanceof PvmActivity) {
+            scope = ((PvmActivity) scope).getParent();
+          } else {
+            scope = null; // stop search
+          }
         }
       }
-      // TODO search for error handlers in parent scopes 
-
+      
+      ErrorEndEventActivityBehavior errorEndEvent = new ErrorEndEventActivityBehavior(error.getErrorCode());
       if (errorEventHandler != null) {
-        // continue execution
-        ErrorEndEventActivityBehavior errorEndEvent = new ErrorEndEventActivityBehavior(error.getErrorCode());
         errorEndEvent.setBorderEventActivityId(errorEventHandler.getId());
-        errorEndEvent.execute(execution);
-        // execution.executeActivity(errorEventHandler);
-      } else {
-        // throw error up 
-        throw error;
       }
+      // continue execution
+      errorEndEvent.execute(execution);
     }
   }
   
