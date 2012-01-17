@@ -102,7 +102,7 @@
     <association property="byteArrayValue" 
                  column="BYTEARRAY_ID_" 
                  javaType="org.activiti.engine.impl.persistence.entity.ByteArrayEntity" 
-                 select="selectByteArray" />
+                 select="org.activiti.engine.impl.persistence.entity.VariableInstanceEntity.selectByteArray" />
   </resultMap>
   
   <resultMap id="historicVariableUpdateResultMap_postgres" extends="historicDetailResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricVariableUpdateEntity">
@@ -118,7 +118,7 @@
     <association property="byteArrayValue" 
                  column="BYTEARRAY_ID_" 
                  javaType="org.activiti.engine.impl.persistence.entity.ByteArrayEntity" 
-                 select="selectByteArray_postgres" />
+                 select="org.activiti.engine.impl.persistence.entity.VariableInstanceEntity.selectByteArray_postgres" />
   </resultMap>
 
   <resultMap id="historicFormPropertyResultMap" extends="historicDetailResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricFormPropertyEntity">

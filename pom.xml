@@ -270,7 +270,7 @@
       <dependency>
         <groupId>org.mybatis</groupId>
         <artifactId>mybatis</artifactId>
-        <version>3.0.4</version>
+        <version>3.0.6</version>
       </dependency>
       <dependency>
         <groupId>org.mockito</groupId>
