@@ -74,8 +74,15 @@ public class TablePageQueryTest extends PluggableActivitiTestCase {
   
   private void verifyTaskNames(String[] expectedTaskNames, List<Map<String, Object>> rowData) {
     assertEquals(expectedTaskNames.length, rowData.size());
+    String columnKey = "NAME_";
+
+    // mybatis will return the correct case for postgres table columns from version 3.0.6 on
+    if (processEngineConfiguration.getDatabaseType().equals("postgres")) {
+      columnKey = "name_";
+    }
+    
     for (int i=0; i < expectedTaskNames.length; i++) {
-      assertEquals(expectedTaskNames[i], rowData.get(i).get("NAME_"));
+      assertEquals(expectedTaskNames[i], rowData.get(i).get(columnKey));
     }
   }
   
