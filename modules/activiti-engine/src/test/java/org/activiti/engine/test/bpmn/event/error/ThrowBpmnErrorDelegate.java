@@ -10,36 +10,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.bpmn.parser;
 
+package org.activiti.engine.test.bpmn.event.error;
+
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.bpmn.event.BpmnError;
 
 
 /**
- * Represents a BPMN Error definition, whereas {@link BpmnError} represents an
- * actual instance of an Error.
- * 
- * @author Joram Barrez
+ * @author Falko Menge
  */
-public class Error {
-  
-  protected String id;
-  protected String errorCode;
-  
-  public String getId() {
-    return id;
+public class ThrowBpmnErrorDelegate implements JavaDelegate {
+
+  public void execute(DelegateExecution execution) throws Exception {
+    throw new BpmnError("23", "This is a business fault, which can be caught by a BPMN Error Event.");
   }
-  
-  public void setId(String id) {
-    this.id = id;
-  }
-  
-  public String getErrorCode() {
-    return errorCode;
-  }
-  
-  public void setErrorCode(String errorCode) {
-    this.errorCode = errorCode;
-  }
-  
+
 }

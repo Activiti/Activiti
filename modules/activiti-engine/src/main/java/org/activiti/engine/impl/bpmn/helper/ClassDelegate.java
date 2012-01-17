@@ -25,14 +25,19 @@ import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.ErrorEndEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ServiceTaskJavaDelegateActivityBehavior;
+import org.activiti.engine.impl.bpmn.event.BpmnError;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ExecutionListenerInvocation;
 import org.activiti.engine.impl.delegate.TaskListenerInvocation;
+import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.util.ReflectUtil;
 
 
@@ -42,6 +47,7 @@ import org.activiti.engine.impl.util.ReflectUtil;
  * This class will lazily instantiate the referenced classes when needed at runtime.
  * 
  * @author Joram Barrez
+ * @author Falko Menge
  */
 public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskListener, ExecutionListener {
   
@@ -109,7 +115,31 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
     if (activityBehaviorInstance == null) {
       activityBehaviorInstance = getActivityBehaviorInstance(execution);
     }
-    activityBehaviorInstance.execute(execution);
+    try {
+      activityBehaviorInstance.execute(execution);
+    } catch (BpmnError error) {
+      // find error handler
+      PvmActivity errorEventHandler = null;
+      for (PvmActivity activity : execution.getActivity().getActivities()) {
+        if (((ActivityImpl) activity).getActivityBehavior() instanceof BoundaryEventActivityBehavior) {
+          // TODO check error code of error handler
+          errorEventHandler = activity;
+          break;
+        }
+      }
+      // TODO search for error handlers in parent scopes 
+
+      if (errorEventHandler != null) {
+        // continue execution
+        ErrorEndEventActivityBehavior errorEndEvent = new ErrorEndEventActivityBehavior(error.getErrorCode());
+        errorEndEvent.setBorderEventActivityId(errorEventHandler.getId());
+        errorEndEvent.execute(execution);
+        // execution.executeActivity(errorEventHandler);
+      } else {
+        // throw error up 
+        throw error;
+      }
+    }
   }
   
   // Signallable activity behavior

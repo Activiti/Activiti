@@ -26,6 +26,7 @@ import org.activiti.engine.test.Deployment;
 
 /**
  * @author Joram Barrez
+ * @author Falko Menge
  */
 public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
   
@@ -37,7 +38,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     Task task = taskService.createTaskQuery().singleResult();
     assertEquals("subprocessTask", task.getName());
     
-    // After task completion, error end event is reached and catched
+    // After task completion, error end event is reached and caught
     taskService.complete(task.getId());
     task = taskService.createTaskQuery().singleResult();
     assertEquals("task after catching the error", task.getName());
@@ -119,7 +120,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testDeeplyNestedErrorThrownOnlyAutomaticSteps() {
-    // input == 1 -> error2 is thrown -> catched on subprocess2 -> end event in subprocess -> proc inst end 1
+    // input == 1 -> error2 is thrown -> caught on subprocess2 -> end event in subprocess -> proc inst end 1
     String procId = runtimeService.startProcessInstanceByKey("deeplyNestedErrorThrown", 
             CollectionUtil.singletonMap("input", 1)).getId();
     assertProcessEnded(procId);
@@ -130,7 +131,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
       hip = historyService.createHistoricProcessInstanceQuery().processInstanceId(procId).singleResult();
       assertEquals("processEnd1", hip.getEndActivityId());
     }
-    // input == 2 -> error2 is thrown -> catched on subprocess1 -> proc inst end 2
+    // input == 2 -> error2 is thrown -> caught on subprocess1 -> proc inst end 2
     procId = runtimeService.startProcessInstanceByKey("deeplyNestedErrorThrown", 
             CollectionUtil.singletonMap("input", 1)).getId();
     assertProcessEnded(procId);
@@ -151,7 +152,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     assertEquals("Task in subprocess", task.getName());
     
     // Completing the task will reach the end error event,
-    // which is catched on the call activity boundary
+    // which is caught on the call activity boundary
     taskService.complete(task.getId());
     task = taskService.createTaskQuery().singleResult();
     assertEquals("Escalated Task", task.getName());
@@ -171,7 +172,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     assertEquals("Task in subprocess", task.getName());
     
     // Completing the task will reach the end error event,
-    // which is catched on the call activity boundary
+    // which is caught on the call activity boundary
     taskService.complete(task.getId());
     task = taskService.createTaskQuery().singleResult();
     assertEquals("Escalated Task", task.getName());
@@ -219,4 +220,19 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     assertProcessEnded(procId);
   }
 
+  @Deployment
+  public void testCatchErrorThrownByJavaDelegateOnServiceTask() {
+    String procId = runtimeService.startProcessInstanceByKey("catchErrorThrownByJavaDelegateOnServiceTask").getId();
+    
+    // The service task will throw and error event,
+    // which is caught on the service task boundary
+    assertEquals("No tasks found in task list.", 1, taskService.createTaskQuery().count());
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("Escalated Task", task.getName());
+    
+    // Completing the task will end the process instance
+    taskService.complete(task.getId());
+    assertProcessEnded(procId);
+  }
+  
 }

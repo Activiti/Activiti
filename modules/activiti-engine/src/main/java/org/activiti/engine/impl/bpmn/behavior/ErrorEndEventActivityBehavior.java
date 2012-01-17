@@ -120,26 +120,32 @@ public class ErrorEndEventActivityBehavior extends FlowNodeActivityBehavior {
     
     boolean matchingParentFound = false;
     ActivityExecution leavingExecution = execution;
-    ActivityImpl currentActivity = (ActivityImpl) execution.getActivity().getParent();
+    ActivityImpl currentActivity = (ActivityImpl) execution.getActivity();
+    if (currentActivity.getId().equals(catchingScope.getId())) {
+      matchingParentFound = true;
+    } else {
+      currentActivity = (ActivityImpl) currentActivity.getParent();
     
-    // Traverse parents until one is found that is a scope 
-    // and matches the activity the boundary event is defined on
-    while(!matchingParentFound && leavingExecution != null && currentActivity != null) {
-      if (!leavingExecution.isConcurrent() && currentActivity.getId().equals(catchingScope.getId())) {
-        matchingParentFound = true;
-      } else if (leavingExecution.isConcurrent()) {
+      // Traverse parents until one is found that is a scope 
+      // and matches the activity the boundary event is defined on
+      while(!matchingParentFound && leavingExecution != null && currentActivity != null) {
+        if (!leavingExecution.isConcurrent() && currentActivity.getId().equals(catchingScope.getId())) {
+          matchingParentFound = true;
+        } else if (leavingExecution.isConcurrent()) {
+          leavingExecution = leavingExecution.getParent();
+        } else {
+          currentActivity = currentActivity.getParentActivity();
+          leavingExecution = leavingExecution.getParent();
+        } 
+      }
+      
+      // Follow parents up until matching scope can't be found anymore (needed to support for multi-instance)
+      while (leavingExecution != null
+              && leavingExecution.getParent() != null 
+              && leavingExecution.getParent().getActivity() != null
+              && leavingExecution.getParent().getActivity().getId().equals(catchingScope.getId())) {
         leavingExecution = leavingExecution.getParent();
-      } else {
-        currentActivity = currentActivity.getParentActivity();
-        leavingExecution = leavingExecution.getParent();
-      } 
-    }
-    
-    // Follow parents up until matching scope can't be found anymore (needed to support for multi-instance)
-    while (leavingExecution.getParent() != null 
-            && leavingExecution.getParent().getActivity() != null
-            && leavingExecution.getParent().getActivity().getId().equals(catchingScope.getId())) {
-      leavingExecution = leavingExecution.getParent();
+      }
     }
     
     if (matchingParentFound && leavingExecution != null) {
