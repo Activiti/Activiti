@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -160,6 +161,24 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     // Completing the task will end the process instance
     taskService.complete(task.getId());
     assertProcessEnded(procId);
+  }
+  
+  @Deployment(resources = {
+          "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testUncaughtErrorOnCallActivity-parent.bpmn20.xml",
+          "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.subprocess.bpmn20.xml"
+  })
+  public void testUncaughtErrorOnCallActivity() {
+    runtimeService.startProcessInstanceByKey("uncaughtErrorOnCallActivity");
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("Task in subprocess", task.getName());
+    
+    try {
+      // Completing the task will reach the end error event,
+      // which is never caught in the process
+      taskService.complete(task.getId());
+    } catch (ActivitiException e) {
+      assertTextPresent("No catching boundary event found for error with errorCode 'myError', neither in same process nor in parent process", e.getMessage());
+    }
   }
   
   @Deployment(resources = {

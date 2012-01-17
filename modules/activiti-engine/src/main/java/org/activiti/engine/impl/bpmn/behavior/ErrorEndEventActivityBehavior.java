@@ -50,6 +50,7 @@ public class ErrorEndEventActivityBehavior extends FlowNodeActivityBehavior {
       if (superExecution != null) {
         executeCatchInSuperProcess(superExecution);
       } else {
+        // TODO Shouldn't this be an exception as in executeCatchInSuperProcess()?
         LOG.info(execution.getActivity().getId() + " throws error event with errorCode '"
                 + errorCode + "', but no catching boundary event was defined. "
                 +   "Execution will simply be ended (none end event semantics).");
@@ -64,27 +65,23 @@ public class ErrorEndEventActivityBehavior extends FlowNodeActivityBehavior {
     ActivityImpl catchingActivity = (ActivityImpl) outgoingExecution.getActivity();
     boolean found = false;
     
-    while (!found && outgoingExecution != null) {
-      
-      if (outgoingExecution != null && catchingActivity != null) {
-        for (ActivityImpl nestedActivity : catchingActivity.getActivities()) {
-          if ("boundaryError".equals(nestedActivity.getProperty("type"))
-                  && (nestedActivity.getProperty("errorCode") == null 
-                      || errorCode.equals(nestedActivity.getProperty("errorCode")))) {
-            found = true;
-            catchingActivity = nestedActivity;
-          }
-        }
-        if (!found) {
-          if (outgoingExecution.isConcurrent()) {
-            outgoingExecution = outgoingExecution.getParent();
-          } else if (outgoingExecution.isScope()) {
-            catchingActivity = catchingActivity.getParentActivity();
-            outgoingExecution = outgoingExecution.getParent();
-          } 
+    while (!found && outgoingExecution != null && catchingActivity != null) {
+      for (ActivityImpl nestedActivity : catchingActivity.getActivities()) {
+        if ("boundaryError".equals(nestedActivity.getProperty("type"))
+                && (nestedActivity.getProperty("errorCode") == null 
+                    || errorCode.equals(nestedActivity.getProperty("errorCode")))) {
+          found = true;
+          catchingActivity = nestedActivity;
         }
       }
-      
+      if (!found) {
+        if (outgoingExecution.isConcurrent()) {
+          outgoingExecution = outgoingExecution.getParent();
+        } else if (outgoingExecution.isScope()) {
+          catchingActivity = catchingActivity.getParentActivity();
+          outgoingExecution = outgoingExecution.getParent();
+        } 
+      }
     }
     
     if (found) {
@@ -94,8 +91,9 @@ public class ErrorEndEventActivityBehavior extends FlowNodeActivityBehavior {
       if (superSuperExecution != null) {
         executeCatchInSuperProcess(superSuperExecution);
       } else {
+        // TODO maybe throw BpmnError?
         throw new ActivitiException("No catching boundary event found for error with errorCode '" 
-                + errorCode + "', not is same process nor in parent process");
+                + errorCode + "', neither in same process nor in parent process");
       }
     }
   }
