@@ -115,7 +115,7 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
     try {
       activityBehaviorInstance.execute(execution);
     } catch (BpmnError error) {
-      ErrorPropagation.propagateError(execution, error);
+      ErrorPropagation.propagateError(error, execution);
     }
   }
 

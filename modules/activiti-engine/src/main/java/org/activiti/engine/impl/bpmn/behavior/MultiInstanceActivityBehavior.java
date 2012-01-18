@@ -84,7 +84,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
       try {
         createInstances(execution);
       } catch (BpmnError error) {
-        ErrorPropagation.propagateError(execution, error);
+        ErrorPropagation.propagateError(error, execution);
       }
     } else {
         innerActivityBehavior.execute(execution);
