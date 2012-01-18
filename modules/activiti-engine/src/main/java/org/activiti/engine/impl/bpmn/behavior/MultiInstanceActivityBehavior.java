@@ -23,12 +23,13 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.impl.bpmn.event.BpmnError;
+import org.activiti.engine.impl.bpmn.event.ErrorPropagation;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ExecutionListenerInvocation;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.CompositeActivityBehavior;
-import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
 import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 
@@ -80,9 +81,13 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   
   public void execute(ActivityExecution execution) throws Exception {
     if (getLoopVariable(execution, LOOP_COUNTER) == null) {
-      createInstances(execution);
+      try {
+        createInstances(execution);
+      } catch (BpmnError error) {
+        ErrorPropagation.propagateError(execution, error);
+      }
     } else {
-      innerActivityBehavior.execute(execution);
+        innerActivityBehavior.execute(execution);
     }
   }
   

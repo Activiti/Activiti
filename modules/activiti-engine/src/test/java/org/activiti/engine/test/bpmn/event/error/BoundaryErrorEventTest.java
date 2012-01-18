@@ -312,6 +312,22 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     }
   }
   
+  @Deployment
+  public void testCatchErrorThrownByJavaDelegateOnMultiInstanceServiceTaskSequential() {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("executionsBeforeError", 2);
+    String procId = runtimeService.startProcessInstanceByKey("catchErrorThrownByJavaDelegateOnMultiInstanceServiceTaskSequential", variables).getId();
+    assertThatErrorHasBeenCaught(procId);
+  }
+
+  @Deployment
+  public void testCatchErrorThrownByJavaDelegateOnMultiInstanceServiceTaskParallel() {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("executionsBeforeError", 2);
+    String procId = runtimeService.startProcessInstanceByKey("catchErrorThrownByJavaDelegateOnMultiInstanceServiceTaskParallel", variables).getId();
+    assertThatErrorHasBeenCaught(procId);
+  }
+
   private void assertThatErrorHasBeenCaught(String procId) {
     // The service task will throw an error event,
     // which is caught on the service task boundary

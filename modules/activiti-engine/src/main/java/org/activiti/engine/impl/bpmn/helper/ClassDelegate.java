@@ -25,20 +25,16 @@ import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ErrorEndEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ServiceTaskJavaDelegateActivityBehavior;
 import org.activiti.engine.impl.bpmn.event.BpmnError;
+import org.activiti.engine.impl.bpmn.event.ErrorPropagation;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ExecutionListenerInvocation;
 import org.activiti.engine.impl.delegate.TaskListenerInvocation;
-import org.activiti.engine.impl.pvm.PvmActivity;
-import org.activiti.engine.impl.pvm.PvmScope;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.util.ReflectUtil;
 
 
@@ -119,48 +115,10 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
     try {
       activityBehaviorInstance.execute(execution);
     } catch (BpmnError error) {
-      // find error handler
-      PvmActivity errorEventHandler = null;
-      // search for error handler with same error code as thrown Error
-      PvmScope scope = execution.getActivity();
-      while (errorEventHandler == null && scope != null) {
-        for (PvmActivity activity : scope.getActivities()) {
-          if (((ActivityImpl) activity).getActivityBehavior() instanceof BoundaryEventActivityBehavior
-                  && error.getErrorCode().equals(activity.getProperty("errorCode"))) {
-            errorEventHandler = activity;
-            break;
-          }
-        }
-        // search for generic error handler if no error handler with that error code has been found
-        if (errorEventHandler == null) {
-          for (PvmActivity activity : scope.getActivities()) {
-            if (((ActivityImpl) activity).getActivityBehavior() instanceof BoundaryEventActivityBehavior
-                    && (activity.getProperty("errorCode") == null || "".equals(activity.getProperty("errorCode")))) {
-              errorEventHandler = activity;
-              break;
-            }
-          }
-          
-        }
-        // search for error handlers in parent scopes 
-        if (errorEventHandler == null) {
-          if (scope instanceof PvmActivity) {
-            scope = ((PvmActivity) scope).getParent();
-          } else {
-            scope = null; // stop search
-          }
-        }
-      }
-      
-      ErrorEndEventActivityBehavior errorEndEvent = new ErrorEndEventActivityBehavior(error.getErrorCode());
-      if (errorEventHandler != null) {
-        errorEndEvent.setBorderEventActivityId(errorEventHandler.getId());
-      }
-      // continue execution
-      errorEndEvent.execute(execution);
+      ErrorPropagation.propagateError(execution, error);
     }
   }
-  
+
   // Signallable activity behavior
   public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
     if (activityBehaviorInstance == null) {
