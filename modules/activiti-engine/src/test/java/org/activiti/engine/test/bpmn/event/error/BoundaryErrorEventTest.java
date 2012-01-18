@@ -164,6 +164,23 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
   }
   
   @Deployment(resources = {
+          "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.subprocess.bpmn20.xml"
+  })
+  public void testUncaughtError() {
+    runtimeService.startProcessInstanceByKey("simpleSubProcess");
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("Task in subprocess", task.getName());
+    
+    try {
+      // Completing the task will reach the end error event,
+      // which is never caught in the process
+      taskService.complete(task.getId());
+    } catch (ActivitiException e) {
+      assertTextPresent("No catching boundary event found for error with errorCode 'myError', neither in same process nor in parent process", e.getMessage());
+    }
+  }
+  
+  @Deployment(resources = {
           "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testUncaughtErrorOnCallActivity-parent.bpmn20.xml",
           "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.subprocess.bpmn20.xml"
   })
@@ -272,6 +289,17 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     assertThatErrorHasBeenCaught(procId);
   }
 
+  @Deployment(resources = {
+          "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorThrownByJavaDelegateOnCallActivity-child.bpmn20.xml"
+  })
+  public void testUncaughtErrorThrownByJavaDelegateOnServiceTask() {
+    try {
+      runtimeService.startProcessInstanceByKey("catchErrorThrownByJavaDelegateOnCallActivity-child");
+    } catch (ActivitiException e) {
+      assertTextPresent("No catching boundary event found for error with errorCode '23', neither in same process nor in parent process", e.getMessage());
+    }
+  }
+  
   @Deployment(resources = {
           "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testUncaughtErrorThrownByJavaDelegateOnCallActivity-parent.bpmn20.xml",
           "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorThrownByJavaDelegateOnCallActivity-child.bpmn20.xml"

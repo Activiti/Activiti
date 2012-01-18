@@ -50,7 +50,7 @@ public class ErrorEndEventActivityBehavior extends FlowNodeActivityBehavior {
       if (superExecution != null) {
         executeCatchInSuperProcess(superExecution);
       } else {
-        // TODO Shouldn't this be an exception as in executeCatchInSuperProcess()?
+        // TODO Shouldn't this be an exception as in executeCatchInSuperProcess() or is this dead code?
         LOG.info(execution.getActivity().getId() + " throws error event with errorCode '"
                 + errorCode + "', but no catching boundary event was defined. "
                 +   "Execution will simply be ended (none end event semantics).");
