@@ -63,9 +63,17 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testCatchErrorInConcurrentEmbeddedSubprocesses() {
-    
+    assertErrorCaughtInConcurrentEmbeddedSubprocesses("boundaryEventTestConcurrentSubprocesses");
+  }
+
+  @Deployment
+  public void testCatchErrorInConcurrentEmbeddedSubprocessesThrownByScriptTask() {
+    assertErrorCaughtInConcurrentEmbeddedSubprocesses("catchErrorInConcurrentEmbeddedSubprocessesThrownByScriptTask");
+  }
+
+  private void assertErrorCaughtInConcurrentEmbeddedSubprocesses(String processDefinitionKey) {
     // Completing task A will lead to task D
-    String procId = runtimeService.startProcessInstanceByKey("boundaryEventTestConcurrentSubprocesses").getId();
+    String procId = runtimeService.startProcessInstanceByKey(processDefinitionKey).getId();
     List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
     assertEquals(2, tasks.size());
     assertEquals("task A", tasks.get(0).getName());
@@ -77,7 +85,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     assertProcessEnded(procId);
     
     // Completing task B will lead to task C
-    procId = runtimeService.startProcessInstanceByKey("boundaryEventTestConcurrentSubprocesses").getId();
+    procId = runtimeService.startProcessInstanceByKey(processDefinitionKey).getId();
     tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
     assertEquals(2, tasks.size());
     assertEquals("task A", tasks.get(0).getName());

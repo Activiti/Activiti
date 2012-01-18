@@ -12,6 +12,11 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
+import javax.script.ScriptException;
+
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.bpmn.event.BpmnError;
+import org.activiti.engine.impl.bpmn.event.ErrorPropagation;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
@@ -40,13 +45,27 @@ public class ScriptTaskActivityBehavior extends TaskActivityBehavior {
       .getProcessEngineConfiguration()
       .getScriptingEngines();
 
-    Object result = scriptingEngines.evaluate(script, language, execution);
+    boolean noErrors = true;
+    try {
+      Object result = scriptingEngines.evaluate(script, language, execution);
+      
+      if (resultVariable != null) {
+        execution.setVariable(resultVariable, result);
+      }
 
-    if (resultVariable != null) {
-      execution.setVariable(resultVariable, result);
+    } catch (ActivitiException e) {
+      noErrors = false;
+      if (e.getCause() instanceof ScriptException
+          && e.getCause().getCause() instanceof ScriptException
+          && e.getCause().getCause().getCause() instanceof BpmnError) {
+        ErrorPropagation.propagateError((BpmnError) e.getCause().getCause().getCause(), execution);
+      } else {
+        throw e;
+      }
     }
-
-    leave(execution);
+     if (noErrors) {
+       leave(execution);
+     }
   }
   
 }
