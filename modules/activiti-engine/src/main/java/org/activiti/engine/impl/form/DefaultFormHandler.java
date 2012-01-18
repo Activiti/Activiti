@@ -102,6 +102,12 @@ public class DefaultFormHandler implements FormHandler {
           formPropertyHandler.setVariableExpression(expression);
         }
 
+        String defaultExpressionText = formPropertyElement.attribute("default");
+        if (defaultExpressionText!=null) {
+          Expression defaultExpression = expressionManager.createExpression(defaultExpressionText);
+          formPropertyHandler.setDefaultExpression(defaultExpression);
+        }
+
         formPropertyHandlers.add(formPropertyHandler);
       }
     }

@@ -34,20 +34,27 @@ public class FormPropertyHandler {
   protected boolean isRequired;
   protected String variableName;
   protected Expression variableExpression;
+  protected Expression defaultExpression;
   
   public FormProperty createFormProperty(ExecutionEntity execution) {
     FormPropertyImpl formProperty = new FormPropertyImpl(this);
-
+    
     if (execution!=null) {
       Object modelValue = null;
-      if (variableName != null) {
-        modelValue = execution.getVariable(variableName);
-      } else if (variableExpression != null) {
-        modelValue = variableExpression.getValue(execution);
+      if (variableName != null || variableExpression == null) {
+        final String varName = variableName != null ? variableName : id;
+        if (execution.hasVariable(varName)) {
+          modelValue = execution.getVariable(varName);
+        } else if (defaultExpression != null) {
+          modelValue = defaultExpression.getValue(execution);
+        }
       } else {
-        modelValue = execution.getVariable(id);
+        modelValue = variableExpression.getValue(execution);
       }
-      if (type != null) {
+      
+      if (modelValue instanceof String) {
+        formProperty.setValue((String) modelValue);
+      } else if (type != null) {
         String formValue = type.convertModelValueToFormValue(modelValue);
         formProperty.setValue(formValue);
       } else if (modelValue != null) {
@@ -63,23 +70,33 @@ public class FormPropertyHandler {
       throw new ActivitiException("form property '"+id+"' is not writable");
     }
     
-    if (isRequired && !properties.containsKey(id)) {
+    if (isRequired && !properties.containsKey(id) && defaultExpression == null) {
       throw new ActivitiException("form property '"+id+"' is required");
     }
     
+    Object modelValue = null;
     if (properties.containsKey(id)) {
-      String propertyValue = properties.remove(id);
-      
-      Object modelValue;
-      if (type!=null) {
+      final String propertyValue = properties.remove(id);
+      if (type != null) {
         modelValue = type.convertFormValueToModelValue(propertyValue);
       } else {
         modelValue = propertyValue;
       }
-
-      if (variableName!=null) {
+    } else if (defaultExpression != null) {
+      final Object expressionValue = defaultExpression.getValue(execution);
+      if (type != null && expressionValue != null) {
+        modelValue = type.convertFormValueToModelValue(expressionValue.toString());
+      } else if (expressionValue != null) {
+        modelValue = expressionValue.toString();
+      } else if (isRequired) {
+        throw new ActivitiException("form property '"+id+"' is required");
+      }
+    }
+    
+    if (modelValue != null) {
+      if (variableName != null) {
         execution.setVariable(variableName, modelValue);
-      } else if (variableExpression!=null) {
+      } else if (variableExpression != null) {
         variableExpression.setValue(modelValue, execution);
       } else {
         execution.setVariable(id, modelValue);
@@ -143,6 +160,14 @@ public class FormPropertyHandler {
   
   public void setVariableExpression(Expression variableExpression) {
     this.variableExpression = variableExpression;
+  }
+  
+  public Expression getDefaultExpression() {
+    return defaultExpression;
+  }
+  
+  public void setDefaultExpression(Expression defaultExpression) {
+    this.defaultExpression = defaultExpression;
   }
   
   public boolean isWritable() {
