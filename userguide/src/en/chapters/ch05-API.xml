@@ -284,7 +284,7 @@ assertNotNull(activityInstance);</programlisting>
   <section id="apiExpressions">
     <title>Expressions</title>
     <para>Activiti uses UEL for expression-resolving. UEL stands for <emphasis>Unified Expression Language</emphasis> and is part of the EE6 specification ()see
-          <ulink url="http://docs.sun.com/app/docs/doc/820-7627/gjddd?l=en&amp;a=view">
+          <ulink url="http://docs.oracle.com/javaee/6/tutorial/doc/gjddd.html">
           the EE6 specification</ulink> for detailed information). To support all features of latest UEL spec on ALL environements, we use a modified version of JUEL.
     </para>
     <para>
