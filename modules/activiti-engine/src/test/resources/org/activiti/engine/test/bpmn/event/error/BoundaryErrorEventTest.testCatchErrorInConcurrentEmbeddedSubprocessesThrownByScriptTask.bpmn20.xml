@@ -24,7 +24,7 @@
 				<sequenceFlow id="flow5" sourceRef="taskA" targetRef="innerSubProcess1ScriptTask" />
 				<scriptTask id="innerSubProcess1ScriptTask" scriptFormat="groovy">
 				  <script>
-				    throw new org.activiti.engine.delegate.BpmnError("1", "");
+				    throw new org.activiti.engine.delegate.BpmnError("1");
 				  </script>
 				</scriptTask>
 			</subProcess>
@@ -38,7 +38,7 @@
         <sequenceFlow id="flow8" sourceRef="taskB" targetRef="innerSubProcess2ScriptTask" />
         <scriptTask id="innerSubProcess2ScriptTask" scriptFormat="groovy">
           <script>
-            throw new org.activiti.engine.delegate.BpmnError("2", "");
+            throw new org.activiti.engine.delegate.BpmnError("2", "Optional Message");
           </script>
         </scriptTask>
       </subProcess>
