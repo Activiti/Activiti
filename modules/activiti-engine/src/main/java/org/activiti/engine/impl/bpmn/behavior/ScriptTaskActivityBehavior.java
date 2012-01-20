@@ -15,8 +15,8 @@ package org.activiti.engine.impl.bpmn.behavior;
 import javax.script.ScriptException;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.bpmn.event.BpmnError;
-import org.activiti.engine.impl.bpmn.event.ErrorPropagation;
+import org.activiti.engine.delegate.BpmnError;
+import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
@@ -27,6 +27,7 @@ import org.activiti.engine.impl.scripting.ScriptingEngines;
  * 
  * @author Joram Barrez
  * @author Christian Stettler
+ * @author Falko Menge
  */
 public class ScriptTaskActivityBehavior extends TaskActivityBehavior {
   

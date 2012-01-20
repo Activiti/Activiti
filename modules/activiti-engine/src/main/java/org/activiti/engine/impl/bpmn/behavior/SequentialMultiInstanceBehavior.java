@@ -13,7 +13,7 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.bpmn.event.BpmnError;
+import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
@@ -21,6 +21,7 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 
 /**
  * @author Joram Barrez
+ * @author Falko Menge
  */
 public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavior {
   

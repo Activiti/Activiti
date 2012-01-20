@@ -11,10 +11,9 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.bpmn.event;
+package org.activiti.engine.delegate;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.bpmn.parser.Error;
 
 

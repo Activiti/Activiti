@@ -11,11 +11,12 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.bpmn.event;
+package org.activiti.engine.impl.bpmn.helper;
 
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ErrorEndEventActivityBehavior;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;

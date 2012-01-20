@@ -12,7 +12,7 @@
  */
 package org.activiti.engine.impl.bpmn.parser;
 
-import org.activiti.engine.impl.bpmn.event.BpmnError;
+import org.activiti.engine.delegate.BpmnError;
 
 
 /**

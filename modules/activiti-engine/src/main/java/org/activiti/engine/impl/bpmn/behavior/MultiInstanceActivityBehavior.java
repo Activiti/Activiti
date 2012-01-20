@@ -20,11 +20,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
-import org.activiti.engine.impl.bpmn.event.BpmnError;
-import org.activiti.engine.impl.bpmn.event.ErrorPropagation;
+import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ExecutionListenerInvocation;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
@@ -45,6 +45,7 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
  * to delegate to the {@link MultiInstanceActivityBehavior} if needed.
  * 
  * @author Joram Barrez
+ * @author Falko Menge
  */
 public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior  
   implements CompositeActivityBehavior, SubProcessActivityBehavior {

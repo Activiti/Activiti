@@ -12,7 +12,7 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
-import org.activiti.engine.impl.bpmn.event.ErrorPropagation;
+import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 
