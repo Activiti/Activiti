@@ -137,8 +137,7 @@ public class ErrorPropagation {
       if (superSuperExecution != null) {
         executeCatchInSuperProcess(errorCode, superSuperExecution);
       } else {
-        // TODO maybe throw BpmnError?
-        throw new ActivitiException("No catching boundary event found for error with errorCode '" 
+        throw new BpmnError(errorCode, "No catching boundary event found for error with errorCode '" 
                 + errorCode + "', neither in same process nor in parent process");
       }
     }
