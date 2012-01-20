@@ -2355,12 +2355,62 @@ public class ReverseStringsFieldInjected implements JavaDelegate {
      <section id="serviceTaskExceptionHandling">
       
       <title>Handling exceptions</title>
+      <para>
+        When custom logic is executed, it is often required to catch certain
+        business exceptions and handle them inside the surrounding process.
+        Activiti provides different options to do that.
+      </para>
       
-       <para>
-        When custom logic is executed, it is often required to catch certain exceptions.
-        One common use case is to route process execution through another path
-        in case some exception occurs. The following example shows how this is done.
-        <programlisting>
+        <section id="serviceTaskBpmnErrors">
+        
+          <title>Throwing BPMN Errors</title>
+          
+          <para>
+            As of Activiti 5.9, it is possible to throw BPMN Errors from user code
+            inside Service Tasks or Script Tasks.
+            In order to do this, a special ActivitiException called
+            <emphasis>BpmnError</emphasis> can be thrown in JavaDelegates or scripts.
+            The engine will catch this exception and forward it to an appropriate
+            error handler, e.g., a Boundary Error Event or an Error Event Sub-Process.
+            <programlisting>
+public class ThrowBpmnErrorDelegate implements JavaDelegate {
+
+  public void execute(DelegateExecution execution) throws Exception {
+    try {
+      executeBusinessLogic();
+    } catch (BusinessExeption e) {
+      throw new BpmnError(&quot;BusinessExeptionOccured&quot;);
+    }
+  }
+
+}</programlisting>
+            The constructor argument is an error code, which will be used to
+            determine the error handler that is responsible for the error.
+            See <link linkend="bpmnBoundaryErrorEvent">Boundary Error Event</link>
+            for information on how to catch a BPMN Error.
+          </para>
+          <para>
+            This mechanism should be used
+            <emphasis role="bold">only for business faults</emphasis>
+            that shall be handled by a Boundary Error Event or Error Event Sub-Process
+            modeled in the process definition.
+            Technical errors should be represented by other exception types
+            and are usually not handled inside a process.
+          </para>
+
+        </section>
+       
+        <section id="serviceTaskExceptionSequenceFlow">
+        
+          <title>Exception Sequence Flow</title>
+
+          <para>
+            <link linkend="internal">
+              <emphasis role="bold">[INTERNAL: non-public implementation classes]</emphasis>
+            </link>
+            Another option is to route process execution through another path
+            in case some exception occurs. The following example shows how this is done.
+            <programlisting>
 &lt;serviceTask id=&quot;javaService&quot; 
   name=&quot;Java service invocation&quot; 
   activiti:class=&quot;org.activiti.ThrowsExceptionBehavior&quot;&gt;            
@@ -2368,10 +2418,10 @@ public class ReverseStringsFieldInjected implements JavaDelegate {
     
 &lt;sequenceFlow id=&quot;no-exception&quot; sourceRef=&quot;javaService&quot; targetRef=&quot;theEnd&quot; /&gt;
 &lt;sequenceFlow id=&quot;exception&quot; sourceRef=&quot;javaService&quot; targetRef=&quot;fixException&quot; /&gt;</programlisting>
-        Here, the service task has two outgoing sequence flow, called <literal>exception</literal>
-        and <literal>no-exception</literal>. This sequence flow id will be used to direct
-        process flow in case of an exception:
-        <programlisting>
+            Here, the service task has two outgoing sequence flow, called <literal>exception</literal>
+            and <literal>no-exception</literal>. This sequence flow id will be used to direct
+            process flow in case of an exception:
+            <programlisting>
 public class ThrowsExceptionBehavior implements ActivityBehavior {
 
   public void execute(ActivityExecution execution) throws Exception {
@@ -2388,7 +2438,8 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
   }
   
 }</programlisting>
-       </para>
+          </para>
+        </section>
       
      </section>
   		
