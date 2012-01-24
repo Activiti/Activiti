@@ -28,6 +28,7 @@ import org.activiti.engine.test.Deployment;
 
 /**
  * @author Joram Barrez
+ * @author Falko Menge
  */
 public class SubProcessTest extends PluggableActivitiTestCase {
   
@@ -137,7 +138,10 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     // both subprocesses are destroyed and the task after the subprocess should be active
     taskService.complete(subProcessTask.getId());
     Task taskAfterSubProcesses = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+    assertNotNull(taskAfterSubProcesses);
     assertEquals("Task after subprocesses", taskAfterSubProcesses.getName());
+    taskService.complete(taskAfterSubProcesses.getId());
+    assertProcessEnded(pi.getId());
   }
   
   @Deployment
@@ -325,5 +329,13 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     taskService.complete(taskAfterTimer.getId());
     assertProcessEnded(pi.getId());
   }
+
+  /**
+   * @see http://jira.codehaus.org/browse/ACT-1072
+   */
+//  @Deployment
+//  public void testNestedSimpleSubProcessWithoutEndEvent() {
+//    testNestedSimpleSubProcess();
+//  }
 
 }
