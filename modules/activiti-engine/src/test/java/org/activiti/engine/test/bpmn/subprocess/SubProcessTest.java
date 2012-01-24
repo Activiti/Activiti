@@ -333,9 +333,9 @@ public class SubProcessTest extends PluggableActivitiTestCase {
   /**
    * @see http://jira.codehaus.org/browse/ACT-1072
    */
-//  @Deployment
-//  public void testNestedSimpleSubProcessWithoutEndEvent() {
-//    testNestedSimpleSubProcess();
-//  }
+  @Deployment
+  public void FAILING_testNestedSimpleSubProcessWithoutEndEvent() {
+    testNestedSimpleSubProcess();
+  }
 
 }
