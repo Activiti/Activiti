@@ -249,4 +249,53 @@ public class PvmEmbeddedSubProcessTest extends PvmTestCase {
     assertEquals(expectedActiveActivityIds, processInstance.findActiveActivityIds());
   }
   
+  /** 
+   *           +-------------------------------------------------------+
+   *           | embedded subprocess                                   |
+   *           |                  +--------------------------------+   |
+   *           |                  | nested embedded subprocess     |   |
+   * +-----+   | +-----------+    |  +-----------+                 |   |   +---+
+   * |start|-->| |startInside|--> |  |startInside|                 |   |-->|end|
+   * +-----+   | +-----------+    |  +-----------+                 |   |   +---+
+   *           |                  +--------------------------------+   |
+   *           |                                                       |
+   *           +-------------------------------------------------------+
+   */
+  public void testNestedSubProcessBothNoEnd() {
+    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
+      .createActivity("start")
+        .initial()
+        .behavior(new Automatic())
+        .transition("embeddedsubprocess")
+      .endActivity()
+      .createActivity("embeddedsubprocess")
+        .scope()
+        .behavior(new EmbeddedSubProcess())
+        .createActivity("startInside")
+          .behavior(new Automatic())
+          .transition("nestedSubProcess")
+        .endActivity()
+          .createActivity("nestedSubProcess")
+          .scope()
+          .behavior(new EmbeddedSubProcess())
+          .createActivity("startNestedInside")
+            .behavior(new Automatic())            
+            .endActivity()        
+        .endActivity()
+      .transition("end")
+      .endActivity()
+      .createActivity("end")
+        .behavior(new WaitState())
+      .endActivity()
+    .buildProcessDefinition();
+    
+    PvmProcessInstance processInstance = processDefinition.createProcessInstance(); 
+    processInstance.start();
+    
+    List<String> expectedActiveActivityIds = new ArrayList<String>();
+    expectedActiveActivityIds.add("end");
+      
+    assertEquals(expectedActiveActivityIds, processInstance.findActiveActivityIds());
+  }
+    
 }
