@@ -87,6 +87,8 @@ public class AcquireJobsRunnable implements Runnable {
         millisToWait *= waitIncreaseFactor;
         if (millisToWait > maxWait) {
           millisToWait = maxWait;
+        } else if (millisToWait==0) {
+          millisToWait = jobExecutor.getWaitTimeInMillis();
         }
       }
 
