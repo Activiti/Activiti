@@ -18,6 +18,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 
@@ -35,6 +37,8 @@ import org.activiti.engine.ActivitiException;
  * @author Daniel Meyer
  */
 public class DefaultJobExecutor extends JobExecutor {
+  
+  private static Logger log = Logger.getLogger(DefaultJobExecutor.class.getName());
   
   protected int queueSize = 3;
   protected int corePoolSize = 3;
@@ -54,21 +58,28 @@ public class DefaultJobExecutor extends JobExecutor {
     }
     if(jobAcquisitionThread == null) {
       jobAcquisitionThread = new Thread(acquireJobsRunnable);
-      jobAcquisitionThread.setDaemon(true);
-      jobAcquisitionThread.start();
+      jobAcquisitionThread.start();      
     }   
   }
     
   protected void stopExecutingJobs() {
+    try {
+      jobAcquisitionThread.join();
+    }catch (InterruptedException e) {
+      log.log(Level.WARNING, "Interrupted while waiting for the job Acquisition thread to terminate", e);
+    }
+    
     // Ask the thread pool to finish and exit
     threadPoolExecutor.shutdown();
 
     // Waits for 1 minute to finish all currently executing jobs
     try {
-      threadPoolExecutor.awaitTermination(60L, TimeUnit.SECONDS);
+      if(!threadPoolExecutor.awaitTermination(60L, TimeUnit.SECONDS)) {
+        log.log(Level.WARNING, "Timeout during shutdown of job executor. "
+                + "The current running jobs could not end within 60 seconds after shutdown operation.");        
+      }              
     } catch (InterruptedException e) {
-      throw new ActivitiException("Timeout during shutdown of job executor. "
-              + "The current running jobs could not end withing 60 seconds after shutdown operation.", e);
+      log.log(Level.WARNING, "Interrupted while shutting down the job executor. ", e);
     }
 
     threadPoolExecutor = null;
@@ -77,9 +88,9 @@ public class DefaultJobExecutor extends JobExecutor {
   
   public void executeJobs(List<String> jobIds) {
     try {
-      threadPoolExecutor.execute(new ExecuteJobsRunnable(commandExecutor, jobIds));
+      threadPoolExecutor.execute(new ExecuteJobsRunnable(this, jobIds));
     }catch (RejectedExecutionException e) {
-      rejectedJobsHandler.jobsRejected(jobIds, commandExecutor);
+      rejectedJobsHandler.jobsRejected(this, jobIds);
     }
   }
   

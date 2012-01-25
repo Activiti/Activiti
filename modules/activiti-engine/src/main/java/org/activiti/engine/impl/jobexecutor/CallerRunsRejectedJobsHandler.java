@@ -15,17 +15,15 @@ package org.activiti.engine.impl.jobexecutor;
 
 import java.util.List;
 
-import org.activiti.engine.impl.interceptor.CommandExecutor;
-
 /**
  * 
  * @author Daniel Meyer
  */
 public class CallerRunsRejectedJobsHandler implements RejectedJobsHandler {
 
-  public void jobsRejected(List<String> jobIds, CommandExecutor commandExecutor) {
+  public void jobsRejected(JobExecutor jobExecutor, List<String> jobIds) {
     // execute rejected work in caller thread (potentially blocking job acquisition)
-    new ExecuteJobsRunnable(commandExecutor, jobIds).run();
+    new ExecuteJobsRunnable(jobExecutor, jobIds).run();
   }
 
 }

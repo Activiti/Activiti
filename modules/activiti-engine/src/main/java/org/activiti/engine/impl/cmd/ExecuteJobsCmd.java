@@ -23,6 +23,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.jobexecutor.DecrementJobRetriesListener;
+import org.activiti.engine.impl.jobexecutor.JobExecutorContext;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 
 
@@ -57,6 +58,11 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
       throw new ActivitiException("No job found with id '" + jobId + "'");
     }
     
+    JobExecutorContext jobExecutorContext = Context.getJobExecutorContext();
+    if(jobExecutorContext != null) { // if null, then we are not called by the job executor     
+      jobExecutorContext.setCurrentJob(job);
+    }
+    
     try { 
       job.execute(commandContext);
     } catch (RuntimeException exception) {
@@ -71,6 +77,10 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
        
       // throw the original exception to indicate the ExecuteJobCmd failed
       throw exception;
+    } finally {
+      if(jobExecutorContext != null) {
+        jobExecutorContext.setCurrentJob(null);
+      }
     }
     return null;
   }

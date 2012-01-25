@@ -15,25 +15,38 @@ package org.activiti.engine.impl.jobexecutor;
 import java.util.List;
 
 import org.activiti.engine.impl.cmd.ExecuteJobsCmd;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
 
 /**
  * @author Tom Baeyens
+ * @author Daniel Meyer
  */
 public class ExecuteJobsRunnable implements Runnable {
 
-  private final CommandExecutor commandExecutor;
   private final List<String> jobIds;
+  private final JobExecutor jobExecutor;
   
-  public ExecuteJobsRunnable(CommandExecutor commandExecutor, List<String> jobIds) {
-    this.commandExecutor = commandExecutor;
+  public ExecuteJobsRunnable(JobExecutor jobExecutor, List<String> jobIds) {
+    this.jobExecutor = jobExecutor;
     this.jobIds = jobIds;
   }
 
   public void run() {
-    for (String jobId: jobIds) {
-      commandExecutor.execute(new ExecuteJobsCmd(jobId));
+    final JobExecutorContext jobExecutorContext = new JobExecutorContext(jobExecutor);
+    final List<String> currentProcessorJobQueue = jobExecutorContext.getCurrentProcessorJobQueue();
+    final CommandExecutor commandExecutor = jobExecutor.getCommandExecutor();
+
+    currentProcessorJobQueue.addAll(jobIds);
+    
+    Context.setJobExecutorContext(jobExecutorContext);
+    try {
+      while (!currentProcessorJobQueue.isEmpty()) {
+        commandExecutor.execute(new ExecuteJobsCmd(currentProcessorJobQueue.remove(0)));
+      }      
+    }finally {
+      Context.removeJobExecutorContext();
     }
   }
 }

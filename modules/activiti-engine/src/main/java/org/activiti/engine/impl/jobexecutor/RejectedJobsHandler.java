@@ -15,8 +15,6 @@ package org.activiti.engine.impl.jobexecutor;
 
 import java.util.List;
 
-import org.activiti.engine.impl.interceptor.CommandExecutor;
-
 /**
  * <p>Strategy for handling jobs that were acquired but cannot be 
  * executed at this point (queue-size exceeded).</p> 
@@ -25,6 +23,6 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
  */
 public interface RejectedJobsHandler {
 
-  public void jobsRejected(List<String> jobIds, CommandExecutor commandExecutor);  
+  public void jobsRejected(JobExecutor jobExecutor, List<String> jobIds);  
   
 }

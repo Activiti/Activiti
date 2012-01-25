@@ -53,4 +53,17 @@ public class ExclusiveTaskTest extends PluggableActivitiTestCase {
     assertEquals(0, managementService.createJobQuery().count());      
   }
   
+  @Deployment
+  public void testExclusiveServiceConcurrent() {   
+    // start process 
+    runtimeService.startProcessInstanceByKey("exclusive");
+    // now there should be 3 exclusive jobs in the database:
+    assertEquals(3, managementService.createJobQuery().count());
+                   
+    waitForJobExecutorToProcessAllJobs(5000L, 25L);
+    
+    // all the jobs are done
+    assertEquals(0, managementService.createJobQuery().count());      
+  }
+  
 }
