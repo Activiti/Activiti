@@ -21,9 +21,11 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.cfg.TransactionListener;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.jobexecutor.ExclusiveJobAddedNotification;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.jobexecutor.JobExecutorContext;
 import org.activiti.engine.impl.jobexecutor.MessageAddedNotification;
@@ -74,6 +76,7 @@ public class JobManager extends AbstractManager {
   protected void hintJobExecutor(JobEntity job) {  
     JobExecutor jobExecutor = Context.getProcessEngineConfiguration().getJobExecutor();
     JobExecutorContext jobExecutorContext = Context.getJobExecutorContext();
+    TransactionListener transactionListener = null;
     if(job.isExclusive() 
             && jobExecutorContext != null 
             && jobExecutorContext.isExecutingExclusiveJob()) {
@@ -81,13 +84,14 @@ public class JobManager extends AbstractManager {
       Date currentTime = ClockUtil.getCurrentTime();
       job.setLockExpirationTime(new Date(currentTime.getTime() + jobExecutor.getLockTimeInMillis()));
       job.setLockOwner(jobExecutor.getLockOwner());
-      jobExecutorContext.getCurrentProcessorJobQueue().add(job.getId());      
+      transactionListener = new ExclusiveJobAddedNotification(job.getId());      
     } else {
       // notify job executor:      
-      Context.getCommandContext()
-        .getTransactionContext()
-        .addTransactionListener(TransactionState.COMMITTED, new MessageAddedNotification(jobExecutor));
+      transactionListener = new MessageAddedNotification(jobExecutor);
     }
+    Context.getCommandContext()
+    .getTransactionContext()
+    .addTransactionListener(TransactionState.COMMITTED, transactionListener);
   }
  
   public void cancelTimers(ExecutionEntity execution) {
