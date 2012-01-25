@@ -22,14 +22,9 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
  */
 public class JobExecutorContext {
 
-  protected final JobExecutor jobExecutor;
   protected List<String> currentProcessorJobQueue = new LinkedList<String>();
   protected JobEntity currentJob;
-    
-  public JobExecutorContext(JobExecutor jobExecutor) {
-    this.jobExecutor = jobExecutor;
-  }
-    
+        
   public List<String> getCurrentProcessorJobQueue() {
     return currentProcessorJobQueue;
   }

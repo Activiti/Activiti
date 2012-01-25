@@ -34,7 +34,7 @@ public class ExecuteJobsRunnable implements Runnable {
   }
 
   public void run() {
-    final JobExecutorContext jobExecutorContext = new JobExecutorContext(jobExecutor);
+    final JobExecutorContext jobExecutorContext = new JobExecutorContext();
     final List<String> currentProcessorJobQueue = jobExecutorContext.getCurrentProcessorJobQueue();
     final CommandExecutor commandExecutor = jobExecutor.getCommandExecutor();
 
