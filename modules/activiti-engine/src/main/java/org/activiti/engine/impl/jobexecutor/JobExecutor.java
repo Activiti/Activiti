@@ -43,6 +43,7 @@ public abstract class JobExecutor {
   protected CommandExecutor commandExecutor;
   protected Command<AcquiredJobs> acquireJobsCmd;
   protected AcquireJobsRunnable acquireJobsRunnable;
+  protected RejectedJobsHandler rejectedJobsHandler;
   
   protected boolean isAutoActivate = false;
   protected boolean isActive = false;
@@ -157,6 +158,14 @@ public abstract class JobExecutor {
     
   public boolean isActive() {
     return isActive;
+  }
+  
+  public RejectedJobsHandler getRejectedJobsHandler() {
+    return rejectedJobsHandler;
+  }
+    
+  public void setRejectedJobsHandler(RejectedJobsHandler rejectedJobsHandler) {
+    this.rejectedJobsHandler = rejectedJobsHandler;
   }
       
 }

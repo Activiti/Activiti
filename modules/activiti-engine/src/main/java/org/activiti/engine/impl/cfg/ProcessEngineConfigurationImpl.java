@@ -81,9 +81,11 @@ import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.jobexecutor.AsyncContinuationJobHandler;
+import org.activiti.engine.impl.jobexecutor.CallerRunsRejectedJobsHandler;
 import org.activiti.engine.impl.jobexecutor.DefaultJobExecutor;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
+import org.activiti.engine.impl.jobexecutor.RejectedJobsHandler;
 import org.activiti.engine.impl.jobexecutor.TimerCatchIntermediateEventJobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
@@ -264,6 +266,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected DelegateInterceptor delegateInterceptor;
 
   protected CommandInterceptor actualCommandExecutor;
+  
+  protected RejectedJobsHandler customRejectedJobsHandler;
   
   // buildProcessEngine ///////////////////////////////////////////////////////
   
@@ -668,6 +672,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
     jobExecutor.setCommandExecutor(commandExecutorTxRequired);
     jobExecutor.setAutoActivate(jobExecutorActivate);
+    
+    if(jobExecutor.getRejectedJobsHandler() == null) {
+      if(customRejectedJobsHandler != null) {
+        jobExecutor.setRejectedJobsHandler(customRejectedJobsHandler);
+      } else {
+        jobExecutor.setRejectedJobsHandler(new CallerRunsRejectedJobsHandler());
+      }
+    }
+    
   }
   
   protected void initMailScanner() {
@@ -1505,6 +1518,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     
   public DelegateInterceptor getDelegateInterceptor() {
     return delegateInterceptor;
+  }
+    
+  public RejectedJobsHandler getCustomRejectedJobsHandler() {
+    return customRejectedJobsHandler;
+  }
+    
+  public ProcessEngineConfigurationImpl setCustomRejectedJobsHandler(RejectedJobsHandler customRejectedJobsHandler) {
+    this.customRejectedJobsHandler = customRejectedJobsHandler;
+    return this;
   }
 
 }

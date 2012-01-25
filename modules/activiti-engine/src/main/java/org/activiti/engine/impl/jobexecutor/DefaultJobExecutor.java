@@ -15,7 +15,7 @@ package org.activiti.engine.impl.jobexecutor;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -43,19 +43,14 @@ public class DefaultJobExecutor extends JobExecutor {
   protected Thread jobAcquisitionThread;
   protected BlockingQueue<Runnable> threadPoolQueue;
   protected ThreadPoolExecutor threadPoolExecutor;
-  
-  protected RejectedExecutionHandler rejectedExecutionHandler;
-  
+    
   protected void startExecutingJobs() {
     if (threadPoolQueue==null) {
       threadPoolQueue = new ArrayBlockingQueue<Runnable>(queueSize);
     }
     if (threadPoolExecutor==null) {
-      threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maxPoolSize, 0L, TimeUnit.MILLISECONDS, threadPoolQueue);
-      if(rejectedExecutionHandler == null) {
-        rejectedExecutionHandler = new ThreadPoolExecutor.CallerRunsPolicy();
-      }
-      threadPoolExecutor.setRejectedExecutionHandler(rejectedExecutionHandler);
+      threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maxPoolSize, 0L, TimeUnit.MILLISECONDS, threadPoolQueue);      
+      threadPoolExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
     }
     if(jobAcquisitionThread == null) {
       jobAcquisitionThread = new Thread(acquireJobsRunnable);
@@ -81,8 +76,11 @@ public class DefaultJobExecutor extends JobExecutor {
   }
   
   public void executeJobs(List<String> jobIds) {
-    // TODO: RejectedExecutionException handling!
-    threadPoolExecutor.execute(new ExecuteJobsRunnable(commandExecutor, jobIds));
+    try {
+      threadPoolExecutor.execute(new ExecuteJobsRunnable(commandExecutor, jobIds));
+    }catch (RejectedExecutionException e) {
+      rejectedJobsHandler.jobsRejected(jobIds, commandExecutor);
+    }
   }
   
   // getters and setters ////////////////////////////////////////////////////// 
@@ -125,14 +123,6 @@ public class DefaultJobExecutor extends JobExecutor {
   
   public void setThreadPoolExecutor(ThreadPoolExecutor threadPoolExecutor) {
     this.threadPoolExecutor = threadPoolExecutor;
-  }
-  
-  protected RejectedExecutionHandler getRejectedExecutionHandler() {    
-    return rejectedExecutionHandler;
-  }
-  
-  public void setRejectedExecutionHandler(RejectedExecutionHandler rejectedExecutionHandler) {
-    this.rejectedExecutionHandler = rejectedExecutionHandler;
   }
     
 }
