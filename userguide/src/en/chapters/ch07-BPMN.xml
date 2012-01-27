@@ -933,6 +933,9 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
         <para>
           <emphasis>Note: </emphasis> a subprocess cannot have a timer start event.
         </para>
+		<para>
+	  	  <emphasis>Note:</emphasis> start timer event is scheduled as soon as process is deployed. There is no need to call startProcessInstanceByXXX, although calling start process methods is not restricted and will cause one more starting of the process at the time of startProcessInstanceByXXX Invocation.
+		</para>. 
 
       </section>
 
