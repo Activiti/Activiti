@@ -3107,6 +3107,136 @@ assertNotNull(execution);
 		
 		</section>
 		
+		<section id="bpmnShellTask">
+			<title>Shell Task</title>
+			<section id="bpmnShellTaskDescription">
+				<title>Description</title>
+				<para>
+				The shell task allows to run shell scripts and commands. Note that the Shell task is <emphasis role="bold">not</emphasis> an 'official' task of BPMN 2.0 spec
+				(and it does not have a dedicated icon as a consequence).
+				</para>
+			</section>			
+			<section id="bpmnShellTaskUsage">
+				<title>defining a shell task</title>
+				<para>The shell task is implemented as a dedicated <link linkend="bpmnJavaServiceTask">Service Task</link>
+		      and is defined by setting <emphasis>'shell'</emphasis> for the <emphasis>type</emphasis> of the service task.
+		      <programlisting>
+&lt;serviceTask id=&quot;shellEcho&quot; <emphasis role="bold">activiti:type=&quot;shell&quot;</emphasis>&gt;		      
+		      </programlisting>
+		    </para>
+        <para>
+		      The Shell task is configured by <link linkend="serviceTaskFieldInjection">field injection</link>.
+		      All the values for these properties can contain EL expression, which are resolved at runtime
+		      during process execution.
+		      Following properties could be set:
+		      <table>
+	         <title>Shell task parameter configuration</title>
+	         <tgroup cols='3'>
+	           <thead>
+	             <row>
+	               <entry>Property</entry>
+	               <entry>Required?</entry>
+	               <entry>Type</entry>
+	               <entry>Description</entry>
+	               <entry>Default</entry>
+	             </row>
+	           </thead>
+	           <tbody>
+	             <row>
+	               <entry>command</entry>
+	               <entry>yes</entry>
+	               <entry>String</entry>				   
+	               <entry>Shell command to execute.</entry>
+	               <entry></entry>
+	             </row>
+	             <row>
+	               <entry>arg0-5</entry>
+	               <entry>no</entry>
+	               <entry>String</entry>				   
+	               <entry>Parameter 0 to Parameter 5</entry>
+	               <entry></entry>
+	             </row>
+	             <row>
+	               <entry>wait</entry>
+	               <entry>no</entry>
+	               <entry>true/false</entry>				   
+	               <entry>wait if necessary, until the shell process has terminated.</entry>
+	               <entry>true</entry>
+				   
+	             </row>
+	             <row>
+	               <entry>redirectError</entry>
+	               <entry>no</entry>
+	               <entry>true/false</entry>				   
+	               <entry>Merge standard error with the standard output.</entry>
+	               <entry>false</entry>				   
+	             </row>
+	             <row>
+	               <entry>cleanEnv</entry>
+	               <entry>no</entry>
+	               <entry>true/false</entry>				   
+	               <entry>Shell process does not inherit current environment.</entry>
+	               <entry>false</entry>				   
+	             </row>
+	             <row>
+	               <entry>outputVariable</entry>
+	               <entry>no</entry>
+	               <entry>String</entry>				   
+	               <entry>Name of variable to contain the output</entry>
+				   <entry>Output is not recorded.</entry>
+	             </row>
+	             <row>
+	               <entry>errorCodeVariable</entry>
+	               <entry>no</entry>
+	               <entry>String</entry>				   
+	               <entry>Name of variable to contain result error code</entry>
+				   <entry>Error level is not registered.</entry>
+				   
+	             </row>
+	             <row>
+	               <entry>directory</entry>
+	               <entry>no</entry>
+	               <entry>String</entry>				   
+	               <entry>Default directory of shell process</entry>
+	               <entry>Current directory</entry>
+	             </row>
+				 
+				
+             </tbody>
+	         </tgroup>
+	        </table>
+        </para>
+			
+				
+		</section>
+			
+			<section id="bpmnShellTaskExampleUsage">
+		  
+		    <title>Example usage</title>
+		  
+		  
+		    <para>
+		      The following XML snippet shows an example of using the shell Task. It runs shell script "cmd /c echo EchoTest", waits for it to be terminated and puts the result in resultVar
+		      <programlisting>
+&lt;serviceTask id=&quot;shellEcho&quot; activiti:type=&quot;shell&quot; &gt;
+  &lt;extensionElements&gt;
+    &lt;activiti:field name=&quot;command&quot; stringValue=&quot;cmd&quot; /&gt;  
+    &lt;activiti:field name=&quot;arg1&quot; stringValue=&quot;/c&quot; /&gt;  
+    &lt;activiti:field name=&quot;arg2&quot; stringValue=&quot;echo&quot; /&gt;  
+    &lt;activiti:field name=&quot;arg3&quot; stringValue=&quot;EchoTest&quot; /&gt;  
+    &lt;activiti:field name=&quot;wait&quot; stringValue=&quot;true&quot; /&gt;  
+    &lt;activiti:field name=&quot;outputVariable&quot; stringValue=&quot;resultVar&quot; /&gt;  
+  &lt;/extensionElements&gt;
+&lt;/serviceTask&gt;		      
+		      </programlisting>
+		      
+		    </para>
+		  </section>
+			
+		
+		</section>
+		
+		
 		<section id="executionListeners">
       <title>Execution listener</title>
       <para><emphasis role="bold">Compatibility note</emphasis>: After releasing 5.3, we discovered that

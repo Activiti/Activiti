@@ -100,6 +100,7 @@ import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.impl.util.xml.Element;
 import org.activiti.engine.impl.util.xml.Parse;
 import org.activiti.engine.impl.variable.VariableDeclaration;
+import org.activiti.engine.impl.bpmn.behavior.ShellActivityBehavior;
 
 /**
  * Specific parsing of one BPMN 2.0 XML file, created by the {@link BpmnParser}.
@@ -943,6 +944,8 @@ public class BpmnParse extends Parse {
         parseEmailServiceTask(activity, serviceTaskElement, parseFieldDeclarations(serviceTaskElement));
       } else if (type.equalsIgnoreCase("mule")) {
         parseMuleServiceTask(activity, serviceTaskElement, parseFieldDeclarations(serviceTaskElement));
+      } else if (type.equalsIgnoreCase("shell")) {
+        parseShellServiceTask(activity, serviceTaskElement, parseFieldDeclarations(serviceTaskElement));
       } else {
         addError("Invalid usage of type attribute: '" + type + "'", serviceTaskElement);
       }
@@ -1158,6 +1161,12 @@ public class BpmnParse extends Parse {
     validateFieldDeclarationsForEmail(serviceTaskElement, fieldDeclarations);
     activity.setActivityBehavior((MailActivityBehavior) ClassDelegate.instantiateDelegate(MailActivityBehavior.class, fieldDeclarations));
   }
+  
+  protected void parseShellServiceTask(ActivityImpl activity, Element serviceTaskElement, List<FieldDeclaration> fieldDeclarations) {
+    validateFieldDeclarationsForShell(serviceTaskElement, fieldDeclarations);
+    activity.setActivityBehavior((ActivityBehavior) ClassDelegate.instantiateDelegate(ShellActivityBehavior.class, fieldDeclarations));
+  }
+
 
   protected void validateFieldDeclarationsForEmail(Element serviceTaskElement, List<FieldDeclaration> fieldDeclarations) {
     boolean toDefined = false;
@@ -1181,6 +1190,29 @@ public class BpmnParse extends Parse {
       addError("Text or html field should be provided", serviceTaskElement);
     }
   }
+
+  protected void validateFieldDeclarationsForShell(Element serviceTaskElement, List<FieldDeclaration> fieldDeclarations) {
+    boolean shellCommandDefined = false;
+
+    for (FieldDeclaration fieldDeclaration : fieldDeclarations) {
+      String fieldName = fieldDeclaration.getName();
+      FixedValue fieldFixedValue = (FixedValue) fieldDeclaration.getValue();
+      String fieldValue = fieldFixedValue.getExpressionText();
+
+      shellCommandDefined |= fieldName.equals("command");
+
+      if ((fieldName.equals("wait") || fieldName.equals("redirectError") || fieldName.equals("cleanEnv")) && !fieldValue.toLowerCase().equals("true")
+              && !fieldValue.toLowerCase().equals("false")) {
+        addError("undefined value for shell " + fieldName + " parameter :" + fieldValue.toString(), serviceTaskElement);
+      }
+
+    }
+
+    if (!shellCommandDefined) {
+      addError("No shell command is defined on the shell activity", serviceTaskElement);
+    }
+  }
+
 
   public List<FieldDeclaration> parseFieldDeclarations(Element element) {
     List<FieldDeclaration> fieldDeclarations = new ArrayList<FieldDeclaration>();

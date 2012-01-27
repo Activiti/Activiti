@@ -175,7 +175,7 @@
     </annotation>
     <simpleType>
       <restriction base="string">
-        <enumeration value="mail"/>
+        <enumeration value="shell"/>
       </restriction>
     </simpleType>
   </attribute>
