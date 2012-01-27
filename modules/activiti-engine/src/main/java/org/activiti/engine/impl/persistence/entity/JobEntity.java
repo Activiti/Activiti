@@ -96,6 +96,7 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject {
     persistentState.put("lockOwner", lockOwner);
     persistentState.put("lockExpirationTime", lockExpirationTime);
     persistentState.put("retries", retries);
+    persistentState.put("duedate", duedate);
     persistentState.put("exceptionMessage", exceptionMessage);
     if(exceptionByteArrayId != null) {
       persistentState.put("exceptionByteArrayId", exceptionByteArrayId);      
