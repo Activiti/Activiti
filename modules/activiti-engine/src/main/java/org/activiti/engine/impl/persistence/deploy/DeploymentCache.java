@@ -113,7 +113,14 @@ public class DeploymentCache {
   public void removeKnowledgeBase(String knowledgeBaseId) {
     knowledgeBaseCache.remove(knowledgeBaseId);
   }
+  
+  public void discardProcessDefinitionCache() {
+    processDefinitionCache.clear();
+  }
 
+  public void discardKnowledgeBaseCache() {
+    knowledgeBaseCache.clear();
+  }
   // getters and setters //////////////////////////////////////////////////////
 
   public Map<String, ProcessDefinitionEntity> getProcessDefinitionCache() {
