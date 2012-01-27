@@ -48,34 +48,42 @@
   </select>
 
   <select id="selectNextJobsToExecute" parameterType="string" resultMap="jobResultMap">
-    select * 
-    from ACT_RU_JOB 
-    where (RETRIES_ &gt; 0)
-      and (DUEDATE_ is null or DUEDATE_ &lt; #{now, jdbcType=TIMESTAMP})
-      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt; #{now, jdbcType=TIMESTAMP})
-      and (RETRIES_ &gt; 0)
+    select 
+    	JOB.*    		
+    from ACT_RU_JOB JOB    
+    	LEFT OUTER JOIN ACT_RU_EXECUTION PI ON PI.ID_ = JOB.PROCESS_INSTANCE_ID_
+    	LEFT OUTER JOIN ACT_RE_PROCDEF PD ON PD.ID_ = PI.PROC_DEF_ID_    
+    where (JOB.RETRIES_ &gt; 0)
+      and (JOB.DUEDATE_ is null or JOB.DUEDATE_ &lt; #{now, jdbcType=TIMESTAMP})
+      and (JOB.LOCK_OWNER_ is null or JOB.LOCK_EXP_TIME_ &lt; #{now, jdbcType=TIMESTAMP})
+      and (JOB.RETRIES_ &gt; 0)       
+	  and (
+	  	    (JOB.EXECUTION_ID_ is null)
+	  		or ((PI.SUSPENSION_STATE_ = 1)     
+      			and (PD.SUSPENSION_STATE_ = 1))
+      )  	    
   </select>
-  
+
   <select id="selectExclusiveJobsToExecute" parameterType="map" resultMap="jobResultMap">
     select * 
-    from ACT_RU_JOB 
+    from ACT_RU_JOB     
     where (RETRIES_ &gt; 0)
       and (DUEDATE_ is null or DUEDATE_ &lt; #{now, jdbcType=TIMESTAMP})
       and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt; #{now, jdbcType=TIMESTAMP})
       and (RETRIES_ &gt; 0)
       and (EXCLUSIVE_ = TRUE)
-      and (PROCESS_INSTANCE_ID_ = #{pid})
+      and (PROCESS_INSTANCE_ID_ = #{pid})  
   </select>
   
   <select id="selectExclusiveJobsToExecute_oracle" parameterType="map" resultMap="jobResultMap">
     select * 
-    from ACT_RU_JOB 
+    from ACT_RU_JOB  
     where (RETRIES_ &gt; 0)
       and (DUEDATE_ is null or DUEDATE_ &lt; #{now, jdbcType=TIMESTAMP})
       and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt; #{now, jdbcType=TIMESTAMP})
       and (RETRIES_ &gt; 0)
       and (EXCLUSIVE_ = 1)
-      and (PROCESS_INSTANCE_ID_ = #{pid})
+      and (PROCESS_INSTANCE_ID_ = #{pid})     
   </select>
   
   <select id="selectLockedJobs" resultMap="jobResultMap">
@@ -152,11 +160,18 @@
 
   <!--  SELECT DEPENDENT -->  
    <select id="selectNextJobsToExecute_mysql" parameterType="string" resultMap="jobResultMap">
-    select * 
-    from ACT_RU_JOB 
+    select JOB.* 
+    from ACT_RU_JOB JOB
+   		LEFT OUTER JOIN ACT_RU_EXECUTION PI ON PI.ID_ = JOB.PROCESS_INSTANCE_ID_
+    	LEFT OUTER JOIN ACT_RE_PROCDEF PD ON PD.ID_ = PI.PROC_DEF_ID_    
     where (RETRIES_ &gt; 0)
       and (DUEDATE_ is null or DUEDATE_ &lt;= #{now, jdbcType=TIMESTAMP})
       and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt;= #{now, jdbcType=TIMESTAMP})
+      and (
+	  	    (JOB.EXECUTION_ID_ is null)
+	  		or ((PI.SUSPENSION_STATE_ = 1)     
+      			and (PD.SUSPENSION_STATE_ = 1))
+      )  
   </select>
   
   <select id="selectExclusiveJobsToExecute_mysql" parameterType="map" resultMap="jobResultMap">

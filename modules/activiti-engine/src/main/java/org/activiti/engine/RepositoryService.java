@@ -73,4 +73,38 @@ public interface RepositoryService {
   
   /** Query process definitions. */
   DeploymentQuery createDeploymentQuery();
+  
+  /**
+   * Suspends the process definition with the given id. 
+   * 
+   * If a process definition is in state suspended, activiti will not 
+   * execute jobs (timers, messages) associated with any process instance of the given definition.
+   * 
+   *  @throws ActivitiException if no such processDefinition can be found or if the process definition is already in state suspended.
+   */
+  void suspendProcessDefinitionById(String processDefinitionId);
+  
+  /**
+   * Suspends the process definition with the given key (=id in the bpmn20.xml file). 
+   * 
+   * If a process definition is in state suspended, activiti will not 
+   * execute jobs (timers, messages) associated with any process instance of the given definition.
+   * 
+   * @throws ActivitiException if no such processDefinition can be found or if the process definition is already in state suspended.
+   */
+  void suspendProcessDefinitionByKey(String processDefinitionKey);
+  
+  /**
+   * Activates the process definition with the given id. 
+   * 
+   * @throws ActivitiException if no such processDefinition can be found or if the process definition is already in state active.
+   */
+  void activateProcessDefinitionById(String processDefinitionId);
+  
+  /**
+   * Activates the process definition with the given key (=id in the bpmn20.xml file). 
+   * 
+   * @throws ActivitiException if no such processDefinition can be found or if the process definition is already in state active.
+   */
+  void activateProcessDefinitionByKey(String processDefinitionKey);
 }

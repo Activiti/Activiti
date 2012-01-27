@@ -21,6 +21,7 @@ import org.activiti.engine.query.Query;
  * 
  * @author Tom Baeyens
  * @author Joram Barrez
+ * @author Daniel Meyer
  */
 public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, ProcessDefinition> {
   
@@ -86,6 +87,16 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
 
   /** Only select process definition with a resource name like the given . */
   ProcessDefinitionQuery processDefinitionResourceNameLike(String resourceNameLike);
+  
+  /**
+   * Only selects process definitions which are suspended
+   */
+  ProcessDefinitionQuery suspended();
+  
+  /**
+   * Only selects process definitions which are active
+   */
+  ProcessDefinitionQuery active();
 
   // ordering ////////////////////////////////////////////////////////////
   

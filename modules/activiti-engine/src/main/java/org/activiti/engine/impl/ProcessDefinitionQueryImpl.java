@@ -18,6 +18,7 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.persistence.entity.SuspensionState;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 
@@ -25,6 +26,7 @@ import org.activiti.engine.repository.ProcessDefinitionQuery;
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
+ * @author Daniel Meyer
  */
 public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQuery, ProcessDefinition> 
   implements ProcessDefinitionQuery {
@@ -42,6 +44,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   protected String resourceNameLike;
   protected Integer version;
   protected boolean latest = false;
+  protected SuspensionState suspensionState;
 
   public ProcessDefinitionQueryImpl() {
   }
@@ -146,6 +149,16 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     return this;
   }
   
+  public ProcessDefinitionQuery active() {
+    this.suspensionState = SuspensionState.ACTIVE;    
+    return this;
+  }
+  
+  public ProcessDefinitionQuery suspended() {
+    this.suspensionState = SuspensionState.SUSPENDED;
+    return this;
+  }
+  
   //sorting ////////////////////////////////////////////
   
   public ProcessDefinitionQuery orderByDeploymentId() {
@@ -234,5 +247,11 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   }
   public String getResourceNameLike() {
     return resourceNameLike;
+  }  
+  public SuspensionState getSuspensionState() {
+    return suspensionState;
+  }  
+  public void setSuspensionState(SuspensionState suspensionState) {
+    this.suspensionState = suspensionState;
   }
 }

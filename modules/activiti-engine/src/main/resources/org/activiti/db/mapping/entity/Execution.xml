@@ -7,7 +7,7 @@
   <!-- EXECUTION INSERT -->
 
   <insert id="insertExecution" parameterType="org.activiti.engine.impl.persistence.entity.ExecutionEntity">
-    insert into ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_, IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_, PARENT_ID_, SUPER_EXEC_)
+    insert into ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_, IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_, PARENT_ID_, SUPER_EXEC_, SUSPENSION_STATE_)
     values (
       #{id ,jdbcType=VARCHAR},
       1,
@@ -19,7 +19,8 @@
       #{isConcurrent ,jdbcType=BOOLEAN},
       #{isScope ,jdbcType=BOOLEAN},
       #{parentId, jdbcType=VARCHAR},
-      #{superExecutionId, jdbcType=VARCHAR}
+      #{superExecutionId, jdbcType=VARCHAR},
+      #{suspensionState, jdbcType=INTEGER}
     )
   </insert>
 
@@ -34,7 +35,8 @@
       IS_CONCURRENT_ = #{isConcurrent, jdbcType=BOOLEAN},
       IS_SCOPE_ = #{isScope, jdbcType=BOOLEAN},
       PARENT_ID_ = #{parentId, jdbcType=VARCHAR},
-      SUPER_EXEC_ = #{superExecutionId, jdbcType=VARCHAR}
+      SUPER_EXEC_ = #{superExecutionId, jdbcType=VARCHAR},
+      SUSPENSION_STATE_ = #{suspensionState, jdbcType=INTEGER}
     where ID_ = #{id, jdbcType=VARCHAR}
       and REV_ = #{revision, jdbcType=INTEGER}
   </update>
@@ -59,6 +61,7 @@
     <result property="isScope" column="IS_SCOPE_" jdbcType="BOOLEAN" />
     <result property="parentId" column="PARENT_ID_" jdbcType="VARCHAR" />
     <result property="superExecutionId" column="SUPER_EXEC_" jdbcType="VARCHAR" />
+    <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER"/>
   </resultMap>
   
   <!-- EXECUTION SELECT -->
@@ -146,6 +149,14 @@
       </if>
       <if test="subProcessInstanceId != null">
         and E.ID_ = (select PROC_INST_ID_ from ACT_RU_EXECUTION where ID_ = (select SUPER_EXEC_ from ACT_RU_EXECUTION where ID_ = #{subProcessInstanceId}))
+      </if>
+      <if test="suspensionState != null">
+      	<if test="suspensionState.stateCode == 1">
+        	and ((E.SUSPENSION_STATE_ = 1) and (P.SUSPENSION_STATE_ = 1))
+        </if>
+        <if test="suspensionState.stateCode == 2">
+        	and ((E.SUSPENSION_STATE_ = 2) or (P.SUSPENSION_STATE_ = 2))
+        </if>
       </if>
       <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
       	and A${index}.NAME_= #{queryVariableValue.name}

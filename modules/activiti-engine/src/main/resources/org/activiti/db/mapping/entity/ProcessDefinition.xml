@@ -7,8 +7,9 @@
   <!-- PROCESSDEFINITION INSERT -->
 
   <insert id="insertProcessDefinition" parameterType="org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity">
-    insert into ACT_RE_PROCDEF(ID_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_, DGRM_RESOURCE_NAME_, HAS_START_FORM_KEY_)
+    insert into ACT_RE_PROCDEF(ID_, REV_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_, DGRM_RESOURCE_NAME_, HAS_START_FORM_KEY_, SUSPENSION_STATE_)
     values (#{id, jdbcType=VARCHAR},
+    		1,
             #{category, jdbcType=VARCHAR},
             #{name, jdbcType=VARCHAR},
             #{key, jdbcType=VARCHAR}, 
@@ -16,10 +17,19 @@
             #{deploymentId, jdbcType=VARCHAR},
             #{resourceName, jdbcType=VARCHAR},
             #{diagramResourceName, jdbcType=VARCHAR},
-            #{hasStartFormKey, jdbcType=BOOLEAN})
+            #{hasStartFormKey, jdbcType=BOOLEAN},
+            #{suspensionState, jdbcType=INTEGER})
   </insert>
   
   <!-- PROCESSDEFINITION UPDATE -->
+
+  <update id="updateProcessDefinition" parameterType="org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity">
+    update ACT_RE_PROCDEF set
+      REV_ = #{revisionNext, jdbcType=INTEGER},    
+      SUSPENSION_STATE_ = #{suspensionState, jdbcType=INTEGER}
+    where ID_ = #{id, jdbcType=VARCHAR}
+      and REV_ = #{revision, jdbcType=INTEGER}
+  </update>
 
   <!-- PROCESSDEFINITION DELETE -->
 
@@ -31,6 +41,7 @@
 
   <resultMap id="processDefinitionResultMap" type="org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="revision" column="REV_" />
     <result property="category" column="CATEGORY_" />
     <result property="name" column="NAME_" />
     <result property="key" column="KEY_" jdbcType="VARCHAR" />
@@ -39,6 +50,7 @@
     <result property="resourceName" column="RESOURCE_NAME_" jdbcType="VARCHAR"/>
     <result property="diagramResourceName" column="DGRM_RESOURCE_NAME_" jdbcType="VARCHAR"/>
     <result property="hasStartFormKey" column="HAS_START_FORM_KEY_" jdbcType="BOOLEAN"/>
+    <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER"/>
   </resultMap>
 
   <!-- PROCESSDEFINITION SELECT -->
@@ -95,6 +107,9 @@
       </if>
       <if test="latest">
         and PD.VERSION_ = (select max(VERSION_) from ACT_RE_PROCDEF where KEY_ = PD.KEY_)
+      </if>
+      <if test="suspensionState != null">
+        and (PD.SUSPENSION_STATE_ = #{suspensionState.stateCode})
       </if>
     </where>
   </sql>

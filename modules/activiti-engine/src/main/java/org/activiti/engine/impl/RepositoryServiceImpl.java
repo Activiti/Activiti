@@ -17,11 +17,14 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.impl.cmd.ActivateProcessDefinitionCmd;
+import org.activiti.engine.impl.cmd.ActivateProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.DeleteDeploymentCmd;
 import org.activiti.engine.impl.cmd.DeployCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentResourceCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentResourceNamesCmd;
+import org.activiti.engine.impl.cmd.SuspendProcessDefinitionCmd;
 import org.activiti.engine.impl.pvm.ReadOnlyProcessDefinition;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.repository.Deployment;
@@ -75,5 +78,23 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
   public ReadOnlyProcessDefinition getDeployedProcessDefinition(String processDefinitionId) {
     return commandExecutor.execute(new GetDeploymentProcessDefinitionCmd(processDefinitionId));
   }
+
+  public void suspendProcessDefinitionById(String processDefinitionId) {
+    commandExecutor.execute(new SuspendProcessDefinitionCmd(processDefinitionId, null));
+  }
+
+  public void suspendProcessDefinitionByKey(String processDefinitionKey) {
+    commandExecutor.execute(new SuspendProcessDefinitionCmd(null, processDefinitionKey));
+  }
+
+  public void activateProcessDefinitionById(String processDefinitionId) {
+    commandExecutor.execute(new ActivateProcessDefinitionCmd(processDefinitionId, null));
+  }
+
+  public void activateProcessDefinitionByKey(String processDefinitionKey) {
+    commandExecutor.execute(new ActivateProcessDefinitionCmd(null, processDefinitionKey));
+  }
+  
+  
 }
 

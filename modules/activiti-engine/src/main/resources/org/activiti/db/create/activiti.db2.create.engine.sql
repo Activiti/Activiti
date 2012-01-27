@@ -44,6 +44,7 @@ create table ACT_RU_EXECUTION (
     IS_SCOPE_ smallint check(IS_SCOPE_ in (1,0)),
 	UNI_BUSINESS_KEY varchar (255)  not null  generated always as (case when "BUSINESS_KEY_" is null then "ID_" else "BUSINESS_KEY_" end),
 	UNI_PROC_DEF_ID varchar (64)  not null  generated always as (case when "PROC_DEF_ID_" is null then "ID_" else "PROC_DEF_ID_" end),
+	SUSPENSION_STATE_ integer,
     primary key (ID_)
 );
 
@@ -68,6 +69,7 @@ create table ACT_RU_JOB (
 
 create table ACT_RE_PROCDEF (
     ID_ varchar(64) not null,
+    REV_ integer,
     CATEGORY_ varchar(255),
     NAME_ varchar(255),
     KEY_ varchar(255),
@@ -76,6 +78,7 @@ create table ACT_RE_PROCDEF (
     RESOURCE_NAME_ varchar(4000),
     DGRM_RESOURCE_NAME_ varchar(4000),
     HAS_START_FORM_KEY_ smallint check(HAS_START_FORM_KEY_ in (1,0)),
+    SUSPENSION_STATE_ integer,
     primary key (ID_)
 );
 

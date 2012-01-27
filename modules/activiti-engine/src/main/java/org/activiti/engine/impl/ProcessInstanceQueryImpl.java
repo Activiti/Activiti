@@ -20,6 +20,7 @@ import java.util.Set;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.persistence.entity.SuspensionState;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
 
@@ -29,6 +30,7 @@ import org.activiti.engine.runtime.ProcessInstanceQuery;
  * @author Joram Barrez
  * @author Frederik Heremans
  * @author Falko Menge
+ * @author Daniel Meyer
  */
 public class ProcessInstanceQueryImpl extends ExecutionVariableQueryImpl<ProcessInstanceQuery, ProcessInstance> implements ProcessInstanceQuery, Serializable {
 
@@ -40,6 +42,7 @@ public class ProcessInstanceQueryImpl extends ExecutionVariableQueryImpl<Process
   protected String processDefinitionKey;
   protected String superProcessInstanceId;
   protected String subProcessInstanceId;
+  protected SuspensionState suspensionState;
   
   // Unused, see dynamic query
   protected String activityId;
@@ -133,6 +136,16 @@ public class ProcessInstanceQueryImpl extends ExecutionVariableQueryImpl<Process
     return this;
   }
   
+  public ProcessInstanceQuery active() {
+    this.suspensionState = SuspensionState.ACTIVE;
+    return this;
+  }
+  
+  public ProcessInstanceQuery suspended() {
+    this.suspensionState = SuspensionState.SUSPENDED;
+    return this;
+  }
+  
   //results /////////////////////////////////////////////////////////////////
   
   public long executeCount(CommandContext commandContext) {
@@ -179,5 +192,11 @@ public class ProcessInstanceQueryImpl extends ExecutionVariableQueryImpl<Process
   }
   public String getSubProcessInstanceId() {
     return subProcessInstanceId;
+  }  
+  public SuspensionState getSuspensionState() {
+    return suspensionState;
+  }  
+  public void setSuspensionState(SuspensionState suspensionState) {
+    this.suspensionState = suspensionState;
   }
 }

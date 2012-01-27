@@ -142,6 +142,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
   protected String id = null;
   protected int revision = 1;
+  protected int suspensionState = SuspensionState.ACTIVE.getStateCode();
 
   /**
    * persisted reference to the processDefinition.
@@ -942,6 +943,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     if (forcedUpdate) {
       persistentState.put("forcedUpdate", Boolean.TRUE);
     }
+    persistentState.put("suspensionState", this.suspensionState);
     return persistentState;
   }
   
@@ -1060,5 +1062,17 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   }
   public boolean isDeleteRoot() {
     return deleteRoot;
+  }
+    
+  public int getSuspensionState() {
+    return suspensionState;
+  }
+    
+  public void setSuspensionState(int suspensionState) {
+    this.suspensionState = suspensionState;
+  }
+  
+  public boolean isSuspended() {
+    return suspensionState == SuspensionState.SUSPENDED.getStateCode();
   }
 }

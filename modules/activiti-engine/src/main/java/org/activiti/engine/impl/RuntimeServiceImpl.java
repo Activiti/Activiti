@@ -20,20 +20,23 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.form.FormData;
+import org.activiti.engine.impl.cmd.ActivateProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.DeleteProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.FindActiveActivityIdsCmd;
-import org.activiti.engine.impl.cmd.GetStartFormCmd;
 import org.activiti.engine.impl.cmd.GetExecutionVariableCmd;
 import org.activiti.engine.impl.cmd.GetExecutionVariablesCmd;
+import org.activiti.engine.impl.cmd.GetStartFormCmd;
 import org.activiti.engine.impl.cmd.SetExecutionVariablesCmd;
 import org.activiti.engine.impl.cmd.SignalCmd;
 import org.activiti.engine.impl.cmd.StartProcessInstanceCmd;
+import org.activiti.engine.impl.cmd.SuspendProcessInstanceCmd;
 import org.activiti.engine.runtime.ExecutionQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
 
 /**
  * @author Tom Baeyens
+ * @author Daniel Meyer
  */
 public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
 
@@ -141,5 +144,13 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
 
   public FormData getFormInstanceById(String processDefinitionId) {
     return commandExecutor.execute(new GetStartFormCmd(processDefinitionId));
+  }
+
+  public void suspendProcessInstanceById(String processInstanceId) {
+    commandExecutor.execute(new SuspendProcessInstanceCmd(processInstanceId));
+  }
+
+  public void activateProcessInstanceById(String processInstanceId) {
+    commandExecutor.execute(new ActivateProcessInstanceCmd(processInstanceId));
   }
 }

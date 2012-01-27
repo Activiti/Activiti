@@ -129,7 +129,20 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
    * starts with (string%), ends with (%string) or contains (%string%).
    */
   ProcessInstanceQuery variableValueLike(String name, String value);
-
+  
+  /**
+   * Only selects process instances which are suspended, either because the 
+   * process instance itself is suspended or because the corresponding process 
+   * definition is suspended
+   */
+  ProcessInstanceQuery suspended();
+  
+  /**
+   * Only selects process instances which are active, which means that 
+   * neither the process instance nor the corresponding process definition 
+   * are suspended.
+   */
+  ProcessInstanceQuery active();
   
   //ordering /////////////////////////////////////////////////////////////////
   

@@ -14,6 +14,7 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
@@ -34,12 +35,14 @@ import org.activiti.engine.repository.ProcessDefinition;
 
 /**
  * @author Tom Baeyens
+ * @author Daniel Meyer
  */
 public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements ProcessDefinition, PersistentObject {
 
   private static final long serialVersionUID = 1L;
 
   protected String key;
+  protected int revision = 1;
   protected int version;
   protected String category;
   protected String deploymentId;
@@ -50,6 +53,7 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   protected boolean isGraphicalNotationDefined;
   protected Map<String, TaskDefinition> taskDefinitions;
   protected boolean hasStartFormKey;
+  protected int suspensionState = SuspensionState.ACTIVE.getStateCode();
   
   public ProcessDefinitionEntity() {
     super(null);
@@ -131,7 +135,9 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   // getters and setters //////////////////////////////////////////////////////
   
   public Object getPersistentState() {
-    return ProcessDefinitionEntity.class;
+    Map<String, Object> persistentState = new HashMap<String, Object>();  
+    persistentState.put("suspensionState", this.suspensionState);
+    return persistentState;
   }
   
   public String getKey() {
@@ -236,6 +242,29 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   
   public void setGraphicalNotationDefined(boolean isGraphicalNotationDefined) {
     this.isGraphicalNotationDefined = isGraphicalNotationDefined;
+  }
+  
+  public int getRevision() {
+    return revision;
+  }
+  public void setRevision(int revision) {
+    this.revision = revision;
+  }
+  
+  public int getRevisionNext() {
+    return revision+1;
+  }
+  
+  public int getSuspensionState() {
+    return suspensionState;
+  }
+  
+  public void setSuspensionState(int suspensionState) {
+    this.suspensionState = suspensionState;
+  }
+
+  public boolean isSuspended() {
+    return suspensionState == SuspensionState.SUSPENDED.getStateCode();
   }
   
 }

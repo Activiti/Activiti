@@ -29,6 +29,7 @@ import org.activiti.engine.runtime.ProcessInstance;
  * 
  * @author Tom Baeyens
  * @author Joram Barez
+ * @author Daniel Meyer
  */
 public interface ProcessDefinition {
 
@@ -59,4 +60,7 @@ public interface ProcessDefinition {
 
   /** Does this process definition has a {@link FormService#getStartFormData(String) start form key}. */
   boolean hasStartFormKey();
+  
+  /** Returns trure if the process definition is in state suspended */
+  boolean isSuspended();
 }

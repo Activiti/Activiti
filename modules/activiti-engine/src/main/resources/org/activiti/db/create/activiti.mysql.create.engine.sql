@@ -42,6 +42,7 @@ create table ACT_RU_EXECUTION (
     IS_ACTIVE_ TINYINT,
     IS_CONCURRENT_ TINYINT,
     IS_SCOPE_ TINYINT,
+    SUSPENSION_STATE_ integer,
     primary key (ID_),
     unique ACT_UNIQ_RU_BUS_KEY (PROC_DEF_ID_, BUSINESS_KEY_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
@@ -67,6 +68,7 @@ create table ACT_RU_JOB (
 
 create table ACT_RE_PROCDEF (
     ID_ varchar(64),
+    REV_ integer,
     CATEGORY_ varchar(255),
     NAME_ varchar(255),
     KEY_ varchar(255),
@@ -75,6 +77,7 @@ create table ACT_RE_PROCDEF (
     RESOURCE_NAME_ varchar(4000),
     DGRM_RESOURCE_NAME_ varchar(4000),
     HAS_START_FORM_KEY_ TINYINT,
+    SUSPENSION_STATE_ integer,
     primary key (ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 

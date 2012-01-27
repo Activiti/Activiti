@@ -42,6 +42,7 @@ create table ACT_RU_EXECUTION (
     IS_ACTIVE_ tinyint,
     IS_CONCURRENT_ tinyint,
     IS_SCOPE_ tinyint,
+    SUSPENSION_STATE_ tinyint,
     primary key (ID_)
 );
 
@@ -66,6 +67,7 @@ create table ACT_RU_JOB (
 
 create table ACT_RE_PROCDEF (
     ID_ nvarchar(64),
+    REV_ int,
     CATEGORY_ nvarchar(255),
     NAME_ nvarchar(255),
     KEY_ nvarchar(255),
@@ -74,6 +76,7 @@ create table ACT_RE_PROCDEF (
     RESOURCE_NAME_ nvarchar(4000),
     DGRM_RESOURCE_NAME_ nvarchar(4000),
     HAS_START_FORM_KEY_ tinyint,
+    SUSPENSION_STATE_ tinyint,
     primary key (ID_)
 );
 

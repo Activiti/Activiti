@@ -20,6 +20,7 @@ import org.activiti.engine.repository.ProcessDefinition;
  * 
  * @author Tom Baeyens
  * @author Joram Barrez
+ * @author Daniel Meyer
  */
 public interface ProcessInstance extends Execution {
   
@@ -32,5 +33,10 @@ public interface ProcessInstance extends Execution {
    * The business key of this process instance.
    */
   String getBusinessKey();
+  
+  /**
+   * returns true if the process instance is suspended
+   */
+  boolean isSuspended();
   
 }

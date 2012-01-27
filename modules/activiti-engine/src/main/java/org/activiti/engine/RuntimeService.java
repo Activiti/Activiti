@@ -254,4 +254,30 @@ public interface RuntimeService {
    * to query process instances.
    */
   ProcessInstanceQuery createProcessInstanceQuery();
+  
+  /**
+   * Suspends the process instance with the given id. 
+   * 
+   * If a process instance is in state suspended, activiti will not 
+   * execute jobs (timers, messages) associated with this instance.
+   * 
+   * If you have a process instance hierarchy, suspending
+   * one process instance form the hierarchy will not suspend other 
+   * process instances form that hierarchy.
+   * 
+   *  @throws ActivitiException if no such processInstance can be found or if the process instance is already in state suspended.
+   */
+  void suspendProcessInstanceById(String processInstanceId);
+  
+  /**
+   * Activates the process instance with the given id. 
+   * 
+   * If you have a process instance hierarchy, suspending
+   * one process instance form the hierarchy will not suspend other 
+   * process instances form that hierarchy.
+   * 
+   * @throws ActivitiException if no such processInstance can be found or if the process instance is already in state active.
+   */
+  void activateProcessInstanceById(String processInstanceId);
+  
 }
