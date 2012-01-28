@@ -12,8 +12,6 @@
  */
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.Map;
-
 import org.activiti.engine.impl.interceptor.CommandContext;
 
 
@@ -32,13 +30,6 @@ public class MessageEntity extends JobEntity {
     delete();
   }
 
-  @SuppressWarnings("unchecked")
-  public Object getPersistentState() {
-    Map<String, Object> persistentState = (Map<String, Object>) super.getPersistentState();
-    persistentState.put("duedate", getDuedate());
-    return persistentState;
-  }
-  
   public String getRepeat() {
     return repeat;
   }
