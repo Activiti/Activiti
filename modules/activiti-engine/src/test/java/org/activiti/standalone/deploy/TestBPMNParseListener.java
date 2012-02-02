@@ -99,4 +99,7 @@ public class TestBPMNParseListener implements BpmnParseListener {
     }
   }
 
+  public void parseReceiveTask(Element receiveTaskElement, ScopeImpl scope, ActivityImpl activity) {
+  }
+
 }

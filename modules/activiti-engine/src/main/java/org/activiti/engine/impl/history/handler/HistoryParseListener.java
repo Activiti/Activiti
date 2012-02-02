@@ -70,6 +70,10 @@ public class HistoryParseListener implements BpmnParseListener {
     addActivityHandlers(activity);
   }
 
+  public void parseReceiveTask(Element receiveTaskElement, ScopeImpl scope, ActivityImpl activity) {
+    addActivityHandlers(activity);
+  }
+
   public void parseScriptTask(Element scriptTaskElement, ScopeImpl scope, ActivityImpl activity) {
     addActivityHandlers(activity);
   }

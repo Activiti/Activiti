@@ -1355,7 +1355,7 @@ public class BpmnParse extends Parse {
     parseExecutionListenersOnScope(receiveTaskElement, activity);
 
     for (BpmnParseListener parseListener : parseListeners) {
-      parseListener.parseManualTask(receiveTaskElement, scope, activity);
+      parseListener.parseReceiveTask(receiveTaskElement, scope, activity);
     }
     return activity;
   }
