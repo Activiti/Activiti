@@ -84,6 +84,9 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
 
   /** Only select tasks for the given process instance id. */
   TaskQuery processInstanceId(String processInstanceId);
+  
+  /** Only select tasks foe the given business key */
+  TaskQuery processInstanceBusinessKey(String processInstanceBusinessKey);  
 
   /** Only select tasks for the given execution. */
   TaskQuery executionId(String executionId);

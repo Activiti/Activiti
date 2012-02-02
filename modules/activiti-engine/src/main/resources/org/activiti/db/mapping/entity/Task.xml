@@ -138,7 +138,10 @@
     <if test="processDefinitionKey != null || processDefinitionName != null">
       inner join ACT_RE_PROCDEF D on T.PROC_DEF_ID_ = D.ID_
     </if>
-    <where>
+    <if test="processInstanceBusinessKey != null">
+        inner join ACT_RU_EXECUTION E on T.PROC_INST_ID_ = E.ID_
+    </if>
+    <where> 
       <if test="taskId != null">
         T.ID_ = #{taskId}
       </if>
@@ -175,6 +178,9 @@
       <if test="processInstanceId != null">
         and T.PROC_INST_ID_ = #{processInstanceId}
       </if>
+      <if test="processInstanceBusinessKey != null">
+        and E.BUSINESS_KEY_ = #{processInstanceBusinessKey}
+      </if>         
       <if test="executionId != null">
         and T.EXECUTION_ID_ = #{executionId}
       </if>

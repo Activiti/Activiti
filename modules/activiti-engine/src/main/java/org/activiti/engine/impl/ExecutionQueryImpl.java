@@ -41,6 +41,7 @@ public class ExecutionQueryImpl extends ExecutionVariableQueryImpl<ExecutionQuer
   protected String superProcessInstanceId;
   protected String subProcessInstanceId;
   protected SuspensionState suspensionState;
+  private String businessKey;
   
   public ExecutionQueryImpl() {
   }
@@ -78,6 +79,14 @@ public class ExecutionQueryImpl extends ExecutionVariableQueryImpl<ExecutionQuer
       throw new ActivitiException("Process instance id is null");
     }
     this.processInstanceId = processInstanceId;
+    return this;
+  }
+  
+  public ExecutionQuery processInstanceBusinessKey(String businessKey) {
+    if (businessKey == null) {
+      throw new ActivitiException("Business key is null");
+    }
+    this.businessKey = businessKey;
     return this;
   }
   
@@ -152,7 +161,7 @@ public class ExecutionQueryImpl extends ExecutionVariableQueryImpl<ExecutionQuer
     return null;
   }
   public String getBusinessKey() {
-    return null;
+    return businessKey;
   }
   public String getExecutionId() {
     return executionId;
