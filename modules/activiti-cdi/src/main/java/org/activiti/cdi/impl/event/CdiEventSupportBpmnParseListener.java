@@ -163,4 +163,10 @@ public class CdiEventSupportBpmnParseListener implements BpmnParseListener {
     addEndEventListener(timerActivity);
   }
 
+  @Override
+  public void parseReceiveTask(Element receiveTaskElement, ScopeImpl scope, ActivityImpl activity) {
+    addStartEventListener(activity);
+    addEndEventListener(activity);
+  }
+
 }
