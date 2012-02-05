@@ -64,7 +64,7 @@
 &lt;/bean&gt;
         </programlisting>  
          The next example configuration below provides a <literal>EntityManagerFactory</literal> which we define ourselves (in this case, an open-jpa entity manager). 
-         Note that the snippet only contains the beans that are relevant for the example, the others are ommited. Full working example with open-jpa entitymanager can be found in the activiti-spring-examples (<literal>/activiti-spring/src/test/java/org/activiti/spring/test/jpa/JPASpringTest.java</literal>)
+         Note that the snippet only contains the beans that are relevant for the example, the others are omitted. Full working example with open-jpa entity manager can be found in the activiti-spring-examples (<literal>/activiti-spring/src/test/java/org/activiti/spring/test/jpa/JPASpringTest.java</literal>)
         <programlisting>
 &lt;bean id=&quot;entityManagerFactory&quot; class=&quot;org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean&quot;&gt;
   &lt;property name=&quot;persistenceUnitManager&quot; ref=&quot;pum&quot;/&gt;

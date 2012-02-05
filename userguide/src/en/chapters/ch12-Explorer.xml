@@ -18,7 +18,7 @@
           rather than <emphasis>tasks</emphasis>. As Explorer allows to relate content, divide
           work into subtasks, involve people in different roles, etc ... the term <emphasis>case</emphasis>
           covers better what is possible. Activiti Explorer as such can be used to create
-          cases that are not related to processes (ie. standalone cases).
+          cases that are not related to processes (i.e. standalone cases).
         </para>
       </listitem>
       <listitem>
@@ -74,7 +74,7 @@
          <listitem>
           <para>
             <emphasis role="bold">Involved:</emphasis> shows the cases where the logged in user is
-            involved with (ie. not assignee or owner).
+            involved with (i.e. not assignee or owner).
           </para>
         </listitem>
          <listitem>
@@ -145,8 +145,8 @@
         <listitem>
           <para>
             <emphasis role="bold">Jobs:</emphasis> Shows the current jobs (timers, etc.) on the left
-            and allows to manually execute them (eg. firing a timer before the deadline). Also
-            shows any exceptions, if the jobs failed to execute (eg. mail server could not be reached)
+            and allows to manually execute them (e.g. firing a timer before the deadline). Also
+            shows any exceptions, if the jobs failed to execute (e.g. mail server could not be reached)
             <mediaobject><imageobject><imagedata align="center" fileref="images/explorer.jobs.png"/></imageobject></mediaobject>
           </para>
         </listitem>

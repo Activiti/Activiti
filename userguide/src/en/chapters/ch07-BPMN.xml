@@ -66,7 +66,7 @@
 		</para>
 		
 		<para>
-		  Optionally you can also add the online schemalocation of the BPMN 2.0 xsd schema,
+		  Optionally you can also add the online schemalocation of the BPMN 2.0 XML schema,
 		  as an alternative to the  <link linkend="eclipsesetup">XML catalog configuration in Eclipse</link>.
 		  <programlisting>
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -149,7 +149,7 @@ xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL
       <title>Use case</title>
       
       <para>
-				The use case is straightfoward: we have a company, let's call it BPMCorp.
+				The use case is straightforward: we have a company, let's call it BPMCorp.
 				In BPMCorp, a financial report needs to be written every month for the
 				company shareholders. This is the responsibility of the accountancy
 				department. When the report is finished, one of the members of the
@@ -793,7 +793,7 @@ public class TenMinuteTutorial {
               </itemizedlist>
           </para>
           <para>
-            You can use expressions for the timer event definitions, by doing so you can influence the timer defintion
+            You can use expressions for the timer event definitions, by doing so you can influence the timer definition
             based on process variables. The process variables must contain the ISO 8601 (or cron for cycle type) string for appropriate timer type.
   <programlisting>
   &lt;boundaryEvent id=&quot;escalationTimer&quot; cancelActivity=&quot;true&quot; attachedToRef=&quot;firstLineSupport&quot;&gt;
@@ -956,7 +956,7 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
 
         <para>
           The XML representation of a timer start event is the normal
-          start event declaration, with timer definition subelement. Please refer to <link linkend="timerEventDefinitions">timer definitions</link> for configuration details.
+          start event declaration, with timer definition sub-element. Please refer to <link linkend="timerEventDefinitions">timer definitions</link> for configuration details.
           for details on configuration details.
          </para>
            <para>Example: process will start 4 times, in 5 minute intervals, starting on 11th march 2011, 12:13
@@ -1050,7 +1050,7 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
 		    <para>
 		      When process execution arrives in an <emphasis role="bold">error end event</emphasis>, 
 		      the, the current path of execution is ended and an error is thrown. This error
-		      can <link linkend="bpmnBoundaryErrorEvent">catched by a matching intermediate boundary error event</link>.
+		      can <link linkend="bpmnBoundaryErrorEvent">caught by a matching intermediate boundary error event</link>.
 		      In case no matching boundary error event is found, the execution semantics default to the 
 		      <link linkend="bpmnNoneEndEvent">none end event</link> semantics.
 		    </para>
@@ -1542,7 +1542,7 @@ assertEquals("Ship Order", task2.getName());</programlisting>
         
         <para>
           The <emphasis role="bold">Inclusive Gateway</emphasis> can be seen as a combination of an exclusive
-          and a parallel gateway. Like an exclusive gatway you can define conditions on outgoing sequence flows
+          and a parallel gateway. Like an exclusive gateway you can define conditions on outgoing sequence flows
           and the inclusive gateway will evaluate them. But the main difference is that the inclusive gateway can take
           more than one sequence flow, like the parallel gateway.
         </para>
@@ -1563,7 +1563,7 @@ assertEquals("Ship Order", task2.getName());</programlisting>
                 <emphasis role="bold">join:</emphasis>   
                 all concurrent executions arriving at the inclusive gateway wait in the gateway
                 until an execution has arrived for each of the incoming sequence flows that have a process token. 
-                This is an important difference with the parallel gatway. So in other words, the inclusive gateway will only wait
+                This is an important difference with the parallel gateway. So in other words, the inclusive gateway will only wait
                 for the incoming sequence flows that will be executed.
                 After the join, the process continues past the joining inclusive gateway.
               </para>
@@ -1728,7 +1728,7 @@ assertEquals("Ship Order", task.getName());</programlisting>
                 on, before or after a certain date.
               </para>
               <para>
-                There is an activity extention which allows you to specify an expression in your task-definition to set the initial due
+                There is an activity extension which allows you to specify an expression in your task-definition to set the initial due
                 date of a task when it is created. The expression <emphasis role="bold">should always resolve to a <literal>java.util.Date</literal> or <literal>null</literal></emphasis>. 
                 For example, you could use a date that was entered in a previous form in the process or calculated in a previous Service Task.
               </para>
@@ -1910,7 +1910,7 @@ public class MyAssignmentHandler implements TaskListener {
           </para>
           
           <para>
-            When using Spring it is possible to use the custom assignment attirbutes as described in the section above,
+            When using Spring it is possible to use the custom assignment attributes as described in the section above,
             and delegate to a Spring bean using a <link linkend="taskListeners">task listener</link>
             with an <link linkend="springExpressions">expression</link> that listens to task <emphasis>create</emphasis> events.
             In the following example, the assignee will be set by calling the <literal>findManagerOfEmployee</literal>
@@ -2202,7 +2202,7 @@ public class ToUppercase implements JavaDelegate {
         This also influences the way <link linkend="serviceTaskFieldInjection">Field injection</link> is handled.
       </para>
       <para>
-        The classes that are referenced in the process definition (ie by using <literal>activiti:class</literal>) are <emphasis role="bold">NOT
+        The classes that are referenced in the process definition (i.e. by using <literal>activiti:class</literal>) are <emphasis role="bold">NOT
         instantiated during deployment</emphasis>. Only when a process execution arrives 
         for the first time at the point in the process where the class is used, an instance
         of that class will be created. If the class cannot be found, an <literal>ActivitiException</literal>
@@ -2237,7 +2237,7 @@ public class ToUppercase implements JavaDelegate {
           </itemizedlist>
         </para>
         <para>
-          If available, the value is injected through a public setter method on your delegated class, folowing the Java Bean naming conventions (eg. field <literal>fistName</literal> has setter <literal>setFirstName(...)</literal>).
+          If available, the value is injected through a public setter method on your delegated class, following the Java Bean naming conventions (e.g. field <literal>fistName</literal> has setter <literal>setFirstName(...)</literal>).
           If no setter is available for that field, the value of private member will be set on the delegate. SecurityManagers in some environments don't allow modifying private fields,
           so it's safer to expose a public setter-method for the fields you want to have injected. <emphasis role="bold">Regardless of the type of value declared in the process-definition, the type of the setter/private field on the injection target should always be 
           <literal>org.activiti.engine.delegate.Expression</literal>.</emphasis>
@@ -2683,7 +2683,7 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
 			<para>
 				To execute one or more business rules that are deployed in the same BAR file as the process definition, we need to define the input and result variables.
 				For the input variable definition a list of process variables can be defined separated by a comma.
-				The output variable definition can only contain one variable name that'll be used to store the output objects of the executed business rules in a process variable.
+				The output variable definition can only contain one variable name that will be used to store the output objects of the executed business rules in a process variable.
 				Note that the result variable will contain a List of objects. If no result variable name is specified by default org.activiti.engine.rules.OUTPUT is used.
 	   	</para>
 	   	<para>
@@ -2731,7 +2731,7 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
 		  
 		  <para>
 		    Activiti allows to enhance business processes with automatic mail service tasks that send
-		    e-mails to one or more recipients, including support for cc, bcc, html content, ... etc.
+		    e-mails to one or more recipients, including support for cc, bcc, HTML content, ... etc.
 		    Note that the mail task is <emphasis role="bold">not</emphasis> an 'official' task 
 		    of the BPMN 2.0 spec (and it does not have a dedicated icon as a consequence).
 		    Hence, in Activiti the mail task is implemented as a dedicated service task.
@@ -3240,7 +3240,7 @@ assertNotNull(execution);
 		<section id="executionListeners">
       <title>Execution listener</title>
       <para><emphasis role="bold">Compatibility note</emphasis>: After releasing 5.3, we discovered that
-      execution listeners and task listeners and expressions were still in non-public api. Those classes were in subpackages 
+      execution listeners and task listeners and expressions were still in non-public API. Those classes were in subpackages 
       of <literal>org.activiti.engine.impl...</literal>,  which has <literal>impl</literal> in it).  
       <literal>org.activiti.engine.impl.pvm.delegate.ExecutionListener</literal>, 
       <literal>org.activiti.engine.impl.pvm.delegate.TaskListener</literal> and 
@@ -3254,7 +3254,7 @@ assertNotNull(execution);
       </para>
       
       <para>Execution listeners allow you to execute external Java code or evaluate an expression when certain events occur
-      during process exevcution. The events that can be captured are:
+      during process execution. The events that can be captured are:
       <itemizedlist>
         <listitem><para>Start and ending of a process instance.</para></listitem>
         <listitem><para>Taking a transition.</para></listitem>
@@ -3262,7 +3262,7 @@ assertNotNull(execution);
       </itemizedlist>
       </para>
       <para>
-        The following process definition contains 3 execution listenerss:
+        The following process definition contains 3 execution listeners:
         <programlisting>
   &lt;process id=&quot;executionListenersProcess&quot;&gt;
   
@@ -3477,7 +3477,7 @@ public class MyTaskCreateListener implements TaskListener {
         <listitem>
           <para>
             <emphasis role="bold">delegateExpression</emphasis> allows to specify an expression
-            that resolves to an object implementing ther <literal>TaskListener</literal> interface,
+            that resolves to an object implementing the <literal>TaskListener</literal> interface,
             <link linkend="bpmnJavaServiceTaskXML">similar to a service task</link>. 
             <programlisting>&lt;activiti:taskListener event=&quot;create&quot; delegateExpression=&quot;${myTaskListenerBean}&quot; /&gt;</programlisting>        
           </para>
@@ -3529,14 +3529,14 @@ public class MyTaskCreateListener implements TaskListener {
           will have following variables:
           <itemizedlist>
             <listitem><para><emphasis role="bold">nrOfInstances</emphasis>: the total number of instances</para></listitem>
-            <listitem><para><emphasis role="bold">nrOfActiveInstances</emphasis>: the number of currently active, ie. not yet finished, instances. For a sequential multi-instance, this will always be 1.</para></listitem>
+            <listitem><para><emphasis role="bold">nrOfActiveInstances</emphasis>: the number of currently active, i.e. not yet finished, instances. For a sequential multi-instance, this will always be 1.</para></listitem>
             <listitem><para><emphasis role="bold">nrOfCompletedInstances</emphasis>: the number of already completed instances.</para></listitem>
           </itemizedlist>
           These values can be retrieved by calling the <literal>execution.getVariable(x)</literal> method.
         </para>
         
         <para>
-          Additionally, each of the created executions will have an execution-local variable (ie. not visible
+          Additionally, each of the created executions will have an execution-local variable (i.e. not visible
           for the other executions, and not stored on process instance level) :
           <itemizedlist>
             <listitem><para><emphasis role="bold">loopCounter</emphasis>: indicates the <emphasis>index in the for-each loop</emphasis> of that particular instance.</para></listitem>
@@ -3550,7 +3550,7 @@ public class MyTaskCreateListener implements TaskListener {
         <title>Graphical notation</title>
         
         <para>
-          If an activity is multi-instance, this is indictaed by three short lines at the bottom
+          If an activity is multi-instance, this is indicated by three short lines at the bottom
           of that activity. Three <emphasis>vertical</emphasis> lines indicates that the instances will be executed
           in parallel, while three <emphasis>horizontal</emphasis> lines indicate sequential execution.
           <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.multi.instance.png"/></imageobject></mediaobject>
@@ -3581,7 +3581,7 @@ public class MyTaskCreateListener implements TaskListener {
 &lt;multiInstanceLoopCharacteristics isSequential=&quot;false|true&quot;&gt;
   &lt;loopCardinality&gt;5&lt;/loopCardinality&gt;
 &lt;/multiInstanceLoopCharacteristics&gt;</programlisting>
-          Expressions that resolve to a postive number are also possible:
+          Expressions that resolve to a positive number are also possible:
           <programlisting>
 &lt;multiInstanceLoopCharacteristics isSequential=&quot;false|true&quot;&gt;
   &lt;loopCardinality&gt;${nrOfOrders-nrOfCancellations}&lt;/loopCardinality&gt;
@@ -3648,7 +3648,7 @@ public class MyTaskCreateListener implements TaskListener {
         <para>
           Since a multi-instance is a regular activity, it is possible to define a 
           <link linkend="bpmnBoundaryEvent">boundary event</link> on its boundary.
-          In case of an interrupting boundary event, when the event is catched, <emphasis role="bold">all instances</emphasis>
+          In case of an interrupting boundary event, when the event is caught, <emphasis role="bold">all instances</emphasis>
           that are still active will be destroyed. Take for example following multi-instance subprocess:
           <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.multi.instance.boundary.event.png"/></imageobject></mediaobject>
           Here, all instances of the subprocess will be destroyed when the timer fires, regardless
@@ -3758,7 +3758,7 @@ public class MyTaskCreateListener implements TaskListener {
         </para>
 
         <para>
-          In the grafical representation, the line of the circle is dotted as you can see in this example above:
+          In the graphical representation, the line of the circle is dotted as you can see in this example above:
           
           <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.non.interrupting.boundary.timer.event.png"/></imageobject></mediaobject>
           
@@ -3824,7 +3824,7 @@ public class MyTaskCreateListener implements TaskListener {
 		    <para>
 		      When an error event is caught, the activity on which the boundary event is defined
 		      is destroyed, also destroying all current executions within
-		      (eg. concurrent activities, nested subprocesses, etc.). Process execution continues
+		      (e.g. concurrent activities, nested subprocesses, etc.). Process execution continues
 		      following the outgoing sequence flow of the boundary event. 
 		    </para>
 		    
@@ -3860,7 +3860,7 @@ public class MyTaskCreateListener implements TaskListener {
         </para>
         
         <para>
-          The <emphasis role="bold">errorCode</emphasis> is used to match the errors that are catched:
+          The <emphasis role="bold">errorCode</emphasis> is used to match the errors that are caught:
           <itemizedlist>
             <listitem>
               <para>
@@ -3890,7 +3890,7 @@ public class MyTaskCreateListener implements TaskListener {
         <para>
           Following example process shows how an error end event can be used. When the 
           <emphasis>'Review profitability'</emphasis> user task is completed by stating that
-          not enough information is provided, an error is thrown. When this error is catched on
+          not enough information is provided, an error is thrown. When this error is caught on
           the boundary of the subprocess, all active activities within the <emphasis>'Review sales lead'</emphasis>
           subprocess are destroyed (even if <emphasis>'Review customer rating'</emphasis> was not yet completed),
           and the <emphasis>'Provide additional details'</emphasis> user task is created.
@@ -4244,10 +4244,10 @@ public class MyTaskCreateListener implements TaskListener {
                 
         <para>
         Activiti executes processes in a transactional way which can be configured to suite your needs. Lets start by looking at how activiti scopes transactions normally. 
-        If you trigger activiti (i.e. start a process, complete a task, singnal an execution),
-        activiti is going to advance in the process, until it reaches wait states on each active path of execution. More concretely speaking it performs a depth-first seach through 
+        If you trigger activiti (i.e. start a process, complete a task, signal an execution),
+        activiti is going to advance in the process, until it reaches wait states on each active path of execution. More concretely speaking it performs a depth-first search through 
         the process graph and returns if it has reached wait states on every branch of execution. A wait state is a task which is performed &quot;later&quot; which means that activiti
-        persits the current execution and waits to be triggerd again. The trigger can either come from an external source for example if we have a user task or a receive message task, 
+        persists the current execution and waits to be triggered again. The trigger can either come from an external source for example if we have a user task or a receive message task, 
         or from activiti itself, if we have a timer event.
         This is illustrated in the following picture:
         
@@ -4271,7 +4271,7 @@ public class MyTaskCreateListener implements TaskListener {
         This time the generation of the invoice is not part of the same unit of work so we do not want to rollback the completion of the usertask if generating an invoice fails.
         So what we want activiti to do is complete the user task (1), commit the transaction and return the control to the calling application. Then we want to generate the invoice 
         asynchronously, in a background thread. This background thread is the activiti job executor (actually a thread pool) which periodically polls the database for jobs. So behind 
-        the scenes, when we reach the &quot;gnerate invoice&quot; task, we are creating a job &quot;message&quot; for activiti to continue the process later and persiting it into the database. 
+        the scenes, when we reach the &quot;generate invoice&quot; task, we are creating a job &quot;message&quot; for activiti to continue the process later and persisting it into the database. 
         This job is then picked up by the job executor and executed. We are also giving the local job executor a little hint that there is a new job, to improve performance.      
     </para>
     
@@ -4280,7 +4280,7 @@ public class MyTaskCreateListener implements TaskListener {
         <programlisting>
 &lt;serviceTask id=&quot;service1&quot; name=&quot;Generate Invoice&quot; activiti:class=&quot;my.custom.Delegate&quot; activiti:async=&quot;true&quot; /&gt; 
         </programlisting>
-        activiti:async ca be specified on the followng bpmn task types:
+        activiti:async ca be specified on the following bpmn task types:
         task, serviceTask, scriptTask, businessRuleTask, sendTask, receiveTask, userTask, subProcess, callActivity
     </para>
     

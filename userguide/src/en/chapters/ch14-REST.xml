@@ -56,7 +56,7 @@
         Uploads and installs a deployment of format .bpmn20.xml, .bar or .zip using normal "html form upload"
         (enctype=multipart/form-data) in other words not a json-request. To make it possible for the ui to react when
         the upload is complete it is possible to submit success/failure callbacks as parameters.
-        I.e. Sending "success=alert" will result in that the string "alert" will be placed inside a js script block with
+        I.e. Sending "success=alert" will result in that the string "alert" will be placed inside a JS script block with
         "();" appended to the end, in other words "alert();". Sending "failure=alert" will result in "alert('Some error message if any');"
         inside a script block. The actual deployment file shall be placed in a parameter named "deployment".
       </para>
@@ -503,7 +503,7 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
         <section>
             <title>Get Process Instance Diagram</title>
             <para>
-            Returns a png diagram of process with highlighted active executions. Returns 404 if process definition does not contain DI information.
+            Returns a PNG diagram of process with highlighted active executions. Returns 404 if process definition does not contain DI information.
             </para>
             <itemizedlist>
               <listitem>

@@ -68,12 +68,12 @@ FormService formService = processEngine.getFormService();</programlisting>
           </listitem>
           <listitem>
             <para>
-             <literal>ActivitiOptimisticLockingException: </literal> Thrown when an optimistic locking occurs in the datastore caused by concurrent access of the same data entry. 
+             <literal>ActivitiOptimisticLockingException: </literal> Thrown when an optimistic locking occurs in the data store caused by concurrent access of the same data entry. 
             </para>
           </listitem>
           <listitem>
             <para>
-             <literal>ActivitiClassLoadingException: </literal> Thrown when an class requested to load was not found or when error occurred while loading it (eg. JavaDelegates, TaskListeners, ...).
+             <literal>ActivitiClassLoadingException: </literal> Thrown when an class requested to load was not found or when error occurred while loading it (e.g. JavaDelegates, TaskListeners, ...).
             </para>
           </listitem>
       </itemizedlist>
@@ -89,9 +89,9 @@ FormService formService = processEngine.getFormService();</programlisting>
       as writing regular unit tests.
     </para>
     <para>
-      Activiti supports both Junit versions 3 and 4 style of unit testing. In the Junit 3 style,
+      Activiti supports both JUnit versions 3 and 4 style of unit testing. In the JUnit 3 style,
       the <emphasis>org.activiti.engine.test.ActivitiTestCase</emphasis> must be extended.
-      This will make the processEngine and the services available through protected member fields. 
+      This will make the ProcessEngine and the services available through protected member fields. 
       In the <emphasis>setup()</emphasis> of the test,  the processEngine will be initialized
       by default with the <emphasis>activiti.cfg.xml</emphasis> resource on the classpath.  To specify a different
       configuration file, override the <emphasis>getConfigurationResource()</emphasis> method.
@@ -109,7 +109,7 @@ FormService formService = processEngine.getFormService();</programlisting>
     details.
    </para> 
    <para>
-     Taking all that in account, a Junit 3 style test looks as follows.
+     Taking all that in account, a JUnit 3 style test looks as follows.
      <programlisting>
 public class MyBusinessProcessTest extends ActivitiTestCase {
    
@@ -127,7 +127,7 @@ public class MyBusinessProcessTest extends ActivitiTestCase {
       </programlisting>
     </para>
     <para>
-      To get the same functionality when using the Junit 4 style of writing unit tests, 
+      To get the same functionality when using the JUnit 4 style of writing unit tests, 
       the <emphasis>org.activiti.engine.test.ActivitiRule</emphasis> Rule must be 
       used. Through this rule, the process engine and services are available through getters. As with the 
       <emphasis>ActivitiTestCase</emphasis> (see above), including this Rule will enable the use
@@ -136,7 +136,7 @@ public class MyBusinessProcessTest extends ActivitiTestCase {
       Process engines are statically cached over multiple unit tests when using the same configuration resource. 
    </para>
    <para>
-     Following code snippet shows an example of using the Junit 4 style of testing and the 
+     Following code snippet shows an example of using the JUnit 4 style of testing and the 
      usage of the <emphasis>ActivitiRule</emphasis>. 
      <programlisting>
 public class MyBusinessProcessTest {
@@ -169,7 +169,7 @@ public class MyBusinessProcessTest {
       When using the in-memory H2 database for unit tests, following instructions allow to
       easily inspect the data in the Activiti database during a debugging session. The 
       screenshots here are taken in Eclipse, but the mechanism should be the similar for other 
-      IDE's. 
+      IDEs. 
     </para>
     
     <para>
@@ -177,7 +177,7 @@ public class MyBusinessProcessTest {
       In Eclipse this is done by double-clicking in the left border next to the code:
       <mediaobject><imageobject><imagedata align="center" fileref="images/api.test.debug.breakpoint.png"/></imageobject></mediaobject>
       If we now run the unit test in <emphasis>debug</emphasis> mode (right-click in test class,
-      select 'Run as' and then 'Junit test'), the test execution halts at our breakpoint, where
+      select 'Run as' and then 'JUnit test'), the test execution halts at our breakpoint, where
       we can now inspect the variables of our test as shown in the right upper panel.
       <mediaobject><imageobject><imagedata align="center" fileref="images/api.test.debug.view.png"/></imageobject></mediaobject>
       To inspect the Activiti data, open up the <emphasis>'Display'</emphasis> window 
@@ -187,22 +187,22 @@ public class MyBusinessProcessTest {
       Select the line you've just typed and right-click on it. Now select 'Display' (or execute the shortcut instead of right-clicking)
       <mediaobject><imageobject><imagedata align="center" fileref="images/api.test.debug.start.h2.server.2.png"/></imageobject></mediaobject>
       Now open up a browser and go to <ulink url="http://localhost:8082">http://localhost:8082</ulink>,
-      and fill in the jdbc url to the in-memory database (by default this is <literal>jdbc:h2:mem:activiti</literal>),
+      and fill in the JDBC URL to the in-memory database (by default this is <literal>jdbc:h2:mem:activiti</literal>),
       and hit the connect button.
       <mediaobject><imageobject><imagedata align="center" fileref="images/api.test.debug.h2.login.png"/></imageobject></mediaobject>
       You can now see the Activiti data and use it to understand how and why your unit test is executing your
-      proces in a certain way.
+      process in a certain way.
       <mediaobject><imageobject><imagedata align="center" fileref="images/api.test.debug.h2.tables.png"/></imageobject></mediaobject>
     </para>
   
   </section>
 
   <section id="apiProcessEngineInWebApp">
-    <title>The process engine in a webapplication</title>
+    <title>The process engine in a web application</title>
     
     <para>
       The <literal>ProcessEngine</literal> is a thread-safe class and can
-      easily be shared among multiple threads. In a webapplication, this 
+      easily be shared among multiple threads. In a web application, this 
       means it is possible to create the process engine when the container boots
       and shut down the engine when the container goes down.
     </para>
@@ -224,7 +224,7 @@ public class ProcessEnginesServletContextListener implements ServletContextListe
 }</programlisting>
       The contextInitialized will delegate to <literal>ProcessEngines.init()</literal>. That will
       look for <literal>activiti.cfg.xml</literal> resource files on the classpath,
-      and create a <literal>ProcessEngines</literal> for the given configurations (eg. multiple jars with a configuration file).
+      and create a <literal>ProcessEngines</literal> for the given configurations (e.g. multiple jars with a configuration file).
       If you have multiple such resource files on the classpath, make sure they all have different names.
       When the process engine  is needed, it can be fetched using <programlisting>ProcessEngines.getDefaultProcessEngine()</programlisting>
       or <programlisting>ProcessEngines.getProcessEngine("myName");</programlisting>
@@ -285,11 +285,11 @@ assertNotNull(activityInstance);</programlisting>
     <title>Expressions</title>
     <para>Activiti uses UEL for expression-resolving. UEL stands for <emphasis>Unified Expression Language</emphasis> and is part of the EE6 specification (see
           <ulink url="http://docs.oracle.com/javaee/6/tutorial/doc/gjddd.html">
-          the EE6 specification</ulink> for detailed information). To support all features of latest UEL spec on ALL environements, we use a modified version of JUEL.
+          the EE6 specification</ulink> for detailed information). To support all features of latest UEL spec on ALL environments, we use a modified version of JUEL.
     </para>
     <para>
       Expressions can be used in for example <link linkend="bpmnJavaServiceTaskXML">Java Service tasks</link>, <link linkend="executionListeners">Execution Listeners</link>, <link linkend="taskListeners">Task Listeners</link> and  <link linkend="conditionalSequenceFlowXml">Conditional sequence flows</link>.
-      Although there are 2 types of expressions, value-expression and method-expression, activiti makes abstraction of this and they can both be used where an <literal>expression</literal> is needed.
+      Although there are 2 types of expressions, value-expression and method-expression, Activiti makes abstraction of this and they can both be used where an <literal>expression</literal> is needed.
       <itemizedlist>
         <listitem>
           <para>

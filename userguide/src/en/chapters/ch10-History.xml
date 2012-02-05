@@ -72,7 +72,7 @@ historyService.createHistoricActivityInstanceQuery()
     <section id="historyQueryDetail">
       <title>HistoricDetailQuery</title>
        <para>The next example, gets all variable-updates that have been done in process with id 123. Only <literal>HistoricVariableUpdate</literal>s will be returned by this query. Note that it's possible that a certain variable name has multiple <literal>HistoricVariableUpdate</literal>
-    entries, for each time the variable was updated in the process. You can use <literal>orderByTime</literal> (the time the variable update was done) or <literal>orderByVariableRevision</literal> (revision of runtime variable at the time of updating) to find out in what order they occured.
+    entries, for each time the variable was updated in the process. You can use <literal>orderByTime</literal> (the time the variable update was done) or <literal>orderByVariableRevision</literal> (revision of runtime variable at the time of updating) to find out in what order they occurred.
   <programlisting>
 historyService.createHistoricDetailQuery()
   .variableUpdates()
@@ -129,7 +129,7 @@ historyService.createHistoricTaskInstanceQuery()
 </section>
   <section id="historyConfig">
     <title>History configuration</title>
-	  <para>The history level can be confugured programatically, using the <literal>HISTORY_*</literal>constants defined on <literal>ProcessEngineConfiguration</literal>:</para>
+	  <para>The history level can be configured programmatically, using the <literal>HISTORY_*</literal>constants defined on <literal>ProcessEngineConfiguration</literal>:</para>
       <programlisting>
 ProcessEngine processEngine = ProcessEngineConfiguration
   .createProcessEngineConfigurationFromResourceDefault()

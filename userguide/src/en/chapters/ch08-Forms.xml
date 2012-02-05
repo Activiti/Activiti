@@ -311,10 +311,10 @@
     <programlisting>&lt;startEvent id=&quot;start&quot; /&gt;</programlisting>
     All process variables are available when execution arrives in the startEvent, but 
     <programlisting>formService.getStartFormData(String processDefinitionId).getFormProperties()</programlisting>
-    will be empty since no speficic mapping was defined.
+    will be empty since no specific mapping was defined.
     </para>
     <para>In the above case, all the submitted properties will be stored as process variables.  
-    This means that by simply adding a new inputfield in the form, a new variable can be stored.
+    This means that by simply adding a new input field in the form, a new variable can be stored.
     </para>
 
     <para>Properties are derived from process variables, but they don't have to be stored
@@ -432,7 +432,7 @@
 
     <para>
       Activiti explorer supports the form properties and will render the form accordingly to the form definition.
-      The following xml snippet
+      The following XML snippet
       <programlisting>
 &lt;startEvent ... &gt;
   &lt;extensionElements&gt;
@@ -480,12 +480,12 @@
     <para>The attribute <literal>&lt;userTask activiti:formKey=&quot;...&quot;</literal> is exposed by the API through 
     <literal>String FormService.getStartFormData(String processDefinitionId).getFormKey()</literal>
     and <literal>String FormService.getTaskFormData(String taskId).getFormKey()</literal>. You could use this to
-    store the full name of the template within your deployment (eg. <literal>org/activiti/example/form/my-custom-form.xml</literal>), but this is not required at all.
+    store the full name of the template within your deployment (e.g. <literal>org/activiti/example/form/my-custom-form.xml</literal>), but this is not required at all.
     For instance, you could also store a generic key in the form 
     attribute and apply an algorithm or transformation to get to the actual template that needs to be used.
     This might be handy when you want to render different forms for different UI technologies like e.g. 
     one form for usage in a web app of normal screen size, one form for mobile phone's small screens and 
-    maybe even a template for a IM form or an email form.
+    maybe even a template for an IM form or an email form.
     </para>
     
   </section>

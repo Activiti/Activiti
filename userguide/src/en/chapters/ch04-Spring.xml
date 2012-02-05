@@ -48,7 +48,7 @@
       In this case no additional wrapping will occur.
     </para>
     <para>
-      <emphasis role="bold">Make sure when declaring a <literal>TransactionAwareDataSourceProxy</literal> in Spring configuration yourself, that you don't use it for resources that are already aware of Spring-transactions (eg. DataSourceTransactionManager and JPATransactionManager need the un-proxied dataSource).</emphasis>
+      <emphasis role="bold">Make sure when declaring a <literal>TransactionAwareDataSourceProxy</literal> in Spring configuration yourself, that you don't use it for resources that are already aware of Spring-transactions (e.g. DataSourceTransactionManager and JPATransactionManager need the un-proxied dataSource).</emphasis>
     </para>
     <programlisting>
 &lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot; 
@@ -210,7 +210,7 @@ userBean.hello();</programlisting>
     all those resources will be scanned and deployed.  There is filtering
     in place that prevents duplicate deployments.  Only when the resources actually have changed, 
     will new deployments be deployed to the Activiti DB. This makes sense in a lot of use case,
-    where the Spring container is rebooted often (eg testing).
+    where the Spring container is rebooted often (e.g. testing).
     </para>
     <para>Here's an example</para>
     <programlisting>

@@ -48,7 +48,7 @@
     <ulink url="http://ant.apache.org/manual/install.html">manual of ant</ulink> gives a description
     on how to do this. The demo setup script is tested with Ant 1.7.1+.
     </para>
-    <para>To get started, open a command prompt/terminal in de <literal>setup</literal> folder of the unzipped Activiti distribution
+    <para>To get started, open a command prompt/terminal in the <literal>setup</literal> folder of the unzipped Activiti distribution
     and type:
     </para>
     <programlisting>ant demo.start</programlisting>
@@ -288,7 +288,7 @@
          <listitem>
           <para>
             <emphasis role="bold">ACT_ID_*</emphasis>: 'ID' stands for <literal>identity</literal>.
-            These tables contain identity information, suchas users, groups, etc.
+            These tables contain identity information, such as users, groups, etc.
           </para>
         </listitem>
          <listitem>

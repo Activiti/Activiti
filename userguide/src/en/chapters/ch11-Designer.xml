@@ -119,7 +119,7 @@
           <para>
           	The BPMN 2.0 XML is opened in the Activiti XML editor, which provides content assist.
             Note that there are 2 main XSDs configured, the BPMN 2.0 spec XSD and the Activiti
-            extensions XSD. These two XSDs are not yet alligned in a good manner.
+            extensions XSD. These two XSDs are not yet aligned in a good manner.
             
             <mediaobject>
               <imageobject>
@@ -314,7 +314,7 @@
       offered by Activiti Designer. This section documents which extensions are available, how they
       can be used and provides some usage examples. Extending Activiti Designer is useful in cases
       where the default functionality doesn't suit your needs, you require additional capabilities
-      or have domain specific requirements when modelling business processes. Extension of Activiti
+      or have domain specific requirements when modeling business processes. Extension of Activiti
       Designer falls into two distinct categories, extending the palette and extending output
       formats. Each of these extension ways requires a specific approach and different technical
       expertise.</para>
@@ -328,7 +328,7 @@
     </para>
     <section id="eclipseDesignerCustomizingPalette">
       <title>Customizing the palette</title>
-      <para>You can customize the palette that is offered to users when modelling processes. The
+      <para>You can customize the palette that is offered to users when modeling processes. The
         palette is the collection of shapes that can be dragged onto the canvas in a process diagram
         and is displayed to the right hand side of the canvas. As you can see in the default
         palette, the default shapes are grouped into compartments (these are called "drawers") for
@@ -365,7 +365,7 @@
         <para>Download and extract <ulink url="http://www.eclipse.org/downloads">Eclipse</ulink>
           (Galileo or Helios should both work) and a recent version (3.x) of <ulink
             url="http://maven.apache.org/download.html">Apache Maven</ulink>. If you use a 2.x
-          vesion of Maven, you will run into problems when building your project, so make sure your
+          version of Maven, you will run into problems when building your project, so make sure your
           version is up to date. We assume you are familiar with using basic features and the Java
           editor in Eclipse. It's up to you whether your prefer to use Eclipse's features for Maven
           or run Maven commands from a command prompt.</para>
@@ -1056,7 +1056,7 @@ private List&lt;GroceryListItem> groceryList;</programlisting>
         </mediaobject>
       </para>
       <para>Both <literal>ProcessValidator</literal>s and <literal>ExportMarshaller</literal>s are
-        created by extending a base class. These base classes inherit some useful methods fromt heir
+        created by extending a base class. These base classes inherit some useful methods from their
         superclass, the <literal>AbstractDiagramWorker</literal> class. Using these methods you can
         create information, warning and error markers that show up in Eclipse's problems view for
         the user to figure out what's wrong or important. You can also access the diagram through

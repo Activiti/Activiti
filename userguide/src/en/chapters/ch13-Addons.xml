@@ -18,7 +18,7 @@
 	    formats of process models. A plug-in infrastructure is provided to hook in own repositories, actions or functionality.
 	  </para>
 	  <para>
-	    The concept of Cycle, especially with the philosophie of Business-IT-Alignment is new. You might best compare it 
+	    The concept of Cycle, especially with the philosophy of Business-IT-Alignment is new. You might best compare it 
 	    to Application Lifecycle Management (ALM) tools. Cycle is developed by <ulink url="http://camunda.com">camunda</ulink>
 	    and the documentation can be found in the <ulink url="http://fox.camunda.com/doc/#cycle">camunda fox documentation</ulink>.	    
 	  </para>

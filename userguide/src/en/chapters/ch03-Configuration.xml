@@ -8,7 +8,7 @@
     <title>Creating a ProcessEngine</title>
     
     <para>
-    The Activiti process engine is configured through a xml file called <literal>activiti.cfg.xml</literal>.
+    The Activiti process engine is configured through a XML file called <literal>activiti.cfg.xml</literal>.
     Note that this is <emphasis role="bold">not</emphasis> applicable if you're 
     using <link linkend="springintegration">the Spring style of building a process engine</link>.
     </para>
@@ -44,15 +44,15 @@
     </para> 
     
     <para>
-      Note that the configuration xml is in fact a Spring configuration.
+      Note that the configuration XML is in fact a Spring configuration.
       <emphasis role="bold">This does not mean that Activiti can only be used in a Spring environment!</emphasis>
-      We are simply leveraging the parsing and dependency injection capabilitities of Spring
+      We are simply leveraging the parsing and dependency injection capabilities of Spring
       internally for building up the engine.
     </para>
     
     <para>
       The ProcessEngineConfiguration object can also be created programmatically using the configuration file.
-      It is also possible to use a different bean id (eg. see line 3).
+      It is also possible to use a different bean id (e.g. see line 3).
       <programlisting>
 ProcessEngineConfiguration.createProcessEngineConfigurationFromResourceDefault();
 ProcessEngineConfiguration.createProcessEngineConfigurationFromResource(String resource);
@@ -101,7 +101,7 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
         <listitem>
           <para>
             <emphasis role="bold">org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration</emphasis>:
-            this is a convience class for unit testing purposes. Activiti will take care of the transactions.
+            this is a convenience class for unit testing purposes. Activiti will take care of the transactions.
             An H2 in-memory database is used by default. The database will be created and dropped when the engine boots and shuts down.
             When using this, probably no additional configuration is needed (except when using for example the job executor or mail capabilities).
           </para>
@@ -128,11 +128,11 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
     <title>Database configuration</title>
     <para>
       There are two ways to configure the database that the Activiti engine will use.
-      The first option is to define the jdbc properties of the database:
+      The first option is to define the JDBC properties of the database:
       <itemizedlist>
         <listitem>
           <para>
-            <emphasis role="bold">jdbcUrl</emphasis>: jdbc url of the database.
+            <emphasis role="bold">jdbcUrl</emphasis>: JDBC URL of the database.
           </para>
         </listitem>
         <listitem>
@@ -154,7 +154,7 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
     </para>
     
     <para>
-      The datasource that is constructed based on the provided jdbc properties
+      The data source that is constructed based on the provided JDBC properties
       will have the default <ulink url="http://www.mybatis.org/">MyBatis</ulink> connection pool
       settings. Following attributes can optionally be set to tweak that connection pool (taken from the MyBatis documentation):
       <itemizedlist>
@@ -200,7 +200,7 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
     
     <para>
       Alternatively, a <literal>javax.sql.DataSource</literal> implementation can be used 
-      (eg. DBCP from <ulink url="http://commons.apache.org/dbcp/">Apache Commons</ulink>):
+      (e.g. DBCP from <ulink url="http://commons.apache.org/dbcp/">Apache Commons</ulink>):
       <programlisting>
 &lt;bean id=&quot;dataSource&quot; class=&quot;org.apache.commons.dbcp.BasicDataSource&quot; &gt;
   &lt;property name=&quot;driverClassName&quot; value=&quot;com.mysql.jdbc.Driver&quot; /&gt;
@@ -215,17 +215,17 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
     &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;
     ...
       </programlisting>
-      Note that Activiti does not ship with a library that allows to define such datasource.
-      So you have to make sure that the libraries (eg. from DBCP) are on your classpath.
+      Note that Activiti does not ship with a library that allows to define such data source.
+      So you have to make sure that the libraries (e.g. from DBCP) are on your classpath.
     </para>
     
     <para>
-      Following properties can be set, regardless of using the jdbc or datasource approach:
+      Following properties can be set, regardless of using the JDBC or data source approach:
       <itemizedlist>
         <listitem>
           <para>
             <emphasis role="bold">databaseType</emphasis>: It's normally not necessary to 
-            specify this property as it is automatically analysed from the database connection metadata.  
+            specify this property as it is automatically analyzed from the database connection meta data.  
             Should only be specified in case automatic detection fails.
             Possible values: {h2, mysql, oracle, postgres, mssql, db2}
             <emphasis role="bold">This property is required when not using the default H2 database</emphasis>
@@ -320,7 +320,7 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
           <row>
             <entry>Activiti database type</entry>
             <entry>Versions tested</entry>
-            <entry>Example jdbc url</entry>
+            <entry>Example JDBC URL</entry>
             <entry>Notes</entry>
           </row>
         </thead>
@@ -374,7 +374,7 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
       The easiest way to create the database tables for your database is to
       <itemizedlist>
         <listitem>
-          <para>Add the activiti engine jars to your classpath</para>
+          <para>Add the activiti-engine jars to your classpath</para>
         </listitem>
         <listitem>
           <para>Add a suitable database driver</para>
@@ -393,7 +393,7 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
       However, often only database administrators can execute DDL statements on a database.
       The SQL DDL statements can be found inside the Activiti engine jar (<emphasis>activiti-engine-x.jar</emphasis>), in 
       the package <emphasis>org/activiti/db/create</emphasis> (the <emphasis>drop</emphasis> folder contains the drop statements).
-      The sql files are of the form
+      The SQL files are of the form
       <programlisting>activiti.{db}.{create|drop}.{type}.sql</programlisting>
       Where <emphasis>db</emphasis> is any of the <link linkend="supporteddatabases">supported databases</link>
       and <emphasis>type</emphasis> is 
