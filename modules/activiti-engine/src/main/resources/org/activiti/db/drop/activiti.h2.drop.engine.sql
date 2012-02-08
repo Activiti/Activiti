@@ -42,6 +42,9 @@ alter table ACT_RU_VARIABLE
 alter table ACT_RU_JOB
     drop constraint ACT_FK_JOB_EXCEPTION;
     
+alter table ACT_RU_EVENT_SUBSCR
+    drop constraint ACT_FK_EVENT_EXEC;    
+    
 drop table ACT_GE_PROPERTY if exists;
 drop table ACT_GE_BYTEARRAY if exists;
 drop table ACT_RE_DEPLOYMENT if exists;
@@ -51,3 +54,4 @@ drop table ACT_RE_PROCDEF if exists;
 drop table ACT_RU_TASK if exists;
 drop table ACT_RU_IDENTITYLINK if exists;
 drop table ACT_RU_VARIABLE if exists;
+drop table ACT_RU_EVENT_SUBSCR if exists;

@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.EventSubscriptionQuery;
 import org.activiti.engine.runtime.ExecutionQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
@@ -256,6 +257,12 @@ public interface RuntimeService {
   ProcessInstanceQuery createProcessInstanceQuery();
   
   /**
+   * Creates a new {@link EventSubscriptionQuery} instance, that can be used
+   * to query event subscriptions.
+   */
+  EventSubscriptionQuery createEventSubscriptionQuery();
+  
+  /**
    * Suspends the process instance with the given id. 
    * 
    * If a process instance is in state suspended, activiti will not 
@@ -279,5 +286,6 @@ public interface RuntimeService {
    * @throws ActivitiException if no such processInstance can be found or if the process instance is already in state active.
    */
   void activateProcessInstanceById(String processInstanceId);
+  
   
 }

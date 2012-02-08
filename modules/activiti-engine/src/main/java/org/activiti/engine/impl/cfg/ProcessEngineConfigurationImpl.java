@@ -65,6 +65,9 @@ import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.db.IbatisVariableTypeHandler;
 import org.activiti.engine.impl.delegate.DefaultDelegateInterceptor;
 import org.activiti.engine.impl.el.ExpressionManager;
+import org.activiti.engine.impl.event.CompensationEventHandler;
+import org.activiti.engine.impl.event.EventHandler;
+import org.activiti.engine.impl.event.SignalEventHander;
 import org.activiti.engine.impl.form.AbstractFormType;
 import org.activiti.engine.impl.form.BooleanFormType;
 import org.activiti.engine.impl.form.DateFormType;
@@ -85,6 +88,7 @@ import org.activiti.engine.impl.jobexecutor.CallerRunsRejectedJobsHandler;
 import org.activiti.engine.impl.jobexecutor.DefaultJobExecutor;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
+import org.activiti.engine.impl.jobexecutor.ProcessEventJobHandler;
 import org.activiti.engine.impl.jobexecutor.RejectedJobsHandler;
 import org.activiti.engine.impl.jobexecutor.TimerCatchIntermediateEventJobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
@@ -96,6 +100,7 @@ import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
 import org.activiti.engine.impl.persistence.entity.AttachmentManager;
 import org.activiti.engine.impl.persistence.entity.CommentManager;
 import org.activiti.engine.impl.persistence.entity.DeploymentManager;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionManager;
 import org.activiti.engine.impl.persistence.entity.GroupManager;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceManager;
@@ -269,6 +274,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   protected RejectedJobsHandler customRejectedJobsHandler;
   
+  protected Map<String, EventHandler> eventHandlers;
+  protected List<EventHandler> customEventHandlers;
+  
   // buildProcessEngine ///////////////////////////////////////////////////////
   
   public ProcessEngine buildProcessEngine() {
@@ -301,6 +309,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initSessionFactories();
     initJpa();
     initDelegateInterceptor();
+    initEventHandlers();
   }
 
   // command executors ////////////////////////////////////////////////////////
@@ -573,6 +582,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       addSessionFactory(new GenericManagerFactory(TaskManager.class));
       addSessionFactory(new GenericManagerFactory(UserManager.class));
       addSessionFactory(new GenericManagerFactory(VariableInstanceManager.class));
+      addSessionFactory(new GenericManagerFactory(EventSubscriptionManager.class));
     }
     if (customSessionFactories!=null) {
       for (SessionFactory sessionFactory: customSessionFactories) {
@@ -662,6 +672,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     
     AsyncContinuationJobHandler asyncContinuationJobHandler = new AsyncContinuationJobHandler();
     jobHandlers.put(asyncContinuationJobHandler.getType(), asyncContinuationJobHandler);
+    
+    ProcessEventJobHandler processEventJobHandler = new ProcessEventJobHandler();
+    jobHandlers.put(processEventJobHandler.getType(), processEventJobHandler);
     
     // if we have custom job handlers, register them
     if (getCustomJobHandlers()!=null) {
@@ -820,6 +833,24 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected void initDelegateInterceptor() {
     if(delegateInterceptor == null) {
       delegateInterceptor = new DefaultDelegateInterceptor();
+    }
+  }
+  
+  protected void initEventHandlers() {
+    if(eventHandlers == null) {
+      eventHandlers = new HashMap<String, EventHandler>();
+      
+      SignalEventHander signalEventHander = new SignalEventHander();
+      eventHandlers.put(signalEventHander.getEventHandlerType(), signalEventHander);
+      
+      CompensationEventHandler compensationEventHandler = new CompensationEventHandler();
+      eventHandlers.put(compensationEventHandler.getEventHandlerType(), compensationEventHandler);
+      
+    }
+    if(customEventHandlers != null) {
+      for (EventHandler eventHandler : customEventHandlers) {
+        eventHandlers.put(eventHandler.getEventHandlerType(), eventHandler);        
+      }
     }
   }
   
@@ -1527,6 +1558,26 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public ProcessEngineConfigurationImpl setCustomRejectedJobsHandler(RejectedJobsHandler customRejectedJobsHandler) {
     this.customRejectedJobsHandler = customRejectedJobsHandler;
     return this;
+  }
+
+  public EventHandler getEventHandler(String eventType) {
+    return eventHandlers.get(eventType);
+  }
+  
+  public void setEventHandlers(Map<String, EventHandler> eventHandlers) {
+    this.eventHandlers = eventHandlers;
+  }
+    
+  public Map<String, EventHandler> getEventHandlers() {
+    return eventHandlers;
+  }
+    
+  public List<EventHandler> getCustomEventHandlers() {
+    return customEventHandlers;
+  }
+    
+  public void setCustomEventHandlers(List<EventHandler> customEventHandlers) {
+    this.customEventHandlers = customEventHandlers;
   }
 
 }

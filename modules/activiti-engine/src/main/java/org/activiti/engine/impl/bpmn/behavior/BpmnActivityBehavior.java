@@ -22,9 +22,9 @@ import java.util.logging.Logger;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.Condition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 
 /**
  * Helper class for implementing BPMN 2.0 activities, offering convenience
@@ -120,17 +120,29 @@ public class BpmnActivityBehavior {
           throw new ActivitiException("Default sequence flow '" + defaultSequenceFlow + "' could not be not found");
         }
       } else {
-        if (log.isLoggable(Level.FINE)) {
-          log.fine("No outgoing sequence flow found for " + execution.getActivity().getId() + ". Ending execution.");
-        }
-        execution.end();
         
-        if (throwExceptionIfExecutionStuck) {
-          throw new ActivitiException("No outgoing sequence flow of the inclusive gateway '" + execution.getActivity().getId()
-                + "' could be selected for continuing the process");
+        Object isForCompensation = execution.getActivity().getProperty(BpmnParse.PROPERTYNAME_IS_FOR_COMPENSATION);
+        if(isForCompensation != null && (Boolean) isForCompensation) {
+          
+          InterpretableExecution parentExecution = (InterpretableExecution) execution.getParent();
+          ((InterpretableExecution)execution).remove();
+          parentExecution.signal("compensationDone", null);            
+          
+        } else {
+          
+          if (log.isLoggable(Level.FINE)) {
+            log.fine("No outgoing sequence flow found for " + execution.getActivity().getId() + ". Ending execution.");
+          }
+          execution.end();
+          
+          if (throwExceptionIfExecutionStuck) {
+            throw new ActivitiException("No outgoing sequence flow of the inclusive gateway '" + execution.getActivity().getId()
+                  + "' could be selected for continuing the process");
+          }
         }
         
       }
     }
   }
+
 }

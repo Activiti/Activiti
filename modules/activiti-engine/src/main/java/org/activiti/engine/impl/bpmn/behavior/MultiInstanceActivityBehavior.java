@@ -25,8 +25,10 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
+import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ExecutionListenerInvocation;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.CompositeActivityBehavior;
@@ -101,6 +103,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   
   // required for supporting embedded subprocesses
   public void lastExecutionEnded(ActivityExecution execution) {
+    ScopeUtil.createEventScopeExecution((ExecutionEntity) execution);
     leave(execution);
   }
   

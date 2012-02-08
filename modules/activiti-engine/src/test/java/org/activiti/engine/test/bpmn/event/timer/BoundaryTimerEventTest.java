@@ -104,5 +104,12 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     // which means the process has ended
     assertProcessEnded(pi.getId());
   }
+  
+  
+  // this leaks a job
+  @Deployment
+  public void FAILING_testTimerInSingleTransactionProcess() {
+    ProcessInstance startProcessInstanceByKey = runtimeService.startProcessInstanceByKey("timerOnSubprocesses");        
+  }
 
 }

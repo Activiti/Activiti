@@ -12,14 +12,13 @@
  */
 package org.activiti.engine.impl.jobexecutor;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 public class TimerCatchIntermediateEventJobHandler implements JobHandler {
@@ -40,7 +39,10 @@ public class TimerCatchIntermediateEventJobHandler implements JobHandler {
     }
 
     try {
-      ((SignallableActivityBehavior) intermediateEventActivity.getActivityBehavior()).signal(execution, null, null);
+      if(!execution.getActivity().getId().equals(intermediateEventActivity.getId())) {
+        execution.setActivity(intermediateEventActivity);
+      }
+      execution.signal(null, null);
     } catch (RuntimeException e) {
       log.log(Level.SEVERE, "exception during timer execution", e);
       throw e;

@@ -99,7 +99,22 @@ public class TestBPMNParseListener implements BpmnParseListener {
     }
   }
 
-  public void parseReceiveTask(Element receiveTaskElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseReceiveTask(Element receiveTaskElement, ScopeImpl scope, ActivityImpl activity) {  
+  }
+
+  public void parseIntermediateSignalCatchEventDefinition(Element signalEventDefinition, ActivityImpl signalActivity) {
+  }
+
+  public void parseBoundarySignalEventDefinition(Element signalEventDefinition, boolean interrupting, ActivityImpl signalActivity) {
+  }
+
+  public void parseEventBasedGateway(Element eventBasedGwElement, ScopeImpl scope, ActivityImpl activity) {
+  }
+
+  public void parseTransaction(Element transactionElement, ScopeImpl scope, ActivityImpl activity) {
+  }
+
+  public void parseCompensateEventDefinition(Element compensateEventDefinition, ActivityImpl compensationActivity) {
   }
 
 }

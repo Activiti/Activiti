@@ -30,6 +30,7 @@ import org.activiti.engine.impl.cmd.SetExecutionVariablesCmd;
 import org.activiti.engine.impl.cmd.SignalCmd;
 import org.activiti.engine.impl.cmd.StartProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.SuspendProcessInstanceCmd;
+import org.activiti.engine.runtime.EventSubscriptionQuery;
 import org.activiti.engine.runtime.ExecutionQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
@@ -78,6 +79,10 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
 
   public ExecutionQuery createExecutionQuery() {
     return new ExecutionQueryImpl(commandExecutor);
+  }
+  
+  public EventSubscriptionQuery createEventSubscriptionQuery() {
+    return new EventSubscriptionQueryImpl(commandExecutor);
   }
 
   public Map<String, Object> getVariables(String executionId) {
@@ -153,4 +158,5 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   public void activateProcessInstanceById(String processInstanceId) {
     commandExecutor.execute(new ActivateProcessInstanceCmd(processInstanceId));
   }
+   
 }

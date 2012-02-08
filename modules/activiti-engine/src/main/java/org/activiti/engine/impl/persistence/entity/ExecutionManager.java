@@ -13,7 +13,9 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.Page;
@@ -99,6 +101,14 @@ public class ExecutionManager extends AbstractManager {
   @SuppressWarnings("unchecked")
   public List<ProcessInstance> findProcessInstanceByQueryCriteria(Object executionQuery, Page page) {
     return getDbSqlSession().selectList("selectProcessInstanceByQueryCriteria", executionQuery, page);
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<ExecutionEntity> findEventScopeExecutionsByActivityId(String activityRef, String parentExecutionId) {
+    Map<String, String> parameters = new HashMap<String, String>();
+    parameters.put("activityId", activityRef);
+    parameters.put("parentExecutionId", parentExecutionId);
+    return getDbSqlSession().selectList("selectExecutionsByParentExecutionId", parameters);
   }
 
 }

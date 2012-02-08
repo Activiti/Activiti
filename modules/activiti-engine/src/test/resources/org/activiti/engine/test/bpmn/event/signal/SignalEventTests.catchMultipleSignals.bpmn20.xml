@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:activiti="http://activiti.org/bpmn" 
+	targetNamespace="Examples">
+
+	<signal id="alertSignal" name="alert" />
+	<signal id="abortSignal" name="abort" />
+
+	<process id="catchSignal">
+
+		<startEvent id="start" />
+
+		<sequenceFlow sourceRef="start" targetRef="task" />
+
+		<userTask id="task" activiti:assignee="kermit" />			
+		
+		<boundaryEvent id="boundary" attachedToRef="task" cancelActivity="true">       
+          <signalEventDefinition signalRef="alertSignal"/>
+      	</boundaryEvent>
+      	
+      	<intermediateCatchEvent id="abort">
+      		<signalEventDefinition signalRef="abortSignal" />
+      	</intermediateCatchEvent>
+      	
+      	<userTask id="taskAfterAbort" activiti:assignee="gonzo" />
+
+		<sequenceFlow sourceRef="task" targetRef="end" />
+		<sequenceFlow sourceRef="start" targetRef="abort" />
+		<sequenceFlow sourceRef="abort" targetRef="taskAfterAbort" />
+		<sequenceFlow sourceRef="taskAfterAbort" targetRef="end" />
+		<sequenceFlow sourceRef="boundary" targetRef="end" />
+
+		<endEvent id="end" />
+
+	</process>
+
+	
+
+</definitions>

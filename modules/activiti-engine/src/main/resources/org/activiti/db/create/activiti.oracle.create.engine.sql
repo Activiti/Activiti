@@ -42,6 +42,7 @@ create table ACT_RU_EXECUTION (
     IS_ACTIVE_ NUMBER(1,0) CHECK (IS_ACTIVE_ IN (1,0)),
     IS_CONCURRENT_ NUMBER(1,0) CHECK (IS_CONCURRENT_ IN (1,0)),
     IS_SCOPE_ NUMBER(1,0) CHECK (IS_SCOPE_ IN (1,0)),
+    IS_EVENT_SCOPE_ NUMBER(1,0) CHECK (IS_SCOPE_ IN (1,0)),
     SUSPENSION_STATE_ INTEGER,
     primary key (ID_)
 );
@@ -125,6 +126,19 @@ create table ACT_RU_VARIABLE (
     primary key (ID_)
 );
 
+create table ACT_RU_EVENT_SUBSCR (
+    ID_ NVARCHAR2(64) not null,
+    REV_ integer,
+    EVENT_TYPE_ NVARCHAR2(255) not null,
+    EVENT_NAME_ NVARCHAR2(255),
+    EXECUTION_ID_ NVARCHAR2(64),
+    PROC_INST_ID_ NVARCHAR2(64),
+    ACTIVITY_ID_ NVARCHAR2(64),
+    CONFIGURATION_ NVARCHAR2(255),
+    CREATED_ TIMESTAMP(6) not null,
+    primary key (ID_)
+);
+
 create index ACT_IDX_EXEC_BUSKEY on ACT_RU_EXECUTION(BUSINESS_KEY_);
 create index ACT_IDX_TASK_CREATE on ACT_RU_TASK(CREATE_TIME_);
 create index ACT_IDX_IDENT_LNK_USER on ACT_RU_IDENTITYLINK(USER_ID_);
@@ -201,6 +215,12 @@ alter table ACT_RU_JOB
     add constraint ACT_FK_JOB_EXCEPTION
     foreign key (EXCEPTION_STACK_ID_) 
     references ACT_GE_BYTEARRAY (ID_);
+    
+create index ACT_IDX_EVENT_SUBSCR on ACT_RU_EVENT_SUBSCR(EXECUTION_ID_);
+alter table ACT_RU_EVENT_SUBSCR
+    add constraint ACT_FK_EVENT_EXEC
+    foreign key (EXECUTION_ID_)
+    references ACT_RU_EXECUTION(ID_);
     
 -- see http://stackoverflow.com/questions/675398/how-can-i-constrain-multiple-columns-to-prevent-duplicates-but-ignore-null-value
 create unique index ACT_UNIQ_RU_BUS_KEY on ACT_RU_EXECUTION

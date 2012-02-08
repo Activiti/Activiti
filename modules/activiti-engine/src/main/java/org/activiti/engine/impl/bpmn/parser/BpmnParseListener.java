@@ -52,4 +52,10 @@ public interface BpmnParseListener {
   void parseIntermediateTimerEventDefinition(Element timerEventDefinition, ActivityImpl timerActivity);
   void parseRootElement(Element rootElement, List<ProcessDefinitionEntity> processDefinitions);
   void parseReceiveTask(Element receiveTaskElement, ScopeImpl scope, ActivityImpl activity);
+  void parseIntermediateSignalCatchEventDefinition(Element signalEventDefinition, ActivityImpl signalActivity);
+  void parseBoundarySignalEventDefinition(Element signalEventDefinition, boolean interrupting, ActivityImpl signalActivity);
+  void parseEventBasedGateway(Element eventBasedGwElement, ScopeImpl scope, ActivityImpl activity);
+  void parseTransaction(Element transactionElement, ScopeImpl scope, ActivityImpl activity);
+  void parseCompensateEventDefinition(Element compensateEventDefinition, ActivityImpl compensationActivity);
+
 }

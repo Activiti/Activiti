@@ -39,6 +39,9 @@ alter table ACT_RU_VARIABLE
 alter table ACT_RU_JOB
     drop FOREIGN KEY ACT_FK_JOB_EXCEPTION;
     
+alter table ACT_RU_EVENT_SUBSCR
+    drop FOREIGN KEY ACT_FK_EVENT_EXEC; 
+    
 drop table if exists ACT_GE_PROPERTY;
 drop table if exists ACT_RU_VARIABLE;
 drop table if exists ACT_GE_BYTEARRAY;
@@ -48,3 +51,4 @@ drop table if exists ACT_RU_TASK;
 drop table if exists ACT_RE_PROCDEF;
 drop table if exists ACT_RU_EXECUTION;
 drop table if exists ACT_RU_JOB; 
+drop table if exists ACT_RU_EVENT_SUBSCR;

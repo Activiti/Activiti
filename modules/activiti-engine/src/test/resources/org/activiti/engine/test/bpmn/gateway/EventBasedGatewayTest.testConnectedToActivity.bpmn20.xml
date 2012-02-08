@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:activiti="http://activiti.org/bpmn" 
+	targetNamespace="Examples">
+
+	<signal id="alertSignal" name="alert" />
+
+	<process id="catchSignal">
+
+		<startEvent id="start" />
+
+		<sequenceFlow sourceRef="start" targetRef="gw1" />
+
+		<eventBasedGateway id="gw1" />
+		
+		<sequenceFlow sourceRef="gw1" targetRef="serviceTask" />	
+		
+		<serviceTask id="serviceTask" activiti:expression="${true}" />			
+
+	</process>
+
+	
+
+</definitions>

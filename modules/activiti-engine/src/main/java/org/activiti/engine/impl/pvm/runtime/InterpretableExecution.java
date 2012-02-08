@@ -71,4 +71,8 @@ public interface InterpretableExecution extends ActivityExecution, ExecutionList
   void setProcessDefinition(ProcessDefinitionImpl processDefinitionImpl);
 
   void setProcessInstance(InterpretableExecution processInstance);
+  
+  boolean isEventScope();
+  
+  void setEventScope(boolean isEventScope);
 }

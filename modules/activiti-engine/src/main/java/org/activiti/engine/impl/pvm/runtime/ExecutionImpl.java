@@ -90,6 +90,7 @@ public class ExecutionImpl implements
   protected boolean isScope = true;
   protected boolean isConcurrent = false;
   protected boolean isEnded = false;
+  protected boolean isEventScope = false;
   
   protected Map<String, Object> variables = null;
   
@@ -98,7 +99,7 @@ public class ExecutionImpl implements
   protected String eventName;
   protected PvmProcessElement eventSource;
   protected int executionListenerIndex = 0;
-  
+    
   // cascade deletion ////////////////////////////////////////////////////////
   
   protected boolean deleteRoot;
@@ -176,6 +177,16 @@ public class ExecutionImpl implements
     if (parent!=null) {
       parent.ensureExecutionsInitialized();
       parent.executions.remove(this);
+    }
+    
+    // remove event scopes:            
+    List<InterpretableExecution> childExecutions = new ArrayList<InterpretableExecution>(getExecutions());
+    for (InterpretableExecution childExecution : childExecutions) {
+      if(childExecution.isEventScope()) {
+        log.fine("removing eventScope "+childExecution);
+        childExecution.destroy();
+        childExecution.remove();
+      }
     }
   }
   
@@ -631,7 +642,7 @@ public class ExecutionImpl implements
     if (isProcessInstance()) {
       return "ProcessInstance["+getToStringIdentity()+"]";
     } else {
-      return (isConcurrent? "Concurrent" : "")+(isScope() ? "Scope" : "")+"Execution["+getToStringIdentity()+"]";
+      return (isEventScope? "EventScope":"")+(isConcurrent? "Concurrent" : "")+(isScope() ? "Scope" : "")+"Execution["+getToStringIdentity()+"]";
     }
   }
 
@@ -771,5 +782,13 @@ public class ExecutionImpl implements
   }
 
   public void setVariablesLocal(Map<String, ? extends Object> variables) {
+  }
+    
+  public boolean isEventScope() {
+    return isEventScope;
+  }
+    
+  public void setEventScope(boolean isEventScope) {
+    this.isEventScope = isEventScope;
   }
 }

@@ -137,6 +137,11 @@ public class HistoryParseListener implements BpmnParseListener {
   public void parseRootElement(Element rootElement, List<ProcessDefinitionEntity> processDefinitions) {
   }
   
+  public void parseBoundarySignalEventDefinition(Element signalEventDefinition, boolean interrupting, ActivityImpl signalActivity) {
+  }
+  public void parseEventBasedGateway(Element eventBasedGwElement, ScopeImpl scope, ActivityImpl activity) {
+  }
+  
   public void parseMultiInstanceLoopCharacteristics(Element activityElement, 
           Element multiInstanceLoopCharacteristicsElement, ActivityImpl activity) {
     // Remove any history parse listeners already attached: the Multi instance behavior will
@@ -162,6 +167,15 @@ public class HistoryParseListener implements BpmnParseListener {
 
   public static boolean activityHistoryEnabled(ScopeImpl scopeElement, int historyLevel) {
     return historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY;
+  }
+  
+  public void parseIntermediateSignalCatchEventDefinition(Element signalEventDefinition, ActivityImpl signalActivity) {
+  }
+
+  public void parseTransaction(Element transactionElement, ScopeImpl scope, ActivityImpl activity) {
+  }
+
+  public void parseCompensateEventDefinition(Element compensateEventDefinition, ActivityImpl compensationActivity) {
   }
 
 }
