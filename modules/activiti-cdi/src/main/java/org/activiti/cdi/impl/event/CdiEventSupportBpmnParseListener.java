@@ -169,4 +169,35 @@ public class CdiEventSupportBpmnParseListener implements BpmnParseListener {
     addEndEventListener(activity);
   }
 
+  @Override
+  public void parseIntermediateSignalCatchEventDefinition(Element signalEventDefinition, ActivityImpl signalActivity) {
+    addStartEventListener(signalActivity);
+    addEndEventListener(signalActivity);
+  }
+
+  @Override
+  public void parseBoundarySignalEventDefinition(Element signalEventDefinition, boolean interrupting, ActivityImpl signalActivity) {
+    addStartEventListener(signalActivity);
+    addEndEventListener(signalActivity);
+  }
+
+  @Override
+  public void parseEventBasedGateway(Element eventBasedGwElement, ScopeImpl scope, ActivityImpl activity) {
+    addStartEventListener(activity);
+    addEndEventListener(activity);
+  }
+
+  @Override
+  public void parseTransaction(Element transactionElement, ScopeImpl scope, ActivityImpl activity) {
+    addStartEventListener(activity);
+    addEndEventListener(activity);
+  }
+
+  @Override
+  public void parseCompensateEventDefinition(Element compensateEventDefinition, ActivityImpl compensationActivity) {
+
+  }
+  
+  
+
 }
