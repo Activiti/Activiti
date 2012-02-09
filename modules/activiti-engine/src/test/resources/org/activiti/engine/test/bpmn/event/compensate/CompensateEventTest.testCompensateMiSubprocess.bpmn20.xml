@@ -28,7 +28,12 @@
 				<compensateEventDefinition />
 			</boundaryEvent>		
 			
-			<serviceTask id="undoBookHotel" isForCompensation="true" activiti:expression="${true}" />
+			<serviceTask id="undoBookHotel" isForCompensation="true"
+				activiti:class="org.activiti.engine.test.bpmn.event.compensate.helper.UndoService">
+				<extensionElements>
+					<activiti:field name="counterName" stringValue="undoBookHotel" />
+				</extensionElements>
+			</serviceTask>	
 			
 			<sequenceFlow sourceRef="bookHotel" targetRef="endInScope" />
 			
@@ -43,8 +48,11 @@
 		<intermediateThrowEvent id="throwCompensate">
 			<compensateEventDefinition activityRef="scope" />
 		</intermediateThrowEvent>
+			
+		<sequenceFlow sourceRef="throwCompensate" targetRef="beforeEnd" />
+		<sequenceFlow sourceRef="beforeEnd" targetRef="end" />
 		
-		<sequenceFlow sourceRef="throwCompensate" targetRef="end" />
+		<receiveTask id="beforeEnd" />
 		
 		<endEvent id="end" />
 	</process>

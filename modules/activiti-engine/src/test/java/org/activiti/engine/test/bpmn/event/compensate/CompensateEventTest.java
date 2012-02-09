@@ -13,6 +13,7 @@
 
 package org.activiti.engine.test.bpmn.event.compensate;
 
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
@@ -29,8 +30,9 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
     
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("compensateProcess");
     
-    assertEquals(5, historyService.createHistoricActivityInstanceQuery().activityId("undoBookHotel").count());
+    assertEquals(5, runtimeService.getVariable(processInstance.getId(), "undoBookHotel"));
     
+    runtimeService.signal(processInstance.getId());    
     assertProcessEnded(processInstance.getId());
     
   }
@@ -40,8 +42,9 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
     
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("compensateProcess");
     
-    assertEquals(5, historyService.createHistoricActivityInstanceQuery().activityId("undoBookHotel").count());
+    assertEquals(5, runtimeService.getVariable(processInstance.getId(), "undoBookHotel"));
     
+    runtimeService.signal(processInstance.getId());    
     assertProcessEnded(processInstance.getId());
     
   }
@@ -51,9 +54,10 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
     
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("compensateProcess");
     
-    assertEquals(5, historyService.createHistoricActivityInstanceQuery().activityId("undoBookHotel").count());
-    assertEquals(5, historyService.createHistoricActivityInstanceQuery().activityId("undoBookFlight").count());
+    assertEquals(5, runtimeService.getVariable(processInstance.getId(), "undoBookHotel"));
+    assertEquals(5, runtimeService.getVariable(processInstance.getId(), "undoBookFlight"));
     
+    runtimeService.signal(processInstance.getId());    
     assertProcessEnded(processInstance.getId());
     
   }
@@ -65,11 +69,22 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
   public void testCallActivityCompensationHandler() {
     
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("compensateProcess");
+
+    if(!processEngineConfiguration.getHistory().equals(ProcessEngineConfiguration.HISTORY_NONE)) {
+      assertEquals(5, historyService.createHistoricActivityInstanceQuery()
+              .activityId("undoBookHotel")
+              .count());
+    }
     
-    assertEquals(6, historyService.createHistoricProcessInstanceQuery().count());
-    assertEquals(5, historyService.createHistoricActivityInstanceQuery().activityId("undoBookHotel").count());
-    
+    runtimeService.signal(processInstance.getId());    
     assertProcessEnded(processInstance.getId());
+    
+    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+    
+    if(!processEngineConfiguration.getHistory().equals(ProcessEngineConfiguration.HISTORY_NONE)) {
+      assertEquals(6, historyService.createHistoricProcessInstanceQuery()
+              .count());
+    }
     
   }
   
@@ -82,7 +97,9 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
     
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("compensateProcess");
     
-    assertEquals(5, historyService.createHistoricActivityInstanceQuery().activityId("undoBookHotel").count());
+    if(!processEngineConfiguration.getHistory().equals(ProcessEngineConfiguration.HISTORY_NONE)) {
+      assertEquals(5, historyService.createHistoricActivityInstanceQuery().activityId("undoBookHotel").count());
+    }
     
     assertProcessEnded(processInstance.getId());
     

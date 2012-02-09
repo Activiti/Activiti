@@ -45,7 +45,10 @@
 			<compensateEventDefinition activityRef="scope" />
 		</intermediateThrowEvent>
 		
-		<sequenceFlow sourceRef="throwCompensate" targetRef="end" />
+		<sequenceFlow sourceRef="throwCompensate" targetRef="beforeEnd" />
+		<sequenceFlow sourceRef="beforeEnd" targetRef="end" />
+		
+		<receiveTask id="beforeEnd" />
 		
 		<endEvent id="end" />
 	</process>
