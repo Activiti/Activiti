@@ -335,6 +335,12 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     String procId = runtimeService.startProcessInstanceByKey("catchErrorThrownByJavaDelegateOnMultiInstanceServiceTaskParallel", variables).getId();
     assertThatErrorHasBeenCaught(procId);
   }
+  
+  @Deployment
+  public void testErrorThrownByJavaDelegateNotCaughtByOtherEventType() {
+    String procId = runtimeService.startProcessInstanceByKey("testErrorThrownByJavaDelegateNotCaughtByOtherEventType").getId();
+    assertThatErrorHasBeenCaught(procId);
+  }
 
   private void assertThatErrorHasBeenCaught(String procId) {
     // The service task will throw an error event,

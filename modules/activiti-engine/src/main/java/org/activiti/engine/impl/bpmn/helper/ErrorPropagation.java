@@ -47,6 +47,7 @@ public class ErrorPropagation {
       // search for error handler with same error code as thrown Error
       for (PvmActivity activity : scope.getActivities()) {
         if (((ActivityImpl) activity).getActivityBehavior() instanceof BoundaryEventActivityBehavior
+                && "boundaryError".equals(activity.getProperty("type"))
                 && error.getErrorCode().equals(activity.getProperty("errorCode"))) {
           errorEventHandler = activity;
           break;
@@ -56,6 +57,7 @@ public class ErrorPropagation {
       if (errorEventHandler == null) {
         for (PvmActivity activity : scope.getActivities()) {
           if (((ActivityImpl) activity).getActivityBehavior() instanceof BoundaryEventActivityBehavior
+                  && "boundaryError".equals(activity.getProperty("type"))
                   && (activity.getProperty("errorCode") == null || "".equals(activity.getProperty("errorCode")))) {
             errorEventHandler = activity;
             break;
