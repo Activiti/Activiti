@@ -338,4 +338,13 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     testNestedSimpleSubProcess();
   }
 
+  /**
+   * @see http://jira.codehaus.org/browse/ACT-1072
+   */
+  @Deployment
+  public void FAILING_testSimpleSubProcessWithoutEndEvent() {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("testSimpleSubProcessWithoutEndEvent");
+    assertProcessEnded(pi.getId());
+  }
+
 }
