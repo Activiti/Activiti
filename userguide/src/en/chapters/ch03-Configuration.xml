@@ -8,7 +8,7 @@
     <title>Creating a ProcessEngine</title>
     
     <para>
-    The Activiti process engine is configured through a XML file called <literal>activiti.cfg.xml</literal>.
+    The Activiti process engine is configured through an XML file called <literal>activiti.cfg.xml</literal>.
     Note that this is <emphasis role="bold">not</emphasis> applicable if you're 
     using <link linkend="springintegration">the Spring style of building a process engine</link>.
     </para>
