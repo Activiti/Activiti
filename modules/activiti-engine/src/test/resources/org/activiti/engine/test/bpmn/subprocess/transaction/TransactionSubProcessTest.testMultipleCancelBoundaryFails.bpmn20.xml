@@ -91,11 +91,11 @@
 		<sequenceFlow sourceRef="tx" targetRef="end" />		
 		
 		<boundaryEvent attachedToRef="tx" id="catchCancelTx">
-			<cancelEventDefinition id="calcel"/>			
+			<cancelEventDefinition id="cancelTx1"/>
 		</boundaryEvent>
 		
 		<boundaryEvent attachedToRef="tx" id="catchCancelTx2">
-			<cancelEventDefinition id="calcel"/>			
+			<cancelEventDefinition id="cancelTx2"/>
 		</boundaryEvent>
 		
 		<endEvent id="cancelled" />
