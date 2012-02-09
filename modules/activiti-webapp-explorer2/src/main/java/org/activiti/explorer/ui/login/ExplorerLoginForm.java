@@ -16,6 +16,7 @@ import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
+import org.springframework.web.util.HtmlUtils;
 
 import com.vaadin.ui.LoginForm;
 
@@ -37,9 +38,9 @@ public class ExplorerLoginForm extends LoginForm {
   
   public ExplorerLoginForm() {
     I18nManager i18nManager = ExplorerApp.get().getI18nManager();
-    usernameCaption = i18nManager.getMessage(Messages.LOGIN_USERNAME);
-    passwordCaption = i18nManager.getMessage(Messages.LOGIN_PASSWORD);
-    submitCaption = i18nManager.getMessage(Messages.LOGIN_BUTTON);
+    usernameCaption = HtmlUtils.htmlEscape(i18nManager.getMessage(Messages.LOGIN_USERNAME));
+    passwordCaption = HtmlUtils.htmlEscape(i18nManager.getMessage(Messages.LOGIN_PASSWORD));
+    submitCaption = HtmlUtils.htmlEscape(i18nManager.getMessage(Messages.LOGIN_BUTTON));
   }
   
   // Hack-alert !! See explanation at http://vaadin.com/book/-/page/components.loginform.html
@@ -89,9 +90,9 @@ public class ExplorerLoginForm extends LoginForm {
       + "<form id='loginf' target='logintarget'"
       + "      onkeypress='submitOnEnter(event)'"
       + "      method='post'>"
-      + "<table>"
+      + "<table width='100%'>"
       + "<tr><td class='" + STYLE_LOGIN_FIELD_CAPTION + "'>" + usernameCaption + "</td>"
-      + "<td><input class='" + STYLE_LOGIN_FIELD +"' type='text' name='username'></td></tr>"
+      + "<td width='100%'><input class='" + STYLE_LOGIN_FIELD +"' type='text' name='username'></td></tr>"
       + "<tr><td class='" + STYLE_LOGIN_FIELD_CAPTION + "'>" + passwordCaption + "</td>"
       + "    <td><input class='" + STYLE_LOGIN_FIELD + "'"
       + "          type='password'"
