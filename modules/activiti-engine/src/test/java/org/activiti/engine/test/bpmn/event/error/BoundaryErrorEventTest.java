@@ -353,5 +353,18 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
     assertProcessEnded(procId);
   }
+  
+  @Deployment
+  public void testConcurrentExecutionsInterruptedOnDestroyScope() {
+    
+    // this test makes sure that if the first concurrent execution destroys the scope 
+    // (due to the interrupting boundary catch), the second concurrent execution does not
+    // move forward.
+    
+    // if the test fails, it produces a constraint violation in db.
+    
+    runtimeService.startProcessInstanceByKey("process");    
+  }
+  
 
 }

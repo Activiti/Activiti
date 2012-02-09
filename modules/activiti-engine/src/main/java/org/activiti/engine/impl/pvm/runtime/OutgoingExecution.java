@@ -13,13 +13,18 @@
 
 package org.activiti.engine.impl.pvm.runtime;
 
+import java.util.logging.Logger;
+
 import org.activiti.engine.impl.pvm.PvmTransition;
 
 /**
  * 
  * @author Tom Baeyens
+ * @author Daniel Meyer
  */
 public class OutgoingExecution {
+  
+  private static Logger log = Logger.getLogger(OutgoingExecution.class.getName());
   
   protected InterpretableExecution outgoingExecution;
   protected PvmTransition outgoingTransition;
@@ -34,7 +39,11 @@ public class OutgoingExecution {
   public void take() {
     if (outgoingExecution.getReplacedBy()!=null) {
       outgoingExecution = outgoingExecution.getReplacedBy();
+    }    
+    if(!outgoingExecution.isDeleteRoot()) {
+      outgoingExecution.take(outgoingTransition);
+    } else {
+      log.fine("Not taking transition '"+outgoingTransition+"', outgoing execution has ended.");      
     }
-    outgoingExecution.take(outgoingTransition);
   }
 }
