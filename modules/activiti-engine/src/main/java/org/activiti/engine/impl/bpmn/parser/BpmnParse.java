@@ -34,6 +34,7 @@ import org.activiti.engine.impl.bpmn.behavior.CallActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.CancelBoundaryEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.CancelEndEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ErrorEndEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.EventSubProcessStartEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.EventBasedGatewayActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ExclusiveGatewayActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.InclusiveGatewayActivityBehavior;
@@ -719,12 +720,26 @@ public class BpmnParse extends Parse {
         }
       } else {
         scope.setProperty(PROPERTYNAME_INITIAL, startEventActivity);
+        // BPMN 2.0 Spec: "The Error Start Event is only allowed for triggering an in-line Event Sub-Process."
+        Element errorEventDefinition = startEventElement.element("errorEventDefinition");
+        if (errorEventDefinition != null) {
+          startEventActivity.setProperty("type", "errorStartEvent");
+          String errorRef = errorEventDefinition.attribute("errorRef");
+          Error error = null;
+          if (errorRef != null) {
+            error = errors.get(errorRef);
+            startEventActivity.setProperty("errorCode", error == null ? errorRef : error.getErrorCode());
+          }
+          startEventActivity.setActivityBehavior(new EventSubProcessStartEventActivityBehavior());
+        }
       }
 
-      // Currently only none start events supported
+      // Currently only none and error start events supported
 
-      // TODO: a subprocess is only allowed to have a none start event
-      startEventActivity.setActivityBehavior(new NoneStartEventActivityBehavior());
+      // TODO: a subprocess is only allowed to have a none start event unless it is an Event Sub-Process
+      if (startEventActivity.getActivityBehavior() == null) {
+        startEventActivity.setActivityBehavior(new NoneStartEventActivityBehavior());
+      }
 
       for (BpmnParseListener parseListener : parseListeners) {
         parseListener.parseStartEvent(startEventElement, scope, startEventActivity);
@@ -2223,6 +2238,8 @@ public class BpmnParse extends Parse {
     
     activity.setAsync(isAsync(subProcessElement));
     activity.setExclusive(isExclusive(subProcessElement));
+
+    activity.setProperty("triggeredByEvent", parseBooleanAttribute(subProcessElement.attribute("triggeredByEvent"), false));
     
     activity.setScope(true);
     activity.setActivityBehavior(new SubProcessActivityBehavior());
@@ -2251,7 +2268,7 @@ public class BpmnParse extends Parse {
   }
 
   /**
-   * Parses a call activity (currenly only supporting calling subprocesses).
+   * Parses a call activity (currently only supporting calling subprocesses).
    * 
    * @param callActivityElement
    *          The XML element defining the call activity
