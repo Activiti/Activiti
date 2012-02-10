@@ -13,25 +13,19 @@
 
 package org.activiti.rest.api.identity;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.activiti.engine.identity.User;
-import org.activiti.rest.api.AbstractPaginateList;
 
 /**
  * @author Tijs Rademakers
  */
-public class GroupUsersPaginateList extends AbstractPaginateList {
+public class UserInfoWithPassword extends UserInfo {
+  
+  String password;
 
-  @SuppressWarnings("rawtypes")
-  @Override
-  protected List processList(List list) {
-    List<UserInfo> responseList = new ArrayList<UserInfo>();
-    for (Object definition : list) {
-      UserInfo response = new UserInfo((User) definition);
-      responseList.add(response);
-    }
-    return responseList;
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
   }
 }

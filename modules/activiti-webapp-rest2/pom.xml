@@ -3,7 +3,6 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<name>Activiti - Rest</name>
-	<groupId>org.activiti</groupId>
 	<artifactId>activiti-webapp-rest2</artifactId>
 	<packaging>war</packaging>
 
@@ -46,12 +45,14 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-engine</artifactId>
 		</dependency>
-    
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-spring</artifactId>
+    </dependency>
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>

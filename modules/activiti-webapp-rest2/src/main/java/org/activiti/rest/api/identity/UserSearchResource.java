@@ -46,22 +46,22 @@ public class UserSearchResource extends SecuredResource {
     
     List<User> lastNameMatchList = ActivitiUtil.getIdentityService().createUserQuery().userLastNameLike(searchText).list();
     
-    Map<String, UserResponse> userMap = new HashMap<String, UserResponse>();
+    Map<String, UserInfo> userMap = new HashMap<String, UserInfo>();
     if(firstNameMatchList != null) {
       for (User user : firstNameMatchList) {
-        userMap.put(user.getId(), new UserResponse(user));
+        userMap.put(user.getId(), new UserInfo(user));
       }
     }
     
     if(lastNameMatchList != null) {
       for (User user : lastNameMatchList) {
         if(userMap.containsKey(user.getId()) == false) {
-          userMap.put(user.getId(), new UserResponse(user));
+          userMap.put(user.getId(), new UserInfo(user));
         }
       }
     }
     
-    List<UserResponse> userList = new ArrayList<UserResponse>();
+    List<UserInfo> userList = new ArrayList<UserInfo>();
     userList.addAll(userMap.values());
     Collections.sort(userList, new UserResponseComparable());
     
@@ -76,10 +76,10 @@ public class UserSearchResource extends SecuredResource {
     return response;
   }
   
-  protected class UserResponseComparable implements Comparator<UserResponse>{
+  protected class UserResponseComparable implements Comparator<UserInfo>{
     
     @Override
-    public int compare(UserResponse user1, UserResponse user2) {
+    public int compare(UserInfo user1, UserInfo user2) {
         return user1.getLastName().compareTo(user2.getLastName());
     }
   }

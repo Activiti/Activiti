@@ -19,6 +19,7 @@ import org.activiti.rest.api.engine.ProcessEngineResource;
 import org.activiti.rest.api.identity.GroupResource;
 import org.activiti.rest.api.identity.GroupUsersResource;
 import org.activiti.rest.api.identity.LoginResource;
+import org.activiti.rest.api.identity.UserCreateResource;
 import org.activiti.rest.api.identity.UserGroupsResource;
 import org.activiti.rest.api.identity.UserPictureResource;
 import org.activiti.rest.api.identity.UserResource;
@@ -37,6 +38,8 @@ import org.activiti.rest.api.process.ProcessInstanceDiagramResource;
 import org.activiti.rest.api.process.ProcessInstanceResource;
 import org.activiti.rest.api.process.ProcessInstancesResource;
 import org.activiti.rest.api.process.StartProcessInstanceResource;
+import org.activiti.rest.api.repository.DeploymentArtifactResource;
+import org.activiti.rest.api.repository.DeploymentArtifactsResource;
 import org.activiti.rest.api.repository.DeploymentDeleteResource;
 import org.activiti.rest.api.repository.DeploymentUploadResource;
 import org.activiti.rest.api.repository.DeploymentsDeleteResource;
@@ -103,6 +106,7 @@ public class ActivitiRestApplication extends Application {
     
     router.attach("/login", LoginResource.class);
     
+    router.attach("/user", UserCreateResource.class);
     router.attach("/user/{userId}", UserResource.class);
     router.attach("/user/{userId}/groups", UserGroupsResource.class);
     router.attach("/user/{userId}/picture", UserPictureResource.class);
@@ -136,6 +140,8 @@ public class ActivitiRestApplication extends Application {
     router.attach("/deployment", DeploymentUploadResource.class);
     router.attach("/deployments/delete", DeploymentsDeleteResource.class);
     router.attach("/deployment/{deploymentId}", DeploymentDeleteResource.class);
+    router.attach("/deployment/{deploymentId}/resources", DeploymentArtifactsResource.class);
+    router.attach("/deployment/{deploymentId}/resource/{resourceName}", DeploymentArtifactResource.class);
     
     router.attach("/management/jobs", JobsResource.class);
     router.attach("/management/job/{jobId}", JobResource.class);

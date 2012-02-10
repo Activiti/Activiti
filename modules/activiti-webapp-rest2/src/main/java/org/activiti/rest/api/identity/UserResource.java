@@ -25,7 +25,7 @@ import org.restlet.resource.Get;
 public class UserResource extends SecuredResource {
   
   @Get
-  public UserResponse getUser() {
+  public UserInfo getUser() {
     if(authenticate() == false) return null;
     
     String userId = (String) getRequest().getAttributes().get("userId");
@@ -33,7 +33,7 @@ public class UserResource extends SecuredResource {
       throw new ActivitiException("No userId provided");
     }
     User user = ActivitiUtil.getIdentityService().createUserQuery().userId(userId).singleResult();
-    UserResponse response = new UserResponse(user);
+    UserInfo response = new UserInfo(user);
     return response;
   }
 

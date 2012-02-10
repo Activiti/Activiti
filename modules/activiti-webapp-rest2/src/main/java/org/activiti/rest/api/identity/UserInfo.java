@@ -18,14 +18,16 @@ import org.activiti.engine.identity.User;
 /**
  * @author Tijs Rademakers
  */
-public class UserResponse {
+public class UserInfo {
   
   String id;
   String firstName;
   String lastName;
   String email;
   
-  public UserResponse(User user) {
+  public UserInfo(){}
+  
+  public UserInfo(User user) {
     setId(user.getId());
     setEmail(user.getEmail());
     setFirstName(user.getFirstName());
@@ -35,28 +37,28 @@ public class UserResponse {
   public String getId() {
     return id;
   }
-  public UserResponse setId(String id) {
+  public UserInfo setId(String id) {
     this.id = id;
     return this;
   }
   public String getFirstName() {
     return firstName;
   }
-  public UserResponse setFirstName(String firstName) {
+  public UserInfo setFirstName(String firstName) {
     this.firstName = firstName;
     return this;
   }
   public String getLastName() {
     return lastName;
   }
-  public UserResponse setLastName(String lastName) {
+  public UserInfo setLastName(String lastName) {
     this.lastName = lastName;
     return this;
   }
   public String getEmail() {
     return email;
   }
-  public UserResponse setEmail(String email) {
+  public UserInfo setEmail(String email) {
     this.email = email;
     return this;
   }
