@@ -394,6 +394,13 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
                includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.feature.cxf.txt" />
       <fileset refid="jdbc.driver.libs" />
     </copy>
+  	<propertyfile file="${activiti.home}/setup/build/webapps/activiti-rest.war/WEB-INF/classes/db.properties">
+  	  <entry key="db" value="${db}" />
+      <entry key="jdbc.driver" value="${jdbc.driver}" />
+      <entry key="jdbc.url" value="${jdbc.url}" />
+      <entry key="jdbc.username" value="${jdbc.username}" />
+  	  <entry key="jdbc.password" value="${jdbc.password}" />
+  	</propertyfile>
   </target>
   
   <target name="internal.deploy.activiti.rest.into.tomcat">
