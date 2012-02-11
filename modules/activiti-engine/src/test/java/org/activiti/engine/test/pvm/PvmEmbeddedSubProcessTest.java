@@ -250,13 +250,43 @@ public class PvmEmbeddedSubProcessTest extends PvmTestCase {
   }
   
   /** 
+   *           +------------------------------+
+   *           | embedded subprocess          |
+   * +-----+   |  +-----------+               |
+   * |start|-->|  |startInside|               |
+   * +-----+   |  +-----------+               |
+   *           +------------------------------+
+   */
+  public void testEmbeddedSubProcessWithoutEndEvents() {
+    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()   
+      .createActivity("start")
+        .initial()
+        .behavior(new Automatic())
+        .transition("embeddedsubprocess")
+      .endActivity()
+      .createActivity("embeddedsubprocess")
+        .scope()
+        .behavior(new EmbeddedSubProcess())
+        .createActivity("startInside")
+          .behavior(new Automatic())
+        .endActivity()       
+      .endActivity()      
+    .buildProcessDefinition();
+    
+    PvmProcessInstance processInstance = processDefinition.createProcessInstance(); 
+    processInstance.start();
+    
+    assertTrue(processInstance.isEnded());
+  }
+  
+  /** 
    *           +-------------------------------------------------------+
    *           | embedded subprocess                                   |
    *           |                  +--------------------------------+   |
    *           |                  | nested embedded subprocess     |   |
-   * +-----+   | +-----------+    |  +-----------+                 |   |   +---+
-   * |start|-->| |startInside|--> |  |startInside|                 |   |-->|end|
-   * +-----+   | +-----------+    |  +-----------+                 |   |   +---+
+   * +-----+   | +-----------+    |  +-----------+                 |   |
+   * |start|-->| |startInside|--> |  |startInside|                 |   |
+   * +-----+   | +-----------+    |  +-----------+                 |   |
    *           |                  +--------------------------------+   |
    *           |                                                       |
    *           +-------------------------------------------------------+
@@ -282,20 +312,48 @@ public class PvmEmbeddedSubProcessTest extends PvmTestCase {
             .behavior(new Automatic())            
             .endActivity()        
         .endActivity()
-      .transition("end")
-      .endActivity()
-      .createActivity("end")
-        .behavior(new WaitState())
-      .endActivity()
+      .endActivity()  
     .buildProcessDefinition();
     
     PvmProcessInstance processInstance = processDefinition.createProcessInstance(); 
     processInstance.start();
     
-    List<String> expectedActiveActivityIds = new ArrayList<String>();
-    expectedActiveActivityIds.add("end");
-      
-    assertEquals(expectedActiveActivityIds, processInstance.findActiveActivityIds());
+    assertTrue(processInstance.isEnded());
+  }
+  
+  
+  /** 
+   *           +------------------------------+
+   *           | embedded subprocess          |
+   * +-----+   |  +-----------+   +---------+ |
+   * |start|-->|  |startInside|-->|endInside| |
+   * +-----+   |  +-----------+   +---------+ |
+   *           +------------------------------+
+   */
+  public void testEmbeddedSubProcessNoEnd() {
+    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()   
+      .createActivity("start")
+        .initial()
+        .behavior(new Automatic())
+        .transition("embeddedsubprocess")
+      .endActivity()
+      .createActivity("embeddedsubprocess")
+        .scope()
+        .behavior(new EmbeddedSubProcess())
+        .createActivity("startInside")
+          .behavior(new Automatic())
+          .transition("endInside")
+        .endActivity()
+        .createActivity("endInside")
+          .behavior(new End())
+        .endActivity()
+      .endActivity()      
+    .buildProcessDefinition();
+    
+    PvmProcessInstance processInstance = processDefinition.createProcessInstance(); 
+    processInstance.start();
+    
+    assertTrue(processInstance.isEnded());
   }
     
 }
