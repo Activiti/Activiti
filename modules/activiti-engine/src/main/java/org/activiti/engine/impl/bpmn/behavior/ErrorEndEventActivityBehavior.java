@@ -22,26 +22,16 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class ErrorEndEventActivityBehavior extends FlowNodeActivityBehavior {
   
-  protected String borderEventActivityId; // the nested activity representing the boundary event
   protected String errorCode;
   
   public ErrorEndEventActivityBehavior(String errorCode) {
     this.errorCode = errorCode;
   }
   
-  public void execute(ActivityExecution execution) throws Exception {
-    String eventHandlerId = borderEventActivityId;
-    
-    ErrorPropagation.propagateError(errorCode, eventHandlerId, execution);
-    
+  public void execute(ActivityExecution execution) throws Exception {    
+    ErrorPropagation.propagateError(errorCode, execution);    
   }
 
-  public String getBorderEventActivityId() {
-    return borderEventActivityId;
-  }
-  public void setBorderEventActivityId(String borderEventActivityId) {
-    this.borderEventActivityId = borderEventActivityId;
-  }
   public String getErrorCode() {
     return errorCode;
   }

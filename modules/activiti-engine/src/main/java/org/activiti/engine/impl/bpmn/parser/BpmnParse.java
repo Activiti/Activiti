@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.text.StringCharacterIterator;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -136,6 +137,7 @@ public class BpmnParse extends Parse {
   public static final String PROPERTYNAME_SIGNAL_DEFINITION_NAME = "signalDefinition";
   public static final String PROPERTYNAME_COMPENSATION_HANDLER_ID = "compensationHandler";
   public static final String PROPERTYNAME_IS_FOR_COMPENSATION = "isForCompensation";
+  public static final String PROPERTYNAME_ERROR_EVENT_DEFINITIONS = "errorEventDefinitions";
 
   /** The deployment to which the parsed process definitions will be added. */
   protected DeploymentEntity deployment;
@@ -686,6 +688,7 @@ public class BpmnParse extends Parse {
     } else if (startEventElements.size() > 0) {
 
       Element startEventElement = startEventElements.get(0);
+    
       ActivityImpl startEventActivity = createActivityOnScope(startEventElement, scope);
 
       if (scope instanceof ProcessDefinitionEntity) {
@@ -726,10 +729,15 @@ public class BpmnParse extends Parse {
           startEventActivity.setProperty("type", "errorStartEvent");
           String errorRef = errorEventDefinition.attribute("errorRef");
           Error error = null;
+          ErrorEventDefinition definition = new ErrorEventDefinition(startEventActivity.getId());
           if (errorRef != null) {
             error = errors.get(errorRef);
-            startEventActivity.setProperty("errorCode", error == null ? errorRef : error.getErrorCode());
+            String errorCode = error == null ? errorRef : error.getErrorCode();
+            definition.setErrorCode(errorCode);
           }
+          ScopeImpl catchingScope = ((ActivityImpl)scope).getParent();
+          definition.setPrecedence(10);
+          addErrorEventDefinition(definition, catchingScope);
           startEventActivity.setActivityBehavior(new EventSubProcessStartEventActivityBehavior());
         }
       }
@@ -2138,46 +2146,32 @@ public class BpmnParse extends Parse {
   public void parseBoundaryErrorEventDefinition(Element errorEventDefinition, boolean interrupting, ActivityImpl activity, ActivityImpl nestedErrorEventActivity) {
 
     nestedErrorEventActivity.setProperty("type", "boundaryError");
-    ((ActivityImpl) nestedErrorEventActivity.getParent()).setScope(true);
+    ScopeImpl catchingScope = nestedErrorEventActivity.getParent();
+    ((ActivityImpl) catchingScope).setScope(true);
 
     String errorRef = errorEventDefinition.attribute("errorRef");
     Error error = null;
+    ErrorEventDefinition definition = new ErrorEventDefinition(nestedErrorEventActivity.getId());
     if (errorRef != null) {
       error = errors.get(errorRef);
-      nestedErrorEventActivity.setProperty("errorCode", error == null ? errorRef : error.getErrorCode());
+      definition.setErrorCode(error == null ? errorRef : error.getErrorCode());
     }
-
-    // TODO: this can probably be made generic for all throw/catch ?
-
-    // Search for all errorEvents that can throw the exception
-    List<ActivityImpl> childErrorEndEvents = getAllChildActivitiesOfType("errorEndEvent", activity);
-    for (ActivityImpl errorEndEvent : childErrorEndEvents) {
-      ErrorEndEventActivityBehavior behavior = (ErrorEndEventActivityBehavior) errorEndEvent.getActivityBehavior();
-      if (errorRef == null || errorRef.equals(behavior.getErrorCode()) || (error != null && error.getErrorCode().equals(behavior.getErrorCode()))) {
-
-        ActivityImpl catchingActivity = null;
-        if (behavior.getBorderEventActivityId() != null) {
-          catchingActivity = activity.getProcessDefinition().findActivity(behavior.getBorderEventActivityId());
-        }
-
-        // If the error end event doesnt have a catching activity assigned yet,
-        // we can just set it
-        // If the error end event already has a catching activity event, we can
-        // only set it
-        // if the current activity is a child of the previous defined one
-        // (ie. the current activity will catch and consume it, and it will
-        // never reach the previous one,
-        // since the previous one set is an activity which is a parent of the
-        // more narrow catching activity)
-        if (catchingActivity == null || isChildActivity(activity, catchingActivity)) {
-          behavior.setBorderEventActivityId(nestedErrorEventActivity.getId());
-        }
-      }
-    }
-
+    
+    addErrorEventDefinition(definition, catchingScope);    
+  
     for (BpmnParseListener parseListener : parseListeners) {
       parseListener.parseBoundaryErrorEventDefinition(errorEventDefinition, interrupting, activity, nestedErrorEventActivity);
     }
+  }
+
+  protected void addErrorEventDefinition(ErrorEventDefinition errorEventDefinition, ScopeImpl catchingScope) {
+    List<ErrorEventDefinition> errorEventDefinitions = (List<ErrorEventDefinition>) catchingScope.getProperty(PROPERTYNAME_ERROR_EVENT_DEFINITIONS);
+    if(errorEventDefinitions == null) {
+      errorEventDefinitions = new ArrayList<ErrorEventDefinition>();
+      catchingScope.setProperty(PROPERTYNAME_ERROR_EVENT_DEFINITIONS, errorEventDefinitions);
+    }
+    errorEventDefinitions.add(errorEventDefinition);
+    Collections.sort(errorEventDefinitions, ErrorEventDefinition.comparator);
   }
 
   protected List<ActivityImpl> getAllChildActivitiesOfType(String type, ScopeImpl scope) {
@@ -2239,9 +2233,11 @@ public class BpmnParse extends Parse {
     activity.setAsync(isAsync(subProcessElement));
     activity.setExclusive(isExclusive(subProcessElement));
 
-    activity.setProperty("triggeredByEvent", parseBooleanAttribute(subProcessElement.attribute("triggeredByEvent"), false));
+    Boolean isTriggeredByEvent = parseBooleanAttribute(subProcessElement.attribute("triggeredByEvent"), false);
+    activity.setProperty("triggeredByEvent", isTriggeredByEvent);
     
-    activity.setScope(true);
+    // event subprocesses are not scopes
+    activity.setScope(!isTriggeredByEvent);
     activity.setActivityBehavior(new SubProcessActivityBehavior());
     parseScope(subProcessElement, activity);
 

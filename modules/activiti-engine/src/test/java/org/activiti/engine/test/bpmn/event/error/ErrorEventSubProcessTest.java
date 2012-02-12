@@ -23,7 +23,33 @@ import org.activiti.engine.test.Deployment;
 public class ErrorEventSubProcessTest extends PluggableActivitiTestCase {
   
   @Deployment
-  public void FAILING_testCatchErrorInEmbeddedSubProcess() {
+  // an event subprocesses takes precedence over a boundary event
+  public void testEventSubprocessTakesPrecedence() {
+    String procId = runtimeService.startProcessInstanceByKey("CatchErrorInEmbeddedSubProcess").getId();
+    assertThatErrorHasBeenCaught(procId);
+  }
+  
+  @Deployment
+  // an event subprocess with errorCode takes precedence over a catch-all handler
+  public void testErrorCodeTakesPrecedence() {
+    String procId = runtimeService.startProcessInstanceByKey("CatchErrorInEmbeddedSubProcess").getId();
+        
+    // The process will throw an error event,
+    // which is caught and escalated by a User Task
+    assertEquals("No tasks found in task list.", 1, taskService.createTaskQuery()
+            .taskDefinitionKey("taskAfterErrorCatch2") // <!>
+            .count());
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("Escalated Task", task.getName());
+    
+    // Completing the Task will end the process instance
+    taskService.complete(task.getId());
+    assertProcessEnded(procId);
+    
+  }
+  
+  @Deployment
+  public void testCatchErrorInEmbeddedSubProcess() {
     String procId = runtimeService.startProcessInstanceByKey("CatchErrorInEmbeddedSubProcess").getId();
     assertThatErrorHasBeenCaught(procId);
   }

@@ -32,6 +32,11 @@ public class StartEventEndHandler implements ExecutionListener {
   public void notify(DelegateExecution execution) throws Exception {
     String executionId = execution.getId();
     String activityId = ((ExecutionEntity)execution).getActivityId();
+    
+    // interrupted executions might not have an activityId set.
+    if(activityId == null) {
+      return;
+    }
 
     CommandContext commandContext = Context.getCommandContext();
     // search for the historic activity instance in the dbsqlsession cache

@@ -27,8 +27,6 @@
       <sequenceFlow id="flow2" sourceRef="catchError" targetRef="taskAfterErrorCatch" />
       <userTask id="taskAfterErrorCatch" name="Escalated Task" />
     </subProcess>
-    <sequenceFlow id="flow5" sourceRef="eventSubProcess" targetRef="workaroundForACT-1072" />
-    <endEvent id="workaroundForACT-1072" />
 
 	</process>
 
