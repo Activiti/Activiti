@@ -31,7 +31,6 @@ import org.activiti.engine.impl.cmd.SignalCmd;
 import org.activiti.engine.impl.cmd.StartProcessInstanceByMessageCmd;
 import org.activiti.engine.impl.cmd.StartProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.SuspendProcessInstanceCmd;
-import org.activiti.engine.runtime.EventSubscriptionQuery;
 import org.activiti.engine.runtime.ExecutionQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
@@ -82,10 +81,6 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
     return new ExecutionQueryImpl(commandExecutor);
   }
   
-  public EventSubscriptionQuery createEventSubscriptionQuery() {
-    return new EventSubscriptionQueryImpl(commandExecutor);
-  }
-
   public Map<String, Object> getVariables(String executionId) {
     return commandExecutor.execute(new GetExecutionVariablesCmd(executionId, null, false));
   }

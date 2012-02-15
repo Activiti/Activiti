@@ -725,7 +725,7 @@ public class BpmnParse extends Parse {
         }
       }
     }
-    // if there is a start event, select it as initial, regardless of it's type:
+    // if there is a single start event, select it as initial, regardless of it's type:
     if(initial == null && startEventActivities.size() == 1) {
       initial = startEventActivities.get(0);
     }

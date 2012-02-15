@@ -23,7 +23,6 @@ import java.util.Set;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.persistence.AbstractManager;
-import org.activiti.engine.runtime.EventSubscription;
 
 
 /**
@@ -58,7 +57,7 @@ public class EventSubscriptionManager extends AbstractManager {
   }
 
   @SuppressWarnings("unchecked")
-  public List<EventSubscription> findEventSubscriptionsByQueryCriteria(EventSubscriptionQueryImpl eventSubscriptionQueryImpl, Page page) {
+  public List<EventSubscriptionEntity> findEventSubscriptionsByQueryCriteria(EventSubscriptionQueryImpl eventSubscriptionQueryImpl, Page page) {
     final String query = "selectEventSubscriptionByQueryCriteria"; 
     return getDbSqlSession().selectList(query, eventSubscriptionQueryImpl, page);
   }

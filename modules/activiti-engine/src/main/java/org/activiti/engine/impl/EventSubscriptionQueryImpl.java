@@ -19,16 +19,15 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.runtime.EventSubscription;
-import org.activiti.engine.runtime.EventSubscriptionQuery;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 
 
 /**
  * @author Daniel Meyer
  */
 public class EventSubscriptionQueryImpl 
-                extends AbstractQuery<EventSubscriptionQuery, EventSubscription> 
-                implements EventSubscriptionQuery, Serializable {
+                extends AbstractQuery<EventSubscriptionQueryImpl, EventSubscriptionEntity> 
+                implements Serializable {
 
   private static final long serialVersionUID = 1L;
   
@@ -48,7 +47,7 @@ public class EventSubscriptionQueryImpl
     super(commandExecutor);
   }
 
-  public EventSubscriptionQuery eventSubscriptionId(String id) {
+  public EventSubscriptionQueryImpl eventSubscriptionId(String id) {
     if (eventSubscriptionId == null) {
       throw new ActivitiException("Provided svent subscription id is null");
     }
@@ -56,7 +55,7 @@ public class EventSubscriptionQueryImpl
     return this;
   }
 
-  public EventSubscriptionQuery eventName(String eventName) {
+  public EventSubscriptionQueryImpl eventName(String eventName) {
     if (eventName == null) {
       throw new ActivitiException("Provided event name is null");
     }
@@ -64,7 +63,7 @@ public class EventSubscriptionQueryImpl
     return this;
   }
 
-  public EventSubscriptionQuery executionId(String executionId) {
+  public EventSubscriptionQueryImpl executionId(String executionId) {
     if (executionId == null) {
       throw new ActivitiException("Provided execution id is null");
     }
@@ -72,7 +71,7 @@ public class EventSubscriptionQueryImpl
     return this;
   }
 
-  public EventSubscriptionQuery processInstanceId(String processInstanceId) {
+  public EventSubscriptionQueryImpl processInstanceId(String processInstanceId) {
     if (processInstanceId == null) {
       throw new ActivitiException("Provided process instance id is null");
     }
@@ -80,7 +79,7 @@ public class EventSubscriptionQueryImpl
     return this;
   }
 
-  public EventSubscriptionQuery activityId(String activityId) {
+  public EventSubscriptionQueryImpl activityId(String activityId) {
     if (activityId == null) {
       throw new ActivitiException("Provided activity id is null");
     }
@@ -88,7 +87,7 @@ public class EventSubscriptionQueryImpl
     return this;
   }
   
-  public EventSubscriptionQuery eventType(String eventType) {
+  public EventSubscriptionQueryImpl eventType(String eventType) {
     if (eventType == null) {
       throw new ActivitiException("Provided event type is null");
     }
@@ -96,7 +95,7 @@ public class EventSubscriptionQueryImpl
     return this;
   }
   
-  public EventSubscriptionQuery eventScope(String eventScope) {
+  public EventSubscriptionQueryImpl eventScope(String eventScope) {
     if (eventScope == null) {
       throw new ActivitiException("Provided event scope is null");
     }
@@ -104,7 +103,7 @@ public class EventSubscriptionQueryImpl
     return this;
   }
   
-  public EventSubscriptionQuery orderByCreated() {
+  public EventSubscriptionQueryImpl orderByCreated() {
     return orderBy(EventSubscriptionQueryProperty.CREATED);
   }
   
@@ -119,7 +118,7 @@ public class EventSubscriptionQueryImpl
   }
 
   @Override
-  public List<EventSubscription> executeList(CommandContext commandContext, Page page) {
+  public List<EventSubscriptionEntity> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     return commandContext
       .getEventSubscriptionManager()

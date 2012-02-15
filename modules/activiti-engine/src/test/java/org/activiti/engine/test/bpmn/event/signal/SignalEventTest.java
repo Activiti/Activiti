@@ -15,6 +15,7 @@ package org.activiti.engine.test.bpmn.event.signal;
 
 import java.util.Date;
 
+import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.task.Task;
@@ -33,12 +34,12 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     
     runtimeService.startProcessInstanceByKey("catchSignal");
         
-    assertEquals(1, runtimeService.createEventSubscriptionQuery().count());    
+    assertEquals(1, createEventSubscriptionQuery().count());    
     assertEquals(1, runtimeService.createProcessInstanceQuery().count());
     
     runtimeService.startProcessInstanceByKey("throwSignal");
     
-    assertEquals(0, runtimeService.createEventSubscriptionQuery().count());    
+    assertEquals(0, createEventSubscriptionQuery().count());    
     assertEquals(0, runtimeService.createProcessInstanceQuery().count());
    
   }
@@ -50,12 +51,12 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     
     runtimeService.startProcessInstanceByKey("catchSignal");
         
-    assertEquals(1, runtimeService.createEventSubscriptionQuery().count());    
+    assertEquals(1, createEventSubscriptionQuery().count());    
     assertEquals(1, runtimeService.createProcessInstanceQuery().count());
     
     runtimeService.startProcessInstanceByKey("throwSignal");
     
-    assertEquals(0, runtimeService.createEventSubscriptionQuery().count());    
+    assertEquals(0, createEventSubscriptionQuery().count());    
     assertEquals(0, runtimeService.createProcessInstanceQuery().count());   
   }
   
@@ -66,12 +67,12 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     
     runtimeService.startProcessInstanceByKey("catchSignal");
         
-    assertEquals(1, runtimeService.createEventSubscriptionQuery().count());    
+    assertEquals(1, createEventSubscriptionQuery().count());    
     assertEquals(1, runtimeService.createProcessInstanceQuery().count());
     
     runtimeService.startProcessInstanceByKey("throwSignal");
     
-    assertEquals(1, runtimeService.createEventSubscriptionQuery().count());    
+    assertEquals(1, createEventSubscriptionQuery().count());    
     assertEquals(1, runtimeService.createProcessInstanceQuery().count());
     
     // there is a job:
@@ -81,7 +82,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
       ClockUtil.setCurrentTime( new Date(System.currentTimeMillis() + 1000));
       waitForJobExecutorToProcessAllJobs(10000, 100l);
       
-      assertEquals(0, runtimeService.createEventSubscriptionQuery().count());    
+      assertEquals(0, createEventSubscriptionQuery().count());    
       assertEquals(0, runtimeService.createProcessInstanceQuery().count());
       assertEquals(0, managementService.createJobQuery().count());   
     }finally {
@@ -98,12 +99,12 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     
     runtimeService.startProcessInstanceByKey("catchSignal");
     
-    assertEquals(2, runtimeService.createEventSubscriptionQuery().count());    
+    assertEquals(2, createEventSubscriptionQuery().count());    
     assertEquals(1, runtimeService.createProcessInstanceQuery().count());
     
     runtimeService.startProcessInstanceByKey("throwAbort");
     
-    assertEquals(1, runtimeService.createEventSubscriptionQuery().count());    
+    assertEquals(1, createEventSubscriptionQuery().count());    
     assertEquals(1, runtimeService.createProcessInstanceQuery().count());    
 
     Task taskAfterAbort = taskService.createTaskQuery().taskAssignee("gonzo").singleResult();
@@ -112,7 +113,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     
     runtimeService.startProcessInstanceByKey("throwSignal");
     
-    assertEquals(0, runtimeService.createEventSubscriptionQuery().count());    
+    assertEquals(0, createEventSubscriptionQuery().count());    
     assertEquals(0, runtimeService.createProcessInstanceQuery().count());
     
    
@@ -168,6 +169,10 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         fail("different exception expected");
       }
     }    
+  }
+  
+  private EventSubscriptionQueryImpl createEventSubscriptionQuery() {
+    return new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutorTxRequired());
   }
   
 }

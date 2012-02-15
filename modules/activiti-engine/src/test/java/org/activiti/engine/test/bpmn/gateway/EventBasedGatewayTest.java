@@ -15,6 +15,7 @@ package org.activiti.engine.test.bpmn.gateway;
 
 import java.util.Date;
 
+import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.task.Task;
@@ -33,13 +34,13 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
     
     runtimeService.startProcessInstanceByKey("catchSignal");
         
-    assertEquals(1, runtimeService.createEventSubscriptionQuery().count());    
+    assertEquals(1, createEventSubscriptionQuery().count());    
     assertEquals(1, runtimeService.createProcessInstanceQuery().count());
     assertEquals(1, managementService.createJobQuery().count());
     
     runtimeService.startProcessInstanceByKey("throwSignal");
     
-    assertEquals(0, runtimeService.createEventSubscriptionQuery().count());    
+    assertEquals(0, createEventSubscriptionQuery().count());    
     assertEquals(1, runtimeService.createProcessInstanceQuery().count());    
     assertEquals(0, managementService.createJobQuery().count());
     
@@ -60,7 +61,7 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
     
     runtimeService.startProcessInstanceByKey("catchSignal");
         
-    assertEquals(1, runtimeService.createEventSubscriptionQuery().count());    
+    assertEquals(1, createEventSubscriptionQuery().count());    
     assertEquals(1, runtimeService.createProcessInstanceQuery().count());
     assertEquals(1, managementService.createJobQuery().count());
     
@@ -69,7 +70,7 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
       // wait for timer to fire
       waitForJobExecutorToProcessAllJobs(10000, 100);
       
-      assertEquals(0, runtimeService.createEventSubscriptionQuery().count());    
+      assertEquals(0, createEventSubscriptionQuery().count());    
       assertEquals(1, runtimeService.createProcessInstanceQuery().count());    
       assertEquals(0, managementService.createJobQuery().count());
       
@@ -113,6 +114,10 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
       }
     }
     
+  }
+  
+  private EventSubscriptionQueryImpl createEventSubscriptionQuery() {
+    return new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutorTxRequired());
   }
 
 }

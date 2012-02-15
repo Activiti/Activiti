@@ -18,7 +18,6 @@ import java.util.Map;
 
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.runtime.EventSubscriptionQuery;
 import org.activiti.engine.runtime.ExecutionQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
@@ -325,13 +324,7 @@ public interface RuntimeService {
    * to query process instances.
    */
   ProcessInstanceQuery createProcessInstanceQuery();
-  
-  /**
-   * Creates a new {@link EventSubscriptionQuery} instance, that can be used
-   * to query event subscriptions.
-   */
-  EventSubscriptionQuery createEventSubscriptionQuery();
-  
+    
   /**
    * Suspends the process instance with the given id. 
    * 
