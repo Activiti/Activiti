@@ -37,7 +37,6 @@ public class EventSubscriptionQueryImpl
   protected String executionId;
   protected String processInstanceId;
   protected String activityId;
-  protected String eventScope;
 
   public EventSubscriptionQueryImpl(CommandContext commandContext) {
     super(commandContext);
@@ -95,14 +94,6 @@ public class EventSubscriptionQueryImpl
     return this;
   }
   
-  public EventSubscriptionQueryImpl eventScope(String eventScope) {
-    if (eventScope == null) {
-      throw new ActivitiException("Provided event scope is null");
-    }
-    this.eventScope = eventScope;
-    return this;
-  }
-  
   public EventSubscriptionQueryImpl orderByCreated() {
     return orderBy(EventSubscriptionQueryProperty.CREATED);
   }
@@ -145,9 +136,6 @@ public class EventSubscriptionQueryImpl
   }
   public String getActivityId() {
     return activityId;
-  }
-  public String getEventScope() {
-    return eventScope;
   }
 
 }
