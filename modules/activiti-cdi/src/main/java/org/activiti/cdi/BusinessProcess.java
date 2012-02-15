@@ -189,10 +189,7 @@ public class BusinessProcess implements Serializable {
    */
   public void signalExecution() {
     assertAssociated();
-    // TODO: add a map of process variables to the signal command 
-    // (here we rely on both commands being combined in a single transaction)
-    processEngine.getRuntimeService().setVariables(associationManager.getExecutionId(), associationManager.getBeanStore().getAllAndClear());
-    processEngine.getRuntimeService().signal(associationManager.getExecutionId());
+    processEngine.getRuntimeService().signal(associationManager.getExecutionId(), associationManager.getBeanStore().getAllAndClear());
     associationManager.disAssociate();
   }
   
