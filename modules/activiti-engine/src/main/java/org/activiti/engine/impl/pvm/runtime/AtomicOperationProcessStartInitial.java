@@ -40,11 +40,13 @@ public class AtomicOperationProcessStartInitial extends AbstractEventAtomicOpera
   protected void eventNotificationsCompleted(InterpretableExecution execution) {
     ActivityImpl activity = (ActivityImpl) execution.getActivity();
     ProcessDefinitionImpl processDefinition = execution.getProcessDefinition();
-    if (activity==processDefinition.getInitial()) {
+    StartingExecution startingExecution = execution.getStartingExecution();
+    if (activity==startingExecution.getInitial()) {
+      execution.disposeStartingExecution();
       execution.performOperation(ACTIVITY_EXECUTE);
 
     } else {
-      List<ActivityImpl> initialActivityStack = processDefinition.getInitialActivityStack();
+      List<ActivityImpl> initialActivityStack = processDefinition.getInitialActivityStack(startingExecution.getInitial());
       int index = initialActivityStack.indexOf(activity);
       activity = initialActivityStack.get(index+1);
 

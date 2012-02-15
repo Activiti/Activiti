@@ -54,6 +54,7 @@ import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 import org.activiti.engine.impl.pvm.runtime.OutgoingExecution;
+import org.activiti.engine.impl.pvm.runtime.StartingExecution;
 import org.activiti.engine.impl.variable.VariableDeclaration;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
@@ -98,6 +99,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   
   /** reference to a subprocessinstance, not-null if currently subprocess is started from this execution */
   protected ExecutionEntity subProcessInstance;
+  
+  protected StartingExecution startingExecution;
   
   // state/type of execution ////////////////////////////////////////////////// 
   
@@ -204,6 +207,10 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   public ExecutionEntity() {
   }
   
+  public ExecutionEntity(ActivityImpl activityImpl) {
+    this.startingExecution = new StartingExecution(activityImpl);
+  }
+
   /** creates a new execution. properties processDefinition, processInstance and activity will be initialized. */  
   public ExecutionEntity createExecution() {
     // create the new child execution
@@ -306,6 +313,9 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   }
   
   public void start() {
+    if(startingExecution == null && isProcessInstance()) {
+      startingExecution = new StartingExecution(processDefinition.getInitial());
+    }
     performOperation(AtomicOperation.PROCESS_START);
   }
 
@@ -1187,5 +1197,13 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
   public void setEventScope(boolean isEventScope) {
     this.isEventScope = isEventScope;
+  }
+  
+  public StartingExecution getStartingExecution() {
+    return startingExecution;
+  }
+  
+  public void disposeStartingExecution() {
+    startingExecution = null;
   }
 }

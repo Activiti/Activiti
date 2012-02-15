@@ -76,6 +76,9 @@ public class ExecutionImpl implements
   /** reference to a subprocessinstance, not-null if currently subprocess is started from this execution */
   protected ExecutionImpl subProcessInstance;
   
+  /** only available until the process instance is started */
+  protected StartingExecution startingExecution;
+  
   // state/type of execution ////////////////////////////////////////////////// 
   
   /** indicates if this execution represents an active path of execution.
@@ -123,7 +126,11 @@ public class ExecutionImpl implements
   protected boolean isOperating = false;
 
   /* Default constructor for ibatis/jpa/etc. */
-  public ExecutionImpl() {
+  public ExecutionImpl() {    
+  }
+  
+  public ExecutionImpl(ActivityImpl initial) {
+    startingExecution = new StartingExecution(initial);
   }
   
   // lifecycle methods ////////////////////////////////////////////////////////
@@ -383,6 +390,9 @@ public class ExecutionImpl implements
   // process instance start implementation ////////////////////////////////////
 
   public void start() {
+    if(startingExecution == null && isProcessInstance()) {
+      startingExecution = new StartingExecution(processDefinition.getInitial());
+    }
     performOperation(AtomicOperation.PROCESS_START);
   }
   
@@ -790,5 +800,13 @@ public class ExecutionImpl implements
     
   public void setEventScope(boolean isEventScope) {
     this.isEventScope = isEventScope;
+  }
+  
+  public StartingExecution getStartingExecution() {
+    return startingExecution;
+  }
+  
+  public void disposeStartingExecution() {
+    startingExecution = null;
   }
 }

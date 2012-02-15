@@ -367,18 +367,18 @@ public class BpmnParse extends Parse {
       String itemRef = this.resolveName(messageElement.attribute("itemRef"));
       String name = messageElement.attribute("name");
       
-      MessageDefinition messageDefinition = new MessageDefinition(id, name);
+      MessageDefinition messageDefinition = new MessageDefinition(this.targetNamespace + ":" + id, name);
       
       if(itemRef != null) {
-        ItemDefinition itemDefinition = this.itemDefinitions.get(itemRef);
-        if(itemDefinition == null) {
-          addError(itemRef + " does not exist", messageElement);          
+        if(!this.itemDefinitions.containsKey(itemRef)) {
+            addError(itemRef + " does not exist", messageElement);          
         } else {
-          messageDefinition.setItemDefinition(itemDefinition);
+            ItemDefinition itemDefinition = this.itemDefinitions.get(itemRef);
+            messageDefinition.setItemDefinition(itemDefinition);
         }
       }
-      
       this.messages.put(messageDefinition.getId(), messageDefinition);
+      
     }
   }
   
@@ -690,87 +690,139 @@ public class BpmnParse extends Parse {
    */
   public void parseStartEvents(Element parentElement, ScopeImpl scope) {
     List<Element> startEventElements = parentElement.elements("startEvent");
-    
-    if (startEventElements.size() > 0) {
-
-      Element startEventElement = startEventElements.get(0);
-    
+    List<ActivityImpl> startEventActivities = new ArrayList<ActivityImpl>();
+    for (Element startEventElement : startEventElements) {
+      
       ActivityImpl startEventActivity = createActivityOnScope(startEventElement, scope);
 
-      if (scope instanceof ProcessDefinitionEntity) {
-        
-        ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) scope;
-        if (processDefinition.getInitial() != null) {
-          // in order to support this, the initial should here be replaced with
-          // a kind of hidden decision activity that has pvm transitions to all
-          // of the visible bpmn start events
-          addError("multiple startEvents in a process definition are not yet supported", startEventElement);
-        }
-        processDefinition.setInitial(startEventActivity);
-
-        StartFormHandler startFormHandler;
-        String startFormHandlerClassName = startEventElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "formHandlerClass");
-        if (startFormHandlerClassName != null) {
-          startFormHandler = (StartFormHandler) ReflectUtil.instantiate(startFormHandlerClassName);
-        } else {
-          startFormHandler = new DefaultStartFormHandler();
-        }
-        startFormHandler.parseConfiguration(startEventElement, deployment, processDefinition, this);
-
-        processDefinition.setStartFormHandler(startFormHandler);
-
-        String initiatorVariableName = startEventElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "initiator");
-        if (initiatorVariableName != null) {
-          processDefinition.setProperty(PROPERTYNAME_INITIATOR_VARIABLE_NAME, initiatorVariableName);
-        }
-        // only allowed for process...
-        Element timerEventDefinition = startEventElement.element("timerEventDefinition");
-        Element messageEventDefinition = startEventElement.element("messageEventDefinition");        
-        if (timerEventDefinition != null) {
-          parseTimerStartEventDefinition(timerEventDefinition, startEventActivity, processDefinition);
-        } else if(messageEventDefinition != null) {
-          parseMessageStartEventDefinition(messageEventDefinition, startEventActivity, processDefinition);
-        }
+      if (scope instanceof ProcessDefinitionEntity) {        
+        parseProcessDefinitionStartEvent(startEventActivity, startEventElement, parentElement, scope);           
+        startEventActivities.add(startEventActivity);
       } else {
-        scope.setProperty(PROPERTYNAME_INITIAL, startEventActivity);
-        // BPMN 2.0 Spec: "The Error Start Event is only allowed for triggering an in-line Event Sub-Process."
-        Element errorEventDefinition = startEventElement.element("errorEventDefinition");
-        if (errorEventDefinition != null) {
-          startEventActivity.setProperty("type", "errorStartEvent");
-          String errorRef = errorEventDefinition.attribute("errorRef");
-          Error error = null;
-          ErrorEventDefinition definition = new ErrorEventDefinition(startEventActivity.getId());
-          if (errorRef != null) {
-            error = errors.get(errorRef);
-            String errorCode = error == null ? errorRef : error.getErrorCode();
-            definition.setErrorCode(errorCode);
-          }
-          ScopeImpl catchingScope = ((ActivityImpl)scope).getParent();
-          definition.setPrecedence(10);
-          addErrorEventDefinition(definition, catchingScope);
-          startEventActivity.setActivityBehavior(new EventSubProcessStartEventActivityBehavior());
-        }
-      }
-
-      // Currently only none and error start events supported
-
-      // TODO: a subprocess is only allowed to have a none start event unless it is an Event Sub-Process
-      if (startEventActivity.getActivityBehavior() == null) {
-        startEventActivity.setActivityBehavior(new NoneStartEventActivityBehavior());
+        parseScopeStartEvent(startEventActivity, startEventElement, parentElement, scope);
       }
 
       for (BpmnParseListener parseListener : parseListeners) {
         parseListener.parseStartEvent(startEventElement, scope, startEventActivity);
       }
     }
+    
+    if(scope instanceof ProcessDefinitionEntity) {
+      selectInitial(startEventActivities, (ProcessDefinitionEntity) scope, parentElement);
+      parseStartFormHandlers(startEventElements, (ProcessDefinitionEntity) scope);
+    }
   }
 
+  protected void selectInitial(List<ActivityImpl> startEventActivities, ProcessDefinitionEntity processDefinition, Element parentElement) {
+    ActivityImpl initial = null;
+    // validate that there is s single none start event / timer start event:
+    for (ActivityImpl activityImpl : startEventActivities) {
+      if(!activityImpl.getProperty("type").equals("messageStartEvent")) {
+        if(initial == null) {
+          initial = activityImpl;          
+        } else {
+          addError("multiple none start events or timer start events not supported on process definition", parentElement);
+        }
+      }
+    }
+    // if there is a start event, select it as initial, regardless of it's type:
+    if(initial == null && startEventActivities.size() == 1) {
+      initial = startEventActivities.get(0);
+    }
+    processDefinition.setInitial(initial);
+  }
+
+  protected void parseProcessDefinitionStartEvent(ActivityImpl startEventActivity, Element startEventElement, Element parentElement, ScopeImpl scope) {
+    ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) scope;
+  
+    String initiatorVariableName = startEventElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "initiator");
+    if (initiatorVariableName != null) {
+      processDefinition.setProperty(PROPERTYNAME_INITIATOR_VARIABLE_NAME, initiatorVariableName);
+    }
+
+    // all start events share the same behavior:
+    startEventActivity.setActivityBehavior(new NoneStartEventActivityBehavior());
+    
+    Element timerEventDefinition = startEventElement.element("timerEventDefinition");
+    Element messageEventDefinition = startEventElement.element("messageEventDefinition");        
+    if (timerEventDefinition != null) {
+      parseTimerStartEventDefinition(timerEventDefinition, startEventActivity, processDefinition);
+    } else if(messageEventDefinition != null) {
+      parseMessageStartEventDefinition(messageEventDefinition, startEventActivity, processDefinition);
+    }
+  }
+  
+  protected void parseStartFormHandlers(List<Element> startEventElements, ProcessDefinitionEntity processDefinition) {
+    if(processDefinition.getInitial() != null) {
+      for (Element startEventElement : startEventElements) {
+        
+        if(startEventElement.attribute("id").equals(processDefinition.getInitial().getId())) {
+          
+          StartFormHandler startFormHandler;
+          String startFormHandlerClassName = startEventElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "formHandlerClass");
+          if (startFormHandlerClassName != null) {
+            startFormHandler = (StartFormHandler) ReflectUtil.instantiate(startFormHandlerClassName);
+          } else {
+            startFormHandler = new DefaultStartFormHandler();
+          }
+          startFormHandler.parseConfiguration(startEventElement, deployment, processDefinition, this);
+      
+          processDefinition.setStartFormHandler(startFormHandler);
+        }
+        
+      }
+    }
+  }
+
+  protected void parseScopeStartEvent(ActivityImpl startEventActivity, Element startEventElement, Element parentElement, ScopeImpl scope) {
+    if(scope.getProperty(PROPERTYNAME_INITIAL) == null) {
+      
+      scope.setProperty(PROPERTYNAME_INITIAL, startEventActivity);
+          
+      Object triggeredByEvent = scope.getProperty("triggeredByEvent");
+      boolean isTriggeredByEvent = triggeredByEvent!=null && ((Boolean)triggeredByEvent==true);
+      
+      Element errorEventDefinition = startEventElement.element("errorEventDefinition");
+      if (errorEventDefinition != null) {      
+        if(isTriggeredByEvent) {        
+          parseErrorStartEventDefinition(errorEventDefinition, startEventActivity, scope);
+        } else {
+          addError("errorEventDefinition only allowed on start event if subprocess is an event subprocess", errorEventDefinition);                
+        }
+      } else {
+        if(!isTriggeredByEvent) {
+          startEventActivity.setActivityBehavior(new NoneStartEventActivityBehavior());  
+        } else {
+          addError("none start event not allowed for event subprocess", startEventElement);
+        }
+      }
+    } else {
+      addError("multiple start events not supported for subprocess", startEventElement);
+    }
+  }
+
+  protected void parseErrorStartEventDefinition(Element errorEventDefinition, ActivityImpl startEventActivity, ScopeImpl scope) {  
+    startEventActivity.setProperty("type", "errorStartEvent");
+    String errorRef = errorEventDefinition.attribute("errorRef");
+    Error error = null;
+    ErrorEventDefinition definition = new ErrorEventDefinition(startEventActivity.getId());
+    if (errorRef != null) {
+      error = errors.get(errorRef);
+      String errorCode = error == null ? errorRef : error.getErrorCode();
+      definition.setErrorCode(errorCode);
+    }
+    ScopeImpl catchingScope = ((ActivityImpl)scope).getParent();
+    definition.setPrecedence(10);
+    addErrorEventDefinition(definition, catchingScope);
+    startEventActivity.setActivityBehavior(new EventSubProcessStartEventActivityBehavior());
+  }
+ 
   protected void parseMessageStartEventDefinition(Element messageEventDefinition, ActivityImpl startEventActivity, ProcessDefinitionEntity processDefinition) {
     String messageRef = messageEventDefinition.attribute("messageRef");
     if(messageRef == null) {
       addError("attriute 'messageRef' is required", messageEventDefinition);
     }
-    MessageDefinition messageDefinition = messages.get(messageRef);
+    MessageDefinition messageDefinition = messages.get(resolveName(messageRef));
     if(messageDefinition == null) {
       addError("Invalid 'messageRef': no message with id '"+messageRef+"' found.", messageEventDefinition);
     }

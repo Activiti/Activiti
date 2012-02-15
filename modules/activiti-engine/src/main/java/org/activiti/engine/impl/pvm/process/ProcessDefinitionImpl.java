@@ -14,8 +14,12 @@
 package org.activiti.engine.impl.pvm.process;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmProcessDefinition;
 import org.activiti.engine.impl.pvm.PvmProcessInstance;
 import org.activiti.engine.impl.pvm.runtime.ExecutionImpl;
@@ -33,7 +37,7 @@ public class ProcessDefinitionImpl extends ScopeImpl implements PvmProcessDefini
   protected String name;
   protected String description;
   protected ActivityImpl initial;
-  protected List<ActivityImpl> initialActivityStack;
+  protected Map<ActivityImpl, List<ActivityImpl>> initialActivityStacks = new HashMap<ActivityImpl, List<ActivityImpl>>();
 
   public ProcessDefinitionImpl(String id) {
     super(id, null);
@@ -41,14 +45,26 @@ public class ProcessDefinitionImpl extends ScopeImpl implements PvmProcessDefini
   }
 
   public PvmProcessInstance createProcessInstance() {
-    InterpretableExecution processInstance = newProcessInstance();
+    return createProcessInstanceForInitial(initial);
+  }
+  
+  /** creates a process instance using the provided activity as initial */
+  public PvmProcessInstance createProcessInstanceForInitial(ActivityImpl initial) {
+    
+    if(initial == null) {
+      throw new ActivitiException("Cannot start process instance, initial is null");
+    }
+    
+    InterpretableExecution processInstance = newProcessInstance(initial);
     processInstance.setProcessDefinition(this);
     processInstance.setProcessInstance(processInstance);
     processInstance.initialize();
 
     InterpretableExecution scopeInstance = processInstance;
-    List<ActivityImpl> initialActivities = getInitialActivityStack();
-    for (ActivityImpl initialActivity: initialActivities) {
+    
+    List<ActivityImpl> initialActivityStack = getInitialActivityStack(initial);
+    
+    for (ActivityImpl initialActivity: initialActivityStack) {
       if (initialActivity.isScope()) {
         scopeInstance = (InterpretableExecution) scopeInstance.createExecution();
         scopeInstance.setActivity(initialActivity);
@@ -62,52 +78,27 @@ public class ProcessDefinitionImpl extends ScopeImpl implements PvmProcessDefini
 
     return processInstance;
   }
-  
-  /** creates a process instance using the provided activity as initial */
-  public PvmProcessInstance createProcessInstanceForInitial(ActivityImpl startActivity) {
-    InterpretableExecution processInstance = newProcessInstance();
-    processInstance.setProcessDefinition(this);
-    processInstance.setProcessInstance(processInstance);
-    processInstance.initialize();
 
-    InterpretableExecution scopeInstance = processInstance;
-    
-    ArrayList<ActivityImpl> initialActivityStack = new ArrayList<ActivityImpl>();
-    ActivityImpl activity = startActivity;
-    while (activity!=null) {
-      initialActivityStack.add(0, activity);
-      activity = activity.getParentActivity();
-    }
-    
-    for (ActivityImpl initialActivity: initialActivityStack) {
-      if (initialActivity.isScope()) {
-        scopeInstance = (InterpretableExecution) scopeInstance.createExecution();
-        scopeInstance.setActivity(initialActivity);
-        if (initialActivity.isScope()) {
-          scopeInstance.initialize();
-        }
-      }
-    }
-    
-    scopeInstance.setActivity(startActivity);
-
-    return processInstance;
+  public List<ActivityImpl> getInitialActivityStack() {
+    return getInitialActivityStack(initial);    
   }
-
-  public synchronized List<ActivityImpl> getInitialActivityStack() {
-    if (initialActivityStack==null) {
+  
+  public synchronized List<ActivityImpl> getInitialActivityStack(ActivityImpl startActivity) {
+    List<ActivityImpl> initialActivityStack = initialActivityStacks.get(startActivity);
+    if(initialActivityStack == null) {
       initialActivityStack = new ArrayList<ActivityImpl>();
-      ActivityImpl activity = initial;
+      ActivityImpl activity = startActivity;
       while (activity!=null) {
         initialActivityStack.add(0, activity);
         activity = activity.getParentActivity();
       }
+      initialActivityStacks.put(startActivity, initialActivityStack);
     }
     return initialActivityStack;
   }
 
-  protected InterpretableExecution newProcessInstance() {
-    return new ExecutionImpl();
+  protected InterpretableExecution newProcessInstance(ActivityImpl startActivity) {
+    return new ExecutionImpl(startActivity);
   }
 
   public String getDiagramResourceName() {

@@ -75,4 +75,8 @@ public interface InterpretableExecution extends ActivityExecution, ExecutionList
   boolean isEventScope();
   
   void setEventScope(boolean isEventScope);
+  
+  StartingExecution getStartingExecution();
+  
+  void disposeStartingExecution();
 }

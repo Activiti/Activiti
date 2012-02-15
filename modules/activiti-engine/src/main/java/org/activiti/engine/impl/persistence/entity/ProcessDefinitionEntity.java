@@ -132,8 +132,8 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   
   
   @Override
-  protected InterpretableExecution newProcessInstance() {
-    ExecutionEntity processInstance = new ExecutionEntity();
+  protected InterpretableExecution newProcessInstance(ActivityImpl activityImpl) {
+    ExecutionEntity processInstance = new ExecutionEntity(activityImpl);
     processInstance.insert();
     return processInstance;
   }

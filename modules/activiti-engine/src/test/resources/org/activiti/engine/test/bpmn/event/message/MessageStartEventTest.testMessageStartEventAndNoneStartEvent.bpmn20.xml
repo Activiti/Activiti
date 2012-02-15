@@ -7,18 +7,19 @@
   
   <message id="newInvoice" name="newInvoiceMessage" />
   
-  <process id="singleMessageStartEvent">
+  <process id="testProcess">
   
-    <startEvent id="theStart" >
+    <startEvent id="messageStart" >
     	<messageEventDefinition messageRef="tns:newInvoice" />
     </startEvent>
     
-    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="task" />
-  
-    <userTask id="task" name="Task" />
-    <sequenceFlow id="flow2" sourceRef="task" targetRef="theEnd" />
+    <startEvent id="noneStart" />
     
-    <endEvent id="theEnd" />
+    <sequenceFlow sourceRef="messageStart" targetRef="taskAfterMessageStart" />
+    <sequenceFlow sourceRef="noneStart" targetRef="taskAfterNoneStart" />
+  
+    <userTask id="taskAfterMessageStart" name="Task" />
+    <userTask id="taskAfterNoneStart" name="Task" />
     
   </process>
 

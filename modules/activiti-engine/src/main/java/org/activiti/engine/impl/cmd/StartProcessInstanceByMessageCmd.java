@@ -13,7 +13,6 @@
 
 package org.activiti.engine.impl.cmd;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;

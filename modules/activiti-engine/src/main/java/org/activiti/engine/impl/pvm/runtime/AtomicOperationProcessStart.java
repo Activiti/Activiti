@@ -15,7 +15,6 @@ package org.activiti.engine.impl.pvm.runtime;
 
 import java.util.List;
 
-import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
@@ -23,6 +22,7 @@ import org.activiti.engine.impl.pvm.process.ScopeImpl;
 
 /**
  * @author Tom Baeyens
+ * @author Daniel Meyer
  */
 public class AtomicOperationProcessStart extends AbstractEventAtomicOperation {
 
@@ -39,7 +39,8 @@ public class AtomicOperationProcessStart extends AbstractEventAtomicOperation {
   @Override
   protected void eventNotificationsCompleted(InterpretableExecution execution) {
     ProcessDefinitionImpl processDefinition = execution.getProcessDefinition();
-    List<ActivityImpl> initialActivityStack = processDefinition.getInitialActivityStack();
+    StartingExecution startingExecution = execution.getStartingExecution();
+    List<ActivityImpl> initialActivityStack = processDefinition.getInitialActivityStack(startingExecution.getInitial());  
     execution.setActivity(initialActivityStack.get(0));
     execution.performOperation(PROCESS_START_INITIAL);
   }
