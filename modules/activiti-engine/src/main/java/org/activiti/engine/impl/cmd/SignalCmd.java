@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -30,11 +31,13 @@ public class SignalCmd implements Command<Object>, Serializable {
   protected String executionId;
   protected String signalName;
   protected Object signalData;
+  protected final Map<String, Object> processVariables;
   
-  public SignalCmd(String executionId, String signalName, Object signalData) {
+  public SignalCmd(String executionId, String signalName, Object signalData, Map<String, Object> processVariables) {
     this.executionId = executionId;
     this.signalName = signalName;
     this.signalData = signalData;
+    this.processVariables = processVariables;
   }
 
   public Object execute(CommandContext commandContext) { 
@@ -48,6 +51,10 @@ public class SignalCmd implements Command<Object>, Serializable {
     
     if (execution==null) {
       throw new ActivitiException("execution "+executionId+" doesn't exist");
+    }
+    
+    if(processVariables != null) {
+      execution.setVariables(processVariables);
     }
     
     execution.signal(signalName, signalData);

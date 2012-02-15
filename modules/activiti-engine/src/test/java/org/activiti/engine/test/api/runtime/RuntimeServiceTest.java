@@ -217,6 +217,21 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     }
   }
   
+  @Deployment
+  public void testSignalWithProcessVariables() {
+    
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testSignalWithProcessVariables");
+    Map<String, Object> processVariables = new HashMap<String, Object>();
+    processVariables.put("variable", "value");
+    
+    // signal the execution while passing in the variables
+    runtimeService.signal(processInstance.getId(), processVariables);
+    
+    Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
+    assertEquals(variables, processVariables);
+       
+  }
+  
   public void testGetVariablesUnexistingExecutionId() {
     try {
       runtimeService.getVariables("unexistingExecutionId");
