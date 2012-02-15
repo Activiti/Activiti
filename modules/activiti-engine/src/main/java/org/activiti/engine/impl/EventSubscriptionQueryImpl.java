@@ -105,7 +105,7 @@ public class EventSubscriptionQueryImpl
   }
   
   public EventSubscriptionQuery orderByCreated() {
-    return this;    
+    return orderBy(EventSubscriptionQueryProperty.CREATED);
   }
   
   //results //////////////////////////////////////////

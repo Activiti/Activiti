@@ -11,21 +11,24 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.persistence.entity;
+package org.activiti.engine.impl.event;
+
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 
 
 /**
  * @author Daniel Meyer
  */
-public class MessageEventSubscriptionEntity extends EventSubscriptionEntity {
+public class MessageEventHandler implements EventHandler {
+  
+  public final static String TYPE = "message";
 
-  public MessageEventSubscriptionEntity(ExecutionEntity executionEntity) {
-    super(executionEntity);
-    eventType = "message";
+  public String getEventHandlerType() {
+    return TYPE;
   }
-    
-  public MessageEventSubscriptionEntity() {
-    eventType = "message";
+
+  public void handleEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext) {
   }
 
 }

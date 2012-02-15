@@ -138,6 +138,7 @@ public class BpmnParse extends Parse {
   public static final String PROPERTYNAME_COMPENSATION_HANDLER_ID = "compensationHandler";
   public static final String PROPERTYNAME_IS_FOR_COMPENSATION = "isForCompensation";
   public static final String PROPERTYNAME_ERROR_EVENT_DEFINITIONS = "errorEventDefinitions";
+  public static final String PROPERTYNAME_MESSAGE_EVENT_DEFINITIONS = "messageEventDefinitions";
 
   /** The deployment to which the parsed process definitions will be added. */
   protected DeploymentEntity deployment;
@@ -364,14 +365,20 @@ public class BpmnParse extends Parse {
     for (Element messageElement : rootElement.elements("message")) {
       String id = messageElement.attribute("id");
       String itemRef = this.resolveName(messageElement.attribute("itemRef"));
-
-      if (!this.itemDefinitions.containsKey(itemRef)) {
-        addError(itemRef + " does not exist", messageElement);
-      } else {
+      String name = messageElement.attribute("name");
+      
+      MessageDefinition messageDefinition = new MessageDefinition(id, name);
+      
+      if(itemRef != null) {
         ItemDefinition itemDefinition = this.itemDefinitions.get(itemRef);
-        MessageDefinition message = new MessageDefinition(this.targetNamespace + ":" + id, itemDefinition);
-        this.messages.put(message.getId(), message);
+        if(itemDefinition == null) {
+          addError(itemRef + " does not exist", messageElement);          
+        } else {
+          messageDefinition.setItemDefinition(itemDefinition);
+        }
       }
+      
+      this.messages.put(messageDefinition.getId(), messageDefinition);
     }
   }
   
@@ -683,15 +690,15 @@ public class BpmnParse extends Parse {
    */
   public void parseStartEvents(Element parentElement, ScopeImpl scope) {
     List<Element> startEventElements = parentElement.elements("startEvent");
-    if (startEventElements.size() > 1) {
-      addError("Multiple start events are currently unsupported", parentElement);
-    } else if (startEventElements.size() > 0) {
+    
+    if (startEventElements.size() > 0) {
 
       Element startEventElement = startEventElements.get(0);
     
       ActivityImpl startEventActivity = createActivityOnScope(startEventElement, scope);
 
       if (scope instanceof ProcessDefinitionEntity) {
+        
         ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) scope;
         if (processDefinition.getInitial() != null) {
           // in order to support this, the initial should here be replaced with
@@ -718,8 +725,11 @@ public class BpmnParse extends Parse {
         }
         // only allowed for process...
         Element timerEventDefinition = startEventElement.element("timerEventDefinition");
+        Element messageEventDefinition = startEventElement.element("messageEventDefinition");        
         if (timerEventDefinition != null) {
           parseTimerStartEventDefinition(timerEventDefinition, startEventActivity, processDefinition);
+        } else if(messageEventDefinition != null) {
+          parseMessageStartEventDefinition(messageEventDefinition, startEventActivity, processDefinition);
         }
       } else {
         scope.setProperty(PROPERTYNAME_INITIAL, startEventActivity);
@@ -753,6 +763,33 @@ public class BpmnParse extends Parse {
         parseListener.parseStartEvent(startEventElement, scope, startEventActivity);
       }
     }
+  }
+
+  protected void parseMessageStartEventDefinition(Element messageEventDefinition, ActivityImpl startEventActivity, ProcessDefinitionEntity processDefinition) {
+    String messageRef = messageEventDefinition.attribute("messageRef");
+    if(messageRef == null) {
+      addError("attriute 'messageRef' is required", messageEventDefinition);
+    }
+    MessageDefinition messageDefinition = messages.get(messageRef);
+    if(messageDefinition == null) {
+      addError("Invalid 'messageRef': no message with id '"+messageRef+"' found.", messageEventDefinition);
+    }
+    
+    startEventActivity.setProperty("type", "messageStartEvent");
+    
+    // create message event subscription:
+    MessageEventDefinition subscription = new MessageEventDefinition(messageDefinition.getId(), messageDefinition.getName(), startEventActivity.getId());
+    addMessageEventDefinition(subscription, processDefinition);    
+  }
+
+  @SuppressWarnings("unchecked")
+  protected void addMessageEventDefinition(MessageEventDefinition subscription, ScopeImpl scope) {
+    List<MessageEventDefinition> messageEventDefinitions = (List<MessageEventDefinition>) scope.getProperty(PROPERTYNAME_MESSAGE_EVENT_DEFINITIONS);
+    if(messageEventDefinitions == null) {
+      messageEventDefinitions = new ArrayList<MessageEventDefinition>();
+      scope.setProperty(PROPERTYNAME_MESSAGE_EVENT_DEFINITIONS, messageEventDefinitions);
+    }
+    messageEventDefinitions.add(subscription);
   }
 
   /**

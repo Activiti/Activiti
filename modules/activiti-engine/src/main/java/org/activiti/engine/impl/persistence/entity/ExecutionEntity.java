@@ -842,7 +842,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
               
     for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
       if (replacedBy!=null) {
-        eventSubscription.setExecutionId(replacedBy.getId());
+        eventSubscription.setExecution(replacedBy);
       } else {
         eventSubscription.delete();
       }        
@@ -850,7 +850,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
     for (CompensateEventSubscriptionEntity compensateEventSubscription : getCompensateEventSubscriptions()) {
       if (replacedBy!=null) {
-        compensateEventSubscription.setExecutionId(replacedBy.getId());
+        compensateEventSubscription.setExecution(replacedBy);
       } else {
         removeCompensateEventSubscription(compensateEventSubscription);
         compensateEventSubscription.delete();

@@ -14,6 +14,10 @@
     delete from ACT_RU_EVENT_SUBSCR where ID_ = #{id}
   </delete>
   
+  <delete id="deleteMessageEventSubscription" parameterType="string">
+    delete from ACT_RU_EVENT_SUBSCR where ID_ = #{id}
+  </delete>
+  
   <!-- RESULTMAP -->
 
   <resultMap id="eventSubscriptionResultMap" type="org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity">
@@ -114,6 +118,29 @@
     	and (EXECUTION_ID_ = #{executionId})
     	and (ACTIVITY_ID_ = #{activityId})
   </select>
+  
+  <select id="selectEventSubscriptionsByConfiguration" resultMap="eventSubscriptionResultMap" parameterType="java.util.Map">
+    select * 
+    from ACT_RU_EVENT_SUBSCR
+    where (EVENT_TYPE_ = #{eventType})
+    	and (CONFIGURATION_ = #{configuration})
+  </select>
+  
+  <select id="selectEventSubscriptionsByName" resultMap="eventSubscriptionResultMap" parameterType="java.util.Map">
+    select * 
+    from ACT_RU_EVENT_SUBSCR
+    where (EVENT_TYPE_ = #{eventType})
+    	and (EVENT_NAME_ = #{eventName})
+  </select>
+  
+   <select id="selectMessageStartEventSubscriptionByName" resultMap="eventSubscriptionResultMap" parameterType="java.lang.String">
+    select * 
+    from ACT_RU_EVENT_SUBSCR
+    where (EVENT_TYPE_ = 'message')
+    	and (EVENT_NAME_ = #{eventName})
+    	and EXECUTION_ID_ is null
+  </select>
+  
   
   <!-- MESSAGE INSERT -->
   

@@ -18,9 +18,12 @@ import java.util.List;
 import org.activiti.engine.impl.DeploymentQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.event.MessageEventHandler;
+import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.Job;
 
 
 /**
@@ -43,27 +46,53 @@ public class DeploymentManager extends AbstractManager {
   }
   
   public void deleteDeployment(String deploymentId, boolean cascade) {
-    if (cascade) {
-      List<ProcessDefinition> processDefinitions = getDbSqlSession()
-        .createProcessDefinitionQuery()
-        .deploymentId(deploymentId)
-        .list();
+    List<ProcessDefinition> processDefinitions = getDbSqlSession()
+            .createProcessDefinitionQuery()
+            .deploymentId(deploymentId)
+            .list();
 
+    if (cascade) {
+
+      // delete process instances
       for (ProcessDefinition processDefinition: processDefinitions) {
         String processDefinitionId = processDefinition.getId();
         
         getProcessInstanceManager()
           .deleteProcessInstancesByProcessDefinition(processDefinitionId, "deleted deployment", cascade);
-
-        Context
-          .getProcessEngineConfiguration()
-          .getDeploymentCache()
-          .removeProcessDefinition(processDefinitionId);
+    
       }
     }
     
+    // delete process definitions from db
     getProcessDefinitionManager()
       .deleteProcessDefinitionsByDeploymentId(deploymentId);
+    
+    for (ProcessDefinition processDefinition : processDefinitions) {
+      String processDefinitionId = processDefinition.getId();
+      
+      // remove process definitions from cache:
+      Context
+        .getProcessEngineConfiguration()
+        .getDeploymentCache()
+        .removeProcessDefinition(processDefinitionId);
+      
+      // remove timer start events:
+      List<Job> timerStartJobs = Context.getCommandContext()
+        .getJobManager()
+        .findJobsByConfiguration(TimerStartEventJobHandler.TYPE, processDefinition.getKey());
+      for (Job job : timerStartJobs) {
+        ((JobEntity)job).delete();        
+      }
+      
+      // remove message event subscriptions:
+      List<EventSubscriptionEntity> findEventSubscriptionsByConfiguration = Context
+        .getCommandContext()
+        .getEventSubscriptionManager()
+        .findEventSubscriptionsByConfiguration(MessageEventHandler.TYPE, processDefinition.getKey());
+      for (EventSubscriptionEntity eventSubscriptionEntity : findEventSubscriptionsByConfiguration) {
+        eventSubscriptionEntity.delete();        
+      }
+    }
     
     getResourceManager()
       .deleteResourcesByDeploymentId(deploymentId);

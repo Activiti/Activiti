@@ -50,13 +50,15 @@ public abstract class EventSubscriptionEntity implements PersistentObject, Event
   
   /////////////////////////////////////////////
   
-  public EventSubscriptionEntity() { }
+  public EventSubscriptionEntity() { 
+    this.created = ClockUtil.getCurrentTime();
+  }
 
   public EventSubscriptionEntity(ExecutionEntity executionEntity) {
+    this();
     setExecution(executionEntity);
     setActivity(execution.getActivity());
-    this.processInstanceId = executionEntity.getProcessDefinitionId();
-    this.created = ClockUtil.getCurrentTime();
+    this.processInstanceId = executionEntity.getProcessInstanceId();
   }
   
   // processing /////////////////////////////

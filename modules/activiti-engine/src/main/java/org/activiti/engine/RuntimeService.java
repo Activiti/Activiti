@@ -29,6 +29,7 @@ import org.activiti.engine.runtime.ProcessInstanceQuery;
  * 
  * @author Tom Baeyens
  * @author Joram Barrez
+ * @author Daniel Meyer
  */
 public interface RuntimeService {
   
@@ -149,6 +150,53 @@ public interface RuntimeService {
    * @throws ActivitiException when no process definition is deployed with the given key. 
    */
   ProcessInstance startProcessInstanceById(String processDefinitionId, String businessKey, Map<String, Object> variables);
+  
+  /**
+   * <p>Signals the process engine that a message is received and starts a new 
+   * {@link ProcessInstance}.</p>
+   * 
+   * <p>Calling this method can have two different outcomes:
+   * <ul>
+   * <li>If the message name is associated with a message start event, a new
+   * process instance is started.</li>
+   * <li>If no subscription to a message with the given name exists, {@link ActivitiException}
+   * is thrown</li>
+   * </ul>
+   * </p>
+   *  
+   * @param messageName
+   *          the 'name' of the message as specified as an attribute on the
+   *          bpmn20 {@code <message name="messageName" />} element.
+   * @param processVariables
+   *          the 'payload' of the message. The variables are added as processes
+   *          variables to the started process instance.
+   * @return the {@link ProcessInstance} object representing the started process instance
+   * 
+   * @throws ActivitiExeception if no subscription to a message with the given name exists
+   * 
+   * @since 5.9
+   */
+  ProcessInstance startProcessInstanceByMessage(String messageName, Map<String, Object> processVariables);
+  
+  /**
+   * See {@link #startProcessInstanceByMessage(String, Map)}. In addition, this method allows 
+   * specifying a business key.
+   *  
+   * @param messageName
+   *          the 'name' of the message as specified as an attribute on the
+   *          bpmn20 {@code <message name="messageName" />} element.
+   * @param businessKey
+   *          the business key which is added to the started process instance 
+   * @param processVariables
+   *          the 'payload' of the message. The variables are added as processes
+   *          variables to the started process instance.
+   * @return the {@link ProcessInstance} object representing the started process instance
+   * 
+   * @throws ActivitiExeception if no subscription to a message with the given name exists
+   * 
+   * @since 5.9
+   */
+  ProcessInstance startProcessInstanceByMessage(String messageName, String businessKey, Map<String, Object> processVariables);
 
   /** Delete an existing runtime process instance.
    * @param processInstanceId id of process instance to delete, cannot be null.
@@ -286,6 +334,5 @@ public interface RuntimeService {
    * @throws ActivitiException if no such processInstance can be found or if the process instance is already in state active.
    */
   void activateProcessInstanceById(String processInstanceId);
-  
-  
+    
 }

@@ -26,6 +26,7 @@ import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.form.StartFormHandler;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 import org.activiti.engine.impl.task.TaskDefinition;
@@ -59,8 +60,14 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
     super(null);
   }
   
-  public ExecutionEntity createProcessInstance(String businessKey) {
-	  ExecutionEntity processInstance = (ExecutionEntity) super.createProcessInstance();
+  public ExecutionEntity createProcessInstance(String businessKey, ActivityImpl initial) {
+    ExecutionEntity processInstance = null;
+  
+    if(initial == null) {
+      processInstance = (ExecutionEntity) super.createProcessInstance();
+    }else {
+      processInstance = (ExecutionEntity) super.createProcessInstanceForInitial(initial);
+    }
 
     CommandContext commandContext = Context.getCommandContext();
   
@@ -115,10 +122,14 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
 
     return processInstance;
   }
+  public ExecutionEntity createProcessInstance(String businessKey) {
+    return createProcessInstance(businessKey, null);
+  }
 
   public ExecutionEntity createProcessInstance() {
     return createProcessInstance(null);
   }
+  
   
   @Override
   protected InterpretableExecution newProcessInstance() {

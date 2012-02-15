@@ -25,10 +25,12 @@ public class MessageDefinition {
   protected String id;
   
   protected ItemDefinition itemDefinition;
+
+  protected String name;
   
-  public MessageDefinition(String id, ItemDefinition itemDefinition) {
+  public MessageDefinition(String id, String name) {
     this.id = id;
-    this.itemDefinition = itemDefinition;
+    this.name = name;
   }
   
   public MessageInstance createInstance() {
@@ -42,8 +44,20 @@ public class MessageDefinition {
   public StructureDefinition getStructureDefinition() {
     return this.itemDefinition.getStructureDefinition();
   }
+  
+  public void setItemDefinition(ItemDefinition itemDefinition) {
+    this.itemDefinition = itemDefinition;
+  }
 
   public String getId() {
     return this.id;
+  }
+  
+  public String getName() {
+    return name;
+  }
+  
+  public void setName(String name) {
+    this.name = name;
   }
 }

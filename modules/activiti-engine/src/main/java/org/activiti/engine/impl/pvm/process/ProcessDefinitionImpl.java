@@ -62,6 +62,37 @@ public class ProcessDefinitionImpl extends ScopeImpl implements PvmProcessDefini
 
     return processInstance;
   }
+  
+  /** creates a process instance using the provided activity as initial */
+  public PvmProcessInstance createProcessInstanceForInitial(ActivityImpl startActivity) {
+    InterpretableExecution processInstance = newProcessInstance();
+    processInstance.setProcessDefinition(this);
+    processInstance.setProcessInstance(processInstance);
+    processInstance.initialize();
+
+    InterpretableExecution scopeInstance = processInstance;
+    
+    ArrayList<ActivityImpl> initialActivityStack = new ArrayList<ActivityImpl>();
+    ActivityImpl activity = startActivity;
+    while (activity!=null) {
+      initialActivityStack.add(0, activity);
+      activity = activity.getParentActivity();
+    }
+    
+    for (ActivityImpl initialActivity: initialActivityStack) {
+      if (initialActivity.isScope()) {
+        scopeInstance = (InterpretableExecution) scopeInstance.createExecution();
+        scopeInstance.setActivity(initialActivity);
+        if (initialActivity.isScope()) {
+          scopeInstance.initialize();
+        }
+      }
+    }
+    
+    scopeInstance.setActivity(startActivity);
+
+    return processInstance;
+  }
 
   public synchronized List<ActivityImpl> getInitialActivityStack() {
     if (initialActivityStack==null) {

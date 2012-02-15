@@ -22,7 +22,6 @@ import java.util.Set;
 
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.Page;
-import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.runtime.EventSubscription;
 
@@ -110,6 +109,27 @@ public class EventSubscriptionManager extends AbstractManager {
     params.put("eventType", type);
     params.put("activityId", activityId);
     return getDbSqlSession().selectList(query, params);            
+  }
+
+  public List<EventSubscriptionEntity> findEventSubscriptionsByConfiguration(String type, String configuration) {
+    final String query = "selectEventSubscriptionsByConfiguration";    
+    Map<String,String> params = new HashMap<String, String>();
+    params.put("eventType", type);
+    params.put("configuration", configuration);
+    return getDbSqlSession().selectList(query, params);            
+  }
+
+  public List<EventSubscriptionEntity> findEventSubscriptionByName(String type, String eventName) {
+    final String query = "selectEventSubscriptionsByName";    
+    Map<String,String> params = new HashMap<String, String>();
+    params.put("eventType", type);
+    params.put("eventName", eventName);    
+    return getDbSqlSession().selectList(query, params);            
+  }
+
+  public MessageEventSubscriptionEntity findMessageStartEventSubscriptionByName(String messageName) {
+    MessageEventSubscriptionEntity entity = (MessageEventSubscriptionEntity) getDbSqlSession().selectOne("selectMessageStartEventSubscriptionByName", messageName);
+    return entity;
   }
    
 }
