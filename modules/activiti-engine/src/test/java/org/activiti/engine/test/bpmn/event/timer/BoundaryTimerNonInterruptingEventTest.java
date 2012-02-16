@@ -14,6 +14,7 @@
 package org.activiti.engine.test.bpmn.event.timer;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.activiti.engine.delegate.DelegateExecution;
@@ -23,6 +24,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -195,8 +197,45 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
 
     moveByHours(1);
     assertEquals(2, tq.count());
-
   }
+  
+  @Deployment
+  /**
+   * see http://jira.codehaus.org/browse/ACT-1106
+   */
+  public void FAILING_testReceiveTaskWithBoundaryTimer(){
+    // Set the clock fixed
+    Date startTime = new Date();
+    
+    HashMap<String, Object> variables = new HashMap<String, Object>();
+    variables.put("timeCycle", "R/PT1H");
+    
+    // After process start, there should be a timer created
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("nonInterruptingCycle", variables);
+
+    JobQuery jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
+    List<Job> jobs = jobQuery.list();
+    assertEquals(1, jobs.size());
+    
+    // The Execution Query should work normally and find executions in state "task"
+    List<Execution> executions = runtimeService.createExecutionQuery()
+      .activityId("task")
+      .variableValueEquals("timeCycle", "R/PT1H").list();
+    assertEquals(1, executions.size());
+    List<String> activeActivityIds = runtimeService.getActiveActivityIds(executions.get(0).getId());
+    assertEquals(1, activeActivityIds.size());
+    assertEquals("task", activeActivityIds.get(0));
+    
+    runtimeService.signal(executions.get(0).getId());
+
+//    // After setting the clock to time '1 hour and 5 seconds', the second timer should fire
+//    ClockUtil.setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
+//    waitForJobExecutorToProcessAllJobs(5000L, 25L);
+//    assertEquals(0L, jobQuery.count());
+
+    // which means the process has ended
+    assertProcessEnded(pi.getId());
+  }    
 
   //we cannot use waitForExecutor... method since there will always be one job left
   private void moveByHours(int hours) throws Exception {
