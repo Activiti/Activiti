@@ -831,6 +831,7 @@ public class BpmnParse extends Parse {
     
     // create message event subscription:
     MessageEventDefinition subscription = new MessageEventDefinition(messageDefinition.getId(), messageDefinition.getName(), startEventActivity.getId());
+    subscription.setStartEvent(true);
     addMessageEventDefinition(subscription, processDefinition);    
   }
 

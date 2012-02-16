@@ -13,8 +13,13 @@
 
 package org.activiti.engine.test.bpmn.event.message;
 
+import java.util.List;
+
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.EventSubscriptionQueryImpl;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -24,6 +29,95 @@ import org.activiti.engine.test.Deployment;
  * @author Daniel Meyer
  */
 public class MessageStartEventTest extends PluggableActivitiTestCase {
+  
+  public void testDeploymentCreatesSubscriptions() {
+    String deploymentId = repositoryService
+      .createDeployment()
+      .addClasspathResource("org/activiti/engine/test/bpmn/event/message/MessageStartEventTest.testSingleMessageStartEvent.bpmn20.xml")
+      .deploy()
+      .getId();
+    
+    List<EventSubscriptionEntity> eventSubscriptions = new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutorTxRequired())
+      .list();
+    
+    assertEquals(1, eventSubscriptions.size());
+    
+    repositoryService.deleteDeployment(deploymentId);    
+  }
+  
+  public void testSameMessageNameFails() {
+    String deploymentId = repositoryService
+      .createDeployment()
+      .addClasspathResource("org/activiti/engine/test/bpmn/event/message/MessageStartEventTest.testSingleMessageStartEvent.bpmn20.xml")
+      .deploy()
+      .getId();
+    try {
+      repositoryService
+        .createDeployment()
+        .addClasspathResource("org/activiti/engine/test/bpmn/event/message/otherProcessWithNewInvoiceMessage.bpmn20.xml")
+        .deploy();
+      fail("exception expected");
+    }catch (ActivitiException e) {
+      assertTrue(e.getMessage().contains("there already is a message event subscription for the message with name"));
+    }
+    
+    // clean db:
+    repositoryService.deleteDeployment(deploymentId);
+    
+  }
+  
+  public void testSameMessageNameInSameProcessFails() {
+    try {
+      repositoryService
+        .createDeployment()
+        .addClasspathResource("org/activiti/engine/test/bpmn/event/message/testSameMessageNameInSameProcessFails.bpmn20.xml")
+        .deploy();
+      fail("exception expected");
+    }catch (ActivitiException e) {
+      assertTrue(e.getMessage().contains("there already is a message event subscription for the message with name"));
+    }        
+  }
+  
+  public void testUpdateProcessVersionCancelsSubscriptions() {
+    String deploymentId = repositoryService
+      .createDeployment()
+      .addClasspathResource("org/activiti/engine/test/bpmn/event/message/MessageStartEventTest.testSingleMessageStartEvent.bpmn20.xml")
+      .deploy()
+      .getId();
+    
+    List<EventSubscriptionEntity> eventSubscriptions = new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutorTxRequired()).list();
+    List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
+        
+    assertEquals(1, eventSubscriptions.size());
+    assertEquals(1, processDefinitions.size());
+    
+    String newDeploymentId  = repositoryService
+      .createDeployment()
+      .addClasspathResource("org/activiti/engine/test/bpmn/event/message/MessageStartEventTest.testSingleMessageStartEvent.bpmn20.xml")
+      .deploy()
+      .getId();
+    
+    List<EventSubscriptionEntity> newEventSubscriptions = new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutorTxRequired()).list();
+    List<ProcessDefinition> newProcessDefinitions = repositoryService.createProcessDefinitionQuery().list();
+        
+    assertEquals(1, newEventSubscriptions.size());
+    assertEquals(2, newProcessDefinitions.size());
+    for (ProcessDefinition processDefinition : newProcessDefinitions) {
+      if(processDefinition.getVersion() == 1) {
+        for (EventSubscriptionEntity subscription : newEventSubscriptions) {
+          assertFalse(subscription.getConfiguration().equals(processDefinition.getId()));         
+        }
+      } else {
+        for (EventSubscriptionEntity subscription : newEventSubscriptions) {
+          assertTrue(subscription.getConfiguration().equals(processDefinition.getId()));         
+        }
+      }
+    }
+    assertFalse(eventSubscriptions.equals(newEventSubscriptions));
+    
+    repositoryService.deleteDeployment(deploymentId);   
+    repositoryService.deleteDeployment(newDeploymentId);
+  }
   
   @Deployment
   public void testSingleMessageStartEvent() {

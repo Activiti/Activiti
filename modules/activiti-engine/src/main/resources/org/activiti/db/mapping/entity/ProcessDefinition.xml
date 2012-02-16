@@ -74,6 +74,9 @@
   
   <sql id="selectProcessDefinitionsByQueryCriteriaSql">  
     from ACT_RE_PROCDEF PD
+    <if test="eventSubscriptionType != null">
+    	inner join ACT_RU_EVENT_SUBSCR EVT on PD.ID_ = EVT.CONFIGURATION_
+    </if>
     <where>
       <if test="id != null">
         PD.ID_ = #{id}
@@ -110,6 +113,9 @@
       </if>
       <if test="suspensionState != null">
         and (PD.SUSPENSION_STATE_ = #{suspensionState.stateCode})
+      </if>
+      <if test="eventSubscriptionType != null">
+      	and (EVT.EVENT_TYPE_ = #{eventSubscriptionType} and EVT.EVENT_NAME_ = #{eventSubscriptionName}) 
       </if>
     </where>
   </sql>

@@ -406,6 +406,23 @@ public class DbSqlSession implements Session {
     }
     return updatedObjects;
   }
+  
+  public <T extends PersistentObject> List<T> pruneDeletedEntities(List<T> listToPrune) {   
+    ArrayList<T> prunedList = new ArrayList<T>(listToPrune);
+    for (T potentiallyDeleted : listToPrune) {
+      for (DeleteOperation deleteOperation: deletedObjects) {
+        if (deleteOperation instanceof DeleteById) {
+          DeleteById deleteById = (DeleteById) deleteOperation;
+          if ( potentiallyDeleted.getClass().equals(deleteById.persistenceObjectClass)
+               && potentiallyDeleted.getId().equals(deleteById.persistentObjectId)
+             ) {            
+            prunedList.remove(potentiallyDeleted);
+          }
+        }
+      }
+    }
+    return prunedList;
+  }
 
   protected void flushInserts() {
     for (PersistentObject insertedObject: insertedObjects) {

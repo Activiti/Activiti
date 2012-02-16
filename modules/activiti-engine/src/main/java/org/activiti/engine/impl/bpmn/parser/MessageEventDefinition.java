@@ -28,6 +28,7 @@ public class MessageEventDefinition implements Serializable {
   protected final String name;
   protected final String id;
   protected final String activityId;
+  protected boolean isStartEvent;
 
   public MessageEventDefinition(String id, String name, String activityId) {
     this.id = id;
@@ -45,6 +46,14 @@ public class MessageEventDefinition implements Serializable {
   
   public String getActivityId() {
     return activityId;
+  }
+    
+  public void setStartEvent(boolean isStartEvent) {
+    this.isStartEvent = isStartEvent;
+  }
+    
+  public boolean isStartEvent() {
+    return isStartEvent;
   }
 
 }

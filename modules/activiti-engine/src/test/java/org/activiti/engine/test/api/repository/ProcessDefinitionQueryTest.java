@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 
@@ -294,6 +295,27 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
       query.singleResult();
       fail();
     } catch (ActivitiException e) {}
+  }
+  
+  public void testQueryByMessageSubscription() {
+    Deployment deployment = repositoryService.createDeployment()
+      .addClasspathResource("org/activiti/engine/test/api/repository/processWithNewBookingMessage.bpmn20.xml")
+      .addClasspathResource("org/activiti/engine/test/api/repository/processWithNewInvoiceMessage.bpmn20.xml")
+    .deploy();
+    
+    assertEquals(1,repositoryService.createProcessDefinitionQuery()
+      .messageEventSubscription("newInvoiceMessage")
+      .count());
+    
+    assertEquals(1,repositoryService.createProcessDefinitionQuery()
+      .messageEventSubscription("newBookingMessage")
+      .count());
+    
+    assertEquals(0,repositoryService.createProcessDefinitionQuery()
+      .messageEventSubscription("bogus")
+      .count());
+    
+    repositoryService.deleteDeployment(deployment.getId());
   }
   
 }

@@ -21,6 +21,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
+import org.activiti.engine.runtime.ExecutionQuery;
 
 
 /**
@@ -45,6 +46,9 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   protected Integer version;
   protected boolean latest = false;
   protected SuspensionState suspensionState;
+  
+  protected String eventSubscriptionName;
+  protected String eventSubscriptionType;
 
   public ProcessDefinitionQueryImpl() {
   }
@@ -156,6 +160,22 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   
   public ProcessDefinitionQuery suspended() {
     this.suspensionState = SuspensionState.SUSPENDED;
+    return this;
+  }
+  
+  public ProcessDefinitionQuery messageEventSubscription(String messageName) {
+    return eventSubscription("message", messageName);
+  }
+  
+  public ProcessDefinitionQuery eventSubscription(String eventType, String eventName) {
+    if(eventName == null) {
+      throw new ActivitiException("event name is null");
+    }
+    if(eventType == null) {
+      throw new ActivitiException("event type is null");
+    }
+    this.eventSubscriptionType = eventType;
+    this.eventSubscriptionName = eventName;
     return this;
   }
   

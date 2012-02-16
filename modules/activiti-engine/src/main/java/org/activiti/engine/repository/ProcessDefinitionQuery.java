@@ -97,6 +97,14 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
    * Only selects process definitions which are active
    */
   ProcessDefinitionQuery active();
+  
+  // Support for event subscriptions /////////////////////////////////////
+  
+  /**
+   * Selects the single process definition which has a start message event 
+   * with the messageName.
+   */
+  ProcessDefinitionQuery messageEventSubscription(String messageName);
 
   // ordering ////////////////////////////////////////////////////////////
   

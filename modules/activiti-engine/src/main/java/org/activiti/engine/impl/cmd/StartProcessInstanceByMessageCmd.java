@@ -55,8 +55,8 @@ public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance
       throw new ActivitiException("Cannot start process instance by message: no subscription to message with name '"+messageName+"' found.");
     }
     
-    String processDefinitionKey = messageEventSubscription.getConfiguration();
-    if(processDefinitionKey == null) {
+    String processDefinitionId = messageEventSubscription.getConfiguration();
+    if(processDefinitionId == null) {
       throw new ActivitiException("Cannot start process instance by message: subscription to message with name '"+messageName+"' is not a message start event.");
     }
         
@@ -64,9 +64,9 @@ public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance
             .getProcessEngineConfiguration()
             .getDeploymentCache();
           
-    ProcessDefinitionEntity processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKey(processDefinitionKey);
+    ProcessDefinitionEntity processDefinition = deploymentCache.findDeployedProcessDefinitionById(processDefinitionId);
     if (processDefinition == null) {
-        throw new ActivitiException("No process definition found for key '" + processDefinitionKey + "'");
+        throw new ActivitiException("No process definition found for id '" + processDefinitionId + "'");
     }
   
     ActivityImpl startActivity = processDefinition.findActivity(messageEventSubscription.getActivityId());
