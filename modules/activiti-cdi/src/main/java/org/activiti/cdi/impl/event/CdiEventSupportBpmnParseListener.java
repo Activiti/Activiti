@@ -197,6 +197,12 @@ public class CdiEventSupportBpmnParseListener implements BpmnParseListener {
   public void parseCompensateEventDefinition(Element compensateEventDefinition, ActivityImpl compensationActivity) {
 
   }
+
+  @Override
+  public void parseIntermediateThrowEvent(Element intermediateEventElement, ScopeImpl scope, ActivityImpl activity) {
+    addStartEventListener(activity);
+    addEndEventListener(activity);    
+  }
   
   
 
