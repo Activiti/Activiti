@@ -405,4 +405,34 @@ public class TransactionSubProcessTest extends PluggableActivitiTestCase {
   private EventSubscriptionQueryImpl createEventSubscriptionQuery() {
     return new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutorTxRequired());
   }
+  
+  @Deployment
+  public void testParseWithDI() {
+    
+    // this test simply makes sure we can parse a transaction subprocess with DI information
+    // the actual transaction behavior is tested by other testcases 
+    
+    //// failing case
+    
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("TransactionSubProcessTest");
+    
+    Task task = taskService.createTaskQuery().singleResult();
+    taskService.setVariable(task.getId(), "confirmed", false);
+    
+    taskService.complete(task.getId());
+    
+    assertProcessEnded(processInstance.getId());
+    
+    
+    ////// success case
+    
+    processInstance = runtimeService.startProcessInstanceByKey("TransactionSubProcessTest");
+    
+    task = taskService.createTaskQuery().singleResult();
+    taskService.setVariable(task.getId(), "confirmed", true);
+    
+    taskService.complete(task.getId());
+    
+    assertProcessEnded(processInstance.getId());
+  }
 }
