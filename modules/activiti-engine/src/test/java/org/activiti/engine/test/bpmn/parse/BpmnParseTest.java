@@ -124,6 +124,11 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
     }
   }
   
+  @Deployment
+  public void testParseDiagramInterchangeElementsForUnknownModelElements() {
+            
+  }
+  
   protected void assertActivityBounds(ActivityImpl activity, int x, int y, int width, int height) {
     assertEquals(x, activity.getX());
     assertEquals(y, activity.getY());

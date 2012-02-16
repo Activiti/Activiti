@@ -169,4 +169,14 @@ public class Element {
   public String getText() {
     return text.toString();
   }
+
+  /**
+   * allows to recursively collect the ids of all elements in the tree.
+   */
+  public void collectIds(List<String> ids) {
+    ids.add(attribute("id"));
+    for (Element child : elements) {
+      child.collectIds(ids);           
+    }
+  }
 }

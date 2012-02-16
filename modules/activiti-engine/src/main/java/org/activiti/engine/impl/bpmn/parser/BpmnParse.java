@@ -151,6 +151,10 @@ public class BpmnParse extends Parse {
 
   /** A map for storing sequence flow based on their id during parsing. */
   protected Map<String, TransitionImpl> sequenceFlows;
+  
+  /** A list of all element IDs. This allows us to parse only what we actually support but 
+   * still validate the references among elements we do not support. */
+  protected List<String> elementIds = new ArrayList<String>();
 
   /**
    * Mapping containing values stored during the first phase of parsing since
@@ -225,6 +229,7 @@ public class BpmnParse extends Parse {
    * Parses the 'definitions' root element
    */
   protected void parseRootElement() {
+    collectElementIds();    
     parseDefinitionsAttributes();
     parseImports();
     parseItemDefinitions();
@@ -241,6 +246,10 @@ public class BpmnParse extends Parse {
     for (BpmnParseListener parseListener : parseListeners) {
       parseListener.parseRootElement(rootElement, getProcessDefinitions());
     }
+  }
+
+  protected void collectElementIds() {
+    rootElement.collectIds(elementIds);
   }
 
   protected void parseDefinitionsAttributes() {
@@ -598,7 +607,14 @@ public class BpmnParse extends Parse {
       ActivityImpl sourceActivity = parentScope.findActivity(sourceRef);
       ActivityImpl targetActivity = parentScope.findActivity(targetRef);
       
-      if(sourceActivity != null && targetActivity != null) {
+      // an association may reference elements that are not parsed as activities (like for instance 
+      // test annotations so do not throw an exception if source sourceActivity or targetActivity are null)
+      // However, we make sure they reference 'something':
+      if(sourceActivity == null && !elementIds.contains(sourceRef)) {
+        addError("Invalid reference sourceRef '"+sourceRef+"' of association element ", associationElement);
+      } else if(targetRef == null && !elementIds.contains(targetRef)) {
+        addError("Invalid reference targetRef '"+targetRef+"' of association element ", associationElement);
+      } else {      
         if(sourceActivity.getProperty("type").equals("compensationBoundaryCatch")) {
           Object isForCompensation = targetActivity.getProperty(PROPERTYNAME_IS_FOR_COMPENSATION);          
           if(isForCompensation == null || !(Boolean) isForCompensation) {
@@ -608,12 +624,7 @@ public class BpmnParse extends Parse {
             compensatedActivity.setProperty(PROPERTYNAME_COMPENSATION_HANDLER_ID, targetActivity.getId());            
           }
         }
-      }else if(sourceActivity == null) {
-        addError("invalid sourceRef '"+sourceRef+"' in association", associationElement);
-      }else if(targetActivity == null) {
-        addError("invalid targetRef '"+targetRef+"' in association", associationElement);
       }
-
     }
   }
 
@@ -2773,7 +2784,7 @@ public class BpmnParse extends Parse {
         if (isExpanded != null) {
           activity.setProperty(PROPERTYNAME_ISEXPANDED, parseBooleanAttribute(isExpanded));
         }
-      } else {
+      } else if(!elementIds.contains(activityId)) { // it might not be an activity but it might still reference 'something'
         addError("Invalid reference in 'bpmnElement' attribute, activity " + activityId + "not found", bpmnShapeElement);
       }
     } else {
@@ -2797,7 +2808,7 @@ public class BpmnParse extends Parse {
         } else {
           addError("Minimum 2 waypoint elements must be definted for a 'BPMNEdge'", bpmnEdgeElement);
         }
-      } else {
+      } else if(!elementIds.contains(sequenceFlowId)) { // it might not be a sequenceFlow but it might still reference 'something'
         addError("Invalid reference in 'bpmnElement' attribute, sequenceFlow " + sequenceFlowId + "not found", bpmnEdgeElement);
       }
     } else {
