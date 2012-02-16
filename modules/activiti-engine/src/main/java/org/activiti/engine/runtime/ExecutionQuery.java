@@ -109,6 +109,15 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
    * starts with (string%), ends with (%string) or contains (%string%).
    */
   ExecutionQuery variableValueLike(String name, String value);
+  
+  // event subscriptions //////////////////////////////////////////////////
+  
+  /** 
+   * Only select executions which have a signal event subscription 
+   * for the given name.
+   * @param signalName the name of the signal the execution has subscribed to
+   */
+  ExecutionQuery signalEventSubscription(String signalName);
 
   //ordering //////////////////////////////////////////////////////////////
   

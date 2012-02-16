@@ -28,6 +28,7 @@ import org.activiti.engine.impl.cmd.GetExecutionVariablesCmd;
 import org.activiti.engine.impl.cmd.GetStartFormCmd;
 import org.activiti.engine.impl.cmd.SetExecutionVariablesCmd;
 import org.activiti.engine.impl.cmd.SignalCmd;
+import org.activiti.engine.impl.cmd.SignalEventReceivedCmd;
 import org.activiti.engine.impl.cmd.StartProcessInstanceByMessageCmd;
 import org.activiti.engine.impl.cmd.StartProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.SuspendProcessInstanceCmd;
@@ -170,5 +171,23 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   public ProcessInstance startProcessInstanceByMessage(String messageName, String businessKey, Map<String, Object> processVariables) {
     return commandExecutor.execute(new StartProcessInstanceByMessageCmd(messageName, businessKey, processVariables));
   }
+
+  public void signalEventReceived(String signalName) {
+    commandExecutor.execute(new SignalEventReceivedCmd(signalName, null, null));
+  }
+
+  public void signalEventReceived(String signalName, Map<String, Object> processVariables) {
+    commandExecutor.execute(new SignalEventReceivedCmd(signalName, null, processVariables));
+  }
+
+  public void signalEventReceived(String signalName, String executionId) {
+    commandExecutor.execute(new SignalEventReceivedCmd(signalName, executionId, null));
+  }
+
+  public void signalEventReceived(String signalName, String executionId, Map<String, Object> processVariables) {
+    commandExecutor.execute(new SignalEventReceivedCmd(signalName, executionId, processVariables));
+  }
+  
+  
    
 }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:activiti="http://activiti.org/bpmn" 
+	targetNamespace="Examples">
+
+	<signal id="panicSignal" name="panic" />
+
+	<process id="catchPanicSignal">
+
+		<startEvent id="start" />
+
+		<sequenceFlow sourceRef="start" targetRef="task" />
+		
+		<userTask id="task" activiti:assignee="kermit" />			
+		
+		<boundaryEvent id="boundary" attachedToRef="task" cancelActivity="true">       
+          <signalEventDefinition signalRef="panicSignal"/>
+      	</boundaryEvent>
+
+		<sequenceFlow sourceRef="boundary" targetRef="end" />
+		<sequenceFlow sourceRef="task" targetRef="end" />
+
+		<endEvent id="end" />
+
+	</process>
+
+	
+
+</definitions>

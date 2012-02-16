@@ -67,7 +67,7 @@ import org.activiti.engine.impl.delegate.DefaultDelegateInterceptor;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.event.CompensationEventHandler;
 import org.activiti.engine.impl.event.EventHandler;
-import org.activiti.engine.impl.event.SignalEventHander;
+import org.activiti.engine.impl.event.SignalEventHandler;
 import org.activiti.engine.impl.form.AbstractFormType;
 import org.activiti.engine.impl.form.BooleanFormType;
 import org.activiti.engine.impl.form.DateFormType;
@@ -840,7 +840,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     if(eventHandlers == null) {
       eventHandlers = new HashMap<String, EventHandler>();
       
-      SignalEventHander signalEventHander = new SignalEventHander();
+      SignalEventHandler signalEventHander = new SignalEventHandler();
       eventHandlers.put(signalEventHander.getEventHandlerType(), signalEventHander);
       
       CompensationEventHandler compensationEventHandler = new CompensationEventHandler();

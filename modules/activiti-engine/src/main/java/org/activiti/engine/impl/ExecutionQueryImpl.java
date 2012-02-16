@@ -36,6 +36,8 @@ public class ExecutionQueryImpl extends ExecutionVariableQueryImpl<ExecutionQuer
   protected String activityId;
   protected String executionId;
   protected String processInstanceId;
+  protected String eventSubscriptionName;
+  protected String eventSubscriptionType;
   
   // Not used by end-users, but needed for dynamic ibatis query
   protected String superProcessInstanceId;
@@ -103,7 +105,23 @@ public class ExecutionQueryImpl extends ExecutionVariableQueryImpl<ExecutionQuer
     return this;
   }
   
+  public ExecutionQuery signalEventSubscription(String signalName) {    
+    return eventSubscription("signal", signalName);
+  }
   
+  
+  public ExecutionQuery eventSubscription(String eventType, String eventName) {
+    if(eventName == null) {
+      throw new ActivitiException("event name is null");
+    }
+    if(eventType == null) {
+      throw new ActivitiException("event type is null");
+    }
+    this.eventSubscriptionType = eventType;
+    this.eventSubscriptionName = eventName;
+    return this;
+  }
+
   //ordering ////////////////////////////////////////////////////
   
   public ExecutionQueryImpl orderByProcessInstanceId() {
@@ -177,5 +195,17 @@ public class ExecutionQueryImpl extends ExecutionVariableQueryImpl<ExecutionQuer
   }  
   public void setSuspensionState(SuspensionState suspensionState) {
     this.suspensionState = suspensionState;
+  }  
+  public String getEventSubscriptionName() {
+    return eventSubscriptionName;
   }
+  public void setEventSubscriptionName(String eventSubscriptionName) {
+    this.eventSubscriptionName = eventSubscriptionName;
+  }  
+  public String getEventSubscriptionType() {
+    return eventSubscriptionType;
+  }  
+  public void setEventSubscriptionType(String eventSubscriptionType) {
+    this.eventSubscriptionType = eventSubscriptionType;
+  }  
 }

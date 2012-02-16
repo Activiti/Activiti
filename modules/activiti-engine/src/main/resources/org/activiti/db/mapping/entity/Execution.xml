@@ -117,6 +117,9 @@
     	inner join ACT_RU_VARIABLE A${index} on E.ID_ = A${index}.EXECUTION_ID_ 
     </foreach>
     inner join ACT_RE_PROCDEF P on E.PROC_DEF_ID_ = P.ID_
+    <if test="eventSubscriptionType != null">
+    	inner join ACT_RU_EVENT_SUBSCR EVT on E.ID_ = EVT.EXECUTION_ID_
+    </if>
     <where>
       <if test="onlyProcessInstances">
         E.PARENT_ID_ is null
@@ -205,6 +208,10 @@
 	      </choose>
       	</if>
       </foreach>
+      <!-- event subscriptions -->
+      <if test="eventSubscriptionType != null">
+      	and (EVT.EVENT_TYPE_ = #{eventSubscriptionType} and EVT.EVENT_NAME_ = #{eventSubscriptionName}) 
+      </if>
     </where>
   </sql>
   

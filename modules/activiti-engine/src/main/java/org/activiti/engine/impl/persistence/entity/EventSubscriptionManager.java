@@ -85,7 +85,28 @@ public class EventSubscriptionManager extends AbstractManager {
     
     // add events created in this command (not visible yet in query)
     for (EventSubscriptionEntity entity : createdSignalSubscriptions) {
-      if(entity instanceof SignalEventSubscriptionEntity) {
+      if(entity instanceof SignalEventSubscriptionEntity 
+         && executionId.equals(entity.getExecutionId())) {
+        selectList.add((SignalEventSubscriptionEntity) entity);        
+      }
+    }
+    
+    return new ArrayList<SignalEventSubscriptionEntity>(selectList);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByNameAndExecution(String name, String executionId) {
+    final String query = "selectSignalEventSubscriptionsByNameAndExecution";    
+    Map<String,String> params = new HashMap<String, String>();
+    params.put("executionId", executionId);
+    params.put("eventName", name);    
+    Set<SignalEventSubscriptionEntity> selectList = new HashSet<SignalEventSubscriptionEntity>( getDbSqlSession().selectList(query, params));
+    
+    // add events created in this command (not visible yet in query)
+    for (EventSubscriptionEntity entity : createdSignalSubscriptions) {
+      if(entity instanceof SignalEventSubscriptionEntity
+              && executionId.equals(entity.getExecutionId())
+              && name.equals(entity.getEventName())) {
         selectList.add((SignalEventSubscriptionEntity) entity);        
       }
     }

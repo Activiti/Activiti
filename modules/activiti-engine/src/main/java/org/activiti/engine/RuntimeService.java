@@ -246,6 +246,8 @@ public interface RuntimeService {
    */
   void signal(String executionId, Map<String, Object> processVariables);
   
+  // Variables ////////////////////////////////////////////////////////////////////
+  
   /** All variables visible from the given execution scope (including parent scopes).
    * @param executionId id of execution, cannot be null.
    * @return the variables or an empty map if no such variables are found.
@@ -318,9 +320,7 @@ public interface RuntimeService {
    * @throws ActivitiException when no execution is found for the given executionId. */
   void setVariablesLocal(String executionId, Map<String, ? extends Object> variables);
 
-
-  
-  
+  // Queries ////////////////////////////////////////////////////////
   
   /** Creates a new {@link ExecutionQuery} instance, 
    * that can be used to query the executions and process instances. */
@@ -331,6 +331,8 @@ public interface RuntimeService {
    * to query process instances.
    */
   ProcessInstanceQuery createProcessInstanceQuery();
+  
+  // Process instance state //////////////////////////////////////////
     
   /**
    * Suspends the process instance with the given id. 
@@ -356,5 +358,65 @@ public interface RuntimeService {
    * @throws ActivitiException if no such processInstance can be found or if the process instance is already in state active.
    */
   void activateProcessInstanceById(String processInstanceId);
-    
+  
+  // Events ////////////////////////////////////////////////////////////////////////
+  
+  /**
+   * Notifies the process engine that a signal event of name 'signalName' has
+   * been received. This method delivers the signal to all executions waiting on
+   * the signal.<p/> 
+   * 
+   * <strong>NOTE:</strong> The waiting executions are notified synchronously. 
+   * 
+   * @param signalName
+   *          the name of the signal event
+   */
+  void signalEventReceived(String signalName);
+  
+  /**
+   * Notifies the process engine that a signal event of name 'signalName' has
+   * been received. This method delivers the signal to all executions waiting on
+   * the signal.<p/>
+   * 
+   * <strong>NOTE:</strong> The waiting executions are notified synchronously.
+   * 
+   * @param signalName
+   *          the name of the signal event
+   * @param processVariables
+   *          a map of variables added to the execution(s)
+   */
+  void signalEventReceived(String signalName, Map<String, Object> processVariables);
+  
+  /**
+   * Notifies the process engine that a signal event of name 'signalName' has
+   * been received. This method delivers the signal to a single execution, being the 
+   * execution referenced by 'executionId'. 
+   * The waiting execution is notified synchronously.
+   * 
+   * @param signalName
+   *          the name of the signal event
+   * @param executionId
+   *          the id of the execution to deliver the signal to
+   * @throws ActivitiException if no such execution exists or if the execution 
+   *          has not subscribed to the signal
+   */
+  void signalEventReceived(String signalName, String executionId);  
+  
+  /**
+   * Notifies the process engine that a signal event of name 'signalName' has
+   * been received. This method delivers the signal to a single execution, being the 
+   * execution referenced by 'executionId'. 
+   * The waiting execution is notified synchronously.
+   * 
+   * @param signalName
+   *          the name of the signal event
+   * @param executionId
+   *          the id of the execution to deliver the signal to
+   * @param processVariables
+   *          a map of variables added to the execution(s)
+   * @throws ActivitiException if no such execution exists or if the execution 
+   *          has not subscribed to the signal
+   */
+  void signalEventReceived(String signalName, String executionId, Map<String, Object> processVariables);
+   
 }

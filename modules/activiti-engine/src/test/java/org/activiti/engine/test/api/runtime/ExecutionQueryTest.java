@@ -1009,4 +1009,25 @@ public void testBooleanVariable() throws Exception {
     runtimeService.deleteProcessInstance(processInstance2.getId(), "test");
 }
   
+  @Deployment
+  public void testQueryBySignalSubscriptionName() {
+    runtimeService.startProcessInstanceByKey("catchSignal");
+    
+    // it finds subscribed instances
+    Execution execution = runtimeService.createExecutionQuery()
+      .signalEventSubscription("alert")
+      .singleResult();
+    assertNotNull(execution);
+
+    // test query for nonexisting subscription
+    execution = runtimeService.createExecutionQuery()
+            .signalEventSubscription("nonExisitng")
+            .singleResult();
+    assertNull(execution);
+    
+    // it finds more than one
+    runtimeService.startProcessInstanceByKey("catchSignal");
+    assertEquals(2, runtimeService.createExecutionQuery().signalEventSubscription("alert").count());
+  }
+  
 }

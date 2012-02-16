@@ -95,7 +95,15 @@
     select * 
     from ACT_RU_EVENT_SUBSCR
     where (EVENT_TYPE_ = 'signal')
+    	and (EXECUTION_ID_ = #{executionId})  
+  </select>
+  
+  <select id="selectSignalEventSubscriptionsByNameAndExecution" resultMap="eventSubscriptionResultMap" parameterType="java.util.Map">
+    select * 
+    from ACT_RU_EVENT_SUBSCR
+    where (EVENT_TYPE_ = 'signal')
     	and (EXECUTION_ID_ = #{executionId})
+    	and (EVENT_NAME_ = #{eventName})
   </select>
   
   <select id="selectEventSubscriptionsByExecution" resultMap="eventSubscriptionResultMap" parameterType="java.util.Map">

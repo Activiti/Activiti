@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.event;
 
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,9 +28,9 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 /**
  * @author Daniel Meyer
  */
-public class SignalEventHander implements EventHandler {
+public class SignalEventHandler implements EventHandler {
   
-  private static Logger log = Logger.getLogger(SignalEventHander.class.getName());
+  private static Logger log = Logger.getLogger(SignalEventHandler.class.getName());
   
   public static final String SIGNAL_EVENT_HANDLER_TYPE = "signal";
 
@@ -51,6 +52,13 @@ public class SignalEventHander implements EventHandler {
       execution.setActivity(activity);
     }
     
+    if(payload instanceof Map) {
+      @SuppressWarnings("unchecked")
+      Map<String, Object> processVariables = (Map<String, Object>) payload;
+      execution.setVariables(processVariables);
+    }
+    
+   
     if(activity.getActivityBehavior() instanceof BoundaryEventActivityBehavior) {
            
       try {
