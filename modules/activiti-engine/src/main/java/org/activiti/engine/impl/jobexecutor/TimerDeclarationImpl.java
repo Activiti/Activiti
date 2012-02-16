@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.jobexecutor;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
@@ -26,6 +27,7 @@ import org.activiti.engine.impl.util.ClockUtil;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
+import java.rmi.activation.ActivationException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -99,7 +101,11 @@ public class TimerDeclarationImpl implements Serializable {
         .getProcessEngineConfiguration()
         .getBusinessCalendarManager()
         .getBusinessCalendar(type.caledarName);
-
+    
+    if (description==null) {
+      // Prefent NPE from happening in the next line
+      throw new ActivitiException("Timer '"+executionEntity.getActivityId()+"' was not configured with a valid duration/time");
+    }
     String dueDateString = executionEntity == null ? description.getExpressionText() : (String) description.getValue(executionEntity);
     Date duedate = businessCalendar.resolveDuedate(dueDateString);
 
