@@ -101,4 +101,7 @@ public class AbstractBpmnParseListener implements BpmnParseListener {
   public void parseCompensateEventDefinition(Element compensateEventDefinition, ActivityImpl compensationActivity) {
   }
 
+  public void parseIntermediateThrowEvent(Element intermediateEventElement, ScopeImpl scope, ActivityImpl activity) {
+  }
+
 }

@@ -41,6 +41,7 @@ import org.activiti.engine.impl.bpmn.behavior.ExclusiveGatewayActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.InclusiveGatewayActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchEventActivitiBehaviour;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowCompensationEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowNoneEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowSignalEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.MailActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ManualTaskActivityBehavior;
@@ -950,16 +951,31 @@ public class BpmnParse extends Parse {
     Element signalEventDefinitionElement = intermediateEventElement.element("signalEventDefinition");
     Element compensateEventDefinitionElement = intermediateEventElement.element("compensateEventDefinition");
 
+    boolean otherUnsupportedThrowingIntermediateEvent = 
+      (intermediateEventElement.element("escalationEventDefinition") != null) || //
+      (intermediateEventElement.element("messageEventDefinition") != null) || //
+      (intermediateEventElement.element("linkEventDefinition") != null);
+    // All other event definition types cannot be intermediate throwing (cancelEventDefinition, conditionalEventDefinition, errorEventDefinition, terminateEventDefinition, timerEventDefinition
+    
+    
     if(signalEventDefinitionElement != null) {
       SignalEventDefinition signalDefinition = parseSignalEventDefinition(signalEventDefinitionElement);            
       activityBehavior = new IntermediateThrowSignalEventActivityBehavior(signalDefinition);
     } else if(compensateEventDefinitionElement != null) {
       CompensateEventDefinition compensateEventDefinition = parseCompensateEventDefinition(compensateEventDefinitionElement, scopeElement);
       activityBehavior = new IntermediateThrowCompensationEventActivityBehavior(compensateEventDefinition);
-    } else {
-      addError("Unsupported intermediate throw event type", intermediateEventElement);
-    }
       
+      // IntermediateThrowNoneEventActivityBehavior
+    } else if (otherUnsupportedThrowingIntermediateEvent) {
+      addError("Unsupported intermediate throw event type", intermediateEventElement);
+    } else { // None intermediate event
+      activityBehavior = new IntermediateThrowNoneEventActivityBehavior();
+    }
+    
+    for (BpmnParseListener parseListener : parseListeners) {
+      parseListener.parseIntermediateThrowEvent(intermediateEventElement, scopeElement, nestedActivityImpl);
+    }    
+    
     nestedActivityImpl.setActivityBehavior(activityBehavior);
     
     return nestedActivityImpl;
