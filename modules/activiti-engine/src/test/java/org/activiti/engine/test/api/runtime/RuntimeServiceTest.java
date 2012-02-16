@@ -380,6 +380,33 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     }
     
   }
+  
+ public void testSignalEventReceivedNonExistingExecution() {
+   try {
+     runtimeService.signalEventReceived("alert", "nonexistingExecution");
+     fail("exeception expected");
+   }catch (ActivitiException e) {
+     // this is good
+     assertTrue(e.getMessage().contains("Execution 'nonexistingExecution' has not subscribed to a signal event with name 'alert'"));
+   }
+  }
+ 
+ @Deployment(resources={
+         "org/activiti/engine/test/api/runtime/RuntimeServiceTest.catchAlertSignal.bpmn20.xml"
+ })
+ public void testExecutionWaitingForDifferentSignal() {
+   runtimeService.startProcessInstanceByKey("catchAlertSignal");
+   Execution execution = runtimeService.createExecutionQuery()
+     .signalEventSubscription("alert")
+     .singleResult();
+   try {
+     runtimeService.signalEventReceived("bogusSignal", execution.getId());
+     fail("exeception expected");
+   }catch (ActivitiException e) {
+     // this is good
+     assertTrue(e.getMessage().contains("has not subscribed to a signal event with name 'bogusSignal'"));
+   }
+  }
 
   private void startSignalCatchProcesses() {
     for (int i = 0; i < 3; i++) {
