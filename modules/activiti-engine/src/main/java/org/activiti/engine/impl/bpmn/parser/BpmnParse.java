@@ -2202,18 +2202,20 @@ public class BpmnParse extends Parse {
     // TimeDate
     TimerDeclarationType type = TimerDeclarationType.DATE;
     Expression expression = parseExpression(timerEventDefinition, "timeDate");
-
     // TimeCycle
     if (expression == null) {
       type = TimerDeclarationType.CYCLE;
       expression = parseExpression(timerEventDefinition, "timeCycle");
     }
-
     // TimeDuration
     if (expression == null) {
       type = TimerDeclarationType.DURATION;
       expression = parseExpression(timerEventDefinition, "timeDuration");
-    }
+    }    
+    // neither date, cycle or duration configured!
+    if (expression==null) {
+      addError("Timer needs configuration (either timeDate, timeCycle or timeDuration is needed).", timerEventDefinition);      
+    }    
 
     // Parse the timer declaration
     // TODO move the timer declaration into the bpmn activity or next to the
