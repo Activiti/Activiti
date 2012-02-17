@@ -52,4 +52,7 @@ public interface HistoricProcessInstance {
   
   /** The start activity. */
   String getStartActivityId();
+
+  /** Obtains the reason for the process instance's deletion. */
+  String getDeleteReason();
 }

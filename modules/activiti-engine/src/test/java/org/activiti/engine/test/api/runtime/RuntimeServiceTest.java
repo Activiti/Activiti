@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -138,8 +140,21 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
     assertEquals(1, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
     
-    runtimeService.deleteProcessInstance(processInstance.getId(), "testing instance deletion");
-    assertEquals(0, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
+    String deleteReason = "testing instance deletion";
+    runtimeService.deleteProcessInstance(processInstance.getId(), deleteReason);
+    assertEquals(0, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());    
+    
+    // test that the delete reason of the process instance shows up as delete reason of the task in history
+    // ACT-848
+    if(!ProcessEngineConfiguration.HISTORY_NONE.equals(processEngineConfiguration.getHistory())) {
+      
+      HistoricTaskInstance historicTaskInstance = historyService
+              .createHistoricTaskInstanceQuery()
+              .processInstanceId(processInstance.getId())
+              .singleResult();
+      
+      assertEquals(deleteReason, historicTaskInstance.getDeleteReason());
+    }    
   }
   
   @Deployment(resources={
@@ -414,4 +429,5 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
       runtimeService.startProcessInstanceByKey("catchPanicSignal");      
     }
   }
+   
 }

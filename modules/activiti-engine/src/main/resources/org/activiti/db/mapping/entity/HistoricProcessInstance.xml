@@ -32,7 +32,8 @@
         START_USER_ID_,
         START_ACT_ID_,
         END_ACT_ID_,
-        SUPER_PROCESS_INSTANCE_ID_
+        SUPER_PROCESS_INSTANCE_ID_,
+        DELETE_REASON_
       ) values (
         #{id ,jdbcType=VARCHAR},
         #{processInstanceId, jdbcType=VARCHAR},
@@ -44,7 +45,8 @@
         #{startUserId, jdbcType=VARCHAR},
         #{startActivityId, jdbcType=VARCHAR},
         #{endActivityId, jdbcType=VARCHAR},
-        #{superProcessInstanceId, jdbcType=VARCHAR}
+        #{superProcessInstanceId, jdbcType=VARCHAR},
+        #{deleteReason, jdbcType=VARCHAR}
       )
   </insert>
 
@@ -56,7 +58,8 @@
       START_TIME_ = #{startTime, jdbcType=TIMESTAMP},
       END_TIME_ = #{endTime, jdbcType=TIMESTAMP},
       DURATION_ = #{durationInMillis ,jdbcType=BIGINT},
-      END_ACT_ID_ = #{endActivityId, jdbcType=VARCHAR}        
+      END_ACT_ID_ = #{endActivityId, jdbcType=VARCHAR},
+      DELETE_REASON_ = #{deleteReason, jdbcType=VARCHAR}
     where ID_ = #{id}
   </update>
 
@@ -80,6 +83,7 @@
     <result property="startActivityId" column="START_ACT_ID_" jdbcType="VARCHAR" />
     <result property="endActivityId" column="END_ACT_ID_" jdbcType="VARCHAR" />
     <result property="superProcessInstanceId" column="SUPER_PROCESS_INSTANCE_ID_" jdbcType="VARCHAR" />
+    <result property="deleteReason" column="DELETE_REASON_" jdbcType="VARCHAR" />
   </resultMap>
 
   <!-- HISTORIC PROCESS INSTANCE SELECT -->

@@ -10,6 +10,7 @@ create table ACT_HI_PROCINST (
     START_ACT_ID_ nvarchar(255),
     END_ACT_ID_ nvarchar(255),
     SUPER_PROCESS_INSTANCE_ID_ nvarchar(64),
+    DELETE_REASON_ nvarchar(4000),
     primary key (ID_),
     unique (PROC_INST_ID_)
 );

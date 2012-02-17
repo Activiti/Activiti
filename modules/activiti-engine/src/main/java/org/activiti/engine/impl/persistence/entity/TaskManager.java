@@ -36,8 +36,10 @@ public class TaskManager extends AbstractManager {
       .processInstanceId(processInstanceId)
       .list();
   
+    String reason = (deleteReason == null || deleteReason.isEmpty()) ? TaskEntity.DELETE_REASON_DELETED : deleteReason;
+    
     for (TaskEntity task: tasks) {
-      deleteTask(task, TaskEntity.DELETE_REASON_DELETED, cascade);
+      deleteTask(task, reason, cascade);
     }
   }
 

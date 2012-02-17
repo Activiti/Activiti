@@ -44,3 +44,9 @@ alter table ACT_RU_EXECUTION
 add IS_EVENT_SCOPE_ tinyint;
 
 update ACT_RU_EXECUTION set IS_EVENT_SCOPE_ = 0;
+
+
+
+
+alter table ACT_HI_PROCINST
+add DELETE_REASON_ nvarchar(4000);
