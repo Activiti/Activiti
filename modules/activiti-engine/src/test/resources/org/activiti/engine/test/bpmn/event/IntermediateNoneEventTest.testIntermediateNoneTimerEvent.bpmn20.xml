@@ -9,7 +9,11 @@
         <startEvent id="theStart"/>
         <sequenceFlow id="flow1" sourceRef="theStart" targetRef="noneEvent"/>
 
-        <intermediateThrowEvent  id="noneEvent" />
+        <intermediateThrowEvent  id="noneEvent">
+          <extensionElements>
+            <activiti:executionListener class="org.activiti.engine.test.bpmn.event.IntermediateNoneEventTest$MyExecutionListener" event="start" />
+          </extensionElements>        
+        </intermediateThrowEvent>
 
         <sequenceFlow id="flow2" sourceRef="noneEvent" targetRef="theEnd"/>
 

@@ -12,18 +12,28 @@
  */
 package org.activiti.engine.test.bpmn.event;
 
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
 public class IntermediateNoneEventTest extends PluggableActivitiTestCase {
   
+  private static boolean listenerExcecuted = false;
+  
+  public static class MyExecutionListener implements ExecutionListener {
+    public void notify(DelegateExecution execution) throws Exception {
+      listenerExcecuted = true;
+    }    
+  }
 
   @Deployment
   public void testIntermediateNoneTimerEvent() throws Exception {    
-    // After process start, there should be timer created
+    assertFalse(listenerExcecuted);    
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("intermediateNoneEventExample");
     assertProcessEnded(pi.getProcessInstanceId());
+    assertTrue(listenerExcecuted);    
   }
 
 

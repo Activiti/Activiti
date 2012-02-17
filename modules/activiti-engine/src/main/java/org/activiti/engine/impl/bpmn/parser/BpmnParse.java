@@ -974,9 +974,11 @@ public class BpmnParse extends Parse {
     
     for (BpmnParseListener parseListener : parseListeners) {
       parseListener.parseIntermediateThrowEvent(intermediateEventElement, scopeElement, nestedActivityImpl);
-    }    
+    }
     
     nestedActivityImpl.setActivityBehavior(activityBehavior);
+    
+    parseExecutionListenersOnScope(intermediateEventElement, nestedActivityImpl);
     
     return nestedActivityImpl;
   }

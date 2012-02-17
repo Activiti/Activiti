@@ -4234,10 +4234,33 @@ public class MyTaskCreateListener implements TaskListener {
         </para>
       
       </section>
-		
-		</section>
+      
+    </section>
+    
+    <section id="bpmnIntermediateThrowNoneEvent">
+        <title>Intermediate throwing none event</title>
+        <para>
+          The following process diagram shows a simple example of an intermediate none event, which is often used to 
+          indicate some state achieved in the process. 
 
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.intermediate.none.event.png"/></imageobject></mediaobject>
+          
+          This can be a good hook to monitor some KPI's, basically by adding an <link linkend="#executionListeners">execution listener</link>
+          
+<programlisting>
+&lt;intermediateThrowEvent id="noneEvent"&gt;
+  &lt;extensionElements&gt;
+    &lt;activiti:executionListener class="org.activiti.engine.test.bpmn.event.IntermediateNoneEventTest$MyExecutionListener" event="start" /&gt;
+  &lt;/extensionElements&gt;
+&lt;/intermediateThrowEvent&gt;
+</programlisting>          
+          
+          There you can add some own code to maybe send some event to your BAM tool or DWH. The engine itself doesn't do anything in that event, it just
+          passes through.
+        </para>
+    </section>
 	</section>
+	
 	<section id="asyncContinuations">
       
         <title>Asynchronous Continuations</title>
