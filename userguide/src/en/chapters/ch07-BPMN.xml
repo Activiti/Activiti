@@ -4310,6 +4310,113 @@ public class MyTaskCreateListener implements TaskListener {
     <para>
         On a userTask, receiveTask or other wait states, the async continuation allows us to execute the start execution listeners in a separate thread/transaction.
     </para>
-        
+    
 	</section>
+	<section id="exclusiveJobs">
+      
+        <title>Exclusive Jobs</title>
+        
+        Since activiti 5.9, the JobExecutor makes sure that jobs from a single process instance are never executed concurrently. Why is this?
+        
+        <section>
+        	<title>Why exclusive Jobs?</title>
+        
+                
+	        <para> Consider the following process definition:</para>
+	        
+	        <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.why.exclusive.jobs.png"/></imageobject></mediaobject>
+	                
+	        <para>We have a parallel gateway followed by three service tasks which all perform an asynchronous continuation. As a result of this, three jobs are added to the database.
+	        Once such a job is present in the database it can be processes by the JobExecutor. The JobExecutor acquires the jobs and delegates them to a thread pool of worker threads 
+	        which actually process the jobs. This means that using an asynchronous continuation, you can distribute the work to this thread pool (and in a clustered scenario even 
+	        across multiple thread pools in the cluster). This is usually a good thing. However it also bears an inherent problem: consistency. Consider the parallel join after the service
+	        tasks. When execution of a service tasks is completed, we arrive at the parallel join and need to decide whether to wait for the other executions or whether we can move forward. 
+	        That means, for each branch 
+	        arriving at the parallel join, we need to take a decision whether we can continue or whether we need to wait for one or more other executions on the other branches.</para> 
+	        
+	        <para>
+	        Why is this a problem? Since the service tasks are configured using an asynchronous continuation, it is possible that the corresponding jobs are all acquired at the same time and 
+	        delegated to different worker threads by the JobExecutor. The consequence is that the transactions in which the services are executed and in which the 3 individual executions arrive
+	        at the parallel join can overlap. And if they do so, each individual transaction will not "see", that another transaction is arriving at the same parallel join concurrently and 
+	        thus assume that it has to wait for the others. However, if each transaction assumes that it has to wait for the other ones, none will continue the process after the parallel 
+	        join and the process instance will remain in that state forever.    
+	         </para>
+	         
+	         <para>
+	         How does activiti address this problem? Activiti performs optimistic locking. Whenever we take a decision based on data that might not be current (because another 
+	         transaction might modify it before we commit, we make sure to increment the version of the same database row in both transactions). This way, whichever transaction commits first wins 
+	         and the other ones fail with an optimistic locking exception. This solves the problem in the case of the process discussed above: if multiple executions arrive at the parallel join 
+	         concurrently, they all assume that they have to wait, increment the version of their parent execution (the process instance) and then try to commit. Whichever execution is first will 
+	         be able to commit and the other ones will fail with an optimistic locking exception. Since the executions are triggered by a job, activiti will retry to perform the same job after waiting
+	         for a certain amount of time and hopefully this time pass the synchronizing gateway.            
+	         </para>
+	         
+	         <para>
+	         Is this a good solution? As we have seen, optimistic locking allows activiti to prevent inconsistencies. It makes sure that we do not "keep stuck at the joining gateway", meaning: either 
+	         all executions have passed the gateway or, there are jobs in the database making sure that we retry passing it. However, while this is a perfectly fine solution from the point of view 
+	         of persistence and consistency, this might not always be desirable behavior at an higher level: 
+	         
+	          <itemizedlist>
+			      <listitem>
+			        <para>
+			          Activiti will retry the same job for a fixed maximum number of times only ('3' in the default configuration). After that, the job will still be present in the database but not be retried 
+			          actively anymore. That means that an operator would need to trigger the job manually.
+			        </para>
+			      </listitem>
+			      <listitem>
+			        <para>
+			          If a job has non-transactional side effects, those will not be rolled back by the failing transaction. For instance, if the "book concert tickets" service does not 
+			          share the same transaction as activiti, we might book multiple tickets if we retry the job. 
+			        </para>
+			      </listitem>
+			    </itemizedlist>         
+	           
+	         </para>
+	         In activiti 5.9 we thus introduced a concept which was already present in jbpm4 we call 'exclusive jobs'.
+	         
+         </section>
+         <section>
+        	<title>What are exclusive Jobs?</title>
+        	<para>
+        		An exclusive job cannot be performed at the same time as another exclusive job from the same process instance. Consider the pocess shown above: if we declare the service tasks to be exclusive,
+        	 	the JobExecutor will make sure that the corresponding jobs are not executed concurrently. Instead, it wil make sure that whenever it acquires an exclusive job from a certain process instance, 
+        	 	it acquires all other exclusive jobs from the same process instance and delegates them to the same worker thread. This ensures sequential execution execution of the jobs.           	 	
+        	</para>
+        		
+        	<para>
+        		How can I enable this feature? Since activiti 5.9, exclusive jobs are the default configuration. All asynchronous continuations and timer events are thus exclusive by default. In addition, if you want a 
+        		job to be non-exclusive, you can configure it as such using <code>activiti:exclusive="false"</code>. For example, the following servicetask would be asynchronous but non-exclusive.
+        		
+        		<programlisting>
+&lt;serviceTask id=&quot;service&quot; activiti:expression=&quot;${myService.performBooking(hotel, dates)}&quot; activiti:async=&quot;true&quot; activiti:exclusive=&quot;false&quot; /&gt;        		
+        		</programlisting>
+        	</para>
+        	
+        	<para>
+        		Is this a good solution?
+        		We had some people asking whether this was a good solution. Their concern was that this would to prevent you from "doing things" in parallel and would thus be a performance problem.
+        		Again, two things have to be taken into consideration: 
+        		  <itemizedlist>
+			      <listitem>
+			        <para>
+			          It can be turned off if you are an expert and know what you are doing (and have understood the section named "Why exclusive Jobs?"). Other than that, it is more intuitive 
+			          for most users if things like asynchronous continuations and timers just work.
+			        </para>
+			      </listitem>
+			      <listitem>
+			        <para>
+			          It is actually not a performance issue. Performance is an issue under heavy load. Heavy load means that all worker threads of the job executor are busy all the time.
+			          With exclusive jobs, activiti will simply distribute the load differently. Exclusive jobs means that jobs from a single process instance are performed by the same
+			          thread sequentially. But consider: you have more than one single process instance.
+			          And jobs from other process instances are delegated to other threads and executed concurrently. 
+			          This means that with exclusive jobs activiti will not execute jobs from the same process instance concurrently but it will still execute multiple instances concurrently. 
+			          From an overall throughput perspective this is desirable in most scenarios as it usually leads to individual instances being done more quickly.    
+			        </para>
+			      </listitem>
+			    </itemizedlist>
+			             
+        	</para>
+        </section>
+      </section>
+	
 </chapter>
