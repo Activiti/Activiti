@@ -2,7 +2,7 @@
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">
 
 <chapter id="bpmn20">
-	<title>BPMN</title>
+	<title>BPMN 20 Introduction</title>
 
 	<section id="whatIsBpmn">
 
@@ -633,12 +633,29 @@ public class TenMinuteTutorial {
     </section>
   	
 	</section>
+</chapter>
 
-	<section id="bpmnConstructs">
 
-		<title>BPMN 2.0 constructs</title>
-		
-			<section id="bpmnCustomExtensions">
+	  <!--	  
+	  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	  
+	  													BPMN 20 Constructs
+	  
+	  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	  ////////////////////////////////////////////////////////////////////////////////////////////////////////////	  
+	   -->
+
+
+
+
+<chapter id="bpmnConstructs">
+	<title>BPMN 20 Constructs</title>
+	
+	<para>This chapter covers the BPMN 20 constructs supported by 
+	activiti as well as custom extensions to the BPMN standard.</para>
+
+	<section id="bpmnCustomExtensions">
 	
 	    <title>Custom extensions</title>
 	
@@ -702,6 +719,16 @@ public class TenMinuteTutorial {
 	    </para>
 	  
 	  </section>
+	  
+	  <!-- 
+	  
+	  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	  
+	  													Events
+	  
+	  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	  
+	   -->
 	  
 	  <section id="bpmnEvents">
 	   
@@ -812,7 +839,7 @@ public class TenMinuteTutorial {
         </para>
 
       </section>
-      </section>
+      
 
 	  <section id="bpmnStartEvents">
 	  
@@ -1118,6 +1145,374 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
 		  
 		</section>
 		
+		
+		
+		
+		<section id="bpmnBoundaryEvent">
+		  
+		  <title>Boundary events</title>
+		  
+		  <para>
+		    Boundary events are <emphasis>catching</emphasis> events that are attached to an activity
+		    (a boundary event can never be throwing). This means that while the activity is
+		    running, the event is <emphasis>listening</emphasis> for a certain type of trigger. 
+		    When the event is <emphasis>caught</emphasis>, the activity is interrupted and the 
+		    sequence flow going out of the event are followed.
+		  </para>
+		  
+		  <para>
+		    All boundary events are defined in the same way:
+<programlisting>
+&lt;boundaryEvent id=&quot;myBoundaryEvent&quot; attachedToRef=&quot;theActivity&quot;&gt;
+      &lt;XXXEventDefinition/&gt;
+&lt;/boundaryEvent&gt;</programlisting>
+		  </para>
+		  
+		  <para>
+		    A boundary event is defined with
+		    <itemizedlist>
+		      <listitem>
+		        <para>
+		          A unique identifier (process-wide)
+		        </para>
+		      </listitem>
+		      <listitem>
+		        <para>
+		          A reference to the activity to which the event is attached through the
+		          <emphasis role="bold">attachedToRef</emphasis> attribute.
+		          Note that a boundary event is defined on the same level as the activities
+		          to which they are attached
+		          (i.e. no inclusion of the boundary event inside the activity).
+		        </para>
+		      </listitem>
+		      <listitem>
+		        <para>
+		          An XML sub-element of the form <emphasis>XXXEventDefinition</emphasis> 
+		          (e.g. <emphasis>TimerEventDefinition</emphasis>, <emphasis>ErrorEventDefinition</emphasis>, etc.)
+		          defining the type of the boundary event. See the specific boundary event types
+		          for more details.
+		        </para>
+		      </listitem>
+		    </itemizedlist>
+		  </para>
+		  
+		</section>
+		  
+		<section id="bpmnTimerBoundaryEvent">
+      
+      <title>Timer Boundary Event</title>
+        
+      <section id="timerBoundaryEventDescription">
+        
+        <title>Description</title>
+          
+        <para>
+          A timer boundary event acts as a stopwatch and alarm clock. When an execution arrives
+          in the activity where the boundary event is attached to, a timer is started.
+          When the timer fires (e.g. after a specified interval), the activity is interrupted
+          and the sequence flow going out of the timer boundary event are followed.
+        </para>
+        
+      </section>
+        
+      <section id="bpmnTimerBoundaryEventGraphicalNotation">
+        
+        <title>Graphical Notation</title>
+          
+        <para>
+          A timer boundary event is visualized as a typical boundary event (i.e. circle
+          on the border), with the timer icon on the inside.
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.boundary.timer.event.png"/></imageobject></mediaobject>
+        </para>
+        
+      </section>
+      
+      <section id="bpmnTimerBoundaryEventXml">
+      
+        <title>XML Representation</title>
+        
+        <para>
+          A timer boundary event is defined as a <link linkend="bpmnBoundaryEvent">regular boundary event</link>.
+          The specific type sub-element is in this case a <emphasis role="bold">timerEventDefinition</emphasis>
+          element.
+<programlisting>
+&lt;boundaryEvent id=&quot;escalationTimer&quot; cancelActivity=&quot;true&quot; attachedToRef=&quot;firstLineSupport&quot;&gt;
+   <emphasis role="bold">&lt;timerEventDefinition&gt;
+    &lt;timeDuration&gt;PT4H&lt;/timeDuration&gt;
+  &lt;/timerEventDefinition&gt;</emphasis>
+&lt;/boundaryEvent&gt;          
+</programlisting>
+
+        Please refer to <link linkend="timerEventDefinitions">timer event definition</link> for details on timer configuration.
+        </para>
+
+        <para>
+          In the graphical representation, the line of the circle is dotted as you can see in this example above:
+          
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.non.interrupting.boundary.timer.event.png"/></imageobject></mediaobject>
+          
+          A typical use case is sending an escalation email additionally but not interrupt the normal process flow.
+        </para>        
+<!-- 
+        <para>
+          Since BPMn 2.0 there is the difference between the interrupting and non interrupting timer event. The 
+          interrupting is the default. The non-interrupting leads to the original activity is <emphasis role="bold">not</emphasis>
+          interrupted but the activity stays there. Instead an additional executions is created and send over the
+          outgoing transition of the event. In the XML representation, the <emphasis>cancelActivity</emphasis> attribute
+          is set to false:
+<programlisting>
+&lt;boundaryEvent id=&quot;escalationTimer&quot; cancelActivity=&quot;false&quot; attachedToRef=&quot;firstLineSupport&quot;/&gt;
+</programlisting>
+        </para>
+         -->
+        
+        <para>
+          <emphasis role="bold">Note:</emphasis> boundary timer events are only fired when 
+          the job executor is enabled (i.e. <emphasis>jobExecutorActivate</emphasis>
+          needs to be set to <literal>true</literal> in the <literal>activiti.cfg.xml</literal>, since the job
+          executor is disabled by default). 
+        </para>
+      
+      </section>
+      
+      <section id="bpmnKnownIssueBoundaryEvent">
+    
+      <title>Known issue with boundary events</title>
+      
+      <para>
+        There is a known issue regarding concurrency when using boundary events of any type.
+        Currently, it is not possible to have multiple outgoing sequence flow attached to 
+        a boundary event (see issue <ulink url="http://jira.codehaus.org/browse/ACT-47">ACT-47</ulink>).
+        A solution to this problem is to use one outgoing sequence flow that goes to a parallel gateway.
+        <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.known.issue.boundary.event.png"/></imageobject></mediaobject>
+      </para>
+    
+    </section>
+		
+		</section> 
+		
+		<section id="bpmnBoundaryErrorEvent">
+		  <title>Error Boundary event</title>
+		  
+		  <section id="bpmnBoundaryErrorEventDescription">
+		    <title>Description</title>
+		    <para>
+		      An intermediate <emphasis>catching</emphasis> error on the boundary of an activity,
+		      or <emphasis role="bold">boundary error event</emphasis> for short, catches errors that are thrown within the scope
+		      of the activity on which it is defined.
+		    </para>
+		    
+		    <para>
+		      Defining a boundary error event makes most sense on an <link linkend="bpmnSubProcess">embedded subprocess</link>,
+		      or a <link linkend="bpmnCallActivity">call activity</link>, as a subprocess creates a scope for all activities inside the subprocess. 
+		      Errors are thrown by <link linkend="bpmnErrorEndEvent">error end events</link>. Such an error will propagate its
+		      parent scopes upwards until a scope is found on which a boundary error event is defined
+		      that matches the error event definition.
+		    </para>
+		    
+		    <para>
+		      When an error event is caught, the activity on which the boundary event is defined
+		      is destroyed, also destroying all current executions within
+		      (e.g. concurrent activities, nested subprocesses, etc.). Process execution continues
+		      following the outgoing sequence flow of the boundary event. 
+		    </para>
+		    
+		  </section>
+		  
+		  <section id="bpmnBoundaryErrorEventgraphicalNotation">
+        <title>Graphical notation</title>
+        <para>
+          A boundary error event is visualized as a typical intermediate event (Circle with smaller circle inside)
+          on the boundary, with the error icon inside. The error icon is white, to indicate
+          the <emphasis>catch</emphasis> semantics.
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.boundary.error.event.png"/></imageobject></mediaobject>
+        </para>
+      </section>
+      
+      <section id="bpmnBoundaryErrorEventXml">
+        <title>Xml representation</title>
+        <para>
+          A boundary error event is defined as a typical <link linkend="bpmnBoundaryEvent">boundary event</link>:
+          <programlisting>
+&lt;boundaryEvent id=&quot;catchError&quot; attachedToRef=&quot;mySubProcess&quot;&gt;
+  &lt;errorEventDefinition errorRef=&quot;myError&quot;/&gt;
+&lt;/boundaryEvent&gt;
+          </programlisting>
+          As with the <link linkend="bpmnErrorEndEvent">error end event</link>, the <emphasis>errorRef</emphasis>
+          references an error defined outside the process element:
+          <programlisting>
+&lt;error id=&quot;myError&quot; errorCode=&quot;123&quot; /&gt;
+...
+&lt;process id=&quot;myProcess&quot;&gt;  
+...              
+          </programlisting>
+        </para>
+        
+        <para>
+          The <emphasis role="bold">errorCode</emphasis> is used to match the errors that are caught:
+          <itemizedlist>
+            <listitem>
+              <para>
+                If <emphasis>errorRef</emphasis> is omitted, the boundary error event will catch
+                <emphasis role="bold">any error event</emphasis>, regardless of the errorCode of the <emphasis>error</emphasis>.
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                In case an <emphasis>errorRef</emphasis> is provided and it references an existing <emphasis>error</emphasis>,
+                the boundary event will <emphasis role="bold">only catch errors with the same error code</emphasis>.
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                In case an <emphasis>errorRef</emphasis> is provided, but no <emphasis>error</emphasis>
+                is defined in the BPMN 2.0 file, then the <emphasis role="bold">errorRef is used
+                as errorCode</emphasis> (similar for with error end events).
+              </para>
+            </listitem>
+          </itemizedlist>
+        </para>
+      </section>
+      
+      <section id="bpmnBoundaryErrorEventExample">
+        <title>Example</title>
+        <para>
+          Following example process shows how an error end event can be used. When the 
+          <emphasis>'Review profitability'</emphasis> user task is completed by stating that
+          not enough information is provided, an error is thrown. When this error is caught on
+          the boundary of the subprocess, all active activities within the <emphasis>'Review sales lead'</emphasis>
+          subprocess are destroyed (even if <emphasis>'Review customer rating'</emphasis> was not yet completed),
+          and the <emphasis>'Provide additional details'</emphasis> user task is created.
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.boundary.error.example.png"/></imageobject></mediaobject>
+        </para>
+        
+        <para>
+          This process is shipped as example in the demo setup. The process XML and unit test can
+          be found in the <emphasis>org.activiti.examples.bpmn.event.error</emphasis> package.
+        </para>
+      </section>
+		  
+		</section>
+
+        <section id="bpmnIntermediateCatchingEvent">
+
+          <title>Intermediate catching events</title>
+
+		  <para>
+		    All intermediate catching events events are defined in the same way:
+<programlisting>
+&lt;intermediateCatchEvent id=&quot;myIntermediateCatchEvent&quot; &gt;
+      &lt;XXXEventDefinition/&gt;
+&lt;/intermediateCatchEvent&gt;</programlisting>
+		  </para>
+
+		  <para>
+		    An intermediate catching event is defined with
+		    <itemizedlist>
+		      <listitem>
+		        <para>
+		          A unique identifier (process-wide)
+		        </para>
+		      </listitem>
+		      <listitem>
+		        <para>
+		          An XML sub-element of the form <emphasis>XXXEventDefinition</emphasis>
+		          (e.g. <emphasis>TimerEventDefinition</emphasis>, etc.)
+		          defining the type of the intermediate catching event. See the specific catching event types
+		          for more details.
+		        </para>
+		      </listitem>
+		    </itemizedlist>
+		  </para>
+
+        </section>
+
+        <section id="bpmnTimerIntermediateEvent">
+
+            <title>Timer intermediate catching event</title>
+
+            <section id="bpmnTimerIntermediateEventDescription">
+                <title>Description</title>
+
+        <para>
+          A timer intermediate event acts as a stopwatch. When an execution arrives
+          in catching event activity, a timer is started.
+          When the timer fires (e.g. after a specified interval), the sequence flow going out of the timer intermediate event is followed.
+        </para>
+
+            </section>
+
+            <section id="bpmnTimerIntermediateEventGraphicalNotation">
+
+              <title>Graphical Notation</title>
+
+              <para>
+                A timer intermediate event is visualized as a intermediate catching event, with the timer icon on the inside.
+                <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.intermediate.timer.event.png"/></imageobject></mediaobject>
+              </para>
+
+            </section>
+
+            <section id="bpmnTimerIntermediateEventXml">
+
+              <title>XML Representation</title>
+
+              <para>
+
+          A timer intermediate event is defined as a <link linkend="bpmnIntermediateCatchingEvent">intermediate catching event</link>.
+          The specific type sub-element is in this case a <emphasis role="bold">timerEventDefinition</emphasis>
+          element.
+                 <programlisting>
+        &lt;intermediateCatchEvent id=&quot;timer&quot;&gt;
+            <emphasis role="bold">&lt;timerEventDefinition&gt;
+                &lt;timeDuration&gt;PT5M&lt;/timeDuration&gt;
+            &lt;/timerEventDefinition&gt;</emphasis>
+        &lt;/intermediateCatchEvent&gt;
+                 </programlisting>
+              See <link linkend="timerEventDefinitions">timer event definitions</link> for configuration details.
+
+              </para>
+            </section>
+
+        </section>
+
+
+    <section id="bpmnIntermediateThrowNoneEvent">
+        <title>Intermediate throwing none event</title>
+        <para>
+          The following process diagram shows a simple example of an intermediate none event, which is often used to 
+          indicate some state achieved in the process. 
+
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.intermediate.none.event.png"/></imageobject></mediaobject>
+          
+          This can be a good hook to monitor some KPI's, basically by adding an <link linkend="#executionListeners">execution listener</link>
+          
+<programlisting>
+&lt;intermediateThrowEvent id="noneEvent"&gt;
+  &lt;extensionElements&gt;
+    &lt;activiti:executionListener class="org.activiti.engine.test.bpmn.event.IntermediateNoneEventTest$MyExecutionListener" event="start" /&gt;
+  &lt;/extensionElements&gt;
+&lt;/intermediateThrowEvent&gt;
+</programlisting>          
+          
+          There you can add some own code to maybe send some event to your BAM tool or DWH. The engine itself doesn't do anything in that event, it just
+          passes through.
+        </para>
+    </section>
+</section>
+
+		
+	  <!-- 
+	  
+	  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	  
+	  												Sequence flows
+	  
+	  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	  
+	   -->
+		
+		
 	  <section id="bpmnSequenceFlow">
     
       <title>Sequence flow</title>
@@ -1160,9 +1555,7 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
         </para>
       
       </section>
-    
-    </section>
-    
+            
     <section id="bpmnConditionalSequenceFlow">
     
       <title>Conditional sequence flow</title>
@@ -1302,6 +1695,19 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
       
     </section>
     
+  </section>
+    
+	  <!-- 
+	  
+	  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	  
+	  												Gateways
+	  
+	  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	  
+	   -->
+    
+    
     <section id="bpmnGateways">
     
       <title>Gateways</title>
@@ -1317,9 +1723,7 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
         The icon shows the type of gateway.
         <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.gateway.png"/></imageobject></mediaobject>
       </para>
-    
-    </section>
-    
+            
     <section id="bpmnExclusiveGateway">
     
       <title>Exclusive gateway</title>
@@ -1665,6 +2069,20 @@ assertEquals("Ship Order", task.getName());</programlisting>
       </section>
    
     </section> 
+</section>
+    
+   	 <!-- 
+	  
+	  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	  
+	  												Tasks
+	  
+	  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	  
+	   -->
+    
+    <section id="bpmnTask">
+    	<title>Tasks</title>    
 
 		<section id="bpmnUserTask">
 
@@ -3658,334 +4076,20 @@ public class MyTaskCreateListener implements TaskListener {
       </section>
     
     </section>    
-		
-		<section id="bpmnBoundaryEvent">
-		  
-		  <title>Boundary events</title>
-		  
-		  <para>
-		    Boundary events are <emphasis>catching</emphasis> events that are attached to an activity
-		    (a boundary event can never be throwing). This means that while the activity is
-		    running, the event is <emphasis>listening</emphasis> for a certain type of trigger. 
-		    When the event is <emphasis>caught</emphasis>, the activity is interrupted and the 
-		    sequence flow going out of the event are followed.
-		  </para>
-		  
-		  <para>
-		    All boundary events are defined in the same way:
-<programlisting>
-&lt;boundaryEvent id=&quot;myBoundaryEvent&quot; attachedToRef=&quot;theActivity&quot;&gt;
-      &lt;XXXEventDefinition/&gt;
-&lt;/boundaryEvent&gt;</programlisting>
-		  </para>
-		  
-		  <para>
-		    A boundary event is defined with
-		    <itemizedlist>
-		      <listitem>
-		        <para>
-		          A unique identifier (process-wide)
-		        </para>
-		      </listitem>
-		      <listitem>
-		        <para>
-		          A reference to the activity to which the event is attached through the
-		          <emphasis role="bold">attachedToRef</emphasis> attribute.
-		          Note that a boundary event is defined on the same level as the activities
-		          to which they are attached
-		          (i.e. no inclusion of the boundary event inside the activity).
-		        </para>
-		      </listitem>
-		      <listitem>
-		        <para>
-		          An XML sub-element of the form <emphasis>XXXEventDefinition</emphasis> 
-		          (e.g. <emphasis>TimerEventDefinition</emphasis>, <emphasis>ErrorEventDefinition</emphasis>, etc.)
-		          defining the type of the boundary event. See the specific boundary event types
-		          for more details.
-		        </para>
-		      </listitem>
-		    </itemizedlist>
-		  </para>
-		  
-		</section>
-		  
-		<section id="bpmnTimerBoundaryEvent">
-      
-      <title>Timer Boundary Event</title>
-        
-      <section id="timerBoundaryEventDescription">
-        
-        <title>Description</title>
-          
-        <para>
-          A timer boundary event acts as a stopwatch and alarm clock. When an execution arrives
-          in the activity where the boundary event is attached to, a timer is started.
-          When the timer fires (e.g. after a specified interval), the activity is interrupted
-          and the sequence flow going out of the timer boundary event are followed.
-        </para>
-        
-      </section>
-        
-      <section id="bpmnTimerBoundaryEventGraphicalNotation">
-        
-        <title>Graphical Notation</title>
-          
-        <para>
-          A timer boundary event is visualized as a typical boundary event (i.e. circle
-          on the border), with the timer icon on the inside.
-          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.boundary.timer.event.png"/></imageobject></mediaobject>
-        </para>
-        
-      </section>
-      
-      <section id="bpmnTimerBoundaryEventXml">
-      
-        <title>XML Representation</title>
-        
-        <para>
-          A timer boundary event is defined as a <link linkend="bpmnBoundaryEvent">regular boundary event</link>.
-          The specific type sub-element is in this case a <emphasis role="bold">timerEventDefinition</emphasis>
-          element.
-<programlisting>
-&lt;boundaryEvent id=&quot;escalationTimer&quot; cancelActivity=&quot;true&quot; attachedToRef=&quot;firstLineSupport&quot;&gt;
-   <emphasis role="bold">&lt;timerEventDefinition&gt;
-    &lt;timeDuration&gt;PT4H&lt;/timeDuration&gt;
-  &lt;/timerEventDefinition&gt;</emphasis>
-&lt;/boundaryEvent&gt;          
-</programlisting>
-
-        Please refer to <link linkend="timerEventDefinitions">timer event definition</link> for details on timer configuration.
-        </para>
-
-        <para>
-          In the graphical representation, the line of the circle is dotted as you can see in this example above:
-          
-          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.non.interrupting.boundary.timer.event.png"/></imageobject></mediaobject>
-          
-          A typical use case is sending an escalation email additionally but not interrupt the normal process flow.
-        </para>        
-<!-- 
-        <para>
-          Since BPMn 2.0 there is the difference between the interrupting and non interrupting timer event. The 
-          interrupting is the default. The non-interrupting leads to the original activity is <emphasis role="bold">not</emphasis>
-          interrupted but the activity stays there. Instead an additional executions is created and send over the
-          outgoing transition of the event. In the XML representation, the <emphasis>cancelActivity</emphasis> attribute
-          is set to false:
-<programlisting>
-&lt;boundaryEvent id=&quot;escalationTimer&quot; cancelActivity=&quot;false&quot; attachedToRef=&quot;firstLineSupport&quot;/&gt;
-</programlisting>
-        </para>
-         -->
-        
-        <para>
-          <emphasis role="bold">Note:</emphasis> boundary timer events are only fired when 
-          the job executor is enabled (i.e. <emphasis>jobExecutorActivate</emphasis>
-          needs to be set to <literal>true</literal> in the <literal>activiti.cfg.xml</literal>, since the job
-          executor is disabled by default). 
-        </para>
-      
-      </section>
-      
-      <section id="bpmnKnownIssueBoundaryEvent">
+</section>
     
-      <title>Known issue with boundary events</title>
-      
-      <para>
-        There is a known issue regarding concurrency when using boundary events of any type.
-        Currently, it is not possible to have multiple outgoing sequence flow attached to 
-        a boundary event (see issue <ulink url="http://jira.codehaus.org/browse/ACT-47">ACT-47</ulink>).
-        A solution to this problem is to use one outgoing sequence flow that goes to a parallel gateway.
-        <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.known.issue.boundary.event.png"/></imageobject></mediaobject>
-      </para>
-    
-    </section>
-		
-		</section> 
-		
-		<section id="bpmnBoundaryErrorEvent">
-		  <title>Error Boundary event</title>
-		  
-		  <section id="bpmnBoundaryErrorEventDescription">
-		    <title>Description</title>
-		    <para>
-		      An intermediate <emphasis>catching</emphasis> error on the boundary of an activity,
-		      or <emphasis role="bold">boundary error event</emphasis> for short, catches errors that are thrown within the scope
-		      of the activity on which it is defined.
-		    </para>
-		    
-		    <para>
-		      Defining a boundary error event makes most sense on an <link linkend="bpmnSubProcess">embedded subprocess</link>,
-		      or a <link linkend="bpmnCallActivity">call activity</link>, as a subprocess creates a scope for all activities inside the subprocess. 
-		      Errors are thrown by <link linkend="bpmnErrorEndEvent">error end events</link>. Such an error will propagate its
-		      parent scopes upwards until a scope is found on which a boundary error event is defined
-		      that matches the error event definition.
-		    </para>
-		    
-		    <para>
-		      When an error event is caught, the activity on which the boundary event is defined
-		      is destroyed, also destroying all current executions within
-		      (e.g. concurrent activities, nested subprocesses, etc.). Process execution continues
-		      following the outgoing sequence flow of the boundary event. 
-		    </para>
-		    
-		  </section>
-		  
-		  <section id="bpmnBoundaryErrorEventgraphicalNotation">
-        <title>Graphical notation</title>
-        <para>
-          A boundary error event is visualized as a typical intermediate event (Circle with smaller circle inside)
-          on the boundary, with the error icon inside. The error icon is white, to indicate
-          the <emphasis>catch</emphasis> semantics.
-          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.boundary.error.event.png"/></imageobject></mediaobject>
-        </para>
-      </section>
-      
-      <section id="bpmnBoundaryErrorEventXml">
-        <title>Xml representation</title>
-        <para>
-          A boundary error event is defined as a typical <link linkend="bpmnBoundaryEvent">boundary event</link>:
-          <programlisting>
-&lt;boundaryEvent id=&quot;catchError&quot; attachedToRef=&quot;mySubProcess&quot;&gt;
-  &lt;errorEventDefinition errorRef=&quot;myError&quot;/&gt;
-&lt;/boundaryEvent&gt;
-          </programlisting>
-          As with the <link linkend="bpmnErrorEndEvent">error end event</link>, the <emphasis>errorRef</emphasis>
-          references an error defined outside the process element:
-          <programlisting>
-&lt;error id=&quot;myError&quot; errorCode=&quot;123&quot; /&gt;
-...
-&lt;process id=&quot;myProcess&quot;&gt;  
-...              
-          </programlisting>
-        </para>
-        
-        <para>
-          The <emphasis role="bold">errorCode</emphasis> is used to match the errors that are caught:
-          <itemizedlist>
-            <listitem>
-              <para>
-                If <emphasis>errorRef</emphasis> is omitted, the boundary error event will catch
-                <emphasis role="bold">any error event</emphasis>, regardless of the errorCode of the <emphasis>error</emphasis>.
-              </para>
-            </listitem>
-            <listitem>
-              <para>
-                In case an <emphasis>errorRef</emphasis> is provided and it references an existing <emphasis>error</emphasis>,
-                the boundary event will <emphasis role="bold">only catch errors with the same error code</emphasis>.
-              </para>
-            </listitem>
-            <listitem>
-              <para>
-                In case an <emphasis>errorRef</emphasis> is provided, but no <emphasis>error</emphasis>
-                is defined in the BPMN 2.0 file, then the <emphasis role="bold">errorRef is used
-                as errorCode</emphasis> (similar for with error end events).
-              </para>
-            </listitem>
-          </itemizedlist>
-        </para>
-      </section>
-      
-      <section id="bpmnBoundaryErrorEventExample">
-        <title>Example</title>
-        <para>
-          Following example process shows how an error end event can be used. When the 
-          <emphasis>'Review profitability'</emphasis> user task is completed by stating that
-          not enough information is provided, an error is thrown. When this error is caught on
-          the boundary of the subprocess, all active activities within the <emphasis>'Review sales lead'</emphasis>
-          subprocess are destroyed (even if <emphasis>'Review customer rating'</emphasis> was not yet completed),
-          and the <emphasis>'Provide additional details'</emphasis> user task is created.
-          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.boundary.error.example.png"/></imageobject></mediaobject>
-        </para>
-        
-        <para>
-          This process is shipped as example in the demo setup. The process XML and unit test can
-          be found in the <emphasis>org.activiti.examples.bpmn.event.error</emphasis> package.
-        </para>
-      </section>
-		  
-		</section>
+       	 <!-- 
+	  
+	  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	  
+	  												Subprocesses
+	  
+	  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	  
+	   -->
+<section id="bpmnSubprocessAndCallActivity">
 
-        <section id="bpmnIntermediateCatchingEvent">
-
-          <title>Intermediate catching events</title>
-
-		  <para>
-		    All intermediate catching events events are defined in the same way:
-<programlisting>
-&lt;intermediateCatchEvent id=&quot;myIntermediateCatchEvent&quot; &gt;
-      &lt;XXXEventDefinition/&gt;
-&lt;/intermediateCatchEvent&gt;</programlisting>
-		  </para>
-
-		  <para>
-		    An intermediate catching event is defined with
-		    <itemizedlist>
-		      <listitem>
-		        <para>
-		          A unique identifier (process-wide)
-		        </para>
-		      </listitem>
-		      <listitem>
-		        <para>
-		          An XML sub-element of the form <emphasis>XXXEventDefinition</emphasis>
-		          (e.g. <emphasis>TimerEventDefinition</emphasis>, etc.)
-		          defining the type of the intermediate catching event. See the specific catching event types
-		          for more details.
-		        </para>
-		      </listitem>
-		    </itemizedlist>
-		  </para>
-
-        </section>
-
-        <section id="bpmnTimerIntermediateEvent">
-
-            <title>Timer intermediate catching event</title>
-
-            <section id="bpmnTimerIntermediateEventDescription">
-                <title>Description</title>
-
-        <para>
-          A timer intermediate event acts as a stopwatch. When an execution arrives
-          in catching event activity, a timer is started.
-          When the timer fires (e.g. after a specified interval), the sequence flow going out of the timer intermediate event is followed.
-        </para>
-
-            </section>
-
-            <section id="bpmnTimerIntermediateEventGraphicalNotation">
-
-              <title>Graphical Notation</title>
-
-              <para>
-                A timer intermediate event is visualized as a intermediate catching event, with the timer icon on the inside.
-                <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.intermediate.timer.event.png"/></imageobject></mediaobject>
-              </para>
-
-            </section>
-
-            <section id="bpmnTimerIntermediateEventXml">
-
-              <title>XML Representation</title>
-
-              <para>
-
-          A timer intermediate event is defined as a <link linkend="bpmnIntermediateCatchingEvent">intermediate catching event</link>.
-          The specific type sub-element is in this case a <emphasis role="bold">timerEventDefinition</emphasis>
-          element.
-                 <programlisting>
-        &lt;intermediateCatchEvent id=&quot;timer&quot;&gt;
-            <emphasis role="bold">&lt;timerEventDefinition&gt;
-                &lt;timeDuration&gt;PT5M&lt;/timeDuration&gt;
-            &lt;/timerEventDefinition&gt;</emphasis>
-        &lt;/intermediateCatchEvent&gt;
-                 </programlisting>
-              See <link linkend="timerEventDefinitions">timer event definitions</link> for configuration details.
-
-              </para>
-            </section>
-
-        </section>
+	<title>Subprocesses and Callactivities</title>    
 
 		<section id="bpmnSubProcess">
 		
@@ -4237,29 +4341,18 @@ public class MyTaskCreateListener implements TaskListener {
       
     </section>
     
-    <section id="bpmnIntermediateThrowNoneEvent">
-        <title>Intermediate throwing none event</title>
-        <para>
-          The following process diagram shows a simple example of an intermediate none event, which is often used to 
-          indicate some state achieved in the process. 
+</section>
+    
+    
+    
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////    
+     -->
+    
+<section id="bpmnConcurrencyAndTransactions">
 
-          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.intermediate.none.event.png"/></imageobject></mediaobject>
-          
-          This can be a good hook to monitor some KPI's, basically by adding an <link linkend="#executionListeners">execution listener</link>
-          
-<programlisting>
-&lt;intermediateThrowEvent id="noneEvent"&gt;
-  &lt;extensionElements&gt;
-    &lt;activiti:executionListener class="org.activiti.engine.test.bpmn.event.IntermediateNoneEventTest$MyExecutionListener" event="start" /&gt;
-  &lt;/extensionElements&gt;
-&lt;/intermediateThrowEvent&gt;
-</programlisting>          
-          
-          There you can add some own code to maybe send some event to your BAM tool or DWH. The engine itself doesn't do anything in that event, it just
-          passes through.
-        </para>
-    </section>
-	</section>
+	<title>Transactions and Concurrency</title>    
 	
 	<section id="asyncContinuations">
       
@@ -4418,5 +4511,5 @@ public class MyTaskCreateListener implements TaskListener {
         	</para>
         </section>
       </section>
-	
+	</section>	
 </chapter>
