@@ -761,6 +761,16 @@ public class TenMinuteTutorial {
 	     
 	    </para>
 	   
+	  <section id="eventDefinitions">
+	  	<title>Event definitions</title>
+	  	
+	  	<para>Event definitions define the semantics of an event. Without an event definition, an event "does nothing special". For instance a start event 
+	  	without and event definition does not specify what exactly starts the process. If we add an event definition to the start event (like for instance a 
+	  	timer event definition) we declare what &quot;type&quot; of event starts the process (in the case of a timer event definition the fact that a certain 
+	  	point in time is reached).  
+	  	</para>
+	  
+	  </section>
 
       <section id="timerEventDefinitions">
           <title>Timer events definitions</title>
@@ -838,6 +848,138 @@ public class TenMinuteTutorial {
           executor is disabled by default).
         </para>
 
+      </section>
+      
+      <section id="bpmnErrorEventDefinition">
+      <title>Error event definitions</title>
+      Error events are events which are triggered by a defined error. 
+      
+        <para>
+		      <emphasis role="bold">Important note:</emphasis> a BPMN error is NOT the same as a 
+		      Java exception. In fact, the two have nothing in common. BPMN error events are a way
+		      of modeling <emphasis>business exceptions</emphasis>. Java exceptions are handled 
+		      in <link linkend="serviceTaskExceptionHandling">their own specific way</link>.
+		</para>
+		
+		
+		An error event definition references an error element. The following is an example of an error end event,
+		referencing an error declaration:
+		
+		 <programlisting>
+&lt;endEvent id=&quot;myErrorEndEvent&quot;&gt;
+  &lt;errorEventDefinition errorRef=&quot;myError&quot; /&gt;
+&lt;/endEvent&gt;     
+         </programlisting>
+         
+         An error event handler references the same error element to declare that it catches the error.      	      
+      </section>
+      
+      
+   <section id="bpmnSignalEventDefinition">
+      	<title>Signal event definitions</title>
+      	<para>
+      		Signal events are events which reference a named signal. A signal is an event of global scope (broadcast semantics)
+      		and is delivered to all active handlers.	
+      	</para>
+        
+        <para>
+      		A signal event definition is declared using the <code>signalEventDefinition</code> element. 
+      		The attribute <code>signalRef</code> references a <code>signal</code> element declared as a child element 
+      		of the <code>definitions</code> root element. The following is an excerpt of a process where a signal event 
+      		is thrown and caught by intermediate events. 
+<programlisting>
+&lt;definitions... &gt;
+	&lt;!-- declaration of the signal --&gt;
+	&lt;signal id=&quot;alertSignal&quot; name=&quot;alert&quot; /&gt;
+	
+	&lt;process id=&quot;catchSignal&quot;&gt;
+		&lt;intermediateThrowEvent id=&quot;throwSignalEvent&quot; name=&quot;Alert&quot;&gt;
+			&lt;!-- signal event definition --&gt;
+			&lt;signalEventDefinition signalRef=&quot;alertSignal&quot; /&gt;
+		&lt;/intermediateThrowEvent&gt;
+		...
+		&lt;intermediateCatchEvent id=&quot;catchSignalEvent&quot; name=&quot;On Alert&quot;&gt;
+			&lt;!-- signal event definition --&gt;
+			&lt;signalEventDefinition signalRef=&quot;alertSignal&quot; /&gt;
+		&lt;/intermediateCatchEvent&gt;
+		...		
+	&lt;/process&gt;
+&lt;/definitions&gt;
+</programlisting>
+The <code>signalEventDefinition</code>s reference the same <code>signal</code> element.      		  
+        </para>
+        <section id="bpmnSignalEventDefinitionThrow">
+        	<title>Throwing a signal event</title>       
+	        <para>
+	        	A signal can either be thrown by a process instance using a bpmn construct
+	        	or programmatically using java API. The following methods on the 
+	        	<code>org.activiti.engine.RuntimeService</code> can be used to throw a signal programmatically:
+	        	<programlisting>
+void signalEventReceived(String signalName);
+void signalEventReceived(String signalName, String executionId);  
+	  			</programlisting>	  			 
+	  			The difference between <code>signalEventReceived(String signalName);</code> and 
+	  			<code>signalEventReceived(String signalName, String executionId);</code> is that the 
+	  			first method throws the signal globally to all subscribed handlers (broadcast semantics) 
+	  			and the second method delivers the signal to a specific execution only. 
+	        </para>
+	    </section>
+	    <section id="bpmnSignalEventDefinitionCatch">
+	    	<title>Catching a signal event</title>
+	    	<para>
+	    		A signal event can be caught by an intermediate catch signal event or a signal boundary event.
+	    	</para>
+	    </section>
+	    <section id="bpmnSignalEventDefinitionQuery">
+	    	<title>Querying for signal event subscriptions</title>
+	    	It is possible to query for all executions which have subscribed to a specific signal event:
+	    	<programlisting>
+ List&lt;Execution&gt; executions = runtimeService.createExecutionQuery()
+      .signalEventSubscription("alert")
+      .list();
+	    	</programlisting>
+	    	We could then use the <code>signalEventReceived(String signalName, String executionId)</code> method 
+	    	to deliver the signal to these executions.	    		    	
+	    </section> 
+	    
+	    <section id="bpmnSignalEventDefinitionExample">
+	    	<title>Signal event example(s)</title>
+	    	
+	    	<para>
+		    	The following is an example of two separate processes communicating using signals. The first process is started if an insurance policy is 
+		    	updated or changed. After the changes have been reviewed by a human participant, a signal event is thrown, signaling that a policy has changed:	    		    	 
+	    	</para>
+	    	
+	    	<mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.signal.event.throw.png"/></imageobject></mediaobject>
+	    	
+	    	<para>
+		    	This event can now be caught by all process instances which are interested. The following is an example of a process subscribing to the event.		    			    		    		    	 
+	    	</para>
+	    	
+	    	<mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.signal.event.catch.png"/></imageobject></mediaobject>
+	    	
+	    	<para>
+	    		<emphasis role="bold">Note:</emphasis> it is important to understand that a signal event is broadcast to <emphasis role="bold">all</emphasis> active handlers.
+	    		This means in the case of the example given above, that all instances of the process catching the signal would receive the event. 
+	    		In this case this is what we want. However, there are also situations where the broadcast behavior is unintended. Consider the following process: 
+	    	</para>
+	    	<mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.signal.event.warning.1.png"/></imageobject></mediaobject>
+	    	
+	    	<para>
+	    		The pattern described in the process above is not supported by activiti. The idea is that the error thrown while performing the "do something" task 
+	    		is caught by the boundary error event and would be propagated to the parallel path of execution using the signal throw event and then interrupt the 
+	    		"do something in parallel" task. So far activiti would perform as expected. The signal would be propagated to the catching boundary event and interrupt the 
+	    		task. <emphasis role="bold">However, due to the broadcast semantics of the signal, it would also be propagated to all other process instances which have subscribed 
+	    		to the signal event.</emphasis> In this case, this might not be what we want.
+	    	</para>
+	    	
+	    	<para>
+	    		<emphasis role="bold">Note:</emphasis> the signal event does not perform any kind of correlation to a specific process instance. On the contrary, it is broadcast to all 
+	    		process instances. If you need to deliver a signal to a specific process instance only, perform correlation manually and use  
+	    		<code>signalEventReceived(String signalName, String executionId)</code> and the appropriate <link linkend="bpmnSignalEventDefinitionQuery">query mechanisms</link>.
+	    	</para>
+	    </section>
+             
       </section>
       
 
@@ -1081,13 +1223,7 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
 		      In case no matching boundary error event is found, the execution semantics default to the 
 		      <link linkend="bpmnNoneEndEvent">none end event</link> semantics.
 		    </para>
-		    
-		    <para>
-		      <emphasis role="bold">Important note:</emphasis> a BPMN error is NOT the same as a 
-		      Java exception. In fact, the two have nothing in common. BPMN error events are a way
-		      of modeling <emphasis>business exceptions</emphasis>. Java exceptions are handled 
-		      in <link linkend="serviceTaskExceptionHandling">their own specific way</link>.
-		    </para>
+		  	  
 		  </section>
 		  
 		  <section id="bpmnErrorEndEventGraphicalNotation">
@@ -1393,8 +1529,64 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
       </section>
 		  
 		</section>
-
-        <section id="bpmnIntermediateCatchingEvent">
+		
+		<section id="bpmnBoundarySignalEvent">
+		  <title>Signal Boundary event</title>
+		  
+		  <section id="bpmnBoundarySignalEventDescription">
+		    <title>Description</title>
+		    <para>
+		      An attached intermediate <emphasis>catching</emphasis> <link linkend="bpmnSignalEventDefinition">signal</link> on the boundary of an activity,
+		      or <emphasis role="bold">boundary signal event</emphasis> for short, catches signals with the same signal name
+		      as the referenced signal definition. 
+		    </para>
+		    
+		    <para>
+		    	<emphasis role="bold">Note:</emphasis> contrary to other events like the boundary error event, a boundary signal event does not only catch
+		    	signal events thrown from the scope it is attached to. On the contrary, a signal event has global scope
+		    	(broadcast semantics) meaning that the signal can be thrown from any place, even from a different process instance. 
+		    </para>
+		    
+		    <para>
+		    	<emphasis role="bold">Note:</emphasis> contrary to other events like an error event, a signal is not consumed if it is caught.
+		    	If you have two active signal boundary events catching the same signal event, both boundary events are triggered, event if they are part of 
+		    	different process instances.
+		    </para>		    		    
+		    
+		  </section>
+		  
+		  <section id="bpmnBoundarySignalEventGraphicalNotation">
+	        <title>Graphical notation</title>
+	        <para>
+	          A boundary signal event is visualized as a typical intermediate event (Circle with smaller circle inside)
+	          on the boundary, with the signal icon inside. The signal icon is white (unfilled), to indicate
+	          the <emphasis>catch</emphasis> semantics.
+	          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.boundary.signal.event.png"/></imageobject></mediaobject>
+	        </para>
+	      </section>
+      
+	      <section id="bpmnBoundarySignalEventXml">
+	        <title>Xml representation</title>	               
+	         <para>
+     	     	A boundary signal event is defined as a typical <link linkend="bpmnBoundaryEvent">boundary event</link>:
+          		<programlisting>
+&lt;boundaryEvent id=&quot;boundary&quot; attachedToRef=&quot;task&quot; cancelActivity=&quot;true&quot;&gt;       
+          &lt;signalEventDefinition signalRef=&quot;alertSignal&quot;/&gt;
+&lt;/boundaryEvent&gt;
+          		</programlisting>         
+        	</para>	    
+	      </section>
+      
+	      <section id="bpmnBoundarySignalEventExample">
+	        <title>Example</title>	        
+	        <para>
+	        	See section on <link linkend="bpmnSignalEventDefinition">signal event definitions</link>.
+	        </para>	       
+	      </section>
+      
+      </section>
+	
+      <section id="bpmnIntermediateCatchingEvent">
 
           <title>Intermediate catching events</title>
 
@@ -1426,6 +1618,8 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
 		  </para>
 
         </section>
+        
+        <!-- //////////////////////////////////////// intermediate timer catch  -->
 
         <section id="bpmnTimerIntermediateEvent">
 
@@ -1475,7 +1669,94 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
             </section>
 
         </section>
+        
+        <!-- //////////////////////////////////////// intermediate signal catch  -->
+        
+        <section id="bpmnIntermediateSignalEvent">
+		  <title>Signal Intermediate catching event</title>
+		  
+		  <section id="bpmnIntermediateSignalEventDescription">
+		    <title>Description</title>
+		    <para>
+		      An intermediate <emphasis>catching</emphasis> <link linkend="bpmnSignalEventDefinition">signal</link> event catches signals with the same signal name
+		      as the referenced signal definition. 
+		    </para>
+		   		    
+		    <para>
+		    	<emphasis role="bold">Note:</emphasis> contrary to other events like an error event, a signal is not consumed if it is caught.
+		    	If you have two active signal boundary events catching the same signal event, both boundary events are triggered, event if they are part of 
+		    	different process instances.
+		    </para>		    		    
+		    
+		  </section>
+		  
+		  <section id="bpmnIntermediateSignalEventGraphicalNotation">
+	        <title>Graphical notation</title>
+	        <para>
+	          An intermediate signal catch event is visualized as a typical intermediate event (Circle with smaller circle inside), 
+	          with the signal icon inside. The signal icon is white (unfilled), to indicate
+	          the <emphasis>catch</emphasis> semantics.
+	          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.intermediate.signal.catch.event.PNG"/></imageobject></mediaobject>
+	        </para>
+	      </section>
+      
+	      <section id="bpmnIntermediateSignalEventXml">
+	        <title>Xml representation</title>	               
+	         <para>
+     	     	 A signal intermediate event is defined as a <link linkend="bpmnIntermediateCatchingEvent">intermediate catching event</link>.
+		          The specific type sub-element is in this case a <emphasis role="bold">signalEventDefinition</emphasis>
+		          element.
+                 <programlisting>
+&lt;intermediateCatchEvent id=&quot;signal&quot;&gt;
+	<emphasis role="bold">&lt;signalEventDefinition signalRef="newCustomerSignal" /&gt;</emphasis>
+&lt;/intermediateCatchEvent&gt;
+                 </programlisting>    
+        	</para>	    
+	      </section>
+      
+	      <section id="bpmnIntermediateSignalEventExample">
+	        <title>Example</title>	        
+	        <para>
+	        	See section on <link linkend="bpmnSignalEventDefinition">signal event definitions</link>.
+	        </para>	       
+	      </section>
+      
+      </section>
+      
+      
+    <!-- //////////////////////////////////////// intermediate throwing events introduction -->
+    
+    <section id="bpmnIntermediateThrowEvent">
+        <title>Intermediate throwing event</title>
+        <para>
+		    All intermediate throwing events events are defined in the same way:
+<programlisting>
+&lt;intermediateThrowEvent id=&quot;myIntermediateThrowEvent&quot; &gt;
+      &lt;XXXEventDefinition/&gt;
+&lt;/intermediateThrowEvent&gt;</programlisting>
+		  </para>
 
+		  <para>
+		    An intermediate throwing event is defined with
+		    <itemizedlist>
+		      <listitem>
+		        <para>
+		          A unique identifier (process-wide)
+		        </para>
+		      </listitem>
+		      <listitem>
+		        <para>
+		          An XML sub-element of the form <emphasis>XXXEventDefinition</emphasis>
+		          (e.g. <emphasis>signalEventDefinition</emphasis>, etc.)
+		          defining the type of the intermediate throwing event. See the specific throwing event types
+		          for more details.
+		        </para>
+		      </listitem>
+		    </itemizedlist>
+		  </para>
+    </section>
+    
+    <!-- //////////////////////////////////////// intermediate throwing none events  -->
 
     <section id="bpmnIntermediateThrowNoneEvent">
         <title>Intermediate throwing none event</title>
@@ -1499,6 +1780,81 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
           passes through.
         </para>
     </section>
+    
+    <!-- //////////////////////////////////////// intermediate throwing signal events  -->
+    
+     <section id="bpmnIntermediateThrowSignalEvent">
+		  <title>Signal intermediate throwing event</title>
+		  
+		  <section id="bpmnIntermediateThrowSignalEventDescription">
+		    <title>Description</title>
+		    <para>
+		      An intermediate <emphasis>throwing</emphasis> <link linkend="bpmnSignalEventDefinition">signal</link> event throws a signal event for a defined signal.		      
+		    </para>
+		   		    
+		    <para>
+		    	In activiti, the signal is broadcast to all active handlers (i.e. all catching signal events). Signals can be published synchronous or asynchronous.
+		    	<itemizedlist>
+		    		<listitem>
+		    			<para>
+		    				In the default configuration, the signal is delivered <emphasis role="bold">synchronously</emphasis>. This means that the throwing process instance waits until 
+		    				the signal is delivered to all catching process instances. The catching process instances are also notified in the same transaction as the throwing process 
+		    				instance, which means that if one of the notified instances produces a technical error (throws an exception), all involved instances fail.
+		    			</para>
+		    		</listitem>
+		    		<listitem>
+		    			<para>
+		    				A signal can also be delivered <emphasis role="bold">asynchronously</emphasis>. In that case it is determined which handlers are active at the time 
+		    				the throwing signal event is reached. For each active handler, an asynchronous notification message (Job) is stored and delivered by the JobExecutor. 			
+		    			</para>
+		    		</listitem>
+		    	</itemizedlist>
+		    	  
+		    </para>		    		    
+		    
+		  </section>
+		  
+		  <section id="bpmnIntermediateThrowSignalEventGraphicalNotation">
+	        <title>Graphical notation</title>
+	        <para>
+	          An intermediate signal throw event is visualized as a typical intermediate event (Circle with smaller circle inside), 
+	          with the signal icon inside. The signal icon is black (filled), to indicate
+	          the <emphasis>throw</emphasis> semantics.
+	          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.intermediate.signal.throw.event.png"/></imageobject></mediaobject>
+	        </para>
+	      </section>
+      
+	      <section id="bpmnIntermediateThrowSignalEventXml">
+	        <title>Xml representation</title>	               
+	         <para>
+     	     	 A signal intermediate event is defined as a <link linkend="bpmnIntermediateThrowingEvent">intermediate throwing event</link>.
+		          The specific type sub-element is in this case a <emphasis role="bold">signalEventDefinition</emphasis>
+		          element.
+                 <programlisting>
+&lt;intermediateThrowEvent id=&quot;signal&quot;&gt;
+	<emphasis role="bold">&lt;signalEventDefinition signalRef="newCustomerSignal" /&gt;</emphasis>
+&lt;/intermediateThrowEvent&gt;
+                 </programlisting>    
+        	</para>
+        	<para>
+        		An asynchronous signal event would look like this:        		
+        		<programlisting>
+&lt;intermediateThrowEvent id=&quot;signal&quot;&gt;
+	<emphasis role="bold">&lt;signalEventDefinition signalRef="newCustomerSignal" activiti:async=&quot;true&quot; /&gt;</emphasis>
+&lt;/intermediateThrowEvent&gt;
+                 </programlisting>
+        	</para>	    
+	      </section>
+      
+	      <section id="bpmnIntermediateSignalEventExample">
+	        <title>Example</title>	        
+	        <para>
+	        	See section on <link linkend="bpmnSignalEventDefinition">signal event definitions</link>.
+	        </para>	       
+	      </section>
+      
+      </section>
+    
 </section>
 
 		
