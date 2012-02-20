@@ -760,6 +760,8 @@ public class TenMinuteTutorial {
        </itemizedlist>
 	     
 	    </para>
+	    
+	<!-- //////////////////////////////////////// event definitions introductions -->
 	   
 	  <section id="eventDefinitions">
 	  	<title>Event definitions</title>
@@ -771,6 +773,8 @@ public class TenMinuteTutorial {
 	  	</para>
 	  
 	  </section>
+	  
+	<!-- //////////////////////////////////////// timer event definitions -->
 
       <section id="timerEventDefinitions">
           <title>Timer events definitions</title>
@@ -850,6 +854,8 @@ public class TenMinuteTutorial {
 
       </section>
       
+	<!-- //////////////////////////////////////// error event definitions -->
+      
       <section id="bpmnErrorEventDefinition">
       <title>Error event definitions</title>
       Error events are events which are triggered by a defined error. 
@@ -873,6 +879,8 @@ public class TenMinuteTutorial {
          
          An error event handler references the same error element to declare that it catches the error.      	      
       </section>
+      
+<!-- //////////////////////////////////////// signal event definitions -->
       
       
    <section id="bpmnSignalEventDefinition">
@@ -915,8 +923,8 @@ The <code>signalEventDefinition</code>s reference the same <code>signal</code> e
 	        	or programmatically using java API. The following methods on the 
 	        	<code>org.activiti.engine.RuntimeService</code> can be used to throw a signal programmatically:
 	        	<programlisting>
-void signalEventReceived(String signalName);
-void signalEventReceived(String signalName, String executionId);  
+RuntimeService.signalEventReceived(String signalName);
+RuntimeService.signalEventReceived(String signalName, String executionId);  
 	  			</programlisting>	  			 
 	  			The difference between <code>signalEventReceived(String signalName);</code> and 
 	  			<code>signalEventReceived(String signalName, String executionId);</code> is that the 
@@ -982,6 +990,92 @@ void signalEventReceived(String signalName, String executionId);
              
       </section>
       
+      <!-- //////////////////////////////////////// message event definitions -->
+      
+      
+   <section id="bpmnMessageEventDefinition">
+      	<title>Message event definitions</title>
+      	<para>
+      		Message events are events which reference a named message. A message has a name and a payload. Unlike a signal, a message event is always directed at a single receiver.      		 
+      	</para>
+        
+        <para>
+      		A message event definition is declared using the <code>messageEventDefinition</code> element. 
+      		The attribute <code>messaageRef</code> references a <code>message</code> element declared as a child element 
+      		of the <code>definitions</code> root element. The following is an excerpt of a process where a message event
+      		is declared and referenced by a start event. 
+<programlisting>
+&lt;definitions id=&quot;definitions&quot; 
+  xmlns=&quot;http://www.omg.org/spec/BPMN/20100524/MODEL&quot;
+  xmlns:activiti=&quot;http://activiti.org/bpmn&quot;
+  targetNamespace=&quot;Examples&quot;
+  xmlns:tns=&quot;Examples&quot;&gt;
+  
+  &lt;message id=&quot;newInvoice&quot; name=&quot;newInvoiceMessage&quot; /&gt;
+  
+  &lt;process id=&quot;invoiceProcess&quot;&gt;  
+  
+    &lt;startEvent id=&quot;messageStart&quot; &gt;
+    	&lt;messageEventDefinition messageRef=&quot;tns:newInvoice&quot; /&gt;
+    &lt;/startEvent&gt;
+    ...    
+  &lt;/process&gt;
+
+&lt;/definitions&gt;</programlisting>		  
+        </para>
+        <section id="bpmnMessageEventDefinitionThrow">
+        	<title>Throwing a signal event</title>       
+	        <para>
+	        	At the moment, activiti supports message events only for starting process instances. To support this, the following methods exist on the <code>RuntimeService</code>:
+	        	<programlisting>
+ProcessInstance startProcessInstanceByMessage(String messageName);
+ProcessInstance startProcessInstanceByMessage(String messageName, Map&lt;String, Object&gt; processVariables);
+ProcessInstance startProcessInstanceByMessage(String messageName, String businessKey, Map&lt;String, Object&lt; processVariables); 		</programlisting>	        	
+	        </para>
+	        The methods allow starting a process instance using the referenced message. 
+	    </section>
+	    <section id="bpmnMessageEventDefinitionCatch">
+	    	<title>Catching a signal event</title>
+	    	<para>
+	    		At the moment activiti only supports <link linkend="bpmnMessageStartEvent">message start events</link>. A message start event catches a message with a given name and 
+	    		starts a process instance. The payload of the message is added as process variables to the process instance. Since a message must be directed at a single receiver, 
+	    		activiti only allows a single process definition to be deployed for a given message name.  
+	    	</para>
+	    </section>
+	    <section id="bpmnMessageEventDefinitionQuery">
+	    	<title>Querying for message event subscriptions</title>	    	
+	    	Since activiti only supports message start events, we can only query for message subscriptions using a <code>ProcessDefinitionQuery</code>:
+	    	<programlisting>
+ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+      .messageEventSubscription("newCallCenterBooking")
+      .singleResult();
+	    	</programlisting>
+	    	Since there can only be one process definition for a specific message subscription, the query always returns zero or one results. If a process definition is updated,
+	    	only the newest version of the process definition has a subscription to the message event.     		    	
+	    </section> 
+	    
+	    <section id="bpmnMessageEventDefinitionExample">
+	    	<title>Message event example(s)</title>
+	    	
+	    	<para>
+		    	The following is an example of a process which can be started using two different messages:		    		    		    	 
+	    	</para>
+	    	
+	    	<mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.start.message.event.example.1.png"/></imageobject></mediaobject>
+	    	
+	    	<para>
+		    	This is useful if the process needs alternative ways to react to different start events but eventually continues in a uniform way.     			    		    		    	 
+	    	</para>
+	    		    	
+	    </section>
+             
+      </section>
+      
+      
+            
+      
+      <!-- //////////////////////////////////////// start events -->
+      
 
 	  <section id="bpmnStartEvents">
 	  
@@ -1003,15 +1097,7 @@ void signalEventReceived(String signalName, String executionId);
 	     In a start event, following activiti-specific properties can be specified:
 	   </para>
 	   
-	   <itemizedlist>
-       <listitem>
-         <para>
-           <emphasis role="bold">formKey</emphasis>: references to a form template that users have to fill in
-           when starting a new process instance.  More information can be found in 
-           <link linkend="forms">the forms section</link> Example:
-           <programlisting>&lt;startEvent id=&quot;request&quot; activiti:formKey=&quot;org/activiti/examples/taskforms/request.form&quot; /&gt;</programlisting>
-         </para>
-       </listitem>
+	   <itemizedlist> 
        <listitem>
          <para>
            <emphasis role="bold">initiator</emphasis>: identifies the variable name in which the authenticated 
@@ -1031,9 +1117,10 @@ void signalEventReceived(String signalName, String executionId);
          </para>
        </listitem>
      </itemizedlist>
-	   
 	  
 	  </section>
+	  
+	  <!-- //////////////////////////////////////// none start events -->
 
 		<section id="bpmnNoneStartEvent">
 
@@ -1082,8 +1169,19 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
         </para>
        
       </section>
+      	<section id="noneStartEventCustomExtension">
+      		<title>Custom extensions for the none start event</title>
+	       	 <para>
+	           <emphasis role="bold">formKey</emphasis>: references to a form template that users have to fill in
+	           when starting a new process instance.  More information can be found in 
+	           <link linkend="forms">the forms section</link> Example:
+	           <programlisting>&lt;startEvent id=&quot;request&quot; activiti:formKey=&quot;org/activiti/examples/taskforms/request.form&quot; /&gt;</programlisting>
+	         </para>
+	    </section>
 
 		</section>
+		
+		<!-- //////////////////////////////////////// timer start events -->
 
         <section id="bpmnTimerStartEvent">
 
@@ -1147,6 +1245,149 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
         &lt;/startEvent&gt;
            </programlisting>
         </para>
+
+      </section>
+
+        </section>
+        
+        
+        <!-- //////////////////////////////////////// message start events -->
+        
+        <section id="bpmnMessageStartEvent">
+
+            <title>Message start event</title>
+
+            <section id="messageStartEventDescription">
+
+	        <title>Description</title>
+	
+	        <para>
+	            A <link linkend="bpmnMessageEventDefinition">message</link> start event can be used to start a process instance using a named message. This effectively allows us 
+	            to <emphasis>select</emphasis> the right start event from a set of alternative start events using the message name.	            
+	        </para>
+	        
+	        <para>
+				When <emphasis role="bold">deploying</emphasis> a process instance with one or more message start events, the following considerations apply:	        	
+				<itemizedlist>
+					<listitem>
+						<para>
+							The name of the message start event must be unique across a given process instance. Activiti throws an exception upon deployment of a process definition such that two or more message 
+							start events reference the same message	of if two or more message start events reference messages with the same message name.  						
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							The name of the message start event must be unique across all deployed process definitions. Activiti throws an exception upon deployment of a process definition such that one or more message start events reference a message with the same name 
+							as a message start event already deployed by a different process definition. 				
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							Process versioning: Upon deployment of a new version of a process definition, the message subscriptions of the previous version are cancelled. This is also true for message events
+							that are not present in the new version.	
+						</para>
+					</listitem>
+				</itemizedlist>					
+			</para>
+	        
+			<para>
+				When <emphasis role="bold">starting</emphasis> a process instance, a message start event can be triggered using the following methods on the <code>RuntimeService</code>:
+	        	<programlisting>
+ProcessInstance startProcessInstanceByMessage(String messageName);
+ProcessInstance startProcessInstanceByMessage(String messageName, Map&lt;String, Object&gt; processVariables);
+ProcessInstance startProcessInstanceByMessage(String messageName, String businessKey, Map&lt;String, Object&lt; processVariables); 
+	  			</programlisting>
+	  			The <code>messageName</code> is the name given in the <code>name</code> attribute of the <code>message</code> element referenced by the <code>messageRef</code>
+	  			attribute of the <code>messageEventDefinition</code>.
+				The following considerations apply when <emphasis role="bold">starting</emphasis> a process instance: 
+				<itemizedlist>
+					<listitem>
+						<para>
+							Message start events are only supported on top-level processes. Message start events are not supported on embedded sub processes.							
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							If a process definition has multiple message start events, <code>rutimeService.startProcessInstanceByMessage(...)</code> allows to select the appropriate 
+							start event.
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							If a process definition has multiple message start events and a single none start event, <code>rutimeService.startProcessInstanceByKey(...)</code> and 
+							<code>rutimeService.startProcessInstanceById(...)</code> starts a process instance using the none start event.
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							If a process definition has multiple message start events and no none start event, <code>rutimeService.startProcessInstanceByKey(...)</code> and 
+							<code>rutimeService.startProcessInstanceById(...)</code> throw an exception.
+						</para>
+					</listitem>
+					<listitem>						
+						<para>
+							If a process definition has a single message start event, <code>rutimeService.startProcessInstanceByKey(...)</code> and 
+							<code>rutimeService.startProcessInstanceById(...)</code> start a new process instance using the message start event.
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							If a process is started from a call activity, message start event(s) are only supported if
+							<itemizedlist>
+								<listitem>
+									<para>in addition to the message start event(s), the process has a single none start event</para>
+								</listitem>
+								<listitem>
+									<para>the process has a single message start event and no other start events.</para>
+								</listitem>
+							</itemizedlist>							
+						</para>
+					</listitem>			
+				</itemizedlist>
+			</para> 
+	
+	      </section>
+
+            <section id="messageStartEventGraphicalNotation">
+
+              <title>Graphical notation</title>
+
+              <para>
+                A message start event is visualized as a circle with a message event symbol. The symbol is unfilled, to visualize the catching (receiving) behavior. 
+                <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.start.message.event.png"/></imageobject></mediaobject>
+              </para>
+
+            </section>
+
+            <section id="messageStartEventXml">
+
+        <title>XML representation</title>
+
+        <para>
+          The XML representation of a message start event is the normal
+          start event declaration with a messageEventDefinition child-element:
+          
+          <programlisting>
+&lt;definitions id=&quot;definitions&quot; 
+  xmlns=&quot;http://www.omg.org/spec/BPMN/20100524/MODEL&quot;
+  xmlns:activiti=&quot;http://activiti.org/bpmn&quot;
+  targetNamespace=&quot;Examples&quot;
+  xmlns:tns=&quot;Examples&quot;&gt;
+  
+  &lt;message id=&quot;newInvoice&quot; name=&quot;newInvoiceMessage&quot; /&gt;
+  
+  &lt;process id=&quot;invoiceProcess&quot;&gt;  
+  
+    &lt;startEvent id=&quot;messageStart&quot; &gt;
+    	&lt;messageEventDefinition messageRef=&quot;tns:newInvoice&quot; /&gt;
+    &lt;/startEvent&gt;
+    ...    
+  &lt;/process&gt;
+
+&lt;/definitions&gt;</programlisting>
+        
+        </para>
+         
 
       </section>
 
