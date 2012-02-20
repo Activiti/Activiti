@@ -2320,6 +2320,8 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
         The icon shows the type of gateway.
         <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.gateway.png"/></imageobject></mediaobject>
       </para>
+      
+     <!-- ///////////////////////////////////////  Exclusive Gateway -->
             
     <section id="bpmnExclusiveGateway">
     
@@ -2400,6 +2402,8 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
       </section>
     
     </section>
+    
+    <!-- ///////////////////////////////////////  Parallel Gateway -->
     
     <section id="bpmnParallelGateway">
       
@@ -2532,6 +2536,8 @@ assertEquals("Ship Order", task2.getName());</programlisting>
       </section>
    
     </section>
+    
+    <!-- ///////////////////////////////////////  Inclusive Gateway -->
     
     <section id="bpmnInclusiveGateway">
       
@@ -2666,6 +2672,131 @@ assertEquals("Ship Order", task.getName());</programlisting>
       </section>
    
     </section> 
+    
+    <!-- ///////////////////////////////////////  Event based Gateway -->
+    
+    <section id="bpmnEventbasedGateway">
+    
+      <title>Event based gateway</title>
+      
+      <section id="eventBasedGatewayDescription">
+      
+        <title>Description</title>
+        
+        <para>
+        	The event based gateway allows to take a decision based on events. Each outgoing sequenceflow of the gateway needs to be connected to an 
+        	intermediate catching event. When process execution reaches the event based gateway, the gateway acts like a wait state: execution is suspended. 
+        	In addition, for each outgoing sequence flow, an event subscription is created.   
+        </para>
+        
+        <para>
+        	Note the sequence flows running out of an event based gateway are different from ordinary sequence flows. These sequence flows are never actually 
+        	&quot;executed&quot;. On the contrary, they allow the process engine to determine which events an execution arriving at an event based gateway needs to 
+        	subscribe to. The following restrictions apply:        	
+        	<itemizedlist>
+        		<listitem>
+        			<para>
+        				An event based gateway must have two or more outgoing sequence flows.
+        			</para>
+        		</listitem>
+        		<listitem>
+        			<para>
+        				An event based gateway must only be to elements of type <code>intermediateCatchEvent</code> only. 
+        				(Receive tasks after an event based gateway are not supported by activiti.)
+        			</para>
+        		</listitem>
+        		<listitem>
+        			<para>
+        				An <code>intermediateCatchEvent</code> connected to an event based gateway must have a single incoming sequenceflow.  
+        			</para>
+        		</listitem>        		
+        	</itemizedlist>
+        	
+        </para>
+        
+        
+      </section>
+      
+      <section id="eventBasedGatewayGraphNotation">
+      
+        <title>Graphical notation</title>
+        
+        <para>
+          An event based gateway gateway is visualized as a typical gateway (i.e. a diamond shape)
+          with a special icon inside.          
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.event.based.gateway.notation.png"/></imageobject></mediaobject>
+        </para>
+      
+      </section>
+      
+      <section id="eventBasedGatewayXML">
+      
+        <title>XML representation</title>
+        
+        <para>
+          The xml element used to define an event based gateway is <code>eventBasedGateway</code>.
+        </para>
+        
+      </section>
+      
+      <section id="eventBasedGatewayExample">      
+      	<title>Example(s)</title>
+      	
+      	<para>
+	      	The following process is an example of a process with an event based gateway. When the execution arrives at the event based gateway,
+	      	process execution is suspended. In addition, the process instance subscribes to the alert signal event and created a timer which fires after 10 minutes.
+	      	This effectively causes the process engine to wait for ten minutes for a signal event. If the signal occurs within 10 minutes, the timer is cancelled and 
+	      	execution continues after the signal. If the signal is not fired, execution continues after the timer and the signal subscription is cancelled. 
+	      	
+	      	<mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.event.based.gateway.example.png"/></imageobject></mediaobject>
+<programlisting>      	
+&lt;definitions id=&quot;definitions&quot;
+	xmlns=&quot;http://www.omg.org/spec/BPMN/20100524/MODEL&quot;
+	xmlns:activiti=&quot;http://activiti.org/bpmn&quot; 
+	targetNamespace=&quot;Examples&quot;&gt;
+
+	&lt;signal id=&quot;alertSignal&quot; name=&quot;alert&quot; /&gt;
+
+	&lt;process id=&quot;catchSignal&quot;&gt;
+
+		&lt;startEvent id=&quot;start&quot; /&gt;
+
+		&lt;sequenceFlow sourceRef=&quot;start&quot; targetRef=&quot;gw1&quot; /&gt;
+
+		&lt;eventBasedGateway id=&quot;gw1&quot; /&gt;
+		
+		&lt;sequenceFlow sourceRef=&quot;gw1&quot; targetRef=&quot;signalEvent&quot; /&gt;		
+		&lt;sequenceFlow sourceRef=&quot;gw1&quot; targetRef=&quot;timerEvent&quot; /&gt;
+
+		&lt;intermediateCatchEvent id=&quot;signalEvent&quot; name=&quot;Alert&quot;&gt;
+			&lt;signalEventDefinition signalRef=&quot;alertSignal&quot; /&gt;
+		&lt;/intermediateCatchEvent&gt;
+		
+		&lt;intermediateCatchEvent id=&quot;timerEvent&quot; name=&quot;Alert&quot;&gt;
+			&lt;timerEventDefinition&gt;
+				&lt;timeDuration&gt;PT10M&lt;/timeDuration&gt;
+			&lt;/timerEventDefinition&gt;		
+		&lt;/intermediateCatchEvent&gt;
+		
+		&lt;sequenceFlow sourceRef=&quot;timerEvent&quot; targetRef=&quot;exGw1&quot; /&gt;
+		&lt;sequenceFlow sourceRef=&quot;signalEvent&quot; targetRef=&quot;task&quot; /&gt;
+			
+		&lt;userTask id=&quot;task&quot; name=&quot;Handle alert&quot;/&gt;
+		
+		&lt;exclusiveGateway id=&quot;exGw1&quot; /&gt;
+		
+		&lt;sequenceFlow sourceRef=&quot;task&quot; targetRef=&quot;exGw1&quot; /&gt;
+		&lt;sequenceFlow sourceRef=&quot;exGw1&quot; targetRef=&quot;end&quot; /&gt;
+
+		&lt;endEvent id=&quot;end&quot; /&gt;
+&lt;/process&gt;
+&lt;/definitions&gt;</programlisting>
+      	</para>
+      </section>
+    
+    </section>
+    
+    
 </section>
     
    	 <!-- 
