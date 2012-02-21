@@ -4931,6 +4931,136 @@ public class MyTaskCreateListener implements TaskListener {
 		
 		</section>
 		
+		<!-- ///////////////////////////////////////// event subprocess -->
+		
+		<section id="bpmnEventSubprocess">
+		
+		  <title>Event subprocess</title>
+		  
+		  <section id="bpmnEventSubprocessDescription">
+		  
+		    <title>Description</title>
+		    
+		    <para>
+		      The event subprocess is new in BPMN 2.0. An event subprocess is a subprocess that is triggered by an event. 
+		      An event subprocess can be added at the process level or at any subprocess level. The event used to trigger an event 
+		      subprocess is configured using a start event. From this, it follows that none start events are not supported for 
+		      event subprocesses. An event subprocess might be triggered using events lit message events, error events, signal events, 
+		      timer events, or compensation events.
+		      The subscription to the start event is created when the scope (process instance or subprocess) 
+		      hosting the event subprocess is created. The subscription is removed when the scope is destroyed. 	      
+		    </para>
+			
+			<para>
+				An event subprocess may be interrupting or non interrupting. An interrupting subprocess cancels any executions 
+				in the current scope. A non interrupting event subprocess spawns a new concurrent execution. While an interrupting 
+				event subprocess can only be triggered once for each activation of the scope hosting it, a non interrupting event subprocess
+				can be triggered multiple times. The fact whether the subprocess is interrupting is configured using the start event triggering the 
+				event subprocess.
+		   	</para>
+		   		   
+		   	<para>
+		   		An event subprocess must not have any incoming or outgoing sequence flows. Since an event subprocess is triggered
+		   		by an event, an incoming sequence flow makes no sense. When an event subprocess is ended, either the current scope is ended 
+		   		(in case of an interrupting event subprocess), or the concurrent execution spawned for the non-interrupting subprocess is ended.
+		   	</para>
+		   		   	
+		   	<para>
+		   		<emphasis role="bold">Current limitations:</emphasis>
+		   		<itemizedlist>
+		   			<listitem>
+		   				<para>
+		   					Activiti only supports interrupting event subprocesses.
+		   				</para>
+		   			</listitem>
+		   			<listitem>
+		   				<para>
+		   					Activiti only supports event subprocess triggered using an error start event.
+		   				</para>
+		   			</listitem>
+		   		</itemizedlist>
+		   	</para>
+		   	
+		  </section>
+		  
+		  <section id="bpmnEventSubprocessGraphicalNotation">
+      
+        <title>Graphical Notation</title>
+        
+        <para>
+          An event subprocess might be visualized as a an <link linkend="bpmnSubProcessGraphicalNotation">embedded subprocess</link> with a dotted outline.          
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.subprocess.eventSubprocess.png"/></imageobject></mediaobject>
+        </para>
+        
+      </section>
+      
+      <section id="bpmnEventSubprocessXMLRepresentation">
+      
+        <title>XML representation</title>
+        
+        <para>
+      		An event subprocess is represented using xml in the same way as a an <link linkend="bpmnSubProcessXMLRepresentation">embedded subprocess</link>.
+      		In addition the attribute <code>triggeredByEvent</code> must have the value <code>true</code>:
+<programlisting>
+&lt;subProcess id=&quot;eventSubProcess&quot; triggeredByEvent=&quot;true&quot;&gt;
+	...
+&lt;/subProcess&gt;
+</programlisting>      		 
+        </para>
+        
+      </section>
+
+      <section id="bpmnEventSubprocessExample">
+      
+        <title>Example</title>
+        
+        <para>
+  			The following is an example of an event subprocess triggered using an error start event. The event subprocess is located "at process level", i.e. is scoped to the process
+  			instance:
+  			<mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.subprocess.eventSubprocess.example.1.PNG"/></imageobject></mediaobject>
+  			This is how the event subprocess would look like in XML:  			
+<programlisting>
+&lt;subProcess id=&quot;eventSubProcess&quot; triggeredByEvent=&quot;true&quot;&gt;
+	&lt;startEvent id=&quot;catchError&quot;&gt;
+		&lt;errorEventDefinition errorRef=&quot;error&quot; /&gt; 
+	&lt;/startEvent&gt;
+	&lt;sequenceFlow id=&quot;flow2&quot; sourceRef=&quot;catchError&quot; targetRef=&quot;taskAfterErrorCatch&quot; /&gt;
+	&lt;userTask id=&quot;taskAfterErrorCatch&quot; name=&quot;Provide additional data&quot; /&gt;
+&lt;/subProcess&gt;
+</programlisting> 
+        </para>
+        
+        <para>
+        	As already stated, an event subprocess can also be added to an embedded subprocess. If it is added to an embedded subprocess, it becomes an alternative to a
+        	boundary event. Consider the two following process diagrams. In both cases the embedded subprocess throws an error event. Both times the error is caught and 
+        	handled using a user task.          
+        	<mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.subprocess.eventSubprocess.example.2a.PNG"/></imageobject></mediaobject>
+        	<para>as opposed to:</para>
+        	<mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.subprocess.eventSubprocess.example.2b.PNG"/></imageobject></mediaobject>	
+        	 In both cases the same tasks are executed. However, there are differences between both modelling alternatives:
+        	<itemizedlist>
+        		<listitem>
+        			<para>
+        				The embedded subprocess is executed using the same execution which executed the scope it is hosted in. This means that an embedded subprocess has
+        				access to the variables local to it's scope. When using a boundary event, the execution created for executing the embedded subprocess is deleted
+        				by the sequence flow leaving the boundary event. This means that the variables created by the embedded subprocess are not available anymore.				
+        			</para>
+        		</listitem>
+        		<listitem>
+        			<para>
+        				When using an event subprocess, the event is completely handled by the subprocess it is added to. 
+        				When using a boundary event, the event is handled by the parent process.				
+        			</para>
+        		</listitem>
+        	</itemizedlist>
+        	These two differences can help you decide whether a boundary event or an embedded subprocess is better suited for solving a particular process modeling 
+        	/ implementation problem.
+        </para>              
+      </section>      
+    </section>
+		
+		<!-- ///////////////////////////////////////// call activity -->
+		
 		<section id="bpmnCallActivity">
 		
 		  <title>Call activity (subprocess)</title>
