@@ -1392,6 +1392,60 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
       </section>
 
         </section>
+        
+        
+        
+         <!-- //////////////////////////////////////// error start events -->
+        
+        <section id="bpmnErrorStartEvent">
+
+            <title>Error start event</title>
+
+            <section id="errorStartEventDescription">
+
+	        <title>Description</title>
+	
+	        <para>
+	            An <link linkend="bpmnErrorEventDefinition">error</link> start event can be used to trigger an event subprocess. 
+	            <emphasis role="bold">An error start event cannot be used for starting a process instance</emphasis>.
+	        </para>
+	        
+	        <para>
+	           An error start event is always interrupting.
+	        </para>
+	        
+	      </section>
+
+            <section id="errorStartEventGraphicalNotation">
+
+              <title>Graphical notation</title>
+
+              <para>
+                A error start event is visualized as a circle with an error event symbol. The symbol is unfilled, to visualize the catching (receiving) behavior. 
+                <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.start.error.event.png"/></imageobject></mediaobject>
+              </para>
+
+            </section>
+
+            <section id="errorStartEventXml">
+
+        <title>XML representation</title>
+
+        <para>
+          The XML representation of an error start event is the normal
+          start event declaration with an errorEventDefinition child-element:
+          
+          <programlisting>
+&lt;startEvent id=&quot;messageStart&quot; &gt;
+	&lt;errorEventDefinition errorRef=&quot;someError&quot; /&gt;
+&lt;/startEvent&gt;</programlisting>
+        
+        </para>
+         
+
+      </section>
+
+        </section>
 
 
 		<section id="bpmnEndEvent">
