@@ -1447,6 +1447,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 
         </section>
 
+	<!-- ////////////////////////////////////// End Events -->
 
 		<section id="bpmnEndEvent">
 		
@@ -1461,6 +1462,8 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 		  </para>
 		
 		</section>
+
+	<!-- ////////////////////////////////////// None End Event -->
 
 		<section id="bpmnNoneEndEvent">
 		
@@ -1504,6 +1507,8 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
       </section>
 
 		</section>
+
+	<!-- ////////////////////////////////////// Error End Events -->
 		
 		<section id="bpmnErrorEndEvent">
 		  
@@ -1575,8 +1580,49 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
       </section>
 		  
 		</section>
+
+	<!-- ////////////////////////////////////// Cancel End Event -->
 		
-		
+		<section id="bpmnCancelEndEvent">
+		  
+		  <title>Cancel end event</title>
+		  
+		  <section id="bpmnCancelEndEventDescription">
+		    <title>Description</title>
+		    <para>
+		     	The cancel end event can only be used in combination with a bpmn transaction subprocess.
+		     	When the cancel end event is reached, a cancel event is thrown which must be caught by a 
+		     	cancel boundary event. The cancel boundary event then cancels the transaction and triggers 
+		     	compensation. 
+		    </para>
+		  	  
+		  </section>
+		  
+		  <section id="bpmnCancelEndEventGraphicalNotation">
+        <title>Graphical notation</title>
+        <para>
+          A cancel end event visualized as a typical end event (circle with thick outline), with the
+          cancel icon inside. The cancel icon is completely black, to indicate the throwing semantics.
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.cancel.end.event.png"/></imageobject></mediaobject>
+        </para>
+      </section>
+      
+      <section id="bpmnCancelEndEventXml">
+        <title>XML representation</title>
+        <para>
+          A cancel end event is represented as an end event, with a <emphasis>cancelEventDefinition</emphasis>
+          child element.
+          <programlisting>
+&lt;endEvent id=&quot;myCancelEndEvent&quot;&gt;
+  &lt;cancelEventDefinition /&gt;
+&lt;/endEvent&gt;          
+          </programlisting>
+		</para>          
+      </section>
+		  
+		</section>		
+	
+	<!-- ////////////////////////////////////// Boundary Events -->	
 		
 		
 		<section id="bpmnBoundaryEvent">
@@ -1722,6 +1768,9 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 		
 		</section> 
 		
+		
+		<!-- ////////////////////// error boundary event -->
+		
 		<section id="bpmnBoundaryErrorEvent">
 		  <title>Error Boundary event</title>
 		  
@@ -1825,6 +1874,8 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 		  
 		</section>
 		
+		<!-- ////////////////////// signal boundary event -->
+		
 		<section id="bpmnBoundarySignalEvent">
 		  <title>Signal Boundary event</title>
 		  
@@ -1880,6 +1931,62 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 	      </section>
       
       </section>
+      
+      <!-- ////////////////////// cancel boundary event -->
+		
+		<section id="bpmnBoundaryCancelEvent">
+		  <title>Cancel Boundary event</title>
+		  
+		  <section id="bpmnBoundaryCancelEventDescription">
+		    <title>Description</title>
+		    <para>
+		      An attached intermediate <emphasis>catching</emphasis> cancel on the boundary of a transcation subprocess,
+		      or <emphasis role="bold">boundary cancel event</emphasis> for short, is triggered when a transaction
+		      is cancelled. When the cancel boundary event is triggered, it first interrupts all executions active in the 
+		      current scope. Next, it starts compensation of all active compensation boundary events in the scope of the 
+		      transaction. Compensation is performed synchounously, i.e. the boundary event waits before compensation is 
+		      completed before leaving the transaction. When compensation is completed, the transaction suprocess is left 
+		      using the sequence flow(s) running out of the cancel boundary event.  
+		    </para>
+		    
+		    <para>
+		    	<emphasis role="bold">Note:</emphasis> Only a single cancel boundary event is allowed for a transaction subprocess.
+		    </para>
+		    
+		    <para>
+		    	<emphasis role="bold">Note:</emphasis> If the transaction subprocess hosts nested subprocesses, compensation is only triggered for subprocesses
+		    	that have completed sucessfully.	
+		    </para>
+		    
+		  </section>
+		  
+		  <section id="bpmnBoundaryCancelEventGraphicalNotation">
+	        <title>Graphical notation</title>
+	        <para>
+	          A cancel boundary event is visualized as a typical intermediate event (Circle with smaller circle inside)
+	          on the boundary, with the cancel icon inside. The cancel icon is white (unfilled), to indicate
+	          the <emphasis>catching</emphasis> semantics.
+	          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.boundary.cancel.event.png"/></imageobject></mediaobject>
+	        </para>
+	      </section>
+      
+	      <section id="bpmnBoundarySignalEventXml">
+	        <title>Xml representation</title>	               
+	         <para>
+     	     	A cancel boundary event is defined as a typical <link linkend="bpmnBoundaryEvent">boundary event</link>:
+          		<programlisting>
+&lt;boundaryEvent id=&quot;boundary&quot; attachedToRef=&quot;transaction&quot; &gt;       
+          &lt;cancelEventDefinition /&gt;
+&lt;/boundaryEvent&gt;
+          		</programlisting>      
+          		Since the cancel boundary event is always interrupting, the <code>cancelActivity</code> attribute 
+          		is not required.   
+        	</para>	    
+	      </section>
+	           
+      </section>
+      
+      <!-- ////////////////////// intermediate catching events -->
 	
       <section id="bpmnIntermediateCatchingEvent">
 
