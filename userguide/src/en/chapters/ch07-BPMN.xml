@@ -1940,12 +1940,12 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 		  <section id="bpmnBoundaryCancelEventDescription">
 		    <title>Description</title>
 		    <para>
-		      An attached intermediate <emphasis>catching</emphasis> cancel on the boundary of a transcation subprocess,
+		      An attached intermediate <emphasis>catching</emphasis> cancel on the boundary of a transaction subprocess,
 		      or <emphasis role="bold">boundary cancel event</emphasis> for short, is triggered when a transaction
 		      is cancelled. When the cancel boundary event is triggered, it first interrupts all executions active in the 
 		      current scope. Next, it starts compensation of all active compensation boundary events in the scope of the 
-		      transaction. Compensation is performed synchounously, i.e. the boundary event waits before compensation is 
-		      completed before leaving the transaction. When compensation is completed, the transaction suprocess is left 
+		      transaction. Compensation is performed synchronously, i.e. the boundary event waits before compensation is 
+		      completed before leaving the transaction. When compensation is completed, the transaction subprocess is left 
 		      using the sequence flow(s) running out of the cancel boundary event.  
 		    </para>
 		    
@@ -1955,7 +1955,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 		    
 		    <para>
 		    	<emphasis role="bold">Note:</emphasis> If the transaction subprocess hosts nested subprocesses, compensation is only triggered for subprocesses
-		    	that have completed sucessfully.	
+		    	that have completed successfully.	
 		    </para>
 		    
 		  </section>
