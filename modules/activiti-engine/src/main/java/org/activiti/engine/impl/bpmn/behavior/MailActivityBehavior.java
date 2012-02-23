@@ -173,6 +173,8 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
     int port = processEngineConfiguration.getMailServerPort();
     email.setSmtpPort(port);
 
+    email.setTLS(processEngineConfiguration.getMailServerUseTLS());
+
     String user = processEngineConfiguration.getMailServerUsername();
     String password = processEngineConfiguration.getMailServerPassword();
     if (user != null && password != null) {

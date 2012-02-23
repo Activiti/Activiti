@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.data.AbstractDataAssociation;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.pvm.PvmProcessInstance;
@@ -36,9 +37,15 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
   protected String processDefinitonKey;
   private List<AbstractDataAssociation> dataInputAssociations = new ArrayList<AbstractDataAssociation>();
   private List<AbstractDataAssociation> dataOutputAssociations = new ArrayList<AbstractDataAssociation>();
-  
+  private Expression processDefinitionExpression;
+
   public CallActivityBehavior(String processDefinitionKey) {
     this.processDefinitonKey = processDefinitionKey;
+  }
+  
+  public CallActivityBehavior(Expression processDefinitionExpression) {
+    super();
+    this.processDefinitionExpression = processDefinitionExpression;
   }
 
   public void addDataInputAssociation(AbstractDataAssociation dataInputAssociation) {
@@ -50,6 +57,11 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
   }
 
   public void execute(ActivityExecution execution) throws Exception {
+    
+    if ((processDefinitonKey == null) && (processDefinitionExpression != null)) {
+      processDefinitonKey = (String) processDefinitionExpression.getValue(execution);
+    }
+    
     ProcessDefinitionImpl processDefinition = Context
       .getProcessEngineConfiguration()
       .getDeploymentCache()

@@ -146,7 +146,7 @@
 	<xsd:complexType name="tCallActivity">
 		<xsd:complexContent>
 			<xsd:extension base="tActivity">
-				<xsd:attribute name="calledElement" type="xsd:QName" use="optional"/>
+				<xsd:attribute name="calledElement" type="xsd:string" use="optional"/>
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
