@@ -2382,7 +2382,23 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 				is thrown recursively. However, compensation is not propagated to the "upper levels" of the process: if compensation 
 				is triggered within a subprocess, it is not propagated to activities outside of the subprocess scope. 
 				The bpmn specification states that compensation is triggered for activities at "the same level of subprocess". 
-			</para>		    
+			</para>		
+			<para>
+				If compensation is thrown within a scope which contains a subprocess and the subprocess contains activities 
+				with compensation handlers, compensation is only propagated to the subprocess if it has completed successfully 
+				when compensation is thrown. If some of the activities nested inside the subprocess have completed and have attached 
+				compensation handlers, the compensation handlers are not executed if the subprocess containing these activities 
+				is not completed yet. Consider the following example: 
+				<mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.throw.compensation.example1.PNG"/></imageobject></mediaobject>
+				In this process we have two concurrent executions, one executing the embedded subprocess and one executing the 
+				"charge credit card" activity. Lets assume both executions are started and the first concurrent execution is waiting 
+				for a user to complete the "review bookings" task. The second execution performs the "charge credit card" activity 
+				and an error is thrown, which causes the "cancel reservations" event to trigger compensation.
+				At this point the parallel subprocess is not yet completed which means that the compensation event is not propagated 
+				to the subprocess and thus the "cancel hotel reservation"  compensation handler is not executed.
+				If the user task (and thus the embedded subprocess) completes before the "cancel reservations" is performed, 
+				compensation is propagated to the embedded subprocess.	
+			</para>    
 			<para>
 				In activiti compensation is performed in inverse order of execution. This means that whichever activity 
 				completed last is compensated first, etc.  
