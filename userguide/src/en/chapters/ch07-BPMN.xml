@@ -1958,6 +1958,12 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 		    	that have completed successfully.	
 		    </para>
 		    
+		    <para>
+		    	<emphasis role="bold">Note:</emphasis> If a cancel boundary event is placed on a transaction subprocess with 
+		    	multi instance characteristics, if one instance triggers cancellation, the boundary event cancels all 
+		    	instances. 
+		    </para>
+		    
 		  </section>
 		  
 		  <section id="bpmnBoundaryCancelEventGraphicalNotation">
@@ -1981,6 +1987,96 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
           		</programlisting>      
           		Since the cancel boundary event is always interrupting, the <code>cancelActivity</code> attribute 
           		is not required.   
+        	</para>	    
+	      </section>
+	           
+      </section>
+      
+       <!-- ////////////////////// compensation boundary event -->
+		
+		<section id="bpmnBoundaryCompensationEvent">
+		  <title>Compensation Boundary event</title>
+		  
+		  <section id="bpmnBoundaryCompensationEventDescription">
+		    <title>Description</title>
+		    <para>
+		      An attached intermediate <emphasis>catching</emphasis> compensation on the boundary of an activity
+		      or <emphasis role="bold">compensation boundary event</emphasis> for short, can be used to attach a compensation 
+		      handler to an activity.		      
+		    </para>
+		    
+		    <para>
+		    	The compensation boundary event must reference a single compensation handler using a directed association.		    	 
+		    </para>
+		    
+		    <para>
+		    	A compensation boundary event has a different activation policy from other boundary events. Other boundary events 
+		    	like for instance the signal boundary event are activated when the activity they are attached to is started. 
+		    	When the activity is left, they are deactivated and the corresponding event subscription is cancelled. 
+		    	The compensation boundary event is different. The compensation boundary is activated when the activity is attached
+		    	to <emphasis role="bold">completes successfully</emphasis>. At this point, the corresponding subscription to 
+		    	compensation events is created. The subscription is removed either when a compensation event is triggered
+		    	or when the corresponding process instance ends. From this, it follows: 
+		    	<itemizedlist>
+		    		<listitem>
+		    			<para>
+		    				When compensation is triggered, the compensation handler associated with the compensation 
+		    				boundary event is invoked the same number of times the activity it is attached to completed 
+		    				successfully.		    				
+		    			</para>
+		    		</listitem>
+		    		<listitem>
+		    			<para>
+		    				If a compensation boundary event is attached to an activity with multiple instance characteristics, 
+		    				a compensation event subscription is created for each instance.
+		    			</para>
+		    		</listitem>
+		    		<listitem>
+		    			<para>
+		    				If a compensation boundary event is attached to an activity which is contained inside a loop, 
+		    				a compensation event subscription is created for each time the activity is executed.
+		    			</para>
+		    		</listitem>
+		    		<listitem>
+		    			<para>
+		    				If the process instance ends, the subscriptions to compensation events are cancelled. 
+		    			</para>
+		    		</listitem>
+		    	</itemizedlist>
+		    	 
+		    </para>
+		    
+		    <para>
+		    	<emphasis role="bold">Note:</emphasis> the compensation boundary event is not supported on embedded subprocesses.
+		    </para>
+		    
+		  </section>
+		  
+		  <section id="bpmnBoundaryCompensationEventGraphicalNotation">
+	        <title>Graphical notation</title>
+	        <para>
+	          A compensation boundary event is visualized as a typical intermediate event (Circle with smaller circle inside)
+	          on the boundary, with the compensation icon inside. The compensation icon is white (unfilled), to indicate
+	          the <emphasis>catching</emphasis> semantics. In addition to a compensation boundary event, the following 
+	          figure shows a compensation handler associated with the boundary event using a unidirectional association:
+	          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.boundary.compensation.event.png"/></imageobject></mediaobject>
+	        </para>
+	      </section>
+      
+	      <section id="bpmnBoundaryCompensationEventXml">
+	        <title>Xml representation</title>	               
+	         <para>
+     	     	A compensation boundary event is defined as a typical <link linkend="bpmnBoundaryEvent">boundary event</link>:
+          		<programlisting>
+&lt;boundaryEvent id=&quot;compensateBookHotelEvt&quot; attachedToRef=&quot;bookHotel&quot; &gt;       
+          &lt;compensateEventDefinition /&gt;
+&lt;/boundaryEvent&gt;
+
+&lt;association associationDirection=&quot;One&quot; id=&quot;a1&quot;  sourceRef=&quot;compensateBookHotelEvt&quot; targetRef=&quot;undoBookHotel&quot; /&gt;
+
+&lt;serviceTask id=&quot;undoBookHotel&quot; isForCompensation=&quot;true&quot; activiti:class=&quot;...&quot; /&gt;</programlisting>      
+          		Since the compensation boundary event is activated after the activity has completed successfully, 
+          		the <code>cancelActivity</code> attribute is not supported.   
         	</para>	    
 	      </section>
 	           
