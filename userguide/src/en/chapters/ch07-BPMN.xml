@@ -2352,6 +2352,97 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 	      </section>
       
       </section>
+      
+      <!-- //////////////////////////////////////// intermediate throwing compensation events  -->
+    
+     <section id="bpmnIntermediateThrowCompensationEvent">
+		  <title>Compensation intermediate throwing event</title>
+		  
+		  <section id="bpmnIntermediateThrowCompensationEventDescription">
+		    <title>Description</title>
+		    <para>
+		      An intermediate <emphasis>throwing</emphasis> <link linkend="bpmnCompensationEventDefinition">compensation</link> 
+		      event can be used to trigger compensation.       
+		    </para>
+		   	<para>
+		   		Compensation can either be triggered for a designated activity or for the scope which hosts the compensation 
+		   		event. If compensation is performed through execution of the compensation handler associated with an activity.  
+		   	</para>
+		   	<para>
+		   		When compensation is thrown for an activity, the associated compensation handler is executed the same
+		   		number of times the activity competed successfully. 
+		   	</para>	  
+		   	<para>
+		   		If compensation is thrown for the current scope, all activities withing the current scope are compensated, 
+		   		which includes activities on concurrent branches.  
+		   	</para>
+			<para>
+				Compensation is triggered hierarchically: if an activity to be compensated is a subprocess, compensation is 
+				triggered for all activities contained in the subprocess. If the subprocess has nested activities, compensation 
+				is thrown recursively. However, compensation is not propagated to the "upper levels" of the process: if compensation 
+				is triggered within a subprocess, it is not propagated to activities outside of the subprocess scope. 
+				The bpmn specification states that compensation is triggered for activities at "the same level of subprocess". 
+			</para>		    
+			<para>
+				In activiti compensation is performed in inverse order of execution. This means that whichever activity 
+				completed last is compensated first, etc.  
+			</para>
+			<para>
+				The intermediate throwing compensation event can be used to compensate transaction subprocesses which 
+				competed successfully.
+			</para>
+			<para>
+				<emphasis role="bold">Current limitations:</emphasis>
+				<itemizedlist>
+					<listitem>
+						<para>
+							<code>waitForCompletion="false"</code> is currently unsupported. When compensation is triggered
+							using the intermediate throwing compensation event, the event is only left, after compensation completed 
+							successfully. 
+						 </para>
+					</listitem>
+					<listitem>
+						<para>
+							Compensation itself is currently performed by concurrent executions. The concurrent executions are started 
+							in reverse order in which the compensated activities completed. Future versions of activity might include 
+							an option to perform compensation sequentially. 
+						</para>
+					</listitem>
+				</itemizedlist>
+			</para>
+		  </section>
+		  
+		  <section id="bpmnIntermediateThrowCompensationEventGraphicalNotation">
+	        <title>Graphical notation</title>
+	        <para>
+	          An intermediate compensation throw event is visualized as a typical intermediate event (Circle with smaller circle inside), 
+	          with the compensation icon inside. The compensation icon is black (filled), to indicate
+	          the <emphasis>throw</emphasis> semantics.
+	          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.intermediate.compensation.throw.event.png"/></imageobject></mediaobject>
+	        </para>
+	      </section>
+      
+	      <section id="bpmnIntermediateThrowSignalEventXml">
+	        <title>Xml representation</title>	               
+	         <para>
+     	     	 A compensation intermediate event is defined as a <link linkend="bpmnIntermediateThrowingEvent">intermediate throwing event</link>.
+		          The specific type sub-element is in this case a <emphasis role="bold">compensateEventDefinition</emphasis>
+		          element.
+                 <programlisting>
+&lt;intermediateThrowEvent id=&quot;throwCompensation&quot;&gt;
+	&lt;compensateEventDefinition /&gt;
+&lt;/intermediateThrowEvent&gt;</programlisting>    
+                 In addition, the optional argument <code>activityRef</code> can be used to trigger compensation of 
+                 a specific scope / activity:
+                  <programlisting>
+&lt;intermediateThrowEvent id=&quot;throwCompensation&quot;&gt;
+	&lt;compensateEventDefinition activityRef=&quot;bookHotel&quot; /&gt;
+&lt;/intermediateThrowEvent&gt;</programlisting>    
+        	</para>
+        	
+	      </section>
+            
+      </section>
     
 </section>
 
