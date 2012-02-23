@@ -2365,25 +2365,48 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 		      event can be used to trigger compensation.       
 		    </para>
 		   	<para>
+		   		<emphasis role="bold">Triggering compensation:</emphasis>
 		   		Compensation can either be triggered for a designated activity or for the scope which hosts the compensation 
-		   		event. If compensation is performed through execution of the compensation handler associated with an activity.  
+		   		event. Compensation is performed through execution of the compensation handler associated with an activity.
+		   		<itemizedlist>
+		   			<listitem>
+		   				<para>
+					   		When compensation is thrown for an activity, the associated compensation handler is executed the same
+					   		number of times the activity competed successfully. 
+					   	</para>	
+		   			</listitem>
+		   			<listitem>
+		   				<para>
+					   		If compensation is thrown for the current scope, all activities withing the current scope are compensated, 
+					   		which includes activities on concurrent branches.  
+					   	</para>
+		   			</listitem>
+		   			<listitem>
+		   				<para>
+							Compensation is triggered hierarchically: if an activity to be compensated is a subprocess, compensation is 
+							triggered for all activities contained in the subprocess. If the subprocess has nested activities, compensation 
+							is thrown recursively. However, compensation is not propagated to the "upper levels" of the process: if compensation 
+							is triggered within a subprocess, it is not propagated to activities outside of the subprocess scope. 
+							The bpmn specification states that compensation is triggered for activities at "the same level of subprocess". 
+						</para>
+		   			</listitem>
+		   			<listitem>
+		   				<para>
+							In activiti compensation is performed in reverse order of execution. This means that whichever activity 
+							completed last is compensated first, etc.  
+						</para>
+					</listitem>
+		   			<listitem>						
+						<para>
+							The intermediate throwing compensation event can be used to compensate transaction subprocesses which 
+							competed successfully.
+						</para>
+		   			</listitem>
+		   		</itemizedlist>  
 		   	</para>
-		   	<para>
-		   		When compensation is thrown for an activity, the associated compensation handler is executed the same
-		   		number of times the activity competed successfully. 
-		   	</para>	  
-		   	<para>
-		   		If compensation is thrown for the current scope, all activities withing the current scope are compensated, 
-		   		which includes activities on concurrent branches.  
-		   	</para>
+		   	  
 			<para>
-				Compensation is triggered hierarchically: if an activity to be compensated is a subprocess, compensation is 
-				triggered for all activities contained in the subprocess. If the subprocess has nested activities, compensation 
-				is thrown recursively. However, compensation is not propagated to the "upper levels" of the process: if compensation 
-				is triggered within a subprocess, it is not propagated to activities outside of the subprocess scope. 
-				The bpmn specification states that compensation is triggered for activities at "the same level of subprocess". 
-			</para>		
-			<para>
+				<emphasis role="bold">Note:</emphasis>
 				If compensation is thrown within a scope which contains a subprocess and the subprocess contains activities 
 				with compensation handlers, compensation is only propagated to the subprocess if it has completed successfully 
 				when compensation is thrown. If some of the activities nested inside the subprocess have completed and have attached 
@@ -2398,15 +2421,35 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 				to the subprocess and thus the "cancel hotel reservation"  compensation handler is not executed.
 				If the user task (and thus the embedded subprocess) completes before the "cancel reservations" is performed, 
 				compensation is propagated to the embedded subprocess.	
-			</para>    
+			</para>   
 			<para>
-				In activiti compensation is performed in inverse order of execution. This means that whichever activity 
-				completed last is compensated first, etc.  
-			</para>
-			<para>
-				The intermediate throwing compensation event can be used to compensate transaction subprocesses which 
-				competed successfully.
-			</para>
+				<emphasis role="bold">Process variables:</emphasis>
+				When compensating an embedded subprocess, the execution used for executing the compensation handlers has access
+				to the local process variables of the subprocess in the state they were in when the subprocess completed execution.
+				To achieve this, a snapshot of the process variables associated with the scope execution (execution created for executing the 
+				subprocess) is taken. Form this, a couple of implications follow:
+				<itemizedlist>
+					<listitem>
+						<para>
+							The compensation handler does not have access to variables added to concurrent executions created 
+							inside the subprocess scope.
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							Process variables associated with executions higher up in the hierarchy, (for instance process variables
+							associated with the process instance execution are not contained in the snapshot: the compensation handler
+							has access to these process variables in the state they are in when compensation is thrown.
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							A variable snapshot is only taken for embedded subprocesses, not for other activities.
+						</para>
+					</listitem>
+				</itemizedlist>								  
+			</para> 
+			
 			<para>
 				<emphasis role="bold">Current limitations:</emphasis>
 				<itemizedlist>
@@ -2422,6 +2465,11 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 							Compensation itself is currently performed by concurrent executions. The concurrent executions are started 
 							in reverse order in which the compensated activities completed. Future versions of activity might include 
 							an option to perform compensation sequentially. 
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							Compensation is not propagated to sub process instances spawned by call activities.
 						</para>
 					</listitem>
 				</itemizedlist>
@@ -5693,8 +5741,8 @@ public class MyTaskCreateListener implements TaskListener {
          <section>
         	<title>What are exclusive Jobs?</title>
         	<para>
-        		An exclusive job cannot be performed at the same time as another exclusive job from the same process instance. Consider the pocess shown above: if we declare the service tasks to be exclusive,
-        	 	the JobExecutor will make sure that the corresponding jobs are not executed concurrently. Instead, it wil make sure that whenever it acquires an exclusive job from a certain process instance, 
+        		An exclusive job cannot be performed at the same time as another exclusive job from the same process instance. Consider the process shown above: if we declare the service tasks to be exclusive,
+        	 	the JobExecutor will make sure that the corresponding jobs are not executed concurrently. Instead, it will make sure that whenever it acquires an exclusive job from a certain process instance, 
         	 	it acquires all other exclusive jobs from the same process instance and delegates them to the same worker thread. This ensures sequential execution execution of the jobs.           	 	
         	</para>
         		
