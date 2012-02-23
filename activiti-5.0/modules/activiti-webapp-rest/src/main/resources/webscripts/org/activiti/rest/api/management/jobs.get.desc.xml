@@ -1,7 +1,0 @@
-<webscript>
-  <shortname>Jobs</shortname>
-  <description>List jobs and limit result using filters &amp; pagination</description>
-  <url>/management/jobs?process-instance={processInstanceId?}&amp;with-retries-left={withRetriesLeft?}&amp;executable={ampExecutable?}&amp;only-timers={boolean}&amp;only-messages={boolean}&amp;duedate-lt={iso8601Date}&amp;duedate-ltoe={iso8601Date}&amp;duedate-ht={iso8601Date}&amp;duedate-htoe={iso8601Date}&amp;start={number}&amp;size={number}&amp;sort={id|process-instance-id|execution-id|due-date|retries|&lt;someArbitraryPropertyId&gt;}&amp;order={asc|desc}</url>
-  <authentication>admin</authentication>
-  <format default="json">argument</format>
-</webscript>

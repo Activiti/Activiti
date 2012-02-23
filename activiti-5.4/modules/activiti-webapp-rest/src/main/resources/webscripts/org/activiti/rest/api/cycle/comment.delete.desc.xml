@@ -1,7 +1,0 @@
-<webscript>
-  <shortname>Delete a cycle repository node comment</shortname>
-  <description>Deletes the cycle repository node comment identified by the comment id.</description>
-  <url>/comment</url>
-  <authentication>user</authentication>
-  <format default="json">argument</format>
-</webscript>

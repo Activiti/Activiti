@@ -1,7 +1,0 @@
-<webscript>
-  <shortname>Process Instances</shortname>
-  <description>Returns information about process instances</description>
-  <url>/process-instances?start={startIndex}&amp;size={pageSize}&amp;sort={&lt;tableColumn&gt;}&amp;order={asc|desc}&amp;businessKey={businessKey}&amp;processDefinitionId={processDefinitionId}</url>
-  <authentication>user</authentication>
-  <format default="json">argument</format>
-</webscript>

@@ -1,7 +1,0 @@
-<webscript>
-  <shortname>Artifact Links</shortname>
-  <description>Returns a json string that represents the linked artifacts for a given artifact</description>
-  <url>/artifact-links?connectorId={connectorId}&amp;artifactId={artifactId}</url>
-  <authentication>user</authentication>
-  <format default="json">argument</format>
-</webscript>

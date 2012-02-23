@@ -1,1 +1,0 @@
-drop table CYCLE_CONFIG if exists;

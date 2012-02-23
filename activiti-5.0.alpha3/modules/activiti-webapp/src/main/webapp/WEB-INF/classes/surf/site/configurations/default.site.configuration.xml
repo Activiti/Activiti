@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<configuration>
-   <source-id>site</source-id>
-   <properties>
-      <root-page>start</root-page>
-   </properties>
-   <title>Activiti Webapp</title>
-   <description>Activiti Webapp Configuration</description>
-</configuration>

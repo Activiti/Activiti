@@ -1,7 +1,0 @@
-<webscript>
-  <shortname>Tasks summary</shortname>
-  <description>Returns a tasks summary for a user</description>
-  <url>/tasks-summary?user={user}</url>
-  <authentication>user</authentication>
-  <format default="json">argument</format>
-</webscript>

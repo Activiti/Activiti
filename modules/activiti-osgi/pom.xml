@@ -1,0 +1,90 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<name>Activiti - OSGi</name>
+	<groupId>org.activiti</groupId>
+	<artifactId>activiti-osgi</artifactId>
+    <packaging>bundle</packaging>
+
+	<parent>
+		<groupId>org.activiti</groupId>
+		<artifactId>activiti-root</artifactId>
+		<relativePath>../..</relativePath>
+        <version>5.9-SNAPSHOT</version>
+	</parent>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*.*</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
+
+	<dependencies>
+		<dependency>
+		  <groupId>org.activiti</groupId>
+		  <artifactId>activiti-engine</artifactId>
+		</dependency>
+        <dependency>
+          <groupId>org.osgi</groupId>
+          <artifactId>org.osgi.core</artifactId>
+          <version>4.2.0</version>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.osgi</groupId>
+          <artifactId>org.osgi.compendium</artifactId>
+          <version>4.2.0</version>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>org.apache.felix.fileinstall</artifactId>
+          <version>3.0.2</version>
+          <optional>true</optional>
+        </dependency>
+	</dependencies>
+
+    <properties>
+        <activiti.osgi.activator>
+            org.activiti.osgi.Activator
+        </activiti.osgi.activator>
+        <activiti.osgi.import.pkg>
+            org.apache.felix.fileinstall*;resolution:=optional,*
+        </activiti.osgi.import.pkg>
+        <activiti.artifact>
+            org.activiti.osgi
+        </activiti.artifact>
+    </properties>
+
+	<profiles>
+		<profile>
+			<id>distro</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>2.1.1</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<phase>package</phase>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+</project>

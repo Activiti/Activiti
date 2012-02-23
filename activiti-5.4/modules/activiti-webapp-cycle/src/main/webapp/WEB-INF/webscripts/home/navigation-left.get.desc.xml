@@ -1,5 +1,0 @@
-<webscript>
-  <shortname>Navigation left</shortname>
-  <description>Provides the HTML scaffold for the left navigation component in cycle. It instantiates the base component which contains a YUI tab view and thus provides the container for all other navigation elements within the Home area of activiti cycle.</description>
-  <url>/component/navigation-left</url>
-</webscript>

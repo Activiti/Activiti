@@ -1,7 +1,0 @@
-<webscript>
-  <shortname>Deployment Resource</shortname>
-  <description>Returns a deployment resource</description>
-  <url>/deployment/{deploymentId}/resource/{resourceName}</url>
-  <authentication>user</authentication>
-  <format default="">argument</format>
-</webscript>

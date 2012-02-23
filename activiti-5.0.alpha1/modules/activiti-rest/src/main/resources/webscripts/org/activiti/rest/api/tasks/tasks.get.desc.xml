@@ -1,7 +1,0 @@
-<webscript>
-  <shortname>Tasks</shortname>
-  <description>Returns tasks</description>
-  <url>/tasks?assignee={assignee}&amp;candidate={candidate}</url>
-  <authentication>user</authentication>
-  <format default="json">argument</format>
-</webscript>

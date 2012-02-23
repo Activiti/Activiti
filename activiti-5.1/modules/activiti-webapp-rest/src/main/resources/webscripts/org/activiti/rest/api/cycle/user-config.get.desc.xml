@@ -1,7 +1,0 @@
-<webscript>
-  <shortname>Retrieve the type and names of the current users cycle repository connector configurations</shortname>
-  <description>Returns the type and names of the current users cycle repository connector configurations as a JSON String</description>
-  <url>/user-config</url>
-  <authentication>user</authentication>
-  <format default="json">argument</format>
-</webscript>

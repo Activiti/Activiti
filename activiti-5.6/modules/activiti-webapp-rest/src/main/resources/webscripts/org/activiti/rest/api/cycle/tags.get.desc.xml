@@ -1,7 +1,0 @@
-<webscript>
-  <shortname>Retrieve a list of tags either by artifact or by name (or characters contained in the name)</shortname>
-  <description>Returns a list of tags, either by artifact or by id (if "tag" parameter is provided, this webscript will return all tags that contain the provided string in their id)</description>
-  <url>/tags</url>
-  <authentication>user</authentication>
-  <format default="json">argument</format>
-</webscript>

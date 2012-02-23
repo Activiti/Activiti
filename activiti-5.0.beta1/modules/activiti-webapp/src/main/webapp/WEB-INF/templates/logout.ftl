@@ -1,1 +1,0 @@
-You have successfully logged out!

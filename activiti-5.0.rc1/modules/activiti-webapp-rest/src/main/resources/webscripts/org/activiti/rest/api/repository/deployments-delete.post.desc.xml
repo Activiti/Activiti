@@ -1,7 +1,0 @@
-<webscript>
-  <shortname>Delete Deployments</shortname>
-  <description>Deletes multiple deployments defined as a body object attribute of type string array named "deploymentIds"</description>
-  <url>/deployments/delete?cascade={cascade?}</url>
-  <authentication>user</authentication>
-  <format default="json">argument</format>
-</webscript>

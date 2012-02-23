@@ -1,7 +1,0 @@
-<webscript>
-  <shortname>Table</shortname>
-  <description>Returns information and data for a database table in the process engine</description>
-  <url>/management/table/{tableName}/data?start={startIndex}&amp;size={pageSize}&amp;sort={&lt;tableColumn&gt;}&amp;order={asc|desc}</url>
-  <authentication>admin</authentication>
-  <format default="json">argument</format>
-</webscript>

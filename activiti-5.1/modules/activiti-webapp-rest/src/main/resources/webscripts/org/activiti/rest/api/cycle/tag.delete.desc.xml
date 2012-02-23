@@ -1,7 +1,0 @@
-<webscript>
-  <shortname>Delete a tag</shortname>
-  <description>Removes the given tag from the artifact identified by connectorId and artifactId.</description>
-  <url>/tag</url>
-  <authentication>user</authentication>
-  <format default="json">argument</format>
-</webscript>

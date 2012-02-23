@@ -1,5 +1,0 @@
-<webscript>
-  <shortname>Cycle Tree</shortname>
-  <description>Provides a tree view component to browse repositories or network drives</description>
-  <url>/component/tree</url>
-</webscript>

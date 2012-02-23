@@ -1,7 +1,0 @@
-<webscript>
-  <shortname>Delete an artifact-link</shortname>
-  <description>Deletes the artifact-link identified by the linkId.</description>
-  <url>/artifact-link</url>
-  <authentication>user</authentication>
-  <format default="json">argument</format>
-</webscript>

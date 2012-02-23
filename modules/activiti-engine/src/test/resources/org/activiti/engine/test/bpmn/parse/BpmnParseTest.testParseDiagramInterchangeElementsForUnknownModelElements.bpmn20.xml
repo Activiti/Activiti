@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:signavio="http://www.signavio.com" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="sid-d4beb362-3c19-446a-81ac-34290495bd23" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="5.2.1" targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL">
+  <process id="TestAnnotation" isExecutable="true">
+    <startEvent id="startEvent_1">
+      <outgoing>sequenceFlow_14</outgoing>
+    </startEvent>
+    <userTask id="Task_5" name="Task">
+      <incoming>sequenceFlow_14</incoming>
+      <outgoing>sequenceFlow_15</outgoing>
+    </userTask>
+    <endEvent id="endEvent_10">
+      <incoming>sequenceFlow_15</incoming>
+    </endEvent>
+    <sequenceFlow id="sequenceFlow_14" sourceRef="startEvent_1" targetRef="Task_5"/>
+    <sequenceFlow id="sequenceFlow_15" sourceRef="Task_5" targetRef="endEvent_10"/>
+    <association id="association_16" sourceRef="Task_5" targetRef="textAnnotation_17"/>
+    <textAnnotation id="textAnnotation_17">
+      <text>Some Text</text>
+    </textAnnotation>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_20">
+    <bpmndi:BPMNPlane id="BPMNPlane_20" bpmnElement="TestAnnotation">
+      <bpmndi:BPMNShape id="BPMNShape_20" bpmnElement="startEvent_1">
+        <omgdc:Bounds height="30.0" width="30.0" x="135.0" y="90.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_22" bpmnElement="Task_5">
+        <omgdc:Bounds height="80.0" width="100.0" x="210.0" y="65.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_24" bpmnElement="endEvent_10">
+        <omgdc:Bounds height="28.0" width="28.0" x="355.0" y="91.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_26" bpmnElement="textAnnotation_17">
+        <omgdc:Bounds height="50.0" width="100.0" x="285.0" y="195.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_28" bpmnElement="sequenceFlow_15" sourceElement="BPMNShape_22" targetElement="BPMNShape_24">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="310.0" y="105.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="355.0" y="105.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_31" bpmnElement="association_16" sourceElement="BPMNShape_22" targetElement="BPMNShape_26">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="260.0" y="145.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="335.0" y="195.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_34" bpmnElement="sequenceFlow_14" sourceElement="BPMNShape_20" targetElement="BPMNShape_22">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="165.0" y="105.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="210.0" y="105.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

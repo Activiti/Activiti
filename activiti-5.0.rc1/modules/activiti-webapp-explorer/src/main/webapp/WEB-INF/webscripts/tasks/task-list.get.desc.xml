@@ -1,5 +1,0 @@
-<webscript>
-  <shortname>Task list</shortname>
-  <description>Displays tasks in a list</description>
-  <url>/component/task-list</url>
-</webscript>

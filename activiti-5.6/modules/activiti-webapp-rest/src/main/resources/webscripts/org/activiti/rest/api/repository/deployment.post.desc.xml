@@ -1,7 +1,0 @@
-<webscript>
-  <shortname>Create Deployment</shortname>
-  <description>Create/upload a deployment</description>
-  <url>/deployment</url>
-  <authentication>admin</authentication>
-  <format default="json"/>
-</webscript>

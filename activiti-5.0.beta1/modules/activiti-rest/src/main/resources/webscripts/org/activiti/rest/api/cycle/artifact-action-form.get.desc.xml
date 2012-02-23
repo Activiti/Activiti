@@ -1,7 +1,0 @@
-<webscript>
-  <shortname>Repository Artifact Action Form</shortname>
-  <description>Returns an artifact action's form</description>
-  <url>/artifact-action-form?artifactId={artifactId}&amp;actionName={actionName}</url>
-  <authentication>user</authentication>
-  <format default="html">argument</format>
-</webscript>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">
+
+<chapter id="activitiExplorer">
+
+  <title>Activiti Explorer</title>
+  
+  <para>
+    Activiti Explorer is a web application that is installed during the <link linkend="demo.setup">demo setup</link>.
+    After logging into the application, you will see three large icons that show the main capabilities.
+    <mediaobject><imageobject><imagedata align="center" fileref="images/explorer.tabs.png"/></imageobject></mediaobject>
+    <itemizedlist>
+      <listitem>
+        <para>
+          <emphasis role="bold">Cases</emphasis>: case and task management functionality.
+          Here you can see user tasks from running processes that are assigned to you, or
+          see group tasks which you can claim. Note that in Explorer we talk about <emphasis>cases</emphasis>
+          rather than <emphasis>tasks</emphasis>. As Explorer allows to relate content, divide
+          work into subtasks, involve people in different roles, etc ... the term <emphasis>case</emphasis>
+          covers better what is possible. Activiti Explorer as such can be used to create
+          cases that are not related to processes (i.e. standalone cases).
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          <emphasis role="bold">Process</emphasis>: shows the deployed process definitions,
+          and allows to start new process instances.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          <emphasis role="bold">Manage</emphasis>: only visible when the logged in user has 
+          administrator rights. Allows to administrate the Activiti engine: manage users and groups,
+          execute and see stuck jobs, see the database and deploy new process definitions.
+        </para>
+      </listitem>
+    </itemizedlist> 
+  </para>
+  
+  <section>
+  
+    <title>Case overview</title>
+    
+    <para>
+      <mediaobject><imageobject><imagedata align="center" fileref="images/explorer.case.overview.png"/></imageobject></mediaobject>
+    </para>
+  
+  </section>
+  
+  <section>
+  
+    <title>Cases</title>
+    
+    <para>
+      <mediaobject><imageobject><imagedata align="center" fileref="images/explorer.cases.png"/></imageobject></mediaobject>
+      <itemizedlist>
+        <listitem>
+          <para>
+            <emphasis role="bold">Inbox:</emphasis> shows the cases where the logged in user is the assignee.
+          </para>
+        </listitem>
+         <listitem>
+          <para>
+            <emphasis role="bold">My Cases:</emphasis> shows the cases where the logged in user is the owner.
+            When you create a standalone case, you are automatically made owner of the case.
+          </para>
+        </listitem>
+         <listitem>
+          <para>
+            <emphasis role="bold">Queued:</emphasis> shows the different groups which you are part
+            of. Cases here must first be claimed before they can be completed.
+          </para>
+        </listitem>
+         <listitem>
+          <para>
+            <emphasis role="bold">Involved:</emphasis> shows the cases where the logged in user is
+            involved with (i.e. not assignee or owner).
+          </para>
+        </listitem>
+         <listitem>
+          <para>
+            <emphasis role="bold">Archived</emphasis> contains the past (historical) cases.
+          </para>
+        </listitem>
+      </itemizedlist>
+    </para>
+  
+  </section>
+  
+  <section>
+  
+    <title>Start process instances</title>
+    
+    <para>
+      The <emphasis role="bold">Process definitions</emphasis> tab, allows to see all process definitions
+      that are deployed to the Activiti engine. You can start new process instances using the 
+      button on the top right. If the process definition has a start <link linkend="forms">form</link>, the form will
+      be displayed before starting the process instance.
+      <mediaobject><imageobject><imagedata align="center" fileref="images/explorer.process.definitions.png"/></imageobject></mediaobject>
+    </para>
+  
+  </section>
+  
+   <section>
+  
+    <title>My instances</title>
+    
+    <para>
+      The <emphasis role="bold">My instances</emphasis> tab, shows all the process instances 
+      where you currently have an uncompleted user task. It also visually shows the current activities
+      of the process instance and the stored process variables.
+      <mediaobject><imageobject><imagedata align="center" fileref="images/explorer.my.instances.png"/></imageobject></mediaobject>
+    </para>
+  
+  </section>
+  
+    <section>
+  
+    <title>Administration</title>
+    
+    <para>
+      The administration functionality is only available when the logged in user is part
+      of the security group <emphasis>admin</emphasis>.
+      When clicking the <emphasis>Manage</emphasis> icon, following tabs are available:
+      
+      <itemizedlist>
+        <listitem>
+          <para>
+            <emphasis role="bold">Database:</emphasis> Shows the content of the database.
+            Extremely useful when developing processes or troubleshooting problems.
+            <mediaobject><imageobject><imagedata align="center" fileref="images/explorer.database.png"/></imageobject></mediaobject>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">Deployments:</emphasis>
+            Shows the current deployments of the engine, and see the content of a deployment (process definitions, images, business rules, etc.)
+            <mediaobject><imageobject><imagedata align="center" fileref="images/explorer.deployments.png"/></imageobject></mediaobject>
+            You can also upload new deployments when clicking the <emphasis>deployment</emphasis> tab.
+            Select a business archive or a bpmn20.xml file from your computer, or simply drag and drop to
+            the designated area to deploy the new business processes.
+            <mediaobject><imageobject><imagedata align="center" fileref="images/explorer.upload.deployment.png"/></imageobject></mediaobject>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">Jobs:</emphasis> Shows the current jobs (timers, etc.) on the left
+            and allows to manually execute them (e.g. firing a timer before the deadline). Also
+            shows any exceptions, if the jobs failed to execute (e.g. mail server could not be reached)
+            <mediaobject><imageobject><imagedata align="center" fileref="images/explorer.jobs.png"/></imageobject></mediaobject>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">Users and Groups:</emphasis> manage the users and groups: create, edit and delete 
+            users and groups. Relate users to groups such they have more privileges or they can see
+            cases assigned to specific groups.
+            <mediaobject><imageobject><imagedata align="center" fileref="images/explorer.users.png"/></imageobject></mediaobject>
+          </para>
+        </listitem>
+      </itemizedlist>
+       
+    </para>
+  
+  </section>
+  
+  <section id="explorer.change.database">
+    <title>Changing the database</title>  
+    <para>
+      To change the database that Explorer uses in the demo setup, change the properties file <literal>apps/apache-timcat-6.x/webapps/activiti-explorer/WEB-INF/classes/db.properties</literal>.
+      Also, place a suitable database driver on the classpath (Tomcat shared libs or in <literal>apps/apache-timcat-6.x/webapps/activiti-explorer/WEB-INF/lib/</literal>).
+    </para>
+  </section>
+  
+</chapter>

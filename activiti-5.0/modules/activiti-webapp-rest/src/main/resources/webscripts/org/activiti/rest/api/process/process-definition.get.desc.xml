@@ -1,7 +1,0 @@
-<webscript>
-  <shortname>Process Definition</shortname>
-  <description>Returns information about a deployed process definition</description>
-  <url>/process-definition/{processDefinitionId}</url>
-  <authentication>user</authentication>
-  <format default="json">argument</format>
-</webscript>

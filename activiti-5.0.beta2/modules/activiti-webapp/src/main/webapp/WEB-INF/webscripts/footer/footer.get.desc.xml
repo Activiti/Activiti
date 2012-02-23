@@ -1,5 +1,0 @@
-<webscript>
-  <shortname>Activiti Footer</shortname>
-  <description>The footer of the Activiti application</description>
-  <url>/component/footer</url>
-</webscript>

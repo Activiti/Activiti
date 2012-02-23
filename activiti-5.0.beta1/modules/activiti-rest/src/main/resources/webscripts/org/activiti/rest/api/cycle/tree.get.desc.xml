@@ -1,7 +1,0 @@
-<webscript>
-  <shortname>Repository Tree</shortname>
-  <description>Returns a json string that represents a content repository</description>
-  <url>/repo-tree</url>
-  <authentication>user</authentication>
-  <format default="json">argument</format>
-</webscript>

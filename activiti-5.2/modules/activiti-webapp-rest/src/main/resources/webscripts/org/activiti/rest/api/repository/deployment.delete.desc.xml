@@ -1,7 +1,0 @@
-<webscript>
-  <shortname>Delete Deployment</shortname>
-  <description>Deletes a deployment</description>
-  <url>/deployment/{deploymentId}?cascade={cascade?}</url>
-  <authentication>user</authentication>
-  <format default="json">argument</format>
-</webscript>

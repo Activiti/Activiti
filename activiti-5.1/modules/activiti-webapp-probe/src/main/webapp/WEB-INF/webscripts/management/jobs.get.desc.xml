@@ -1,5 +1,0 @@
-<webscript>
-  <shortname>Probe Job List and Admin Functions</shortname>
-  <description>Displays the Jobs, Job related info and allows them to be executed</description>
-  <url>/component/jobs</url>
-</webscript>

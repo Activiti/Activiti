@@ -1,1 +1,0 @@
-<script type="text/javascript" src="${url.context}/res/components/processes/processes.js"></script>

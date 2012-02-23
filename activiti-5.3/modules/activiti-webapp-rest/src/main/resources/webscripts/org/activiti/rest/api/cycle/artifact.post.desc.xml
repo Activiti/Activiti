@@ -1,7 +1,0 @@
-<webscript>
-  <shortname>Create an artifact</shortname>
-  <description>Creates a new artifact in the specified repository</description>
-  <url>/artifact</url>
-  <authentication>user</authentication>
-  <format default="html">argument</format>
-</webscript>

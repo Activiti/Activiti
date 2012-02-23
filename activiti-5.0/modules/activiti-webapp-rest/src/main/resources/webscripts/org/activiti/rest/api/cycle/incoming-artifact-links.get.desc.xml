@@ -1,7 +1,0 @@
-<webscript>
-  <shortname>Get artifacts that are linking to the given artifact</shortname>
-  <description>Returns a json string that represents the artifacts that have a link to the given artifact</description>
-  <url>/incoming-artifact-links?connectorId={connectorId}&amp;artifactId={artifactId}</url>
-  <authentication>user</authentication>
-  <format default="json">argument</format>
-</webscript>

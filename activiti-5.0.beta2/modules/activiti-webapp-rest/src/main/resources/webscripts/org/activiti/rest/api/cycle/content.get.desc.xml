@@ -1,7 +1,0 @@
-<webscript>
-  <shortname>Streams an image</shortname>
-  <description>Streams back the content of an image</description>
-  <url>/content</url>
-  <authentication>user</authentication>
-  <format default="">argument</format>
-</webscript>

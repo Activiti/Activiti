@@ -1,7 +1,0 @@
-<webscript>
-  <shortname>Process Definition Form</shortname>
-  <description>Returns a process definition's form</description>
-  <url>/process-definition/{processDefinitionId}/form</url>
-  <authentication>user</authentication>
-  <format default="html">argument</format>
-</webscript>

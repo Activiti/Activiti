@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+  
+<mapper namespace="org.activiti.engine.impl.persistence.entity.ExecutionEntity">
+
+  <!-- EXECUTION INSERT -->
+
+  <insert id="insertExecution" parameterType="org.activiti.engine.impl.persistence.entity.ExecutionEntity">
+    insert into ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_, IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, PARENT_ID_, SUPER_EXEC_, SUSPENSION_STATE_)
+    values (
+      #{id ,jdbcType=VARCHAR},
+      1,
+      #{processInstanceId, jdbcType=VARCHAR},
+      #{businessKey, jdbcType=VARCHAR},
+      #{processDefinitionId ,jdbcType=VARCHAR},
+      #{activityId ,jdbcType=VARCHAR},
+      #{isActive ,jdbcType=BOOLEAN},
+      #{isConcurrent ,jdbcType=BOOLEAN},
+      #{isScope ,jdbcType=BOOLEAN},
+      #{isEventScope ,jdbcType=BOOLEAN},
+      #{parentId, jdbcType=VARCHAR},
+      #{superExecutionId, jdbcType=VARCHAR},
+      #{suspensionState, jdbcType=INTEGER}
+    )
+  </insert>
+
+  <!-- EXECUTION UPDATE -->
+  
+  <update id="updateExecution" parameterType="org.activiti.engine.impl.persistence.entity.ExecutionEntity">
+    update ACT_RU_EXECUTION set
+      REV_ = #{revisionNext, jdbcType=INTEGER},
+      PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
+      ACT_ID_ = #{activityId, jdbcType=VARCHAR},
+      IS_ACTIVE_ = #{isActive, jdbcType=BOOLEAN},
+      IS_CONCURRENT_ = #{isConcurrent, jdbcType=BOOLEAN},
+      IS_SCOPE_ = #{isScope, jdbcType=BOOLEAN},
+      IS_EVENT_SCOPE_ = #{isEventScope, jdbcType=BOOLEAN},
+      PARENT_ID_ = #{parentId, jdbcType=VARCHAR},
+      SUPER_EXEC_ = #{superExecutionId, jdbcType=VARCHAR},
+      SUSPENSION_STATE_ = #{suspensionState, jdbcType=INTEGER}
+    where ID_ = #{id, jdbcType=VARCHAR}
+      and REV_ = #{revision, jdbcType=INTEGER}
+  </update>
+  
+  <!-- EXECUTION DELETE -->
+  
+  <delete id="deleteExecution" parameterType="string">
+    delete from ACT_RU_EXECUTION where ID_ = #{id}
+  </delete>
+  
+  <!-- EXECUTION RESULTMAP -->
+  
+  <resultMap id="executionResultMap" type="org.activiti.engine.impl.persistence.entity.ExecutionEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="revision" column="REV_" jdbcType="INTEGER" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="businessKey" column="BUSINESS_KEY_" jdbcType="VARCHAR" />
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
+    <result property="activityId" column="ACT_ID_" jdbcType="VARCHAR" />
+    <result property="isActive" column="IS_ACTIVE_" jdbcType="BOOLEAN" />
+    <result property="isConcurrent" column="IS_CONCURRENT_" jdbcType="BOOLEAN" />
+    <result property="isScope" column="IS_SCOPE_" jdbcType="BOOLEAN" />
+    <result property="isEventScope" column="IS_EVENT_SCOPE_" jdbcType="BOOLEAN" />
+    <result property="parentId" column="PARENT_ID_" jdbcType="VARCHAR" />
+    <result property="superExecutionId" column="SUPER_EXEC_" jdbcType="VARCHAR" />
+    <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER"/>
+  </resultMap>
+  
+  <!-- EXECUTION SELECT -->
+  
+  <select id="selectExecution" parameterType="string" resultMap="executionResultMap">
+    select * from ACT_RU_EXECUTION where ID_ = #{id}
+  </select>
+  
+  <select id="selectExecutionsByParentExecutionId" parameterType="string" resultMap="executionResultMap">
+    select * from ACT_RU_EXECUTION
+    where PARENT_ID_ = #{parentExecutionId}
+  </select>
+  
+  <select id="selectProcessInstanceIdsByProcessDefinitionId" parameterType="string" resultType="string">
+    select ID_
+    from ACT_RU_EXECUTION
+    where PROC_DEF_ID_ = #{processDefinitionId}
+  </select>
+  
+  <select id="selectExecutionsByQueryCriteria" parameterType="org.activiti.engine.impl.ExecutionQueryImpl" resultMap="executionResultMap">
+    select E.*
+    <include refid="selectExecutionsByQueryCriteriaSql"/>
+    <if test="orderBy != null">
+      order by ${orderBy}
+    </if>
+  </select>
+  
+  <select id="selectExecutionCountByQueryCriteria" parameterType="org.activiti.engine.impl.ExecutionQueryImpl" resultType="long">
+    select count(*)
+    <include refid="selectExecutionsByQueryCriteriaSql"/>
+  </select>
+  
+  <!--  same as selectExecutionByQueryCriteria, but with different parameterType -->
+  <select id="selectProcessInstanceByQueryCriteria" parameterType="org.activiti.engine.impl.ProcessInstanceQueryImpl" resultMap="executionResultMap">
+    select E.*
+    <include refid="selectExecutionsByQueryCriteriaSql"/>
+    <if test="orderBy != null">
+      order by ${orderBy}
+    </if>
+  </select>
+  
+  <select id="selectProcessInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.ProcessInstanceQueryImpl" resultType="long">
+    select count(*)
+    <include refid="selectExecutionsByQueryCriteriaSql"/>
+  </select>
+  
+  <sql id="selectExecutionsByQueryCriteriaSql">
+    from ACT_RU_EXECUTION E
+    <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
+    	inner join ACT_RU_VARIABLE A${index} on E.ID_ = A${index}.EXECUTION_ID_ 
+    </foreach>
+    inner join ACT_RE_PROCDEF P on E.PROC_DEF_ID_ = P.ID_
+    <if test="eventSubscriptionType != null">
+    	inner join ACT_RU_EVENT_SUBSCR EVT on E.ID_ = EVT.EXECUTION_ID_
+    </if>
+    <where>
+      <if test="onlyProcessInstances">
+        E.PARENT_ID_ is null
+      </if>
+      <if test="processDefinitionId != null">
+        and P.ID_ = #{processDefinitionId}
+      </if>
+      <if test="processDefinitionKey != null">
+        and P.KEY_ = #{processDefinitionKey}
+      </if>
+      <if test="executionId != null">
+        and E.ID_ = #{executionId}
+      </if>
+      <if test="processInstanceId != null">
+        and E.PROC_INST_ID_ = #{processInstanceId}
+      </if>
+      <if test="processInstanceIds != null and !processInstanceIds.isEmpty()">
+        and E.PROC_INST_ID_ in
+        <foreach item="item" index="index" collection="processInstanceIds" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+      <if test="businessKey != null">
+        and E.BUSINESS_KEY_ = #{businessKey}
+      </if>
+      <if test="activityId != null">
+        and E.ACT_ID_ = #{activityId}
+      </if>
+      <if test="superProcessInstanceId != null">
+        <!-- A sub process instance is stored under a certain *execution*, potentially nested.
+             A sub process instance is NOT stored under the process instanc, hence the following: -->
+        and E.SUPER_EXEC_ IN (select ID_ from ACT_RU_EXECUTION where PROC_INST_ID_ = #{superProcessInstanceId})
+      </if>
+      <if test="subProcessInstanceId != null">
+        and E.ID_ = (select PROC_INST_ID_ from ACT_RU_EXECUTION where ID_ = (select SUPER_EXEC_ from ACT_RU_EXECUTION where ID_ = #{subProcessInstanceId}))
+      </if>
+      <if test="suspensionState != null">
+      	<if test="suspensionState.stateCode == 1">
+        	and ((E.SUSPENSION_STATE_ = 1) and (P.SUSPENSION_STATE_ = 1))
+        </if>
+        <if test="suspensionState.stateCode == 2">
+        	and ((E.SUSPENSION_STATE_ = 2) or (P.SUSPENSION_STATE_ = 2))
+        </if>
+      </if>
+      <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
+      	and A${index}.NAME_= #{queryVariableValue.name}
+        <if test="!queryVariableValue.type.equals('null')">
+        <!-- When operator is not-equals or type of value is null, type doesn't matter! -->
+          and A${index}.TYPE_ = #{queryVariableValue.type}
+        </if>
+      	<if test="queryVariableValue.textValue != null &amp;&amp; queryVariableValue.longValue == null &amp;&amp; queryVariableValue.doubleValue == null">
+	      and A${index}.TEXT_
+	      <choose>
+	        <when test="queryVariableValue.operator.equals('LIKE')">LIKE</when>
+	        <otherwise><include refid="executionVariableOperator" /></otherwise>
+	      </choose>
+	        #{queryVariableValue.textValue}
+      	</if>
+      	<if test="queryVariableValue.textValue2 != null">
+	      and A${index}.TEXT2_
+	      <choose>
+	        <when test="queryVariableValue.operator.equals('LIKE')">LIKE</when>
+	        <otherwise><include refid="executionVariableOperator" /></otherwise>
+	      </choose>
+	        #{queryVariableValue.textValue2}
+      	</if>
+      	<if test="queryVariableValue.longValue != null">
+	      and A${index}.LONG_
+	      <include refid="executionVariableOperator" />
+	      #{queryVariableValue.longValue}
+      	</if>
+      	<if test="queryVariableValue.doubleValue != null">
+	      and A${index}.DOUBLE_
+	      <include refid="executionVariableOperator" />
+	      #{queryVariableValue.doubleValue}
+      	</if>
+      	<!-- Null variable type -->
+      	<if test="queryVariableValue.textValue == null &amp;&amp; queryVariableValue.textValue2 == null &amp;&amp; queryVariableValue.longValue == null &amp;&amp; queryVariableValue.doubleValue == null">
+          <choose>
+	        <when test="queryVariableValue.operator.equals('NOT_EQUALS')">
+	          and (A${index}.TEXT_ is not null or A${index}.TEXT2_ is not null or A${index}.LONG_ is not null or A${index}.DOUBLE_ is not null or A${index}.BYTEARRAY_ID_ is not null)
+	        </when>
+	        <otherwise>
+			  and A${index}.TEXT_ is null and A${index}.TEXT2_ is null and A${index}.LONG_ is null and A${index}.DOUBLE_ is null and A${index}.BYTEARRAY_ID_ is null
+	        </otherwise>
+	      </choose>
+      	</if>
+      </foreach>
+      <!-- event subscriptions -->
+      <if test="eventSubscriptionType != null">
+      	and (EVT.EVENT_TYPE_ = #{eventSubscriptionType} and EVT.EVENT_NAME_ = #{eventSubscriptionName}) 
+      </if>
+    </where>
+  </sql>
+  
+  <sql id="executionVariableOperator">
+    <choose>
+   	  <when test="queryVariableValue.operator.equals('EQUALS')">=</when>
+   	  <when test="queryVariableValue.operator.equals('NOT_EQUALS')">&lt;&gt;</when>
+   	  <when test="queryVariableValue.operator.equals('GREATER_THAN')">&gt;</when>
+   	  <when test="queryVariableValue.operator.equals('GREATER_THAN_OR_EQUAL')">&gt;=</when>
+   	  <when test="queryVariableValue.operator.equals('LESS_THAN')">&lt;</when>
+   	  <when test="queryVariableValue.operator.equals('LESS_THAN_OR_EQUAL')">&lt;=</when>
+   </choose>
+  </sql>
+  
+  <select id="selectSubProcessInstanceBySuperExecutionId" parameterType="string" resultMap="executionResultMap">
+    select *
+    from ACT_RU_EXECUTION
+    where SUPER_EXEC_ = #{superExecutionId}
+  </select>
+  
+</mapper>

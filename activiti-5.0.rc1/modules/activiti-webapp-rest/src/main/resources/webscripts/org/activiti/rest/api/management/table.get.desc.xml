@@ -1,7 +1,0 @@
-<webscript>
-  <shortname>Table</shortname>
-  <description>Returns information and data for a database table in the process engine</description>
-  <url>/management/table/{tableName}</url>
-  <authentication>admin</authentication>
-  <format default="json">argument</format>
-</webscript>
