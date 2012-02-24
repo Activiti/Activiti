@@ -298,6 +298,9 @@ public class BpmnDeployer implements Deployer {
     resource.setBytes(bytes);
     resource.setDeploymentId(deploymentEntity.getId());
     
+    // Mark the resource as 'generated'
+    resource.setGenerated(true);
+    
     Context
       .getCommandContext()
       .getDbSqlSession()

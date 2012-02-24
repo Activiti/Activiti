@@ -20,6 +20,7 @@ create table ACT_GE_BYTEARRAY (
     NAME_ varchar(255),
     DEPLOYMENT_ID_ varchar(64),
     BYTES_ bytea,
+    GENERATED_ boolean,
     primary key (ID_)
 );
 

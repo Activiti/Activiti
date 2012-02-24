@@ -66,16 +66,17 @@ public class DeployCmd<T> implements Command<Deployment> {
   protected boolean deploymentsDiffer(DeploymentEntity deployment, DeploymentEntity saved) {
     Map<String, ResourceEntity> resources = deployment.getResources();
     Map<String, ResourceEntity> savedResources = saved.getResources();
-    if (!resources.keySet().equals(savedResources.keySet())) {
-      return true;
-    }
+    
     for (String resourceName: resources.keySet()) {
-      ResourceEntity resource = resources.get(resourceName);
-      byte[] bytes = resource.getBytes();
       ResourceEntity savedResource = savedResources.get(resourceName);
-      byte[] savedBytes = savedResource.getBytes();
-      if (!Arrays.equals(bytes, savedBytes)) {
-        return true;
+      if(!savedResource.isGenerated()) {
+        ResourceEntity resource = resources.get(resourceName);
+        
+        byte[] bytes = resource.getBytes();
+        byte[] savedBytes = savedResource.getBytes();
+        if (!Arrays.equals(bytes, savedBytes)) {
+          return true;
+        }
       }
     }
     return false;

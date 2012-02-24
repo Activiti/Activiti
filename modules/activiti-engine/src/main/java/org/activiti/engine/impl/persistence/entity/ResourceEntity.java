@@ -29,6 +29,7 @@ public class ResourceEntity implements Serializable, PersistentObject {
   protected String name;
   protected byte[] bytes;
   protected String deploymentId;
+  protected boolean generated = false;
   
   public String getId() {
     return id;
@@ -64,5 +65,17 @@ public class ResourceEntity implements Serializable, PersistentObject {
 
   public Object getPersistentState() {
     return ResourceEntity.class;
+  }
+  
+  public void setGenerated(boolean generated) {
+    this.generated = generated;
+  }
+  
+  /**
+   * Indicated whether or not the resource has been generated while deploying rather than
+   * being actual part of the deployment. 
+   */
+  public boolean isGenerated() {
+    return generated;
   }
 }
