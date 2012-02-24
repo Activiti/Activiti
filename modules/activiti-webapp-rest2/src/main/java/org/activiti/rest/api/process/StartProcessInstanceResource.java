@@ -59,7 +59,6 @@ public class StartProcessInstanceResource extends SecuredResource {
       variables.remove("processDefinitionKey");
       variables.remove("businessKey");
       
-      ActivitiUtil.getIdentityService().setAuthenticatedUserId(loggedInUser);
       ProcessInstance processInstance = null;
       if (processDefinitionKey != null) {
         processInstance = ActivitiUtil.getRuntimeService().startProcessInstanceByKey(processDefinitionKey, businessKey, variables);
