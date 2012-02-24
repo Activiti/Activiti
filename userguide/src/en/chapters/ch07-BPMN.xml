@@ -5216,8 +5216,54 @@ public class MyTaskCreateListener implements TaskListener {
       </section>
     
     </section>    
-</section>
-    
+
+<section id="bpmnCompensationHandlers">
+	<title>Compensation Handlers</title>
+	
+	
+	 <section id="bpmnCompensationHandlerDescription">
+      
+        <title>Description</title>
+        
+        <para>
+         If an activity is used for compensating the effects of another activity, it can be declared to be a compensation handler.
+         Compensation handlers are not contained in normal flow and are only executed when a compensation event is thrown. 
+        </para>
+        
+        <para>
+        	Compensation handlers must not have incoming or outgoing sequence flows.
+        </para>
+        
+        <para>
+        	A compensation handler must be associated with a compensation boundary event using a directed association.
+        </para>
+                             
+      </section>
+      
+      <section id="bpmnCompensationHandlerGraphicalNotation">
+      
+        <title>Graphical notation</title>
+        
+        <para>
+          If an activity is a compensation handler, the compensation event icon is displayed in the center bottom area. The following
+          excerpt from a process diagram shows a service task with an attached compensation boundary event which is associated to a 
+          compensation handler. Notice the compensation handler icon in the bottom canter area of the "cancel hotel reservation" service task
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.boundary.compensation.event.png"/></imageobject></mediaobject>
+        </para>
+      
+      </section>
+      
+      <section id="bpmnCompensationHandlerXml">
+      
+        <title>Xml representation</title>
+      	In order to declare an activity to be a compensation handler, we need to set the attribute <code>isForCompensation</code>
+      	to <code>true</code>:
+      	<programlisting>
+&lt;serviceTask id=&quot;undoBookHotel&quot; isForCompensation=&quot;true&quot; activiti:class=&quot;...&quot;&gt;
+&lt;/serviceTask&gt;</programlisting> 
+      </section>
+	</section>
+</section>    
        	 <!-- 
 	  
 	  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
