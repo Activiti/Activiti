@@ -2403,7 +2403,13 @@ public class BpmnParse extends Parse {
       addError("Missing attribute 'calledElement'", callActivityElement);
     }
 
-    CallActivityBehavior callActivityBehaviour = new CallActivityBehavior(calledElement);
+    CallActivityBehavior callActivityBehaviour = null;
+    String expressionRegex = "\\$+\\{+.+\\}";
+    if (calledElement.matches(expressionRegex)) {
+      callActivityBehaviour = new CallActivityBehavior(expressionManager.createExpression(calledElement));
+    } else {
+      callActivityBehaviour = new CallActivityBehavior(calledElement);
+    }
 
     Element extentionsElement = callActivityElement.element("extensionElements");
     if (extentionsElement != null) {
