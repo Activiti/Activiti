@@ -48,8 +48,10 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 
@@ -157,7 +159,20 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
 
       Embedded embedded = new Embedded(null, diagram);
       embedded.setType(Embedded.TYPE_IMAGE);
-      panelLayout.addComponent(embedded);
+      embedded.setSizeUndefined();
+
+      Panel imagePanel = new Panel(); // using panel for scrollbars
+      imagePanel.setScrollable(true);
+      imagePanel.addStyleName(Reindeer.PANEL_LIGHT);
+      imagePanel.setWidth(100, UNITS_PERCENTAGE);
+      imagePanel.setHeight(400, UNITS_PIXELS);
+      
+      HorizontalLayout panelLayoutT = new HorizontalLayout();
+      panelLayoutT.setSizeUndefined();
+      imagePanel.setContent(panelLayoutT);
+      imagePanel.addComponent(embedded);
+      
+      panelLayout.addComponent(imagePanel);
     }
   }
 
