@@ -49,3 +49,10 @@ update ACT_RU_EXECUTION set IS_EVENT_SCOPE_ = false;
 
 alter table ACT_HI_PROCINST
 add DELETE_REASON_ varchar(4000);
+
+
+
+alter table ACT_GE_BYTEARRAY 
+add GENERATED_ boolean;
+
+update ACT_GE_BYTEARRAY set GENERATED_ = 0;

@@ -20,6 +20,7 @@ create table ACT_GE_BYTEARRAY (
     NAME_ nvarchar(255),
     DEPLOYMENT_ID_ nvarchar(64),
     BYTES_ image,
+    GENERATED_ tinyint,
     primary key (ID_)
 );
 

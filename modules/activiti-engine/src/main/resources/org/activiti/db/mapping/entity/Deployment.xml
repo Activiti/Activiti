@@ -62,7 +62,7 @@
   </select>
   
   <select id="selectDeploymentsByName" parameterType="string" resultMap="deploymentResultMap">
-    select * from ACT_RE_DEPLOYMENT D where NAME_=#{name} order by D.DEPLOY_TIME_ asc
+    select * from ACT_RE_DEPLOYMENT D where NAME_=#{name} order by D.DEPLOY_TIME_ desc
   </select>
   
   <select id="selectDeploymentById" parameterType="string" resultMap="deploymentResultMap">

@@ -7,8 +7,8 @@
   <!-- RESOURCE INSERT -->
 
   <insert id="insertResource" parameterType="org.activiti.engine.impl.persistence.entity.ResourceEntity">
-    insert into ACT_GE_BYTEARRAY(ID_, REV_, NAME_, BYTES_, DEPLOYMENT_ID_)
-    values (#{id, jdbcType=VARCHAR}, 1, #{name, jdbcType=VARCHAR}, #{bytes, jdbcType=BLOB}, #{deploymentId, jdbcType=VARCHAR})  
+    insert into ACT_GE_BYTEARRAY(ID_, REV_, NAME_, BYTES_, DEPLOYMENT_ID_, GENERATED_)
+    values (#{id, jdbcType=VARCHAR}, 1, #{name, jdbcType=VARCHAR}, #{bytes, jdbcType=BLOB}, #{deploymentId, jdbcType=VARCHAR}, #{generated, jdbcType=BOOLEAN})  
   </insert>
   
   <!-- RESOURCE UPDATE -->
@@ -25,6 +25,7 @@
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="name" column="NAME_" jdbcType="VARCHAR"/>
     <result property="bytes" column="BYTES_" jdbcType="BLOB"/>
+    <result property="generated" column="GENERATED_" jdbcType="BOOLEAN"/>
   </resultMap>
   
   <!-- RESOURCE SELECT -->
@@ -48,6 +49,7 @@
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="name" column="NAME_" jdbcType="VARCHAR"/>
     <result property="bytes" column="BYTES_" jdbcType="BINARY"/>
+    <result property="generated" column="GENERATED_" jdbcType="BOOLEAN"/>
   </resultMap>
     
   <!-- postgresql specific -->
