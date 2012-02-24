@@ -120,7 +120,7 @@ public class HumanTimeTest extends TestCase {
     
     // Months
     cal = (Calendar) now.clone();
-    cal.add(Calendar.DAY_OF_YEAR, 30);
+    cal.add(Calendar.DAY_OF_YEAR, 31);
     Assert.assertEquals("one month from now", humanTime.format(cal.getTime()));
     
     cal = (Calendar) now.clone();
@@ -149,7 +149,7 @@ public class HumanTimeTest extends TestCase {
     Assert.assertEquals("one year ago", humanTime.format(cal.getTime()));
     
     cal = (Calendar) now.clone();
-    cal.add(Calendar.DAY_OF_YEAR, -365 * 2);
+    cal.add(Calendar.DAY_OF_YEAR, -365 * 2 - 20);
     Assert.assertEquals("2 years ago", humanTime.format(cal.getTime()));
     
   }
