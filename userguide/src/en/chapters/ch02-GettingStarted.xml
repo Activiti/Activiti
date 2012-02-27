@@ -278,7 +278,7 @@
         </listitem>
          <listitem>
           <para>
-            <emphasis role="bold">ACT_RU_*</emphasis>: 'RE' stands for <literal>runtime</literal>.
+            <emphasis role="bold">ACT_RU_*</emphasis>: 'RU' stands for <literal>runtime</literal>.
             These are the runtime tables, that contain the runtime data of process instances,
             user tasks,variables, jobs, etc. Activiti only stores the runtime data during process instance
             execution, and removes the records when a process instance ends. This keeps 
