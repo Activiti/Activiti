@@ -15,7 +15,6 @@
         <listitem><para>Support for unit testing.</para></listitem>
    </itemizedlist>   
   </para>
-  Please note that the activiti-cdi module is considered an <link linkend="experimental"><emphasis role="bold">&lt;EXPERIMENTAL&gt;</emphasis></link> feature of activiti.
   
   In order to include activiti-cdi in a maven project, we add the following maven dependency:
 <programlisting>
@@ -281,6 +280,9 @@ public class BusinessTripRequest implements Serializable {
 	</section>	
 	<section>
 	  	<title>Receiving Process Events</title>
+	  			<link linkend="experimental">
+			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
+		</link>
 	  	<para>
 	  	Activiti can be hooked-up to the CDI event-bus. This allows us to be notified of process events using standard CDI event mechanisms. 
 	  	In order to enable CDI event support for activiti, enable the corresponding parse listener in the configuration:

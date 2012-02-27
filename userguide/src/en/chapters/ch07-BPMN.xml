@@ -885,6 +885,9 @@ public class TenMinuteTutorial {
       
    <section id="bpmnSignalEventDefinition">
       	<title>Signal event definitions</title>
+      	<link linkend="experimental">
+			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
+		</link>
       	<para>
       		Signal events are events which reference a named signal. A signal is an event of global scope (broadcast semantics)
       		and is delivered to all active handlers.	
@@ -995,6 +998,9 @@ RuntimeService.signalEventReceived(String signalName, String executionId);
       
    <section id="bpmnMessageEventDefinition">
       	<title>Message event definitions</title>
+		<link linkend="experimental">
+			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
+		</link>
       	<para>
       		Message events are events which reference a named message. A message has a name and a payload. Unlike a signal, a message event is always directed at a single receiver.      		 
       	</para>
@@ -1256,6 +1262,9 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
         <section id="bpmnMessageStartEvent">
 
             <title>Message start event</title>
+		<link linkend="experimental">
+			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
+		</link>
 
             <section id="messageStartEventDescription">
 
@@ -1400,7 +1409,9 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
         <section id="bpmnErrorStartEvent">
 
             <title>Error start event</title>
-
+		<link linkend="experimental">
+			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
+		</link>
             <section id="errorStartEventDescription">
 
 	        <title>Description</title>
@@ -1586,6 +1597,9 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 		<section id="bpmnCancelEndEvent">
 		  
 		  <title>Cancel end event</title>
+		<link linkend="experimental">
+			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
+		</link>
 		  
 		  <section id="bpmnCancelEndEventDescription">
 		    <title>Description</title>
@@ -1878,6 +1892,9 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 		
 		<section id="bpmnBoundarySignalEvent">
 		  <title>Signal Boundary event</title>
+		<link linkend="experimental">
+			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
+		</link>
 		  
 		  <section id="bpmnBoundarySignalEventDescription">
 		    <title>Description</title>
@@ -1936,6 +1953,9 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 		
 		<section id="bpmnBoundaryCancelEvent">
 		  <title>Cancel Boundary event</title>
+		<link linkend="experimental">
+			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
+		</link>
 		  
 		  <section id="bpmnBoundaryCancelEventDescription">
 		    <title>Description</title>
@@ -1996,6 +2016,9 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 		
 		<section id="bpmnBoundaryCompensationEvent">
 		  <title>Compensation Boundary event</title>
+		<link linkend="experimental">
+			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
+		</link>
 		  
 		  <section id="bpmnBoundaryCompensationEventDescription">
 		    <title>Description</title>
@@ -2172,7 +2195,9 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
         
         <section id="bpmnIntermediateSignalEvent">
 		  <title>Signal Intermediate catching event</title>
-		  
+		<link linkend="experimental">
+			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
+		</link>
 		  <section id="bpmnIntermediateSignalEventDescription">
 		    <title>Description</title>
 		    <para>
@@ -2283,7 +2308,9 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
     
      <section id="bpmnIntermediateThrowSignalEvent">
 		  <title>Signal intermediate throwing event</title>
-		  
+		<link linkend="experimental">
+			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
+		</link>
 		  <section id="bpmnIntermediateThrowSignalEventDescription">
 		    <title>Description</title>
 		    <para>
@@ -2357,6 +2384,9 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
     
      <section id="bpmnIntermediateThrowCompensationEvent">
 		  <title>Compensation intermediate throwing event</title>
+		<link linkend="experimental">
+			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
+		</link>
 		  
 		  <section id="bpmnIntermediateThrowCompensationEventDescription">
 		    <title>Description</title>
@@ -3090,6 +3120,9 @@ assertEquals("Ship Order", task.getName());</programlisting>
     <section id="bpmnEventbasedGateway">
     
       <title>Event based gateway</title>
+		<link linkend="experimental">
+			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
+		</link>
       
       <section id="eventBasedGatewayDescription">
       
@@ -5224,7 +5257,9 @@ public class MyTaskCreateListener implements TaskListener {
 	 <section id="bpmnCompensationHandlerDescription">
       
         <title>Description</title>
-        
+		<link linkend="experimental">
+			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
+		</link>
         <para>
          If an activity is used for compensating the effects of another activity, it can be declared to be a compensation handler.
          Compensation handlers are not contained in normal flow and are only executed when a compensation event is thrown. 
@@ -5394,6 +5429,9 @@ public class MyTaskCreateListener implements TaskListener {
 		<section id="bpmnEventSubprocess">
 		
 		  <title>Event subprocess</title>
+		<link linkend="experimental">
+			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
+		</link>
 		  
 		  <section id="bpmnEventSubprocessDescription">
 		  
@@ -5514,6 +5552,206 @@ public class MyTaskCreateListener implements TaskListener {
         	These two differences can help you decide whether a boundary event or an embedded subprocess is better suited for solving a particular process modeling 
         	/ implementation problem.
         </para>              
+      </section>      
+    </section>
+    
+    
+    	<!-- ///////////////////////////////////////// transaction subprocess -->
+		
+		<section id="bpmnTransactionSubprocess">
+		
+		  <title>Transaction subprocess</title>
+		  
+		<link linkend="experimental">
+			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
+		</link>
+		
+		  <section id="bpmnTransactionSubprocessDescription">
+		  
+		    <title>Description</title>
+		    
+		    <para>
+		      A transaction subprocess is an embedded subprocess, which can be used to group multiple activities to a transaction. 
+		      A transaction is a logical unit of work which allows to group a set of individual activities, 
+		      such that they either succeed or fail collectively.		      		      		      
+		    </para>
+		    
+		    <para>
+		    	<emphasis role="bold">Possible outcomes of a transaction:</emphasis>
+		    	A transaction can have three different outcomes:
+		    	<itemizedlist>
+		    		<listitem>
+		    			<para>
+		    				A transaction is <emphasis>successful</emphasis>, if it is neither cancelled not terminated by a hazard. If a transaction subprocess
+		    				is successful, it is left using the outgoing sequenceflow(s). A successful transaction might be compensated if a compensation
+		    				event is thrown later in the process.		    				
+							   	<para>
+							   		<emphasis role="bols">Note:</emphasis> just as "ordinary" embedded subprocesses, a transaction may be compensated 
+							   		after successful completion using an intermediary throwing compensation event. 
+							   	</para> 
+		    			</para>
+		    		</listitem>
+		    		<listitem>
+		    			<para>
+		    				A transaction is <emphasis>cancelled</emphasis>, if an execution reaches the cancel end event. In that case, all executions are 
+		    				terminated and removed. A single remaining execution is then set to the cancel boundary event, which triggers compensation.
+		    				After compensation is completed, the transaction subprocess is left using the outgoing sequence flow(s) of the cancel boundary event.		    				  
+		    			</para>
+		    		</listitem>
+		    		<listitem>
+		    			<para>
+		    				A transaction is ended by a <emphasis>hazard</emphasis>, if an error event is thrown, that is not caught within the scope of the 
+		    				transaction subprocess. (This also applies if the error is caught on the boundary of the transaction subprocess.)
+		    				In this case, compensation is not performed.
+		    			</para>
+		    		</listitem>
+		    	</itemizedlist>
+		    	The following diagram illustrates the three different outcomes:
+		    	<mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.transaction.subprocess.example.1.png"/></imageobject></mediaobject>		    	
+		    </para>
+		 			
+			<para>
+				<emphasis role="bold">Relation to ACID transactions:</emphasis> it is important not to confuse the bpmn transaction subprocess with 
+				technical (ACID) transactions. The bpmn transaction subprocess is not a way to scope technical transactions.
+				In order to understand transaction management in activiti, read the section on 
+				<link linkend="bpmnConcurrencyAndTransactions">concurrency and transactions</link>.
+		   		A bpmn transaction is different from a technical transaction in the following ways:
+		   		<itemizedlist>
+		   			<listitem>
+		   				<para>
+		   					While an ACID transaction is typically short lived, a bpmn transaction may take hours, days or even months 
+		   					to complete. (Consider the case where one of the activities grouped by a transaction is a usertask, 
+		   					typically people have longer response times than applications. Or, in another situation, a bpmn transaction might wait 
+		   					for some business event to occur, like the fact that a particular order has been fulfilled.) Such operations
+		   					usually take considerably longer to complete than updating a record in a database, or storing a message using 
+		   					a transactional queue.  
+		   				</para>
+		   			</listitem>
+		   			<listitem>
+		   				<para>
+		   					Because it is impossible to scope a technical transaction to the duration of a business activity, a bpmn transaction typically 
+		   					spans multiple ACID transactions.
+		   				</para>
+		   			</listitem>
+		   			<listitem>
+		   				<para>
+		   					Since a bpmn transaction spans multiple ACID transactions, we loose ACID properties. For example, consider the example given above.
+		   					Let's assume the "book hotel" and the "charge credit card" operations are performed in separate ACID transactions. Let's also assume that 
+		   					the "book hotel" activity is successful. Now we have an intermediary inconsistent state, because we have performed an hotel booking but have 
+		   					not yet charged the credit card. Now, in an ACID transaction, we would also perform different operations sequentially and thus also have an 
+		   					intermediary inconsistent state. What is different here, is that the inconsistent state is visible outside of the scope of the transaction. 
+		   					For example, if the reservations are made using an external booking service, other parties using the same booking service might already see that 
+		   					the hotel is booked. This means, that when implementing business transactions, we completely loose the isolation property (Granted: we usually also 
+		   					relax isolation when working with ACID transactions to allow for higher levels of concurrency, but there we have fine grained control and intermediary 
+		   					inconsistencies are only present for very short periods of times). 		   					  		   				   
+		   				</para>
+		   			</listitem>
+		   			<listitem>
+		   				<para>
+		   					A bpmn business transaction can also not be rolled back in the traditional sense. Since it spans multiple ACID transactions, some of these ACID 
+		   					transactions might already be committed at the time the bpmn transaction is cancelled. At this point, they cannot be rolled back anymore. 
+		   				</para>
+		   			</listitem>		   			
+		   		</itemizedlist>
+		   	</para>
+		   	
+		   	<para>
+		   		Since bpmn transactions are long-running in nature, the lack of isolation and a rollback mechanism need to be dealt with differently. In practice, there is usually 
+		   		no better solution than to deal with these problems in a domain specific way:
+		   		<itemizedlist>
+		   			<listitem>
+		   				<para>
+		   					The rollback is performed using compensation. If a cancel event is thrown in the scope of a transaction, the effects of all activities that executed 
+		   					successfully and have a compensation handler are compensated. 		   				
+		   				</para>
+		   			</listitem>
+		   			<listitem>
+		   				<para>
+		   					The lack of isolation is also often dealt with using domain specific solutions. For instance, in the example above, an hotel room might appear to be
+		   					booked to a second customer, before we have actually made sure that the first customer can pay for it. Since this might be undesirable from a business 
+		   					perspective, a booking service might choose to allow for a certain amount of overbooking.
+		   				</para>
+		   			</listitem>
+		   			<listitem>
+		   				<para>
+		   					In addition, since the transaction can be aborted in case of a hazard, the booking service has to deal with the situation where a hotel room is booked 
+		   					but payment is never attempted (since the transaction was aborted). In that case the booking service might choose a strategy where a hotel room is
+		   					reserved for a maximum period of time and if payment is not received until then, the booking is cancelled. 
+		   				</para>
+		   			</listitem>
+		   		</itemizedlist>
+		   		To sum it up: while ACID transactions offer a generic solution to such problems (rollback, isolation levels and heuristic outcomes), 
+		   		we need to find domain specific solutions to these problems when implementing business transactions. 
+		   	</para>
+		   			   		   		   		   	
+		   	<para>
+		   		<emphasis role="bold">Current limitations:</emphasis>
+		   		<itemizedlist>
+		   			<listitem>
+		   				<para>
+		   					The bpmn specification requires that the process engine reacts to events issued by the underlying transaction protocol 
+		   					and for instance that a transaction is cancelled, if a cancel event occurs in the underlying protocol.
+		   					As an embeddable engine, activiti does currently not support this. (For some ramifications of this, see paragraph on consistency below.)		   					
+		   				</para>
+		   			</listitem>		   			
+		   		</itemizedlist>
+		   	</para>
+		   	
+		   	<para>
+		   		<emphasis role="bold">Consistency on top of ACID transactions and optimistic concurrency:</emphasis>
+		   		A bpmn transaction guarantees consistency in the sense that either all activities compete successfully, or if some activity 
+		   		cannot be performed, the effects of all other successful activities are compensated. So either way we end up in a consistent 
+		   		state. However, it is important to recognize that in activiti, the consistency model for bpmn transactions is superposed 
+		   		on top of the consistency model for process execution. 
+		   		Activiti executes processes in a transactional way. Concurrency is addressed using optimistic
+		   		locking. In activiti, bpmn error, cancel and compensation events 
+		   		are built on top of the same acid transactions and optimistic locking. For example, a cancel end event can only trigger compensation 
+		   		if it is actually reached. It is not reached if some undeclared exception is thrown by a service task before. Or, the 
+		   		effects of a compensation handler can not be committed if some other participant in the underlying ACID transaction 
+		   		sets the transaction to the state rollback-only. Or, when two concurrent executions reach a cancel end event, compensation 
+		   		might be triggered twice and fail with an optimistic locking exception. All of this is to say that when implementing 
+		   		bpmn transactions in activiti, the same set of rules apply as when implementing "ordinary" processes and subprocesses.
+		   		So to effectively guarantee consistency, it is important to implement processes in a way that does take the optimistic, transactional 
+		   		execution model into consideration.		   		 
+		   	</para>
+		   	
+		  </section>
+		  
+		  <section id="bpmnEventSubprocessGraphicalNotation">
+      
+        <title>Graphical Notation</title>
+        
+        <para>
+          An transaction subprocess might be visualized as a an <link linkend="bpmnSubProcessGraphicalNotation">embedded subprocess</link> with a double outline.          
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.transaction.subprocess.png"/></imageobject></mediaobject>
+        </para>
+        
+      </section>
+      
+      <section id="bpmnEventSubprocessXMLRepresentation">
+      
+        <title>XML representation</title>
+        
+        <para>
+      		A transaction subprocess is represented using xml using the  <code>transaction</code> tag:
+<programlisting>
+&lt;transaction id=&quot;myTransaction&quot; &gt;
+	...
+&lt;/transaction&gt;
+</programlisting>      		 
+        </para>
+        
+      </section>
+
+      <section id="bpmnEventSubprocessExample">
+      
+        <title>Example</title>
+        
+        <para>
+        	The following is an example of a transaction subprocess:
+        	<mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.transaction.subprocess.example.2.png"/></imageobject></mediaobject>
+        </para>
+      
       </section>      
     </section>
 		
