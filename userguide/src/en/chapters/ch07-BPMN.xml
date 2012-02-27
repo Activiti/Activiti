@@ -5535,6 +5535,7 @@ public class MyTaskCreateListener implements TaskListener {
 		    </para>
 		    
 		    <para>
+		    	<emphasis role="bold">Possible outcomes of a transaction:</emphasis>
 		    	A transaction can have three different outcomes:
 		    	<itemizedlist>
 		    		<listitem>
@@ -5568,7 +5569,7 @@ public class MyTaskCreateListener implements TaskListener {
 		    </para>
 		 			
 			<para>
-				<emphasis role="bold">Note:</emphasis> it is important not to confuse the bpmn transaction subprocess with 
+				<emphasis role="bold">Relation to ACID transactions:</emphasis> it is important not to confuse the bpmn transaction subprocess with 
 				technical (ACID) transactions. The bpmn transaction subprocess is not a way to scope technical transactions.
 				In order to understand transaction management in activiti, read the section on 
 				<link linkend="bpmnConcurrencyAndTransactions">concurrency and transactions</link>.
@@ -5655,6 +5656,7 @@ public class MyTaskCreateListener implements TaskListener {
 		   	</para>
 		   	
 		   	<para>
+		   		<emphasis role="bold">Consistency on top of ACID transactions and optimistic concurrency:</emphasis>
 		   		A bpmn transaction guarantees consistency in the sense that either all activities compete successfully, or if some activity 
 		   		cannot be performed, the effects of all other successful activities are compensated. So either way we end up in a consistent 
 		   		state. However, it is important to recognize that in activiti, the consistency model for bpmn transactions is superposed 
@@ -5704,13 +5706,10 @@ public class MyTaskCreateListener implements TaskListener {
         <title>Example</title>
         
         <para>
-        	<!-- Example -->
+        	The following is an example of a transaction subprocess:
+        	<mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.transaction.subprocess.example.2.png"/></imageobject></mediaobject>
         </para>
-        
-        <para>
-        	<!-- Alternative to cancel / throw catch: error event subprocess with compensation rethrow and different error caught on boundary.
-        	Ths gives us the prossibility to control the ordering of the compensation. -->
-        </para>              
+      
       </section>      
     </section>
 		
