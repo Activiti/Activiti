@@ -5,7 +5,7 @@
 
   <!-- ACT-482 -->
 
-	<process id="nestedForkJoin" isExecutable="false">
+	<process id="nestedForkJoin">
 	
 		<startEvent id="Start" name="Start" />
 		<sequenceFlow id="Flow_9" name="" sourceRef="Start" targetRef="Task_0" />

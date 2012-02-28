@@ -5,7 +5,7 @@
   xmlns:ns5="http://www.omg.org/spec/DD/20100524/DC"
   xmlns:ns4="http://www.omg.org/spec/DD/20100524/DI" 
   xmlns:ns6="http://www.omg.org/spec/BPMN/20100524/DI">
-	<process isExecutable="false" name="Expense process" id="adhoc_Expense_process">
+	<process name="Expense process" id="adhoc_Expense_process">
 		<documentation id="adhoc_Expense_process_documentation"> Example process created using Activiti KickStart</documentation>
 		<startEvent ns3:initiator="initiator" id="theStart" />
 		<sequenceFlow targetRef="task_1" sourceRef="theStart" id="flow_1" />
