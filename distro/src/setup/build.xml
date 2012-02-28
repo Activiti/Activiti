@@ -12,7 +12,6 @@
   <property name="activiti.version" value="5.9-SNAPSHOT" />   
   <property name="tomcat.url" value="http://activiti.org/downloads/" />
   
-  <property name="cycle.workspace" location="${activiti.home}/workspace/activiti-cycle-examples"/>
   <property name="activiti.modeler.base.url" value="http://localhost:8080/activiti-modeler/" />
 
   <!-- ### OS PROPERTIES #################################################################### -->
@@ -28,11 +27,7 @@
   </condition>
 	
 	<!-- ### DEMO SETUP OPTIONAL FEATURES #################################################################### -->	
-  
-  <condition property="cycle.is.enabled">
-    <equals arg1="${feature.cycle}" arg2="enabled" />
-  </condition>
-  
+   
   <condition property="modeler.is.enabled">
     <equals arg1="${feature.modeler}" arg2="enabled" />
   </condition>
@@ -161,11 +156,6 @@
     <mkdir dir="build/demo" />
     <copy file="files/demo/${db}.data.sql" todir="build/demo" />
     
-    <!-- replace some properties currently needed/used for cycle config -->
-    <replace file="build/demo/${db}.data.sql">
-      <replacefilter token="@activiti.modeler.base.url@" value="${activiti.modeler.base.url}" />
-      <replacefilter token="@cycle.base.file.path@" value="${cycle.workspace}" />
-    </replace>
     <sql driver="${jdbc.driver}" 
          password="${jdbc.password}" 
          url="${jdbc.url}" 

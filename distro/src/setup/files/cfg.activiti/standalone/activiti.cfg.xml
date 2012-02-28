@@ -15,8 +15,6 @@
     
     <property name="jobExecutorActivate" value="true" />
 
-    <property name="dbCycleUsed" value="true" />
-    
   </bean>
 
 </beans>
