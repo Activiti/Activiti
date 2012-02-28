@@ -14,7 +14,7 @@
              targetNamespace="http://www.signavio.com/bpmn20" 
              typeLanguage="http://www.w3.org/2001/XMLSchema">
              
-   <process id="myProc" isExecutable="false" name="P3.bpmn20.xml">
+   <process id="myProc" isExecutable="true" name="P3.bpmn20.xml">
       <startEvent id="theStart" name="" />
       <sequenceFlow id="sid-A143A22A-DBFC-4F85-A3E4-0F502E0CA386" name="" sourceRef="theStart" targetRef="manTask1"/>
 

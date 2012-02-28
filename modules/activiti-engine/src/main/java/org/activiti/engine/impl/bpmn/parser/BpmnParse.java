@@ -510,7 +510,19 @@ public class BpmnParse extends Parse {
    */
   public void parseProcessDefinitions() {
     for (Element processElement : rootElement.elements("process")) {
-      processDefinitions.add(parseProcess(processElement));
+      boolean processProcess = true;
+      String isExecutableStr = processElement.attribute("isExecutable");
+      if (isExecutableStr != null) {
+        boolean isExecutable = Boolean.parseBoolean(isExecutableStr);
+        if (!isExecutable) {
+          processProcess = false;
+        }
+      }
+
+      //Only process executable processes
+      if (processProcess) {
+        processDefinitions.add(parseProcess(processElement));
+      }
     }
   }
 
