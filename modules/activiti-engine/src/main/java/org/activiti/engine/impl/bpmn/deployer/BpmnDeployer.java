@@ -54,6 +54,7 @@ public class BpmnDeployer implements Deployer {
 
   private static final Logger LOG = Logger.getLogger(BpmnDeployer.class.getName());;
 
+  //TODO: Add suffix .bpmn as well, since that is "normal" in the BPMN world (Eclipde Designer, Signavio, jBPM 5)
   public static final String BPMN_RESOURCE_SUFFIX = "bpmn20.xml";
   public static final String[] DIAGRAM_SUFFIXES = new String[]{"png", "jpg", "gif", "svg"};
 
