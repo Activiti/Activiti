@@ -88,14 +88,6 @@
     <property name="webapp.redeploy.module" value="explorer"/>
     <antcall target="webapp.redeploy"/>
   </target>
-
-  <!--
-  See comment in "webapp.cycle.redeploy.resources"
-  <target name="webapp.cycle.redeploy">
-    <property name="webapp.redeploy.module" value="activiti-webapp-cycle"/>
-    <antcall target="webapp.redeploy"/>
-  </target>
-  -->
   
   <target name="webapp.redeploy">
     <fail message="To use this target, set property webapp.redeploy.module to the chosen module" unless="webapp.redeploy.module"/>
@@ -157,28 +149,6 @@ Then run test.demo.setup to make it get placed inside your tomcat server." unles
   <target name="webapp.explorer.redeploy.resources">
     <property name="webapp.redeploy.module" value="explorer"/>
     <antcall target="webapp.redeploy.resources"/>
-  </target>
-
-  <!-- 
-  NOTE: the below applies to all webapps. (probe and explorer are now prefixed "activti-webapp-", 
-  but still deployed with prefix "activiti-" )
-  
-  The cycle webapp mvn module is called activiti-webapp-cycle, whereas the deployment in 
-  the server is called activiti-cycle, so the standard deployment with the module name doesn't 
-  work... Temporarily added a separate, non-generic target "webapp.cycle.redeploy.resources"
-  <target name="webapp.cycle.redeploy.resources">
-    <property name="webapp.redeploy.module" value="webapp-cycle"/>
-    <antcall target="webapp.redeploy.resources"/>
-  </target>
-  -->
-  
-  <target name="webapp.cycle.redeploy.resources">
-    <copy todir="${tomcat.home}/webapps/activiti-cycle" verbose="true">
-      <fileset dir="../modules/activiti-webapp/src/main/webapp/" excludes="WEB-INF/web.xml" />
-    </copy>
-    <copy todir="${tomcat.home}/webapps/activiti-cycle" verbose="true">
-      <fileset dir="../modules/activiti-webapp-cycle/src/main/webapp/" excludes="WEB-INF/web.xml" />
-    </copy>
   </target>
 
   <target name="webapp.redeploy.resources">

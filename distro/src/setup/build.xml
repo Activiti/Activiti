@@ -12,8 +12,6 @@
   <property name="activiti.version" value="5.9-SNAPSHOT" />   
   <property name="tomcat.url" value="http://activiti.org/downloads/" />
   
-  <property name="activiti.modeler.base.url" value="http://localhost:8080/activiti-modeler/" />
-
   <!-- ### OS PROPERTIES #################################################################### -->
   
   <condition property="is.windows">
@@ -24,12 +22,6 @@
     <not>
       <os family="Windows"/>
     </not>
-  </condition>
-	
-	<!-- ### DEMO SETUP OPTIONAL FEATURES #################################################################### -->	
-   
-  <condition property="modeler.is.enabled">
-    <equals arg1="${feature.modeler}" arg2="enabled" />
   </condition>
   
   <!-- ### EXAMPLES #################################################################### -->
