@@ -54,8 +54,7 @@ public class BpmnDeployer implements Deployer {
 
   private static final Logger LOG = Logger.getLogger(BpmnDeployer.class.getName());;
 
-  //TODO: Add suffix .bpmn as well, since that is "normal" in the BPMN world (Eclipde Designer, Signavio, jBPM 5)
-  public static final String BPMN_RESOURCE_SUFFIX = "bpmn20.xml";
+  public static final String[] BPMN_RESOURCE_SUFFIXES = new String[] { "bpmn20.xml", "bpmn" };
   public static final String[] DIAGRAM_SUFFIXES = new String[]{"png", "jpg", "gif", "svg"};
 
   protected ExpressionManager expressionManager;
@@ -69,7 +68,7 @@ public class BpmnDeployer implements Deployer {
     for (String resourceName : resources.keySet()) {
 
       LOG.info("Processing resource " + resourceName);
-      if (resourceName.endsWith(BPMN_RESOURCE_SUFFIX)) {
+      if (isBpmnResource(resourceName)) {
         ResourceEntity resource = resources.get(resourceName);
         byte[] bytes = resource.getBytes();
         ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
@@ -306,6 +305,15 @@ public class BpmnDeployer implements Deployer {
       .getCommandContext()
       .getDbSqlSession()
       .insert(resource);
+  }
+  
+  protected boolean isBpmnResource(String resourceName) {
+    for (String suffix : BPMN_RESOURCE_SUFFIXES) {
+      if (resourceName.endsWith(suffix)) {
+        return true;
+      }
+    }
+    return false;
   }
   
   public ExpressionManager getExpressionManager() {

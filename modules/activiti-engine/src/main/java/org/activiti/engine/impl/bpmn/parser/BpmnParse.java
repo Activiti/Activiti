@@ -156,6 +156,9 @@ public class BpmnParse extends Parse {
   /** A list of all element IDs. This allows us to parse only what we actually support but 
    * still validate the references among elements we do not support. */
   protected List<String> elementIds = new ArrayList<String>();
+  
+  /** A map for storing the process references of participants */
+  protected Map<String, String> participantProcesses = new HashMap<String, String>();
 
   /**
    * Mapping containing values stored during the first phase of parsing since
@@ -239,6 +242,7 @@ public class BpmnParse extends Parse {
     parseErrors();
     parseSignals();
     parseProcessDefinitions();
+    parseCollaboration();
 
     // Diagram interchange parsing must be after parseProcessDefinitions,
     // since it depends and sets values on existing process definition objects
@@ -525,7 +529,25 @@ public class BpmnParse extends Parse {
       }
     }
   }
-
+  
+  /**
+   * Parses the collaboration definition defined within the 'definitions'
+   * root element and get all participants to lookup their process references
+   * during DI parsing.
+   * 
+   */
+  public void parseCollaboration() {
+    Element collaboration = rootElement.element("collaboration");
+    if (collaboration != null) {
+      for (Element participant : collaboration.elements("participant")) {
+        String processRef = participant.attribute("processRef");
+        if (processRef != null) {
+          participantProcesses.put(participant.attribute("id"), processRef);
+        }
+      }
+    }
+  }
+  
   /**
    * Parses one process (ie anything inside a &lt;process&gt; element).
    * 
@@ -2774,61 +2796,71 @@ public class BpmnParse extends Parse {
   }
 
   public void parseBPMNPlane(Element bpmnPlaneElement) {
-    String processId = bpmnPlaneElement.attribute("bpmnElement");
-    if (processId != null && !"".equals(processId)) {
-      ProcessDefinitionEntity processDefinition = getProcessDefinition(processId);
-      if (processDefinition != null) {
-        processDefinition.setGraphicalNotationDefined(true);
-
-        List<Element> shapes = bpmnPlaneElement.elementsNS(BpmnParser.BPMN_DI_NS, "BPMNShape");
-        for (Element shape : shapes) {
-          parseBPMNShape(shape, processDefinition);
-        }
-
-        List<Element> edges = bpmnPlaneElement.elementsNS(BpmnParser.BPMN_DI_NS, "BPMNEdge");
-        for (Element edge : edges) {
-          parseBPMNEdge(edge, processDefinition);
-        }
-
-      } else {
-        addError("Invalid reference in 'bpmnElement' attribute, process " + processId + " not found", bpmnPlaneElement);
+    String bpmnElement = bpmnPlaneElement.attribute("bpmnElement");
+    if (bpmnElement != null && !"".equals(bpmnElement)) {
+      // there seems to be only on process without collaboration
+      if (getProcessDefinition(bpmnElement) != null) {
+        getProcessDefinition(bpmnElement).setGraphicalNotationDefined(true);
       }
+
+      List<Element> shapes = bpmnPlaneElement.elementsNS(BpmnParser.BPMN_DI_NS, "BPMNShape");
+      for (Element shape : shapes) {
+        parseBPMNShape(shape);
+      }
+
+      List<Element> edges = bpmnPlaneElement.elementsNS(BpmnParser.BPMN_DI_NS, "BPMNEdge");
+      for (Element edge : edges) {
+        parseBPMNEdge(edge);
+      }
+
     } else {
       addError("'bpmnElement' attribute is required on BPMNPlane ", bpmnPlaneElement);
     }
   }
 
-  public void parseBPMNShape(Element bpmnShapeElement, ProcessDefinitionEntity processDefinition) {
-    String activityId = bpmnShapeElement.attribute("bpmnElement");
-    if (activityId != null && !"".equals(activityId)) {
-      ActivityImpl activity = processDefinition.findActivity(activityId);
+  public void parseBPMNShape(Element bpmnShapeElement) {
+    String bpmnElement = bpmnShapeElement.attribute("bpmnElement");
 
-      // bounds
-      if (activity != null) {
-        Element bounds = bpmnShapeElement.elementNS(BpmnParser.BPMN_DC_NS, "Bounds");
-        if (bounds != null) {
-          activity.setX(parseDoubleAttribute(bpmnShapeElement, "x", bounds.attribute("x"), true).intValue());
-          activity.setY(parseDoubleAttribute(bpmnShapeElement, "y", bounds.attribute("y"), true).intValue());
-          activity.setWidth(parseDoubleAttribute(bpmnShapeElement, "width", bounds.attribute("width"), true).intValue());
-          activity.setHeight(parseDoubleAttribute(bpmnShapeElement, "height", bounds.attribute("height"), true).intValue());
-        } else {
-          addError("'Bounds' element is required", bpmnShapeElement);
-        }
+    if (bpmnElement != null && !"".equals(bpmnElement)) {
+      // For collaborations, their are also shape definitions for the
+      // participants / processes
+      if (participantProcesses.get(bpmnElement) != null) {
+        getProcessDefinition(participantProcesses.get(bpmnElement)).setGraphicalNotationDefined(true);
+      }
 
-        // collapsed or expanded
-        String isExpanded = bpmnShapeElement.attribute("isExpanded");
-        if (isExpanded != null) {
-          activity.setProperty(PROPERTYNAME_ISEXPANDED, parseBooleanAttribute(isExpanded));
+      for (ProcessDefinitionEntity processDefinition : getProcessDefinitions()) {
+        ActivityImpl activity = processDefinition.findActivity(bpmnElement);
+
+        // bounds
+        if (activity != null) {
+          Element bounds = bpmnShapeElement.elementNS(BpmnParser.BPMN_DC_NS, "Bounds");
+          if (bounds != null) {
+            activity.setX(parseDoubleAttribute(bpmnShapeElement, "x", bounds.attribute("x"), true).intValue());
+            activity.setY(parseDoubleAttribute(bpmnShapeElement, "y", bounds.attribute("y"), true).intValue());
+            activity.setWidth(parseDoubleAttribute(bpmnShapeElement, "width", bounds.attribute("width"), true).intValue());
+            activity.setHeight(parseDoubleAttribute(bpmnShapeElement, "height", bounds.attribute("height"), true).intValue());
+          } else {
+            addError("'Bounds' element is required", bpmnShapeElement);
+          }
+
+          // collapsed or expanded
+          String isExpanded = bpmnShapeElement.attribute("isExpanded");
+          if (isExpanded != null) {
+            activity.setProperty(PROPERTYNAME_ISEXPANDED, parseBooleanAttribute(isExpanded));
+          }
+        } else if (!elementIds.contains(bpmnElement)) { // it might not be an
+                                                        // activity but it might
+                                                        // still reference
+                                                        // 'something'
+          addError("Invalid reference in 'bpmnElement' attribute, activity " + bpmnElement + "not found", bpmnShapeElement);
         }
-      } else if(!elementIds.contains(activityId)) { // it might not be an activity but it might still reference 'something'
-        addError("Invalid reference in 'bpmnElement' attribute, activity " + activityId + "not found", bpmnShapeElement);
       }
     } else {
       addError("'bpmnElement' attribute is required on BPMNShape", bpmnShapeElement);
     }
   }
 
-  public void parseBPMNEdge(Element bpmnEdgeElement, ProcessDefinitionEntity processDefinition) {
+  public void parseBPMNEdge(Element bpmnEdgeElement) {
     String sequenceFlowId = bpmnEdgeElement.attribute("bpmnElement");
     if (sequenceFlowId != null && !"".equals(sequenceFlowId)) {
       TransitionImpl sequenceFlow = sequenceFlows.get(sequenceFlowId);

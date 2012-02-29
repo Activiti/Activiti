@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.test;
 
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -35,6 +36,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.util.ClassNameUtil;
+import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
@@ -110,10 +112,20 @@ public abstract class TestHelper {
    * get a resource location by convention based on a class (type) and a
    * relative resource name. The return value will be the full classpath
    * location of the type, plus a suffix built from the name parameter:
-   * <code>.&lt;name&gt;.bpmn20.xml</code>.
+   * <code>BpmnDeployer.BPMN_RESOURCE_SUFFIXES</code>. 
+   * The first resource matching a suffix will be returned.
    */
   public static String getBpmnProcessDefinitionResource(Class< ? > type, String name) {
-    return type.getName().replace('.', '/') + "." + name + "." + BpmnDeployer.BPMN_RESOURCE_SUFFIX;
+    for (String suffix : BpmnDeployer.BPMN_RESOURCE_SUFFIXES) {
+      String resource = type.getName().replace('.', '/') + "." + name + "." + suffix;
+      InputStream inputStream = ReflectUtil.getResourceAsStream(resource);
+      if (inputStream == null) {
+        continue;
+      } else {
+        return resource;
+      }
+    }
+    return type.getName().replace('.', '/') + "." + name + "." + BpmnDeployer.BPMN_RESOURCE_SUFFIXES[0];
   }
 
   /** Each test is assumed to clean up all DB content it entered.
