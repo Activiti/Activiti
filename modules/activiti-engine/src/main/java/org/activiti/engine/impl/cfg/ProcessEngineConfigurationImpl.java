@@ -266,7 +266,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected boolean isDbIdentityUsed = true;
   protected boolean isDbHistoryUsed = true;
-  protected boolean isDbCycleUsed = false;
   
   protected DelegateInterceptor delegateInterceptor;
 
@@ -559,7 +558,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       dbSqlSessionFactory.setSqlSessionFactory(sqlSessionFactory);
       dbSqlSessionFactory.setDbIdentityUsed(isDbIdentityUsed);
       dbSqlSessionFactory.setDbHistoryUsed(isDbHistoryUsed);
-      dbSqlSessionFactory.setDbCycleUsed(isDbCycleUsed);
       addSessionFactory(dbSqlSessionFactory);
       
       addSessionFactory(new GenericManagerFactory(AttachmentManager.class));
@@ -1506,27 +1504,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public boolean isDbHistoryUsed() {
     return isDbHistoryUsed;
   }
-
   
   public void setDbHistoryUsed(boolean isDbHistoryUsed) {
     this.isDbHistoryUsed = isDbHistoryUsed;
   }
-
-  
-  public boolean isDbCycleUsed() {
-    return isDbCycleUsed;
-  }
-
-  
-  public void setDbCycleUsed(boolean isDbCycleUsed) {
-    this.isDbCycleUsed = isDbCycleUsed;
-  }
-
   
   public List<ResolverFactory> getResolverFactories() {
     return resolverFactories;
   }
-
   
   public void setResolverFactories(List<ResolverFactory> resolverFactories) {
     this.resolverFactories = resolverFactories;

@@ -17,10 +17,3 @@ drop table ACT_HI_TASKINST cascade;
 drop table ACT_HI_DETAIL cascade;
 drop table ACT_HI_COMMENT cascade;
 drop table ACT_HI_ATTACHMENT cascade;
-
-drop table ACT_CY_CONN_CONFIG cascade;
-drop table ACT_CY_CONFIG cascade;
-drop table ACT_CY_LINK cascade;
-drop table ACT_CY_PEOPLE_LINK cascade;
-drop table ACT_CY_TAG cascade;
-drop table ACT_CY_COMMENT cascade;

@@ -17,10 +17,3 @@ drop table ACT_HI_TASKINST cascade constraints;
 drop table ACT_HI_DETAIL cascade constraints;
 drop table ACT_HI_COMMENT cascade constraints;
 drop table ACT_HI_ATTACHMENT cascade constraints;
-
-drop table ACT_CY_CONN_CONFIG cascade constraints;
-drop table ACT_CY_CONFIG cascade constraints;
-drop table ACT_CY_LINK cascade constraints;
-drop table ACT_CY_PEOPLE_LINK cascade constraints;
-drop table ACT_CY_TAG cascade constraints;
-drop table ACT_CY_COMMENT cascade constraints;

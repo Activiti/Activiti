@@ -502,9 +502,6 @@ public class DbSqlSession implements Session {
       if (dbSqlSessionFactory.isDbIdentityUsed() && !isIdentityTablePresent()) {
         errorMessage = addMissingComponent(errorMessage, "identity");
       }
-      if (dbSqlSessionFactory.isDbCycleUsed() && !isCycleTablePresent()) {
-        errorMessage = addMissingComponent(errorMessage, "cycle");
-      }
       
       Integer configuredHistoryLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
       PropertyEntity historyLevelProperty = selectById(PropertyEntity.class, "historyLevel");
@@ -580,13 +577,6 @@ public class DbSqlSession implements Session {
     if (processEngineConfiguration.isDbIdentityUsed()) {
       dbSchemaCreateIdentity();
     }
-    if (processEngineConfiguration.isDbCycleUsed()) {
-      dbSchemaCreateCycle();
-    }
-  }
-
-  protected void dbSchemaCreateCycle() {
-    executeMandatorySchemaResource("create", "cycle");
   }
 
   protected void dbSchemaCreateIdentity() {
@@ -613,9 +603,6 @@ public class DbSqlSession implements Session {
     if (dbSqlSessionFactory.isDbIdentityUsed()) {
       executeMandatorySchemaResource("drop", "identity");
     }
-    if (dbSqlSessionFactory.isDbCycleUsed()) {
-      executeMandatorySchemaResource("drop", "cycle");
-    }
   }
 
   public void dbSchemaPrune() {
@@ -624,9 +611,6 @@ public class DbSqlSession implements Session {
     }
     if (isIdentityTablePresent() && dbSqlSessionFactory.isDbIdentityUsed()) {
       executeMandatorySchemaResource("drop", "identity");
-    }
-    if (isCycleTablePresent() && dbSqlSessionFactory.isDbCycleUsed()) {
-      executeMandatorySchemaResource("drop", "cycle");
     }
   }
 
@@ -685,13 +669,6 @@ public class DbSqlSession implements Session {
       dbSchemaCreateIdentity();
     }
     
-    if (isCycleTablePresent()) {
-      if (isUpgradeNeeded) {
-        dbSchemaUpgrade("cycle", dbVersion);
-      }
-    } else if (dbSqlSessionFactory.isDbCycleUsed()) {
-      dbSchemaCreateCycle();
-    }
     return feedback;
   }
 
@@ -703,9 +680,6 @@ public class DbSqlSession implements Session {
   }
   public boolean isIdentityTablePresent(){
     return isTablePresent("ACT_ID_USER");
-  }
-  public boolean isCycleTablePresent(){
-    return isTablePresent("ACT_CY_CONFIG");
   }
 
   public boolean isTablePresent(String tableName) {
