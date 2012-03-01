@@ -16,7 +16,7 @@
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-engine</artifactId>
-      <version>5.9-SNAPSHOT</version>
+      <version>5.9</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
