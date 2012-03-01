@@ -239,9 +239,6 @@ public class ProcessEnginesServletContextListener implements ServletContextListe
 
   <section>
     <title>Process Virtual Machine API</title>
-    <para><link linkend="experimental"><emphasis role="bold">[EXPERIMENTAL]</emphasis></link>
-    This API is probably going to change in subsequent releases.
-    </para>
     <para>The Process Virtual Machine API exposes the POJO core of the Process Virtual Machine.
     Reading and playing with it is interesting for education purposes to understand
     the internal workings of Activiti.  And the POJO API can also be used to build
