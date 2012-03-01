@@ -882,7 +882,6 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
           </listitem>
         </itemizedlist>
       </section>
-    </section>
     
     <section>
         <title>Add attachment to a task</title>
@@ -916,7 +915,6 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
           </listitem>
         </itemizedlist>
       </section>    
-    <section>
     
     <section>
         <title>Add url to a task</title>
@@ -949,8 +947,8 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
             </para>
           </listitem>
         </itemizedlist>
-      </section>    
-    <section>
+      </section>
+    </section>
 
 
     <!-- IDENTITY -->
