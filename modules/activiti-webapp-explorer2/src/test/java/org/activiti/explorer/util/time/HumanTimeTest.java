@@ -33,6 +33,7 @@ public class HumanTimeTest extends TestCase {
     I18nManager i18nManager = new DummyI18nManager();
     
     Calendar now = Calendar.getInstance();
+    now.setTime(new Date(293840293840L));
     HumanTime humanTime = new HumanTime(now.getTime(), i18nManager);
     
     // Edge cases
