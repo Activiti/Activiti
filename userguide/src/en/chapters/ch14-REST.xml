@@ -4,19 +4,16 @@
 <chapter>
 
   <title>REST API</title>
-  
-  <para><link linkend="experimental"><emphasis role="bold">&lt;EXPERIMENTAL&gt;</emphasis></link>... the whole REST interface is still experimental</para>
 
   <para>
     Activiti includes a REST API to the engine that will be deployed to your server when you run the setup script.
-    The REST API uses JSON format (http://www.json.org) and is built upon the Spring Webscripts (http://www.springsurf.org).
+    The REST API uses JSON format (http://www.json.org) and is built upon the Restlet (http://www.restlet.org).
   </para>
 
   <para>
     Each REST API call has its individual authorization level and you must be logged in as a user to invoke a REST API
     call (except for the /login service). Authentication is done using Basic HTTP Authentication, so if you logged in as
-    an admin (i.e. kermit) to browse the REST API, as described above, you should be able to perform all calls as
-    described below.
+    an admin (i.e. kermit) you should be able to perform all calls as described below.
   </para>
 
   <para>
@@ -36,7 +33,7 @@
   <para>
     The base URL for invoking a REST call is http://localhost:8080/activiti-rest/service/.
     So for example to list the process definitions in the engine point your browser to:
-    http://localhost:8080/activiti-rest/service/process-engine
+    http://localhost:8080/activiti-rest/service/process-definitions
   </para>
 
   <para>
@@ -124,6 +121,43 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
   "sort": "id",
   "order": "asc",
   "size": 1
+}</programlisting>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </section>
+    
+    <section>
+      <title>Get Deployment Resources</title>
+      <para>
+        Returns all resources from the deployment.
+        Example: /deployment/10/resources
+      </para>
+      <itemizedlist>
+        <listitem>
+          <para>
+            <emphasis role="bold">Request: </emphasis>
+            <literal>GET /deployment/{deploymentId}/resources</literal>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">API: </emphasis>
+            <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getRepositoryService().getDeploymentResourceNames(deploymentId)</literal>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">Response:</emphasis>
+            <programlisting>
+{
+  "resources": [
+    {
+      "id": "10",
+      "name": "activiti-examples.bar",
+      "deploymentTime": "2010-10-13T14:54:26.750+02:00"
+    }
+  ]
 }</programlisting>
           </para>
         </listitem>
@@ -278,8 +312,7 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
           Returns details about the deployed process definitions that can be sorted by "id", "name", "version" or
           "deploymentTime". The name of the BPMN2.0 XML process diagram is given in the "resourceName" attribute and can,
           in combination with the "deploymentId" attribute, be retrieved from the GET Deployment Resource REST API call
-          above. If the process has a start form it is given in the "startFormResourceKey" attribute.
-          The start form for a process can be retrieved from the GET Start Process Form REST API call.
+          above.
         </para>
         <itemizedlist>
           <listitem>
@@ -306,8 +339,10 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
       "version": 1,
       "name": "Monthly financial report",
       "resourceName": "org/activiti/examples/bpmn/usertask/FinancialReportProcess.bpmn20.xml",
+      "diagramResourceName": "org/activiti/examples/bpmn/usertask/FinancialReportProcess.png",
       "deploymentId": "10",
-      "startFormResourceKey": null                 
+      "startFormResourceKey": null,
+      "isGraphicNotationDefined": true                 
     }
   ],
   "total": 1,
@@ -320,45 +355,48 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
           </listitem>
         </itemizedlist>
       </section>
-
+      
       <section>
-        <title>Get Process Definition</title>
+        <title>Get Process Definition Form Properties</title>
         <para>
-          Returns details about a deployed process definition.
+          Returns a process definition's form properties.
         </para>
         <itemizedlist>
           <listitem>
             <para>
               <emphasis role="bold">Request:</emphasis>
-              <literal>GET /process-definition/{processDefinitionId}</literal>
+              <literal>GET /process-definition/{processDefinitionId}/properties</literal>
             </para>
           </listitem>
           <listitem>
             <para>
               <emphasis role="bold">API:</emphasis>
-              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getRepositoryService().createProcessDefinitionQuery().processDefinitionId(processDefinitionId)</literal>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getFormService().getStartFormData(processDefinitionId)</literal>
             </para>
           </listitem>
           <listitem>
             <para>
               <emphasis role="bold">Response:</emphasis>
               <programlisting>
-{
-  "id": "financialReport:1",
-  "key": "financialReport",
-  "version": 1,
-  "name": "Monthly financial report",
-  "resourceName": "org/activiti/examples/bpmn/usertask/FinancialReportProcess.bpmn20.xml",
-  "deploymentId": "10",
-  "startFormResourceKey": null
-}</programlisting>
+                "data": [
+    {
+      "id": "fullName",
+      "name": "Full name",
+      "value": "${name}",
+      "type": "String",
+      "required": false,
+      "readable": true,
+      "writeable": true               
+    }
+  ]
+              </programlisting>
             </para>
           </listitem>
         </itemizedlist>
       </section>
 
       <section>
-        <title>Get Process Definition Form</title>
+        <title>Get Process Definition Form Resource</title>
         <para>
           Returns a process definition's form.
         </para>
@@ -366,7 +404,7 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
           <listitem>
             <para>
               <emphasis role="bold">Request:</emphasis>
-              <literal>GET /process-definition/{processDefinitionId}/form[?format=html|json]</literal>
+              <literal>GET /process-definition/{processDefinitionId}/form</literal>
             </para>
           </listitem>
           <listitem>
@@ -392,28 +430,9 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
           next to the "processDefinitionId" attribute.
         </para>
         <para>
-          These additional variables may also be described using "meta data fields".
-          A variable named "numberOfDays" with value "2" may be described as an int using
-          an extra variable named "numberOfDays_type" set to "Integer" and to describe it as a required variable use
-          an extra variable named "numberOfDays_required" set to "true". If no type descriptor is used the value will
-          be treated as a String as long as its surrounded by '"'-characters. Its also possible to set the
-          type to "Boolean".
-        </para>
-        <para>
           Note that if a value is submitted as true (instead of "true") it will be treated as a
           Boolean even if no descriptor is used. The same is also valid for number, i.e., 123 will become an Integer
-          but "123" will become a String (unless a descriptor is defined). Note that no variables containing "_" in
-          the name will be saved, they are only treated as meta data fields.
-        </para>
-        <para>
-          The reason for using these meta data fields is to make it possible using a standard HTML form to
-          submit the values (since an HTML form submits everything as strings its not possible to distinguish the
-          type of a value as in JSON). HTML submission will be supported in the near future.
-          It is of course not an optimal solution to let the client send instructions to the server about which
-          variables that are required and what type they have, but this is a temporary solution to enable simple form
-          handling.
-          We are currently looking for more proper solutions for forms, containing real meta models that can be used on
-          the server to avoid using meta data fields like above. Please feel free to give suggestions or tips in the Activiti Forum.
+          but "123" will become a String (unless a descriptor is defined).
         </para>
         <itemizedlist>
           <listitem>
@@ -438,19 +457,8 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
 {
   "id": "217",
   "processDefinitionId": "financialReport:1:1700",
-  "activityNames": ["writeReportTask"],
-  "ended": true
-}</programlisting>
-            </para>
-          </listitem>
-          <listitem>
-            <para>
-              <emphasis role="bold">Request providing processDefinitionKey instead of Id:</emphasis>
-              <literal>POST /process-instance</literal>
-              <programlisting>
-{
-  "processDefinitionKey":"financialReport:1",
-  "businessKey":"order-4711"
+  "businessKey": "order-4711",
+  "processInstanceId": "217"
 }</programlisting>
             </para>
           </listitem>
@@ -486,7 +494,7 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
         "id": 2,
         "processDefinitionId": "financialReport:1",
         "businessKey": 55,
-        "startTime": "12-03-2011",
+        "startTime": "2010-10-13T14:54:26.750+02:00",
         "startUserId": "kermit"
       }
     ],
@@ -500,6 +508,74 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
             </listitem>
           </itemizedlist>
         </section>
+        
+        <section>
+          <title>Get Process Instance Details</title>
+          <para>
+            Returns all details about a specific process instance. This can be a running or completed process instance.
+          </para>
+          <itemizedlist>
+            <listitem>
+              <para>
+                <emphasis role="bold">Request:</emphasis>
+                <literal>GET /processInstance/{processInstanceId}</literal>
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                <emphasis role="bold">API:</emphasis>
+                <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getHistoryService().createHistoricProcessInstanceQuery().processInstanceId(..).singleResult()</literal>
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                <emphasis role="bold">Response:</emphasis>
+                <programlisting>
+  {
+    "id": 2,
+    "processDefinitionId": "financialReport:1",
+    "businessKey": 55,
+    "startTime": "2010-10-13T14:54:26.750+02:00",
+    "startActivityId": "startFinancialAnalysis",
+    "startUserId": "kermit",
+    "completed": false,
+    "tasks": [
+      {
+        "taskId": 3,
+        "taskName": "Analyze report",
+        "owner": null,
+        "assignee": "Kermit",
+        "startTime": "2010-10-13T14:53:26.750+02:00",
+        "completed": false
+      }
+    ],
+    "activities": [
+      {
+        "activityId": 4,
+        "activityName": "Get report",
+        "activityType": "ServiceTask",
+        "startTime": "2010-10-13T14:53:25.750+02:00",
+        "completed": true,
+        "startTime": "2010-10-13T14:53:25.950+02:00",
+        "duration": 200
+      }
+    ],
+    "variables": [
+      {
+        "variableName": "reportName",
+        "variableValue": "classified.pdf",
+        "variableType": "String",
+        "revision": 1,
+        "time": "2010-10-13T14:53:26.750+02:00"
+      }
+    ]
+    
+  }</programlisting>
+              </para>
+            </listitem>
+          </itemizedlist>
+        </section>
+        
         <section>
             <title>Get Process Instance Diagram</title>
             <para>
@@ -613,10 +689,17 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
       "id": 127,
       "name": "Handle vacation request",
       "description": "Vacation request by Kermit",
+      "delegationState": "pending",
+      "dueDate": "2010-10-13T14:54:26.750+02:00",
       "priority": 50,
       "assignee": null,
       "executionId": 118,
-      "formResourceKey": "org/activiti/examples/taskforms/approve.form"
+      "formResourceKey": "org/activiti/examples/taskforms/approve.form",
+      "owner": "Kermit",
+      "parentTaskId": 120,
+      "processDefinitionId": "financialReport:1",
+      "processInstanceId": "123",
+      "taskDefinitionKey": "125"
     }
   ],
   "total": 1,
@@ -653,13 +736,50 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
               <emphasis role="bold">Response:</emphasis>
               <programlisting>
 {
-      "id": 127,
+      "id": "127",
       "name": "Handle vacation request",
       "description": "Vacation request by Kermit",
+      "delegationState": "pending",
+      "dueDate": "2010-10-13T14:54:26.750+02:00",
       "priority": 50,
       "assignee": null,
       "executionId": 118,
-      "formResourceKey": "org/activiti/examples/taskforms/approve.form"
+      "formResourceKey": "org/activiti/examples/taskforms/approve.form",
+      "owner": "Kermit",
+      "parentTaskId": 120,
+      "processDefinitionId": "financialReport:1",
+      "processInstanceId": "123",
+      "taskDefinitionKey": "125",
+      "subTaskList": [
+        {
+          "id": "129",
+          "name": "Analyze request",
+          "description": "Analyze request",
+          "delegationState": "pending",
+          "dueDate": "2010-10-13T14:54:26.750+02:00",
+          "priority": 50,
+          "assignee": null,
+          "executionId": "118",
+          "owner": "Kermit",
+          "parentTaskId": "127"
+        }
+      ],
+      "identityLinkList" : [
+        {
+          "type": "candidate",
+          "userId": "Fozzie",
+          "groupId": null
+        }
+      ],
+      "attachmentList" : [
+        {
+          "id": "130",
+          "name": "vacation_request.xls",
+          "description": "Vacation request",
+          "type": "application/pdf",
+          "url": null
+        }
+      ]
 }</programlisting>
             </para>
           </listitem>
@@ -763,6 +883,74 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
         </itemizedlist>
       </section>
     </section>
+    
+    <section>
+        <title>Add attachment to a task</title>
+        <para>
+          Add an attachment to a task instance
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis role="bold">Request:</emphasis>
+              <literal>PUT /task/{taskId}/attachment</literal>
+              <programlisting>{}</programlisting>
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis role="bold">API:</emphasis>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getTaskService().createAttachment(...)</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis role="bold">Response:</emphasis>
+              <programlisting>
+        {
+          "id": "130",
+          "name": "vacation_request.xls",
+          "description": "Vacation request",
+          "type": "application/pdf",
+          "url": null
+        }</programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+      </section>    
+    <section>
+    
+    <section>
+        <title>Add url to a task</title>
+        <para>
+          Add an url to a task instance
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis role="bold">Request:</emphasis>
+              <literal>PUT /task/{taskId}/url</literal>
+              <programlisting>{}</programlisting>
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis role="bold">API:</emphasis>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getTaskService().createAttachment(...)</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis role="bold">Response:</emphasis>
+              <programlisting>
+        {
+          "id": "130",
+          "name": "google.com",
+          "description": "Good search sitet",
+          "type": null,
+          "url": "http://www.google.com"
+        }</programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+      </section>    
+    <section>
 
 
     <!-- IDENTITY -->
@@ -1220,7 +1408,5 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
       </section>
 
     </section>
-
-  <para>The whole REST interface is still experimental ...<link linkend="experimental"><emphasis role="bold">&lt;/EXPERIMENTAL&gt;</emphasis></link></para>
-
+    
 </chapter>
