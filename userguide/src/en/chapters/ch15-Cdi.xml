@@ -117,7 +117,15 @@
 	&lt;/bean&gt;
 &lt;/beans&gt;
      	</programlisting>
-     	(Note that the above configuration requires the &quot;spring-context&quot; module.) The configuration in a Java SE environment looks exactly 
+      Note that the above configuration requires the &quot;spring-context&quot; module:
+<programlisting>
+&lt;dependency&gt;
+	&lt;groupId&gt;org.springframework&lt;/groupId&gt;
+	&lt;artifactId&gt;spring-context&lt;/artifactId&gt;
+	&lt;version&gt;3.0.3.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+</programlisting>
+      The configuration in a Java SE environment looks exactly 
      	like the examples provided in section <link linkend="configuration">Creating a ProcessEngine</link>, 
      	substitute &quot;CdiStandaloneProcessEngineConfiguration&quot; for &quot;StandaloneProcessEngineConfiguration&quot;.     	 
      	</para>    	
