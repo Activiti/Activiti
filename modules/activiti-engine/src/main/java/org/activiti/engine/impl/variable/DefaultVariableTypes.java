@@ -59,7 +59,7 @@ public class DefaultVariableTypes implements Serializable, VariableTypes {
         return type;
       }
     }
-    throw new ActivitiException("couldn't find type for " + value);
+    throw new ActivitiException("couldn't find a variable type that is able to serialize " + value);
   }
 
   public int getTypeIndex(VariableType type) {
