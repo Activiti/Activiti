@@ -38,7 +38,8 @@ public interface Query<T extends Query< ? , ? >, U extends Object> {
   long count();
 
   /**
-   * Executes the query and returns the resulting entity.
+   * Executes the query and returns the resulting entity or null if no
+   * entity matches the query criteria.
    * @throws ActivitiException when the query results in more than one
    * entities.
    */
