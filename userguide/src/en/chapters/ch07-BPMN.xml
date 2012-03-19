@@ -176,8 +176,8 @@ xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL
 				we'll type the XML ourselves, as this learns us the most at this point. 
 				The graphical BPMN 2.0 notation of our process looks like this:
 			  <mediaobject><imageobject><imagedata align="center" fileref="images/financial.report.example.diagram.png"/></imageobject></mediaobject>
-        What we see is a <link linkend="bpmnNoneStartEvent">none start event</link> (circle on the left),
-        followed by two <link linkend="bpmnUserTask">user tasks</link>:
+        What we see is a <link linkend="bpmnNoneStartEvent">None Start Event</link> (circle on the left),
+        followed by two <link linkend="bpmnUserTask">User Tasks</link>:
         <emphasis>'Write monthly financial report'</emphasis> and 
         <emphasis>'Verify monthly financial report'</emphasis>, ending in
         a <link linkend="bpmnNoneEndEvent">none end event</link> (circle with thick border on the right).
@@ -202,7 +202,7 @@ xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL
           </listitem>
           <listitem>
             <para>
-              The <link linkend="bpmnUserTask">user tasks</link> declarations are the representation
+              The <link linkend="bpmnUserTask">User Tasks</link> declarations are the representation
               of the human tasks of our process. Note that the first task is assigned
               to the <emphasis>accountancy</emphasis> group, while the second task is 
               assigned to the <emphasis>management</emphasis> group.
@@ -650,7 +650,7 @@ public class TenMinuteTutorial {
 
 
 <chapter id="bpmnConstructs">
-	<title>BPMN 20 Constructs</title>
+	<title>BPMN 2.0 Constructs</title>
 	
 	<para>This chapter covers the BPMN 20 constructs supported by 
 	activiti as well as custom extensions to the BPMN standard.</para>
@@ -764,7 +764,7 @@ public class TenMinuteTutorial {
 	<!-- //////////////////////////////////////// event definitions introductions -->
 	   
 	  <section id="eventDefinitions">
-	  	<title>Event definitions</title>
+	  	<title>Event Definitions</title>
 	  	
 	  	<para>Event definitions define the semantics of an event. Without an event definition, an event "does nothing special". For instance a start event 
 	  	without and event definition does not specify what exactly starts the process. If we add an event definition to the start event (like for instance a 
@@ -777,7 +777,7 @@ public class TenMinuteTutorial {
 	<!-- //////////////////////////////////////// timer event definitions -->
 
       <section id="timerEventDefinitions">
-          <title>Timer events definitions</title>
+          <title>Timer Event Definitions</title>
           <para>Timer events are events which are triggered by defined timer. They can be used as
           <link linkend="bpmnTimerStartEvent">start event</link>,
               <link linkend="bpmnIntermediateCatchingEvent">intermediate event</link>
@@ -857,7 +857,7 @@ public class TenMinuteTutorial {
 	<!-- //////////////////////////////////////// error event definitions -->
       
       <section id="bpmnErrorEventDefinition">
-      <title>Error event definitions</title>
+      <title>Error Event Definitions</title>
       Error events are events which are triggered by a defined error. 
       
         <para>
@@ -884,7 +884,7 @@ public class TenMinuteTutorial {
       
       
    <section id="bpmnSignalEventDefinition">
-      	<title>Signal event definitions</title>
+      	<title>Signal Event Definitions</title>
       	<link linkend="experimental">
 			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
 		</link>
@@ -920,7 +920,7 @@ public class TenMinuteTutorial {
 The <code>signalEventDefinition</code>s reference the same <code>signal</code> element.      		  
         </para>
         <section id="bpmnSignalEventDefinitionThrow">
-        	<title>Throwing a signal event</title>       
+        	<title>Throwing a Signal Event</title>       
 	        <para>
 	        	A signal can either be thrown by a process instance using a bpmn construct
 	        	or programmatically using java API. The following methods on the 
@@ -936,13 +936,13 @@ RuntimeService.signalEventReceived(String signalName, String executionId);
 	        </para>
 	    </section>
 	    <section id="bpmnSignalEventDefinitionCatch">
-	    	<title>Catching a signal event</title>
+	    	<title>Catching a Signal Event</title>
 	    	<para>
 	    		A signal event can be caught by an intermediate catch signal event or a signal boundary event.
 	    	</para>
 	    </section>
 	    <section id="bpmnSignalEventDefinitionQuery">
-	    	<title>Querying for signal event subscriptions</title>
+	    	<title>Querying for Signal Event subscriptions</title>
 	    	It is possible to query for all executions which have subscribed to a specific signal event:
 	    	<programlisting>
  List&lt;Execution&gt; executions = runtimeService.createExecutionQuery()
@@ -954,7 +954,7 @@ RuntimeService.signalEventReceived(String signalName, String executionId);
 	    </section> 
 	    
 	    <section id="bpmnSignalEventDefinitionExample">
-	    	<title>Signal event example(s)</title>
+	    	<title>Signal Event example(s)</title>
 	    	
 	    	<para>
 		    	The following is an example of two separate processes communicating using signals. The first process is started if an insurance policy is 
@@ -997,7 +997,7 @@ RuntimeService.signalEventReceived(String signalName, String executionId);
       
       
    <section id="bpmnMessageEventDefinition">
-      	<title>Message event definitions</title>
+      	<title>Message Event Definitions</title>
 		<link linkend="experimental">
 			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
 		</link>
@@ -1030,7 +1030,7 @@ RuntimeService.signalEventReceived(String signalName, String executionId);
 &lt;/definitions&gt;</programlisting>		  
         </para>
         <section id="bpmnMessageEventDefinitionThrow">
-        	<title>Throwing a signal event</title>       
+        	<title>Throwing a Signal Event</title>       
 	        <para>
 	        	At the moment, activiti supports message events only for starting process instances. To support this, the following methods exist on the <code>RuntimeService</code>:
 	        	<programlisting>
@@ -1041,7 +1041,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 	        The methods allow starting a process instance using the referenced message. 
 	    </section>
 	    <section id="bpmnMessageEventDefinitionCatch">
-	    	<title>Catching a signal event</title>
+	    	<title>Catching a Signal Event</title>
 	    	<para>
 	    		At the moment activiti only supports <link linkend="bpmnMessageStartEvent">message start events</link>. A message start event catches a message with a given name and 
 	    		starts a process instance. The payload of the message is added as process variables to the process instance. Since a message must be directed at a single receiver, 
@@ -1049,7 +1049,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 	    	</para>
 	    </section>
 	    <section id="bpmnMessageEventDefinitionQuery">
-	    	<title>Querying for message event subscriptions</title>	    	
+	    	<title>Querying for Message Event subscriptions</title>	    	
 	    	Since activiti only supports message start events, we can only query for message subscriptions using a <code>ProcessDefinitionQuery</code>:
 	    	<programlisting>
 ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
@@ -1061,7 +1061,7 @@ ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQ
 	    </section> 
 	    
 	    <section id="bpmnMessageEventDefinitionExample">
-	    	<title>Message event example(s)</title>
+	    	<title>Message Event example(s)</title>
 	    	
 	    	<para>
 		    	The following is an example of a process which can be started using two different messages:		    		    		    	 
@@ -1085,7 +1085,7 @@ ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQ
 
 	  <section id="bpmnStartEvents">
 	  
-	   <title>Start events</title>
+	   <title>Start Events</title>
 	  
 	   <para>
 	     A start event indicates where a process starts. The type of start event (process starts on arrival of 
@@ -1130,7 +1130,7 @@ ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQ
 
 		<section id="bpmnNoneStartEvent">
 
-			<title>None start event</title>
+			<title>None Start Event</title>
 			
 			<section id="noneStartEventDescription">
        
@@ -1191,7 +1191,7 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
 
         <section id="bpmnTimerStartEvent">
 
-            <title>Timer start event</title>
+            <title>Timer Start Event</title>
 
             <section id="timerStartEventDescription">
 
@@ -1261,7 +1261,7 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
         
         <section id="bpmnMessageStartEvent">
 
-            <title>Message start event</title>
+            <title>Message Start Event</title>
 		<link linkend="experimental">
 			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
 		</link>
@@ -1408,7 +1408,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
         
         <section id="bpmnErrorStartEvent">
 
-            <title>Error start event</title>
+            <title>Error Start Event</title>
 		<link linkend="experimental">
 			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
 		</link>
@@ -1417,7 +1417,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 	        <title>Description</title>
 	
 	        <para>
-	            An <link linkend="bpmnErrorEventDefinition">error</link> start event can be used to trigger an event subprocess. 
+	            An <link linkend="bpmnErrorEventDefinition">error</link> start event can be used to trigger an Event Sub-Process. 
 	            <emphasis role="bold">An error start event cannot be used for starting a process instance</emphasis>.
 	        </para>
 	        
@@ -1462,7 +1462,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 
 		<section id="bpmnEndEvent">
 		
-		  <title>End events</title>
+		  <title>End Events</title>
 		  
 		  <para>
 		    An end event signifies the end (of a path) of a (sub)process. An end event is 
@@ -1478,7 +1478,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 
 		<section id="bpmnNoneEndEvent">
 		
-		  <title>None end event</title>
+		  <title>None End Event</title>
 
       <section id="noneEndEventDescription">
 
@@ -1523,7 +1523,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 		
 		<section id="bpmnErrorEndEvent">
 		  
-		  <title>Error end event</title>
+		  <title>Error End Event</title>
 		  
 		  <section id="bpmnErrorEndEventDescription">
 		    <title>Description</title>
@@ -1596,7 +1596,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 		
 		<section id="bpmnCancelEndEvent">
 		  
-		  <title>Cancel end event</title>
+		  <title>Cancel End Event</title>
 		<link linkend="experimental">
 			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
 		</link>
@@ -1641,7 +1641,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 		
 		<section id="bpmnBoundaryEvent">
 		  
-		  <title>Boundary events</title>
+		  <title>Boundary Events</title>
 		  
 		  <para>
 		    Boundary events are <emphasis>catching</emphasis> events that are attached to an activity
@@ -1786,7 +1786,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 		<!-- ////////////////////// error boundary event -->
 		
 		<section id="bpmnBoundaryErrorEvent">
-		  <title>Error Boundary event</title>
+		  <title>Error Boundary Event</title>
 		  
 		  <section id="bpmnBoundaryErrorEventDescription">
 		    <title>Description</title>
@@ -1891,7 +1891,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 		<!-- ////////////////////// signal boundary event -->
 		
 		<section id="bpmnBoundarySignalEvent">
-		  <title>Signal Boundary event</title>
+		  <title>Signal Boundary Event</title>
 		<link linkend="experimental">
 			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
 		</link>
@@ -1929,7 +1929,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 	      </section>
       
 	      <section id="bpmnBoundarySignalEventXml">
-	        <title>Xml representation</title>	               
+	        <title>XML representation</title>	               
 	         <para>
      	     	A boundary signal event is defined as a typical <link linkend="bpmnBoundaryEvent">boundary event</link>:
           		<programlisting>
@@ -1952,7 +1952,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
       <!-- ////////////////////// cancel boundary event -->
 		
 		<section id="bpmnBoundaryCancelEvent">
-		  <title>Cancel Boundary event</title>
+		  <title>Cancel Boundary Event</title>
 		<link linkend="experimental">
 			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
 		</link>
@@ -1997,7 +1997,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 	      </section>
       
 	      <section id="bpmnBoundarySignalEventXml">
-	        <title>Xml representation</title>	               
+	        <title>XML representation</title>	               
 	         <para>
      	     	A cancel boundary event is defined as a typical <link linkend="bpmnBoundaryEvent">boundary event</link>:
           		<programlisting>
@@ -2015,7 +2015,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
        <!-- ////////////////////// compensation boundary event -->
 		
 		<section id="bpmnBoundaryCompensationEvent">
-		  <title>Compensation Boundary event</title>
+		  <title>Compensation Boundary Event</title>
 		<link linkend="experimental">
 			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
 		</link>
@@ -2087,7 +2087,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 	      </section>
       
 	      <section id="bpmnBoundaryCompensationEventXml">
-	        <title>Xml representation</title>	               
+	        <title>XML representation</title>	               
 	         <para>
      	     	A compensation boundary event is defined as a typical <link linkend="bpmnBoundaryEvent">boundary event</link>:
           		<programlisting>
@@ -2109,7 +2109,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 	
       <section id="bpmnIntermediateCatchingEvent">
 
-          <title>Intermediate catching events</title>
+          <title>Intermediate Catching Events</title>
 
 		  <para>
 		    All intermediate catching events events are defined in the same way:
@@ -2144,7 +2144,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 
         <section id="bpmnTimerIntermediateEvent">
 
-            <title>Timer intermediate catching event</title>
+            <title>Timer Intermediate Catching Event</title>
 
             <section id="bpmnTimerIntermediateEventDescription">
                 <title>Description</title>
@@ -2194,7 +2194,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
         <!-- //////////////////////////////////////// intermediate signal catch  -->
         
         <section id="bpmnIntermediateSignalEvent">
-		  <title>Signal Intermediate catching event</title>
+		  <title>Signal Intermediate Catching Event</title>
 		<link linkend="experimental">
 			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
 		</link>
@@ -2224,7 +2224,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 	      </section>
       
 	      <section id="bpmnIntermediateSignalEventXml">
-	        <title>Xml representation</title>	               
+	        <title>XML representation</title>	               
 	         <para>
      	     	 A signal intermediate event is defined as a <link linkend="bpmnIntermediateCatchingEvent">intermediate catching event</link>.
 		          The specific type sub-element is in this case a <emphasis role="bold">signalEventDefinition</emphasis>
@@ -2250,7 +2250,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
     <!-- //////////////////////////////////////// intermediate throwing events introduction -->
     
     <section id="bpmnIntermediateThrowEvent">
-        <title>Intermediate throwing event</title>
+        <title>Intermediate Throwing Event</title>
         <para>
 		    All intermediate throwing events events are defined in the same way:
 <programlisting>
@@ -2282,7 +2282,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
     <!-- //////////////////////////////////////// intermediate throwing none events  -->
 
     <section id="bpmnIntermediateThrowNoneEvent">
-        <title>Intermediate throwing none event</title>
+        <title>Intermediate Throwing None Event</title>
         <para>
           The following process diagram shows a simple example of an intermediate none event, which is often used to 
           indicate some state achieved in the process. 
@@ -2307,7 +2307,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
     <!-- //////////////////////////////////////// intermediate throwing signal events  -->
     
      <section id="bpmnIntermediateThrowSignalEvent">
-		  <title>Signal intermediate throwing event</title>
+		  <title>Signal Intermediate Throwing Event</title>
 		<link linkend="experimental">
 			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
 		</link>
@@ -2350,7 +2350,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 	      </section>
       
 	      <section id="bpmnIntermediateThrowSignalEventXml">
-	        <title>Xml representation</title>	               
+	        <title>XML representation</title>	               
 	         <para>
      	     	 A signal intermediate event is defined as a <link linkend="bpmnIntermediateThrowingEvent">intermediate throwing event</link>.
 		          The specific type sub-element is in this case a <emphasis role="bold">signalEventDefinition</emphasis>
@@ -2383,7 +2383,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
       <!-- //////////////////////////////////////// intermediate throwing compensation events  -->
     
      <section id="bpmnIntermediateThrowCompensationEvent">
-		  <title>Compensation intermediate throwing event</title>
+		  <title>Compensation Intermediate Throwing Event</title>
 		<link linkend="experimental">
 			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
 		</link>
@@ -2554,7 +2554,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 		
 	  <section id="bpmnSequenceFlow">
     
-      <title>Sequence flow</title>
+      <title>Sequence Flow</title>
       
       <section id="sequenceFlowDescription">
       
@@ -2767,7 +2767,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
             
     <section id="bpmnExclusiveGateway">
     
-      <title>Exclusive gateway</title>
+      <title>Exclusive Gateway</title>
       
       <section id="exclusiveGatewayDescription">
       
@@ -3115,11 +3115,11 @@ assertEquals("Ship Order", task.getName());</programlisting>
    
     </section> 
     
-    <!-- ///////////////////////////////////////  Event based Gateway -->
+    <!-- ///////////////////////////////////////  Event-based Gateway -->
     
     <section id="bpmnEventbasedGateway">
     
-      <title>Event based gateway</title>
+      <title>Event-based Gateway</title>
 		<link linkend="experimental">
 			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
 		</link>
@@ -3129,30 +3129,30 @@ assertEquals("Ship Order", task.getName());</programlisting>
         <title>Description</title>
         
         <para>
-        	The event based gateway allows to take a decision based on events. Each outgoing sequenceflow of the gateway needs to be connected to an 
-        	intermediate catching event. When process execution reaches the event based gateway, the gateway acts like a wait state: execution is suspended. 
+        	The Event-based Gateway allows to take a decision based on events. Each outgoing sequence flow of the gateway needs to be connected to an 
+        	intermediate catching event. When process execution reaches an Event-based Gateway, the gateway acts like a wait state: execution is suspended. 
         	In addition, for each outgoing sequence flow, an event subscription is created.   
         </para>
         
         <para>
-        	Note the sequence flows running out of an event based gateway are different from ordinary sequence flows. These sequence flows are never actually 
-        	&quot;executed&quot;. On the contrary, they allow the process engine to determine which events an execution arriving at an event based gateway needs to 
+        	Note the sequence flows running out of an Event-based Gateway are different from ordinary sequence flows. These sequence flows are never actually 
+        	&quot;executed&quot;. On the contrary, they allow the process engine to determine which events an execution arriving at an Event-based Gateway needs to 
         	subscribe to. The following restrictions apply:        	
         	<itemizedlist>
         		<listitem>
         			<para>
-        				An event based gateway must have two or more outgoing sequence flows.
+        				An Event-based Gateway must have two or more outgoing sequence flows.
         			</para>
         		</listitem>
         		<listitem>
         			<para>
-        				An event based gateway must only be to elements of type <code>intermediateCatchEvent</code> only. 
-        				(Receive tasks after an event based gateway are not supported by activiti.)
+        				An Event-based Gateway must only be to elements of type <code>intermediateCatchEvent</code> only. 
+        				(Receive Tasks after an Event-based Gateway are not supported by Activiti.)
         			</para>
         		</listitem>
         		<listitem>
         			<para>
-        				An <code>intermediateCatchEvent</code> connected to an event based gateway must have a single incoming sequenceflow.  
+        				An <code>intermediateCatchEvent</code> connected to an Event-based Gateway must have a single incoming sequence flow.
         			</para>
         		</listitem>        		
         	</itemizedlist>
@@ -3167,8 +3167,8 @@ assertEquals("Ship Order", task.getName());</programlisting>
         <title>Graphical notation</title>
         
         <para>
-          An event based gateway gateway is visualized as a typical gateway (i.e. a diamond shape)
-          with a special icon inside.          
+          An Event-based Gateway is visualized as a diamond shape like other BPMN gateways
+          with a special icon inside.
           <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.event.based.gateway.notation.png"/></imageobject></mediaobject>
         </para>
       
@@ -3179,7 +3179,7 @@ assertEquals("Ship Order", task.getName());</programlisting>
         <title>XML representation</title>
         
         <para>
-          The xml element used to define an event based gateway is <code>eventBasedGateway</code>.
+          The XML element used to define an Event-based Gateway is <code>eventBasedGateway</code>.
         </para>
         
       </section>
@@ -3188,7 +3188,7 @@ assertEquals("Ship Order", task.getName());</programlisting>
       	<title>Example(s)</title>
       	
       	<para>
-	      	The following process is an example of a process with an event based gateway. When the execution arrives at the event based gateway,
+	      	The following process is an example of a process with an Event-based Gateway. When the execution arrives at the Event-based Gateway,
 	      	process execution is suspended. In addition, the process instance subscribes to the alert signal event and created a timer which fires after 10 minutes.
 	      	This effectively causes the process engine to wait for ten minutes for a signal event. If the signal occurs within 10 minutes, the timer is cancelled and 
 	      	execution continues after the signal. If the signal is not fired, execution continues after the timer and the signal subscription is cancelled. 
@@ -3259,7 +3259,7 @@ assertEquals("Ship Order", task.getName());</programlisting>
 
 		<section id="bpmnUserTask">
 
-			<title>User task</title>
+			<title>User Task</title>
 
 			<section id="bpmnUserTaskDescription">
 			
@@ -3818,7 +3818,7 @@ public class ToUppercase implements JavaDelegate {
      
      <section id="serviceTaskFieldInjection">
      
-      <title>Field injection</title>
+      <title>Field Injection</title>
       
         <para>
           It's possible to inject values into the fields of the delegated classes. The following types of injection are supported:
@@ -4040,7 +4040,7 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
 		</section>
   
 <section id="bpmnWebserviceTask">
-	<title>WebService Task</title><link linkend="experimental">
+	<title>Web Service Task</title><link linkend="experimental">
 		<emphasis role="bold">[EXPERIMENTAL]</emphasis>
 	</link>
 
@@ -4049,7 +4049,7 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
 		<title>Description</title>
 
 		<para>
-			A WebService task is used to synchronously invoke an external web service.
+			A Web Service task is used to synchronously invoke an external Web service.
 		</para>
 
 	</section>
@@ -4059,7 +4059,7 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
 		<title>Graphical Notation</title>
 
 		<para>
-			A WebService task is visualized the same as a Java service task.
+			A Web Service task is visualized the same as a Java service task.
 			<mediaobject>
 				<imageobject>
 					<imagedata align="center" fileref="images/bpmn.web.service.task.png" />
@@ -4074,8 +4074,8 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
 		<title>XML representation</title>
 
 		<para>
-			To use a WebService we need to import its operations and complex types. This can be done
-			automatically by using the import tag pointing to the WSDL of the WebService:
+			To use a Web service we need to import its operations and complex types. This can be done
+			automatically by using the import tag pointing to the WSDL of the Web service:
        </para>
 
 		<programlisting>
@@ -4098,7 +4098,7 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
 &lt;itemDefinition id=&quot;prettyPrintCountResponseItem&quot; structureRef=&quot;counter:prettyPrintCountResponse&quot; /&gt;</programlisting>
 		
 		<para>
-			Before declaring the service task, we have to define the BPMN interfaces and operations that actually reference the WebService ones.
+			Before declaring the service task, we have to define the BPMN interfaces and operations that actually reference the Web service ones.
 			Basically, we define and 'interface' and the required 'operation's'. For each operation we reuse the previous defined
 			message for in and out. For example, the following declaration defines the 'counter' interface and the 'prettyPrintCountOperation' operation:
 		</para>
@@ -4113,8 +4113,8 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
 &lt;/interface&gt;</programlisting>
 		
 		<para>
-			Then we can declare a WebService task by using the ##WebService implementation 
-			and a reference to the WebService operation. 
+			Then we can declare a Web Service Task by using the ##WebService implementation 
+			and a reference to the Web service operation. 
 		</para>
 		
 		<programlisting>
@@ -4125,10 +4125,10 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
 	</section>
 
 	<section id="bpmnWebserviceTaskIOSpecification">
-		<title>WebService task IO Specification</title>
+		<title>Web Service Task IO Specification</title>
 
 		<para>
-			Unless we are using the simplistic approach for data input and output associations (See below), each WebService task
+			Unless we are using the simplistic approach for data input and output associations (See below), each Web Service Task
 			needs to declare an IO Specification which states which are the inputs and outputs of the task. The approach is pretty
 			straightforward and BPMN 2.0 complaint, for our prettyPrint example we define the input and output sets according to
 			the previously declared item definitions:  
@@ -4148,7 +4148,7 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
 	</section>
 
 	<section id="bpmnWebserviceTaskDataInputAssociation">
-		<title>WebService task data input associations</title>
+		<title>Web Service Task data input associations</title>
 
 		<para>
 			There are 2 ways of specifying data input associations:
@@ -4197,7 +4197,7 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
 	</section>
 
 	<section id="bpmnWebserviceTaskDataOutputAssociation">
-		<title>WebService task data output associations</title>
+		<title>Web Service Task data output associations</title>
 
 		<para>
 			There are 2 ways of specifying data out associations:
@@ -4318,7 +4318,7 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
 		
   <section id="bpmnEmailTask">
 		
-		  <title>Email task</title>
+		  <title>Email Task</title>
 		  
 		  <para>
 		    Activiti allows to enhance business processes with automatic mail service tasks that send
@@ -4640,19 +4640,19 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
 		
 		<section id="bpmnReceiveTask">
 		
-		  <title>Java receive task</title>
+		  <title>Java Receive Task</title>
 		  
 		  <section id="bpmnReceiveTaskDescription">
 		  
 		    <title>Description</title>
 		    
 		    <para>
-          A receive task is a simple task that waits for the arrival of a certain message.
+          A Receive Task is a simple task that waits for the arrival of a certain message.
           Currently, we have only implemented Java semantics for this task. When process
-          execution arrives at a receive task, the process state is committed to the 
+          execution arrives at a Receive Task, the process state is committed to the 
           persistence store. This means that the process will stay in this wait state, 
           until a specific message is received by the engine, which triggers the continuation
-          of the process past the receive task.
+          of the process past the Receive Task.
 		    </para>
 		  
 		  </section>
@@ -4662,7 +4662,7 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
 		    <title>Graphical notation</title>
         
         <para>
-          A receive task is visualized as a task (rounded rectangle) with a message icon in
+          A Receive Task is visualized as a task (rounded rectangle) with a message icon in
           the top left corner. The message is white (a black message icon would have send semantics)
           <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.receive.task.png"/></imageobject></mediaobject>
         </para>
@@ -4678,9 +4678,9 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
         </para>
         
         <para>
-          To continue a process instance that is currently waiting at such a receive task,
+          To continue a process instance that is currently waiting at such a Receive Task,
           the <emphasis>runtimeService.signal(executionId)</emphasis> must be called using
-          the id of the execution that arrived in the receive task.
+          the id of the execution that arrived in the Receive Task.
           The following code snippet shows how this works in practice:
           <programlisting>
 ProcessInstance pi = runtimeService.startProcessInstanceByKey(&quot;receiveTask&quot;);
@@ -5100,18 +5100,18 @@ public class MyTaskCreateListener implements TaskListener {
           will cause the activity to be executed multiple times at runtime. Following
           activities can become a <emphasis>multi-instance activity:</emphasis>
           <itemizedlist>
-            <listitem><para><link linkend="bpmnUserTask">User task</link></para></listitem>
-            <listitem><para><link linkend="bpmnScriptTask">Script task</link></para></listitem>
-            <listitem><para><link linkend="bpmnJavaServiceTask">Java service task</link></para></listitem>
-            <listitem><para><link linkend="bpmnWebserviceTask">Web service task</link></para></listitem>
-            <listitem><para><link linkend="bpmnBusinessRuleTask">Business rule task</link></para></listitem>
-            <listitem><para><link linkend="bpmnEmailTask">Email task</link></para></listitem>
-            <listitem><para><link linkend="bpmnManualTask">Manual task</link></para></listitem>
-            <listitem><para><link linkend="bpmnReceiveTask">Receive task</link></para></listitem>
-            <listitem><para><link linkend="bpmnSubProcess">(embedded) subprocess</link></para></listitem>
-            <listitem><para><link linkend="bpmnCallActivity">Call activity</link></para></listitem>
+            <listitem><para><link linkend="bpmnUserTask">User Task</link></para></listitem>
+            <listitem><para><link linkend="bpmnScriptTask">Script Task</link></para></listitem>
+            <listitem><para><link linkend="bpmnJavaServiceTask">Java Service Task</link></para></listitem>
+            <listitem><para><link linkend="bpmnWebserviceTask">Web Service Task</link></para></listitem>
+            <listitem><para><link linkend="bpmnBusinessRuleTask">Business Rule Task</link></para></listitem>
+            <listitem><para><link linkend="bpmnEmailTask">Email Task</link></para></listitem>
+            <listitem><para><link linkend="bpmnManualTask">Manual Task</link></para></listitem>
+            <listitem><para><link linkend="bpmnReceiveTask">Receive Task</link></para></listitem>
+            <listitem><para><link linkend="bpmnSubProcess">(Embedded) Sub-Process</link></para></listitem>
+            <listitem><para><link linkend="bpmnCallActivity">Call Activity</link></para></listitem>
           </itemizedlist>
-          A <link linkend="bpmnGateways">gateway</link> or <link linkend="bpmnEvents">event</link>
+          A <link linkend="bpmnGateways">Gateway</link> or <link linkend="bpmnEvents">Event</link>
           can <emphasis role="bold">not</emphasis> become multi-instance.
         </para>
         
@@ -5290,7 +5290,7 @@ public class MyTaskCreateListener implements TaskListener {
       
       <section id="bpmnCompensationHandlerXml">
       
-        <title>Xml representation</title>
+        <title>XML representation</title>
       	In order to declare an activity to be a compensation handler, we need to set the attribute <code>isForCompensation</code>
       	to <code>true</code>:
       	<programlisting>
@@ -5310,60 +5310,60 @@ public class MyTaskCreateListener implements TaskListener {
 	   -->
 <section id="bpmnSubprocessAndCallActivity">
 
-	<title>Subprocesses and Callactivities</title>    
+	<title>Sub-Processes and Call Activities</title>    
 
 		<section id="bpmnSubProcess">
 		
-		  <title>SubProcess</title>
+		  <title>Sub-Process</title>
 		  
 		  <section id="bpmnSubProcessDescription">
 		  
 		    <title>Description</title>
 		    
 		    <para>
-		      A <emphasis>subprocess</emphasis> is an activity that contains other activities, gateways,
+		      A <emphasis>Sub-Process</emphasis> is an activity that contains other activities, gateways,
 		      events, etc. which on itself form a process that is part of the bigger process. 
-		      A <emphasis>subprocess</emphasis> is completely defined inside a parent process
-		      (that's why it's often called an <emphasis>embedded</emphasis> subprocess).
+		      A <emphasis>Sub-Process</emphasis> is completely defined inside a parent process
+		      (that's why it's often called an <emphasis>embedded</emphasis> Sub-Process).
 		    </para>
 		    
 		    <para>
-		      Subprocesses have two major use cases:
+		      Sub-Processes have two major use cases:
 		      <itemizedlist>
 		        <listitem>
 		          <para>
-		            Subprocesses allow <emphasis role="bold">hierarchical modeling</emphasis>.
-		            Many modeling tools allow that subprocesses can be <emphasis>collapsed</emphasis>, 
-		            hiding all the details of the subprocess and displaying a high-level end-to-end
+		            Sub-Processes allow <emphasis role="bold">hierarchical modeling</emphasis>.
+		            Many modeling tools allow that Sub-Processes can be <emphasis>collapsed</emphasis>, 
+		            hiding all the details of the Sub-Process and displaying a high-level end-to-end
 		            overview of the business process.
 		          </para>
 		        </listitem>
 		        <listitem>
 		          <para>
-		            A subprocess creates a new <emphasis role="bold">scope for events</emphasis>.
-		            Events that are thrown during execution of the subprocess, can be caught by
+		            A Sub-Process creates a new <emphasis role="bold">scope for events</emphasis>.
+		            Events that are thrown during execution of the Sub-Process, can be caught by
 		            <link linkend="bpmnBoundaryEvent">a boundary event</link> on the boundary 
-		            of the subprocess, thus creating a scope for that event limited to the subprocess.
+		            of the Sub-Process, thus creating a scope for that event limited to the Sub-Process.
 		          </para>
 		        </listitem>
 		      </itemizedlist>
 		    </para>
 		    
 		    <para>
-		      Using a subprocess does impose some constraints:
+		      Using a Sub-Process does impose some constraints:
 		      <itemizedlist>
 		        <listitem>
 		          <para>
-		            A subprocess can only have <emphasis role="bold">one none start event</emphasis>, no other
-		            start event types are allowed. A subprocess must <emphasis role="bold">
+		            A Sub-Process can only have <emphasis role="bold">one none start event</emphasis>, no other
+		            start event types are allowed. A Sub-Process must <emphasis role="bold">
 		            at least have one end event</emphasis>. Note that the BPMN 2.0 specification
-		            allows to omit the start and end events in a subprocess, but the current
+		            allows to omit the start and end events in a Sub-Process, but the current
 		            Activiti implementation does not support this.
 		          </para>
 		        </listitem>
 		        <listitem>
 		          <para>
-		            <emphasis role="bold">Sequence flow can not cross subprocess boundaries.</emphasis>
+		            <emphasis role="bold">Sequence flow can not cross Sub-Process boundaries.</emphasis>
 		          </para>
 		        </listitem>
 		      </itemizedlist>
@@ -5376,24 +5376,24 @@ public class MyTaskCreateListener implements TaskListener {
         <title>Graphical Notation</title>
         
         <para>
-          A subprocess is visualized as a typical activity, i.e. a rounded rectangle.
-          In case the subprocess is <emphasis>collapsed</emphasis>, only the name and a plus-sign are displayed,
+          A Sub-Process is visualized as a typical activity, i.e. a rounded rectangle.
+          In case the Sub-Process is <emphasis>collapsed</emphasis>, only the name and a plus-sign are displayed,
           giving a high-level overview of the process:
           <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.collapsed.subprocess.png"/></imageobject></mediaobject>
         </para>
         
         <para>  
-          In case the subprocess is <emphasis>expanded</emphasis>, the steps of the subprocess
-          are displayed within the subprocess boundaries:
+          In case the Sub-Process is <emphasis>expanded</emphasis>, the steps of the Sub-Process
+          are displayed within the Sub-Process boundaries:
           <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.expanded.subprocess.png"/></imageobject></mediaobject>
         </para>
         
         <para>
-          One of the main reasons to use a subprocess, is to define a scope for a certain event.
+          One of the main reasons to use a Sub-Process, is to define a scope for a certain event.
           The following process model shows this: both the <emphasis>investigate software/investigate hardware</emphasis>
           tasks need to be done in parallel, but both tasks need to be done within a certain time,
           before <emphasis>Level 2 support</emphasis> is consulted.
-          Here, the scope of the timer (i.e. which activities must be done in time) is constrained by the subprocess. 
+          Here, the scope of the timer (i.e. which activities must be done in time) is constrained by the Sub-Process. 
           <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.subprocess.with.boundary.timer.png"/></imageobject></mediaobject>
         </para>
       
@@ -5404,15 +5404,15 @@ public class MyTaskCreateListener implements TaskListener {
         <title>XML representation</title>
         
         <para>
-          A subprocess is defined by the <emphasis>subprocess</emphasis> element.
-          All activities, gateways, events, etc. that are part of the subprocess, need
+          A Sub-Process is defined by the <emphasis>subprocess</emphasis> element.
+          All activities, gateways, events, etc. that are part of the Sub-Process, need
           to be enclosed within this element.
           <programlisting>
 &lt;subProcess id=&quot;subProcess&quot;&gt;
     
   &lt;startEvent id=&quot;subProcessStart&quot; /&gt;
   
-  ... other subprocess elements ...
+  ... other Sub-Process elements ...
 
   &lt;endEvent id=&quot;subProcessEnd&quot; /&gt;
     
@@ -5424,11 +5424,11 @@ public class MyTaskCreateListener implements TaskListener {
 		
 		</section>
 		
-		<!-- ///////////////////////////////////////// event subprocess -->
+		<!-- ///////////////////////////////////////// Event Sub-Process -->
 		
 		<section id="bpmnEventSubprocess">
 		
-		  <title>Event subprocess</title>
+		  <title>Event Sub-Process</title>
 		<link linkend="experimental">
 			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
 		</link>
@@ -5438,27 +5438,27 @@ public class MyTaskCreateListener implements TaskListener {
 		    <title>Description</title>
 		    
 		    <para>
-		      The event subprocess is new in BPMN 2.0. An event subprocess is a subprocess that is triggered by an event. 
-		      An event subprocess can be added at the process level or at any subprocess level. The event used to trigger an event 
+		      The Event Sub-Process is new in BPMN 2.0. An Event Sub-Process is a subprocess that is triggered by an event. 
+		      An Event Sub-Process can be added at the process level or at any subprocess level. The event used to trigger an event 
 		      subprocess is configured using a start event. From this, it follows that none start events are not supported for 
-		      event subprocesses. An event subprocess might be triggered using events lit message events, error events, signal events, 
+		      Event Sub-Processes. An Event Sub-Process might be triggered using events lit message events, error events, signal events, 
 		      timer events, or compensation events.
 		      The subscription to the start event is created when the scope (process instance or subprocess) 
-		      hosting the event subprocess is created. The subscription is removed when the scope is destroyed. 	      
+		      hosting the Event Sub-Process is created. The subscription is removed when the scope is destroyed. 	      
 		    </para>
 			
 			<para>
-				An event subprocess may be interrupting or non interrupting. An interrupting subprocess cancels any executions 
-				in the current scope. A non interrupting event subprocess spawns a new concurrent execution. While an interrupting 
-				event subprocess can only be triggered once for each activation of the scope hosting it, a non interrupting event subprocess
+				An Event Sub-Process may be interrupting or non interrupting. An interrupting subprocess cancels any executions 
+				in the current scope. A non interrupting Event Sub-Process spawns a new concurrent execution. While an interrupting 
+				Event Sub-Process can only be triggered once for each activation of the scope hosting it, a non interrupting Event Sub-Process
 				can be triggered multiple times. The fact whether the subprocess is interrupting is configured using the start event triggering the 
-				event subprocess.
+				Event Sub-Process.
 		   	</para>
 		   		   
 		   	<para>
-		   		An event subprocess must not have any incoming or outgoing sequence flows. Since an event subprocess is triggered
-		   		by an event, an incoming sequence flow makes no sense. When an event subprocess is ended, either the current scope is ended 
-		   		(in case of an interrupting event subprocess), or the concurrent execution spawned for the non-interrupting subprocess is ended.
+		   		An Event Sub-Process must not have any incoming or outgoing sequence flows. Since an Event Sub-Process is triggered
+		   		by an event, an incoming sequence flow makes no sense. When an Event Sub-Process is ended, either the current scope is ended 
+		   		(in case of an interrupting Event Sub-Process), or the concurrent execution spawned for the non-interrupting subprocess is ended.
 		   	</para>
 		   		   	
 		   	<para>
@@ -5466,12 +5466,12 @@ public class MyTaskCreateListener implements TaskListener {
 		   		<itemizedlist>
 		   			<listitem>
 		   				<para>
-		   					Activiti only supports interrupting event subprocesses.
+		   					Activiti only supports interrupting Event Sub-Processes.
 		   				</para>
 		   			</listitem>
 		   			<listitem>
 		   				<para>
-		   					Activiti only supports event subprocess triggered using an error start event.
+		   					Activiti only supports Event Sub-Process triggered using an error start event.
 		   				</para>
 		   			</listitem>
 		   		</itemizedlist>
@@ -5484,7 +5484,7 @@ public class MyTaskCreateListener implements TaskListener {
         <title>Graphical Notation</title>
         
         <para>
-          An event subprocess might be visualized as a an <link linkend="bpmnSubProcessGraphicalNotation">embedded subprocess</link> with a dotted outline.          
+          An Event Sub-Process might be visualized as a an <link linkend="bpmnSubProcessGraphicalNotation">embedded subprocess</link> with a dotted outline.          
           <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.subprocess.eventSubprocess.png"/></imageobject></mediaobject>
         </para>
         
@@ -5495,7 +5495,7 @@ public class MyTaskCreateListener implements TaskListener {
         <title>XML representation</title>
         
         <para>
-      		An event subprocess is represented using xml in the same way as a an <link linkend="bpmnSubProcessXMLRepresentation">embedded subprocess</link>.
+      		An Event Sub-Process is represented using xml in the same way as a an <link linkend="bpmnSubProcessXMLRepresentation">embedded subprocess</link>.
       		In addition the attribute <code>triggeredByEvent</code> must have the value <code>true</code>:
 <programlisting>
 &lt;subProcess id=&quot;eventSubProcess&quot; triggeredByEvent=&quot;true&quot;&gt;
@@ -5511,10 +5511,10 @@ public class MyTaskCreateListener implements TaskListener {
         <title>Example</title>
         
         <para>
-  			The following is an example of an event subprocess triggered using an error start event. The event subprocess is located "at process level", i.e. is scoped to the process
+  			The following is an example of an Event Sub-Process triggered using an error start event. The Event Sub-Process is located "at process level", i.e. is scoped to the process
   			instance:
   			<mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.subprocess.eventSubprocess.example.1.PNG"/></imageobject></mediaobject>
-  			This is how the event subprocess would look like in XML:  			
+  			This is how the Event Sub-Process would look like in XML:  			
 <programlisting>
 &lt;subProcess id=&quot;eventSubProcess&quot; triggeredByEvent=&quot;true&quot;&gt;
 	&lt;startEvent id=&quot;catchError&quot;&gt;
@@ -5527,7 +5527,7 @@ public class MyTaskCreateListener implements TaskListener {
         </para>
         
         <para>
-        	As already stated, an event subprocess can also be added to an embedded subprocess. If it is added to an embedded subprocess, it becomes an alternative to a
+        	As already stated, an Event Sub-Process can also be added to an embedded subprocess. If it is added to an embedded subprocess, it becomes an alternative to a
         	boundary event. Consider the two following process diagrams. In both cases the embedded subprocess throws an error event. Both times the error is caught and 
         	handled using a user task.          
         	<mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.subprocess.eventSubprocess.example.2a.PNG"/></imageobject></mediaobject>
@@ -5544,7 +5544,7 @@ public class MyTaskCreateListener implements TaskListener {
         		</listitem>
         		<listitem>
         			<para>
-        				When using an event subprocess, the event is completely handled by the subprocess it is added to. 
+        				When using an Event Sub-Process, the event is completely handled by the subprocess it is added to. 
         				When using a boundary event, the event is handled by the parent process.				
         			</para>
         		</listitem>
