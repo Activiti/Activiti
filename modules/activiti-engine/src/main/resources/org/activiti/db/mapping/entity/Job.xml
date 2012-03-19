@@ -56,7 +56,6 @@
     where (JOB.RETRIES_ &gt; 0)
       and (JOB.DUEDATE_ is null or JOB.DUEDATE_ &lt; #{now, jdbcType=TIMESTAMP})
       and (JOB.LOCK_OWNER_ is null or JOB.LOCK_EXP_TIME_ &lt; #{now, jdbcType=TIMESTAMP})
-      and (JOB.RETRIES_ &gt; 0)       
 	  and (
 	  	    (JOB.EXECUTION_ID_ is null)
 	  		or ((PI.SUSPENSION_STATE_ = 1)     
@@ -70,7 +69,6 @@
     where (RETRIES_ &gt; 0)
       and (DUEDATE_ is null or DUEDATE_ &lt; #{now, jdbcType=TIMESTAMP})
       and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt; #{now, jdbcType=TIMESTAMP})
-      and (RETRIES_ &gt; 0)
       and (EXCLUSIVE_ = TRUE)
       and (PROCESS_INSTANCE_ID_ = #{pid})  
   </select>
@@ -81,7 +79,6 @@
     where (RETRIES_ &gt; 0)
       and (DUEDATE_ is null or DUEDATE_ &lt; #{now, jdbcType=TIMESTAMP})
       and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt; #{now, jdbcType=TIMESTAMP})
-      and (RETRIES_ &gt; 0)
       and (EXCLUSIVE_ = 1)
       and (PROCESS_INSTANCE_ID_ = #{pid})     
   </select>
