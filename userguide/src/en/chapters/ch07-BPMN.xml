@@ -4686,7 +4686,7 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
 ProcessInstance pi = runtimeService.startProcessInstanceByKey(&quot;receiveTask&quot;);
 Execution execution = runtimeService.createExecutionQuery()
   .processInstanceId(pi.getId())
-  .activityId(&quot;wait&quot;)
+  .activityId(&quot;waitState&quot;)
   .singleResult();
 assertNotNull(execution);
     
