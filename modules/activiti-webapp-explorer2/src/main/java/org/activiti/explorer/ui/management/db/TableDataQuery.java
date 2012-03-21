@@ -13,8 +13,10 @@
 package org.activiti.explorer.ui.management.db;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.management.TablePageQuery;
@@ -57,7 +59,17 @@ public class TableDataQuery extends AbstractLazyLoadingQuery {
     List<Map<String, Object>> rows = query.listPage(start, count).getRows();
     List<Item> items = new ArrayList<Item>();
     for (Map<String, Object> row : rows) {
-      items.add(new MapItem(row));
+    	
+      HashMap<String, Object> newRow = new HashMap<String, Object>();
+      for( Entry<String,Object> rowEntry : row.entrySet() ) {
+    	  String key = rowEntry.getKey();
+    	  if( key != null ) {
+    		  key = key.toUpperCase();
+    	  }
+    	  newRow.put( key, rowEntry.getValue() );
+      }
+    	
+      items.add(new MapItem(newRow));
     }
     return items;
   }
