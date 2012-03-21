@@ -2219,7 +2219,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 	          An intermediate signal catch event is visualized as a typical intermediate event (Circle with smaller circle inside), 
 	          with the signal icon inside. The signal icon is white (unfilled), to indicate
 	          the <emphasis>catch</emphasis> semantics.
-	          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.intermediate.signal.catch.event.PNG"/></imageobject></mediaobject>
+	          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.intermediate.signal.catch.event.png"/></imageobject></mediaobject>
 	        </para>
 	      </section>
       
@@ -2442,7 +2442,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 				when compensation is thrown. If some of the activities nested inside the subprocess have completed and have attached 
 				compensation handlers, the compensation handlers are not executed if the subprocess containing these activities 
 				is not completed yet. Consider the following example: 
-				<mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.throw.compensation.example1.PNG"/></imageobject></mediaobject>
+				<mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.throw.compensation.example1.png"/></imageobject></mediaobject>
 				In this process we have two concurrent executions, one executing the embedded subprocess and one executing the 
 				"charge credit card" activity. Lets assume both executions are started and the first concurrent execution is waiting 
 				for a user to complete the "review bookings" task. The second execution performs the "charge credit card" activity 
@@ -5515,7 +5515,7 @@ public class MyTaskCreateListener implements TaskListener {
         <para>
   			The following is an example of an Event Sub-Process triggered using an error start event. The Event Sub-Process is located "at process level", i.e. is scoped to the process
   			instance:
-  			<mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.subprocess.eventSubprocess.example.1.PNG"/></imageobject></mediaobject>
+  			<mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.subprocess.eventSubprocess.example.1.png"/></imageobject></mediaobject>
   			This is how the Event Sub-Process would look like in XML:  			
 <programlisting>
 &lt;subProcess id=&quot;eventSubProcess&quot; triggeredByEvent=&quot;true&quot;&gt;
@@ -5532,9 +5532,9 @@ public class MyTaskCreateListener implements TaskListener {
         	As already stated, an Event Sub-Process can also be added to an embedded subprocess. If it is added to an embedded subprocess, it becomes an alternative to a
         	boundary event. Consider the two following process diagrams. In both cases the embedded subprocess throws an error event. Both times the error is caught and 
         	handled using a user task.          
-        	<mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.subprocess.eventSubprocess.example.2a.PNG"/></imageobject></mediaobject>
+        	<mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.subprocess.eventSubprocess.example.2a.png"/></imageobject></mediaobject>
         	<para>as opposed to:</para>
-        	<mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.subprocess.eventSubprocess.example.2b.PNG"/></imageobject></mediaobject>	
+        	<mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.subprocess.eventSubprocess.example.2b.png"/></imageobject></mediaobject>	
         	 In both cases the same tasks are executed. However, there are differences between both modelling alternatives:
         	<itemizedlist>
         		<listitem>
