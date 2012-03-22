@@ -278,13 +278,22 @@ public class BpmnDeployer implements Deployer {
   }
   
   protected String getBpmnFileImageResourceName(String bpmnFileResource, String diagramSuffix) {
-    String bpmnFileResourceBase = bpmnFileResource.substring(0, bpmnFileResource.length()-10); // minus 10 to remove 'bpmn20.xml'
+    String bpmnFileResourceBase = stripBpmnFileSuffix(bpmnFileResource);
     return bpmnFileResourceBase + diagramSuffix;
   }
-  
+
   protected String getProcessImageResourceName(String bpmnFileResource, String processKey, String diagramSuffix) {
-    String bpmnFileResourceBase = bpmnFileResource.substring(0, bpmnFileResource.length()-10); // minus 10 to remove 'bpmn20.xml'
+    String bpmnFileResourceBase = stripBpmnFileSuffix(bpmnFileResource);
     return bpmnFileResourceBase + processKey + "." + diagramSuffix;
+  }
+
+  protected String stripBpmnFileSuffix(String bpmnFileResource) {
+    for (String suffix : BPMN_RESOURCE_SUFFIXES) {
+      if (bpmnFileResource.endsWith(suffix)) {
+        return bpmnFileResource.substring(0, bpmnFileResource.length() - suffix.length());
+      }
+    }
+    return bpmnFileResource;
   }
 
   protected void createResource(String name, byte[] bytes, DeploymentEntity deploymentEntity) {
