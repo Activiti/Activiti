@@ -520,6 +520,7 @@ public class BpmnParse extends Parse {
         boolean isExecutable = Boolean.parseBoolean(isExecutableStr);
         if (!isExecutable) {
           processProcess = false;
+          LOGGER.info("Ignoring non-executable process with id='" + processElement.attribute("id") + "'. Set the attribute executable=\"true\" to deploy this process.");
         }
       }
 
