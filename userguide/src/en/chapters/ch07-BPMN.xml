@@ -4251,6 +4251,12 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
 				in the process BAR file like for example the task forms. For more information about creating business rules for Drools Expert please refer to the Drools
 				documentation at <ulink url="http://www.jboss.org/drools/documentation">JBoss Drools</ulink>
 			</para>
+			
+			<para>
+			  if you want to plug in your implementation of the rule task, e.g. because you want to use Drools differently or you want to use a completly
+			  different rule engine, then you can use the class or expression attribute on the BusinessRuleTask and it will behave exactly like a
+			  <ulink url="#bpmnJavaServiceTask">ServiceTask</ulink>
+			</para>
 	
 		</section>
 
@@ -4312,6 +4318,15 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
 			  </programlisting>
 			  In this case all rules deployed in the same BAR file as the process definition will be executed, except for rule1 and rule2.
 			</para>
+			
+	   	<para>
+				As mentioned earlier another option is to hook in the implementation of the BusinessRuleTask yourself:
+				<programlisting>
+&lt;businessRuleTask id=&quot;businessRuleTask&quot; activiti:class=&quot;${MyRuleServiceDelegate}&quot; /&gt;
+			  </programlisting>
+			  Now the BusinessRuleTask behaves exactly like a ServiceTask, but still keeps the BusinessRuleTask icon to visualize
+			  that we do business rule processing here.
+			</para>			
 		</section>
 	</section>
 
