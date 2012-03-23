@@ -12,24 +12,36 @@
  */
 package org.activiti.cdi.test;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.activiti.cdi.BusinessProcess;
-import org.activiti.cdi.impl.util.BeanManagerLookup;
 import org.activiti.cdi.impl.util.ProgrammaticBeanLookup;
+import org.activiti.cdi.test.util.ProcessEngineLookupForTestsuite;
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.jboss.weld.context.bound.BoundConversationContext;
-import org.jboss.weld.context.bound.BoundRequestContext;
-import org.jboss.weld.context.bound.BoundSessionContext;
-import org.jboss.weld.context.bound.MutableBoundRequest;
-import org.jboss.weld.environment.se.Weld;
-import org.jboss.weld.environment.se.WeldContainer;
+import org.activiti.engine.FormService;
+import org.activiti.engine.HistoryService;
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.ManagementService;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.jobexecutor.JobExecutor;
+import org.activiti.engine.test.ActivitiRule;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.runner.RunWith;
 
 /**
  * Abstract base class for executing activiti-cdi tests in a Java SE
@@ -37,178 +49,51 @@ import org.jboss.weld.environment.se.WeldContainer;
  * 
  * @author Daniel Meyer
  */
-public abstract class CdiActivitiTestCase extends PluggableActivitiTestCase {
+@RunWith(Arquillian.class)
+public abstract class CdiActivitiTestCase {
 
   protected Logger logger = Logger.getLogger(getClass().getName());
-
-  protected WeldContainer weldContainer;
+    
+  @Deployment
+  public static JavaArchive createDeployment() {
+    
+    return ShrinkWrap.create(JavaArchive.class)
+      .addPackages(true, "org.activiti.cdi")
+      .addAsManifestResource("META-INF/beans.xml", "beans.xml");
+  }
+  
+  @Rule
+  public ActivitiRule activitiRule = new ActivitiRule(getBeanInstance(ProcessEngine.class));
 
   protected BeanManager beanManager;
+  
+  protected ProcessEngine processEngine;
+  protected FormService formService;
+  protected HistoryService historyService;
+  protected IdentityService identityService;
+  protected ManagementService managementService;
+  protected RepositoryService repositoryService;
+  protected RuntimeService runtimeService;
+  protected TaskService taskService;
+  protected ProcessEngineConfigurationImpl processEngineConfiguration;
 
-  protected Weld weld;
-
-  // hide from subclasses
-  private HashMap<String, Object> currentRequestMap;
-  private HashMap<String, Object> currentSessionMap;
-
-  @Override
-  protected void setUp() throws Exception {
-    // set the process engine in the TestProcessEngineLookup-bean.
-    ProcessEngineLookupForTestsuite.processEngine = processEngine;
-    // bootstrap the CDI container
-    weld = new Weld();
-    weldContainer = weld.initialize();
-    beanManager = weldContainer.getBeanManager();
-    BeanManagerLookup.localInstance = beanManager;
+  @Before
+  public void setUp() throws Exception {    
     
-    beginRequest();
-    beginSession();
-    beginConversation();    
-    
+    beanManager = ProgrammaticBeanLookup.lookup(BeanManager.class);
+    processEngine = ProgrammaticBeanLookup.lookup(ProcessEngine.class);
+    processEngineConfiguration = ((ProcessEngineImpl)ProcessEngineLookupForTestsuite.processEngine).getProcessEngineConfiguration();
+    formService = processEngine.getFormService();
+    historyService = processEngine.getHistoryService();
+    identityService = processEngine.getIdentityService();
+    managementService = processEngine.getManagementService();
+    repositoryService = processEngine.getRepositoryService();
+    runtimeService = processEngine.getRuntimeService();
+    taskService = processEngine.getTaskService();        
   }
   
-  public void beginSession() {
-    currentSessionMap = new HashMap<String, Object>();
-    beginSession(currentSessionMap);
-  }
-
-  public void beginSession(Map<String, Object> sessionDataMap) {    
-    BoundSessionContext sessionContext = getSessionContext();
-    sessionContext.associate(currentSessionMap);
-    sessionContext.activate();
-    if (logger.isLoggable(Level.FINE)) {
-      logger.fine("     ----------------------------- Started a new Session -----------------------");
-    }
-  }
-  
-  public void endSession() {
-    endSession(currentSessionMap);
-    currentSessionMap = null;
-  }
-
-  public void endSession(Map<String, Object> sessionDataMap) {
-    BoundSessionContext sessionContext = getSessionContext();
-    try {
-      sessionContext.invalidate();
-      sessionContext.deactivate();
-      if (logger.isLoggable(Level.FINE)) {
-        logger.fine("     ----------------------------- Ended the current Session -----------------------");
-      }
-    } finally {
-      sessionContext.dissociate(sessionDataMap);
-    }
-  }
-
-  public void beginRequest() {
-    currentRequestMap = new HashMap<String, Object>();
-    beginRequest(currentRequestMap);
-  }
-
-  public void beginRequest(Map<String, Object> requestDataStore) {
-    // Associate the store with the context and acticate the context
-    BoundRequestContext requestContext = getRequestContext();
-    requestContext.associate(requestDataStore);
-    requestContext.activate();
-    if (logger.isLoggable(Level.FINE)) {
-      logger.fine("     ----------------------------- Started a new Request -----------------------");
-    }
-  }
-
-  public void endRequest() {
-    endRequest(currentRequestMap);
-    currentRequestMap = null;
-  }
-
-  public void endRequest(Map<String, Object> requestDataStore) {
-    BoundRequestContext requestContext = getRequestContext();
-    try {
-      requestContext.invalidate();
-      requestContext.deactivate();
-      if (logger.isLoggable(Level.FINE)) {
-        logger.fine("     ----------------------------- Ended the current Request -----------------------");
-      }
-    } finally {
-      requestContext.dissociate(requestDataStore);
-    }
-  }
-
-  public void beginConversation() {
-    if (currentRequestMap == null) {
-      throw new ActivitiException("Cannot start conversation: no request active.");
-    }
-    if(currentSessionMap == null) {
-      throw new ActivitiException("Cannot start conversation: no session active.");
-    }
-    currentSessionMap = new HashMap<String, Object>();
-    startTransientConversation(currentRequestMap, currentSessionMap);
-  }
-
-  public void endConversation() {
-    if (currentRequestMap == null) {
-      throw new ActivitiException("Cannot end conversation: no request active.");
-    }
-    if(currentSessionMap == null) {
-      throw new ActivitiException("Cannot end conversation: no session active.");
-    }
-    endOrPassivateConversation(currentRequestMap, currentSessionMap);    
-  }
-
-  public void startTransientConversation(Map<String, Object> requestDataStore, Map<String, Object> sessionDataStore) {
-    resumeOrStartConversation(requestDataStore, sessionDataStore, null);
-  }
-
-  public void resumeOrStartConversation(Map<String, Object> requestDataStore, Map<String, Object> sessionDataStore, String cid) {
-    BoundConversationContext conversationContext = getConversationContext();
-    conversationContext.associate(new MutableBoundRequest(requestDataStore, sessionDataStore));
-    conversationContext.activate(cid);
-    if (logger.isLoggable(Level.FINE)) {
-      logger.fine("---------------------------------------- Started a new Conversation -----------------------");
-    }
-  }
-
-  public void endOrPassivateConversation(Map<String, Object> requestDataStore, Map<String, Object> sessionDataStore) {
-    BoundConversationContext conversationContext = getConversationContext();
-    try {
-      conversationContext.invalidate();
-      conversationContext.deactivate();
-      if (logger.isLoggable(Level.FINE)) {
-        logger.fine("---------------------------------------- Ended the current Conversation -----------------------");
-      }
-    } finally {
-      conversationContext.dissociate(new MutableBoundRequest(requestDataStore, sessionDataStore));
-    }
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    endConversation();
-    endRequest();
-    endSession();
-//   https://issues.jboss.org/browse/WELD-891
-    weld.shutdown();    
-  }
-
-  protected void endConversationAndBeginNew() {
-    endConversation();
-    beginConversation();
-  }
-
   protected void endConversationAndBeginNew(String processInstanceId) {
-    endConversation();
-    beginConversation();
     getBeanInstance(BusinessProcess.class).associateExecutionById(processInstanceId);
-  }
-
-  protected BoundConversationContext getConversationContext() {
-    return getBeanInstance(BoundConversationContext.class);
-  }
-
-  protected BoundSessionContext getSessionContext() {
-    return getBeanInstance(BoundSessionContext.class);
-  }
-
-  protected BoundRequestContext getRequestContext() {
-    return getBeanInstance(BoundRequestContext.class);
   }
 
   protected <T> T getBeanInstance(Class<T> clazz) {
@@ -217,5 +102,86 @@ public abstract class CdiActivitiTestCase extends PluggableActivitiTestCase {
 
   protected Object getBeanInstance(String name) {
     return ProgrammaticBeanLookup.lookup(name);
+  }
+  
+  //////////////////////// copied from AbstractActivitiTestcase
+  
+  public void waitForJobExecutorToProcessAllJobs(long maxMillisToWait, long intervalMillis) {
+    JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
+    jobExecutor.start();
+
+    try {
+      Timer timer = new Timer();
+      InteruptTask task = new InteruptTask(Thread.currentThread());
+      timer.schedule(task, maxMillisToWait);
+      boolean areJobsAvailable = true;
+      try {
+        while (areJobsAvailable && !task.isTimeLimitExceeded()) {
+          Thread.sleep(intervalMillis);
+          areJobsAvailable = areJobsAvailable();
+        }
+      } catch (InterruptedException e) {
+      } finally {
+        timer.cancel();
+      }
+      if (areJobsAvailable) {
+        throw new ActivitiException("time limit of " + maxMillisToWait + " was exceeded");
+      }
+
+    } finally {
+      jobExecutor.shutdown();
+    }
+  }
+
+  public void waitForJobExecutorOnCondition(long maxMillisToWait, long intervalMillis, Callable<Boolean> condition) {
+    JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
+    jobExecutor.start();
+
+    try {
+      Timer timer = new Timer();
+      InteruptTask task = new InteruptTask(Thread.currentThread());
+      timer.schedule(task, maxMillisToWait);
+      boolean conditionIsViolated = true;
+      try {
+        while (conditionIsViolated) {
+          Thread.sleep(intervalMillis);
+          conditionIsViolated = !condition.call();
+        }
+      } catch (InterruptedException e) {
+      } catch (Exception e) {
+        throw new ActivitiException("Exception while waiting on condition: "+e.getMessage(), e);
+      } finally {
+        timer.cancel();
+      }
+      if (conditionIsViolated) {
+        throw new ActivitiException("time limit of " + maxMillisToWait + " was exceeded");
+      }
+
+    } finally {
+      jobExecutor.shutdown();
+    }
+  }
+
+  public boolean areJobsAvailable() {
+    return !managementService
+      .createJobQuery()
+      .executable()
+      .list()
+      .isEmpty();
+  }
+  
+  private static class InteruptTask extends TimerTask {
+    protected boolean timeLimitExceeded = false;
+    protected Thread thread;
+    public InteruptTask(Thread thread) {
+      this.thread = thread;
+    }
+    public boolean isTimeLimitExceeded() {
+      return timeLimitExceeded;
+    }
+    public void run() {
+      timeLimitExceeded = true;
+      thread.interrupt();
+    }
   }
 }

@@ -10,22 +10,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cdi.annotation;
+package org.activiti.cdi.test.api.annotation;
 
 import org.activiti.cdi.BusinessProcess;
+import org.activiti.cdi.impl.util.ProgrammaticBeanLookup;
 import org.activiti.cdi.test.CdiActivitiTestCase;
 import org.activiti.engine.test.Deployment;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * 
  * @author Daniel Meyer
  */
-public class ProcessIdTest extends CdiActivitiTestCase {
-
-  @Deployment
-  public void testProcessIdInjectable() {
-    getBeanInstance(BusinessProcess.class).startProcessByKey("keyOfTheProcess");    
-    assertNotNull(getBeanInstance("processInstanceId"));
-  }
+public class BusinessKeyTest extends CdiActivitiTestCase {
   
+  @Test
+  @Deployment
+  public void testBusinessKeyInjectable() {
+    String businessKey = "Activiti";
+    String pid = runtimeService.startProcessInstanceByKey("keyOfTheProcess", businessKey).getId();
+    getBeanInstance(BusinessProcess.class).associateExecutionById(pid);
+    
+    // assert that now the businessKey-Bean can be looked up:
+    Assert.assertEquals(businessKey, ProgrammaticBeanLookup.lookup("businessKey"));
+    
+  } 
 }

@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cdi.test.beans;
+package org.activiti.cdi.test.impl.beans;
 
 import org.activiti.cdi.annotation.CompleteTask;
 import org.activiti.cdi.annotation.ProcessVariable;

@@ -10,18 +10,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cdi.impl.context;
+package org.activiti.experimental;
+
+import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.cdi.BusinessProcess;
 import org.activiti.cdi.test.CdiActivitiTestCase;
-import org.activiti.cdi.test.beans.InjectProcessVariable;
 import org.activiti.engine.test.Deployment;
+import org.junit.Ignore;
+import org.junit.Test;
 
 public class ProcessVariablesTest extends CdiActivitiTestCase {
 
+  @Ignore
+  @Test
   @Deployment(resources = "org/activiti/cdi/BusinessProcessBeanTest.test.bpmn20.xml")
   public void testResolveString() {
     BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);

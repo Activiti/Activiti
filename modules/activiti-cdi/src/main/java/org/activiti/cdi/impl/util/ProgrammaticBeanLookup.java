@@ -12,6 +12,7 @@
  */
 package org.activiti.cdi.impl.util;
 
+import java.lang.reflect.Type;
 import java.util.Iterator;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -45,7 +46,9 @@ public class ProgrammaticBeanLookup {
     }
     Bean bean = iter.next();
     CreationalContext ctx = bm.createCreationalContext(bean);
-    return bm.getReference(bean, bean.getBeanClass(), ctx);
+    // select one beantype randomly. A bean has a non-empty set of beantypes.
+    Type type = (Type) bean.getTypes().iterator().next();
+    return bm.getReference(bean, type, ctx);
   }
   
   public static <T> T lookup(Class<T> clazz) {

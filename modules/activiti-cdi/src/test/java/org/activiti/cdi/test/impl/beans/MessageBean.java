@@ -10,18 +10,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cdi.test.beans;
+package org.activiti.cdi.test.impl.beans;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 
 /**
  * @author Daniel Meyer
  */
 @Named
-@ConversationScoped
+@ApplicationScoped
 public class MessageBean implements Serializable {
 
   private static final long serialVersionUID = 1L;

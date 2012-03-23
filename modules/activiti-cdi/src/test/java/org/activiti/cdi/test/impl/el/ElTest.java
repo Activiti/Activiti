@@ -10,31 +10,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cdi.test.beans;
+package org.activiti.cdi.test.impl.el;
 
-import java.io.Serializable;
+import static org.junit.Assert.assertEquals;
 
-import javax.inject.Named;
-
-import org.activiti.cdi.annotation.BusinessProcessScoped;
+import org.activiti.cdi.test.CdiActivitiTestCase;
+import org.activiti.cdi.test.impl.beans.MessageBean;
+import org.activiti.engine.test.Deployment;
+import org.junit.Test;
 
 /**
  * @author Daniel Meyer
  */
-@Named
-@BusinessProcessScoped
-public class ProcessScopedMessageBean implements Serializable {
+public class ElTest extends CdiActivitiTestCase {
 
-  private static final long serialVersionUID = 1L;
-
-  private String message;
-
-  public void setMessage(String message) {
-    this.message = message;
-  }
-
-  public String getMessage() {
-    return message;
+  @Test
+  @Deployment
+  public void testSetBeanProperty() throws Exception {
+    MessageBean messageBean = getBeanInstance(MessageBean.class);
+    runtimeService.startProcessInstanceByKey("setBeanProperty");
+    assertEquals("Greetings from Activiti", messageBean.getMessage());
   }
 
 }

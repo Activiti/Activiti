@@ -10,14 +10,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cdi.annotation;
+package org.activiti.cdi.test.api.annotation;
+
+import static org.junit.Assert.assertNull;
 
 import org.activiti.cdi.BusinessProcess;
 import org.activiti.cdi.impl.annotation.CompleteTaskInterceptor;
 import org.activiti.cdi.test.CdiActivitiTestCase;
-import org.activiti.cdi.test.beans.DeclarativeProcessController;
+import org.activiti.cdi.test.impl.beans.DeclarativeProcessController;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+import org.junit.Test;
 
 /**
  * Testcase for assuring that the {@link CompleteTaskInterceptor} works as
@@ -27,7 +30,8 @@ import org.activiti.engine.test.Deployment;
  */
 public class CompleteTaskTest extends CdiActivitiTestCase {
 
-  @Deployment(resources = "org/activiti/cdi/annotation/CompleteTaskTest.bpmn20.xml")
+  @Test
+  @Deployment(resources = "org/activiti/cdi/test/api/annotation/CompleteTaskTest.bpmn20.xml")
   public void testCompleteTask() {
 
     BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);

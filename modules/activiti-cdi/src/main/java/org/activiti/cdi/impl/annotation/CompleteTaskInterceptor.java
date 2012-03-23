@@ -38,7 +38,7 @@ public class CompleteTaskInterceptor implements Serializable {
   @Inject BusinessProcess businessProcess;
 
   @AroundInvoke
-  public Object invoke(InvocationContext ctx) throws Throwable {
+  public Object invoke(InvocationContext ctx) throws Exception {
     try {
       Object result = ctx.proceed();
 

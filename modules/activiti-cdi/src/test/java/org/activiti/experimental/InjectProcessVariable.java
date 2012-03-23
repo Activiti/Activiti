@@ -10,11 +10,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cdi.test.beans;
-
-import org.activiti.cdi.annotation.ProcessVariable;
+package org.activiti.experimental;
 
 import javax.inject.Inject;
+
+import org.activiti.cdi.annotation.ProcessVariable;
 
 public class InjectProcessVariable {
 

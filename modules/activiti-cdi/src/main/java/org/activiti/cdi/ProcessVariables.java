@@ -46,7 +46,7 @@ public class ProcessVariables {
   }
 
   @Produces
-  @ProcessVariable("")
+  @ProcessVariable
   protected Object getProcessVariable(InjectionPoint ip) {
     String processVariableName = getVariableName(ip);
 

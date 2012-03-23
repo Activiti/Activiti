@@ -10,19 +10,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cdi.test;
-
-import javax.enterprise.inject.Alternative;
+package org.activiti.cdi.test.util;
 
 import org.activiti.cdi.spi.ProcessEngineLookup;
 import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngines;
 
 /**
- * {@link Alternative} implementation of the {@link ProcessEngineLookup}
- * -interface, providing access to the ProcessEngine built for unit-tests.
- * 
- * @see CdiActivitiTestCase
- * 
  * @author Daniel Meyer
  */
 public class ProcessEngineLookupForTestsuite implements ProcessEngineLookup {
@@ -36,6 +30,9 @@ public class ProcessEngineLookupForTestsuite implements ProcessEngineLookup {
 
   @Override
   public ProcessEngine getProcessEngine() {
+    if(processEngine == null) {
+      processEngine = ProcessEngines.getDefaultProcessEngine();
+    }
     return processEngine;
   }
   

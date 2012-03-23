@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cdi.impl.event;
+package org.activiti.cdi.test.impl.event;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -26,6 +26,15 @@ import org.activiti.cdi.annotation.event.TakeTransition;
 
 @ApplicationScoped
 public class TestEventListener {
+  
+  public void reset() {
+    startActivityService1 = 0;
+    endActivityService1 = 0;
+    takeTransitiont1 = 0;
+    
+    eventsReceivedByKey.clear();
+    eventsReceived.clear();
+  }
 
   private final Set<BusinessProcessEvent> eventsReceivedByKey = new HashSet<BusinessProcessEvent>();
   

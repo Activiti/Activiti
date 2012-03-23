@@ -10,13 +10,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cdi;
+package org.activiti.cdi.test.api;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
+import org.activiti.cdi.BusinessProcess;
 import org.activiti.cdi.test.CdiActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+import org.junit.Test;
 
 /**
  * @author Daniel Meyer
@@ -24,6 +30,7 @@ import org.activiti.engine.test.Deployment;
 public class BusinessProcessBeanTest extends CdiActivitiTestCase {
 
   /* General test asserting that the business process bean is functional */
+  @Test
   @Deployment
   public void test() throws Exception {
 
@@ -55,7 +62,8 @@ public class BusinessProcessBeanTest extends CdiActivitiTestCase {
 
   }
 
-  @Deployment(resources = "org/activiti/cdi/BusinessProcessBeanTest.test.bpmn20.xml")
+  @Test
+  @Deployment(resources = "org/activiti/cdi/test/api/BusinessProcessBeanTest.test.bpmn20.xml")
   public void testResolveProcessInstanceBean() {
     BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
 
@@ -75,7 +83,8 @@ public class BusinessProcessBeanTest extends CdiActivitiTestCase {
     taskService.complete(taskService.createTaskQuery().singleResult().getId());
   }
 
-  @Deployment(resources = "org/activiti/cdi/BusinessProcessBeanTest.test.bpmn20.xml")
+  @Test
+  @Deployment(resources = "org/activiti/cdi/test/api/BusinessProcessBeanTest.test.bpmn20.xml")
   public void testResolveTaskBean() {
     BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
 

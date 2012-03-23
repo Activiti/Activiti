@@ -10,27 +10,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cdi.annotation;
+package org.activiti.cdi.test.api.annotation;
 
 import org.activiti.cdi.BusinessProcess;
 import org.activiti.cdi.test.CdiActivitiTestCase;
 import org.activiti.engine.test.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * 
  * @author Daniel Meyer
  */
-public class BusinessKeyTest extends CdiActivitiTestCase {
+@RunWith(Arquillian.class)
+public class ProcessIdTest extends CdiActivitiTestCase {
 
+  @Test
   @Deployment
-  public void testBusinessKeyInjectable() {
-    String businessKey = "Activiti";
-    String pid = runtimeService.startProcessInstanceByKey("keyOfTheProcess", businessKey).getId();
-    getBeanInstance(BusinessProcess.class).associateExecutionById(pid);
-    
-    // assert that now the businessKey-Bean can be looked up:
-    assertEquals(businessKey, getBeanInstance("businessKey"));
-    
-    
-  } 
+  public void testProcessIdInjectable() {
+    getBeanInstance(BusinessProcess.class).startProcessByKey("keyOfTheProcess");    
+    Assert.assertNotNull(getBeanInstance("processInstanceId"));
+  }
+  
 }

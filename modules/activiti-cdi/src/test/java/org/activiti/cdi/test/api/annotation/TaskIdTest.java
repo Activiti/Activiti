@@ -10,42 +10,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cdi.impl.context;
+package org.activiti.cdi.test.api.annotation;
 
 import org.activiti.cdi.BusinessProcess;
 import org.activiti.cdi.test.CdiActivitiTestCase;
 import org.activiti.engine.test.Deployment;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * 
  * @author Daniel Meyer
  */
-public class ContextScopingTest extends CdiActivitiTestCase {
+public class TaskIdTest extends CdiActivitiTestCase {
 
-  @Override
-  public void beginConversation() {
-    // do not activate conversation
+  @Test
+  @Deployment
+  public void testTaskIdInjectable() {
+    BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
+    businessProcess.startProcessByKey("keyOfTheProcess");  
+    
+    businessProcess.startTask(taskService.createTaskQuery().singleResult().getId());   
+    
+    // assert that now the 'taskId'-bean can be looked up
+    assertNotNull(getBeanInstance("taskId"));
+    
+    businessProcess.completeTask();
   }
   
-  @Override
-  public void endConversation() {
-    // do not deactivate conversation
-  }
-
-  @Deployment
-  public void testFallbackToRequestContext() {
-    BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
-
-    String pid = businessProcess.startProcessByKey("processkey").getId();
-    assertEquals(pid, businessProcess.getProcessInstanceId());
-
-    endRequest();
-    beginRequest();
-    // assert that now the process is not associated with the new request.
-    assertNull(businessProcess.getProcessInstanceId());
-    
-    runtimeService.deleteProcessInstance(pid, null);
-
-  }
-
 }

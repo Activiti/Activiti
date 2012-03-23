@@ -10,13 +10,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cdi.annotation;
+package org.activiti.cdi.test.api.annotation;
 
 import org.activiti.cdi.BusinessProcess;
 import org.activiti.cdi.impl.annotation.StartProcessInterceptor;
 import org.activiti.cdi.test.CdiActivitiTestCase;
-import org.activiti.cdi.test.beans.DeclarativeProcessController;
+import org.activiti.cdi.test.impl.beans.DeclarativeProcessController;
 import org.activiti.engine.test.Deployment;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Testcase for assuring that the {@link StartProcessInterceptor} behaves as
@@ -26,7 +29,8 @@ import org.activiti.engine.test.Deployment;
  */
 public class StartProcessTest extends CdiActivitiTestCase {
 
-  @Deployment(resources = "org/activiti/cdi/annotation/StartProcessTest.bpmn20.xml")
+  @Test
+  @Deployment(resources = "org/activiti/cdi/test/api/annotation/StartProcessTest.bpmn20.xml")
   public void testStartProcessByKey() {
 
     assertNull(runtimeService.createProcessInstanceQuery().singleResult());
@@ -42,7 +46,8 @@ public class StartProcessTest extends CdiActivitiTestCase {
     businessProcess.completeTask();
   }
 
-  @Deployment(resources = "org/activiti/cdi/annotation/StartProcessTest.bpmn20.xml")
+  @Test
+  @Deployment(resources = "org/activiti/cdi/test/api/annotation/StartProcessTest.bpmn20.xml")
   public void testStartProcessByName() {
 
     assertNull(runtimeService.createProcessInstanceQuery().singleResult());

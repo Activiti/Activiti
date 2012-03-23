@@ -10,49 +10,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cdi.impl.context;
+package org.activiti.cdi.test.impl.context;
 
 import org.activiti.cdi.test.CdiActivitiTestCase;
-import org.activiti.cdi.test.beans.ProcessScopedMessageBean;
+import org.activiti.cdi.test.impl.beans.ProcessScopedMessageBean;
 import org.activiti.engine.test.Deployment;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * 
  * @author Daniel Meyer
  */
 public class ThreadContextAssociationTest extends CdiActivitiTestCase {
-
-  @Override
-  public void beginConversation() {
-    // do not activate conversation
-  }
   
-  @Override
-  public void endConversation() {
-    // do not deactivate conversation
-  }
-  
-  @Override
-  public void beginRequest() {
-   // do not activate
-  }
-  
-  @Override
-  public void endRequest() {
-    // do not deactivate
-  }
-  
-  @Override
-  public void beginSession() {
-    // do not activate
-  }
-  
-  @Override
-  public void endSession() {
-    // do not deactivate
-  }
-  
-  
+  @Test
   @Deployment
   public void testBusinessProcessScopedWithJobExecutor() throws InterruptedException {
     String pid = runtimeService.startProcessInstanceByKey("processkey").getId();

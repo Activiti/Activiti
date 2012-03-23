@@ -42,7 +42,7 @@ public class StartProcessInterceptor implements Serializable {
   @Inject BusinessProcess businessProcess;
 
   @AroundInvoke
-  public Object invoke(InvocationContext ctx) throws Throwable {
+  public Object invoke(InvocationContext ctx) throws Exception {
     try {
       Object result = ctx.proceed();
 
@@ -61,7 +61,12 @@ public class StartProcessInterceptor implements Serializable {
 
       return result;
     } catch (InvocationTargetException e) {
-      throw e.getCause();
+      Throwable cause = e.getCause();
+      if(cause != null && cause instanceof Exception) {
+        throw (Exception) cause;
+      } else {
+        throw e;
+      }
     } catch (Exception e) {
       throw new ActivitiException("Error while starting process using @StartProcess on method  '"+ctx.getMethod()+"': " + e.getMessage(), e);
     }
