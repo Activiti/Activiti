@@ -216,7 +216,7 @@ public class BpmnParse extends Parse {
       parseRootElement();
 
     } catch (Exception e) {
-      LOGGER.log(Level.SEVERE, "Uknown exception", e);
+      LOGGER.log(Level.SEVERE, "Unknown exception", e);
     } finally {
       if (hasWarnings()) {
         logWarnings();
@@ -644,14 +644,14 @@ public class BpmnParse extends Parse {
       ActivityImpl targetActivity = parentScope.findActivity(targetRef);
       
       // an association may reference elements that are not parsed as activities (like for instance 
-      // test annotations so do not throw an exception if source sourceActivity or targetActivity are null)
+      // text annotations so do not throw an exception if sourceActivity or targetActivity are null)
       // However, we make sure they reference 'something':
       if(sourceActivity == null && !elementIds.contains(sourceRef)) {
         addError("Invalid reference sourceRef '"+sourceRef+"' of association element ", associationElement);
-      } else if(targetRef == null && !elementIds.contains(targetRef)) {
+      } else if(targetActivity == null && !elementIds.contains(targetRef)) {
         addError("Invalid reference targetRef '"+targetRef+"' of association element ", associationElement);
       } else {      
-        if(sourceActivity.getProperty("type").equals("compensationBoundaryCatch")) {
+        if(sourceActivity != null && sourceActivity.getProperty("type").equals("compensationBoundaryCatch")) {
           Object isForCompensation = targetActivity.getProperty(PROPERTYNAME_IS_FOR_COMPENSATION);          
           if(isForCompensation == null || !(Boolean) isForCompensation) {
             addError("compensation boundary catch must be connected to element with isForCompensation=true", associationElement);

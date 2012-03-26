@@ -118,6 +118,19 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
     }    
   }
   
+  public void testMultipleCompensationCatchEventsCompensationAttributeMissingFails() {    
+    try {
+      repositoryService.createDeployment()
+        .addClasspathResource("org/activiti/engine/test/bpmn/event/compensate/CompensateEventTest.testMultipleCompensationCatchEventsCompensationAttributeMissingFails.bpmn20.xml")
+        .deploy();
+      fail("exception expected");
+    } catch (Exception e) {
+      if(!e.getMessage().contains("compensation boundary catch must be connected to element with isForCompensation=true")) {
+        fail("different exception expected");
+      }
+    }    
+  }
+  
   public void testInvalidActivityRefFails() {    
     try {
       repositoryService.createDeployment()

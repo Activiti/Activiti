@@ -13,7 +13,6 @@
 
 package org.activiti.engine.test.bpmn.parse;
 
-import java.awt.GraphicsEnvironment;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
@@ -81,7 +80,7 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
     
     // Check if diagram has been created based on Diagram Interchange when it's not a headless instance
     List<String> resourceNames = repositoryService.getDeploymentResourceNames(processDefinitionEntity.getDeploymentId());
-	assertEquals(2, resourceNames.size());
+    assertEquals(2, resourceNames.size());
     
     for (ActivityImpl activity : processDefinitionEntity.getActivities()) {
       
@@ -128,6 +127,16 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
   @Deployment
   public void testParseDiagramInterchangeElementsForUnknownModelElements() {
             
+  }
+  
+  public void testParseSwitchedSourceAndTargetRefsForAssociations() {
+    repositoryService.createDeployment()
+      .addClasspathResource("org/activiti/engine/test/bpmn/parse/BpmnParseTest.testParseSwitchedSourceAndTargetRefsForAssociations.bpmn20.xml")
+      .deploy();
+    
+    assertEquals(1, repositoryService.createProcessDefinitionQuery().count());
+    
+    repositoryService.deleteDeployment(repositoryService.createDeploymentQuery().singleResult().getId(), true);
   }
   
   protected void assertActivityBounds(ActivityImpl activity, int x, int y, int width, int height) {
