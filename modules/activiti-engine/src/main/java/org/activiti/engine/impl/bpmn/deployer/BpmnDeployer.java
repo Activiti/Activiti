@@ -12,7 +12,6 @@
  */
 package org.activiti.engine.impl.bpmn.deployer;
 
-import java.awt.GraphicsEnvironment;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;

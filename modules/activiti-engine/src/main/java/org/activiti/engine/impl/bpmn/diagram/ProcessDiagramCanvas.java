@@ -79,6 +79,7 @@ public class ProcessDiagramCanvas {
   protected static Image RECEIVETASK_IMAGE;
   protected static Image SENDTASK_IMAGE;
   protected static Image MANUALTASK_IMAGE;
+  protected static Image BUSINESS_RULE_TASK_IMAGE;
   protected static Image TIMER_IMAGE;
   protected static Image ERROR_THROW_IMAGE;
   protected static Image ERROR_CATCH_IMAGE;
@@ -92,6 +93,7 @@ public class ProcessDiagramCanvas {
       RECEIVETASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/engine/impl/bpmn/deployer/receive.png"));
       SENDTASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/engine/impl/bpmn/deployer/send.png"));
       MANUALTASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/engine/impl/bpmn/deployer/manual.png"));
+      BUSINESS_RULE_TASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/engine/impl/bpmn/deployer/business_rule.png"));
       TIMER_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/engine/impl/bpmn/deployer/timer.png"));
       ERROR_THROW_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/engine/impl/bpmn/deployer/error_throw.png"));
       ERROR_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/engine/impl/bpmn/deployer/error_catch.png"));
@@ -382,6 +384,11 @@ public class ProcessDiagramCanvas {
   public void drawManualTask(String name, int x, int y, int width, int height) {
     drawTask(name, x, y, width, height);
     g.drawImage(MANUALTASK_IMAGE, x + 7, y + 7, ICON_SIZE, ICON_SIZE, null);
+  }
+  
+  public void drawBusinessRuleTask(String name, int x, int y, int width, int height) {
+    drawTask(name, x, y, width, height);
+    g.drawImage(BUSINESS_RULE_TASK_IMAGE, x + 7, y + 7, ICON_SIZE, ICON_SIZE, null);
   }
 
   public void drawExpandedSubProcess(String name, int x, int y, int width, int height) {

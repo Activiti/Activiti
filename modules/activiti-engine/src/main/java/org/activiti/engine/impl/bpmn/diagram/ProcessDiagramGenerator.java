@@ -132,6 +132,15 @@ public class ProcessDiagramGenerator {
                 activityImpl.getHeight());
       }
     });
+    
+    // businessRuleTask task
+    activityDrawInstructions.put("businessRuleTask", new ActivityDrawInstruction() {
+
+      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
+        processDiagramCreator.drawBusinessRuleTask((String) activityImpl.getProperty("name"), activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(),
+                activityImpl.getHeight());
+      }
+    });
 
     // exclusive gateway
     activityDrawInstructions.put("exclusiveGateway", new ActivityDrawInstruction() {
