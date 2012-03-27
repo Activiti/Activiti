@@ -116,6 +116,11 @@ public class JobManager extends AbstractManager {
   }
   
   @SuppressWarnings("unchecked")
+  public List<Job> findJobsByExecutionId(String executionId) {
+    return getDbSqlSession().selectList("selectJobsByExecutionId", executionId);
+  }
+  
+  @SuppressWarnings("unchecked")
   public List<JobEntity> findExclusiveJobsToExecute(String processInstanceId) {
     Map<String,Object> params = new HashMap<String, Object>();
     params.put("pid", processInstanceId);

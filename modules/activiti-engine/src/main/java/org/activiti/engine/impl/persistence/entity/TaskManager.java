@@ -86,6 +86,11 @@ public class TaskManager extends AbstractManager {
   }
 
   @SuppressWarnings("unchecked")
+  public List<TaskEntity> findTasksByExecutionId(String executionId) {
+    return getDbSqlSession().selectList("selectTasksByExecutionId", executionId);
+  }
+  
+  @SuppressWarnings("unchecked")
   public List<Task> findTasksByQueryCriteria(TaskQueryImpl taskQuery, Page page) {
     final String query = "selectTaskByQueryCriteria";
     return getDbSqlSession().selectList(query, taskQuery, page);

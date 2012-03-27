@@ -106,6 +106,12 @@
   <select id="selectTasksByParentTaskId" parameterType="string" resultMap="taskResultMap">
     select * from ACT_RU_TASK where PARENT_TASK_ID_ = #{parentTaskId}
   </select>
+
+  <select id="selectTasksByExecutionId" parameterType="string" resultMap="taskResultMap">
+    select distinct T.*
+    from ACT_RU_TASK T
+    where T.EXECUTION_ID_ = #{executionId}
+  </select>
   
   <select id="selectTaskByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultMap="taskResultMap">
     select distinct T.*

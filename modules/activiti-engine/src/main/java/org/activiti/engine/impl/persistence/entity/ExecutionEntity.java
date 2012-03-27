@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -822,9 +820,10 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     
     // delete all the tasks
     CommandContext commandContext = Context.getCommandContext();
-    List<TaskEntity> tasks = (List) new TaskQueryImpl(commandContext)
-      .executionId(id)
-      .list();
+    List<TaskEntity> tasks = commandContext
+      .getTaskManager()
+      .findTasksByExecutionId(id);
+    
     for (TaskEntity task : tasks) {
       if (replacedBy!=null) {
         task.setExecution(replacedBy);
@@ -834,10 +833,12 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
           .deleteTask(task, TaskEntity.DELETE_REASON_DELETED, false);
       }
     }
-
-    List<Job> jobs = new JobQueryImpl(commandContext)
-      .executionId(id)
-      .list();
+    
+    // Delete all jobs
+    List<Job> jobs = commandContext
+	    .getJobManager()
+	    .findJobsByExecutionId(id);
+    
     for (Job job: jobs) {
       if (replacedBy!=null) {
         ((JobEntity)job).setExecution((ExecutionEntity) replacedBy);
