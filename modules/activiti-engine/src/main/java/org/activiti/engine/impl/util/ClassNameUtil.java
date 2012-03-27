@@ -13,8 +13,8 @@
 
 package org.activiti.engine.impl.util;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -22,7 +22,7 @@ import java.util.Map;
  */
 public abstract class ClassNameUtil {
 
-  protected static final Map<Class<?>, String> cachedNames = new HashMap<Class<?>, String>();  
+  protected static final Map<Class<?>, String> cachedNames = new ConcurrentHashMap<Class<?>, String>();  
   
   public static String getClassNameWithoutPackage(Object object) {
     return getClassNameWithoutPackage(object.getClass());
