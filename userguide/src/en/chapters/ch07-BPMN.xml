@@ -4866,7 +4866,8 @@ assertNotNull(execution);
         <listitem><para>Taking a transition.</para></listitem>
         <listitem><para>Start and ending of an activity.</para></listitem>
         <listitem><para>Start and ending of a gateway.</para></listitem>
-        <listitem><para>Start and ending of an intermediate throw event.</para></listitem>
+        <listitem><para>Start and ending of intermediate events.</para></listitem>
+        <listitem><para>Ending an start event or starting an end event.</para></listitem>
       </itemizedlist>
       </para>
       <para>

@@ -14,12 +14,14 @@
 package org.activiti.examples.bpmn.executionlistener;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+import org.activiti.examples.bpmn.executionlistener.RecorderExecutionListener.RecordedEvent;
 
 /**
  * @author Frederik Heremans
@@ -70,6 +72,39 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
     
     assertProcessEnded(processInstance.getId());
   }
+  
+  @Deployment(resources = {"org/activiti/examples/bpmn/executionlistener/ExecutionListenersStartEndEvent.bpmn20.xml"})
+  public void testExecutionListenersOnStartEndEvents() {
+    RecorderExecutionListener.clear();
+    
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("executionListenersProcess");
+    assertProcessEnded(processInstance.getId());
+
+    List<RecordedEvent> recordedEvents = RecorderExecutionListener.getRecordedEvents();
+    assertEquals(4, recordedEvents.size());
+    
+    assertEquals("theStart", recordedEvents.get(0).getActivityId());
+    assertEquals("Start Event", recordedEvents.get(0).getActivityName());
+    assertEquals("Start Event Listener", recordedEvents.get(0).getParameter());
+    assertEquals("end", recordedEvents.get(0).getEventName());
+
+    assertEquals("noneEvent", recordedEvents.get(1).getActivityId());
+    assertEquals("None Event", recordedEvents.get(1).getActivityName());
+    assertEquals("Intermediate Catch Event Listener", recordedEvents.get(1).getParameter());
+    assertEquals("end", recordedEvents.get(1).getEventName());
+    
+    assertEquals("signalEvent", recordedEvents.get(2).getActivityId());
+    assertEquals("Signal Event", recordedEvents.get(2).getActivityName());
+    assertEquals("Intermediate Throw Event Listener", recordedEvents.get(2).getParameter());
+    assertEquals("start", recordedEvents.get(2).getEventName());
+    
+    assertEquals("theEnd", recordedEvents.get(3).getActivityId());
+    assertEquals("End Event", recordedEvents.get(3).getActivityName());
+    assertEquals("End Event Listener", recordedEvents.get(3).getParameter());
+    assertEquals("start", recordedEvents.get(3).getEventName());
+    
+  }
+  
   
   @Deployment(resources = {"org/activiti/examples/bpmn/executionlistener/ExecutionListenersFieldInjectionProcess.bpmn20.xml"})
   public void testExecutionListenerFieldInjection() {

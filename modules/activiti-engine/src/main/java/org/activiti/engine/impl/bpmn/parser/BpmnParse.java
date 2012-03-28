@@ -752,6 +752,7 @@ public class BpmnParse extends Parse {
       for (BpmnParseListener parseListener : parseListeners) {
         parseListener.parseStartEvent(startEventElement, scope, startEventActivity);
       }
+      parseExecutionListenersOnScope(startEventElement, startEventActivity);      
     }
     
     if(scope instanceof ProcessDefinitionEntity) {
@@ -974,6 +975,9 @@ public class BpmnParse extends Parse {
     } else {
       addError("Unsupported intermediate catch event type", intermediateEventElement);
     }
+    
+    parseExecutionListenersOnScope(intermediateEventElement, nestedActivity);
+    
     return nestedActivity;
   }
   
@@ -2075,6 +2079,8 @@ public class BpmnParse extends Parse {
       for (BpmnParseListener parseListener : parseListeners) {
         parseListener.parseEndEvent(endEventElement, scope, activity);
       }
+      
+      parseExecutionListenersOnScope(endEventElement, activity);      
     }
   }
 
