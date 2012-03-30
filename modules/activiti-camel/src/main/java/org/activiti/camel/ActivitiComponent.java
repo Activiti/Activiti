@@ -23,8 +23,11 @@ public class ActivitiComponent extends DefaultComponent {
 
   private RuntimeService runtimeService;
 
-  public ActivitiComponent(CamelContext context) {
-    super(context);
+  public ActivitiComponent() {}
+  
+  @Override
+  public void setCamelContext(CamelContext context) {
+    super.setCamelContext(context);
     runtimeService = getByType(context, RuntimeService.class);
   }
 
