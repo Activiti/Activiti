@@ -201,6 +201,34 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
   
   @Deployment
   /**
+   * see http://jira.codehaus.org/browse/ACT-1173
+   */
+  public void FAILING_testTimerOnEmbeddedSubprocess() {
+    String id = runtimeService.startProcessInstanceByKey("nonInterruptingTimerOnEmbeddedSubprocess").getId();
+    
+    TaskQuery tq = taskService.createTaskQuery().taskAssignee("kermit");
+    
+    assertEquals(1, tq.count());
+    
+    // Simulate timer
+    Job timer = managementService.createJobQuery().singleResult();
+    managementService.executeJob(timer.getId());
+    
+    tq = taskService.createTaskQuery().taskAssignee("kermit");
+    
+    assertEquals(2, tq.count());
+    
+    List<Task> tasks = tq.list(); 
+    
+    // this is where it fails...
+    taskService.complete(tasks.get(0).getId());
+    taskService.complete(tasks.get(1).getId());
+    
+    assertProcessEnded(id);
+  }
+  
+  @Deployment
+  /**
    * see http://jira.codehaus.org/browse/ACT-1106
    */
   public void FAILING_testReceiveTaskWithBoundaryTimer(){
