@@ -18,7 +18,6 @@ import java.util.Date;
 import java.util.ResourceBundle;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
 
 import org.activiti.explorer.I18nManager;
 
@@ -27,8 +26,8 @@ import org.activiti.explorer.I18nManager;
 /**
  * @author Frederik Heremans
  */
-public class HumanTimeTest extends TestCase {
-  
+public class HumanTimeTest {
+    
   public void IGNORED_testHumanTime() {
     // Set up the i18nManager
     I18nManager i18nManager = new DummyI18nManager();
