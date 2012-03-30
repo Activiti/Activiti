@@ -109,10 +109,16 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-		<groupId>com.fasterxml.uuid</groupId>
-		<artifactId>java-uuid-generator</artifactId>
-		<scope>provided</scope>
-	</dependency>
+      <groupId>com.fasterxml.uuid</groupId>
+      <artifactId>java-uuid-generator</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <!-- required for DiagramQueryTest -->
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <properties>

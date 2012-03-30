@@ -15,15 +15,19 @@ package org.activiti.engine;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
+import org.activiti.engine.repository.Bounds;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentQuery;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 
 
 /** Service providing access to the repository of process definitions and deployments.
  * 
  * @author Tom Baeyens
+ * @author Falko Menge
  */
 public interface RepositoryService {
 
@@ -107,4 +111,38 @@ public interface RepositoryService {
    * @throws ActivitiException if no such processDefinition can be found or if the process definition is already in state active.
    */
   void activateProcessDefinitionByKey(String processDefinitionKey);
+
+  /**
+   * Gives access to a deployed process model, e.g., a BPMN 2.0 XML file,
+   * through a stream of bytes.
+   *
+   * @param processDefinitionId
+   *          id of a {@link ProcessDefinition}, cannot be null.
+   * @throws ActivitiException
+   *           when the process model doesn't exist.
+   */
+  InputStream getProcessModel(String processDefinitionId);
+
+  /**
+   * Gives access to a deployed process diagram, e.g., a PNG image, through a
+   * stream of bytes.
+   *
+   * @param processDefinitionId
+   *          id of a {@link ProcessDefinition}, cannot be null.
+   * @throws ActivitiException
+   *           when the process diagram doesn't exist.
+   */
+  InputStream getProcessDiagram(String processDefinitionId);
+
+  /**
+   * Provides positions and dimensions of elements in a process diagram as
+   * provided by {@link RepositoryService#getProcessDiagram(String)}.
+   *
+   * This method requires a process model and a diagram image to be deployed.
+   * @param processDefinitionId id of a {@link ProcessDefinition}, cannot be null.
+   * @return Map with process element ids as keys and positions and dimensions as values.
+   * @throws ActivitiException when the process model or diagram doesn't exist.
+   */
+  Map<String, Bounds> getProcessDiagramLayout(String processDefinitionId);
+
 }

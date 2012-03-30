@@ -15,18 +15,22 @@ package org.activiti.engine.impl;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.cmd.ActivateProcessDefinitionCmd;
-import org.activiti.engine.impl.cmd.ActivateProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.DeleteDeploymentCmd;
 import org.activiti.engine.impl.cmd.DeployCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
+import org.activiti.engine.impl.cmd.GetDeploymentProcessDiagramCmd;
+import org.activiti.engine.impl.cmd.GetDeploymentProcessDiagramLayoutCmd;
+import org.activiti.engine.impl.cmd.GetDeploymentProcessModelCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentResourceCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentResourceNamesCmd;
 import org.activiti.engine.impl.cmd.SuspendProcessDefinitionCmd;
 import org.activiti.engine.impl.pvm.ReadOnlyProcessDefinition;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
+import org.activiti.engine.repository.Bounds;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentQuery;
@@ -35,6 +39,7 @@ import org.activiti.engine.repository.ProcessDefinitionQuery;
 
 /**
  * @author Tom Baeyens
+ * @author Falko Menge
  */
 public class RepositoryServiceImpl extends ServiceImpl implements RepositoryService {
 
@@ -94,7 +99,17 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
   public void activateProcessDefinitionByKey(String processDefinitionKey) {
     commandExecutor.execute(new ActivateProcessDefinitionCmd(null, processDefinitionKey));
   }
-  
-  
-}
 
+  public InputStream getProcessModel(String processDefinitionId) {
+    return commandExecutor.execute(new GetDeploymentProcessModelCmd(processDefinitionId));
+  }
+
+  public InputStream getProcessDiagram(String processDefinitionId) {
+    return commandExecutor.execute(new GetDeploymentProcessDiagramCmd(processDefinitionId));
+  }
+
+  public Map<String, Bounds> getProcessDiagramLayout(String processDefinitionId) {
+    return commandExecutor.execute(new GetDeploymentProcessDiagramLayoutCmd(processDefinitionId));
+  }
+
+}
