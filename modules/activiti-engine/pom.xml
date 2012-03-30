@@ -243,26 +243,7 @@
 		            </goals>
 		          </execution>
 		        </executions>
-		      </plugin>
-          <plugin>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <version>1.4</version>
-            <executions>
-              <execution>
-                <id>remove-meta-inf-persistence-xml</id>
-                <phase>process-test-classes</phase>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <tasks>
-                    <!-- this will prevent that the persistence.xml causes trouble on jboss continuous integration testing -->
-                    <delete dir="target/test-classes/META-INF" />
-                  </tasks>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
+		      </plugin>          
         </plugins>
       </build>
     </profile>
