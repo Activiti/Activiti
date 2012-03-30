@@ -27,14 +27,17 @@
 					<groupId>org.jboss.arquillian.container</groupId>
 					<artifactId>arquillian-openwebbeans-embedded-1</artifactId>
 					<version>1.0.0.CR2</version>
+					<scope>test</scope>
 				</dependency>
 				<dependency>
 					<groupId>org.apache.openwebbeans</groupId>
 					<artifactId>openwebbeans-spi</artifactId>
+					<scope>test</scope>
 				</dependency>
 				<dependency>
 					<groupId>org.apache.openwebbeans</groupId>
 					<artifactId>openwebbeans-impl</artifactId>
+					<scope>test</scope>
 				</dependency>
 			</dependencies>
 			<dependencyManagement>
@@ -64,14 +67,17 @@
 				<dependency>
 					<groupId>org.jboss.weld</groupId>
 					<artifactId>weld-core</artifactId>
+					<scope>test</scope>
 				</dependency>
 				<dependency>
 					<groupId>org.jboss.weld</groupId>
 					<artifactId>weld-api</artifactId>
+					<scope>test</scope>
 				</dependency>
 				<dependency>
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-simple</artifactId>
+					<scope>test</scope>
 				</dependency>
 			</dependencies>
 
@@ -121,7 +127,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<scope>provided</scope>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
