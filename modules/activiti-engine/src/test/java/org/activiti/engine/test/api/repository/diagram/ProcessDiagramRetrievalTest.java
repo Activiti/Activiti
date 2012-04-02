@@ -153,7 +153,7 @@ public class ProcessDiagramRetrievalTest {
       ProcessDefinition processDefinition = processDefinitionQuery.singleResult();
       InputStream expectedStream = new FileInputStream("src/test/resources/org/activiti/engine/test/api/repository/diagram/" + imageFileName);
       InputStream actualStream = repositoryService.getProcessDiagram(processDefinition.getId());
-//      writeToFile(actualStream,
+//      writeToFile(repositoryService.getProcessDiagram(processDefinition.getId()),
 //              new File("src/test/resources/org/activiti/engine/test/api/repository/diagram/" + imageFileName + ".actual.png"));
       assertTrue(isEqual(expectedStream, actualStream));
     } else {
@@ -268,7 +268,7 @@ public class ProcessDiagramRetrievalTest {
   }
   
   /**
-   * Might be used for debugging {@link ProcessDiagramRetrievalTest#testGetProcessDiagramLayout()}.
+   * Might be used for debugging {@link ProcessDiagramRetrievalTest#testGetProcessDiagram()}.
    */
   @SuppressWarnings("unused")
   private static void writeToFile(InputStream is, File file) throws Exception {
