@@ -43,17 +43,14 @@ public class Bpmn20NamespaceContext implements NamespaceContext {
     namespaceUris.put("omgdc", "http://www.omg.org/spec/DD/20100524/DC");
   }
 
-  @Override
   public String getNamespaceURI(String prefix) {
     return namespaceUris.get(prefix);
   }
 
-  @Override
   public String getPrefix(String namespaceURI) {
     return getKeyByValue(namespaceUris, namespaceURI);
   }
 
-  @Override
   public Iterator<String> getPrefixes(String namespaceURI) {
     return getKeysByValue(namespaceUris, namespaceURI).iterator();
   }
