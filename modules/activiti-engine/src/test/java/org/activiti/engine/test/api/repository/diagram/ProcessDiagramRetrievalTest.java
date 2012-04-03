@@ -193,7 +193,7 @@ public class ProcessDiagramRetrievalTest {
       FileUtils.writeStringToFile(htmlFile, html);
       fail("The assertions of this test only work if ProcessDiagramRetrievalTest#OVERWRITE_EXPECTED_HTML_FILES is set to false.");
     }
-    assertEquals(FileUtils.readFileToString(htmlFile), html);
+    assertEquals(FileUtils.readFileToString(htmlFile).replace("\r", ""), html); // remove carriage returns in case the files have been fetched via Git on Windows
   }
 
   private static String generateHtmlCode(String imageUrl, Map<String, Bounds> mapOfBoundsForImage, String highlightedActivityId) {
