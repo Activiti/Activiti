@@ -998,6 +998,8 @@ public class BpmnParse extends Parse {
     
     
     if(signalEventDefinitionElement != null) {
+      nestedActivityImpl.setProperty("type", "intermediateSignalThrow");  
+      
       SignalEventDefinition signalDefinition = parseSignalEventDefinition(signalEventDefinitionElement);            
       activityBehavior = new IntermediateThrowSignalEventActivityBehavior(signalDefinition);
     } else if(compensateEventDefinitionElement != null) {

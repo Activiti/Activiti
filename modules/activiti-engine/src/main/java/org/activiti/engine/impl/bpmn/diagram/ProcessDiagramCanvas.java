@@ -83,6 +83,8 @@ public class ProcessDiagramCanvas {
   protected static Image TIMER_IMAGE;
   protected static Image ERROR_THROW_IMAGE;
   protected static Image ERROR_CATCH_IMAGE;
+  protected static Image SIGNAL_CATCH_IMAGE;
+  protected static Image SIGNAL_THROW_IMAGE;
 
   // icons are statically loaded for performace
   static {
@@ -97,6 +99,8 @@ public class ProcessDiagramCanvas {
       TIMER_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/engine/impl/bpmn/deployer/timer.png"));
       ERROR_THROW_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/engine/impl/bpmn/deployer/error_throw.png"));
       ERROR_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/engine/impl/bpmn/deployer/error_catch.png"));
+      SIGNAL_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/engine/impl/bpmn/deployer/signal_catch.png"));
+      SIGNAL_THROW_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/engine/impl/bpmn/deployer/signal_throw.png"));
     } catch (IOException e) {
       LOGGER.warning("Could not load image for process diagram creation: " + e.getMessage());
     }
@@ -239,6 +243,14 @@ public class ProcessDiagramCanvas {
 
   public void drawCatchingErroEvent(int x, int y, int width, int height) {
     drawCatchingEvent(x, y, width, height, ERROR_CATCH_IMAGE);
+  }
+  
+  public void drawCatchingSignalEvent(int x, int y, int width, int height) {
+    drawCatchingEvent(x, y, width, height, SIGNAL_CATCH_IMAGE);
+  }
+  
+  public void drawThrowingSignalEvent(int x, int y, int width, int height) {
+    drawCatchingEvent(x, y, width, height, SIGNAL_THROW_IMAGE);
   }
 
   public void drawSequenceflow(int srcX, int srcY, int targetX, int targetY, boolean conditional) {

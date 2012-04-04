@@ -53,7 +53,23 @@ public class ProcessDiagramGenerator {
         processDiagramCreator.drawTimerStartEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
       }
     });
-
+    
+    // signal catch
+    activityDrawInstructions.put("intermediateSignalCatch", new ActivityDrawInstruction() {
+      
+      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
+        processDiagramCreator.drawCatchingSignalEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
+      }
+    });
+    
+    // signal throw
+    activityDrawInstructions.put("intermediateSignalThrow", new ActivityDrawInstruction() {
+      
+      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
+        processDiagramCreator.drawThrowingSignalEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
+      }
+    });
+    
     // end event
     activityDrawInstructions.put("endEvent", new ActivityDrawInstruction() {
 
@@ -69,7 +85,7 @@ public class ProcessDiagramGenerator {
         processDiagramCreator.drawErrorEndEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
       }
     });
-
+    
     // task
     activityDrawInstructions.put("task", new ActivityDrawInstruction() {
 
@@ -179,6 +195,14 @@ public class ProcessDiagramGenerator {
 
       public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
         processDiagramCreator.drawCatchingErroEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
+      }
+    });
+    
+    // Boundary signal event
+    activityDrawInstructions.put("boundarySignal", new ActivityDrawInstruction() {
+
+      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
+        processDiagramCreator.drawCatchingSignalEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
       }
     });
 
