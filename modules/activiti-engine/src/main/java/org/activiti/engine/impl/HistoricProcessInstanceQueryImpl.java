@@ -26,7 +26,6 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.variable.VariableTypes;
-import org.apache.commons.lang.time.DateUtils;
 
 
 /**
@@ -142,14 +141,21 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
 	}
 	
 	private Date calculateBeforeMidnight(Date date){
-		Date calc = DateUtils.truncate(date, Calendar.DATE);
-		calc = DateUtils.addDays(calc, 1);
-		
-		return DateUtils.addSeconds(calc, -1);
+	  Calendar cal = Calendar.getInstance();
+	  cal.setTime(date);
+	  cal.add(Calendar.DAY_OF_MONTH, 1);
+	  cal.add(Calendar.SECOND, -1);		
+		return cal.getTime();
 	}
 	
 	private Date calculateMidnight(Date date){
-		return DateUtils.truncate(date, Calendar.DATE);
+	  Calendar cal = Calendar.getInstance();
+	  cal.setTime(date);
+	  cal.set(Calendar.MILLISECOND, 0);
+	  cal.set(Calendar.SECOND, 0);
+	  cal.set(Calendar.MINUTE, 0);
+	  cal.set(Calendar.HOUR, 0);	  
+		return cal.getTime();
 	}
 	
 	/* public HistoricProcessInstanceQuery processVariableEquals(String variableName, Object variableValue) {
