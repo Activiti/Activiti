@@ -86,6 +86,14 @@ public class ProcessDiagramGenerator {
       }
     });
     
+    // error start event
+    activityDrawInstructions.put("errorStartEvent", new ActivityDrawInstruction() {
+
+      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
+        processDiagramCreator.drawErrorStartEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
+      }
+    });
+    
     // task
     activityDrawInstructions.put("task", new ActivityDrawInstruction() {
 

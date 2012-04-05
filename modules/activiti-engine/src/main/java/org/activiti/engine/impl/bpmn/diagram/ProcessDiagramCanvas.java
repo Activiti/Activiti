@@ -216,6 +216,11 @@ public class ProcessDiagramCanvas {
     drawNoneEndEvent(x, y, width, height);
     g.drawImage(ERROR_THROW_IMAGE, x + 3, y + 3, width - 6, height - 6, null);
   }
+  
+  public void drawErrorStartEvent(int x, int y, int width, int height) {
+    drawNoneStartEvent(x, y, width, height);
+    g.drawImage(ERROR_CATCH_IMAGE, x + 3, y + 3, width - 6, height - 6, null);
+  }
 
   public void drawCatchingEvent(int x, int y, int width, int height, Image image) {
     // event circles
