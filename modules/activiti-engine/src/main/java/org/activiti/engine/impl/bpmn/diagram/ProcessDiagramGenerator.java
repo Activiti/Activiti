@@ -227,12 +227,16 @@ public class ProcessDiagramGenerator {
 
       public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
         Boolean isExpanded = (Boolean) activityImpl.getProperty(BpmnParse.PROPERTYNAME_ISEXPANDED);
+        Boolean isTriggeredByEvent = (Boolean) activityImpl.getProperty("triggeredByEvent");
+        if(isTriggeredByEvent == null) {
+          isTriggeredByEvent = Boolean.TRUE;
+        }
         if (isExpanded != null && isExpanded == false) {
           processDiagramCreator.drawCollapsedSubProcess((String) activityImpl.getProperty("name"), activityImpl.getX(), activityImpl.getY(),
-                  activityImpl.getWidth(), activityImpl.getHeight());
+                  activityImpl.getWidth(), activityImpl.getHeight(), isTriggeredByEvent);
         } else {
           processDiagramCreator.drawExpandedSubProcess((String) activityImpl.getProperty("name"), activityImpl.getX(), activityImpl.getY(),
-                  activityImpl.getWidth(), activityImpl.getHeight());
+                  activityImpl.getWidth(), activityImpl.getHeight(), isTriggeredByEvent);
         }
       }
     });

@@ -70,6 +70,7 @@ public class ProcessDiagramCanvas {
   protected static Stroke GATEWAY_TYPE_STROKE = new BasicStroke(3.0f);
   protected static Stroke END_EVENT_STROKE = new BasicStroke(3.0f);
   protected static Stroke MULTI_INSTANCE_STROKE = new BasicStroke(1.3f);
+  protected static Stroke EVENT_SUBPROCESS_STROKE = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.0f,  new float[] { 1.0f }, 0.0f);
 
   // icons
   protected static int ICON_SIZE = 16;
@@ -408,15 +409,24 @@ public class ProcessDiagramCanvas {
     g.drawImage(BUSINESS_RULE_TASK_IMAGE, x + 7, y + 7, ICON_SIZE, ICON_SIZE, null);
   }
 
-  public void drawExpandedSubProcess(String name, int x, int y, int width, int height) {
+  public void drawExpandedSubProcess(String name, int x, int y, int width, int height, Boolean isTriggeredByEvent) {
     RoundRectangle2D rect = new RoundRectangle2D.Double(x, y, width, height, 20, 20);
-    g.draw(rect);
+    
+    // Use different stroke (dashed)
+    if(isTriggeredByEvent) {
+      Stroke originalStroke = g.getStroke();
+      g.setStroke(EVENT_SUBPROCESS_STROKE);
+      g.draw(rect);
+      g.setStroke(originalStroke);
+    } else {
+      g.draw(rect);
+    }
 
     String text = fitTextToWidth(name, width);
     g.drawString(text, x + 10, y + 15);
   }
 
-  public void drawCollapsedSubProcess(String name, int x, int y, int width, int height) {
+  public void drawCollapsedSubProcess(String name, int x, int y, int width, int height, Boolean isTriggeredByEvent) {
     drawCollapsedTask(name, x, y, width, height, false);
   }
 
