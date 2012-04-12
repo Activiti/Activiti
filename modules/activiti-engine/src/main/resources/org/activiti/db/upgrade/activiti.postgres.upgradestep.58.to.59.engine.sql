@@ -56,4 +56,4 @@ add DELETE_REASON_ varchar(4000);
 alter table ACT_GE_BYTEARRAY 
 add GENERATED_ boolean;
 
-update ACT_GE_BYTEARRAY set GENERATED_ = 0;
+update ACT_GE_BYTEARRAY set GENERATED_ = false;
