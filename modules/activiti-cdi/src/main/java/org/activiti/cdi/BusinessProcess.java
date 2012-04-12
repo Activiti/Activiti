@@ -239,10 +239,12 @@ public class BusinessProcess implements Serializable {
    * this method allows to start a conversation if no conversation is active
    */
   public Task startTask(String taskId, boolean beginConversation) {
-    Conversation conversation = conversationInstance.get();
-    if(conversation.isTransient()) {
-     conversation.begin(); 
-    }    
+    if(beginConversation) {
+      Conversation conversation = conversationInstance.get();
+      if(conversation.isTransient()) {
+       conversation.begin(); 
+      }
+    }
     return startTask(taskId);
   }
 
