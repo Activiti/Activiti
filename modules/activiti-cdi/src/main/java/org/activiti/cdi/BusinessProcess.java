@@ -434,7 +434,8 @@ public class BusinessProcess implements Serializable {
    * @see #getExecution()
    */
   @Produces @Named public String getExecutionId() {
-    return associationManager.getExecutionId();
+    Execution e = getExecution();
+    return e != null ? e.getId() : null;
   }
 
   /**
