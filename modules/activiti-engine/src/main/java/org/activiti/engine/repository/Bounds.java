@@ -15,8 +15,6 @@ package org.activiti.engine.repository;
 
 import java.io.Serializable;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-
 /**
  * Stores position and dimensions of a diagram shape.
  *
