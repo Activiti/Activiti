@@ -73,7 +73,7 @@
       and (PROCESS_INSTANCE_ID_ = #{pid})  
   </select>
   
-  <select id="selectExclusiveJobsToExecute_oracle" parameterType="map" resultMap="jobResultMap">
+  <select id="selectExclusiveJobsToExecute_integerBoolean" parameterType="map" resultMap="jobResultMap">
     select * 
     from ACT_RU_JOB  
     where (RETRIES_ &gt; 0)
