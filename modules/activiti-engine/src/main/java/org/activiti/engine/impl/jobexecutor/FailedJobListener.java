@@ -14,7 +14,7 @@
 package org.activiti.engine.impl.jobexecutor;
 
 import org.activiti.engine.impl.cfg.TransactionListener;
-import org.activiti.engine.impl.cmd.DecrementJobRetriesCmd;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
@@ -22,20 +22,22 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 /**
  * @author Frederik Heremans
  */
-public class DecrementJobRetriesListener implements TransactionListener {
+public class FailedJobListener implements TransactionListener {
 
   protected CommandExecutor commandExecutor;
   protected String jobId;
   protected Throwable exception;
 
-  public DecrementJobRetriesListener(CommandExecutor commandExecutor, String jobId, Throwable exception) {
+  public FailedJobListener(CommandExecutor commandExecutor, String jobId, Throwable exception) {
     this.commandExecutor = commandExecutor;
     this.jobId = jobId;
     this.exception = exception;
   }
   
   public void execute(CommandContext commandContext) {
-    commandExecutor.execute(new DecrementJobRetriesCmd(jobId, exception));
+    commandExecutor.execute(Context.getProcessEngineConfiguration()
+                              .getFailedJobCommandFactory()
+                              .getCommand(jobId, exception));
   }
 
 }

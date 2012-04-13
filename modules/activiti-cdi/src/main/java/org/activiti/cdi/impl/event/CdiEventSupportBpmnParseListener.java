@@ -203,7 +203,13 @@ public class CdiEventSupportBpmnParseListener implements BpmnParseListener {
     addStartEventListener(activity);
     addEndEventListener(activity);    
   }
-  
-  
+
+  @Override
+  public void parseIntermediateCatchEvent(Element intermediateEventElement, ScopeImpl scope, ActivityImpl activity) {
+  }
+
+  @Override
+  public void parseBoundaryEvent(Element boundaryEventElement, ScopeImpl scopeElement, ActivityImpl nestedActivity) {
+  }
 
 }

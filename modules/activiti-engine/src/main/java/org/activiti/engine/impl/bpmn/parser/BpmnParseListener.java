@@ -63,5 +63,7 @@ public interface BpmnParseListener {
   void parseTransaction(Element transactionElement, ScopeImpl scope, ActivityImpl activity);
   void parseCompensateEventDefinition(Element compensateEventDefinition, ActivityImpl compensationActivity);
   void parseIntermediateThrowEvent(Element intermediateEventElement, ScopeImpl scope, ActivityImpl activity);
+  void parseIntermediateCatchEvent(Element intermediateEventElement, ScopeImpl scope, ActivityImpl activity);
+  void parseBoundaryEvent(Element boundaryEventElement, ScopeImpl scopeElement, ActivityImpl nestedActivity);
 
 }

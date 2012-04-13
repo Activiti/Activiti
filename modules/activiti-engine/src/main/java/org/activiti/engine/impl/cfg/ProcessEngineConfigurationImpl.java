@@ -85,7 +85,9 @@ import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.jobexecutor.AsyncContinuationJobHandler;
 import org.activiti.engine.impl.jobexecutor.CallerRunsRejectedJobsHandler;
+import org.activiti.engine.impl.jobexecutor.DefaultFailedJobCommandFactory;
 import org.activiti.engine.impl.jobexecutor.DefaultJobExecutor;
+import org.activiti.engine.impl.jobexecutor.FailedJobCommandFactory;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
 import org.activiti.engine.impl.jobexecutor.ProcessEventJobHandler;
@@ -275,6 +277,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   protected Map<String, EventHandler> eventHandlers;
   protected List<EventHandler> customEventHandlers;
+
+  protected FailedJobCommandFactory failedJobCommandFactory;
   
   // buildProcessEngine ///////////////////////////////////////////////////////
   
@@ -309,6 +313,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initJpa();
     initDelegateInterceptor();
     initEventHandlers();
+    initFailedJobCommandFactory();
+  }
+
+  // failedJobCommandFactory ////////////////////////////////////////////////////////
+  
+  protected void initFailedJobCommandFactory() {
+    if (failedJobCommandFactory == null) {
+      failedJobCommandFactory = new DefaultFailedJobCommandFactory();
+    }
   }
 
   // command executors ////////////////////////////////////////////////////////
@@ -1569,6 +1582,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     
   public void setCustomEventHandlers(List<EventHandler> customEventHandlers) {
     this.customEventHandlers = customEventHandlers;
+  }
+  
+  public FailedJobCommandFactory getFailedJobCommandFactory() {
+    return failedJobCommandFactory;
+  }
+  
+  public ProcessEngineConfigurationImpl setFailedJobCommandFactory(FailedJobCommandFactory failedJobCommandFactory) {
+    this.failedJobCommandFactory = failedJobCommandFactory;
+    return this;
   }
 
 }

@@ -976,6 +976,10 @@ public class BpmnParse extends Parse {
       addError("Unsupported intermediate catch event type", intermediateEventElement);
     }
     
+    for (BpmnParseListener parseListener : parseListeners) {
+      parseListener.parseIntermediateCatchEvent(intermediateEventElement, scopeElement, nestedActivity);
+    }
+    
     parseExecutionListenersOnScope(intermediateEventElement, nestedActivity);
     
     return nestedActivity;
@@ -2152,6 +2156,10 @@ public class BpmnParse extends Parse {
         parseCatchCompensateEventDefinition(compensateEventDefinition, nestedActivity);      
       } else {
         addError("Unsupported boundary event type", boundaryEventElement);
+      }
+      
+      for (BpmnParseListener parseListener : parseListeners) {
+        parseListener.parseBoundaryEvent(boundaryEventElement, scopeElement, nestedActivity);
       }
 
       nestedActivity.setActivityBehavior(behavior);
