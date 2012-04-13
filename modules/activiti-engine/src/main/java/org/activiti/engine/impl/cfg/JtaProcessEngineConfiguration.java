@@ -19,6 +19,7 @@ import java.util.List;
 
 import javax.transaction.TransactionManager;
 
+import org.activiti.engine.impl.cfg.jta.JtaTransactionContextFactory;
 import org.activiti.engine.impl.interceptor.CommandContextInterceptor;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.JtaTransactionInterceptor;
@@ -49,7 +50,14 @@ public class JtaProcessEngineConfiguration extends ProcessEngineConfigurationImp
     defaultCommandInterceptorsTxRequiresNew.add(new CommandContextInterceptor(commandContextFactory, this));
     return defaultCommandInterceptorsTxRequiresNew;
   }
-
+  
+  @Override
+  protected void initTransactionContextFactory() {
+    if(transactionContextFactory == null) {
+      transactionContextFactory = new JtaTransactionContextFactory(transactionManager);
+    }
+  }
+  
   public TransactionManager getTransactionManager() {
     return transactionManager;
   }
