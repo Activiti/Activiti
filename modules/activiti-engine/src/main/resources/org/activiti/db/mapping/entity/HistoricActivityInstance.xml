@@ -21,7 +21,7 @@
   <!-- HISTORIC ACTIVITY INSTANCE INSERT -->
   
   <insert id="insertHistoricActivityInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity">
-      insert into ACT_HI_ACTINST (
+      insert into ${prefix}ACT_HI_ACTINST (
         ID_,
         PROC_DEF_ID_,
         PROC_INST_ID_,
@@ -51,7 +51,7 @@
   <!-- HISTORIC ACTIVITY INSTANCE UPDATE -->
   
   <update id="updateHistoricActivityInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity">
-    update ACT_HI_ACTINST set
+    update ${prefix}ACT_HI_ACTINST set
       EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR},
       ASSIGNEE_ = #{assignee, jdbcType=VARCHAR},
       END_TIME_ = #{endTime, jdbcType=TIMESTAMP},
@@ -62,7 +62,7 @@
   <!-- HISTORIC ACTIVITY INSTANCE DELETE -->
   
   <delete id="deleteHistoricActivityInstancesByProcessInstanceId">
-    delete from ACT_HI_ACTINST where PROC_INST_ID_ = #{processInstanceId}
+    delete from ${prefix}ACT_HI_ACTINST where PROC_INST_ID_ = #{processInstanceId}
   </delete>
 
   <!-- HISTORIC ACTIVITY INSTANCE RESULT MAP -->
@@ -84,7 +84,7 @@
   <!-- HISTORIC ACTIVITY INSTANCE SELECT -->
   
   <select id="selectHistoricActivityInstance" resultMap="historicActivityInstanceResultMap">
-    select * from ACT_HI_ACTINST where ACT_ID_ = #{activityId} and PROC_INST_ID_ = #{processInstanceId}
+    select * from ${prefix}ACT_HI_ACTINST where ACT_ID_ = #{activityId} and PROC_INST_ID_ = #{processInstanceId}
   </select>
 
   <select id="selectHistoricActivityInstancesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricActivityInstanceQueryImpl" resultMap="historicActivityInstanceResultMap">
@@ -101,7 +101,7 @@
   </select>
   
   <sql id="selectHistoricActivityInstancesByQueryCriteriaSql">
-    from ACT_HI_ACTINST HAI
+    from ${prefix}ACT_HI_ACTINST HAI
     <where>
       <if test="processInstanceId != null">
         HAI.PROC_INST_ID_ = #{processInstanceId}

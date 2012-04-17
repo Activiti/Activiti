@@ -7,7 +7,7 @@
   <!-- PROCESSDEFINITION INSERT -->
 
   <insert id="insertProcessDefinition" parameterType="org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity">
-    insert into ACT_RE_PROCDEF(ID_, REV_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_, DGRM_RESOURCE_NAME_, HAS_START_FORM_KEY_, SUSPENSION_STATE_)
+    insert into ${prefix}ACT_RE_PROCDEF(ID_, REV_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_, DGRM_RESOURCE_NAME_, HAS_START_FORM_KEY_, SUSPENSION_STATE_)
     values (#{id, jdbcType=VARCHAR},
     		1,
             #{category, jdbcType=VARCHAR},
@@ -24,7 +24,7 @@
   <!-- PROCESSDEFINITION UPDATE -->
 
   <update id="updateProcessDefinition" parameterType="org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity">
-    update ACT_RE_PROCDEF set
+    update ${prefix}ACT_RE_PROCDEF set
       REV_ = #{revisionNext, jdbcType=INTEGER},    
       SUSPENSION_STATE_ = #{suspensionState, jdbcType=INTEGER}
     where ID_ = #{id, jdbcType=VARCHAR}
@@ -34,7 +34,7 @@
   <!-- PROCESSDEFINITION DELETE -->
 
   <delete id="deleteProcessDefinitionsByDeploymentId" parameterType="string">
-    delete from ACT_RE_PROCDEF where DEPLOYMENT_ID_ = #{deploymenId} 
+    delete from ${prefix}ACT_RE_PROCDEF where DEPLOYMENT_ID_ = #{deploymenId} 
   </delete>
   
   <!-- PROCESSDEFINITION RESULTMAP -->
@@ -56,7 +56,7 @@
   <!-- PROCESSDEFINITION SELECT -->
   
   <select id="selectProcessDefinitionById" parameterType="string" resultMap="processDefinitionResultMap">
-    select * from ACT_RE_PROCDEF where ID_ = #{processDefinitionId}
+    select * from ${prefix}ACT_RE_PROCDEF where ID_ = #{processDefinitionId}
   </select>
 
   <select id="selectProcessDefinitionsByQueryCriteria" parameterType="org.activiti.engine.impl.ProcessDefinitionQueryImpl" resultMap="processDefinitionResultMap">
@@ -73,9 +73,9 @@
   </select>
   
   <sql id="selectProcessDefinitionsByQueryCriteriaSql">  
-    from ACT_RE_PROCDEF PD
+    from ${prefix}ACT_RE_PROCDEF PD
     <if test="eventSubscriptionType != null">
-    	inner join ACT_RU_EVENT_SUBSCR EVT on PD.ID_ = EVT.CONFIGURATION_
+    	inner join ${prefix}ACT_RU_EVENT_SUBSCR EVT on PD.ID_ = EVT.CONFIGURATION_
     </if>
     <where>
       <if test="id != null">
@@ -109,7 +109,7 @@
         and PD.DEPLOYMENT_ID_ = #{deploymentId}
       </if>
       <if test="latest">
-        and PD.VERSION_ = (select max(VERSION_) from ACT_RE_PROCDEF where KEY_ = PD.KEY_)
+        and PD.VERSION_ = (select max(VERSION_) from ${prefix}ACT_RE_PROCDEF where KEY_ = PD.KEY_)
       </if>
       <if test="suspensionState != null">
         and (PD.SUSPENSION_STATE_ = #{suspensionState.stateCode})
@@ -121,30 +121,30 @@
   </sql>
   
   <select id="selectProcessDefinitions" resultMap="processDefinitionResultMap">
-    select * from ACT_RE_PROCDEF
+    select * from ${prefix}ACT_RE_PROCDEF
     order by KEY_ ASC, VERSION_ DESC
   </select>
   
   <select id="selectProcessDefinitionByDeployment" parameterType="string" resultMap="processDefinitionResultMap">
-    select * from ACT_RE_PROCDEF where DEPLOYMENT_ID_ = #{deploymentId}
+    select * from ${prefix}ACT_RE_PROCDEF where DEPLOYMENT_ID_ = #{deploymentId}
   </select>
   
   <select id="selectProcessDefinitionByDeploymentAndKey" parameterType="map" resultMap="processDefinitionResultMap">
     select * 
-    from ACT_RE_PROCDEF 
+    from ${prefix}ACT_RE_PROCDEF 
     where DEPLOYMENT_ID_ = #{deploymentId}
       and KEY_ = #{processDefinitionKey}
   </select>
   
   <select id="selectProcessDefinitionsByDeploymentId" parameterType="string" resultMap="processDefinitionResultMap">
-    select * from ACT_RE_PROCDEF where DEPLOYMENT_ID_ = #{deploymentId}
+    select * from ${prefix}ACT_RE_PROCDEF where DEPLOYMENT_ID_ = #{deploymentId}
   </select>
   
   <select id="selectLatestProcessDefinitionByKey" parameterType="string" resultMap="processDefinitionResultMap">
     select *
-    from ACT_RE_PROCDEF 
+    from ${prefix}ACT_RE_PROCDEF 
     where KEY_ = #{key} and
-          VERSION_ = (select max(VERSION_) from ACT_RE_PROCDEF where KEY_ = #{processDefinitionKey})
+          VERSION_ = (select max(VERSION_) from ${prefix}ACT_RE_PROCDEF where KEY_ = #{processDefinitionKey})
   </select>
 
   <!-- mysql specific sql -->

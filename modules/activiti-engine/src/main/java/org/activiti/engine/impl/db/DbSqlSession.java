@@ -683,6 +683,7 @@ public class DbSqlSession implements Session {
   }
 
   public boolean isTablePresent(String tableName) {
+    tableName = prependDatabaseTablePrefix(tableName);
     Connection connection = null;
     try {
       connection = sqlSession.getConnection();
@@ -714,6 +715,10 @@ public class DbSqlSession implements Session {
     } catch (Exception e) {
       throw new ActivitiException("couldn't check if tables are already present using metadata: "+e.getMessage(), e); 
     }
+  }
+
+  protected String prependDatabaseTablePrefix(String tableName) {
+    return dbSqlSessionFactory.getDatabaseTablePrefix() + tableName;    
   }
 
   protected void dbSchemaUpgrade(String component, String dbVersion) {

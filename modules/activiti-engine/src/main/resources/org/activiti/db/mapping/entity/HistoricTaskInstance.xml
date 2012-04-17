@@ -21,7 +21,7 @@
   <!-- HISTORIC TASK INSTANCE INSERT -->
   
   <insert id="insertHistoricTaskInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity">
-      insert into ACT_HI_TASKINST (
+      insert into ${prefix}ACT_HI_TASKINST (
         ID_,
         PROC_DEF_ID_,
         PROC_INST_ID_,
@@ -61,7 +61,7 @@
   <!-- HISTORIC TASK INSTANCE UPDATE -->
   
   <update id="updateHistoricTaskInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity">
-    update ACT_HI_TASKINST set
+    update ${prefix}ACT_HI_TASKINST set
       EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR},
       NAME_ = #{name, jdbcType=VARCHAR},
       PARENT_TASK_ID_ = #{parentTaskId, jdbcType=VARCHAR},
@@ -80,7 +80,7 @@
   <!-- HISTORIC TASK INSTANCE DELETE -->
   
   <delete id="deleteHistoricTaskInstance">
-    delete from ACT_HI_TASKINST where ID_ = #{historicTaskInstanceId}
+    delete from ${prefix}ACT_HI_TASKINST where ID_ = #{historicTaskInstanceId}
   </delete>
 
   <!-- HISTORIC TASK INSTANCE RESULT MAP -->
@@ -107,12 +107,12 @@
   <!-- HISTORIC TASK INSTANCE SELECT -->
   
   <select id="selectHistoricTaskInstance" resultMap="historicTaskInstanceResultMap">
-    select * from ACT_HI_TASKINST where ID_ = #{historicTaskInstanceId}
+    select * from ${prefix}ACT_HI_TASKINST where ID_ = #{historicTaskInstanceId}
   </select>
   
   <select id="selectHistoricTaskInstanceIdsByProcessInstanceId" resultType="string" parameterType="string" >
     select ID_ 
-    from ACT_HI_TASKINST 
+    from ${prefix}ACT_HI_TASKINST 
     where PROC_INST_ID_ = #{processInstanceId}
   </select>
 
@@ -130,12 +130,12 @@
   </select>
   
   <sql id="selectHistoricTaskInstancesByQueryCriteriaSql">
-    from ACT_HI_TASKINST HTI
+    from ${prefix}ACT_HI_TASKINST HTI
     <if test="processFinished || processUnfinished">
-      inner join ACT_HI_PROCINST HPI ON HTI.PROC_INST_ID_ = HPI.ID_
+      inner join ${prefix}ACT_HI_PROCINST HPI ON HTI.PROC_INST_ID_ = HPI.ID_
     </if>
     <if test="processDefinitionKey != null || processDefinitionName != null">
-      inner join ACT_RE_PROCDEF D on HTI.PROC_DEF_ID_ = D.ID_
+      inner join ${prefix}ACT_RE_PROCDEF D on HTI.PROC_DEF_ID_ = D.ID_
     </if>
     <where>
       <if test="taskId != null">
@@ -219,20 +219,20 @@
       <foreach collection="variables" index="index" item="var">
         and exists (
           select HD.ID_ 
-          from ACT_HI_DETAIL HD 
+          from ${prefix}ACT_HI_DETAIL HD 
           where
             HD.TYPE_ = 'VariableUpdate' 
             and HD.NAME_ =  #{var.name}
             <choose>
               <when test="var.taskVariable">
                 and HD.TASK_ID_ = HTI.ID_
-                and HD.REV_ = (select max(HDM.REV_) from ACT_HI_DETAIL HDM where HDM.TASK_ID_ = HTI.ID_ and HDM.VAR_TYPE_ = #{var.type} and HDM.NAME_ = #{var.name} and HDM.TYPE_ = 'VariableUpdate')
-                and HD.TIME_ = (select max(HDM.TIME_) from ACT_HI_DETAIL HDM where HDM.TASK_ID_ = HTI.ID_ and HDM.VAR_TYPE_ = #{var.type} and HDM.NAME_ = #{var.name} and HDM.TYPE_ = 'VariableUpdate')
+                and HD.REV_ = (select max(HDM.REV_) from ${prefix}ACT_HI_DETAIL HDM where HDM.TASK_ID_ = HTI.ID_ and HDM.VAR_TYPE_ = #{var.type} and HDM.NAME_ = #{var.name} and HDM.TYPE_ = 'VariableUpdate')
+                and HD.TIME_ = (select max(HDM.TIME_) from ${prefix}ACT_HI_DETAIL HDM where HDM.TASK_ID_ = HTI.ID_ and HDM.VAR_TYPE_ = #{var.type} and HDM.NAME_ = #{var.name} and HDM.TYPE_ = 'VariableUpdate')
               </when>
               <otherwise>
                 and HD.PROC_INST_ID_ = HTI.PROC_INST_ID_ and HD.TASK_ID_ is null
-                and HD.REV_ = (select max(HDM.REV_) from ACT_HI_DETAIL HDM where HDM.PROC_INST_ID_ = HTI.PROC_INST_ID_ and HDM.TASK_ID_ is null and HDM.VAR_TYPE_ = #{var.type} and HDM.NAME_ = #{var.name} and HDM.TYPE_ = 'VariableUpdate')
-                and HD.TIME_ = (select max(HDM.TIME_) from ACT_HI_DETAIL HDM where HDM.PROC_INST_ID_ = HTI.PROC_INST_ID_ and HDM.TASK_ID_ is null and HDM.VAR_TYPE_ = #{var.type} and HDM.NAME_ = #{var.name} and HDM.TYPE_ = 'VariableUpdate')
+                and HD.REV_ = (select max(HDM.REV_) from ${prefix}ACT_HI_DETAIL HDM where HDM.PROC_INST_ID_ = HTI.PROC_INST_ID_ and HDM.TASK_ID_ is null and HDM.VAR_TYPE_ = #{var.type} and HDM.NAME_ = #{var.name} and HDM.TYPE_ = 'VariableUpdate')
+                and HD.TIME_ = (select max(HDM.TIME_) from ${prefix}ACT_HI_DETAIL HDM where HDM.PROC_INST_ID_ = HTI.PROC_INST_ID_ and HDM.TASK_ID_ is null and HDM.VAR_TYPE_ = #{var.type} and HDM.NAME_ = #{var.name} and HDM.TYPE_ = 'VariableUpdate')
               </otherwise>
             </choose>  
             <if test="!var.type.equals('null')">

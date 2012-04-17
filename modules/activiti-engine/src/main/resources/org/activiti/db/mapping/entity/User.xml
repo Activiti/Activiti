@@ -7,7 +7,7 @@
   <!-- USER INSERT -->
 
   <insert id="insertUser" parameterType="org.activiti.engine.impl.persistence.entity.UserEntity">
-    insert into ACT_ID_USER (ID_, REV_, FIRST_, LAST_, EMAIL_, PWD_)
+    insert into ${prefix}ACT_ID_USER (ID_, REV_, FIRST_, LAST_, EMAIL_, PWD_)
     values (
       #{id ,jdbcType=VARCHAR},
       1,
@@ -21,7 +21,7 @@
   <!-- USER UPDATE -->
 
   <update id="updateUser" parameterType="org.activiti.engine.impl.persistence.entity.UserEntity">
-    update ACT_ID_USER set
+    update ${prefix}ACT_ID_USER set
       REV_ = #{revisionNext ,jdbcType=INTEGER},
       FIRST_ = #{firstName ,jdbcType=VARCHAR},
       LAST_ = #{lastName ,jdbcType=VARCHAR},
@@ -35,7 +35,7 @@
   <!-- USER DELETE -->
 
   <delete id="deleteUser" parameterType="string">
-    delete from ACT_ID_USER where ID_ = #{userId} 
+    delete from ${prefix}ACT_ID_USER where ID_ = #{userId} 
   </delete>
 
   <!-- USER RESULTMAP -->
@@ -53,11 +53,11 @@
   <!-- USER SELECT -->
 
   <select id="selectUserById" parameterType="string" resultMap="userResultMap">
-    select * from ACT_ID_USER where ID_ = #{id,jdbcType=VARCHAR}
+    select * from ${prefix}ACT_ID_USER where ID_ = #{id,jdbcType=VARCHAR}
   </select>
   
   <select id="selectUsers" resultMap="userResultMap">
-    select * from ACT_ID_USER
+    select * from ${prefix}ACT_ID_USER
   </select>
   
   <select id="selectUserByQueryCriteria" parameterType="org.activiti.engine.impl.UserQueryImpl" resultMap="userResultMap">
@@ -74,10 +74,10 @@
   </select>
   
   <sql id="selectUserByQueryCriteriaSql">
-    from ACT_ID_USER U 
+    from ${prefix}ACT_ID_USER U 
     <if test="groupId != null">
-      inner join ACT_ID_MEMBERSHIP M on U.ID_ = M.USER_ID_
-      inner join ACT_ID_GROUP G on M.GROUP_ID_ = G.ID_
+      inner join ${prefix}ACT_ID_MEMBERSHIP M on U.ID_ = M.USER_ID_
+      inner join ${prefix}ACT_ID_GROUP G on M.GROUP_ID_ = G.ID_
     </if>
     <where>
       <if test="id != null">

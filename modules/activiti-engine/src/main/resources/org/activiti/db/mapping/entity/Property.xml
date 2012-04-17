@@ -7,7 +7,7 @@
   <!-- PROPERTY INSERT -->
   
   <insert id="insertProperty" parameterType="org.activiti.engine.impl.persistence.entity.PropertyEntity">
-      insert into ACT_GE_PROPERTY (
+      insert into ${prefix}ACT_GE_PROPERTY (
         NAME_,
         VALUE_,
         REV_
@@ -21,7 +21,7 @@
   <!-- PROPERTY UPDATE -->
   
   <update id="updateProperty" parameterType="org.activiti.engine.impl.persistence.entity.PropertyEntity">
-    update ACT_GE_PROPERTY
+    update ${prefix}ACT_GE_PROPERTY
     <set>
       REV_ = #{revisionNext, jdbcType=INTEGER},
       VALUE_ = #{value, jdbcType=VARCHAR}
@@ -33,7 +33,7 @@
   <!-- PROPERTY DELETE -->
   
   <delete id="deleteProperty">
-    delete from ACT_GE_PROPERTY where NAME_ = #{propertyName}
+    delete from ${prefix}ACT_GE_PROPERTY where NAME_ = #{propertyName}
   </delete>
 
 
@@ -46,15 +46,15 @@
   </resultMap>
   
   <select id="selectDbSchemaVersion" resultType="string">
-    select VALUE_ from ACT_GE_PROPERTY where NAME_ = 'schema.version'
+    select VALUE_ from ${prefix}ACT_GE_PROPERTY where NAME_ = 'schema.version'
   </select>
 
   <select id="selectProperty" parameterType="string" resultMap="propertyResultMap">
-    select * from ACT_GE_PROPERTY where NAME_ = #{name}
+    select * from ${prefix}ACT_GE_PROPERTY where NAME_ = #{name}
   </select>
   
   <select id="selectProperties" resultMap="propertyResultMap">
-    select * from ACT_GE_PROPERTY 
+    select * from ${prefix}ACT_GE_PROPERTY 
   </select>
   
 </mapper>

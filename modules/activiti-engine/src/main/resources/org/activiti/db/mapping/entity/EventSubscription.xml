@@ -7,15 +7,15 @@
   <!-- DELETE -->
 
   <delete id="deleteSignalEventSubscription" parameterType="string">
-    delete from ACT_RU_EVENT_SUBSCR where ID_ = #{id}
+    delete from ${prefix}ACT_RU_EVENT_SUBSCR where ID_ = #{id}
   </delete>
   
   <delete id="deleteCompensateEventSubscription" parameterType="string">
-    delete from ACT_RU_EVENT_SUBSCR where ID_ = #{id}
+    delete from ${prefix}ACT_RU_EVENT_SUBSCR where ID_ = #{id}
   </delete>
   
   <delete id="deleteMessageEventSubscription" parameterType="string">
-    delete from ACT_RU_EVENT_SUBSCR where ID_ = #{id}
+    delete from ${prefix}ACT_RU_EVENT_SUBSCR where ID_ = #{id}
   </delete>
   
   <!-- RESULTMAP -->
@@ -44,7 +44,7 @@
   <!-- SELECT -->  
 
   <select id="selectEventSubscription" parameterType="string" resultMap="eventSubscriptionResultMap">
-    select * from ACT_RU_EVENT_SUBSCR where ID_ = #{id}
+    select * from ${prefix}ACT_RU_EVENT_SUBSCR where ID_ = #{id}
   </select>
 
   <select id="selectEventSubscriptionByQueryCriteria" parameterType="org.activiti.engine.impl.EventSubscriptionQueryImpl" resultMap="eventSubscriptionResultMap">
@@ -61,7 +61,7 @@
   </select>
   
   <sql id="selectEventSubscriptionByQueryCriteriaSql">
-    from ACT_RU_EVENT_SUBSCR E
+    from ${prefix}ACT_RU_EVENT_SUBSCR E
     <where>
       <if test="eventSubscriptionId != null">
         E.ID_ = #{eventSubscriptionId}
@@ -86,21 +86,21 @@
   
   <select id="selectSignalEventSubscriptionsByEventName" resultMap="eventSubscriptionResultMap" parameterType="string">
     select * 
-    from ACT_RU_EVENT_SUBSCR
+    from ${prefix}ACT_RU_EVENT_SUBSCR
     where (EVENT_TYPE_ = 'signal')
     	and (EVENT_NAME_ = #{eventName})
   </select>
   
   <select id="selectSignalEventSubscriptionsByExecution" resultMap="eventSubscriptionResultMap" parameterType="string">
     select * 
-    from ACT_RU_EVENT_SUBSCR
+    from ${prefix}ACT_RU_EVENT_SUBSCR
     where (EVENT_TYPE_ = 'signal')
     	and (EXECUTION_ID_ = #{executionId})  
   </select>
   
   <select id="selectSignalEventSubscriptionsByNameAndExecution" resultMap="eventSubscriptionResultMap" parameterType="java.util.Map">
     select * 
-    from ACT_RU_EVENT_SUBSCR
+    from ${prefix}ACT_RU_EVENT_SUBSCR
     where (EVENT_TYPE_ = 'signal')
     	and (EXECUTION_ID_ = #{executionId})
     	and (EVENT_NAME_ = #{eventName})
@@ -108,20 +108,20 @@
   
   <select id="selectEventSubscriptionsByExecution" resultMap="eventSubscriptionResultMap" parameterType="java.util.Map">
     select * 
-    from ACT_RU_EVENT_SUBSCR
+    from ${prefix}ACT_RU_EVENT_SUBSCR
     where (EXECUTION_ID_ = #{executionId})
   </select>
       
   <select id="selectEventSubscriptionsByExecutionAndType" resultMap="eventSubscriptionResultMap" parameterType="java.util.Map">
     select * 
-    from ACT_RU_EVENT_SUBSCR
+    from ${prefix}ACT_RU_EVENT_SUBSCR
     where (EVENT_TYPE_ = #{eventType})
     	and (EXECUTION_ID_ = #{executionId})
   </select>
   
   <select id="selectEventSubscriptionsByExecutionTypeAndActivity" resultMap="eventSubscriptionResultMap" parameterType="java.util.Map">
     select * 
-    from ACT_RU_EVENT_SUBSCR
+    from ${prefix}ACT_RU_EVENT_SUBSCR
     where (EVENT_TYPE_ = #{eventType})
     	and (EXECUTION_ID_ = #{executionId})
     	and (ACTIVITY_ID_ = #{activityId})
@@ -129,21 +129,21 @@
   
   <select id="selectEventSubscriptionsByConfiguration" resultMap="eventSubscriptionResultMap" parameterType="java.util.Map">
     select * 
-    from ACT_RU_EVENT_SUBSCR
+    from ${prefix}ACT_RU_EVENT_SUBSCR
     where (EVENT_TYPE_ = #{eventType})
     	and (CONFIGURATION_ = #{configuration})
   </select>
   
   <select id="selectEventSubscriptionsByName" resultMap="eventSubscriptionResultMap" parameterType="java.util.Map">
     select * 
-    from ACT_RU_EVENT_SUBSCR
+    from ${prefix}ACT_RU_EVENT_SUBSCR
     where (EVENT_TYPE_ = #{eventType})
     	and (EVENT_NAME_ = #{eventName})
   </select>
   
    <select id="selectMessageStartEventSubscriptionByName" resultMap="eventSubscriptionResultMap" parameterType="java.lang.String">
     select * 
-    from ACT_RU_EVENT_SUBSCR
+    from ${prefix}ACT_RU_EVENT_SUBSCR
     where (EVENT_TYPE_ = 'message')
     	and (EVENT_NAME_ = #{eventName})
     	and EXECUTION_ID_ is null
@@ -153,7 +153,7 @@
   <!-- MESSAGE INSERT -->
   
   <insert id="insertMessageEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity">
- 	insert into ACT_RU_EVENT_SUBSCR (
+ 	insert into ${prefix}ACT_RU_EVENT_SUBSCR (
             ID_, 
             REV_,
             EVENT_TYPE_,
@@ -179,7 +179,7 @@
   <!-- MESSAGE UPDATE -->
 
   <update id="updateMessageEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity">
-    update ACT_RU_EVENT_SUBSCR
+    update ${prefix}ACT_RU_EVENT_SUBSCR
     <set>
        REV_ =  #{revisionNext, jdbcType=INTEGER},
        EVENT_NAME_ = #{eventName, jdbcType=INTEGER},
@@ -196,7 +196,7 @@
    <!-- SIGNAL INSERT -->
   
   <insert id="insertSignalEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity">
-   insert into ACT_RU_EVENT_SUBSCR (
+   insert into ${prefix}ACT_RU_EVENT_SUBSCR (
              ID_, 
             REV_,
             EVENT_TYPE_,
@@ -222,7 +222,7 @@
   <!-- SIGNAL UPDATE -->
 
   <update id="updateSignalEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity">
-    update ACT_RU_EVENT_SUBSCR
+    update ${prefix}ACT_RU_EVENT_SUBSCR
     <set>
        REV_ =  #{revisionNext, jdbcType=INTEGER},
        EVENT_NAME_ = #{eventName, jdbcType=INTEGER},
@@ -239,7 +239,7 @@
    <!-- Compensate INSERT -->
   
   <insert id="insertCompensateEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntity">
-    insert into ACT_RU_EVENT_SUBSCR (
+    insert into ${prefix}ACT_RU_EVENT_SUBSCR (
              ID_, 
             REV_,
             EVENT_TYPE_,
@@ -265,7 +265,7 @@
   <!-- Compensate UPDATE -->
 
   <update id="updateCompensateEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntity">
-    update ACT_RU_EVENT_SUBSCR
+    update ${prefix}ACT_RU_EVENT_SUBSCR
     <set>
        REV_ =  #{revisionNext, jdbcType=INTEGER},
        EVENT_NAME_ = #{eventName, jdbcType=INTEGER},

@@ -68,6 +68,7 @@ public class DbSqlSessionFactory implements SessionFactory {
   }
   
   protected String databaseType;
+  protected String databaseTablePrefix = "";
   protected SqlSessionFactory sqlSessionFactory;
   protected IdGenerator idGenerator;
   protected Map<String, String> statementMappings;
@@ -231,6 +232,14 @@ public class DbSqlSessionFactory implements SessionFactory {
   
   public void setDbHistoryUsed(boolean isDbHistoryUsed) {
     this.isDbHistoryUsed = isDbHistoryUsed;
+  }
+
+  public void setDatabaseTablePrefix(String databaseTablePrefix) {
+    this.databaseTablePrefix = databaseTablePrefix;
+  }
+    
+  public String getDatabaseTablePrefix() {
+    return databaseTablePrefix;
   }
 
 }

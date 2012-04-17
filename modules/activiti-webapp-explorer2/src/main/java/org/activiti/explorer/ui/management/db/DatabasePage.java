@@ -100,13 +100,13 @@ public class DatabasePage extends ManagementPage {
   
   protected Embedded determineTableIcon(String tableName) {
       Resource image = null;
-      if (tableName.startsWith("ACT_HI")) {
+      if (tableName.contains("ACT_HI")) {
         image = Images.DATABASE_HISTORY;
-      } else if (tableName.startsWith("ACT_RU")) {
+      } else if (tableName.contains("ACT_RU")) {
         image = Images.DATABASE_RUNTIME;
-      } else if (tableName.startsWith("ACT_RE")) {
+      } else if (tableName.contains("ACT_RE")) {
         image = Images.DATABASE_REPOSITORY;
-      } else if (tableName.startsWith("ACT_ID")) {
+      } else if (tableName.contains("ACT_ID")) {
         image = Images.DATABASE_IDENTITY;
       } else {
         image = Images.DATABASE_22;

@@ -61,9 +61,10 @@ public class TableDataManager extends AbstractManager {
       ResultSet tables = null;
       try {
         log.fine("retrieving activiti tables from jdbc metadata");
-        String tableNameFilter = "ACT_%";
+        String databaseTablePrefix = getDbSqlSession().getDbSqlSessionFactory().getDatabaseTablePrefix();
+        String tableNameFilter = databaseTablePrefix+"ACT_%";
         if ("postgres".equals(getDbSqlSession().getDbSqlSessionFactory().getDatabaseType())) {
-          tableNameFilter = "act_%";
+          tableNameFilter = databaseTablePrefix+"act_%";
         }
         tables = databaseMetaData.getTables(null, null, tableNameFilter, getDbSqlSession().JDBC_METADATA_TABLE_TYPES);
         while (tables.next()) {

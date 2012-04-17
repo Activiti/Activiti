@@ -7,7 +7,7 @@
   <!-- VARIABLE INSTANCE INSERT -->
   
   <insert id="insertVariableInstance" parameterType="org.activiti.engine.impl.persistence.entity.VariableInstanceEntity">
-    insert into ACT_RU_VARIABLE (ID_, REV_, TYPE_, NAME_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_)
+    insert into ${prefix}ACT_RU_VARIABLE (ID_, REV_, TYPE_, NAME_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_)
     values (
 	    #{id, jdbcType=VARCHAR},
 	    1,
@@ -27,7 +27,7 @@
   <!-- VARIABLE INSTANCE UPDATE -->
   
   <update id="updateVariableInstance" parameterType="org.activiti.engine.impl.persistence.entity.VariableInstanceEntity">
-    update ACT_RU_VARIABLE
+    update ${prefix}ACT_RU_VARIABLE
     set 
       REV_ = #{revisionNext, jdbcType=INTEGER},
 	    BYTEARRAY_ID_ = #{byteArrayValueId, jdbcType=VARCHAR},
@@ -42,7 +42,7 @@
   <!-- VARIABLE INSTANCE DELETE -->
 
   <delete id="deleteVariableInstance" parameterType="string">
-    delete from ACT_RU_VARIABLE where ID_ = #{id, jdbcType=VARCHAR}
+    delete from ${prefix}ACT_RU_VARIABLE where ID_ = #{id, jdbcType=VARCHAR}
   </delete>
   
   <!-- VARIABLE INSTANCE RESULTMAP -->
@@ -68,24 +68,24 @@
   <!-- VARIABLE INSTANCE SELECT -->
 
 	<select id="selectVariableInstance" parameterType="string" resultMap="variableInstanceResultMap">
-		select * from ACT_RU_VARIABLE where ID_ = #{id, jdbcType=VARCHAR}
+		select * from ${prefix}ACT_RU_VARIABLE where ID_ = #{id, jdbcType=VARCHAR}
   </select>
 
 	<select id="selectVariablesByExecutionId" parameterType="string" resultMap="variableInstanceResultMap">
-		select * from ACT_RU_VARIABLE 
+		select * from ${prefix}ACT_RU_VARIABLE 
 		where EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR}
 		  and TASK_ID_ is null
   </select>
 
   <select id="selectVariablesByTaskId" parameterType="string" resultMap="variableInstanceResultMap">
-    select * from ACT_RU_VARIABLE where
+    select * from ${prefix}ACT_RU_VARIABLE where
     TASK_ID_ = #{taskId, jdbcType=VARCHAR}
   </select>
 
   <!-- BYTE ARRAY INSERT -->
 
   <insert id="insertByteArray" parameterType="org.activiti.engine.impl.persistence.entity.ByteArrayEntity">
-    insert into ACT_GE_BYTEARRAY(ID_, REV_, NAME_, BYTES_, DEPLOYMENT_ID_)
+    insert into ${prefix}ACT_GE_BYTEARRAY(ID_, REV_, NAME_, BYTES_, DEPLOYMENT_ID_)
     values (
       #{id, jdbcType=VARCHAR},
       1, 
@@ -98,7 +98,7 @@
   <!-- BYTE ARRAY UPDATE -->
 
   <update id="updateByteArray" parameterType="org.activiti.engine.impl.persistence.entity.ByteArrayEntity">
-    update ACT_GE_BYTEARRAY 
+    update ${prefix}ACT_GE_BYTEARRAY 
     set
       REV_ = #{revisionNext, jdbcType=INTEGER},
       BYTES_ = #{bytes, jdbcType=BLOB}
@@ -109,15 +109,15 @@
   <!-- BYTE ARRAY DELETE -->
 
   <select id="selectBytesOfByteArray" parameterType="string" resultType="hashmap">
-    select BYTES_ from ACT_GE_BYTEARRAY where ID_ = #{id}
+    select BYTES_ from ${prefix}ACT_GE_BYTEARRAY where ID_ = #{id}
   </select>
   
   <delete id="deleteByteArraysForDeployment" parameterType="string">
-    delete from ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{id}
+    delete from ${prefix}ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{id}
   </delete>
    
   <delete id="deleteByteArray" parameterType="string">
-    delete from ACT_GE_BYTEARRAY where ID_ = #{id}
+    delete from ${prefix}ACT_GE_BYTEARRAY where ID_ = #{id}
   </delete>
 
   <!-- BYTE ARRAY RESULTMAP -->
@@ -132,15 +132,15 @@
   <!-- BYTE ARRAY SELECT -->
   
   <select id="selectByteArray" parameterType="string" resultMap="byteArrayResultMap">
-   select * from ACT_GE_BYTEARRAY where ID_ = #{id}
+   select * from ${prefix}ACT_GE_BYTEARRAY where ID_ = #{id}
   </select>
   
   <select id="selectByteArraysForDeployment" parameterType="string" resultMap="byteArrayResultMap">
-    select * from ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{deploymentId} order by NAME_ asc
+    select * from ${prefix}ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{deploymentId} order by NAME_ asc
   </select>  
   
   <select id="selectDeploymentResource" parameterType="map" resultMap="byteArrayResultMap">
-    select * from ACT_GE_BYTEARRAY 
+    select * from ${prefix}ACT_GE_BYTEARRAY 
     where DEPLOYMENT_ID_ = #{deploymentId}
           AND NAME_ = #{resourceName}
   </select>
@@ -154,11 +154,11 @@
   </resultMap>
   
   <select id="selectByteArray_postgres" parameterType="string" resultMap="byteArrayResultMap_postgres">
-   select * from ACT_GE_BYTEARRAY where ID_ = #{id}
+   select * from ${prefix}ACT_GE_BYTEARRAY where ID_ = #{id}
   </select>
 
 	<update id="updateByteArray_postgres" parameterType="org.activiti.engine.impl.persistence.entity.ByteArrayEntity">
-    update ACT_GE_BYTEARRAY 
+    update ${prefix}ACT_GE_BYTEARRAY 
     set
       REV_ = #{revisionNext, jdbcType=INTEGER},
       BYTES_ = #{bytes, jdbcType=BINARY}
@@ -167,7 +167,7 @@
   </update>  
   
     <insert id="insertByteArray_postgres" parameterType="org.activiti.engine.impl.persistence.entity.ByteArrayEntity">
-    insert into ACT_GE_BYTEARRAY(ID_, REV_, NAME_, BYTES_, DEPLOYMENT_ID_)
+    insert into ${prefix}ACT_GE_BYTEARRAY(ID_, REV_, NAME_, BYTES_, DEPLOYMENT_ID_)
     values (
       #{id, jdbcType=VARCHAR},
       1, 

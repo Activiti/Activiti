@@ -7,7 +7,7 @@
   <!-- DEPLOYMENT INSERT -->
   
   <insert id="insertDeployment" parameterType="org.activiti.engine.impl.persistence.entity.DeploymentEntity">
-    insert into ACT_RE_DEPLOYMENT(ID_, NAME_, DEPLOY_TIME_)
+    insert into ${prefix}ACT_RE_DEPLOYMENT(ID_, NAME_, DEPLOY_TIME_)
     values(#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{deploymentTime, jdbcType=TIMESTAMP})
   </insert>
   
@@ -16,7 +16,7 @@
   <!-- DEPLOYMENT DELETE -->
   
   <delete id="deleteDeployment" parameterType="string">
-    delete from ACT_RE_DEPLOYMENT where ID_ = #{id}
+    delete from ${prefix}ACT_RE_DEPLOYMENT where ID_ = #{id}
   </delete>
 
   <!-- DEPLOYMENT RESULTMAP -->
@@ -43,7 +43,7 @@
   </select>
   
   <sql id="selectDeploymentsByQueryCriteriaSql">  
-    from ACT_RE_DEPLOYMENT D
+    from ${prefix}ACT_RE_DEPLOYMENT D
     <where>
       <if test="deploymentId != null">
         D.ID_ = #{deploymentId}
@@ -58,21 +58,21 @@
   </sql>
   
   <select id="selectDeployments" resultMap="deploymentResultMap">
-    select * from ACT_RE_DEPLOYMENT D order by D.DEPLOY_TIME_ asc
+    select * from ${prefix}ACT_RE_DEPLOYMENT D order by D.DEPLOY_TIME_ asc
   </select>
   
   <select id="selectDeploymentsByName" parameterType="string" resultMap="deploymentResultMap">
-    select * from ACT_RE_DEPLOYMENT D where NAME_=#{name} order by D.DEPLOY_TIME_ desc
+    select * from ${prefix}ACT_RE_DEPLOYMENT D where NAME_=#{name} order by D.DEPLOY_TIME_ desc
   </select>
   
   <select id="selectDeploymentById" parameterType="string" resultMap="deploymentResultMap">
-    select * from ACT_RE_DEPLOYMENT where ID_ = #{id}
+    select * from ${prefix}ACT_RE_DEPLOYMENT where ID_ = #{id}
   </select>
   
   <select id="selectDeploymentByProcessDefinitionId" parameterType="string" resultMap="deploymentResultMap">
-    select * from ACT_RE_DEPLOYMENT D 
+    select * from ${prefix}ACT_RE_DEPLOYMENT D 
     where D.ID_ = 
-      (select P.DEPLOYMENT_ID_ from ACT_RE_PROCDEF P where P.ID_ = #{processDefinitionId})
+      (select P.DEPLOYMENT_ID_ from ${prefix}ACT_RE_PROCDEF P where P.ID_ = #{processDefinitionId})
   </select>
   
   <!-- mysql specific -->

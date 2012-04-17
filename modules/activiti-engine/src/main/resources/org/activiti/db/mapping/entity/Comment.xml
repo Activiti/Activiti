@@ -21,7 +21,7 @@
   <!-- COMMENT INSERT -->
   
   <insert id="insertComment" parameterType="org.activiti.engine.impl.persistence.entity.CommentEntity">
-    insert into ACT_HI_COMMENT (ID_, TYPE_, TIME_, USER_ID_, TASK_ID_, PROC_INST_ID_, ACTION_, MESSAGE_, FULL_MSG_)
+    insert into ${prefix}ACT_HI_COMMENT (ID_, TYPE_, TIME_, USER_ID_, TASK_ID_, PROC_INST_ID_, ACTION_, MESSAGE_, FULL_MSG_)
     values (
       #{id ,jdbcType=VARCHAR},
       #{type ,jdbcType=VARCHAR},
@@ -36,7 +36,7 @@
   </insert>
 
   <insert id="insertComment_postgres" parameterType="org.activiti.engine.impl.persistence.entity.CommentEntity">
-    insert into ACT_HI_COMMENT (ID_, TYPE_, TIME_, USER_ID_, TASK_ID_, PROC_INST_ID_, ACTION_, MESSAGE_, FULL_MSG_)
+    insert into ${prefix}ACT_HI_COMMENT (ID_, TYPE_, TIME_, USER_ID_, TASK_ID_, PROC_INST_ID_, ACTION_, MESSAGE_, FULL_MSG_)
     values (
       #{id ,jdbcType=VARCHAR},
       #{type ,jdbcType=VARCHAR},
@@ -53,7 +53,7 @@
   <!-- COMMENT DELETE -->
 
   <delete id="deleteCommentsByTaskId" parameterType="string">
-    delete from ACT_HI_COMMENT where TASK_ID_ = #{taskId} 
+    delete from ${prefix}ACT_HI_COMMENT where TASK_ID_ = #{taskId} 
   </delete>
 
   <!-- COMMENT RESULTMAP -->
@@ -86,7 +86,7 @@
 
   <select id="selectCommentsByTaskId" parameterType="string" resultMap="commentResultMap">
     select * 
-    from ACT_HI_COMMENT 
+    from ${prefix}ACT_HI_COMMENT 
     where TASK_ID_ = #{taskId,jdbcType=VARCHAR}
       and TYPE_ = 'comment'
     order by TIME_ desc
@@ -94,7 +94,7 @@
 
   <select id="selectCommentsByTaskId_postgres" parameterType="string" resultMap="commentResultMap_postgres">
     select * 
-    from ACT_HI_COMMENT 
+    from ${prefix}ACT_HI_COMMENT 
     where TASK_ID_ = #{taskId,jdbcType=VARCHAR}
       and TYPE_ = 'comment'
     order by TIME_ desc
@@ -102,21 +102,21 @@
 
   <select id="selectEventsByTaskId" parameterType="string" resultMap="commentResultMap">
     select * 
-    from ACT_HI_COMMENT 
+    from ${prefix}ACT_HI_COMMENT 
     where TASK_ID_ = #{taskId,jdbcType=VARCHAR}
     order by TIME_ desc
   </select>
 
   <select id="selectCommentsByProcessInstanceId" parameterType="string" resultMap="commentResultMap">
     select * 
-    from ACT_HI_COMMENT 
+    from ${prefix}ACT_HI_COMMENT 
     where PROC_INST_ID_ = #{processInstanceId,jdbcType=VARCHAR}
     order by TIME_ desc
   </select>
 
   <select id="selectCommentsByProcessInstanceId_postgres" parameterType="string" resultMap="commentResultMap_postgres">
     select * 
-    from ACT_HI_COMMENT 
+    from ${prefix}ACT_HI_COMMENT 
     where PROC_INST_ID_ = #{processInstanceId,jdbcType=BINARY}
     order by TIME_ desc
   </select>

@@ -21,7 +21,7 @@
   <!-- HISTORIC DETAILS INSERT -->
   
   <insert id="insertHistoricFormProperty" parameterType="org.activiti.engine.impl.persistence.entity.HistoricFormPropertyEntity">
-    insert into ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, ACT_INST_ID_, EXECUTION_ID_, TASK_ID_, TIME_, NAME_, TEXT_)
+    insert into ${prefix}ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, ACT_INST_ID_, EXECUTION_ID_, TASK_ID_, TIME_, NAME_, TEXT_)
     values (
       #{id, jdbcType=VARCHAR},
       'FormProperty',
@@ -36,7 +36,7 @@
   </insert>
   
   <insert id="insertHistoricVariableUpdate" parameterType="org.activiti.engine.impl.persistence.entity.HistoricVariableUpdateEntity">
-    insert into ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, EXECUTION_ID_, ACT_INST_ID_, TASK_ID_, NAME_, REV_, VAR_TYPE_, TIME_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_)
+    insert into ${prefix}ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, EXECUTION_ID_, ACT_INST_ID_, TASK_ID_, NAME_, REV_, VAR_TYPE_, TIME_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_)
     values (
       #{id, jdbcType=VARCHAR},
       'VariableUpdate',
@@ -59,7 +59,7 @@
   <!-- HISTORIC DETAILS DELETE -->
 
   <delete id="deleteHistoricDetail">
-    delete from ACT_HI_DETAIL where ID_ = #{historicDetailId}
+    delete from ${prefix}ACT_HI_DETAIL where ID_ = #{historicDetailId}
   </delete>
   
   <!-- HISTORIC DETAILS RESULTMAP -->
@@ -150,7 +150,7 @@
   </select>
   
   <sql id="selectHistoricDetailsByQueryCriteriaSql">
-    from ACT_HI_DETAIL HD
+    from ${prefix}ACT_HI_DETAIL HD
     <where>
       <if test="processInstanceId != null">
         HD.PROC_INST_ID_ = #{processInstanceId}

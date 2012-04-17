@@ -7,7 +7,7 @@
   <!-- INFO INSERT -->
 
   <insert id="insertIdentityInfo" parameterType="org.activiti.engine.impl.persistence.entity.IdentityInfoEntity">
-    insert into ACT_ID_INFO (ID_, REV_, USER_ID_, TYPE_, KEY_, VALUE_, PASSWORD_, PARENT_ID_)
+    insert into ${prefix}ACT_ID_INFO (ID_, REV_, USER_ID_, TYPE_, KEY_, VALUE_, PASSWORD_, PARENT_ID_)
     values (
       #{id ,jdbcType=VARCHAR},
       1,
@@ -21,7 +21,7 @@
   </insert>
   
    <insert id="insertIdentityInfo_postgres" parameterType="org.activiti.engine.impl.persistence.entity.IdentityInfoEntity">
-    insert into ACT_ID_INFO (ID_, REV_, USER_ID_, TYPE_, KEY_, VALUE_, PASSWORD_, PARENT_ID_)
+    insert into ${prefix}ACT_ID_INFO (ID_, REV_, USER_ID_, TYPE_, KEY_, VALUE_, PASSWORD_, PARENT_ID_)
     values (
       #{id ,jdbcType=VARCHAR},
       1,
@@ -36,7 +36,7 @@
   
   <!-- INFO UPDATE -->
   <update id="updateIdentityInfo" parameterType="org.activiti.engine.impl.persistence.entity.IdentityInfoEntity">
-    update ACT_ID_INFO 
+    update ${prefix}ACT_ID_INFO 
     set REV_ = #{revisionNext ,jdbcType=INTEGER},
         VALUE_ = #{value ,jdbcType=VARCHAR},
         PASSWORD_ = #{passwordBytes ,jdbcType=BLOB}
@@ -45,7 +45,7 @@
   </update>
   
   <update id="updateIdentityInfo_postgres" parameterType="org.activiti.engine.impl.persistence.entity.IdentityInfoEntity">
-    update ACT_ID_INFO 
+    update ${prefix}ACT_ID_INFO 
     set REV_ = #{revisionNext ,jdbcType=INTEGER},
         VALUE_ = #{value ,jdbcType=VARCHAR},
         PASSWORD_ = #{passwordBytes ,jdbcType=BINARY}
@@ -56,7 +56,7 @@
   <!-- INFO DELETE -->
 
   <delete id="deleteIdentityInfo" parameterType="string">
-    delete from ACT_ID_INFO 
+    delete from ${prefix}ACT_ID_INFO 
     where ID_ = #{id} 
   </delete>
 
@@ -87,48 +87,48 @@
   <!-- INFO SELECT -->
 
   <select id="selectIdentityInfoById" parameterType="string" resultMap="identityInfoResultMap">
-    select * from ACT_ID_INFO where ID_ = #{id,jdbcType=VARCHAR}
+    select * from ${prefix}ACT_ID_INFO where ID_ = #{id,jdbcType=VARCHAR}
   </select>
   
   <select id="selectIdentityInfoById_postgres" parameterType="string" resultMap="identityInfoResultMap_postgres">
-    select * from ACT_ID_INFO where ID_ = #{id,jdbcType=VARCHAR}
+    select * from ${prefix}ACT_ID_INFO where ID_ = #{id,jdbcType=VARCHAR}
   </select>
   
   <select id="selectIdentityInfoByUserIdAndKey" parameterType="map" resultMap="identityInfoResultMap">
-    select * from ACT_ID_INFO 
+    select * from ${prefix}ACT_ID_INFO 
     where USER_ID_ = #{userId,jdbcType=VARCHAR}
       and KEY_ =  #{key,jdbcType=VARCHAR}
       and PARENT_ID_ is null
   </select>
   
    <select id="selectIdentityInfoByUserIdAndKey_postgres" parameterType="map" resultMap="identityInfoResultMap_postgres">
-    select * from ACT_ID_INFO 
+    select * from ${prefix}ACT_ID_INFO 
     where USER_ID_ = #{userId,jdbcType=VARCHAR}
       and KEY_ =  #{key,jdbcType=VARCHAR}
       and PARENT_ID_ is null
   </select>
   
   <select id="selectIdentityInfoKeysByUserIdAndType" parameterType="map" resultType="string">
-    select KEY_ from ACT_ID_INFO 
+    select KEY_ from ${prefix}ACT_ID_INFO 
     where USER_ID_ = #{userId,jdbcType=VARCHAR}
       and TYPE_ =  #{type,jdbcType=VARCHAR}
       and PARENT_ID_ is null
   </select>
   
   <select id="selectIdentityInfoByUserId" parameterType="string" resultMap="identityInfoResultMap">
-    select * from ACT_ID_INFO where USER_ID_ = #{userId,jdbcType=VARCHAR}
+    select * from ${prefix}ACT_ID_INFO where USER_ID_ = #{userId,jdbcType=VARCHAR}
   </select>
   
   <select id="selectIdentityInfoByUserId_postgres" parameterType="string" resultMap="identityInfoResultMap_postgres">
-    select * from ACT_ID_INFO where USER_ID_ = #{userId,jdbcType=VARCHAR}
+    select * from ${prefix}ACT_ID_INFO where USER_ID_ = #{userId,jdbcType=VARCHAR}
   </select>
 
   <select id="selectIdentityInfoDetails" parameterType="string" resultMap="identityInfoResultMap">
-    select * from ACT_ID_INFO where PARENT_ID_ = #{parentId,jdbcType=VARCHAR}
+    select * from ${prefix}ACT_ID_INFO where PARENT_ID_ = #{parentId,jdbcType=VARCHAR}
   </select>
 
   <select id="selectIdentityInfoDetails_postgres" parameterType="string" resultMap="identityInfoResultMap_postgres">
-    select * from ACT_ID_INFO where PARENT_ID_ = #{parentId,jdbcType=VARCHAR}
+    select * from ${prefix}ACT_ID_INFO where PARENT_ID_ = #{parentId,jdbcType=VARCHAR}
   </select>
   
   

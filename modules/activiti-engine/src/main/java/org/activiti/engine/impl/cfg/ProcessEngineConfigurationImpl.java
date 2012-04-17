@@ -280,6 +280,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected FailedJobCommandFactory failedJobCommandFactory;
   
+  protected String databaseTablePrefix = "";
+  
   // buildProcessEngine ///////////////////////////////////////////////////////
   
   public ProcessEngine buildProcessEngine() {
@@ -543,7 +545,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         // update the jdbc parameters to the configured ones...
         Environment environment = new Environment("default", transactionFactory, dataSource);
         Reader reader = new InputStreamReader(inputStream);
-        XMLConfigBuilder parser = new XMLConfigBuilder(reader);
+        Properties properties = new Properties();
+        properties.put("prefix", databaseTablePrefix);
+        XMLConfigBuilder parser = new XMLConfigBuilder(reader,"", properties);
         Configuration configuration = parser.getConfiguration();
         configuration.setEnvironment(environment);
         configuration.getTypeHandlerRegistry().register(VariableType.class, JdbcType.VARCHAR, new IbatisVariableTypeHandler());
@@ -571,6 +575,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       dbSqlSessionFactory.setSqlSessionFactory(sqlSessionFactory);
       dbSqlSessionFactory.setDbIdentityUsed(isDbIdentityUsed);
       dbSqlSessionFactory.setDbHistoryUsed(isDbHistoryUsed);
+      dbSqlSessionFactory.setDatabaseTablePrefix(databaseTablePrefix);
       addSessionFactory(dbSqlSessionFactory);
       
       addSessionFactory(new GenericManagerFactory(AttachmentManager.class));
@@ -1591,6 +1596,28 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public ProcessEngineConfigurationImpl setFailedJobCommandFactory(FailedJobCommandFactory failedJobCommandFactory) {
     this.failedJobCommandFactory = failedJobCommandFactory;
     return this;
+  }
+  
+  /**
+   * Allows configuring a database table prefix which is used for all runtime operations of the process engine.
+   * For example, if you specify a prefix named 'PRE1.', activiti will query for executions in a table named
+   * 'PRE1.ACT_RU_EXECUTION_'. 
+   * 
+   * <p />
+   * <strong>NOTE: the prefix is not respected by automatic database schema management. If you use 
+   * {@link ProcessEngineConfiguration#DB_SCHEMA_UPDATE_CREATE_DROP} 
+   * or {@link ProcessEngineConfiguration#DB_SCHEMA_UPDATE_TRUE}, activiti will create the database tables 
+   * using the default names, regardless of the prefix configured here.</strong>  
+   * 
+   * @since 5.9
+   */
+  public ProcessEngineConfiguration setDatabaseTablePrefix(String databaseTablePrefix) {
+    this.databaseTablePrefix = databaseTablePrefix;
+    return this;
+  }
+    
+  public String getDatabaseTablePrefix() {
+    return databaseTablePrefix;
   }
 
 }

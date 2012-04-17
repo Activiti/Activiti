@@ -27,10 +27,11 @@ import org.activiti.engine.task.Task;
 public class TablePageQueryTest extends PluggableActivitiTestCase {
   
   public void testGetTablePage() {
+    String tablePrefix = processEngineConfiguration.getDatabaseTablePrefix();
     List<String> taskIds = generateDummyTasks(20);
     
     TablePage tablePage = managementService.createTablePageQuery()
-      .tableName("ACT_RU_TASK")
+      .tableName(tablePrefix+"ACT_RU_TASK")
       .listPage(0, 5);
     
     assertEquals(0, tablePage.getFirstResult());
@@ -39,7 +40,7 @@ public class TablePageQueryTest extends PluggableActivitiTestCase {
     assertEquals(20, tablePage.getTotal());
     
     tablePage = managementService.createTablePageQuery()
-      .tableName("ACT_RU_TASK")
+      .tableName(tablePrefix+"ACT_RU_TASK")
       .listPage(14, 10);
     
     assertEquals(14, tablePage.getFirstResult());
@@ -51,11 +52,12 @@ public class TablePageQueryTest extends PluggableActivitiTestCase {
   }
   
   public void testGetSortedTablePage() {
+    String tablePrefix = processEngineConfiguration.getDatabaseTablePrefix();
     List<String> taskIds = generateDummyTasks(15);
     
     // With an ascending sort
     TablePage tablePage = managementService.createTablePageQuery()
-      .tableName("ACT_RU_TASK")
+      .tableName(tablePrefix+"ACT_RU_TASK")
       .orderAsc("NAME_")
       .listPage(1, 7);
     String[] expectedTaskNames = new String[] {"B", "C", "D", "E", "F", "G", "H"};
@@ -63,7 +65,7 @@ public class TablePageQueryTest extends PluggableActivitiTestCase {
     
     // With a descending sort
     tablePage = managementService.createTablePageQuery()
-      .tableName("ACT_RU_TASK")
+      .tableName(tablePrefix+"ACT_RU_TASK")
       .orderDesc("NAME_")
       .listPage(6, 8);
     expectedTaskNames = new String[] {"I", "H", "G", "F", "E", "D", "C", "B"} ;

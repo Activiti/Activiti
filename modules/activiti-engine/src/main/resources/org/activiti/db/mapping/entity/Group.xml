@@ -7,7 +7,7 @@
   <!-- GROUP INSERT -->
 
   <insert id="insertGroup" parameterType="org.activiti.engine.impl.persistence.entity.GroupEntity">
-    insert into ACT_ID_GROUP (ID_, REV_, NAME_, TYPE_)
+    insert into ${prefix}ACT_ID_GROUP (ID_, REV_, NAME_, TYPE_)
     values (
       #{id ,jdbcType=VARCHAR},
       1, 
@@ -19,7 +19,7 @@
   <!-- GROUP UPDATE -->
   
   <update id="updateGroup" parameterType="org.activiti.engine.impl.persistence.entity.GroupEntity">
-    update ACT_ID_GROUP set
+    update ${prefix}ACT_ID_GROUP set
       REV_ = #{revisionNext ,jdbcType=INTEGER},
       NAME_ = #{name ,jdbcType=VARCHAR},
       TYPE_ = #{type ,jdbcType=VARCHAR}
@@ -30,7 +30,7 @@
   <!-- GROUP DELETE -->
 
   <delete id="deleteGroup" parameterType="string">
-    delete from ACT_ID_GROUP where ID_ = #{groupId} 
+    delete from ${prefix}ACT_ID_GROUP where ID_ = #{groupId} 
   </delete>
 
   <!-- GROUP RESULTMAP -->
@@ -45,23 +45,23 @@
   <!-- GROUP SELECT -->
 
   <select id="selectGroupById" parameterType="string" resultMap="groupResultMap">
-    select * from ACT_ID_GROUP where ID_ = #{id}
+    select * from ${prefix}ACT_ID_GROUP where ID_ = #{id}
   </select>
   
   <select id="selectGroups" resultMap="groupResultMap">
-    select * from ACT_ID_GROUP
+    select * from ${prefix}ACT_ID_GROUP
   </select>
   
   <select id="selectGroupsByUserId" parameterType="string" resultMap="groupResultMap">
     select g.*
-    from ACT_ID_GROUP g, ACT_ID_MEMBERSHIP membership
+    from ${prefix}ACT_ID_GROUP g, ${prefix}ACT_ID_MEMBERSHIP membership
     where g.ID_ = membership.GROUP_ID_
       and membership.USER_ID_ = #{userId}
   </select>
 
   <select id="selectGroupsByUserIdAndGroupType" parameterType="map" resultMap="groupResultMap">
     select g.*
-    from ACT_ID_GROUP g, ACT_ID_MEMBERSHIP membership
+    from ${prefix}ACT_ID_GROUP g, ${prefix}ACT_ID_MEMBERSHIP membership
     where g.ID_ = membership.GROUP_ID_
       and membership.USER_ID_ = #{userId}
       <if test="groupType != null">
@@ -83,10 +83,10 @@
   </select>
   
   <sql id="selectGroupByQueryCriteriaSql">
-    from ACT_ID_GROUP G
+    from ${prefix}ACT_ID_GROUP G
     <if test="userId != null">
-      inner join ACT_ID_MEMBERSHIP M on G.ID_ = M.GROUP_ID_
-      inner join ACT_ID_USER U on M.USER_ID_ = U.ID_
+      inner join ${prefix}ACT_ID_MEMBERSHIP M on G.ID_ = M.GROUP_ID_
+      inner join ${prefix}ACT_ID_USER U on M.USER_ID_ = U.ID_
     </if>
     <where>
       <if test="id != null">

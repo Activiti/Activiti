@@ -7,7 +7,7 @@
   <!-- JOB DELETE (FOR TIMER AND MESSAGE) -->
 
   <delete id="deleteJob" parameterType="string">
-    delete from ACT_RU_JOB where ID_ = #{id}
+    delete from ${prefix}ACT_RU_JOB where ID_ = #{id}
   </delete>
   
   <!-- JOB RESULTMAP (FOR TIMER AND MESSAGE) -->
@@ -40,19 +40,19 @@
 
   <!-- JOB SELECT (FOR TIMER AND MESSAGE) -->  
   <select id="selectJobs" resultMap="jobResultMap">
-    select * from ACT_RU_JOB
+    select * from ${prefix}ACT_RU_JOB
   </select>
 
   <select id="selectJob" parameterType="string" resultMap="jobResultMap">
-    select * from ACT_RU_JOB where ID_ = #{id}
+    select * from ${prefix}ACT_RU_JOB where ID_ = #{id}
   </select>
 
   <select id="selectNextJobsToExecute" parameterType="string" resultMap="jobResultMap">
     select 
     	JOB.*    		
-    from ACT_RU_JOB JOB    
-    	LEFT OUTER JOIN ACT_RU_EXECUTION PI ON PI.ID_ = JOB.PROCESS_INSTANCE_ID_
-    	LEFT OUTER JOIN ACT_RE_PROCDEF PD ON PD.ID_ = PI.PROC_DEF_ID_    
+    from ${prefix}ACT_RU_JOB JOB    
+    	LEFT OUTER JOIN ${prefix}ACT_RU_EXECUTION PI ON PI.ID_ = JOB.PROCESS_INSTANCE_ID_
+    	LEFT OUTER JOIN ${prefix}ACT_RE_PROCDEF PD ON PD.ID_ = PI.PROC_DEF_ID_    
     where (JOB.RETRIES_ &gt; 0)
       and (JOB.DUEDATE_ is null or JOB.DUEDATE_ &lt; #{now, jdbcType=TIMESTAMP})
       and (JOB.LOCK_OWNER_ is null or JOB.LOCK_EXP_TIME_ &lt; #{now, jdbcType=TIMESTAMP})
@@ -65,7 +65,7 @@
 
   <select id="selectExclusiveJobsToExecute" parameterType="map" resultMap="jobResultMap">
     select * 
-    from ACT_RU_JOB     
+    from ${prefix}ACT_RU_JOB     
     where (RETRIES_ &gt; 0)
       and (DUEDATE_ is null or DUEDATE_ &lt; #{now, jdbcType=TIMESTAMP})
       and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt; #{now, jdbcType=TIMESTAMP})
@@ -75,7 +75,7 @@
   
   <select id="selectExclusiveJobsToExecute_integerBoolean" parameterType="map" resultMap="jobResultMap">
     select * 
-    from ACT_RU_JOB  
+    from ${prefix}ACT_RU_JOB  
     where (RETRIES_ &gt; 0)
       and (DUEDATE_ is null or DUEDATE_ &lt; #{now, jdbcType=TIMESTAMP})
       and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt; #{now, jdbcType=TIMESTAMP})
@@ -85,20 +85,20 @@
   
   <select id="selectLockedJobs" resultMap="jobResultMap">
     select * 
-    from ACT_RU_JOB
+    from ${prefix}ACT_RU_JOB
     where (RETRIES_ &gt; 0)
       and (LOCK_OWNER_ is not null)
   </select>
 
   <select id="selectJobsByConfiguration" parameterType="map" resultMap="jobResultMap">
-      select * from ACT_RU_JOB
+      select * from ${prefix}ACT_RU_JOB
       where HANDLER_TYPE_ = #{handlerType}
       and HANDLER_CFG_ =  #{handlerConfiguration}
   </select>
 
   <select id="selectJobsByExecutionId" parameterType="string" resultMap="jobResultMap">
     select *
-    from ACT_RU_JOB J
+    from ${prefix}ACT_RU_JOB J
     where J.EXECUTION_ID_ = #{executionId}
   </select>
 
@@ -116,7 +116,7 @@
   </select>
   
   <sql id="selectJobByQueryCriteriaSql">
-    from ACT_RU_JOB J
+    from ${prefix}ACT_RU_JOB J
     <where>
       <if test="id != null">
         J.ID_ = #{id}
@@ -164,9 +164,9 @@
   <!--  SELECT DEPENDENT -->  
    <select id="selectNextJobsToExecute_mysql" parameterType="string" resultMap="jobResultMap">
     select JOB.* 
-    from ACT_RU_JOB JOB
-   		LEFT OUTER JOIN ACT_RU_EXECUTION PI ON PI.ID_ = JOB.PROCESS_INSTANCE_ID_
-    	LEFT OUTER JOIN ACT_RE_PROCDEF PD ON PD.ID_ = PI.PROC_DEF_ID_    
+    from ${prefix}ACT_RU_JOB JOB
+   		LEFT OUTER JOIN ${prefix}ACT_RU_EXECUTION PI ON PI.ID_ = JOB.PROCESS_INSTANCE_ID_
+    	LEFT OUTER JOIN ${prefix}ACT_RE_PROCDEF PD ON PD.ID_ = PI.PROC_DEF_ID_    
     where (RETRIES_ &gt; 0)
       and (DUEDATE_ is null or DUEDATE_ &lt;= #{now, jdbcType=TIMESTAMP})
       and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt;= #{now, jdbcType=TIMESTAMP})
@@ -179,7 +179,7 @@
   
   <select id="selectExclusiveJobsToExecute_mysql" parameterType="map" resultMap="jobResultMap">
     select * 
-    from ACT_RU_JOB 
+    from ${prefix}ACT_RU_JOB 
     where (RETRIES_ &gt; 0)
       and (DUEDATE_ is null or DUEDATE_ &lt;= #{now, jdbcType=TIMESTAMP})
       and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt;= #{now, jdbcType=TIMESTAMP})
@@ -192,7 +192,7 @@
   <!-- TIMER INSERT -->
   
   <insert id="insertTimer" parameterType="org.activiti.engine.impl.persistence.entity.TimerEntity">
-    insert into ACT_RU_JOB (
+    insert into ${prefix}ACT_RU_JOB (
             ID_, 
             REV_,
             TYPE_,
@@ -229,7 +229,7 @@
   <!-- TIMER UPDATE -->
 
   <update id="updateTimer" parameterType="org.activiti.engine.impl.persistence.entity.TimerEntity">
-    update ACT_RU_JOB
+    update ${prefix}ACT_RU_JOB
     <set>
        REV_ =  #{revisionNext, jdbcType=INTEGER},
        LOCK_EXP_TIME_ = #{lockExpirationTime, jdbcType=TIMESTAMP},
@@ -247,7 +247,7 @@
   
   <select id="selectUnlockedTimersByDuedate" parameterType="date" resultMap="jobResultMap">
     select *
-    from ACT_RU_JOB
+    from ${prefix}ACT_RU_JOB
     where (TYPE_ = 'timer')
       and (DUEDATE_ is not null)
       and (DUEDATE_ &lt; #{duedate, jdbcType=TIMESTAMP})
@@ -258,7 +258,7 @@
 
   <select id="selectTimersByExecutionId" parameterType="string" resultMap="jobResultMap">
     select * 
-    from ACT_RU_JOB 
+    from ${prefix}ACT_RU_JOB 
     where (RETRIES_ &gt; 0)
       and (TYPE_ = 'timer')
       and (EXECUTION_ID_ = #{executionId})
@@ -268,7 +268,7 @@
   <!-- MESSAGE INSERT -->
 
   <insert id="insertMessage" parameterType="org.activiti.engine.impl.persistence.entity.MessageEntity">
-    insert into ACT_RU_JOB (
+    insert into ${prefix}ACT_RU_JOB (
             ID_, 
             REV_, 
             TYPE_,
@@ -301,7 +301,7 @@
   <!-- MESSAGE UPDATE -->
   
   <update id="updateMessage" parameterType="org.activiti.engine.impl.persistence.entity.MessageEntity">
-    update ACT_RU_JOB
+    update ${prefix}ACT_RU_JOB
     <set>
        REV_ =  #{revisionNext, jdbcType=INTEGER},
        LOCK_EXP_TIME_ = #{lockExpirationTime, jdbcType=TIMESTAMP},

@@ -7,7 +7,7 @@
   <!-- TASK INSERT -->
   
   <insert id="insertTask" parameterType="org.activiti.engine.impl.persistence.entity.TaskEntity">
-    insert into ACT_RU_TASK (ID_, REV_, NAME_, PARENT_TASK_ID_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
+    insert into ${prefix}ACT_RU_TASK (ID_, REV_, NAME_, PARENT_TASK_ID_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
                       ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_)
     values (#{id, jdbcType=VARCHAR},
             1,
@@ -30,7 +30,7 @@
   <!-- TASK UPDATE -->
   
   <update id="updateTask" parameterType="org.activiti.engine.impl.persistence.entity.TaskEntity">
-    update ACT_RU_TASK
+    update ${prefix}ACT_RU_TASK
     <set>
       REV_ = #{revisionNext, jdbcType=INTEGER},
       NAME_ = #{name, jdbcType=VARCHAR},
@@ -50,7 +50,7 @@
   
   <!-- TASK DELETE -->
   <delete id="deleteTask" parameterType="string">
-    delete from ACT_RU_TASK where ID_ = #{id}
+    delete from ${prefix}ACT_RU_TASK where ID_ = #{id}
   </delete>
   
   <!-- TASK RESULTMAP -->
@@ -76,11 +76,11 @@
   <!-- TASK SELECT -->  
 
   <select id="selectTask" parameterType="string" resultMap="taskResultMap">
-   select * from ACT_RU_TASK where ID_ = #{id}
+   select * from ${prefix}ACT_RU_TASK where ID_ = #{id}
   </select>
   
   <select id="selectCandidateTasks" parameterType="map" resultMap="taskResultMap">
-    select T.* from ACT_RU_TASK T inner join ACT_RU_IDENTITYLINK I ON T.ID_ = I.TASK_ID_
+    select T.* from ${prefix}ACT_RU_TASK T inner join ${prefix}ACT_RU_IDENTITYLINK I ON T.ID_ = I.TASK_ID_
     where T.ASSIGNEE_ IS NULL
           AND I.TYPE_ = 'candidate'
     <choose>
@@ -100,16 +100,16 @@
   </select>
   
   <select id="selectTasksByAssignee" parameterType="string" resultMap="taskResultMap">
-    select * from ACT_RU_TASK where ASSIGNEE_ = #{assignee}
+    select * from ${prefix}ACT_RU_TASK where ASSIGNEE_ = #{assignee}
   </select>
   
   <select id="selectTasksByParentTaskId" parameterType="string" resultMap="taskResultMap">
-    select * from ACT_RU_TASK where PARENT_TASK_ID_ = #{parentTaskId}
+    select * from ${prefix}ACT_RU_TASK where PARENT_TASK_ID_ = #{parentTaskId}
   </select>
 
   <select id="selectTasksByExecutionId" parameterType="string" resultMap="taskResultMap">
     select distinct T.*
-    from ACT_RU_TASK T
+    from ${prefix}ACT_RU_TASK T
     where T.EXECUTION_ID_ = #{executionId}
   </select>
   
@@ -127,25 +127,25 @@
   </select>
   
   <sql id="selectTaskByQueryCriteriaSql">  
-    from ACT_RU_TASK T
+    from ${prefix}ACT_RU_TASK T
     <if test="candidateUser != null || candidateGroups != null || involvedUser != null">
-      inner join ACT_RU_IDENTITYLINK I on I.TASK_ID_ = T.ID_
+      inner join ${prefix}ACT_RU_IDENTITYLINK I on I.TASK_ID_ = T.ID_
     </if>
     <foreach collection="variables" index="index" item="var">
       <choose>
         <when test="var.taskVariable">
-          inner join ACT_RU_VARIABLE A${index} on T.ID_ = A${index}.TASK_ID_ 
+          inner join ${prefix}ACT_RU_VARIABLE A${index} on T.ID_ = A${index}.TASK_ID_ 
         </when>
         <otherwise>
-          inner join ACT_RU_VARIABLE A${index} on T.PROC_INST_ID_ = A${index}.PROC_INST_ID_ 
+          inner join ${prefix}ACT_RU_VARIABLE A${index} on T.PROC_INST_ID_ = A${index}.PROC_INST_ID_ 
         </otherwise>
       </choose>       
     </foreach>
     <if test="processDefinitionKey != null || processDefinitionName != null">
-      inner join ACT_RE_PROCDEF D on T.PROC_DEF_ID_ = D.ID_
+      inner join ${prefix}ACT_RE_PROCDEF D on T.PROC_DEF_ID_ = D.ID_
     </if>
     <if test="processInstanceBusinessKey != null">
-        inner join ACT_RU_EXECUTION E on T.PROC_INST_ID_ = E.ID_
+        inner join ${prefix}ACT_RU_EXECUTION E on T.PROC_INST_ID_ = E.ID_
     </if>
     <where> 
       <if test="taskId != null">

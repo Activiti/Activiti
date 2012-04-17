@@ -7,7 +7,7 @@
   <!-- MEMBERSHIP INSERT -->
 
   <insert id="insertMembership" parameterType="map">
-    insert into ACT_ID_MEMBERSHIP (USER_ID_, GROUP_ID_)
+    insert into ${prefix}ACT_ID_MEMBERSHIP (USER_ID_, GROUP_ID_)
     values (
       #{userId ,jdbcType=VARCHAR},
       #{groupId ,jdbcType=VARCHAR}
@@ -19,12 +19,12 @@
   <!-- MEMBERSHIP DELETE -->
 
   <delete id="deleteMembershipsByUserId" parameterType="string">
-    delete from ACT_ID_MEMBERSHIP 
+    delete from ${prefix}ACT_ID_MEMBERSHIP 
     where USER_ID_ = #{userId} 
   </delete>
 
   <delete id="deleteMembership" parameterType="map">
-    delete from ACT_ID_MEMBERSHIP 
+    delete from ${prefix}ACT_ID_MEMBERSHIP 
     where USER_ID_ = #{userId}
       and GROUP_ID_ = #{groupId} 
   </delete>
@@ -34,7 +34,7 @@
   <!-- MEMBERSHIP DELETE -->
 
   <delete id="deleteMembershipsByGroupId" parameterType="string">
-    delete from ACT_ID_MEMBERSHIP 
+    delete from ${prefix}ACT_ID_MEMBERSHIP 
     where GROUP_ID_ = #{groupId} 
   </delete>
   
