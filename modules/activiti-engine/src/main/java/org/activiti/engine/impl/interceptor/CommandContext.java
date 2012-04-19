@@ -23,6 +23,7 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
+import org.activiti.engine.impl.jobexecutor.FailedJobCommandFactory;
 import org.activiti.engine.impl.persistence.entity.AttachmentManager;
 import org.activiti.engine.impl.persistence.entity.CommentManager;
 import org.activiti.engine.impl.persistence.entity.DeploymentManager;
@@ -62,6 +63,7 @@ public class CommandContext {
   protected Throwable exception = null;
   protected LinkedList<AtomicOperation> nextOperations = new LinkedList<AtomicOperation>();
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
+  protected FailedJobCommandFactory failedJobCommandFactory;
 
   
   public void performOperation(AtomicOperation executionOperation, InterpretableExecution execution) {
@@ -85,6 +87,7 @@ public class CommandContext {
   public CommandContext(Command<?> command, ProcessEngineConfigurationImpl processEngineConfiguration) {
     this.command = command;
     this.processEngineConfiguration = processEngineConfiguration;
+    this.failedJobCommandFactory = processEngineConfiguration.getFailedJobCommandFactory();
     sessionFactories = processEngineConfiguration.getSessionFactories();
     this.transactionContext = processEngineConfiguration
       .getTransactionContextFactory()
@@ -288,5 +291,8 @@ public class CommandContext {
   }
   public Throwable getException() {
     return exception;
+  }
+  public FailedJobCommandFactory getFailedJobCommandFactory() {
+    return failedJobCommandFactory;
   }
 }

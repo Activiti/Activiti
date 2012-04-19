@@ -14,7 +14,6 @@
 package org.activiti.engine.impl.jobexecutor;
 
 import org.activiti.engine.impl.cfg.TransactionListener;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
@@ -35,9 +34,8 @@ public class FailedJobListener implements TransactionListener {
   }
   
   public void execute(CommandContext commandContext) {
-    commandExecutor.execute(Context.getProcessEngineConfiguration()
-                              .getFailedJobCommandFactory()
-                              .getCommand(jobId, exception));
+    commandExecutor.execute(commandContext.getFailedJobCommandFactory()
+                                          .getCommand(jobId, exception));
   }
 
 }
