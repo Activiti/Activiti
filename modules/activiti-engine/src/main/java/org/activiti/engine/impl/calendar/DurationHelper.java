@@ -79,6 +79,10 @@ public class DurationHelper {
     }
     return add(start, period);
   }
+  
+  public int getTimes() {
+    return times;
+  }
 
   private Date getDateAfterRepeat(Date date) {
     if (start != null) {
