@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -27,7 +28,7 @@ import org.activiti.engine.repository.Deployment;
 /**
  * @author Tom Baeyens
  */
-public class DeployCmd<T> implements Command<Deployment> {
+public class DeployCmd<T> implements Command<Deployment>, Serializable {
 
   private static final long serialVersionUID = 1L;
   protected DeploymentBuilderImpl deploymentBuilder;
@@ -69,6 +70,9 @@ public class DeployCmd<T> implements Command<Deployment> {
     
     for (String resourceName: resources.keySet()) {
       ResourceEntity savedResource = savedResources.get(resourceName);
+      
+      if(savedResource == null) return true;
+      
       if(!savedResource.isGenerated()) {
         ResourceEntity resource = resources.get(resourceName);
         
