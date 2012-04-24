@@ -15,6 +15,7 @@ package org.activiti.explorer.ui.process;
 
 import java.io.InputStream;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
@@ -33,11 +34,13 @@ import com.vaadin.terminal.StreamResource.StreamSource;
 
 /**
  * Builder that is capable of creating a {@link StreamResource} for a given
- * process-definition, containing the diagram image.
+ * process-definition, containing the diagram image, if available.
  * 
  * @author Frederik Heremans
  */
 public class ProcessDefinitionImageStreamResourceBuilder {
+  
+  protected static final Logger LOGGER = Logger.getLogger(ProcessDefinitionImageStreamResourceBuilder.class.getName());
   
   public StreamResource buildStreamResource(ProcessDefinition processDefinition, RepositoryService repositoryService) {
     
@@ -68,16 +71,23 @@ public class ProcessDefinitionImageStreamResourceBuilder {
             .getProcessDefinitionId());
 
     if (processDefinition != null && processDefinition.isGraphicalNotationDefined()) {
-      InputStream definitionImageStream = ProcessDiagramGenerator.generateDiagram(processDefinition, "png", 
-        runtimeService.getActiveActivityIds(processInstance.getId()));
-      
-      StreamSource streamSource = new InputStreamStreamSource(definitionImageStream);
-      
-      // Create image name
-      String imageExtension = extractImageExtension(processDefinition.getDiagramResourceName());
-      String fileName = processInstance.getId() + UUID.randomUUID() + "." + imageExtension;
-      
-      imageResource = new StreamResource(streamSource, fileName, ExplorerApp.get()); 
+      try {
+        InputStream definitionImageStream = ProcessDiagramGenerator.generateDiagram(processDefinition, "png", 
+                runtimeService.getActiveActivityIds(processInstance.getId()));
+              
+        if(definitionImageStream != null) {
+          StreamSource streamSource = new InputStreamStreamSource(definitionImageStream);
+          
+          // Create image name
+          String imageExtension = extractImageExtension(processDefinition.getDiagramResourceName());
+          String fileName = processInstance.getId() + UUID.randomUUID() + "." + imageExtension;
+          
+          imageResource = new StreamResource(streamSource, fileName, ExplorerApp.get()); 
+        }
+      } catch(Throwable t) {
+        // Image can't be generated, ignore this
+        LOGGER.warning("Process image cannot be generated due to exception: " + t.getClass().getName() + " - " + t.getMessage());
+      }
     }
     return imageResource;
   }
