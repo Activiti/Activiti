@@ -653,7 +653,7 @@ public class TenMinuteTutorial {
 	<title>BPMN 2.0 Constructs</title>
 	
 	<para>This chapter covers the BPMN 20 constructs supported by 
-	activiti as well as custom extensions to the BPMN standard.</para>
+	Activiti as well as custom extensions to the BPMN standard.</para>
 
 	<section id="bpmnCustomExtensions">
 	
@@ -977,9 +977,9 @@ RuntimeService.signalEventReceived(String signalName, String executionId);
 	    	<mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.signal.event.warning.1.png"/></imageobject></mediaobject>
 	    	
 	    	<para>
-	    		The pattern described in the process above is not supported by activiti. The idea is that the error thrown while performing the "do something" task 
+	    		The pattern described in the process above is not supported by Activiti. The idea is that the error thrown while performing the "do something" task 
 	    		is caught by the boundary error event and would be propagated to the parallel path of execution using the signal throw event and then interrupt the 
-	    		"do something in parallel" task. So far activiti would perform as expected. The signal would be propagated to the catching boundary event and interrupt the 
+	    		"do something in parallel" task. So far Activiti would perform as expected. The signal would be propagated to the catching boundary event and interrupt the 
 	    		task. <emphasis role="bold">However, due to the broadcast semantics of the signal, it would also be propagated to all other process instances which have subscribed 
 	    		to the signal event.</emphasis> In this case, this might not be what we want.
 	    	</para>
@@ -1032,7 +1032,7 @@ RuntimeService.signalEventReceived(String signalName, String executionId);
         <section id="bpmnMessageEventDefinitionThrow">
         	<title>Throwing a Signal Event</title>       
 	        <para>
-	        	At the moment, activiti supports message events only for starting process instances. To support this, the following methods exist on the <code>RuntimeService</code>:
+	        	At the moment, Activiti supports message events only for starting process instances. To support this, the following methods exist on the <code>RuntimeService</code>:
 	        	<programlisting>
 ProcessInstance startProcessInstanceByMessage(String messageName);
 ProcessInstance startProcessInstanceByMessage(String messageName, Map&lt;String, Object&gt; processVariables);
@@ -1043,14 +1043,14 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 	    <section id="bpmnMessageEventDefinitionCatch">
 	    	<title>Catching a Signal Event</title>
 	    	<para>
-	    		At the moment activiti only supports <link linkend="bpmnMessageStartEvent">message start events</link>. A message start event catches a message with a given name and 
+	    		At the moment Activiti only supports <link linkend="bpmnMessageStartEvent">message start events</link>. A message start event catches a message with a given name and 
 	    		starts a process instance. The payload of the message is added as process variables to the process instance. Since a message must be directed at a single receiver, 
-	    		activiti only allows a single process definition to be deployed for a given message name.  
+	    		Activiti only allows a single process definition to be deployed for a given message name.  
 	    	</para>
 	    </section>
 	    <section id="bpmnMessageEventDefinitionQuery">
 	    	<title>Querying for Message Event subscriptions</title>	    	
-	    	Since activiti only supports message start events, we can only query for message subscriptions using a <code>ProcessDefinitionQuery</code>:
+	    	Since Activiti only supports message start events, we can only query for message subscriptions using a <code>ProcessDefinitionQuery</code>:
 	    	<programlisting>
 ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
       .messageEventSubscription("newCallCenterBooking")
@@ -1100,7 +1100,7 @@ ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQ
 	   </para>
 	   
 	   <para>
-	     In a start event, following activiti-specific properties can be specified:
+	     In a start event, following Activiti-specific properties can be specified:
 	   </para>
 	   
 	   <itemizedlist> 
@@ -2317,7 +2317,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 		    </para>
 		   		    
 		    <para>
-		    	In activiti, the signal is broadcast to all active handlers (i.e. all catching signal events). Signals can be published synchronous or asynchronous.
+		    	In Activiti, the signal is broadcast to all active handlers (i.e. all catching signal events). Signals can be published synchronous or asynchronous.
 		    	<itemizedlist>
 		    		<listitem>
 		    			<para>
@@ -2421,7 +2421,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 		   			</listitem>
 		   			<listitem>
 		   				<para>
-							In activiti compensation is performed in reverse order of execution. This means that whichever activity 
+							In Activiti compensation is performed in reverse order of execution. This means that whichever activity 
 							completed last is compensated first, etc.  
 						</para>
 					</listitem>
@@ -5630,7 +5630,7 @@ public class MyTaskCreateListener implements TaskListener {
 			<para>
 				<emphasis role="bold">Relation to ACID transactions:</emphasis> it is important not to confuse the bpmn transaction subprocess with 
 				technical (ACID) transactions. The bpmn transaction subprocess is not a way to scope technical transactions.
-				In order to understand transaction management in activiti, read the section on 
+				In order to understand transaction management in Activiti, read the section on 
 				<link linkend="bpmnConcurrencyAndTransactions">concurrency and transactions</link>.
 		   		A bpmn transaction is different from a technical transaction in the following ways:
 		   		<itemizedlist>
@@ -5708,7 +5708,7 @@ public class MyTaskCreateListener implements TaskListener {
 		   				<para>
 		   					The bpmn specification requires that the process engine reacts to events issued by the underlying transaction protocol 
 		   					and for instance that a transaction is cancelled, if a cancel event occurs in the underlying protocol.
-		   					As an embeddable engine, activiti does currently not support this. (For some ramifications of this, see paragraph on consistency below.)		   					
+		   					As an embeddable engine, Activiti does currently not support this. (For some ramifications of this, see paragraph on consistency below.)		   					
 		   				</para>
 		   			</listitem>		   			
 		   		</itemizedlist>
@@ -5718,16 +5718,16 @@ public class MyTaskCreateListener implements TaskListener {
 		   		<emphasis role="bold">Consistency on top of ACID transactions and optimistic concurrency:</emphasis>
 		   		A bpmn transaction guarantees consistency in the sense that either all activities compete successfully, or if some activity 
 		   		cannot be performed, the effects of all other successful activities are compensated. So either way we end up in a consistent 
-		   		state. However, it is important to recognize that in activiti, the consistency model for bpmn transactions is superposed 
+		   		state. However, it is important to recognize that in Activiti, the consistency model for bpmn transactions is superposed 
 		   		on top of the consistency model for process execution. 
 		   		Activiti executes processes in a transactional way. Concurrency is addressed using optimistic
-		   		locking. In activiti, bpmn error, cancel and compensation events 
+		   		locking. In Activiti, bpmn error, cancel and compensation events 
 		   		are built on top of the same acid transactions and optimistic locking. For example, a cancel end event can only trigger compensation 
 		   		if it is actually reached. It is not reached if some undeclared exception is thrown by a service task before. Or, the 
 		   		effects of a compensation handler can not be committed if some other participant in the underlying ACID transaction 
 		   		sets the transaction to the state rollback-only. Or, when two concurrent executions reach a cancel end event, compensation 
 		   		might be triggered twice and fail with an optimistic locking exception. All of this is to say that when implementing 
-		   		bpmn transactions in activiti, the same set of rules apply as when implementing "ordinary" processes and subprocesses.
+		   		bpmn transactions in Activiti, the same set of rules apply as when implementing "ordinary" processes and subprocesses.
 		   		So to effectively guarantee consistency, it is important to implement processes in a way that does take the optimistic, transactional 
 		   		execution model into consideration.		   		 
 		   	</para>
@@ -5930,22 +5930,22 @@ public class MyTaskCreateListener implements TaskListener {
         <title>Asynchronous Continuations</title>
                 
         <para>
-        Activiti executes processes in a transactional way which can be configured to suite your needs. Lets start by looking at how activiti scopes transactions normally. 
-        If you trigger activiti (i.e. start a process, complete a task, signal an execution),
-        activiti is going to advance in the process, until it reaches wait states on each active path of execution. More concretely speaking it performs a depth-first search through 
-        the process graph and returns if it has reached wait states on every branch of execution. A wait state is a task which is performed &quot;later&quot; which means that activiti
+        Activiti executes processes in a transactional way which can be configured to suite your needs. Lets start by looking at how Activiti scopes transactions normally. 
+        If you trigger Activiti (i.e. start a process, complete a task, signal an execution),
+        Activiti is going to advance in the process, until it reaches wait states on each active path of execution. More concretely speaking it performs a depth-first search through 
+        the process graph and returns if it has reached wait states on every branch of execution. A wait state is a task which is performed &quot;later&quot; which means that Activiti
         persists the current execution and waits to be triggered again. The trigger can either come from an external source for example if we have a user task or a receive message task, 
-        or from activiti itself, if we have a timer event.
+        or from Activiti itself, if we have a timer event.
         This is illustrated in the following picture:
         
         <mediaobject><imageobject><imagedata align="center" fileref="images/activiti.async.example.no.async.PNG"/></imageobject></mediaobject>
                
         We see a segment of a BPMN processes with a usertask, a service task and a timer event. Completing the usertask and validating the address is part of the 
         same unit of work, so it should succeed or fail atomically. That means that if the service task throws an exception we want to rollback the current transaction, 
-        such that the execution tracks back to the user task and the the user task is still
-        present in the database. This is also the default behavior of activiti. In (1) an application or client thread completes the task. In that same thread activiti is now 
+        such that the execution tracks back to the user task and the user task is still
+        present in the database. This is also the default behavior of Activiti. In (1) an application or client thread completes the task. In that same thread Activiti is now 
         executing the service and advances until it reaches a wait state, in this case the timer event (2). Then it returns the control to the caller (3) potentially committing 
-        the transaction (if it was started by activiti).
+        the transaction (if it was started by Activiti).
     </para>
     
     <para>
@@ -5956,9 +5956,9 @@ public class MyTaskCreateListener implements TaskListener {
         
         This time we are completing the user task, generating an invoice and then send that invoice to the customer.
         This time the generation of the invoice is not part of the same unit of work so we do not want to rollback the completion of the usertask if generating an invoice fails.
-        So what we want activiti to do is complete the user task (1), commit the transaction and return the control to the calling application. Then we want to generate the invoice 
-        asynchronously, in a background thread. This background thread is the activiti job executor (actually a thread pool) which periodically polls the database for jobs. So behind 
-        the scenes, when we reach the &quot;generate invoice&quot; task, we are creating a job &quot;message&quot; for activiti to continue the process later and persisting it into the database. 
+        So what we want Activiti to do is complete the user task (1), commit the transaction and return the control to the calling application. Then we want to generate the invoice 
+        asynchronously, in a background thread. This background thread is the Activiti job executor (actually a thread pool) which periodically polls the database for jobs. So behind 
+        the scenes, when we reach the &quot;generate invoice&quot; task, we are creating a job &quot;message&quot; for Activiti to continue the process later and persisting it into the database. 
         This job is then picked up by the job executor and executed. We are also giving the local job executor a little hint that there is a new job, to improve performance.      
     </para>
     
@@ -5980,7 +5980,7 @@ public class MyTaskCreateListener implements TaskListener {
       
         <title>Exclusive Jobs</title>
         
-        Since activiti 5.9, the JobExecutor makes sure that jobs from a single process instance are never executed concurrently. Why is this?
+        Since Activiti 5.9, the JobExecutor makes sure that jobs from a single process instance are never executed concurrently. Why is this?
         
         <section>
         	<title>Why exclusive Jobs?</title>
@@ -6007,16 +6007,16 @@ public class MyTaskCreateListener implements TaskListener {
 	         </para>
 	         
 	         <para>
-	         How does activiti address this problem? Activiti performs optimistic locking. Whenever we take a decision based on data that might not be current (because another 
+	         How does Activiti address this problem? Activiti performs optimistic locking. Whenever we take a decision based on data that might not be current (because another 
 	         transaction might modify it before we commit, we make sure to increment the version of the same database row in both transactions). This way, whichever transaction commits first wins 
 	         and the other ones fail with an optimistic locking exception. This solves the problem in the case of the process discussed above: if multiple executions arrive at the parallel join 
 	         concurrently, they all assume that they have to wait, increment the version of their parent execution (the process instance) and then try to commit. Whichever execution is first will 
-	         be able to commit and the other ones will fail with an optimistic locking exception. Since the executions are triggered by a job, activiti will retry to perform the same job after waiting
+	         be able to commit and the other ones will fail with an optimistic locking exception. Since the executions are triggered by a job, Activiti will retry to perform the same job after waiting
 	         for a certain amount of time and hopefully this time pass the synchronizing gateway.            
 	         </para>
 	         
 	         <para>
-	         Is this a good solution? As we have seen, optimistic locking allows activiti to prevent inconsistencies. It makes sure that we do not "keep stuck at the joining gateway", meaning: either 
+	         Is this a good solution? As we have seen, optimistic locking allows Activiti to prevent inconsistencies. It makes sure that we do not "keep stuck at the joining gateway", meaning: either 
 	         all executions have passed the gateway or, there are jobs in the database making sure that we retry passing it. However, while this is a perfectly fine solution from the point of view 
 	         of persistence and consistency, this might not always be desirable behavior at an higher level: 
 	         
@@ -6030,17 +6030,17 @@ public class MyTaskCreateListener implements TaskListener {
 			      <listitem>
 			        <para>
 			          If a job has non-transactional side effects, those will not be rolled back by the failing transaction. For instance, if the "book concert tickets" service does not 
-			          share the same transaction as activiti, we might book multiple tickets if we retry the job. 
+			          share the same transaction as Activiti, we might book multiple tickets if we retry the job. 
 			        </para>
 			      </listitem>
 			    </itemizedlist>         
 	           
 	         </para>
-	         In activiti 5.9 we thus introduced a concept which was already present in jbpm4 we call 'exclusive jobs'.
+	         In Activiti 5.9 we thus introduced a concept, which was already present in jBPM 4 and is called 'exclusive jobs'.
 	         
          </section>
          <section>
-        	<title>What are exclusive Jobs?</title>
+        	<title>What are exclusive jobs?</title>
         	<para>
         		An exclusive job cannot be performed at the same time as another exclusive job from the same process instance. Consider the process shown above: if we declare the service tasks to be exclusive,
         	 	the JobExecutor will make sure that the corresponding jobs are not executed concurrently. Instead, it will make sure that whenever it acquires an exclusive job from a certain process instance, 
@@ -6048,7 +6048,7 @@ public class MyTaskCreateListener implements TaskListener {
         	</para>
         		
         	<para>
-        		How can I enable this feature? Since activiti 5.9, exclusive jobs are the default configuration. All asynchronous continuations and timer events are thus exclusive by default. In addition, if you want a 
+        		How can I enable this feature? Since Activiti 5.9, exclusive jobs are the default configuration. All asynchronous continuations and timer events are thus exclusive by default. In addition, if you want a 
         		job to be non-exclusive, you can configure it as such using <code>activiti:exclusive="false"</code>. For example, the following servicetask would be asynchronous but non-exclusive.
         		
         		<programlisting>
@@ -6070,11 +6070,16 @@ public class MyTaskCreateListener implements TaskListener {
 			      <listitem>
 			        <para>
 			          It is actually not a performance issue. Performance is an issue under heavy load. Heavy load means that all worker threads of the job executor are busy all the time.
-			          With exclusive jobs, activiti will simply distribute the load differently. Exclusive jobs means that jobs from a single process instance are performed by the same
+			          With exclusive jobs, Activiti will simply distribute the load differently. Exclusive jobs means that jobs from a single process instance are performed by the same
 			          thread sequentially. But consider: you have more than one single process instance.
 			          And jobs from other process instances are delegated to other threads and executed concurrently. 
-			          This means that with exclusive jobs activiti will not execute jobs from the same process instance concurrently but it will still execute multiple instances concurrently. 
-			          From an overall throughput perspective this is desirable in most scenarios as it usually leads to individual instances being done more quickly.    
+			          This means that with exclusive jobs Activiti will not execute jobs from the same process instance concurrently, but it will still execute multiple instances concurrently. 
+                From an overall throughput perspective this is desirable in most scenarios as it usually leads to individual instances being done more quickly.
+                Furthermore, data that is required for executing subsequent jobs
+                of the same process instance will already be in the cache of
+                the executing cluster node.
+                If the jobs do not have this node affinity,
+                that data might need to be fetched from the database again.
 			        </para>
 			      </listitem>
 			    </itemizedlist>
