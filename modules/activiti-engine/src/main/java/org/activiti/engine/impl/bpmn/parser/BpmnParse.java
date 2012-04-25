@@ -35,8 +35,8 @@ import org.activiti.engine.impl.bpmn.behavior.CallActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.CancelBoundaryEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.CancelEndEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ErrorEndEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.EventSubProcessStartEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.EventBasedGatewayActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.EventSubProcessStartEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ExclusiveGatewayActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.InclusiveGatewayActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchEventActivitiBehaviour;
@@ -101,6 +101,10 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.impl.pvm.process.HasDIBounds;
+import org.activiti.engine.impl.pvm.process.Lane;
+import org.activiti.engine.impl.pvm.process.LaneSet;
+import org.activiti.engine.impl.pvm.process.ParticipantProcess;
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
@@ -535,7 +539,6 @@ public class BpmnParse extends Parse {
    * Parses the collaboration definition defined within the 'definitions'
    * root element and get all participants to lookup their process references
    * during DI parsing.
-   * 
    */
   public void parseCollaboration() {
     Element collaboration = rootElement.element("collaboration");
@@ -543,7 +546,16 @@ public class BpmnParse extends Parse {
       for (Element participant : collaboration.elements("participant")) {
         String processRef = participant.attribute("processRef");
         if (processRef != null) {
-          participantProcesses.put(participant.attribute("id"), processRef);
+          ProcessDefinitionImpl procDef = getProcessDefinition(processRef);
+          if(procDef != null) {
+            // Set participant process on the procDef, so it can get rendered later on if needed
+            ParticipantProcess participantProcess = new ParticipantProcess();
+            participantProcess.setId(participant.attribute("id"));
+            participantProcess.setName(participant.attribute("name"));
+            procDef.setParticipantProcess(participantProcess);
+            
+            participantProcesses.put(participantProcess.getId(), processRef);
+          }
         }
       }
     }
@@ -579,6 +591,9 @@ public class BpmnParse extends Parse {
       LOGGER.fine("Parsing process " + processDefinition.getKey());
     }
     parseScope(processElement, processDefinition);
+    
+    // Parse any laneSets defined for this process
+    parseLaneSets(processElement, processDefinition);
 
     for (BpmnParseListener parseListener : parseListeners) {
       parseListener.parseProcess(processElement, processDefinition);
@@ -586,6 +601,46 @@ public class BpmnParse extends Parse {
 
     return processDefinition;
   }
+  
+  protected void parseLaneSets(Element parentElement, ProcessDefinitionEntity processDefinition) {
+    List<Element> laneSets = parentElement.elements("laneSet");
+    
+    if(laneSets != null && laneSets.size() > 0) {
+      for(Element laneSetElement : laneSets) {
+        LaneSet newLaneSet = new LaneSet();
+     
+        newLaneSet.setId(laneSetElement.attribute("id"));
+        newLaneSet.setName(laneSetElement.attribute("name"));
+        parseLanes(laneSetElement, newLaneSet);
+        
+        // Finally, add the set
+        processDefinition.addLaneSet(newLaneSet);
+      }
+    }
+  }
+  
+  protected void parseLanes(Element laneSetElement, LaneSet laneSet) {
+    List<Element> lanes = laneSetElement.elements("lane");
+    if(lanes != null && lanes.size() > 0) {
+      for(Element laneElement : lanes) {
+        // Parse basic attributes
+        Lane lane = new Lane();
+        lane.setId(laneElement.attribute("id"));
+        lane.setName(laneElement.attribute("name"));
+        
+        // Parse ID's of flow-nodes that live inside this lane
+        List<Element> flowNodeElements = laneElement.elements("flowNodeRef");
+        if(flowNodeElements != null && flowNodeElements.size() > 0) {
+          for(Element flowNodeElement : flowNodeElements) {
+            lane.getFlowNodeIds().add(flowNodeElement.getText());            
+          }
+        }
+        
+        laneSet.addLane(lane);
+      }
+    }
+  }
+
 
   /**
    * Parses a scope: a process, subprocess, etc.
@@ -2851,38 +2906,49 @@ public class BpmnParse extends Parse {
       // For collaborations, their are also shape definitions for the
       // participants / processes
       if (participantProcesses.get(bpmnElement) != null) {
-        getProcessDefinition(participantProcesses.get(bpmnElement)).setGraphicalNotationDefined(true);
+        ProcessDefinitionEntity procDef = getProcessDefinition(participantProcesses.get(bpmnElement));
+        procDef.setGraphicalNotationDefined(true);
+        
+        // The participation that references this process, has a bounds to be rendered + a name as wel
+        parseDIBounds(bpmnShapeElement, procDef.getParticipantProcess());
+        return;
       }
-
+      
       for (ProcessDefinitionEntity processDefinition : getProcessDefinitions()) {
         ActivityImpl activity = processDefinition.findActivity(bpmnElement);
-
-        // bounds
         if (activity != null) {
-          Element bounds = bpmnShapeElement.elementNS(BpmnParser.BPMN_DC_NS, "Bounds");
-          if (bounds != null) {
-            activity.setX(parseDoubleAttribute(bpmnShapeElement, "x", bounds.attribute("x"), true).intValue());
-            activity.setY(parseDoubleAttribute(bpmnShapeElement, "y", bounds.attribute("y"), true).intValue());
-            activity.setWidth(parseDoubleAttribute(bpmnShapeElement, "width", bounds.attribute("width"), true).intValue());
-            activity.setHeight(parseDoubleAttribute(bpmnShapeElement, "height", bounds.attribute("height"), true).intValue());
-          } else {
-            addError("'Bounds' element is required", bpmnShapeElement);
-          }
+          parseDIBounds(bpmnShapeElement, activity);
 
           // collapsed or expanded
           String isExpanded = bpmnShapeElement.attribute("isExpanded");
           if (isExpanded != null) {
             activity.setProperty(PROPERTYNAME_ISEXPANDED, parseBooleanAttribute(isExpanded));
           }
-        } else if (!elementIds.contains(bpmnElement)) { // it might not be an
-                                                        // activity but it might
-                                                        // still reference
-                                                        // 'something'
-          addError("Invalid reference in 'bpmnElement' attribute, activity " + bpmnElement + "not found", bpmnShapeElement);
+        } else {
+          Lane lane = processDefinition.getLaneForId(bpmnElement);
+          
+          if(lane != null) {
+            // The shape represents a lane
+            parseDIBounds(bpmnShapeElement, lane);
+          } else if(!elementIds.contains(bpmnElement)) { // It might not be an activity nor a lane, but it might still reference 'something'
+            addError("Invalid reference in 'bpmnElement' attribute, activity " + bpmnElement + "not found", bpmnShapeElement);
+          }
         }
       }
     } else {
       addError("'bpmnElement' attribute is required on BPMNShape", bpmnShapeElement);
+    }
+  }
+  
+  protected void parseDIBounds(Element bpmnShapeElement, HasDIBounds target) {
+    Element bounds = bpmnShapeElement.elementNS(BpmnParser.BPMN_DC_NS, "Bounds");
+    if (bounds != null) {
+      target.setX(parseDoubleAttribute(bpmnShapeElement, "x", bounds.attribute("x"), true).intValue());
+      target.setY(parseDoubleAttribute(bpmnShapeElement, "y", bounds.attribute("y"), true).intValue());
+      target.setWidth(parseDoubleAttribute(bpmnShapeElement, "width", bounds.attribute("width"), true).intValue());
+      target.setHeight(parseDoubleAttribute(bpmnShapeElement, "height", bounds.attribute("height"), true).intValue());
+    } else {
+      addError("'Bounds' element is required", bpmnShapeElement);
     }
   }
 

@@ -27,7 +27,7 @@ import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 /**
  * @author Tom Baeyens
  */
-public class ActivityImpl extends ScopeImpl implements PvmActivity {
+public class ActivityImpl extends ScopeImpl implements PvmActivity, HasDIBounds {
 
   private static final long serialVersionUID = 1L;
   protected List<TransitionImpl> outgoingTransitions = new ArrayList<TransitionImpl>();

@@ -23,6 +23,9 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.impl.pvm.process.Lane;
+import org.activiti.engine.impl.pvm.process.LaneSet;
+import org.activiti.engine.impl.pvm.process.ParticipantProcess;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
 
 /**
@@ -270,9 +273,27 @@ public class ProcessDiagramGenerator {
 
   protected static ProcessDiagramCanvas generateDiagram(ProcessDefinitionEntity processDefinition, List<String> highLightedActivities) {
     ProcessDiagramCanvas processDiagramCanvas = initProcessDiagramCanvas(processDefinition);
+    
+    // Draw pool shape, if process is participant in collaboration
+    if(processDefinition.getParticipantProcess() != null) {
+      ParticipantProcess pProc = processDefinition.getParticipantProcess();
+      processDiagramCanvas.drawPoolOrLane(pProc.getName(), pProc.getX(), pProc.getY(), pProc.getWidth(), pProc.getHeight());
+    }
+    
+    // Draw lanes
+    if(processDefinition.getLaneSets() != null && processDefinition.getLaneSets().size() > 0) {
+      for(LaneSet laneSet : processDefinition.getLaneSets()) {
+        if(laneSet.getLanes() != null && laneSet.getLanes().size() > 0) {
+          for(Lane lane : laneSet.getLanes()) {
+            processDiagramCanvas.drawPoolOrLane(lane.getName(), lane.getX(), lane.getY(), lane.getWidth(), lane.getHeight());
+          }
+        }
+      }
+    }
+    
+    // Draw activities and their sequence-flows
     for (ActivityImpl activity : processDefinition.getActivities()) {
       drawActivity(processDiagramCanvas, activity, highLightedActivities);
-
     }
     return processDiagramCanvas;
   }
@@ -349,7 +370,16 @@ public class ProcessDiagramGenerator {
     int maxX = 0;
     int minY = Integer.MAX_VALUE;
     int maxY = 0;
-
+    
+    if(processDefinition.getParticipantProcess() != null) {
+      ParticipantProcess pProc = processDefinition.getParticipantProcess();
+      
+      minX = pProc.getX();
+      maxX = pProc.getX() + pProc.getWidth();
+      minY = pProc.getY();
+      maxY = pProc.getY() + pProc.getHeight();
+    }
+    
     for (ActivityImpl activity : processDefinition.getActivities()) {
 
       // width
@@ -387,6 +417,30 @@ public class ProcessDiagramGenerator {
         }
       }
     }
+    
+    if(processDefinition.getLaneSets() != null && processDefinition.getLaneSets().size() > 0) {
+      for(LaneSet laneSet : processDefinition.getLaneSets()) {
+        if(laneSet.getLanes() != null && laneSet.getLanes().size() > 0) {
+          for(Lane lane : laneSet.getLanes()) {
+            // width
+            if (lane.getX() + lane.getWidth() > maxX) {
+              maxX = lane.getX() + lane.getWidth();
+            }
+            if (lane.getX() < minX) {
+              minX = lane.getX();
+            }
+            // height
+            if (lane.getY() + lane.getHeight() > maxY) {
+              maxY = lane.getY() + lane.getHeight();
+            }
+            if (lane.getY() < minY) {
+              minY = lane.getY();
+            }
+          }
+        }
+      }
+    }
+    
     return new ProcessDiagramCanvas(maxX + 10, maxY + 10, minX, minY);
   }
 

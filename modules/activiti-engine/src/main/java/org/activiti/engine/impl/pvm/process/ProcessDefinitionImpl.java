@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmProcessDefinition;
 import org.activiti.engine.impl.pvm.PvmProcessInstance;
 import org.activiti.engine.impl.pvm.runtime.ExecutionImpl;
@@ -38,6 +37,8 @@ public class ProcessDefinitionImpl extends ScopeImpl implements PvmProcessDefini
   protected String description;
   protected ActivityImpl initial;
   protected Map<ActivityImpl, List<ActivityImpl>> initialActivityStacks = new HashMap<ActivityImpl, List<ActivityImpl>>();
+  protected List<LaneSet> laneSets;
+  protected ParticipantProcess participantProcess;
 
   public ProcessDefinitionImpl(String id) {
     super(id, null);
@@ -108,7 +109,24 @@ public class ProcessDefinitionImpl extends ScopeImpl implements PvmProcessDefini
   public String getDeploymentId() {
     return null;
   }
-
+  
+  public void addLaneSet(LaneSet newLaneSet) {
+    getLaneSets().add(newLaneSet);
+  }
+  
+  public Lane getLaneForId(String id) {
+    if(laneSets != null && laneSets.size() > 0) {
+      Lane lane;
+      for(LaneSet set : laneSets) {
+        lane = set.getLaneForId(id);
+        if(lane != null) {
+          return lane;
+        }
+      }
+    }
+    return null;
+  }
+  
   // getters and setters //////////////////////////////////////////////////////
   
   public ActivityImpl getInitial() {
@@ -133,5 +151,24 @@ public class ProcessDefinitionImpl extends ScopeImpl implements PvmProcessDefini
   
   public String getDescription() {
     return (String) getProperty("documentation");
+  }
+  
+  /**
+   * @return all lane-sets defined on this process-instance. Returns an empty list if none are defined. 
+   */
+  public List<LaneSet> getLaneSets() {
+    if(laneSets == null) {
+      laneSets = new ArrayList<LaneSet>();
+    }
+    return laneSets;
+  }
+  
+  
+  public void setParticipantProcess(ParticipantProcess participantProcess) {
+    this.participantProcess = participantProcess;
+  }
+  
+  public ParticipantProcess getParticipantProcess() {
+    return participantProcess;
   }
 }

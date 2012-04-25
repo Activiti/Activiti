@@ -329,6 +329,31 @@ public class ProcessDiagramCanvas {
   public void drawTask(String name, int x, int y, int width, int height) {
     drawTask(name, x, y, width, height, false);
   }
+  
+  public void drawPoolOrLane(String name, int x, int y, int width, int height) {
+    g.drawRect(x, y, width, height);
+    
+    // Add the name as text, vertical
+    if(name != null && name.length() > 0) {
+      // Include some padding
+      int availableTextSpace = height - 6;
+
+      // Create rotation for derived font
+      AffineTransform transformation = new AffineTransform();
+      transformation.setToIdentity();
+      transformation.rotate(270 * Math.PI/180);
+
+      Font currentFont = g.getFont();
+      Font theDerivedFont = currentFont.deriveFont(transformation);
+      g.setFont(theDerivedFont);
+      
+      String truncated = fitTextToWidth(name, availableTextSpace);
+      int realWidth = fontMetrics.stringWidth(truncated);
+      
+      g.drawString(truncated, x + 2 + fontMetrics.getHeight(), 3 + y + availableTextSpace - (availableTextSpace - realWidth) / 2);
+      g.setFont(currentFont);
+    }
+  }
 
   protected void drawTask(String name, int x, int y, int width, int height, boolean thickBorder) {
     Paint originalPaint = g.getPaint();
