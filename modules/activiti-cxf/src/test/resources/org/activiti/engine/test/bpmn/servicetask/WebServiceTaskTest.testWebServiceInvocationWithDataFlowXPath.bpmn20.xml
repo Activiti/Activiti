@@ -62,11 +62,11 @@
                 <targetRef>dataInputOfServiceTask</targetRef>
    				<assignment>
    					<from>bpmn:getDataObject("dataInputOfProcess")/prefix</from>
-   					<to>bpmn:getDataInput("dataInputOfServiceTask")/counter:prefix}</to>
+   					<to>bpmn:getDataInput("dataInputOfServiceTask")/counter:prefix</to>
    				</assignment>
    				<assignment>
    					<from>bpmn:getDataObject("dataInputOfProcess")/suffix</from>
-   					<to>bpmn:getDataInput("dataInputOfServiceTask")/counter:suffix}</to>
+   					<to>bpmn:getDataInput("dataInputOfServiceTask")/counter:suffix</to>
    				</assignment>
             </dataInputAssociation>
             <dataOutputAssociation>
