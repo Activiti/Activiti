@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn"
+	targetNamespace="Examples">
+
+	<process id="testTimerOnConcurrentSubprocess">
+
+		<startEvent id="theStart" />		
+		<sequenceFlow sourceRef="theStart" targetRef="fork" />		
+		<parallelGateway id="fork" />		
+		<sequenceFlow sourceRef="fork" targetRef="subProcess1" />
+		<sequenceFlow sourceRef="fork" targetRef="subProcess2" />
+		
+		<subProcess id="subProcess1">
+			<startEvent id="sub1Start" />
+			<sequenceFlow sourceRef="sub1Start" targetRef="sub1fork" />			
+			<parallelGateway id="sub1fork" />			
+			<sequenceFlow sourceRef="sub1fork" targetRef="sub1task1" />
+			<sequenceFlow sourceRef="sub1fork" targetRef="sub1task2" />
+			<userTask id="sub1task1" />
+			<userTask id="sub1task2" />
+			<parallelGateway id="sub1join" />
+			<sequenceFlow sourceRef="sub1task1" targetRef="sub1join" />
+			<sequenceFlow sourceRef="sub1task2" targetRef="sub1join" />
+			<sequenceFlow sourceRef="sub1join" targetRef="sub1end" />
+			<endEvent id="sub1end" />
+		</subProcess>
+		
+		<subProcess id="subProcess2">
+			<startEvent id="sub2Start" />
+			<sequenceFlow sourceRef="sub2Start" targetRef="sub2fork" />			
+			<parallelGateway id="sub2fork" />			
+			<sequenceFlow sourceRef="sub2fork" targetRef="sub2task1" />
+			<sequenceFlow sourceRef="sub2fork" targetRef="sub2task2" />
+			<userTask id="sub2task1" />
+			<userTask id="sub2task2" />
+			<parallelGateway id="sub2join" />
+			<sequenceFlow sourceRef="sub2task1" targetRef="sub2join" />
+			<sequenceFlow sourceRef="sub2task2" targetRef="sub2join" />
+			<sequenceFlow sourceRef="sub2join" targetRef="sub2end" />
+			<endEvent id="sub2end" />
+		</subProcess>
+			
+		<sequenceFlow sourceRef="subProcess1" targetRef="join" />
+		<sequenceFlow sourceRef="subProcess2" targetRef="join" />		
+		<parallelGateway id="join" />
+		<sequenceFlow sourceRef="join" targetRef="end" />
+		<endEvent id="end" />
+		
+	    <boundaryEvent id="timer" attachedToRef="subProcess2" cancelActivity="false">
+	      <timerEventDefinition>
+	        <timeDuration>PT1H</timeDuration>
+	      </timerEventDefinition>
+	    </boundaryEvent>	    
+	    <sequenceFlow id="flow5" sourceRef="timer" targetRef="timerFiredTask" />
+	    <userTask id="timerFiredTask" />
+	    <sequenceFlow id="flow6" sourceRef="timerFiredTask" targetRef="nonInterruptingEnd" />
+	    <endEvent id="nonInterruptingEnd" />
+    
+	</process>
+</definitions>

@@ -17,10 +17,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.JavaDelegate;
-import org.activiti.engine.impl.cmd.DeleteJobsCmd;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
@@ -160,7 +156,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
   
   // Difference with previous test: now the join will be reached first
   @Deployment(resources = {"org/activiti/engine/test/bpmn/event/timer/BoundaryTimerNonInterruptingEventTest.testTimerOnConcurrentTasks.bpmn20.xml"})
-  public void FAILING_testTimerOnConcurrentTasks2() {
+  public void testTimerOnConcurrentTasks2() {
     String procId = runtimeService.startProcessInstanceByKey("nonInterruptingOnConcurrentTasks").getId();
     assertEquals(2, taskService.createTaskQuery().count());
     
@@ -203,7 +199,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
   /**
    * see http://jira.codehaus.org/browse/ACT-1173
    */
-  public void FAILING_testTimerOnEmbeddedSubprocess() {
+  public void testTimerOnEmbeddedSubprocess() {
     String id = runtimeService.startProcessInstanceByKey("nonInterruptingTimerOnEmbeddedSubprocess").getId();
     
     TaskQuery tq = taskService.createTaskQuery().taskAssignee("kermit");
@@ -220,7 +216,6 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
     
     List<Task> tasks = tq.list(); 
     
-    // this is where it fails...
     taskService.complete(tasks.get(0).getId());
     taskService.complete(tasks.get(1).getId());
     
@@ -231,7 +226,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
   /**
    * see http://jira.codehaus.org/browse/ACT-1106
    */
-  public void FAILING_testReceiveTaskWithBoundaryTimer(){
+  public void testReceiveTaskWithBoundaryTimer(){
     // Set the clock fixed
     Date startTime = new Date();
     
@@ -239,7 +234,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
     variables.put("timeCycle", "R/PT1H");
     
     // After process start, there should be a timer created
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("nonInterruptingCycle", variables);
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("nonInterruptingCycle",variables);
 
     JobQuery jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
     List<Job> jobs = jobQuery.list();
@@ -248,7 +243,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
     // The Execution Query should work normally and find executions in state "task"
     List<Execution> executions = runtimeService.createExecutionQuery()
       .activityId("task")
-      .variableValueEquals("timeCycle", "R/PT1H").list();
+      .list();
     assertEquals(1, executions.size());
     List<String> activeActivityIds = runtimeService.getActiveActivityIds(executions.get(0).getId());
     assertEquals(1, activeActivityIds.size());
@@ -263,7 +258,61 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
 
     // which means the process has ended
     assertProcessEnded(pi.getId());
-  }    
+  }  
+  
+  @Deployment
+  public void testTimerOnConcurrentSubprocess() {
+    String procId = runtimeService.startProcessInstanceByKey("testTimerOnConcurrentSubprocess").getId();
+    assertEquals(4, taskService.createTaskQuery().count());
+    
+    Job timer = managementService.createJobQuery().singleResult();
+    managementService.executeJob(timer.getId());
+    assertEquals(5, taskService.createTaskQuery().count());
+    
+    // Complete 4 tasks that will trigger the join
+    Task task = taskService.createTaskQuery().taskDefinitionKey("sub1task1").singleResult();
+    taskService.complete(task.getId());
+    task = taskService.createTaskQuery().taskDefinitionKey("sub1task2").singleResult();
+    taskService.complete(task.getId());
+    task = taskService.createTaskQuery().taskDefinitionKey("sub2task1").singleResult();
+    taskService.complete(task.getId());
+    task = taskService.createTaskQuery().taskDefinitionKey("sub2task2").singleResult();
+    taskService.complete(task.getId());
+    assertEquals(1, taskService.createTaskQuery().count());
+    
+    // Finally, complete the task that was created due to the timer 
+    task = taskService.createTaskQuery().taskDefinitionKey("timerFiredTask").singleResult();
+    taskService.complete(task.getId());
+    
+    assertProcessEnded(procId);
+  }
+  
+  @Deployment(resources="org/activiti/engine/test/bpmn/event/timer/BoundaryTimerNonInterruptingEventTest.testTimerOnConcurrentSubprocess.bpmn20.xml")
+  public void testTimerOnConcurrentSubprocess2() {
+    String procId = runtimeService.startProcessInstanceByKey("testTimerOnConcurrentSubprocess").getId();
+    assertEquals(4, taskService.createTaskQuery().count());
+    
+    Job timer = managementService.createJobQuery().singleResult();
+    managementService.executeJob(timer.getId());
+    assertEquals(5, taskService.createTaskQuery().count());
+    
+    Task task = taskService.createTaskQuery().taskDefinitionKey("sub1task1").singleResult();
+    taskService.complete(task.getId());
+    task = taskService.createTaskQuery().taskDefinitionKey("sub1task2").singleResult();
+    taskService.complete(task.getId());
+    
+    // complete the task that was created due to the timer 
+    task = taskService.createTaskQuery().taskDefinitionKey("timerFiredTask").singleResult();
+    taskService.complete(task.getId());
+    
+    task = taskService.createTaskQuery().taskDefinitionKey("sub2task1").singleResult();
+    taskService.complete(task.getId());
+    task = taskService.createTaskQuery().taskDefinitionKey("sub2task2").singleResult();
+    taskService.complete(task.getId());
+    assertEquals(0, taskService.createTaskQuery().count());
+    
+    assertProcessEnded(procId);
+  }
 
   //we cannot use waitForExecutor... method since there will always be one job left
   private void moveByHours(int hours) throws Exception {

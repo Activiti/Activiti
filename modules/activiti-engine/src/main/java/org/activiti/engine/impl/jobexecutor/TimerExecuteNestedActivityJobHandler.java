@@ -43,7 +43,6 @@ public class TimerExecuteNestedActivityJobHandler implements JobHandler {
     }
 
     try {
-      execution.setActivity(borderEventActivity);
       
       borderEventActivity
         .getActivityBehavior()

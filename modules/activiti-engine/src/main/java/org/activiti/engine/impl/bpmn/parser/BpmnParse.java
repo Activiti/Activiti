@@ -2188,7 +2188,7 @@ public class BpmnParse extends Parse {
       boolean interrupting = cancelActivity.equals("true") ? true : false;
 
       // Catch event behavior is the same for most types
-      ActivityBehavior behavior = new BoundaryEventActivityBehavior(interrupting);
+      ActivityBehavior behavior = new BoundaryEventActivityBehavior(interrupting, nestedActivity.getId());
 
       // Depending on the sub-element definition, the correct activityBehavior
       // parsing is selected
