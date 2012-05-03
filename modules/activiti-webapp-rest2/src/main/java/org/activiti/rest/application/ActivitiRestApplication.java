@@ -16,10 +16,13 @@ package org.activiti.rest.application;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.DefaultResource;
 import org.activiti.rest.api.engine.ProcessEngineResource;
+import org.activiti.rest.api.identity.GroupCreateResource;
 import org.activiti.rest.api.identity.GroupResource;
+import org.activiti.rest.api.identity.GroupSearchResource;
 import org.activiti.rest.api.identity.GroupUsersResource;
 import org.activiti.rest.api.identity.LoginResource;
 import org.activiti.rest.api.identity.UserCreateResource;
+import org.activiti.rest.api.identity.UserGroupsDeleteResource;
 import org.activiti.rest.api.identity.UserGroupsResource;
 import org.activiti.rest.api.identity.UserPictureResource;
 import org.activiti.rest.api.identity.UserResource;
@@ -109,11 +112,15 @@ public class ActivitiRestApplication extends Application {
     router.attach("/user", UserCreateResource.class);
     router.attach("/user/{userId}", UserResource.class);
     router.attach("/user/{userId}/groups", UserGroupsResource.class);
+    router.attach("/user/{userId}/groups/{groupId}", UserGroupsDeleteResource.class);
     router.attach("/user/{userId}/picture", UserPictureResource.class);
     router.attach("/users/{searchText}", UserSearchResource.class);
-    
+
+    router.attach("/group", GroupCreateResource.class);
     router.attach("/group/{groupId}", GroupResource.class);
+    router.attach("/group/{groupId}/users/{userId}", UserGroupsDeleteResource.class);
     router.attach("/groups/{groupId}/users", GroupUsersResource.class);
+    router.attach("/groups/{searchText}", GroupSearchResource.class);
     
     router.attach("/process-definitions", ProcessDefinitionsResource.class);
     router.attach("/process-instances", ProcessInstancesResource.class);

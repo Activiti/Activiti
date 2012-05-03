@@ -13,50 +13,42 @@
 
 package org.activiti.rest.api.identity;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
-import org.restlet.data.Status;
 import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
+import org.restlet.data.Status;
 
 /**
- * @author Tijs Rademakers
+ * @author Ernesto Revilla
  */
-public class GroupResource extends SecuredResource {
-
-  @Get
-  public Group getGroup() {
-    if (authenticate() == false)
-      return null;
-
-    String groupId = (String) getRequest().getAttributes().get("groupId");
-    if (groupId == null) {
-      throw new ActivitiException("No groupId provided");
-    }
-    Group group = ActivitiUtil.getIdentityService().createGroupQuery()
-        .groupId(groupId).singleResult();
-    return group;
-  }
+public class UserGroupsDeleteResource extends SecuredResource {
 
   @Delete
   public StateResponse deleteGroup() {
     if (authenticate() == false)
       return null;
-
+    String userId = (String) getRequest().getAttributes().get("userId");
     String groupId = (String) getRequest().getAttributes().get("groupId");
-    if (groupId == null) {
-      setStatus(Status.CLIENT_ERROR_NOT_FOUND, "The group '" + groupId
+    if (userId == null) {
+      setStatus(Status.CLIENT_ERROR_BAD_REQUEST, "No userId provided.");
+      return new StateResponse().setSuccess(false);
+    }
+
+    IdentityService identityService = ActivitiUtil.getIdentityService();
+    // Check if user exists
+    if (identityService.createUserQuery().userId(userId).singleResult() == null) {
+      setStatus(Status.CLIENT_ERROR_NOT_FOUND, "The user '" + userId
           + "' does not exist.");
       return new StateResponse().setSuccess(false);
     }
-    Group group = ActivitiUtil.getIdentityService().createGroupQuery()
+
+    // Add only if not already member
+    Group group = identityService.createGroupQuery().groupMember(userId)
         .groupId(groupId).singleResult();
-    if (group != null) {
-      ActivitiUtil.getIdentityService().deleteGroup(groupId);
-      return new StateResponse().setSuccess(true);
-    }
-    return new StateResponse().setSuccess(false);
+    if (group != null)
+      identityService.deleteMembership(userId, groupId);
+    return new StateResponse().setSuccess(true);
   }
 }
