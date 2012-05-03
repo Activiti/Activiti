@@ -373,7 +373,7 @@
       <listitem><para><literal>long</literal> (org.activiti.engine.impl.form.LongFormType)</para></listitem>
       <listitem><para><literal>enum</literal> (org.activiti.engine.impl.form.EnumFormType)</para></listitem>
       <listitem><para><literal>date</literal> (org.activiti.engine.impl.form.DateFormType)</para></listitem>
-      <listitem><para><literal>boolean</literal> (org.activiti.engine.impl.form.BooleqnFormType)</para></listitem>
+      <listitem><para><literal>boolean</literal> (org.activiti.engine.impl.form.BooleanFormType)</para></listitem>
     </itemizedlist>
 
     <para>For each form property declared, the following <literal>FormProperty</literal>
