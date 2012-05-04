@@ -161,9 +161,17 @@
       <if test="activityInstanceId != null">
         and HD.ACT_INST_ID_ = #{activityInstanceId}
       </if>
-      <if test="taskId != null">
-        and HD.TASK_ID_ = #{taskId}
-      </if>
+      <choose>
+        <when test="taskId != null">
+          and HD.TASK_ID_ = #{taskId}
+        </when>
+        <otherwise>
+          <if test="excludeTaskRelated">
+           and HD.TASK_ID_ is null
+         </if>
+        </otherwise>
+      </choose>
+      
       <if test="type != null">
         and HD.TYPE_ = #{type}
       </if>

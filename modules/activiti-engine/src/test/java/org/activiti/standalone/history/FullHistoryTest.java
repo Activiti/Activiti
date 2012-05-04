@@ -352,6 +352,32 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
   
   @Deployment(
     resources={"org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"})
+  public void testHistoricVariableQueryExcludeTaskRelatedDetails() throws Exception {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("stringVar", "activiti rocks!");
+    variables.put("longVar", 12345L);
+    
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", variables);
+
+    // Set a local task-variable
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(task);
+    taskService.setVariableLocal(task.getId(), "taskVar", "It is I, le Variable");
+
+    // Query on process-instance
+    assertEquals(3, historyService.createHistoricDetailQuery().variableUpdates().processInstanceId(processInstance.getId()).count());
+    
+    // Query on process-instance, excluding task-details
+    assertEquals(2, historyService.createHistoricDetailQuery().variableUpdates().processInstanceId(processInstance.getId())
+      .excludeTaskDetails().count());
+    
+    // Check task-id precedence on excluding task-details
+    assertEquals(1, historyService.createHistoricDetailQuery().variableUpdates().processInstanceId(processInstance.getId())
+            .excludeTaskDetails().taskId(task.getId()).count());
+  }
+  
+  @Deployment(
+    resources={"org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"})
   public void testHistoricFormPropertiesQuery() throws Exception {
     Map<String, String> formProperties = new HashMap<String, String>();
     formProperties.put("stringVar", "activiti rocks!");
