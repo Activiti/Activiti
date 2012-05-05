@@ -30,9 +30,18 @@ import org.apache.ibatis.session.SqlSessionFactory;
 public class DbSqlSessionFactory implements SessionFactory {
 
   protected static final Map<String, Map<String, String>> databaseSpecificStatements = new HashMap<String, Map<String,String>>();
+  
+  public static final Map<String, String> databaseSpecificLimitBeforeStatements = new HashMap<String, String>();
+  public static final Map<String, String> databaseSpecificLimitAfterStatements = new HashMap<String, String>();
 
   static {
-	  //mysql specific  
+    // h2
+    databaseSpecificLimitBeforeStatements.put("h2", "");
+    databaseSpecificLimitAfterStatements.put("h2", "LIMIT #{maxResults} OFFSET #{firstResult}");
+    
+	  //mysql specific
+    databaseSpecificLimitBeforeStatements.put("mysql", "");
+    databaseSpecificLimitAfterStatements.put("mysql", "LIMIT #{maxResults} OFFSET #{firstResult}");
     addDatabaseSpecificStatement("mysql", "selectNextJobsToExecute", "selectNextJobsToExecute_mysql");
     addDatabaseSpecificStatement("mysql", "selectExclusiveJobsToExecute", "selectExclusiveJobsToExecute_mysql");
     addDatabaseSpecificStatement("mysql", "selectProcessDefinitionsByQueryCriteria", "selectProcessDefinitionsByQueryCriteria_mysql");
@@ -41,6 +50,8 @@ public class DbSqlSessionFactory implements SessionFactory {
     addDatabaseSpecificStatement("mysql", "selectDeploymentCountByQueryCriteria", "selectDeploymentCountByQueryCriteria_mysql");
     
     //postgres specific
+    databaseSpecificLimitBeforeStatements.put("postgres", "");
+    databaseSpecificLimitAfterStatements.put("postgres", "LIMIT #{maxResults} OFFSET #{firstResult}");
     addDatabaseSpecificStatement("postgres", "insertByteArray", "insertByteArray_postgres");
     addDatabaseSpecificStatement("postgres", "updateByteArray", "updateByteArray_postgres");
     addDatabaseSpecificStatement("postgres", "selectByteArray", "selectByteArray_postgres");
@@ -58,12 +69,18 @@ public class DbSqlSessionFactory implements SessionFactory {
     addDatabaseSpecificStatement("postgres", "selectCommentsByProcessInstanceId", "selectCommentsByProcessInstanceId_postgres");
         
     // oracle
+    databaseSpecificLimitBeforeStatements.put("oracle", "select * from ( select a.*, ROWNUM rnum from (");
+    databaseSpecificLimitAfterStatements.put("oracle", "  ) a where ROWNUM < #{lastRow}) where rnum  >= #{firstRow}");
     addDatabaseSpecificStatement("oracle", "selectExclusiveJobsToExecute", "selectExclusiveJobsToExecute_integerBoolean");
     
     // db2
+    databaseSpecificLimitBeforeStatements.put("db2", ""); // TODO!
+    databaseSpecificLimitAfterStatements.put("db2", "");
     addDatabaseSpecificStatement("db2", "selectExclusiveJobsToExecute", "selectExclusiveJobsToExecute_integerBoolean");
     
     // mssql
+    databaseSpecificLimitBeforeStatements.put("mssql", ""); // TODO!
+    databaseSpecificLimitAfterStatements.put("mssql", "");
     addDatabaseSpecificStatement("mssql", "selectExclusiveJobsToExecute", "selectExclusiveJobsToExecute_integerBoolean");
   }
   

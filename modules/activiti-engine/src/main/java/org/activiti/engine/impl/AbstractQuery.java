@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.db.ListQueryParameterObject;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -29,7 +30,7 @@ import org.activiti.engine.query.QueryProperty;
  *  
  * @author Joram Barrez
  */
-public abstract class AbstractQuery<T extends Query<?,?>, U> implements Command<Object>, Query<T,U>, Serializable {
+public abstract class AbstractQuery<T extends Query<?,?>, U> extends ListQueryParameterObject implements Command<Object>, Query<T,U>, Serializable {
       
   private static final long serialVersionUID = 1L;
   
@@ -44,13 +45,12 @@ public abstract class AbstractQuery<T extends Query<?,?>, U> implements Command<
   protected transient CommandContext commandContext;
   protected String orderBy;
   
-  protected int firstResult;
-  protected int maxResults;
   protected ResultType resultType;
 
   protected QueryProperty orderProperty;
 
   protected AbstractQuery() {
+    parameter = this;
   }
   
   protected AbstractQuery(CommandExecutor commandExecutor) {
@@ -139,7 +139,7 @@ public abstract class AbstractQuery<T extends Query<?,?>, U> implements Command<
     } else if (resultType==ResultType.SINGLE_RESULT) {
       return executeSingleResult(commandContext);
     } else if (resultType==ResultType.LIST_PAGE) {
-      return executeList(commandContext, new Page(firstResult, maxResults));
+      return executeList(commandContext, null);
     } else {
       return executeCount(commandContext);
     }

@@ -102,7 +102,7 @@ public class DeploymentManager extends AbstractManager {
 
 
   public DeploymentEntity findLatestDeploymentByName(String deploymentName) {
-    List<?> list = getDbSqlSession().selectList("selectDeploymentsByName", deploymentName, new Page(0, 1));
+    List<?> list = getDbSqlSession().selectList("selectDeploymentsByName", deploymentName, 0, 1);
     if (list!=null && !list.isEmpty()) {
       return (DeploymentEntity) list.get(0);
     }

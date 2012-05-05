@@ -84,41 +84,51 @@
   
   <!-- COMMENT SELECT -->
 
-  <select id="selectCommentsByTaskId" parameterType="string" resultMap="commentResultMap">
+  <select id="selectCommentsByTaskId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap">
+  	${limitBefore}
     select * 
     from ${prefix}ACT_HI_COMMENT 
-    where TASK_ID_ = #{taskId,jdbcType=VARCHAR}
+    where TASK_ID_ = #{parameter,jdbcType=VARCHAR}
       and TYPE_ = 'comment'
     order by TIME_ desc
+    ${limitAfter}
   </select>
 
-  <select id="selectCommentsByTaskId_postgres" parameterType="string" resultMap="commentResultMap_postgres">
+  <select id="selectCommentsByTaskId_postgres" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap_postgres">
+    ${limitBefore}
     select * 
     from ${prefix}ACT_HI_COMMENT 
-    where TASK_ID_ = #{taskId,jdbcType=VARCHAR}
+    where TASK_ID_ = #{parameter,jdbcType=VARCHAR}
       and TYPE_ = 'comment'
     order by TIME_ desc
+    ${limitAfter}
   </select>
 
-  <select id="selectEventsByTaskId" parameterType="string" resultMap="commentResultMap">
+  <select id="selectEventsByTaskId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap">
+    ${limitBefore}
     select * 
     from ${prefix}ACT_HI_COMMENT 
-    where TASK_ID_ = #{taskId,jdbcType=VARCHAR}
+    where TASK_ID_ = #{parameter,jdbcType=VARCHAR}
     order by TIME_ desc
+    ${limitAfter}
   </select>
 
-  <select id="selectCommentsByProcessInstanceId" parameterType="string" resultMap="commentResultMap">
+  <select id="selectCommentsByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap">
+    ${limitBefore}
     select * 
     from ${prefix}ACT_HI_COMMENT 
-    where PROC_INST_ID_ = #{processInstanceId,jdbcType=VARCHAR}
+    where PROC_INST_ID_ = #{parameter,jdbcType=VARCHAR}
     order by TIME_ desc
+    ${limitAfter}
   </select>
 
-  <select id="selectCommentsByProcessInstanceId_postgres" parameterType="string" resultMap="commentResultMap_postgres">
+  <select id="selectCommentsByProcessInstanceId_postgres" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap_postgres">
+    ${limitBefore}
     select * 
     from ${prefix}ACT_HI_COMMENT 
-    where PROC_INST_ID_ = #{processInstanceId,jdbcType=BINARY}
+    where PROC_INST_ID_ = #{parameter,jdbcType=BINARY}
     order by TIME_ desc
+    ${limitAfter}
   </select>
 
 </mapper>

@@ -60,11 +60,13 @@
   </select>
 
   <select id="selectProcessDefinitionsByQueryCriteria" parameterType="org.activiti.engine.impl.ProcessDefinitionQueryImpl" resultMap="processDefinitionResultMap">
+  	${limitBefore}
     select PD.*
     <include refid="selectProcessDefinitionsByQueryCriteriaSql"/>
     <if test="orderBy != null">
       order by ${orderBy}
     </if>
+    ${limitAfter}
   </select>
 
   <select id="selectProcessDefinitionCountByQueryCriteria" parameterType="org.activiti.engine.impl.ProcessDefinitionQueryImpl" resultType="long">
@@ -119,27 +121,14 @@
       </if>
     </where>
   </sql>
-  
-  <select id="selectProcessDefinitions" resultMap="processDefinitionResultMap">
-    select * from ${prefix}ACT_RE_PROCDEF
-    order by KEY_ ASC, VERSION_ DESC
-  </select>
-  
-  <select id="selectProcessDefinitionByDeployment" parameterType="string" resultMap="processDefinitionResultMap">
-    select * from ${prefix}ACT_RE_PROCDEF where DEPLOYMENT_ID_ = #{deploymentId}
-  </select>
-  
+    
   <select id="selectProcessDefinitionByDeploymentAndKey" parameterType="map" resultMap="processDefinitionResultMap">
     select * 
     from ${prefix}ACT_RE_PROCDEF 
     where DEPLOYMENT_ID_ = #{deploymentId}
       and KEY_ = #{processDefinitionKey}
   </select>
-  
-  <select id="selectProcessDefinitionsByDeploymentId" parameterType="string" resultMap="processDefinitionResultMap">
-    select * from ${prefix}ACT_RE_PROCDEF where DEPLOYMENT_ID_ = #{deploymentId}
-  </select>
-  
+    
   <select id="selectLatestProcessDefinitionByKey" parameterType="string" resultMap="processDefinitionResultMap">
     select *
     from ${prefix}ACT_RE_PROCDEF 
@@ -149,11 +138,13 @@
 
   <!-- mysql specific sql -->
   <select id="selectProcessDefinitionsByQueryCriteria_mysql" parameterType="org.activiti.engine.impl.ProcessDefinitionQueryImpl" resultMap="processDefinitionResultMap">
+  	${limitBefore}
     select distinct PD.*
     <include refid="selectProcessDefinitionsByQueryCriteriaSql"/>
     <if test="orderBy != null">
       order by ${orderBy}
     </if>
+    ${limitAfter}
   </select>
 
   <!-- mysql specific sql -->

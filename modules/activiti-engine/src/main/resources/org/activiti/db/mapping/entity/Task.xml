@@ -79,46 +79,24 @@
    select * from ${prefix}ACT_RU_TASK where ID_ = #{id}
   </select>
   
-  <select id="selectCandidateTasks" parameterType="map" resultMap="taskResultMap">
-    select T.* from ${prefix}ACT_RU_TASK T inner join ${prefix}ACT_RU_IDENTITYLINK I ON T.ID_ = I.TASK_ID_
-    where T.ASSIGNEE_ IS NULL
-          AND I.TYPE_ = 'candidate'
-    <choose>
-      <when test="userId != null">
-        AND (I.USER_ID_ = #{userId, jdbcType=VARCHAR}
-      </when>
-      <otherwise>
-        (
-      </otherwise>
-    </choose>       
-    <if test="groupIds != null">
-      <foreach collection="groupIds" index="index" item="groupId">
-         OR I.GROUP_ID_ = #{groupId, jdbcType=VARCHAR}  
-      </foreach>
-    </if>
-    )
-  </select>
-  
-  <select id="selectTasksByAssignee" parameterType="string" resultMap="taskResultMap">
-    select * from ${prefix}ACT_RU_TASK where ASSIGNEE_ = #{assignee}
-  </select>
-  
-  <select id="selectTasksByParentTaskId" parameterType="string" resultMap="taskResultMap">
-    select * from ${prefix}ACT_RU_TASK where PARENT_TASK_ID_ = #{parentTaskId}
+  <select id="selectTasksByParentTaskId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="taskResultMap">
+    select * from ${prefix}ACT_RU_TASK where PARENT_TASK_ID_ = #{parameter}
   </select>
 
-  <select id="selectTasksByExecutionId" parameterType="string" resultMap="taskResultMap">
+  <select id="selectTasksByExecutionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="taskResultMap">
     select distinct T.*
     from ${prefix}ACT_RU_TASK T
-    where T.EXECUTION_ID_ = #{executionId}
+    where T.EXECUTION_ID_ = #{parameter}
   </select>
   
   <select id="selectTaskByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultMap="taskResultMap">
+  	${limitBefore}
     select distinct T.*
     <include refid="selectTaskByQueryCriteriaSql"/>
     <if test="orderBy != null">
       order by ${orderBy}
     </if>
+    ${limitAfter}
   </select>
 
   <select id="selectTaskCountByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultType="long">

@@ -66,11 +66,11 @@ public class UserManager extends AbstractManager {
   }
   
   @SuppressWarnings("unchecked")
-  public List<User> findUserByQueryCriteria(Object query, Page page) {
+  public List<User> findUserByQueryCriteria(UserQueryImpl query, Page page) {
     return getDbSqlSession().selectList("selectUserByQueryCriteria", query, page);
   }
   
-  public long findUserCountByQueryCriteria(Object query) {
+  public long findUserCountByQueryCriteria(UserQueryImpl query) {
     return (Long) getDbSqlSession().selectOne("selectUserCountByQueryCriteria", query);
   }
   

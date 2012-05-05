@@ -110,18 +110,22 @@
     select * from ${prefix}ACT_HI_TASKINST where ID_ = #{historicTaskInstanceId}
   </select>
   
-  <select id="selectHistoricTaskInstanceIdsByProcessInstanceId" resultType="string" parameterType="string" >
+  <select id="selectHistoricTaskInstanceIdsByProcessInstanceId" resultType="string" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" >
+  	${limitBefore}
     select ID_ 
     from ${prefix}ACT_HI_TASKINST 
-    where PROC_INST_ID_ = #{processInstanceId}
+    where PROC_INST_ID_ = #{parameter}
+    ${limitAfter}
   </select>
 
   <select id="selectHistoricTaskInstancesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricTaskInstanceQueryImpl" resultMap="historicTaskInstanceResultMap">
+  	${limitBefore}
     select *
     <include refid="selectHistoricTaskInstancesByQueryCriteriaSql"/>
     <if test="orderBy != null">
       order by ${orderBy}
     </if>
+    ${limitAfter}
   </select>
   
   <select id="selectHistoricTaskInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricTaskInstanceQueryImpl" resultType="long">

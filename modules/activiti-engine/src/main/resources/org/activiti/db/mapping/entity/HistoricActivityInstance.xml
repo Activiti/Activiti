@@ -88,11 +88,13 @@
   </select>
 
   <select id="selectHistoricActivityInstancesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricActivityInstanceQueryImpl" resultMap="historicActivityInstanceResultMap">
+    ${limitBefore}
     select *
     <include refid="selectHistoricActivityInstancesByQueryCriteriaSql"/>
     <if test="orderBy != null">
       order by ${orderBy}
     </if>
+    ${limitAfter}
   </select>
   
   <select id="selectHistoricActivityInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricActivityInstanceQueryImpl" resultType="long">

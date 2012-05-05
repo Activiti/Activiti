@@ -367,7 +367,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     checkQueryOk();
     return commandContext
       .getTaskManager()
-      .findTasksByQueryCriteria(this, page);
+      .findTasksByQueryCriteria(this);
   }
   
   public long executeCount(CommandContext commandContext) {

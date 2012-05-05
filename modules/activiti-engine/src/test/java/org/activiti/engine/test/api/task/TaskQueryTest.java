@@ -675,6 +675,8 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
   
   public void testQueryPaging() {
     TaskQuery query = taskService.createTaskQuery().taskCandidateUser("kermit");
+    
+    assertEquals(11, query.listPage(0, Integer.MAX_VALUE).size());
 
     // Verifying the un-paged results
     assertEquals(11, query.count());

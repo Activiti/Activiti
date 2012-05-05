@@ -92,19 +92,23 @@
     select * from ${prefix}ACT_HI_PROCINST where PROC_INST_ID_ = #{processInstanceId}
   </select>
 
-  <select id="selectHistoricProcessInstanceIdsByProcessDefinitionId" parameterType="string" resultType="string">
+  <select id="selectHistoricProcessInstanceIdsByProcessDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultType="string">
+  	${limitBefore}
     select ID_
     from ${prefix}ACT_HI_PROCINST 
-    where PROC_DEF_ID_ = #{processDefinitionId}
+    where PROC_DEF_ID_ = #{parameter}
+    ${limitAfter}
   </select>
   
 
   <select id="selectHistoricProcessInstancesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricProcessInstanceQueryImpl" resultMap="historicProcessInstanceResultMap">
+  	${limitBefore}
     select *
     <include refid="selectHistoricProcessInstancesByQueryCriteriaSql"/>
     <if test="orderBy != null">
       order by ${orderBy}
     </if>
+    ${limitAfter}
   </select>
   
   <select id="selectHistoricProcessInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricProcessInstanceQueryImpl" resultType="long">

@@ -30,8 +30,8 @@
   
   <!-- RESOURCE SELECT -->
 
-  <select id="selectResourceNamesByDeploymentId" parameterType="string" resultType="string">
-    select NAME_ from ${prefix}ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{deploymentId} order by NAME_ asc
+  <select id="selectResourceNamesByDeploymentId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultType="string">
+    select NAME_ from ${prefix}ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{parameter} order by NAME_ asc
   </select>
   
   <select id="selectResourceByDeploymentIdAndResourceName" parameterType="map" resultMap="resourceResultMap">
@@ -40,8 +40,8 @@
           AND NAME_ = #{resourceName}
   </select>
 
-  <select id="selectResourcesByDeploymentId" parameterType="string" resultMap="resourceResultMap">
-    select * from ${prefix}ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{deploymentId} order by NAME_ asc
+  <select id="selectResourcesByDeploymentId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="resourceResultMap">
+    select * from ${prefix}ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{parameter} order by NAME_ asc
   </select>  
 
   <!-- postgresql specific -->
@@ -53,15 +53,15 @@
   </resultMap>
     
   <!-- postgresql specific -->
-  <select id="selectResourceByDeploymentIdAndResourceName_postgres" parameterType="map" resultMap="resourceResultMap_postgres">
+  <select id="selectResourceByDeploymentIdAndResourceName_postgres" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="resourceResultMap_postgres">
     select * from ${prefix}ACT_GE_BYTEARRAY 
-    where DEPLOYMENT_ID_ = #{deploymentId}
-          AND NAME_ = #{resourceName}
+    where DEPLOYMENT_ID_ = #{parameter.deploymentId}
+          AND NAME_ = #{parameter.resourceName}
   </select>
   
   <!-- postgresql specific -->
-  <select id="selectResourcesByDeploymentId_postgres" parameterType="string" resultMap="resourceResultMap_postgres">
-    select * from ${prefix}ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{deploymentId} order by NAME_ asc
+  <select id="selectResourcesByDeploymentId_postgres" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="resourceResultMap_postgres">
+    select * from ${prefix}ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{parameter} order by NAME_ asc
   </select>  
   
 </mapper>

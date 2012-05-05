@@ -39,75 +39,77 @@
   </resultMap>
 
   <!-- JOB SELECT (FOR TIMER AND MESSAGE) -->  
-  <select id="selectJobs" resultMap="jobResultMap">
-    select * from ${prefix}ACT_RU_JOB
-  </select>
 
   <select id="selectJob" parameterType="string" resultMap="jobResultMap">
     select * from ${prefix}ACT_RU_JOB where ID_ = #{id}
   </select>
 
-  <select id="selectNextJobsToExecute" parameterType="string" resultMap="jobResultMap">
+  <select id="selectNextJobsToExecute" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+  	${limitBefore}
     select 
     	JOB.*    		
     from ${prefix}ACT_RU_JOB JOB    
     	LEFT OUTER JOIN ${prefix}ACT_RU_EXECUTION PI ON PI.ID_ = JOB.PROCESS_INSTANCE_ID_
     	LEFT OUTER JOIN ${prefix}ACT_RE_PROCDEF PD ON PD.ID_ = PI.PROC_DEF_ID_    
     where (JOB.RETRIES_ &gt; 0)
-      and (JOB.DUEDATE_ is null or JOB.DUEDATE_ &lt; #{now, jdbcType=TIMESTAMP})
-      and (JOB.LOCK_OWNER_ is null or JOB.LOCK_EXP_TIME_ &lt; #{now, jdbcType=TIMESTAMP})
+      and (JOB.DUEDATE_ is null or JOB.DUEDATE_ &lt; #{parameter, jdbcType=TIMESTAMP})
+      and (JOB.LOCK_OWNER_ is null or JOB.LOCK_EXP_TIME_ &lt; #{parameter, jdbcType=TIMESTAMP})
 	  and (
 	  	    (JOB.EXECUTION_ID_ is null)
 	  		or ((PI.SUSPENSION_STATE_ = 1)     
       			and (PD.SUSPENSION_STATE_ = 1))
-      )  	    
+      )  
+    ${limitAfter}	    
   </select>
 
-  <select id="selectExclusiveJobsToExecute" parameterType="map" resultMap="jobResultMap">
+  <select id="selectExclusiveJobsToExecute" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+  	${limitBefore}
     select * 
     from ${prefix}ACT_RU_JOB     
     where (RETRIES_ &gt; 0)
-      and (DUEDATE_ is null or DUEDATE_ &lt; #{now, jdbcType=TIMESTAMP})
-      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt; #{now, jdbcType=TIMESTAMP})
+      and (DUEDATE_ is null or DUEDATE_ &lt; #{parameter.now, jdbcType=TIMESTAMP})
+      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt; #{parameter.now, jdbcType=TIMESTAMP})
       and (EXCLUSIVE_ = TRUE)
-      and (PROCESS_INSTANCE_ID_ = #{pid})  
+      and (PROCESS_INSTANCE_ID_ = #{parameter.pid})  
+    ${limitAfter}
   </select>
   
-  <select id="selectExclusiveJobsToExecute_integerBoolean" parameterType="map" resultMap="jobResultMap">
+  <select id="selectExclusiveJobsToExecute_integerBoolean" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+  	${limitBefore}
     select * 
     from ${prefix}ACT_RU_JOB  
     where (RETRIES_ &gt; 0)
-      and (DUEDATE_ is null or DUEDATE_ &lt; #{now, jdbcType=TIMESTAMP})
-      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt; #{now, jdbcType=TIMESTAMP})
+      and (DUEDATE_ is null or DUEDATE_ &lt; #{parameter.now, jdbcType=TIMESTAMP})
+      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt; #{parameter.now, jdbcType=TIMESTAMP})
       and (EXCLUSIVE_ = 1)
-      and (PROCESS_INSTANCE_ID_ = #{pid})     
+      and (PROCESS_INSTANCE_ID_ = #{parameter.pid})  
+    ${limitAfter}   
   </select>
   
-  <select id="selectLockedJobs" resultMap="jobResultMap">
-    select * 
-    from ${prefix}ACT_RU_JOB
-    where (RETRIES_ &gt; 0)
-      and (LOCK_OWNER_ is not null)
-  </select>
-
-  <select id="selectJobsByConfiguration" parameterType="map" resultMap="jobResultMap">
+  <select id="selectJobsByConfiguration" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+  	${limitBefore}
       select * from ${prefix}ACT_RU_JOB
-      where HANDLER_TYPE_ = #{handlerType}
-      and HANDLER_CFG_ =  #{handlerConfiguration}
+      where HANDLER_TYPE_ = #{parameter.handlerType}
+      and HANDLER_CFG_ =  #{parameter.handlerConfiguration}
+    ${limitAfter}
   </select>
 
-  <select id="selectJobsByExecutionId" parameterType="string" resultMap="jobResultMap">
+  <select id="selectJobsByExecutionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+  	${limitBefore}
     select *
     from ${prefix}ACT_RU_JOB J
-    where J.EXECUTION_ID_ = #{executionId}
+    where J.EXECUTION_ID_ = #{parameter}
+    ${limitAfter}
   </select>
 
   <select id="selectJobByQueryCriteria" parameterType="org.activiti.engine.impl.JobQueryImpl" resultMap="jobResultMap">
+  	${limitBefore}
     select *
     <include refid="selectJobByQueryCriteriaSql"/>
     <if test="orderBy != null">
     	order by ${orderBy}
     </if>
+    ${limitAfter}
   </select>
 
   <select id="selectJobCountByQueryCriteria" parameterType="org.activiti.engine.impl.JobQueryImpl" resultType="long">
@@ -162,29 +164,33 @@
   </sql>
 
   <!--  SELECT DEPENDENT -->  
-   <select id="selectNextJobsToExecute_mysql" parameterType="string" resultMap="jobResultMap">
+   <select id="selectNextJobsToExecute_mysql" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+   	${limitBefore}
     select JOB.* 
     from ${prefix}ACT_RU_JOB JOB
    		LEFT OUTER JOIN ${prefix}ACT_RU_EXECUTION PI ON PI.ID_ = JOB.PROCESS_INSTANCE_ID_
     	LEFT OUTER JOIN ${prefix}ACT_RE_PROCDEF PD ON PD.ID_ = PI.PROC_DEF_ID_    
     where (RETRIES_ &gt; 0)
-      and (DUEDATE_ is null or DUEDATE_ &lt;= #{now, jdbcType=TIMESTAMP})
-      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt;= #{now, jdbcType=TIMESTAMP})
+      and (DUEDATE_ is null or DUEDATE_ &lt;= #{parameter, jdbcType=TIMESTAMP})
+      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt;= #{parameter, jdbcType=TIMESTAMP})
       and (
 	  	    (JOB.EXECUTION_ID_ is null)
 	  		or ((PI.SUSPENSION_STATE_ = 1)     
       			and (PD.SUSPENSION_STATE_ = 1))
       )  
+    ${limitAfter}
   </select>
   
-  <select id="selectExclusiveJobsToExecute_mysql" parameterType="map" resultMap="jobResultMap">
+  <select id="selectExclusiveJobsToExecute_mysql" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+  	${limitBefore}
     select * 
     from ${prefix}ACT_RU_JOB 
     where (RETRIES_ &gt; 0)
-      and (DUEDATE_ is null or DUEDATE_ &lt;= #{now, jdbcType=TIMESTAMP})
-      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt;= #{now, jdbcType=TIMESTAMP})
+      and (DUEDATE_ is null or DUEDATE_ &lt;= #{parameter.now, jdbcType=TIMESTAMP})
+      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt;= #{parameter.now, jdbcType=TIMESTAMP})
       and (EXCLUSIVE_ = TRUE)
-      and (PROCESS_INSTANCE_ID_ = #{pid})
+      and (PROCESS_INSTANCE_ID_ = #{parameter.pid})
+    ${limitAfter}
   </select>
   
 
@@ -245,23 +251,27 @@
   
   <!-- TIMER SELECT -->
   
-  <select id="selectUnlockedTimersByDuedate" parameterType="date" resultMap="jobResultMap">
+  <select id="selectUnlockedTimersByDuedate" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+  	${limitBefore}
     select *
     from ${prefix}ACT_RU_JOB
     where (TYPE_ = 'timer')
       and (DUEDATE_ is not null)
-      and (DUEDATE_ &lt; #{duedate, jdbcType=TIMESTAMP})
-      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt; #{duedate, jdbcType=TIMESTAMP})
+      and (DUEDATE_ &lt; #{parameter, jdbcType=TIMESTAMP})
+      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt; #{parameter, jdbcType=TIMESTAMP})
       and (RETRIES_  &gt; 0)
     order by DUEDATE_
+    ${limitAfter}
   </select>
 
-  <select id="selectTimersByExecutionId" parameterType="string" resultMap="jobResultMap">
+  <select id="selectTimersByExecutionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+  	${limitBefore}
     select * 
     from ${prefix}ACT_RU_JOB 
     where (RETRIES_ &gt; 0)
       and (TYPE_ = 'timer')
-      and (EXECUTION_ID_ = #{executionId})
+      and (EXECUTION_ID_ = #{parameter})
+    ${limitAfter}
   </select>
   
 

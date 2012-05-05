@@ -91,9 +91,17 @@ public class TaskManager extends AbstractManager {
   }
   
   @SuppressWarnings("unchecked")
+  @Deprecated
   public List<Task> findTasksByQueryCriteria(TaskQueryImpl taskQuery, Page page) {
+    taskQuery.setFirstResult(page.getFirstResult());
+    taskQuery.setMaxResults(page.getMaxResults());
+    return findTasksByQueryCriteria(taskQuery);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<Task> findTasksByQueryCriteria(TaskQueryImpl taskQuery) {
     final String query = "selectTaskByQueryCriteria";
-    return getDbSqlSession().selectList(query, taskQuery, page);
+    return getDbSqlSession().selectList(query, taskQuery);
   }
 
   public long findTaskCountByQueryCriteria(TaskQueryImpl taskQuery) {

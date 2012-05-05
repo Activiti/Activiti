@@ -116,19 +116,19 @@
   </select>
   
   <select id="selectIdentityInfoByUserId" parameterType="string" resultMap="identityInfoResultMap">
-    select * from ${prefix}ACT_ID_INFO where USER_ID_ = #{userId,jdbcType=VARCHAR}
+    select * from ${prefix}ACT_ID_INFO where USER_ID_ = #{parameter,jdbcType=VARCHAR}
   </select>
   
   <select id="selectIdentityInfoByUserId_postgres" parameterType="string" resultMap="identityInfoResultMap_postgres">
-    select * from ${prefix}ACT_ID_INFO where USER_ID_ = #{userId,jdbcType=VARCHAR}
+    select * from ${prefix}ACT_ID_INFO where USER_ID_ = #{parameter,jdbcType=VARCHAR}
   </select>
 
   <select id="selectIdentityInfoDetails" parameterType="string" resultMap="identityInfoResultMap">
-    select * from ${prefix}ACT_ID_INFO where PARENT_ID_ = #{parentId,jdbcType=VARCHAR}
+    select * from ${prefix}ACT_ID_INFO where PARENT_ID_ = #{parameter,jdbcType=VARCHAR}
   </select>
 
   <select id="selectIdentityInfoDetails_postgres" parameterType="string" resultMap="identityInfoResultMap_postgres">
-    select * from ${prefix}ACT_ID_INFO where PARENT_ID_ = #{parentId,jdbcType=VARCHAR}
+    select * from ${prefix}ACT_ID_INFO where PARENT_ID_ = #{parameter,jdbcType=VARCHAR}
   </select>
   
   

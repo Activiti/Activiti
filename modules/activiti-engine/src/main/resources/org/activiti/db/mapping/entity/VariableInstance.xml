@@ -71,15 +71,15 @@
 		select * from ${prefix}ACT_RU_VARIABLE where ID_ = #{id, jdbcType=VARCHAR}
   </select>
 
-	<select id="selectVariablesByExecutionId" parameterType="string" resultMap="variableInstanceResultMap">
+	<select id="selectVariablesByExecutionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="variableInstanceResultMap">
 		select * from ${prefix}ACT_RU_VARIABLE 
-		where EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR}
+		where EXECUTION_ID_ = #{parameter, jdbcType=VARCHAR}
 		  and TASK_ID_ is null
   </select>
 
-  <select id="selectVariablesByTaskId" parameterType="string" resultMap="variableInstanceResultMap">
+  <select id="selectVariablesByTaskId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="variableInstanceResultMap">
     select * from ${prefix}ACT_RU_VARIABLE where
-    TASK_ID_ = #{taskId, jdbcType=VARCHAR}
+    TASK_ID_ = #{parameter, jdbcType=VARCHAR}
   </select>
 
   <!-- BYTE ARRAY INSERT -->
@@ -135,16 +135,6 @@
    select * from ${prefix}ACT_GE_BYTEARRAY where ID_ = #{id}
   </select>
   
-  <select id="selectByteArraysForDeployment" parameterType="string" resultMap="byteArrayResultMap">
-    select * from ${prefix}ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{deploymentId} order by NAME_ asc
-  </select>  
-  
-  <select id="selectDeploymentResource" parameterType="map" resultMap="byteArrayResultMap">
-    select * from ${prefix}ACT_GE_BYTEARRAY 
-    where DEPLOYMENT_ID_ = #{deploymentId}
-          AND NAME_ = #{resourceName}
-  </select>
-
 <!-- Postgresql specific configuration -->
   <resultMap id="byteArrayResultMap_postgres" type="org.activiti.engine.impl.persistence.entity.ByteArrayEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />

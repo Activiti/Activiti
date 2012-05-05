@@ -173,28 +173,52 @@ public class DbSqlSession implements Session {
 
   @SuppressWarnings("unchecked")
   public List selectList(String statement) {
-    return selectList(statement, null);
-  }
-
-  @SuppressWarnings("unchecked")
-  public List selectList(String statement, Object parameter) {
-    statement = dbSqlSessionFactory.mapStatement(statement);
-    List loadedObjects = sqlSession.selectList(statement, parameter);
-    return filterLoadedObjects(loadedObjects);
+    return selectList(statement, null, 0, Integer.MAX_VALUE);
   }
   
   @SuppressWarnings("unchecked")
-  public List selectList(String statement, Object parameter, Page page) {
-    statement = dbSqlSessionFactory.mapStatement(statement);
-    List loadedObjects;
-    if (page!=null) {
-      loadedObjects = sqlSession.selectList(statement, parameter, new RowBounds(page.getFirstResult(), page.getMaxResults()));
+  public List selectList(String statement, Object parameter) {  
+    return selectList(statement, parameter, 0, Integer.MAX_VALUE);
+  }
+  
+  @SuppressWarnings("unchecked")
+  @Deprecated
+  public List selectList(String statement, Object parameter, Page page) {   
+    if(page!=null) {
+      return selectList(statement, parameter, page.getFirstResult(), page.getMaxResults());
+    }else {
+      return selectList(statement, parameter, 0, Integer.MAX_VALUE);
+    }
+  }
+  
+  @SuppressWarnings("unchecked")
+  @Deprecated
+  public List selectList(String statement, ListQueryParameterObject parameter, Page page) {   
+    return selectList(statement, parameter);
+  }
+
+  @SuppressWarnings("unchecked")
+  public List selectList(String statement, Object parameter, int firstResult, int maxResults) {   
+    return selectList(statement, new ListQueryParameterObject(parameter, firstResult, maxResults));
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List selectList(String statement, ListQueryParameterObject parameter) {
+    statement = dbSqlSessionFactory.mapStatement(statement);    
+    if(parameter.firstResult == -1 ||  parameter.maxResults==-1) {
+      return Collections.EMPTY_LIST;
+    }
+    List loadedObjects = null;
+    String databaseType = dbSqlSessionFactory.databaseType;
+    if(databaseType.equals("mssql") || databaseType.equals("db2")) {
+      // use mybatis paging (native database paging not yet implemented)
+      loadedObjects = sqlSession.selectList(statement, parameter, new RowBounds(parameter.getFirstResult(), parameter.getMaxResults()));
     } else {
+      // use native database paging
       loadedObjects = sqlSession.selectList(statement, parameter);
     }
     return filterLoadedObjects(loadedObjects);
   }
-
 
   public Object selectOne(String statement, Object parameter) {
     statement = dbSqlSessionFactory.mapStatement(statement);

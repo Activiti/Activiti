@@ -38,23 +38,27 @@
     select * from ${prefix}ACT_RU_IDENTITYLINK where ID_ = #{id}
   </select>
   
-  <select id="selectIdentityLinksByTask" parameterType="string" resultMap="identityLinkResultMap">
-    select * from ${prefix}ACT_RU_IDENTITYLINK where TASK_ID_ = #{taskId}
+  <select id="selectIdentityLinksByTask" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="identityLinkResultMap">
+  	${limitBefore}
+    select * from ${prefix}ACT_RU_IDENTITYLINK where TASK_ID_ = #{parameter}
+    ${limitAfter}    
   </select>
   
-  <select id="selectIdentityLinkByTaskUserGroupAndType" parameterType="map" resultMap="identityLinkResultMap">
+  <select id="selectIdentityLinkByTaskUserGroupAndType" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="identityLinkResultMap">
+  	${limitBefore}
     select * 
     from ${prefix}ACT_RU_IDENTITYLINK 
-    where TASK_ID_ = #{taskId}
-      <if test="userId != null">
-        and USER_ID_ = #{userId}
+    where TASK_ID_ = #{parameter.taskId}
+      <if test="parameter.userId != null">
+        and USER_ID_ = #{parameter.userId}
       </if>
-      <if test="groupId != null">
-        and GROUP_ID_ = #{groupId}
+      <if test="parameter.groupId != null">
+        and GROUP_ID_ = #{parameter.groupId}
       </if>
-      <if test="type != null">
-        and TYPE_ = #{type}
+      <if test="parameter.type != null">
+        and TYPE_ = #{parameter.type}
       </if>
+    ${limitAfter}
   </select>
   
 </mapper>

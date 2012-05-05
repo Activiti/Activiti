@@ -53,11 +53,11 @@ public class GroupManager extends AbstractManager {
   }
 
   @SuppressWarnings("unchecked")
-  public List<Group> findGroupByQueryCriteria(Object query, Page page) {
+  public List<Group> findGroupByQueryCriteria(GroupQueryImpl query, Page page) {
     return getDbSqlSession().selectList("selectGroupByQueryCriteria", query, page);
   }
   
-  public long findGroupCountByQueryCriteria(Object query) {
+  public long findGroupCountByQueryCriteria(GroupQueryImpl query) {
     return (Long) getDbSqlSession().selectOne("selectGroupCountByQueryCriteria", query);
   }
 

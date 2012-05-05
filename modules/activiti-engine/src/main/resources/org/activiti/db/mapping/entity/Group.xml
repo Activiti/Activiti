@@ -47,34 +47,36 @@
   <select id="selectGroupById" parameterType="string" resultMap="groupResultMap">
     select * from ${prefix}ACT_ID_GROUP where ID_ = #{id}
   </select>
-  
-  <select id="selectGroups" resultMap="groupResultMap">
-    select * from ${prefix}ACT_ID_GROUP
-  </select>
-  
-  <select id="selectGroupsByUserId" parameterType="string" resultMap="groupResultMap">
+    
+  <select id="selectGroupsByUserId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="groupResultMap">
+  	${limitBefore}
     select g.*
     from ${prefix}ACT_ID_GROUP g, ${prefix}ACT_ID_MEMBERSHIP membership
     where g.ID_ = membership.GROUP_ID_
-      and membership.USER_ID_ = #{userId}
+      and membership.USER_ID_ = #{parameter}
+    ${limitAfter}
   </select>
 
-  <select id="selectGroupsByUserIdAndGroupType" parameterType="map" resultMap="groupResultMap">
+  <select id="selectGroupsByUserIdAndGroupType" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="groupResultMap">
+  	${limitBefore}
     select g.*
     from ${prefix}ACT_ID_GROUP g, ${prefix}ACT_ID_MEMBERSHIP membership
     where g.ID_ = membership.GROUP_ID_
-      and membership.USER_ID_ = #{userId}
+      and membership.USER_ID_ = #{parameter.userId}
       <if test="groupType != null">
-         and g.TYPE_ = #{groupType}
+         and g.TYPE_ = #{parameter.groupType}
       </if>
+    ${limitAfter}
   </select>
   
   <select id="selectGroupByQueryCriteria" parameterType="org.activiti.engine.impl.GroupQueryImpl" resultMap="groupResultMap">
+  	${limitBefore}
     select G.*
     <include refid="selectGroupByQueryCriteriaSql" />
     <if test="orderBy != null">
       order by ${orderBy}
     </if>
+    ${limitAfter}
   </select>
   
    <select id="selectGroupCountByQueryCriteria" parameterType="org.activiti.engine.impl.GroupQueryImpl" resultType="long">
