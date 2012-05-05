@@ -53,10 +53,10 @@
   </resultMap>
     
   <!-- postgresql specific -->
-  <select id="selectResourceByDeploymentIdAndResourceName_postgres" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="resourceResultMap_postgres">
+  <select id="selectResourceByDeploymentIdAndResourceName_postgres" parameterType="map" resultMap="resourceResultMap_postgres">
     select * from ${prefix}ACT_GE_BYTEARRAY 
-    where DEPLOYMENT_ID_ = #{parameter.deploymentId}
-          AND NAME_ = #{parameter.resourceName}
+    where DEPLOYMENT_ID_ = #{deploymentId}
+          AND NAME_ = #{resourceName}
   </select>
   
   <!-- postgresql specific -->
