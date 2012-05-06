@@ -15,9 +15,12 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -58,7 +61,9 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   protected boolean hasStartFormKey;
   protected int suspensionState = SuspensionState.ACTIVE.getStateCode();
   protected boolean isIdentityLinksInitialized = false;
-  protected List<IdentityLinkEntity> definitionIdentityLinkEntities = new ArrayList<IdentityLinkEntity>(); 
+  protected List<IdentityLinkEntity> definitionIdentityLinkEntities = new ArrayList<IdentityLinkEntity>();
+  protected Set<Expression> candidateStarterUserIdExpressions = new HashSet<Expression>();
+  protected Set<Expression> candidateStarterGroupIdExpressions = new HashSet<Expression>();
   
   public ProcessDefinitionEntity() {
     super(null);
@@ -318,4 +323,19 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
     return suspensionState == SuspensionState.SUSPENDED.getStateCode();
   }
   
+  public Set<Expression> getCandidateStarterUserIdExpressions() {
+    return candidateStarterUserIdExpressions;
+  }
+
+  public void addCandidateStarterUserIdExpression(Expression userId) {
+    candidateStarterUserIdExpressions.add(userId);
+  }
+
+  public Set<Expression> getCandidateStarterGroupIdExpressions() {
+    return candidateStarterGroupIdExpressions;
+  }
+
+  public void addCandidateStarterGroupIdExpression(Expression groupId) {
+    candidateStarterGroupIdExpressions.add(groupId);
+  }
 }

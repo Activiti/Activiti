@@ -270,7 +270,7 @@ public class StartAuthorizationTest extends PluggableActivitiTestCase {
               .createProcessDefinitionQuery().processDefinitionKey("process2")
               .singleResult();      
       List<Group> authorizedGroups =  ProcessEngines.getDefaultProcessEngine().getIdentityService()
-          .createGroupQuery().potentialStarter(latestProcessDef.getId()).list();
+          .createGroupQuery().potentialStarter(latestProcessDef.getId()).orderByGroupId().asc().list();
       assertEquals(0, authorizedGroups.size());
       
       // Process 3 has 3 groups as authorized starter groups
