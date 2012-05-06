@@ -119,6 +119,11 @@
       <if test="eventSubscriptionType != null">
       	and (EVT.EVENT_TYPE_ = #{eventSubscriptionType} and EVT.EVENT_NAME_ = #{eventSubscriptionName}) 
       </if>
+      <if test="authorizationUserId != null">
+        AND (exists (select ID_  from ${prefix} ACT_RU_IDENTITYLINK  IDN where IDN.PROC_DEF_ID_ = PD.ID_ and IDN.USER_ID_ = #{authorizationUserId})
+             OR exists (select IDN.ID_  from ${prefix} ACT_RU_IDENTITYLINK  IDN,  ${prefix} ACT_ID_MEMBERSHIP MBMR where IDN.PROC_DEF_ID_ = PD.ID_ and MBMR.USER_ID_ =  #{authorizationUserId} and IDN.GROUP_ID_ = MBMR.GROUP_ID_)
+             )
+      </if>
     </where>
   </sql>
     
@@ -152,5 +157,4 @@
     select distinct count(PD.ID_)
     <include refid="selectProcessDefinitionsByQueryCriteriaSql"/>
   </select>
-
 </mapper>

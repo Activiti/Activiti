@@ -36,6 +36,7 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
   protected String email;
   protected String emailLike;
   protected String groupId;
+  protected String procDefId;
   
   public UserQueryImpl() {
   }
@@ -101,6 +102,15 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
     }
     this.groupId = groupId;
     return this;
+  }
+  
+  public UserQuery potentialStarter(String procDefId) {
+    if (procDefId == null) {
+      throw new ActivitiException("Provided processDefinitionId is null or empty");
+    }
+    this.procDefId = procDefId;
+    return this;
+    
   }
 
   //sorting //////////////////////////////////////////////////////////

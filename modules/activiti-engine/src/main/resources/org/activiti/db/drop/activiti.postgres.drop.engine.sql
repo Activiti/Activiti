@@ -36,6 +36,9 @@ alter table ACT_RU_EXECUTION
 alter table ACT_RU_IDENTITYLINK
     drop constraint ACT_FK_TSKASS_TASK;
 
+alter table ACT_RU_IDENTITYLINK
+    drop constraint ACT_FK_ATHRZ_PROCEDEF;
+
 alter table ACT_RU_TASK
 	drop constraint ACT_FK_TASK_EXE;
 

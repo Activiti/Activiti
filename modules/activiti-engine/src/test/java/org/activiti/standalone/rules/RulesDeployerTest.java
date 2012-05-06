@@ -45,6 +45,9 @@ public class RulesDeployerTest extends ResourceActivitiTestCase {
     assertNotNull(processInstance);
     assertTrue(processInstance.getProcessDefinitionId().startsWith("rulesDeployment:1"));
     
+    runtimeService.getVariable(processInstance.getId(), "order");
+    assertTrue(order.isValid());
+    
     Collection<Object> ruleOutputList = (Collection<Object>)
         runtimeService.getVariable(processInstance.getId(), "rulesOutput");
     assertNotNull(ruleOutputList);

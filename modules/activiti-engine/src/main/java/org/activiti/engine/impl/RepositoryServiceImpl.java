@@ -19,7 +19,9 @@ import java.util.Map;
 
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.cmd.ActivateProcessDefinitionCmd;
+import org.activiti.engine.impl.cmd.AddIdentityLinkForProcessDefinitionCmd;
 import org.activiti.engine.impl.cmd.DeleteDeploymentCmd;
+import org.activiti.engine.impl.cmd.DeleteIdentityLinkForProcessDefinitionCmd;
 import org.activiti.engine.impl.cmd.DeployCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentProcessDiagramCmd;
@@ -27,6 +29,7 @@ import org.activiti.engine.impl.cmd.GetDeploymentProcessDiagramLayoutCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentProcessModelCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentResourceCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentResourceNamesCmd;
+import org.activiti.engine.impl.cmd.GetIdentityLinksForProcessDefinitionCmd;
 import org.activiti.engine.impl.cmd.SuspendProcessDefinitionCmd;
 import org.activiti.engine.impl.pvm.ReadOnlyProcessDefinition;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
@@ -35,6 +38,7 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
+import org.activiti.engine.task.IdentityLink;
 
 
 /**
@@ -110,6 +114,26 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
 
   public Map<String, Bounds> getProcessDiagramLayout(String processDefinitionId) {
     return commandExecutor.execute(new GetDeploymentProcessDiagramLayoutCmd(processDefinitionId));
+  }
+  
+  public void addCandidateStarterUser(String processDefinitionId, String userId) {
+    commandExecutor.execute(new AddIdentityLinkForProcessDefinitionCmd(processDefinitionId, userId, null));
+  }
+  
+  public void addCandidateStarterGroup(String processDefinitionId, String groupId) {
+    commandExecutor.execute(new AddIdentityLinkForProcessDefinitionCmd(processDefinitionId, null, groupId));
+  }
+  
+  public void deleteCandidateStarterGroup(String processDefinitionId, String groupId) {
+    commandExecutor.execute(new DeleteIdentityLinkForProcessDefinitionCmd(processDefinitionId, null, groupId));
+  }
+
+  public void deleteCandidateStarterUser(String processDefinitionId, String userId) {
+    commandExecutor.execute(new DeleteIdentityLinkForProcessDefinitionCmd(processDefinitionId, userId, null));
+  }
+
+  public List<IdentityLink> getIdentityLinksForProcessDefinition(String processDefinitionId) {
+    return commandExecutor.execute(new GetIdentityLinksForProcessDefinitionCmd(processDefinitionId));
   }
 
 }

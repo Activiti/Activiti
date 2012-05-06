@@ -62,7 +62,13 @@ public class DeploymentManager extends AbstractManager {
     
       }
     }
-    
+
+    for (ProcessDefinition processDefinition : processDefinitions) {
+      String processDefinitionId = processDefinition.getId();
+      // remove related authorization parameters in IdentityLink table
+      getIdentityLinkManager().deleteIdentityLinksByProcDef(processDefinitionId);
+    }
+
     // delete process definitions from db
     getProcessDefinitionManager()
       .deleteProcessDefinitionsByDeploymentId(deploymentId);

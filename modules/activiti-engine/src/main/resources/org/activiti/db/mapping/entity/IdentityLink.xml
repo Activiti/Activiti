@@ -7,13 +7,15 @@
   <!-- INSERT IDENTITY LINK -->
   
   <insert id="insertIdentityLink" parameterType="org.activiti.engine.impl.persistence.entity.IdentityLinkEntity">
-    insert into ${prefix}ACT_RU_IDENTITYLINK (ID_, REV_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_)
+    insert into ${prefix}ACT_RU_IDENTITYLINK (ID_, REV_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_, PROC_DEF_ID_)
     values (#{id, jdbcType=VARCHAR},
             1,
             #{type, jdbcType=VARCHAR},
             #{userId, jdbcType=VARCHAR},
             #{groupId, jdbcType=VARCHAR},
-            #{taskId, jdbcType=VARCHAR})
+            #{taskId, jdbcType=VARCHAR},
+            #{processDefId, jdbcType=VARCHAR})
+            
   </insert>
   
   <!-- IDENTITY LINK DELETE -->
@@ -21,6 +23,11 @@
   <delete id="deleteIdentityLink" parameterType="string">
     delete from ${prefix}ACT_RU_IDENTITYLINK where ID_ = #{id}
   </delete>
+  
+  <delete id="deleteIdentityLinkByProcDef" parameterType="string">
+    delete from ${prefix}ACT_RU_IDENTITYLINK where PROC_DEF_ID_ = #{id}
+  </delete>
+  
 
   <!-- IDENTITY LINK RESULTMAP -->
 
@@ -30,6 +37,7 @@
     <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />
     <result property="groupId" column="GROUP_ID_" jdbcType="VARCHAR" />
     <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
+    <result property="processDefId" column="PROCESS_DEF_ID_" jdbcType="VARCHAR" />    
   </resultMap>
 
   <!-- IDENTITY LINK SELECT -->
@@ -41,6 +49,12 @@
   <select id="selectIdentityLinksByTask" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="identityLinkResultMap">
   	${limitBefore}
     select * from ${prefix}ACT_RU_IDENTITYLINK where TASK_ID_ = #{parameter}
+    ${limitAfter}    
+  </select>
+  
+  <select id="selectIdentityLinksByProcessDefinition" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="identityLinkResultMap">
+    ${limitBefore}
+    select * from ${prefix}ACT_RU_IDENTITYLINK where PROC_DEF_ID_ = #{parameter}
     ${limitAfter}    
   </select>
   
@@ -57,6 +71,20 @@
       </if>
       <if test="parameter.type != null">
         and TYPE_ = #{parameter.type}
+      </if>
+    ${limitAfter}
+  </select>
+  
+  <select id="selectIdentityLinkByProcessDefinitionUserAndGroup" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="identityLinkResultMap">
+    ${limitBefore}
+    select * 
+    from ${prefix}ACT_RU_IDENTITYLINK 
+    where PROC_DEF_ID_ = #{parameter.processDefinitionId}
+      <if test="parameter.userId != null">
+        and USER_ID_ = #{parameter.userId}
+      </if>
+      <if test="parameter.groupId != null">
+        and GROUP_ID_ = #{parameter.groupId}
       </if>
     ${limitAfter}
   </select>

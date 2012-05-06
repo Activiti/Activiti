@@ -3,7 +3,10 @@
   xmlns="http://www.w3.org/2001/XMLSchema"
   targetNamespace="http://activiti.org/bpmn"
   xmlns:tns="http://activiti.org/bpmn"
+  xmlns:sem="http://www.omg.org/spec/BPMN/20100524/MODEL"
   elementFormDefault="qualified">
+  
+<import namespace="http://www.omg.org/spec/BPMN/20100524/MODEL" schemaLocation="Semantic.xsd" />  
   
   <!-- TODO
   
@@ -277,6 +280,36 @@
     </annotation>
   </attribute>
 
+  <attribute name="candidateStarterUsers">
+    <annotation>
+      <documentation>
+        Process attribute to set the potential starts of a process.
+        Provided user(s) will be able to start the process.        
+        In case of multiple user ids, a comma-separated list must be provided.
+        Also supports expressions that evaluate to a String or Collection&lt;String&gt;.
+      </documentation>
+    </annotation>
+  </attribute>
+  
+  <attribute name="candidateStarterGroups">
+    <annotation>
+      <documentation>
+        Process attribute to set the potential starts of a process.
+        Provided group(s) will be able to start the process.        
+        In case of multiple group ids, a comma-separated list must be provided.
+        Also supports expressions that evaluate to a String or Collection&lt;String&gt;.
+      </documentation>
+    </annotation>
+  </attribute>
+  
+  <complexType name="tPotentialStarter">
+	<complexContent>
+		<extension base="sem:tHumanPerformer" />
+	</complexContent>
+  </complexType>
+  
+  <element name="potentialStarter" type="string" />
+  
   <element name="taskListener">
     <annotation>
       <documentation>

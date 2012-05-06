@@ -29,6 +29,7 @@ import org.activiti.engine.impl.persistence.AbstractManager;
 
 /**
  * @author Tom Baeyens
+ * @author Saeid Mirzaei
  */
 public class UserManager extends AbstractManager {
 
@@ -105,4 +106,14 @@ public class UserManager extends AbstractManager {
     }
     return false;
   }
+  
+  @SuppressWarnings("unchecked")
+  public List<User> findPotentialStarterUsers(String proceDefId) {
+    Map<String, String> parameters = new HashMap<String, String>();
+    parameters.put("procDefId", proceDefId);
+    return  (List<User>) getDbSqlSession().selectOne("selectUserByQueryCriteria", parameters);
+    
+  }
+  
+  
 }

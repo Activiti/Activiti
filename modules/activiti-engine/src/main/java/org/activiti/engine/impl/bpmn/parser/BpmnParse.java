@@ -114,6 +114,7 @@ import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.impl.util.xml.Element;
 import org.activiti.engine.impl.util.xml.Parse;
 import org.activiti.engine.impl.variable.VariableDeclaration;
+import org.activiti.engine.repository.ProcessDefinition;
 
 /**
  * Specific parsing of one BPMN 2.0 XML file, created by the {@link BpmnParser}.
@@ -125,6 +126,7 @@ import org.activiti.engine.impl.variable.VariableDeclaration;
  * @author Falko Menge
  * @author Esteban Robles
  * @author Daniel Meyer
+ * @author Saeid Mirzaei
  */
 public class BpmnParse extends Parse {
 
@@ -144,6 +146,11 @@ public class BpmnParse extends Parse {
   public static final String PROPERTYNAME_IS_FOR_COMPENSATION = "isForCompensation";
   public static final String PROPERTYNAME_ERROR_EVENT_DEFINITIONS = "errorEventDefinitions";
   public static final String PROPERTYNAME_MESSAGE_EVENT_DEFINITIONS = "messageEventDefinitions";
+
+  /* process start authorization specific finals */
+  protected static final String POTENTIAL_STARTER = "potentialStarter";
+  protected static final String CANDIDATE_STARTER_USERS_EXTENSION = "candidateStarterUsers";
+  protected static final String CANDIDATE_STARTER_GROUPS_EXTENSION = "candidateStarterGroups";
 
   /** The deployment to which the parsed process definitions will be added. */
   protected DeploymentEntity deployment;
@@ -668,6 +675,10 @@ public class BpmnParse extends Parse {
     parseExecutionListenersOnScope(scopeElement, parentScope);
     parseAssociations(scopeElement, parentScope);
     
+    if(parentScope instanceof ProcessDefinition) {
+      parseProcessDefinitionCustomExtensions(scopeElement, (ProcessDefinition) parentScope);
+    }
+   
     postponedElements.clear();
 
     IOSpecification ioSpecification = parseIOSpecification(scopeElement.element("ioSpecification"));
@@ -680,6 +691,65 @@ public class BpmnParse extends Parse {
       if(parentScope.findActivity(postponedElement.attribute("id")) == null) { // check whether activity is already parsed
         if(postponedElement.getTagName().equals("intermediateCatchEvent")) {
           parseIntermediateCatchEvent(postponedElement, parentScope, false);
+        }
+      }
+    }
+  }
+
+  protected void parseProcessDefinitionCustomExtensions(Element scopeElement, ProcessDefinition definition) {
+    parseStartAuthorization(scopeElement, definition);
+  }
+
+  protected void parseStartAuthorization(Element scopeElement, ProcessDefinition definition) {
+    ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) definition;
+
+    // parse activiti:potentialStarters
+    Element extentionsElement = scopeElement.element("extensionElements");
+    if (extentionsElement != null) {
+      List<Element> potentialStarterElements = extentionsElement.elementsNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, POTENTIAL_STARTER);
+
+      for (Element potentialStarterElement : potentialStarterElements) {
+        parsePotentialStarterResourceAssignment(potentialStarterElement, processDefinition);
+      }
+    }
+
+    // parse activiti:candidateStarterUsers
+    String candidateUsersString = scopeElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, CANDIDATE_STARTER_USERS_EXTENSION);
+    if (candidateUsersString != null) {
+      List<String> candidateUsers = parseCommaSeparatedList(candidateUsersString);
+      for (String candidateUser : candidateUsers) {
+        processDefinition.addCandidateStarterUserIdExpression(expressionManager.createExpression(candidateUser.trim()));
+      }
+    }
+
+    // Candidate activiti:candidateStarterGroups
+    String candidateGroupsString = scopeElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, CANDIDATE_STARTER_GROUPS_EXTENSION);
+    if (candidateGroupsString != null) {
+      List<String> candidateGroups = parseCommaSeparatedList(candidateGroupsString);
+      for (String candidateGroup : candidateGroups) {
+        processDefinition.addCandidateStarterGroupIdExpression(expressionManager.createExpression(candidateGroup.trim()));
+      }
+    }
+
+  }
+
+  protected void parsePotentialStarterResourceAssignment(Element performerElement, ProcessDefinitionEntity processDefinition) {
+    Element raeElement = performerElement.element(RESOURCE_ASSIGNMENT_EXPR);
+    if (raeElement != null) {
+      Element feElement = raeElement.element(FORMAL_EXPRESSION);
+      if (feElement != null) {
+        List<String> assignmentExpressions = parseCommaSeparatedList(feElement.getText());
+        for (String assignmentExpression : assignmentExpressions) {
+          assignmentExpression = assignmentExpression.trim();
+          if (assignmentExpression.startsWith(USER_PREFIX)) {
+            String userAssignementId = getAssignmentId(assignmentExpression, USER_PREFIX);
+            processDefinition.addCandidateStarterUserIdExpression(expressionManager.createExpression(userAssignementId));
+          } else if (assignmentExpression.startsWith(GROUP_PREFIX)) {
+            String groupAssignementId = getAssignmentId(assignmentExpression, GROUP_PREFIX);
+            processDefinition.addCandidateStarterGroupIdExpression(expressionManager.createExpression(groupAssignementId));
+          } else { // default: given string is a goupId, as-is.
+            processDefinition.addCandidateStarterGroupIdExpression(expressionManager.createExpression(assignmentExpression));
+          }
         }
       }
     }

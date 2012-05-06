@@ -1,0 +1,21 @@
+
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
+
+	<process id="potentialStarter" activiti:candidateStarterUsers="user1, user2"  activiti:candidateStarterGroups="group1">
+
+		<extensionElements>
+			<activiti:potentialStarter>
+				<resourceAssignmentExpression>
+					<formalExpression>group2, group(group3), user(user3)</formalExpression>
+				</resourceAssignmentExpression>
+			</activiti:potentialStarter>
+		</extensionElements>
+
+		<startEvent id="theStart" />
+		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="theEnd" />
+		<endEvent id="theEnd" />
+	</process>
+
+
+</definitions>

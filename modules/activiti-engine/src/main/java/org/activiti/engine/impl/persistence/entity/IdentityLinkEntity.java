@@ -36,7 +36,12 @@ public class IdentityLinkEntity implements Serializable, IdentityLink, Persisten
   protected String groupId;
   
   protected String taskId;
+  
+  protected String processDefId;
+  
   protected TaskEntity task;
+  
+  protected ProcessDefinitionEntity processDef;
 
   public Object getPersistentState() {
     return this.type;
@@ -104,7 +109,15 @@ public class IdentityLinkEntity implements Serializable, IdentityLink, Persisten
   void setTaskId(String taskId) {
     this.taskId = taskId;
   }
+    
+  public String getProcessDefId() {
+    return processDefId;
+  }
   
+  public void setProcessDefId(String processDefId) {
+    this.processDefId = processDefId;
+  }
+
   public TaskEntity getTask() {
     if ( (task==null) && (taskId!=null) ) {
       this.task = Context
@@ -114,9 +127,26 @@ public class IdentityLinkEntity implements Serializable, IdentityLink, Persisten
     }
     return task;
   }
-
+  
   public void setTask(TaskEntity task) {
     this.task = task;
     this.taskId = task.getId();
   }
+
+  public ProcessDefinitionEntity getProcessDef() {
+    if ((processDef == null) && (processDefId != null)) {
+      this.processDef = Context
+              .getCommandContext()
+              .getProcessDefinitionManager()
+              .findLatestProcessDefinitionById(processDefId);
+    }
+    return processDef;
+  }
+  
+  public void setProcessDef(ProcessDefinitionEntity processDef) {
+    this.processDef = processDef;
+    this.processDefId = processDef.getId();
+  }
+
+  
 }

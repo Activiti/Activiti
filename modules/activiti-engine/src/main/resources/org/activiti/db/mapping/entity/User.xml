@@ -102,6 +102,10 @@
       <if test="groupId != null">
         and G.ID_ = #{groupId}
       </if>
+      <if test="procDefId != null">
+        and exists (select ID_ from ${prefix} ACT_RU_IDENTITYLINK where PROC_DEF_ID_ = #{procDefId} and USER_ID_=U.ID_ )
+      </if>
+      
     </where>
   </sql>
   

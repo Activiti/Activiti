@@ -21,13 +21,13 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
-import org.activiti.engine.runtime.ExecutionQuery;
 
 
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  * @author Daniel Meyer
+ * @author Saeid Mirzaei
  */
 public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQuery, ProcessDefinition> 
   implements ProcessDefinitionQuery {
@@ -46,6 +46,8 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   protected Integer version;
   protected boolean latest = false;
   protected SuspensionState suspensionState;
+  protected String authorizationUserId;
+  protected String procDefId;
   
   protected String eventSubscriptionName;
   protected String eventSubscriptionType;
@@ -166,7 +168,12 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   public ProcessDefinitionQuery messageEventSubscription(String messageName) {
     return eventSubscription("message", messageName);
   }
-  
+
+  public ProcessDefinitionQuery processDefinitionStarter(String procDefId) {
+    this.procDefId = procDefId;
+    return this;
+  }
+
   public ProcessDefinitionQuery eventSubscription(String eventType, String eventName) {
     if(eventName == null) {
       throw new ActivitiException("event name is null");
@@ -273,5 +280,13 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   }  
   public void setSuspensionState(SuspensionState suspensionState) {
     this.suspensionState = suspensionState;
+  }
+
+  public ProcessDefinitionQueryImpl startableByUser(String userId) {
+    if (userId == null) {
+      throw new ActivitiException("userId is null");
+    }
+    this.authorizationUserId = userId;
+    return this;
   }
 }

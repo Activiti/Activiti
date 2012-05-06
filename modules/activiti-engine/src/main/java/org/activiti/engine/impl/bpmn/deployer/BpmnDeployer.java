@@ -14,12 +14,15 @@ package org.activiti.engine.impl.bpmn.deployer;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
@@ -37,6 +40,7 @@ import org.activiti.engine.impl.persistence.deploy.Deployer;
 import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
+import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionManager;
@@ -44,6 +48,7 @@ import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.runtime.Job;
+import org.activiti.engine.task.IdentityLinkType;
 
 /**
  * @author Tom Baeyens
@@ -141,6 +146,8 @@ public class BpmnDeployer implements Deployer {
 
         dbSqlSession.insert(processDefinition);
         deploymentCache.addProcessDefinition(processDefinition);
+        addAuthorizations(processDefinition);
+
         
       } else {
         String deploymentId = deployment.getId();
@@ -149,6 +156,8 @@ public class BpmnDeployer implements Deployer {
         processDefinition.setId(persistedProcessDefinition.getId());
         processDefinition.setVersion(persistedProcessDefinition.getVersion());
         deploymentCache.addProcessDefinition(processDefinition);
+        addAuthorizations(processDefinition);
+
       }
 
       Context
@@ -240,7 +249,34 @@ public class BpmnDeployer implements Deployer {
       }
     }      
   }
+  
+  enum ExprType {
+	  USER, GROUP
+  }
+  
+  private void addAuthorizationsFromIterator(Set<Expression> exprSet, ProcessDefinitionEntity processDefinition, ExprType exprType) {
+    CommandContext commandContext = Context.getCommandContext();
+    if (exprSet != null) {
+      Iterator<Expression> iterator = exprSet.iterator();
+      while (iterator.hasNext()) {
+        Expression expr = (Expression) iterator.next();
+        IdentityLinkEntity identityLink = new IdentityLinkEntity();
+        identityLink.setProcessDef(processDefinition);
+        if (exprType.equals(ExprType.USER)) {
+           identityLink.setUserId(expr.toString());
+        } else if (exprType.equals(ExprType.GROUP)) {
+          identityLink.setGroupId(expr.toString());
+        }
+        identityLink.setType(IdentityLinkType.CANDIDATE);
+        commandContext.getDbSqlSession().insert(identityLink);
+      }
+    }
+  }
 
+  protected void addAuthorizations(ProcessDefinitionEntity processDefinition) {
+    addAuthorizationsFromIterator(processDefinition.getCandidateStarterUserIdExpressions(), processDefinition, ExprType.USER);
+    addAuthorizationsFromIterator(processDefinition.getCandidateStarterGroupIdExpressions(), processDefinition, ExprType.GROUP);
+  }
 
   /**
    * Returns the default name of the image resource for a certain process.

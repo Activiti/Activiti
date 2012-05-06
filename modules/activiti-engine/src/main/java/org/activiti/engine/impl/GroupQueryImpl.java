@@ -33,6 +33,8 @@ public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements 
   protected String nameLike;
   protected String type;
   protected String userId;
+  protected String procDefId;
+  
 
   public GroupQueryImpl() {
   }
@@ -85,6 +87,15 @@ public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements 
     return this;
   }
 
+  public GroupQuery potentialStarter(String procDefId) {
+    if (procDefId == null) {
+      throw new ActivitiException("Provided processDefinitionId is null or empty");
+    }
+    this.procDefId = procDefId;
+    return this;
+    
+  }
+  
   //sorting ////////////////////////////////////////////////////////
   
   public GroupQuery orderByGroupId() {
@@ -132,5 +143,6 @@ public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements 
   public String getUserId() {
     return userId;
   }
+
   
 }

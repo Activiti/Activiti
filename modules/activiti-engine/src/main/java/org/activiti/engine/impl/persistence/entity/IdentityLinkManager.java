@@ -22,6 +22,7 @@ import org.activiti.engine.impl.persistence.AbstractManager;
 
 /**
  * @author Tom Baeyens
+ * @author Saeid Mirzaei
  */
 public class IdentityLinkManager extends AbstractManager {
 
@@ -33,6 +34,11 @@ public class IdentityLinkManager extends AbstractManager {
   public List<IdentityLinkEntity> findIdentityLinksByTaskId(String taskId) {
     return getDbSqlSession().selectList("selectIdentityLinksByTask", taskId);
   }
+  
+  @SuppressWarnings("unchecked")
+  public List<IdentityLinkEntity> findIdentityLinksByProcessDefinitionId(String processDefinitionId) {
+    return getDbSqlSession().selectList("selectIdentityLinksByProcessDefinition", processDefinitionId);
+  }
 
   @SuppressWarnings("unchecked")
   public List<IdentityLinkEntity> findIdentityLinkByTaskUserGroupAndType(String taskId, String userId, String groupId, String type) {
@@ -43,6 +49,15 @@ public class IdentityLinkManager extends AbstractManager {
     parameters.put("type", type);
     return getDbSqlSession().selectList("selectIdentityLinkByTaskUserGroupAndType", parameters);
   }
+  
+  @SuppressWarnings("unchecked")
+  public List<IdentityLinkEntity> findIdentityLinkByProcessDefinitionUserAndGroup(String processDefinitionId, String userId, String groupId) {
+    Map<String, String> parameters = new HashMap<String, String>();
+    parameters.put("processDefinitionId", processDefinitionId);
+    parameters.put("userId", userId);
+    parameters.put("groupId", groupId);
+    return getDbSqlSession().selectList("selectIdentityLinkByProcessDefinitionUserAndGroup", parameters);
+  }
 
   public void deleteIdentityLinksByTaskId(String taskId) {
     List<IdentityLinkEntity> identityLinks = findIdentityLinksByTaskId(taskId);
@@ -50,4 +65,9 @@ public class IdentityLinkManager extends AbstractManager {
       deleteIdentityLink(identityLink);
     }
   }
+  
+  public void deleteIdentityLinksByProcDef(String processDefId) {
+    getDbSqlSession().delete("deleteIdentityLinkByProcDef", processDefId);
+  }
+  
 }
