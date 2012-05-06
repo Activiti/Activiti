@@ -109,7 +109,7 @@ create table ACT_RU_IDENTITYLINK (
     TYPE_ varchar(255),
     USER_ID_ varchar(64),
     TASK_ID_ varchar(64),
-    PROC_DEF_ID varchar (64),
+    PROC_DEF_ID_ varchar (64),
     primary key (ID_)
 );
 
@@ -182,7 +182,7 @@ alter table ACT_RU_IDENTITYLINK
 create index ACT_IDX_ATHRZ_PROCEDEF on ACT_RU_IDENTITYLINK(PROC_DEF_ID_);
 alter table ACT_RU_IDENTITYLINK
     add constraint ACT_FK_ATHRZ_PROCEDEF
-    foreign key (PROC_DEF_ID) 
+    foreign key (PROC_DEF_ID_) 
     references ACT_RE_PROCDEF (ID_);
     
 create index ACT_IDX_TASK_EXEC on ACT_RU_TASK(EXECUTION_ID_);
