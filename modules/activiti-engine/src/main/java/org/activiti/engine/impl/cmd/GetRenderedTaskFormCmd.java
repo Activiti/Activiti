@@ -48,6 +48,11 @@ public class GetRenderedTaskFormCmd  implements Command<Object>, Serializable {
     if (task == null) {
       throw new ActivitiException("Task '" + taskId +"' not found");
     }
+    
+    if (task.getTaskDefinition() == null) {
+      throw new ActivitiException("Task form definition for '" + taskId +"' not found");
+    }
+    
     TaskFormHandler taskFormHandler = task.getTaskDefinition().getTaskFormHandler();
     if (taskFormHandler == null) {
       return null;
