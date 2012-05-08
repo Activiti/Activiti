@@ -12,11 +12,13 @@
  */
 package org.activiti.engine.task;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.query.Query;
+import org.activiti.engine.runtime.ExecutionQuery;
 
 /**
  * Allows programmatic querying of {@link Task}s;
@@ -121,11 +123,27 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
    */
   TaskQuery taskVariableValueEquals(String variableName, Object variableValue);
   
+  /** 
+   * Only select tasks which have a local task variable with the given name, but
+   * with a different value than the passed value.
+   * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
+   * are not supported.
+   */
+  TaskQuery taskVariableValueNotEquals(String variableName, Object variableValue);    
+  
   /**
    * Only select tasks which have are part of a process that have a variable
    * with the given name set to the given value.
    */
   TaskQuery processVariableValueEquals(String variableName, Object variableValue);
+  
+  /** 
+   * Only select tasks which have a variable with the given name, but
+   * with a different value than the passed value.
+   * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
+   * are not supported.
+   */
+  TaskQuery processVariableValueNotEquals(String variableName, Object variableValue);  
   
   /**
    * Only select tasks which are part of a process instance which has the given

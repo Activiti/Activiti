@@ -238,23 +238,55 @@
         </if>
         <!-- Variable value -->
         <if test="var.textValue != null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
-          and A${index}.TEXT_ =  #{var.textValue}
+          and A${index}.TEXT_ 
+          <choose>
+              <when test="var.operator.equals('LIKE')">LIKE</when>
+              <otherwise><include refid="executionVariableOperator" /></otherwise>
+          </choose>          
+          #{var.textValue}
         </if>
         <if test="var.textValue2 != null">
-          and A${index}.TEXT2_ = #{var.textValue2}
+          and A${index}.TEXT2_ 
+          <choose>
+            <when test="var.operator.equals('LIKE')">LIKE</when>
+            <otherwise><include refid="executionVariableOperator" /></otherwise>
+          </choose>          
+          #{var.textValue2}
         </if>
         <if test="var.longValue != null">
-          and A${index}.LONG_ = #{var.longValue}
+          and A${index}.LONG_
+          <include refid="executionVariableOperator" />
+          #{var.longValue}
         </if>
         <if test="var.doubleValue != null">
-          and A${index}.DOUBLE_ = #{var.doubleValue}
+          and A${index}.DOUBLE_ 
+          <include refid="executionVariableOperator" />
+          #{var.doubleValue}
         </if>
         <!-- Null variable type -->
         <if test="var.textValue == null &amp;&amp; var.textValue2 == null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
-          and A${index}.TEXT_ is null and A${index}.TEXT2_ is null and A${index}.LONG_ is null and A${index}.DOUBLE_ is null and A${index}.BYTEARRAY_ID_ is null
+          <choose>
+            <when test="var.operator.equals('NOT_EQUALS')">
+              and (A${index}.TEXT_ is not null or A${index}.TEXT2_ is not null or A${index}.LONG_ is not null or A${index}.DOUBLE_ is not null or A${index}.BYTEARRAY_ID_ is not null)
+            </when>
+            <otherwise>
+              and A${index}.TEXT_ is null and A${index}.TEXT2_ is null and A${index}.LONG_ is null and A${index}.DOUBLE_ is null and A${index}.BYTEARRAY_ID_ is null
+            </otherwise>
+          </choose>          
         </if>
       </foreach>
     </where>
   </sql>
+  
+  <sql id="executionVariableOperator">
+    <choose>
+      <when test="var.operator.equals('EQUALS')">=</when>
+      <when test="var.operator.equals('NOT_EQUALS')">&lt;&gt;</when>
+      <when test="var.operator.equals('GREATER_THAN')">&gt;</when>
+      <when test="var.operator.equals('GREATER_THAN_OR_EQUAL')">&gt;=</when>
+      <when test="var.operator.equals('LESS_THAN')">&lt;</when>
+      <when test="var.operator.equals('LESS_THAN_OR_EQUAL')">&lt;=</when>
+   </choose>
+  </sql>  
 
 </mapper>

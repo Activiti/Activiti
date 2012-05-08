@@ -482,6 +482,14 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     otherDate.add(Calendar.YEAR, 1);
     assertEquals(0, taskService.createTaskQuery().taskVariableValueEquals("dateVar", otherDate.getTime()).count());
     assertEquals(0, taskService.createTaskQuery().taskVariableValueEquals("nullVar", "999").count());
+    
+    // Test query for not equals
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueNotEquals("longVar", 999L).count());
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueNotEquals("shortVar",  (short) 999).count());
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueNotEquals("integerVar", 999).count());
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueNotEquals("stringVar", "999").count());
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueNotEquals("booleanVar", false).count());
+    
   }
   
   @Deployment
@@ -509,15 +517,15 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertEquals(1, taskService.createTaskQuery().processVariableValueEquals("nullVar", null).count());
     
     // Test query for other values on existing variables
-    assertEquals(0, taskService.createTaskQuery().taskVariableValueEquals("longVar", 999L).count());
-    assertEquals(0, taskService.createTaskQuery().taskVariableValueEquals("shortVar",  (short) 999).count());
-    assertEquals(0, taskService.createTaskQuery().taskVariableValueEquals("integerVar", 999).count());
-    assertEquals(0, taskService.createTaskQuery().taskVariableValueEquals("stringVar", "999").count());
-    assertEquals(0, taskService.createTaskQuery().taskVariableValueEquals("booleanVar", false).count());
+    assertEquals(0, taskService.createTaskQuery().processVariableValueEquals("longVar", 999L).count());
+    assertEquals(0, taskService.createTaskQuery().processVariableValueEquals("shortVar",  (short) 999).count());
+    assertEquals(0, taskService.createTaskQuery().processVariableValueEquals("integerVar", 999).count());
+    assertEquals(0, taskService.createTaskQuery().processVariableValueEquals("stringVar", "999").count());
+    assertEquals(0, taskService.createTaskQuery().processVariableValueEquals("booleanVar", false).count());
     Calendar otherDate = Calendar.getInstance();
     otherDate.add(Calendar.YEAR, 1);
-    assertEquals(0, taskService.createTaskQuery().taskVariableValueEquals("dateVar", otherDate.getTime()).count());
-    assertEquals(0, taskService.createTaskQuery().taskVariableValueEquals("nullVar", "999").count());
+    assertEquals(0, taskService.createTaskQuery().processVariableValueEquals("dateVar", otherDate.getTime()).count());
+    assertEquals(0, taskService.createTaskQuery().processVariableValueEquals("nullVar", "999").count());
     
     // Test querying for task variables don't match the process-variables 
     assertEquals(0, taskService.createTaskQuery().taskVariableValueEquals("longVar", 928374L).count());
@@ -527,6 +535,16 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertEquals(0, taskService.createTaskQuery().taskVariableValueEquals("booleanVar", true).count());
     assertEquals(0, taskService.createTaskQuery().taskVariableValueEquals("dateVar", date).count());
     assertEquals(0, taskService.createTaskQuery().taskVariableValueEquals("nullVar", null).count());
+    
+    // Test querying for task variables not equals
+    assertEquals(1, taskService.createTaskQuery().processVariableValueNotEquals("longVar", 999L).count());
+    assertEquals(1, taskService.createTaskQuery().processVariableValueNotEquals("shortVar",  (short) 999).count());
+    assertEquals(1, taskService.createTaskQuery().processVariableValueNotEquals("integerVar", 999).count());
+    assertEquals(1, taskService.createTaskQuery().processVariableValueNotEquals("stringVar", "999").count());
+    assertEquals(1, taskService.createTaskQuery().processVariableValueNotEquals("booleanVar", false).count());
+    
+    // and query for the existing variable with NOT shoudl result in nothing found:
+    assertEquals(0, taskService.createTaskQuery().processVariableValueNotEquals("longVar", 928374L).count());
     
     // Test combination of task-variable and process-variable
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();

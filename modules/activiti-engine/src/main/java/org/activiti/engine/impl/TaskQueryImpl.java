@@ -256,12 +256,22 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     variables.add(new TaskQueryVariableValue(variableName, variableValue, QueryOperator.EQUALS, true));
     return this;
   }
-  
+
+  public TaskQuery taskVariableValueNotEquals(String variableName, Object variableValue) {
+    variables.add(new TaskQueryVariableValue(variableName, variableValue, QueryOperator.NOT_EQUALS, true));
+    return this;
+  }
+
   public TaskQuery processVariableValueEquals(String variableName, Object variableValue) {
     variables.add(new TaskQueryVariableValue(variableName, variableValue, QueryOperator.EQUALS, false));
     return this;
   }
-  
+
+  public TaskQuery processVariableValueNotEquals(String variableName, Object variableValue) {
+    variables.add(new TaskQueryVariableValue(variableName, variableValue, QueryOperator.NOT_EQUALS, false));
+    return this;
+  }
+
   public TaskQuery processDefinitionKey(String processDefinitionKey) {
     this.processDefinitionKey = processDefinitionKey;
     return this;
