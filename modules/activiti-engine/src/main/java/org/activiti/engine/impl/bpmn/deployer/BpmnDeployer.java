@@ -93,7 +93,8 @@ public class BpmnDeployer implements Deployer {
           processDefinition.setResourceName(resourceName);
           
           String diagramResourceName = getDiagramResourceForProcess(resourceName, processDefinition.getKey(), resources);
-          if (diagramResourceName==null && processDefinition.isGraphicalNotationDefined()) {
+          if (Context.getProcessEngineConfiguration().isCreateDiagramOnDeploy() && 
+                  diagramResourceName==null && processDefinition.isGraphicalNotationDefined()) {
             try {
               byte[] diagramBytes = IoUtil.readInputStream(ProcessDiagramGenerator.generatePngDiagram(processDefinition), null);
               diagramResourceName = getProcessImageResourceName(resourceName, processDefinition.getKey(), "png");
@@ -101,7 +102,7 @@ public class BpmnDeployer implements Deployer {
             } catch (Throwable t) { // if anything goes wrong, we don't store the image (the process will still be executable).
               LOG.log(Level.WARNING, "Error while generating process diagram, image will not be stored in repository", t);
             }
-          } 
+          }
           
           processDefinition.setDiagramResourceName(diagramResourceName);
           processDefinitions.add(processDefinition);

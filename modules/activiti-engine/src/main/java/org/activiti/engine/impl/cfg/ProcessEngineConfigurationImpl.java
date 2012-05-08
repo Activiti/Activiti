@@ -282,6 +282,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   protected String databaseTablePrefix = "";
   
+  protected boolean isCreateDiagramOnDeploy = true;
+  
   // buildProcessEngine ///////////////////////////////////////////////////////
   
   public ProcessEngine buildProcessEngine() {
@@ -1622,6 +1624,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     
   public String getDatabaseTablePrefix() {
     return databaseTablePrefix;
+  }
+
+  public boolean isCreateDiagramOnDeploy() {
+    return isCreateDiagramOnDeploy;
+  }
+
+  public ProcessEngineConfiguration setCreateDiagramOnDeploy(boolean createDiagramOnDeploy) {
+    this.isCreateDiagramOnDeploy = createDiagramOnDeploy;
+    return this;
   }
 
 }
