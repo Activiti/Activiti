@@ -75,7 +75,6 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
     return this;
   }
   
-  @Override
   public HistoricDetailQuery excludeTaskDetails() {
     this.excludeTaskRelated = true;
     return this;
