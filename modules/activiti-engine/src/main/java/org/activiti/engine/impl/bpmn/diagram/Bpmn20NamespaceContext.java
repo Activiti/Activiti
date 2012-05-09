@@ -38,10 +38,12 @@ public class Bpmn20NamespaceContext implements NamespaceContext {
   public static final String OMGDC = "omgdc";
   public static final String OMGDI = "omgdi";
   
-  Map<String, String> namespaceUris;
+  /**
+   * This is a protected filed so you can extend that context with your own namespaces if necessary
+   */
+  protected Map<String, String> namespaceUris = new HashMap<String, String>();
   
   public Bpmn20NamespaceContext() {
-    namespaceUris = new HashMap<String, String>();
     namespaceUris.put(BPMN, "http://www.omg.org/spec/BPMN/20100524/MODEL");
     namespaceUris.put(BPMNDI, "http://www.omg.org/spec/BPMN/20100524/DI");
     namespaceUris.put(OMGDC, "http://www.omg.org/spec/DD/20100524/DI");
