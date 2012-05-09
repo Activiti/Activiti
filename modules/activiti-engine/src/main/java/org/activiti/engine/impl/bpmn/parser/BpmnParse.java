@@ -2166,7 +2166,7 @@ public class BpmnParse extends Parse {
     } else if (delegateExpression != null) {
       taskListener = new DelegateExpressionTaskListener(expressionManager.createExpression(delegateExpression));
     } else {
-      addError("Element 'class' or 'expression' is mandatory on taskListener", taskListenerElement);
+      addError("Element 'class', 'expression' or 'delegateExpression' is mandatory on taskListener", taskListenerElement);
     }
     return taskListener;
   }
