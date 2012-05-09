@@ -33,14 +33,19 @@ import javax.xml.xpath.XPath;
  */
 public class Bpmn20NamespaceContext implements NamespaceContext {
   
+  public static final String BPMN = "bpmn";
+  public static final String BPMNDI = "bpmndi";
+  public static final String OMGDC = "omgdc";
+  public static final String OMGDI = "omgdi";
+  
   Map<String, String> namespaceUris;
   
   public Bpmn20NamespaceContext() {
     namespaceUris = new HashMap<String, String>();
-    namespaceUris.put("bpmn", "http://www.omg.org/spec/BPMN/20100524/MODEL");
-    namespaceUris.put("bpmndi", "http://www.omg.org/spec/BPMN/20100524/DI");
-    namespaceUris.put("omgdi", "http://www.omg.org/spec/DD/20100524/DI");
-    namespaceUris.put("omgdc", "http://www.omg.org/spec/DD/20100524/DC");
+    namespaceUris.put(BPMN, "http://www.omg.org/spec/BPMN/20100524/MODEL");
+    namespaceUris.put(BPMNDI, "http://www.omg.org/spec/BPMN/20100524/DI");
+    namespaceUris.put(OMGDC, "http://www.omg.org/spec/DD/20100524/DI");
+    namespaceUris.put(OMGDI, "http://www.omg.org/spec/DD/20100524/DC");
   }
 
   public String getNamespaceURI(String prefix) {
