@@ -2143,7 +2143,7 @@ public class BpmnParse extends Parse {
             TaskListener taskListener = parseTaskListener(taskListenerElement);
             taskDefinition.addTaskListener(eventName, taskListener);
           } else {
-            addError("Invalid eventName for taskListener: choose 'create' |'assignment'", userTaskElement);
+            addError("Invalid eventName for taskListener: choose 'create' | 'assignment' | 'complete'", userTaskElement);
           }
         } else {
           addError("Event is mandatory on taskListener", userTaskElement);
