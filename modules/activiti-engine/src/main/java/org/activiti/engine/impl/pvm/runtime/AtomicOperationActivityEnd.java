@@ -114,6 +114,11 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
           // Copy execution-local variables of lastConcurrent
           concurrentRoot.setVariablesLocal(lastConcurrent.getVariablesLocal());
           
+          // Make sure parent execution is re-activated when the last concurrent child execution is active
+          if (!concurrentRoot.isActive() && lastConcurrent.isActive()) {
+            concurrentRoot.setActive(true);
+          }
+          
           lastConcurrent.remove();
         } else {
           lastConcurrent.setConcurrent(false);

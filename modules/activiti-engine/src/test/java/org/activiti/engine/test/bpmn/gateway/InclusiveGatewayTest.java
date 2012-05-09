@@ -99,6 +99,52 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
   }
 
   /**
+   * Test for ACT-1216: When merging a concurrent execution the parent is not activated correctly
+   */
+  @Deployment
+  public void testParentActivationOnNonJoiningEnd() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("parentActivationOnNonJoiningEnd");
+    
+    List<Execution> executionsBefore = runtimeService.createExecutionQuery().list();
+    assertEquals(3, executionsBefore.size());
+    
+    // start first round of tasks
+    List<Task> firstTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
+    
+    assertEquals(2, firstTasks.size());
+    
+    for (Task t: firstTasks) {
+      taskService.complete(t.getId());
+    }
+    
+    // start first round of tasks
+    List<Task> secondTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
+    
+    assertEquals(2, secondTasks.size());
+    
+    // complete one task
+    Task task = secondTasks.get(0);
+    taskService.complete(task.getId());
+    
+    // should have merged last child execution into parent
+    List<Execution> executionsAfter = runtimeService.createExecutionQuery().list();
+    assertEquals(1, executionsAfter.size());
+    
+    Execution execution = executionsAfter.get(0);
+    
+    // and should have one active activity
+    List<String> activeActivityIds = runtimeService.getActiveActivityIds(execution.getId());
+    assertEquals(1, activeActivityIds.size());
+    
+    // Completing last task should finish the process instance
+    
+    Task lastTask = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    taskService.complete(lastTask.getId());
+    
+    assertEquals(0l, runtimeService.createProcessInstanceQuery().active().count());
+  }
+
+  /**
    * Test for bug ACT-10: whitespaces/newlines in expressions lead to exceptions
    */
   @Deployment
