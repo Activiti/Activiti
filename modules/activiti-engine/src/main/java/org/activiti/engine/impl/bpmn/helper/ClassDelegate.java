@@ -207,4 +207,12 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
     }
   }
 
+  /**
+   * returns the class name this {@link ClassDelegate} is configured to. Comes in handy if you want to
+   * check which delegates you already have e.g. in a list of listeners
+   */
+  public String getClassName() {
+    return className;
+  }
+
 }
