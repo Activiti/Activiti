@@ -53,4 +53,12 @@ public class DelegateExpressionExecutionListener implements ExecutionListener {
     }
   }
 
+  /**
+   * returns the expression text for this execution listener. Comes in handy if you want to
+   * check which listeners you already have.
+   */  
+  public String getExpressionText() {
+    return expression.getExpressionText();
+  }
+
 }

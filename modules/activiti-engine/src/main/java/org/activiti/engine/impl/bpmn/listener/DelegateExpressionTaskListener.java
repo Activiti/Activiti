@@ -49,5 +49,13 @@ public class DelegateExpressionTaskListener implements TaskListener {
               + " did not resolve to an implementation of " + TaskListener.class );
     }
   }
+  
+  /**
+   * returns the expression text for this task listener. Comes in handy if you want to
+   * check which listeners you already have.
+   */  
+  public String getExpressionText() {
+    return expression.getExpressionText();
+  }  
 
 }

@@ -33,4 +33,12 @@ public class ExpressionTaskListener implements TaskListener {
       expression.getValue(delegateTask);
   }
 
+  /**
+   * returns the expression text for this task listener. Comes in handy if you want to
+   * check which listeners you already have.
+   */  
+  public String getExpressionText() {
+    return expression.getExpressionText();
+  }
+
 }
