@@ -1036,7 +1036,7 @@ RuntimeService.signalEventReceived(String signalName, String executionId);
 	        	<programlisting>
 ProcessInstance startProcessInstanceByMessage(String messageName);
 ProcessInstance startProcessInstanceByMessage(String messageName, Map&lt;String, Object&gt; processVariables);
-ProcessInstance startProcessInstanceByMessage(String messageName, String businessKey, Map&lt;String, Object&lt; processVariables); 		</programlisting>	        	
+ProcessInstance startProcessInstanceByMessage(String messageName, String businessKey, Map&lt;String, Object&gt; processVariables); 		</programlisting>	        	
 	        </para>
 	        The methods allow starting a process instance using the referenced message. 
 	    </section>
@@ -1317,26 +1317,26 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 					</listitem>
 					<listitem>
 						<para>
-							If a process definition has multiple message start events, <code>rutimeService.startProcessInstanceByMessage(...)</code> allows to select the appropriate 
+							If a process definition has multiple message start events, <code>runtimeService.startProcessInstanceByMessage(...)</code> allows to select the appropriate 
 							start event.
 						</para>
 					</listitem>
 					<listitem>
 						<para>
-							If a process definition has multiple message start events and a single none start event, <code>rutimeService.startProcessInstanceByKey(...)</code> and 
-							<code>rutimeService.startProcessInstanceById(...)</code> starts a process instance using the none start event.
+							If a process definition has multiple message start events and a single none start event, <code>runtimeService.startProcessInstanceByKey(...)</code> and 
+							<code>runtimeService.startProcessInstanceById(...)</code> starts a process instance using the none start event.
 						</para>
 					</listitem>
 					<listitem>
 						<para>
-							If a process definition has multiple message start events and no none start event, <code>rutimeService.startProcessInstanceByKey(...)</code> and 
-							<code>rutimeService.startProcessInstanceById(...)</code> throw an exception.
+							If a process definition has multiple message start events and no none start event, <code>runtimeService.startProcessInstanceByKey(...)</code> and 
+							<code>runtimeService.startProcessInstanceById(...)</code> throw an exception.
 						</para>
 					</listitem>
 					<listitem>						
 						<para>
-							If a process definition has a single message start event, <code>rutimeService.startProcessInstanceByKey(...)</code> and 
-							<code>rutimeService.startProcessInstanceById(...)</code> start a new process instance using the message start event.
+							If a process definition has a single message start event, <code>runtimeService.startProcessInstanceByKey(...)</code> and 
+							<code>runtimeService.startProcessInstanceById(...)</code> start a new process instance using the message start event.
 						</para>
 					</listitem>
 					<listitem>
@@ -1529,7 +1529,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 		    <title>Description</title>
 		    <para>
 		      When process execution arrives in an <emphasis role="bold">error end event</emphasis>, 
-		      the, the current path of execution is ended and an error is thrown. This error
+		      the current path of execution is ended and an error is thrown. This error
 		      can <link linkend="bpmnBoundaryErrorEvent">caught by a matching intermediate boundary error event</link>.
 		      In case no matching boundary error event is found, the execution semantics default to the 
 		      <link linkend="bpmnNoneEndEvent">none end event</link> semantics.

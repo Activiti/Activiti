@@ -491,9 +491,9 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
   {
     "data": [
       {
-        "id": 2,
+        "id": "2",
         "processDefinitionId": "financialReport:1",
-        "businessKey": 55,
+        "businessKey": "55",
         "startTime": "2010-10-13T14:54:26.750+02:00",
         "startUserId": "kermit"
       }
@@ -532,16 +532,16 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
                 <emphasis role="bold">Response:</emphasis>
                 <programlisting>
   {
-    "id": 2,
+    "id": "2",
     "processDefinitionId": "financialReport:1",
-    "businessKey": 55,
+    "businessKey": "55",
     "startTime": "2010-10-13T14:54:26.750+02:00",
     "startActivityId": "startFinancialAnalysis",
     "startUserId": "kermit",
     "completed": false,
     "tasks": [
       {
-        "taskId": 3,
+        "taskId": "3",
         "taskName": "Analyze report",
         "owner": null,
         "assignee": "Kermit",
@@ -551,7 +551,7 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
     ],
     "activities": [
       {
-        "activityId": 4,
+        "activityId": "4",
         "activityName": "Get report",
         "activityType": "ServiceTask",
         "startTime": "2010-10-13T14:53:25.750+02:00",
@@ -686,17 +686,17 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
 {
   "data": [
     {
-      "id": 127,
+      "id": "127",
       "name": "Handle vacation request",
       "description": "Vacation request by Kermit",
       "delegationState": "pending",
       "dueDate": "2010-10-13T14:54:26.750+02:00",
       "priority": 50,
       "assignee": null,
-      "executionId": 118,
+      "executionId": "118",
       "formResourceKey": "org/activiti/examples/taskforms/approve.form",
       "owner": "Kermit",
-      "parentTaskId": 120,
+      "parentTaskId": "120",
       "processDefinitionId": "financialReport:1",
       "processInstanceId": "123",
       "taskDefinitionKey": "125"
@@ -743,10 +743,10 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
       "dueDate": "2010-10-13T14:54:26.750+02:00",
       "priority": 50,
       "assignee": null,
-      "executionId": 118,
+      "executionId": "118",
       "formResourceKey": "org/activiti/examples/taskforms/approve.form",
       "owner": "Kermit",
-      "parentTaskId": 120,
+      "parentTaskId": "120",
       "processDefinitionId": "financialReport:1",
       "processInstanceId": "123",
       "taskDefinitionKey": "125",
