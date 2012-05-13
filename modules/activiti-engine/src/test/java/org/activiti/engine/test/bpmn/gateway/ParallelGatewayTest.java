@@ -102,8 +102,32 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
    taskService.complete(tasks.get(1).getId());
    tasks = query.list();
    assertEquals(1, tasks.size());
-   assertEquals("Task C", tasks.get(0).getName());
-   
+   assertEquals("Task C", tasks.get(0).getName());   
+  }
+  
+  /**
+   * http://jira.codehaus.org/browse/ACT-1222
+   */
+  @Deployment
+  public void testReceyclingExecutionWithCallActivity() {
+    String processInstanceId = runtimeService.startProcessInstanceByKey("parent-process").getId();
+    
+    // After process start we have two tasks, one from the parent and one from the sub process
+    TaskQuery query = taskService.createTaskQuery().orderByTaskName().asc(); 
+    List<Task> tasks = query.list();
+    assertEquals(2, tasks.size());
+    assertEquals("Another task", tasks.get(0).getName());
+    assertEquals("Some Task", tasks.get(1).getName());
+    
+    // we complete the task from the parent process, the root execution is receycled, the task in the sub process is still there 
+    taskService.complete(tasks.get(1).getId());
+    tasks = query.list();
+    assertEquals(1, tasks.size());
+    assertEquals("Another task", tasks.get(0).getName());
+
+    // we end the task in the sub process and the sub process instance end is propagated to the parent process 
+    taskService.complete(tasks.get(0).getId());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).finished().count());    
   }
   
 }
