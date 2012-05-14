@@ -131,6 +131,7 @@ public interface RepositoryService {
    *
    * @param processDefinitionId
    *          id of a {@link ProcessDefinition}, cannot be null.
+   * @return null when the diagram resource name of a {@link ProcessDefinition} is null.
    * @throws ActivitiException
    *           when the process diagram doesn't exist.
    */
@@ -143,6 +144,7 @@ public interface RepositoryService {
    * This method requires a process model and a diagram image to be deployed.
    * @param processDefinitionId id of a {@link ProcessDefinition}, cannot be null.
    * @return Map with process element ids as keys and positions and dimensions as values.
+   * @return null when the input stream of a process diagram is null.
    * @throws ActivitiException when the process model or diagram doesn't exist.
    */
   Map<String, Bounds> getProcessDiagramLayout(String processDefinitionId);

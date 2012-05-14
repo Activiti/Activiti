@@ -15,6 +15,7 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.InputStream;
 import java.io.Serializable;
+import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
@@ -32,6 +33,8 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 public class GetDeploymentProcessDiagramCmd implements Command<InputStream>, Serializable {
 
   private static final long serialVersionUID = 1L;
+  private static Logger log = Logger.getLogger(GetDeploymentProcessDiagramCmd.class.getName());
+  
   protected String processDefinitionId;
 
   public GetDeploymentProcessDiagramCmd(String processDefinitionId) {
@@ -48,10 +51,15 @@ public class GetDeploymentProcessDiagramCmd implements Command<InputStream>, Ser
             .findDeployedProcessDefinitionById(processDefinitionId);
     String deploymentId = processDefinition.getDeploymentId();
     String resourceName = processDefinition.getDiagramResourceName();
-    InputStream processDiagramStream =
-            new GetDeploymentResourceCmd(deploymentId, resourceName)
-            .execute(commandContext);
-    return processDiagramStream;
+    if (resourceName == null ) {
+      log.info("Resource name is null! No process diagram stream exists.");
+      return null;
+    } else {
+      InputStream processDiagramStream =
+              new GetDeploymentResourceCmd(deploymentId, resourceName)
+              .execute(commandContext);
+      return processDiagramStream;
+    }
   }
 
 }

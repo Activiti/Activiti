@@ -60,6 +60,7 @@ public class ProcessDiagramLayout {
    *          by {@link ImageIO} may also work)
    * @return Map with BPMN element ids as keys and positions and dimensions as
    *         values.
+   * @return null when parameter imageStream is null
    */
   public Map<String, Bounds> getProcessDiagramLayout(InputStream bpmnXmlStream, InputStream imageStream) {
     Document bpmnModel = parseXml(bpmnXmlStream);
@@ -77,8 +78,12 @@ public class ProcessDiagramLayout {
    *          by {@link ImageIO} may also work)
    * @return Map with BPMN element ids as keys and positions and dimensions as
    *         values.
+   * @return null when parameter imageStream is null
    */
   public Map<String, Bounds> getBpmnProcessDiagramLayout(Document bpmnModel, InputStream imageStream) {
+    if (imageStream == null) {
+      return null;
+    }
     Bounds diagramBoundsXml = getDiagramBoundsFromBpmnDi(bpmnModel);
     Bounds diagramBoundsImage;
     if (isExportedFromAdonis50(bpmnModel)) {
