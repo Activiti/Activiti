@@ -159,8 +159,8 @@ import org.apache.ibatis.type.JdbcType;
 /**
  * @author Tom Baeyens
  */
-public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfiguration {
-  
+public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfiguration {  
+
   private static Logger log = Logger.getLogger(ProcessEngineConfigurationImpl.class.getName());
   
   public static final String DB_SCHEMA_UPDATE_CREATE = "create";
@@ -172,6 +172,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public static final int HISTORYLEVEL_FULL = 3;
 
   public static final String DEFAULT_WS_SYNC_FACTORY = "org.activiti.engine.impl.webservice.CxfWebServiceClientFactory";
+  
+  public static final String DEFAULT_MYBATIS_MAPPING_FILE = "org/activiti/db/mapping/mappings.xml";
 
   // SERVICES /////////////////////////////////////////////////////////////////
 
@@ -542,7 +544,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     if (sqlSessionFactory==null) {
       InputStream inputStream = null;
       try {
-        inputStream = ReflectUtil.getResourceAsStream("org/activiti/db/mapping/mappings.xml");
+        inputStream = getMyBatisXmlConfigurationSteam();
 
         // update the jdbc parameters to the configured ones...
         Environment environment = new Environment("default", transactionFactory, dataSource);
@@ -569,6 +571,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
   
+  protected InputStream getMyBatisXmlConfigurationSteam() {
+    return ReflectUtil.getResourceAsStream(DEFAULT_MYBATIS_MAPPING_FILE);
+  }
+
   // session factories ////////////////////////////////////////////////////////
   
   protected void initSessionFactories() {
