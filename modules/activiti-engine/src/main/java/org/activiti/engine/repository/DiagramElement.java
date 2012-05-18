@@ -16,54 +16,40 @@ package org.activiti.engine.repository;
 import java.io.Serializable;
 
 /**
- * Stores position and dimensions of a diagram shape.
+ * Represents a diagram node.
  *
  * @author Falko Menge
  */
-public class Bounds implements Serializable {
+abstract public class DiagramElement implements Serializable {
 
   private static final long serialVersionUID = 1L;
+  
+  protected String id = null;
 
-  private Double x = null;
-  private Double y = null;
-  private Double width = null;
-  private Double height = null;
-
-  public Double getX() {
-    return x;
+  public DiagramElement() {
   }
 
-  public void setX(Double x) {
-    this.x = x;
+  public DiagramElement(String id) {
+    this.id = id;
   }
 
-  public Double getY() {
-    return y;
+  /**
+   * Id of the diagram element.
+   */
+  public String getId() {
+    return id;
   }
 
-  public void setY(Double y) {
-    this.y = y;
-  }
-
-  public Double getWidth() {
-    return width;
-  }
-
-  public void setWidth(Double width) {
-    this.width = width;
-  }
-
-  public Double getHeight() {
-    return height;
-  }
-
-  public void setHeight(Double height) {
-    this.height = height;
+  public void setId(String id) {
+    this.id = id;
   }
   
   @Override
   public String toString() {
-    return "x=" + getX() + ", y=" + getY() + ", width=" + getWidth() + ", height=" + getHeight();
+    return "id=" + getId();
   }
+
+  public abstract boolean isNode();
+  public abstract boolean isEdge();
 
 }

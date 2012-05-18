@@ -32,7 +32,9 @@ import javax.xml.xpath.XPathFactory;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
-import org.activiti.engine.repository.Bounds;
+import org.activiti.engine.repository.DiagramElement;
+import org.activiti.engine.repository.DiagramLayout;
+import org.activiti.engine.repository.DiagramNode;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -45,7 +47,7 @@ import org.w3c.dom.NodeList;
  *
  * @author Falko Menge
  */
-public class ProcessDiagramLayout {
+public class ProcessDiagramLayoutFactory {
 
   /**
    * Provides positions and dimensions of elements in a process diagram as
@@ -58,11 +60,10 @@ public class ProcessDiagramLayout {
    * @param imageStream
    *          BPMN 2.0 diagram in PNG format (JPEG and other formats supported
    *          by {@link ImageIO} may also work)
-   * @return Map with BPMN element ids as keys and positions and dimensions as
-   *         values.
+   * @return Layout of the process diagram
    * @return null when parameter imageStream is null
    */
-  public Map<String, Bounds> getProcessDiagramLayout(InputStream bpmnXmlStream, InputStream imageStream) {
+  public DiagramLayout getProcessDiagramLayout(InputStream bpmnXmlStream, InputStream imageStream) {
     Document bpmnModel = parseXml(bpmnXmlStream);
     return getBpmnProcessDiagramLayout(bpmnModel, imageStream);
   }
@@ -76,16 +77,15 @@ public class ProcessDiagramLayout {
    * @param imageStream
    *          BPMN 2.0 diagram in PNG format (JPEG and other formats supported
    *          by {@link ImageIO} may also work)
-   * @return Map with BPMN element ids as keys and positions and dimensions as
-   *         values.
+   * @return Layout of the process diagram
    * @return null when parameter imageStream is null
    */
-  public Map<String, Bounds> getBpmnProcessDiagramLayout(Document bpmnModel, InputStream imageStream) {
+  public DiagramLayout getBpmnProcessDiagramLayout(Document bpmnModel, InputStream imageStream) {
     if (imageStream == null) {
       return null;
     }
-    Bounds diagramBoundsXml = getDiagramBoundsFromBpmnDi(bpmnModel);
-    Bounds diagramBoundsImage;
+    DiagramNode diagramBoundsXml = getDiagramBoundsFromBpmnDi(bpmnModel);
+    DiagramNode diagramBoundsImage;
     if (isExportedFromAdonis50(bpmnModel)) {
       int offsetTop = 29; // Adonis header
       int offsetBottom = 61; // Adonis footer
@@ -94,13 +94,13 @@ public class ProcessDiagramLayout {
       diagramBoundsImage = getDiagramBoundsFromImage(imageStream);
     }
         
-    Map<String, Bounds> listOfBounds = new HashMap<String, Bounds>();
-    listOfBounds.put("BPMNDiagram", diagramBoundsXml);
+    Map<String, DiagramNode> listOfBounds = new HashMap<String, DiagramNode>();
+    listOfBounds.put(diagramBoundsXml.getId(), diagramBoundsXml);
 //    listOfBounds.putAll(getElementBoundsFromBpmnDi(bpmnModel));
     listOfBounds.putAll(fixFlowNodePositionsIfModelFromAdonis(bpmnModel, getElementBoundsFromBpmnDi(bpmnModel)));
 
-    Map<String, Bounds> listOfBoundsForImage = transformBoundsForImage(diagramBoundsImage, diagramBoundsXml, listOfBounds);
-    return listOfBoundsForImage;
+    Map<String, DiagramElement> listOfBoundsForImage = transformBoundsForImage(diagramBoundsImage, diagramBoundsXml, listOfBounds);
+    return new DiagramLayout(listOfBoundsForImage);
   }
   
   protected Document parseXml(InputStream bpmnXmlStream) {
@@ -122,7 +122,7 @@ public class ProcessDiagramLayout {
     return bpmnModel;
   }
 
-  protected Bounds getDiagramBoundsFromBpmnDi(Document bpmnModel) {
+  protected DiagramNode getDiagramBoundsFromBpmnDi(Document bpmnModel) {
     Double minX = null;
     Double minY = null;
     Double maxX = null;
@@ -177,7 +177,7 @@ public class ProcessDiagramLayout {
       }
     }
   
-    Bounds diagramBounds = new Bounds();
+    DiagramNode diagramBounds = new DiagramNode("BPMNDiagram");
     diagramBounds.setX(minX);
     diagramBounds.setY(minY);
     diagramBounds.setWidth(maxX - minX);
@@ -185,22 +185,22 @@ public class ProcessDiagramLayout {
     return diagramBounds;
   }
 
-  protected Bounds getDiagramBoundsFromImage(InputStream imageStream) {
+  protected DiagramNode getDiagramBoundsFromImage(InputStream imageStream) {
     return getDiagramBoundsFromImage(imageStream, 0, 0);
   }
 
-  protected Bounds getDiagramBoundsFromImage(InputStream imageStream, int offsetTop, int offsetBottom) {
+  protected DiagramNode getDiagramBoundsFromImage(InputStream imageStream, int offsetTop, int offsetBottom) {
     BufferedImage image;
     try {
       image = ImageIO.read(imageStream);
     } catch (IOException e) {
       throw new ActivitiException("Error while reading process diagram image.", e);
     }
-    Bounds diagramBoundsImage = getDiagramBoundsFromImage(image, offsetTop, offsetBottom);
+    DiagramNode diagramBoundsImage = getDiagramBoundsFromImage(image, offsetTop, offsetBottom);
     return diagramBoundsImage;
   }
 
-  protected Bounds getDiagramBoundsFromImage(BufferedImage image, int offsetTop, int offsetBottom) {
+  protected DiagramNode getDiagramBoundsFromImage(BufferedImage image, int offsetTop, int offsetBottom) {
     int width = image.getWidth();
     int height = image.getHeight();
     
@@ -271,7 +271,7 @@ public class ProcessDiagramLayout {
       }
     }
     
-    Bounds diagramBoundsImage = new Bounds();
+    DiagramNode diagramBoundsImage = new DiagramNode();
     diagramBoundsImage.setX((double) marginLeft);
     diagramBoundsImage.setY((double) marginTop);
     diagramBoundsImage.setWidth((double) (width - marginRight - marginLeft));
@@ -279,8 +279,8 @@ public class ProcessDiagramLayout {
     return diagramBoundsImage;
   }
 
-  protected Map<String, Bounds> getElementBoundsFromBpmnDi(Document bpmnModel) {
-    Map<String, Bounds> listOfBounds = new HashMap<String, Bounds>();
+  protected Map<String, DiagramNode> getElementBoundsFromBpmnDi(Document bpmnModel) {
+    Map<String, DiagramNode> listOfBounds = new HashMap<String, DiagramNode>();
     // iterate over all DI shapes
     NodeList shapes = bpmnModel.getElementsByTagNameNS(BpmnParser.BPMN_DI_NS, "BPMNShape");
     for (int i = 0; i < shapes.getLength(); i++) {
@@ -293,7 +293,8 @@ public class ProcessDiagramLayout {
         if (childNode instanceof Element
                 && BpmnParser.BPMN_DC_NS.equals(childNode.getNamespaceURI())
                 && "Bounds".equals(childNode.getLocalName())) {
-          Bounds bounds = parseBounds((Element) childNode);
+          DiagramNode bounds = parseBounds((Element) childNode);
+          bounds.setId(bpmnElementId);
           listOfBounds.put(bpmnElementId, bounds);
           break;
         }
@@ -302,8 +303,8 @@ public class ProcessDiagramLayout {
     return listOfBounds;
   }
 
-  protected Bounds parseBounds(Element boundsElement) {
-    Bounds bounds = new Bounds();
+  protected DiagramNode parseBounds(Element boundsElement) {
+    DiagramNode bounds = new DiagramNode();
     bounds.setX(Double.valueOf(boundsElement.getAttribute("x")));
     bounds.setY(Double.valueOf(boundsElement.getAttribute("y")));
     bounds.setWidth(Double.valueOf(boundsElement.getAttribute("width")));
@@ -311,19 +312,19 @@ public class ProcessDiagramLayout {
     return bounds;
   }
 
-  protected Map<String, Bounds> transformBoundsForImage(Bounds diagramBoundsImage, Bounds diagramBoundsXml, Map<String, Bounds> listOfBounds) {
-    Map<String, Bounds> listOfBoundsForImage = new HashMap<String, Bounds>();
-    for (Entry<String, Bounds> bounds : listOfBounds.entrySet()) {
+  protected Map<String, DiagramElement> transformBoundsForImage(DiagramNode diagramBoundsImage, DiagramNode diagramBoundsXml, Map<String, DiagramNode> listOfBounds) {
+    Map<String, DiagramElement> listOfBoundsForImage = new HashMap<String, DiagramElement>();
+    for (Entry<String, DiagramNode> bounds : listOfBounds.entrySet()) {
       listOfBoundsForImage.put(bounds.getKey(), transformBoundsForImage(diagramBoundsImage, diagramBoundsXml, bounds.getValue()));
     }
     return listOfBoundsForImage;
   }
 
-  protected Bounds transformBoundsForImage(Bounds diagramBoundsImage, Bounds diagramBoundsXml, Bounds elementBounds) {
+  protected DiagramNode transformBoundsForImage(DiagramNode diagramBoundsImage, DiagramNode diagramBoundsXml, DiagramNode elementBounds) {
     double scalingFactorX = diagramBoundsImage.getWidth() / diagramBoundsXml.getWidth();
     double scalingFactorY = diagramBoundsImage.getWidth() / diagramBoundsXml.getWidth();
 
-    Bounds elementBoundsForImage = new Bounds();
+    DiagramNode elementBoundsForImage = new DiagramNode(elementBounds.getId());
     elementBoundsForImage.setX((double) Math.round((elementBounds.getX() - diagramBoundsXml.getX()) * scalingFactorX + diagramBoundsImage.getX()));
     elementBoundsForImage.setY((double) Math.round((elementBounds.getY() - diagramBoundsXml.getY()) * scalingFactorY + diagramBoundsImage.getY()));
     elementBoundsForImage.setWidth((double) Math.round(elementBounds.getWidth() * scalingFactorX));
@@ -331,15 +332,15 @@ public class ProcessDiagramLayout {
     return elementBoundsForImage;
   }
 
-  protected Map<String, Bounds> fixFlowNodePositionsIfModelFromAdonis(Document bpmnModel, Map<String, Bounds> elementBoundsFromBpmnDi) {
+  protected Map<String, DiagramNode> fixFlowNodePositionsIfModelFromAdonis(Document bpmnModel, Map<String, DiagramNode> elementBoundsFromBpmnDi) {
     if (isExportedFromAdonis50(bpmnModel)) {
-      Map<String, Bounds> mapOfFixedBounds = new HashMap<String, Bounds>();
+      Map<String, DiagramNode> mapOfFixedBounds = new HashMap<String, DiagramNode>();
       XPathFactory xPathFactory = XPathFactory.newInstance();
       XPath xPath = xPathFactory.newXPath();
       xPath.setNamespaceContext(new Bpmn20NamespaceContext());
-      for (Entry<String, Bounds> entry : elementBoundsFromBpmnDi.entrySet()) {
+      for (Entry<String, DiagramNode> entry : elementBoundsFromBpmnDi.entrySet()) {
         String elementId = entry.getKey();
-        Bounds elementBounds = entry.getValue();
+        DiagramNode elementBounds = entry.getValue();
         String expression = "local-name(//bpmn:*[@id = '" + elementId + "'])";
         try {
           XPathExpression xPathExpression = xPath.compile(expression);

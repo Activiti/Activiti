@@ -15,11 +15,10 @@ package org.activiti.engine;
 
 import java.io.InputStream;
 import java.util.List;
-import java.util.Map;
 
-import org.activiti.engine.repository.Bounds;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentQuery;
+import org.activiti.engine.repository.DiagramLayout;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.task.IdentityLink;
@@ -147,7 +146,7 @@ public interface RepositoryService {
    * @return null when the input stream of a process diagram is null.
    * @throws ActivitiException when the process model or diagram doesn't exist.
    */
-  Map<String, Bounds> getProcessDiagramLayout(String processDefinitionId);
+  DiagramLayout getProcessDiagramLayout(String processDefinitionId);
   
   /**
    * Authorizes a candidate user for a process definition.
