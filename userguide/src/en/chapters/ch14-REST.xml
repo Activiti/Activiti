@@ -5,41 +5,52 @@
 
   <title>REST API</title>
 
-  <para>
-    Activiti includes a REST API to the engine that will be deployed to your server when you run the setup script.
-    The REST API uses JSON format (http://www.json.org) and is built upon the Restlet (http://www.restlet.org).
-  </para>
+  <section>
 
-  <para>
-    Each REST API call has its individual authorization level and you must be logged in as a user to invoke a REST API
-    call (except for the /login service). Authentication is done using Basic HTTP Authentication, so if you logged in as
-    an admin (i.e. kermit) you should be able to perform all calls as described below.
-  </para>
+    <title>General Usage</title>
 
-  <para>
-    The API follows normal REST API conventions using GET for read operations, POST for creating objects, PUT for updating and
-    performing operations on already created objects and finally DELETE for deleting objects. When performing a call
-    that affects multiple objects POST is used on all such operations for consistency and making sure that an unlimited
-    number of objects may be used. The reason for using POST is that the HTTP DELETE method doesn't implicitly allow
-    request bodies and therefore, a call using DELETE, in theory, could get it's request body stripped out by a proxy.
-    So to be certain this doesn't happen we use POST, even when PUT could have been used to update multiple objects,
-    for consistency.  
-  </para>
+    <para>
+      Activiti includes a REST API to the engine that will be deployed to your server when you run the setup script.
+      The REST API uses JSON format (http://www.json.org) and is built upon the Restlet (http://www.restlet.org).
+    </para>
 
-  <para>
-    All rest calls use a content type of "application/json" (except for upload requests which uses "multipart/form-data").
-  </para>
+    <para>
+      Each REST API call has its individual authorization level and you must be logged in as a user to invoke a REST API
+      call (except for the /login service). Authentication is done using Basic HTTP Authentication, so if you logged in as
+      an admin (i.e. kermit) you should be able to perform all calls as described below.
+    </para>
 
-  <para>
-    The base URL for invoking a REST call is http://localhost:8080/activiti-rest/service/.
-    So for example to list the process definitions in the engine point your browser to:
-    http://localhost:8080/activiti-rest/service/process-definitions
-  </para>
+    <para>
+      The API follows normal REST API conventions using GET for read operations, POST for creating objects, PUT for updating and
+      performing operations on already created objects and finally DELETE for deleting objects. When performing a call
+      that affects multiple objects POST is used on all such operations for consistency and making sure that an unlimited
+      number of objects may be used. The reason for using POST is that the HTTP DELETE method doesn't implicitly allow
+      request bodies and therefore, a call using DELETE, in theory, could get it's request body stripped out by a proxy.
+      So to be certain this doesn't happen we use POST, even when PUT could have been used to update multiple objects,
+      for consistency.
+    </para>
 
-  <para>
-    Please look below to see what REST API calls that currently are available.
-    Please consider the "API" sections as a "one line hint" to what functionality of the core API that is used to implement the REST API call.
-  </para>
+    <para>
+      All rest calls use a content type of "application/json" (except for upload requests which uses "multipart/form-data").
+    </para>
+
+    <para>
+      The base URL for invoking a REST call is http://localhost:8080/activiti-rest/service/.
+      So for example to list the process definitions in the engine point your browser to:
+      http://localhost:8080/activiti-rest/service/process-definitions
+    </para>
+
+    <para>
+      You may also use curl to run queries against the REST API, e.g.:
+      <programlisting>curl --basic --user kermit:kermit http://localhost:8080/activiti-rest/service/tasks?assignee=kermit</programlisting>
+    </para>
+
+    <para>
+      Please look below to see what REST API calls that currently are available.
+      Please consider the "API" sections as a "one line hint" to what functionality of the core API that is used to implement the REST API call.
+    </para>
+
+  </section>
 
   <section>
 
@@ -671,6 +682,12 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
             <para>
               <emphasis role="bold">Paginated Request:</emphasis>
               <literal>GET /tasks?[assignee={userId}|candidate={userId}|candidate-group={groupId}]&amp;start={start=0}&amp;size={size=10}&amp;sort={sort=id}&amp;order={order=asc}</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">Example:</emphasis>
+              <programlisting>curl --basic --user kermit:kermit http://localhost:8080/activiti-rest/service/tasks?assignee=kermit</programlisting>
             </para>
           </listitem>
           <listitem>
