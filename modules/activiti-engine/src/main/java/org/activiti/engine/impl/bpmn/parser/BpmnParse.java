@@ -531,8 +531,10 @@ public class BpmnParse extends Parse {
         boolean isExecutable = Boolean.parseBoolean(isExecutableStr);
         if (!isExecutable) {
           processProcess = false;
-          LOGGER.info("Ignoring non-executable process with id='" + processElement.attribute("id") + "'. Set the attribute executable=\"true\" to deploy this process.");
+          LOGGER.info("Ignoring non-executable process with id='" + processElement.attribute("id") + "'. Set the attribute isExecutable=\"true\" to deploy this process.");
         }
+      } else {
+        LOGGER.info("Process with id='" + processElement.attribute("id") + "' hasn't the attribute isExecutable set. Please maintain it, so you are compatible to future activiti versions.");
       }
 
       //Only process executable processes
