@@ -74,5 +74,17 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
       }
     }
   }
+  
+  @Override
+  public void execute(ActivityExecution execution) throws Exception {
+    super.execute(execution);
+    
+    if(innerActivityBehavior instanceof SubProcessActivityBehavior) {
+      // ACT-1185: end-event in subprocess may have inactivated execution
+      if(!execution.isActive() && execution.isEnded() && (execution.getExecutions() == null || execution.getExecutions().size() == 0)) {
+        execution.setActive(true);
+      }
+    }
+  }
 
 }
