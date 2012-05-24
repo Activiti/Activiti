@@ -1030,4 +1030,25 @@ public void testBooleanVariable() throws Exception {
     assertEquals(2, runtimeService.createExecutionQuery().signalEventSubscription("alert").count());
   }
   
+  @Deployment
+  public void testQueryBySignalSubscriptionNameBoundary() {
+    runtimeService.startProcessInstanceByKey("signalProces");
+    
+    // it finds subscribed instances
+    Execution execution = runtimeService.createExecutionQuery()
+      .signalEventSubscription("Test signal")
+      .singleResult();
+    assertNotNull(execution);
+
+    // test query for nonexisting subscription
+    execution = runtimeService.createExecutionQuery()
+            .signalEventSubscription("nonExisitng")
+            .singleResult();
+    assertNull(execution);
+    
+    // it finds more than one
+    runtimeService.startProcessInstanceByKey("signalProces");
+    assertEquals(2, runtimeService.createExecutionQuery().signalEventSubscription("Test signal").count());
+  }
+  
 }
