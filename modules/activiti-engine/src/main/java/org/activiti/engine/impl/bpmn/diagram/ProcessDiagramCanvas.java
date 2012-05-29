@@ -492,9 +492,9 @@ public class ProcessDiagramCanvas {
       }
     } else {
       if (multiInstanceSequential) {
-        drawMultiInstanceMarker(false, x, y, width, height);
-      } else if (multiInstanceParallel) {
         drawMultiInstanceMarker(true, x, y, width, height);
+      } else if (multiInstanceParallel) {
+        drawMultiInstanceMarker(false, x, y, width, height);
       }
     }
   }
