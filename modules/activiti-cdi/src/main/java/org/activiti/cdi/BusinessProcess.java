@@ -102,9 +102,22 @@ public class BusinessProcess implements Serializable {
     return instance;
   }
 
+  public ProcessInstance startProcessById(String processDefinitionId, String businessKey) {        
+    ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceById(processDefinitionId, businessKey, getBeanStore().getAll());
+    associate(instance.getProcessInstanceId());
+    return instance;
+  }
+
   public ProcessInstance startProcessById(String processDefinitionId, Map<String, Object> variables) {
     getBeanStore().putAll(variables);
     ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceById(processDefinitionId, getBeanStore().getAll());
+    associate(instance.getProcessInstanceId());
+    return instance;
+  }
+
+  public ProcessInstance startProcessById(String processDefinitionId, String businessKey, Map<String, Object> variables) {
+    getBeanStore().putAll(variables);
+    ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceById(processDefinitionId, businessKey, getBeanStore().getAll());
     associate(instance.getProcessInstanceId());
     return instance;
   }
@@ -115,9 +128,22 @@ public class BusinessProcess implements Serializable {
     return instance;
   }
 
+  public ProcessInstance startProcessByKey(String key, String businessKey) {
+    ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByKey(key, businessKey, getBeanStore().getAll());
+    associate(instance.getProcessInstanceId());
+    return instance;
+  }
+
   public ProcessInstance startProcessByKey(String key, Map<String, Object> variables) {
     getBeanStore().putAll(variables);
     ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByKey(key, getBeanStore().getAll());
+    associate(instance.getProcessInstanceId());
+    return instance;
+  }
+
+  public ProcessInstance startProcessByKey(String key, String businessKey, Map<String, Object> variables) {
+    getBeanStore().putAll(variables);
+    ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByKey(key, businessKey, getBeanStore().getAll());
     associate(instance.getProcessInstanceId());
     return instance;
   }
