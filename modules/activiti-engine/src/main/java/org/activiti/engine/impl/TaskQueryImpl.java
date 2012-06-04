@@ -314,6 +314,8 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   }
   
   protected List<String> getGroupsForCandidateUser(String candidateUser) {
+    // TODO: Discuss about removing this feature? Or document it properly and maybe recommend to not use it
+    // and explain alternatives
     List<Group> groups = Context
       .getCommandContext()
       .getGroupManager()
