@@ -13,12 +13,15 @@
 
 package org.activiti.engine.test.api.history;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
+import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -91,6 +94,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     "org/activiti/examples/bpmn/callactivity/checkCreditProcess.bpmn20.xml"       
   })
   public void testHistoricProcessInstanceQueryByProcessDefinitionKey() {
+    
     String processDefinitionKey = "oneTaskProcess";
     runtimeService.startProcessInstanceByKey(processDefinitionKey);
     runtimeService.startProcessInstanceByKey("orderProcess");
@@ -98,6 +102,17 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     assertNotNull(historicProcessInstance);
     assertTrue(historicProcessInstance.getProcessDefinitionId().startsWith(processDefinitionKey));
     assertEquals("theStart", historicProcessInstance.getStartActivityId());
+
+    // now complete the task to end the process instance
+    Task task = taskService.createTaskQuery().processDefinitionKey("checkCreditProcess").singleResult();
+    Map<String, Object> map = new HashMap<String, Object>();
+    map.put("creditApproved", true);
+    taskService.complete(task.getId(), map);
+    
+    // and make sure the super process instance is set correctly on the HistoricProcessInstance    
+    HistoricProcessInstance historicProcessInstanceSub = historyService.createHistoricProcessInstanceQuery().processDefinitionKey("checkCreditProcess").singleResult();
+    HistoricProcessInstance historicProcessInstanceSuper = historyService.createHistoricProcessInstanceQuery().processDefinitionKey("orderProcess").singleResult();    
+    assertEquals(historicProcessInstanceSuper.getId(), ((HistoricProcessInstanceEntity)historicProcessInstanceSub).getSuperProcessInstanceId());    
   }
 
   @Deployment(resources = {
