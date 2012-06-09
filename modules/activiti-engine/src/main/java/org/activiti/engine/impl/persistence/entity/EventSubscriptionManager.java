@@ -31,12 +31,12 @@ import org.activiti.engine.impl.persistence.AbstractManager;
 public class EventSubscriptionManager extends AbstractManager {
   
   /** keep track of subscriptions created in the current command */
-  protected List<EventSubscriptionEntity> createdSignalSubscriptions = new ArrayList<EventSubscriptionEntity>();
+  protected List<SignalEventSubscriptionEntity> createdSignalSubscriptions = new ArrayList<SignalEventSubscriptionEntity>();
   
   public void insert(EventSubscriptionEntity persistentObject) {
     super.insert(persistentObject);
     if(persistentObject instanceof SignalEventSubscriptionEntity) {
-      createdSignalSubscriptions.add(persistentObject);
+      createdSignalSubscriptions.add((SignalEventSubscriptionEntity)persistentObject);
     }
   }
   
@@ -68,10 +68,9 @@ public class EventSubscriptionManager extends AbstractManager {
     Set<SignalEventSubscriptionEntity> selectList = new HashSet<SignalEventSubscriptionEntity>( getDbSqlSession().selectList(query, eventName));
     
     // add events created in this command (not visible yet in query)
-    for (EventSubscriptionEntity entity : createdSignalSubscriptions) {
-      if(entity instanceof SignalEventSubscriptionEntity
-         && eventName.equals(entity.getEventName())) {
-        selectList.add((SignalEventSubscriptionEntity) entity);        
+    for (SignalEventSubscriptionEntity entity : createdSignalSubscriptions) {
+      if(eventName.equals(entity.getEventName())) {
+        selectList.add(entity);        
       }
     }
     
@@ -84,9 +83,8 @@ public class EventSubscriptionManager extends AbstractManager {
     Set<SignalEventSubscriptionEntity> selectList = new HashSet<SignalEventSubscriptionEntity>( getDbSqlSession().selectList(query, executionId));
     
     // add events created in this command (not visible yet in query)
-    for (EventSubscriptionEntity entity : createdSignalSubscriptions) {
-      if(entity instanceof SignalEventSubscriptionEntity 
-         && executionId.equals(entity.getExecutionId())) {
+    for (SignalEventSubscriptionEntity entity : createdSignalSubscriptions) {
+      if(executionId.equals(entity.getExecutionId())) {
         selectList.add((SignalEventSubscriptionEntity) entity);        
       }
     }
@@ -103,10 +101,9 @@ public class EventSubscriptionManager extends AbstractManager {
     Set<SignalEventSubscriptionEntity> selectList = new HashSet<SignalEventSubscriptionEntity>( getDbSqlSession().selectList(query, params));
     
     // add events created in this command (not visible yet in query)
-    for (EventSubscriptionEntity entity : createdSignalSubscriptions) {
-      if(entity instanceof SignalEventSubscriptionEntity
-              && executionId.equals(entity.getExecutionId())
-              && name.equals(entity.getEventName())) {
+    for (SignalEventSubscriptionEntity entity : createdSignalSubscriptions) {
+      if(executionId.equals(entity.getExecutionId())
+         && name.equals(entity.getEventName())) {
         selectList.add((SignalEventSubscriptionEntity) entity);        
       }
     }
@@ -114,12 +111,17 @@ public class EventSubscriptionManager extends AbstractManager {
     return new ArrayList<SignalEventSubscriptionEntity>(selectList);
   }
 
-  public List<EventSubscriptionEntity> findEventSubscriptions(String executionId, String type) {
+  public List<EventSubscriptionEntity> findEventSubscriptionsByExecutionAndType(String executionId, String type) {
     final String query = "selectEventSubscriptionsByExecutionAndType";    
     Map<String,String> params = new HashMap<String, String>();
     params.put("executionId", executionId);
     params.put("eventType", type);    
     return getDbSqlSession().selectList(query, params);    
+  }
+  
+  public List<EventSubscriptionEntity> findEventSubscriptionsByExecution(String executionId) {
+    final String query = "selectEventSubscriptionsByExecution";    
+    return getDbSqlSession().selectList(query, executionId);    
   }
   
   public List<EventSubscriptionEntity> findEventSubscriptions(String executionId, String type, String activityId) {
@@ -139,11 +141,20 @@ public class EventSubscriptionManager extends AbstractManager {
     return getDbSqlSession().selectList(query, params);            
   }
 
-  public List<EventSubscriptionEntity> findEventSubscriptionByName(String type, String eventName) {
+  public List<EventSubscriptionEntity> findEventSubscriptionsByName(String type, String eventName) {
     final String query = "selectEventSubscriptionsByName";    
     Map<String,String> params = new HashMap<String, String>();
     params.put("eventType", type);
     params.put("eventName", eventName);    
+    return getDbSqlSession().selectList(query, params);            
+  }
+  
+  public List<EventSubscriptionEntity> findEventSubscriptionsByNameAndExecution(String type, String eventName, String executionId) {
+    final String query = "selectEventSubscriptionsByNameAndExecution";    
+    Map<String,String> params = new HashMap<String, String>();
+    params.put("eventType", type);
+    params.put("eventName", eventName);
+    params.put("executionId", executionId);    
     return getDbSqlSession().selectList(query, params);            
   }
 

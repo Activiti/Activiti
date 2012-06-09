@@ -168,6 +168,10 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   public ProcessDefinitionQuery messageEventSubscription(String messageName) {
     return eventSubscription("message", messageName);
   }
+  
+  public ProcessDefinitionQuery messageEventSubscriptionName(String messageName) {
+    return eventSubscription("message", messageName);
+  }
 
   public ProcessDefinitionQuery processDefinitionStarter(String procDefId) {
     this.procDefId = procDefId;

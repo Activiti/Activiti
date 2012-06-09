@@ -78,7 +78,6 @@ public class UserSearchResource extends SecuredResource {
   
   protected class UserResponseComparable implements Comparator<UserInfo>{
     
-    @Override
     public int compare(UserInfo user1, UserInfo user2) {
         return user1.getLastName().compareTo(user2.getLastName());
     }

@@ -94,7 +94,7 @@ public class DeploymentManager extends AbstractManager {
       List<EventSubscriptionEntity> findEventSubscriptionsByConfiguration = Context
         .getCommandContext()
         .getEventSubscriptionManager()
-        .findEventSubscriptionsByConfiguration(MessageEventHandler.TYPE, processDefinition.getId());
+        .findEventSubscriptionsByConfiguration(MessageEventHandler.EVENT_HANDLER_TYPE, processDefinition.getId());
       for (EventSubscriptionEntity eventSubscriptionEntity : findEventSubscriptionsByConfiguration) {
         eventSubscriptionEntity.delete();        
       }

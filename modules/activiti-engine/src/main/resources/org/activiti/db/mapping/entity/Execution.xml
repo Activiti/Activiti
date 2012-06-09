@@ -124,10 +124,12 @@
     <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
     	inner join ${prefix}ACT_RU_VARIABLE A${index} on E.ID_ = A${index}.EXECUTION_ID_ 
     </foreach>
-    inner join ${prefix}ACT_RE_PROCDEF P on E.PROC_DEF_ID_ = P.ID_
-    <if test="eventSubscriptionType != null">
-    	inner join ${prefix}ACT_RU_EVENT_SUBSCR EVT on E.ID_ = EVT.EXECUTION_ID_
+    <if test="eventSubscriptions != null">
+    	 <foreach collection="eventSubscriptions" index="index" item="eventSubscriptionValue">
+    	 	inner join ${prefix}ACT_RU_EVENT_SUBSCR EVT${index} on E.ID_ = EVT${index}.EXECUTION_ID_
+	    </foreach>
     </if>
+    inner join ${prefix}ACT_RE_PROCDEF P on E.PROC_DEF_ID_ = P.ID_
     <where>
       <if test="onlyProcessInstances">
         E.PARENT_ID_ is null
@@ -217,8 +219,10 @@
       	</if>
       </foreach>
       <!-- event subscriptions -->
-      <if test="eventSubscriptionType != null">
-      	and (EVT.EVENT_TYPE_ = #{eventSubscriptionType} and EVT.EVENT_NAME_ = #{eventSubscriptionName}) 
+      <if test="eventSubscriptions != null">
+    	 <foreach collection="eventSubscriptions" index="index" item="eventSubscriptionValue">
+    	    and (EVT${index}.EVENT_TYPE_ = #{eventSubscriptionValue.eventType} and EVT${index}.EVENT_NAME_ = #{eventSubscriptionValue.eventName}) 
+	    </foreach>
       </if>
     </where>
   </sql>

@@ -304,15 +304,15 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
     .deploy();
     
     assertEquals(1,repositoryService.createProcessDefinitionQuery()
-      .messageEventSubscription("newInvoiceMessage")
+      .messageEventSubscriptionName("newInvoiceMessage")
       .count());
     
     assertEquals(1,repositoryService.createProcessDefinitionQuery()
-      .messageEventSubscription("newBookingMessage")
+      .messageEventSubscriptionName("newBookingMessage")
       .count());
     
     assertEquals(0,repositoryService.createProcessDefinitionQuery()
-      .messageEventSubscription("bogus")
+      .messageEventSubscriptionName("bogus")
       .count());
     
     repositoryService.deleteDeployment(deployment.getId());

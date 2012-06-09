@@ -113,12 +113,33 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
   // event subscriptions //////////////////////////////////////////////////
   
   /** 
-   * Only select executions which have a signal event subscription 
-   * for the given name.
-   * @param signalName the name of the signal the execution has subscribed to
+   * @see #signalEventSubscriptionName(String)
    */
+  @Deprecated
   ExecutionQuery signalEventSubscription(String signalName);
 
+  /** 
+   * Only select executions which have a signal event subscription 
+   * for the given signal name.
+   * 
+   * (The signalName is specified using the 'name' attribute of the signal element 
+   * in the BPMN 2.0 XML.)
+   * 
+   * @param signalName the name of the signal the execution has subscribed to
+   */
+  ExecutionQuery signalEventSubscriptionName(String signalName);
+  
+  /** 
+   * Only select executions which have a message event subscription 
+   * for the given messageName. 
+   * 
+   * (The messageName is specified using the 'name' attribute of the message element 
+   * in the BPMN 2.0 XML.)
+   * 
+   * @param messageName the name of the message the execution has subscribed to
+   */
+  ExecutionQuery messageEventSubscriptionName(String messageName);
+  
   //ordering //////////////////////////////////////////////////////////////
   
   /** Order by id (needs to be followed by {@link #asc()} or {@link #desc()}). */

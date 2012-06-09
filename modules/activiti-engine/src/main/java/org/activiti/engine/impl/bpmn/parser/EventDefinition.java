@@ -13,22 +13,28 @@
 
 package org.activiti.engine.impl.bpmn.parser;
 
+import java.io.Serializable;
+
 
 /**
  * @author Daniel Meyer
  */
-public class SignalEventDefinition {
+public class EventDefinition implements Serializable {
 
-  protected final String signalName;
+  protected final String eventName;
+  protected final String eventType;
+  
   protected boolean async;
   protected String activityId;
+  protected boolean isStartEvent;
 
-  public SignalEventDefinition(SignalDefinition signalDefinition) {
-    this.signalName = signalDefinition.getName();    
+  public EventDefinition(String eventName, String eventType) {
+    this.eventName = eventName;
+    this.eventType = eventType;   
   }
     
-  public String getSignalName() {
-    return signalName;
+  public String getEventName() {
+    return eventName;
   }
     
   public boolean isAsync() {
@@ -45,6 +51,18 @@ public class SignalEventDefinition {
     
   public String getActivityId() {
     return activityId;
+  }
+  
+  public boolean isStartEvent() {
+    return isStartEvent;
+  }
+  
+  public void setStartEvent(boolean isStartEvent) {
+    this.isStartEvent = isStartEvent;
+  }
+  
+  public String getEventType() {
+    return eventType;
   }
 
 }

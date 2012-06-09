@@ -67,6 +67,7 @@ import org.activiti.engine.impl.delegate.DefaultDelegateInterceptor;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.event.CompensationEventHandler;
 import org.activiti.engine.impl.event.EventHandler;
+import org.activiti.engine.impl.event.MessageEventHandler;
 import org.activiti.engine.impl.event.SignalEventHandler;
 import org.activiti.engine.impl.form.AbstractFormType;
 import org.activiti.engine.impl.form.BooleanFormType;
@@ -873,6 +874,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       
       CompensationEventHandler compensationEventHandler = new CompensationEventHandler();
       eventHandlers.put(compensationEventHandler.getEventHandlerType(), compensationEventHandler);
+      
+      MessageEventHandler messageEventHandler = new MessageEventHandler();
+      eventHandlers.put(messageEventHandler.getEventHandlerType(), messageEventHandler);
       
     }
     if(customEventHandlers != null) {

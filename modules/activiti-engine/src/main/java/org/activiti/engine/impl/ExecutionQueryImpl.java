@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
@@ -36,8 +37,7 @@ public class ExecutionQueryImpl extends ExecutionVariableQueryImpl<ExecutionQuer
   protected String activityId;
   protected String executionId;
   protected String processInstanceId;
-  protected String eventSubscriptionName;
-  protected String eventSubscriptionType;
+  protected List<EventSubscriptionQueryValue> eventSubscriptions;
   
   // Not used by end-users, but needed for dynamic ibatis query
   protected String superProcessInstanceId;
@@ -109,6 +109,13 @@ public class ExecutionQueryImpl extends ExecutionVariableQueryImpl<ExecutionQuer
     return eventSubscription("signal", signalName);
   }
   
+  public ExecutionQuery signalEventSubscriptionName(String signalName) {    
+    return eventSubscription("signal", signalName);
+  }  
+  
+  public ExecutionQuery messageEventSubscriptionName(String messageName) {    
+    return eventSubscription("message", messageName);
+  } 
   
   public ExecutionQuery eventSubscription(String eventType, String eventName) {
     if(eventName == null) {
@@ -117,8 +124,10 @@ public class ExecutionQueryImpl extends ExecutionVariableQueryImpl<ExecutionQuer
     if(eventType == null) {
       throw new ActivitiException("event type is null");
     }
-    this.eventSubscriptionType = eventType;
-    this.eventSubscriptionName = eventName;
+    if(eventSubscriptions == null) {
+      eventSubscriptions = new ArrayList<EventSubscriptionQueryValue>();
+    }
+    eventSubscriptions.add(new EventSubscriptionQueryValue(eventName, eventType));
     return this;
   }
 
@@ -196,16 +205,12 @@ public class ExecutionQueryImpl extends ExecutionVariableQueryImpl<ExecutionQuer
   public void setSuspensionState(SuspensionState suspensionState) {
     this.suspensionState = suspensionState;
   }  
-  public String getEventSubscriptionName() {
-    return eventSubscriptionName;
+  
+  public List<EventSubscriptionQueryValue> getEventSubscriptions() {
+    return eventSubscriptions;
   }
-  public void setEventSubscriptionName(String eventSubscriptionName) {
-    this.eventSubscriptionName = eventSubscriptionName;
-  }  
-  public String getEventSubscriptionType() {
-    return eventSubscriptionType;
-  }  
-  public void setEventSubscriptionType(String eventSubscriptionType) {
-    this.eventSubscriptionType = eventSubscriptionType;
-  }  
+  
+  public void setEventSubscriptions(List<EventSubscriptionQueryValue> eventSubscriptions) {
+    this.eventSubscriptions = eventSubscriptions;
+  }
 }

@@ -24,7 +24,6 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cfg.TransactionListener;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.ExclusiveJobAddedNotification;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.jobexecutor.JobExecutorContext;
@@ -41,12 +40,7 @@ import org.activiti.engine.runtime.Job;
 public class JobManager extends AbstractManager {
 
   public void send(MessageEntity message) {
-    CommandContext commandContext = Context.getCommandContext();
-    
-    commandContext
-      .getDbSqlSession()
-      .insert(message);
-       
+    message.insert();
     hintJobExecutor(message);    
   }
  
@@ -55,12 +49,8 @@ public class JobManager extends AbstractManager {
     if (duedate==null) {
       throw new ActivitiException("duedate is null");
     }
-    
-    CommandContext commandContext = Context.getCommandContext();
-    
-    commandContext
-      .getDbSqlSession()
-      .insert(timer);
+
+    timer.insert();
     
     // Check if this timer fires before the next time the job executor will check for new timers to fire.
     // This is highly unlikely because normally waitTimeInMillis is 5000 (5 seconds)

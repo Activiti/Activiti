@@ -106,10 +106,13 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
   }
   
   
-  // this leaks a job
   @Deployment
-  public void FAILING_testTimerInSingleTransactionProcess() {
-    ProcessInstance startProcessInstanceByKey = runtimeService.startProcessInstanceByKey("timerOnSubprocesses");        
+  public void testTimerInSingleTransactionProcess() {
+    // make sure that if a PI completes in single transaction, JobEntities associated with the execution are deleted.
+    // broken before 5.10, see ACT-1133
+    runtimeService.startProcessInstanceByKey("timerOnSubprocesses"); 
+    
+    assertEquals(0, managementService.createJobQuery().count());
   }
 
 }

@@ -16,8 +16,10 @@ package org.activiti.engine.test.bpmn.gateway;
 import java.util.Date;
 
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
@@ -76,6 +78,47 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
       
       Task task = taskService.createTaskQuery()
         .taskName("afterTimer")
+        .singleResult();
+      
+      assertNotNull(task);
+      
+      taskService.complete(task.getId());
+    }finally{
+      ClockUtil.setCurrentTime(new Date());
+    }
+  }
+  
+  @Deployment
+  public void testCatchSignalAndMessageAndTimer() {
+    
+    runtimeService.startProcessInstanceByKey("catchSignal");
+        
+    assertEquals(2, createEventSubscriptionQuery().count());
+    EventSubscriptionQueryImpl messageEventSubscriptionQuery = createEventSubscriptionQuery().eventType("message");
+    assertEquals(1, messageEventSubscriptionQuery.count());
+    assertEquals(1, createEventSubscriptionQuery().eventType("signal").count());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().count());
+    assertEquals(1, managementService.createJobQuery().count());
+    
+    // we can query for an execution with has both a signal AND message subscription
+    Execution execution = runtimeService.createExecutionQuery()
+      .messageEventSubscriptionName("newInvoice")
+      .signalEventSubscriptionName("alert")
+      .singleResult();
+    assertNotNull(execution);
+    
+    ClockUtil.setCurrentTime(new Date(ClockUtil.getCurrentTime().getTime() +10000));
+    try {
+     
+      EventSubscriptionEntity messageEventSubscription = messageEventSubscriptionQuery.singleResult();
+      runtimeService.messageEventReceived(messageEventSubscription.getEventName(), messageEventSubscription.getExecutionId());
+      
+      assertEquals(0, createEventSubscriptionQuery().count());    
+      assertEquals(1, runtimeService.createProcessInstanceQuery().count());    
+      assertEquals(0, managementService.createJobQuery().count());
+      
+      Task task = taskService.createTaskQuery()
+        .taskName("afterMessage")
         .singleResult();
       
       assertNotNull(task);

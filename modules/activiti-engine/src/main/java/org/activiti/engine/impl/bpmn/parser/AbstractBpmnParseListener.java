@@ -109,5 +109,8 @@ public class AbstractBpmnParseListener implements BpmnParseListener {
 
   public void parseBoundaryEvent(Element boundaryEventElement, ScopeImpl scopeElement, ActivityImpl nestedActivity) {
   }
+  
+  public void parseIntermediateMessageCatchEventDefinition(Element messageEventDefinition, ActivityImpl nestedActivity) {
+  }
 
 }

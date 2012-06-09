@@ -418,5 +418,37 @@ public interface RuntimeService {
    *          has not subscribed to the signal
    */
   void signalEventReceived(String signalName, String executionId, Map<String, Object> processVariables);
+
+  /**
+   * Notifies the process engine that a message event with name 'messageName' has
+   * been received and has been correlated to an execution with id 'executionId'. 
+   * 
+   * The waiting execution is notified synchronously.
+   * 
+   * @param messageName
+   *          the name of the message event
+   * @param executionId
+   *          the id of the execution to deliver the message to
+   * @throws ActivitiException if no such execution exists or if the execution 
+   *          has not subscribed to the signal
+   */
+  void messageEventReceived(String messageName, String executionId);
+  
+  /**
+   * Notifies the process engine that a message event with the name 'messageName' has
+   * been received and has been correlated to an execution with id 'executionId'. 
+   * 
+   * The waiting execution is notified synchronously.
+   * 
+   * @param messageName
+   *          the name of the message event
+   * @param executionId
+   *          the id of the execution to deliver the message to
+   * @param processVariables
+   *          a map of variables added to the execution
+   * @throws ActivitiException if no such execution exists or if the execution 
+   *          has not subscribed to the signal
+   */
+  void messageEventReceived(String messageName, String executionId, Map<String, Object> processVariables);
    
 }

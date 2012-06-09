@@ -74,7 +74,7 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
         .deploy();
       fail("exception expected");
     }catch (ActivitiException e) {
-      assertTrue(e.getMessage().contains("there already is a message event subscription for the message with name"));
+      assertTrue(e.getMessage().contains("Cannot have more than one message event subscription with name 'newInvoiceMessage' for scope"));
     }        
   }
   

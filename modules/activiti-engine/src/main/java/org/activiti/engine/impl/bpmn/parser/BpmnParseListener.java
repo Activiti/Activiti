@@ -58,6 +58,7 @@ public interface BpmnParseListener {
   void parseRootElement(Element rootElement, List<ProcessDefinitionEntity> processDefinitions);
   void parseReceiveTask(Element receiveTaskElement, ScopeImpl scope, ActivityImpl activity);
   void parseIntermediateSignalCatchEventDefinition(Element signalEventDefinition, ActivityImpl signalActivity);
+  void parseIntermediateMessageCatchEventDefinition(Element messageEventDefinition, ActivityImpl nestedActivity);
   void parseBoundarySignalEventDefinition(Element signalEventDefinition, boolean interrupting, ActivityImpl signalActivity);
   void parseEventBasedGateway(Element eventBasedGwElement, ScopeImpl scope, ActivityImpl activity);
   void parseTransaction(Element transactionElement, ScopeImpl scope, ActivityImpl activity);

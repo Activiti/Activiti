@@ -100,12 +100,32 @@ public abstract class EventSubscriptionEntity implements PersistentObject {
     Context.getCommandContext()
       .getEventSubscriptionManager()
       .deleteEventSubscription(this);
+    removeFromExecution();
   }
   
   public void insert() {
     Context.getCommandContext()
       .getEventSubscriptionManager()
       .insert(this);
+    addToExecution();   
+  }
+  
+ // referential integrity -> ExecutionEntity ////////////////////////////////////
+  
+  protected void addToExecution() {
+    // add reference in execution
+    ExecutionEntity execution = getExecution();
+    if(execution != null) {
+      execution.addEventSubscription(this);
+    }
+  }
+  
+  protected void removeFromExecution() {
+    // remove reference in execution
+    ExecutionEntity execution = getExecution();
+    if(execution != null) {
+      execution.removeEventSubscription(this);
+    }
   }
   
   public Object getPersistentState() {

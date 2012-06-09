@@ -159,6 +159,16 @@
     ${limitAfter}
   </select>
   
+  <select id="selectEventSubscriptionsByNameAndExecution" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
+  	${limitBefore}
+    select * 
+    from ${prefix}ACT_RU_EVENT_SUBSCR
+    where (EVENT_TYPE_ = #{parameter.eventType})
+    	and (EVENT_NAME_ = #{parameter.eventName})
+    	and (EXECUTION_ID_ = #{parameter.executionId})
+    ${limitAfter}
+  </select>
+  
    <select id="selectMessageStartEventSubscriptionByName" resultMap="eventSubscriptionResultMap" parameterType="string">
     select * 
     from ${prefix}ACT_RU_EVENT_SUBSCR

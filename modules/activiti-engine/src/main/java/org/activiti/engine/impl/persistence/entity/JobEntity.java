@@ -78,16 +78,40 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject {
     jobHandler.execute(jobHandlerConfiguration, execution, commandContext);
   }
   
+  public void insert() {
+    DbSqlSession dbSqlSession = Context
+      .getCommandContext()
+      .getDbSqlSession();
+    
+    dbSqlSession.insert(this);
+    
+    // add link to execution
+    if(executionId != null) {
+      ExecutionEntity execution = Context.getCommandContext()
+        .getExecutionManager()
+        .findExecutionById(executionId);
+      execution.addJob(this);
+    }
+  }
+  
   public void delete() {
     DbSqlSession dbSqlSession = Context
       .getCommandContext()
       .getDbSqlSession();
 
-    dbSqlSession.delete(JobEntity.class, id);
+    dbSqlSession.delete(getClass(), id);
 
     // Also delete the job's exception byte array
     if (exceptionByteArrayId != null) {
       dbSqlSession.delete(ByteArrayEntity.class, exceptionByteArrayId);
+    }
+    
+    // remove link to execution
+    if(executionId != null) {
+      ExecutionEntity execution = Context.getCommandContext()
+        .getExecutionManager()
+        .findExecutionById(executionId);
+      execution.removeJob(this);
     }
   }
 
@@ -111,6 +135,7 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject {
   public void setExecution(ExecutionEntity execution) {
     executionId = execution.getId();
     processInstanceId = execution.getProcessInstanceId();
+    execution.addJob(this);
   }
 
   // getters and setters //////////////////////////////////////////////////////

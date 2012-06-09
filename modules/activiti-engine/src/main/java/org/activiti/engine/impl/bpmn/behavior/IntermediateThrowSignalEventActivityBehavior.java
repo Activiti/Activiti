@@ -15,7 +15,7 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.List;
 
-import org.activiti.engine.impl.bpmn.parser.SignalEventDefinition;
+import org.activiti.engine.impl.bpmn.parser.EventDefinition;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
@@ -27,9 +27,9 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnActivityBehavior {    
       
-  protected final SignalEventDefinition signalDefinition;
+  protected final EventDefinition signalDefinition;
 
-  public IntermediateThrowSignalEventActivityBehavior(SignalEventDefinition signalDefinition) {
+  public IntermediateThrowSignalEventActivityBehavior(EventDefinition signalDefinition) {
     this.signalDefinition = signalDefinition;
   }
   
@@ -39,7 +39,7 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
     
     List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByEventName = commandContext
       .getEventSubscriptionManager()
-      .findSignalEventSubscriptionsByEventName(signalDefinition.getSignalName());
+      .findSignalEventSubscriptionsByEventName(signalDefinition.getEventName());
     
     for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : findSignalEventSubscriptionsByEventName) {
       signalEventSubscriptionEntity.eventReceived(null, signalDefinition.isAsync());

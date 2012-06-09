@@ -104,6 +104,10 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
     dbSqlSession.insert(this);
     
+    if(execution != null) {
+      execution.addTask(this);
+    }
+    
     int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
     if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
       HistoricTaskInstanceEntity historicTaskInstance = new HistoricTaskInstanceEntity(this, execution);
@@ -146,7 +150,9 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
       .deleteTask(this, TaskEntity.DELETE_REASON_COMPLETED, false);
     
     if (executionId!=null) {
-      getExecution().signal(null, null);
+      ExecutionEntity execution = getExecution();
+      execution.removeTask(this);
+      execution.signal(null, null);
     }
   }
   

@@ -378,20 +378,51 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     // signal the executions one at a time:
     for (int executions = 3; executions > 0; executions--) {
       List<Execution> page = runtimeService.createExecutionQuery()
-        .signalEventSubscription("alert")
+        .signalEventSubscriptionName("alert")
         .listPage(0, 1);
       runtimeService.signalEventReceived("alert", page.get(0).getId());       
       
-      assertEquals(executions-1, runtimeService.createExecutionQuery().signalEventSubscription("alert").count());  
+      assertEquals(executions-1, runtimeService.createExecutionQuery().signalEventSubscriptionName("alert").count());  
     }
     
     for (int executions = 3; executions > 0; executions-- ) {
       List<Execution> page = runtimeService.createExecutionQuery()
-        .signalEventSubscription("panic")
+        .signalEventSubscriptionName("panic")
         .listPage(0, 1);
       runtimeService.signalEventReceived("panic", page.get(0).getId());       
       
-      assertEquals(executions-1, runtimeService.createExecutionQuery().signalEventSubscription("panic").count());  
+      assertEquals(executions-1, runtimeService.createExecutionQuery().signalEventSubscriptionName("panic").count());  
+    }
+    
+  }
+  
+  @Deployment(resources={
+          "org/activiti/engine/test/api/runtime/RuntimeServiceTest.catchAlertMessage.bpmn20.xml",
+          "org/activiti/engine/test/api/runtime/RuntimeServiceTest.catchPanicMessage.bpmn20.xml"
+  })
+  public void testMessageEventReceived() {
+    
+    startMessageCatchProcesses();    
+    // 12, because the signal catch is a scope
+    assertEquals(12, runtimeService.createExecutionQuery().count());    
+  
+    // signal the executions one at a time:
+    for (int executions = 3; executions > 0; executions--) {
+      List<Execution> page = runtimeService.createExecutionQuery()
+        .messageEventSubscriptionName("alert")
+        .listPage(0, 1);
+      runtimeService.messageEventReceived("alert", page.get(0).getId());       
+      
+      assertEquals(executions-1, runtimeService.createExecutionQuery().messageEventSubscriptionName("alert").count());  
+    }
+    
+    for (int executions = 3; executions > 0; executions-- ) {
+      List<Execution> page = runtimeService.createExecutionQuery()
+        .messageEventSubscriptionName("panic")
+        .listPage(0, 1);
+      runtimeService.messageEventReceived("panic", page.get(0).getId());       
+      
+      assertEquals(executions-1, runtimeService.createExecutionQuery().messageEventSubscriptionName("panic").count());  
     }
     
   }
@@ -406,13 +437,23 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
    }
   }
  
+ public void testMessageEventReceivedNonExistingExecution() {
+   try {
+     runtimeService.messageEventReceived("alert", "nonexistingExecution");
+     fail("exeception expected");
+   }catch (ActivitiException e) {
+     // this is good
+     assertTrue(e.getMessage().contains("Execution with id 'nonexistingExecution' does not have a subscription to a message event with name 'alert'"));
+   }
+  }
+ 
  @Deployment(resources={
          "org/activiti/engine/test/api/runtime/RuntimeServiceTest.catchAlertSignal.bpmn20.xml"
  })
  public void testExecutionWaitingForDifferentSignal() {
    runtimeService.startProcessInstanceByKey("catchAlertSignal");
    Execution execution = runtimeService.createExecutionQuery()
-     .signalEventSubscription("alert")
+     .signalEventSubscriptionName("alert")
      .singleResult();
    try {
      runtimeService.signalEventReceived("bogusSignal", execution.getId());
@@ -427,6 +468,13 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     for (int i = 0; i < 3; i++) {
       runtimeService.startProcessInstanceByKey("catchAlertSignal");
       runtimeService.startProcessInstanceByKey("catchPanicSignal");      
+    }
+  }
+  
+  private void startMessageCatchProcesses() {
+    for (int i = 0; i < 3; i++) {
+      runtimeService.startProcessInstanceByKey("catchAlertMessage");
+      runtimeService.startProcessInstanceByKey("catchPanicMessage");      
     }
   }
    

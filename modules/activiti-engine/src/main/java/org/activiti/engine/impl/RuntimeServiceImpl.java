@@ -26,6 +26,7 @@ import org.activiti.engine.impl.cmd.FindActiveActivityIdsCmd;
 import org.activiti.engine.impl.cmd.GetExecutionVariableCmd;
 import org.activiti.engine.impl.cmd.GetExecutionVariablesCmd;
 import org.activiti.engine.impl.cmd.GetStartFormCmd;
+import org.activiti.engine.impl.cmd.MessageEventReceivedCmd;
 import org.activiti.engine.impl.cmd.SetExecutionVariablesCmd;
 import org.activiti.engine.impl.cmd.SignalCmd;
 import org.activiti.engine.impl.cmd.SignalEventReceivedCmd;
@@ -187,7 +188,13 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   public void signalEventReceived(String signalName, String executionId, Map<String, Object> processVariables) {
     commandExecutor.execute(new SignalEventReceivedCmd(signalName, executionId, processVariables));
   }
-  
-  
+
+  public void messageEventReceived(String messageName, String executionId) {
+    commandExecutor.execute(new MessageEventReceivedCmd(messageName, executionId, null));
+  }
+
+  public void messageEventReceived(String messageName, String executionId, Map<String, Object> processVariables) {
+    commandExecutor.execute(new MessageEventReceivedCmd(messageName, executionId, processVariables));
+  }
    
 }

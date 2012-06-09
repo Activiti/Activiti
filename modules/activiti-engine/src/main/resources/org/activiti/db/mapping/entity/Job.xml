@@ -4,9 +4,17 @@
   
 <mapper namespace="org.activiti.engine.impl.persistence.entity.JobEntity">
 
-  <!-- JOB DELETE (FOR TIMER AND MESSAGE) -->
+  <!-- JOB DELETE STATEMENTS-->
 
   <delete id="deleteJob" parameterType="string">
+    delete from ${prefix}ACT_RU_JOB where ID_ = #{id}
+  </delete>
+  
+  <delete id="deleteTimer" parameterType="string">
+    delete from ${prefix}ACT_RU_JOB where ID_ = #{id}
+  </delete>
+  
+  <delete id="deleteMessage" parameterType="string">
     delete from ${prefix}ACT_RU_JOB where ID_ = #{id}
   </delete>
   

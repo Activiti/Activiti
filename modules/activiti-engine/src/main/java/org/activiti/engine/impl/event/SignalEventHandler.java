@@ -13,72 +13,17 @@
 
 package org.activiti.engine.impl.event;
 
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
-import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
 
 
 /**
  * @author Daniel Meyer
  */
-public class SignalEventHandler implements EventHandler {
+public class SignalEventHandler extends AbstractEventHandler {
   
-  private static Logger log = Logger.getLogger(SignalEventHandler.class.getName());
-  
-  public static final String SIGNAL_EVENT_HANDLER_TYPE = "signal";
+  public static final String EVENT_HANDLER_TYPE = "signal";
 
   public String getEventHandlerType() {
-    return SIGNAL_EVENT_HANDLER_TYPE;
-  }
-
-  public void handleEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext) {    
-    
-    ExecutionEntity execution = eventSubscription.getExecution();        
-    ActivityImpl activity = eventSubscription.getActivity();
-    
-    if(activity == null) {
-      throw new ActivitiException("Error while sending signal for event subscription '"+eventSubscription.getId()+"': " +
-              "no activity associated with event subscription");
-    }
-    
-    if(!execution.getActivity().equals(activity)) {
-      execution.setActivity(activity);
-    }
-    
-    if(payload instanceof Map) {
-      @SuppressWarnings("unchecked")
-      Map<String, Object> processVariables = (Map<String, Object>) payload;
-      execution.setVariables(processVariables);
-    }
-    
-   
-    if(activity.getActivityBehavior() instanceof BoundaryEventActivityBehavior) {
-           
-      try {
-        
-        activity.getActivityBehavior()
-        .execute(execution);
-      
-      } catch (RuntimeException e) {
-        log.log(Level.SEVERE, "exception while sending signal for event subscription '"+eventSubscription+"'", e);
-        throw e;
-        
-      } catch (Exception e) {
-        log.log(Level.SEVERE, "exception while sending signal for event subscription '"+eventSubscription+"'", e);
-        throw new ActivitiException("exception while sending signal for event subscription '"+eventSubscription+"':"+e.getMessage(), e);
-      }
-      
-    } else {      // not boundary
-      execution.signal("signal", null);
-    }
-   
+    return EVENT_HANDLER_TYPE;
   }
 
 }

@@ -13,22 +13,17 @@
 
 package org.activiti.engine.impl.event;
 
-import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 
 
 /**
  * @author Daniel Meyer
  */
-public class MessageEventHandler implements EventHandler {
+public class MessageEventHandler extends AbstractEventHandler {
   
-  public final static String TYPE = "message";
+  public final static String EVENT_HANDLER_TYPE = "message";
 
   public String getEventHandlerType() {
-    return TYPE;
-  }
-
-  public void handleEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext) {
+    return EVENT_HANDLER_TYPE;
   }
 
 }

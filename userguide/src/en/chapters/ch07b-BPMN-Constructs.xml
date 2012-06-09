@@ -297,7 +297,7 @@ RuntimeService.signalEventReceived(String signalName, String executionId);
 	    	It is possible to query for all executions which have subscribed to a specific signal event:
 	    	<programlisting>
  List&lt;Execution&gt; executions = runtimeService.createExecutionQuery()
-      .signalEventSubscription("alert")
+      .signalEventSubscriptionName("alert")
       .list();
 	    	</programlisting>
 	    	We could then use the <code>signalEventReceived(String signalName, String executionId)</code> method 
@@ -353,14 +353,15 @@ RuntimeService.signalEventReceived(String signalName, String executionId);
 			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
 		</link>
       	<para>
-      		Message events are events which reference a named message. A message has a name and a payload. Unlike a signal, a message event is always directed at a single receiver.      		 
+      		Message events are events which reference a named message. A message has a name and a payload. Unlike a signal, 
+      		a message event is always directed at a single receiver.      		 
       	</para>
         
         <para>
       		A message event definition is declared using the <code>messageEventDefinition</code> element. 
       		The attribute <code>messaageRef</code> references a <code>message</code> element declared as a child element 
-      		of the <code>definitions</code> root element. The following is an excerpt of a process where a message event
-      		is declared and referenced by a start event. 
+      		of the <code>definitions</code> root element. The following is an excerpt of a process where two message events
+      		is declared and referenced by a start event and an intermediate catching message event.
 <programlisting>
 &lt;definitions id=&quot;definitions&quot; 
   xmlns=&quot;http://www.omg.org/spec/BPMN/20100524/MODEL&quot;
@@ -369,46 +370,81 @@ RuntimeService.signalEventReceived(String signalName, String executionId);
   xmlns:tns=&quot;Examples&quot;&gt;
   
   &lt;message id=&quot;newInvoice&quot; name=&quot;newInvoiceMessage&quot; /&gt;
+  &lt;message id=&quot;payment&quot; name=&quot;paymentMessage&quot; /&gt;
   
   &lt;process id=&quot;invoiceProcess&quot;&gt;  
   
     &lt;startEvent id=&quot;messageStart&quot; &gt;
-    	&lt;messageEventDefinition messageRef=&quot;tns:newInvoice&quot; /&gt;
+    	&lt;messageEventDefinition messageRef=&quot;newInvoice&quot; /&gt;
     &lt;/startEvent&gt;
     ...    
+    &lt;intermediateCatchEvent id=&quot;paymentEvt&quot; &gt;
+    	&lt;messageEventDefinition messageRef=&quot;payment&quot; /&gt;
+    &lt;/intermediateCatchEvent&gt;
+    ...
   &lt;/process&gt;
 
 &lt;/definitions&gt;</programlisting>		  
         </para>
         <section id="bpmnMessageEventDefinitionThrow">
-        	<title>Throwing a Signal Event</title>       
+        	<title>Throwing a Message Event</title>
+        	<para>
+        		As an embeddable process engine, activiti is not concerned with actually receiving a message. This would be environment 
+	        	dependenent and entail platform-specific activities like connecting to a JMS (Java Messaging Service) Queue/Topic or 
+	        	processing a Webservice or REST request.      	
+	        	The reception of messages is therefore something you have to implement as part of the application or infrastructure into 
+	        	which the process engine is embedded. 
+        	</para>       
 	        <para>
-	        	At the moment, Activiti supports message events only for starting process instances. To support this, the following methods exist on the <code>RuntimeService</code>:
+	        	After you have received a messge inside your application, you must decide what to do with it.
+	        	If the message should trigger the start of a new process instance, choose between the following methods offered by
+	        	the runtime service:	        	
 	        	<programlisting>
 ProcessInstance startProcessInstanceByMessage(String messageName);
 ProcessInstance startProcessInstanceByMessage(String messageName, Map&lt;String, Object&gt; processVariables);
-ProcessInstance startProcessInstanceByMessage(String messageName, String businessKey, Map&lt;String, Object&gt; processVariables); 		</programlisting>	        	
+ProcessInstance startProcessInstanceByMessage(String messageName, String businessKey, Map&lt;String, Object&gt; processVariables); 		</programlisting>
+				These methods allow starting a process instance using the referenced message.	        	
 	        </para>
-	        The methods allow starting a process instance using the referenced message. 
-	    </section>
-	    <section id="bpmnMessageEventDefinitionCatch">
-	    	<title>Catching a Signal Event</title>
-	    	<para>
-	    		At the moment Activiti only supports <link linkend="bpmnMessageStartEvent">message start events</link>. A message start event catches a message with a given name and 
-	    		starts a process instance. The payload of the message is added as process variables to the process instance. Since a message must be directed at a single receiver, 
-	    		Activiti only allows a single process definition to be deployed for a given message name.  
-	    	</para>
-	    </section>
+	        <para>
+	        	If the message needs to be received by an existing process instance, you first have to correlate the message to 
+	        	a specific process instance (see next section) and then trigger the continuation of the wating execution.
+	        	The runtime service offers the following methods for triggering an execution based on a message event subscription:
+	        	 	<programlisting>
+void messageEventReceived(String messageName, String executionId);
+void messageEventReceived(String messageName, String executionId, HashMap&lt;String, Object&gt; processVariables);	</programlisting>
+	        </para>
+	    </section>	    
 	    <section id="bpmnMessageEventDefinitionQuery">
 	    	<title>Querying for Message Event subscriptions</title>	    	
-	    	Since Activiti only supports message start events, we can only query for message subscriptions using a <code>ProcessDefinitionQuery</code>:
+	    	Activiti supports message start events and intermediate message events.
+	    	<itemizedlist>
+	    		<listitem>
+	    			<para>
+	    			In the case of a message start event, the message event subscription is associated with a particular 
+	    	<emphasis>process definition</emphasis>. Such message subscriptions can be queried using a <code>ProcessDefinitionQuery</code>:
 	    	<programlisting>
 ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
       .messageEventSubscription("newCallCenterBooking")
       .singleResult();
 	    	</programlisting>
 	    	Since there can only be one process definition for a specific message subscription, the query always returns zero or one results. If a process definition is updated,
-	    	only the newest version of the process definition has a subscription to the message event.     		    	
+	    	only the newest version of the process definition has a subscription to the message event.
+	    			</para>
+	    		</listitem>
+	    		<listitem>
+	    			<para>
+	    				In the case of an intermediate catch message event, the message event subscription is associated with a 
+	    				particular <emphasis>execution</emphasis>. Such message event subscriptions can be queried using a <code>ExecutionQuery</code>:
+	    				<programlisting>
+Execution execution = runtimeService.createExecutionQuery()
+      .messageEventSubscriptionName("paymentReceived")
+      .variableValueEquals("orderId", message.getOrderId())
+      .singleResult();</programlisting>		    		
+				    	Such queries are called correlation queries and usually require knowledge about the processes (in this case that there will be 
+				    	at most one process instance for a given orderId).	
+	    			</para>
+	    		</listitem>
+	    	</itemizedlist>
 	    </section> 
 	    
 	    <section id="bpmnMessageEventDefinitionExample">
@@ -1591,6 +1627,54 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 	        <title>Example</title>	        
 	        <para>
 	        	See section on <link linkend="bpmnSignalEventDefinition">signal event definitions</link>.
+	        </para>	       
+	      </section>
+	    </section>
+	    
+	    
+	      <!-- //////////////////////////////////////// intermediate message catch  -->
+        
+        <section id="bpmnIntermediateMessageEvent">
+		  <title>Message Intermediate Catching Event</title>
+		<link linkend="experimental">
+			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
+		</link>
+		  <section id="bpmnIntermediateMessageEventDescription">
+		    <title>Description</title>
+		    <para>
+		      An intermediate <emphasis>catching</emphasis> <link linkend="bpmnMessageEventDefinition">message</link> event catches messages with a specified name. 
+		    </para>
+		   		    
+		  </section>
+		  
+		  <section id="bpmnIntermediateMessageEventGraphicalNotation">
+	        <title>Graphical notation</title>
+	        <para>
+	          An intermediate catching message event is visualized as a typical intermediate event (Circle with smaller circle inside), 
+	          with the message icon inside. The message icon is white (unfilled), to indicate
+	          the <emphasis>catch</emphasis> semantics.
+	          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.intermediate.message.catch.event.png"/></imageobject></mediaobject>
+	        </para>
+	      </section>
+      
+	      <section id="bpmnIntermediateSignalEventXml">
+	        <title>XML representation</title>	               
+	         <para>
+     	     	 A message intermediate event is defined as a <link linkend="bpmnIntermediateCatchingEvent">intermediate catching event</link>.
+		          The specific type sub-element is in this case a <emphasis role="bold">messageEventDefinition</emphasis>
+		          element.
+                 <programlisting>
+&lt;intermediateCatchEvent id=&quot;message&quot;&gt;
+	<emphasis role="bold">&lt;messageEventDefinition signalRef="newCustomerMessage" /&gt;</emphasis>
+&lt;/intermediateCatchEvent&gt;
+                 </programlisting>    
+        	</para>	    
+	      </section>
+      
+	      <section id="bpmnIntermediateMessageEventExample">
+	        <title>Example</title>	        
+	        <para>
+	        	See section on <link linkend="bpmnMessageEventDefinition">message event definitions</link>.
 	        </para>	       
 	      </section>
       
