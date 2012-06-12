@@ -93,15 +93,21 @@ public class BpmnDeployer implements Deployer {
           processDefinition.setResourceName(resourceName);
           
           String diagramResourceName = getDiagramResourceForProcess(resourceName, processDefinition.getKey(), resources);
-          if (Context.getProcessEngineConfiguration().isCreateDiagramOnDeploy() && 
+                   
+          // Only generate the resource when deployment is new to prevent modification of deployment resources 
+          // after the process-definition is actually deployed. Also to prevent resource-generation failure every
+          // time the process definition is added to the deployment-cache when diagram-generation has failed the first time.
+          if(deployment.isNew()) {
+            if (Context.getProcessEngineConfiguration().isCreateDiagramOnDeploy() &&
                   diagramResourceName==null && processDefinition.isGraphicalNotationDefined()) {
-            try {
-              byte[] diagramBytes = IoUtil.readInputStream(ProcessDiagramGenerator.generatePngDiagram(processDefinition), null);
-              diagramResourceName = getProcessImageResourceName(resourceName, processDefinition.getKey(), "png");
-              createResource(diagramResourceName, diagramBytes, deployment);
-            } catch (Throwable t) { // if anything goes wrong, we don't store the image (the process will still be executable).
-              LOG.log(Level.WARNING, "Error while generating process diagram, image will not be stored in repository", t);
-            }
+              try {
+                  byte[] diagramBytes = IoUtil.readInputStream(ProcessDiagramGenerator.generatePngDiagram(processDefinition), null);
+                  diagramResourceName = getProcessImageResourceName(resourceName, processDefinition.getKey(), "png");
+                  createResource(diagramResourceName, diagramBytes, deployment);
+              } catch (Throwable t) { // if anything goes wrong, we don't store the image (the process will still be executable).
+                LOG.log(Level.WARNING, "Error while generating process diagram, image will not be stored in repository", t);
+              }
+            } 
           }
           
           processDefinition.setDiagramResourceName(diagramResourceName);
