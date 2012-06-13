@@ -15,11 +15,18 @@ package org.activiti.engine.impl.bpmn.parser;
 
 import java.io.Serializable;
 
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
+import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
+
 
 /**
  * @author Daniel Meyer
  */
-public class EventDefinition implements Serializable {
+public class EventSubscriptionDeclaration implements Serializable {
 
   protected final String eventName;
   protected final String eventType;
@@ -28,7 +35,7 @@ public class EventDefinition implements Serializable {
   protected String activityId;
   protected boolean isStartEvent;
 
-  public EventDefinition(String eventName, String eventType) {
+  public EventSubscriptionDeclaration(String eventName, String eventType) {
     this.eventName = eventName;
     this.eventType = eventType;   
   }
@@ -63,6 +70,24 @@ public class EventDefinition implements Serializable {
   
   public String getEventType() {
     return eventType;
+  }
+
+  public EventSubscriptionEntity prepareEventSubscriptionEntity(ExecutionEntity execution) {
+    EventSubscriptionEntity eventSubscriptionEntity = null;
+    if(eventType.equals("message")) {
+      eventSubscriptionEntity = new MessageEventSubscriptionEntity(execution);
+    }else  if(eventType.equals("signal")) {
+      eventSubscriptionEntity = new SignalEventSubscriptionEntity(execution);
+    }else {
+      throw new ActivitiException("Found event definition of unknown type: "+eventType);
+    }
+    
+    eventSubscriptionEntity.setEventName(eventName);
+    if(activityId != null) {
+      ActivityImpl activity = execution.getActivity().findActivity(activityId);
+      eventSubscriptionEntity.setActivity(activity);
+    }
+    return eventSubscriptionEntity;
   }
 
 }

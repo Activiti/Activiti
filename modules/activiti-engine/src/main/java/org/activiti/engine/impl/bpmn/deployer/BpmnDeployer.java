@@ -26,7 +26,7 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
-import org.activiti.engine.impl.bpmn.parser.EventDefinition;
+import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.cmd.DeleteJobsCmd;
 import org.activiti.engine.impl.context.Context;
@@ -218,9 +218,9 @@ public class BpmnDeployer implements Deployer {
   @SuppressWarnings("unchecked")
   protected void addMessageEventSubscriptions(ProcessDefinitionEntity processDefinition) {
     CommandContext commandContext = Context.getCommandContext();
-    List<EventDefinition> messageEventDefinitions = (List<EventDefinition>) processDefinition.getProperty(BpmnParse.PROPERTYNAME_EVENT_DEFINITIONS);
+    List<EventSubscriptionDeclaration> messageEventDefinitions = (List<EventSubscriptionDeclaration>) processDefinition.getProperty(BpmnParse.PROPERTYNAME_EVENT_SUBSCRIPTION_DECLARATION);
     if(messageEventDefinitions != null) {     
-      for (EventDefinition messageEventDefinition : messageEventDefinitions) {
+      for (EventSubscriptionDeclaration messageEventDefinition : messageEventDefinitions) {
         if(messageEventDefinition.isStartEvent()) {
           // look for subscriptions for the same name in db:
           List<EventSubscriptionEntity> subscriptionsForSameMessageName = commandContext

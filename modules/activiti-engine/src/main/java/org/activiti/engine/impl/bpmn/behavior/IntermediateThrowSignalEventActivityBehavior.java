@@ -15,7 +15,7 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.List;
 
-import org.activiti.engine.impl.bpmn.parser.EventDefinition;
+import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
@@ -27,9 +27,9 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnActivityBehavior {    
       
-  protected final EventDefinition signalDefinition;
+  protected final EventSubscriptionDeclaration signalDefinition;
 
-  public IntermediateThrowSignalEventActivityBehavior(EventDefinition signalDefinition) {
+  public IntermediateThrowSignalEventActivityBehavior(EventSubscriptionDeclaration signalDefinition) {
     this.signalDefinition = signalDefinition;
   }
   

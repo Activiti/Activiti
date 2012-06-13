@@ -24,7 +24,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.bpmn.parser.EventDefinition;
+import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
@@ -303,30 +303,13 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     }
     
     // create event subscriptions for the current scope
-    List<EventDefinition> eventDefinitions = (List<EventDefinition>) scope.getProperty(BpmnParse.PROPERTYNAME_EVENT_DEFINITIONS);
-    if(eventDefinitions != null) {
-      for (EventDefinition eventDefinition : eventDefinitions) {
-        
-        if(eventDefinition.isStartEvent()) {
-          continue;
-        }
-        
-        EventSubscriptionEntity eventSubscriptionEntity = null;
-        if(eventDefinition.getEventType().equals("message")) {
-          eventSubscriptionEntity = new MessageEventSubscriptionEntity(this);
-        }else  if(eventDefinition.getEventType().equals("signal")) {
-          eventSubscriptionEntity = new SignalEventSubscriptionEntity(this);
-        }else {
-          throw new ActivitiException("Found event definition of unknown type: "+eventDefinition.getEventType());
-        }
-        
-        eventSubscriptionEntity.setEventName(eventDefinition.getEventName());
-        if(eventDefinition.getActivityId() != null) {
-          ActivityImpl activity = getActivity().findActivity(eventDefinition.getActivityId());
-          eventSubscriptionEntity.setActivity(activity);
-        }
-        
-        eventSubscriptionEntity.insert();
+    List<EventSubscriptionDeclaration> eventSubscriptionDeclarations = (List<EventSubscriptionDeclaration>) scope.getProperty(BpmnParse.PROPERTYNAME_EVENT_SUBSCRIPTION_DECLARATION);
+    if(eventSubscriptionDeclarations != null) {
+      for (EventSubscriptionDeclaration eventSubscriptionDeclaration : eventSubscriptionDeclarations) {        
+        if(!eventSubscriptionDeclaration.isStartEvent()) {
+          EventSubscriptionEntity eventSubscriptionEntity = eventSubscriptionDeclaration.prepareEventSubscriptionEntity(this);        
+          eventSubscriptionEntity.insert();
+        }        
       }
     }
   }
