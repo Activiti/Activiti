@@ -17,7 +17,7 @@
     <title>Installation</title>
     <para>
     	The following installation instructions are verified on <ulink
-        url="http://www.eclipse.org/downloads/">Eclipse Indigo and Helios</ulink>.
+        url="http://www.eclipse.org/downloads/">Eclipse Indigo</ulink>. Note that Eclipse Helio is <emphasis role="bold">NOT</emphasis> supported.
     </para>
     <para>
     	Go to <emphasis role="bold">Help -> Install New Software</emphasis>. In the following
@@ -59,32 +59,30 @@
         </listitem>
         <listitem>
           <para>
-          	A BPMN 2.0 XML file and an image of the process are automatically generated after
-            each save of the Activiti diagram (the automatic generation can be switched of in the
-            Eclipse preferences in the Activiti tab).
+          	The Activiti Designer creates a .bpmn file when creating a new Activiti diagram. When opened with the Activiti Diagram Editor view
+            this will provide a graphical modeling canvas and palette. The same file can however be opened with an XML editor and it then shows
+            the BPMN 2.0 XML elements of the process definition. So the Activiti Designer works with only one file for both the graphical diagram
+            as well as the BPMN 2.0 XML. Note that in Activiti 5.9 the .bpmn extension is not yet supported as deployment artifact for a process definition.
+            Therefore the "create deployment artifacts" feature of the Activiti Designer generates a BAR file with a .bpmn20.xml file that contains the content
+            of the .bpmn file. You can also do a quick file rename yourself. Also note that you can open a .bpmn20.xml file with the Activiti Diagram Editor view as well.
             
             <mediaobject>
               <imageobject>
-                <imagedata align="center" fileref="images/designer.export.to.bpmn20.png"/>
+                <imagedata align="center" fileref="images/designer.bpmn.file.png"/>
               </imageobject>
             </mediaobject>
           </para>
         </listitem>
         <listitem>
           <para>
-          	BPMN 2.0 XML files can be imported into the Activiti Designer and a diagram will be created. There are two ways
-          	supported to import a BPMN 2.0 XML file. One is to right-click on the Activiti project in the package explorer
-          	and choose the <emphasis>Import BPMN 2.0 file</emphasis> option at the bottom of the popup menu. Then you can choose
-          	the BPMN 2.0 XML via the file select dialog and the diagram is created. A second option is to import the BPMN 2.0 XML
-          	file to the src/main/resources/diagrams folder of your project (the filename should end with .bpmn20.xml). Then when
-          	you open the BPMN 2.0 XML file the diagram is created. Note that the Activiti Designer is able to read the BPMN DI
-          	information from the BPMN 2.0 XML file, but in this version the diagram is created by parsing and analyzing the
-          	BPMN 2.0 XML only, because this gives the best result. This means that import support is available even for BPMN
-          	2.0 XML files without BPMN DI information. 
+          	BPMN 2.0 XML files can be imported into the Activiti Designer and a diagram will be created. Just copy the BPMN 2.0 XML file
+            to your project and open the file with the Activiti Diagram Editor view.
+            The Activiti Designer uses the BPMN DI information of the file to create the diagram. If you have a BPMN 2.0 XML file without
+            BPMN DI information, no diagram can be created.
           
             <mediaobject>
               <imageobject>
-                <imagedata align="center" fileref="images/designer.create.deployment.png"/>
+                <imagedata align="center" fileref="images/designer.open.importedfile.png"/>
               </imageobject>
             </mediaobject>
           </para>
@@ -117,31 +115,6 @@
         </listitem>
         <listitem>
           <para>
-          	The BPMN 2.0 XML is opened in the Activiti XML editor, which provides content assist.
-            Note that there are 2 main XSDs configured, the BPMN 2.0 spec XSD and the Activiti
-            extensions XSD. These two XSDs are not yet aligned in a good manner.
-            
-            <mediaobject>
-              <imageobject>
-                <imagedata align="center" fileref="images/designer.xml.contentassist.png"/>
-              </imageobject>
-            </mediaobject>
-          </para>
-        </listitem>
-        <listitem>
-          <para>
-          	A basic validation is performed every time an Activiti diagram is saved and possible
-            errors are displayed in the Eclipse problem view.
-            
-            <mediaobject>
-              <imageobject>
-                <imagedata align="center" fileref="images/designer.problem.view.png"/>
-              </imageobject>
-            </mediaobject>
-          </para>
-        </listitem>
-        <listitem>
-          <para>
           	The Activiti project is generated as a Maven project. To configure the dependencies
             you need to run <emphasis>mvn eclipse:eclipse</emphasis> and the Maven dependencies
             will be configured as expected. Note that for process design Maven dependencies are not needed.
@@ -164,9 +137,11 @@
       <itemizedlist>
         <listitem>
           <para>
-          	Support for start event, end event, sequence flow, parallel gateway, exclusive
-            gateway, embedded subprocess, call activity, script task, user task, service task, mail task, manual
-            task, timer boundary event and error boundary event.
+          	Support for start none event, start error event, timer start event, end none event, end error event, sequence flow, 
+            parallel gateway, exclusive gateway, inclusive gateway, event gateway, embedded subprocess, event sub process, call activity, pool, lane, 
+            script task, user task, service task, mail task, manual task, business rule task, receive task,
+            timer boundary event, error boundary event, signal boundary event, timer catching event, signal catching event, signal throwing event,
+            none throwing event and four Alfresco specific elements (user, script, mail tasks and start event).
             
             <mediaobject>
               <imageobject>
@@ -212,8 +187,46 @@
         
         <listitem>
           <para>
-          	Support for expanded embedded sub processes. For this version no hierarchical support for embedded sub processes
-          	is provided. This means you can't add an embedded sub process in another embedded sub process.
+            Support for pools and lanes. Because Activiti reads different pools as different process definition, it makes the most sense to use only one pool.
+            If you use multiple pools, be aware that drawing sequence flows between the pools will result in problems when deploying the process in the Activiti Engine.
+            You can add as much lanes to a pool as you want.
+            
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center" fileref="images/designer.model.poolandlanes.png"/>
+              </imageobject>
+            </mediaobject>
+          </para>
+        </listitem>
+        
+        <listitem>
+          <para>
+            You can add labels to sequence flows by filling the name property. 
+            You can position the labels yourself as the position is saved as part of the BPMN 2.0 XML DI information.
+            
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center" fileref="images/designer.model.labels.png"/>
+              </imageobject>
+            </mediaobject>
+          </para>
+        </listitem>
+        
+        <listitem>
+          <para>
+            Support for event sub processes.
+            
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center" fileref="images/designer.model.eventsubprocess.png"/>
+              </imageobject>
+            </mediaobject>
+          </para>
+        </listitem>
+        
+        <listitem>
+          <para>
+          	Support for expanded embedded sub processes. You can also add an embedded sub process in another embedded sub process.
             
             <mediaobject>
               <imageobject>
