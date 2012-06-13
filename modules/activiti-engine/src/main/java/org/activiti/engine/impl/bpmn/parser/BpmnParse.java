@@ -506,10 +506,9 @@ public class BpmnParse extends Parse {
       error.setId(id);
 
       String errorCode = errorElement.attribute("errorCode");
-      if (errorCode == null) {
-        addError("'errorCode' is mandatory on error definition", errorElement);
+      if (errorCode != null) {
+        error.setErrorCode(errorCode);
       }
-      error.setErrorCode(errorCode);
 
       errors.put(id, error);
     }
@@ -2226,6 +2225,9 @@ public class BpmnParse extends Parse {
           addError("'errorRef' attribute is mandatory on error end event", errorEventDefinition);
         } else {
           Error error = errors.get(errorRef);
+          if (error != null && (error.getErrorCode() == null || "".equals(error.getErrorCode()))) {
+            addError("'errorCode' is mandatory on errors referenced by throwing error event definitions, but the error '" + error.getId() + "' does not define one.", errorEventDefinition);
+          }
           activity.setProperty("type", "errorEndEvent");
           activity.setActivityBehavior(new ErrorEndEventActivityBehavior(error != null ? error.getErrorCode() : errorRef));
         }

@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -44,7 +45,39 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     task = taskService.createTaskQuery().singleResult();
     assertEquals("task after catching the error", task.getName());
   }
-  
+
+  public void testThrowErrorWithoutErrorCode() {
+    try {
+      repositoryService.createDeployment()
+        .addClasspathResource("org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testThrowErrorWithoutErrorCode.bpmn20.xml")
+        .deploy();
+      fail("ActivitiException expected");
+    } catch (ActivitiException re) {
+      assertTextPresent("'errorCode' is mandatory on errors referenced by throwing error event definitions", re.getMessage());
+    }
+  }
+
+  public void testThrowErrorWithEmptyErrorCode() {
+    try {
+      repositoryService.createDeployment()
+        .addClasspathResource("org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testThrowErrorWithEmptyErrorCode.bpmn20.xml")
+        .deploy();
+      fail("ActivitiException expected");
+    } catch (ActivitiException re) {
+      assertTextPresent("'errorCode' is mandatory on errors referenced by throwing error event definitions", re.getMessage());
+    }
+  }
+
+  @Deployment
+  public void testCatchErrorOnEmbeddedSubprocessWithEmptyErrorCode() {
+    testCatchErrorOnEmbeddedSubprocess();
+  }
+
+  @Deployment
+  public void testCatchErrorOnEmbeddedSubprocessWithoutErrorCode() {
+    testCatchErrorOnEmbeddedSubprocess();
+  }
+
   @Deployment
   public void testCatchErrorOfInnerSubprocessOnOuterSubprocess() {
     runtimeService.startProcessInstanceByKey("boundaryErrorTest");
