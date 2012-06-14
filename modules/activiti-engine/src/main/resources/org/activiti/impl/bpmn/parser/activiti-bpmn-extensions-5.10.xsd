@@ -83,8 +83,8 @@
       </documentation>
     </annotation>
     <complexType>
-      <sequence minOccurs="0" maxOccurs="unbounded">
-	    <element name="value">
+      <sequence>
+	    <element name="value" minOccurs="0" maxOccurs="unbounded">
 	   	  <annotation>
 		    <documentation>
 		      Defines a (potential) value for the form property.
@@ -351,8 +351,8 @@
       </documentation>
     </annotation>
     <complexType>
-      <sequence minOccurs="0" maxOccurs="unbounded">
-        <element ref="tns:field" />
+      <sequence>
+        <element ref="tns:field" minOccurs="0" maxOccurs="unbounded" />
       </sequence>
       <attribute name="class" type="string">
         <annotation>
@@ -403,8 +403,8 @@
       </documentation>
     </annotation>
     <complexType>
-      <sequence minOccurs="0" maxOccurs="unbounded">
-        <element ref="tns:field" />
+      <sequence>
+        <element ref="tns:field" minOccurs="0" maxOccurs="unbounded"/>
       </sequence>
       <attribute name="class" type="string">
         <annotation>
