@@ -163,7 +163,7 @@
         and J.DUEDATE_ &lt;= #{duedateLowerThenOrEqual}
       </if>
       <if test="withException">
-      	and J.EXCEPTION_MSG_ is not null
+      	and (J.EXCEPTION_MSG_ is not null or J.EXCEPTION_STACK_ID_ is not null)
       </if>
       <if test="exceptionMessage">
       	and J.EXCEPTION_MSG_ = #{exceptionMessage}
