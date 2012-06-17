@@ -1,2 +1,1 @@
-alter table ACT_HI_PROCINST 
-add SUPER_PROCESS_INSTANCE_ID_ varchar(64);
+create index ACT_IDX_HI_DETAIL_TASK_ID on ACT_HI_DETAIL(TASK_ID_);
