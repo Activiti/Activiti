@@ -45,6 +45,9 @@ public interface ProcessDefinition {
   /** unique name for all versions this process definitions */
   String getKey();
   
+  /** description of this process **/
+  String getDescription();
+  
   /** version of this process definition */
   int getVersion();
 
