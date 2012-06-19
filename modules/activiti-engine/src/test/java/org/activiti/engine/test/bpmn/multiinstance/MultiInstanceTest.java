@@ -575,7 +575,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   @Deployment
   public void testParallelSubProcessCompletionCondition() {
     String procId = runtimeService.startProcessInstanceByKey("miParallelSubprocessCompletionCondition").getId();
-    List<Task> tasks = taskService.createTaskQuery().orderByTaskId().asc().list();
+    List<Task> tasks = taskService.createTaskQuery().orderByExecutionId().asc().list();
     assertEquals(4, tasks.size());
     
     for (int i=0; i<2; i++) {
