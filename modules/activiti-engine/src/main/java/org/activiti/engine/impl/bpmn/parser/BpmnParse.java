@@ -150,6 +150,8 @@ public class BpmnParse extends Parse {
   protected static final String POTENTIAL_STARTER = "potentialStarter";
   protected static final String CANDIDATE_STARTER_USERS_EXTENSION = "candidateStarterUsers";
   protected static final String CANDIDATE_STARTER_GROUPS_EXTENSION = "candidateStarterGroups";
+  
+  protected static final String ATTRIBUTEVALUE_T_FORMAL_EXPRESSION = BpmnParser.BPMN20_NS + ":tFormalExpression";
 
   /** The deployment to which the parsed process definitions will be added. */
   protected DeploymentEntity deployment;
@@ -2850,10 +2852,13 @@ public class BpmnParse extends Parse {
     if (conditionExprElement != null) {
       String expression = conditionExprElement.getText().trim();
       String type = conditionExprElement.attributeNS(BpmnParser.XSI_NS, "type");
-      if (type != null && !type.equals("tFormalExpression")) {
-        addError("Invalid type, only tFormalExpression is currently supported", conditionExprElement);
+      if (type != null) {
+        String value = type.contains(":") ? resolveName(type) : BpmnParser.BPMN20_NS + ":" + type;
+        if (!value.equals(ATTRIBUTEVALUE_T_FORMAL_EXPRESSION)) {
+          addError("Invalid type, only tFormalExpression is currently supported", conditionExprElement);
+        }
       }
-
+      
       Condition expressionCondition = new UelExpressionCondition(expressionManager.createExpression(expression));
       seqFlow.setProperty(PROPERTYNAME_CONDITION_TEXT, expression);
       seqFlow.setProperty(PROPERTYNAME_CONDITION, expressionCondition);

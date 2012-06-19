@@ -16,6 +16,7 @@ package org.activiti.engine.test.bpmn.parse;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -23,6 +24,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.test.TestHelper;
@@ -121,6 +123,36 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
         }
         
       }
+    }
+  }
+  
+  @Deployment
+  public void testParseNamespaceInConditionExpressionType() {
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    ProcessDefinitionEntity processDefinitionEntity = commandExecutor.execute(new Command<ProcessDefinitionEntity>() {
+      public ProcessDefinitionEntity execute(CommandContext commandContext) {
+        return Context
+          .getProcessEngineConfiguration()
+          .getDeploymentCache()
+          .findDeployedLatestProcessDefinitionByKey("resolvableNamespacesProcess");
+      }
+    });
+    
+    // Test that the process definition has been deployed
+    assertNotNull(processDefinitionEntity);
+    ActivityImpl activity = processDefinitionEntity.findActivity("ExclusiveGateway_1");
+    assertNotNull(activity);
+    
+    // Test that the conditions has been resolved
+    for (PvmTransition transition : activity.getOutgoingTransitions()) {
+      if (transition.getDestination().getId().equals("Task_2")) {
+        assertTrue(transition.getProperty("conditionText").equals("#{approved}"));
+      } else if (transition.getDestination().getId().equals("Task_3")) {
+        assertTrue(transition.getProperty("conditionText").equals("#{!approved}"));
+      } else {
+        fail("Something went wrong");
+      }
+      
     }
   }
   
