@@ -43,7 +43,9 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
       repositoryService.createDeployment().name(resource).addClasspathResource(resource).deploy();
       fail();
     } catch (ActivitiException e) {
-      assertTextPresent("Attribute 'invalidAttribute' is not allowed to appear in element 'process'", e.getMessage());
+      assertTextPresent("cvc-complex-type.3.2.2:", e.getMessage());
+      assertTextPresent("invalidAttribute", e.getMessage());
+      assertTextPresent("process", e.getMessage());
     }
   }
   
