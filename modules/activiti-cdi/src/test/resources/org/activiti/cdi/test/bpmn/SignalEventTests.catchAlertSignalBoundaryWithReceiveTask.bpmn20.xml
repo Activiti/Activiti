@@ -19,7 +19,10 @@
     </boundaryEvent>
 
     <sequenceFlow sourceRef="task" targetRef="end" />
-    <sequenceFlow sourceRef="boundary" targetRef="receiveTask" />
+    <sequenceFlow sourceRef="boundary" targetRef="serviceTask" />
+
+    <serviceTask id="serviceTask" activiti:delegateExpression="#{signalReceivedDelegate}" />
+    <sequenceFlow sourceRef="serviceTask" targetRef="receiveTask" />
     
     <receiveTask id="receiveTask" />
     <sequenceFlow sourceRef="receiveTask" targetRef="end" />
