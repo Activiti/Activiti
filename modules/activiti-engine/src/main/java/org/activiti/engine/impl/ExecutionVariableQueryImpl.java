@@ -138,6 +138,5 @@ public abstract class ExecutionVariableQueryImpl<T extends Query<?,?>, U> extend
   public List<QueryVariableValue> getQueryVariableValues() {
     return queryVariableValues;
   }
-
   
 }

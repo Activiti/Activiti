@@ -109,6 +109,9 @@
   
   <sql id="selectHistoricProcessInstancesByQueryCriteriaSql">
     from ACT_HI_PROCINST HPI
+    <if test="processKeyNotIn != null || processDefinitionKey != null">
+    	inner join ACT_RE_PROCDEF DEF on HPI.PROC_DEF_ID_ = DEF.ID_
+    </if>
     <where>
       <if test="processInstanceId != null">
         HPI.PROC_INST_ID_ = #{processInstanceId}
@@ -131,8 +134,88 @@
       <if test="superProcessInstanceId != null">
         and HPI.SUPER_PROCESS_INSTANCE_ID_ = #{superProcessInstanceId}
       </if>
-       
+      <if test="startedBefore != null">
+        and HPI.START_TIME_ &lt;= #{startedBefore}
+      </if>
+      <if test="startedAfter != null">
+        and HPI.START_TIME_ &gt;= #{startedAfter}
+      </if>
+      <if test="finishedBefore != null">
+        and HPI.END_TIME_ &lt;= #{finishedBefore}
+      </if>
+      <if test="finishedAfter != null">
+        and HPI.END_TIME_ &gt;= #{finishedAfter}
+      </if>
+      <if test="processDefinitionKey != null">
+      		and DEF.KEY_ = #{processDefinitionKey}
+      </if>
+      <if test="processKeyNotIn != null">
+      	<foreach collection="processKeyNotIn" index="index" item="procDefKey">
+	   		and DEF.KEY_ not like #{procDefKey}
+	  	</foreach>
+      </if>
+      
+      <!-- Variables -->
+      <foreach collection="queryVariableValues" index="index" item="var">
+        and exists (
+          select HD.ID_ 
+          from ACT_HI_DETAIL HD 
+          where
+            HD.TYPE_ = 'VariableUpdate' 
+            and HD.NAME_ =  #{var.name}
+            and HD.PROC_INST_ID_ = HPI.PROC_INST_ID_ and HD.TASK_ID_ is null
+            and HD.REV_ = (select max(HDM.REV_) from ACT_HI_DETAIL HDM where HDM.PROC_INST_ID_ = HPI.PROC_INST_ID_ and HDM.TASK_ID_ is null and HDM.VAR_TYPE_ = #{var.type} and HDM.NAME_ = #{var.name} and HDM.TYPE_ = 'VariableUpdate')
+            and HD.TIME_ = (select max(HDM.TIME_) from ACT_HI_DETAIL HDM where HDM.PROC_INST_ID_ = HPI.PROC_INST_ID_ and HDM.TASK_ID_ is null and HDM.VAR_TYPE_ = #{var.type} and HDM.NAME_ = #{var.name} and HDM.TYPE_ = 'VariableUpdate')
+        
+            <if test="!var.type.equals('null')">
+              and HD.VAR_TYPE_ = #{var.type}
+            </if>
+            <!-- Variable value -->
+            <if test="var.textValue != null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
+              and HD.TEXT_ 
+              <choose>
+	            <when test="var.operator.equals('LIKE')">LIKE</when>
+	            <otherwise><include refid="executionVariableOperator" /></otherwise>
+	          </choose>
+                #{var.textValue}
+            </if>
+            <if test="var.textValue2 != null">
+              and HD.TEXT2_
+              <choose>
+	            <when test="var.operator.equals('LIKE')">LIKE</when>
+	            <otherwise><include refid="executionVariableOperator" /></otherwise>
+	          </choose>               
+               #{var.textValue2}
+            </if>
+            <if test="var.longValue != null">
+              and HD.LONG_
+              <include refid="executionVariableOperator" /> 
+               #{var.longValue}
+            </if>
+            <if test="var.doubleValue != null">
+              and HD.DOUBLE_
+              <include refid="executionVariableOperator" /> 
+               #{var.doubleValue}
+            </if>
+            <!-- Null variable type -->
+            <if test="var.textValue == null &amp;&amp; var.textValue2 == null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
+              and HD.TEXT_ is null and HD.TEXT2_ is null and HD.LONG_ is null and HD.DOUBLE_ is null and HD.BYTEARRAY_ID_ is null
+            </if>
+        )
+      </foreach>     
     </where>
+  </sql>
+  
+  
+  <sql id="executionVariableOperator">
+    <choose>
+   	  <when test="var.operator.equals('EQUALS')">=</when>
+   	  <when test="var.operator.equals('NOT_EQUALS')">&lt;&gt;</when>
+   	  <when test="var.operator.equals('GREATER_THAN')">&gt;</when>
+   	  <when test="var.operator.equals('GREATER_THAN_OR_EQUAL')">&gt;=</when>
+   	  <when test="var.operator.equals('LESS_THAN')">&lt;</when>
+   	  <when test="var.operator.equals('LESS_THAN_OR_EQUAL')">&lt;=</when>
+   </choose>
   </sql>
 
 </mapper>

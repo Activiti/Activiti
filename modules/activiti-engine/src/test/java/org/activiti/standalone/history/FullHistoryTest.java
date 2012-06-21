@@ -846,7 +846,161 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     taskService.setVariableLocal(task.getId(), "longVar", 9999L);
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().processVariableValueEquals("longVar", 9999L).count());
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().processVariableValueEquals("longVar", 67890L).count());
-    
   }
+  
+  @Deployment
+  public void testHistoricProcessInstanceVariableValueEquals() throws Exception {
+    // Set some variables on the process instance
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("longVar", 12345L);
+    variables.put("shortVar", (short) 123);
+    variables.put("integerVar", 1234);
+    variables.put("stringVar", "stringValue");
+    variables.put("booleanVar", true);
+    Date date = Calendar.getInstance().getTime();
+    variables.put("dateVar", date);
+    variables.put("nullVar", null);
+    
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("HistoricProcessInstanceTest", variables);
+    
+    // Validate all variable-updates are present in DB
+    assertEquals(7, historyService.createHistoricDetailQuery().variableUpdates().processInstanceId(processInstance.getId()).count());
+    
+    // Query Historic process instances based on process variable
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueEquals("longVar", 12345L).count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueEquals("shortVar", (short) 123).count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueEquals("integerVar",1234).count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueEquals("stringVar","stringValue").count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueEquals("booleanVar", true).count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueEquals("dateVar", date).count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueEquals("nullVar", null).count());
+    
+    // Update the variables
+    variables.put("longVar", 67890L);
+    variables.put("shortVar", (short) 456);
+    variables.put("integerVar", 5678);
+    variables.put("stringVar", "updatedStringValue");
+    variables.put("booleanVar", false);
+    Calendar otherCal = Calendar.getInstance();
+    otherCal.add(Calendar.DAY_OF_MONTH, 1);
+    Date otherDate = otherCal.getTime();
+    variables.put("dateVar", otherDate);
+    variables.put("nullVar", null);
+    
+    runtimeService.setVariables(processInstance.getId(), variables);
+    
+    // Validate all variable-updates are present in DB
+    assertEquals(14, historyService.createHistoricDetailQuery().variableUpdates().processInstanceId(processInstance.getId()).count());
+    
+    // Previous values should NOT match
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().variableValueEquals("longVar", 12345L).count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().variableValueEquals("shortVar", (short) 123).count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().variableValueEquals("integerVar",1234).count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().variableValueEquals("stringVar","stringValue").count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().variableValueEquals("booleanVar", true).count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().variableValueEquals("dateVar", date).count());
+    
+    // New values should match
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueEquals("longVar", 67890L).count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueEquals("shortVar", (short) 456).count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueEquals("integerVar",5678).count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueEquals("stringVar","updatedStringValue").count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueEquals("booleanVar", false).count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueEquals("dateVar", otherDate).count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueEquals("nullVar", null).count());
+  }
+  
+  @Deployment(resources={"org/activiti/standalone/history/FullHistoryTest.testHistoricProcessInstanceVariableValueEquals.bpmn20.xml"})
+  public void testHistoricProcessInstanceVariableValueNotEquals() throws Exception {
+    // Set some variables on the process instance
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("longVar", 12345L);
+    variables.put("shortVar", (short) 123);
+    variables.put("integerVar", 1234);
+    variables.put("stringVar", "stringValue");
+    variables.put("booleanVar", true);
+    Date date = Calendar.getInstance().getTime();
+    Calendar otherCal = Calendar.getInstance();
+    otherCal.add(Calendar.DAY_OF_MONTH, 1);
+    Date otherDate = otherCal.getTime();
+    variables.put("dateVar", date);
+    variables.put("nullVar", null);
+    
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("HistoricProcessInstanceTest", variables);
+    
+    // Validate all variable-updates are present in DB
+    assertEquals(7, historyService.createHistoricDetailQuery().variableUpdates().processInstanceId(processInstance.getId()).count());
+    
+    // Query Historic process instances based on process variable, shouldn't match
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().variableValueNotEquals("longVar", 12345L).count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().variableValueNotEquals("shortVar", (short) 123).count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().variableValueNotEquals("integerVar",1234).count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().variableValueNotEquals("stringVar","stringValue").count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().variableValueNotEquals("booleanVar", true).count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().variableValueNotEquals("dateVar", date).count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().variableValueNotEquals("nullVar", "123").count());
+    
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueNotEquals("longVar", 67890L).count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueNotEquals("shortVar", (short) 456).count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueNotEquals("integerVar",5678).count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueNotEquals("stringVar","updatedStringValue").count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueNotEquals("booleanVar", false).count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueNotEquals("dateVar", otherDate).count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueNotEquals("nullVar", null).count());
+    
+    // Update the variables
+    variables.put("longVar", 67890L);
+    variables.put("shortVar", (short) 456);
+    variables.put("integerVar", 5678);
+    variables.put("stringVar", "updatedStringValue");
+    variables.put("booleanVar", false);
+    variables.put("dateVar", otherDate);
+    variables.put("nullVar", null);
+    
+    runtimeService.setVariables(processInstance.getId(), variables);
+    
+    // Validate all variable-updates are present in DB
+    assertEquals(14, historyService.createHistoricDetailQuery().variableUpdates().processInstanceId(processInstance.getId()).count());
+    
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueNotEquals("longVar", 12345L).count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueNotEquals("shortVar", (short) 123).count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueNotEquals("integerVar",1234).count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueNotEquals("stringVar","stringValue").count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueNotEquals("booleanVar", true).count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueNotEquals("dateVar", date).count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueNotEquals("nullVar", null).count());
+    
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().variableValueNotEquals("longVar", 67890L).count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().variableValueNotEquals("shortVar", (short) 456).count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().variableValueNotEquals("integerVar",5678).count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().variableValueNotEquals("stringVar","updatedStringValue").count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().variableValueNotEquals("booleanVar", false).count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().variableValueNotEquals("dateVar", otherDate).count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().variableValueNotEquals("nullVar", "123").count());
+  }
+  
+  @Deployment(resources={"org/activiti/standalone/history/FullHistoryTest.testHistoricProcessInstanceVariableValueEquals.bpmn20.xml"})
+  public void testHistoricProcessInstanceVariableValueLessThanAndGreaterThan() throws Exception {
+    // Set some variables on the process instance
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("longVar", 12345L);
+       
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("HistoricProcessInstanceTest", variables);
+    
+    // Validate all variable-updates are present in DB
+    assertEquals(1, historyService.createHistoricDetailQuery().variableUpdates().processInstanceId(processInstance.getId()).count());
+    
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().variableValueGreaterThan("longVar", 12345L).count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueGreaterThan("longVar", 12344L).count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueGreaterThanOrEqual("longVar", 12345L).count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueGreaterThanOrEqual("longVar", 12344L).count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().variableValueGreaterThanOrEqual("longVar", 12346L).count());
+    
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().variableValueLessThan("longVar", 12345L).count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueLessThan("longVar", 12346L).count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueLessThanOrEqual("longVar", 12345L).count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueLessThanOrEqual("longVar", 12346L).count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().variableValueLessThanOrEqual("longVar", 12344L).count());
+   }
   
 }

@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.history.HistoricProcessInstance;
@@ -24,7 +25,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 /**
  * @author Tom Baeyens
  */
-public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProcessInstanceQuery, HistoricProcessInstance> implements HistoricProcessInstanceQuery {
+public class HistoricProcessInstanceQueryImpl extends ExecutionVariableQueryImpl<HistoricProcessInstanceQuery, HistoricProcessInstance> implements HistoricProcessInstanceQuery {
 
   private static final long serialVersionUID = 1L;
   protected String processInstanceId;
@@ -34,6 +35,12 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
   protected boolean unfinished = false;
   protected String startedBy;
   protected String superProcessInstanceId;
+  protected List<String> processKeyNotIn;
+  protected Date startedBefore;
+  protected Date startedAfter;
+  protected Date finishedBefore;
+  protected Date finishedAfter;
+  protected String processDefinitionKey;
   
   public HistoricProcessInstanceQueryImpl() {
   }
@@ -56,6 +63,12 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
     return this;
   }
   
+  @Override
+  public HistoricProcessInstanceQuery processDefinitionKey(String processDefinitionKey) {
+    this.processDefinitionKey = processDefinitionKey; 
+    return this;
+  }
+  
   public HistoricProcessInstanceQuery processInstanceBusinessKey(String businessKey) {
     this.businessKey = businessKey;
     return this;
@@ -73,6 +86,38 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
   
   public HistoricProcessInstanceQuery startedBy(String userId) {
     this.startedBy = userId;
+    return this;
+  }
+  
+  @Override
+  public HistoricProcessInstanceQuery processDefinitionKeyNotIn(List<String> processDefinitionKeys) {
+    this.processKeyNotIn = processDefinitionKeys;
+    return this;
+  }
+  
+  @Override
+  public HistoricProcessInstanceQuery startedAfter(Date date) {
+    startedAfter = date;
+    return this;
+  }
+  
+  @Override
+  public HistoricProcessInstanceQuery startedBefore(Date date) {
+    startedBefore = date;
+    return this;
+  }
+  
+  @Override
+  public HistoricProcessInstanceQuery finishedAfter(Date date) {
+    finishedAfter = date;
+    finished = true;
+    return this;
+  }
+  
+  @Override
+  public HistoricProcessInstanceQuery finishedBefore(Date date) {
+    finishedBefore = date;
+    finished = true;
     return this;
   }
   
@@ -107,6 +152,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
   
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
+    ensureVariablesInitialized();
     return commandContext
       .getHistoricProcessInstanceManager()
       .findHistoricProcessInstanceCountByQueryCriteria(this);
@@ -114,6 +160,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
 
   public List<HistoricProcessInstance> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
+    ensureVariablesInitialized();
     return commandContext
       .getHistoricProcessInstanceManager()
       .findHistoricProcessInstancesByQueryCriteria(this, page);
@@ -135,10 +182,28 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
     return startedBy;
   }
   public String getSuperProcessInstanceId() {
-	return superProcessInstanceId;
+	  return superProcessInstanceId;
   }
   public void setSuperProcessInstanceId(String superProcessInstanceId) {
-	this.superProcessInstanceId = superProcessInstanceId;
+  	this.superProcessInstanceId = superProcessInstanceId;
+  }
+  public List<String> getProcessKeyNotIn() {
+    return processKeyNotIn;
+  }
+  public String getProcessDefinitionKey() {
+    return processDefinitionKey;
+  }
+  public Date getStartedAfter() {
+    return startedAfter;
+  }
+  public Date getStartedBefore() {
+    return startedBefore;
+  }
+  public Date getFinishedAfter() {
+    return finishedAfter;
+  }
+  public Date getFinishedBefore() {
+    return finishedBefore;
   }
   
 }
