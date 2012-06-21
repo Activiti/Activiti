@@ -14,10 +14,12 @@
 package org.activiti.engine.test.bpmn.event.signal;
 
 import java.util.Date;
+import java.util.HashMap;
 
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
@@ -48,7 +50,6 @@ public class SignalEventTest extends PluggableActivitiTestCase {
           "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.catchAlertSignalBoundary.bpmn20.xml",
           "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.throwAlertSignal.bpmn20.xml"})
   public void testSignalCatchBoundary() {
-    
     runtimeService.startProcessInstanceByKey("catchSignal");
         
     assertEquals(1, createEventSubscriptionQuery().count());    
@@ -59,7 +60,22 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     assertEquals(0, createEventSubscriptionQuery().count());    
     assertEquals(0, runtimeService.createProcessInstanceQuery().count());   
   }
-  
+
+  @Deployment(resources={
+          "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.catchAlertSignalBoundaryWithReceiveTask.bpmn20.xml",
+          "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.throwAlertSignal.bpmn20.xml"})
+  public void testSignalCatchBoundaryWithVariables() {
+    HashMap<String, Object> variables1 = new HashMap<String, Object>();
+    variables1.put("processName", "catchSignal");
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("catchSignal", variables1);
+        
+    HashMap<String, Object> variables2 = new HashMap<String, Object>();
+    variables2.put("processName", "throwSignal");
+    runtimeService.startProcessInstanceByKey("throwSignal", variables2);
+    
+    assertEquals("catchSignal", runtimeService.getVariable(pi.getId(), "processName"));
+  }
+
   @Deployment(resources={
           "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.catchAlertSignal.bpmn20.xml",
           "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.throwAlertSignalAsynch.bpmn20.xml"})
