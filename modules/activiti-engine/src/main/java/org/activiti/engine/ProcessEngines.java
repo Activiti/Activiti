@@ -22,8 +22,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -83,8 +86,14 @@ public abstract class ProcessEngines {
       } catch (IOException e) {
         throw new ActivitiException("problem retrieving activiti.cfg.xml resources on the classpath: "+System.getProperty("java.class.path"), e);
       }
+      
+      // Remove duplicated configuration URL's using set. Some classloaders may return identical URL's twice, causing duplicate startups
+      Set<URL> configUrls = new HashSet<URL>();
       while (resources.hasMoreElements()) {
-        URL resource = resources.nextElement();
+        configUrls.add( resources.nextElement() );
+      }
+      for (Iterator<URL> iterator = configUrls.iterator(); iterator.hasNext();) {
+        URL resource = iterator.next();
         initProcessEnginFromResource(resource);
       }
       
