@@ -49,6 +49,8 @@ import org.w3c.dom.NodeList;
  */
 public class ProcessDiagramLayoutFactory {
 
+  private static final int GREY_THRESHOLD = 175;
+
   /**
    * Provides positions and dimensions of elements in a process diagram as
    * provided by {@link RepositoryService#getProcessDiagram(String)}.
@@ -223,7 +225,7 @@ public class ProcessDiagramLayoutFactory {
           int red   = (pixel >> 16) & 0xff;
           int green = (pixel >>  8) & 0xff;
           int blue  = (pixel >>  0) & 0xff;
-          if (!(alpha == 0 || (red >= 200 && green >= 200 && blue >= 200))) {
+          if (!(alpha == 0 || (red >= GREY_THRESHOLD && green >= GREY_THRESHOLD && blue >= GREY_THRESHOLD))) {
             rowIsWhite.put(row, false);
             columnIsWhite.put(column, false);
           }

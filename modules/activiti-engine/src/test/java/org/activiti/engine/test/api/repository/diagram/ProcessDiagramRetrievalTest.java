@@ -95,6 +95,7 @@ public class ProcessDiagramRetrievalTest {
             { "testProcessFromIboPrometheus", ".bpmn", ".jpg", "ibo-5784efbe-35ac-44bc-bcbe-4c18a2f23d5d" },
             { "testInvoiceProcessCamundaFoxDesigner", ".bpmn20.xml", ".jpg", "Rechnung_freigeben_125" },
             { "testInvoiceProcessSignavio", ".bpmn", ".png", "Freigebenden_zuordnen_143" },
+            { "testInvoiceProcessFromBusinessProcessIncubator", ".bpmn", ".png", "Rechnung_kl_ren_148" },
             { "testProcessFromYaoqiang", ".bpmn", ".png", "_3" },
     });
   }
