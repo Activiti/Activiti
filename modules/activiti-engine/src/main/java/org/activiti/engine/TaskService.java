@@ -83,11 +83,12 @@ public interface TaskService {
 	 /**
    * Claim responsibility for a task: the given user is made assignee for the task.
    * The difference with {@link #setAssignee(String, String)} is that here 
-   * a check is done if the provided user is known by the identity component.
+   * a check is done if the task already has a user assigned to it.
+   * No check is done whether the user is known by the identity component.
    * @param taskId task to claim, cannot be null.
    * @param userId user that claims the task. When userId is null the task is unclaimed,
    * assigned to no one.
-   * @throws ActivitiException when the user or task doesn't exist or when the task
+   * @throws ActivitiException when the task doesn't exist or when the task
    * is already claimed by another user.
    */
   void claim(String taskId, String userId);
