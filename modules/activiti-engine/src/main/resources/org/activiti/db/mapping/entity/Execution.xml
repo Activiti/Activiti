@@ -7,7 +7,7 @@
   <!-- EXECUTION INSERT -->
 
   <insert id="insertExecution" parameterType="org.activiti.engine.impl.persistence.entity.ExecutionEntity">
-    insert into ${prefix}ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_, IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, PARENT_ID_, SUPER_EXEC_, SUSPENSION_STATE_)
+    insert into ${prefix}ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_, IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, PARENT_ID_, SUPER_EXEC_, SUSPENSION_STATE_, CACHED_ENT_STATE_)
     values (
       #{id ,jdbcType=VARCHAR},
       1,
@@ -21,7 +21,8 @@
       #{isEventScope ,jdbcType=BOOLEAN},
       #{parentId, jdbcType=VARCHAR},
       #{superExecutionId, jdbcType=VARCHAR},
-      #{suspensionState, jdbcType=INTEGER}
+      #{suspensionState, jdbcType=INTEGER},
+      #{cachedEntityState, jdbcType=INTEGER}
     )
   </insert>
 
@@ -38,7 +39,8 @@
       IS_EVENT_SCOPE_ = #{isEventScope, jdbcType=BOOLEAN},
       PARENT_ID_ = #{parentId, jdbcType=VARCHAR},
       SUPER_EXEC_ = #{superExecutionId, jdbcType=VARCHAR},
-      SUSPENSION_STATE_ = #{suspensionState, jdbcType=INTEGER}
+      SUSPENSION_STATE_ = #{suspensionState, jdbcType=INTEGER},
+      CACHED_ENT_STATE_ = #{cachedEntityState, jdbcType=INTEGER}
     where ID_ = #{id, jdbcType=VARCHAR}
       and REV_ = #{revision, jdbcType=INTEGER}
   </update>
@@ -65,6 +67,7 @@
     <result property="parentId" column="PARENT_ID_" jdbcType="VARCHAR" />
     <result property="superExecutionId" column="SUPER_EXEC_" jdbcType="VARCHAR" />
     <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER"/>
+    <result property="cachedEntityState" column="CACHED_ENT_STATE_" jdbcType="INTEGER"/>
   </resultMap>
   
   <!-- EXECUTION SELECT -->

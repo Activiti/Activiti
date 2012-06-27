@@ -51,6 +51,7 @@ import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 import org.activiti.engine.impl.pvm.runtime.OutgoingExecution;
 import org.activiti.engine.impl.pvm.runtime.StartingExecution;
+import org.activiti.engine.impl.util.BitMaskUtil;
 import org.activiti.engine.impl.variable.VariableDeclaration;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
@@ -66,6 +67,10 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   
   private static Logger log = Logger.getLogger(ExecutionEntity.class.getName());
   
+  // Persistent refrenced entities state //////////////////////////////////////
+  protected static final int EVENT_SUBSCRIPTIONS_STATE_BIT = 1;
+  protected static final int TASKS_STATE_BIT = 2;
+  protected static final int JOBS_STATE_BIT = 3;
   
   // current position /////////////////////////////////////////////////////////
   
@@ -126,6 +131,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   protected List<EventSubscriptionEntity> eventSubscriptions;  
   protected List<JobEntity> jobs;
   protected List<TaskEntity> tasks;
+  protected int cachedEntityState;
   
   // cascade deletion ////////////////////////////////////////////////////////
   
@@ -290,6 +296,9 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     eventSubscriptions = new ArrayList<EventSubscriptionEntity>();
     jobs = new ArrayList<JobEntity>();
     tasks = new ArrayList<TaskEntity>();
+    
+    // Cached entity-state initialized to null, all bits are zore, indicating NO entities present
+    cachedEntityState = 0;
     
     List<TimerDeclarationImpl> timerDeclarations = (List<TimerDeclarationImpl>) scope.getProperty(BpmnParse.PROPERTYNAME_TIMER_DECLARATION);
     if (timerDeclarations!=null) {
@@ -825,7 +834,12 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     // delete all the tasks
     for (TaskEntity task : getTasks()) {
       if (replacedBy!=null) {
-        task.setExecution(replacedBy);
+        if(task.getExecution() == null || task.getExecution() != replacedBy) {
+          // All tasks should have been moved when "replacedBy" has been set. Just in case tasks where added,
+          // wo do an additional check here and move it
+          task.setExecution(replacedBy);
+          this.replacedBy.addTask(task);
+        }
       } else {
         Context.getCommandContext()
           .getTaskManager()
@@ -889,12 +903,15 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
 
     // update the related tasks
-    List<TaskEntity> tasks = (List) new TaskQueryImpl(commandContext)
-      .executionId(id)
-      .list();
-    for (TaskEntity task: tasks) {
+    for (TaskEntity task: getTasks()) {
       task.setExecutionId(replacedBy.getId());
+      task.setExecution(this.replacedBy);
+      this.replacedBy.addTask(task);
     }
+    
+    // All tasks have been moved to 'replacedBy', safe to clear the list 
+    this.tasks.clear();
+    
     tasks = dbSqlSession.findInCache(TaskEntity.class);
     for (TaskEntity task: tasks) {
       if (id.equals(task.getExecutionId())) {
@@ -1000,6 +1017,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
       persistentState.put("forcedUpdate", Boolean.TRUE);
     }
     persistentState.put("suspensionState", this.suspensionState);
+    persistentState.put("cachedEntityState", this.cachedEntityState);
     return persistentState;
   }
   
@@ -1073,7 +1091,6 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     return result;
   }
 
-  @SuppressWarnings({ "unchecked" })
   protected void ensureEventSubscriptionsInitialized() {
     if (eventSubscriptions == null) {
 
@@ -1082,9 +1099,10 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
         .findEventSubscriptionsByExecution(id);
     }
   }
-
+  
   public void addEventSubscription(EventSubscriptionEntity eventSubscriptionEntity) {
     getEventSubscriptionsInternal().add(eventSubscriptionEntity);
+    
   }
 
   public void removeEventSubscription(EventSubscriptionEntity eventSubscriptionEntity) {
@@ -1093,7 +1111,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   
   // referenced job entities //////////////////////////////////////////////////
   
-  @SuppressWarnings({ "unchecked" })
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   protected void ensureJobsInitialized() {
     if(jobs == null) {    
       jobs = (List)Context.getCommandContext()
@@ -1101,7 +1119,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
         .findJobsByExecutionId(id);
     }    
   }
-
+  
   protected List<JobEntity> getJobsInternal() {
     ensureJobsInitialized();
     return jobs;
@@ -1121,12 +1139,12 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   
   // referenced task entities ///////////////////////////////////////////////////
   
-  @SuppressWarnings({ "unchecked" })
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   protected void ensureTasksInitialized() {
     if(tasks == null) {    
       tasks = (List)Context.getCommandContext()
         .getTaskManager()
-        .findTasksByExecutionId(id);
+        .findTasksByExecutionId(id);      
     }    
   }
 
@@ -1149,6 +1167,35 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     
 
   // getters and setters //////////////////////////////////////////////////////
+  
+  
+  public void setCachedEntityState(int cachedEntityState) {
+    this.cachedEntityState = cachedEntityState;
+    
+    // Check for flags that are down. These lists can be safely initialized as empty, preventing
+    // additional queries that end up in an empty list anyway
+    if(jobs == null && !BitMaskUtil.isBitOn(cachedEntityState, JOBS_STATE_BIT)) {
+      jobs = new ArrayList<JobEntity>();
+    }
+    if(tasks == null && !BitMaskUtil.isBitOn(cachedEntityState, TASKS_STATE_BIT)) {
+      tasks = new ArrayList<TaskEntity>();
+    }
+    if(eventSubscriptions == null && !BitMaskUtil.isBitOn(cachedEntityState, EVENT_SUBSCRIPTIONS_STATE_BIT)) {
+      eventSubscriptions = new ArrayList<EventSubscriptionEntity>();
+    }
+  }
+    
+  public int getCachedEntityState() {
+    cachedEntityState = 0;
+    
+    // Only mark a flag as false when the list is not-null and empty. If null, we can't be sure there are no entries in it since
+    // the list hasn't been initialized/queried yet.
+    cachedEntityState = BitMaskUtil.setBit(cachedEntityState, TASKS_STATE_BIT, (tasks == null || tasks.size() > 0));
+    cachedEntityState = BitMaskUtil.setBit(cachedEntityState, EVENT_SUBSCRIPTIONS_STATE_BIT, (eventSubscriptions == null || eventSubscriptions.size() > 0));
+    cachedEntityState = BitMaskUtil.setBit(cachedEntityState, JOBS_STATE_BIT, (jobs == null || jobs.size() > 0));
+    
+    return cachedEntityState;
+  }
   
   public String getProcessInstanceId() {
     return processInstanceId;

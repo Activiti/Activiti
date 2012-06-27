@@ -45,6 +45,7 @@ create table ACT_RU_EXECUTION (
     IS_SCOPE_ TINYINT,
     IS_EVENT_SCOPE_ TINYINT,
     SUSPENSION_STATE_ integer,
+    CACHED_ENT_STATE_ integer,
     primary key (ID_),
     unique ACT_UNIQ_RU_BUS_KEY (PROC_DEF_ID_, BUSINESS_KEY_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
