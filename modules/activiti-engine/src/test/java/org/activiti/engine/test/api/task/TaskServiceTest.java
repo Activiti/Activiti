@@ -766,6 +766,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     
     taskService.claim(taskId, "kermit");
     taskService.delegateTask(taskId, "fozzie");
+
     List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
     assertEquals(2, identityLinks.size());
 
@@ -840,5 +841,30 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     }
   }
 
+  /**
+   * @see http://jira.codehaus.org/browse/ACT-1059
+   */
+  public void testSetDelegationState() {
+    Task task = taskService.newTask();
+    task.setOwner("wuzh");
+    task.delegate("other");
+    taskService.saveTask(task);
+    String taskId = task.getId();
+
+    task = taskService.createTaskQuery().taskId(taskId).singleResult();
+    assertEquals("wuzh", task.getOwner());
+    assertEquals("other", task.getAssignee());
+    assertEquals(DelegationState.PENDING, task.getDelegationState());
+
+    task.setDelegationState(DelegationState.RESOLVED);
+    taskService.saveTask(task);
+
+    task = taskService.createTaskQuery().taskId(taskId).singleResult();
+    assertEquals("wuzh", task.getOwner());
+    assertEquals("other", task.getAssignee());
+    assertEquals(DelegationState.RESOLVED, task.getDelegationState());
+
+    taskService.deleteTask(taskId, true);
+  }
   
 }

@@ -176,10 +176,10 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     persistentState.put("owner", this.owner);
     persistentState.put("name", this.name);
     persistentState.put("priority", this.priority);
-    if (executionId!=null) {
+    if (executionId != null) {
       persistentState.put("executionId", this.executionId);
     }
-    if (createTime!=null) {
+    if (createTime != null) {
       persistentState.put("createTime", this.createTime);
     }
     if(description != null) {
@@ -188,8 +188,11 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     if(dueDate != null) {
       persistentState.put("dueDate", this.dueDate);
     }
-    if (parentTaskId!=null) {
+    if (parentTaskId != null) {
       persistentState.put("parentTaskId", this.parentTaskId);
+    }
+    if (delegationState != null) {
+      persistentState.put("delegationState", this.delegationState);
     }
     return persistentState;
   }
