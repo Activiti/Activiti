@@ -15,6 +15,7 @@ package org.activiti.engine.impl.cmd;
 import java.io.Serializable;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -55,7 +56,7 @@ public class ClaimTaskCmd implements Command<Void>, Serializable {
         if(!task.getAssignee().equals(userId)) {
           // When the task is already claimed by another user, throw exception. Otherwise, ignore
           // this, post-conditions of method already met.
-          throw new ActivitiException("Task " + taskId + " is already claimed by someone else");
+          throw new ActivitiTaskAlreadyClaimedException(task.getId(), task.getAssignee());
         }
       } else {
         task.setAssignee(userId);

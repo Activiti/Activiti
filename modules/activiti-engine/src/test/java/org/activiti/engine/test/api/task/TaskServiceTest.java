@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
@@ -42,6 +43,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * @author Frederik Heremans
  * @author Joram Barrez
+ * @author Falko Menge
  */
 public class TaskServiceTest extends PluggableActivitiTestCase {
 
@@ -353,8 +355,8 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     try {
       taskService.claim(task.getId(), secondUser.getId());
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
-      assertTextPresent("Task " + task.getId() + " is already claimed by someone else", ae.getMessage());
+    } catch (ActivitiTaskAlreadyClaimedException ae) {
+      assertTextPresent("Task '" + task.getId() + "' is already claimed by user 'user'.", ae.getMessage());
     }
 
     taskService.deleteTask(task.getId(), true);
