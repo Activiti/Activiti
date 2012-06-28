@@ -2749,7 +2749,7 @@ assertEquals("Ship Order", task.getName());</programlisting>
             <section id="bpmnUserTaskDueDate">
               <title>Due Date</title>
               <para>
-                Each task has a field, indicating the due date of that task. The Query API can be used to query for task that are due 
+                Each task has a field, indicating the due date of that task. The Query API can be used to query for tasks that are due 
                 on, before or after a certain date.
               </para>
               <para>
@@ -2791,8 +2791,8 @@ assertEquals("Ship Order", task.getName());</programlisting>
 				<para>
 				  <emphasis role="bold">Only one</emphasis> user can be assigned as human performer to the task.
 				  In Activiti terminology, this user is called the <emphasis role="bold">assignee</emphasis>.
-				  Task that have an assignee are not visible in the task lists of other people, and
-				  are found in the so-called <emphasis role="bold">personal task list</emphasis> of the assignee. 
+				  Tasks that have an assignee are not visible in the task lists of other people and
+				  can be found in the so-called <emphasis role="bold">personal task list</emphasis> of the assignee instead. 
 				</para>
 				
 				<para>
@@ -2831,8 +2831,8 @@ assertEquals("Ship Order", task.getName());</programlisting>
           retrieve all tasks that are <emphasis role="bold">assigned to a group where kermit is
           a member of</emphasis> (e.g. <emphasis>group(management)</emphasis>, if kermit is a member of that group
           and the Activiti identity component is used).
-          The groups of the user are resolved at runtime and these can be 
-          managed through the <emphasis>IdentityService</emphasis>.
+          The groups of a user are resolved at runtime and these can be 
+          managed through the <link linkend="apiEngine">IdentityService</link>.
         </para>
         
         <para>
@@ -2904,6 +2904,14 @@ assertEquals("Ship Order", task.getName());</programlisting>
                 </para>
               </listitem>
             </itemizedlist>
+          </para>
+          
+          <para>
+            Note: Although Actviti provides an identity management component,
+            which is exposed through the <link linkend="apiEngine">IdentityService</link>,
+            no check is done whether a provided user is known by the identity component.
+            This allows Activiti to integrate with existing identity management solutions
+            when it is embedded into an application.
           </para>
           
           <para>
