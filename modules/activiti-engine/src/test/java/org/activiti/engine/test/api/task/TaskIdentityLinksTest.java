@@ -22,11 +22,13 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Event;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 
 /**
  * @author Tom Baeyens
+ * @author Falko Menge
  */
 public class TaskIdentityLinksTest extends PluggableActivitiTestCase {
 
@@ -163,6 +165,36 @@ public class TaskIdentityLinksTest extends PluggableActivitiTestCase {
     taskService.deleteGroupIdentityLink(taskId, "muppets", "playing");
     
     assertEquals(0, taskService.getIdentityLinksForTask(taskId).size());
+  }
+
+  public void testDeleteAssignee() {
+    Task task = taskService.newTask();
+    task.setAssignee("nonExistingUser");
+    taskService.saveTask(task);
+
+    taskService.deleteUserIdentityLink(task.getId(), "nonExistingUser", IdentityLinkType.ASSIGNEE);
+
+    task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
+    assertNull(task.getAssignee());
+    assertEquals(0, taskService.getIdentityLinksForTask(task.getId()).size());
+    
+    // cleanup
+    taskService.deleteTask(task.getId(), true);
+  }
+
+  public void testDeleteOwner() {
+    Task task = taskService.newTask();
+    task.setOwner("nonExistingUser");
+    taskService.saveTask(task);
+
+    taskService.deleteUserIdentityLink(task.getId(), "nonExistingUser", IdentityLinkType.OWNER);
+
+    task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
+    assertNull(task.getOwner());
+    assertEquals(0, taskService.getIdentityLinksForTask(task.getId()).size());
+    
+    // cleanup
+    taskService.deleteTask(task.getId(), true);
   }
 
 }

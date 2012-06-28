@@ -58,6 +58,8 @@ public class ChangeOwnershipListener implements ClickListener {
         new SelectUsersPopupWindow(i18nManager.getMessage(Messages.TASK_OWNER_TRANSFER), false, ignoredIds);
     
     involvePeoplePopupWindow.addListener(new SubmitEventListener() {
+      private static final long serialVersionUID = 1L;
+
       protected void submitted(SubmitEvent event) {
         // Update owner
         String selectedUser = involvePeoplePopupWindow.getSelectedUserId();

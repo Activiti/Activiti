@@ -30,6 +30,7 @@ import org.activiti.engine.task.IdentityLinkType;
 
 /**
  * @author Tom Baeyens
+ * @author Falko Menge
  */
 public class DeleteIdentityLinkCmd implements Command<Object>, Serializable {
 
@@ -60,11 +61,11 @@ public class DeleteIdentityLinkCmd implements Command<Object>, Serializable {
       throw new ActivitiException("type is required when adding a new task identity link");
     }
     
-    // Special treatment for assignee, group cannot be used an userId may be null
-    if (IdentityLinkType.ASSIGNEE.equals(type)) {
+    // Special treatment for assignee and owner: group cannot be used and userId may be null
+    if (IdentityLinkType.ASSIGNEE.equals(type) || IdentityLinkType.OWNER.equals(type)) {
       if (groupId != null) {
-        throw new ActivitiException("Incompatible usage: cannot use ASSIGNEE" 
-                + " together with a groupId");
+        throw new ActivitiException("Incompatible usage: cannot use type '" + type
+                + "' together with a groupId");
       }
     } else {
       if (userId == null && groupId == null) {
@@ -85,6 +86,8 @@ public class DeleteIdentityLinkCmd implements Command<Object>, Serializable {
     
     if (IdentityLinkType.ASSIGNEE.equals(type)) {
       task.setAssignee(null);
+    } else if (IdentityLinkType.OWNER.equals(type)) {
+        task.setOwner(null);
     } else {
       task.deleteIdentityLink(userId, groupId, type);
     }

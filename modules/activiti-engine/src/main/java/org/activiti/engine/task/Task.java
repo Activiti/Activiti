@@ -92,7 +92,8 @@ public interface Task {
 	/** Change due date of the task. */
 	void setDueDate(Date dueDate);
 
-	/** delegates this task to the given user and sets the {@link #getDelegationState() delegationState} to {@link DelegationState#PENDING}. */
+	/** delegates this task to the given user and sets the {@link #getDelegationState() delegationState} to {@link DelegationState#PENDING}.
+	 * If no owner is set on the task, the owner is set to the current assignee of the task. */
   void delegate(String userId);
   
   /** the parent task for which this task is a subtask */

@@ -44,6 +44,7 @@ import org.activiti.engine.task.Task;
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
+ * @author Falko Menge
  */ 
 public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask, Serializable, PersistentObject {
 
@@ -158,6 +159,9 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   
   public void delegate(String userId) {
     setDelegationState(DelegationState.PENDING);
+    if (getOwner() == null) {
+      setOwner(getAssignee());
+    }
     setAssignee(userId);
   }
 

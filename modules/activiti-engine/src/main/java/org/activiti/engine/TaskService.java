@@ -101,8 +101,10 @@ public interface TaskService {
   void complete(String taskId);
   
   /**
-   * Delegates the task to another user.  This means that the assignee is set 
-   * and the delegation state is set to {@link DelegationState#PENDING} 
+   * Delegates the task to another user. This means that the assignee is set 
+   * and the delegation state is set to {@link DelegationState#PENDING}.
+   * If no owner is set on the task, the owner is set to the current assignee
+   * of the task.
    * @param taskId The id of the task that will be delegated.
    * @param userId The id of the user that will be set as assignee.
    * @throws ActivitiException when no task exists with the given id.

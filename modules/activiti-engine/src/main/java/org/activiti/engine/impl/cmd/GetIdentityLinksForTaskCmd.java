@@ -26,6 +26,7 @@ import org.activiti.engine.task.IdentityLinkType;
 
 /**
  * @author Joram Barrez
+ * @author Falko Menge
  */
 public class GetIdentityLinksForTaskCmd implements Command<List<IdentityLink>>, Serializable {
   
@@ -57,6 +58,12 @@ public class GetIdentityLinksForTaskCmd implements Command<List<IdentityLink>>, 
       IdentityLinkEntity identityLink = new IdentityLinkEntity();
       identityLink.setUserId(task.getAssignee());
       identityLink.setType(IdentityLinkType.ASSIGNEE);
+      identityLinks.add(identityLink);
+    }
+    if (task.getOwner() != null) {
+      IdentityLinkEntity identityLink = new IdentityLinkEntity();
+      identityLink.setUserId(task.getOwner());
+      identityLink.setType(IdentityLinkType.OWNER);
       identityLinks.add(identityLink);
     }
     
