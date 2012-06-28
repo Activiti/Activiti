@@ -19,7 +19,7 @@ public class ActivitiTaskAlreadyClaimedException extends ActivitiException {
     private String taskAssignee;
     
     public ActivitiTaskAlreadyClaimedException(String taskId, String taskAssignee) {
-        super("Task '" + taskId + "' is already claimed by user '" + taskAssignee + "'.");
+        super("Task '" + taskId + "' is already claimed by someone else.");
         this.taskId = taskId;
         this.taskAssignee = taskAssignee;
     }

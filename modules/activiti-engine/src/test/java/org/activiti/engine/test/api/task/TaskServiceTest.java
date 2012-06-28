@@ -356,7 +356,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
       taskService.claim(task.getId(), secondUser.getId());
       fail("ActivitiException expected");
     } catch (ActivitiTaskAlreadyClaimedException ae) {
-      assertTextPresent("Task '" + task.getId() + "' is already claimed by user 'user'.", ae.getMessage());
+      assertTextPresent("Task '" + task.getId() + "' is already claimed by someone else.", ae.getMessage());
     }
 
     taskService.deleteTask(task.getId(), true);
