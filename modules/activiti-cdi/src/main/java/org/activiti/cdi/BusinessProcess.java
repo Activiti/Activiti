@@ -366,8 +366,15 @@ public class BusinessProcess implements Serializable {
    * @return the value of the provided process variable or 'null' if no such
    *         variable is set
    */
+  @SuppressWarnings("unchecked")
   public <T> T getVariable(String variableName) {
-    return associationManager.getVariable(variableName);
+    Object variable = associationManager.getVariable(variableName);
+    if(variable == null) {
+      return null;
+    } else {
+      return (T)variable;
+    }
+    
   }
 
   /**

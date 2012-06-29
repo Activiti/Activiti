@@ -195,12 +195,12 @@ public class DefaultContextAssociationManager implements ContextAssociationManag
   }
 
   @Override
-  public <T> T getVariable(String variableName) {
+  public Object getVariable(String variableName) {
     ExecutionEntity execution = getExecutionFromContext();
     if(execution != null) {
-      return (T) execution.getVariable(variableName);
+      return execution.getVariable(variableName);
     } else {
-      return (T) getScopedAssociation().getVariable(variableName);  
+      return getScopedAssociation().getVariable(variableName);  
     }
   }
   

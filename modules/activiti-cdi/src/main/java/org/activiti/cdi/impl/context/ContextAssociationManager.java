@@ -69,7 +69,7 @@ public interface ContextAssociationManager {
   /**
    * get a process variable
    */
-  public <T> T getVariable(String variableName);
+  public Object getVariable(String variableName);
 
   /**  
    * @return a map of process variables cached between flushes
