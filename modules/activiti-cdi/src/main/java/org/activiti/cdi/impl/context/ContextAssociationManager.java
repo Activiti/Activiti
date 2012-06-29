@@ -72,8 +72,8 @@ public interface ContextAssociationManager {
   public <T> T getVariable(String variableName);
 
   /**  
-   * @return the beanstore for storing process variables between flushes
+   * @return a map of process variables cached between flushes
    */
-  public Map<String,Object> getBeanStore();
+  public Map<String,Object> getCachedVariables();
   
 }

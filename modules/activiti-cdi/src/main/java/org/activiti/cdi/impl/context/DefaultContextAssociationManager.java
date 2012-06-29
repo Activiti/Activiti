@@ -58,7 +58,7 @@ public class DefaultContextAssociationManager implements ContextAssociationManag
     @Inject 
     private RuntimeService runtimeService;
     
-    protected Map<String, Object> beanStore = new HashMap<String, Object>();
+    protected Map<String, Object> cachedVariables = new HashMap<String, Object>();
     protected Execution execution;    
     protected Task task;
     
@@ -79,22 +79,22 @@ public class DefaultContextAssociationManager implements ContextAssociationManag
     }
 
     public <T> T getVariable(String variableName) {
-      Object value = beanStore.get(variableName);
+      Object value = cachedVariables.get(variableName);
       if(value == null) {
         if(execution != null) {
           value = runtimeService.getVariable(execution.getId(), variableName);
-          beanStore.put(variableName, value);
+          cachedVariables.put(variableName, value);
         }
       }
       return (T) value;
     }
 
     public void setVariable(String variableName, Object value) {
-      beanStore.put(variableName, value);
+      cachedVariables.put(variableName, value);
     }
 
-    public Map<String, Object> getBeanStore() {
-      return beanStore;
+    public Map<String, Object> getCachedVariables() {
+      return cachedVariables;
     }
    
   }
@@ -240,8 +240,11 @@ public class DefaultContextAssociationManager implements ContextAssociationManag
   }
 
   @Override
-  public Map<String, Object> getBeanStore() {
-    return getScopedAssociation().getBeanStore();
+  public Map<String, Object> getCachedVariables() {
+    if(Context.getCommandContext() != null) {
+      throw new ActivitiCdiException("Cannot work with cached variables in an activiti command.");
+    }
+    return getScopedAssociation().getCachedVariables();
   }
 
 }

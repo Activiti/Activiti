@@ -13,6 +13,7 @@
 package org.activiti.cdi;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.enterprise.context.Conversation;
@@ -30,6 +31,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -89,75 +91,132 @@ public class BusinessProcess implements Serializable {
   
   @Inject private Instance<Conversation> conversationInstance;
 
-  public ProcessInstance startProcessById(String processDefinitionId) {        
-    ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceById(processDefinitionId, getBeanStore());
+  public ProcessInstance startProcessById(String processDefinitionId) {       
+    
+    if(Context.getCommandContext() != null) {
+      throw new ActivitiCdiException("Cannot use startProcessById in an activiti command.");
+    }
+    
+    ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceById(processDefinitionId, getAndClearCachedVariables());
     setExecution(instance);
     return instance;
   }
 
-  public ProcessInstance startProcessById(String processDefinitionId, String businessKey) {        
-    ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceById(processDefinitionId, businessKey, getBeanStore());
+  public ProcessInstance startProcessById(String processDefinitionId, String businessKey) {   
+    
+    if(Context.getCommandContext() != null) {
+      throw new ActivitiCdiException("Cannot use startProcessById in an activiti command.");
+    }
+    
+    ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceById(processDefinitionId, businessKey, getAndClearCachedVariables());
     setExecution(instance);
     return instance;
   }
 
   public ProcessInstance startProcessById(String processDefinitionId, Map<String, Object> variables) {
-    getBeanStore().putAll(variables);
-    ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceById(processDefinitionId, getBeanStore());
+    
+    if(Context.getCommandContext() != null) {
+      throw new ActivitiCdiException("Cannot use startProcessById in an activiti command.");
+    }
+    
+    Map<String, Object> cachedVariables = getAndClearCachedVariables();
+    cachedVariables.putAll(variables);
+    ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceById(processDefinitionId, cachedVariables);
     setExecution(instance);
     return instance;
   }
 
   public ProcessInstance startProcessById(String processDefinitionId, String businessKey, Map<String, Object> variables) {
-    getBeanStore().putAll(variables);
-    ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceById(processDefinitionId, businessKey, getBeanStore());
+    
+    if(Context.getCommandContext() != null) {
+      throw new ActivitiCdiException("Cannot use startProcessById in an activiti command.");
+    }
+    
+    Map<String, Object> cachedVariables = getAndClearCachedVariables();
+    cachedVariables.putAll(variables);
+    ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceById(processDefinitionId, businessKey, cachedVariables);
     setExecution(instance);
     return instance;
   }
 
   public ProcessInstance startProcessByKey(String key) {
-    ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByKey(key, getBeanStore());
+    
+    if(Context.getCommandContext() != null) {
+      throw new ActivitiCdiException("Cannot use startProcessByKey in an activiti command.");
+    }
+    
+    ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByKey(key, getAndClearCachedVariables());
     setExecution(instance);
     return instance;
   }
 
   public ProcessInstance startProcessByKey(String key, String businessKey) {
-    ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByKey(key, businessKey, getBeanStore());
+    
+    if(Context.getCommandContext() != null) {
+      throw new ActivitiCdiException("Cannot use startProcessByKey in an activiti command.");
+    }
+    
+    ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByKey(key, businessKey, getAndClearCachedVariables());
     setExecution(instance);
     return instance;
   }
 
   public ProcessInstance startProcessByKey(String key, Map<String, Object> variables) {
-    getBeanStore().putAll(variables);
-    ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByKey(key, getBeanStore());
+    
+    if(Context.getCommandContext() != null) {
+      throw new ActivitiCdiException("Cannot use startProcessByKey in an activiti command.");
+    }
+    
+    Map<String, Object> cachedVariables = getAndClearCachedVariables();
+    cachedVariables.putAll(variables);
+    ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByKey(key, cachedVariables);
     setExecution(instance);
     return instance;
   }
 
   public ProcessInstance startProcessByKey(String key, String businessKey, Map<String, Object> variables) {
-    getBeanStore().putAll(variables);
-    ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByKey(key, businessKey, getBeanStore());
+    
+    if(Context.getCommandContext() != null) {
+      throw new ActivitiCdiException("Cannot use startProcessByKey in an activiti command.");
+    }
+    
+    Map<String, Object> cachedVariables = getAndClearCachedVariables();
+    cachedVariables.putAll(variables);
+    ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByKey(key, businessKey, cachedVariables);
     setExecution(instance);
     return instance;
   }
 
+  @Deprecated
   public ProcessInstance startProcessByName(String string) {
+    
+    if(Context.getCommandContext() != null) {
+      throw new ActivitiCdiException("Cannot use startProcessByName in an activiti command.");
+    }
+    
     ProcessDefinition definition = processEngine.getRepositoryService().createProcessDefinitionQuery().processDefinitionName(string).singleResult();
     if (definition == null) {
       throw new ActivitiException("No process definition found for name: " + string);
     }
-    ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceById(definition.getId(), getBeanStore());
+    ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceById(definition.getId(), getAndClearCachedVariables());
     setExecution(instance);
     return instance;
   }
 
+  @Deprecated
   public ProcessInstance startProcessByName(String string, Map<String, Object> variables) {
+    
+    if(Context.getCommandContext() != null) {
+      throw new ActivitiCdiException("Cannot use startProcessByName in an activiti command.");
+    }
+    
     ProcessDefinition definition = processEngine.getRepositoryService().createProcessDefinitionQuery().processDefinitionName(string).singleResult();
     if (definition == null) {
       throw new ActivitiException("No process definition found for name: " + string);
     }
-    getBeanStore().putAll(variables);
-    ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceById(definition.getId(), getBeanStore());
+    Map<String, Object> cachedVariables = getAndClearCachedVariables();
+    cachedVariables.putAll(variables);
+    ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceById(definition.getId(), cachedVariables);
     setExecution(instance);
     return instance;
   }
@@ -204,8 +263,7 @@ public class BusinessProcess implements Serializable {
    */
   public void signalExecution() {
     assertAssociated();
-    Map<String, Object> beanStore = getBeanStore();
-    processEngine.getRuntimeService().signal(associationManager.getExecutionId(), beanStore);    
+    processEngine.getRuntimeService().signal(associationManager.getExecutionId(), getAndClearCachedVariables());    
     associationManager.disAssociate();
   }
   
@@ -278,8 +336,7 @@ public class BusinessProcess implements Serializable {
    */
   public void completeTask() {
     assertTaskAssociated();
-    Map<String, Object> beanStore = getBeanStore();
-    processEngine.getTaskService().complete(getTask().getId(), beanStore);
+    processEngine.getTaskService().complete(getTask().getId(), getAndClearCachedVariables());
     associationManager.disAssociate();
   }
   
@@ -443,8 +500,15 @@ public class BusinessProcess implements Serializable {
     }
   }
 
-  protected Map<String, Object> getBeanStore() {
-   return associationManager.getBeanStore();
+  protected Map<String, Object> getCachedVariables() {
+   return associationManager.getCachedVariables();
+  }
+  
+  protected Map<String, Object> getAndClearCachedVariables() {
+    Map<String, Object> beanStore = getCachedVariables();
+    Map<String, Object> copy = new HashMap<String, Object>(beanStore);
+    beanStore.clear();
+    return copy;        
   }
  
 }
