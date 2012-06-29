@@ -15,6 +15,7 @@ package org.activiti.engine.impl.jobexecutor;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.impl.cmd.AcquireJobsCmd;
@@ -44,6 +45,7 @@ public abstract class JobExecutor {
   protected Command<AcquiredJobs> acquireJobsCmd;
   protected AcquireJobsRunnable acquireJobsRunnable;
   protected RejectedJobsHandler rejectedJobsHandler;
+  protected Thread jobAcquisitionThread;
   
   protected boolean isAutoActivate = false;
   protected boolean isActive = false;
@@ -167,5 +169,23 @@ public abstract class JobExecutor {
   public void setRejectedJobsHandler(RejectedJobsHandler rejectedJobsHandler) {
     this.rejectedJobsHandler = rejectedJobsHandler;
   }
-      
+  
+  protected void startJobAcquisitionThread() {
+		if (jobAcquisitionThread == null) {
+			jobAcquisitionThread = new Thread(acquireJobsRunnable);
+			jobAcquisitionThread.start();
+		}
+	}
+	
+	protected void stopJobAcquisitionThread() {
+		try {
+			jobAcquisitionThread.join();
+		} catch (InterruptedException e) {
+			log.log(
+					Level.WARNING,
+					"Interrupted while waiting for the job Acquisition thread to terminate",
+					e);
+		}	
+		jobAcquisitionThread = null;
+	}
 }

@@ -21,8 +21,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.activiti.engine.ActivitiException;
-
 /**
  * <p>This is a simple implementation of the {@link JobExecutor} using self-managed
  * threads for performing background work.</p>
@@ -44,7 +42,6 @@ public class DefaultJobExecutor extends JobExecutor {
   protected int corePoolSize = 3;
   private int maxPoolSize = 10;
 
-  protected Thread jobAcquisitionThread;
   protected BlockingQueue<Runnable> threadPoolQueue;
   protected ThreadPoolExecutor threadPoolExecutor;
     
@@ -56,18 +53,11 @@ public class DefaultJobExecutor extends JobExecutor {
       threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maxPoolSize, 0L, TimeUnit.MILLISECONDS, threadPoolQueue);      
       threadPoolExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
     }
-    if(jobAcquisitionThread == null) {
-      jobAcquisitionThread = new Thread(acquireJobsRunnable);
-      jobAcquisitionThread.start();      
-    }   
+    startJobAcquisitionThread(); 
   }
     
   protected void stopExecutingJobs() {
-    try {
-      jobAcquisitionThread.join();
-    }catch (InterruptedException e) {
-      log.log(Level.WARNING, "Interrupted while waiting for the job Acquisition thread to terminate", e);
-    }
+	stopJobAcquisitionThread();
     
     // Ask the thread pool to finish and exit
     threadPoolExecutor.shutdown();
@@ -83,7 +73,6 @@ public class DefaultJobExecutor extends JobExecutor {
     }
 
     threadPoolExecutor = null;
-    jobAcquisitionThread = null;
   }
   
   public void executeJobs(List<String> jobIds) {
@@ -137,3 +126,4 @@ public class DefaultJobExecutor extends JobExecutor {
   }
     
 }
+
