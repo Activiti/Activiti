@@ -25,7 +25,7 @@ import org.activiti.engine.test.Deployment;
  *
  * @author Daniel Meyer
  */
-public abstract class ServiceTaskVariablesTest extends PluggableActivitiTestCase {
+public class ServiceTaskVariablesTest extends PluggableActivitiTestCase {
   
   static boolean isNullInDelegate2;
   static boolean isNullInDelegate3;
@@ -40,7 +40,7 @@ public abstract class ServiceTaskVariablesTest extends PluggableActivitiTestCase
     public void execute(DelegateExecution execution) throws Exception {
       Variable v = new Variable();
       execution.setVariable("variable", v);
-      v.value = "test";
+      v.value = "delegate1";
     }
     
   }
@@ -51,9 +51,9 @@ public abstract class ServiceTaskVariablesTest extends PluggableActivitiTestCase
       Variable v = (Variable) execution.getVariable("variable");
       synchronized (ServiceTaskVariablesTest.class) {
         // we expect this to be 'true'
-        isNullInDelegate2 = (v.value == null);        
+        isNullInDelegate2 = (v.value != null && v.value.equals("delegate1"));         
       }
-      v.value = "test";      
+      v.value = "delegate2";      
     }
     
   }
@@ -64,51 +64,38 @@ public abstract class ServiceTaskVariablesTest extends PluggableActivitiTestCase
       Variable v = (Variable) execution.getVariable("variable");
       synchronized (ServiceTaskVariablesTest.class) {
         // we expect this to be 'true' as well
-        isNullInDelegate3 = (v.value == null);
+        isNullInDelegate3 = (v.value != null && v.value.equals("delegate2"));  
       }
     }
     
   }
   
   @Deployment
-  public void FAILING_testSerializedVariablesBothAsync() {
+  public void testSerializedVariablesBothAsync() {
     
     // in this test, there is an async cont. both before the second and the
     // third service task in the sequence
-    
-    // this test demonstrates, that the new value set through 
-    //    v.value = "test";      
-    // in Delegate2 is seraialized even though I do not call 
-    //    execution.setVariable("variable", v);
-    // in the second Delegate
     
     runtimeService.startProcessInstanceByKey("process");
     waitForJobExecutorToProcessAllJobs(1000, 500);
     
     synchronized (ServiceTaskVariablesTest.class) {
-      assertTrue(isNullInDelegate2); // this passes -> v.value is null in second service task (this is expected)
-      assertTrue(isNullInDelegate3); // this fails -> updated even though setVariable(...) was not called
+      assertTrue(isNullInDelegate2);
+      assertTrue(isNullInDelegate3); 
     }
   }
 
   @Deployment
-  public void FAILING_testSerializedVariablesThirdAsync() {
+  public void testSerializedVariablesThirdAsync() {
     
     // in this test, only the third service task is async
-    
-    // this test demonstrates that v.value is not null in the second service task
-    // (since the value set in the first service task is cached in memory)
-    // ( -> this is not expected)
-    
-    // but it is null in the third -> new command 
-    // ( -> this is expected)
         
     runtimeService.startProcessInstanceByKey("process");
     waitForJobExecutorToProcessAllJobs(1000, 500);
     
     synchronized (ServiceTaskVariablesTest.class) {
-      assertTrue(isNullInDelegate3); // this passes -> v.value is null in the third service task
-      assertTrue(isNullInDelegate2); // this fails 
+      assertTrue(isNullInDelegate2); 
+      assertTrue(isNullInDelegate3); 
     }
     
   }
