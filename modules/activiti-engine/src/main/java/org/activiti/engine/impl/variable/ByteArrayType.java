@@ -13,9 +13,7 @@
 package org.activiti.engine.impl.variable;
 
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntity;
-import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 
 /**
  * @author Tom Baeyens
@@ -45,17 +43,13 @@ public class ByteArrayType implements VariableType {
     if (byteArray==null) {
       byteArray = new ByteArrayEntity(bytes);
       
-      DbSqlSession dbSqlSession = Context
+      Context
         .getCommandContext()
-        .getDbSqlSession();      
-      dbSqlSession.insert(byteArray);
+        .getDbSqlSession()
+        .insert(byteArray);
       
       valueFields.setByteArrayValue(byteArray);
-      
-      if(valueFields instanceof VariableInstanceEntity) {
-        dbSqlSession.addDeserializedObject(valueFields.getCachedValue(), bytes, (VariableInstanceEntity)valueFields);
-      }
-      
+   
     } else {
       byteArray.setBytes(bytes);
     }

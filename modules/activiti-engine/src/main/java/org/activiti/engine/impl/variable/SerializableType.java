@@ -67,6 +67,16 @@ public class SerializableType extends ByteArrayType {
   public void setValue(Object value, ValueFields valueFields) {
     byte[] byteArray = serialize(value, valueFields);
     valueFields.setCachedValue(value);
+    
+    if(valueFields.getByteArrayValue() == null) {
+      if(valueFields instanceof VariableInstanceEntity) {
+        Context
+          .getCommandContext()
+          .getDbSqlSession()
+          .addDeserializedObject(valueFields.getCachedValue(), byteArray, (VariableInstanceEntity)valueFields);
+      }
+    }
+        
     super.setValue(byteArray, valueFields);
   }
 
