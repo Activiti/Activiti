@@ -105,7 +105,7 @@ public class BusinessProcessContext implements Context {
       }
 
       T beanInstance = bean.create(arg1);
-      businessProcess.setVariable(bean.getName(), beanInstance);
+      businessProcess.setVariable(variableName, beanInstance);
       return beanInstance;
     }
 
@@ -115,7 +115,7 @@ public class BusinessProcessContext implements Context {
   public boolean isActive() {
     // we assume the business process is always 'active'. If no task/execution is 
     // associated, temporary instances of @BusinessProcesScoped beans are cached in the 
-    // conversation / request / tread 
+    // conversation / request 
     return true;
   }
 

@@ -12,7 +12,6 @@
  */
 package org.activiti.cdi;
 
-import org.activiti.cdi.impl.CdiProcessVariableFlushingDelegateInterceptor;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 
 /**
@@ -25,8 +24,4 @@ public class CdiStandaloneProcessEngineConfiguration extends StandaloneProcessEn
     expressionManager = new CdiExpressionManager();
   }
 
-  @Override
-  protected void initDelegateInterceptor() {
-    delegateInterceptor = new CdiProcessVariableFlushingDelegateInterceptor();
-  }
 }

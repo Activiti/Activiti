@@ -12,7 +12,10 @@
  */
 package org.activiti.cdi.impl.context;
 
+import java.util.Map;
+
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.task.Task;
 
 /**
@@ -24,15 +27,8 @@ import org.activiti.engine.task.Task;
  * 
  * @author Daniel Meyer
  */
-public interface BusinessProcessAssociationManager {
+public interface ContextAssociationManager {
   
-  /**
-   * Associates an executionId
-   * 
-   * @param processInstanceId
-   */
-  public void associate(String executionId);
-    
   /**
    * Disassociates the current process instance with a context / scope
    * 
@@ -40,16 +36,20 @@ public interface BusinessProcessAssociationManager {
    */
   public void disAssociate();
     
-    
   /**
    * @return the id of the execution currently associated or null
    */
   public String getExecutionId();
-   
+
   /**
-   * @return the beanstore for storing process variables between flushes
+   * get the current execution
    */
-  public CachingBeanStore getBeanStore();
+  public Execution getExecution();
+
+  /**
+   * associate with the provided execution
+   */
+  void setExecution(Execution execution);
   
   /**
    * set a current task
@@ -59,6 +59,21 @@ public interface BusinessProcessAssociationManager {
   /**
    * get the current task
    */
-  public Task getTask();  
+  public Task getTask();
 
+  /**
+   * set a process variable
+   */
+  public void setVariable(String variableName, Object value);
+
+  /**
+   * get a process variable
+   */
+  public <T> T getVariable(String variableName);
+
+  /**  
+   * @return the beanstore for storing process variables between flushes
+   */
+  public Map<String,Object> getBeanStore();
+  
 }

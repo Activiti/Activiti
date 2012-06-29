@@ -15,7 +15,9 @@ package org.activiti.cdi.impl.context;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,8 +28,14 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.inject.Scope;
 
+import org.activiti.cdi.ActivitiCdiException;
 import org.activiti.cdi.impl.util.ProgrammaticBeanLookup;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.context.ExecutionContext;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.task.Task;
 
 /**
@@ -41,35 +49,58 @@ import org.activiti.engine.task.Task;
  * @author Daniel Meyer
  */
 @SuppressWarnings("serial")
-public class DefaultBusinessProcessAssociationManager implements BusinessProcessAssociationManager, Serializable {
+public class DefaultContextAssociationManager implements ContextAssociationManager, Serializable {
   
-  private final static Logger log = Logger.getLogger(DefaultBusinessProcessAssociationManager.class.getName());
+  private final static Logger log = Logger.getLogger(DefaultContextAssociationManager.class.getName());
   
   protected static class ScopedAssociation { 
-    protected String executionId;     
+    
+    @Inject 
+    private RuntimeService runtimeService;
+    
+    protected Map<String, Object> beanStore = new HashMap<String, Object>();
+    protected Execution execution;    
     protected Task task;
-    protected CachingBeanStore beanStore = new CachingBeanStore();
-    public void setExecutionId(String executionId) {
-      this.executionId = executionId;
-    }      
-    public String getExecutionId() {
-      return executionId;
-    }    
-    public CachingBeanStore getBeanStore() {
-      return beanStore;
-    }   
-
+    
+    public Execution getExecution() {
+      return execution;
+    }
+    
+    public void setExecution(Execution execution) {
+      this.execution = execution;
+    }
+    
     public Task getTask() {
       return task;
-    }        
+    }
+    
     public void setTask(Task task) {
       this.task = task;
     }
+
+    public <T> T getVariable(String variableName) {
+      Object value = beanStore.get(variableName);
+      if(value == null) {
+        if(execution != null) {
+          value = runtimeService.getVariable(execution.getId(), variableName);
+          beanStore.put(variableName, value);
+        }
+      }
+      return (T) value;
+    }
+
+    public void setVariable(String variableName, Object value) {
+      beanStore.put(variableName, value);
+    }
+
+    public Map<String, Object> getBeanStore() {
+      return beanStore;
+    }
+   
   }
   
   @ConversationScoped protected static class ConversationScopedAssociation extends ScopedAssociation implements Serializable {}
   @RequestScoped protected static class RequestScopedAssociation extends ScopedAssociation implements Serializable {}
-  @ThreadScoped protected static class ThreadScopedAssociation extends ScopedAssociation implements Serializable {}
   
   @Inject private BeanManager beanManager;
 
@@ -100,7 +131,6 @@ public class DefaultBusinessProcessAssociationManager implements BusinessProcess
     ArrayList<Class< ? extends ScopedAssociation>> scopeTypes = new ArrayList<Class< ? extends ScopedAssociation>>();
     scopeTypes.add(ConversationScopedAssociation.class);
     scopeTypes.add(RequestScopedAssociation.class);
-    scopeTypes.add(ThreadScopedAssociation.class);
     return scopeTypes;
   }
   
@@ -109,19 +139,35 @@ public class DefaultBusinessProcessAssociationManager implements BusinessProcess
   }
 
   @Override
-  public void associate(String executionId) {
+  public void setExecution(Execution execution) {
+    if(execution == null) {
+      throw new ActivitiCdiException("Cannot associate with execution: null");
+    }
+    
+    if(Context.getCommandContext() != null) {
+      throw new ActivitiCdiException("Cannot work with scoped associations inside command context.");
+    }
+    
     ScopedAssociation scopedAssociation = getScopedAssociation();
+    Execution associatedExecution = scopedAssociation.getExecution();
+    if(associatedExecution!=null && !associatedExecution.getId().equals(execution.getId())) {
+      throw new ActivitiCdiException("Cannot associate "+execution+", already associated with "+associatedExecution+". Disassociate first!");
+    }
+    
     if (log.isLoggable(Level.FINE)) {
-      log.fine("Associating Execution[" + executionId + "] (@" 
+      log.fine("Associating "+execution+" (@" 
                 + scopedAssociation.getClass().getAnnotations()[0].annotationType().getSimpleName() + ")");
     }
-    scopedAssociation.setExecutionId(executionId);
+    scopedAssociation.setExecution(execution);
   }
 
   @Override
   public void disAssociate() {
+    if(Context.getCommandContext() != null) {
+      throw new ActivitiCdiException("Cannot work with scoped associations inside command context.");
+    }
     ScopedAssociation scopedAssociation = getScopedAssociation();
-    if (scopedAssociation.getExecutionId() == null) {
+    if (scopedAssociation.getExecution() == null) {
       throw new ActivitiException("Cannot dissasociate execution, no " 
                 + scopedAssociation.getClass().getAnnotations()[0].annotationType().getSimpleName()
                 + " execution associated. ");
@@ -129,29 +175,73 @@ public class DefaultBusinessProcessAssociationManager implements BusinessProcess
     if (log.isLoggable(Level.FINE)) {
       log.fine("Disassociating");
     }
-    scopedAssociation.setExecutionId(null);
+    scopedAssociation.setExecution(null);
     scopedAssociation.setTask(null);
-    scopedAssociation.getBeanStore().clear();
   }
   
   @Override
   public String getExecutionId() {
-    return getScopedAssociation().getExecutionId();
-  }
-
-  @Override
-  public CachingBeanStore getBeanStore() {
-    return getScopedAssociation().getBeanStore();
-  }
-    
-  @Override
-  public Task getTask() {    
-    return getScopedAssociation().getTask();
+    return getExecution().getId();
   }
   
   @Override
+  public Execution getExecution() {
+    ExecutionEntity execution = getExecutionFromContext();
+    if(execution != null) {
+      return execution;
+    } else {
+      return getScopedAssociation().getExecution();     
+    }
+  }
+
+  @Override
+  public <T> T getVariable(String variableName) {
+    ExecutionEntity execution = getExecutionFromContext();
+    if(execution != null) {
+      return (T) execution.getVariable(variableName);
+    } else {
+      return (T) getScopedAssociation().getVariable(variableName);  
+    }
+  }
+  
+  @Override
+  public void setVariable(String variableName, Object value) {
+    ExecutionEntity execution = getExecutionFromContext();
+    if(execution != null) {
+      execution.setVariable(variableName, value);
+      execution.getVariable(variableName);
+    } else {
+      getScopedAssociation().setVariable(variableName, value);  
+    }
+  }
+  
+  protected ExecutionEntity getExecutionFromContext() {
+    if(Context.getCommandContext() != null) {
+      ExecutionContext executionContext = Context.getExecutionContext();
+      if(executionContext != null) {
+        return executionContext.getExecution();
+      }
+    }
+    return null;
+  }
+
+  public Task getTask() {    
+    if(Context.getCommandContext() != null) {
+      throw new ActivitiCdiException("Cannot work with tasks in an activiti command.");
+    }
+    return getScopedAssociation().getTask();
+  }
+  
   public void setTask(Task task) {
+    if(Context.getCommandContext() != null) {
+      throw new ActivitiCdiException("Cannot work with tasks in an activiti command.");
+    }
     getScopedAssociation().setTask(task);
+  }
+
+  @Override
+  public Map<String, Object> getBeanStore() {
+    return getScopedAssociation().getBeanStore();
   }
 
 }

@@ -12,16 +12,12 @@
  */
 package org.activiti.cdi.test.bpmn;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import junit.framework.Assert;
 
 import org.activiti.cdi.BusinessProcess;
 import org.activiti.cdi.test.CdiActivitiTestCase;
@@ -34,7 +30,6 @@ import org.junit.Test;
 
 public class SignalEventTest extends CdiActivitiTestCase {
   
-//  private static Logger log = Logger.getLogger(SignalEventTest.class.getName());
   
   @Named
   public static class SignalReceivedDelegate implements JavaDelegate {    
@@ -44,7 +39,6 @@ public class SignalEventTest extends CdiActivitiTestCase {
     
     public void execute(DelegateExecution execution) {
       businessProcess.setVariable("processName", "catchSignal-visited (was " + businessProcess.getVariable("processName")  + ")");
-//      log.log(Level.INFO, "");
     }
   }
 
@@ -84,9 +78,8 @@ public class SignalEventTest extends CdiActivitiTestCase {
     assertEquals(1, runtimeService.createExecutionQuery().processInstanceId(piCatchSignal.getProcessInstanceId()).activityId("receiveTask").count());
     assertEquals(1, runtimeService.createExecutionQuery().processInstanceId(piThrowSignal.getProcessInstanceId()).activityId("receiveTask").count());
     
-    //TODO: THis fails because of http://jira.codehaus.org/browse/ACT-1257, should be fixed and re-enabled :-)
-    //assertEquals("catchSignal-visited (was catchSignal)", runtimeService.getVariable(piCatchSignal.getId(), "processName"));
-    //assertEquals("throwSignal-visited (was throwSignal)", runtimeService.getVariable(piThrowSignal.getId(), "processName"));
+    assertEquals("catchSignal-visited (was catchSignal)", runtimeService.getVariable(piCatchSignal.getId(), "processName"));
+    assertEquals("throwSignal-visited (was throwSignal)", runtimeService.getVariable(piThrowSignal.getId(), "processName"));
 
     // clean up
     runtimeService.signal(piCatchSignal.getId());
