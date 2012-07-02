@@ -14,8 +14,10 @@ package org.activiti.engine.delegate;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 
 /**
@@ -146,4 +148,10 @@ public interface DelegateTask extends VariableScope {
    * @throws ActivitiException when the task or group doesn't exist.
    */
   void deleteGroupIdentityLink(String groupId, String identityLinkType);
+
+  /**
+   * Retrieves the candidate users and groups associated with the task.
+   * @return set of {@link IdentityLink}s of type {@link IdentityLinkType#CANDIDATE}.
+   */
+  Set<IdentityLink> getCandidates();
 }
