@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="testCatchErrorThrownByDelegateExpressionOnServiceTask">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="serviceTask" />
+    
+    <serviceTask id="serviceTask" activiti:delegateExpression="#{bpmnErrorBean.getDelegate()}" />
+    
+    <boundaryEvent id="catchError" attachedToRef="serviceTask">
+      <errorEventDefinition />
+    </boundaryEvent>
+    
+    <sequenceFlow id="flow3" sourceRef="catchError" targetRef="escalatedTask" />
+    
+    <userTask id="escalatedTask" name="Escalated Task" />
+    <sequenceFlow id="flow4" sourceRef="serviceTask" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

@@ -399,5 +399,28 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     runtimeService.startProcessInstanceByKey("process");    
   }
   
+  @Deployment
+  public void testCatchErrorThrownByExpressionOnServiceTask() {
+    HashMap<String, Object> variables = new HashMap<String, Object>();
+    variables.put("bpmnErrorBean", new BpmnErrorBean());
+    String procId = runtimeService.startProcessInstanceByKey("testCatchErrorThrownByExpressionOnServiceTask", variables).getId();
+    assertThatErrorHasBeenCaught(procId);
+  }
+
+  @Deployment
+  public void testCatchErrorThrownByDelegateExpressionOnServiceTask() {
+    HashMap<String, Object> variables = new HashMap<String, Object>();
+    variables.put("bpmnErrorBean", new BpmnErrorBean());
+    String procId = runtimeService.startProcessInstanceByKey("testCatchErrorThrownByDelegateExpressionOnServiceTask", variables).getId();
+    assertThatErrorHasBeenCaught(procId);
+  }
+
+  @Deployment
+  public void testCatchErrorThrownByJavaDelegateProvidedByDelegateExpressionOnServiceTask() {
+    HashMap<String, Object> variables = new HashMap<String, Object>();
+    variables.put("bpmnErrorBean", new BpmnErrorBean());
+    String procId = runtimeService.startProcessInstanceByKey("testCatchErrorThrownByJavaDelegateProvidedByDelegateExpressionOnServiceTask", variables).getId();
+    assertThatErrorHasBeenCaught(procId);
+  }
 
 }

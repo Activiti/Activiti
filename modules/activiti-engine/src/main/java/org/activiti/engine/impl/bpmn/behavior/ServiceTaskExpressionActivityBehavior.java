@@ -13,7 +13,9 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
+import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 
@@ -24,6 +26,8 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  * @author Tom Baeyens
  * @author Christian Stettler
  * @author Frederik Heremans
+ * @author Slawomir Wojtasiak (Patch for ACT-1159)
+ * @author Falko Menge
  */
 public class ServiceTaskExpressionActivityBehavior extends TaskActivityBehavior {
 
@@ -36,12 +40,30 @@ public class ServiceTaskExpressionActivityBehavior extends TaskActivityBehavior 
   }
 
   public void execute(ActivityExecution execution) throws Exception {
-    Object value = expression.getValue(execution);
+	Object value = null;
+	try {
+		value = expression.getValue(execution);
+		if (resultVariable != null) {
+		    execution.setVariable(resultVariable, value);
+		}
+		leave(execution);
+    } catch (Exception exc) {
 
-    if (resultVariable != null) {
-      execution.setVariable(resultVariable, value);
+      Throwable cause = exc;
+      BpmnError error = null;
+      while (cause != null) {
+        if (cause instanceof BpmnError) {
+          error = (BpmnError) cause;
+          break;
+        }
+        cause = cause.getCause();
+      }
+
+      if (error != null) {
+        ErrorPropagation.propagateError(error, execution);
+      } else {
+        throw exc;
+      }
     }
-    
-    leave(execution);
   }
 }
