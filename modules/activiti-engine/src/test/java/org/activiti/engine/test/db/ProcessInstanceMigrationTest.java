@@ -37,6 +37,8 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
   private static final String TEST_PROCESS = "org/activiti/engine/test/db/ProcessInstanceMigrationTest.testSetProcessDefinitionVersion.bpmn20.xml";
   private static final String TEST_PROCESS_ACTIVITY_MISSING = "org/activiti/engine/test/db/ProcessInstanceMigrationTest.testSetProcessDefinitionVersionActivityMissing.bpmn20.xml";
 
+  private static final String TEST_PROCESS_CALL_ACTIVITY = "org/activiti/engine/test/db/ProcessInstanceMigrationTest.withCallActivity.bpmn20.xml";
+
   public void testSetProcessDefinitionVersionEmptyArguments() {
     try {
       new SetProcessDefinitionVersionCmd(null, 23);    
@@ -227,4 +229,37 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     repositoryService.deleteDeployment(deployment.getId(), true);
   }
 
+
+  @Deployment(resources = {TEST_PROCESS_CALL_ACTIVITY})
+  public void testSetProcessDefinitionVersionWithCallActivity() {
+    // start process instance
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("parentProcess");
+
+    // check that receive task has been reached
+    Execution execution = runtimeService.createExecutionQuery()
+      .activityId("waitState1")
+      .processDefinitionKey("childProcess")
+      .singleResult();
+    assertNotNull(execution);
+    
+    // deploy new version of the process definition
+    org.activiti.engine.repository.Deployment deployment = repositoryService
+      .createDeployment()
+      .addClasspathResource(TEST_PROCESS_CALL_ACTIVITY)
+      .deploy();
+    assertEquals(2, repositoryService.createProcessDefinitionQuery().processDefinitionKey("parentProcess").count());
+
+    // migrate process instance to new process definition version
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    commandExecutor.execute(new SetProcessDefinitionVersionCmd(pi.getId(), 2));
+
+    // signal process instance
+    runtimeService.signal(execution.getId());
+
+    // should be finished now
+    assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceId(pi.getId()).count());
+
+    // undeploy "manually" deployed process definition
+    repositoryService.deleteDeployment(deployment.getId(), true);
+  }
 }

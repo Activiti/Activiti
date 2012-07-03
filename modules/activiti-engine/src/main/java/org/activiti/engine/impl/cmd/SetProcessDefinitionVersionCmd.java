@@ -107,19 +107,7 @@ public class SetProcessDefinitionVersionCmd implements Command<Void>, Serializab
     ProcessDefinitionEntity newProcessDefinition = deploymentCache
       .findDeployedProcessDefinitionByKeyAndVersion(currentProcessDefinition.getKey(), processDefinitionVersion);
     
-    // check that the new process definition version contains the current activity
-    if (!newProcessDefinition.contains(processInstance.getActivity())) {
-      throw new ActivitiException(
-        "The new process definition " +
-        "(key = '" + newProcessDefinition.getKey() + "') " +
-        "does not contain the current activity " +
-        "(id = '" + processInstance.getActivity().getId() + "') " +
-        "of the process instance " +
-        "(id = '" + processInstanceId + "').");
-    }
-
-    // switch the process instance to the new process definition version
-    processInstance.setProcessDefinition(newProcessDefinition);
+    validateAndSwitchVersionOfExecution(processInstance, newProcessDefinition);
     
     // switch the historic process instance to the new process definition version
     HistoricProcessInstanceManager historicProcessInstanceManager = commandContext.getHistoricProcessInstanceManager();
@@ -132,10 +120,26 @@ public class SetProcessDefinitionVersionCmd implements Command<Void>, Serializab
     List<ExecutionEntity> childExecutions = executionManager
       .findChildExecutionsByParentExecutionId(processInstanceId);
     for (ExecutionEntity executionEntity : childExecutions) {
-      executionEntity.setProcessDefinition(newProcessDefinition);
+      validateAndSwitchVersionOfExecution(executionEntity, newProcessDefinition);
     }
 
     return null;
+  }
+
+  protected void validateAndSwitchVersionOfExecution(ExecutionEntity execution, ProcessDefinitionEntity newProcessDefinition) {
+    // check that the new process definition version contains the current activity
+    if (execution.getActivity() != null && !newProcessDefinition.contains(execution.getActivity())) {
+      throw new ActivitiException(
+        "The new process definition " +
+        "(key = '" + newProcessDefinition.getKey() + "') " +
+        "does not contain the current activity " +
+        "(id = '" + execution.getActivity().getId() + "') " +
+        "of the process instance " +
+        "(id = '" + processInstanceId + "').");
+    }
+
+    // switch the process instance to the new process definition version
+    execution.setProcessDefinition(newProcessDefinition);
   }
 
 }
