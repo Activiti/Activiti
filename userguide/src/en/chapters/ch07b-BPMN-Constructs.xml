@@ -3405,7 +3405,8 @@ public class ReverseStringsFieldInjected implements JavaDelegate {
             As of Activiti 5.9, it is possible to throw BPMN Errors from user code
             inside Service Tasks or Script Tasks.
             In order to do this, a special ActivitiException called
-            <emphasis>BpmnError</emphasis> can be thrown in JavaDelegates or scripts.
+            <emphasis>BpmnError</emphasis> can be thrown in JavaDelegates or scripts
+            and since Activiti 5.10 also in expressions and delegate expressions.
             The engine will catch this exception and forward it to an appropriate
             error handler, e.g., a Boundary Error Event or an Error Event Sub-Process.
             <programlisting>
