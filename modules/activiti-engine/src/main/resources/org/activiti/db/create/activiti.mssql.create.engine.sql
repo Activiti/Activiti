@@ -87,8 +87,8 @@ create table ACT_RU_TASK (
     PARENT_TASK_ID_ nvarchar(64),
     DESCRIPTION_ nvarchar(4000),
     TASK_DEF_KEY_ nvarchar(255),
-    OWNER_ nvarchar(64),
-    ASSIGNEE_ nvarchar(64),
+    OWNER_ nvarchar(255),
+    ASSIGNEE_ nvarchar(255),
     DELEGATION_ nvarchar(64),
     PRIORITY_ int,
     CREATE_TIME_ datetime,
@@ -99,9 +99,9 @@ create table ACT_RU_TASK (
 create table ACT_RU_IDENTITYLINK (
     ID_ nvarchar(64),
     REV_ int,
-    GROUP_ID_ nvarchar(64),
+    GROUP_ID_ nvarchar(255),
     TYPE_ nvarchar(255),
-    USER_ID_ nvarchar(64),
+    USER_ID_ nvarchar(255),
     TASK_ID_ nvarchar(64),
     primary key (ID_)
 );
