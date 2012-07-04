@@ -27,6 +27,8 @@ import org.activiti.engine.impl.util.ClockUtil;
  */
 public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity implements HistoricTaskInstance, PersistentObject {
 
+  private static final long serialVersionUID = 1L;
+  
   protected String executionId;
   protected String name;
   protected String parentTaskId;

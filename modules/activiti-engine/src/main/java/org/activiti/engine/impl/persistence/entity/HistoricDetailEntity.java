@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.activiti.engine.history.HistoricDetail;
@@ -24,8 +25,10 @@ import org.activiti.engine.impl.db.PersistentObject;
 /**
  * @author Tom Baeyens
  */
-public class HistoricDetailEntity implements HistoricDetail, PersistentObject {
+public class HistoricDetailEntity implements HistoricDetail, PersistentObject, Serializable {
 
+  private static final long serialVersionUID = 1L;
+  
   protected String id;
   protected String processInstanceId;
   protected String activityInstanceId;

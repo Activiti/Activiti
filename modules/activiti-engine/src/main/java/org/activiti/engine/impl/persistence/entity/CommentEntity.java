@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,7 +27,9 @@ import org.activiti.engine.task.Event;
 /**
  * @author Tom Baeyens
  */
-public class CommentEntity implements Comment, Event, PersistentObject {
+public class CommentEntity implements Comment, Event, PersistentObject, Serializable {
+  
+  private static final long serialVersionUID = 1L;
   
   public static final String TYPE_EVENT = "event";
   public static final String TYPE_COMMENT = "comment";

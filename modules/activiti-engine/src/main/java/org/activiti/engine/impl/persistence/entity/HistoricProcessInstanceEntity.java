@@ -27,6 +27,8 @@ import org.activiti.engine.impl.util.ClockUtil;
  */
 public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity implements HistoricProcessInstance {
 
+  private static final long serialVersionUID = 1L;
+  
   protected String endActivityId;
   protected String businessKey;
   protected String startUserId;

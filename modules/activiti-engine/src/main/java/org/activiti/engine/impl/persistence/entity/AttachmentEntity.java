@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,8 +24,10 @@ import org.activiti.engine.task.Attachment;
 /**
  * @author Tom Baeyens
  */
-public class AttachmentEntity implements Attachment, PersistentObject {
+public class AttachmentEntity implements Attachment, PersistentObject, Serializable {
 
+  private static final long serialVersionUID = 1L;
+  
   protected String id;
   protected int revision;
   protected String name;

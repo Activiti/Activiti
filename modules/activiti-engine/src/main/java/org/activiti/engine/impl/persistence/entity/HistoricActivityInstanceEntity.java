@@ -24,6 +24,8 @@ import org.activiti.engine.history.HistoricActivityInstance;
  */
 public class HistoricActivityInstanceEntity extends HistoricScopeInstanceEntity implements HistoricActivityInstance {
 
+  private static final long serialVersionUID = 1L;
+  
   protected String activityId;
   protected String activityName;
   protected String activityType;

@@ -20,6 +20,8 @@ package org.activiti.engine.impl.persistence.entity;
  */
 public class SignalEventSubscriptionEntity extends EventSubscriptionEntity {
   
+  private static final long serialVersionUID = 1L;
+  
   public SignalEventSubscriptionEntity(ExecutionEntity executionEntity) {
     super(executionEntity);
     eventType = "signal";

@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.impl.persistence.entity;
 
+import java.io.Serializable;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.db.PersistentObject;
 
@@ -20,8 +22,10 @@ import org.activiti.engine.impl.db.PersistentObject;
 /**
  * @author Tom Baeyens
  */
-public class PropertyEntity implements PersistentObject {
+public class PropertyEntity implements PersistentObject, Serializable {
 
+  private static final long serialVersionUID = 1L;
+  
   String name;
   int revision;
   String value;

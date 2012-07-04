@@ -14,6 +14,7 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.activiti.engine.impl.db.PersistentObject;
@@ -22,8 +23,10 @@ import org.activiti.engine.impl.util.ClockUtil;
 /**
  * @author Christian Stettler
  */
-public abstract class HistoricScopeInstanceEntity implements PersistentObject {
+public abstract class HistoricScopeInstanceEntity implements PersistentObject, Serializable {
 
+  private static final long serialVersionUID = 1L;
+  
   protected String id;
   protected String processInstanceId;
   protected String processDefinitionId;

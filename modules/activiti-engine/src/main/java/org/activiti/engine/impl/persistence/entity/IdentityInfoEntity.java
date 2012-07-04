@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,7 +24,9 @@ import org.activiti.engine.impl.identity.Account;
 /**
  * @author Tom Baeyens
  */
-public class IdentityInfoEntity implements PersistentObject, Account {
+public class IdentityInfoEntity implements PersistentObject, Account, Serializable {
+  
+  private static final long serialVersionUID = 1L;
   
   public static final String TYPE_USERACCOUNT = "account";
   public static final String TYPE_USERINFO = "userinfo";

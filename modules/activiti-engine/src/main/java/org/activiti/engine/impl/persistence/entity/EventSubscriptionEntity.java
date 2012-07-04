@@ -30,8 +30,10 @@ import org.activiti.engine.impl.util.ClockUtil;
 /**
  * @author Daniel Meyer
  */
-public abstract class EventSubscriptionEntity implements PersistentObject {
+public abstract class EventSubscriptionEntity implements PersistentObject, Serializable {
 
+  private static final long serialVersionUID = 1L;
+  
   // persistent state ///////////////////////////
   protected String id;
   protected int revision = 1;

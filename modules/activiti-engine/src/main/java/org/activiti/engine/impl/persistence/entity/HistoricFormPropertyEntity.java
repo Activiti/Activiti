@@ -23,6 +23,8 @@ import org.activiti.engine.impl.util.ClockUtil;
  */
 public class HistoricFormPropertyEntity extends HistoricDetailEntity implements HistoricFormProperty {
 
+  private static final long serialVersionUID = 1L;
+  
   protected String propertyId;
   protected String propertyValue;
   
