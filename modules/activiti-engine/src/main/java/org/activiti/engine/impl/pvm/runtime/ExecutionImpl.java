@@ -204,6 +204,14 @@ public class ExecutionImpl implements
     ensureParentInitialized();
     return parent;
   }
+  
+  public String getParentId() {
+    ensureActivityInitialized();
+    if(parent != null) {
+      return parent.getId();
+    }
+    return null;
+  }
 
   /** all updates need to go through this setter as subclasses can override this method */
   public void setParent(InterpretableExecution parent) {
