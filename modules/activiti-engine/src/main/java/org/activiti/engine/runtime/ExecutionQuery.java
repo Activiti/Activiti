@@ -19,7 +19,7 @@ import org.activiti.engine.query.Query;
 
 
 
-/** Allows programatic querying of {@link Execution}s.
+/** Allows programmatic querying of {@link Execution}s.
  * 
  * @author Joram Barrez
  * @author Frederik Heremans
@@ -45,7 +45,7 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
   ExecutionQuery activityId(String activityId);
   
   /** 
-   * Only select executions which have a variable with the given value. The type 
+   * Only select executions which have a local variable with the given value. The type
    * of variable is determined based on the value, using types configured in 
    * {@link ProcessEngineConfiguration#getVariableTypes()}. 
    * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
@@ -55,7 +55,7 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
   ExecutionQuery variableValueEquals(String name, Object value);
   
   /** 
-   * Only select executions which have a variable with the given name, but
+   * Only select executions which have a local variable with the given name, but
    * with a different value than the passed value.
    * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
    * are not supported.
@@ -65,7 +65,7 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
   
 
   /** 
-   * Only select executions which have a variable value greater than the passed value.
+   * Only select executions which have a local variable value greater than the passed value.
    * Booleans, Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
    * are not supported.
    * @param name variable name, cannot be null.
@@ -74,7 +74,7 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
   ExecutionQuery variableValueGreaterThan(String name, Object value);
   
   /** 
-   * Only select executions which have a variable value greater than or equal to 
+   * Only select executions which have a local variable value greater than or equal to
    * the passed value. Booleans, Byte-arrays and {@link Serializable} objects (which 
    * are not primitive type wrappers) are not supported.
    * @param name variable name, cannot be null.
@@ -83,7 +83,7 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
   ExecutionQuery variableValueGreaterThanOrEqual(String name, Object value);
   
   /** 
-   * Only select executions which have a variable value less than the passed value.
+   * Only select executions which have a local variable value less than the passed value.
    * Booleans, Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
    * are not supported.
    * @param name variable name, cannot be null.
@@ -92,7 +92,7 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
   ExecutionQuery variableValueLessThan(String name, Object value);
   
   /** 
-   * Only select executions which have a variable value less than or equal to the passed value.
+   * Only select executions which have a local variable value less than or equal to the passed value.
    * Booleans, Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
    * are not supported.
    * @param name variable name, cannot be null.
@@ -101,7 +101,7 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
   ExecutionQuery variableValueLessThanOrEqual(String name, Object value);
   
   /** 
-   * Only select executions which have a variable value like the given value.
+   * Only select executions which have a local variable value like the given value.
    * This be used on string variables only.
    * @param name variable name, cannot be null.
    * @param value variable value, cannot be null. The string can include the

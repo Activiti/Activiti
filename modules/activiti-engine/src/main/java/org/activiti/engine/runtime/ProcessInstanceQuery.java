@@ -65,7 +65,7 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
   ProcessInstanceQuery subProcessInstanceId(String subProcessInstanceId);
   
   /** 
-   * Only select process instances which have a variable with the given value. The type 
+   * Only select process instances which have a global variable with the given value. The type
    * of variable is determined based on the value, using types configured in 
    * {@link ProcessEngineConfiguration#getVariableTypes()}. 
    * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
@@ -75,7 +75,7 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
   ProcessInstanceQuery variableValueEquals(String name, Object value);
   
   /** 
-   * Only select process instances which have a variable with the given name, but
+   * Only select process instances which have a global variable with the given name, but
    * with a different value than the passed value.
    * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
    * are not supported.
@@ -94,7 +94,7 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
   ProcessInstanceQuery variableValueGreaterThan(String name, Object value);
   
   /** 
-   * Only select process instances which have a variable value greater than or equal to 
+   * Only select process instances which have a global variable value greater than or equal to
    * the passed value. Booleans, Byte-arrays and {@link Serializable} objects (which 
    * are not primitive type wrappers) are not supported.
    * @param name variable name, cannot be null.
@@ -103,7 +103,7 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
   ProcessInstanceQuery variableValueGreaterThanOrEqual(String name, Object value);
   
   /** 
-   * Only select process instances which have a variable value less than the passed value.
+   * Only select process instances which have a global variable value less than the passed value.
    * Booleans, Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
    * are not supported.
    * @param name variable name, cannot be null.
@@ -112,7 +112,7 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
   ProcessInstanceQuery variableValueLessThan(String name, Object value);
   
   /** 
-   * Only select process instances which have a variable value less than or equal to the passed value.
+   * Only select process instances which have a global variable value less than or equal to the passed value.
    * Booleans, Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
    * are not supported.
    * @param name variable name, cannot be null.
@@ -121,7 +121,7 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
   ProcessInstanceQuery variableValueLessThanOrEqual(String name, Object value);
   
   /** 
-   * Only select process instances which have a variable value like the given value.
+   * Only select process instances which have a global variable value like the given value.
    * This be used on string variables only.
    * @param name variable name, cannot be null.
    * @param value variable value, cannot be null. The string can include the
