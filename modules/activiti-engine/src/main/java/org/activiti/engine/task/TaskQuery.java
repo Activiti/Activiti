@@ -23,6 +23,7 @@ import org.activiti.engine.query.Query;
  * Allows programmatic querying of {@link Task}s;
  * 
  * @author Joram Barrez
+ * @author Falko Menge
  */
 public interface TaskQuery extends Query<TaskQuery, Task>{
 
@@ -67,6 +68,9 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   /** @see {@link #taskUnassigned} */
   @Deprecated
   TaskQuery taskUnnassigned();
+
+  /** Only select tasks with the given {@link DelegationState}. */
+  TaskQuery taskDelegationState(DelegationState delegationState);
 
   /** Only select tasks for which the given user is a candidate. */
   TaskQuery taskCandidateUser(String candidateUser);

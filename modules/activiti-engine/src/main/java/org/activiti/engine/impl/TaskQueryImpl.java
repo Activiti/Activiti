@@ -23,12 +23,14 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.variable.VariableTypes;
+import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 
 /**
  * @author Joram Barrez
  * @author Tom Baeyens
+ * @author Falko Menge
  */
 public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements TaskQuery {
   
@@ -45,6 +47,8 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   protected String involvedUser;
   protected String owner;
   protected boolean unassigned = false;
+  protected boolean noDelegationState = false;
+  protected DelegationState delegationState;
   protected String candidateUser;
   protected String candidateGroup;
   private List<String> candidateGroups;
@@ -160,6 +164,15 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
 
   public TaskQuery taskUnassigned() {
     this.unassigned = true;
+    return this;
+  }
+
+  public TaskQuery taskDelegationState(DelegationState delegationState) {
+    if (delegationState == null) {
+      this.noDelegationState = true;
+    } else {
+      this.delegationState = delegationState;
+    }
     return this;
   }
 
@@ -409,6 +422,15 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   }
   public boolean getUnassigned() {
     return unassigned;
+  }
+  public DelegationState getDelegationState() {
+    return delegationState;
+  }
+  public boolean getNoDelegationState() {
+    return noDelegationState;
+  }
+  public String getDelegationStateString() {
+    return (delegationState!=null ? delegationState.toString() : null);
   }
   public String getCandidateUser() {
     return candidateUser;

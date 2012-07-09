@@ -25,6 +25,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
@@ -32,6 +33,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * @author Joram Barrez
  * @author Frederik Heremans
+ * @author Falko Menge
  */
 public class TaskQueryTest extends PluggableActivitiTestCase {
 
@@ -353,7 +355,44 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
       // OK
     }
   }
-  
+
+  public void testQueryByDelegationState() {
+    TaskQuery query = taskService.createTaskQuery().taskDelegationState(null);
+    assertEquals(12, query.count());
+    assertEquals(12, query.list().size());
+    query = taskService.createTaskQuery().taskDelegationState(DelegationState.PENDING);
+    assertEquals(0, query.count());
+    assertEquals(0, query.list().size());
+    query = taskService.createTaskQuery().taskDelegationState(DelegationState.RESOLVED);
+    assertEquals(0, query.count());
+    assertEquals(0, query.list().size());
+
+    String taskId= taskService.createTaskQuery().taskAssignee("gonzo").singleResult().getId();
+    taskService.delegateTask(taskId, "kermit");
+
+    query = taskService.createTaskQuery().taskDelegationState(null);
+    assertEquals(11, query.count());
+    assertEquals(11, query.list().size());
+    query = taskService.createTaskQuery().taskDelegationState(DelegationState.PENDING);
+    assertEquals(1, query.count());
+    assertEquals(1, query.list().size());
+    query = taskService.createTaskQuery().taskDelegationState(DelegationState.RESOLVED);
+    assertEquals(0, query.count());
+    assertEquals(0, query.list().size());
+
+    taskService.resolveTask(taskId);
+
+    query = taskService.createTaskQuery().taskDelegationState(null);
+    assertEquals(11, query.count());
+    assertEquals(11, query.list().size());
+    query = taskService.createTaskQuery().taskDelegationState(DelegationState.PENDING);
+    assertEquals(0, query.count());
+    assertEquals(0, query.list().size());
+    query = taskService.createTaskQuery().taskDelegationState(DelegationState.RESOLVED);
+    assertEquals(1, query.count());
+    assertEquals(1, query.list().size());
+  }
+
   public void testQueryCreatedOn() throws Exception {
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss.SSS");
     
@@ -605,7 +644,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
  
   @Deployment(resources={"org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml"})
   public void testProcessInstanceBusinessKey() throws Exception {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", "BUSINESS-KEY-1");
+    runtimeService.startProcessInstanceByKey("oneTaskProcess", "BUSINESS-KEY-1");
     
     assertEquals(1, taskService.createTaskQuery().processDefinitionName("The One Task Process").processInstanceBusinessKey("BUSINESS-KEY-1").list().size());
     assertEquals(1, taskService.createTaskQuery().processInstanceBusinessKey("BUSINESS-KEY-1").list().size());    

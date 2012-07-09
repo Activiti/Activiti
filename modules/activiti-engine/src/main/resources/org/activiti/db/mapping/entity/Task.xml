@@ -159,6 +159,12 @@
       <if test="unassigned">
         and T.ASSIGNEE_ IS NULL
       </if>
+      <if test="noDelegationState">
+        and T.DELEGATION_ IS NULL
+      </if>
+      <if test="delegationState != null">
+        and T.DELEGATION_ = #{delegationStateString}
+      </if>
       <if test="processInstanceId != null">
         and T.PROC_INST_ID_ = #{processInstanceId}
       </if>
