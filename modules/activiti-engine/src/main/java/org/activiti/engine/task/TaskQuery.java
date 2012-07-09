@@ -18,7 +18,6 @@ import java.util.List;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.query.Query;
-import org.activiti.engine.runtime.ExecutionQuery;
 
 /**
  * Allows programmatic querying of {@link Task}s;
@@ -63,6 +62,10 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   TaskQuery taskOwner(String owner);
   
   /** Only select tasks which don't have an assignee. */
+  TaskQuery taskUnassigned();
+
+  /** @see {@link #taskUnassigned} */
+  @Deprecated
   TaskQuery taskUnnassigned();
 
   /** Only select tasks for which the given user is a candidate. */

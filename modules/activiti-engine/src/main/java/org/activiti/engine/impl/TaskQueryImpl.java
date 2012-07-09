@@ -152,7 +152,13 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     return this;
   }
   
+  /** @see {@link #taskUnassigned} */
+  @Deprecated
   public TaskQuery taskUnnassigned() {
+    return taskUnassigned();
+  }
+
+  public TaskQuery taskUnassigned() {
     this.unassigned = true;
     return this;
   }

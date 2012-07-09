@@ -254,6 +254,13 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
   }
 
   public void testQueryByUnassigned() {
+    TaskQuery query = taskService.createTaskQuery().taskUnassigned();
+    assertEquals(11, query.count());
+    assertEquals(11, query.list().size());
+  }
+
+  public void testQueryByUnnassigned() {
+    @SuppressWarnings("deprecation")
     TaskQuery query = taskService.createTaskQuery().taskUnnassigned();
     assertEquals(11, query.count());
     assertEquals(11, query.list().size());
