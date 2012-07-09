@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.context.Context;
@@ -121,7 +122,11 @@ public class CommandContext {
           }
 
           if (exception != null) {
-            log.log(Level.SEVERE, "Error while closing command context", exception);
+            Level loggingLevel = Level.SEVERE;
+            if (exception instanceof ActivitiTaskAlreadyClaimedException) {
+              loggingLevel = Level.INFO; // reduce log level, because this is not really a technical exception
+            }
+            log.log(loggingLevel, "Error while closing command context", exception);
             transactionContext.rollback();
           }
         }
