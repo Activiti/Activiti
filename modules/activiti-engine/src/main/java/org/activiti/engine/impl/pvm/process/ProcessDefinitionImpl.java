@@ -46,6 +46,9 @@ public class ProcessDefinitionImpl extends ScopeImpl implements PvmProcessDefini
   }
 
   public PvmProcessInstance createProcessInstance() {
+    if(initial == null) {
+      throw new ActivitiException("Process '"+name+"' has no default start activity (e.g. none start event), hence you cannot use 'startProcessInstanceBy...' but have to start it using one of the modeled start events (e.g. message start events).");
+    }
     return createProcessInstanceForInitial(initial);
   }
   
@@ -53,7 +56,7 @@ public class ProcessDefinitionImpl extends ScopeImpl implements PvmProcessDefini
   public PvmProcessInstance createProcessInstanceForInitial(ActivityImpl initial) {
     
     if(initial == null) {
-      throw new ActivitiException("Cannot start process instance, initial is null");
+      throw new ActivitiException("Cannot start process instance, initial activity where the process instance should start is null.");
     }
     
     InterpretableExecution processInstance = newProcessInstance(initial);
