@@ -78,8 +78,8 @@ public class SignalEventTest extends CdiActivitiTestCase {
   }
 
   @Test
-  @Deployment(resources = {"org/activiti/cdi/test/bpmn/SignalEventTests.catchAlertSignalBoundaryWithReceiveTask.bpmn20.xml", 
-                          "org/activiti/cdi/test/bpmn/SignalEventTests.throwAlertSignalWithDelegate.bpmn20.xml"})
+  @Deployment(resources = {"org/activiti/cdi/test/impl/bpmn/SignalEventTests.catchAlertSignalBoundaryWithReceiveTask.bpmn20.xml", 
+                          "org/activiti/cdi/test/impl/bpmn/SignalEventTests.throwAlertSignalWithDelegate.bpmn20.xml"})
   public void testSignalCatchBoundaryWithVariables() throws InterruptedException {
     HashMap<String, Object> variables1 = new HashMap<String, Object>();
     variables1.put("processName", "catchSignal");
