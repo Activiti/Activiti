@@ -91,11 +91,14 @@ public class BusinessProcess implements Serializable {
   
   @Inject private Instance<Conversation> conversationInstance;
 
-  public ProcessInstance startProcessById(String processDefinitionId) {       
-    
+  protected void validateValidUsage() {
     if(Context.getCommandContext() != null) {
-      throw new ActivitiCdiException("Cannot use startProcessById in an activiti command.");
+      throw new ActivitiCdiException("Cannot use this method of the BusinessProcess bean within an activiti command.");
     }
+  }  
+  
+  public ProcessInstance startProcessById(String processDefinitionId) {       
+    validateValidUsage();
     
     ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceById(processDefinitionId, getAndClearCachedVariables());
     setExecution(instance);
@@ -103,10 +106,7 @@ public class BusinessProcess implements Serializable {
   }
 
   public ProcessInstance startProcessById(String processDefinitionId, String businessKey) {   
-    
-    if(Context.getCommandContext() != null) {
-      throw new ActivitiCdiException("Cannot use startProcessById in an activiti command.");
-    }
+    validateValidUsage();
     
     ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceById(processDefinitionId, businessKey, getAndClearCachedVariables());
     setExecution(instance);
@@ -114,10 +114,7 @@ public class BusinessProcess implements Serializable {
   }
 
   public ProcessInstance startProcessById(String processDefinitionId, Map<String, Object> variables) {
-    
-    if(Context.getCommandContext() != null) {
-      throw new ActivitiCdiException("Cannot use startProcessById in an activiti command.");
-    }
+    validateValidUsage();
     
     Map<String, Object> cachedVariables = getAndClearCachedVariables();
     cachedVariables.putAll(variables);
@@ -127,10 +124,7 @@ public class BusinessProcess implements Serializable {
   }
 
   public ProcessInstance startProcessById(String processDefinitionId, String businessKey, Map<String, Object> variables) {
-    
-    if(Context.getCommandContext() != null) {
-      throw new ActivitiCdiException("Cannot use startProcessById in an activiti command.");
-    }
+    validateValidUsage();
     
     Map<String, Object> cachedVariables = getAndClearCachedVariables();
     cachedVariables.putAll(variables);
@@ -139,11 +133,8 @@ public class BusinessProcess implements Serializable {
     return instance;
   }
 
-  public ProcessInstance startProcessByKey(String key) {
-    
-    if(Context.getCommandContext() != null) {
-      throw new ActivitiCdiException("Cannot use startProcessByKey in an activiti command.");
-    }
+  public ProcessInstance startProcessByKey(String key) {    
+    validateValidUsage();
     
     ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByKey(key, getAndClearCachedVariables());
     setExecution(instance);
@@ -151,10 +142,7 @@ public class BusinessProcess implements Serializable {
   }
 
   public ProcessInstance startProcessByKey(String key, String businessKey) {
-    
-    if(Context.getCommandContext() != null) {
-      throw new ActivitiCdiException("Cannot use startProcessByKey in an activiti command.");
-    }
+    validateValidUsage();
     
     ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByKey(key, businessKey, getAndClearCachedVariables());
     setExecution(instance);
@@ -162,10 +150,7 @@ public class BusinessProcess implements Serializable {
   }
 
   public ProcessInstance startProcessByKey(String key, Map<String, Object> variables) {
-    
-    if(Context.getCommandContext() != null) {
-      throw new ActivitiCdiException("Cannot use startProcessByKey in an activiti command.");
-    }
+    validateValidUsage();
     
     Map<String, Object> cachedVariables = getAndClearCachedVariables();
     cachedVariables.putAll(variables);
@@ -174,17 +159,43 @@ public class BusinessProcess implements Serializable {
     return instance;
   }
 
-  public ProcessInstance startProcessByKey(String key, String businessKey, Map<String, Object> variables) {
-    
-    if(Context.getCommandContext() != null) {
-      throw new ActivitiCdiException("Cannot use startProcessByKey in an activiti command.");
-    }
+  public ProcessInstance startProcessByKey(String key, String businessKey, Map<String, Object> variables) {    
+    validateValidUsage();
     
     Map<String, Object> cachedVariables = getAndClearCachedVariables();
     cachedVariables.putAll(variables);
     ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByKey(key, businessKey, cachedVariables);
     setExecution(instance);
     return instance;
+  }
+
+  public ProcessInstance startProcessInstanceByMessage(String messageName) { 
+    validateValidUsage();
+    
+    Map<String, Object> cachedVariables = getAndClearCachedVariables();
+    ProcessInstance processInstance =  processEngine.getRuntimeService().startProcessInstanceByMessage(messageName, cachedVariables); 
+    setExecution(processInstance);
+    return processInstance;
+  }
+
+  public ProcessInstance startProcessInstanceByMessage(String messageName, Map<String, Object> processVariables) { 
+    validateValidUsage();
+    
+    Map<String, Object> cachedVariables = getAndClearCachedVariables();
+    cachedVariables.putAll(processVariables);
+    ProcessInstance processInstance =  processEngine.getRuntimeService().startProcessInstanceByMessage(messageName, cachedVariables); 
+    setExecution(processInstance);
+    return processInstance;
+  }
+
+  public ProcessInstance startProcessInstanceByMessage(String messageName, String businessKey, Map<String, Object> processVariables) { 
+    validateValidUsage();
+    
+    Map<String, Object> cachedVariables = getAndClearCachedVariables();
+    cachedVariables.putAll(processVariables);
+    ProcessInstance processInstance =  processEngine.getRuntimeService().startProcessInstanceByMessage(messageName, businessKey, cachedVariables); 
+    setExecution(processInstance);
+    return processInstance;
   }
 
   @Deprecated
