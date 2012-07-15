@@ -36,7 +36,7 @@ public class HistoricTaskInstanceQueryProperty implements QueryProperty {
   public static final HistoricTaskInstanceQueryProperty TASK_DESCRIPTION = new HistoricTaskInstanceQueryProperty("DESCRIPTION_");
   public static final HistoricTaskInstanceQueryProperty TASK_ASSIGNEE = new HistoricTaskInstanceQueryProperty("ASSIGNEE_");
   public static final HistoricTaskInstanceQueryProperty TASK_OWNER = new HistoricTaskInstanceQueryProperty("OWNER_");
-  public static final HistoricTaskInstanceQueryProperty TASK_DEFINITION_KEY = new HistoricTaskInstanceQueryProperty("TASK_DEF_ID_");
+  public static final HistoricTaskInstanceQueryProperty TASK_DEFINITION_KEY = new HistoricTaskInstanceQueryProperty("TASK_DEF_KEY_");
   public static final HistoricTaskInstanceQueryProperty DELETE_REASON = new HistoricTaskInstanceQueryProperty("DELETE_REASON_");
   public static final HistoricTaskInstanceQueryProperty START = new HistoricTaskInstanceQueryProperty("HTI.START_TIME_");
   public static final HistoricTaskInstanceQueryProperty END = new HistoricTaskInstanceQueryProperty("HTI.END_TIME_");
