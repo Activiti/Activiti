@@ -18,7 +18,9 @@ import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 
 public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
@@ -44,5 +46,33 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
 
   }
 
+  @Deployment 
+  public void testExpression() {
+    // Set the clock fixed
+    Date startTime = new Date();
+
+    HashMap<String, Object> variables1 = new HashMap<String, Object>();
+    variables1.put("dueDate", new Date());
+    
+    HashMap<String, Object> variables2 = new HashMap<String, Object>();
+    variables2.put("dueDate", new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss").format(new Date()));
+    
+    // After process start, there should be timer created    
+    ProcessInstance pi1 = runtimeService.startProcessInstanceByKey("intermediateTimerEventExample", variables1);
+    ProcessInstance pi2 = runtimeService.startProcessInstanceByKey("intermediateTimerEventExample", variables2);
+    
+    assertEquals(1, managementService.createJobQuery().processInstanceId(pi1.getId()).count());
+    assertEquals(1, managementService.createJobQuery().processInstanceId(pi2.getId()).count());
+
+    // After setting the clock to one second in the future the timers should fire
+    ClockUtil.setCurrentTime(new Date(startTime.getTime() + 1000));
+    waitForJobExecutorToProcessAllJobs(5000L, 25L);
+
+    assertEquals(0, managementService.createJobQuery().processInstanceId(pi1.getId()).count());
+    assertEquals(0, managementService.createJobQuery().processInstanceId(pi2.getId()).count());
+
+    assertProcessEnded(pi1.getProcessInstanceId());
+    assertProcessEnded(pi2.getProcessInstanceId());    
+  }
 
 }

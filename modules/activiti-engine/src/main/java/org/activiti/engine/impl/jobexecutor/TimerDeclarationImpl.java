@@ -106,8 +106,27 @@ public class TimerDeclarationImpl implements Serializable {
       // Prefent NPE from happening in the next line
       throw new ActivitiException("Timer '"+executionEntity.getActivityId()+"' was not configured with a valid duration/time");
     }
-    String dueDateString = executionEntity == null ? description.getExpressionText() : (String) description.getValue(executionEntity);
-    Date duedate = businessCalendar.resolveDuedate(dueDateString);
+    
+    String dueDateString = null;
+    Date duedate = null;
+    if (executionEntity == null) {
+      dueDateString = description.getExpressionText();
+    }
+    else {
+      Object dueDateValue = description.getValue(executionEntity);
+      if (dueDateValue instanceof String) {
+        dueDateString = (String)dueDateValue;
+      }
+      else if (dueDateValue instanceof Date) {
+        duedate = (Date)dueDateValue;
+      }
+      else {
+        throw new ActivitiException("Timer '"+executionEntity.getActivityId()+"' was not configured with a valid duration/time, either hand in a java.util.Date or a String in format 'yyyy-MM-dd'T'hh:mm:ss'");
+      }
+    }
+    if (duedate==null) {      
+      duedate = businessCalendar.resolveDuedate(dueDateString);
+    }
 
     TimerEntity timer = new TimerEntity(this);
     timer.setDuedate(duedate);
