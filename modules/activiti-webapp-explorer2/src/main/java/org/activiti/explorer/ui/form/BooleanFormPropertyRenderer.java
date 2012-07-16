@@ -36,7 +36,8 @@ public class BooleanFormPropertyRenderer extends AbstractFormPropertyRenderer {
     checkBox.setEnabled(formProperty.isWritable());
 
     if (formProperty.getValue() != null) {
-      checkBox.setValue(formProperty.getValue());
+      Boolean value = new Boolean(Boolean.parseBoolean(formProperty.getValue()));
+      checkBox.setValue(value); 
     }
 
     return checkBox;
