@@ -38,9 +38,9 @@ public class FormPropertyHandler {
   
   public FormProperty createFormProperty(ExecutionEntity execution) {
     FormPropertyImpl formProperty = new FormPropertyImpl(this);
+    Object modelValue = null;
     
     if (execution!=null) {
-      Object modelValue = null;
       if (variableName != null || variableExpression == null) {
         final String varName = variableName != null ? variableName : id;
         if (execution.hasVariable(varName)) {
@@ -51,15 +51,21 @@ public class FormPropertyHandler {
       } else {
         modelValue = variableExpression.getValue(execution);
       }
-      
-      if (modelValue instanceof String) {
-        formProperty.setValue((String) modelValue);
-      } else if (type != null) {
-        String formValue = type.convertModelValueToFormValue(modelValue);
-        formProperty.setValue(formValue);
-      } else if (modelValue != null) {
-        formProperty.setValue(modelValue.toString());
+    } else {
+      // Execution is null, the form-property is used in a start-form. Default value
+      // should be available (ACT-1028) even though no execution is available.
+      if (defaultExpression != null) {
+        modelValue = defaultExpression.getValue(StartFormVariableScope.getSharedInstance());
       }
+    }
+
+    if (modelValue instanceof String) {
+      formProperty.setValue((String) modelValue);
+    } else if (type != null) {
+      String formValue = type.convertModelValueToFormValue(modelValue);
+      formProperty.setValue(formValue);
+    } else if (modelValue != null) {
+      formProperty.setValue(modelValue.toString());
     }
     
     return formProperty;
