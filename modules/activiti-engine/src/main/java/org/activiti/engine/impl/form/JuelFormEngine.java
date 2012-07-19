@@ -50,7 +50,7 @@ public class JuelFormEngine implements FormEngine {
     return scriptingEngines.evaluate(formTemplateString, ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE, task.getExecution());
   }
 
-  private String getFormTemplateString(FormData formInstance) {
+  protected String getFormTemplateString(FormData formInstance) {
     String deploymentId = formInstance.getDeploymentId();
     String formKey = formInstance.getFormKey();
     
