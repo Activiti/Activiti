@@ -5531,5 +5531,61 @@ public class MyTaskCreateListener implements TaskListener {
         	</para>
         </section>
       </section>
-	</section>	
+	</section>
+  <section id="security">
+      <title>Process Initiation Authorization</title>
+      By default everyone is allowed to start a new process instance of deployed process definitions. The process initiation authorization functionality allows to define
+      users and groups so that web clients can optionally restrict users to start a new process instance. <emphasis role="bold">NOTE</emphasis> that the authorization definition
+      is <emphasis role="bold">NOT</emphasis> validated by the Activiti Engine in any way. This functionality is only meant for developers to ease the implemention of authorization
+      rules in a web client. The syntax is similar to the syntax of user assignment for a user task. 
+      A user or group can be assigned as potential initiator of a process using &lt;activiti:potentialStarter&gt; tag. Here is an example:
+ <programlisting>
+   &lt;process id="potentialStarter"&gt;
+     &lt;extensionElements&gt;
+       &lt;activiti:potentialStarter&gt;
+         &lt;resourceAssignmentExpression&gt;
+           &lt;formalExpression>group2, group(group3), user(user3)&lt;/formalExpression&gt;
+         &lt;/resourceAssignmentExpression&gt;
+       &lt;/activiti:potentialStarter&gt;
+     &lt;/extensionElements&gt;
+   &lt;startEvent id="theStart"/&gt;
+   ...
+ </programlisting> 
+In the above xml excerpt user(user3) refers directly to user user3 and group(group3) to group group3. No indicator will default to a group type.
+It is also possible to use attributes of the &lt;process&gt; tag, namely &lt;activiti:candidateStarterUsers&gt; and &lt;activiti:candidateStarterUsers&gt;. Here is an example:
+
+  <programlisting>
+      &lt;process id="potentialStarter" activiti:candidateStarterUsers="user1, user2"  
+                                        activiti:candidateStarterGroups="group1"&gt;
+      ...
+  </programlisting>
+<para>
+It is possible to use both attributes simultaneously. 
+</para>
+<para>
+After the process initiation authorizations are defined, a developer can retrieve the authorization definition using the following methods.
+This code retrieves the list of process definitions which can be initiated by the given user:
+   <programlisting>
+      processDefinitions = repositoryService.createProcessDefinitionQuery().startableByUser("userxxx").list();
+   </programlisting> 
+</para>
+<para>
+It's also possible to retrieve all identity links that are defined as potential starter for a specific process definition
+   <programlisting>
+      identityLinks = repositoryService.getIdentityLinksForProcessDefinition("processDefinitionId");
+   </programlisting> 
+</para>
+<para>
+The following example shows how to get list of users who can initiate the given process:
+   <programlisting>
+      List&lt;User&gt; authorizedUsers =  identityService().createUserQuery().potentialStarter("processDefinitionId").list();
+   </programlisting>
+</para>
+<para>
+Exactly the same way, the list of groups that is configured as a potential starter to a given process definition can be retrieved:
+   <programlisting>     
+      List&lt;Group&gt; authorizedGroups =  identityService().createGroupQuery().potentialStarter("processDefinitionId").list();
+   </programlisting>
+</para>
+</section>	
 </chapter>

@@ -62,19 +62,13 @@
       <title>Upload Deployment</title>
       <para>
         Uploads and installs a deployment of format .bpmn20.xml, .bar or .zip using normal "html form upload"
-        (enctype=multipart/form-data) in other words not a json-request. To make it possible for the ui to react when
-        the upload is complete it is possible to submit success/failure callbacks as parameters.
-        I.e. Sending "success=alert" will result in that the string "alert" will be placed inside a JS script block with
-        "();" appended to the end, in other words "alert();". Sending "failure=alert" will result in "alert('Some error message if any');"
-        inside a script block. The actual deployment file shall be placed in a parameter named "deployment".
+        (enctype=multipart/form-data) in other words not a json-request. The deployment information is returned as a response if the deploy action succeeds.
       </para>
       <itemizedlist>
         <listitem>
           <para>
             <emphasis role="bold">Request: </emphasis>
             <literal>POST /deployment</literal>
-            <programlisting>
-success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
           </para>
         </listitem>
         <listitem>
@@ -87,11 +81,11 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
           <para>
             <emphasis role="bold">Response:</emphasis>
             <programlisting>
-&lt;html&gt;
-  &lt;script type="text/javascript"&gt;
-      alert();
-  &lt;/script&gt;
-&lt;/html&gt;</programlisting>
+{
+  "id": "10",
+  "name": "activiti-examples.bar",
+  "deploymentTime": "2010-10-13T14:54:26.750+02:00"
+}</programlisting>
           </para>
         </listitem>
       </itemizedlist>
