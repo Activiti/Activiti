@@ -285,6 +285,13 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   protected String databaseTablePrefix = "";
   
+  /**
+   * In some situations you want to set the schema to use for table checks / generation if the database metadata
+   * doesn't return that correctly, see https://jira.codehaus.org/browse/ACT-1220,
+   * https://jira.codehaus.org/browse/ACT-1062
+   */
+  protected String databaseSchema = null;
+  
   protected boolean isCreateDiagramOnDeploy = true;
   
   // buildProcessEngine ///////////////////////////////////////////////////////
@@ -589,6 +596,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       dbSqlSessionFactory.setDbIdentityUsed(isDbIdentityUsed);
       dbSqlSessionFactory.setDbHistoryUsed(isDbHistoryUsed);
       dbSqlSessionFactory.setDatabaseTablePrefix(databaseTablePrefix);
+      dbSqlSessionFactory.setDatabaseSchema(databaseSchema);
       addSessionFactory(dbSqlSessionFactory);
       
       addSessionFactory(new GenericManagerFactory(AttachmentManager.class));
@@ -1643,6 +1651,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public ProcessEngineConfiguration setCreateDiagramOnDeploy(boolean createDiagramOnDeploy) {
     this.isCreateDiagramOnDeploy = createDiagramOnDeploy;
     return this;
+  }
+  
+  public String getDatabaseSchema() {
+    return databaseSchema;
+  }
+  
+  public void setDatabaseSchema(String databaseSchema) {
+    this.databaseSchema = databaseSchema;
   }
 
 }

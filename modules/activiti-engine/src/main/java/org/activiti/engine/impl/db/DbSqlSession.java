@@ -715,18 +715,14 @@ public class DbSqlSession implements Session {
       ResultSet tables = null;
       
       String schema = this.connectionMetadataDefaultSchema;
+      if (dbSqlSessionFactory.getDatabaseSchema()!=null) {
+        schema = dbSqlSessionFactory.getDatabaseSchema();
+      }
+      
       String databaseType = dbSqlSessionFactory.getDatabaseType();
       
       if ("postgres".equals(databaseType)) {
         tableName = tableName.toLowerCase();
-      }
-      
-      if ("oracle".equals(databaseType)) {
-        // avoid problems if multiple schemas are visible to the current oracle user (https://jira.codehaus.org/browse/ACT-1062)
-        if (schema == null) {
-          schema = databaseMetaData.getUserName();
-          log.info("oracle database used and schema not set; assuming schema " + schema);
-        }
       }
       
       try {
