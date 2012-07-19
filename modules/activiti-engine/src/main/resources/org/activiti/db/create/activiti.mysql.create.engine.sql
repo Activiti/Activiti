@@ -155,6 +155,10 @@ alter table ACT_GE_BYTEARRAY
     foreign key (DEPLOYMENT_ID_) 
     references ACT_RE_DEPLOYMENT (ID_);
 
+alter table ACT_RE_PROCDEF
+    add constraint ACT_UNIQ_PROCDEF
+    unique (KEY_,VERSION_);
+    
 alter table ACT_RU_EXECUTION
     add constraint ACT_FK_EXE_PROCINST 
     foreign key (PROC_INST_ID_) 
@@ -179,7 +183,6 @@ alter table ACT_RU_IDENTITYLINK
     add constraint ACT_FK_ATHRZ_PROCEDEF 
     foreign key (PROC_DEF_ID_) 
     references ACT_RE_PROCDEF(ID_);
-    
     
 alter table ACT_RU_TASK
     add constraint ACT_FK_TASK_EXE

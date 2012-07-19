@@ -15,3 +15,7 @@ alter table ACT_RU_EXECUTION
 
 insert into ACT_RU_EXECUTION (CACHED_ENT_STATE_)
 	values (7);
+	
+alter table ACT_RE_PROCDEF
+    add constraint ACT_UNIQ_PROCDEF
+    unique (KEY_,VERSION_);
