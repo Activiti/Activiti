@@ -117,7 +117,13 @@ public abstract class ProcessEngines {
     try {
       Class< ? > springConfigurationHelperClass = ReflectUtil.loadClass("org.activiti.spring.SpringConfigurationHelper");
       Method method = springConfigurationHelperClass.getMethod("buildProcessEngine", new Class<?>[]{URL.class});
-      method.invoke(null, new Object[]{resource});
+      ProcessEngine processEngine = (ProcessEngine) method.invoke(null, new Object[]{resource});
+      
+      String processEngineName = processEngine.getName();
+      ProcessEngineInfo processEngineInfo = new ProcessEngineInfoImpl(processEngineName, resource.toString(), null);
+      processEngineInfosByName.put(processEngineName, processEngineInfo);
+      processEngineInfosByResourceUrl.put(resource.toString(), processEngineInfo);
+      
     } catch (Exception e) {
       throw new ActivitiException("couldn't initialize process engine from spring configuration resource "+resource.toString()+": "+e.getMessage(), e);
     } 
