@@ -22,6 +22,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
+import org.restlet.data.MediaType;
 import org.restlet.representation.InputRepresentation;
 import org.restlet.resource.Get;
 
@@ -53,7 +54,7 @@ public class ProcessInstanceDiagramResource extends SecuredResource {
     if (pde != null && pde.isGraphicalNotationDefined()) {
       InputStream resource = ProcessDiagramGenerator.generateDiagram(pde, "png", ActivitiUtil.getRuntimeService().getActiveActivityIds(processInstanceId));
 
-      InputRepresentation output = new InputRepresentation(resource);
+      InputRepresentation output = new InputRepresentation(resource, MediaType.IMAGE_PNG);
       return output;
       
     } else {
