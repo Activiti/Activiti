@@ -747,6 +747,22 @@ public class ExecutionImpl implements
   public boolean isDeleteRoot() {
     return deleteRoot;
   }
+  
+  public String getCurrentActivityId() {
+    String currentActivityId = null;
+    if (this.activity != null) {
+      currentActivityId = activity.getId();
+    }
+    return currentActivityId;
+  }
+  
+  public String getCurrentActivityName() {
+    String currentActivityName = null;
+    if (this.activity != null) {
+      currentActivityName = (String) activity.getProperty("name");
+    }
+    return currentActivityName;
+  }
 
 
   public void createVariableLocal(String variableName, Object value) {

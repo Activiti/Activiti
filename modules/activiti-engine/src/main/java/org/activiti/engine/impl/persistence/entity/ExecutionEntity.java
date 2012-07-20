@@ -182,6 +182,11 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   protected String activityId;
   
   /**
+   * The name of the current activity position
+   */
+  protected String activityName;
+  
+  /**
    * persisted reference to the process instance.
    * 
    * @see #getProcessInstance()
@@ -714,8 +719,10 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     this.activity = activity;
     if (activity != null) {
       this.activityId = activity.getId();
+      this.activityName = (String) activity.getProperty("name");
     } else {
       this.activityId = null;
+      this.activityName = null;
     }
   }
   
@@ -1303,6 +1310,14 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   
   public void disposeStartingExecution() {
     startingExecution = null;
+  }
+  
+  public String getCurrentActivityId() {
+    return activityId;
+  }
+  
+  public String getCurrentActivityName() {
+    return activityName;
   }
   
 }
