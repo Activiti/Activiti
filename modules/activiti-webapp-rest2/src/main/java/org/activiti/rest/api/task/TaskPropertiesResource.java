@@ -53,7 +53,7 @@ public class TaskPropertiesResource extends SecuredResource {
         if(property.getValue() != null) {
           propertyJSON.put("value", property.getValue());
         } else {
-          propertyJSON.put("value", "null");
+          propertyJSON.putNull("value");
         }
         
         if(property.getType() != null) {

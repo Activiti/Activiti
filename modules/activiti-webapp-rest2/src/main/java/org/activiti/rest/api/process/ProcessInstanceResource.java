@@ -36,7 +36,7 @@ import org.restlet.resource.Get;
 public class ProcessInstanceResource extends SecuredResource {
   
   @Get
-  public ObjectNode getProcessInstances() {
+  public ObjectNode getProcessInstance() {
     if(authenticate() == false) return null;
     
     String processInstanceId = (String) getRequest().getAttributes().get("processInstanceId");
@@ -51,11 +51,20 @@ public class ProcessInstanceResource extends SecuredResource {
     
     ObjectNode responseJSON = new ObjectMapper().createObjectNode();
     responseJSON.put("processInstanceId", instance.getId());
-    responseJSON.put("businessKey", instance.getBusinessKey() != null ? instance.getBusinessKey() : "null");
+    if (instance.getBusinessKey() != null) {
+      responseJSON.put("businessKey", instance.getBusinessKey());
+    } else {
+      responseJSON.putNull("businessKey");
+    }
     responseJSON.put("processDefinitionId", instance.getProcessDefinitionId());
     responseJSON.put("startTime", RequestUtil.dateToString(instance.getStartTime()));
     responseJSON.put("startActivityId", instance.getStartActivityId());
-    responseJSON.put("startUserId", instance.getStartUserId() != null ? instance.getStartUserId() : "null");
+    if (instance.getStartUserId() != null) {
+      responseJSON.put("startUserId", instance.getStartUserId());
+    } else {
+      responseJSON.putNull("startUserId");
+    }
+    
     if(instance.getEndTime() == null) {
       responseJSON.put("completed", false);
     } else {
@@ -99,9 +108,21 @@ public class ProcessInstanceResource extends SecuredResource {
       for (HistoricTaskInstance historicTaskInstance : taskList) {
         ObjectNode taskJSON = new ObjectMapper().createObjectNode();
         taskJSON.put("taskId", historicTaskInstance.getId());
-        taskJSON.put("taskName", historicTaskInstance.getName() != null ? historicTaskInstance.getName() : "null");
-        taskJSON.put("owner", historicTaskInstance.getOwner() != null ? historicTaskInstance.getOwner() : "null");
-        taskJSON.put("assignee", historicTaskInstance.getAssignee() != null ? historicTaskInstance.getAssignee() : "null");
+        if (historicTaskInstance.getName() != null) {
+          taskJSON.put("taskName", historicTaskInstance.getName());
+        } else {
+          taskJSON.putNull("taskName");
+        }
+        if (historicTaskInstance.getOwner() != null) {
+          taskJSON.put("owner", historicTaskInstance.getOwner());
+        } else {
+          taskJSON.putNull("owner");
+        }
+        if (historicTaskInstance.getOwner() != null) {
+          taskJSON.put("assignee", historicTaskInstance.getAssignee());
+        } else {
+          taskJSON.putNull("assignee");
+        }
         taskJSON.put("startTime", RequestUtil.dateToString(historicTaskInstance.getStartTime()));
         if(historicTaskInstance.getEndTime() == null) {
           taskJSON.put("completed", false);
@@ -129,7 +150,11 @@ public class ProcessInstanceResource extends SecuredResource {
       for (HistoricActivityInstance historicActivityInstance : activityList) {
         ObjectNode activityJSON = new ObjectMapper().createObjectNode();
         activityJSON.put("activityId", historicActivityInstance.getActivityId());
-        activityJSON.put("activityName", historicActivityInstance.getActivityName() != null ? historicActivityInstance.getActivityName() : "null");
+        if (historicActivityInstance.getActivityName() != null) {
+          activityJSON.put("activityName", historicActivityInstance.getActivityName());
+        } else {
+          activityJSON.putNull("activityName");
+        }
         activityJSON.put("activityType", historicActivityInstance.getActivityType());
         activityJSON.put("startTime", RequestUtil.dateToString(historicActivityInstance.getStartTime()));
         if(historicActivityInstance.getEndTime() == null) {

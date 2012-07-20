@@ -29,15 +29,13 @@ import org.activiti.engine.TaskService;
  */
 public class ActivitiUtil {
   
-  private static final String DEFAULT_ENGINE = "default";
-  
   /**
    * Returns the process engine info.
    *
    * @return The process engine info
    */
   public static ProcessEngineInfo getProcessEngineInfo() {
-    return ProcessEngines.getProcessEngineInfo(DEFAULT_ENGINE);
+    return ProcessEngines.getProcessEngineInfo(ProcessEngines.NAME_DEFAULT);
   }
 
   /**
