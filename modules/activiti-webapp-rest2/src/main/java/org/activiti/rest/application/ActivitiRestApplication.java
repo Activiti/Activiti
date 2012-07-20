@@ -67,7 +67,7 @@ import org.restlet.routing.Router;
 import org.restlet.security.ChallengeAuthenticator;
 import org.restlet.security.SecretVerifier;
 import org.restlet.security.Verifier;
-
+import org.activiti.rest.api.process.ProcessInstanceTaskResource;
 /**
  * @author Tijs Rademakers
  */
@@ -126,8 +126,9 @@ public class ActivitiRestApplication extends Application {
     router.attach("/process-definitions", ProcessDefinitionsResource.class);
     router.attach("/process-instances", ProcessInstancesResource.class);
     router.attach("/process-instance", StartProcessInstanceResource.class);
-    router.attach("/processInstance/{processInstanceId}", ProcessInstanceResource.class);
-    router.attach("/processInstance/{processInstanceId}/diagram", ProcessInstanceDiagramResource.class);
+    router.attach("/process-instance/{processInstanceId}", ProcessInstanceResource.class);
+    router.attach("/process-instance/{processInstanceId}/diagram", ProcessInstanceDiagramResource.class);
+    router.attach("/process-instance/{processInstanceId}/tasks", ProcessInstanceTaskResource.class);
     router.attach("/process-definition/{processDefinitionId}/form", ProcessDefinitionFormResource.class);
     router.attach("/process-definition/{processDefinitionId}/diagram", ProcessDefinitionDiagramResource.class);
     router.attach("/process-definition/{processDefinitionId}/properties", ProcessDefinitionPropertiesResource.class);

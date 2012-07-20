@@ -550,7 +550,7 @@
             <listitem>
               <para>
                 <emphasis role="bold">Request:</emphasis>
-                <literal>GET /processInstance/{processInstanceId}</literal>
+                <literal>GET /process-instance/{processInstanceId}</literal>
               </para>
             </listitem>
             <listitem>
@@ -623,7 +623,7 @@
               <listitem>
                 <para>
                   <emphasis role="bold">Request:</emphasis>
-                  <literal>GET /processInstance/{processInstanceId}/diagram</literal>
+                  <literal>GET /process-instance/{processInstanceId}/diagram</literal>
                 </para>
               </listitem>
               <listitem>
@@ -639,6 +639,58 @@
                 </para>
               </listitem>
             </itemizedlist>
+        </section>
+        
+        <section>
+            <title>Get open tasks for a process instance</title>
+            <para>
+            Returns a list of open tasks for a running process instance
+            </para>
+            <itemizedlist>
+              <listitem>
+                <para>
+                  <emphasis role="bold">Request:</emphasis>
+                  <literal>GET /process-instance/{processInstanceId}/tasks</literal>
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  <emphasis role="bold">API:</emphasis>
+                  <literal>taskService.createTaskQuery().processInstanceId(processInstanceId);</literal>
+                </para>
+              </listitem>
+              <listitem>
+            <para>
+              <emphasis role="bold">Paginated Response:</emphasis>
+              <programlisting>
+{
+  "data": [
+    {
+      "id": "127",
+      "name": "Handle vacation request",
+      "description": "Vacation request by Kermit",
+      "delegationState": "pending",
+      "dueDate": "2010-10-13T14:54:26.750+02:00",
+      "priority": 50,
+      "assignee": null,
+      "executionId": "118",
+      "formResourceKey": "org/activiti/examples/taskforms/approve.form",
+      "owner": "Kermit",
+      "parentTaskId": "120",
+      "processDefinitionId": "financialReport:1",
+      "processInstanceId": "123",
+      "taskDefinitionKey": "125"
+    }
+  ],
+  "total": 1,
+  "start": 0,
+  "sort": "id",
+  "order": "asc",
+  "size": 1
+}</programlisting>
+            </para>
+          </listitem>
+         </itemizedlist>
         </section>
 
 
