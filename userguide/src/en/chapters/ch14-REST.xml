@@ -426,6 +426,33 @@
           </listitem>
         </itemizedlist>
       </section>
+      
+      <section>
+            <title>Get Process Definition Diagram</title>
+            <para>
+            Returns a PNG diagram of the process definition if it's available.
+            </para>
+            <itemizedlist>
+              <listitem>
+                <para>
+                  <emphasis role="bold">Request:</emphasis>
+                  <literal>GET /process-definition/{processDefinitionId}/diagram</literal>
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  <emphasis role="bold">API:</emphasis>
+                  <literal>repositoryService.getResourceAsStream(processDefinition.getDeploymentId(), processDefinition.getDiagramResourceName());</literal>
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  <emphasis role="bold">Response:</emphasis>
+                  <programlisting>Png diagram of the process definition.</programlisting>
+                </para>
+              </listitem>
+            </itemizedlist>
+        </section>
 
       <section>
         <title>Start Process Instance</title>
