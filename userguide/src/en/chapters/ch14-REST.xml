@@ -236,7 +236,7 @@
         <listitem>
           <para>
             <emphasis role="bold">Request: </emphasis>
-            <literal>POST /deployments?cascade={cascade?}</literal>
+            <literal>POST /deployments/delete?cascade={cascade?}</literal>
             <programlisting>
 {
 "deploymentIds": [ "10", "11" ]
