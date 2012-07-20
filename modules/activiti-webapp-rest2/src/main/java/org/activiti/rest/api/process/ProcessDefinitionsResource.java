@@ -36,6 +36,7 @@ public class ProcessDefinitionsResource extends SecuredResource {
     properties.put("version", ProcessDefinitionQueryProperty.PROCESS_DEFINITION_VERSION);
     properties.put("deploymentId", ProcessDefinitionQueryProperty.DEPLOYMENT_ID);
     properties.put("name", ProcessDefinitionQueryProperty.PROCESS_DEFINITION_NAME);
+    properties.put("category", ProcessDefinitionQueryProperty.PROCESS_DEFINITION_CATEGORY);
   }
   
   @Get
