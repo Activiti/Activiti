@@ -53,7 +53,18 @@ public class StartProcessInstanceResource extends SecuredResource {
       Iterator<String> itName = startJSON.getFieldNames();
       while(itName.hasNext()) {
         String name = itName.next();
-        variables.put(name, startJSON.path(name).getTextValue()); 
+        JsonNode valueNode = startJSON.path(name);
+        if (valueNode.isBoolean()) {
+          variables.put(name, valueNode.getBooleanValue());
+        } else if (valueNode.isLong()) {
+          variables.put(name, valueNode.getLongValue());
+        } else if (valueNode.isDouble()) {
+          variables.put(name, valueNode.getDoubleValue());
+        } else if (valueNode.isTextual()) {
+          variables.put(name, valueNode.getTextValue());
+        } else {
+          variables.put(name, valueNode.getValueAsText());
+        }
       }
       variables.remove("processDefinitionId");
       variables.remove("processDefinitionKey");

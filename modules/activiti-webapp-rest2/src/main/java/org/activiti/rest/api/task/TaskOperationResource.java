@@ -45,10 +45,18 @@ public class TaskOperationResource extends SecuredResource {
       while(itName.hasNext()) {
         String name = itName.next();
         JsonNode valueNode = startJSON.path(name);
-        if("true".equals(valueNode.getTextValue()) || "false".equals(valueNode.getTextValue())) {
+        if (valueNode.isBoolean()) {
+          variables.put(name, valueNode.getBooleanValue());
+        } else if (valueNode.isLong()) {
+          variables.put(name, valueNode.getLongValue());
+        } else if (valueNode.isDouble()) {
+          variables.put(name, valueNode.getDoubleValue());
+        } else if (valueNode.isTextual()) {
+          variables.put(name, valueNode.getTextValue());
+        } else if("true".equals(valueNode.getTextValue()) || "false".equals(valueNode.getTextValue())) {
           variables.put(name, Boolean.valueOf(valueNode.getTextValue()));
         } else {
-          variables.put(name, valueNode.getTextValue());
+          variables.put(name, valueNode.getValueAsText());
         }
       }
       
