@@ -596,6 +596,12 @@
       {
         "variableName": "reportName",
         "variableValue": "classified.pdf",
+      }
+    ]
+    "historyVariables": [
+      {
+        "variableName": "reportName",
+        "variableValue": "classified.pdf",
         "variableType": "String",
         "revision": 1,
         "time": "2010-10-13T14:53:26.750+02:00"

@@ -14,6 +14,7 @@
 package org.activiti.rest.api.process;
 
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricActivityInstance;
@@ -170,7 +171,43 @@ public class ProcessInstanceResource extends SecuredResource {
   }
   
   private void addVariableList(String processInstanceId, ObjectNode responseJSON) {
-    List<HistoricDetail> variableList = ActivitiUtil.getHistoryService()
+    
+    try {
+      Map<String, Object> variableMap = ActivitiUtil.getRuntimeService()
+          .getVariables(processInstanceId);
+      
+      if(variableMap != null && variableMap.size() > 0) {
+        ArrayNode variablesJSON = new ObjectMapper().createArrayNode();
+        responseJSON.put("variables", variablesJSON);
+        for (String key : variableMap.keySet()) {
+          Object variableValue = variableMap.get(key);
+          ObjectNode variableJSON = new ObjectMapper().createObjectNode();
+          variableJSON.put("variableName", key);
+          if (variableValue != null) {
+            if (variableValue instanceof Boolean) {
+              variableJSON.put("variableValue", (Boolean) variableValue);
+            } else if (variableValue instanceof Long) {
+              variableJSON.put("variableValue", (Long) variableValue);
+            } else if (variableValue instanceof Double) {
+              variableJSON.put("variableValue", (Double) variableValue);
+            } else if (variableValue instanceof Float) {
+              variableJSON.put("variableValue", (Float) variableValue);
+            } else if (variableValue instanceof Integer) {
+              variableJSON.put("variableValue", (Integer) variableValue);
+            } else {
+              variableJSON.put("variableValue", variableValue.toString());
+            }
+          } else {
+            variableJSON.putNull("variableValue");
+          }
+          variablesJSON.add(variableJSON);
+        }
+      }
+    } catch(Exception e) {
+      // Absorb possible error that the execution could not be found
+    }
+    
+    List<HistoricDetail> historyVariableList = ActivitiUtil.getHistoryService()
         .createHistoricDetailQuery()
         .processInstanceId(processInstanceId)
         .variableUpdates()
@@ -178,15 +215,27 @@ public class ProcessInstanceResource extends SecuredResource {
         .desc()
         .list();
     
-    if(variableList != null && variableList.size() > 0) {
+    if(historyVariableList != null && historyVariableList.size() > 0) {
       ArrayNode variablesJSON = new ObjectMapper().createArrayNode();
-      responseJSON.put("variables", variablesJSON);
-      for (HistoricDetail historicDetail : variableList) {
+      responseJSON.put("historyVariables", variablesJSON);
+      for (HistoricDetail historicDetail : historyVariableList) {
         HistoricVariableUpdate variableUpdate = (HistoricVariableUpdate) historicDetail;
         ObjectNode variableJSON = new ObjectMapper().createObjectNode();
         variableJSON.put("variableName", variableUpdate.getVariableName());
         if (variableUpdate.getValue() != null) {
-          variableJSON.put("variableValue", variableUpdate.getValue().toString());
+          if (variableUpdate.getValue() instanceof Boolean) {
+            variableJSON.put("variableValue", (Boolean) variableUpdate.getValue());
+          } else if (variableUpdate.getValue() instanceof Long) {
+            variableJSON.put("variableValue", (Long) variableUpdate.getValue());
+          } else if (variableUpdate.getValue() instanceof Double) {
+            variableJSON.put("variableValue", (Double) variableUpdate.getValue());
+          } else if (variableUpdate.getValue() instanceof Float) {
+            variableJSON.put("variableValue", (Float) variableUpdate.getValue());
+          } else if (variableUpdate.getValue() instanceof Integer) {
+            variableJSON.put("variableValue", (Integer) variableUpdate.getValue());
+          } else {
+            variableJSON.put("variableValue", variableUpdate.getValue().toString());
+          }
         } else {
           variableJSON.putNull("variableValue");
         }
