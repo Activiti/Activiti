@@ -141,7 +141,7 @@
         and J.RETRIES_ &gt; 0
       </if>
       <if test="executable">
-        (J.RETRIES_ &gt; 0)
+        and (J.RETRIES_ &gt; 0)
         and (J.DUEDATE_ is null or J.DUEDATE_ &lt;= #{now, jdbcType=TIMESTAMP})
       </if>
       <if test="onlyTimers">
