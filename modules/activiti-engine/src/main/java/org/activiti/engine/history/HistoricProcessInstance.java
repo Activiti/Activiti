@@ -55,4 +55,9 @@ public interface HistoricProcessInstance {
 
   /** Obtains the reason for the process instance's deletion. */
   String getDeleteReason();
+  
+  /**
+   * The process instance id of a potential super process instance or null if no super process instance exists
+   */
+  String getSuperProcessInstanceId(); 
 }
