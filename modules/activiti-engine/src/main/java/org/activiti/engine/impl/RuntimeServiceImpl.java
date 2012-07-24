@@ -165,6 +165,10 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
     return commandExecutor.execute(new StartProcessInstanceByMessageCmd(messageName,null, null));
   }
   
+  public ProcessInstance startProcessInstanceByMessage(String messageName, String businessKey) {
+    return commandExecutor.execute(new StartProcessInstanceByMessageCmd(messageName, businessKey, null));
+  }
+  
   public ProcessInstance startProcessInstanceByMessage(String messageName, Map<String, Object> processVariables) {
     return commandExecutor.execute(new StartProcessInstanceByMessageCmd(messageName, null, processVariables));
   }

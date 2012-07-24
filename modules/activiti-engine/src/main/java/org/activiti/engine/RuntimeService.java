@@ -179,6 +179,25 @@ public interface RuntimeService {
    * <p>Signals the process engine that a message is received and starts a new 
    * {@link ProcessInstance}.</p>
    * 
+   * See {@link #startProcessInstanceByMessage(String, Map)}. This method allows 
+   * specifying a business key.
+   *  
+   * @param messageName
+   *          the 'name' of the message as specified as an attribute on the
+   *          bpmn20 {@code <message name="messageName" />} element.
+   * @param businessKey
+   *          the business key which is added to the started process instance 
+   * 
+   * @throws ActivitiExeception if no subscription to a message with the given name exists
+   * 
+   * @since 5.10
+   */
+  ProcessInstance startProcessInstanceByMessage(String messageName, String businessKey);
+  
+  /**
+   * <p>Signals the process engine that a message is received and starts a new 
+   * {@link ProcessInstance}.</p>
+   * 
    * See {@link #startProcessInstanceByMessage(String)}. In addition, this method allows 
    * specifying a the payload of the message as a map of process variables.
    *  
