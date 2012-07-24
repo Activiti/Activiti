@@ -81,7 +81,7 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
     assertEquals("two", processDefinition.getKey());
     assertEquals("Two", processDefinition.getName());
     assertTrue(processDefinition.getId().startsWith("two:1"));
-    assertEquals("Examples", processDefinition.getCategory());
+    assertEquals("Examples2", processDefinition.getCategory());
   }
   
   public void testQueryByDeploymentId() {
@@ -161,6 +161,19 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
       fail();
     } catch (ActivitiException e) {}
   }
+
+  public void testQueryByCategory() {
+    ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().processDefinitionCategory("Examples");
+    verifyQueryResults(query, 2);
+  }
+
+  public void testQueryByCategoryLike() {
+    ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().processDefinitionCategoryLike("%Example%");
+    verifyQueryResults(query, 3);
+
+    query = repositoryService.createProcessDefinitionQuery().processDefinitionCategoryLike("%amples2");
+    verifyQueryResults(query, 1);
+  } 
 
   public void testQueryByVersion() {
     ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().processDefinitionVersion(2);

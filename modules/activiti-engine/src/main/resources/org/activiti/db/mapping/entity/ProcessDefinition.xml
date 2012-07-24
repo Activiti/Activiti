@@ -84,13 +84,16 @@
         PD.ID_ = #{id}
       </if>
       <if test="category != null">
-        PD.CATEGORY_ = #{category}
+        and PD.CATEGORY_ = #{category}
+      </if>
+      <if test="categoryLike != null">
+        and PD.CATEGORY_ like #{categoryLike}
       </if>
       <if test="name != null">
-        PD.NAME_ = #{name}
+        and PD.NAME_ = #{name}
       </if>
       <if test="nameLike != null">
-        PD.NAME_ like #{nameLike}
+        and PD.NAME_ like #{nameLike}
       </if>
       <if test="key != null">
         and PD.KEY_ = #{key}

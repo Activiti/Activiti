@@ -3,7 +3,7 @@
 <definitions
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:activiti="http://activiti.org/bpmn"
-  targetNamespace="Examples">
+  targetNamespace="Examples2">
 
   <process id="two" name="Two">
   
