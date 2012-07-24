@@ -182,7 +182,6 @@ public class DbSqlSession implements Session {
   }
   
   @SuppressWarnings("unchecked")
-  @Deprecated
   public List selectList(String statement, Object parameter, Page page) {   
     if(page!=null) {
       return selectList(statement, parameter, page.getFirstResult(), page.getMaxResults());
@@ -192,7 +191,6 @@ public class DbSqlSession implements Session {
   }
   
   @SuppressWarnings("unchecked")
-  @Deprecated
   public List selectList(String statement, ListQueryParameterObject parameter, Page page) {   
     return selectList(statement, parameter);
   }
