@@ -169,7 +169,7 @@ public class BusinessProcess implements Serializable {
     return instance;
   }
 
-  public ProcessInstance startProcessInstanceByMessage(String messageName) { 
+  public ProcessInstance startProcessByMessage(String messageName) { 
     validateValidUsage();
     
     Map<String, Object> cachedVariables = getAndClearCachedVariables();
@@ -178,7 +178,7 @@ public class BusinessProcess implements Serializable {
     return processInstance;
   }
 
-  public ProcessInstance startProcessInstanceByMessage(String messageName, Map<String, Object> processVariables) { 
+  public ProcessInstance startProcessByMessage(String messageName, Map<String, Object> processVariables) { 
     validateValidUsage();
     
     Map<String, Object> cachedVariables = getAndClearCachedVariables();
@@ -188,7 +188,7 @@ public class BusinessProcess implements Serializable {
     return processInstance;
   }
 
-  public ProcessInstance startProcessInstanceByMessage(String messageName, String businessKey, Map<String, Object> processVariables) { 
+  public ProcessInstance startProcessByMessage(String messageName, String businessKey, Map<String, Object> processVariables) { 
     validateValidUsage();
     
     Map<String, Object> cachedVariables = getAndClearCachedVariables();
