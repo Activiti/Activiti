@@ -692,6 +692,41 @@
           </listitem>
          </itemizedlist>
         </section>
+        <section>
+            <title>Signal an activity (receive task) for a specific process instance</title>
+            <para>
+            Signals an activity execution (receive task).
+            </para>
+            <itemizedlist>
+              <listitem>
+                <para>
+                  <emphasis role="bold">Request:</emphasis>
+                  <literal>POST /process-instance/{processInstanceId}/signal</literal>
+                  <programlisting>
+{
+  "activityId":"receiveTask",
+  "variable1":"value",
+  "variable2":"value"
+}</programlisting>
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  <emphasis role="bold">API:</emphasis>
+                  <literal>runtimeService.signal(execution.getId(), variables);</literal>
+                </para>
+              </listitem>
+              <listitem>
+            <para>
+              <emphasis role="bold">Response:</emphasis>
+              <programlisting>
+{
+  "success": true
+}</programlisting>
+            </para>
+          </listitem>
+         </itemizedlist>
+        </section>
 
 
     </section>
