@@ -12,9 +12,7 @@
  */
 package org.activiti.engine.impl.scripting;
 
-import java.lang.reflect.Method;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.script.Bindings;
@@ -64,10 +62,6 @@ public class ScriptingEngines {
     ScriptEngine scriptEngine = scriptEngineManager.getEngineByName(language);
 
     if (scriptEngine == null) {
-      scriptEngine = checkForOSGiEngine(language);
-    }
-    
-    if (scriptEngine == null) {
       throw new ActivitiException("Can't find scripting engine for '" + language + "'");
     }
 
@@ -76,24 +70,6 @@ public class ScriptingEngines {
     } catch (ScriptException e) {
       throw new ActivitiException("problem evaluating script: " + e.getMessage(), e);
     }
-  }
-  
-  private ScriptEngine checkForOSGiEngine(String language) {
-    log.info("No script engine found for " + language + " using standard javax.script auto-registration. Checking OSGi registry...");
-    try {
-      // Test the OSGi environment with the Activator
-      Class<?> c = Class.forName("org.activiti.osgi.Extender");
-      Method mth = c.getDeclaredMethod("getBundleContext");
-      Object ctx = mth.invoke(null);
-      log.info("Found OSGi BundleContext " + ctx);
-      if (ctx != null) {
-        Method resolveScriptEngine = c.getDeclaredMethod("resolveScriptEngine", String.class);
-        return (ScriptEngine)resolveScriptEngine.invoke(null, language);
-      }
-    } catch (Throwable t) {
-      log.log(Level.INFO, "Unable to load OSGi, script engine cannot be found", t);
-    }
-    return null;
   }
 
   /** override to build a spring aware ScriptingEngines */

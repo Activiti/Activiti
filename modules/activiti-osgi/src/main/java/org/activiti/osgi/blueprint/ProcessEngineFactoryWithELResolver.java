@@ -1,5 +1,8 @@
 package org.activiti.osgi.blueprint;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.el.ExpressionManager;
@@ -9,7 +12,11 @@ import org.activiti.engine.impl.javax.el.CompositeELResolver;
 import org.activiti.engine.impl.javax.el.ELResolver;
 import org.activiti.engine.impl.javax.el.ListELResolver;
 import org.activiti.engine.impl.javax.el.MapELResolver;
-import org.activiti.osgi.blueprint.ProcessEngineFactory;
+import org.activiti.engine.impl.scripting.BeansResolverFactory;
+import org.activiti.engine.impl.scripting.ResolverFactory;
+import org.activiti.engine.impl.scripting.ScriptBindingsFactory;
+import org.activiti.engine.impl.scripting.VariableScopeResolverFactory;
+import org.activiti.osgi.OsgiScriptingEngines;
 
 
 public class ProcessEngineFactoryWithELResolver extends ProcessEngineFactory {
@@ -18,7 +25,17 @@ public class ProcessEngineFactoryWithELResolver extends ProcessEngineFactory {
 
     @Override
     public void init() throws Exception {
-      ((ProcessEngineConfigurationImpl) getProcessEngineConfiguration()).setExpressionManager(new BlueprintExpressionManager());
+      ProcessEngineConfigurationImpl configImpl = (ProcessEngineConfigurationImpl) getProcessEngineConfiguration();
+      configImpl.setExpressionManager(new BlueprintExpressionManager());
+      
+      List<ResolverFactory> resolverFactories = configImpl.getResolverFactories();
+      if (resolverFactories == null) {
+        resolverFactories = new ArrayList<ResolverFactory>();
+        resolverFactories.add(new VariableScopeResolverFactory());
+        resolverFactories.add(new BeansResolverFactory());
+      }
+      
+      configImpl.setScriptingEngines(new OsgiScriptingEngines(new ScriptBindingsFactory(resolverFactories)));
       super.init();
     }
 
