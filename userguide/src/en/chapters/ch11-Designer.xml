@@ -423,7 +423,7 @@
 &lt;repositories&gt;
   &lt;repository&gt;
       &lt;id&gt;Activiti&lt;/id&gt;
-      &lt;url&gt;http://maven.alfresco.com/nexus/content/repositories/activiti/&lt;/url&gt;
+      &lt;url&gt;https://maven.alfresco.com/nexus/content/repositories/activiti/&lt;/url&gt;
    &lt;/repository&gt;
 &lt;/repositories&gt;</programlisting>
         </para>

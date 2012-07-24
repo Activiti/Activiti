@@ -20,12 +20,12 @@
   <repositories>
     <repository>
       <id>alfresco.snapshot.repo</id>
-      <url>http://maven.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
+      <url>https://maven.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
       <snapshots><enabled /></snapshots>
     </repository>
     <repository>
       <id>alfresco</id>
-      <url>http://maven.alfresco.com/nexus/content/repositories/activiti/</url>
+      <url>https://maven.alfresco.com/nexus/content/repositories/activiti/</url>
     </repository>
   </repositories>
   

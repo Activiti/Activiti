@@ -47,7 +47,7 @@
     <repository>
       <id>activiti</id>
       <name>Activiti</name>
-      <url>http://maven.alfresco.com/nexus/content/repositories/activiti/</url>
+      <url>https://maven.alfresco.com/nexus/content/repositories/activiti/</url>
     </repository>
   </repositories>
 

@@ -120,6 +120,15 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  
+  <repositories>
+    <!-- This repo declaration is here for as this will be part of the distro -->
+    <repository>
+      <id>activiti</id>
+      <name>Activiti</name>
+      <url>https://maven.alfresco.com/nexus/content/repositories/activiti/</url>
+    </repository>
+  </repositories>
 
   <properties>
       <activiti.artifact>org.activiti.engine</activiti.artifact>
@@ -137,14 +146,6 @@
           com.fasterxml*;resolution:=optional,
       </activiti.osgi.import.additional>
   </properties>
-
-  <repositories>
-    <repository>
-      <id>activiti</id>
-      <name>Activiti</name>
-      <url>http://maven.alfresco.com/nexus/content/repositories/activiti/</url>
-    </repository>
-  </repositories>
 
   <build>
     <plugins>      
