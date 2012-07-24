@@ -29,11 +29,11 @@ import org.apache.ibatis.type.TypeHandler;
 /**
  * @author Dave Syer
  */
-public class IbatisVariableTypeHandler implements TypeHandler {
+public class IbatisVariableTypeHandler implements TypeHandler<VariableType> {
 
   protected VariableTypes variableTypes;
 
-  public Object getResult(ResultSet rs, String columnName) throws SQLException {
+  public VariableType getResult(ResultSet rs, String columnName) throws SQLException {
     String typeName = rs.getString(columnName);
     VariableType type = getVariableTypes().getVariableType(typeName);
     if (type == null) {
@@ -42,7 +42,7 @@ public class IbatisVariableTypeHandler implements TypeHandler {
     return type;
   }
 
-  public Object getResult(CallableStatement cs, int columnIndex) throws SQLException {
+  public VariableType getResult(CallableStatement cs, int columnIndex) throws SQLException {
     String typeName = cs.getString(columnIndex);
     VariableType type = getVariableTypes().getVariableType(typeName);
     if (type == null) {
@@ -51,8 +51,8 @@ public class IbatisVariableTypeHandler implements TypeHandler {
     return type;
   }
 
-  public void setParameter(PreparedStatement ps, int i, Object parameter, JdbcType jdbcType) throws SQLException {
-    String typeName = ((VariableType) parameter).getTypeName();
+  public void setParameter(PreparedStatement ps, int i, VariableType parameter, JdbcType jdbcType) throws SQLException {
+    String typeName = parameter.getTypeName();
     ps.setString(i, typeName);
   }
 
@@ -63,5 +63,14 @@ public class IbatisVariableTypeHandler implements TypeHandler {
         .getVariableTypes();
     }
     return variableTypes;
+  }
+
+  public VariableType getResult(ResultSet resultSet, int columnIndex) throws SQLException {
+    String typeName = resultSet.getString(columnIndex);
+    VariableType type = getVariableTypes().getVariableType(typeName);
+    if (type == null) {
+      throw new ActivitiException("unknown variable type name " + typeName);
+    }
+    return type;
   }
 }

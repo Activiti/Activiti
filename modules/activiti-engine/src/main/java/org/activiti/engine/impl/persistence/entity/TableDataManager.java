@@ -90,17 +90,17 @@ public class TableDataManager extends AbstractManager {
   }
 
   @SuppressWarnings("unchecked")
- public TablePage getTablePage(TablePageQueryImpl tablePageQuery, int firstResult, int maxResults) {
+  public TablePage getTablePage(TablePageQueryImpl tablePageQuery, int firstResult, int maxResults) {
 
     TablePage tablePage = new TablePage();
 
-    List<Map<String, Object>> tableData = (List<Map<String, Object>>) getDbSqlSession()
-      .getSqlSession()
+    @SuppressWarnings("rawtypes")
+    List tableData = getDbSqlSession().getSqlSession()
       .selectList("selectTableData", tablePageQuery, new RowBounds(firstResult, maxResults));
 
     tablePage.setTableName(tablePageQuery.getTableName());
     tablePage.setTotal(getTableCount(tablePageQuery.getTableName()));
-    tablePage.setRows(tableData);
+    tablePage.setRows((List<Map<String,Object>>)tableData);
     tablePage.setFirstResult(firstResult);
     
     return tablePage;
