@@ -24,6 +24,8 @@ import org.activiti.engine.impl.util.ClockUtil;
 
 /**
  * @author Tom Baeyens
+ * 
+ * BE AWARE: For Start Events this is dine in the ProcessDefinitionEntity!
  */
 public class ActivityInstanceStartHandler implements ExecutionListener {
 

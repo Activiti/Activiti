@@ -98,15 +98,15 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
     }
     
     int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
+    // TODO: This smells bad, as the rest of the history is done via the ParseListener
     if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY) {
       HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity(processInstance);
 
       commandContext
         .getSession(DbSqlSession.class)
         .insert(historicProcessInstance);
-    }
-    
-    if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
+
+      // do basically the same as in ActivityInstanceStanrtHandler
       IdGenerator idGenerator = Context.getProcessEngineConfiguration().getIdGenerator();
       
       String processDefinitionId = processInstance.getProcessDefinitionId();

@@ -183,10 +183,8 @@ public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
     runtimeService.startProcessInstanceByKey("process");
 
     int expectedActivityInstances = -1;
-    if (processEngineConfiguration.getHistoryLevel()==ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
+    if (processEngineConfiguration.getHistoryLevel()>=ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY) {
       expectedActivityInstances = 2;
-    } else if (processEngineConfiguration.getHistoryLevel()>=ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY) {
-      expectedActivityInstances = 1;
     } else {
       expectedActivityInstances = 0;
     }
