@@ -105,7 +105,7 @@ public class HistoryParseListener implements BpmnParseListener {
   }
 
   public void parseStartEvent(Element startEventElement, ScopeImpl scope, ActivityImpl activity) {
-    if (fullHistoryEnabled(historyLevel)) {
+    if (activityHistoryEnabled(activity, historyLevel)) {
       activity.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, START_EVENT_END_HANDLER);
     }
   }
