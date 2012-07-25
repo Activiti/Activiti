@@ -18,6 +18,7 @@ import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 
@@ -140,6 +141,35 @@ public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
       HistoricActivityInstance historicActivityInstance = historyService.createHistoricActivityInstanceQuery().list().get(0);
       assertEquals(1, historyService.createHistoricActivityInstanceQuery().activityInstanceId(historicActivityInstance.getId()).list().size());
     }
+  }
+  
+  @Deployment
+  public void testHistoricActivityInstanceForEventsQuery() {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("eventProcess");
+    assertEquals(1, taskService.createTaskQuery().count()); 
+    runtimeService.signalEventReceived("signal");
+    assertProcessEnded(pi.getId());
+    
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().activityId("noop").list().size());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().activityId("userTask").list().size());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().activityId("intermediate-event").list().size());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().activityId("start").list().size());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().activityId("end").list().size());
+    
+    // TODO: Discuss if boundary events will occur in the log!
+//    assertEquals(1, historyService.createHistoricActivityInstanceQuery().activityId("boundaryEvent").list().size());
+
+    HistoricActivityInstance intermediateEvent = historyService.createHistoricActivityInstanceQuery().activityId("intermediate-event").singleResult();
+    assertNotNull(intermediateEvent.getStartTime());
+    assertNotNull(intermediateEvent.getEndTime());
+    
+    HistoricActivityInstance startEvent = historyService.createHistoricActivityInstanceQuery().activityId("start").singleResult();
+    assertNotNull(startEvent.getStartTime());
+    assertNotNull(startEvent.getEndTime());
+    
+    HistoricActivityInstance endEvent = historyService.createHistoricActivityInstanceQuery().activityId("end").singleResult();
+    assertNotNull(endEvent.getStartTime());
+    assertNotNull(endEvent.getEndTime());
   }
   
   @Deployment
