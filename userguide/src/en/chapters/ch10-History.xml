@@ -17,7 +17,7 @@
         <para><literal>HistoricProcessInstance</literal>s containing information about current and past process instances.</para>
       </listitem>
       <listitem>
-        <para><literal>HistoricActivityInstance</literal>s containing information about a single execution of an activity.</para>
+        <para><literal>HistoricActivityInstance</literal>s containing information about a single execution of an activity (node in the process).</para>
       </listitem>
       <listitem>
         <para><literal>HistoricTaskInstance</literal>s containing information about current and past (completed and deleted) task instances.</para>
@@ -152,12 +152,12 @@ ProcessEngine processEngine = ProcessEngineConfiguration
 	    process execution, but no historical information will be available. </para></listitem>
 	    <listitem><para><literal>activity</literal>: archives all process instances and activity instances. 
 	    No details will be archived</para></listitem>
-	    <listitem><para><literal>audit</literal>: This is the default.  It archives all process instances, 
+	    <listitem><para><literal>audit</literal>: This is the default. It archives all process instances, 
 	    activity instances and all form properties that are submitted so that all user interaction 
 	    through forms is traceable and can be audited.</para></listitem>
 	    <listitem><para><literal>full</literal>: This is the highest level of history archiving and hence the 
 	    slowest.  This level stores all information as in the <literal>audit</literal> level 
-	    plus all other possible details like process variable updates.</para></listitem>
+	    plus all other possible details, mostly this are process variable updates.</para></listitem>
 	  </itemizedlist>
   </section>
   
