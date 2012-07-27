@@ -21,7 +21,7 @@
     <repository>
       <id>alfresco.snapshot.repo</id>
       <url>https://maven.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
-      <snapshots><enabled /></snapshots>
+      <snapshots><enabled>true</enabled></snapshots>
     </repository>
     <repository>
       <id>alfresco</id>
