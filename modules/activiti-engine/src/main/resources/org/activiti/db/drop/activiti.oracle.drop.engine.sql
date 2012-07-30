@@ -15,7 +15,6 @@ drop index ACT_IDX_EXEC_BUSKEY;
 drop index ACT_IDX_TASK_CREATE;
 drop index ACT_IDX_IDENT_LNK_USER;
 drop index ACT_IDX_IDENT_LNK_GROUP;
-drop index ACT_IDX_EVENT_SUBSCR;
 drop index ACT_IDX_VARIABLE_TASK_ID;
 
 alter table ACT_GE_BYTEARRAY 
