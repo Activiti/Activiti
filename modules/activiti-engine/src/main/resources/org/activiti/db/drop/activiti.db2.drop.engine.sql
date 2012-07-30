@@ -3,6 +3,8 @@ drop index ACT_IDX_TASK_CREATE;
 drop index ACT_IDX_IDENT_LNK_USER;
 drop index ACT_IDX_IDENT_LNK_GROUP;
 drop index ACT_IDX_VARIABLE_TASK_ID;
+drop index ACT_IDX_EVENT_SUBSCR_CONFIG_;
+drop index ACT_IDX_ATHRZ_PROCEDEF;
 
 alter table ACT_GE_BYTEARRAY 
     drop foreign key ACT_FK_BYTEARR_DEPL;
@@ -44,7 +46,7 @@ alter table ACT_RU_JOB
     drop foreign key ACT_FK_JOB_EXCEPTION;
     
 alter table ACT_RU_EVENT_SUBSCR
-    drop foreign key ACT_FK_EVENT_EXEC; 
+    drop foreign key ACT_FK_EVENT_EXEC;
     
 drop table ACT_GE_PROPERTY;
 drop table ACT_GE_BYTEARRAY;
