@@ -17,3 +17,4 @@ drop table ACT_HI_TASKINST cascade constraints;
 drop table ACT_HI_DETAIL cascade constraints;
 drop table ACT_HI_COMMENT cascade constraints;
 drop table ACT_HI_ATTACHMENT cascade constraints;
+drop table ACT_RU_EVENT_SUBSCR cascade constraints;

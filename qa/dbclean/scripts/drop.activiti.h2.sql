@@ -17,3 +17,4 @@ drop table ACT_HI_TASKINST cascade;
 drop table ACT_HI_DETAIL cascade;
 drop table ACT_HI_COMMENT cascade;
 drop table ACT_HI_ATTACHMENT cascade;
+drop table ACT_RU_EVENT_SUBSCR cascade;
