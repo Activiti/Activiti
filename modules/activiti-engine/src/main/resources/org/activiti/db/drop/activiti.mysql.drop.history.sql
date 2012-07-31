@@ -10,6 +10,7 @@ drop index ACT_IDX_HI_DETAIL_TASK_ID on ACT_HI_DETAIL;
 
 drop table if exists ACT_HI_PROCINST;
 drop table if exists ACT_HI_ACTINST;
+drop table if exists ACT_HI_PROCVARIABLE;
 drop table if exists ACT_HI_TASKINST;
 drop table if exists ACT_HI_DETAIL;
 drop table if exists ACT_HI_COMMENT;

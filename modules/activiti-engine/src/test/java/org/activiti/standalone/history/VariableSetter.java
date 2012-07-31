@@ -16,8 +16,8 @@ package org.activiti.standalone.history;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.test.history.SerializableVariable;
 
@@ -25,10 +25,9 @@ import org.activiti.engine.test.history.SerializableVariable;
 /**
  * @author Tom Baeyens
  */
-public class VariableSetter implements ActivityBehavior {
+public class VariableSetter implements JavaDelegate {
 
-  
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(DelegateExecution execution) throws Exception {
     
     SimpleDateFormat sdf =  new SimpleDateFormat("dd/MM/yyyy hh:mm:ss SSS");
     // We set the time to check of the updated time is picked up in the history

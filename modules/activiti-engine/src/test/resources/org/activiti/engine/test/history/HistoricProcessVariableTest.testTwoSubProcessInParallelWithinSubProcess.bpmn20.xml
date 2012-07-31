@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="twoSubProcessInParallelWithinSubProcess">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theScriptTask" />
+    
+    <scriptTask id="theScriptTask" name="Execute script" scriptFormat="groovy">
+      <script>
+        // Using def in Groovy makes the variable script-local
+        // It will not be stored autmatically (which is the case when not using def)
+        def scriptVar = "test123"
+        execution.setVariable("myVar", scriptVar)
+        def scriptVar1 = "test123"
+        execution.setVariable("myVar1", scriptVar1)
+      </script>
+    </scriptTask>
+    <sequenceFlow id="flow1-1" sourceRef="theScriptTask" targetRef="outerSubProcess" />
+    
+    <subProcess id="outerSubProcess">
+    
+      <startEvent id="outerSubProcessStart" />
+      <sequenceFlow id="flow2" sourceRef="outerSubProcessStart" targetRef="fork" />
+      
+	    <parallelGateway id="fork"/>
+	    <sequenceFlow id="flow3" sourceRef="fork" targetRef="subProcessA" />
+	    <sequenceFlow id="flow4" sourceRef="fork" targetRef="subProcessB" />
+	
+	    
+	    <subProcess id="subProcessA">
+	    
+	      <startEvent id="subProcessAStart" />
+	      <sequenceFlow id="flow5" sourceRef="subProcessAStart" targetRef="subProcessATask" />
+	      <scriptTask id="subProcessATask" name="Execute script" scriptFormat="groovy">
+	        <script>
+	          // Using def in Groovy makes the variable script-local
+	          // It will not be stored autmatically (which is the case when not using def)
+	          def scriptVar = "test456"
+	          execution.setVariable("myVar", scriptVar)
+	          def scriptVar1 = "test456"
+	          execution.setVariable("myVar1", scriptVar1)
+	        </script>
+	      </scriptTask>
+	      <sequenceFlow id="flow6" sourceRef="subProcessATask" targetRef="subProcessAEnd" />
+	      <endEvent id="subProcessAEnd" />
+	    
+	    </subProcess>
+	    <sequenceFlow id="flow7" sourceRef="subProcessA" targetRef="join" />
+	    
+	    <subProcess id="subProcessB">
+	    
+	      <startEvent id="subProcessBStart" />
+	      <sequenceFlow id="flow8" sourceRef="subProcessBStart" targetRef="subProcessBTask" />
+	      <scriptTask id="subProcessBTask" name="Execute script" scriptFormat="groovy">
+	        <script>
+	          // Using def in Groovy makes the variable script-local
+	          // It will not be stored autmatically (which is the case when not using def)
+	          def scriptVar = "test789"
+	          execution.setVariable("myVar", scriptVar)
+	          def scriptVar1 = "test789"
+	          execution.setVariable("myVar1", scriptVar1)
+	        </script>
+	      </scriptTask>
+	      <sequenceFlow id="flow9" sourceRef="subProcessBTask" targetRef="subProcessBEnd" />
+	      <endEvent id="subProcessBEnd" />
+	    
+	    </subProcess>
+	    <sequenceFlow id="flow10" sourceRef="subProcessB" targetRef="join" />
+	    
+	    <parallelGateway id="join" />
+	    <sequenceFlow id="flow11" sourceRef="join" targetRef="outerSubProcessEnd" />
+	    <endEvent id="outerSubProcessEnd" />
+    
+    </subProcess>
+    
+    <sequenceFlow id="flow12" sourceRef="outerSubProcess" targetRef="taskAfterSubProcess" />
+    <scriptTask id="taskAfterSubProcess" name="Execute script" scriptFormat="groovy">
+      <script>
+        // Using def in Groovy makes the variable script-local
+        // It will not be stored autmatically (which is the case when not using def)
+        def scriptVar = "test101112"
+        execution.setVariable("myVar", scriptVar)
+      </script>
+    </scriptTask>
+    <sequenceFlow id="flow13" sourceRef="taskAfterSubProcess" targetRef="theEnd" />
+    <endEvent id="theEnd" />
+   
+    
+  </process>
+
+</definitions>

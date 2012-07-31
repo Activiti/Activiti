@@ -10,6 +10,7 @@ drop index ACT_IDX_HI_DETAIL_TASK_ID;
 
 drop table ACT_HI_PROCINST;
 drop table ACT_HI_ACTINST;
+drop table ACT_HI_PROCVARIABLE;
 drop table ACT_HI_TASKINST;
 drop table ACT_HI_DETAIL;
 drop table ACT_HI_COMMENT;

@@ -24,6 +24,7 @@ import org.activiti.engine.impl.persistence.entity.GroupManager;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceManager;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailManager;
 import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceManager;
+import org.activiti.engine.impl.persistence.entity.HistoricProcessVariableManager;
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceManager;
 import org.activiti.engine.impl.persistence.entity.IdentityInfoManager;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkManager;
@@ -94,6 +95,10 @@ public abstract class AbstractManager implements Session {
 
   protected HistoricActivityInstanceManager getHistoricActivityInstanceManager() {
     return getSession(HistoricActivityInstanceManager.class);
+  }
+  
+  protected HistoricProcessVariableManager getHistoricProcessVariableManager() {
+    return getSession(HistoricProcessVariableManager.class);
   }
   
   protected HistoricTaskInstanceManager getHistoricTaskInstanceManager() {

@@ -31,8 +31,11 @@ import org.activiti.engine.impl.variable.VariableDeclaration;
  * @author Joram Barrez
  * @author Falko Menge
  * @author Bernd Ruecker (camunda)
+ * @author Christian Lipphardt (camunda)
  */
 public class HistoryParseListener implements BpmnParseListener {
+
+  protected static final HistoricProcessVariableHandler HISTORIC_PROCESS_VARIABLE_HANDLER = new HistoricProcessVariableHandler();
 
   protected static final StartEventEndHandler START_EVENT_END_HANDLER = new StartEventEndHandler();
 
@@ -116,6 +119,9 @@ public class HistoryParseListener implements BpmnParseListener {
 
   public void parseEndEvent(Element endEventElement, ScopeImpl scope, ActivityImpl activity) {
     addActivityHandlers(activity);
+    if (variableHistoryEnabled(activity,historyLevel)) {
+      activity.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, HISTORIC_PROCESS_VARIABLE_HANDLER, -1);
+    }
   }
 
   public void parseParallelGateway(Element parallelGwElement, ScopeImpl scope, ActivityImpl activity) {
@@ -142,6 +148,7 @@ public class HistoryParseListener implements BpmnParseListener {
   
   public void parseBoundarySignalEventDefinition(Element signalEventDefinition, boolean interrupting, ActivityImpl signalActivity) {
   }
+  
   public void parseEventBasedGateway(Element eventBasedGwElement, ScopeImpl scope, ActivityImpl activity) {
     // TODO: Shall we add audit logging here as well? 
   }
@@ -169,6 +176,10 @@ public class HistoryParseListener implements BpmnParseListener {
     return historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT;
   }
 
+  public static boolean variableHistoryEnabled(ScopeImpl scopeElement, int historyLevel) {
+    return historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_VARIABLE;
+  }
+  
   public static boolean activityHistoryEnabled(ScopeImpl scopeElement, int historyLevel) {
     return historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY;
   }

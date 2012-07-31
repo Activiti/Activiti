@@ -51,6 +51,24 @@ create table ACT_HI_TASKINST (
     primary key (ID_)
 );
 
+create table ACT_HI_PROCVARIABLE (
+    ID_ varchar(64) not null,
+    PROC_INST_ID_ varchar(64) not null,
+    EXECUTION_ID_ varchar(64) not null,
+    TASK_ID_ varchar(64),
+    ACT_INST_ID_ varchar(64),
+    NAME_ varchar(255) not null,
+    VAR_TYPE_ varchar(255),
+    REV_ integer,
+    TIME_ timestamp not null,
+    BYTEARRAY_ID_ varchar(64),
+    DOUBLE_ double precision,
+    LONG_ bigint,
+    TEXT_ varchar(4000),
+    TEXT2_ varchar(4000),
+    primary key (ID_)
+);
+
 create table ACT_HI_DETAIL (
     ID_ varchar(64) not null,
     TYPE_ varchar(255) not null,

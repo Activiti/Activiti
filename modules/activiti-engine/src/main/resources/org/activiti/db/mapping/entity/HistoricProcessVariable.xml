@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.activiti.engine.impl.persistence.entity.HistoricProcessVariableEntity">
+
+  <!-- HISTORIC PROCESS VARIABLE INSERT -->
+  
+  <insert id="insertHistoricProcessVariable" parameterType="org.activiti.engine.impl.persistence.entity.HistoricProcessVariableEntity">
+    insert into ${prefix}ACT_HI_PROCVARIABLE (ID_, PROC_INST_ID_, EXECUTION_ID_, ACT_INST_ID_, TASK_ID_, NAME_, REV_, VAR_TYPE_, TIME_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_)
+    values (
+      #{id, jdbcType=VARCHAR},
+      #{processInstanceId, jdbcType=VARCHAR},
+      #{executionId, jdbcType=VARCHAR},
+      #{activityInstanceId, jdbcType=VARCHAR},
+      #{taskId, jdbcType=VARCHAR},
+      #{variableName, jdbcType=VARCHAR},
+      #{revision, jdbcType=VARCHAR},
+      #{variableType, jdbcType=VARCHAR},
+      #{time, jdbcType=TIMESTAMP },
+      #{byteArrayValueId, jdbcType=VARCHAR},
+      #{doubleValue, jdbcType=DOUBLE},
+      #{longValue, jdbcType=BIGINT},
+      #{textValue, jdbcType=VARCHAR},
+      #{textValue2, jdbcType=VARCHAR}
+    )
+  </insert>
+  
+  <!-- HISTORIC PROCESS VARIABLE DELETE -->
+
+  <delete id="deleteHistoricProcessVariable">
+    delete from ${prefix}ACT_HI_PROCVARIABLE where ID_ = #{historicDetailId}
+  </delete>
+  
+  <!-- HISTORIC PROCESS VARIABLE RESULTMAP -->
+  <resultMap id="historicProcessVariableResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricProcessVariableEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="activityInstanceId" column="ACT_INST_ID_" jdbcType="VARCHAR" />
+    <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
+    <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
+    <result property="time" column="TIME_" jdbcType="TIMESTAMP" />
+    <result property="name" column="NAME_" javaType="String" jdbcType="VARCHAR" />
+    <result property="revision" column="REV_" jdbcType="INTEGER" />
+    <result property="variableType" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="VARCHAR"/>
+    <result property="byteArrayValueId" column="BYTEARRAY_ID_" jdbcType="VARCHAR" />
+    <result property="doubleValue" column="DOUBLE_" jdbcType="DOUBLE" />
+    <result property="textValue" column="TEXT_" jdbcType="VARCHAR" />
+    <result property="textValue2" column="TEXT2_" jdbcType="VARCHAR" />
+    <result property="longValue" column="LONG_" jdbcType="BIGINT" />
+    <association property="byteArrayValue" 
+                 column="BYTEARRAY_ID_" 
+                 javaType="org.activiti.engine.impl.persistence.entity.ByteArrayEntity" 
+                 select="org.activiti.engine.impl.persistence.entity.VariableInstanceEntity.selectByteArray" />
+  </resultMap>
+  
+  <resultMap id="historicProcessVariableResultMap_postgres" type="org.activiti.engine.impl.persistence.entity.HistoricProcessVariableEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="activityInstanceId" column="ACT_INST_ID_" jdbcType="VARCHAR" />
+    <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
+    <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
+    <result property="time" column="TIME_" jdbcType="TIMESTAMP" />
+    <result property="name" column="NAME_" javaType="String" jdbcType="VARCHAR" />
+    <result property="revision" column="REV_" jdbcType="INTEGER" />
+    <result property="variableType" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="VARCHAR"/>
+    <result property="byteArrayValueId" column="BYTEARRAY_ID_" jdbcType="VARCHAR" />
+    <result property="doubleValue" column="DOUBLE_" jdbcType="DOUBLE" />
+    <result property="textValue" column="TEXT_" jdbcType="VARCHAR" />
+    <result property="textValue2" column="TEXT2_" jdbcType="VARCHAR" />
+    <result property="longValue" column="LONG_" jdbcType="BIGINT" />
+    <association property="byteArrayValue" 
+                 column="BYTEARRAY_ID_" 
+                 javaType="org.activiti.engine.impl.persistence.entity.ByteArrayEntity" 
+                 select="org.activiti.engine.impl.persistence.entity.VariableInstanceEntity.selectByteArray_postgres" />
+  </resultMap>
+
+  <!-- HISTORIC VARIABLE UPDATE SELECT -->
+
+  <select id="selectHistoricProcessVariableByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricProcessVariableQueryImpl" resultMap="historicProcessVariableResultMap">
+  	${limitBefore}
+    select *
+    <include refid="selectHistoricProcessVariableByQueryCriteriaSql"/>
+    <if test="orderBy != null">
+      order by ${orderBy}
+    </if>
+    ${limitAfter}
+  </select>
+  
+  <select id="selectHistoricProcessVariableByQueryCriteria_postgres" parameterType="org.activiti.engine.impl.HistoricProcessVariableQueryImpl" resultMap="historicProcessVariableResultMap_postgres">
+  	${limitBefore}
+    select *
+    <include refid="selectHistoricProcessVariableByQueryCriteriaSql"/>
+    <if test="orderBy != null">
+      order by ${orderBy}
+    </if>
+    ${limitAfter}
+  </select>
+  
+  <select id="selectHistoricProcessVariableCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricProcessVariableQueryImpl" resultType="long">
+    select count(*)
+    <include refid="selectHistoricProcessVariableByQueryCriteriaSql"/>
+  </select>
+  
+  <sql id="selectHistoricProcessVariableByQueryCriteriaSql">
+    from ${prefix}ACT_HI_PROCVARIABLE PV
+    <where>
+      <if test="processInstanceId != null">
+        PV.PROC_INST_ID_ = #{processInstanceId}
+      </if>
+      <if test="activityInstanceId != null">
+        and PV.ACT_INST_ID_ = #{activityInstanceId}
+      </if>
+      <if test="variableName != null">
+        and PV.NAME_ = #{variableName}
+      </if>
+      <if test="variableNameLike != null">
+        and PV.NAME_ like #{variableNameLike}
+      </if>
+      <choose>
+        <when test="taskId != null">
+          and PV.TASK_ID_ = #{taskId}
+        </when>
+        <otherwise>
+          <if test="excludeTaskRelated">
+            and PV.TASK_ID_ is null
+         </if>
+        </otherwise>
+      </choose>
+    </where>
+  </sql>
+  
+</mapper>

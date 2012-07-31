@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="callSimpleSubProcess">
+  
+    <startEvent id="theStart" />
+    
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="taskBeforeSubProcess" />
+    
+    <scriptTask id="taskBeforeSubProcess" name="Execute script" scriptFormat="groovy">
+      <script>
+        // Using def in Groovy makes the variable script-local
+        // It will not be stored autmatically (which is the case when not using def)
+        def scriptVar = "test123"
+        execution.setVariable("myVar", scriptVar)
+        def scriptVar1 = "test123"
+        execution.setVariable("myVar1", scriptVar1)
+      </script>
+    </scriptTask>
+    
+    <sequenceFlow id="flow2" sourceRef="taskBeforeSubProcess" targetRef="callSubProcess" />
+  
+    <callActivity id="callSubProcess" calledElement="simpleSubProcess" />
+    
+    <sequenceFlow id="flow3" sourceRef="callSubProcess" targetRef="taskAfterSubProcess" />
+    
+    <scriptTask id="taskAfterSubProcess" name="Execute script" scriptFormat="groovy">
+      <script>
+        // Using def in Groovy makes the variable script-local
+        // It will not be stored autmatically (which is the case when not using def)
+        def scriptVar1 = "test456"
+        execution.setVariable("myVar1", scriptVar1)
+      </script>
+    </scriptTask>
+    
+    <sequenceFlow id="flow4" sourceRef="taskAfterSubProcess" targetRef="theEnd" />
+     
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

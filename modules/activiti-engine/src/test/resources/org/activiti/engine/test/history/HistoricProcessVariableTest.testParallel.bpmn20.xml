@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+             xmlns:activiti="http://activiti.org/bpmn" 
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" 
+             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" 
+             xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" 
+             xmlns:signavio="http://www.signavio.com" 
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+             exporter="Signavio Process Editor, http://www.signavio.com" 
+             exporterVersion="" 
+             expressionLanguage="http://www.w3.org/1999/XPath" 
+             id="sid-7b4298e2-d37d-4b00-ab34-579ea52b2d35" 
+             targetNamespace="http://www.signavio.com/bpmn20" 
+             typeLanguage="http://www.w3.org/2001/XMLSchema">
+             
+   <process id="myProc" name="P3.bpmn20.xml">
+      <startEvent id="theStart" name="" />
+      <sequenceFlow id="sid-A143A22A-DBFC-4F85-A3E4-0F502E0CA386" name="" sourceRef="theStart" targetRef="manTask1"/>
+
+      <manualTask id="manTask1" />
+      <sequenceFlow id="sid-0C7DB62B-8F30-4B6B-9D55-B1880777B93B" name="" sourceRef="manTask1" targetRef="gateway1"/>
+
+      <parallelGateway id="gateway1" name="" />
+      <sequenceFlow id="sid-8EC53ABF-E45D-40F2-B53B-1D62B3531224" name="" sourceRef="gateway1" targetRef="theScriptTask"/>
+      <sequenceFlow id="sid-277D4CCF-211F-4E6E-BED2-4CEB39538594" name="" sourceRef="gateway1" targetRef="theScriptTask1"/>
+
+      <scriptTask id="theScriptTask" name="Execute script" scriptFormat="groovy">
+	      <script>
+	        // Using def in Groovy makes the variable script-local
+	        // It will not be stored autmatically (which is the case when not using def)
+	        def scriptVar = "test123"
+	        execution.setVariable("myVar", scriptVar)
+	        def scriptVar1 = "test123"
+          execution.setVariable("myVar1", scriptVar1)
+	      </script>
+      </scriptTask>
+      
+      <sequenceFlow id="sid-7CD58A88-0C17-4B28-BF0A-1A0695C77012" name="" sourceRef="theScriptTask" targetRef="userTask1"/>
+      
+      <userTask id="userTask1" name="userTask1">
+         <humanPerformer id="sid-6fb5b033-ee58-438c-abf4-e4e2fdd543e7">
+            <resourceAssignmentExpression id="sid-d2837c98-373d-4700-b533-7662e95fc69d">
+               <formalExpression id="sid-d0113065-5fa3-4fb1-b361-2423defefd9d">fozzie</formalExpression>
+            </resourceAssignmentExpression>
+         </humanPerformer>
+      </userTask>
+      
+      <sequenceFlow id="sid-7CD58A88-0C17-4B28-BF0A-1A0695C77011" name="" sourceRef="userTask1" targetRef="theEnd1"/>
+      <endEvent id="theEnd1" name="" />
+
+      <scriptTask id="theScriptTask1" name="Execute script" scriptFormat="groovy">
+	      <script>
+	        // Using def in Groovy makes the variable script-local
+	        // It will not be stored autmatically (which is the case when not using def)
+	        def scriptVar = "test456"
+	        execution.setVariable("myVar", scriptVar)
+	        def scriptVar1 = "test456"
+          execution.setVariable("myVar1", scriptVar1)
+	      </script>
+      </scriptTask>
+      
+      <sequenceFlow id="sid-A8708B31-2F4E-409C-A649-C75F7B52E66A" name="" sourceRef="theScriptTask1" targetRef="theEnd2"/>
+      <endEvent id="theEnd2" name="" />
+   </process>
+   
+</definitions>
