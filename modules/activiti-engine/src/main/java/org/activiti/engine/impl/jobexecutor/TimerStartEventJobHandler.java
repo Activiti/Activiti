@@ -12,15 +12,16 @@
  */
 package org.activiti.engine.impl.jobexecutor;
 
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.cmd.StartProcessInstanceCmd;
-import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.cmd.StartProcessInstanceCmd;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.repository.ProcessDefinition;
 
 
 public class TimerStartEventJobHandler implements JobHandler {
@@ -34,8 +35,17 @@ public class TimerStartEventJobHandler implements JobHandler {
   }
 
   public void execute(String configuration, ExecutionEntity execution, CommandContext commandContext) {
+    DeploymentCache deploymentCache = Context
+            .getProcessEngineConfiguration()
+            .getDeploymentCache();
+    
+    ProcessDefinition processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKey(configuration);
     try {
-      new StartProcessInstanceCmd(configuration, null, null, null).execute(commandContext);
+      if(!processDefinition.isSuspended()) {
+        new StartProcessInstanceCmd(configuration, null, null, null).execute(commandContext);
+      } else {
+        log.log(Level.FINE, "ignoring timer of suspended process definition " + processDefinition.getName());
+      }
     } catch (RuntimeException e) {
       log.log(Level.SEVERE, "exception during timer execution", e);
       throw e;
