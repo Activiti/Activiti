@@ -122,7 +122,7 @@
             <configuration>
               <failIfNoTests>false</failIfNoTests>
               <trimStackTrace>false</trimStackTrace>
-              <redirectTestOutputToFile>true</redirectTestOutputToFile>
+              <!-- redirectTestOutputToFile>true</redirectTestOutputToFile -->
               <includes>
                 <include>**/*AfterTest.java</include>
               </includes>
@@ -161,7 +161,7 @@
                   <tasks>
                     <echo message="dropping schema in ${database}" />
                     <property name="test_classpath" refid="maven.test.classpath" />
-                    <java classname="org.activiti.engine.impl.db.DbSchemaDrop">
+                    <java classname="org.activiti.engine.impl.db.DbSchemaDrop" fork="true">
                       <classpath>
                         <path path="${test_classpath}"/>
                       </classpath>

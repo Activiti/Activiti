@@ -810,6 +810,7 @@ public class DbSqlSession implements Session {
             throw new ActivitiException("database update java class '"+upgradestepClassName+"' can't be instantiated: "+e.getMessage(), e);
           }
           try {
+            log.fine("executing upgrade step java class "+upgradestepClassName);
             dbUpgradeStep.execute(this);
           } catch (Exception e) {
             throw new ActivitiException("error while executing database update java class '"+upgradestepClassName+"': "+e.getMessage(), e);
@@ -822,6 +823,7 @@ public class DbSqlSession implements Session {
             Statement jdbcStatement = connection.createStatement();
             try {
               // no logging needed as the connection will log it
+              log.fine("SQL: "+sqlStatement);
               jdbcStatement.execute(sqlStatement);
               jdbcStatement.close();
             } catch (Exception e) {

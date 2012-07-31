@@ -2,7 +2,7 @@
 <project name="activiti.qa.upgrade" default="upgrade">
 	
   <property file="${user.home}/.activiti/build.properties" />
-  <property name="activiti.version" value="5.9-SNAPSHOT" />
+  <property name="activiti.version" value="5.10-SNAPSHOT" />
   <property name="database" value="h2" />
   <property name="activiti.old.version" value="5.0" />
   <property name="downloads.dir" value="${user.home}/.activiti/downloads" />
@@ -24,11 +24,23 @@
     <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.start" inheritall="false">
     	<property name="db" value="${database}" />
     </ant>
-		<echo message="creating activiti tables" />
+    <echo message="####################################" />
+    <echo message="### CREATING ACTIVITI ${activiti.old.version} TABLES ###" />
+    <echo message="####################################" />
+	  <loadfile property="old.database.properties.used" srcFile="target/activiti-${activiti.old.version}/setup/build.${database}.properties" failonerror="false"/>
+    <echo message="${old.database.properties.used}" />
+		<jar destfile="target/activiti-${activiti.old.version}/setup/files/dependencies/libs/logging-config.jar">
+			<fileset dir=".">
+				<includesfile name="logging.properties"/>
+			</fileset>
+		</jar>
     <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="db.create" inheritall="false">
       <property name="db" value="${database}" />
     	<property name="feature.cycle" value="disabled" />
-     </ant>
+    </ant>
+    <echo message="###################################################" />
+    <echo message="### RUNNING BEFORE-TESTS IN ACTIVITI ${activiti.old.version} ###" />
+    <echo message="###################################################" />
     <echo message="unpacking upgrade before test classes" />
     <exec executable="${mvn.executable}">
       <arg line="dependency:unpack-dependencies -Dactiviti.upgrade.version=${activiti.old.version}-ALWAYS-SNAPSHOT -DoutputDirectory=target/activiti-${activiti.old.version}-upgrade-before-classes -DexcludeTransitive=true" />
@@ -38,7 +50,6 @@
       <filterset filtersfile="${user.home}/.activiti/upgrade/build.${database}.properties" />
     </copy>
     <mkdir dir="target/test-results-before" />
-    <echo message="running before tests" />
 		<junit>
 			<classpath>
 				<pathelement location="target/activiti-${activiti.old.version}-upgrade-before-classes" />
@@ -49,13 +60,15 @@
 				<fileset dir="target/activiti-${activiti.old.version}-upgrade-before-classes">
 					<include name="**/*BeforeTest.class"/>
 			  </fileset>
-				<formatter type="xml" />
+				<formatter type="xml" usefile="false" />
 			</batchtest>
 		</junit>
+    <echo message="##################################################" />
+    <echo message="### RUNNING AFTER-TESTS IN ACTIVITI ${activiti.version} ###" />
+    <echo message="##################################################" />
     <condition property="optional.debug.property" value="-Dmaven.surefire.debug" else="">
       <equals arg1="${debug}" arg2="true"/>
     </condition>
-    <echo message="running after tests" />
     <exec executable="${mvn.executable}" dir="../../modules/activiti-upgrade">
       <arg line="-Ddatabase=${database} ${optional.debug.property} clean prepare-package" />
     </exec>
@@ -80,6 +93,9 @@
   </target>
 	
   <target name="internal.install.old.distro" unless="old.installation.available">
+    <echo message="#############################" />
+    <echo message="### INSTALLING OLD DISTRO ###" />
+    <echo message="#############################" />
   	<mkdir dir="target/activiti-${activiti.old.version}" />
     <unzip src="${downloads.dir}/activiti-${activiti.old.version}.zip" dest="target" />
   	<copy file="${user.home}/.activiti/upgrade/build.${database}.properties" todir="target/activiti-${activiti.old.version}/setup" overwrite="true" />
@@ -98,6 +114,9 @@
   </target>
 	
 	<target name="build.engine.module">
+    <echo message="##############################" />
+    <echo message="### BUILDING ENGINE MODULE ###" />
+    <echo message="##############################" />
     <exec executable="${mvn.executable}" dir="../..">
       <arg line="-DskipTests clean install" />
     </exec>
@@ -107,6 +126,9 @@
 	 	 <equals arg1="${database}" arg2="mysql" />
 	</condition>
 	<target name="clean.db" if="is.database.mysql" depends="install.old.distro">
+    <echo message="#########################" />
+    <echo message="### CLEANING MYSQL DB ###" />
+    <echo message="#########################" />
 	  <property file="${user.home}/.activiti/upgrade/build.${database}.properties" />
 		<echo message="cleaning db ${jdbc.url}" />
 	  <sql driver="${jdbc.driver}" password="${jdbc.password}" url="${jdbc.url}" userid="${jdbc.username}">
