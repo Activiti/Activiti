@@ -41,7 +41,7 @@ public abstract class AbstractEventHandler implements EventHandler {
               + "no activity associated with event subscription");
     }
 
-    if (!execution.getActivity().equals(activity)) {
+    if (!activity.equals( execution.getActivity() )) {
       execution.setActivity(activity);
     }
 
