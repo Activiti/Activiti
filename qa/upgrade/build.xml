@@ -34,7 +34,18 @@
 				<includesfile name="logging.properties"/>
 			</fileset>
 		</jar>
-    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="db.create" inheritall="false">
+		<condition property="db.create.target" value="db.create" else="internal.db.create">
+			<or>
+				<equals arg1="${activiti.old.version}" arg2="5.0" />
+        <equals arg1="${activiti.old.version}" arg2="5.1" />
+        <equals arg1="${activiti.old.version}" arg2="5.2" />
+        <equals arg1="${activiti.old.version}" arg2="5.3" />
+        <equals arg1="${activiti.old.version}" arg2="5.4" />
+        <equals arg1="${activiti.old.version}" arg2="5.5" />
+        <equals arg1="${activiti.old.version}" arg2="5.6" />
+			</or>
+		</condition>
+    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="${db.create.target}" inheritall="false">
       <property name="db" value="${database}" />
     	<property name="feature.cycle" value="disabled" />
     </ant>
