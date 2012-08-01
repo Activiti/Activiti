@@ -51,7 +51,7 @@ create table ACT_HI_TASKINST (
 );
 
 create table ACT_HI_PROCVARIABLE (
-    ID_ varchar(64) not null,
+    ID_ NVARCHAR2(64) not null,
     PROC_INST_ID_ NVARCHAR2(64) not null,
     EXECUTION_ID_ NVARCHAR2(64) not null,
     TASK_ID_ NVARCHAR2(64),
@@ -69,7 +69,7 @@ create table ACT_HI_PROCVARIABLE (
 );
 
 create table ACT_HI_DETAIL (
-    ID_ varchar(64) not null,
+    ID_ NVARCHAR2(64) not null,
     TYPE_ NVARCHAR2(255) not null,
     PROC_INST_ID_ NVARCHAR2(64) not null,
     EXECUTION_ID_ NVARCHAR2(64) not null,
