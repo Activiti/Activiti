@@ -74,12 +74,12 @@ public class DbSqlSessionFactory implements SessionFactory {
     addDatabaseSpecificStatement("oracle", "selectExclusiveJobsToExecute", "selectExclusiveJobsToExecute_integerBoolean");
     
     // db2
-    databaseSpecificLimitBeforeStatements.put("db2", ""); // TODO!
-    databaseSpecificLimitAfterStatements.put("db2", "");
+    databaseSpecificLimitBeforeStatements.put("db2", "");
+    databaseSpecificLimitAfterStatements.put("db2", "LIMIT #{maxResults} OFFSET #{firstResult}");
     addDatabaseSpecificStatement("db2", "selectExclusiveJobsToExecute", "selectExclusiveJobsToExecute_integerBoolean");
     
     // mssql
-    databaseSpecificLimitBeforeStatements.put("mssql", ""); // TODO!
+    databaseSpecificLimitBeforeStatements.put("mssql", ""); // TODO, this is not easily possible in MS-SQL, see www.codeguru.com/csharp/.net/net_data/article.php/c19611/Paging-in-SQL-Server-2005.htm
     databaseSpecificLimitAfterStatements.put("mssql", "");
     addDatabaseSpecificStatement("mssql", "selectExclusiveJobsToExecute", "selectExclusiveJobsToExecute_integerBoolean");
   }

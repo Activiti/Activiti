@@ -146,9 +146,21 @@
       <dependency>
         <groupId>com.ibm.db2.jcc</groupId>
         <artifactId>db2jcc4</artifactId>
-		    <version>9.7</version>
+		<version>9.7</version>
         <scope>test</scope>
       </dependency>
+      <dependency>
+        <groupId>com.ibm.db2.jcc</groupId>
+        <artifactId>db2jcc_license_cisuz</artifactId>
+        <version>9.7</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.ibm.db2.jcc</groupId>
+        <artifactId>db2jcc_license_cu</artifactId>
+        <version>9.7</version>
+        <scope>test</scope>
+      </dependency>      
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-engine</artifactId>
@@ -623,10 +635,12 @@
         <module>modules/activiti-spring</module>
         <module>modules/activiti-webapp-rest2</module>
         <module>modules/activiti-webapp-explorer2</module>
+        <!--
         <module>modules/activiti-cxf</module>
         <module>modules/activiti-osgi</module>
-	      <module>modules/activiti-camel</module>
+	      <module>modules/activiti-camel</module>	      
         <module>modules/activiti-mule</module>
+        -->
 		    <module>modules/activiti-cdi</module>
       </modules>
     </profile>
