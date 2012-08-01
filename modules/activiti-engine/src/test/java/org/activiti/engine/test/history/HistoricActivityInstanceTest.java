@@ -13,8 +13,11 @@
 
 package org.activiti.engine.test.history;
 
+import java.util.List;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -165,7 +168,7 @@ public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
   }
   
   @Deployment
-  public void testHistoricActivityInstanceAssignee() {    
+  public void testHistoricActivityInstanceProperties() {    
     // Start process instance
     runtimeService.startProcessInstanceByKey("taskAssigneeProcess");
 
@@ -175,7 +178,26 @@ public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
       .activityId("theTask")
       .singleResult();
     
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals(task.getId(), historicActivityInstance.getTaskId());
     assertEquals("kermit", historicActivityInstance.getAssignee());
+  }
+  
+  @Deployment(resources = {
+          "org/activiti/engine/test/history/calledProcess.bpmn20.xml",
+          "org/activiti/engine/test/history/HistoricActivityInstanceTest.testCallSimpleSubProcess.bpmn20.xml"
+        })
+  public void testHistoricActivityInstanceCalledProcessId() {    
+    runtimeService.startProcessInstanceByKey("callSimpleSubProcess");
+
+    HistoricActivityInstance historicActivityInstance = historyService
+      .createHistoricActivityInstanceQuery()
+      .activityId("callSubProcess")
+      .singleResult();
+    
+    HistoricProcessInstance oldInstance = historyService.createHistoricProcessInstanceQuery().processDefinitionKey("calledProcess").singleResult();
+    
+    assertEquals(oldInstance.getId(), historicActivityInstance.getCalledProcessInstanceId());
   }
   
   @Deployment

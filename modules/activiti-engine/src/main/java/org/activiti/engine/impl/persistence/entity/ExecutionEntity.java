@@ -262,6 +262,12 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
       DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);
       HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity((ExecutionEntity) subProcessInstance);
       dbSqlSession.insert(historicProcessInstance);
+      
+      HistoricActivityInstanceEntity activitiyInstance = ActivityInstanceEndHandler.findActivityInstance(this);
+      if (activitiyInstance != null) {
+        activitiyInstance.setCalledProcessInstanceId(subProcessInstance.getProcessInstanceId());
+      }
+      
     }
 
     return subProcessInstance;

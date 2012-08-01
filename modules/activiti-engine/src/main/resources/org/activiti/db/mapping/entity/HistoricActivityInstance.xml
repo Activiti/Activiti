@@ -27,6 +27,8 @@
         PROC_INST_ID_,
         EXECUTION_ID_,
         ACT_ID_,
+        TASK_ID_,
+        CALL_PROC_INST_ID_,
         ACT_NAME_,
         ACT_TYPE_,
         ASSIGNEE_,
@@ -39,6 +41,8 @@
         #{processInstanceId, jdbcType=VARCHAR},
         #{executionId, jdbcType=VARCHAR},
         #{activityId ,jdbcType=VARCHAR},
+        #{taskId ,jdbcType=VARCHAR},
+        #{calledProcessInstanceId ,jdbcType=VARCHAR},
         #{activityName ,jdbcType=VARCHAR},
         #{activityType ,jdbcType=VARCHAR},
         #{assignee ,jdbcType=VARCHAR},
@@ -73,6 +77,8 @@
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
     <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
     <result property="activityId" column="ACT_ID_" jdbcType="VARCHAR" />
+    <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
+    <result property="calledProcessInstanceId" column="CALL_PROC_INST_ID_" jdbcType="VARCHAR" />
     <result property="activityName" column="ACT_NAME_" jdbcType="VARCHAR" />
     <result property="activityType" column="ACT_TYPE_" jdbcType="VARCHAR" />
     <result property="assignee" column="ASSIGNEE_" jdbcType="VARCHAR" />

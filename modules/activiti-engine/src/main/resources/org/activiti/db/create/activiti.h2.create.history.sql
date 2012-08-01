@@ -21,6 +21,8 @@ create table ACT_HI_ACTINST (
     PROC_INST_ID_ varchar(64) not null,
     EXECUTION_ID_ varchar(64) not null,
     ACT_ID_ varchar(255) not null,
+    TASK_ID_ varchar(64),
+   	CALL_PROC_INST_ID_ varchar(64),
     ACT_NAME_ varchar(255),
     ACT_TYPE_ varchar(255) not null,
     ASSIGNEE_ varchar(64),

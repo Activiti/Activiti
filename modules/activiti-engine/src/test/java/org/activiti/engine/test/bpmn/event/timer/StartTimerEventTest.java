@@ -74,7 +74,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
 
   }
 
-
+  // FIXME: This test likes to run in an endless loop when invoking the waitForJobExecutorOnCondition method
   @Deployment
   public void testCycleDateStartTimerEvent() throws Exception {
     ClockUtil.setCurrentTime(new Date());

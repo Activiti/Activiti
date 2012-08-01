@@ -44,6 +44,12 @@ public interface HistoricActivityInstance {
   /** Execution reference */
   String getExecutionId();
 
+  /** The corresponding task in case of task activity */
+  String getTaskId();
+  
+  /** The called process instance in case of call activity */
+  String getCalledProcessInstanceId();
+
   /** Assignee in case of user task activity */
   String getAssignee();
 

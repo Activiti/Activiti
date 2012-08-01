@@ -45,6 +45,8 @@ public class HistoryParseListener implements BpmnParseListener {
 
   protected static final UserTaskAssignmentHandler USER_TASK_ASSIGNMENT_HANDLER = new UserTaskAssignmentHandler();
 
+  protected static final UserTaskIdHandler USER_TASK_ID_HANDLER = new UserTaskIdHandler();
+
   // The history level set in the Activiti configuration
   protected int historyLevel;
 
@@ -92,6 +94,7 @@ public class HistoryParseListener implements BpmnParseListener {
     if (activityHistoryEnabled(scope, historyLevel)) {
       TaskDefinition taskDefinition = ((UserTaskActivityBehavior) activity.getActivityBehavior()).getTaskDefinition();
       taskDefinition.addTaskListener(TaskListener.EVENTNAME_ASSIGNMENT, USER_TASK_ASSIGNMENT_HANDLER);
+      taskDefinition.addTaskListener(TaskListener.EVENTNAME_CREATE, USER_TASK_ID_HANDLER);
     }
   }
 
