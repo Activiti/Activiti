@@ -70,11 +70,11 @@ create table ACT_RU_JOB (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 create table ACT_RE_PROCDEF (
-    ID_ varchar(64),
+    ID_ varchar(64) not null,
     REV_ integer,
     CATEGORY_ varchar(255),
     NAME_ varchar(255),
-    KEY_ varchar(255),
+    KEY_ varchar(255) not null,
     VERSION_ integer,
     DEPLOYMENT_ID_ varchar(64),
     RESOURCE_NAME_ varchar(4000),

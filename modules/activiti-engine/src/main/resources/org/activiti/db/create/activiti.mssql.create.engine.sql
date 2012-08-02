@@ -69,11 +69,11 @@ create table ACT_RU_JOB (
 );
 
 create table ACT_RE_PROCDEF (
-    ID_ nvarchar(64),
+    ID_ nvarchar(64) not null,
     REV_ int,
     CATEGORY_ nvarchar(255),
     NAME_ nvarchar(255),
-    KEY_ nvarchar(255),
+    KEY_ nvarchar(255) not null,
     VERSION_ int,
     DEPLOYMENT_ID_ nvarchar(64),
     RESOURCE_NAME_ nvarchar(4000),
