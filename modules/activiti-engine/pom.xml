@@ -564,18 +564,6 @@
           <artifactId>db2jcc4</artifactId>
           <scope>test</scope>
         </dependency>
-        <!--
-        <dependency>
-          <groupId>com.ibm.db2.jcc</groupId>
-          <artifactId>db2jcc_license_cisuz</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>com.ibm.db2.jcc</groupId>
-          <artifactId>db2jcc_license_cu</artifactId>
-          <scope>test</scope>
-        </dependency>
-        -->
       </dependencies>
     </profile>
   </profiles>
