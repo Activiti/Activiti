@@ -175,6 +175,11 @@ alter table ACT_RU_EXECUTION
     references ACT_RU_EXECUTION;
     
 alter table ACT_RU_EXECUTION
+    add constraint ACT_FK_EXE_PROCDEF 
+    foreign key (PROC_DEF_ID_) 
+    references ACT_RE_PROCDEF (ID_);    
+    
+alter table ACT_RU_EXECUTION
     add constraint ACT_UNIQ_RU_BUS_KEY
     unique(PROC_DEF_ID_, BUSINESS_KEY_);
     
