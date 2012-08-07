@@ -4902,16 +4902,16 @@ public class MyTaskCreateListener implements TaskListener {
 		      The Event Sub-Process is new in BPMN 2.0. An Event Sub-Process is a subprocess that is triggered by an event. 
 		      An Event Sub-Process can be added at the process level or at any subprocess level. The event used to trigger an event 
 		      subprocess is configured using a start event. From this, it follows that none start events are not supported for 
-		      Event Sub-Processes. An Event Sub-Process might be triggered using events lit message events, error events, signal events, 
+		      Event Sub-Processes. An Event Sub-Process might be triggered using events like message events, error events, signal events, 
 		      timer events, or compensation events.
 		      The subscription to the start event is created when the scope (process instance or subprocess) 
 		      hosting the Event Sub-Process is created. The subscription is removed when the scope is destroyed. 	      
 		    </para>
 			
 			<para>
-				An Event Sub-Process may be interrupting or non interrupting. An interrupting subprocess cancels any executions 
-				in the current scope. A non interrupting Event Sub-Process spawns a new concurrent execution. While an interrupting 
-				Event Sub-Process can only be triggered once for each activation of the scope hosting it, a non interrupting Event Sub-Process
+				An Event Sub-Process may be interrupting or non-interrupting. An interrupting subprocess cancels any executions 
+				in the current scope. A non-interrupting Event Sub-Process spawns a new concurrent execution. While an interrupting 
+				Event Sub-Process can only be triggered once for each activation of the scope hosting it, a non-interrupting Event Sub-Process
 				can be triggered multiple times. The fact whether the subprocess is interrupting is configured using the start event triggering the 
 				Event Sub-Process.
 		   	</para>
@@ -4932,7 +4932,7 @@ public class MyTaskCreateListener implements TaskListener {
 		   			</listitem>
 		   			<listitem>
 		   				<para>
-		   					Activiti only supports Event Sub-Process triggered using an error start event.
+		   					Activiti only supports Event Sub-Process triggered using an Error Start Event or Message Start Event.
 		   				</para>
 		   			</listitem>
 		   		</itemizedlist>
@@ -4956,7 +4956,7 @@ public class MyTaskCreateListener implements TaskListener {
         <title>XML representation</title>
         
         <para>
-      		An Event Sub-Process is represented using xml in the same way as a an <link linkend="bpmnSubProcessXMLRepresentation">embedded subprocess</link>.
+      		An Event Sub-Process is represented using XML in the same way as a an <link linkend="bpmnSubProcessXMLRepresentation">embedded subprocess</link>.
       		In addition the attribute <code>triggeredByEvent</code> must have the value <code>true</code>:
 <programlisting>
 &lt;subProcess id=&quot;eventSubProcess&quot; triggeredByEvent=&quot;true&quot;&gt;
@@ -4972,7 +4972,7 @@ public class MyTaskCreateListener implements TaskListener {
         <title>Example</title>
         
         <para>
-  			The following is an example of an Event Sub-Process triggered using an error start event. The Event Sub-Process is located "at process level", i.e. is scoped to the process
+  			The following is an example of an Event Sub-Process triggered using an Error Start Event. The Event Sub-Process is located at the "process level", i.e. is scoped to the process
   			instance:
   			<mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.subprocess.eventSubprocess.example.1.png"/></imageobject></mediaobject>
   			This is how the Event Sub-Process would look like in XML:  			
