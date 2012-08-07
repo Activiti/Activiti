@@ -25,8 +25,11 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 
 /**
  * @author Daniel Meyer
+ * @author Falko Menge
  */
 public class EventSubscriptionDeclaration implements Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   protected final String eventName;
   protected final String eventType;
@@ -84,7 +87,7 @@ public class EventSubscriptionDeclaration implements Serializable {
     
     eventSubscriptionEntity.setEventName(eventName);
     if(activityId != null) {
-      ActivityImpl activity = execution.getActivity().findActivity(activityId);
+      ActivityImpl activity = execution.getProcessDefinition().findActivity(activityId);
       eventSubscriptionEntity.setActivity(activity);
     }
     return eventSubscriptionEntity;

@@ -14,18 +14,20 @@
 package org.activiti.engine.impl.event;
 
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.EventSubProcessStartEventActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 
 /**
  * @author Daniel Meyer
+ * @author Falko Menge
  */
 public abstract class AbstractEventHandler implements EventHandler {
 
@@ -41,34 +43,30 @@ public abstract class AbstractEventHandler implements EventHandler {
               + "no activity associated with event subscription");
     }
 
-    if (!activity.equals( execution.getActivity() )) {
-      execution.setActivity(activity);
-    }
-
     if (payload instanceof Map) {
       @SuppressWarnings("unchecked")
       Map<String, Object> processVariables = (Map<String, Object>) payload;
       execution.setVariables(processVariables);
     }
 
-    if (activity.getActivityBehavior() instanceof BoundaryEventActivityBehavior) {
+    ActivityBehavior activityBehavior = activity.getActivityBehavior();
+    if (activityBehavior instanceof BoundaryEventActivityBehavior
+            || activityBehavior instanceof EventSubProcessStartEventActivityBehavior) {
 
       try {
 
-        activity
-          .getActivityBehavior()
-          .execute(execution);
+        activityBehavior.execute(execution);
 
       } catch (RuntimeException e) {
-        log.log(Level.SEVERE, "exception while sending signal for event subscription '" + eventSubscription + "'", e);
         throw e;
-
       } catch (Exception e) {
-        log.log(Level.SEVERE, "exception while sending signal for event subscription '" + eventSubscription + "'", e);
         throw new ActivitiException("exception while sending signal for event subscription '" + eventSubscription + "':" + e.getMessage(), e);
       }
 
     } else { // not boundary
+      if (!activity.equals( execution.getActivity() )) {
+        execution.setActivity(activity);
+      }
       execution.signal("signal", null);
     }
 

@@ -53,7 +53,7 @@ public class MessageEventSubprocessTest extends PluggableActivitiTestCase {
     processInstance = runtimeService.startProcessInstanceByKey("process");
     runtimeService.messageEventReceived("newMessage", processInstance.getId());
     
-    task = taskService.createTaskQuery().singleResult();
+    task = taskService.createTaskQuery().list().get(1);
     assertEquals("eventSubProcessTask", task.getTaskDefinitionKey());
     taskService.complete(task.getId());
     assertProcessEnded(processInstance.getId());

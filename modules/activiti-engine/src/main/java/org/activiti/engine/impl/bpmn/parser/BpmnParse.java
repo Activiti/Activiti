@@ -955,30 +955,74 @@ public class BpmnParse extends Parse {
   }
 
   protected void parseScopeStartEvent(ActivityImpl startEventActivity, Element startEventElement, Element parentElement, ScopeImpl scope) {
-    if(scope.getProperty(PROPERTYNAME_INITIAL) == null) {
+
+    Object triggeredByEvent = scope.getProperty("triggeredByEvent");
+    boolean isTriggeredByEvent = triggeredByEvent != null && ((Boolean) triggeredByEvent == true);
+
+    Element errorEventDefinition = startEventElement.element("errorEventDefinition");
+    Element messageEventDefinition = startEventElement.element("messageEventDefinition");
+    Element signalEventDefinition = startEventElement.element("signalEventDefinition");
+    
+    if (isTriggeredByEvent) { // event subprocess
       
-      scope.setProperty(PROPERTYNAME_INITIAL, startEventActivity);
-          
-      Object triggeredByEvent = scope.getProperty("triggeredByEvent");
-      boolean isTriggeredByEvent = triggeredByEvent!=null && ((Boolean)triggeredByEvent==true);
+      // all start events of an event subprocess share common behavior
+      EventSubProcessStartEventActivityBehavior activityBehavior = new EventSubProcessStartEventActivityBehavior(startEventActivity.getId());
+      startEventActivity.setActivityBehavior(activityBehavior);
       
-      Element errorEventDefinition = startEventElement.element("errorEventDefinition");
-      if (errorEventDefinition != null) {      
-        if(isTriggeredByEvent) {        
-          parseErrorStartEventDefinition(errorEventDefinition, startEventActivity, scope);
-        } else {
-          addError("errorEventDefinition only allowed on start event if subprocess is an event subprocess", errorEventDefinition);                
-        }
-      } else {
-        if(!isTriggeredByEvent) {
-          startEventActivity.setActivityBehavior(new NoneStartEventActivityBehavior());  
-        } else {
-          addError("none start event not allowed for event subprocess", startEventElement);
-        }
+      String isInterrupting = startEventElement.attribute("isInterrupting");
+      if(isInterrupting != null && (isInterrupting.equals("false")||isInterrupting.equals("FALSE"))) {
+        activityBehavior.setInterrupting(false);
       }
-    } else {
-      addError("multiple start events not supported for subprocess", startEventElement);
+      
+      // the scope of the event subscription is the parent of the event
+      // subprocess (subscription must be created when parent is initialized)
+      ScopeImpl catchingScope = ((ActivityImpl) scope).getParent();
+      
+      if (errorEventDefinition != null) {
+        if(!activityBehavior.isInterrupting()) {
+          addError("error start event of event subprocess must be interrupting", startEventElement);
+        }
+        if (scope.getProperty(PROPERTYNAME_INITIAL) == null) {
+            scope.setProperty(PROPERTYNAME_INITIAL, startEventActivity);
+            parseErrorStartEventDefinition(errorEventDefinition, startEventActivity, catchingScope);
+          } else {
+            addError("multiple start events not supported for subprocess", startEventElement);
+          }
+        
+      } else if (messageEventDefinition != null) {
+        EventSubscriptionDeclaration eventSubscriptionDeclaration = parseMessageEventDefinition(messageEventDefinition);
+        eventSubscriptionDeclaration.setActivityId(startEventActivity.getId());
+        eventSubscriptionDeclaration.setStartEvent(false);
+        addEventDefinition(eventSubscriptionDeclaration, catchingScope, messageEventDefinition);
+        
+      } else if (signalEventDefinition != null) {
+        EventSubscriptionDeclaration eventSubscriptionDeclaration = parseSignalEventDefinition(signalEventDefinition);
+        eventSubscriptionDeclaration.setActivityId(startEventActivity.getId());
+        eventSubscriptionDeclaration.setStartEvent(false);
+        addEventDefinition(eventSubscriptionDeclaration, catchingScope, signalEventDefinition);
+      
+      } else {
+        addError("start event of event subprocess must be of type 'error', 'message' or 'signal'", startEventElement);
+      }
+      
+    } else { // "regular" subprocess
+      if(errorEventDefinition != null) {
+        addError("errorEventDefinition only allowed on start event if subprocess is an event subprocess", errorEventDefinition);
+      }
+      if(messageEventDefinition != null) {
+        addError("messageEventDefinition only allowed on start event if subprocess is an event subprocess", messageEventDefinition);
+      }
+      if(signalEventDefinition != null) {
+        addError("signalEventDefintion only allowed on start event if subprocess is an event subprocess", messageEventDefinition);
+      }
+      if (scope.getProperty(PROPERTYNAME_INITIAL) == null) {
+        scope.setProperty(PROPERTYNAME_INITIAL, startEventActivity);
+        startEventActivity.setActivityBehavior(new NoneStartEventActivityBehavior());
+      } else {
+        addError("multiple start events not supported for subprocess", startEventElement);
+      }
     }
+
   }
 
   protected void parseErrorStartEventDefinition(Element errorEventDefinition, ActivityImpl startEventActivity, ScopeImpl scope) {  
@@ -991,10 +1035,8 @@ public class BpmnParse extends Parse {
       String errorCode = error == null ? errorRef : error.getErrorCode();
       definition.setErrorCode(errorCode);
     }
-    ScopeImpl catchingScope = ((ActivityImpl)scope).getParent();
     definition.setPrecedence(10);
-    addErrorEventDefinition(definition, catchingScope);
-    startEventActivity.setActivityBehavior(new EventSubProcessStartEventActivityBehavior());
+    addErrorEventDefinition(definition, scope);
   }
  
   protected EventSubscriptionDeclaration parseMessageEventDefinition(Element messageEventDefinition) {
