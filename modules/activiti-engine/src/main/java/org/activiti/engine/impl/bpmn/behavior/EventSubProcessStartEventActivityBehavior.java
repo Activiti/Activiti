@@ -14,7 +14,6 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.Collections;
 
-import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
@@ -48,7 +47,7 @@ public class EventSubProcessStartEventActivityBehavior extends NoneStartEventAct
     ActivityExecution outgoingExecution = execution;
     
     if(isInterrupting) {
-      ScopeUtil.destroyScope(execution, "Event subprocess triggered using activity "+ activityId);
+      execution.destroyScope("Event subprocess triggered using activity "+ activityId);
     } else{ 
       outgoingExecution = execution.createExecution();
       outgoingExecution.setActive(true);

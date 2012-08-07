@@ -23,6 +23,7 @@ import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 
 /**
  * @author Daniel Meyer
+ * @author Falko Menge
  */
 public class CancelEndEventActivityBehavior extends FlowNodeActivityBehavior {
   
@@ -40,7 +41,7 @@ public class CancelEndEventActivityBehavior extends FlowNodeActivityBehavior {
     ActivityExecution scopeExecution = ScopeUtil.findScopeExecution((ExecutionEntity)execution, cancelBoundaryEvent.getParentActivity());    
     
     // end all executions and process instances in the scope of the transaction
-    ScopeUtil.destroyScope(scopeExecution, "cancel end event fired");
+    scopeExecution.destroyScope("cancel end event fired");
     
     // the scope execution executes the boundary event
     InterpretableExecution outgoingExecution = (InterpretableExecution)scopeExecution;

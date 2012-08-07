@@ -29,7 +29,18 @@ public class MessageEventSubprocessTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testInterruptingUnderProcessDefinition() {
-    
+    testInterruptingUnderProcessDefinition(1);
+  }
+
+  /**
+   * Checks if unused event subscriptions are properly deleted. 
+   */
+  @Deployment
+  public void testTwoInterruptingUnderProcessDefinition() {
+    testInterruptingUnderProcessDefinition(2);
+  }
+
+  private void testInterruptingUnderProcessDefinition(int expectedNumberOfEventSubscriptions) {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("process");
     
     // the process instance must have a message event subscription:
@@ -38,7 +49,7 @@ public class MessageEventSubprocessTest extends PluggableActivitiTestCase {
       .messageEventSubscriptionName("newMessage")
       .singleResult();
     assertNotNull(execution);
-    assertEquals(1, createEventSubscriptionQuery().count());
+    assertEquals(expectedNumberOfEventSubscriptions, createEventSubscriptionQuery().count());
     assertEquals(1, runtimeService.createExecutionQuery().count());
     
     // if we trigger the usertask, the process terminates and the event subscription is removed:
@@ -53,13 +64,12 @@ public class MessageEventSubprocessTest extends PluggableActivitiTestCase {
     processInstance = runtimeService.startProcessInstanceByKey("process");
     runtimeService.messageEventReceived("newMessage", processInstance.getId());
     
-    task = taskService.createTaskQuery().list().get(1);
+    task = taskService.createTaskQuery().singleResult();
     assertEquals("eventSubProcessTask", task.getTaskDefinitionKey());
     taskService.complete(task.getId());
     assertProcessEnded(processInstance.getId());
     assertEquals(0, createEventSubscriptionQuery().count());
     assertEquals(0, runtimeService.createExecutionQuery().count());
-    
   }
   
   @Deployment

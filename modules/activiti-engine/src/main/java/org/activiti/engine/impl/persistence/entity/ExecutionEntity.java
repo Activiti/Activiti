@@ -20,9 +20,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
-import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -60,6 +58,8 @@ import org.activiti.engine.runtime.ProcessInstance;
 
 /**
  * @author Tom Baeyens
+ * @author Daniel Meyer
+ * @author Falko Menge
  */
 public class ExecutionEntity extends VariableScopeImpl implements ActivityExecution, ExecutionListenerExecution, Execution, PvmExecution, ProcessInstance, InterpretableExecution, PersistentObject {
 
@@ -832,7 +832,6 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   
   // customized persistence behaviour /////////////////////////////////////////
 
-  @SuppressWarnings("unchecked")
   public void remove() {
     ensureParentInitialized();
     if (parent!=null) {
@@ -845,6 +844,78 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     removeVariablesLocal();
     
     // delete all the tasks
+    removeTasks(null);
+    
+    // remove all jobs
+    removeJobs();
+    
+    // remove all event subscriptions for this scope, if the scope has event subscriptions:
+    removeEventSubscriptions();
+    
+    // remove event scopes:            
+    removeEventScopes();
+
+    // finally delete this execution
+    Context.getCommandContext()
+      .getDbSqlSession()
+      .delete(ExecutionEntity.class, id);
+  }
+
+  public void destroyScope(String reason) {
+    
+    if(log.isLoggable(Level.FINE)) {
+      log.fine("performing destroy scope behavior for execution "+this);
+    }
+    
+    // remove all child executions and sub process instances:
+    List<InterpretableExecution> executions = new ArrayList<InterpretableExecution>(getExecutions());
+    for (InterpretableExecution childExecution : executions) {
+      if (childExecution.getSubProcessInstance()!=null) {
+        childExecution.getSubProcessInstance().deleteCascade(reason);
+      }      
+      childExecution.deleteCascade(reason);
+    } 
+    
+    removeTasks(reason);
+    removeJobs();
+    // Daniel thought this would be needed, but it seems not: removeEventSubscriptions();
+  } 
+    
+  private void removeEventScopes() {
+    List<InterpretableExecution> childExecutions = new ArrayList<InterpretableExecution>(getExecutions());
+    for (InterpretableExecution childExecution : childExecutions) {
+      if(childExecution.isEventScope()) {
+        log.fine("removing eventScope "+childExecution);
+        childExecution.destroy();
+        childExecution.remove();
+      }
+    }
+  }
+
+  private void removeEventSubscriptions() {
+    for (EventSubscriptionEntity eventSubscription : getEventSubscriptions()) {
+      if (replacedBy != null) {
+        eventSubscription.setExecution((ExecutionEntity) replacedBy);
+      } else {
+        eventSubscription.delete();
+      }
+    }
+  }
+
+  private void removeJobs() {
+    for (Job job: getJobs()) {
+      if (replacedBy!=null) {
+        ((JobEntity)job).setExecution((ExecutionEntity) replacedBy);
+      } else {
+        ((JobEntity)job).delete();
+      }
+    }
+  }
+
+  private void removeTasks(String reason) {
+    if(reason == null) {
+      reason = TaskEntity.DELETE_REASON_DELETED;
+    }
     for (TaskEntity task : getTasks()) {
       if (replacedBy!=null) {
         if(task.getExecution() == null || task.getExecution() != replacedBy) {
@@ -856,54 +927,11 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
       } else {
         Context.getCommandContext()
           .getTaskManager()
-          .deleteTask(task, TaskEntity.DELETE_REASON_DELETED, false);
+          .deleteTask(task, reason, false);
       }
-    }
-    
-    // remove all jobs
-    for (Job job: getJobs()) {
-      if (replacedBy!=null) {
-        ((JobEntity)job).setExecution((ExecutionEntity) replacedBy);
-      } else {
-        ((JobEntity)job).delete();
-      }
-    }
-    
-    // remove all event subscriptions for this scope, if the scope has event subscriptions:
-    for (EventSubscriptionEntity eventSubscription : getEventSubscriptions()) {
-      if (replacedBy != null) {
-        eventSubscription.setExecution((ExecutionEntity) replacedBy);
-      } else {
-        eventSubscription.delete();
-      }
-    }
-    
-    // remove event scopes:            
-    List<InterpretableExecution> childExecutions = new ArrayList<InterpretableExecution>(getExecutions());
-    for (InterpretableExecution childExecution : childExecutions) {
-      if(childExecution.isEventScope()) {
-        log.fine("removing eventScope "+childExecution);
-        childExecution.destroy();
-        childExecution.remove();
-      }
-    }    
-    
-    // finally delete this execution
-    Context.getCommandContext()
-      .getDbSqlSession()
-      .delete(ExecutionEntity.class, id);
-  }
-
-  protected void removeEventSubscriptions(List<EventSubscriptionEntity> list) {
-    for (EventSubscriptionEntity eventSubscription : list) {
-      if (replacedBy!=null) {
-        eventSubscription.setExecution(replacedBy);
-      } else {
-        eventSubscription.delete();
-      }        
     }
   }
-    
+  
   public ExecutionEntity getReplacedBy() {
     return replacedBy;
   }

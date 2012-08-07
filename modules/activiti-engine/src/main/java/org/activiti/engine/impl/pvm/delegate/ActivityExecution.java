@@ -23,6 +23,8 @@ import org.activiti.engine.impl.pvm.PvmTransition;
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
+ * @author Daniel Meyer
+ * @author Falko Menge
  */
 public interface ActivityExecution extends DelegateExecution {
   
@@ -135,4 +137,12 @@ public interface ActivityExecution extends DelegateExecution {
    * Executes the {@link ActivityBehavior} associated with the given activity.
    */
   void executeActivity(PvmActivity activity);
+
+  /**
+   * Called when an execution is interrupted. 
+   * 
+   * Performs destroy scope behavior: all child executions and sub-process instances and other related
+   * resources are removed. The execution itself can continue execution. 
+   */
+  void destroyScope(String string);
 }

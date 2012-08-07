@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmException;
 import org.activiti.engine.impl.pvm.PvmExecution;
@@ -38,6 +39,8 @@ import org.activiti.engine.impl.pvm.process.TransitionImpl;
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
+ * @author Daniel Meyer
+ * @author Falko Menge
  */
 public class ExecutionImpl implements
         Serializable,
@@ -195,6 +198,23 @@ public class ExecutionImpl implements
         childExecution.remove();
       }
     }
+  }
+  
+  public void destroyScope(String reason) {
+    
+    if(log.isLoggable(Level.FINE)) {
+      log.fine("performing destroy scope behavior for execution "+this);
+    }
+    
+    // remove all child executions and sub process instances:
+    List<InterpretableExecution> executions = new ArrayList<InterpretableExecution>(getExecutions());
+    for (InterpretableExecution childExecution : executions) {
+      if (childExecution.getSubProcessInstance()!=null) {
+        childExecution.getSubProcessInstance().deleteCascade(reason);
+      }      
+      childExecution.deleteCascade(reason);
+    } 
+    
   }
   
   // parent ///////////////////////////////////////////////////////////////////

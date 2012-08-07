@@ -13,7 +13,6 @@
 
 package org.activiti.engine.impl.bpmn.helper;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -91,17 +90,6 @@ public class ScopeUtil {
       activity = activity.getParentActivity();      
     }    
     return null;
-  }
-
-  @SuppressWarnings("unchecked")
-  public static void destroyScope(ActivityExecution execution, String reason) {    
-    List<InterpretableExecution> executions = new ArrayList<InterpretableExecution>((List<InterpretableExecution>) execution.getExecutions());
-    for (InterpretableExecution childExecution : executions) {
-      if (childExecution.getSubProcessInstance()!=null) {
-        childExecution.getSubProcessInstance().deleteCascade(reason);
-      }      
-      childExecution.deleteCascade(reason);
-    }       
   }
 
   /**
