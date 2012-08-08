@@ -74,7 +74,7 @@ create table ACT_RE_PROCDEF (
     CATEGORY_ nvarchar(255),
     NAME_ nvarchar(255),
     KEY_ nvarchar(255) not null,
-    VERSION_ int,
+    VERSION_ int not null,
     DEPLOYMENT_ID_ nvarchar(64),
     RESOURCE_NAME_ nvarchar(4000),
     DGRM_RESOURCE_NAME_ nvarchar(4000),
