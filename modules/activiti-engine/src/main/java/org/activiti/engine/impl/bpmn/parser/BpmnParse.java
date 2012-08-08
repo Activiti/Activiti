@@ -525,20 +525,19 @@ public class BpmnParse extends Parse {
    */
   public void parseProcessDefinitions() {
     for (Element processElement : rootElement.elements("process")) {
-      boolean processProcess = true;
+      boolean isExecutable = true;
       String isExecutableStr = processElement.attribute("isExecutable");
       if (isExecutableStr != null) {
-        boolean isExecutable = Boolean.parseBoolean(isExecutableStr);
-        if (!isExecutable) {
-          processProcess = false;
+        if (!Boolean.parseBoolean(isExecutableStr)) {
+          isExecutable = false;
           LOGGER.info("Ignoring non-executable process with id='" + processElement.attribute("id") + "'. Set the attribute isExecutable=\"true\" to deploy this process.");
         }
       } else {
-        LOGGER.info("Process with id='" + processElement.attribute("id") + "' hasn't the attribute isExecutable set. Please maintain it, so you are compatible to future activiti versions.");
+        LOGGER.info("Process with id='" + processElement.attribute("id") + "' has no attribute isExecutable. Assuming it is executable. Better set the attribute explicitely, especially to be compatible with future engine versions which might change the default behavior.");
       }
 
       //Only process executable processes
-      if (processProcess) {
+      if (isExecutable) {
         processDefinitions.add(parseProcess(processElement));
       }
     }
