@@ -16,14 +16,20 @@
 		<delete dir="target" />
 	</target>
 	
+  <condition property="is.database.mysql">
+     <equals arg1="${database}" arg2="mysql" />
+  </condition>
+
+  <condition property="is.database.h2">
+     <equals arg1="${database}" arg2="h2" />
+  </condition>
+	
 	<target name="upgrade" depends="get.old.distro,
 		                              install.old.distro,
 		                              build.engine.module,
 		                              clean.db">
     <copy file="${user.home}/.activiti/upgrade/build.${database}.properties" todir="target/activiti-${activiti.old.version}/setup" overwrite="true" />
-    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.start" inheritall="false">
-    	<property name="db" value="${database}" />
-    </ant>
+		<antcall target="internal.h2.start" />
 		<echo message="creating activiti tables" />
     <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="db.create" inheritall="false">
       <property name="db" value="${database}" />
@@ -59,10 +65,20 @@
     <exec executable="${mvn.executable}" dir="../../modules/activiti-upgrade">
       <arg line="-Ddatabase=${database} ${optional.debug.property} clean prepare-package" />
     </exec>
-    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.stop" inheritall="false">
+    <antcall target="internal.h2.start" />
+	</target>
+	
+	<target name="internal.h2.start" if="is.database.h2">
+    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.start" inheritall="false">
       <property name="db" value="${database}" />
     </ant>
 	</target>
+
+	 <target name="internal.h2.stop" if="is.database.h2">
+ 	  <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.stop" inheritall="false">
+	    <property name="db" value="${database}" />
+	  </ant>
+  </target>
 
 	<target name="get.old.distro">
 	  <available property="old.distro.available" file="${downloads.dir}/activiti-${activiti.old.version}.zip"/>
@@ -103,9 +119,6 @@
     </exec>
 	</target>
 
-  <condition property="is.database.mysql">
-	 	 <equals arg1="${database}" arg2="mysql" />
-	</condition>
 	<target name="clean.db" if="is.database.mysql" depends="install.old.distro">
 	  <property file="${user.home}/.activiti/upgrade/build.${database}.properties" />
 		<echo message="cleaning db ${jdbc.url}" />
