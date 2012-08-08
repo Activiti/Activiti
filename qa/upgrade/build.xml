@@ -24,6 +24,18 @@
      <equals arg1="${database}" arg2="h2" />
   </condition>
 	
+  <condition property="db.create.target" value="db.create" else="internal.db.create">
+     <or>
+       <equals arg1="${activiti.old.version}" arg2="5.0" />
+       <equals arg1="${activiti.old.version}" arg2="5.1" />
+       <equals arg1="${activiti.old.version}" arg2="5.2" />
+       <equals arg1="${activiti.old.version}" arg2="5.3" />
+       <equals arg1="${activiti.old.version}" arg2="5.4" />
+       <equals arg1="${activiti.old.version}" arg2="5.5" />
+       <equals arg1="${activiti.old.version}" arg2="5.6" />
+     </or>
+   </condition>
+	
 	<target name="upgrade" depends="get.old.distro,
 		                              install.old.distro,
 		                              build.engine.module,
@@ -31,7 +43,7 @@
     <copy file="${user.home}/.activiti/upgrade/build.${database}.properties" todir="target/activiti-${activiti.old.version}/setup" overwrite="true" />
 		<antcall target="internal.h2.start" />
 		<echo message="creating activiti tables" />
-    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="db.create" inheritall="false">
+    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="${db.create.target}" inheritall="false">
       <property name="db" value="${database}" />
     	<property name="feature.cycle" value="disabled" />
      </ant>
