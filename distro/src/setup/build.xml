@@ -205,7 +205,7 @@
   	<echo message="starting H2 database..." />
     <launch dir="${activiti.home}/apps/h2"
             script="h2.start"
-            msg="TCP server running on"/>
+            msg="TCP server running"/>
   	<echo message="H2 database started" />
   </target>
   
