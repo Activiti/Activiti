@@ -179,12 +179,12 @@
   <distributionManagement>
     <snapshotRepository>
       <id>alfresco.snapshot.repo</id>
-      <url>http://maven.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
+      <url>https://maven.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
       <uniqueVersion>false</uniqueVersion>
     </snapshotRepository>
     <repository>
       <id>alfresco.release.repo</id>
-      <url>http://maven.alfresco.com/nexus/content/repositories/activiti/</url>
+      <url>https://maven.alfresco.com/nexus/content/repositories/activiti/</url>
     </repository>
   </distributionManagement>
 
