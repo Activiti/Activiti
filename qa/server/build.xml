@@ -2,7 +2,7 @@
 <project name="activiti.qa.server">
 
 	<property file="${user.home}/.activiti/build.properties" />
-	<property name="activiti.version" value="5.9-SNAPSHOT" />
+	<property name="activiti.version" value="5.10" />
 	<property name="activiti.home" value="../../distro/target/activiti-${activiti.version}" />
 	<property name="database" value="h2" />
 	<property name="server" value="tomcat6x" />
