@@ -651,7 +651,7 @@
     </snapshotRepository>
     <repository>
       <id>alfresco.release.repo</id>
-      <url>https://maven.alfresco.com/nexus/content/repositories/activiti/</url>
+      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</url>
     </repository>
   </distributionManagement>
 

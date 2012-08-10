@@ -4,7 +4,7 @@
   	
   <property file="${user.home}/.activiti/build.properties" />
   <property file="../distro/src/setup/build.properties" />
-  <property name="activiti.version" value="5.9-SNAPSHOT" />
+  <property name="activiti.version" value="5.10" />
   <property name="activiti.home" value="../distro/target/activiti-${activiti.version}" /> 
   <property name="macos.browser" value="/usr/bin/open" />
   <property name="windows.browser" value="C:/Program Files/Mozilla Firefox/firefox.exe" />

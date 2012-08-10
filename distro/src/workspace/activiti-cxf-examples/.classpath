@@ -3,10 +3,10 @@
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="src" path="src/test/resources"/>
 	<classpathentry kind="lib" path="libs-runtime/activation-1.1.jar"/>
-	<classpathentry kind="lib" path="libs-runtime/activiti-cxf-5.9-SNAPSHOT-sources.jar"/>
-	<classpathentry kind="lib" path="libs-runtime/activiti-cxf-5.9-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="libs-runtime/activiti-engine-5.9-SNAPSHOT-sources.jar"/>
-	<classpathentry kind="lib" path="libs-runtime/activiti-engine-5.9-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/activiti-cxf-5.10-sources.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/activiti-cxf-5.10.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/activiti-engine-5.10-sources.jar"/>
+	<classpathentry kind="lib" path="libs-runtime/activiti-engine-5.10.jar"/>
 	<classpathentry kind="lib" path="libs-runtime/aopalliance-1.0.jar"/>
 	<classpathentry kind="lib" path="libs-runtime/commons-email-1.2.jar"/>
 	<classpathentry kind="lib" path="libs-runtime/commons-lang-2.4.jar"/>
