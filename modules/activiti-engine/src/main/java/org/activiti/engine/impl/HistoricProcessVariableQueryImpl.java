@@ -18,14 +18,16 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricProcessVariable;
 import org.activiti.engine.history.HistoricProcessVariableQuery;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-
+import org.activiti.engine.impl.variable.VariableTypes;
 
 /**
  * @author Christian Lipphardt (camunda)
  */
-public class HistoricProcessVariableQueryImpl extends AbstractQuery<HistoricProcessVariableQuery, HistoricProcessVariable> implements HistoricProcessVariableQuery {
+public class HistoricProcessVariableQueryImpl extends AbstractQuery<HistoricProcessVariableQuery, HistoricProcessVariable> implements
+        HistoricProcessVariableQuery {
 
   private static final long serialVersionUID = 1L;
   protected String taskId;
@@ -34,6 +36,7 @@ public class HistoricProcessVariableQueryImpl extends AbstractQuery<HistoricProc
   protected String variableName;
   protected String variableNameLike;
   protected boolean excludeTaskRelated = false;
+  protected QueryVariableValue queryVariableValue;
 
   public HistoricProcessVariableQueryImpl() {
   }
@@ -74,7 +77,19 @@ public class HistoricProcessVariableQueryImpl extends AbstractQuery<HistoricProc
     this.variableName = variableName;
     return this;
   }
-  
+
+  public HistoricProcessVariableQuery variableEquals(String variableName, Object variableValue) {
+    if (variableName == null) {
+      throw new ActivitiException("variableName is null");
+    }
+    if (variableValue == null) {
+      throw new ActivitiException("variableValue is null");
+    }
+    this.variableName = variableName;
+    queryVariableValue = new QueryVariableValue(variableName, variableValue, QueryOperator.EQUALS);
+    return this;
+  }
+
   public HistoricProcessVariableQuery variableNameLike(String variableNameLike) {
     if (variableNameLike == null) {
       throw new ActivitiException("variableNameLike is null");
@@ -82,28 +97,33 @@ public class HistoricProcessVariableQueryImpl extends AbstractQuery<HistoricProc
     this.variableNameLike = variableNameLike;
     return this;
   }
-  
+
   public HistoricProcessVariableQuery excludeTaskDetails() {
     this.excludeTaskRelated = true;
     return this;
   }
 
+  protected void ensureVariablesInitialized() {
+    if (this.queryVariableValue != null) {
+      VariableTypes variableTypes = Context.getProcessEngineConfiguration().getVariableTypes();
+      queryVariableValue.initialize(variableTypes);
+    }
+  }
+
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
-    return commandContext
-      .getHistoricProcessVariableManager()
-      .findHistoricProcessVariableCountByQueryCriteria(this);
+    ensureVariablesInitialized();
+    return commandContext.getHistoricProcessVariableManager().findHistoricProcessVariableCountByQueryCriteria(this);
   }
 
   public List<HistoricProcessVariable> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
-    return commandContext
-      .getHistoricProcessVariableManager()
-      .findHistoricProcessVariableByQueryCriteria(this, page);
+    ensureVariablesInitialized();
+    return commandContext.getHistoricProcessVariableManager().findHistoricProcessVariableByQueryCriteria(this, page);
   }
-  
+
   // order by /////////////////////////////////////////////////////////////////
-  
+
   public HistoricProcessVariableQuery orderByProcessInstanceId() {
     orderBy(HistoricProcessVariableQueryProperty.PROCESS_INSTANCE_ID);
     return this;
@@ -118,31 +138,35 @@ public class HistoricProcessVariableQueryImpl extends AbstractQuery<HistoricProc
     orderBy(HistoricProcessVariableQueryProperty.VARIABLE_NAME);
     return this;
   }
-  
+
   // getters and setters //////////////////////////////////////////////////////
-  
+
   public String getProcessInstanceId() {
     return processInstanceId;
   }
-  
+
   public String getTaskId() {
     return taskId;
   }
-  
+
   public String getActivityInstanceId() {
     return activityInstanceId;
   }
-  
+
   public boolean getExcludeTaskRelated() {
     return excludeTaskRelated;
   }
-  
+
   public String getVariableName() {
     return variableName;
   }
-  
+
   public String getVariableNameLike() {
     return variableNameLike;
   }
-  
+
+  public QueryVariableValue getQueryVariableValue() {
+    return queryVariableValue;
+  }
+
 }

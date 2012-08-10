@@ -38,6 +38,11 @@ public interface HistoricProcessVariableQuery extends Query<HistoricProcessVaria
   /** Only select historic process variables where the given variable name is like. */
   HistoricProcessVariableQuery variableNameLike(String variableNameLike);
 
+  /**
+   * only select historic process variables with the given name and value
+   */
+  HistoricProcessVariableQuery variableEquals(String variableName, Object variableValue);
+  
   /** Exclude all task-related {@link HistoricProcessVariable}s, so only items which have no 
    * task-id set will be selected. When used together with {@link #taskId(String)}, this
    * call is ignored task details are NOT excluded.

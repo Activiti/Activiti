@@ -177,6 +177,7 @@
         	and ((E.SUSPENSION_STATE_ = 2) or (P.SUSPENSION_STATE_ = 2))
         </if>
       </if>
+      <!-- PLEASE NOTE: If you change anything have a look into the HistoricProcessVariable, the same query object is used there! -->
       <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
       	and A${index}.NAME_= #{queryVariableValue.name}
         <if test="!queryVariableValue.type.equals('null')">

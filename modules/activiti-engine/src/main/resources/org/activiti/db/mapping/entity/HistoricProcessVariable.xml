@@ -131,6 +131,52 @@
       <if test="variableNameLike != null">
         and PV.NAME_ like #{variableNameLike}
       </if>
+      
+      <!-- PLEASE NOTE: If you change anything have a look into the Execution, the same query object is used there! -->
+      <if test="queryVariableValue != null" >
+        <if test="!queryVariableValue.type.equals('null')">
+        <!-- When operator is not-equals or type of value is null, type doesn't matter! -->
+          and PV.VAR_TYPE_ = #{queryVariableValue.type}
+        </if>
+        <if test="queryVariableValue.textValue != null &amp;&amp; queryVariableValue.longValue == null &amp;&amp; queryVariableValue.doubleValue == null">
+        and PV.TEXT_
+        <choose>
+          <when test="queryVariableValue.operator.equals('LIKE')">LIKE</when>
+          <otherwise><include refid="executionVariableOperator" /></otherwise>
+        </choose>
+          #{queryVariableValue.textValue}
+        </if>
+        <if test="queryVariableValue.textValue2 != null">
+        and PV.TEXT2_
+        <choose>
+          <when test="queryVariableValue.operator.equals('LIKE')">LIKE</when>
+          <otherwise><include refid="executionVariableOperator" /></otherwise>
+        </choose>
+          #{queryVariableValue.textValue2}
+        </if>
+        <if test="queryVariableValue.longValue != null">
+        and PV.LONG_
+        <include refid="executionVariableOperator" />
+        #{queryVariableValue.longValue}
+        </if>
+        <if test="queryVariableValue.doubleValue != null">
+        and PV.DOUBLE_
+        <include refid="executionVariableOperator" />
+        #{queryVariableValue.doubleValue}
+        </if>
+        <!-- Null variable type -->
+        <if test="queryVariableValue.textValue == null &amp;&amp; queryVariableValue.textValue2 == null &amp;&amp; queryVariableValue.longValue == null &amp;&amp; queryVariableValue.doubleValue == null">
+          <choose>
+          <when test="queryVariableValue.operator.equals('NOT_EQUALS')">
+            and (PV.TEXT_ is not null or PV.TEXT2_ is not null or PV.LONG_ is not null or PV.DOUBLE_ is not null or PV.BYTEARRAY_ID_ is not null)
+          </when>
+          <otherwise>
+        and PV.TEXT_ is null and PV.TEXT2_ is null and PV.LONG_ is null and PV.DOUBLE_ is null and PV.BYTEARRAY_ID_ is null
+          </otherwise>
+        </choose>
+        </if>
+      </if>
+
       <choose>
         <when test="taskId != null">
           and PV.TASK_ID_ = #{taskId}
@@ -143,5 +189,17 @@
       </choose>
     </where>
   </sql>
+  
+  <sql id="executionVariableOperator">
+    <choose>
+      <when test="queryVariableValue.operator.equals('EQUALS')">=</when>
+      <when test="queryVariableValue.operator.equals('NOT_EQUALS')">&lt;&gt;</when>
+      <when test="queryVariableValue.operator.equals('GREATER_THAN')">&gt;</when>
+      <when test="queryVariableValue.operator.equals('GREATER_THAN_OR_EQUAL')">&gt;=</when>
+      <when test="queryVariableValue.operator.equals('LESS_THAN')">&lt;</when>
+      <when test="queryVariableValue.operator.equals('LESS_THAN_OR_EQUAL')">&lt;=</when>
+   </choose>
+  </sql>
+  
   
 </mapper>

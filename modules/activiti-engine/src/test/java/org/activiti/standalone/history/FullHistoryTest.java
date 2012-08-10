@@ -201,6 +201,42 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     assertEquals("zzz", historicVariable.getVariableName());
     assertEquals(123456789L, historicVariable.getValue());
   }
+  
+  @Deployment(resources="org/activiti/standalone/history/FullHistoryTest.testVariableUpdates.bpmn20.xml")
+  public void testHistoricProcessVariableQuery() {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("process", "one");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("receiveTask", variables);
+    runtimeService.signal(processInstance.getProcessInstanceId());
+    
+    assertEquals(1, historyService.createHistoricProcessVariableQuery().variableName("process").count());
+    assertEquals(1, historyService.createHistoricProcessVariableQuery().variableEquals("process", "one").count());    
+    
+    Map<String, Object> variables2 = new HashMap<String, Object>();
+    variables2.put("process", "two");
+    ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("receiveTask", variables2);
+    runtimeService.signal(processInstance2.getProcessInstanceId());
+    
+    assertEquals(2, historyService.createHistoricProcessVariableQuery().variableName("process").count());
+    assertEquals(1, historyService.createHistoricProcessVariableQuery().variableEquals("process", "one").count());    
+    assertEquals(1, historyService.createHistoricProcessVariableQuery().variableEquals("process", "two").count());        
+    
+    HistoricProcessVariable historicProcessVariable = historyService.createHistoricProcessVariableQuery().variableEquals("process", "one").singleResult();
+    assertEquals("process", historicProcessVariable.getVariableName());
+    assertEquals("one", historicProcessVariable.getValue());
+    
+    Map<String, Object> variables3 = new HashMap<String, Object>();
+    variables3.put("long", 1000l);
+    variables3.put("double", 25.43d);
+    ProcessInstance processInstance3 = runtimeService.startProcessInstanceByKey("receiveTask", variables3);
+    runtimeService.signal(processInstance3.getProcessInstanceId());
+    
+    assertEquals(1, historyService.createHistoricProcessVariableQuery().variableName("long").count());
+    assertEquals(1, historyService.createHistoricProcessVariableQuery().variableEquals("long", 1000l).count());    
+    assertEquals(1, historyService.createHistoricProcessVariableQuery().variableName("double").count());
+    assertEquals(1, historyService.createHistoricProcessVariableQuery().variableEquals("double",  25.43d).count());    
+
+  }
  
   @Deployment
   public void testHistoricVariableUpdatesAllTypes() throws Exception {
