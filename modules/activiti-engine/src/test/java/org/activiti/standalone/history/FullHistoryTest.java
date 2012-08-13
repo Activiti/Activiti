@@ -496,19 +496,10 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     assertProcessEnded(processInstance.getId());
     
     assertEquals(2, historyService.createHistoricProcessVariableQuery().count());
-    
-    // Query on activity-instance, activity instance null will return all vars set when process ended
-    assertEquals(2, historyService.createHistoricProcessVariableQuery().activityInstanceId(null).count());
-    assertEquals(0, historyService.createHistoricProcessVariableQuery().activityInstanceId("unexisting").count());
-    
+       
     // Query on process-instance
     assertEquals(2, historyService.createHistoricProcessVariableQuery().processInstanceId(processInstance.getId()).count());
     assertEquals(0, historyService.createHistoricProcessVariableQuery().processInstanceId("unexisting").count());
-
-    // Query both process-instance and activity-instance
-    assertEquals(2, historyService.createHistoricProcessVariableQuery()
-            .activityInstanceId(null)
-            .processInstanceId(processInstance.getId()).count());
   }
   
   @Deployment(

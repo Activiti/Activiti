@@ -16,16 +16,24 @@ package org.activiti.engine.history;
 
 
 
+
 /**
  * A single process variable containing the last value when its process instance has finished.
  * It is only available when HISTORY_LEVEL is set >= VARIABLE
  * 
  * @author Christian Lipphardt (camunda)
+ * @author ruecker
  */
-public interface HistoricProcessVariable extends HistoricDetail {
+public interface HistoricProcessVariable {
+  
+  /** The unique DB id */
+  String getId();
   
   String getVariableName();
   String getVariableTypeName();
   Object getValue();
+    
+  /** The process instance reference. */
+  String getProcessInstanceId();
   
 }

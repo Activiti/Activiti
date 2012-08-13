@@ -192,6 +192,31 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     }
   }
 
+  @Deployment(resources = { "org/activiti/engine/test/api/runtime/concurrentExecution.bpmn20.xml" })
+  public void testHistoricProcessVariablesOnParallelExecution() {
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("rootValue", "test");
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("concurrent", vars);
+    
+    List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
+    for (Task task : tasks) {      
+      Map<String, Object> variables = new HashMap<String, Object>();
+      // set token local variable
+      runtimeService.setVariable(task.getExecutionId(), "parallelValue1", task.getId());
+      runtimeService.setVariable(task.getExecutionId(), "parallelValue2", "test");
+      taskService.complete(task.getId(), variables);      
+    }
+    taskService.complete(taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult().getId());
+    
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueEquals("rootValue", "test").count());
+    
+    // TODO: THis is currently not supported
+    
+    //    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueEquals("parallelValue1", "receivePayment").count());
+    //    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueEquals("parallelValue1", "shipOrder").count());
+    //    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueEquals("parallelValue2", "test").count());
+  }
+  
   /**
    * basically copied from {@link ProcessInstanceQueryTest}
    */

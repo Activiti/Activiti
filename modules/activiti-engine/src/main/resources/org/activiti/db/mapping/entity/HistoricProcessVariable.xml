@@ -21,17 +21,13 @@
   <!-- HISTORIC PROCESS VARIABLE INSERT -->
   
   <insert id="insertHistoricProcessVariable" parameterType="org.activiti.engine.impl.persistence.entity.HistoricProcessVariableEntity">
-    insert into ${prefix}ACT_HI_PROCVARIABLE (ID_, PROC_INST_ID_, EXECUTION_ID_, ACT_INST_ID_, TASK_ID_, NAME_, REV_, VAR_TYPE_, TIME_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_)
+    insert into ${prefix}ACT_HI_PROCVARIABLE (ID_, PROC_INST_ID_, NAME_, REV_, VAR_TYPE_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_)
     values (
       #{id, jdbcType=VARCHAR},
       #{processInstanceId, jdbcType=VARCHAR},
-      #{executionId, jdbcType=VARCHAR},
-      #{activityInstanceId, jdbcType=VARCHAR},
-      #{taskId, jdbcType=VARCHAR},
       #{variableName, jdbcType=VARCHAR},
       #{revision, jdbcType=VARCHAR},
       #{variableType, jdbcType=VARCHAR},
-      #{time, jdbcType=TIMESTAMP },
       #{byteArrayValueId, jdbcType=VARCHAR},
       #{doubleValue, jdbcType=DOUBLE},
       #{longValue, jdbcType=BIGINT},
@@ -50,10 +46,6 @@
   <resultMap id="historicProcessVariableResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricProcessVariableEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
-    <result property="activityInstanceId" column="ACT_INST_ID_" jdbcType="VARCHAR" />
-    <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
-    <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
-    <result property="time" column="TIME_" jdbcType="TIMESTAMP" />
     <result property="name" column="NAME_" javaType="String" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
     <result property="variableType" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="VARCHAR"/>
@@ -71,10 +63,6 @@
   <resultMap id="historicProcessVariableResultMap_postgres" type="org.activiti.engine.impl.persistence.entity.HistoricProcessVariableEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
-    <result property="activityInstanceId" column="ACT_INST_ID_" jdbcType="VARCHAR" />
-    <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
-    <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
-    <result property="time" column="TIME_" jdbcType="TIMESTAMP" />
     <result property="name" column="NAME_" javaType="String" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
     <result property="variableType" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="VARCHAR"/>
@@ -121,9 +109,6 @@
     <where>
       <if test="processInstanceId != null">
         PV.PROC_INST_ID_ = #{processInstanceId}
-      </if>
-      <if test="activityInstanceId != null">
-        and PV.ACT_INST_ID_ = #{activityInstanceId}
       </if>
       <if test="variableName != null">
         and PV.NAME_ = #{variableName}
@@ -176,17 +161,6 @@
         </choose>
         </if>
       </if>
-
-      <choose>
-        <when test="taskId != null">
-          and PV.TASK_ID_ = #{taskId}
-        </when>
-        <otherwise>
-          <if test="excludeTaskRelated">
-            and PV.TASK_ID_ is null
-         </if>
-        </otherwise>
-      </choose>
     </where>
   </sql>
   

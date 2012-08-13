@@ -27,6 +27,8 @@ import org.activiti.engine.impl.util.xml.Element;
 import org.activiti.engine.impl.variable.VariableDeclaration;
 
 /**
+ * Implements writing the history, but not all logic is contained here, see {@link ProcessDefinitionEntity} as well!
+ * 
  * @author Tom Baeyens
  * @author Joram Barrez
  * @author Falko Menge

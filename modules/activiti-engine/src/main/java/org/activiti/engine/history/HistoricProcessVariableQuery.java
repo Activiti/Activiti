@@ -26,12 +26,6 @@ public interface HistoricProcessVariableQuery extends Query<HistoricProcessVaria
   /** Only select historic process variables with the given process instance. */
   HistoricProcessVariableQuery processInstanceId(String processInstanceId);
 
-  /** Only select historic process variables associated to the given {@link HistoricActivityInstance activity instance}. */
-  HistoricProcessVariableQuery activityInstanceId(String activityInstanceId);
-
-  /** Only select historic process variables associated to the given {@link HistoricTaskInstance historic task instance}. */
-  HistoricProcessVariableQuery taskId(String taskId);
-  
   /** Only select historic process variables with the given variable name. */
   HistoricProcessVariableQuery variableName(String variableName);
   
@@ -42,12 +36,6 @@ public interface HistoricProcessVariableQuery extends Query<HistoricProcessVaria
    * only select historic process variables with the given name and value
    */
   HistoricProcessVariableQuery variableEquals(String variableName, Object variableValue);
-  
-  /** Exclude all task-related {@link HistoricProcessVariable}s, so only items which have no 
-   * task-id set will be selected. When used together with {@link #taskId(String)}, this
-   * call is ignored task details are NOT excluded.
-   */
-  HistoricProcessVariableQuery excludeTaskDetails();
 
   HistoricProcessVariableQuery orderByProcessInstanceId();
   
