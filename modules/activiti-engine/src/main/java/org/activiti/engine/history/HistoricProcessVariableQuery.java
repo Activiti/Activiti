@@ -35,7 +35,7 @@ public interface HistoricProcessVariableQuery extends Query<HistoricProcessVaria
   /**
    * only select historic process variables with the given name and value
    */
-  HistoricProcessVariableQuery variableEquals(String variableName, Object variableValue);
+  HistoricProcessVariableQuery variableValueEquals(String variableName, Object variableValue);
 
   HistoricProcessVariableQuery orderByProcessInstanceId();
   

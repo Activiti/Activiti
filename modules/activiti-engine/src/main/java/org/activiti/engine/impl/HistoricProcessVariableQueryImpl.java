@@ -78,7 +78,7 @@ public class HistoricProcessVariableQueryImpl extends AbstractQuery<HistoricProc
     return this;
   }
 
-  public HistoricProcessVariableQuery variableEquals(String variableName, Object variableValue) {
+  public HistoricProcessVariableQuery variableValueEquals(String variableName, Object variableValue) {
     if (variableName == null) {
       throw new ActivitiException("variableName is null");
     }

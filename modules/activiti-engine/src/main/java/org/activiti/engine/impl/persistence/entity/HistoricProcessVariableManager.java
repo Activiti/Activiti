@@ -47,17 +47,26 @@ public class HistoricProcessVariableManager extends AbstractHistoricManager {
   @SuppressWarnings("unchecked")
   public void deleteHistoricProcessVariableByProcessInstanceId(String historicProcessInstanceId) {
     if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_VARIABLE) {
+      HistoricProcessVariableManager historicProcessVariableManager = Context
+              .getCommandContext()
+              .getHistoricProcessVariableManager();
+
+      // delete entries in DB
       List<HistoricProcessVariableEntity> historicProcessVariables = (List) getDbSqlSession()
         .createHistoricProcessVariableQuery()
         .processInstanceId(historicProcessInstanceId)
         .list();
-      
-      HistoricProcessVariableManager historicProcessVariableManager = Context
-        .getCommandContext()
-        .getHistoricProcessVariableManager();
-      
       for (HistoricProcessVariableEntity historicProcessVariable : historicProcessVariables) {
         historicProcessVariableManager.deleteHistoricProcessVariable(historicProcessVariable);
+      }
+      
+      //delete enrties in Cache
+      List<HistoricProcessVariableEntity> cachedHistoricProcessVariables = getDbSqlSession().findInCache(HistoricProcessVariableEntity.class);
+      for (HistoricProcessVariableEntity historicProcessVariable : cachedHistoricProcessVariables) {
+        // make sure we only delete the right ones (as we cannot make a proper query in the cache)
+        if (historicProcessVariable.getProcessInstanceId().equals(historicProcessInstanceId )) {
+          historicProcessVariableManager.deleteHistoricProcessVariable(historicProcessVariable);
+        }
       }
     }
   }

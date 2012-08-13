@@ -60,6 +60,9 @@ public class HistoryParseListener implements BpmnParseListener {
     if (activityHistoryEnabled(processDefinition, historyLevel)) {
       processDefinition.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, new ProcessInstanceEndHandler());
     }
+    if (variableHistoryEnabled(processDefinition, historyLevel)) {
+      processDefinition.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, HISTORIC_PROCESS_VARIABLE_HANDLER);
+    }
   }
 
   public void parseExclusiveGateway(Element exclusiveGwElement, ScopeImpl scope, ActivityImpl activity) {
@@ -124,9 +127,6 @@ public class HistoryParseListener implements BpmnParseListener {
 
   public void parseEndEvent(Element endEventElement, ScopeImpl scope, ActivityImpl activity) {
     addActivityHandlers(activity);
-    if (variableHistoryEnabled(activity,historyLevel)) {
-      activity.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, HISTORIC_PROCESS_VARIABLE_HANDLER, -1);
-    }
   }
 
   public void parseParallelGateway(Element parallelGwElement, ScopeImpl scope, ActivityImpl activity) {

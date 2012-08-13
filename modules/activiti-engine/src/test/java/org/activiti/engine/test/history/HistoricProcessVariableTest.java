@@ -13,6 +13,7 @@
 
 package org.activiti.engine.test.history;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.activiti.engine.ProcessEngineConfiguration;
@@ -215,10 +216,7 @@ public class HistoricProcessVariableTest extends AbstractActivitiTestCase {
     assertEquals(4, historyService.createHistoricProcessVariableQuery().orderByTime().asc().count());
     assertEquals(4, historyService.createHistoricProcessVariableQuery().orderByVariableName().asc().count());
     
-    assertEquals(4, historyService.createHistoricProcessVariableQuery().excludeTaskDetails().count());
     assertEquals(2, historyService.createHistoricProcessVariableQuery().processInstanceId(processInstance.getId()).count());
-    assertEquals(4, historyService.createHistoricProcessVariableQuery().activityInstanceId(null).count());
-    assertEquals(0, historyService.createHistoricProcessVariableQuery().taskId("").count());
     assertEquals(2, historyService.createHistoricProcessVariableQuery().variableName("myVar").count());
     assertEquals(2, historyService.createHistoricProcessVariableQuery().variableNameLike("myVar1").count());
     
@@ -244,5 +242,19 @@ public class HistoricProcessVariableTest extends AbstractActivitiTestCase {
     
     assertEquals(7, historyService.createHistoricActivityInstanceQuery().count());
     assertEquals(5, historyService.createHistoricDetailQuery().count());
+  }
+  
+  @Deployment(resources={
+          "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"
+  })
+  public void testHidtoricProcessVariableOnDeletion() {
+    HashMap<String, Object> variables = new HashMap<String,  Object>();
+    variables.put("testVar", "Hallo Christian");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", variables);
+    runtimeService.deleteProcessInstance(processInstance.getId(), "deleted");
+    assertProcessEnded(processInstance.getId());
+    
+    // check that process variable is set even if the process is canceled and not ended normally
+    assertEquals(1, historyService.createHistoricProcessVariableQuery().processInstanceId(processInstance.getId()).variableValueEquals("testVar", "Hallo Christian").count());
   }
 }

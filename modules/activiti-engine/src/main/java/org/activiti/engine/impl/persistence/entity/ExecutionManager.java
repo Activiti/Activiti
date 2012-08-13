@@ -64,14 +64,15 @@ public class ExecutionManager extends AbstractManager {
     commandContext
       .getTaskManager()
       .deleteTasksByProcessInstanceId(processInstanceId, deleteReason, cascade);
-
+    
+    // delete the execution BEFORE we delete the history, otherwise we will produce orphan HistoricProcessVariable instances
+    execution.deleteCascade(deleteReason);
+    
     if (cascade) {
       commandContext
       .getHistoricProcessInstanceManager()
       .deleteHistoricProcessInstanceById(processInstanceId);
     }
-    
-    execution.deleteCascade(deleteReason);
   }
 
   public ExecutionEntity findSubProcessInstanceBySuperExecutionId(String superExecutionId) {
