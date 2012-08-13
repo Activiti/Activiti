@@ -210,7 +210,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     runtimeService.signal(processInstance.getProcessInstanceId());
     
     assertEquals(1, historyService.createHistoricProcessVariableQuery().variableName("process").count());
-    assertEquals(1, historyService.createHistoricProcessVariableQuery().variableEquals("process", "one").count());    
+    assertEquals(1, historyService.createHistoricProcessVariableQuery().variableValueEquals("process", "one").count());    
     
     Map<String, Object> variables2 = new HashMap<String, Object>();
     variables2.put("process", "two");
@@ -218,10 +218,10 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     runtimeService.signal(processInstance2.getProcessInstanceId());
     
     assertEquals(2, historyService.createHistoricProcessVariableQuery().variableName("process").count());
-    assertEquals(1, historyService.createHistoricProcessVariableQuery().variableEquals("process", "one").count());    
-    assertEquals(1, historyService.createHistoricProcessVariableQuery().variableEquals("process", "two").count());        
+    assertEquals(1, historyService.createHistoricProcessVariableQuery().variableValueEquals("process", "one").count());    
+    assertEquals(1, historyService.createHistoricProcessVariableQuery().variableValueEquals("process", "two").count());        
     
-    HistoricProcessVariable historicProcessVariable = historyService.createHistoricProcessVariableQuery().variableEquals("process", "one").singleResult();
+    HistoricProcessVariable historicProcessVariable = historyService.createHistoricProcessVariableQuery().variableValueEquals("process", "one").singleResult();
     assertEquals("process", historicProcessVariable.getVariableName());
     assertEquals("one", historicProcessVariable.getValue());
     
@@ -232,9 +232,9 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     runtimeService.signal(processInstance3.getProcessInstanceId());
     
     assertEquals(1, historyService.createHistoricProcessVariableQuery().variableName("long").count());
-    assertEquals(1, historyService.createHistoricProcessVariableQuery().variableEquals("long", 1000l).count());    
+    assertEquals(1, historyService.createHistoricProcessVariableQuery().variableValueEquals("long", 1000l).count());    
     assertEquals(1, historyService.createHistoricProcessVariableQuery().variableName("double").count());
-    assertEquals(1, historyService.createHistoricProcessVariableQuery().variableEquals("double",  25.43d).count());    
+    assertEquals(1, historyService.createHistoricProcessVariableQuery().variableValueEquals("double",  25.43d).count());    
 
   }
  
