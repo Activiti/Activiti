@@ -179,6 +179,9 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     if (executionId != null) {
       persistentState.put("executionId", this.executionId);
     }
+    if (processDefinitionId != null) {
+      persistentState.put("processDefinitionId", this.processDefinitionId);
+    }
     if (createTime != null) {
       persistentState.put("createTime", this.createTime);
     }

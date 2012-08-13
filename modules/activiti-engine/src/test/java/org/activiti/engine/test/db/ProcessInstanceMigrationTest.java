@@ -23,8 +23,10 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 
@@ -38,6 +40,8 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
   private static final String TEST_PROCESS_ACTIVITY_MISSING = "org/activiti/engine/test/db/ProcessInstanceMigrationTest.testSetProcessDefinitionVersionActivityMissing.bpmn20.xml";
 
   private static final String TEST_PROCESS_CALL_ACTIVITY = "org/activiti/engine/test/db/ProcessInstanceMigrationTest.withCallActivity.bpmn20.xml";
+  private static final String TEST_PROCESS_USER_TASK_V1 = "org/activiti/engine/test/db/ProcessInstanceMigrationTest.testSetProcessDefinitionVersionWithTask.bpmn20.xml";
+  private static final String TEST_PROCESS_USER_TASK_V2 = "org/activiti/engine/test/db/ProcessInstanceMigrationTest.testSetProcessDefinitionVersionWithTaskV2.bpmn20.xml";
 
   public void testSetProcessDefinitionVersionEmptyArguments() {
     try {
@@ -229,7 +233,6 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     repositoryService.deleteDeployment(deployment.getId(), true);
   }
 
-
   @Deployment(resources = {TEST_PROCESS_CALL_ACTIVITY})
   public void testSetProcessDefinitionVersionWithCallActivity() {
     // start process instance
@@ -262,4 +265,44 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     // undeploy "manually" deployed process definition
     repositoryService.deleteDeployment(deployment.getId(), true);
   }
+  
+  @Deployment(resources = {TEST_PROCESS_USER_TASK_V1})
+  public void testSetProcessDefinitionVersionWithWithTask() {
+    try {
+    // start process instance
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("userTask");
+
+    // check that user task has been reached    
+    assertEquals(1, taskService.createTaskQuery().processInstanceId(pi.getId()).count());
+    
+    // deploy new version of the process definition
+    org.activiti.engine.repository.Deployment deployment = repositoryService
+      .createDeployment()
+      .addClasspathResource(TEST_PROCESS_USER_TASK_V2)
+      .deploy();
+    assertEquals(2, repositoryService.createProcessDefinitionQuery().processDefinitionKey("userTask").count());
+    
+    ProcessDefinition newProcessDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionKey("userTask").processDefinitionVersion(2).singleResult();
+
+    // migrate process instance to new process definition version
+    processEngineConfiguration.getCommandExecutorTxRequired().execute(new SetProcessDefinitionVersionCmd(pi.getId(), 2));
+    
+    // check UserTask
+    Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+    assertEquals(newProcessDefinition.getId(), task.getProcessDefinitionId());
+    assertEquals("testFormKey", formService.getTaskFormData(task.getId()).getFormKey());
+
+    // continue
+    taskService.complete(task.getId());
+
+    assertProcessEnded(pi.getId());
+
+    // undeploy "manually" deployed process definition
+    repositoryService.deleteDeployment(deployment.getId(), true);
+    }
+    catch (Exception ex) {
+     ex.printStackTrace(); 
+    }
+  }
+  
 }

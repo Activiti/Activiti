@@ -41,6 +41,7 @@
       ASSIGNEE_ = #{assignee, jdbcType=VARCHAR},
       DELEGATION_ = #{delegationStateString, jdbcType=VARCHAR},
       EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR},
+      PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
       DESCRIPTION_ = #{description, jdbcType=VARCHAR},
       DUE_DATE_ = #{dueDate, jdbcType=TIMESTAMP}
     </set>
