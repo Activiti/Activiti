@@ -19,7 +19,7 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.ExecutionQueryImpl;
-import org.activiti.engine.impl.ExecutionVariableQueryImpl;
+import org.activiti.engine.impl.AbstractVariableQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -87,21 +87,21 @@ public class ExecutionManager extends AbstractManager {
     return (ExecutionEntity) getDbSqlSession().selectById(ExecutionEntity.class, executionId);
   }
   
-  public long findExecutionCountByQueryCriteria(ExecutionVariableQueryImpl executionQuery) {
+  public long findExecutionCountByQueryCriteria(AbstractVariableQueryImpl executionQuery) {
     return (Long) getDbSqlSession().selectOne("selectExecutionCountByQueryCriteria", executionQuery);
   }
 
   @SuppressWarnings("unchecked")
-  public List<ExecutionEntity> findExecutionsByQueryCriteria(ExecutionVariableQueryImpl executionQuery, Page page) {
+  public List<ExecutionEntity> findExecutionsByQueryCriteria(AbstractVariableQueryImpl executionQuery, Page page) {
     return getDbSqlSession().selectList("selectExecutionsByQueryCriteria", executionQuery, page);
   }
 
-  public long findProcessInstanceCountByQueryCriteria(ExecutionVariableQueryImpl executionQuery) {
+  public long findProcessInstanceCountByQueryCriteria(AbstractVariableQueryImpl executionQuery) {
     return (Long) getDbSqlSession().selectOne("selectProcessInstanceCountByQueryCriteria", executionQuery);
   }
   
   @SuppressWarnings("unchecked")
-  public List<ProcessInstance> findProcessInstanceByQueryCriteria(ExecutionVariableQueryImpl executionQuery, Page page) {
+  public List<ProcessInstance> findProcessInstanceByQueryCriteria(AbstractVariableQueryImpl executionQuery, Page page) {
     return getDbSqlSession().selectList("selectProcessInstanceByQueryCriteria", executionQuery, page);
   }
 

@@ -118,6 +118,9 @@
   
   <sql id="selectHistoricProcessInstancesByQueryCriteriaSql">
     from ${prefix}ACT_HI_PROCINST HPI
+    <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
+      inner join ${prefix}ACT_HI_PROCVARIABLE  A${index} on HPI.PROC_INST_ID_ = A${index}.PROC_INST_ID_
+    </foreach>    
     <where>
       <if test="processInstanceId != null">
         HPI.PROC_INST_ID_ = #{processInstanceId}
@@ -163,40 +166,62 @@
       <if test="superProcessInstanceId != null">
         and HPI.SUPER_PROCESS_INSTANCE_ID_ = #{superProcessInstanceId}
       </if>
-       <foreach collection="variables" index="index" item="var">
-        and exists (
-          select HD.ID_ 
-          from ${prefix}ACT_HI_DETAIL HD 
-          where
-            HD.TYPE_ = 'VariableUpdate' 
-            and HD.NAME_ =  #{var.name}
-            and HD.PROC_INST_ID_ = HPI.PROC_INST_ID_ and HD.TASK_ID_ is null
-            and HD.REV_ = (select max(HDM.REV_) from ${prefix}ACT_HI_DETAIL HDM where HDM.PROC_INST_ID_ = HPI.PROC_INST_ID_ and HDM.TASK_ID_ is null and HDM.VAR_TYPE_ = #{var.type} and HDM.NAME_ = #{var.name} and HDM.TYPE_ = 'VariableUpdate')
-            and HD.TIME_ = (select max(HDM.TIME_) from ${prefix}ACT_HI_DETAIL HDM where HDM.PROC_INST_ID_ = HPI.PROC_INST_ID_ and HDM.TASK_ID_ is null and HDM.VAR_TYPE_ = #{var.type} and HDM.NAME_ = #{var.name} and HDM.TYPE_ = 'VariableUpdate')
-
-            <if test="!var.type.equals('null')">
-              and HD.VAR_TYPE_ = #{var.type}
-            </if>
-            <!-- Variable value -->
-            <if test="var.textValue != null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
-              and HD.TEXT_ =  #{var.textValue}
-            </if>
-            <if test="var.textValue2 != null">
-              and HD.TEXT2_ = #{var.textValue2}
-            </if>
-            <if test="var.longValue != null">
-              and HD.LONG_ = #{var.longValue}
-            </if>
-            <if test="var.doubleValue != null">
-              and HD.DOUBLE_ = #{var.doubleValue}
-            </if>
-            <!-- Null variable type -->
-            <if test="var.textValue == null &amp;&amp; var.textValue2 == null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
-              and HD.TEXT_ is null and HD.TEXT2_ is null and HD.LONG_ is null and HD.DOUBLE_ is null and HD.BYTEARRAY_ID_ is null
-            </if>
-        )
-      </foreach>      
+      <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
+        and A${index}.NAME_= #{queryVariableValue.name}
+        <if test="!queryVariableValue.type.equals('null')">
+        <!-- When operator is not-equals or type of value is null, type doesn't matter! -->
+          and A${index}.VAR_TYPE_ = #{queryVariableValue.type}
+        </if>
+        <if test="queryVariableValue.textValue != null &amp;&amp; queryVariableValue.longValue == null &amp;&amp; queryVariableValue.doubleValue == null">
+        and A${index}.TEXT_
+        <choose>
+          <when test="queryVariableValue.operator.equals('LIKE')">LIKE</when>
+          <otherwise><include refid="executionVariableOperator" /></otherwise>
+        </choose>
+          #{queryVariableValue.textValue}
+        </if>
+        <if test="queryVariableValue.textValue2 != null">
+        and A${index}.TEXT2_
+        <choose>
+          <when test="queryVariableValue.operator.equals('LIKE')">LIKE</when>
+          <otherwise><include refid="executionVariableOperator" /></otherwise>
+        </choose>
+          #{queryVariableValue.textValue2}
+        </if>
+        <if test="queryVariableValue.longValue != null">
+        and A${index}.LONG_
+        <include refid="executionVariableOperator" />
+        #{queryVariableValue.longValue}
+        </if>
+        <if test="queryVariableValue.doubleValue != null">
+        and A${index}.DOUBLE_
+        <include refid="executionVariableOperator" />
+        #{queryVariableValue.doubleValue}
+        </if>
+        <!-- Null variable type -->
+        <if test="queryVariableValue.textValue == null &amp;&amp; queryVariableValue.textValue2 == null &amp;&amp; queryVariableValue.longValue == null &amp;&amp; queryVariableValue.doubleValue == null">
+          <choose>
+          <when test="queryVariableValue.operator.equals('NOT_EQUALS')">
+            and (A${index}.TEXT_ is not null or A${index}.TEXT2_ is not null or A${index}.LONG_ is not null or A${index}.DOUBLE_ is not null or A${index}.BYTEARRAY_ID_ is not null)
+          </when>
+          <otherwise>
+            and A${index}.TEXT_ is null and A${index}.TEXT2_ is null and A${index}.LONG_ is null and A${index}.DOUBLE_ is null and A${index}.BYTEARRAY_ID_ is null
+          </otherwise>
+        </choose>
+        </if>
+      </foreach>
     </where>
   </sql>
-
+  
+  <sql id="executionVariableOperator">
+    <choose>
+      <when test="queryVariableValue.operator.equals('EQUALS')">=</when>
+      <when test="queryVariableValue.operator.equals('NOT_EQUALS')">&lt;&gt;</when>
+      <when test="queryVariableValue.operator.equals('GREATER_THAN')">&gt;</when>
+      <when test="queryVariableValue.operator.equals('GREATER_THAN_OR_EQUAL')">&gt;=</when>
+      <when test="queryVariableValue.operator.equals('LESS_THAN')">&lt;</when>
+      <when test="queryVariableValue.operator.equals('LESS_THAN_OR_EQUAL')">&lt;=</when>
+   </choose>
+  </sql>
+ 
 </mapper>

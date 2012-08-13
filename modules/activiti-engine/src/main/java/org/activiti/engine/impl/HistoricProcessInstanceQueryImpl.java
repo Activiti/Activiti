@@ -13,7 +13,6 @@
 
 package org.activiti.engine.impl;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -22,17 +21,16 @@ import java.util.Set;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.variable.VariableTypes;
 
 
 /**
  * @author Tom Baeyens
  * @author Falko Menge
+ * @author Bernd Ruecker
  */
-public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProcessInstanceQuery, HistoricProcessInstance> implements HistoricProcessInstanceQuery {
+public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<HistoricProcessInstanceQuery, HistoricProcessInstance> implements HistoricProcessInstanceQuery {
 
   private static final long serialVersionUID = 1L;
   protected String processInstanceId;
@@ -52,7 +50,6 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
   protected Date startDateOnEnd;
   protected Date finishDateOnBegin;
   protected Date finishDateOnEnd;
-  protected List<QueryVariableValue> variables = new ArrayList<QueryVariableValue>();
   
   public HistoricProcessInstanceQueryImpl() {
   }
@@ -156,18 +153,6 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
 	  cal.set(Calendar.MINUTE, 0);
 	  cal.set(Calendar.HOUR, 0);	  
 		return cal.getTime();
-	}
-	
-	/* public HistoricProcessInstanceQuery processVariableEquals(String variableName, Object variableValue) {
-		variables.add(new QueryVariableValue(variableName, variableValue, QueryOperator.EQUALS));
-		return this;
-	} */
-	
-	protected void ensureVariablesInitialized() {    
-	  VariableTypes types = Context.getProcessEngineConfiguration().getVariableTypes();
-	  for(QueryVariableValue var : variables) {
-	    var.initialize(types);
-	  }
 	}
 
 	public HistoricProcessInstanceQuery orderByProcessInstanceBusinessKey() {

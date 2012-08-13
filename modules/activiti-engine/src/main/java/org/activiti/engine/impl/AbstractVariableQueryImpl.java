@@ -29,20 +29,20 @@ import org.activiti.engine.query.Query;
  * 
  * @author Frederik Heremans
  */
-public abstract class ExecutionVariableQueryImpl<T extends Query<?,?>, U> extends AbstractQuery<T, U> {
+public abstract class AbstractVariableQueryImpl<T extends Query<?,?>, U> extends AbstractQuery<T, U> {
 
   private static final long serialVersionUID = 1L;
   
   protected List<QueryVariableValue> queryVariableValues = new ArrayList<QueryVariableValue>();
   
-  public ExecutionVariableQueryImpl() {
+  public AbstractVariableQueryImpl() {
   }
 
-  public ExecutionVariableQueryImpl(CommandContext commandContext) {
+  public AbstractVariableQueryImpl(CommandContext commandContext) {
     super(commandContext);
   }
 
-  public ExecutionVariableQueryImpl(CommandExecutor commandExecutor) {
+  public AbstractVariableQueryImpl(CommandExecutor commandExecutor) {
     super(commandExecutor);
   }
 

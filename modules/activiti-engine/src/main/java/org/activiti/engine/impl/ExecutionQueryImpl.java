@@ -28,7 +28,7 @@ import org.activiti.engine.runtime.ExecutionQuery;
  * @author Frederik Heremans
  * @author Daniel Meyer
  */
-public class ExecutionQueryImpl extends ExecutionVariableQueryImpl<ExecutionQuery, Execution> 
+public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery, Execution> 
   implements ExecutionQuery {
 
   private static final long serialVersionUID = 1L;
