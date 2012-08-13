@@ -1,13 +1,9 @@
 create table ACT_HI_PROCVARIABLE (
     ID_ varchar(64) not null,
     PROC_INST_ID_ varchar(64) not null,
-    EXECUTION_ID_ varchar(64) not null,
-    TASK_ID_ varchar(64),
-    ACT_INST_ID_ varchar(64),
     NAME_ varchar(255) not null,
     VAR_TYPE_ varchar(255),
     REV_ integer,
-    TIME_ timestamp not null,
     BYTEARRAY_ID_ varchar(64),
     DOUBLE_ double,
     LONG_ bigint,
@@ -20,8 +16,8 @@ create index ACT_IDX_HI_PROCVAR_PROC_INST on ACT_HI_PROCVARIABLE(PROC_INST_ID_);
 create index ACT_IDX_HI_PROCVAR_NAME_TYPE on ACT_HI_PROCVARIABLE(NAME_, VAR_TYPE_);
 
 insert into ACT_HI_PROCVARIABLE
-  (ID_,PROC_INST_ID_,EXECUTION_ID_,TASK_ID_,ACT_INST_ID_,NAME_,VAR_TYPE_,REV_,TIME_,BYTEARRAY_ID_,DOUBLE_,LONG_,TEXT_,TEXT2_)
-  select d.ID_,d.PROC_INST_ID_,d.EXECUTION_ID_,d.TASK_ID_,d.ACT_INST_ID_,d.NAME_,d.VAR_TYPE_,d.REV_,d.TIME_,d.BYTEARRAY_ID_,d.DOUBLE_,d.LONG_,d.TEXT_,d.TEXT2_
+  (ID_,PROC_INST_ID_,NAME_,VAR_TYPE_,REV_,BYTEARRAY_ID_,DOUBLE_,LONG_,TEXT_,TEXT2_)
+  select d.ID_,d.PROC_INST_ID_,d.NAME_,d.VAR_TYPE_,d.REV_,d.BYTEARRAY_ID_,d.DOUBLE_,d.LONG_,d.TEXT_,d.TEXT2_
   from ACT_HI_DETAIL d
   inner join
     (
