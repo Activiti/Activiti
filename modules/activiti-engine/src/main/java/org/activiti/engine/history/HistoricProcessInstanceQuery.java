@@ -61,7 +61,7 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   HistoricProcessInstanceQuery unfinished();
 
   /**
-   * Only select process instances which had a variable with the given value
+   * Only select process instances which had a global variable with the given value
    * when they ended. Only select process instances which have a variable value
    * greater than the passed value. The type only applies to already ended
    * process instances, otherwise use a {@link ProcessInstanceQuery} instead! of
@@ -76,7 +76,7 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   HistoricProcessInstanceQuery variableValueEquals(String name, Object value);
 
   /**
-   * Only select process instances which had a variable with the given name, but
+   * Only select process instances which had a global variable with the given name, but
    * with a different value than the passed value when they ended. Only select
    * process instances which have a variable value greater than the passed
    * value. Byte-arrays and {@link Serializable} objects (which are not
@@ -88,7 +88,7 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   HistoricProcessInstanceQuery variableValueNotEquals(String name, Object value);
 
   /**
-   * Only select process instances which had a variable value greater than the
+   * Only select process instances which had a global variable value greater than the
    * passed value when they ended. Booleans, Byte-arrays and
    * {@link Serializable} objects (which are not primitive type wrappers) are
    * not supported. Only select process instances which have a variable value
@@ -102,7 +102,7 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   HistoricProcessInstanceQuery variableValueGreaterThan(String name, Object value);
 
   /**
-   * Only select process instances which had a variable value greater than or
+   * Only select process instances which had a global variable value greater than or
    * equal to the passed value when they ended. Booleans, Byte-arrays and
    * {@link Serializable} objects (which are not primitive type wrappers) are
    * not supported. Only applies to already ended process instances, otherwise
@@ -116,7 +116,7 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   HistoricProcessInstanceQuery variableValueGreaterThanOrEqual(String name, Object value);
 
   /**
-   * Only select process instances which had a variable value less than the
+   * Only select process instances which had a global variable value less than the
    * passed value when the ended. Only applies to already ended process
    * instances, otherwise use a {@link ProcessInstanceQuery} instead! Booleans,
    * Byte-arrays and {@link Serializable} objects (which are not primitive type
@@ -130,7 +130,7 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   HistoricProcessInstanceQuery variableValueLessThan(String name, Object value);
 
   /**
-   * Only select process instances which has a variable value less than or equal
+   * Only select process instances which has a global variable value less than or equal
    * to the passed value when they ended. Only applies to already ended process
    * instances, otherwise use a {@link ProcessInstanceQuery} instead! Booleans,
    * Byte-arrays and {@link Serializable} objects (which are not primitive type
@@ -144,7 +144,7 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   HistoricProcessInstanceQuery variableValueLessThanOrEqual(String name, Object value);
 
   /**
-   * Only select process instances which had variable value like the given value
+   * Only select process instances which had global variable value like the given value
    * when they ended. Only applies to already ended process instances, otherwise
    * use a {@link ProcessInstanceQuery} instead! This can be used on string
    * variables only.
