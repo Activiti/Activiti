@@ -34,6 +34,7 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.CompositeActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
 
 
 /**
@@ -229,6 +230,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
    * it is needed to call the end listeners yourself.
    */
   protected void callActivityEndListeners(ActivityExecution execution) {
+    // TODO: This is currently done without a proper {@link AtomicOperation} causing problems, see http://jira.codehaus.org/browse/ACT-1339
     List<ExecutionListener> listeners = activity.getExecutionListeners(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END);
     for (ExecutionListener executionListener : listeners) {
       try {
