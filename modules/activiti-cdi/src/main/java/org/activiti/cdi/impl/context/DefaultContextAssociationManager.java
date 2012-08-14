@@ -181,7 +181,12 @@ public class DefaultContextAssociationManager implements ContextAssociationManag
   
   @Override
   public String getExecutionId() {
-    return getExecution().getId();
+    Execution execution = getExecution();
+    if (execution != null) {
+      return execution.getId();
+    } else {
+      return null;
+    }
   }
   
   @Override
