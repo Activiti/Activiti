@@ -56,9 +56,9 @@ public class JuelExpression implements Expression {
     } catch (MethodNotFoundException mnfe) {
       throw new ActivitiException("Unknown method used in expression", mnfe);
     } catch(ELException ele) {
-      throw new ActivitiException("Error while evalutaing expression", ele);
+      throw new ActivitiException("Error while evaluating expression", ele);
     } catch (Exception e) {
-      throw new ActivitiException("Error while evalutaing expression", e);
+      throw new ActivitiException("Error while evaluating expression", e);
     }
   }
   
@@ -70,7 +70,7 @@ public class JuelExpression implements Expression {
         .getDelegateInterceptor()
         .handleInvocation(invocation);
     }catch (Exception e) {
-      throw new ActivitiException("Error while evalutaing expression", e);
+      throw new ActivitiException("Error while evaluating expression", e);
     }
   }
   
