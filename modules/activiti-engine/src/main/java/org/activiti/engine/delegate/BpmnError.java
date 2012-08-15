@@ -19,7 +19,7 @@ import org.activiti.engine.impl.bpmn.parser.Error;
 
 /**
  * Special exception that can be used to throw a BPMN Error from
- * {@link JavaDelegate}s.
+ * {@link JavaDelegate}s and expressions.
  * 
  * This should only be used for business faults, which shall be handled by a
  * Boundary Error Event or Error Event Sub-Process modeled in the process
