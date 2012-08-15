@@ -9,11 +9,14 @@ alter table ACT_GE_BYTEARRAY
     drop constraint ACT_FK_BYTEARR_DEPL;
 
 alter table ACT_RU_EXECUTION 
+    drop constraint ACT_FK_EXE_PROCDEF;
+	
+alter table ACT_RU_EXECUTION 
     drop constraint ACT_FK_EXE_PARENT;
 
 alter table ACT_RU_EXECUTION 
-    drop constraint ACT_FK_EXE_SUPER;
-    
+    drop constraint ACT_FK_EXE_SUPER;  
+	
 alter table ACT_RU_IDENTITYLINK
     drop constraint ACT_FK_TSKASS_TASK;
 
