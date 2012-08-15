@@ -17,8 +17,11 @@ alter table ACT_RU_EXECUTION
     drop constraint ACT_FK_EXE_SUPER;
     
 alter table ACT_RU_EXECUTION
-    drop constraint ACT_UNIQ_RU_BUS_KEY;
-    
+    drop constraint ACT_FK_EXE_PROCDEF;
+
+alter table ACT_RU_EXECUTION
+    drop constraint ACT_UNIQ_RU_BUS_KEY;    
+
 alter table ACT_RU_IDENTITYLINK
     drop constraint ACT_FK_TSKASS_TASK;
 
