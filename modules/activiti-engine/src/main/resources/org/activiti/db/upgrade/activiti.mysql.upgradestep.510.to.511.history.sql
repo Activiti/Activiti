@@ -39,3 +39,9 @@ update ACT_GE_PROPERTY
 
 alter table ACT_HI_ACTINST
 add (ASK_ID_ varchar(64), CALL_PROC_INST_ID_ varchar(64));
+
+alter table ACT_HI_DETAIL
+	MODIFY PROC_INST_ID_ varchar(64) null;
+
+alter table ACT_HI_DETAIL
+	MODIFY EXECUTION_ID_ varchar(64) null;

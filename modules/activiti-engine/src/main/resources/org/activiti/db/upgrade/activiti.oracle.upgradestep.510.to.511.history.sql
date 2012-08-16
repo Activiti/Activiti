@@ -39,3 +39,9 @@ update ACT_GE_PROPERTY
 
 alter table ACT_HI_ACTINST
 add (TASK_ID_ NVARCHAR2(64), CALL_PROC_INST_ID_ NVARCHAR2(64));
+
+alter table ACT_HI_DETAIL
+	modify PROC_INST_ID_ NVARCHAR2(64) null;
+
+alter table ACT_HI_DETAIL
+	modify EXECUTION_ID_ NVARCHAR2(64) null;

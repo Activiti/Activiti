@@ -69,8 +69,8 @@ create table ACT_HI_PROCVARIABLE (
 create table ACT_HI_DETAIL (
     ID_ nvarchar(64) not null,
     TYPE_ nvarchar(255) not null,
-    PROC_INST_ID_ nvarchar(64) not null,
-    EXECUTION_ID_ nvarchar(64) not null,
+    PROC_INST_ID_ nvarchar(64),
+    EXECUTION_ID_ nvarchar(64),
     TASK_ID_ nvarchar(64),
     ACT_INST_ID_ nvarchar(64),
     NAME_ nvarchar(255) not null,
