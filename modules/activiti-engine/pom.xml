@@ -84,12 +84,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-        <groupId>org.apache.openjpa</groupId>
-        <artifactId>openjpa</artifactId>
-        <scope>test</scope>
-      </dependency>
+	    <groupId>org.apache.openjpa</groupId>
+	    <artifactId>openjpa</artifactId>
+	    <scope>test</scope>
+    </dependency>
     <dependency>
-        <groupId>org.subethamail</groupId>
+      <groupId>org.subethamail</groupId>
       <artifactId>subethasmtp-wiser</artifactId>
       <scope>test</scope>
     </dependency>
@@ -101,7 +101,12 @@
     <dependency>
       <groupId>postgresql</groupId>
       <artifactId>postgresql</artifactId>
-        <scope>test</scope>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.ibm.db2.jcc</groupId>
+      <artifactId>db2jcc4</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>net.sourceforge.jtds</groupId>

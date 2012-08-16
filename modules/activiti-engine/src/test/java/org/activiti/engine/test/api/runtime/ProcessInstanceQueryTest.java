@@ -207,9 +207,9 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
   }
   
   public void testQueryPaging() {
+    assertEquals(4, runtimeService.createProcessInstanceQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).count());
     assertEquals(2, runtimeService.createProcessInstanceQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).listPage(0, 2).size());
     assertEquals(3, runtimeService.createProcessInstanceQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).listPage(1, 3).size());
-
   }
   
   public void testQuerySorting() {

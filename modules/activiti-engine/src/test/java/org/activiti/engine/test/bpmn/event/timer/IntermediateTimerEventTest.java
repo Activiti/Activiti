@@ -14,6 +14,7 @@ package org.activiti.engine.test.bpmn.event.timer;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
@@ -21,6 +22,7 @@ import org.activiti.engine.test.Deployment;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 
 public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
@@ -49,8 +51,6 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
   @Deployment 
   public void testExpression() {
     // Set the clock fixed
-    Date startTime = new Date();
-
     HashMap<String, Object> variables1 = new HashMap<String, Object>();
     variables1.put("dueDate", new Date());
     
@@ -65,9 +65,11 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
     assertEquals(1, managementService.createJobQuery().processInstanceId(pi2.getId()).count());
 
     // After setting the clock to one second in the future the timers should fire
-    ClockUtil.setCurrentTime(new Date(startTime.getTime() + 1000));
-    waitForJobExecutorToProcessAllJobs(5000L, 25L);
-
+    List<Job> jobs = managementService.createJobQuery().executable().list();
+    for (Job job : jobs) {
+      managementService.executeJob(job.getId());
+    }
+    
     assertEquals(0, managementService.createJobQuery().processInstanceId(pi1.getId()).count());
     assertEquals(0, managementService.createJobQuery().processInstanceId(pi2.getId()).count());
 
