@@ -104,11 +104,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.ibm.db2.jcc</groupId>
-      <artifactId>db2jcc4</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>net.sourceforge.jtds</groupId>
       <artifactId>jtds</artifactId>
       <scope>test</scope>
