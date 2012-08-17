@@ -209,8 +209,9 @@ public class DbSqlSession implements Session {
     }
     List loadedObjects = null;
     String databaseType = dbSqlSessionFactory.databaseType;
-    if(databaseType.equals("mssql") || databaseType.equals("db2")) {
+    if(databaseType.equals("mssql")) {
       // use mybatis paging (native database paging not yet implemented)
+      log.log(Level.FINE, "Using mybatis paging (native database paging not yet implemented for mssql)");
       loadedObjects = sqlSession.selectList(statement, parameter, new RowBounds(parameter.getFirstResult(), parameter.getMaxResults()));
     } else {
       // use native database paging
