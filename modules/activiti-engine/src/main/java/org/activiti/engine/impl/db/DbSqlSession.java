@@ -796,7 +796,9 @@ public class DbSqlSession implements Session {
             sqlStatement = addSqlStatementPiece(sqlStatement, line.substring(0, line.length()-1));
             Statement jdbcStatement = connection.createStatement();
             try {
-              // no logging needed as the connection will log it
+              
+              log.fine("Executing statement: " + sqlStatement);
+              
               jdbcStatement.execute(sqlStatement);
               jdbcStatement.close();
             } catch (Exception e) {
