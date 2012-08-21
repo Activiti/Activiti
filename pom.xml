@@ -623,12 +623,10 @@
         <module>modules/activiti-spring</module>
         <module>modules/activiti-webapp-rest2</module>
         <module>modules/activiti-webapp-explorer2</module>
-        <!--
         <module>modules/activiti-cxf</module>
         <module>modules/activiti-osgi</module>
 	      <module>modules/activiti-camel</module>	      
         <module>modules/activiti-mule</module>
-        -->
 		    <module>modules/activiti-cdi</module>
       </modules>
     </profile>
