@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="taskAssigneeExample" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
+
+  <process id="invalidExpression">
+    <startEvent id="startEvent1" />
+
+    <serviceTask id="service1" activiti:resultVariable="test" activiti:expression="xxx" />
+    <receiveTask id="receive1" activiti:resultVariable="test" activiti:expression="xxx" />
+
+    <endEvent id="endEvent1" />
+
+    <sequenceFlow targetRef="service1" sourceRef="startEvent1" />
+    <sequenceFlow targetRef="receive1" sourceRef="service1" />
+    <sequenceFlow targetRef="endEvent1" sourceRef="receive1" />
+  </process>
+  
+  <process id="invalidExpressionDelegate">
+    <startEvent id="startEvent2" />
+
+    <serviceTask id="service2" activiti:delegateExpression="xxx" />
+
+    <endEvent id="endEvent2" />
+
+    <sequenceFlow targetRef="service2" sourceRef="startEvent2" />
+    <sequenceFlow targetRef="endEvent2" sourceRef="service2" />
+  </process>
+</definitions>

@@ -33,14 +33,14 @@ public class ElTest extends CdiActivitiTestCase {
     assertEquals("Greetings from Activiti", messageBean.getMessage());
   }
 
-  @Test
-  @Deployment(resources="org/activiti/cdi/test/impl/el/ElTest.testInvalidExpression.bpmn20.xml")
-  public void testInvalidExpressions() throws Exception {
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("invalidExpression");
-    
-    assertEquals("xxx", runtimeService.getVariable(pi.getId(), "test"));
-
-//    runtimeService.startProcessInstanceByKey("invalidExpressionDelegate");
-    
-  }
+//  @Test
+//  @Deployment(resources="org/activiti/cdi/test/impl/el/ElTest.testInvalidExpression.bpmn20.xml")
+//  public void testInvalidExpressions() throws Exception {
+//    ProcessInstance pi = runtimeService.startProcessInstanceByKey("invalidExpression");
+//    
+//    assertEquals("xxx", runtimeService.getVariable(pi.getId(), "test"));
+//
+////    runtimeService.startProcessInstanceByKey("invalidExpressionDelegate");
+//    
+//  }
 }
