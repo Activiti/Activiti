@@ -40,8 +40,8 @@ public class TaskOperationResource extends SecuredResource {
     String operation = (String) getRequest().getAttributes().get("operation");
     try {
       Map<String, Object> variables = new HashMap<String, Object>();
-      if (entity != null && StringUtils.isNotEmpty(entity.getText())) {
-        String startParams = entity.getText();
+      String startParams = entity.getText();
+      if (StringUtils.isNotEmpty(startParams)) {
         JsonNode startJSON = new ObjectMapper().readTree(startParams);
         Iterator<String> itName = startJSON.getFieldNames();
         while(itName.hasNext()) {
