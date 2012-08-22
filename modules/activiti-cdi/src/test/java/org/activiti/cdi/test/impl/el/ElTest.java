@@ -16,6 +16,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.activiti.cdi.test.CdiActivitiTestCase;
 import org.activiti.cdi.test.impl.beans.MessageBean;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.junit.Test;
 
@@ -32,4 +33,14 @@ public class ElTest extends CdiActivitiTestCase {
     assertEquals("Greetings from Activiti", messageBean.getMessage());
   }
 
+  @Test
+  @Deployment(resources="org/activiti/cdi/test/impl/el/ElTest.testInvalidExpression.bpmn20.xml")
+  public void testInvalidExpressions() throws Exception {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("invalidExpression");
+    
+    assertEquals("xxx", runtimeService.getVariable(pi.getId(), "test"));
+
+//    runtimeService.startProcessInstanceByKey("invalidExpressionDelegate");
+    
+  }
 }
