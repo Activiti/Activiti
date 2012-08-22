@@ -2,7 +2,7 @@ create table ACT_HI_PROCVARIABLE (
     ID_ nvarchar(64) not null,
     PROC_INST_ID_ nvarchar(64) not null,
     NAME_ nvarchar(255) not null,
-    VAR_TYPE_ nvarchar(255),
+    VAR_TYPE_ nvarchar(100),
     REV_ int,
     BYTEARRAY_ID_ nvarchar(64),
     DOUBLE_ double precision,
@@ -38,7 +38,10 @@ update ACT_GE_PROPERTY
   where NAME_ = 'historyLevel' and VALUE_ >= 2;
 
 alter table ACT_HI_ACTINST
-add TASK_ID_ nvarchar(64), CALL_PROC_INST_ID_ nvarchar(64);
+	add column TASK_ID_ nvarchar(64);
+
+alter table ACT_HI_ACTINST
+	add column CALL_PROC_INST_ID_ nvarchar(64);	
 
 alter table ACT_HI_DETAIL
 	alter column PROC_INST_ID_ nvarchar(64) null;

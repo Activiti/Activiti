@@ -56,7 +56,7 @@ create table ACT_HI_PROCVARIABLE (
     ID_ nvarchar(64) not null,
     PROC_INST_ID_ nvarchar(64) not null,
     NAME_ nvarchar(255) not null,
-    VAR_TYPE_ nvarchar(255),
+    VAR_TYPE_ nvarchar(100),
     REV_ int,
     BYTEARRAY_ID_ nvarchar(64),
     DOUBLE_ double precision,

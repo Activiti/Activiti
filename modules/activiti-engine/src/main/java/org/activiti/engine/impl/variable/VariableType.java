@@ -20,7 +20,7 @@ package org.activiti.engine.impl.variable;
 public interface VariableType {
 
   /**
-   * name of variable type (limited to 25 characters length)
+   * name of variable type (limited to 100 characters length)
    */
   String getTypeName();
   boolean isCachable();
