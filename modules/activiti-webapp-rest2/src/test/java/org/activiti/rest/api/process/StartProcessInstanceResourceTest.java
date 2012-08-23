@@ -1,0 +1,77 @@
+package org.activiti.rest.api.process;
+
+import java.util.List;
+import java.util.Map;
+
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.test.Deployment;
+import org.activiti.rest.BaseRestTestCase;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.ObjectNode;
+import org.restlet.representation.Representation;
+import org.restlet.resource.ClientResource;
+
+public class StartProcessInstanceResourceTest extends BaseRestTestCase {
+
+  @Deployment
+  public void testStartInstance() throws Exception {
+    ClientResource client = getAuthenticatedClient("process-instance");
+    ObjectNode requestNode = objectMapper.createObjectNode();
+    requestNode.put("processDefinitionKey", "simpleProcess");
+    Representation response = client.post(requestNode);
+    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    assertNotNull(responseNode);
+    
+    String processInstanceId = responseNode.get("processInstanceId").getValueAsText();
+    assertNotNull(processInstanceId);
+    
+    List<ProcessInstance> instanceList = runtimeService.createProcessInstanceQuery().list();
+    assertEquals(1, instanceList.size());
+    assertEquals(processInstanceId, instanceList.get(0).getProcessInstanceId());
+    
+    Task task = taskService.createTaskQuery().taskAssignee("kermit").singleResult();
+    assertNotNull(task);
+    assertEquals("WaitTask", task.getName());
+    
+    taskService.complete(task.getId());
+    
+    instanceList = runtimeService.createProcessInstanceQuery().list();
+    assertEquals(0, instanceList.size());
+  }
+  
+  @Deployment
+  public void testStartInstanceWithVariables() throws Exception {
+    ClientResource client = getAuthenticatedClient("process-instance");
+    ObjectNode requestNode = objectMapper.createObjectNode();
+    requestNode.put("processDefinitionKey", "simpleProcess");
+    requestNode.put("var1", "test");
+    requestNode.put("var2", 1);
+    Representation response = client.post(requestNode);
+    
+    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    assertNotNull(responseNode);
+    
+    String processInstanceId = responseNode.get("processInstanceId").getValueAsText();
+    assertNotNull(processInstanceId);
+    
+    List<ProcessInstance> instanceList = runtimeService.createProcessInstanceQuery().list();
+    assertEquals(1, instanceList.size());
+    assertEquals(processInstanceId, instanceList.get(0).getProcessInstanceId());
+    
+    Map<String, Object> variableMap = runtimeService.getVariables(processInstanceId);
+    assertTrue(variableMap.containsKey("var1"));
+    assertEquals("test", variableMap.get("var1"));
+    assertTrue(variableMap.containsKey("var2"));
+    assertEquals(1, variableMap.get("var2"));
+    
+    Task task = taskService.createTaskQuery().taskAssignee("kermit").singleResult();
+    assertNotNull(task);
+    assertEquals("WaitTask", task.getName());
+    
+    taskService.complete(task.getId());
+    
+    instanceList = runtimeService.createProcessInstanceQuery().list();
+    assertEquals(0, instanceList.size());
+  }
+}

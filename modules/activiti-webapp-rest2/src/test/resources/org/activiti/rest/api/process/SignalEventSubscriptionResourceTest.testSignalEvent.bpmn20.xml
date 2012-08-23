@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <signal id="stopSignal" name="stopSignal"></signal>
+  
+  <process id="signalEvent" name="Signal Event Handler JUnit" isExecutable="true">
+  
+    <startEvent id="start" name="Start JUnit"></startEvent>
+    <sequenceFlow id="flow1" name="" sourceRef="start" targetRef="waitingsubprocess"></sequenceFlow>
+    
+    <subProcess id="waitingsubprocess" name="Waiting sub process">
+      
+      <startEvent id="sub-start" name="Start"></startEvent>      
+      <sequenceFlow id="flow6" name="" sourceRef="sub-start" targetRef="timer"></sequenceFlow>
+      
+      <intermediateCatchEvent id="timer" name="Wait another day before making the test. ">
+        <timerEventDefinition>
+          <timeDuration>P1D</timeDuration>
+        </timerEventDefinition>
+      </intermediateCatchEvent>      
+      <sequenceFlow id="flow7" name="" sourceRef="timer" targetRef="sub-end"></sequenceFlow>
+      
+      <endEvent id="sub-end" name="End"></endEvent>
+
+    </subProcess>
+    <sequenceFlow id="flow2" sourceRef="waitingsubprocess" targetRef="end"></sequenceFlow>
+
+    <boundaryEvent id="waitStopSignal" name="Wait the stop signal" cancelActivity="true" attachedToRef="waitingsubprocess">
+      <signalEventDefinition signalRef="stopSignal"></signalEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="flow8" sourceRef="waitStopSignal" targetRef="end"></sequenceFlow>
+
+    <endEvent id="end" name="End JUnit"></endEvent>
+  </process>
+</definitions>

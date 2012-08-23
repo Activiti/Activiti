@@ -1,7 +1,6 @@
 package org.activiti.rest.api.process;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
@@ -9,6 +8,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
@@ -28,7 +28,7 @@ public class ProcessInstanceSignalExecutionResource extends SecuredResource {
 		String processInstanceId = (String) getRequest().getAttributes().get("processInstanceId");
 
     if (processInstanceId == null) {
-      throw new ActivitiException("No process instance id provided");
+      throw new ActivitiException("No process instance is provided");
     }
 		
 		try {
@@ -37,14 +37,11 @@ public class ProcessInstanceSignalExecutionResource extends SecuredResource {
 				return null;
 			
 			// extract request parameters
-			String startParams = entity.getText();
-			JsonNode startJSON = new ObjectMapper().readTree(startParams);
-			Iterator<String> itName = startJSON.getFieldNames();
 			Map<String, Object> variables = new HashMap<String, Object>();
-			while (itName.hasNext()) {
-				String name = itName.next();
-				JsonNode valueNode = startJSON.path(name);
-				variables.put(name, valueNode.getTextValue());
+			String startParams = entity.getText();
+			if (StringUtils.isNotEmpty(startParams)) {
+  			JsonNode startJSON = new ObjectMapper().readTree(startParams);
+  			variables.putAll(retrieveVariables(startJSON));
 			}
 
 			// extract activity id

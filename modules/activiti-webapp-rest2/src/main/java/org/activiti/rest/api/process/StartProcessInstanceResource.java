@@ -13,8 +13,6 @@
 
 package org.activiti.rest.api.process;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
@@ -49,23 +47,7 @@ public class StartProcessInstanceResource extends SecuredResource {
         businessKey = businessKeyJson.getTextValue();
       }
       
-      Map<String, Object> variables = new HashMap<String, Object>();
-      Iterator<String> itName = startJSON.getFieldNames();
-      while(itName.hasNext()) {
-        String name = itName.next();
-        JsonNode valueNode = startJSON.path(name);
-        if (valueNode.isBoolean()) {
-          variables.put(name, valueNode.getBooleanValue());
-        } else if (valueNode.isLong()) {
-          variables.put(name, valueNode.getLongValue());
-        } else if (valueNode.isDouble()) {
-          variables.put(name, valueNode.getDoubleValue());
-        } else if (valueNode.isTextual()) {
-          variables.put(name, valueNode.getTextValue());
-        } else {
-          variables.put(name, valueNode.getValueAsText());
-        }
-      }
+      Map<String, Object> variables = retrieveVariables(startJSON);
       variables.remove("processDefinitionId");
       variables.remove("processDefinitionKey");
       variables.remove("businessKey");

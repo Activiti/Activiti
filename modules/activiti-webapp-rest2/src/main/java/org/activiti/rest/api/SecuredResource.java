@@ -13,10 +13,14 @@
 
 package org.activiti.rest.api;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.identity.Group;
 import org.activiti.rest.application.ActivitiRestApplication;
+import org.codehaus.jackson.JsonNode;
 import org.restlet.data.Status;
 import org.restlet.resource.ServerResource;
 
@@ -62,6 +66,31 @@ public class SecuredResource extends ServerResource {
       }
       return allowed;
     }
+  }
+  
+  protected Map<String, Object> retrieveVariables(JsonNode jsonNode) {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    if (jsonNode != null) {
+      Iterator<String> itName = jsonNode.getFieldNames();
+      while(itName.hasNext()) {
+        String name = itName.next();
+        JsonNode valueNode = jsonNode.path(name);
+        if (valueNode.isBoolean()) {
+          variables.put(name, valueNode.getBooleanValue());
+        } else if (valueNode.isInt()) {
+          variables.put(name, valueNode.getIntValue());
+        } else if (valueNode.isLong()) {
+          variables.put(name, valueNode.getLongValue());
+        } else if (valueNode.isDouble()) {
+          variables.put(name, valueNode.getDoubleValue());
+        } else if (valueNode.isTextual()) {
+          variables.put(name, valueNode.getTextValue());
+        } else {
+          variables.put(name, valueNode.getValueAsText());
+        }
+      }
+    }
+    return variables;
   }
 
 }
