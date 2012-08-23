@@ -102,42 +102,6 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
     repositoryService.deleteDeployment(deploymentId);
   }
   
-  public void FAILING_testDeployTwoProcessesWithDuplicateIdAtTheSameTime() {
-    String bpmnResourceName = "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testGetBpmnXmlFileThroughService.bpmn20.xml";
-    String bpmnResourceName2 = "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testGetBpmnXmlFileThroughService2.bpmn20.xml";
-    repositoryService.createDeployment().enableDuplicateFiltering()
-            .addClasspathResource(bpmnResourceName)
-            .addClasspathResource(bpmnResourceName2)
-            .name("duplicateAtTheSameTime").deploy();
-    
-    String deploymentId = repositoryService.createDeploymentQuery().singleResult().getId();
-    List<String> deploymentResources = repositoryService.getDeploymentResourceNames(deploymentId);
-    
-    // verify bpmn file names
-    assertEquals(2, deploymentResources.size());
-    assertEquals(bpmnResourceName, deploymentResources.get(0));
-    assertEquals(bpmnResourceName2, deploymentResources.get(1));
-    
-    // FAILS WITHOUT CONSTRAINT!
-    try {
-      ProcessDefinition pd = repositoryService.createProcessDefinitionQuery().processDefinitionKey("emptyProcess").latestVersion().singleResult();
-      runtimeService.startProcessInstanceById(pd.getId());
-      fail();
-    } catch (Exception e) {
-      assertTextPresent(e.getMessage(), "Query return 2 results instead of max 1");
-    }
-
-    // FAILS WITHOUT CONSTRAINT TOO!
-    try {
-      runtimeService.startProcessInstanceByKey("emptyProcess");
-      fail();
-    } catch (Exception e) {
-      assertTextPresent(e.getMessage(), "Expected one result (or null) to be returned by selectOne(), but found: 2");
-    }
-    
-    repositoryService.deleteDeployment(deploymentId);
-  }
-  
   public void testDeployTwoProcessesWithDuplicateIdAtTheSameTime() {
     try {
       String bpmnResourceName = "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testGetBpmnXmlFileThroughService.bpmn20.xml";

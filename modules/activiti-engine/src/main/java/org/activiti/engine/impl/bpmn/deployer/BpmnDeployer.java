@@ -116,6 +116,15 @@ public class BpmnDeployer implements Deployer {
       }
     }
     
+    // check if there are process definitions with the same process key to prevent database unique index violation
+    List<String> keyList = new ArrayList<String>();
+    for (ProcessDefinitionEntity processDefinition : processDefinitions) {
+      if (keyList.contains(processDefinition.getKey())) {
+        throw new ActivitiException("The deployment contains process definitions with the same key (process id atrribute), this is not allowed");
+      }
+      keyList.add(processDefinition.getKey());
+    }
+    
     CommandContext commandContext = Context.getCommandContext();
     ProcessDefinitionManager processDefinitionManager = commandContext.getProcessDefinitionManager();
     DeploymentCache deploymentCache = Context.getProcessEngineConfiguration().getDeploymentCache();

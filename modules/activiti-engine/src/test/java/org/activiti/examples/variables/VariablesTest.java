@@ -14,6 +14,7 @@ package org.activiti.examples.variables;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -103,6 +104,15 @@ public class VariablesTest extends PluggableActivitiTestCase {
     assertEquals(serializable, variables.get("serializableVar"));
     assertTrue(Arrays.equals(bytes, (byte[]) variables.get("bytesVar")));
     assertEquals(9, variables.size());
+    
+    Collection<String> varFilter = new ArrayList<String>(2);
+    varFilter.add("stringVar");
+    varFilter.add("integerVar");
+    
+    Map<String, Object> filteredVariables = runtimeService.getVariables(processInstance.getId(), varFilter);
+    assertEquals(2, filteredVariables.size());
+    assertTrue(filteredVariables.containsKey("stringVar"));
+    assertTrue(filteredVariables.containsKey("integerVar"));
     
     // Try setting the value of the variable that was initially created with value 'null'
     runtimeService.setVariable(processInstance.getId(), "nullVar", "a value");

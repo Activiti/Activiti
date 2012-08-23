@@ -14,6 +14,7 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
@@ -56,6 +57,17 @@ public class GetExecutionVariablesCmd implements Command<Map<String, Object>>, S
       executionVariables = execution.getVariablesLocal();
     } else {
       executionVariables = execution.getVariables();
+    }
+    
+    if (variableNames != null && variableNames.size() > 0) {
+      // if variableNames is not empty, return only variable names mentioned in it
+      Map<String, Object> tempVariables = new HashMap<String, Object>();
+      for (String variableName: variableNames) {
+        if (executionVariables.containsKey(variableName)) {
+          tempVariables.put(variableName, executionVariables.get(variableName));
+        }
+      }
+      executionVariables = tempVariables;
     }
     
     return executionVariables;
