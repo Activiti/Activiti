@@ -40,25 +40,27 @@ public class TaskOperationResource extends SecuredResource {
     String operation = (String) getRequest().getAttributes().get("operation");
     try {
       Map<String, Object> variables = new HashMap<String, Object>();
-      String startParams = entity.getText();
-      if (StringUtils.isNotEmpty(startParams)) {
-        JsonNode startJSON = new ObjectMapper().readTree(startParams);
-        Iterator<String> itName = startJSON.getFieldNames();
-        while(itName.hasNext()) {
-          String name = itName.next();
-          JsonNode valueNode = startJSON.path(name);
-          if (valueNode.isBoolean()) {
-            variables.put(name, valueNode.getBooleanValue());
-          } else if (valueNode.isLong()) {
-            variables.put(name, valueNode.getLongValue());
-          } else if (valueNode.isDouble()) {
-            variables.put(name, valueNode.getDoubleValue());
-          } else if (valueNode.isTextual()) {
-            variables.put(name, valueNode.getTextValue());
-          } else if("true".equals(valueNode.getTextValue()) || "false".equals(valueNode.getTextValue())) {
-            variables.put(name, Boolean.valueOf(valueNode.getTextValue()));
-          } else {
-            variables.put(name, valueNode.getValueAsText());
+      if (entity != null) {
+        String startParams = entity.getText();
+        if (StringUtils.isNotEmpty(startParams)) {
+          JsonNode startJSON = new ObjectMapper().readTree(startParams);
+          Iterator<String> itName = startJSON.getFieldNames();
+          while(itName.hasNext()) {
+            String name = itName.next();
+            JsonNode valueNode = startJSON.path(name);
+            if (valueNode.isBoolean()) {
+              variables.put(name, valueNode.getBooleanValue());
+            } else if (valueNode.isLong()) {
+              variables.put(name, valueNode.getLongValue());
+            } else if (valueNode.isDouble()) {
+              variables.put(name, valueNode.getDoubleValue());
+            } else if (valueNode.isTextual()) {
+              variables.put(name, valueNode.getTextValue());
+            } else if("true".equals(valueNode.getTextValue()) || "false".equals(valueNode.getTextValue())) {
+              variables.put(name, Boolean.valueOf(valueNode.getTextValue()));
+            } else {
+              variables.put(name, valueNode.getValueAsText());
+            }
           }
         }
       }
