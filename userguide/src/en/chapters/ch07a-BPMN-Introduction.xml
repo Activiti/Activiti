@@ -170,7 +170,7 @@ xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL
     
       <para>
 				The business process as described above, can be graphically visualized
-				using the <link linkend="activitiModeler">Activiti Modeler</link> or the 
+				using the  
 				<link linkend="activitiDesigner">Activiti Designer</link>. However, for this tutorial
 				we'll type the XML ourselves, as this learns us the most at this point. 
 				The graphical BPMN 2.0 notation of our process looks like this:

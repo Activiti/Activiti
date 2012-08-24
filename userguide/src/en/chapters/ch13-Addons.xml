@@ -12,7 +12,7 @@
 	    <ulink url="http://www.camunda.com/fox/enterprise/components/cycle/">Cycle</ulink> is web application that provides a
 	    collaborative platform for different stakeholders 
 	    of BPM projects (Business, analysts, developers, managers, IT operations, ...).
-	    It combines different data sources like the Activiti Modeler repository, Subversion or your local file system into a single view 
+	    It combines different data sources like Subversion or your local file system into a single view 
 	    which makes it easy to browse all the artifacts (process models, development projects, requirements, ...)
 	    that are involved in such a project. Additionally you can maintain relationships between them and cycle
 	    provides built in actions like moving artifacts between repositories or downloading different
@@ -23,17 +23,6 @@
 	    to Application Lifecycle Management (ALM) tools. Cycle is developed by <ulink url="http://www.camunda.com">camunda</ulink>
 	    and no longer aprt of the Activiti project.
 	  </para>
-  </section>
-
-  <section id="activitiModeler">
-    <title>Activiti Modeler based on Signavio Core components</title>
-    <para>Signavio has a web based BPMN process modeler.  There is a tweaked version for 
-    easy development with a file based backend.  That can be found in 
-    the Google project <ulink url="http://code.google.com/p/signavio-core-components/">Signavio core components</ulink>
-    </para> 
-    <para>We've documented some instructions on how to build it and how to use it with Activiti in the wiki page 
-    <ulink url="http://docs.codehaus.org/display/ACT/How+to+build+Activiti+Modeler+from+Signavio">How to build Activiti Modeler from Signavio</ulink> 
-    </para>
   </section>
 
 </chapter>
