@@ -12,20 +12,19 @@
  */
 package org.activiti.engine.impl.calendar;
 
-import org.activiti.engine.ActivitiException;
-
-import javax.xml.datatype.DatatypeFactory;
 import java.util.Date;
+
+import org.activiti.engine.ActivitiException;
+import org.joda.time.DateTime;
 
 
 public class DueDateBusinessCalendar implements BusinessCalendar {
 
   public static final String NAME = "dueDate";
-
+  
   public Date resolveDuedate(String duedate) {
     try {
-      DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
-      return datatypeFactory.newXMLGregorianCalendar(duedate).toGregorianCalendar().getTime();
+      return DateTime.parse(duedate).toDate();
 
     } catch (Exception e) {
       throw new ActivitiException("couldn't resolve duedate: " + e.getMessage(), e);

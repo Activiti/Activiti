@@ -14,12 +14,18 @@
 
 package org.activiti.engine.impl.calendar;
 
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.util.ClockUtil;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
-import java.util.*;
+
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.util.ClockUtil;
+import org.joda.time.DateTime;
 
 /**
  * helper class for parsing ISO8601 duration format (also recurring) and computing next timer date
@@ -110,7 +116,7 @@ public class DurationHelper {
   }
 
   private Date parseDate(String date) throws Exception {
-      return datatypeFactory.newXMLGregorianCalendar(date).toGregorianCalendar().getTime();
+      return DateTime.parse(date).toDate();
   }
 
   private Duration parsePeriod(String period) throws Exception {
