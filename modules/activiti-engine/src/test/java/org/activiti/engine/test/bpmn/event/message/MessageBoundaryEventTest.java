@@ -23,7 +23,9 @@ import org.activiti.engine.test.Deployment;
 
 
 /**
- * @author Daniel Meyer
+ * @author Daniel Meyer (camunda)
+ * @author Kristin Polenz (camunda)
+ * @author Christian Lipphardt (camunda)
  */
 public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
   
