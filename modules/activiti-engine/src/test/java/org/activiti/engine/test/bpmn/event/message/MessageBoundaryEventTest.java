@@ -13,8 +13,11 @@
 
 package org.activiti.engine.test.bpmn.event.message;
 
+import java.util.List;
+
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
@@ -255,6 +258,7 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
     
   }
   
+
   @Deployment
   public void testBoundaryMessageEventOnSubprocess() {
     runtimeService.startProcessInstanceByKey("process");
@@ -321,6 +325,55 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
     taskService.complete(userTask.getId());
     assertEquals(0, runtimeService.createProcessInstanceQuery().count());      
     
-  }    
+  }  
+  
+  @Deployment
+  public void testBoundaryMessageEventOnSubprocessAndInsideSubprocessMultiInstance() {
+    
+    // this time the boundary events are placed on a user task that is contained inside a sub process 
+    // and on the subprocess itself
+    
+    runtimeService.startProcessInstanceByKey("process");
+    
+    assertEquals(17, runtimeService.createExecutionQuery().count());
+    
+    // 5 user tasks
+    List<Task> userTasks = taskService.createTaskQuery().list();
+    assertNotNull(userTasks);
+    assertEquals(5, userTasks.size());
+    
+    // there are 5 event subscriptions to the event on the inner user task
+    List<Execution> executions = runtimeService.createExecutionQuery()
+      .messageEventSubscriptionName("messageName")
+      .list();
+    assertNotNull(executions);
+    assertEquals(5, executions.size());
+    
+    // there is a single event subscription for the event on the subprocess
+    executions = runtimeService.createExecutionQuery()
+      .messageEventSubscriptionName("messageName2")
+      .list();
+    assertNotNull(executions);
+    assertEquals(1, executions.size());
+    
+    // if we complete the outer message event, all inner executions are removed
+    Execution outerScopeExecution = executions.get(0);
+    runtimeService.messageEventReceived("messageName2", outerScopeExecution.getId());
+    
+    executions = runtimeService.createExecutionQuery()
+      .messageEventSubscriptionName("messageName")
+      .list();
+    assertEquals(0, executions.size());
+    
+    Task userTask = taskService.createTaskQuery()
+      .singleResult();
+    assertNotNull(userTask);
+    assertEquals("taskAfterOuterMessageBoundary", userTask.getTaskDefinitionKey());
+    
+    taskService.complete(userTask.getId());
+    
+    // and we are done
+    
+  }
 
 }
