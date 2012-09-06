@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples"
+  xmlns:tns="Examples">
+  
+  <message id="messageId_one" name="messageName_one" />
+  <message id="messageId_two" name="messageName_two" />
+  
+  <process id="process">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow sourceRef="theStart" targetRef="subProcess" />
+    
+    <subProcess id="subProcess">
+  
+	    <startEvent id="subProcessStart" />
+	    <sequenceFlow sourceRef="subProcessStart" targetRef="taskSubProcess" />
+	    
+	    <userTask id="taskSubProcess" />
+	  	<sequenceFlow sourceRef="taskSubProcess" targetRef="subProcessEnd" />
+	  	
+	    <endEvent id="subProcessEnd" />
+	    
+    </subProcess>
+
+    <sequenceFlow sourceRef="subProcess" targetRef="taskAfterSubProcess" />
+    
+    <userTask id="taskAfterSubProcess" />
+    <sequenceFlow sourceRef="taskAfterSubProcess" targetRef="theEnd" />
+    
+    <boundaryEvent id="messageBoundary_one" attachedToRef="subProcess">
+		<messageEventDefinition messageRef="messageId_one" />
+	</boundaryEvent>
+    
+    <boundaryEvent id="messageBoundary_two" attachedToRef="subProcess">
+		<messageEventDefinition messageRef="messageId_two" />
+	</boundaryEvent>
+	
+ 	<sequenceFlow sourceRef="messageBoundary_one" targetRef="taskAfterMessage_one" />
+ 	<sequenceFlow sourceRef="messageBoundary_two" targetRef="taskAfterMessage_two" />
+	  	
+    <userTask id="taskAfterMessage_one" />
+    <sequenceFlow sourceRef="taskAfterMessage_one" targetRef="theEnd" />
+	
+    <userTask id="taskAfterMessage_two" />
+    <sequenceFlow sourceRef="taskAfterMessage_two" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

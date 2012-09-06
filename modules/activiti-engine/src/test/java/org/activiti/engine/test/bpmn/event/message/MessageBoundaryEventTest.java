@@ -255,5 +255,73 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
     // and we are done
     
   }
+  
+  @Deployment
+  public void testBoundaryMessageEventOnSubprocess() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("process");
+    
+    assertEquals(2, runtimeService.createExecutionQuery().count());
+    
+    Task userTask = taskService.createTaskQuery().singleResult();
+    assertNotNull(userTask);
+    
+    // 1. case: message one received cancels the task
+
+    Execution executionMessageOne = runtimeService.createExecutionQuery()
+            .messageEventSubscriptionName("messageName_one")
+            .singleResult();
+    assertNotNull(executionMessageOne);
+
+    runtimeService.messageEventReceived("messageName_one", executionMessageOne.getId());
+    
+    userTask = taskService.createTaskQuery().singleResult();
+    assertNotNull(userTask);
+    assertEquals("taskAfterMessage_one", userTask.getTaskDefinitionKey());
+    taskService.complete(userTask.getId());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+    
+    // 2nd. case: message two received cancels the task
+    
+    processInstance = runtimeService.startProcessInstanceByKey("process");
+
+    Execution executionMessageTwo = runtimeService.createExecutionQuery()
+            .messageEventSubscriptionName("messageName_two")
+            .singleResult();
+    assertNotNull(executionMessageTwo);    
+    
+    runtimeService.messageEventReceived("messageName_two", executionMessageTwo.getId());
+    
+    userTask = taskService.createTaskQuery().singleResult();
+    assertNotNull(userTask);
+    assertEquals("taskAfterMessage_two", userTask.getTaskDefinitionKey());
+    taskService.complete(userTask.getId());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+    
+    
+    // 3rd. case: complete the user task cancels the message subscription
+    
+    processInstance = runtimeService.startProcessInstanceByKey("process");
+    
+    userTask = taskService.createTaskQuery().singleResult();
+    assertNotNull(userTask);
+    taskService.complete(userTask.getId());
+    
+    executionMessageOne = runtimeService.createExecutionQuery()
+      .messageEventSubscriptionName("messageName_one")
+      .singleResult();
+    assertNull(executionMessageOne);
+    
+    executionMessageTwo = runtimeService.createExecutionQuery()
+     .messageEventSubscriptionName("messageName_two")
+     .singleResult();
+    assertNull(executionMessageTwo);
+    
+    userTask = taskService.createTaskQuery().singleResult();
+    assertNotNull(userTask);
+    assertEquals("taskAfterSubProcess", userTask.getTaskDefinitionKey());
+    taskService.complete(userTask.getId());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().count());      
+    
+  }    
 
 }
