@@ -216,4 +216,8 @@ public class CdiEventSupportBpmnParseListener implements BpmnParseListener {
   public void parseIntermediateMessageCatchEventDefinition(Element messageEventDefinition, ActivityImpl nestedActivity) {
   }
 
+  @Override
+  public void parseBoundaryMessageEventDefinition(Element element, boolean interrupting, ActivityImpl messageActivity) {
+  }
+
 }

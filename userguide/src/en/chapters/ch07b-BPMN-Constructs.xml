@@ -663,11 +663,11 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
 	        </para>
 	        
 	        <para>
-				When <emphasis role="bold">deploying</emphasis> a process instance with one or more message start events, the following considerations apply:	        	
+				When <emphasis role="bold">deploying</emphasis> a process definition with one or more message start events, the following considerations apply:	        	
 				<itemizedlist>
 					<listitem>
 						<para>
-							The name of the message start event must be unique across a given process instance. Activiti throws an exception upon deployment of a process definition such that two or more message 
+							The name of the message start event must be unique across a given process definition. A process definition must not have multiple message start events with the same name. Activiti throws an exception upon deployment of a process definition such that two or more message 
 							start events reference the same message	of if two or more message start events reference messages with the same message name.  						
 						</para>
 					</listitem>

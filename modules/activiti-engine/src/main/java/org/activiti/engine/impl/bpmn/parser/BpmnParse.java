@@ -927,7 +927,7 @@ public class BpmnParse extends Parse {
       messageDefinition.setActivityId(startEventActivity.getId());
       // create message event subscription:      
       messageDefinition.setStartEvent(true);
-      addEventDefinition(messageDefinition, processDefinition, startEventElement);
+      addEventSubscriptionDeclaration(messageDefinition, processDefinition, startEventElement);
     }
   }
   
@@ -992,13 +992,13 @@ public class BpmnParse extends Parse {
         EventSubscriptionDeclaration eventSubscriptionDeclaration = parseMessageEventDefinition(messageEventDefinition);
         eventSubscriptionDeclaration.setActivityId(startEventActivity.getId());
         eventSubscriptionDeclaration.setStartEvent(false);
-        addEventDefinition(eventSubscriptionDeclaration, catchingScope, messageEventDefinition);
+        addEventSubscriptionDeclaration(eventSubscriptionDeclaration, catchingScope, messageEventDefinition);
         
       } else if (signalEventDefinition != null) {
         EventSubscriptionDeclaration eventSubscriptionDeclaration = parseSignalEventDefinition(signalEventDefinition);
         eventSubscriptionDeclaration.setActivityId(startEventActivity.getId());
         eventSubscriptionDeclaration.setStartEvent(false);
-        addEventDefinition(eventSubscriptionDeclaration, catchingScope, signalEventDefinition);
+        addEventSubscriptionDeclaration(eventSubscriptionDeclaration, catchingScope, signalEventDefinition);
       
       } else {
         addError("start event of event subprocess must be of type 'error', 'message' or 'signal'", startEventElement);
@@ -1041,7 +1041,7 @@ public class BpmnParse extends Parse {
   protected EventSubscriptionDeclaration parseMessageEventDefinition(Element messageEventDefinition) {
     String messageRef = messageEventDefinition.attribute("messageRef");
     if(messageRef == null) {
-      addError("attriute 'messageRef' is required", messageEventDefinition);
+      addError("attribute 'messageRef' is required", messageEventDefinition);
     }
     MessageDefinition messageDefinition = messages.get(resolveName(messageRef));
     if(messageDefinition == null) {
@@ -1052,7 +1052,7 @@ public class BpmnParse extends Parse {
   }
 
   @SuppressWarnings("unchecked")
-  protected void addEventDefinition(EventSubscriptionDeclaration subscription, ScopeImpl scope, Element element) {
+  protected void addEventSubscriptionDeclaration(EventSubscriptionDeclaration subscription, ScopeImpl scope, Element element) {
     List<EventSubscriptionDeclaration> eventDefinitions = (List<EventSubscriptionDeclaration>) scope.getProperty(PROPERTYNAME_EVENT_SUBSCRIPTION_DECLARATION);
     if(eventDefinitions == null) {
       eventDefinitions = new ArrayList<EventSubscriptionDeclaration>();
@@ -1175,10 +1175,10 @@ public class BpmnParse extends Parse {
     EventSubscriptionDeclaration messageDefinition =  parseMessageEventDefinition(messageEventDefinition);
     if(isAfterEventBasedGateway) {
       messageDefinition.setActivityId(nestedActivity.getId());
-      addEventDefinition(messageDefinition, nestedActivity.getParent(), messageEventDefinition);      
+      addEventSubscriptionDeclaration(messageDefinition, nestedActivity.getParent(), messageEventDefinition);      
     }else {
       nestedActivity.setScope(true);
-      addEventDefinition(messageDefinition, nestedActivity, messageEventDefinition);   
+      addEventSubscriptionDeclaration(messageDefinition, nestedActivity, messageEventDefinition);   
     }
     
     for (BpmnParseListener parseListener : parseListeners) {
@@ -2345,6 +2345,7 @@ public class BpmnParse extends Parse {
       Element signalEventDefinition = boundaryEventElement.element("signalEventDefinition");
       Element cancelEventDefinition = boundaryEventElement.element("cancelEventDefinition");
       Element compensateEventDefinition = boundaryEventElement.element("compensateEventDefinition");
+      Element messageEventDefinition = boundaryEventElement.element("messageEventDefinition");
       if (timerEventDefinition != null) {
         parseBoundaryTimerEventDefinition(timerEventDefinition, interrupting, nestedActivity);
       } else if (errorEventDefinition != null) {
@@ -2357,6 +2358,8 @@ public class BpmnParse extends Parse {
         behavior = parseBoundaryCancelEventDefinition(cancelEventDefinition, nestedActivity);
       } else if(compensateEventDefinition != null) {
         parseCatchCompensateEventDefinition(compensateEventDefinition, nestedActivity);      
+      } else if(messageEventDefinition != null) {
+        parseBoundaryMessageEventDefinition(messageEventDefinition, interrupting, nestedActivity);
       } else {
         addError("Unsupported boundary event type", boundaryEventElement);
       }
@@ -2405,7 +2408,7 @@ public class BpmnParse extends Parse {
       addError("boundary event has no id", element);
     }
     signalDefinition.setActivityId(signalActivity.getId());
-    addEventDefinition(signalDefinition, signalActivity.getParent(), element);
+    addEventSubscriptionDeclaration(signalDefinition, signalActivity.getParent(), element);
     
     if (signalActivity.getParent() instanceof ActivityImpl) {     
       ((ActivityImpl) signalActivity.getParent()).setScope(true);
@@ -2416,6 +2419,26 @@ public class BpmnParse extends Parse {
     }
     
   }
+  
+  public void parseBoundaryMessageEventDefinition(Element element, boolean interrupting, ActivityImpl messageActivity) {
+    messageActivity.setProperty("type", "boundaryMessage");
+    
+    EventSubscriptionDeclaration messageEventDefinition = parseMessageEventDefinition(element);
+    if(messageActivity.getId() == null) {
+      addError("boundary event has no id", element);
+    }
+    messageEventDefinition.setActivityId(messageActivity.getId());
+    addEventSubscriptionDeclaration(messageEventDefinition, messageActivity.getParent(), element);
+    
+    if (messageActivity.getParent() instanceof ActivityImpl) {     
+      ((ActivityImpl) messageActivity.getParent()).setScope(true);
+    }
+    
+    for (BpmnParseListener parseListener : parseListeners) {
+      parseListener.parseBoundaryMessageEventDefinition(element, interrupting, messageActivity);
+    }
+    
+  }  
 
   @SuppressWarnings("unchecked")
   private void parseTimerStartEventDefinition(Element timerEventDefinition, ActivityImpl timerActivity, ProcessDefinitionEntity processDefinition) {
@@ -2438,10 +2461,10 @@ public class BpmnParse extends Parse {
     EventSubscriptionDeclaration signalDefinition = parseSignalEventDefinition(element);
     if(isAfterEventBasedGateway) {
       signalDefinition.setActivityId(signalActivity.getId());
-      addEventDefinition(signalDefinition, signalActivity.getParent(), element);      
+      addEventSubscriptionDeclaration(signalDefinition, signalActivity.getParent(), element);      
     }else {
       signalActivity.setScope(true);
-      addEventDefinition(signalDefinition, signalActivity, element);   
+      addEventSubscriptionDeclaration(signalDefinition, signalActivity, element);   
     }
     
     for (BpmnParseListener parseListener : parseListeners) {
