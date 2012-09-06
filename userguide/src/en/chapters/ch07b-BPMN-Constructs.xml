@@ -1335,6 +1335,53 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
       
       </section>
       
+      <!-- ////////////////////// message boundary event -->
+		
+		<section id="bpmnBoundaryMessageEvent">
+		  <title>Message Boundary Event</title>
+				  
+		  <section id="bpmnBoundaryMessageEventDescription">
+		    <title>Description</title>
+		    <para>
+		      An attached intermediate <emphasis>catching</emphasis> <link linkend="bpmnMessageEventDefinition">message</link> on the boundary of an activity,
+		      or <emphasis role="bold">boundary message event</emphasis> for short, catches messages with the same message name
+		      as the referenced message definition. 
+		    </para>
+		    
+		  </section>
+		  
+		  <section id="bpmnBoundaryMessageEventGraphicalNotation">
+	        <title>Graphical notation</title>
+	        <para>
+	          A boundary message event is visualized as a typical intermediate event (Circle with smaller circle inside)
+	          on the boundary, with the message icon inside. The message icon is white (unfilled), to indicate
+	          the <emphasis>catch</emphasis> semantics.
+	          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.boundary.message.event.png"/></imageobject></mediaobject>
+	          Note that boundary message event can be both interrupting (right hand side) and non interrupting (left hand side).
+	        </para>
+	      </section>
+      
+	      <section id="bpmnBoundaryMessageEventXml">
+	        <title>XML representation</title>	               
+	         <para>
+     	     	A boundary message event is defined as a typical <link linkend="bpmnBoundaryEvent">boundary event</link>:
+          		<programlisting>
+&lt;boundaryEvent id=&quot;boundary&quot; attachedToRef=&quot;task&quot; cancelActivity=&quot;true&quot;&gt;       
+          &lt;messageEventDefinition messageRef=&quot;newCustomerMessage&quot;/&gt;
+&lt;/boundaryEvent&gt;
+          		</programlisting>         
+        	</para>	    
+	      </section>
+      
+	      <section id="bpmnBoundaryMessageEventExample">
+	        <title>Example</title>	        
+	        <para>
+	        	See section on <link linkend="bpmnMessageEventDefinition">message event definitions</link>.
+	        </para>	       
+	      </section>
+      
+      </section>
+      
       <!-- ////////////////////// cancel boundary event -->
 		
 		<section id="bpmnBoundaryCancelEvent">
