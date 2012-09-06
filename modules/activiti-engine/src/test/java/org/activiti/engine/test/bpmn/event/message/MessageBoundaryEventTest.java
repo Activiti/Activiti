@@ -15,7 +15,6 @@ package org.activiti.engine.test.bpmn.event.message;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
-import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
@@ -27,7 +26,7 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testSingleBoundaryMessageEvent() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("process");
+    runtimeService.startProcessInstanceByKey("process");
     
     assertEquals(2, runtimeService.createExecutionQuery().count());
     
@@ -51,7 +50,7 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
     
     // 2nd. case: complete the user task cancels the message subscription
     
-    processInstance = runtimeService.startProcessInstanceByKey("process");
+    runtimeService.startProcessInstanceByKey("process");
 
     userTask = taskService.createTaskQuery().singleResult();
     assertNotNull(userTask);
@@ -258,7 +257,7 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testBoundaryMessageEventOnSubprocess() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("process");
+    runtimeService.startProcessInstanceByKey("process");
     
     assertEquals(2, runtimeService.createExecutionQuery().count());
     
@@ -282,7 +281,7 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
     
     // 2nd. case: message two received cancels the task
     
-    processInstance = runtimeService.startProcessInstanceByKey("process");
+    runtimeService.startProcessInstanceByKey("process");
 
     Execution executionMessageTwo = runtimeService.createExecutionQuery()
             .messageEventSubscriptionName("messageName_two")
@@ -300,7 +299,7 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
     
     // 3rd. case: complete the user task cancels the message subscription
     
-    processInstance = runtimeService.startProcessInstanceByKey("process");
+    runtimeService.startProcessInstanceByKey("process");
     
     userTask = taskService.createTaskQuery().singleResult();
     assertNotNull(userTask);
