@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <message id="messageId_1" name="messageName_1" />
+  <message id="messageId_2" name="messageName_2" />
+  
+  <process id="process">
+  
+    <startEvent id="theStart" />
+    
+    <sequenceFlow sourceRef="theStart" targetRef="task" />
+    
+    <userTask id="task">
+      <multiInstanceLoopCharacteristics isSequential="false">
+        <loopCardinality>5</loopCardinality>
+      </multiInstanceLoopCharacteristics>
+    </userTask>
+    
+    <!-- add two boundary message events to task -->
+    <boundaryEvent id="messageBoundary_1" attachedToRef="task">
+  		<messageEventDefinition messageRef="messageId_1" />
+  	</boundaryEvent>
+    
+    <boundaryEvent id="messageBoundary_2" attachedToRef="task">
+      <messageEventDefinition messageRef="messageId_2" />
+    </boundaryEvent>
+  	
+  	<sequenceFlow sourceRef="task" targetRef="taskAfterTask" />
+  	<sequenceFlow sourceRef="taskAfterTask" targetRef="theEnd" />
+  	
+  	<userTask id="taskAfterTask" />
+  	
+  	<sequenceFlow sourceRef="messageBoundary_1" targetRef="taskAfterMessage_1" />
+    <sequenceFlow sourceRef="messageBoundary_2" targetRef="taskAfterMessage_2" />
+  	
+    <userTask id="taskAfterMessage_1" />
+    <userTask id="taskAfterMessage_2" />
+    
+    <sequenceFlow sourceRef="taskAfterMessage_1" targetRef="theEnd" />
+    <sequenceFlow sourceRef="taskAfterMessage_2" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

@@ -72,6 +72,182 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
     
   }
   
+  public void testDoubleBoundaryMessageEventSameMessageId() {
+    // deployment fails when two boundary message events have the same messageId
+    try {
+      repositoryService
+        .createDeployment()
+        .addClasspathResource("org/activiti/engine/test/bpmn/event/message/MessageBoundaryEventTest.testDoubleBoundaryMessageEventSameMessageId.bpmn20.xml")
+        .deploy();
+      fail("Deployment should fail because Activiti cannot handle two boundary message events with same messageId.");
+    } catch (Exception e) {
+      assertTextPresent("Cannot have more than one message event subscription with name 'messageName' for scope 'task'", e.getMessage());
+      assertEquals(0, repositoryService.createDeploymentQuery().count());
+    }
+  }
+  
+  @Deployment
+  public void testDoubleBoundaryMessageEvent() {
+    runtimeService.startProcessInstanceByKey("process");
+    
+    assertEquals(2, runtimeService.createExecutionQuery().count());
+    
+    Task userTask = taskService.createTaskQuery().singleResult();
+    assertNotNull(userTask);
+    
+    // the executions for both messageEventSubscriptionNames are the same
+    Execution execution1 = runtimeService.createExecutionQuery()
+      .messageEventSubscriptionName("messageName_1")
+      .singleResult();
+    assertNotNull(execution1);
+    
+    Execution execution2 = runtimeService.createExecutionQuery()
+      .messageEventSubscriptionName("messageName_2")
+      .singleResult();
+    assertNotNull(execution2);
+    
+    assertEquals(execution1.getId(), execution2.getId());
+    
+    ///////////////////////////////////////////////////////////////////////////////////
+    // 1. first message received cancels the task and the execution and both subscriptions
+    runtimeService.messageEventReceived("messageName_1", execution1.getId());
+    
+    // this should then throw an exception because execution2 no longer exists
+    try {
+      runtimeService.messageEventReceived("messageName_2", execution2.getId());
+      fail();
+    } catch (Exception e) {
+      assertTextPresent("does not have a subscription to a message event with name 'messageName_2'", e.getMessage());
+    }
+    
+    userTask = taskService.createTaskQuery().singleResult();
+    assertNotNull(userTask);
+    assertEquals("taskAfterMessage_1", userTask.getTaskDefinitionKey());
+    taskService.complete(userTask.getId());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+    
+    /////////////////////////////////////////////////////////////////////
+    // 2. complete the user task cancels the message subscriptions
+    
+    runtimeService.startProcessInstanceByKey("process");
+
+    userTask = taskService.createTaskQuery().singleResult();
+    assertNotNull(userTask);
+    taskService.complete(userTask.getId());
+    
+    execution1 = runtimeService.createExecutionQuery()
+      .messageEventSubscriptionName("messageName_1")
+      .singleResult();
+    assertNull(execution1);
+    execution2 = runtimeService.createExecutionQuery()
+      .messageEventSubscriptionName("messageName_2")
+      .singleResult();
+    assertNull(execution2);
+    
+    userTask = taskService.createTaskQuery().singleResult();
+    assertNotNull(userTask);
+    assertEquals("taskAfterTask", userTask.getTaskDefinitionKey());
+    taskService.complete(userTask.getId());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+  }
+  
+  @Deployment
+  public void testDoubleBoundaryMessageEventMultiInstance() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("process");
+    // assume we have 7 executions
+    // one process instance
+    // one execution for scope created for boundary message event
+    // five execution because we have loop cardinality 5
+    assertEquals(7, runtimeService.createExecutionQuery().count());
+    
+    assertEquals(5, taskService.createTaskQuery().count());
+    
+    Execution execution1 = runtimeService.createExecutionQuery().messageEventSubscriptionName("messageName_1").singleResult();
+    Execution execution2 = runtimeService.createExecutionQuery().messageEventSubscriptionName("messageName_2").singleResult();
+    // both executions are the same
+    assertEquals(execution1.getId(), execution2.getId());
+    
+    ///////////////////////////////////////////////////////////////////////////////////
+    // 1. first message received cancels all tasks and the executions and both subscriptions
+    runtimeService.messageEventReceived("messageName_1", execution1.getId());
+    
+    // this should then throw an exception because execution2 no longer exists
+    try {
+      runtimeService.messageEventReceived("messageName_2", execution2.getId());
+      fail();
+    } catch (Exception e) {
+      assertTextPresent("does not have a subscription to a message event with name 'messageName_2'", e.getMessage());
+    }
+    
+    // only process instance left
+    assertEquals(1, runtimeService.createExecutionQuery().count());
+    
+    Task userTask = taskService.createTaskQuery().singleResult();
+    assertNotNull(userTask);
+    assertEquals("taskAfterMessage_1", userTask.getTaskDefinitionKey());
+    taskService.complete(userTask.getId());
+    assertProcessEnded(processInstance.getId());
+    
+    
+    ///////////////////////////////////////////////////////////////////////////////////
+    // 2. complete the user task cancels the message subscriptions
+    
+    processInstance = runtimeService.startProcessInstanceByKey("process");
+    // assume we have 7 executions
+    // one process instance
+    // one execution for scope created for boundary message event
+    // five execution because we have loop cardinality 5
+    assertEquals(7, runtimeService.createExecutionQuery().count());
+    
+    assertEquals(5, taskService.createTaskQuery().count());
+    
+    execution1 = runtimeService.createExecutionQuery().messageEventSubscriptionName("messageName_1").singleResult();
+    execution2 = runtimeService.createExecutionQuery().messageEventSubscriptionName("messageName_2").singleResult();
+    // both executions are the same
+    assertEquals(execution1.getId(), execution2.getId());
+ 
+    List<Task> userTasks = taskService.createTaskQuery().list();
+    assertNotNull(userTasks);
+    assertEquals(5, userTasks.size());
+    
+    // as long as tasks exists, the message subscriptions exist
+    for (int i = 0; i < userTasks.size()-1; i++) {
+      Task task = userTasks.get(i);
+      taskService.complete(task.getId());
+      
+      execution1 = runtimeService.createExecutionQuery()
+              .messageEventSubscriptionName("messageName_1")
+              .singleResult();
+      assertNotNull(execution1);
+      execution2 = runtimeService.createExecutionQuery()
+              .messageEventSubscriptionName("messageName_2")
+              .singleResult();
+      assertNotNull(execution2);
+    }
+    
+    // only one task left
+    userTask = taskService.createTaskQuery().singleResult();
+    assertNotNull(userTask);
+    taskService.complete(userTask.getId());
+    
+    // after last task is completed, no message subscriptions left
+    execution1 = runtimeService.createExecutionQuery()
+      .messageEventSubscriptionName("messageName_1")
+      .singleResult();
+    assertNull(execution1);
+    execution2 = runtimeService.createExecutionQuery()
+      .messageEventSubscriptionName("messageName_2")
+      .singleResult();
+    assertNull(execution2);
+    
+    // complete last task to end process
+    userTask = taskService.createTaskQuery().singleResult();
+    assertNotNull(userTask);
+    assertEquals("taskAfterTask", userTask.getTaskDefinitionKey());
+    taskService.complete(userTask.getId());
+    assertProcessEnded(processInstance.getId());
+  }
+  
   @Deployment
   public void testBoundaryMessageEventInsideSubprocess() {
     
