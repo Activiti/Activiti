@@ -72,10 +72,15 @@ public class ProcessDefinitionInfoComponent extends VerticalLayout {
     processTitle.addStyleName(ExplorerLayout.STYLE_H3);
     processImageContainer.addComponent(processTitle);
     
+    StreamResource diagram = null;
+    
+    // Try generating process-image stream
     if(processDefinition.getDiagramResourceName() != null) {
-      StreamResource diagram = new ProcessDefinitionImageStreamResourceBuilder()
+       diagram = new ProcessDefinitionImageStreamResourceBuilder()
         .buildStreamResource(processDefinition, repositoryService);
-      
+    }
+
+    if(diagram != null) {
       Embedded embedded = new Embedded(null, diagram);
       embedded.setType(Embedded.TYPE_IMAGE);
       embedded.setSizeUndefined();

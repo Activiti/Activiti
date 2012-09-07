@@ -148,31 +148,33 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
 
     // Only show when graphical notation is defined
     if (processDefinitionEntity != null && processDefinitionEntity.isGraphicalNotationDefined()) {
-      Label header = new Label(i18nManager.getMessage(Messages.PROCESS_HEADER_DIAGRAM));
-      header.addStyleName(ExplorerLayout.STYLE_H3);
-      header.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
-      header.addStyleName(ExplorerLayout.STYLE_NO_LINE);
-      panelLayout.addComponent(header);
-      
       StreamResource diagram = new ProcessDefinitionImageStreamResourceBuilder()
         .buildStreamResource(processInstance, repositoryService, runtimeService);
 
-      Embedded embedded = new Embedded(null, diagram);
-      embedded.setType(Embedded.TYPE_IMAGE);
-      embedded.setSizeUndefined();
-
-      Panel imagePanel = new Panel(); // using panel for scrollbars
-      imagePanel.setScrollable(true);
-      imagePanel.addStyleName(Reindeer.PANEL_LIGHT);
-      imagePanel.setWidth(100, UNITS_PERCENTAGE);
-      imagePanel.setHeight(400, UNITS_PIXELS);
-      
-      HorizontalLayout panelLayoutT = new HorizontalLayout();
-      panelLayoutT.setSizeUndefined();
-      imagePanel.setContent(panelLayoutT);
-      imagePanel.addComponent(embedded);
-      
-      panelLayout.addComponent(imagePanel);
+      if(diagram != null) {
+        Label header = new Label(i18nManager.getMessage(Messages.PROCESS_HEADER_DIAGRAM));
+        header.addStyleName(ExplorerLayout.STYLE_H3);
+        header.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
+        header.addStyleName(ExplorerLayout.STYLE_NO_LINE);
+        panelLayout.addComponent(header);
+        
+        Embedded embedded = new Embedded(null, diagram);
+        embedded.setType(Embedded.TYPE_IMAGE);
+        embedded.setSizeUndefined();
+  
+        Panel imagePanel = new Panel(); // using panel for scrollbars
+        imagePanel.setScrollable(true);
+        imagePanel.addStyleName(Reindeer.PANEL_LIGHT);
+        imagePanel.setWidth(100, UNITS_PERCENTAGE);
+        imagePanel.setHeight(400, UNITS_PIXELS);
+        
+        HorizontalLayout panelLayoutT = new HorizontalLayout();
+        panelLayoutT.setSizeUndefined();
+        imagePanel.setContent(panelLayoutT);
+        imagePanel.addComponent(embedded);
+        
+        panelLayout.addComponent(imagePanel);
+      }
     }
   }
 
