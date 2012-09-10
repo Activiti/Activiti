@@ -182,7 +182,7 @@ public class MyBusinessProcessTest {
       <mediaobject><imageobject><imagedata align="center" fileref="images/api.test.debug.view.png"/></imageobject></mediaobject>
       To inspect the Activiti data, open up the <emphasis>'Display'</emphasis> window 
       (if this window isn't there, open Window->Show View->Other and select <emphasis>Display</emphasis>). 
-      and type (code completion is available) <literal>org.h2.tools.Server.createWebServer("").start()</literal>
+      and type (code completion is available) <literal>org.h2.tools.Server.createWebServer("-web").start()</literal>
       <mediaobject><imageobject><imagedata align="center" fileref="images/api.test.debug.start.h2.server.png"/></imageobject></mediaobject>
       Select the line you've just typed and right-click on it. Now select 'Display' (or execute the shortcut instead of right-clicking)
       <mediaobject><imageobject><imagedata align="center" fileref="images/api.test.debug.start.h2.server.2.png"/></imageobject></mediaobject>
