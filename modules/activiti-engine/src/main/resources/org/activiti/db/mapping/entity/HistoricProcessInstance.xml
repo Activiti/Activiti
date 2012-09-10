@@ -118,6 +118,9 @@
   
   <sql id="selectHistoricProcessInstancesByQueryCriteriaSql">
     from ${prefix}ACT_HI_PROCINST HPI
+    <if test="processKeyNotIn != null || processDefinitionKey != null">
+      inner join ACT_RE_PROCDEF DEF on HPI.PROC_DEF_ID_ = DEF.ID_
+    </if>
     <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
       inner join ${prefix}ACT_HI_PROCVARIABLE  A${index} on HPI.PROC_INST_ID_ = A${index}.PROC_INST_ID_
     </foreach>    
@@ -140,20 +143,44 @@
       <if test="businessKey != null">
         and HPI.BUSINESS_KEY_ = #{businessKey}
       </if>
+
+      <if test="startedBefore != null">
+        and HPI.START_TIME_ &lt;= #{startedBefore}
+      </if>
+      <if test="startedAfter != null">
+        and HPI.START_TIME_ &gt;= #{startedAfter}
+      </if>
+      <if test="finishedBefore != null">
+        and HPI.END_TIME_ &lt;= #{finishedBefore}
+      </if>
+      <if test="finishedAfter != null">
+        and HPI.END_TIME_ &gt;= #{finishedAfter}
+      </if>
+      <if test="processKeyNotIn != null">
+        <foreach collection="processKeyNotIn" index="index" item="procDefKey">
+        and DEF.KEY_ not like #{procDefKey}
+      </foreach>
+      </if>
+      
+      <!-- DEPRECATED : TO BE REMOVED IN 5.11 -->
       <if test="startDateOn">
         and HPI.START_TIME_ &gt;= #{startDateOnBegin}
         and HPI.START_TIME_ &lt;= #{startDateOnEnd}
       </if>
+      <!-- DEPRECATED : TO BE REMOVED IN 5.11 -->
       <if test="finishDateOn">
         and HPI.END_TIME_ &gt;= #{finishDateOnBegin}
         and HPI.END_TIME_ &lt;= #{finishDateOnEnd}
       </if>
+      <!-- DEPRECATED : TO BE REMOVED IN 5.11 -->
       <if test="finishDateBy">
         and HPI.END_TIME_ &lt;= #{finishDateBy}
       </if>
+      <!-- DEPRECATED : TO BE REMOVED IN 5.11 -->
       <if test="startDateBy">
         and HPI.START_TIME_ &gt;= #{startDateBy}
       </if>
+
       <if test="unfinished">
         and HPI.END_TIME_ IS NULL
       </if>

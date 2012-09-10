@@ -43,6 +43,7 @@ import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.util.LogUtil.ThreadLogMode;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.apache.ibatis.logging.LogFactory;
 import org.junit.Assert;
 
 
@@ -52,6 +53,12 @@ import org.junit.Assert;
 public abstract class AbstractActivitiTestCase extends PvmTestCase {
 
   private static Logger log = Logger.getLogger(PluggableActivitiTestCase.class.getName());
+  
+  static {
+    // this ensures that mybatis uses the jdk logging
+    LogFactory.useJdkLogging();
+    // with an upgrade of mybatis, this might have to become org.mybatis.generator.logging.LogFactory.forceJavaLogging();
+  }
   
   private static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Arrays.asList(
     "ACT_GE_PROPERTY"
