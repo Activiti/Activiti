@@ -51,6 +51,7 @@ import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
+import org.activiti.engine.task.NativeTaskQuery;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 
@@ -168,6 +169,10 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     return new TaskQueryImpl(commandExecutor);
   }
   
+  public NativeTaskQuery createNativeTaskQuery() {
+    return new NativeTaskQueryImpl(commandExecutor);
+  }
+  
   public Map<String, Object> getVariables(String executionId) {
     return commandExecutor.execute(new GetTaskVariablesCmd(executionId, null, false));
   }
@@ -269,4 +274,5 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   public List<Task> getSubTasks(String parentTaskId) {
     return commandExecutor.execute(new GetSubTasksCmd(parentTaskId));
   }
+
 }

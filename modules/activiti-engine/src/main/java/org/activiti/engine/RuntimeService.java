@@ -16,11 +16,17 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.query.NativeQuery;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
+import org.activiti.engine.runtime.NativeExecutionQuery;
+import org.activiti.engine.runtime.NativeProcessInstanceQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
+import org.activiti.engine.task.NativeTaskQuery;
+import org.activiti.engine.task.Task;
 
 
 /** Service which provides access to {@link Deployment}s,
@@ -346,10 +352,22 @@ public interface RuntimeService {
   ExecutionQuery createExecutionQuery();
   
   /**
+   * creates a new {@link NativeExecutionQuery} to query {@link Execution}s
+   * by SQL directly
+   */
+  NativeExecutionQuery createNativeExecutionQuery();
+  
+  /**
    * Creates a new {@link ProcessInstanceQuery} instance, that can be used
    * to query process instances.
    */
   ProcessInstanceQuery createProcessInstanceQuery();
+
+  /**
+   * creates a new {@link NativeProcessInstanceQuery} to query {@link ProcessInstance}s 
+   * by SQL directly
+   */
+  NativeProcessInstanceQuery createNativeProcessInstanceQuery();
   
   // Process instance state //////////////////////////////////////////
     

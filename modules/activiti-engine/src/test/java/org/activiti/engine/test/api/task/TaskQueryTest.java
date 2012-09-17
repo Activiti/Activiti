@@ -22,13 +22,17 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.DelegationState;
+import org.activiti.engine.task.NativeTaskQuery;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
+import org.apache.openjpa.persistence.EntityManagerImpl;
 
 /**
  * @author Joram Barrez
@@ -783,6 +787,30 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertEquals(6, taskService.createTaskQuery().orderByTaskId().taskName("testTask").asc().list().size());
     assertEquals(6, taskService.createTaskQuery().orderByTaskId().taskName("testTask").desc().list().size());
   }
+  
+  public void testNativeQuery() {
+    assertEquals("ACT_RU_TASK", managementService.getTableName(Task.class));
+    assertEquals("ACT_RU_TASK", managementService.getTableName(TaskEntity.class));
+    assertEquals(12, taskService.createNativeTaskQuery().from(managementService.getTableName(Task.class)).list().size());
+    assertEquals(12, taskService.createNativeTaskQuery().from(managementService.getTableName(Task.class)).count());
+    
+    assertEquals(144, taskService.createNativeTaskQuery().from("ACT_RU_TASK T1, ACT_RU_TASK T1").count());
+    
+    // join task and variable instances
+    NativeTaskQuery customNativeQuery = taskService.createNativeTaskQuery().from(managementService.getTableName(Task.class) + " T1, "+managementService.getTableName(VariableInstanceEntity.class)+" V1 WHERE V1.TASK_ID_ = T1.ID_");
+    assertEquals(1, customNativeQuery.list().size());
+    assertEquals(1, customNativeQuery.count());
+    assertEquals("gonzoTask", customNativeQuery.list().get(0).getName());    
+    
+    // select with distinct
+    assertEquals(12, taskService.createNativeTaskQuery().select("DISTINCT T1.*").from("ACT_RU_TASK T1").list().size());    
+    
+    assertEquals(1, taskService.createNativeTaskQuery().from(managementService.getTableName(Task.class) + " T WHERE T.NAME_ = 'gonzoTask'").count());
+    assertEquals(1, taskService.createNativeTaskQuery().from(managementService.getTableName(Task.class) + " T WHERE T.NAME_ = 'gonzoTask'").list().size());
+    
+    // use parameters
+    assertEquals(1, taskService.createNativeTaskQuery().from(managementService.getTableName(Task.class) + " T WHERE T.NAME_ = #{taskName}").parameter("taskName", "gonzoTask").count());
+  }
 
   /**
    * Generates some test tasks. - 6 tasks where kermit is a candidate - 1 tasks
@@ -811,9 +839,10 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     Task task = taskService.newTask();
     task.setName("gonzoTask");
     task.setDescription("gonzo description");
-    task.setPriority(4);
+    task.setPriority(4);    
     taskService.saveTask(task);
     taskService.setAssignee(task.getId(), "gonzo");
+    taskService.setVariable(task.getId(), "testVar", "someVariable");
     ids.add(task.getId());
 
     ClockUtil.setCurrentTime(sdf.parse("03/03/2003 03:03:03.000"));

@@ -19,6 +19,7 @@ import org.activiti.engine.management.TableMetaData;
 import org.activiti.engine.management.TablePage;
 import org.activiti.engine.management.TablePageQuery;
 import org.activiti.engine.runtime.JobQuery;
+import org.activiti.engine.task.Task;
 
 
 
@@ -39,6 +40,11 @@ public interface ManagementService {
    * Activiti database schema.
    */
   Map<String, Long> getTableCount();
+  
+  /**
+   * Gets the table name (including any configured prefix) for an Activiti entity like Task, Execution or the like.
+   */
+  String getTableName(Class<?> activitiEntityClass);
   
   /**
    * Gets the metadata (column names, column types, etc.) of a certain table. 

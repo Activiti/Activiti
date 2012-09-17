@@ -33,9 +33,13 @@ import org.activiti.engine.impl.cmd.SignalEventReceivedCmd;
 import org.activiti.engine.impl.cmd.StartProcessInstanceByMessageCmd;
 import org.activiti.engine.impl.cmd.StartProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.SuspendProcessInstanceCmd;
+import org.activiti.engine.query.NativeQuery;
 import org.activiti.engine.runtime.ExecutionQuery;
+import org.activiti.engine.runtime.NativeExecutionQuery;
+import org.activiti.engine.runtime.NativeProcessInstanceQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
+import org.activiti.engine.task.Task;
 
 /**
  * @author Tom Baeyens
@@ -82,6 +86,14 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   public ExecutionQuery createExecutionQuery() {
     return new ExecutionQueryImpl(commandExecutor);
   }
+  
+  public NativeExecutionQuery createNativeExecutionQuery() {
+    return new NativeExecutionQueryImpl(commandExecutor);
+  }
+
+  public NativeProcessInstanceQuery createNativeProcessInstanceQuery() {
+    return new NativeProcessInstanceQueryImpl(commandExecutor);
+  }  
   
   public Map<String, Object> getVariables(String executionId) {
     return commandExecutor.execute(new GetExecutionVariablesCmd(executionId, null, false));

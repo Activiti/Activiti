@@ -14,13 +14,16 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.NativeTaskQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.AbstractManager;
+import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.task.Task;
 
 
@@ -106,6 +109,16 @@ public class TaskManager extends AbstractManager {
 
   public long findTaskCountByQueryCriteria(TaskQueryImpl taskQuery) {
     return (Long) getDbSqlSession().selectOne("selectTaskCountByQueryCriteria", taskQuery);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<Task> findTasksByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
+    final String query = "selectTaskByNativeQuery";   
+    return getDbSqlSession().selectListWithRawParameter(query, parameterMap, firstResult, maxResults);
+  }
+
+  public long findTaskCountByNativeQuery(Map<String, Object> parameterMap) {
+    return (Long) getDbSqlSession().selectOne("selectTaskCountByNativeQuery", parameterMap);
   }
 
   @SuppressWarnings("unchecked")

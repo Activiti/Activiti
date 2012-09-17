@@ -38,10 +38,14 @@ import java.util.Map;
 import junit.framework.Assert;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.NativeTaskQuery;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 
@@ -1050,5 +1054,14 @@ public void testBooleanVariable() throws Exception {
     runtimeService.startProcessInstanceByKey("signalProces");
     assertEquals(2, runtimeService.createExecutionQuery().signalEventSubscription("Test signal").count());
   }
-  
+    
+  public void testNativeQuery() {
+    assertEquals("ACT_RU_EXECUTION", managementService.getTableName(Execution.class));
+    
+    long executionCount = runtimeService.createExecutionQuery().count();
+    
+    assertEquals(executionCount, runtimeService.createNativeExecutionQuery().from(managementService.getTableName(Execution.class)).list().size());
+    assertEquals(executionCount, runtimeService.createNativeExecutionQuery().from(managementService.getTableName(Execution.class)).count());
+  }
+
 }

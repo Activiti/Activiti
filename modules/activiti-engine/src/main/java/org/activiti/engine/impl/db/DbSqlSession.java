@@ -203,8 +203,13 @@ public class DbSqlSession implements Session {
   
   @SuppressWarnings("unchecked")
   public List selectList(String statement, ListQueryParameterObject parameter) {
+    return selectListWithRawParameter(statement, parameter, parameter.getFirstResult(), parameter.getMaxResults());
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List selectListWithRawParameter(String statement, Object parameter, int firstResult, int maxResults) {
     statement = dbSqlSessionFactory.mapStatement(statement);    
-    if(parameter.firstResult == -1 ||  parameter.maxResults==-1) {
+    if(firstResult == -1 ||  maxResults==-1) {
       return Collections.EMPTY_LIST;
     }
     List loadedObjects = null;
@@ -212,13 +217,13 @@ public class DbSqlSession implements Session {
     if(databaseType.equals("mssql")) {
       // use mybatis paging (native database paging not yet implemented)
       log.log(Level.FINE, "Using mybatis paging (native database paging not yet implemented for mssql)");
-      loadedObjects = sqlSession.selectList(statement, parameter, new RowBounds(parameter.getFirstResult(), parameter.getMaxResults()));
+      loadedObjects = sqlSession.selectList(statement, parameter, new RowBounds(firstResult, maxResults));
     } else {
       // use native database paging
       loadedObjects = sqlSession.selectList(statement, parameter);
     }
     return filterLoadedObjects(loadedObjects);
-  }
+  }  
 
   public Object selectOne(String statement, Object parameter) {
     statement = dbSqlSessionFactory.mapStatement(statement);

@@ -23,6 +23,7 @@ import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.Event;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
+import org.activiti.engine.task.NativeTaskQuery;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 
@@ -241,6 +242,11 @@ public interface TaskService {
    * Returns a new {@link TaskQuery} that can be used to dynamically query tasks.
    */
   TaskQuery createTaskQuery();
+  
+  /**
+   * Returns a new 
+   */
+  NativeTaskQuery createNativeTaskQuery();
 
   /** set variable on a task.  If the variable is not already existing, it will be created in the 
    * most outer scope.  This means the process instance in case this task is related to an 

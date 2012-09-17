@@ -1098,5 +1098,14 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
       assertTextPresent("Set of process instance ids is null", re.getMessage());
     }
   }
+  
+  public void testNativeQuery() {
+    assertEquals("ACT_RU_EXECUTION", managementService.getTableName(ProcessInstance.class));
+    
+    long piCount = runtimeService.createProcessInstanceQuery().count();
+    
+    assertEquals(piCount, runtimeService.createNativeProcessInstanceQuery().from(managementService.getTableName(ProcessInstance.class)).list().size());
+    assertEquals(piCount, runtimeService.createNativeProcessInstanceQuery().from(managementService.getTableName(ProcessInstance.class)).count());
+  }  
 
 }

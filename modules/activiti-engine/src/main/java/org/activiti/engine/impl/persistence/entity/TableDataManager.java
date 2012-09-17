@@ -25,11 +25,26 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricDetail;
+import org.activiti.engine.history.HistoricFormProperty;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricProcessVariable;
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.impl.TablePageQueryImpl;
+import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.management.TableMetaData;
 import org.activiti.engine.management.TablePage;
+import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.Job;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.apache.ibatis.session.RowBounds;
+import org.drools.core.util.Memento;
 
 
 /**
@@ -38,6 +53,77 @@ import org.apache.ibatis.session.RowBounds;
 public class TableDataManager extends AbstractManager {
   
   private static Logger log = Logger.getLogger(TableDataManager.class.getName());
+  
+  public static Map<Class<?>, String> apiTypeToTableNameMap = new HashMap<Class<?>, String>();
+  public static Map<Class<? extends PersistentObject>, String> persistentObjectToTableNameMap = new HashMap<Class<? extends PersistentObject>, String>();
+  
+  static {
+    // runtime
+    persistentObjectToTableNameMap.put(TaskEntity.class, "ACT_RU_TASK");
+    persistentObjectToTableNameMap.put(ExecutionEntity.class, "ACT_RU_EXECUTION");
+    persistentObjectToTableNameMap.put(IdentityLinkEntity.class, "ACT_RU_IDENTITYLINK");
+    persistentObjectToTableNameMap.put(VariableInstanceEntity.class, "ACT_RU_VARIABLE");
+    
+    persistentObjectToTableNameMap.put(JobEntity.class, "ACT_RU_JOB");
+    persistentObjectToTableNameMap.put(MessageEntity.class, "ACT_RU_JOB");
+    persistentObjectToTableNameMap.put(TimerEntity.class, "ACT_RU_JOB");
+    
+    persistentObjectToTableNameMap.put(EventSubscriptionEntity.class, "ACT_RU_EVENT_SUBSCRIPTION");
+    persistentObjectToTableNameMap.put(CompensateEventSubscriptionEntity.class, "ACT_RU_EVENT_SUBSCRIPTION");    
+    persistentObjectToTableNameMap.put(MessageEventSubscriptionEntity.class, "ACT_RU_EVENT_SUBSCRIPTION");    
+    persistentObjectToTableNameMap.put(SignalEventSubscriptionEntity.class, "ACT_RU_EVENT_SUBSCRIPTION");
+        
+    // repository
+    persistentObjectToTableNameMap.put(DeploymentEntity.class, "ACT_RE_DEPLOYMENT");
+    persistentObjectToTableNameMap.put(ProcessDefinitionEntity.class, "ACT_RE_PROCDEF");
+    
+    // history
+    persistentObjectToTableNameMap.put(CommentEntity.class, "ACT_HI_COMMENT");
+    
+    persistentObjectToTableNameMap.put(HistoricActivityInstanceEntity.class, "ACT_HI_ACTINST");
+    persistentObjectToTableNameMap.put(AttachmentEntity.class, "ACT_HI_ATTACHMEN");
+    persistentObjectToTableNameMap.put(HistoricProcessInstanceEntity.class, "ACT_HI_PROCINST");
+    persistentObjectToTableNameMap.put(HistoricProcessVariableEntity.class, "ACT_HI_PROCVARIABLE");
+    persistentObjectToTableNameMap.put(HistoricTaskInstanceEntity.class, "ACT_HI_TASKINST");
+    
+    // a couple of stuff goes to the same table
+    persistentObjectToTableNameMap.put(HistoricDetailAssignmentEntity.class, "ACT_HI_DETAIL");
+    persistentObjectToTableNameMap.put(HistoricDetailTransitionInstanceEntity.class, "ACT_HI_DETAIL");
+    persistentObjectToTableNameMap.put(HistoricFormPropertyEntity.class, "ACT_HI_DETAIL");
+    persistentObjectToTableNameMap.put(HistoricVariableUpdateEntity.class, "ACT_HI_DETAIL");
+    persistentObjectToTableNameMap.put(HistoricDetailEntity.class, "ACT_HI_DETAIL");
+    
+    
+    // Identity module
+    persistentObjectToTableNameMap.put(GroupEntity.class, "ACT_ID_GROUP");
+    persistentObjectToTableNameMap.put(MembershipEntity.class, "ACT_ID_MEMBERSHIP");
+    persistentObjectToTableNameMap.put(UserEntity.class, "ACT_ID_USER");
+    persistentObjectToTableNameMap.put(IdentityInfoEntity.class, "ACT_ID_INFO");
+    
+    // general
+    persistentObjectToTableNameMap.put(PropertyEntity.class, "ACT_GE_PROPERTY");
+    persistentObjectToTableNameMap.put(ByteArrayEntity.class, "ACT_GE_BYTEARRAY");
+    persistentObjectToTableNameMap.put(ResourceEntity.class, "ACT_GE_BYTEARRAY");
+    
+    // and now the map for the API types (does not cover all cases)
+    apiTypeToTableNameMap.put(Task.class, "ACT_RU_TASK");
+    apiTypeToTableNameMap.put(Execution.class, "ACT_RU_EXECUTION");
+    apiTypeToTableNameMap.put(ProcessInstance.class, "ACT_RU_EXECUTION");
+    apiTypeToTableNameMap.put(ProcessDefinition.class, "ACT_RE_PROCDEF");
+    apiTypeToTableNameMap.put(Deployment.class, "ACT_RE_DEPLOYMENT");    
+    apiTypeToTableNameMap.put(Job.class, "ACT_RU_JOB");
+    
+    // history
+    apiTypeToTableNameMap.put(HistoricProcessInstance.class, "ACT_HI_PROCINST");
+    apiTypeToTableNameMap.put(HistoricActivityInstance.class, "ACT_HI_ACTINST");
+    apiTypeToTableNameMap.put(HistoricDetail.class, "ACT_HI_DETAIL");
+    apiTypeToTableNameMap.put(HistoricVariableUpdate.class, "ACT_HI_DETAIL");
+    apiTypeToTableNameMap.put(HistoricFormProperty.class, "ACT_HI_DETAIL");
+    apiTypeToTableNameMap.put(HistoricTaskInstance.class, "ACT_HI_TASKINST");        
+    apiTypeToTableNameMap.put(HistoricProcessVariable.class, "ACT_HI_PROCVARIABLE");
+    
+    // TODO: Identity skipped for the moment as no SQL injection is provided here
+  }
 
   public Map<String, Long> getTableCount() {
     Map<String, Long> tableCount = new HashMap<String, Long>();
@@ -104,6 +190,24 @@ public class TableDataManager extends AbstractManager {
     tablePage.setFirstResult(firstResult);
     
     return tablePage;
+  }
+  
+  public String getTableName(Class<?> entityClass, boolean withPrefix) {
+    String databaseTablePrefix = getDbSqlSession().getDbSqlSessionFactory().getDatabaseTablePrefix();
+    String tableName = null;
+    
+    if (PersistentObject.class.isAssignableFrom(entityClass)) {
+      tableName = persistentObjectToTableNameMap.get(entityClass);
+    }
+    else {
+      tableName = apiTypeToTableNameMap.get(entityClass);
+    }
+    if (withPrefix) {
+      return databaseTablePrefix + tableName;
+    }
+    else {
+      return tableName;
+    }
   }
 
   public TableMetaData getTableMetaData(String tableName) {

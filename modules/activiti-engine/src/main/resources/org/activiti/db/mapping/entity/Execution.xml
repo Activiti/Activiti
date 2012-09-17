@@ -248,4 +248,14 @@
     where SUPER_EXEC_ = #{parameter}
   </select>
   
+  <select id="selectExecutionByNativeQuery" parameterType="java.util.Map" resultMap="executionResultMap">
+    ${limitBefore}
+    SELECT ${selectClause} FROM ${fromClause}
+    ${limitAfter}
+  </select>
+
+  <select id="selectExecutionCountByNativeQuery" parameterType="java.util.Map" resultType="long">
+    select count(${selectClause}) FROM ${fromClause}
+  </select>  
+  
 </mapper>

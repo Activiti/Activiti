@@ -24,6 +24,7 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.AbstractManager;
+import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 
 
@@ -112,6 +113,20 @@ public class ExecutionManager extends AbstractManager {
     parameters.put("activityId", activityRef);
     parameters.put("parentExecutionId", parentExecutionId);
     return getDbSqlSession().selectList("selectExecutionsByParentExecutionId", parameters);
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<Execution> findExecutionsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
+    return getDbSqlSession().selectListWithRawParameter("selectExecutionByNativeQuery", parameterMap, firstResult, maxResults);
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<ProcessInstance> findProcessInstanceByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
+    return getDbSqlSession().selectListWithRawParameter("selectExecutionByNativeQuery", parameterMap, firstResult, maxResults);
+  }
+
+  public long findExecutionCountByNativeQuery(Map<String, Object> parameterMap) {
+    return (Long) getDbSqlSession().selectOne("selectExecutionCountByNativeQuery", parameterMap);
   }
 
 }

@@ -21,6 +21,7 @@ import org.activiti.engine.impl.cmd.GetJobExceptionStacktraceCmd;
 import org.activiti.engine.impl.cmd.GetPropertiesCmd;
 import org.activiti.engine.impl.cmd.GetTableCountCmd;
 import org.activiti.engine.impl.cmd.GetTableMetaDataCmd;
+import org.activiti.engine.impl.cmd.GetTableNameCmd;
 import org.activiti.engine.impl.cmd.SetJobRetriesCmd;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
@@ -40,6 +41,10 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
 
   public Map<String, Long> getTableCount() {
     return commandExecutor.execute(new GetTableCountCmd());
+  }
+  
+  public String getTableName(Class<?> activitiEntityClass) {
+    return commandExecutor.execute(new GetTableNameCmd(activitiEntityClass));    
   }
   
   public TableMetaData getTableMetaData(String tableName) {
