@@ -79,6 +79,47 @@ FormService formService = processEngine.getFormService();</programlisting>
       </itemizedlist>
     </para>
   </section>
+
+  <section id="queryAPI">
+    <title>Query API</title>
+    <para>
+      There are two ways of querying data from the engine: The query API and native queries. The Query API allows to 
+      programm with a fluent API completly typesafe queries. You can add various conditions to your queries, all of them
+      are applied together (logical AND) and one ordering. The following code shows an example:
+      <programlisting>
+      List&lt;Task&gt; tasks = taskService.createTaskQuery()
+         .taskAssignee("kermit")
+         .processVariableValueEquals("orderId", "0815")
+         .orderByDueDate().asc()
+         .list();
+      </programlisting>
+      
+      Sometimes you need more powerful queries, e.g. queries using an OR operator or restrictions you can not express by the Query API.
+      Therefor we introduced native queries, where you can write your own SQL queries. The return type is defined by the Query object you use
+      and the data will be mapped into the correct objects, e.g. Tasks. Since this will be fired against the database you have to 
+      use table and column names as in the database, this requires some knowledge about the internal data structure and it is recommeded to use native
+      queries with care. The table names can be retrieved via the API to keep the dependency as small as possible.
+      
+      <programlisting>
+      List&lt;Task&gt; tasks = taskService.createNativeTaskQuery()
+         .from(managementService.getTableName(Task.class) + " WHERE NAME_ = #{taskName}")
+         .parameter("taskName", "gonzoTask").list();
+
+      List&lt;Task&gt; tasks = taskService.createNativeTaskQuery()
+         .from("ACT_RU_TASK")
+         .list();
+
+      List&lt;Task&gt; tasks = taskService.createNativeTaskQuery()
+         .select("DISTINCT T1.*") // default is "*", but can be overwritten if you need it
+         .from("ACT_RU_TASK T1, ACT_RU_TASK T2 WHERE T1.ID_ = T2.ID_") // okay, joining with ourselves doesn't make too much sense, agreed
+         .list();
+      
+      List&lt;Task&gt; tasks = taskService.createNativeTaskQuery()
+         .from(managementService.getTableName(Task.class) + " TASK, " + managementService.getTableName(VariableInstanceEntity.class) + " var WHERE VAR.TASK_ID_ = TASK.ID_")
+         .list();
+      </programlisting>
+    </para>
+  </section>
   
   <section id="apiUnitTesting">
     <title>Unit testing</title>
