@@ -17,13 +17,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.NativeTaskQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.AbstractManager;
-import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.task.Task;
 
 
@@ -113,8 +111,7 @@ public class TaskManager extends AbstractManager {
   
   @SuppressWarnings("unchecked")
   public List<Task> findTasksByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    final String query = "selectTaskByNativeQuery";   
-    return getDbSqlSession().selectListWithRawParameter(query, parameterMap, firstResult, maxResults);
+    return getDbSqlSession().selectListWithRawParameter("selectTaskByNativeQuery", parameterMap, firstResult, maxResults);
   }
 
   public long findTaskCountByNativeQuery(Map<String, Object> parameterMap) {

@@ -20,9 +20,13 @@ import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricDetailQuery;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
+import org.activiti.engine.history.HistoricProcessVariable;
 import org.activiti.engine.history.HistoricProcessVariableQuery;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
+import org.activiti.engine.history.NativeHistoricActivityInstanceQuery;
+import org.activiti.engine.history.NativeHistoricProcessInstanceQuery;
+import org.activiti.engine.history.NativeHistoricTaskInstanceQuery;
 
 /** 
  * Service exposing information about ongoing and past process instances.  This is different
@@ -63,5 +67,20 @@ public interface HistoryService {
    * historic details (variable updates, form properties) are deleted as well.
    */
   void deleteHistoricProcessInstance(String processInstanceId);
+
+  /**
+   * creates a native query to search for {@link HistoricProcessInstance}s via SQL
+   */
+  NativeHistoricProcessInstanceQuery createNativeHistoricProcessInstanceQuery();
+
+  /**
+   * creates a native query to search for {@link HistoricTaskInstance}s via SQL
+   */
+  NativeHistoricTaskInstanceQuery createNativeHistoricTaskInstanceQuery();
+
+  /**
+   * creates a native query to search for {@link HistoricActivityInstance}s via SQL
+   */
+  NativeHistoricActivityInstanceQuery createNativeHistoricActivityInstanceQuery();
 
 }

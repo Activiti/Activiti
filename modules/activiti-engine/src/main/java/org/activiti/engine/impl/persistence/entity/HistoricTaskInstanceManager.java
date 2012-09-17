@@ -16,6 +16,7 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricTaskInstance;
@@ -160,5 +161,14 @@ public class HistoricTaskInstanceManager extends AbstractHistoricManager {
         historicTaskInstance.setParentTaskId(parentTaskId);
       }
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<HistoricTaskInstance> findHistoricTaskInstancesByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
+    return getDbSqlSession().selectListWithRawParameter("selectHistoricTaskInstanceByNativeQuery", parameterMap, firstResult, maxResults);
+  }
+
+  public long findHistoricTaskInstanceCountByNativeQuery(Map<String, Object> parameterMap) {
+    return (Long) getDbSqlSession().selectOne("selectHistoricTaskInstanceCountByNativeQuery", parameterMap);
   }
 }

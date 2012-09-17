@@ -59,4 +59,13 @@ public class HistoricActivityInstanceManager extends AbstractHistoricManager {
   public List<HistoricActivityInstance> findHistoricActivityInstancesByQueryCriteria(HistoricActivityInstanceQueryImpl historicActivityInstanceQuery, Page page) {
     return getDbSqlSession().selectList("selectHistoricActivityInstancesByQueryCriteria", historicActivityInstanceQuery, page);
   }
+
+  @SuppressWarnings("unchecked")
+  public List<HistoricActivityInstance> findHistoricActivityInstancesByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
+    return getDbSqlSession().selectListWithRawParameter("selectHistoricActivityInstanceByNativeQuery", parameterMap, firstResult, maxResults);
+  }
+
+  public long findHistoricActivityInstanceCountByNativeQuery(Map<String, Object> parameterMap) {
+    return (Long) getDbSqlSession().selectOne("selectHistoricActivityInstanceCountByNativeQuery", parameterMap);
+  }
 }

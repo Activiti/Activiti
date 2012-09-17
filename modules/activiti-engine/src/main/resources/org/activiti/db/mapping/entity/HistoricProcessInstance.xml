@@ -251,4 +251,13 @@
    </choose>
   </sql>
  
+   <select id="selectHistoricProcessInstanceByNativeQuery" parameterType="java.util.Map" resultMap="historicProcessInstanceResultMap">
+    ${limitBefore}
+    SELECT ${selectClause} FROM ${fromClause}
+    ${limitAfter}
+  </select>
+
+  <select id="selectHistoricProcessInstanceCountByNativeQuery" parameterType="java.util.Map" resultType="long">
+    select count(${selectClause}) FROM ${fromClause}
+  </select>
 </mapper>

@@ -20,11 +20,15 @@ import org.activiti.engine.history.HistoricDetailQuery;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.history.HistoricProcessVariableQuery;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
+import org.activiti.engine.history.NativeHistoricActivityInstanceQuery;
+import org.activiti.engine.history.NativeHistoricProcessInstanceQuery;
+import org.activiti.engine.history.NativeHistoricTaskInstanceQuery;
 import org.activiti.engine.impl.cmd.DeleteHistoricProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.DeleteHistoricTaskInstanceCmd;
 
 /**
  * @author Tom Baeyens
+ * @author Bernd Ruecker (camunda)
  * @author Christian Stettler
  */
 public class HistoryServiceImpl extends ServiceImpl implements HistoryService {
@@ -56,5 +60,18 @@ public class HistoryServiceImpl extends ServiceImpl implements HistoryService {
   public void deleteHistoricProcessInstance(String processInstanceId) {
     commandExecutor.execute(new DeleteHistoricProcessInstanceCmd(processInstanceId));
   }
+
+  public NativeHistoricProcessInstanceQuery createNativeHistoricProcessInstanceQuery() {
+    return new NativeHistoricProcessInstanceQueryImpl(commandExecutor);
+  }
+
+  public NativeHistoricTaskInstanceQuery createNativeHistoricTaskInstanceQuery() {
+    return new NativeHistoricTaskInstanceQueryImpl(commandExecutor);
+  }
+
+  public NativeHistoricActivityInstanceQuery createNativeHistoricActivityInstanceQuery() {
+    return new NativeHistoricActivityInstanceQueryImpl(commandExecutor);
+  }
+
 
 }

@@ -56,7 +56,6 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     assertEquals(1, tasks.size());
     taskService.complete(tasks.get(0).getId());
     assertTrue(historyService.createHistoricProcessInstanceQuery().count() == 1);
-
   }
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
@@ -410,4 +409,27 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     historyService.deleteHistoricProcessInstance(processInstance2.getId());
     historyService.deleteHistoricProcessInstance(processInstance3.getId());
   }
+  
+  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+  public void testNativeHistoricProcessInstanceTest() {    
+    // just test that the query will be constructed and executed, details are tested in the TaskQueryTest
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");    
+    assertEquals(1, historyService.createNativeHistoricProcessInstanceQuery().from(managementService.getTableName(HistoricProcessInstance.class)).count());
+    assertEquals(1, historyService.createNativeHistoricProcessInstanceQuery().from(managementService.getTableName(HistoricProcessInstance.class)).list().size());
+  }
+  
+  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+  public void testNativeHistoricTaskInstanceTest() {    
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");    
+    assertEquals(1, historyService.createNativeHistoricTaskInstanceQuery().from(managementService.getTableName(HistoricProcessInstance.class)).count());
+    assertEquals(1, historyService.createNativeHistoricTaskInstanceQuery().from(managementService.getTableName(HistoricProcessInstance.class)).list().size());
+  }
+  
+  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+  public void testNativeHistoricActivityInstanceTest() {    
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");    
+    assertEquals(1, historyService.createNativeHistoricActivityInstanceQuery().from(managementService.getTableName(HistoricProcessInstance.class)).count());
+    assertEquals(1, historyService.createNativeHistoricActivityInstanceQuery().from(managementService.getTableName(HistoricProcessInstance.class)).list().size());
+  }
+  
 }

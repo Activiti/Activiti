@@ -15,6 +15,7 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
@@ -87,5 +88,14 @@ public class HistoricProcessInstanceManager extends AbstractHistoricManager {
       return getDbSqlSession().selectList("selectHistoricProcessInstancesByQueryCriteria", historicProcessInstanceQuery, page);
     }
     return Collections.EMPTY_LIST;
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<HistoricProcessInstance> findHistoricProcessInstancesByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
+    return getDbSqlSession().selectListWithRawParameter("selectHistoricProcessInstanceByNativeQuery", parameterMap, firstResult, maxResults);    
+  }
+
+  public long findHistoricProcessInstanceCountByNativeQuery(Map<String, Object> parameterMap) {
+    return (Long) getDbSqlSession().selectOne("selectHistoricProcessInstanceCountByNativeQuery", parameterMap);
   }
 }

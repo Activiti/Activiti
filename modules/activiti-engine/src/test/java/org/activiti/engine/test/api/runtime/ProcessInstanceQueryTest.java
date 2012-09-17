@@ -1100,6 +1100,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
   }
   
   public void testNativeQuery() {
+    // just test that the query will be constructed and executed, details are tested in the TaskQueryTest
     assertEquals("ACT_RU_EXECUTION", managementService.getTableName(ProcessInstance.class));
     
     long piCount = runtimeService.createProcessInstanceQuery().count();
