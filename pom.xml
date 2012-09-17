@@ -397,12 +397,16 @@
         <classifier>lgpl</classifier>
         <version>2.0.0</version>
       </dependency>
-	    <!-- cdi integration -->	   
-		<dependency>
-		    <groupId>com.fasterxml.uuid</groupId>
-		    <artifactId>java-uuid-generator</artifactId>
-		    <version>3.1.2</version>
-		</dependency>
+	  <dependency>
+		<groupId>com.fasterxml.uuid</groupId>
+		<artifactId>java-uuid-generator</artifactId>
+	    <version>3.1.2</version>
+	  </dependency>
+	  <dependency>
+		<groupId>com.microsoft.sqlserver</groupId>
+		<artifactId>sqljdbc4</artifactId>
+	    <version>4.0</version>
+	  </dependency>
     </dependencies>
   </dependencyManagement>
 

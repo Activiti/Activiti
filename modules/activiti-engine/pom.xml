@@ -570,6 +570,23 @@
         </dependency>
       </dependencies>
     </profile>
+
+	<profile>
+	  <id>mssql</id>
+	    <activation>
+		  <property>
+			<name>database</name>
+			<value>mssql</value>
+		  </property>
+		</activation>
+		<dependencies>
+		  <dependency>
+			<groupId>com.microsoft.sqlserver</groupId>
+			<artifactId>sqljdbc4</artifactId>
+			<scope>test</scope>
+		  </dependency>
+	   </dependencies>
+	</profile>
   </profiles>
 
 </project>
