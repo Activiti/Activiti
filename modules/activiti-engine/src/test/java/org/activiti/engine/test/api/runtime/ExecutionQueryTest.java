@@ -38,14 +38,11 @@ import java.util.Map;
 import junit.framework.Assert;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.NativeTaskQuery;
-import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 
@@ -1065,4 +1062,25 @@ public void testBooleanVariable() throws Exception {
     assertEquals(executionCount, runtimeService.createNativeExecutionQuery().from(managementService.getTableName(Execution.class)).count());
   }
 
+  @Deployment(resources={"org/activiti/engine/test/api/runtime/concurrentExecution.bpmn20.xml"})
+  public void testExecutionQueryWithProcessVariable() {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("x", "parent");
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("concurrent", variables);
+    
+    List<Execution> concurrentExecutions = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).list();
+    assertEquals(3, concurrentExecutions.size());
+    for (Execution execution : concurrentExecutions) {
+      if (!((ExecutionEntity)execution).isProcessInstance()) {
+        // only the concurrent executions, not the root one, would be cooler to query that directly, see http://jira.codehaus.org/browse/ACT-1373        
+        runtimeService.setVariableLocal(execution.getId(), "x", "child");
+      }      
+    }
+    
+    assertEquals(2, runtimeService.createExecutionQuery().processInstanceId(pi.getId()).variableValueEquals("x", "child").count());
+    assertEquals(1, runtimeService.createExecutionQuery().processInstanceId(pi.getId()).variableValueEquals("x", "parent").count());    
+
+    assertEquals(3, runtimeService.createExecutionQuery().processInstanceId(pi.getId()).processVariableValueEquals("x", "parent").count());
+    assertEquals(3, runtimeService.createExecutionQuery().processInstanceId(pi.getId()).processVariableValueNotEquals("x", "xxx").count());
+  }
 }

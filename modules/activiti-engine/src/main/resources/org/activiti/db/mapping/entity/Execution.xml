@@ -125,7 +125,14 @@
   <sql id="selectExecutionsByQueryCriteriaSql">
     from ${prefix}ACT_RU_EXECUTION E
     <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
-    	inner join ${prefix}ACT_RU_VARIABLE A${index} on E.ID_ = A${index}.EXECUTION_ID_ 
+      <choose>
+        <when test="queryVariableValue.local">
+          inner join ${prefix}ACT_RU_VARIABLE A${index} on E.ID_ = A${index}.EXECUTION_ID_
+        </when>
+        <otherwise>
+          inner join ${prefix}ACT_RU_VARIABLE A${index} on E.PROC_INST_ID_ = A${index}.PROC_INST_ID_
+        </otherwise>
+      </choose> 
     </foreach>
     <if test="eventSubscriptions != null">
     	 <foreach collection="eventSubscriptions" index="index" item="eventSubscriptionValue">
@@ -179,6 +186,10 @@
       </if>
       <!-- PLEASE NOTE: If you change anything have a look into the HistoricProcessVariable & HistoricProcessInstance, the same query object is used there! -->
       <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
+        <if test="!queryVariableValue.local">
+          <!-- When process instance variable is queried for, only process variables are taken into account -->
+          and A${index}.EXECUTION_ID_ = A${index}.PROC_INST_ID_
+        </if>
       	and A${index}.NAME_= #{queryVariableValue.name}
         <if test="!queryVariableValue.type.equals('null')">
         <!-- When operator is not-equals or type of value is null, type doesn't matter! -->

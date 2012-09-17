@@ -247,7 +247,7 @@ public class HistoricProcessVariableTest extends AbstractActivitiTestCase {
   @Deployment(resources={
           "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"
   })
-  public void testHidtoricProcessVariableOnDeletion() {
+  public void testHistoricProcessVariableOnDeletion() {
     HashMap<String, Object> variables = new HashMap<String,  Object>();
     variables.put("testVar", "Hallo Christian");
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", variables);

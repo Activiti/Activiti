@@ -22,6 +22,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.variable.VariableTypes;
 import org.activiti.engine.query.Query;
+import org.activiti.engine.runtime.ExecutionQuery;
 
 
 /**
@@ -55,47 +56,60 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?,?>, U> extends
   
   @SuppressWarnings("unchecked")
   public T variableValueEquals(String name, Object value) {
-    addVariable(name, value, QueryOperator.EQUALS);
+    addVariable(name, value, QueryOperator.EQUALS, true);
     return (T) this;
   }
   
   @SuppressWarnings("unchecked")
   public T variableValueNotEquals(String name, Object value) {
-    addVariable(name, value, QueryOperator.NOT_EQUALS);
+    addVariable(name, value, QueryOperator.NOT_EQUALS, true);
     return (T) this;
   }
   
   @SuppressWarnings("unchecked")
   public T variableValueGreaterThan(String name, Object value) {
-    addVariable(name, value, QueryOperator.GREATER_THAN);
+    addVariable(name, value, QueryOperator.GREATER_THAN, true);
     return (T) this;
   } 
   
   @SuppressWarnings("unchecked")
   public T variableValueGreaterThanOrEqual(String name, Object value) {
-    addVariable(name, value, QueryOperator.GREATER_THAN_OR_EQUAL);
+    addVariable(name, value, QueryOperator.GREATER_THAN_OR_EQUAL, true);
     return (T) this;
   }
   
   @SuppressWarnings("unchecked")
   public T variableValueLessThan(String name, Object value) {
-    addVariable(name, value, QueryOperator.LESS_THAN);
+    addVariable(name, value, QueryOperator.LESS_THAN, true);
     return (T) this;
   }
   
   @SuppressWarnings("unchecked")
   public T variableValueLessThanOrEqual(String name, Object value) {
-    addVariable(name, value, QueryOperator.LESS_THAN_OR_EQUAL);
+    addVariable(name, value, QueryOperator.LESS_THAN_OR_EQUAL, true);
     return (T) this;
   }
   
   @SuppressWarnings("unchecked")
   public T variableValueLike(String name, String value) {
-    addVariable(name, value, QueryOperator.LIKE);
+    addVariable(name, value, QueryOperator.LIKE, true);
     return (T)this;
   }
   
-  private void addVariable(String name, Object value, QueryOperator operator) {
+  @SuppressWarnings("unchecked")
+  public T processVariableValueEquals(String variableName, Object variableValue) {
+    addVariable(variableName, variableValue, QueryOperator.EQUALS, false);
+    return (T)this;
+  }
+
+  @SuppressWarnings("unchecked")
+  public T processVariableValueNotEquals(String variableName, Object variableValue) {
+    addVariable(variableName, variableValue, QueryOperator.NOT_EQUALS, false);
+    return (T)this;
+  }
+
+  
+  private void addVariable(String name, Object value, QueryOperator operator, boolean processInstanceScope) {
     if(name == null) {
       throw new ActivitiException("name is null");
     }
@@ -114,7 +128,7 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?,?>, U> extends
         throw new ActivitiException("Booleans and null cannot be used in 'like' condition");
       }
     }
-    queryVariableValues.add(new QueryVariableValue(name, value, operator));
+    queryVariableValues.add(new QueryVariableValue(name, value, operator, processInstanceScope));
   }
   
   private boolean isBoolean(Object value) {

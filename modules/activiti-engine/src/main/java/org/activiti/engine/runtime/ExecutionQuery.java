@@ -16,6 +16,7 @@ import java.io.Serializable;
 
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.query.Query;
+import org.activiti.engine.task.TaskQuery;
 
 
 
@@ -109,6 +110,20 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
    * starts with (string%), ends with (%string) or contains (%string%).
    */
   ExecutionQuery variableValueLike(String name, String value);
+  
+  /**
+   * Only select executions which are part of a process that have a variable
+   * with the given name set to the given value.
+   */
+  ExecutionQuery processVariableValueEquals(String variableName, Object variableValue);
+  
+  /** 
+   * Only select executions which are part of a process that have a variable  with the given name, but
+   * with a different value than the passed value.
+   * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
+   * are not supported.
+   */
+  ExecutionQuery processVariableValueNotEquals(String variableName, Object variableValue);    
   
   // event subscriptions //////////////////////////////////////////////////
   

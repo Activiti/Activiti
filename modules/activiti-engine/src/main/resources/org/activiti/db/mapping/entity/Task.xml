@@ -112,7 +112,7 @@
     </if>
     <foreach collection="variables" index="index" item="var">
       <choose>
-        <when test="var.taskVariable">
+        <when test="var.local">
           inner join ${prefix}ACT_RU_VARIABLE A${index} on T.ID_ = A${index}.TASK_ID_ 
         </when>
         <otherwise>
@@ -235,7 +235,7 @@
         and I.USER_ID_ = #{involvedUser}
       </if>
       <foreach item="var" collection="variables" index="index">
-        <if test="!var.taskVariable">
+        <if test="!var.local">
           <!-- When process instance variable is queried for, taskId should be null -->
           and A${index}.TASK_ID_ is null
         </if>

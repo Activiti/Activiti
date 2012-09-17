@@ -35,11 +35,13 @@ public class QueryVariableValue implements Serializable {
   private QueryOperator operator;
   
   private VariableInstanceEntity variableInstanceEntity;
+  private boolean local;
     
-  public QueryVariableValue(String name, Object value, QueryOperator operator) {
+  public QueryVariableValue(String name, Object value, QueryOperator operator, boolean local) {
     this.name = name;
     this.value = value;
     this.operator = operator;
+    this.local = local;
   }
   
   public void initialize(VariableTypes types) {
@@ -100,5 +102,9 @@ public class QueryVariableValue implements Serializable {
       return variableInstanceEntity.getType().getTypeName();
     }
     return null;
+  }
+  
+  public boolean isLocal() {
+    return local;
   }
 }

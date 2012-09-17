@@ -86,7 +86,7 @@ public class HistoricProcessVariableQueryImpl extends AbstractQuery<HistoricProc
       throw new ActivitiException("variableValue is null");
     }
     this.variableName = variableName;
-    queryVariableValue = new QueryVariableValue(variableName, variableValue, QueryOperator.EQUALS);
+    queryVariableValue = new QueryVariableValue(variableName, variableValue, QueryOperator.EQUALS, true);
     return this;
   }
 

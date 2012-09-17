@@ -228,7 +228,7 @@
             HD.TYPE_ = 'VariableUpdate' 
             and HD.NAME_ =  #{var.name}
             <choose>
-              <when test="var.taskVariable">
+              <when test="var.local">
                 and HD.TASK_ID_ = HTI.ID_
                 and HD.REV_ = (select max(HDM.REV_) from ${prefix}ACT_HI_DETAIL HDM where HDM.TASK_ID_ = HTI.ID_ and HDM.VAR_TYPE_ = #{var.type} and HDM.NAME_ = #{var.name} and HDM.TYPE_ = 'VariableUpdate')
                 and HD.TIME_ = (select max(HDM.TIME_) from ${prefix}ACT_HI_DETAIL HDM where HDM.TASK_ID_ = HTI.ID_ and HDM.VAR_TYPE_ = #{var.type} and HDM.NAME_ = #{var.name} and HDM.TYPE_ = 'VariableUpdate')
