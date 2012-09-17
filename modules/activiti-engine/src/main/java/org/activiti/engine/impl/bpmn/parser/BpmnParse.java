@@ -198,11 +198,8 @@ public class BpmnParse extends Parse {
 
   /**
    * Constructor to be called by the {@link BpmnParser}.
-   * 
-   * Note the package modifier here: only the {@link BpmnParser} is allowed to
-   * create instances.
    */
-  BpmnParse(BpmnParser parser) {
+  public BpmnParse(BpmnParser parser) {
     super(parser);
     this.expressionManager = parser.getExpressionManager();
     this.parseListeners = parser.getParseListeners();
@@ -2441,7 +2438,7 @@ public class BpmnParse extends Parse {
   }  
 
   @SuppressWarnings("unchecked")
-  private void parseTimerStartEventDefinition(Element timerEventDefinition, ActivityImpl timerActivity, ProcessDefinitionEntity processDefinition) {
+  protected void parseTimerStartEventDefinition(Element timerEventDefinition, ActivityImpl timerActivity, ProcessDefinitionEntity processDefinition) {
     timerActivity.setProperty("type", "startTimerEvent");
     TimerDeclarationImpl timerDeclaration = parseTimer(timerEventDefinition, timerActivity, TimerStartEventJobHandler.TYPE);
     timerDeclaration.setJobHandlerConfiguration(processDefinition.getKey());    
@@ -2490,7 +2487,7 @@ public class BpmnParse extends Parse {
     }
   }
   
-  private void parseIntemediateTimerEventDefinition(Element timerEventDefinition, ActivityImpl timerActivity, boolean isAfterEventBasedGateway) {
+  protected void parseIntemediateTimerEventDefinition(Element timerEventDefinition, ActivityImpl timerActivity, boolean isAfterEventBasedGateway) {
     timerActivity.setProperty("type", "intermediateTimer");
     TimerDeclarationImpl timerDeclaration = parseTimer(timerEventDefinition, timerActivity, TimerCatchIntermediateEventJobHandler.TYPE);
     if(isAfterEventBasedGateway) {
@@ -2504,7 +2501,7 @@ public class BpmnParse extends Parse {
     }
   }
 
-  private TimerDeclarationImpl parseTimer(Element timerEventDefinition, ScopeImpl timerActivity, String jobHandlerType) {
+  protected TimerDeclarationImpl parseTimer(Element timerEventDefinition, ScopeImpl timerActivity, String jobHandlerType) {
     // TimeDate
     TimerDeclarationType type = TimerDeclarationType.DATE;
     Expression expression = parseExpression(timerEventDefinition, "timeDate");
@@ -2532,7 +2529,7 @@ public class BpmnParse extends Parse {
     return timerDeclaration;
   }
 
-  private Expression parseExpression(Element parent, String name) {
+  protected Expression parseExpression(Element parent, String name) {
     Element value = parent.element(name);
     if (value != null) {
       String expressionText = value.getText().trim();
@@ -2645,8 +2642,8 @@ public class BpmnParse extends Parse {
     return activity;
   }
   
-  private ActivityImpl parseTransaction(Element transactionElement, ScopeImpl scope) {
- ActivityImpl activity = createActivityOnScope(transactionElement, scope);
+  protected ActivityImpl parseTransaction(Element transactionElement, ScopeImpl scope) {
+    ActivityImpl activity = createActivityOnScope(transactionElement, scope);
     
     activity.setAsync(isAsync(transactionElement));
     activity.setExclusive(isExclusive(transactionElement));

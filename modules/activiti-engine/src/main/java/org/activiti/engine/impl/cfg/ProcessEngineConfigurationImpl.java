@@ -263,6 +263,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected CommandContextFactory commandContextFactory;
   protected TransactionContextFactory transactionContextFactory;
+  protected BpmnParseFactory bpmnParseFactory;
   
   protected int historyLevel;
   
@@ -669,7 +670,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     BpmnDeployer bpmnDeployer = new BpmnDeployer();
     bpmnDeployer.setExpressionManager(expressionManager);
     bpmnDeployer.setIdGenerator(idGenerator);
-    BpmnParser bpmnParser = new BpmnParser(expressionManager);
+    
+    if (bpmnParseFactory == null) {
+      bpmnParseFactory = new DefaultBpmnParseFactory();
+    }
+    
+    BpmnParser bpmnParser = new BpmnParser(expressionManager, bpmnParseFactory);
     
     if(preParseListeners != null) {
       bpmnParser.getParseListeners().addAll(preParseListeners);
