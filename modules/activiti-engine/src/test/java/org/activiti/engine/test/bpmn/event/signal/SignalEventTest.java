@@ -15,6 +15,7 @@ package org.activiti.engine.test.bpmn.event.signal;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -197,6 +198,76 @@ public class SignalEventTest extends PluggableActivitiTestCase {
   
   private EventSubscriptionQueryImpl createEventSubscriptionQuery() {
     return new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutorTxRequired());
+  }
+  
+  /**
+   * TestCase to reproduce Issue ACT-1344
+   */
+  @Deployment
+  public void testNonInterruptingSignal() {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("nonInterruptingSignalEvent");
+    
+    List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getProcessInstanceId()).list();
+    assertEquals(1,  tasks.size());
+    Task currentTask = tasks.get(0);
+    assertEquals("My User Task", currentTask.getName());
+    
+    runtimeService.signalEventReceived("alert");
+    
+    tasks = taskService.createTaskQuery().processInstanceId(pi.getProcessInstanceId()).list();
+    assertEquals(2,  tasks.size());
+    
+    for (Task task : tasks) {
+      if (!task.getName().equals("My User Task") && !task.getName().equals("My Second User Task")) {
+        fail("Expected: <My User Task> or <My Second User Task> but was <" + task.getName() + ">.");
+      }
+    }
+    
+    taskService.complete(taskService.createTaskQuery().taskName("My User Task").singleResult().getId());
+    
+    tasks = taskService.createTaskQuery().processInstanceId(pi.getProcessInstanceId()).list();
+    assertEquals(1,  tasks.size());
+    currentTask = tasks.get(0);
+    assertEquals("My Second User Task", currentTask.getName());
+  }
+  
+  
+  /**
+   * TestCase to reproduce Issue ACT-1344
+   */
+  @Deployment
+  public void testNonInterruptingSignalWithSubProcess() {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("nonInterruptingSignalWithSubProcess");
+    List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getProcessInstanceId()).list();
+    assertEquals(1,  tasks.size());
+    
+    Task currentTask = tasks.get(0);
+    assertEquals("Approve", currentTask.getName());
+    
+    runtimeService.signalEventReceived("alert");
+    
+    tasks = taskService.createTaskQuery().processInstanceId(pi.getProcessInstanceId()).list();
+    assertEquals(2, tasks.size());
+    
+    for (Task task : tasks) {
+      if (!task.getName().equals("Approve") && !task.getName().equals("Review")) {
+        fail("Expected: <Approve> or <Review> but was <" + task.getName() + ">.");
+      }
+    }
+    
+    taskService.complete(taskService.createTaskQuery().taskName("Approve").singleResult().getId());
+    
+    tasks = taskService.createTaskQuery().processInstanceId(pi.getProcessInstanceId()).list();
+    assertEquals(1, tasks.size());
+
+    currentTask = tasks.get(0);
+    assertEquals("Review", currentTask.getName());
+    
+    taskService.complete(taskService.createTaskQuery().taskName("Review").singleResult().getId());
+    
+    tasks = taskService.createTaskQuery().processInstanceId(pi.getProcessInstanceId()).list();
+    assertEquals(1, tasks.size());
+    
   }
   
 }

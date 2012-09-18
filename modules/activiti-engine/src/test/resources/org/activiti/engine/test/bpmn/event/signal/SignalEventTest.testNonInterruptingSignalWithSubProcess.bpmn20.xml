@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
+
+  <signal id="alertSignal" name="alert" />
+
+  <process id="nonInterruptingSignalWithSubProcess">
+    <startEvent id="StartEvent_1" />
+    
+    <endEvent id="EndEvent_1" />
+    
+    <subProcess id="SubProcess_1" name="Process stage I">
+    
+      <subProcess id="SubProcess_2" name="Main Process">
+      
+        <startEvent id="StartEvent_3" />
+        
+        <sequenceFlow id="SequenceFlow_5" sourceRef="StartEvent_3" targetRef="UserTask_1" />
+        
+        <userTask id="UserTask_1" name="Approve" />
+        
+        <sequenceFlow id="SequenceFlow_6" sourceRef="UserTask_1" targetRef="EndEvent_2" />
+        
+        <endEvent id="EndEvent_2" />
+        
+      </subProcess>
+      
+      <startEvent id="StartEvent_2" />
+      
+      <sequenceFlow id="SequenceFlow_4" sourceRef="StartEvent_2" targetRef="SubProcess_2" />
+      
+      <endEvent id="EndEvent_3" />
+      
+      <sequenceFlow id="SequenceFlow_7" sourceRef="SubProcess_2" targetRef="EndEvent_3" />
+      
+      <subProcess id="SubProcess_3" name="It should work when needed">
+      
+        <startEvent id="StartEvent_4" />
+        
+        <userTask id="UserTask_2" name="Review" />
+        
+        <sequenceFlow id="SequenceFlow_8" sourceRef="StartEvent_4" targetRef="UserTask_2" />
+        
+        <endEvent id="EndEvent_4" />
+        
+        <sequenceFlow id="SequenceFlow_9" sourceRef="UserTask_2" targetRef="EndEvent_4" />
+        
+      </subProcess>
+      
+      <boundaryEvent id="BoundaryEvent_1" attachedToRef="SubProcess_2" cancelActivity="false">
+        <signalEventDefinition signalRef="alertSignal" />
+      </boundaryEvent>
+      
+      <sequenceFlow id="SequenceFlow_10" name="" sourceRef="BoundaryEvent_1" targetRef="SubProcess_3" />
+      
+      <endEvent id="EndEvent_5" />
+      
+      <sequenceFlow id="SequenceFlow_11" sourceRef="SubProcess_3" targetRef="EndEvent_5" />
+      
+    </subProcess>
+    
+    <sequenceFlow id="SequenceFlow_2" sourceRef="StartEvent_1" targetRef="SubProcess_1" />
+    
+    <userTask id="UserTask_3" name="Finish" />
+    
+    <sequenceFlow id="SequenceFlow_12" sourceRef="SubProcess_1" targetRef="UserTask_3" />
+    
+    <sequenceFlow id="SequenceFlow_13" sourceRef="UserTask_3" targetRef="EndEvent_1" />
+    
+  </process>
+
+</definitions>
