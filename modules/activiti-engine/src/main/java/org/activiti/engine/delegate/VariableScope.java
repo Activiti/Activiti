@@ -52,8 +52,6 @@ public interface VariableScope {
 
   void createVariableLocal(String variableName, Object value);
 
-  void createVariablesLocal(Map<String, ? extends Object> variables);
-
   /**
    * Removes the variable and creates a new
    * {@link HistoricVariableUpdateEntity}.
