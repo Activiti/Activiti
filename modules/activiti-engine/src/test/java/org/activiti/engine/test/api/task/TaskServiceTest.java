@@ -25,10 +25,12 @@ import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
+import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.persistence.entity.HistoricVariableUpdateEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Attachment;
@@ -867,4 +869,170 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     taskService.deleteTask(taskId, true);
   }
   
+  private void checkHistoricVariableUpdateEntity(String variableName, String processInstanceId) {
+    if (processEngineConfiguration.getHistoryLevel() == ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
+      boolean deletedVariableUpdateFound = false;
+
+      List<HistoricDetail> resultSet = historyService.createHistoricDetailQuery().processInstanceId(processInstanceId).list();
+      for (HistoricDetail currentHistoricDetail : resultSet) {
+        assertTrue(currentHistoricDetail instanceof HistoricVariableUpdateEntity);
+        HistoricVariableUpdateEntity historicVariableUpdate = (HistoricVariableUpdateEntity) currentHistoricDetail;
+      
+        if (historicVariableUpdate.getName().equals(variableName)) {
+          if (historicVariableUpdate.getValue() == null) {
+            if (deletedVariableUpdateFound) {
+              fail("Mismatch: A HistoricVariableUpdateEntity with a null value already found");
+            } else {
+              deletedVariableUpdateFound = true;
+            }
+          }
+        }
+      }
+      
+      assertTrue(deletedVariableUpdateFound);
+    }
+  }
+  
+  @Deployment(resources = { 
+  "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+  public void testRemoveVariable() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    
+    Task currentTask = taskService.createTaskQuery().singleResult();
+    
+    taskService.setVariable(currentTask.getId(), "variable1", "value1");
+    assertEquals("value1", taskService.getVariable(currentTask.getId(), "variable1"));
+    assertNull(taskService.getVariableLocal(currentTask.getId(), "variable1"));
+    
+    taskService.removeVariable(currentTask.getId(), "variable1");
+    
+    assertNull(taskService.getVariable(currentTask.getId(), "variable1"));
+    
+    checkHistoricVariableUpdateEntity("variable1", processInstance.getId());
+  }
+  
+  public void testRemoveVariableNullTaskId() {
+    try {
+      taskService.removeVariable(null, "variable");
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+      assertTextPresent("taskId is null", ae.getMessage());
+    }    
+  }
+  
+  @Deployment(resources = { 
+  "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+  public void testRemoveVariables() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    
+    Task currentTask = taskService.createTaskQuery().singleResult();
+    
+    Map<String, Object> varsToDelete = new HashMap<String, Object>();
+    varsToDelete.put("variable1", "value1");
+    varsToDelete.put("variable2", "value2");
+    taskService.setVariables(currentTask.getId(), varsToDelete);
+    taskService.setVariable(currentTask.getId(), "variable3", "value3");
+    
+    assertEquals("value1", taskService.getVariable(currentTask.getId(), "variable1"));
+    assertEquals("value2", taskService.getVariable(currentTask.getId(), "variable2"));
+    assertEquals("value3", taskService.getVariable(currentTask.getId(), "variable3"));
+    assertNull(taskService.getVariableLocal(currentTask.getId(), "variable1"));
+    assertNull(taskService.getVariableLocal(currentTask.getId(), "variable2"));
+    assertNull(taskService.getVariableLocal(currentTask.getId(), "variable3"));
+    
+    taskService.removeVariables(currentTask.getId(), varsToDelete.keySet());
+    
+    assertNull(taskService.getVariable(currentTask.getId(), "variable1"));
+    assertNull(taskService.getVariable(currentTask.getId(), "variable2"));
+    assertEquals("value3", taskService.getVariable(currentTask.getId(), "variable3"));
+    
+    assertNull(taskService.getVariableLocal(currentTask.getId(), "variable1"));
+    assertNull(taskService.getVariableLocal(currentTask.getId(), "variable2"));
+    assertNull(taskService.getVariableLocal(currentTask.getId(), "variable3"));
+
+    checkHistoricVariableUpdateEntity("variable1", processInstance.getId());
+    checkHistoricVariableUpdateEntity("variable2", processInstance.getId());
+  }
+  
+  @SuppressWarnings("unchecked")
+  public void testRemoveVariablesNullTaskId() {
+    try {
+      taskService.removeVariables(null, Collections.EMPTY_LIST);
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+      assertTextPresent("taskId is null", ae.getMessage());
+    }    
+  }
+  
+  @Deployment(resources = { 
+  "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+  public void testRemoveVariableLocal() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    
+    Task currentTask = taskService.createTaskQuery().singleResult();
+    
+    taskService.setVariableLocal(currentTask.getId(), "variable1", "value1");
+    assertEquals("value1", taskService.getVariable(currentTask.getId(), "variable1"));
+    assertEquals("value1", taskService.getVariableLocal(currentTask.getId(), "variable1"));
+    
+    taskService.removeVariableLocal(currentTask.getId(), "variable1");
+    
+    assertNull(taskService.getVariable(currentTask.getId(), "variable1"));
+    assertNull(taskService.getVariableLocal(currentTask.getId(), "variable1"));
+    
+    checkHistoricVariableUpdateEntity("variable1", processInstance.getId());
+  }
+  
+  public void testRemoveVariableLocalNullTaskId() {
+    try {
+      taskService.removeVariableLocal(null, "variable");
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+      assertTextPresent("taskId is null", ae.getMessage());
+    }    
+  }
+  
+  @Deployment(resources = { 
+  "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+  public void testRemoveVariablesLocal() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    
+    Task currentTask = taskService.createTaskQuery().singleResult();
+    
+    Map<String, Object> varsToDelete = new HashMap<String, Object>();
+    varsToDelete.put("variable1", "value1");
+    varsToDelete.put("variable2", "value2");
+    taskService.setVariablesLocal(currentTask.getId(), varsToDelete);
+    taskService.setVariableLocal(currentTask.getId(), "variable3", "value3");
+    
+    assertEquals("value1", taskService.getVariable(currentTask.getId(), "variable1"));
+    assertEquals("value2", taskService.getVariable(currentTask.getId(), "variable2"));
+    assertEquals("value3", taskService.getVariable(currentTask.getId(), "variable3"));
+    assertEquals("value1", taskService.getVariableLocal(currentTask.getId(), "variable1"));
+    assertEquals("value2", taskService.getVariableLocal(currentTask.getId(), "variable2"));
+    assertEquals("value3", taskService.getVariableLocal(currentTask.getId(), "variable3"));
+    
+    taskService.removeVariables(currentTask.getId(), varsToDelete.keySet());
+    
+    assertNull(taskService.getVariable(currentTask.getId(), "variable1"));
+    assertNull(taskService.getVariable(currentTask.getId(), "variable2"));
+    assertEquals("value3", taskService.getVariable(currentTask.getId(), "variable3"));
+    
+    assertNull(taskService.getVariableLocal(currentTask.getId(), "variable1"));
+    assertNull(taskService.getVariableLocal(currentTask.getId(), "variable2"));
+    assertEquals("value3", taskService.getVariableLocal(currentTask.getId(), "variable3"));
+    
+    checkHistoricVariableUpdateEntity("variable1", processInstance.getId());
+    checkHistoricVariableUpdateEntity("variable2", processInstance.getId());
+  }
+  
+  @SuppressWarnings("unchecked")
+  public void testRemoveVariablesLocalNullTaskId() {
+    try {
+      taskService.removeVariablesLocal(null, Collections.EMPTY_LIST);
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+      assertTextPresent("taskId is null", ae.getMessage());
+    }    
+  }
 }

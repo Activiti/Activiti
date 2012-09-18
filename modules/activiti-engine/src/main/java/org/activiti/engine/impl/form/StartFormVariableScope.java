@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.form;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -120,6 +121,14 @@ public class StartFormVariableScope implements VariableScope {
   }
 
   public void removeVariablesLocal() {
+    throw new UnsupportedOperationException("No execution active, no variables can be removed");
+  }
+
+  public void removeVariables(Collection<String> variableNames) {
+    throw new UnsupportedOperationException("No execution active, no variables can be removed");
+  }
+
+  public void removeVariablesLocal(Collection<String> variableNames) {
     throw new UnsupportedOperationException("No execution active, no variables can be removed");
   }
 

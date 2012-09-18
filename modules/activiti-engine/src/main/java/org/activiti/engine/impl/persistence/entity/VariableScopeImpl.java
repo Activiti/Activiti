@@ -14,6 +14,7 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -196,7 +197,22 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     variableInstance.setValue(value);
     
     int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
-    if (historyLevel==ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
+    if (historyLevel == ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
+      HistoricVariableUpdateEntity historicVariableUpdate = new HistoricVariableUpdateEntity(variableInstance);
+      initializeActivityInstanceId(historicVariableUpdate);
+      Context
+        .getCommandContext()
+        .getDbSqlSession()
+        .insert(historicVariableUpdate);
+    }
+  }
+  
+  protected void removeVariableInstanceValue(VariableInstanceEntity variableInstance) {
+    variableInstance.delete();
+    variableInstance.setValue(null);
+    
+    int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
+    if (historyLevel == ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
       HistoricVariableUpdateEntity historicVariableUpdate = new HistoricVariableUpdateEntity(variableInstance);
       initializeActivityInstanceId(historicVariableUpdate);
       Context
@@ -238,15 +254,14 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   }
 
   public void removeVariable(String variableName) {
-    ensureVariableInstancesInitialized();
-    VariableInstanceEntity variableInstance = variableInstances.remove(variableName);
-    if (variableInstance != null) {
-      variableInstance.delete();
+    if (hasVariableLocal(variableName)) {
+      removeVariableLocal(variableName);
       return;
     }
     VariableScope parentVariableScope = getParentVariableScope();
-    if (parentVariableScope!=null) {
+    if (parentVariableScope != null) {
       parentVariableScope.removeVariable(variableName);
+      return;
     }
   }
   
@@ -254,7 +269,23 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     ensureVariableInstancesInitialized();
     VariableInstanceEntity variableInstance = variableInstances.remove(variableName);
     if (variableInstance != null) {
-      variableInstance.delete();
+      removeVariableInstanceValue(variableInstance);
+    }
+  }
+  
+  public void removeVariables(Collection<String> variableNames) {
+    if (variableNames != null) {
+      for (String variableName : variableNames) {
+        removeVariable(variableName);
+      }
+    }
+  }
+  
+  public void removeVariablesLocal(Collection<String> variableNames) {
+    if (variableNames != null) {
+      for (String variableName : variableNames) {
+        removeVariableLocal(variableName);
+      }
     }
   }
 
@@ -275,7 +306,6 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   }
 
   public void removeVariables() {
-    ensureVariableInstancesInitialized();
     Set<String> variableNames = new HashSet<String>(variableInstances.keySet());
     for (String variableName: variableNames) {
       removeVariable(variableName);
@@ -295,4 +325,15 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   public void setCachedElContext(ELContext cachedElContext) {
     this.cachedElContext = cachedElContext;
   }
+  
+  public void deleteVariablesLocal() {
+    List<String> variableNames = new ArrayList<String>(getVariableNamesLocal());
+    for (String variableName : variableNames) {
+      VariableInstanceEntity variableInstance = variableInstances.remove(variableName);
+      if (variableInstance != null) {
+        variableInstance.delete();
+      }
+    }
+  }
+  
 }

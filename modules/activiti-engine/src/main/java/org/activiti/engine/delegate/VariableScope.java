@@ -13,6 +13,7 @@
 
 package org.activiti.engine.delegate;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -53,11 +54,40 @@ public interface VariableScope {
 
   void createVariablesLocal(Map<String, ? extends Object> variables);
 
+  /**
+   * Removes the variable and creates a new
+   * {@link HistoricVariableUpdateEntity}.
+   */
   void removeVariable(String variableName);
 
+  /**
+   * Removes the local variable and creates a new
+   * {@link HistoricVariableUpdateEntity}.
+   */
   void removeVariableLocal(String variableName);
 
+  /**
+   * Removes the variables and creates a new
+   * {@link HistoricVariableUpdateEntity} for each of them.
+   */
+  void removeVariables(Collection<String> variableNames);
+
+  /**
+   * Removes the local variables and creates a new
+   * {@link HistoricVariableUpdateEntity} for each of them.
+   */
+  void removeVariablesLocal(Collection<String> variableNames);
+
+  /**
+   * Removes the (local) variables and creates a new
+   * {@link HistoricVariableUpdateEntity} for each of them.
+   */
   void removeVariables();
 
+  /**
+   * Removes the (local) variables and creates a new
+   * {@link HistoricVariableUpdateEntity} for each of them.
+   */
   void removeVariablesLocal();
+
 }

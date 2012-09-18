@@ -13,6 +13,7 @@
 package org.activiti.engine.impl;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +41,7 @@ import org.activiti.engine.impl.cmd.GetTaskCommentsCmd;
 import org.activiti.engine.impl.cmd.GetTaskEventsCmd;
 import org.activiti.engine.impl.cmd.GetTaskVariableCmd;
 import org.activiti.engine.impl.cmd.GetTaskVariablesCmd;
+import org.activiti.engine.impl.cmd.RemoveTaskVariablesCmd;
 import org.activiti.engine.impl.cmd.ResolveTaskCmd;
 import org.activiti.engine.impl.cmd.SaveAttachmentCmd;
 import org.activiti.engine.impl.cmd.SaveTaskCmd;
@@ -168,7 +170,7 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   public TaskQuery createTaskQuery() {
     return new TaskQueryImpl(commandExecutor);
   }
-  
+ 
   public NativeTaskQuery createNativeTaskQuery() {
     return new NativeTaskQueryImpl(commandExecutor);
   }
@@ -221,6 +223,26 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
 
   public void setVariablesLocal(String executionId, Map<String, ? extends Object> variables) {
     commandExecutor.execute(new SetTaskVariablesCmd(executionId, variables, true));
+  }
+
+  public void removeVariable(String taskId, String variableName) {
+    Collection<String> variableNames = new ArrayList<String>();
+    variableNames.add(variableName);
+    commandExecutor.execute(new RemoveTaskVariablesCmd(taskId, variableNames, false));
+  }
+
+  public void removeVariableLocal(String taskId, String variableName) {
+    Collection<String> variableNames = new ArrayList<String>(1);
+    variableNames.add(variableName);
+    commandExecutor.execute(new RemoveTaskVariablesCmd(taskId, variableNames, true));
+  }
+
+  public void removeVariables(String taskId, Collection<String> variableNames) {
+    commandExecutor.execute(new RemoveTaskVariablesCmd(taskId, variableNames, false));
+  }
+
+  public void removeVariablesLocal(String taskId, Collection<String> variableNames) {
+    commandExecutor.execute(new RemoveTaskVariablesCmd(taskId, variableNames, true));
   }
 
   public void addComment(String taskId, String processInstance, String message) {

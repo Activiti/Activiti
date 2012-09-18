@@ -288,6 +288,30 @@ public interface TaskService {
   /** get a variable on a task */
   Map<String, Object> getVariablesLocal(String taskId, Collection<String> variableNames);
   
+  /**
+   * Removes the variable from the task.
+   * When the variable does not exist, nothing happens.
+   */
+  void removeVariable(String taskId, String variableName);
+
+  /**
+   * Removes the variable from the task (not considering parent scopes).
+   * When the variable does not exist, nothing happens.
+   */
+  void removeVariableLocal(String taskId, String variableName);
+
+  /**
+   * Removes all variables in the given collection from the task.
+   * Non existing variable names are simply ignored.
+   */
+  void removeVariables(String taskId, Collection<String> variableNames);
+
+  /**
+   * Removes all variables in the given collection from the task (not considering parent scopes).
+   * Non existing variable names are simply ignored.
+   */
+  void removeVariablesLocal(String taskId, Collection<String> variableNames);
+
   /** Add a comment to a task and/or process instance. */
   void addComment(String taskId, String processInstanceId, String message);
 

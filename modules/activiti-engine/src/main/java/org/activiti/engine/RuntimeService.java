@@ -344,7 +344,35 @@ public interface RuntimeService {
    * @param variables map containing name (key) and value of variables, can be null.
    * @throws ActivitiException when no execution is found for the given executionId. */
   void setVariablesLocal(String executionId, Map<String, ? extends Object> variables);
+  
+  /**
+   * Removes a variable for an execution.
+   * @param executionId id of execution to remove variable in.
+   * @param variableName name of variable to remove.
+   */
+  void removeVariable(String executionId, String variableName);
+  
+  /**
+   * Removes a variable for an execution (not considering parent scopes).
+   * @param executionId id of execution to remove variable in.
+   * @param variableName name of variable to remove.
+   */
+  void removeVariableLocal(String executionId, String variableName);
+  
+  /**
+   * Removes variables for an execution.
+   * @param executionId id of execution to remove variable in.
+   * @param variableNames collection containing name of variables to remove.
+   */
+  void removeVariables(String executionId, Collection<String> variableNames);
 
+  /**
+   * Remove variables for an execution (not considering parent scopes).
+   * @param executionId id of execution to remove variable in.
+   * @param variableNames collection containing name of variables to remove.
+   */
+  void removeVariablesLocal(String executionId, Collection<String> variableNames);
+  
   // Queries ////////////////////////////////////////////////////////
   
   /** Creates a new {@link ExecutionQuery} instance, 

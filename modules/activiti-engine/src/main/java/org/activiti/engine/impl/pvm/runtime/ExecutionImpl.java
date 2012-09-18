@@ -14,6 +14,7 @@ package org.activiti.engine.impl.pvm.runtime;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmException;
 import org.activiti.engine.impl.pvm.PvmExecution;
@@ -825,12 +825,21 @@ public class ExecutionImpl implements
   public void removeVariableLocal(String variableName) {
   }
 
+  public void removeVariables(Collection<String> variableNames) {
+  }
+  
+  public void removeVariablesLocal(Collection<String> variableNames) {
+  }
+  
   public void removeVariables() {
   }
 
   public void removeVariablesLocal() {
   }
 
+  public void deleteVariablesLocal() {
+  }
+  
   public Object setVariableLocal(String variableName, Object value) {
     return null;
   }

@@ -345,8 +345,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     log.fine("destroying "+this);
     
     ensureParentInitialized();
-    removeVariablesLocal();
-    removeVariables();
+    deleteVariablesLocal();
 
     setScope(false);
   }
@@ -841,7 +840,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
     // delete all the variable instances
     ensureVariableInstancesInitialized();
-    removeVariablesLocal();
+    deleteVariablesLocal();
     
     // delete all the tasks
     removeTasks(null);

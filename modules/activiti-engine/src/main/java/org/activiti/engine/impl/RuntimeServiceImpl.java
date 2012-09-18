@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -27,19 +28,18 @@ import org.activiti.engine.impl.cmd.GetExecutionVariableCmd;
 import org.activiti.engine.impl.cmd.GetExecutionVariablesCmd;
 import org.activiti.engine.impl.cmd.GetStartFormCmd;
 import org.activiti.engine.impl.cmd.MessageEventReceivedCmd;
+import org.activiti.engine.impl.cmd.RemoveExecutionVariablesCmd;
 import org.activiti.engine.impl.cmd.SetExecutionVariablesCmd;
 import org.activiti.engine.impl.cmd.SignalCmd;
 import org.activiti.engine.impl.cmd.SignalEventReceivedCmd;
 import org.activiti.engine.impl.cmd.StartProcessInstanceByMessageCmd;
 import org.activiti.engine.impl.cmd.StartProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.SuspendProcessInstanceCmd;
-import org.activiti.engine.query.NativeQuery;
 import org.activiti.engine.runtime.ExecutionQuery;
 import org.activiti.engine.runtime.NativeExecutionQuery;
 import org.activiti.engine.runtime.NativeProcessInstanceQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
-import org.activiti.engine.task.Task;
 
 /**
  * @author Tom Baeyens
@@ -144,6 +144,27 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   public void setVariablesLocal(String executionId, Map<String, ? extends Object> variables) {
     commandExecutor.execute(new SetExecutionVariablesCmd(executionId, variables, true));
   }
+  
+  public void removeVariable(String executionId, String variableName) {
+    Collection<String> variableNames = new ArrayList<String>();
+    variableNames.add(variableName);
+    commandExecutor.execute(new RemoveExecutionVariablesCmd(executionId, variableNames, false));
+  }
+  
+  public void removeVariableLocal(String executionId, String variableName) {
+    Collection<String> variableNames = new ArrayList<String>();
+    variableNames.add(variableName);
+    commandExecutor.execute(new RemoveExecutionVariablesCmd(executionId, variableNames, true));
+    
+  }
+
+  public void removeVariables(String executionId, Collection<String> variableNames) {
+    commandExecutor.execute(new RemoveExecutionVariablesCmd(executionId, variableNames, false));    
+  }
+
+  public void removeVariablesLocal(String executionId, Collection<String> variableNames) {
+    commandExecutor.execute(new RemoveExecutionVariablesCmd(executionId, variableNames, true));    
+  }
 
   public void signal(String executionId) {
     commandExecutor.execute(new SignalCmd(executionId, null, null, null));
@@ -212,5 +233,5 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   public void messageEventReceived(String messageName, String executionId, Map<String, Object> processVariables) {
     commandExecutor.execute(new MessageEventReceivedCmd(messageName, executionId, processVariables));
   }
-   
+
 }
