@@ -171,6 +171,8 @@ public class BpmnDeployer implements Deployer {
         ProcessDefinitionEntity persistedProcessDefinition = processDefinitionManager.findProcessDefinitionByDeploymentAndKey(deploymentId, processDefinition.getKey());
         processDefinition.setId(persistedProcessDefinition.getId());
         processDefinition.setVersion(persistedProcessDefinition.getVersion());
+        processDefinition.setSuspensionState(persistedProcessDefinition.getSuspensionState());
+        
         deploymentCache.addProcessDefinition(processDefinition);
         addAuthorizations(processDefinition);
 

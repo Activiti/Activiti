@@ -13,6 +13,7 @@
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
@@ -54,6 +55,11 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
     
     setState(processDefinitionEntity);
     
+    // evict cache
+    Context
+      .getProcessEngineConfiguration()
+      .getDeploymentCache().removeProcessDefinition(processDefinitionEntity.getId());
+
     return null;
   }
 

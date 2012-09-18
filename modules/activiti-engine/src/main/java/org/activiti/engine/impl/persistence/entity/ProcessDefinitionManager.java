@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.repository.ProcessDefinition;
 
@@ -47,8 +49,17 @@ public class ProcessDefinitionManager extends AbstractManager {
   
   @SuppressWarnings("unchecked")
   public List<ProcessDefinition> findProcessDefinitionsByQueryCriteria(ProcessDefinitionQueryImpl processDefinitionQuery, Page page) {
-    final String query = "selectProcessDefinitionsByQueryCriteria";
-    return getDbSqlSession().selectList(query, processDefinitionQuery, page);
+    List<ProcessDefinition> processDefinitions = getDbSqlSession().selectList("selectProcessDefinitionsByQueryCriteria", processDefinitionQuery, page);
+
+    // retrieve process definitions from cache (http://jira.codehaus.org/browse/ACT-1020) to have all available information
+    ArrayList<ProcessDefinition> result = new ArrayList<ProcessDefinition>();
+    for (ProcessDefinition processDefinitionEntity : processDefinitions) {      
+      ProcessDefinitionEntity fullProcessDefinition = Context
+              .getProcessEngineConfiguration()
+              .getDeploymentCache().resolveProcessDefinition((ProcessDefinitionEntity)processDefinitionEntity);
+      result.add(fullProcessDefinition);
+    }
+    return result;
   }
 
   public long findProcessDefinitionCountByQueryCriteria(ProcessDefinitionQueryImpl processDefinitionQuery) {

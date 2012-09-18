@@ -78,7 +78,7 @@ public class DeploymentCache {
     return processDefinition;
   }
 
-  protected ProcessDefinitionEntity resolveProcessDefinition(ProcessDefinitionEntity processDefinition) {
+  public ProcessDefinitionEntity resolveProcessDefinition(ProcessDefinitionEntity processDefinition) {
     String processDefinitionId = processDefinition.getId();
     String deploymentId = processDefinition.getDeploymentId();
     processDefinition = processDefinitionCache.get(processDefinitionId);
