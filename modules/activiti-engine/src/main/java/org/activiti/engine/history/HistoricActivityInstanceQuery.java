@@ -23,7 +23,7 @@ import org.activiti.engine.query.Query;
  */
 public interface HistoricActivityInstanceQuery extends Query<HistoricActivityInstanceQuery, HistoricActivityInstance>{
 
-  /** Only select historic activity instances with the given id. */
+  /** Only select historic activity instances with the given id (primary key within history tables). */
   HistoricActivityInstanceQuery activityInstanceId(String processInstanceId);
   
   /** Only select historic activity instances with the given process instance.
@@ -36,7 +36,7 @@ public interface HistoricActivityInstanceQuery extends Query<HistoricActivityIns
   /** Only select historic activity instances for the given execution */
   HistoricActivityInstanceQuery executionId(String executionId);
 
-  /** Only select historic activity instances for the given activity */
+  /** Only select historic activity instances for the given activity (id from BPMN 2.0 XML) */
   HistoricActivityInstanceQuery activityId(String activityId);
 
   /** Only select historic activity instances for activities with the given name */
