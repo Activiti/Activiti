@@ -1156,5 +1156,53 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
 //    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueLessThanOrEqual("longVar", 12345L).count());
 //    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueLessThanOrEqual("longVar", 12346L).count());
 //    assertEquals(0, historyService.createHistoricProcessInstanceQuery().variableValueLessThanOrEqual("longVar", 12344L).count());
- }  
+  }
+ 
+  @Deployment(resources={"org/activiti/standalone/history/FullHistoryTest.testVariableUpdatesAreLinkedToActivity.bpmn20.xml"})
+  public void testVariableUpdatesLinkedToActivity() throws Exception {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("ProcessWithSubProcess");
+    
+    Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();    
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("test", "1");    
+    taskService.complete(task.getId(), variables);
+    
+    // now we are in the subprocess
+    task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+    variables.clear();
+    variables.put("test", "2");    
+    taskService.complete(task.getId(), variables);
+    
+    // now we are ended
+    assertProcessEnded(pi.getId());
+    
+    // check history
+    List<HistoricDetail> updates = historyService.createHistoricDetailQuery().variableUpdates().list();
+    assertEquals(2, updates.size());
+    
+    HistoricVariableUpdate update1 = (HistoricVariableUpdate) updates.get(0);
+    HistoricVariableUpdate update2 = (HistoricVariableUpdate) updates.get(1);
+
+    assertEquals("1", update1.getValue());
+    assertEquals("2", update2.getValue());
+
+    assertNotNull(update1.getActivityInstanceId());
+    assertNotNull(update1.getExecutionId());
+    HistoricActivityInstance historicActivityInstance1 = historyService.createHistoricActivityInstanceQuery().activityInstanceId(update1.getActivityInstanceId()).singleResult();
+    assertEquals(historicActivityInstance1.getExecutionId(), update1.getExecutionId());
+    assertEquals("usertask1", historicActivityInstance1.getActivityId());
+    
+    assertNotNull(update2.getActivityInstanceId());
+    HistoricActivityInstance historicActivityInstance2 = historyService.createHistoricActivityInstanceQuery().activityInstanceId(update2.getActivityInstanceId()).singleResult();
+    assertEquals("usertask2", historicActivityInstance2.getActivityId());
+
+    /*
+     * This is OK! The variable is set on the root execution, on a execution never run through the activity, where the process instances
+     * stands when calling the set Variable. But the ActivityId of this flow node is used. So the execution id's doesn't have to be equal.
+     * 
+     * execution id: On which execution it was set
+     * activity id: in which activity was the process instance when setting the variable
+     */
+    assertFalse(historicActivityInstance2.getExecutionId().equals(update2.getExecutionId()));
+  }  
 }

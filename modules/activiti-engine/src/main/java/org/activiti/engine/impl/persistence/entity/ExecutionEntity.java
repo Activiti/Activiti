@@ -15,11 +15,14 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
@@ -1030,13 +1033,20 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   }
   
   @Override
-  protected void initializeActivityInstanceId(HistoricVariableUpdateEntity historicVariableUpdate) {
+  protected void initializeActivityInstanceId(HistoricVariableUpdateEntity historicVariableUpdate, Stack<VariableScopeImpl> scopes) {
     int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
     if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
-      HistoricActivityInstanceEntity historicActivityInstance = ActivityInstanceEndHandler.findActivityInstance(this);
-      if (historicActivityInstance!=null) {
-        historicVariableUpdate.setActivityInstanceId(historicActivityInstance.getId());
-      }
+      // use the first execution which is found on the stack as activity id, since this is where the variable changes was set on:
+      for (VariableScopeImpl scope : scopes) {
+        if (scope instanceof ExecutionEntity) {          
+          HistoricActivityInstanceEntity historicActivityInstance = ActivityInstanceEndHandler.findActivityInstance((ExecutionEntity)scope); 
+          if (historicActivityInstance!=null) {
+            historicVariableUpdate.setActivityInstanceId(historicActivityInstance.getId());
+          }
+          // done
+          break;
+        }
+      }      
     }
   }
 
