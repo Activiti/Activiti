@@ -1398,11 +1398,22 @@ public class BpmnParse extends Parse {
   }
 
   public String parseDocumentation(Element element) {
-    Element docElement = element.element("documentation");
-    if (docElement != null) {
-      return docElement.getText().trim();
+    List<Element> docElements = element.elements("documentation");
+    if (docElements.isEmpty()) {
+      return null;
     }
-    return null;
+    
+    
+    StringBuilder builder = new StringBuilder();
+    for (Element e: docElements) {
+      if (builder.length() != 0) {
+        builder.append("\n\n");
+      }
+      
+      builder.append(e.getText().trim());
+    }
+    
+    return builder.toString();
   }
 
   /**
@@ -2272,12 +2283,12 @@ public class BpmnParse extends Parse {
           activity.setActivityBehavior(new ErrorEndEventActivityBehavior(error != null ? error.getErrorCode() : errorRef));
         }
       } else if (cancelEventDefinition != null) {
-        if(scope.getProperty("type")==null || !scope.getProperty("type").equals("transaction")) {
+        if (scope.getProperty("type")==null || !scope.getProperty("type").equals("transaction")) {
           addError("end event with cancelEventDefinition only supported inside transaction subprocess", cancelEventDefinition);
         } else {
           activity.setProperty("type", "cancelEndEvent");   
           activity.setActivityBehavior(new CancelEndEventActivityBehavior());
-        }        
+        }
       } else { // default: none end event
         activity.setActivityBehavior(new NoneEndEventActivityBehavior());
       }
@@ -2286,7 +2297,7 @@ public class BpmnParse extends Parse {
         parseListener.parseEndEvent(endEventElement, scope, activity);
       }
       
-      parseExecutionListenersOnScope(endEventElement, activity);      
+      parseExecutionListenersOnScope(endEventElement, activity);
     }
   }
 

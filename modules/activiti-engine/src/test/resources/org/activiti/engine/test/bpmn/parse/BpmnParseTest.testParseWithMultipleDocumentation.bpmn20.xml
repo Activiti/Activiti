@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="taskAssigneeExample" 
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="Examples">
+  <process id="process" name="Task Assignee example">
+    <documentation>
+      Some documentation
+    </documentation>
+    <documentation>
+      Some documentation
+    </documentation>
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask">
+      <documentation>
+        Some documentation
+      </documentation>
+      <documentation>
+        Some documentation
+      </documentation>
+    </sequenceFlow>
+
+    <userTask id="theTask" name="Schedule meeting" >
+      <documentation>
+      Some documentation
+      </documentation>
+      <documentation>
+      Some documentation
+      </documentation>
+      <humanPerformer>
+        <resourceAssignmentExpression>
+          <formalExpression>kermit</formalExpression>
+        </resourceAssignmentExpression>
+      </humanPerformer>
+    </userTask>
+    <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />
+    <endEvent id="theEnd" />
+  </process>
+
+</definitions>
