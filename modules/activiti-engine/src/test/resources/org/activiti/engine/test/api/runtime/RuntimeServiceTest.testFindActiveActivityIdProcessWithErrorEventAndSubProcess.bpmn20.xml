@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
+
+  <process id="errorEventSubprocess" name="ErrorEventSubprocess">
+  
+    <startEvent id="startevent1" name="Start" />
+    
+    <subProcess id="subprocess1" name="Sub Process">
+    
+      <startEvent id="subprocess1startevent2" name="Start" />
+      
+      <sequenceFlow id="subprocess1flow2" name="" sourceRef="subprocess1startevent2" targetRef="subprocess1parallelgateway1" />
+      
+      <parallelGateway id="subprocess1parallelgateway1" name="Parallel Gateway" />
+      
+      <userTask id="subprocess1ParallelUserTask" name="ParallelUserTask" activiti:assignee="user1" />
+      
+      <sequenceFlow id="subprocess1flow3" name="" sourceRef="subprocess1parallelgateway1" targetRef="subprocess1ParallelUserTask" />
+      
+      <endEvent id="subprocess1endevent1" name="ErrorEnd">
+        <errorEventDefinition errorRef="err1" />
+      </endEvent>
+      
+      <endEvent id="subprocess1endevent2" name="End" />
+      
+      <sequenceFlow id="subprocess1flow6" name="" sourceRef="subprocess1ParallelUserTask" targetRef="subprocess1endevent2" />
+      
+      <receiveTask id="subprocess1WaitBeforeError" name="WaitBeforeError"/>
+      
+      <sequenceFlow id="subprocess1flow9" name="" sourceRef="subprocess1parallelgateway1" targetRef="subprocess1WaitBeforeError" />
+      
+      <userTask id="subprocess1BeforeError" name="BeforeError" />
+      
+      <sequenceFlow id="subprocess1flow10" name="" sourceRef="subprocess1WaitBeforeError" targetRef="subprocess1BeforeError" />
+      
+      <sequenceFlow id="subprocess1flow11" name="" sourceRef="subprocess1BeforeError" targetRef="subprocess1endevent1"/>
+      
+    </subProcess>
+    
+    <sequenceFlow id="flow1" name="" sourceRef="startevent1" targetRef="parallelgateway2" />
+    
+    <endEvent id="EndSuccess" name="EndSuccess" />
+    
+    <userTask id="AfterSuccess" name="AfterSuccess" />
+    
+    <sequenceFlow id="flow12" name="" sourceRef="subprocess1" targetRef="AfterSuccess" />
+    
+    <sequenceFlow id="flow13" name="" sourceRef="AfterSuccess" targetRef="EndSuccess" />
+    
+    <boundaryEvent id="boundaryerror1" attachedToRef="subprocess1">
+      <errorEventDefinition errorRef="err1" />
+    </boundaryEvent>
+    
+    <userTask id="AfterError" name="AfterError" />
+    
+    <sequenceFlow id="flow14" name="" sourceRef="boundaryerror1" targetRef="AfterError" />
+    
+    <endEvent id="EndError" name="EndError" />
+    
+    <sequenceFlow id="flow15" name="" sourceRef="AfterError" targetRef="EndError" />
+    
+    <parallelGateway id="parallelgateway2" name="Parallel Gateway" />
+    
+    <sequenceFlow id="flow16" name="" sourceRef="parallelgateway2" targetRef="subprocess1" />
+    
+    <userTask id="MainUserTask" name="MainUserTask" activiti:assignee="user1" />
+    
+    <sequenceFlow id="flow17" name="" sourceRef="parallelgateway2" targetRef="MainUserTask" />
+    
+    <endEvent id="EndMainUserTask" name="EndMainUserTask" />
+    
+    <sequenceFlow id="flow18" name="" sourceRef="MainUserTask" targetRef="EndMainUserTask"/>
+  </process>
+
+</definitions>
