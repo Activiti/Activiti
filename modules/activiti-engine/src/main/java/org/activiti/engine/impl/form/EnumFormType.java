@@ -55,7 +55,7 @@ public class EnumFormType extends AbstractFormType {
       }
       validateValue((String) modelValue);
     }
-    return null;
+    return (String) modelValue;
   }
   
   protected void validateValue(String value) {
