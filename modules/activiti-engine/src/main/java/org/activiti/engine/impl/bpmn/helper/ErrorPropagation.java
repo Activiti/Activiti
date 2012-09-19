@@ -113,7 +113,11 @@ public class ErrorPropagation {
   
   private static ActivityExecution getSuperExecution(ActivityExecution execution) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
-    return executionEntity.getProcessInstance().getSuperExecution();
+    ExecutionEntity superExecution = executionEntity.getProcessInstance().getSuperExecution();
+    if (superExecution != null && !superExecution.isScope()) {
+      return superExecution.getParent();
+    }
+    return superExecution;
   }
   
   private static void executeCatch(String errorHandlerId, ActivityExecution execution) {

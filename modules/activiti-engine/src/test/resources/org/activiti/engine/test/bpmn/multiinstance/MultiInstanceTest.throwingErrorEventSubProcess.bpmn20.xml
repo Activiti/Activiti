@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definition" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="callActivityProcess" name="process1">
+  
+    <startEvent id="startevent1" name="Start" />
+    
+    <userTask id="usertask1" name="Inner User Task" />
+    
+    <sequenceFlow id="flow1" name="" sourceRef="startevent1" targetRef="usertask1" />
+    
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway" />
+    
+    <sequenceFlow id="flow2" name="" sourceRef="usertask1" targetRef="exclusivegateway1" />
+    
+    <endEvent id="endevent1" name="End" />
+    
+    <sequenceFlow id="flow3" name="" sourceRef="exclusivegateway1" targetRef="endevent1">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${done}]]></conditionExpression>
+    </sequenceFlow>
+    
+    <endEvent id="endevent2" name="ErrorEnd">
+      <errorEventDefinition errorRef="errorId1"></errorEventDefinition>
+    </endEvent>
+    
+    <sequenceFlow id="flow4" name="" sourceRef="exclusivegateway1" targetRef="endevent2">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!done}]]></conditionExpression>
+    </sequenceFlow>
+    
+  </process>
+</definitions>
+  
