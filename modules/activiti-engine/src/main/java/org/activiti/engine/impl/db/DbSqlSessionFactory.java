@@ -16,6 +16,7 @@ package org.activiti.engine.impl.db;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.interceptor.Session;
@@ -97,10 +98,10 @@ public class DbSqlSessionFactory implements SessionFactory {
   protected SqlSessionFactory sqlSessionFactory;
   protected IdGenerator idGenerator;
   protected Map<String, String> statementMappings;
-  protected Map<Class<?>,String>  insertStatements = Collections.synchronizedMap(new HashMap<Class<?>, String>());
-  protected Map<Class<?>,String>  updateStatements = Collections.synchronizedMap(new HashMap<Class<?>, String>());
-  protected Map<Class<?>,String>  deleteStatements = Collections.synchronizedMap(new HashMap<Class<?>, String>());
-  protected Map<Class<?>,String>  selectStatements = Collections.synchronizedMap(new HashMap<Class<?>, String>());
+  protected Map<Class<?>,String>  insertStatements = new ConcurrentHashMap<Class<?>, String>();
+  protected Map<Class<?>,String>  updateStatements = new ConcurrentHashMap<Class<?>, String>();
+  protected Map<Class<?>,String>  deleteStatements = new ConcurrentHashMap<Class<?>, String>();
+  protected Map<Class<?>,String>  selectStatements = new ConcurrentHashMap<Class<?>, String>();
   protected boolean isDbIdentityUsed = true;
   protected boolean isDbHistoryUsed = true;
 
