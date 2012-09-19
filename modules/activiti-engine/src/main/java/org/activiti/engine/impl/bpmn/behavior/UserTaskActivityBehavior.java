@@ -12,8 +12,10 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
@@ -102,7 +104,8 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       for (Expression groupIdExpr : taskDefinition.getCandidateGroupIdExpressions()) {
         Object value = groupIdExpr.getValue(execution);
         if (value instanceof String) {
-          task.addCandidateGroup((String) value);
+          List<String> candiates = extractCandidates((String) value);
+          task.addCandidateGroups(candiates);
         } else if (value instanceof Collection) {
           task.addCandidateGroups((Collection) value);
         } else {
@@ -115,7 +118,8 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       for (Expression userIdExpr : taskDefinition.getCandidateUserIdExpressions()) {
         Object value = userIdExpr.getValue(execution);
         if (value instanceof String) {
-          task.addCandidateUser((String) value);
+          List<String> candiates = extractCandidates((String) value);
+          task.addCandidateUsers(candiates);
         } else if (value instanceof Collection) {
           task.addCandidateUsers((Collection) value);
         } else {
@@ -125,6 +129,16 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     }
   }
 
+  /**
+   * Extract a candidate list from a string. 
+   * 
+   * @param str
+   * @return 
+   */
+  protected List<String> extractCandidates(String str) {
+    return Arrays.asList(str.split("[\\s]*,[\\s]*"));
+  }
+  
   // getters and setters //////////////////////////////////////////////////////
   
   public TaskDefinition getTaskDefinition() {
