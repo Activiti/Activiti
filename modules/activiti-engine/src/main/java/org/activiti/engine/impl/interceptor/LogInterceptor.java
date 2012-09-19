@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.interceptor;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.impl.util.ClassNameUtil;
@@ -26,6 +27,10 @@ public class LogInterceptor extends CommandInterceptor {
   private static Logger log = Logger.getLogger(LogInterceptor.class.getName());
 
   public <T> T execute(Command<T> command) {
+    if (!log.isLoggable(Level.FINE)) {
+      // do nothing here if we cannot log
+      return next.execute(command);
+    }
     log.fine("                                                                                                    ");
     log.fine("--- starting " + ClassNameUtil.getClassNameWithoutPackage(command) + " --------------------------------------------------------");
     try {
