@@ -129,7 +129,7 @@ ProcessEngine processEngine = ProcessEngineConfiguration
     <section>
       <title>Simple Example</title>
       <para>
-        Examples for using JPA variables can be found in <literal>JPAVariableTest</literal>. We'll explain <literal>JPAVariableTest.testUpdateJPAEntityValues</literal> step by step.
+        Examples for using JPA variables can be found in <literal><ulink url="http://svn.codehaus.org/activiti/activiti/trunk/modules/activiti-engine/src/test/java/org/activiti/standalone/jpa/JPAVariableTest.java">JPAVariableTest</ulink></literal>. We'll explain <literal>JPAVariableTest.testUpdateJPAEntityValues</literal> step by step.
       </para>
       <para>
         First of all, we create a <literal>EntityManagerFactory</literal> for our persistence-unit, which is based on <literal>META-INF/persistence.xml</literal>. This contains classes which should be included in 
