@@ -135,6 +135,12 @@ public interface RepositoryService {
    *           when the process diagram doesn't exist.
    */
   InputStream getProcessDiagram(String processDefinitionId);
+  
+  /**
+   * Returns the {@link ProcessDefinition} including all BPMN information like additional 
+   * Properties (e.g. documentation).
+   */
+  ProcessDefinition getProcessDefinition(String processDefinitionId);  
 
   /**
    * Provides positions and dimensions of elements in a process diagram as

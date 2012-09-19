@@ -18,13 +18,13 @@ import java.io.Serializable;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.pvm.ReadOnlyProcessDefinition;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 
 
 /**
  * @author Tom Baeyens
  */
-public class GetDeploymentProcessDefinitionCmd implements Command<ReadOnlyProcessDefinition>, Serializable {
+public class GetDeploymentProcessDefinitionCmd implements Command<ProcessDefinitionEntity>, Serializable {
 
   private static final long serialVersionUID = 1L;
   protected String processDefinitionId;
@@ -33,7 +33,7 @@ public class GetDeploymentProcessDefinitionCmd implements Command<ReadOnlyProces
     this.processDefinitionId = processDefinitionId;
   }
 
-  public ReadOnlyProcessDefinition execute(CommandContext commandContext) {
+  public ProcessDefinitionEntity execute(CommandContext commandContext) {
     return Context
       .getProcessEngineConfiguration()
       .getDeploymentCache()

@@ -36,6 +36,7 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.engine.repository.DiagramLayout;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.task.IdentityLink;
 
@@ -83,6 +84,10 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
     return new DeploymentQueryImpl(commandExecutor);
   }
 
+  public ProcessDefinition getProcessDefinition(String processDefinitionId) {
+    return commandExecutor.execute(new GetDeploymentProcessDefinitionCmd(processDefinitionId));
+  }
+  
   public ReadOnlyProcessDefinition getDeployedProcessDefinition(String processDefinitionId) {
     return commandExecutor.execute(new GetDeploymentProcessDefinitionCmd(processDefinitionId));
   }

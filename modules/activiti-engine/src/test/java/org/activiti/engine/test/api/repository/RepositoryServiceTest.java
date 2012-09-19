@@ -48,6 +48,12 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
     assertNotNull(processDefinition);
     assertEquals("oneTaskProcess", processDefinition.getKey());
     assertEquals("The One Task Process", processDefinition.getName());
+
+    // See http://jira.codehaus.org/browse/ACT-1020, we have to query the process definition via the extra method to get all information
+    // otherwise it is null:
+    assertNull(processDefinition.getDescription());
+    // and here we get it:
+    processDefinition = repositoryService.getProcessDefinition(definitions.get(0).getId());    
     assertEquals("This is a process for testing purposes", processDefinition.getDescription());
   }
   
