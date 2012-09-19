@@ -59,6 +59,7 @@ import org.activiti.engine.impl.bpmn.behavior.ServiceTaskExpressionActivityBehav
 import org.activiti.engine.impl.bpmn.behavior.ShellActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.SubProcessActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.TaskActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.TerminateEndEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.TransactionActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.WebServiceActivityBehavior;
@@ -2330,6 +2331,7 @@ public class BpmnParse extends Parse {
 
       Element errorEventDefinition = endEventElement.element("errorEventDefinition");
       Element cancelEventDefinition = endEventElement.element("cancelEventDefinition");
+      Element terminateEventDefinition = endEventElement.element("terminateEventDefinition");
       if (errorEventDefinition != null) { // error end event
         String errorRef = errorEventDefinition.attribute("errorRef");
         if (errorRef == null || "".equals(errorRef)) {
@@ -2349,6 +2351,8 @@ public class BpmnParse extends Parse {
           activity.setProperty("type", "cancelEndEvent");   
           activity.setActivityBehavior(new CancelEndEventActivityBehavior());
         }
+      } else if (terminateEventDefinition != null) {
+        activity.setActivityBehavior(new TerminateEndEventActivityBehavior());
       } else { // default: none end event
         activity.setActivityBehavior(new NoneEndEventActivityBehavior());
       }

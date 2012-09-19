@@ -38,7 +38,7 @@ public class CancelEndEventActivityBehavior extends FlowNodeActivityBehavior {
       throw new ActivitiException("Could not find cancel boundary event for cancel end event "+execution.getActivity());
     }
     
-    ActivityExecution scopeExecution = ScopeUtil.findScopeExecution((ExecutionEntity)execution, cancelBoundaryEvent.getParentActivity());    
+    ActivityExecution scopeExecution = ScopeUtil.findScopeExecutionForScope((ExecutionEntity)execution, cancelBoundaryEvent.getParentActivity());    
     
     // end all executions and process instances in the scope of the transaction
     scopeExecution.destroyScope("cancel end event fired");

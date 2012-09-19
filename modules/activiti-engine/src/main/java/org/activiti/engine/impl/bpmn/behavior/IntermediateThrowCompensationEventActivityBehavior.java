@@ -38,7 +38,7 @@ public class IntermediateThrowCompensationEventActivityBehavior extends FlowNode
   public void execute(ActivityExecution execution) throws Exception {
     final String activityRef = compensateEventDefinition.getActivityRef();
             
-    ExecutionEntity scopeExecution = ScopeUtil.findScopeExecution((ExecutionEntity)execution, (ActivityImpl)execution.getActivity());
+    ExecutionEntity scopeExecution = ScopeUtil.findScopeExecutionForScope((ExecutionEntity)execution, (ActivityImpl)execution.getActivity());
     
     List<CompensateEventSubscriptionEntity> eventSubscriptions;
     

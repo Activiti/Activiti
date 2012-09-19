@@ -33,17 +33,39 @@ import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 
 /**
  * @author Daniel Meyer
+ * @author Nico Rehwaldt
  */
 public class ScopeUtil {
  
   /**
+   * Find the next scope execution in the parent execution hierarchy
+   * That method works different than {@link #findScopeExecutionForScope(org.activiti.engine.impl.persistence.entity.ExecutionEntity, org.activiti.engine.impl.pvm.PvmScope)} 
+   * which returns the most outer scope execution.
+   * 
+   * @param execution the execution from which to start the search
+   * @return the next scope execution in the parent execution hierarchy
+   */
+  public static ActivityExecution findScopeExecution(ActivityExecution execution) {
+    
+    while(!execution.isScope()) {
+      execution = execution.getParent();
+    }
+    
+    if(execution.isConcurrent()) {
+      execution = execution.getParent();
+    }
+    
+    return execution;
+    
+  }
+  /**
    * returns the top-most execution sitting in an activity part of the scope defined by 'scopeActivitiy'.
    */
-  public static ExecutionEntity findScopeExecution(ExecutionEntity execution, PvmScope scopeActivity) {
+  public static ExecutionEntity findScopeExecutionForScope(ExecutionEntity execution, PvmScope scopeActivity) {
     
     // TODO: this feels hacky!
     
-    if(scopeActivity instanceof PvmProcessDefinition) {
+    if (scopeActivity instanceof PvmProcessDefinition) {
       return execution.getProcessInstance();
       
     } else {
@@ -141,7 +163,7 @@ public class ScopeUtil {
    */
   public static void createEventScopeExecution(ExecutionEntity execution) {
 
-    ExecutionEntity eventScope = ScopeUtil.findScopeExecution(execution, execution.getActivity().getParent());
+    ExecutionEntity eventScope = ScopeUtil.findScopeExecutionForScope(execution, execution.getActivity().getParent());
     
     List<CompensateEventSubscriptionEntity> eventSubscriptions = execution.getCompensateEventSubscriptions();
     

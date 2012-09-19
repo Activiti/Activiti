@@ -14,11 +14,10 @@ package org.activiti.engine.impl.cfg;
 
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
-import org.activiti.engine.impl.cfg.*;
 
 
 /**
- * @author nico.rehwaldt@camunda.com
+ * @author Nico Rehwaldt
  */
 public class DefaultBpmnParseFactory implements BpmnParseFactory {
 

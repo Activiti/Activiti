@@ -17,7 +17,7 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 
 
 /**
- * @author nico.rehwaldt@camunda.com
+ * @author Nico Rehwaldt
  */
 public interface BpmnParseFactory {
 
