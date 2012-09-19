@@ -17,14 +17,13 @@ package org.activiti.engine.impl.jobexecutor;
 import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
 import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
-import org.activiti.engine.impl.calendar.DurationHelper;
 
 public enum TimerDeclarationType {
   DATE(DueDateBusinessCalendar.NAME),DURATION(DurationBusinessCalendar.NAME),CYCLE(CycleBusinessCalendar.NAME);
 
-  public final String caledarName;
+  public final String calendarName;
 
   TimerDeclarationType(String caledarName) {
-    this.caledarName = caledarName;
+    this.calendarName = caledarName;
   }
 }

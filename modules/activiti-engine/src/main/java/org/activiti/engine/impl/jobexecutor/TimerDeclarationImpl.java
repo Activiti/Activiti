@@ -100,7 +100,7 @@ public class TimerDeclarationImpl implements Serializable {
     BusinessCalendar businessCalendar = Context
         .getProcessEngineConfiguration()
         .getBusinessCalendarManager()
-        .getBusinessCalendar(type.caledarName);
+        .getBusinessCalendar(type.calendarName);
     
     if (description==null) {
       // Prefent NPE from happening in the next line
