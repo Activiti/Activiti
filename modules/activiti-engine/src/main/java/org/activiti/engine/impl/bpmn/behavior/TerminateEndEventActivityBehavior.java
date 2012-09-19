@@ -40,7 +40,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
   }
   
   
-  // If we use this implementation, we run into trouble in the DbSqlSession
+  // If we use this implementation, we run into trouble in the DbSqlSession, see ACT-1382
   
 //  public void execute(ActivityExecution execution) throws Exception {
 //    
