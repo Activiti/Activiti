@@ -18,6 +18,7 @@ import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -99,6 +100,7 @@ import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.HasDIBounds;
@@ -603,7 +605,10 @@ public class BpmnParse extends Parse {
     for (BpmnParseListener parseListener : parseListeners) {
       parseListener.parseProcess(processElement, processDefinition);
     }
-
+    
+    // now we have parsed anything we can validate some stuff
+    validateActivities(processDefinition.getActivities());
+    
     return processDefinition;
   }
   
@@ -683,7 +688,7 @@ public class BpmnParse extends Parse {
     parentScope.setIoSpecification(ioSpecification);
     
   }
-    
+
   protected void parsePostponedElements(Element scopeElement, ScopeImpl parentScope, HashMap<String, Element> postponedElements) {
     for (Element postponedElement : postponedElements.values()) {
       if(parentScope.findActivity(postponedElement.attribute("id")) == null) { // check whether activity is already parsed
@@ -1131,8 +1136,63 @@ public class BpmnParse extends Parse {
     // Parse stuff common to activities above
     if (activity != null) {
       parseMultiInstanceLoopCharacteristics(activityElement, activity);      
+    }    
+  }
+  
+  public void validateActivities(List<ActivityImpl> activities) {
+    for (ActivityImpl activity : activities) {
+      validateActivity(activity);
+      // check children if it is an own scope / subprocess / ...
+      if (activity.getActivities().size()>0) {
+        validateActivities(activity.getActivities());
+      }
     }
-    
+  }
+
+  protected void validateActivity(ActivityImpl activity) {
+    if (activity.getActivityBehavior() instanceof ExclusiveGatewayActivityBehavior) {
+      validateExclusiveGateway(activity);
+    }
+  }
+
+  public void validateExclusiveGateway(ActivityImpl activity) {
+    if (activity.getOutgoingTransitions().size()==0) {
+      // TODO: double check if this is valid (I think in Activiti yes, since we need start events we will need an end event as well)
+      addError("Exclusive Gateway '" + activity.getId() + "' has no outgoing sequence flows.", null);      
+    } else if (activity.getOutgoingTransitions().size()==1) {
+      PvmTransition flow = activity.getOutgoingTransitions().get(0);
+      Condition condition = (Condition) flow.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
+      if (condition!=null) {
+        addError("Exclusive Gateway '" + activity.getId() + "' has only one outgoing sequence flow ('" + flow.getId() + "'). This is not allowed to have a condition.", null);
+      }
+    } else {    
+      String defaultSequenceFlow = (String) activity.getProperty("default");
+      boolean hasDefaultFlow = defaultSequenceFlow!=null && defaultSequenceFlow.length()>0;
+      
+      ArrayList<PvmTransition> flowsWithoutCondition = new ArrayList<PvmTransition>();
+      for (PvmTransition flow : activity.getOutgoingTransitions()) {
+          Condition condition = (Condition) flow.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
+          boolean isDefaultFlow = flow.getId()!=null && flow.getId().equals(defaultSequenceFlow);
+          boolean hasConditon = condition!=null;
+
+          if (!hasConditon && !isDefaultFlow) {
+            flowsWithoutCondition.add(flow);
+          }
+          if (hasConditon && isDefaultFlow) {
+            addError("Exclusive Gateway '" + activity.getId() + "' has outgoing sequence flow '" + flow.getId() + "' which is the default flow but has a condition too.", null);
+          }
+      }
+      if (hasDefaultFlow || flowsWithoutCondition.size()>1) {
+        // if we either have a default flow (then no flows without conditions are valid at all) or if we have more than one flow without condition this is an error 
+        for (PvmTransition flow : flowsWithoutCondition) {          
+          addError("Exclusive Gateway '" + activity.getId() + "' has outgoing sequence flow '" + flow.getId() + "' without condition which is not the default flow.", null);
+        }        
+      } else if (flowsWithoutCondition.size()==1) {
+        // Havinf no default and exactly one flow without condition this is considered the default one now (to not break backward compatibility)
+        PvmTransition flow = flowsWithoutCondition.get(0);
+        addWarning("Exclusive Gateway '" + activity.getId() + "' has outgoing sequence flow '" + flow.getId() + "' without condition which is not the default flow. We assume it to be the default flow, but it is bad modeling practice, better set the default flow in your gateway.", null);
+      }
+    }
   }
 
   public ActivityImpl parseIntermediateCatchEvent(Element intermediateEventElement, ScopeImpl scopeElement, boolean isAfterEventBasedGateway) {

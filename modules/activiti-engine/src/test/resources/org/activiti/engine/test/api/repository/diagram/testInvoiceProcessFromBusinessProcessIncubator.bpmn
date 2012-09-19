@@ -72,7 +72,9 @@
     <sequenceFlow id="sequenceFlow_183" name="" sourceRef="Rechnung_kl_ren_148" targetRef="Kl_rung_erfolgreich__153"/>
     <sequenceFlow id="sequenceFlow_179" name="" sourceRef="zberweisung_vorbereiten_169" targetRef="PDF_aus_SVN_entfernen_160"/>
     <sequenceFlow id="sequenceFlow_178" name="" sourceRef="Freigebenden_zuordnen_143" targetRef="Rechnung_freigeben_125"/>
-    <sequenceFlow id="ja_186" name="ja" sourceRef="Kl_rung_erfolgreich__153" targetRef="Rechnung_freigeben_125"/>
+    <sequenceFlow id="ja_186" name="ja" sourceRef="Kl_rung_erfolgreich__153" targetRef="Rechnung_freigeben_125">
+      <conditionExpression xsi:type="tFormalExpression" id="FormalExpression_3">some condition</conditionExpression>
+    </sequenceFlow>
     <sequenceFlow id="sequenceFlow_187" name="" sourceRef="Rechnung_eingegangen_138" targetRef="Freigebenden_zuordnen_143"/>
     <sequenceFlow id="SequenceFlow_1" name="" sourceRef="PDF_aus_SVN_entfernen_160" targetRef="Rechnungseingang_abgearbeitet_174"/>
     <textAnnotation id="_40005-2">

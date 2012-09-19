@@ -17,7 +17,9 @@
 		
 		<exclusiveGateway id="gateway1" />
 		<sequenceFlow id="flowGateway1ToTask2" sourceRef="gateway1" targetRef="task2" />
-    <sequenceFlow id="flowGateway1ToTask3" sourceRef="gateway1" targetRef="task3" />
+    <sequenceFlow id="flowGateway1ToTask3" sourceRef="gateway1" targetRef="task3">
+      <conditionExpression id="condition">some condition</conditionExpression>
+    </sequenceFlow>
       
 		<task id="task2" />
 		<sequenceFlow id="flowTask2ToGateway2" sourceRef="task2" targetRef="gateway2" />
