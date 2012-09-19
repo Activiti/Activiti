@@ -44,24 +44,23 @@ public class AcquireJobsCmd implements Command<AcquiredJobs> {
     
     String lockOwner = jobExecutor.getLockOwner();
     int lockTimeInMillis = jobExecutor.getLockTimeInMillis();
-    int maxJobsPerAcquisition = jobExecutor.getMaxJobsPerAcquisition();    
-    int jobsInThisAcquisition = 0;
+    int maxNonExclusiveJobsPerAcquisition = jobExecutor.getMaxJobsPerAcquisition();
     
     AcquiredJobs acquiredJobs = new AcquiredJobs();
     List<JobEntity> jobs = commandContext
       .getJobManager()
-      .findNextJobsToExecute(new Page(0, maxJobsPerAcquisition));
-        
+      .findNextJobsToExecute(new Page(0, maxNonExclusiveJobsPerAcquisition));
+
     for (JobEntity job: jobs) {
       List<String> jobIds = new ArrayList<String>();
 
-      if (job != null && !acquiredJobs.contains(job.getId())) {     
+      if (job != null && !acquiredJobs.contains(job.getId())) {
         if (job.isExclusive() && job.getProcessInstanceId() != null) {
           // acquire all exclusive jobs in the same process instance
           // (includes the current job)
           List<JobEntity> exclusiveJobs = commandContext.getJobManager()
             .findExclusiveJobsToExecute(job.getProcessInstanceId());
-          for (JobEntity exclusiveJob : exclusiveJobs) {   
+          for (JobEntity exclusiveJob : exclusiveJobs) {
             if(exclusiveJob != null) {
               lockJob(exclusiveJob, lockOwner, lockTimeInMillis);
               jobIds.add(exclusiveJob.getId());
@@ -69,19 +68,14 @@ public class AcquireJobsCmd implements Command<AcquiredJobs> {
           }
         } else {
           lockJob(job, lockOwner, lockTimeInMillis);
-          jobIds.add(job.getId());        
+          jobIds.add(job.getId());
         }
         
-      } 
+      }
 
       acquiredJobs.addJobIdBatch(jobIds);
-      
-      jobsInThisAcquisition += jobIds.size();
-      if(jobsInThisAcquisition >= maxJobsPerAcquisition) {
-        break;
-      }      
     }
-    
+
     return acquiredJobs;
   }
 
