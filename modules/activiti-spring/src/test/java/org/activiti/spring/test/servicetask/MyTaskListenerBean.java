@@ -14,15 +14,30 @@ package org.activiti.spring.test.servicetask;
 
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.impl.el.FixedValue;
 
 
 /**
  * @author Joram Barrez
+ * @author Bernd Ruecker (camunda)
  */
 public class MyTaskListenerBean implements TaskListener {
   
+  private FixedValue someField;
+  
   public void notify(DelegateTask delegateTask) {
     delegateTask.getExecution().setVariable("taskListenerVar", "working");
+    if (someField!=null) {
+      delegateTask.getExecution().setVariable("taskListenerField", someField.getValue(delegateTask));
+    }
+  }
+
+  public FixedValue getSomeField() {
+    return someField;
+  }
+
+  public void setSomeField(FixedValue someField) {
+    this.someField = someField;
   }
 
 }

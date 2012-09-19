@@ -12,8 +12,12 @@
     
     <userTask id="userTask" name="Schedule meeting">
       <extensionElements>
-        <activiti:executionListener event="start" delegateExpression="${myExecutionListenerBean}" />
-        <activiti:taskListener event="create" delegateExpression="${myTaskListenerBean}" />
+        <activiti:executionListener event="start" delegateExpression="${myExecutionListenerBean}">
+          <activiti:field name="someField" stringValue="executionListenerInjection"/>
+        </activiti:executionListener>
+        <activiti:taskListener event="create" delegateExpression="${myTaskListenerBean}">
+          <activiti:field name="someField" stringValue="taskListenerInjection"/>
+        </activiti:taskListener>
       </extensionElements>
     </userTask>
     <sequenceFlow id="flow3" sourceRef="userTask" targetRef="end" />

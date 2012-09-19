@@ -1575,7 +1575,7 @@ public class BpmnParse extends Parse {
       if (resultVariableName != null) {
         addError("'resultVariableName' not supported for service tasks using 'delegateExpression'", serviceTaskElement);
       }
-      activity.setActivityBehavior(new ServiceTaskDelegateExpressionActivityBehavior(expressionManager.createExpression(delegateExpression)));
+      activity.setActivityBehavior(new ServiceTaskDelegateExpressionActivityBehavior(expressionManager.createExpression(delegateExpression), parseFieldDeclarations(serviceTaskElement)));
 
     } else if (expression != null && expression.trim().length() > 0) {
       activity.setActivityBehavior(new ServiceTaskExpressionActivityBehavior(expressionManager.createExpression(expression), resultVariableName));
@@ -2236,7 +2236,7 @@ public class BpmnParse extends Parse {
     } else if (expression != null) {
       taskListener = new ExpressionTaskListener(expressionManager.createExpression(expression));
     } else if (delegateExpression != null) {
-      taskListener = new DelegateExpressionTaskListener(expressionManager.createExpression(delegateExpression));
+      taskListener = new DelegateExpressionTaskListener(expressionManager.createExpression(delegateExpression), parseFieldDeclarations(taskListenerElement));
     } else {
       addError("Element 'class', 'expression' or 'delegateExpression' is mandatory on taskListener", taskListenerElement);
     }
@@ -3002,7 +3002,7 @@ public class BpmnParse extends Parse {
     } else if (expression != null) {
       executionListener = new ExpressionExecutionListener(expressionManager.createExpression(expression));
     } else if (delegateExpression != null) {
-      executionListener = new DelegateExpressionExecutionListener(expressionManager.createExpression(delegateExpression));
+      executionListener = new DelegateExpressionExecutionListener(expressionManager.createExpression(delegateExpression), parseFieldDeclarations(executionListenerElement));
     } else {
       addError("Element 'class' or 'expression' is mandatory on executionListener", executionListenerElement);
     }

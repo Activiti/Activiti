@@ -14,15 +14,29 @@ package org.activiti.spring.test.servicetask;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
-
+import org.activiti.engine.impl.el.FixedValue;
 
 /**
  * @author Joram Barrez
+ * @author Bernd Ruecker (camunda)
  */
 public class MyExecutionListenerBean implements ExecutionListener {
-  
+
+  private FixedValue someField;
+
   public void notify(DelegateExecution execution) throws Exception {
     execution.setVariable("executionListenerVar", "working");
+    if (someField!=null) {
+      execution.setVariable("executionListenerField", someField.getValue(execution));
+    }
+  }
+
+  public FixedValue getSomeField() {
+    return someField;
+  }
+
+  public void setSomeField(FixedValue someField) {
+    this.someField = someField;
   }
 
 }

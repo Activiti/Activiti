@@ -10,7 +10,12 @@
     <startEvent id="start" />
     <sequenceFlow id="flow1" sourceRef="start" targetRef="serviceTask" />
     
-    <serviceTask id="serviceTask" activiti:delegateExpression="${delegateExpressionBean}" />
+    <serviceTask id="serviceTask" activiti:delegateExpression="${delegateExpressionBean}">
+      <extensionElements>
+        <activiti:field name="someField" stringValue="fieldInjectionWorking" />
+      </extensionElements>
+    </serviceTask>
+    
     <sequenceFlow id="flow2" sourceRef="serviceTask" targetRef="userTask" />
     
     <userTask id="userTask" name="Schedule meeting" />

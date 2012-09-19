@@ -14,21 +14,35 @@ package org.activiti.spring.test.servicetask;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
-
+import org.activiti.engine.impl.el.FixedValue;
 
 /**
  * @author Joram Barrez
+ * @author Bernd Ruecker (camunda)
  */
 public class DelegateExpressionBean implements JavaDelegate {
-  
+
   private SentenceGenerator sentenceGenerator;
-  
+
+  private FixedValue someField;
+
   public void execute(DelegateExecution execution) throws Exception {
     execution.setVariable("myVar", sentenceGenerator.getSentence());
+    if (someField != null) {
+      execution.setVariable("fieldInjection", someField.getValue(execution));
+    }
   }
-  
+
   public void setSentenceGenerator(SentenceGenerator sentenceGenerator) {
     this.sentenceGenerator = sentenceGenerator;
+  }
+
+  public FixedValue getSomeField() {
+    return someField;
+  }
+
+  public void setSomeField(FixedValue someField) {
+    this.someField = someField;
   }
 
 }

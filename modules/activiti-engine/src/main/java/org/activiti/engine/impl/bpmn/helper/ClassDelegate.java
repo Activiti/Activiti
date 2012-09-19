@@ -160,15 +160,19 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
   
   public static Object instantiateDelegate(String className, List<FieldDeclaration> fieldDeclarations) {
     Object object = ReflectUtil.instantiate(className);
-    if(fieldDeclarations != null) {
-      for(FieldDeclaration declaration : fieldDeclarations) {
-        applyFieldDeclaration(declaration, object);
-      }
-    }
+    applyFieldDeclaration(fieldDeclarations, object);
     return object;
   }
   
-  private static void applyFieldDeclaration(FieldDeclaration declaration, Object target) {
+  public static void applyFieldDeclaration(List<FieldDeclaration> fieldDeclarations, Object target) {
+    if(fieldDeclarations != null) {
+      for(FieldDeclaration declaration : fieldDeclarations) {
+        applyFieldDeclaration(declaration, target);
+      }
+    }
+  }
+  
+  public static void applyFieldDeclaration(FieldDeclaration declaration, Object target) {
     Method setterMethod = ReflectUtil.getSetter(declaration.getName(), 
       target.getClass(), declaration.getValue().getClass());
     

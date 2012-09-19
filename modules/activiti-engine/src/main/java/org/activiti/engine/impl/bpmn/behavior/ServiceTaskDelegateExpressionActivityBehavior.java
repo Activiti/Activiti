@@ -12,11 +12,15 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.List;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
+import org.activiti.engine.impl.bpmn.helper.ClassDelegate;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
+import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehaviorInvocation;
 import org.activiti.engine.impl.delegate.JavaDelegateInvocation;
@@ -37,9 +41,11 @@ import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
 public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityBehavior {
   
   protected Expression expression;
+  private final List<FieldDeclaration> fieldDeclarations;
   
-  public ServiceTaskDelegateExpressionActivityBehavior(Expression expression) {
+  public ServiceTaskDelegateExpressionActivityBehavior(Expression expression, List<FieldDeclaration> fieldDeclarations) {
     this.expression = expression;
+    this.fieldDeclarations = fieldDeclarations;
   }
 
   @Override
@@ -57,6 +63,7 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
       // Note: we can't cache the result of the expression, because the
       // execution can change: eg. delegateExpression='${mySpringBeanFactory.randomSpringBean()}'
       Object delegate = expression.getValue(execution);
+      ClassDelegate.applyFieldDeclaration(fieldDeclarations, delegate);
 
       if (delegate instanceof ActivityBehavior) {
         Context.getProcessEngineConfiguration()
