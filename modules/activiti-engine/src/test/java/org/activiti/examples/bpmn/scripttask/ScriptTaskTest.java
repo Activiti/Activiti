@@ -34,6 +34,6 @@ public class ScriptTaskTest extends PluggableActivitiTestCase {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("setScriptResultToProcessVariable", variables);
 
     assertEquals("hello", runtimeService.getVariable(pi.getId(), "existingProcessVariableName"));
-    assertEquals("hello", runtimeService.getVariable(pi.getId(), "newProcessVariableName"));
+    assertEquals(pi.getId(), runtimeService.getVariable(pi.getId(), "newProcessVariableName"));
   }
 }
