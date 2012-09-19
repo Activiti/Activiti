@@ -1058,8 +1058,8 @@ public void testBooleanVariable() throws Exception {
     
     long executionCount = runtimeService.createExecutionQuery().count();
     
-    assertEquals(executionCount, runtimeService.createNativeExecutionQuery().from(managementService.getTableName(Execution.class)).list().size());
-    assertEquals(executionCount, runtimeService.createNativeExecutionQuery().from(managementService.getTableName(Execution.class)).count());
+    assertEquals(executionCount, runtimeService.createNativeExecutionQuery().sql("SELECT * FROM " + managementService.getTableName(Execution.class)).list().size());
+    assertEquals(executionCount, runtimeService.createNativeExecutionQuery().sql("SELECT count(*) FROM " + managementService.getTableName(Execution.class)).count());
   }
 
   @Deployment(resources={"org/activiti/engine/test/api/runtime/concurrentExecution.bpmn20.xml"})

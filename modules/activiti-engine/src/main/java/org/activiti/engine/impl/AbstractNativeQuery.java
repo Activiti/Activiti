@@ -13,14 +13,12 @@
 package org.activiti.engine.impl;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.ListQueryParameterObject;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -31,13 +29,13 @@ import org.activiti.engine.query.NativeQuery;
  * 
  * @author Bernd Ruecker (camunda)
  */
-public abstract class AbstractNativeQuery<T extends NativeQuery< ? , ? >, U> extends ListQueryParameterObject implements Command<Object>, NativeQuery<T, U>,
+public abstract class AbstractNativeQuery<T extends NativeQuery< ? , ? >, U> implements Command<Object>, NativeQuery<T, U>,
         Serializable {
 
   private static final long serialVersionUID = 1L;
 
   private static enum ResultType {
-    LIST, LIST_PAGE, SINGLE_RESULT, COUNT
+    LIST, SINGLE_RESULT, COUNT
   }
 
   protected transient CommandExecutor commandExecutor;
@@ -45,14 +43,8 @@ public abstract class AbstractNativeQuery<T extends NativeQuery< ? , ? >, U> ext
 
   protected ResultType resultType;
 
-  private String selectClause = "*";
-  private String fromClause = "*";
-
   private Map<String, Object> parameters = new HashMap<String, Object>();
-
-  protected AbstractNativeQuery() {
-    parameter = this;
-  }
+  private String sqlStatement;
 
   protected AbstractNativeQuery(CommandExecutor commandExecutor) {
     this.commandExecutor = commandExecutor;
@@ -68,14 +60,8 @@ public abstract class AbstractNativeQuery<T extends NativeQuery< ? , ? >, U> ext
   }
 
   @SuppressWarnings("unchecked")
-  public T from(String fromClause) {
-    this.fromClause = fromClause;
-    return (T) this;
-  }
-
-  @SuppressWarnings("unchecked")
-  public T select(String selectClause) {
-    this.selectClause = selectClause;
+  public T sql(String sqlStatement) {
+    this.sqlStatement = sqlStatement;
     return (T) this;
   }
 
@@ -103,17 +89,6 @@ public abstract class AbstractNativeQuery<T extends NativeQuery< ? , ? >, U> ext
     return executeList(Context.getCommandContext(), getParameterMap(), 0, Integer.MAX_VALUE);
   }
 
-  @SuppressWarnings("unchecked")
-  public List<U> listPage(int firstResult, int maxResults) {
-    this.firstResult = firstResult;
-    this.maxResults = maxResults;
-    this.resultType = ResultType.LIST_PAGE;
-    if (commandExecutor != null) {
-      return (List<U>) commandExecutor.execute(this);
-    }
-    return executeList(Context.getCommandContext(), getParameterMap(), firstResult, maxResults);
-  }
-
   public long count() {
     this.resultType = ResultType.COUNT;
     if (commandExecutor != null) {
@@ -127,8 +102,6 @@ public abstract class AbstractNativeQuery<T extends NativeQuery< ? , ? >, U> ext
       return executeList(commandContext, getParameterMap(), 0, Integer.MAX_VALUE);
     } else if (resultType == ResultType.SINGLE_RESULT) {
       return executeSingleResult(commandContext);
-    } else if (resultType == ResultType.LIST_PAGE) {
-      return executeList(commandContext, getParameterMap(), firstResult, maxResults);
     } else {
       return executeCount(commandContext, getParameterMap());
     }
@@ -159,25 +132,11 @@ public abstract class AbstractNativeQuery<T extends NativeQuery< ? , ? >, U> ext
 
   private Map<String, Object> getParameterMap() {
     HashMap<String, Object> parameterMap = new HashMap<String, Object>();
-    
-    parameterMap.put("fromClause", fromClause);
-    parameterMap.put("selectClause", selectClause);
-        
-    parameterMap.put("firstResult", firstResult);
-    parameterMap.put("maxResults", maxResults);
-
+    parameterMap.put("sql", sqlStatement);
     parameterMap.putAll(parameters);
     return parameterMap;
   }
 
-  public String getFrom() {
-    return fromClause;
-  }
-
-  public String getSelect() {
-    return selectClause;
-  }
-  
   public Map<String, Object> getParameters() {
     return parameters;
   }

@@ -145,12 +145,10 @@
   </sql>
   
   <select id="selectHistoricActivityInstanceByNativeQuery" parameterType="java.util.Map" resultMap="historicActivityInstanceResultMap">
-    ${limitBefore}
-    SELECT ${selectClause} FROM ${fromClause}
-    ${limitAfter}
+    ${sql}
   </select>
 
   <select id="selectHistoricActivityInstanceCountByNativeQuery" parameterType="java.util.Map" resultType="long">
-    select count(${selectClause}) FROM ${fromClause}
+    ${sql}
   </select>
 </mapper>

@@ -17,10 +17,6 @@ public class NativeHistoricActivityInstanceQueryImpl extends AbstractNativeQuery
 
   private static final long serialVersionUID = 1L;
 
-  public NativeHistoricActivityInstanceQueryImpl() {
-    super();
-  }
-
   public NativeHistoricActivityInstanceQueryImpl(CommandContext commandContext) {
     super(commandContext);
   }

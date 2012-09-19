@@ -17,10 +17,6 @@ public class NativeHistoricProcessInstanceQueryImpl extends AbstractNativeQuery<
 
   private static final long serialVersionUID = 1L;
 
-  public NativeHistoricProcessInstanceQueryImpl() {
-    super();
-  }
-
   public NativeHistoricProcessInstanceQueryImpl(CommandContext commandContext) {
     super(commandContext);
   }

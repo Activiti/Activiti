@@ -17,10 +17,6 @@ public class NativeHistoricTaskInstanceQueryImpl extends AbstractNativeQuery<Nat
 
   private static final long serialVersionUID = 1L;
 
-  public NativeHistoricTaskInstanceQueryImpl() {
-    super();
-  }
-
   public NativeHistoricTaskInstanceQueryImpl(CommandContext commandContext) {
     super(commandContext);
   }

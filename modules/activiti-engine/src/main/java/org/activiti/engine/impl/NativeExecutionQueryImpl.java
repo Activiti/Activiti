@@ -15,10 +15,6 @@ public class NativeExecutionQueryImpl extends AbstractNativeQuery<NativeExecutio
 
   private static final long serialVersionUID = 1L;
 
-  public NativeExecutionQueryImpl() {
-    super();
-  }
-
   public NativeExecutionQueryImpl(CommandContext commandContext) {
     super(commandContext);
   }

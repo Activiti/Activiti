@@ -12,11 +12,7 @@ import org.activiti.engine.task.Task;
 public class NativeTaskQueryImpl extends AbstractNativeQuery<NativeTaskQuery, Task> implements NativeTaskQuery {
 
   private static final long serialVersionUID = 1L;
-
-  public NativeTaskQueryImpl() {
-    super();
-  }
-
+  
   public NativeTaskQueryImpl(CommandContext commandContext) {
     super(commandContext);
   }

@@ -413,23 +413,23 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testNativeHistoricProcessInstanceTest() {    
     // just test that the query will be constructed and executed, details are tested in the TaskQueryTest
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");    
-    assertEquals(1, historyService.createNativeHistoricProcessInstanceQuery().from(managementService.getTableName(HistoricProcessInstance.class)).count());
-    assertEquals(1, historyService.createNativeHistoricProcessInstanceQuery().from(managementService.getTableName(HistoricProcessInstance.class)).list().size());
+    runtimeService.startProcessInstanceByKey("oneTaskProcess");    
+    assertEquals(1, historyService.createNativeHistoricProcessInstanceQuery().sql("SELECT count(*) FROM " + managementService.getTableName(HistoricProcessInstance.class)).count());
+    assertEquals(1, historyService.createNativeHistoricProcessInstanceQuery().sql("SELECT * FROM " + managementService.getTableName(HistoricProcessInstance.class)).list().size());
   }
   
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testNativeHistoricTaskInstanceTest() {    
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");    
-    assertEquals(1, historyService.createNativeHistoricTaskInstanceQuery().from(managementService.getTableName(HistoricProcessInstance.class)).count());
-    assertEquals(1, historyService.createNativeHistoricTaskInstanceQuery().from(managementService.getTableName(HistoricProcessInstance.class)).list().size());
+    runtimeService.startProcessInstanceByKey("oneTaskProcess");    
+    assertEquals(1, historyService.createNativeHistoricTaskInstanceQuery().sql("SELECT count(*) FROM " + managementService.getTableName(HistoricProcessInstance.class)).count());
+    assertEquals(1, historyService.createNativeHistoricTaskInstanceQuery().sql("SELECT * FROM " + managementService.getTableName(HistoricProcessInstance.class)).list().size());
   }
   
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testNativeHistoricActivityInstanceTest() {    
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");    
-    assertEquals(1, historyService.createNativeHistoricActivityInstanceQuery().from(managementService.getTableName(HistoricProcessInstance.class)).count());
-    assertEquals(1, historyService.createNativeHistoricActivityInstanceQuery().from(managementService.getTableName(HistoricProcessInstance.class)).list().size());
+    runtimeService.startProcessInstanceByKey("oneTaskProcess");    
+    assertEquals(1, historyService.createNativeHistoricActivityInstanceQuery().sql("SELECT count(*) FROM " + managementService.getTableName(HistoricProcessInstance.class)).count());
+    assertEquals(1, historyService.createNativeHistoricActivityInstanceQuery().sql("SELECT * FROM " + managementService.getTableName(HistoricProcessInstance.class)).list().size());
   }
   
 }

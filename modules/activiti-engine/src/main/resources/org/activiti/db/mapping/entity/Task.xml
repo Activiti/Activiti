@@ -297,13 +297,11 @@
   </sql>  
 
   <select id="selectTaskByNativeQuery" parameterType="java.util.Map" resultMap="taskResultMap">
-    ${limitBefore}
-    SELECT ${selectClause} FROM ${fromClause}
-    ${limitAfter}
+    ${sql}
   </select>
 
   <select id="selectTaskCountByNativeQuery" parameterType="java.util.Map" resultType="long">
-    select count(${selectClause}) FROM ${fromClause}
+     ${sql}
   </select>
 
 </mapper>
