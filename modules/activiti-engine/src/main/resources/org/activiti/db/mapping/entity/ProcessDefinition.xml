@@ -61,70 +61,68 @@
 
   <select id="selectProcessDefinitionsByQueryCriteria" parameterType="org.activiti.engine.impl.ProcessDefinitionQueryImpl" resultMap="processDefinitionResultMap">
   	${limitBefore}
-    select PD.*
+    select RES.* ${limitBetween}
     <include refid="selectProcessDefinitionsByQueryCriteriaSql"/>
-    <if test="orderBy != null">
-      order by ${orderBy}
-    </if>
+    ${orderBy}
     ${limitAfter}
   </select>
 
   <select id="selectProcessDefinitionCountByQueryCriteria" parameterType="org.activiti.engine.impl.ProcessDefinitionQueryImpl" resultType="long">
-    select count(PD.ID_)
+    select count(RES.ID_)
     <include refid="selectProcessDefinitionsByQueryCriteriaSql"/>
   </select>
   
   <sql id="selectProcessDefinitionsByQueryCriteriaSql">  
-    from ${prefix}ACT_RE_PROCDEF PD
+    from ${prefix}ACT_RE_PROCDEF RES
     <if test="eventSubscriptionType != null">
-    	inner join ${prefix}ACT_RU_EVENT_SUBSCR EVT on PD.ID_ = EVT.CONFIGURATION_
+    	inner join ${prefix}ACT_RU_EVENT_SUBSCR EVT on RES.ID_ = EVT.CONFIGURATION_
     </if>
     <where>
       <if test="id != null">
-        PD.ID_ = #{id}
+        RES.ID_ = #{id}
       </if>
       <if test="category != null">
-        and PD.CATEGORY_ = #{category}
+        and RES.CATEGORY_ = #{category}
       </if>
       <if test="categoryLike != null">
-        and PD.CATEGORY_ like #{categoryLike}
+        and RES.CATEGORY_ like #{categoryLike}
       </if>
       <if test="name != null">
-        and PD.NAME_ = #{name}
+        and RES.NAME_ = #{name}
       </if>
       <if test="nameLike != null">
-        and PD.NAME_ like #{nameLike}
+        and RES.NAME_ like #{nameLike}
       </if>
       <if test="key != null">
-        and PD.KEY_ = #{key}
+        and RES.KEY_ = #{key}
       </if>
       <if test="keyLike != null">
-        and PD.KEY_ like #{keyLike}
+        and RES.KEY_ like #{keyLike}
       </if>
       <if test="resourceName != null">
-        and PD.RESOURCE_NAME_ = #{resourceName}
+        and RES.RESOURCE_NAME_ = #{resourceName}
       </if>
       <if test="resourceNameLike != null">
-        and PD.RESOURCE_NAME_ like #{resourceNameLike}
+        and RES.RESOURCE_NAME_ like #{resourceNameLike}
       </if>
       <if test="version != null">
-        and PD.VERSION_ = #{version}
+        and RES.VERSION_ = #{version}
       </if>
       <if test="deploymentId != null">
-        and PD.DEPLOYMENT_ID_ = #{deploymentId}
+        and RES.DEPLOYMENT_ID_ = #{deploymentId}
       </if>
       <if test="latest">
-        and PD.VERSION_ = (select max(VERSION_) from ${prefix}ACT_RE_PROCDEF where KEY_ = PD.KEY_)
+        and RES.VERSION_ = (select max(VERSION_) from ${prefix}ACT_RE_PROCDEF where KEY_ = RES.KEY_)
       </if>
       <if test="suspensionState != null">
-        and (PD.SUSPENSION_STATE_ = #{suspensionState.stateCode})
+        and (RES.SUSPENSION_STATE_ = #{suspensionState.stateCode})
       </if>
       <if test="eventSubscriptionType != null">
       	and (EVT.EVENT_TYPE_ = #{eventSubscriptionType} and EVT.EVENT_NAME_ = #{eventSubscriptionName}) 
       </if>
       <if test="authorizationUserId != null">
-        AND (exists (select ID_  from ${prefix} ACT_RU_IDENTITYLINK  IDN where IDN.PROC_DEF_ID_ = PD.ID_ and IDN.USER_ID_ = #{authorizationUserId})
-             OR exists (select IDN.ID_  from ${prefix} ACT_RU_IDENTITYLINK  IDN,  ${prefix} ACT_ID_MEMBERSHIP MBMR where IDN.PROC_DEF_ID_ = PD.ID_ and MBMR.USER_ID_ =  #{authorizationUserId} and IDN.GROUP_ID_ = MBMR.GROUP_ID_)
+        AND (exists (select ID_  from ${prefix} ACT_RU_IDENTITYLINK  IDN where IDN.PROC_DEF_ID_ = RES.ID_ and IDN.USER_ID_ = #{authorizationUserId})
+             OR exists (select IDN.ID_  from ${prefix} ACT_RU_IDENTITYLINK  IDN,  ${prefix} ACT_ID_MEMBERSHIP MBMR where IDN.PROC_DEF_ID_ = RES.ID_ and MBMR.USER_ID_ =  #{authorizationUserId} and IDN.GROUP_ID_ = MBMR.GROUP_ID_)
              )
       </if>
     </where>
@@ -147,17 +145,15 @@
   <!-- mysql specific sql -->
   <select id="selectProcessDefinitionsByQueryCriteria_mysql" parameterType="org.activiti.engine.impl.ProcessDefinitionQueryImpl" resultMap="processDefinitionResultMap">
   	${limitBefore}
-    select distinct PD.*
+    select distinct RES.* ${limitBetween}
     <include refid="selectProcessDefinitionsByQueryCriteriaSql"/>
-    <if test="orderBy != null">
-      order by ${orderBy}
-    </if>
+    ${orderBy}
     ${limitAfter}
   </select>
 
   <!-- mysql specific sql -->
   <select id="selectProcessDefinitionCountByQueryCriteria_mysql" parameterType="org.activiti.engine.impl.ProcessDefinitionQueryImpl" resultType="long">
-    select distinct count(PD.ID_)
+    select distinct count(RES.ID_)
     <include refid="selectProcessDefinitionsByQueryCriteriaSql"/>
   </select>
 </mapper>

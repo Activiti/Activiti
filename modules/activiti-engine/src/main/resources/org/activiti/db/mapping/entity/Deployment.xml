@@ -31,66 +31,52 @@
 
   <select id="selectDeploymentsByQueryCriteria" parameterType="org.activiti.engine.impl.DeploymentQueryImpl" resultMap="deploymentResultMap">
   	${limitBefore}
-    select distinct D.*
+    select distinct RES.* ${limitBetween}
     <include refid="selectDeploymentsByQueryCriteriaSql"/>
-    <if test="orderBy != null">
-      order by ${orderBy}
-    </if>
+    ${orderBy}
     ${limitAfter}
   </select>
 
   <select id="selectDeploymentCountByQueryCriteria" parameterType="org.activiti.engine.impl.DeploymentQueryImpl" resultType="long">
-    select count(distinct D.ID_)
+    select count(distinct RES.ID_)
     <include refid="selectDeploymentsByQueryCriteriaSql"/>
   </select>
   
   <sql id="selectDeploymentsByQueryCriteriaSql">  
-    from ${prefix}ACT_RE_DEPLOYMENT D
+    from ${prefix}ACT_RE_DEPLOYMENT RES
     <where>
       <if test="deploymentId != null">
-        D.ID_ = #{deploymentId}
+        RES.ID_ = #{deploymentId}
       </if>
       <if test="name != null">
-        D.NAME_ = #{name}
+        RES.NAME_ = #{name}
       </if>
       <if test="nameLike != null">
-        D.NAME_ like #{nameLike}
+        RES.NAME_ like #{nameLike}
       </if>
     </where>
   </sql>
     
   <select id="selectDeploymentsByName" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="deploymentResultMap">
-  	${limitBefore}
     select * from ${prefix}ACT_RE_DEPLOYMENT D where NAME_=#{parameter} order by D.DEPLOY_TIME_ desc
-    ${limitAfter}
   </select>
   
   <select id="selectDeploymentById" parameterType="string" resultMap="deploymentResultMap">
     select * from ${prefix}ACT_RE_DEPLOYMENT where ID_ = #{id}
   </select>
-  
-  <select id="selectDeploymentByProcessDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="deploymentResultMap">
-  	${limitBefore}
-    select * from ${prefix}ACT_RE_DEPLOYMENT D 
-    where D.ID_ = 
-      (select P.DEPLOYMENT_ID_ from ${prefix}ACT_RE_PROCDEF P where P.ID_ = #{parameter})
-    ${limitAfter}
-  </select>
-  
+
   <!-- mysql specific -->
   <select id="selectDeploymentsByQueryCriteria_mysql" parameterType="org.activiti.engine.impl.DeploymentQueryImpl" resultMap="deploymentResultMap">
   	${limitBefore}
-    select distinct D.*
+    select distinct RES.* ${limitBetween}
     <include refid="selectDeploymentsByQueryCriteriaSql"/>
-    <if test="orderBy != null">
-      order by ${orderBy}
-    </if>
+   	${orderBy}
     ${limitAfter}
   </select>
   
   <!-- mysql specific -->
   <select id="selectDeploymentCountByQueryCriteria_mysql" parameterType="org.activiti.engine.impl.DeploymentQueryImpl" resultType="long">
-    select distinct count(D.ID_)
+    select distinct count(RES.ID_)
     <include refid="selectDeploymentsByQueryCriteriaSql"/>
   </select>
 

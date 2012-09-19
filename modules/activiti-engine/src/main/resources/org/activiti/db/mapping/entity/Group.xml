@@ -49,16 +49,13 @@
   </select>
     
   <select id="selectGroupsByUserId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="groupResultMap">
-  	${limitBefore}
     select g.*
     from ${prefix}ACT_ID_GROUP g, ${prefix}ACT_ID_MEMBERSHIP membership
     where g.ID_ = membership.GROUP_ID_
       and membership.USER_ID_ = #{parameter}
-    ${limitAfter}
   </select>
 
   <select id="selectGroupsByUserIdAndGroupType" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="groupResultMap">
-  	${limitBefore}
     select g.*
     from ${prefix}ACT_ID_GROUP g, ${prefix}ACT_ID_MEMBERSHIP membership
     where g.ID_ = membership.GROUP_ID_
@@ -66,48 +63,45 @@
       <if test="groupType != null">
          and g.TYPE_ = #{parameter.groupType}
       </if>
-    ${limitAfter}
   </select>
   
   <select id="selectGroupByQueryCriteria" parameterType="org.activiti.engine.impl.GroupQueryImpl" resultMap="groupResultMap">
   	${limitBefore}
-    select G.*
+    select RES.* ${limitBetween}
     <include refid="selectGroupByQueryCriteriaSql" />
-    <if test="orderBy != null">
-      order by ${orderBy}
-    </if>
+    ${orderBy}
     ${limitAfter}
   </select>
   
    <select id="selectGroupCountByQueryCriteria" parameterType="org.activiti.engine.impl.GroupQueryImpl" resultType="long">
-    select count(G.ID_)
+    select count(RES.ID_)
     <include refid="selectGroupByQueryCriteriaSql" />
   </select>
   
   <sql id="selectGroupByQueryCriteriaSql">
-    from ${prefix}ACT_ID_GROUP G
+    from ${prefix}ACT_ID_GROUP RES
     <if test="userId != null">
-      inner join ${prefix}ACT_ID_MEMBERSHIP M on G.ID_ = M.GROUP_ID_
+      inner join ${prefix}ACT_ID_MEMBERSHIP M on RES.ID_ = M.GROUP_ID_
       inner join ${prefix}ACT_ID_USER U on M.USER_ID_ = U.ID_
     </if>
     <where>
       <if test="id != null">
-        G.ID_ = #{id}
+        RES.ID_ = #{id}
       </if>
       <if test="name != null">
-        and G.NAME_ = #{name}
+        and RES.NAME_ = #{name}
       </if>
       <if test="nameLike != null">
-        and G.NAME_ like #{nameLike}
+        and RES.NAME_ like #{nameLike}
       </if>
       <if test="type != null">
-        and G.TYPE_ = #{type}
+        and RES.TYPE_ = #{type}
       </if>
       <if test="userId != null">
         and U.ID_ = #{userId}
       </if>
       <if test="procDefId != null">
-        and exists (select ID_ from ${prefix} ACT_RU_IDENTITYLINK where PROC_DEF_ID_ = #{procDefId} and GROUP_ID_=G.ID_ )
+        and exists (select ID_ from ${prefix} ACT_RU_IDENTITYLINK where PROC_DEF_ID_ = #{procDefId} and GROUP_ID_=RES.ID_ )
       </if>
       
     </where>

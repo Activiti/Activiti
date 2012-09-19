@@ -32,10 +32,10 @@ public class UserQueryProperty implements QueryProperty {
 
   private static final Map<String, UserQueryProperty> properties = new HashMap<String, UserQueryProperty>();
 
-  public static final UserQueryProperty USER_ID = new UserQueryProperty("U.ID_");
-  public static final UserQueryProperty FIRST_NAME = new UserQueryProperty("U.FIRST_");
-  public static final UserQueryProperty LAST_NAME = new UserQueryProperty("U.LAST_");
-  public static final UserQueryProperty EMAIL = new UserQueryProperty("U.EMAIL_");
+  public static final UserQueryProperty USER_ID = new UserQueryProperty("RES.ID_");
+  public static final UserQueryProperty FIRST_NAME = new UserQueryProperty("RES.FIRST_");
+  public static final UserQueryProperty LAST_NAME = new UserQueryProperty("RES.LAST_");
+  public static final UserQueryProperty EMAIL = new UserQueryProperty("RES.EMAIL_");
   
   private String name;
 

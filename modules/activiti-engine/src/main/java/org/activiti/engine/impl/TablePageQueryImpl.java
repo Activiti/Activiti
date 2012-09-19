@@ -32,7 +32,7 @@ public class TablePageQueryImpl implements TablePageQuery, Command<TablePage>, S
   transient CommandExecutor commandExecutor;
   
   protected String tableName;
-  protected String orderBy;
+  protected String order;
   protected int firstResult;
   protected int maxResults;
 
@@ -63,12 +63,12 @@ public class TablePageQueryImpl implements TablePageQuery, Command<TablePage>, S
   }
 
   protected void addOrder(String column, String sortOrder) {
-    if (orderBy==null) {
-      orderBy = "";
+    if (order==null) {
+      order = "";
     } else {
-      orderBy = orderBy+", ";
+      order = order+", ";
     }
-    orderBy = orderBy+column+" "+sortOrder;
+    order = order+column+" "+sortOrder;
   }
 
   public TablePage listPage(int firstResult, int maxResults) {
@@ -82,4 +82,9 @@ public class TablePageQueryImpl implements TablePageQuery, Command<TablePage>, S
       .getTableDataManager()
       .getTablePage(this, firstResult, maxResults);
   }
+  
+  public String getOrder() {
+    return order;
+  }
+  
 }

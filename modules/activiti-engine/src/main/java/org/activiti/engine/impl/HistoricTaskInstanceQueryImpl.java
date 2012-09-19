@@ -319,9 +319,6 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
   public String getProcessDefinitionId() {
     return processDefinitionId;
   }
-  public String getOrderBy() {
-    return orderBy;
-  }
   public boolean isFinished() {
     return finished;
   }

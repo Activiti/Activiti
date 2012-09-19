@@ -183,9 +183,6 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
   public String getActivityId() {
     return activityId;
   }
-  public String getOrderBy() {
-    return orderBy;
-  }
   public String getActivityName() {
     return activityName;
   }

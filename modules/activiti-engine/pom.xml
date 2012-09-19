@@ -587,6 +587,23 @@
 		  </dependency>
 	   </dependencies>
 	</profile>
+	
+	<profile>
+	  <id>mysql</id>
+	    <activation>
+		  <property>
+			<name>database</name>
+			<value>mysql</value>
+		  </property>
+		</activation>
+		<dependencies>
+		  <dependency>
+		    <groupId>mysql</groupId>
+     	    <artifactId>mysql-connector-java</artifactId>
+			<scope>test</scope>
+		  </dependency>
+	   </dependencies>
+	</profile>
   </profiles>
 
 </project>

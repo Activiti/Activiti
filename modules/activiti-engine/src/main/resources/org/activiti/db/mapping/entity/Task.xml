@@ -92,106 +92,104 @@
   
   <select id="selectTaskByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultMap="taskResultMap">
   	${limitBefore}
-    select distinct T.*
-    <include refid="selectTaskByQueryCriteriaSql"/>
-    <if test="orderBy != null">
-      order by ${orderBy}
-    </if>
+    select distinct RES.* ${limitBetween}
+    <include refid="selectTaskByQueryCriteriaSql"/> 
+    ${orderBy}
     ${limitAfter}
   </select>
 
   <select id="selectTaskCountByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultType="long">
-    select count(distinct T.ID_)
+    select count(distinct RES.ID_)
     <include refid="selectTaskByQueryCriteriaSql"/>
   </select>
   
   <sql id="selectTaskByQueryCriteriaSql">  
-    from ${prefix}ACT_RU_TASK T
+    from ${prefix}ACT_RU_TASK RES
     <if test="candidateUser != null || candidateGroups != null || involvedUser != null">
-      inner join ${prefix}ACT_RU_IDENTITYLINK I on I.TASK_ID_ = T.ID_
+      inner join ${prefix}ACT_RU_IDENTITYLINK I on I.TASK_ID_ = RES.ID_
     </if>
     <foreach collection="variables" index="index" item="var">
       <choose>
         <when test="var.local">
-          inner join ${prefix}ACT_RU_VARIABLE A${index} on T.ID_ = A${index}.TASK_ID_ 
+          inner join ${prefix}ACT_RU_VARIABLE A${index} on RES.ID_ = A${index}.TASK_ID_ 
         </when>
         <otherwise>
-          inner join ${prefix}ACT_RU_VARIABLE A${index} on T.PROC_INST_ID_ = A${index}.PROC_INST_ID_ 
+          inner join ${prefix}ACT_RU_VARIABLE A${index} on RES.PROC_INST_ID_ = A${index}.PROC_INST_ID_ 
         </otherwise>
       </choose>       
     </foreach>
     <if test="processDefinitionKey != null || processDefinitionName != null">
-      inner join ${prefix}ACT_RE_PROCDEF D on T.PROC_DEF_ID_ = D.ID_
+      inner join ${prefix}ACT_RE_PROCDEF D on RES.PROC_DEF_ID_ = D.ID_
     </if>
     <if test="processInstanceBusinessKey != null">
-        inner join ${prefix}ACT_RU_EXECUTION E on T.PROC_INST_ID_ = E.ID_
+        inner join ${prefix}ACT_RU_EXECUTION E on RES.PROC_INST_ID_ = E.ID_
     </if>
     <where> 
       <if test="taskId != null">
-        T.ID_ = #{taskId}
+        RES.ID_ = #{taskId}
       </if>
       <if test="name != null">
-        and T.NAME_ = #{name}
+        and RES.NAME_ = #{name}
       </if>
       <if test="nameLike != null">
-        and T.NAME_ like #{nameLike}
+        and RES.NAME_ like #{nameLike}
       </if>
       <if test="description != null">
-        and T.DESCRIPTION_ = #{description}
+        and RES.DESCRIPTION_ = #{description}
       </if>
       <if test="descriptionLike != null">
-        and T.DESCRIPTION_ like #{descriptionLike}
+        and RES.DESCRIPTION_ like #{descriptionLike}
       </if>
       <if test="priority != null">
-        and T.PRIORITY_ = #{priority}
+        and RES.PRIORITY_ = #{priority}
       </if> 
       <if test="minPriority != null">
-        and T.PRIORITY_ &gt;= #{minPriority}
+        and RES.PRIORITY_ &gt;= #{minPriority}
       </if> 
       <if test="maxPriority != null">
-        and T.PRIORITY_ &lt;= #{maxPriority}
+        and RES.PRIORITY_ &lt;= #{maxPriority}
       </if> 
       <if test="assignee != null">
-        and T.ASSIGNEE_ = #{assignee}
+        and RES.ASSIGNEE_ = #{assignee}
       </if>
       <if test="owner != null">
-        and T.OWNER_ = #{owner}
+        and RES.OWNER_ = #{owner}
       </if>
       <if test="unassigned">
-        and T.ASSIGNEE_ IS NULL
+        and RES.ASSIGNEE_ IS NULL
       </if>
       <if test="noDelegationState">
-        and T.DELEGATION_ IS NULL
+        and RES.DELEGATION_ IS NULL
       </if>
       <if test="delegationState != null">
-        and T.DELEGATION_ = #{delegationStateString}
+        and RES.DELEGATION_ = #{delegationStateString}
       </if>
       <if test="processInstanceId != null">
-        and T.PROC_INST_ID_ = #{processInstanceId}
+        and RES.PROC_INST_ID_ = #{processInstanceId}
       </if>
       <if test="processInstanceBusinessKey != null">
         and E.BUSINESS_KEY_ = #{processInstanceBusinessKey}
       </if>         
       <if test="executionId != null">
-        and T.EXECUTION_ID_ = #{executionId}
+        and RES.EXECUTION_ID_ = #{executionId}
       </if>
       <if test="createTime != null">
-        and T.CREATE_TIME_ = #{createTime}
+        and RES.CREATE_TIME_ = #{createTime}
       </if>
       <if test="createTimeBefore != null">
-        and T.CREATE_TIME_ &lt; #{createTimeBefore}
+        and RES.CREATE_TIME_ &lt; #{createTimeBefore}
       </if>
       <if test="createTimeAfter != null">
-        and T.CREATE_TIME_ &gt; #{createTimeAfter}
+        and RES.CREATE_TIME_ &gt; #{createTimeAfter}
       </if>
       <if test="key != null">
-        and T.TASK_DEF_KEY_ = #{key}
+        and RES.TASK_DEF_KEY_ = #{key}
       </if>
       <if test="keyLike != null">
-        and T.TASK_DEF_KEY_ like #{keyLike}
+        and RES.TASK_DEF_KEY_ like #{keyLike}
       </if>
       <if test="processDefinitionId != null">
-        and T.PROC_DEF_ID_ = #{processDefinitionId}
+        and RES.PROC_DEF_ID_ = #{processDefinitionId}
       </if>
       <if test="processDefinitionKey != null">
         and D.KEY_ = #{processDefinitionKey}
@@ -200,19 +198,19 @@
         and D.NAME_ = #{processDefinitionName}
       </if>
       <if test="dueDate != null">
-        and T.DUE_DATE_ = #{dueDate}
+        and RES.DUE_DATE_ = #{dueDate}
       </if>
       <if test="dueBefore != null">
-        and T.DUE_DATE_ &lt; #{dueBefore}
+        and RES.DUE_DATE_ &lt; #{dueBefore}
       </if>
       <if test="dueAfter != null">
-        and T.DUE_DATE_ &gt; #{dueAfter}
+        and RES.DUE_DATE_ &gt; #{dueAfter}
       </if>
       <if test="dueDate != null || dueBefore != null || dueAfter != null">
-        and T.DUE_DATE_ is not null
+        and RES.DUE_DATE_ is not null
       </if>
       <if test="candidateUser != null || candidateGroups != null">
-        and T.ASSIGNEE_ is null
+        and RES.ASSIGNEE_ is null
         and I.TYPE_ = 'candidate'
         and 
         ( 

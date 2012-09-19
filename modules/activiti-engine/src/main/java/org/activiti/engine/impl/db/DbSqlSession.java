@@ -211,17 +211,8 @@ public class DbSqlSession implements Session {
     statement = dbSqlSessionFactory.mapStatement(statement);    
     if(firstResult == -1 ||  maxResults==-1) {
       return Collections.EMPTY_LIST;
-    }
-    List loadedObjects = null;
-    String databaseType = dbSqlSessionFactory.databaseType;
-    if(databaseType.equals("mssql")) {
-      // use mybatis paging (native database paging not yet implemented)
-      log.log(Level.FINE, "Using mybatis paging (native database paging not yet implemented for mssql)");
-      loadedObjects = sqlSession.selectList(statement, parameter, new RowBounds(firstResult, maxResults));
-    } else {
-      // use native database paging
-      loadedObjects = sqlSession.selectList(statement, parameter);
-    }
+    }    
+    List loadedObjects = sqlSession.selectList(statement, parameter);
     return filterLoadedObjects(loadedObjects);
   }  
 

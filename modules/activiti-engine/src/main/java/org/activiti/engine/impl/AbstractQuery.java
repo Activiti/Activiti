@@ -23,6 +23,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.query.Query;
 import org.activiti.engine.query.QueryProperty;
+import org.junit.runners.ParentRunner;
 
 
 /**
@@ -173,6 +174,10 @@ public abstract class AbstractQuery<T extends Query<?,?>, U> extends ListQueryPa
   }
 
   public String getOrderBy() {
-    return orderBy;
+    if(orderBy == null) {
+      return super.getOrderBy();
+    } else {
+      return orderBy;
+    }
   }
 }

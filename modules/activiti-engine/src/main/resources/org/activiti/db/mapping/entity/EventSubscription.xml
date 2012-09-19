@@ -49,124 +49,104 @@
 
   <select id="selectEventSubscriptionByQueryCriteria" parameterType="org.activiti.engine.impl.EventSubscriptionQueryImpl" resultMap="eventSubscriptionResultMap">
   	${limitBefore}
-    select *
+    select RES.* ${limitBetween}
     <include refid="selectEventSubscriptionByQueryCriteriaSql"/>
-    <if test="orderBy != null">
-    	order by ${orderBy}
-    </if>
+    ${orderBy}
     ${limitAfter}
   </select>
 
   <select id="selectEventSubscriptionCountByQueryCriteria" parameterType="org.activiti.engine.impl.EventSubscriptionQueryImpl" resultType="long">
-    select count(distinct ID_)
+    select count(distinct RES.ID_)
     <include refid="selectEventSubscriptionByQueryCriteriaSql"/>
   </select>
   
   <sql id="selectEventSubscriptionByQueryCriteriaSql">
-    from ${prefix}ACT_RU_EVENT_SUBSCR E
+    from ${prefix}ACT_RU_EVENT_SUBSCR RES
     <where>
       <if test="eventSubscriptionId != null">
-        E.ID_ = #{eventSubscriptionId}
+        RES.ID_ = #{eventSubscriptionId}
       </if>
       <if test="processInstanceId != null">
-        and E.PROC_INST_ID_ = #{processInstanceId}
+        and RES.PROC_INST_ID_ = #{processInstanceId}
       </if>
       <if test="executionId != null">
-        and E.EXECUTION_ID_ = #{executionId}
+        and RES.EXECUTION_ID_ = #{executionId}
       </if>
       <if test="activityId != null">
-        and E.ACTIVITY_ID_ = #{activityId}
+        and RES.ACTIVITY_ID_ = #{activityId}
       </if>
       <if test="eventType != null">
-        and E.EVENT_TYPE_ = #{eventType}
+        and RES.EVENT_TYPE_ = #{eventType}
       </if>
       <if test="eventName != null">
-        and E.EVENT_NAME_ = #{eventName}
+        and RES.EVENT_NAME_ = #{eventName}
       </if>       
     </where>
   </sql>
   
   <select id="selectSignalEventSubscriptionsByEventName" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
-  	${limitBefore}
     select * 
     from ${prefix}ACT_RU_EVENT_SUBSCR
     where (EVENT_TYPE_ = 'signal')
     	and (EVENT_NAME_ = #{parameter})
-   	${limitAfter}
   </select>
   
   <select id="selectSignalEventSubscriptionsByExecution" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
-  	${limitBefore}
     select * 
     from ${prefix}ACT_RU_EVENT_SUBSCR
     where (EVENT_TYPE_ = 'signal')
     	and (EXECUTION_ID_ = #{parameter})  
-    ${limitAfter}
   </select>
   
   <select id="selectSignalEventSubscriptionsByNameAndExecution" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
-  	${limitBefore}
     select * 
     from ${prefix}ACT_RU_EVENT_SUBSCR
     where (EVENT_TYPE_ = 'signal')
     	and (EXECUTION_ID_ = #{parameter.executionId})
     	and (EVENT_NAME_ = #{parameter.eventName})
-    ${limitAfter}
   </select>
   
   <select id="selectEventSubscriptionsByExecution" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
-  	${limitBefore}
     select * 
     from ${prefix}ACT_RU_EVENT_SUBSCR
     where (EXECUTION_ID_ = #{parameter})
-    ${limitAfter}
   </select>
       
   <select id="selectEventSubscriptionsByExecutionAndType" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
-  	${limitBefore}
     select * 
     from ${prefix}ACT_RU_EVENT_SUBSCR
     where (EVENT_TYPE_ = #{parameter.eventType})
     	and (EXECUTION_ID_ = #{parameter.executionId})
-    ${limitAfter}
   </select>
   
   <select id="selectEventSubscriptionsByExecutionTypeAndActivity" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
-  	${limitBefore}
     select * 
     from ${prefix}ACT_RU_EVENT_SUBSCR
     where (EVENT_TYPE_ = #{parameter.eventType})
     	and (EXECUTION_ID_ = #{parameter.executionId})
     	and (ACTIVITY_ID_ = #{parameter.activityId})
-    ${limitAfter}
   </select>
   
   <select id="selectEventSubscriptionsByConfiguration" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
-  	${limitBefore}
     select * 
     from ${prefix}ACT_RU_EVENT_SUBSCR
     where (EVENT_TYPE_ = #{parameter.eventType})
     	and (CONFIGURATION_ = #{parameter.configuration})
-    ${limitAfter}
   </select>
   
   <select id="selectEventSubscriptionsByName" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
-  	${limitBefore}
     select * 
     from ${prefix}ACT_RU_EVENT_SUBSCR
     where (EVENT_TYPE_ = #{parameter.eventType})
     	and (EVENT_NAME_ = #{parameter.eventName})
-    ${limitAfter}
   </select>
   
   <select id="selectEventSubscriptionsByNameAndExecution" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
-  	${limitBefore}
     select * 
     from ${prefix}ACT_RU_EVENT_SUBSCR
     where (EVENT_TYPE_ = #{parameter.eventType})
     	and (EVENT_NAME_ = #{parameter.eventName})
     	and (EXECUTION_ID_ = #{parameter.executionId})
-    ${limitAfter}
   </select>
   
    <select id="selectMessageStartEventSubscriptionByName" resultMap="eventSubscriptionResultMap" parameterType="string">

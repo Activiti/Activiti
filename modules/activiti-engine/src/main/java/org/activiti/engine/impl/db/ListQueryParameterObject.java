@@ -22,6 +22,7 @@ public class ListQueryParameterObject {
   protected int maxResults = Integer.MAX_VALUE;
   protected int firstResult = 0;
   protected Object parameter;
+  protected String databaseType;
   
   public ListQueryParameterObject() {
   }
@@ -65,6 +66,19 @@ public class ListQueryParameterObject {
     
   public void setParameter(Object parameter) {
     this.parameter = parameter;
+  }
+  
+  public String getOrderBy() {
+    // the default order column
+    return "RES.ID_ asc";
+  }
+  
+  public void setDatabaseType(String databaseType) {
+    this.databaseType = databaseType;
+  }
+  
+  public String getDatabaseType() {
+    return databaseType;
   }
 
 }

@@ -565,6 +565,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         if(databaseType != null) {
           properties.put("limitBefore" , DbSqlSessionFactory.databaseSpecificLimitBeforeStatements.get(databaseType));
           properties.put("limitAfter" , DbSqlSessionFactory.databaseSpecificLimitAfterStatements.get(databaseType));
+          properties.put("limitBetween" , DbSqlSessionFactory.databaseSpecificLimitBetweenStatements.get(databaseType));
+          properties.put("orderBy" , DbSqlSessionFactory.databaseSpecificOrderByStatements.get(databaseType));
         }
         XMLConfigBuilder parser = new XMLConfigBuilder(reader,"", properties);
         Configuration configuration = parser.getConfiguration();

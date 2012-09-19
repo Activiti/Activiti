@@ -130,54 +130,50 @@
 
   <select id="selectHistoricDetailsByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricDetailQueryImpl" resultMap="historicDetailResultMap">
   	${limitBefore}
-    select *
+    select RES.* ${limitBetween}
     <include refid="selectHistoricDetailsByQueryCriteriaSql"/>
-    <if test="orderBy != null">
-      order by ${orderBy}
-    </if>
+    ${orderBy}
     ${limitAfter}
   </select>
   
   <select id="selectHistoricDetailsByQueryCriteria_postgres" parameterType="org.activiti.engine.impl.HistoricDetailQueryImpl" resultMap="historicDetailResultMap_postgres">
   	${limitBefore}
-    select *
+    select RES.* ${limitBetween}
     <include refid="selectHistoricDetailsByQueryCriteriaSql"/>
-    <if test="orderBy != null">
-      order by ${orderBy}
-    </if>
+    ${orderBy}
     ${limitAfter}
   </select>
   
   <select id="selectHistoricDetailCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricDetailQueryImpl" resultType="long">
-    select count(*)
+    select count(RES.*)
     <include refid="selectHistoricDetailsByQueryCriteriaSql"/>
   </select>
   
   <sql id="selectHistoricDetailsByQueryCriteriaSql">
-    from ${prefix}ACT_HI_DETAIL HD
+    from ${prefix}ACT_HI_DETAIL RES
     <where>
       <if test="processInstanceId != null">
-        HD.PROC_INST_ID_ = #{processInstanceId}
+        RES.PROC_INST_ID_ = #{processInstanceId}
       </if>
       <if test="activityId != null">
-        and HD.ACT_INST_ID_ = #{activityId}
+        and RES.ACT_INST_ID_ = #{activityId}
       </if>
       <if test="activityInstanceId != null">
-        and HD.ACT_INST_ID_ = #{activityInstanceId}
+        and RES.ACT_INST_ID_ = #{activityInstanceId}
       </if>
       <choose>
         <when test="taskId != null">
-          and HD.TASK_ID_ = #{taskId}
+          and RES.TASK_ID_ = #{taskId}
         </when>
         <otherwise>
           <if test="excludeTaskRelated">
-           and HD.TASK_ID_ is null
+           and RES.TASK_ID_ is null
          </if>
         </otherwise>
       </choose>
       
       <if test="type != null">
-        and HD.TYPE_ = #{type}
+        and RES.TYPE_ = #{type}
       </if>
     </where>
   </sql>

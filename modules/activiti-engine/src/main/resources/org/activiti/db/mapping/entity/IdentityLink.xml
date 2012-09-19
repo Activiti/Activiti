@@ -47,19 +47,14 @@
   </select>
   
   <select id="selectIdentityLinksByTask" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="identityLinkResultMap">
-  	${limitBefore}
     select * from ${prefix}ACT_RU_IDENTITYLINK where TASK_ID_ = #{parameter}
-    ${limitAfter}    
   </select>
   
   <select id="selectIdentityLinksByProcessDefinition" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="identityLinkResultMap">
-    ${limitBefore}
     select * from ${prefix}ACT_RU_IDENTITYLINK where PROC_DEF_ID_ = #{parameter}
-    ${limitAfter}    
   </select>
   
   <select id="selectIdentityLinkByTaskUserGroupAndType" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="identityLinkResultMap">
-  	${limitBefore}
     select * 
     from ${prefix}ACT_RU_IDENTITYLINK 
     where TASK_ID_ = #{parameter.taskId}
@@ -72,11 +67,9 @@
       <if test="parameter.type != null">
         and TYPE_ = #{parameter.type}
       </if>
-    ${limitAfter}
   </select>
   
   <select id="selectIdentityLinkByProcessDefinitionUserAndGroup" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="identityLinkResultMap">
-    ${limitBefore}
     select * 
     from ${prefix}ACT_RU_IDENTITYLINK 
     where PROC_DEF_ID_ = #{parameter.processDefinitionId}
@@ -86,7 +79,6 @@
       <if test="parameter.groupId != null">
         and GROUP_ID_ = #{parameter.groupId}
       </if>
-    ${limitAfter}
   </select>
   
 </mapper>

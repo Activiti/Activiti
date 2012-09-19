@@ -45,15 +45,15 @@ public class TaskQueryProperty implements QueryProperty {
 
   private static final Map<String, TaskQueryProperty> properties = new HashMap<String, TaskQueryProperty>();
 
-  public static final TaskQueryProperty TASK_ID = new TaskQueryProperty("T.ID_");
-  public static final TaskQueryProperty NAME = new TaskQueryProperty("T.NAME_");
-  public static final TaskQueryProperty DESCRIPTION = new TaskQueryProperty("T.DESCRIPTION_");
-  public static final TaskQueryProperty PRIORITY = new TaskQueryProperty("T.PRIORITY_");
-  public static final TaskQueryProperty ASSIGNEE = new TaskQueryProperty("T.ASSIGNEE_");
-  public static final TaskQueryProperty CREATE_TIME = new TaskQueryProperty("T.CREATE_TIME_");
-  public static final TaskQueryProperty PROCESS_INSTANCE_ID = new TaskQueryProperty("T.PROC_INST_ID_");
-  public static final TaskQueryProperty EXECUTION_ID = new TaskQueryProperty("T.EXECUTION_ID_");
-  public static final TaskQueryProperty DUE_DATE = new TaskQueryProperty("T.DUE_DATE_");
+  public static final TaskQueryProperty TASK_ID = new TaskQueryProperty("RES.ID_");
+  public static final TaskQueryProperty NAME = new TaskQueryProperty("RES.NAME_");
+  public static final TaskQueryProperty DESCRIPTION = new TaskQueryProperty("RES.DESCRIPTION_");
+  public static final TaskQueryProperty PRIORITY = new TaskQueryProperty("RES.PRIORITY_");
+  public static final TaskQueryProperty ASSIGNEE = new TaskQueryProperty("RES.ASSIGNEE_");
+  public static final TaskQueryProperty CREATE_TIME = new TaskQueryProperty("RES.CREATE_TIME_");
+  public static final TaskQueryProperty PROCESS_INSTANCE_ID = new TaskQueryProperty("RES.PROC_INST_ID_");
+  public static final TaskQueryProperty EXECUTION_ID = new TaskQueryProperty("RES.EXECUTION_ID_");
+  public static final TaskQueryProperty DUE_DATE = new TaskQueryProperty("RES.DUE_DATE_");
   
   private String name;
 

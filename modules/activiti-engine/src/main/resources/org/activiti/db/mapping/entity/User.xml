@@ -58,52 +58,50 @@
     
   <select id="selectUserByQueryCriteria" parameterType="org.activiti.engine.impl.UserQueryImpl" resultMap="userResultMap">
   	${limitBefore}
-    select U.*
+    select RES.* ${limitBetween}
     <include refid="selectUserByQueryCriteriaSql" />
-    <if test="orderBy != null">
-      order by ${orderBy}
-    </if>
+    ${orderBy}
     ${limitAfter}
   </select>
   
    <select id="selectUserCountByQueryCriteria" parameterType="org.activiti.engine.impl.UserQueryImpl" resultType="long">
-    select count(U.ID_)
+    select count(RES.ID_)
     <include refid="selectUserByQueryCriteriaSql" />
   </select>
   
   <sql id="selectUserByQueryCriteriaSql">
-    from ${prefix}ACT_ID_USER U 
+    from ${prefix}ACT_ID_USER RES 
     <if test="groupId != null">
-      inner join ${prefix}ACT_ID_MEMBERSHIP M on U.ID_ = M.USER_ID_
+      inner join ${prefix}ACT_ID_MEMBERSHIP M on RES.ID_ = M.USER_ID_
       inner join ${prefix}ACT_ID_GROUP G on M.GROUP_ID_ = G.ID_
     </if>
     <where>
       <if test="id != null">
-        U.ID_ = #{id}
+        RES.ID_ = #{id}
       </if>
       <if test="firstName != null">
-        and U.FIRST_ = #{firstName}
+        and RES.FIRST_ = #{firstName}
       </if>
       <if test="firstNameLike != null">
-        and U.FIRST_ like #{firstNameLike}
+        and RES.FIRST_ like #{firstNameLike}
       </if>
       <if test="lastName != null">
-        and U.LAST_ = #{lastName}
+        and RES.LAST_ = #{lastName}
       </if>
       <if test="lastNameLike != null">
-        and U.LAST_ like #{lastNameLike}
+        and RES.LAST_ like #{lastNameLike}
       </if>
       <if test="email != null">
-        and U.EMAIL_ = #{email}
+        and RES.EMAIL_ = #{email}
       </if>
       <if test="emailLike != null">
-        and U.EMAIL_ like #{emailLike}
+        and RES.EMAIL_ like #{emailLike}
       </if>
       <if test="groupId != null">
         and G.ID_ = #{groupId}
       </if>
       <if test="procDefId != null">
-        and exists (select ID_ from ${prefix} ACT_RU_IDENTITYLINK where PROC_DEF_ID_ = #{procDefId} and USER_ID_=U.ID_ )
+        and exists (select ID_ from ${prefix} ACT_RU_IDENTITYLINK where PROC_DEF_ID_ = #{procDefId} and USER_ID_=RES.ID_ )
       </if>
       
     </where>

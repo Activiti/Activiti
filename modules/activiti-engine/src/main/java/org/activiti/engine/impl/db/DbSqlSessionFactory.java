@@ -34,15 +34,24 @@ public class DbSqlSessionFactory implements SessionFactory {
   
   public static final Map<String, String> databaseSpecificLimitBeforeStatements = new HashMap<String, String>();
   public static final Map<String, String> databaseSpecificLimitAfterStatements = new HashMap<String, String>();
+  public static final Map<String, String> databaseSpecificLimitBetweenStatements = new HashMap<String, String>();
+  public static final Map<String, String> databaseSpecificOrderByStatements = new HashMap<String, String>();
 
   static {
+    
+    String defaultOrderBy = " order by ${orderBy} ";
+    
     // h2
     databaseSpecificLimitBeforeStatements.put("h2", "");
     databaseSpecificLimitAfterStatements.put("h2", "LIMIT #{maxResults} OFFSET #{firstResult}");
+    databaseSpecificLimitBetweenStatements.put("h2", "");
+    databaseSpecificOrderByStatements.put("h2", defaultOrderBy);
     
 	  //mysql specific
     databaseSpecificLimitBeforeStatements.put("mysql", "");
     databaseSpecificLimitAfterStatements.put("mysql", "LIMIT #{maxResults} OFFSET #{firstResult}");
+    databaseSpecificLimitBetweenStatements.put("mysql", "");
+    databaseSpecificOrderByStatements.put("mysql", defaultOrderBy);
     addDatabaseSpecificStatement("mysql", "selectNextJobsToExecute", "selectNextJobsToExecute_mysql");
     addDatabaseSpecificStatement("mysql", "selectExclusiveJobsToExecute", "selectExclusiveJobsToExecute_mysql");
     addDatabaseSpecificStatement("mysql", "selectProcessDefinitionsByQueryCriteria", "selectProcessDefinitionsByQueryCriteria_mysql");
@@ -53,6 +62,8 @@ public class DbSqlSessionFactory implements SessionFactory {
     //postgres specific
     databaseSpecificLimitBeforeStatements.put("postgres", "");
     databaseSpecificLimitAfterStatements.put("postgres", "LIMIT #{maxResults} OFFSET #{firstResult}");
+    databaseSpecificLimitBetweenStatements.put("postgres", "");
+    databaseSpecificOrderByStatements.put("postgres", defaultOrderBy);
     addDatabaseSpecificStatement("postgres", "insertByteArray", "insertByteArray_postgres");
     addDatabaseSpecificStatement("postgres", "updateByteArray", "updateByteArray_postgres");
     addDatabaseSpecificStatement("postgres", "selectByteArray", "selectByteArray_postgres");
@@ -73,16 +84,22 @@ public class DbSqlSessionFactory implements SessionFactory {
     // oracle
     databaseSpecificLimitBeforeStatements.put("oracle", "select * from ( select a.*, ROWNUM rnum from (");
     databaseSpecificLimitAfterStatements.put("oracle", "  ) a where ROWNUM < #{lastRow}) where rnum  >= #{firstRow}");
+    databaseSpecificLimitBetweenStatements.put("oracle", "");
+    databaseSpecificOrderByStatements.put("oracle", defaultOrderBy);
     addDatabaseSpecificStatement("oracle", "selectExclusiveJobsToExecute", "selectExclusiveJobsToExecute_integerBoolean");
     
     // db2
-    databaseSpecificLimitBeforeStatements.put("db2", "");
-    databaseSpecificLimitAfterStatements.put("db2", "LIMIT #{maxResults} OFFSET #{firstResult}");
+    databaseSpecificLimitBeforeStatements.put("db2", "SELECT SUB.* FROM (");
+    databaseSpecificLimitAfterStatements.put("db2", ")RES ) SUB WHERE SUB.rnk >= #{firstRow} AND SUB.rnk < #{lastRow}");
+    databaseSpecificLimitBetweenStatements.put("db2", ", row_number() over (ORDER BY ${orderBy}) rnk FROM ( select distinct RES.* ");
+    databaseSpecificOrderByStatements.put("db2", "");
     addDatabaseSpecificStatement("db2", "selectExclusiveJobsToExecute", "selectExclusiveJobsToExecute_integerBoolean");
     
     // mssql
-    databaseSpecificLimitBeforeStatements.put("mssql", ""); // TODO, this is not easily possible in MS-SQL, see www.codeguru.com/csharp/.net/net_data/article.php/c19611/Paging-in-SQL-Server-2005.htm
-    databaseSpecificLimitAfterStatements.put("mssql", "");
+    databaseSpecificLimitBeforeStatements.put("mssql", "SELECT SUB.* FROM (");
+    databaseSpecificLimitAfterStatements.put("mssql", ")RES ) SUB WHERE SUB.rnk >= #{firstRow} AND SUB.rnk < #{lastRow}");
+    databaseSpecificLimitBetweenStatements.put("mssql", ", row_number() over (ORDER BY ${orderBy}) rnk FROM ( select distinct RES.* ");
+    databaseSpecificOrderByStatements.put("mssql", "");
     addDatabaseSpecificStatement("mssql", "selectExclusiveJobsToExecute", "selectExclusiveJobsToExecute_integerBoolean");
   }
   

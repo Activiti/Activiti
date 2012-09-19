@@ -95,11 +95,9 @@
 
   <select id="selectHistoricActivityInstancesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricActivityInstanceQueryImpl" resultMap="historicActivityInstanceResultMap">
     ${limitBefore}
-    select *
+    select RES.* ${limitBetween}
     <include refid="selectHistoricActivityInstancesByQueryCriteriaSql"/>
-    <if test="orderBy != null">
-      order by ${orderBy}
-    </if>
+    ${orderBy}
     ${limitAfter}
   </select>
   
@@ -109,37 +107,37 @@
   </select>
   
   <sql id="selectHistoricActivityInstancesByQueryCriteriaSql">
-    from ${prefix}ACT_HI_ACTINST HAI
+    from ${prefix}ACT_HI_ACTINST RES
     <where>
       <if test="processInstanceId != null">
-        HAI.PROC_INST_ID_ = #{processInstanceId}
+        RES.PROC_INST_ID_ = #{processInstanceId}
       </if>
       <if test="activityInstanceId != null">
-        and HAI.ID_ = #{activityInstanceId}
+        and RES.ID_ = #{activityInstanceId}
       </if>
       <if test="executionId != null">
-        and HAI.EXECUTION_ID_ = #{executionId}
+        and RES.EXECUTION_ID_ = #{executionId}
       </if>
       <if test="processDefinitionId != null">
-        and HAI.PROC_DEF_ID_ = #{processDefinitionId}
+        and RES.PROC_DEF_ID_ = #{processDefinitionId}
       </if>
       <if test="activityId != null">
-        and HAI.ACT_ID_ = #{activityId}
+        and RES.ACT_ID_ = #{activityId}
       </if>
       <if test="activityName != null">
-        and HAI.ACT_NAME_ = #{activityName}
+        and RES.ACT_NAME_ = #{activityName}
       </if>
       <if test="activityType != null">
-        and HAI.ACT_TYPE_ = #{activityType}
+        and RES.ACT_TYPE_ = #{activityType}
       </if>
       <if test="assignee != null">
-        and HAI.ASSIGNEE_ = #{assignee}
+        and RES.ASSIGNEE_ = #{assignee}
       </if>
       <if test="unfinished">
-        and HAI.END_TIME_ is null
+        and RES.END_TIME_ is null
       </if>
       <if test="finished">
-       and HAI.END_TIME_ is not null
+       and RES.END_TIME_ is not null
       </if>
     </where>
   </sql>

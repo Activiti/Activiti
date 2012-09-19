@@ -77,27 +77,21 @@
   </select>
   
   <select id="selectExecutionsByParentExecutionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
-  	${limitBefore}
     select * from ${prefix}ACT_RU_EXECUTION
     where PARENT_ID_ = #{parameter}
-    ${limitAfter}
   </select>
   
   <select id="selectProcessInstanceIdsByProcessDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultType="string">
-  	${limitBefore}
     select ID_
     from ${prefix}ACT_RU_EXECUTION
     where PROC_DEF_ID_ = #{parameter}
-    ${limitAfter}
   </select>
   
   <select id="selectExecutionsByQueryCriteria" parameterType="org.activiti.engine.impl.ExecutionQueryImpl" resultMap="executionResultMap">
   	${limitBefore}
-    select E.*
+    select RES.* ${limitBetween}, KEY_
     <include refid="selectExecutionsByQueryCriteriaSql"/>
-    <if test="orderBy != null">
-      order by ${orderBy}
-    </if>
+    ${orderBy}
     ${limitAfter}
   </select>
   
@@ -109,11 +103,9 @@
   <!--  same as selectExecutionByQueryCriteria, but with different parameterType -->
   <select id="selectProcessInstanceByQueryCriteria" parameterType="org.activiti.engine.impl.ProcessInstanceQueryImpl" resultMap="executionResultMap">
   	${limitBefore}
-    select E.*
+    select RES.* ${limitBetween}, KEY_
     <include refid="selectExecutionsByQueryCriteriaSql"/>
-    <if test="orderBy != null">
-      order by ${orderBy}
-    </if>
+    ${orderBy}
     ${limitAfter}
   </select>
   
@@ -123,26 +115,26 @@
   </select>
   
   <sql id="selectExecutionsByQueryCriteriaSql">
-    from ${prefix}ACT_RU_EXECUTION E
+    from ${prefix}ACT_RU_EXECUTION RES
     <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
       <choose>
         <when test="queryVariableValue.local">
-          inner join ${prefix}ACT_RU_VARIABLE A${index} on E.ID_ = A${index}.EXECUTION_ID_
+          inner join ${prefix}ACT_RU_VARIABLE A${index} on RES.ID_ = A${index}.EXECUTION_ID_
         </when>
         <otherwise>
-          inner join ${prefix}ACT_RU_VARIABLE A${index} on E.PROC_INST_ID_ = A${index}.PROC_INST_ID_
+          inner join ${prefix}ACT_RU_VARIABLE A${index} on RES.PROC_INST_ID_ = A${index}.PROC_INST_ID_
         </otherwise>
       </choose> 
     </foreach>
     <if test="eventSubscriptions != null">
     	 <foreach collection="eventSubscriptions" index="index" item="eventSubscriptionValue">
-    	 	inner join ${prefix}ACT_RU_EVENT_SUBSCR EVT${index} on E.ID_ = EVT${index}.EXECUTION_ID_
+    	 	inner join ${prefix}ACT_RU_EVENT_SUBSCR EVT${index} on RES.ID_ = EVT${index}.EXECUTION_ID_
 	    </foreach>
     </if>
-    inner join ${prefix}ACT_RE_PROCDEF P on E.PROC_DEF_ID_ = P.ID_
+    inner join ${prefix}ACT_RE_PROCDEF P on RES.PROC_DEF_ID_ = P.ID_
     <where>
       <if test="onlyProcessInstances">
-        E.PARENT_ID_ is null
+        RES.PARENT_ID_ is null
       </if>
       <if test="processDefinitionId != null">
         and P.ID_ = #{processDefinitionId}
@@ -151,37 +143,37 @@
         and P.KEY_ = #{processDefinitionKey}
       </if>
       <if test="executionId != null">
-        and E.ID_ = #{executionId}
+        and RES.ID_ = #{executionId}
       </if>
       <if test="processInstanceId != null">
-        and E.PROC_INST_ID_ = #{processInstanceId}
+        and RES.PROC_INST_ID_ = #{processInstanceId}
       </if>
       <if test="processInstanceIds != null and !processInstanceIds.isEmpty()">
-        and E.PROC_INST_ID_ in
+        and RES.PROC_INST_ID_ in
         <foreach item="item" index="index" collection="processInstanceIds" open="(" separator="," close=")">
           #{item}
         </foreach>
       </if>
       <if test="businessKey != null">
-        and E.BUSINESS_KEY_ = #{businessKey}
+        and RES.BUSINESS_KEY_ = #{businessKey}
       </if>
       <if test="activityId != null">
-        and E.ACT_ID_ = #{activityId}
+        and RES.ACT_ID_ = #{activityId}
       </if>
       <if test="superProcessInstanceId != null">
         <!-- A sub process instance is stored under a certain *execution*, potentially nested.
              A sub process instance is NOT stored under the process instanc, hence the following: -->
-        and E.SUPER_EXEC_ IN (select ID_ from ${prefix}ACT_RU_EXECUTION where PROC_INST_ID_ = #{superProcessInstanceId})
+        and RES.SUPER_EXEC_ IN (select ID_ from ${prefix}ACT_RU_EXECUTION where PROC_INST_ID_ = #{superProcessInstanceId})
       </if>
       <if test="subProcessInstanceId != null">
-        and E.ID_ = (select PROC_INST_ID_ from ${prefix}ACT_RU_EXECUTION where ID_ = (select SUPER_EXEC_ from ${prefix}ACT_RU_EXECUTION where ID_ = #{subProcessInstanceId}))
+        and RES.ID_ = (select PROC_INST_ID_ from ${prefix}ACT_RU_EXECUTION where ID_ = (select SUPER_EXEC_ from ${prefix}ACT_RU_EXECUTION where ID_ = #{subProcessInstanceId}))
       </if>
       <if test="suspensionState != null">
       	<if test="suspensionState.stateCode == 1">
-        	and ((E.SUSPENSION_STATE_ = 1) and (P.SUSPENSION_STATE_ = 1))
+        	and ((RES.SUSPENSION_STATE_ = 1) and (P.SUSPENSION_STATE_ = 1))
         </if>
         <if test="suspensionState.stateCode == 2">
-        	and ((E.SUSPENSION_STATE_ = 2) or (P.SUSPENSION_STATE_ = 2))
+        	and ((RES.SUSPENSION_STATE_ = 2) or (P.SUSPENSION_STATE_ = 2))
         </if>
       </if>
       <!-- PLEASE NOTE: If you change anything have a look into the HistoricProcessVariable & HistoricProcessInstance, the same query object is used there! -->

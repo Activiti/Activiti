@@ -11,8 +11,8 @@
   
   <select id="selectTableData" parameterType="org.activiti.engine.impl.TablePageQueryImpl" resultType="map">
     select * from ${tableName}
-    <if test="orderBy != null">
-      order by ${orderBy}
+    <if test="order != null">
+      order by ${order}
     </if>
   </select>
 

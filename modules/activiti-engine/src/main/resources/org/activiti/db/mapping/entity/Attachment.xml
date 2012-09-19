@@ -75,15 +75,11 @@
   </select>
   
   <select id="selectAttachmentsByTaskId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="attachmentResultMap">
-  	${limitBefore}
     select * from ${prefix}ACT_HI_ATTACHMENT where TASK_ID_ = #{parameter,jdbcType=VARCHAR}
-    ${limitAfter}
   </select>
   
   <select id="selectAttachmentsByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="attachmentResultMap">
-  	${limitBefore}
     select * from ${prefix}ACT_HI_ATTACHMENT where PROC_INST_ID_ = #{parameter,jdbcType=VARCHAR}
-    ${limitAfter}
   </select>
 
 </mapper>
