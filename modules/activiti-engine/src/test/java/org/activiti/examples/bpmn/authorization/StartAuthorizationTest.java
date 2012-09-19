@@ -17,7 +17,6 @@ package org.activiti.examples.bpmn.authorization;
 import java.util.List;
 
 import org.activiti.engine.IdentityService;
-import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -251,16 +250,14 @@ public class StartAuthorizationTest extends PluggableActivitiTestCase {
       ProcessDefinition latestProcessDef = repositoryService
               .createProcessDefinitionQuery().processDefinitionKey("process1")
               .singleResult();      
-      List<User> authorizedUsers =  ProcessEngines.getDefaultProcessEngine().getIdentityService()
-          .createUserQuery().potentialStarter(latestProcessDef.getId()).list();
+      List<User> authorizedUsers = identityService.createUserQuery().potentialStarter(latestProcessDef.getId()).list();
       assertEquals(0, authorizedUsers.size());
 
       // user1 and user2 are potential Startes of Process2
       latestProcessDef = repositoryService
               .createProcessDefinitionQuery().processDefinitionKey("process2")
               .singleResult();      
-      authorizedUsers =  ProcessEngines.getDefaultProcessEngine().getIdentityService()
-          .createUserQuery().potentialStarter(latestProcessDef.getId()).orderByUserId().asc().list();
+      authorizedUsers =  identityService.createUserQuery().potentialStarter(latestProcessDef.getId()).orderByUserId().asc().list();
       assertEquals(2, authorizedUsers.size());
       assertEquals("user1", authorizedUsers.get(0).getId());
       assertEquals("user2", authorizedUsers.get(1).getId());
@@ -269,16 +266,14 @@ public class StartAuthorizationTest extends PluggableActivitiTestCase {
       latestProcessDef = repositoryService
               .createProcessDefinitionQuery().processDefinitionKey("process2")
               .singleResult();      
-      List<Group> authorizedGroups =  ProcessEngines.getDefaultProcessEngine().getIdentityService()
-          .createGroupQuery().potentialStarter(latestProcessDef.getId()).list();
+      List<Group> authorizedGroups = identityService.createGroupQuery().potentialStarter(latestProcessDef.getId()).list();
       assertEquals(0, authorizedGroups.size());
       
       // Process 3 has 3 groups as authorized starter groups
       latestProcessDef = repositoryService
               .createProcessDefinitionQuery().processDefinitionKey("process4")
               .singleResult();      
-      authorizedGroups =  ProcessEngines.getDefaultProcessEngine().getIdentityService()
-          .createGroupQuery().potentialStarter(latestProcessDef.getId()).orderByGroupId().asc().list();
+      authorizedGroups = identityService.createGroupQuery().potentialStarter(latestProcessDef.getId()).orderByGroupId().asc().list();
       assertEquals(3, authorizedGroups.size());
       assertEquals("group1", authorizedGroups.get(0).getId());
       assertEquals("group2", authorizedGroups.get(1).getId());
@@ -325,7 +320,7 @@ public class StartAuthorizationTest extends PluggableActivitiTestCase {
       processDefinitions = repositoryService.createProcessDefinitionQuery().startableByUser("userInGroup2").list();
       assertEquals(1, processDefinitions.size());
       assertEquals("process4", processDefinitions.get(0).getKey());
-
+    
     } finally {
       tearDownUsersAndGroups();
     }
