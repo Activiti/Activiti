@@ -76,7 +76,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
   
   @Deployment(resources={
     "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.testTerminateWithCallActivity.bpmn", 
-    "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.subProcessNoTerminate.bpmn", 
+    "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.subProcessNoTerminate.bpmn" 
   })
   public void testTerminateWithCallActivity() throws Exception {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
@@ -183,7 +183,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
   
   @Deployment(resources={
     "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.testTerminateInCallActivity.bpmn", 
-    "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.subProcessTerminate.bpmn", 
+    "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.subProcessTerminate.bpmn" 
   })
   public void testTerminateInCallActivity() throws Exception {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
@@ -200,7 +200,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
   
   @Deployment(resources={
     "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.testTerminateInCallActivityMulitInstance.bpmn", 
-    "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.subProcessTerminate.bpmn", 
+    "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.subProcessTerminate.bpmn" 
   })
   public void testTerminateInCallActivityMulitInstance() throws Exception {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
@@ -217,7 +217,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
   
   @Deployment(resources={
     "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.testTerminateInCallActivityConcurrent.bpmn", 
-    "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.subProcessConcurrentTerminate.bpmn", 
+    "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.subProcessConcurrentTerminate.bpmn"
   })
   public void testTerminateInCallActivityConcurrent() throws Exception {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
@@ -234,7 +234,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
   
   @Deployment(resources={
     "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.testTerminateInCallActivityConcurrentMulitInstance.bpmn", 
-    "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.subProcessConcurrentTerminate.bpmn", 
+    "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.subProcessConcurrentTerminate.bpmn" 
   })
   public void testTerminateInCallActivityConcurrentMulitInstance() throws Exception {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
