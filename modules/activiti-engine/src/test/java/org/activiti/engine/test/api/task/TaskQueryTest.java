@@ -28,11 +28,9 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.DelegationState;
-import org.activiti.engine.task.NativeTaskQuery;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
-import org.apache.openjpa.persistence.EntityManagerImpl;
 
 /**
  * @author Joram Barrez
@@ -261,13 +259,6 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
 
   public void testQueryByUnassigned() {
     TaskQuery query = taskService.createTaskQuery().taskUnassigned();
-    assertEquals(11, query.count());
-    assertEquals(11, query.list().size());
-  }
-
-  public void testQueryByUnnassigned() {
-    @SuppressWarnings("deprecation")
-    TaskQuery query = taskService.createTaskQuery().taskUnnassigned();
     assertEquals(11, query.count());
     assertEquals(11, query.list().size());
   }

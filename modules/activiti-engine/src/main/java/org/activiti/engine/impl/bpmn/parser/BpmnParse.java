@@ -18,7 +18,6 @@ import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -118,6 +117,7 @@ import org.activiti.engine.impl.util.xml.Element;
 import org.activiti.engine.impl.util.xml.Parse;
 import org.activiti.engine.impl.variable.VariableDeclaration;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.drools.core.util.StringUtils;
 
 /**
  * Specific parsing of one BPMN 2.0 XML file, created by the {@link BpmnParser}.
@@ -834,9 +834,22 @@ public class BpmnParse extends Parse {
   }
 
   protected AbstractDataAssociation parseDataInputAssociation(Element dataAssociationElement) {
-    String sourceRef = dataAssociationElement.element("sourceRef").getText();
-    String targetRef = dataAssociationElement.element("targetRef").getText();
-
+    String sourceRef = null;
+    Element sourceElement = dataAssociationElement.element("sourceRef");
+    if (sourceElement != null) {
+      sourceRef = sourceElement.getText();
+    }
+    
+    String targetRef = null;
+    Element targetElement = dataAssociationElement.element("targetRef");
+    if (targetElement != null) {
+      targetRef = targetElement.getText();
+    }
+    
+    if (StringUtils.isEmpty(targetRef)) {
+      addError("targetRef is required", dataAssociationElement);
+    }
+    
     List<Element> assignments = dataAssociationElement.elements("assignment");
     if (assignments.isEmpty()) {
       return new MessageImplicitDataInputAssociation(sourceRef, targetRef);
@@ -844,10 +857,12 @@ public class BpmnParse extends Parse {
       SimpleDataInputAssociation dataAssociation = new SimpleDataInputAssociation(sourceRef, targetRef);
 
       for (Element assigmentElement : dataAssociationElement.elements("assignment")) {
-        Expression from = this.expressionManager.createExpression(assigmentElement.element("from").getText());
-        Expression to = this.expressionManager.createExpression(assigmentElement.element("to").getText());
-        Assignment assignment = new Assignment(from, to);
-        dataAssociation.addAssignment(assignment);
+        if (assigmentElement.element("from") != null && assigmentElement.element("to") != null) {
+          Expression from = this.expressionManager.createExpression(assigmentElement.element("from").getText());
+          Expression to = this.expressionManager.createExpression(assigmentElement.element("to").getText());
+          Assignment assignment = new Assignment(from, to);
+          dataAssociation.addAssignment(assignment);
+        }
       }
 
       return dataAssociation;

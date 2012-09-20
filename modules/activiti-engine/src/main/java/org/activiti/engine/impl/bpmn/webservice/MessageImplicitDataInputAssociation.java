@@ -16,6 +16,7 @@ import org.activiti.engine.impl.bpmn.behavior.WebServiceActivityBehavior;
 import org.activiti.engine.impl.bpmn.data.AbstractDataAssociation;
 import org.activiti.engine.impl.bpmn.data.FieldBaseStructureInstance;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * An implicit data input association between a source and a target.
@@ -31,11 +32,13 @@ public class MessageImplicitDataInputAssociation extends AbstractDataAssociation
 
   @Override
   public void evaluate(ActivityExecution execution) {
-    Object value = execution.getVariable(this.source);
-    MessageInstance message = (MessageInstance) execution.getVariable(WebServiceActivityBehavior.CURRENT_MESSAGE);
-    if (message.getStructureInstance() instanceof FieldBaseStructureInstance) {
-      FieldBaseStructureInstance structure = (FieldBaseStructureInstance) message.getStructureInstance();
-      structure.setFieldValue(this.target, value);
+    if (StringUtils.isNotEmpty(this.source)) {
+      Object value = execution.getVariable(this.source);
+      MessageInstance message = (MessageInstance) execution.getVariable(WebServiceActivityBehavior.CURRENT_MESSAGE);
+      if (message.getStructureInstance() instanceof FieldBaseStructureInstance) {
+        FieldBaseStructureInstance structure = (FieldBaseStructureInstance) message.getStructureInstance();
+        structure.setFieldValue(this.target, value);
+      }
     }
   }
 }
