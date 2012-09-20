@@ -32,7 +32,7 @@ public class QueuedListQuery extends AbstractTaskListQuery {
   
   @Override
   protected TaskQuery getQuery() {
-    return taskService.createTaskQuery().taskCandidateGroup(groupId).taskUnnassigned().orderByTaskId().asc();
+    return taskService.createTaskQuery().taskCandidateGroup(groupId).taskUnassigned().orderByTaskId().asc();
   }
 
 }
