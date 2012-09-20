@@ -25,8 +25,8 @@ import org.activiti.cdi.annotation.ProcessVariable;
 import org.activiti.cdi.impl.ProcessVariableMap;
 
 /**
- * Allows to access the process variables of the managed process instance. A
- * process instnace cyn be managed, using the {@link BusinessProcess}-bean.
+ * Allows to access the process variables of a managed process instance.
+ * A process instance can be managed, using the {@link BusinessProcess}-bean.
  * 
  * @author Daniel Meyer
  */
