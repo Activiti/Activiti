@@ -19,13 +19,10 @@ import java.util.Map;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.activiti.cdi.annotation.BusinessProcessScoped;
-import org.activiti.cdi.annotation.ProcessInstanceId;
-import org.activiti.cdi.annotation.TaskId;
 import org.activiti.cdi.impl.context.ContextAssociationManager;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
@@ -78,7 +75,7 @@ import org.activiti.engine.task.Task;
  * current thread. 
  * 
  * @author Daniel Meyer
- * 
+ * @author Falko Menge
  */
 @Named 
 public class BusinessProcess implements Serializable {
@@ -406,7 +403,12 @@ public class BusinessProcess implements Serializable {
     associationManager.setVariable(variableName, value);
   }
   
-  // ----------------------------------- Getters / Setters and Producers
+  // ----------------------------------- Getters / Setters
+
+  /*
+   * Note that Producers should go into {@link BusinessProcessProducers} in
+   * order to allow for specializing {@link BusinessProcess}.
+   */
 
   /**
    * @see #startTask(String)
@@ -439,8 +441,7 @@ public class BusinessProcess implements Serializable {
   /**
    * Returns the id of the currently associated process instance or 'null'
    */
-  /* Also makes the processId available for injection */
-  @Produces @Named("processInstanceId") @ProcessInstanceId public String getProcessInstanceId() {
+  public String getProcessInstanceId() {
     Execution execution = associationManager.getExecution();
     return execution != null ? execution.getProcessInstanceId() : null; 
   }
@@ -448,8 +449,7 @@ public class BusinessProcess implements Serializable {
   /**
    * Returns the id of the task associated with the current conversation or 'null'.
    */
-  /* Also makes the taskId available for injection */
-  @Produces @Named("taskId") @TaskId public String getTaskId() {
+  public String getTaskId() {
     Task task = getTask();
     return task != null ? task.getId() : null;
   }
@@ -462,24 +462,21 @@ public class BusinessProcess implements Serializable {
    *           to check whether an association exists.
    * 
    */
-  /* Also makes the current Task available for injection */
-  @Produces @Named public Task getTask() {
+  public Task getTask() {
     return associationManager.getTask();
   }
   
   /**
    * Returns the currently associated execution  or 'null'
-   * 
    */
-  /* Also makes the current Execution available for injection */
-  @Produces @Named public Execution getExecution() {    
+  public Execution getExecution() {
     return associationManager.getExecution();
   }
   
   /**
    * @see #getExecution()
    */
-  @Produces @Named public String getExecutionId() {
+  public String getExecutionId() {
     Execution e = getExecution();
     return e != null ? e.getId() : null;
   }
@@ -491,8 +488,7 @@ public class BusinessProcess implements Serializable {
    *           if no {@link Execution} is associated. Use
    *           {@link #isAssociated()} to check whether an association exists.
    */
-  /* Also makes the current ProcessInstance available for injection */
-  @Produces @Named public ProcessInstance getProcessInstance() {
+  public ProcessInstance getProcessInstance() {
     Execution execution = getExecution();    
     if(execution != null && !(execution.getProcessInstanceId().equals(execution.getId()))){
       return processEngine
