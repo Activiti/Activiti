@@ -406,7 +406,7 @@ public class BusinessProcess implements Serializable {
   // ----------------------------------- Getters / Setters
 
   /*
-   * Note that Producers should go into {@link BusinessProcessProducers} in
+   * Note that Producers should go into {@link CurrentProcessInstance} in
    * order to allow for specializing {@link BusinessProcess}.
    */
 
