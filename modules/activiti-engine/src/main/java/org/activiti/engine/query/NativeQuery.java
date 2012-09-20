@@ -16,8 +16,6 @@ package org.activiti.engine.query;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.task.Task;
-import org.activiti.engine.task.TaskQuery;
 
 /**
  * Describes basic methods for doing native queries
