@@ -27,7 +27,7 @@ import org.activiti.engine.impl.variable.VariableType;
 /**
  * @author Tom Baeyens
  */
-public class HistoricVariableUpdateEntity extends HistoricDetailEntity implements ValueFields, HistoricVariableUpdate, PersistentObject {
+public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEntity implements ValueFields, HistoricVariableUpdate, PersistentObject {
   
   private static final long serialVersionUID = 1L;
   
@@ -45,10 +45,10 @@ public class HistoricVariableUpdateEntity extends HistoricDetailEntity implement
 
   protected Object cachedValue;
 
-  public HistoricVariableUpdateEntity() {
+  public HistoricDetailVariableInstanceUpdateEntity() {
   }
 
-  public HistoricVariableUpdateEntity(VariableInstanceEntity variableInstance) {
+  public HistoricDetailVariableInstanceUpdateEntity(VariableInstanceEntity variableInstance) {
     this.processInstanceId = variableInstance.getProcessInstanceId();
     this.executionId = variableInstance.getExecutionId();
     this.taskId = variableInstance.getTaskId();
@@ -93,20 +93,78 @@ public class HistoricVariableUpdateEntity extends HistoricDetailEntity implement
     }
   }
 
-  public ByteArrayEntity getByteArrayValue() {
-    // Aren't we forgetting lazy initialization here?
-    return byteArrayValue;
-  }
-
   public Object getPersistentState() {
-    // HistoricVariableUpdateEntity is immutable, so always the same object is returned
-    return HistoricVariableUpdateEntity.class;
+    // HistoricDetailVariableInstanceUpdateEntity is immutable, so always the same object is returned
+    return HistoricDetailVariableInstanceUpdateEntity.class;
   }
   
   public String getVariableTypeName() {
     return (variableType!=null ? variableType.getTypeName() : null);
   }
 
+  // byte array value /////////////////////////////////////////////////////////
+  
+  // i couldn't find a easy readable way to extract the common byte array value logic
+  // into a common class.  therefor it's duplicated in VariableInstanceEntity, 
+  // HistoricVariableInstance and HistoricDetailVariableInstanceUpdateEntity 
+  
+  public String getByteArrayValueId() {
+    return byteArrayValueId;
+  }
+
+  public void setByteArrayValueId(String byteArrayValueId) {
+    this.byteArrayValueId = byteArrayValueId;
+    this.byteArrayValue = null;
+  }
+
+  public ByteArrayEntity getByteArrayValue() {
+    if ((byteArrayValue == null) && (byteArrayValueId != null)) {
+      byteArrayValue = Context
+        .getCommandContext()
+        .getDbSqlSession()
+        .selectById(ByteArrayEntity.class, byteArrayValueId);
+    }
+    return byteArrayValue;
+  }
+  
+  public void setByteArrayValue(byte[] bytes) {
+    ByteArrayEntity byteArrayValue = null;
+    if (this.byteArrayValueId!=null) {
+      getByteArrayValue();
+      Context
+        .getCommandContext()
+        .getDbSqlSession()
+        .delete(ByteArrayEntity.class, this.byteArrayValueId);
+    }
+    if (bytes!=null) {
+      byteArrayValue = new ByteArrayEntity(bytes);
+      Context
+        .getCommandContext()
+        .getDbSqlSession()
+        .insert(byteArrayValue);
+    }
+    this.byteArrayValue = byteArrayValue;
+    if (byteArrayValue != null) {
+      this.byteArrayValueId = byteArrayValue.getId();
+    } else {
+      this.byteArrayValueId = null;
+    }
+  }
+
+  protected void deleteByteArrayValue() {
+    if (byteArrayValueId != null) {
+      // the next apparently useless line is probably to ensure consistency in the DbSqlSession 
+      // cache, but should be checked and docced here (or removed if it turns out to be unnecessary)
+      getByteArrayValue();
+      Context
+        .getCommandContext()
+        .getDbSqlSession()
+        .delete(ByteArrayEntity.class, byteArrayValueId);
+    }
+  }
+  
+  // getters and setters //////////////////////////////////////////////////////
+  
   public Date getTime() {
     return time;
   }
@@ -186,17 +244,6 @@ public class HistoricVariableUpdateEntity extends HistoricDetailEntity implement
     this.byteArrayValue = byteArrayValue;
   }
 
-  
-  public String getByteArrayValueId() {
-    return byteArrayValueId;
-  }
-
-  
-  public void setByteArrayValueId(String byteArrayValueId) {
-    this.byteArrayValueId = byteArrayValueId;
-  }
-
-  
   public Object getCachedValue() {
     return cachedValue;
   }

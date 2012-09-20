@@ -16,18 +16,21 @@ package org.activiti.engine.impl;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.history.HistoricProcessVariable;
-import org.activiti.engine.history.HistoricProcessVariableQuery;
+import org.activiti.engine.history.HistoricDetail;
+import org.activiti.engine.history.HistoricVariableInstance;
+import org.activiti.engine.history.HistoricVariableInstanceQuery;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
+import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity;
 import org.activiti.engine.impl.variable.VariableTypes;
 
 /**
  * @author Christian Lipphardt (camunda)
  */
-public class HistoricProcessVariableQueryImpl extends AbstractQuery<HistoricProcessVariableQuery, HistoricProcessVariable> implements
-        HistoricProcessVariableQuery {
+public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVariableInstanceQuery, HistoricVariableInstance> implements
+        HistoricVariableInstanceQuery {
 
   private static final long serialVersionUID = 1L;
   protected String taskId;
@@ -38,18 +41,18 @@ public class HistoricProcessVariableQueryImpl extends AbstractQuery<HistoricProc
   protected boolean excludeTaskRelated = false;
   protected QueryVariableValue queryVariableValue;
 
-  public HistoricProcessVariableQueryImpl() {
+  public HistoricVariableInstanceQueryImpl() {
   }
 
-  public HistoricProcessVariableQueryImpl(CommandContext commandContext) {
+  public HistoricVariableInstanceQueryImpl(CommandContext commandContext) {
     super(commandContext);
   }
 
-  public HistoricProcessVariableQueryImpl(CommandExecutor commandExecutor) {
+  public HistoricVariableInstanceQueryImpl(CommandExecutor commandExecutor) {
     super(commandExecutor);
   }
 
-  public HistoricProcessVariableQueryImpl processInstanceId(String processInstanceId) {
+  public HistoricVariableInstanceQueryImpl processInstanceId(String processInstanceId) {
     if (processInstanceId == null) {
       throw new ActivitiException("processInstanceId is null");
     }
@@ -57,12 +60,12 @@ public class HistoricProcessVariableQueryImpl extends AbstractQuery<HistoricProc
     return this;
   }
 
-  public HistoricProcessVariableQuery activityInstanceId(String activityInstanceId) {
+  public HistoricVariableInstanceQuery activityInstanceId(String activityInstanceId) {
     this.activityInstanceId = activityInstanceId;
     return this;
   }
 
-  public HistoricProcessVariableQuery taskId(String taskId) {
+  public HistoricVariableInstanceQuery taskId(String taskId) {
     if (taskId == null) {
       throw new ActivitiException("taskId is null");
     }
@@ -70,7 +73,7 @@ public class HistoricProcessVariableQueryImpl extends AbstractQuery<HistoricProc
     return this;
   }
 
-  public HistoricProcessVariableQuery variableName(String variableName) {
+  public HistoricVariableInstanceQuery variableName(String variableName) {
     if (variableName == null) {
       throw new ActivitiException("variableName is null");
     }
@@ -78,7 +81,7 @@ public class HistoricProcessVariableQueryImpl extends AbstractQuery<HistoricProc
     return this;
   }
 
-  public HistoricProcessVariableQuery variableValueEquals(String variableName, Object variableValue) {
+  public HistoricVariableInstanceQuery variableValueEquals(String variableName, Object variableValue) {
     if (variableName == null) {
       throw new ActivitiException("variableName is null");
     }
@@ -90,7 +93,7 @@ public class HistoricProcessVariableQueryImpl extends AbstractQuery<HistoricProc
     return this;
   }
 
-  public HistoricProcessVariableQuery variableNameLike(String variableNameLike) {
+  public HistoricVariableInstanceQuery variableNameLike(String variableNameLike) {
     if (variableNameLike == null) {
       throw new ActivitiException("variableNameLike is null");
     }
@@ -98,7 +101,7 @@ public class HistoricProcessVariableQueryImpl extends AbstractQuery<HistoricProc
     return this;
   }
 
-  public HistoricProcessVariableQuery excludeTaskDetails() {
+  public HistoricVariableInstanceQuery excludeTaskDetails() {
     this.excludeTaskRelated = true;
     return this;
   }
@@ -113,29 +116,34 @@ public class HistoricProcessVariableQueryImpl extends AbstractQuery<HistoricProc
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
     ensureVariablesInitialized();
-    return commandContext.getHistoricProcessVariableManager().findHistoricProcessVariableCountByQueryCriteria(this);
+    return commandContext.getHistoricVariableInstanceManager().findHistoricVariableInstanceCountByQueryCriteria(this);
   }
 
-  public List<HistoricProcessVariable> executeList(CommandContext commandContext, Page page) {
+  public List<HistoricVariableInstance> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     ensureVariablesInitialized();
-    return commandContext.getHistoricProcessVariableManager().findHistoricProcessVariableByQueryCriteria(this, page);
+    List<HistoricVariableInstance> historicVariableInstances = commandContext
+            .getHistoricVariableInstanceManager()
+            .findHistoricVariableInstancesByQueryCriteria(this, page);
+    if (historicVariableInstances!=null) {
+      for (HistoricVariableInstance historicVariableInstance: historicVariableInstances) {
+        if (historicVariableInstance instanceof HistoricVariableInstanceEntity) {
+          ((HistoricVariableInstanceEntity)historicVariableInstance).getByteArrayValue();
+        }
+      }
+    }
+    return historicVariableInstances;
   }
 
   // order by /////////////////////////////////////////////////////////////////
 
-  public HistoricProcessVariableQuery orderByProcessInstanceId() {
-    orderBy(HistoricProcessVariableQueryProperty.PROCESS_INSTANCE_ID);
+  public HistoricVariableInstanceQuery orderByProcessInstanceId() {
+    orderBy(HistoricVariableInstanceQueryProperty.PROCESS_INSTANCE_ID);
     return this;
   }
 
-  public HistoricProcessVariableQuery orderByTime() {
-    orderBy(HistoricProcessVariableQueryProperty.TIME);
-    return this;
-  }
-
-  public HistoricProcessVariableQuery orderByVariableName() {
-    orderBy(HistoricProcessVariableQueryProperty.VARIABLE_NAME);
+  public HistoricVariableInstanceQuery orderByVariableName() {
+    orderBy(HistoricVariableInstanceQueryProperty.VARIABLE_NAME);
     return this;
   }
 

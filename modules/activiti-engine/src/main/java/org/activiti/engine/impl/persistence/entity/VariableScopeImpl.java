@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.VariableScope;
@@ -45,6 +44,8 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   
   protected ELContext cachedElContext;
 
+  protected String id = null;
+
   protected abstract List<VariableInstanceEntity> loadVariableInstances();
   protected abstract VariableScopeImpl getParentVariableScope();
   protected abstract void initializeVariableInstanceBackPointer(VariableInstanceEntity variableInstance);
@@ -67,15 +68,6 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     return collectVariables(new HashMap<String, Object>());
   }
   
-  public Map<String, Object> getVariablesLocal() {
-    Map<String, Object> variables = new HashMap<String, Object>();
-    ensureVariableInstancesInitialized();
-    for (VariableInstanceEntity variableInstance: variableInstances.values()) {
-      variables.put(variableInstance.getName(), variableInstance.getValue());
-    }
-    return variables;
-  }
-
   protected Map<String, Object> collectVariables(HashMap<String, Object> variables) {
     ensureVariableInstancesInitialized();
     VariableScopeImpl parentScope = getParentVariableScope();
@@ -158,164 +150,25 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   public Set<String> getVariableNames() {
     return collectVariableNames(new HashSet<String>());
   }
+  
+  public Map<String, Object> getVariablesLocal() {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    ensureVariableInstancesInitialized();
+    for (VariableInstanceEntity variableInstance: variableInstances.values()) {
+      variables.put(variableInstance.getName(), variableInstance.getValue());
+    }
+    return variables;
+  }
 
   public Set<String> getVariableNamesLocal() {
     ensureVariableInstancesInitialized();
     return variableInstances.keySet();
   }
-  
-  public void setVariable(String variableName, Object value) {
-    setVariable(variableName, value, newStack());
-  }
-  
-  private Stack<VariableScopeImpl> newStack() {    
-    Stack<VariableScopeImpl> stack = new Stack<VariableScopeImpl>();
-    stack.add(this);
-    return stack;
-  }
-  
-  /**
-   * Variable used within this VariableScope to remember on which scope we initially called "setVariable" before
-   * we maybe delegated to parent scopes. We need this information to correctly fill the history
-   * (see http://jira.codehaus.org/browse/ACT-1083) 
-   */
-  private void setVariable(String variableName, Object value, Stack<VariableScopeImpl> scopes) {    
-    if (hasVariableLocal(variableName)) {
-      setVariableLocal(variableName, value, scopes);
-      return;
-    } 
-    VariableScopeImpl parentVariableScope = getParentVariableScope();
-    if (parentVariableScope!=null) {
-      scopes.add(parentVariableScope);
-      parentVariableScope.setVariable(variableName, value, scopes);
-      return;
-    }
-    createVariableLocal(variableName, value, scopes);
-  }
 
-  public Object setVariableLocal(String variableName, Object value) {
-    return setVariableLocal(variableName, value, newStack());    
-  }
-  
-  public Object setVariableLocal(String variableName, Object value, Stack<VariableScopeImpl> scopes) {
-    ensureVariableInstancesInitialized();
-    VariableInstanceEntity variableInstance = variableInstances.get(variableName);
-    if ((variableInstance != null) && (!variableInstance.getType().isAbleToStore(value))) {
-      // delete variable
-      removeVariable(variableName);
-      variableInstance = null;
-    }
-    if (variableInstance == null) {
-      createVariableLocal(variableName, value, scopes);
-    } else {
-      setVariableInstanceValue(value, variableInstance, scopes);
-    }
-    
-    return null;
-  }
-
-  protected void setVariableInstanceValue(Object value, VariableInstanceEntity variableInstance, Stack<VariableScopeImpl> scopes) {
-    variableInstance.setValue(value);
-    
-    int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
-    if (historyLevel == ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
-      HistoricVariableUpdateEntity historicVariableUpdate = new HistoricVariableUpdateEntity(variableInstance);
-      initializeActivityInstanceId(historicVariableUpdate, scopes);      
-      Context
-        .getCommandContext()
-        .getDbSqlSession()
-        .insert(historicVariableUpdate);
-    }
-  }
-  
-  protected void initializeActivityInstanceId(HistoricVariableUpdateEntity historicVariableUpdate, Stack<VariableScopeImpl> scopes) {    
-  }
-
-  protected void removeVariableInstanceValue(VariableInstanceEntity variableInstance, Stack<VariableScopeImpl> scopes) {
-    variableInstance.delete();
-    variableInstance.setValue(null);
-    
-    int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
-    if (historyLevel == ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
-      HistoricVariableUpdateEntity historicVariableUpdate = new HistoricVariableUpdateEntity(variableInstance);
-      initializeActivityInstanceId(historicVariableUpdate, scopes);
-      Context
-        .getCommandContext()
-        .getDbSqlSession()
-        .insert(historicVariableUpdate);
-    }
-  }
-  
-  public void createVariableLocal(String variableName, Object value) {
-    createVariableLocal(variableName, value, newStack());
-  }
-  
-  public void createVariableLocal(String variableName, Object value, Stack<VariableScopeImpl> scopes) {
-    ensureVariableInstancesInitialized();
-    
-    if (variableInstances.containsKey(variableName)) {
-      throw new ActivitiException("variable '"+variableName+"' already exists. Use setVariableLocal if you want to overwrite the value");
-    }
-    
-    VariableTypes variableTypes = Context
-      .getProcessEngineConfiguration()
-      .getVariableTypes();
-    
-    VariableType type = variableTypes.findVariableType(value);
- 
-    VariableInstanceEntity variableInstance = VariableInstanceEntity.createAndInsert(variableName, type, value);
-    initializeVariableInstanceBackPointer(variableInstance);
-    variableInstances.put(variableName, variableInstance);
-    
-    setVariableInstanceValue(value, variableInstance, scopes);
-  }
-
-  public void removeVariable(String variableName) {
-    removeVariable(variableName, newStack());
-  }
-  
-  /**
-   * Variable used within this VariableScope to remember on which scope we initially called "setVariable" before
-   * we maybe delegated to parent scopes. We need this information to correctly fill the history
-   * (see http://jira.codehaus.org/browse/ACT-1083) 
-   */
-  protected void removeVariable(String variableName, Stack<VariableScopeImpl> scopes) {
-    if (hasVariableLocal(variableName)) {
-      removeVariableLocal(variableName, scopes);
-      return;
-    }
-    VariableScopeImpl parentVariableScope = getParentVariableScope();
-    if (parentVariableScope != null) {
-      scopes.add(parentVariableScope);
-      parentVariableScope.removeVariable(variableName, scopes);
-      return;
-    }
-  }
-  
-  public void removeVariableLocal(String variableName) {
-    removeVariable(variableName, newStack());
-  }
-  
-  protected void removeVariableLocal(String variableName, Stack<VariableScopeImpl> scopes) {
-    ensureVariableInstancesInitialized();
-    VariableInstanceEntity variableInstance = variableInstances.remove(variableName);
-    if (variableInstance != null) {
-      removeVariableInstanceValue(variableInstance, scopes);
-    }
-  }
-  
-  public void removeVariables(Collection<String> variableNames) {
-    if (variableNames != null) {
-      for (String variableName : variableNames) {
-        removeVariable(variableName);
-      }
-    }
-  }
-  
-  public void removeVariablesLocal(Collection<String> variableNames) {
-    if (variableNames != null) {
-      for (String variableName : variableNames) {
-        removeVariableLocal(variableName);
+  public void createVariablesLocal(Map<String, ? extends Object> variables) {
+    if (variables!=null) {
+      for (Map.Entry<String, ? extends Object> entry: variables.entrySet()) {
+        createVariableLocal(entry.getKey(), entry.getValue());
       }
     }
   }
@@ -337,18 +190,225 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   }
 
   public void removeVariables() {
+    ensureVariableInstancesInitialized();
     Set<String> variableNames = new HashSet<String>(variableInstances.keySet());
     for (String variableName: variableNames) {
       removeVariable(variableName);
     }
   }
-
+  
   public void removeVariablesLocal() {
     List<String> variableNames = new ArrayList<String>(getVariableNamesLocal());
     for (String variableName: variableNames) {
       removeVariableLocal(variableName);
     }
   }
+  
+  public void deleteVariablesInstanceForLeavingScope() {
+    List<String> variableNames = new ArrayList<String>(getVariableNamesLocal());
+    for (String variableName: variableNames) {
+      ensureVariableInstancesInitialized();
+      VariableInstanceEntity variableInstance = variableInstances.remove(variableName);
+      if (variableInstance != null) {
+        variableInstance.delete();
+
+        int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
+        if (historyLevel == ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY) {
+          insertHistoricVariableInstance(variableInstance);
+        }
+      }
+    }
+  }
+  
+  public void removeVariables(Collection<String> variableNames) {
+    if (variableNames != null) {
+      for (String variableName : variableNames) {
+        removeVariable(variableName);
+      }
+    }
+  }
+
+  public void removeVariablesLocal(Collection<String> variableNames) {
+    if (variableNames != null) {
+      for (String variableName : variableNames) {
+        removeVariableLocal(variableName);
+      }
+    }
+  }
+  
+  public void setVariable(String variableName, Object value) {
+    if (hasVariableLocal(variableName)) {
+      setVariableLocal(variableName, value);
+      return;
+    } 
+    VariableScope parentVariableScope = getParentVariableScope();
+    if (parentVariableScope!=null) {
+      parentVariableScope.setVariable(variableName, value);
+      return;
+    }
+    createVariableLocal(variableName, value);
+  }
+  
+  public Object setVariableLocal(String variableName, Object value) {
+    ensureVariableInstancesInitialized();
+    VariableInstanceEntity variableInstance = variableInstances.get(variableName);
+    if ((variableInstance != null) && (!variableInstance.getType().isAbleToStore(value))) {
+      // delete variable
+      removeVariable(variableName);
+      variableInstance = null;
+    }
+    if (variableInstance == null) {
+      createVariableLocal(variableName, value);
+    } else {
+      updateVariableInstance(variableInstance, value);
+    }
+    
+    return null;
+  }
+  
+  /** only called when a new variable is created on this variable scope.
+   * This method is also responsible for propagating the creation of this 
+   * variable to the history. */
+  public void createVariableLocal(String variableName, Object value) {
+    ensureVariableInstancesInitialized();
+    
+    if (variableInstances.containsKey(variableName)) {
+      throw new ActivitiException("variable '"+variableName+"' already exists. Use setVariableLocal if you want to overwrite the value");
+    }
+    
+    createVariableInstance(variableName, value);
+  }
+  
+  public void removeVariable(String variableName) {
+    ensureVariableInstancesInitialized();
+    if (variableInstances.containsKey(variableName)) {
+      removeVariableLocal(variableName);
+      return;
+    }
+    VariableScope parentVariableScope = getParentVariableScope();
+    if (parentVariableScope!=null) {
+      parentVariableScope.removeVariable(variableName);
+    }
+  }
+  
+  public void removeVariableLocal(String variableName) {
+    ensureVariableInstancesInitialized();
+    VariableInstanceEntity variableInstance = variableInstances.remove(variableName);
+    if (variableInstance != null) {
+      deleteVariableInstanceForExplicitUserCall(variableInstance);
+    }
+  }
+
+  protected void deleteVariableInstanceForExplicitUserCall(VariableInstanceEntity variableInstance) {
+    variableInstance.delete();
+    variableInstance.setValue(null);
+    
+    int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
+    
+    if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+      updateHistoricVariableInstanceValue(variableInstance);
+    }
+
+    if (historyLevel == ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
+      HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = new HistoricDetailVariableInstanceUpdateEntity(variableInstance);
+      updateActivityInstanceIdInHistoricVariableUpdate(historicVariableUpdate);
+      Context
+        .getCommandContext()
+        .getDbSqlSession()
+        .insert(historicVariableUpdate);
+    }
+  }
+
+  protected void updateVariableInstance(VariableInstanceEntity variableInstance, Object value) {
+    variableInstance.setValue(value);
+
+    int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
+    if (historyLevel==ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
+      insertHistoricDetailVariableInstanceUpdate(variableInstance);
+    }
+    
+    if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+      updateHistoricVariableInstanceValue(variableInstance);
+    }
+  }
+
+  protected VariableInstanceEntity createVariableInstance(String variableName, Object value) {
+    VariableTypes variableTypes = Context
+      .getProcessEngineConfiguration()
+      .getVariableTypes();
+    
+    VariableType type = variableTypes.findVariableType(value);
+ 
+    VariableInstanceEntity variableInstance = VariableInstanceEntity.createAndInsert(variableName, type, value);
+    initializeVariableInstanceBackPointer(variableInstance);
+    variableInstances.put(variableName, variableInstance);
+    
+    variableInstance.setValue(value);
+    
+    int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
+    if (historyLevel==ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
+      insertHistoricDetailVariableInstanceUpdate(variableInstance);
+    }
+    
+    if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+      insertHistoricVariableInstance(variableInstance);
+    }
+
+    return variableInstance;
+  }
+
+  protected void insertHistoricVariableInstance(VariableInstanceEntity variableInstance) {
+    HistoricVariableInstanceEntity historicVariableInstance = new HistoricVariableInstanceEntity(variableInstance);
+    Context
+      .getCommandContext()
+      .getDbSqlSession()
+      .insert(historicVariableInstance);
+  }
+  
+  protected void insertHistoricDetailVariableInstanceUpdate(VariableInstanceEntity variableInstance) {
+    HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = new HistoricDetailVariableInstanceUpdateEntity(variableInstance);
+
+    updateActivityInstanceIdInHistoricVariableUpdate(historicVariableUpdate);
+    
+    Context
+      .getCommandContext()
+      .getDbSqlSession()
+      .insert(historicVariableUpdate);
+  }
+
+  /** execution variable updates have activity instance ids
+   * but historic task variable updates don't
+   * @see ExecutionEntity#updateActivityInstanceIdInHistoricVariableUpdate(HistoricDetailVariableInstanceUpdateEntity) */
+  protected void updateActivityInstanceIdInHistoricVariableUpdate(HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate) {
+  }
+
+  /** only called when an existing variable is updated.
+   * This method is also responsible for propagating the creation of this 
+   * variable to the history. */
+  protected void updateHistoricVariableInstanceValue(VariableInstanceEntity variableInstance) {
+    HistoricVariableInstanceEntity historicProcessVariable = 
+      Context
+        .getCommandContext()
+        .getDbSqlSession()
+        .findInCache(HistoricVariableInstanceEntity.class, variableInstance.getId());
+    if (historicProcessVariable==null) {
+      historicProcessVariable = Context
+              .getCommandContext()
+              .getHistoricVariableInstanceManager()
+              .findHistoricVariableInstanceByVariableInstanceId(variableInstance.getId());
+    }
+    if (historicProcessVariable!=null) {
+      historicProcessVariable.copyValue(variableInstance);
+    } else {
+      historicProcessVariable = new HistoricVariableInstanceEntity(variableInstance);
+      Context
+        .getCommandContext()
+        .getDbSqlSession()
+        .insert(historicProcessVariable);
+    }
+  }
+
+  // getters and setters //////////////////////////////////////////////////////
 
   public ELContext getCachedElContext() {
     return cachedElContext;
@@ -357,14 +417,11 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     this.cachedElContext = cachedElContext;
   }
   
-  public void deleteVariablesLocal() {
-    List<String> variableNames = new ArrayList<String>(getVariableNamesLocal());
-    for (String variableName : variableNames) {
-      VariableInstanceEntity variableInstance = variableInstances.remove(variableName);
-      if (variableInstance != null) {
-        variableInstance.delete();
-      }
-    }
+  public String getId() {
+    return id;
   }
   
+  public void setId(String id) {
+    this.id = id;
+  }
 }

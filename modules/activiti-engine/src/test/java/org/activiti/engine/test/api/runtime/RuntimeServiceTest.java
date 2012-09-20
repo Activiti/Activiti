@@ -23,7 +23,7 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.persistence.entity.HistoricVariableUpdateEntity;
+import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -446,8 +446,8 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
 
       List<HistoricDetail> resultSet = historyService.createHistoricDetailQuery().processInstanceId(processInstanceId).list();
       for (HistoricDetail currentHistoricDetail : resultSet) {
-        assertTrue(currentHistoricDetail instanceof HistoricVariableUpdateEntity);
-        HistoricVariableUpdateEntity historicVariableUpdate = (HistoricVariableUpdateEntity) currentHistoricDetail;
+        assertTrue(currentHistoricDetail instanceof HistoricDetailVariableInstanceUpdateEntity);
+        HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = (HistoricDetailVariableInstanceUpdateEntity) currentHistoricDetail;
       
         if (historicVariableUpdate.getName().equals(variableName)) {
           if (historicVariableUpdate.getValue() == null) {

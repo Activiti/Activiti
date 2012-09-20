@@ -24,7 +24,7 @@ package org.activiti.engine.history;
  * @author Christian Lipphardt (camunda)
  * @author ruecker
  */
-public interface HistoricProcessVariable {
+public interface HistoricVariableInstance {
   
   /** The unique DB id */
   String getId();

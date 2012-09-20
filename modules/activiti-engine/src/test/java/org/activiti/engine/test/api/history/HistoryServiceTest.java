@@ -192,7 +192,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
   }
 
   @Deployment(resources = { "org/activiti/engine/test/api/runtime/concurrentExecution.bpmn20.xml" })
-  public void testHistoricProcessVariablesOnParallelExecution() {
+  public void testHistoricVariableInstancesOnParallelExecution() {
     Map<String, Object> vars = new HashMap<String, Object>();
     vars.put("rootValue", "test");
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("concurrent", vars);
@@ -201,19 +201,18 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     for (Task task : tasks) {      
       Map<String, Object> variables = new HashMap<String, Object>();
       // set token local variable
-      runtimeService.setVariable(task.getExecutionId(), "parallelValue1", task.getId());
-      runtimeService.setVariable(task.getExecutionId(), "parallelValue2", "test");
+      log.fine("setting variables on task "+task.getId()+", execution "+task.getExecutionId());
+      runtimeService.setVariableLocal(task.getExecutionId(), "parallelValue1", task.getName());
+      runtimeService.setVariableLocal(task.getExecutionId(), "parallelValue2", "test");
       taskService.complete(task.getId(), variables);      
     }
     taskService.complete(taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult().getId());
     
     assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueEquals("rootValue", "test").count());
     
-    // TODO: THis is currently not supported
-    
-    //    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueEquals("parallelValue1", "receivePayment").count());
-    //    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueEquals("parallelValue1", "shipOrder").count());
-    //    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueEquals("parallelValue2", "test").count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueEquals("parallelValue1", "Receive Payment").count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueEquals("parallelValue1", "Ship Order").count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().variableValueEquals("parallelValue2", "test").count());
   }
   
   /**

@@ -109,7 +109,7 @@ import org.activiti.engine.impl.persistence.entity.GroupManager;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceManager;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailManager;
 import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceManager;
-import org.activiti.engine.impl.persistence.entity.HistoricProcessVariableManager;
+import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceManager;
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceManager;
 import org.activiti.engine.impl.persistence.entity.IdentityInfoManager;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkManager;
@@ -170,9 +170,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public static final int HISTORYLEVEL_NONE = 0;
   public static final int HISTORYLEVEL_ACTIVITY = 1;
-  public static final int HISTORYLEVEL_VARIABLE = 2;
-  public static final int HISTORYLEVEL_AUDIT = 3;
-  public static final int HISTORYLEVEL_FULL = 4;
+  public static final int HISTORYLEVEL_AUDIT = 2;
+  public static final int HISTORYLEVEL_FULL = 3;
 
   public static final String DEFAULT_WS_SYNC_FACTORY = "org.activiti.engine.impl.webservice.CxfWebServiceClientFactory";
   
@@ -611,7 +610,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       addSessionFactory(new GenericManagerFactory(HistoricActivityInstanceManager.class));
       addSessionFactory(new GenericManagerFactory(HistoricDetailManager.class));
       addSessionFactory(new GenericManagerFactory(HistoricProcessInstanceManager.class));
-      addSessionFactory(new GenericManagerFactory(HistoricProcessVariableManager.class));
+      addSessionFactory(new GenericManagerFactory(HistoricVariableInstanceManager.class));
       addSessionFactory(new GenericManagerFactory(HistoricTaskInstanceManager.class));
       addSessionFactory(new GenericManagerFactory(IdentityInfoManager.class));
       addSessionFactory(new GenericManagerFactory(IdentityLinkManager.class));
@@ -758,12 +757,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       historyLevel = 0;
     } else if (HISTORY_ACTIVITY.equalsIgnoreCase(history)) {
       historyLevel = 1;
-    } else if (HISTORY_VARIABLE.equalsIgnoreCase(history)) {
-      historyLevel = 2;
     } else if (HISTORY_AUDIT.equalsIgnoreCase(history)) {
-      historyLevel = 3;
+      historyLevel = 2;
     } else if (HISTORY_FULL.equalsIgnoreCase(history)) {
-      historyLevel = 4;
+      historyLevel = 3;
     } else {
       throw new ActivitiException("invalid history level: "+history);
     }

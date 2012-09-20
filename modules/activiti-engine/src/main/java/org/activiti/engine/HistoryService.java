@@ -20,10 +20,10 @@ import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricDetailQuery;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
-import org.activiti.engine.history.HistoricProcessVariable;
-import org.activiti.engine.history.HistoricProcessVariableQuery;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
+import org.activiti.engine.history.HistoricVariableInstance;
+import org.activiti.engine.history.HistoricVariableInstanceQuery;
 import org.activiti.engine.history.NativeHistoricActivityInstanceQuery;
 import org.activiti.engine.history.NativeHistoricProcessInstanceQuery;
 import org.activiti.engine.history.NativeHistoricTaskInstanceQuery;
@@ -53,8 +53,8 @@ public interface HistoryService {
   /** Creates a new programmatic query to search for {@link HistoricDetail}s. */
   HistoricDetailQuery createHistoricDetailQuery();
   
-  /** Creates a new programmatic query to search for {@link HistoricProcessVariable}s. */
-  HistoricProcessVariableQuery createHistoricProcessVariableQuery();
+  /** Creates a new programmatic query to search for {@link HistoricVariableInstance}s. */
+  HistoricVariableInstanceQuery createHistoricVariableInstanceQuery();
 
   /** Deletes historic task instance.  This might be useful for tasks that are 
    * {@link TaskService#newTask() dynamically created} and then {@link TaskService#complete(String) completed}. 

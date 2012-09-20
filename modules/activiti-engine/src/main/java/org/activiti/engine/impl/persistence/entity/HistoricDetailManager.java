@@ -29,23 +29,23 @@ import org.activiti.engine.impl.persistence.AbstractHistoricManager;
  */
 public class HistoricDetailManager extends AbstractHistoricManager {
 
-  public void deleteHistoricDetail(HistoricDetailEntity historicDetail) {
-    if (historicDetail instanceof HistoricVariableUpdateEntity) {
-      HistoricVariableUpdateEntity historicVariableUpdate = (HistoricVariableUpdateEntity) historicDetail;
-      String byteArrayValueId = historicVariableUpdate.getByteArrayValueId();
-      if (byteArrayValueId != null) {
-          // the next apparently useless line is probably to ensure consistency in the DbSqlSession 
-          // cache, but should be checked and docced here (or removed if it turns out to be unnecessary)
-          // @see also HistoricVariableInstanceEntity
-        historicVariableUpdate.getByteArrayValue();
-        Context
-          .getCommandContext()
-          .getSession(DbSqlSession.class)
-          .delete(ByteArrayEntity.class, byteArrayValueId);
-      }
-    }
-    getDbSqlSession().delete(HistoricDetailEntity.class, historicDetail.getId());
-  }
+//  public void deleteHistoricDetail(HistoricDetailEntity historicDetail) {
+//    if (historicDetail instanceof HistoricDetailVariableInstanceUpdateEntity) {
+//      HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = (HistoricDetailVariableInstanceUpdateEntity) historicDetail;
+//      String byteArrayValueId = historicVariableUpdate.getByteArrayValueId();
+//      if (byteArrayValueId != null) {
+//          // the next apparently useless line is probably to ensure consistency in the DbSqlSession 
+//          // cache, but should be checked and docced here (or removed if it turns out to be unnecessary)
+//          // @see also HistoricVariableInstanceEntity
+//        historicVariableUpdate.getByteArrayValue();
+//        Context
+//          .getCommandContext()
+//          .getSession(DbSqlSession.class)
+//          .delete(ByteArrayEntity.class, byteArrayValueId);
+//      }
+//    }
+//    getDbSqlSession().delete(HistoricDetailEntity.class, historicDetail.getId());
+//  }
 
   @SuppressWarnings("unchecked")
   public void deleteHistoricDetailsByProcessInstanceId(String historicProcessInstanceId) {
@@ -60,7 +60,7 @@ public class HistoricDetailManager extends AbstractHistoricManager {
         .getHistoricDetailManager();
       
       for (HistoricDetailEntity historicDetail: historicDetails) {
-        historicDetailManager.deleteHistoricDetail(historicDetail);
+        historicDetail.delete();
       }
     }
   }

@@ -176,7 +176,7 @@
         	and ((RES.SUSPENSION_STATE_ = 2) or (P.SUSPENSION_STATE_ = 2))
         </if>
       </if>
-      <!-- PLEASE NOTE: If you change anything have a look into the HistoricProcessVariable & HistoricProcessInstance, the same query object is used there! -->
+      <!-- PLEASE NOTE: If you change anything have a look into the HistoricVariableInstance & HistoricProcessInstance, the same query object is used there! -->
       <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
         <if test="!queryVariableValue.local">
           <!-- When process instance variable is queried for, only process variables are taken into account -->

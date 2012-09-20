@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.history.handler;
 
 import java.util.List;
+
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.BpmnParseListener;
@@ -37,8 +38,6 @@ import org.activiti.engine.impl.variable.VariableDeclaration;
  */
 public class HistoryParseListener implements BpmnParseListener {
 
-  protected static final HistoricProcessVariableHandler HISTORIC_PROCESS_VARIABLE_HANDLER = new HistoricProcessVariableHandler();
-
   protected static final StartEventEndHandler START_EVENT_END_HANDLER = new StartEventEndHandler();
 
   protected static final ActivityInstanceEndHandler ACTIVITI_INSTANCE_END_LISTENER = new ActivityInstanceEndHandler();
@@ -59,9 +58,6 @@ public class HistoryParseListener implements BpmnParseListener {
   public void parseProcess(Element processElement, ProcessDefinitionEntity processDefinition) {
     if (activityHistoryEnabled(processDefinition, historyLevel)) {
       processDefinition.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, new ProcessInstanceEndHandler());
-    }
-    if (variableHistoryEnabled(processDefinition, historyLevel)) {
-      processDefinition.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, HISTORIC_PROCESS_VARIABLE_HANDLER);
     }
   }
 
@@ -182,7 +178,7 @@ public class HistoryParseListener implements BpmnParseListener {
   }
 
   public static boolean variableHistoryEnabled(ScopeImpl scopeElement, int historyLevel) {
-    return historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_VARIABLE;
+    return historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY;
   }
   
   public static boolean activityHistoryEnabled(ScopeImpl scopeElement, int historyLevel) {

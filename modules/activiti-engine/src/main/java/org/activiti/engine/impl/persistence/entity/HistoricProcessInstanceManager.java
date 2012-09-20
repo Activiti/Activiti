@@ -60,8 +60,8 @@ public class HistoricProcessInstanceManager extends AbstractHistoricManager {
         .deleteHistoricDetailsByProcessInstanceId(historicProcessInstanceId);
 
       commandContext
-        .getHistoricProcessVariableManager()
-        .deleteHistoricProcessVariableByProcessInstanceId(historicProcessInstanceId);
+        .getHistoricVariableInstanceManager()
+        .deleteHistoricVariableInstanceByProcessInstanceId(historicProcessInstanceId);
       
       commandContext
         .getHistoricActivityInstanceManager()

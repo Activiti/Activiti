@@ -19,6 +19,7 @@ import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricDetailQuery;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
 
 
 /**
@@ -95,9 +96,17 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
 
   public List<HistoricDetail> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
-    return commandContext
+    List<HistoricDetail> historicDetails = commandContext
       .getHistoricDetailManager()
       .findHistoricDetailsByQueryCriteria(this, page);
+    if (historicDetails!=null) {
+      for (HistoricDetail historicDetail: historicDetails) {
+        if (historicDetail instanceof HistoricDetailVariableInstanceUpdateEntity) {
+          ((HistoricDetailVariableInstanceUpdateEntity)historicDetail).getByteArrayValue();
+        }
+      }
+    }
+    return historicDetails;
   }
   
   // order by /////////////////////////////////////////////////////////////////

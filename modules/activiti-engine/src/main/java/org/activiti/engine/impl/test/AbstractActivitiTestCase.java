@@ -52,8 +52,6 @@ import org.junit.Assert;
  */
 public abstract class AbstractActivitiTestCase extends PvmTestCase {
 
-  private static Logger log = Logger.getLogger(PluggableActivitiTestCase.class.getName());
-  
   static {
     // this ensures that mybatis uses the jdk logging
     LogFactory.useJdkLogging();

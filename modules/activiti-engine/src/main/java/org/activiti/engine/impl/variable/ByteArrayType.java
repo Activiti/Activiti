@@ -12,7 +12,6 @@
  */
 package org.activiti.engine.impl.variable;
 
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntity;
 
 /**
@@ -41,14 +40,7 @@ public class ByteArrayType implements VariableType {
     ByteArrayEntity byteArray = valueFields.getByteArrayValue();
     byte[] bytes = (byte[]) value;
     if (byteArray==null) {
-      byteArray = new ByteArrayEntity(bytes);
-      
-      Context
-        .getCommandContext()
-        .getDbSqlSession()
-        .insert(byteArray);
-      
-      valueFields.setByteArrayValue(byteArray);
+      valueFields.setByteArrayValue(bytes);
    
     } else {
       byteArray.setBytes(bytes);

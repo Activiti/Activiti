@@ -24,19 +24,6 @@ import org.activiti.engine.impl.persistence.AbstractManager;
  */
 public class VariableInstanceManager extends AbstractManager {
 
-  public void deleteVariableInstance(VariableInstanceEntity variableInstance) {
-    getDbSqlSession().delete(VariableInstanceEntity.class, variableInstance.getId());
-
-    String byteArrayValueId = variableInstance.getByteArrayValueId();
-    if (byteArrayValueId != null) {
-      // the next apparently useless line is probably to ensure consistency in the DbSqlSession 
-      // cache, but should be checked and docced here (or removed if it turns out to be unnecessary)
-      // @see also HistoricVariableUpdateEntity
-      variableInstance.getByteArrayValue();
-      getDbSqlSession().delete(ByteArrayEntity.class, byteArrayValueId);
-    }
-  }
-
   @SuppressWarnings("unchecked")
   public List<VariableInstanceEntity> findVariableInstancesByTaskId(String taskId) {
     return getDbSqlSession().selectList("selectVariablesByTaskId", taskId);
@@ -51,7 +38,7 @@ public class VariableInstanceManager extends AbstractManager {
     Map<String, VariableInstanceEntity> variableInstances = task.getVariableInstances();
     if (variableInstances!=null) {
       for (VariableInstanceEntity variableInstance: variableInstances.values()) {
-        deleteVariableInstance(variableInstance);
+        variableInstance.delete();
       }
     }
   }

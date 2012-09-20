@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
@@ -81,28 +82,12 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Se
 
   public void delete() {
     // delete variable
-    DbSqlSession dbSqlSession = Context
+    Context
       .getCommandContext()
-      .getDbSqlSession();
+      .getDbSqlSession()
+      .delete(VariableInstanceEntity.class, id);
     
-    dbSqlSession.delete(VariableInstanceEntity.class, id);
-
-    if (byteArrayValueId != null) {
-      // the next apparently useless line is probably to ensure consistency in the DbSqlSession 
-      // cache, but should be checked and docced here (or removed if it turns out to be unnecessary)
-      // @see also HistoricVariableUpdateEntity
-      getByteArrayValue();
-      dbSqlSession.delete(ByteArrayEntity.class, byteArrayValueId);
-    }
-  }
-
-  public void setByteArrayValue(ByteArrayEntity byteArrayValue) {
-    this.byteArrayValue = byteArrayValue;
-    if (byteArrayValue != null) {
-      this.byteArrayValueId = byteArrayValue.getId();
-    } else {
-      this.byteArrayValueId = null;
-    }
+    deleteByteArrayValue();
   }
 
   public Object getPersistentState() {
@@ -135,6 +120,16 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Se
   public void setExecutionId(String executionId) {
     this.executionId = executionId;
   }
+  
+  // byte array value /////////////////////////////////////////////////////////
+  
+  // i couldn't find a easy readable way to extract the common byte array value logic
+  // into a common class.  therefor it's duplicated in VariableInstanceEntity, 
+  // HistoricVariableInstance and HistoricDetailVariableInstanceUpdateEntity 
+  
+  public String getByteArrayValueId() {
+    return byteArrayValueId;
+  }
 
   public void setByteArrayValueId(String byteArrayValueId) {
     this.byteArrayValueId = byteArrayValueId;
@@ -151,6 +146,42 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Se
     return byteArrayValue;
   }
   
+  public void setByteArrayValue(byte[] bytes) {
+    ByteArrayEntity byteArrayValue = null;
+    if (this.byteArrayValueId!=null) {
+      getByteArrayValue();
+      Context
+        .getCommandContext()
+        .getDbSqlSession()
+        .delete(ByteArrayEntity.class, this.byteArrayValueId);
+    }
+    if (bytes!=null) {
+      byteArrayValue = new ByteArrayEntity(bytes);
+      Context
+        .getCommandContext()
+        .getDbSqlSession()
+        .insert(byteArrayValue);
+    }
+    this.byteArrayValue = byteArrayValue;
+    if (byteArrayValue != null) {
+      this.byteArrayValueId = byteArrayValue.getId();
+    } else {
+      this.byteArrayValueId = null;
+    }
+  }
+
+  protected void deleteByteArrayValue() {
+    if (byteArrayValueId != null) {
+      // the next apparently useless line is probably to ensure consistency in the DbSqlSession 
+      // cache, but should be checked and docced here (or removed if it turns out to be unnecessary)
+      getByteArrayValue();
+      Context
+        .getCommandContext()
+        .getDbSqlSession()
+        .delete(ByteArrayEntity.class, byteArrayValueId);
+    }
+  }
+
   // type /////////////////////////////////////////////////////////////////////
 
   public Object getValue() {
@@ -172,9 +203,6 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Se
   }
   public void setId(String id) {
     this.id = id;
-  }
-  public String getByteArrayValueId() {
-    return byteArrayValueId;
   }
   public String getTextValue() {
     return textValue;

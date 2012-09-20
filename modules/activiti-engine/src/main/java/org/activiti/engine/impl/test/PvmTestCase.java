@@ -35,7 +35,7 @@ public class PvmTestCase extends TestCase {
     LogUtil.readJavaUtilLoggingConfigFromClasspath();
   }
   
-  private static Logger log = Logger.getLogger(PvmTestCase.class.getName());
+  protected static Logger log = Logger.getLogger(PvmTestCase.class.getName());
 
   protected static final ThreadLogMode DEFAULT_THREAD_LOG_MODE = ThreadLogMode.INDENT;
   

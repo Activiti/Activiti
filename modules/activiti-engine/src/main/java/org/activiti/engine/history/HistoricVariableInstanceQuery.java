@@ -17,29 +17,27 @@ import org.activiti.engine.query.Query;
 
 
 /** 
- * Programmatic querying for {@link HistoricProcessVariable}s.
+ * Programmatic querying for {@link HistoricVariableInstance}s.
  * 
  * @author Christian Lipphardt (camunda)
  */
-public interface HistoricProcessVariableQuery extends Query<HistoricProcessVariableQuery, HistoricProcessVariable> {
+public interface HistoricVariableInstanceQuery extends Query<HistoricVariableInstanceQuery, HistoricVariableInstance> {
 
   /** Only select historic process variables with the given process instance. */
-  HistoricProcessVariableQuery processInstanceId(String processInstanceId);
+  HistoricVariableInstanceQuery processInstanceId(String processInstanceId);
 
   /** Only select historic process variables with the given variable name. */
-  HistoricProcessVariableQuery variableName(String variableName);
+  HistoricVariableInstanceQuery variableName(String variableName);
   
   /** Only select historic process variables where the given variable name is like. */
-  HistoricProcessVariableQuery variableNameLike(String variableNameLike);
+  HistoricVariableInstanceQuery variableNameLike(String variableNameLike);
 
   /**
    * only select historic process variables with the given name and value
    */
-  HistoricProcessVariableQuery variableValueEquals(String variableName, Object variableValue);
+  HistoricVariableInstanceQuery variableValueEquals(String variableName, Object variableValue);
 
-  HistoricProcessVariableQuery orderByProcessInstanceId();
+  HistoricVariableInstanceQuery orderByProcessInstanceId();
   
-  HistoricProcessVariableQuery orderByVariableName();
-  
-  HistoricProcessVariableQuery orderByTime();
+  HistoricVariableInstanceQuery orderByVariableName();
 }

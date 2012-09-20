@@ -15,7 +15,7 @@ alter table ACT_HI_PROCINST
     
 drop table ACT_HI_PROCINST if exists;
 drop table ACT_HI_ACTINST if exists;
-drop table ACT_HI_PROCVARIABLE if exists;
+drop table ACT_HI_VARINST if exists;
 drop table ACT_HI_TASKINST if exists;
 drop table ACT_HI_DETAIL if exists;
 drop table ACT_HI_COMMENT if exists;

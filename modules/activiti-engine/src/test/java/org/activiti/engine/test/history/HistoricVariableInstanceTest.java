@@ -15,11 +15,15 @@ package org.activiti.engine.test.history;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.history.HistoricProcessVariable;
+import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricDetail;
+import org.activiti.engine.history.HistoricVariableInstance;
+import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.persistence.entity.HistoricProcessVariableEntity;
+import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity;
 import org.activiti.engine.impl.test.AbstractActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -31,7 +35,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * @author Christian Lipphardt (camunda)
  */
-public class HistoricProcessVariableTest extends AbstractActivitiTestCase {
+public class HistoricVariableInstanceTest extends AbstractActivitiTestCase {
 
   @Override
   protected void initializeProcessEngine() {
@@ -80,10 +84,10 @@ public class HistoricProcessVariableTest extends AbstractActivitiTestCase {
     
     assertProcessEnded(processInstance.getId());
     
-    List<HistoricProcessVariable> variables = historyService.createHistoricProcessVariableQuery().list();
+    List<HistoricVariableInstance> variables = historyService.createHistoricVariableInstanceQuery().list();
     assertEquals(1, variables.size());
     
-    HistoricProcessVariableEntity historicVariable = (HistoricProcessVariableEntity) variables.get(0);
+    HistoricVariableInstanceEntity historicVariable = (HistoricVariableInstanceEntity) variables.get(0);
     assertEquals("test456", historicVariable.getTextValue());
     
     assertEquals(5, historyService.createHistoricActivityInstanceQuery().count());
@@ -95,10 +99,10 @@ public class HistoricProcessVariableTest extends AbstractActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("myProc");
     assertProcessEnded(processInstance.getId());
     
-    List<HistoricProcessVariable> variables = historyService.createHistoricProcessVariableQuery().list();
+    List<HistoricVariableInstance> variables = historyService.createHistoricVariableInstanceQuery().list();
     assertEquals(1, variables.size());
     
-    HistoricProcessVariableEntity historicVariable = (HistoricProcessVariableEntity) variables.get(0);
+    HistoricVariableInstanceEntity historicVariable = (HistoricVariableInstanceEntity) variables.get(0);
     assertEquals("test456", historicVariable.getTextValue());
     
     assertEquals(4, historyService.createHistoricActivityInstanceQuery().count());
@@ -116,14 +120,14 @@ public class HistoricProcessVariableTest extends AbstractActivitiTestCase {
     
     assertProcessEnded(processInstance.getId());
     
-    List<HistoricProcessVariable> variables = historyService.createHistoricProcessVariableQuery().orderByVariableName().asc().list();
+    List<HistoricVariableInstance> variables = historyService.createHistoricVariableInstanceQuery().orderByVariableName().asc().list();
     assertEquals(2, variables.size());
     
-    HistoricProcessVariableEntity historicVariable = (HistoricProcessVariableEntity) variables.get(0);
+    HistoricVariableInstanceEntity historicVariable = (HistoricVariableInstanceEntity) variables.get(0);
     assertEquals("myVar", historicVariable.getName());
     assertEquals("test789", historicVariable.getTextValue());
     
-    HistoricProcessVariableEntity historicVariable1 = (HistoricProcessVariableEntity) variables.get(1);
+    HistoricVariableInstanceEntity historicVariable1 = (HistoricVariableInstanceEntity) variables.get(1);
     assertEquals("myVar1", historicVariable1.getName());
     assertEquals("test456", historicVariable1.getTextValue());
     
@@ -136,10 +140,10 @@ public class HistoricProcessVariableTest extends AbstractActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("myProc");
     assertProcessEnded(processInstance.getId());
     
-    List<HistoricProcessVariable> variables = historyService.createHistoricProcessVariableQuery().list();
+    List<HistoricVariableInstance> variables = historyService.createHistoricVariableInstanceQuery().list();
     assertEquals(1, variables.size());
     
-    HistoricProcessVariableEntity historicVariable = (HistoricProcessVariableEntity) variables.get(0);
+    HistoricVariableInstanceEntity historicVariable = (HistoricVariableInstanceEntity) variables.get(0);
     assertEquals("test456", historicVariable.getTextValue());
     
     assertEquals(7, historyService.createHistoricActivityInstanceQuery().count());
@@ -151,14 +155,14 @@ public class HistoricProcessVariableTest extends AbstractActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("twoSubProcessInParallelWithinSubProcess");
     assertProcessEnded(processInstance.getId());
     
-    List<HistoricProcessVariable> variables = historyService.createHistoricProcessVariableQuery().orderByVariableName().asc().list();
+    List<HistoricVariableInstance> variables = historyService.createHistoricVariableInstanceQuery().orderByVariableName().asc().list();
     assertEquals(2, variables.size());
     
-    HistoricProcessVariableEntity historicVariable = (HistoricProcessVariableEntity) variables.get(0);
+    HistoricVariableInstanceEntity historicVariable = (HistoricVariableInstanceEntity) variables.get(0);
     assertEquals("myVar", historicVariable.getName());
     assertEquals("test101112", historicVariable.getTextValue());
     
-    HistoricProcessVariableEntity historicVariable1 = (HistoricProcessVariableEntity) variables.get(1);
+    HistoricVariableInstanceEntity historicVariable1 = (HistoricVariableInstanceEntity) variables.get(1);
     assertEquals("myVar1", historicVariable1.getName());
     assertEquals("test789", historicVariable1.getTextValue());
     
@@ -167,91 +171,47 @@ public class HistoricProcessVariableTest extends AbstractActivitiTestCase {
   }
   
   @Deployment(resources={
-          "org/activiti/engine/test/history/HistoricProcessVariableTest.testCallSimpleSubProcess.bpmn20.xml",
+          "org/activiti/engine/test/history/HistoricVariableInstanceTest.testCallSimpleSubProcess.bpmn20.xml",
           "org/activiti/engine/test/history/simpleSubProcess.bpmn20.xml"
   })
-  public void testCallSimpleSubProcess() {
+  public void testHistoricVariableInstanceQuery() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("callSimpleSubProcess");
     assertProcessEnded(processInstance.getId());
     
-    List<HistoricProcessVariable> variables = historyService.createHistoricProcessVariableQuery().list();
+    assertEquals(4, historyService.createHistoricVariableInstanceQuery().count());
+    assertEquals(4, historyService.createHistoricVariableInstanceQuery().list().size());
+    assertEquals(4, historyService.createHistoricVariableInstanceQuery().orderByProcessInstanceId().asc().count());
+    assertEquals(4, historyService.createHistoricVariableInstanceQuery().orderByProcessInstanceId().asc().list().size());
+    assertEquals(4, historyService.createHistoricVariableInstanceQuery().orderByVariableName().asc().count());
+    assertEquals(4, historyService.createHistoricVariableInstanceQuery().orderByVariableName().asc().list().size());
+    
+    assertEquals(2, historyService.createHistoricVariableInstanceQuery().processInstanceId(processInstance.getId()).count());
+    assertEquals(2, historyService.createHistoricVariableInstanceQuery().processInstanceId(processInstance.getId()).list().size());
+    assertEquals(2, historyService.createHistoricVariableInstanceQuery().variableName("myVar").count());
+    assertEquals(2, historyService.createHistoricVariableInstanceQuery().variableName("myVar").list().size());
+    assertEquals(2, historyService.createHistoricVariableInstanceQuery().variableNameLike("myVar1").count());
+    assertEquals(2, historyService.createHistoricVariableInstanceQuery().variableNameLike("myVar1").list().size());
+
+    List<HistoricVariableInstance> variables = historyService.createHistoricVariableInstanceQuery().list();
     assertEquals(4, variables.size());
-    
-    // call activity
-    HistoricProcessVariableEntity historicVariable = (HistoricProcessVariableEntity) variables.get(0);
-    assertEquals("myVar", historicVariable.getName());
-    assertEquals("test666", historicVariable.getTextValue());
-    
-    HistoricProcessVariableEntity historicVariable1 = (HistoricProcessVariableEntity) variables.get(1);
-    assertEquals("myVar1", historicVariable1.getName());
-    assertEquals("test666", historicVariable1.getTextValue());
-    
-    // process instance
-    HistoricProcessVariableEntity historicVariable2 = (HistoricProcessVariableEntity) variables.get(2);
-    assertEquals(processInstance.getId(), historicVariable2.getProcessInstanceId());
-    assertEquals("myVar", historicVariable2.getName());
-    assertEquals("test123", historicVariable2.getTextValue());
-    
-    HistoricProcessVariableEntity historicVariable3 = (HistoricProcessVariableEntity) variables.get(3);
-    assertEquals(processInstance.getProcessInstanceId(), historicVariable3.getProcessInstanceId());
-    assertEquals("myVar1", historicVariable3.getName());
-    assertEquals("test456", historicVariable3.getTextValue());
+
+    assertEquals(1, historyService.createHistoricVariableInstanceQuery().variableValueEquals("myVar", "test123").count());
+    assertEquals(1, historyService.createHistoricVariableInstanceQuery().variableValueEquals("myVar", "test123").list().size());
+    assertEquals(1, historyService.createHistoricVariableInstanceQuery().variableValueEquals("myVar1", "test456").count());
+    assertEquals(1, historyService.createHistoricVariableInstanceQuery().variableValueEquals("myVar1", "test456").list().size());
+    assertEquals(1, historyService.createHistoricVariableInstanceQuery().variableValueEquals("myVar", "test666").count());
+    assertEquals(1, historyService.createHistoricVariableInstanceQuery().variableValueEquals("myVar", "test666").list().size());
+    assertEquals(1, historyService.createHistoricVariableInstanceQuery().variableValueEquals("myVar1", "test666").count());
+    assertEquals(1, historyService.createHistoricVariableInstanceQuery().variableValueEquals("myVar1", "test666").list().size());
     
     assertEquals(7, historyService.createHistoricActivityInstanceQuery().count());
     assertEquals(5, historyService.createHistoricDetailQuery().count());
-  }
-  
-  @Deployment(resources={
-          "org/activiti/engine/test/history/HistoricProcessVariableTest.testCallSimpleSubProcess.bpmn20.xml",
-          "org/activiti/engine/test/history/simpleSubProcess.bpmn20.xml"
-  })
-  public void testHistoricProcessVariableQuery() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("callSimpleSubProcess");
-    assertProcessEnded(processInstance.getId());
-    
-    List<HistoricProcessVariable> variables = historyService.createHistoricProcessVariableQuery().list();
-    assertEquals(4, variables.size());
-    
-    assertEquals(4, historyService.createHistoricProcessVariableQuery().orderByProcessInstanceId().asc().count());
-    assertEquals(4, historyService.createHistoricProcessVariableQuery().orderByTime().asc().count());
-    assertEquals(4, historyService.createHistoricProcessVariableQuery().orderByVariableName().asc().count());
-    
-    assertEquals(2, historyService.createHistoricProcessVariableQuery().processInstanceId(processInstance.getId()).count());
-    assertEquals(2, historyService.createHistoricProcessVariableQuery().variableName("myVar").count());
-    assertEquals(2, historyService.createHistoricProcessVariableQuery().variableNameLike("myVar1").count());
-    
-    // call activity
-    HistoricProcessVariableEntity historicVariable = (HistoricProcessVariableEntity) variables.get(0);
-    assertEquals("myVar", historicVariable.getName());
-    assertEquals("test666", historicVariable.getTextValue());
-    
-    HistoricProcessVariableEntity historicVariable1 = (HistoricProcessVariableEntity) variables.get(1);
-    assertEquals("myVar1", historicVariable1.getName());
-    assertEquals("test666", historicVariable1.getTextValue());
-    
-    // process instance
-    HistoricProcessVariableEntity historicVariable2 = (HistoricProcessVariableEntity) variables.get(2);
-    assertEquals(processInstance.getId(), historicVariable2.getProcessInstanceId());
-    assertEquals("myVar", historicVariable2.getName());
-    assertEquals("test123", historicVariable2.getTextValue());
-    
-    HistoricProcessVariableEntity historicVariable3 = (HistoricProcessVariableEntity) variables.get(3);
-    assertEquals(processInstance.getProcessInstanceId(), historicVariable3.getProcessInstanceId());
-    assertEquals("myVar1", historicVariable3.getName());
-    assertEquals("test456", historicVariable3.getTextValue());
-    
-    assertEquals(7, historyService.createHistoricActivityInstanceQuery().count());
-    assertEquals(5, historyService.createHistoricDetailQuery().count());
-    
-    // only main process:
-    assertEquals(3, historyService.createHistoricDetailQuery().executionId(processInstance.getId()).count());
-    assertEquals(3, historyService.createHistoricDetailQuery().processInstanceId(processInstance.getId()).count());
   }
   
   @Deployment(resources={
           "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"
   })
-  public void testHistoricProcessVariableOnDeletion() {
+  public void testHidtoricProcessVariableOnDeletion() {
     HashMap<String, Object> variables = new HashMap<String,  Object>();
     variables.put("testVar", "Hallo Christian");
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", variables);
@@ -259,6 +219,56 @@ public class HistoricProcessVariableTest extends AbstractActivitiTestCase {
     assertProcessEnded(processInstance.getId());
     
     // check that process variable is set even if the process is canceled and not ended normally
-    assertEquals(1, historyService.createHistoricProcessVariableQuery().processInstanceId(processInstance.getId()).variableValueEquals("testVar", "Hallo Christian").count());
+    assertEquals(1, historyService.createHistoricVariableInstanceQuery().processInstanceId(processInstance.getId()).variableValueEquals("testVar", "Hallo Christian").count());
   }
+
+  
+  @Deployment(resources={"org/activiti/standalone/history/FullHistoryTest.testVariableUpdatesAreLinkedToActivity.bpmn20.xml"})
+  public void testVariableUpdatesLinkedToActivity() throws Exception {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("ProcessWithSubProcess");
+    
+    Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();    
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("test", "1");    
+    taskService.complete(task.getId(), variables);
+    
+    // now we are in the subprocess
+    task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+    variables.clear();
+    variables.put("test", "2");    
+    taskService.complete(task.getId(), variables);
+    
+    // now we are ended
+    assertProcessEnded(pi.getId());
+    
+    // check history
+    List<HistoricDetail> updates = historyService.createHistoricDetailQuery().variableUpdates().list();
+    assertEquals(2, updates.size());
+    
+    HistoricVariableUpdate update1 = (HistoricVariableUpdate) updates.get(0);
+    HistoricVariableUpdate update2 = (HistoricVariableUpdate) updates.get(1);
+
+    assertEquals("1", update1.getValue());
+    assertEquals("2", update2.getValue());
+
+    assertNotNull(update1.getActivityInstanceId());
+    assertNotNull(update1.getExecutionId());
+    HistoricActivityInstance historicActivityInstance1 = historyService.createHistoricActivityInstanceQuery().activityInstanceId(update1.getActivityInstanceId()).singleResult();
+    assertEquals(historicActivityInstance1.getExecutionId(), update1.getExecutionId());
+    assertEquals("usertask1", historicActivityInstance1.getActivityId());
+    
+    // TODO http://jira.codehaus.org/browse/ACT-1083
+//    assertNotNull(update2.getActivityInstanceId());
+//    HistoricActivityInstance historicActivityInstance2 = historyService.createHistoricActivityInstanceQuery().activityInstanceId(update2.getActivityInstanceId()).singleResult();
+//    assertEquals("usertask2", historicActivityInstance2.getActivityId());
+//
+//    /*
+//     * This is OK! The variable is set on the root execution, on a execution never run through the activity, where the process instances
+//     * stands when calling the set Variable. But the ActivityId of this flow node is used. So the execution id's doesn't have to be equal.
+//     * 
+//     * execution id: On which execution it was set
+//     * activity id: in which activity was the process instance when setting the variable
+//     */
+//    assertFalse(historicActivityInstance2.getExecutionId().equals(update2.getExecutionId()));
+  }  
 }

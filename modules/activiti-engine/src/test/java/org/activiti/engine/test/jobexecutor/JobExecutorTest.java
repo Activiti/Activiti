@@ -15,6 +15,7 @@ package org.activiti.engine.test.jobexecutor;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -55,6 +56,6 @@ public class JobExecutorTest extends JobExecutorTestCase {
     expectedMessages.add("timer-one");
     expectedMessages.add("timer-two");
     
-    assertEquals(expectedMessages, messages);
+    assertEquals(new TreeSet<String>(expectedMessages), new TreeSet<String>(messages));
   }
 }

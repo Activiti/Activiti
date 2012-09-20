@@ -53,7 +53,6 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
 
   private static final long serialVersionUID = 1L;
 
-  protected String id;
   protected int revision;
 
   protected String owner;
@@ -567,14 +566,6 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   
   // getters and setters //////////////////////////////////////////////////////
 
-  public String getId() {
-    return id;
-  }
-  
-  public void setId(String id) {
-    this.id = id;
-  }
-  
   public int getRevision() {
     return revision;
   }

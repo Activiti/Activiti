@@ -36,9 +36,10 @@ public interface ValueFields {
   void setDoubleValue(Double doubleValue);
   
   String getByteArrayValueId();
-  void setByteArrayValue(ByteArrayEntity byteArrayValue);
   ByteArrayEntity getByteArrayValue();
+  void setByteArrayValue(byte[] bytes);
   
   Object getCachedValue();
   void setCachedValue(Object deserializedObject);
+
 }

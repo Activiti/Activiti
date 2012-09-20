@@ -29,8 +29,8 @@ import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricFormProperty;
 import org.activiti.engine.history.HistoricProcessInstance;
-import org.activiti.engine.history.HistoricProcessVariable;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.impl.TablePageQueryImpl;
 import org.activiti.engine.impl.db.PersistentObject;
@@ -44,7 +44,6 @@ import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.ibatis.session.RowBounds;
-import org.drools.core.util.Memento;
 
 
 /**
@@ -83,14 +82,14 @@ public class TableDataManager extends AbstractManager {
     persistentObjectToTableNameMap.put(HistoricActivityInstanceEntity.class, "ACT_HI_ACTINST");
     persistentObjectToTableNameMap.put(AttachmentEntity.class, "ACT_HI_ATTACHMEN");
     persistentObjectToTableNameMap.put(HistoricProcessInstanceEntity.class, "ACT_HI_PROCINST");
-    persistentObjectToTableNameMap.put(HistoricProcessVariableEntity.class, "ACT_HI_PROCVARIABLE");
+    persistentObjectToTableNameMap.put(HistoricVariableInstanceEntity.class, "ACT_HI_VARINST");
     persistentObjectToTableNameMap.put(HistoricTaskInstanceEntity.class, "ACT_HI_TASKINST");
     
     // a couple of stuff goes to the same table
     persistentObjectToTableNameMap.put(HistoricDetailAssignmentEntity.class, "ACT_HI_DETAIL");
     persistentObjectToTableNameMap.put(HistoricDetailTransitionInstanceEntity.class, "ACT_HI_DETAIL");
     persistentObjectToTableNameMap.put(HistoricFormPropertyEntity.class, "ACT_HI_DETAIL");
-    persistentObjectToTableNameMap.put(HistoricVariableUpdateEntity.class, "ACT_HI_DETAIL");
+    persistentObjectToTableNameMap.put(HistoricDetailVariableInstanceUpdateEntity.class, "ACT_HI_DETAIL");
     persistentObjectToTableNameMap.put(HistoricDetailEntity.class, "ACT_HI_DETAIL");
     
     
@@ -120,7 +119,7 @@ public class TableDataManager extends AbstractManager {
     apiTypeToTableNameMap.put(HistoricVariableUpdate.class, "ACT_HI_DETAIL");
     apiTypeToTableNameMap.put(HistoricFormProperty.class, "ACT_HI_DETAIL");
     apiTypeToTableNameMap.put(HistoricTaskInstance.class, "ACT_HI_TASKINST");        
-    apiTypeToTableNameMap.put(HistoricProcessVariable.class, "ACT_HI_PROCVARIABLE");
+    apiTypeToTableNameMap.put(HistoricVariableInstance.class, "ACT_HI_VARINST");
     
     // TODO: Identity skipped for the moment as no SQL injection is provided here
   }

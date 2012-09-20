@@ -118,7 +118,7 @@
       inner join ACT_RE_PROCDEF DEF on RES.PROC_DEF_ID_ = DEF.ID_
     </if>
     <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
-      inner join ${prefix}ACT_HI_PROCVARIABLE  A${index} on RES.PROC_INST_ID_ = A${index}.PROC_INST_ID_
+      inner join ${prefix}ACT_HI_VARINST  A${index} on RES.PROC_INST_ID_ = A${index}.PROC_INST_ID_
     </foreach>    
     <where>
       <if test="processInstanceId != null">

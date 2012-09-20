@@ -66,7 +66,7 @@ public class ExecutionManager extends AbstractManager {
       .getTaskManager()
       .deleteTasksByProcessInstanceId(processInstanceId, deleteReason, cascade);
     
-    // delete the execution BEFORE we delete the history, otherwise we will produce orphan HistoricProcessVariable instances
+    // delete the execution BEFORE we delete the history, otherwise we will produce orphan HistoricVariableInstance instances
     execution.deleteCascade(deleteReason);
     
     if (cascade) {

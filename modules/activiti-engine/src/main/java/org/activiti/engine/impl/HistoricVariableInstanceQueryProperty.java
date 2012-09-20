@@ -16,27 +16,27 @@ package org.activiti.engine.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.history.HistoricVariableInstanceQuery;
 import org.activiti.engine.query.QueryProperty;
 
 
 /**
- * Contains the possible properties which can be used in a {@link HistoricProcessVariableQuery}.
+ * Contains the possible properties which can be used in a {@link HistoricVariableInstanceQuery}.
  * 
  * @author Christian Lipphardt (camunda)
  */
-public class HistoricProcessVariableQueryProperty implements QueryProperty {
+public class HistoricVariableInstanceQueryProperty implements QueryProperty {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Map<String, HistoricProcessVariableQueryProperty> properties = new HashMap<String, HistoricProcessVariableQueryProperty>();
+  private static final Map<String, HistoricVariableInstanceQueryProperty> properties = new HashMap<String, HistoricVariableInstanceQueryProperty>();
 
-  public static final HistoricProcessVariableQueryProperty PROCESS_INSTANCE_ID = new HistoricProcessVariableQueryProperty("PROC_INST_ID_");
-  public static final HistoricProcessVariableQueryProperty VARIABLE_NAME = new HistoricProcessVariableQueryProperty("NAME_");
-  public static final HistoricProcessVariableQueryProperty TIME = new HistoricProcessVariableQueryProperty("TIME_");
+  public static final HistoricVariableInstanceQueryProperty PROCESS_INSTANCE_ID = new HistoricVariableInstanceQueryProperty("PROC_INST_ID_");
+  public static final HistoricVariableInstanceQueryProperty VARIABLE_NAME = new HistoricVariableInstanceQueryProperty("NAME_");
   
   private String name;
 
-  public HistoricProcessVariableQueryProperty(String name) {
+  public HistoricVariableInstanceQueryProperty(String name) {
     this.name = name;
     properties.put(name, this);
   }
@@ -45,7 +45,7 @@ public class HistoricProcessVariableQueryProperty implements QueryProperty {
     return name;
   }
   
-  public static HistoricProcessVariableQueryProperty findByName(String propertyName) {
+  public static HistoricVariableInstanceQueryProperty findByName(String propertyName) {
     return properties.get(propertyName);
   }
 }

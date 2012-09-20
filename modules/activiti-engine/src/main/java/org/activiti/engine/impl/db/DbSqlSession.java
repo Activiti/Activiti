@@ -40,7 +40,7 @@ import org.activiti.engine.impl.GroupQueryImpl;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.HistoricDetailQueryImpl;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
-import org.activiti.engine.impl.HistoricProcessVariableQueryImpl;
+import org.activiti.engine.impl.HistoricVariableInstanceQueryImpl;
 import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
@@ -315,7 +315,12 @@ public class DbSqlSession implements Session {
     }
     return Collections.emptyList();
   }
+  
+  public <T> T findInCache(Class<T> entityClass, String id) {
+    return cacheGet(entityClass, id);
+  }
 
+  
   public static class CachedObject {
     protected PersistentObject persistentObject;
     protected Object persistentObjectState;
@@ -949,8 +954,8 @@ public class DbSqlSession implements Session {
   public HistoricDetailQueryImpl createHistoricDetailQuery() {
     return new HistoricDetailQueryImpl();
   }
-  public HistoricProcessVariableQueryImpl createHistoricProcessVariableQuery() {
-    return new HistoricProcessVariableQueryImpl();
+  public HistoricVariableInstanceQueryImpl createHistoricVariableInstanceQuery() {
+    return new HistoricVariableInstanceQueryImpl();
   }
   public UserQueryImpl createUserQuery() {
     return new UserQueryImpl();
