@@ -242,6 +242,10 @@ public class HistoricProcessVariableTest extends AbstractActivitiTestCase {
     
     assertEquals(7, historyService.createHistoricActivityInstanceQuery().count());
     assertEquals(5, historyService.createHistoricDetailQuery().count());
+    
+    // only main process:
+    assertEquals(3, historyService.createHistoricDetailQuery().executionId(processInstance.getId()).count());
+    assertEquals(3, historyService.createHistoricDetailQuery().processInstanceId(processInstance.getId()).count());
   }
   
   @Deployment(resources={

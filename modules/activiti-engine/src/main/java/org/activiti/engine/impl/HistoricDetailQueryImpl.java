@@ -29,6 +29,7 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
   private static final long serialVersionUID = 1L;
   protected String taskId;
   protected String processInstanceId;
+  protected String executionId;
   protected String activityId;
   protected String activityInstanceId;
   protected String type;
@@ -45,8 +46,13 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
     super(commandExecutor);
   }
 
-  public HistoricDetailQueryImpl processInstanceId(String processInstanceId) {
+  public HistoricDetailQuery processInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
+    return this;
+  }
+  
+  public HistoricDetailQuery executionId(String executionId) {
+    this.executionId = executionId;
     return this;
   }
 

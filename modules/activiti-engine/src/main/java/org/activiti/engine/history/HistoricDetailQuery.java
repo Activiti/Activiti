@@ -14,6 +14,7 @@
 package org.activiti.engine.history;
 
 import org.activiti.engine.query.Query;
+import org.activiti.engine.runtime.Execution;
 
 
 /** 
@@ -26,6 +27,11 @@ public interface HistoricDetailQuery extends Query<HistoricDetailQuery, Historic
   /** Only select historic variable updates with the given process instance.
    * {@link ProcessInstance) ids and {@link HistoricProcessInstance} ids match. */
   HistoricDetailQuery processInstanceId(String processInstanceId);
+  
+  /** Only select historic variable updates with the given execution.
+   * Note that {@link Execution} ids are not stored in the history as first class citizen, 
+   * only process instances are.*/
+  HistoricDetailQuery executionId(String executionId);
 
   /** Only select historic variable updates associated to the given {@link HistoricActivityInstance activity instance}. 
    * @deprecated since 5.2, use {@link #activityInstanceId(String)} instead */
