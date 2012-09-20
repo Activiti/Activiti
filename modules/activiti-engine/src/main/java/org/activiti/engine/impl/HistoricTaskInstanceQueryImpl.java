@@ -293,6 +293,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
     return this;
   }
 
+  public HistoricTaskInstanceQuery orderByTaskDueDate() {
+    orderBy(HistoricTaskInstanceQueryProperty.TASK_DUE_DATE);
+    return this;
+  }
+  
   public HistoricTaskInstanceQueryImpl orderByDeleteReason() {
     orderBy(HistoricTaskInstanceQueryProperty.DELETE_REASON);
     return this;
