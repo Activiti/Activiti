@@ -135,7 +135,10 @@
   </repositories>
 
   <properties>
-      <activiti.artifact>org.activiti.engine</activiti.artifact>
+      <activiti.artifact>
+        org.activiti.db.mapping.entity,
+        org.activiti.engine
+      </activiti.artifact>
       <activiti.osgi.import.additional>
           junit*;resolution:=optional,
           org.junit*;resolution:=optional,
