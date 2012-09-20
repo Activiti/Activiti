@@ -64,6 +64,10 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   
   /** Only select tasks which don't have an assignee. */
   TaskQuery taskUnassigned();
+  
+  /** @see {@link #taskUnassigned} */
+  @Deprecated
+  TaskQuery taskUnnassigned();
 
   /** Only select tasks with the given {@link DelegationState}. */
   TaskQuery taskDelegationState(DelegationState delegationState);
