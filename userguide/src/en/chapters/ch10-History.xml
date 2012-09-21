@@ -17,7 +17,7 @@
         <para><literal>HistoricProcessInstance</literal>s containing information about current and past process instances.</para>
       </listitem>
       <listitem>
-        <para><literal>HistoricProcessVariable</literal>s containing information about the latest state a variable held in a past process instance.</para>
+        <para><literal>HistoricVariableInstance</literal>s containing the latest value of a process variable or task variable.</para>
       </listitem>
       <listitem>
         <para><literal>HistoricActivityInstance</literal>s containing information about a single execution of an activity (node in the process).</para>
@@ -42,7 +42,7 @@
   <section id="historyQuery">
     <title>Querying history</title>
     <para>In the API, it's possible to query all 5 of the History entities. The HistoryService exposes the the methods 
-      <literal>createHistoricProcessInstanceQuery()</literal>, <literal>createHistoricProcessVariableQuery()</literal>, <literal>createHistoricActivityInstanceQuery()</literal>, 
+      <literal>createHistoricProcessInstanceQuery()</literal>, <literal>createHistoricVariableInstanceQuery()</literal>, <literal>createHistoricActivityInstanceQuery()</literal>, 
       <literal>createHistoricDetailQuery()</literal> and <literal>createHistoricTaskInstanceQuery()</literal>.
     </para>
     
@@ -60,11 +60,11 @@ historyService.createHistoricProcessInstanceQuery()
       </para>
     </section>
     
-  <section id="historyQueryProcessVariable">
-      <title>HistoricProcessVariableQuery</title>
-       <para>Get all <literal>HistoricProcessVariables</literal> from a finished process instance with id 'xxx' ordered by variable name.
+  <section id="historyQueryVariableInstance">
+      <title>HistoricVariableInstanceQuery</title>
+       <para>Get all <literal>HistoricVariableInstances</literal> from a finished process instance with id 'xxx' ordered by variable name.
           <programlisting>
-historyService.createHistoricProcessVariableQuery()
+historyService.createHistoricVariableInstanceQuery()
   .processInstanceId("XXX")
   .orderByVariableName.desc()
   .list();</programlisting>
@@ -165,12 +165,11 @@ ProcessEngine processEngine = ProcessEngineConfiguration
 	    <listitem><para><literal>none</literal>: skips all history archiving.  This is the most performant for runtime 
 	    process execution, but no historical information will be available. </para></listitem>
 	    <listitem><para><literal>activity</literal>: archives all process instances and activity instances. 
-	    No details will be archived</para></listitem>
-	    <listitem><para><literal>variable</literal>: archives all process instances, activity instances and 
-	    variable values of finished process instances.</para></listitem>
+	    At the end of the process instance, the latest values of the top level process instance variables 
+	    will be copied to historic variable instances.  No details will be archived.</para></listitem>
 	    <listitem><para><literal>audit</literal>: This is the default. It archives all process instances, 
-	    activity instances, variable values of finished process instances and all form properties that are submitted so that all user interaction 
-	    through forms is traceable and can be audited.</para></listitem>
+	    activity instances, keeps variable values continuously in sync and all form properties that are submitted 
+	    so that all user interaction through forms is traceable and can be audited.</para></listitem>
 	    <listitem><para><literal>full</literal>: This is the highest level of history archiving and hence the 
 	    slowest.  This level stores all information as in the <literal>audit</literal> level 
 	    plus all other possible details, mostly this are process variable updates.</para></listitem>
