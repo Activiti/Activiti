@@ -1025,11 +1025,17 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     return getParent();
   }
 
+  /** used to calculate the sourceActivityExecution for method {@link #updateActivityInstanceIdInHistoricVariableUpdate(HistoricDetailVariableInstanceUpdateEntity, ExecutionEntity)} */
+  protected ExecutionEntity getSourceActivityExecution() {
+    return (activityId!=null ? this : null);
+  }
+
   @Override
-  protected void updateActivityInstanceIdInHistoricVariableUpdate(HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate) {
+  protected void updateActivityInstanceIdInHistoricVariableUpdate(HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate, ExecutionEntity sourceActivityExecution) {
     int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
-    if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY) {
-      HistoricActivityInstanceEntity historicActivityInstance = ActivityInstanceEndHandler.findActivityInstance(this); 
+    if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL
+        && sourceActivityExecution!=null) {
+      HistoricActivityInstanceEntity historicActivityInstance = ActivityInstanceEndHandler.findActivityInstance(sourceActivityExecution); 
       if (historicActivityInstance!=null) {
         historicVariableUpdate.setActivityInstanceId(historicActivityInstance.getId());
       }

@@ -244,12 +244,15 @@ public class HistoricVariableInstanceTest extends AbstractActivitiTestCase {
     // check history
     List<HistoricDetail> updates = historyService.createHistoricDetailQuery().variableUpdates().list();
     assertEquals(2, updates.size());
-    
-    HistoricVariableUpdate update1 = (HistoricVariableUpdate) updates.get(0);
-    HistoricVariableUpdate update2 = (HistoricVariableUpdate) updates.get(1);
 
-    assertEquals("1", update1.getValue());
-    assertEquals("2", update2.getValue());
+    Map<String, HistoricVariableUpdate> updatesMap = new HashMap<String, HistoricVariableUpdate>();
+    HistoricVariableUpdate update = (HistoricVariableUpdate) updates.get(0);
+    updatesMap.put((String)update.getValue(), update);
+    update = (HistoricVariableUpdate) updates.get(1);
+    updatesMap.put((String)update.getValue(), update);
+    
+    HistoricVariableUpdate update1 = updatesMap.get("1");
+    HistoricVariableUpdate update2 = updatesMap.get("2");
 
     assertNotNull(update1.getActivityInstanceId());
     assertNotNull(update1.getExecutionId());
@@ -258,17 +261,17 @@ public class HistoricVariableInstanceTest extends AbstractActivitiTestCase {
     assertEquals("usertask1", historicActivityInstance1.getActivityId());
     
     // TODO http://jira.codehaus.org/browse/ACT-1083
-//    assertNotNull(update2.getActivityInstanceId());
-//    HistoricActivityInstance historicActivityInstance2 = historyService.createHistoricActivityInstanceQuery().activityInstanceId(update2.getActivityInstanceId()).singleResult();
-//    assertEquals("usertask2", historicActivityInstance2.getActivityId());
-//
-//    /*
-//     * This is OK! The variable is set on the root execution, on a execution never run through the activity, where the process instances
-//     * stands when calling the set Variable. But the ActivityId of this flow node is used. So the execution id's doesn't have to be equal.
-//     * 
-//     * execution id: On which execution it was set
-//     * activity id: in which activity was the process instance when setting the variable
-//     */
-//    assertFalse(historicActivityInstance2.getExecutionId().equals(update2.getExecutionId()));
+    assertNotNull(update2.getActivityInstanceId());
+    HistoricActivityInstance historicActivityInstance2 = historyService.createHistoricActivityInstanceQuery().activityInstanceId(update2.getActivityInstanceId()).singleResult();
+    assertEquals("usertask2", historicActivityInstance2.getActivityId());
+
+    /*
+     * This is OK! The variable is set on the root execution, on a execution never run through the activity, where the process instances
+     * stands when calling the set Variable. But the ActivityId of this flow node is used. So the execution id's doesn't have to be equal.
+     * 
+     * execution id: On which execution it was set
+     * activity id: in which activity was the process instance when setting the variable
+     */
+    assertFalse(historicActivityInstance2.getExecutionId().equals(update2.getExecutionId()));
   }  
 }
