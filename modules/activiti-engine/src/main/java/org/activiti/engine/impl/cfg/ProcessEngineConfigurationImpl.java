@@ -79,6 +79,7 @@ import org.activiti.engine.impl.form.LongFormType;
 import org.activiti.engine.impl.form.StringFormType;
 import org.activiti.engine.impl.history.handler.HistoryParseListener;
 import org.activiti.engine.impl.interceptor.CommandContextFactory;
+import org.activiti.engine.impl.interceptor.CommandContextInterceptor;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.interceptor.CommandExecutorImpl;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
@@ -239,7 +240,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   // ID GENERATOR /////////////////////////////////////////////////////////////
   protected IdGenerator idGenerator;
-  
+  protected DataSource idGeneratorDataSource;
+  protected String idGeneratorDataSourceJndiName;
+
   // OTHER ////////////////////////////////////////////////////////////////////
   protected List<FormEngine> customFormEngines;
   protected Map<String, FormEngine> formEngines;
@@ -770,13 +773,30 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   protected void initIdGenerator() {
     if (idGenerator==null) {
+      CommandExecutor idGeneratorCommandExecutor = null;
+      if (idGeneratorDataSource!=null) {
+        ProcessEngineConfigurationImpl processEngineConfiguration = new StandaloneProcessEngineConfiguration();
+        processEngineConfiguration.setDataSource(idGeneratorDataSource);
+        processEngineConfiguration.setDatabaseSchemaUpdate(DB_SCHEMA_UPDATE_FALSE);
+        processEngineConfiguration.init();
+        idGeneratorCommandExecutor = processEngineConfiguration.getCommandExecutorTxRequiresNew();
+      } else if (idGeneratorDataSourceJndiName!=null) {
+        ProcessEngineConfigurationImpl processEngineConfiguration = new StandaloneProcessEngineConfiguration();
+        processEngineConfiguration.setDataSourceJndiName(idGeneratorDataSourceJndiName);
+        processEngineConfiguration.setDatabaseSchemaUpdate(DB_SCHEMA_UPDATE_FALSE);
+        processEngineConfiguration.init();
+        idGeneratorCommandExecutor = processEngineConfiguration.getCommandExecutorTxRequiresNew();
+      } else {
+        idGeneratorCommandExecutor = commandExecutorTxRequiresNew;
+      }
+      
       DbIdGenerator dbIdGenerator = new DbIdGenerator();
       dbIdGenerator.setIdBlockSize(idBlockSize);
-      dbIdGenerator.setCommandExecutor(commandExecutorTxRequiresNew);
+      dbIdGenerator.setCommandExecutor(idGeneratorCommandExecutor);
       idGenerator = dbIdGenerator;
     }
   }
-  
+
   // OTHER ////////////////////////////////////////////////////////////////////
   
   protected void initCommandContextFactory() {
@@ -1671,4 +1691,19 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     this.databaseSchema = databaseSchema;
   }
 
+  public DataSource getIdGeneratorDataSource() {
+    return idGeneratorDataSource;
+  }
+  
+  public void setIdGeneratorDataSource(DataSource idGeneratorDataSource) {
+    this.idGeneratorDataSource = idGeneratorDataSource;
+  }
+  
+  public String getIdGeneratorDataSourceJndiName() {
+    return idGeneratorDataSourceJndiName;
+  }
+
+  public void setIdGeneratorDataSourceJndiName(String idGeneratorDataSourceJndiName) {
+    this.idGeneratorDataSourceJndiName = idGeneratorDataSourceJndiName;
+  }
 }
