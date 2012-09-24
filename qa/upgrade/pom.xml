@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-	<name>Activiti - Upgrade Fetcher</name>
-	<groupId>org.activiti</groupId>
-	<artifactId>activiti-upgrade-fetcher</artifactId>
-	<version>5.11-SNAPSHOT</version>
+  <name>Activiti - Upgrade Fetcher</name>
+  <groupId>org.activiti</groupId>
+  <artifactId>activiti-upgrade-fetcher</artifactId>
+  <version>5.11-SNAPSHOT</version>
 
-	<dependencies>
+  <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-upgrade</artifactId>
@@ -21,7 +21,9 @@
     <repository>
       <id>alfresco.snapshot.repo</id>
       <url>https://maven.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
-      <snapshots><enabled>true</enabled></snapshots>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
     </repository>
     <repository>
       <id>alfresco</id>
