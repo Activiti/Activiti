@@ -1,19 +1,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-	<name>Activiti - Spring</name>
-	<groupId>org.activiti</groupId>
-	<artifactId>activiti-spring</artifactId>
+  <name>Activiti - Spring</name>
+  <groupId>org.activiti</groupId>
+  <artifactId>activiti-spring</artifactId>
 
-	<parent>
-		<groupId>org.activiti</groupId>
-		<artifactId>activiti-root</artifactId>
-		<relativePath>../..</relativePath>
-		<version>5.11-SNAPSHOT</version>
-	</parent>
+  <parent>
+    <groupId>org.activiti</groupId>
+    <artifactId>activiti-root</artifactId>
+    <relativePath>../..</relativePath>
+    <version>5.11-SNAPSHOT</version>
+  </parent>
 
-	<dependencies>
+  <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-engine</artifactId>
@@ -30,14 +30,14 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-tx</artifactId>
     </dependency>
-     <dependency>
+    <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>  
       <groupId>commons-lang</groupId>
-       <artifactId>commons-lang</artifactId>
+      <artifactId>commons-lang</artifactId>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -50,10 +50,10 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-    <groupId>javax.persistence</groupId>
-    <artifactId>persistence-api</artifactId>
-    <scope>provided</scope>
-  </dependency>
+      <groupId>javax.persistence</groupId>
+      <artifactId>persistence-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
       <artifactId>groovy</artifactId>
@@ -78,7 +78,7 @@
       <artifactId>subethasmtp-wiser</artifactId>
       <scope>test</scope>
     </dependency>
-	  <dependency>
+    <dependency>
       <groupId>org.apache.openjpa</groupId>
       <artifactId>openjpa</artifactId>
       <scope>test</scope>
@@ -87,7 +87,7 @@
       <groupId>commons-dbcp</groupId>
       <artifactId>commons-dbcp</artifactId>
     </dependency>
-	</dependencies>
+  </dependencies>
 
   <profiles>
     <profile>
@@ -122,18 +122,18 @@
     <profile>
       <id>checkspring</id>
       <build>
-		    <plugins>
+        <plugins>
           <plugin>
-		        <artifactId>maven-antrun-plugin</artifactId>
-		        <executions>
-		          <execution>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
                 <id>copy-test-sources-from-engine</id>
-		            <phase>generate-sources</phase>
+                <phase>generate-sources</phase>
                 <goals>
                   <goal>run</goal>
                 </goals>
-		            <configuration>
-		              <tasks>
+                <configuration>
+                  <tasks>
                     <delete dir="src/test/java/org/activiti/engine/test"/>
                     <delete dir="src/test/resources/org/activiti/engine/test"/>
                     <delete dir="src/test/java/org/activiti/examples"/>
@@ -146,9 +146,9 @@
                     <copy todir="src/test/resources" overwrite="true">
                       <fileset dir="../activiti-engine/src/test/resources" />
                     </copy>
-		              </tasks>
-		            </configuration>
-		          </execution>
+                  </tasks>
+                </configuration>
+              </execution>
               <execution>
                 <id>delete-test-sources-after</id>
                 <phase>package</phase>
@@ -166,19 +166,22 @@
                   </tasks>
                 </configuration>
               </execution>
-		        </executions>
-		      </plugin>          
-		      <plugin>
+            </executions>
+          </plugin>          
+          <plugin>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
               <systemProperties>
-                <property><name>process.engine.initializer</name><value>org.activiti.spring.SpringProcessEngineInitializer</value></property>
+                <property>
+                  <name>process.engine.initializer</name>
+                  <value>org.activiti.spring.SpringProcessEngineInitializer</value>
+                </property>
               </systemProperties>
               <excludes>
                 <exclude>org/activiti/standalone/**</exclude>
                 <exclude>**/*TestCase.java</exclude>
                 <exclude>**/ActivitiRuleJunit4Test.java</exclude><!-- Can't run in Spring since ActivitiRule must be used different in Spring -->
-		            <exclude>**/CompetingJobAcquisitionTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-234 -->
+                <exclude>**/CompetingJobAcquisitionTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-234 -->
                 <exclude>**/WSDLImporterTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-315 -->
                 <exclude>**/JobExecutorTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-427 -->
                 <exclude>**/HistoricTaskInstanceUpdateTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-485  -->
