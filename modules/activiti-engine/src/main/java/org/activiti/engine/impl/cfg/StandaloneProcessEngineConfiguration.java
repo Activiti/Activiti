@@ -28,14 +28,22 @@ import org.activiti.engine.impl.interceptor.LogInterceptor;
 public class StandaloneProcessEngineConfiguration extends ProcessEngineConfigurationImpl {
 
   protected Collection< ? extends CommandInterceptor> getDefaultCommandInterceptorsTxRequired() {
-    List<CommandInterceptor> defaultCommandInterceptorsTxRequired = new ArrayList<CommandInterceptor>();
-    defaultCommandInterceptorsTxRequired.add(new LogInterceptor());
-    defaultCommandInterceptorsTxRequired.add(new CommandContextInterceptor(commandContextFactory, this));
-    return defaultCommandInterceptorsTxRequired;
+    return createDefaultCommandInterceptors(true);
   }
   
   protected Collection< ? extends CommandInterceptor> getDefaultCommandInterceptorsTxRequiresNew() {
-    // assumes this is already initialized and in standalone cases the required and requires new are the same
-    return commandInterceptorsTxRequired;
+    return createDefaultCommandInterceptors(false);
   }
+  
+  protected Collection< ? extends CommandInterceptor> createDefaultCommandInterceptors(boolean contextReusePossible) {
+    List<CommandInterceptor> defaultCommandInterceptorsTxRequired = new ArrayList<CommandInterceptor>();
+    defaultCommandInterceptorsTxRequired.add(new LogInterceptor());
+    
+    CommandContextInterceptor commandContextInterceptor = new CommandContextInterceptor(commandContextFactory, this);
+    commandContextInterceptor.setContextReusePossible(contextReusePossible);
+    defaultCommandInterceptorsTxRequired.add(commandContextInterceptor);
+    
+    return defaultCommandInterceptorsTxRequired;
+  }
+  
 }
