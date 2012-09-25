@@ -117,7 +117,6 @@ import org.activiti.engine.impl.util.xml.Element;
 import org.activiti.engine.impl.util.xml.Parse;
 import org.activiti.engine.impl.variable.VariableDeclaration;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.drools.core.util.StringUtils;
 
 /**
  * Specific parsing of one BPMN 2.0 XML file, created by the {@link BpmnParser}.
@@ -846,7 +845,7 @@ public class BpmnParse extends Parse {
       targetRef = targetElement.getText();
     }
     
-    if (StringUtils.isEmpty(targetRef)) {
+    if (targetRef != null && targetRef.equals("")) {
       addError("targetRef is required", dataAssociationElement);
     }
     
