@@ -166,6 +166,7 @@
   </sql>
 
   <!--  SELECT DEPENDENT -->  
+  <!--  ACT-1064: MySQL-specific select's are needed to handle non-millisecond precision -->
    <select id="selectNextJobsToExecute_mysql" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
    	${limitBefore}
     select RES.* ${limitBetween} 
