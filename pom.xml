@@ -16,40 +16,40 @@
     <restlet.version>2.0.15</restlet.version>
     <batik.version>1.7</batik.version>
 
-      <!-- OSGi bundles properties -->
-      <activiti.artifact/>
-      <activiti.osgi.import.activiti.version>version="[$(version;==;${activiti.osgi.version.clean}),$(version;=+;${activiti.osgi.version.clean}))"</activiti.osgi.import.activiti.version>
-      <activiti.osgi.import.strict.version>version="[$(version;===;${activiti.osgi.version.clean}),$(version;==+;${activiti.osgi.version.clean}))"</activiti.osgi.import.strict.version>
-      <activiti.osgi.import.default.version>[$(version;==;$(@)),$(version;+;$(@)))</activiti.osgi.import.default.version>
-      <activiti.osgi.import.defaults>
-      </activiti.osgi.import.defaults>
-      <activiti.osgi.import.before.defaults />
-      <activiti.osgi.import.additional />
-      <activiti.osgi.import.pkg>
-        org.activiti.*;${activiti.osgi.import.activiti.version},
-        ${activiti.osgi.import.before.defaults},
-        ${activiti.osgi.import.defaults},
-        ${activiti.osgi.import.additional},
-        *
-      </activiti.osgi.import.pkg>
-      <activiti.osgi.activator />
-      <activiti.osgi.failok>false</activiti.osgi.failok>
-      <activiti.osgi.export>${activiti.osgi.export.pkg};${activiti.osgi.version};-noimport:=true</activiti.osgi.export>
-      <!--
-      <activiti.osgi.export.pkg>!*.impl;${activiti.artifact}*</activiti.osgi.export.pkg>
-      <activiti.osgi.private.pkg>${activiti.artifact}*.impl</activiti.osgi.private.pkg>
-      -->
-      <activiti.osgi.export.pkg>${activiti.artifact}*</activiti.osgi.export.pkg>
-      <activiti.osgi.private.pkg></activiti.osgi.private.pkg>
-      <activiti.osgi.version>version=${project.version}</activiti.osgi.version>
-      <activiti.osgi.split.pkg>-split-package:=first</activiti.osgi.split.pkg>
-      <activiti.osgi.import>${activiti.osgi.import.pkg}</activiti.osgi.import>
-      <activiti.osgi.dynamic />
-      <activiti.osgi.symbolic.name>${activiti.artifact}</activiti.osgi.symbolic.name>
-      <activiti.osgi.exclude.dependencies>false</activiti.osgi.exclude.dependencies>
-      <activiti.osgi.remove.headers>Ignore-Package,Include-Resource,Private-Package,Bundle-DocURL</activiti.osgi.remove.headers>
-      <activiti.osgi.include.resource>{maven-resources}</activiti.osgi.include.resource>
-      <activiti.osgi.embed></activiti.osgi.embed>
+    <!-- OSGi bundles properties -->
+    <activiti.artifact/>
+    <activiti.osgi.import.activiti.version>version="[$(version;==;${activiti.osgi.version.clean}),$(version;=+;${activiti.osgi.version.clean}))"</activiti.osgi.import.activiti.version>
+    <activiti.osgi.import.strict.version>version="[$(version;===;${activiti.osgi.version.clean}),$(version;==+;${activiti.osgi.version.clean}))"</activiti.osgi.import.strict.version>
+    <activiti.osgi.import.default.version>[$(version;==;$(@)),$(version;+;$(@)))</activiti.osgi.import.default.version>
+    <activiti.osgi.import.defaults>
+    </activiti.osgi.import.defaults>
+    <activiti.osgi.import.before.defaults />
+    <activiti.osgi.import.additional />
+    <activiti.osgi.import.pkg>
+      org.activiti.*;${activiti.osgi.import.activiti.version},
+      ${activiti.osgi.import.before.defaults},
+      ${activiti.osgi.import.defaults},
+      ${activiti.osgi.import.additional},
+      *
+    </activiti.osgi.import.pkg>
+    <activiti.osgi.activator />
+    <activiti.osgi.failok>false</activiti.osgi.failok>
+    <activiti.osgi.export>${activiti.osgi.export.pkg};${activiti.osgi.version};-noimport:=true</activiti.osgi.export>
+    <!--
+    <activiti.osgi.export.pkg>!*.impl;${activiti.artifact}*</activiti.osgi.export.pkg>
+    <activiti.osgi.private.pkg>${activiti.artifact}*.impl</activiti.osgi.private.pkg>
+    -->
+    <activiti.osgi.export.pkg>${activiti.artifact}*</activiti.osgi.export.pkg>
+    <activiti.osgi.private.pkg></activiti.osgi.private.pkg>
+    <activiti.osgi.version>version=${project.version}</activiti.osgi.version>
+    <activiti.osgi.split.pkg>-split-package:=first</activiti.osgi.split.pkg>
+    <activiti.osgi.import>${activiti.osgi.import.pkg}</activiti.osgi.import>
+    <activiti.osgi.dynamic />
+    <activiti.osgi.symbolic.name>${activiti.artifact}</activiti.osgi.symbolic.name>
+    <activiti.osgi.exclude.dependencies>false</activiti.osgi.exclude.dependencies>
+    <activiti.osgi.remove.headers>Ignore-Package,Include-Resource,Private-Package,Bundle-DocURL</activiti.osgi.remove.headers>
+    <activiti.osgi.include.resource>{maven-resources}</activiti.osgi.include.resource>
+    <activiti.osgi.embed></activiti.osgi.embed>
   </properties>
 
   <dependencyManagement>
@@ -147,7 +147,7 @@
       <dependency>
         <groupId>com.ibm.db2.jcc</groupId>
         <artifactId>db2jcc4</artifactId>
-		<version>9.7</version>
+        <version>9.7</version>
         <scope>test</scope>
       </dependency> 
       <dependency>
@@ -183,7 +183,7 @@
         <artifactId>commons-email</artifactId>
         <version>1.2</version>
       </dependency>
-        <!-- Web service -->
+      <!-- Web service -->
       <dependency>
         <groupId>org.apache.cxf</groupId>
         <artifactId>cxf-rt-frontend-jaxws</artifactId>
@@ -454,16 +454,16 @@
         <classifier>lgpl</classifier>
         <version>2.0.0</version>
       </dependency>
-	  <dependency>
-		<groupId>com.fasterxml.uuid</groupId>
-		<artifactId>java-uuid-generator</artifactId>
-	    <version>3.1.2</version>
-	  </dependency>
-	  <dependency>
-		<groupId>com.microsoft.sqlserver</groupId>
-		<artifactId>sqljdbc4</artifactId>
-	    <version>4.0</version>
-	  </dependency>
+      <dependency>
+        <groupId>com.fasterxml.uuid</groupId>
+        <artifactId>java-uuid-generator</artifactId>
+        <version>3.1.2</version>
+      </dependency>
+      <dependency>
+        <groupId>com.microsoft.sqlserver</groupId>
+        <artifactId>sqljdbc4</artifactId>
+        <version>4.0</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -506,7 +506,9 @@
     </pluginRepository>
     <pluginRepository>
       <id>sonatype-snapshot-repo</id>
-      <snapshots><enabled>true</enabled></snapshots>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
       <url>https://repository.sonatype.org/content/repositories/apache-snapshots</url>
     </pluginRepository>
   </pluginRepositories>
@@ -517,8 +519,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>2.3.2</version>
         <configuration>
-                <source>1.6</source>
-                <target>1.6</target>
+          <source>1.6</source>
+          <target>1.6</target>
           <showDeprecation>true</showDeprecation>
           <showWarnings>true</showWarnings>
           <optimize>true</optimize>
@@ -601,9 +603,9 @@
   <profiles>
     <profile>
       <id>nofail</id>
-        <properties>
-          <maven.test.failure.ignore>true</maven.test.failure.ignore>
-        </properties>
+      <properties>
+        <maven.test.failure.ignore>true</maven.test.failure.ignore>
+      </properties>
     </profile>
     <profile>
       <id>deploy</id>
@@ -654,12 +656,12 @@
         <module>modules/activiti-spring</module>
       </modules>
     </profile>    
-	  <profile>
+    <profile>
       <id>checkcdi</id>
-	    <modules>
-		    <module>modules/activiti-cdi</module>
-	    </modules>	
-	  </profile>
+      <modules>
+        <module>modules/activiti-cdi</module>
+      </modules>	
+    </profile>
     <profile>
       <id>upgradeDatabase</id>
       <activation>
@@ -691,9 +693,9 @@
         <module>modules/activiti-webapp-explorer2</module>
         <module>modules/activiti-cxf</module>
         <module>modules/activiti-osgi</module>
-	      <module>modules/activiti-camel</module>	      
+        <module>modules/activiti-camel</module>	      
         <module>modules/activiti-mule</module>
-		    <module>modules/activiti-cdi</module>
+        <module>modules/activiti-cdi</module>
       </modules>
     </profile>
     <profile>
@@ -791,14 +793,14 @@
       <url>http://alfresco.com</url>
     </developer>
     <developer>
-       <name>Nick Burch</name>
-       <organization>Alfresco</organization>
-       <url>http://alfresco.com</url> 
+      <name>Nick Burch</name>
+      <organization>Alfresco</organization>
+      <url>http://alfresco.com</url> 
     </developer>
     <developer>
-       <name>Christian Stettler</name>
-       <organization>Mimacom</organization>
-       <url>http://mimacom.com</url> 
+      <name>Christian Stettler</name>
+      <organization>Mimacom</organization>
+      <url>http://mimacom.com</url> 
     </developer>
   </developers>
   <issueManagement>
@@ -810,8 +812,8 @@
     <url>http://bamboo.ci.codehaus.org/browse/ACT</url>
   </ciManagement>
   <scm>
-   <connection>scm:svn:http://svn.codehaus.org/activiti/</connection>
-   <developerConnection>scm:svn:https://svn.codehaus.org/activiti/</developerConnection>
+    <connection>scm:svn:http://svn.codehaus.org/activiti/</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/activiti/</developerConnection>
   </scm>
 
 </project>

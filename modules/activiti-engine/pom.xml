@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
   <name>Activiti - Engine</name>
   <artifactId>activiti-engine</artifactId>
@@ -83,9 +83,9 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-	    <groupId>org.apache.openjpa</groupId>
-	    <artifactId>openjpa</artifactId>
-	    <scope>test</scope>
+      <groupId>org.apache.openjpa</groupId>
+      <artifactId>openjpa</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.subethamail</groupId>
@@ -134,23 +134,23 @@
   </repositories>
 
   <properties>
-      <activiti.artifact>
-        org.activiti.db.mapping.entity,
-        org.activiti.engine
-      </activiti.artifact>
-      <activiti.osgi.import.additional>
-          junit*;resolution:=optional,
-          org.junit*;resolution:=optional,
-          com.sun*;resolution:=optional,
-          javax.persistence*;resolution:=optional,
-          org.apache.commons.mail;resolution:=optional,
-          org.apache.tools.ant*;resolution:=optional,
-          org.apache.xerces*;resolution:=optional,
-          org.activiti.osgi*;resolution:=optional,
-          org.springframework*;resolution:=optional,
-          org.drools*;resolution:=optional,
-          com.fasterxml*;resolution:=optional,
-      </activiti.osgi.import.additional>
+    <activiti.artifact>
+      org.activiti.db.mapping.entity,
+      org.activiti.engine
+    </activiti.artifact>
+    <activiti.osgi.import.additional>
+      junit*;resolution:=optional,
+      org.junit*;resolution:=optional,
+      com.sun*;resolution:=optional,
+      javax.persistence*;resolution:=optional,
+      org.apache.commons.mail;resolution:=optional,
+      org.apache.tools.ant*;resolution:=optional,
+      org.apache.xerces*;resolution:=optional,
+      org.activiti.osgi*;resolution:=optional,
+      org.springframework*;resolution:=optional,
+      org.drools*;resolution:=optional,
+      com.fasterxml*;resolution:=optional,
+    </activiti.osgi.import.additional>
   </properties>
 
   <build>
@@ -177,58 +177,58 @@
         </configuration>
       </plugin>
       <plugin>
-         <groupId>org.apache.felix</groupId>
-         <artifactId>maven-bundle-plugin</artifactId>
-          <executions>
-              <execution>
-                  <phase>generate-sources</phase>
-                  <goals>
-                      <goal>cleanVersions</goal>
-                  </goals>
-              </execution>
-        <execution>
-          <id>bundle-manifest</id>
-          <phase>process-classes</phase>
-          <goals>
-            <goal>manifest</goal>
-          </goals>
-        </execution>
-      </executions>
-    </plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>cleanVersions</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>bundle-manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
     <pluginManagement>
-    	<plugins>
-    		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-    		<plugin>
-    			<groupId>org.eclipse.m2e</groupId>
-    			<artifactId>lifecycle-mapping</artifactId>
-    			<version>1.0.0</version>
-    			<configuration>
-    				<lifecycleMappingMetadata>
-    					<pluginExecutions>
-    						<pluginExecution>
-    							<pluginExecutionFilter>
-    								<groupId>org.apache.felix</groupId>
-    								<artifactId>
-    									maven-bundle-plugin
-    								</artifactId>
-    								<versionRange>
-    									[2.1.0,)
-    								</versionRange>
-    								<goals>
-    									<goal>cleanVersions</goal>
-    									<goal>manifest</goal>
-    								</goals>
-    							</pluginExecutionFilter>
-    							<action>
-    								<ignore></ignore>
-    							</action>
-    						</pluginExecution>
-    					</pluginExecutions>
-    				</lifecycleMappingMetadata>
-    			</configuration>
-    		</plugin>
-    	</plugins>
+      <plugins>
+        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>
+                      maven-bundle-plugin
+                    </artifactId>
+                    <versionRange>
+                      [2.1.0,)
+                    </versionRange>
+                    <goals>
+                      <goal>cleanVersions</goal>
+                      <goal>manifest</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
     </pluginManagement>
   </build>
   
@@ -245,18 +245,18 @@
       <id>create-test-jar</id>
       <build>
         <plugins>
-		      <plugin>
-		        <groupId>org.apache.maven.plugins</groupId>
-		        <artifactId>maven-jar-plugin</artifactId>
-		        <version>2.2</version>
-		        <executions>
-		          <execution>
-		            <goals>
-		              <goal>test-jar</goal>
-		            </goals>
-		          </execution>
-		        </executions>
-		      </plugin>          
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>2.2</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>test-jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>          
         </plugins>
       </build>
     </profile>
@@ -483,15 +483,15 @@
       </activation>
       <build>
         <plugins>
-		      <plugin>
-		        <artifactId>maven-surefire-plugin</artifactId>
-		        <configuration>
+          <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
               <includes>
                 <include>**/JdbcMetaDataTest.java</include>
               </includes>
-		          <excludes />
-		        </configuration>
-		      </plugin>
+              <excludes />
+            </configuration>
+          </plugin>
           <plugin>
             <artifactId>maven-antrun-plugin</artifactId>
             <version>1.4</version>
@@ -526,7 +526,7 @@
                   <tasks>
                     <echo message="dropping schema in ${metadatabase}" />
                     <ant antfile="${basedir}/../../qa/db/build.xml" target="drop.db.schema"
-                      inheritAll="false">
+                         inheritAll="false">
                       <property name="test_classpath" refid="maven.test.classpath" />
                       <property name="database" value="${metadatabase}" />
                     </ant>
@@ -573,39 +573,39 @@
       </dependencies>
     </profile>
 
-	<profile>
-	  <id>mssql</id>
-	    <activation>
-		  <property>
-			<name>database</name>
-			<value>mssql</value>
-		  </property>
-		</activation>
-		<dependencies>
-		  <dependency>
-			<groupId>com.microsoft.sqlserver</groupId>
-			<artifactId>sqljdbc4</artifactId>
-			<scope>test</scope>
-		  </dependency>
-	   </dependencies>
-	</profile>
+    <profile>
+      <id>mssql</id>
+      <activation>
+        <property>
+          <name>database</name>
+          <value>mssql</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.microsoft.sqlserver</groupId>
+          <artifactId>sqljdbc4</artifactId>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
 	
-	<profile>
-	  <id>mysql</id>
-	    <activation>
-		  <property>
-			<name>database</name>
-			<value>mysql</value>
-		  </property>
-		</activation>
-		<dependencies>
-		  <dependency>
-		    <groupId>mysql</groupId>
-     	    <artifactId>mysql-connector-java</artifactId>
-			<scope>test</scope>
-		  </dependency>
-	   </dependencies>
-	</profile>
+    <profile>
+      <id>mysql</id>
+      <activation>
+        <property>
+          <name>database</name>
+          <value>mysql</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>mysql</groupId>
+          <artifactId>mysql-connector-java</artifactId>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
   </profiles>
 
 </project>

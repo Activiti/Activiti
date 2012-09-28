@@ -41,6 +41,22 @@
 
   <h1>Activiti Release Notes</h1>
 
+  <h3>Release Notes - Activiti - Version 5.11</h3>
+
+  <h4>Highlights</h4>
+  <ul>
+    <li>Enhanced ability to query for history variable values</li>
+  </ul>
+
+  <h4>Important upgrade note</h4>
+  <p>In 5.11 we introduce a new history table for process variables. There is an optional migration database script
+  that you can run to generate historic variables for existing process instances.  This is optional because 
+  the engine will just create those records upon update of the variable if they don't exist.  
+  </p>
+  <p>The files can be found in the <code>activiti-engine-5.11.jar</code> file in directory
+  <code>org/activiti/db/upgrade/optional</code>.
+  </p> 
+
   <h3>Release Notes - Activiti - Version 5.10</h3>
 
   <h4>Highlights</h4>

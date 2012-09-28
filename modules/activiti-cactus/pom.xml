@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -83,7 +83,7 @@
       <groupId>org.apache.openjpa</groupId>
       <artifactId>openjpa</artifactId>
       <scope>runtime</scope>
-      </dependency>
+    </dependency>
     <dependency>
       <groupId>org.subethamail</groupId>
       <artifactId>subethasmtp-wiser</artifactId>
@@ -102,7 +102,7 @@
       <artifactId>jtds</artifactId>
     </dependency>
     
-     <dependency>
+    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
       <scope>provided</scope>
@@ -113,7 +113,7 @@
   <build>
     <plugins>
       <plugin>
-       <groupId>org.codehaus.mojo</groupId>
+        <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.1</version>
         <executions>
@@ -160,8 +160,8 @@
             <configuration>
               <tasks>
                 <condition property="cfg.file.name" value="activiti-context.xml" else="activiti.cfg.xml">
-						      <equals arg1="${cfg}" arg2="spring" />
-						    </condition>
+                  <equals arg1="${cfg}" arg2="spring" />
+                </condition>
                 <echo message="using configuration src/main/cfg/server.${server}.cfg.${cfg}.tx.${tx}.xml as ${cfg.file.name}" />
                 <echo message="using database properties ${user.home}/.activiti/server/build.${database}.properties" />
                 <copy tofile="target/classes/${cfg.file.name}" file="src/main/cfg/server.${server}.cfg.${cfg}.tx.${tx}.xml">
@@ -177,45 +177,45 @@
   
   <profiles>
     <profile>
-     <id>jboss</id>
-     <activation>
-       <property>
-         <name>server</name>
-         <value>jboss</value>
-       </property>
-     </activation>
-     <dependencies>
-	    <dependency>
-	      <groupId>org.apache.cactus</groupId>
-	      <artifactId>cactus.integration.ant</artifactId>
-	      <version>1.8.1</version>
-	      <exclusions>
-	        <exclusion>
-	          <groupId>xerces</groupId>
-	          <artifactId>xercesImpl</artifactId>
-	        </exclusion>
-	        <exclusion>
-	          <groupId>xml-apis</groupId>
-	          <artifactId>xml-apis</artifactId>
-	        </exclusion>
-	      </exclusions>
-	    </dependency>
-      <dependency>
-        <groupId>jaxen</groupId>
-        <artifactId>jaxen</artifactId>
-        <version>1.1.1</version>
-        <exclusions>
-          <exclusion>
-            <groupId>xerces</groupId>
-            <artifactId>xercesImpl</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>xml-apis</groupId>
-            <artifactId>xml-apis</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-     </dependencies>
+      <id>jboss</id>
+      <activation>
+        <property>
+          <name>server</name>
+          <value>jboss</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>org.apache.cactus</groupId>
+          <artifactId>cactus.integration.ant</artifactId>
+          <version>1.8.1</version>
+          <exclusions>
+            <exclusion>
+              <groupId>xerces</groupId>
+              <artifactId>xercesImpl</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>xml-apis</groupId>
+              <artifactId>xml-apis</artifactId>
+            </exclusion>
+          </exclusions>
+        </dependency>
+        <dependency>
+          <groupId>jaxen</groupId>
+          <artifactId>jaxen</artifactId>
+          <version>1.1.1</version>
+          <exclusions>
+            <exclusion>
+              <groupId>xerces</groupId>
+              <artifactId>xercesImpl</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>xml-apis</groupId>
+              <artifactId>xml-apis</artifactId>
+            </exclusion>
+          </exclusions>
+        </dependency>
+      </dependencies>
     </profile>
   </profiles>
 
