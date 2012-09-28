@@ -3211,8 +3211,9 @@ public class BpmnParse extends Parse {
   public void parseBPMNEdge(Element bpmnEdgeElement) {
     String sequenceFlowId = bpmnEdgeElement.attribute("bpmnElement");
     if (sequenceFlowId != null && !"".equals(sequenceFlowId)) {
-      TransitionImpl sequenceFlow = sequenceFlows.get(sequenceFlowId);
-      if (sequenceFlow != null) {
+      if (sequenceFlows != null && sequenceFlows.containsKey(sequenceFlowId)) {
+        
+        TransitionImpl sequenceFlow = sequenceFlows.get(sequenceFlowId);
         List<Element> waypointElements = bpmnEdgeElement.elementsNS(BpmnParser.OMG_DI_NS, "waypoint");
         if (waypointElements.size() >= 2) {
           List<Integer> waypoints = new ArrayList<Integer>();
