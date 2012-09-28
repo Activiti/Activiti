@@ -13,8 +13,12 @@
         </startEvent>    
 
         <sequenceFlow id="flow1" sourceRef="theStart" targetRef="receive"/>
-
-        <receiveTask id="receive"/>
+      
+        <scriptTask id="receive" scriptFormat="groovy">
+          <script>
+            throw new java.lang.NullPointerException("Test");
+          </script>
+        </scriptTask>
 
         <sequenceFlow id="flow2" sourceRef="receive" targetRef="theEnd"/>
 

@@ -228,6 +228,11 @@ public class BpmnParse extends Parse {
 
     } catch (Exception e) {
       LOGGER.log(Level.SEVERE, "Unknown exception", e);
+      
+      // ALL unexpected exceptions should bubble up since they are not handled
+      // accordingly by onderlying parse-methods and can't be deployed
+      throw new ActivitiException("Error while parsing process: " + e.getMessage(), e);
+      
     } finally {
       if (hasWarnings()) {
         logWarnings();

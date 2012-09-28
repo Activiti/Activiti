@@ -47,9 +47,10 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
 
     List<ProcessInstance> pi = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExample")
         .list();
+    assertEquals(99, managementService.createJobQuery().singleResult().getRetries());
     assertEquals(1, pi.size());
 
-    assertEquals(0, jobQuery.count());
+    
 
 
   }

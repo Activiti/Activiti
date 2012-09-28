@@ -11,13 +11,13 @@
     
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="task1">
       <conditionExpression xsi:type="tFormalExpression">
-         <![CDATA[${input == 'left'}]]>
+         <![CDATA[${}]]>
       </conditionExpression>
     </sequenceFlow>
     
     <sequenceFlow id="flow2" sourceRef="theStart" targetRef="task2">
       <conditionExpression xsi:type="tFormalExpression">
-         <![CDATA[${input == 'right'}]]>
+         <![CDATA[${}]]>
       </conditionExpression>
     </sequenceFlow>
     
