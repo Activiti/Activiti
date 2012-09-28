@@ -28,6 +28,7 @@ import org.activiti.explorer.ui.form.FormPropertiesEventListener;
 import org.activiti.explorer.ui.form.FormPropertiesForm;
 import org.activiti.explorer.ui.form.FormPropertiesForm.FormPropertiesEvent;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
+import org.activiti.explorer.ui.process.listener.ConvertProcessDefinitionToModelClickListener;
 import org.activiti.explorer.ui.process.listener.StartProcessInstanceClickListener;
 
 import com.vaadin.ui.Button;
@@ -65,6 +66,7 @@ public class ProcessDefinitionDetailPanel extends DetailPanel {
   protected HorizontalLayout actionsContainer;
   protected Label nameLabel;
   protected Button startProcessInstanceButton;
+  protected Button editProcessDefinitionButton;
   
   protected FormPropertiesForm processDefinitionStartForm;
   protected ProcessDefinitionInfoComponent definitionInfoComponent;
@@ -109,9 +111,17 @@ public class ProcessDefinitionDetailPanel extends DetailPanel {
     startProcessInstanceButton = new Button(i18nManager.getMessage(Messages.PROCESS_START));
     startProcessInstanceButton.addListener(new StartProcessInstanceClickListener(processDefinition, processDefinitionPage));
     
+    editProcessDefinitionButton = new Button(i18nManager.getMessage(Messages.PROCESS_CONVERT));
+    editProcessDefinitionButton.addListener(new ConvertProcessDefinitionToModelClickListener(processDefinition));
+    
+    if(processDefinition.getDiagramResourceName() == null) {
+      editProcessDefinitionButton.setEnabled(false);
+    }
+    
     // Clear toolbar and add 'start' button
     processDefinitionPage.getToolBar().removeAllButtons();
     processDefinitionPage.getToolBar().addButton(startProcessInstanceButton);
+    processDefinitionPage.getToolBar().addButton(editProcessDefinitionButton);
   }
   
 

@@ -59,6 +59,7 @@ public class NavigatorManager implements InitializingBean, Serializable {
     
     addNavigator(new TaskNavigator());
     addNavigator(new ProcessNavigator());
+    addNavigator(new ProcessModelNavigator());
     addNavigator(new DeploymentNavigator());
     addNavigator(new DatabaseNavigator());
     addNavigator(new JobNavigator());

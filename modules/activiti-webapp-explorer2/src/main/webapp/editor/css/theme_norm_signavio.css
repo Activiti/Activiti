@@ -1,0 +1,1120 @@
+body, html {
+	font-family: tahoma,arial,helvetica,sans-serif;
+	font-size: 12px;
+}
+
+.x-window-dlg .ext-mb-question {
+	background:transparent url(../../explorer/src/img/nuvola/32x32/actions/help.png) no-repeat scroll left top;
+}
+
+.x-window-dlg .ext-mb-warning {
+	background:transparent url(../../explorer/src/img/nuvola/32x32/actions/messagebox_warning.png) no-repeat scroll left top;
+}
+
+.x-window-dlg .ext-mb-info {
+	background:transparent url(../../explorer/src/img/nuvola/32x32/actions/messagebox_info.png) no-repeat scroll left top;
+}
+
+.x-window-dlg .ext-mb-error {
+	background:transparent url(../../explorer/src/img/nuvola/32x32/actions/no.png) no-repeat scroll left top;
+}
+
+.x-collapse-text {
+	color:#EEEEEE;
+	font-family:Verdana,Tahoma,sans-serif;
+	font-size:11px;
+	font-weight:bold;
+	margin-top:18px;
+	position:absolute;
+	top:0;
+	-webkit-user-select: none;
+    -moz-user-select:none;
+    -o-user-select:none;
+}
+
+.x-layout-collapsed-east .x-collapse-text {
+	-moz-transform:rotate(90deg);
+	-moz-transform-origin:left center;
+	-o-transform: rotate(90deg);
+	-o-transform-origin:left center;
+	-webkit-transform: rotate(90deg); 
+	-webkit-transform-origin:left center;
+	left:11px;
+}
+
+.x-layout-collapsed-west .x-collapse-text {
+	-moz-transform:rotate(-90deg);
+	-moz-transform-origin:right center;
+	-webkit-transform: rotate(-90deg); 
+	-webkit-transform-origin:right center;
+	-o-transform: rotate(-90deg);
+	-o-transform-origin:right center;
+	right:11px;
+}
+
+.x-layout-collapsed svg,
+.x-layout-collapsed svg text {
+	cursor: pointer;
+} 
+
+
+/*********
+ * BROWSER SPECIFIC BEHAVIOR
+ */
+
+/**
+ * MAC
+ */
+.ext-mac.ext-gecko .x-form-radio, .ext-mac.ext-gecko .x-form-checkbox {
+	position:relative;
+	top:3px;
+} 
+
+.ext-opera .Oryx_button .x-menu {
+	width: 246px;
+}
+
+a {
+	color:#ad0f5b;
+}
+
+a:hover, a:focus, a:active {
+	color:#82566B;
+}
+
+/*********
+ * SVG Style
+ */
+
+text,
+text * {
+	cursor:default;
+	-webkit-user-select: none;
+}
+
+/*********
+ * HEADER SECTION
+ *
+ */
+#oryx_editor_header {
+	background:transparent url(../../explorer/src/img/signavio/header_background2.png) repeat-x scroll center 0;
+	height:35px;
+	position:absolute;
+	width:100%;
+}
+
+#oryx_editor_header a {
+	background-attachment:scroll;
+	background-color:transparent;
+	background-image:url(../../explorer/src/img/signavio/logo2.png);
+	background-position:0 0;
+	background-repeat:no-repeat;
+	display:block;
+	height:35px;
+	width:150px;
+	left:20px;
+	position:relative;
+}
+
+#oryx_editor_header a img {
+	margin-top:-3px;
+	margin-left:10px;
+	visibility:hidden;
+}
+#oryx_editor_header .openid{
+	font-family:tahoma;
+	color:white;
+	font-size:12px;
+	position:absolute;
+	color:#ffffff;
+	right:15px;
+	top:10px;
+}
+
+#oryx_editor_header div {
+	background-image:url(../../explorer/src/img/signavio/header_background2.png) repeat-x center bottom;
+	height:10px;
+	position:absolute;
+	top:59px;
+	width:100%;
+}
+
+.x-panel-editor-north * {
+	overflow:visible;
+}
+
+#oryx_editor_header .openid.not{
+	color:#ffffff;
+	font-style:italic;
+}
+
+
+.x-panel-editor-north .x-toolbar {
+	background:transparent url(../../explorer/src/img/signavio/header_background2.png) repeat-x scroll left -40px;
+	border:none;
+	overflow:hidden;
+}
+
+.x-panel-editor-north .x-toolbar .ytb-sep {
+	background-image: url(../../explorer/src/img/signavio/vLine.png);
+	margin:0 6px;
+}
+
+.x-panel-editor-north * {
+	overflow:visible;
+}
+
+.x-panel-editor-north #oryx_editor_header div {
+	background:transparent url(../../explorer/src/img/signavio/header_background2.png) repeat-x center bottom;
+	height:10px;
+	left:0;
+	top:59px;
+	position:absolute;
+	width:100%;
+	z-index:1000;
+}
+
+.x-panel-editor-north .x-panel-body {
+	height:59px !important;
+}
+.x-panel-editor-north .x-panel .x-panel-body {
+	height:35px !important;
+}
+
+.x-layout-split {
+	background:white;
+	border:none;
+	width:3px;
+}
+
+.x-panel-editor-center,
+.x-panel-editor-center .x-panel-body,
+.x-panel-editor-east,
+.x-panel-editor-east .x-panel-body,
+.x-panel-editor-west,
+.x-panel-editor-west .x-panel-body {
+	border:none;
+}
+
+.x-panel-editor-center {
+	background: #777777;
+}
+
+.x-panel-editor-center .x-panel-body {
+	background: transparent none repeat scroll 0 0;
+}
+
+.x-panel-editor-west .x-panel-body .x-panel-body,
+.x-panel-editor-west .x-panel-bwrap,
+.x-panel-editor-east .x-panel-body .x-panel-body,
+.x-panel-editor-east .x-panel-bwrap,
+.x-panel-editor-east .x-grid3 {
+	background: transparent none repeat scroll 0 0;
+}
+
+
+.x-panel-editor-west .x-panel-body {
+	background:#F1F1F1 url(../../explorer/src/img/signavio/bgr_left.png) repeat-y right center;
+}
+
+.x-panel-editor-east .x-panel-body {
+	background:#F1F1F1 url(../../explorer/src/img/signavio/bgr_right.png) repeat-y -1px center;
+}
+
+.LoadingIndicator {
+	background-image: url('../../libs/ext-2.0.2/resources/images/default/grid/loading.gif');
+}
+
+#oryx_canvas_htmlContainer {
+	
+}
+
+.x-plugin-rename-field {
+	position:absolute;
+	left:-100000px;
+}
+
+.ORYX_Editor {
+	/*background:url(../images/controls/background.bmp);*/
+	/*background: #EEF1FE;
+	border:5px double #99BBE8;*/
+	background:white;
+	border:4px double #E1E1E1;
+	margin:-5px;
+	margin-top:0px;
+	width:1200px;
+	height:600px;
+	
+}
+
+.x-tree-root-node > .x-tree-node {
+	margin-bottom:0;
+}
+
+.x-form-field-wrap .x-form-color-trigger {
+	background:transparent url("/libs/ext-2.0.2/resources/images/default/form/color-trigger.png") no-repeat 0 0;
+    cursor:pointer; 
+}
+
+.x-form-field-wrap .x-form-trigger.x-trigger-other {
+	background-image:url(../../explorer/src/img/signavio/trigger-other.png);
+}
+
+.x-form-field-wrap .x-form-complex-trigger {
+	background-image:url(../../explorer/src/img/signavio/trigger-other.png);
+}
+
+.ie6 .x-form-field-wrap .x-form-color-trigger {
+	background:transparent url("../../libs/ext-2.0.2/resources/images/default/form/color-trigger.gif") no-repeat 0 0;
+}
+
+.headerShapeRep, .headerShapeRepChild{
+    background:transparent url(../../explorer/src/img/signavio/bgr_left.png) repeat-y scroll right center;
+    padding:1px 0px;
+	margin:0px;
+	border:none;
+	font-size:12px;
+	font-weight:bold;
+	font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+.headerShapeRepChild {
+
+}
+
+.x-tree-node{
+    background:#EEEEEE url(../../libs/ext-2.0.2/resources/images/gray/panel/white-top-bottom.gif) repeat-x scroll 0 0;
+	overflow:hidden;
+}
+
+.headerShapeRepChild {
+	font-size:10px;
+	height:20px;
+}
+
+.x-panel-editor-west .x-tree-node img.ShapeRepEntreeImg, .x-tree-node-leaf img.ShapeRepEntreeImg {
+	height:16px;
+	width:16px;
+	background:none;
+	position:relative;
+	left:-7px;
+	top:1px;
+}
+
+.x-panel-editor-west .x-tree-node .x-tree-elbow-plus,
+.x-panel-editor-west .x-tree-node .x-tree-elbow-minus,
+.x-panel-editor-west .x-tree-node .x-tree-elbow-end-plus,
+.x-panel-editor-west .x-tree-node .x-tree-elbow-end-minus {
+	top:0px;
+}
+
+
+.x-panel-editor-west .x-tree-node .x-tree-elbow-plus,
+.x-panel-editor-west .x-tree-node .x-tree-elbow-end-plus {
+	background: transparent url(../../explorer/src/img/signavio/arrows.png) no-repeat scroll 0 -2px;
+}
+
+.x-panel-editor-west .x-tree-node .x-tree-elbow-minus,
+.x-panel-editor-west .x-tree-node .x-tree-elbow-end-minus {
+	background: transparent url(../../explorer/src/img/signavio/arrows.png) no-repeat scroll -19px -2px;
+}
+
+.x-panel-editor-west .x-tree-node .x-tree-selected a span {
+	background:none;
+}
+
+.x-panel-editor-west .x-tree-node .x-tree-selected {
+	background-color:#F1F1F1;
+	border:none;
+}
+
+.x-panel-editor-west {
+	background:white;
+}
+.x-panel-editor-west .x-panel-header {
+	margin:0;
+	border:none;
+}
+
+.ShapeRepEntree {
+	border:none;
+	margin:0px;
+    background:#F1F1F1 url(../../explorer/src/img/signavio/bgr_left.png) repeat-y scroll right center;
+	padding:5px 0px;
+}
+
+.x-dd-drag-proxy .ShapeRepEntree {
+	background:#F1F1F1;
+}
+
+
+.ShapeRepEntree, .ShapeRepEntree *{
+	cursor:move;
+	white-space:normal;
+}
+
+.ShapeRepEntree:hover {
+	border:none;
+	background-color:#E1E1E1 !important;
+}
+ 
+.x-tree-node .headerShapeRepChild.x-tree-node-over,
+.x-tree-node .headerShapeRepChild.x-tree-selected,
+.x-tree-node .headerShapeRep.x-tree-node-over,
+.x-tree-node .headerShapeRep.x-tree-selected {
+	background-color:transparent !important;
+}
+
+.x-tree-node a span, .x-dd-drag-ghost a span { 
+	color:black;	
+}
+
+/*****************
+ * EAST-Panel
+ *
+ */
+ 
+.x-panel-editor-east .x-grid3-row {
+	background:#E1E1E1 url(../../explorer/src/img/signavio/bgr_right.png) repeat-y scroll -1px center;
+	border:none;
+	cursor:default;
+	width:100%;
+}
+
+.x-panel-editor-east .x-grid3-row-alt {
+	background-color:#F1F1F1;
+}
+
+.x-grid3-row {
+	color:black;
+}
+
+.x-grid3-hd-row td {
+	border-left:none;
+}
+
+.x-grid3-hd-row {
+	color:white;
+}
+
+.x-grid-group-hd {
+	border-bottom:2px solid #AF356F;
+}
+
+.x-grid-group-hd div {	
+	color:#AF356F;
+}
+
+.x-small-editor textarea.x-form-field  {
+	padding:2px 3px 0px;
+}
+
+.selectssperspective .x-panel-body {
+	overflow:hidden !important;
+}
+.selectssperspective .x-form-field-wrap{
+	margin-bottom:-2px;
+	margin-right:25px;
+	position:relative;
+	width:auto !important;
+}
+
+.selectssperspective .x-form-field-wrap input{
+	position:relative;
+	top:-1px;
+	width:100%;
+}
+
+.selectssperspective .x-form-field-wrap img{
+	right:0px;
+	margin-top:-8px;
+	position:relative;
+	top:6px;
+}
+
+
+.selectssperspective {
+
+}
+
+
+
+.resizer {
+	position:relative;
+	background:url(../../libs/ext-2.0.2/resources/images/default/sizer/se-handle-dark.gif);
+	width:10px; 
+	height:10px; 
+}
+
+.transform-epc-bpmn-window .transform-epc-bpmn-group-button .x-btn-center {
+	background:transparent url(../../libs/ext-2.0.2/resources/images/default/grid/group-expand-sprite.gif) no-repeat scroll 0px 0px;
+	padding-left:15px;
+	border-bottom:1px solid #CCCCCC;
+	text-align:left;
+	width:100%;
+
+}
+
+
+.Oryx_ShapeMenu .Oryx_MorphItem_disabled {
+	border:none;
+	cursor:default;
+	font-style:italic;
+	font-weight:normal;
+	opacity:0.3;
+}
+
+.Oryx_ShapeMenu .Oryx_MorphItem_disabled a {
+	cursor:default;
+}
+
+
+/** HELP PANEL */
+.x-help {
+	display:block;
+	height:96% !important;
+	left:2% !important;
+	top:2% !important;
+	width:96% !important;
+}
+
+.x-help .x-panel,
+.x-help .x-panel-bwrap,
+.x-help .x-panel-body,
+.x-help .x-window-bwrap,
+.x-help .x-window-mr,
+.x-help .x-window-mc,
+.x-help .x-window-body {
+	height:100%;
+}
+
+.x-help .x-window-ml {
+	height:92%;
+}
+
+.x-help-iframe {
+	width:100%;
+	height:100%;
+	border:none;
+}
+
+.x-help-iframe html {
+	border:none;
+}
+
+.x-help * {
+	overflow:visible;
+}
+
+.x-help .x-help-a {
+	color:white;
+	padding:5px 5px 7px 4px;
+	position:absolute;
+	right:20px;
+	top:-23px;
+	z-index:100;
+}
+
+/**
+ * Linking
+ */
+.x-window-linking-establish .ext-el-mask {
+	background: none;
+}
+
+.x-window-linking-establish .x-form-item {
+	overflow:hidden !important;
+}
+
+.x-window-linking-establish .x-tree-node {
+	background:none;
+}
+
+.x-window-linking-establish form ul {
+	margin:0px;
+}
+
+.x-window-linking-establish .folder.x-tree-node-collapsed .x-tree-node-icon {
+	background:transparent url(../../explorer/src/img/nuvola/16x16/filesystems/folder_grey.png) no-repeat scroll 0 0;
+}
+
+.x-window-linking-establish .folder .x-tree-node-icon {
+	background:transparent url(../../explorer/src/img/nuvola/16x16/filesystems/folder_grey_open.png) no-repeat scroll 0 0;
+}
+
+.x-window-linking-establish .folder.x-tree-node-leaf.x-disabled .x-tree-node-icon {
+	background:transparent url(../../explorer/src/img/nuvola/16x16/filesystems/folder_grey.png) no-repeat scroll 0 0;
+	opacity:0.6;
+	color:silver;
+}
+
+.x-window-linking-establish .model.x-tree-node-leaf  .x-tree-node-icon {
+	background:transparent url(../../explorer/src/img/nuvola/16x16/mimetypes/kpovmodeler_doc.png) no-repeat scroll center center;
+}
+
+
+
+.x-window-linking-establish .x-img-panel .x-info-model {
+	height:100%;
+	line-height:400%;
+	overflow:hidden !important;
+	position:relative;
+	vertical-align:middle;
+	width:100%;
+}
+
+.x-window-linking-establish .x-img-panel .x-info-model iframe {
+	width:100%;
+	height:100%;
+	border:none;
+	overflow:hidden;
+}
+
+.x-window-linking-establish .x-img-panel  img {
+	max-width:100%;
+	max-height:100%;
+	position:absolute;
+	top:0px;
+	left:0px;
+}
+
+.x-window-linking-establish .x-img-panel .x-scrollable img {
+	max-width:none;
+	max-height:none;
+}
+
+.x-window-linking-establish .x-img-panel .x-scrollenable {
+	cursor:-moz-zoom-in;
+}
+
+.x-window-linking-establish .x-img-panel .x-scrollenable.x-scrollable {
+	cursor:-moz-zoom-out;
+}
+
+.x-window-linking-establish .x-img-panel .x-msg-loading{
+	left:50%;
+	position:absolute;
+	top:50%;
+	z-index:1000;
+	margin-left:-8px;
+	margin-top:-8px;
+}
+
+.x-msg-loading {
+	height:16px;
+	width:16px;
+	margin-bottom:-3px;
+	margin-top:5px;
+	background: transparent url(../../libs/ext-2.0.2/resources/images/default/tree/loading.gif) no-repeat center;
+	position:absolute;
+	right:-10px;
+	top:2px;
+	white-space:nowrap;
+}
+
+/*****************
+ * GLOSSARY
+ *
+ */
+.x-glossary-support .search-item {
+	border:1px solid transparent;
+	font-size:11px;
+	overflow:hidden;
+	padding:2px 5px 2px 20px;
+	position:relative;
+	white-space:nowrap;
+}
+
+.x-glossary-support .search-item img.x-image {
+	width:16px;
+	height:16px;
+	position:absolute;
+	left:1px;
+	top:1px;
+}
+
+
+img.x-org_unit, .x-org_unit .x-tree-node-icon, .x-org_unit.x-image {
+	background: transparent url(../../explorer/src/img/famfamfam/building.png) no-repeat center center;
+}
+
+img.x-document, .x-document .x-tree-node-icon, .x-document.x-image {
+	background: transparent url(../../explorer/src/img/famfamfam/page.png) no-repeat center center;
+}
+
+img.x-it_system, .x-it_system .x-tree-node-icon, .x-it_system.x-image {
+	background: transparent url(../../explorer/src/img/nuvola/16x16/apps/mycomputer.png) no-repeat center center;
+}
+
+img.x-activity, .x-activity .x-tree-node-icon, .x-activity.x-image {
+	background: transparent url(../../explorer/src/img/nuvola/16x16/apps/kcmdf.png) no-repeat center center;
+}
+
+img.x-state, .x-state .x-tree-node-icon, .x-state.x-image {
+	background: transparent url(../../explorer/src/img/nuvola/16x16/apps/ksysv.png) no-repeat center center;
+}
+
+
+img.x-search, .x-search .x-tree-node-icon, .x-search.x-image {
+	background: transparent url(../../explorer/src/img/nuvola/16x16/actions/viewmag.png) no-repeat center center;
+}
+
+.x-glossary-title.x-image {
+	background-position: left center !important;
+}
+
+.x-glossary-title-list {
+	display:inline;
+	padding:2px 0 2px 0px;
+	line-height:20px;
+}
+
+.x-glossary-list {
+	margin-top:5px;
+}
+
+.x-glossary-support .x-no-entry {
+	padding: 2px 5px;
+	border:1px solid transparent;
+	font-size:11px;
+	color: gray;
+	font-style: italic;
+	overflow:hidden;
+	white-space:nowrap;
+}
+
+
+.x-glossary-support .x-toolbar {
+	background:none repeat scroll 0 0 #DDECFE;
+	border:0 none;
+	padding:1px;
+	padding-bottom:0px;
+}
+
+.x-glossary-support .x-toolbar .x-paging-info {
+	color:gray;
+}
+
+.x-glossary-support .x-toolbar .x-btn-over .x-btn-left,
+.x-glossary-support .x-toolbar .x-btn-click .x-btn-left, 
+.x-glossary-support .x-toolbar .x-btn-pressed .x-btn-left, 
+.x-glossary-support .x-toolbar .x-btn-over .x-btn-center,
+.x-glossary-support .x-toolbar .x-btn-menu-active .x-btn-center,
+.x-glossary-support .x-toolbar .x-btn-click .x-btn-center, 
+.x-glossary-support .x-toolbar .x-btn-pressed .x-btn-center, 
+.x-glossary-support .x-toolbar .x-btn-menu-active .x-btn-center,
+.x-glossary-support .x-toolbar .x-btn-over .x-btn-right,
+.x-glossary-support .x-toolbar .x-btn-click .x-btn-right, 
+.x-glossary-support .x-toolbar .x-btn-pressed .x-btn-right, 
+.x-glossary-support .x-toolbar .x-btn-menu-active .x-btn-right  {
+	background-image:url("../../libs/ext-2.0.2/resources/images/default/toolbar/tb-btn-sprite.gif");
+}
+
+
+/** Hide old textbox */
+.x-glossary-support-container .x_form_text_set_absolute {
+	display:none;
+}
+
+.x-glossary-link {
+	opacity:0.4;
+}
+
+.x-glossary-link.x-hover {
+	opacity:1.0;
+}
+
+
+.x-glossary-preview .x-msg-loading {
+	background-position:left center;
+	height:24px;
+	line-height:24px;
+	margin:0;
+	padding-left:20px;
+	position:relative;
+	top:0;
+}
+
+.x-glossary-preview .x-glossary-title,
+.x-glossary-preview .x-glossary-attachments-title, 
+.x-glossary-preview .x-glossary-links-title {
+	font-weight:bold;
+}
+
+.x-glossary-preview .x-glossary-title {
+	font-size:12px;
+	margin-bottom:5px;
+}
+
+.x-glossary-preview .x-glossary-title span{
+	font-size:11px;
+	font-weight:normal;
+}
+
+.x-glossary-preview .x-glossary-description {
+	padding:0 0 20px;
+}
+
+.x-glossary-preview .x-glossary-links-title {
+	margin-top:20px;
+}
+.x-glossary-preview .x-glossary-links-entry span{
+	font-size:10px;
+}
+
+.x-glossary-preview .x-glossary-attachments-entry img{
+	background:transparent url(../../explorer/src/img/nuvola/16x16/filesystems/www_small.png) no-repeat scroll center center;
+	height:16px;
+	margin-bottom:-2px;
+	margin-right:10px;
+	width:16px;
+}
+
+.x-glossary-preview .x-glossary-none {
+	font-style: italic;
+	color:gray;
+}
+
+.x-glossary-preview .x-window-body table th {
+	color:#888888;
+	padding-right:3px;
+	text-align:right;
+	width:140px;
+	vertical-align:top;
+}
+
+.x-glossary-preview .x-window-body table {
+	border-spacing:5px;	
+}
+
+.x-glossary-preview .x-window-body table .x-no-data {
+	color:#888888;
+	font-style:italic;
+}
+
+
+.x-glossary-preview img.x-image {
+	height:16px;
+	margin-bottom:-3px;
+	margin-right:3px;
+	margin-top:-5px;
+	position:relative;
+	width:16px;
+}
+
+.x-glossary-preview .x-org_unit.x-image {
+	background: transparent url(../../explorer/src/img/famfamfam/building.png) no-repeat center center !important;
+}
+
+.x-glossary-preview .x-document.x-image {
+	background: transparent url(../../explorer/src/img/famfamfam/page.png) no-repeat center center !important;
+}
+
+.x-glossary-preview .x-it_system.x-image {
+	background: transparent url(../../explorer/src/img/nuvola/16x16/apps/mycomputer.png) no-repeat center center !important;
+}
+
+.x-glossary-preview .x-activity.x-image {
+	background: transparent url(../../explorer/src/img/nuvola/16x16/apps/kcmdf.png) no-repeat center center !important;
+}
+
+.x-glossary-preview .x-state.x-image {
+	background: transparent url(../../explorer/src/img/nuvola/16x16/apps/ksysv.png) no-repeat center center !important;
+}
+
+.x-glossary-preview .x-attachment.x-image {
+	background: transparent url(../../explorer/src/img/famfamfam/attach.png) no-repeat center center;
+}
+
+.x-glossary-preview .x-model-link.x-image  {
+	background: transparent url(../../explorer/src/img/famfamfam/page_white_link.png) no-repeat center center;
+}
+
+div.x-inline {
+	display:inline;
+	line-height:14px;
+}
+
+.x-glossary-new div.x-inline {
+	line-height:17px;
+}
+
+.x-glossary-new div.x-inline div {
+	background-position:0 center !important;
+	display:inline;
+	padding-bottom:2px;
+	padding-left:20px;
+	padding-top:2px;
+}
+
+.x-glossary-preview .x-panel-bwrap,
+.x-glossary-preview .x-panel-bwrap .x-panel-body  {
+	overflow:visible;
+}
+
+/******************
+ * EXT
+ *
+ */
+
+
+.x-window-dlg .ext-mb-question {
+	background:transparent url(../../explorer/src/img/nuvola/32x32/actions/help.png) no-repeat scroll left top;
+}
+
+.x-window-dlg .ext-mb-info {
+	background:transparent url(../../explorer/src/img/nuvola/32x32/actions/messagebox_info.png) no-repeat scroll left top;
+}
+
+
+.x-waiting-box div {
+	margin-left:10px;
+	padding-left:30px;
+	background: transparent url(../../libs/ext-2.0.2/resources/images/default/tree/loading.gif) no-repeat scroll left center;
+	border: none;
+}
+
+.x-combo-list-item {
+	min-height:14px;
+}
+
+.x-grid3-col-propertywindow_column_value img {
+	margin:-1px 2px -1px 0px;
+}
+
+.x-view-over {
+	background-color: #eeeeee;
+}
+
+.x-list-view {
+	border: 1px solid #dedede;
+	padding: 0px;
+	background: url("../../libs/ext-2.0.2/resources/images/default/form/text-bg.gif") repeat-x scroll 0 -1px #FFFFFF;
+}
+
+.thumb-wrap {
+	min-height: 18px;
+	padding: 5px;
+	position:relative;
+}
+
+.thumb-value {
+	vertical-align: middle;
+}
+
+.thumb-action {
+	position:absolute;
+	right:5px;
+	top:5px;
+	opacity: 0.2;
+}
+
+.x-view-over .thumb-action,
+.x-view-selected .thumb-action {
+	opacity: 1;
+}
+
+.list-action-edit:hover {
+	cursor: pointer;
+}
+
+.list-action-remove:hover {
+	cursor: pointer;
+}
+
+/**
+ * MAP EXPORT
+ *
+ */
+.x-plugin-map-view {
+    position:relative;
+}
+
+.x-plugin-map-view .thumb-wrap {
+    float: left;
+    margin: 4px;
+    margin-right: 0;
+    padding: 5px;
+    cursor:pointer;
+    width:140px;
+    height: 95px;
+    -moz-user-select:none !important;
+    text-align: center;
+    border: 1px solid transparent;
+}
+
+* html .x-plugin-map-view .thumb-wrap {
+    width:135px;
+}
+
+.x-plugin-process-documentation {
+    height:117px;
+}
+
+.x-plugin-process-documentation .thumb-wrap {
+    width : 100px !important;
+    position:relative;
+}
+
+.x-plugin-process-documentation .thumb-wrap .thumb {
+    left:0;
+    position:absolute;
+    text-align:center;
+    top:40px;
+    width:100%;
+}
+
+
+.x-plugin-map-view .thumb-wrap .thumb {
+    position:relative;
+    text-align:center;
+    top:10px;
+}
+
+
+.x-plugin-map-view .thumb-wrap.x-view-over{
+    border:1px solid #dddddd;
+    background: #efefef;
+}
+
+.x-plugin-map-view .thumb-wrap.x-view-selected{
+    background: #eff5fb;
+    border:1px solid #99bbe8;
+}
+
+.x-plugin-map-view .thumb-wrap .thumb-format {
+    display:block;
+    text-align: center;
+    font-style: italic;
+    font-size: 11px;
+}
+
+/**
+ * Property Window
+ *
+ */
+.x-grey-background {
+	background:none repeat scroll 0 0 #EEEEEE;
+	color:#BBBBBB;
+}
+
+.x-glossary-preview ol,
+.x-manage-list ol {
+	list-style-position:outside !important;
+	list-style-type:decimal !important;
+	margin-left:20px;
+}
+
+.x-manage-list ol li {
+	border: 1px solid white;
+	white-space:normal;
+}
+
+.x-manage-list ol li.x-editing {
+	border: 1px dotted silver;
+	color:silver;
+}
+
+.x-manage-list ol li.x-editing span {
+	display: none;
+}
+
+.x-manage-list ol li.x-hover span {
+	color: black;
+}
+.x-manage-list ol li span,
+.x-manage-list ol li span a {
+	color: #e1e1e1;
+}
+
+.x-manage-list ol li.x-hover span a {
+	color:#ad0f5b;
+}
+
+.x-manage-list ol li.x-hover span a:hover, 
+.x-manage-list ol li.x-hover span a:focus, 
+.x-manage-list ol li.x-hover span a:active {
+	color:#82566B;
+}
+
+.x-empty {
+	color: silver;
+	font-style:italic;
+}
+
+
+
+
+.x-view-window .x-form-item.x-hide-label .x-form-element {
+	overflow:hidden;	
+}
+
+
+
+
+/*** Glossary Support ***/
+.x-smaller {
+	font-size:10px;	
+}
+
+.x-no-margin {
+	margin:0px !important;
+}
+
+.x-url-link-field-list ol li {
+	background:url(../../explorer/src/img/famfamfam/attach.png) no-repeat scroll left center;
+	list-style-image:none;
+	list-style-type:none;
+	margin-left:-27px;
+	padding-left:19px;
+}
+
+.x-glossary-new ol {
+	list-style-position:outside !important;
+	list-style-type:decimal !important;
+	margin-left:25px;
+}
+
+.x-glossary-new ol li {
+	border: 1px solid white;
+	white-space:normal;
+}
+
+.x-glossary-new ol li.x-editing {
+	border: 1px dotted silver;
+	color:silver;
+}
+
+.x-glossary-new ol li.x-editing span {
+	display: none;
+}
+
+.x-glossary-new .x-field-wrap {
+	margin: 0px 0px 2px 0px !important;
+}
+
+.x-glossary-new .x-window-mc {
+	background: white !important;
+}
+
+.x-checkbox-left {
+	left: 1px !important;
+	top:3px !important;
+}
+
+.x-form-map-export-branding {
+	padding-top:5px;
+	padding-bottom:5px;
+}
+
+.x-form-map-export-branding .x-form-item {
+	overflow: hidden !important;
+}
+
+/*
+ * BUGFIX in safari
+ */
+.y-view-panel{
+	width: 200px;
+}
+

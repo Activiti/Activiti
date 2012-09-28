@@ -1,0 +1,129 @@
+
+
+/***************************
+ * ACADEMIC EXTENSION
+ *
+ *
+ * *************************/
+ 
+#signavio_repository_header #signavio_repository_logo, #oryx_editor_header a {
+	background:transparent url(../img/signavio/smoky/logo2.png) no-repeat scroll 0 0 !important;
+	height:32px !important;
+	left:0px !important;
+	margin-top:0 !important;
+	position:absolute;
+	top:0 !important;
+	width:180px !important;
+	z-index:1000;
+}
+
+#oryx_editor_header a {
+	left: 15px !important;
+}
+
+#signavio_repository_header, #oryx_editor_header {
+	background: transparent url(../img/signavio/smoky/header_background2.png) repeat-x scroll center 0 !important;
+}
+
+.x-toolbar.north_view {
+	background:transparent url(../img/signavio/smoky/header_background2.png) repeat-x scroll left -34px;
+	border:none;
+	height:24px !important;
+}
+
+.signavio_repository_header_shadow, .x-panel-editor-north #oryx_editor_header div  {
+	background:transparent url(../img/signavio/smoky/header_background2.png) repeat-x scroll center bottom !important;
+}
+
+* html div.signavio_repository_header_shadow,
+* html .x-panel-editor-north #oryx_editor_header div {
+	behavior:expression((this.runtimeStyle.behavior="none")&&
+						(!this._loaded)&&						
+						(!document.getElementById("signavio_repository_header_shadow_moved"))&&
+						(this.id =  "signavio_repository_header_shadow_moved")&&
+						(document.body.appendChild(this))&&		
+						(this.innerHTML = "<img src='/explorer/src/img/signavio/s.gif'/>")&&				
+						(this._loaded = true));	
+	background:none !important;
+	overflow:hidden;
+}
+
+
+* html div.signavio_repository_header_shadow img,
+* html .x-panel-editor-north #oryx_editor_header div img {
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../explorer/src/img/signavio/smoky/header_background2.png',sizingMethod='scale');
+	background:none;
+	position:relative;
+	height:76px;
+	width:100%;
+	top:-66px;
+}
+
+
+* html .x-header-shown div.signavio_repository_header_shadow img {
+	top:-68px !important;
+}
+
+
+.x-panel-editor-north .x-toolbar {
+	background-image:url(../img/signavio/smoky/header_background2.png) !important;
+}
+
+.search_plugin .search_field_right  {
+	height:22px;
+	padding-top:3px;
+	background-position: -43px -54px !important;
+}
+
+
+.search_plugin .x-table-layout-cell,
+.search_plugin .search_field_left,
+.search_plugin .search_field_right {
+	background-color:transparent;
+	background-image: url(../img/signavio/smoky/search_background2.png) !important;
+}
+
+div.search_plugin .x-focus .x-table-layout-cell div.search_field_left,
+div.search_plugin.activated .x-table-layout-cell div.search_field_left {
+	background-position:0px -3px !important;
+}
+
+div.search_plugin .x-focus .x-table-layout-cell div.search_field_right,
+div.search_plugin.activated .x-table-layout-cell div.search_field_right {
+	background-position:-43px -3px !important;
+}
+
+div.search_plugin .x-table-layout-cell.x-focus, 
+div.search_plugin.activated .x-table-layout-cell {
+	background-position:0 -29px !important;
+}
+
+.x-toolbar.north_view .ytb-sep, .x-panel-editor-north .x-toolbar .ytb-sep {
+	background-image:url(../img/signavio/smoky/vLine-alpha.png) !important;
+}
+
+
+* html .x-toolbar.north_view .ytb-sep,
+* html .x-panel-editor-north .x-toolbar .ytb-sep {
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../explorer/src/img/signavio/smoky/vLine-alpha.png',sizingMethod='image') !important;
+	background:none !important;
+}
+
+
+.mask-version, .mask-title {
+	color:#575652 !important;
+}
+
+.mask-logo div img {
+	padding-bottom:10px;
+	visibility: hidden;
+}
+
+.mask-logo div  {
+	border-bottom:1px solid #575652 !important;
+	background: transparent url(../img/signavio/smoky/logo.png) no-repeat top center;
+}
+
+.x-menu {
+	background-repeat: repeat;
+}

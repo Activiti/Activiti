@@ -1,0 +1,1005 @@
+{
+  "title" : "BPMN 2.0",
+  "namespace" : "http://b3mn.org/stencilset/bpmn2.0#",
+  "description" : "This is the BPMN 2.0 stencil set specification.",
+  "propertyPackages" : [ {
+    "name" : "baseAttributes",
+    "properties" : [ {
+      "id" : "name",
+      "type" : "String",
+      "title" : "Name",
+      "value" : "",
+      "description" : "The descriptive name of the BPMN element.",
+      "popular" : true,
+      "refToView" : "text_name"
+    }, {
+      "id" : "documentation",
+      "type" : "Text",
+      "title" : "Documentation",
+      "value" : "",
+      "description" : "The descriptive name of the BPMN element.",
+      "popular" : true
+    } ]
+  }, {
+    "name" : "diagrambase",
+    "properties" : [ {
+      "id" : "process_id",
+      "type" : "String",
+      "title" : "Process identifier",
+      "value" : "process",
+      "description" : "Unique identifier of the process definition.",
+      "popular" : true
+    }, {
+      "id" : "process_author",
+      "type" : "String",
+      "title" : "Process author",
+      "value" : "",
+      "description" : "Author of the process definition.",
+      "popular" : false
+    }, {
+      "id" : "process_version",
+      "type" : "String",
+      "title" : "Process version string (documentation only)",
+      "value" : "",
+      "description" : "Version identifier for documentation purpose.",
+      "popular" : false
+    }, {
+      "id" : "process_namespace",
+      "type" : "String",
+      "title" : "Target namespace",
+      "value" : "http://www.activiti.org/processdef",
+      "description" : "Target namespace for the process definition.",
+      "popular" : false
+    } ]
+  }, {
+    "name" : "timerdefinition",
+    "properties" : [ {
+      "id" : "timerdurationdefinition",
+      "type" : "String",
+      "title" : "Time duration (e.g. PT5M)",
+      "value" : "",
+      "description" : "Define the timer with a ISO-8601 duration.",
+      "popular" : true
+    }, {
+      "id" : "timerdatedefinition",
+      "type" : "String",
+      "title" : "Time date in ISO-8601",
+      "value" : "",
+      "description" : "Define the timer with a ISO-8601 date definition.",
+      "popular" : true
+    }, {
+      "id" : "timercycledefinition",
+      "type" : "String",
+      "title" : "Time cycle (e.g. R3/PT10H)",
+      "value" : "",
+      "description" : "Define the timer with a ISO-8601 cycle.",
+      "popular" : true
+    } ]
+  }, {
+    "name" : "messagerefdefinition",
+    "properties" : [ {
+      "id" : "messageRef",
+      "type" : "String",
+      "title" : "Message reference",
+      "value" : "",
+      "description" : "Define the message name.",
+      "popular" : true
+    } ]
+  }, {
+    "name" : "signalrefdefinition",
+    "properties" : [ {
+      "id" : "signalRef",
+      "type" : "String",
+      "title" : "Signal reference",
+      "value" : "",
+      "description" : "Define the signal name.",
+      "popular" : true
+    } ]
+  }, {
+    "name" : "errorrefdefinition",
+    "properties" : [ {
+      "id" : "errorRef",
+      "type" : "String",
+      "title" : "Error reference",
+      "value" : "",
+      "description" : "Define the error name.",
+      "popular" : true
+    } ]
+  }, {
+    "name" : "nonestarteventbase",
+    "properties" : [ {
+      "id" : "initiator",
+      "type" : "String",
+      "title" : "Initiator",
+      "value" : "",
+      "description" : "Initiator of the process.",
+      "popular" : true
+    } ]
+  }, {
+    "name" : "activity",
+    "properties" : [ {
+      "id" : "isforcompensation",
+      "type" : "Boolean",
+      "title" : "Is for compensation",
+      "value" : "false",
+      "description" : "A flag that identifies whether this activity is intended for the purposes of compensation.",
+      "popular" : false,
+      "refToView" : "compensation"
+    } ]
+  }, {
+    "name" : "activityasyncdefinition",
+    "properties" : [ {
+      "id" : "asynchronousDefinition",
+      "type" : "Choice",
+      "title" : "Asynchronous",
+      "value" : "No",
+      "description" : "Define the activity as asynchronous.",
+      "popular" : true,
+      "items" : [ {
+        "id" : "no",
+        "title" : "No",
+        "value" : "No"
+      }, {
+        "id" : "yes",
+        "title" : "Yes",
+        "value" : "Yes"
+      } ]
+    }, {
+      "id" : "exclusiveDefinition",
+      "type" : "Choice",
+      "title" : "Exclusive",
+      "value" : "Yes",
+      "description" : "Define the activity as exclusive.",
+      "popular" : true,
+      "items" : [ {
+        "id" : "no",
+        "title" : "No",
+        "value" : "No"
+      }, {
+        "id" : "yes",
+        "title" : "Yes",
+        "value" : "Yes"
+      } ]
+    } ]
+  }, {
+    "name" : "loopcharacteristics",
+    "properties" : [ {
+      "id" : "looptype",
+      "type" : "Choice",
+      "title" : "Loop type",
+      "value" : "None",
+      "description" : "Repeated activity execution (parallel or sequential) can be displayed through different loop types",
+      "popular" : false,
+      "items" : [ {
+        "id" : "c1",
+        "title" : "None",
+        "title_de" : "Keine Schleife",
+        "value" : "None",
+        "refToView" : "none"
+      }, {
+        "id" : "c2",
+        "title" : "Standard",
+        "title_de" : "Standard",
+        "value" : "Standard",
+        "icon" : "activity/list/looptype.standard.png",
+        "refToView" : "loop"
+      }, {
+        "id" : "c3",
+        "title" : "MI Parallel",
+        "title_de" : "MI parallel",
+        "value" : "Parallel",
+        "icon" : "activity/list/mi.parallel.png",
+        "refToView" : "parallel"
+      }, {
+        "id" : "c4",
+        "title" : "MI Sequential",
+        "title_de" : "MI sequentialisiert",
+        "value" : "Sequential",
+        "icon" : "activity/list/mi.sequential.png",
+        "refToView" : "sequential"
+      } ]
+    } ]
+  }, {
+    "name" : "executionlistenerdefinition",
+    "properties" : [ {
+      "id" : "executionlisteners",
+      "type" : "multiplecomplex",
+      "title" : "Execution listeners",
+      "value" : "",
+      "description" : "Listeners for an activity, process, sequence flow, start and end event.",
+      "popular" : true,
+      "complexItems" : [ {
+        "id" : "execution_listener_event_type",
+        "name" : "Event",
+        "type" : "Choice",
+        "value" : "",
+        "width" : 200,
+        "optional" : false,
+        "items" : [ {
+          "id" : "c1",
+          "title" : "Start",
+          "value" : "start",
+          "refToView" : ""
+        }, {
+          "id" : "c2",
+          "title" : "End",
+          "value" : "end",
+          "refToView" : ""
+        }, {
+          "id" : "c2",
+          "title" : "Take (only sequence flows)",
+          "value" : "take",
+          "refToView" : ""
+        } ]
+      }, {
+        "id" : "execution_listener_class",
+        "name" : "Class",
+        "type" : "String",
+        "description" : "Listener class.",
+        "value" : "",
+        "width" : 200,
+        "optional" : true
+      }, {
+        "id" : "execution_listener_expression",
+        "name" : "Expression",
+        "type" : "String",
+        "description" : "Listener expression definition.",
+        "value" : "",
+        "width" : 200,
+        "optional" : true
+      }, {
+        "id" : "execution_listener_delegate_expression",
+        "name" : "Delegate expression",
+        "type" : "String",
+        "description" : "Listener delegate expression definition.",
+        "value" : "",
+        "width" : 200,
+        "optional" : true
+      }, {
+        "id" : "execution_listener_fields",
+        "name" : "Fields",
+        "type" : "Complex",
+        "width" : 100,
+        "optional" : false,
+        "complexItems" : [ {
+          "id" : "execution_listener_field_name",
+          "name" : "Name",
+          "type" : "String",
+          "value" : "",
+          "width" : 200,
+          "optional" : false
+        }, {
+          "id" : "execution_listener_field_value",
+          "name" : "String value",
+          "type" : "String",
+          "value" : "",
+          "width" : 200,
+          "optional" : false
+        }, {
+          "id" : "execution_listener_field_expression",
+          "name" : "Expression",
+          "type" : "String",
+          "value" : "",
+          "width" : 200,
+          "optional" : false
+        } ]
+      } ]
+    } ]
+  }, {
+    "name" : "formdefinition",
+    "properties" : [ {
+      "id" : "formproperties",
+      "type" : "Complex",
+      "title" : "Form properties",
+      "value" : "",
+      "description" : "Definition of the form with a list of form properties",
+      "popular" : true,
+      "complexItems" : [ {
+        "id" : "formproperty_id",
+        "name" : "Id",
+        "name_de" : "Typ",
+        "type" : "String",
+        "description" : "This defines the expression used for the resource assignment.",
+        "description_de" : "Definiert den Ausdruck, der fr die Zordung von Ressourcen genutzt wird.",
+        "value" : "",
+        "width" : 150,
+        "optional" : false
+      }, {
+        "id" : "formproperty_name",
+        "name" : "Name",
+        "name_de" : "Typ",
+        "type" : "String",
+        "description" : "This defines the expression used for the resource assignment.",
+        "description_de" : "Definiert den Ausdruck, der fr die Zordung von Ressourcen genutzt wird.",
+        "value" : "",
+        "width" : 150,
+        "optional" : false
+      }, {
+        "id" : "formproperty_type",
+        "name" : "Type",
+        "name_de" : "Typ",
+        "type" : "Choice",
+        "value" : "",
+        "width" : 100,
+        "optional" : false,
+        "items" : [ {
+          "id" : "c1",
+          "title" : "String",
+          "title_de" : "String",
+          "value" : "string",
+          "refToView" : ""
+        }, {
+          "id" : "c2",
+          "title" : "Date",
+          "title_de" : "Date",
+          "value" : "date",
+          "refToView" : ""
+        }, {
+          "id" : "c3",
+          "title" : "Long",
+          "title_de" : "Long",
+          "value" : "long",
+          "refToView" : ""
+        }, {
+          "id" : "c3",
+          "title" : "Boolean",
+          "title_de" : "Boolean",
+          "value" : "boolean",
+          "refToView" : ""
+        } ]
+      }, {
+        "id" : "formproperty_expression",
+        "name" : "Expression",
+        "name_de" : "Typ",
+        "type" : "String",
+        "description" : "This defines the expression used for the resource assignment.",
+        "description_de" : "Definiert den Ausdruck, der fr die Zordung von Ressourcen genutzt wird.",
+        "value" : "",
+        "width" : 200,
+        "optional" : false
+      }, {
+        "id" : "formproperty_variable",
+        "name" : "Variable",
+        "name_de" : "Typ",
+        "type" : "String",
+        "description" : "This defines the expression used for the resource assignment.",
+        "description_de" : "Definiert den Ausdruck, der fr die Zordung von Ressourcen genutzt wird.",
+        "value" : "",
+        "width" : 200,
+        "optional" : false
+      } ]
+    } ]
+  }, {
+    "name" : "usertaskassignment",
+    "properties" : [ {
+      "id" : "usertaskassignment",
+      "type" : "Complex",
+      "title" : "Assignments",
+      "value" : "",
+      "description" : "Assignment definition for the user task",
+      "popular" : true,
+      "complexItems" : [ {
+        "id" : "assignment_type",
+        "name" : "Type",
+        "name_de" : "Typ",
+        "type" : "Choice",
+        "value" : "",
+        "width" : 100,
+        "optional" : false,
+        "items" : [ {
+          "id" : "c1",
+          "title" : "Assignee",
+          "title_de" : "Performer",
+          "value" : "assignee",
+          "refToView" : ""
+        }, {
+          "id" : "c2",
+          "title" : "Candidate users",
+          "title_de" : "HumanPerformer",
+          "value" : "candidateUsers",
+          "refToView" : ""
+        }, {
+          "id" : "c3",
+          "title" : "Candidate groups",
+          "title_de" : "PotentialOwner",
+          "value" : "candidateGroups",
+          "refToView" : ""
+        } ]
+      }, {
+        "id" : "resourceassignmentexpr",
+        "name" : "Resource assignment expression",
+        "name_de" : "Zuordnungs-Ausdruck",
+        "type" : "String",
+        "description" : "This defines the expression used for the resource assignment.",
+        "description_de" : "Definiert den Ausdruck, der fr die Zordung von Ressourcen genutzt wird.",
+        "value" : "",
+        "width" : 200,
+        "optional" : true
+      } ]
+    } ]
+  }, {
+    "name" : "usertaskbase",
+    "properties" : [ {
+      "id" : "formKeyDefinition",
+      "type" : "String",
+      "title" : "Form key",
+      "value" : "",
+      "description" : "Form key of the user task.",
+      "popular" : true
+    }, {
+      "id" : "duedateDefinition",
+      "type" : "String",
+      "title" : "Due date",
+      "value" : "",
+      "description" : "Due date of the user task.",
+      "popular" : true
+    }, {
+      "id" : "priorityDefinition",
+      "type" : "String",
+      "title" : "Priority",
+      "value" : "",
+      "description" : "Priority of the user task.",
+      "popular" : true
+    } ]
+  }, {
+    "name" : "tasklistenerdefinition",
+    "properties" : [ {
+      "id" : "tasklisteners",
+      "type" : "multiplecomplex",
+      "title" : "Task listeners",
+      "value" : "",
+      "description" : "Listeners for a user task",
+      "popular" : true,
+      "complexItems" : [ {
+        "id" : "task_listener_event_type",
+        "name" : "Event",
+        "type" : "Choice",
+        "value" : "",
+        "width" : 100,
+        "optional" : false,
+        "items" : [ {
+          "id" : "c1",
+          "title" : "Create",
+          "value" : "create",
+          "refToView" : ""
+        }, {
+          "id" : "c2",
+          "title" : "Assignment",
+          "value" : "assignment",
+          "refToView" : ""
+        }, {
+          "id" : "c3",
+          "title" : "Complete",
+          "value" : "complete",
+          "refToView" : ""
+        } ]
+      }, {
+        "id" : "task_listener_class",
+        "name" : "Class",
+        "type" : "String",
+        "description" : "Listener class.",
+        "value" : "",
+        "width" : 200,
+        "optional" : true
+      }, {
+        "id" : "task_listener_expression",
+        "name" : "Expression",
+        "type" : "String",
+        "description" : "Listener expression definition.",
+        "value" : "",
+        "width" : 200,
+        "optional" : true
+      }, {
+        "id" : "task_listener_delegate_expression",
+        "name" : "Delegate expression",
+        "type" : "String",
+        "description" : "Listener delegate expression definition.",
+        "value" : "",
+        "width" : 200,
+        "optional" : true
+      }, {
+        "id" : "task_listener_fields",
+        "name" : "Fields",
+        "type" : "Complex",
+        "width" : 100,
+        "optional" : false,
+        "complexItems" : [ {
+          "id" : "task_listener_field_name",
+          "name" : "Name",
+          "type" : "String",
+          "value" : "",
+          "width" : 200,
+          "optional" : false
+        }, {
+          "id" : "task_listener_field_value",
+          "name" : "String value",
+          "type" : "String",
+          "value" : "",
+          "width" : 200,
+          "optional" : false
+        }, {
+          "id" : "task_listener_field_expression",
+          "name" : "Expression",
+          "type" : "String",
+          "value" : "",
+          "width" : 200,
+          "optional" : false
+        } ]
+      } ]
+    } ]
+  }, {
+    "name" : "servicetaskbase",
+    "properties" : [ {
+      "id" : "servicetaskclass",
+      "type" : "String",
+      "title" : "Class",
+      "value" : "",
+      "description" : "Class that implements the service task logic.",
+      "popular" : true
+    }, {
+      "id" : "servicetaskexpression",
+      "type" : "String",
+      "title" : "Expression",
+      "value" : "",
+      "description" : "Service task logic defined with an expression.",
+      "popular" : true
+    }, {
+      "id" : "servicetaskdelegateexpression",
+      "type" : "String",
+      "title" : "Delegate expression",
+      "value" : "",
+      "description" : "Service task logic defined with a delegate expression.",
+      "popular" : true
+    }, {
+      "id" : "servicetaskresultvariable",
+      "type" : "String",
+      "title" : "Result variable name",
+      "value" : "",
+      "description" : "Process variable name to store the service task result.",
+      "popular" : true
+    }, {
+      "id" : "servicetaskfields",
+      "type" : "Complex",
+      "title" : "Class fields",
+      "value" : "",
+      "description" : "Field extensions",
+      "popular" : true,
+      "complexItems" : [ {
+        "id" : "servicetask_field_name",
+        "name" : "Name",
+        "type" : "String",
+        "value" : "",
+        "width" : 200,
+        "optional" : false
+      }, {
+        "id" : "servicetask_field_value",
+        "name" : "String value",
+        "type" : "String",
+        "value" : "",
+        "width" : 200,
+        "optional" : false
+      }, {
+        "id" : "servicetask_field_expression",
+        "name" : "Expression",
+        "type" : "String",
+        "value" : "",
+        "width" : 200,
+        "optional" : false
+      } ]
+    } ]
+  }, {
+    "name" : "scripttaskbase",
+    "properties" : [ {
+      "id" : "scriptformat",
+      "type" : "String",
+      "title" : "Script format",
+      "value" : "",
+      "description" : "Script format of the script task.",
+      "popular" : true
+    }, {
+      "id" : "scripttext",
+      "type" : "Text",
+      "title" : "Script",
+      "value" : "",
+      "description" : "Script text of the script task.",
+      "popular" : true
+    } ]
+  }, {
+    "name" : "sequenceflowbase",
+    "properties" : [ {
+      "id" : "defaultflow",
+      "type" : "Choice",
+      "title" : "Default flow",
+      "value" : "None",
+      "description" : "Define the sequence flow as default",
+      "popular" : true,
+      "items" : [ {
+        "id" : "none",
+        "title" : "Standard",
+        "title_de" : "Standard",
+        "value" : "None"
+      }, {
+        "id" : "default",
+        "title" : "Default Flow",
+        "title_de" : "Standardfluss",
+        "value" : "Default",
+        "icon" : "connector/list/type.default.png",
+        "refToView" : "default"
+      } ]
+    }, {
+      "id" : "conditionalflow",
+      "type" : "Choice",
+      "title" : "Conditional flow",
+      "value" : "None",
+      "description" : "Define the sequence flow with a condition",
+      "popular" : true,
+      "items" : [ {
+        "id" : "none",
+        "title" : "Standard",
+        "title_de" : "Standard",
+        "value" : "None"
+      }, {
+        "id" : "default",
+        "title" : "Conditional Flow",
+        "value" : "Conditional",
+        "icon" : "connector/list/type.expression.png",
+        "refToView" : "conditional"
+      } ]
+    } ]
+  } ],
+  "stencils" : [ {
+    "type" : "node",
+    "id" : "BPMNDiagram",
+    "title" : "BPMN-Diagram",
+    "description" : "A BPMN 2.0 diagram.",
+    "view" : "diagram.svg",
+    "icon" : "diagram.png",
+    "groups" : [ "Diagram" ],
+    "mayBeRoot" : true,
+    "hide" : true,
+    "propertyPackages" : [ "baseAttributes", "executionlistenerdefinition", "diagrambase" ],
+    "roles" : [ ]
+  }, {
+    "type" : "node",
+    "id" : "StartNoneEvent",
+    "title" : "Start event",
+    "description" : "A start event without a specific trigger",
+    "view" : "startevent/none.svg",
+    "icon" : "startevent/none.png",
+    "groups" : [ "Start Events" ],
+    "propertyPackages" : [ "baseAttributes", "executionlistenerdefinition", "formdefinition", "nonestarteventbase" ],
+    "roles" : [ "Startevents_all", "sequence_start", "StartEventsMorph", "all" ]
+  }, {
+    "type" : "node",
+    "id" : "StartTimerEvent",
+    "title" : "Start timer event",
+    "description" : "A start event with a timer trigger",
+    "view" : "startevent/timer.svg",
+    "icon" : "startevent/timer.png",
+    "groups" : [ "Start Events" ],
+    "propertyPackages" : [ "baseAttributes", "executionlistenerdefinition", "timerdefinition" ],
+    "roles" : [ "Startevents_all", "sequence_start", "StartEventsMorph", "all" ]
+  }, {
+    "type" : "node",
+    "id" : "StartMessageEvent",
+    "title" : "Start message event",
+    "description" : "A start event with a message trigger",
+    "view" : "startevent/message.svg",
+    "icon" : "startevent/message.png",
+    "groups" : [ "Start Events" ],
+    "propertyPackages" : [ "messagerefdefinition", "baseAttributes", "executionlistenerdefinition" ],
+    "roles" : [ "Startevents_all", "sequence_start", "StartEventsMorph", "all" ]
+  }, {
+    "type" : "node",
+    "id" : "StartSignalEvent",
+    "title" : "Start signal event",
+    "description" : "A start event with a signal trigger",
+    "view" : "startevent/signal.svg",
+    "icon" : "startevent/signal.png",
+    "groups" : [ "Start Events" ],
+    "propertyPackages" : [ "baseAttributes", "executionlistenerdefinition", "signalrefdefinition" ],
+    "roles" : [ "Startevents_all", "sequence_start", "StartEventsMorph", "all" ]
+  }, {
+    "type" : "node",
+    "id" : "StartErrorEvent",
+    "title" : "Start error event",
+    "description" : "A start event that catches a thrown BPMN error",
+    "view" : "startevent/error.svg",
+    "icon" : "startevent/error.png",
+    "groups" : [ "Start Events" ],
+    "propertyPackages" : [ "baseAttributes", "executionlistenerdefinition", "errorrefdefinition" ],
+    "roles" : [ "Startevents_all", "sequence_start", "StartEventsMorph", "all" ]
+  }, {
+    "type" : "node",
+    "id" : "UserTask",
+    "title" : "User task",
+    "description" : "A manual task assigned to a specific person",
+    "view" : "activity/usertask.svg",
+    "icon" : "activity/list/type.user.png",
+    "groups" : [ "Activities" ],
+    "propertyPackages" : [ "usertaskassignment", "usertaskbase", "baseAttributes", "executionlistenerdefinition", "tasklistenerdefinition", "loopcharacteristics", "activityasyncdefinition", "formdefinition", "activity" ],
+    "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
+  }, {
+    "type" : "node",
+    "id" : "ServiceTask",
+    "title" : "Service task",
+    "description" : "An automatic task with service logic",
+    "view" : "activity/servicetask.svg",
+    "icon" : "activity/list/type.service.png",
+    "groups" : [ "Activities" ],
+    "propertyPackages" : [ "baseAttributes", "executionlistenerdefinition", "loopcharacteristics", "activityasyncdefinition", "servicetaskbase", "activity" ],
+    "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
+  }, {
+    "type" : "node",
+    "id" : "ScriptTask",
+    "title" : "Script task",
+    "description" : "An automatic task with script logic",
+    "view" : "activity/scripttask.svg",
+    "icon" : "activity/list/type.script.png",
+    "groups" : [ "Activities" ],
+    "propertyPackages" : [ "baseAttributes", "executionlistenerdefinition", "loopcharacteristics", "activityasyncdefinition", "scripttaskbase", "activity" ],
+    "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
+  }, {
+    "type" : "node",
+    "id" : "BusinessRule",
+    "title" : "Business rule task",
+    "description" : "An automatic task with rule logic",
+    "view" : "activity/businessruletask.svg",
+    "icon" : "activity/list/type.business.rule.png",
+    "groups" : [ "Activities" ],
+    "propertyPackages" : [ "baseAttributes", "executionlistenerdefinition", "loopcharacteristics", "activityasyncdefinition", "activity" ],
+    "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
+  }, {
+    "type" : "node",
+    "id" : "ReceiveTask",
+    "title" : "Receive task",
+    "description" : "An task that waits for a signal",
+    "view" : "activity/receivetask.svg",
+    "icon" : "activity/list/type.receive.png",
+    "groups" : [ "Activities" ],
+    "propertyPackages" : [ "baseAttributes", "executionlistenerdefinition", "loopcharacteristics", "activityasyncdefinition", "activity" ],
+    "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
+  }, {
+    "type" : "node",
+    "id" : "SendTask",
+    "title" : "Send task",
+    "description" : "An automatic task that sends a message",
+    "view" : "activity/sendtask.svg",
+    "icon" : "activity/list/type.send.png",
+    "groups" : [ "Activities" ],
+    "propertyPackages" : [ "baseAttributes", "executionlistenerdefinition", "loopcharacteristics", "activityasyncdefinition", "activity" ],
+    "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
+  }, {
+    "type" : "node",
+    "id" : "ManualTask",
+    "title" : "Manual task",
+    "description" : "An automatic task with no logic",
+    "view" : "activity/manualtask.svg",
+    "icon" : "activity/list/type.manual.png",
+    "groups" : [ "Activities" ],
+    "propertyPackages" : [ "baseAttributes", "executionlistenerdefinition", "loopcharacteristics", "activityasyncdefinition", "activity" ],
+    "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
+  }, {
+    "type" : "node",
+    "id" : "SubProcess",
+    "title" : "Sub process",
+    "description" : "A sub process scope",
+    "view" : "activity/subprocess.expanded.svg",
+    "icon" : "activity/expanded.subprocess.png",
+    "groups" : [ "Structural" ],
+    "propertyPackages" : [ "baseAttributes" ],
+    "roles" : [ "sequence_start", "Activity", "sequence_end", "all" ]
+  }, {
+    "type" : "node",
+    "id" : "CallActivity",
+    "title" : "Call activity",
+    "description" : "A call activity",
+    "view" : "activity/callactivity.svg",
+    "icon" : "activity/task.png",
+    "groups" : [ "Structural" ],
+    "propertyPackages" : [ "baseAttributes", "loopcharacteristics", "activity" ],
+    "roles" : [ "sequence_start", "Activity", "sequence_end", "all" ]
+  }, {
+    "type" : "node",
+    "id" : "ExclusiveGateway",
+    "title" : "Exclusive gateway",
+    "description" : "A choice gateway",
+    "view" : "gateway/exclusive.databased.svg",
+    "icon" : "gateway/exclusive.databased.png",
+    "groups" : [ "Gateways" ],
+    "propertyPackages" : [ "baseAttributes" ],
+    "roles" : [ "sequence_start", "sequence_end", "GatewaysMorph", "all" ]
+  }, {
+    "type" : "node",
+    "id" : "ParallelGateway",
+    "title" : "Parallel gateway",
+    "description" : "A parallel gateway",
+    "view" : "gateway/parallel.svg",
+    "icon" : "gateway/parallel.png",
+    "groups" : [ "Gateways" ],
+    "propertyPackages" : [ "baseAttributes" ],
+    "roles" : [ "sequence_start", "sequence_end", "GatewaysMorph", "all" ]
+  }, {
+    "type" : "node",
+    "id" : "InclusiveGateway",
+    "title" : "Inclusive gateway",
+    "description" : "An inclusive gateway",
+    "view" : "gateway/inclusive.svg",
+    "icon" : "gateway/inclusive.png",
+    "groups" : [ "Gateways" ],
+    "propertyPackages" : [ "baseAttributes" ],
+    "roles" : [ "sequence_start", "sequence_end", "GatewaysMorph", "all" ]
+  }, {
+    "type" : "node",
+    "id" : "EventGateway",
+    "title" : "Event gateway",
+    "description" : "An event gateway",
+    "view" : "gateway/eventbased.svg",
+    "icon" : "gateway/eventbased.png",
+    "groups" : [ "Gateways" ],
+    "propertyPackages" : [ "baseAttributes" ],
+    "roles" : [ "sequence_start", "sequence_end", "GatewaysMorph", "all" ]
+  }, {
+    "type" : "node",
+    "id" : "BoundaryErrorEvent",
+    "title" : "Boundary error event",
+    "description" : "A boundary event that catches a BPMN error",
+    "view" : "intermediateevent/error.svg",
+    "icon" : "catching/error.png",
+    "groups" : [ "Boundary Events" ],
+    "propertyPackages" : [ "baseAttributes", "errorrefdefinition" ],
+    "roles" : [ "sequence_start", "BoundaryEventsMorph", "IntermediateEventOnActivityBoundary" ]
+  }, {
+    "type" : "node",
+    "id" : "BoundaryTimerEvent",
+    "title" : "Boundary timer event",
+    "description" : "A boundary event with a timer trigger",
+    "view" : "intermediateevent/timer.svg",
+    "icon" : "catching/timer.png",
+    "groups" : [ "Boundary Events" ],
+    "propertyPackages" : [ "baseAttributes", "timerdefinition" ],
+    "roles" : [ "sequence_start", "BoundaryEventsMorph", "IntermediateEventOnActivityBoundary" ]
+  }, {
+    "type" : "node",
+    "id" : "BoundarySignalEvent",
+    "title" : "Boundary signal event",
+    "description" : "A boundary event with a signal trigger",
+    "view" : "intermediateevent/signal.catching.svg",
+    "icon" : "catching/signal.png",
+    "groups" : [ "Boundary Events" ],
+    "propertyPackages" : [ "baseAttributes", "signalrefdefinition" ],
+    "roles" : [ "sequence_start", "BoundaryEventsMorph", "IntermediateEventOnActivityBoundary" ]
+  }, {
+    "type" : "node",
+    "id" : "CatchTimerEvent",
+    "title" : "Intermediate timer catching event",
+    "description" : "An intermediate catching event with a timer trigger",
+    "view" : "intermediateevent/timer.svg",
+    "icon" : "catching/timer.png",
+    "groups" : [ "Intermediate Catching Events" ],
+    "propertyPackages" : [ "baseAttributes", "executionlistenerdefinition", "timerdefinition" ],
+    "roles" : [ "sequence_start", "sequence_end", "CatchEventsMorph", "all" ]
+  }, {
+    "type" : "node",
+    "id" : "CatchSignalEvent",
+    "title" : "Intermediate signal catching event",
+    "description" : "An intermediate catching event with a signal trigger",
+    "view" : "intermediateevent/signal.catching.svg",
+    "icon" : "catching/signal.png",
+    "groups" : [ "Intermediate Catching Events" ],
+    "propertyPackages" : [ "baseAttributes", "executionlistenerdefinition", "signalrefdefinition" ],
+    "roles" : [ "sequence_start", "sequence_end", "CatchEventsMorph", "all" ]
+  }, {
+    "type" : "node",
+    "id" : "CatchMessageEvent",
+    "title" : "Intermediate message catching event",
+    "description" : "An intermediate catching event with a message trigger",
+    "view" : "intermediateevent/message.catching.svg",
+    "icon" : "catching/message.png",
+    "groups" : [ "Intermediate Catching Events" ],
+    "propertyPackages" : [ "messagerefdefinition", "baseAttributes", "executionlistenerdefinition" ],
+    "roles" : [ "sequence_start", "sequence_end", "CatchEventsMorph", "all" ]
+  }, {
+    "type" : "node",
+    "id" : "ThrowNoneEvent",
+    "title" : "Intermediate none throwing event",
+    "description" : "An intermediate event without a specific trigger",
+    "view" : "intermediateevent/none.svg",
+    "icon" : "throwing/none.png",
+    "groups" : [ "Intermediate Throwing Events" ],
+    "propertyPackages" : [ "baseAttributes", "executionlistenerdefinition" ],
+    "roles" : [ "sequence_start", "ThrowEventsMorph", "sequence_end", "all" ]
+  }, {
+    "type" : "node",
+    "id" : "ThrowSignalEvent",
+    "title" : "Intermediate signal throwing event",
+    "description" : "An intermediate event with a signal trigger",
+    "view" : "intermediateevent/signal.throwing.svg",
+    "icon" : "throwing/signal.png",
+    "groups" : [ "Intermediate Throwing Events" ],
+    "propertyPackages" : [ "baseAttributes", "executionlistenerdefinition", "signalrefdefinition" ],
+    "roles" : [ "sequence_start", "ThrowEventsMorph", "sequence_end", "all" ]
+  }, {
+    "type" : "node",
+    "id" : "EndNoneEvent",
+    "title" : "End event",
+    "description" : "An end event without a specific trigger",
+    "view" : "endevent/none.svg",
+    "icon" : "endevent/none.png",
+    "groups" : [ "End Events" ],
+    "propertyPackages" : [ "baseAttributes", "executionlistenerdefinition" ],
+    "roles" : [ "EndEventsMorph", "sequence_end", "all" ]
+  }, {
+    "type" : "node",
+    "id" : "EndErrorEvent",
+    "title" : "End error event",
+    "description" : "An end event that throws an error event",
+    "view" : "endevent/error.svg",
+    "icon" : "endevent/error.png",
+    "groups" : [ "End Events" ],
+    "propertyPackages" : [ "baseAttributes", "executionlistenerdefinition", "errorrefdefinition" ],
+    "roles" : [ "EndEventsMorph", "sequence_end", "all" ]
+  }, {
+    "type" : "edge",
+    "id" : "SequenceFlow",
+    "title" : "Sequence flow",
+    "description" : "Sequence flow defines the execution order of activities.",
+    "view" : "connector/sequenceflow.svg",
+    "icon" : "connector/sequenceflow.png",
+    "groups" : [ "Connecting Objects" ],
+    "layout" : [ {
+      "type" : "layout.bpmn2_0.sequenceflow"
+    } ],
+    "propertyPackages" : [ "baseAttributes", "sequenceflowbase" ],
+    "roles" : [ "ConnectingObjectsMorph", "all" ]
+  } ],
+  "rules" : {
+    "cardinalityRules" : [ {
+      "role" : "Startevents_all",
+      "incomingEdges" : [ {
+        "role" : "SequenceFlow",
+        "maximum" : 0
+      } ]
+    }, {
+      "role" : "Endevents_all",
+      "outgoingEdges" : [ {
+        "role" : "SequenceFlow",
+        "maximum" : 0
+      } ]
+    } ],
+    "connectionRules" : [ {
+      "role" : "SequenceFlow",
+      "connects" : [ {
+        "from" : "sequence_start",
+        "to" : [ "sequence_end" ]
+      } ]
+    }, {
+      "role" : "IntermediateEventOnActivityBoundary",
+      "connects" : [ {
+        "from" : "Activity",
+        "to" : [ "IntermediateEventOnActivityBoundary" ]
+      } ]
+    } ],
+    "containmentRules" : [ {
+      "role" : "BPMNDiagram",
+      "contains" : [ "all" ]
+    }, {
+      "role" : "SubProcess",
+      "contains" : [ "sequence_start", "sequence_end", "from_task_event", "to_task_event", "EventSubprocess", "TextAnnotation" ]
+    } ],
+    "morphingRules" : [ {
+      "role" : "ActivitiesMorph",
+      "baseMorphs" : [ "UserTask" ],
+      "preserveBounds" : true
+    }, {
+      "role" : "GatewaysMorph",
+      "baseMorphs" : [ "ExclusiveGateway" ]
+    }, {
+      "role" : "StartEventsMorph",
+      "baseMorphs" : [ "StartNoneEvent" ]
+    }, {
+      "role" : "EndEventsMorph",
+      "baseMorphs" : [ "StartNoneEvent" ]
+    } ]
+  }
+}

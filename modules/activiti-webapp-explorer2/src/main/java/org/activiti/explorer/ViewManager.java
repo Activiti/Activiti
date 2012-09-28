@@ -67,9 +67,13 @@ public interface ViewManager {
   
   // Process
   
-  void showProcessDefinitionPage();
+  void showDeployedProcessDefinitionPage();
   
-  void showProcessDefinitionPage(String processDefinitionId);
+  void showDeployedProcessDefinitionPage(String processDefinitionId);
+  
+  void showEditorProcessDefinitionPage();
+  
+  void showEditorProcessDefinitionPage(String processDefinitionId);
   
   void showMyProcessInstancesPage();
   

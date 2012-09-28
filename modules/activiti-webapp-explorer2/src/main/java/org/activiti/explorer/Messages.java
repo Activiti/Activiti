@@ -183,7 +183,8 @@ public interface Messages {
   
   // Process menu
   static final String PROCESS_MENU_MY_INSTANCES = "process.menu.my.instances";
-  static final String PROCESS_MENU_DEFINITIONS = "process.menu.definitions";
+  static final String PROCESS_MENU_DEPLOYED_DEFINITIONS = "process.menu.deployed.definitions";
+  static final String PROCESS_MENU_EDITOR_DEFINITIONS = "process.menu.editor.definitions";
   static final String PROCESS_MENU_INSTANCES = "process.menu.instances";
   
   // Process page
@@ -193,6 +194,11 @@ public interface Messages {
   static final String PROCESS_HEADER_DIAGRAM = "process.header.diagram";
   static final String PROCESS_NO_DIAGRAM = "process.no.diagram";
   static final String PROCESS_START = "process.start";
+  static final String PROCESS_EDIT = "process.edit";
+  static final String PROCESS_NEW = "process.new";
+  static final String PROCESS_DELETE = "process.delete";
+  static final String PROCESS_DEPLOY = "process.deploy";
+  static final String PROCESS_CONVERT = "process.convert";
   static final String PROCESS_INSTANCE_DELETE = "process.instance.delete";
   static final String PROCESS_INSTANCE_DELETE_POPUP_TITLE = "process.instance.delete.popup.title";
   static final String PROCESS_INSTANCE_DELETE_POPUP_DESCRIPTION = "process.instance.delete.popup.description";
@@ -211,6 +217,14 @@ public interface Messages {
   static final String PROCESS_INSTANCE_ACTIONS = "process.instance.actions";
   static final String PROCESS_INSTANCE_VARIABLE_NAME = "process.instance.variable.name";
   static final String PROCESS_INSTANCE_VARIABLE_VALUE = "process.instance.variable.value";
+  static final String PROCESS_CONVERT_POPUP_CAPTION = "process.convert.popup.caption";
+  static final String PROCESS_CONVERT_POPUP_MESSAGE = "process.convert.popup.message";
+  static final String PROCESS_CONVERT_POPUP_CONVERT_BUTTON = "process.convert.popup.convert.button";
+  static final String PROCESS_NEW_POPUP_CAPTION = "process.new.popup.caption";
+  static final String PROCESS_NEW_POPUP_CREATE_BUTTON = "process.new.popup.create.button";
+  static final String PROCESS_DELETE_POPUP_CAPTION = "process.delete.popup.caption";
+  static final String PROCESS_DELETE_POPUP_MESSAGE = "process.delete.popup.message";
+  static final String PROCESS_DELETE_POPUP_DELETE_BUTTON = "process.delete.popup.delete.button";
   
   // Management menu
   static final String MGMT_MENU_DATABASE = "management.menu.database";

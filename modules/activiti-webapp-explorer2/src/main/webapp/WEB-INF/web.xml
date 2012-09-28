@@ -21,15 +21,60 @@
     <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
   </listener>
   
+  <listener>
+    <listener-class>org.activiti.editor.servlet.listener.EntityManagerListener</listener-class>
+  </listener>
+  
+  <listener>
+    <listener-class>org.activiti.editor.test.listener.TestDataListener</listener-class>
+  </listener>
+  
 	<servlet>
 		<servlet-name>Vaadin Application Servlet</servlet-name>
 		<servlet-class>org.activiti.explorer.servlet.ExplorerApplicationServlet</servlet-class>
 	</servlet>
+  
+  <!-- Restlet adapter -->  
+  <servlet>  
+    <servlet-name>RestletServlet</servlet-name>  
+    <servlet-class>org.restlet.ext.servlet.ServerServlet</servlet-class>
+    <init-param>
+      <!-- Application class name -->
+      <param-name>org.restlet.application</param-name>
+      <param-value>org.activiti.editor.rest.application.ActivitiRestApplication</param-value>
+    </init-param>
+  </servlet>
 	
 	<servlet-mapping>
 		<servlet-name>Vaadin Application Servlet</servlet-name>
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>default</servlet-name>
+    <url-pattern>/api/*</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>default</servlet-name>
+    <url-pattern>/editor/*</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>default</servlet-name>
+    <url-pattern>/explorer/*</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>default</servlet-name>
+    <url-pattern>/libs/*</url-pattern>
+  </servlet-mapping>
+  
+  <!-- Catch all service requests -->  
+  <servlet-mapping>  
+    <servlet-name>RestletServlet</servlet-name>  
+    <url-pattern>/service/*</url-pattern>  
+  </servlet-mapping>
 
 	<!-- Session timeout on one day -->
 	<session-config>

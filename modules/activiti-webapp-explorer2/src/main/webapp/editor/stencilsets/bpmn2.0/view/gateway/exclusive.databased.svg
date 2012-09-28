@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:oryx="http://www.b3mn.org/oryx"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.0"
+   width="40"
+   height="40">
+  <defs
+     id="defs4" />
+  <oryx:magnets>
+    <oryx:magnet
+       oryx:default="yes"
+       oryx:cy="16"
+       oryx:cx="16" />
+  </oryx:magnets>					
+  <g>
+  
+    <defs>
+		<radialGradient id="background" cx="10%" cy="10%" r="100%" fx="10%" fy="10%">
+			<stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+			<stop id="fill_el" offset="100%" stop-color="#ffffff" stop-opacity="1"/>
+		</radialGradient>
+	</defs>
+	
+    <path
+       d="M -4.5,16 L 16,-4.5 L 35.5,16 L 16,35.5z"
+       id="bg_frame"
+       fill="url(#background) white"
+       stroke="black"
+       style="stroke-width:1" />
+    <g
+       id="cross">
+      <path
+      	id="crosspath"
+      	stroke="black"
+      	fill="black"
+        d="M 8.75,7.55 L 12.75,7.55 L 23.15,24.45 L 19.25,24.45 z"
+        style="stroke-width:1" />
+      <path
+      	id="crosspath2"
+      	stroke="black"
+      	fill="black"
+        d="M 8.75,24.45 L 19.25,7.55 L 23.15,7.55 L 12.75,24.45 z"
+        style="stroke-width:1" />
+    </g>
+	
+	<text id="text_name" x="26" y="26" oryx:align="left top"/>
+	
+  </g>
+</svg>

@@ -4,15 +4,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<name>Activiti - OSGi</name>
-	<groupId>org.activiti</groupId>
 	<artifactId>activiti-osgi</artifactId>
-    <packaging>bundle</packaging>
+  <packaging>bundle</packaging>
 
 	<parent>
 		<groupId>org.activiti</groupId>
 		<artifactId>activiti-root</artifactId>
 		<relativePath>../..</relativePath>
-        <version>5.11-SNAPSHOT</version>
+    <version>5.11-SNAPSHOT</version>
 	</parent>
 
 	<build>
@@ -34,19 +33,16 @@
         <dependency>
           <groupId>org.osgi</groupId>
           <artifactId>org.osgi.core</artifactId>
-          <version>4.2.0</version>
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.osgi</groupId>
           <artifactId>org.osgi.compendium</artifactId>
-          <version>4.2.0</version>
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.felix</groupId>
           <artifactId>org.apache.felix.fileinstall</artifactId>
-          <version>3.0.2</version>
           <optional>true</optional>
         </dependency>
 	</dependencies>

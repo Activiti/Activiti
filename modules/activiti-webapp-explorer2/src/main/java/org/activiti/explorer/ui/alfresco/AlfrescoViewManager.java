@@ -29,12 +29,12 @@ public class AlfrescoViewManager extends DefaultViewManager {
   }
   
   @Override
-  public void showProcessDefinitionPage() {
+  public void showDeployedProcessDefinitionPage() {
     switchView(new AlfrescoProcessDefinitionPage(), ViewManager.MAIN_NAVIGATION_PROCESS, AlfrescoManagementMenuBar.ENTRY_PROCESS_DEFINITIONS);
   }
   
   @Override
-  public void showProcessDefinitionPage(String processDefinitionId) {
+  public void showDeployedProcessDefinitionPage(String processDefinitionId) {
     switchView(new AlfrescoProcessDefinitionPage(processDefinitionId), ViewManager.MAIN_NAVIGATION_PROCESS, AlfrescoManagementMenuBar.ENTRY_PROCESS_DEFINITIONS);
   }
   

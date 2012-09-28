@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<svg 
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:svg="http://www.w3.org/2000/svg"
+    xmlns:oryx="http://www.b3mn.org/oryx"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    
+    width="60px" 
+    height="60px"
+    version="1.0">
+  <g>	
+    <defs>
+        <radialGradient id="background" cx="30%" cy="30%" r="50%" fx="0%" fy="0%">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="1"></stop>
+            <stop offset="100%" stop-color="#ffffff" stop-opacity="1" id="fill_el"></stop>
+        </radialGradient>
+    </defs>
+		
+	<path id="bg_frame" fill="url(#background) #ffffff" stroke="#010101" d="M7.757,58.934h51.667V41.758c0,0-5.114-8.586-15.527-11.328H24.751
+        C12.313,33.384,7.575,43.037,7.575,43.037L7.757,58.934z"/>
+        	
+    <path id="path1" fill="none" stroke="#010101" d="M18.49,49.799v8.771"/>
+	
+    <path id="path2" fill="none" stroke="#010101" d="M48.051,49.799v8.771"/>
+	
+    <circle id="circle1" fill="#010101" stroke="#010101" cx="33.845" cy="18.916" r="11.879"/>
+	
+    <path id="bg_frame2" fill="#F1F0F1" stroke="#010101" d="M22.972,21.474c0,0,6.17-5.319,11.788-3.962C40.379,18.87,44.9,15.994,44.9,15.994
+        c0.549,3.701,0.093,8.222-3.199,12.243c0,0,2.377,1.644,2.377,3.289c0,1.647,0.272,4.111-2.193,6.58
+        c-2.465,2.465-12.061,2.741-14.801,0c-2.741-2.742-2.741-4.02-2.741-5.849c0-1.828,1.278-2.74,2.741-4.202
+        C24.708,26.775,21.604,22.845,22.972,21.474z"/>
+        	
+    <text font-size="12" id="text_name" x="34" y="66" oryx:align="center top" stroke="black" />        	
+  </g>
+</svg>

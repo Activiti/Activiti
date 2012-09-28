@@ -31,9 +31,9 @@ public class ProcessNavigator implements Navigator {
     String processDefinitionId = uriFragment.getUriPart(1);
     
     if(processDefinitionId != null) {
-      ExplorerApp.get().getViewManager().showProcessDefinitionPage(processDefinitionId);
+      ExplorerApp.get().getViewManager().showDeployedProcessDefinitionPage(processDefinitionId);
     } else {
-      ExplorerApp.get().getViewManager().showProcessDefinitionPage();
+      ExplorerApp.get().getViewManager().showDeployedProcessDefinitionPage();
     }
   }
 

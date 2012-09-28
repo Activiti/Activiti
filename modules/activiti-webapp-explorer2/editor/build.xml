@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="Editor" default="js.compress">
+
+	<!-- Editor properties *************************************************** -->
+	<property name="root" value="." />
+	<property name="src" value="${root}/scripts" />
+	<property name="data" value="${root}/data" />
+	<property name="destdir" value="../src/main/webapp/editor" />
+	<property name="target" value="target" />
+	<property name="temp" value="temp" />
+
+	<!-- parses plugin xml-->
+	<xmlproperty file="../src/main/resources/plugins.xml" collapseAttributes="true" />
+
+	<!-- Main targets ****************************************************** -->
+	<target name="js.concat">
+
+		<concat destfile='${destdir}/oryx.debug.js'>
+			<filelist id="coresourcefiles" dir="${src}">
+				<file name='utils.js' />
+				<file name='kickstart.js' />
+				<file name='erdfparser.js' />
+				<file name='datamanager.js' />
+				<file name='clazz.js' />
+				<file name='server.js' />
+				<file name='config.js' />
+				<file name='editor.js' />
+				<file name='Core/SVG/editpathhandler.js' />
+				<file name='Core/SVG/minmaxpathhandler.js' />
+				<file name='Core/SVG/pointspathhandler.js' />
+				<file name='Core/SVG/svgmarker.js' />
+				<file name='Core/SVG/svgshape.js' />
+				<file name='Core/SVG/label.js' />
+				<file name='Core/Math/math.js' />
+				<file name='Core/StencilSet/stencil.js' />
+				<file name='Core/StencilSet/property.js' />
+				<file name='Core/StencilSet/propertyitem.js' />
+				<file name='Core/StencilSet/complexpropertyitem.js' />
+				<file name='Core/StencilSet/rules.js' />
+				<file name='Core/StencilSet/stencilset.js' />
+				<file name='Core/StencilSet/stencilsets.js' />
+				<file name='Core/command.js' />
+				<file name='Core/bounds.js' />
+				<file name='Core/uiobject.js' />
+				<file name='Core/abstractshape.js' />
+				<file name='Core/canvas.js' />
+				<file name='Core/main.js' />
+				<file name='Core/svgDrag.js' />
+				<file name='Core/shape.js' />
+				<file name='Core/Controls/control.js' />
+				<file name='Core/Controls/docker.js' />
+				<file name='Core/Controls/magnet.js' />
+				<file name='Core/node.js' />
+				<file name='Core/edge.js' />
+				<file name='Core/abstractPlugin.js' />
+				<file name='Core/abstractLayouter.js' />
+        <file name='imageviewer.js' />
+			</filelist>
+			<!-- load all sources from plugins defined in the plugins.xml-->
+			<filelist dir="${src}/Plugins/" files="${config.plugins.plugin.source}" />
+		</concat>
+	</target>
+
+	<target name='js.compress' depends="js.concat">
+
+    <mkdir dir="${temp}" />
+		<tempfile property="compress.temp" suffix=".js" prefix="compressed" destDir="${temp}" />
+
+		<java dir="${temp}" jar="lib/yuicompressor-2.4.2.jar" fork="true" failonerror="true" output='${compress.temp}'>
+			<arg file='${destdir}/oryx.debug.js' />
+		</java>
+
+		<concat destfile='${destdir}/oryx.js'>
+			<fileset file="LICENSE" />
+			<fileset file="${compress.temp}" />
+		</concat>
+
+		<delete file='${compress.temp}' />
+  
+    <delete dir="${temp}" />
+
+	</target>
+	
+</project>

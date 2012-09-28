@@ -194,7 +194,7 @@ public class MainMenuBar extends HorizontalLayout {
   
   private class ShowProcessDefinitionsClickListener implements ClickListener {
     public void buttonClick(ClickEvent event) {
-      ExplorerApp.get().getViewManager().showProcessDefinitionPage();
+      ExplorerApp.get().getViewManager().showDeployedProcessDefinitionPage();
     }
   }
   

@@ -153,7 +153,7 @@ public class DeploymentDetailPanel extends DetailPanel {
         Button processDefinitionButton = new Button(getProcessDisplayName(processDefinition));
         processDefinitionButton.addListener(new ClickListener() {
           public void buttonClick(ClickEvent event) {
-            viewManager.showProcessDefinitionPage(processDefinition.getId());
+            viewManager.showDeployedProcessDefinitionPage(processDefinition.getId());
           }
         });
         processDefinitionButton.addStyleName(Reindeer.BUTTON_LINK);

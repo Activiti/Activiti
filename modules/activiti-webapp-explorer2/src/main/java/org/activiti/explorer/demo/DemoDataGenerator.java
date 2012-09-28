@@ -41,6 +41,7 @@ public class DemoDataGenerator {
     
     initDemoGroups();
     initDemoUsers();
+    initProcessDefinitions();
   }
   
   protected void initDemoGroups() {

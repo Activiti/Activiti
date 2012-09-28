@@ -1,0 +1,632 @@
+
+
+/*img {
+	behavior:expression((this.runtimeStyle.behavior="none")&&
+							(this.tagName == "IMG" && this.src)&&
+							(!this._loaded)&&
+							(this.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+this.src+"',sizingMethod='"+(this.width&&this.height?"scale":"image")+"')")&&
+							(this.src = "../explorer/src/img/signavio/s.gif")&&
+							(this._loaded = true));
+}*/
+
+
+div.signavio_repository_header_shadow {
+	behavior:expression((this.runtimeStyle.behavior="none")&&
+						(!window.headerMoved)&&						
+						(!document.getElementById("signavio_repository_header_shadow_moved"))&&
+						(this.id =  "signavio_repository_header_shadow_moved")&&
+						(document.body.appendChild(this))&&		
+						(this.innerHTML = "<img src='../explorer/src/img/signavio/s.gif'/>")&&				
+						(window.headerMoved = true));	
+	background:none;
+	overflow:hidden;
+}
+
+
+div.signavio_repository_header_shadow img{
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../explorer/src/img/signavio/header_background2.png',sizingMethod='scale');
+	position:relative;
+	height:76px;
+	width:100%;
+	top:-66px;
+}
+
+.x-purchase-link {
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../explorer/src/img/signavio/purchase3.png',sizingMethod='image');
+	background:none !important;
+	top:-15px !important;
+	line-height:34px !important;
+}
+
+img {
+
+}
+
+.x-admin-btn img.x-ok{	
+	background:white !important;
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../explorer/src/img/nuvola/16x16/actions/ok.png',sizingMethod='image') !important
+	behavior:none !important;
+}
+
+.x-admin-btn img.x-failed{	
+	background:white !important;
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../explorer/src/img/nuvola/16x16/actions/button_cancel.png',sizingMethod='image') !important;
+	behavior:none !important;
+}
+
+.view_plugin .thumb-wrap {
+	border:1px solid white;
+}
+
+.view_plugin .thumb-wrap.x-view-over{
+    border:1px solid #dddddd !important;
+}
+
+.view_plugin .thumb-wrap.x-view-selected{
+	border:1px solid #99bbe8 !important;
+}
+
+.view_plugin .thumb.model {
+	behavior:expression((this.runtimeStyle.behavior="none")&&
+						(!this._addedImg)&&
+						(this.innerHTML = "<img src='../explorer/src/img/signavio/s.gif' class='background'/>" + this.innerHTML)&&
+						(this._addedImg = true));	
+	background:none !important;
+}
+
+.view_plugin .thumb.model {
+	padding-top: 5px !important;	
+}
+
+.view_plugin .thumb.model img.background {
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../explorer/src/img/signavio/icon-model-background.png",sizingMethod="image");
+	position:absolute;
+	top:8px !important;
+	left:22px !important;
+}
+
+.view_plugin .thumb img.x-thumb-icon {
+	behavior:expression((this.runtimeStyle.behavior="none")&&
+							(this.tagName == "IMG" && this.src)&&
+							(!this._loaded)&&
+							(this.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+this.src+"',sizingMethod='image')")&&
+							(this.src = "../explorer/src/img/signavio/s.gif")&&
+							(this._loaded = true));	
+							
+	top: expression(((68-this.offsetHeight)/2)+"px");
+}
+
+.view_plugin .thumb-wrap .x-badge img,
+.view_view .x-grid3 .x-icon {
+	behavior:expression((this.runtimeStyle.behavior="none")&&
+							(this.tagName == "IMG" && this.src)&&
+							(!this._loaded)&&
+							(this.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+this.src+"',sizingMethod='image')")&&
+							(this.src = "../explorer/src/img/signavio/s.gif")&&
+							(this._loaded = true));	
+}
+
+
+.x-view-selector-toolbar .x-button-img{
+	top: 1px;	
+}
+
+button {
+	position: relative;
+	behavior:expression((this.style.backgroundImage)&&
+						(this.runtimeStyle.behavior="none")&&
+						(!this._loaded)&&
+						(this.innerHTML = "<img class='x-button-img' src='../explorer/src/img/signavio/s.gif' style='filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="+this.style.backgroundImage.slice(4,this.style.backgroundImage.length)+",sizingMethod=crop)'/>" + this.innerHTML)&&
+						(this.style.background = "none")&&
+						(this._loaded = true));	
+							
+}
+
+
+button img.x-button-img {
+	width: 16px;
+	height: 16px;
+	position: absolute;
+	top: 2px;
+	left: 0px;
+}
+
+table.x-disabled button {
+	color:silver;
+}
+
+img.x-tree-node-icon {
+		behavior:expression((this.runtimeStyle.behavior="none")&&
+							(this.currentStyle.backgroundImage)&&
+							(!this._loaded)&&
+							(this.style.filter = (this.currentStyle.filter||"") + (this.style.filter||"") + "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+this.currentStyle.backgroundImage.slice(5,this.currentStyle.backgroundImage.length-2)+"',sizingMethod='crop')")&&
+							(this.style.background = "none")&&
+							(this.className += " x-tree-node-icon-fixed")&&
+							(this.src = "../explorer/src/img/signavio/s.gif")&&
+							(this._loaded = true));			
+}
+
+img.x-tree-node-icon-fixed {
+	background: none !important;
+}
+
+.x-tree-node-anchor span img,
+img.x-menu-item-icon {
+		behavior:expression((this.src)&&
+							(this.runtimeStyle.behavior="none")&&
+							(!this._loaded)&&
+							(this.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+this.src+"',sizingMethod='image')")&&
+							(this.src = "../explorer/src/img/signavio/s.gif")&&
+							(this._loaded = true));	
+							
+}
+
+
+.x-tableview-plugin .folder.x-tree-node-collapsed .x-tree-node-icon,
+.x-tableview-plugin .folder .x-tree-node-icon,
+.x-tableview-plugin .x-disabled.x-locked.folder.x-tree-node-leaf .x-tree-node-icon,
+.x-tableview-plugin .x-tree-node-collapsed.x-locked.folder .x-tree-node-icon,
+.x-tableview-plugin .x-locked.folder .x-tree-node-icon  {
+	background:none;
+	behavior:none !important;
+}
+
+
+
+.x-tableview-plugin .x-disabled.x-locked.folder.x-tree-node-leaf .x-tree-node-icon,
+.x-tableview-plugin .x-tree-node-collapsed.x-locked.folder .x-tree-node-icon {
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../explorer/src/img/nuvola/16x16/filesystems/folder_grey_locked.png",sizingMethod="image") !important;
+}
+
+.x-tableview-plugin .folder.x-locked .x-tree-node-icon {
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../explorer/src/img/nuvola/16x16/filesystems/folder_grey_open_locked.png",sizingMethod="image") !important;
+}
+
+.x-tableview-plugin .folder.x-tree-node-expanded .x-tree-node-icon {
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../explorer/src/img/nuvola/16x16/filesystems/folder_grey_open.png",sizingMethod="image") !important;
+}
+
+.x-tableview-plugin .folder.x-tree-node-collapsed .x-tree-node-icon {
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../explorer/src/img/nuvola/16x16/filesystems/folder_grey.png",sizingMethod="image") !important;
+}
+
+.x-tableview-plugin .model.x-tree-node-leaf  .x-tree-node-icon {
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../explorer/src/img/nuvola/16x16/mimetypes/kig_doc.png",sizingMethod="image") !important;
+	color:black !important;
+	font-style:normal!important;
+}
+
+.x-tableview-plugin .x-tree-node-leaf span {
+	color: black;
+	font-style: normal;
+}
+
+img {
+		behavior:expression((this.src)&&
+							(this.src.indexOf("famfamfam")>0)&&
+							(this.runtimeStyle.behavior="none")&&
+							(!this._loaded)&&
+							(this.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+this.src+"',sizingMethod='image')")&&
+							(this.src = "../explorer/src/img/signavio/s.gif")&&
+							(this._loaded = true));	
+							
+}
+
+
+.view_plugin .thumb.model img.background {
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../explorer/src/img/signavio/icon-model-background.png",sizingMethod="image");
+	position:absolute;
+	top:8px !important;
+	left:22px !important;
+}
+
+.view_plugin {
+	position:absolute;
+}
+
+
+#folder_plugin .x-tree-arrows .x-tree-elbow-plus,
+#folder_plugin .x-tree-arrows .x-tree-elbow-end-plus {	
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../explorer/src/img/signavio/arrow-plus.png",sizingMethod="image");
+	background: none;
+} 
+#folder_plugin .x-tree-arrows .x-tree-elbow-minus,
+#folder_plugin .x-tree-arrows .x-tree-elbow-end-minus {		
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../explorer/src/img/signavio/arrow-minus.png",sizingMethod="image");
+	background: none;
+}
+
+/** Map View **/
+.x-plugin-map-view .thumb-wrap {
+	border: 1px solid white !important;
+}
+
+.x-plugin-map-view .thumb-wrap.x-view-over{
+    border:1px solid #dddddd !important;
+}
+
+.x-plugin-map-view .thumb-wrap.x-view-selected{
+	border:1px solid #99bbe8 !important;
+}
+
+.x-plugin-map-view .thumb-wrap img{
+	behavior:expression((this.runtimeStyle.behavior="none")&&
+							(this.tagName == "IMG" && this.src)&&
+							(!this._loaded)&&
+							(this.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+this.src+"',sizingMethod='image')")&&
+							(this.src = "../explorer/src/img/signavio/s.gif")&&
+							(this._loaded = true));	
+}
+
+/** SEARCH **/
+.search_plugin .x-panel .x-panel-bwrap {
+	background:none !important;
+}
+
+/** INFO **/
+.x-info .x-header-info.x-panel-header {
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../explorer/src/img/signavio/bgr_top_small.png",sizingMethod="scale");
+	background:none;
+}
+
+.x-info .x-header-info.x-panel-header span {
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../explorer/src/img/signavio/bgr_lefttop_small.png",sizingMethod="crop");
+	background:white;
+	position: relative;
+	top:1px;
+}
+
+
+.x-info-box .x-editable {
+	background:none;
+}
+
+
+.x-info {
+	behavior:expression((this.runtimeStyle.behavior="none")&&
+						(!this._loaded)&&
+						(this.img = document.createElement("img"))&&
+						(this.img.src = "../explorer/src/img/signavio/s.gif")&&
+						(this.img.className = "x-bgr-left-img")&&
+						(this.appendChild(this.img))&&
+						(this.style.background = "none")&&
+						(this._loaded = true));	
+						
+}
+
+
+.x-info img.x-bgr-left-img {
+	position:absolute;
+	left:0px !important;
+	top:10px;
+	width:9px;
+	height:expression(this.parentNode.offsetHeight - 10 + "px");
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../explorer/src/img/signavio/bgr_left_small.png",sizingMethod="scale");
+}
+
+
+/** FOLDER **/
+.left_view .x-panel-body {
+	background-image:none !important;url(../img/signavio/bgr_left.png);
+	overflow-x:hidden !important;
+}
+
+.left_view {	
+	behavior:expression((this.runtimeStyle.behavior="none")&&
+						(!this._loaded)&&
+						(this.img = document.createElement("img"))&&
+						(this.img.src = "../explorer/src/img/signavio/s.gif")&&
+						(this.img.className = "x-bgr-right-img")&&
+						(this.appendChild(this.img))&&
+						(this._loaded = true));	
+	background-image:none !important;
+}
+
+.left_view img.x-bgr-right-img {	
+	position:absolute;
+	right:expression((this.parentNode.childNodes[0].childNodes[0].scrollHeight > this.parentNode.childNodes[0].childNodes[0].clientHeight ? 16 : 0) + "px")!important;
+	top:0px;
+	width:16px !important;
+	height:expression(this.parentNode.childNodes[0].childNodes[0].clientHeight + "px");
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../explorer/src/img/signavio/bgr_left.png",sizingMethod="scale");
+}
+
+.x-tree-node {
+	/*width: expression(this.parentNode.parentNode.offsetWidth + "px") !important;*/
+	list-style-position:outside;
+}
+
+.x-tree-node .x-tree-node-el {
+	background-image: none !important;
+	position: relative;
+	left: 0px;
+}
+
+
+.x-info .x-header-info .x-tool,
+.x-info .x-revision .x-panel-header .x-tool,
+.x-talkabout .x-tool-close {
+	behavior:expression((this.runtimeStyle.behavior="none")&&
+						(!this._loaded)&&
+						(this.img = document.createElement("img"))&&
+						(this.img.src = "../explorer/src/img/signavio/s.gif")&&
+						(this.img.className = "x-bgr-tool-img")&&
+						(this.appendChild(this.img))&&
+						(this._loaded = true));	
+	background:none !important;
+	overflow:hidden;
+	top:-5px;
+}
+
+
+.x-info .x-header-info .x-tool img.x-bgr-tool-img,
+.x-info .x-revision .x-panel-header .x-tool img.x-bgr-tool-img,
+.x-talkabout .x-tool-close img.x-bgr-tool-img {
+	position:absolute;
+	left:0px;
+	top:0px;
+	width:70px;
+	height:122px;
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../explorer/src/img/signavio/btn_sprite.png",sizingMethod="scale");
+}
+
+
+.x-info .x-header-info .x-tool-toggle img.x-bgr-tool-img {
+	left:0;
+	top:0;
+}
+
+.x-info-fullview .x-header-info .x-tool-toggle img.x-bgr-tool-img {
+	left:0;
+	top:-32px !important;
+}
+
+
+.x-info .x-header-info .x-tool.x-disabled img.x-bgr-tool-img {
+	left:-34px !important;
+	top: -62px !important;
+}
+
+.x-info .x-header-info .x-tool-open img.x-bgr-tool-img {
+	top:0;
+	left:0;
+}
+
+.x-info .x-header-info .x-tool-open-over img.x-bgr-tool-img {
+	left:-34px;
+	top:-88px;
+}
+
+.x-info .x-header-info .x-tool-toggle img.x-bgr-tool-img {
+	left:0;
+	top: -61px;
+}
+
+.x-info .x-header-info .x-tool-toggle-over img.x-bgr-tool-img,
+.x-info .x-revision .x-panel-header .x-tool-toggle-over img.x-bgr-tool-img {
+	left:-34px !important;
+}
+
+.x-info-fullview .x-header-info .x-tool-toggle-over img.x-bgr-tool-img {
+	top:-32px !important;
+}
+
+
+.x-panel-collapsed.x-info .x-header-info .x-tool-toggle img.x-bgr-tool-img{
+	left:0;
+	top:-62px;
+}
+
+.x-panel-collapsed.x-info.x-header-info .x-tool-toggle-over img.x-bgr-tool-img {
+	left:-34px;
+	top: -62px;
+}
+
+
+.x-info .x-revision .x-panel-header .x-tool {
+	top:0px !important;
+	right: 10px !important;
+}
+
+.x-info .x-revision .x-panel-header .x-tool img.x-bgr-tool-img {
+	top: -90px;
+}
+
+.x-revision {
+	behavior:expression((this.runtimeStyle.behavior="none")&&
+						(!this._loaded)&&
+						(this.img = document.createElement("img"))&&
+						(this.img.src = "../explorer/src/img/signavio/s.gif")&&
+						(this.img.className = "x-bgr-left-img")&&
+						(this.appendChild(this.img))&&
+						(this._loaded = true));	
+	background:#F1F1F1 !important;
+	overflow:visible;
+	height: 100%;
+}
+
+
+.x-revision img.x-bgr-left-img {
+	position:absolute;
+	left:0px;
+	top:0px;
+	width:16px;
+	height:expression(this.parentNode.offsetHeight + "px");
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../explorer/src/img/signavio/bgr_right.png",sizingMethod="scale");
+}
+
+
+.x-info .x-revision .x-panel-header {
+	height:30px !important;
+	top:-15px;
+	background:none;
+	z-index:10000;
+	filter:none !important;
+}
+
+
+.x-info .x-revision .x-header-info.x-panel-header span {
+	position:absolute;
+	left:0px;
+	top:15px;
+	width:expression(this.parentNode.offsetWidth + "px");
+	height:13px;
+	background:none;
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../explorer/src/img/signavio/bgr_bottom.png",sizingMethod="scale");
+}
+
+.x-revision .x-revision-item {
+	position:relative;
+}
+
+.x-info .x-tool.x-tool-expand-east {
+	background:transparent url(../img/signavio/revision_white.png) no-repeat left top !important;
+}
+
+
+
+/** Dialog **/
+.ext-mb-icon {
+	behavior:expression((this.currentStyle.backgroundImage)&&
+						(this.currentStyle.backgroundImage != "none")&&
+						(this.runtimeStyle.behavior="none")&&
+						(!this._loaded)&&
+						(this.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+this.currentStyle.backgroundImage.slice(5,this.currentStyle.backgroundImage.length-2)+"',sizingMethod='crop')")&&
+						(this.style.backgroundImage = "none")&&
+						(this._loaded = true));	
+}
+
+/** Header **/
+#openid_login input {
+	margin-top:3px !important;
+	margin-bottom:-2px !important;
+}
+
+
+.x-menu-large .x-menu-item {
+	padding:6px 2px 2px 2px !important;
+}
+
+.x-menu-large .x-menu-item img {
+	margin-top:-4px !important;
+}
+
+
+/** TalkAbout **/
+
+.x-talkabout div.x-window-tl,
+.x-talkabout div.x-window-tr,
+.x-talkabout div.x-window-tc,
+.x-talkabout div.x-window-ml,
+.x-talkabout div.x-window-mr,
+.x-talkabout div.x-window-bl,
+.x-talkabout div.x-window-br,
+.x-talkabout div.x-window-bc {
+	behavior:expression((this.runtimeStyle.behavior="none")&&
+						(!this._loaded)&&
+						(this.img = document.createElement("img"))&&
+						(this.img.src = "../explorer/src/img/signavio/s.gif")&&
+						(this.img.className = "x-bgr-img " + this.className)&&
+						(this.appendChild(this.img))&&
+						(this._loaded = true));	
+	background:none;
+}
+
+
+.x-talkabout div.x-window-bl {
+	position:relative;
+}
+
+.x-talkabout img.x-window-tl,
+.x-talkabout img.x-window-tr,
+.x-talkabout img.x-window-tc,
+.x-talkabout img.x-window-ml,
+.x-talkabout img.x-window-mr,
+.x-talkabout img.x-window-bl,
+.x-talkabout img.x-window-br,
+.x-talkabout img.x-window-bc {
+	padding:0px !important;
+	width:expression(this.parentNode.offsetWidth + "px");
+	height:expression(this.parentNode.offsetHeight + "px");
+	position:absolute;
+	background:none;
+}
+
+.x-talkabout img.x-window-tl {
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../explorer/src/img/signavio/bgr_lefttop.png",sizingMethod="image");
+	left:0px;
+	top:0px;
+	width:18px !important;
+	height:18px !important;
+}
+
+.x-talkabout img.x-window-tr {
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../explorer/src/img/signavio/bgr_righttop.png",sizingMethod="image");
+	right:0px;
+	top:0px;
+	width:18px !important;
+	height:18px !important;
+}
+
+.x-talkabout img.x-window-bl {
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../explorer/src/img/signavio/bgr_leftbottom.png",sizingMethod="image");
+	left:0px;
+	bottom:0px;
+	width:18px !important;
+	height:15px !important;
+}
+
+.x-talkabout img.x-window-br {
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../explorer/src/img/signavio/bgr_rightbottom.png",sizingMethod="image");
+	right:0px;
+	bottom:0px;
+	width:18px !important;
+	height:15px !important;
+}
+
+.x-talkabout img.x-window-tc {
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../explorer/src/img/signavio/bgr_top.png",sizingMethod="scale");
+	top:0px;
+	height:13px !important;
+}
+
+.x-talkabout img.x-window-ml {
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../explorer/src/img/signavio/bgr_left.png",sizingMethod="scale");
+	top:5px;
+	left:0px;
+	width:18px !important;
+	height:expression(this.parentNode.offsetHeight-6 + "px") !important;
+}
+
+.x-talkabout img.x-window-mr {
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../explorer/src/img/signavio/bgr_right.png",sizingMethod="scale");
+	top:2px;
+	right:0px;
+	width:18px !important;
+	height:expression(this.parentNode.offsetHeight-3 + "px") !important;
+}
+
+
+.x-talkabout img.x-window-bc {
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../explorer/src/img/signavio/bgr_bottom.png",sizingMethod="scale");
+	bottom:0px;
+	left:18px;
+	height:15px !important;
+	width:expression(this.parentNode.offsetWidth-2 + "px") !important;
+}
+
+
+
+/** SECURITY CENTER **/
+.x-security-center-tab-panel .x-grid3-cell-inner .x-column-user img {
+	left:-20px !important;
+}
+
+.x-security-center-cb-user img {
+	left: -18px;
+}
+
+
+div.x-grid3-cell-inner {
+	width: 100% !important;
+}

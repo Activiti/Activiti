@@ -1,0 +1,745 @@
+.processdata {
+	display:none;
+}
+
+/* Fix for Firefox 3 */
+.x-date-middle {
+width: 160px;
+}
+
+.x-grid3 table {
+table-layout:fixed;
+}
+
+/* Hide tiny small blue dot on the lower top of a menu */
+
+.x-form-add-trigger {
+	background-image:url(../../explorer/src/img/signavio/trigger-add.png) !important;
+}
+
+.x-menu {
+	overflow:hidden;
+}
+
+.x-grid3-row-table {
+	table-layout: fixed;
+}
+.ext_specialize_gridPanel_aml {
+	
+}
+
+.x-grid3-scroller {
+	padding-bottom: 24px;
+}
+
+.x_form_text_set_absolute {
+	position:absolute;
+	top:-500px;
+	left:-500px;
+}
+
+.ext-gecko .x-window-body div.ext_specific_window_overflow.x-form-item  {
+	overflow:hidden;
+}
+
+.ext-gecko .x-window-body div.ext_specific_window_overflow.x-form-item  .x-form-element {
+	padding-left:60px;
+}
+
+.icon-large {
+	width:18px !important;
+}
+
+.prop-background-color {
+	border:1px solid #ACA899;
+	height:10px;
+	width:10px;
+}
+
+#oryx_editor_header {
+       background-image: url('../images/header_bg.small.gif');
+       background-position: top center;
+       background-repeat: repeat-x;
+       position: absolute;
+       width: 100%;
+	   height: 30px;
+}
+
+.x-panel-editor-north .x-panel-body .x-panel-body,
+.x-panel-editor-north .x-panel-body .x-panel-bwrap {
+	overflow:visible;
+}
+
+#oryx_editor_header .openid{
+	font-family:tahoma;
+	font-size:11px;
+	position:absolute;
+	right:15px;
+	top:8px;
+}
+
+#oryx_editor_header .openid.not{
+	color:#666666;
+	font-style:italic;
+}
+
+#oryx_editor_header .mashupinfo{
+	margin-left:8px;
+	position:relative;
+	top:3px;
+	vertical-align:top;
+}
+
+#oryx_editor_header .mashupinfo img{
+	margin-left:5px;
+	width:14px;
+}
+
+
+
+.LoadingIndicator, .StatusIndicator {
+	font-family:Verdana;
+	font-size:11px; 
+	display:block; 
+	background: white no-repeat 8px; 
+	padding:5px; 
+	padding-left:30px; 
+	position:fixed; 
+	top:0px; 
+	left:0px;
+	border:1px solid silver;
+	white-space:nowrap;
+	opacity:0.6;
+}
+
+.LoadingIndicator {
+	background-image: url('../../libs/ext-2.0.2/resources/images/default/grid/loading.gif');
+}
+
+.StatusIndicator {
+	padding-left:10px; 
+}
+
+#oryxcanvas {
+	width:1200px;
+	height:600px;
+}
+
+.ORYX_Editor {
+	/*background:url(../images/controls/background.bmp);*/
+	background: #EEF1FE;
+	width:1200px;
+	height:600px;
+	border:5px double #99BBE8;
+}
+
+.x-layout-panel-center {
+	background:#888888;
+}
+
+.x-layout-panel-center .x-layout-panel-body {
+	padding:20px;
+}
+
+.x-form-field-wrap .x-form-color-trigger {
+	background:transparent url("../../libs/ext-2.0.2/resources/images/default/form/color-trigger.png") no-repeat 0 0;
+    cursor:pointer; 
+}
+
+.ie6 .x-form-field-wrap .x-form-color-trigger {
+	background:transparent url("../../libs/ext-2.0.2/resources/images/default/form/color-trigger.gif") no-repeat 0 0;
+}
+
+/* extended by Kerstin (start)*/
+.x-form-field-wrap .x-form-complex-trigger {
+	background:transparent url("../images/complex-trigger.gif") no-repeat 0 0;
+    cursor:pointer; 
+}
+/* extended by Kerstin (end)*/
+
+.x-dd-drag-ghost {
+	opacity:1.0;
+}
+
+.x-dd-drag-proxy  .x-tree-node-leaf  {
+	padding-left:15px;
+	padding-right:5px;
+}
+
+.headerShapeRep, .headerShapeRepChild{
+    background:#eee url("../images/bg.gif") repeat-x;
+    margin-top:1px;
+    border-top:1px solid #ddd;
+    border-bottom:1px solid #ccc;
+    padding-top:3px;
+    padding-bottom:0px;
+	font-size:12px;
+	font-weight:bold;
+	font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+.x-tree-root-node > .x-tree-node {
+	margin-bottom:4px;
+}
+.headerShapeRep *, .headerShapeRepChild *{
+	cursor:default;
+}
+
+.headerShapeRepChild {
+	font-size:10px;
+	height:16px;
+	padding-top:0px;
+}
+.shaperepository .x-tree-node-indent *{
+	width:0px;
+	position:relative;
+	
+}
+
+.x-tree-node img.headerShapeRepImg {
+    background:none;
+	width:0px;
+}
+
+.x-tree-ec-icon {
+	position:relative;
+	top:-2px;
+}
+
+.x-tree-node img.ShapeRepEntreeImg, .x-tree-node-leaf img.ShapeRepEntreeImg {
+	height:16px;
+	width:16px;
+	background:none;
+	position:relative;
+	left:-7px;
+	top:-1px;
+}
+
+.x-tree-node .x-tree-selected a span {
+	background:none;
+	color:black;
+}
+
+.ShapeRepEntree{
+	margin:1px;
+	padding:5px 0px;
+	border:1px solid #f1f1f1;
+	background-color:#f6f6f6;
+}
+
+.ShapeRepEntree, .ShapeRepEntree *{
+	cursor:move;
+	white-space:normal;
+}
+
+.ShapeRepEntree:hover {
+	border:1px solid #c3daf9;
+	background-color:#ddecfe;
+}
+
+/** Resizer for the Canvas **/
+.canvas_resize_indicator_area {
+	
+	margin		:auto;
+	display		:block;
+	height		:30px;
+	left		:20%;
+	position	:absolute;
+	text-align	:center;
+	top			:0;
+	width		:60%;
+	
+}
+
+.canvas_resize_indicator {
+	
+	width		: 15px;
+	height		: 15px;	
+	position	: absolute;
+	display		: block;
+	margin		: auto;
+	opacity		: 0.6;
+}
+
+.canvas_resize_indicator:hover {
+	
+	opacity		: 1.0;
+}
+
+.canvas_resize_indicator_grow.S{
+	left		: 50%;	
+	bottom		: 30px;
+	margin-right: 15px;
+	background 	: url(../images/arrow-bottom.png) no-repeat center center;
+}
+.canvas_resize_indicator_shrink.S{
+	left		: 50%;	
+	margin-left : 15px;
+	bottom		: 30px;
+	background 	: url(../images/arrow-top.png) no-repeat center center;
+}
+.canvas_resize_indicator_grow.W{
+	left		: 10px;	
+	top			: 50%;
+	margin-bottom: 15px;
+	background 	: url(../images/arrow-left.png) no-repeat center center;
+}
+.canvas_resize_indicator_shrink.W{
+	left		: 10px;	
+	top			: 50%;
+	margin-top: 15px;
+	background 	: url(../images/arrow-right.png) no-repeat center center;
+}
+.canvas_resize_indicator_grow.E{
+	right		: 30px;	
+	top			: 50%;
+	margin-bottom: 15px;
+	background 	: url(../images/arrow-right.png) no-repeat center center;
+}
+.canvas_resize_indicator_shrink.E{
+	right		: 30px;	
+	top			: 50%;
+	margin-top: 15px;
+	background 	: url(../images/arrow-left.png) no-repeat center center;
+}
+.canvas_resize_indicator_grow.N{
+	left		: 50%;	
+	top			: 10px;
+	margin-right: 15px;
+	background 	: url(../images/arrow-top.png) no-repeat center center;
+}
+.canvas_resize_indicator_shrink.N{
+	left		: 50%;	
+	top			: 10px;
+	margin-left : 15px;
+	background 	: url(../images/arrow-bottom.png) no-repeat center center;
+}
+/** End Resizer **/
+
+
+.Oryx_ShapeMenu .Oryx_MorphItem_disabled {
+	font-weight: bold;
+	cursor:default;
+	opacity:.3;
+	-moz-opacity:.3;
+	filter:alpha(opacity=30);
+	border: 1px solid #000;
+}
+
+.Oryx_hover, .Oryx_button:hover {
+	background: url(../images/shapemenu_highlight.png) no-repeat 1px 1px;
+	opacity: 1 !important;
+}
+
+.Oryx_down {
+	
+}
+
+.Oryx_button img {
+	position:relative;
+	width:16px;
+	height:16px;
+	top:1px;
+	left:1px;
+}
+
+.Oryx_ShapeMenu > .Oryx_Right {
+	margin-top:2px;
+	margin-left:2px;
+	padding-left:0px;
+	padding-right:0px;	
+}
+
+.Oryx_ShapeMenu > .Oryx_Left {
+	border-right-width:2px;
+	margin-top:2px;
+	margin-left:13px;
+	padding-left:0px;
+	padding-right:0px;		
+}
+
+.Oryx_ShapeMenu > .Oryx_Top {
+	border-bottom-width:2px;
+	margin-top:13px;
+	margin-left:2px;
+	padding-top:0px;
+	padding-bottom:0px;
+}
+
+.Oryx_ShapeMenu > .Oryx_Bottom {
+	border-top-width:2px;
+	margin-top:2px;
+	margin-left:2px;
+	padding-top:0px;
+	padding-bottom:0px;
+}
+
+.Oryx_Right .Oryx_button,
+.Oryx_Left .Oryx_button,
+.Oryx_Top .Oryx_button,
+.Oryx_Bottom .Oryx_button {
+	opacity: 0.5;
+}
+
+.Oryx_button.x-opacity-0 {
+	opacity: 0;
+	display:none;
+}
+
+.Oryx_button.x-opacity-10 {
+	opacity: 0.1;
+}
+
+.Oryx_button.x-opacity-20 {
+	opacity: 0.2;
+}
+
+.Oryx_button.x-opacity-50 {
+	opacity: 0.5;
+}
+
+.Oryx_Right:hover .Oryx_button,
+.Oryx_Left:hover .Oryx_button,
+.Oryx_Top:hover .Oryx_button,
+.Oryx_Bottom:hover .Oryx_button {
+	opacity: 0.7;
+	display:block;
+}
+
+
+.Oryx_button img {
+	top:1px;
+}
+
+.Oryx_Left img {
+	top:0px;
+}
+
+.Oryx_button {
+	width:16px;
+	height:16px;
+	padding:4px;
+	position:absolute;
+}
+
+.Oryx_button_with_caption {
+	width:inherit;
+	height:16px;
+	padding:4px;
+	position:absolute;
+}
+
+
+
+/*** Resizer ***/
+
+.resizer_southeast,
+.resizer_northwest {
+	width:12px; 
+	height:12px; 
+	position:relative;
+	background-color: transparent;
+	background-repeat:no-repeat;
+}
+
+.resizer_southeast {
+	background-image:url(../../libs/ext-2.0.2/resources/images/default/sizer/se-handle-dark.gif);
+	cursor: se-resize;
+	background-position: 4px 4px;
+}
+
+.resizer_northwest {
+	background-image:url(../../libs/ext-2.0.2/resources/images/default/sizer/nw-handle-dark.gif);
+	cursor: nw-resize;
+	background-position: -2px -2px;
+}
+
+/*** Selection Frame ***/
+
+.Oryx_SelectionFrame{
+	position:absolute;
+	border:1px dotted gray;
+	background:none;
+}
+
+
+/*** Shape Repository ***/
+
+.shapelist {
+	padding:4px;
+	margin:1px;
+	border:1px solid #f1f1f1;
+	background-color:#f6f6f6;
+}
+
+.shapelist *{
+	cursor:default;
+}
+
+.shapelist img{
+	margin-top:3px;
+	margin-right:10px;
+}
+
+.shapelist .body{
+	font:bold 12px tahoma, verdana, helvetica;
+	overflow:hidden;
+	position:relative;
+	top:-3px;
+}
+
+
+.shapelist:hover {
+	border:1px solid #c3daf9;
+	background-color:#ddecfe;
+}
+
+
+/*** Property Window ***/
+
+.propertywindow {
+	width:100%
+}
+
+.propertywindow * {
+	font-family:tahoma, verdana, helvetica;
+	font-size:8pt;
+	border:none;
+	
+}
+
+.propertywindow th, td {
+		border-collapse:collapse;
+}
+.propertywindow thead th {
+	background-color:#ddecfe;
+	padding:3px;
+	height:20px;
+}
+.propertywindow tbody td {
+	border-top:1px solid #CCCCCC;
+	padding:3px;
+	height:16px;
+}
+.propertywindow input {
+	width:100%;
+}
+
+/*** Save Dialog (Copied from model_properties.css) ****/
+
+/******************************************************************************
+ * forms
+ */
+
+form {
+	font-size: 12px;
+}
+
+form p, form ul {
+	padding: 0px;
+	margin: 10px 0px 0px 10px;
+	list-style-type: none;
+}
+
+form p.info {
+	color: #fc8b03;
+	font-style: italic;
+	text-align : center;
+}
+
+hr {
+	margin: 3px 10px;
+	border: 0px solid #444;
+	border-bottom-width: 1px;
+}
+
+form ul.access li {
+	margin: 0px 3px 3px 3px;
+}
+
+fieldset {
+	border-width: 0px;
+	border-top: 12px solid transparent;
+	padding: 0px 20px;
+	margin: 5px;
+	background-color: #fff;
+}
+
+fieldset legend {
+	margin-left: -17px;
+	font-weight: bold;
+	background-color: #fff;
+}
+
+fieldset .description {
+	color: #666;
+	margin: 0px 0px 3px -17px;
+	font-weight: normal;
+	margin-left: -15px;
+	font-size: 11px;
+	padding-bottom: 2px;
+}
+
+fieldset label {
+	width: 80px;
+	float: left;
+	text-align: right;
+	display: block;
+	margin-top: 3px;
+}
+
+fieldset p {
+	margin: 2px;
+}
+
+fieldset input, 
+fieldset select, 
+fieldset textarea,
+fieldset .field_with_error_msg,
+fieldset span.input {
+	display: block;
+	margin-left: 90px;
+}
+
+fieldset input.text, 
+fieldset select, 
+fieldset textarea,
+fieldset .field_with_error_msg,
+fieldset span.input {
+	width: 400px;
+	padding: 2px;
+}
+
+fieldset p.inline {
+	margin-left: 90px;
+	margin-bottom: 4px;
+}
+
+fieldset p.inline label {
+	display: inline;
+	float: none;
+	width: default;
+	padding-left: 5px;
+	padding-right: 20px;
+	text-align: left;
+}
+
+fieldset p.inline input {
+	display: inline;
+	margin-left: auto;
+}
+
+fieldset p.inline input.button {
+	margin-right: 20px;
+}
+
+fieldset p.inline .field_with_error_msg {
+	margin-left: 0px;
+}
+
+
+
+
+input.text, select, textarea {
+	border: 1px solid #efefef;
+	background-color: #efefef;
+}
+
+input.text:hover, select:hover, textarea:hover,
+input.text.activated, select.activated, textarea.activated {
+	border-color: #fc8b03;
+}
+
+input.text.disabled, input.disabled, select.disabled, textarea.disabled,
+input.text.disabled:hover, input.disabled:hover, select.disabled:hover, textarea.disabled:hover {
+	background-color: #fff;
+	border-color: #fff;
+	color: #000;
+}
+
+.field_with_error {
+	background-color: #f7d4d4 !important;
+	border-color: #c00 !important;
+}
+
+.field_with_error_msg {
+	padding: 2px 0px;
+	font-size: 9pt;
+	color: #c00;
+}
+
+
+
+/*** PLUGIN SPECIFIC ***/
+
+/*** PLUGIN: Transform EPC to BPMN **/
+.transform-epc-bpmn-window .transform-epc-bpmn-group-button *, .transform-epc-bpmn-group-button.x-btn-pressed * {
+	background:transparent;
+	color:#555555;
+	height:15px;
+}
+
+.transform-epc-bpmn-window *{
+	font-family:tahoma,arial,helvetica,sans-serif;
+	font-size-adjust:none;
+	font-stretch:normal;
+	font-style:normal;
+	font-variant:normal;
+	font-size:11px;
+}
+
+.transform-epc-bpmn-window .transform-epc-bpmn-group-button button {
+	font-size:11px;
+	font-weight:bold;
+}			
+
+
+.transform-epc-bpmn-window .transform-epc-bpmn-group-button .x-btn-center {
+	background:transparent url(../../libs/ext-2.0.2/resources/images/default/grid/group-expand-sprite.gif) no-repeat scroll 0px 0px;
+	padding-left:15px;
+	border-bottom:1px solid #CCCCCC;
+	text-align:left;
+	width:100%;
+
+}
+
+.transform-epc-bpmn-window .transform-epc-bpmn-group-button.x-btn-pressed .x-btn-center {
+	background-position:0px -50px;
+}
+
+.transform-epc-bpmn-window .transform-epc-bpmn-title {
+	border-bottom:1px solid #CCCCCC;
+	margin-bottom:10px;
+	text-align:left;
+	color:#555555;
+	display:block;
+	font-weight:bold;
+}
+			
+/*** DEBUG **/
+
+
+.NewToolbar {
+	display:inline; 
+	z-index:10;
+	position:absolute; 
+	top:50px; 
+	left:800px; 
+	background:#CCCCCC; 
+	border:1px solid gray;	
+}
+
+.NewToolbarButton {
+	display:block; 
+	z-index:10;
+	position:relative; 
+	top:0px; 
+	left:0px; 
+	background:#99BBBB; 
+	margin:5px;
+	padding:5px;
+	font-size:9px;
+	border:1px solid gray;
+	
+}
+

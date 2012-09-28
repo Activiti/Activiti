@@ -1,0 +1,3190 @@
+body {
+	background-color: #ffffff;
+	font-family	: tahoma,arial,san-serif;
+	font-size	: 11px;
+	margin: 0px;
+	padding:0px;
+}
+
+body, td, input, textarea {
+	font-size: 12px;
+}
+
+:focus {
+    outline: 0;
+}
+
+.x-gecko-3-6 .x-form-text {
+	padding-bottom:1px;
+	padding-top:1px;
+}
+
+.x-border-layout-ct {
+	background:white none repeat scroll 0 0;
+}
+
+a {
+	color	: #ad0f5b;
+}
+
+a.x-item-disabled:hover, a.x-item-disabled:focus, a.x-item-disabled:active {
+	color	: white;	
+}
+
+a:hover, a:focus, a:active {
+	color	: #82566B;
+}
+
+a.x-button-plain, .x-panel-btns a.x-link-button {
+	color:white;
+	font-size:11px;
+	line-height:13px;
+	display:block;
+	vertical-align:middle;
+	padding:4px;
+}
+
+a.x-button-plain:hover, 
+a.x-button-plain:focus, 
+a.x-button-plain:active,
+.x-panel-btns a.x-link-button:hover, 
+.x-panel-btns a.x-link-button:focus, 
+.x-panel-btns a.x-link-button:active {
+	color:#E1E1E1;
+}
+	
+	
+.x-nowrap {
+	white-space:nowrap;	
+}	
+
+.x-tree-node-el a.x-link {
+	color:#AD0F5B;
+	text-decoration: underline;
+}
+
+.x-tree-node-el a.x-link:hover, .x-tree-node-el a.x-link:focus, .x-tree-node-el a.x-link:active {
+	color	: #82566B;
+}
+
+.x-combo-list-item  {
+	height:14px;
+}
+
+.x-mask.x-background-white {
+	background:white;
+	bottom:0;
+	height:100%;
+	left:0;
+	position:absolute;
+	right:0;
+	top:0;
+	width:100%;
+	z-index:100000;
+}
+
+/** UX **/
+.x-form-add-trigger {
+	background-image:url(../img/signavio/trigger-add.png) !important
+}
+
+.x-form-textfield-list ol {
+	list-style-position:outside !important;
+	list-style-type:decimal !important;
+	margin-left:25px;
+}
+
+.x-form-textfield-list ol li {
+	border: 1px solid white;
+	white-space:normal;
+}
+
+.x-form-textfield-list ol li.x-editing {
+	border: 1px dotted silver;
+	color:silver;
+}
+
+.x-form-textfield-list ol li span {
+	font-size: 10px;
+}
+
+.x-form-textfield-list ol li.x-editing span {
+	display: none;
+}
+
+/** removes icons from treepanel */
+/*.x-tree-node-icon {*/
+.no-icon {
+	display: none;
+}
+
+.ajax_loader {
+	background-image: url(../../data/images/repository/ajax-loader.gif);
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+
+.repository_ext_btn_align_center {
+	background-position: 0px center !important;	
+	padding: 2px 0 3px 18px !important;
+}
+
+.repository_ext_icon_align_center {
+	height:auto;
+	vertical-align:middle;
+}
+
+.repository_ext_icon_arrow_up {
+	background-image:url(../../data/images/silk/arrow_up.png);
+}
+
+.repository_ext_icon_arrow_down {
+	background-image:url(../../data/images/silk/arrow_down.png);
+}
+
+.repository_rating_filter .x-grid3-scroller{
+	overflow: hidden;
+}
+/**  FIXES FOR EXT 2.0.2 **/
+
+.x-date-middle {
+width: 160px;
+}
+
+.x-grid3 table {
+table-layout:fixed;
+}
+
+
+.x-grid3-row-table {
+	table-layout: fixed;
+}
+
+
+.x-item-disabled * {
+	color:silver !important;
+}
+
+.x-menu-list-item.x-item-disabled * {
+	color:grey !important;	
+}
+
+.x-menu-list-item-large {
+	vertical-align: middle;
+	line-height: 20px !important;
+}
+
+.x-menu-item-icon {
+	margin: 0 10px 0 0;
+}
+
+.x-menu a.x-menu-item {
+	padding: 3px 21px 3px 2px;
+}
+
+.item-large {
+	background-image:url(../img/signavio/list-item-large.gif);
+	background-repeat: repeat-x;
+	background-position:top;
+}
+
+.x-menu-item-icon-large {
+	width: 22px;
+	height: 22px;
+}
+
+.x-menu {
+	background-repeat: repeat;
+}
+
+.x-menu-large {
+	background: #c4c4c4 url(../img/signavio/menu-large.gif) repeat-y scroll 0 0;
+}
+
+input.x-tree-node-cb {
+	position:relative;
+	top:2px;
+}
+
+.x-tree-check-panel .x-panel-body {
+	background: #FFFFFF url(../../../libs/ext-2.0.2/resources/images/default/form/text-bg.gif) repeat-x scroll 0 0;
+	border:1px solid #A5A5A5;
+	overflow-x:hidden !important;
+}
+.x-grid3-dirty-cell {
+	background:transparent url(../../../libs/ext-2.0.2/resources/images/default/grid/dirty.gif) no-repeat scroll 0 0 !important;
+}
+.x-dirty-cell-overlay {
+	height:5px;
+	position:absolute;
+	top:0;
+	width:5px;
+	left:0px;
+}
+
+.x-layer.x-menu {
+	width: auto !important;
+}
+
+.x-window-dlg .ext-mb-question {
+	background:transparent url(../img/nuvola/32x32/actions/help.png) no-repeat scroll left top;
+}
+
+.x-window-dlg .ext-mb-warning {
+	background:transparent url(../img/nuvola/32x32/actions/messagebox_warning.png) no-repeat scroll left top;
+}
+
+.x-window-dlg .ext-mb-info {
+	background:transparent url(../img/nuvola/32x32/actions/messagebox_info.png) no-repeat scroll left top;
+}
+
+.x-window-dlg .ext-mb-error {
+	background:transparent url(../img/nuvola/32x32/actions/no.png) no-repeat scroll left top;
+}
+
+
+
+.x-tree-arrows .x-tree-elbow-line {
+	visibility: hidden;
+}
+
+
+/******************************************************************************
+ * the central widget that contains the list of all models of a user
+ */
+
+.no_items {
+	text-align: center;
+	color: #999;
+	font-style: italic;
+	font-size: 10px;
+	padding: 15px;
+}
+
+.oryx_repository_list_container {
+
+	padding: 0% 0 0 2%;
+}
+
+.oryx_repository_list_item {
+	width: 47%;
+	min-width: 300px;
+	margin: 1% 2% 1% 0;
+	float: left;
+	font-size: 11px;
+	position:relative;
+	
+	border: 1px solid #D0D0D0;
+}
+
+.oryx_repository_list_item:hover {
+	border-color: #aaa;
+}
+
+.oryx_repository_list_item .ctrl {
+	display: none;
+	position: absolute;
+	right: 0px;
+	height: 20px;
+}
+
+.oryx_repository_list_item:hover .ctrl {
+	display: block;
+}
+
+.oryx_repository_list_item h3 {
+	padding: 3px 60px 3px 0px;
+	background-color: #D0D0D0;
+	min-height: 12px;
+	border-bottom: 1px solid #d0d0d0;
+}
+
+.oryx_repository_list_item h3,
+.oryx_repository_list_item h3 a {
+	color: #222;
+	text-decoration: none;
+}
+
+.oryx_repository_list_item h3:hover a:hover {
+	color: #fff;
+}
+
+.oryx_repository_list_item:hover h3 a{ 
+	color: #dedede;
+}
+
+.oryx_repository_list_item:hover h3{
+	border-color: #888;
+	background-color: #888;
+}
+
+.oryx_repository_list_item p { 
+	padding: 3px 3px 3px 0px;
+	margin-top: 3px;
+	color: #222;
+}
+
+.oryx_repository_list_item .owner {
+	color: #666;
+}
+
+
+
+.oryx_repository_list_item img {
+	float: left; 
+	margin: 5px;
+	max-width: 80px;
+}
+
+.oryx_repository_list_item h3,
+.oryx_repository_list_item p,
+.oryx_repository_list_item span,
+.oryx_repository_list_item div,
+.oryx_repository_list_item em {
+	padding-left: 90px;
+}
+
+
+/*******************************************************************
+ * login area for the repository
+ */
+
+#header {
+	background-image:url(../img/signavio/header_logo.png);
+	background-position:center bottom;
+	background-repeat:repeat-x;
+	padding:5px 0 30px;
+	width:100%;
+	position:fixed;
+	top:0px;
+	z-index:100;
+}
+
+#header a {
+	margin-left:40px
+}
+
+#header img {
+	border:none;
+}
+
+.content {
+	margin:10px;
+	margin-top:60px;
+}
+.content img {
+	margin:5px;
+}
+
+.content .label {
+	width:50px;
+	float:left;
+}
+.content .value {
+	font-weight:bold;
+}
+.content .model {
+	margin-top:30px;
+}
+
+#signavio_repository_header {
+	background:transparent url(../img/signavio/header_background2.png) repeat-x scroll center 0;
+	height:100%;
+	width:100%;
+}
+
+.signavio_repository_header_shadow, .signavio_repository_header_shadow2  {
+	background:transparent url(../img/signavio/header_background2.png) repeat-x scroll center bottom;
+	width:100%;
+	height:10px;
+	position:absolute;
+	top:63px;
+	z-index:1000;
+}
+
+.ext-ie7 .north_view .header_view div.signavio_repository_header_shadow {
+	behavior:expression((this.runtimeStyle.behavior="none")&&
+						(!this._loaded)&&
+						(this._loaded=true)&&
+						(this.className="signavio_repository_header_shadow2")&&
+						(document.body.appendChild(this.cloneNode(true)))&&
+						(this.parentNode.removeChild(this)));	
+}
+
+
+.x-panel.north_view .x-panel-bwrap,
+.x-panel.north_view .x-panel-body {
+	overflow:visible;
+}
+
+#signavio_repository_header #signavio_repository_logo {
+	background:transparent url(../img/signavio/logo2.png) no-repeat scroll 0 0;
+	height:34px;
+	margin-left:20px;
+	margin-top:0;
+	width:150px;
+}
+#signavio_repository_header span{
+	left:110px;
+	position:absolute;
+	display:block;
+	top:3px;
+}
+
+#signavio_repository_header span img{
+	position:relative;
+	right:6px;
+	margin-right:6px;
+	width:16px;
+}
+
+#signavio_repository_header.mouseover span{
+	display:inline;
+}
+
+#openid_login {
+	position:absolute;
+	right:10px;
+	top:5px;
+	color:white;	
+}
+
+#openid_login input {
+	font-size:12px;
+	margin:0px 1px;
+	padding:1px;
+	width:40px;
+}
+
+#openid_login input.button {
+	background-color:transparent;
+	border-width:0px;
+	color:white;
+	cursor:pointer;
+	font-weight:bold;
+	width:auto;
+}
+
+#openid_login input.text {
+	background:#FFFFFF url(../../data/images/style/openid_login_bg.gif) no-repeat scroll 5px 50%;
+	border:1px solid #AA0000;
+	padding-left:25px;
+	width:200px;
+}
+
+#openid_login .login_name {
+	line-height: 21px;
+}
+
+#openid_login input.text.logged_id {
+	background-color:#F1F1F1;
+	color:#333333;
+}
+
+
+.x-toolbar.north_view {
+	background:transparent url(../img/signavio/header_background2.png) repeat-x scroll left -40px;
+	border:none;
+	height:24px !important;
+}
+
+
+.x-toolbar.north_view.x-no-text-right .x-arrange-right button,
+.x-toolbar.north_view.x-no-text-left .x-arrange-left button,
+.x-toolbar.north_view.x-no-text button,
+.x-toolbar.north_view .x-btn-icon button {
+	color:transparent !important;
+	width:16px !important;
+	overflow:hidden;
+	padding:3px 0 2px 18px !important;
+}
+
+
+.x-toolbar.north_view .ytb-sep {
+	background-image: url(../img/signavio/vLine.png);
+	margin:0 6px;
+}
+
+.x-toolbar .x-item-disabled, .x-toolbar .x-disabled{
+	filter: alpha(opacity=60);
+}
+
+.x-window .x-window-info {
+	background: transparent url(../img/nuvola/48x48/apps/kworldclock.png) no-repeat scroll left top;
+	width:48px;
+	height:48px;
+	margin-right:10px;
+}
+
+.view_view .x-grid3-header-offset {
+	border-left:1px solid gray;
+	border-top:1px solid gray;
+}
+
+.view_view .x-grid3-hd.x-grid3-td-0 {
+	border-left:none !important;
+}
+
+.view_view .x-view-selector-toolbar {
+	background:none repeat scroll 0 0 transparent;
+	border:medium none;
+	opacity:0.7;
+	position:absolute;
+	right:5px;
+	top:10px;
+}
+
+.view_view .x-view-selector-toolbar {
+	background:none repeat scroll 0 0 transparent;
+	border:medium none;
+	opacity:0.8;
+	filter:alpha(opacity=80);
+	position:absolute;
+	right:5px;
+	top:10px;
+}
+
+.view_view .x-view-selector-toolbar button:focus {
+    outline: 0;
+}
+
+.view_view .x-view-selector-toolbar .x-btn-over .x-btn-left,
+.view_view .x-view-selector-toolbar .x-btn-click .x-btn-left,
+.view_view .x-view-selector-toolbar .x-btn-pressed .x-btn-left,
+.view_view .x-view-selector-toolbar .x-btn-menu-active .x-btn-left,
+.view_view .x-view-selector-toolbar .x-btn-over .x-btn-center,
+.view_view .x-view-selector-toolbar .x-btn-click .x-btn-center,
+.view_view .x-view-selector-toolbar .x-btn-pressed .x-btn-center,
+.view_view .x-view-selector-toolbar .x-btn-menu-active .x-btn-center,
+.view_view .x-view-selector-toolbar .x-btn-over .x-btn-right,
+.view_view .x-view-selector-toolbar .x-btn-click .x-btn-right,
+.view_view .x-view-selector-toolbar .x-btn-pressed .x-btn-right,
+.view_view .x-view-selector-toolbar .x-btn-menu-active .x-btn-right {
+	background-image:url(../../../libs/ext-2.0.2/resources/images/gray/toolbar/tb-btn-sprite.gif);
+}
+
+.view_view .x-view-selector-toolbar .x-btn-icon td {
+	background-color:white;
+}
+	
+.view_view .x-view-selector-toolbar .ytb-sep {
+	background-image:url(../../../libs/ext-2.0.2/resources/images/vista/grid/grid-split.gif);
+}
+
+.view_view .x-grid3-row {
+	overflow:hidden;
+}
+
+.view_view .x-grid3-row-selected  {
+	border:1px solid #99BBE8;
+	border-top:1px solid #CDDFF4;
+}
+
+.view_view .x-grid3-row-selected.x-grid3-row-first-selected {
+	border-top:1px solid #99BBE8;
+}
+
+/*******************************************************************
+ * some ext extensions
+ */
+
+.create_model_menu {
+	background-image: url(../../data/images/silk/shape_square_add.png) !important;
+	background-repeat: no-repeat;
+}
+
+.start_model_button,
+.edit_model_button,
+.delete_model_button,
+.view_model_button {
+	background-image: url(../../data/images/silk/pencil.png) !important;
+	background-repeat: no-repeat;
+	position: absolute;
+	right: 20px;
+	height: 18px;
+	width: 18px;
+	background-position: 1px 1px;
+	text-decoration: none;
+}
+
+.start_model_button:hover,
+.edit_model_button:hover,
+.view_model_button:hover,
+.delete_model_button:hover {
+	background-color: #eee;
+} 
+
+.view_model_button {
+	background-image: url(../../data/images/silk/magnifier.png) !important;
+}
+
+.start_model_button {
+	right: 40px;
+	background-image: url(../../data/images/silk/shape_square_go.png) !important;
+}
+
+.delete_model_button {
+	right: 0px;
+	background-image: url(../../data/images/silk/delete.png) !important;
+}
+
+/* Some test stuff for the new repository
+*/
+
+.test_selected_item {
+	border-color:#FF0000;
+	border-width: 2px;	
+}
+
+.test_unselected_item {
+	border-color:#000000;
+	border-width: 2px;	
+}
+
+.test_selected_text {
+	font-weight: bold;
+}
+
+.test_unselected_text {
+	font-weight: normal;
+}
+
+/** ***********************************
+ * ************************************
+ * Icon View Plugin 
+ * ************************************
+ **/
+
+
+.repository_iconview dl {
+	width		: 100%;
+	max-width	: 1000px;
+}
+
+.repository_iconview dd{
+	width		: 200px;
+	height		: 105px; 
+	padding		: 10px;
+	border		: 1px solid #EEEEEE;
+	font-family	: tahoma,arial,san-serif;
+	font-size	: 9px;
+	display		: block;
+	margin		: 5px;
+	text-align	: left;
+	float		: left;
+}
+
+.repository_iconview dd.over{
+	background-color	: #fff5e1;
+}
+
+.repository_iconview dd.selected{
+	border-color: #FC8B03;
+}
+
+.repository_iconview dd img{
+	max-width	: 190px;
+	max-height	: 70px;
+}
+
+.repository_iconview dd .image{
+	width	: 200px;
+	height	: 80px;
+	padding-bottom	: 10px;
+	text-align		: center;
+	vertical-align	: middle;
+	display	:table-cell;
+}
+.repository_iconview dd .title{
+	font-weight	: bold;
+	font-size	: 11px;
+	color		: #555555;
+}
+
+.repository_iconview dd .author{
+	margin-left	: 5px;
+}
+
+.repository_iconview dd .type{
+
+}
+
+.view_plugin {
+	overflow:auto;
+}
+.view_plugin .x-panel-body{
+	background: white;
+	font: 11px Arial, Helvetica, sans-serif;
+}
+.view_plugin .thumb{
+	padding: 3px;
+	text-align:center;
+	height:64px;
+	line-height:64px;
+	vertical-align:middle;
+}
+
+.view_plugin .thumb.model {
+	background:transparent url(../img/signavio/icon-model-background.png) no-repeat scroll center center;
+}
+
+.view_plugin .thumb img{
+}
+
+.view_plugin .thumb.model img.x-thumb-icon {
+	max-height: 55px;
+	max-width:50px;
+	vertical-align: middle;	
+	margin-top:-4px;
+	position: relative;
+	top: expression(((68-clientHeight)/2)+"px");
+}
+
+
+.view_plugin .thumb-wrap {
+	-moz-user-select:none !important;
+	border:1px solid transparent;
+	cursor:pointer;
+	float:left;
+	margin:4px 0 4px 4px;
+	padding:4px;
+	position:relative;
+	-moz-border-radius:4px;
+	-webkit-border-radius:4px;
+	width:90px;
+}
+
+
+.view_plugin .thumb-wrap span {
+	-moz-user-select:none !important;
+	display:block;
+	font-size:11px;
+	overflow:visible;
+	text-align:center;
+	width:90px;
+	white-space:nowrap;
+	height:26px;
+}
+
+.view_plugin .thumb-wrap .x-badge {
+	left:19px;
+	position:absolute;
+	top:57px;
+}
+
+.view_plugin .thumb-wrap .x-badge img {
+	height: 16px;
+	width: 16px;
+	opacity: 0.8;
+}
+
+.view_plugin.trash .thumb-wrap span{
+	color:gray;
+	font-style:italic;
+}
+
+.view_plugin.trash .thumb-wrap img{
+	opacity:0.7;
+}
+
+
+.view_plugin .empty-directory {
+	float: left;
+	margin: 4px;
+	margin-right: 0;
+	padding: 5px;
+	cursor:pointer;
+	position:relative;
+	width:90px;
+}
+.view_plugin .empty-directory img{
+	opacity:0.1;
+	filter: alpha(opacity=10);
+}
+.view_plugin .empty-directory span{
+	color:gray;
+	display:block;
+	font-style:italic;
+	overflow:hidden;
+	position:absolute;
+	text-align:center;
+	top:35px;
+	width:90px;
+}
+
+.view_plugin .x-view-over{
+    border:1px solid #dddddd;
+    background: #efefef;
+}
+
+.view_plugin .x-view-selected{
+	background: #eff5fb;
+	border:1px solid #99bbe8;
+	padding: 4px;
+}
+.x-window .x-panel-body .y-stencilgrid .x-grid3-cell-inner{
+	padding: 3px 3px 0 5px;
+	overflow: visible;
+}
+.x-window .x-panel-body .y-stencilgrid .x-grid3-cell-first{
+	width: 16px;
+	padding-right:0px !important;
+}
+.x-window .x-panel-body .y-stencilgrid .x-grid3-td-stencils div{
+	padding-left: 20px !important;
+}
+.x-window .x-panel-body .y-stencilgrid .x-grid3-td-stencils img{
+	left: 0px !important;
+}
+.x-window .x-panel-body .y-stencilgrid .x-grid3-row td{
+	line-height:12px !important;
+}
+.x-window .x-panel-body .y-stencilgrid .x-view-over,
+.x-window .x-panel-body .y-stencilgrid .x-view-selected,
+{
+	border: none;
+}
+.x-window .x-panel-body .y-glossary-categories img{
+	height:16px;
+	margin-right:5px;
+	position:relative;
+	top:2px;
+	width:16px;
+}
+.x-window .x-panel-body .y-glossary-categories img.x-org_unit {
+	background: transparent url(../img/famfamfam/building.png) no-repeat center center !important;
+}
+
+.x-window .x-panel-body .y-glossary-categories img.x-document {
+	background: transparent url(../img/famfamfam/page.png) no-repeat center center !important;
+}
+
+.x-window .x-panel-body .y-glossary-categories img.x-it_system {
+	background: transparent url(../img/nuvola/16x16/apps/mycomputer.png) no-repeat center center !important;
+}
+
+.x-window .x-panel-body .y-glossary-categories img.x-activity {
+	background: transparent url(../img/nuvola/16x16/apps/kcmdf.png) no-repeat center center !important;
+}
+
+.x-window .x-panel-body .y-glossary-categories img.x-state {
+	background: transparent url(../img/nuvola/16x16/apps/ksysv.png) no-repeat center center !important;
+}
+
+/** ***********************************
+ * ************************************
+ * Table View Plugin 
+ * ************************************
+ **/
+
+.x-tableview-plugin {
+	padding:5px;
+}
+
+
+.x-tableview-plugin .folder.x-tree-node-collapsed .x-tree-node-icon,
+.folder.x-tree-node-collapsed .x-tree-node-icon {
+	background:transparent url(../img/nuvola/16x16/filesystems/folder_grey.png) no-repeat scroll 0 0;
+}
+
+.x-tableview-plugin .folder .x-tree-node-icon,
+.folder .x-tree-node-icon {
+	background:transparent url(../img/nuvola/16x16/filesystems/folder_grey.png) no-repeat scroll 0 0;
+}
+
+.x-tableview-plugin .folder.x-tree-node-expanded .x-tree-node-icon,
+.folder.x-tree-node-expanded .x-tree-node-icon {
+	background:transparent url(../img/nuvola/16x16/filesystems/folder_grey_open.png) no-repeat scroll 0 0;
+}
+
+.x-tableview-plugin .x-glossary .x-tree-node-icon {
+	background:transparent url(../img/famfamfam/book_silver.png) no-repeat scroll 0 0;
+}
+
+.x-tableview-plugin .folder.x-tree-node-leaf.x-disabled .x-tree-node-icon {
+	background:transparent url(../img/nuvola/16x16/filesystems/folder_grey.png) no-repeat scroll 0 0;
+	opacity:0.6;
+	color:silver;
+}
+
+.x-tree-node .x-tree-node-inline-icon {
+	height:16px !important;
+	margin:1px 0 0 !important;
+	background:transparent none repeat scroll 0 0 !important;
+}
+
+.x-tableview-plugin .folder.x-locked.x-tree-node-leaf.x-disabled .x-tree-node-icon,
+.x-tableview-plugin .folder.x-locked.x-tree-node-collapsed .x-tree-node-icon {
+	background-image:url(../img/nuvola/16x16/filesystems/folder_grey_locked.png);
+}
+
+.x-tableview-plugin .folder.x-locked .x-tree-node-icon {
+	background-image:url(../img/nuvola/16x16/filesystems/folder_grey_open_locked.png);
+}
+
+
+.x-tableview-plugin .model.x-tree-node-leaf  .x-tree-node-icon {
+	background:transparent url(../img/nuvola/16x16/mimetypes/kig_doc.png) no-repeat scroll 0 0;
+}
+
+.x-tableview-plugin .x-no-directory.x-tree-node-leaf  .x-tree-node-icon {
+	background:transparent url(../img/nuvola/16x16/filesystems/folder_grey.png) no-repeat scroll 0 0;
+	opacity:0.5;
+	filter: alpha(opacity=50);
+}
+
+.x-tableview-plugin .x-no-directory.x-tree-node-leaf  span {
+	color:silver;
+	font-style:italic;
+}
+
+
+/** ***********************************
+ * ************************************
+ * Info Plugin 
+ * ************************************
+ **/
+
+
+.info_plugin .details {
+	padding:10px;
+}
+
+.info_plugin .details .key {
+	color:gray;
+	font-weight:bold;
+	padding-right:5px;
+	width:70px;
+	text-align:right;
+	display:table-cell;
+}
+
+.info_plugin .details .value {
+	display:block;
+	width:100%;
+	min-height:16px;
+	white-space:pre;
+}
+
+.info_plugin .details th {
+	vertical-align:top;
+}
+
+.info_plugin .details td {
+	width:100%;
+}
+
+.info_plugin .details .value.read {
+	color:gray;
+	font-style:italic;
+}
+
+
+.info_plugin .details .preview img.inactive {
+	max-width:100px;
+	opacity:0.2;
+}
+
+.info_plugin .details .preview {
+	text-align:center;
+}
+
+.info_plugin .details .preview table {
+	margin:auto;
+	width:100%;
+}
+
+.info_plugin .details .preview td {
+	border:1px solid #e1e1e1;
+	vertical-align:middle;
+	text-align:center;
+}
+
+
+.info_plugin .details .preview .items-1 td {
+	border:none;
+}
+
+.info_plugin .details .preview table.inactive td {
+	border:none;
+}
+
+.info_plugin hr {
+	border:none;
+	border-top:1px solid #ad0f5b;
+}
+
+.x-info * {
+	background-color:transparent;
+}
+
+.x-info {
+	position:absolute;
+	top:100%;
+	background:transparent url(../img/signavio/bgr_left_small.png) repeat-y left;
+}
+
+.x-info.x-info-fullview {
+
+}
+
+.x-info .x-info-box {
+	padding-left:5px;	
+}
+
+.x-info-box .x-panel-body {
+	padding:5px;
+	background-color:white;
+}
+
+.x-info-box .x-info-updated,
+.x-info-box .x-info-author {
+	color:gray;
+	display:inline;
+	padding-left:6px;
+	font-size:11px;
+}
+
+.x-info-box .x-info-count {
+	display:inline;
+}
+
+.x-info-box .x-info-updated span,
+.x-info-box .x-info-author span {
+	font-weight:bold;
+}
+
+.x-info-box .x-info-name {
+	display:inline;
+	font-weight:bold;
+}
+
+.x-info-box .x-info-name.x-editable {
+	background-image:url(../img/famfamfam/pencil_small.png);
+	background-position:right center;
+	background-repeat:no-repeat;
+	padding-right:15px;
+}
+
+
+.x-info-fullview .x-info-description br {
+	display:inline;
+}
+
+.x-info-description br {
+	display:none;
+}
+
+.x-info-box .x-info-description {
+	margin-top:5px;	
+}
+
+.x-info-box .x-info-name.x-default, 
+.x-info-box .x-info-description.x-default,
+.x-info-box .x-no-selection {
+	font-style:italic;
+	color:gray;
+}
+
+.x-info-box .x-over {
+	background-color:#F1F1F1;
+}
+
+.x-info-box img {
+	max-width:100%;
+	max-height:100%;
+	position:absolute;
+	top:0px;
+	left:0px;
+}
+
+* html .x-info .x-info-box img {
+	background-color:white !important;
+}
+
+.x-info-box .x-msg-loading{
+	left:50%;
+	position:absolute;
+	top:50%;
+	z-index:1000;
+}
+
+
+.x-info-box .x-scrollable img {
+	max-width:none;
+	max-height:none;
+}
+
+div.x-info-box div.x-info-details div.x-info-model {
+	position:relative;
+	width:100%;
+	height:100%;
+	overflow:auto;
+	display:none;
+}
+
+
+.x-info-fullview .x-info-box .x-scrollenable.x-info-model {
+	cursor:-moz-zoom-in;
+}
+
+.x-info-fullview .x-info-box .x-scrollenable.x-scrollable.x-info-model {
+	cursor:-moz-zoom-out;
+}
+
+.x-info-model {
+	display:none;
+}
+
+.x-info-fullview .x-info-model {
+	display:block;
+}
+.x-info .x-header-info {
+	border:none;
+	background:none;
+	
+}
+.x-info .x-panel-body {
+	border-bottom:none;
+	border-right:none;
+}
+
+.x-info .x-header-info .x-tool{
+	background:transparent url(../img/signavio/btn_sprite.png) no-repeat;
+	height:30px;
+	width:30px;
+	position:absolute;
+	z-index:1000;
+}
+
+.x-info .x-header-info .x-tool-toggle {
+	background-position:0 0;
+	top:-7px;
+	right:10px;	
+}
+
+.x-info.x-info-fullview .x-header-info .x-tool-toggle {
+	background-position:0 -32px;
+}
+.x-info.x-info-fullview .x-header-info .x-tool-toggle-over {
+	background-position:-34px -32px;
+}
+
+.x-info .x-header-info .x-tool.x-disabled {
+	cursor:default;
+	opacity:0.5;
+	background-position:-34px -61px !important;
+}
+
+.x-info .x-header-info .x-tool-open {
+	background-position:0 0;
+	right:40px;
+}
+
+.x-info .x-header-info .x-tool-open-over {
+	background-position:-34px bottom;
+}
+
+.x-info .x-header-info .x-tool-toggle {
+	background-position:0 -61px;
+}
+
+.x-info .x-header-info .x-tool-toggle-over {
+	background-position:-34px -61px;
+}
+
+.x-info.x-panel-collapsed .x-header-info .x-tool-toggle  {
+	background-position:0 -62px;
+	top:-20px;
+}
+.x-info.x-panel-collapsed .x-header-info .x-tool-toggle-over  {
+	background-position:-34px -62px;
+}
+
+.x-info .x-header-info.x-panel-header {
+	height:10px;
+	padding:0;
+	background:transparent url(../img/signavio/bgr_top_small.png) repeat-x top;
+}
+
+.x-info .x-header-info.x-panel-header span {
+	background:white url(../img/signavio/bgr_lefttop_small.png) no-repeat left top;
+	display:block;
+	height:9px;
+	width:9px;
+}
+
+.x-info .x-layout-collapsed.x-layout-collapsed-east {
+	width:30px;
+	border:none;
+	overflow:hidden;
+}
+
+.x-info .x-tool.x-tool-expand-east {
+	background:transparent url(../img/signavio/revision.png) no-repeat left top;
+	height:100px;
+	position:absolute;
+	right:0px;
+	top:50px;
+	width:25px;
+}
+
+.x-info .x-tool.x-tool-expand-east-over {
+	background-position: -34px top;
+}
+
+body .ext-overlay-model {
+	max-height:90%;
+	max-width:90%;
+}
+
+body .ext-overlay-model div {
+	cursor:default;	
+	background:white;
+}
+
+body .ext-overlay-model img {
+	width:100%;
+	height:100%;
+}
+
+body .ext-overlay-model div div{
+	border:none;
+	color:#ad0f5b;
+	font-weight:bold;
+	padding:5px;	
+}
+
+/** ***********************************
+ * ************************************
+ * Folder Plugin 
+ * ************************************
+ **/
+
+.left_view * {
+	background:none;
+}
+
+.left_view .x-panel-body {
+	background:#b1b1b1 url(../img/signavio/bgr_left.png) repeat-y right;
+}
+
+.left_view .x-panel-body .x-tree-root-ct {
+	margin-top:10px;
+}
+
+.x-layout-split-west {
+	background:white;
+}
+
+#folder_plugin .x-tree-node-el {
+	padding:5px;
+	font-weight:bold;
+	font-size:13px;
+	font-family:Tahoma;
+	color:#FFFFFF;
+}
+
+#folder_plugin .x-panel-body {
+	overflow:visible;
+}
+
+
+/*#folder_plugin .x-tree-node .x-tree-node div.x-tree-node-el {
+	padding-left:20px;
+}
+*/
+#folder_plugin .x-tree-node a span {
+	padding-left:10px;
+	color:#FFFFFF;
+}
+/*
+#folder_plugin .x-tree-node-indent,
+#folder_plugin .x-tree-ec-icon.x-tree-elbow, 
+#folder_plugin .x-tree-ec-icon.x-tree-elbow-end,
+#folder_plugin .x-tree-ec-icon.x-tree-elbow-minus, 
+#folder_plugin .x-tree-ec-icon.x-tree-elbow-end-minus,
+#folder_plugin .x-tree-ec-icon.x-tree-elbow-plus, 
+#folder_plugin .x-tree-ec-icon.x-tree-elbow-end-plus,
+#folder_plugin .root .x-tree-node-icon {
+	display:none;
+}
+*/
+#folder_plugin img.x-tree-node-icon {
+	height:22px;
+	width:22px;
+}
+
+
+#folder_plugin .folder.x-tree-node-collapsed .x-tree-node-icon {
+	background:transparent url(../img/nuvola/22x22/filesystems/folder_grey.png) no-repeat scroll 0 0;
+}
+
+#folder_plugin .folder .x-tree-node-icon {
+	background:transparent url(../img/nuvola/22x22/filesystems/folder_grey_open.png) no-repeat scroll 0 2px;
+}
+
+#folder_plugin .x-tree-node-loading .x-tree-node-icon {
+	background-position:center;
+}
+
+
+#folder_plugin .folder.x-tree-node-leaf.x-disabled .x-tree-node-icon {
+	background:transparent url(../img/nuvola/22x22/filesystems/folder_grey.png) no-repeat scroll 0 0;
+	opacity:0.6;
+	filter: alpha(opacity=60);
+	color:silver;
+}
+
+#folder_plugin .x-tree-arrows .x-tree-elbow-plus,
+#folder_plugin .x-tree-arrows .x-tree-elbow-end-plus {
+	background:transparent url(../img/signavio/arrows.png) no-repeat 0 0;
+}
+
+#folder_plugin .x-tree-arrows .x-tree-elbow-minus,
+#folder_plugin .x-tree-arrows .x-tree-elbow-end-minus {
+	background:transparent url(../img/signavio/arrows.png) no-repeat -19px 0px;
+}
+
+#folder_plugin .trash .x-tree-node-icon {
+	background:transparent url(../img/nuvola/22x22/filesystems/trashcan_grey_full.png) no-repeat scroll 0 0;
+}
+
+#folder_plugin .x-glossary .x-tree-node-icon {
+	background:transparent url(../img/nuvola/22x22/filesystems/glossary.add.png) no-repeat scroll 0 0;
+}
+
+#folder_plugin .x-glossary .x-tree-node-anchor span img {
+	position:relative;
+	top:-2px;
+}
+
+
+#folder_plugin .root .x-tree-ec-icon,
+#folder_plugin .root .x-tree-node-icon {
+	display:none;
+}
+
+/*
+#folder_plugin .x-tree-node-leaf .x-tree-node-icon {
+	background:transparent url(../img/nuvola/22x22/filesystems/folder_grey.png) no-repeat scroll 0 0;
+}
+
+#folder_plugin .x-tree-selected.x-tree-node-leaf .x-tree-node-icon {
+	background:transparent url(../img/nuvola/22x22/filesystems/folder_grey_open.png) no-repeat scroll 0 2px;
+}
+
+#folder_plugin .trash.x-tree-node-leaf .x-tree-node-icon,
+#folder_plugin .trash.x-tree-node-leaf.x-tree-selected .x-tree-node-icon {
+	background:transparent url(../img/nuvola/22x22/filesystems/trashcan_grey_full.png) no-repeat scroll 0 0;
+}
+
+
+#folder_plugin .x-tree-node-expanded .x-tree-node-icon {
+	background:transparent url(../img/nuvola/16x16/actions/1downarrow.png) no-repeat scroll 0 1px;
+	display:none;
+}
+
+#folder_plugin .x-tree-node-collapsed .x-tree-node-icon {
+	background:transparent url(../img/nuvola/16x16/actions/1rightarrow.png) no-repeat scroll 0 1px;
+	display:none;
+}
+*/
+
+#folder_plugin .x-tree-node .x-tree-node-over{
+	background:#919191 url(../img/signavio/bgr_left.png) repeat-y scroll right center;
+}
+
+#folder_plugin .x-tree-node .x-tree-selected {
+	background:gray url(../img/signavio/bgr_left.png) repeat-y scroll right center;
+}
+
+/** ***********************************
+ * ************************************
+ * Message Plugin 
+ * ************************************
+ **/
+ 
+.x-message {
+	
+}
+
+.x-message .x-message-item {
+	padding:10px;
+	/*border:1px solid #ad0f5b;
+	background:white;*/
+	border-top:none;
+	position:relative;
+	top:-5px;
+}
+ 
+/** ***********************************
+ * ************************************
+ * Access Plugin 
+ * ************************************
+ **/
+
+.access_plugin .access_plugin_content {
+	padding:10px;
+}
+
+
+.access_plugin .details .header {
+	color:gray;
+	font-weight:bold;
+	font-style:italic;
+	margin: 10px 0px 5px 0px;
+}
+
+.x-hoverbutton {
+	float:right;
+	display:block;
+	position:relative;
+	cursor:pointer;
+}
+
+.access_plugin .details .nouser {
+	color:gray;
+	font-style:italic;
+}
+
+.access_plugin #access_plugin_contentpane {
+	margin-bottom:20px;
+}
+
+.access_plugin .x-form-field-wrap {
+	margin-left:-1px;	
+}
+
+.x-panel-access th {
+	width:100%;
+	padding-bottom:3px;
+}
+
+.x-panel-added-item .cb-access-right {
+	text-align:center;
+	width:20px;
+}
+
+.x-disabled .x-panel-access th {
+	color:silver;
+}
+
+.cb-access {
+	font-size:10px !important;
+	height:13px !important;
+	width:90% !important;
+	margin-right:5px;
+	margin-top:-4px;
+}
+
+.x-panel-access {
+	width:100%;
+	padding:10px;
+}
+
+.x-panel-access td, .x-panel-access th {
+	white-space:nowrap;
+}
+
+.x-disable-hidden {
+	display:none;	
+}
+
+div.x-cb-enabled {
+	width:10px;
+	height:10px;
+	background:transparent url(../img/nuvola/16x16/actions/ok_small.png) no-repeat scroll center center;
+	margin:auto;
+}
+
+.x-access-no-rights {
+	color:silver;
+	font-style:italic;
+}
+
+.x-tool-access-over {
+	background-position:-15px -90px !important;
+}
+
+
+.x-tree-admin-user.x-tree-access .x-checked .x-tree-node-icon {
+	background:transparent url(../img/nuvola/16x16/actions/ok_small.png) no-repeat scroll center center;
+}
+
+.x-tree-admin-user.x-tree-access .x-tree-node-icon {
+	background:transparent url(../../../libs/ext-2.0.2/resources/images/default/s.gif);
+}
+
+.x-tree-admin-user.x-tree-access.x-editable .x-tree-node-icon,
+.x-tree-admin-user.x-tree-access input {
+	display:none;	
+}
+
+.x-tree-admin-user.x-tree-access.x-editable input {
+	display:inline;
+}
+
+.x-tree-admin-user.x-tree-access .x-checked .x-tree-node-anchor span {
+ 	color:black;
+}
+
+.x-tree-admin-user.x-tree-access .x-tree-node-anchor span,
+.x-tree-admin-user.x-tree-access .x-access-inherited .x-tree-node-anchor span  {
+	color:silver;
+}
+
+.x-tree-admin-user.x-tree-access .x-access-inherited .x-tree-node-anchor span span{
+	font-style:italic;
+}
+
+/** ***********************************
+ * ************************************
+ * Breadcrumb Plugin 
+ * ************************************
+ **/
+ 
+.breadcrumb_plugin {
+	margin-top:8px;
+}
+
+.breadcrumb_plugin .details {
+	padding:10px;
+	white-space:nowrap;
+} 
+
+.breadcrumb_plugin .details a {
+	cursor:pointer;
+	font-weight:bold;
+	padding:0px 5px;
+} 
+
+.breadcrumb_plugin .details a.x-disabled {
+	cursor:default;
+	font-style: normal;
+	color: silver !important;
+}
+
+.breadcrumb_plugin .search_title {
+	color:gray;
+}
+
+.breadcrumb_plugin .search_query {
+	font-weight:bold;
+	color:#ad0f5b;
+} 
+
+.x-disabled {
+	color:silver;
+	font-style:italic;
+}
+.breadcrumb_plugin .x-breadcrumb-wrapper {
+	line-height:30px;
+	position:absolute;	
+	white-space:nowrap;
+}
+
+.x-msg-loading {
+	height:16px;
+	width:16px;
+	margin-bottom:-3px;
+	margin-top:5px;
+	background: transparent url(../../../libs/ext-2.0.2/resources/images/default/tree/loading.gif) no-repeat center;
+	position:absolute;
+	right:-10px;
+	top:2px;
+}
+
+.x-bread-search-pages {
+	margin-right:15px;	
+}
+
+.x-breadcrumb-bottom-bar {
+	text-align:center;
+}
+
+.x-breadcrumb-bottom-bar .x-bread-search-pages {
+	display:block;
+	padding-bottom:20px;
+	padding-top:10px;
+}
+
+.x-bread-search-pages .x-disabled {
+	font-style:normal;
+}
+
+.x-bread-search-pages a {
+	text-decoration:none;
+}
+
+.x-bread-search-pages .x-first,
+.x-bread-search-pages .x-last {
+	letter-spacing:-2px;
+}
+
+
+/** ***********************************
+ * ************************************
+ * Drawer Button Plugin 
+ * ************************************
+ **/
+
+.x-layout-collapsed-east {
+	overflow:visible;
+}
+
+.drawer_plugin {
+	left:-70px;
+	position:absolute;
+	text-align:right;
+	top:20px;
+	z-index:100;
+}
+
+.drawer_plugin .x-btn {
+	display:block;
+	width:60px;
+	margin-top:20px;
+	cursor:pointer;
+	color:silver;
+}
+
+.drawer_plugin .x-btn.activated {
+	font-weight:bold;
+	color:black;
+}
+
+.drawer_plugin .x-btn:hover {
+	color:gray;
+}
+ 
+
+/** ***********************************
+ * ************************************
+ * Search Plugin 
+ * ************************************
+ **/
+.search_plugin {
+	margin-bottom:-1px;
+	margin-left:10px;
+	margin-right:25px;
+}
+
+.search_plugin .x-panel-body {
+	background:transparent;
+}
+
+.search_plugin.activated,
+.search_plugin.activated  * {
+	
+}
+
+.search_plugin .x-form-field {
+	border:none;
+	padding:3px;
+	background: none;
+}
+
+
+.search_plugin .x-table-layout-cell {
+	background: url(../img/signavio/search_background2.png) repeat-x 0 -80px;
+}
+
+.search_plugin .x-table-layout-cell .search_field_left {
+	height:22px;
+	padding-top:3px;
+	background: url(../img/signavio/search_background2.png) no-repeat 0px -54px;
+}
+
+.search_plugin .x-table-layout-cell .search_field_right {
+	height:22px;
+	padding-top:3px;
+	background: url(../img/signavio/search_background2.png) no-repeat -40px -54px;
+}
+
+
+div.search_plugin .x-table-layout-cell.x-focus, 
+div.search_plugin.activated .x-table-layout-cell {
+	background-position:0 -28px !important;
+}
+
+div.search_plugin .x-focus .x-table-layout-cell div.search_field_right,
+div.search_plugin.activated .x-table-layout-cell div.search_field_right {
+	background-position:-40px -2px !important;
+}
+
+div.search_plugin .x-focus .x-table-layout-cell div.search_field_left,
+div.search_plugin.activated .x-table-layout-cell div.search_field_left {
+	background-position:0px -2px !important;
+}
+
+
+
+
+
+
+
+
+
+.search_plugin .x-btn {
+	height:22px;
+	margin-top:-3px;
+	background: url(../img/signavio/search_button.png) no-repeat 0 0;
+}
+
+.search_plugin .x-btn.x-btn-over {
+	background-position:-45px 0px;
+}
+.search_plugin .x-btn.x-btn-click {
+	background-position:-90px 0px;
+}
+
+.search_plugin .x-btn .x-btn-center {
+	width:28px;
+	padding-bottom:2px;
+}
+
+.search_plugin .x-btn .x-btn-center button {
+	padding-left:6px;
+}
+.search_plugin .x-btn * {
+	background: none;
+}
+.search_plugin .x-form-field.x-form-focus {
+	
+}
+
+/** ***********************************
+ * ************************************
+ * Mask Loading  
+ * ************************************
+ **/
+.mask-logo {
+	display:block;
+	width:391px;
+}
+
+.mask-version {
+	color:#ad0f5b;
+	padding-right:10px;
+}
+
+.mask-text {
+	display:block;
+	position:relative;
+	text-align:right;
+	top:0;
+	width:100%;	
+	height:20px;
+}
+.mask-title {
+	color:#ad0f5b;
+	font-weight:bold;
+	padding-right:10px;
+}
+.mask-logo span img {
+	height:16px;
+	width:16px;
+	margin-bottom:-4px;
+	background: transparent url(../../../libs/ext-2.0.2/resources/images/default/tree/loading.gif) no-repeat center;
+}
+
+.mask-logo div img {
+	padding-bottom:10px;
+	border-bottom:1px solid #ad0f5b;
+}
+/** ***********************************
+ * ************************************
+ * Revision Plugin 
+ * ************************************
+ **/
+.x-panel-body .x-revision-plugin  {
+	padding:5px;
+}
+
+.x-revision {
+	background:#F1F1F1 url(../img/signavio/bgr_right.png) repeat-y left center;
+}
+
+.x-revision .x-panel-header {
+	background:transparent url(../img/signavio/bgr_bottom.png) repeat-x scroll center top;
+	border:none;
+	height:5px;
+	overflow:visible;
+	position:absolute;
+	top:0;
+	width:100%;
+}
+
+.x-revision .x-panel-body {
+	padding-left:1px;
+}
+
+.x-revision .x-panel-body .x-revision-plugin {
+}
+
+.x-revision .x-tool-toggle {
+	background:transparent url(../img/signavio/btn_sprite.png) no-repeat left -90px;
+	height:30px;
+	position:absolute;
+	right:18px;
+	width:30px;
+	z-index:100;
+	top:-15px;
+}
+
+.x-revision .x-tool-toggle-over {
+	background-position:-34px -90px;
+}
+
+.x-revision-plugin .x-revision-item{
+	padding:5px;
+	margin-bottom:5px;
+	cursor:pointer;
+	border:1px solid white;
+}
+
+.x-revision-plugin .x-revision-item .revision {
+	font-weight:bold;
+}
+
+.x-revision-plugin .x-revision-item .revision {
+	font-weight:bold;
+}
+
+.x-revision-plugin .x-revision-item .author,
+.x-revision-plugin .x-revision-item .date {
+	color:gray;
+	font-size:11px;
+}
+
+.x-revision-plugin .x-revision-item .author span,
+.x-revision-plugin .x-revision-item .date span{
+	font-weight:bold;
+}
+
+.x-revision-plugin .x-revision-item .author {
+	display:block;
+}
+
+.x-revision-plugin .x-revision-item .comment {
+	padding-top:10px;
+	white-space:pre;
+	overflow:hidden;
+	white-space:normal;
+}
+
+.x-revision-plugin .x-revision-item.x-view-selected {
+	background:white;
+	border:1px solid #B70F5B;
+}
+
+
+.x-revision-plugin .x-view-select.x-view-selected {
+	color:gray !important;
+	text-decoration:none !important;	
+}
+
+.x-revision-plugin .x-views img {
+	margin-left:4px;
+	position:relative;
+	top:2px;
+}
+
+.x-revision-plugin .x-revision-item-over {
+	background:white;
+	border:1px solid #DDDDDD;
+}
+
+
+.x-revision-plugin .x-revision-item .x-revision-item-header {
+	white-space:nowrap;
+	overflow:hidden;
+}
+
+.x-revision-item-header img {
+	height:16px;
+	margin-right:5px;
+	margin-top:-4px;
+	position:relative;
+	top:4px;
+	width:16px;
+}
+
+.x-revision-item-extension img{
+	width:100%;
+	height:100%;
+}
+
+.x-revision-item-extension {
+	padding:5px;
+	margin-top:5px;	
+	background:#F9FBFD;
+	border:1px solid #B4CDEE;
+}
+
+.x-revision-collapsed .x-revision-item-extension {
+	display:none;
+}
+
+.x-revision-model {
+	border-top:1px solid #AD0F5B;
+	color:gray;
+	margin:20px 0 5px;
+	padding-bottom:5px;
+	padding-top:15px;
+
+}
+
+.x-revision-mode-first {
+	border-top:none;
+	margin-top:5px;
+	padding-top:0px;
+}
+
+.x-revision-model span{
+	font-weight:bold;
+	text-decoration:underline;
+	color:#ad0f5b;
+}
+
+.x-revision-plugin .x-revision-no {
+	padding:5px;
+	font-style:italic;
+	color:silver;
+}
+
+.x-revision-plugin .x-form-cb-label {
+	padding:0px;
+}
+
+
+.x-revision-plugin .x-revert {
+	height:31px;
+	position:relative;
+	text-align:right;
+	vertical-align:bottom;
+}
+
+.x-revision-plugin .x-link-revert,
+.x-revision-plugin .x-link-approve {
+	font-size:11px;
+	font-style:italic;
+	position:relative;
+	text-align:right;
+	top:18px;
+	margin-left:10px;
+}
+
+
+.x-revision-plugin .x-views {
+	
+}
+/** ***********************************
+ * ************************************
+ * Move Plugin  
+ * ************************************
+ **/
+.x-plugin-move-window .x-window-body {
+	padding:5px;
+	background:white;
+}
+
+.x-plugin-move-window .x-tableview-plugin {
+	padding:0px;
+}
+
+.x-plugin-move-window label {
+	display:block;
+	padding-bottom:5px;
+}
+
+.x-plugin-move-window .x-form-checkbox {
+	position:relative;
+	top:2px;
+}
+
+.x-plugin-move-window .x-disabled a span {
+	color:#999 !important;
+	font-style: italic;
+}
+
+.x-tableview-plugin.x-div-textbackground .x-panel-body {
+	padding: 2px 0px !important;
+}
+
+
+
+/** ***********************************
+ * ************************************
+ * Configuration/Administration Plugin  
+ * ************************************
+ **/
+
+.configuration_window_form .x-panel-body {
+	padding:10px;
+}
+.configuration_window_form .x-panel-body .x-panel-body {
+	padding:0px;
+}
+
+.configuration_window_form .x-form-item label {
+
+}
+
+.configuration_window_form .x-form-item {
+	text-align:right;
+}
+
+.configuration_window_form .x-form-item .x-form-element {
+	text-align:left;
+}
+
+.configuration_window_form .x-item-disabled {
+	filter:none !important;
+}
+
+.x-form-item .x-disable .x-form-element {
+	color:silver;
+}
+
+.administration_plugin_tree .folder.x-tree-node-collapsed .x-tree-node-icon.x-tree-node-inline-icon {
+	background:transparent url(../img/nuvola/16x16/filesystems/folder_grey.png) no-repeat scroll 0 0;
+}
+
+.administration_plugin_tree .folder.x-tree-node-expanded .x-tree-node-icon.x-tree-node-inline-icon {
+	background:transparent url(../img/nuvola/16x16/filesystems/folder_grey_open.png) no-repeat scroll 0 0;
+}
+
+
+.administration_plugin_tree .user.x-tree-node-leaf .x-tree-node-icon,
+.administration_plugin_tree .user.x-tree-node-el .x-tree-node-icon {
+	background:transparent url(../img/famfamfam/user.png) no-repeat scroll 0 0;
+}
+
+.administration_plugin_tree .x-tree-removed {
+	text-decoration:line-through;
+	opacity:0.6;
+	filter: alpha(opacity=60);
+	
+}
+
+.administration_plugin_tree .group.x-tree-node-leaf .x-tree-node-icon,
+.administration_plugin_tree .group.x-tree-node-el .x-tree-node-icon  {
+	background:transparent url(../img/famfamfam/group.png) no-repeat scroll 0 0;
+}
+
+.administration_plugin_tree .application.x-tree-node-leaf .x-tree-node-icon,
+.administration_plugin_tree .application.x-tree-node-el .x-tree-node-icon  {
+	background:transparent url(../img/famfamfam/application.png) no-repeat scroll 0 0;
+}
+
+
+.administration_panel_window .x-layout-split-west {
+	background:#ABADAF;
+	width:2px;
+}
+
+.administration_panel_window .x-default {
+	color:gray;
+	font-style:italic;
+}
+
+.x-tree-admin-user .x-tree-ec-icon {
+	display:none;
+}
+
+
+
+.administration_panel_window .ext-el-mask {
+	background-color:#EEEEEE;
+	border:1px solid #A5A5A5;
+}
+
+.x-admin-btn {
+	padding-left:105px;
+}
+
+.x-admin-btn table{
+	display:inline;
+	margin-right:5px;
+}
+
+.x-admin-btn .x-panel-bwrap,
+.x-admin-btn .x-panel-body {
+	overflow:visible;
+} 
+.x-admin-btn img {
+	width:16px;
+	height:16px;
+	left:-22px;
+	top:2px;
+	position:absolute;
+	display:none;
+}
+
+.x-admin-btn img.x-ok{	
+	background:white url(../img/nuvola/16x16/actions/ok.png) no-repeat scroll center center;
+}
+
+.x-admin-btn img.x-failed{	
+	background:white url(../img/nuvola/16x16/actions/button_cancel.png) no-repeat scroll center center;
+}
+
+.x-admin-purchaseHint {
+	margin-bottom:10px;
+}
+
+.x-window-settings-btn {
+	padding:5px;
+}
+
+.x-window-settings-btn table{
+	display:inline;
+	margin-right:5px;
+}
+
+.x-form-right-label {
+	color:gray;
+	font-style:italic;
+	margin-left:360px;
+	margin-top:-22px;
+	position:absolute;
+}
+
+.x-administration-iframe {
+	border:none;
+	width:100%;
+	height:100%;
+}
+
+.x-waiting {
+	width:16px;
+	height:16px;
+	position:absolute;
+	top:5px;
+	left:5px;
+	background: transparent url(../../../libs/ext-2.0.2/resources/images/default/tree/loading.gif) no-repeat scroll 0 0;
+}
+
+.x-waiting-box div {
+	margin-left:10px;
+	padding-left:30px;
+	background: transparent url(../../../libs/ext-2.0.2/resources/images/default/tree/loading.gif) no-repeat scroll left center;
+	border: none;
+}
+
+.x-panel-added .x-panel-added-list {
+	margin-top:3px;
+}
+
+.x-panel-added .x-no-group .x-panel-added-list {
+	color:gray;
+	font-style:italic;
+}
+
+.x-panel-added .x-no-group .x-panel-added-list img{
+	opacity:0.5;
+	filter:alpha(opacity=50);
+}
+
+.x-panel-added .x-panel-added-item img {
+	margin-right:5px;
+	position:relative;
+	top:-1px;
+}
+
+.x-panel-added .x-panel-added-item span {
+	vertical-align:top;
+}
+
+.x-panel-added-trigger {
+	background-image:url(../../../libs/ext-2.0.2/resources/images/darkgray/form/add-trigger.gif) !important;
+}
+
+.x-panel-added-cb-list .search-item {
+	padding:3px;
+	border:1px solid white;
+}
+
+.x-panel-added-cb-list .x-combo-list-inner {
+	overflow-x:hidden !important;
+}
+
+.search-item .name, .search-item .mail, .search-item .principal {
+	display:block;
+	font-style:italic;
+}
+
+.search-item .name {
+	font-weight:bold;
+	font-style:normal;
+}
+
+.x-admin-check.x-admin-trial {
+	margin-top:-8px;
+}
+
+.x-admin-check .x-form-check-wrap {
+	padding:3px;
+}
+
+.x-admin-check small {
+	font-size:11px;
+}
+
+.x-admin-check .x-form-check-wrap label{
+	top:-2px;
+}
+
+input.x-plain {
+	border-color:white !important;
+	background:white !important;
+	color:black !important;
+	opacity:1;
+}
+/** ***********************************
+ * ************************************
+ * Buy Plugin  
+ * ************************************
+ **/
+ 
+.x-purchase-payment .x-panel-body {
+	padding:5px !important;
+
+} 
+
+
+/** ***********************************
+ * ************************************
+ * TalkAbout Plugin  
+ * ************************************
+ **/
+.x-talkabout-iframe {
+	width:100%;
+	height:100%;
+	border:none;
+}
+
+.x-talkabout-iframe html {
+	border:none;
+}
+
+.x-talkabout {
+	display:block;
+	height:96% !important;
+	left:2% !important;
+	top:2% !important;
+	width:96% !important;
+}
+
+.x-talkabout * {
+	overflow:visible;
+}
+
+.x-hint {
+	position:absolute;
+	bottom:100%;
+	font-weight:bold;
+}
+
+
+.x-talkabout .x-panel,
+.x-talkabout .x-panel-bwrap,
+.x-talkabout .x-panel-body,
+.x-talkabout .x-window-bwrap,
+.x-talkabout .x-window-mr,
+.x-talkabout .x-window-mc,
+.x-talkabout .x-window-body {
+	height:100%;
+}
+
+.x-talkabout .x-window-ml {
+	height:92%;
+}
+
+
+
+
+.x-talkabout .x-tool-close {
+	position:absolute;
+	background:transparent url(../img/signavio/btn_sprite.png) no-repeat scroll 0 0;
+	height:30px;
+	width:30px;
+	right:40px;
+	top:-5px;
+}
+
+.x-talkabout .x-tool-close-over {
+	background-position:-34px 0;
+}
+
+.x-talkabout .x-window-bwrap {
+	z-index:500;
+}
+
+.x-talkabout .x-window-tl {
+	background-image:url(../img/signavio/bgr_lefttop.png);
+	padding-left:18px;
+	z-index:1000;
+}
+
+.x-talkabout .x-window-tr {
+	background-image:url(../img/signavio/bgr_righttop.png);
+	padding-right:18px;
+}
+
+.x-talkabout .x-window-tc {
+	background-image:url(../img/signavio/bgr_top.png);
+	height:13px;
+}
+
+.x-talkabout .x-window-ml {
+	background-image:url(../img/signavio/bgr_left.png);
+	background-position:left center;
+	padding-left:15px;
+}
+
+.x-talkabout .x-window-mr {
+	background-image:url(../img/signavio/bgr_right.png);
+	padding-right:17px;
+}
+
+.x-talkabout .x-window-bl {
+	background-image:url(../img/signavio/bgr_leftbottom.png);
+	background-position:-1px 50%;
+	height:14px;
+	padding-left:17px;
+}
+
+.x-talkabout .x-window-br {
+	background-image:url(../img/signavio/bgr_rightbottom.png);
+	height:14px;
+	padding-right:18px;
+}
+
+.x-talkabout .x-window-bc {
+	background-image:url(../img/signavio/bgr_bottom.png);
+	height:14px;
+}
+
+.x-talkabout .x-panel-nofooter .x-window-bc {
+	height:14px;
+}
+
+.x-talkabout .x-window-mc {
+	background:white none repeat scroll 0 0;
+	border:medium none;
+}
+
+
+.x-talkabout .x-window-header-text {
+	cursor:pointer;
+	display:none;
+}
+
+
+
+
+
+/** ***********************************
+ * ************************************
+ * New Plugin  
+ * ************************************
+ **/
+.x-window .x-window-ffonly {
+	background:transparent url(../img/nuvola/48x48/actions/fileclose.png) no-repeat scroll left top;
+	height:48px;
+	margin-right:10px;
+	width:48px;
+}
+
+
+/** ***********************************
+ * ************************************
+ * Help - Feedback-Plugin  
+ * ************************************
+ **/
+.x-help-iframe {
+	width:100%;
+	height:100%;
+	border:none;
+}
+
+.x-help-iframe html {
+	border:none;
+}
+
+.x-help {
+	display:block;
+	height:96% !important;
+	width:96% !important;
+}
+
+.x-help.x-help-screencasts {
+	display:block;
+	height:96% !important;
+	width:850px !important;
+}
+
+.x-help * {
+	overflow:visible;
+}
+.x-help .x-panel,
+.x-help .x-panel-bwrap,
+.x-help .x-panel-body,
+.x-help .x-window-bwrap,
+.x-help .x-window-mr,
+.x-help .x-window-mc,
+.x-help .x-window-body {
+	height:100%;
+}
+
+.x-help .x-window-ml {
+	height:92%;
+}
+
+.x-help .x-help-a {
+	color:white;
+	padding:5px 5px 7px 4px;
+	position:absolute;
+	right:20px;
+	top:-23px;
+	z-index:100;
+}
+
+
+/** ***********************************
+ * ************************************
+ * Purchase 
+ * ************************************
+ **/
+.x-plugin-purchase form {
+	padding:10px;
+	font-size:13px;
+}
+
+.x-plugin-purchase form label {
+	margin-left:10px;
+	position:relative;
+	top:-1px;
+}
+
+.x-plugin-purchase form .x-purchase-license-count {
+	margin-right:5px;
+	width:25px;
+}
+
+.x-plugin-purchase .x-disabled {
+	color:gray;
+	font-style:italic;
+}
+
+.x-plugin-purchase .x-purchase-box {
+	border:1px solid #AD0F5B;
+	margin:10px 0px 20px;
+	padding:10px;
+	overflow:auto;
+}
+
+
+.x-plugin-purchase .x-purchase-box.x-purchase-license {
+	max-height:110px;
+	position:relative;
+}
+
+.x-plugin-purchase .x-purchase-license.x-label-title {
+	margin-top:-9px;
+}
+
+.x-plugin-purchase input {
+	margin-bottom:5px;
+}
+
+.x-ie7 .x-plugin-purchase input {
+	margin-bottom:0px !important;
+}
+
+.x-ie7 .x-plugin-purchase .x-purchase-box {
+	padding-bottom:5px !important;
+}
+
+.x-ie7 .administration_panel_window .x-administration-general .x-panel-body {
+	height:350px !important;
+}
+
+.x-ie7 .administration_panel_window .x-administration-general .x-panel-body .x-panel-body {
+	height:auto !important;
+}
+
+.x-plugin-purchase input.x-more-licences{
+	margin-bottom:0px;
+	margin-top:10px;
+}
+
+.x-plugin-purchase .x-calc {
+	display:block;
+	left:190px;
+	position:absolute;
+	text-align:right;
+	top:0;
+}
+.x-plugin-purchase  .x-purchase-line-calc {
+	height:50px;
+	position:relative;
+}
+
+.x-plugin-purchase .x-purchase-dates {
+	display:block;
+}
+
+.x-plugin-purchase .x-purchase-dates img {
+	position:absolute;
+	margin-left:10px;
+}
+
+.x-plugin-purchase .x-purchase-line {
+	margin-bottom:5px;
+}
+
+.x-plugin-purchase .x-purchase-line.x-purchase-interval {
+	margin-bottom:15px;
+}
+
+
+.x-plugin-purchase .x-label-title {
+	background:white;
+	color:#AD0F5B;
+	font-size:11px;
+	font-weight:bold;
+	margin-top:-20px;
+	position:absolute;
+	left:8px;
+	padding:2px;
+	z-index:10000;
+}
+
+.x-plugin-purchase .x-purchase-label {
+	float:left;
+	width:190px;
+	height:20px;
+}
+
+.x-plugin-purchase .x-sum {
+	border-top:3px double silver;
+	display:block;
+	margin-top:4px;
+	font-weight:bold;
+}
+
+.x-plugin-purchase .x-purchase-invoice-hint{
+	font-size:11px;
+	color:gray;
+}
+
+.x-plugin-purchase form .x-purchase-billing label {
+	color:#AD0F5B;
+	margin-left:0;
+	margin-right:10px;
+	position:relative;
+	top:-1px;
+}
+
+.x-plugin-purchase .x-purchase-billing .x-purchase-method img {
+	position:relative;
+	top:4px;
+}
+
+.x-plugin-purchase .x-purchase-billing .x-purchase-method input {
+	width:auto;
+}
+
+.x-plugin-purchase .x-purchase-billing .x-purchase-method label {
+	color:black;
+	margin-left:5px;
+}
+
+
+.x-plugin-purchase .x-purchase-billing input.x-default {
+	color:silver;
+	font-style:italic;	
+}
+
+.x-plugin-purchase .x-purchase-billing input {
+	display:inline;
+	margin-bottom:5px;
+	padding:2px;
+	width:300px;
+}
+
+.x-plugin-purchase .x-purchase-billing input.x-purchase-zip,
+.x-plugin-purchase .x-purchase-billing input.x-purchase-phone {
+	display:block;
+	float:left;
+	margin-right:0px;
+	width:52px;
+}
+
+.x-plugin-purchase .x-purchase-intro {
+	padding:5px 0px 10px 0px;
+}
+
+.x-plugin-purchase .x-label-hint {
+	display:block;
+	font-size:11px;
+	margin-bottom:7px;
+}
+
+.x-plugin-purchase .x-purchase-billing input.x-purchase-phone,
+.x-plugin-purchase .x-purchase-billing input.x-purchase-fax {
+	width:138px;
+}
+
+.x-plugin-purchase .x-purchase-billing input.x-purchase-city {
+	width:224px;
+}
+
+/*.x-plugin-purchase .x-purchase-billing input.x-invalid {
+	background:transparent url(../img/famfamfam/arrow_left_light.png) no-repeat right center;
+	border-width:1px;
+}*/
+
+.x-plugin-purchase .x-purchase-billing .x-invalid {
+	font-weight:bold;
+}
+
+
+.x-plugin-purchase .x-purchase-summary .x-purchase-hints {
+	font-size:10px;
+}
+
+.x-plugin-purchase .x-purchase-summary .agb {
+	text-align:right;
+}
+
+.x-plugin-purchase .x-purchase-summary .agb label {
+	position:relative;
+	top:-2px;
+	margin-left:10px;
+}
+
+
+.x-purchase-link {
+	background:transparent url(../img/signavio/purchase3.png) no-repeat scroll center center;
+	color:white;
+	margin-right:-100px;
+	padding:15px 30px;
+	position:absolute;
+	right:33%;
+	text-decoration:none;
+	top:-7px;
+	z-index:1000;
+}
+
+.x-purchase-link u {
+	font-weight:bold;
+}
+
+a.x-purchase-link:hover, a.x-purchase-link:active, a.x-purchase-link:focus {
+	color:#f1f1f1;
+}
+
+.x-purchase-link img {
+	background:transparent url(../img/signavio/purchase.png) no-repeat scroll left 0;
+	height:49px;
+	width:170px;
+}
+
+.x-plugin-purchase .x-purchase-has-license {
+	font-style:italic;
+}
+.x-purchase-link span {
+	color:white;
+	display:block;
+	font-size:12px;
+	position:absolute;
+	right:105px;
+	text-align:center;
+	top:9px;
+	width:30px;
+}
+
+.en .x-purchase-link span {
+	right:69px;
+}
+
+.en .x-purchase-link img {
+	background:transparent url(../img/signavio/purchase.png) no-repeat scroll right 0;
+}
+
+
+/**
+ * SECURITY CENTER
+ */
+ 
+.x-purl-panel.x-editable .x-remove-entry {
+	display:inline;
+}
+
+.x-purl-panel .x-remove-entry  {
+	display:none;
+}
+
+.x-window-security-center .ext-el-mask {
+	background:transparent;
+	filter:none;
+}
+
+.x-window-security-center .x-item-disabled,
+.x-window-security-center .x-item-disabled:hover {
+	opacity:1;
+	color:silver;	
+}
+.x-window-security-center textarea, 
+.x-window-security-center input {
+	font-size:11px;
+}
+
+.x-window-security-center .x-info-img {
+	left:3px;
+	position:relative;
+	top:3px;	
+	margin-top:-4px;
+}
+
+.x-window-security-center .x-form-cb-label {
+	bottom:2px;
+	position:relative;
+}
+
+.ext-ie7 .x-window-security-center .x-form-cb-label {
+	bottom:0px;
+}
+
+.x-window-security-center .x-item-disabled .x-panel-footer {
+	opacity:0.1	
+}
+
+
+.x-div-textbackground .x-panel-body {
+	border: 1px solid #A5A5A5 !important;
+	padding: 1px !important;
+	background: transparent url(../../../libs/ext-2.0.2/resources/images/default/form/text-bg.gif) repeat-x 0 0;
+}
+
+.x-groups-parent.x-div-textbackground .x-panel-body {
+	padding: 1px 3px !important;
+}
+
+.x-div-textbackground {
+	background: white;
+}
+
+.x-div-textbackground.x-loading {
+	background: white url(../../../libs/ext-2.0.2/resources/images/default/tree/loading.gif) no-repeat center center;
+}
+
+.x-div-textbackground .ext-el-mask {
+	background-color:white;
+	opacity:0.2;
+}
+
+.x-div-textbackground .x-panel-body .x-panel-body {
+	border: none !important;
+	padding: 0;
+	background: none;
+}
+
+.x-window-security-center-manage-entry img.x-remove-entry {
+	right:10px;
+	position:absolute;
+	top:3px;
+	cursor: pointer;
+}
+
+.x-window-security-center-manage-entry .x-remove-entry.x-hover {
+
+}
+
+
+.x-window-security-center-manage-entry .x-remove-entry.x-disabled {
+	color:grey !important;
+}
+
+.x-window-security-center-manage-entry span {
+	position: absolute;
+	top:1px;
+	left:20px;
+	white-space: nowrap;
+}
+
+.x-window-security-center-manage-entry a.x-remove-entry {
+	float:right;
+	position:absolute;
+	top:1px;
+	right:5px;
+}
+
+.x-window-security-center-manage-entry.x-empty {
+	color:grey;
+	font-style: italic;
+}
+
+
+.x-window-security-center .x-window-security-center-mail .x-form-check-wrap {
+	position: relative;
+	top:5px;
+}
+
+.ext-ie7 .x-window-security-center .x-window-security-center-mail .x-form-check-wrap {
+	position: relative;
+	top:2px;
+}
+
+.x-window-security-center .x-window-security-center-mail .x-div-textbackground .x-form-check-wrap {
+	top: 0px;
+}
+
+
+.x-window-security-center .x-link-deselect-all {
+	margin-left:5px;
+}
+
+.x-security-center-cb-user {
+	padding-left:20px;
+	position:relative;
+}
+
+.x-security-center-cb-user img {
+	position: absolute;
+	left: 2px;
+	top: 2px;
+}
+.x-info-notify {
+	display:inline;
+	font-size:11px;
+	font-style:italic;
+	padding-left:10px;
+	color:grey;
+}
+
+.x-info-notify-link {
+	padding-left:5px;
+}
+
+.x-plugin-archive .x-form-check-wrap {
+	margin-top:3px;
+}
+
+.x-plugin-archive .x-form-check-wrap .x-form-cb-label {
+	bottom:2px;
+	position:relative;
+}
+
+.x-grid3-row-selected {
+	color:#000000 !important;
+	background:#D9E8FB none repeat scroll 0 0 !important;
+}
+
+.x-waiting-panel .ext-el-mask {
+	opacity:1;
+	background: transparent url(../../../libs/ext-2.0.2/resources/images/default/tree/loading.gif) no-repeat center center;
+}
+
+.x-grid3-header {
+	background-image:url(../../../libs/ext-2.0.2/resources/images/darkgray/grid/grid3-hrow-over.gif);
+	border:none;
+	padding:0px;
+}
+
+td.x-grid3-hd-over, td.sort-desc, td.sort-asc, td.x-grid3-hd-menu-open {
+	border-left:1px solid white;
+	border-right:1px solid silver;
+}
+
+.x-grid3-row-over {
+	background:#EEEEEE;
+	border:1px solid #DDDDDD;
+}
+
+.x-grid3 table {
+	border-right:1px solid #EEEEEE;
+}
+
+.x-security-center-tab-panel .x-grid3-cell-inner img {
+	position: absolute;
+	top:2px;
+	left:2px;
+}
+
+.x-security-center-tab-panel .x-grid3-cell-inner .x-column-user {
+	padding-left:18px;
+	position:relative;
+}
+
+.x-security-center-tab-panel .x-grid3-cell-inner .x-column-user img {
+	left:-2px;
+	position:absolute;
+	top:-1px;
+}
+
+.x-window-login .x-form-item-label {
+	float:none;
+}
+
+.x-window-login .x-form-element {
+	padding-left:0px !important;
+}
+
+.x-gecko-3-0 .x-security-center-tab-panel .ext-el-mask {
+	opacity:0;
+}
+
+/**
+ * MAP EXPORT
+ *
+ */
+.x-plugin-map-view {
+	position:relative;
+}
+
+.x-plugin-map-view .thumb-wrap {
+	float: left;
+	margin: 4px;
+	margin-right: 0;
+	padding: 5px;
+	cursor:pointer;
+	width:140px;
+	height: 95px;
+	-moz-user-select:none !important;
+	text-align: center;
+	border: 1px solid transparent;
+}
+
+.x-form-map-export-branding {
+	padding-top:5px;
+	padding-bottom:5px;
+}
+
+.x-form-map-export-branding .x-form-item {
+	overflow: hidden !important;
+}
+
+* html .x-plugin-map-view .thumb-wrap {
+	width:135px;
+}
+
+.x-plugin-process-documentation {
+	height:117px;
+}
+
+.x-plugin-process-documentation .thumb-wrap {
+	width : 100px !important;
+	position:relative;
+}
+
+.x-plugin-process-documentation .thumb-wrap .thumb {
+	left:0;
+	position:absolute;
+	text-align:center;
+	top:40px;
+	width:100%;
+}
+
+
+.x-plugin-map-view .thumb-wrap .thumb {
+	position:relative;
+	text-align:center;
+	top:10px;
+}
+
+
+.x-plugin-map-view .thumb-wrap.x-view-over{
+    border:1px solid #dddddd;
+    background: #efefef;
+}
+
+.x-plugin-map-view .thumb-wrap.x-view-selected{
+	background: #eff5fb;
+	border:1px solid #99bbe8;
+}
+
+.x-plugin-map-view .thumb-wrap .thumb-format {
+	display:block;
+	text-align: center;
+	font-style: italic;
+	font-size: 11px;
+}
+
+#plugin-purl-embedPanel label {
+	position: relative;
+	top: -3px;
+}
+
+#plugin-purl-embedPanel label img {
+	position: relative;
+	top: 3px;
+}
+
+#plugin-purl-embedPanel.x-item-disabled {
+	opacity:0.5
+}
+
+#plugin-purl-embedPanel input.auto {
+	color:gray;
+	font-style:italic;
+}
+
+#plugin-purl-embedPanel ul.x-tab-strip-top {
+	background: white none;
+}
+
+#plugin-purl-embedPanel .x-tab-panel-header {
+	border-style: none;
+	background: none;
+	border-style: none none solid none;
+	border-color: 646464;
+	border-width: 2px;
+	padding: 0 1px 0px 1px;
+}
+
+.plugin-purl-previewimg {
+	border: 1px solid gray;
+}
+
+
+/*** Master Thesis ***/
+.thumb-wrap.x-variation-type {
+	padding:5px;
+	border: 1px solid white;
+	margin:1px;
+}
+
+.thumb-wrap.x-variation-type.x-view-over,
+.thumb-wrap.x-variation-type.x-view-selected  {
+	background:none repeat scroll 0 0 #EFF5FB;
+	border:1px solid #99BBE8;
+}
+
+
+/*** MANAGE META DATA ***/
+/* description in meta window */
+.x-window .x-panel-body .y-stencilsets-description{
+}
+.x-window .x-panel-body .y-glossary-description{
+}
+
+/* grid container in meta window*/
+.x-window .x-panel-body .y-grids{
+}
+.x-window .x-panel-body .y-stencilset-tree{
+	margin-right:10px;
+}
+.x-window .x-panel-body .y-stencilgrid{
+	margin-right:10px;
+}
+.x-window .x-panel-body .x-grid3-row{
+	border: none;
+}
+.x-window .x-panel-body .y-glossary-categories{
+	margin-right:10px;
+}
+.x-window .x-panel-body .y-ownAttrgrid{
+	margin-bottom:10px;
+}
+.x-window .x-panel-body .y-ownAttrgrid .x-grid3-dirty-cell,
+.x-window .x-panel-body .y-glossary-attrgrid .x-grid3-dirty-cell {
+	background: none !important;
+}
+
+.x-window .x-panel-body .y-glossary-attrgrid{
+	margin-bottom:10px;
+}
+
+.x-window .x-panel-body .y-attr-desc{
+	color:#888888;
+	font-size:11px;
+	padding-left:5px;
+	padding-right:10px;
+	padding-top:5px;
+	text-align:left;
+	vertical-align:top;
+	min-width:60px;
+}
+.x-window .x-panel-body .y-attr-val{
+	padding-top:5px;
+}
+.x-window .x-panel-body .y-used-in-annotation{
+	font-size:11px;
+	font-style:italic;
+	color:#888888;
+}
+.x-window .x-panel-body .y-stencilset-checkbox{
+	position:relative;
+	top:1px;
+	margin-right:2px;
+}
+
+.x-window-body .y-export-window-description{
+	padding-top:5px;
+	padding-bottom: 5px;
+	padding-left:5px;
+	display:block;
+}
+.x-window-body .y-export-radio-original{
+	font-size:11px;
+	margin-left:5px;
+}
+
+.x-window-body .y-export-radio{
+	font-size:11px;
+	margin-left:5px;
+}
+
+.x-window #stencilGrid .x-grid-empty img {
+	margin-right:5px;
+	margin-top:-5px;
+	opacity:0.5;
+	position:relative;
+	top:3px;
+}
+
+.x-toolbar button {
+	color:white;
+}
+
+.x-btn-over {
+	color:white;
+}
+.x-window-body .y-stencilgrid{
+	border: none;
+}
+.x-window-body .y-stencil-row div{
+	position:relative;
+	padding-left:20px;
+}
+
+
+.x-checkbox-left {
+	left: 1px !important;
+	top:3px !important;
+}
+
+
+.x-window-socialize .x-form-cb-label, 
+.x-window-socialize .x-form-item {
+	font-size: 11px;
+	top:-2px;
+}
+
+.x-window-socialize .x-form-checkbox {
+	float: left;
+	margin-bottom: 30px;
+	margin-right: 5px;
+}
+
+.x-window-socialize .x-form-cb-label {
+	margin-left:0;
+	padding:0;
+}

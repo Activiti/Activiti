@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.activiti.editor.ui.EditorProcessDefinitionPage;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
@@ -37,11 +38,11 @@ import org.activiti.explorer.ui.process.ProcessDefinitionPage;
 import org.activiti.explorer.ui.process.ProcessMenuBar;
 import org.activiti.explorer.ui.profile.ProfilePopupWindow;
 import org.activiti.explorer.ui.task.ArchivedPage;
-import org.activiti.explorer.ui.task.TasksPage;
 import org.activiti.explorer.ui.task.InboxPage;
 import org.activiti.explorer.ui.task.InvolvedPage;
 import org.activiti.explorer.ui.task.QueuedPage;
 import org.activiti.explorer.ui.task.TaskMenuBar;
+import org.activiti.explorer.ui.task.TasksPage;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.ui.Window;
@@ -192,12 +193,20 @@ public class DefaultViewManager implements ViewManager {
   
   // Process
   
-  public void showProcessDefinitionPage() {
-    switchView(new ProcessDefinitionPage(), ViewManager.MAIN_NAVIGATION_PROCESS, ProcessMenuBar.PROCESS_DEFINITIONS);
+  public void showDeployedProcessDefinitionPage() {
+    switchView(new ProcessDefinitionPage(), ViewManager.MAIN_NAVIGATION_PROCESS, ProcessMenuBar.DEPLOYED_PROCESS_DEFINITIONS);
   }
   
-  public void showProcessDefinitionPage(String processDefinitionId) {
-    switchView(new ProcessDefinitionPage(processDefinitionId), ViewManager.MAIN_NAVIGATION_PROCESS, ProcessMenuBar.PROCESS_DEFINITIONS);
+  public void showDeployedProcessDefinitionPage(String processDefinitionId) {
+    switchView(new ProcessDefinitionPage(processDefinitionId), ViewManager.MAIN_NAVIGATION_PROCESS, ProcessMenuBar.DEPLOYED_PROCESS_DEFINITIONS);
+  }
+  
+  public void showEditorProcessDefinitionPage() {
+    switchView(new EditorProcessDefinitionPage(), ViewManager.MAIN_NAVIGATION_PROCESS, ProcessMenuBar.EDITOR_PROCESS_DEFINITIONS);
+  }
+  
+  public void showEditorProcessDefinitionPage(String modelId) {
+    switchView(new EditorProcessDefinitionPage(modelId), ViewManager.MAIN_NAVIGATION_PROCESS, ProcessMenuBar.EDITOR_PROCESS_DEFINITIONS);
   }
   
   public void showMyProcessInstancesPage() {

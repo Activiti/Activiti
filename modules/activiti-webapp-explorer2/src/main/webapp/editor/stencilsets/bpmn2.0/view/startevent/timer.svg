@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:oryx="http://www.b3mn.org/oryx"
+   width="40"
+   height="40"
+   version="1.0">
+  <defs></defs>
+  <oryx:magnets>
+  	<oryx:magnet oryx:cx="16" oryx:cy="16" oryx:default="yes" />
+  </oryx:magnets>
+  <g pointer-events="fill">
+  
+    <defs>
+		<radialGradient id="background" cx="10%" cy="10%" r="100%" fx="10%" fy="10%">
+			<stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+			<stop id="fill_el" offset="100%" stop-color="#ffffff" stop-opacity="1"/>
+		</radialGradient>
+	</defs>
+	
+	
+    <circle 
+    	id="bg_frame" 
+    	cx="16" 
+    	cy="16" 
+    	r="15" 
+    	stroke="black" 
+    	fill="url(#background) white" 
+    	stroke-width="1"
+    	style="stroke-dasharray: 5.5, 3" />
+    <circle id="frame" cx="16" cy="16" r="15" stroke="black" fill="none" stroke-width="1"/>
+    
+    <circle id="circle" cx="16" cy="16" r="10" stroke="black" fill="none" stroke-width="1"/>
+    <path id="path1" d="M 16 6 L 16 9
+    		M 21 7 L 19.5 10
+    		M 25 11 L 22 12.5
+    		M 26 16 L 23 16
+    		M 25 21 L 22 19.5
+    		M 21 25 L 19.5 22
+    		M 16 26 L 16 23
+    		M 11 25 L 12.5 22
+    		M 7 21 L 10 19.5
+    		M 6 16 L 9 16
+    		M 7 11 L 10 12.5
+    		M 11 7 L 12.5 10
+    		M 18 9 L 16 16 L 20 16" fill="none" stroke="black" stroke-width="1" />
+	<text font-size="11" 
+		id="text_name" 
+		x="16" y="33" 
+		oryx:align="top center" 
+		stroke="black"
+	></text>
+  </g>
+</svg>

@@ -1,0 +1,61 @@
+/*
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
+ * licensing@extjs.com
+ * 
+ * http://extjs.com/license
+ */
+
+.x-window-dlg .x-window-body {
+    border:0 none !important;
+    padding:5px 10px;
+    overflow:hidden !important;
+}
+.x-window-dlg .x-window-mc {
+    border:0 none !important;
+}
+.x-window-dlg .ext-mb-text,
+.x-window-dlg .x-window-header-text {
+    font-size:12px;
+}
+.x-window-dlg .ext-mb-input {
+    margin-top:4px;
+    width:95%;
+}
+.x-window-dlg .ext-mb-textarea {
+    margin-top:4px;
+    font:normal 12px tahoma,arial,helvetica,sans-serif;
+}
+.x-window-dlg .x-progress-wrap {
+    margin-top:4px;
+}
+.ext-ie .x-window-dlg .x-progress-wrap {
+    margin-top:6px;
+}
+.x-window-dlg .x-msg-box-wait {
+    background: transparent url(../images/default/grid/loading.gif) no-repeat left;
+    display:block;
+    width:300px;
+    padding-left:18px;
+    line-height:18px;
+}
+.x-window-dlg .ext-mb-icon {
+    float:left;
+    width:47px;
+    height:32px;
+}
+.ext-ie .x-window-dlg .ext-mb-icon {
+    width:44px; /* 3px IE margin issue */
+}
+.x-window-dlg .ext-mb-info {
+    background:transparent url(../images/default/window/icon-info.gif) no-repeat top left;
+}
+.x-window-dlg .ext-mb-warning {
+    background:transparent url(../images/default/window/icon-warning.gif) no-repeat top left;
+}
+.x-window-dlg .ext-mb-question {
+    background:transparent url(../images/default/window/icon-question.gif) no-repeat top left;
+}
+.x-window-dlg .ext-mb-error {
+    background:transparent url(../images/default/window/icon-error.gif) no-repeat top left;
+}

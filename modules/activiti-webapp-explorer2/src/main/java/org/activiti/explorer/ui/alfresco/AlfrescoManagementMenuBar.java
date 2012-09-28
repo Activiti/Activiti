@@ -37,9 +37,9 @@ public class AlfrescoManagementMenuBar extends ManagementMenuBar {
   }
   
   protected void addProcessDefinitionsEntry() {
-    addToolbarEntry(ENTRY_PROCESS_DEFINITIONS, i18nManager.getMessage(Messages.PROCESS_MENU_DEFINITIONS), new ToolbarCommand() {
+    addToolbarEntry(ENTRY_PROCESS_DEFINITIONS, i18nManager.getMessage(Messages.PROCESS_MENU_DEPLOYED_DEFINITIONS), new ToolbarCommand() {
       public void toolBarItemSelected() {
-        viewManager.showProcessDefinitionPage();
+        viewManager.showDeployedProcessDefinitionPage();
       }
     });
   }

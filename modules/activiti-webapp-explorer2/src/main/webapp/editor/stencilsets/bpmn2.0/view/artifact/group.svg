@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  xmlns:svg="http://www.w3.org/2000/svg"
+  xmlns:oryx="http://www.b3mn.org/oryx"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="122"
+  height="92"
+  version="1.0">
+  <defs></defs>
+  <g pointer-events="stroke" oryx:minimumSize="60 50">
+    <rect oryx:resize="vertical horizontal" x="0" y="0" width="120" height="90" rx="5" ry="5" stroke="white" visibility="hidden" stroke-width="10" fill="none" />
+    <rect id="c" oryx:resize="vertical horizontal" x="0" y="0" width="120" height="90" rx="5" ry="5" stroke="black" stroke-dasharray="2, 4, 10, 4" stroke-width="1" fill="none" />
+    <text 
+		font-size="12" 
+		id="text_name" x="4" y="2" 
+		oryx:align="top left"
+		oryx:fittoelem="c"
+		oryx:anchors="top left"
+		stroke="black">
+	</text>
+  </g>
+</svg>

@@ -1,0 +1,50 @@
+Ext JS - JavaScript Library
+Copyright (c) 2006-2007, Ext JS, LLC
+All rights reserved.
+licensing@extjs.com
+
+http://extjs.com/license
+
+
+License of CSS and Graphics ("Assets")
+------------------------------------------------------------------------------------------
+The Assets distributed with Ext are licensed for use ONLY
+with their associated Ext JavaScript component ("Component"). Use of the Assets in
+any way that does not also include the Component is prohibited without explicit
+permission from Ext JS, LLC.  Deriving images and CSS from the Assets in an effort
+to bypass this license is also prohibited.
+
+
+Open Source License
+------------------------------------------------------------------------------------------
+Ext is also licensed under the terms of the Open Source LGPL 3.0 license. You may use 
+our open source license if you:
+ * Want to use Ext in an open source project that precludes using non-open source software
+ * Plan to use Ext in a personal, educational or non-profit manner
+ * Are using Ext in a commercial application that is not a software development library 
+or toolkit, you will meet LGPL requirements and you do not wish to support the project
+
+http://www.gnu.org/licenses/lgpl.html
+
+
+Commercial License
+------------------------------------------------------------------------------------------
+If you are using this library for commercial purposes, we encourage you to purchase
+a commercial license. Please visit http://extjs.com/license for more details.
+
+
+OEM / Reseller License
+------------------------------------------------------------------------------------------
+If you plan to distribute Ext in a product that will be packaged or sold as a software 
+development library, toolkit or plug-in-based framework ("LIBRARY"), we require that you 
+work with us to establish a specific license that is appropriate. Use of the open source 
+license in a LIBRARY is not permitted without explicit permission from Ext JS, LLC.
+
+For more details, please visit: http://extjs.com/license.
+
+--
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.

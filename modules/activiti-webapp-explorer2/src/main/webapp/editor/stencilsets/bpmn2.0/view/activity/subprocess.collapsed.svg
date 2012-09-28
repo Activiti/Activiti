@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:oryx="http://www.b3mn.org/oryx"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   width="100"
+   height="80"
+   version="1.0">
+  <defs></defs>
+  <oryx:magnets>
+  	<oryx:magnet oryx:cx="1" oryx:cy="20" oryx:anchors="left" />
+  	<oryx:magnet oryx:cx="1" oryx:cy="40" oryx:anchors="left" />
+  	<oryx:magnet oryx:cx="1" oryx:cy="60" oryx:anchors="left" />
+  	
+  	<oryx:magnet oryx:cx="25" oryx:cy="79" oryx:anchors="bottom" />
+  	<oryx:magnet oryx:cx="50" oryx:cy="79" oryx:anchors="bottom" />
+  	<oryx:magnet oryx:cx="75" oryx:cy="79" oryx:anchors="bottom" />
+  	
+  	<oryx:magnet oryx:cx="99" oryx:cy="20" oryx:anchors="right" />
+  	<oryx:magnet oryx:cx="99" oryx:cy="40" oryx:anchors="right" />
+  	<oryx:magnet oryx:cx="99" oryx:cy="60" oryx:anchors="right" />
+  	
+  	<oryx:magnet oryx:cx="25" oryx:cy="1" oryx:anchors="top" />
+  	<oryx:magnet oryx:cx="50" oryx:cy="1" oryx:anchors="top" />
+  	<oryx:magnet oryx:cx="75" oryx:cy="1" oryx:anchors="top" />
+  	
+  	<oryx:magnet oryx:cx="50" oryx:cy="40" oryx:default="yes" />
+  </oryx:magnets>
+  <g pointer-events="fill" oryx:minimumSize="80 60">
+  	<defs>
+		<radialGradient id="background" cx="10%" cy="10%" r="100%" fx="10%" fy="10%">
+			<stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+			<stop id="fill_el" offset="100%" stop-color="#ffffcc" stop-opacity="1"/>
+		</radialGradient>
+	</defs>
+	
+	<rect id="text_frame" oryx:anchors="bottom top right left" x="1" y="1" width="94" height="79" rx="10" ry="10" stroke="none" stroke-width="0" fill="none" />
+	<rect id="bg_frame" oryx:anchors="bottom top right left" x="0" y="0" width="100" height="80" rx="10" ry="10" stroke="black" stroke-width="1" fill="url(#background) #ffffcc" />
+    <rect id="callActivity" oryx:resize="vertical horizontal" oryx:anchors="bottom top right left" x="0" y="0" width="100" height="80" rx="10" ry="10" stroke="black" stroke-width="4" fill="none" />
+    	<text 
+			font-size="12"
+			id="text_name" 
+			x="50" 
+			y="40" 
+			oryx:align="middle center"
+			oryx:fittoelem="text_frame"
+			stroke="black">
+		</text>
+    	
+ 	
+	 	<g 	id="b" 
+			oryx:anchors="bottom"
+			transform="translate(1)">
+			
+		 	<rect id="plusborder" oryx:anchors="bottom" x="43" y="66" width="14" height="14" fill="none" stroke="black" stroke-width="1" />
+			<path id="plus" oryx:anchors="bottom" fill="none" stroke="black" d="M50 68 v10 M 45 73 h10" stroke-width="1"/>
+		
+		</g>
+	
+	<g id="none"></g>
+  </g>
+</svg>

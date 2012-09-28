@@ -13,6 +13,8 @@
 
 package org.activiti.explorer.navigation;
 
+import org.activiti.explorer.ExplorerApp;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.ui.UriFragmentUtility.FragmentChangedEvent;
@@ -35,21 +37,30 @@ public class NavigationFragmentChangeListener implements FragmentChangedListener
   public void fragmentChanged(FragmentChangedEvent source) {
     String fragment = source.getUriFragmentUtility().getFragment();
     
-    if (fragment != null && !"".equals(fragment)) {
+    if (StringUtils.isNotEmpty(fragment)) {
       UriFragment uriFragment = new UriFragment(fragment);
       
       // Find appropriate handler based on the first part of the URI
       Navigator navigationHandler = null;
-      if(uriFragment.getUriParts() != null && uriFragment.getUriParts().size() > 0) {
+      if (uriFragment.getUriParts() != null && uriFragment.getUriParts().size() > 0) {
         navigationHandler = navigatorManager.getNavigator(uriFragment.getUriParts().get(0));
       }
       
-      if(navigationHandler == null) {
+      if (navigationHandler == null) {
         navigationHandler = navigatorManager.getDefaultNavigator();
       }
       
       // Delegate navigation to handler
       navigationHandler.handleNavigation(uriFragment);
+    
+    } else if (ExplorerApp.get().getCurrentUriFragment() != null &&
+        ExplorerApp.get().getCurrentUriFragment().getUriParts() != null &&
+            ExplorerApp.get().getCurrentUriFragment().getUriParts().size() > 0) {
+      
+      Navigator navigationHandler = navigatorManager.getNavigator(ExplorerApp.get().getCurrentUriFragment().getUriParts().get(0));
+      if (navigationHandler instanceof ProcessModelNavigator) {
+        navigationHandler.handleNavigation(ExplorerApp.get().getCurrentUriFragment());
+      }
     }
     
   }
