@@ -92,7 +92,7 @@ public class ExplorerLoginForm extends LoginForm {
       + "      method='post'>"
       + "<table width='100%'>"
       + "<tr><td class='" + STYLE_LOGIN_FIELD_CAPTION + "'>" + usernameCaption + "</td>"
-      + "<td width='100%'><input class='" + STYLE_LOGIN_FIELD +"' type='text' name='username'></td></tr>"
+      + "<td width='80%'><input class='" + STYLE_LOGIN_FIELD +"' type='text' name='username'></td></tr>"
       + "<tr><td class='" + STYLE_LOGIN_FIELD_CAPTION + "'>" + passwordCaption + "</td>"
       + "    <td><input class='" + STYLE_LOGIN_FIELD + "'"
       + "          type='password'"
