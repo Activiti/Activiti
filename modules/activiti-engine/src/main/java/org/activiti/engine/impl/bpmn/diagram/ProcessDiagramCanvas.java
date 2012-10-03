@@ -24,6 +24,9 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
+import java.awt.font.LineBreakMeasurer;
+import java.awt.font.TextAttribute;
+import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
@@ -33,6 +36,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.AttributedCharacterIterator;
+import java.text.AttributedString;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
@@ -40,6 +47,7 @@ import javax.imageio.ImageIO;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
+import org.apache.commons.lang.WordUtils;
 
 /**
  * Represents a canvas on which BPMN 2.0 constructs can be drawn.
@@ -58,6 +66,11 @@ public class ProcessDiagramCanvas {
   protected static final int ARROW_WIDTH = 5;
   protected static final int CONDITIONAL_INDICATOR_WIDTH = 16;
   protected static final int MARKER_WIDTH = 12;
+  protected static final int FONT_SIZE = 11;
+  protected static final int FONT_SPACING = 2;
+  protected static final int TEXT_PADDING = 3;
+  protected static final int LINE_HEIGHT = FONT_SIZE + FONT_SPACING;
+  
 
   // Colors
   protected static Color TASK_COLOR = new Color(255, 255, 204);
@@ -74,6 +87,7 @@ public class ProcessDiagramCanvas {
 
   // icons
   protected static int ICON_SIZE = 16;
+  protected static int ICON_PADDING = 3;
   protected static Image USERTASK_IMAGE;
   protected static Image SCRIPTTASK_IMAGE;
   protected static Image SERVICETASK_IMAGE;
@@ -127,7 +141,7 @@ public class ProcessDiagramCanvas {
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     g.setPaint(Color.black);
 
-    Font font = new Font("Arial", Font.BOLD, 11);
+    Font font = new Font("Arial", Font.BOLD, FONT_SIZE);
     g.setFont(font);
     this.fontMetrics = g.getFontMetrics();
   }
@@ -375,12 +389,77 @@ public class ProcessDiagramCanvas {
 
     // text
     if (name != null) {
-      String text = fitTextToWidth(name, width);
-      int textX = x + ((width - fontMetrics.stringWidth(text)) / 2);
-      int textY = y + ((height - fontMetrics.getHeight()) / 2) + fontMetrics.getHeight();
-      g.drawString(text, textX, textY);
+//      String text = fitTextToWidth(name, width);
+//      int textX = x + ((width - fontMetrics.stringWidth(text)) / 2);
+//      int textY = y + ((height - fontMetrics.getHeight()) / 2) + fontMetrics.getHeight();
+//      g.drawString(text, textX, textY);
+      
+      drawMultilineText(name, x, y, width, height);
+      
     }
   }
+  
+  protected void drawMultilineText(String text, int x, int y, int boxWidth, int boxHeight) {
+    int availableHeight = boxHeight - ICON_SIZE - ICON_PADDING;
+    
+    // Create an attributed string based in input text
+    AttributedString attributedString = new AttributedString(text);
+    attributedString.addAttribute(TextAttribute.FONT, g.getFont());
+    attributedString.addAttribute(TextAttribute.FOREGROUND, Color.black);
+    
+    AttributedCharacterIterator characterIterator = attributedString.getIterator();
+    
+    int width = boxWidth - (2 * TEXT_PADDING);
+    
+    int currentHeight = 0;
+    // Prepare a list of lines of text we'll be drawing
+    List<TextLayout> layouts = new ArrayList<TextLayout>();
+    String lastLine = null;
+    
+    LineBreakMeasurer measurer = new LineBreakMeasurer(characterIterator, g.getFontRenderContext());
+    
+    TextLayout layout = null;
+    while (measurer.getPosition() < characterIterator.getEndIndex() && currentHeight <= availableHeight) {
+       
+      int previousPosition = measurer.getPosition();
+      
+      // Request next layout
+      layout = measurer.nextLayout(width);
+      
+      int height = ((Float)(layout.getDescent() + layout.getAscent() + layout.getLeading())).intValue();
+      
+      if(currentHeight + height > availableHeight) {
+        // The line we're about to add should NOT be added anymore, append three dots to previous one instead
+        // to indicate more text is truncated
+        layouts.remove(layouts.size() - 1);
+        
+        if(lastLine.length() >= 4) {
+          lastLine = lastLine.substring(0, lastLine.length() - 4) + "...";
+        }
+        layouts.add(new TextLayout(lastLine, g.getFont(), g.getFontRenderContext()));
+      } else {
+        layouts.add(layout);
+        lastLine = text.substring(previousPosition, measurer.getPosition());
+        currentHeight += height;
+      }
+    }
+    
+    
+    int currentY = y + ICON_SIZE + ICON_PADDING + ((availableHeight - currentHeight) /2);
+    int currentX = 0;
+    
+    // Actually draw the lines
+    for(TextLayout textLayout : layouts) {
+      
+      currentY += textLayout.getAscent();
+      currentX = TEXT_PADDING + x + ((width - ((Double)textLayout.getBounds().getWidth()).intValue()) /2);
+      
+      textLayout.draw(g, currentX, currentY);
+      currentY += textLayout.getDescent() + textLayout.getLeading();
+    }
+    
+  }
+  
 
   protected String fitTextToWidth(String original, int width) {
     String text = original;
@@ -401,37 +480,37 @@ public class ProcessDiagramCanvas {
 
   public void drawUserTask(String name, int x, int y, int width, int height) {
     drawTask(name, x, y, width, height);
-    g.drawImage(USERTASK_IMAGE, x + 7, y + 7, ICON_SIZE, ICON_SIZE, null);
+    g.drawImage(USERTASK_IMAGE, x + ICON_PADDING, y + ICON_PADDING, ICON_SIZE, ICON_SIZE, null);
   }
 
   public void drawScriptTask(String name, int x, int y, int width, int height) {
     drawTask(name, x, y, width, height);
-    g.drawImage(SCRIPTTASK_IMAGE, x + 7, y + 7, ICON_SIZE, ICON_SIZE, null);
+    g.drawImage(SCRIPTTASK_IMAGE, x + ICON_PADDING, y + ICON_PADDING, ICON_SIZE, ICON_SIZE, null);
   }
 
   public void drawServiceTask(String name, int x, int y, int width, int height) {
     drawTask(name, x, y, width, height);
-    g.drawImage(SERVICETASK_IMAGE, x + 7, y + 7, ICON_SIZE, ICON_SIZE, null);
+    g.drawImage(SERVICETASK_IMAGE, x + ICON_PADDING, y + ICON_PADDING, ICON_SIZE, ICON_SIZE, null);
   }
 
   public void drawReceiveTask(String name, int x, int y, int width, int height) {
     drawTask(name, x, y, width, height);
-    g.drawImage(RECEIVETASK_IMAGE, x + 7, y + 7, ICON_SIZE, ICON_SIZE, null);
+    g.drawImage(RECEIVETASK_IMAGE, x + ICON_PADDING, y + ICON_PADDING, ICON_SIZE, ICON_SIZE, null);
   }
 
   public void drawSendTask(String name, int x, int y, int width, int height) {
     drawTask(name, x, y, width, height);
-    g.drawImage(SENDTASK_IMAGE, x + 7, y + 7, ICON_SIZE, ICON_SIZE, null);
+    g.drawImage(SENDTASK_IMAGE, x + ICON_PADDING, y + ICON_PADDING, ICON_SIZE, ICON_SIZE, null);
   }
 
   public void drawManualTask(String name, int x, int y, int width, int height) {
     drawTask(name, x, y, width, height);
-    g.drawImage(MANUALTASK_IMAGE, x + 7, y + 7, ICON_SIZE, ICON_SIZE, null);
+    g.drawImage(MANUALTASK_IMAGE, x + ICON_PADDING, y + ICON_PADDING, ICON_SIZE, ICON_SIZE, null);
   }
   
   public void drawBusinessRuleTask(String name, int x, int y, int width, int height) {
     drawTask(name, x, y, width, height);
-    g.drawImage(BUSINESS_RULE_TASK_IMAGE, x + 7, y + 7, ICON_SIZE, ICON_SIZE, null);
+    g.drawImage(BUSINESS_RULE_TASK_IMAGE, x + ICON_PADDING, y + ICON_PADDING, ICON_SIZE, ICON_SIZE, null);
   }
 
   public void drawExpandedSubProcess(String name, int x, int y, int width, int height, Boolean isTriggeredByEvent) {
