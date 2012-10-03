@@ -183,7 +183,8 @@ public class TaskInvolvedPeopleComponent extends CustomComponent {
     List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(task.getId());
     for (final IdentityLink identityLink : identityLinks) { 
       if (identityLink.getUserId() != null) { // only user identity links, ignoring the group ids
-        if (!IdentityLinkType.ASSIGNEE.equals(identityLink.getType())) {
+        if (!IdentityLinkType.ASSIGNEE.equals(identityLink.getType())
+                && !IdentityLinkType.OWNER.equals(identityLink.getType())) {
           UserDetailsComponent involvedDetails = new UserDetailsComponent(
                   identityLink.getUserId(), 
                   identityLink.getType(),
