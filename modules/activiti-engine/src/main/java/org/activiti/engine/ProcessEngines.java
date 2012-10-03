@@ -94,6 +94,7 @@ public abstract class ProcessEngines {
       }
       for (Iterator<URL> iterator = configUrls.iterator(); iterator.hasNext();) {
         URL resource = iterator.next();
+        log.info("Initializing process engine using configuration '" + resource.toString() + "'");
         initProcessEnginFromResource(resource);
       }
       
@@ -104,6 +105,7 @@ public abstract class ProcessEngines {
       }
       while (resources.hasMoreElements()) {
         URL resource = resources.nextElement();
+        log.info("Initializing process engine using Spring configuration '" + resource.toString() + "'");
         initProcessEngineFromSpringResource(resource);
       }
 
