@@ -15,6 +15,7 @@ package org.activiti.engine.impl.test;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.ProcessEngines;
 
 
@@ -34,12 +35,15 @@ public class PluggableActivitiTestCase extends AbstractActivitiTestCase {
   protected static ProcessEngine cachedProcessEngine;
 
   protected void initializeProcessEngine() {
-    if (cachedProcessEngine==null) {
+    /*if (cachedProcessEngine==null) {
       cachedProcessEngine = ProcessEngines.getDefaultProcessEngine();
       if (cachedProcessEngine==null) {
         throw new ActivitiException("no default process engine available");
       }
     }
-    processEngine = cachedProcessEngine;
+    processEngine = cachedProcessEngine;*/
+    processEngine = ProcessEngineConfiguration
+        .createProcessEngineConfigurationFromResource("activiti.cfg.xml")
+        .buildProcessEngine();
   }
 }
