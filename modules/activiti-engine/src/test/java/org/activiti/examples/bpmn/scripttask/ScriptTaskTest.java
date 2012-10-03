@@ -12,10 +12,13 @@
  */
 package org.activiti.examples.bpmn.scripttask;
 
+import groovy.lang.MissingPropertyException;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
@@ -36,4 +39,44 @@ public class ScriptTaskTest extends PluggableActivitiTestCase {
     assertEquals("hello", runtimeService.getVariable(pi.getId(), "existingProcessVariableName"));
     assertEquals(pi.getId(), runtimeService.getVariable(pi.getId(), "newProcessVariableName"));
   }
+  
+  @Deployment
+  public void testFailingScript() {
+    Exception expectedException = null;
+    try {
+      runtimeService.startProcessInstanceByKey("failingScript");
+    } catch (Exception e) {
+      expectedException = e;
+    }
+    
+    // Check if correct exception is found in the stacktrace
+    verifyExceptionInStacktrace(expectedException, MissingPropertyException.class);
+  }
+  
+  @Deployment
+  public void testExceptionThrownInScript() {
+    Exception expectedException = null;
+    try {
+      runtimeService.startProcessInstanceByKey("failingScript");
+    } catch (Exception e) {
+      expectedException = e;
+    }
+    
+    verifyExceptionInStacktrace(expectedException, IllegalStateException.class);
+  }
+  
+  protected void verifyExceptionInStacktrace(Exception rootExcepton, Class expectedExceptionClass) {
+    Throwable expectedException = rootExcepton;
+    boolean found = false;
+    while (!found && expectedException != null) {
+      if (expectedException.getClass().equals(expectedExceptionClass)) {
+        found = true;
+      } else {
+        expectedException = expectedException.getCause();
+      }
+    }
+    
+    assertEquals(expectedExceptionClass, expectedException.getClass());
+  }
+  
 }

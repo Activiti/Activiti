@@ -228,6 +228,11 @@ public class BpmnParse extends Parse {
 
     } catch (Exception e) {
       LOGGER.log(Level.SEVERE, "Unknown exception", e);
+      
+      // ALL unexpected exceptions should bubble up since they are not handled
+      // accordingly by onderlying parse-methods and can't be deployed
+      throw new ActivitiException("Error while parsing process: " + e.getMessage(), e);
+      
     } finally {
       if (hasWarnings()) {
         logWarnings();
@@ -3206,8 +3211,9 @@ public class BpmnParse extends Parse {
   public void parseBPMNEdge(Element bpmnEdgeElement) {
     String sequenceFlowId = bpmnEdgeElement.attribute("bpmnElement");
     if (sequenceFlowId != null && !"".equals(sequenceFlowId)) {
-      TransitionImpl sequenceFlow = sequenceFlows.get(sequenceFlowId);
-      if (sequenceFlow != null) {
+      if (sequenceFlows != null && sequenceFlows.containsKey(sequenceFlowId)) {
+        
+        TransitionImpl sequenceFlow = sequenceFlows.get(sequenceFlowId);
         List<Element> waypointElements = bpmnEdgeElement.elementsNS(BpmnParser.OMG_DI_NS, "waypoint");
         if (waypointElements.size() >= 2) {
           List<Integer> waypoints = new ArrayList<Integer>();
