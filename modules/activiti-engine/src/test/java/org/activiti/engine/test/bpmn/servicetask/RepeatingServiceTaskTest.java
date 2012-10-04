@@ -25,10 +25,10 @@ import org.activiti.engine.test.Deployment;
 public class RepeatingServiceTaskTest extends PluggableActivitiTestCase {
   
 //  @Deployment
-//  public void testMultipleInvocationsInSameTransation() {
+  public void testMultipleInvocationsInSameTransation() {
 //    ProcessInstance processInstance = 
 //        runtimeService.startProcessInstanceByKey("repeating", CollectionUtil.singletonMap("count", 0));
 //    assertTrue(processInstance.isEnded());
-//  }
+  }
 
 }

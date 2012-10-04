@@ -13,8 +13,11 @@
 
 package org.activiti.engine.impl.test;
 
+import java.util.logging.Logger;
+
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.ProcessEngines;
 
 
 /** Base class for the activiti test cases.
@@ -31,13 +34,20 @@ import org.activiti.engine.ProcessEngineConfiguration;
  */
 public class PluggableActivitiTestCase extends AbstractActivitiTestCase {
   
+  private static Logger pluggableActivitiTestCaseLogger = Logger.getLogger(PluggableActivitiTestCase.class.getName());
+  
   protected static ProcessEngine cachedProcessEngine;
 
   protected void initializeProcessEngine() {
     if (cachedProcessEngine == null) {
-      cachedProcessEngine = ProcessEngineConfiguration
-              .createProcessEngineConfigurationFromResource("activiti.cfg.xml")
-              .buildProcessEngine();
+      pluggableActivitiTestCaseLogger.info("No cached process engine found for test. Retrieving the default engine.");
+//      cachedProcessEngine = ProcessEngineConfiguration
+//              .createProcessEngineConfigurationFromResource("activiti.cfg.xml")
+//              .buildProcessEngine();
+      cachedProcessEngine = ProcessEngines.getDefaultProcessEngine();
+      if (cachedProcessEngine==null) {
+        throw new ActivitiException("no default process engine available");
+      }
     }
     processEngine = cachedProcessEngine;
   }
