@@ -79,6 +79,10 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
   
   protected abstract void initializeProcessEngine();
   
+  // Default: do nothing
+  protected void closeDownProcessEngine() {
+  }
+  
   @Override
   public void runBare() throws Throwable {
     initializeProcessEngine();
@@ -110,6 +114,9 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
       TestHelper.annotationDeploymentTearDown(processEngine, deploymentId, getClass(), getName());
       assertAndEnsureCleanDb();
       ClockUtil.reset();
+      
+      // Can't do this in the teardown, as the teardown will be called as part of the super.runBare
+      closeDownProcessEngine();
     }
   }
 
