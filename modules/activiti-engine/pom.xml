@@ -160,9 +160,7 @@
         <configuration>
           <excludes>
             <exclude>**/*TestCase.java</exclude>
-            
             <exclude>**/RepeatingServiceTaskTest.java</exclude>
-            <exclude>**/ProcessDiagramRetrievalTest.java</exclude>
           </excludes>
         </configuration>
       </plugin>
