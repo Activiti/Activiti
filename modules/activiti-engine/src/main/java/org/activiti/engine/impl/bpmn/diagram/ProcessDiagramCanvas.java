@@ -74,7 +74,6 @@ public class ProcessDiagramCanvas {
 
   // Colors
   protected static Color TASK_BOX_COLOR = new Color(255, 255, 204);
-  protected static Paint TASK_COLOR = new GradientPaint(50, 0, Color.white, 50, 100, new Color(255, 255, 204));
   protected static Color BOUNDARY_EVENT_COLOR = new Color(255, 255, 255);
   protected static Color CONDITIONAL_INDICATOR_COLOR = new Color(255, 255, 255);
   protected static Color HIGHLIGHT_COLOR = Color.RED;
