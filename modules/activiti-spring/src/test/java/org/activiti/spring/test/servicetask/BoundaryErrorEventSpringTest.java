@@ -20,7 +20,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 /**
  * @see http://jira.codehaus.org/browse/ACT-1166
- * @author Angel López Cima
+ * @author Angel Lopez Cima
  * @author Falko Menge
  */
 @ContextConfiguration("classpath:org/activiti/spring/test/servicetask/serviceraskSpringTestCatchError-context.xml")
