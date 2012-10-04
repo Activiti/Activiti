@@ -17,6 +17,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Paint;
@@ -47,7 +48,6 @@ import javax.imageio.ImageIO;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
-import org.apache.commons.lang.WordUtils;
 
 /**
  * Represents a canvas on which BPMN 2.0 constructs can be drawn.
@@ -73,7 +73,8 @@ public class ProcessDiagramCanvas {
   
 
   // Colors
-  protected static Color TASK_COLOR = new Color(255, 255, 204);
+  protected static Color TASK_BOX_COLOR = new Color(255, 255, 204);
+  protected static Paint TASK_COLOR = new GradientPaint(50, 0, Color.white, 50, 100, new Color(255, 255, 204));
   protected static Color BOUNDARY_EVENT_COLOR = new Color(255, 255, 255);
   protected static Color CONDITIONAL_INDICATOR_COLOR = new Color(255, 255, 255);
   protected static Color HIGHLIGHT_COLOR = Color.RED;
@@ -371,7 +372,9 @@ public class ProcessDiagramCanvas {
 
   protected void drawTask(String name, int x, int y, int width, int height, boolean thickBorder) {
     Paint originalPaint = g.getPaint();
-    g.setPaint(TASK_COLOR);
+    
+    // Create a new gradient paint for every task box, gradient depends on x and y and is not relative
+    g.setPaint(new GradientPaint(x + 50, y, Color.white, x + 50, y + 50, TASK_BOX_COLOR));
 
     // shape
     RoundRectangle2D rect = new RoundRectangle2D.Double(x, y, width, height, 20, 20);
@@ -389,13 +392,7 @@ public class ProcessDiagramCanvas {
 
     // text
     if (name != null) {
-//      String text = fitTextToWidth(name, width);
-//      int textX = x + ((width - fontMetrics.stringWidth(text)) / 2);
-//      int textY = y + ((height - fontMetrics.getHeight()) / 2) + fontMetrics.getHeight();
-//      g.drawString(text, textX, textY);
-      
       drawMultilineText(name, x, y, width, height);
-      
     }
   }
   
