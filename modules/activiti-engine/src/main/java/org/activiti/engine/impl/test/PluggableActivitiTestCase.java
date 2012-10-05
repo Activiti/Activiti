@@ -40,10 +40,10 @@ public class PluggableActivitiTestCase extends AbstractActivitiTestCase {
 
   protected void initializeProcessEngine() {
     if (cachedProcessEngine == null) {
+      
       pluggableActivitiTestCaseLogger.info("No cached process engine found for test. Retrieving the default engine.");
-//      cachedProcessEngine = ProcessEngineConfiguration
-//              .createProcessEngineConfigurationFromResource("activiti.cfg.xml")
-//              .buildProcessEngine();
+      ProcessEngines.destroy(); // Just to be sure we're not getting any previously cached version
+      
       cachedProcessEngine = ProcessEngines.getDefaultProcessEngine();
       if (cachedProcessEngine==null) {
         throw new ActivitiException("no default process engine available");
