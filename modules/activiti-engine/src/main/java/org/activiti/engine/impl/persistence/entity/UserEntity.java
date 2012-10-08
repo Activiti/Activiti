@@ -18,15 +18,15 @@ import java.util.Map;
 
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
-import org.activiti.engine.impl.cmd.SaveUserCmd;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
 
 
 /**
  * @author Tom Baeyens
  */
-public class UserEntity implements User, Serializable, PersistentObject {
+public class UserEntity implements User, Serializable, PersistentObject, HasRevision {
 
   private static final long serialVersionUID = 1L;
 
@@ -45,15 +45,6 @@ public class UserEntity implements User, Serializable, PersistentObject {
   
   public UserEntity(String id) {
     this.id = id;
-  }
-  
-  /** update this user by copying all the given user's signalData into this user.
-   * @see SaveUserCmd */
-  public void update(UserEntity user) {
-    this.firstName = user.getFirstName();
-    this.lastName = user.getLastName();
-    this.email = user.getEmail();
-    this.password = user.getPassword();
   }
   
   public Object getPersistentState() {

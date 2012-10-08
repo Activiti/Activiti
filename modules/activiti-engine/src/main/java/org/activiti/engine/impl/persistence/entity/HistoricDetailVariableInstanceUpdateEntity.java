@@ -18,6 +18,7 @@ import java.util.Date;
 import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
+import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.variable.ValueFields;
@@ -27,7 +28,7 @@ import org.activiti.engine.impl.variable.VariableType;
 /**
  * @author Tom Baeyens
  */
-public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEntity implements ValueFields, HistoricVariableUpdate, PersistentObject {
+public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEntity implements ValueFields, HistoricVariableUpdate, PersistentObject, HasRevision {
   
   private static final long serialVersionUID = 1L;
   
@@ -188,7 +189,10 @@ public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEn
   public void setRevision(int revision) {
     this.revision = revision;
   }
-
+  
+  public int getRevisionNext() {
+    return revision + 1;
+  }
   
   public String getName() {
     return name;

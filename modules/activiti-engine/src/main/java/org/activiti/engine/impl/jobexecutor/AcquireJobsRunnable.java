@@ -92,7 +92,7 @@ public class AcquireJobsRunnable implements Runnable {
           log.fine("Optimistic locking exception during job acquisition. If you have multiple job executors running against the same database, " +
           		"this exception means that this thread tried to acquire a job, which already was acquired by another job executor acquisition thread." +
           		"This is expected behavior in a clustered environment. " +
-          		"You can ignore this message if you indeed have multiple job executor acquisiation threads running against the same database. " +
+          		"You can ignore this message if you indeed have multiple job executor acquisition threads running against the same database. " +
           		"Exception message: " + optimisticLockingException.getMessage());
         }
       } catch (Exception e) {
