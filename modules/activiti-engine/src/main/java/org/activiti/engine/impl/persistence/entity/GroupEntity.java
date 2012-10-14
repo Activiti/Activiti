@@ -17,13 +17,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.identity.Group;
+import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
 
 
 /**
  * @author Tom Baeyens
  */
-public class GroupEntity implements Group, Serializable, PersistentObject {
+public class GroupEntity implements Group, Serializable, PersistentObject, HasRevision {
 
   private static final long serialVersionUID = 1L;
 
@@ -37,11 +38,6 @@ public class GroupEntity implements Group, Serializable, PersistentObject {
   
   public GroupEntity(String id) {
     this.id = id;
-  }
-  
-  public void update(GroupEntity group) {
-    this.name = group.getName();
-    this.type = group.getType();
   }
   
   public Object getPersistentState() {

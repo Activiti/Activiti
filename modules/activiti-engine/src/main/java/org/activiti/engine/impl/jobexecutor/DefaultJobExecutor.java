@@ -57,7 +57,7 @@ public class DefaultJobExecutor extends JobExecutor {
   }
     
   protected void stopExecutingJobs() {
-	stopJobAcquisitionThread();
+    stopJobAcquisitionThread();
     
     // Ask the thread pool to finish and exit
     threadPoolExecutor.shutdown();

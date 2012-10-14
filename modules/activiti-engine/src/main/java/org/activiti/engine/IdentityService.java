@@ -132,15 +132,28 @@ public interface IdentityService {
   /** Delete an entry of the generic extensibility key-value pairs associated with a user */
   void deleteUserInfo(String userId, String key);
 
-  /** Store account information for a remote system */
+  /** 
+   * Store account information for a remote system
+   * @deprecated Will be removed in Activiti 5.12 
+   */
   void setUserAccount(String userId, String userPassword, String accountName, String accountUsername, String accountPassword, Map<String, String> accountDetails);
   
-  /** Get account names associated with the given user */
+  /** 
+   * Get account names associated with the given user
+   * 
+   * @deprecated Will be removed in Activiti 5.12 
+   */
   List<String> getUserAccountNames(String userId);
 
-  /** Get account information associated with a user */
+  /** 
+   * Get account information associated with a user
+   * @deprecated Will be removed in Activiti 5.12 
+   */
   Account getUserAccount(String userId, String userPassword, String accountName);
 
-  /** Delete an entry of the generic extensibility key-value pairs associated with a user */
+  /** 
+   * Delete an entry of the generic extensibility key-value pairs associated with a user
+   * @deprecated Will be removed in Activiti 5.12 
+   */
   void deleteUserAccount(String userId, String accountName);
 }

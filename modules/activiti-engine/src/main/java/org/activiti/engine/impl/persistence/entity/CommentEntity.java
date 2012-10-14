@@ -35,6 +35,9 @@ public class CommentEntity implements Comment, Event, PersistentObject, Serializ
   public static final String TYPE_COMMENT = "comment";
   
   protected String id;
+  
+  // If comments would be removeable, revision needs to be added!
+  
   protected String type;
   protected String userId;
   protected Date time;

@@ -46,5 +46,5 @@ public class UserTaskTest extends PluggableActivitiTestCase {
       assertEquals(0, taskService.getTaskEvents(task.getId()).size());
     }
   }
-
+  
 }

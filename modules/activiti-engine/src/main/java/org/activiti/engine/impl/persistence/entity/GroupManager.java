@@ -22,13 +22,16 @@ import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.impl.GroupQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.AbstractManager;
 
 
 /**
  * @author Tom Baeyens
  * @author Saeid Mirzaei
+ * @author Joram Barrez
  */
 public class GroupManager extends AbstractManager {
 
@@ -40,11 +43,11 @@ public class GroupManager extends AbstractManager {
     getDbSqlSession().insert((PersistentObject) group);
   }
 
-  public void updateGroup(Group updatedGroup) {
-    GroupEntity persistentGroup = findGroupById(updatedGroup.getId());
-    persistentGroup.update((GroupEntity) updatedGroup);
+  public void updateGroup(GroupEntity updatedGroup) {
+    CommandContext commandContext = Context.getCommandContext();
+    DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
+    dbSqlSession.update(updatedGroup);
   }
-
 
   public void deleteGroup(String groupId) {
     getDbSqlSession().delete("deleteMembershipsByGroupId", groupId);

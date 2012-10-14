@@ -19,6 +19,7 @@ import java.util.HashMap;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.event.EventHandler;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -30,7 +31,7 @@ import org.activiti.engine.impl.util.ClockUtil;
 /**
  * @author Daniel Meyer
  */
-public abstract class EventSubscriptionEntity implements PersistentObject, Serializable {
+public abstract class EventSubscriptionEntity implements PersistentObject, HasRevision, Serializable {
 
   private static final long serialVersionUID = 1L;
   

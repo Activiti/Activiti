@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
@@ -37,18 +38,21 @@ public class AcquireJobsRunnable implements Runnable {
   protected volatile boolean isJobAdded = false;
   protected final Object MONITOR = new Object();
   protected final AtomicBoolean isWaiting = new AtomicBoolean(false);
+  
+  protected long millisToWait = 0;
+  protected float waitIncreaseFactor = 2;
+  protected long maxWait = 60 * 1000;
 
   public AcquireJobsRunnable(JobExecutor jobExecutor) {
     this.jobExecutor = jobExecutor;
   }
 
   public synchronized void run() {
-    log.info(jobExecutor.getName() + " starting to acquire jobs");
+    if (log.isLoggable(Level.INFO)) {
+      log.info(jobExecutor.getName() + " starting to acquire jobs");
+    }
 
     final CommandExecutor commandExecutor = jobExecutor.getCommandExecutor();
-    long millisToWait = 0;
-    float waitIncreaseFactor = 2;
-    long maxWait = 60 * 1000;
 
     while (!isInterrupted) {
       int maxJobsPerAcquisition = jobExecutor.getMaxJobsPerAcquisition();
@@ -82,8 +86,19 @@ public class AcquireJobsRunnable implements Runnable {
           millisToWait = 0;
         }
 
+      } catch (ActivitiOptimisticLockingException optimisticLockingException) { 
+        // See http://jira.codehaus.org/browse/ACT-1390
+        if (log.isLoggable(Level.FINE)) {
+          log.fine("Optimistic locking exception during job acquisition. If you have multiple job executors running against the same database, " +
+          		"this exception means that this thread tried to acquire a job, which already was acquired by another job executor acquisition thread." +
+          		"This is expected behavior in a clustered environment. " +
+          		"You can ignore this message if you indeed have multiple job executor acquisition threads running against the same database. " +
+          		"Exception message: " + optimisticLockingException.getMessage());
+        }
       } catch (Exception e) {
-        log.log(Level.SEVERE, "exception during job acquisition: " + e.getMessage(), e);
+        if (log.isLoggable(Level.SEVERE)) {
+          log.log(Level.SEVERE, "exception during job acquisition: " + e.getMessage(), e);          
+        }
         millisToWait *= waitIncreaseFactor;
         if (millisToWait > maxWait) {
           millisToWait = maxWait;
@@ -94,22 +109,32 @@ public class AcquireJobsRunnable implements Runnable {
 
       if ((millisToWait > 0) && (!isJobAdded)) {
         try {
-          log.fine("job acquisition thread sleeping for " + millisToWait + " millis");
+          if (log.isLoggable(Level.FINE)) {
+            log.fine("job acquisition thread sleeping for " + millisToWait + " millis");
+          }
           synchronized (MONITOR) {
             if(!isInterrupted) {
               isWaiting.set(true);
               MONITOR.wait(millisToWait);
             }
           }
-          log.fine("job acquisition thread woke up");
+          
+          if (log.isLoggable(Level.FINE)) {
+            log.fine("job acquisition thread woke up");
+          }
         } catch (InterruptedException e) {
-          log.fine("job acquisition wait interrupted");
+          if (log.isLoggable(Level.FINE)) {
+            log.fine("job acquisition wait interrupted");
+          }
         } finally {
           isWaiting.set(false);
         }
       }
     }
-    log.info(jobExecutor.getName() + " stopped job acquisition");
+    
+    if (log.isLoggable(Level.INFO)) {
+      log.info(jobExecutor.getName() + " stopped job acquisition");
+    }
   }
 
   public void stop() {
@@ -130,6 +155,31 @@ public class AcquireJobsRunnable implements Runnable {
         MONITOR.notifyAll();
       }
     }    
+  }
+
+  
+  public long getMillisToWait() {
+    return millisToWait;
+  }
+  
+  public void setMillisToWait(long millisToWait) {
+    this.millisToWait = millisToWait;
+  }
+  
+  public float getWaitIncreaseFactor() {
+    return waitIncreaseFactor;
+  }
+  
+  public void setWaitIncreaseFactor(float waitIncreaseFactor) {
+    this.waitIncreaseFactor = waitIncreaseFactor;
+  }
+  
+  public long getMaxWait() {
+    return maxWait;
+  }
+
+  public void setMaxWait(long maxWait) {
+    this.maxWait = maxWait;
   }
 
 }
