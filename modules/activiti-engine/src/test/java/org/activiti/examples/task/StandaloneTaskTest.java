@@ -14,6 +14,8 @@ package org.activiti.examples.task;
 
 import java.util.List;
 
+import org.activiti.engine.ActivitiOptimisticLockingException;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Task;
 
@@ -69,6 +71,47 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
     // Task should be removed from runtime data
     // TODO: check for historic data when implemented!
     assertNull(taskService.createTaskQuery().taskId(taskId).singleResult());
+  }
+  
+  public void testOptimisticLockingThrownOnMultipleUpdates() {
+    Task task = taskService.newTask();
+    taskService.saveTask(task);
+    String taskId = task.getId();
+    
+    // first modification
+    Task task1 = taskService.createTaskQuery().taskId(taskId).singleResult();
+    Task task2 = taskService.createTaskQuery().taskId(taskId).singleResult();
+    
+    task1.setDescription("first modification");
+    taskService.saveTask(task1);
+
+    // second modification on the initial instance
+    task2.setDescription("second modification");
+    try {
+      taskService.saveTask(task2);
+      fail("should get an exception here as the task was modified by someone else.");
+    } catch (ActivitiOptimisticLockingException expected) {
+      //  exception was thrown as expected
+    }
+    
+    taskService.deleteTask(taskId, true);
+  }
+  
+  // See http://jira.codehaus.org/browse/ACT-1290 
+  public void testRevisionUpdatedOnSave() {
+    Task task = taskService.newTask();
+    taskService.saveTask(task);
+    assertEquals(1, ((TaskEntity) task).getRevision());
+
+    task.setDescription("first modification");
+    taskService.saveTask(task);
+    assertEquals(2, ((TaskEntity) task).getRevision());
+
+    task.setDescription("second modification");
+    taskService.saveTask(task);
+    assertEquals(3, ((TaskEntity) task).getRevision());
+    
+    taskService.deleteTask(task.getId(), true);
   }
 
 }

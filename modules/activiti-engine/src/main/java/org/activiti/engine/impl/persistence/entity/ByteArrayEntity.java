@@ -14,12 +14,13 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
 
+import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
 
 /**
  * @author Tom Baeyens
  */
-public class ByteArrayEntity implements Serializable, PersistentObject {
+public class ByteArrayEntity implements Serializable, PersistentObject, HasRevision {
 
   private static final long serialVersionUID = 1L;
 

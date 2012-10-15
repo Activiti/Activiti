@@ -17,6 +17,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.identity.Account;
 
@@ -24,7 +25,7 @@ import org.activiti.engine.impl.identity.Account;
 /**
  * @author Tom Baeyens
  */
-public class IdentityInfoEntity implements PersistentObject, Account, Serializable {
+public class IdentityInfoEntity implements PersistentObject, HasRevision, Account, Serializable {
   
   private static final long serialVersionUID = 1L;
   

@@ -40,8 +40,8 @@ import org.activiti.engine.impl.GroupQueryImpl;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.HistoricDetailQueryImpl;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
-import org.activiti.engine.impl.HistoricVariableInstanceQueryImpl;
 import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
+import org.activiti.engine.impl.HistoricVariableInstanceQueryImpl;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
@@ -67,6 +67,7 @@ import org.apache.ibatis.session.SqlSession;
  *   - db specific statement name mapping
  *   
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class DbSqlSession implements Session {
   
@@ -75,6 +76,7 @@ public class DbSqlSession implements Session {
   protected SqlSession sqlSession;
   protected DbSqlSessionFactory dbSqlSessionFactory;
   protected List<PersistentObject> insertedObjects = new ArrayList<PersistentObject>();
+  protected List<PersistentObject> updatedObjects = new ArrayList<PersistentObject>();
   protected Map<Class<?>, Map<String, CachedObject>> cachedObjects = new HashMap<Class<?>, Map<String,CachedObject>>();
   protected List<DeleteOperation> deletedObjects = new ArrayList<DeleteOperation>();
   protected List<DeserializedObject> deserializedObjects = new ArrayList<DeserializedObject>();
@@ -105,6 +107,13 @@ public class DbSqlSession implements Session {
       persistentObject.setId(id);
     }
     insertedObjects.add(persistentObject);
+    cachePut(persistentObject, false);
+  }
+  
+  // update ///////////////////////////////////////////////////////////////////
+  
+  public void update(PersistentObject persistentObject) {
+    updatedObjects.add(persistentObject);
     cachePut(persistentObject, false);
   }
   
@@ -420,7 +429,7 @@ public class DbSqlSession implements Session {
         PersistentObject persistentObject = (PersistentObject) cachedObject.getPersistentObject();
         if (!deletedObjects.contains(persistentObject)) {
           Object originalState = cachedObject.getPersistentObjectState();
-          if (!originalState.equals(persistentObject.getPersistentState())) {
+          if (!persistentObject.getPersistentState().equals(originalState)) {
             updatedObjects.add(persistentObject);
           } else {
             log.finest("loaded object '"+persistentObject+"' was not updated");
@@ -459,6 +468,11 @@ public class DbSqlSession implements Session {
       
       log.fine("inserting: "+toString(insertedObject));
       sqlSession.insert(insertStatement, insertedObject);
+      
+      // See http://jira.codehaus.org/browse/ACT-1290
+      if (insertedObject instanceof HasRevision) {
+        ((HasRevision) insertedObject).setRevision(((HasRevision) insertedObject).getRevisionNext());
+      }
     }
     insertedObjects.clear();
   }
@@ -474,7 +488,13 @@ public class DbSqlSession implements Session {
       int updatedRecords = sqlSession.update(updateStatement, updatedObject);
       if (updatedRecords!=1) {
         throw new ActivitiOptimisticLockingException(toString(updatedObject)+" was updated by another transaction concurrently");
+      } 
+      
+      // See http://jira.codehaus.org/browse/ACT-1290
+      if (updatedObject instanceof HasRevision) {
+        ((HasRevision) updatedObject).setRevision(((HasRevision) updatedObject).getRevisionNext());
       }
+      
     }
     updatedObjects.clear();
   }

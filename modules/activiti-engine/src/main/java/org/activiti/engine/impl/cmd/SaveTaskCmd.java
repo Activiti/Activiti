@@ -15,7 +15,6 @@ package org.activiti.engine.impl.cmd;
 import java.io.Serializable;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
@@ -27,7 +26,8 @@ import org.activiti.engine.task.Task;
 public class SaveTaskCmd implements Command<Void>, Serializable {
 	
 	private static final long serialVersionUID = 1L;
-  protected TaskEntity task;
+  
+	protected TaskEntity task;
 	
 	public SaveTaskCmd(Task task) {
 		this.task = (TaskEntity) task;
@@ -40,14 +40,8 @@ public class SaveTaskCmd implements Command<Void>, Serializable {
 	  
     if (task.getRevision()==0) {
       task.insert(null);
-      
     } else {
-      TaskEntity persistentTask = Context
-        .getCommandContext()
-        .getTaskManager()
-        .findTaskById(task.getId());
-      
-      persistentTask.update(task);
+      task.update();
     }
 
     return null;

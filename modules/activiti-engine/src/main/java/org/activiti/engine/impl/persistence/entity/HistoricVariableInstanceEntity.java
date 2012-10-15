@@ -18,9 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.history.HistoricVariableInstance;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.DbSqlSession;
+import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti.engine.impl.variable.VariableType;
@@ -28,7 +27,7 @@ import org.activiti.engine.impl.variable.VariableType;
 /**
  * @author Christian Lipphardt (camunda)
  */
-public class HistoricVariableInstanceEntity implements ValueFields, HistoricVariableInstance, PersistentObject, Serializable {
+public class HistoricVariableInstanceEntity implements ValueFields, HistoricVariableInstance, PersistentObject, HasRevision, Serializable {
 
   private static final long serialVersionUID = 1L;
 
