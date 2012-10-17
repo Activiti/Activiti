@@ -12,27 +12,19 @@
  */
 package org.activiti.engine.impl.jobexecutor;
 
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
-import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
-import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
-import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.el.StartProcessVariableScope;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.util.ClockUtil;
-import org.springframework.util.StringUtils;
-
-import java.io.Serializable;
-import java.rmi.activation.ActivationException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.regex.Pattern;
-
 
 /**
  * @author Tom Baeyens
@@ -109,21 +101,25 @@ public class TimerDeclarationImpl implements Serializable {
     
     String dueDateString = null;
     Date duedate = null;
-    if (executionEntity == null) {
-      dueDateString = description.getExpressionText();
+
+    // ACT-1415: timer-declaration on start-event may contain expressions NOT
+    // evaluating variables but other context, evaluating should happen nevertheless
+    VariableScope scopeForExpression = executionEntity;
+    if(scopeForExpression == null) {
+      scopeForExpression = StartProcessVariableScope.getSharedInstance();
+    }
+
+    Object dueDateValue = description.getValue(scopeForExpression);
+    if (dueDateValue instanceof String) {
+      dueDateString = (String)dueDateValue;
+    }
+    else if (dueDateValue instanceof Date) {
+      duedate = (Date)dueDateValue;
     }
     else {
-      Object dueDateValue = description.getValue(executionEntity);
-      if (dueDateValue instanceof String) {
-        dueDateString = (String)dueDateValue;
-      }
-      else if (dueDateValue instanceof Date) {
-        duedate = (Date)dueDateValue;
-      }
-      else {
-        throw new ActivitiException("Timer '"+executionEntity.getActivityId()+"' was not configured with a valid duration/time, either hand in a java.util.Date or a String in format 'yyyy-MM-dd'T'hh:mm:ss'");
-      }
+      throw new ActivitiException("Timer '"+executionEntity.getActivityId()+"' was not configured with a valid duration/time, either hand in a java.util.Date or a String in format 'yyyy-MM-dd'T'hh:mm:ss'");
     }
+    
     if (duedate==null) {      
       duedate = businessCalendar.resolveDuedate(dueDateString);
     }
