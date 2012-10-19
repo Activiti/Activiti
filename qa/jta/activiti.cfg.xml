@@ -22,7 +22,7 @@
             <!-- Postgres -->
             <props>
                 <prop key="serverName">@jdbc.servername@</prop>
-                <prop key="databaseName">@jdbc.databasename</prop>
+                <prop key="databaseName">@jdbc.databasename@</prop>
                 <prop key="user">@jdbc.username@</prop>
                 <prop key="password">@jdbc.password@</prop>
             </props>

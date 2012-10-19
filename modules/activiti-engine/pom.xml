@@ -424,25 +424,27 @@
 							</goals>
 							<configuration>
 								<tasks>
-									<echo message="updating activiti configuration config to db ${config}" />
-									<copy file="${basedir}/../../qa/jta/activiti.cfg.xml" todir="target/test-classes" overwrite="true" />
+								    <echo message="Copying jta enabled Activiti configuration file to target/test-classes" />
+									<echo message="Updating activiti configuration config to db ${database}" />
+									<copy file="${basedir}/../../qa/jta/activiti.cfg.xml" todir="target/test-classes" overwrite="true">
+									   <filterset filtersfile="${user.home}/.activiti/jdbc/build.${database}.properties" />
+									</copy>
 								</tasks>
 							</configuration>
 						</execution>
-						<!-- <execution>
-							<id>database-test-drop-schema</id>
-							<phase>prepare-package</phase>
-							<goals>
-								<goal>run</goal>
-							</goals>
-							<configuration>
-								<tasks>
-									<echo message="dropping schema in ${database}" />
-									<java classname="org.activiti.engine.impl.db.DbSchemaDrop"
-										classpathref="maven.test.classpath" />
-								</tasks>
-							</configuration>
-						</execution> -->
+						<execution>
+                            <id>database-test-drop-schema</id>
+                            <phase>prepare-package</phase>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                            <configuration>
+                                <tasks>
+                                    <echo message="dropping schema in ${database}" />
+                                    <java classname="org.activiti.engine.impl.db.DbSchemaDrop" classpathref="maven.test.classpath" />
+                                </tasks>
+                            </configuration>
+                        </execution>
 					</executions>
 				</plugin>
 				<plugin>
