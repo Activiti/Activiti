@@ -11,11 +11,22 @@
         <property name="maxPoolSize" value="20" />
         <property name="allowLocalTransactions" value="true" />
         <property name="driverProperties">
-            <props>
+        
+            <!-- This is for H2 -->
+           <!--  <props>
                 <prop key="URL">@jdbc.url@</prop>
                 <prop key="user">@jdbc.username@</prop>
                 <prop key="password">@jdbc.password@</prop>
+            </props> -->
+            
+            <!-- Postgres -->
+            <props>
+                <prop key="serverName">@jdbc.servername@</prop>
+                <prop key="databaseName">@jdbc.databasename</prop>
+                <prop key="user">@jdbc.username@</prop>
+                <prop key="password">@jdbc.password@</prop>
             </props>
+            
         </property>
     </bean>
 
