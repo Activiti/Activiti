@@ -27,7 +27,9 @@ alter table ACT_HI_ACTINST
 	add CALL_PROC_INST_ID_ varchar(64);
 
 alter table ACT_HI_DETAIL
-	alter column PROC_DEF_ID_ DROP NOT NULL;
+	alter column PROC_INST_ID_ DROP NOT NULL;
 
 alter table ACT_HI_DETAIL
 	alter column EXECUTION_ID_ DROP NOT NULL;
+
+Call Sysproc.admin_cmd ('REORG TABLE ACT_HI_DETAIL');
