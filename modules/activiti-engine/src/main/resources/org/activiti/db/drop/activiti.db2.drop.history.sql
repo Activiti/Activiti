@@ -7,6 +7,7 @@ drop index ACT_IDX_HI_DETAIL_ACT_INST;
 drop index ACT_IDX_HI_DETAIL_TIME;
 drop index ACT_IDX_HI_DETAIL_NAME;
 drop index ACT_IDX_HI_DETAIL_TASK_ID;
+drop index ACT_IDX_HI_ACT_INST_PROCINST;
 
 drop table ACT_HI_PROCINST;
 drop table ACT_HI_ACTINST;
