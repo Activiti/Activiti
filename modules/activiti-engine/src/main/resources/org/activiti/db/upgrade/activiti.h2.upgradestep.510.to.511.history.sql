@@ -25,3 +25,5 @@ add TASK_ID_ varchar(64);
 
 alter table ACT_HI_ACTINST
 add CALL_PROC_INST_ID_ varchar(64);
+
+create index ACT_IDX_HI_ACT_INST_PROCINST on ACT_HI_ACTINST(PROC_INST_ID_, ACT_ID_);
