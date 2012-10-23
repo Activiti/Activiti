@@ -15,9 +15,9 @@ package org.activiti.editor.rest.model;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.editor.data.dao.ModelDao;
 import org.activiti.editor.data.model.ModelData;
-import org.activiti.editor.json.constants.ModelDataJsonConstants;
 import org.apache.commons.lang.math.NumberUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;

@@ -15,10 +15,9 @@ package org.activiti.editor.rest.model;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.editor.data.dao.ModelDao;
 import org.activiti.editor.data.model.ModelData;
-import org.activiti.editor.json.constants.ModelDataJsonConstants;
-import org.activiti.editor.language.bpmn.export.JsonToBpmnExport;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Form;
@@ -55,8 +54,7 @@ public class ModelSaveRestResource extends ServerResource implements ModelDataJs
       model.setModelJson(modelJson.toString());
       
       model.setModelEditorJson(modelForm.getFirstValue("json_xml"));
-      System.out.println("svg " + modelForm.getFirstValue("svg_xml"));
-      model.setModelSvg(modelForm.getFirstValue("svg_xml"));
+      model.setModelSvg(new String(modelForm.getFirstValue("svg_xml").getBytes("utf-8")));
       
       modelDao.saveModel(model);
       

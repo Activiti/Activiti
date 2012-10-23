@@ -159,6 +159,11 @@
         <groupId>org.activiti</groupId>
         <artifactId>activiti-spring</artifactId>
         <version>${version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-bpmn-converter</artifactId>
+        <version>${version}</version>
       </dependency> 
       <dependency>
         <groupId>org.activiti</groupId>

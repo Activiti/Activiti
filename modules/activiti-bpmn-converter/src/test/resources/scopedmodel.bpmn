@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="process" name="process1" isExecutable="true">
+    <subProcess id="outerSubProcess" name="subProcess">
+      <sequenceFlow id="sid-AC31A1D0-0FB6-43EA-ADFD-89098A01B136" sourceRef="innerBoundaryEvent" targetRef="outerEndEvent"></sequenceFlow>
+      <sequenceFlow id="sid-529AC957-0834-4098-8D72-04BA1845A96F" sourceRef="outerStartEvent" targetRef="innerSubProcess"></sequenceFlow>
+      <endEvent id="outerEndEvent"></endEvent>
+      <startEvent id="outerStartEvent"></startEvent>
+      <subProcess id="innerSubProcess" name="subProcess">
+        <endEvent id="innerEndEvent"></endEvent>
+        <boundaryEvent id="taskBoundaryEvent" attachedToRef="usertask" cancelActivity="false">
+          <timerEventDefinition>
+            <timeDuration>PT5M</timeDuration>
+          </timerEventDefinition>
+        </boundaryEvent>
+        <sequenceFlow id="sid-D4D86FA3-5700-4C3A-8C64-1283CE94F99F" sourceRef="innerStartEvent" targetRef="usertask"></sequenceFlow>
+        <sequenceFlow id="sid-3AF4E402-1D2F-4536-8EC1-15BF5F9B9107" sourceRef="taskBoundaryEvent" targetRef="innerEndEvent"></sequenceFlow>
+        <startEvent id="innerStartEvent"></startEvent>
+        <userTask id="usertask"></userTask>
+        <sequenceFlow id="sid-D252D8D3-44D6-4934-83E5-5FC48CA082C9" sourceRef="usertask" targetRef="innerEndEvent"></sequenceFlow>
+      </subProcess>
+      <boundaryEvent id="innerBoundaryEvent" attachedToRef="innerSubProcess" cancelActivity="false">
+        <timerEventDefinition>
+          <timeDuration>PT5M</timeDuration>
+        </timerEventDefinition>
+      </boundaryEvent>
+    </subProcess>
+    <sequenceFlow id="sid-056C45C3-7864-44F3-9F5B-B416421FEC3D" sourceRef="innerSubProcess" targetRef="outerEndEvent"></sequenceFlow>
+    <boundaryEvent id="outerBoundaryEvent" attachedToRef="outerSubProcess" cancelActivity="false">
+      <timerEventDefinition>
+        <timeDuration>PT5M</timeDuration>
+      </timerEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="sid-D1973BBE-1E46-44CE-9219-D4AA8B8DF170" sourceRef="outerSubProcess" targetRef="endEvent"></sequenceFlow>
+    <sequenceFlow id="sid-776DE4CC-C8B5-4A07-8A51-B4A1599D263E" sourceRef="outerBoundaryEvent" targetRef="endEvent"></sequenceFlow>
+    <sequenceFlow id="sid-4983A58B-5A6D-4315-858A-371CB6F07DC5" sourceRef="startEvent1" targetRef="outerSubProcess"></sequenceFlow>
+    <endEvent id="endEvent"></endEvent>
+    <startEvent id="startEvent1"></startEvent>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_process">
+    <bpmndi:BPMNPlane bpmnElement="process" id="BPMNPlane_process">
+      <bpmndi:BPMNShape bpmnElement="innerEndEvent" id="BPMNShape_innerEndEvent">
+        <omgdc:Bounds height="28.0" width="28.0" x="547.0" y="233.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="outerEndEvent" id="BPMNShape_outerEndEvent">
+        <omgdc:Bounds height="28.0" width="28.0" x="640.0" y="231.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="taskBoundaryEvent" id="BPMNShape_taskBoundaryEvent">
+        <omgdc:Bounds height="30.0" width="30.0" x="439.08173233009813" y="272.5937804369141"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="outerSubProcess" id="BPMNShape_outerSubProcess">
+        <omgdc:Bounds height="296.0" width="510.0" x="180.0" y="99.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent" id="BPMNShape_endEvent">
+        <omgdc:Bounds height="28.0" width="28.0" x="735.0" y="233.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="outerStartEvent" id="BPMNShape_outerStartEvent">
+        <omgdc:Bounds height="30.0" width="30.0" x="201.0" y="232.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="innerSubProcess" id="BPMNShape_innerSubProcess">
+        <omgdc:Bounds height="156.0" width="295.0" x="300.0" y="167.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="95.0" y="232.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="outerBoundaryEvent" id="BPMNShape_outerBoundaryEvent">
+        <omgdc:Bounds height="30.0" width="30.0" x="303.85621135783435" y="380.2907301413365"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="innerBoundaryEvent" id="BPMNShape_innerBoundaryEvent">
+        <omgdc:Bounds height="30.0" width="30.0" x="358.9945071245634" y="308.1973328462091"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="innerStartEvent" id="BPMNShape_innerStartEvent">
+        <omgdc:Bounds height="30.0" width="30.0" x="327.0" y="232.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask" id="BPMNShape_usertask">
+        <omgdc:Bounds height="80.0" width="100.0" x="402.0" y="207.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-AC31A1D0-0FB6-43EA-ADFD-89098A01B136" id="BPMNEdge_sid-AC31A1D0-0FB6-43EA-ADFD-89098A01B136">
+        <omgdi:waypoint x="388.5501100349648" y="326.82147742317005"></omgdi:waypoint>
+        <omgdi:waypoint x="570.0" y="372.0"></omgdi:waypoint>
+        <omgdi:waypoint x="646.2766845826969" y="256.67691735711304"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-D1973BBE-1E46-44CE-9219-D4AA8B8DF170" id="BPMNEdge_sid-D1973BBE-1E46-44CE-9219-D4AA8B8DF170">
+        <omgdi:waypoint x="690.0" y="247.0"></omgdi:waypoint>
+        <omgdi:waypoint x="735.0" y="247.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-529AC957-0834-4098-8D72-04BA1845A96F" id="BPMNEdge_sid-529AC957-0834-4098-8D72-04BA1845A96F">
+        <omgdi:waypoint x="230.99944024890246" y="246.87041520303325"></omgdi:waypoint>
+        <omgdi:waypoint x="300.0" y="246.27429805615552"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-776DE4CC-C8B5-4A07-8A51-B4A1599D263E" id="BPMNEdge_sid-776DE4CC-C8B5-4A07-8A51-B4A1599D263E">
+        <omgdi:waypoint x="333.30077979913614" y="399.33479276999947"></omgdi:waypoint>
+        <omgdi:waypoint x="700.0" y="502.0"></omgdi:waypoint>
+        <omgdi:waypoint x="746.3581362390646" y="260.74847467425593"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-4983A58B-5A6D-4315-858A-371CB6F07DC5" id="BPMNEdge_sid-4983A58B-5A6D-4315-858A-371CB6F07DC5">
+        <omgdi:waypoint x="125.0" y="247.0"></omgdi:waypoint>
+        <omgdi:waypoint x="180.0" y="247.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-D4D86FA3-5700-4C3A-8C64-1283CE94F99F" id="BPMNEdge_sid-D4D86FA3-5700-4C3A-8C64-1283CE94F99F">
+        <omgdi:waypoint x="357.0" y="247.0"></omgdi:waypoint>
+        <omgdi:waypoint x="402.0" y="247.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-056C45C3-7864-44F3-9F5B-B416421FEC3D" id="BPMNEdge_sid-056C45C3-7864-44F3-9F5B-B416421FEC3D">
+        <omgdi:waypoint x="595.0" y="245.0"></omgdi:waypoint>
+        <omgdi:waypoint x="640.0" y="245.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-3AF4E402-1D2F-4536-8EC1-15BF5F9B9107" id="BPMNEdge_sid-3AF4E402-1D2F-4536-8EC1-15BF5F9B9107">
+        <omgdi:waypoint x="468.8157754740052" y="290.40589221162804"></omgdi:waypoint>
+        <omgdi:waypoint x="561.0" y="308.0"></omgdi:waypoint>
+        <omgdi:waypoint x="561.0" y="261.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-D252D8D3-44D6-4934-83E5-5FC48CA082C9" id="BPMNEdge_sid-D252D8D3-44D6-4934-83E5-5FC48CA082C9">
+        <omgdi:waypoint x="502.0" y="247.0"></omgdi:waypoint>
+        <omgdi:waypoint x="547.0" y="247.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

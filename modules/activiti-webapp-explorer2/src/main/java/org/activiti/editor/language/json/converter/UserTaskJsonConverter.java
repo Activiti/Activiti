@@ -1,0 +1,165 @@
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.activiti.editor.language.json.converter;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+
+import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.UserTask;
+import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.ObjectNode;
+
+/**
+ * @author Tijs Rademakers
+ */
+public class UserTaskJsonConverter extends BaseBpmnJsonConverter {
+
+  public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,
+      Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
+    
+    fillJsonTypes(convertersToBpmnMap);
+    fillBpmnTypes(convertersToJsonMap);
+  }
+  
+  public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
+    convertersToBpmnMap.put(STENCIL_TASK_USER, UserTaskJsonConverter.class);
+  }
+  
+  public static void fillBpmnTypes(Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
+    convertersToJsonMap.put(UserTask.class, UserTaskJsonConverter.class);
+  }
+  
+  @Override
+  protected String getStencilId(FlowElement flowElement) {
+    return STENCIL_TASK_USER;
+  }
+  
+  @Override
+  protected void convertElementToJson(ObjectNode propertiesNode, FlowElement flowElement) {
+    UserTask userTask = (UserTask) flowElement;
+    String assignee = userTask.getAssignee();
+    String candidateUsers = null;
+    String candidateGroups = null;
+    
+    if (userTask.getCandidateUsers().size() > 0) {
+      StringBuilder expressionBuilder = new StringBuilder();
+      for (String candidateUser : userTask.getCandidateUsers()) {
+        if (expressionBuilder.length() > 0) {
+          expressionBuilder.append(",");
+        } 
+        expressionBuilder.append(candidateUser);
+      }
+      candidateUsers = expressionBuilder.toString();
+    }
+    
+    if (userTask.getCandidateGroups().size() > 0) {
+      StringBuilder expressionBuilder = new StringBuilder();
+      for (String candidateGroup : userTask.getCandidateGroups()) {
+        if (expressionBuilder.length() > 0) {
+          expressionBuilder.append(",");
+        } 
+        expressionBuilder.append(candidateGroup);
+      }
+      candidateGroups = expressionBuilder.toString();
+    }
+    
+    if (StringUtils.isNotEmpty(assignee) || StringUtils.isNotEmpty(candidateUsers) || StringUtils.isNotEmpty(candidateGroups)) {
+      ObjectNode assignmentNode = objectMapper.createObjectNode();
+      ArrayNode itemsNode = objectMapper.createArrayNode();
+      
+      if (StringUtils.isNotEmpty(assignee)) {
+        ObjectNode assignmentItemNode = objectMapper.createObjectNode();
+        assignmentItemNode.put(PROPERTY_USERTASK_ASSIGNMENT_TYPE, PROPERTY_USERTASK_ASSIGNEE);
+        assignmentItemNode.put(PROPERTY_USERTASK_ASSIGNMENT_EXPRESSION, assignee);
+        itemsNode.add(assignmentItemNode);
+      }
+      
+      if (StringUtils.isNotEmpty(candidateUsers)) {
+        ObjectNode assignmentItemNode = objectMapper.createObjectNode();
+        assignmentItemNode.put(PROPERTY_USERTASK_ASSIGNMENT_TYPE, PROPERTY_USERTASK_CANDIDATE_USERS);
+        assignmentItemNode.put(PROPERTY_USERTASK_ASSIGNMENT_EXPRESSION, candidateUsers);
+        itemsNode.add(assignmentItemNode);
+      }
+      
+      if (StringUtils.isNotEmpty(candidateGroups)) {
+        ObjectNode assignmentItemNode = objectMapper.createObjectNode();
+        assignmentItemNode.put(PROPERTY_USERTASK_ASSIGNMENT_TYPE, PROPERTY_USERTASK_CANDIDATE_GROUPS);
+        assignmentItemNode.put(PROPERTY_USERTASK_ASSIGNMENT_EXPRESSION, candidateGroups);
+        itemsNode.add(assignmentItemNode);
+      }
+      
+      assignmentNode.put("totalCount", itemsNode.size());
+      assignmentNode.put(EDITOR_PROPERTIES_GENERAL_ITEMS, itemsNode);
+      propertiesNode.put(PROPERTY_USERTASK_ASSIGNMENT, assignmentNode);
+    }
+    
+    addFormProperties(userTask.getFormProperties(), propertiesNode);
+  }
+  
+  @Override
+  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode) {
+    UserTask task = new UserTask();
+    String priority = getPropertyValueAsString(PROPERTY_USERTASK_PRIORITY, elementNode);
+    if (StringUtils.isNotEmpty(priority)) {
+      try {
+        task.setPriority(Integer.valueOf(priority));
+      } catch(Exception e) {
+        LOGGER.log(Level.INFO, "priority is not a number " + priority);
+      }
+    }
+    task.setFormKey(getPropertyValueAsString(PROPERTY_USERTASK_FORMKEY, elementNode));
+    task.setDueDate(getPropertyValueAsString(PROPERTY_USERTASK_DUEDATE, elementNode));
+    
+    JsonNode assignmentNode = getProperty(PROPERTY_USERTASK_ASSIGNMENT, elementNode);
+    JsonNode itemsNode = assignmentNode.get(EDITOR_PROPERTIES_GENERAL_ITEMS);
+    if (itemsNode != null) {
+      Iterator<JsonNode> assignmentIterator = itemsNode.getElements();
+      while (assignmentIterator.hasNext()) {
+        JsonNode assignmentItemNode = assignmentIterator.next();
+        if (assignmentItemNode.get(PROPERTY_USERTASK_ASSIGNMENT_TYPE) != null && 
+            assignmentItemNode.get(PROPERTY_USERTASK_ASSIGNMENT_EXPRESSION) != null) {
+          
+          String assignmentType = assignmentItemNode.get(PROPERTY_USERTASK_ASSIGNMENT_TYPE).asText();
+          if (PROPERTY_USERTASK_ASSIGNEE.equals(assignmentType)) {
+            task.setAssignee(assignmentItemNode.get(PROPERTY_USERTASK_ASSIGNMENT_EXPRESSION).asText());
+          } else if (PROPERTY_USERTASK_CANDIDATE_USERS.equals(assignmentType)) {
+            task.setCandidateUsers(convertPropertyToList(PROPERTY_USERTASK_ASSIGNMENT_EXPRESSION, assignmentItemNode));
+          } else if (PROPERTY_USERTASK_CANDIDATE_GROUPS.equals(assignmentType)) {
+            task.setCandidateGroups(convertPropertyToList(PROPERTY_USERTASK_ASSIGNMENT_EXPRESSION, assignmentItemNode));
+          }
+        }
+      }
+    }
+    convertJsonToFormProperties(elementNode, task);
+    return task;
+  }
+  
+  private List<String> convertPropertyToList(String name, JsonNode elementNode) {
+    List<String> assignmentList = new ArrayList<String>();
+    if (elementNode.get(name) != null) {
+      String propertyValue = elementNode.get(name).asText();
+      String[] valueList = propertyValue.split(",");
+      for (String value : valueList) {
+        assignmentList.add(value.trim());
+      }
+    }
+    return assignmentList;
+  }
+}
