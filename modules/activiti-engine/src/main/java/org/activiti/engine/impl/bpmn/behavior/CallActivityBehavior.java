@@ -72,6 +72,14 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     subProcessInstance.start();
   }
   
+  public void setProcessDefinitonKey(String processDefinitonKey) {
+    this.processDefinitonKey = processDefinitonKey;
+  }
+  
+  public String getProcessDefinitonKey() {
+    return processDefinitonKey;
+  }
+  
   public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
     // only data.  no control flow available on this execution.
 

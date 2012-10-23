@@ -33,24 +33,23 @@ import com.vaadin.data.util.PropertysetItem;
 public class DeploymentListQuery extends AbstractLazyLoadingQuery {
   
   protected RepositoryService repositoryService;
+  protected DeploymentFilter deploymentFilter;
   
-  public DeploymentListQuery() {
+  public DeploymentListQuery(DeploymentFilter deploymentFilter) {
     this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+    this.deploymentFilter = deploymentFilter;
   }
 
   public int size() {
-    return (int) repositoryService.createDeploymentQuery().count();
+    return (int) deploymentFilter.getCountQuery(repositoryService).count();
   }
 
   public List<Item> loadItems(int start, int count) {
-    List<Deployment> deployments = repositoryService.createDeploymentQuery()
-      .orderByDeploymentName().asc()
-      .orderByDeploymentId().asc()
-      .listPage(start, count);
+    List<Deployment> deployments = deploymentFilter.getQuery(repositoryService).listPage(start, count);
     
     List<Item> items = new ArrayList<Item>();
     for (Deployment deployment : deployments) {
-      items.add(new DeploymentListitem(deployment));
+      items.add(deploymentFilter.createItem(deployment));
     }
     return items;
   }
@@ -58,7 +57,7 @@ public class DeploymentListQuery extends AbstractLazyLoadingQuery {
   public Item loadSingleResult(String id) {
     Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(id).singleResult();
     if(deployment != null) {
-      return new DeploymentListitem(deployment);
+      return deploymentFilter.createItem(deployment);
     }
     return null;
   }
@@ -67,7 +66,7 @@ public class DeploymentListQuery extends AbstractLazyLoadingQuery {
     throw new UnsupportedOperationException();
   }
   
-  class DeploymentListitem extends PropertysetItem implements Comparable<DeploymentListitem> {
+  public static class DeploymentListitem extends PropertysetItem implements Comparable<DeploymentListitem> {
     
     private static final long serialVersionUID = 1L;
     

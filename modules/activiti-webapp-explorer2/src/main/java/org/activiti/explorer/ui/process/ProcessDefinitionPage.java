@@ -23,6 +23,7 @@ import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.ProcessNavigator;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.AbstractTablePage;
+import org.activiti.explorer.ui.ComponentFactory;
 import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.custom.ToolBar;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
@@ -49,10 +50,17 @@ public class ProcessDefinitionPage extends AbstractTablePage {
   protected LazyLoadingContainer processDefinitionContainer;
   protected Table processDefinitionTable;
   protected ProcessDefinitionDetailPanel detailPanel;
+
+  private ProcessDefinitionFilter definitionFilter;
   
   public ProcessDefinitionPage() {
     ExplorerApp.get().setCurrentUriFragment(
       new UriFragment(ProcessNavigator.process_URI_PART));
+    
+    // Create the filter, responsible for querying and populating process definition items
+    ComponentFactory<ProcessDefinitionFilter> factory = 
+            ExplorerApp.get().getComponentFactory(ProcessDefinitionFilterFactory.class);
+    definitionFilter = factory.create();
   }
   
   /**
@@ -93,7 +101,7 @@ public class ProcessDefinitionPage extends AbstractTablePage {
     processDefinitionTable.setSizeFull();
     
     
-    LazyLoadingQuery lazyLoadingQuery = new ProcessDefinitionListQuery(repositoryService);
+    LazyLoadingQuery lazyLoadingQuery = new ProcessDefinitionListQuery(repositoryService, definitionFilter);
     this.processDefinitionContainer = new LazyLoadingContainer(lazyLoadingQuery, 10);
     processDefinitionTable.setContainerDataSource(processDefinitionContainer);
     
