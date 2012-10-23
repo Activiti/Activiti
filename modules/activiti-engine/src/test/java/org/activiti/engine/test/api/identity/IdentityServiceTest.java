@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
@@ -395,4 +396,51 @@ public class IdentityServiceTest extends PluggableActivitiTestCase {
     assertFalse(identityService.checkPassword(null, "passwd"));
     assertFalse(identityService.checkPassword(null, null));
   }
+  
+  public void testUserOptimisticLockingException() {
+    User user = identityService.newUser("kermit");
+    identityService.saveUser(user);
+    
+    User user1 = identityService.createUserQuery().singleResult();
+    User user2 = identityService.createUserQuery().singleResult();
+    
+    user1.setFirstName("name one");
+    identityService.saveUser(user1);
+
+    try {
+      
+      user2.setFirstName("name two");
+      identityService.saveUser(user2);
+      
+      fail("Expected an exception");
+    } catch (ActivitiOptimisticLockingException e) {
+      // Expected an exception
+    }
+    
+    identityService.deleteUser(user.getId());
+  }
+  
+  public void testGroupOptimisticLockingException() {
+    Group group = identityService.newGroup("group");
+    identityService.saveGroup(group);
+    
+    Group group1 = identityService.createGroupQuery().singleResult();
+    Group group2 = identityService.createGroupQuery().singleResult();
+    
+    group1.setName("name one");
+    identityService.saveGroup(group1);
+
+    try {
+      
+      group2.setName("name two");
+      identityService.saveGroup(group2);
+      
+      fail("Expected an exception");
+    } catch (ActivitiOptimisticLockingException e) {
+      // Expected an exception
+    }
+    
+    identityService.deleteGroup(group.getId());
+  }
+  
 }

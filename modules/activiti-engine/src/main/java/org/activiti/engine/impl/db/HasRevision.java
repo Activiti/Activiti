@@ -10,26 +10,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.activiti.engine.impl.identity;
-
-import java.util.Map;
-
+package org.activiti.engine.impl.db;
 
 /**
- * @author Tom Baeyens
+ * Entities that are using revisions for optimistic locking, need to implement this interface.
  * 
- * @deprecated Will be removed in Activiti 5.12
+ * @author Joram Barrez
  */
-public interface Account {
+public interface HasRevision {
+  
+  void setRevision(int revision);
+  int getRevision();
+  int getRevisionNext();
 
-  String NAME_ALFRESCO = "Alfresco";
-  String NAME_GOOGLE = "Google";
-  String NAME_SKYPE = "Skype";
-  String NAME_MAIL = "Mail";
-
-  String getName();
-  String getUsername();
-  String getPassword();
-  Map<String, String> getDetails();
 }

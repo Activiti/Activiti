@@ -21,6 +21,7 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
+import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
@@ -35,7 +36,7 @@ import org.activiti.engine.runtime.Job;
  * @author Dave Syer
  * @author Frederik Heremans
  */
-public abstract class JobEntity implements Serializable, Job, PersistentObject {
+public abstract class JobEntity implements Serializable, Job, PersistentObject, HasRevision {
 
   public static final boolean DEFAULT_EXCLUSIVE = true;
   public static final int DEFAULT_RETRIES = 3;

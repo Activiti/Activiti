@@ -13,35 +13,34 @@
 
 package org.activiti.engine.impl.test;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.ProcessEngines;
 
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class ResourceActivitiTestCase extends AbstractActivitiTestCase {
-  
-  protected static Map<String, ProcessEngine> cachedProcessEngines = new HashMap<String, ProcessEngine>();
   
   protected String activitiConfigurationResource;
   
   public ResourceActivitiTestCase(String activitiConfigurationResource) {
     this.activitiConfigurationResource = activitiConfigurationResource;
   }
+  
+  @Override
+  protected void closeDownProcessEngine() {
+    super.closeDownProcessEngine();
+    ProcessEngines.unregister(processEngine);
+    processEngine = null;
+  }
 
   @Override
   protected void initializeProcessEngine() {
-    processEngine = cachedProcessEngines.get(activitiConfigurationResource);
-    if (processEngine==null) {
-      processEngine = ProcessEngineConfiguration
-        .createProcessEngineConfigurationFromResource(activitiConfigurationResource)
-        .buildProcessEngine();
-      cachedProcessEngines.put(activitiConfigurationResource, processEngine);
-    }
+    processEngine = ProcessEngineConfiguration
+            .createProcessEngineConfigurationFromResource(activitiConfigurationResource)
+            .buildProcessEngine();
   }
 
 }

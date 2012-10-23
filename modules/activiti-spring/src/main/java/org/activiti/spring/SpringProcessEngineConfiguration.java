@@ -71,6 +71,7 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
     defaultCommandInterceptorsTxRequired.add(new LogInterceptor());
     defaultCommandInterceptorsTxRequired.add(new SpringTransactionInterceptor(transactionManager, TransactionTemplate.PROPAGATION_REQUIRED));
     CommandContextInterceptor commandContextInterceptor = new CommandContextInterceptor(commandContextFactory, this);
+    commandContextInterceptor.setContextReusePossible(true);
     defaultCommandInterceptorsTxRequired.add(commandContextInterceptor);
     return defaultCommandInterceptorsTxRequired;
   }
@@ -80,6 +81,7 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
     defaultCommandInterceptorsTxRequiresNew.add(new LogInterceptor());
     defaultCommandInterceptorsTxRequiresNew.add(new SpringTransactionInterceptor(transactionManager, TransactionTemplate.PROPAGATION_REQUIRES_NEW));
     CommandContextInterceptor commandContextInterceptor = new CommandContextInterceptor(commandContextFactory, this);
+    commandContextInterceptor.setContextReusePossible(false);
     defaultCommandInterceptorsTxRequiresNew.add(commandContextInterceptor);
     return defaultCommandInterceptorsTxRequiresNew;
   }

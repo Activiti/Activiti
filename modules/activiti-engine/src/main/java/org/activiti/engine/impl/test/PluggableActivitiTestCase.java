@@ -13,9 +13,10 @@
 
 package org.activiti.engine.impl.test;
 
+import java.util.logging.Logger;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.ProcessEngines;
 
 
@@ -29,21 +30,25 @@ import org.activiti.engine.ProcessEngines;
  * on the test support classes that we offer as part of our api (in org.activiti.engine.test).
  * 
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class PluggableActivitiTestCase extends AbstractActivitiTestCase {
+  
+  private static Logger pluggableActivitiTestCaseLogger = Logger.getLogger(PluggableActivitiTestCase.class.getName());
   
   protected static ProcessEngine cachedProcessEngine;
 
   protected void initializeProcessEngine() {
-    /*if (cachedProcessEngine==null) {
+    if (cachedProcessEngine == null) {
+      
+      pluggableActivitiTestCaseLogger.info("No cached process engine found for test. Retrieving the default engine.");
+      ProcessEngines.destroy(); // Just to be sure we're not getting any previously cached version
+      
       cachedProcessEngine = ProcessEngines.getDefaultProcessEngine();
       if (cachedProcessEngine==null) {
         throw new ActivitiException("no default process engine available");
       }
     }
-    processEngine = cachedProcessEngine;*/
-    processEngine = ProcessEngineConfiguration
-        .createProcessEngineConfigurationFromResource("activiti.cfg.xml")
-        .buildProcessEngine();
+    processEngine = cachedProcessEngine;
   }
 }

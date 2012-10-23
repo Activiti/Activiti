@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.form;
+package org.activiti.engine.impl.el;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -23,21 +23,21 @@ import org.activiti.engine.delegate.VariableScope;
 
 /**
  * Variable-scope only used to resolve variables when NO execution is active but
- * expression-resolving is needed. This occurs when start-form properties have default's
+ * expression-resolving is needed. This occurs eg. when start-form properties have default's
  * defined. Even though variables are not available yet, expressions should be resolved 
  * anyway.
  * 
  * @author Frederik Heremans
  */
-public class StartFormVariableScope implements VariableScope {
+public class StartProcessVariableScope implements VariableScope {
   
-  private static final StartFormVariableScope INSTANCE = new StartFormVariableScope();
+  private static final StartProcessVariableScope INSTANCE = new StartProcessVariableScope();
 
   /**
-   * Since a {@link StartFormVariableScope} has no state, it's safe to use the same
+   * Since a {@link StartProcessVariableScope} has no state, it's safe to use the same
    * instance to prevent too many useless instances created.
    */
-  public static StartFormVariableScope getSharedInstance()  {
+  public static StartProcessVariableScope getSharedInstance()  {
     return INSTANCE;
   }
   

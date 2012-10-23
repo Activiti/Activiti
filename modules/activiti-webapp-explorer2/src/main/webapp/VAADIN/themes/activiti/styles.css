@@ -274,6 +274,7 @@ input.login-field {
   margin-bottom: 5px;
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
+  border-radius: 4px;
 }
 
 .login-field-caption {
@@ -298,6 +299,7 @@ input.login-field {
   cursor: pointer;
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
+  border-radius: 4px;
 }
       
 .login-button:hover {

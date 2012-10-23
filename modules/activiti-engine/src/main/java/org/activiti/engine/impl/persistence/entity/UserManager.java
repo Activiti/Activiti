@@ -23,13 +23,16 @@ import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.UserQueryImpl;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.AbstractManager;
 
 
 /**
  * @author Tom Baeyens
  * @author Saeid Mirzaei
+ * @author Joram Barrez
  */
 public class UserManager extends AbstractManager {
 
@@ -41,9 +44,10 @@ public class UserManager extends AbstractManager {
     getDbSqlSession().insert((PersistentObject) user);
   }
   
-  public void updateUser(User updatedUser) {
-    UserEntity persistentUser = findUserById(updatedUser.getId());
-    persistentUser.update((UserEntity) updatedUser);
+  public void updateUser(UserEntity updatedUser) {
+    CommandContext commandContext = Context.getCommandContext();
+    DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
+    dbSqlSession.update(updatedUser);
   }
 
   public UserEntity findUserById(String userId) {

@@ -30,9 +30,13 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramLayoutFactory;
+import org.activiti.engine.repository.DiagramElement;
 import org.activiti.engine.repository.DiagramLayout;
 import org.activiti.engine.repository.DiagramNode;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -218,7 +222,11 @@ public class ProcessDiagramRetrievalTest {
     html.append("  <body>\n");
     html.append("    <div style=\"position: relative\">\n");
     html.append("      <img src=\"" + imageUrl + "\" />\n");
-    for (DiagramNode node : processDiagramLayout.getNodes()) {
+    
+    List<DiagramNode> nodes = processDiagramLayout.getNodes();
+    Collections.sort(nodes, new DiagramElementComparator());
+    
+    for (DiagramNode node : nodes) {
       html.append("      <div");
       html.append(" class=\"BPMNElement\"");
       html.append(" id=\"" + node.getId() + "\"");
@@ -280,6 +288,19 @@ public class ProcessDiagramRetrievalTest {
     }
     is.close();
     out.close();
+  }
+  
+  static class DiagramElementComparator implements Comparator<DiagramElement> {
+    
+    public int compare(DiagramElement a, DiagramElement b) {
+      return a.getId().compareTo(b.getId());
+    }
+    
+    // Don't need it here
+    public boolean equals(Object obj) {
+      return this == obj;
+    }
+    
   }
 
 }

@@ -30,6 +30,7 @@ import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
+import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.delegate.TaskListenerInvocation;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -46,7 +47,7 @@ import org.activiti.engine.task.Task;
  * @author Joram Barrez
  * @author Falko Menge
  */ 
-public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask, Serializable, PersistentObject {
+public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask, Serializable, PersistentObject, HasRevision {
 
   public static final String DELETE_REASON_COMPLETED = "completed";
   public static final String DELETE_REASON_DELETED = "deleted";
@@ -115,6 +116,23 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     }
   }
   
+  public void update() {
+    // Needed to make history work: the setter will also update the historic task
+    setOwner(this.getOwner());
+    setAssignee(this.getAssignee());
+    setDelegationState(this.getDelegationState());
+    setName(this.getName());
+    setDescription(this.getDescription());
+    setPriority(this.getPriority());
+    setCreateTime(this.getCreateTime());
+    setDueDate(this.getDueDate());
+    setParentTaskId(this.getParentTaskId());
+    
+    CommandContext commandContext = Context.getCommandContext();
+    DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
+    dbSqlSession.update(this);
+  }
+  
   /** new task.  Embedded state and create time will be initialized.
    * But this task still will have to be persisted with 
    * TransactionContext
@@ -127,18 +145,6 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     task.isIdentityLinksInitialized = true;
     task.createTime = ClockUtil.getCurrentTime();
     return task;
-  }
-
-  public void update(TaskEntity task) {
-    setOwner(task.getOwner());
-    setAssignee(task.getAssignee());
-    setDelegationState(task.getDelegationState());
-    setName(task.getName());
-    setDescription(task.getDescription());
-    setPriority(task.getPriority());
-    setCreateTime(task.getCreateTime());
-    setDueDate(task.getDueDate());
-    setParentTaskId(task.getParentTaskId());
   }
 
   public void complete() {
@@ -418,9 +424,9 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     if (assignee==null && this.assignee==null) {
       return;
     }
-    if (assignee!=null && assignee.equals(this.assignee)) {
-      return;
-    }
+//    if (assignee!=null && assignee.equals(this.assignee)) {
+//      return;
+//    }
     this.assignee = assignee;
 
     CommandContext commandContext = Context.getCommandContext();
@@ -446,9 +452,9 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     if (owner==null && this.owner==null) {
       return;
     }
-    if (owner!=null && owner.equals(this.owner)) {
-      return;
-    }
+//    if (owner!=null && owner.equals(this.owner)) {
+//      return;
+//    }
     this.owner = owner;
 
     CommandContext commandContext = Context.getCommandContext();

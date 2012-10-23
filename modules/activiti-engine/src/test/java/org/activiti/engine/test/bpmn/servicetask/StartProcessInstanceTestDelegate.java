@@ -10,25 +10,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.test.bpmn.servicetask;
 
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.CollectionUtil;
-import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.test.Deployment;
-
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.JavaDelegate;
+import org.activiti.engine.impl.context.Context;
 
 /**
  * @author Joram Barrez
  */
-public class RepeatingServiceTaskTest extends PluggableActivitiTestCase {
-  
-//  @Deployment
-  public void testMultipleInvocationsInSameTransation() {
-//    ProcessInstance processInstance = 
-//        runtimeService.startProcessInstanceByKey("repeating", CollectionUtil.singletonMap("count", 0));
-//    assertTrue(processInstance.isEnded());
+public class StartProcessInstanceTestDelegate implements JavaDelegate {
+
+  public void execute(DelegateExecution execution) throws Exception {
+    RuntimeService runtimeService = Context.getProcessEngineConfiguration().getRuntimeService();
+    runtimeService.startProcessInstanceByKey("oneTaskProcess");
   }
 
 }

@@ -17,6 +17,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.task.Attachment;
 
@@ -24,7 +25,7 @@ import org.activiti.engine.task.Attachment;
 /**
  * @author Tom Baeyens
  */
-public class AttachmentEntity implements Attachment, PersistentObject, Serializable {
+public class AttachmentEntity implements Attachment, PersistentObject, HasRevision, Serializable {
 
   private static final long serialVersionUID = 1L;
   
