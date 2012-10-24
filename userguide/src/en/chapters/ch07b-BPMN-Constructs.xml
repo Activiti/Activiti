@@ -3449,11 +3449,9 @@ public class ReverseStringsFieldInjected implements JavaDelegate {
           <title>Throwing BPMN Errors</title>
           
           <para>
-            As of Activiti 5.9, it is possible to throw BPMN Errors from user code
-            inside Service Tasks or Script Tasks.
+            It is possible to throw BPMN Errors from user code inside Service Tasks or Script Tasks.
             In order to do this, a special ActivitiException called
-            <emphasis>BpmnError</emphasis> can be thrown in JavaDelegates or scripts
-            and since Activiti 5.10 also in expressions and delegate expressions.
+            <emphasis>BpmnError</emphasis> can be thrown in JavaDelegates, scripts, expressions and delegate expressions.
             The engine will catch this exception and forward it to an appropriate
             error handler, e.g., a Boundary Error Event or an Error Event Sub-Process.
             <programlisting>
@@ -3524,10 +3522,63 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
 }</programlisting>
           </para>
         </section>
+        
+		</section>
+		
+		<section id="serviceTaskCallActivitiService">
+        
+          <title>Using an Activiti service from within a JavaDelegate</title>
+
+          <para>
+            For some use cases, it might be needed to use the Activiti services from within a Java service task 
+            (eg. starting a process instance through the RuntimeService, if the callActivity doesn't suit your needs).
+            The <emphasis>org.activiti.engine.delegate.DelegateExecution</emphasis> allows to easily 
+            use these services through the <emphasis>org.activiti.engine.EngineServices</emphasis> interface:
+            <programlisting>
+public class StartProcessInstanceTestDelegate implements JavaDelegate {
+
+  public void execute(DelegateExecution execution) throws Exception {
+    RuntimeService runtimeService = execution.getEngineServices().getRuntimeService();
+    runtimeService.startProcessInstanceByKey(&quot;myProcess&quot;);
+  }
+
+}            
+            </programlisting>
+            All of the Activiti service API's are available through this interface.
+            </para>
+            
+            <para>
+            All data changes that occur as an effect of using these API calls, will be part of the current transaction.
+            This also works in environments with dependency injection like Spring and CDI with or without a JTA enabled datasource.
+            For example, the following snippet of code will do the same as the snippet above,
+            but now the RuntimeService is injected rather than it is being fetched through the
+            <emphasis>org.activiti.engine.EngineServices</emphasis> interface.
+            <programlisting>
+@Component(&quot;startProcessInstanceDelegate&quot;)
+public class StartProcessInstanceTestDelegateWithInjection {
+  
+    @Autowired
+    private RuntimeService runtimeService;
+    
+    public void startProcess() {
+      runtimeService.startProcessInstanceByKey(&quot;oneTaskProcess&quot;);
+    }
+    
+}
+            </programlisting>
+          </para>
+          
+          <para>
+            <emphasis role="bold">Important technical note:</emphasis> since the service call
+            is being done as part of the current transaction any data that was produced or altered
+            <emphasis>before</emphasis> the service task is executed, is not yet flushed to
+            the database. All API calls work on the database data, which means that these uncommitted
+            changes are not be 'visible' within the api call of the service task.          
+          </para>
+        
+        </section>
       
      </section>
-  		
-		</section>
   
 <section id="bpmnWebserviceTask">
 	<title>Web Service Task</title><link linkend="experimental">
