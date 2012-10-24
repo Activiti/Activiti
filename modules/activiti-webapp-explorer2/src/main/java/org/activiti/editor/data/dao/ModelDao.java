@@ -15,9 +15,9 @@ package org.activiti.editor.data.dao;
 
 import java.util.List;
 
+import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.editor.data.model.ModelData;
 import org.activiti.editor.exception.ModelException;
-import org.activiti.editor.json.constants.ModelDataJsonConstants;
 import org.codehaus.jackson.JsonNode;
 
 /**

@@ -13,8 +13,10 @@
 
 package org.activiti.explorer.ui.process.listener;
 
+import org.activiti.bpmn.converter.BpmnXMLConverter;
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.editor.data.model.ModelData;
-import org.activiti.editor.language.bpmn.export.JsonToBpmnExport;
+import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
@@ -48,9 +50,15 @@ public class DeployProcessDefinitionClickListener implements ClickListener {
 
   public void buttonClick(ClickEvent event) {
     
-    try { 
-      JsonToBpmnExport converter = new JsonToBpmnExport((ObjectNode) new ObjectMapper().readTree(modelData.getModelEditorJson()));
-      byte[] bpmnBytes = converter.convert();
+    try {
+      System.out.println("converting to model");
+      ObjectNode modelNode = (ObjectNode) new ObjectMapper().readTree(modelData.getModelEditorJson());
+      System.out.println("json " + modelNode.toString());
+      BpmnModel model = new BpmnJsonConverter().convertToBpmnModel(modelNode);
+      System.out.println("converted to model");
+      byte[] bpmnBytes = new BpmnXMLConverter().convertToXML(model);
+      
+      System.out.println(new String(bpmnBytes));
       
       Deployment deployment = repositoryService.createDeployment().name(modelData.getName())
           .addString(modelData.getName() + ".bpmn20.xml", new String(bpmnBytes)).deploy();

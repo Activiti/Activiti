@@ -21,7 +21,6 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.explorer.data.AbstractLazyLoadingQuery;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
 
 
@@ -32,21 +31,19 @@ public class ProcessDefinitionListQuery extends AbstractLazyLoadingQuery {
   
   protected RepositoryService repositoryService;
   
-  public ProcessDefinitionListQuery(RepositoryService repositoryService) {
+  protected ProcessDefinitionFilter filter;
+  
+  public ProcessDefinitionListQuery(RepositoryService repositoryService, ProcessDefinitionFilter filter) {
     this.repositoryService = repositoryService;
+    this.filter = filter;
   }
   
   public List<Item> loadItems(int start, int count) {
-    List<ProcessDefinition> processDefinitions = repositoryService
-      .createProcessDefinitionQuery()
-      .latestVersion()
-      .orderByProcessDefinitionName().asc()
-      .orderByProcessDefinitionKey().asc() // name is not unique, so we add the order on key (so we can use it in the comparsion of ProcessDefinitionListItem)
-      .listPage(start, count);
+    List<ProcessDefinition> processDefinitions = filter.getQuery(repositoryService).listPage(start, count);
     
     List<Item> items = new ArrayList<Item>();
     for (ProcessDefinition processDefinition : processDefinitions) {
-      items.add(createItem(processDefinition));
+      items.add(filter.createItem(processDefinition));
     }
     return items;
   }
@@ -54,29 +51,13 @@ public class ProcessDefinitionListQuery extends AbstractLazyLoadingQuery {
   public Item loadSingleResult(String id) {
     ProcessDefinition definition = repositoryService.createProcessDefinitionQuery().processDefinitionId(id).singleResult();
     if (definition != null) {
-      return createItem(definition);
+      return filter.createItem(definition);
     }
     return null;
   }
   
-  protected ProcessDefinitionListItem createItem(ProcessDefinition processDefinition) {
-    ProcessDefinitionListItem item = new ProcessDefinitionListItem();
-    item.addItemProperty("id", new ObjectProperty<String>(processDefinition.getId(), String.class));
-    item.addItemProperty("name", new ObjectProperty<String>(getProcessDisplayName(processDefinition), String.class));
-    item.addItemProperty("key", new ObjectProperty<String>(processDefinition.getKey(), String.class));
-    return item;
-  }
-  
-  protected String getProcessDisplayName(ProcessDefinition processDefinition) {
-    if(processDefinition.getName() != null) {
-      return processDefinition.getName();
-    } else {
-      return processDefinition.getKey();
-    }
-  }
-
   public int size() {
-    return (int)repositoryService.createProcessDefinitionQuery().latestVersion().count();
+    return (int) filter.getCountQuery(repositoryService).count();
   }
 
   public void setSorting(Object[] propertyId, boolean[] ascending) {
@@ -85,7 +66,7 @@ public class ProcessDefinitionListQuery extends AbstractLazyLoadingQuery {
   
   
   
-  class ProcessDefinitionListItem extends PropertysetItem implements Comparable<ProcessDefinitionListItem>{
+  public static class ProcessDefinitionListItem extends PropertysetItem implements Comparable<ProcessDefinitionListItem>{
 
     private static final long serialVersionUID = 1L;
 

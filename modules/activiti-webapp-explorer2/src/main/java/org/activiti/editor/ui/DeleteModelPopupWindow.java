@@ -12,9 +12,9 @@
  */
 package org.activiti.editor.ui;
 
+import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.editor.data.dao.ModelDao;
 import org.activiti.editor.data.model.ModelData;
-import org.activiti.editor.json.constants.ModelDataJsonConstants;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;

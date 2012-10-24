@@ -14,10 +14,10 @@ package org.activiti.editor.ui;
 
 import java.io.InputStream;
 
+import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.editor.data.dao.ModelDao;
 import org.activiti.editor.data.model.ModelData;
-import org.activiti.editor.json.constants.ModelDataJsonConstants;
-import org.activiti.editor.language.json.converter.BpmnToEditorJsonConverter;
+import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
@@ -110,7 +110,7 @@ public class ConvertProcessDefinitionPopupWindow extends PopupWindow implements 
       public void buttonClick(ClickEvent event) {
         
         InputStream bpmnStream = repositoryService.getResourceAsStream(processDefinition.getDeploymentId(), processDefinition.getResourceName());
-        BpmnToEditorJsonConverter converter = new BpmnToEditorJsonConverter(processDefinition.getResourceName(), bpmnStream);
+        BpmnJsonConverter converter = new BpmnJsonConverter(processDefinition.getResourceName(), bpmnStream);
         ObjectNode modelNode = converter.convertToJson();
         ModelData modelData = new ModelData();
         modelData.setModelEditorJson(modelNode.toString());

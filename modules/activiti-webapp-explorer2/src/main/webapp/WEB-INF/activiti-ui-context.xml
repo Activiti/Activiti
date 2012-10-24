@@ -45,6 +45,14 @@
     <property name="environment" value="${activiti.ui.environment}" />
   </bean>
   
+  <bean name="processDefinitionFilterFactory" class="org.activiti.explorer.ui.process.ProcessDefinitionFilterFactory">
+    <property name="componentFactories" ref="componentFactories" />
+  </bean>
+  
+  <bean name="deploymentFilterFactory" class="org.activiti.explorer.ui.management.deployment.DeploymentFilterFactory">
+    <property name="componentFactories" ref="componentFactories" />
+  </bean>
+  
   <!-- User cache usage depends on environment, hence the faactory approach -->
   <bean name="userCache" class="org.activiti.explorer.cache.UserCacheFactoryBean">
     <property name="environment" value="${activiti.ui.environment}" />

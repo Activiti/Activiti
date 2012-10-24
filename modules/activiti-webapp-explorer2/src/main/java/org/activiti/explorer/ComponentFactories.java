@@ -44,6 +44,11 @@ public class ComponentFactories {
     return factories.get(clazz);
   }
   
+  public <T> void add(Class<? extends ComponentFactory<T>> clazz, ComponentFactory<T> factory) {
+    factories.put(clazz, factory);
+    factory.initialise(environment);
+  }
+  
   public void setEnvironment(String environment) {
     this.environment = environment;
     

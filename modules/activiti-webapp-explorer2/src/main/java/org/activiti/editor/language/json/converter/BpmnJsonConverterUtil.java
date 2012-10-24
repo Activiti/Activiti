@@ -12,10 +12,11 @@
  */
 package org.activiti.editor.language.json.converter;
 
-import org.activiti.editor.json.constants.EditorJsonConstants;
+import org.activiti.editor.constants.EditorJsonConstants;
 import org.activiti.engine.impl.bpmn.behavior.NoneEndEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.NoneStartEventActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
@@ -75,6 +76,15 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants {
     } else {
       return activity.getHeight();
     }
+  }
+  
+  public static String getStencilId(JsonNode objectNode) {
+    String stencilId = null;
+    JsonNode stencilNode = objectNode.get(EDITOR_STENCIL);
+    if (stencilNode != null && stencilNode.get(EDITOR_STENCIL_ID) != null) {
+      stencilId = stencilNode.get(EDITOR_STENCIL_ID).asText();
+    }
+    return stencilId;
   }
   
 }

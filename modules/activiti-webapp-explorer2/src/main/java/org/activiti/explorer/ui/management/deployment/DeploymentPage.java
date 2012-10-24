@@ -24,7 +24,6 @@ import org.activiti.explorer.ui.util.ThemeImageColumnGenerator;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 
 
@@ -38,10 +37,13 @@ public class DeploymentPage extends ManagementPage {
   protected String deploymentId;
   protected Table deploymentTable;
   protected LazyLoadingContainer deploymentListContainer;
+  protected DeploymentFilter deploymentFilter;
   
   public DeploymentPage() {
     ExplorerApp.get().setCurrentUriFragment(
       new UriFragment(DeploymentNavigator.DEPLOYMENT_URI_PART));
+    
+    deploymentFilter = ExplorerApp.get().getComponentFactory(DeploymentFilterFactory.class).create();
   }
   
   public DeploymentPage(String deploymentId) {
@@ -64,7 +66,7 @@ public class DeploymentPage extends ManagementPage {
   protected Table createList() {
     final Table deploymentTable = new Table();
     
-    LazyLoadingQuery deploymentListQuery = new DeploymentListQuery();
+    LazyLoadingQuery deploymentListQuery = new DeploymentListQuery(deploymentFilter);
     deploymentListContainer = new LazyLoadingContainer(deploymentListQuery, 10);
     deploymentTable.setContainerDataSource(deploymentListContainer);
             

@@ -20,9 +20,9 @@ import java.util.logging.Logger;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.editor.data.dao.ModelDao;
 import org.activiti.editor.data.model.ModelData;
-import org.activiti.editor.json.constants.ModelDataJsonConstants;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
