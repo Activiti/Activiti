@@ -41,8 +41,8 @@
 
   <!-- VARIABLE INSTANCE DELETE -->
 
-  <delete id="deleteVariableInstance" parameterType="string">
-    delete from ${prefix}ACT_RU_VARIABLE where ID_ = #{id, jdbcType=VARCHAR}
+  <delete id="deleteVariableInstance" parameterType="org.activiti.engine.impl.persistence.entity.VariableInstanceEntity">
+    delete from ${prefix}ACT_RU_VARIABLE where ID_ = #{id, jdbcType=VARCHAR} and REV_ = #{revision}
   </delete>
   
   <!-- VARIABLE INSTANCE RESULTMAP -->
@@ -109,14 +109,18 @@
   <!-- BYTE ARRAY DELETE -->
 
   <select id="selectBytesOfByteArray" parameterType="string" resultType="hashmap">
-    select BYTES_ from ${prefix}ACT_GE_BYTEARRAY where ID_ = #{id}
+    select BYTES_ from ${prefix}ACT_GE_BYTEARRAY where ID_ = #{id} and REV_ = #{revision}
   </select>
   
-  <delete id="deleteByteArraysForDeployment" parameterType="string">
-    delete from ${prefix}ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{id}
+  <delete id="deleteByteArraysForDeployment" parameterType="org.activiti.engine.impl.persistence.entity.ByteArrayEntity">
+    delete from ${prefix}ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{id} and REV_ = #{revision}
   </delete>
-   
-  <delete id="deleteByteArray" parameterType="string">
+  
+  <delete id="deleteByteArray" parameterType="org.activiti.engine.impl.persistence.entity.ByteArrayEntity">
+    delete from ${prefix}ACT_GE_BYTEARRAY where ID_ = #{id} and REV_ = #{revision}
+  </delete>
+  
+  <delete id="deleteByteArrayNoRevisionCheck" parameterType="string">
     delete from ${prefix}ACT_GE_BYTEARRAY where ID_ = #{id}
   </delete>
 

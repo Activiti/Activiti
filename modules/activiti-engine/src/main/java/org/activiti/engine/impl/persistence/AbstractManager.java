@@ -18,6 +18,7 @@ import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.entity.AttachmentManager;
+import org.activiti.engine.impl.persistence.entity.ByteArrayManager;
 import org.activiti.engine.impl.persistence.entity.DeploymentManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionManager;
 import org.activiti.engine.impl.persistence.entity.GroupManager;
@@ -46,7 +47,7 @@ public abstract class AbstractManager implements Session {
   }
 
   public void delete(PersistentObject persistentObject) {
-    getDbSqlSession().delete(persistentObject.getClass(), persistentObject.getId());
+    getDbSqlSession().delete(persistentObject);
   }
 
   protected DbSqlSession getDbSqlSession() {
@@ -63,6 +64,10 @@ public abstract class AbstractManager implements Session {
 
   protected ResourceManager getResourceManager() {
     return getSession(ResourceManager.class);
+  }
+  
+  protected ByteArrayManager getByteArrayManager() {
+    return getSession(ByteArrayManager.class);
   }
   
   protected ProcessDefinitionManager getProcessDefinitionManager() {

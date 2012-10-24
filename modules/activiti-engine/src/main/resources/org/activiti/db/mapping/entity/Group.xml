@@ -29,8 +29,8 @@
   
   <!-- GROUP DELETE -->
 
-  <delete id="deleteGroup" parameterType="string">
-    delete from ${prefix}ACT_ID_GROUP where ID_ = #{groupId} 
+  <delete id="deleteGroup" parameterType="org.activiti.engine.impl.persistence.entity.GroupEntity">
+    delete from ${prefix}ACT_ID_GROUP where ID_ = #{id} and REV_ = #{revision} 
   </delete>
 
   <!-- GROUP RESULTMAP -->
@@ -44,7 +44,7 @@
   
   <!-- GROUP SELECT -->
 
-  <select id="selectGroupById" parameterType="string" resultMap="groupResultMap">
+  <select id="selectGroup" parameterType="string" resultMap="groupResultMap">
     select * from ${prefix}ACT_ID_GROUP where ID_ = #{id}
   </select>
     

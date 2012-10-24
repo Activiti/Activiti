@@ -74,7 +74,7 @@ public class TaskManager extends AbstractManager {
           .markTaskInstanceEnded(taskId, deleteReason);
       }
         
-      getDbSqlSession().delete(TaskEntity.class, task.getId());
+      getDbSqlSession().delete(task);
     }
   }
 

@@ -36,10 +36,10 @@ public class IdentityInfoManager extends AbstractManager {
   }
 
   public void deleteIdentityInfo(IdentityInfoEntity identityInfo) {
-    getDbSqlSession().delete(IdentityInfoEntity.class, identityInfo.getId());
+    getDbSqlSession().delete(identityInfo);
     if (IdentityInfoEntity.TYPE_USERACCOUNT.equals(identityInfo.getType())) {
       for (IdentityInfoEntity identityInfoDetail: findIdentityInfoDetails(identityInfo.getId())) {
-        getDbSqlSession().delete(IdentityInfoEntity.class, identityInfoDetail.getId());
+        getDbSqlSession().delete(identityInfoDetail);
       }
     }
   }

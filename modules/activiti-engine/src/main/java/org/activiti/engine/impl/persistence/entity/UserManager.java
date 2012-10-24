@@ -59,14 +59,14 @@ public class UserManager extends AbstractManager {
     UserEntity user = findUserById(userId);
     if (user!=null) {
       if (user.getPictureByteArrayId()!=null) {
-        getDbSqlSession().delete(ByteArrayEntity.class, user.getPictureByteArrayId());
+        getByteArrayManager().deleteByteArrayById(user.getPictureByteArrayId());
       }
       List<IdentityInfoEntity> identityInfos = getDbSqlSession().selectList("selectIdentityInfoByUserId", userId);
       for (IdentityInfoEntity identityInfo: identityInfos) {
         getIdentityInfoManager().deleteIdentityInfo(identityInfo);
       }
       getDbSqlSession().delete("deleteMembershipsByUserId", userId);
-      getDbSqlSession().delete("deleteUser", userId);
+      getDbSqlSession().delete(user);
     }
   }
   

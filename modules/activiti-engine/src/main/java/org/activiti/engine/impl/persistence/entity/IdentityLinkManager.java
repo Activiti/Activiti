@@ -27,7 +27,7 @@ import org.activiti.engine.impl.persistence.AbstractManager;
 public class IdentityLinkManager extends AbstractManager {
 
   public void deleteIdentityLink(IdentityLinkEntity identityLink) {
-    getDbSqlSession().delete(IdentityLinkEntity.class, identityLink.getId());
+    getDbSqlSession().delete(identityLink);
   }
   
   @SuppressWarnings("unchecked")

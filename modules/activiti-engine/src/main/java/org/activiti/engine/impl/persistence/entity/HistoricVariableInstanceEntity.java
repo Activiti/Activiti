@@ -81,7 +81,7 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
     Context
       .getCommandContext()
       .getDbSqlSession()
-      .delete(HistoricVariableInstanceEntity.class, id);
+      .delete(this);
   }
 
   public Object getPersistentState() {
@@ -136,8 +136,8 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
       getByteArrayValue();
       Context
         .getCommandContext()
-        .getDbSqlSession()
-        .delete(ByteArrayEntity.class, this.byteArrayValueId);
+        .getByteArrayManager()
+        .deleteByteArrayById(this.byteArrayValueId);
     }
     if (bytes!=null) {
       byteArrayValue = new ByteArrayEntity(bytes);
@@ -161,8 +161,8 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
       getByteArrayValue();
       Context
         .getCommandContext()
-        .getDbSqlSession()
-        .delete(ByteArrayEntity.class, byteArrayValueId);
+        .getByteArrayManager()
+        .deleteByteArrayById(this.byteArrayValueId);
     }
   }
 

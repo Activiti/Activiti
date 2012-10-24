@@ -44,7 +44,7 @@ public class DeleteAttachmentCmd implements Command<Object>, Serializable {
 
     commandContext
       .getDbSqlSession()
-      .delete(AttachmentEntity.class, attachmentId);
+      .delete(attachment);
     
     if (attachment.getTaskId()!=null) {
       CommentManager commentManager = commandContext.getCommentManager();

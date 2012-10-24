@@ -39,10 +39,6 @@ public class HistoricActivityInstanceManager extends AbstractHistoricManager {
     getDbSqlSession().insert(historicActivityInstance);
   }
 
-  public void deleteHistoricActivityInstance(String historicActivityInstanceId) {
-    getDbSqlSession().delete(HistoricActivityInstanceEntity.class, historicActivityInstanceId);
-  }
-
   public HistoricActivityInstanceEntity findHistoricActivityInstance(String activityId, String processInstanceId) {
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put("activityId", activityId);

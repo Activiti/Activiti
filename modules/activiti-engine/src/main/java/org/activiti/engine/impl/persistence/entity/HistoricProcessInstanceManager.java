@@ -54,6 +54,7 @@ public class HistoricProcessInstanceManager extends AbstractHistoricManager {
   public void deleteHistoricProcessInstanceById(String historicProcessInstanceId) {
     if (historyLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
       CommandContext commandContext = Context.getCommandContext();
+      HistoricProcessInstanceEntity historicProcessInstance = findHistoricProcessInstance(historicProcessInstanceId);
       
       commandContext
         .getHistoricDetailManager()
@@ -71,7 +72,7 @@ public class HistoricProcessInstanceManager extends AbstractHistoricManager {
         .getHistoricTaskInstanceManager()
         .deleteHistoricTaskInstancesByProcessInstanceId(historicProcessInstanceId);
 
-      getDbSqlSession().delete(HistoricProcessInstanceEntity.class, historicProcessInstanceId);
+      getDbSqlSession().delete(historicProcessInstance);
     }
   }
   

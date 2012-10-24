@@ -54,8 +54,8 @@
   
   <!-- HISTORIC PROCESS VARIABLE DELETE -->
 
-  <delete id="deleteHistoricVariableInstance">
-    delete from ${prefix}ACT_HI_VARINST where ID_ = #{historicDetailId}
+  <delete id="deleteHistoricVariableInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity">
+    delete from ${prefix}ACT_HI_VARINST where ID_ = #{id} and REV_ = #{revision}
   </delete>
   
   <!-- HISTORIC PROCESS VARIABLE RESULTMAP -->

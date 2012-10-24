@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="oneTaskWithDelay">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
+    <userTask id="theTask" name="my task" />    
+    <sequenceFlow id="flow2" sourceRef="theTask" targetRef="delay" />
+    <serviceTask id="delay" activiti:class="org.activiti.engine.test.bpmn.event.end.EndEventTestJavaDelegate" />
+    <sequenceFlow id="flow3" sourceRef="delay" targetRef="theEnd" />
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

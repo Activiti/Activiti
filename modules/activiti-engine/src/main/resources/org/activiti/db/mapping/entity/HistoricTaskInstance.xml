@@ -79,8 +79,8 @@
 
   <!-- HISTORIC TASK INSTANCE DELETE -->
   
-  <delete id="deleteHistoricTaskInstance">
-    delete from ${prefix}ACT_HI_TASKINST where ID_ = #{historicTaskInstanceId}
+  <delete id="deleteHistoricTaskInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity">
+    delete from ${prefix}ACT_HI_TASKINST where ID_ = #{id}
   </delete>
 
   <!-- HISTORIC TASK INSTANCE RESULT MAP -->

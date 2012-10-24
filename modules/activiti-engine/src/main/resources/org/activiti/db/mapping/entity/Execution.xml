@@ -47,8 +47,8 @@
   
   <!-- EXECUTION DELETE -->
   
-  <delete id="deleteExecution" parameterType="string">
-    delete from ${prefix}ACT_RU_EXECUTION where ID_ = #{id}
+  <delete id="deleteExecution" parameterType="org.activiti.engine.impl.persistence.entity.ExecutionEntity">
+    delete from ${prefix}ACT_RU_EXECUTION where ID_ = #{id} and REV_ = #{revision}
   </delete>
   
   <!-- EXECUTION RESULTMAP -->
@@ -84,7 +84,7 @@
   <select id="selectProcessInstanceIdsByProcessDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultType="string">
     select ID_
     from ${prefix}ACT_RU_EXECUTION
-    where PROC_DEF_ID_ = #{parameter}
+    where PROC_DEF_ID_ = #{parameter} and PARENT_ID_ is null
   </select>
   
   <select id="selectExecutionsByQueryCriteria" parameterType="org.activiti.engine.impl.ExecutionQueryImpl" resultMap="executionResultMap">

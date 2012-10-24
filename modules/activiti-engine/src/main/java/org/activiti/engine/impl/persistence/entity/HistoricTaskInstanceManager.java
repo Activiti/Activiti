@@ -90,7 +90,7 @@ public class HistoricTaskInstanceManager extends AbstractHistoricManager {
           .getAttachmentManager()
           .deleteAttachmentsByTaskId(taskId);
       
-        getDbSqlSession().delete(HistoricTaskInstanceEntity.class, taskId);
+        getDbSqlSession().delete(historicTaskInstance);
       }
     }
   }

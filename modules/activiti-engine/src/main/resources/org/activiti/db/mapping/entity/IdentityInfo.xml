@@ -55,9 +55,9 @@
   
   <!-- INFO DELETE -->
 
-  <delete id="deleteIdentityInfo" parameterType="string">
+  <delete id="deleteIdentityInfo" parameterType="org.activiti.engine.impl.persistence.entity.IdentityInfoEntity">
     delete from ${prefix}ACT_ID_INFO 
-    where ID_ = #{id} 
+    where ID_ = #{id} and REV_ = #{revision}
   </delete>
 
   <!-- INFO RESULTMAP -->

@@ -442,7 +442,7 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
 	    <exec executable="${macos.browser}" os="Mac OS X" failifexecutionfails="false" failonerror="false">
 	      <arg value="@{url}" />
 	    </exec>
-	    <exec executable="cmd" os="Windows Vista, Windows XP,Windows 2000,Windows 98" failifexecutionfails="false" failonerror="false">
+	    <exec executable="cmd" os="Windows 7, Windows Vista, Windows XP,Windows 2000,Windows 98" failifexecutionfails="false" failonerror="false">
 	      <arg value="/C start &quot;${windows.browser}&quot; &quot;@{url}&quot;" />
 	    </exec>
 	      <exec executable="${linux.browser}" os="Linux" failifexecutionfails="false" failonerror="false">

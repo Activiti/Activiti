@@ -16,6 +16,7 @@ import java.sql.Connection;
 import java.util.Map;
 
 import org.activiti.engine.ManagementService;
+import org.activiti.engine.impl.cmd.DeleteJobCmd;
 import org.activiti.engine.impl.cmd.ExecuteJobsCmd;
 import org.activiti.engine.impl.cmd.GetJobExceptionStacktraceCmd;
 import org.activiti.engine.impl.cmd.GetPropertiesCmd;
@@ -36,6 +37,7 @@ import org.activiti.engine.runtime.JobQuery;
  * @author Tom Baeyens
  * @author Joram Barrez
  * @author Falko Menge
+ * @author Saeid Mizaei
  */
 public class ManagementServiceImpl extends ServiceImpl implements ManagementService {
 
@@ -53,6 +55,10 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
 
   public void executeJob(String jobId) {
     commandExecutor.execute(new ExecuteJobsCmd(jobId));
+  }
+  
+  public void deleteJob(String jobId) {
+    commandExecutor.execute(new DeleteJobCmd(jobId));
   }
 
   public void setJobRetries(String jobId, int retries) {
@@ -85,4 +91,5 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
       }
     });
   }
+
 }

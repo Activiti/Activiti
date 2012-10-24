@@ -26,6 +26,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.jobexecutor.FailedJobCommandFactory;
 import org.activiti.engine.impl.persistence.entity.AttachmentManager;
+import org.activiti.engine.impl.persistence.entity.ByteArrayManager;
 import org.activiti.engine.impl.persistence.entity.CommentManager;
 import org.activiti.engine.impl.persistence.entity.DeploymentManager;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionManager;
@@ -202,6 +203,10 @@ public class CommandContext {
 
   public ResourceManager getResourceManager() {
     return getSession(ResourceManager.class);
+  }
+  
+  public ByteArrayManager getByteArrayManager() {
+    return getSession(ByteArrayManager.class);
   }
   
   public ProcessDefinitionManager getProcessDefinitionManager() {

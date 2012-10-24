@@ -50,8 +50,9 @@ public class GroupManager extends AbstractManager {
   }
 
   public void deleteGroup(String groupId) {
+    GroupEntity group = getDbSqlSession().selectById(GroupEntity.class, groupId);
     getDbSqlSession().delete("deleteMembershipsByGroupId", groupId);
-    getDbSqlSession().delete("deleteGroup", groupId);
+    getDbSqlSession().delete(group);
   }
 
   public GroupQuery createNewGroupQuery() {

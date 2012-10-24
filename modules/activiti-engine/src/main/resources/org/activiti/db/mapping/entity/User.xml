@@ -34,8 +34,8 @@
   
   <!-- USER DELETE -->
 
-  <delete id="deleteUser" parameterType="string">
-    delete from ${prefix}ACT_ID_USER where ID_ = #{userId} 
+  <delete id="deleteUser" parameterType="org.activiti.engine.impl.persistence.entity.UserEntity">
+    delete from ${prefix}ACT_ID_USER where ID_ = #{id} and REV_ = #{revision}
   </delete>
 
   <!-- USER RESULTMAP -->

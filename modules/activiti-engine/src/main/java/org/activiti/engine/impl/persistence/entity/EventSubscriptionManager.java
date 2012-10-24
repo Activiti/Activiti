@@ -41,7 +41,7 @@ public class EventSubscriptionManager extends AbstractManager {
   }
   
   public void deleteEventSubscription(EventSubscriptionEntity persistentObject) {
-    getDbSqlSession().delete(persistentObject.getClass(), persistentObject.getId());
+    getDbSqlSession().delete(persistentObject);
     if(persistentObject instanceof SignalEventSubscriptionEntity) {
       createdSignalSubscriptions.remove(persistentObject);
     }

@@ -49,9 +49,9 @@
 
   <!-- ATTACHMENT DELETE -->
 
-  <delete id="deleteAttachment" parameterType="string">
+  <delete id="deleteAttachment" parameterType="org.activiti.engine.impl.persistence.entity.AttachmentEntity">
     delete from ${prefix}ACT_HI_ATTACHMENT 
-    where ID_ = #{id} 
+    where ID_ = #{id} and REV_ = #{revision} 
   </delete>
   
   <!-- ATTACHMENT RESULTMAP -->

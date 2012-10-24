@@ -84,7 +84,7 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
     Context
       .getCommandContext()
       .getDbSqlSession()
-      .delete(VariableInstanceEntity.class, id);
+      .delete(this);
     
     deleteByteArrayValue();
   }
@@ -151,8 +151,8 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
       getByteArrayValue();
       Context
         .getCommandContext()
-        .getDbSqlSession()
-        .delete(ByteArrayEntity.class, this.byteArrayValueId);
+        .getByteArrayManager()
+        .deleteByteArrayById(byteArrayValueId);
     }
     if (bytes!=null) {
       byteArrayValue = new ByteArrayEntity(bytes);
@@ -176,8 +176,8 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
       getByteArrayValue();
       Context
         .getCommandContext()
-        .getDbSqlSession()
-        .delete(ByteArrayEntity.class, byteArrayValueId);
+        .getByteArrayManager()
+        .deleteByteArrayById(byteArrayValueId);
     }
   }
 

@@ -43,9 +43,9 @@ public class AttachmentManager extends AbstractHistoricManager {
     for (AttachmentEntity attachment: attachments) {
       String contentId = attachment.getContentId();
       if (contentId!=null) {
-        getDbSqlSession().delete(ByteArrayEntity.class, contentId);
+        getByteArrayManager().deleteByteArrayById(contentId);
       }
-      getDbSqlSession().delete(AttachmentEntity.class, attachment.getId());
+      getDbSqlSession().delete(attachment);
     }
   }
 }

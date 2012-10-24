@@ -102,6 +102,7 @@ import org.activiti.engine.impl.persistence.GenericManagerFactory;
 import org.activiti.engine.impl.persistence.deploy.Deployer;
 import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
 import org.activiti.engine.impl.persistence.entity.AttachmentManager;
+import org.activiti.engine.impl.persistence.entity.ByteArrayManager;
 import org.activiti.engine.impl.persistence.entity.CommentManager;
 import org.activiti.engine.impl.persistence.entity.DeploymentManager;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionManager;
@@ -623,6 +624,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       addSessionFactory(new GenericManagerFactory(ProcessDefinitionManager.class));
       addSessionFactory(new GenericManagerFactory(PropertyManager.class));
       addSessionFactory(new GenericManagerFactory(ResourceManager.class));
+      addSessionFactory(new GenericManagerFactory(ByteArrayManager.class));
       addSessionFactory(new GenericManagerFactory(TableDataManager.class));
       addSessionFactory(new GenericManagerFactory(TaskManager.class));
       addSessionFactory(new GenericManagerFactory(UserManager.class));

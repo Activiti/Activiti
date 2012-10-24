@@ -58,8 +58,20 @@
   
   <!-- HISTORIC DETAILS DELETE -->
 
-  <delete id="deleteHistoricDetail">
-    delete from ${prefix}ACT_HI_DETAIL where ID_ = #{historicDetailId}
+  <delete id="deleteHistoricDetailAssignment">
+    delete from ${prefix}ACT_HI_DETAIL where ID_ = #{id}
+  </delete>
+  
+  <delete id="deleteHistoricDetailTransitionInstance">
+    delete from ${prefix}ACT_HI_DETAIL where ID_ = #{id}
+  </delete>
+  
+  <delete id="deleteHistoricDetailVariableInstanceUpdate">
+    delete from ${prefix}ACT_HI_DETAIL where ID_ = #{id}
+  </delete>
+  
+  <delete id="deleteHistoricFormProperty">
+    delete from ${prefix}ACT_HI_DETAIL where ID_ = #{id}
   </delete>
   
   <!-- HISTORIC DETAILS RESULTMAP -->

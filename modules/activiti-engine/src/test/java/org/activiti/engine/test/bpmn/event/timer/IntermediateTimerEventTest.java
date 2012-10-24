@@ -55,7 +55,7 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
     variables1.put("dueDate", new Date());
     
     HashMap<String, Object> variables2 = new HashMap<String, Object>();
-    variables2.put("dueDate", new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss").format(new Date()));
+    variables2.put("dueDate", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(new Date()));
     
     // After process start, there should be timer created    
     ProcessInstance pi1 = runtimeService.startProcessInstanceByKey("intermediateTimerEventExample", variables1);
@@ -66,6 +66,7 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
 
     // After setting the clock to one second in the future the timers should fire
     List<Job> jobs = managementService.createJobQuery().executable().list();
+    assertEquals(2, jobs.size());
     for (Job job : jobs) {
       managementService.executeJob(job.getId());
     }

@@ -294,7 +294,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
       Context
         .getCommandContext()
         .getDbSqlSession()
-        .delete(IdentityLinkEntity.class, identityLink.getId());
+        .delete(identityLink);
     }
   }
   

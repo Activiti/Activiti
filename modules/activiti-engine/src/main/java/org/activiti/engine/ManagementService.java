@@ -71,6 +71,13 @@ public interface ManagementService {
    */
   void executeJob(String jobId);
   
+  /** 
+   * Delete the job with the provided id.
+   * @param jobId id of the job to execute, cannot be null.
+   * @throws ActivitiException when there is no job with the given id. 
+   */
+  void deleteJob(String jobId);
+
   /**
    * Sets the number of retries that a job has left.
    *

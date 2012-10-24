@@ -100,11 +100,11 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject, 
       .getCommandContext()
       .getDbSqlSession();
 
-    dbSqlSession.delete(getClass(), id);
+    dbSqlSession.delete(this);
 
     // Also delete the job's exception byte array
     if (exceptionByteArrayId != null) {
-      dbSqlSession.delete(ByteArrayEntity.class, exceptionByteArrayId);
+      Context.getCommandContext().getByteArrayManager().deleteByteArrayById(exceptionByteArrayId);
     }
     
     // remove link to execution

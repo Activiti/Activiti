@@ -13,11 +13,19 @@
 
 package org.activiti.engine.test.api.mgmt;
 
+import java.util.Date;
+
 import junit.framework.Assert;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.cmd.AcquireJobsCmd;
+import org.activiti.engine.impl.cmd.ExecuteJobsCmd;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.jobexecutor.AcquiredJobs;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.management.TableMetaData;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -27,6 +35,8 @@ import org.activiti.engine.test.Deployment;
 /**
  * @author Frederik Heremans
  * @author Falko Menge
+ * @author Saeid Mizaei
+ * @author Joram Barrez
  */
 public class ManagementServiceTest extends PluggableActivitiTestCase {
 
@@ -162,7 +172,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
       assertTextPresent("The job id is mandatory, but 'null' has been provided.", re.getMessage());
     }
   }
-  
+
   public void testSetJobRetriesNegativeNumberOfRetries() {
     try {
       managementService.setJobRetries("unexistingjob", -1);
@@ -170,5 +180,63 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     } catch (ActivitiException re) {
       assertTextPresent("The number of job retries must be a non-negative Integer, but '-1' has been provided.", re.getMessage());
     }
+  }
+
+  public void testDeleteJobNullJobId() {
+    try {
+      managementService.deleteJob(null);
+      fail("ActivitiException expected");
+    } catch (ActivitiException re) {
+      assertTextPresent("jobId is null", re.getMessage());
+    }
+  }
+
+  public void testDeleteJobUnexistingJob() {
+    try {
+      managementService.deleteJob("unexistingjob");
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+      assertTextPresent("No job found with id", ae.getMessage());
+    }
+  }
+
+  @Deployment(resources = { "org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml" })
+  public void testDeleteJobDeletion() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerOnTask");
+    Job timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+
+    assertNotNull("Task timer should be there", timerJob);
+    managementService.deleteJob(timerJob.getId());
+    
+    timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNull("There should be no job now. It was deleted", timerJob);
+  }
+  
+  @Deployment(resources = { "org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml" })
+  public void testDeleteJobThatWasAlreadyAcquired() {
+    ClockUtil.setCurrentTime(new Date());
+    
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerOnTask");
+    Job timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    
+    // We need to move time at least one hour to make the timer executable
+    ClockUtil.setCurrentTime(new Date(ClockUtil.getCurrentTime().getTime() + 7200000L));
+
+    // Acquire job by running the acquire command manually
+    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) processEngine;
+    AcquireJobsCmd acquireJobsCmd = new AcquireJobsCmd(processEngineImpl.getProcessEngineConfiguration().getJobExecutor());
+    CommandExecutor commandExecutor = processEngineImpl.getProcessEngineConfiguration().getCommandExecutorTxRequired();
+    commandExecutor.execute(acquireJobsCmd);
+    
+    // Try to delete the job. This should fail.
+    try {
+      managementService.deleteJob(timerJob.getId());
+      fail();
+    } catch (ActivitiException e) {
+      // Exception is expected
+    }
+    
+    // Clean up
+    managementService.executeJob(timerJob.getId());
   }
 }

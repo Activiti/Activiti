@@ -50,8 +50,8 @@
   </update>
   
   <!-- TASK DELETE -->
-  <delete id="deleteTask" parameterType="string">
-    delete from ${prefix}ACT_RU_TASK where ID_ = #{id}
+  <delete id="deleteTask" parameterType="org.activiti.engine.impl.persistence.entity.TaskEntity">
+    delete from ${prefix}ACT_RU_TASK where ID_ = #{id} and REV_ = #{revision}
   </delete>
   
   <!-- TASK RESULTMAP -->

@@ -6,16 +6,16 @@
 
   <!-- JOB DELETE STATEMENTS-->
 
-  <delete id="deleteJob" parameterType="string">
-    delete from ${prefix}ACT_RU_JOB where ID_ = #{id}
+  <delete id="deleteJob" parameterType="org.activiti.engine.impl.persistence.entity.JobEntity">
+    delete from ${prefix}ACT_RU_JOB where ID_ = #{id} and REV_ = #{revision}
   </delete>
   
-  <delete id="deleteTimer" parameterType="string">
-    delete from ${prefix}ACT_RU_JOB where ID_ = #{id}
+  <delete id="deleteTimer" parameterType="org.activiti.engine.impl.persistence.entity.JobEntity">
+    delete from ${prefix}ACT_RU_JOB where ID_ = #{id} and REV_ = #{revision}
   </delete>
   
-  <delete id="deleteMessage" parameterType="string">
-    delete from ${prefix}ACT_RU_JOB where ID_ = #{id}
+  <delete id="deleteMessage" parameterType="org.activiti.engine.impl.persistence.entity.JobEntity">
+    delete from ${prefix}ACT_RU_JOB where ID_ = #{id} and REV_ = #{revision}
   </delete>
   
   <!-- JOB RESULTMAP (FOR TIMER AND MESSAGE) -->

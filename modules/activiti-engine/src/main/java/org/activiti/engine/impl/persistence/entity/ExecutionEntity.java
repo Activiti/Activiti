@@ -854,7 +854,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     // finally delete this execution
     Context.getCommandContext()
       .getDbSqlSession()
-      .delete(ExecutionEntity.class, id);
+      .delete(this);
   }
 
   public void destroyScope(String reason) {

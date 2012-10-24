@@ -46,7 +46,7 @@ public class HistoricDetailEntity implements HistoricDetail, PersistentObject, S
       .getCommandContext()
       .getDbSqlSession();
 
-    dbSqlSession.delete(HistoricDetailEntity.class, id);
+    dbSqlSession.delete(this);
   }
 
   // getters and setters //////////////////////////////////////////////////////

@@ -168,7 +168,7 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
       Context
         .getCommandContext()
         .getDbSqlSession()
-        .delete(IdentityLinkEntity.class, identityLink.getId());
+        .delete(identityLink);
     }
   }
   
