@@ -46,7 +46,7 @@ package org.activiti.engine;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public interface ProcessEngine {
+public interface ProcessEngine extends EngineServices {
 
   /** the version of the activiti library */
   public static String VERSION = "5.11-SNAPSHOT";
@@ -55,14 +55,6 @@ public interface ProcessEngine {
    * the activiti.cfg.xml configuration file.
    * The default name for a process engine is 'default */
   String getName();
-
-  RepositoryService getRepositoryService();
-  RuntimeService getRuntimeService();
-  FormService getFormService();
-  TaskService getTaskService();
-  HistoryService getHistoryService();
-  IdentityService getIdentityService();
-  ManagementService getManagementService();
 
   void close();
 }

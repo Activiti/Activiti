@@ -10,20 +10,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.test.bpmn.servicetask;
-
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.JavaDelegate;
+package org.activiti.engine;
 
 /**
- * @author Joram Barrez
+ * Interface implemented by all classes that expose the Activiti services.
+ * 
+ * @author Joram Barrez 
  */
-public class StartProcessInstanceTestDelegate implements JavaDelegate {
+public interface EngineServices {
 
-  public void execute(DelegateExecution execution) throws Exception {
-    RuntimeService runtimeService = execution.getEngineServices().getRuntimeService();
-    runtimeService.startProcessInstanceByKey("oneTaskProcess");
-  }
-
+  RepositoryService getRepositoryService();
+  
+  RuntimeService getRuntimeService();
+  
+  FormService getFormService();
+  
+  TaskService getTaskService();
+  
+  HistoryService getHistoryService();
+  
+  IdentityService getIdentityService();
+  
+  ManagementService getManagementService();
+  
 }

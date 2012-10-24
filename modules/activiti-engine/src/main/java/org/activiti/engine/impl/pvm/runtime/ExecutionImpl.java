@@ -22,6 +22,10 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.activiti.engine.EngineServices;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmException;
 import org.activiti.engine.impl.pvm.PvmExecution;
@@ -672,6 +676,12 @@ public class ExecutionImpl implements
     if (variables==null) {
       variables = new HashMap<String, Object>();
     }
+  }
+  
+  // process engine convience access /////////////////////////////////////////////////////////////////
+  
+  public EngineServices getEngineServices() {
+    return Context.getProcessEngineConfiguration();
   }
   
   // toString /////////////////////////////////////////////////////////////////

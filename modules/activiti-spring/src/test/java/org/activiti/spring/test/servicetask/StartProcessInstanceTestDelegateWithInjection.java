@@ -10,20 +10,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.test.bpmn.servicetask;
+package org.activiti.spring.test.servicetask;
 
 import org.activiti.engine.RuntimeService;
-import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.JavaDelegate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Joram Barrez
  */
-public class StartProcessInstanceTestDelegate implements JavaDelegate {
-
-  public void execute(DelegateExecution execution) throws Exception {
-    RuntimeService runtimeService = execution.getEngineServices().getRuntimeService();
-    runtimeService.startProcessInstanceByKey("oneTaskProcess");
-  }
+@Component("startProcessInstanceDelegate")
+public class StartProcessInstanceTestDelegateWithInjection {
+  
+    @Autowired
+    private RuntimeService runtimeService;
+    
+    public void startProcess() {
+      runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    }
 
 }

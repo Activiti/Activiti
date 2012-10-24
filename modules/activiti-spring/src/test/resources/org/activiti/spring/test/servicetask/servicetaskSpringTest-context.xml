@@ -7,6 +7,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
                            http://www.springframework.org/schema/tx      http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+                           
+  <context:component-scan base-package="org.activiti.spring.test.servicetask" />
 
   <bean id="sentenceGenerator" class="org.activiti.spring.test.servicetask.SentenceGenerator" />
   

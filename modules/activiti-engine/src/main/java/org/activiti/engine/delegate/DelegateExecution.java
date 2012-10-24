@@ -13,6 +13,9 @@
 
 package org.activiti.engine.delegate;
 
+import org.activiti.engine.EngineServices;
+import org.activiti.engine.ProcessEngine;
+
 
 
 /**
@@ -64,4 +67,9 @@ public interface DelegateExecution extends VariableScope {
    * Gets the name of the current activity.
    */
   String getCurrentActivityName();
+  
+  /**
+   * All Activiti services can be accessed through this interface.
+   */
+  EngineServices getEngineServices();
 }

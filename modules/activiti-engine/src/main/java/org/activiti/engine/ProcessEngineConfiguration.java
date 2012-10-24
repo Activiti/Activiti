@@ -74,7 +74,7 @@ import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
  * @see ProcessEngines 
  * @author Tom Baeyens
  */
-public abstract class ProcessEngineConfiguration {
+public abstract class ProcessEngineConfiguration implements EngineServices {
   
   /** Checks the version of the DB schema against the library when 
    * the process engine is being created and throws an exception
