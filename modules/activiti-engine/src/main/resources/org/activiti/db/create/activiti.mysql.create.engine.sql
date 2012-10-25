@@ -52,9 +52,9 @@ create table ACT_RU_EXECUTION (
 
 create table ACT_RU_JOB (
     ID_ varchar(64) NOT NULL,
-	  REV_ integer,
+	REV_ integer,
     TYPE_ varchar(255) NOT NULL,
-    LOCK_EXP_TIME_ timestamp,
+    LOCK_EXP_TIME_ timestamp NULL,
     LOCK_OWNER_ varchar(255),
     EXCLUSIVE_ boolean,
     EXECUTION_ID_ varchar(64),
