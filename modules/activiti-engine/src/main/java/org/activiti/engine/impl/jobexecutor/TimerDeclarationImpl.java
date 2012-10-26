@@ -41,6 +41,7 @@ public class TimerDeclarationImpl implements Serializable {
   protected String repeat;
   protected boolean exclusive = TimerEntity.DEFAULT_EXCLUSIVE;
   protected int retries = TimerEntity.DEFAULT_RETRIES;
+  protected boolean isInterruptingTimer; // For boundary timers
 
   public TimerDeclarationImpl(Expression expression, TimerDeclarationType type, String jobHandlerType) {
     this.jobHandlerType = jobHandlerType;
@@ -87,6 +88,14 @@ public class TimerDeclarationImpl implements Serializable {
   public void setJobHandlerType(String jobHandlerType) {
     this.jobHandlerType = jobHandlerType;
   }
+  
+  public boolean isInterruptingTimer() {
+    return isInterruptingTimer;
+  }
+  
+  public void setInterruptingTimer(boolean isInterruptingTimer) {
+    this.isInterruptingTimer = isInterruptingTimer;
+  }
 
   public TimerEntity prepareTimerEntity(ExecutionEntity executionEntity) {
     BusinessCalendar businessCalendar = Context
@@ -129,10 +138,14 @@ public class TimerDeclarationImpl implements Serializable {
     if (executionEntity != null) {
       timer.setExecution(executionEntity);
     }
+    
     if (type == TimerDeclarationType.CYCLE) {
-      String prepared = prepareRepeat(dueDateString);
-      timer.setRepeat(prepared);
-
+      
+      // See ACT-1427: A boundary timer with a cancelActivity='true', doesn't need to repeat itself
+      if (!isInterruptingTimer) {
+        String prepared = prepareRepeat(dueDateString);
+        timer.setRepeat(prepared);
+      }
     }
     
     return timer;
