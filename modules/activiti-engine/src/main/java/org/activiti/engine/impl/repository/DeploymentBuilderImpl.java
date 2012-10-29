@@ -97,6 +97,11 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
     return this;
   }
   
+  public DeploymentBuilder category(String category) {
+    deployment.setCategory(category);
+    return this;
+  }
+    
   public DeploymentBuilder enableDuplicateFiltering() {
     isDuplicateFilterEnabled = true;
     return this;
