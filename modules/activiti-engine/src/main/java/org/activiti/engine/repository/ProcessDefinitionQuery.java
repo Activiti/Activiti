@@ -38,6 +38,10 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
    */
   ProcessDefinitionQuery processDefinitionCategoryLike(String processDefinitionCategoryLike);
 
+  /** Only select deployments that have a different category then the given one. 
+   * @see DeploymentBuilder#category(String) */
+  ProcessDefinitionQuery processDefinitionCategoryNotEquals(String categoryNotEquals);
+
   /** Only select process definitions with the given name. */
   ProcessDefinitionQuery processDefinitionName(String processDefinitionName);
   

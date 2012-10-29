@@ -33,6 +33,7 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
   
   protected String id;
   protected String name;
+  protected String category;
   protected Map<String, ResourceEntity> resources;
   protected Date deploymentTime;
   protected boolean validatingSchema = true;
@@ -115,5 +116,13 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
   
   public void setNew(boolean isNew) {
     this.isNew = isNew;
+  }
+
+  public String getCategory() {
+    return category;
+  }
+
+  public void setCategory(String category) {
+    this.category = category;
   }
 }

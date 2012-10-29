@@ -330,5 +330,4 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
     
     repositoryService.deleteDeployment(deployment.getId());
   }
-  
 }

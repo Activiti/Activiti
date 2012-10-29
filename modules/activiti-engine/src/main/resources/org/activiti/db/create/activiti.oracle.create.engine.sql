@@ -27,6 +27,7 @@ create table ACT_GE_BYTEARRAY (
 create table ACT_RE_DEPLOYMENT (
     ID_ NVARCHAR2(64),
     NAME_ NVARCHAR2(255),
+    CATEGORY_ NVARCHAR2(255),
     DEPLOY_TIME_ TIMESTAMP(6),
     primary key (ID_)
 );

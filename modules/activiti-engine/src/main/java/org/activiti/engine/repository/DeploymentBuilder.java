@@ -37,6 +37,7 @@ public interface DeploymentBuilder {
   DeploymentBuilder addZipInputStream(ZipInputStream zipInputStream);
   
   DeploymentBuilder name(String name);
+  DeploymentBuilder category(String category);
   DeploymentBuilder enableDuplicateFiltering();
 
   Deployment deploy();

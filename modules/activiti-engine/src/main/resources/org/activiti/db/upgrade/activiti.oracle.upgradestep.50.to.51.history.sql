@@ -15,3 +15,6 @@ create table ACT_HI_TASKINST (
 );
 
 alter table ACT_HI_DETAIL add TASK_ID_ NVARCHAR2(64);
+
+alter table ACT_RE_DEPLOYMENT 
+add CATEGORY_ NVARCHAR2(255);
