@@ -22,6 +22,7 @@ import org.activiti.engine.impl.cmd.GetRenderedStartFormCmd;
 import org.activiti.engine.impl.cmd.GetRenderedTaskFormCmd;
 import org.activiti.engine.impl.cmd.GetStartFormCmd;
 import org.activiti.engine.impl.cmd.GetTaskFormCmd;
+import org.activiti.engine.impl.cmd.GetFormKeyCmd;
 import org.activiti.engine.impl.cmd.SubmitStartFormCmd;
 import org.activiti.engine.impl.cmd.SubmitTaskFormCmd;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -29,6 +30,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 
 /**
  * @author Tom Baeyens
+ * @author Falko Menge (camunda)
  */
 public class FormServiceImpl extends ServiceImpl implements FormService {
 
@@ -67,4 +69,13 @@ public class FormServiceImpl extends ServiceImpl implements FormService {
   public void submitTaskFormData(String taskId, Map<String, String> properties) {
     commandExecutor.execute(new SubmitTaskFormCmd(taskId, properties));
   }
+
+  public String getStartFormKey(String processDefinitionId) {
+    return commandExecutor.execute(new GetFormKeyCmd(processDefinitionId));
+  }
+
+  public String getTaskFormKey(String processDefinitionId, String taskDefinitionKey) {
+    return commandExecutor.execute(new GetFormKeyCmd(processDefinitionId, taskDefinitionKey));
+  }
+
 }

@@ -32,6 +32,7 @@ import org.activiti.engine.test.Deployment;
  * @author Joram Barrez
  * @author Frederik Heremans
  * @author Tom Baeyens
+ * @author Falko Menge (camunda)
  */
 public class FormServiceTest extends PluggableActivitiTestCase {
 
@@ -294,6 +295,71 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     assertEquals("123", processInstance.getBusinessKey());
 
     assertEquals(processInstance.getId(), runtimeService.createProcessInstanceQuery().processInstanceBusinessKey("123").singleResult().getId());
+  }
+
+  public void testGetStartFormKeyEmptyArgument() {
+    try {
+      formService.getStartFormKey(null);
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+      assertTextPresent("The process definition id is mandatory, but 'null' has been provided.", ae.getMessage());
+    }
+
+    try {
+      formService.getStartFormKey("");
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+      assertTextPresent("The process definition id is mandatory, but '' has been provided.", ae.getMessage());
+    }
+  }
+
+  @Deployment(resources = "org/activiti/engine/test/api/form/FormsProcess.bpmn20.xml")
+  public void testGetStartFormKey() {
+    String processDefinitionId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
+    String expectedFormKey = formService.getStartFormData(processDefinitionId).getFormKey();
+    String actualFormKey = formService.getStartFormKey(processDefinitionId);
+    assertEquals(expectedFormKey, actualFormKey);
+  }
+
+  public void testGetTaskFormKeyEmptyArguments() {
+    try {
+      formService.getTaskFormKey(null, "23");
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+      assertTextPresent("The process definition id is mandatory, but 'null' has been provided.", ae.getMessage());
+    }
+
+    try {
+      formService.getTaskFormKey("", "23");
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+      assertTextPresent("The process definition id is mandatory, but '' has been provided.", ae.getMessage());
+    }
+
+    try {
+      formService.getTaskFormKey("42", null);
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+      assertTextPresent("The task definition key is mandatory, but 'null' has been provided.", ae.getMessage());
+    }
+
+    try {
+      formService.getTaskFormKey("42", "");
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+      assertTextPresent("The task definition key is mandatory, but '' has been provided.", ae.getMessage());
+    }
+  }
+
+  @Deployment(resources = "org/activiti/engine/test/api/form/FormsProcess.bpmn20.xml")
+  public void testGetTaskFormKey() {
+    String processDefinitionId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
+    runtimeService.startProcessInstanceById(processDefinitionId);
+    Task task = taskService.createTaskQuery().singleResult();
+    assertNotNull(task);
+    String expectedFormKey = formService.getTaskFormData(task.getId()).getFormKey();
+    String actualFormKey = formService.getTaskFormKey(task.getProcessDefinitionId(), task.getTaskDefinitionKey());
+    assertEquals(expectedFormKey, actualFormKey);
   }
 
 }
