@@ -36,6 +36,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   protected String id;
   protected String category;
   protected String categoryLike;
+  protected String categoryNotEquals;
   protected String name;
   protected String nameLike;
   protected String deploymentId;
@@ -81,6 +82,14 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
       throw new ActivitiException("categoryLike is null");
     }
     this.categoryLike = categoryLike;
+    return this;
+  }
+
+  public ProcessDefinitionQueryImpl processDefinitionCategoryNotEquals(String categoryNotEquals) {
+    if (categoryNotEquals == null) {
+      throw new ActivitiException("categoryNotEquals is null");
+    }
+    this.categoryNotEquals = categoryNotEquals;
     return this;
   }
 
@@ -284,6 +293,9 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   }  
   public void setSuspensionState(SuspensionState suspensionState) {
     this.suspensionState = suspensionState;
+  }
+  public String getCategoryNotEquals() {
+    return categoryNotEquals;
   }
 
   public ProcessDefinitionQueryImpl startableByUser(String userId) {

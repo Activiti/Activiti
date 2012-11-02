@@ -19,11 +19,14 @@ import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
 
 
 /** Access to form data and rendered forms for starting new process instances and completing tasks.
  * 
  * @author Tom Baeyens
+ * @author Falko Menge (camunda)
  */
 public interface FormService {
 
@@ -71,4 +74,26 @@ public interface FormService {
   
   /** Completes a task with the user data that was entered as properties in a task form. */  
   void submitTaskFormData(String taskId, Map<String, String> properties);
+
+  /**
+   * Retrieves a user defined reference to a start form.
+   *
+   * In the Explorer app, it is assumed that the form key specifies a resource
+   * in the deployment, which is the template for the form.  But users are free
+   * to use this property differently.
+   */
+  String getStartFormKey(String processDefinitionId);
+
+  /**
+   * Retrieves a user defined reference to a task form.
+   *
+   * In the Explorer app, it is assumed that the form key specifies a resource
+   * in the deployment, which is the template for the form.  But users are free
+   * to use this property differently.
+   *
+   * Both arguments can be obtained from {@link Task} instances returned by any
+   * {@link TaskQuery}.
+   */
+  String getTaskFormKey(String processDefinitionId, String taskDefinitionKey);
+
 }

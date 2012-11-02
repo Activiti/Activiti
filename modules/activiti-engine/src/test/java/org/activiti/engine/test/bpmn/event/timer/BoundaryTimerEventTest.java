@@ -105,14 +105,27 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     assertProcessEnded(pi.getId());
   }
   
-  
   @Deployment
   public void testTimerInSingleTransactionProcess() {
     // make sure that if a PI completes in single transaction, JobEntities associated with the execution are deleted.
     // broken before 5.10, see ACT-1133
     runtimeService.startProcessInstanceByKey("timerOnSubprocesses"); 
-    
     assertEquals(0, managementService.createJobQuery().count());
+  }
+  
+  @Deployment
+  public void testRepeatingTimerWithCancelActivity() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("repeatingTimerAndCallActivity");
+    assertEquals(1, managementService.createJobQuery().count());
+    assertEquals(1, taskService.createTaskQuery().count());
+    
+    // Firing job should cancel the user task, destroy the scope,
+    // re-enter the task and recreate the task. A new timer should also be created.
+    // This didn't happen before 5.11 (new jobs kept being created). See ACT-1427
+    Job job = managementService.createJobQuery().singleResult();
+    managementService.executeJob(job.getId());
+    assertEquals(1, managementService.createJobQuery().count());
+    assertEquals(1, taskService.createTaskQuery().count());
   }
 
 }

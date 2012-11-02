@@ -270,4 +270,18 @@ repositoryService.createDeployment()
     </para>
   </section>
 
+  <section id="deploymentCategory">
+    <title>Category</title>
+    <para>
+    Both deployments and process definitions have user defined categories.  The process definition 
+    category is initialized value in attribute in the BPMN file: <literal>&lt;definitions ... targetNamespace=&quot;yourCategory&quot; ...</literal>
+    </para>
+    <para>The deployment category can be specified in the API like this:</para>
+    <programlisting>repositoryService
+    .createDeployment()
+    .category(&quot;yourCategory&quot;)
+    ...
+    .deploy();</programlisting>
+  </section>
+
 </chapter>

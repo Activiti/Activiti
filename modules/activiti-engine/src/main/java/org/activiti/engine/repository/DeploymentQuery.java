@@ -41,6 +41,14 @@ public interface DeploymentQuery extends Query<DeploymentQuery, Deployment>{
   /** Only select deployments with a name like the given string. */
   DeploymentQuery deploymentNameLike(String nameLike);
 
+  /** Only select deployments with the given category. 
+   * @see DeploymentBuilder#category(String) */
+  DeploymentQuery deploymentCategory(String category);
+
+  /** Only select deployments that have a different category then the given one. 
+   * @see DeploymentBuilder#category(String) */
+  DeploymentQuery deploymentCategoryNotEquals(String categoryNotEquals);
+
   //sorting ////////////////////////////////////////////////////////
   
   /** Order by deployment id (needs to be followed by {@link #asc()} or {@link #desc()}). */

@@ -33,6 +33,9 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
   protected String deploymentId;
   protected String name;
   protected String nameLike;
+  protected String category;
+  protected String categoryNotEquals;
+
 
   public DeploymentQueryImpl() {
   }
@@ -68,7 +71,24 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
     this.nameLike = nameLike;
     return this;
   }
-  
+
+  public DeploymentQueryImpl deploymentCategory(String deploymentCategory) {
+    if (deploymentCategory == null) {
+      throw new ActivitiException("deploymentCategory is null");
+    }
+    this.category = deploymentCategory;
+    return this;
+  }
+
+  public DeploymentQueryImpl deploymentCategoryNotEquals(String deploymentCategoryNotEquals) {
+    if (deploymentCategoryNotEquals == null) {
+      throw new ActivitiException("deploymentCategoryExclude is null");
+    }
+    this.categoryNotEquals = deploymentCategoryNotEquals;
+    return this;
+  }
+
+
   //sorting ////////////////////////////////////////////////////////
   
   public DeploymentQuery orderByDeploymentId() {
@@ -113,5 +133,13 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
 
   public String getNameLike() {
     return nameLike;
+  }
+
+  public String getCategory() {
+    return category;
+  }
+
+  public String getCategoryNotEquals() {
+    return categoryNotEquals;
   }
 }

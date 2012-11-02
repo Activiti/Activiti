@@ -3,3 +3,6 @@ alter table ACT_RE_PROCDEF
 
 alter table ACT_RE_PROCDEF
     alter column VERSION_ int not null;
+    
+alter table ACT_RE_DEPLOYMENT 
+add CATEGORY_ nvarchar(255);

@@ -2480,6 +2480,12 @@ public class BpmnParse extends Parse {
   public void parseBoundaryTimerEventDefinition(Element timerEventDefinition, boolean interrupting, ActivityImpl timerActivity) {
     timerActivity.setProperty("type", "boundaryTimer");
     TimerDeclarationImpl timerDeclaration = parseTimer(timerEventDefinition, timerActivity, TimerExecuteNestedActivityJobHandler.TYPE);
+    
+    // ACT-1427
+    if (interrupting) {
+      timerDeclaration.setInterruptingTimer(true);
+    }
+    
     addTimerDeclaration(timerActivity.getParent(), timerDeclaration);
 
     if (timerActivity.getParent() instanceof ActivityImpl) {
