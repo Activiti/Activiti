@@ -13,7 +13,7 @@
 package org.activiti.bpmn.model;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public class FlowElementsContainer extends BaseElement {
 
-  protected Map<String, FlowElement> flowElementMap = new HashMap<String, FlowElement>();
+  protected Map<String, FlowElement> flowElementMap = new LinkedHashMap<String, FlowElement>(); // Linked hashmap to preserve order of inserted elements
 
   public FlowElement getFlowElement(String id) {
     return flowElementMap.get(id);
