@@ -444,6 +444,13 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
         xtw.writeAttribute(ATTRIBUTE_NAME, "subProcess");
       }
       
+      if (StringUtils.isNotEmpty(subProcess.getDocumentation())) {
+
+        xtw.writeStartElement(ELEMENT_DOCUMENTATION);
+        xtw.writeCharacters(subProcess.getDocumentation());
+        xtw.writeEndElement();
+      }
+      
       for (FlowElement subElement : subProcess.getFlowElements()) {
         createXML(subElement, xtw);
       }

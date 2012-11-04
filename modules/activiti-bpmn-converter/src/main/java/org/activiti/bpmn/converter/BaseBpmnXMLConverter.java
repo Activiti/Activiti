@@ -162,6 +162,12 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     }
     
     writeAdditionalAttributes(flowElement, xtw);
+    if (StringUtils.isNotEmpty(flowElement.getDocumentation())) {
+
+      xtw.writeStartElement(ELEMENT_DOCUMENTATION);
+      xtw.writeCharacters(flowElement.getDocumentation());
+      xtw.writeEndElement();
+    }
     writeAdditionalChildElements(flowElement, xtw);
     
     writeListeners(flowElement, xtw);
