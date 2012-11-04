@@ -81,6 +81,7 @@ create table ACT_RE_PROCDEF (
     DEPLOYMENT_ID_ varchar(64),
     RESOURCE_NAME_ varchar(4000),
     DGRM_RESOURCE_NAME_ varchar(4000),
+    DESCRIPTION_ varchar(4000),
     HAS_START_FORM_KEY_ smallint check(HAS_START_FORM_KEY_ in (1,0)),
     SUSPENSION_STATE_ integer,
     primary key (ID_)

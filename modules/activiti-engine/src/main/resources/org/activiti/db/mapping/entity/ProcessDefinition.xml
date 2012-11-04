@@ -7,7 +7,7 @@
   <!-- PROCESSDEFINITION INSERT -->
 
   <insert id="insertProcessDefinition" parameterType="org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity">
-    insert into ${prefix}ACT_RE_PROCDEF(ID_, REV_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_, DGRM_RESOURCE_NAME_, HAS_START_FORM_KEY_, SUSPENSION_STATE_)
+    insert into ${prefix}ACT_RE_PROCDEF(ID_, REV_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_, DGRM_RESOURCE_NAME_, DESCRIPTION_, HAS_START_FORM_KEY_, SUSPENSION_STATE_)
     values (#{id, jdbcType=VARCHAR},
     		1,
             #{category, jdbcType=VARCHAR},
@@ -17,6 +17,7 @@
             #{deploymentId, jdbcType=VARCHAR},
             #{resourceName, jdbcType=VARCHAR},
             #{diagramResourceName, jdbcType=VARCHAR},
+            #{description, jdbcType=VARCHAR},
             #{hasStartFormKey, jdbcType=BOOLEAN},
             #{suspensionState, jdbcType=INTEGER})
   </insert>
@@ -49,6 +50,7 @@
     <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="VARCHAR"/>
     <result property="resourceName" column="RESOURCE_NAME_" jdbcType="VARCHAR"/>
     <result property="diagramResourceName" column="DGRM_RESOURCE_NAME_" jdbcType="VARCHAR"/>
+    <result property="description" column="DESCRIPTION_" jdbcType="VARCHAR" />
     <result property="hasStartFormKey" column="HAS_START_FORM_KEY_" jdbcType="BOOLEAN"/>
     <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER"/>
   </resultMap>

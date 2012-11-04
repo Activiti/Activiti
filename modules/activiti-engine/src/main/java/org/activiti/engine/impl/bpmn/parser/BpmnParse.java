@@ -595,7 +595,8 @@ public class BpmnParse extends Parse {
     processDefinition.setKey(processElement.attribute("id"));
     processDefinition.setName(processElement.attribute("name"));
     processDefinition.setCategory(rootElement.attribute("targetNamespace"));
-    processDefinition.setProperty(PROPERTYNAME_DOCUMENTATION, parseDocumentation(processElement));
+    processDefinition.setDescription(parseDocumentation(processElement)); 
+    processDefinition.setProperty(PROPERTYNAME_DOCUMENTATION, parseDocumentation(processElement)); // Kept for backwards compatibility. See ACT-1020
     processDefinition.setTaskDefinitions(new HashMap<String, TaskDefinition>());
     processDefinition.setDeploymentId(deployment.getId());
 

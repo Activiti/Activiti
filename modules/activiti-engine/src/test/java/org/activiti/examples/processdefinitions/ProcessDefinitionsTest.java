@@ -13,6 +13,7 @@
 package org.activiti.examples.processdefinitions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -22,6 +23,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
 
@@ -107,6 +109,14 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
     assertEquals(1, processDefinition.getVersion());
     
     deleteDeployments(deploymentIds);
+  }
+  
+  public void testProcessDefinitionDescription() {
+    String deploymentId = deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='test' name='test'><documentation>This is a test</documentation></process></definitions>"));
+    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId).singleResult();
+    assertEquals("This is a test", processDefinition.getDescription());
+    
+    deleteDeployments(Arrays.asList(deploymentId));
   }
   
   private String deployProcessString(String processString) {

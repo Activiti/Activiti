@@ -9,4 +9,7 @@ alter table ACT_RU_JOB
     MODIFY LOCK_EXP_TIME_ timestamp null;
     
 alter table ACT_RE_DEPLOYMENT 
-add CATEGORY_ varchar(255);
+    add CATEGORY_ varchar(255);
+    
+alter table ACT_RE_PROCDEF
+    add DESCRIPTION_ varchar(4000);

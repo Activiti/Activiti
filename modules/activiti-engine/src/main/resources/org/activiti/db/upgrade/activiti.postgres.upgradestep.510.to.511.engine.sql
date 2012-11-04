@@ -6,3 +6,6 @@ alter table ACT_RE_PROCDEF
     
 alter table ACT_RE_DEPLOYMENT 
 add CATEGORY_ varchar(255);
+
+alter table ACT_RE_PROCDEF
+    add DESCRIPTION_ varchar(4000);  

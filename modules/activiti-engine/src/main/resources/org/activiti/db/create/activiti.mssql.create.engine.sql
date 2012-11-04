@@ -79,6 +79,7 @@ create table ACT_RE_PROCDEF (
     DEPLOYMENT_ID_ nvarchar(64),
     RESOURCE_NAME_ nvarchar(4000),
     DGRM_RESOURCE_NAME_ nvarchar(4000),
+    DESCRIPTION_ nvarchar(4000),
     HAS_START_FORM_KEY_ tinyint,
     SUSPENSION_STATE_ tinyint,
     primary key (ID_)
