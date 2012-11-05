@@ -441,6 +441,14 @@ public class ProcessDiagramGenerator {
       }
     }
     
+    // Special case, see http://jira.codehaus.org/browse/ACT-1431
+    if ( (processDefinition.getActivities() == null || processDefinition.getActivities().size() == 0) 
+            && (processDefinition.getLaneSets() == null || processDefinition.getLaneSets().size() == 0)) {
+      // Nothing to show
+      minX = 0;
+      minY = 0;
+    }
+    
     return new ProcessDiagramCanvas(maxX + 10, maxY + 10, minX, minY);
   }
 
