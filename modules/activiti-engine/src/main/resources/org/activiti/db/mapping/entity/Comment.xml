@@ -106,6 +106,13 @@
     where TASK_ID_ = #{parameter,jdbcType=VARCHAR}
     order by TIME_ desc
   </select>
+  
+  <select id="selectEventsByTaskId_postgres" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap_postgres">
+    select * 
+    from ${prefix}ACT_HI_COMMENT 
+    where TASK_ID_ = #{parameter,jdbcType=VARCHAR}
+    order by TIME_ desc
+  </select>
 
   <select id="selectCommentsByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap">
     select * 
