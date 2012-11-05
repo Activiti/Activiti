@@ -79,7 +79,11 @@ public interface ViewManager {
   
   void showMyProcessInstancesPage(String processInstanceId);
   
-  // Management
+  void showAllProcessInstancesPage();
+
+  void showAllProcessInstancesPage(String processInstanceId);
+
+// Management
   
   void showDatabasePage();
   
@@ -108,5 +112,6 @@ public interface ViewManager {
   // Profile
   
   void showProfilePopup(String userId);
+
   
 }

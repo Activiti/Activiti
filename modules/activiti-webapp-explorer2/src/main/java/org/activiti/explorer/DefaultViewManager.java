@@ -33,6 +33,7 @@ import org.activiti.explorer.ui.management.deployment.DeploymentPage;
 import org.activiti.explorer.ui.management.identity.GroupPage;
 import org.activiti.explorer.ui.management.identity.UserPage;
 import org.activiti.explorer.ui.management.job.JobPage;
+import org.activiti.explorer.ui.process.AllProcessInstancesPage;
 import org.activiti.explorer.ui.process.MyProcessInstancesPage;
 import org.activiti.explorer.ui.process.ProcessDefinitionPage;
 import org.activiti.explorer.ui.process.ProcessMenuBar;
@@ -213,10 +214,18 @@ public class DefaultViewManager implements ViewManager {
     switchView(new MyProcessInstancesPage(), ViewManager.MAIN_NAVIGATION_PROCESS, ProcessMenuBar.ENTRY_MY_PROCESS_INSTANCES);
   }
   
+  public void showAllProcessInstancesPage() {
+	    switchView(new AllProcessInstancesPage(), ViewManager.MAIN_NAVIGATION_PROCESS, ProcessMenuBar.ENTRY_ALL_PROCESS_INSTANCES);
+  }
+
   public void showMyProcessInstancesPage(String processInstanceId) {
     switchView(new MyProcessInstancesPage(processInstanceId), ViewManager.MAIN_NAVIGATION_PROCESS, ProcessMenuBar.ENTRY_MY_PROCESS_INSTANCES);
   }
   
+  public void showAllProcessInstancesPage(String processInstanceId) {
+    switchView(new AllProcessInstancesPage(processInstanceId), ViewManager.MAIN_NAVIGATION_PROCESS, ProcessMenuBar.ENTRY_ALL_PROCESS_INSTANCES);
+  }
+
   // Management
   
   public void showDatabasePage() {

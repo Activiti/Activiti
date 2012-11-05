@@ -183,6 +183,7 @@ public interface Messages {
   
   // Process menu
   static final String PROCESS_MENU_MY_INSTANCES = "process.menu.my.instances";
+  static final String PROCESS_MENU_ALL_INSTANCES = "process.menu.all.instances";
   static final String PROCESS_MENU_DEPLOYED_DEFINITIONS = "process.menu.deployed.definitions";
   static final String PROCESS_MENU_EDITOR_DEFINITIONS = "process.menu.editor.definitions";
   static final String PROCESS_MENU_INSTANCES = "process.menu.instances";
@@ -372,5 +373,6 @@ public interface Messages {
   static final String TIME_UNIT_YEAR = "time.unit.year";
   static final String TIME_UNIT_YEARS = "time.unit.years";
   static final String TIME_UNIT_JUST_NOW = "time.unit.just.now";
+
 
 }

@@ -30,6 +30,7 @@ public class ProcessMenuBar extends ToolBar {
   private static final long serialVersionUID = 1L;
   
   public static final String ENTRY_MY_PROCESS_INSTANCES = "myProcessInstances";
+  public static final String ENTRY_ALL_PROCESS_INSTANCES = "allProcessInstances";
   public static final String DEPLOYED_PROCESS_DEFINITIONS = "deployedProcessDefinitions";
   public static final String EDITOR_PROCESS_DEFINITIONS = "editorProcessDefinitions";
 
@@ -51,6 +52,14 @@ public class ProcessMenuBar extends ToolBar {
         viewManager.showMyProcessInstancesPage();
       }
     });
+    
+    if (ExplorerApp.get().getLoggedInUser().isAdmin()) {
+        addToolbarEntry(ENTRY_ALL_PROCESS_INSTANCES, i18nManager.getMessage(Messages.PROCESS_MENU_ALL_INSTANCES), new ToolbarCommand() {
+            public void toolBarItemSelected() {
+              viewManager.showAllProcessInstancesPage();
+            }
+          });
+    }
     
     addToolbarEntry(DEPLOYED_PROCESS_DEFINITIONS, i18nManager.getMessage(Messages.PROCESS_MENU_DEPLOYED_DEFINITIONS), new ToolbarCommand() {
       public void toolBarItemSelected() {
