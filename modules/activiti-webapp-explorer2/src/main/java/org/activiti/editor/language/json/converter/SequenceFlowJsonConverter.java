@@ -84,6 +84,7 @@ public class SequenceFlowJsonConverter extends BaseBpmnJsonConverter {
     flowNode.put("target", BpmnJsonConverterUtil.createResourceNode(sequenceFlow.getTargetRef()));
     
     ObjectNode propertiesNode = objectMapper.createObjectNode();
+    propertiesNode.put(PROPERTY_OVERRIDE_ID, flowElement.getId());
     if (StringUtils.isNotEmpty(sequenceFlow.getName())) {
       propertiesNode.put(PROPERTY_NAME, sequenceFlow.getName());
     }
@@ -107,14 +108,15 @@ public class SequenceFlowJsonConverter extends BaseBpmnJsonConverter {
   }
   
   @Override
-  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode) {
+  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
     SequenceFlow flow = new SequenceFlow();
     
     String sourceRef = lookForSourceRef(elementNode.get(EDITOR_SHAPE_ID).asText(), modelNode.get(EDITOR_CHILD_SHAPES));
     
     if (sourceRef != null) {
       flow.setSourceRef(sourceRef);
-      flow.setTargetRef(elementNode.get("target").get(EDITOR_SHAPE_ID).asText());
+      String targetId = elementNode.get("target").get(EDITOR_SHAPE_ID).asText();
+      flow.setTargetRef(BpmnJsonConverterUtil.getElementId(shapeMap.get(targetId)));
     }
     
     flow.setConditionExpression(getPropertyValueAsString(PROPERTY_SEQUENCEFLOW_CONDITION, elementNode));
@@ -133,7 +135,7 @@ public class SequenceFlowJsonConverter extends BaseBpmnJsonConverter {
           for (JsonNode outgoingChildNode : outgoingNode) {
             JsonNode resourceNode = outgoingChildNode.get(EDITOR_SHAPE_ID);
             if (resourceNode != null && flowId.equals(resourceNode.asText())) {
-              sourceRef = childNode.get(EDITOR_SHAPE_ID).asText();
+              sourceRef = BpmnJsonConverterUtil.getElementId(childNode);
               break;
             }
           }

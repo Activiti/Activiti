@@ -56,7 +56,11 @@ public interface StencilConstants {
   
   final String STENCIL_SEQUENCE_FLOW = "SequenceFlow";
 	
+  final String PROPERTY_VALUE_YES = "Yes";
+  final String PROPERTY_VALUE_NO = "No";
+  
   //stencil properties
+  final String PROPERTY_OVERRIDE_ID = "overrideid";
 	final String PROPERTY_NAME = "name";
 	final String PROPERTY_DOCUMENTATION = "documentation";
 	
@@ -79,6 +83,12 @@ public interface StencilConstants {
 	
 	final String PROPERTY_ASYNCHRONOUS = "asynchronousdefinition";
 	final String PROPERTY_EXCLUSIVE = "exclusivedefinition";
+	
+	final String PROPERTY_MULTIINSTANCE_SEQUENTIAL = "multiinstance_sequential";
+  final String PROPERTY_MULTIINSTANCE_CARDINALITY = "multiinstance_cardinality";
+  final String PROPERTY_MULTIINSTANCE_COLLECTION = "multiinstance_collection";
+  final String PROPERTY_MULTIINSTANCE_VARIABLE = "multiinstance_variable";
+  final String PROPERTY_MULTIINSTANCE_CONDITION = "multiinstance_condition";
 	
 	final String PROPERTY_TASK_LISTENERS = "tasklisteners";
 	final String PROPERTY_TASK_LISTENER_EVENT = "task_listener_event_type";

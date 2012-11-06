@@ -232,7 +232,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     }
     
     ArrayNode shapesArrayNode = (ArrayNode) modelNode.get(EDITOR_CHILD_SHAPES);
-    processJsonElements(shapesArrayNode, modelNode, bpmnModel.getMainProcess());
+    processJsonElements(shapesArrayNode, modelNode, bpmnModel.getMainProcess(), shapeMap);
     
     // sequence flows are now all on root level
     Map<String, SubProcess> subShapesMap = new HashMap<String, SubProcess>();
@@ -266,13 +266,14 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     return bpmnModel;
   }
   
-  public void processJsonElements(JsonNode shapesArrayNode, JsonNode modelNode, BaseElement parentElement) {
+  public void processJsonElements(JsonNode shapesArrayNode, JsonNode modelNode, 
+      BaseElement parentElement, Map<String, JsonNode> shapeMap) {
     
     for (JsonNode shapeNode : shapesArrayNode) {
       Class<? extends BaseBpmnJsonConverter> converter = convertersToBpmnMap.get(BpmnJsonConverterUtil.getStencilId(shapeNode));
       if (converter != null) {
         try {
-          converter.newInstance().convertToBpmnModel(shapeNode, modelNode, this, parentElement);
+          converter.newInstance().convertToBpmnModel(shapeNode, modelNode, this, parentElement, shapeMap);
         } catch (Exception e) {
           LOGGER.log(Level.SEVERE, "Error converting " + BpmnJsonConverterUtil.getStencilId(shapeNode), e);
         }
@@ -343,7 +344,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
           graphicInfo.height = lowerRightNode.get(EDITOR_BOUNDS_Y).asDouble() - graphicInfo.y + parentY;
           
           String childShapeId = jsonChildNode.get(EDITOR_SHAPE_ID).asText();
-          bpmnModel.addGraphicInfo(childShapeId, graphicInfo);
+          bpmnModel.addGraphicInfo(BpmnJsonConverterUtil.getElementId(jsonChildNode), graphicInfo);
           
           shapeMap.put(childShapeId, jsonChildNode);
           
@@ -377,11 +378,10 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
           
         } else if (STENCIL_SEQUENCE_FLOW.equals(stencilId)) {
           
-          String childEdgeId = childNode.get(EDITOR_SHAPE_ID).asText();
-          
+          String childEdgeId = BpmnJsonConverterUtil.getElementId(childNode);
           String targetRefId = childNode.get("target").get(EDITOR_SHAPE_ID).asText();
           List<JsonNode> sourceAndTargetList = new ArrayList<JsonNode>();
-          sourceAndTargetList.add(sourceRefMap.get(childEdgeId));
+          sourceAndTargetList.add(sourceRefMap.get(childNode.get(EDITOR_SHAPE_ID).asText()));
           sourceAndTargetList.add(shapeMap.get(targetRefId));
           
           edgeMap.put(childEdgeId, childNode);
@@ -404,8 +404,8 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       double sourceDockersX = dockersNode.get(0).get(EDITOR_BOUNDS_X).getDoubleValue();
       double sourceDockersY = dockersNode.get(0).get(EDITOR_BOUNDS_Y).getDoubleValue();
       
-      GraphicInfo sourceInfo = bpmnModel.getGraphicInfo(sourceRefNode.get(EDITOR_SHAPE_ID).asText());
-      GraphicInfo targetInfo = bpmnModel.getGraphicInfo(targetRefNode.get(EDITOR_SHAPE_ID).asText());
+      GraphicInfo sourceInfo = bpmnModel.getGraphicInfo(BpmnJsonConverterUtil.getElementId(sourceRefNode));
+      GraphicInfo targetInfo = bpmnModel.getGraphicInfo(BpmnJsonConverterUtil.getElementId(targetRefNode));
       
       /*JsonNode sourceRefBoundsNode = sourceRefNode.get(EDITOR_BOUNDS);
       BoundsLocation sourceRefUpperLeftLocation = getLocation(EDITOR_BOUNDS_UPPER_LEFT, sourceRefBoundsNode);

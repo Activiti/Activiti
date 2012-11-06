@@ -3,7 +3,17 @@
   "namespace" : "http://b3mn.org/stencilset/bpmn2.0#",
   "description" : "This is the BPMN 2.0 stencil set specification.",
   "propertyPackages" : [ {
-    "name" : "baseAttributes",
+    "name" : "elementbase",
+    "properties" : [ {
+      "id" : "overrideid",
+      "type" : "String",
+      "title" : "Id",
+      "value" : "",
+      "description" : "Unique identifier of the element.",
+      "popular" : true
+    } ]
+  }, {
+    "name" : "baseattributes",
     "properties" : [ {
       "id" : "name",
       "type" : "String",
@@ -54,21 +64,21 @@
   }, {
     "name" : "usertaskbase",
     "properties" : [ {
-      "id" : "formKeyDefinition",
+      "id" : "formkeydefinition",
       "type" : "String",
       "title" : "Form key",
       "value" : "",
       "description" : "Form key of the user task.",
       "popular" : true
     }, {
-      "id" : "duedateDefinition",
+      "id" : "duedatedefinition",
       "type" : "String",
       "title" : "Due date",
       "value" : "",
       "description" : "Due date of the user task.",
       "popular" : true
     }, {
-      "id" : "priorityDefinition",
+      "id" : "prioritydefinition",
       "type" : "String",
       "title" : "Priority",
       "value" : "",
@@ -208,7 +218,7 @@
       } ]
     } ]
   }, {
-    "name" : "tasklistenerdefinition",
+    "name" : "tasklistenersbase",
     "properties" : [ {
       "id" : "tasklisteners",
       "type" : "multiplecomplex",
@@ -514,7 +524,7 @@
   }, {
     "name" : "messagerefdefinition",
     "properties" : [ {
-      "id" : "messageRef",
+      "id" : "messageref",
       "type" : "String",
       "title" : "Message reference",
       "value" : "",
@@ -524,7 +534,7 @@
   }, {
     "name" : "signalrefdefinition",
     "properties" : [ {
-      "id" : "signalRef",
+      "id" : "signalref",
       "type" : "String",
       "title" : "Signal reference",
       "value" : "",
@@ -534,7 +544,7 @@
   }, {
     "name" : "errorrefdefinition",
     "properties" : [ {
-      "id" : "errorRef",
+      "id" : "errorref",
       "type" : "String",
       "title" : "Error reference",
       "value" : "",
@@ -552,9 +562,9 @@
       "popular" : true
     } ]
   }, {
-    "name" : "activityasyncdefinition",
+    "name" : "asynchronousbase",
     "properties" : [ {
-      "id" : "asynchronousDefinition",
+      "id" : "asynchronousdefinition",
       "type" : "Choice",
       "title" : "Asynchronous",
       "value" : "No",
@@ -570,7 +580,7 @@
         "value" : "Yes"
       } ]
     }, {
-      "id" : "exclusiveDefinition",
+      "id" : "exclusivedefinition",
       "type" : "Choice",
       "title" : "Exclusive",
       "value" : "Yes",
@@ -587,7 +597,7 @@
       } ]
     } ]
   }, {
-    "name" : "executionlistenerdefinition",
+    "name" : "executionlistenersbase",
     "properties" : [ {
       "id" : "executionlisteners",
       "type" : "multiplecomplex",
@@ -673,6 +683,29 @@
       } ]
     } ]
   }, {
+    "name" : "customformdefinition",
+    "properties" : [ {
+      "id" : "customformdefinition",
+      "type" : "Choice",
+      "title" : "Custom form",
+      "value" : "",
+      "description" : "Des A",
+      "popular" : true,
+      "items" : [ {
+        "id" : "1",
+        "title" : "Form 1",
+        "value" : "1"
+      }, {
+        "id" : "2",
+        "title" : "Form 2",
+        "value" : "2"
+      }, {
+        "id" : "3",
+        "title" : "Form 3",
+        "value" : "3"
+      } ]
+    } ]
+  }, {
     "name" : "loopcharacteristics",
     "properties" : [ {
       "id" : "looptype",
@@ -713,6 +746,50 @@
   }, {
     "name" : "activity",
     "properties" : [ {
+      "id" : "multiinstance_sequential",
+      "type" : "Choice",
+      "title" : "Sequential (Multi-instance)",
+      "value" : "Yes",
+      "description" : "Define the multi instance as sequential.",
+      "popular" : true,
+      "items" : [ {
+        "id" : "no",
+        "title" : "No",
+        "value" : "No"
+      }, {
+        "id" : "yes",
+        "title" : "Yes",
+        "value" : "Yes"
+      } ]
+    }, {
+      "id" : "multiinstance_cardinality",
+      "type" : "String",
+      "title" : "Cardinality (Multi-instance)",
+      "value" : "",
+      "description" : "Define the cardinality of multi instance.",
+      "popular" : true
+    }, {
+      "id" : "multiinstance_collection",
+      "type" : "String",
+      "title" : "Collection (Multi-instance)",
+      "value" : "",
+      "description" : "Define the collection for the multi instance.",
+      "popular" : true
+    }, {
+      "id" : "multiinstance_variable",
+      "type" : "String",
+      "title" : "Element variable (Multi-instance)",
+      "value" : "",
+      "description" : "Define the element variable for the multi instance.",
+      "popular" : true
+    }, {
+      "id" : "multiinstance_condition",
+      "type" : "String",
+      "title" : "Completion condition (Multi-instance)",
+      "value" : "",
+      "description" : "Define the completion condition for the multi instance.",
+      "popular" : true
+    }, {
       "id" : "isforcompensation",
       "type" : "Boolean",
       "title" : "Is for compensation",
@@ -732,7 +809,7 @@
     "groups" : [ "Diagram" ],
     "mayBeRoot" : true,
     "hide" : true,
-    "propertyPackages" : [ "baseAttributes", "diagrambase", "executionlistenerdefinition" ],
+    "propertyPackages" : [ "baseattributes", "diagrambase", "executionlistenersbase" ],
     "roles" : [ ]
   }, {
     "type" : "node",
@@ -742,7 +819,7 @@
     "view" : "startevent/none.svg",
     "icon" : "startevent/none.png",
     "groups" : [ "Start Events" ],
-    "propertyPackages" : [ "baseAttributes", "formdefinition", "nonestarteventbase", "executionlistenerdefinition" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "formdefinition", "nonestarteventbase", "executionlistenersbase" ],
     "roles" : [ "Startevents_all", "sequence_start", "StartEventsMorph", "all" ]
   }, {
     "type" : "node",
@@ -752,7 +829,7 @@
     "view" : "startevent/timer.svg",
     "icon" : "startevent/timer.png",
     "groups" : [ "Start Events" ],
-    "propertyPackages" : [ "baseAttributes", "timerdefinition", "executionlistenerdefinition" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "timerdefinition", "executionlistenersbase" ],
     "roles" : [ "Startevents_all", "sequence_start", "StartEventsMorph", "all" ]
   }, {
     "type" : "node",
@@ -762,7 +839,7 @@
     "view" : "startevent/message.svg",
     "icon" : "startevent/message.png",
     "groups" : [ "Start Events" ],
-    "propertyPackages" : [ "baseAttributes", "messagerefdefinition", "executionlistenerdefinition" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "messagerefdefinition", "executionlistenersbase" ],
     "roles" : [ "Startevents_all", "sequence_start", "StartEventsMorph", "all" ]
   }, {
     "type" : "node",
@@ -772,7 +849,7 @@
     "view" : "startevent/signal.svg",
     "icon" : "startevent/signal.png",
     "groups" : [ "Start Events" ],
-    "propertyPackages" : [ "baseAttributes", "signalrefdefinition", "executionlistenerdefinition" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "signalrefdefinition", "executionlistenersbase" ],
     "roles" : [ "Startevents_all", "sequence_start", "StartEventsMorph", "all" ]
   }, {
     "type" : "node",
@@ -782,7 +859,7 @@
     "view" : "startevent/error.svg",
     "icon" : "startevent/error.png",
     "groups" : [ "Start Events" ],
-    "propertyPackages" : [ "baseAttributes", "errorrefdefinition", "executionlistenerdefinition" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "errorrefdefinition", "executionlistenersbase" ],
     "roles" : [ "Startevents_all", "sequence_start", "StartEventsMorph", "all" ]
   }, {
     "type" : "node",
@@ -792,7 +869,7 @@
     "view" : "activity/usertask.svg",
     "icon" : "activity/list/type.user.png",
     "groups" : [ "Activities" ],
-    "propertyPackages" : [ "baseAttributes", "usertaskbase", "usertaskassignment", "formdefinition", "tasklistenerdefinition", "activityasyncdefinition", "loopcharacteristics", "activity" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "usertaskbase", "usertaskassignment", "formdefinition", "tasklistenersbase", "asynchronousbase", "customformdefinition", "loopcharacteristics", "activity" ],
     "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
   }, {
     "type" : "node",
@@ -802,7 +879,7 @@
     "view" : "activity/servicetask.svg",
     "icon" : "activity/list/type.service.png",
     "groups" : [ "Activities" ],
-    "propertyPackages" : [ "baseAttributes", "servicetaskbase", "activityasyncdefinition", "executionlistenerdefinition", "loopcharacteristics", "activity" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "servicetaskbase", "asynchronousbase", "executionlistenersbase", "loopcharacteristics", "activity" ],
     "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
   }, {
     "type" : "node",
@@ -812,7 +889,7 @@
     "view" : "activity/scripttask.svg",
     "icon" : "activity/list/type.script.png",
     "groups" : [ "Activities" ],
-    "propertyPackages" : [ "baseAttributes", "scripttaskbase", "activityasyncdefinition", "executionlistenerdefinition", "loopcharacteristics", "activity" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "scripttaskbase", "asynchronousbase", "executionlistenersbase", "loopcharacteristics", "activity" ],
     "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
   }, {
     "type" : "node",
@@ -822,7 +899,7 @@
     "view" : "activity/businessruletask.svg",
     "icon" : "activity/list/type.business.rule.png",
     "groups" : [ "Activities" ],
-    "propertyPackages" : [ "baseAttributes", "activityasyncdefinition", "executionlistenerdefinition", "loopcharacteristics", "activity" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "asynchronousbase", "executionlistenersbase", "loopcharacteristics", "activity" ],
     "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
   }, {
     "type" : "node",
@@ -832,7 +909,7 @@
     "view" : "activity/receivetask.svg",
     "icon" : "activity/list/type.receive.png",
     "groups" : [ "Activities" ],
-    "propertyPackages" : [ "baseAttributes", "activityasyncdefinition", "executionlistenerdefinition", "loopcharacteristics", "activity" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "asynchronousbase", "executionlistenersbase", "loopcharacteristics", "activity" ],
     "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
   }, {
     "type" : "node",
@@ -842,7 +919,7 @@
     "view" : "activity/sendtask.svg",
     "icon" : "activity/list/type.send.png",
     "groups" : [ "Activities" ],
-    "propertyPackages" : [ "baseAttributes", "activityasyncdefinition", "executionlistenerdefinition", "loopcharacteristics", "activity" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "asynchronousbase", "executionlistenersbase", "loopcharacteristics", "activity" ],
     "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
   }, {
     "type" : "node",
@@ -852,7 +929,7 @@
     "view" : "activity/manualtask.svg",
     "icon" : "activity/list/type.manual.png",
     "groups" : [ "Activities" ],
-    "propertyPackages" : [ "baseAttributes", "activityasyncdefinition", "executionlistenerdefinition", "loopcharacteristics", "activity" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "asynchronousbase", "executionlistenersbase", "loopcharacteristics", "activity" ],
     "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
   }, {
     "type" : "node",
@@ -862,7 +939,7 @@
     "view" : "activity/subprocess.expanded.svg",
     "icon" : "activity/expanded.subprocess.png",
     "groups" : [ "Structural" ],
-    "propertyPackages" : [ "baseAttributes", "activityasyncdefinition", "executionlistenerdefinition" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "asynchronousbase", "executionlistenersbase" ],
     "roles" : [ "sequence_start", "Activity", "sequence_end", "all" ]
   }, {
     "type" : "node",
@@ -872,7 +949,7 @@
     "view" : "activity/callactivity.svg",
     "icon" : "activity/task.png",
     "groups" : [ "Structural" ],
-    "propertyPackages" : [ "baseAttributes", "callactivitybase", "activityasyncdefinition", "executionlistenerdefinition", "loopcharacteristics", "activity" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "callactivitybase", "asynchronousbase", "executionlistenersbase", "loopcharacteristics", "activity" ],
     "roles" : [ "sequence_start", "Activity", "sequence_end", "all" ]
   }, {
     "type" : "node",
@@ -882,7 +959,7 @@
     "view" : "gateway/exclusive.databased.svg",
     "icon" : "gateway/exclusive.databased.png",
     "groups" : [ "Gateways" ],
-    "propertyPackages" : [ "baseAttributes" ],
+    "propertyPackages" : [ "elementbase", "baseattributes" ],
     "roles" : [ "sequence_start", "sequence_end", "GatewaysMorph", "all" ]
   }, {
     "type" : "node",
@@ -892,7 +969,7 @@
     "view" : "gateway/parallel.svg",
     "icon" : "gateway/parallel.png",
     "groups" : [ "Gateways" ],
-    "propertyPackages" : [ "baseAttributes" ],
+    "propertyPackages" : [ "elementbase", "baseattributes" ],
     "roles" : [ "sequence_start", "sequence_end", "GatewaysMorph", "all" ]
   }, {
     "type" : "node",
@@ -902,7 +979,7 @@
     "view" : "gateway/inclusive.svg",
     "icon" : "gateway/inclusive.png",
     "groups" : [ "Gateways" ],
-    "propertyPackages" : [ "baseAttributes" ],
+    "propertyPackages" : [ "elementbase", "baseattributes" ],
     "roles" : [ "sequence_start", "sequence_end", "GatewaysMorph", "all" ]
   }, {
     "type" : "node",
@@ -912,7 +989,7 @@
     "view" : "gateway/eventbased.svg",
     "icon" : "gateway/eventbased.png",
     "groups" : [ "Gateways" ],
-    "propertyPackages" : [ "baseAttributes" ],
+    "propertyPackages" : [ "elementbase", "baseattributes" ],
     "roles" : [ "sequence_start", "sequence_end", "GatewaysMorph", "all" ]
   }, {
     "type" : "node",
@@ -922,7 +999,7 @@
     "view" : "intermediateevent/error.svg",
     "icon" : "catching/error.png",
     "groups" : [ "Boundary Events" ],
-    "propertyPackages" : [ "baseAttributes", "errorrefdefinition" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "errorrefdefinition" ],
     "roles" : [ "sequence_start", "BoundaryEventsMorph", "IntermediateEventOnActivityBoundary" ]
   }, {
     "type" : "node",
@@ -932,7 +1009,7 @@
     "view" : "intermediateevent/timer.svg",
     "icon" : "catching/timer.png",
     "groups" : [ "Boundary Events" ],
-    "propertyPackages" : [ "baseAttributes", "timerdefinition" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "timerdefinition" ],
     "roles" : [ "sequence_start", "BoundaryEventsMorph", "IntermediateEventOnActivityBoundary" ]
   }, {
     "type" : "node",
@@ -942,7 +1019,7 @@
     "view" : "intermediateevent/signal.catching.svg",
     "icon" : "catching/signal.png",
     "groups" : [ "Boundary Events" ],
-    "propertyPackages" : [ "baseAttributes", "signalrefdefinition" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "signalrefdefinition" ],
     "roles" : [ "sequence_start", "BoundaryEventsMorph", "IntermediateEventOnActivityBoundary" ]
   }, {
     "type" : "node",
@@ -952,7 +1029,7 @@
     "view" : "intermediateevent/timer.svg",
     "icon" : "catching/timer.png",
     "groups" : [ "Intermediate Catching Events" ],
-    "propertyPackages" : [ "baseAttributes", "timerdefinition", "executionlistenerdefinition" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "timerdefinition", "executionlistenersbase" ],
     "roles" : [ "sequence_start", "sequence_end", "CatchEventsMorph", "all" ]
   }, {
     "type" : "node",
@@ -962,7 +1039,7 @@
     "view" : "intermediateevent/signal.catching.svg",
     "icon" : "catching/signal.png",
     "groups" : [ "Intermediate Catching Events" ],
-    "propertyPackages" : [ "baseAttributes", "signalrefdefinition", "executionlistenerdefinition" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "signalrefdefinition", "executionlistenersbase" ],
     "roles" : [ "sequence_start", "sequence_end", "CatchEventsMorph", "all" ]
   }, {
     "type" : "node",
@@ -972,7 +1049,7 @@
     "view" : "intermediateevent/message.catching.svg",
     "icon" : "catching/message.png",
     "groups" : [ "Intermediate Catching Events" ],
-    "propertyPackages" : [ "baseAttributes", "messagerefdefinition", "executionlistenerdefinition" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "messagerefdefinition", "executionlistenersbase" ],
     "roles" : [ "sequence_start", "sequence_end", "CatchEventsMorph", "all" ]
   }, {
     "type" : "node",
@@ -982,7 +1059,7 @@
     "view" : "intermediateevent/none.svg",
     "icon" : "throwing/none.png",
     "groups" : [ "Intermediate Throwing Events" ],
-    "propertyPackages" : [ "baseAttributes", "executionlistenerdefinition" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "executionlistenersbase" ],
     "roles" : [ "sequence_start", "ThrowEventsMorph", "sequence_end", "all" ]
   }, {
     "type" : "node",
@@ -992,7 +1069,7 @@
     "view" : "intermediateevent/signal.throwing.svg",
     "icon" : "throwing/signal.png",
     "groups" : [ "Intermediate Throwing Events" ],
-    "propertyPackages" : [ "baseAttributes", "signalrefdefinition", "executionlistenerdefinition" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "signalrefdefinition", "executionlistenersbase" ],
     "roles" : [ "sequence_start", "ThrowEventsMorph", "sequence_end", "all" ]
   }, {
     "type" : "node",
@@ -1002,7 +1079,7 @@
     "view" : "endevent/none.svg",
     "icon" : "endevent/none.png",
     "groups" : [ "End Events" ],
-    "propertyPackages" : [ "baseAttributes", "executionlistenerdefinition" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "executionlistenersbase" ],
     "roles" : [ "EndEventsMorph", "sequence_end", "all" ]
   }, {
     "type" : "node",
@@ -1012,7 +1089,7 @@
     "view" : "endevent/error.svg",
     "icon" : "endevent/error.png",
     "groups" : [ "End Events" ],
-    "propertyPackages" : [ "baseAttributes", "errorrefdefinition", "executionlistenerdefinition" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "errorrefdefinition", "executionlistenersbase" ],
     "roles" : [ "EndEventsMorph", "sequence_end", "all" ]
   }, {
     "type" : "edge",
@@ -1025,7 +1102,7 @@
     "layout" : [ {
       "type" : "layout.bpmn2_0.sequenceflow"
     } ],
-    "propertyPackages" : [ "baseAttributes", "sequenceflowbase" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "sequenceflowbase" ],
     "roles" : [ "ConnectingObjectsMorph", "all" ]
   } ],
   "rules" : {

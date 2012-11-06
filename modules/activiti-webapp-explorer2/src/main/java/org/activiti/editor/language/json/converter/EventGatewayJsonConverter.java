@@ -47,7 +47,7 @@ public class EventGatewayJsonConverter extends BaseBpmnJsonConverter {
   protected void convertElementToJson(ObjectNode propertiesNode, FlowElement flowElement) {
   }
   
-  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode) {
+  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
     EventGateway gateway = new EventGateway();
     return gateway;
   }

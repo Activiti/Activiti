@@ -88,7 +88,7 @@ public class CallActivityJsonConverter extends BaseBpmnJsonConverter {
     propertiesNode.put(propertyName, parametersNode);
   }
   
-  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode) {
+  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
     CallActivity callActivity = new CallActivity();
     if (StringUtils.isNotEmpty(getPropertyValueAsString(PROPERTY_CALLACTIVITY_CALLEDELEMENT, elementNode))) {
       callActivity.setCalledElement(getPropertyValueAsString(PROPERTY_CALLACTIVITY_CALLEDELEMENT, elementNode));

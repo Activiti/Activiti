@@ -64,7 +64,7 @@ public class EndEventJsonConverter extends BaseBpmnJsonConverter {
     addEventProperties(endEvent, propertiesNode);
   }
   
-  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode) {
+  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
     EndEvent endEvent = new EndEvent();
     String stencilId = BpmnJsonConverterUtil.getStencilId(elementNode);
     if (STENCIL_EVENT_END_ERROR.equals(stencilId)) {

@@ -48,7 +48,7 @@ public class ManualTaskJsonConverter extends BaseBpmnJsonConverter {
   	
   }
   
-  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode) {
+  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
     ManualTask task = new ManualTask();
     return task;
   }

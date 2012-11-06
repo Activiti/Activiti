@@ -65,7 +65,7 @@ public class ThrowEventJsonConverter extends BaseBpmnJsonConverter {
     addEventProperties(throwEvent, propertiesNode);
   }
   
-  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode) {
+  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
     ThrowEvent throwEvent = new ThrowEvent();
     String stencilId = BpmnJsonConverterUtil.getStencilId(elementNode);
     if (STENCIL_EVENT_THROW_SIGNAL.equals(stencilId)) {

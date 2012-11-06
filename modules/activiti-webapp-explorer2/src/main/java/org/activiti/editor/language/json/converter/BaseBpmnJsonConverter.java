@@ -13,6 +13,7 @@
 package org.activiti.editor.language.json.converter;
 
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,6 +30,7 @@ import org.activiti.bpmn.model.FormProperty;
 import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.MessageEventDefinition;
+import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.SignalEventDefinition;
@@ -36,7 +38,6 @@ import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.bpmn.model.UserTask;
-import org.activiti.editor.constants.BpmnXMLConstants;
 import org.activiti.editor.constants.EditorJsonConstants;
 import org.activiti.editor.constants.StencilConstants;
 import org.apache.commons.lang.StringUtils;
@@ -48,7 +49,7 @@ import org.codehaus.jackson.node.ObjectNode;
 /**
  * @author Tijs Rademakers
  */
-public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, StencilConstants, BpmnXMLConstants {
+public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, StencilConstants {
   
   protected static final Logger LOGGER = Logger.getLogger(BaseBpmnJsonConverter.class.getName());
   
@@ -77,6 +78,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
         graphicInfo.x - subProcessX, graphicInfo.y - subProcessY);
     shapesArrayNode.add(flowElementNode);
     ObjectNode propertiesNode = objectMapper.createObjectNode();
+    propertiesNode.put(PROPERTY_OVERRIDE_ID, flowElement.getId());
     if (StringUtils.isNotEmpty(flowElement.getName())) {
       propertiesNode.put(PROPERTY_NAME, flowElement.getName());
     }
@@ -99,18 +101,49 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
       for (BoundaryEvent boundaryEvent : activity.getBoundaryEvents()) {
         outgoingArrayNode.add(BpmnJsonConverterUtil.createResourceNode(boundaryEvent.getId()));
       }
+      
+      if (activity.isAsynchronous()) {
+        propertiesNode.put(PROPERTY_ASYNCHRONOUS, PROPERTY_VALUE_YES);
+      }
+      
+      if (activity.isNotExclusive()) {
+        propertiesNode.put(PROPERTY_EXCLUSIVE, PROPERTY_VALUE_NO);
+      }
+      
+      if (activity.getLoopCharacteristics() != null) {
+        MultiInstanceLoopCharacteristics loopDef = activity.getLoopCharacteristics();
+        if (StringUtils.isNotEmpty(loopDef.getLoopCardinality()) || StringUtils.isNotEmpty(loopDef.getInputDataItem()) ||
+            StringUtils.isNotEmpty(loopDef.getCompletionCondition())) {
+          
+          if (loopDef.isSequential() == false) {
+            propertiesNode.put(PROPERTY_MULTIINSTANCE_SEQUENTIAL, PROPERTY_VALUE_NO);
+          }
+          if (StringUtils.isNotEmpty(loopDef.getLoopCardinality())) {
+            propertiesNode.put(PROPERTY_MULTIINSTANCE_CARDINALITY, loopDef.getLoopCardinality());
+          }
+          if (StringUtils.isNotEmpty(loopDef.getInputDataItem())) {
+            propertiesNode.put(PROPERTY_MULTIINSTANCE_COLLECTION, loopDef.getInputDataItem());
+          }
+          if (StringUtils.isNotEmpty(loopDef.getElementVariable())) {
+            propertiesNode.put(PROPERTY_MULTIINSTANCE_VARIABLE, loopDef.getElementVariable());
+          }
+          if (StringUtils.isNotEmpty(loopDef.getCompletionCondition())) {
+            propertiesNode.put(PROPERTY_MULTIINSTANCE_CONDITION, loopDef.getCompletionCondition());
+          }
+        }
+      }
     }
     
     flowElementNode.put("outgoing", outgoingArrayNode);
   }
   
   public void convertToBpmnModel(JsonNode elementNode, JsonNode modelNode, 
-      ActivityProcessor processor, BaseElement parentElement) {
+      ActivityProcessor processor, BaseElement parentElement, Map<String, JsonNode> shapeMap) {
     
     this.processor = processor;
     
-    FlowElement flowElement = convertJsonToElement(elementNode, modelNode);
-    flowElement.setId(elementNode.get(EDITOR_SHAPE_ID).asText());
+    FlowElement flowElement = convertJsonToElement(elementNode, modelNode, shapeMap);
+    flowElement.setId(BpmnJsonConverterUtil.getElementId(elementNode));
     flowElement.setName(getPropertyValueAsString(PROPERTY_NAME, elementNode));
     flowElement.setDocumentation(getPropertyValueAsString(PROPERTY_DOCUMENTATION, elementNode));
     
@@ -119,13 +152,34 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
     if (flowElement instanceof Activity) {
       Activity activity = (Activity) flowElement;
       String asynchronous = getPropertyValueAsString(PROPERTY_ASYNCHRONOUS, elementNode);
-      if ("yes".equalsIgnoreCase(asynchronous)) {
+      if (PROPERTY_VALUE_YES.equalsIgnoreCase(asynchronous)) {
         activity.setAsynchronous(true);
       }
       
       String exclusive = getPropertyValueAsString(PROPERTY_EXCLUSIVE, elementNode);
-      if ("no".equalsIgnoreCase(exclusive)) {
+      if (PROPERTY_VALUE_NO.equalsIgnoreCase(exclusive)) {
         activity.setNotExclusive(true);
+      }
+      
+      String multiInstanceCardinality = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_CARDINALITY, elementNode);
+      String multiInstanceCollection = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_COLLECTION, elementNode);
+      String multiInstanceCondition = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_CONDITION, elementNode);
+      
+      if (StringUtils.isNotEmpty(multiInstanceCardinality) || StringUtils.isNotEmpty(multiInstanceCollection) ||
+          StringUtils.isNotEmpty(multiInstanceCondition)) {
+        
+        String multiInstanceSequential = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_SEQUENTIAL, elementNode);
+        String multiInstanceVariable = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_VARIABLE, elementNode);
+        
+        MultiInstanceLoopCharacteristics multiInstanceObject = new MultiInstanceLoopCharacteristics();
+        if (PROPERTY_VALUE_YES.equalsIgnoreCase(multiInstanceSequential)) {
+          multiInstanceObject.setSequential(true);
+        }
+        multiInstanceObject.setLoopCardinality(multiInstanceCardinality);
+        multiInstanceObject.setInputDataItem(multiInstanceCollection);
+        multiInstanceObject.setElementVariable(multiInstanceVariable);
+        multiInstanceObject.setCompletionCondition(multiInstanceCondition);
+        activity.setLoopCharacteristics(multiInstanceObject);
       }
     }
     if (parentElement instanceof Process) {
@@ -137,7 +191,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
   
   protected abstract void convertElementToJson(ObjectNode propertiesNode, FlowElement flowElement);
   
-  protected abstract FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode);
+  protected abstract FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap);
   
   protected abstract String getStencilId(FlowElement flowElement);
   

@@ -80,7 +80,7 @@ public class BoundaryEventJsonConverter extends BaseBpmnJsonConverter {
     addEventProperties(boundaryEvent, propertiesNode);
   }
   
-  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode) {
+  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
     BoundaryEvent boundaryEvent = new BoundaryEvent();
     String stencilId = BpmnJsonConverterUtil.getStencilId(elementNode);
     if (STENCIL_EVENT_BOUNDARY_TIMER.equals(stencilId)) {
@@ -105,7 +105,7 @@ public class BoundaryEventJsonConverter extends BaseBpmnJsonConverter {
           for (JsonNode outgoingChildNode : outgoingNode) {
             JsonNode resourceNode = outgoingChildNode.get(EDITOR_SHAPE_ID);
             if (resourceNode != null && boundaryEventId.equals(resourceNode.asText())) {
-              attachedRefId = childNode.get(EDITOR_SHAPE_ID).asText();
+              attachedRefId = BpmnJsonConverterUtil.getElementId(childNode);
               break;
             }
           }

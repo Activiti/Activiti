@@ -12,6 +12,8 @@
  */
 package org.activiti.editor.language.json.converter;
 
+import java.util.Map;
+
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
@@ -26,5 +28,5 @@ public interface ActivityProcessor {
   public void processFlowElements(Process process, BpmnModel model, ArrayNode shapesArrayNode, 
       double subProcessX, double subProcessY);
   
-  public void processJsonElements(JsonNode shapesArrayNode, JsonNode modelNode, BaseElement parentElement);
+  public void processJsonElements(JsonNode shapesArrayNode, JsonNode modelNode, BaseElement parentElement, Map<String, JsonNode> shapeMap);
 }

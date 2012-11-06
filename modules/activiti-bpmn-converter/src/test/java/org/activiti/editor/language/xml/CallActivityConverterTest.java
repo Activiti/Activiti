@@ -1,4 +1,4 @@
-package org.activiti.editor.language;
+package org.activiti.editor.language.xml;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

@@ -21,6 +21,7 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.Messages;
 import org.activiti.explorer.NotificationManager;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
@@ -51,14 +52,9 @@ public class DeployProcessDefinitionClickListener implements ClickListener {
   public void buttonClick(ClickEvent event) {
     
     try {
-      System.out.println("converting to model");
       ObjectNode modelNode = (ObjectNode) new ObjectMapper().readTree(modelData.getModelEditorJson());
-      System.out.println("json " + modelNode.toString());
       BpmnModel model = new BpmnJsonConverter().convertToBpmnModel(modelNode);
-      System.out.println("converted to model");
       byte[] bpmnBytes = new BpmnXMLConverter().convertToXML(model);
-      
-      System.out.println(new String(bpmnBytes));
       
       Deployment deployment = repositoryService.createDeployment().name(modelData.getName())
           .addString(modelData.getName() + ".bpmn20.xml", new String(bpmnBytes)).deploy();
@@ -66,7 +62,7 @@ public class DeployProcessDefinitionClickListener implements ClickListener {
       ExplorerApp.get().getViewManager().showDeploymentPage(deployment.getId());
       
     } catch(Exception e) {
-      
+      notificationManager.showErrorNotification(Messages.PROCESS_TOXML_FAILED, e);
     }
   }
 }

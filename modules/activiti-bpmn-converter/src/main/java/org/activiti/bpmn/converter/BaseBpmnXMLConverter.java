@@ -46,6 +46,7 @@ import org.activiti.bpmn.model.FormProperty;
 import org.activiti.bpmn.model.Gateway;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.MessageEventDefinition;
+import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.SignalEventDefinition;
@@ -174,6 +175,37 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     
     if (didWriteExtensionStartElement) {
       xtw.writeEndElement();
+    }
+    
+    if (flowElement instanceof Activity) {
+      Activity activity = (Activity) flowElement;
+      if (activity.getLoopCharacteristics() != null) {
+        MultiInstanceLoopCharacteristics multiInstanceObject = activity.getLoopCharacteristics();
+        if (StringUtils.isNotEmpty(multiInstanceObject.getLoopCardinality()) ||
+            StringUtils.isNotEmpty(multiInstanceObject.getInputDataItem()) ||
+            StringUtils.isNotEmpty(multiInstanceObject.getCompletionCondition())) {
+          
+          xtw.writeStartElement(ELEMENT_MULTIINSTANCE);
+          writeDefaultAttribute(ATTRIBUTE_MULTIINSTANCE_SEQUENTIAL, String.valueOf(multiInstanceObject.isSequential()).toLowerCase(), xtw);
+          if (StringUtils.isNotEmpty(multiInstanceObject.getInputDataItem())) {
+            writeQualifiedAttribute(ATTRIBUTE_MULTIINSTANCE_COLLECTION, multiInstanceObject.getInputDataItem(), xtw);
+          }
+          if (StringUtils.isNotEmpty(multiInstanceObject.getElementVariable())) {
+            writeQualifiedAttribute(ATTRIBUTE_MULTIINSTANCE_VARIABLE, multiInstanceObject.getElementVariable(), xtw);
+          }
+          if (StringUtils.isNotEmpty(multiInstanceObject.getLoopCardinality())) {
+            xtw.writeStartElement(ELEMENT_MULTIINSTANCE_CARDINALITY);
+            xtw.writeCharacters(multiInstanceObject.getLoopCardinality());
+            xtw.writeEndElement();
+          }
+          if (StringUtils.isNotEmpty(multiInstanceObject.getCompletionCondition())) {
+            xtw.writeStartElement(ELEMENT_MULTIINSTANCE_CONDITION);
+            xtw.writeCharacters(multiInstanceObject.getCompletionCondition());
+            xtw.writeEndElement();
+          }
+          xtw.writeEndElement();
+        }
+      }
     }
     
     xtw.writeEndElement();

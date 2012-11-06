@@ -23,7 +23,6 @@ import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
 
-import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.UserError;
 import com.vaadin.ui.Alignment;
@@ -42,17 +41,19 @@ import com.vaadin.ui.themes.Reindeer;
 /**
  * @author Tijs Rademakers
  */
-public class NewModelPopupWindow extends PopupWindow implements ModelDataJsonConstants {
+public class CopyModelPopupWindow extends PopupWindow implements ModelDataJsonConstants {
   
   private static final long serialVersionUID = 1L;
   
+  protected ModelData modelData;
   protected I18nManager i18nManager;
   protected VerticalLayout windowLayout;
   protected Form form;
   protected TextField nameTextField;
   protected TextArea descriptionTextArea;
   
-  public NewModelPopupWindow() {
+  public CopyModelPopupWindow(ModelData model) {
+    this.modelData = model;
     this.windowLayout = (VerticalLayout) getContent();
     this.i18nManager = ExplorerApp.get().getI18nManager();
     
@@ -68,17 +69,18 @@ public class NewModelPopupWindow extends PopupWindow implements ModelDataJsonCon
     setWidth("400px");
     setHeight("390px");
     center();
-    setCaption(i18nManager.getMessage(Messages.PROCESS_NEW_POPUP_CAPTION));
+    setCaption(i18nManager.getMessage(Messages.PROCESS_COPY_POPUP_CAPTION));
   }
   
   protected void addFields() {
     form = new Form();
-    form.setCaption(i18nManager.getMessage(Messages.PROCESS_NEW_POPUP_CAPTION));
+    form.setCaption(i18nManager.getMessage(Messages.PROCESS_COPY_POPUP_CAPTION));
     form.getLayout().setMargin(true);
     
     nameTextField = new TextField(i18nManager.getMessage(Messages.TASK_NAME));
     nameTextField.setWidth(20, Sizeable.UNITS_EM);
     nameTextField.setRequired(true);
+    nameTextField.setValue(modelData.getName());
     form.getLayout().addComponent(nameTextField);
     nameTextField.focus();
     
@@ -121,17 +123,11 @@ public class NewModelPopupWindow extends PopupWindow implements ModelDataJsonCon
           return;
         }
         
-        ObjectMapper objectMapper = new ObjectMapper();
-        ObjectNode editorNode = objectMapper.createObjectNode();
-        editorNode.put("id", "canvas");
-        editorNode.put("resourceId", "canvas");
-        ObjectNode stencilSetNode = objectMapper.createObjectNode();
-        stencilSetNode.put("namespace", "http://b3mn.org/stencilset/bpmn2.0#");
-        editorNode.put("stencilset", stencilSetNode);
-        ModelData modelData = new ModelData();
-        modelData.setModelEditorJson(editorNode.toString());
+        ModelData newModelData = new ModelData();
+        newModelData.setModelEditorJson(modelData.getModelEditorJson());
+        newModelData.setModelSvg(modelData.getModelSvg());
         
-        ObjectNode modelObjectNode = objectMapper.createObjectNode();
+        ObjectNode modelObjectNode = new ObjectMapper().createObjectNode();
         modelObjectNode.put(MODEL_NAME, (String) nameTextField.getValue());
         modelObjectNode.put(MODEL_REVISION, 1);
         String description = null;
@@ -141,13 +137,11 @@ public class NewModelPopupWindow extends PopupWindow implements ModelDataJsonCon
           description = "";
         }
         modelObjectNode.put(MODEL_DESCRIPTION, description);
-        modelData.setModelJson(modelObjectNode.toString());
+        newModelData.setModelJson(modelObjectNode.toString());
         
-        long modelId = new ModelDao().saveModel(modelData);
+        long modelId = new ModelDao().saveModel(newModelData);
         close();
         ExplorerApp.get().getViewManager().showEditorProcessDefinitionPage(String.valueOf(modelId));
-        ExplorerApp.get().getMainWindow().open(new ExternalResource(
-            ExplorerApp.get().getURL().toString() + "service/editor?id=" + modelId));
       }
     });
     

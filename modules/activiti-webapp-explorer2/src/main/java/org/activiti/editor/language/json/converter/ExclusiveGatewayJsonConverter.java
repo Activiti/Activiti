@@ -47,7 +47,7 @@ public class ExclusiveGatewayJsonConverter extends BaseBpmnJsonConverter {
   protected void convertElementToJson(ObjectNode propertiesNode, FlowElement flowElement) {
   }
   
-  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode) {
+  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
     ExclusiveGateway gateway = new ExclusiveGateway();
     return gateway;
   }

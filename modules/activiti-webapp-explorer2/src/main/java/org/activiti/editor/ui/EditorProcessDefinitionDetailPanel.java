@@ -21,9 +21,11 @@ import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.custom.DetailPanel;
 import org.activiti.explorer.ui.form.FormPropertiesForm;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
+import org.activiti.explorer.ui.process.listener.CopyModelClickListener;
 import org.activiti.explorer.ui.process.listener.DeleteModelClickListener;
 import org.activiti.explorer.ui.process.listener.DeployProcessDefinitionClickListener;
 import org.activiti.explorer.ui.process.listener.EditModelClickListener;
+import org.activiti.explorer.ui.process.listener.ExportModelClickListener;
 import org.activiti.explorer.ui.process.listener.NewModelClickListener;
 
 import com.vaadin.ui.Button;
@@ -59,7 +61,9 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
   protected Label nameLabel;
   protected Button newModelButton;
   protected Button deployProcessDefinitionButton;
+  protected Button exportModelButton;
   protected Button editModelButton;
+  protected Button copyModelButton;
   protected Button deleteModelButton;
   
   protected FormPropertiesForm processDefinitionStartForm;
@@ -102,8 +106,14 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
     deployProcessDefinitionButton = new Button(i18nManager.getMessage(Messages.PROCESS_DEPLOY));
     deployProcessDefinitionButton.addListener(new DeployProcessDefinitionClickListener(modelData));
     
+    exportModelButton = new Button(i18nManager.getMessage(Messages.PROCESS_EXPORT));
+    exportModelButton.addListener(new ExportModelClickListener(modelData));
+    
     editModelButton = new Button(i18nManager.getMessage(Messages.PROCESS_EDIT));
     editModelButton.addListener(new EditModelClickListener(modelData.getObjectId()));
+    
+    copyModelButton = new Button(i18nManager.getMessage(Messages.PROCESS_COPY));
+    copyModelButton.addListener(new CopyModelClickListener(modelData));
     
     deleteModelButton = new Button(i18nManager.getMessage(Messages.PROCESS_DELETE));
     deleteModelButton.addListener(new DeleteModelClickListener(modelData));
@@ -112,7 +122,9 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
     processDefinitionPage.getToolBar().removeAllButtons();
     processDefinitionPage.getToolBar().addButton(newModelButton);
     processDefinitionPage.getToolBar().addButton(deployProcessDefinitionButton);
+    processDefinitionPage.getToolBar().addButton(exportModelButton);
     processDefinitionPage.getToolBar().addButton(editModelButton);
+    processDefinitionPage.getToolBar().addButton(copyModelButton);
     processDefinitionPage.getToolBar().addButton(deleteModelButton);
   }
   

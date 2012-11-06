@@ -19,7 +19,6 @@ import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.ServiceTask;
-import org.activiti.editor.constants.BpmnXMLConstants;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
@@ -27,7 +26,7 @@ import org.codehaus.jackson.node.ObjectNode;
 /**
  * @author Tijs Rademakers
  */
-public class ServiceTaskJsonConverter extends BaseBpmnJsonConverter implements BpmnXMLConstants {
+public class ServiceTaskJsonConverter extends BaseBpmnJsonConverter {
 
   public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,
       Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
@@ -59,7 +58,7 @@ public class ServiceTaskJsonConverter extends BaseBpmnJsonConverter implements B
     }
   }
   
-  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode) {
+  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
     ServiceTask task = new ServiceTask();
     if (StringUtils.isNotEmpty(getPropertyValueAsString(PROPERTY_SERVICETASK_CLASS, elementNode))) {
       task.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_CLASS);

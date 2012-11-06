@@ -1,4 +1,4 @@
-package org.activiti.editor.language;
+package org.activiti.editor.language.xml;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

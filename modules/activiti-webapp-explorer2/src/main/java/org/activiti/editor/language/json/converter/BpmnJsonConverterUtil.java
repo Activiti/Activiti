@@ -13,9 +13,11 @@
 package org.activiti.editor.language.json.converter;
 
 import org.activiti.editor.constants.EditorJsonConstants;
+import org.activiti.editor.constants.StencilConstants;
 import org.activiti.engine.impl.bpmn.behavior.NoneEndEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.NoneStartEventActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
@@ -24,7 +26,7 @@ import org.codehaus.jackson.node.ObjectNode;
 /**
  * @author Tijs Rademakers
  */
-public class BpmnJsonConverterUtil implements EditorJsonConstants {
+public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConstants {
   
   private static ObjectMapper objectMapper = new ObjectMapper();
 
@@ -85,6 +87,35 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants {
       stencilId = stencilNode.get(EDITOR_STENCIL_ID).asText();
     }
     return stencilId;
+  }
+  
+  public static String getElementId(JsonNode objectNode) {
+    String elementId = null;
+    if (StringUtils.isNotEmpty(getPropertyValueAsString(PROPERTY_OVERRIDE_ID, objectNode))) {
+      elementId = getPropertyValueAsString(PROPERTY_OVERRIDE_ID, objectNode).trim();
+    } else {
+      elementId = objectNode.get(EDITOR_SHAPE_ID).asText();
+    }
+    
+    return elementId;
+  }
+  
+  protected static String getPropertyValueAsString(String name, JsonNode objectNode) {
+    String propertyValue = null;
+    JsonNode propertyNode = getProperty(name, objectNode);
+    if (propertyNode != null) {
+      propertyValue = propertyNode.asText();
+    }
+    return propertyValue;
+  }
+  
+  protected static JsonNode getProperty(String name, JsonNode objectNode) {
+    JsonNode propertyNode = null;
+    if (objectNode.get(EDITOR_SHAPE_PROPERTIES) != null) {
+      JsonNode propertiesNode = objectNode.get(EDITOR_SHAPE_PROPERTIES);
+      propertyNode = propertiesNode.get(name);
+    }
+    return propertyNode;
   }
   
 }

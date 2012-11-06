@@ -114,7 +114,7 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter {
   }
   
   @Override
-  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode) {
+  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
     UserTask task = new UserTask();
     String priority = getPropertyValueAsString(PROPERTY_USERTASK_PRIORITY, elementNode);
     if (StringUtils.isNotEmpty(priority)) {

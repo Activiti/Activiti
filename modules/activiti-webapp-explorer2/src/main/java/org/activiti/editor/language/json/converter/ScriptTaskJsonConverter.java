@@ -50,7 +50,7 @@ public class ScriptTaskJsonConverter extends BaseBpmnJsonConverter {
   	propertiesNode.put(PROPERTY_SCRIPT_TEXT, scriptTask.getScript());
   }
   
-  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode) {
+  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
     ScriptTask task = new ScriptTask();
     task.setScriptFormat(getPropertyValueAsString(PROPERTY_SCRIPT_FORMAT, elementNode));
     task.setScriptFormat(getPropertyValueAsString(PROPERTY_SCRIPT_TEXT, elementNode));

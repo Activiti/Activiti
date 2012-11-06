@@ -77,7 +77,7 @@ public class StartEventJsonConverter extends BaseBpmnJsonConverter {
     addEventProperties(startEvent, propertiesNode);
   }
   
-  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode) {
+  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
     StartEvent startEvent = new StartEvent();
     startEvent.setInitiator(getPropertyValueAsString(PROPERTY_NONE_STARTEVENT_INITIATOR, elementNode));
     String stencilId = BpmnJsonConverterUtil.getStencilId(elementNode);

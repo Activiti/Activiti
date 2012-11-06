@@ -48,7 +48,7 @@ public class ReceiveTaskJsonConverter extends BaseBpmnJsonConverter {
   	
   }
   
-  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode) {
+  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
     ReceiveTask task = new ReceiveTask();
     return task;
   }
