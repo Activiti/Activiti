@@ -45,7 +45,7 @@ public class LazyLoadingContainer implements Container.Indexed, Container.Sortab
   protected Map<Object, Class<?>> containerPropertyTypes = new HashMap<Object, Class<?>>();
   protected Map<Object, Object> containerPropertyDefaultValues = new HashMap<Object, Object>();
   
-  protected Map<Integer, Item> itemCache = new HashMap<Integer, Item>();
+  protected Map<Object, Item> itemCache = new HashMap<Object, Item>();
   
   public LazyLoadingContainer(LazyLoadingQuery lazyLoadingQuery, int batchSize) {
     this.lazyLoadingQuery = lazyLoadingQuery;
@@ -84,12 +84,15 @@ public class LazyLoadingContainer implements Container.Indexed, Container.Sortab
   }
   
   public Property getContainerProperty(Object itemId, Object propertyId) {
+	  if(itemId instanceof Item){
+		Item item = (Item) itemId;
+		return item.getItemProperty(propertyId);
+	  }
     return getItem(itemId).getItemProperty(propertyId);
   }
   
   public boolean containsId(Object itemId) {
-    Integer index = (Integer) itemId;
-    return index >= 0 && index < size();
+    return itemCache.containsKey(itemId);
   }
 
   public Item getItem(Object itemId) {
@@ -123,7 +126,7 @@ public class LazyLoadingContainer implements Container.Indexed, Container.Sortab
     // so we can just override the get() and save some memory
     return new AbstractList<Integer>() {
       public int size() {
-        return size();
+        return -1;
       }
       public Integer get(int index) {
         return index;

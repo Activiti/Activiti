@@ -32,7 +32,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
-import org.activiti.explorer.ui.AbstractTablePage;
+import org.activiti.explorer.ui.AbstractPage;
 import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.custom.DetailPanel;
 import org.activiti.explorer.ui.custom.PrettyTimeLabel;
@@ -47,11 +47,11 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 
@@ -72,13 +72,13 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
   protected VariableRendererManager variableRendererManager;
   
   protected ProcessInstance processInstance;
-  protected AbstractTablePage processInstancePage;
+  protected AbstractPage processInstancePage;
   protected HistoricProcessInstance historicProcessInstance;
   protected ProcessDefinition processDefinition;
   
   protected VerticalLayout panelLayout;
 
-  public ProcessInstanceDetailPanel(String processInstanceId, AbstractTablePage processInstancePage) {
+  public ProcessInstanceDetailPanel(String processInstanceId, AbstractPage processInstancePage) {
     
     // Member initialization
     this.processInstancePage = processInstancePage;

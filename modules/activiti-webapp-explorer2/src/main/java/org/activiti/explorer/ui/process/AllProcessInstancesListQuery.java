@@ -13,6 +13,12 @@
 
 package org.activiti.explorer.ui.process;
 
+import static org.activiti.explorer.ui.process.ProcessInstanceItem.PROPERTY_BUSINESS_KEY;
+import static org.activiti.explorer.ui.process.ProcessInstanceItem.PROPERTY_DEFINITION;
+import static org.activiti.explorer.ui.process.ProcessInstanceItem.PROPERTY_ID;
+import static org.activiti.explorer.ui.process.ProcessInstanceItem.PROPERTY_NAME;
+import static org.activiti.explorer.ui.process.ProcessInstanceItem.PROPERTY_SUPER_ID;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,20 +28,18 @@ import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.data.AbstractLazyLoadingQuery;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.ObjectProperty;
-
 
 /**
  * @author Michel Daviot
  */
 public class AllProcessInstancesListQuery extends AbstractLazyLoadingQuery {
   
-  protected HistoryService historyService;
-  protected RepositoryService repositoryService;
+	protected HistoryService historyService;
+	protected RepositoryService repositoryService;
   
   protected Map<String, ProcessDefinition> cachedProcessDefinitions;
   
@@ -69,14 +73,7 @@ public class AllProcessInstancesListQuery extends AbstractLazyLoadingQuery {
   }
   
   protected ProcessInstanceItem createItem(HistoricProcessInstance processInstance) {
-    ProcessInstanceItem item = new ProcessInstanceItem();
-    item.addItemProperty("id", new ObjectProperty<String>(processInstance.getId(), String.class));
-
-    ProcessDefinition processDefinition = getProcessDefinition(processInstance.getProcessDefinitionId());
-    
-    String itemName = getProcessDisplayName(processDefinition) + " (" + processInstance.getId() + ")";
-    item.addItemProperty("name", new ObjectProperty<String>(itemName, String.class));
-    return item;
+    return  new ProcessInstanceItem(processInstance,getProcessDefinition(processInstance.getProcessDefinitionId()));
   }
   
   protected String getProcessDisplayName(ProcessDefinition processDefinition) {

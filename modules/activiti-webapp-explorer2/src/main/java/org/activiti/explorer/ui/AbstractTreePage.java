@@ -37,12 +37,12 @@ public abstract class AbstractTreePage extends AbstractPage {
 
   @Override
   public void refreshSelectNext() {
-    throw new UnsupportedOperationException();
+//    throw new UnsupportedOperationException();
   }
 
   @Override
   public void selectElement(int index) {
-    throw new UnsupportedOperationException();
+//    throw new UnsupportedOperationException();
   }
 
 }

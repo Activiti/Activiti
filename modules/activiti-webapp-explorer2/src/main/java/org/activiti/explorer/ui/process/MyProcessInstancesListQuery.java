@@ -26,7 +26,6 @@ import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.data.AbstractLazyLoadingQuery;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.util.ObjectProperty;
 
 
 /**
@@ -71,23 +70,11 @@ public class MyProcessInstancesListQuery extends AbstractLazyLoadingQuery {
   }
   
   protected ProcessInstanceItem createItem(HistoricProcessInstance processInstance) {
-    ProcessInstanceItem item = new ProcessInstanceItem();
-    item.addItemProperty("id", new ObjectProperty<String>(processInstance.getId(), String.class));
-
-    ProcessDefinition processDefinition = getProcessDefinition(processInstance.getProcessDefinitionId());
-    
-    String itemName = getProcessDisplayName(processDefinition) + " (" + processInstance.getId() + ")";
-    item.addItemProperty("name", new ObjectProperty<String>(itemName, String.class));
+    ProcessInstanceItem item = new ProcessInstanceItem(processInstance,getProcessDefinition(processInstance.getProcessDefinitionId()));
     return item;
   }
   
-  protected String getProcessDisplayName(ProcessDefinition processDefinition) {
-    if(processDefinition.getName() != null) {
-      return processDefinition.getName();
-    } else {
-      return processDefinition.getKey();
-    }
-  }
+ 
 
   protected ProcessDefinition getProcessDefinition(String id) {
     ProcessDefinition processDefinition = cachedProcessDefinitions.get(id);
