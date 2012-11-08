@@ -2,8 +2,10 @@ package org.activiti.explorer.ui.process;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -12,6 +14,7 @@ import org.activiti.explorer.data.LazyLoadingQuery;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 import com.vaadin.data.util.ObjectProperty;
 
 import static org.activiti.explorer.ui.process.ProcessInstanceItem.*;
@@ -21,18 +24,17 @@ import static org.activiti.explorer.ui.process.ProcessInstanceItem.*;
  * @author Michel Daviot
  *
  */
-public class ProcessInstanceContainer extends LazyLoadingContainer
-		implements Container.Hierarchical {
+public class ProcessInstanceContainer implements Container.Hierarchical {
 	private static final String PREFIX_DEFINITION = "DEF_";
 	private static final long serialVersionUID = 1L;
-
-	public ProcessInstanceContainer(LazyLoadingQuery lazyLoadingQuery,
-			int batchSize) {
-		super(lazyLoadingQuery, batchSize);
-	}
+	private final LazyLoadingQuery lazyLoadingQuery;
+	protected Map<Object, Item> itemCache = new HashMap<Object, Item>();
+	protected List<Object> containerPropertyIds = new ArrayList<Object>();
+    protected Map<Object, Class<?>> containerPropertyTypes = new HashMap<Object, Class<?>>();
+    protected Map<Object, Object> containerPropertyDefaultValues = new HashMap<Object, Object>();
 
 	public ProcessInstanceContainer(LazyLoadingQuery lazyLoadingQuery) {
-		this(lazyLoadingQuery, 15);
+		this.lazyLoadingQuery = lazyLoadingQuery;
 	}
 	 
 	@Override
@@ -42,7 +44,7 @@ public class ProcessInstanceContainer extends LazyLoadingContainer
 			item.addItemProperty(PROPERTY_NAME, new ObjectProperty<String>(itemId.toString().substring(PREFIX_DEFINITION.length()), String.class));
 			return item;
 		} else {
-			return super.getItem(itemId);
+			return itemCache.get(itemId);
 		}
 	}
 	
@@ -56,19 +58,21 @@ public class ProcessInstanceContainer extends LazyLoadingContainer
 
 	@Override
 	public Collection<?> getChildren(Object itemId) {
-		List<Item> items = new ArrayList<Item>();
+		List<Object> items = new ArrayList<Object>();
 		if(isRootDefinition(itemId)) {// root : definition
 			String definition = getDefinition(itemId);
-			for (Item item : itemCache.values()) {
+			for (Entry<Object, Item> entry : itemCache.entrySet()) {
+				Item item =entry.getValue();
 				if(definition.equals(item.getItemProperty(PROPERTY_DEFINITION).getValue())){
-					items.add(item);
+					items.add(entry.getKey());
 				}
 			}
 		}
 		else {
-			for (Item item : itemCache.values()) {
+			for (Entry<Object, Item> entry : itemCache.entrySet()) {
+				Item item =entry.getValue();
 				if(itemId.equals(item.getItemProperty(PROPERTY_SUPER_ID))){
-					items.add(item);
+					items.add(entry.getKey());
 				}
 			}
 		}
@@ -88,6 +92,11 @@ public class ProcessInstanceContainer extends LazyLoadingContainer
 			roots.add(PREFIX_DEFINITION+entry.getValue().getItemProperty(PROPERTY_DEFINITION).getValue().toString());
 		}
 		return roots;
+	}
+	
+	@Override
+	public boolean containsId(Object itemId) {
+		return itemCache.containsKey(itemId) || itemCache.containsValue(itemId);
 	}
 
 	private void updateCache() {
@@ -124,6 +133,89 @@ public class ProcessInstanceContainer extends LazyLoadingContainer
 	@Override
 	public boolean hasChildren(Object itemId) {
 		return getChildren(itemId).size() > 0;
+	}
+
+	 public Object addItem() throws UnsupportedOperationException {
+		    throw new UnsupportedOperationException();
+		  }
+		  
+	public Object addItemAfter(Object previousItemId)
+			throws UnsupportedOperationException {
+		throw new UnsupportedOperationException();
+	}
+
+	public Item addItemAfter(Object previousItemId, Object newItemId)
+			throws UnsupportedOperationException {
+		throw new UnsupportedOperationException();
+	}
+
+	public Object addItemAt(int index) throws UnsupportedOperationException {
+		throw new UnsupportedOperationException();
+	}
+
+	public Item addItemAt(int index, Object newItemId)
+			throws UnsupportedOperationException {
+		throw new UnsupportedOperationException();
+	}
+
+	public boolean removeItem(Object itemId)
+			throws UnsupportedOperationException {
+		throw new UnsupportedOperationException();
+	}
+
+	public Item addItem(Object itemId) throws UnsupportedOperationException {
+		throw new UnsupportedOperationException();
+	}
+
+	
+	 public Collection< ? > getContainerPropertyIds() {
+		    return containerPropertyIds;
+		  }
+
+		
+
+	@Override
+	public Collection<?> getItemIds() {
+		return itemCache.keySet();
+	}
+
+	@Override
+	public Property getContainerProperty(Object itemId, Object propertyId) {
+		return getItem(itemId).getItemProperty(propertyId);
+	}
+
+
+	public Class<?> getType(Object propertyId) {
+		return containerPropertyTypes.get(propertyId);
+	}
+
+	public Object getDefaultValue(Object propertyId) {
+		return containerPropertyDefaultValues.get(propertyId);
+	}
+
+	@Override
+	public int size() {
+		return itemCache.size();
+	}
+
+	public boolean addContainerProperty(Object propertyId, Class< ? > type, Object defaultValue) throws UnsupportedOperationException {
+	    containerPropertyIds.add(propertyId);
+	    containerPropertyTypes.put(propertyId, type);
+	    containerPropertyDefaultValues.put(propertyId, defaultValue);
+	    return true;
+	  }
+
+	  public boolean removeContainerProperty(Object propertyId) throws UnsupportedOperationException {
+	    containerPropertyIds.remove(propertyId);
+	    containerPropertyTypes.remove(propertyId);
+	    containerPropertyDefaultValues.remove(propertyId);
+	    return true;
+	  }
+	  
+
+	public boolean removeAllItems() throws UnsupportedOperationException {
+		itemCache.clear();
+		return true;
 	}
 
 }

@@ -25,6 +25,7 @@ import org.activiti.explorer.ui.AbstractTreePage;
 import org.activiti.explorer.ui.custom.ToolBar;
 import org.activiti.explorer.ui.management.process.ProcessInstanceDetailPanel;
 
+import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -40,7 +41,7 @@ public class AllProcessInstancesPage extends AbstractTreePage {
 
 	  private static final long serialVersionUID = 1L;
 
-	  protected LazyLoadingContainer processInstanceListContainer;
+	  protected Container.Hierarchical processInstanceListContainer;
 	  protected LazyLoadingQuery lazyLoadingQuery;
 	  
 	  @Override
@@ -53,8 +54,8 @@ public class AllProcessInstancesPage extends AbstractTreePage {
 		final Tree tree=new Tree();
 		tree.setImmediate(true);
 		tree.addListener(new Property.ValueChangeListener() {
-			 private static final long serialVersionUID = 1;
-			 
+			private static final long serialVersionUID = 2994322854323740189L;
+
 			@Override
 			public void valueChange(ValueChangeEvent event) {
 				Item item = tree.getItem(event.getProperty().getValue()); // the value of the property is the itemId of the table entry
@@ -73,7 +74,7 @@ public class AllProcessInstancesPage extends AbstractTreePage {
 			}
 		});
 		this.lazyLoadingQuery = createLazyLoadingQuery();
-		this.processInstanceListContainer = new ProcessInstanceContainer(lazyLoadingQuery, 10);
+		this.processInstanceListContainer = new ProcessInstanceContainer(lazyLoadingQuery);
 		tree.addContainerProperty("name", String.class, null);
 		tree.setContainerDataSource(processInstanceListContainer);
 		// Expand whole tree
@@ -109,16 +110,6 @@ public class AllProcessInstancesPage extends AbstractTreePage {
     return new AllProcessInstancesListQuery(historyService, repositoryService);
   }
   
-  @Override
-  protected void initUi() {
-    super.initUi();
-    
-    if(processInstanceId != null) {
-      selectElement(processInstanceListContainer.getIndexForObjectId(processInstanceId));
-    } else {
-      selectElement(0);
-    }
-  }
 
   protected UriFragment getUriFragment(String processInstanceId) {
     UriFragment fragment = new UriFragment(AllProcessesNavigator.ALL_PROCESSES_URI_PART);
