@@ -71,7 +71,7 @@ public class ProcessInstanceContainer implements Container.Hierarchical {
 		else {
 			for (Entry<Object, Item> entry : itemCache.entrySet()) {
 				Item item =entry.getValue();
-				if(itemId.equals(item.getItemProperty(PROPERTY_SUPER_ID))){
+				if(itemId.equals(item.getItemProperty(PROPERTY_SUPER_ID).getValue())){
 					items.add(entry.getKey());
 				}
 			}
@@ -103,7 +103,7 @@ public class ProcessInstanceContainer implements Container.Hierarchical {
 		if (itemCache.isEmpty()) {
 			List<Item> batch = lazyLoadingQuery.loadItems(0, lazyLoadingQuery.size());
 			for (Item batchItem : batch) {
-				itemCache.put(batchItem.getItemProperty(PROPERTY_ID), batchItem);
+				itemCache.put(batchItem.getItemProperty(PROPERTY_ID).getValue(), batchItem);
 			}
 		}
 	}
