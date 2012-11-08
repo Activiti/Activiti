@@ -90,7 +90,7 @@
         and RES.CATEGORY_ like #{categoryLike}
       </if>
       <if test="categoryNotEquals != null">
-        and RES.CATEGORY_ &lt;&gt; #{categoryNotEquals} OR RES.CATEGORY_ is null
+        and ( RES.CATEGORY_ &lt;&gt; #{categoryNotEquals} OR RES.CATEGORY_ is null )
       </if>
       <if test="name != null">
         and RES.NAME_ = #{name}
