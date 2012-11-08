@@ -186,7 +186,7 @@ public class BpmnDeployer implements Deployer {
   }
 
   @SuppressWarnings("unchecked")
-  private void addTimerDeclarations(ProcessDefinitionEntity processDefinition) {
+  protected void addTimerDeclarations(ProcessDefinitionEntity processDefinition) {
     List<TimerDeclarationImpl> timerDeclarations = (List<TimerDeclarationImpl>) processDefinition.getProperty(BpmnParse.PROPERTYNAME_START_TIMER);
     if (timerDeclarations!=null) {
       for (TimerDeclarationImpl timerDeclaration : timerDeclarations) {
@@ -199,7 +199,7 @@ public class BpmnDeployer implements Deployer {
     }
   }
 
-  private void removeObsoleteTimers(ProcessDefinitionEntity processDefinition) {
+  protected void removeObsoleteTimers(ProcessDefinitionEntity processDefinition) {
     List<Job> jobsToDelete = Context
       .getCommandContext()
       .getJobManager()
