@@ -119,7 +119,7 @@ public class ProcessInstanceResource extends SecuredResource {
         } else {
           taskJSON.putNull("owner");
         }
-        if (historicTaskInstance.getOwner() != null) {
+        if (historicTaskInstance.getAssignee() != null) {
           taskJSON.put("assignee", historicTaskInstance.getAssignee());
         } else {
           taskJSON.putNull("assignee");
