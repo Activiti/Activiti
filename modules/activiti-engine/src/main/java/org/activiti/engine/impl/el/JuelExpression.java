@@ -52,16 +52,16 @@ public class JuelExpression implements Expression {
         .handleInvocation(invocation);
       return invocation.getInvocationResult();      
     } catch (PropertyNotFoundException pnfe) {
-      throw new ActivitiException("Unknown property used in expression", pnfe);
+      throw new ActivitiException("Unknown property used in expression: " + expressionText, pnfe);
     } catch (MethodNotFoundException mnfe) {
-      throw new ActivitiException("Unknown method used in expression", mnfe);
+      throw new ActivitiException("Unknown method used in expression: " + expressionText, mnfe);
     } catch(ELException ele) {
-      throw new ActivitiException("Error while evaluating expression", ele);
+      throw new ActivitiException("Error while evaluating expression: " + expressionText, ele);
     } catch (Exception e) {
-      throw new ActivitiException("Error while evaluating expression", e);
+      throw new ActivitiException("Error while evaluating expression: " + expressionText, e);
     }
   }
-  
+    
   public void setValue(Object value, VariableScope variableScope) {
     ELContext elContext = expressionManager.getElContext(variableScope);
     try {
@@ -69,8 +69,8 @@ public class JuelExpression implements Expression {
       Context.getProcessEngineConfiguration()
         .getDelegateInterceptor()
         .handleInvocation(invocation);
-    }catch (Exception e) {
-      throw new ActivitiException("Error while evaluating expression", e);
+    } catch (Exception e) {
+      throw new ActivitiException("Error while evaluating expression: " + expressionText, e);
     }
   }
   
