@@ -13,6 +13,12 @@
 
 package org.activiti.explorer.ui.process;
 
+import static org.activiti.explorer.ui.process.ProcessInstanceItem.PROPERTY_BUSINESS_KEY;
+import static org.activiti.explorer.ui.process.ProcessInstanceItem.PROPERTY_DEFINITION;
+import static org.activiti.explorer.ui.process.ProcessInstanceItem.PROPERTY_ID;
+import static org.activiti.explorer.ui.process.ProcessInstanceItem.PROPERTY_NAME;
+import static org.activiti.explorer.ui.process.ProcessInstanceItem.PROPERTY_SUPER_ID;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,32 +28,30 @@ import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.data.AbstractLazyLoadingQuery;
 
 import com.vaadin.data.Item;
-
+import com.vaadin.data.util.ObjectProperty;
 
 /**
- * @author Frederik Heremans
+ * @author Michel Daviot
  */
-public class MyProcessInstancesListQuery extends AbstractLazyLoadingQuery {
+public class AllProcessInstancesListQuery extends AbstractLazyLoadingQuery {
   
-  protected HistoryService historyService;
-  protected RepositoryService repositoryService;
+	protected HistoryService historyService;
+	protected RepositoryService repositoryService;
   
   protected Map<String, ProcessDefinition> cachedProcessDefinitions;
   
-  public MyProcessInstancesListQuery(HistoryService historyService, RepositoryService repositoryService) {
+  public AllProcessInstancesListQuery(HistoryService historyService, RepositoryService repositoryService) {
     this.historyService = historyService;
     this.repositoryService = repositoryService;
     cachedProcessDefinitions = new HashMap<String, ProcessDefinition>();
   }
-  
+
   public List<Item> loadItems(int start, int count) {
     List<HistoricProcessInstance> processInstances = historyService
       .createHistoricProcessInstanceQuery()
-      .startedBy(ExplorerApp.get().getLoggedInUser().getId())
       .unfinished()
       .list();
     
@@ -60,7 +64,6 @@ public class MyProcessInstancesListQuery extends AbstractLazyLoadingQuery {
   
   public Item loadSingleResult(String id) {
     HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery()
-      .startedBy(ExplorerApp.get().getLoggedInUser().getId())
       .unfinished()
       .processInstanceId(id).singleResult();
     if (processInstance != null) {
@@ -70,11 +73,16 @@ public class MyProcessInstancesListQuery extends AbstractLazyLoadingQuery {
   }
   
   protected ProcessInstanceItem createItem(HistoricProcessInstance processInstance) {
-    ProcessInstanceItem item = new ProcessInstanceItem(processInstance,getProcessDefinition(processInstance.getProcessDefinitionId()));
-    return item;
+    return  new ProcessInstanceItem(processInstance,getProcessDefinition(processInstance.getProcessDefinitionId()));
   }
   
- 
+  protected String getProcessDisplayName(ProcessDefinition processDefinition) {
+    if(processDefinition.getName() != null) {
+      return processDefinition.getName();
+    } else {
+      return processDefinition.getKey();
+    }
+  }
 
   protected ProcessDefinition getProcessDefinition(String id) {
     ProcessDefinition processDefinition = cachedProcessDefinitions.get(id);
@@ -87,7 +95,6 @@ public class MyProcessInstancesListQuery extends AbstractLazyLoadingQuery {
 
   public int size() {
     return (int) historyService.createHistoricProcessInstanceQuery()
-    .startedBy(ExplorerApp.get().getLoggedInUser().getId())
     .unfinished()
     .count();
   }

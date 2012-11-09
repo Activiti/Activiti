@@ -25,7 +25,7 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
-import org.activiti.explorer.ui.AbstractTablePage;
+import org.activiti.explorer.ui.AbstractPage;
 import org.activiti.explorer.ui.MainWindow;
 import org.activiti.explorer.ui.management.ManagementMenuBar;
 import org.activiti.explorer.ui.management.db.DatabasePage;
@@ -33,6 +33,7 @@ import org.activiti.explorer.ui.management.deployment.DeploymentPage;
 import org.activiti.explorer.ui.management.identity.GroupPage;
 import org.activiti.explorer.ui.management.identity.UserPage;
 import org.activiti.explorer.ui.management.job.JobPage;
+import org.activiti.explorer.ui.process.AllProcessInstancesPage;
 import org.activiti.explorer.ui.process.MyProcessInstancesPage;
 import org.activiti.explorer.ui.process.ProcessDefinitionPage;
 import org.activiti.explorer.ui.process.ProcessMenuBar;
@@ -55,7 +56,7 @@ public class DefaultViewManager implements ViewManager {
   
   private static final long serialVersionUID = 1L;
   
-  protected AbstractTablePage currentPage;
+  protected AbstractPage currentPage;
   
   @Autowired
   protected MainWindow mainWindow;
@@ -213,10 +214,18 @@ public class DefaultViewManager implements ViewManager {
     switchView(new MyProcessInstancesPage(), ViewManager.MAIN_NAVIGATION_PROCESS, ProcessMenuBar.ENTRY_MY_PROCESS_INSTANCES);
   }
   
+  public void showAllProcessInstancesPage() {
+	    switchView(new AllProcessInstancesPage(), ViewManager.MAIN_NAVIGATION_PROCESS, ProcessMenuBar.ENTRY_ALL_PROCESS_INSTANCES);
+  }
+
   public void showMyProcessInstancesPage(String processInstanceId) {
     switchView(new MyProcessInstancesPage(processInstanceId), ViewManager.MAIN_NAVIGATION_PROCESS, ProcessMenuBar.ENTRY_MY_PROCESS_INSTANCES);
   }
   
+  public void showAllProcessInstancesPage(String processInstanceId) {
+    switchView(new AllProcessInstancesPage(processInstanceId), ViewManager.MAIN_NAVIGATION_PROCESS, ProcessMenuBar.ENTRY_ALL_PROCESS_INSTANCES);
+  }
+
   // Management
   
   public void showDatabasePage() {
@@ -275,14 +284,14 @@ public class DefaultViewManager implements ViewManager {
   
   // Helper
   
-  protected void switchView(AbstractTablePage page, String mainMenuActive, String subMenuActive) {
+  protected void switchView(AbstractPage page, String mainMenuActive, String subMenuActive) {
     currentPage = page;
     mainWindow.setMainNavigation(mainMenuActive);
     mainWindow.switchView(page);
     page.getToolBar().setActiveEntry(subMenuActive); // Must be set AFTER adding page to window (toolbar will be created in atach())
   }
   
-  public AbstractTablePage getCurrentPage() {
+  public AbstractPage getCurrentPage() {
     return currentPage;
   }
   
