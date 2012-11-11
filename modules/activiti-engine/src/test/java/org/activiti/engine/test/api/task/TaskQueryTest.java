@@ -802,7 +802,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     // use parameters
     assertEquals(1, taskService.createNativeTaskQuery().sql("SELECT count(*) FROM " + managementService.getTableName(Task.class) + " T WHERE T.NAME_ = #{taskName}").parameter("taskName", "gonzoTask").count());
   }
-
+  
   /**
    * Generates some test tasks. - 6 tasks where kermit is a candidate - 1 tasks
    * where gonzo is assignee - 2 tasks assigned to management group - 2 tasks

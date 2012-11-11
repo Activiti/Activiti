@@ -13,15 +13,12 @@
 
 package org.activiti.engine.impl.cmd;
 
-import java.io.Serializable;
 import java.util.Map;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.form.StartFormHandler;
-import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricFormPropertyEntity;
@@ -31,29 +28,22 @@ import org.activiti.engine.runtime.ProcessInstance;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public class SubmitStartFormCmd implements Command<ProcessInstance>, Serializable {
+public class SubmitStartFormCmd extends NeedsActiveProcessDefinitionCmd<ProcessInstance> {
 
   private static final long serialVersionUID = 1L;
-  protected String processDefinitionId;
+  
   protected final String businessKey;
   protected Map<String, String> properties;
   
   public SubmitStartFormCmd(String processDefinitionId, String businessKey, Map<String, String> properties) {
-    this.processDefinitionId = processDefinitionId;
-	this.businessKey = businessKey;
+    super(processDefinitionId);
+    this.businessKey = businessKey;
     this.properties = properties;
   }
-
-  public ProcessInstance execute(CommandContext commandContext) {
-    ProcessDefinitionEntity processDefinition = Context
-      .getProcessEngineConfiguration()
-      .getDeploymentCache()
-      .findDeployedProcessDefinitionById(processDefinitionId);
-    if (processDefinition == null) {
-      throw new ActivitiException("No process definition found for id = '" + processDefinitionId + "'");
-    }
-    
+  
+  protected ProcessInstance execute(CommandContext commandContext, ProcessDefinitionEntity processDefinition) {
     ExecutionEntity processInstance = null;
     if (businessKey != null) {
       processInstance = processDefinition.createProcessInstance(businessKey);

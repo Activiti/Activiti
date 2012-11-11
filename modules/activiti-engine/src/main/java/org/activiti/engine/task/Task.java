@@ -101,4 +101,7 @@ public interface Task {
 
   /** the parent task for which this task is a subtask */
   String getParentTaskId();
+  
+  /** Indicated whether this task is suspended or not. */
+  boolean isSuspended();
 }

@@ -82,8 +82,8 @@ public interface RepositoryService {
   /**
    * Suspends the process definition with the given id. 
    * 
-   * If a process definition is in state suspended, activiti will not 
-   * execute jobs (timers, messages) associated with any process instance of the given definition.
+   * If a process definition is in state suspended, Activiti will not 
+   * execute jobs (timers, asynchronous continuations) associated with any process instance of the given definition.
    * 
    *  @throws ActivitiException if no such processDefinition can be found or if the process definition is already in state suspended.
    */
@@ -92,8 +92,8 @@ public interface RepositoryService {
   /**
    * Suspends the process definition with the given key (=id in the bpmn20.xml file). 
    * 
-   * If a process definition is in state suspended, activiti will not 
-   * execute jobs (timers, messages) associated with any process instance of the given definition.
+   * If a process definition is in state suspended, Activiti will not 
+   * execute jobs (timers, asynchronous continuations) associated with any process instance of the given definition.
    * 
    * @throws ActivitiException if no such processDefinition can be found or if the process definition is already in state suspended.
    */

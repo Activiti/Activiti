@@ -185,6 +185,16 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
    */
   TaskQuery dueAfter(Date dueDate);
   
+  /**
+   * Only selects tasks which are suspended, because its process instance was suspended.
+   */
+  TaskQuery suspended();
+  
+  /**
+   * Only selects tasks which are active (ie. not suspended)
+   */
+  TaskQuery active();
+  
   // ordering ////////////////////////////////////////////////////////////
   
   /** Order by task id (needs to be followed by {@link #asc()} or {@link #desc()}). */

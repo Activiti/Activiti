@@ -84,6 +84,11 @@ public class ExecutionManager extends AbstractManager {
   public List<ExecutionEntity> findChildExecutionsByParentExecutionId(String parentExecutionId) {
     return getDbSqlSession().selectList("selectExecutionsByParentExecutionId", parentExecutionId);
   }
+  
+  @SuppressWarnings("unchecked")
+  public List<ExecutionEntity> findChildExecutionsByProcessInstanceId(String processInstanceId) {
+    return getDbSqlSession().selectList("selectExecutionsByProcessInstanceId", processInstanceId);
+  }
 
   public ExecutionEntity findExecutionById(String executionId) {
     return (ExecutionEntity) getDbSqlSession().selectById(ExecutionEntity.class, executionId);

@@ -13,12 +13,10 @@
 
 package org.activiti.engine.impl.cmd;
 
-import java.io.Serializable;
-
 import org.activiti.engine.impl.identity.Authentication;
-import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.CommentEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.task.Event;
 
@@ -26,21 +24,20 @@ import org.activiti.engine.task.Event;
 /**
  * @author Tom Baeyens
  */
-public class AddCommentCmd implements Command<Object>, Serializable {
+public class AddCommentCmd extends NeedsActiveTaskCmd<Object> {
 
   private static final long serialVersionUID = 1L;
   
-  protected String taskId;
   protected String processInstanceId;
   protected String message;
   
   public AddCommentCmd(String taskId, String processInstanceId, String message) {
-    this.taskId = taskId;
+    super(taskId);
     this.processInstanceId = processInstanceId;
     this.message = message;
   }
-
-  public Object execute(CommandContext commandContext) {
+  
+  protected Object execute(CommandContext commandContext, TaskEntity task) {
     String userId = Authentication.getAuthenticatedUserId();
     CommentEntity comment = new CommentEntity();
     comment.setUserId(userId);
@@ -63,5 +60,10 @@ public class AddCommentCmd implements Command<Object>, Serializable {
       .insert(comment);
     
     return null;
+  }
+  
+  @Override
+  protected String getSuspendedTaskException() {
+    return "Cannot add a comment to a suspended task";
   }
 }

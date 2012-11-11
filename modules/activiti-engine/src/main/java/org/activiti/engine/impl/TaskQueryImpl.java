@@ -22,6 +22,7 @@ import org.activiti.engine.identity.Group;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.persistence.entity.SuspensionState;
 import org.activiti.engine.impl.variable.VariableTypes;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.Task;
@@ -67,6 +68,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   protected Date dueDate;
   protected Date dueBefore;
   protected Date dueAfter;
+  protected SuspensionState suspensionState;
   
   public TaskQueryImpl() {
   }
@@ -318,6 +320,16 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   
   public TaskQuery dueAfter(Date dueAfter) {
     this.dueAfter = dueAfter;
+    return this;
+  }
+  
+  public TaskQuery active() {
+    this.suspensionState = SuspensionState.ACTIVE;
+    return this;
+  }
+  
+  public TaskQuery suspended() {
+    this.suspensionState = SuspensionState.SUSPENDED;
     return this;
   }
   

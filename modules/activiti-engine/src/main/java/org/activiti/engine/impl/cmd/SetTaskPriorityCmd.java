@@ -12,11 +12,6 @@
  */
 package org.activiti.engine.impl.cmd;
 
-import java.io.Serializable;
-
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
@@ -24,35 +19,19 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 /**
  * @author Joram Barrez
  */
-public class SetTaskPriorityCmd implements Command<Void>, Serializable {
+public class SetTaskPriorityCmd extends NeedsActiveTaskCmd<Void> {
   
   private static final long serialVersionUID = 1L;
 
-  protected String taskId;
-  
   protected int priority;
   
   public SetTaskPriorityCmd(String taskId, int priority) {
-    this.taskId = taskId;
+    super(taskId);
     this.priority = priority;
   }
   
-  public Void execute(CommandContext commandContext) {
-    if(taskId == null) {
-      throw new ActivitiException("taskId is null");
-    }
-    
-    TaskEntity task = Context
-      .getCommandContext()
-      .getTaskManager()
-      .findTaskById(taskId);
-    
-    if (task == null) {
-      throw new ActivitiException("Cannot find task with id " + taskId);
-    }
-    
+  protected Void execute(CommandContext commandContext, TaskEntity task) {
     task.setPriority(priority);
-    
     return null;
   }
 

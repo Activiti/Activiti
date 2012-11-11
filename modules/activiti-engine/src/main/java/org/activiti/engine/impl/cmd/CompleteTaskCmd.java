@@ -12,12 +12,8 @@
  */
 package org.activiti.engine.impl.cmd;
 
-import java.io.Serializable;
 import java.util.Map;
 
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
@@ -25,41 +21,28 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 /**
  * @author Joram Barrez
  */
-public class CompleteTaskCmd implements Command<Void>, Serializable {
+public class CompleteTaskCmd extends NeedsActiveTaskCmd<Void> {
       
   private static final long serialVersionUID = 1L;
-  protected String taskId;
   protected Map<String, Object> variables;
   
   public CompleteTaskCmd(String taskId, Map<String, Object> variables) {
-    this.taskId = taskId;
+    super(taskId);
     this.variables = variables;
   }
   
-  public Void execute(CommandContext commandContext) {
-    if(taskId == null) {
-      throw new ActivitiException("taskId is null");
-    }
-    
-    TaskEntity task = Context
-      .getCommandContext()
-      .getTaskManager()
-      .findTaskById(taskId);
-    
-    if (task == null) {
-      throw new ActivitiException("Cannot find task with id " + taskId);
-    }
-    
+  protected Void execute(CommandContext commandContext, TaskEntity task) {
     if (variables!=null) {
       task.setExecutionVariables(variables);
     }
     
-    completeTask(task);
-    
+    task.complete();
     return null;
   }
-
-  protected void completeTask(TaskEntity task) {
-    task.complete();
+  
+  @Override
+  protected String getSuspendedTaskException() {
+    return "Cannot complete a suspended task";
   }
+
 }

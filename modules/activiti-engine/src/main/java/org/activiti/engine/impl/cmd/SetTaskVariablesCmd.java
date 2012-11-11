@@ -13,46 +13,32 @@
 
 package org.activiti.engine.impl.cmd;
 
-import java.io.Serializable;
 import java.util.Map;
 
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public class SetTaskVariablesCmd implements Command<Object>, Serializable {
+public class SetTaskVariablesCmd extends NeedsActiveTaskCmd<Object> {
 
   private static final long serialVersionUID = 1L;
-  protected String taskId;
+
   protected Map<String, ? extends Object> variables;
   protected boolean isLocal;
   
   public SetTaskVariablesCmd(String taskId, Map<String, ? extends Object> variables, boolean isLocal) {
+    super(taskId);
     this.taskId = taskId;
     this.variables = variables;
     this.isLocal = isLocal;
   }
+  
+  protected Object execute(CommandContext commandContext, TaskEntity task) {
 
-  public Object execute(CommandContext commandContext) {
-    if(taskId == null) {
-      throw new ActivitiException("taskId is null");
-    }
-    
-    TaskEntity task = Context
-      .getCommandContext()
-      .getTaskManager()
-      .findTaskById(taskId);
-    
-    if (task==null) {
-      throw new ActivitiException("task "+taskId+" doesn't exist");
-    }
-    
     if (isLocal) {
       task.setVariablesLocal(variables);
     } else {
@@ -61,4 +47,10 @@ public class SetTaskVariablesCmd implements Command<Object>, Serializable {
     
     return null;
   }
+  
+  @Override
+  protected String getSuspendedTaskException() {
+    return "Cannot add variables to a suspended task";
+  }
+  
 }

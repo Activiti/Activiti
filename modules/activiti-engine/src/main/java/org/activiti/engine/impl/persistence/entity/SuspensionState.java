@@ -73,18 +73,27 @@ public interface SuspensionState {
   /////////////////////////////////////////// helper class
   
   public static class SuspensionStateUtil{
+    
     public static void setSuspensionState(ProcessDefinitionEntity processDefinitionEntity, SuspensionState state) {
       if(processDefinitionEntity.getSuspensionState() == state.getStateCode()) {
         throw new ActivitiException("Cannot set suspension state '"+state+"' for "+processDefinitionEntity+"': already in state '"+state+"'.");
       }
       processDefinitionEntity.setSuspensionState(state.getStateCode());
-    }   
+    }
+    
     public static void setSuspensionState(ExecutionEntity executionEntity, SuspensionState state) {
       if(executionEntity.getSuspensionState() == state.getStateCode()) {
         throw new ActivitiException("Cannot set suspension state '"+state+"' for "+executionEntity+"': already in state '"+state+"'.");
       }
       executionEntity.setSuspensionState(state.getStateCode());
-    }   
+    }
+    
+    public static void setSuspensionState(TaskEntity taskEntity, SuspensionState state) {
+      if (taskEntity.getSuspensionState() == state.getStateCode()) {
+        throw new ActivitiException("Cannot set suspension state '"+state+"' for " + taskEntity + "': already in state '"+state+"'.");
+      }
+      taskEntity.setSuspensionState(state.getStateCode());
+    }
   }
   
 }

@@ -13,25 +13,34 @@
 
 package org.activiti.engine.impl.cmd;
 
-import java.io.Serializable;
 import java.util.Map;
 
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 
 /**
  * @author Tom Baeyens
  */
-public class ResolveTaskCmd extends CompleteTaskCmd implements Serializable {
+public class ResolveTaskCmd extends NeedsActiveTaskCmd<Void> {
 
   private static final long serialVersionUID = 1L;
 
+  protected Map<String, Object> variables;
+
   public ResolveTaskCmd(String taskId, Map<String, Object> variables) {
-    super(taskId, variables);
+    super(taskId);
+    this.variables = variables;
+  }
+  
+  protected Void execute(CommandContext commandContext, TaskEntity task) {
+    task.resolve();
+    return null;
   }
 
   @Override
-  protected void completeTask(TaskEntity task) {
-    task.resolve();
+  protected String getSuspendedTaskException() {
+    return "Cannot resolve a suspended task";
   }
+  
 }

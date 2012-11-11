@@ -64,6 +64,6 @@ public interface ProcessDefinition {
   /** Does this process definition has a {@link FormService#getStartFormData(String) start form key}. */
   boolean hasStartFormKey();
   
-  /** Returns trure if the process definition is in state suspended */
+  /** Returns true if the process definition is in suspended state. */
   boolean isSuspended();
 }

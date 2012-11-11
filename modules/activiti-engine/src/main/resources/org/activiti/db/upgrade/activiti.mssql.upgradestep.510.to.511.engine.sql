@@ -9,3 +9,9 @@ alter table ACT_RE_DEPLOYMENT
     
 alter table ACT_RE_PROCDEF
     add DESCRIPTION_ nvarchar(4000);
+    
+alter table ACT_RU_TASK
+    add SUSPENSION_STATE_ int;
+    
+update ACT_RU_TASK set SUSPENSION_STATE= 1; 
+

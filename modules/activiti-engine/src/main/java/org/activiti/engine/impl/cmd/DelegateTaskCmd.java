@@ -13,11 +13,6 @@
 
 package org.activiti.engine.impl.cmd;
 
-import java.io.Serializable;
-
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
@@ -25,34 +20,24 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 /**
  * @author Tom Baeyens
  */
-public class DelegateTaskCmd implements Command<Object>, Serializable {  
+public class DelegateTaskCmd extends NeedsActiveTaskCmd<Object> {  
 
   private static final long serialVersionUID = 1L;
-  protected String taskId;
   protected String userId;
   
   public DelegateTaskCmd(String taskId, String userId) {
-    this.taskId = taskId;
+    super(taskId);
     this.userId = userId;
   }
-
-  public Object execute(CommandContext commandContext) {
-    if(taskId == null) {
-      throw new ActivitiException("taskId is null");
-    }
-    
-    TaskEntity task = Context
-      .getCommandContext()
-      .getTaskManager()
-      .findTaskById(taskId);
-    
-    if (task == null) {
-      throw new ActivitiException("Cannot find task with id " + taskId);
-    }
-
+  
+  protected Object execute(CommandContext commandContext, TaskEntity task) {
     task.delegate(userId);
-    
     return null;
+  }
+  
+  @Override
+  protected String getSuspendedTaskException() {
+    return "Cannot delegate a suspended task";
   }
 
 }

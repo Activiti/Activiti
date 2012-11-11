@@ -17,12 +17,12 @@ import java.io.InputStream;
 
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.identity.Authentication;
-import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntity;
 import org.activiti.engine.impl.persistence.entity.CommentEntity;
 import org.activiti.engine.impl.persistence.entity.CommentManager;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.task.Attachment;
@@ -33,10 +33,9 @@ import org.activiti.engine.task.Event;
  * @author Tom Baeyens
  */
 // Not Serializable
-public class CreateAttachmentCmd implements Command<Attachment> {  
+public class CreateAttachmentCmd extends NeedsActiveTaskCmd<Attachment> {  
   
   protected String attachmentType;
-  protected String taskId;
   protected String processInstanceId;
   protected String attachmentName;
   protected String attachmentDescription;
@@ -44,6 +43,7 @@ public class CreateAttachmentCmd implements Command<Attachment> {
   protected String url;
   
   public CreateAttachmentCmd(String attachmentType, String taskId, String processInstanceId, String attachmentName, String attachmentDescription, InputStream content, String url) {
+    super(taskId);
     this.attachmentType = attachmentType;
     this.taskId = taskId;
     this.processInstanceId = processInstanceId;
@@ -52,8 +52,9 @@ public class CreateAttachmentCmd implements Command<Attachment> {
     this.content = content;
     this.url = url;
   }
-
-  public Attachment execute(CommandContext commandContext) {
+  
+  @Override
+  protected Attachment execute(CommandContext commandContext, TaskEntity task) {
     AttachmentEntity attachment = new AttachmentEntity();
     attachment.setName(attachmentName);
     attachment.setDescription(attachmentDescription);

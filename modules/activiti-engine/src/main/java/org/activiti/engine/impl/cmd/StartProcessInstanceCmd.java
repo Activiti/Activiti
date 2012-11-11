@@ -27,6 +27,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Serializable {
 
@@ -48,6 +49,7 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
       .getProcessEngineConfiguration()
       .getDeploymentCache();
     
+    // Find the process definition
     ProcessDefinitionEntity processDefinition = null;
     if (processDefinitionId!=null) {
       processDefinition = deploymentCache.findDeployedProcessDefinitionById(processDefinitionId);
@@ -63,12 +65,17 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
       throw new ActivitiException("processDefinitionKey and processDefinitionId are null");
     }
     
-    ExecutionEntity processInstance = processDefinition.createProcessInstance(businessKey);
+    // Do not start process a process instance if the process definition is suspended
+    if (processDefinition.isSuspended()) {
+      throw new ActivitiException("Cannot start process instance. Process definition " 
+              + processDefinition.getName() + " (id = " + processDefinition.getId() + ") is suspended");
+    }
 
+    // Start the process instance
+    ExecutionEntity processInstance = processDefinition.createProcessInstance(businessKey);
     if (variables!=null) {
       processInstance.setVariables(variables);
     }
-    
     processInstance.start();
     
     return processInstance;

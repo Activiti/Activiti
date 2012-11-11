@@ -68,7 +68,7 @@
       			and (PD.SUSPENSION_STATE_ = 1))
       )  
     ${limitAfter}	    
-  </select>
+  </select>                   
 
   <select id="selectExclusiveJobsToExecute" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
   	${limitBefore}

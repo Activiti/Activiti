@@ -50,12 +50,22 @@ public class PvmTestCase extends TestCase {
     this.threadRenderingMode = threadRenderingMode;
   }
   
+  /**
+   * Asserts if the provided text is part of some text.
+   */
   public void assertTextPresent(String expected, String actual) {
     if ( (actual==null)
          || (actual.indexOf(expected)==-1)
        ) {
       throw new AssertionFailedError("expected presence of ["+expected+"], but was ["+actual+"]");
     }
+  }
+  
+  /**
+   * Asserts if the provided text is part of some text, ignoring any uppercase characters
+   */
+  public void assertTextPresentIgnoreCase(String expected, String actual) {
+    assertTextPresent(expected.toLowerCase(), actual.toLowerCase());
   }
   
   @Override
