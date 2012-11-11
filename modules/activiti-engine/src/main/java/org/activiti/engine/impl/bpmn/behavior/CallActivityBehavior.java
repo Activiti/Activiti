@@ -58,6 +58,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
 
   public void execute(ActivityExecution execution) throws Exception {
     
+	String processDefinitonKey = this.processDefinitonKey;
     if (processDefinitionExpression != null) {
       processDefinitonKey = (String) processDefinitionExpression.getValue(execution);
     }
