@@ -59,7 +59,7 @@
         RES.CATEGORY_ = #{category}
       </if>
       <if test="categoryNotEquals != null">
-        RES.CATEGORY_ &lt;&gt; #{categoryNotEquals} OR RES.CATEGORY_ is null  
+        ( RES.CATEGORY_ &lt;&gt; #{categoryNotEquals} OR RES.CATEGORY_ is null )  
       </if>
     </where>
   </sql>
