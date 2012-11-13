@@ -2428,7 +2428,7 @@ public class BpmnParse extends Parse {
       boolean interrupting = cancelActivity.equals("true") ? true : false;
 
       // Catch event behavior is the same for most types
-      ActivityBehavior behavior = new BoundaryEventActivityBehavior(interrupting, nestedActivity.getId());
+      ActivityBehavior behavior = null;
 
       // Depending on the sub-element definition, the correct activityBehavior
       // parsing is selected
@@ -2439,18 +2439,23 @@ public class BpmnParse extends Parse {
       Element compensateEventDefinition = boundaryEventElement.element("compensateEventDefinition");
       Element messageEventDefinition = boundaryEventElement.element("messageEventDefinition");
       if (timerEventDefinition != null) {
+    	behavior = new BoundaryEventActivityBehavior(interrupting, nestedActivity.getId());
         parseBoundaryTimerEventDefinition(timerEventDefinition, interrupting, nestedActivity);
       } else if (errorEventDefinition != null) {
         interrupting = true; // non-interrupting not yet supported
+        behavior = new BoundaryEventActivityBehavior(interrupting, nestedActivity.getId());
         parseBoundaryErrorEventDefinition(errorEventDefinition, interrupting, parentActivity, nestedActivity);
       } else if (signalEventDefinition != null) {
+    	behavior = new BoundaryEventActivityBehavior(interrupting, nestedActivity.getId());
         parseBoundarySignalEventDefinition(signalEventDefinition, interrupting, nestedActivity);
       } else if (cancelEventDefinition != null) {
         // always interrupting
         behavior = parseBoundaryCancelEventDefinition(cancelEventDefinition, nestedActivity);
       } else if(compensateEventDefinition != null) {
+        behavior = new BoundaryEventActivityBehavior(interrupting, nestedActivity.getId());
         parseCatchCompensateEventDefinition(compensateEventDefinition, nestedActivity);      
       } else if(messageEventDefinition != null) {
+        behavior = new BoundaryEventActivityBehavior(interrupting, nestedActivity.getId());
         parseBoundaryMessageEventDefinition(messageEventDefinition, interrupting, nestedActivity);
       } else {
         addError("Unsupported boundary event type", boundaryEventElement);
