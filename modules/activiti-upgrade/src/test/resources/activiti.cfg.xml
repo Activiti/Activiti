@@ -10,15 +10,9 @@
     <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/activiti?autoReconnect=true" />
     <property name="jdbcUsername" value="activiti" />
     <property name="jdbcPassword" value="activiti" />
-    
-    <!-- Database configurations -->
+  
     <property name="databaseSchemaUpdate" value="true" />
-    
-    <!-- job executor configurations -->
     <property name="jobExecutorActivate" value="false" />
-    
-    <!-- mail server configurations -->
-    <property name="mailServerPort" value="5025" />    
     <property name="history" value="full" />
   </bean>
 
