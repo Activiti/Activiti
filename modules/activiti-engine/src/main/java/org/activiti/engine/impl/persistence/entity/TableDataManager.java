@@ -75,6 +75,7 @@ public class TableDataManager extends AbstractManager {
     // repository
     persistentObjectToTableNameMap.put(DeploymentEntity.class, "ACT_RE_DEPLOYMENT");
     persistentObjectToTableNameMap.put(ProcessDefinitionEntity.class, "ACT_RE_PROCDEF");
+    persistentObjectToTableNameMap.put(ModelEntity.class, "ACT_RE_MODEL");
     
     // history
     persistentObjectToTableNameMap.put(CommentEntity.class, "ACT_HI_COMMENT");
