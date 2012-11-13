@@ -325,6 +325,12 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
   }
 
   @Deployment
+  public void testCatchErrorThrownByJavaDelegateOnServiceTaskNotCancelActivity() {
+    String procId = runtimeService.startProcessInstanceByKey("catchErrorThrownByJavaDelegateOnServiceTaskNotCancelActiviti").getId();
+    assertThatErrorHasBeenCaught(procId);
+  }
+
+  @Deployment
   public void testCatchErrorThrownByJavaDelegateOnServiceTaskWithErrorCode() {
     String procId = runtimeService.startProcessInstanceByKey("catchErrorThrownByJavaDelegateOnServiceTaskWithErrorCode").getId();
     assertThatErrorHasBeenCaught(procId);

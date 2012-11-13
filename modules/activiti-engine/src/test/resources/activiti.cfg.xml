@@ -6,10 +6,10 @@
 
   <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration">
   
-    <property name="jdbcUrl" value="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000" />
-    <property name="jdbcDriver" value="org.h2.Driver" />
-    <property name="jdbcUsername" value="sa" />
-    <property name="jdbcPassword" value="" />
+    <property name="jdbcDriver" value="com.mysql.jdbc.Driver" />
+    <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/activiti?autoReconnect=true" />
+    <property name="jdbcUsername" value="activiti" />
+    <property name="jdbcPassword" value="activiti" />
     
     <!-- Database configurations -->
     <property name="databaseSchemaUpdate" value="true" />
