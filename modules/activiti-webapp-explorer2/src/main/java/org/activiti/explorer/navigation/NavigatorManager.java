@@ -17,6 +17,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.explorer.ui.management.admin.AdministrationNavigator;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
@@ -65,6 +66,7 @@ public class NavigatorManager implements InitializingBean, Serializable {
     addNavigator(new JobNavigator());
     addNavigator(new UserNavigator());
     addNavigator(new GroupNavigator());
+    addNavigator(new AdministrationNavigator());
     addNavigator(new MyProcessesNavigator());
   }
 

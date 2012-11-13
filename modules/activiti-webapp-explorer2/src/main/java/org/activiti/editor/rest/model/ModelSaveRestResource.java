@@ -16,8 +16,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.editor.constants.ModelDataJsonConstants;
-import org.activiti.editor.data.dao.ModelDao;
-import org.activiti.editor.data.model.ModelData;
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.Model;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Form;
@@ -45,18 +46,20 @@ public class ModelSaveRestResource extends ServerResource implements ModelDataJs
       byte[] bpmnBytes = converter.convert();
       System.out.println("bpmn " + new String(bpmnBytes));*/
       
-      ModelDao modelDao = new ModelDao();
-      ModelData model = modelDao.getModelById(Long.valueOf(modelId));
-      ObjectNode modelJson = (ObjectNode) objectMapper.readTree(model.getModelJson());
+      RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+      Model model = repositoryService.getModel(modelId);
+      
+      ObjectNode modelJson = (ObjectNode) objectMapper.readTree(model.getMetaInfo());
       
       modelJson.put(MODEL_NAME, modelForm.getFirstValue("name"));
       modelJson.put(MODEL_DESCRIPTION, modelForm.getFirstValue("description"));
-      model.setModelJson(modelJson.toString());
+      model.setMetaInfo(modelJson.toString());
+      model.setName(modelForm.getFirstValue("name"));
       
-      model.setModelEditorJson(modelForm.getFirstValue("json_xml"));
-      model.setModelSvg(new String(modelForm.getFirstValue("svg_xml").getBytes("utf-8")));
+      model.setEditorSource(modelForm.getFirstValue("json_xml").getBytes("utf-8"));
+      model.setEditorSourceExtra(modelForm.getFirstValue("svg_xml").getBytes("utf-8"));
       
-      modelDao.saveModel(model);
+      repositoryService.saveModel(model);
       
     } catch(Exception e) {
       LOGGER.log(Level.SEVERE, "Error saving model", e);

@@ -12,8 +12,9 @@
  */
 package org.activiti.editor.ui;
 
-import org.activiti.editor.data.dao.ModelDao;
-import org.activiti.editor.data.model.ModelData;
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.Model;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
@@ -48,7 +49,7 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
   private static final long serialVersionUID = 1L;
   
   // Members
-  protected ModelData modelData;
+  protected Model modelData;
   protected EditorProcessDefinitionPage processDefinitionPage;
   
   // Services
@@ -69,11 +70,13 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
   protected FormPropertiesForm processDefinitionStartForm;
   protected EditorProcessDefinitionInfoComponent definitionInfoComponent;
   
-  public EditorProcessDefinitionDetailPanel(long modelId, EditorProcessDefinitionPage processDefinitionPage) {
+  protected RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+  
+  public EditorProcessDefinitionDetailPanel(String modelId, EditorProcessDefinitionPage processDefinitionPage) {
     this.i18nManager = ExplorerApp.get().getI18nManager();
     
     this.processDefinitionPage = processDefinitionPage;
-    this.modelData = new ModelDao().getModelById(modelId);
+    this.modelData = repositoryService.getModel(modelId);
 
     initUi();
   }
@@ -110,7 +113,7 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
     exportModelButton.addListener(new ExportModelClickListener(modelData));
     
     editModelButton = new Button(i18nManager.getMessage(Messages.PROCESS_EDIT));
-    editModelButton.addListener(new EditModelClickListener(modelData.getObjectId()));
+    editModelButton.addListener(new EditModelClickListener(modelData.getId()));
     
     copyModelButton = new Button(i18nManager.getMessage(Messages.PROCESS_COPY));
     copyModelButton.addListener(new CopyModelClickListener(modelData));
@@ -166,7 +169,7 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
     details.addComponent(propertiesLayout);
     
     // Version
-    String versionString = i18nManager.getMessage(Messages.PROCESS_VERSION, modelData.getRevision());
+    String versionString = i18nManager.getMessage(Messages.PROCESS_VERSION, modelData.getVersion());
     Label versionLabel = new Label(versionString);
     versionLabel.addStyleName(ExplorerLayout.STYLE_PROCESS_HEADER_VERSION);
     propertiesLayout.addComponent(versionLabel);

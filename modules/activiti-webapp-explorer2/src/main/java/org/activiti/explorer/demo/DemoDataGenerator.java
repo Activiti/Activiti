@@ -13,35 +13,46 @@
 
 package org.activiti.explorer.demo;
 
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.util.IoUtil;
+import org.activiti.engine.repository.Model;
+import org.apache.commons.io.IOUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ObjectNode;
 
 
 /**
  * @author Joram Barrez
  */
-public class DemoDataGenerator {
+public class DemoDataGenerator implements ModelDataJsonConstants {
   
   protected static final Logger LOGGER = Logger.getLogger(DemoDataGenerator.class.getName());
 
   protected ProcessEngine processEngine;
   protected IdentityService identityService;
+  protected RepositoryService repositoryService;
   
   public void setProcessEngine(ProcessEngine processEngine) {
     this.processEngine = processEngine;
     this.identityService = processEngine.getIdentityService();
+    this.repositoryService = processEngine.getRepositoryService();
     
     initDemoGroups();
     initDemoUsers();
     initProcessDefinitions();
+    initModelData();
   }
   
   protected void initDemoGroups() {
@@ -129,6 +140,36 @@ public class DemoDataGenerator {
       .addClasspathResource("org/activiti/explorer/demo/process/oneTaskProcess.bpmn20.xml")
       .addClasspathResource("org/activiti/explorer/demo/process/createTimersProcess.bpmn20.xml")
       .deploy();
+  }
+  
+  protected void initModelData() {
+    createModelData("Demo model", "This is a demo model", "org/activiti/explorer/demo/model/test.model.json");
+  }
+  
+  protected void createModelData(String name, String description, String jsonFile) {
+    Model model = repositoryService.newModel();
+    model.setName(name);
+    
+    ObjectNode modelObjectNode = new ObjectMapper().createObjectNode();
+    modelObjectNode.put(MODEL_NAME, name);
+    modelObjectNode.put(MODEL_DESCRIPTION, description);
+    model.setMetaInfo(modelObjectNode.toString());
+    
+    try {
+      InputStream svgStream = this.getClass().getClassLoader().getResourceAsStream("org/activiti/explorer/demo/model/test.svg");
+      model.setEditorSourceExtra(IOUtils.toByteArray(svgStream));
+    } catch(Exception e) {
+      LOGGER.log(Level.WARNING, "Failed to read SVG", e);
+    }
+    
+    try {
+      InputStream editorJsonStream = this.getClass().getClassLoader().getResourceAsStream(jsonFile);
+      model.setEditorSource(IOUtils.toByteArray(editorJsonStream));
+    } catch(Exception e) {
+      LOGGER.log(Level.WARNING, "Failed to read editor JSON", e);
+    }
+    
+    repositoryService.saveModel(model);
   }
 
 }

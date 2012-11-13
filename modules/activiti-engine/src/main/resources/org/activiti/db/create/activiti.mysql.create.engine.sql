@@ -32,6 +32,18 @@ create table ACT_RE_DEPLOYMENT (
     primary key (ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
+create table ACT_RE_MODEL (
+    ID_ varchar(64) not null,
+    NAME_ varchar(255),
+    CATEGORY_ varchar(255),
+    CREATE_TIME_ timestamp,
+    VERSION_ integer,
+    META_INFO_ varchar(4000),
+    EDITOR_SOURCE_ LONGBLOB,
+    EDITOR_SOURCE_EXTRA_ LONGBLOB,
+    primary key (ID_)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
+
 create table ACT_RU_EXECUTION (
     ID_ varchar(64),
     REV_ integer,

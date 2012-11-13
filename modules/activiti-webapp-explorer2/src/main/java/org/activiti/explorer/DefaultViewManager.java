@@ -28,6 +28,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.explorer.ui.AbstractTablePage;
 import org.activiti.explorer.ui.MainWindow;
 import org.activiti.explorer.ui.management.ManagementMenuBar;
+import org.activiti.explorer.ui.management.admin.AdministrationPage;
 import org.activiti.explorer.ui.management.db.DatabasePage;
 import org.activiti.explorer.ui.management.deployment.DeploymentPage;
 import org.activiti.explorer.ui.management.identity.GroupPage;
@@ -265,6 +266,14 @@ public class DefaultViewManager implements ViewManager {
   
   public void showProcessInstancePage(String processInstanceId) {
     throw new UnsupportedOperationException(); // Only for alfresco admin app
+  }
+  
+  public void showAdministrationPage() {
+    switchView(new AdministrationPage(), ViewManager.MAIN_NAVIGATION_MANAGE, ManagementMenuBar.ENTRY_ADMIN);
+  }
+  
+  public void showAdministrationPage(String managementId) {
+    switchView(new AdministrationPage(managementId), ViewManager.MAIN_NAVIGATION_MANAGE, ManagementMenuBar.ENTRY_ADMIN);
   }
   
   // Profile

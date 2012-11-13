@@ -19,8 +19,6 @@ import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.impl.HistoricDetailQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.persistence.AbstractHistoricManager;
 
 
@@ -47,17 +45,13 @@ public class HistoricDetailManager extends AbstractHistoricManager {
 //    getDbSqlSession().delete(HistoricDetailEntity.class, historicDetail.getId());
 //  }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public void deleteHistoricDetailsByProcessInstanceId(String historicProcessInstanceId) {
     if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
       List<HistoricDetailEntity> historicDetails = (List) getDbSqlSession()
         .createHistoricDetailQuery()
         .processInstanceId(historicProcessInstanceId)
         .list();
-      
-      HistoricDetailManager historicDetailManager = Context
-        .getCommandContext()
-        .getHistoricDetailManager();
       
       for (HistoricDetailEntity historicDetail: historicDetails) {
         historicDetail.delete();

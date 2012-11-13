@@ -21,8 +21,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.EngineServices;
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
@@ -428,7 +426,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     return childExecutions;
   }
   
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public void takeAll(List<PvmTransition> transitions, List<ActivityExecution> recyclableExecutions) {
     transitions = new ArrayList<PvmTransition>(transitions);
     recyclableExecutions = (recyclableExecutions!=null ? new ArrayList<ActivityExecution>(recyclableExecutions) : new ArrayList<ActivityExecution>());
@@ -583,7 +581,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     return executions;
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   protected void ensureExecutionsInitialized() {
     if (executions==null) {
       this.executions = (List) Context
@@ -935,7 +933,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     return replacedBy;
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public void setReplacedBy(InterpretableExecution replacedBy) {
     this.replacedBy = (ExecutionEntity) replacedBy;
     

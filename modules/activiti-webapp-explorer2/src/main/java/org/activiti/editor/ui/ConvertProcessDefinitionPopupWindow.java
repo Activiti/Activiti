@@ -15,16 +15,16 @@ package org.activiti.editor.ui;
 import java.io.InputStream;
 
 import org.activiti.editor.constants.ModelDataJsonConstants;
-import org.activiti.editor.data.dao.ModelDao;
-import org.activiti.editor.data.model.ModelData;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
+import org.activiti.explorer.NotificationManager;
 import org.activiti.explorer.ui.custom.PopupWindow;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -49,6 +49,7 @@ public class ConvertProcessDefinitionPopupWindow extends PopupWindow implements 
   private static final long serialVersionUID = 1L;
   
   protected I18nManager i18nManager;
+  protected NotificationManager notificationManager;
   protected RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
   protected RuntimeService runtimeService = ProcessEngines.getDefaultProcessEngine().getRuntimeService();
   protected VerticalLayout windowLayout;
@@ -58,6 +59,7 @@ public class ConvertProcessDefinitionPopupWindow extends PopupWindow implements 
     this.processDefinition = processDefinition;
     this.windowLayout = (VerticalLayout) getContent();
     this.i18nManager = ExplorerApp.get().getI18nManager();
+    this.notificationManager = ExplorerApp.get().getNotificationManager();
     
     initWindow();
     addConvertWarning();
@@ -109,23 +111,28 @@ public class ConvertProcessDefinitionPopupWindow extends PopupWindow implements 
 
       public void buttonClick(ClickEvent event) {
         
-        InputStream bpmnStream = repositoryService.getResourceAsStream(processDefinition.getDeploymentId(), processDefinition.getResourceName());
-        BpmnJsonConverter converter = new BpmnJsonConverter(processDefinition.getResourceName(), bpmnStream);
-        ObjectNode modelNode = converter.convertToJson();
-        ModelData modelData = new ModelData();
-        modelData.setModelEditorJson(modelNode.toString());
-        
-        ObjectNode modelObjectNode = new ObjectMapper().createObjectNode();
-        modelObjectNode.put(MODEL_NAME, processDefinition.getName());
-        modelObjectNode.put(MODEL_REVISION, 1);
-        modelObjectNode.put(MODEL_DESCRIPTION, processDefinition.getDescription());
-        modelData.setModelJson(modelObjectNode.toString());
-        
-        long modelId = new ModelDao().saveModel(modelData);
-        close();
-        ExplorerApp.get().getViewManager().showEditorProcessDefinitionPage(String.valueOf(modelId));
-        ExplorerApp.get().getMainWindow().open(new ExternalResource(
-            ExplorerApp.get().getURL().toString() + "service/editor?id=" + modelId));
+        try {
+          InputStream bpmnStream = repositoryService.getResourceAsStream(processDefinition.getDeploymentId(), processDefinition.getResourceName());
+          BpmnJsonConverter converter = new BpmnJsonConverter(processDefinition.getResourceName(), bpmnStream);
+          ObjectNode modelNode = converter.convertToJson();
+          Model modelData = repositoryService.newModel();
+          modelData.setEditorSource(modelNode.toString().getBytes("utf-8"));
+          
+          ObjectNode modelObjectNode = new ObjectMapper().createObjectNode();
+          modelObjectNode.put(MODEL_NAME, processDefinition.getName());
+          modelObjectNode.put(MODEL_REVISION, 1);
+          modelObjectNode.put(MODEL_DESCRIPTION, processDefinition.getDescription());
+          modelData.setMetaInfo(modelObjectNode.toString());
+          
+          repositoryService.saveModel(modelData);
+          close();
+          ExplorerApp.get().getViewManager().showEditorProcessDefinitionPage(modelData.getId());
+          ExplorerApp.get().getMainWindow().open(new ExternalResource(
+              ExplorerApp.get().getURL().toString() + "service/editor?id=" + modelData.getId()));
+          
+        } catch(Exception e) {
+          notificationManager.showErrorNotification("error", e);
+        }
       }
     });
     

@@ -1,7 +1,7 @@
 package org.activiti.explorer.ui.process.listener;
 
-import org.activiti.editor.data.model.ModelData;
 import org.activiti.editor.ui.CopyModelPopupWindow;
+import org.activiti.engine.repository.Model;
 import org.activiti.explorer.ExplorerApp;
 
 import com.vaadin.ui.Button.ClickEvent;
@@ -14,9 +14,9 @@ import com.vaadin.ui.Button.ClickListener;
 public class CopyModelClickListener implements ClickListener {
 
   private static final long serialVersionUID = 1L;
-  private ModelData modelData;
+  private Model modelData;
   
-  public CopyModelClickListener(ModelData model) {
+  public CopyModelClickListener(Model model) {
     this.modelData = model;
   }
   

@@ -10,16 +10,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.editor.exception;
+package org.activiti.engine.impl.cmd;
+
+import java.io.Serializable;
+
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
+
 
 /**
  * @author Tijs Rademakers
  */
-public class ModelException extends RuntimeException {
+public class DeleteModelCmd implements Command<Void>, Serializable  {
 
   private static final long serialVersionUID = 1L;
-
-  public ModelException(String message) {
-    super(message);
+  String modelId;
+  
+  public DeleteModelCmd(String modelId) {
+    this.modelId = modelId;
   }
+  
+  public Void execute(CommandContext commandContext) {
+    if(modelId == null) {
+      throw new ActivitiException("modelId is null");
+    }
+    commandContext.getModelManager().deleteModel(modelId);
+    
+    return null;
+  }
+
 }

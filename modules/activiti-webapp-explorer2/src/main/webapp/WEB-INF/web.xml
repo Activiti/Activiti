@@ -26,14 +26,6 @@
 		<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
 	</listener>
 
-	<listener>
-		<listener-class>org.activiti.editor.servlet.listener.EntityManagerListener</listener-class>
-	</listener>
-
-	<listener>
-		<listener-class>org.activiti.editor.test.listener.TestDataListener</listener-class>
-	</listener>
-
 	<servlet>
 		<servlet-name>Vaadin Application Servlet</servlet-name>
 		<servlet-class>org.activiti.explorer.servlet.ExplorerApplicationServlet</servlet-class>

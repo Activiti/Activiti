@@ -280,10 +280,6 @@
       <groupId>math.geom</groupId>
       <artifactId>javaGeom</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-entitymanager</artifactId>
-    </dependency>
     
     <!-- Running example processes -->
     <dependency>
@@ -295,6 +291,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <scope>test</scope>
     </dependency>
    
   </dependencies>

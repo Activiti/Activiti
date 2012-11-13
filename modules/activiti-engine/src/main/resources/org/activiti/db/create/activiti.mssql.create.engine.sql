@@ -32,6 +32,18 @@ create table ACT_RE_DEPLOYMENT (
     primary key (ID_)
 );
 
+create table ACT_RE_MODEL (
+    ID_ nvarchar(64) not null,
+    NAME_ nvarchar(255),
+    CATEGORY_ nvarchar(255),
+    CREATE_TIME_ datetime,
+    VERSION_ int,
+    META_INFO_ nvarchar(4000),
+    EDITOR_SOURCE_ image,
+    EDITOR_SOURCE_EXTRA_ image,
+    primary key (ID_)
+);
+
 create table ACT_RU_EXECUTION (
     ID_ nvarchar(64),
     REV_ int,

@@ -16,8 +16,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.editor.constants.ModelDataJsonConstants;
-import org.activiti.editor.data.dao.ModelDao;
-import org.activiti.editor.data.model.ModelData;
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.repository.Model;
 import org.apache.commons.lang.math.NumberUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
@@ -39,14 +39,13 @@ public class ModelEditorJsonRestResource extends ServerResource implements Model
     String modelId = (String) getRequest().getAttributes().get("modelId");
     
     if(NumberUtils.isNumber(modelId)) {
-      ModelDao modelDao = new ModelDao();
-      ModelData model = modelDao.getModelById(Long.valueOf(modelId));
+      Model model = ProcessEngines.getDefaultProcessEngine().getRepositoryService().getModel(modelId);
       
       if (model != null) {
         try {
-          modelNode = (ObjectNode) objectMapper.readTree(model.getModelJson());
-          modelNode.put(MODEL_ID, model.getObjectId());
-          ObjectNode editorJsonNode = (ObjectNode) objectMapper.readTree(model.getModelEditorJson());
+          modelNode = (ObjectNode) objectMapper.readTree(model.getMetaInfo());
+          modelNode.put(MODEL_ID, model.getId());
+          ObjectNode editorJsonNode = (ObjectNode) objectMapper.readTree(new String(model.getEditorSource(), "utf-8"));
           modelNode.put("model", editorJsonNode);
           
         } catch(Exception e) {

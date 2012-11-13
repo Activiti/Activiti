@@ -91,6 +91,27 @@ public class ProcessDefinitionImageStreamResourceBuilder {
     }
     return imageResource;
   }
+  
+  public StreamResource buildStreamResource(String processInstanceId, String processDefinitionId, RepositoryService repositoryService, RuntimeService runtimeService) {
+
+    StreamResource imageResource = null;
+    
+    ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService).getDeployedProcessDefinition(processDefinitionId);
+
+    if (processDefinition != null && processDefinition.isGraphicalNotationDefined()) {
+      InputStream definitionImageStream = ProcessDiagramGenerator.generateDiagram(processDefinition, "png", 
+        runtimeService.getActiveActivityIds(processInstanceId));
+      
+      StreamSource streamSource = new InputStreamStreamSource(definitionImageStream);
+      
+      // Create image name
+      String imageExtension = extractImageExtension(processDefinition.getDiagramResourceName());
+      String fileName = processInstanceId + UUID.randomUUID() + "." + imageExtension;
+      
+      imageResource = new StreamResource(streamSource, fileName, ExplorerApp.get()); 
+    }
+    return imageResource;
+  }
 
   protected String extractImageExtension(String diagramResourceName) {
     String[] parts = diagramResourceName.split(".");

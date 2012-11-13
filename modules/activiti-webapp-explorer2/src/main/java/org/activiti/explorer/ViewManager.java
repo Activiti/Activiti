@@ -105,6 +105,10 @@ public interface ViewManager {
   
   void showProcessInstancePage(String processInstanceId);
   
+  void showAdministrationPage();
+  
+  void showAdministrationPage(String managementId);
+  
   // Profile
   
   void showProfilePopup(String userId);

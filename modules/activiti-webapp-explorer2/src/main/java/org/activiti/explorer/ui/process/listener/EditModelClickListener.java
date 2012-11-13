@@ -16,9 +16,9 @@ public class EditModelClickListener implements ClickListener {
   private static final long serialVersionUID = 1L;
   
   protected NotificationManager notificationManager;
-  protected long modelId;
+  protected String modelId;
   
-  public EditModelClickListener(long modelId) {
+  public EditModelClickListener(String modelId) {
     this.notificationManager = ExplorerApp.get().getNotificationManager(); 
     
     this.modelId = modelId;

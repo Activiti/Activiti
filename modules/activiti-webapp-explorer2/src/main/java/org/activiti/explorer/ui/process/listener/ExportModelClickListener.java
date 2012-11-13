@@ -20,8 +20,8 @@ import java.util.logging.Logger;
 
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.editor.data.model.ModelData;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
+import org.activiti.engine.repository.Model;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.NotificationManager;
@@ -43,9 +43,9 @@ public class ExportModelClickListener implements ClickListener {
   protected static final Logger LOGGER = Logger.getLogger(ExportModelClickListener.class.getName());
   
   protected NotificationManager notificationManager;
-  protected ModelData modelData;
+  protected Model modelData;
   
-  public ExportModelClickListener(ModelData model) {
+  public ExportModelClickListener(Model model) {
     this.notificationManager = ExplorerApp.get().getNotificationManager(); 
     this.modelData = model;
   }
@@ -58,12 +58,11 @@ public class ExportModelClickListener implements ClickListener {
 
         @Override
         public DownloadStream getStream() {
-          String editorJson = modelData.getModelEditorJson();
           DownloadStream ds = null;
           try {
             
             BpmnJsonConverter jsonConverter = new BpmnJsonConverter();
-            JsonNode editorNode = new ObjectMapper().readTree(editorJson);
+            JsonNode editorNode = new ObjectMapper().readTree(modelData.getEditorSource());
             BpmnModel bpmnModel = jsonConverter.convertToBpmnModel(editorNode);
             BpmnXMLConverter xmlConverter = new BpmnXMLConverter();
             byte[] bpmnBytes = xmlConverter.convertToXML(bpmnModel);

@@ -33,6 +33,7 @@ public class ManagementMenuBar extends ToolBar {
   public static final String ENTRY_JOBS = "jobs"; 
   public static final String ENTRY_USERS = "users";
   public static final String ENTRY_GROUPS = "groups";
+  public static final String ENTRY_ADMIN = "administration";
   
   protected I18nManager i18nManager;
   protected ViewManager viewManager;
@@ -51,6 +52,7 @@ public class ManagementMenuBar extends ToolBar {
     addJobsToolbarEntry();
     addUsersToolbarEntry();
     addGroupToolbarEntry();
+    addAdministrationToolbarEntry();
   }
 
   protected void addDatabaseToolbarEntry() {
@@ -91,6 +93,14 @@ public class ManagementMenuBar extends ToolBar {
     addToolbarEntry(ENTRY_GROUPS, i18nManager.getMessage(Messages.MGMT_MENU_GROUPS), new ToolbarCommand() {
       public void toolBarItemSelected() {
         viewManager.showGroupPage();
+      }
+    });
+  }
+  
+  protected void addAdministrationToolbarEntry() {
+    addToolbarEntry(ENTRY_ADMIN, i18nManager.getMessage(Messages.MGMT_MENU_ADMINISTRATION), new ToolbarCommand() {
+      public void toolBarItemSelected() {
+        viewManager.showAdministrationPage();
       }
     });
   }

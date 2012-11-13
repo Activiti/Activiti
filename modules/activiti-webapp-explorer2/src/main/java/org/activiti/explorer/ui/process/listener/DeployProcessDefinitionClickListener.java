@@ -15,11 +15,11 @@ package org.activiti.explorer.ui.process.listener;
 
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.editor.data.model.ModelData;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.Model;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.NotificationManager;
@@ -40,9 +40,9 @@ public class DeployProcessDefinitionClickListener implements ClickListener {
   protected RepositoryService repositoryService;
   protected NotificationManager notificationManager;
   
-  protected ModelData modelData;
+  protected Model modelData;
   
-  public DeployProcessDefinitionClickListener(ModelData model) {
+  public DeployProcessDefinitionClickListener(Model model) {
     this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
     this.notificationManager = ExplorerApp.get().getNotificationManager(); 
     
@@ -52,7 +52,7 @@ public class DeployProcessDefinitionClickListener implements ClickListener {
   public void buttonClick(ClickEvent event) {
     
     try {
-      ObjectNode modelNode = (ObjectNode) new ObjectMapper().readTree(modelData.getModelEditorJson());
+      ObjectNode modelNode = (ObjectNode) new ObjectMapper().readTree(modelData.getEditorSource());
       BpmnModel model = new BpmnJsonConverter().convertToBpmnModel(modelNode);
       byte[] bpmnBytes = new BpmnXMLConverter().convertToXML(model);
       

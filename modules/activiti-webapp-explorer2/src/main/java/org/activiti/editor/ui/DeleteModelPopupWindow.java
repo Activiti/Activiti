@@ -13,8 +13,9 @@
 package org.activiti.editor.ui;
 
 import org.activiti.editor.constants.ModelDataJsonConstants;
-import org.activiti.editor.data.dao.ModelDao;
-import org.activiti.editor.data.model.ModelData;
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.Model;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
@@ -39,9 +40,11 @@ public class DeleteModelPopupWindow extends PopupWindow implements ModelDataJson
   
   protected I18nManager i18nManager;
   protected VerticalLayout windowLayout;
-  protected ModelData modelData;
+  protected Model modelData;
   
-  public DeleteModelPopupWindow(ModelData model) {
+  protected RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+  
+  public DeleteModelPopupWindow(Model model) {
     this.modelData = model;
     this.windowLayout = (VerticalLayout) getContent();
     this.i18nManager = ExplorerApp.get().getI18nManager();
@@ -91,7 +94,7 @@ public class DeleteModelPopupWindow extends PopupWindow implements ModelDataJson
       private static final long serialVersionUID = 1L;
 
       public void buttonClick(ClickEvent event) {
-        new ModelDao().deleteModel(modelData);
+        repositoryService.deleteModel(modelData.getId());
         close();
         ExplorerApp.get().getViewManager().showEditorProcessDefinitionPage();
       }

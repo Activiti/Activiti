@@ -13,11 +13,13 @@
 package org.activiti.editor.ui;
 
 import org.activiti.editor.constants.ModelDataJsonConstants;
-import org.activiti.editor.data.dao.ModelDao;
-import org.activiti.editor.data.model.ModelData;
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.Model;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
+import org.activiti.explorer.NotificationManager;
 import org.activiti.explorer.ui.custom.PopupWindow;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -47,14 +49,18 @@ public class NewModelPopupWindow extends PopupWindow implements ModelDataJsonCon
   private static final long serialVersionUID = 1L;
   
   protected I18nManager i18nManager;
+  protected NotificationManager notificationManager;
   protected VerticalLayout windowLayout;
   protected Form form;
   protected TextField nameTextField;
   protected TextArea descriptionTextArea;
   
+  protected RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+  
   public NewModelPopupWindow() {
     this.windowLayout = (VerticalLayout) getContent();
     this.i18nManager = ExplorerApp.get().getI18nManager();
+    this.notificationManager = ExplorerApp.get().getNotificationManager();
     
     initWindow();
     addFields();
@@ -121,33 +127,38 @@ public class NewModelPopupWindow extends PopupWindow implements ModelDataJsonCon
           return;
         }
         
-        ObjectMapper objectMapper = new ObjectMapper();
-        ObjectNode editorNode = objectMapper.createObjectNode();
-        editorNode.put("id", "canvas");
-        editorNode.put("resourceId", "canvas");
-        ObjectNode stencilSetNode = objectMapper.createObjectNode();
-        stencilSetNode.put("namespace", "http://b3mn.org/stencilset/bpmn2.0#");
-        editorNode.put("stencilset", stencilSetNode);
-        ModelData modelData = new ModelData();
-        modelData.setModelEditorJson(editorNode.toString());
-        
-        ObjectNode modelObjectNode = objectMapper.createObjectNode();
-        modelObjectNode.put(MODEL_NAME, (String) nameTextField.getValue());
-        modelObjectNode.put(MODEL_REVISION, 1);
-        String description = null;
-        if (StringUtils.isNotEmpty((String) descriptionTextArea.getValue())) {
-          description = (String) descriptionTextArea.getValue();
-        } else {
-          description = "";
+        try {
+          ObjectMapper objectMapper = new ObjectMapper();
+          ObjectNode editorNode = objectMapper.createObjectNode();
+          editorNode.put("id", "canvas");
+          editorNode.put("resourceId", "canvas");
+          ObjectNode stencilSetNode = objectMapper.createObjectNode();
+          stencilSetNode.put("namespace", "http://b3mn.org/stencilset/bpmn2.0#");
+          editorNode.put("stencilset", stencilSetNode);
+          Model modelData = repositoryService.newModel();
+          modelData.setEditorSource(editorNode.toString().getBytes("utf-8"));
+          
+          ObjectNode modelObjectNode = objectMapper.createObjectNode();
+          modelObjectNode.put(MODEL_NAME, (String) nameTextField.getValue());
+          modelObjectNode.put(MODEL_REVISION, 1);
+          String description = null;
+          if (StringUtils.isNotEmpty((String) descriptionTextArea.getValue())) {
+            description = (String) descriptionTextArea.getValue();
+          } else {
+            description = "";
+          }
+          modelObjectNode.put(MODEL_DESCRIPTION, description);
+          modelData.setMetaInfo(modelObjectNode.toString());
+          
+          repositoryService.saveModel(modelData);
+          close();
+          ExplorerApp.get().getViewManager().showEditorProcessDefinitionPage(modelData.getId());
+          ExplorerApp.get().getMainWindow().open(new ExternalResource(
+              ExplorerApp.get().getURL().toString() + "service/editor?id=" + modelData.getId()));
+          
+        } catch(Exception e) {
+          notificationManager.showErrorNotification("error", e);
         }
-        modelObjectNode.put(MODEL_DESCRIPTION, description);
-        modelData.setModelJson(modelObjectNode.toString());
-        
-        long modelId = new ModelDao().saveModel(modelData);
-        close();
-        ExplorerApp.get().getViewManager().showEditorProcessDefinitionPage(String.valueOf(modelId));
-        ExplorerApp.get().getMainWindow().open(new ExternalResource(
-            ExplorerApp.get().getURL().toString() + "service/editor?id=" + modelId));
       }
     });
     

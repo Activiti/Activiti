@@ -11,27 +11,26 @@
  * limitations under the License.
  */
 
-package org.activiti.editor.data.model;
+package org.activiti.engine.impl.cmd;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import java.io.Serializable;
+
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.repository.Model;
+
 
 /**
  * @author Tijs Rademakers
  */
-@MappedSuperclass
-public abstract class BaseDatabaseObject {
+public class CreateModelCmd implements Command<Model>, Serializable {
 
-  @Id
-  @GeneratedValue
-  private long objectId;
+  private static final long serialVersionUID = 1L;
 
-  public long getObjectId() {
-    return objectId;
+  public Model execute(CommandContext commandContext) {
+    return commandContext
+      .getModelManager()
+      .createNewModel();
   }
 
-  public void setObjectId(long objectId) {
-    this.objectId = objectId;
-  }
 }

@@ -15,10 +15,9 @@ package org.activiti.editor.ui;
 
 import java.util.List;
 
-import org.activiti.editor.data.dao.ModelDao;
-import org.activiti.editor.data.model.ModelData;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.Model;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.navigation.ProcessModelNavigator;
 import org.activiti.explorer.navigation.UriFragment;
@@ -68,7 +67,7 @@ public class EditorProcessDefinitionPage extends AbstractTablePage {
     if (modelId == null) {
       table.select(table.firstItemId());
     } else {
-      table.select(Long.valueOf(modelId));
+      table.select(modelId);
     }
   }
   
@@ -95,7 +94,7 @@ public class EditorProcessDefinitionPage extends AbstractTablePage {
       private static final long serialVersionUID = 1L;
 
       public void valueChange(ValueChangeEvent event) {
-        showProcessDefinitionDetail((Long) event.getProperty().getValue());
+        showProcessDefinitionDetail((String) event.getProperty().getValue());
       }
     });
     
@@ -106,9 +105,9 @@ public class EditorProcessDefinitionPage extends AbstractTablePage {
     processDefinitionTable.addContainerProperty("name", String.class, null);
     processDefinitionTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
     
-    List<ModelData> modelList = new ModelDao().getModels();
-    for (ModelData modelData : modelList) {
-      Item item = processDefinitionTable.addItem(modelData.getObjectId());
+    List<Model> modelList = repositoryService.createModelQuery().list();
+    for (Model modelData : modelList) {
+      Item item = processDefinitionTable.addItem(modelData.getId());
       item.getItemProperty("name").setValue(modelData.getName());
     }
     
@@ -116,7 +115,7 @@ public class EditorProcessDefinitionPage extends AbstractTablePage {
     return processDefinitionTable;
   }
 
-  protected void showProcessDefinitionDetail(Long selectedModelId) {
+  protected void showProcessDefinitionDetail(String selectedModelId) {
     detailPanel = new EditorProcessDefinitionDetailPanel(selectedModelId, this);
     setDetailComponent(detailPanel);
     changeUrl("" + selectedModelId);

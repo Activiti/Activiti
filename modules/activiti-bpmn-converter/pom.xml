@@ -3,7 +3,7 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <name>Activiti - Engine</name>
+  <name>Activiti - BPMN Converter</name>
   <artifactId>activiti-bpmn-converter</artifactId>
 
   <parent>

@@ -19,7 +19,7 @@ import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.activiti.editor.data.model.ModelData;
+import org.activiti.engine.repository.Model;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
@@ -27,8 +27,6 @@ import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.terminal.StreamResource.StreamSource;
 import com.vaadin.ui.ComponentContainer;
@@ -52,14 +50,14 @@ public class EditorProcessDefinitionInfoComponent extends VerticalLayout {
   protected I18nManager i18nManager;
   
   // Members
-  protected ModelData modelData;
+  protected Model modelData;
   
   // UI
   protected HorizontalLayout timeDetails;
   protected VerticalLayout processImageContainer;
   
   
-  public EditorProcessDefinitionInfoComponent(ModelData model) {
+  public EditorProcessDefinitionInfoComponent(Model model) {
     super();
     this.i18nManager = ExplorerApp.get().getI18nManager(); 
     
@@ -78,8 +76,8 @@ public class EditorProcessDefinitionInfoComponent extends VerticalLayout {
     processImageContainer.addComponent(processTitle);
     
     StreamSource streamSource = null;
-    if (StringUtils.isNotEmpty(modelData.getModelSvg())) {
-      InputStream svgStream = IOUtils.toInputStream(modelData.getModelSvg());
+    if (modelData.getEditorSourceExtra() != null) {
+      InputStream svgStream = new ByteArrayInputStream(modelData.getEditorSourceExtra());
       TranscoderInput input = new TranscoderInput(svgStream);
       
       PNGTranscoder transcoder = new PNGTranscoder();

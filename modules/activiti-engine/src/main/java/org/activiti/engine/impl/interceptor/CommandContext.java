@@ -35,12 +35,13 @@ import org.activiti.engine.impl.persistence.entity.GroupManager;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceManager;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailManager;
 import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceManager;
-import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceManager;
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceManager;
+import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceManager;
 import org.activiti.engine.impl.persistence.entity.IdentityInfoManager;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkManager;
 import org.activiti.engine.impl.persistence.entity.JobManager;
 import org.activiti.engine.impl.persistence.entity.MembershipManager;
+import org.activiti.engine.impl.persistence.entity.ModelManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionManager;
 import org.activiti.engine.impl.persistence.entity.PropertyManager;
 import org.activiti.engine.impl.persistence.entity.ResourceManager;
@@ -211,6 +212,10 @@ public class CommandContext {
   
   public ProcessDefinitionManager getProcessDefinitionManager() {
     return getSession(ProcessDefinitionManager.class);
+  }
+  
+  public ModelManager getModelManager() {
+    return getSession(ModelManager.class);
   }
 
   public ExecutionManager getExecutionManager() {

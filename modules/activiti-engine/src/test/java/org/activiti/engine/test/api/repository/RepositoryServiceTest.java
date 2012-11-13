@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
 
@@ -133,7 +134,6 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
     }
   }
   
-  
   public void testGetResourceAsStreamNullArguments() {
     try {
       repositoryService.getResourceAsStream(null, "resource");    
@@ -149,5 +149,41 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
       assertTextPresent("resourceName is null", ae.getMessage());
     }
   }
- 
+
+  public void testNewModelPersistence() {
+    Model model = repositoryService.newModel();
+    assertNotNull(model);
+    
+    model.setName("Test model");
+    model.setCategory("test");
+    model.setMetaInfo("meta");
+    repositoryService.saveModel(model);
+    
+    assertNotNull(model.getId());
+    model = repositoryService.getModel(model.getId());
+    assertNotNull(model);
+    assertEquals("Test model", model.getName());
+    assertEquals("test", model.getCategory());
+    assertEquals("meta", model.getMetaInfo());
+    assertNotNull(model.getCreateTime());
+    assertEquals(Integer.valueOf(1), model.getVersion());
+    
+    repositoryService.deleteModel(model.getId());
+  }
+  
+  public void testNewModelWithSource() throws Exception {
+    Model model = repositoryService.newModel();
+    model.setName("Test model");
+    byte[] testSource = "modelsource".getBytes("utf-8");
+    assertNotNull(testSource);
+    model.setEditorSource(testSource);
+    repositoryService.saveModel(model);
+    
+    assertNotNull(model.getId());
+    model = repositoryService.getModel(model.getId());
+    assertNotNull(model);
+    assertEquals("modelsource", new String(model.getEditorSource(), "utf-8"));
+    
+    repositoryService.deleteModel(model.getId());
+  }
 }

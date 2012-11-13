@@ -13,8 +13,9 @@
 package org.activiti.editor.ui;
 
 import org.activiti.editor.constants.ModelDataJsonConstants;
-import org.activiti.editor.data.dao.ModelDao;
-import org.activiti.editor.data.model.ModelData;
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.Model;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
@@ -45,14 +46,16 @@ public class CopyModelPopupWindow extends PopupWindow implements ModelDataJsonCo
   
   private static final long serialVersionUID = 1L;
   
-  protected ModelData modelData;
+  protected Model modelData;
   protected I18nManager i18nManager;
   protected VerticalLayout windowLayout;
   protected Form form;
   protected TextField nameTextField;
   protected TextArea descriptionTextArea;
   
-  public CopyModelPopupWindow(ModelData model) {
+  protected RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+  
+  public CopyModelPopupWindow(Model model) {
     this.modelData = model;
     this.windowLayout = (VerticalLayout) getContent();
     this.i18nManager = ExplorerApp.get().getI18nManager();
@@ -123,13 +126,12 @@ public class CopyModelPopupWindow extends PopupWindow implements ModelDataJsonCo
           return;
         }
         
-        ModelData newModelData = new ModelData();
-        newModelData.setModelEditorJson(modelData.getModelEditorJson());
-        newModelData.setModelSvg(modelData.getModelSvg());
+        Model newModelData = repositoryService.newModel();
+        newModelData.setEditorSource(modelData.getEditorSource());
+        newModelData.setEditorSourceExtra(modelData.getEditorSourceExtra());
         
         ObjectNode modelObjectNode = new ObjectMapper().createObjectNode();
         modelObjectNode.put(MODEL_NAME, (String) nameTextField.getValue());
-        modelObjectNode.put(MODEL_REVISION, 1);
         String description = null;
         if (StringUtils.isNotEmpty((String) descriptionTextArea.getValue())) {
           description = (String) descriptionTextArea.getValue();
@@ -137,11 +139,12 @@ public class CopyModelPopupWindow extends PopupWindow implements ModelDataJsonCo
           description = "";
         }
         modelObjectNode.put(MODEL_DESCRIPTION, description);
-        newModelData.setModelJson(modelObjectNode.toString());
+        newModelData.setMetaInfo(modelObjectNode.toString());
+        newModelData.setName((String) nameTextField.getValue());
         
-        long modelId = new ModelDao().saveModel(newModelData);
+        repositoryService.saveModel(newModelData);
         close();
-        ExplorerApp.get().getViewManager().showEditorProcessDefinitionPage(String.valueOf(modelId));
+        ExplorerApp.get().getViewManager().showEditorProcessDefinitionPage(newModelData.getId());
       }
     });
     

@@ -216,6 +216,7 @@ public interface Messages {
   static final String PROCESS_NO_INSTANCES = "process.no.instances";
   static final String PROCESS_ACTION_VIEW = "process.action.view";
   static final String PROCESS_INSTANCE_ID = "process.instance.id";
+  static final String PROCESS_INSTANCE_NAME = "process.instance.name";
   static final String PROCESS_INSTANCE_BUSINESSKEY = "process.instance.businesskey";
   static final String PROCESS_INSTANCE_ACTIONS = "process.instance.actions";
   static final String PROCESS_INSTANCE_VARIABLE_NAME = "process.instance.variable.name";
@@ -238,6 +239,7 @@ public interface Messages {
   static final String MGMT_MENU_DEPLOYMENTS_UPLOAD = "management.menu.deployments.upload";
   static final String MGMT_MENU_USERS = "management.menu.users";
   static final String MGMT_MENU_GROUPS = "management.menu.groups";
+  static final String MGMT_MENU_ADMINISTRATION = "management.menu.admin";
   
   // Job page
   static final String JOB_EXECUTE = "job.execute";
@@ -310,6 +312,30 @@ public interface Messages {
   static final String GROUP_NO_MEMBERS = "group.no.members";
   static final String GROUP_SELECT_MEMBERS = "group.select.members";
   static final String GROUP_DELETE = "group.delete";
+  
+  // Running process instances page
+  static final String ADMIN_MENU_RUNNING = "admin.menu.running";
+  static final String ADMIN_MENU_COMPLETED = "admin.menu.completed";
+  static final String ADMIN_MENU_DATABASE = "admin.menu.database";
+  static final String ADMIN_RUNNING_TITLE = "admin.running.title";
+  static final String ADMIN_RUNNING_NONE_FOUND = "admin.running.none.found";
+  static final String ADMIN_COMPLETED_TITLE = "admin.completed.title";
+  static final String ADMIN_COMPLETED_NONE_FOUND = "admin.completed.none.found";
+  static final String ADMIN_DEFINITIONS = "admin.definitions";
+  static final String ADMIN_NR_INSTANCES = "admin.nr.instances";
+  static final String ADMIN_STARTED_BY = "admin.started.by";
+  static final String ADMIN_START_ACTIVITY = "admin.start.activity";
+  static final String ADMIN_FINISHED = "admin.finished";
+  
+  // Database settings page
+  static final String DATABASE_TITLE = "database.title";
+  static final String DATABASE_TYPE = "database.type";
+  static final String DATABASE_UPDATE = "database.update";
+  static final String DATABASE_CONFIG_TYPE = "database.config.type";
+  static final String DATABASE_JNDI = "database.jndi";
+  static final String DATABASE_DATASOURCE_CLASS = "database.datasource.class";
+  static final String DATABASE_DATASOURCE_URL = "database.datasource.url";
+  static final String DATABASE_JDBC_URL = "database.jdbc.url";
   
   // Upload
   static final String UPLOAD_SELECT = "upload.select";

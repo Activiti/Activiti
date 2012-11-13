@@ -1,7 +1,7 @@
 package org.activiti.explorer.ui.process.listener;
 
-import org.activiti.editor.data.model.ModelData;
 import org.activiti.editor.ui.DeleteModelPopupWindow;
+import org.activiti.engine.repository.Model;
 import org.activiti.explorer.ExplorerApp;
 
 import com.vaadin.ui.Button.ClickEvent;
@@ -15,9 +15,9 @@ public class DeleteModelClickListener implements ClickListener {
 
   private static final long serialVersionUID = 1L;
   
-  protected ModelData modelData;
+  protected Model modelData;
   
-  public DeleteModelClickListener(ModelData model) {
+  public DeleteModelClickListener(Model model) {
     this.modelData = model;
   }
 
