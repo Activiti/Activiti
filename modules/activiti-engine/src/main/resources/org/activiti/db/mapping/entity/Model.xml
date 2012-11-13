@@ -12,6 +12,12 @@
     1, #{metaInfo, jdbcType=VARCHAR}, #{editorSource, jdbcType=BLOB}, #{editorSourceExtra, jdbcType=BLOB})
   </insert>
   
+  <insert id="insertModel_postgres" parameterType="org.activiti.engine.impl.persistence.entity.ModelEntity">
+    insert into ${prefix}ACT_RE_MODEL(ID_, NAME_, CATEGORY_, CREATE_TIME_, VERSION_, META_INFO_, EDITOR_SOURCE_, EDITOR_SOURCE_EXTRA_)
+    values(#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{category, jdbcType=VARCHAR}, #{createTime, jdbcType=TIMESTAMP},
+    1, #{metaInfo, jdbcType=VARCHAR}, #{editorSource, jdbcType=BINARY}, #{editorSourceExtra, jdbcType=BINARY})
+  </insert>
+  
   <!-- MODEL UPDATE -->
   <update id="updateModel" parameterType="org.activiti.engine.impl.persistence.entity.ModelEntity">
     update ${prefix}ACT_RE_MODEL set
@@ -39,8 +45,8 @@
     <result property="createTime" column="CREATE_TIME_" jdbcType="TIMESTAMP"/>
     <result property="version" column="VERSION_" jdbcType="INTEGER" />
     <result property="metaInfo" column="META_INFO_" jdbcType="VARCHAR" />
-    <result property="editorSource" column="EDITOR_SOURCE_" jdbcType="VARCHAR" />
-    <result property="editorSourceExtra" column="EDITOR_SOURCE_EXTRA_" jdbcType="VARCHAR" />
+    <result property="editorSource" column="EDITOR_SOURCE_" jdbcType="BLOB" />
+    <result property="editorSourceExtra" column="EDITOR_SOURCE_EXTRA_" jdbcType="BLOB" />
   </resultMap>
 
   <!-- MODEL SELECT -->
