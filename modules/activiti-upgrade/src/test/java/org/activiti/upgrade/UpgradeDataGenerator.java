@@ -12,18 +12,18 @@
  */
 package org.activiti.upgrade;
 
-import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.sql.DriverManager;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.db.DbSqlSession;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.util.ClassNameUtil;
 import org.activiti.engine.impl.util.LogUtil;
 import org.activiti.upgrade.test.UpgradeTaskOneTest;
@@ -34,7 +34,7 @@ import org.activiti.upgrade.test.UpgradeTaskTwoTest;
  */
 public class UpgradeDataGenerator {
   
-  private static Logger log = Logger.getLogger(UpgradeTestCase.class.getName());
+  static Logger log = Logger.getLogger(UpgradeTestCase.class.getName());
   
   static UpgradeTestCase[] upgradeTestCases = new UpgradeTestCase[]{
     new UpgradeTaskOneTest(),
@@ -42,44 +42,33 @@ public class UpgradeDataGenerator {
   };
 
   public static void main(String[] args) {
+    
+    ProcessEngineConfigurationImpl processEngineConfiguration = null;
+    
     try {
 
       LogUtil.readJavaUtilLoggingConfigFromClasspath();
       
-      if (args==null || args.length!=1) {
-        throw new RuntimeException("exactly argument expected: database");
+      if (args==null || args.length!=2) {
+        throw new RuntimeException("exactly 2 arguments expected: database and releaseVersion");
       }
       
       String database = args[0];
+      String releaseVersion = args[1];
       log.fine("database: "+database);
+      log.fine("releaseVersion: "+releaseVersion);
   
-      ProcessEngineConfiguration processEngineConfiguration = (ProcessEngineConfigurationImpl) ProcessEngineConfiguration
-              .createStandaloneProcessEngineConfiguration()
-              .setHistory("full")
-              .setJobExecutorActivate(false);
+      processEngineConfiguration = UpgradeTestCase.createProcessEngineConfiguration(database);
 
-      // loading properties
-      log.fine("loading properties...");
-      String propertiesFileName = System.getProperty("user.home")+System.getProperty("file.separator")+".activiti"+System.getProperty("file.separator")+"jdbc"+System.getProperty("file.separator")+"build."+database+".properties";
-      Properties properties = new Properties();
-      properties.load(new FileInputStream(propertiesFileName));
-      log.fine("jdbc url.....: "+processEngineConfiguration.getJdbcUrl());
-      log.fine("jdbc username: "+processEngineConfiguration.getJdbcUsername());
-      
       // install the jdbc proxy driver
       log.fine("installing jdbc proxy driver...");
-      ProxyDriver.setUrl(properties.getProperty("jdbc.url"));
-      DriverManager.registerDriver(new ProxyDriver());
-
-      // configure the jdbc parameters in the process engine configuration
-      processEngineConfiguration.setJdbcDriver(properties.getProperty("jdbc.driver"));
+      ProxyDriver.setUrl(processEngineConfiguration.getJdbcUrl());
       processEngineConfiguration.setJdbcUrl("proxy");
-      processEngineConfiguration.setJdbcUsername(properties.getProperty("jdbc.username"));
-      processEngineConfiguration.setJdbcPassword(properties.getProperty("jdbc.password"));
+      DriverManager.registerDriver(new ProxyDriver());
 
       log.fine("building the process engine...");
       ProcessEngine processEngine = processEngineConfiguration.buildProcessEngine();
-      
+
       log.fine("deploy processes and start process instances");
       UpgradeTestCase.setProcessEngine(processEngine);
       
@@ -89,15 +78,33 @@ public class UpgradeDataGenerator {
       }
 
       log.fine("### Captured SQL");
-
+      PrintWriter file = new PrintWriter("src/test/resources/org/activiti/db/"+releaseVersion+"/data/"+database+".data.sql");
       System.err.println();
       System.err.println();
       for (String statement: ProxyDriver.statements) {
         System.err.println(statement);
         System.err.println();
+        file.println(statement);
+        file.println();
       }
+      file.close();
+      
     } catch (Exception e) {
       e.printStackTrace();
     }
+    
+    dbSchemaDrop(processEngineConfiguration);
+  }
+
+  private static void dbSchemaDrop(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    commandExecutor.execute(new Command<Object> (){
+      public Object execute(CommandContext commandContext) {
+        commandContext
+          .getSession(DbSqlSession.class)
+          .dbSchemaDrop();
+        return null;
+      }
+    });
   }
 }
