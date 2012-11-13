@@ -106,12 +106,28 @@
 
   <profiles>
     <profile>
-      <id>upgrade.database</id>
-      <activation>
-        <property>
-          <name>database</name>
-        </property>
-      </activation>
+      <id>drop</id>
+      <properties>
+        <skipTests>false</skipTests>
+      </properties>
+    </profile>
+    
+    <profile>
+      <id>create</id>
+      <properties>
+        <skipTests>false</skipTests>
+      </properties>
+    </profile>
+    
+    <profile>
+      <id>generate</id>
+      <properties>
+        <skipTests>false</skipTests>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>upgrade</id>
       <properties>
         <skipTests>false</skipTests>
       </properties>

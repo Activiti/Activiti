@@ -5,6 +5,7 @@ import org.activiti.engine.ManagementService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Task;
+import org.activiti.upgrade.UpgradeTestCase;
 
 
 public class UpgradeTaskOneTest extends UpgradeTestCase {

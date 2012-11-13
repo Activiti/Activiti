@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.task.Task;
+import org.activiti.upgrade.UpgradeTestCase;
 
 
 public class UpgradeTaskTwoTest extends UpgradeTestCase {
@@ -16,7 +17,7 @@ public class UpgradeTaskTwoTest extends UpgradeTestCase {
     processEngine.getRepositoryService()
       .createDeployment()
       .name("simpleTaskProcess")
-      .addClasspathResource("org/activiti/upgrade/test/UserTaskBeforeTest.testTaskWithExecutionVariablesTask.bpmn20.xml")
+      .addClasspathResource("org/activiti/upgrade/test/UserTaskBeforeTest.testTaskWithExecutionVariables.bpmn20.xml")
       .deploy();
 
     Map<String, Object> variables = new HashMap<String, Object>();
