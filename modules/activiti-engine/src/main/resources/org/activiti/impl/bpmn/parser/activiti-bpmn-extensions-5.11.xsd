@@ -252,6 +252,26 @@
       </documentation>
     </annotation>
   </attribute>
+  
+  <attribute name="async" type="boolean">
+    <annotation>
+      <documentation>
+        The async attribute can be set on an activity (task, call activity or sub process) to let
+        the job executor handle the execution of the activity asynchronously. This provides ways
+        to define transaction boundaries for your process execution.
+      </documentation>
+    </annotation>
+  </attribute>
+  
+  <attribute name="exclusive" type="boolean">
+    <annotation>
+      <documentation>
+        Can be used in combination with an async value of true. By default exclusive is set to false
+        and the job executor can run multiple async tasks of the same process instance concurrently.
+        When exclusive is set to true, only one async task of the same process instance will be executed at a time.
+      </documentation>
+    </annotation>
+  </attribute>
 
   <element name="field">
     <annotation>
