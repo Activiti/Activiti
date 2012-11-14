@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.JobNotFoundException;
 import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TransactionContext;
@@ -126,9 +127,14 @@ public class CommandContext {
 
           if (exception != null) {
             Level loggingLevel = Level.SEVERE;
-            if (exception instanceof ActivitiTaskAlreadyClaimedException) {
+            if (exception instanceof JobNotFoundException) {
+              // reduce log level, because this may have been caused because of job deletion due to cancelActiviti="true"
+              loggingLevel = Level.INFO;
+              
+            } else if (exception instanceof ActivitiTaskAlreadyClaimedException) {
               loggingLevel = Level.INFO; // reduce log level, because this is not really a technical exception
             }
+
             log.log(loggingLevel, "Error while closing command context", exception);
             transactionContext.rollback();
           }
