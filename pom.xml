@@ -162,7 +162,27 @@
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
+        <artifactId>activiti-bpmn-model</artifactId>
+        <version>${version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
         <artifactId>activiti-bpmn-converter</artifactId>
+        <version>${version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-json-converter</artifactId>
+        <version>${version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-explorer</artifactId>
+        <version>${version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-modeler</artifactId>
         <version>${version}</version>
       </dependency> 
       <dependency>
@@ -610,6 +630,11 @@
     <profile>
       <id>deploy</id>
       <modules>
+        <module>modules/activiti-bpmn-model</module>
+        <module>modules/activiti-bpmn-converter</module>
+        <module>modules/activiti-json-converter</module>
+        <module>modules/activiti-modeler</module>
+        <module>modules/activiti-explorer</module>
         <module>modules/activiti-webapp-explorer2</module>
         <module>modules/activiti-spring</module>
         <module>modules/activiti-cxf</module>
@@ -689,6 +714,11 @@
       <id>distro</id>
       <modules>
         <module>modules/activiti-spring</module>
+        <module>modules/activiti-bpmn-model</module>
+        <module>modules/activiti-bpmn-converter</module>
+        <module>modules/activiti-json-converter</module>
+        <module>modules/activiti-modeler</module>
+        <module>modules/activiti-explorer</module>
         <module>modules/activiti-webapp-rest2</module>
         <module>modules/activiti-webapp-explorer2</module>
         <module>modules/activiti-cxf</module>

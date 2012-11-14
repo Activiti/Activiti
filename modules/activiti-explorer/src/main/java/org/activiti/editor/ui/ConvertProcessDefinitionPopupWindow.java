@@ -13,7 +13,13 @@
 package org.activiti.editor.ui;
 
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
+
+import org.activiti.bpmn.converter.BpmnXMLConverter;
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.ProcessEngines;
@@ -113,8 +119,13 @@ public class ConvertProcessDefinitionPopupWindow extends PopupWindow implements 
         
         try {
           InputStream bpmnStream = repositoryService.getResourceAsStream(processDefinition.getDeploymentId(), processDefinition.getResourceName());
-          BpmnJsonConverter converter = new BpmnJsonConverter(processDefinition.getResourceName(), bpmnStream);
-          ObjectNode modelNode = converter.convertToJson();
+          XMLInputFactory xif = XMLInputFactory.newInstance();
+          InputStreamReader in = new InputStreamReader(bpmnStream, "UTF-8");
+          XMLStreamReader xtr = xif.createXMLStreamReader(in);
+          BpmnModel model = new BpmnXMLConverter().convertToBpmnModel(xtr);
+          
+          BpmnJsonConverter converter = new BpmnJsonConverter();
+          ObjectNode modelNode = converter.convertToJson(model);
           Model modelData = repositoryService.newModel();
           modelData.setEditorSource(modelNode.toString().getBytes("utf-8"));
           

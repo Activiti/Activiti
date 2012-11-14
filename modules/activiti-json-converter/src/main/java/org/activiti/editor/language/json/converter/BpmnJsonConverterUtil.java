@@ -14,9 +14,6 @@ package org.activiti.editor.language.json.converter;
 
 import org.activiti.editor.constants.EditorJsonConstants;
 import org.activiti.editor.constants.StencilConstants;
-import org.activiti.engine.impl.bpmn.behavior.NoneEndEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.NoneStartEventActivityBehavior;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -60,24 +57,6 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
     ObjectNode resourceNode = objectMapper.createObjectNode();
     resourceNode.put(EDITOR_SHAPE_ID, id);
     return resourceNode;
-  }
-  
-  public static double getActivityWidth(ActivityImpl activity) {
-    if (activity.getActivityBehavior() instanceof NoneStartEventActivityBehavior ||
-        activity.getActivityBehavior() instanceof NoneEndEventActivityBehavior) {
-      return 30.0;
-    } else {
-      return activity.getWidth();
-    }
-  }
-  
-  public static double getActivityHeight(ActivityImpl activity) {
-    if (activity.getActivityBehavior() instanceof NoneStartEventActivityBehavior ||
-        activity.getActivityBehavior() instanceof NoneEndEventActivityBehavior) {
-      return 30.0;
-    } else {
-      return activity.getHeight();
-    }
   }
   
   public static String getStencilId(JsonNode objectNode) {

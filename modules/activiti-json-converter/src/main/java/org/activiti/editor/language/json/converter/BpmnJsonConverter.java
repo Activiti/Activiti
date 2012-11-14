@@ -12,8 +12,6 @@
  */
 package org.activiti.editor.language.json.converter;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -22,15 +20,11 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
-
 import math.geom2d.Point2D;
 import math.geom2d.conic.Circle2D;
 import math.geom2d.line.Line2D;
 import math.geom2d.polygon.Polyline2D;
 
-import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BoundaryEvent;
@@ -56,8 +50,6 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
   protected static final Logger LOGGER = Logger.getLogger(BpmnJsonConverter.class.getName());
   
   private ObjectMapper objectMapper = new ObjectMapper();
-  private String resourceName;
-  private InputStream inputStream;
   
   private static Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap = 
       new HashMap<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>>();
@@ -140,16 +132,8 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     DI_GATEWAY.add(STENCIL_GATEWAY_INCLUSIVE);
     DI_GATEWAY.add(STENCIL_GATEWAY_PARALLEL);
   }
-  
-  public BpmnJsonConverter() {
-  }
-  
-  public BpmnJsonConverter(String resourceName, InputStream inputStream) {
-    this.resourceName = resourceName;
-    this.inputStream = inputStream;
-  }
 
-  public ObjectNode convertToJson() {
+  public ObjectNode convertToJson(BpmnModel model) {
     ObjectNode modelNode = objectMapper.createObjectNode();
     modelNode.put("bounds", BpmnJsonConverterUtil.createBoundsNode(1485, 1050, 0, 0));
     modelNode.put("resourceId", "canvas");
@@ -164,17 +148,6 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     modelNode.put("stencilset", stencilsetNode);
     
     ArrayNode shapesArrayNode = objectMapper.createArrayNode();
-    
-    BpmnModel model = null;
-    try {
-      XMLInputFactory xif = XMLInputFactory.newInstance();
-      InputStreamReader in = new InputStreamReader(inputStream, "UTF-8");
-      XMLStreamReader xtr = xif.createXMLStreamReader(in);
-      model = new BpmnXMLConverter().convertToBpmnModel(xtr);
-    } catch(Exception e) {
-      LOGGER.log(Level.SEVERE, "Error parsing BPMN XML", e);
-      return modelNode;
-    }
     
     Process process = model.getMainProcess();
       

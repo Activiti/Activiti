@@ -3,8 +3,8 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <name>Activiti - BPMN Converter</name>
-  <artifactId>activiti-bpmn-converter</artifactId>
+  <name>Activiti - JSON Converter</name>
+  <artifactId>activiti-json-converter</artifactId>
 
   <parent>
     <groupId>org.activiti</groupId>
@@ -31,18 +31,13 @@
       <artifactId>jackson-mapper-asl</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
+      <groupId>math.geom</groupId>
+      <artifactId>javaGeom</artifactId>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-engine</artifactId>
-      <scope>test</scope>
     </dependency>          
   </dependencies>
   
@@ -52,6 +47,10 @@
       <id>activiti</id>
       <name>Activiti</name>
       <url>https://maven.alfresco.com/nexus/content/repositories/activiti/</url>
+    </repository>
+    <repository>
+      <id>Alfresco thirdparty</id>
+      <url>https://maven.alfresco.com/nexus/content/repositories/thirdparty/</url>
     </repository>
   </repositories>
 
