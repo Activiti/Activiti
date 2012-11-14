@@ -126,10 +126,22 @@
     ${limitAfter}
   </select>
   
-  <!-- mysql specific -->
   <select id="selectModelCountByQueryCriteria_mysql" parameterType="org.activiti.engine.impl.ModelQueryImpl" resultType="long">
     select distinct count(RES.ID_)
     <include refid="selectModelsByQueryCriteriaSql"/>
+  </select>
+  
+  <!-- postgres specific -->
+  <select id="selectModelsByQueryCriteria_postgres" parameterType="org.activiti.engine.impl.ModelQueryImpl" resultMap="modelResultMap_postgres">
+    ${limitBefore}
+    select distinct RES.* ${limitBetween}
+    <include refid="selectModelsByQueryCriteriaSql"/>
+    ${orderBy}
+    ${limitAfter}
+  </select>
+  
+  <select id="selectModel_postgres" parameterType="string" resultMap="modelResultMap_postgres">
+    select * from ${prefix}ACT_RE_MODEL where ID_ = #{id}
   </select>
 
 </mapper>

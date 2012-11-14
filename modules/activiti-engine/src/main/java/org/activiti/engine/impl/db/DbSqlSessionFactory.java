@@ -57,6 +57,8 @@ public class DbSqlSessionFactory implements SessionFactory {
     addDatabaseSpecificStatement("mysql", "selectProcessDefinitionCountByQueryCriteria", "selectProcessDefinitionCountByQueryCriteria_mysql");
     addDatabaseSpecificStatement("mysql", "selectDeploymentsByQueryCriteria", "selectDeploymentsByQueryCriteria_mysql");
     addDatabaseSpecificStatement("mysql", "selectDeploymentCountByQueryCriteria", "selectDeploymentCountByQueryCriteria_mysql");
+    addDatabaseSpecificStatement("mysql", "selectModelsByQueryCriteria", "selectModelsByQueryCriteria_mysql");
+    addDatabaseSpecificStatement("mysql", "selectModelCountByQueryCriteria", "selectModelCountByQueryCriteria_mysql");
     
     //postgres specific
     databaseSpecificLimitBeforeStatements.put("postgres", "");
@@ -79,6 +81,9 @@ public class DbSqlSessionFactory implements SessionFactory {
     addDatabaseSpecificStatement("postgres", "selectCommentsByTaskId", "selectCommentsByTaskId_postgres");
     addDatabaseSpecificStatement("postgres", "selectCommentsByProcessInstanceId", "selectCommentsByProcessInstanceId_postgres");
     addDatabaseSpecificStatement("postgres", "insertModel", "insertModel_postgres");
+    addDatabaseSpecificStatement("postgres", "updateModel", "updateModel_postgres");
+    addDatabaseSpecificStatement("postgres", "selectModelsByQueryCriteria", "selectModelsByQueryCriteria_postgres");
+    addDatabaseSpecificStatement("postgres", "selectModel", "selectModel_postgres");
     addDatabaseSpecificStatement("postgres", "selectEventsByTaskId", "selectEventsByTaskId_postgres");
         
     // oracle

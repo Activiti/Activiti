@@ -32,6 +32,7 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
     Model model = repositoryService.newModel();
     model.setName("my model");
     model.setCategory("test");
+    model.setEditorSource("bytes".getBytes("utf-8"));
     repositoryService.saveModel(model);
     modelOneId = model.getId();
     
@@ -50,9 +51,11 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
     assertEquals(1, query.count());
   }
   
-  public void testQueryByName() {
+  public void testQueryByName() throws Exception {
     ModelQuery query = repositoryService.createModelQuery().modelName("my model");
-    assertNotNull(query.singleResult());
+    Model model = query.singleResult();
+    assertNotNull(model);
+    assertEquals("bytes", new String(model.getEditorSource(), "utf-8"));
     assertEquals(1, query.list().size());
     assertEquals(1, query.count());
   }
@@ -64,8 +67,11 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
     assertEquals(0, query.count());
   }
   
-  public void testQueryByNameLike() {
+  public void testQueryByNameLike() throws Exception {
     ModelQuery query = repositoryService.createModelQuery().modelNameLike("%model%");
+    Model model = query.singleResult();
+    assertNotNull(model);
+    assertEquals("bytes", new String(model.getEditorSource(), "utf-8"));
     assertEquals(1, query.list().size());
     assertEquals(1, query.count());
   }

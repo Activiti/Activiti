@@ -252,17 +252,17 @@ public class DbSqlSession implements Session {
   
   // select ///////////////////////////////////////////////////////////////////
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "rawtypes" })
   public List selectList(String statement) {
     return selectList(statement, null, 0, Integer.MAX_VALUE);
   }
   
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("rawtypes")
   public List selectList(String statement, Object parameter) {  
     return selectList(statement, parameter, 0, Integer.MAX_VALUE);
   }
   
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("rawtypes")
   public List selectList(String statement, Object parameter, Page page) {   
     if(page!=null) {
       return selectList(statement, parameter, page.getFirstResult(), page.getMaxResults());
@@ -271,22 +271,22 @@ public class DbSqlSession implements Session {
     }
   }
   
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("rawtypes")
   public List selectList(String statement, ListQueryParameterObject parameter, Page page) {   
     return selectList(statement, parameter);
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("rawtypes")
   public List selectList(String statement, Object parameter, int firstResult, int maxResults) {   
     return selectList(statement, new ListQueryParameterObject(parameter, firstResult, maxResults));
   }
   
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("rawtypes")
   public List selectList(String statement, ListQueryParameterObject parameter) {
     return selectListWithRawParameter(statement, parameter, parameter.getFirstResult(), parameter.getMaxResults());
   }
   
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public List selectListWithRawParameter(String statement, Object parameter, int firstResult, int maxResults) {
     statement = dbSqlSessionFactory.mapStatement(statement);    
     if(firstResult == -1 ||  maxResults==-1) {
@@ -324,7 +324,7 @@ public class DbSqlSession implements Session {
 
   // internal session cache ///////////////////////////////////////////////////
   
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("rawtypes")
   protected List filterLoadedObjects(List<Object> loadedObjects) {
     if (loadedObjects.isEmpty()) {
       return loadedObjects;
