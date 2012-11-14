@@ -12,7 +12,11 @@
  */
 package org.activiti.osgi;
 
-import java.io.BufferedOutputStream;
+import static org.activiti.osgi.Constants.BUNDLE_ACTIVITI_HEADER;
+import static org.osgi.framework.Constants.BUNDLE_MANIFESTVERSION;
+import static org.osgi.framework.Constants.BUNDLE_SYMBOLICNAME;
+import static org.osgi.framework.Constants.BUNDLE_VERSION;
+
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.Set;
@@ -25,9 +29,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
-
-import static org.activiti.osgi.Constants.BUNDLE_ACTIVITI_HEADER;
-import static org.osgi.framework.Constants.*;
 
 /**
  * @author <a href="gnodet@gmail.com">Guillaume Nodet</a>

@@ -235,6 +235,7 @@ public class Extender implements BundleTrackerCustomizer, ServiceTrackerCustomiz
     }
   }
 
+  @SuppressWarnings({ "rawtypes" })
   private void addEntries(Bundle bundle, String path, String filePattern, List<URL> pathList) {
     Enumeration e = bundle.findEntries(path, filePattern, false);
     while (e != null && e.hasMoreElements()) {
@@ -315,7 +316,7 @@ public class Extender implements BundleTrackerCustomizer, ServiceTrackerCustomiz
     return null;
   }
 
-
+  @SuppressWarnings({ "rawtypes" })
   protected void registerScriptEngines(Bundle bundle, List<BundleScriptEngineResolver> resolvers) {
     URL configURL = null;
     for (Enumeration e = bundle.findEntries(META_INF_SERVICES_DIR, SCRIPT_ENGINE_SERVICE_FILE, false); e != null && e.hasMoreElements();) {
@@ -351,6 +352,8 @@ public class Extender implements BundleTrackerCustomizer, ServiceTrackerCustomiz
         reg.unregister();
       }
     }
+    
+    @SuppressWarnings({ "rawtypes" })
     public ScriptEngine resolveScriptEngine(String name) {
       try {
         BufferedReader in = new BufferedReader(new InputStreamReader(configFile.openStream()));

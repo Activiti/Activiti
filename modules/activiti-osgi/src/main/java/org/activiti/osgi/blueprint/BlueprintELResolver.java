@@ -33,13 +33,15 @@ public class BlueprintELResolver extends ELResolver {
 		return null;
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public void bindService(JavaDelegate delegate, Map props) {
     String name = (String) props.get("osgi.service.blueprint.compname");
     delegateMap.put(name, delegate);
     LOGGER.info("added Activiti service to delegate cache " + name);
 	}
 
-	public void unbindService(JavaDelegate delegate, Map props) {
+	@SuppressWarnings("rawtypes")
+  public void unbindService(JavaDelegate delegate, Map props) {
 		String name = (String) props.get("osgi.service.blueprint.compname");
     if(delegateMap.containsKey(name)) {
     	delegateMap.remove(name);
