@@ -25,6 +25,7 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
+import org.activiti.engine.impl.history.HistoryManager;
 import org.activiti.engine.impl.jobexecutor.FailedJobCommandFactory;
 import org.activiti.engine.impl.persistence.entity.AttachmentManager;
 import org.activiti.engine.impl.persistence.entity.ByteArrayManager;
@@ -302,6 +303,10 @@ public class CommandContext {
 
   public PropertyManager getPropertyManager() {
     return getSession(PropertyManager.class);
+  }
+  
+  public HistoryManager getHistoryManager() {
+    return getSession(HistoryManager.class);
   }
 
   // getters and setters //////////////////////////////////////////////////////

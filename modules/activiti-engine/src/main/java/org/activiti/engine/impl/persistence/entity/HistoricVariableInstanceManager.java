@@ -18,25 +18,20 @@ import java.util.List;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.HistoricVariableInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.DbSqlSession;
-import org.activiti.engine.impl.persistence.AbstractHistoricManager;
+import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.impl.persistence.AbstractManager;
 
 
 /**
  * @author Christian Lipphardt (camunda)
  */
-public class HistoricVariableInstanceManager extends AbstractHistoricManager {
+public class HistoricVariableInstanceManager extends AbstractManager {
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public void deleteHistoricVariableInstanceByProcessInstanceId(String historicProcessInstanceId) {
-    if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY) {
-      HistoricVariableInstanceManager historicProcessVariableManager = Context
-              .getCommandContext()
-              .getHistoricVariableInstanceManager();
+    if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
 
-      // delete entries in DB
+      // Delete entries in DB
       List<HistoricVariableInstanceEntity> historicProcessVariables = (List) getDbSqlSession()
         .createHistoricVariableInstanceQuery()
         .processInstanceId(historicProcessInstanceId)
@@ -45,11 +40,11 @@ public class HistoricVariableInstanceManager extends AbstractHistoricManager {
         historicProcessVariable.delete();
       }
       
-      //delete enrties in Cache
+      // Delete entries in Cache
       List<HistoricVariableInstanceEntity> cachedHistoricVariableInstances = getDbSqlSession().findInCache(HistoricVariableInstanceEntity.class);
       for (HistoricVariableInstanceEntity historicProcessVariable : cachedHistoricVariableInstances) {
-        // make sure we only delete the right ones (as we cannot make a proper query in the cache)
-        if (historicProcessVariable.getProcessInstanceId().equals(historicProcessInstanceId )) {
+        // Make sure we only delete the right ones (as we cannot make a proper query in the cache)
+        if (historicProcessVariable.getProcessInstanceId().equals(historicProcessInstanceId)) {
           historicProcessVariable.delete();
         }
       }
@@ -70,7 +65,7 @@ public class HistoricVariableInstanceManager extends AbstractHistoricManager {
   }
 
   public void deleteHistoricVariableInstancesByTaskId(String taskId) {
-    if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY) {
+    if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       HistoricVariableInstanceQueryImpl historicProcessVariableQuery = 
         (HistoricVariableInstanceQueryImpl) new HistoricVariableInstanceQueryImpl().taskId(taskId);
       List<HistoricVariableInstance> historicProcessVariables = historicProcessVariableQuery.list();

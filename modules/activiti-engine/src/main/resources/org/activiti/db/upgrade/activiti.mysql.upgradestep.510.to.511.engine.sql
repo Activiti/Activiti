@@ -25,3 +25,5 @@ create table ACT_RE_MODEL (
     EDITOR_SOURCE_EXTRA_ LONGBLOB,
     primary key (ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
+
+delete from ACT_GE_PROPERTY where NAME_ = 'historyLevel';

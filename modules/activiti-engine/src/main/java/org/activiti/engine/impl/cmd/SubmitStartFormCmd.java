@@ -17,10 +17,10 @@ import java.io.Serializable;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.form.StartFormHandler;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -61,16 +61,12 @@ public class SubmitStartFormCmd implements Command<ProcessInstance>, Serializabl
       processInstance = processDefinition.createProcessInstance();
     }
 
-    int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
-    if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY) {
+    if (commandContext.getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
       DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);
-
-      if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
-        for (String propertyId: properties.keySet()) {
-          String propertyValue = properties.get(propertyId);
-          HistoricFormPropertyEntity historicFormProperty = new HistoricFormPropertyEntity(processInstance, propertyId, propertyValue);
-          dbSqlSession.insert(historicFormProperty);
-        }
+      for (String propertyId: properties.keySet()) {
+        String propertyValue = properties.get(propertyId);
+        HistoricFormPropertyEntity historicFormProperty = new HistoricFormPropertyEntity(processInstance, propertyId, propertyValue);
+        dbSqlSession.insert(historicFormProperty);
       }
     }
     

@@ -15,41 +15,19 @@ package org.activiti.engine.impl.history.handler;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
-import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
-import org.activiti.engine.impl.util.ClockUtil;
 
 
 /**
  * @author Tom Baeyens
  * 
- * BE AWARE: For Start Events this is dine in the ProcessDefinitionEntity!
+ * BE AWARE: For Start Events this is done in the ProcessDefinitionEntity!
  */
 public class ActivityInstanceStartHandler implements ExecutionListener {
 
   public void notify(DelegateExecution execution) {
-    IdGenerator idGenerator = Context.getProcessEngineConfiguration().getIdGenerator();
-    
-    ExecutionEntity executionEntity = (ExecutionEntity) execution;
-    String processDefinitionId = executionEntity.getProcessDefinitionId();
-    String processInstanceId = executionEntity.getProcessInstanceId();
-    String executionId = execution.getId();
-
-    HistoricActivityInstanceEntity historicActivityInstance = new HistoricActivityInstanceEntity();
-    historicActivityInstance.setId(idGenerator.getNextId());
-    historicActivityInstance.setProcessDefinitionId(processDefinitionId);
-    historicActivityInstance.setProcessInstanceId(processInstanceId);
-    historicActivityInstance.setExecutionId(executionId);
-    historicActivityInstance.setActivityId(executionEntity.getActivityId());
-    historicActivityInstance.setActivityName((String) executionEntity.getActivity().getProperty("name"));
-    historicActivityInstance.setActivityType((String) executionEntity.getActivity().getProperty("type"));
-    historicActivityInstance.setStartTime(ClockUtil.getCurrentTime());
-    
-    Context
-      .getCommandContext()
-      .getDbSqlSession()
-      .insert(historicActivityInstance);
+    Context.getCommandContext().getHistoryManager()
+      .recordActivityStart((ExecutionEntity) execution);
   }
 }

@@ -24,8 +24,6 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionManager;
-import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
@@ -111,11 +109,7 @@ public class SetProcessDefinitionVersionCmd implements Command<Void>, Serializab
     validateAndSwitchVersionOfExecution(commandContext, processInstance, newProcessDefinition);
     
     // switch the historic process instance to the new process definition version
-    HistoricProcessInstanceManager historicProcessInstanceManager = commandContext.getHistoricProcessInstanceManager();
-    if (historicProcessInstanceManager.isHistoryEnabled()) {
-      HistoricProcessInstanceEntity historicProcessInstance = historicProcessInstanceManager.findHistoricProcessInstance(processInstanceId);
-      historicProcessInstance.setProcessDefinitionId(newProcessDefinition.getId());
-    }
+    commandContext.getHistoryManager().recordProcessDefinitionChange(processInstanceId, newProcessDefinition.getId());
     
     // switch all sub-executions of the process instance to the new process definition version
     List<ExecutionEntity> childExecutions = executionManager

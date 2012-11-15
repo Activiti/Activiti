@@ -21,15 +21,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.EngineServices;
-import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.history.handler.ActivityInstanceEndHandler;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.AsyncContinuationJobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
@@ -254,19 +251,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     subProcessInstance.setProcessDefinition((ProcessDefinitionImpl) processDefinition);
     subProcessInstance.setProcessInstance(subProcessInstance);
     
-    CommandContext commandContext = Context.getCommandContext();
-    int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
-    if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY) {
-      DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);
-      HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity((ExecutionEntity) subProcessInstance);
-      dbSqlSession.insert(historicProcessInstance);
-      
-      HistoricActivityInstanceEntity activitiyInstance = ActivityInstanceEndHandler.findActivityInstance(this);
-      if (activitiyInstance != null) {
-        activitiyInstance.setCalledProcessInstanceId(subProcessInstance.getProcessInstanceId());
-      }
-      
-    }
+    Context.getCommandContext().getHistoryManager()
+      .recordSubProcessInstanceStart(this, subProcessInstance);
 
     return subProcessInstance;
   }
@@ -984,26 +970,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
       }
     }
     
-    // update the cached historic activity instances that are open
-    List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = dbSqlSession.findInCache(HistoricActivityInstanceEntity.class);
-    for (HistoricActivityInstanceEntity cachedHistoricActivityInstance: cachedHistoricActivityInstances) {
-      if ( (cachedHistoricActivityInstance.getEndTime()==null)
-           && (id.equals(cachedHistoricActivityInstance.getExecutionId())) 
-         ) {
-        cachedHistoricActivityInstance.setExecutionId(replacedBy.getId());
-      }
-    }
-    
-    // update the persisted historic activity instances that are open
-    if (Context.getProcessEngineConfiguration().getHistoryLevel()>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
-      List<HistoricActivityInstanceEntity> historicActivityInstances = (List) new HistoricActivityInstanceQueryImpl(commandContext)
-        .executionId(id)
-        .unfinished()
-        .list();
-      for (HistoricActivityInstanceEntity historicActivityInstance: historicActivityInstances) {
-        historicActivityInstance.setExecutionId(replacedBy.getId());
-      }
-    }
+    commandContext.getHistoryManager()
+      .recordExecutionReplacedBy(this, replacedBy);
   }
 
   // variables ////////////////////////////////////////////////////////////////
@@ -1031,17 +999,10 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   protected ExecutionEntity getSourceActivityExecution() {
     return (activityId!=null ? this : null);
   }
-
+  
   @Override
-  protected void updateActivityInstanceIdInHistoricVariableUpdate(HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate, ExecutionEntity sourceActivityExecution) {
-    int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
-    if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL
-        && sourceActivityExecution!=null) {
-      HistoricActivityInstanceEntity historicActivityInstance = ActivityInstanceEndHandler.findActivityInstance(sourceActivityExecution); 
-      if (historicActivityInstance!=null) {
-        historicVariableUpdate.setActivityInstanceId(historicActivityInstance.getId());
-      }
-    }
+  protected boolean isActivityIdUsedForDetails() {
+    return true;
   }
 
   // persistent state /////////////////////////////////////////////////////////

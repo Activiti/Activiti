@@ -19,7 +19,7 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.history.HistoricProcessInstance;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.task.Task;
@@ -168,8 +168,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     assertProcessEnded(procId);
     
     HistoricProcessInstance hip;
-    int historyLevel = processEngineConfiguration.getHistoryLevel();
-    if (historyLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       hip = historyService.createHistoricProcessInstanceQuery().processInstanceId(procId).singleResult();
       assertEquals("processEnd1", hip.getEndActivityId());
     }
@@ -178,7 +177,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
             CollectionUtil.singletonMap("input", 1)).getId();
     assertProcessEnded(procId);
     
-    if (historyLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       hip = historyService.createHistoricProcessInstanceQuery().processInstanceId(procId).singleResult();
       assertEquals("processEnd1", hip.getEndActivityId());
     }
