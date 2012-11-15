@@ -102,7 +102,7 @@ public class DbSqlSessionFactory implements SessionFactory {
     // mssql
     databaseSpecificLimitBeforeStatements.put("mssql", "SELECT SUB.* FROM (");
     databaseSpecificLimitAfterStatements.put("mssql", ")RES ) SUB WHERE SUB.rnk >= #{firstRow} AND SUB.rnk < #{lastRow}");
-    databaseSpecificLimitBetweenStatements.put("mssql", ", row_number() over (ORDER BY ${orderBy}) rnk FROM ( select distinct RES.* ");
+    databaseSpecificLimitBetweenStatements.put("mssql", ", row_number() over (ORDER BY ${orderBy}) rnk FROM ( select RES.* ");
     databaseSpecificOrderByStatements.put("mssql", "");
     addDatabaseSpecificStatement("mssql", "selectExclusiveJobsToExecute", "selectExclusiveJobsToExecute_integerBoolean");
     addDatabaseSpecificStatement("mssql", "selectModelsByQueryCriteria", "selectModelsByQueryCriteria_mssql");

@@ -89,7 +89,7 @@
   
   <select id="selectExecutionsByQueryCriteria" parameterType="org.activiti.engine.impl.ExecutionQueryImpl" resultMap="executionResultMap">
   	${limitBefore}
-    select RES.* ${limitBetween}, P.KEY_
+    select RES.* ${limitBetween}, P.KEY_ as ProcessDefinitionKey
     <include refid="selectExecutionsByQueryCriteriaSql"/>
     ${orderBy}
     ${limitAfter}
@@ -103,7 +103,7 @@
   <!--  same as selectExecutionByQueryCriteria, but with different parameterType -->
   <select id="selectProcessInstanceByQueryCriteria" parameterType="org.activiti.engine.impl.ProcessInstanceQueryImpl" resultMap="executionResultMap">
   	${limitBefore}
-    select RES.* ${limitBetween}, P.KEY_
+    select RES.* ${limitBetween}, P.KEY_ as ProcessDefinitionKey
     <include refid="selectExecutionsByQueryCriteriaSql"/>
     ${orderBy}
     ${limitAfter}
