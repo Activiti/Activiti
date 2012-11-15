@@ -24,6 +24,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -332,12 +333,13 @@ public class DbSqlSession implements Session {
     if (! (PersistentObject.class.isAssignableFrom(loadedObjects.get(0).getClass()))) {
       return loadedObjects;
     }
-    List<PersistentObject> filteredObjects = new ArrayList<PersistentObject>(loadedObjects.size());
+    
+    Map<String, PersistentObject> filteredObjectsMap = new LinkedHashMap<String, PersistentObject>(loadedObjects.size());
     for (Object loadedObject: loadedObjects) {
       PersistentObject cachedPersistentObject = cacheFilter((PersistentObject) loadedObject);
-      filteredObjects.add(cachedPersistentObject);
+      filteredObjectsMap.put(cachedPersistentObject.getId(), cachedPersistentObject);
     }
-    return filteredObjects;
+    return new ArrayList<PersistentObject>(filteredObjectsMap.values());
   }
 
   protected CachedObject cachePut(PersistentObject persistentObject, boolean storeState) {
