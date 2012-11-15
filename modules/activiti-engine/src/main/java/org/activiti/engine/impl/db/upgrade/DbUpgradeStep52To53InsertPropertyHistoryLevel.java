@@ -13,9 +13,7 @@
 
 package org.activiti.engine.impl.db.upgrade;
 
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
-import org.activiti.engine.impl.persistence.entity.PropertyEntity;
 
 
 /**
@@ -24,9 +22,12 @@ import org.activiti.engine.impl.persistence.entity.PropertyEntity;
 public class DbUpgradeStep52To53InsertPropertyHistoryLevel implements DbUpgradeStep {
 
   public void execute(DbSqlSession dbSqlSession) throws Exception {
-    int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
-    PropertyEntity property = new PropertyEntity("historyLevel", Integer.toString(historyLevel));
-    dbSqlSession.insert(property);
+    // As of 5.11, the history-setting is no longer stored in the database, so inserting it in this upgrade and removing
+    // in in a 5.10->5.11 upgrade is useless...
+    
+    //    int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
+    //    PropertyEntity property = new PropertyEntity("historyLevel", Integer.toString(historyLevel));
+    //    dbSqlSession.insert(property);
   }
 
 }

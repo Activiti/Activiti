@@ -21,3 +21,5 @@ create table ACT_RE_MODEL (
     EDITOR_SOURCE_EXTRA_ bytea,
     primary key (ID_)
 );
+
+delete from ACT_GE_PROPERTY where NAME_ = 'historyLevel';

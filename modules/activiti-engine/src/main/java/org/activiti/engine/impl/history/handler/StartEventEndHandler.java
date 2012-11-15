@@ -13,15 +13,10 @@
 
 package org.activiti.engine.impl.history.handler;
 
-import java.util.List;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.DbSqlSession;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
 
 
 /**
@@ -33,24 +28,8 @@ public class StartEventEndHandler implements ExecutionListener {
     String executionId = execution.getId();
     String activityId = ((ExecutionEntity)execution).getActivityId();
     
-    // interrupted executions might not have an activityId set.
-    if(activityId == null) {
-      return;
-    }
-
-    CommandContext commandContext = Context.getCommandContext();
-    // search for the historic activity instance in the dbsqlsession cache
-    DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
-    List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = dbSqlSession.findInCache(HistoricActivityInstanceEntity.class);
-    for (HistoricActivityInstanceEntity cachedHistoricActivityInstance: cachedHistoricActivityInstances) {
-      if ( executionId.equals(cachedHistoricActivityInstance.getExecutionId())
-           && (activityId.equals(cachedHistoricActivityInstance.getActivityId()))
-           && (cachedHistoricActivityInstance.getEndTime()==null)
-         ) {
-        cachedHistoricActivityInstance.markEnded(null);
-        return;
-      }
-    }
+    Context.getCommandContext().getHistoryManager()
+      .recordStartEventEnded(executionId, activityId);
   }
 
 }

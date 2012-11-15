@@ -70,8 +70,8 @@ public class TaskManager extends AbstractManager {
           .deleteHistoricTaskInstanceById(taskId);
       } else {
         commandContext
-          .getHistoricTaskInstanceManager()
-          .markTaskInstanceEnded(taskId, deleteReason);
+          .getHistoryManager()
+          .recordTaskEnd(taskId, deleteReason);
       }
         
       getDbSqlSession().delete(task);

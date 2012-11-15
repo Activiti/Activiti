@@ -23,7 +23,6 @@ import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.VariableScope;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.javax.el.ELContext;
@@ -212,10 +211,8 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
       if (variableInstance != null) {
         variableInstance.delete();
 
-        int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
-        if (historyLevel == ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY) {
-          insertHistoricVariableInstance(variableInstance);
-        }
+        Context.getCommandContext().getHistoryManager()
+          .recordVariableUpdate(variableInstance);
       }
     }
   }
@@ -334,34 +331,24 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   protected void deleteVariableInstanceForExplicitUserCall(VariableInstanceEntity variableInstance, ExecutionEntity sourceActivityExecution) {
     variableInstance.delete();
     variableInstance.setValue(null);
-    
-    int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
-    
-    if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
-      updateHistoricVariableInstanceValue(variableInstance);
-    }
 
-    if (historyLevel == ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
-      HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = new HistoricDetailVariableInstanceUpdateEntity(variableInstance);
-      updateActivityInstanceIdInHistoricVariableUpdate(historicVariableUpdate, sourceActivityExecution);
-      Context
-        .getCommandContext()
-        .getDbSqlSession()
-        .insert(historicVariableUpdate);
-    }
+    // Record historic variable
+    Context.getCommandContext().getHistoryManager()
+      .recordVariableUpdate(variableInstance);
+
+    // Record historic detail
+    Context.getCommandContext().getHistoryManager()
+      .recordHistoricDetailVariableCreate(variableInstance, sourceActivityExecution,  isActivityIdUsedForDetails());
   }
 
   protected void updateVariableInstance(VariableInstanceEntity variableInstance, Object value, ExecutionEntity sourceActivityExecution) {
     variableInstance.setValue(value);
 
-    int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
-    if (historyLevel==ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
-      insertHistoricDetailVariableInstanceUpdate(variableInstance, sourceActivityExecution);
-    }
+    Context.getCommandContext().getHistoryManager()
+      .recordHistoricDetailVariableCreate(variableInstance, sourceActivityExecution, isActivityIdUsedForDetails());
     
-    if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
-      updateHistoricVariableInstanceValue(variableInstance);
-    }
+    Context.getCommandContext().getHistoryManager()
+      .recordVariableUpdate(variableInstance);
   }
 
   protected VariableInstanceEntity createVariableInstance(String variableName, Object value, ExecutionEntity sourceActivityExecution) {
@@ -377,14 +364,13 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     
     variableInstance.setValue(value);
     
-    int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
-    if (historyLevel==ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
-      insertHistoricDetailVariableInstanceUpdate(variableInstance, sourceActivityExecution);
-    }
-    
-    if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
-      insertHistoricVariableInstance(variableInstance);
-    }
+    // Record historic variable
+    Context.getCommandContext().getHistoryManager()
+      .recordVariableCreate(variableInstance);
+
+    // Record historic detail
+    Context.getCommandContext().getHistoryManager()
+      .recordHistoricDetailVariableCreate(variableInstance, sourceActivityExecution,  isActivityIdUsedForDetails());
 
     return variableInstance;
   }
@@ -397,47 +383,11 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
       .insert(historicVariableInstance);
   }
   
-  protected void insertHistoricDetailVariableInstanceUpdate(VariableInstanceEntity variableInstance, ExecutionEntity sourceActivityExecution) {
-    HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = new HistoricDetailVariableInstanceUpdateEntity(variableInstance);
-
-    updateActivityInstanceIdInHistoricVariableUpdate(historicVariableUpdate, sourceActivityExecution);
-    
-    Context
-      .getCommandContext()
-      .getDbSqlSession()
-      .insert(historicVariableUpdate);
-  }
-
-  /** execution variable updates have activity instance ids
-   * but historic task variable updates don't
-   * @see ExecutionEntity#updateActivityInstanceIdInHistoricVariableUpdate(HistoricDetailVariableInstanceUpdateEntity) */
-  protected void updateActivityInstanceIdInHistoricVariableUpdate(HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate, ExecutionEntity sourceActivityExecution) {
-  }
-
-  /** only called when an existing variable is updated.
-   * This method is also responsible for propagating the creation of this 
-   * variable to the history. */
-  protected void updateHistoricVariableInstanceValue(VariableInstanceEntity variableInstance) {
-    HistoricVariableInstanceEntity historicProcessVariable = 
-      Context
-        .getCommandContext()
-        .getDbSqlSession()
-        .findInCache(HistoricVariableInstanceEntity.class, variableInstance.getId());
-    if (historicProcessVariable==null) {
-      historicProcessVariable = Context
-              .getCommandContext()
-              .getHistoricVariableInstanceManager()
-              .findHistoricVariableInstanceByVariableInstanceId(variableInstance.getId());
-    }
-    if (historicProcessVariable!=null) {
-      historicProcessVariable.copyValue(variableInstance);
-    } else {
-      historicProcessVariable = new HistoricVariableInstanceEntity(variableInstance);
-      Context
-        .getCommandContext()
-        .getDbSqlSession()
-        .insert(historicProcessVariable);
-    }
+  /** 
+   * Execution variable updates have activity instance ids, but historic task variable updates don't.
+   */
+  protected boolean isActivityIdUsedForDetails() {
+    return true;
   }
 
   // getters and setters //////////////////////////////////////////////////////

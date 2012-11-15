@@ -18,36 +18,18 @@ import java.util.List;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.impl.HistoricDetailQueryImpl;
 import org.activiti.engine.impl.Page;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.persistence.AbstractHistoricManager;
+import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.impl.persistence.AbstractManager;
 
 
 /**
  * @author Tom Baeyens
  */
-public class HistoricDetailManager extends AbstractHistoricManager {
-
-//  public void deleteHistoricDetail(HistoricDetailEntity historicDetail) {
-//    if (historicDetail instanceof HistoricDetailVariableInstanceUpdateEntity) {
-//      HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = (HistoricDetailVariableInstanceUpdateEntity) historicDetail;
-//      String byteArrayValueId = historicVariableUpdate.getByteArrayValueId();
-//      if (byteArrayValueId != null) {
-//          // the next apparently useless line is probably to ensure consistency in the DbSqlSession 
-//          // cache, but should be checked and docced here (or removed if it turns out to be unnecessary)
-//          // @see also HistoricVariableInstanceEntity
-//        historicVariableUpdate.getByteArrayValue();
-//        Context
-//          .getCommandContext()
-//          .getSession(DbSqlSession.class)
-//          .delete(ByteArrayEntity.class, byteArrayValueId);
-//      }
-//    }
-//    getDbSqlSession().delete(HistoricDetailEntity.class, historicDetail.getId());
-//  }
+public class HistoricDetailManager extends AbstractManager {
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public void deleteHistoricDetailsByProcessInstanceId(String historicProcessInstanceId) {
-    if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+    if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
       List<HistoricDetailEntity> historicDetails = (List) getDbSqlSession()
         .createHistoricDetailQuery()
         .processInstanceId(historicProcessInstanceId)
@@ -69,7 +51,7 @@ public class HistoricDetailManager extends AbstractHistoricManager {
   }
 
   public void deleteHistoricDetailsByTaskId(String taskId) {
-    if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
+    if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.FULL)) {
       HistoricDetailQueryImpl detailsQuery = 
         (HistoricDetailQueryImpl) new HistoricDetailQueryImpl().taskId(taskId);
       List<HistoricDetail> details = detailsQuery.list();

@@ -16,14 +16,9 @@ import java.io.Serializable;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.CommentEntity;
-import org.activiti.engine.impl.persistence.entity.CommentManager;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.engine.impl.util.ClockUtil;
-import org.activiti.engine.task.Event;
 import org.activiti.engine.task.IdentityLinkType;
 
 
@@ -90,23 +85,7 @@ public class AddIdentityLinkCmd implements Command<Void>, Serializable {
       task.addIdentityLink(userId, groupId, type);
     }
 
-    CommentManager commentManager = commandContext.getCommentManager();
-    if (commentManager.isHistoryEnabled()) {
-      String authenticatedUserId = Authentication.getAuthenticatedUserId();
-      CommentEntity comment = new CommentEntity();
-      comment.setUserId(authenticatedUserId);
-      comment.setType(CommentEntity.TYPE_EVENT);
-      comment.setTime(ClockUtil.getCurrentTime());
-      comment.setTaskId(taskId);
-      if (userId!=null) {
-        comment.setAction(Event.ACTION_ADD_USER_LINK);
-        comment.setMessage(new String[]{userId, type});
-      } else {
-        comment.setAction(Event.ACTION_ADD_GROUP_LINK);
-        comment.setMessage(new String[]{groupId, type});
-      }
-      commentManager.insert(comment);
-    }
+    commandContext.getHistoryManager().createIdentityLinkComment(taskId, userId, groupId, type, true);
     
     return null;  
   }

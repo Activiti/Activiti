@@ -15,8 +15,9 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.persistence.AbstractHistoricManager;
+import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
 
@@ -24,7 +25,7 @@ import org.activiti.engine.task.Event;
 /**
  * @author Tom Baeyens
  */
-public class CommentManager extends AbstractHistoricManager {
+public class CommentManager extends AbstractManager {
   
   public void delete(PersistentObject persistentObject) {
     checkHistoryEnabled();
@@ -58,5 +59,10 @@ public class CommentManager extends AbstractHistoricManager {
     checkHistoryEnabled();
     return getDbSqlSession().selectList("selectCommentsByProcessInstanceId", processInstanceId);
   }
-
+  
+  protected void checkHistoryEnabled() {
+    if(!getHistoryManager().isHistoryEnabled()) {
+      throw new ActivitiException("In order to use comments, history should be enabled");
+    }
+  }
 }
