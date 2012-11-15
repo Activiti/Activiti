@@ -126,6 +126,15 @@
     ${limitAfter}
   </select>
   
+  <!-- db2 specific -->
+  <select id="selectModelsByQueryCriteria_db2" parameterType="org.activiti.engine.impl.ModelQueryImpl" resultMap="modelResultMap">
+    ${limitBefore}
+    select RES.* ${limitBetween}
+    <include refid="selectModelsByQueryCriteriaSql"/>
+    ${orderBy}
+    ${limitAfter}
+  </select>
+  
   <!-- mysql specific -->
   <select id="selectModelCountByQueryCriteria_mysql" parameterType="org.activiti.engine.impl.ModelQueryImpl" resultType="long">
     select distinct count(RES.ID_)
