@@ -208,6 +208,7 @@ public interface Messages {
   static final String PROCESS_START_TIME = "process.start.time";
   static final String PROCESS_STARTED_NOTIFICATION = "process.started.notification";
   static final String PROCESS_INSTANCE_STARTED_ON = "process.instance.started.on";
+  static final String PROCESS_INSTANCE_STARTED = "process.instance.started";
   static final String PROCESS_INSTANCE_HEADER_TASKS = "process.instance.header.tasks";
   static final String PROCESS_INSTANCE_NO_TASKS = "process.instance.no.tasks";
   static final String PROCESS_INSTANCE_HEADER_VARIABLES = "process.instance.header.variables";

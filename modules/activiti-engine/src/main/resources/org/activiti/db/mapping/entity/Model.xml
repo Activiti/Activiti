@@ -117,15 +117,16 @@
     select * from ${prefix}ACT_RE_MODEL where ID_ = #{id}
   </select>
 
-  <!-- mysql specific -->
-  <select id="selectModelsByQueryCriteria_mysql" parameterType="org.activiti.engine.impl.ModelQueryImpl" resultMap="modelResultMap">
+  <!-- mssql specific -->
+  <select id="selectModelsByQueryCriteria_mssql" parameterType="org.activiti.engine.impl.ModelQueryImpl" resultMap="modelResultMap">
   	${limitBefore}
-    select distinct RES.* ${limitBetween}
+    select RES.* ${limitBetween}
     <include refid="selectModelsByQueryCriteriaSql"/>
    	${orderBy}
     ${limitAfter}
   </select>
   
+  <!-- mysql specific -->
   <select id="selectModelCountByQueryCriteria_mysql" parameterType="org.activiti.engine.impl.ModelQueryImpl" resultType="long">
     select distinct count(RES.ID_)
     <include refid="selectModelsByQueryCriteriaSql"/>

@@ -232,7 +232,7 @@ public class AdminCompletedInstancesPanel extends DetailPanel {
     instancesTable.addContainerProperty("business key", String.class, null, i18nManager.getMessage(Messages.PROCESS_INSTANCE_BUSINESSKEY), null, Table.ALIGN_LEFT);
     instancesTable.addContainerProperty("start user id", String.class, null, i18nManager.getMessage(Messages.ADMIN_STARTED_BY), null, Table.ALIGN_LEFT);
     instancesTable.addContainerProperty("start activity id", String.class, null, i18nManager.getMessage(Messages.ADMIN_START_ACTIVITY), null, Table.ALIGN_LEFT);
-    instancesTable.addContainerProperty("start time", String.class, null, i18nManager.getMessage(Messages.PROCESS_INSTANCE_STARTED_ON), null, Table.ALIGN_LEFT);
+    instancesTable.addContainerProperty("start time", String.class, null, i18nManager.getMessage(Messages.PROCESS_INSTANCE_STARTED), null, Table.ALIGN_LEFT);
     instancesTable.addContainerProperty("end time", String.class, null, i18nManager.getMessage(Messages.TASK_COMPLETE_TIME), null, Table.ALIGN_LEFT);
     instancesTable.addContainerProperty("duration", String.class, null, i18nManager.getMessage(Messages.TASK_DURATION), null, Table.ALIGN_LEFT);
     
