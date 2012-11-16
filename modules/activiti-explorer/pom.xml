@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  
+
   <name>Activiti - Explorer</name>
   <artifactId>activiti-explorer</artifactId>
   <packaging>jar</packaging>
@@ -19,15 +19,15 @@
   </properties>
 
   <build>
-	<plugins>
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-compiler-plugin</artifactId>
-			<configuration>
-				<source>1.6</source>
-				<target>1.6</target>
-			</configuration>
-		</plugin>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
@@ -49,7 +49,7 @@
       <groupId>org.activiti</groupId>
       <artifactId>activiti-json-converter</artifactId>
     </dependency>
-    
+
     <!-- Vaadin -->
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -60,7 +60,7 @@
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin</artifactId>
     </dependency>
-    
+
     <!-- Database -->
     <dependency>
       <groupId>commons-dbcp</groupId>
@@ -70,7 +70,7 @@
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
     </dependency>
-    
+
     <!-- Spring -->
     <dependency>
       <groupId>org.springframework</groupId>
@@ -79,8 +79,8 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-beans</artifactId>
-    </dependency>    
-     <dependency>
+    </dependency>
+    <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jdbc</artifactId>
     </dependency>
@@ -89,7 +89,7 @@
       <artifactId>spring-web</artifactId>
       <version>${spring.framework.version}</version>
     </dependency>
-    
+
     <dependency>
       <groupId>com.thebuzzmedia</groupId>
       <artifactId>imgscalr-lib</artifactId>
@@ -127,21 +127,21 @@
       <groupId>org.apache.xmlgraphics</groupId>
       <artifactId>batik-svggen</artifactId>
     </dependency>
-    
+
     <!-- Running example processes -->
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
       <artifactId>groovy</artifactId>
     </dependency>
-    
+
     <!-- Testing -->
-	  <dependency>
-	    <groupId>junit</groupId>
-	    <artifactId>junit</artifactId>
-	  </dependency>
-   
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+
   </dependencies>
-  
+
   <repositories>
     <repository>
       <id>buzzmedia</id>

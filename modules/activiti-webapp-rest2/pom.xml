@@ -40,11 +40,6 @@
   </build>
 
   <dependencies>
-
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-engine</artifactId>
@@ -54,41 +49,12 @@
       <artifactId>activiti-spring</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-rest</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
     </dependency>
-    
-    <dependency>  
-      <groupId>org.restlet.jee</groupId>  
-      <artifactId>org.restlet</artifactId>   
-    </dependency>  
-    <dependency>  
-      <groupId>org.restlet.jee</groupId>  
-      <artifactId>org.restlet.ext.servlet</artifactId>   
-    </dependency>
-    <dependency>  
-      <groupId>org.restlet.jee</groupId>  
-      <artifactId>org.restlet.ext.jackson</artifactId>  
-    </dependency>
-    <dependency>  
-      <groupId>org.restlet.jee</groupId>  
-      <artifactId>org.restlet.ext.fileupload</artifactId>   
-    </dependency>
-    
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-fileupload</groupId>
-      <artifactId>commons-fileupload</artifactId>
-    </dependency>
-    
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-
   </dependencies>
 </project>

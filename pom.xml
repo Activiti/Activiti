@@ -184,6 +184,11 @@
         <groupId>org.activiti</groupId>
         <artifactId>activiti-modeler</artifactId>
         <version>${version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-rest</artifactId>
+        <version>${version}</version>
       </dependency> 
       <dependency>
         <groupId>org.activiti</groupId>
@@ -636,6 +641,8 @@
         <module>modules/activiti-modeler</module>
         <module>modules/activiti-explorer</module>
         <module>modules/activiti-webapp-explorer2</module>
+        <module>modules/activiti-rest</module>
+        <module>modules/activiti-webapp-rest2</module>
         <module>modules/activiti-spring</module>
         <module>modules/activiti-cxf</module>
         <module>modules/activiti-mule</module>
@@ -719,6 +726,7 @@
         <module>modules/activiti-json-converter</module>
         <module>modules/activiti-modeler</module>
         <module>modules/activiti-explorer</module>
+        <module>modules/activiti-rest</module>
         <module>modules/activiti-webapp-rest2</module>
         <module>modules/activiti-webapp-explorer2</module>
         <module>modules/activiti-cxf</module>
@@ -842,8 +850,8 @@
     <url>http://bamboo.ci.codehaus.org/browse/ACT</url>
   </ciManagement>
   <scm>
-    <connection>scm:svn:http://svn.codehaus.org/activiti/</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/activiti/</developerConnection>
+    <connection>scm:git:https://github.com/Activiti/Activiti.git</connection>
+    <developerConnection>scm:git:https://github.com/Activiti/Activiti.git</developerConnection>
   </scm>
 
 </project>
