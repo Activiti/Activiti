@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
@@ -150,7 +149,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     
     // test that the delete reason of the process instance shows up as delete reason of the task in history
     // ACT-848
-    if(!ProcessEngineConfiguration.HISTORY_NONE.equals(processEngineConfiguration.getHistory())) {
+    if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       
       HistoricTaskInstance historicTaskInstance = historyService
               .createHistoricTaskInstanceQuery()

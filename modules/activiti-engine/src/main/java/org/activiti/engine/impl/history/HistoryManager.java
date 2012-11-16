@@ -16,6 +16,8 @@ package org.activiti.engine.impl.history;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
@@ -48,6 +50,8 @@ import org.activiti.engine.task.IdentityLink;
  */
 public class HistoryManager extends AbstractManager {
   
+  private static Logger log = Logger.getLogger(HistoryManager.class.getName());
+  
   private HistoryLevel historyLevel;
   
   public HistoryManager() {
@@ -59,6 +63,9 @@ public class HistoryManager extends AbstractManager {
    * a higher value than the given level.
    */
   public boolean isHistoryLevelAtLeast(HistoryLevel level) {
+    if(log.isLoggable(Level.FINE)) {
+      log.fine("Current history level: " + historyLevel + ", level required: " + level);
+    }
     // Comparing enums actually compares the location of values declared in the enum
     return historyLevel.isAtLeast(level);
   }
@@ -67,6 +74,9 @@ public class HistoryManager extends AbstractManager {
    * @return true, if history-level is configured to level other than "none".
    */
   public boolean isHistoryEnabled() {
+    if(log.isLoggable(Level.FINE)) {
+      log.fine("Current history level: " + historyLevel);
+    }
     return !historyLevel.equals(HistoryLevel.NONE);
   }
   
