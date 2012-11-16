@@ -15,6 +15,7 @@ package org.activiti.engine.impl.history;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
@@ -28,6 +29,7 @@ import org.activiti.engine.impl.persistence.entity.CommentManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
+import org.activiti.engine.impl.persistence.entity.HistoricFormPropertyEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity;
@@ -273,7 +275,9 @@ public class HistoryManager extends AbstractManager {
   public void recordProcessDefinitionChange(String processInstanceId, String processDefinitionId) {
     if(isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       HistoricProcessInstanceEntity historicProcessInstance = getHistoricProcessInstanceManager().findHistoricProcessInstance(processInstanceId);
-      historicProcessInstance.setProcessDefinitionId(processDefinitionId);
+      if(historicProcessInstance != null) {
+        historicProcessInstance.setProcessDefinitionId(processDefinitionId);
+      }
     }
   }
   
@@ -448,7 +452,7 @@ public class HistoryManager extends AbstractManager {
    */
   public void recordVariableCreate(VariableInstanceEntity variable) {
     // Historic variables
-    if(isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
+    if(isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       HistoricVariableInstanceEntity historicVariableInstance = new HistoricVariableInstanceEntity(variable);
       getDbSqlSession().insert(historicVariableInstance);
     }
@@ -477,7 +481,7 @@ public class HistoryManager extends AbstractManager {
    * Record a variable has been updated, if audit history is enabled.
    */
   public void recordVariableUpdate(VariableInstanceEntity variable) {
-    if(isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
+    if(isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       HistoricVariableInstanceEntity historicProcessVariable = 
       getDbSqlSession().findInCache(HistoricVariableInstanceEntity.class, variable.getId());
       if (historicProcessVariable==null) {
@@ -548,6 +552,19 @@ public class HistoryManager extends AbstractManager {
       }
       comment.setMessage(attachmentName);
       getSession(CommentManager.class).insert(comment);
+    }
+  }
+
+  /**
+   * Report form properties submitted, if audit history is enabled.
+   */
+  public void reportFormPropertiesSubmitted(ExecutionEntity processInstance, Map<String, String> properties, String taskId) {
+    if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
+      for (String propertyId: properties.keySet()) {
+        String propertyValue = properties.get(propertyId);
+        HistoricFormPropertyEntity historicFormProperty = new HistoricFormPropertyEntity(processInstance, propertyId, propertyValue, taskId);
+        getDbSqlSession().insert(historicFormProperty);
+      }
     }
   }
 }

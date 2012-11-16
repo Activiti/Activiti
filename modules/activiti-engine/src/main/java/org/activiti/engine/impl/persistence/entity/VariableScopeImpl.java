@@ -375,13 +375,6 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     return variableInstance;
   }
 
-  protected void insertHistoricVariableInstance(VariableInstanceEntity variableInstance) {
-    HistoricVariableInstanceEntity historicVariableInstance = new HistoricVariableInstanceEntity(variableInstance);
-    Context
-      .getCommandContext()
-      .getDbSqlSession()
-      .insert(historicVariableInstance);
-  }
   
   /** 
    * Execution variable updates have activity instance ids, but historic task variable updates don't.
