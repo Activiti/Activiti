@@ -12,25 +12,39 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import java.util.List;
+
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.ProcessInstanceQueryImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionManager;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.ProcessInstance;
 
 /**
- * 
  * @author Daniel Meyer
+ * @author Joram Barrez
  */
 public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Void> {
   
   protected final String processDefinitionId;
-  private final String processDefinitionKey;
+  protected final String processDefinitionKey;
+  protected boolean includeProcessInstances = false;
+  protected int batchSize = 25;
 
   public AbstractSetProcessDefinitionStateCmd(String processDefinitionId, String processDefinitionKey) {
     this.processDefinitionId = processDefinitionId;
     this.processDefinitionKey = processDefinitionKey;
+  }
+  
+  public AbstractSetProcessDefinitionStateCmd(String processDefinitionId, String processDefinitionKey,
+            boolean includeProcessInstances, int batchSize) {
+    this(processDefinitionId, processDefinitionKey);
+    this.includeProcessInstances = includeProcessInstances;
+    this.batchSize = batchSize;
   }
   
   public Void execute(CommandContext commandContext) {
@@ -55,14 +69,41 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
     
     setState(processDefinitionEntity);
     
-    // evict cache
+    // Evict cache
     Context
       .getProcessEngineConfiguration()
       .getDeploymentCache().removeProcessDefinition(processDefinitionEntity.getId());
+    
+    // Suspend process instances (if needed)
+    if (includeProcessInstances) {
+      
+      int currentStartIndex = 0;
+      List<ProcessInstance> processInstances = fetchProcessInstancesPage(commandContext, processDefinitionEntity, currentStartIndex);
+      while (processInstances.size() > 0) {
+        
+        for (ProcessInstance processInstance : processInstances) {
+          AbstractSetProcessInstanceStateCmd processInstanceCmd = getProcessInstanceCmd(processInstance);
+          processInstanceCmd.execute(commandContext);
+        }
+        
+        // Fetch new batch of process instances
+        currentStartIndex += processInstances.size();
+        processInstances = fetchProcessInstancesPage(commandContext, processDefinitionEntity, currentStartIndex);
+      }
+      
+    }
 
     return null;
   }
+  
+  protected List<ProcessInstance> fetchProcessInstancesPage(CommandContext commandContext, 
+          ProcessDefinition processDefinition, int currentPageStartIndex) {
+    return new ProcessInstanceQueryImpl(commandContext)
+      .processDefinitionId(processDefinition.getId())
+      .listPage(currentPageStartIndex, batchSize);
+  }
 
   protected abstract void setState(ProcessDefinitionEntity processDefinitionEntity);
-
+  
+  protected abstract AbstractSetProcessInstanceStateCmd getProcessInstanceCmd(ProcessInstance processInstance); 
 }

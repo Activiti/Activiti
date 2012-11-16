@@ -95,17 +95,33 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
   public void suspendProcessDefinitionById(String processDefinitionId) {
     commandExecutor.execute(new SuspendProcessDefinitionCmd(processDefinitionId, null));
   }
-
+  
+  public void suspendProcessDefinitionById(String processDefinitionId, boolean suspendProcessInstances, int batchSize) {
+    commandExecutor.execute(new SuspendProcessDefinitionCmd(processDefinitionId, null, suspendProcessInstances, batchSize));
+  }
+  
   public void suspendProcessDefinitionByKey(String processDefinitionKey) {
     commandExecutor.execute(new SuspendProcessDefinitionCmd(null, processDefinitionKey));
   }
 
+  public void suspendProcessDefinitionByKey(String processDefinitionKey, boolean suspendProcessInstances, int batchSize) {
+    commandExecutor.execute(new SuspendProcessDefinitionCmd(null, processDefinitionKey, suspendProcessInstances, batchSize));
+  }
+  
   public void activateProcessDefinitionById(String processDefinitionId) {
     commandExecutor.execute(new ActivateProcessDefinitionCmd(processDefinitionId, null));
+  }
+  
+  public void activateProcessDefinitionById(String processDefinitionId, boolean activateProcessInstances, int batchSize) {
+    commandExecutor.execute(new ActivateProcessDefinitionCmd(processDefinitionId, null, activateProcessInstances, batchSize));
   }
 
   public void activateProcessDefinitionByKey(String processDefinitionKey) {
     commandExecutor.execute(new ActivateProcessDefinitionCmd(null, processDefinitionKey));
+  }
+  
+  public void activateProcessDefinitionByKey(String processDefinitionKey, boolean activateProcessInstances, int batchSize) {
+    commandExecutor.execute(new ActivateProcessDefinitionCmd(null, processDefinitionKey, activateProcessInstances, batchSize));
   }
 
   public InputStream getProcessModel(String processDefinitionId) {

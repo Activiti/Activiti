@@ -20,11 +20,13 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 
 
 /**
  * @author Daniel Meyer
+ * @author Joram Barrez
  */
 public class SignalEventReceivedCmd implements Command<Void> {
     
@@ -46,8 +48,21 @@ public class SignalEventReceivedCmd implements Command<Void> {
        signalEvents = commandContext.getEventSubscriptionManager()
         .findSignalEventSubscriptionsByEventName(eventName);              
     } else {
+      
+      ExecutionEntity execution = commandContext.getExecutionManager().findExecutionById(executionId);
+      
+      if (execution == null) {
+        throw new ActivitiException("Cannot find execution with id '" + executionId + "'");
+      }
+      
+      if (execution.isSuspended()) {
+        throw new ActivitiException("Cannot throw signal event '" + eventName 
+                + "' because execution '" + executionId + "' is suspended");
+      }
+      
       signalEvents = commandContext.getEventSubscriptionManager()
         .findSignalEventSubscriptionsByNameAndExecution(eventName, executionId);
+      
       if(signalEvents.isEmpty()) {
         throw new ActivitiException("Execution '"+executionId+"' has not subscribed to a signal event with name '"+eventName+"'.");      
       }

@@ -15,19 +15,29 @@ package org.activiti.engine.impl.cmd;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
 import org.activiti.engine.impl.persistence.entity.SuspensionState.SuspensionStateUtil;
+import org.activiti.engine.runtime.ProcessInstance;
 
 /**
- * 
  * @author Daniel Meyer
+ * @author Joram Barrez
  */
 public class SuspendProcessDefinitionCmd extends AbstractSetProcessDefinitionStateCmd {
 
   public SuspendProcessDefinitionCmd(String processDefinitionId, String processDefinitionKey) {
     super(processDefinitionId, processDefinitionKey);
   }
+  
+  public SuspendProcessDefinitionCmd(String processDefinitionId, String processDefinitionKey,
+          boolean suspendProcessInstances, int batchSize) {
+    super(processDefinitionId, processDefinitionKey, suspendProcessInstances, batchSize);
+  }
 
   protected void setState(ProcessDefinitionEntity processDefinitionEntity) {    
       SuspensionStateUtil.setSuspensionState(processDefinitionEntity, SuspensionState.SUSPENDED);   
+  }
+  
+  protected AbstractSetProcessInstanceStateCmd getProcessInstanceCmd(ProcessInstance processInstance) {
+    return new SuspendProcessInstanceCmd(processInstance.getId());
   }
   
 }

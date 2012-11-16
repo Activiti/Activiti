@@ -19,32 +19,31 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.event.MessageEventHandler;
-import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 
 /**
  * @author Daniel Meyer
+ * @author Joram Barrez
  */
-public class MessageEventReceivedCmd implements Command<Void> {
+public class MessageEventReceivedCmd extends NeedsActiveExecutionCmd<Void> {
+  
+  private static final long serialVersionUID = 1L;
   
   protected final Map<String, Object> processVariables;
   protected final String messageName;
-  protected final String executionId;
 
   public MessageEventReceivedCmd(String messageName, String executionId, Map<String, Object> processVariables) {
+    super(executionId);
     this.messageName = messageName;
-    this.executionId = executionId;
     this.processVariables = processVariables;
   }
 
-  public Void execute(CommandContext commandContext) {
+  protected Void execute(CommandContext commandContext, ExecutionEntity execution) {
     if(messageName == null) {
       throw new ActivitiException("messageName cannot be null");
-    }
-    if(executionId == null) {
-      throw new ActivitiException("executionId cannot be null");
     }
     
     List<EventSubscriptionEntity> eventSubscriptions = commandContext.getEventSubscriptionManager()

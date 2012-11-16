@@ -82,22 +82,58 @@ public interface RepositoryService {
   /**
    * Suspends the process definition with the given id. 
    * 
-   * If a process definition is in state suspended, Activiti will not 
-   * execute jobs (timers, asynchronous continuations) associated with any process instance of the given definition.
+   * If a process definition is in state suspended, it will not be possible to start new process instances
+   * based on the process definition.
+   * 
+   * <strong>Note: all the process instances of the process definition will still be active 
+   * (ie. not suspended)!</strong>
    * 
    *  @throws ActivitiException if no such processDefinition can be found or if the process definition is already in state suspended.
    */
   void suspendProcessDefinitionById(String processDefinitionId);
+
+  /**
+   * Suspends the process definition with the given id. 
+   * 
+   * If a process definition is in state suspended, it will not be possible to start new process instances
+   * based on the process definition.
+   * 
+   * @param suspendProcessInstances If true, all the process instances of the provided process definition
+   *                                will be suspended too.
+   * @param batchSize The number of process instances that will be fetched at the same time when 
+   *                  looping over all process instances to suspend. This will only matter if 
+   *                  the 'suspendProcessInstances' parameter is set to true. Default is 25.                  
+   *  @throws ActivitiException if no such processDefinition can be found or if the process definition is already in state suspended.
+   */
+  void suspendProcessDefinitionById(String processDefinitionId, boolean suspendProcessInstances, int batchSize);
   
   /**
-   * Suspends the process definition with the given key (=id in the bpmn20.xml file). 
+   * Suspends the process definition with the given key (= id in the bpmn20.xml file). 
    * 
-   * If a process definition is in state suspended, Activiti will not 
-   * execute jobs (timers, asynchronous continuations) associated with any process instance of the given definition.
+   * If a process definition is in state suspended, it will not be possible to start new process instances
+   * based on the process definition.
    * 
-   * @throws ActivitiException if no such processDefinition can be found or if the process definition is already in state suspended.
+   * <strong>Note: all the process instances of the process definition will still be active 
+   * (ie. not suspended)!</strong>
+   * 
+   *  @throws ActivitiException if no such processDefinition can be found or if the process definition is already in state suspended.
    */
   void suspendProcessDefinitionByKey(String processDefinitionKey);
+  
+  /**
+   * Suspends the process definition with the given key (= id in the bpmn20.xml file). 
+   * 
+   * If a process definition is in state suspended, it will not be possible to start new process instances
+   * based on the process definition.
+   * 
+   * @param suspendProcessInstances If true, all the process instances of the provided process definition
+   *                                will be suspended too.
+   * @param batchSize The number of process instances that will be fetched at the same time when 
+   *                  looping over all process instances to suspend. This will only matter if 
+   *                  the 'suspendProcessInstances' parameter is set to true. Default is 25.                  
+   *  @throws ActivitiException if no such processDefinition can be found or if the process definition is already in state suspended.
+   */
+  void suspendProcessDefinitionByKey(String processDefinitionKey, boolean suspendProcessInstances, int batchSize);
   
   /**
    * Activates the process definition with the given id. 
@@ -107,11 +143,37 @@ public interface RepositoryService {
   void activateProcessDefinitionById(String processDefinitionId);
   
   /**
+   * Activates the process definition with the given id. 
+   * 
+   * @param suspendProcessInstances If true, all the process instances of the provided process definition
+   *                                will be activated too.
+   * @param batchSize The number of process instances that will be fetched at the same time when 
+   *                  looping over all process instances to activate. This will only matter if 
+   *                  the 'activateProcessInstances' parameter is set to true. Default is 25.   
+   * 
+   * @throws ActivitiException if no such processDefinition can be found or if the process definition is already in state active.
+   */
+  void activateProcessDefinitionById(String processDefinitionId, boolean activateProcessInstances, int batchSize);
+  
+  /**
    * Activates the process definition with the given key (=id in the bpmn20.xml file). 
    * 
    * @throws ActivitiException if no such processDefinition can be found or if the process definition is already in state active.
    */
   void activateProcessDefinitionByKey(String processDefinitionKey);
+  
+  /**
+   * Activates the process definition with the given key (=id in the bpmn20.xml file). 
+   * 
+   * @param suspendProcessInstances If true, all the process instances of the provided process definition
+   *                                will be activated too.
+   * @param batchSize The number of process instances that will be fetched at the same time when 
+   *                  looping over all process instances to activate. This will only matter if 
+   *                  the 'activateProcessInstances' parameter is set to true. Default is 25. 
+   * 
+   * @throws ActivitiException if no such processDefinition can be found or if the process definition is already in state active.
+   */
+  void activateProcessDefinitionByKey(String processDefinitionKey, boolean activateProcessInstances, int batchSize);
 
   /**
    * Gives access to a deployed process model, e.g., a BPMN 2.0 XML file,
