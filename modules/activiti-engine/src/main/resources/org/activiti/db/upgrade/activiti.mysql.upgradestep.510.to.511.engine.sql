@@ -27,3 +27,5 @@ create table ACT_RE_MODEL (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 delete from ACT_GE_PROPERTY where NAME_ = 'historyLevel';
+
+update ACT_GE_PROPERTY set VALUE_ = '5.11' where NAME_ = 'schema.version';

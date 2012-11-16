@@ -750,7 +750,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
 
     // Verifying odd usages
     assertEquals(0, query.listPage(-1, -1).size());
-    assertEquals(0, query.listPage(11, 3).size()); // 10 is the last index with a result
+    assertEquals(0, query.listPage(11, 2).size()); // 10 is the last index with a result
     assertEquals(11, query.listPage(0, 15).size()); // there are only 11 tasks
   }
   

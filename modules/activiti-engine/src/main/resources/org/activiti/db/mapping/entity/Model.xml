@@ -120,7 +120,7 @@
   <!-- mssql specific -->
   <select id="selectModelsByQueryCriteria_mssql" parameterType="org.activiti.engine.impl.ModelQueryImpl" resultMap="modelResultMap">
   	${limitBefore}
-    select RES.* ${limitBetween}
+    select distinct RES.* ${limitBetween}
     <include refid="selectModelsByQueryCriteriaSql"/>
    	${orderBy}
     ${limitAfter}
@@ -129,7 +129,7 @@
   <!-- db2 specific -->
   <select id="selectModelsByQueryCriteria_db2" parameterType="org.activiti.engine.impl.ModelQueryImpl" resultMap="modelResultMap">
     ${limitBefore}
-    select RES.* ${limitBetween}
+    select distinct RES.* ${limitBetween}
     <include refid="selectModelsByQueryCriteriaSql"/>
     ${orderBy}
     ${limitAfter}

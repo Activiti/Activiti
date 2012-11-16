@@ -335,12 +335,12 @@ public class DbSqlSession implements Session {
       return loadedObjects;
     }
     
-    Map<String, PersistentObject> filteredObjectsMap = new LinkedHashMap<String, PersistentObject>(loadedObjects.size());
+    List<PersistentObject> filteredObjects = new ArrayList<PersistentObject>(loadedObjects.size());
     for (Object loadedObject: loadedObjects) {
       PersistentObject cachedPersistentObject = cacheFilter((PersistentObject) loadedObject);
-      filteredObjectsMap.put(cachedPersistentObject.getId(), cachedPersistentObject);
+      filteredObjects.add(cachedPersistentObject);
     }
-    return new ArrayList<PersistentObject>(filteredObjectsMap.values());
+    return filteredObjects;
   }
 
   protected CachedObject cachePut(PersistentObject persistentObject, boolean storeState) {
