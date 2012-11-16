@@ -20,8 +20,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -263,7 +263,7 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
   @Deployment(resources = {"org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"})
   // ACT-1098
   public void testDeleteReason() {
-    if(!ProcessEngineConfiguration.HISTORY_NONE.equals(processEngineConfiguration.getHistory())) {
+    if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       final String deleteReason = "some delete reason";
       ProcessInstance pi = runtimeService.startProcessInstanceByKey("oneTaskProcess");
       runtimeService.deleteProcessInstance(pi.getId(), deleteReason);
