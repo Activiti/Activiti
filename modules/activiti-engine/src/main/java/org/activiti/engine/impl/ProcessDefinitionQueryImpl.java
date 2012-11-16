@@ -13,9 +13,12 @@
 
 package org.activiti.engine.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.identity.Group;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
@@ -197,6 +200,23 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     this.eventSubscriptionType = eventType;
     this.eventSubscriptionName = eventName;
     return this;
+  }
+  
+  public List<String> getAuthorizationGroups() {
+    // Simmilar behaviour as the TaskQuery.taskCandidateUser() which includes the groups the candidate
+    // user is part of
+    if(authorizationUserId != null) {
+      List<Group> groups = Context
+              .getCommandContext()
+              .getGroupManager()
+              .findGroupsByUser(authorizationUserId);
+            List<String> groupIds = new ArrayList<String>();
+            for (Group group : groups) {
+              groupIds.add(group.getId());
+            }
+            return groupIds;
+    }
+    return null;
   }
   
   //sorting ////////////////////////////////////////////
