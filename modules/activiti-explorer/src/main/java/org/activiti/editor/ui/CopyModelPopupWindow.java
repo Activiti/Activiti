@@ -127,8 +127,6 @@ public class CopyModelPopupWindow extends PopupWindow implements ModelDataJsonCo
         }
         
         Model newModelData = repositoryService.newModel();
-        newModelData.setEditorSource(modelData.getEditorSource());
-        newModelData.setEditorSourceExtra(modelData.getEditorSourceExtra());
         
         ObjectNode modelObjectNode = new ObjectMapper().createObjectNode();
         modelObjectNode.put(MODEL_NAME, (String) nameTextField.getValue());
@@ -143,6 +141,10 @@ public class CopyModelPopupWindow extends PopupWindow implements ModelDataJsonCo
         newModelData.setName((String) nameTextField.getValue());
         
         repositoryService.saveModel(newModelData);
+        
+        repositoryService.addModelEditorSource(newModelData.getId(), repositoryService.getModelEditorSource(modelData.getId()));
+        repositoryService.addModelEditorSourceExtra(newModelData.getId(), repositoryService.getModelEditorSourceExtra(modelData.getId()));
+        
         close();
         ExplorerApp.get().getViewManager().showEditorProcessDefinitionPage(newModelData.getId());
       }

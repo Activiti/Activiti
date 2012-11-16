@@ -175,14 +175,17 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
     Model model = repositoryService.newModel();
     model.setName("Test model");
     byte[] testSource = "modelsource".getBytes("utf-8");
-    assertNotNull(testSource);
-    model.setEditorSource(testSource);
     repositoryService.saveModel(model);
     
     assertNotNull(model.getId());
+    repositoryService.addModelEditorSource(model.getId(), testSource);
+    
     model = repositoryService.getModel(model.getId());
     assertNotNull(model);
-    assertEquals("modelsource", new String(model.getEditorSource(), "utf-8"));
+    assertEquals("Test model", model.getName());
+    
+    byte[] editorSourceBytes = repositoryService.getModelEditorSource(model.getId());
+    assertEquals("modelsource", new String(editorSourceBytes, "utf-8"));
     
     repositoryService.deleteModel(model.getId());
   }
@@ -204,9 +207,11 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
     model.setCategory("New category");
     model.setMetaInfo("test");
     model.setVersion(2);
-    model.setEditorSource("new".getBytes("utf-8"));
-    model.setEditorSourceExtra("new".getBytes("utf-8"));
     repositoryService.saveModel(model);
+    
+    assertNotNull(model.getId());
+    repositoryService.addModelEditorSource(model.getId(), "new".getBytes("utf-8"));
+    repositoryService.addModelEditorSourceExtra(model.getId(), "new".getBytes("utf-8"));
     
     model = repositoryService.getModel(model.getId());
     
@@ -215,8 +220,8 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
     assertEquals("test", model.getMetaInfo());
     assertNotNull(model.getCreateTime());
     assertEquals(Integer.valueOf(2), model.getVersion());
-    assertEquals("new", new String(model.getEditorSource(), "utf-8"));
-    assertEquals("new", new String(model.getEditorSourceExtra(), "utf-8"));
+    assertEquals("new", new String(repositoryService.getModelEditorSource(model.getId()), "utf-8"));
+    assertEquals("new", new String(repositoryService.getModelEditorSourceExtra(model.getId()), "utf-8"));
     
     repositoryService.deleteModel(model.getId());
   }

@@ -136,7 +136,6 @@ public class NewModelPopupWindow extends PopupWindow implements ModelDataJsonCon
           stencilSetNode.put("namespace", "http://b3mn.org/stencilset/bpmn2.0#");
           editorNode.put("stencilset", stencilSetNode);
           Model modelData = repositoryService.newModel();
-          modelData.setEditorSource(editorNode.toString().getBytes("utf-8"));
           
           ObjectNode modelObjectNode = objectMapper.createObjectNode();
           modelObjectNode.put(MODEL_NAME, (String) nameTextField.getValue());
@@ -151,6 +150,9 @@ public class NewModelPopupWindow extends PopupWindow implements ModelDataJsonCon
           modelData.setMetaInfo(modelObjectNode.toString());
           
           repositoryService.saveModel(modelData);
+          
+          repositoryService.addModelEditorSource(modelData.getId(), editorNode.toString().getBytes("utf-8"));
+          
           close();
           ExplorerApp.get().getViewManager().showEditorProcessDefinitionPage(modelData.getId());
           ExplorerApp.get().getMainWindow().open(new ExternalResource(

@@ -127,7 +127,6 @@ public class ConvertProcessDefinitionPopupWindow extends PopupWindow implements 
           BpmnJsonConverter converter = new BpmnJsonConverter();
           ObjectNode modelNode = converter.convertToJson(model);
           Model modelData = repositoryService.newModel();
-          modelData.setEditorSource(modelNode.toString().getBytes("utf-8"));
           
           ObjectNode modelObjectNode = new ObjectMapper().createObjectNode();
           modelObjectNode.put(MODEL_NAME, processDefinition.getName());
@@ -136,6 +135,9 @@ public class ConvertProcessDefinitionPopupWindow extends PopupWindow implements 
           modelData.setMetaInfo(modelObjectNode.toString());
           
           repositoryService.saveModel(modelData);
+          
+          repositoryService.addModelEditorSource(modelData.getId(), modelNode.toString().getBytes("utf-8"));
+          
           close();
           ExplorerApp.get().getViewManager().showEditorProcessDefinitionPage(modelData.getId());
           ExplorerApp.get().getMainWindow().open(new ExternalResource(

@@ -52,7 +52,7 @@ public class DeployProcessDefinitionClickListener implements ClickListener {
   public void buttonClick(ClickEvent event) {
     
     try {
-      ObjectNode modelNode = (ObjectNode) new ObjectMapper().readTree(modelData.getEditorSource());
+      ObjectNode modelNode = (ObjectNode) new ObjectMapper().readTree(repositoryService.getModelEditorSource(modelData.getId()));
       BpmnModel model = new BpmnJsonConverter().convertToBpmnModel(modelNode);
       byte[] bpmnBytes = new BpmnXMLConverter().convertToXML(model);
       

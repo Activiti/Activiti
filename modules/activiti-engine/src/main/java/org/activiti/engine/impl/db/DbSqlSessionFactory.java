@@ -79,10 +79,6 @@ public class DbSqlSessionFactory implements SessionFactory {
     addDatabaseSpecificStatement("postgres", "insertComment", "insertComment_postgres");
     addDatabaseSpecificStatement("postgres", "selectCommentsByTaskId", "selectCommentsByTaskId_postgres");
     addDatabaseSpecificStatement("postgres", "selectCommentsByProcessInstanceId", "selectCommentsByProcessInstanceId_postgres");
-    addDatabaseSpecificStatement("postgres", "insertModel", "insertModel_postgres");
-    addDatabaseSpecificStatement("postgres", "updateModel", "updateModel_postgres");
-    addDatabaseSpecificStatement("postgres", "selectModelsByQueryCriteria", "selectModelsByQueryCriteria_postgres");
-    addDatabaseSpecificStatement("postgres", "selectModel", "selectModel_postgres");
     addDatabaseSpecificStatement("postgres", "selectEventsByTaskId", "selectEventsByTaskId_postgres");
         
     // oracle
@@ -98,7 +94,6 @@ public class DbSqlSessionFactory implements SessionFactory {
     databaseSpecificLimitBetweenStatements.put("db2", ", row_number() over (ORDER BY ${orderBy}) rnk FROM ( select distinct RES.* ");
     databaseSpecificOrderByStatements.put("db2", "");
     addDatabaseSpecificStatement("db2", "selectExclusiveJobsToExecute", "selectExclusiveJobsToExecute_integerBoolean");
-    addDatabaseSpecificStatement("db2", "selectModelsByQueryCriteria", "selectModelsByQueryCriteria_db2");
     
     // mssql
     databaseSpecificLimitBeforeStatements.put("mssql", "SELECT SUB.* FROM (");
@@ -106,7 +101,6 @@ public class DbSqlSessionFactory implements SessionFactory {
     databaseSpecificLimitBetweenStatements.put("mssql", ", row_number() over (ORDER BY ${orderBy}) rnk FROM ( select distinct RES.* ");
     databaseSpecificOrderByStatements.put("mssql", "");
     addDatabaseSpecificStatement("mssql", "selectExclusiveJobsToExecute", "selectExclusiveJobsToExecute_integerBoolean");
-    addDatabaseSpecificStatement("mssql", "selectModelsByQueryCriteria", "selectModelsByQueryCriteria_mssql");
   }
   
   protected String databaseType;

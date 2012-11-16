@@ -18,6 +18,8 @@ import java.util.List;
 
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.cmd.ActivateProcessDefinitionCmd;
+import org.activiti.engine.impl.cmd.AddEditorSourceExtraForModelCmd;
+import org.activiti.engine.impl.cmd.AddEditorSourceForModelCmd;
 import org.activiti.engine.impl.cmd.AddIdentityLinkForProcessDefinitionCmd;
 import org.activiti.engine.impl.cmd.CreateModelCmd;
 import org.activiti.engine.impl.cmd.DeleteDeploymentCmd;
@@ -32,6 +34,8 @@ import org.activiti.engine.impl.cmd.GetDeploymentResourceCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentResourceNamesCmd;
 import org.activiti.engine.impl.cmd.GetIdentityLinksForProcessDefinitionCmd;
 import org.activiti.engine.impl.cmd.GetModelCmd;
+import org.activiti.engine.impl.cmd.GetModelEditorSourceCmd;
+import org.activiti.engine.impl.cmd.GetModelEditorSourceExtraCmd;
 import org.activiti.engine.impl.cmd.SaveModelCmd;
 import org.activiti.engine.impl.cmd.SuspendProcessDefinitionCmd;
 import org.activiti.engine.impl.persistence.entity.ModelEntity;
@@ -139,12 +143,28 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
     commandExecutor.execute(new DeleteModelCmd(modelId));
   }
   
+  public void addModelEditorSource(String modelId, byte[] bytes) {
+    commandExecutor.execute(new AddEditorSourceForModelCmd(modelId, bytes));
+  }
+  
+  public void addModelEditorSourceExtra(String modelId, byte[] bytes) {
+    commandExecutor.execute(new AddEditorSourceExtraForModelCmd(modelId, bytes));
+  }
+  
   public ModelQuery createModelQuery() {
     return new ModelQueryImpl(commandExecutor);
   }
   
   public Model getModel(String modelId) {
     return commandExecutor.execute(new GetModelCmd(modelId));
+  }
+  
+  public byte[] getModelEditorSource(String modelId) {
+    return commandExecutor.execute(new GetModelEditorSourceCmd(modelId));
+  }
+  
+  public byte[] getModelEditorSourceExtra(String modelId) {
+    return commandExecutor.execute(new GetModelEditorSourceExtraCmd(modelId));
   }
   
   public void addCandidateStarterUser(String processDefinitionId, String userId) {

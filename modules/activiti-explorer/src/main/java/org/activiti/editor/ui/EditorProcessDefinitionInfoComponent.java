@@ -19,6 +19,8 @@ import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Model;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
@@ -47,6 +49,7 @@ public class EditorProcessDefinitionInfoComponent extends VerticalLayout {
   private static final long serialVersionUID = 1L;
 
   // Services
+  protected RepositoryService repositoryService;
   protected I18nManager i18nManager;
   
   // Members
@@ -59,6 +62,7 @@ public class EditorProcessDefinitionInfoComponent extends VerticalLayout {
   
   public EditorProcessDefinitionInfoComponent(Model model) {
     super();
+    this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
     this.i18nManager = ExplorerApp.get().getI18nManager(); 
     
     this.modelData = model;
@@ -76,8 +80,9 @@ public class EditorProcessDefinitionInfoComponent extends VerticalLayout {
     processImageContainer.addComponent(processTitle);
     
     StreamSource streamSource = null;
-    if (modelData.getEditorSourceExtra() != null) {
-      InputStream svgStream = new ByteArrayInputStream(modelData.getEditorSourceExtra());
+    byte[] editorSourceExtra = repositoryService.getModelEditorSourceExtra(modelData.getId());
+    if (editorSourceExtra != null) {
+      InputStream svgStream = new ByteArrayInputStream(editorSourceExtra);
       TranscoderInput input = new TranscoderInput(svgStream);
       
       PNGTranscoder transcoder = new PNGTranscoder();

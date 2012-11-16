@@ -7,15 +7,9 @@
   <!-- MODEL INSERT -->
   
   <insert id="insertModel" parameterType="org.activiti.engine.impl.persistence.entity.ModelEntity">
-    insert into ${prefix}ACT_RE_MODEL(ID_, NAME_, CATEGORY_, CREATE_TIME_, VERSION_, META_INFO_, EDITOR_SOURCE_, EDITOR_SOURCE_EXTRA_)
+    insert into ${prefix}ACT_RE_MODEL(ID_, NAME_, CATEGORY_, CREATE_TIME_, VERSION_, META_INFO_, EDITOR_SOURCE_VALUE_ID_, EDITOR_SOURCE_EXTRA_VALUE_ID_)
     values(#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{category, jdbcType=VARCHAR}, #{createTime, jdbcType=TIMESTAMP},
-    1, #{metaInfo, jdbcType=VARCHAR}, #{editorSource, jdbcType=BLOB}, #{editorSourceExtra, jdbcType=BLOB})
-  </insert>
-  
-  <insert id="insertModel_postgres" parameterType="org.activiti.engine.impl.persistence.entity.ModelEntity">
-    insert into ${prefix}ACT_RE_MODEL(ID_, NAME_, CATEGORY_, CREATE_TIME_, VERSION_, META_INFO_, EDITOR_SOURCE_, EDITOR_SOURCE_EXTRA_)
-    values(#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{category, jdbcType=VARCHAR}, #{createTime, jdbcType=TIMESTAMP},
-    1, #{metaInfo, jdbcType=VARCHAR}, #{editorSource, jdbcType=BINARY}, #{editorSourceExtra, jdbcType=BINARY})
+    1, #{metaInfo, jdbcType=VARCHAR}, #{editorSourceValueId, jdbcType=VARCHAR}, #{editorSourceExtraValueId, jdbcType=VARCHAR})
   </insert>
   
   <!-- MODEL UPDATE -->
@@ -25,21 +19,11 @@
       CATEGORY_ = #{category, jdbcType=VARCHAR},
       VERSION_ = #{version, jdbcType=INTEGER},
       META_INFO_ = #{metaInfo, jdbcType=VARCHAR},
-      EDITOR_SOURCE_ = #{editorSource, jdbcType=BLOB},
-      EDITOR_SOURCE_EXTRA_ = #{editorSourceExtra, jdbcType=BLOB}
+      EDITOR_SOURCE_VALUE_ID_ = #{editorSourceValueId, jdbcType=VARCHAR},
+      EDITOR_SOURCE_EXTRA_VALUE_ID_ = #{editorSourceExtraValueId, jdbcType=VARCHAR}
     where ID_ = #{id, jdbcType=VARCHAR}
   </update>
-  
-  <update id="updateModel_postgres" parameterType="org.activiti.engine.impl.persistence.entity.ModelEntity">
-    update ${prefix}ACT_RE_MODEL set
-      NAME_ = #{name, jdbcType=VARCHAR},
-      CATEGORY_ = #{category, jdbcType=VARCHAR},
-      VERSION_ = #{version, jdbcType=INTEGER},
-      META_INFO_ = #{metaInfo, jdbcType=VARCHAR},
-      EDITOR_SOURCE_ = #{editorSource, jdbcType=BINARY},
-      EDITOR_SOURCE_EXTRA_ = #{editorSourceExtra, jdbcType=BINARY}
-    where ID_ = #{id, jdbcType=VARCHAR}
-  </update>
+
   
   <!-- MODEL DELETE -->
   
@@ -56,19 +40,8 @@
     <result property="createTime" column="CREATE_TIME_" jdbcType="TIMESTAMP"/>
     <result property="version" column="VERSION_" jdbcType="INTEGER" />
     <result property="metaInfo" column="META_INFO_" jdbcType="VARCHAR" />
-    <result property="editorSource" column="EDITOR_SOURCE_" jdbcType="BLOB" />
-    <result property="editorSourceExtra" column="EDITOR_SOURCE_EXTRA_" jdbcType="BLOB" />
-  </resultMap>
-  
-  <resultMap id="modelResultMap_postgres" type="org.activiti.engine.impl.persistence.entity.ModelEntity">
-    <id property="id" column="ID_" jdbcType="VARCHAR" />
-    <result property="name" column="NAME_" jdbcType="VARCHAR" />
-    <result property="category" column="CATEGORY_" jdbcType="VARCHAR" />
-    <result property="createTime" column="CREATE_TIME_" jdbcType="TIMESTAMP"/>
-    <result property="version" column="VERSION_" jdbcType="INTEGER" />
-    <result property="metaInfo" column="META_INFO_" jdbcType="VARCHAR" />
-    <result property="editorSource" column="EDITOR_SOURCE_" jdbcType="BINARY" />
-    <result property="editorSourceExtra" column="EDITOR_SOURCE_EXTRA_" jdbcType="BINARY" />
+    <result property="editorSourceValueId" column="EDITOR_SOURCE_VALUE_ID_" jdbcType="VARCHAR" />
+    <result property="editorSourceExtraValueId" column="EDITOR_SOURCE_EXTRA_VALUE_ID_" jdbcType="VARCHAR" />
   </resultMap>
 
   <!-- MODEL SELECT -->
@@ -116,42 +89,11 @@
   <select id="selectModel" parameterType="string" resultMap="modelResultMap">
     select * from ${prefix}ACT_RE_MODEL where ID_ = #{id}
   </select>
-
-  <!-- mssql specific -->
-  <select id="selectModelsByQueryCriteria_mssql" parameterType="org.activiti.engine.impl.ModelQueryImpl" resultMap="modelResultMap">
-  	${limitBefore}
-    select distinct RES.* ${limitBetween}
-    <include refid="selectModelsByQueryCriteriaSql"/>
-   	${orderBy}
-    ${limitAfter}
-  </select>
-  
-  <!-- db2 specific -->
-  <select id="selectModelsByQueryCriteria_db2" parameterType="org.activiti.engine.impl.ModelQueryImpl" resultMap="modelResultMap">
-    ${limitBefore}
-    select distinct RES.* ${limitBetween}
-    <include refid="selectModelsByQueryCriteriaSql"/>
-    ${orderBy}
-    ${limitAfter}
-  </select>
   
   <!-- mysql specific -->
   <select id="selectModelCountByQueryCriteria_mysql" parameterType="org.activiti.engine.impl.ModelQueryImpl" resultType="long">
     select distinct count(RES.ID_)
     <include refid="selectModelsByQueryCriteriaSql"/>
-  </select>
-  
-  <!-- postgres specific -->
-  <select id="selectModelsByQueryCriteria_postgres" parameterType="org.activiti.engine.impl.ModelQueryImpl" resultMap="modelResultMap_postgres">
-    ${limitBefore}
-    select distinct RES.* ${limitBetween}
-    <include refid="selectModelsByQueryCriteriaSql"/>
-    ${orderBy}
-    ${limitAfter}
-  </select>
-  
-  <select id="selectModel_postgres" parameterType="string" resultMap="modelResultMap_postgres">
-    select * from ${prefix}ACT_RE_MODEL where ID_ = #{id}
   </select>
 
 </mapper>

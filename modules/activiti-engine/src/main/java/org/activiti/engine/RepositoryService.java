@@ -16,13 +16,6 @@ package org.activiti.engine;
 import java.io.InputStream;
 import java.util.List;
 
-import org.activiti.engine.identity.User;
-import org.activiti.engine.impl.ModelQueryImpl;
-import org.activiti.engine.impl.cmd.CreateModelCmd;
-import org.activiti.engine.impl.cmd.DeleteModelCmd;
-import org.activiti.engine.impl.cmd.GetModelCmd;
-import org.activiti.engine.impl.cmd.SaveModelCmd;
-import org.activiti.engine.impl.persistence.entity.ModelEntity;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.engine.repository.DiagramLayout;
@@ -182,6 +175,20 @@ public interface RepositoryService {
    */
   public void deleteModel(String modelId);
   
+  /**
+   * Saves the model editor source for a model
+   * @param modelId id of model to delete, cannot be null. When an id is passed
+   * for an unexisting model, this operation is ignored.
+   */
+  public void addModelEditorSource(String modelId, byte[] bytes);
+  
+  /**
+   * Saves the model editor source extra for a model
+   * @param modelId id of model to delete, cannot be null. When an id is passed
+   * for an unexisting model, this operation is ignored.
+   */
+  public void addModelEditorSourceExtra(String modelId, byte[] bytes);
+  
   /** Query models. */
   public ModelQuery createModelQuery();
   
@@ -190,6 +197,18 @@ public interface RepositoryService {
    * @param modelId id of model
    */
   public Model getModel(String modelId);
+  
+  /**
+   * Returns the model editor source as a byte array
+   * @param modelId id of model
+   */
+  public byte[] getModelEditorSource(String modelId);
+  
+  /**
+   * Returns the model editor source extra as a byte array
+   * @param modelId id of model
+   */
+  public byte[] getModelEditorSourceExtra(String modelId);
   
   /**
    * Authorizes a candidate user for a process definition.

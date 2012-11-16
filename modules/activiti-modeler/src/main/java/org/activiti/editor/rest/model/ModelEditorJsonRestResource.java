@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 
 import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Model;
 import org.apache.commons.lang.math.NumberUtils;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -39,13 +40,14 @@ public class ModelEditorJsonRestResource extends ServerResource implements Model
     String modelId = (String) getRequest().getAttributes().get("modelId");
     
     if(NumberUtils.isNumber(modelId)) {
-      Model model = ProcessEngines.getDefaultProcessEngine().getRepositoryService().getModel(modelId);
+      RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+      Model model = repositoryService.getModel(modelId);
       
       if (model != null) {
         try {
           modelNode = (ObjectNode) objectMapper.readTree(model.getMetaInfo());
           modelNode.put(MODEL_ID, model.getId());
-          ObjectNode editorJsonNode = (ObjectNode) objectMapper.readTree(new String(model.getEditorSource(), "utf-8"));
+          ObjectNode editorJsonNode = (ObjectNode) objectMapper.readTree(new String(repositoryService.getModelEditorSource(model.getId()), "utf-8"));
           modelNode.put("model", editorJsonNode);
           
         } catch(Exception e) {

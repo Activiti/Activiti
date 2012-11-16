@@ -155,21 +155,21 @@ public class DemoDataGenerator implements ModelDataJsonConstants {
     modelObjectNode.put(MODEL_DESCRIPTION, description);
     model.setMetaInfo(modelObjectNode.toString());
     
+    repositoryService.saveModel(model);
+    
     try {
       InputStream svgStream = this.getClass().getClassLoader().getResourceAsStream("org/activiti/explorer/demo/model/test.svg");
-      model.setEditorSourceExtra(IOUtils.toByteArray(svgStream));
+      repositoryService.addModelEditorSourceExtra(model.getId(), IOUtils.toByteArray(svgStream));
     } catch(Exception e) {
       LOGGER.log(Level.WARNING, "Failed to read SVG", e);
     }
     
     try {
       InputStream editorJsonStream = this.getClass().getClassLoader().getResourceAsStream(jsonFile);
-      model.setEditorSource(IOUtils.toByteArray(editorJsonStream));
+      repositoryService.addModelEditorSource(model.getId(), IOUtils.toByteArray(editorJsonStream));
     } catch(Exception e) {
       LOGGER.log(Level.WARNING, "Failed to read editor JSON", e);
     }
-    
-    repositoryService.saveModel(model);
   }
 
 }

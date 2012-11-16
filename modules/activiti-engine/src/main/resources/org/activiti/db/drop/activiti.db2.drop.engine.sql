@@ -49,6 +49,12 @@ alter table ACT_RU_JOB
 alter table ACT_RU_EVENT_SUBSCR
     drop foreign key ACT_FK_EVENT_EXEC;
 
+alter table ACT_RE_MODEL 
+    drop foreign key ACT_FK_MODEL_SOURCE;
+
+alter table ACT_RE_MODEL 
+    drop foreign key ACT_FK_MODEL_SOURCE_EXTRA; 
+
 drop index ACT_IDX_EVENT_SUBSCR_CONFIG_;
 drop index ACT_IDX_ATHRZ_PROCEDEF;
     

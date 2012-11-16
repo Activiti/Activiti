@@ -47,6 +47,12 @@ alter table ACT_RU_JOB
 alter table ACT_RU_EVENT_SUBSCR
     drop constraint ACT_FK_EVENT_EXEC;
 
+alter table ACT_RE_MODEL 
+    drop constraint ACT_FK_MODEL_SOURCE;
+
+alter table ACT_RE_MODEL 
+    drop constraint ACT_FK_MODEL_SOURCE_EXTRA;
+
 drop index ACT_RU_IDENTITYLINK.ACT_IDX_ATHRZ_PROCEDEF;
     
 if exists (select TABLE_NAME from INFORMATION_SCHEMA.TABLES where TABLE_NAME = 'ACT_GE_PROPERTY') drop table ACT_GE_PROPERTY;

@@ -40,10 +40,4 @@ public interface Model {
   
   String getMetaInfo();
   void setMetaInfo(String metaInfo);
-  
-  byte[] getEditorSource();
-  void setEditorSource(byte[] editorSource);
-  
-  byte[] getEditorSourceExtra();
-  void setEditorSourceExtra(byte[] editorSourceExtra);
 }

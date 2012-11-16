@@ -27,7 +27,6 @@ import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.apache.commons.lang.time.DateUtils;
 
 
 /**
@@ -97,52 +96,6 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     HistoricProcessInstance historicProcessInstance = 
       historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(historicProcessInstance.getEndTime());
-  }
-  
-  @Deployment(resources = {"org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"})
-  public void testHistoricProcessInstanceStartDate() {
-    runtimeService.startProcessInstanceByKey("oneTaskProcess");
-    
-    Date date = new Date();
-
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().startDateOn(date).count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().startDateBy(date).count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().startDateBy(DateUtils.addDays(date, -1)).count());
-    
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().startDateBy(DateUtils.addDays(date, 1)).count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().startDateOn(DateUtils.addDays(date, -1)).count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().startDateOn(DateUtils.addDays(date, 1)).count());
-  }
-  
-  @Deployment(resources = {"org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"})
-  public void testHistoricProcessInstanceFinishDateUnfinished() {
-    runtimeService.startProcessInstanceByKey("oneTaskProcess");
-    
-    Date date = new Date();
-    
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().finishDateOn(date).count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().finishDateBy(date).count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().finishDateBy(DateUtils.addDays(date, 1)).count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().finishDateBy(DateUtils.addDays(date, -1)).count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().finishDateOn(DateUtils.addDays(date, -1)).count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().finishDateOn(DateUtils.addDays(date, 1)).count());
-  }
-  
-  @Deployment(resources = {"org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"})
-  public void testHistoricProcessInstanceFinishDateFinished() {
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("oneTaskProcess");
-    
-    Date date = new Date();
-    
-    runtimeService.deleteProcessInstance(pi.getId(), "cancel");
-
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().finishDateOn(date).count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().finishDateBy(date).count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().finishDateBy(DateUtils.addDays(date, 1)).count());
-    
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().finishDateBy(DateUtils.addDays(date, -1)).count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().finishDateOn(DateUtils.addDays(date, -1)).count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().finishDateOn(DateUtils.addDays(date, 1)).count());
   }
   
   /*@Deployment(resources = {"org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"})

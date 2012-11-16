@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.repository.Model;
 
@@ -35,8 +36,8 @@ public class ModelEntity implements Serializable, Model, PersistentObject {
   protected Date createTime;
   protected Integer version;
   protected String metaInfo;
-  protected byte[] editorSource;
-  protected byte[] editorSourceExtra;
+  protected String editorSourceValueId;
+  protected String editorSourceExtraValueId;
 
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
@@ -45,8 +46,8 @@ public class ModelEntity implements Serializable, Model, PersistentObject {
     persistentState.put("createTime", this.createTime);
     persistentState.put("version", this.version);
     persistentState.put("metaInfo", this.metaInfo);
-    persistentState.put("editorSource", this.editorSource);
-    persistentState.put("editorSourceExtra", this.editorSourceExtra);
+    persistentState.put("editorSourceValueId", this.editorSourceValueId);
+    persistentState.put("editorSourceExtraValueId", this.editorSourceExtraValueId);
     return persistentState;
   }
 
@@ -100,20 +101,20 @@ public class ModelEntity implements Serializable, Model, PersistentObject {
     this.metaInfo = metaInfo;
   }
 
-  public byte[] getEditorSource() {
-    return editorSource;
+  public String getEditorSourceValueId() {
+    return editorSourceValueId;
+  }
+  
+  public void setEditorSourceValueId(String editorSourceValueId) {
+    this.editorSourceValueId = editorSourceValueId;
   }
 
-  public void setEditorSource(byte[] editorSource) {
-    this.editorSource = editorSource;
+  public String getEditorSourceExtraValueId() {
+    return editorSourceExtraValueId;
   }
 
-  public byte[] getEditorSourceExtra() {
-    return editorSourceExtra;
-  }
-
-  public void setEditorSourceExtra(byte[] editorSourceExtra) {
-    this.editorSourceExtra = editorSourceExtra;
+  public void setEditorSourceExtraValueId(String editorSourceExtraValueId) {
+    this.editorSourceExtraValueId = editorSourceExtraValueId;
   }
   
 }

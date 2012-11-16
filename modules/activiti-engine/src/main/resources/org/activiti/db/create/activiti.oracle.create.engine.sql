@@ -39,8 +39,8 @@ create table ACT_RE_MODEL (
     CREATE_TIME_ TIMESTAMP(6),
     VERSION_ INTEGER,
     META_INFO_ NVARCHAR2(2000),
-    EDITOR_SOURCE_ BLOB,
-    EDITOR_SOURCE_EXTRA_ BLOB,
+    EDITOR_SOURCE_VALUE_ID_ NVARCHAR2(64),
+    EDITOR_SOURCE_EXTRA_VALUE_ID_ NVARCHAR2(64),
     primary key (ID_)
 );
 
@@ -256,6 +256,18 @@ alter table ACT_RU_EVENT_SUBSCR
     add constraint ACT_FK_EVENT_EXEC
     foreign key (EXECUTION_ID_)
     references ACT_RU_EXECUTION(ID_);
+
+create index ACT_IDX_MODEL_SOURCE on ACT_RE_MODEL(EDITOR_SOURCE_VALUE_ID_);
+alter table ACT_RE_MODEL 
+    add constraint ACT_FK_MODEL_SOURCE 
+    foreign key (EDITOR_SOURCE_VALUE_ID_) 
+    references ACT_GE_BYTEARRAY (ID_);
+
+create index ACT_IDX_MODEL_SOURCE_EXTRA on ACT_RE_MODEL(EDITOR_SOURCE_EXTRA_VALUE_ID_);
+alter table ACT_RE_MODEL 
+    add constraint ACT_FK_MODEL_SOURCE_EXTRA 
+    foreign key (EDITOR_SOURCE_EXTRA_VALUE_ID_) 
+    references ACT_GE_BYTEARRAY (ID_);
     
 -- see http://stackoverflow.com/questions/675398/how-can-i-constrain-multiple-columns-to-prevent-duplicates-but-ignore-null-value
 create unique index ACT_UNIQ_RU_BUS_KEY on ACT_RU_EXECUTION
