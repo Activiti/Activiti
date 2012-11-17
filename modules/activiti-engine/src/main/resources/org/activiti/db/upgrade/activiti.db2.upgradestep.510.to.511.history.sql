@@ -37,3 +37,5 @@ alter table ACT_HI_DETAIL
 	alter column EXECUTION_ID_ DROP NOT NULL;
 
 Call Sysproc.admin_cmd ('REORG TABLE ACT_HI_DETAIL');
+
+create index ACT_IDX_HI_ACT_INST_PROCINST on ACT_HI_ACTINST(PROC_INST_ID_, ACT_ID_);
