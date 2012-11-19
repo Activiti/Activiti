@@ -99,6 +99,7 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   protected String mailServerUsername; // by default no name and password are provided, which 
   protected String mailServerPassword; // means no authentication for mail server
   protected int mailServerPort = 25;
+  protected boolean useSSL = false;
   protected boolean useTLS = false;
   protected String mailServerDefaultFrom = "activiti@localhost";
 
@@ -242,7 +243,16 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
     this.mailServerPort = mailServerPort;
     return this;
   }
-
+  
+  public boolean getMailServerUseSSL() {
+	  return useSSL;
+  }
+  
+  public ProcessEngineConfiguration setMailServerUseSSL(boolean useSSL) {
+	  this.useSSL = useSSL;
+	  return this;
+  }
+  
   
   public boolean getMailServerUseTLS() {
     return useTLS;

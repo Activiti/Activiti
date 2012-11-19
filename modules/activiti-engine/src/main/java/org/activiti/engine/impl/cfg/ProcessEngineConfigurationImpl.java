@@ -1475,6 +1475,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   }
 
   @Override
+  public ProcessEngineConfigurationImpl setMailServerUseSSL(boolean useSSL) {
+	    super.setMailServerUseSSL(useSSL);
+	    return this;
+	  }
+  
+  @Override
   public ProcessEngineConfigurationImpl setMailServerUseTLS(boolean useTLS) {
     super.setMailServerUseTLS(useTLS);
     return this;

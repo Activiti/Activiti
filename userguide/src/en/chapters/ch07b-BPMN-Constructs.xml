@@ -3930,6 +3930,11 @@ public class StartProcessInstanceTestDelegateWithInjection {
                 <entry>if applicable for your server</entry>
                 <entry>Some mail servers require credentials for sending e-mail. By default not set.</entry>
               </row>
+              <row>
+                <entry>mailServerUseSSL</entry>
+                <entry>if applicable for your server</entry>
+                <entry>Some mail servers require ssl communication. By default set to false.</entry>
+              </row> 
             </tbody>
             </tgroup>
           </table>
