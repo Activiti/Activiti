@@ -67,7 +67,8 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   protected Date dueDate;
   protected Date dueBefore;
   protected Date dueAfter;
-  
+  protected boolean excludeSubtasks = false;
+
   public TaskQueryImpl() {
   }
   
@@ -320,7 +321,12 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     this.dueAfter = dueAfter;
     return this;
   }
-  
+
+  public TaskQuery excludeSubtasks() {
+    this.excludeSubtasks = true;
+    return this;
+  }
+
   public List<String> getCandidateGroups() {
     if (candidateGroup!=null) {
       return Collections.singletonList(candidateGroup);
@@ -483,9 +489,10 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   public String getProcessDefinitionName() {
     return processDefinitionName;
   }
-
-  
   public String getProcessInstanceBusinessKey() {
     return processInstanceBusinessKey;
+  }
+  public boolean getExcludeSubtasks() {
+    return excludeSubtasks;
   }
 }
