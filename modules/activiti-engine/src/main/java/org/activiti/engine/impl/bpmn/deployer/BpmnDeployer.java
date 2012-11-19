@@ -66,7 +66,7 @@ public class BpmnDeployer implements Deployer {
   protected IdGenerator idGenerator;
 
   public void deploy(DeploymentEntity deployment) {
-    LOG.info("Processing deployment " + deployment.getName());
+    LOG.fine("Processing deployment " + deployment.getName());
     
     List<ProcessDefinitionEntity> processDefinitions = new ArrayList<ProcessDefinitionEntity>();
     Map<String, ResourceEntity> resources = deployment.getResources();
