@@ -86,9 +86,11 @@
   
   <select id="selectSignalEventSubscriptionsByEventName" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
     select * 
-    from ${prefix}ACT_RU_EVENT_SUBSCR
+    from ${prefix}ACT_RU_EVENT_SUBSCR EVT
+    inner join ${prefix}ACT_RU_EXECUTION EXC on EVT.EXECUTION_ID_ = EXC.ID_
     where (EVENT_TYPE_ = 'signal')
     	and (EVENT_NAME_ = #{parameter})
+    	and EXC.SUSPENSION_STATE_ = 1
   </select>
   
   <select id="selectSignalEventSubscriptionsByExecution" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">

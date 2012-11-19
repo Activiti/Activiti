@@ -29,6 +29,11 @@ public interface Execution {
   String getId();
   
   /**
+   * Indicates if the execution is suspended.
+   */
+  boolean isSuspended();
+  
+  /**
    * Indicates if the execution is ended.
    */
   boolean isEnded();

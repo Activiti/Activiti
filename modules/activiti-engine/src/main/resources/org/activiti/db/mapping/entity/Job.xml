@@ -58,14 +58,13 @@
     	RES.* ${limitBetween}    		
     from ${prefix}ACT_RU_JOB RES    
     	LEFT OUTER JOIN ${prefix}ACT_RU_EXECUTION PI ON PI.ID_ = RES.PROCESS_INSTANCE_ID_
-    	LEFT OUTER JOIN ${prefix}ACT_RE_PROCDEF PD ON PD.ID_ = PI.PROC_DEF_ID_    
     where (RES.RETRIES_ &gt; 0)
       and (RES.DUEDATE_ is null or RES.DUEDATE_ &lt; #{parameter, jdbcType=TIMESTAMP})
       and (RES.LOCK_OWNER_ is null or RES.LOCK_EXP_TIME_ &lt; #{parameter, jdbcType=TIMESTAMP})
 	  and (
 	  	    (RES.EXECUTION_ID_ is null)
-	  		or ((PI.SUSPENSION_STATE_ = 1)     
-      			and (PD.SUSPENSION_STATE_ = 1))
+	  		or 
+	  		(PI.SUSPENSION_STATE_ = 1)
       )  
     ${limitAfter}	    
   </select>                   
@@ -121,6 +120,9 @@
   
   <sql id="selectJobByQueryCriteriaSql">
     from ${prefix}ACT_RU_JOB RES
+    <if test="executable">
+        LEFT OUTER JOIN ${prefix}ACT_RU_EXECUTION PI ON PI.ID_ = RES.PROCESS_INSTANCE_ID_
+    </if>
     <where>
       <if test="id != null">
         RES.ID_ = #{id}
@@ -137,6 +139,11 @@
       <if test="executable">
         and (RES.RETRIES_ &gt; 0)
         and (RES.DUEDATE_ is null or RES.DUEDATE_ &lt;= #{now, jdbcType=TIMESTAMP})
+        and (
+            (RES.EXECUTION_ID_ is null)
+            or 
+            (PI.SUSPENSION_STATE_ = 1)     
+      )
       </if>
       <if test="onlyTimers">
         and RES.TYPE_ = 'timer'
@@ -172,14 +179,13 @@
     select RES.* ${limitBetween} 
     from ${prefix}ACT_RU_JOB RES
    		LEFT OUTER JOIN ${prefix}ACT_RU_EXECUTION PI ON PI.ID_ = RES.PROCESS_INSTANCE_ID_
-    	LEFT OUTER JOIN ${prefix}ACT_RE_PROCDEF PD ON PD.ID_ = PI.PROC_DEF_ID_    
     where (RETRIES_ &gt; 0)
       and (DUEDATE_ is null or DUEDATE_ &lt;= #{parameter, jdbcType=TIMESTAMP})
       and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt;= #{parameter, jdbcType=TIMESTAMP})
       and (
 	  	    (RES.EXECUTION_ID_ is null)
-	  		or ((PI.SUSPENSION_STATE_ = 1)     
-      			and (PD.SUSPENSION_STATE_ = 1))
+	  		or 
+	  		(PI.SUSPENSION_STATE_ = 1)     
       )  
     ${limitAfter}
   </select>

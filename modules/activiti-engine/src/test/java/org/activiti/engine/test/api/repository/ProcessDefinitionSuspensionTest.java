@@ -12,11 +12,16 @@
  */
 package org.activiti.engine.test.api.repository;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
@@ -156,5 +161,112 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
     }
   }
   
+  @Deployment(resources={"org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
+  public void testContinueProcessAfterProcessDefinitionSuspend() {
+    
+    // Start Process Instance
+    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+    runtimeService.startProcessInstanceByKey(processDefinition.getKey());
+    
+    // Verify one task is created
+    Task task = taskService.createTaskQuery().singleResult();
+    assertNotNull(task);
+    assertEquals(1, runtimeService.createProcessInstanceQuery().count());
+    
+    // Suspend process definition
+    repositoryService.suspendProcessDefinitionById(processDefinition.getId());
+    
+    // Process should be able to continue
+    taskService.complete(task.getId());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+  }
+  
+  @Deployment(resources={"org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
+  public void testSuspendProcessInstancesDuringProcessDefinitionSuspend() {
+    
+    int nrOfProcessInstances = 9;
+    
+    // Fire up a few processes for the deployed process definition
+    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+    for (int i=0; i<nrOfProcessInstances; i++) {
+      runtimeService.startProcessInstanceByKey(processDefinition.getKey());
+    }
+    assertEquals(nrOfProcessInstances, runtimeService.createProcessInstanceQuery().count());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().suspended().count());
+    assertEquals(nrOfProcessInstances, runtimeService.createProcessInstanceQuery().active().count());
+
+    // Suspend process definitions and include process instances
+    repositoryService.suspendProcessDefinitionById(processDefinition.getId(), true, 2);
+    
+    // Verify all process instances are also suspended
+    for (ProcessInstance processInstance : runtimeService.createProcessInstanceQuery().list()) {
+      assertTrue(processInstance.isSuspended());
+    }
+    
+    // Verify all process instances can't be continued
+    for (Task task : taskService.createTaskQuery().list()) {
+      try {
+        taskService.complete(task.getId());
+        fail("A suspended task shouldn't be able to be continued");
+      } catch(ActivitiException e) {
+        // This is good
+      }
+    }
+    assertEquals(nrOfProcessInstances, runtimeService.createProcessInstanceQuery().count());
+    assertEquals(nrOfProcessInstances, runtimeService.createProcessInstanceQuery().suspended().count());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().active().count());
+    
+    // Activate the process definition again
+    repositoryService.activateProcessDefinitionById(processDefinition.getId(), true, 5);
+    
+    // Verify that all process instances can be completed
+    for (Task task : taskService.createTaskQuery().list()) {
+      taskService.complete(task.getId());
+    }
+    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().suspended().count());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().active().count());
+  }
+  
+  @Deployment(resources={"org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
+  public void testSubmitStartFormAfterProcessDefinitionSuspend() {
+    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+    repositoryService.suspendProcessDefinitionById(processDefinition.getId());
+    
+    try {
+      formService.submitStartFormData(processDefinition.getId(), new HashMap<String, String>());
+      fail();
+    } catch (ActivitiException e) {
+      // This is expected
+    }
+    
+    try {
+      formService.submitStartFormData(processDefinition.getId(), "someKey", new HashMap<String, String>());
+      fail();
+    } catch (ActivitiException e) {
+      e.printStackTrace();
+      // This is expected
+    }
+    
+  }
+  
+  @Deployment
+  public void testJobIsExecutedOnProcessDefinitionSuspend() {
+    
+    Date now = new Date();
+    ClockUtil.setCurrentTime(now);
+    
+    // Suspending the process definition should not stop the execution of jobs
+    // Added this test because in previous implementations, this was the case.
+    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+    runtimeService.startProcessInstanceById(processDefinition.getId());
+    repositoryService.suspendProcessDefinitionById(processDefinition.getId());
+    assertEquals(1, managementService.createJobQuery().count());
+    
+    // The jobs should simply be executed
+    ClockUtil.setCurrentTime(new Date(now.getTime() + (60 * 60 * 1000))); // Timer is set to fire on 5 minutes
+    waitForJobExecutorToProcessAllJobs(2000L, 100L);
+    assertEquals(0, managementService.createJobQuery().count());
+  }
 
 }
