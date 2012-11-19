@@ -14,14 +14,19 @@ package org.activiti.engine.impl.variable;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
+import java.io.OutputStream;
 import java.io.Serializable;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.util.IoUtil;
+import org.activiti.engine.impl.util.ReflectUtil;
 
 /**
  * @author Tom Baeyens
@@ -45,7 +50,7 @@ public class SerializableType extends ByteArrayType {
     ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
     Object deserializedObject;
     try {
-      ObjectInputStream ois = new ObjectInputStream(bais);
+      ObjectInputStream ois = createObjectInputStream(bais);
       deserializedObject = ois.readObject();
       valueFields.setCachedValue(deserializedObject);
       
@@ -57,7 +62,7 @@ public class SerializableType extends ByteArrayType {
       }
       
     } catch (Exception e) {
-      throw new ActivitiException("coudn't deserialize object in variable '"+valueFields.getName()+"'", e);
+      throw new ActivitiException("Couldn't deserialize object in variable '"+valueFields.getName()+"'", e);
     } finally {
       IoUtil.closeSilently(bais);
     }
@@ -87,17 +92,29 @@ public class SerializableType extends ByteArrayType {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     ObjectOutputStream ois = null;
     try {
-      ois = new ObjectOutputStream(baos);
+      ois = createObjectOutputStream(baos);
       ois.writeObject(value);
     } catch (Exception e) {
-      throw new ActivitiException("coudn't serialize value '"+value+"' in variable '"+valueFields.getName()+"'", e);
+      throw new ActivitiException("Couldn't serialize value '"+value+"' in variable '"+valueFields.getName()+"'", e);
     } finally {
       IoUtil.closeSilently(ois);
     }
     return baos.toByteArray();
   }
-  
+
   public boolean isAbleToStore(Object value) {
     return value instanceof Serializable;
+  }
+
+  protected ObjectInputStream createObjectInputStream(InputStream is) throws IOException {
+    return new ObjectInputStream(is) {
+      protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
+        return ReflectUtil.loadClass(desc.getName());
+      }
+    };
+  }
+  
+  private static ObjectOutputStream createObjectOutputStream(OutputStream os) throws IOException {
+    return new ObjectOutputStream(os);
   }
 }
