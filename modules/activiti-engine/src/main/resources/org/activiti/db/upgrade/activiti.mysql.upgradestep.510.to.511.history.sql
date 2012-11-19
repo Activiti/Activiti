@@ -21,7 +21,7 @@ update ACT_GE_PROPERTY
   where NAME_ = 'historyLevel' and VALUE_ >= 2;
 
 alter table ACT_HI_ACTINST
-	add ASK_ID_ varchar(64);
+	add TASK_ID_ varchar(64);
 	
 alter table ACT_HI_ACTINST
 	add CALL_PROC_INST_ID_ varchar(64);
