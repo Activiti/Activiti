@@ -261,6 +261,21 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     
     assertEquals(3, runtimeService.createExecutionQuery().variableValueLike("stringVar", "a%").count());
     assertEquals(0, runtimeService.createExecutionQuery().variableValueLike("stringVar", "%x%").count());
+
+    // Test value-only matching
+    execution = runtimeService.createExecutionQuery().variableValueEquals("azerty").singleResult();
+    assertNotNull(execution);
+    assertEquals(processInstance3.getId(), execution.getId());
+    
+    executions = runtimeService.createExecutionQuery().variableValueEquals("abcdef").list();
+    Assert.assertEquals(2, executions.size());
+    expecedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
+    ids = new ArrayList<String>(Arrays.asList(executions.get(0).getId(), executions.get(1).getId()));
+    ids.removeAll(expecedIds);
+    assertTrue(ids.isEmpty());
+    
+    execution = runtimeService.createExecutionQuery().variableValueEquals("notmatchinganyvalues").singleResult();
+    assertNull(execution);
     
     runtimeService.deleteProcessInstance(processInstance1.getId(), "test");
     runtimeService.deleteProcessInstance(processInstance2.getId(), "test");
@@ -341,6 +356,22 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     
     Assert.assertEquals(0, runtimeService.createExecutionQuery().variableValueLessThanOrEqual("longVar", 12344L).count());
     
+    
+    // Test value-only matching
+    execution = runtimeService.createExecutionQuery().variableValueEquals(55555L).singleResult();
+    assertNotNull(execution);
+    assertEquals(processInstance3.getId(), execution.getId());
+    
+    executions = runtimeService.createExecutionQuery().variableValueEquals(12345L).list();
+    Assert.assertEquals(2, executions.size());
+    expecedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
+    ids = new ArrayList<String>(Arrays.asList(executions.get(0).getId(), executions.get(1).getId()));
+    ids.removeAll(expecedIds);
+    assertTrue(ids.isEmpty());
+    
+    execution = runtimeService.createExecutionQuery().variableValueEquals(99999L).singleResult();
+    assertNull(execution);
+    
     runtimeService.deleteProcessInstance(processInstance1.getId(), "test");
     runtimeService.deleteProcessInstance(processInstance2.getId(), "test");
     runtimeService.deleteProcessInstance(processInstance3.getId(), "test");
@@ -420,6 +451,21 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     
     Assert.assertEquals(0, runtimeService.createExecutionQuery().variableValueLessThanOrEqual("doubleVar", 12344.6789).count());
     
+    // Test value-only matching
+    execution = runtimeService.createExecutionQuery().variableValueEquals(55555.5555).singleResult();
+    assertNotNull(execution);
+    assertEquals(processInstance3.getId(), execution.getId());
+    
+    executions = runtimeService.createExecutionQuery().variableValueEquals(12345.6789).list();
+    Assert.assertEquals(2, executions.size());
+    expecedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
+    ids = new ArrayList<String>(Arrays.asList(executions.get(0).getId(), executions.get(1).getId()));
+    ids.removeAll(expecedIds);
+    assertTrue(ids.isEmpty());
+    
+    execution = runtimeService.createExecutionQuery().variableValueEquals(9999.9999).singleResult();
+    assertNull(execution);
+    
     runtimeService.deleteProcessInstance(processInstance1.getId(), "test");
     runtimeService.deleteProcessInstance(processInstance2.getId(), "test");
     runtimeService.deleteProcessInstance(processInstance3.getId(), "test");
@@ -498,6 +544,21 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     Assert.assertEquals(3, executions.size());
     
     Assert.assertEquals(0, runtimeService.createExecutionQuery().variableValueLessThanOrEqual("integerVar", 12344).count());
+    
+    // Test value-only matching
+    execution = runtimeService.createExecutionQuery().variableValueEquals(55555).singleResult();
+    assertNotNull(execution);
+    assertEquals(processInstance3.getId(), execution.getId());
+    
+    executions = runtimeService.createExecutionQuery().variableValueEquals(12345).list();
+    Assert.assertEquals(2, executions.size());
+    expecedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
+    ids = new ArrayList<String>(Arrays.asList(executions.get(0).getId(), executions.get(1).getId()));
+    ids.removeAll(expecedIds);
+    assertTrue(ids.isEmpty());
+    
+    execution = runtimeService.createExecutionQuery().variableValueEquals(99999).singleResult();
+    assertNull(execution);
     
     runtimeService.deleteProcessInstance(processInstance1.getId(), "test");
     runtimeService.deleteProcessInstance(processInstance2.getId(), "test");
@@ -580,6 +641,21 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     Assert.assertEquals(3, executions.size());
     
     Assert.assertEquals(0, runtimeService.createExecutionQuery().variableValueLessThanOrEqual("shortVar", (short)1233).count());
+    
+    // Test value-only matching
+    execution = runtimeService.createExecutionQuery().variableValueEquals((short)5555).singleResult();
+    assertNotNull(execution);
+    assertEquals(processInstance3.getId(), execution.getId());
+    
+    executions = runtimeService.createExecutionQuery().variableValueEquals((short)1234).list();
+    Assert.assertEquals(2, executions.size());
+    expecedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
+    ids = new ArrayList<String>(Arrays.asList(executions.get(0).getId(), executions.get(1).getId()));
+    ids.removeAll(expecedIds);
+    assertTrue(ids.isEmpty());
+    
+    execution = runtimeService.createExecutionQuery().variableValueEquals((short)999).singleResult();
+    assertNull(execution);
     
     runtimeService.deleteProcessInstance(processInstance1.getId(), "test");
     runtimeService.deleteProcessInstance(processInstance2.getId(), "test");
@@ -675,6 +751,21 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     
     Assert.assertEquals(0, runtimeService.createExecutionQuery().variableValueLessThanOrEqual("dateVar", oneYearAgo.getTime()).count());
     
+    // Test value-only matching
+    execution = runtimeService.createExecutionQuery().variableValueEquals(nextYear.getTime()).singleResult();
+    assertNotNull(execution);
+    assertEquals(processInstance3.getId(), execution.getId());
+    
+    executions = runtimeService.createExecutionQuery().variableValueEquals(date1).list();
+    Assert.assertEquals(2, executions.size());
+    expecedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
+    ids = new ArrayList<String>(Arrays.asList(executions.get(0).getId(), executions.get(1).getId()));
+    ids.removeAll(expecedIds);
+    assertTrue(ids.isEmpty());
+    
+    execution = runtimeService.createExecutionQuery().variableValueEquals(twoYearsLater.getTime()).singleResult();
+    assertNull(execution);
+    
     runtimeService.deleteProcessInstance(processInstance1.getId(), "test");
     runtimeService.deleteProcessInstance(processInstance2.getId(), "test");
     runtimeService.deleteProcessInstance(processInstance3.getId(), "test");
@@ -682,7 +773,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
   
   @Deployment(resources={
   "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
-public void testBooleanVariable() throws Exception {
+  public void testBooleanVariable() throws Exception {
 
   // TEST EQUALS
   HashMap<String, Object> vars = new HashMap<String, Object>();
@@ -717,6 +808,11 @@ public void testBooleanVariable() throws Exception {
   assertNotNull(instances);
   assertEquals(1, instances.size());
   assertEquals(processInstance1.getId(), instances.get(0).getId());
+  
+  // Test value-only matching
+  Execution execution = runtimeService.createExecutionQuery().variableValueEquals(true).singleResult();
+  assertNotNull(execution);
+  assertEquals(processInstance1.getId(), execution.getId());
   
   // Test unsupported operations
   try {
@@ -835,6 +931,13 @@ public void testBooleanVariable() throws Exception {
     Assert.assertEquals(1, runtimeService.createExecutionQuery().variableValueNotEquals("nullVarDouble", null).count());
     // When a byte-array refrence is present, the variable is not considered null
     Assert.assertEquals(1, runtimeService.createExecutionQuery().variableValueNotEquals("nullVarByte", null).count());
+
+    
+    // Test value-only matching
+    Execution execution = runtimeService.createExecutionQuery().variableValueEquals(null).singleResult();
+    assertNotNull(execution);
+    assertEquals(processInstance1.getId(), execution.getId());
+    
     
     // All other variable queries with null should throw exception
     try {
@@ -877,6 +980,10 @@ public void testBooleanVariable() throws Exception {
     runtimeService.deleteProcessInstance(processInstance3.getId(), "test");
     runtimeService.deleteProcessInstance(processInstance4.getId(), "test");
     runtimeService.deleteProcessInstance(processInstance5.getId(), "test");
+    
+    // Test value-only matching, non-null processes exist
+    execution = runtimeService.createExecutionQuery().variableValueEquals(null).singleResult();
+    assertNull(execution);
   }
   
   @Deployment(resources={
@@ -1082,5 +1189,10 @@ public void testBooleanVariable() throws Exception {
 
     assertEquals(3, runtimeService.createExecutionQuery().processInstanceId(pi.getId()).processVariableValueEquals("x", "parent").count());
     assertEquals(3, runtimeService.createExecutionQuery().processInstanceId(pi.getId()).processVariableValueNotEquals("x", "xxx").count());
+    
+    // Test value-only query
+    assertEquals(0, runtimeService.createExecutionQuery().processInstanceId(pi.getId()).processVariableValueEquals("child").count());
+    assertEquals(3, runtimeService.createExecutionQuery().processInstanceId(pi.getId()).processVariableValueEquals("parent").count());    
+    
   }
 }

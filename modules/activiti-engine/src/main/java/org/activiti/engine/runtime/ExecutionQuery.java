@@ -16,7 +16,6 @@ import java.io.Serializable;
 
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.query.Query;
-import org.activiti.engine.task.TaskQuery;
 
 
 
@@ -54,6 +53,15 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
    * @param name name of the variable, cannot be null.
    */
   ExecutionQuery variableValueEquals(String name, Object value);
+  
+  /** 
+   * Only select executions which have at least one local variable with the given value. The type
+   * of variable is determined based on the value, using types configured in 
+   * {@link ProcessEngineConfiguration#getVariableTypes()}. 
+   * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
+   * are not supported.
+   */
+  ExecutionQuery variableValueEquals(Object value);
   
   /** 
    * Only select executions which have a local variable with the given name, but
@@ -114,8 +122,18 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
   /**
    * Only select executions which are part of a process that have a variable
    * with the given name set to the given value.
+   * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
+   * are not supported.
    */
   ExecutionQuery processVariableValueEquals(String variableName, Object variableValue);
+  
+  /**
+   * Only select executions which are part of a process that have at least one variable
+   * with the given value.
+   * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
+   * are not supported.
+   */
+  ExecutionQuery processVariableValueEquals( Object variableValue);
   
   /** 
    * Only select executions which are part of a process that have a variable  with the given name, but

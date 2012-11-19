@@ -240,7 +240,10 @@
           <!-- When process instance variable is queried for, taskId should be null -->
           and A${index}.TASK_ID_ is null
         </if>
-        and A${index}.NAME_= #{var.name}
+        <if test="var.name != null">
+          <!-- Match-all variable-names when name is null -->
+          and A${index}.NAME_= #{var.name}
+        </if>
         <if test="!var.type.equals('null')">
           and A${index}.TYPE_ = #{var.type}
         </if>

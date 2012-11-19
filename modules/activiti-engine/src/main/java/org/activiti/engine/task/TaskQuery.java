@@ -133,6 +133,11 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
    */
   TaskQuery taskVariableValueEquals(String variableName, Object variableValue);
   
+  /**
+   * Only select tasks which have at least one local task variable with the given value.
+   */
+  TaskQuery taskVariableValueEquals(Object variableValue);
+  
   /** 
    * Only select tasks which have a local task variable with the given name, but
    * with a different value than the passed value.
@@ -146,6 +151,12 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
    * with the given name set to the given value.
    */
   TaskQuery processVariableValueEquals(String variableName, Object variableValue);
+  
+  /**
+   * Only select tasks which have are part of a process that have at least one variable
+   * with the given value.
+   */
+  TaskQuery processVariableValueEquals(Object variableValue);
   
   /** 
    * Only select tasks which have a variable with the given name, but
