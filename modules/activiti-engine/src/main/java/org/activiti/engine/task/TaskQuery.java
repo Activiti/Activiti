@@ -109,6 +109,9 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   /** Only select tasks that are created after the given date. **/
   TaskQuery taskCreatedAfter(Date after);
   
+  /** Only select tasks that have no parent (i.e. do not select subtasks). **/
+  TaskQuery excludeSubtasks();
+
   /** 
    * Only select tasks with the given taskDefinitionKey.
    * The task definition key is the id of the userTask:

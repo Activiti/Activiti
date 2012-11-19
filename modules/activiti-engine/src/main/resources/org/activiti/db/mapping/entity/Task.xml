@@ -209,6 +209,9 @@
       <if test="dueDate != null || dueBefore != null || dueAfter != null">
         and RES.DUE_DATE_ is not null
       </if>
+      <if test="excludeSubtasks">
+        and RES.PARENT_TASK_ID_ IS NULL
+      </if>
       <if test="candidateUser != null || candidateGroups != null">
         and RES.ASSIGNEE_ is null
         and I.TYPE_ = 'candidate'
