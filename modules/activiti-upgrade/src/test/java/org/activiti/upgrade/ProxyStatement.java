@@ -180,7 +180,7 @@ public class ProxyStatement implements PreparedStatement {
     byte[] bytes = IoUtil.readInputStream(x, "jdbc variable bytes");
     StringBuffer sb = new StringBuffer();
     for (byte b : bytes) {
-      sb.append(Integer.toHexString((int) (b & 0xff)));
+      sb.append(String.format("%02X", b));
     }
     parameters.put(parameterIndex, "0x"+sb.toString());
   }
