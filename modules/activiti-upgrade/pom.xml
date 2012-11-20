@@ -10,14 +10,14 @@
 
   <properties>
     <skipTests>true</skipTests>
+    <releaseVersion>5.11-SNAPSHOT</releaseVersion>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-engine</artifactId>
-      <version>5.11-SNAPSHOT</version>
-      <!-- version>${releaseVersion}</version -->
+      <version>${releaseVersion}</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -313,9 +313,9 @@
                   <value>${database}</value>
                 </property>
               </systemProperties>
-              <includes>
-                <include>**/*Test.java</include>
-              </includes>
+              <excludes>
+                <exclude>**/*TestCase.java</exclude>
+              </excludes>
             </configuration>
           </plugin>
         </plugins>

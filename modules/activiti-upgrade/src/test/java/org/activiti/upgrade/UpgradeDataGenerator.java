@@ -12,8 +12,6 @@
  */
 package org.activiti.upgrade;
 
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.sql.DriverManager;
 import java.util.logging.Logger;
