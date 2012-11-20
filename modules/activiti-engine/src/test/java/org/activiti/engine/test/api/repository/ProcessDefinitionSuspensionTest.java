@@ -196,7 +196,7 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
     assertEquals(nrOfProcessInstances, runtimeService.createProcessInstanceQuery().active().count());
 
     // Suspend process definitions and include process instances
-    repositoryService.suspendProcessDefinitionById(processDefinition.getId(), true, 2);
+    repositoryService.suspendProcessDefinitionById(processDefinition.getId(), true, null);
     
     // Verify all process instances are also suspended
     for (ProcessInstance processInstance : runtimeService.createProcessInstanceQuery().list()) {
@@ -217,7 +217,7 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
     assertEquals(0, runtimeService.createProcessInstanceQuery().active().count());
     
     // Activate the process definition again
-    repositoryService.activateProcessDefinitionById(processDefinition.getId(), true, 5);
+    repositoryService.activateProcessDefinitionById(processDefinition.getId(), true, null);
     
     // Verify that all process instances can be completed
     for (Task task : taskService.createTaskQuery().list()) {
@@ -268,5 +268,144 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
     waitForJobExecutorToProcessAllJobs(2000L, 100L);
     assertEquals(0, managementService.createJobQuery().count());
   }
+  
+  @Deployment(resources={"org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
+  public void testDelayedSuspendProcessDefinition() {
 
+    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+    Date startTime = new Date();
+    ClockUtil.setCurrentTime(startTime);
+    
+    // Suspend process definition in one week from now
+    long oneWeekFromStartTime = startTime.getTime() + (7 * 24 * 60 * 60 * 1000); 
+    repositoryService.suspendProcessDefinitionById(processDefinition.getId(), false, new Date(oneWeekFromStartTime));
+
+    // Verify we can just start process instances
+    runtimeService.startProcessInstanceById(processDefinition.getId());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().count());
+    assertEquals(1, repositoryService.createProcessDefinitionQuery().active().count());
+    assertEquals(0, repositoryService.createProcessDefinitionQuery().suspended().count());
+    
+    // Move clock 8 days further and let job executor run
+    long eightDaysSinceStartTime = oneWeekFromStartTime + (24 * 60 * 60 * 1000);
+    ClockUtil.setCurrentTime(new Date(eightDaysSinceStartTime));
+    waitForJobExecutorToProcessAllJobs(5000L, 50L);
+    
+    // Try to start process instance. It should fail now.
+    try {
+      runtimeService.startProcessInstanceById(processDefinition.getId());
+      fail();
+    } catch (ActivitiException e) {
+      assertTextPresentIgnoreCase("suspended", e.getMessage());
+    }
+    assertEquals(1, runtimeService.createProcessInstanceQuery().count());
+    assertEquals(0, repositoryService.createProcessDefinitionQuery().active().count());
+    assertEquals(1, repositoryService.createProcessDefinitionQuery().suspended().count());
+    
+    // Activate again
+    repositoryService.activateProcessDefinitionById(processDefinition.getId());
+    runtimeService.startProcessInstanceById(processDefinition.getId());
+    assertEquals(2, runtimeService.createProcessInstanceQuery().count());
+    assertEquals(1, repositoryService.createProcessDefinitionQuery().active().count());
+    assertEquals(0, repositoryService.createProcessDefinitionQuery().suspended().count());
+  }
+  
+  @Deployment(resources={"org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
+  public void testDelayedSuspendProcessDefinitionIncludingProcessInstances() {
+    
+    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+    Date startTime = new Date();
+    ClockUtil.setCurrentTime(startTime);
+    
+    // Start some process instances
+    int nrOfProcessInstances = 30;
+    for (int i=0; i<nrOfProcessInstances; i++) {
+      runtimeService.startProcessInstanceById(processDefinition.getId());
+    }
+    
+    assertEquals(nrOfProcessInstances, runtimeService.createProcessInstanceQuery().count());
+    assertEquals(nrOfProcessInstances, runtimeService.createProcessInstanceQuery().active().count());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().suspended().count());
+    assertEquals(0, taskService.createTaskQuery().suspended().count());
+    assertEquals(nrOfProcessInstances, taskService.createTaskQuery().active().count());
+    assertEquals(1, repositoryService.createProcessDefinitionQuery().active().count());
+    assertEquals(0, repositoryService.createProcessDefinitionQuery().suspended().count());
+    
+    // Suspend process definition in one week from now
+    long oneWeekFromStartTime = startTime.getTime() + (7 * 24 * 60 * 60 * 1000); 
+    repositoryService.suspendProcessDefinitionById(processDefinition.getId(), true, new Date(oneWeekFromStartTime));
+
+    // Verify we can start process instances
+    runtimeService.startProcessInstanceById(processDefinition.getId());
+    nrOfProcessInstances = nrOfProcessInstances + 1;
+    assertEquals(nrOfProcessInstances, runtimeService.createProcessInstanceQuery().count());
+    
+    // Move clock 9 days further and let job executor run
+    long eightDaysSinceStartTime = oneWeekFromStartTime + (2 * 24 * 60 * 60 * 1000);
+    ClockUtil.setCurrentTime(new Date(eightDaysSinceStartTime));
+    waitForJobExecutorToProcessAllJobs(5000L, 50L);
+    
+    // Try to start process instance. It should fail now.
+    try {
+      runtimeService.startProcessInstanceById(processDefinition.getId());
+      fail();
+    } catch (ActivitiException e) {
+      assertTextPresentIgnoreCase("suspended", e.getMessage());
+    }
+    assertEquals(nrOfProcessInstances, runtimeService.createProcessInstanceQuery().count());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().active().count());
+    assertEquals(nrOfProcessInstances, runtimeService.createProcessInstanceQuery().suspended().count());
+    assertEquals(nrOfProcessInstances, taskService.createTaskQuery().suspended().count());
+    assertEquals(0, taskService.createTaskQuery().active().count());
+    assertEquals(0, repositoryService.createProcessDefinitionQuery().active().count());
+    assertEquals(1, repositoryService.createProcessDefinitionQuery().suspended().count());
+    
+    // Activate again
+    repositoryService.activateProcessDefinitionById(processDefinition.getId(), true, null);
+    assertEquals(nrOfProcessInstances, runtimeService.createProcessInstanceQuery().count());
+    assertEquals(nrOfProcessInstances, runtimeService.createProcessInstanceQuery().active().count());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().suspended().count());
+    assertEquals(0, taskService.createTaskQuery().suspended().count());
+    assertEquals(nrOfProcessInstances, taskService.createTaskQuery().active().count());
+    assertEquals(1, repositoryService.createProcessDefinitionQuery().active().count());
+    assertEquals(0, repositoryService.createProcessDefinitionQuery().suspended().count());
+  }
+  
+  @Deployment(resources={"org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
+  public void testDelayedActivateProcessDefinition() {
+    
+    Date startTime = new Date();
+    ClockUtil.setCurrentTime(startTime);
+
+    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+    repositoryService.suspendProcessDefinitionById(processDefinition.getId());
+    
+    // Try to start process instance. It should fail now.
+    try {
+      runtimeService.startProcessInstanceById(processDefinition.getId());
+      fail();
+    } catch (ActivitiException e) {
+      assertTextPresentIgnoreCase("suspended", e.getMessage());
+    }
+    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+    assertEquals(0, repositoryService.createProcessDefinitionQuery().active().count());
+    assertEquals(1, repositoryService.createProcessDefinitionQuery().suspended().count());
+    
+    // Activate in a day from now
+    long oneDayFromStart = startTime.getTime() + (24 * 60 * 60 * 1000);
+    repositoryService.activateProcessDefinitionById(processDefinition.getId(), false, new Date(oneDayFromStart));
+    
+    // Move clock two days and let job executor run
+    long twoDaysFromStart = startTime.getTime() + (2 * 24 * 60 * 60 * 1000);
+    ClockUtil.setCurrentTime(new Date(twoDaysFromStart));
+    waitForJobExecutorToProcessAllJobs(5000L, 50L);
+    
+    // Starting a process instance should now succeed
+    runtimeService.startProcessInstanceById(processDefinition.getId());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().count());
+    assertEquals(1, repositoryService.createProcessDefinitionQuery().active().count());
+    assertEquals(0, repositoryService.createProcessDefinitionQuery().suspended().count());
+  }
+  
+  
 }

@@ -14,6 +14,7 @@
 package org.activiti.engine;
 
 import java.io.InputStream;
+import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.repository.DeploymentBuilder;
@@ -29,6 +30,7 @@ import org.activiti.engine.task.IdentityLink;
  * @author Tom Baeyens
  * @author Falko Menge
  * @author Tijs Rademakers
+ * @author Joram Barrez
  */
 public interface RepositoryService {
 
@@ -100,12 +102,13 @@ public interface RepositoryService {
    * 
    * @param suspendProcessInstances If true, all the process instances of the provided process definition
    *                                will be suspended too.
-   * @param batchSize The number of process instances that will be fetched at the same time when 
-   *                  looping over all process instances to suspend. This will only matter if 
-   *                  the 'suspendProcessInstances' parameter is set to true. Default is 25.                  
-   *  @throws ActivitiException if no such processDefinition can be found or if the process definition is already in state suspended.
+   * @param suspensionDate The date on which the process definition will be suspended. If null, the 
+   *                       process definition is suspended immediately. 
+   *                       Note: The job executor needs to be active to use this!                                
+   * 
+   * @throws ActivitiException if no such processDefinition can be found or if the process definition is already in state suspended.
    */
-  void suspendProcessDefinitionById(String processDefinitionId, boolean suspendProcessInstances, int batchSize);
+  void suspendProcessDefinitionById(String processDefinitionId, boolean suspendProcessInstances, Date suspensionDate);
   
   /**
    * Suspends the process definition with the given key (= id in the bpmn20.xml file). 
@@ -128,12 +131,12 @@ public interface RepositoryService {
    * 
    * @param suspendProcessInstances If true, all the process instances of the provided process definition
    *                                will be suspended too.
-   * @param batchSize The number of process instances that will be fetched at the same time when 
-   *                  looping over all process instances to suspend. This will only matter if 
-   *                  the 'suspendProcessInstances' parameter is set to true. Default is 25.                  
-   *  @throws ActivitiException if no such processDefinition can be found or if the process definition is already in state suspended.
+   * @param suspensionDate The date on which the process definition will be suspended. If null, the 
+   *                       process definition is suspended immediately. 
+   *                       Note: The job executor needs to be active to use this!   
+   * @throws ActivitiException if no such processDefinition can be found or if the process definition is already in state suspended.
    */
-  void suspendProcessDefinitionByKey(String processDefinitionKey, boolean suspendProcessInstances, int batchSize);
+  void suspendProcessDefinitionByKey(String processDefinitionKey, boolean suspendProcessInstances, Date suspensionDate);
   
   /**
    * Activates the process definition with the given id. 
@@ -147,13 +150,13 @@ public interface RepositoryService {
    * 
    * @param suspendProcessInstances If true, all the process instances of the provided process definition
    *                                will be activated too.
-   * @param batchSize The number of process instances that will be fetched at the same time when 
-   *                  looping over all process instances to activate. This will only matter if 
-   *                  the 'activateProcessInstances' parameter is set to true. Default is 25.   
-   * 
+   * @param activationDate The date on which the process definition will be activated. If null, the 
+   *                       process definition is suspended immediately. 
+   *                       Note: The job executor needs to be active to use this!                                 
+   *                                
    * @throws ActivitiException if no such processDefinition can be found or if the process definition is already in state active.
    */
-  void activateProcessDefinitionById(String processDefinitionId, boolean activateProcessInstances, int batchSize);
+  void activateProcessDefinitionById(String processDefinitionId, boolean activateProcessInstances, Date activationDate);
   
   /**
    * Activates the process definition with the given key (=id in the bpmn20.xml file). 
@@ -167,13 +170,13 @@ public interface RepositoryService {
    * 
    * @param suspendProcessInstances If true, all the process instances of the provided process definition
    *                                will be activated too.
-   * @param batchSize The number of process instances that will be fetched at the same time when 
-   *                  looping over all process instances to activate. This will only matter if 
-   *                  the 'activateProcessInstances' parameter is set to true. Default is 25. 
-   * 
+   * @param activationDate The date on which the process definition will be activated. If null, the 
+   *                       process definition is suspended immediately. 
+   *                       Note: The job executor needs to be active to use this!                                 
+   *                                
    * @throws ActivitiException if no such processDefinition can be found or if the process definition is already in state active.
    */
-  void activateProcessDefinitionByKey(String processDefinitionKey, boolean activateProcessInstances, int batchSize);
+  void activateProcessDefinitionByKey(String processDefinitionKey, boolean activateProcessInstances,  Date activationDate);
 
   /**
    * Gives access to a deployed process model, e.g., a BPMN 2.0 XML file,

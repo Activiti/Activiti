@@ -14,6 +14,7 @@
 package org.activiti.engine.impl;
 
 import java.io.InputStream;
+import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.RepositoryService;
@@ -44,6 +45,7 @@ import org.activiti.engine.task.IdentityLink;
 /**
  * @author Tom Baeyens
  * @author Falko Menge
+ * @author Joram Barrez
  */
 public class RepositoryServiceImpl extends ServiceImpl implements RepositoryService {
 
@@ -93,35 +95,35 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
   }
 
   public void suspendProcessDefinitionById(String processDefinitionId) {
-    commandExecutor.execute(new SuspendProcessDefinitionCmd(processDefinitionId, null));
+    commandExecutor.execute(new SuspendProcessDefinitionCmd(processDefinitionId, null, false, null));
   }
   
-  public void suspendProcessDefinitionById(String processDefinitionId, boolean suspendProcessInstances, int batchSize) {
-    commandExecutor.execute(new SuspendProcessDefinitionCmd(processDefinitionId, null, suspendProcessInstances, batchSize));
+  public void suspendProcessDefinitionById(String processDefinitionId, boolean suspendProcessInstances, Date suspensionDate) {
+    commandExecutor.execute(new SuspendProcessDefinitionCmd(processDefinitionId, null, suspendProcessInstances, suspensionDate));
   }
   
   public void suspendProcessDefinitionByKey(String processDefinitionKey) {
-    commandExecutor.execute(new SuspendProcessDefinitionCmd(null, processDefinitionKey));
+    commandExecutor.execute(new SuspendProcessDefinitionCmd(null, processDefinitionKey, false, null));
   }
 
-  public void suspendProcessDefinitionByKey(String processDefinitionKey, boolean suspendProcessInstances, int batchSize) {
-    commandExecutor.execute(new SuspendProcessDefinitionCmd(null, processDefinitionKey, suspendProcessInstances, batchSize));
+  public void suspendProcessDefinitionByKey(String processDefinitionKey, boolean suspendProcessInstances, Date suspensionDate) {
+    commandExecutor.execute(new SuspendProcessDefinitionCmd(null, processDefinitionKey, suspendProcessInstances, suspensionDate));
   }
   
   public void activateProcessDefinitionById(String processDefinitionId) {
-    commandExecutor.execute(new ActivateProcessDefinitionCmd(processDefinitionId, null));
+    commandExecutor.execute(new ActivateProcessDefinitionCmd(processDefinitionId, null, false, null));
   }
   
-  public void activateProcessDefinitionById(String processDefinitionId, boolean activateProcessInstances, int batchSize) {
-    commandExecutor.execute(new ActivateProcessDefinitionCmd(processDefinitionId, null, activateProcessInstances, batchSize));
+  public void activateProcessDefinitionById(String processDefinitionId, boolean activateProcessInstances, Date activationDate) {
+    commandExecutor.execute(new ActivateProcessDefinitionCmd(processDefinitionId, null, activateProcessInstances, activationDate));
   }
 
   public void activateProcessDefinitionByKey(String processDefinitionKey) {
-    commandExecutor.execute(new ActivateProcessDefinitionCmd(null, processDefinitionKey));
+    commandExecutor.execute(new ActivateProcessDefinitionCmd(null, processDefinitionKey, false, null));
   }
   
-  public void activateProcessDefinitionByKey(String processDefinitionKey, boolean activateProcessInstances, int batchSize) {
-    commandExecutor.execute(new ActivateProcessDefinitionCmd(null, processDefinitionKey, activateProcessInstances, batchSize));
+  public void activateProcessDefinitionByKey(String processDefinitionKey, boolean activateProcessInstances, Date activationDate) {
+    commandExecutor.execute(new ActivateProcessDefinitionCmd(null, processDefinitionKey, activateProcessInstances, activationDate));
   }
 
   public InputStream getProcessModel(String processDefinitionId) {

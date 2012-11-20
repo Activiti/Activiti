@@ -79,7 +79,6 @@ import org.activiti.engine.impl.form.LongFormType;
 import org.activiti.engine.impl.form.StringFormType;
 import org.activiti.engine.impl.history.handler.HistoryParseListener;
 import org.activiti.engine.impl.interceptor.CommandContextFactory;
-import org.activiti.engine.impl.interceptor.CommandContextInterceptor;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.interceptor.CommandExecutorImpl;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
@@ -94,9 +93,11 @@ import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
 import org.activiti.engine.impl.jobexecutor.ProcessEventJobHandler;
 import org.activiti.engine.impl.jobexecutor.RejectedJobsHandler;
+import org.activiti.engine.impl.jobexecutor.TimerActivateProcessDefinitionHandler;
 import org.activiti.engine.impl.jobexecutor.TimerCatchIntermediateEventJobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
+import org.activiti.engine.impl.jobexecutor.TimerSuspendProcessDefinitionHandler;
 import org.activiti.engine.impl.mail.MailScanner;
 import org.activiti.engine.impl.persistence.GenericManagerFactory;
 import org.activiti.engine.impl.persistence.deploy.Deployer;
@@ -111,8 +112,8 @@ import org.activiti.engine.impl.persistence.entity.GroupManager;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceManager;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailManager;
 import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceManager;
-import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceManager;
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceManager;
+import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceManager;
 import org.activiti.engine.impl.persistence.entity.IdentityInfoManager;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkManager;
 import org.activiti.engine.impl.persistence.entity.JobManager;
@@ -290,6 +291,16 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected FailedJobCommandFactory failedJobCommandFactory;
   
   protected String databaseTablePrefix = "";
+  
+  /**
+   * The following settings will determine the amount of entities loaded at once when the engine 
+   * needs to load multiple entities (eg. when suspending a process definition with all its process instances).
+   * 
+   * The default setting is quite low, as not to surprise anyone with sudden memory spikes.
+   * Change it to something higher if the environment Activiti runs in allows it.
+   */
+  protected int batchSizeProcessInstances = 25;
+  protected int batchSizeTasks = 25;
   
   /**
    * In some situations you want to set the schema to use for table checks / generation if the database metadata
@@ -727,6 +738,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     
     ProcessEventJobHandler processEventJobHandler = new ProcessEventJobHandler();
     jobHandlers.put(processEventJobHandler.getType(), processEventJobHandler);
+    
+    TimerSuspendProcessDefinitionHandler suspendProcessDefinitionHandler = new TimerSuspendProcessDefinitionHandler();
+    jobHandlers.put(suspendProcessDefinitionHandler.getType(), suspendProcessDefinitionHandler);
+    
+    TimerActivateProcessDefinitionHandler activateProcessDefinitionHandler = new TimerActivateProcessDefinitionHandler();
+    jobHandlers.put(activateProcessDefinitionHandler.getType(), activateProcessDefinitionHandler);
     
     // if we have custom job handlers, register them
     if (getCustomJobHandlers()!=null) {
@@ -1708,4 +1725,21 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public void setIdGeneratorDataSourceJndiName(String idGeneratorDataSourceJndiName) {
     this.idGeneratorDataSourceJndiName = idGeneratorDataSourceJndiName;
   }
+
+  public int getBatchSizeProcessInstances() {
+    return batchSizeProcessInstances;
+  }
+
+  public void setBatchSizeProcessInstances(int batchSizeProcessInstances) {
+    this.batchSizeProcessInstances = batchSizeProcessInstances;
+  }
+  
+  public int getBatchSizeTasks() {
+    return batchSizeTasks;
+  }
+  
+  public void setBatchSizeTasks(int batchSizeTasks) {
+    this.batchSizeTasks = batchSizeTasks;
+  }
+  
 }

@@ -104,7 +104,7 @@ public class TimerDeclarationImpl implements Serializable {
         .getBusinessCalendar(type.calendarName);
     
     if (description==null) {
-      // Prefent NPE from happening in the next line
+      // Prevent NPE from happening in the next line
       throw new ActivitiException("Timer '"+executionEntity.getActivityId()+"' was not configured with a valid duration/time");
     }
     

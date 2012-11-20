@@ -12,9 +12,10 @@
  */
 package org.activiti.engine.impl.cmd;
 
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import java.util.Date;
+
+import org.activiti.engine.impl.jobexecutor.TimerActivateProcessDefinitionHandler;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
-import org.activiti.engine.impl.persistence.entity.SuspensionState.SuspensionStateUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 
 /**
@@ -23,20 +24,20 @@ import org.activiti.engine.runtime.ProcessInstance;
  */
 public class ActivateProcessDefinitionCmd extends AbstractSetProcessDefinitionStateCmd {
 
-  public ActivateProcessDefinitionCmd(String processDefinitionId, String processDefinitionKey) {
-    super(processDefinitionId, processDefinitionKey);
+  public ActivateProcessDefinitionCmd(String processDefinitionId, String processDefinitionKey, 
+          boolean includeProcessInstances, Date executionDate) {
+    super(processDefinitionId, processDefinitionKey, includeProcessInstances, executionDate);
   }
   
-  public ActivateProcessDefinitionCmd(String processDefinitionId, String processDefinitionKey,
-          boolean includeProcessInstances, int batchSize) {
-  super(processDefinitionId, processDefinitionKey, includeProcessInstances, batchSize);
-}
+  protected SuspensionState getProcessDefinitionSuspensionState() {
+    return SuspensionState.ACTIVE;
+  }
+  
+  protected String getDelayedExecutionJobHandlerType() {
+    return TimerActivateProcessDefinitionHandler.TYPE;
+  }
 
-  protected void setState(ProcessDefinitionEntity processDefinitionEntity) {    
-      SuspensionStateUtil.setSuspensionState(processDefinitionEntity, SuspensionState.ACTIVE);   
-  }
-  
-  protected AbstractSetProcessInstanceStateCmd getProcessInstanceCmd(ProcessInstance processInstance) {
+  protected AbstractSetProcessInstanceStateCmd getProcessInstanceChangeStateCmd(ProcessInstance processInstance) {
     return new ActivateProcessInstanceCmd(processInstance.getId());
   }
 }
