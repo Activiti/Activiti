@@ -2983,9 +2983,10 @@ public class BpmnParse extends Parse {
         addError("Invalid source '" + sourceRef + "' of sequence flow '" + id + "'", sequenceFlowElement);
       } else if (destinationActivity == null) {
         addError("Invalid destination '" + destinationRef + "' of sequence flow '" + id + "'", sequenceFlowElement);
-      } else if(sourceActivity.getActivityBehavior() instanceof EventBasedGatewayActivityBehavior) {     
-        // ignore
-      } else if(destinationActivity.getActivityBehavior() instanceof IntermediateCatchEventActivitiBehaviour
+      /*} else if(sourceActivity.getActivityBehavior() instanceof EventBasedGatewayActivityBehavior) {     
+        // ignore*/
+      } else if(!(sourceActivity.getActivityBehavior() instanceof EventBasedGatewayActivityBehavior)
+              && destinationActivity.getActivityBehavior() instanceof IntermediateCatchEventActivitiBehaviour
               && (destinationActivity.getParentActivity() != null)
               && (destinationActivity.getParentActivity().getActivityBehavior() instanceof EventBasedGatewayActivityBehavior)) {
         addError("Invalid incoming sequenceflow for intermediateCatchEvent with id '"+destinationActivity.getId()+"' connected to an event-based gateway.", sequenceFlowElement);        

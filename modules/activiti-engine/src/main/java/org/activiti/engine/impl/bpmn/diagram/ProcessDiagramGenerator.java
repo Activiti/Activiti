@@ -192,6 +192,15 @@ public class ProcessDiagramGenerator {
         processDiagramCreator.drawParallelGateway(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
       }
     });
+    
+    // event based gateway
+    activityDrawInstructions.put("eventBasedGateway", new ActivityDrawInstruction() {
+
+      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
+        processDiagramCreator.drawEventBasedGateway(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
+      }
+    });
+    
 
     // Boundary timer
     activityDrawInstructions.put("boundaryTimer", new ActivityDrawInstruction() {
