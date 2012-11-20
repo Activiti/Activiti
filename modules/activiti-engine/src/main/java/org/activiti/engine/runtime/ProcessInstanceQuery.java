@@ -84,6 +84,14 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
   ProcessInstanceQuery variableValueEquals(Object value);
   
   /** 
+   * Only select process instances which have a local string variable with the given value, 
+   * case insensitive.
+   * @param name name of the variable, cannot be null.
+   * @param value value of the variable, cannot be null.
+   */
+  ProcessInstanceQuery variableValueEqualsIgnoreCase(String name, String value);
+  
+  /** 
    * Only select process instances which have a global variable with the given name, but
    * with a different value than the passed value.
    * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)

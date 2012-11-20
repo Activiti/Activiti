@@ -77,6 +77,14 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
    * not supported. 
    */
   HistoricProcessInstanceQuery variableValueEquals(Object value);
+  
+  /** 
+   * Only select historic process instances which have a local string variable with the 
+   * given value, case insensitive.
+   * @param name name of the variable, cannot be null.
+   * @param value value of the variable, cannot be null.
+   */
+  HistoricProcessInstanceQuery variableValueEqualsIgnoreCase(String name, String value);
 
   /** Only select process instances which had a global variable with the given name, but
    * with a different value than the passed value when they ended. Only select

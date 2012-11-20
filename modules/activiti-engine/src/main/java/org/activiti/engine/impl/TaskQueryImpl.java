@@ -281,6 +281,15 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     variables.add(new TaskQueryVariableValue(null, variableValue, QueryOperator.EQUALS, true));
     return this;
   }
+  
+  @Override
+  public TaskQuery taskVariableValueEqualsIgnoreCase(String name, String value) {
+    if(value == null) {
+      throw new ActivitiException("value is null");
+    }
+    variables.add(new TaskQueryVariableValue(name, value.toLowerCase(), QueryOperator.EQUALS_IGNORE_CASE, true));
+    return this;
+  }
 
   public TaskQuery taskVariableValueNotEquals(String variableName, Object variableValue) {
     variables.add(new TaskQueryVariableValue(variableName, variableValue, QueryOperator.NOT_EQUALS, true));
@@ -299,6 +308,15 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   
   public TaskQuery processVariableValueEquals(Object variableValue) {
     variables.add(new TaskQueryVariableValue(null, variableValue, QueryOperator.EQUALS, false));
+    return this;
+  }
+  
+  @Override
+  public TaskQuery processVariableValueEqualsIgnoreCase(String name, String value) {
+    if(value == null) {
+      throw new ActivitiException("value is null");
+    }
+    variables.add(new TaskQueryVariableValue(name, value.toLowerCase(), QueryOperator.EQUALS_IGNORE_CASE, false));
     return this;
   }
 

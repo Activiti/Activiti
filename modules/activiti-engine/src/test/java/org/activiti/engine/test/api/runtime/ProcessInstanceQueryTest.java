@@ -1029,7 +1029,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
       runtimeService.createProcessInstanceQuery().variableValueLike("nullVar", null);
       fail("Excetion expected");
     } catch(ActivitiException ae) {
-      assertTextPresent("Booleans and null cannot be used in 'like' condition", ae.getMessage());
+      assertTextPresent("Only string values can be used with 'like' condition", ae.getMessage());
     }
     
     runtimeService.deleteProcessInstance(processInstance1.getId(), "test");
@@ -1040,6 +1040,49 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     
     // Test value-only, no more null-variables exist
     Assert.assertEquals(0, runtimeService.createProcessInstanceQuery().variableValueEquals(null).count());
+  }
+  
+  @Deployment(resources={
+    "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+  public void testQueryEqualsIgnoreCase() {
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("mixed", "AbCdEfG");
+    vars.put("lower", "ABCDEFG");
+    vars.put("upper", "abcdefg");
+    ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
+    
+    ProcessInstance instance = runtimeService.createProcessInstanceQuery().variableValueEqualsIgnoreCase("mixed", "abcdefg").singleResult();
+    assertNotNull(instance);
+    assertEquals(processInstance1.getId(), instance.getId());
+    
+    instance = runtimeService.createProcessInstanceQuery().variableValueEqualsIgnoreCase("lower", "abcdefg").singleResult();
+    assertNotNull(instance);
+    assertEquals(processInstance1.getId(), instance.getId());
+    
+    instance = runtimeService.createProcessInstanceQuery().variableValueEqualsIgnoreCase("upper", "abcdefg").singleResult();
+    assertNotNull(instance);
+    assertEquals(processInstance1.getId(), instance.getId());
+    
+    // Pass in non-lower-case string
+    instance = runtimeService.createProcessInstanceQuery().variableValueEqualsIgnoreCase("upper", "ABCdefg").singleResult();
+    assertNotNull(instance);
+    assertEquals(processInstance1.getId(), instance.getId());
+    
+    // Pass in null-value, should cause exception
+    try {
+      instance = runtimeService.createProcessInstanceQuery().variableValueEqualsIgnoreCase("upper", null).singleResult();
+      fail("Exception expected");
+    } catch(ActivitiException ae) {
+      assertEquals("value is null", ae.getMessage());
+    }
+    
+    // Pass in null name, should cause exception
+    try {
+      instance = runtimeService.createProcessInstanceQuery().variableValueEqualsIgnoreCase(null, "abcdefg").singleResult();
+      fail("Exception expected");
+    } catch(ActivitiException ae) {
+      assertEquals("name is null", ae.getMessage());
+    }
   }
   
   @Deployment(resources={
