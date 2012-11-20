@@ -32,10 +32,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-engine</artifactId>
     </dependency>
@@ -43,7 +39,11 @@
       <groupId>org.activiti</groupId>
       <artifactId>activiti-spring</artifactId>
     </dependency>
-    
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>  
       <groupId>org.restlet.jee</groupId>  
       <artifactId>org.restlet</artifactId>   
