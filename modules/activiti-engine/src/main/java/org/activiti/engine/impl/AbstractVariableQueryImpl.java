@@ -75,6 +75,15 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?,?>, U> extends
   }
   
   @SuppressWarnings("unchecked")
+  public T variableValueNotEqualsIgnoreCase(String name, String value) {
+    if(value == null) {
+      throw new ActivitiException("value is null");
+    }
+    addVariable(name, value.toLowerCase(), QueryOperator.NOT_EQUALS_IGNORE_CASE, true);
+    return (T)this;
+  }
+  
+  @SuppressWarnings("unchecked")
   public T variableValueNotEquals(String name, Object value) {
     addVariable(name, value, QueryOperator.NOT_EQUALS, true);
     return (T) this;
@@ -136,6 +145,15 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?,?>, U> extends
     addVariable(name, value.toLowerCase(), QueryOperator.EQUALS_IGNORE_CASE, false);
     return (T)this;
   }
+  
+  @SuppressWarnings("unchecked")
+  public T processVariableValueNotEqualsIgnoreCase(String name, String value) {
+    if(value == null) {
+      throw new ActivitiException("value is null");
+    }
+    addVariable(name, value.toLowerCase(), QueryOperator.NOT_EQUALS_IGNORE_CASE, false);
+    return (T)this;
+  }
 
   
   private void addVariable(String name, Object value, QueryOperator operator, boolean localScope) {
@@ -158,6 +176,11 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?,?>, U> extends
       if(operator == QueryOperator.EQUALS_IGNORE_CASE && (value == null || !(value instanceof String)))
       {
         throw new ActivitiException("Only string values can be used with 'equals ignore case' condition");
+      }
+      
+      if(operator == QueryOperator.NOT_EQUALS_IGNORE_CASE && (value == null || !(value instanceof String)))
+      {
+        throw new ActivitiException("Only string values can be used with 'not equals ignore case' condition");
       }
       
       if(operator == QueryOperator.LIKE && (value == null || !(value instanceof String)))
