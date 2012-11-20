@@ -407,5 +407,102 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
     assertEquals(0, repositoryService.createProcessDefinitionQuery().suspended().count());
   }
   
+  public void testSuspendMultipleProcessDefinitionsByKey () {
+
+    // Deploy three processes
+    int nrOfProcessDefinitions = 3;
+    for (int i=0; i<nrOfProcessDefinitions; i++) {
+      repositoryService.createDeployment()
+        .addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml").deploy();
+    }
+    assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().count());
+    assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().active().count());
+    assertEquals(0, repositoryService.createProcessDefinitionQuery().suspended().count());
+    
+    // Suspend all process definitions with same key
+    repositoryService.suspendProcessDefinitionByKey("oneTaskProcess");
+    assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().count());
+    assertEquals(0, repositoryService.createProcessDefinitionQuery().active().count());
+    assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().suspended().count());
+    
+    // Activate again
+    repositoryService.activateProcessDefinitionByKey("oneTaskProcess");
+    assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().count());
+    assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().active().count());
+    assertEquals(0, repositoryService.createProcessDefinitionQuery().suspended().count());
+    
+    // Start process instance
+    runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    
+    // And suspend again, cascading to process instances
+    repositoryService.suspendProcessDefinitionByKey("oneTaskProcess", true, null);
+    assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().count());
+    assertEquals(0, repositoryService.createProcessDefinitionQuery().active().count());
+    assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().suspended().count());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().suspended().count());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().active().count());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().count());
+    
+    // Clean DB
+    for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+      repositoryService.deleteDeployment(deployment.getId(), true);
+    }
+  }
+  
+  public void testDelayedSuspendMultipleProcessDefinitionsByKey () {
+    
+    Date startTime = new Date();
+    ClockUtil.setCurrentTime(startTime);
+    final long hourInMs = 60 * 60 * 1000;
+    
+    // Deploy five versions of the same process
+    int nrOfProcessDefinitions = 5;
+    for (int i=0; i<nrOfProcessDefinitions; i++) {
+      repositoryService.createDeployment()
+        .addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml").deploy();
+    }
+    assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().count());
+    assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().active().count());
+    assertEquals(0, repositoryService.createProcessDefinitionQuery().suspended().count());
+    
+    // Start process instance
+    runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    
+    // Suspend all process definitions with same key in 2 hourse from now
+    repositoryService.suspendProcessDefinitionByKey("oneTaskProcess", true, new Date(startTime.getTime() + (2 * hourInMs)));
+    assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().count());
+    assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().active().count());
+    assertEquals(0, repositoryService.createProcessDefinitionQuery().suspended().count());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().active().count());
+    
+    // Move time 3 hours and run job executor
+    ClockUtil.setCurrentTime(new Date(startTime.getTime() + (3 * hourInMs)));
+    waitForJobExecutorToProcessAllJobs(5000L, 50L);
+    assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().count());
+    assertEquals(0, repositoryService.createProcessDefinitionQuery().active().count());
+    assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().suspended().count());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().suspended().count());
+    
+    // Activate again in 5 hourse from now
+    repositoryService.activateProcessDefinitionByKey("oneTaskProcess", true, new Date(startTime.getTime() + (5 * hourInMs)));
+    assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().count());
+    assertEquals(0, repositoryService.createProcessDefinitionQuery().active().count());
+    assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().suspended().count());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().suspended().count());
+    
+    // Move time 6 hours and run job executor
+    ClockUtil.setCurrentTime(new Date(startTime.getTime() + (6 *hourInMs)));
+    waitForJobExecutorToProcessAllJobs(5000L, 50L);
+    assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().count());
+    assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().active().count());
+    assertEquals(0, repositoryService.createProcessDefinitionQuery().suspended().count());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().active().count());
+    
+    // Clean DB
+    for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+      repositoryService.deleteDeployment(deployment.getId(), true);
+    }
+  }
+  
   
 }

@@ -12,10 +12,12 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
@@ -51,73 +53,91 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
   
   public Void execute(CommandContext commandContext) {
     
-    ProcessDefinitionEntity processDefinitionEntity = findProcessDefinition(commandContext);
+    List<ProcessDefinitionEntity> processDefinitions = findProcessDefinition(commandContext);
     
     if (executionDate != null) { // Process definition state change is delayed
-      createTimerForDelayedExecution(commandContext, processDefinitionEntity);
+      createTimerForDelayedExecution(commandContext, processDefinitions);
     } else { // Process definition state is changed now
-      changeProcessDefinitionState(commandContext, processDefinitionEntity);
+      changeProcessDefinitionState(commandContext, processDefinitions);
     }
 
     return null;
   }
 
-  protected ProcessDefinitionEntity findProcessDefinition(CommandContext commandContext) {
+  protected List<ProcessDefinitionEntity> findProcessDefinition(CommandContext commandContext) {
     
     // Validation of input parameters
     if(processDefinitionId == null && processDefinitionKey == null) {
       throw new ActivitiException("Process definition id or key cannot be null");
     }
     
-    ProcessDefinitionEntity processDefinitionEntity = null;
+    List<ProcessDefinitionEntity> processDefinitionEntities = new ArrayList<ProcessDefinitionEntity>();
     ProcessDefinitionManager processDefinitionManager = commandContext.getProcessDefinitionManager();
     
-    if(processDefinitionId == null) {
-      processDefinitionEntity = processDefinitionManager.findLatestProcessDefinitionByKey(processDefinitionKey);
-      if(processDefinitionEntity == null) {
-        throw new ActivitiException("Cannot find process definition for key '"+processDefinitionKey+"'");
-      }
-    } else {
-      processDefinitionEntity = processDefinitionManager.findLatestProcessDefinitionById(processDefinitionId);
+    if(processDefinitionId != null) {
+      
+      ProcessDefinitionEntity processDefinitionEntity = processDefinitionManager.findLatestProcessDefinitionById(processDefinitionId);
       if(processDefinitionEntity == null) {
         throw new ActivitiException("Cannot find process definition for id '"+processDefinitionId+"'");
       }
-    }
-    return processDefinitionEntity;
-  }
-  
-  protected void createTimerForDelayedExecution(CommandContext commandContext, ProcessDefinitionEntity processDefinitionEntity) {
-    TimerEntity timer = new TimerEntity();
-    timer.setDuedate(executionDate);
-    timer.setJobHandlerType(getDelayedExecutionJobHandlerType());
-    timer.setJobHandlerConfiguration(TimerChangeProcessDefinitionSuspensionStateJobHandler
-            .createJobHandlerConfiguration(processDefinitionEntity.getId(), includeProcessInstances));
-    commandContext.getJobManager().schedule(timer);
-  }
-  
-  protected void changeProcessDefinitionState(CommandContext commandContext, ProcessDefinitionEntity processDefinitionEntity) {
-    SuspensionStateUtil.setSuspensionState(processDefinitionEntity, getProcessDefinitionSuspensionState());
-    
-    // Evict cache
-    Context
-    .getProcessEngineConfiguration()
-    .getDeploymentCache().removeProcessDefinition(processDefinitionEntity.getId());
-    
-    // Suspend process instances (if needed)
-    if (includeProcessInstances) {
+      processDefinitionEntities.add(processDefinitionEntity);
       
-      int currentStartIndex = 0;
-      List<ProcessInstance> processInstances = fetchProcessInstancesPage(commandContext, processDefinitionEntity, currentStartIndex);
-      while (processInstances.size() > 0) {
+    } else {
+
+      List<ProcessDefinition> processDefinitions = new ProcessDefinitionQueryImpl(commandContext)
+        .processDefinitionKey(processDefinitionKey)
+        .list();
+
+      if(processDefinitions.size() == 0) {
+        throw new ActivitiException("Cannot find process definition for key '"+processDefinitionKey+"'");
+      }
+      
+      for (ProcessDefinition processDefinition : processDefinitions) {
+        processDefinitionEntities.add((ProcessDefinitionEntity) processDefinition);
+      }
+      
+    }
+    return processDefinitionEntities;
+  }
+  
+  protected void createTimerForDelayedExecution(CommandContext commandContext, List<ProcessDefinitionEntity> processDefinitions) {
+    for (ProcessDefinitionEntity processDefinition : processDefinitions) {
+      TimerEntity timer = new TimerEntity();
+      timer.setDuedate(executionDate);
+      timer.setJobHandlerType(getDelayedExecutionJobHandlerType());
+      timer.setJobHandlerConfiguration(TimerChangeProcessDefinitionSuspensionStateJobHandler
+              .createJobHandlerConfiguration(processDefinition.getId(), includeProcessInstances));
+      commandContext.getJobManager().schedule(timer);
+    }
+  }
+  
+  protected void changeProcessDefinitionState(CommandContext commandContext, List<ProcessDefinitionEntity> processDefinitions) {
+    for (ProcessDefinitionEntity processDefinition : processDefinitions) {
+    
+      SuspensionStateUtil.setSuspensionState(processDefinition, getProcessDefinitionSuspensionState());
+      
+      // Evict cache
+      Context
+        .getProcessEngineConfiguration()
+        .getDeploymentCache().removeProcessDefinition(processDefinition.getId());
+      
+      // Suspend process instances (if needed)
+      if (includeProcessInstances) {
         
-        for (ProcessInstance processInstance : processInstances) {
-          AbstractSetProcessInstanceStateCmd processInstanceCmd = getProcessInstanceChangeStateCmd(processInstance);
-          processInstanceCmd.execute(commandContext);
+        int currentStartIndex = 0;
+        List<ProcessInstance> processInstances = fetchProcessInstancesPage(commandContext, processDefinition, currentStartIndex);
+        while (processInstances.size() > 0) {
+          
+          for (ProcessInstance processInstance : processInstances) {
+            AbstractSetProcessInstanceStateCmd processInstanceCmd = getProcessInstanceChangeStateCmd(processInstance);
+            processInstanceCmd.execute(commandContext);
+          }
+          
+          // Fetch new batch of process instances
+          currentStartIndex += processInstances.size();
+          processInstances = fetchProcessInstancesPage(commandContext, processDefinition, currentStartIndex);
         }
         
-        // Fetch new batch of process instances
-        currentStartIndex += processInstances.size();
-        processInstances = fetchProcessInstancesPage(commandContext, processDefinitionEntity, currentStartIndex);
       }
       
     }
