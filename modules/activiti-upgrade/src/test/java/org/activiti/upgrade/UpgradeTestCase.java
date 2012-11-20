@@ -70,6 +70,8 @@ public abstract class UpgradeTestCase extends TestCase {
     
     if (processEngine==null) {
       String database = System.getProperty("database");
+      UpgradeDataGenerator.log.fine("Configuration properties...");
+      UpgradeDataGenerator.log.fine("database.....:"+database);
       setProcessEngine(createProcessEngineConfiguration(database).buildProcessEngine());
     }
   }
@@ -94,8 +96,7 @@ public abstract class UpgradeTestCase extends TestCase {
             .setJobExecutorActivate(false);
   
     // loading properties
-    UpgradeDataGenerator.log.fine("loading properties...");
-    String propertiesFileName = System.getProperty("user.home")+System.getProperty("file.separator")+".activiti"+System.getProperty("file.separator")+"jdbc"+System.getProperty("file.separator")+"build."+database+".properties";
+    String propertiesFileName = System.getProperty("user.home")+System.getProperty("file.separator")+".activiti"+System.getProperty("file.separator")+"upgrade"+System.getProperty("file.separator")+"build."+database+".properties";
     Properties properties = new Properties();
     properties.load(new FileInputStream(propertiesFileName));
     UpgradeDataGenerator.log.fine("jdbc url.....: "+processEngineConfiguration.getJdbcUrl());
