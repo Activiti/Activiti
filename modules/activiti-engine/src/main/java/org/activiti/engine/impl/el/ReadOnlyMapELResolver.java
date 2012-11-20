@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.spring;
+package org.activiti.engine.impl.el;
 
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;

@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.el.ExpressionManager;
+import org.activiti.engine.impl.el.ReadOnlyMapELResolver;
 import org.activiti.engine.impl.el.VariableScopeElResolver;
 import org.activiti.engine.impl.javax.el.ArrayELResolver;
 import org.activiti.engine.impl.javax.el.BeanELResolver;
@@ -36,7 +37,6 @@ import org.springframework.context.ApplicationContext;
 public class SpringExpressionManager extends ExpressionManager {
   
   protected ApplicationContext applicationContext;
-  protected Map<Object, Object> beans;
   
   /**
    * @param applicationContext
@@ -47,8 +47,8 @@ public class SpringExpressionManager extends ExpressionManager {
    *          application-context will be exposed.
    */
   public SpringExpressionManager(ApplicationContext applicationContext, Map<Object, Object> beans) {
+    super(beans);
     this.applicationContext = applicationContext;
-    this.beans = beans;
   }
 
   @Override
