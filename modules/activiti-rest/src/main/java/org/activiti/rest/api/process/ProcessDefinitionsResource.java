@@ -18,9 +18,11 @@ import java.util.Map;
 
 import org.activiti.engine.impl.ProcessDefinitionQueryProperty;
 import org.activiti.engine.query.QueryProperty;
+import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.DataResponse;
 import org.activiti.rest.api.SecuredResource;
+import org.apache.commons.lang.StringUtils;
 import org.restlet.resource.Get;
 
 /**
@@ -43,8 +45,14 @@ public class ProcessDefinitionsResource extends SecuredResource {
   public DataResponse getProcessDefinitions() {
     if(authenticate() == false) return null;
 
+    ProcessDefinitionQuery query = ActivitiUtil.getRepositoryService().createProcessDefinitionQuery();
+    String startableByUser = getQuery().getValues("startableByUser");
+    if (StringUtils.isNotEmpty(startableByUser)) {
+      query = query.startableByUser(startableByUser);
+    }
+    
     DataResponse response = new ProcessDefinitionsPaginateList().paginateList(
-        getQuery(), ActivitiUtil.getRepositoryService().createProcessDefinitionQuery(), "id", properties);
+        getQuery(), query, "id", properties);
     return response;
   }
 }
