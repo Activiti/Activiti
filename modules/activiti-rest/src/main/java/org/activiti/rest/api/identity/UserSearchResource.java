@@ -36,14 +36,13 @@ public class UserSearchResource extends SecuredResource {
   public DataResponse searchUsers() {
     if(authenticate() == false) return null;
     
-    String searchText = (String) getRequest().getAttributes().get("searchText");
+    String searchText = (String) getQuery().getValues("searchText");
     if(searchText == null) {
       throw new ActivitiException("No searchText provided");
     }
     searchText = "%" + searchText + "%";
     
     List<User> firstNameMatchList = ActivitiUtil.getIdentityService().createUserQuery().userFirstNameLike(searchText).list();
-    
     List<User> lastNameMatchList = ActivitiUtil.getIdentityService().createUserQuery().userLastNameLike(searchText).list();
     
     Map<String, UserInfo> userMap = new HashMap<String, UserInfo>();

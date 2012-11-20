@@ -131,10 +131,13 @@ public class BaseRestTestCase extends PvmTestCase {
   protected void createUsers() {
     IdentityService identityService = processEngine.getIdentityService();
     User user = identityService.newUser("kermit");
+    user.setFirstName("Kermit");
+    user.setLastName("the Frog");
     user.setPassword("kermit");
     identityService.saveUser(user);
     
     Group group = identityService.newGroup("admin");
+    group.setName("Administrators");
     identityService.saveGroup(group);
     
     identityService.createMembership(user.getId(), group.getId());

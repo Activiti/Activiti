@@ -22,6 +22,7 @@ import org.activiti.engine.identity.Group;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.DataResponse;
 import org.activiti.rest.api.SecuredResource;
+import org.apache.commons.lang.StringUtils;
 import org.restlet.resource.Get;
 
 /**
@@ -34,17 +35,21 @@ public class GroupSearchResource extends SecuredResource {
     if (authenticate() == false)
       return null;
 
-    String searchText = (String) getRequest().getAttributes().get("searchText");
-    if (searchText == null) {
-      searchText = "";
+    String searchText = (String) getQuery().getValues("searchText");
+    if (searchText != null) {
+      searchText = searchText.toLowerCase();
     }
-    searchText = searchText.toLowerCase();
 
     List<Group> groups = ActivitiUtil.getIdentityService().createGroupQuery().list();
     List<GroupInfo> groupList = new ArrayList<GroupInfo>();
     for (Group group : groups) {
-      if (group.getName().toLowerCase().contains(searchText)
-          || group.getId().toLowerCase().contains(searchText)) {
+      
+      if (StringUtils.isNotEmpty(searchText)) {
+        if (group.getName().toLowerCase().contains(searchText)
+            || group.getId().toLowerCase().contains(searchText)) {
+          groupList.add(new GroupInfo(group));
+        }
+      } else {
         groupList.add(new GroupInfo(group));
       }
     }
