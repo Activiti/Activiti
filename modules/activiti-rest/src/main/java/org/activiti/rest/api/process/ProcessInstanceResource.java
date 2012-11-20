@@ -109,6 +109,7 @@ public class ProcessInstanceResource extends SecuredResource {
       for (HistoricTaskInstance historicTaskInstance : taskList) {
         ObjectNode taskJSON = new ObjectMapper().createObjectNode();
         taskJSON.put("taskId", historicTaskInstance.getId());
+        taskJSON.put("taskDefinitionKey", historicTaskInstance.getTaskDefinitionKey());
         if (historicTaskInstance.getName() != null) {
           taskJSON.put("taskName", historicTaskInstance.getName());
         } else {
