@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.impl.el;
 
+import java.util.Map;
+
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
@@ -52,11 +54,17 @@ public class ExpressionManager {
   protected ExpressionFactory expressionFactory;
   // Default implementation (does nothing)
   protected ELContext parsingElContext = new ParsingElContext();
+  protected Map<Object, Object> beans;
   
   
   public ExpressionManager() {
+    this(null);
+  }
+  
+  public ExpressionManager(Map<Object, Object> beans) {
     // Use the ExpressionFactoryImpl in activiti build in version of juel, with parametrised method expressions enabled
     expressionFactory = new ExpressionFactoryImpl();
+    this.beans = beans;
   }
 
  
@@ -95,6 +103,13 @@ public class ExpressionManager {
   protected ELResolver createElResolver(VariableScope variableScope) {
     CompositeELResolver elResolver = new CompositeELResolver();
     elResolver.add(new VariableScopeElResolver(variableScope));
+    
+    if(beans != null) {
+      // ACT-1102: Also expose all beans in configuration when using standalone activiti, not
+      // in spring-context
+      elResolver.add(new ReadOnlyMapELResolver(beans));
+    }
+    
     elResolver.add(new ArrayELResolver());
     elResolver.add(new ListELResolver());
     elResolver.add(new MapELResolver());
