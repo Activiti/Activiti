@@ -38,46 +38,36 @@ public class TaskOperationResource extends SecuredResource {
     
     String taskId = (String) getRequest().getAttributes().get("taskId");
     String operation = (String) getRequest().getAttributes().get("operation");
-    try {
-      Map<String, Object> variables = new HashMap<String, Object>();
-      if (entity != null) {
-        String startParams = entity.getText();
-        if (StringUtils.isNotEmpty(startParams)) {
-          JsonNode startJSON = new ObjectMapper().readTree(startParams);
-          Iterator<String> itName = startJSON.getFieldNames();
-          while(itName.hasNext()) {
-            String name = itName.next();
-            JsonNode valueNode = startJSON.path(name);
-            if (valueNode.isBoolean()) {
-              variables.put(name, valueNode.getBooleanValue());
-            } else if (valueNode.isLong()) {
-              variables.put(name, valueNode.getLongValue());
-            } else if (valueNode.isDouble()) {
-              variables.put(name, valueNode.getDoubleValue());
-            } else if (valueNode.isTextual()) {
-              variables.put(name, valueNode.getTextValue());
-            } else if("true".equals(valueNode.getTextValue()) || "false".equals(valueNode.getTextValue())) {
-              variables.put(name, Boolean.valueOf(valueNode.getTextValue()));
-            } else {
-              variables.put(name, valueNode.getValueAsText());
+      
+    if ("claim".equals(operation)) {
+      ActivitiUtil.getTaskService().claim(taskId, loggedInUser);
+    } else if ("unclaim".equals(operation)) {
+      ActivitiUtil.getTaskService().claim(taskId, null);
+    } else if ("complete".equals(operation)) {
+      
+      Map<String, String> variables = new HashMap<String, String>();
+      try {
+        if (entity != null) {
+          String startParams = entity.getText();
+          if (StringUtils.isNotEmpty(startParams)) {
+            JsonNode startJSON = new ObjectMapper().readTree(startParams);
+            Iterator<String> itName = startJSON.getFieldNames();
+            while(itName.hasNext()) {
+              String name = itName.next();
+              JsonNode valueNode = startJSON.path(name);
+              variables.put(name, valueNode.asText());
             }
           }
         }
+      } catch(Exception e) {
+        throw new ActivitiException("Did not receive the operation parameters", e);
       }
       
-      if ("claim".equals(operation)) {
-        ActivitiUtil.getTaskService().claim(taskId, loggedInUser);
-      } else if ("unclaim".equals(operation)) {
-        ActivitiUtil.getTaskService().claim(taskId, null);
-      } else if ("complete".equals(operation)) {
-        variables.remove("taskId");
-        ActivitiUtil.getTaskService().complete(taskId, variables);
-      } else {
-        throw new ActivitiException("'" + operation + "' is not a valid operation");
-      }
+      variables.remove("taskId");
+      ActivitiUtil.getFormService().submitTaskFormData(taskId, variables);
       
-    } catch(Exception e) {
-      throw new ActivitiException("Did not receive the operation parameters", e);
+    } else {
+      throw new ActivitiException("'" + operation + "' is not a valid operation");
     }
     
     ObjectNode successNode = new ObjectMapper().createObjectNode();

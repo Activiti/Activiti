@@ -23,7 +23,7 @@ public class StartProcessInstanceResourceTest extends BaseRestTestCase {
     JsonNode responseNode = objectMapper.readTree(response.getStream());
     assertNotNull(responseNode);
     
-    String processInstanceId = responseNode.get("processInstanceId").getValueAsText();
+    String processInstanceId = responseNode.get("processInstanceId").asText();
     assertNotNull(processInstanceId);
     
     List<ProcessInstance> instanceList = runtimeService.createProcessInstanceQuery().list();
@@ -52,7 +52,7 @@ public class StartProcessInstanceResourceTest extends BaseRestTestCase {
     JsonNode responseNode = objectMapper.readTree(response.getStream());
     assertNotNull(responseNode);
     
-    String processInstanceId = responseNode.get("processInstanceId").getValueAsText();
+    String processInstanceId = responseNode.get("processInstanceId").asText();
     assertNotNull(processInstanceId);
     
     List<ProcessInstance> instanceList = runtimeService.createProcessInstanceQuery().list();
