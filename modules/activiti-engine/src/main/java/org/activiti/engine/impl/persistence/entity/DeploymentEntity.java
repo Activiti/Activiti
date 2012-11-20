@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +39,12 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
   protected Date deploymentTime;
   protected boolean validatingSchema = true;
   protected boolean isNew;
+  
+  /**
+   * Will only be used during actual deployment to pass deployed artifacts (eg process definitions).
+   * Will be null otherwise.
+   */
+  protected Map<Class<?>, List<Object>> deployedArtifacts;
   
   public ResourceEntity getResource(String resourceName) {
     return getResources().get(resourceName);
@@ -70,6 +77,28 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
     // so always the same value is returned
     // so never will an update be issued for a DeploymentEntity
     return DeploymentEntity.class;
+  }
+  
+  // Deployed artifacts manipulation //////////////////////////////////////////
+  
+  public void addDeployedArtifact(Object deployedArtifact) {
+    if (deployedArtifacts == null) {
+      deployedArtifacts = new HashMap<Class<?>, List<Object>>();
+    }
+    
+    Class<?> clazz = deployedArtifact.getClass();
+    List<Object> artifacts = deployedArtifacts.get(clazz);
+    if (artifacts == null) {
+      artifacts = new ArrayList<Object>();
+      deployedArtifacts.put(clazz, artifacts);
+    }
+    
+    artifacts.add(deployedArtifact);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public <T> List<T> getDeployedArtifacts(Class<T> clazz) {
+    return (List<T>) deployedArtifacts.get(clazz);
   }
 
   // getters and setters //////////////////////////////////////////////////////

@@ -13,6 +13,7 @@
 package org.activiti.engine.repository;
 
 import java.io.InputStream;
+import java.util.Date;
 import java.util.zip.ZipInputStream;
 
 /**
@@ -36,9 +37,33 @@ public interface DeploymentBuilder {
   DeploymentBuilder addString(String resourceName, String text);
   DeploymentBuilder addZipInputStream(ZipInputStream zipInputStream);
   
+  /**
+   * Gives the deployment the given name.
+   */
   DeploymentBuilder name(String name);
+  
+  /**
+   * Gives the deployment the given category.
+   */
   DeploymentBuilder category(String category);
+  
+  /**
+   * If set, this deployment will be compared to any previous deployment.
+   * This means that every (non-generated) resource will be compared with the
+   * provided resources of this deployment.
+   */
   DeploymentBuilder enableDuplicateFiltering();
+  
+  /**
+   * Sets the date on which the process definitions contained in this deployment
+   * will be activated. This means that all process definitions will be deployed
+   * as usual, but they will be suspended from the start until the given activation date.
+   */
+  DeploymentBuilder activateProcessDefinitionsOn(Date date);
 
+  /**
+   * Deploys all provided sources to the Activiti engine.
+   */
   Deployment deploy();
+  
 }

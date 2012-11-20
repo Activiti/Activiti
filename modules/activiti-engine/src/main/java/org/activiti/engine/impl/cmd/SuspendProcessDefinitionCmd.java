@@ -15,6 +15,7 @@ package org.activiti.engine.impl.cmd;
 import java.util.Date;
 
 import org.activiti.engine.impl.jobexecutor.TimerSuspendProcessDefinitionHandler;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
 import org.activiti.engine.runtime.ProcessInstance;
 
@@ -23,6 +24,11 @@ import org.activiti.engine.runtime.ProcessInstance;
  * @author Joram Barrez
  */
 public class SuspendProcessDefinitionCmd extends AbstractSetProcessDefinitionStateCmd {
+  
+  public SuspendProcessDefinitionCmd(ProcessDefinitionEntity processDefinitionEntity, 
+          boolean includeProcessInstances, Date executionDate) {
+    super(processDefinitionEntity, includeProcessInstances, executionDate);
+  }
 
   public SuspendProcessDefinitionCmd(String processDefinitionId, String processDefinitionKey,
           boolean suspendProcessInstances, Date suspensionDate) {

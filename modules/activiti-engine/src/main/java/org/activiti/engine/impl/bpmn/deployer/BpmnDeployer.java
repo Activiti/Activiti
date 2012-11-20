@@ -130,6 +130,7 @@ public class BpmnDeployer implements Deployer {
     DeploymentCache deploymentCache = Context.getProcessEngineConfiguration().getDeploymentCache();
     DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);
     for (ProcessDefinitionEntity processDefinition : processDefinitions) {
+      
       if (deployment.isNew()) {
         int processDefinitionVersion;
 
@@ -178,10 +179,14 @@ public class BpmnDeployer implements Deployer {
 
       }
 
+      // Add to cache
       Context
         .getProcessEngineConfiguration()
         .getDeploymentCache()
         .addProcessDefinition(processDefinition);
+      
+      // Add to deployment for further usage
+      deployment.addDeployedArtifact(processDefinition);
     }
   }
 

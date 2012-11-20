@@ -13,6 +13,7 @@
 package org.activiti.engine.impl.cmd;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -38,11 +39,19 @@ import org.activiti.engine.runtime.ProcessInstance;
  */
 public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Void> {
   
-  protected final String processDefinitionId;
-  protected final String processDefinitionKey;
+  protected String processDefinitionId;
+  protected String processDefinitionKey;
+  protected ProcessDefinitionEntity processDefinitionEntity;
   protected boolean includeProcessInstances = false;
   protected Date executionDate;
 
+  public AbstractSetProcessDefinitionStateCmd(ProcessDefinitionEntity processDefinitionEntity, 
+          boolean includeProcessInstances, Date executionDate) {
+    this.processDefinitionEntity = processDefinitionEntity;
+    this.includeProcessInstances = includeProcessInstances;
+    this.executionDate = executionDate;
+  }
+  
   public AbstractSetProcessDefinitionStateCmd(String processDefinitionId, String processDefinitionKey,
             boolean includeProcessInstances, Date executionDate) {
     this.processDefinitionId = processDefinitionId;
@@ -66,6 +75,12 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
 
   protected List<ProcessDefinitionEntity> findProcessDefinition(CommandContext commandContext) {
     
+    // If process definition is already provided (eg. when command is called through the DeployCmd) 
+    // we don't need to do an extra database fetch and we can simply return it, wrapped in a list
+    if (processDefinitionEntity != null) {
+      return Arrays.asList(processDefinitionEntity);
+    }
+    
     // Validation of input parameters
     if(processDefinitionId == null && processDefinitionKey == null) {
       throw new ActivitiException("Process definition id or key cannot be null");
@@ -83,11 +98,11 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
       processDefinitionEntities.add(processDefinitionEntity);
       
     } else {
-
+      
       List<ProcessDefinition> processDefinitions = new ProcessDefinitionQueryImpl(commandContext)
         .processDefinitionKey(processDefinitionKey)
         .list();
-
+      
       if(processDefinitions.size() == 0) {
         throw new ActivitiException("Cannot find process definition for key '"+processDefinitionKey+"'");
       }

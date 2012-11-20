@@ -13,10 +13,12 @@
 
 package org.activiti.engine.test.api.repository;
 
+import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
 
@@ -107,6 +109,50 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
     } catch (ActivitiException ae) {
       assertTextPresent("deploymentId is null", ae.getMessage());
     }
+  }
+  
+  public void testDeploymentWithDelayedProcessDefinitionActivation() {
+    
+    Date startTime = new Date();
+    ClockUtil.setCurrentTime(startTime);
+    Date inThreeDays = new Date(startTime.getTime() + (3 * 24 * 60 * 60 * 1000));
+    
+    // Deploy process, but activate after three days
+    org.activiti.engine.repository.Deployment deployment = repositoryService.createDeployment()
+            .addClasspathResource("org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml")
+            .addClasspathResource("org/activiti/engine/test/api/twoTasksProcess.bpmn20.xml")
+            .activateProcessDefinitionsOn(inThreeDays)
+            .deploy();
+    
+    assertEquals(1, repositoryService.createDeploymentQuery().count());
+    assertEquals(2, repositoryService.createProcessDefinitionQuery().count());
+    assertEquals(2, repositoryService.createProcessDefinitionQuery().suspended().count());
+    assertEquals(0, repositoryService.createProcessDefinitionQuery().active().count());
+    
+    // Shouldn't be able to start a process instance
+    try {
+      runtimeService.startProcessInstanceByKey("oneTaskProcess");
+      fail();
+    } catch (ActivitiException e) {
+      assertTextPresentIgnoreCase("suspended", e.getMessage());
+    }
+    
+    // Move time four days forward, the timer will fire and the process definitions will be active
+    Date inFourDays = new Date(startTime.getTime() + (4 * 24 * 60 * 60 * 1000));
+    ClockUtil.setCurrentTime(inFourDays);
+    waitForJobExecutorToProcessAllJobs(5000L, 50L);
+    
+    assertEquals(1, repositoryService.createDeploymentQuery().count());
+    assertEquals(2, repositoryService.createProcessDefinitionQuery().count());
+    assertEquals(0, repositoryService.createProcessDefinitionQuery().suspended().count());
+    assertEquals(2, repositoryService.createProcessDefinitionQuery().active().count());
+    
+    // Should be able to start process instance
+    runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    assertEquals(1, runtimeService.createProcessInstanceQuery().count());
+    
+    // Cleanup
+    repositoryService.deleteDeployment(deployment.getId(), true);
   }
   
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
