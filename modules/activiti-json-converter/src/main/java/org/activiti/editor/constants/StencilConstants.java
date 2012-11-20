@@ -135,6 +135,12 @@ public interface StencilConstants {
 	final String PROPERTY_SCRIPT_FORMAT = "scriptformat";
 	final String PROPERTY_SCRIPT_TEXT = "scripttext";
 	
+	final String PROPERTY_RULETASK_CLASS = "ruletask_class";
+	final String PROPERTY_RULETASK_VARIABLES_INPUT = "ruletask_variables_input";
+	final String PROPERTY_RULETASK_RESULT = "ruletask_result";
+	final String PROPERTY_RULETASK_RULES = "ruletask_rules";
+	final String PROPERTY_RULETASK_EXCLUDE = "ruletask_exclude";
+	
 	final String PROPERTY_CALLACTIVITY_CALLEDELEMENT = "callactivitycalledelement";
   final String PROPERTY_CALLACTIVITY_IN = "callactivityinparameters";
   final String PROPERTY_CALLACTIVITY_OUT = "callactivityoutparameters";

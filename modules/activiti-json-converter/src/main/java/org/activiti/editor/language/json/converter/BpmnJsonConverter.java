@@ -67,6 +67,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     SequenceFlowJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
     
     // task types
+    BusinessRuleTaskJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
     ManualTaskJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
     ReceiveTaskJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
     ScriptTaskJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);

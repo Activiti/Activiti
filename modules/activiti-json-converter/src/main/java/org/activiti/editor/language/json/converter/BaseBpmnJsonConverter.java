@@ -12,6 +12,7 @@
  */
 package org.activiti.editor.language.json.converter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -151,15 +152,8 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
     
     if (flowElement instanceof Activity) {
       Activity activity = (Activity) flowElement;
-      String asynchronous = getPropertyValueAsString(PROPERTY_ASYNCHRONOUS, elementNode);
-      if (PROPERTY_VALUE_YES.equalsIgnoreCase(asynchronous)) {
-        activity.setAsynchronous(true);
-      }
-      
-      String exclusive = getPropertyValueAsString(PROPERTY_EXCLUSIVE, elementNode);
-      if (PROPERTY_VALUE_NO.equalsIgnoreCase(exclusive)) {
-        activity.setNotExclusive(true);
-      }
+      activity.setAsynchronous(getPropertyValueAsBoolean(PROPERTY_ASYNCHRONOUS, elementNode));
+      activity.setNotExclusive(getPropertyValueAsBoolean(PROPERTY_EXCLUSIVE, elementNode));
       
       String multiInstanceCardinality = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_CARDINALITY, elementNode);
       String multiInstanceCollection = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_COLLECTION, elementNode);
@@ -168,13 +162,10 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
       if (StringUtils.isNotEmpty(multiInstanceCardinality) || StringUtils.isNotEmpty(multiInstanceCollection) ||
           StringUtils.isNotEmpty(multiInstanceCondition)) {
         
-        String multiInstanceSequential = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_SEQUENTIAL, elementNode);
         String multiInstanceVariable = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_VARIABLE, elementNode);
         
         MultiInstanceLoopCharacteristics multiInstanceObject = new MultiInstanceLoopCharacteristics();
-        if (PROPERTY_VALUE_YES.equalsIgnoreCase(multiInstanceSequential)) {
-          multiInstanceObject.setSequential(true);
-        }
+        multiInstanceObject.setSequential(getPropertyValueAsBoolean(PROPERTY_MULTIINSTANCE_SEQUENTIAL, elementNode));
         multiInstanceObject.setLoopCardinality(multiInstanceCardinality);
         multiInstanceObject.setInputDataItem(multiInstanceCollection);
         multiInstanceObject.setElementVariable(multiInstanceVariable);
@@ -412,6 +403,18 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
     return propertyValue;
   }
   
+  protected List<String> getValueAsList(String name, JsonNode objectNode) {
+    List<String> resultList = new ArrayList<String>();
+    String propertyValue = getValueAsString(name, objectNode);
+    if (propertyValue != null) {
+      String[] valueList = propertyValue.split(",");
+      for (String value : valueList) {
+        resultList.add(value.trim());
+      }
+    }
+    return resultList;
+  }
+  
   protected String getPropertyValueAsString(String name, JsonNode objectNode) {
     String propertyValue = null;
     JsonNode propertyNode = getProperty(name, objectNode);
@@ -419,6 +422,27 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
       propertyValue = propertyNode.asText();
     }
     return propertyValue;
+  }
+  protected boolean getPropertyValueAsBoolean(String name, JsonNode objectNode) {
+    boolean result = false;
+    String stringValue = getPropertyValueAsString(name, objectNode);
+    if (PROPERTY_VALUE_YES.equalsIgnoreCase(stringValue)) {
+      result = true;
+    }
+    return result;
+  }
+  
+  protected List<String> getPropertyValueAsList(String name, JsonNode objectNode) {
+    List<String> resultList = new ArrayList<String>();
+    JsonNode propertyNode = getProperty(name, objectNode);
+    if (propertyNode != null) {
+      String propertyValue = propertyNode.asText();
+      String[] valueList = propertyValue.split(",");
+      for (String value : valueList) {
+        resultList.add(value.trim());
+      }
+    }
+    return resultList;
   }
   
   protected JsonNode getProperty(String name, JsonNode objectNode) {
@@ -428,5 +452,20 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
       propertyNode = propertiesNode.get(name);
     }
     return propertyNode;
+  }
+  
+  protected String convertListToCommaSeparatedString(List<String> stringList) {
+    String resultString = null;
+    if (stringList  != null && stringList.size() > 0) {
+      StringBuilder expressionBuilder = new StringBuilder();
+      for (String singleItem : stringList) {
+        if (expressionBuilder.length() > 0) {
+          expressionBuilder.append(",");
+        } 
+        expressionBuilder.append(singleItem);
+      }
+      resultString = expressionBuilder.toString();
+    }
+    return resultString;
   }
 }
