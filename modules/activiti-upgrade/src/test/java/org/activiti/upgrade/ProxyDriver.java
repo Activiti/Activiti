@@ -41,9 +41,15 @@ public class ProxyDriver implements Driver {
   
   public static void setUrl(String url) {
     ProxyDriver.url = url;
-//    if (url.startsWith("jdbc:mysql")) {
-//      databaseFormatter = new DatabaseFormatterCustom();
-//    }
+    if (url.startsWith("jdbc:oracle")) {
+      databaseFormatter = new DatabaseFormatterOracle();
+    } else if (url.startsWith("jdbc:sqlserver")) {
+      databaseFormatter = new DatabaseFormatterMsSqlServer();
+    } else if (url.startsWith("jdbc:db2")) {
+      databaseFormatter = new DatabaseFormatterOracle();
+    } else if (url.startsWith("jdbc:postgresql")) {
+      databaseFormatter = new DatabaseFormatterOracle();
+    } 
   }
 
   public boolean acceptsURL(String url) throws SQLException {

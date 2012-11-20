@@ -12,30 +12,17 @@
  */
 package org.activiti.upgrade;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
+public class DatabaseFormatterOracle extends DatabaseFormatter {
 
-public class DatabaseFormatter {
-
-  static SimpleDateFormat defaultDateFormat = new SimpleDateFormat("''yyyy-MM-dd HH:mm:ss''");
-
-  public String formatDate(Date date) {
-    return defaultDateFormat.format(date);
-  }
-  
+  @Override
   public String formatBinary(byte[] bytes) {
     StringBuffer sb = new StringBuffer();
-    sb.append("X'");
+    sb.append("hextoraw('");
     appendBytesInHex(sb, bytes);
-    sb.append("'");
+    sb.append("')");
     return sb.toString();
   }
 
-  protected void appendBytesInHex(StringBuffer sb, byte[] bytes) {
-    for (byte b : bytes) {
-      sb.append(String.format("%02X", b));
-    }
-  }
 
 }
