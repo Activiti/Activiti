@@ -75,6 +75,15 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
   ProcessInstanceQuery variableValueEquals(String name, Object value);
   
   /** 
+   * Only select process instances which have at least one global variable with the given value. The type
+   * of variable is determined based on the value, using types configured in 
+   * {@link ProcessEngineConfiguration#getVariableTypes()}. 
+   * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
+   * are not supported.
+   */
+  ProcessInstanceQuery variableValueEquals(Object value);
+  
+  /** 
    * Only select process instances which have a global variable with the given name, but
    * with a different value than the passed value.
    * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)

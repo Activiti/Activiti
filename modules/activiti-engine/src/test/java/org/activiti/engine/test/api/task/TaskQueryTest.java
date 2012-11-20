@@ -531,6 +531,21 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertEquals(1, taskService.createTaskQuery().taskVariableValueNotEquals("stringVar", "999").count());
     assertEquals(1, taskService.createTaskQuery().taskVariableValueNotEquals("booleanVar", false).count());
     
+    // Test value-only variable equals
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueEquals(928374L).count());
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueEquals((short) 123).count());
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueEquals(1234).count());
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueEquals("stringValue").count());
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueEquals(true).count());
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueEquals(date).count());
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueEquals(null).count());
+    
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueEquals(999999L).count());
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueEquals((short) 999).count());
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueEquals(9999).count());
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueEquals("unexistingstringvalue").count());
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueEquals(false).count());
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueEquals(otherDate.getTime()).count());
   }
   
   @Deployment
@@ -587,6 +602,23 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     // and query for the existing variable with NOT shoudl result in nothing found:
     assertEquals(0, taskService.createTaskQuery().processVariableValueNotEquals("longVar", 928374L).count());
     
+    
+    // Test value-only variable equals
+    assertEquals(1, taskService.createTaskQuery().processVariableValueEquals(928374L).count());
+    assertEquals(1, taskService.createTaskQuery().processVariableValueEquals((short) 123).count());
+    assertEquals(1, taskService.createTaskQuery().processVariableValueEquals(1234).count());
+    assertEquals(1, taskService.createTaskQuery().processVariableValueEquals("stringValue").count());
+    assertEquals(1, taskService.createTaskQuery().processVariableValueEquals(true).count());
+    assertEquals(1, taskService.createTaskQuery().processVariableValueEquals(date).count());
+    assertEquals(1, taskService.createTaskQuery().processVariableValueEquals(null).count());
+    
+    assertEquals(0, taskService.createTaskQuery().processVariableValueEquals(999999L).count());
+    assertEquals(0, taskService.createTaskQuery().processVariableValueEquals((short) 999).count());
+    assertEquals(0, taskService.createTaskQuery().processVariableValueEquals(9999).count());
+    assertEquals(0, taskService.createTaskQuery().processVariableValueEquals("unexistingstringvalue").count());
+    assertEquals(0, taskService.createTaskQuery().processVariableValueEquals(false).count());
+    assertEquals(0, taskService.createTaskQuery().processVariableValueEquals(otherDate.getTime()).count());
+    
     // Test combination of task-variable and process-variable
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.setVariableLocal(task.getId(), "taskVar", "theValue");
@@ -600,6 +632,16 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertEquals(1, taskService.createTaskQuery()
             .processVariableValueEquals("longVar", 928374L)
             .taskVariableValueEquals("longVar", 928374L)
+            .count());
+    
+    assertEquals(1, taskService.createTaskQuery()
+            .processVariableValueEquals(928374L)
+            .taskVariableValueEquals("theValue")
+            .count());
+    
+    assertEquals(1, taskService.createTaskQuery()
+            .processVariableValueEquals(928374L)
+            .taskVariableValueEquals(928374L)
             .count());
   }
   

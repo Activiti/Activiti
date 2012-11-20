@@ -182,7 +182,10 @@
           <!-- When process instance variable is queried for, only process variables are taken into account -->
           and A${index}.EXECUTION_ID_ = A${index}.PROC_INST_ID_
         </if>
-      	and A${index}.NAME_= #{queryVariableValue.name}
+        <if test="queryVariableValue.name != null">
+          <!-- Match-all variable-names when name is null -->
+          and A${index}.NAME_= #{queryVariableValue.name}
+        </if>
         <if test="!queryVariableValue.type.equals('null')">
         <!-- When operator is not-equals or type of value is null, type doesn't matter! -->
           and A${index}.TYPE_ = #{queryVariableValue.type}
