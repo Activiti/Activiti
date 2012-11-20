@@ -10,14 +10,14 @@
 
   <properties>
     <skipTests>true</skipTests>
-    <releaseVersion>5.11-SNAPSHOT</releaseVersion>
+    <dependencyVersion>5.11-SNAPSHOT</dependencyVersion>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-engine</artifactId>
-      <version>${releaseVersion}</version>
+      <version>${dependencyVersion}</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -114,50 +114,6 @@
     </profile>
     
     <profile>
-      <id>copy</id>
-      <activation>
-        <property>
-          <name>releaseVersion</name>
-        </property>
-      </activation>
-      <properties>
-        <skipTests>true</skipTests>
-      </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <version>1.4</version>
-            <executions>
-              <execution>
-                <id>customized.config.for.db</id>
-                <phase>process-test-classes</phase>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <tasks>
-                    <echo message="generating db files for ${releaseVersion}" />
-                    <echo message="copying create files" />
-                    <mkdir dir="src/test/resources/org/activiti/db/${releaseVersion}/create" />
-                    <copy todir="src/test/resources/org/activiti/db/${releaseVersion}/create">
-                      <fileset dir="../activiti-engine/src/main/resources/org/activiti/db/create" />
-                    </copy>
-                    <echo message="copying drop files" />
-                    <mkdir dir="src/test/resources/org/activiti/db/${releaseVersion}/drop" />
-                    <copy todir="src/test/resources/org/activiti/db/${releaseVersion}/drop">
-                      <fileset dir="../activiti-engine/src/main/resources/org/activiti/db/drop" />
-                    </copy>
-                  </tasks>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>        
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
       <id>generate</id>
       <activation>
         <property>
@@ -174,7 +130,7 @@
             <version>1.4</version>
             <executions>
               <execution>
-                <id>customized.config.for.db</id>
+                <id>run.upgrade.data.generator</id>
                 <phase>process-test-classes</phase>
                 <goals>
                   <goal>run</goal>
@@ -182,7 +138,8 @@
                 <configuration>
                   <tasks>
                     <echo message="Property database: ${database}" />
-                    <echo message="Property oldVersion: ${releaseVersion}" />
+                    <echo message="Property dependencyVersion: ${dependencyVersion}" />
+                    <echo message="Property releaseVersion: ${releaseVersion}" />
                     <condition property="mandatoryPropertiesAvailable">
                       <and>
                         <isset property="database"/>
@@ -190,6 +147,16 @@
                       </and>
                     </condition>
                     <fail unless="mandatoryPropertiesAvailable" message="please specify values for all the properties" />
+
+                    <mkdir dir="src/test/resources/org/activiti/db/${releaseVersion}/create" />
+                    <copy todir="src/test/resources/org/activiti/db/${releaseVersion}/create">
+                      <fileset dir="../activiti-engine/src/main/resources/org/activiti/db/create" />
+                    </copy>
+                    <mkdir dir="src/test/resources/org/activiti/db/${releaseVersion}/drop" />
+                    <copy todir="src/test/resources/org/activiti/db/${releaseVersion}/drop">
+                      <fileset dir="../activiti-engine/src/main/resources/org/activiti/db/drop" />
+                    </copy>
+
                     <mkdir dir="src/test/resources/org/activiti/db/${releaseVersion}/data" />
                     <echo message="generating data files" />
                     <property name="test_classpath" refid="maven.test.classpath" />
@@ -246,7 +213,8 @@
 	                  <echo message="  jdbc username ${jdbc.username}" />
                     <property name="test_classpath" refid="maven.test.classpath" />
                     <sql driver="${jdbc.driver}" url="${jdbc.url}" userid="${jdbc.username}" password="${jdbc.password}"
-                         classpath="${test_classpath}">
+                         classpath="${test_classpath}"
+                         onerror="continue">
                       <path>
                         <fileset dir="src/test/resources/org/activiti/db/clean">
                           <include name="clean.${database}.sql"/>
