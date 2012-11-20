@@ -249,7 +249,14 @@
         </if>
         <!-- Variable value -->
         <if test="var.textValue != null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
-          and A${index}.TEXT_ 
+          <choose>
+            <when test="var.operator.equals('EQUALS_IGNORE_CASE')">
+              and lower(A${index}.TEXT_)
+            </when>
+            <otherwise>
+              and A${index}.TEXT_
+            </otherwise>
+          </choose> 
           <choose>
               <when test="var.operator.equals('LIKE')">LIKE</when>
               <otherwise><include refid="executionVariableOperator" /></otherwise>
@@ -292,6 +299,7 @@
   <sql id="executionVariableOperator">
     <choose>
       <when test="var.operator.equals('EQUALS')">=</when>
+      <when test="var.operator.equals('EQUALS_IGNORE_CASE')">=</when>
       <when test="var.operator.equals('NOT_EQUALS')">&lt;&gt;</when>
       <when test="var.operator.equals('GREATER_THAN')">&gt;</when>
       <when test="var.operator.equals('GREATER_THAN_OR_EQUAL')">&gt;=</when>

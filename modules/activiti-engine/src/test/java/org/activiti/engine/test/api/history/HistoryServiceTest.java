@@ -32,7 +32,6 @@ import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
@@ -302,10 +301,68 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
 
     assertEquals(3, historyService.createHistoricProcessInstanceQuery().variableValueLike("stringVar", "a%").count());
     assertEquals(0, historyService.createHistoricProcessInstanceQuery().variableValueLike("stringVar", "%x%").count());
+    
+    // Test value-only matching
+    resultInstance = historyService.createHistoricProcessInstanceQuery().variableValueEquals("azerty").singleResult();
+    assertNotNull(resultInstance);
+    assertEquals(processInstance3.getId(), resultInstance.getId());
+    
+    processInstances = historyService.createHistoricProcessInstanceQuery().variableValueEquals("abcdef").list();
+    Assert.assertEquals(2, processInstances.size());
+    expecedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
+    ids = new ArrayList<String>(Arrays.asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
+    ids.removeAll(expecedIds);
+    assertTrue(ids.isEmpty());
+    
+    resultInstance = historyService.createHistoricProcessInstanceQuery().variableValueEquals("notmatchinganyvalues").singleResult();
+    assertNull(resultInstance);
 
     historyService.deleteHistoricProcessInstance(processInstance1.getId());
     historyService.deleteHistoricProcessInstance(processInstance2.getId());
     historyService.deleteHistoricProcessInstance(processInstance3.getId());
+  }
+  
+  @Deployment(resources={
+    "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+  public void testQueryEqualsIgnoreCase() {
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("mixed", "AbCdEfG");
+    vars.put("lower", "ABCDEFG");
+    vars.put("upper", "abcdefg");
+    ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
+    
+    HistoricProcessInstance instance = historyService.createHistoricProcessInstanceQuery().variableValueEqualsIgnoreCase("mixed", "abcdefg").singleResult();
+    assertNotNull(instance);
+    assertEquals(processInstance1.getId(), instance.getId());
+    
+    instance = historyService.createHistoricProcessInstanceQuery().variableValueEqualsIgnoreCase("lower", "abcdefg").singleResult();
+    assertNotNull(instance);
+    assertEquals(processInstance1.getId(), instance.getId());
+    
+    instance = historyService.createHistoricProcessInstanceQuery().variableValueEqualsIgnoreCase("upper", "abcdefg").singleResult();
+    assertNotNull(instance);
+    assertEquals(processInstance1.getId(), instance.getId());
+    
+    // Pass in non-lower-case string
+    instance = historyService.createHistoricProcessInstanceQuery().variableValueEqualsIgnoreCase("upper", "ABCdefg").singleResult();
+    assertNotNull(instance);
+    assertEquals(processInstance1.getId(), instance.getId());
+    
+    // Pass in null-value, should cause exception
+    try {
+      instance = historyService.createHistoricProcessInstanceQuery().variableValueEqualsIgnoreCase("upper", null).singleResult();
+      fail("Exception expected");
+    } catch(ActivitiException ae) {
+      assertEquals("value is null", ae.getMessage());
+    }
+    
+    // Pass in null name, should cause exception
+    try {
+      instance = historyService.createHistoricProcessInstanceQuery().variableValueEqualsIgnoreCase(null, "abcdefg").singleResult();
+      fail("Exception expected");
+    } catch(ActivitiException ae) {
+      assertEquals("name is null", ae.getMessage());
+    }
   }
 
   /**
@@ -403,6 +460,21 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     Assert.assertEquals(3, processInstances.size());
 
     Assert.assertEquals(0, historyService.createHistoricProcessInstanceQuery().variableValueLessThanOrEqual("dateVar", oneYearAgo.getTime()).count());
+    
+    // Test value-only matching
+    resultInstance = historyService.createHistoricProcessInstanceQuery().variableValueEquals(nextYear.getTime()).singleResult();
+    assertNotNull(resultInstance);
+    assertEquals(processInstance3.getId(), resultInstance.getId());
+    
+    processInstances = historyService.createHistoricProcessInstanceQuery().variableValueEquals(date1).list();
+    Assert.assertEquals(2, processInstances.size());
+    expecedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
+    ids = new ArrayList<String>(Arrays.asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
+    ids.removeAll(expecedIds);
+    assertTrue(ids.isEmpty());
+    
+    resultInstance = historyService.createHistoricProcessInstanceQuery().variableValueEquals(twoYearsLater.getTime()).singleResult();
+    assertNull(resultInstance);
 
     historyService.deleteHistoricProcessInstance(processInstance1.getId());
     historyService.deleteHistoricProcessInstance(processInstance2.getId());

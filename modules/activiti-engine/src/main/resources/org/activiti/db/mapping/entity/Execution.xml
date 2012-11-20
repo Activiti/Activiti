@@ -191,12 +191,19 @@
           and A${index}.TYPE_ = #{queryVariableValue.type}
         </if>
       	<if test="queryVariableValue.textValue != null &amp;&amp; queryVariableValue.longValue == null &amp;&amp; queryVariableValue.doubleValue == null">
-	      and A${index}.TEXT_
+          <choose>
+            <when test="queryVariableValue.operator.equals('EQUALS_IGNORE_CASE')">
+              and lower(A${index}.TEXT_)
+            </when>
+            <otherwise>
+              and A${index}.TEXT_
+            </otherwise>
+          </choose>
 	      <choose>
 	        <when test="queryVariableValue.operator.equals('LIKE')">LIKE</when>
 	        <otherwise><include refid="executionVariableOperator" /></otherwise>
 	      </choose>
-	        #{queryVariableValue.textValue}
+  	      #{queryVariableValue.textValue}
       	</if>
       	<if test="queryVariableValue.textValue2 != null">
 	      and A${index}.TEXT2_
@@ -240,6 +247,7 @@
   <sql id="executionVariableOperator">
     <choose>
    	  <when test="queryVariableValue.operator.equals('EQUALS')">=</when>
+   	  <when test="queryVariableValue.operator.equals('EQUALS_IGNORE_CASE')">=</when>
    	  <when test="queryVariableValue.operator.equals('NOT_EQUALS')">&lt;&gt;</when>
    	  <when test="queryVariableValue.operator.equals('GREATER_THAN')">&gt;</when>
    	  <when test="queryVariableValue.operator.equals('GREATER_THAN_OR_EQUAL')">&gt;=</when>

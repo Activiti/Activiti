@@ -284,6 +284,50 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
   
   @Deployment(resources={
     "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+  public void testQueryEqualsIgnoreCase() {
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("mixed", "AbCdEfG");
+    vars.put("lower", "ABCDEFG");
+    vars.put("upper", "abcdefg");
+    ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
+    
+    Execution execution = runtimeService.createExecutionQuery().variableValueEqualsIgnoreCase("mixed", "abcdefg").singleResult();
+    assertNotNull(execution);
+    assertEquals(processInstance1.getId(), execution.getId());
+    
+    execution = runtimeService.createExecutionQuery().variableValueEqualsIgnoreCase("lower", "abcdefg").singleResult();
+    assertNotNull(execution);
+    assertEquals(processInstance1.getId(), execution.getId());
+    
+    execution = runtimeService.createExecutionQuery().variableValueEqualsIgnoreCase("upper", "abcdefg").singleResult();
+    assertNotNull(execution);
+    assertEquals(processInstance1.getId(), execution.getId());
+    
+    // Pass in non-lower-case string
+    execution = runtimeService.createExecutionQuery().variableValueEqualsIgnoreCase("upper", "ABCdefg").singleResult();
+    assertNotNull(execution);
+    assertEquals(processInstance1.getId(), execution.getId());
+    
+    // Pass in null-value, should cause exception
+    try {
+      execution = runtimeService.createExecutionQuery().variableValueEqualsIgnoreCase("upper", null).singleResult();
+      fail("Exception expected");
+    } catch(ActivitiException ae) {
+      assertEquals("value is null", ae.getMessage());
+    }
+    
+    // Pass in null name, should cause exception
+    try {
+      execution = runtimeService.createExecutionQuery().variableValueEqualsIgnoreCase(null, "abcdefg").singleResult();
+      fail("Exception expected");
+    } catch(ActivitiException ae) {
+      assertEquals("name is null", ae.getMessage());
+    }
+  }
+  
+  
+  @Deployment(resources={
+    "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
   public void testQueryLongVariable() {
     Map<String, Object> vars = new HashMap<String, Object>();
     vars.put("longVar", 12345L);
@@ -972,7 +1016,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
       runtimeService.createExecutionQuery().variableValueLike("nullVar", null);
       fail("Excetion expected");
     } catch(ActivitiException ae) {
-      assertTextPresent("Booleans and null cannot be used in 'like' condition", ae.getMessage());
+      assertTextPresent("Only string values can be used with 'like' condition", ae.getMessage());
     }
     
     runtimeService.deleteProcessInstance(processInstance1.getId(), "test");
@@ -1173,6 +1217,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
   public void testExecutionQueryWithProcessVariable() {
     Map<String, Object> variables = new HashMap<String, Object>();
     variables.put("x", "parent");
+    variables.put("xIgnoreCase", "PaReNt");
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("concurrent", variables);
     
     List<Execution> concurrentExecutions = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).list();
@@ -1181,6 +1226,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
       if (!((ExecutionEntity)execution).isProcessInstance()) {
         // only the concurrent executions, not the root one, would be cooler to query that directly, see http://jira.codehaus.org/browse/ACT-1373        
         runtimeService.setVariableLocal(execution.getId(), "x", "child");
+        runtimeService.setVariableLocal(execution.getId(), "xIgnoreCase", "ChILD");
       }      
     }
     
@@ -1191,8 +1237,10 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     assertEquals(3, runtimeService.createExecutionQuery().processInstanceId(pi.getId()).processVariableValueNotEquals("x", "xxx").count());
     
     // Test value-only query
-    assertEquals(0, runtimeService.createExecutionQuery().processInstanceId(pi.getId()).processVariableValueEquals("child").count());
-    assertEquals(3, runtimeService.createExecutionQuery().processInstanceId(pi.getId()).processVariableValueEquals("parent").count());    
+    assertEquals(0, runtimeService.createExecutionQuery().processInstanceId(pi.getId()).processVariableValueEqualsIgnoreCase("xIgnoreCase", "CHILD").count());
+    assertEquals(3, runtimeService.createExecutionQuery().processInstanceId(pi.getId()).processVariableValueEqualsIgnoreCase("xIgnoreCase", "PARENT").count());   
+    
+    // Test ignore-case queries
     
   }
 }

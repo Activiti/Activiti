@@ -55,6 +55,14 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
   ExecutionQuery variableValueEquals(String name, Object value);
   
   /** 
+   * Only select executions which have a local string variable with the given value, 
+   * case insensitive.
+   * @param name name of the variable, cannot be null.
+   * @param value value of the variable, cannot be null.
+   */
+  ExecutionQuery variableValueEqualsIgnoreCase(String name, String value);
+  
+  /** 
    * Only select executions which have at least one local variable with the given value. The type
    * of variable is determined based on the value, using types configured in 
    * {@link ProcessEngineConfiguration#getVariableTypes()}. 
@@ -142,6 +150,14 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
    * are not supported.
    */
   ExecutionQuery processVariableValueNotEquals(String variableName, Object variableValue);    
+  
+  /** 
+   * Only select executions which are part of a process that have a local string variable with 
+   * the given value, case insensitive.
+   * @param name name of the variable, cannot be null.
+   * @param value value of the variable, cannot be null.
+   */
+  ExecutionQuery processVariableValueEqualsIgnoreCase(String name, String value);
   
   // event subscriptions //////////////////////////////////////////////////
   
