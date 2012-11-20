@@ -18,6 +18,7 @@ import java.io.InputStream;
 import org.activiti.engine.ActivitiException;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
+import org.restlet.data.MediaType;
 import org.restlet.representation.InputRepresentation;
 import org.restlet.resource.Get;
 
@@ -36,6 +37,10 @@ public class DeploymentArtifactResource extends SecuredResource {
     if(deploymentId == null) {
       throw new ActivitiException("No deployment id provided");
     }
+    
+    if(resourceName == null) {
+      throw new ActivitiException("No resource name provided");
+    }
 
     final InputStream resourceStream = ActivitiUtil.getRepositoryService().getResourceAsStream(
         deploymentId, resourceName);
@@ -44,7 +49,19 @@ public class DeploymentArtifactResource extends SecuredResource {
       throw new ActivitiException("No resource with name " + resourceName + " could be found");
     }
 
-    InputRepresentation output = new InputRepresentation(resourceStream);
+    MediaType mediaType = null;
+    String lowerResourceName = resourceName.toLowerCase();
+    if (lowerResourceName.endsWith("png")) {
+      mediaType = MediaType.IMAGE_PNG;
+      
+    } else if (lowerResourceName.endsWith("xml") || lowerResourceName.endsWith("bpmn")) {
+      mediaType = MediaType.TEXT_XML;
+    
+    } else {
+      mediaType = MediaType.APPLICATION_ALL;
+    }
+    
+    InputRepresentation output = new InputRepresentation(resourceStream, mediaType);
     return output;
   }
 }
