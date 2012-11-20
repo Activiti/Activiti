@@ -1047,8 +1047,8 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
   public void testQueryEqualsIgnoreCase() {
     Map<String, Object> vars = new HashMap<String, Object>();
     vars.put("mixed", "AbCdEfG");
-    vars.put("lower", "ABCDEFG");
-    vars.put("upper", "abcdefg");
+    vars.put("upper", "ABCDEFG");
+    vars.put("lower", "abcdefg");
     ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
     
     ProcessInstance instance = runtimeService.createProcessInstanceQuery().variableValueEqualsIgnoreCase("mixed", "abcdefg").singleResult();
@@ -1083,7 +1083,34 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     } catch(ActivitiException ae) {
       assertEquals("name is null", ae.getMessage());
     }
+    
+    // Test NOT equals 
+    instance = runtimeService.createProcessInstanceQuery().variableValueNotEqualsIgnoreCase("upper", "UIOP").singleResult();
+    assertNotNull(instance);
+    
+    // Should return result when using "ABCdefg" case-insensitive while normal not-equals won't
+    instance = runtimeService.createProcessInstanceQuery().variableValueNotEqualsIgnoreCase("upper", "ABCdefg").singleResult();
+    assertNull(instance);
+    instance = runtimeService.createProcessInstanceQuery().variableValueNotEquals("upper", "ABCdefg").singleResult();
+    assertNotNull(instance);
+    
+    // Pass in null-value, should cause exception
+    try {
+      instance = runtimeService.createProcessInstanceQuery().variableValueNotEqualsIgnoreCase("upper", null).singleResult();
+      fail("Exception expected");
+    } catch(ActivitiException ae) {
+      assertEquals("value is null", ae.getMessage());
+    }
+    
+    // Pass in null name, should cause exception
+    try {
+      instance = runtimeService.createProcessInstanceQuery().variableValueNotEqualsIgnoreCase(null, "abcdefg").singleResult();
+      fail("Exception expected");
+    } catch(ActivitiException ae) {
+      assertEquals("name is null", ae.getMessage());
+    }
   }
+  
   
   @Deployment(resources={
     "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})

@@ -100,6 +100,13 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
    */
   ProcessInstanceQuery variableValueNotEquals(String name, Object value);
   
+  /** 
+   * Only select process instances which have a local string variable which is not the given value, 
+   * case insensitive.
+   * @param name name of the variable, cannot be null.
+   * @param value value of the variable, cannot be null.
+   */
+  ProcessInstanceQuery variableValueNotEqualsIgnoreCase(String name, String value);
 
   /** 
    * Only select process instances which have a variable value greater than the passed value.

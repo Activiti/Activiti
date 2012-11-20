@@ -80,6 +80,14 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
    */
   ExecutionQuery variableValueNotEquals(String name, Object value);
   
+  /** 
+   * Only select executions which have a local string variable which is not the given value, 
+   * case insensitive.
+   * @param name name of the variable, cannot be null.
+   * @param value value of the variable, cannot be null.
+   */
+  ExecutionQuery variableValueNotEqualsIgnoreCase(String name, String value);
+  
 
   /** 
    * Only select executions which have a local variable value greater than the passed value.
@@ -141,7 +149,7 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
    * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
    * are not supported.
    */
-  ExecutionQuery processVariableValueEquals( Object variableValue);
+  ExecutionQuery processVariableValueEquals(Object variableValue);
   
   /** 
    * Only select executions which are part of a process that have a variable  with the given name, but
@@ -158,6 +166,14 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
    * @param value value of the variable, cannot be null.
    */
   ExecutionQuery processVariableValueEqualsIgnoreCase(String name, String value);
+  
+  /** 
+   * Only select executions which are part of a process that have a local string variable which is not 
+   * the given value, case insensitive.
+   * @param name name of the variable, cannot be null.
+   * @param value value of the variable, cannot be null.
+   */
+  ExecutionQuery processVariableValueNotEqualsIgnoreCase(String name, String value);
   
   // event subscriptions //////////////////////////////////////////////////
   

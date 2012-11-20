@@ -250,7 +250,7 @@
         <!-- Variable value -->
         <if test="var.textValue != null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
           <choose>
-            <when test="var.operator.equals('EQUALS_IGNORE_CASE')">
+            <when test="var.operator.equals('EQUALS_IGNORE_CASE') || var.operator.equals('NOT_EQUALS_IGNORE_CASE')">
               and lower(A${index}.TEXT_)
             </when>
             <otherwise>
@@ -301,6 +301,7 @@
       <when test="var.operator.equals('EQUALS')">=</when>
       <when test="var.operator.equals('EQUALS_IGNORE_CASE')">=</when>
       <when test="var.operator.equals('NOT_EQUALS')">&lt;&gt;</when>
+      <when test="var.operator.equals('NOT_EQUALS_IGNORE_CASE')">&lt;&gt;</when>
       <when test="var.operator.equals('GREATER_THAN')">&gt;</when>
       <when test="var.operator.equals('GREATER_THAN_OR_EQUAL')">&gt;=</when>
       <when test="var.operator.equals('LESS_THAN')">&lt;</when>

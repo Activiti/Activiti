@@ -669,6 +669,19 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertEquals(1, taskService.createTaskQuery().taskVariableValueEqualsIgnoreCase("lower", "azerty").count());
     assertEquals(0, taskService.createTaskQuery().taskVariableValueEqualsIgnoreCase("lower", "uiop").count());
     
+    // Test not-equals
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueNotEqualsIgnoreCase("mixed", "azerTY").count());
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueNotEqualsIgnoreCase("mixed", "azerty").count());
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueNotEqualsIgnoreCase("mixed", "uiop").count());
+    
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueNotEqualsIgnoreCase("upper", "azerTY").count());
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueNotEqualsIgnoreCase("upper", "azerty").count());
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueNotEqualsIgnoreCase("upper", "uiop").count());
+    
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueNotEqualsIgnoreCase("lower", "azerTY").count());
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueNotEqualsIgnoreCase("lower", "azerty").count());
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueNotEqualsIgnoreCase("lower", "uiop").count());
+    
   }
   
   

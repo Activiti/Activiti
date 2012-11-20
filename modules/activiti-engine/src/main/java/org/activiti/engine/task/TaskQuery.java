@@ -153,6 +153,12 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   TaskQuery taskVariableValueNotEquals(String variableName, Object variableValue);    
   
   /**
+   * Only select tasks which have a local string variable with is not the given value, 
+   * case insensitive.
+   */
+  TaskQuery taskVariableValueNotEqualsIgnoreCase(String name, String value);
+  
+  /**
    * Only select tasks which are part of a process that has a variable
    * with the given name set to the given value.
    */
@@ -165,8 +171,8 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   TaskQuery processVariableValueEquals(Object variableValue);
   
   /**
-   * Only select tasks which are part of a process that has a local string variable with 
-   * the given value, case insensitive.
+   * Only select tasks which are part of a process that has a local string variable which 
+   * is not the given value, case insensitive.
    */
   TaskQuery processVariableValueEqualsIgnoreCase(String name, String value);
   
@@ -176,7 +182,13 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
    * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
    * are not supported.
    */
-  TaskQuery processVariableValueNotEquals(String variableName, Object variableValue);  
+  TaskQuery processVariableValueNotEquals(String variableName, Object variableValue); 
+  
+  /**
+   * Only select tasks which are part of a process that has a string variable with 
+   * the given value, case insensitive.
+   */
+  TaskQuery processVariableValueNotEqualsIgnoreCase(String name, String value);
   
   /**
    * Only select tasks which are part of a process instance which has the given
