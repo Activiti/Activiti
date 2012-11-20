@@ -1738,14 +1738,14 @@ public class BpmnParse extends Parse {
       }
   
       if (ruleVariableInputString != null) {
-        String[] ruleVariableInputObjects = ruleVariableInputString.split(",");
+        List<String> ruleVariableInputObjects = parseCommaSeparatedList(ruleVariableInputString);
         for (String ruleVariableInputObject : ruleVariableInputObjects) {
           ruleActivity.addRuleVariableInputIdExpression(expressionManager.createExpression(ruleVariableInputObject.trim()));
         }
       }
   
       if (rulesString != null) {
-        String[] rules = rulesString.split(",");
+        List<String> rules = parseCommaSeparatedList(rulesString);
         for (String rule : rules) {
           ruleActivity.addRuleIdExpression(expressionManager.createExpression(rule.trim()));
         }
