@@ -748,6 +748,39 @@
         <module>modules/activiti-engine</module>
       </modules>
     </profile>
+    <profile>
+      <!-- Profile used by the start-explorer.sh script to build the Explorer webapp and all its dependencies -->
+      <id>buildWebappDependencies</id>
+      <modules>
+        <module>modules/activiti-engine</module>
+        <module>modules/activiti-spring</module>
+        <module>modules/activiti-explorer</module>
+        <module>modules/activiti-modeler</module>
+        <module>modules/activiti-json-converter</module>
+        <module>modules/activiti-bpmn-converter</module>
+        <module>modules/activiti-bpmn-model</module>
+      </modules>
+      <properties>
+        <skipTests>true</skipTests>
+      </properties>
+      <build>
+          <plugins>
+            <plugin>
+              <groupId>org.zeroturnaround</groupId>
+              <artifactId>jrebel-maven-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>generate-rebel-xml</id>
+                  <phase>process-resources</phase>
+                  <goals>
+                    <goal>generate</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </build>
+    </profile>
   </profiles>
   
   <distributionManagement>
