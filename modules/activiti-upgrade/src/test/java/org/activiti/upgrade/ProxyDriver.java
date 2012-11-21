@@ -21,9 +21,12 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 
 public class ProxyDriver implements Driver {
+  
+  private static Logger log = Logger.getLogger(ProxyDriver.class.getName());
   
   static String url;
   static DatabaseFormatter databaseFormatter = new DatabaseFormatter();
@@ -57,7 +60,17 @@ public class ProxyDriver implements Driver {
   }
 
   public Connection connect(String url, Properties properties) throws SQLException {
-    Connection connection = DriverManager.getConnection(ProxyDriver.url, properties);
+    if (!"proxy".equals(url)) {
+      return null;
+    }
+    Connection connection;
+    try {
+      log.info("creating proxy connection to "+ProxyDriver.url);
+      connection = DriverManager.getConnection(ProxyDriver.url, properties);
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw e;
+    }
     return new ProxyConnection(connection, this);
   }
 

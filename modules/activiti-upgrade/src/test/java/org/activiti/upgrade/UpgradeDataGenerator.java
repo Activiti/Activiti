@@ -59,7 +59,7 @@ public class UpgradeDataGenerator {
       processEngineConfiguration = UpgradeTestCase.createProcessEngineConfiguration(database);
 
       // install the jdbc proxy driver
-      log.fine("installing jdbc proxy driver...");
+      log.fine("installing jdbc proxy driver delegating to "+processEngineConfiguration.getJdbcUrl());
       ProxyDriver.setUrl(processEngineConfiguration.getJdbcUrl());
       processEngineConfiguration.setJdbcUrl("proxy");
       DriverManager.registerDriver(new ProxyDriver());
