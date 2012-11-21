@@ -143,16 +143,16 @@ public class ProxyStatement implements PreparedStatement {
     preparedStatement.setDate(parameterIndex, x, cal);
   }
 
+  public void setBoolean(int parameterIndex, boolean x) throws SQLException {
+    parameters.put(parameterIndex, ProxyDriver.databaseFormatter.formatBoolean(x));
+    preparedStatement.setBoolean(parameterIndex, x);
+  }
 
-
+  //////////////////////////////////////////////////////////////////////
+  
   public void setString(int parameterIndex, String x) throws SQLException {
     parameters.put(parameterIndex, "'"+x+"'");
     preparedStatement.setString(parameterIndex, x);
-  }
-
-  public void setBoolean(int parameterIndex, boolean x) throws SQLException {
-    parameters.put(parameterIndex, Boolean.toString(x));
-    preparedStatement.setBoolean(parameterIndex, x);
   }
 
   public void setNull(int parameterIndex, int sqlType) throws SQLException {
@@ -535,6 +535,14 @@ public class ProxyStatement implements PreparedStatement {
 
   public ParameterMetaData getParameterMetaData() throws SQLException {
     return preparedStatement.getParameterMetaData();
+  }
+
+  public void closeOnCompletion() throws SQLException {
+    preparedStatement.closeOnCompletion();
+  }
+
+  public boolean isCloseOnCompletion() throws SQLException {
+    return preparedStatement.isCloseOnCompletion();
   }
 
 }

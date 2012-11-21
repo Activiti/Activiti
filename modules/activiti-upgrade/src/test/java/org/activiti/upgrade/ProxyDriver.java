@@ -17,6 +17,7 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,4 +91,7 @@ public class ProxyDriver implements Driver {
     throw new RuntimeException("buzz");
   }
 
+  public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+    throw new RuntimeException("buzz");
+  }
 }

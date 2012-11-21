@@ -12,8 +12,26 @@
  */
 package org.activiti.upgrade;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 public class DatabaseFormatterOracle extends DatabaseFormatter {
+
+  static SimpleDateFormat oracleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS");
+
+  public String formatDate(Date date) {
+    StringBuffer sb = new StringBuffer();
+    sb.append("to_timestamp('");
+    sb.append(oracleDateFormat.format(date));
+    sb.append("', 'YYYY-MM-DD HH:MI:SS.FF')");
+    return sb.toString();
+  }
+
+  @Override
+  public String formatBoolean(boolean b) {
+    return (b ? "1" : "0");
+  }
 
   @Override
   public String formatBinary(byte[] bytes) {
@@ -23,6 +41,4 @@ public class DatabaseFormatterOracle extends DatabaseFormatter {
     sb.append("')");
     return sb.toString();
   }
-
-
 }

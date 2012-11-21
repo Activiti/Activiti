@@ -23,7 +23,11 @@ public class DatabaseFormatter {
   public String formatDate(Date date) {
     return defaultDateFormat.format(date);
   }
-  
+
+  public String formatBoolean(boolean b) {
+    return Boolean.toString(b);
+  }
+
   public String formatBinary(byte[] bytes) {
     StringBuffer sb = new StringBuffer();
     sb.append("X'");
@@ -31,7 +35,7 @@ public class DatabaseFormatter {
     sb.append("'");
     return sb.toString();
   }
-
+  
   protected void appendBytesInHex(StringBuffer sb, byte[] bytes) {
     for (byte b : bytes) {
       sb.append(String.format("%02X", b));
