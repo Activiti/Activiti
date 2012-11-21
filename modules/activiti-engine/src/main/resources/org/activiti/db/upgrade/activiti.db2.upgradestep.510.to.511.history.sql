@@ -17,6 +17,8 @@ create table ACT_HI_VARINST (
 create index ACT_IDX_HI_PROCVAR_PROC_INST on ACT_HI_VARINST(PROC_INST_ID_);
 create index ACT_IDX_HI_PROCVAR_NAME_TYPE on ACT_HI_VARINST(NAME_, VAR_TYPE_);
 
+Call Sysproc.admin_cmd ('REORG TABLE ACT_HI_VARINST');
+
 alter table ACT_HI_ACTINST
 	add TASK_ID_ varchar(64);
 	
@@ -24,9 +26,11 @@ alter table ACT_HI_ACTINST
 	add CALL_PROC_INST_ID_ varchar(64);
 
 alter table ACT_HI_DETAIL
-	alter column PROC_DEF_ID_ DROP NOT NULL;
+	alter column PROC_INST_ID_ DROP NOT NULL;
 
 alter table ACT_HI_DETAIL
 	alter column EXECUTION_ID_ DROP NOT NULL;
 	
+Call Sysproc.admin_cmd ('REORG TABLE ACT_HI_DETAIL');
+
 create index ACT_IDX_HI_ACT_INST_PROCINST on ACT_HI_ACTINST(PROC_INST_ID_, ACT_ID_);
