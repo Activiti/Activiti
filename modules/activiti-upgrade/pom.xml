@@ -148,18 +148,33 @@
                     </condition>
                     <fail unless="mandatoryPropertiesAvailable" message="please specify values for all the properties" />
 
-                    <mkdir dir="src/test/resources/org/activiti/db/${releaseVersion}/create" />
+                    <!-- mkdir dir="src/test/resources/org/activiti/db/${releaseVersion}/create" />
                     <copy todir="src/test/resources/org/activiti/db/${releaseVersion}/create">
                       <fileset dir="../activiti-engine/src/main/resources/org/activiti/db/create" />
                     </copy>
                     <mkdir dir="src/test/resources/org/activiti/db/${releaseVersion}/drop" />
                     <copy todir="src/test/resources/org/activiti/db/${releaseVersion}/drop">
                       <fileset dir="../activiti-engine/src/main/resources/org/activiti/db/drop" />
-                    </copy>
+                    </copy -->
 
                     <mkdir dir="src/test/resources/org/activiti/db/${releaseVersion}/data" />
+                    <property file="${user.home}/.activiti/upgrade/build.${database}.properties" />
                     <echo message="generating data files" />
                     <property name="test_classpath" refid="maven.test.classpath" />
+                    <echo message="cleaning schema" />
+                    <echo message="  jdbc driver.. ${jdbc.driver}" />
+                    <echo message="  jdbc url..... ${jdbc.url}" />
+                    <echo message="  jdbc username ${jdbc.username}" />
+                    <sql driver="${jdbc.driver}" url="${jdbc.url}" userid="${jdbc.username}" password="${jdbc.password}"
+                         classpath="${test_classpath}"
+                         onerror="continue">
+                      <path>
+                        <fileset dir="src/test/resources/org/activiti/db/clean">
+                          <include name="clean.${database}.sql"/>
+                        </fileset>
+                      </path>
+                    </sql>
+                    <echo message="generating data in ${releaseVersion}" />
                     <java classname="org.activiti.upgrade.UpgradeDataGenerator" fork="true">
                       <arg line="${database} ${releaseVersion}"/>
                       <classpath>
