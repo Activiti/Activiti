@@ -670,6 +670,7 @@
       <id>check</id>
       <modules>
         <module>modules/activiti-spring</module>
+        <module>modules/activiti-rest</module>
         <module>modules/activiti-webapp-rest2</module>
         <module>modules/activiti-cxf</module>
         <module>modules/activiti-cdi</module>
