@@ -99,14 +99,16 @@ public abstract class UpgradeTestCase extends TestCase {
     String propertiesFileName = System.getProperty("user.home")+System.getProperty("file.separator")+".activiti"+System.getProperty("file.separator")+"upgrade"+System.getProperty("file.separator")+"build."+database+".properties";
     Properties properties = new Properties();
     properties.load(new FileInputStream(propertiesFileName));
-    UpgradeDataGenerator.log.fine("jdbc url.....: "+processEngineConfiguration.getJdbcUrl());
-    UpgradeDataGenerator.log.fine("jdbc username: "+processEngineConfiguration.getJdbcUsername());
   
     // configure the jdbc parameters in the process engine configuration
     processEngineConfiguration.setJdbcDriver(properties.getProperty("jdbc.driver"));
     processEngineConfiguration.setJdbcUrl(properties.getProperty("jdbc.url"));
     processEngineConfiguration.setJdbcUsername(properties.getProperty("jdbc.username"));
     processEngineConfiguration.setJdbcPassword(properties.getProperty("jdbc.password"));
+
+    UpgradeDataGenerator.log.fine("jdbc url.....: "+processEngineConfiguration.getJdbcUrl());
+    UpgradeDataGenerator.log.fine("jdbc username: "+processEngineConfiguration.getJdbcUsername());
+
     return processEngineConfiguration;
   }
 }

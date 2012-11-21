@@ -167,7 +167,8 @@
                     <echo message="  jdbc username ${jdbc.username}" />
                     <sql driver="${jdbc.driver}" url="${jdbc.url}" userid="${jdbc.username}" password="${jdbc.password}"
                          classpath="${test_classpath}"
-                         onerror="continue">
+                         onerror="continue"
+                         autocommit="true">
                       <path>
                         <fileset dir="src/test/resources/org/activiti/db/clean">
                           <include name="clean.${database}.sql"/>

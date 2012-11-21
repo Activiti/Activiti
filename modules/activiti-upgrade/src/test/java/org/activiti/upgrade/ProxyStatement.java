@@ -12,6 +12,7 @@
  */
 package org.activiti.upgrade;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -113,9 +114,10 @@ public class ProxyStatement implements PreparedStatement {
   
   //////////////////////////////////////////////////////////////////////
   
-  void setInputStreamParameter(int parameterIndex, InputStream x) {
+  InputStream setInputStreamParameter(int parameterIndex, InputStream x) {
     byte[] bytes = IoUtil.readInputStream(x, "jdbc variable bytes");
     parameters.put(parameterIndex, ProxyDriver.databaseFormatter.formatBinary(bytes));
+    return new ByteArrayInputStream(bytes);
   }
   
   public void setTime(int parameterIndex, Time x, Calendar cal) throws SQLException {
@@ -181,17 +183,17 @@ public class ProxyStatement implements PreparedStatement {
   }
   
   public void setBinaryStream(int parameterIndex, InputStream x) throws SQLException {
-    setInputStreamParameter(parameterIndex, x);
+    x = setInputStreamParameter(parameterIndex, x);
     preparedStatement.setBinaryStream(parameterIndex, x);
   }
 
   public void setBinaryStream(int parameterIndex, InputStream x, int length) throws SQLException {
-    setInputStreamParameter(parameterIndex, x);
+    x = setInputStreamParameter(parameterIndex, x);
     preparedStatement.setBinaryStream(parameterIndex, x, length);
   }
 
   public void setBinaryStream(int parameterIndex, InputStream x, long length) throws SQLException {
-    setInputStreamParameter(parameterIndex, x);
+    x = setInputStreamParameter(parameterIndex, x);
     preparedStatement.setBinaryStream(parameterIndex, x, length);
   }
 
