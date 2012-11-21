@@ -50,9 +50,9 @@ public class ProxyDriver implements Driver {
     } else if (url.startsWith("jdbc:sqlserver")) {
       databaseFormatter = new DatabaseFormatterMsSqlServer();
     } else if (url.startsWith("jdbc:db2")) {
-      databaseFormatter = new DatabaseFormatterOracle();
+      databaseFormatter = new DatabaseFormatterDb2();
     } else if (url.startsWith("jdbc:postgresql")) {
-      databaseFormatter = new DatabaseFormatterOracle();
+      databaseFormatter = new DatabaseFormatterPostgres();
     } 
   }
 
