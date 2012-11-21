@@ -77,6 +77,8 @@ import org.activiti.engine.impl.form.FormTypes;
 import org.activiti.engine.impl.form.JuelFormEngine;
 import org.activiti.engine.impl.form.LongFormType;
 import org.activiti.engine.impl.form.StringFormType;
+import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.impl.history.HistoryManager;
 import org.activiti.engine.impl.history.handler.HistoryParseListener;
 import org.activiti.engine.impl.interceptor.CommandContextFactory;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -118,6 +120,7 @@ import org.activiti.engine.impl.persistence.entity.IdentityInfoManager;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkManager;
 import org.activiti.engine.impl.persistence.entity.JobManager;
 import org.activiti.engine.impl.persistence.entity.MembershipManager;
+import org.activiti.engine.impl.persistence.entity.ModelManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionManager;
 import org.activiti.engine.impl.persistence.entity.PropertyManager;
 import org.activiti.engine.impl.persistence.entity.ResourceManager;
@@ -170,11 +173,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   public static final String DB_SCHEMA_UPDATE_CREATE = "create";
   public static final String DB_SCHEMA_UPDATE_DROP_CREATE = "drop-create";
-
-  public static final int HISTORYLEVEL_NONE = 0;
-  public static final int HISTORYLEVEL_ACTIVITY = 1;
-  public static final int HISTORYLEVEL_AUDIT = 2;
-  public static final int HISTORYLEVEL_FULL = 3;
 
   public static final String DEFAULT_WS_SYNC_FACTORY = "org.activiti.engine.impl.webservice.CxfWebServiceClientFactory";
   
@@ -269,7 +267,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected TransactionContextFactory transactionContextFactory;
   protected BpmnParseFactory bpmnParseFactory;
   
-  protected int historyLevel;
+  protected HistoryLevel historyLevel;
   
   protected List<BpmnParseListener> preParseListeners;
   protected List<BpmnParseListener> postParseListeners;
@@ -621,6 +619,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       addSessionFactory(new GenericManagerFactory(AttachmentManager.class));
       addSessionFactory(new GenericManagerFactory(CommentManager.class));
       addSessionFactory(new GenericManagerFactory(DeploymentManager.class));
+      addSessionFactory(new GenericManagerFactory(ModelManager.class));
       addSessionFactory(new GenericManagerFactory(ExecutionManager.class));
       addSessionFactory(new GenericManagerFactory(HistoricActivityInstanceManager.class));
       addSessionFactory(new GenericManagerFactory(HistoricDetailManager.class));
@@ -641,6 +640,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       addSessionFactory(new GenericManagerFactory(UserManager.class));
       addSessionFactory(new GenericManagerFactory(VariableInstanceManager.class));
       addSessionFactory(new GenericManagerFactory(EventSubscriptionManager.class));
+      addSessionFactory(new GenericManagerFactory(HistoryManager.class));
     }
     if (customSessionFactories!=null) {
       for (SessionFactory sessionFactory: customSessionFactories) {
@@ -710,9 +710,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   protected List<BpmnParseListener> getDefaultBPMNParseListeners() {
     List<BpmnParseListener> defaultListeners = new ArrayList<BpmnParseListener>();
-        if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY) {
-      defaultListeners.add(new HistoryParseListener(historyLevel));
-    }
+    defaultListeners.add(new HistoryParseListener());
     return defaultListeners;
   }
 
@@ -775,17 +773,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // history //////////////////////////////////////////////////////////////////
   
   public void initHistoryLevel() {
-    if (HISTORY_NONE.equalsIgnoreCase(history)) {
-      historyLevel = 0;
-    } else if (HISTORY_ACTIVITY.equalsIgnoreCase(history)) {
-      historyLevel = 1;
-    } else if (HISTORY_AUDIT.equalsIgnoreCase(history)) {
-      historyLevel = 2;
-    } else if (HISTORY_FULL.equalsIgnoreCase(history)) {
-      historyLevel = 3;
-    } else {
-      throw new ActivitiException("invalid history level: "+history);
-    }
+    historyLevel = HistoryLevel.getHistoryLevelForKey(getHistory());
   }
   
   // id generator /////////////////////////////////////////////////////////////
@@ -901,7 +889,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected void initExpressionManager() {
     if (expressionManager==null) {
-      expressionManager = new ExpressionManager();
+      expressionManager = new ExpressionManager(beans);
     }
   }
 
@@ -977,11 +965,11 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return processEngineName;
   }
 
-  public int getHistoryLevel() {
+  public HistoryLevel getHistoryLevel() {
     return historyLevel;
   }
   
-  public void setHistoryLevel(int historyLevel) {
+  public void setHistoryLevel(HistoryLevel historyLevel) {
     this.historyLevel = historyLevel;
   }
 
@@ -1504,6 +1492,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
 
+  @Override
+  public ProcessEngineConfigurationImpl setMailServerUseSSL(boolean useSSL) {
+	    super.setMailServerUseSSL(useSSL);
+	    return this;
+	  }
+  
   @Override
   public ProcessEngineConfigurationImpl setMailServerUseTLS(boolean useTLS) {
     super.setMailServerUseTLS(useTLS);

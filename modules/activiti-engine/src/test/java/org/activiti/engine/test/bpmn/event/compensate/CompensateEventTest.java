@@ -13,7 +13,7 @@
 
 package org.activiti.engine.test.bpmn.event.compensate;
 
-import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
@@ -70,7 +70,7 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
     
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("compensateProcess");
 
-    if(!processEngineConfiguration.getHistory().equals(ProcessEngineConfiguration.HISTORY_NONE)) {
+    if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       assertEquals(5, historyService.createHistoricActivityInstanceQuery()
               .activityId("undoBookHotel")
               .count());
@@ -81,7 +81,7 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
     
     assertEquals(0, runtimeService.createProcessInstanceQuery().count());
     
-    if(!processEngineConfiguration.getHistory().equals(ProcessEngineConfiguration.HISTORY_NONE)) {
+    if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       assertEquals(6, historyService.createHistoricProcessInstanceQuery()
               .count());
     }
@@ -97,7 +97,7 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
     
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("compensateProcess");
     
-    if(!processEngineConfiguration.getHistory().equals(ProcessEngineConfiguration.HISTORY_NONE)) {
+    if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       assertEquals(5, historyService.createHistoricActivityInstanceQuery().activityId("undoBookHotel").count());
     }
     

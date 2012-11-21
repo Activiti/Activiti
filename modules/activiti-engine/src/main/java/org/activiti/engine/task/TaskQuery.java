@@ -109,6 +109,9 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   /** Only select tasks that are created after the given date. **/
   TaskQuery taskCreatedAfter(Date after);
   
+  /** Only select tasks that have no parent (i.e. do not select subtasks). **/
+  TaskQuery excludeSubtasks();
+
   /** 
    * Only select tasks with the given taskDefinitionKey.
    * The task definition key is the id of the userTask:
@@ -130,6 +133,17 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
    */
   TaskQuery taskVariableValueEquals(String variableName, Object variableValue);
   
+  /**
+   * Only select tasks which have at least one local task variable with the given value.
+   */
+  TaskQuery taskVariableValueEquals(Object variableValue);
+  
+  /**
+   * Only select tasks which have a local string variable with the given value, 
+   * case insensitive.
+   */
+  TaskQuery taskVariableValueEqualsIgnoreCase(String name, String value);
+  
   /** 
    * Only select tasks which have a local task variable with the given name, but
    * with a different value than the passed value.
@@ -139,10 +153,28 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   TaskQuery taskVariableValueNotEquals(String variableName, Object variableValue);    
   
   /**
-   * Only select tasks which have are part of a process that have a variable
+   * Only select tasks which have a local string variable with is not the given value, 
+   * case insensitive.
+   */
+  TaskQuery taskVariableValueNotEqualsIgnoreCase(String name, String value);
+  
+  /**
+   * Only select tasks which are part of a process that has a variable
    * with the given name set to the given value.
    */
   TaskQuery processVariableValueEquals(String variableName, Object variableValue);
+  
+  /**
+   * Only select tasks which are part of a process that has at least one variable
+   * with the given value.
+   */
+  TaskQuery processVariableValueEquals(Object variableValue);
+  
+  /**
+   * Only select tasks which are part of a process that has a local string variable which 
+   * is not the given value, case insensitive.
+   */
+  TaskQuery processVariableValueEqualsIgnoreCase(String name, String value);
   
   /** 
    * Only select tasks which have a variable with the given name, but
@@ -150,7 +182,13 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
    * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
    * are not supported.
    */
-  TaskQuery processVariableValueNotEquals(String variableName, Object variableValue);  
+  TaskQuery processVariableValueNotEquals(String variableName, Object variableValue); 
+  
+  /**
+   * Only select tasks which are part of a process that has a string variable with 
+   * the given value, case insensitive.
+   */
+  TaskQuery processVariableValueNotEqualsIgnoreCase(String name, String value);
   
   /**
    * Only select tasks which are part of a process instance which has the given

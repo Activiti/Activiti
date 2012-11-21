@@ -19,11 +19,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.JobNotFoundException;
 import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
+import org.activiti.engine.impl.history.HistoryManager;
 import org.activiti.engine.impl.jobexecutor.FailedJobCommandFactory;
 import org.activiti.engine.impl.persistence.entity.AttachmentManager;
 import org.activiti.engine.impl.persistence.entity.ByteArrayManager;
@@ -35,12 +37,13 @@ import org.activiti.engine.impl.persistence.entity.GroupManager;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceManager;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailManager;
 import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceManager;
-import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceManager;
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceManager;
+import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceManager;
 import org.activiti.engine.impl.persistence.entity.IdentityInfoManager;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkManager;
 import org.activiti.engine.impl.persistence.entity.JobManager;
 import org.activiti.engine.impl.persistence.entity.MembershipManager;
+import org.activiti.engine.impl.persistence.entity.ModelManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionManager;
 import org.activiti.engine.impl.persistence.entity.PropertyManager;
 import org.activiti.engine.impl.persistence.entity.ResourceManager;
@@ -125,9 +128,14 @@ public class CommandContext {
 
           if (exception != null) {
             Level loggingLevel = Level.SEVERE;
-            if (exception instanceof ActivitiTaskAlreadyClaimedException) {
+            if (exception instanceof JobNotFoundException) {
+              // reduce log level, because this may have been caused because of job deletion due to cancelActiviti="true"
+              loggingLevel = Level.INFO;
+              
+            } else if (exception instanceof ActivitiTaskAlreadyClaimedException) {
               loggingLevel = Level.INFO; // reduce log level, because this is not really a technical exception
             }
+
             log.log(loggingLevel, "Error while closing command context", exception);
             transactionContext.rollback();
           }
@@ -212,6 +220,10 @@ public class CommandContext {
   public ProcessDefinitionManager getProcessDefinitionManager() {
     return getSession(ProcessDefinitionManager.class);
   }
+  
+  public ModelManager getModelManager() {
+    return getSession(ModelManager.class);
+  }
 
   public ExecutionManager getExecutionManager() {
     return getSession(ExecutionManager.class);
@@ -291,6 +303,10 @@ public class CommandContext {
 
   public PropertyManager getPropertyManager() {
     return getSession(PropertyManager.class);
+  }
+  
+  public HistoryManager getHistoryManager() {
+    return getSession(HistoryManager.class);
   }
 
   // getters and setters //////////////////////////////////////////////////////

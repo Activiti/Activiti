@@ -628,6 +628,30 @@ public class ProcessDiagramCanvas {
     g.draw(circle);
     g.setStroke(orginalStroke);
   }
+  
+  public void drawEventBasedGateway(int x, int y, int width, int height) {
+    // rhombus
+    drawGateway(x, y, width, height);
+    double scale = .6;
+    
+    drawCatchingEvent((int)(x + width*(1-scale)/2), (int)(y + height*(1-scale)/2), (int)(width*scale), (int)(height*scale), null);
+    
+    double r = width / 6.;
+    
+    // create pentagon (coords with respect to center)
+    int topX = (int)(.95 * r); // top right corner
+    int topY = (int)(-.31 * r);
+    int bottomX = (int)(.59 * r); // bottom right corner
+    int bottomY = (int)(.81 * r);
+    
+    int[] xPoints = new int[]{ 0, topX, bottomX, -bottomX, -topX };
+    int[] yPoints = new int[]{ -(int)r, topY, bottomY, bottomY, topY };
+    Polygon pentagon = new Polygon(xPoints, yPoints, 5);
+    pentagon.translate(x+width/2, y+width/2);
+
+    // draw
+    g.drawPolygon(pentagon);
+  }
 
   public void drawMultiInstanceMarker(boolean sequential, int x, int y, int width, int height) {
     int rectangleWidth = MARKER_WIDTH;

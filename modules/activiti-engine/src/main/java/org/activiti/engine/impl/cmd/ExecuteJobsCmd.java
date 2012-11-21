@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.JobNotFoundException;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
@@ -37,7 +38,7 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
   private static Logger log = Logger.getLogger(ExecuteJobsCmd.class.getName());
   
   protected String jobId;
-
+ 
   public ExecuteJobsCmd(String jobId) {
     this.jobId = jobId;
   }
@@ -55,7 +56,7 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
       .findJobById(jobId);
     
     if (job == null) {
-      throw new ActivitiException("No job found with id '" + jobId + "'");
+      throw new JobNotFoundException(jobId);
     }
     
     JobExecutorContext jobExecutorContext = Context.getJobExecutorContext();
@@ -84,4 +85,9 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
     }
     return null;
   }
+  
+  public String getJobId() {
+		return jobId;
+	}
+
 }

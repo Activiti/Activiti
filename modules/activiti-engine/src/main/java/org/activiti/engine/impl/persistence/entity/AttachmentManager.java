@@ -15,14 +15,15 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
 
-import org.activiti.engine.impl.persistence.AbstractHistoricManager;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.task.Attachment;
 
 
 /**
  * @author Tom Baeyens
  */
-public class AttachmentManager extends AbstractHistoricManager {
+public class AttachmentManager extends AbstractManager {
 
   @SuppressWarnings("unchecked")
   public List<Attachment> findAttachmentsByProcessInstanceId(String processInstanceId) {
@@ -46,6 +47,12 @@ public class AttachmentManager extends AbstractHistoricManager {
         getByteArrayManager().deleteByteArrayById(contentId);
       }
       getDbSqlSession().delete(attachment);
+    }
+  }
+  
+  protected void checkHistoryEnabled() {
+    if(!getHistoryManager().isHistoryEnabled()) {
+      throw new ActivitiException("In order to use attachments, history should be enabled");
     }
   }
 }

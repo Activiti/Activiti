@@ -90,7 +90,7 @@
         and RES.CATEGORY_ like #{categoryLike}
       </if>
       <if test="categoryNotEquals != null">
-        and RES.CATEGORY_ &lt;&gt; #{categoryNotEquals} OR RES.CATEGORY_ is null
+        and ( RES.CATEGORY_ &lt;&gt; #{categoryNotEquals} OR RES.CATEGORY_ is null )
       </if>
       <if test="name != null">
         and RES.NAME_ = #{name}
@@ -127,8 +127,15 @@
       </if>
       <if test="authorizationUserId != null">
         AND (exists (select ID_  from ${prefix} ACT_RU_IDENTITYLINK  IDN where IDN.PROC_DEF_ID_ = RES.ID_ and IDN.USER_ID_ = #{authorizationUserId})
-             OR exists (select IDN.ID_  from ${prefix} ACT_RU_IDENTITYLINK  IDN,  ${prefix} ACT_ID_MEMBERSHIP MBMR where IDN.PROC_DEF_ID_ = RES.ID_ and MBMR.USER_ID_ =  #{authorizationUserId} and IDN.GROUP_ID_ = MBMR.GROUP_ID_)
-             )
+        <if test="authorizationGroups != null &amp;&amp; authorizationGroups.size() &gt; 0">
+         OR exists (select ID_ from ${prefix} ACT_RU_IDENTITYLINK  IDN where IDN.PROC_DEF_ID_ = RES.ID_ and IDN.GROUP_ID_ IN
+            <foreach item="group" index="index" collection="authorizationGroups" 
+                     open="(" separator="," close=")">
+              #{group}
+            </foreach>
+         )
+         </if>
+        )
       </if>
     </where>
   </sql>

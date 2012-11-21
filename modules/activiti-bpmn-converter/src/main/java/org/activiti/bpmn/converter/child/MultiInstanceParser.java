@@ -26,7 +26,7 @@ import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
 public class MultiInstanceParser extends BaseChildElementParser {
 
   public String getElementName() {
-    return "multiInstanceLoopCharacteristics";
+    return ELEMENT_MULTIINSTANCE;
   }
   
   public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement) throws Exception {
@@ -34,28 +34,28 @@ public class MultiInstanceParser extends BaseChildElementParser {
     
     MultiInstanceLoopCharacteristics multiInstanceDef = new MultiInstanceLoopCharacteristics();
     
-    if (xtr.getAttributeValue(null, "isSequential") != null) {
-      multiInstanceDef.setSequential(Boolean.valueOf(xtr.getAttributeValue(null, "isSequential")));
+    if (xtr.getAttributeValue(null, ATTRIBUTE_MULTIINSTANCE_SEQUENTIAL) != null) {
+      multiInstanceDef.setSequential(Boolean.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_MULTIINSTANCE_SEQUENTIAL)));
     }
-    multiInstanceDef.setInputDataItem(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, "collection"));
-    multiInstanceDef.setElementVariable(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, "elementVariable"));
+    multiInstanceDef.setInputDataItem(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_MULTIINSTANCE_COLLECTION));
+    multiInstanceDef.setElementVariable(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_MULTIINSTANCE_VARIABLE));
 
     boolean readyWithMultiInstance = false;
     try {
       while (readyWithMultiInstance == false && xtr.hasNext()) {
         xtr.next();
-        if (xtr.isStartElement() && "loopCardinality".equalsIgnoreCase(xtr.getLocalName())) {
+        if (xtr.isStartElement() && ELEMENT_MULTIINSTANCE_CARDINALITY.equalsIgnoreCase(xtr.getLocalName())) {
           multiInstanceDef.setLoopCardinality(xtr.getElementText());
 
-        } else if (xtr.isStartElement() && "loopDataInputRef".equalsIgnoreCase(xtr.getLocalName())) {
+        } else if (xtr.isStartElement() && ELEMENT_MULTIINSTANCE_DATAINPUT.equalsIgnoreCase(xtr.getLocalName())) {
           multiInstanceDef.setInputDataItem(xtr.getElementText());
 
-        } else if (xtr.isStartElement() && "inputDataItem".equalsIgnoreCase(xtr.getLocalName())) {
-          if (xtr.getAttributeValue(null, "name") != null) {
-            multiInstanceDef.setElementVariable(xtr.getAttributeValue(null, "name"));
+        } else if (xtr.isStartElement() && ELEMENT_MULTIINSTANCE_DATAITEM.equalsIgnoreCase(xtr.getLocalName())) {
+          if (xtr.getAttributeValue(null, ATTRIBUTE_NAME) != null) {
+            multiInstanceDef.setElementVariable(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
           }
 
-        } else if (xtr.isStartElement() && "completionCondition".equalsIgnoreCase(xtr.getLocalName())) {
+        } else if (xtr.isStartElement() && ELEMENT_MULTIINSTANCE_CONDITION.equalsIgnoreCase(xtr.getLocalName())) {
           multiInstanceDef.setCompletionCondition(xtr.getElementText());
 
         } else if (xtr.isEndElement() && getElementName().equalsIgnoreCase(xtr.getLocalName())) {

@@ -1738,14 +1738,14 @@ public class BpmnParse extends Parse {
       }
   
       if (ruleVariableInputString != null) {
-        String[] ruleVariableInputObjects = ruleVariableInputString.split(",");
+        List<String> ruleVariableInputObjects = parseCommaSeparatedList(ruleVariableInputString);
         for (String ruleVariableInputObject : ruleVariableInputObjects) {
           ruleActivity.addRuleVariableInputIdExpression(expressionManager.createExpression(ruleVariableInputObject.trim()));
         }
       }
   
       if (rulesString != null) {
-        String[] rules = rulesString.split(",");
+        List<String> rules = parseCommaSeparatedList(rulesString);
         for (String rule : rules) {
           ruleActivity.addRuleIdExpression(expressionManager.createExpression(rule.trim()));
         }
@@ -2428,7 +2428,7 @@ public class BpmnParse extends Parse {
       boolean interrupting = cancelActivity.equals("true") ? true : false;
 
       // Catch event behavior is the same for most types
-      ActivityBehavior behavior = new BoundaryEventActivityBehavior(interrupting, nestedActivity.getId());
+      ActivityBehavior behavior = null;
 
       // Depending on the sub-element definition, the correct activityBehavior
       // parsing is selected
@@ -2439,18 +2439,23 @@ public class BpmnParse extends Parse {
       Element compensateEventDefinition = boundaryEventElement.element("compensateEventDefinition");
       Element messageEventDefinition = boundaryEventElement.element("messageEventDefinition");
       if (timerEventDefinition != null) {
+    	behavior = new BoundaryEventActivityBehavior(interrupting, nestedActivity.getId());
         parseBoundaryTimerEventDefinition(timerEventDefinition, interrupting, nestedActivity);
       } else if (errorEventDefinition != null) {
         interrupting = true; // non-interrupting not yet supported
+        behavior = new BoundaryEventActivityBehavior(interrupting, nestedActivity.getId());
         parseBoundaryErrorEventDefinition(errorEventDefinition, interrupting, parentActivity, nestedActivity);
       } else if (signalEventDefinition != null) {
+    	behavior = new BoundaryEventActivityBehavior(interrupting, nestedActivity.getId());
         parseBoundarySignalEventDefinition(signalEventDefinition, interrupting, nestedActivity);
       } else if (cancelEventDefinition != null) {
         // always interrupting
         behavior = parseBoundaryCancelEventDefinition(cancelEventDefinition, nestedActivity);
       } else if(compensateEventDefinition != null) {
+        behavior = new BoundaryEventActivityBehavior(interrupting, nestedActivity.getId());
         parseCatchCompensateEventDefinition(compensateEventDefinition, nestedActivity);      
       } else if(messageEventDefinition != null) {
+        behavior = new BoundaryEventActivityBehavior(interrupting, nestedActivity.getId());
         parseBoundaryMessageEventDefinition(messageEventDefinition, interrupting, nestedActivity);
       } else {
         addError("Unsupported boundary event type", boundaryEventElement);
@@ -2978,9 +2983,10 @@ public class BpmnParse extends Parse {
         addError("Invalid source '" + sourceRef + "' of sequence flow '" + id + "'", sequenceFlowElement);
       } else if (destinationActivity == null) {
         addError("Invalid destination '" + destinationRef + "' of sequence flow '" + id + "'", sequenceFlowElement);
-      } else if(sourceActivity.getActivityBehavior() instanceof EventBasedGatewayActivityBehavior) {     
-        // ignore
-      } else if(destinationActivity.getActivityBehavior() instanceof IntermediateCatchEventActivitiBehaviour
+      /*} else if(sourceActivity.getActivityBehavior() instanceof EventBasedGatewayActivityBehavior) {     
+        // ignore*/
+      } else if(!(sourceActivity.getActivityBehavior() instanceof EventBasedGatewayActivityBehavior)
+              && destinationActivity.getActivityBehavior() instanceof IntermediateCatchEventActivitiBehaviour
               && (destinationActivity.getParentActivity() != null)
               && (destinationActivity.getParentActivity().getActivityBehavior() instanceof EventBasedGatewayActivityBehavior)) {
         addError("Invalid incoming sequenceflow for intermediateCatchEvent with id '"+destinationActivity.getId()+"' connected to an event-based gateway.", sequenceFlowElement);        

@@ -24,6 +24,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -51,6 +52,7 @@ import org.activiti.engine.impl.UserQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.upgrade.DbUpgradeStep;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.entity.PropertyEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
@@ -252,17 +254,17 @@ public class DbSqlSession implements Session {
   
   // select ///////////////////////////////////////////////////////////////////
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "rawtypes" })
   public List selectList(String statement) {
     return selectList(statement, null, 0, Integer.MAX_VALUE);
   }
   
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("rawtypes")
   public List selectList(String statement, Object parameter) {  
     return selectList(statement, parameter, 0, Integer.MAX_VALUE);
   }
   
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("rawtypes")
   public List selectList(String statement, Object parameter, Page page) {   
     if(page!=null) {
       return selectList(statement, parameter, page.getFirstResult(), page.getMaxResults());
@@ -271,22 +273,22 @@ public class DbSqlSession implements Session {
     }
   }
   
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("rawtypes")
   public List selectList(String statement, ListQueryParameterObject parameter, Page page) {   
     return selectList(statement, parameter);
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("rawtypes")
   public List selectList(String statement, Object parameter, int firstResult, int maxResults) {   
     return selectList(statement, new ListQueryParameterObject(parameter, firstResult, maxResults));
   }
   
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("rawtypes")
   public List selectList(String statement, ListQueryParameterObject parameter) {
     return selectListWithRawParameter(statement, parameter, parameter.getFirstResult(), parameter.getMaxResults());
   }
   
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public List selectListWithRawParameter(String statement, Object parameter, int firstResult, int maxResults) {
     statement = dbSqlSessionFactory.mapStatement(statement);    
     if(firstResult == -1 ||  maxResults==-1) {
@@ -324,7 +326,7 @@ public class DbSqlSession implements Session {
 
   // internal session cache ///////////////////////////////////////////////////
   
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("rawtypes")
   protected List filterLoadedObjects(List<Object> loadedObjects) {
     if (loadedObjects.isEmpty()) {
       return loadedObjects;
@@ -332,6 +334,7 @@ public class DbSqlSession implements Session {
     if (! (PersistentObject.class.isAssignableFrom(loadedObjects.get(0).getClass()))) {
       return loadedObjects;
     }
+    
     List<PersistentObject> filteredObjects = new ArrayList<PersistentObject>(loadedObjects.size());
     for (Object loadedObject: loadedObjects) {
       PersistentObject cachedPersistentObject = cacheFilter((PersistentObject) loadedObject);
@@ -702,27 +705,10 @@ public class DbSqlSession implements Session {
         errorMessage = addMissingComponent(errorMessage, "identity");
       }
       
-      Integer configuredHistoryLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
-      PropertyEntity historyLevelProperty = selectById(PropertyEntity.class, "historyLevel");
-      if (historyLevelProperty==null) {
-        if (errorMessage==null) {
-          errorMessage = "";
-        }
-        errorMessage += "no historyLevel property specified";
-      } else {
-        Integer databaseHistoryLevel = new Integer(historyLevelProperty.getValue());
-        if (!configuredHistoryLevel.equals(databaseHistoryLevel)) {
-          if (errorMessage==null) {
-            errorMessage = "";
-          }
-          errorMessage += "historyLevel mismatch: configuration says "+configuredHistoryLevel+" and database says "+databaseHistoryLevel;
-        }
-      }
-      
       if (errorMessage!=null) {
         throw new ActivitiException("Activiti database problem: "+errorMessage);
       }
-
+      
     } catch (Exception e) {
       if (isMissingTablesException(e)) {
         throw new ActivitiException("no activiti tables in db.  set <property name=\"databaseSchemaUpdate\" to value=\"true\" or value=\"create-drop\" (use create-drop for testing only!) in bean processEngineConfiguration in activiti.cfg.xml for automatic schema creation", e);
@@ -753,13 +739,6 @@ public class DbSqlSession implements Session {
   public void dbSchemaCreate() {
     ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
     
-    int configuredHistoryLevel = processEngineConfiguration.getHistoryLevel();
-    if ( (!processEngineConfiguration.isDbHistoryUsed())
-         && (configuredHistoryLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE)
-       ) {
-      throw new ActivitiException("historyLevel config is higher then 'none' and dbHistoryUsed is set to false");
-    }
-
     if (isEngineTablePresent()) {
       String dbVersion = getDbVersion();
       if (!ProcessEngine.VERSION.equals(dbVersion)) {
@@ -769,7 +748,7 @@ public class DbSqlSession implements Session {
       dbSchemaCreateEngine();
     }
 
-    if (processEngineConfiguration.isDbHistoryUsed()) {
+    if (processEngineConfiguration.getHistoryLevel() != HistoryLevel.NONE) {
       dbSchemaCreateHistory();
     }
 
@@ -788,10 +767,6 @@ public class DbSqlSession implements Session {
 
   protected void dbSchemaCreateEngine() {
     executeMandatorySchemaResource("create", "engine");
-    
-    int configuredHistoryLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
-    PropertyEntity property = new PropertyEntity("historyLevel", Integer.toString(configuredHistoryLevel));
-    insert(property);
   }
 
   public void dbSchemaDrop() {

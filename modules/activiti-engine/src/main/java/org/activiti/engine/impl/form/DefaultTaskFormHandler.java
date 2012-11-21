@@ -25,7 +25,12 @@ public class DefaultTaskFormHandler extends DefaultFormHandler implements TaskFo
 
   public TaskFormData createTaskForm(TaskEntity task) {
     TaskFormDataImpl taskFormData = new TaskFormDataImpl();
-    taskFormData.setFormKey(formKey);
+    if (formKey != null) {
+      Object formValue = formKey.getValue(task.getExecution());
+      if (formValue != null) {
+        taskFormData.setFormKey(formValue.toString());
+      }
+    }
     taskFormData.setDeploymentId(deploymentId);
     taskFormData.setTask(task);
     initializeFormProperties(taskFormData, task.getExecution());

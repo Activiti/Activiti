@@ -38,4 +38,6 @@ public interface Deployment {
   
   Date getDeploymentTime();
   
+  String getCategory();
+  
 }

@@ -66,6 +66,8 @@ public class BpmnDeployer implements Deployer {
   protected IdGenerator idGenerator;
 
   public void deploy(DeploymentEntity deployment) {
+    LOG.fine("Processing deployment " + deployment.getName());
+    
     List<ProcessDefinitionEntity> processDefinitions = new ArrayList<ProcessDefinitionEntity>();
     Map<String, ResourceEntity> resources = deployment.getResources();
 
@@ -191,7 +193,7 @@ public class BpmnDeployer implements Deployer {
   }
 
   @SuppressWarnings("unchecked")
-  private void addTimerDeclarations(ProcessDefinitionEntity processDefinition) {
+  protected void addTimerDeclarations(ProcessDefinitionEntity processDefinition) {
     List<TimerDeclarationImpl> timerDeclarations = (List<TimerDeclarationImpl>) processDefinition.getProperty(BpmnParse.PROPERTYNAME_START_TIMER);
     if (timerDeclarations!=null) {
       for (TimerDeclarationImpl timerDeclaration : timerDeclarations) {
@@ -204,7 +206,7 @@ public class BpmnDeployer implements Deployer {
     }
   }
 
-  private void removeObsoleteTimers(ProcessDefinitionEntity processDefinition) {
+  protected void removeObsoleteTimers(ProcessDefinitionEntity processDefinition) {
     List<Job> jobsToDelete = Context
       .getCommandContext()
       .getJobManager()

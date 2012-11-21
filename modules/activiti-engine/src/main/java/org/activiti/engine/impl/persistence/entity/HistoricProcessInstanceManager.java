@@ -20,19 +20,18 @@ import java.util.Map;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.AbstractHistoricManager;
+import org.activiti.engine.impl.persistence.AbstractManager;
 
 
 /**
  * @author Tom Baeyens
  */
-public class HistoricProcessInstanceManager extends AbstractHistoricManager {
+public class HistoricProcessInstanceManager extends AbstractManager {
 
   public HistoricProcessInstanceEntity findHistoricProcessInstance(String processInstanceId) {
-    if (historyLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
+    if (getHistoryManager().isHistoryEnabled()) {
       return (HistoricProcessInstanceEntity) getDbSqlSession().selectById(HistoricProcessInstanceEntity.class, processInstanceId);
     }
     return null;
@@ -41,7 +40,7 @@ public class HistoricProcessInstanceManager extends AbstractHistoricManager {
 
   @SuppressWarnings("unchecked")
   public void deleteHistoricProcessInstanceByProcessDefinitionId(String processDefinitionId) {
-    if (historyLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
+    if (getHistoryManager().isHistoryEnabled()) {
       List<String> historicProcessInstanceIds = getDbSqlSession()
         .selectList("selectHistoricProcessInstanceIdsByProcessDefinitionId", processDefinitionId);
     
@@ -52,7 +51,7 @@ public class HistoricProcessInstanceManager extends AbstractHistoricManager {
   }
   
   public void deleteHistoricProcessInstanceById(String historicProcessInstanceId) {
-    if (historyLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
+    if (getHistoryManager().isHistoryEnabled()) {
       CommandContext commandContext = Context.getCommandContext();
       HistoricProcessInstanceEntity historicProcessInstance = findHistoricProcessInstance(historicProcessInstanceId);
       
@@ -77,7 +76,7 @@ public class HistoricProcessInstanceManager extends AbstractHistoricManager {
   }
   
   public long findHistoricProcessInstanceCountByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery) {
-    if (historyLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
+    if (getHistoryManager().isHistoryEnabled()) {
       return (Long) getDbSqlSession().selectOne("selectHistoricProcessInstanceCountByQueryCriteria", historicProcessInstanceQuery);
     }
     return 0;
@@ -85,7 +84,7 @@ public class HistoricProcessInstanceManager extends AbstractHistoricManager {
 
   @SuppressWarnings("unchecked")
   public List<HistoricProcessInstance> findHistoricProcessInstancesByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery, Page page) {
-    if (historyLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
+    if (getHistoryManager().isHistoryEnabled()) {
       return getDbSqlSession().selectList("selectHistoricProcessInstancesByQueryCriteria", historicProcessInstanceQuery, page);
     }
     return Collections.EMPTY_LIST;

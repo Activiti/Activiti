@@ -23,6 +23,7 @@ import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -360,6 +361,14 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     String expectedFormKey = formService.getTaskFormData(task.getId()).getFormKey();
     String actualFormKey = formService.getTaskFormKey(task.getProcessDefinitionId(), task.getTaskDefinitionKey());
     assertEquals(expectedFormKey, actualFormKey);
+  }
+  
+  @Deployment
+  public void testGetTaskFormKeyWithExpression() {
+    runtimeService.startProcessInstanceByKey("FormsProcess", CollectionUtil.singletonMap("dynamicKey", "test"));
+    Task task = taskService.createTaskQuery().singleResult();
+    assertNotNull(task);
+    assertEquals("test", formService.getTaskFormData(task.getId()).getFormKey());
   }
 
 }

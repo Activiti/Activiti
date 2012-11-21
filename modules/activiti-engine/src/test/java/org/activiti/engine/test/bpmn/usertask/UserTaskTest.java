@@ -13,7 +13,7 @@
 
 package org.activiti.engine.test.bpmn.usertask;
 
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -42,7 +42,7 @@ public class UserTaskTest extends PluggableActivitiTestCase {
     assertNotNull(task.getCreateTime());
     
     // the next test verifies that if an execution creates a task, that no events are created during creation of the task.
-    if (processEngineConfiguration.getHistoryLevel()>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       assertEquals(0, taskService.getTaskEvents(task.getId()).size());
     }
   }

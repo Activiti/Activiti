@@ -59,8 +59,7 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   HistoricProcessInstanceQuery unfinished();
 
   /** Only select process instances which had a global variable with the given value
-   * when they ended. Only select process instances which have a variable value
-   * greater than the passed value. The type only applies to already ended
+   * when they ended. The type only applies to already ended
    * process instances, otherwise use a {@link ProcessInstanceQuery} instead! of
    * variable is determined based on the value, using types configured in
    * {@link ProcessEngineConfiguration#getVariableTypes()}. Byte-arrays and
@@ -68,6 +67,24 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
    * not supported. 
    * @param name of the variable, cannot be null. */
   HistoricProcessInstanceQuery variableValueEquals(String name, Object value);
+  
+  /** Only select process instances which had at least one global variable with the given value
+   * when they ended. The type only applies to already ended
+   * process instances, otherwise use a {@link ProcessInstanceQuery} instead! of
+   * variable is determined based on the value, using types configured in
+   * {@link ProcessEngineConfiguration#getVariableTypes()}. Byte-arrays and
+   * {@link Serializable} objects (which are not primitive type wrappers) are
+   * not supported. 
+   */
+  HistoricProcessInstanceQuery variableValueEquals(Object value);
+  
+  /** 
+   * Only select historic process instances which have a local string variable with the 
+   * given value, case insensitive.
+   * @param name name of the variable, cannot be null.
+   * @param value value of the variable, cannot be null.
+   */
+  HistoricProcessInstanceQuery variableValueEqualsIgnoreCase(String name, String value);
 
   /** Only select process instances which had a global variable with the given name, but
    * with a different value than the passed value when they ended. Only select

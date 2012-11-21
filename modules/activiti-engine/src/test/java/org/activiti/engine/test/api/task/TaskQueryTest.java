@@ -531,6 +531,21 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertEquals(1, taskService.createTaskQuery().taskVariableValueNotEquals("stringVar", "999").count());
     assertEquals(1, taskService.createTaskQuery().taskVariableValueNotEquals("booleanVar", false).count());
     
+    // Test value-only variable equals
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueEquals(928374L).count());
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueEquals((short) 123).count());
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueEquals(1234).count());
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueEquals("stringValue").count());
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueEquals(true).count());
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueEquals(date).count());
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueEquals(null).count());
+    
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueEquals(999999L).count());
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueEquals((short) 999).count());
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueEquals(9999).count());
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueEquals("unexistingstringvalue").count());
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueEquals(false).count());
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueEquals(otherDate.getTime()).count());
   }
   
   @Deployment
@@ -587,6 +602,22 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     // and query for the existing variable with NOT shoudl result in nothing found:
     assertEquals(0, taskService.createTaskQuery().processVariableValueNotEquals("longVar", 928374L).count());
     
+    // Test value-only variable equals
+    assertEquals(1, taskService.createTaskQuery().processVariableValueEquals(928374L).count());
+    assertEquals(1, taskService.createTaskQuery().processVariableValueEquals((short) 123).count());
+    assertEquals(1, taskService.createTaskQuery().processVariableValueEquals(1234).count());
+    assertEquals(1, taskService.createTaskQuery().processVariableValueEquals("stringValue").count());
+    assertEquals(1, taskService.createTaskQuery().processVariableValueEquals(true).count());
+    assertEquals(1, taskService.createTaskQuery().processVariableValueEquals(date).count());
+    assertEquals(1, taskService.createTaskQuery().processVariableValueEquals(null).count());
+    
+    assertEquals(0, taskService.createTaskQuery().processVariableValueEquals(999999L).count());
+    assertEquals(0, taskService.createTaskQuery().processVariableValueEquals((short) 999).count());
+    assertEquals(0, taskService.createTaskQuery().processVariableValueEquals(9999).count());
+    assertEquals(0, taskService.createTaskQuery().processVariableValueEquals("unexistingstringvalue").count());
+    assertEquals(0, taskService.createTaskQuery().processVariableValueEquals(false).count());
+    assertEquals(0, taskService.createTaskQuery().processVariableValueEquals(otherDate.getTime()).count());
+    
     // Test combination of task-variable and process-variable
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.setVariableLocal(task.getId(), "taskVar", "theValue");
@@ -601,6 +632,79 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
             .processVariableValueEquals("longVar", 928374L)
             .taskVariableValueEquals("longVar", 928374L)
             .count());
+    
+    assertEquals(1, taskService.createTaskQuery()
+            .processVariableValueEquals(928374L)
+            .taskVariableValueEquals("theValue")
+            .count());
+    
+    assertEquals(1, taskService.createTaskQuery()
+            .processVariableValueEquals(928374L)
+            .taskVariableValueEquals(928374L)
+            .count());
+  }
+  
+  @Deployment(resources="org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml")
+  public void testVariableValueEqualsIgnoreCase() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(task);
+    
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("mixed", "AzerTY");
+    variables.put("upper", "AZERTY");
+    variables.put("lower", "azerty");
+    taskService.setVariablesLocal(task.getId(), variables);
+    
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueEqualsIgnoreCase("mixed", "azerTY").count());
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueEqualsIgnoreCase("mixed", "azerty").count());
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueEqualsIgnoreCase("mixed", "uiop").count());
+    
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueEqualsIgnoreCase("upper", "azerTY").count());
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueEqualsIgnoreCase("upper", "azerty").count());
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueEqualsIgnoreCase("upper", "uiop").count());
+    
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueEqualsIgnoreCase("lower", "azerTY").count());
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueEqualsIgnoreCase("lower", "azerty").count());
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueEqualsIgnoreCase("lower", "uiop").count());
+    
+    // Test not-equals
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueNotEqualsIgnoreCase("mixed", "azerTY").count());
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueNotEqualsIgnoreCase("mixed", "azerty").count());
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueNotEqualsIgnoreCase("mixed", "uiop").count());
+    
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueNotEqualsIgnoreCase("upper", "azerTY").count());
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueNotEqualsIgnoreCase("upper", "azerty").count());
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueNotEqualsIgnoreCase("upper", "uiop").count());
+    
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueNotEqualsIgnoreCase("lower", "azerTY").count());
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueNotEqualsIgnoreCase("lower", "azerty").count());
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueNotEqualsIgnoreCase("lower", "uiop").count());
+    
+  }
+  
+  
+  @Deployment(resources="org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml")
+  public void testProcessVariableValueEqualsIgnoreCase() throws Exception {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("mixed", "AzerTY");
+    variables.put("upper", "AZERTY");
+    variables.put("lower", "azerty");
+    
+    runtimeService.startProcessInstanceByKey("oneTaskProcess", variables);
+    
+    assertEquals(1, taskService.createTaskQuery().processVariableValueEqualsIgnoreCase("mixed", "azerTY").count());
+    assertEquals(1, taskService.createTaskQuery().processVariableValueEqualsIgnoreCase("mixed", "azerty").count());
+    assertEquals(0, taskService.createTaskQuery().processVariableValueEqualsIgnoreCase("mixed", "uiop").count());
+    
+    assertEquals(1, taskService.createTaskQuery().processVariableValueEqualsIgnoreCase("upper", "azerTY").count());
+    assertEquals(1, taskService.createTaskQuery().processVariableValueEqualsIgnoreCase("upper", "azerty").count());
+    assertEquals(0, taskService.createTaskQuery().processVariableValueEqualsIgnoreCase("upper", "uiop").count());
+    
+    assertEquals(1, taskService.createTaskQuery().processVariableValueEqualsIgnoreCase("lower", "azerTY").count());
+    assertEquals(1, taskService.createTaskQuery().processVariableValueEqualsIgnoreCase("lower", "azerty").count());
+    assertEquals(0, taskService.createTaskQuery().processVariableValueEqualsIgnoreCase("lower", "uiop").count());
   }
   
   @Deployment(resources={"org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml"})

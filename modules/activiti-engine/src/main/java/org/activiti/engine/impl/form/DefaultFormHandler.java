@@ -35,19 +35,25 @@ import org.activiti.engine.impl.util.xml.Element;
  */
 public class DefaultFormHandler implements FormHandler {
   
-  protected String formKey;
+  protected Expression formKey;
   protected String deploymentId;
   protected List<FormPropertyHandler> formPropertyHandlers = new ArrayList<FormPropertyHandler>();
   
   public void parseConfiguration(Element activityElement, DeploymentEntity deployment, ProcessDefinitionEntity processDefinition, BpmnParse bpmnParse) {
     this.deploymentId = deployment.getId();
-    this.formKey = activityElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "formKey");
-    Element extensionElement = activityElement.element("extensionElements");
-    if (extensionElement != null) {
-
-      ExpressionManager expressionManager = Context
+    
+    ExpressionManager expressionManager = Context
         .getProcessEngineConfiguration()
         .getExpressionManager();
+    
+    String formKeyAttribute = activityElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "formKey");
+    
+    if (formKeyAttribute != null) {
+      this.formKey = expressionManager.createExpression(formKeyAttribute);
+    }
+    
+    Element extensionElement = activityElement.element("extensionElements");
+    if (extensionElement != null) {
       
       FormTypes formTypes = Context
         .getProcessEngineConfiguration()
@@ -138,11 +144,11 @@ public class DefaultFormHandler implements FormHandler {
 
   // getters and setters //////////////////////////////////////////////////////
   
-  public String getFormKey() {
+  public Expression getFormKey() {
     return formKey;
   }
   
-  public void setFormKey(String formKey) {
+  public void setFormKey(Expression formKey) {
     this.formKey = formKey;
   }
   
