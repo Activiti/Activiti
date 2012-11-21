@@ -153,7 +153,7 @@ public class TableDataManager extends AbstractManager {
           tableNameFilter = databaseTablePrefix+"act_%";
         }
         if ("oracle".equals(getDbSqlSession().getDbSqlSessionFactory().getDatabaseType())) {
-          tableNameFilter = databaseTablePrefix+"ACT\\_%";
+          tableNameFilter = databaseTablePrefix+"ACT" + databaseMetaData.getSearchStringEscape() + "_%";
         }
         tables = databaseMetaData.getTables(null, null, tableNameFilter, getDbSqlSession().JDBC_METADATA_TABLE_TYPES);
         while (tables.next()) {
