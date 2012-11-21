@@ -160,7 +160,7 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   public void setLocale(Locale locale) {
     super.setLocale(locale);
     if(i18nManager != null) {
-      i18nManager.createResourceBundle();
+      i18nManager.setLocale(locale);
     }
   }
   

@@ -14,9 +14,9 @@
 package org.activiti.explorer;
 
 import java.io.Serializable;
-import java.text.MessageFormat;
 import java.util.Locale;
-import java.util.ResourceBundle;
+
+import org.springframework.context.MessageSource;
 
 
 /**
@@ -25,25 +25,31 @@ import java.util.ResourceBundle;
 public class I18nManager implements Serializable {
 
   private static final long serialVersionUID = 1L;
-  protected ResourceBundle messages;
+  protected MessageSource messageSource;
+  protected Locale locale;
   
   public String getMessage(String key) {
-    if (messages == null) {
-      createResourceBundle();
-    }
-    return messages.getString(key);
+    checkLocale();
+    return messageSource.getMessage(key, null, locale);
   }
 
   public String getMessage(String key, Object... arguments) {
-    if (messages == null) {
-      createResourceBundle();
-    }
-    return MessageFormat.format(messages.getString(key), arguments);
+    checkLocale();
+    return messageSource.getMessage(key, arguments, locale);
   }
   
-  public void createResourceBundle() {
-    Locale locale = ExplorerApp.get().getLocale();
-    this.messages = ResourceBundle.getBundle(Constants.RESOURCE_BUNDLE, locale);
+  public void setLocale(Locale locale) {
+    this.locale = locale;
+  }
+  
+  protected void checkLocale() {
+    if (locale == null) {
+      locale = ExplorerApp.get().getLocale();
+    }
+  }
+  
+  public void setMessageSource(MessageSource messageSource) {
+    this.messageSource = messageSource;
   }
   
 }

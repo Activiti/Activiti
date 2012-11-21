@@ -6,6 +6,8 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
+       
+  <!-- This application context will be included in Alfresco as-is -->       
 
   <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" name="activitiUiPropertyPlaceholder">
     <property name="location" value="classpath:ui.properties" />
@@ -53,7 +55,7 @@
     <property name="componentFactories" ref="componentFactories" />
   </bean>
   
-  <!-- User cache usage depends on environment, hence the faactory approach -->
+  <!-- User cache usage depends on environment, hence the factory approach -->
   <bean name="userCache" class="org.activiti.explorer.cache.UserCacheFactoryBean">
     <property name="environment" value="${activiti.ui.environment}" />
   </bean>
@@ -83,7 +85,17 @@
     <property name="loginHandler" ref="activitiLoginHandler" />
   </bean>
   
-  <bean name="i18nManager" class="org.activiti.explorer.I18nManager" scope="session" />
+  <bean name="i18nManager" class="org.activiti.explorer.I18nManager" scope="session">
+    <property name="messageSource">
+	  <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+	    <property name="basenames">
+	      <list>
+	        <value>messages</value>
+	      </list>
+	    </property>
+	  </bean>
+    </property>
+  </bean>
   
   <bean name="notificationManager" class="org.activiti.explorer.NotificationManager" scope="session">
     <property name="mainWindow" ref="mainWindow" />
