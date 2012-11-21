@@ -1,5 +1,7 @@
 package org.activiti.upgrade;
 
+import java.util.Date;
+
 
 public class DatabaseFormatterDb2 extends DatabaseFormatter {
 
@@ -12,4 +14,12 @@ public class DatabaseFormatterDb2 extends DatabaseFormatter {
     return sb.toString();
   }
 
+  @Override
+  public String formatDate(Date date) {
+    StringBuffer sb = new StringBuffer();
+    sb.append("TIMESTAMP ('");
+    sb.append(defaultDateFormat.format(date));
+    sb.append("')");
+    return sb.toString();
+  }
 }

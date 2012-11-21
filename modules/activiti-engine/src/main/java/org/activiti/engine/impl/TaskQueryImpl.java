@@ -282,7 +282,6 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     return this;
   }
   
-  @Override
   public TaskQuery taskVariableValueEqualsIgnoreCase(String name, String value) {
     if(value == null) {
       throw new ActivitiException("value is null");
@@ -291,7 +290,6 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     return this;
   }
   
-  @Override
   public TaskQuery taskVariableValueNotEqualsIgnoreCase(String name, String value) {
     if(value == null) {
       throw new ActivitiException("value is null");
@@ -320,7 +318,6 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     return this;
   }
   
-  @Override
   public TaskQuery processVariableValueEqualsIgnoreCase(String name, String value) {
     if(value == null) {
       throw new ActivitiException("value is null");
@@ -329,7 +326,6 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     return this;
   }
   
-  @Override
   public TaskQuery processVariableValueNotEqualsIgnoreCase(String name, String value) {
     if(value == null) {
       throw new ActivitiException("value is null");

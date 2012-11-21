@@ -10,5 +10,10 @@ public class DatabaseFormatterMsSqlServer extends DatabaseFormatter {
     appendBytesInHex(sb, bytes);
     return sb.toString();
   }
+  
+  @Override
+  public String formatBoolean(boolean b) {
+    return (b ? "1" : "0");
+  }
 
 }
