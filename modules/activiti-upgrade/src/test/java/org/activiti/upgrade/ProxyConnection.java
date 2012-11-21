@@ -244,22 +244,22 @@ public class ProxyConnection implements Connection {
   }
 
   public void setSchema(String schema) throws SQLException {
-    connection.setSchema(schema);
+    throw new RuntimeException("buzz");
   }
 
   public String getSchema() throws SQLException {
-    return connection.getSchema();
+    throw new RuntimeException("buzz");
   }
 
   public void abort(Executor executor) throws SQLException {
-    connection.abort(executor);
+    throw new RuntimeException("buzz");
   }
 
   public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {
-    connection.setNetworkTimeout(executor, milliseconds);
+    throw new RuntimeException("buzz");
   }
 
   public int getNetworkTimeout() throws SQLException {
-    return connection.getNetworkTimeout();
+    throw new RuntimeException("buzz");
   }
 }

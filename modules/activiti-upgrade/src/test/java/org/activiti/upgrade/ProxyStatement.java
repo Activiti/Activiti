@@ -538,11 +538,10 @@ public class ProxyStatement implements PreparedStatement {
   }
 
   public void closeOnCompletion() throws SQLException {
-    preparedStatement.closeOnCompletion();
+    throw new RuntimeException("buzz");
   }
 
   public boolean isCloseOnCompletion() throws SQLException {
-    return preparedStatement.isCloseOnCompletion();
+    throw new RuntimeException("buzz");
   }
-
 }
