@@ -209,6 +209,9 @@
       <if test="dueDate != null || dueBefore != null || dueAfter != null">
         and RES.DUE_DATE_ is not null
       </if>
+      <if test="excludeSubtasks">
+        and RES.PARENT_TASK_ID_ IS NULL
+      </if>
       <if test="candidateUser != null || candidateGroups != null">
         and RES.ASSIGNEE_ is null
         and I.TYPE_ = 'candidate'
@@ -237,13 +240,23 @@
           <!-- When process instance variable is queried for, taskId should be null -->
           and A${index}.TASK_ID_ is null
         </if>
-        and A${index}.NAME_= #{var.name}
+        <if test="var.name != null">
+          <!-- Match-all variable-names when name is null -->
+          and A${index}.NAME_= #{var.name}
+        </if>
         <if test="!var.type.equals('null')">
           and A${index}.TYPE_ = #{var.type}
         </if>
         <!-- Variable value -->
         <if test="var.textValue != null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
-          and A${index}.TEXT_ 
+          <choose>
+            <when test="var.operator.equals('EQUALS_IGNORE_CASE') || var.operator.equals('NOT_EQUALS_IGNORE_CASE')">
+              and lower(A${index}.TEXT_)
+            </when>
+            <otherwise>
+              and A${index}.TEXT_
+            </otherwise>
+          </choose> 
           <choose>
               <when test="var.operator.equals('LIKE')">LIKE</when>
               <otherwise><include refid="executionVariableOperator" /></otherwise>
@@ -286,7 +299,9 @@
   <sql id="executionVariableOperator">
     <choose>
       <when test="var.operator.equals('EQUALS')">=</when>
+      <when test="var.operator.equals('EQUALS_IGNORE_CASE')">=</when>
       <when test="var.operator.equals('NOT_EQUALS')">&lt;&gt;</when>
+      <when test="var.operator.equals('NOT_EQUALS_IGNORE_CASE')">&lt;&gt;</when>
       <when test="var.operator.equals('GREATER_THAN')">&gt;</when>
       <when test="var.operator.equals('GREATER_THAN_OR_EQUAL')">&gt;=</when>
       <when test="var.operator.equals('LESS_THAN')">&lt;</when>

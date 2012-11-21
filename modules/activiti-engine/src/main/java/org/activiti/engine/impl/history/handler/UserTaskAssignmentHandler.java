@@ -15,8 +15,7 @@ package org.activiti.engine.impl.history.handler;
 
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 
@@ -26,11 +25,8 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 public class UserTaskAssignmentHandler implements TaskListener {
 
   public void notify(DelegateTask task) {
-    ExecutionEntity execution = ((TaskEntity) task).getExecution();
-    if (execution != null) {
-      HistoricActivityInstanceEntity historicActivityInstance = ActivityInstanceEndHandler.findActivityInstance(execution);
-      historicActivityInstance.setAssignee(task.getAssignee());
-    }
+   Context.getCommandContext().getHistoryManager()
+     .recordTaskAssignment((TaskEntity) task);
   }
   
 }

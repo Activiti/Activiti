@@ -57,6 +57,24 @@
 			<fileset dir="../modules/activiti-spring/target">
 				<include name="activiti-spring-*.jar" />
 			</fileset>
+			<fileset dir="../modules/activiti-bpmn-model/target">
+        <include name="activiti-bpmn-model-*.jar" />
+      </fileset>
+			<fileset dir="../modules/activiti-bpmn-converter/target">
+        <include name="activiti-bpmn-converter-*.jar" />
+      </fileset>
+			<fileset dir="../modules/activiti-json-converter/target">
+        <include name="activiti-json-converter-*.jar" />
+      </fileset>
+			<fileset dir="../modules/activiti-explorer/target">
+        <include name="activiti-explorer-*.jar" />
+      </fileset>
+			<fileset dir="../modules/activiti-modeler/target">
+        <include name="activiti-modeler-*.jar" />
+      </fileset>
+			<fileset dir="../modules/activiti-rest/target">
+        <include name="activiti-rest-*.jar" />
+      </fileset>
 			<fileset dir="../modules/activiti-camel/target">
 				<include name="activiti-camel-*.jar" />
 			</fileset>

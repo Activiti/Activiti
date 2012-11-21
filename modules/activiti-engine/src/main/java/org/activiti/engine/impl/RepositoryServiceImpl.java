@@ -18,9 +18,13 @@ import java.util.List;
 
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.cmd.ActivateProcessDefinitionCmd;
+import org.activiti.engine.impl.cmd.AddEditorSourceExtraForModelCmd;
+import org.activiti.engine.impl.cmd.AddEditorSourceForModelCmd;
 import org.activiti.engine.impl.cmd.AddIdentityLinkForProcessDefinitionCmd;
+import org.activiti.engine.impl.cmd.CreateModelCmd;
 import org.activiti.engine.impl.cmd.DeleteDeploymentCmd;
 import org.activiti.engine.impl.cmd.DeleteIdentityLinkForProcessDefinitionCmd;
+import org.activiti.engine.impl.cmd.DeleteModelCmd;
 import org.activiti.engine.impl.cmd.DeployCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentProcessDiagramCmd;
@@ -29,13 +33,20 @@ import org.activiti.engine.impl.cmd.GetDeploymentProcessModelCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentResourceCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentResourceNamesCmd;
 import org.activiti.engine.impl.cmd.GetIdentityLinksForProcessDefinitionCmd;
+import org.activiti.engine.impl.cmd.GetModelCmd;
+import org.activiti.engine.impl.cmd.GetModelEditorSourceCmd;
+import org.activiti.engine.impl.cmd.GetModelEditorSourceExtraCmd;
+import org.activiti.engine.impl.cmd.SaveModelCmd;
 import org.activiti.engine.impl.cmd.SuspendProcessDefinitionCmd;
+import org.activiti.engine.impl.persistence.entity.ModelEntity;
 import org.activiti.engine.impl.pvm.ReadOnlyProcessDefinition;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.engine.repository.DiagramLayout;
+import org.activiti.engine.repository.Model;
+import org.activiti.engine.repository.ModelQuery;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.task.IdentityLink;
@@ -118,6 +129,42 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
 
   public DiagramLayout getProcessDiagramLayout(String processDefinitionId) {
     return commandExecutor.execute(new GetDeploymentProcessDiagramLayoutCmd(processDefinitionId));
+  }
+  
+  public Model newModel() {
+    return commandExecutor.execute(new CreateModelCmd());
+  }
+
+  public void saveModel(Model model) {
+    commandExecutor.execute(new SaveModelCmd((ModelEntity) model));
+  }
+
+  public void deleteModel(String modelId) {
+    commandExecutor.execute(new DeleteModelCmd(modelId));
+  }
+  
+  public void addModelEditorSource(String modelId, byte[] bytes) {
+    commandExecutor.execute(new AddEditorSourceForModelCmd(modelId, bytes));
+  }
+  
+  public void addModelEditorSourceExtra(String modelId, byte[] bytes) {
+    commandExecutor.execute(new AddEditorSourceExtraForModelCmd(modelId, bytes));
+  }
+  
+  public ModelQuery createModelQuery() {
+    return new ModelQueryImpl(commandExecutor);
+  }
+  
+  public Model getModel(String modelId) {
+    return commandExecutor.execute(new GetModelCmd(modelId));
+  }
+  
+  public byte[] getModelEditorSource(String modelId) {
+    return commandExecutor.execute(new GetModelEditorSourceCmd(modelId));
+  }
+  
+  public byte[] getModelEditorSourceExtra(String modelId) {
+    return commandExecutor.execute(new GetModelEditorSourceExtraCmd(modelId));
   }
   
   public void addCandidateStarterUser(String processDefinitionId, String userId) {

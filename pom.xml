@@ -147,7 +147,7 @@
       <dependency>
         <groupId>com.ibm.db2.jcc</groupId>
         <artifactId>db2jcc4</artifactId>
-        <version>9.7</version>
+        <version>10.1</version>
         <scope>test</scope>
       </dependency> 
       <dependency>
@@ -162,7 +162,32 @@
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
+        <artifactId>activiti-bpmn-model</artifactId>
+        <version>${version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
         <artifactId>activiti-bpmn-converter</artifactId>
+        <version>${version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-json-converter</artifactId>
+        <version>${version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-explorer</artifactId>
+        <version>${version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-modeler</artifactId>
+        <version>${version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-rest</artifactId>
         <version>${version}</version>
       </dependency> 
       <dependency>
@@ -435,11 +460,6 @@
         <artifactId>javaGeom</artifactId>
         <version>0.11.0</version>
       </dependency>
-      <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-entitymanager</artifactId>
-        <version>4.1.4.Final</version>
-      </dependency>
       <!-- Webapps -->
       <dependency>
         <groupId>com.vaadin</groupId>
@@ -615,7 +635,14 @@
     <profile>
       <id>deploy</id>
       <modules>
+        <module>modules/activiti-bpmn-model</module>
+        <module>modules/activiti-bpmn-converter</module>
+        <module>modules/activiti-json-converter</module>
+        <module>modules/activiti-modeler</module>
+        <module>modules/activiti-explorer</module>
         <module>modules/activiti-webapp-explorer2</module>
+        <module>modules/activiti-rest</module>
+        <module>modules/activiti-webapp-rest2</module>
         <module>modules/activiti-spring</module>
         <module>modules/activiti-cxf</module>
         <module>modules/activiti-mule</module>
@@ -643,6 +670,7 @@
       <id>check</id>
       <modules>
         <module>modules/activiti-spring</module>
+        <module>modules/activiti-rest</module>
         <module>modules/activiti-webapp-rest2</module>
         <module>modules/activiti-cxf</module>
         <module>modules/activiti-cdi</module>
@@ -694,6 +722,12 @@
       <id>distro</id>
       <modules>
         <module>modules/activiti-spring</module>
+        <module>modules/activiti-bpmn-model</module>
+        <module>modules/activiti-bpmn-converter</module>
+        <module>modules/activiti-json-converter</module>
+        <module>modules/activiti-modeler</module>
+        <module>modules/activiti-explorer</module>
+        <module>modules/activiti-rest</module>
         <module>modules/activiti-webapp-rest2</module>
         <module>modules/activiti-webapp-explorer2</module>
         <module>modules/activiti-cxf</module>
@@ -817,8 +851,8 @@
     <url>http://bamboo.ci.codehaus.org/browse/ACT</url>
   </ciManagement>
   <scm>
-    <connection>scm:svn:http://svn.codehaus.org/activiti/</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/activiti/</developerConnection>
+    <connection>scm:git:https://github.com/Activiti/Activiti.git</connection>
+    <developerConnection>scm:git:https://github.com/Activiti/Activiti.git</developerConnection>
   </scm>
 
 </project>

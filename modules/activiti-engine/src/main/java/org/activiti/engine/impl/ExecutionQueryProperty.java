@@ -31,8 +31,8 @@ public class ExecutionQueryProperty implements QueryProperty {
   private static final Map<String, ExecutionQueryProperty> properties = new HashMap<String, ExecutionQueryProperty>();
 
   public static final ExecutionQueryProperty PROCESS_INSTANCE_ID = new ExecutionQueryProperty("RES.ID_");
-  public static final ExecutionQueryProperty PROCESS_DEFINITION_KEY = new ExecutionQueryProperty("P.KEY_");
-  public static final ExecutionQueryProperty PROCESS_DEFINITION_ID = new ExecutionQueryProperty("RES.ID_");
+  public static final ExecutionQueryProperty PROCESS_DEFINITION_KEY = new ExecutionQueryProperty("ProcessDefinitionKey");
+  public static final ExecutionQueryProperty PROCESS_DEFINITION_ID = new ExecutionQueryProperty("ProcessDefinitionId");
   
   private String name;
 

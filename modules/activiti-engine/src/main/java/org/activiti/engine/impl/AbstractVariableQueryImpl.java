@@ -22,7 +22,6 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.variable.VariableTypes;
 import org.activiti.engine.query.Query;
-import org.activiti.engine.runtime.ExecutionQuery;
 
 
 /**
@@ -58,6 +57,30 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?,?>, U> extends
   public T variableValueEquals(String name, Object value) {
     addVariable(name, value, QueryOperator.EQUALS, true);
     return (T) this;
+  }
+  
+  @SuppressWarnings("unchecked")
+  public T variableValueEquals(Object value) {
+    queryVariableValues.add(new QueryVariableValue(null, value, QueryOperator.EQUALS, true));
+    return (T) this;
+  }
+  
+  @SuppressWarnings("unchecked")
+  public T variableValueEqualsIgnoreCase(String name, String value) {
+    if(value == null) {
+      throw new ActivitiException("value is null");
+    }
+    addVariable(name, value.toLowerCase(), QueryOperator.EQUALS_IGNORE_CASE, true);
+    return (T)this;
+  }
+  
+  @SuppressWarnings("unchecked")
+  public T variableValueNotEqualsIgnoreCase(String name, String value) {
+    if(value == null) {
+      throw new ActivitiException("value is null");
+    }
+    addVariable(name, value.toLowerCase(), QueryOperator.NOT_EQUALS_IGNORE_CASE, true);
+    return (T)this;
   }
   
   @SuppressWarnings("unchecked")
@@ -101,15 +124,39 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?,?>, U> extends
     addVariable(variableName, variableValue, QueryOperator.EQUALS, false);
     return (T)this;
   }
+  
+  @SuppressWarnings("unchecked")
+  public T processVariableValueEquals(Object value) {
+    queryVariableValues.add(new QueryVariableValue(null, value, QueryOperator.EQUALS, false));
+    return (T) this;
+  }
 
   @SuppressWarnings("unchecked")
   public T processVariableValueNotEquals(String variableName, Object variableValue) {
     addVariable(variableName, variableValue, QueryOperator.NOT_EQUALS, false);
     return (T)this;
   }
+  
+  @SuppressWarnings("unchecked")
+  public T processVariableValueEqualsIgnoreCase(String name, String value) {
+    if(value == null) {
+      throw new ActivitiException("value is null");
+    }
+    addVariable(name, value.toLowerCase(), QueryOperator.EQUALS_IGNORE_CASE, false);
+    return (T)this;
+  }
+  
+  @SuppressWarnings("unchecked")
+  public T processVariableValueNotEqualsIgnoreCase(String name, String value) {
+    if(value == null) {
+      throw new ActivitiException("value is null");
+    }
+    addVariable(name, value.toLowerCase(), QueryOperator.NOT_EQUALS_IGNORE_CASE, false);
+    return (T)this;
+  }
 
   
-  private void addVariable(String name, Object value, QueryOperator operator, boolean processInstanceScope) {
+  private void addVariable(String name, Object value, QueryOperator operator, boolean localScope) {
     if(name == null) {
       throw new ActivitiException("name is null");
     }
@@ -124,11 +171,24 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?,?>, U> extends
         throw new ActivitiException("Booleans and null cannot be used in 'greater than or equal' condition");
       case LESS_THAN_OR_EQUAL:
         throw new ActivitiException("Booleans and null cannot be used in 'less than or equal' condition");
-      case LIKE:
-        throw new ActivitiException("Booleans and null cannot be used in 'like' condition");
+      }
+      
+      if(operator == QueryOperator.EQUALS_IGNORE_CASE && (value == null || !(value instanceof String)))
+      {
+        throw new ActivitiException("Only string values can be used with 'equals ignore case' condition");
+      }
+      
+      if(operator == QueryOperator.NOT_EQUALS_IGNORE_CASE && (value == null || !(value instanceof String)))
+      {
+        throw new ActivitiException("Only string values can be used with 'not equals ignore case' condition");
+      }
+      
+      if(operator == QueryOperator.LIKE && (value == null || !(value instanceof String)))
+      {
+        throw new ActivitiException("Only string values can be used with 'like' condition");
       }
     }
-    queryVariableValues.add(new QueryVariableValue(name, value, operator, processInstanceScope));
+    queryVariableValues.add(new QueryVariableValue(name, value, operator, localScope));
   }
   
   private boolean isBoolean(Object value) {

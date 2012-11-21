@@ -20,6 +20,7 @@ import javax.sql.DataSource;
 import org.activiti.engine.impl.cfg.BeansConfigurationHelper;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
+import org.activiti.engine.impl.history.HistoryLevel;
 
 
 /** Configuration information from which a process engine can be build.
@@ -89,31 +90,16 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
    * an update of the schema is performed if it is necessary. */
   public static final String DB_SCHEMA_UPDATE_TRUE = "true";
 
-  /** Value for {@link #setHistory(String)} to ensure that no history is being recorded. */
-  public static final String HISTORY_NONE = "none";
-  /** Value for {@link #setHistory(String)} to ensure that only historic process instances and 
-   * historic activity instances are being recorded. 
-   * This means no details for those entities. */
-  public static final String HISTORY_ACTIVITY = "activity";
-  /** Value for {@link #setHistory(String)} to ensure that only historic process instances, 
-   * historic activity instances and last process variable values are being recorded. */ 
-  public static final String HISTORY_VARIABLE = "variable";
-  /** Value for {@link #setHistory(String)} to ensure that only historic process instances, 
-   * historic activity instances and submitted form property values are being recorded. */ 
-  public static final String HISTORY_AUDIT = "audit";
-  /** Value for {@link #setHistory(String)} to ensure that all historic information is 
-   * being recorded, including the variable updates. */ 
-  public static final String HISTORY_FULL = "full";
-  
   protected String processEngineName = ProcessEngines.NAME_DEFAULT;
   protected int idBlockSize = 100;
-  protected String history = HISTORY_AUDIT;
+  protected String history = HistoryLevel.AUDIT.getKey();
   protected boolean jobExecutorActivate;
 
   protected String mailServerHost = "localhost";
   protected String mailServerUsername; // by default no name and password are provided, which 
   protected String mailServerPassword; // means no authentication for mail server
   protected int mailServerPort = 25;
+  protected boolean useSSL = false;
   protected boolean useTLS = false;
   protected String mailServerDefaultFrom = "activiti@localhost";
 
@@ -257,7 +243,16 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
     this.mailServerPort = mailServerPort;
     return this;
   }
-
+  
+  public boolean getMailServerUseSSL() {
+	  return useSSL;
+  }
+  
+  public ProcessEngineConfiguration setMailServerUseSSL(boolean useSSL) {
+	  this.useSSL = useSSL;
+	  return this;
+  }
+  
   
   public boolean getMailServerUseTLS() {
     return useTLS;

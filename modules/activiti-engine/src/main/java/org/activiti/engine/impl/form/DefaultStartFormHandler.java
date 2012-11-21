@@ -38,7 +38,9 @@ public class DefaultStartFormHandler extends DefaultFormHandler implements Start
 
   public StartFormData createStartFormData(ProcessDefinitionEntity processDefinition) {
     StartFormDataImpl startFormData = new StartFormDataImpl();
-    startFormData.setFormKey(formKey);
+    if (formKey != null) {
+      startFormData.setFormKey(formKey.getExpressionText());
+    }
     startFormData.setDeploymentId(deploymentId);
     startFormData.setProcessDefinition(processDefinition);
     initializeFormProperties(startFormData, null);

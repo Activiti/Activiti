@@ -53,7 +53,6 @@ public class ProcessEngineImpl implements ProcessEngine {
   protected CommandExecutor commandExecutor;
   protected Map<Class<?>, SessionFactory> sessionFactories;
   protected ExpressionManager expressionManager;
-  protected int historyLevel;
   protected TransactionContextFactory transactionContextFactory;
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
 
@@ -71,7 +70,6 @@ public class ProcessEngineImpl implements ProcessEngine {
     this.jobExecutor = processEngineConfiguration.getJobExecutor();
     this.commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
     this.sessionFactories = processEngineConfiguration.getSessionFactories();
-    this.historyLevel = processEngineConfiguration.getHistoryLevel();
     this.transactionContextFactory = processEngineConfiguration.getTransactionContextFactory();
     
     commandExecutor.execute(new SchemaOperationsProcessEngineBuild());

@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.activiti.engine.history.HistoricTaskInstance;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Task;
 
@@ -58,7 +58,7 @@ public class SubTaskTest extends PluggableActivitiTestCase {
       subTaskNames.add(subTask.getName());
     }
 
-    if (processEngineConfiguration.getHistoryLevel()>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
       Set<String> expectedSubTaskNames = new HashSet<String>();
       expectedSubTaskNames.add("subtask one");
       expectedSubTaskNames.add("subtask two");

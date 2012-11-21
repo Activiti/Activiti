@@ -30,7 +30,7 @@ import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -89,7 +89,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     assertEquals(dueDate, task.getDueDate());
     assertEquals(1, task.getPriority());
     
-    if (processEngineConfiguration.getHistoryLevel()>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
       HistoricTaskInstance historicTaskInstance = historyService
         .createHistoricTaskInstanceQuery()
         .taskId(task.getId())
@@ -126,8 +126,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
   }
 
   public void testTaskComments() {
-    int historyLevel = processEngineConfiguration.getHistoryLevel();
-    if (historyLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       Task task = taskService.newTask();
       task.setOwner("johndoe");
       taskService.saveTask(task);
@@ -164,8 +163,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
   }
 
   public void testTaskAttachments() {
-    int historyLevel = processEngineConfiguration.getHistoryLevel();
-    if (historyLevel>ProcessEngineConfigurationImpl.HISTORYLEVEL_NONE) {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       Task task = taskService.newTask();
       task.setOwner("johndoe");
       taskService.saveTask(task);
@@ -448,7 +446,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     String taskId = task.getId();
     taskService.complete(taskId, null);
 
-    if (processEngineConfiguration.getHistoryLevel()>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
       historyService.deleteHistoricTaskInstance(taskId);
     }
     
@@ -465,7 +463,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     String taskId = task.getId();
     taskService.complete(taskId, Collections.EMPTY_MAP);
 
-    if (processEngineConfiguration.getHistoryLevel()>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
       historyService.deleteHistoricTaskInstance(taskId);
     }
     
@@ -871,7 +869,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
   }
   
   private void checkHistoricVariableUpdateEntity(String variableName, String processInstanceId) {
-    if (processEngineConfiguration.getHistoryLevel() == ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
       boolean deletedVariableUpdateFound = false;
 
       List<HistoricDetail> resultSet = historyService.createHistoricDetailQuery().processInstanceId(processInstanceId).list();

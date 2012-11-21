@@ -35,7 +35,7 @@ public class JuelFormEngine implements FormEngine {
     if (startForm.getFormKey()==null) {
       return null;
     }
-    String formTemplateString = getFormTemplateString(startForm);
+    String formTemplateString = getFormTemplateString(startForm, startForm.getFormKey());
     ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
     return scriptingEngines.evaluate(formTemplateString, ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE, null);
   }
@@ -44,15 +44,14 @@ public class JuelFormEngine implements FormEngine {
     if (taskForm.getFormKey()==null) {
       return null;
     }
-    String formTemplateString = getFormTemplateString(taskForm);
+    String formTemplateString = getFormTemplateString(taskForm, taskForm.getFormKey());
     ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
     TaskEntity task = (TaskEntity) taskForm.getTask();
     return scriptingEngines.evaluate(formTemplateString, ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE, task.getExecution());
   }
 
-  protected String getFormTemplateString(FormData formInstance) {
+  protected String getFormTemplateString(FormData formInstance, String formKey) {
     String deploymentId = formInstance.getDeploymentId();
-    String formKey = formInstance.getFormKey();
     
     ResourceEntity resourceStream = Context
       .getCommandContext()

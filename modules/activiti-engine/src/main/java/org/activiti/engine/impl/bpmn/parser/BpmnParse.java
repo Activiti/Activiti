@@ -1738,14 +1738,14 @@ public class BpmnParse extends Parse {
       }
   
       if (ruleVariableInputString != null) {
-        String[] ruleVariableInputObjects = ruleVariableInputString.split(",");
+        List<String> ruleVariableInputObjects = parseCommaSeparatedList(ruleVariableInputString);
         for (String ruleVariableInputObject : ruleVariableInputObjects) {
           ruleActivity.addRuleVariableInputIdExpression(expressionManager.createExpression(ruleVariableInputObject.trim()));
         }
       }
   
       if (rulesString != null) {
-        String[] rules = rulesString.split(",");
+        List<String> rules = parseCommaSeparatedList(rulesString);
         for (String rule : rules) {
           ruleActivity.addRuleIdExpression(expressionManager.createExpression(rule.trim()));
         }
@@ -2983,9 +2983,10 @@ public class BpmnParse extends Parse {
         addError("Invalid source '" + sourceRef + "' of sequence flow '" + id + "'", sequenceFlowElement);
       } else if (destinationActivity == null) {
         addError("Invalid destination '" + destinationRef + "' of sequence flow '" + id + "'", sequenceFlowElement);
-      } else if(sourceActivity.getActivityBehavior() instanceof EventBasedGatewayActivityBehavior) {     
-        // ignore
-      } else if(destinationActivity.getActivityBehavior() instanceof IntermediateCatchEventActivitiBehaviour
+      /*} else if(sourceActivity.getActivityBehavior() instanceof EventBasedGatewayActivityBehavior) {     
+        // ignore*/
+      } else if(!(sourceActivity.getActivityBehavior() instanceof EventBasedGatewayActivityBehavior)
+              && destinationActivity.getActivityBehavior() instanceof IntermediateCatchEventActivitiBehaviour
               && (destinationActivity.getParentActivity() != null)
               && (destinationActivity.getParentActivity().getActivityBehavior() instanceof EventBasedGatewayActivityBehavior)) {
         addError("Invalid incoming sequenceflow for intermediateCatchEvent with id '"+destinationActivity.getId()+"' connected to an event-based gateway.", sequenceFlowElement);        

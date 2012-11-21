@@ -17,14 +17,9 @@ import java.io.Serializable;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricFormPropertyEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 
@@ -48,25 +43,14 @@ public class SubmitTaskFormCmd implements Command<Object>, Serializable {
       throw new ActivitiException("taskId is null");
     }
     
-    TaskEntity task = Context
-      .getCommandContext()
-      .getTaskManager()
-      .findTaskById(taskId);
+    TaskEntity task = commandContext.getTaskManager().findTaskById(taskId);
 
     if (task == null) {
       throw new ActivitiException("Cannot find task with id " + taskId);
     }
     
-    int historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
-    ExecutionEntity execution = task.getExecution();
-    if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT && execution != null) {
-      DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);
-      for (String propertyId: properties.keySet()) {
-        String propertyValue = properties.get(propertyId);
-        HistoricFormPropertyEntity historicFormProperty = new HistoricFormPropertyEntity(execution, propertyId, propertyValue, taskId);
-        dbSqlSession.insert(historicFormProperty);
-      }
-    }
+    commandContext.getHistoryManager()
+      .reportFormPropertiesSubmitted(task.getExecution(), properties, taskId);
     
     TaskFormHandler taskFormHandler = task.getTaskDefinition().getTaskFormHandler();
     taskFormHandler.submitFormProperties(properties, task.getExecution());

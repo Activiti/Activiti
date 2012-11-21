@@ -67,7 +67,8 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   protected Date dueDate;
   protected Date dueBefore;
   protected Date dueAfter;
-  
+  protected boolean excludeSubtasks = false;
+
   public TaskQueryImpl() {
   }
   
@@ -275,6 +276,29 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     variables.add(new TaskQueryVariableValue(variableName, variableValue, QueryOperator.EQUALS, true));
     return this;
   }
+  
+  public TaskQuery taskVariableValueEquals(Object variableValue) {
+    variables.add(new TaskQueryVariableValue(null, variableValue, QueryOperator.EQUALS, true));
+    return this;
+  }
+  
+  @Override
+  public TaskQuery taskVariableValueEqualsIgnoreCase(String name, String value) {
+    if(value == null) {
+      throw new ActivitiException("value is null");
+    }
+    variables.add(new TaskQueryVariableValue(name, value.toLowerCase(), QueryOperator.EQUALS_IGNORE_CASE, true));
+    return this;
+  }
+  
+  @Override
+  public TaskQuery taskVariableValueNotEqualsIgnoreCase(String name, String value) {
+    if(value == null) {
+      throw new ActivitiException("value is null");
+    }
+    variables.add(new TaskQueryVariableValue(name, value.toLowerCase(), QueryOperator.NOT_EQUALS_IGNORE_CASE, true));
+    return this;
+  }
 
   public TaskQuery taskVariableValueNotEquals(String variableName, Object variableValue) {
     variables.add(new TaskQueryVariableValue(variableName, variableValue, QueryOperator.NOT_EQUALS, true));
@@ -288,6 +312,29 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
 
   public TaskQuery processVariableValueNotEquals(String variableName, Object variableValue) {
     variables.add(new TaskQueryVariableValue(variableName, variableValue, QueryOperator.NOT_EQUALS, false));
+    return this;
+  }
+  
+  public TaskQuery processVariableValueEquals(Object variableValue) {
+    variables.add(new TaskQueryVariableValue(null, variableValue, QueryOperator.EQUALS, false));
+    return this;
+  }
+  
+  @Override
+  public TaskQuery processVariableValueEqualsIgnoreCase(String name, String value) {
+    if(value == null) {
+      throw new ActivitiException("value is null");
+    }
+    variables.add(new TaskQueryVariableValue(name, value.toLowerCase(), QueryOperator.EQUALS_IGNORE_CASE, false));
+    return this;
+  }
+  
+  @Override
+  public TaskQuery processVariableValueNotEqualsIgnoreCase(String name, String value) {
+    if(value == null) {
+      throw new ActivitiException("value is null");
+    }
+    variables.add(new TaskQueryVariableValue(name, value.toLowerCase(), QueryOperator.NOT_EQUALS_IGNORE_CASE, false));
     return this;
   }
 
@@ -320,7 +367,12 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     this.dueAfter = dueAfter;
     return this;
   }
-  
+
+  public TaskQuery excludeSubtasks() {
+    this.excludeSubtasks = true;
+    return this;
+  }
+
   public List<String> getCandidateGroups() {
     if (candidateGroup!=null) {
       return Collections.singletonList(candidateGroup);
@@ -483,9 +535,10 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   public String getProcessDefinitionName() {
     return processDefinitionName;
   }
-
-  
   public String getProcessInstanceBusinessKey() {
     return processInstanceBusinessKey;
+  }
+  public boolean getExcludeSubtasks() {
+    return excludeSubtasks;
   }
 }

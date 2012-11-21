@@ -75,6 +75,23 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
   ProcessInstanceQuery variableValueEquals(String name, Object value);
   
   /** 
+   * Only select process instances which have at least one global variable with the given value. The type
+   * of variable is determined based on the value, using types configured in 
+   * {@link ProcessEngineConfiguration#getVariableTypes()}. 
+   * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
+   * are not supported.
+   */
+  ProcessInstanceQuery variableValueEquals(Object value);
+  
+  /** 
+   * Only select process instances which have a local string variable with the given value, 
+   * case insensitive.
+   * @param name name of the variable, cannot be null.
+   * @param value value of the variable, cannot be null.
+   */
+  ProcessInstanceQuery variableValueEqualsIgnoreCase(String name, String value);
+  
+  /** 
    * Only select process instances which have a global variable with the given name, but
    * with a different value than the passed value.
    * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
@@ -83,6 +100,13 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
    */
   ProcessInstanceQuery variableValueNotEquals(String name, Object value);
   
+  /** 
+   * Only select process instances which have a local string variable which is not the given value, 
+   * case insensitive.
+   * @param name name of the variable, cannot be null.
+   * @param value value of the variable, cannot be null.
+   */
+  ProcessInstanceQuery variableValueNotEqualsIgnoreCase(String name, String value);
 
   /** 
    * Only select process instances which have a variable value greater than the passed value.

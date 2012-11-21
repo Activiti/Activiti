@@ -19,6 +19,8 @@ import java.util.List;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.engine.repository.DiagramLayout;
+import org.activiti.engine.repository.Model;
+import org.activiti.engine.repository.ModelQuery;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.task.IdentityLink;
@@ -153,6 +155,60 @@ public interface RepositoryService {
    * @throws ActivitiException when the process model or diagram doesn't exist.
    */
   DiagramLayout getProcessDiagramLayout(String processDefinitionId);
+  
+  /**
+   * Creates a new model. The model is transient and must be saved using 
+   * {@link #saveModel(Model)}.
+   */
+  public Model newModel();
+
+  /**
+   * Saves the model. If the model already existed, the model is updated
+   * otherwise a new model is created.
+   * @param model model to save, cannot be null.
+   */
+  public void saveModel(Model model);
+
+  /**
+   * @param modelId id of model to delete, cannot be null. When an id is passed
+   * for an unexisting model, this operation is ignored.
+   */
+  public void deleteModel(String modelId);
+  
+  /**
+   * Saves the model editor source for a model
+   * @param modelId id of model to delete, cannot be null. When an id is passed
+   * for an unexisting model, this operation is ignored.
+   */
+  public void addModelEditorSource(String modelId, byte[] bytes);
+  
+  /**
+   * Saves the model editor source extra for a model
+   * @param modelId id of model to delete, cannot be null. When an id is passed
+   * for an unexisting model, this operation is ignored.
+   */
+  public void addModelEditorSourceExtra(String modelId, byte[] bytes);
+  
+  /** Query models. */
+  public ModelQuery createModelQuery();
+  
+  /**
+   * Returns the {@link Model}
+   * @param modelId id of model
+   */
+  public Model getModel(String modelId);
+  
+  /**
+   * Returns the model editor source as a byte array
+   * @param modelId id of model
+   */
+  public byte[] getModelEditorSource(String modelId);
+  
+  /**
+   * Returns the model editor source extra as a byte array
+   * @param modelId id of model
+   */
+  public byte[] getModelEditorSourceExtra(String modelId);
   
   /**
    * Authorizes a candidate user for a process definition.

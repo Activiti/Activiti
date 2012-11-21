@@ -143,11 +143,11 @@ historyService.createHistoricTaskInstanceQuery()
 </section>
   <section id="historyConfig">
     <title>History configuration</title>
-	  <para>The history level can be configured programmatically, using the <literal>HISTORY_*</literal>constants defined on <literal>ProcessEngineConfiguration</literal>:</para>
+	  <para>The history level can be configured programmatically, using the enum org.activiti.engine.impl.history.HistoryLevel (or <literal>HISTORY_*</literal>constants defined on <literal>ProcessEngineConfiguration</literal> for versions prior to 5.11):</para>
       <programlisting>
 ProcessEngine processEngine = ProcessEngineConfiguration
   .createProcessEngineConfigurationFromResourceDefault()
-  <emphasis role="bold">.setHistory(ProcessEngineConfiguration.HISTORY_AUDIT)</emphasis>
+  <emphasis role="bold">.setHistory(HistoryLevel.AUDIT.getKey())</emphasis>
   .buildProcessEngine();
       </programlisting>
       
@@ -174,6 +174,9 @@ ProcessEngine processEngine = ProcessEngineConfiguration
 	    slowest.  This level stores all information as in the <literal>audit</literal> level 
 	    plus all other possible details, mostly this are process variable updates.</para></listitem>
 	  </itemizedlist>
+    
+     <para><emphasis role="bold">Prior to Activiti 5.11, the history level was stored in the database (table <literal>ACT_GE_PROPERTY</literal>, property with name <literal>historyLevel</literal>). Starting from 5.11, this value
+     is not used anymore and is ignored/deleted from the database. The history can now be changed between 2 boots of the engine, without an exception being thrown in case the level changed from the previous engine-boot.</emphasis></para>
   </section>
   
   <section id="historyFormAuditPurposes">

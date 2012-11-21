@@ -23,6 +23,7 @@ import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity;
 import org.activiti.engine.impl.test.AbstractActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
@@ -46,7 +47,7 @@ public class HistoricVariableInstanceTest extends AbstractActivitiTestCase {
     .setJdbcPassword("")
     .setDatabaseSchemaUpdate(ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_TRUE)
     .setJobExecutorActivate(false)
-    .setHistory(ProcessEngineConfiguration.HISTORY_FULL);
+    .setHistory(HistoryLevel.FULL.getKey());
     
     processEngine = processEngineConfiguration.buildProcessEngine();
   }

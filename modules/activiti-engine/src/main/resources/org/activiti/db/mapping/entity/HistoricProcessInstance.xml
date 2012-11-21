@@ -190,17 +190,27 @@
         and RES.SUPER_PROCESS_INSTANCE_ID_ = #{superProcessInstanceId}
       </if>
       <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
-        and A${index}.NAME_= #{queryVariableValue.name}
+        <if test="queryVariableValue.name != null">
+          <!-- Match-all variable-names when name is null -->
+          and A${index}.NAME_= #{queryVariableValue.name}
+        </if>
         <if test="!queryVariableValue.type.equals('null')">
         <!-- When operator is not-equals or type of value is null, type doesn't matter! -->
           and A${index}.VAR_TYPE_ = #{queryVariableValue.type}
         </if>
         <if test="queryVariableValue.textValue != null &amp;&amp; queryVariableValue.longValue == null &amp;&amp; queryVariableValue.doubleValue == null">
-        and A${index}.TEXT_
-        <choose>
-          <when test="queryVariableValue.operator.equals('LIKE')">LIKE</when>
-          <otherwise><include refid="executionVariableOperator" /></otherwise>
-        </choose>
+          <choose>
+            <when test="queryVariableValue.operator.equals('EQUALS_IGNORE_CASE') || queryVariableValue.operator.equals('NOT_EQUALS_IGNORE_CASE')">
+              and lower(A${index}.TEXT_)
+            </when>
+            <otherwise>
+              and A${index}.TEXT_
+            </otherwise>
+          </choose>
+          <choose>
+            <when test="queryVariableValue.operator.equals('LIKE')">LIKE</when>
+            <otherwise><include refid="executionVariableOperator" /></otherwise>
+          </choose>
           #{queryVariableValue.textValue}
         </if>
         <if test="queryVariableValue.textValue2 != null">
@@ -239,7 +249,9 @@
   <sql id="executionVariableOperator">
     <choose>
       <when test="queryVariableValue.operator.equals('EQUALS')">=</when>
+      <when test="queryVariableValue.operator.equals('EQUALS_IGNORE_CASE')">=</when>
       <when test="queryVariableValue.operator.equals('NOT_EQUALS')">&lt;&gt;</when>
+      <when test="queryVariableValue.operator.equals('NOT_EQUALS_IGNORE_CASE')">&lt;&gt;</when>
       <when test="queryVariableValue.operator.equals('GREATER_THAN')">&gt;</when>
       <when test="queryVariableValue.operator.equals('GREATER_THAN_OR_EQUAL')">&gt;=</when>
       <when test="queryVariableValue.operator.equals('LESS_THAN')">&lt;</when>

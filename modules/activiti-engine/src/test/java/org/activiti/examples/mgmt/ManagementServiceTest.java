@@ -32,7 +32,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     
     String tablePrefix = processEngineConfiguration.getDatabaseTablePrefix();
     
-    assertEquals(new Long(4), tableCount.get(tablePrefix+"ACT_GE_PROPERTY"));
+    assertEquals(new Long(3), tableCount.get(tablePrefix+"ACT_GE_PROPERTY"));
     assertEquals(new Long(0), tableCount.get(tablePrefix+"ACT_GE_BYTEARRAY"));
     assertEquals(new Long(0), tableCount.get(tablePrefix+"ACT_RE_DEPLOYMENT"));
     assertEquals(new Long(0), tableCount.get(tablePrefix+"ACT_RU_EXECUTION"));

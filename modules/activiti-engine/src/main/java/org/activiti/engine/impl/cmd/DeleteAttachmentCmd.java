@@ -15,14 +15,9 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 
-import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
-import org.activiti.engine.impl.persistence.entity.CommentEntity;
-import org.activiti.engine.impl.persistence.entity.CommentManager;
-import org.activiti.engine.impl.util.ClockUtil;
-import org.activiti.engine.task.Event;
 
 
 /**
@@ -54,18 +49,8 @@ public class DeleteAttachmentCmd implements Command<Object>, Serializable {
     }
     
     if (attachment.getTaskId()!=null) {
-      CommentManager commentManager = commandContext.getCommentManager();
-      if (commentManager.isHistoryEnabled()) {
-        String authenticatedUserId = Authentication.getAuthenticatedUserId();
-        CommentEntity comment = new CommentEntity();
-        comment.setUserId(authenticatedUserId);
-        comment.setType(CommentEntity.TYPE_EVENT);
-        comment.setTime(ClockUtil.getCurrentTime());
-        comment.setAction(Event.ACTION_DELETE_ATTACHMENT);
-        comment.setMessage(attachment.getName());
-        comment.setTaskId(attachment.getTaskId());
-        commentManager.insert(comment);
-      }
+      commandContext.getHistoryManager()
+        .createAttachmentComment(attachment.getTaskId(), attachment.getProcessInstanceId(), attachment.getName(), false);
     }
 
     return null;

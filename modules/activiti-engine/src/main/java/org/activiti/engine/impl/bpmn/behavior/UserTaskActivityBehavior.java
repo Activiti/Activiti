@@ -20,6 +20,7 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
@@ -58,11 +59,14 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     if(taskDefinition.getDueDateExpression() != null) {
       Object dueDate = taskDefinition.getDueDateExpression().getValue(execution);
       if(dueDate != null) {
-        if(!(dueDate instanceof Date)) {
-          throw new ActivitiException("Due date expression does not resolve to a Date: " + 
-                  taskDefinition.getDueDateExpression().getExpressionText());
+        if (dueDate instanceof Date) {
+          task.setDueDate((Date) dueDate);
+        } else if (dueDate instanceof String) {
+          task.setDueDate(new DueDateBusinessCalendar().resolveDuedate((String) dueDate)); 
+        } else {
+          throw new ActivitiException("Due date expression does not resolve to a Date or Date string: " + 
+              taskDefinition.getDueDateExpression().getExpressionText());
         }
-        task.setDueDate((Date) dueDate);
       }
     }
 

@@ -15,8 +15,8 @@ package org.activiti.engine.test.bpmn.subprocess.transaction;
 
 import java.util.List;
 
-import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
@@ -109,7 +109,7 @@ public class TransactionSubProcessTest extends PluggableActivitiTestCase {
     assertEquals(1, runtimeService.getVariable(processInstance.getId(), "undoChargeCard"));
     
     // if we have history, we check that the invocation of the compensation handlers is recorded in history.
-    if(!processEngineConfiguration.getHistory().equals(ProcessEngineConfiguration.HISTORY_NONE)) {
+    if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       assertEquals(1, historyService.createHistoricActivityInstanceQuery()
               .activityId("undoBookFlight")
               .count());
@@ -160,7 +160,7 @@ public class TransactionSubProcessTest extends PluggableActivitiTestCase {
     assertEquals(1, runtimeService.getVariable(processInstance.getId(), "undoBookFlight"));
     
     // if we have history, we check that the invocation of the compensation handlers is recorded in history.
-    if(!processEngineConfiguration.getHistory().equals(ProcessEngineConfiguration.HISTORY_NONE)) {
+    if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       assertEquals(1, historyService.createHistoricActivityInstanceQuery()
               .activityId("undoBookFlight")
               .count());
@@ -213,7 +213,7 @@ public class TransactionSubProcessTest extends PluggableActivitiTestCase {
     assertEquals(1, runtimeService.getVariable(processInstance.getId(), "innerTxundoBookFlight"));
     
     // if we have history, we check that the invocation of the compensation handlers is recorded in history.
-    if(!processEngineConfiguration.getHistory().equals(ProcessEngineConfiguration.HISTORY_NONE)) {
+    if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       assertEquals(5, historyService.createHistoricActivityInstanceQuery()
               .activityId("innerTxundoBookHotel")
               .count());

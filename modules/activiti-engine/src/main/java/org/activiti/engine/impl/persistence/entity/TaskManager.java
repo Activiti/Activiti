@@ -30,7 +30,7 @@ import org.activiti.engine.task.Task;
  */
 public class TaskManager extends AbstractManager {
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public void deleteTasksByProcessInstanceId(String processInstanceId, String deleteReason, boolean cascade) {
     List<TaskEntity> tasks = (List) getDbSqlSession()
       .createTaskQuery()
@@ -70,8 +70,8 @@ public class TaskManager extends AbstractManager {
           .deleteHistoricTaskInstanceById(taskId);
       } else {
         commandContext
-          .getHistoricTaskInstanceManager()
-          .markTaskInstanceEnded(taskId, deleteReason);
+          .getHistoryManager()
+          .recordTaskEnd(taskId, deleteReason);
       }
         
       getDbSqlSession().delete(task);
@@ -91,7 +91,6 @@ public class TaskManager extends AbstractManager {
     return getDbSqlSession().selectList("selectTasksByExecutionId", executionId);
   }
   
-  @SuppressWarnings("unchecked")
   @Deprecated
   public List<Task> findTasksByQueryCriteria(TaskQueryImpl taskQuery, Page page) {
     taskQuery.setFirstResult(page.getFirstResult());

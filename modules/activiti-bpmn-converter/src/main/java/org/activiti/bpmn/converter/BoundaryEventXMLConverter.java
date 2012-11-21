@@ -17,6 +17,8 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.bpmn.model.ErrorEventDefinition;
+import org.activiti.bpmn.model.EventDefinition;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -50,6 +52,15 @@ public class BoundaryEventXMLConverter extends BaseBpmnXMLConverter {
     boundaryEvent.setAttachedToRefId(xtr.getAttributeValue(null, ATTRIBUTE_BOUNDARY_ATTACHEDTOREF));
     parseChildElements(getXMLElementName(), boundaryEvent, xtr);
     
+    // Explicitly set cancel activity to false for error boundary events
+    if (boundaryEvent.getEventDefinitions().size() == 1) {
+      EventDefinition eventDef = boundaryEvent.getEventDefinitions().get(0); 
+      
+      if (eventDef instanceof ErrorEventDefinition) {
+        boundaryEvent.setCancelActivity(false);
+      }
+    }
+    
     return boundaryEvent;
   }
 
@@ -59,7 +70,14 @@ public class BoundaryEventXMLConverter extends BaseBpmnXMLConverter {
     if (boundaryEvent.getAttachedToRef() != null) {
       writeDefaultAttribute(ATTRIBUTE_BOUNDARY_ATTACHEDTOREF, boundaryEvent.getAttachedToRef().getId(), xtw);
     }
-    writeDefaultAttribute(ATTRIBUTE_BOUNDARY_CANCELACTIVITY, String.valueOf(boundaryEvent.isCancelActivity()).toLowerCase(), xtw);
+    
+    if (boundaryEvent.getEventDefinitions().size() == 1) {
+      EventDefinition eventDef = boundaryEvent.getEventDefinitions().get(0); 
+      
+      if (eventDef instanceof ErrorEventDefinition == false) {
+        writeDefaultAttribute(ATTRIBUTE_BOUNDARY_CANCELACTIVITY, String.valueOf(boundaryEvent.isCancelActivity()).toLowerCase(), xtw);
+      }
+    }
   }
 
   @Override

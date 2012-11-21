@@ -71,7 +71,11 @@ public class GetFormKeyCmd implements Command<String> {
       // TODO: Maybe add getFormKey() to FormHandler interface to avoid the following cast
       formHandler = (DefaultFormHandler) taskDefinition.getTaskFormHandler();
     }
-    return formHandler.getFormKey();
+    String formKey = null;
+    if (formHandler.getFormKey() != null) {
+      formKey = formHandler.getFormKey().getExpressionText();
+    }
+    return formKey;
   }
 
 }

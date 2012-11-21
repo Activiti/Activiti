@@ -14,9 +14,8 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import org.activiti.engine.history.HistoricFormProperty;
-import org.activiti.engine.impl.history.handler.ActivityInstanceEndHandler;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.util.ClockUtil;
-
 
 /**
  * @author Tom Baeyens
@@ -43,7 +42,7 @@ public class HistoricFormPropertyEntity extends HistoricDetailEntity implements 
     this.propertyValue = propertyValue;
     this.time = ClockUtil.getCurrentTime();
 
-    HistoricActivityInstanceEntity historicActivityInstance = ActivityInstanceEndHandler.findActivityInstance(execution);
+    HistoricActivityInstanceEntity historicActivityInstance = Context.getCommandContext().getHistoryManager().findActivityInstance(execution);
     if (historicActivityInstance!=null) {
       this.activityInstanceId = historicActivityInstance.getId();
     }

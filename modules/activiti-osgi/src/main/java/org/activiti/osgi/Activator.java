@@ -79,6 +79,7 @@ public class Activator implements BundleActivator {
         return props;
     }
 
+    @SuppressWarnings({ "rawtypes" })
     private static class Service implements Runnable {
 
         private final ServiceRegistration registration;

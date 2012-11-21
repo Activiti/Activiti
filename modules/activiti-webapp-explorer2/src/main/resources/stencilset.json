@@ -381,6 +381,53 @@
       "popular" : true
     } ]
   }, {
+    "name" : "ruletaskbase",
+    "properties" : [ {
+      "id" : "ruletask_class",
+      "type" : "String",
+      "title" : "Class",
+      "value" : "",
+      "description" : "Class of the rule task.",
+      "popular" : true
+    }, {
+      "id" : "ruletask_variables_input",
+      "type" : "String",
+      "title" : "Input variables",
+      "value" : "",
+      "description" : "Input variables of the rule task.",
+      "popular" : true
+    }, {
+      "id" : "ruletask_result",
+      "type" : "String",
+      "title" : "Result variable",
+      "value" : "",
+      "description" : "Result variable of the rule task.",
+      "popular" : true
+    }, {
+      "id" : "ruletask_rules",
+      "type" : "String",
+      "title" : "Rules",
+      "value" : "",
+      "description" : "Rules of the rule task.",
+      "popular" : true
+    }, {
+      "id" : "ruletask_exclude",
+      "type" : "Choice",
+      "title" : "Exclude",
+      "value" : "No",
+      "description" : "Use the rules property as exclusion.",
+      "popular" : true,
+      "items" : [ {
+        "id" : "no",
+        "title" : "No",
+        "value" : "No"
+      }, {
+        "id" : "yes",
+        "title" : "Yes",
+        "value" : "Yes"
+      } ]
+    } ]
+  }, {
     "name" : "callactivitybase",
     "properties" : [ {
       "id" : "callactivitycalledelement",
@@ -693,15 +740,15 @@
       "popular" : true,
       "items" : [ {
         "id" : "1",
-        "title" : "Form 1",
+        "title" : "form 1",
         "value" : "1"
       }, {
         "id" : "2",
-        "title" : "Form 2",
+        "title" : "form 2",
         "value" : "2"
       }, {
         "id" : "3",
-        "title" : "Form 3",
+        "title" : "form 3",
         "value" : "3"
       } ]
     } ]
@@ -899,7 +946,7 @@
     "view" : "activity/businessruletask.svg",
     "icon" : "activity/list/type.business.rule.png",
     "groups" : [ "Activities" ],
-    "propertyPackages" : [ "elementbase", "baseattributes", "asynchronousbase", "executionlistenersbase", "loopcharacteristics", "activity" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "ruletaskbase", "asynchronousbase", "executionlistenersbase", "loopcharacteristics", "activity" ],
     "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
   }, {
     "type" : "node",
