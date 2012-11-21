@@ -117,6 +117,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     DI_CIRCLES.add(STENCIL_EVENT_THROW_SIGNAL);
     
     DI_CIRCLES.add(STENCIL_EVENT_END_NONE);
+    DI_CIRCLES.add(STENCIL_EVENT_END_ERROR);
     
     DI_RECTANGLES.add(STENCIL_CALL_ACTIVITY);
     DI_RECTANGLES.add(STENCIL_SUB_PROCESS);
