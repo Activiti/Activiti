@@ -24,11 +24,12 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiOptimisticLockingException;
@@ -74,6 +75,8 @@ import org.apache.ibatis.session.SqlSession;
 public class DbSqlSession implements Session {
   
   private static Logger log = Logger.getLogger(DbSqlSession.class.getName());
+  
+  private static final Pattern CLEAN_VERSION_REGEX = Pattern.compile("\\d\\.\\d*");
 
   protected SqlSession sqlSession;
   protected DbSqlSessionFactory dbSqlSessionFactory;
@@ -884,6 +887,38 @@ public class DbSqlSession implements Session {
       
     } catch (Exception e) {
       throw new ActivitiException("couldn't check if tables are already present using metadata: "+e.getMessage(), e); 
+    }
+  }
+  
+  protected boolean isUpgradeNeeded(String versionInDatabase) {
+    if(ProcessEngine.VERSION.equals(versionInDatabase)) {
+      return false;
+    }
+    Double cleanDbVersion = getCleanVersion(versionInDatabase);
+    Double cleanEngineVersion = getCleanVersion(ProcessEngine.VERSION);
+      
+    if(cleanDbVersion.compareTo(cleanEngineVersion) > 0) {
+      throw new ActivitiException("Version of activiti database (" + versionInDatabase + ") is more recent than the engine (" + ProcessEngine.VERSION +")");
+    } else if(cleanDbVersion.compareTo(cleanEngineVersion) == 0) {
+      // Versions don't match exactly, possibly snapshot is being used
+      log.warning("Engine-version is the same, but not an exact match: " + versionInDatabase + " vs. " + ProcessEngine.VERSION 
+              + ". Not performing database-upgrade.");
+      return false;
+    }
+    return true;
+  }
+
+  protected Double getCleanVersion(String versionString) {
+    Matcher matcher = CLEAN_VERSION_REGEX.matcher(versionString);
+    if(!matcher.find()) {
+      throw new ActivitiException("Illegal format for version: " + versionString);
+    }
+    
+    String cleanString = matcher.group();
+    try {
+      return Double.parseDouble(cleanString);
+    } catch(NumberFormatException nfe) {
+      throw new ActivitiException("Illegal format for version: " + versionString);
     }
   }
 
