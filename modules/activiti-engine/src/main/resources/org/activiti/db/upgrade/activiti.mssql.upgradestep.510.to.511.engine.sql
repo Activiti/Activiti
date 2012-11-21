@@ -1,20 +1,16 @@
-drop constraint ACT_UNIQ_PROCDEF;
+alter table ACT_RE_PROCDEF drop constraint ACT_UNIQ_PROCDEF;
 
-alter table ACT_RE_PROCDEF
-    alter column KEY_ nvarchar(255) not null;
+alter table ACT_RE_PROCDEF alter column KEY_ nvarchar(255) not null;
+
+alter table ACT_RE_PROCDEF alter column VERSION_ int not null;
 
 alter table ACT_RE_PROCDEF
     add constraint ACT_UNIQ_PROCDEF
     unique (KEY_,VERSION_);
 
-alter table ACT_RE_PROCDEF
-    alter column VERSION_ int not null;
+alter table ACT_RE_DEPLOYMENT add CATEGORY_ nvarchar(255);
     
-alter table ACT_RE_DEPLOYMENT 
-    add CATEGORY_ nvarchar(255);
-    
-alter table ACT_RE_PROCDEF
-    add DESCRIPTION_ nvarchar(4000);
+alter table ACT_RE_PROCDEF add DESCRIPTION_ nvarchar(4000);
 
 alter table ACT_RU_EXECUTION
     add constraint ACT_FK_EXE_PROCDEF 
