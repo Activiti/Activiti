@@ -1,6 +1,8 @@
 create table ACT_HI_VARINST (
     ID_ nvarchar(64) not null,
-    PROC_INST_ID_ nvarchar(64) not null,
+    PROC_INST_ID_ nvarchar(64),
+    EXECUTION_ID_ nvarchar(64),
+    TASK_ID_ nvarchar(64),
     NAME_ nvarchar(255) not null,
     VAR_TYPE_ nvarchar(100),
     REV_ int,
