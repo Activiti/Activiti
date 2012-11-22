@@ -15,6 +15,9 @@ package org.activiti.explorer.ui.management.job;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.impl.jobexecutor.TimerActivateProcessDefinitionHandler;
+import org.activiti.engine.impl.jobexecutor.TimerSuspendProcessDefinitionHandler;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.runtime.Job;
@@ -94,31 +97,31 @@ public class JobDetailPanel extends DetailPanel {
   }
 
   protected void addHeader() {
-    GridLayout taskDetails = new GridLayout(3, 2);
-    taskDetails.setWidth(100, UNITS_PERCENTAGE);
-    taskDetails.addStyleName(ExplorerLayout.STYLE_TITLE_BLOCK);
-    taskDetails.setSpacing(true);
-    taskDetails.setMargin(false, false, true, false);
+    GridLayout jobDetails = new GridLayout(3, 2);
+    jobDetails.setWidth(100, UNITS_PERCENTAGE);
+    jobDetails.addStyleName(ExplorerLayout.STYLE_TITLE_BLOCK);
+    jobDetails.setSpacing(true);
+    jobDetails.setMargin(false, false, true, false);
     
     // Add image
     Embedded image = new Embedded(null, Images.JOB_50);
-    taskDetails.addComponent(image, 0, 0, 0, 1);
+    jobDetails.addComponent(image, 0, 0, 0, 1);
     
     // Add job name
     Label nameLabel = new Label(getJobLabel(job));
     nameLabel.addStyleName(Reindeer.LABEL_H2);
-    taskDetails.addComponent(nameLabel, 1, 0, 2, 0);
+    jobDetails.addComponent(nameLabel, 1, 0, 2, 0);
     
     // Add due date
     PrettyTimeLabel dueDateLabel = new PrettyTimeLabel(i18nManager.getMessage(Messages.JOB_DUEDATE),
       job.getDuedate(), i18nManager.getMessage(Messages.JOB_NO_DUEDATE), false);
     dueDateLabel.addStyleName(ExplorerLayout.STYLE_JOB_HEADER_DUE_DATE);
-    taskDetails.addComponent(dueDateLabel, 1, 1);
+    jobDetails.addComponent(dueDateLabel, 1, 1);
     
-    taskDetails.setColumnExpandRatio(1, 1.0f);
-    taskDetails.setColumnExpandRatio(2, 1.0f);
+    jobDetails.setColumnExpandRatio(1, 1.0f);
+    jobDetails.setColumnExpandRatio(2, 1.0f);
     
-    addDetailComponent(taskDetails);
+    addDetailComponent(jobDetails);
   }
   
   protected String getJobLabel(Job theJob) {
@@ -177,10 +180,34 @@ public class JobDetailPanel extends DetailPanel {
       layout.addComponent(stackPanel);
       layout.setExpandRatio(stackPanel, 1.0f);
     } else {
-      Label noException = new Label(i18nManager.getMessage(Messages.JOB_NOT_EXECUTED));
-      layout.addComponent(noException);
-      layout.setExpandRatio(noException, 1.0f);
+      
+      if (job.getProcessDefinitionId() != null) {
+        
+        // This is a hack .. need to cleanify this in the engine
+        JobEntity jobEntity = (JobEntity) job;
+        
+        if (jobEntity.getJobHandlerType().equals(TimerSuspendProcessDefinitionHandler.TYPE)) {
+          Label processDefinitionLabel = new Label(i18nManager.getMessage(Messages.JOB_SUSPEND_PROCESSDEFINITION, job.getProcessDefinitionId()));
+          layout.addComponent(processDefinitionLabel);
+        } else if (jobEntity.getJobHandlerType().equals(TimerActivateProcessDefinitionHandler.TYPE)) {
+          Label processDefinitionLabel = new Label(i18nManager.getMessage(Messages.JOB_ACTIVATE_PROCESSDEFINITION, job.getProcessDefinitionId()));
+          layout.addComponent(processDefinitionLabel);
+        } else {
+          addNotYetExecutedLabel(layout);
+        }
+        
+      } else {
+      
+        addNotYetExecutedLabel(layout);
+        
+      }
     }
+  }
+
+  private void addNotYetExecutedLabel(VerticalLayout layout) {
+    Label noException = new Label(i18nManager.getMessage(Messages.JOB_NOT_EXECUTED));
+    layout.addComponent(noException);
+    layout.setExpandRatio(noException, 1.0f);
   }
   
   protected String getRetriesLabel(Job theJob) {

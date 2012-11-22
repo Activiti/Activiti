@@ -72,7 +72,6 @@ public interface ExplorerLayout {
   static final String STYLE_ADD = "add";
   static final String STYLE_NO_LINE = "no-line";
   
-  
   static final String STYLE_APPLICATION_LOGO = "logo";
   static final String STYLE_WORKFLOW_CONSOLE_LOGO = "workflow-console-logo";
   static final String STYLE_MAIN_MENU_BUTTON = "main-menu-button";
@@ -129,6 +128,10 @@ public interface ExplorerLayout {
   static final String STYLE_JOB_EXCEPTION_MESSAGE = "job-exception-message";
   static final String STYLE_JOB_EXCEPTION_TRACE = "job-exception-trace";
   static final String STYLE_JOB_HEADER_DUE_DATE = "job-duedate";
+  
+  // Process definitions page
+  
+  static final String STYLE_PROCESS_DEFINITION_SUSPEND_CHOICE = "process-definition-suspend-choice";
 
   // Related content
   static final String STYLE_RELATED_CONTENT_LIST = "related-content-list";

@@ -13,6 +13,7 @@
 package org.activiti.explorer.ui.process;
 
 import org.activiti.engine.FormService;
+import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
@@ -53,6 +54,7 @@ public abstract class AbstractProcessDefinitionDetailPanel extends DetailPanel {
   
   // Services
   protected RepositoryService repositoryService;
+  protected ManagementService managementService;
   protected FormService formService; 
   protected I18nManager i18nManager;
   
@@ -67,6 +69,7 @@ public abstract class AbstractProcessDefinitionDetailPanel extends DetailPanel {
   
   public AbstractProcessDefinitionDetailPanel(String processDefinitionId, AbstractPage parentPage) {
     this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+    this.managementService = ProcessEngines.getDefaultProcessEngine().getManagementService();
     this.formService = ProcessEngines.getDefaultProcessEngine().getFormService();
     this.i18nManager = ExplorerApp.get().getI18nManager();
     

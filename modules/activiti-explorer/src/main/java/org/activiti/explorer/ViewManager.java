@@ -95,7 +95,7 @@ public interface ViewManager {
   
   void showSuspendedProcessDefinitionsPage();
   
-  void showSuspendedProcessDefinitionsPage(String processDefinitionsId);
+  void showSuspendedProcessDefinitionsPage(String processDefinitionId);
   
   void showJobPage();
   

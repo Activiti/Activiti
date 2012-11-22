@@ -21,6 +21,7 @@ import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.AbstractPage;
 import org.activiti.explorer.ui.custom.PopupWindow;
+import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -52,12 +53,13 @@ public class ChangeProcessSuspensionStatePopupWindow extends PopupWindow {
   protected DateField dateField;
   protected CheckBox includeProcessInstancesCheckBox;
 
-  public ChangeProcessSuspensionStatePopupWindow(String processDefinitionId, AbstractPage parentPage) {
+  public ChangeProcessSuspensionStatePopupWindow(String processDefinitionId, AbstractPage parentPage, boolean suspend) {
     this.processDefinitionId = processDefinitionId;
     this.parentPage = parentPage;
     this.i18nManager = ExplorerApp.get().getI18nManager();
     
-    setCaption(i18nManager.getMessage(Messages.PROCESS_SUSPEND_POPUP));
+    setCaption(suspend ? i18nManager.getMessage(Messages.PROCESS_SUSPEND_POPUP) :
+                         i18nManager.getMessage(Messages.PROCESS_ACTIVATE_POPUP));
     setModal(true);
     center();
     setResizable(false);
@@ -67,17 +69,19 @@ public class ChangeProcessSuspensionStatePopupWindow extends PopupWindow {
     
     verticalLayout = new VerticalLayout();
     addComponent(verticalLayout);
-    
-    addTimeSection();
-    addIncludeProcessInstancesSection();
-    addOkButton();
+    addTimeSection(suspend);
+    addIncludeProcessInstancesSection(suspend);
+    addOkButton(suspend);
   }
   
-  protected void addTimeSection() {
-    Label timeLabel = new Label(i18nManager.getMessage(Messages.PROCESS_SUSPEND_POPUP_TIME_DESCRIPTION));
+  protected void addTimeSection(boolean suspend) {
+    Label timeLabel = new Label(suspend ? i18nManager.getMessage(Messages.PROCESS_SUSPEND_POPUP_TIME_DESCRIPTION)
+            : i18nManager.getMessage(Messages.PROCESS_ACTIVATE_POPUP_TIME_DESCRIPTION));
     verticalLayout.addComponent(timeLabel);
+    verticalLayout.addComponent(new Label("&nbsp", Label.CONTENT_XHTML));
     
     nowCheckBox = new CheckBox(i18nManager.getMessage(Messages.PROCESS_SUSPEND_POPUP_TIME_NOW), true);
+    nowCheckBox.addStyleName(ExplorerLayout.STYLE_PROCESS_DEFINITION_SUSPEND_CHOICE);
     nowCheckBox.setImmediate(true);
     nowCheckBox.addListener(new ClickListener() {
       public void buttonClick(ClickEvent event) {
@@ -96,6 +100,7 @@ public class ChangeProcessSuspensionStatePopupWindow extends PopupWindow {
     verticalLayout.addComponent(dateLayout);
     
     dateCheckBox = new CheckBox(i18nManager.getMessage(Messages.PROCESS_SUSPEND_POPUP_TIME_DATE));
+    dateCheckBox.addStyleName(ExplorerLayout.STYLE_PROCESS_DEFINITION_SUSPEND_CHOICE);
     dateCheckBox.setImmediate(true);
     dateCheckBox.addListener(new ClickListener() {
       public void buttonClick(ClickEvent event) {
@@ -125,20 +130,21 @@ public class ChangeProcessSuspensionStatePopupWindow extends PopupWindow {
     dateLayout.addComponent(dateField);
   }
   
-  protected void addIncludeProcessInstancesSection() {
+  protected void addIncludeProcessInstancesSection(boolean suspend) {
+    verticalLayout.addComponent(new Label("&nbsp", Label.CONTENT_XHTML));
     verticalLayout.addComponent(new Label("&nbsp", Label.CONTENT_XHTML));
     
-    includeProcessInstancesCheckBox = new CheckBox(i18nManager.getMessage(
-            Messages.PROCESS_SUSPEND_POPUP_INCLUDE_PROCESS_INSTANCES_DESCRIPTION));
+    includeProcessInstancesCheckBox = new CheckBox(suspend ?
+            i18nManager.getMessage(Messages.PROCESS_SUSPEND_POPUP_INCLUDE_PROCESS_INSTANCES_DESCRIPTION) :
+            i18nManager.getMessage(Messages.PROCESS_ACTIVATE_POPUP_INCLUDE_PROCESS_INSTANCES_DESCRIPTION));
     verticalLayout.addComponent(includeProcessInstancesCheckBox);
   }
   
-  protected void addOkButton() {
+  protected void addOkButton(final boolean suspend) {
+    verticalLayout.addComponent(new Label("&nbsp", Label.CONTENT_XHTML));
     verticalLayout.addComponent(new Label("&nbsp", Label.CONTENT_XHTML));
     
     Button okButton = new Button(i18nManager.getMessage(Messages.BUTTON_OK));
-    okButton.setWidth("110px");
-    okButton.setHeight("80px");
     verticalLayout.addComponent(okButton);
     verticalLayout.setComponentAlignment(okButton, Alignment.BOTTOM_CENTER);
     
@@ -148,8 +154,15 @@ public class ChangeProcessSuspensionStatePopupWindow extends PopupWindow {
 
       public void buttonClick(ClickEvent event) {
         RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
-        repositoryService.suspendProcessDefinitionById(processDefinitionId, 
-                (Boolean) includeProcessInstancesCheckBox.getValue(), (Date) dateField.getValue());
+        boolean includeProcessInstances = (Boolean) includeProcessInstancesCheckBox.getValue();
+                
+        if (suspend) {
+          repositoryService.suspendProcessDefinitionById(processDefinitionId, 
+                includeProcessInstances, (Date) dateField.getValue());
+        } else {
+          repositoryService.activateProcessDefinitionById(processDefinitionId, 
+                  includeProcessInstances, (Date) dateField.getValue());
+        }
         
         close();
         parentPage.refreshSelectNext(); // select next item in list on the left

@@ -915,6 +915,14 @@ div.searchbox {
 .v-table-related-content-create-list .v-table-row-odd.v-selected {
 	background: #DFF5FF;
 }
+
+/**********************
+* Process definitions *
+***********************/
+
+.process-definition-suspend-choice {
+    margin: 5px 5px 5px 10px;
+}
  
 /**********************
 * Custom Scrollbar CSS

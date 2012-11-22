@@ -27,21 +27,21 @@ import com.vaadin.data.Item;
 /**
  * @author Joram Barrez
  */
-public class ActiveProcessDefinitionListQuery extends AbstractLazyLoadingQuery {
+public class SuspendedProcessDefinitionListQuery extends AbstractLazyLoadingQuery {
   
   protected RepositoryService repositoryService;
   
-  public ActiveProcessDefinitionListQuery() {
+  public SuspendedProcessDefinitionListQuery() {
     this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
   }
 
   public int size() {
-    return (int) repositoryService.createProcessDefinitionQuery().active().count();
+    return (int) repositoryService.createProcessDefinitionQuery().suspended().count();
   }
 
   public List<Item> loadItems(int start, int count) {
     List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery()
-            .active()
+            .suspended()
             .orderByProcessDefinitionName().asc()
             .orderByProcessDefinitionVersion().asc()
             .listPage(start, count);

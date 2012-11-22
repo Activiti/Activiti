@@ -28,6 +28,7 @@ public interface Messages {
   static final String BUTTON_OK = "button.ok";
   static final String BUTTON_CREATE = "button.create";
   static final String BUTTON_CANCEL = "button.cancel";
+  static final String UNCAUGHT_EXCEPTION = "uncaught.exception";
   
   // Navigation
   static final String NAVIGATION_ERROR_NOT_INVOLVED_TITLE = "navigation.error.not.involved.title";
@@ -193,6 +194,9 @@ public interface Messages {
   static final String PROCESS_DEPLOY_TIME = "process.deploy.time";
   static final String PROCESS_HEADER_DIAGRAM = "process.header.diagram";
   static final String PROCESS_NO_DIAGRAM = "process.no.diagram";
+  static final String PROCESS_HEADER_SUSPENSION_STATE = "process.header.suspension.state";
+  static final String PROCESS_SCHEDULED_SUSPEND = "process.scheduled.suspend";
+  static final String PROCESS_SCHEDULED_ACTIVATE = "process.scheduled.activate";
   static final String PROCESS_START = "process.start";
   static final String PROCESS_EDIT = "process.edit";
   static final String PROCESS_COPY = "process.copy";
@@ -201,6 +205,8 @@ public interface Messages {
   static final String PROCESS_DEPLOY = "process.deploy";
   static final String PROCESS_ACTIVATE = "process.activate";
   static final String PROCESS_ACTIVATE_POPUP = "process.activate.popup";
+  static final String PROCESS_ACTIVATE_POPUP_TIME_DESCRIPTION = "process.activate.popup.time.description";
+  static final String PROCESS_ACTIVATE_POPUP_INCLUDE_PROCESS_INSTANCES_DESCRIPTION = "process.activate.popup.process.instances.description";
   static final String PROCESS_SUSPEND = "process.suspend";
   static final String PROCESS_SUSPEND_POPUP = "process.suspend.popup";
   static final String PROCESS_SUSPEND_POPUP_TIME_DESCRIPTION = "process.suspend.popup.time.description";
@@ -264,6 +270,8 @@ public interface Messages {
   static final String JOB_NO_DUEDATE = "job.no.dudedate";
   static final String JOB_ERROR = "job.error";
   static final String JOB_NOT_EXECUTED = "job.not.executed";
+  static final String JOB_SUSPEND_PROCESSDEFINITION = "job.suspend.processdefinition";
+  static final String JOB_ACTIVATE_PROCESSDEFINITION = "job.activate.processdefinition";
   
   // Deployment page
   static final String DEPLOYMENT_DELETE = "deployment.delete";

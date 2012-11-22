@@ -16,7 +16,6 @@ import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.AbstractPage;
 import org.activiti.explorer.ui.process.AbstractProcessDefinitionDetailPanel;
-import org.activiti.explorer.ui.process.ProcessDefinitionPage;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -25,25 +24,25 @@ import com.vaadin.ui.Button.ClickListener;
 /**
  * @author Joram Barrez
  */
-public class ActiveProcessDefinitionDetailPanel extends AbstractProcessDefinitionDetailPanel {
+public class SuspendedProcessDefinitionDetailPanel extends AbstractProcessDefinitionDetailPanel {
 
   private static final long serialVersionUID = 1L;
 
-  public ActiveProcessDefinitionDetailPanel(String processDefinitionId,  ActiveProcessDefinitionPage activeProcessDefinitionPage) {
-    super(processDefinitionId, activeProcessDefinitionPage);
+  public SuspendedProcessDefinitionDetailPanel(String processDefinitionId,  SuspendedProcessDefinitionPage suspendedProcessDefinitionPage) {
+    super(processDefinitionId, suspendedProcessDefinitionPage);
   }
   
   protected void initActions(final AbstractPage parentPage) {
-    ActiveProcessDefinitionPage processDefinitionPage = (ActiveProcessDefinitionPage) parentPage;
+    SuspendedProcessDefinitionPage processDefinitionPage = (SuspendedProcessDefinitionPage) parentPage;
 
-    Button suspendButton = new Button(i18nManager.getMessage(Messages.PROCESS_SUSPEND));
-    suspendButton.addListener(new ClickListener() {
+    Button activateButton = new Button(i18nManager.getMessage(Messages.PROCESS_ACTIVATE));
+    activateButton.addListener(new ClickListener() {
       
       private static final long serialVersionUID = 1L;
 
       public void buttonClick(ClickEvent event) {
         ChangeProcessSuspensionStatePopupWindow popupWindow = 
-                new ChangeProcessSuspensionStatePopupWindow(processDefinition.getId(), parentPage, true);
+                new ChangeProcessSuspensionStatePopupWindow(processDefinition.getId(), parentPage, false);
         ExplorerApp.get().getViewManager().showPopupWindow(popupWindow);
       }
       
@@ -51,7 +50,7 @@ public class ActiveProcessDefinitionDetailPanel extends AbstractProcessDefinitio
     
     // Clear toolbar and add 'start' button
     processDefinitionPage.getToolBar().removeAllButtons();
-    processDefinitionPage.getToolBar().addButton(suspendButton);
+    processDefinitionPage.getToolBar().addButton(activateButton);
   }
 
 }
