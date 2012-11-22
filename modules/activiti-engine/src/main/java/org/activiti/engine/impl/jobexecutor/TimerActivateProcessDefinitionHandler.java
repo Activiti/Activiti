@@ -15,6 +15,7 @@ package org.activiti.engine.impl.jobexecutor;
 import org.activiti.engine.impl.cmd.ActivateProcessDefinitionCmd;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.util.json.JSONObject;
 
 /**
@@ -27,10 +28,10 @@ public class TimerActivateProcessDefinitionHandler extends TimerChangeProcessDef
   public String getType() {
     return TYPE;
   }
-
-  public void execute(String configuration, ExecutionEntity execution, CommandContext commandContext) {
+  
+  public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
     JSONObject cfgJson = new JSONObject(configuration);
-    String processDefinitionId = getProcessDefinitionId(cfgJson);
+    String processDefinitionId = job.getProcessDefinitionId();
     boolean activateProcessInstances = getIncludeProcessInstances(cfgJson);
     
     ActivateProcessDefinitionCmd activateProcessDefinitionCmd =

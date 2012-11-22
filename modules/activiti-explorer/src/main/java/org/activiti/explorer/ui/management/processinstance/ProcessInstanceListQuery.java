@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.explorer.ui.management.process;
+package org.activiti.explorer.ui.management.processinstance;
 
 import java.util.ArrayList;
 import java.util.HashMap;

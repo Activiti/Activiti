@@ -286,10 +286,16 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
     assertEquals(1, repositoryService.createProcessDefinitionQuery().active().count());
     assertEquals(0, repositoryService.createProcessDefinitionQuery().suspended().count());
     
+    // verify there is a job created
+    assertEquals(1, managementService.createJobQuery().processDefinitionId(processDefinition.getId()).count());
+    
     // Move clock 8 days further and let job executor run
     long eightDaysSinceStartTime = oneWeekFromStartTime + (24 * 60 * 60 * 1000);
     ClockUtil.setCurrentTime(new Date(eightDaysSinceStartTime));
     waitForJobExecutorToProcessAllJobs(5000L, 50L);
+    
+    // verify job is now removed
+    assertEquals(0, managementService.createJobQuery().processDefinitionId(processDefinition.getId()).count());
     
     // Try to start process instance. It should fail now.
     try {
@@ -474,6 +480,12 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().active().count());
     assertEquals(0, repositoryService.createProcessDefinitionQuery().suspended().count());
     assertEquals(1, runtimeService.createProcessInstanceQuery().active().count());
+    
+    // Verify a job is created for each process definition
+    assertEquals(nrOfProcessDefinitions, managementService.createJobQuery().count());
+    for (ProcessDefinition processDefinition : repositoryService.createProcessDefinitionQuery().list()) {
+      assertEquals(1, managementService.createJobQuery().processDefinitionId(processDefinition.getId()).count());
+    }
     
     // Move time 3 hours and run job executor
     ClockUtil.setCurrentTime(new Date(startTime.getTime() + (3 * hourInMs)));

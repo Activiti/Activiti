@@ -28,6 +28,7 @@
     <result property="exclusive" column="EXCLUSIVE_" jdbcType="BOOLEAN" />
     <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
     <result property="processInstanceId" column="PROCESS_INSTANCE_ID_" jdbcType="VARCHAR" />
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
     <result property="retries" column="RETRIES_" jdbcType="INTEGER" />
     <result property="exceptionByteArrayId" column="EXCEPTION_STACK_ID_" jdbcType="VARCHAR" />
     <result property="exceptionMessage" column="EXCEPTION_MSG_" jdbcType="VARCHAR" />
@@ -133,6 +134,9 @@
       <if test="executionId != null">
         and RES.EXECUTION_ID_ = #{executionId}
       </if>
+      <if test="processDefinitionId != null">
+        and RES.PROC_DEF_ID_ = #{processDefinitionId}
+      </if>
       <if test="retriesLeft">
         and RES.RETRIES_ &gt; 0
       </if>
@@ -216,6 +220,7 @@
             EXCLUSIVE_,
             EXECUTION_ID_, 
             PROCESS_INSTANCE_ID_,
+            PROC_DEF_ID_,
             RETRIES_, 
             EXCEPTION_STACK_ID_,
             EXCEPTION_MSG_,
@@ -231,6 +236,7 @@
             #{exclusive, jdbcType=BOOLEAN},
             #{executionId, jdbcType=VARCHAR},
             #{processInstanceId, jdbcType=VARCHAR},
+            #{processDefinitionId, jdbcType=VARCHAR},
             #{retries, jdbcType=INTEGER},
             #{exceptionByteArrayId, jdbcType=VARCHAR},
             #{exceptionMessage, jdbcType=VARCHAR},
@@ -292,6 +298,7 @@
             EXCLUSIVE_,
             EXECUTION_ID_, 
             PROCESS_INSTANCE_ID_,
+            PROC_DEF_ID_,
             RETRIES_, 
             EXCEPTION_STACK_ID_,
             EXCEPTION_MSG_,
@@ -305,6 +312,7 @@
             #{exclusive, jdbcType=BOOLEAN},
             #{executionId, jdbcType=VARCHAR},
             #{processInstanceId, jdbcType=VARCHAR},
+            #{processDefinitionId, jdbcType=VARCHAR},
             #{retries, jdbcType=INTEGER},
             #{exceptionByteArrayId, jdbcType=VARCHAR},
             #{exceptionMessage, jdbcType=VARCHAR},

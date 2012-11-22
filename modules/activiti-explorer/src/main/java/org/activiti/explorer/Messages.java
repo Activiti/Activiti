@@ -199,6 +199,14 @@ public interface Messages {
   static final String PROCESS_NEW = "process.new";
   static final String PROCESS_DELETE = "process.delete";
   static final String PROCESS_DEPLOY = "process.deploy";
+  static final String PROCESS_ACTIVATE = "process.activate";
+  static final String PROCESS_ACTIVATE_POPUP = "process.activate.popup";
+  static final String PROCESS_SUSPEND = "process.suspend";
+  static final String PROCESS_SUSPEND_POPUP = "process.suspend.popup";
+  static final String PROCESS_SUSPEND_POPUP_TIME_DESCRIPTION = "process.suspend.popup.time.description";
+  static final String PROCESS_SUSPEND_POPUP_TIME_NOW = "process.suspend.popup.time.now";
+  static final String PROCESS_SUSPEND_POPUP_TIME_DATE = "process.suspend.popup.time.date";
+  static final String PROCESS_SUSPEND_POPUP_INCLUDE_PROCESS_INSTANCES_DESCRIPTION = "process.suspend.popup.process.instances.description";
   static final String PROCESS_TOXML_FAILED = "process.toxml.failed";
   static final String PROCESS_CONVERT = "process.convert";
   static final String PROCESS_EXPORT = "process.export";
@@ -235,6 +243,8 @@ public interface Messages {
   // Management menu
   static final String MGMT_MENU_DATABASE = "management.menu.database";
   static final String MGMT_MENU_DEPLOYMENTS = "management.menu.deployments";
+  static final String MGMT_MENU_ACTIVE_PROCESS_DEFINITIONS = "management.menu.active.processdefinitions";
+  static final String MGMT_MENU_SUSPENDED_PROCESS_DEFINITIONS = "management.menu.suspended.processdefinitions";
   static final String MGMT_MENU_JOBS = "management.menu.jobs";
   static final String MGMT_MENU_DEPLOYMENTS_SHOW_ALL = "management.menu.deployments.show.all";
   static final String MGMT_MENU_DEPLOYMENTS_UPLOAD = "management.menu.deployments.upload";

@@ -31,17 +31,20 @@ public class DefaultProcessDefinitionFilter implements ProcessDefinitionFilter {
   
   
   public ProcessDefinitionQuery getQuery(RepositoryService repositoryService) {
-    return repositoryService
-    .createProcessDefinitionQuery()
-    .latestVersion()
-    .orderByProcessDefinitionName().asc()
-    .orderByProcessDefinitionKey().asc(); // name is not unique, so we add the order on key (so we can use it in the comparsion of ProcessDefinitionListItem)
+    return getBaseQuery(repositoryService)
+            .orderByProcessDefinitionName().asc()
+            .orderByProcessDefinitionKey().asc(); // name is not unique, so we add the order on key (so we can use it in the comparsion of ProcessDefinitionListItem)
   }
   
   public ProcessDefinitionQuery getCountQuery(RepositoryService repositoryService) {
+    return getBaseQuery(repositoryService);
+  }
+  
+  protected ProcessDefinitionQuery getBaseQuery(RepositoryService repositoryService) {
     return repositoryService
             .createProcessDefinitionQuery()
-            .latestVersion();
+            .latestVersion()
+            .active();
   }
 
   public ProcessDefinitionListItem createItem(ProcessDefinition processDefinition) {

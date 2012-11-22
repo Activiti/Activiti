@@ -6,9 +6,9 @@
 
   <process id="oneTaskProcess" name="Famous One Task Process">
   
-    <startEvent id="theStart" />
+    <startEvent id="theStart" activiti:initiator="initiator" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
-    <userTask id="theTask" name="my task" />    
+    <userTask id="theTask" name="my task" activiti:assignee="${initiator}" />    
     <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />
     <endEvent id="theEnd" />
     

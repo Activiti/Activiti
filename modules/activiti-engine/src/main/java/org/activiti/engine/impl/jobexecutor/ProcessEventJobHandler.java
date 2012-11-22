@@ -16,6 +16,7 @@ package org.activiti.engine.impl.jobexecutor;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 
 
 /**
@@ -29,7 +30,7 @@ public class ProcessEventJobHandler implements JobHandler {
     return TYPE;
   }
 
-  public void execute(String configuration, ExecutionEntity execution, CommandContext commandContext) {
+  public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
     // lookup subscription:    
     EventSubscriptionEntity eventSubscription = commandContext.getEventSubscriptionManager()
       .findEventSubscriptionbyId(configuration);

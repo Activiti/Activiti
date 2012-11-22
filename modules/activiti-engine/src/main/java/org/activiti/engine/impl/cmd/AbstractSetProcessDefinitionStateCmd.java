@@ -118,10 +118,11 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
   protected void createTimerForDelayedExecution(CommandContext commandContext, List<ProcessDefinitionEntity> processDefinitions) {
     for (ProcessDefinitionEntity processDefinition : processDefinitions) {
       TimerEntity timer = new TimerEntity();
+      timer.setProcessDefinitionId(processDefinition.getId());
       timer.setDuedate(executionDate);
       timer.setJobHandlerType(getDelayedExecutionJobHandlerType());
       timer.setJobHandlerConfiguration(TimerChangeProcessDefinitionSuspensionStateJobHandler
-              .createJobHandlerConfiguration(processDefinition.getId(), includeProcessInstances));
+              .createJobHandlerConfiguration(includeProcessInstances));
       commandContext.getJobManager().schedule(timer);
     }
   }

@@ -34,6 +34,7 @@ import org.activiti.explorer.ui.management.deployment.DeploymentPage;
 import org.activiti.explorer.ui.management.identity.GroupPage;
 import org.activiti.explorer.ui.management.identity.UserPage;
 import org.activiti.explorer.ui.management.job.JobPage;
+import org.activiti.explorer.ui.management.processdefinition.ActiveProcessDefinitionPage;
 import org.activiti.explorer.ui.process.MyProcessInstancesPage;
 import org.activiti.explorer.ui.process.ProcessDefinitionPage;
 import org.activiti.explorer.ui.process.ProcessMenuBar;
@@ -234,6 +235,22 @@ public class DefaultViewManager implements ViewManager {
   
   public void showDeploymentPage(String deploymentId) {
     switchView(new DeploymentPage(deploymentId), ViewManager.MAIN_NAVIGATION_MANAGE, ManagementMenuBar.ENTRY_DEPLOYMENTS);
+  }
+  
+  public void showActiveProcessDefinitionsPage() {
+    switchView(new ActiveProcessDefinitionPage(), ViewManager.MAIN_NAVIGATION_MANAGE, ManagementMenuBar.ENTRY_ACTIVE_PROCESS_DEFINITIONS);
+  }
+  
+  public void showActiveProcessDefinitionsPage(String processDefinitionId) {
+    switchView(new ActiveProcessDefinitionPage(processDefinitionId), ViewManager.MAIN_NAVIGATION_MANAGE, ManagementMenuBar.ENTRY_ACTIVE_PROCESS_DEFINITIONS);
+  }
+  
+  public void showSuspendedProcessDefinitionsPage() {
+    // TODO
+  }
+  
+  public void showSuspendedProcessDefinitionsPage(String processDefinitionsId) {
+    // TODO
   }
   
   public void showJobPage() {

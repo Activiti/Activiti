@@ -54,6 +54,7 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject, 
 
   protected String executionId = null;
   protected String processInstanceId = null;
+  protected String processDefinitionId = null;
 
   protected boolean isExclusive = DEFAULT_EXCLUSIVE;
 
@@ -76,7 +77,7 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject, 
     Map<String, JobHandler> jobHandlers = Context.getProcessEngineConfiguration().getJobHandlers();
     JobHandler jobHandler = jobHandlers.get(jobHandlerType);
 
-    jobHandler.execute(jobHandlerConfiguration, execution, commandContext);
+    jobHandler.execute(this, jobHandlerConfiguration, execution, commandContext);
   }
   
   public void insert() {
@@ -204,6 +205,14 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject, 
     this.duedate = duedate;
   }
   
+  public String getProcessDefinitionId() {
+    return processDefinitionId;
+  }
+
+  public void setProcessDefinitionId(String processDefinitionId) {
+    this.processDefinitionId = processDefinitionId;
+  }
+
   public void setExceptionStacktrace(String exception) {
     byte[] exceptionBytes = null;
     if(exception == null) {

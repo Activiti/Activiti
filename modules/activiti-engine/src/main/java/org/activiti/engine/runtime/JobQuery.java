@@ -34,6 +34,9 @@ public interface JobQuery extends Query<JobQuery, Job> {
   
   /** Only select jobs which exist for the given execution */ 
   JobQuery executionId(String executionId);
+  
+  /** Only select jobs which exist for the given process definition id */
+  JobQuery processDefinitionId(String processDefinitionid);
 
   /** Only select jobs which have retries left */
   JobQuery withRetriesLeft();

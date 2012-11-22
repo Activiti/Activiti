@@ -30,6 +30,8 @@ public class ManagementMenuBar extends ToolBar {
   
   public static final String ENTRY_DATABASE = "database"; 
   public static final String ENTRY_DEPLOYMENTS = "deployments"; 
+  public static final String ENTRY_ACTIVE_PROCESS_DEFINITIONS = "activeProcessDefinitions";
+  public static final String ENTRY_SUSPENDED_PROCESS_DEFINITIONS = "suspendedProcessDefinitions";
   public static final String ENTRY_JOBS = "jobs"; 
   public static final String ENTRY_USERS = "users";
   public static final String ENTRY_GROUPS = "groups";
@@ -49,6 +51,8 @@ public class ManagementMenuBar extends ToolBar {
   protected void initToolbarEntries() {
     addDatabaseToolbarEntry();
     addDeploymentsToolbarEntry();
+    addActiveProcessDefinitionsEntry();
+    addSuspendedProcessDefinitionsEntry();
     addJobsToolbarEntry();
     addUsersToolbarEntry();
     addGroupToolbarEntry();
@@ -71,6 +75,24 @@ public class ManagementMenuBar extends ToolBar {
       }
     });
     deploymentEntry.addMenuItem(i18nManager.getMessage(Messages.MGMT_MENU_DEPLOYMENTS_UPLOAD), new NewDeploymentListener());
+  }
+  
+  protected void addActiveProcessDefinitionsEntry() {
+    addToolbarEntry(ENTRY_ACTIVE_PROCESS_DEFINITIONS, 
+            i18nManager.getMessage(Messages.MGMT_MENU_ACTIVE_PROCESS_DEFINITIONS), new ToolbarCommand() {
+      public void toolBarItemSelected() {
+        viewManager.showActiveProcessDefinitionsPage();
+      }
+    });
+  }
+  
+  protected void addSuspendedProcessDefinitionsEntry() {
+    addToolbarEntry(ENTRY_SUSPENDED_PROCESS_DEFINITIONS, 
+            i18nManager.getMessage(Messages.MGMT_MENU_SUSPENDED_PROCESS_DEFINITIONS), new ToolbarCommand() {
+      public void toolBarItemSelected() {
+        viewManager.showSuspendedProcessDefinitionsPage();
+      }
+    });
   }
 
   protected void addJobsToolbarEntry() {

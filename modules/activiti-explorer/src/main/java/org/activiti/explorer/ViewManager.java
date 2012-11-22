@@ -89,6 +89,14 @@ public interface ViewManager {
   
   void showDeploymentPage(String deploymentId);
   
+  void showActiveProcessDefinitionsPage();
+  
+  void showActiveProcessDefinitionsPage(String processDefinitionId);
+  
+  void showSuspendedProcessDefinitionsPage();
+  
+  void showSuspendedProcessDefinitionsPage(String processDefinitionsId);
+  
   void showJobPage();
   
   void showJobPage(String jobId);

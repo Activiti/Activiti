@@ -15,7 +15,7 @@ package org.activiti.explorer.ui.alfresco;
 
 import org.activiti.explorer.DefaultViewManager;
 import org.activiti.explorer.ViewManager;
-import org.activiti.explorer.ui.management.process.ProcessInstancePage;
+import org.activiti.explorer.ui.management.processinstance.ProcessInstancePage;
 
 
 /**

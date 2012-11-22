@@ -36,6 +36,7 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
   protected String id;
   protected String processInstanceId;
   protected String executionId;
+  protected String processDefinitionId;
   protected boolean retriesLeft;
   protected boolean executable;
   protected boolean onlyTimers;
@@ -71,6 +72,14 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
       throw new ActivitiException("Provided process instance id is null");
     }
     this.processInstanceId = processInstanceId;
+    return this;
+  }
+  
+  public JobQueryImpl processDefinitionId(String processDefinitionId) {
+    if (processDefinitionId == null) {
+      throw new ActivitiException("Provided process definition id is null");
+    }
+    this.processDefinitionId = processDefinitionId;
     return this;
   }
   

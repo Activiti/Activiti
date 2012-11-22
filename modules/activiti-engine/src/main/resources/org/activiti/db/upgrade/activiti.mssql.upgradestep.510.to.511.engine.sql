@@ -39,4 +39,7 @@ alter table ACT_RE_MODEL
 
 delete from ACT_GE_PROPERTY where NAME_ = 'historyLevel';
 
+alter table ACT_RU_JOB
+    add PROC_DEF_ID_ nvarchar(64);
+
 update ACT_GE_PROPERTY set VALUE_ = '5.11' where NAME_ = 'schema.version';
