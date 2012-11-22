@@ -143,7 +143,7 @@
             <version>1.4</version>
             <executions>
               <execution>
-                <id>run.upgrade.data.generator</id>
+                <id>generate.data.file</id>
                 <phase>process-test-classes</phase>
                 <goals>
                   <goal>run</goal>
@@ -187,10 +187,8 @@
                         </fileset>
                       </path>
                     </sql>
-                    <condition property="isPostgres">
-                      <equals arg1="${database}" arg2="postgres" />
-                    </condition>
-                    <java classname="org.activiti.upgrade.CleanPostgres" fork="true" if="isPostgres">
+                    <java classname="org.activiti.upgrade.CleanPostgres" fork="true">
+                      <arg line="${database}"/>
                       <classpath>
                         <path path="${test_classpath}"/>
                       </classpath>
