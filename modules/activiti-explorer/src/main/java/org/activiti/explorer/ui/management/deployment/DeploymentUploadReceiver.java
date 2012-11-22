@@ -78,7 +78,7 @@ public class DeploymentUploadReceiver implements Receiver, FinishedListener {
     DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().name(fileName);
     try {
       try {
-        if (fileName.endsWith(".bpmn20.xml")) {
+        if (fileName.endsWith(".bpmn20.xml") || fileName.endsWith(".bpmn")) {
           validFile = true;
           deployment = deploymentBuilder
             .addInputStream(fileName, new ByteArrayInputStream(outputStream.toByteArray()))

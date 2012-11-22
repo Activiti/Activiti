@@ -78,6 +78,7 @@ import org.activiti.engine.impl.bpmn.listener.DelegateExpressionExecutionListene
 import org.activiti.engine.impl.bpmn.listener.DelegateExpressionTaskListener;
 import org.activiti.engine.impl.bpmn.listener.ExpressionExecutionListener;
 import org.activiti.engine.impl.bpmn.listener.ExpressionTaskListener;
+import org.activiti.engine.impl.bpmn.parser.BpmnParseListener;
 import org.activiti.engine.impl.bpmn.webservice.BpmnInterface;
 import org.activiti.engine.impl.bpmn.webservice.BpmnInterfaceImplementation;
 import org.activiti.engine.impl.bpmn.webservice.MessageDefinition;
