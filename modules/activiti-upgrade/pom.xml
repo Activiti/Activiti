@@ -187,6 +187,14 @@
                         </fileset>
                       </path>
                     </sql>
+                    <condition property="isPostgres">
+                      <equals arg1="${database}" arg2="postgres" />
+                    </condition>
+                    <java classname="org.activiti.upgrade.CleanPostgres" fork="true" if="isPostgres">
+                      <classpath>
+                        <path path="${test_classpath}"/>
+                      </classpath>
+                    </java>
                     <sql driver="${jdbc.driver}" url="${jdbc.url}" userid="${jdbc.username}" password="${jdbc.password}"
                          classpath="${test_classpath}">
                       <path>
@@ -257,6 +265,12 @@
                         </fileset>
                       </path>
                     </sql>
+                    <java classname="org.activiti.upgrade.CleanPostgres" fork="true">
+                      <arg line="${database}"/>
+                      <classpath>
+                        <path path="${test_classpath}"/>
+                      </classpath>
+                    </java>
 	                  <sql driver="${jdbc.driver}" url="${jdbc.url}" userid="${jdbc.username}" password="${jdbc.password}"
 	                       classpath="${test_classpath}">
 		                  <path>

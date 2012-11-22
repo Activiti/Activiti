@@ -87,7 +87,7 @@ public abstract class UpgradeTestCase extends TestCase {
 
   public abstract void runInTheOldVersion();
 
-  public static ProcessEngineConfigurationImpl createProcessEngineConfiguration(String database) throws IOException, FileNotFoundException {
+  public static ProcessEngineConfigurationImpl createProcessEngineConfiguration(String database) throws Exception {
     ProcessEngineConfigurationImpl processEngineConfiguration;
     processEngineConfiguration = (ProcessEngineConfigurationImpl) ProcessEngineConfiguration
             .createStandaloneProcessEngineConfiguration()
