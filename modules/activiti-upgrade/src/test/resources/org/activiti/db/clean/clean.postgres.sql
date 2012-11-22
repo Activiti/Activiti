@@ -1,5 +1,4 @@
-select * from ACT_GE_PROPERTY;
-drop table if exists ACT_GE_PROPERTY cascade;
+drop table if exists act_ge_property cascade;
 
 drop table if exists ACT_GE_BYTEARRAY cascade;
 drop table if exists ACT_RE_MODEL cascade;
