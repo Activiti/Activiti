@@ -1,4 +1,15 @@
-drop table if exists act_ge_property cascade;
+SELECT 
+  execute($$
+      drop table act_ge_property cascade
+  $$) 
+WHERE 
+  exists 
+  (
+    SELECT * 
+    FROM information_schema.tables 
+    WHERE table_name = 'act_ge_property'
+  );
+
 drop table if exists ACT_GE_BYTEARRAY cascade;
 drop table if exists ACT_RE_MODEL cascade;
 drop table if exists ACT_RE_DEPLOYMENT cascade;
