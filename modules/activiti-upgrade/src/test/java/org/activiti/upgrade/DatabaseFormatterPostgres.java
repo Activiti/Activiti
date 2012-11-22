@@ -6,9 +6,9 @@ public class DatabaseFormatterPostgres extends DatabaseFormatter {
   @Override
   public String formatBinary(byte[] bytes) {
     StringBuffer sb = new StringBuffer();
-    sb.append("decode('");
+    sb.append("E'\\\\x");
     appendBytesInHex(sb, bytes);
-    sb.append("', 'hex')");
+    sb.append("'");
     return sb.toString();
   }
 

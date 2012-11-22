@@ -24,9 +24,9 @@ alter table ACT_HI_ACTINST
 	add column CALL_PROC_INST_ID_ varchar(64);
 
 alter table ACT_HI_DETAIL
-	alter column PROC_DEF_ID_ set null;
+	alter column PROC_INST_ID_ drop not null;
 
 alter table ACT_HI_DETAIL
-	alter column EXECUTION_ID_ set null;
+	alter column EXECUTION_ID_ drop not null;
 	
 create index ACT_IDX_HI_ACT_INST_PROCINST on ACT_HI_ACTINST(PROC_INST_ID_, ACT_ID_);
