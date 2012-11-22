@@ -36,11 +36,11 @@
       <artifactId>mysql-connector-java</artifactId>
       <version>5.1.6</version>
     </dependency>
-    <dependency>
-      <groupId>postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>${postgresVersion}</version>
-    </dependency>
+<dependency>
+    <groupId>postgresql</groupId>
+    <artifactId>postgresql</artifactId>
+    <version>8.4-702.jdbc4</version>
+</dependency>
     <dependency>
       <groupId>com.oracle.jdbc</groupId>
       <artifactId>ojdbc5</artifactId>
