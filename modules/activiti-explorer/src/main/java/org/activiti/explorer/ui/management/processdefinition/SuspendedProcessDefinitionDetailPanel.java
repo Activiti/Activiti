@@ -12,6 +12,12 @@
  */
 package org.activiti.explorer.ui.management.processdefinition;
 
+import java.util.List;
+
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.impl.jobexecutor.TimerActivateProcessDefinitionHandler;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.runtime.Job;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.AbstractPage;
@@ -47,6 +53,19 @@ public class SuspendedProcessDefinitionDetailPanel extends AbstractProcessDefini
       }
       
     });
+    
+    // Check if already activation job pending
+    boolean activateJobPending = false;
+    List<Job> jobs = ProcessEngines.getDefaultProcessEngine().getManagementService()
+            .createJobQuery().processDefinitionId(processDefinition.getId()).list();
+    for (Job job : jobs) {
+      // TODO: this is a hack. Needs to be cleaner in engine!
+      if ( ((JobEntity) job).getJobHandlerType().equals(TimerActivateProcessDefinitionHandler.TYPE) ) {
+        activateJobPending = true;
+        break;
+      }
+    }
+    activateButton.setEnabled(!activateJobPending);
     
     // Clear toolbar and add 'start' button
     processDefinitionPage.getToolBar().removeAllButtons();

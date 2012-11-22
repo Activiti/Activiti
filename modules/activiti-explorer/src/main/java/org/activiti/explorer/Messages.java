@@ -260,6 +260,8 @@ public interface Messages {
   
   // Job page
   static final String JOB_EXECUTE = "job.execute";
+  static final String JOB_DELETE = "job.delete";
+  static final String JOB_DELETED = "job.deleted";
   static final String JOB_HEADER_EXECUTION = "job.header.execution";
   static final String JOB_RETRIES = "job.retries";
   static final String JOB_NO_RETRIES = "job.no.retries";

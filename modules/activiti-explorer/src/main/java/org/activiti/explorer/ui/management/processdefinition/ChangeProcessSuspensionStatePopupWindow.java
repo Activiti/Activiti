@@ -136,7 +136,7 @@ public class ChangeProcessSuspensionStatePopupWindow extends PopupWindow {
     
     includeProcessInstancesCheckBox = new CheckBox(suspend ?
             i18nManager.getMessage(Messages.PROCESS_SUSPEND_POPUP_INCLUDE_PROCESS_INSTANCES_DESCRIPTION) :
-            i18nManager.getMessage(Messages.PROCESS_ACTIVATE_POPUP_INCLUDE_PROCESS_INSTANCES_DESCRIPTION));
+            i18nManager.getMessage(Messages.PROCESS_ACTIVATE_POPUP_INCLUDE_PROCESS_INSTANCES_DESCRIPTION), true);
     verticalLayout.addComponent(includeProcessInstancesCheckBox);
   }
   

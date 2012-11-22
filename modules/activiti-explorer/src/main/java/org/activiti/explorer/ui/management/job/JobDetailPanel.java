@@ -35,6 +35,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
@@ -74,6 +75,18 @@ public class JobDetailPanel extends DetailPanel {
   }
   
   protected void addActions() {
+    Button deleteButton = new Button(i18nManager.getMessage(Messages.JOB_DELETE));
+    deleteButton.setIcon(Images.DELETE);
+    deleteButton.addListener(new ClickListener() {
+      private static final long serialVersionUID = 1L;
+      public void buttonClick(ClickEvent event) {
+        managementService.deleteJob(job.getId());
+        
+        notificationManager.showInformationNotification(Messages.JOB_DELETED);
+        jobPage.refreshSelectNext();
+      }
+    });
+    
     Button executeButton = new Button(i18nManager.getMessage(Messages.JOB_EXECUTE));
     executeButton.setIcon(Images.EXECUTE);
     executeButton.addListener(new ClickListener() {
@@ -91,9 +104,10 @@ public class JobDetailPanel extends DetailPanel {
         }
       }
     });
-
+    
     jobPage.getToolBar().removeAllButtons();
     jobPage.getToolBar().addButton(executeButton);
+    jobPage.getToolBar().addButton(deleteButton);
   }
 
   protected void addHeader() {
@@ -185,13 +199,10 @@ public class JobDetailPanel extends DetailPanel {
         
         // This is a hack .. need to cleanify this in the engine
         JobEntity jobEntity = (JobEntity) job;
-        
         if (jobEntity.getJobHandlerType().equals(TimerSuspendProcessDefinitionHandler.TYPE)) {
-          Label processDefinitionLabel = new Label(i18nManager.getMessage(Messages.JOB_SUSPEND_PROCESSDEFINITION, job.getProcessDefinitionId()));
-          layout.addComponent(processDefinitionLabel);
+          addLinkToProcessDefinition(layout, i18nManager.getMessage(Messages.JOB_SUSPEND_PROCESSDEFINITION), false);
         } else if (jobEntity.getJobHandlerType().equals(TimerActivateProcessDefinitionHandler.TYPE)) {
-          Label processDefinitionLabel = new Label(i18nManager.getMessage(Messages.JOB_ACTIVATE_PROCESSDEFINITION, job.getProcessDefinitionId()));
-          layout.addComponent(processDefinitionLabel);
+          addLinkToProcessDefinition(layout, i18nManager.getMessage(Messages.JOB_ACTIVATE_PROCESSDEFINITION), true);
         } else {
           addNotYetExecutedLabel(layout);
         }
@@ -202,6 +213,31 @@ public class JobDetailPanel extends DetailPanel {
         
       }
     }
+  }
+
+  protected void addLinkToProcessDefinition(final VerticalLayout verticalLayout, final String labelText, final boolean isSuspendedProcessDefinition) {
+    HorizontalLayout  layout = new HorizontalLayout();
+    verticalLayout.addComponent(layout);
+    
+    Label processDefinitionLabel = new Label(labelText);
+    processDefinitionLabel.setSizeUndefined();
+    layout.addComponent(processDefinitionLabel);
+    
+    layout.addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
+    
+    Button showProcessDefinitionLink = new Button(job.getProcessDefinitionId());
+    showProcessDefinitionLink.addStyleName(Reindeer.BUTTON_LINK);
+    showProcessDefinitionLink.addListener(new ClickListener() {
+      private static final long serialVersionUID = 1L;
+      public void buttonClick(ClickEvent event) {
+        if (isSuspendedProcessDefinition) {
+          ExplorerApp.get().getViewManager().showSuspendedProcessDefinitionsPage(job.getProcessDefinitionId());
+        } else {
+          ExplorerApp.get().getViewManager().showActiveProcessDefinitionsPage(job.getProcessDefinitionId());
+        }
+      }
+    });
+    layout.addComponent(showProcessDefinitionLink);
   }
 
   private void addNotYetExecutedLabel(VerticalLayout layout) {
