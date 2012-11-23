@@ -158,9 +158,11 @@ alter table ACT_GE_BYTEARRAY
     foreign key (DEPLOYMENT_ID_) 
     references ACT_RE_DEPLOYMENT (ID_);
 
-alter table ACT_RE_PROCDEF
-    add constraint ACT_UNIQ_PROCDEF
-    unique (KEY_,VERSION_);
+-- THIS IS ONLY COMMENTED IN THE UPGRADE TESTS
+-- IT WAS PART OF THE 5.10 RELEASE AND FAILS
+-- alter table ACT_RE_PROCDEF
+--     add constraint ACT_UNIQ_PROCDEF
+--     unique (KEY_,VERSION_);
     
 alter table ACT_RU_EXECUTION
     add constraint ACT_FK_EXE_PROCINST 

@@ -28,6 +28,7 @@ public interface Messages {
   static final String BUTTON_OK = "button.ok";
   static final String BUTTON_CREATE = "button.create";
   static final String BUTTON_CANCEL = "button.cancel";
+  static final String UNCAUGHT_EXCEPTION = "uncaught.exception";
   
   // Navigation
   static final String NAVIGATION_ERROR_NOT_INVOLVED_TITLE = "navigation.error.not.involved.title";
@@ -193,12 +194,25 @@ public interface Messages {
   static final String PROCESS_DEPLOY_TIME = "process.deploy.time";
   static final String PROCESS_HEADER_DIAGRAM = "process.header.diagram";
   static final String PROCESS_NO_DIAGRAM = "process.no.diagram";
+  static final String PROCESS_HEADER_SUSPENSION_STATE = "process.header.suspension.state";
+  static final String PROCESS_SCHEDULED_SUSPEND = "process.scheduled.suspend";
+  static final String PROCESS_SCHEDULED_ACTIVATE = "process.scheduled.activate";
   static final String PROCESS_START = "process.start";
   static final String PROCESS_EDIT = "process.edit";
   static final String PROCESS_COPY = "process.copy";
   static final String PROCESS_NEW = "process.new";
   static final String PROCESS_DELETE = "process.delete";
   static final String PROCESS_DEPLOY = "process.deploy";
+  static final String PROCESS_ACTIVATE = "process.activate";
+  static final String PROCESS_ACTIVATE_POPUP = "process.activate.popup";
+  static final String PROCESS_ACTIVATE_POPUP_TIME_DESCRIPTION = "process.activate.popup.time.description";
+  static final String PROCESS_ACTIVATE_POPUP_INCLUDE_PROCESS_INSTANCES_DESCRIPTION = "process.activate.popup.process.instances.description";
+  static final String PROCESS_SUSPEND = "process.suspend";
+  static final String PROCESS_SUSPEND_POPUP = "process.suspend.popup";
+  static final String PROCESS_SUSPEND_POPUP_TIME_DESCRIPTION = "process.suspend.popup.time.description";
+  static final String PROCESS_SUSPEND_POPUP_TIME_NOW = "process.suspend.popup.time.now";
+  static final String PROCESS_SUSPEND_POPUP_TIME_DATE = "process.suspend.popup.time.date";
+  static final String PROCESS_SUSPEND_POPUP_INCLUDE_PROCESS_INSTANCES_DESCRIPTION = "process.suspend.popup.process.instances.description";
   static final String PROCESS_TOXML_FAILED = "process.toxml.failed";
   static final String PROCESS_CONVERT = "process.convert";
   static final String PROCESS_EXPORT = "process.export";
@@ -235,6 +249,8 @@ public interface Messages {
   // Management menu
   static final String MGMT_MENU_DATABASE = "management.menu.database";
   static final String MGMT_MENU_DEPLOYMENTS = "management.menu.deployments";
+  static final String MGMT_MENU_ACTIVE_PROCESS_DEFINITIONS = "management.menu.active.processdefinitions";
+  static final String MGMT_MENU_SUSPENDED_PROCESS_DEFINITIONS = "management.menu.suspended.processdefinitions";
   static final String MGMT_MENU_JOBS = "management.menu.jobs";
   static final String MGMT_MENU_DEPLOYMENTS_SHOW_ALL = "management.menu.deployments.show.all";
   static final String MGMT_MENU_DEPLOYMENTS_UPLOAD = "management.menu.deployments.upload";
@@ -244,6 +260,8 @@ public interface Messages {
   
   // Job page
   static final String JOB_EXECUTE = "job.execute";
+  static final String JOB_DELETE = "job.delete";
+  static final String JOB_DELETED = "job.deleted";
   static final String JOB_HEADER_EXECUTION = "job.header.execution";
   static final String JOB_RETRIES = "job.retries";
   static final String JOB_NO_RETRIES = "job.no.retries";
@@ -254,6 +272,8 @@ public interface Messages {
   static final String JOB_NO_DUEDATE = "job.no.dudedate";
   static final String JOB_ERROR = "job.error";
   static final String JOB_NOT_EXECUTED = "job.not.executed";
+  static final String JOB_SUSPEND_PROCESSDEFINITION = "job.suspend.processdefinition";
+  static final String JOB_ACTIVATE_PROCESSDEFINITION = "job.activate.processdefinition";
   
   // Deployment page
   static final String DEPLOYMENT_DELETE = "deployment.delete";

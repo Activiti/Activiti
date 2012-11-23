@@ -216,6 +216,15 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
     }
   }
   
+  // Error handling ---------------------------------------------------------------------------------
+  
+  @Override
+  public void terminalError(com.vaadin.terminal.Terminal.ErrorEvent event) {
+    super.terminalError(event);
+    
+    notificationManager.showErrorNotification(Messages.UNCAUGHT_EXCEPTION, event.getThrowable().getCause().getMessage());
+  }
+  
   // URL Handling ---------------------------------------------------------------------------------
   
   public void setCurrentUriFragment(UriFragment fragment) {

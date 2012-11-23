@@ -13,7 +13,6 @@
 
 package org.activiti.explorer.ui.custom;
 
-import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Window;
 

@@ -1,3 +1,15 @@
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.activiti.upgrade;
 
 import java.sql.Array;
@@ -17,6 +29,7 @@ import java.sql.Statement;
 import java.sql.Struct;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.Executor;
 
 
 public class ProxyConnection implements Connection {
@@ -228,5 +241,25 @@ public class ProxyConnection implements Connection {
 
   public void setTypeMap(Map<String, Class< ? >> map) throws SQLException {
     connection.setTypeMap(map);
+  }
+
+  public void setSchema(String schema) throws SQLException {
+    throw new RuntimeException("buzz");
+  }
+
+  public String getSchema() throws SQLException {
+    throw new RuntimeException("buzz");
+  }
+
+  public void abort(Executor executor) throws SQLException {
+    throw new RuntimeException("buzz");
+  }
+
+  public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {
+    throw new RuntimeException("buzz");
+  }
+
+  public int getNetworkTimeout() throws SQLException {
+    throw new RuntimeException("buzz");
   }
 }

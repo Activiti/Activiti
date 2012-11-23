@@ -23,8 +23,8 @@ import org.activiti.engine.ActivitiException;
 public enum HistoryLevel {
   
   NONE("none"),
-  ACTIVITY("audit"),
-  AUDIT("activity"),
+  ACTIVITY("activity"),
+  AUDIT("audit"),
   FULL("full");
   
   private String key;

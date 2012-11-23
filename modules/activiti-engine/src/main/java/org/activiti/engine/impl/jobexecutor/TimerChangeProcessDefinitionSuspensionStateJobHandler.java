@@ -19,19 +19,12 @@ import org.activiti.engine.impl.util.json.JSONObject;
  */
 public abstract class TimerChangeProcessDefinitionSuspensionStateJobHandler implements JobHandler {
   
-  private static final String JOB_HANDLER_CFG_PROCESS_DEFINITION_ID = "processDefinitionId";
-  
   private static final String JOB_HANDLER_CFG_INCLUDE_PROCESS_INSTANCES = "includeProcessInstances";
   
-  public static String createJobHandlerConfiguration(String processDefinitionId, boolean includeProcessInstances) {
+  public static String createJobHandlerConfiguration(boolean includeProcessInstances) {
     JSONObject json = new JSONObject();
-    json.put(JOB_HANDLER_CFG_PROCESS_DEFINITION_ID, processDefinitionId);
     json.put(JOB_HANDLER_CFG_INCLUDE_PROCESS_INSTANCES, includeProcessInstances);
     return json.toString();
-  }
-  
-  public static String getProcessDefinitionId(JSONObject jobHandlerCfgJson) {
-    return jobHandlerCfgJson.getString(JOB_HANDLER_CFG_PROCESS_DEFINITION_ID);
   }
   
   public static boolean getIncludeProcessInstances(JSONObject jobHandlerCfgJson) {

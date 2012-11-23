@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 
 
@@ -34,8 +35,8 @@ public class TimerExecuteNestedActivityJobHandler implements JobHandler {
   public String getType() {
     return TYPE;
   }
-
-  public void execute(String configuration, ExecutionEntity execution, CommandContext commandContext) {
+  
+  public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
     ActivityImpl borderEventActivity = execution.getProcessDefinition().findActivity(configuration);
 
     if (borderEventActivity == null) {

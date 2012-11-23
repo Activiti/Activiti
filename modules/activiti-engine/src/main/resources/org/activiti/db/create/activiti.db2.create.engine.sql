@@ -73,6 +73,7 @@ create table ACT_RU_JOB (
     EXCLUSIVE_ smallint check(EXCLUSIVE_ in (1,0)),
     EXECUTION_ID_ varchar(64),
     PROCESS_INSTANCE_ID_ varchar(64),
+    PROC_DEF_ID_ varchar(64),
     RETRIES_ integer,
     EXCEPTION_STACK_ID_ varchar(64),
     EXCEPTION_MSG_ varchar(4000),

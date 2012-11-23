@@ -13,6 +13,7 @@
 
 package org.activiti.spring;
 
+
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.cfg.TransactionListener;
 import org.activiti.engine.impl.cfg.TransactionState;
@@ -79,7 +80,9 @@ public class SpringTransactionContext implements TransactionContext {
       TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
         @Override
         public void afterCompletion(int status) {
-          transactionListener.execute(commandContext);
+          if(TransactionSynchronization.STATUS_ROLLED_BACK == status) {
+            transactionListener.execute(commandContext);
+          }
         }
       });
       

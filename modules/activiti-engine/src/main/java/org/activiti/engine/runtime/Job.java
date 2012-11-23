@@ -46,6 +46,11 @@ public interface Job {
   String getExecutionId();
   
   /**
+   * Returns the specific process definition on which the job was created
+   */
+  String getProcessDefinitionId();
+  
+  /**
    * Returns the number of retries this job has left. 
    * Whenever the jobexecutor fails to execute the job, this value is decremented. 
    * When it hits zero, the job is supposed to be dead and not retried again 
