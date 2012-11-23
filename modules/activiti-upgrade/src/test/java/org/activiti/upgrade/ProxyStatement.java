@@ -1,5 +1,18 @@
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.activiti.upgrade;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -101,14 +114,47 @@ public class ProxyStatement implements PreparedStatement {
   
   //////////////////////////////////////////////////////////////////////
   
-  public void setString(int parameterIndex, String x) throws SQLException {
-    parameters.put(parameterIndex, "'"+x+"'");
-    preparedStatement.setString(parameterIndex, x);
+  InputStream setInputStreamParameter(int parameterIndex, InputStream x) {
+    byte[] bytes = IoUtil.readInputStream(x, "jdbc variable bytes");
+    parameters.put(parameterIndex, ProxyDriver.databaseFormatter.formatBinary(bytes));
+    return new ByteArrayInputStream(bytes);
+  }
+  
+  public void setTime(int parameterIndex, Time x, Calendar cal) throws SQLException {
+    parameters.put(parameterIndex, ProxyDriver.databaseFormatter.formatDate(x));
+    preparedStatement.setTime(parameterIndex, x, cal);
+  }
+
+  public void setTimestamp(int parameterIndex, Timestamp x) throws SQLException {
+    parameters.put(parameterIndex, ProxyDriver.databaseFormatter.formatDate(x));
+    preparedStatement.setTimestamp(parameterIndex, x);
+  }
+
+  public void setTimestamp(int parameterIndex, Timestamp x, Calendar cal) throws SQLException {
+    parameters.put(parameterIndex, ProxyDriver.databaseFormatter.formatDate(x));
+    preparedStatement.setTimestamp(parameterIndex, x, cal);
+  }
+  
+  public void setDate(int parameterIndex, Date x) throws SQLException {
+    parameters.put(parameterIndex, ProxyDriver.databaseFormatter.formatDate(x));
+    preparedStatement.setDate(parameterIndex, x);
+  }
+
+  public void setDate(int parameterIndex, Date x, Calendar cal) throws SQLException {
+    parameters.put(parameterIndex, ProxyDriver.databaseFormatter.formatDate(x));
+    preparedStatement.setDate(parameterIndex, x, cal);
   }
 
   public void setBoolean(int parameterIndex, boolean x) throws SQLException {
-    parameters.put(parameterIndex, Boolean.toString(x));
+    parameters.put(parameterIndex, ProxyDriver.databaseFormatter.formatBoolean(x));
     preparedStatement.setBoolean(parameterIndex, x);
+  }
+
+  //////////////////////////////////////////////////////////////////////
+  
+  public void setString(int parameterIndex, String x) throws SQLException {
+    parameters.put(parameterIndex, "'"+x+"'");
+    preparedStatement.setString(parameterIndex, x);
   }
 
   public void setNull(int parameterIndex, int sqlType) throws SQLException {
@@ -126,31 +172,6 @@ public class ProxyStatement implements PreparedStatement {
     preparedStatement.setTime(parameterIndex, x);
   }
 
-  public void setTime(int parameterIndex, Time x, Calendar cal) throws SQLException {
-    parameters.put(parameterIndex, ProxyDriver.dateFormat.format(x));
-    preparedStatement.setTime(parameterIndex, x, cal);
-  }
-
-  public void setTimestamp(int parameterIndex, Timestamp x) throws SQLException {
-    parameters.put(parameterIndex, ProxyDriver.dateFormat.format(x));
-    preparedStatement.setTimestamp(parameterIndex, x);
-  }
-
-  public void setTimestamp(int parameterIndex, Timestamp x, Calendar cal) throws SQLException {
-    parameters.put(parameterIndex, ProxyDriver.dateFormat.format(x));
-    preparedStatement.setTimestamp(parameterIndex, x, cal);
-  }
-  
-  public void setDate(int parameterIndex, Date x) throws SQLException {
-    parameters.put(parameterIndex, ProxyDriver.dateFormat.format(x));
-    preparedStatement.setDate(parameterIndex, x);
-  }
-
-  public void setDate(int parameterIndex, Date x, Calendar cal) throws SQLException {
-    parameters.put(parameterIndex, ProxyDriver.dateFormat.format(x));
-    preparedStatement.setDate(parameterIndex, x, cal);
-  }
-
   public void setInt(int parameterIndex, int x) throws SQLException {
     parameters.put(parameterIndex, Integer.toString(x));
     preparedStatement.setInt(parameterIndex, x);
@@ -162,27 +183,18 @@ public class ProxyStatement implements PreparedStatement {
   }
   
   public void setBinaryStream(int parameterIndex, InputStream x) throws SQLException {
-    setInputStreamParameter(parameterIndex, x);
+    x = setInputStreamParameter(parameterIndex, x);
     preparedStatement.setBinaryStream(parameterIndex, x);
   }
 
   public void setBinaryStream(int parameterIndex, InputStream x, int length) throws SQLException {
-    setInputStreamParameter(parameterIndex, x);
+    x = setInputStreamParameter(parameterIndex, x);
     preparedStatement.setBinaryStream(parameterIndex, x, length);
   }
 
   public void setBinaryStream(int parameterIndex, InputStream x, long length) throws SQLException {
-    setInputStreamParameter(parameterIndex, x);
+    x = setInputStreamParameter(parameterIndex, x);
     preparedStatement.setBinaryStream(parameterIndex, x, length);
-  }
-
-  void setInputStreamParameter(int parameterIndex, InputStream x) {
-    byte[] bytes = IoUtil.readInputStream(x, "jdbc variable bytes");
-    StringBuffer sb = new StringBuffer();
-    for (byte b : bytes) {
-      sb.append(Integer.toHexString((int) (b & 0xff)));
-    }
-    parameters.put(parameterIndex, "0x"+sb.toString());
   }
 
   //////////////////////////////////////////////////////////////////////
@@ -527,4 +539,11 @@ public class ProxyStatement implements PreparedStatement {
     return preparedStatement.getParameterMetaData();
   }
 
+  public void closeOnCompletion() throws SQLException {
+    throw new RuntimeException("buzz");
+  }
+
+  public boolean isCloseOnCompletion() throws SQLException {
+    throw new RuntimeException("buzz");
+  }
 }

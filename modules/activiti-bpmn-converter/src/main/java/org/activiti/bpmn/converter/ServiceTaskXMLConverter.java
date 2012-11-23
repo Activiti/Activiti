@@ -56,6 +56,7 @@ public class ServiceTaskXMLConverter extends BaseBpmnXMLConverter {
 		}
 	
 		serviceTask.setResultVariableName(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_SERVICE_RESULTVARIABLE));
+		serviceTask.setType(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TYPE));
 	
 		parseChildElements(getXMLElementName(), serviceTask, xtr);
 		
@@ -77,6 +78,9 @@ public class ServiceTaskXMLConverter extends BaseBpmnXMLConverter {
     
     if (StringUtils.isNotEmpty(serviceTask.getResultVariableName())) {
       writeQualifiedAttribute(ATTRIBUTE_TASK_SERVICE_RESULTVARIABLE, serviceTask.getResultVariableName(), xtw);
+    }
+    if (StringUtils.isNotEmpty(serviceTask.getType())) {
+      writeQualifiedAttribute(ATTRIBUTE_TYPE, serviceTask.getType(), xtw);
     }
   }
   

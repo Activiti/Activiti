@@ -304,6 +304,10 @@ public class ProcessDiagramCanvas {
   public void drawThrowingSignalEvent(int x, int y, int width, int height) {
     drawCatchingEvent(x, y, width, height, false, SIGNAL_THROW_IMAGE);
   }
+  
+  public void drawThrowingNoneEvent(int x, int y, int width, int height) {
+    drawCatchingEvent(x, y, width, height, false, null);
+  }
 
   public void drawSequenceflow(int srcX, int srcY, int targetX, int targetY, boolean conditional) {
     drawSequenceflow(srcX, srcY, targetX, targetY, conditional, false);

@@ -47,13 +47,14 @@ public class SubProcessJsonConverter extends BaseBpmnJsonConverter {
   }
 
   protected void convertElementToJson(ObjectNode propertiesNode, FlowElement flowElement) {
+    SubProcess subProcess = (SubProcess) flowElement;
     propertiesNode.put("activitytype", "Sub-Process");
     propertiesNode.put("subprocesstype", "Embedded");
-    ArrayNode subProcessshapesArrayNode = objectMapper.createArrayNode();
+    ArrayNode subProcessShapesArrayNode = objectMapper.createArrayNode();
     GraphicInfo graphicInfo = model.getGraphicInfo(flowElement.getId());
-    processor.processFlowElements(process, model, shapesArrayNode, 
+    processor.processFlowElements(subProcess.getFlowElements(), model, subProcessShapesArrayNode, 
         graphicInfo.x + subProcessX, graphicInfo.y + subProcessY);
-    flowElementNode.put("childShapes", subProcessshapesArrayNode);
+    flowElementNode.put("childShapes", subProcessShapesArrayNode);
   }
   
   protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {

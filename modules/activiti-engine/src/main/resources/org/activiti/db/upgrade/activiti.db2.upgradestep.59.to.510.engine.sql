@@ -13,7 +13,15 @@ alter table ACT_RU_EXECUTION
 	add CACHED_ENT_STATE_ integer;
 
 update ACT_RU_EXECUTION set CACHED_ENT_STATE_ = 7;
-	
+
+alter table ACT_RE_PROCDEF 
+  alter column KEY_ set not null;
+
+alter table ACT_RE_PROCDEF
+  alter column VERSION_ set not null;
+
+Call Sysproc.admin_cmd ('REORG TABLE ACT_RE_PROCDEF');
+
 alter table ACT_RE_PROCDEF
     add constraint ACT_UNIQ_PROCDEF
     unique (KEY_,VERSION_);

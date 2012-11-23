@@ -54,16 +54,21 @@ public interface TaskService {
 	void saveTask(Task task);
 	
 	/**
-	 * Deletes the given task.
+	 * Deletes the given task, not deleting historic information that is related to this task.
 	 * @param taskId The id of the task that will be deleted, cannot be null. If no task
 	 * exists with the given taskId, the operation is ignored.
+	 * @throws ActivitiException when an error occurs while deleting the task or in case the task is part
+   *   of a running process.
 	 */
 	void deleteTask(String taskId);
 	
 	/**
-	 * Deletes all tasks of the given collection.
+	 * Deletes all tasks of the given collection, not deleting historic information that is related 
+	 * to these tasks.
 	 * @param taskIds The id's of the tasks that will be deleted, cannot be null. All
 	 * id's in the list that don't have an existing task will be ignored.
+	 * @throws ActivitiException when an error occurs while deleting the tasks or in case one of the tasks
+   *  is part of a running process.
 	 */
 	void deleteTasks(Collection<String> taskIds);
 	
@@ -72,6 +77,8 @@ public interface TaskService {
    * @param taskId The id of the task that will be deleted, cannot be null. If no task
    * exists with the given taskId, the operation is ignored.
    * @param cascade If cascade is true, also the historic information related to this task is deleted.
+   * @throws ActivitiException when an error occurs while deleting the task or in case the task is part
+   *   of a running process.
    */
   void deleteTask(String taskId, boolean cascade);
   
@@ -80,8 +87,32 @@ public interface TaskService {
    * @param taskIds The id's of the tasks that will be deleted, cannot be null. All
    * id's in the list that don't have an existing task will be ignored.
    * @param cascade If cascade is true, also the historic information related to this task is deleted.
+   * @throws ActivitiException when an error occurs while deleting the tasks or in case one of the tasks
+   *  is part of a running process.
+   * @throws ActivitiException when an error occurs while deleting the tasks or in case one of the tasks
+   *  is part of a running process.
    */
   void deleteTasks(Collection<String> taskIds, boolean cascade);
+  
+  /**
+   * Deletes the given task, not deleting historic information that is related to this task..
+   * @param taskId The id of the task that will be deleted, cannot be null. If no task
+   * exists with the given taskId, the operation is ignored.
+   * @param deleteReason reason the task is deleted. Is recorded in history, if enabled.
+   * @throws ActivitiException when an error occurs while deleting the task or in case the task is part
+   *  of a running process
+   */
+  void deleteTask(String taskId, String deleteReason);
+  
+  /**
+   * Deletes all tasks of the given collection, not deleting historic information that is related to these tasks.
+   * @param taskIds The id's of the tasks that will be deleted, cannot be null. All
+   * id's in the list that don't have an existing task will be ignored.
+   * @param deleteReason reason the task is deleted. Is recorded in history, if enabled.
+   * @throws ActivitiException when an error occurs while deleting the tasks or in case one of the tasks
+   *  is part of a running process.
+   */
+  void deleteTasks(Collection<String> taskIds, String deleteReason);
   
 	 /**
    * Claim responsibility for a task: the given user is made assignee for the task.

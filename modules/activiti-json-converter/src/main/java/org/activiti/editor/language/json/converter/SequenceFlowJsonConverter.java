@@ -18,7 +18,6 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.GraphicInfo;
-import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonNode;
@@ -52,8 +51,7 @@ public class SequenceFlowJsonConverter extends BaseBpmnJsonConverter {
   
   @Override
   public void convertToJson(FlowElement flowElement, ActivityProcessor processor,
-      Process process, BpmnModel model, ArrayNode shapesArrayNode,
-      double subProcessX, double subProcessY) {
+      BpmnModel model, ArrayNode shapesArrayNode, double subProcessX, double subProcessY) {
     
     SequenceFlow sequenceFlow = (SequenceFlow) flowElement;
     ObjectNode flowNode = BpmnJsonConverterUtil.createChildShape(sequenceFlow.getId(), STENCIL_SEQUENCE_FLOW, 172, 212, 128, 212);

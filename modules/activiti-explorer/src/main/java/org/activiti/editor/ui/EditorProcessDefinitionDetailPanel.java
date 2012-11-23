@@ -12,8 +12,17 @@
  */
 package org.activiti.editor.ui;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.activiti.bpmn.converter.BpmnXMLConverter;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
@@ -22,19 +31,26 @@ import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.custom.DetailPanel;
 import org.activiti.explorer.ui.form.FormPropertiesForm;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
-import org.activiti.explorer.ui.process.listener.CopyModelClickListener;
-import org.activiti.explorer.ui.process.listener.DeleteModelClickListener;
-import org.activiti.explorer.ui.process.listener.DeployProcessDefinitionClickListener;
 import org.activiti.explorer.ui.process.listener.EditModelClickListener;
-import org.activiti.explorer.ui.process.listener.ExportModelClickListener;
+import org.activiti.explorer.ui.process.listener.ImportModelClickListener;
 import org.activiti.explorer.ui.process.listener.NewModelClickListener;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ObjectNode;
 
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.terminal.DownloadStream;
+import com.vaadin.terminal.FileResource;
+import com.vaadin.ui.AbstractSelect.Filtering;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Select;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
@@ -47,6 +63,7 @@ import com.vaadin.ui.themes.Reindeer;
 public class EditorProcessDefinitionDetailPanel extends DetailPanel {
   
   private static final long serialVersionUID = 1L;
+  protected static final Logger LOGGER = Logger.getLogger(EditorProcessDefinitionDetailPanel.class.getName());
   
   // Members
   protected Model modelData;
@@ -61,11 +78,10 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
   protected HorizontalLayout actionsContainer;
   protected Label nameLabel;
   protected Button newModelButton;
-  protected Button deployProcessDefinitionButton;
-  protected Button exportModelButton;
+  protected Button importModelButton;
   protected Button editModelButton;
-  protected Button copyModelButton;
-  protected Button deleteModelButton;
+  protected Label actionLabel;
+  protected Select actionSelect;
   
   protected FormPropertiesForm processDefinitionStartForm;
   protected EditorProcessDefinitionInfoComponent definitionInfoComponent;
@@ -106,39 +122,57 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
     newModelButton = new Button(i18nManager.getMessage(Messages.PROCESS_NEW));
     newModelButton.addListener(new NewModelClickListener());
     
-    deployProcessDefinitionButton = new Button(i18nManager.getMessage(Messages.PROCESS_DEPLOY));
-    deployProcessDefinitionButton.addListener(new DeployProcessDefinitionClickListener(modelData));
-    
-    exportModelButton = new Button(i18nManager.getMessage(Messages.PROCESS_EXPORT));
-    exportModelButton.addListener(new ExportModelClickListener(modelData));
+    importModelButton = new Button(i18nManager.getMessage(Messages.PROCESS_IMPORT));
+    importModelButton.addListener(new ImportModelClickListener());
     
     editModelButton = new Button(i18nManager.getMessage(Messages.PROCESS_EDIT));
     editModelButton.addListener(new EditModelClickListener(modelData.getId()));
     
-    copyModelButton = new Button(i18nManager.getMessage(Messages.PROCESS_COPY));
-    copyModelButton.addListener(new CopyModelClickListener(modelData));
+    actionLabel = new Label(i18nManager.getMessage(Messages.MODEL_ACTION));
+    actionLabel.setSizeUndefined();
     
-    deleteModelButton = new Button(i18nManager.getMessage(Messages.PROCESS_DELETE));
-    deleteModelButton.addListener(new DeleteModelClickListener(modelData));
+    actionSelect = new Select();
+    actionSelect.addItem(i18nManager.getMessage(Messages.PROCESS_COPY));
+    actionSelect.addItem(i18nManager.getMessage(Messages.PROCESS_DELETE));
+    actionSelect.addItem(i18nManager.getMessage(Messages.PROCESS_DEPLOY));
+    actionSelect.addItem(i18nManager.getMessage(Messages.PROCESS_EXPORT));
+    
+    actionSelect.setWidth("100px");
+    actionSelect.setFilteringMode(Filtering.FILTERINGMODE_OFF);
+    actionSelect.setImmediate(true);
+    actionSelect.addListener(new ValueChangeListener() {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void valueChange(ValueChangeEvent event) {
+        if (i18nManager.getMessage(Messages.PROCESS_COPY).equals(event.getProperty().getValue())) {
+          ExplorerApp.get().getViewManager().showPopupWindow(new CopyModelPopupWindow(modelData));
+        } else if (i18nManager.getMessage(Messages.PROCESS_DELETE).equals(event.getProperty().getValue())) {
+          ExplorerApp.get().getViewManager().showPopupWindow(new DeleteModelPopupWindow(modelData));
+        } else if (i18nManager.getMessage(Messages.PROCESS_DEPLOY).equals(event.getProperty().getValue())) {
+          deployModel();
+        } else if (i18nManager.getMessage(Messages.PROCESS_EXPORT).equals(event.getProperty().getValue())) {
+          exportModel();
+        }
+      }
+    });
     
     // Clear toolbar and add 'start' button
     processDefinitionPage.getToolBar().removeAllButtons();
+    processDefinitionPage.getToolBar().removeAllAdditionalComponents();
     processDefinitionPage.getToolBar().addButton(newModelButton);
-    processDefinitionPage.getToolBar().addButton(deployProcessDefinitionButton);
-    processDefinitionPage.getToolBar().addButton(exportModelButton);
+    processDefinitionPage.getToolBar().addButton(importModelButton);
     processDefinitionPage.getToolBar().addButton(editModelButton);
-    processDefinitionPage.getToolBar().addButton(copyModelButton);
-    processDefinitionPage.getToolBar().addButton(deleteModelButton);
+    processDefinitionPage.getToolBar().addAdditionalComponent(actionLabel);
+    processDefinitionPage.getToolBar().setComponentAlignment(actionLabel, Alignment.MIDDLE_LEFT);
+    processDefinitionPage.getToolBar().addAdditionalComponent(actionSelect);
+    processDefinitionPage.getToolBar().setComponentAlignment(actionSelect, Alignment.MIDDLE_RIGHT);
   }
   
 
   public void initProcessDefinitionInfo() {
     if(definitionInfoComponent == null) {
       definitionInfoComponent = new EditorProcessDefinitionInfoComponent(modelData);
-    }
-    
-    if (deployProcessDefinitionButton != null) {
-      deployProcessDefinitionButton.setEnabled(true);
     }
     
     detailContainer.removeAllComponents();
@@ -179,5 +213,53 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
     Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
     emptySpace.setSizeUndefined();
     container.addComponent(emptySpace);
+  }
+  
+  protected void exportModel() {
+    final FileResource stream = new FileResource(new File(""), ExplorerApp.get()) {
+      
+      private static final long serialVersionUID = 1L;
+
+        @Override
+        public DownloadStream getStream() {
+          DownloadStream ds = null;
+          try {
+            
+            BpmnJsonConverter jsonConverter = new BpmnJsonConverter();
+            JsonNode editorNode = new ObjectMapper().readTree(repositoryService.getModelEditorSource(modelData.getId()));
+            BpmnModel bpmnModel = jsonConverter.convertToBpmnModel(editorNode);
+            BpmnXMLConverter xmlConverter = new BpmnXMLConverter();
+            byte[] bpmnBytes = xmlConverter.convertToXML(bpmnModel);
+            
+            ByteArrayInputStream in = new ByteArrayInputStream(bpmnBytes);
+            String filename = bpmnModel.getMainProcess().getId() + ".bpmn20.xml";
+            ds = new DownloadStream(in, "application/xml", filename);
+            // Need a file download POPUP
+            ds.setParameter("Content-Disposition", "attachment; filename=" + filename);
+          } catch(Exception e) {
+            LOGGER.log(Level.SEVERE, "failed to export model to BPMN XML", e);
+            ExplorerApp.get().getNotificationManager().showErrorNotification(Messages.PROCESS_TOXML_FAILED, e);
+          }
+          return ds;
+        }
+    };
+    stream.setCacheTime(0);
+    ExplorerApp.get().getMainWindow().open(stream);
+  }
+  
+  protected void deployModel() {
+    try {
+      ObjectNode modelNode = (ObjectNode) new ObjectMapper().readTree(repositoryService.getModelEditorSource(modelData.getId()));
+      BpmnModel model = new BpmnJsonConverter().convertToBpmnModel(modelNode);
+      byte[] bpmnBytes = new BpmnXMLConverter().convertToXML(model);
+      
+      Deployment deployment = repositoryService.createDeployment().name(modelData.getName())
+          .addString(modelData.getName() + ".bpmn20.xml", new String(bpmnBytes)).deploy();
+      
+      ExplorerApp.get().getViewManager().showDeploymentPage(deployment.getId());
+      
+    } catch(Exception e) {
+      ExplorerApp.get().getNotificationManager().showErrorNotification(Messages.PROCESS_TOXML_FAILED, e);
+    }
   }
 }

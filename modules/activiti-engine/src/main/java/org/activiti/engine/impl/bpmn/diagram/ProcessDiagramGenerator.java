@@ -75,6 +75,14 @@ public class ProcessDiagramGenerator {
       }
     });
     
+    // none throw
+    activityDrawInstructions.put("intermediateThrowEvent", new ActivityDrawInstruction() {
+      
+      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
+        processDiagramCreator.drawThrowingNoneEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
+      }
+    });
+    
     // end event
     activityDrawInstructions.put("endEvent", new ActivityDrawInstruction() {
 
@@ -325,6 +333,7 @@ public class ProcessDiagramGenerator {
 
   protected static void drawActivity(ProcessDiagramCanvas processDiagramCanvas, ActivityImpl activity, List<String> highLightedActivities, List<String> highLightedFlows) {
     String type = (String) activity.getProperty("type");
+    
     ActivityDrawInstruction drawInstruction = activityDrawInstructions.get(type);
     if (drawInstruction != null) {
 

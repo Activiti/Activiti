@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.form;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
@@ -42,7 +43,8 @@ public class FormTypes {
       formType = new DateFormType(datePatternText);
       
     } else if ("enum".equals(typeText)) {
-      Map<String, String> values = new HashMap<String, String>();
+      // ACT-1023: Using linked hashmap to preserve the order in which the entries are defined
+      Map<String, String> values = new LinkedHashMap<String, String>();
       for (Element valueElement: formPropertyElement.elementsNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS,"value")) {
         String valueId = valueElement.attribute("id");
         String valueName = valueElement.attribute("name");

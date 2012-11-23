@@ -15,8 +15,11 @@ package org.activiti.engine.test.api.form;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.form.FormProperty;
@@ -267,11 +270,19 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     assertEquals("enum", property.getType().getName());
     Map<String, String> values = (Map<String, String>) property.getType().getInformation("values");
 
-    Map<String, String> expectedValues = new HashMap<String, String>();
+    Map<String, String> expectedValues = new LinkedHashMap<String, String>();
     expectedValues.put("left", "Go Left");
     expectedValues.put("right", "Go Right");
     expectedValues.put("up", "Go Up");
     expectedValues.put("down", "Go Down");
+    
+    // ACT-1023: check if ordering is retained
+    Iterator<Entry<String, String>> expectedValuesIterator = expectedValues.entrySet().iterator();
+    for(Entry<String, String> entry : values.entrySet()) {
+      Entry<String, String> expectedEntryAtLocation = expectedValuesIterator.next();
+      assertEquals(expectedEntryAtLocation.getKey(), entry.getKey());
+      assertEquals(expectedEntryAtLocation.getValue(), entry.getValue());
+    }
     assertEquals(expectedValues, values);
   }
   

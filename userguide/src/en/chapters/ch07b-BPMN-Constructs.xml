@@ -236,9 +236,6 @@
       
    <section id="bpmnSignalEventDefinition">
       	<title>Signal Event Definitions</title>
-      	<link linkend="experimental">
-			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
-		</link>
       	<para>
       		Signal events are events which reference a named signal. A signal is an event of global scope (broadcast semantics)
       		and is delivered to all active handlers.	
@@ -349,9 +346,6 @@ RuntimeService.signalEventReceived(String signalName, String executionId);
       
    <section id="bpmnMessageEventDefinition">
       	<title>Message Event Definitions</title>
-		<link linkend="experimental">
-			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
-		</link>
       	<para>
       		Message events are events which reference a named message. A message has a name and a payload. Unlike a signal, 
       		a message event is always directed at a single receiver.      		 
@@ -649,10 +643,6 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
         <section id="bpmnMessageStartEvent">
 
             <title>Message Start Event</title>
-		<link linkend="experimental">
-			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
-		</link>
-
             <section id="messageStartEventDescription">
 
 	        <title>Description</title>
@@ -796,9 +786,6 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
         <section id="bpmnErrorStartEvent">
 
             <title>Error Start Event</title>
-		<link linkend="experimental">
-			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
-		</link>
             <section id="errorStartEventDescription">
 
 	        <title>Description</title>
@@ -1278,9 +1265,6 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 		
 		<section id="bpmnBoundarySignalEvent">
 		  <title>Signal Boundary Event</title>
-		<link linkend="experimental">
-			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
-		</link>
 		  
 		  <section id="bpmnBoundarySignalEventDescription">
 		    <title>Description</title>
@@ -1628,9 +1612,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
         
         <section id="bpmnIntermediateSignalEvent">
 		  <title>Signal Intermediate Catching Event</title>
-		<link linkend="experimental">
-			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
-		</link>
+		
 		  <section id="bpmnIntermediateSignalEventDescription">
 		    <title>Description</title>
 		    <para>
@@ -1683,9 +1665,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
         
         <section id="bpmnIntermediateMessageEvent">
 		  <title>Message Intermediate Catching Event</title>
-		<link linkend="experimental">
-			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
-		</link>
+		
 		  <section id="bpmnIntermediateMessageEventDescription">
 		    <title>Description</title>
 		    <para>
@@ -1789,9 +1769,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
     
      <section id="bpmnIntermediateThrowSignalEvent">
 		  <title>Signal Intermediate Throwing Event</title>
-		<link linkend="experimental">
-			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
-		</link>
+		
 		  <section id="bpmnIntermediateThrowSignalEventDescription">
 		    <title>Description</title>
 		    <para>
@@ -2601,9 +2579,6 @@ assertEquals("Ship Order", task.getName());</programlisting>
     <section id="bpmnEventbasedGateway">
     
       <title>Event-based Gateway</title>
-		<link linkend="experimental">
-			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
-		</link>
       
       <section id="eventBasedGatewayDescription">
       
@@ -2801,7 +2776,8 @@ assertEquals("Ship Order", task.getName());</programlisting>
               </para>
               <para>
                 There is an activity extension which allows you to specify an expression in your task-definition to set the initial due
-                date of a task when it is created. The expression <emphasis role="bold">should always resolve to a <literal>java.util.Date</literal> or <literal>null</literal></emphasis>. 
+                date of a task when it is created. The expression <emphasis role="bold">should always resolve to a <literal>java.util.Date</literal>, 
+                <literal>java.util.String (ISO8601 formatted)</literal> or <literal>null</literal></emphasis>. 
                 For example, you could use a date that was entered in a previous form in the process or calculated in a previous Service Task.
               </para>
                <programlisting>
@@ -4993,9 +4969,6 @@ public class MyTaskCreateListener implements TaskListener {
 		<section id="bpmnEventSubprocess">
 		
 		  <title>Event Sub-Process</title>
-		<link linkend="experimental">
-			<emphasis role="bold">[EXPERIMENTAL]</emphasis>
-		</link>
 		  
 		  <section id="bpmnEventSubprocessDescription">
 		  

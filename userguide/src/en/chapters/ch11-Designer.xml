@@ -318,7 +318,7 @@
   
   <section id="eclipseDesignerExtending">
     <title>Extending Activiti Designer</title>
-    <para><emphasis role="bold">[EXPERIMENTAL]</emphasis> You can extend the default functionality
+    <para>You can extend the default functionality
       offered by Activiti Designer. This section documents which extensions are available, how they
       can be used and provides some usage examples. Extending Activiti Designer is useful in cases
       where the default functionality doesn't suit your needs, you require additional capabilities

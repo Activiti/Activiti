@@ -10,10 +10,15 @@ add CATEGORY_ varchar(255);
 alter table ACT_RE_PROCDEF
     add DESCRIPTION_ varchar(4000);  
     
+alter table ACT_RU_EXECUTION
+    add constraint ACT_FK_EXE_PROCDEF 
+    foreign key (PROC_DEF_ID_) 
+    references ACT_RE_PROCDEF (ID_);    
+    
 alter table ACT_RU_TASK
     add SUSPENSION_STATE_ integer;
     
-update ACT_RU_TASK set SUSPENSION_STATE= 1; 
+update ACT_RU_TASK set SUSPENSION_STATE_ = 1; 
 
 create table ACT_RE_MODEL (
     ID_ varchar(64) not null,

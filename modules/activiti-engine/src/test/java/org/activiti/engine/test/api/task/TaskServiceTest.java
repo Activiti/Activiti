@@ -495,8 +495,6 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
     assertEquals(1, variables.size());
     assertEquals("myValue", variables.get("myParam"));
-
-    taskService.deleteTask(task.getId(), true);
   }
   
   public void testSetAssignee() {
@@ -1053,6 +1051,74 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     } catch(ActivitiOptimisticLockingException e) {
       // Expected exception
     }
+  }
+  
+  public void testDeleteTaskWithDeleteReason() {
+    // ACT-900: deleteReason can be manually specified - can only be validated when historyLevel > ACTIVITY
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      
+      Task task = taskService.newTask();
+      task.setName("test task");
+      taskService.saveTask(task);
+      
+      assertNotNull(task.getId());
+      
+      taskService.deleteTask(task.getId(), "deleted for testing purposes");
+      
+      HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery()
+        .taskId(task.getId()).singleResult();
+      
+      assertNotNull(historicTaskInstance);
+      assertEquals("deleted for testing purposes", historicTaskInstance.getDeleteReason());
+      
+      // Delete historic task that is left behind, will not be cleaned up because this is not part of a process
+      taskService.deleteTask(task.getId(), true);
+      
+    }
+  }
+  
+  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+  public void testDeleteTaskPartOfProcess() {
+    runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    Task task = taskService.createTaskQuery().singleResult();
+    assertNotNull(task);
+    
+    try {
+      taskService.deleteTask(task.getId());
+    } catch(ActivitiException ae) {
+      assertEquals("The task cannot be deleted because is part of a running process", ae.getMessage());
+    }
+    
+    try {
+      taskService.deleteTask(task.getId(), true);
+    } catch(ActivitiException ae) {
+      assertEquals("The task cannot be deleted because is part of a running process", ae.getMessage());
+    }
+    
+    try {
+      taskService.deleteTask(task.getId(), "test");
+    } catch(ActivitiException ae) {
+      assertEquals("The task cannot be deleted because is part of a running process", ae.getMessage());
+    }
+    
+    try {
+      taskService.deleteTasks(Arrays.asList(task.getId()));
+    } catch(ActivitiException ae) {
+      assertEquals("The task cannot be deleted because is part of a running process", ae.getMessage());
+    }
+    
+    try {
+      taskService.deleteTasks(Arrays.asList(task.getId()), true);
+    } catch(ActivitiException ae) {
+      assertEquals("The task cannot be deleted because is part of a running process", ae.getMessage());
+    }
+    
+    try {
+      taskService.deleteTasks(Arrays.asList(task.getId()), "test");
+    } catch(ActivitiException ae) {
+      assertEquals("The task cannot be deleted because is part of a running process", ae.getMessage());
+    }
+    
   }
   
 }

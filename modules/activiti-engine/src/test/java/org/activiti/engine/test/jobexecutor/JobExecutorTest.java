@@ -12,15 +12,23 @@
  */
 package org.activiti.engine.test.jobexecutor;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.jobexecutor.GetUnlockedTimersByDuedateCmd;
 import org.activiti.engine.impl.persistence.entity.JobManager;
+import org.activiti.engine.impl.persistence.entity.TimerEntity;
+import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.test.Deployment;
 
 
 
@@ -39,6 +47,7 @@ public class JobExecutorTest extends JobExecutorTestCase {
         jobManager.send(createTweetMessage("message-three"));
         jobManager.send(createTweetMessage("message-four"));
         
+        jobManager.schedule(createTweetTimer("timer-one", new Date()));
         jobManager.schedule(createTweetTimer("timer-one", new Date()));
         jobManager.schedule(createTweetTimer("timer-two", new Date()));
         return null;
