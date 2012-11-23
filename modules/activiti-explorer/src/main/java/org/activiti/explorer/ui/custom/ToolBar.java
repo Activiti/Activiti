@@ -23,6 +23,7 @@ import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 
@@ -39,10 +40,12 @@ public class ToolBar extends HorizontalLayout {
   protected Map<String, ToolbarEntry> entryMap;
   protected ToolbarEntry currentEntry;
   protected List<Button> actionButtons;
+  protected List<Component> additionalComponents;
 
   public ToolBar() {
     entryMap = new HashMap<String, ToolbarEntry>();
     actionButtons = new ArrayList<Button>();
+    additionalComponents = new ArrayList<Component>();
     
     setWidth("100%");
     setHeight(36, UNITS_PIXELS);
@@ -107,6 +110,17 @@ public class ToolBar extends HorizontalLayout {
   public void removeAllButtons() {
     for(Button b : actionButtons) {
       removeComponent(b);
+    }
+  }
+  
+  public void addAdditionalComponent(Component component) {
+    additionalComponents.add(component);
+    addComponent(component);
+  }
+  
+  public void removeAllAdditionalComponents() {
+    for(Component c : additionalComponents) {
+      removeComponent(c);
     }
   }
   

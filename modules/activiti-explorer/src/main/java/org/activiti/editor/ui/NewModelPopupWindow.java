@@ -148,6 +148,7 @@ public class NewModelPopupWindow extends PopupWindow implements ModelDataJsonCon
           }
           modelObjectNode.put(MODEL_DESCRIPTION, description);
           modelData.setMetaInfo(modelObjectNode.toString());
+          modelData.setName((String) nameTextField.getValue());
           
           repositoryService.saveModel(modelData);
           

@@ -201,6 +201,7 @@ public interface Messages {
   static final String PROCESS_EDIT = "process.edit";
   static final String PROCESS_COPY = "process.copy";
   static final String PROCESS_NEW = "process.new";
+  static final String PROCESS_IMPORT = "process.import";
   static final String PROCESS_DELETE = "process.delete";
   static final String PROCESS_DEPLOY = "process.deploy";
   static final String PROCESS_ACTIVATE = "process.activate";
@@ -292,6 +293,18 @@ public interface Messages {
   static final String DEPLOYMENT_DELETE_POPUP_CAPTION = "deployment.delete.popup.caption";
   static final String DEPLOYMENT_DELETE_POPUP_WARNING = "deployment.delete.popup.warning";
   static final String DEPLOYMENT_DELETE_POPUP_DELETE_BUTTON = "deployment.delete.popup.delete.button";
+  
+  // Import to model workspace
+  static final String MODEL_IMPORT = "model.import";
+  static final String MODEL_IMPORT_DESCRIPTION = "model.import.description";
+  static final String MODEL_IMPORT_FAILED = "model.import.failed";
+  static final String MODEL_IMPORT_INVALID_FILE = "model.import.invalid.file";
+  static final String MODEL_IMPORT_INVALID_FILE_EXPLANATION = "model.import.invalid.file.explanation";
+  static final String MODEL_IMPORT_INVALID_BPMNDI = "model.import.invalid.bpmndi";
+  static final String MODEL_IMPORT_INVALID_BPMNDI_EXPLANATION = "model.import.invalid.bpmndi.explanation";
+  static final String MODEL_IMPORT_INVALID_BPMN_EXPLANATION = "model.import.invalid.bpmn.explanation";
+  
+  static final String MODEL_ACTION = "model.action";
   
   // Database page
   static final String DATABASE_NO_ROWS = "database.no.rows";

@@ -58,6 +58,7 @@ public class DeleteModelPopupWindow extends PopupWindow implements ModelDataJson
     windowLayout.setSpacing(true);
     addStyleName(Reindeer.WINDOW_LIGHT);
     setModal(true);
+    setWidth("300px");
     center();
     
     setCaption(i18nManager.getMessage(Messages.PROCESS_DELETE_POPUP_CAPTION, modelData.getName()));

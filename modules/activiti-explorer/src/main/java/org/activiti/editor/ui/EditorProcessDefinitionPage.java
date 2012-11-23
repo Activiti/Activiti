@@ -19,6 +19,7 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Model;
 import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.Messages;
 import org.activiti.explorer.navigation.ProcessModelNavigator;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.AbstractTablePage;
@@ -26,11 +27,14 @@ import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.custom.ToolBar;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 import org.activiti.explorer.ui.process.ProcessMenuBar;
+import org.activiti.explorer.ui.process.listener.ImportModelClickListener;
+import org.activiti.explorer.ui.process.listener.NewModelClickListener;
 import org.activiti.explorer.ui.util.ThemeImageColumnGenerator;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Table;
 
 
@@ -73,7 +77,14 @@ public class EditorProcessDefinitionPage extends AbstractTablePage {
   
   @Override
   protected ToolBar createMenuBar() {
-   return new ProcessMenuBar();
+   ProcessMenuBar menuBar = new ProcessMenuBar();
+   Button newModelButton = new Button(ExplorerApp.get().getI18nManager().getMessage(Messages.PROCESS_NEW));
+   newModelButton.addListener(new NewModelClickListener());
+   menuBar.addButton(newModelButton);
+   Button importModelButton = new Button(ExplorerApp.get().getI18nManager().getMessage(Messages.PROCESS_IMPORT));
+   importModelButton.addListener(new ImportModelClickListener());
+   menuBar.addButton(importModelButton);
+   return menuBar;
   }
   
   @Override
