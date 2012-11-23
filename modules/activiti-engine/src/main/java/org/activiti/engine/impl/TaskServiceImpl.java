@@ -79,19 +79,29 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   }
   
   public void deleteTask(String taskId) {
-    commandExecutor.execute(new DeleteTaskCmd(taskId, false));
+    commandExecutor.execute(new DeleteTaskCmd(taskId, null, false));
   }
   
   public void deleteTasks(Collection<String> taskIds) {
-    commandExecutor.execute(new DeleteTaskCmd(taskIds, false));
+    commandExecutor.execute(new DeleteTaskCmd(taskIds, null, false));
   }
   
   public void deleteTask(String taskId, boolean cascade) {
-    commandExecutor.execute(new DeleteTaskCmd(taskId, cascade));
+    commandExecutor.execute(new DeleteTaskCmd(taskId, null, cascade));
   }
 
   public void deleteTasks(Collection<String> taskIds, boolean cascade) {
-    commandExecutor.execute(new DeleteTaskCmd(taskIds, cascade));
+    commandExecutor.execute(new DeleteTaskCmd(taskIds, null, cascade));
+  }
+  
+  @Override
+  public void deleteTask(String taskId, String deleteReason) {
+    commandExecutor.execute(new DeleteTaskCmd(taskId, deleteReason, false));
+  }
+  
+  @Override
+  public void deleteTasks(Collection<String> taskIds, String deleteReason) {
+    commandExecutor.execute(new DeleteTaskCmd(taskIds, deleteReason, false));
   }
 
   public void setAssignee(String taskId, String userId) {

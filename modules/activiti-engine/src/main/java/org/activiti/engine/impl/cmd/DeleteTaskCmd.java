@@ -30,15 +30,18 @@ public class DeleteTaskCmd implements Command<Void>, Serializable {
   protected String taskId;
   protected Collection<String> taskIds;
   protected boolean cascade;
+  protected String deleteReason;
   
-  public DeleteTaskCmd(String taskId, boolean cascade) {
+  public DeleteTaskCmd(String taskId, String deleteReason, boolean cascade) {
     this.taskId = taskId;
     this.cascade = cascade;
+    this.deleteReason = deleteReason;
   }
   
-  public DeleteTaskCmd(Collection<String> taskIds, boolean cascade) {
+  public DeleteTaskCmd(Collection<String> taskIds, String deleteReason, boolean cascade) {
     this.taskIds = taskIds;
     this.cascade = cascade;
+    this.deleteReason = deleteReason;
   }
 
   public Void execute(CommandContext commandContext) {
@@ -60,6 +63,6 @@ public class DeleteTaskCmd implements Command<Void>, Serializable {
     Context
       .getCommandContext()
       .getTaskManager()
-      .deleteTask(taskId, cascade);
+      .deleteTask(taskId, deleteReason, cascade);
   }
 }
