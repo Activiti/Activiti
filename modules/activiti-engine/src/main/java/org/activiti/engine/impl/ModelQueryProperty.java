@@ -24,6 +24,7 @@ import org.activiti.engine.repository.ModelQuery;
  * Contains the possible properties that can be used in a {@link ModelQuery}.
  * 
  * @author Tijs Rademakers
+ * @author Joram Barrez
  */
 public class ModelQueryProperty implements QueryProperty {
   
@@ -35,6 +36,9 @@ public class ModelQueryProperty implements QueryProperty {
   public static final ModelQueryProperty MODEL_ID = new ModelQueryProperty("RES.ID_");
   public static final ModelQueryProperty MODEL_VERSION = new ModelQueryProperty("RES.VERSION_");
   public static final ModelQueryProperty MODEL_NAME = new ModelQueryProperty("RES.NAME_");
+  public static final ModelQueryProperty MODEL_CREATE_TIME = new ModelQueryProperty("RES.CREATE_TIME_");
+  public static final ModelQueryProperty MODEL_LAST_UPDATE_TIME = new ModelQueryProperty("RES.LAST_UPDATE_TIME_");
+  public static final ModelQueryProperty MODEL_KEY = new ModelQueryProperty("RES.KEY_");
   
   private String name;
 

@@ -107,6 +107,12 @@
       <if test="deploymentId != null">
         and RES.DEPLOYMENT_ID_ = #{deploymentId}
       </if>
+      <if test="notDeployed">
+        and RES.DEPLOYMENT_ID_ is null
+      </if>
+      <if test="deployed">
+        and RES.DEPLOYMENT_ID_ is not null
+      </if>
       <if test="latest">
         and RES.VERSION_ = (select max(VERSION_) from ${prefix}ACT_RE_MODEL RES where KEY_ = RES.KEY_)
       </if>

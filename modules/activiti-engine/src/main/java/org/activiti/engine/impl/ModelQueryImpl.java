@@ -39,6 +39,8 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
   protected Integer version;
   protected boolean latest;
   protected String deploymentId;
+  protected boolean notDeployed;
+  protected boolean deployed;
 
   public ModelQueryImpl() {
   }
@@ -127,6 +129,22 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
     return this;
   }
   
+  public ModelQuery notDeployed() {
+    if (deployed == true) {
+      throw new ActivitiException("Invalid usage: cannot use deployed() and notDeployed() in the same query");
+    }
+    this.notDeployed = true;
+    return this;
+  }
+  
+  public ModelQuery deployed() {
+    if (notDeployed == true) {
+      throw new ActivitiException("Invalid usage: cannot use deployed() and notDeployed() in the same query");
+    }
+    this.deployed = true;
+    return this;
+  }
+  
   //sorting ////////////////////////////////////////////
   
   public ModelQuery orderByModelCategory() {
@@ -137,12 +155,24 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
     return orderBy(ModelQueryProperty.MODEL_ID);
   }
   
+  public ModelQuery orderByModelKey() {
+    return orderBy(ModelQueryProperty.MODEL_KEY);
+  }
+  
   public ModelQuery orderByModelVersion() {
     return orderBy(ModelQueryProperty.MODEL_VERSION);
   }
   
   public ModelQuery orderByModelName() {
     return orderBy(ModelQueryProperty.MODEL_NAME);
+  }
+  
+  public ModelQuery orderByCreateTime() {
+    return orderBy(ModelQueryProperty.MODEL_CREATE_TIME);
+  }
+  
+  public ModelQuery orderByLastUpdateTime() {
+    return orderBy(ModelQueryProperty.MODEL_LAST_UPDATE_TIME);
   }
   
   //results ////////////////////////////////////////////

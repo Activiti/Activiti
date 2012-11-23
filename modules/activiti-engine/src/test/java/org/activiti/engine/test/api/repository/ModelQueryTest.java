@@ -162,11 +162,17 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
   public void testByDeploymentId() {
     Deployment deployment = repositoryService.createDeployment().addString("test", "test").deploy();
     
+    assertEquals(0, repositoryService.createModelQuery().deploymentId(deployment.getId()).count());
+    assertEquals(0, repositoryService.createModelQuery().deployed().count());
+    assertEquals(1, repositoryService.createModelQuery().notDeployed().count());
+    
     Model model = repositoryService.createModelQuery().singleResult();
     model.setDeploymentId(deployment.getId());
     repositoryService.saveModel(model);
     
     assertEquals(1, repositoryService.createModelQuery().deploymentId(deployment.getId()).count());
+    assertEquals(1, repositoryService.createModelQuery().deployed().count());
+    assertEquals(0, repositoryService.createModelQuery().notDeployed().count());
     
     // Cleanup
     repositoryService.deleteDeployment(deployment.getId(), true);
@@ -174,6 +180,7 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
     // After cleanup the model should still exist
     assertEquals(0, repositoryService.createDeploymentQuery().count());
     assertEquals(0, repositoryService.createModelQuery().deploymentId(deployment.getId()).count());
+    assertEquals(1, repositoryService.createModelQuery().notDeployed().count());
     assertEquals(1, repositoryService.createModelQuery().count());
   }
   
@@ -181,6 +188,23 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
     ModelQuery query = repositoryService.createModelQuery().deploymentId("invalid");
     assertNull(query.singleResult());
     assertEquals(0, query.count());
+  }
+  
+  public void testNotDeployed() {
+    ModelQuery query = repositoryService.createModelQuery().notDeployed();
+    assertEquals(1, query.count());
+    assertEquals(1, query.list().size());
+  }
+  
+  public void testOrderBy() {
+    ModelQuery query = repositoryService.createModelQuery();
+    assertEquals(1, query.orderByCreateTime().asc().count());
+    assertEquals(1, query.orderByLastUpdateTime().asc().count());
+    assertEquals(1, query.orderByModelCategory().asc().count());
+    assertEquals(1, query.orderByModelId().desc().count());
+    assertEquals(1, query.orderByModelName().desc().count());
+    assertEquals(1, query.orderByModelVersion().desc().count());
+    assertEquals(1, query.orderByModelKey().desc().count());
   }
   
   public void testByLatestVersion() {

@@ -63,6 +63,12 @@ public interface ModelQuery extends Query<ModelQuery, Model> {
   
   /** Only select models that are the source for the provided deployment */
   ModelQuery deploymentId(String deploymentId);
+  
+  /** Only select models that are deployed (ie deploymentId != null) */
+  ModelQuery deployed();
+  
+  /** Only select models that are not yet deployed */
+  ModelQuery notDeployed();
 
   // ordering ////////////////////////////////////////////////////////////
   
@@ -72,10 +78,19 @@ public interface ModelQuery extends Query<ModelQuery, Model> {
   /** Order by the id of the models (needs to be followed by {@link #asc()} or {@link #desc()}). */
   ModelQuery orderByModelId();
   
+  /** Order by the key of the models (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  ModelQuery orderByModelKey();
+  
   /** Order by the version of the models (needs to be followed by {@link #asc()} or {@link #desc()}). */
   ModelQuery orderByModelVersion();
   
   /** Order by the name of the models (needs to be followed by {@link #asc()} or {@link #desc()}). */
   ModelQuery orderByModelName();
+  
+  /** Order by the creation time of the models (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  ModelQuery orderByCreateTime();
+  
+  /** Order by the last update time of the models (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  ModelQuery orderByLastUpdateTime();
   
 }
