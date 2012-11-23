@@ -67,35 +67,4 @@ public class JobExecutorTest extends JobExecutorTestCase {
     
     assertEquals(new TreeSet<String>(expectedMessages), new TreeSet<String>(messages));
   }
-  
-  @Deployment
-  public void testSuspendedProcessTimerExecution() throws Exception {
-    // Process with boundary timer-event that fires in 1 hour
-    ProcessInstance procInst = runtimeService.startProcessInstanceByKey("suspendProcess");
-    assertNotNull(procInst);
-    assertEquals(1, managementService.createJobQuery().processInstanceId(procInst.getId()).count());
-    
-    // Shutdown the job-executor so timer's won't be executed
-    processEngineConfiguration.getJobExecutor().shutdown();
-    
-    // Roll time ahead to be sure timer is due to fire
-    Calendar tomorrow = Calendar.getInstance();
-    tomorrow.add(Calendar.DAY_OF_YEAR, 1);
-    ClockUtil.setCurrentTime(tomorrow.getTime());
-    
-    // Check if timer is eligable to be executed, when process in not yet suspended
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
-    List<TimerEntity> jobs = commandExecutor.execute(new GetUnlockedTimersByDuedateCmd(ClockUtil.getCurrentTime(), new Page(0, 1)));
-    assertEquals(1, jobs.size());
-    
-    // Suspend process instancd
-    runtimeService.suspendProcessInstanceById(procInst.getId());
-
-    // Check if the timer is NOT aquired, even though the duedate is reached
-    jobs = commandExecutor.execute(new GetUnlockedTimersByDuedateCmd(ClockUtil.getCurrentTime(), new Page(0, 1)));
-    assertEquals(0, jobs.size());
-    
-    // Start job-executor again
-    processEngineConfiguration.getJobExecutor().start();
-  }
 }
