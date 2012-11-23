@@ -32,6 +32,7 @@
         OWNER_,
         ASSIGNEE_,
         START_TIME_,
+        CLAIM_TIME_,
         END_TIME_,
         DURATION_,
         DELETE_REASON_,
@@ -49,6 +50,7 @@
         #{owner ,jdbcType=VARCHAR},
         #{assignee ,jdbcType=VARCHAR},
         #{startTime, jdbcType=TIMESTAMP},
+        #{claimTime, jdbcType=TIMESTAMP},
         #{endTime, jdbcType=TIMESTAMP},
         #{durationInMillis ,jdbcType=BIGINT},
         #{deleteReason ,jdbcType=VARCHAR},
@@ -68,6 +70,7 @@
       DESCRIPTION_ = #{description, jdbcType=VARCHAR},
       OWNER_ = #{owner, jdbcType=VARCHAR},
       ASSIGNEE_ = #{assignee, jdbcType=VARCHAR},
+      CLAIM_TIME_ = #{claimTime, jdbcType=TIMESTAMP},
       END_TIME_ = #{endTime, jdbcType=TIMESTAMP},
       DURATION_ = #{durationInMillis ,jdbcType=BIGINT},
       DELETE_REASON_ = #{deleteReason ,jdbcType=VARCHAR},
@@ -96,6 +99,7 @@
     <result property="owner" column="OWNER_" jdbcType="VARCHAR" />
     <result property="assignee" column="ASSIGNEE_" jdbcType="VARCHAR" />
     <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
+    <result property="claimTime" column="CLAIM_TIME_" jdbcType="TIMESTAMP" />
     <result property="endTime" column="END_TIME_" jdbcType="TIMESTAMP" />
     <result property="durationInMillis" column="DURATION_" jdbcType="BIGINT" />
     <result property="deleteReason" column="DELETE_REASON_" jdbcType="VARCHAR" />

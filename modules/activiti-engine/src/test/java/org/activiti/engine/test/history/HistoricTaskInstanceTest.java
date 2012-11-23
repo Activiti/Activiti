@@ -60,8 +60,17 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(taskDefinitionKey, historicTaskInstance.getTaskDefinitionKey());
     assertNull(historicTaskInstance.getEndTime());
     assertNull(historicTaskInstance.getDurationInMillis());
-    
+    assertNull(historicTaskInstance.getWorkTimeInMillis());
+    assertNull(historicTaskInstance.getDurationInMillis());
+
     runtimeService.setVariable(processInstanceId, "deadline", "yesterday");
+    
+    taskService.claim(taskId, "kermit");
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().count());
+
+    historicTaskInstance = historyService.createHistoricTaskInstanceQuery().singleResult();
+    assertNotNull(historicTaskInstance.getClaimTime());
+    assertNull(historicTaskInstance.getWorkTimeInMillis());
     
     taskService.complete(taskId);
     
@@ -78,7 +87,9 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(taskDefinitionKey, historicTaskInstance.getTaskDefinitionKey());
     assertNotNull(historicTaskInstance.getEndTime());
     assertNotNull(historicTaskInstance.getDurationInMillis());
-    
+    assertNotNull(historicTaskInstance.getClaimTime());
+    assertNotNull(historicTaskInstance.getWorkTimeInMillis());
+
     historyService.deleteHistoricTaskInstance(taskId);
 
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().count());

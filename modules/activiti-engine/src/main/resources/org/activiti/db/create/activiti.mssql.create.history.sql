@@ -44,6 +44,7 @@ create table ACT_HI_TASKINST (
     OWNER_ nvarchar(255),
     ASSIGNEE_ nvarchar(255),
     START_TIME_ datetime not null,
+    CLAIM_TIME_ datetime,
     END_TIME_ datetime,
     DURATION_ numeric(19,0),
     DELETE_REASON_ nvarchar(4000),

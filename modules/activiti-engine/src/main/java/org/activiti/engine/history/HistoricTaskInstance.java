@@ -63,6 +63,12 @@ public interface HistoricTaskInstance {
   /** Difference between {@link #getEndTime()} and {@link #getStartTime()} in milliseconds.  */
   Long getDurationInMillis();
   
+  /** Difference between {@link #getEndTime()} and {@link #getClaimTime()} in milliseconds.  */
+  Long getWorkTimeInMillis();
+  
+  /** Time when the task was claimed. */
+  Date getClaimTime();
+
   /** Task definition key. */
   String getTaskDefinitionKey();
   
