@@ -6,6 +6,7 @@ drop index ACT_RU_VARIABLE.ACT_IDX_VARIABLE_TASK_ID;
 drop index ACT_RU_EVENT_SUBSCR.ACT_IDX_EVENT_SUBSCR_CONFIG_;
 
 alter table ACT_GE_BYTEARRAY drop constraint ACT_FK_BYTEARR_DEPL;
+alter table ACT_RE_PROCDEF drop constraint ACT_UNIQ_PROCDEF;
 alter table ACT_RU_EXECUTION drop constraint ACT_FK_EXE_PROCDEF;
 alter table ACT_RU_EXECUTION drop constraint ACT_FK_EXE_PARENT;
 alter table ACT_RU_EXECUTION drop constraint ACT_FK_EXE_SUPER;  
