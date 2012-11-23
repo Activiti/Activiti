@@ -68,6 +68,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     
     // task types
     BusinessRuleTaskJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
+    MailTaskJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
     ManualTaskJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
     ReceiveTaskJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
     ScriptTaskJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
@@ -83,6 +84,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     
     // scope constructs
     SubProcessJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
+    EventSubProcessJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
     
     // catch events
     CatchEventJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
@@ -102,7 +104,6 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     DI_CIRCLES.add(STENCIL_EVENT_START_ERROR);
     DI_CIRCLES.add(STENCIL_EVENT_START_MESSAGE);
     DI_CIRCLES.add(STENCIL_EVENT_START_NONE);
-    DI_CIRCLES.add(STENCIL_EVENT_START_SIGNAL);
     DI_CIRCLES.add(STENCIL_EVENT_START_TIMER);
     
     DI_CIRCLES.add(STENCIL_EVENT_BOUNDARY_ERROR);
@@ -121,11 +122,12 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     
     DI_RECTANGLES.add(STENCIL_CALL_ACTIVITY);
     DI_RECTANGLES.add(STENCIL_SUB_PROCESS);
+    DI_RECTANGLES.add(STENCIL_EVENT_SUB_PROCESS);
     DI_RECTANGLES.add(STENCIL_TASK_BUSINESS_RULE);
+    DI_RECTANGLES.add(STENCIL_TASK_MAIL);
     DI_RECTANGLES.add(STENCIL_TASK_MANUAL);
     DI_RECTANGLES.add(STENCIL_TASK_RECEIVE);
     DI_RECTANGLES.add(STENCIL_TASK_SCRIPT);
-    DI_RECTANGLES.add(STENCIL_TASK_SEND);
     DI_RECTANGLES.add(STENCIL_TASK_SERVICE);
     DI_RECTANGLES.add(STENCIL_TASK_USER);
     
@@ -164,20 +166,20 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       propertiesNode.put(PROPERTY_DOCUMENTATION, process.getDocumentation());
     }
     modelNode.put(EDITOR_SHAPE_PROPERTIES, propertiesNode);
-    processFlowElements(process, model, shapesArrayNode, 0.0, 0.0);
+    processFlowElements(process.getFlowElements(), model, shapesArrayNode, 0.0, 0.0);
     
     modelNode.put(EDITOR_CHILD_SHAPES, shapesArrayNode);
     return modelNode;
   }
   
-  public void processFlowElements(Process process, BpmnModel model, ArrayNode shapesArrayNode, 
+  public void processFlowElements(Collection<FlowElement> flowElements, BpmnModel model, ArrayNode shapesArrayNode, 
       double subProcessX, double subProcessY) {
     
-    for (FlowElement flowElement : process.getFlowElements()) {
+    for (FlowElement flowElement : flowElements) {
       Class<? extends BaseBpmnJsonConverter> converter = convertersToJsonMap.get(flowElement.getClass());
       if (converter != null) {
         try {
-          converter.newInstance().convertToJson(flowElement, this, process, model, shapesArrayNode, 
+          converter.newInstance().convertToJson(flowElement, this, model, shapesArrayNode, 
               subProcessX, subProcessY);
         } catch (Exception e) {
           LOGGER.log(Level.SEVERE, "Error converting " + flowElement, e);
@@ -374,6 +376,16 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       
       JsonNode sourceRefNode = sourceAndTargetList.get(0);
       JsonNode targetRefNode = sourceAndTargetList.get(1);
+      
+      if (sourceRefNode == null) {
+      	LOGGER.log(Level.INFO, "Skipping edge " + edgeId + " because source ref is null");
+      	continue;
+      }
+      
+      if (targetRefNode == null) {
+      	LOGGER.log(Level.INFO, "Skipping edge " + edgeId + " because target ref is null");
+      	continue;
+      }
       
       JsonNode dockersNode = edgeNode.get(EDITOR_DOCKERS);
       double sourceDockersX = dockersNode.get(0).get(EDITOR_BOUNDS_X).getDoubleValue();

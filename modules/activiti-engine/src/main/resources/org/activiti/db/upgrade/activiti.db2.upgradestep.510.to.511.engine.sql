@@ -6,7 +6,9 @@ alter table ACT_RE_PROCDEF
 
 alter table ACT_RU_TASK
     add SUSPENSION_STATE_ integer;
-    
+
+Call Sysproc.admin_cmd ('REORG TABLE ACT_RU_TASK');
+
 update ACT_RU_TASK set SUSPENSION_STATE_ = 1; 
 
 alter table ACT_RU_EXECUTION

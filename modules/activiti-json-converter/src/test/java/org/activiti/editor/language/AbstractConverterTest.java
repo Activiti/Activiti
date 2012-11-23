@@ -6,6 +6,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ObjectNode;
 
 public abstract class AbstractConverterTest {
 
@@ -13,6 +14,12 @@ public abstract class AbstractConverterTest {
     InputStream jsonStream = this.getClass().getClassLoader().getResourceAsStream(getResource());
     JsonNode modelNode = new ObjectMapper().readTree(jsonStream);
     BpmnModel bpmnModel = new BpmnJsonConverter().convertToBpmnModel(modelNode);
+    return bpmnModel;
+  }
+  
+  protected BpmnModel convertToJsonAndBack(BpmnModel bpmnModel) {
+    ObjectNode modelNode = new BpmnJsonConverter().convertToJson(bpmnModel);
+    bpmnModel = new BpmnJsonConverter().convertToBpmnModel(modelNode);
     return bpmnModel;
   }
   

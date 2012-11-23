@@ -21,6 +21,13 @@ public class SubProcessConverterTest extends AbstractConverterTest {
     validateModel(bpmnModel);
   }
   
+  @Test 
+  public void doubleConversionValidation() throws Exception {
+    BpmnModel bpmnModel = readJsonFile();
+    bpmnModel = convertToJsonAndBack(bpmnModel);
+    validateModel(bpmnModel);
+  }
+  
   protected String getResource() {
     return "test.subprocessmodel.json";
   }

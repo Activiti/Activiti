@@ -37,6 +37,7 @@ public interface BpmnXMLConstants {
   
   public static final String ATTRIBUTE_ID = "id";
   public static final String ATTRIBUTE_NAME = "name";
+  public static final String ATTRIBUTE_TYPE = "type";
   public static final String ELEMENT_DOCUMENTATION = "documentation";
   
   public static final String ELEMENT_SIGNAL = "signal";
@@ -65,6 +66,9 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_ACTIVITY_ASYNCHRONOUS = "async";
   public static final String ATTRIBUTE_ACTIVITY_EXCLUSIVE = "exclusive";
   public static final String ATTRIBUTE_ACTIVITY_DEFAULT = "default";
+  
+  // fake element for mail task
+  public static final String ELEMENT_TASK_MAIL = "mailTask";
   
   public static final String ELEMENT_TASK_BUSINESSRULE = "businessRuleTask";
   public static final String ELEMENT_TASK_MANUAL = "manualTask";

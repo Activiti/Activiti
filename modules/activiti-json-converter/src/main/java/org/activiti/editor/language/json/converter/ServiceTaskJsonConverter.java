@@ -49,13 +49,30 @@ public class ServiceTaskJsonConverter extends BaseBpmnJsonConverter {
   
   protected void convertElementToJson(ObjectNode propertiesNode, FlowElement flowElement) {
   	ServiceTask serviceTask = (ServiceTask) flowElement;
-  	if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(serviceTask.getImplementationType())) {
-  	  propertiesNode.put(PROPERTY_SERVICETASK_CLASS, serviceTask.getImplementation());
-  	} else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(serviceTask.getImplementationType())) {
-      propertiesNode.put(PROPERTY_SERVICETASK_EXPRESSION, serviceTask.getImplementation());
-    } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(serviceTask.getImplementationType())) {
-      propertiesNode.put(PROPERTY_SERVICETASK_DELEGATE_EXPRESSION, serviceTask.getImplementation());
-    }
+  	
+  	if ("mail".equalsIgnoreCase(serviceTask.getType())) {
+  	  
+  	  setPropertyFieldValue(PROPERTY_MAILTASK_TO, serviceTask, propertiesNode);
+  	  setPropertyFieldValue(PROPERTY_MAILTASK_FROM, serviceTask, propertiesNode);
+  	  setPropertyFieldValue(PROPERTY_MAILTASK_SUBJECT, serviceTask, propertiesNode);
+  	  setPropertyFieldValue(PROPERTY_MAILTASK_CC, serviceTask, propertiesNode);
+  	  setPropertyFieldValue(PROPERTY_MAILTASK_BCC, serviceTask, propertiesNode);
+  	  setPropertyFieldValue(PROPERTY_MAILTASK_TEXT, serviceTask, propertiesNode);
+  	  setPropertyFieldValue(PROPERTY_MAILTASK_HTML, serviceTask, propertiesNode);
+  	  setPropertyFieldValue(PROPERTY_MAILTASK_CHARSET, serviceTask, propertiesNode);
+  	  
+  	} else {
+  	
+    	if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(serviceTask.getImplementationType())) {
+    	  propertiesNode.put(PROPERTY_SERVICETASK_CLASS, serviceTask.getImplementation());
+    	} else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(serviceTask.getImplementationType())) {
+        propertiesNode.put(PROPERTY_SERVICETASK_EXPRESSION, serviceTask.getImplementation());
+      } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(serviceTask.getImplementationType())) {
+        propertiesNode.put(PROPERTY_SERVICETASK_DELEGATE_EXPRESSION, serviceTask.getImplementation());
+      }
+    	
+    	addFieldExtensions(serviceTask.getFieldExtensions(), propertiesNode);
+  	}
   }
   
   protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
@@ -95,5 +112,17 @@ public class ServiceTaskJsonConverter extends BaseBpmnJsonConverter {
     }
     
     return task;
+  }
+  
+  protected void setPropertyFieldValue(String name, ServiceTask task, ObjectNode propertiesNode) {
+    for (FieldExtension extension : task.getFieldExtensions()) {
+      if (name.substring(8).equalsIgnoreCase(extension.getFieldName())) {
+        if (StringUtils.isNotEmpty(extension.getStringValue())) {
+          setPropertyValue(name, extension.getStringValue(), propertiesNode);
+        } else if (StringUtils.isNotEmpty(extension.getExpression())) {
+          setPropertyValue(name, extension.getExpression(), propertiesNode);
+        }
+      }
+    }
   }
 }

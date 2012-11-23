@@ -28,9 +28,11 @@ public interface StencilConstants {
   final String STENCIL_EVENT_END_ERROR = "EndErrorEvent";
   
   final String STENCIL_SUB_PROCESS = "SubProcess";
+  final String STENCIL_EVENT_SUB_PROCESS = "EventSubProcess";
   final String STENCIL_CALL_ACTIVITY = "CallActivity";
   
   final String STENCIL_TASK_BUSINESS_RULE = "BusinessRule";
+  final String STENCIL_TASK_MAIL = "MailTask";
   final String STENCIL_TASK_MANUAL = "ManualTask";
   final String STENCIL_TASK_RECEIVE = "ReceiveTask";
   final String STENCIL_TASK_SCRIPT = "ScriptTask";
@@ -55,6 +57,8 @@ public interface StencilConstants {
   final String STENCIL_EVENT_THROW_NONE = "ThrowNoneEvent";
   
   final String STENCIL_SEQUENCE_FLOW = "SequenceFlow";
+  
+  final String STENCIL_TEXT_ANNOTATION = "TextAnnotation";
 	
   final String PROPERTY_VALUE_YES = "Yes";
   final String PROPERTY_VALUE_NO = "No";
@@ -140,6 +144,15 @@ public interface StencilConstants {
 	final String PROPERTY_RULETASK_RESULT = "ruletask_result";
 	final String PROPERTY_RULETASK_RULES = "ruletask_rules";
 	final String PROPERTY_RULETASK_EXCLUDE = "ruletask_exclude";
+	
+	final String PROPERTY_MAILTASK_TO = "mailtaskto";
+	final String PROPERTY_MAILTASK_FROM = "mailtaskfrom";
+	final String PROPERTY_MAILTASK_SUBJECT= "mailtasksubject";
+	final String PROPERTY_MAILTASK_CC= "mailtaskcc";
+	final String PROPERTY_MAILTASK_BCC= "mailtaskbcc";
+	final String PROPERTY_MAILTASK_TEXT= "mailtasktext";
+	final String PROPERTY_MAILTASK_HTML= "mailtaskhtml";
+	final String PROPERTY_MAILTASK_CHARSET= "mailtaskcharset";
 	
 	final String PROPERTY_CALLACTIVITY_CALLEDELEMENT = "callactivitycalledelement";
   final String PROPERTY_CALLACTIVITY_IN = "callactivityinparameters";
