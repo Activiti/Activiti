@@ -25,8 +25,8 @@
 <section id="required.software">
   <title>Required software</title>
   <section>
-    <title>JDK 5+</title>
-    <para>Activiti runs on a JDK higher then version 5.  Go 
+    <title>JDK 6+</title>
+    <para>Activiti runs on a JDK higher than or equal to version 6.  Go 
     to <ulink url="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Oracle Java SE downloads</ulink>
     and click on button "Download JDK".  There are installation instructions on that page as well.
     To verify that your installation was successful, run <literal>java -version</literal> on the 
@@ -42,12 +42,10 @@
     </para>
   </section>
   <section>
-    <title>Eclipse 3.6.2</title>
-    <para>Download the <emphasis role="bold">Eclipse Classic</emphasis> version of eclipse from <ulink url="http://www.eclipse.org/downloads/">the Eclipse download page</ulink>.
+    <title>Eclipse Indigo and Juno</title>
+    <para>Download the the eclipse distribution of your choice from <ulink url="http://www.eclipse.org/downloads/">the Eclipse download page</ulink>.
     Unzip the downloaded file and then you should be able to start it with the eclipse file in the directory <literal>eclipse</literal>. 
-    Further in this user guide, there is a section on <link linkend="eclipsesetup">setting up the Activiti examples projects in 
-    your eclipse</link> and another one on <link linkend="eclipseDesignerInstallation">installing our eclipse designer 
-    plugin</link>.
+    Further in this user guide, there is a section on <link linkend="eclipseDesignerInstallation">installing our eclipse designer plugin</link>.
     </para>
   </section>
 </section>
@@ -75,7 +73,7 @@
 <section id="internal">
   <title>Internal implementation classes</title>
   <para>In the jar file, all classes in packages that have <literal>.impl.</literal> (e.g. <literal>org.activiti.engine.impl.pvm.delegate</literal>)
-  in them are implementation classes and should be considered internal.  No stability guarantees are given on classes or interfaces 
+  in them are implementation classes and should be considered internal. No stability guarantees are given on classes or interfaces 
   that are in implementation classes.
   </para>
 </section>

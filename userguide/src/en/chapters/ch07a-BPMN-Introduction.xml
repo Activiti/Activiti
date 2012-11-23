@@ -13,21 +13,6 @@
 
 	</section>
 
-	<section id="bpmnExamples">
-
-		<title>Examples</title>
-
-		<para>
-		  Examples for the BPMN 2.0 constructs described in the following sections can be 
-		  found in the <emphasis>workspace/activiti-x-examples</emphasis> folders of the Activiti distribution. 
-	  </para>
-	  
-	  <para>	  
-		  See the specific section on <link linkend="examples">examples</link> for more information.
-		</para>
-
-	</section>
-
 	<section id="bpmnDefiningProcess">
 
 		<title>Defining a process</title>
