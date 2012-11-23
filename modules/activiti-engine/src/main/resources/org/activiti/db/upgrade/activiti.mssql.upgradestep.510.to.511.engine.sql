@@ -16,7 +16,7 @@ alter table ACT_RE_PROCDEF
 alter table ACT_RU_TASK
     add SUSPENSION_STATE_ int;
     
-update ACT_RU_TASK set SUSPENSION_STATE= 1; 
+update ACT_RU_TASK set SUSPENSION_STATE_ = 1; 
 
 alter table ACT_RU_EXECUTION
     add constraint ACT_FK_EXE_PROCDEF 

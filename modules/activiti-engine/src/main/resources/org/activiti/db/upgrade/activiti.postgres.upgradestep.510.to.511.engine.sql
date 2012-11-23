@@ -18,7 +18,7 @@ alter table ACT_RU_EXECUTION
 alter table ACT_RU_TASK
     add SUSPENSION_STATE_ integer;
     
-update ACT_RU_TASK set SUSPENSION_STATE= 1; 
+update ACT_RU_TASK set SUSPENSION_STATE_ = 1; 
 
 create table ACT_RE_MODEL (
     ID_ varchar(64) not null,
