@@ -34,11 +34,15 @@ create table ACT_RE_DEPLOYMENT (
 
 create table ACT_RE_MODEL (
     ID_ varchar(64) not null,
+    REV_ integer,
     NAME_ varchar(255),
+    KEY_ varchar(255),
     CATEGORY_ varchar(255),
     CREATE_TIME_ timestamp,
+    LAST_UPDATE_TIME_ timestamp,
     VERSION_ integer,
     META_INFO_ varchar(4000),
+    DEPLOYMENT_ID_ varchar(64),
     EDITOR_SOURCE_VALUE_ID_ varchar(64),
     EDITOR_SOURCE_EXTRA_VALUE_ID_ varchar(64),
     primary key (ID_)
@@ -272,3 +276,9 @@ alter table ACT_RE_MODEL
     add constraint ACT_FK_MODEL_SOURCE_EXTRA 
     foreign key (EDITOR_SOURCE_EXTRA_VALUE_ID_) 
     references ACT_GE_BYTEARRAY (ID_);
+    
+create index ACT_IDX_MODEL_DEPLOYMENT on ACT_RE_DEPLOYMENT(DEPLOYMENT_ID_);    
+alter table ACT_RE_MODEL 
+    add constraint ACT_FK_MODEL_DEPLOYMENT 
+    foreign key (DEPLOYMENT_ID_) 
+    references ACT_RE_DEPLOYMENT (ID_);        

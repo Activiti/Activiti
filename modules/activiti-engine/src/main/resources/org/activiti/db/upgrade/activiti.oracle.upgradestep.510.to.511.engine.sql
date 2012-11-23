@@ -17,11 +17,15 @@ update ACT_RU_TASK set SUSPENSION_STATE= 1;
 
 create table ACT_RE_MODEL (
     ID_ NVARCHAR2(64) not null,
+    REV_ INTEGER,
     NAME_ NVARCHAR2(255),
+    KEY_ NVARCHAR2(255),
     CATEGORY_ NVARCHAR2(255),
     CREATE_TIME_ TIMESTAMP(6),
+    LAST_UPDATE_TIME_ TIMESTAMP(6),
     VERSION_ INTEGER,
     META_INFO_ NVARCHAR2(2000),
+    DEPLOYMENT_ID_ NVARCHAR2(64),
     EDITOR_SOURCE_VALUE_ID_ NVARCHAR2(64),
     EDITOR_SOURCE_EXTRA_VALUE_ID_ NVARCHAR2(64),
     primary key (ID_)
@@ -38,6 +42,12 @@ alter table ACT_RE_MODEL
     add constraint ACT_FK_MODEL_SOURCE_EXTRA 
     foreign key (EDITOR_SOURCE_EXTRA_VALUE_ID_) 
     references ACT_GE_BYTEARRAY (ID_);
+    
+create index ACT_IDX_MODEL_DEPLOYMENT on ACT_RE_MODEL(DEPLOYMENT_ID_);    
+alter table ACT_RE_MODEL 
+    add constraint ACT_FK_MODEL_DEPLOYMENT 
+    foreign key (DEPLOYMENT_ID_) 
+    references ACT_RE_DEPLOYMENT (ID_);        
 
 delete from ACT_GE_PROPERTY where NAME_ = 'historyLevel';
 

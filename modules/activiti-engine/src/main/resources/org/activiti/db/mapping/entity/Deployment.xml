@@ -50,16 +50,16 @@
         RES.ID_ = #{deploymentId}
       </if>
       <if test="name != null">
-        RES.NAME_ = #{name}
+        and RES.NAME_ = #{name}
       </if>
       <if test="nameLike != null">
-        RES.NAME_ like #{nameLike}
+        and RES.NAME_ like #{nameLike}
       </if>
       <if test="category != null">
-        RES.CATEGORY_ = #{category}
+        and RES.CATEGORY_ = #{category}
       </if>
       <if test="categoryNotEquals != null">
-        ( RES.CATEGORY_ &lt;&gt; #{categoryNotEquals} OR RES.CATEGORY_ is null )  
+        and ( RES.CATEGORY_ &lt;&gt; #{categoryNotEquals} OR RES.CATEGORY_ is null )  
       </if>
     </where>
   </sql>

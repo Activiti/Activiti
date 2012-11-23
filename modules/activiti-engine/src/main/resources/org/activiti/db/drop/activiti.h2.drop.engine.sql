@@ -60,6 +60,9 @@ alter table ACT_RE_MODEL
 
 alter table ACT_RE_MODEL 
     drop constraint ACT_FK_MODEL_SOURCE_EXTRA;
+    
+alter table ACT_RE_MODEL 
+    drop constraint ACT_FK_MODEL_DEPLOYMENT;
 
 drop index ACT_IDX_EVENT_SUBSCR_CONFIG_;
 drop index ACT_IDX_ATHRZ_PROCEDEF;

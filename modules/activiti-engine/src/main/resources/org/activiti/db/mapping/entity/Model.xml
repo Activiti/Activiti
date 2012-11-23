@@ -7,39 +7,57 @@
   <!-- MODEL INSERT -->
   
   <insert id="insertModel" parameterType="org.activiti.engine.impl.persistence.entity.ModelEntity">
-    insert into ${prefix}ACT_RE_MODEL(ID_, NAME_, CATEGORY_, CREATE_TIME_, VERSION_, META_INFO_, EDITOR_SOURCE_VALUE_ID_, EDITOR_SOURCE_EXTRA_VALUE_ID_)
-    values(#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{category, jdbcType=VARCHAR}, #{createTime, jdbcType=TIMESTAMP},
-    1, #{metaInfo, jdbcType=VARCHAR}, #{editorSourceValueId, jdbcType=VARCHAR}, #{editorSourceExtraValueId, jdbcType=VARCHAR})
+    insert into ${prefix}ACT_RE_MODEL(ID_, REV_, NAME_, KEY_, CATEGORY_, CREATE_TIME_, LAST_UPDATE_TIME_, VERSION_, META_INFO_, DEPLOYMENT_ID_, EDITOR_SOURCE_VALUE_ID_, EDITOR_SOURCE_EXTRA_VALUE_ID_)
+    values(#{id, jdbcType=VARCHAR}, 
+           1,
+           #{name, jdbcType=VARCHAR}, 
+           #{key, jdbcType=VARCHAR}, 
+           #{category, jdbcType=VARCHAR}, 
+           #{createTime, jdbcType=TIMESTAMP},
+           #{createTime, jdbcType=TIMESTAMP},
+           #{version, jdbcType=INTEGER}, 
+           #{metaInfo, jdbcType=VARCHAR}, 
+           #{deploymentId, jdbcType=VARCHAR},
+           #{editorSourceValueId, jdbcType=VARCHAR}, 
+           #{editorSourceExtraValueId, jdbcType=VARCHAR})
   </insert>
   
   <!-- MODEL UPDATE -->
   <update id="updateModel" parameterType="org.activiti.engine.impl.persistence.entity.ModelEntity">
     update ${prefix}ACT_RE_MODEL set
+      REV_ = #{revisionNext, jdbcType=INTEGER},
       NAME_ = #{name, jdbcType=VARCHAR},
+      KEY_ = #{key, jdbcType=VARCHAR},
       CATEGORY_ = #{category, jdbcType=VARCHAR},
+      LAST_UPDATE_TIME_ = #{lastUpdateTime, jdbcType=VARCHAR},
       VERSION_ = #{version, jdbcType=INTEGER},
       META_INFO_ = #{metaInfo, jdbcType=VARCHAR},
+      DEPLOYMENT_ID_ = #{deploymentId, jdbcType=VARCHAR},
       EDITOR_SOURCE_VALUE_ID_ = #{editorSourceValueId, jdbcType=VARCHAR},
       EDITOR_SOURCE_EXTRA_VALUE_ID_ = #{editorSourceExtraValueId, jdbcType=VARCHAR}
-    where ID_ = #{id, jdbcType=VARCHAR}
+    where ID_ = #{id, jdbcType=VARCHAR} and REV_ = #{revision, jdbcType=INTEGER}
   </update>
 
   
   <!-- MODEL DELETE -->
   
   <delete id="deleteModel" parameterType="string">
-    delete from ${prefix}ACT_RE_MODEL where ID_ = #{id}
+    delete from ${prefix}ACT_RE_MODEL where ID_ = #{id} and REV_ = #{revision}
   </delete>
 
   <!-- MODEL RESULTMAP -->
   
   <resultMap id="modelResultMap" type="org.activiti.engine.impl.persistence.entity.ModelEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="revision" column="REV_" jdbcType="INTEGER"/>
     <result property="name" column="NAME_" jdbcType="VARCHAR" />
+    <result property="key" column="KEY_" jdbcType="VARCHAR" />
     <result property="category" column="CATEGORY_" jdbcType="VARCHAR" />
     <result property="createTime" column="CREATE_TIME_" jdbcType="TIMESTAMP"/>
+    <result property="lastUpdateTime" column="LAST_UPDATE_TIME_" jdbcType="TIMESTAMP"/>
     <result property="version" column="VERSION_" jdbcType="INTEGER" />
     <result property="metaInfo" column="META_INFO_" jdbcType="VARCHAR" />
+    <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="VARCHAR" />
     <result property="editorSourceValueId" column="EDITOR_SOURCE_VALUE_ID_" jdbcType="VARCHAR" />
     <result property="editorSourceExtraValueId" column="EDITOR_SOURCE_EXTRA_VALUE_ID_" jdbcType="VARCHAR" />
   </resultMap>
@@ -66,22 +84,31 @@
         RES.ID_ = #{id}
       </if>
       <if test="name != null">
-        RES.NAME_ = #{name}
+        and RES.NAME_ = #{name}
       </if>
       <if test="nameLike != null">
-        RES.NAME_ like #{nameLike}
+        and RES.NAME_ like #{nameLike}
+      </if>
+      <if test="key != null">
+        and RES.KEY_ = #{key}
       </if>
       <if test="category != null">
-        RES.CATEGORY_ = #{category}
+        and RES.CATEGORY_ = #{category}
       </if>
       <if test="categoryLike != null">
-        RES.CATEGORY_ like #{categoryLike}
+        and RES.CATEGORY_ like #{categoryLike}
       </if>
       <if test="categoryNotEquals != null">
-        ( RES.CATEGORY_ &lt;&gt; #{categoryNotEquals} OR RES.CATEGORY_ is null )  
+        and ( RES.CATEGORY_ &lt;&gt; #{categoryNotEquals} OR RES.CATEGORY_ is null )  
       </if>
       <if test="version != null">
-        RES.VERSION_ = #{version}
+        and RES.VERSION_ = #{version}
+      </if>
+      <if test="deploymentId != null">
+        and RES.DEPLOYMENT_ID_ = #{deploymentId}
+      </if>
+      <if test="latest">
+        and RES.VERSION_ = (select max(VERSION_) from ${prefix}ACT_RE_MODEL RES where KEY_ = RES.KEY_)
       </if>
     </where>
   </sql>

@@ -49,9 +49,12 @@ alter table ACT_RU_EVENT_SUBSCR
 
 alter table ACT_RE_MODEL 
     drop constraint ACT_FK_MODEL_SOURCE;
-
+    
 alter table ACT_RE_MODEL 
     drop constraint ACT_FK_MODEL_SOURCE_EXTRA;
+    
+alter table ACT_RE_MODEL 
+    drop constraint ACT_FK_MODEL_DEPLOYMENT;    
 
 drop index ACT_RU_IDENTITYLINK.ACT_IDX_ATHRZ_PROCEDEF;
     

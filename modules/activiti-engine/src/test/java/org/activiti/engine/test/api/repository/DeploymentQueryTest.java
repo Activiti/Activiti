@@ -35,6 +35,7 @@ public class DeploymentQueryTest extends PluggableActivitiTestCase {
     deploymentOneId = repositoryService
       .createDeployment()
       .name("org/activiti/engine/test/repository/one.bpmn20.xml")
+      .category("testCategory")
       .addClasspathResource("org/activiti/engine/test/repository/one.bpmn20.xml")
       .deploy()
       .getId();
@@ -126,6 +127,13 @@ public class DeploymentQueryTest extends PluggableActivitiTestCase {
       repositoryService.createDeploymentQuery().deploymentNameLike(null);
       fail();
     } catch (ActivitiException e) {}
+  }
+  
+  public void testQueryByNameAndCategory() {
+    DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentCategory("testCategory").deploymentNameLike("%activiti%");
+    assertEquals(1, query.list().size());
+    assertEquals(1, query.count());
+    assertNotNull(query.singleResult());
   }
 
   public void testVerifyDeploymentProperties() {

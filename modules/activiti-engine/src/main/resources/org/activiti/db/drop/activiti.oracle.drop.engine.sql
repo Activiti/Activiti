@@ -12,6 +12,7 @@ drop index ACT_IDX_VAR_BYTEARRAY;
 drop index ACT_IDX_JOB_EXCEPTION;
 drop index ACT_IDX_MODEL_SOURCE;
 drop index ACT_IDX_MODEL_SOURCE_EXTRA;
+drop index ACT_IDX_MODEL_DEPLOYMENT;
 
 drop index ACT_IDX_EXEC_BUSKEY;
 drop index ACT_IDX_TASK_CREATE;
@@ -72,6 +73,9 @@ alter table ACT_RE_MODEL
 
 alter table ACT_RE_MODEL
     drop CONSTRAINT ACT_FK_MODEL_SOURCE_EXTRA;
+    
+alter table ACT_RE_MODEL
+    drop CONSTRAINT ACT_FK_MODEL_DEPLOYMENT;    
     
 drop index ACT_IDX_EVENT_SUBSCR_CONFIG_;
 drop index ACT_IDX_EVENT_SUBSCR;

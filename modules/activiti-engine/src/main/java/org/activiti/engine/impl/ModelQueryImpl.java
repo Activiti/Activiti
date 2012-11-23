@@ -24,6 +24,7 @@ import org.activiti.engine.repository.ModelQuery;
 
 /**
  * @author Tijs Rademakers
+ * @author Joram Barrez
  */
 public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements ModelQuery {
   
@@ -34,7 +35,10 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
   protected String categoryNotEquals;
   protected String name;
   protected String nameLike;
+  protected String key;
   protected Integer version;
+  protected boolean latest;
+  protected String deploymentId;
 
   public ModelQueryImpl() {
   }
@@ -92,6 +96,14 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
     return this;
   }
   
+  public ModelQuery modelKey(String key) {
+    if (key == null) {
+      throw new ActivitiException("key is null");
+    }
+    this.key = key;
+    return this;
+  }
+  
   public ModelQueryImpl modelVersion(Integer version) {
     if (version == null) {
       throw new ActivitiException("version is null");
@@ -99,6 +111,19 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
       throw new ActivitiException("version must be positive");
     }
     this.version = version;
+    return this;
+  }
+  
+  public ModelQuery latestVersion() {
+    this.latest = true;
+    return this;
+  }
+  
+  public ModelQuery deploymentId(String deploymentId) {
+    if (deploymentId == null) {
+      throw new ActivitiException("DeploymentId is null");
+    }
+    this.deploymentId = deploymentId;
     return this;
   }
   

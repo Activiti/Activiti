@@ -19,6 +19,7 @@ import org.activiti.engine.query.Query;
  * Allows programmatic querying of {@link Model}s.
  * 
  * @author Tijs Rademakers
+ * @author Joram Barrez
  */
 public interface ModelQuery extends Query<ModelQuery, Model> {
   
@@ -45,11 +46,23 @@ public interface ModelQuery extends Query<ModelQuery, Model> {
    * The syntax that should be used is the same as in SQL, eg. %activiti%
    */
   ModelQuery modelNameLike(String modelNameLike);
+  
+  /** Only selects models with the given key. */
+  ModelQuery modelKey(String key);
 
-  /**
-   * Only select model with a certain version.
-   */
+  /** Only select model with a certain version. */
   ModelQuery modelVersion(Integer modelVersion);
+  
+  /**
+   * Only select models which has the highest version.
+   * 
+   * Note: if modelKey(key) is not used in this query, all the models with
+   * the highest version for each key will be returned (similar to process definitions) 
+   */
+  ModelQuery latestVersion();
+  
+  /** Only select models that are the source for the provided deployment */
+  ModelQuery deploymentId(String deploymentId);
 
   // ordering ////////////////////////////////////////////////////////////
   

@@ -16,6 +16,7 @@ package org.activiti.engine.test.api.repository;
 import java.util.List;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ModelQuery;
 
@@ -31,6 +32,7 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
   protected void setUp() throws Exception {
     Model model = repositoryService.newModel();
     model.setName("my model");
+    model.setKey("someKey");
     model.setCategory("test");
     repositoryService.saveModel(model);
     modelOneId = model.getId();
@@ -44,6 +46,18 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
   protected void tearDown() throws Exception {
     super.tearDown();
     repositoryService.deleteModel(modelOneId);
+  }
+  
+  public void testModelProperties() {
+    ModelQuery query = repositoryService.createModelQuery();
+    Model model = query.singleResult();
+    assertNotNull(model.getId());
+    assertNotNull(model.getCategory());
+    assertNotNull(model.getKey());
+    assertNotNull(model.getName());
+    assertNotNull(model.getVersion());
+    assertNotNull(model.getCreateTime());
+    assertNotNull(model.getLastUpdateTime());
   }
   
   public void testQueryNoCriteria() {
@@ -79,6 +93,29 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
   
   public void testQueryByInvalidNameLike() {
     ModelQuery query = repositoryService.createModelQuery().modelNameLike("%invalid%");
+    assertNull(query.singleResult());
+    assertEquals(0, query.list().size());
+    assertEquals(0, query.count());
+  }
+  
+  public void testQueryByKey() {
+    ModelQuery query = repositoryService.createModelQuery().modelName("my model").modelKey("someKey");
+    Model model = query.singleResult();
+    assertNotNull(model);
+    assertEquals(1, query.list().size());
+    assertEquals(1, query.count());
+  }
+  
+  public void testQueryByNameAndKey() {
+    ModelQuery query = repositoryService.createModelQuery().modelKey("someKey");
+    Model model = query.singleResult();
+    assertNotNull(model);
+    assertEquals(1, query.list().size());
+    assertEquals(1, query.count());
+  }
+  
+  public void testQueryByInvalidKey() {
+    ModelQuery query = repositoryService.createModelQuery().modelKey("invalid");
     assertNull(query.singleResult());
     assertEquals(0, query.list().size());
     assertEquals(0, query.count());
@@ -120,6 +157,52 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
     ModelQuery query = repositoryService.createModelQuery().modelVersion(1);
     assertEquals(1, query.list().size());
     assertEquals(1, query.count());
+  }
+  
+  public void testByDeploymentId() {
+    Deployment deployment = repositoryService.createDeployment().addString("test", "test").deploy();
+    
+    Model model = repositoryService.createModelQuery().singleResult();
+    model.setDeploymentId(deployment.getId());
+    repositoryService.saveModel(model);
+    
+    assertEquals(1, repositoryService.createModelQuery().deploymentId(deployment.getId()).count());
+    
+    // Cleanup
+    repositoryService.deleteDeployment(deployment.getId(), true);
+    
+    // After cleanup the model should still exist
+    assertEquals(0, repositoryService.createDeploymentQuery().count());
+    assertEquals(0, repositoryService.createModelQuery().deploymentId(deployment.getId()).count());
+    assertEquals(1, repositoryService.createModelQuery().count());
+  }
+  
+  public void testByInvalidDeploymentId() {
+    ModelQuery query = repositoryService.createModelQuery().deploymentId("invalid");
+    assertNull(query.singleResult());
+    assertEquals(0, query.count());
+  }
+  
+  public void testByLatestVersion() {
+    ModelQuery query = repositoryService.createModelQuery().latestVersion().modelKey("someKey");
+    Model model = query.singleResult();
+    assertNotNull(model);
+    
+    // Add a new version of the model
+    Model newVersion = repositoryService.newModel();
+    newVersion.setName("my model");
+    newVersion.setKey("someKey");
+    newVersion.setCategory("test");
+    newVersion.setVersion(model.getVersion() + 1);
+    repositoryService.saveModel(newVersion);
+    
+    // Verify query
+    model = query.singleResult();
+    assertNotNull(model);
+    assertTrue(model.getVersion() == 2);
+    
+    // Cleanup
+    repositoryService.deleteModel(model.getId());
   }
 
   public void testVerifyModelProperties() {
