@@ -15,18 +15,18 @@ package org.activiti.editor.language.json.converter;
 import java.util.Map;
 
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.GraphicInfo;
-import org.activiti.bpmn.model.SubProcess;
+import org.activiti.bpmn.model.ServiceTask;
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 /**
  * @author Tijs Rademakers
  */
-public class SubProcessJsonConverter extends BaseBpmnJsonConverter {
-  
+public class MailTaskJsonConverter extends BaseBpmnJsonConverter {
+
   public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,
       Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
     
@@ -35,32 +35,47 @@ public class SubProcessJsonConverter extends BaseBpmnJsonConverter {
   }
   
   public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
-    convertersToBpmnMap.put(STENCIL_SUB_PROCESS, SubProcessJsonConverter.class);
+    convertersToBpmnMap.put(STENCIL_TASK_MAIL, MailTaskJsonConverter.class);
   }
   
   public static void fillBpmnTypes(Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
-    convertersToJsonMap.put(SubProcess.class, SubProcessJsonConverter.class);
+    // will be handled by ServiceTaskJsonConverter
   }
   
   protected String getStencilId(FlowElement flowElement) {
-    return STENCIL_SUB_PROCESS;
+    return STENCIL_TASK_MAIL;
   }
-
+  
   protected void convertElementToJson(ObjectNode propertiesNode, FlowElement flowElement) {
-    SubProcess subProcess = (SubProcess) flowElement;
-    propertiesNode.put("activitytype", "Sub-Process");
-    propertiesNode.put("subprocesstype", "Embedded");
-    ArrayNode subProcessShapesArrayNode = objectMapper.createArrayNode();
-    GraphicInfo graphicInfo = model.getGraphicInfo(flowElement.getId());
-    processor.processFlowElements(subProcess.getFlowElements(), model, subProcessShapesArrayNode, 
-        graphicInfo.x + subProcessX, graphicInfo.y + subProcessY);
-    flowElementNode.put("childShapes", subProcessShapesArrayNode);
+    // will be handled by ServiceTaskJsonConverter
   }
   
   protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
-    SubProcess subProcess = new SubProcess();
-    JsonNode childShapesArray = elementNode.get(EDITOR_CHILD_SHAPES);
-    processor.processJsonElements(childShapesArray, modelNode, subProcess, shapeMap);
-    return subProcess;
+  	ServiceTask task = new ServiceTask();
+  	task.setType("mail");
+  	addField(PROPERTY_MAILTASK_TO, elementNode, task);
+  	addField(PROPERTY_MAILTASK_FROM, elementNode, task);
+  	addField(PROPERTY_MAILTASK_SUBJECT, elementNode, task);
+  	addField(PROPERTY_MAILTASK_CC, elementNode, task);
+  	addField(PROPERTY_MAILTASK_BCC, elementNode, task);
+  	addField(PROPERTY_MAILTASK_TEXT, elementNode, task);
+  	addField(PROPERTY_MAILTASK_HTML, elementNode, task);
+  	addField(PROPERTY_MAILTASK_CHARSET, elementNode, task);
+    
+    return task;
+  }
+  
+  protected void addField(String name, JsonNode elementNode, ServiceTask task) {
+    FieldExtension field = new FieldExtension();
+    field.setFieldName(name.substring(8));
+    String value = getPropertyValueAsString(name, elementNode);
+    if (StringUtils.isNotEmpty(value)) {
+      if ((value.contains("${") || value.contains("#{")) && value.contains("}")) {
+        field.setExpression(value);
+      } else {
+        field.setStringValue(value);
+      }
+    }
+    task.getFieldExtensions().add(field);
   }
 }

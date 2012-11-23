@@ -41,6 +41,7 @@ import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.EventDefinition;
+import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.Lane;
@@ -218,10 +219,10 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 					if (activeSubProcessList.size() > 0 && ELEMENT_EXTENSIONS.equalsIgnoreCase(xtr.getLocalName())) {
 						new ExecutionListenerParser().parseChildElement(xtr, activeSubProcessList.get(activeSubProcessList.size() - 1));
 
-					} else if (activeSubProcessList.size() > 0 && "multiInstanceLoopCharacteristics".equalsIgnoreCase(xtr.getLocalName())) {
+					} else if (activeSubProcessList.size() > 0 && ELEMENT_MULTIINSTANCE.equalsIgnoreCase(xtr.getLocalName())) {
 						
 						new MultiInstanceParser().parseChildElement(xtr, activeSubProcessList.get(activeSubProcessList.size() - 1));
-						
+					  
 					} else if (convertersToBpmnMap.containsKey(xtr.getLocalName())) {
 					  Class<? extends BaseBpmnXMLConverter> converter = convertersToBpmnMap.get(xtr.getLocalName());
 					  converter.newInstance().convertToBpmnModel(xtr, model, activeProcess, activeSubProcessList);
@@ -442,6 +443,10 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
         xtw.writeAttribute(ATTRIBUTE_NAME, subProcess.getName());
       } else {
         xtw.writeAttribute(ATTRIBUTE_NAME, "subProcess");
+      }
+      
+      if (subProcess instanceof EventSubProcess) {
+        xtw.writeAttribute(ATTRIBUTE_TRIGGERED_BY, "true");
       }
       
       if (StringUtils.isNotEmpty(subProcess.getDocumentation())) {

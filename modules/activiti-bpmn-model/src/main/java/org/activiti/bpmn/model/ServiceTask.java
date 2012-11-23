@@ -23,6 +23,7 @@ public class ServiceTask extends Task {
   protected String implementation;
   protected String implementationType;
   protected String resultVariableName;
+  protected String type;
   protected List<FieldExtension> fieldExtensions = new ArrayList<FieldExtension>();
   protected List<CustomProperty> customProperties = new ArrayList<CustomProperty>();
 
@@ -43,6 +44,12 @@ public class ServiceTask extends Task {
   }
   public void setResultVariableName(String resultVariableName) {
     this.resultVariableName = resultVariableName;
+  }
+  public String getType() {
+    return type;
+  }
+  public void setType(String type) {
+    this.type = type;
   }
   public List<FieldExtension> getFieldExtensions() {
     return fieldExtensions;

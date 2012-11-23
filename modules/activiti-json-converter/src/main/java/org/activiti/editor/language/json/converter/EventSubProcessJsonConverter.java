@@ -15,6 +15,7 @@ package org.activiti.editor.language.json.converter;
 import java.util.Map;
 
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.SubProcess;
@@ -25,7 +26,7 @@ import org.codehaus.jackson.node.ObjectNode;
 /**
  * @author Tijs Rademakers
  */
-public class SubProcessJsonConverter extends BaseBpmnJsonConverter {
+public class EventSubProcessJsonConverter extends BaseBpmnJsonConverter {
   
   public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,
       Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
@@ -35,20 +36,20 @@ public class SubProcessJsonConverter extends BaseBpmnJsonConverter {
   }
   
   public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
-    convertersToBpmnMap.put(STENCIL_SUB_PROCESS, SubProcessJsonConverter.class);
+    convertersToBpmnMap.put(STENCIL_EVENT_SUB_PROCESS, EventSubProcessJsonConverter.class);
   }
   
   public static void fillBpmnTypes(Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
-    convertersToJsonMap.put(SubProcess.class, SubProcessJsonConverter.class);
+    convertersToJsonMap.put(EventSubProcess.class, EventSubProcessJsonConverter.class);
   }
   
   protected String getStencilId(FlowElement flowElement) {
-    return STENCIL_SUB_PROCESS;
+    return STENCIL_EVENT_SUB_PROCESS;
   }
 
   protected void convertElementToJson(ObjectNode propertiesNode, FlowElement flowElement) {
     SubProcess subProcess = (SubProcess) flowElement;
-    propertiesNode.put("activitytype", "Sub-Process");
+    propertiesNode.put("activitytype", "Event-Sub-Process");
     propertiesNode.put("subprocesstype", "Embedded");
     ArrayNode subProcessShapesArrayNode = objectMapper.createArrayNode();
     GraphicInfo graphicInfo = model.getGraphicInfo(flowElement.getId());
@@ -58,7 +59,7 @@ public class SubProcessJsonConverter extends BaseBpmnJsonConverter {
   }
   
   protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
-    SubProcess subProcess = new SubProcess();
+    EventSubProcess subProcess = new EventSubProcess();
     JsonNode childShapesArray = elementNode.get(EDITOR_CHILD_SHAPES);
     processor.processJsonElements(childShapesArray, modelNode, subProcess, shapeMap);
     return subProcess;

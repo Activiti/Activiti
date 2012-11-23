@@ -428,6 +428,65 @@
       } ]
     } ]
   }, {
+    "name" : "mailtaskbase",
+    "properties" : [ {
+      "id" : "mailtaskto",
+      "type" : "Text",
+      "title" : "To",
+      "value" : "",
+      "description" : "The recipients if the e-mail. Multiple recipients are defined in a comma-separated list.",
+      "popular" : true
+    }, {
+      "id" : "mailtaskfrom",
+      "type" : "Text",
+      "title" : "From",
+      "value" : "",
+      "description" : "The sender e-mail address. If not provided, the default configured from address is used.",
+      "popular" : true
+    }, {
+      "id" : "mailtasksubject",
+      "type" : "Text",
+      "title" : "Subject",
+      "value" : "",
+      "description" : "The subject of the e-mail.",
+      "popular" : true
+    }, {
+      "id" : "mailtaskcc",
+      "type" : "Text",
+      "title" : "Cc",
+      "value" : "",
+      "description" : "The cc's of the e-mail. Multiple recipients are defined in a comma-separated list",
+      "popular" : true
+    }, {
+      "id" : "mailtaskbcc",
+      "type" : "Text",
+      "title" : "Bcc",
+      "value" : "",
+      "description" : "The bcc's of the e-mail. Multiple recipients are defined in a comma-separated list",
+      "popular" : true
+    }, {
+      "id" : "mailtasktext",
+      "type" : "Text",
+      "title" : "Text",
+      "value" : "",
+      "description" : "The content of the e-mail, in case one needs to send plain none-rich e-mails. Can be used in combination with html, for e-mail clients that don't support rich content. The client will then fall back to this text-only alternative.",
+      "popular" : true
+    }, {
+      "id" : "mailtaskhtml",
+      "type" : "Text",
+      "title" : "Html",
+      "value" : "",
+      "description" : "A piece of HTML that is the content of the e-mail.",
+      "popular" : true
+    }, {
+      "id" : "mailtaskcharset",
+      "type" : "String",
+      "title" : "Charset",
+      "value" : "",
+      "description" : "Allows to change the charset of the email, which is necessary for many non-English languages. ",
+      "popular" : true
+    } ]
+  }, {
     "name" : "callactivitybase",
     "properties" : [ {
       "id" : "callactivitycalledelement",
@@ -607,6 +666,17 @@
       "value" : "",
       "description" : "Initiator of the process.",
       "popular" : true
+    } ]
+  }, {
+    "name" : "textannotationbase",
+    "properties" : [ {
+      "id" : "text",
+      "type" : "String",
+      "title" : "Text",
+      "value" : "",
+      "description" : "The text of the text annotation.",
+      "popular" : true,
+      "refToView" : "text"
     } ]
   }, {
     "name" : "asynchronousbase",
@@ -890,16 +960,6 @@
     "roles" : [ "Startevents_all", "sequence_start", "StartEventsMorph", "all" ]
   }, {
     "type" : "node",
-    "id" : "StartSignalEvent",
-    "title" : "Start signal event",
-    "description" : "A start event with a signal trigger",
-    "view" : "startevent/signal.svg",
-    "icon" : "startevent/signal.png",
-    "groups" : [ "Start Events" ],
-    "propertyPackages" : [ "elementbase", "baseattributes", "signalrefdefinition", "executionlistenersbase" ],
-    "roles" : [ "Startevents_all", "sequence_start", "StartEventsMorph", "all" ]
-  }, {
-    "type" : "node",
     "id" : "StartErrorEvent",
     "title" : "Start error event",
     "description" : "A start event that catches a thrown BPMN error",
@@ -916,7 +976,7 @@
     "view" : "activity/usertask.svg",
     "icon" : "activity/list/type.user.png",
     "groups" : [ "Activities" ],
-    "propertyPackages" : [ "elementbase", "baseattributes", "usertaskbase", "usertaskassignment", "formdefinition", "tasklistenersbase", "asynchronousbase", "customformdefinition", "loopcharacteristics", "activity" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "usertaskbase", "usertaskassignment", "formdefinition", "tasklistenersbase", "asynchronousbase", "loopcharacteristics", "activity" ],
     "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
   }, {
     "type" : "node",
@@ -960,16 +1020,6 @@
     "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
   }, {
     "type" : "node",
-    "id" : "SendTask",
-    "title" : "Send task",
-    "description" : "An automatic task that sends a message",
-    "view" : "activity/sendtask.svg",
-    "icon" : "activity/list/type.send.png",
-    "groups" : [ "Activities" ],
-    "propertyPackages" : [ "elementbase", "baseattributes", "asynchronousbase", "executionlistenersbase", "loopcharacteristics", "activity" ],
-    "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
-  }, {
-    "type" : "node",
     "id" : "ManualTask",
     "title" : "Manual task",
     "description" : "An automatic task with no logic",
@@ -980,11 +1030,31 @@
     "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
   }, {
     "type" : "node",
+    "id" : "MailTask",
+    "title" : "Mail task",
+    "description" : "An mail task",
+    "view" : "activity/sendtask.svg",
+    "icon" : "activity/list/type.send.png",
+    "groups" : [ "Activities" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "mailtaskbase", "asynchronousbase", "executionlistenersbase", "loopcharacteristics", "activity" ],
+    "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
+  }, {
+    "type" : "node",
     "id" : "SubProcess",
     "title" : "Sub process",
     "description" : "A sub process scope",
     "view" : "activity/subprocess.expanded.svg",
     "icon" : "activity/expanded.subprocess.png",
+    "groups" : [ "Structural" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "asynchronousbase", "executionlistenersbase" ],
+    "roles" : [ "sequence_start", "Activity", "sequence_end", "all" ]
+  }, {
+    "type" : "node",
+    "id" : "EventSubProcess",
+    "title" : "Event sub process",
+    "description" : "A event sub process scope",
+    "view" : "activity/event.subprocess.svg",
+    "icon" : "activity/event.subprocess.png",
     "groups" : [ "Structural" ],
     "propertyPackages" : [ "elementbase", "baseattributes", "asynchronousbase", "executionlistenersbase" ],
     "roles" : [ "sequence_start", "Activity", "sequence_end", "all" ]
@@ -1151,6 +1221,29 @@
     } ],
     "propertyPackages" : [ "elementbase", "baseattributes", "sequenceflowbase" ],
     "roles" : [ "ConnectingObjectsMorph", "all" ]
+  }, {
+    "type" : "edge",
+    "id" : "Association",
+    "title" : "Association",
+    "description" : "Associates a text annotation with an element.",
+    "view" : "connector/association.undirected.svg",
+    "icon" : "connector/association.undirected.png",
+    "groups" : [ "Connecting Objects" ],
+    "layout" : [ {
+      "type" : "layout.bpmn2_0.sequenceflow"
+    } ],
+    "propertyPackages" : [ "elementbase", "baseattributes" ],
+    "roles" : [ "ConnectingObjectsMorph", "all" ]
+  }, {
+    "type" : "node",
+    "id" : "TextAnnotation",
+    "title" : "Text annotation",
+    "description" : "Annotates elements with description text.",
+    "view" : "artifact/text.annotation.svg",
+    "icon" : "artifact/text.annotation.png",
+    "groups" : [ "Artifacts" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "textannotationbase" ],
+    "roles" : [ "all" ]
   } ],
   "rules" : {
     "cardinalityRules" : [ {
@@ -1173,6 +1266,18 @@
         "to" : [ "sequence_end" ]
       } ]
     }, {
+      "role" : "Association",
+      "connects" : [ {
+        "from" : "sequence_start",
+        "to" : [ "TextAnnotation" ]
+      } ]
+    }, {
+      "role" : "Association",
+      "connects" : [ {
+        "from" : "TextAnnotation",
+        "to" : [ "sequence_end" ]
+      } ]
+    }, {
       "role" : "IntermediateEventOnActivityBoundary",
       "connects" : [ {
         "from" : "Activity",
@@ -1185,6 +1290,9 @@
     }, {
       "role" : "SubProcess",
       "contains" : [ "sequence_start", "sequence_end", "from_task_event", "to_task_event", "EventSubprocess", "TextAnnotation" ]
+    }, {
+      "role" : "EventSubProcess",
+      "contains" : [ "sequence_start", "sequence_end", "from_task_event", "to_task_event", "TextAnnotation" ]
     } ],
     "morphingRules" : [ {
       "role" : "ActivitiesMorph",
@@ -1199,6 +1307,15 @@
     }, {
       "role" : "EndEventsMorph",
       "baseMorphs" : [ "StartNoneEvent" ]
+    }, {
+      "role" : "CatchEventsMorph",
+      "baseMorphs" : [ "CatchTimerEvent" ]
+    }, {
+      "role" : "ThrowEventsMorph",
+      "baseMorphs" : [ "ThrowNoneEvent" ]
+    }, {
+      "role" : "TextAnnotation",
+      "baseMorphs" : [ "TextAnnotation" ]
     } ]
   }
 }

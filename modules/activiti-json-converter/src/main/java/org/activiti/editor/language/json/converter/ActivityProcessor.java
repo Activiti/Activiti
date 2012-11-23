@@ -12,11 +12,12 @@
  */
 package org.activiti.editor.language.json.converter;
 
+import java.util.Collection;
 import java.util.Map;
 
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.FlowElement;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 
@@ -25,7 +26,7 @@ import org.codehaus.jackson.node.ArrayNode;
  */
 public interface ActivityProcessor {
 
-  public void processFlowElements(Process process, BpmnModel model, ArrayNode shapesArrayNode, 
+  public void processFlowElements(Collection<FlowElement> flowElements, BpmnModel model, ArrayNode shapesArrayNode, 
       double subProcessX, double subProcessY);
   
   public void processJsonElements(JsonNode shapesArrayNode, JsonNode modelNode, BaseElement parentElement, Map<String, JsonNode> shapeMap);

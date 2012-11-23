@@ -86,6 +86,12 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter {
       propertiesNode.put(PROPERTY_USERTASK_ASSIGNMENT, assignmentNode);
     }
     
+    if (userTask.getPriority() != null) {
+      setPropertyValue(PROPERTY_USERTASK_PRIORITY, userTask.getPriority().toString(), propertiesNode);
+    }
+    setPropertyValue(PROPERTY_USERTASK_FORMKEY, userTask.getFormKey(), propertiesNode);
+    setPropertyValue(PROPERTY_USERTASK_DUEDATE, userTask.getDueDate(), propertiesNode);
+    
     addFormProperties(userTask.getFormProperties(), propertiesNode);
   }
   
@@ -104,21 +110,23 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter {
     task.setDueDate(getPropertyValueAsString(PROPERTY_USERTASK_DUEDATE, elementNode));
     
     JsonNode assignmentNode = getProperty(PROPERTY_USERTASK_ASSIGNMENT, elementNode);
-    JsonNode itemsNode = assignmentNode.get(EDITOR_PROPERTIES_GENERAL_ITEMS);
-    if (itemsNode != null) {
-      Iterator<JsonNode> assignmentIterator = itemsNode.getElements();
-      while (assignmentIterator.hasNext()) {
-        JsonNode assignmentItemNode = assignmentIterator.next();
-        if (assignmentItemNode.get(PROPERTY_USERTASK_ASSIGNMENT_TYPE) != null && 
-            assignmentItemNode.get(PROPERTY_USERTASK_ASSIGNMENT_EXPRESSION) != null) {
-          
-          String assignmentType = assignmentItemNode.get(PROPERTY_USERTASK_ASSIGNMENT_TYPE).asText();
-          if (PROPERTY_USERTASK_ASSIGNEE.equals(assignmentType)) {
-            task.setAssignee(assignmentItemNode.get(PROPERTY_USERTASK_ASSIGNMENT_EXPRESSION).asText());
-          } else if (PROPERTY_USERTASK_CANDIDATE_USERS.equals(assignmentType)) {
-            task.setCandidateUsers(getValueAsList(PROPERTY_USERTASK_ASSIGNMENT_EXPRESSION, assignmentItemNode));
-          } else if (PROPERTY_USERTASK_CANDIDATE_GROUPS.equals(assignmentType)) {
-            task.setCandidateGroups(getValueAsList(PROPERTY_USERTASK_ASSIGNMENT_EXPRESSION, assignmentItemNode));
+    if (assignmentNode != null) {
+      JsonNode itemsNode = assignmentNode.get(EDITOR_PROPERTIES_GENERAL_ITEMS);
+      if (itemsNode != null) {
+        Iterator<JsonNode> assignmentIterator = itemsNode.getElements();
+        while (assignmentIterator.hasNext()) {
+          JsonNode assignmentItemNode = assignmentIterator.next();
+          if (assignmentItemNode.get(PROPERTY_USERTASK_ASSIGNMENT_TYPE) != null && 
+              assignmentItemNode.get(PROPERTY_USERTASK_ASSIGNMENT_EXPRESSION) != null) {
+            
+            String assignmentType = assignmentItemNode.get(PROPERTY_USERTASK_ASSIGNMENT_TYPE).asText();
+            if (PROPERTY_USERTASK_ASSIGNEE.equals(assignmentType)) {
+              task.setAssignee(assignmentItemNode.get(PROPERTY_USERTASK_ASSIGNMENT_EXPRESSION).asText());
+            } else if (PROPERTY_USERTASK_CANDIDATE_USERS.equals(assignmentType)) {
+              task.setCandidateUsers(getValueAsList(PROPERTY_USERTASK_ASSIGNMENT_EXPRESSION, assignmentItemNode));
+            } else if (PROPERTY_USERTASK_CANDIDATE_GROUPS.equals(assignmentType)) {
+              task.setCandidateGroups(getValueAsList(PROPERTY_USERTASK_ASSIGNMENT_EXPRESSION, assignmentItemNode));
+            }
           }
         }
       }
