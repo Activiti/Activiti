@@ -10,13 +10,15 @@
 
   <properties>
     <skipTests>true</skipTests>
+    <dependencyVersion>5.11-SNAPSHOT</dependencyVersion>
+    <postgresVersion>8.4-701.jdbc4</postgresVersion>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-engine</artifactId>
-      <version>5.11-SNAPSHOT</version>
+      <version>${dependencyVersion}</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -37,7 +39,7 @@
     <dependency>
       <groupId>postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>8.4-701.jdbc4</version>
+      <version>${postgresVersion}</version>
     </dependency>
     <dependency>
       <groupId>com.oracle.jdbc</groupId>
@@ -48,6 +50,18 @@
       <groupId>net.sourceforge.jtds</groupId>
       <artifactId>jtds</artifactId>
       <version>1.2.4</version>
+    </dependency>
+    <dependency>
+      <groupId>com.microsoft.sqlserver</groupId>
+      <artifactId>sqljdbc4</artifactId>
+      <version>4.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.ibm.db2.jcc</groupId>
+      <artifactId>db2jcc4</artifactId>
+      <version>10.1</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
@@ -106,24 +120,101 @@
 
   <profiles>
     <profile>
-      <id>drop</id>
-      <properties>
-        <skipTests>false</skipTests>
-      </properties>
-    </profile>
-    
-    <profile>
       <id>create</id>
       <properties>
-        <skipTests>false</skipTests>
+        <skipTests>true</skipTests>
       </properties>
     </profile>
     
     <profile>
       <id>generate</id>
+      <activation>
+        <property>
+          <name>releaseVersion</name>
+        </property>
+      </activation>
       <properties>
-        <skipTests>false</skipTests>
+        <skipTests>true</skipTests>
       </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.4</version>
+            <executions>
+              <execution>
+                <id>generate.data.file</id>
+                <phase>process-test-classes</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <echo message="Property database: ${database}" />
+                    <echo message="Property dependencyVersion: ${dependencyVersion}" />
+                    <echo message="Property releaseVersion: ${releaseVersion}" />
+                    <condition property="mandatoryPropertiesAvailable">
+                      <and>
+                        <isset property="database"/>
+                        <isset property="releaseVersion"/>
+                      </and>
+                    </condition>
+                    <fail unless="mandatoryPropertiesAvailable" message="please specify values for all the properties" />
+
+                    <!-- mkdir dir="src/test/resources/org/activiti/db/${releaseVersion}/create" />
+                    <copy todir="src/test/resources/org/activiti/db/${releaseVersion}/create">
+                      <fileset dir="../activiti-engine/src/main/resources/org/activiti/db/create" />
+                    </copy>
+                    <mkdir dir="src/test/resources/org/activiti/db/${releaseVersion}/drop" />
+                    <copy todir="src/test/resources/org/activiti/db/${releaseVersion}/drop">
+                      <fileset dir="../activiti-engine/src/main/resources/org/activiti/db/drop" />
+                    </copy -->
+
+                    <mkdir dir="src/test/resources/org/activiti/db/${releaseVersion}/data" />
+                    <property file="${user.home}/.activiti/upgrade/build.${database}.properties" />
+                    <echo message="generating data files" />
+                    <property name="test_classpath" refid="maven.test.classpath" />
+                    <echo message="cleaning schema" />
+                    <echo message="  jdbc driver.. ${jdbc.driver}" />
+                    <echo message="  jdbc url..... ${jdbc.url}" />
+                    <echo message="  jdbc username ${jdbc.username}" />
+                    <sql driver="${jdbc.driver}" url="${jdbc.url}" userid="${jdbc.username}" password="${jdbc.password}"
+                         classpath="${test_classpath}"
+                         onerror="continue">
+                      <path>
+                        <fileset dir="src/test/resources/org/activiti/db/clean">
+                          <include name="clean.${database}.sql"/>
+                        </fileset>
+                      </path>
+                    </sql>
+                    <java classname="org.activiti.upgrade.CleanPostgres" fork="true">
+                      <arg line="${database}"/>
+                      <classpath>
+                        <path path="${test_classpath}"/>
+                      </classpath>
+                    </java>
+                    <sql driver="${jdbc.driver}" url="${jdbc.url}" userid="${jdbc.username}" password="${jdbc.password}"
+                         classpath="${test_classpath}">
+                      <path>
+                        <fileset dir="src/test/resources/org/activiti/db/${dependencyVersion}/create">
+                          <include name="activiti.${database}.create.*.sql"/>
+                        </fileset>
+                      </path>
+                    </sql>
+                    <echo message="generating data in ${releaseVersion}" />
+                    <java classname="org.activiti.upgrade.UpgradeDataGenerator" fork="true">
+                      <arg line="${database} ${releaseVersion}"/>
+                      <classpath>
+                        <path path="${test_classpath}"/>
+                      </classpath>
+                    </java>
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>        
+        </plugins>
+      </build>
     </profile>
 
     <profile>
@@ -134,54 +225,163 @@
       <build>
         <plugins>
           <plugin>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <failIfNoTests>false</failIfNoTests>
-              <trimStackTrace>false</trimStackTrace>
-              <!-- redirectTestOutputToFile>true</redirectTestOutputToFile -->
-              <includes>
-                <include>**/*AfterTest.java</include>
-              </includes>
-            </configuration>
-          </plugin>
-          <plugin>
             <artifactId>maven-antrun-plugin</artifactId>
-            <!--
-              only worked with this version, there might be a bug with antrun
-              see http://jira.codehaus.org/browse/MANTRUN-109
-            -->
             <version>1.4</version>
             <executions>
               <execution>
-                <id>customized.config.for.db</id>
+                <id>create.old.schema</id>
                 <phase>process-test-classes</phase>
                 <goals>
                   <goal>run</goal>
                 </goals>
                 <configuration>
                   <tasks>
-                    <echo message="updating activiti configuration for ${database}" />
-                    <copy file="../../qa/upgrade/activiti.cfg.xml" todir="target/test-classes" overwrite="true">
-                      <filterset filtersfile="${user.home}/.activiti/upgrade/build.${database}.properties" />
-                    </copy>
-                  </tasks>
+                    <echo message="Property database: ${database}" />
+                    <echo message="Property oldVersion: ${oldVersion}" />
+                    <echo message="Property newVersion: ${newVersion}" />
+                    <condition property="mandatoryPropertiesAvailable">
+                      <and>
+                        <isset property="database"/>
+                        <isset property="oldVersion"/>
+                        <isset property="newVersion"/>
+                      </and>
+                    </condition>
+                    <fail unless="mandatoryPropertiesAvailable" message="please specify values for all the properties" />
+	                  <echo message="reading properties from ${user.home}/.activiti/upgrade/build.${database}.properties" />
+	                  <property file="${user.home}/.activiti/upgrade/build.${database}.properties" />
+	                  <echo message="creating old schema ${oldVersion}" />
+	                  <echo message="  jdbc driver.. ${jdbc.driver}" />
+	                  <echo message="  jdbc url..... ${jdbc.url}" />
+	                  <echo message="  jdbc username ${jdbc.username}" />
+                    <property name="test_classpath" refid="maven.test.classpath" />
+                    <sql driver="${jdbc.driver}" url="${jdbc.url}" userid="${jdbc.username}" password="${jdbc.password}"
+                         classpath="${test_classpath}"
+                         onerror="continue">
+                      <path>
+                        <fileset dir="src/test/resources/org/activiti/db/clean">
+                          <include name="clean.${database}.sql"/>
+                        </fileset>
+                      </path>
+                    </sql>
+                    <java classname="org.activiti.upgrade.CleanPostgres" fork="true">
+                      <arg line="${database}"/>
+                      <classpath>
+                        <path path="${test_classpath}"/>
+                      </classpath>
+                    </java>
+	                  <sql driver="${jdbc.driver}" url="${jdbc.url}" userid="${jdbc.username}" password="${jdbc.password}"
+	                       classpath="${test_classpath}">
+		                  <path>
+										    <fileset dir="src/test/resources/org/activiti/db/${oldVersion}/create">
+										      <include name="activiti.${database}.create.*.sql"/>
+										    </fileset>
+										  </path>
+										</sql>
+                    <sql driver="${jdbc.driver}" url="${jdbc.url}" userid="${jdbc.username}" password="${jdbc.password}"
+                         classpath="${test_classpath}">
+                      <path>
+                        <fileset dir="src/test/resources/org/activiti/db/${oldVersion}/data">
+                          <include name="${database}.data.sql"/>
+                        </fileset>
+                      </path>
+                    </sql>
+								  </tasks>
                 </configuration>
               </execution>
               <execution>
-                <id>database-test-drop-schema</id>
+                <id>drop.schema</id>
                 <phase>prepare-package</phase>
                 <goals>
                   <goal>run</goal>
                 </goals>
                 <configuration>
                   <tasks>
-                    <echo message="dropping schema in ${database}" />
+                    <echo message="reading properties from ${user.home}/.activiti/upgrade/build.${database}.properties" />
+                    <property file="${user.home}/.activiti/upgrade/build.${database}.properties" />
+                    <echo message="dropping new schema ${newVersion}" />
+                    <echo message="  jdbc driver.. ${jdbc.driver}" />
+                    <echo message="  jdbc url..... ${jdbc.url}" />
+                    <echo message="  jdbc username ${jdbc.username}" />
                     <property name="test_classpath" refid="maven.test.classpath" />
-                    <java classname="org.activiti.engine.impl.db.DbSchemaDrop" fork="true">
-                      <classpath>
-                        <path path="${test_classpath}"/>
-                      </classpath>
-                    </java>
+                    <sql driver="${jdbc.driver}" url="${jdbc.url}" userid="${jdbc.username}" password="${jdbc.password}"
+                         classpath="${test_classpath}"
+                         onerror="continue">
+                      <path>
+                        <fileset dir="src/test/resources/org/activiti/db/${newVersion}/drop">
+                          <include name="activiti.${database}.drop.*.sql"/>
+                        </fileset>
+                      </path>
+                    </sql>
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <failIfNoTests>false</failIfNoTests>
+              <trimStackTrace>false</trimStackTrace>
+              <!-- redirectTestOutputToFile>true</redirectTestOutputToFile -->
+              <systemProperties>
+                <property>
+                  <name>database</name>
+                  <value>${database}</value>
+                </property>
+              </systemProperties>
+              <excludes>
+                <exclude>**/*TestCase.java</exclude>
+              </excludes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>drop</id>
+      <properties>
+        <skipTests>true</skipTests>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.4</version>
+            <executions>
+              <execution>
+                <id>drop.schema</id>
+                <phase>process-test-classes</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <echo message="Property database: ${database}" />
+                    <echo message="Property activitiVersion: ${activitiVersion}" />
+                    <condition property="mandatoryPropertiesAvailable">
+                      <and>
+                        <isset property="database"/>
+                        <isset property="activitiVersion"/>
+                      </and>
+                    </condition>
+                    <fail unless="mandatoryPropertiesAvailable" message="please specify values for all the properties" />
+                    <echo message="reading properties from ${user.home}/.activiti/upgrade/build.${database}.properties" />
+                    <property file="${user.home}/.activiti/upgrade/build.${database}.properties" />
+                    <echo message="dropping schema ${activitiVersion}" />
+                    <echo message="  jdbc driver.. ${jdbc.driver}" />
+                    <echo message="  jdbc url..... ${jdbc.url}" />
+                    <echo message="  jdbc username ${jdbc.username}" />
+                    <property name="test_classpath" refid="maven.test.classpath" />
+                    <sql driver="${jdbc.driver}" url="${jdbc.url}" userid="${jdbc.username}" password="${jdbc.password}"
+                         classpath="${test_classpath}"
+                         onerror="continue">
+                      <path>
+                        <fileset dir="src/test/resources/org/activiti/db/${activitiVersion}/create">
+                          <include name="activiti.${database}.*.sql"/>
+                        </fileset>
+                      </path>
+                    </sql>
                   </tasks>
                 </configuration>
               </execution>

@@ -1,6 +1,8 @@
 create table ACT_HI_VARINST (
     ID_ NVARCHAR2(64) not null,
-    PROC_INST_ID_ NVARCHAR2(64) not null,
+    PROC_INST_ID_ NVARCHAR2(64),
+    EXECUTION_ID_ NVARCHAR2(64),
+    TASK_ID_ NVARCHAR2(64),
     NAME_ NVARCHAR2(255) not null,
     VAR_TYPE_ NVARCHAR2(100),
     REV_ INTEGER,
@@ -14,11 +16,6 @@ create table ACT_HI_VARINST (
 
 create index ACT_IDX_HI_PROCVAR_PROC_INST on ACT_HI_VARINST(PROC_INST_ID_);
 create index ACT_IDX_HI_PROCVAR_NAME_TYPE on ACT_HI_VARINST(NAME_, VAR_TYPE_);
-
-update ACT_GE_PROPERTY
-  set VALUE_ = VALUE_ + 1,
-      REV_ = REV_ + 1
-  where NAME_ = 'historyLevel' and VALUE_ >= 2;
 
 alter table ACT_HI_ACTINST
 add TASK_ID_ NVARCHAR2(64);
