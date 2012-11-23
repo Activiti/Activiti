@@ -12,15 +12,23 @@
  */
 package org.activiti.engine.test.jobexecutor;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.jobexecutor.GetUnlockedTimersByDuedateCmd;
 import org.activiti.engine.impl.persistence.entity.JobManager;
+import org.activiti.engine.impl.persistence.entity.TimerEntity;
+import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.test.Deployment;
 
 
 
@@ -40,6 +48,7 @@ public class JobExecutorTest extends JobExecutorTestCase {
         jobManager.send(createTweetMessage("message-four"));
         
         jobManager.schedule(createTweetTimer("timer-one", new Date()));
+        jobManager.schedule(createTweetTimer("timer-one", new Date()));
         jobManager.schedule(createTweetTimer("timer-two", new Date()));
         return null;
       }
@@ -57,5 +66,36 @@ public class JobExecutorTest extends JobExecutorTestCase {
     expectedMessages.add("timer-two");
     
     assertEquals(new TreeSet<String>(expectedMessages), new TreeSet<String>(messages));
+  }
+  
+  @Deployment
+  public void testSuspendedProcessTimerExecution() throws Exception {
+    // Process with boundary timer-event that fires in 1 hour
+    ProcessInstance procInst = runtimeService.startProcessInstanceByKey("suspendProcess");
+    assertNotNull(procInst);
+    assertEquals(1, managementService.createJobQuery().processInstanceId(procInst.getId()).count());
+    
+    // Shutdown the job-executor so timer's won't be executed
+    processEngineConfiguration.getJobExecutor().shutdown();
+    
+    // Roll time ahead to be sure timer is due to fire
+    Calendar tomorrow = Calendar.getInstance();
+    tomorrow.add(Calendar.DAY_OF_YEAR, 1);
+    ClockUtil.setCurrentTime(tomorrow.getTime());
+    
+    // Check if timer is eligable to be executed, when process in not yet suspended
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    List<TimerEntity> jobs = commandExecutor.execute(new GetUnlockedTimersByDuedateCmd(ClockUtil.getCurrentTime(), new Page(0, 1)));
+    assertEquals(1, jobs.size());
+    
+    // Suspend process instancd
+    runtimeService.suspendProcessInstanceById(procInst.getId());
+
+    // Check if the timer is NOT aquired, even though the duedate is reached
+    jobs = commandExecutor.execute(new GetUnlockedTimersByDuedateCmd(ClockUtil.getCurrentTime(), new Page(0, 1)));
+    assertEquals(0, jobs.size());
+    
+    // Start job-executor again
+    processEngineConfiguration.getJobExecutor().start();
   }
 }

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="suspendProcess" name="The One Task Process">
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
+    <userTask id="theTask" name="my task" />   
+     
+    <boundaryEvent id="escalationTimer" cancelActivity="true" attachedToRef="theTask">
+      <timerEventDefinition>
+        <timeDuration>PT1H</timeDuration>
+      </timerEventDefinition>
+    </boundaryEvent>  
+    
+    <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />
+    <sequenceFlow id="flow3" sourceRef="escalationTimer" targetRef="theEnd" />
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>
