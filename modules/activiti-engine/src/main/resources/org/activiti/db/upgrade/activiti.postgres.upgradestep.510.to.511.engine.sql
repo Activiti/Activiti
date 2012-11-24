@@ -48,7 +48,7 @@ alter table ACT_RE_MODEL
     foreign key (EDITOR_SOURCE_EXTRA_VALUE_ID_) 
     references ACT_GE_BYTEARRAY (ID_);
     
-create index ACT_IDX_MODEL_DEPLOYMENT on ACT_RE_DEPLOYMENT(DEPLOYMENT_ID_);    
+create index ACT_IDX_MODEL_DEPLOYMENT on ACT_RE_MODEL(DEPLOYMENT_ID_);    
 alter table ACT_RE_MODEL 
     add constraint ACT_FK_MODEL_DEPLOYMENT 
     foreign key (DEPLOYMENT_ID_) 
