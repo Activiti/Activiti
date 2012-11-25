@@ -572,7 +572,9 @@
           the classes that will be used by the Activiti engine during runtime. In your extension you
           describe the properties that can be set in Activiti Designer for each shape. From these
           shapes, your refer to the runtime class that should be used by the engine. This class
-          should implement JavaDelegate as for any ServiceTask in Activiti.</para>
+          should implement <literal>JavaDelegate</literal> as for any ServiceTask in Activiti. 
+          See <link linkend="eclipseDesignerConfiguringRuntime">this section</link> for more 
+          details.</para>
         <para>A shape's class is a simple Java class, to which a number of annotations are added.
           The class should implement the <literal>CustomServiceTask</literal> interface, but you
           shouldn't implement this interface yourself. Extend the
@@ -692,15 +694,46 @@ public class AcmeMoneyTask extends AbstractCustomServiceTask {
             </imageobject>
           </mediaobject>
         </para>
-        <para>The final step for your shape is to indicate the class that is instantiated by the
-          Activiti engine when it reaches your node when executing a process instance. To do this,
-          you use the <literal>@Runtime</literal> annotation. The <literal>delegationClass</literal>
-          attribute you return should contain the canonical name of the runtime class. Note that the
-          runtime class shouldn't be in your extension JAR, as it's dependent on the Activiti
-          libraries.</para>
-        <para>
-          <programlisting>@Runtime(delegationClass = "org.acme.runtime.AcmeMoneyJavaDelegation")</programlisting>
-        </para>
+        
+      	<section id="eclipseDesignerConfiguringRuntime">
+      		<title>Configuring runtime execution of Custom Service Tasks</title>
+      		
+      		<para>
+      			With your fields setup and your extension applied to Designer, users can configure 
+      			the properties of the service task when modelling a process. In most cases, you will 
+      			want to use these user-configured properties when the process is executed by Activiti. 
+      			To do this, you must instruct Activiti which class to instantiate when the process reaches 
+      			your <literal>CustomServiceTask</literal>. 
+      		</para>
+      		
+      		<para>
+      			There is a special annotation for specifying the class to be executed for your <literal>CustomServiceTask</literal>, 
+      			the <literal>@Runtime</literal> annotation. Here's an example of how to use it:
+      		</para>
+      		
+      		<programlisting>@Runtime(delegationClass = "org.acme.runtime.AcmeMoneyJavaDelegation")</programlisting>
+      		
+        	<para>
+        		The <literal>delegationClass</literal>
+          		attribute you provide should contain the canonical name of the runtime class. This is a class that implements 
+          		Activiti's <literal>JavaDelegate</literal> interface. You should implement this class in the same manner as any  
+          		other <literal>JavaDelegate</literal>. Documentation for this is provided in the <link linkend="bpmnJavaServiceTaskImplementation">userguide here</link>. 
+          	</para>
+          	
+          	<para>
+          		The user's property values will be injected into the <literal>delegationClass</literal> runtime class 
+          		if you provide members in the class for Activiti to inject into. The names should match the names of the members 
+          		in your <literal>CustomServiceTask</literal>. For more information, consult <link linkend="serviceTaskFieldInjection">this part</link> 
+          		of the userguide.
+          	</para>
+          	
+          	<para>
+          		Note that the runtime class shouldn't be in your extension JAR, as it's dependent on the Activiti
+          		libraries. Activiti needs to be able to find it at runtime, so it needs to be on the Activiti engine's 
+          		classpath.
+          	</para>
+          	
+        </section>
       </section>
       <section id="eclipseDesignerPropertyTypes">
         <title>Property types </title>
