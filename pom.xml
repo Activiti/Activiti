@@ -265,14 +265,6 @@
         <version>20070829</version>
       </dependency>
       <dependency>
-        <!-- required for building with JDK 5 -->
-        <groupId>org.livetribe</groupId>
-        <artifactId>livetribe-jsr223</artifactId>
-        <version>2.0.6</version>
-        <type>jar</type>
-        <scope>compile</scope>
-      </dependency>
-      <dependency>
         <groupId>org.mule.modules</groupId>
         <artifactId>mule-module-cxf</artifactId>
         <version>${mule.version}</version>

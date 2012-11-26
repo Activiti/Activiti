@@ -23,11 +23,6 @@
       <artifactId>commons-lang</artifactId>
     </dependency>
     <dependency>
-      <!-- required for building with JDK 5 -->
-      <groupId>org.livetribe</groupId>
-      <artifactId>livetribe-jsr223</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.mybatis</groupId>
       <artifactId>mybatis</artifactId>
     </dependency>
