@@ -56,6 +56,15 @@
   <p>The files can be found in the <code>activiti-engine-5.11.jar</code> file in directory
   <code>org/activiti/db/upgrade/optional</code>.
   </p> 
+  
+  <h4>API Change</h4>
+  <p>The functionality of the repositoryService.suspendProcessDefinitionByXXX has been slightly altered.
+  Previously, calling this method would stop the execution of jobs related to this process definition.
+  Now, calling this method will <b>not</b> do this, but rather make sure a process instance 
+  cannot be created from this process definition. We've added a new method with an additional
+  parameter 'suspendProcessInstances' which can be used to get the same behavior: when set to 'true',
+  all the associated process instances will be suspended. This will avoid process instance continuation,
+  including the execution of jobs related to the process instance.</p>
 
   <h3>Release Notes - Activiti - Version 5.10</h3>
 
