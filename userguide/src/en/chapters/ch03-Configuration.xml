@@ -265,50 +265,6 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
     </para>
   </section>
   
-  <section id="jobExecutorConfiguration">
-    <title>Job executor activation</title>
-    <para>The JobExecutor is a component that manages a couple of threads to fire timers (and later also asynchronous messages).
-    For unit testing scenarios, it is cumbersome to work with multiple threads.  Therefor the API allows to query for 
-    (<literal>ManagementService.createJobQuery</literal>) and execute jobs (<literal>ManagementService.executeJob</literal>) through 
-    the API so that job execution can be controlled from within a unit test.  To avoid that the job executor interferes, it can be turned off. 
-    </para>
-    <para> 
-    By default, the JobExecutor is activated when the process engine boots.  Specify
-    <programlisting>&lt;property name=&quot;jobExecutorActivate&quot; value=&quot;false&quot; /></programlisting>
-    when you don't want the JobExecutor to be activated upon process engine boot.  
-    </para>
-  </section>
-  
-  <section id="mailServerConfiguration">
-    <title>Mail server configuration</title>
-    <para>
-      Optional. Activiti supports sending e-mails in business processes. To actually send an e-mail, a valid
-      SMTP mail server configuration is required.  See the 
-      <link linkend="bpmnEmailTaskServerConfiguration">e-mail task</link> for the configuration options.
-    </para>
-  </section>
-  
-  <section id="historyConfiguration">
-    <title>History configuration</title>
-    <para>
-      Optional. Allows to tweak settings that influence the <link linkend="history">history capabilities</link>
-      of the engine. See <link linkend="historyConfig">history configuration</link> for more details.
-      <programlisting>&lt;property name=&quot;history&quot; value=&quot;audit&quot; /&gt;</programlisting>
-    </para>
-  </section>
-  
-  <section id="exposingConfigurationBeans">
-    <title>Exposing configuration beans in expressions and scripts</title>
-    <para>By default, all beans that you specify in the <literal>activiti.cfg.xml</literal> configuration 
-    or in your own spring configuration file are available to expressions and in the scripts.
-    If you want to limit the visibility of beans in your configuration file, then you can 
-    configure a property called <literal>beans</literal> in your process engine configuration.
-    The beans property in ProcessEngineConfiguration is a map. When you specify that property,
-    only beans specified in that map will be visible to expressions and scripts.  The exposed beans 
-    will be exposed with the names as you specify in that map.  
-    </para>
-  </section>
-
   <section id="supporteddatabases">
     <title>Supported databases</title>
     <para>Following are the types (case sensitive!) that Activiti uses to refer to databases.</para>
@@ -404,11 +360,58 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
           <para><emphasis role="bold">identity:</emphasis> optional tables, when using the default identity management as shipped with the engine.</para>
         </listitem>
         <listitem>
-          <para><emphasis role="bold">history:</emphasis> contain the history and audit information. Optional: not needed when history level is set to <emphasis>none</emphasis></para>
+          <para><emphasis role="bold">history:</emphasis> contain the history and audit information. Optional: not needed when history level is set to <emphasis>none</emphasis>
+          Note that this will also disable some features such as commenting on tasks which store the data in the history database.</para>
         </listitem>
       </itemizedlist>
     </para>
   
+  </section>
+  
+  <section id="database.tables.explained">
+    <title>Database table names explained</title>
+    <para>
+      The database names of Activiti all start with <emphasis role="bold">ACT_</emphasis>. The 
+      second part is a two-character identification of use case of the table. This use case 
+      will also roughly match the service API.
+      <itemizedlist>
+        <listitem>
+          <para>
+            <emphasis role="bold">ACT_RE_*</emphasis>: 'RE' stands for <literal>repository</literal>. 
+            Tables with this prefix will contain 'static'' information such as process definitions and,
+            process resources (images, rules, etc.).
+          </para>
+        </listitem>
+         <listitem>
+          <para>
+            <emphasis role="bold">ACT_RU_*</emphasis>: 'RU' stands for <literal>runtime</literal>.
+            These are the runtime tables, that contain the runtime data of process instances,
+            user tasks,variables, jobs, etc. Activiti only stores the runtime data during process instance
+            execution, and removes the records when a process instance ends. This keeps 
+            the runtime tables small and fast.
+          </para>
+        </listitem>
+         <listitem>
+          <para>
+            <emphasis role="bold">ACT_ID_*</emphasis>: 'ID' stands for <literal>identity</literal>.
+            These tables contain identity information, such as users, groups, etc.
+          </para>
+        </listitem>
+         <listitem>
+          <para>
+            <emphasis role="bold">ACT_HI_*</emphasis>: 'HI' stands for <literal>history</literal>.
+            These are the tables that contain historic data, such as past process instances,
+            variables, tasks, etc.
+          </para>
+        </listitem>
+         <listitem>
+          <para>
+            <emphasis role="bold">ACT_GE_*</emphasis>: <literal>general</literal> data, which is used
+            in various use cases.
+          </para>
+        </listitem>
+      </itemizedlist>
+    </para>
   </section>
     
   <section id="databaseUpgrade">
@@ -443,4 +446,49 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
      It's also possible to run the upgrade database scripts, available on the Activiti downloads page.
      </para>
    </section>
+  
+  <section id="jobExecutorConfiguration">
+    <title>Job executor activation</title>
+    <para>The JobExecutor is a component that manages a couple of threads to fire timers (and later also asynchronous messages).
+    For unit testing scenarios, it is cumbersome to work with multiple threads.  Therefor the API allows to query for 
+    (<literal>ManagementService.createJobQuery</literal>) and execute jobs (<literal>ManagementService.executeJob</literal>) through 
+    the API so that job execution can be controlled from within a unit test.  To avoid that the job executor interferes, it can be turned off. 
+    </para>
+    <para> 
+    By default, the JobExecutor is activated when the process engine boots.  Specify
+    <programlisting>&lt;property name=&quot;jobExecutorActivate&quot; value=&quot;false&quot; /></programlisting>
+    when you don't want the JobExecutor to be activated upon process engine boot.  
+    </para>
+  </section>
+  
+  <section id="mailServerConfiguration">
+    <title>Mail server configuration</title>
+    <para>
+      Optional. Activiti supports sending e-mails in business processes. To actually send an e-mail, a valid
+      SMTP mail server configuration is required.  See the 
+      <link linkend="bpmnEmailTaskServerConfiguration">e-mail task</link> for the configuration options.
+    </para>
+  </section>
+  
+  <section id="historyConfiguration">
+    <title>History configuration</title>
+    <para>
+      Optional. Allows to tweak settings that influence the <link linkend="history">history capabilities</link>
+      of the engine. See <link linkend="historyConfig">history configuration</link> for more details.
+      <programlisting>&lt;property name=&quot;history&quot; value=&quot;audit&quot; /&gt;</programlisting>
+    </para>
+  </section>
+  
+  <section id="exposingConfigurationBeans">
+    <title>Exposing configuration beans in expressions and scripts</title>
+    <para>By default, all beans that you specify in the <literal>activiti.cfg.xml</literal> configuration 
+    or in your own spring configuration file are available to expressions and in the scripts.
+    If you want to limit the visibility of beans in your configuration file, then you can 
+    configure a property called <literal>beans</literal> in your process engine configuration.
+    The beans property in ProcessEngineConfiguration is a map. When you specify that property,
+    only beans specified in that map will be visible to expressions and scripts.  The exposed beans 
+    will be exposed with the names as you specify in that map.  
+    </para>
+  </section>
+
 </chapter>

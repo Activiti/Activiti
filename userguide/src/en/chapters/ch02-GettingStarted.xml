@@ -10,7 +10,8 @@
       After downloading the Activiti Explorer WAR file from the <ulink url="http://www.activiti.org">Activiti website</ulink>,
       follow these steps to get the demo setup running with default settings. 
       You'll need a working <ulink url="http://java.sun.com/javase/downloads/index.jsp">Java runtime</ulink> and
-      <ulink url="http://tomcat.apache.org/download-70.cgi">Apache Tomcat</ulink> installation.
+      <ulink url="http://tomcat.apache.org/download-70.cgi">Apache Tomcat</ulink> installation (Actually, 
+      any web container would work since we only rely on servlet capablility. But we test on Tomcat primarily).
       <itemizedlist>
         <listitem>
           <para>Copy the downloaded activiti-explorer.war to the webapps directory of Tomcat.</para>
@@ -103,49 +104,77 @@
     </para>
   </section>
   
-  <section id="database.tables.explained">
-    <title>Database table names explained</title>
+  <section id="getting.started.including.libs">
+
+    <title>Include the Activiti jar and its dependencies</title>
+    
     <para>
-      The database names of Activiti all start with <emphasis role="bold">ACT_</emphasis>. The 
-      second part is a two-character identification of use case of the table. This use case 
-      will also roughly match the service API.
-      <itemizedlist>
-        <listitem>
-          <para>
-            <emphasis role="bold">ACT_RE_*</emphasis>: 'RE' stands for <literal>repository</literal>. 
-            Tables with this prefix will contain 'static'' information such as process definitions and,
-            process resources (images, rules, etc.).
-          </para>
-        </listitem>
-         <listitem>
-          <para>
-            <emphasis role="bold">ACT_RU_*</emphasis>: 'RU' stands for <literal>runtime</literal>.
-            These are the runtime tables, that contain the runtime data of process instances,
-            user tasks,variables, jobs, etc. Activiti only stores the runtime data during process instance
-            execution, and removes the records when a process instance ends. This keeps 
-            the runtime tables small and fast.
-          </para>
-        </listitem>
-         <listitem>
-          <para>
-            <emphasis role="bold">ACT_ID_*</emphasis>: 'ID' stands for <literal>identity</literal>.
-            These tables contain identity information, such as users, groups, etc.
-          </para>
-        </listitem>
-         <listitem>
-          <para>
-            <emphasis role="bold">ACT_HI_*</emphasis>: 'HI' stands for <literal>history</literal>.
-            These are the tables that contain historic data, such as past process instances,
-            variables, tasks, etc.
-          </para>
-        </listitem>
-         <listitem>
-          <para>
-            <emphasis role="bold">ACT_GE_*</emphasis>: <literal>general</literal> data, which is used
-            in various use cases.
-          </para>
-        </listitem>
-      </itemizedlist>
+        To include the Activiti jar and its dependent libraries, we advise using 
+        <ulink url="http://maven.apache.org/">Maven</ulink>Maven (or <ulink url="http://ant.apache.org/ivy/">Ivy</ulink>), as it 
+        simplies dependency management on both our and your side a lot. Follow the instructions
+        at <ulink url="http://www.activiti.org/community.html#maven.respository"></ulink> to
+        include the necessary jars in your environment.
+    </para>    
+    
+    <para>
+        Alternatively, if you don't want to use Maven you can include the jars in your project
+        yourself. The Activiti download zip contains a folder <literal>libs</literal> which
+        contain all the Activiti jars (and the source jars). The dependencies are not shipped this way.
+        The required dependencies of the Activiti engine are (generated using <literal>mvn dependency:tree</literal>):
+       <programlisting>
+org.activiti:activiti-engine:jar:5.11-SNAPSHOT
++- org.apache.commons:commons-email:jar:1.2:compile
+|  +- javax.mail:mail:jar:1.4.1:compile
+|  \- javax.activation:activation:jar:1.1:compile
++- commons-lang:commons-lang:jar:2.4:compile
++- org.mybatis:mybatis:jar:3.1.1:compile
++- org.springframework:spring-beans:jar:3.1.2.RELEASE:compile
+|  \- org.springframework:spring-core:jar:3.1.2.RELEASE:compile
+|     +- org.springframework:spring-asm:jar:3.1.2.RELEASE:compile
+|     \- commons-logging:commons-logging:jar:1.1.1:compile
+\- joda-time:joda-time:jar:2.1:compile       
+       </programlisting>
+       Note: the mail jars are only needed if you are using the <link linkend="bpmnEmailTask">mail service task</link>.
+    </para>
+    
+    <para>
+        All the dependencies can easily be downloaded using <literal>mvn dependency:copy-dependencies</literal>
+        on a module of the <ulink url="https://github.com/Activiti/Activiti">Activiti source code</ulink>.
+    </para>
+    
+  </section>
+  
+  <section id="getting.started.next.steps">
+    <title>Next steps</title>
+    <para>
+        Playing around with the <link linkend="activitiExplorer">Activiti Explorer</link> web application
+        is a good way to get familiar with the Activiti concepts and functionality. However, the 
+        main purpose of Activiti is of course to enable powerful BPM and workflow capabilities
+        in your own application. The following chapters will get you familiar with how to
+        use Activiti programmatically in your environment:
+        <itemizedlist>
+            <listitem>
+                <para>
+                    <link linkend="configuration">The chapter on configuration</link> will learn you
+                    how to set up Activiti and how to obtain an instance of the <literal>ProcessEngine</literal>
+                    class which is your central access point to all the engine functionality of Activiti.    
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    <link linkend="chapterApi">The API chapter</link> will guide you through the 
+                    services which form the API of Activiti. These services offer the Activiti engine
+                    functionality in a convienent yet powerful way and can be used in any Java
+                    environment.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    Interested in getting insight on BPMN 2.0, the format in which process for the 
+                    Activiti engine are written? Then continue on to the <link linkend="bpmn20">BPMN 2.0 section</link>.
+                </para>
+            </listitem>
+        </itemizedlist>
     </para>
   </section>
   
