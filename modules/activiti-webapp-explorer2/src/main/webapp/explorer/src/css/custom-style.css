@@ -17,7 +17,8 @@
 }
 
 #oryx_editor_header {
-	height: 40px !important;	
+	height: 40px !important;
+	overflow: hidden;	
 }
 
 .signavio_repository_header_shadow, .x-panel-editor-north #oryx_editor_header div {
@@ -75,3 +76,26 @@
 	display: none;
 }
 
+#editor_header {
+  background:url("../img/signavio/smoky/header_background2.png") repeat-x scroll center -4px transparent !important;
+  width: 100%;
+  overflow:hidden; 
+  position: relative;
+  height: 40px;
+}
+
+#header_logo_image {
+  position: absolute;
+    top: -4px;
+    left: 0px;
+    height: 40px;
+    width: 150px;
+}
+
+#header_close_image {
+  position: absolute;
+  width: 25px;
+  top: 10px;
+    right: 17px;
+    height: 40px;
+}
