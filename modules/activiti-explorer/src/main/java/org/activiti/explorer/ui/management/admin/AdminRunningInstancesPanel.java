@@ -469,7 +469,12 @@ public class AdminRunningInstancesPanel extends DetailPanel {
         variableItem.getItemProperty("name").setValue(variable);
         
         // Get string value to show
-        String theValue = variableRendererManager.getStringRepresentation(variables.get(variable));
+        String theValue = null;
+        try {
+          theValue = variableRendererManager.getStringRepresentation(variables.get(variable));
+        } catch(Exception e) {
+          theValue = "N/A";
+        }
         variableItem.getItemProperty("value").setValue(theValue);
       }
       
