@@ -100,7 +100,6 @@ import org.activiti.engine.impl.jobexecutor.TimerCatchIntermediateEventJobHandle
 import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerSuspendProcessDefinitionHandler;
-import org.activiti.engine.impl.mail.MailScanner;
 import org.activiti.engine.impl.persistence.GenericManagerFactory;
 import org.activiti.engine.impl.persistence.deploy.Deployer;
 import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
@@ -228,10 +227,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected Map<String, JobHandler> jobHandlers;
   protected JobExecutor jobExecutor;
 
-  // MAIL SCANNER /////////////////////////////////////////////////////////////
-  
-  protected MailScanner mailScanner;
-  
   // MYBATIS SQL SESSION FACTORY //////////////////////////////////////////////
   
   protected SqlSessionFactory sqlSessionFactory;
@@ -334,7 +329,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initIdGenerator();
     initDeployers();
     initJobExecutor();
-    initMailScanner();
     initDataSource();
     initTransactionFactory();
     initSqlSessionFactory();
@@ -761,13 +755,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       }
     }
     
-  }
-  
-  protected void initMailScanner() {
-    if (mailScanner==null) {
-      mailScanner = new MailScanner();
-    }
-    mailScanner.setCommandExecutor(commandExecutorTxRequired);
   }
   
   // history //////////////////////////////////////////////////////////////////
@@ -1602,14 +1589,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     this.resolverFactories = resolverFactories;
   }
 
-  public MailScanner getMailScanner() {
-    return mailScanner;
-  }
-
-  public void setMailScanner(MailScanner mailScanner) {
-    this.mailScanner = mailScanner;
-  }
-  
   public DeploymentCache getDeploymentCache() {
     return deploymentCache;
   }
