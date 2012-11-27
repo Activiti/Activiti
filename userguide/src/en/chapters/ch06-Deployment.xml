@@ -35,26 +35,6 @@ repositoryService.createDeployment()
 	    See javadocs for more details.</para>
 	  </section>
 	  
-	  <section>
-	    <title>Deploying with ant</title>
-	    <para>To deploy a business archive with ant, first the <literal>deploy-bar</literal> task 
-	    needs to be defined.  Make sure that the configuration jar is on the classpath, as well as the 
-	    Activiti jar and all its dependencies:</para>
-	    <programlisting>&lt;taskdef name=&quot;deploy-bar&quot; classname=&quot;org.activiti.engine.impl.ant.DeployBarTask&quot;&gt;
-  &lt;classpath&gt;
-    &lt;fileset dir=&quot;...&quot;&gt;
-      &lt;include name=&quot;activiti-cfg.jar&quot;/&gt;
-      &lt;include name=&quot;your-db-driver.jar&quot;/&gt;
-    &lt;/fileset&gt;
-    &lt;fileset dir=&quot;${activiti.home}/lib&quot;&gt;
-      &lt;include name=&quot;activiti-engine-${activiti.version}.jar&quot;/&gt;
-      &lt;include name=&quot;ibatis-sqlmap-*.jar&quot;/&gt;
-    &lt;/fileset&gt;
-  &lt;/classpath&gt;
-&lt;/taskdef&gt;
-&lt;deploy-bar file=&quot;.../yourprocess.bar&quot; /&gt;</programlisting>
-    </section>
-    
     <section id="deploymentWithExplorer">
       <title>Deploying with Activiti Explorer</title>
       <para>

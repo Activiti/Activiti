@@ -136,9 +136,14 @@ public class DemoDataGenerator implements ModelDataJsonConstants {
     processEngine.getRepositoryService()
       .createDeployment()
       .name("Demo processes")
-      .addClasspathResource("org/activiti/explorer/demo/process/testProcess.bpmn20.xml")
-      .addClasspathResource("org/activiti/explorer/demo/process/oneTaskProcess.bpmn20.xml")
       .addClasspathResource("org/activiti/explorer/demo/process/createTimersProcess.bpmn20.xml")
+      .addClasspathResource("org/activiti/explorer/demo/process/VacationRequest.bpmn20.xml")
+      .addClasspathResource("org/activiti/explorer/demo/process/VacationRequest.png")
+      .addClasspathResource("org/activiti/explorer/demo/process/FixSystemFailureProcess.bpmn20.xml")
+      .addClasspathResource("org/activiti/explorer/demo/process/FixSystemFailureProcess.png")
+      .addClasspathResource("org/activiti/explorer/demo/process/Helpdesk.bpmn20.xml")
+      .addClasspathResource("org/activiti/explorer/demo/process/Helpdesk.png")
+      .addClasspathResource("org/activiti/explorer/demo/process/reviewSalesLead.bpmn20.xml")
       .deploy();
   }
   

@@ -3,8 +3,8 @@
   <!ENTITY ch01 SYSTEM "chapters/ch01-Introduction.xml">
   <!ENTITY ch02 SYSTEM "chapters/ch02-GettingStarted.xml">
   <!ENTITY ch03 SYSTEM "chapters/ch03-Configuration.xml">
-  <!ENTITY ch04 SYSTEM "chapters/ch04-Spring.xml">
-  <!ENTITY ch05 SYSTEM "chapters/ch05-API.xml">
+  <!ENTITY ch04 SYSTEM "chapters/ch04-API.xml">
+  <!ENTITY ch05 SYSTEM "chapters/ch05-Spring.xml">
   <!ENTITY ch06 SYSTEM "chapters/ch06-Deployment.xml">
   <!ENTITY ch07a SYSTEM "chapters/ch07a-BPMN-Introduction.xml">
   <!ENTITY ch07b SYSTEM "chapters/ch07b-BPMN-Constructs.xml">
