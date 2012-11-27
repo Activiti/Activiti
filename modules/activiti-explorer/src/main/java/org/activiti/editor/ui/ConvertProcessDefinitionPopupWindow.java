@@ -122,26 +122,38 @@ public class ConvertProcessDefinitionPopupWindow extends PopupWindow implements 
           XMLInputFactory xif = XMLInputFactory.newInstance();
           InputStreamReader in = new InputStreamReader(bpmnStream, "UTF-8");
           XMLStreamReader xtr = xif.createXMLStreamReader(in);
-          BpmnModel model = new BpmnXMLConverter().convertToBpmnModel(xtr);
+          BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
           
-          BpmnJsonConverter converter = new BpmnJsonConverter();
-          ObjectNode modelNode = converter.convertToJson(model);
-          Model modelData = repositoryService.newModel();
+          if (bpmnModel.getMainProcess() == null || bpmnModel.getMainProcess().getId() == null) {
+            notificationManager.showErrorNotification(Messages.MODEL_IMPORT_FAILED, 
+                i18nManager.getMessage(Messages.MODEL_IMPORT_INVALID_BPMN_EXPLANATION));
+          } else {
           
-          ObjectNode modelObjectNode = new ObjectMapper().createObjectNode();
-          modelObjectNode.put(MODEL_NAME, processDefinition.getName());
-          modelObjectNode.put(MODEL_REVISION, 1);
-          modelObjectNode.put(MODEL_DESCRIPTION, processDefinition.getDescription());
-          modelData.setMetaInfo(modelObjectNode.toString());
+            if (bpmnModel.getLocationMap().size() == 0) {
+              notificationManager.showErrorNotification(Messages.MODEL_IMPORT_INVALID_BPMNDI,
+                  i18nManager.getMessage(Messages.MODEL_IMPORT_INVALID_BPMNDI_EXPLANATION));
+            } else {
           
-          repositoryService.saveModel(modelData);
-          
-          repositoryService.addModelEditorSource(modelData.getId(), modelNode.toString().getBytes("utf-8"));
-          
-          close();
-          ExplorerApp.get().getViewManager().showEditorProcessDefinitionPage(modelData.getId());
-          ExplorerApp.get().getMainWindow().open(new ExternalResource(
-              ExplorerApp.get().getURL().toString() + "service/editor?id=" + modelData.getId()));
+              BpmnJsonConverter converter = new BpmnJsonConverter();
+              ObjectNode modelNode = converter.convertToJson(bpmnModel);
+              Model modelData = repositoryService.newModel();
+              
+              ObjectNode modelObjectNode = new ObjectMapper().createObjectNode();
+              modelObjectNode.put(MODEL_NAME, processDefinition.getName());
+              modelObjectNode.put(MODEL_REVISION, 1);
+              modelObjectNode.put(MODEL_DESCRIPTION, processDefinition.getDescription());
+              modelData.setMetaInfo(modelObjectNode.toString());
+              
+              repositoryService.saveModel(modelData);
+              
+              repositoryService.addModelEditorSource(modelData.getId(), modelNode.toString().getBytes("utf-8"));
+              
+              close();
+              ExplorerApp.get().getViewManager().showEditorProcessDefinitionPage(modelData.getId());
+              ExplorerApp.get().getMainWindow().open(new ExternalResource(
+                  ExplorerApp.get().getURL().toString() + "service/editor?id=" + modelData.getId()));
+            }
+          }
           
         } catch(Exception e) {
           notificationManager.showErrorNotification("error", e);

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">
+
+<chapter id="activitiModeler">
+
+  <title>Activiti Modeler</title>
+  
+  <para>
+    Activiti Modeler is a BPMN web modeler component that's available as part of the <link linkend="activitiExplorer">Activiti Explorer</link> web application. 
+    The Modeler is a fork of the <ulink url="http://code.google.com/p/signavio-core-components/">Signavio Core Components</ulink> project.
+    The initial development of the new Activiti Modeler is donated to the Activiti project by <ulink url="http://kisbpm.com">KIS BPM</ulink>.
+    A main difference with the previous Activiti Modeler (Signavio Core Components) is that that the new modeler is maintained and developed as part of the Activiti project.
+    The goal of the Activiti Modeler is to support all the BPMN elements and extension supported by the Activiti Engine.
+  </para>
+  <para> 
+    When you run the Activiti Explorer with the default configuration one demo process will be available in the model workspace.
+    <mediaobject><imageobject><imagedata align="center" fileref="images/modeler.example.process.png"/></imageobject></mediaobject>
+  </para>
+  
+  <section>
+  
+    <title>Model editing</title>
+    
+    <para>
+      When you click on the edit button in the model workspace the model will be opened in the modeler.
+      On the left side of the screen the available palette of BPMN elements and Activiti extensions is available.
+      You can drag and drop new elements on the canvas when needed. On the right side of the screen the attributes of a selected element can be filled-in.
+      In the example screenshot a user task is selected and you can fill-in user task attributes like assignment, form properties and due date.
+      To return to the Activiti Explorer you can click the close button at the top right of the screen.
+      <mediaobject><imageobject><imagedata align="center" fileref="images/modeler.editor.canvas.png"/></imageobject></mediaobject>
+    </para>
+  
+  </section>
+  
+  <section>
+  
+    <title>Importing existing models</title>
+    
+    <para>
+      You can also import existing models into the model workspace to edit them in the Activiti Modeler.
+      Click on the import button and select a .bpmn or .bpmn20.xml file. Note that the BPMN XML file should contain BPMN DI information.
+      <mediaobject><imageobject><imagedata align="center" fileref="images/modeler.import.png"/></imageobject></mediaobject>
+    </para>
+  
+  </section>
+  
+   <section>
+  
+    <title>Convert deployed definitions to a editeable model</title>
+    
+    <para>
+      Deployed process definition can be converted into models that can be edited by the Activiti Modeler.
+      Note that the process definition should contain BPMN DI information.
+      <mediaobject><imageobject><imagedata align="center" fileref="images/modeler.convert.png"/></imageobject></mediaobject>
+    </para>
+  
+  </section>
+  
+    <section>
+  
+    <title>Export model to BPMN XML</title>
+    
+    <para>
+      A model in the model workspace can be exported to a BPMN XML file. Select the export option in the model action select box.
+      <mediaobject><imageobject><imagedata align="center" fileref="images/modeler.export.png"/></imageobject></mediaobject>
+    </para>
+  
+  </section>
+  
+  <section>
+  
+    <title>Deploy model to the Activiti Engine</title>
+    
+    <para>
+      When a model contains all the attributes necessary to be executed, it can be deployed to the Activiti Engine.
+      Select the deploy option in the model action select box.
+      <mediaobject><imageobject><imagedata align="center" fileref="images/modeler.deploy.png"/></imageobject></mediaobject>
+    </para>
+  
+  </section>
+  
+</chapter>

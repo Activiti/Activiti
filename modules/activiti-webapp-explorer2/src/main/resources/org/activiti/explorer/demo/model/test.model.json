@@ -51,13 +51,13 @@
             "exclusivedefinition" : "Yes",
             "executionlisteners" : "",
             "formkeydefinition" : "",
-            "formproperties" : { "items" : [ { "formproperty_id" : "test",
-                      "formproperty_name" : "Test",
-                      "formproperty_type" : "string"
+            "formproperties" : { "items" : [ { "formproperty_id" : "number",
+                      "formproperty_name" : "Number",
+                      "formproperty_type" : "long"
                     },
-                    { "formproperty_id" : "test2",
-                      "formproperty_name" : "Test 2",
-                      "formproperty_type" : "boolean"
+                    { "formproperty_id" : "message",
+                      "formproperty_name" : "Message",
+                      "formproperty_type" : "string"
                     }
                   ],
                 "totalCount" : 2
