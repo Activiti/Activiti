@@ -11541,7 +11541,7 @@ ORYX.Editor = {
 			height		: 30,
 			autoHeight	: false,
 			border		: false,
-			html		: "<div id='oryx_editor_header'><a href=\""+ORYX.CONFIG.WEB_URL+"\" target=\"_self\"><img src='"+ORYX.PATH+"images/oryx.small.gif' border=\"0\" /></a><div style='clear: both;'></div></div>" 
+			html : "<div id='oryx_editor_header'><a href=\""+ORYX.CONFIG.WEB_URL+"\" target=\"_self\"><img src='"+ORYX.PATH+"images/oryx.small.gif' border=\"0\" /></a><div style='clear: both;'></div><div id='close_editor'></div></div>" 
 		});
 
 		var maActive 	= ORYX.MashupAPI && ORYX.MashupAPI.isUsed;
@@ -11563,16 +11563,21 @@ ORYX.Editor = {
 				user 	= 	publicText;
 			}
 			
-			var content = 	"<div id='oryx_editor_header'>" +
-								"<a href=\""+ORYX.CONFIG.WEB_URL+"\" target=\"_self\">" +
-									"<img src='"+ORYX.PATH+"images/oryx.small.gif' border=\"0\" />" + 
-								"</a>" + 
-								"<span class='openid " + (publicText == user ? "not" : "") + "'>" + 
-									(unescape(user)) + 
-									maModelAuthI + 
-								"</span>" + 
-								"<div style='clear: both;'/>" + 
-							"</div>";
+			var content =  "<div id='editor_header'>" +
+                "<div id='header_logo_image'>" +                
+                    "<img src='../explorer/src/img/signavio/smoky/logo2.png' border=\"0\" usemap=\"#kisbpmmap\"/>" + 
+                    "<map id=\"kisbpmmap\" name=\"kisbpmmap\"><area shape=\"rect\" alt=\"kisbpm.com\" title=\"kisbpm.com\" coords=\"15,2,322,44\" href=\"http://kisbpm.com\" target=\"_blank\" /></map>" +
+                "</div>" +
+                "<span class='openid " + (publicText == user ? "not" : "") + "'>" + 
+                  (unescape(user)) + 
+                  maModelAuthI + 
+                "</span>" + 
+                "<div id='header_close_image'>" +
+                  "<a href=\""+ORYX.CONFIG.WEB_URL+"\" target=\"_self\" title=\"close modeler\">" +
+                    "<img src='../editor/images/close_button.png' border=\"0\" />" + 
+                  "</a>" +
+                "</div>" + 
+              "</div>";
 			
 			if( headerPanel.body ){
 				headerPanel.body.dom.innerHTML = content;
