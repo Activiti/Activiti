@@ -49,8 +49,7 @@ public class DemoDataGenerator implements ModelDataJsonConstants {
   protected boolean createDemoProcessDefinitions;
   protected boolean createDemoModels;
   
-  public void setProcessEngine(ProcessEngine processEngine) {
-    this.processEngine = processEngine;
+  public void init() {
     this.identityService = processEngine.getIdentityService();
     this.repositoryService = processEngine.getRepositoryService();
     
@@ -66,6 +65,10 @@ public class DemoDataGenerator implements ModelDataJsonConstants {
     if (createDemoModels) {
       initModelData();
     }
+  }
+  
+  public void setProcessEngine(ProcessEngine processEngine) {
+    this.processEngine = processEngine;
   }
   
   public void setCreateDemoUsersAndGroups(boolean createDemoUsersAndGroups) {

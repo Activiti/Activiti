@@ -9,7 +9,7 @@
        
   <!-- This Spring config file is NOT used in Alfresco, as the Activiti engine is wired in a different way there -->
        
-  <bean id="demoDataGenerator" class="org.activiti.explorer.demo.DemoDataGenerator">
+  <bean id="demoDataGenerator" class="org.activiti.explorer.demo.DemoDataGenerator" init-method="init">
     <property name="processEngine" ref="processEngine" />
     <property name="createDemoUsersAndGroups" value="true" />
     <property name="createDemoProcessDefinitions" value="true" />
