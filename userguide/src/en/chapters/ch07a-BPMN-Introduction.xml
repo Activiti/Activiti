@@ -16,15 +16,10 @@
 	<section id="bpmnDefiningProcess">
 
 		<title>Defining a process</title>
-
-		<para>
-      To create a new BPMN 2.0 process definition, it's best to have your Eclipse
-      <link linkend="eclipsesetup">properly set up</link>.		  
-		</para>
 		
 		<para>
 		  Create a new XML file (<emphasis>rightclick on any project and select New->Other->XML-XML File</emphasis>) and give it a name.
-		  Make sure that the file <emphasis role="bold">ends with .bpmn20.xml</emphasis>, since
+		  Make sure that the file <emphasis role="bold">ends with .bpmn20.xml or .bpmn</emphasis>, since
 		  otherwise the engine won't pick up this file for deployment.
 		  <mediaobject><imageobject><imagedata align="center" fileref="images/new.bpmn.procdef.png"/></imageobject></mediaobject>
 		</para>
@@ -50,8 +45,8 @@
 		</para>
 		
 		<para>
-		  Optionally you can also add the online schemalocation of the BPMN 2.0 XML schema,
-		  as an alternative to the  <link linkend="eclipsesetup">XML catalog configuration in Eclipse</link>.
+		  Optionally you can also add the online schema location of the BPMN 2.0 XML schema,
+		  as an alternative to the XML catalog configuration in Eclipse.
 		  <programlisting>
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL 
@@ -109,7 +104,6 @@ xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL
       
       <para>
         This tutorial assumes that you have the <link linkend="demo.setup.one.minute.version">Activiti demo setup running</link>.
-        Optionally, you should also have an Eclipse installed and <link linkend="eclipsesetup">imported the Activiti examples</link>.
       </para>
     
     </section>
@@ -139,13 +133,7 @@ xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL
 				department. When the report is finished, one of the members of the
 				upper management needs to approve the document before it is sent to all
 				the shareholders.
-      </para> 
-      
-      <para>
-        All files and code snippets used through the next sections can be found
-        in the <link linkend="examples">examples</link> shipped with the Activiti distribution.
-        Look for the package <emphasis>org.activiti.examples.bpmn.usertask</emphasis>.
-      </para>   
+      </para>  
     
     </section>
     
@@ -390,7 +378,7 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().taskCandidateGroup(&quot;
 </para>
       
       <para>
-        Since we've configured our ProcessEngine to use the same database as the demo setup is using (run the <link linkend="demo.setup">demo setup</link> if you haven't done it yet'),
+        Since we've configured our ProcessEngine to use the same database as the demo setup is using,
         we can now log into <ulink url="http://localhost:8080/activiti-explorer/">Activiti Explorer</ulink> 
         (login with fozzie/fozzie), and we fill find that we can start our business process after
         selecting the <emphasis>Processes</emphasis> page and
