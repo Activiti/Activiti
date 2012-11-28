@@ -24,11 +24,13 @@ public class DeploymentResponse {
   String id;
   String name;
   String deploymentTime;
+  String category;
   
   public DeploymentResponse(Deployment deployment) {
     setId(deployment.getId());
     setName(deployment.getName());
     setDeploymentTime(RequestUtil.dateToString(deployment.getDeploymentTime()));
+    setCategory(deployment.getCategory());
   }
   
   public String getId() {
@@ -48,5 +50,11 @@ public class DeploymentResponse {
   }
   public void setDeploymentTime(String deploymentTime) {
     this.deploymentTime = deploymentTime;
+  }
+  public String getCategory() {
+    return category;
+  }
+  public void setCategory(String category) {
+    this.category = category;
   }
 }

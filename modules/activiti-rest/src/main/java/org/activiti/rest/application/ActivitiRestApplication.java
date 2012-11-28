@@ -122,7 +122,7 @@ public class ActivitiRestApplication extends Application {
     router.attach("/group", GroupCreateResource.class);
     router.attach("/group/{groupId}", GroupResource.class);
     router.attach("/group/{groupId}/users/{userId}", UserGroupsDeleteResource.class);
-    router.attach("/groups/{groupId}/users", GroupUsersResource.class);
+    router.attach("/group/{groupId}/users", GroupUsersResource.class);
     router.attach("/groups", GroupSearchResource.class);
     
     router.attach("/process-definitions", ProcessDefinitionsResource.class);

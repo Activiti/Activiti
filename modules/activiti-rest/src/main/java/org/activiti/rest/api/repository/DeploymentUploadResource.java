@@ -49,12 +49,12 @@ public class DeploymentUploadResource extends SecuredResource {
       
       DeploymentBuilder deploymentBuilder = ActivitiUtil.getRepositoryService().createDeployment();
       String fileName = uploadItem.getName();
-      if (fileName.endsWith(".bpmn20.xml")) {
+      if (fileName.endsWith(".bpmn20.xml") || fileName.endsWith(".bpmn")) {
         deploymentBuilder.addInputStream(fileName, uploadItem.getInputStream());
       } else if (fileName.toLowerCase().endsWith(".bar") || fileName.toLowerCase().endsWith(".zip")) {
         deploymentBuilder.addZipInputStream(new ZipInputStream(uploadItem.getInputStream()));
       } else {
-        throw new ActivitiException("File must be of type .bpmn20.xml, .bar or .zip");
+        throw new ActivitiException("File must be of type .bpmn20.xml, .bpmn, .bar or .zip");
       }
       deploymentBuilder.name(fileName);
       Deployment deployment = deploymentBuilder.deploy();

@@ -23,7 +23,6 @@ import org.activiti.engine.impl.GroupQueryProperty;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.DataResponse;
-import org.activiti.rest.api.DefaultPaginateList;
 import org.activiti.rest.api.SecuredResource;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
@@ -51,7 +50,7 @@ public class UserGroupsResource extends SecuredResource {
       throw new ActivitiException("No userId provided");
     }
 
-    DataResponse dataResponse = new DefaultPaginateList().paginateList(
+    DataResponse dataResponse = new UserGroupsPaginateList().paginateList(
         getQuery(), ActivitiUtil.getIdentityService().createGroupQuery()
             .groupMember(userId), "id", properties);
     return dataResponse;

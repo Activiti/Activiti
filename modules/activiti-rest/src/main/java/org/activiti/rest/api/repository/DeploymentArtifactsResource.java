@@ -47,6 +47,7 @@ public class DeploymentArtifactsResource extends SecuredResource {
     responseJSON.put("id", deployment.getId());
     responseJSON.put("name", deployment.getName());
     responseJSON.put("deploymentTime", RequestUtil.dateToString(deployment.getDeploymentTime()));
+    responseJSON.put("category", deployment.getCategory());
     
     ArrayNode resourceArray = new ObjectMapper().createArrayNode();
     

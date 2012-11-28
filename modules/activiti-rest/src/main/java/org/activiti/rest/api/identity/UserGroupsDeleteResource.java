@@ -35,6 +35,11 @@ public class UserGroupsDeleteResource extends SecuredResource {
       setStatus(Status.CLIENT_ERROR_BAD_REQUEST, "No userId provided.");
       return new StateResponse().setSuccess(false);
     }
+    
+    if (groupId == null) {
+      setStatus(Status.CLIENT_ERROR_BAD_REQUEST, "No groupId provided.");
+      return new StateResponse().setSuccess(false);
+    }
 
     IdentityService identityService = ActivitiUtil.getIdentityService();
     // Check if user exists
