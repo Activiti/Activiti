@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.upgrade;
+package org.activiti.upgrade.data;
 
 import java.io.PrintWriter;
 import java.sql.DriverManager;
@@ -24,21 +24,18 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.util.ClassNameUtil;
 import org.activiti.engine.impl.util.LogUtil;
-import org.activiti.upgrade.test.UpgradeTaskOneTest;
-import org.activiti.upgrade.test.UpgradeTaskTwoTest;
+import org.activiti.upgrade.CleanPostgres;
+import org.activiti.upgrade.ProxyDriver;
+import org.activiti.upgrade.UpgradeUtil;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class UpgradeDataGenerator {
   
-  static Logger log = Logger.getLogger(UpgradeTestCase.class.getName());
+  static Logger log = Logger.getLogger(UpgradeDataGenerator.class.getName());
   
-  static UpgradeTestCase[] upgradeTestCases = new UpgradeTestCase[]{
-    new UpgradeTaskOneTest(),
-    new UpgradeTaskTwoTest()
-  };
-
   public static void main(String[] args) {
     
     ProcessEngineConfigurationImpl processEngineConfiguration = null;
@@ -56,7 +53,7 @@ public class UpgradeDataGenerator {
       log.fine("database: "+database);
       log.fine("releaseVersion: "+releaseVersion);
   
-      processEngineConfiguration = UpgradeTestCase.createProcessEngineConfiguration(database);
+      processEngineConfiguration = UpgradeUtil.createProcessEngineConfiguration(database);
 
       // install the jdbc proxy driver
       log.fine("installing jdbc proxy driver delegating to "+processEngineConfiguration.getJdbcUrl());
@@ -67,12 +64,17 @@ public class UpgradeDataGenerator {
       log.fine("building the process engine...");
       ProcessEngine processEngine = processEngineConfiguration.buildProcessEngine();
 
-      log.fine("deploy processes and start process instances");
-      UpgradeTestCase.setProcessEngine(processEngine);
       
-      for (UpgradeTestCase upgradeTestCase: upgradeTestCases) {
-        log.fine("### Running test "+ClassNameUtil.getClassNameWithoutPackage(upgradeTestCase.getClass())+" in the old version");
-        upgradeTestCase.runInTheOldVersion();
+      log.fine("### Running data generator "+ClassNameUtil.getClassNameWithoutPackage(CommonDataGenerator.class)+" in the old version");
+      CommonDataGenerator commonDataGenerator = new CommonDataGenerator();
+      commonDataGenerator.setProcessEngine(processEngine);
+      commonDataGenerator.run();
+      
+      // < 5.11 upgrade tests (ie the following data only needs to be generated when the engine is lower then or equals 5.10)
+      if (UpgradeUtil.getProcessEngineVersion(processEngine) < 11) {
+        Activiti_5_10_DataGenerator activiti_5_10_DataGenerator = new Activiti_5_10_DataGenerator();
+        activiti_5_10_DataGenerator.setProcessEngine(processEngine);
+        activiti_5_10_DataGenerator.run();
       }
 
       log.fine("### Captured SQL");
@@ -95,14 +97,23 @@ public class UpgradeDataGenerator {
   }
 
   private static void dbSchemaDrop(ProcessEngineConfigurationImpl processEngineConfiguration) {
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
-    commandExecutor.execute(new Command<Object> (){
-      public Object execute(CommandContext commandContext) {
-        commandContext
-          .getSession(DbSqlSession.class)
-          .dbSchemaDrop();
-        return null;
-      }
-    });
+    if (processEngineConfiguration.getDatabaseType().equals("postgres")) {
+      
+      CleanPostgres cleanPostgres = new CleanPostgres();
+      cleanPostgres.execute();
+      
+    } else {
+    
+      CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+      commandExecutor.execute(new Command<Object> (){
+        public Object execute(CommandContext commandContext) {
+          commandContext
+            .getSession(DbSqlSession.class)
+            .dbSchemaDrop();
+          return null;
+        }
+      });
+      
+    }
   }
 }

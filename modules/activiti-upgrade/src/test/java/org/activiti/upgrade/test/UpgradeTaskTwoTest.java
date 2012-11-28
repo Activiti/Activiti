@@ -16,28 +16,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.task.Task;
-import org.activiti.upgrade.UpgradeTestCase;
 
 
 public class UpgradeTaskTwoTest extends UpgradeTestCase {
   
-  public static void main(String[] args) {
-    runBeforeAndAfterInDevelopmentMode(new UpgradeTaskOneTest());
-  }
-
-  public void runInTheOldVersion() {
-    processEngine.getRepositoryService()
-      .createDeployment()
-      .name("simpleTaskProcess")
-      .addClasspathResource("org/activiti/upgrade/test/UserTaskBeforeTest.testTaskWithExecutionVariables.bpmn20.xml")
-      .deploy();
-
-    Map<String, Object> variables = new HashMap<String, Object>();
-    variables.put("instrument", "trumpet");
-    variables.put("player", "gonzo");
-    runtimeService.startProcessInstanceByKey("taskWithExecutionVariablesProcess", variables);
-  }
-
   public void testTaskWithExecutionVariables() {
     Task task = taskService
       .createTaskQuery()

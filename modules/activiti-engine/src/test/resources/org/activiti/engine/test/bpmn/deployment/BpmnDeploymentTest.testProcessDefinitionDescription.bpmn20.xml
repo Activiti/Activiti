@@ -6,9 +6,7 @@
 
   <process id="processDescription">
 
-    <documentation>
-      This is really good process documentation! 
-    </documentation>
+    <documentation><![CDATA[This is really good process documentation!]]></documentation>
 
     <startEvent id="start" />
 
