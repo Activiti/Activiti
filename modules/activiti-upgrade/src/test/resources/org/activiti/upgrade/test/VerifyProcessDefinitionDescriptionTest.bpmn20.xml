@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions id="taskAssigneeExample" 
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="Upgrade">
+  
+  <process id="verifyProcessDefinitionDescription">
+  
+    <documentation><![CDATA[This is not really a very usable process...]]></documentation>
+  
+    <startEvent id="start"/>
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="one" />
+
+    <userTask id="one" name="one" />
+    <sequenceFlow id="flow2" sourceRef="one" targetRef="end" />
+    
+    <endEvent id="end" />
+    
+  </process>
+
+</definitions>

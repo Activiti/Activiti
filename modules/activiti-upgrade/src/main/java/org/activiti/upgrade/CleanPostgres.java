@@ -51,39 +51,43 @@ public class CleanPostgres {
   "drop table ACT_ID_USER cascade;"};
 
   public static void main(String[] args) {
+    if ("postgres".equals(args[0])) {
+      CleanPostgres cleanPostgres = new CleanPostgres();
+      cleanPostgres.execute();
+    }
+  }
+
+  public void execute() {
     try {
-      if ("postgres".equals(args[0])) {
-        ProcessEngineConfigurationImpl processEngineConfiguration = UpgradeTestCase.createProcessEngineConfiguration("postgres");
-        processEngineConfiguration.buildProcessEngine();
-        CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
-        commandExecutor.execute(new Command<Object>() {
+      ProcessEngineConfigurationImpl processEngineConfiguration = UpgradeUtil.createProcessEngineConfiguration("postgres");
+      processEngineConfiguration.buildProcessEngine();
+      CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+      commandExecutor.execute(new Command<Object>() {
 
-          public Object execute(CommandContext commandContext) {
-            try {
-              Connection connection = commandContext.getSession(DbSqlSession.class).getSqlSession().getConnection();
-              connection.setAutoCommit(false);
+        public Object execute(CommandContext commandContext) {
+          try {
+            Connection connection = commandContext.getSession(DbSqlSession.class).getSqlSession().getConnection();
+            connection.setAutoCommit(false);
 
-              for (String cleanStatement : cleanStatements) {
-                try {
-                  PreparedStatement preparedStatement = connection.prepareStatement(cleanStatement);
-                  preparedStatement.execute();
-                  connection.commit();
-                  log.info("executed ["+cleanStatement+"] successfully");
+            for (String cleanStatement : cleanStatements) {
+              try {
+                PreparedStatement preparedStatement = connection.prepareStatement(cleanStatement);
+                preparedStatement.execute();
+                connection.commit();
+                log.info("executed [" + cleanStatement + "] successfully");
 
-                } catch (Exception e) {
-                  log.info("ERROR WHILE EXECUTING ["+cleanStatement+"]:");
-                  e.printStackTrace();
-                  connection.rollback();
-                }
+              } catch (Exception e) {
+                log.info("ERROR WHILE EXECUTING [" + cleanStatement + "]:");
+                e.printStackTrace();
+                connection.rollback();
               }
-            } catch (Exception e) {
-              e.printStackTrace();
             }
-            return null;
+          } catch (Exception e) {
+            e.printStackTrace();
           }
-        });
-      }
-      
+          return null;
+        }
+      });
     } catch (Exception e) {
       e.printStackTrace();
     }

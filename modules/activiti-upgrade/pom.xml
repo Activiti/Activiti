@@ -199,7 +199,7 @@
                       </path>
                     </sql>
                     <echo message="generating data in ${upgradeVersion}" />
-                    <java classname="org.activiti.upgrade.UpgradeDataGenerator" fork="true">
+                    <java classname="org.activiti.upgrade.data.UpgradeDataGenerator" fork="true">
                       <arg line="${database} ${upgradeVersion}"/>
                       <classpath>
                         <path path="${test_classpath}"/>

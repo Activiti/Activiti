@@ -17,30 +17,9 @@ import org.activiti.engine.ManagementService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Task;
-import org.activiti.upgrade.UpgradeTestCase;
-
 
 public class UpgradeTaskOneTest extends UpgradeTestCase {
   
-  public static void main(String[] args) {
-    runBeforeAndAfterInDevelopmentMode(new UpgradeTaskOneTest());
-  }
-
-  public void runInTheOldVersion() {
-    RuntimeService runtimeService = processEngine.getRuntimeService();
-    TaskService taskService = processEngine.getTaskService();
-
-    processEngine.getRepositoryService()
-      .createDeployment()
-      .name("simpleTaskProcess")
-      .addClasspathResource("org/activiti/upgrade/test/UserTaskBeforeTest.testSimplestTask.bpmn20.xml")
-      .deploy();
-
-    runtimeService.startProcessInstanceByKey("simpleTaskProcess");
-    String taskId = taskService.createTaskQuery().singleResult().getId();
-    taskService.complete(taskId);
-  }
-
   public void testSimplestTask() {
     RuntimeService runtimeService = processEngine.getRuntimeService();
     TaskService taskService = processEngine.getTaskService();
