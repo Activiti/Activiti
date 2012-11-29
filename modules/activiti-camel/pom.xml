@@ -4,7 +4,6 @@
   <modelVersion>4.0.0</modelVersion>
 
   <name>Activiti - Camel</name>
-  <groupId>org.activiti</groupId>
   <artifactId>activiti-camel</artifactId>
   <packaging>bundle</packaging>
 
@@ -12,7 +11,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.11-SNAPSHOT</version>
+    <version>5.11</version>
   </parent>
 
 
@@ -20,7 +19,6 @@
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-spring</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.camel</groupId>
