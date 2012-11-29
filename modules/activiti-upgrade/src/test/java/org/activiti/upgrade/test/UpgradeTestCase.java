@@ -21,6 +21,12 @@ import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.persistence.entity.PropertyEntity;
 import org.activiti.engine.impl.util.LogUtil;
 import org.activiti.upgrade.UpgradeUtil;
 import org.junit.Ignore;
@@ -80,13 +86,26 @@ public abstract class UpgradeTestCase extends TestCase {
     }
   }
 
-
   public static void setProcessEngine(ProcessEngine processEngine) {
     UpgradeTestCase.processEngine = processEngine;
     runtimeService = processEngine.getRuntimeService();
     taskService = processEngine.getTaskService();
     historyService = processEngine.getHistoryService();
     managementService = processEngine.getManagementService();
+  }
+  
+  public boolean isTestRunningInUpgrade(final String versionFrom, final String versionTo) {
+    ProcessEngineConfigurationImpl processEngineConfiguration = 
+            ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    return commandExecutor.execute(new Command<Boolean>() {
+      public Boolean execute(CommandContext commandContext) {
+        PropertyEntity dbHistoryProperty = commandContext.getDbSqlSession()
+                 .selectById(PropertyEntity.class, "schema.history");
+        String dbHistory = dbHistoryProperty.getValue();
+        return dbHistory.contains(versionFrom + "->" + versionTo);
+      }
+    });
   }
 
 }

@@ -26,7 +26,7 @@ public class VerifyProcessDefinitionDescriptionTest extends UpgradeTestCase {
   public void testProcessDefinitionDescription() {
     
     // Test makes only sense on 5.11
-    if (UpgradeUtil.getProcessEngineVersion(processEngine) == 11) {
+    if (UpgradeUtil.getProcessEngineVersion(processEngine) == 11 && isTestRunningInUpgrade("5.10", "5.11")) {
       
       // We don't upgrade the process definition description, we only add the column.
       // So we'll just verify if the process definition description is null and if 
