@@ -246,8 +246,8 @@
       </dependency>
       <dependency>
         <groupId>org.codehaus.groovy</groupId>
-        <artifactId>groovy</artifactId>
-        <version>1.8.6</version>
+        <artifactId>groovy-all</artifactId>
+        <version>2.0.4</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>

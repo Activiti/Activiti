@@ -29,8 +29,8 @@ public class SuspendAndActivateFunctionalityTest extends UpgradeTestCase {
   
   public void testSuspendProcessDefinition() {
     
-    // Test makes only sense on 5.11
-    if (UpgradeUtil.getProcessEngineVersion(processEngine) == 11) {
+    // Test makes only sense on 5.10 -> 5.11
+    if (UpgradeUtil.getProcessEngineVersion(processEngine) == 11 && isTestRunningInUpgrade("5.10", "5.11")) {
       
       ProcessDefinition processDefinition = processEngine.getRepositoryService()
               .createProcessDefinitionQuery().processDefinitionKey("suspendAndActivate").singleResult();
@@ -70,7 +70,7 @@ public class SuspendAndActivateFunctionalityTest extends UpgradeTestCase {
   public void testSuspendProcessInstance() {
     
     // Test makes only sense on 5.11
-    if (UpgradeUtil.getProcessEngineVersion(processEngine) == 11) {
+    if (UpgradeUtil.getProcessEngineVersion(processEngine) == 11 && isTestRunningInUpgrade("5.10", "5.11")) {
       
       ProcessDefinition processDefinition = processEngine.getRepositoryService()
               .createProcessDefinitionQuery().processDefinitionKey("suspendAndActivate").singleResult();

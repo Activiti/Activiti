@@ -185,7 +185,7 @@
     <!-- Running example processes -->
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
-      <artifactId>groovy</artifactId>
+      <artifactId>groovy-all</artifactId>
     </dependency>
     
     <!-- Testing -->

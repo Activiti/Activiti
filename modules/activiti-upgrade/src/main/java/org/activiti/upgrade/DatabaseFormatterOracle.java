@@ -24,7 +24,7 @@ public class DatabaseFormatterOracle extends DatabaseFormatter {
     StringBuffer sb = new StringBuffer();
     sb.append("to_timestamp('");
     sb.append(oracleDateFormat.format(date));
-    sb.append("', 'YYYY-MM-DD HH:MI:SS.FF')");
+    sb.append("', 'YYYY-MM-DD HH24:MI:SS.FF')");
     return sb.toString();
   }
 
