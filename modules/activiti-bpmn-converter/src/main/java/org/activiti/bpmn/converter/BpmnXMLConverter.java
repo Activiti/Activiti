@@ -82,6 +82,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
     addConverter(ScriptTaskXMLConverter.getXMLType(), ScriptTaskXMLConverter.getBpmnElementType(), ScriptTaskXMLConverter.class);
     addConverter(ServiceTaskXMLConverter.getXMLType(), ServiceTaskXMLConverter.getBpmnElementType(), ServiceTaskXMLConverter.class);
     addConverter(UserTaskXMLConverter.getXMLType(), UserTaskXMLConverter.getBpmnElementType(), UserTaskXMLConverter.class);
+    addConverter(TaskXMLConverter.getXMLType(), TaskXMLConverter.getBpmnElementType(), TaskXMLConverter.class);
     addConverter(CallActivityXMLConverter.getXMLType(), CallActivityXMLConverter.getBpmnElementType(), CallActivityXMLConverter.class);
     
     // gateways

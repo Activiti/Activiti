@@ -70,6 +70,7 @@ public interface BpmnXMLConstants {
   // fake element for mail task
   public static final String ELEMENT_TASK_MAIL = "mailTask";
   
+  public static final String ELEMENT_TASK = "task";
   public static final String ELEMENT_TASK_BUSINESSRULE = "businessRuleTask";
   public static final String ELEMENT_TASK_MANUAL = "manualTask";
   public static final String ELEMENT_TASK_RECEIVE = "receiveTask";

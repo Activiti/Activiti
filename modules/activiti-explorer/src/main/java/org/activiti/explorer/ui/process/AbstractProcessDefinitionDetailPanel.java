@@ -74,7 +74,7 @@ public abstract class AbstractProcessDefinitionDetailPanel extends DetailPanel {
     this.i18nManager = ExplorerApp.get().getI18nManager();
     
     this.parentPage = parentPage;
-    this.processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(processDefinitionId).singleResult();
+    this.processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
 
     if(processDefinition != null) {
       deployment = repositoryService.createDeploymentQuery().deploymentId(processDefinition.getDeploymentId()).singleResult();
