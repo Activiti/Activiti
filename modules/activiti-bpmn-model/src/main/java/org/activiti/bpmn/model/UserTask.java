@@ -21,7 +21,7 @@ import java.util.List;
 public class UserTask extends Task {
 
   protected String assignee;
-  protected Integer priority;
+  protected String priority;
   protected String formKey;
   protected String dueDate;
   protected List<String> candidateUsers = new ArrayList<String>();
@@ -35,10 +35,10 @@ public class UserTask extends Task {
   public void setAssignee(String assignee) {
     this.assignee = assignee;
   }
-  public Integer getPriority() {
+  public String getPriority() {
     return priority;
   }
-  public void setPriority(Integer priority) {
+  public void setPriority(String priority) {
     this.priority = priority;
   }
   public String getFormKey() {

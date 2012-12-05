@@ -13,6 +13,7 @@
 package org.activiti.explorer.ui.process;
 
 import org.activiti.engine.form.StartFormData;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.AbstractPage;
@@ -52,7 +53,7 @@ public class ProcessDefinitionDetailPanel extends AbstractProcessDefinitionDetai
     editProcessDefinitionButton = new Button(i18nManager.getMessage(Messages.PROCESS_CONVERT));
     editProcessDefinitionButton.addListener(new ConvertProcessDefinitionToModelClickListener(processDefinition));
     
-    if(processDefinition.getDiagramResourceName() == null) {
+    if(((ProcessDefinitionEntity) processDefinition).isGraphicalNotationDefined() == false) {
       editProcessDefinitionButton.setEnabled(false);
     }
     

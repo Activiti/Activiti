@@ -37,13 +37,6 @@ public class BpmnModel {
 
 	public Process getMainProcess() {
 	  Process process = getProcess(null);
-	  if(process == null) {
-	    process = new Process();
-	    process.setName("process1");
-	    process.setId("process1");
-      addProcess(process);
-	  }
-	  
 	  return process;
 	}
 
@@ -79,6 +72,49 @@ public class BpmnModel {
 	
 	public void addProcess(Process process) {
 	  processes.add(process);
+	}
+	
+	public FlowElement getFlowElement(String id) {
+	  FlowElement foundFlowElement = null;
+	  for (Process process : processes) {
+	    foundFlowElement = process.getFlowElement(id);
+	    if (foundFlowElement != null) {
+	      break;
+	    }
+	  }
+	  
+	  if (foundFlowElement == null) {
+	    for (Process process : processes) {
+	      for (FlowElement flowElement : process.getFlowElements()) {
+	        if (flowElement instanceof SubProcess) {
+	          foundFlowElement = getFlowElementInSubProcess(id, (SubProcess) flowElement);
+	          if (foundFlowElement != null) {
+	            break;
+	          }
+	        }
+	      }
+	      if (foundFlowElement != null) {
+          break;
+        }
+	    }
+	  }
+	  
+	  return foundFlowElement;
+	}
+	
+	protected FlowElement getFlowElementInSubProcess(String id, SubProcess subProcess) {
+	  FlowElement foundFlowElement = subProcess.getFlowElement(id);
+    if (foundFlowElement == null) {
+      for (FlowElement flowElement : subProcess.getFlowElements()) {
+        if (flowElement instanceof SubProcess) {
+          foundFlowElement = getFlowElementInSubProcess(id, (SubProcess) flowElement);
+          if (foundFlowElement != null) {
+            break;
+          }
+        }
+      }
+    }
+    return foundFlowElement;
 	}
 	
 	public void addGraphicInfo(String key, GraphicInfo graphicInfo) {

@@ -52,7 +52,7 @@ public class MailTaskJsonConverter extends BaseBpmnJsonConverter {
   
   protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
   	ServiceTask task = new ServiceTask();
-  	task.setType("mail");
+  	task.setType(ServiceTask.MAIL_TASK);
   	addField(PROPERTY_MAILTASK_TO, elementNode, task);
   	addField(PROPERTY_MAILTASK_FROM, elementNode, task);
   	addField(PROPERTY_MAILTASK_SUBJECT, elementNode, task);

@@ -31,6 +31,9 @@ public interface StencilConstants {
   final String STENCIL_EVENT_SUB_PROCESS = "EventSubProcess";
   final String STENCIL_CALL_ACTIVITY = "CallActivity";
   
+  final String STENCIL_POOL = "Pool";
+  final String STENCIL_LANE = "Lane";
+  
   final String STENCIL_TASK_BUSINESS_RULE = "BusinessRule";
   final String STENCIL_TASK_MAIL = "MailTask";
   final String STENCIL_TASK_MANUAL = "ManualTask";

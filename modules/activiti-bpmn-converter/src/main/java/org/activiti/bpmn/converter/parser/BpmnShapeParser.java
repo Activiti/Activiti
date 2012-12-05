@@ -35,7 +35,7 @@ public class BpmnShapeParser implements BpmnXMLConstants {
 				GraphicInfo graphicInfo = new GraphicInfo();
 				graphicInfo.x = Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_X)).intValue();
 				graphicInfo.y = Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_Y)).intValue();
-				FlowElement flowElement = model.getMainProcess().getFlowElement(id);
+				FlowElement flowElement = model.getFlowElement(id);
 				if (flowElement instanceof Event) {
 				  graphicInfo.width = 30;
 				  graphicInfo.height = 30;

@@ -38,13 +38,17 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_ID = "id";
   public static final String ATTRIBUTE_NAME = "name";
   public static final String ATTRIBUTE_TYPE = "type";
+  public static final String ELEMENT_DEFINITIONS = "definitions";
   public static final String ELEMENT_DOCUMENTATION = "documentation";
   
   public static final String ELEMENT_SIGNAL = "signal";
   public static final String ELEMENT_MESSAGE = "message";
   public static final String ELEMENT_COLLABORATION = "collaboration";
   public static final String ELEMENT_PARTICIPANT = "participant";
+  public static final String ELEMENT_LANESET = "laneSet";
+  public static final String ELEMENT_LANE = "lane";
   public static final String ATTRIBUTE_PROCESS_REF = "processRef";
+  public static final String ATTRIBUTE_FLOWNODE_REF = "flowNodeRef";
   
   public static final String ELEMENT_PROCESS = "process";
   public static final String ATTRIBUTE_PROCESS_EXECUTABLE = "isExecutable";
@@ -70,6 +74,7 @@ public interface BpmnXMLConstants {
   // fake element for mail task
   public static final String ELEMENT_TASK_MAIL = "mailTask";
   
+  public static final String ELEMENT_TASK = "task";
   public static final String ELEMENT_TASK_BUSINESSRULE = "businessRuleTask";
   public static final String ELEMENT_TASK_MANUAL = "manualTask";
   public static final String ELEMENT_TASK_RECEIVE = "receiveTask";
