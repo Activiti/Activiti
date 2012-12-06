@@ -20,10 +20,13 @@ import java.util.List;
  */
 public class ServiceTask extends Task {
 
+  public static final String MAIL_TASK = "mail";
+  
   protected String implementation;
   protected String implementationType;
   protected String resultVariableName;
   protected String type;
+  protected String extensionId;
   protected List<FieldExtension> fieldExtensions = new ArrayList<FieldExtension>();
   protected List<CustomProperty> customProperties = new ArrayList<CustomProperty>();
 
@@ -62,5 +65,14 @@ public class ServiceTask extends Task {
   }
   public void setCustomProperties(List<CustomProperty> customProperties) {
     this.customProperties = customProperties;
+  }
+  public String getExtensionId() {
+    return extensionId;
+  }
+  public void setExtensionId(String extensionId) {
+    this.extensionId = extensionId;
+  }
+  public boolean isExtended() {
+    return extensionId != null && !extensionId.isEmpty();
   }
 }

@@ -14,7 +14,10 @@ public class SimpleModelTest {
   @Test
   public void connvertModelToXML() throws Exception {
     BpmnModel bpmnModel = new BpmnModel();
-    Process process = bpmnModel.getMainProcess();
+    Process process = new Process();
+    process.setId("simpleProcess");
+    process.setName("Very simple process");
+    bpmnModel.getProcesses().add(process);
     StartEvent startEvent = new StartEvent();
     startEvent.setId("startEvent1");
     process.addFlowElement(startEvent);

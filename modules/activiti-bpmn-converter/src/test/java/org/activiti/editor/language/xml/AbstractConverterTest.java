@@ -26,6 +26,7 @@ public abstract class AbstractConverterTest {
   
   protected BpmnModel exportAndReadXMLFile(BpmnModel bpmnModel) throws Exception {
     byte[] xml = new BpmnXMLConverter().convertToXML(bpmnModel);
+    System.out.println("xml " + new String(xml, "UTF-8"));
     XMLInputFactory xif = XMLInputFactory.newInstance();
     InputStreamReader in = new InputStreamReader(new ByteArrayInputStream(xml), "UTF-8");
     XMLStreamReader xtr = xif.createXMLStreamReader(in);

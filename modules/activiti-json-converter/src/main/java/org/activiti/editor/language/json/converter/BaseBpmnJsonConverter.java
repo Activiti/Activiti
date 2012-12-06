@@ -31,6 +31,7 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FormProperty;
 import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.ImplementationType;
+import org.activiti.bpmn.model.Lane;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
 import org.activiti.bpmn.model.Process;
@@ -43,6 +44,7 @@ import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.editor.constants.EditorJsonConstants;
 import org.activiti.editor.constants.StencilConstants;
+import org.activiti.editor.language.json.converter.util.JsonConverterUtil;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -196,6 +198,10 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
       ((Process) parentElement).addFlowElement(flowElement);
     } else if (parentElement instanceof SubProcess) {
       ((SubProcess) parentElement).addFlowElement(flowElement);
+    } else if (parentElement instanceof Lane) {
+      Lane lane = (Lane) parentElement;
+      lane.getFlowReferences().add(flowElement.getId());
+      lane.getParentProcess().addFlowElement(flowElement);
     }
   }
   
@@ -509,43 +515,19 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
   }
   
   protected String getPropertyValueAsString(String name, JsonNode objectNode) {
-    String propertyValue = null;
-    JsonNode propertyNode = getProperty(name, objectNode);
-    if (propertyNode != null && "null".equalsIgnoreCase(propertyNode.asText()) == false) {
-      propertyValue = propertyNode.asText();
-    }
-    return propertyValue;
+    return JsonConverterUtil.getPropertyValueAsString(name, objectNode);
   }
   
   protected boolean getPropertyValueAsBoolean(String name, JsonNode objectNode) {
-    boolean result = false;
-    String stringValue = getPropertyValueAsString(name, objectNode);
-    if (PROPERTY_VALUE_YES.equalsIgnoreCase(stringValue)) {
-      result = true;
-    }
-    return result;
+    return JsonConverterUtil.getPropertyValueAsBoolean(name, objectNode);
   }
   
   protected List<String> getPropertyValueAsList(String name, JsonNode objectNode) {
-    List<String> resultList = new ArrayList<String>();
-    JsonNode propertyNode = getProperty(name, objectNode);
-    if (propertyNode != null && "null".equalsIgnoreCase(propertyNode.asText()) == false) {
-      String propertyValue = propertyNode.asText();
-      String[] valueList = propertyValue.split(",");
-      for (String value : valueList) {
-        resultList.add(value.trim());
-      }
-    }
-    return resultList;
+    return JsonConverterUtil.getPropertyValueAsList(name, objectNode);
   }
   
   protected JsonNode getProperty(String name, JsonNode objectNode) {
-    JsonNode propertyNode = null;
-    if (objectNode.get(EDITOR_SHAPE_PROPERTIES) != null) {
-      JsonNode propertiesNode = objectNode.get(EDITOR_SHAPE_PROPERTIES);
-      propertyNode = propertiesNode.get(name);
-    }
-    return propertyNode;
+    return JsonConverterUtil.getProperty(name, objectNode);
   }
   
   protected String convertListToCommaSeparatedString(List<String> stringList) {

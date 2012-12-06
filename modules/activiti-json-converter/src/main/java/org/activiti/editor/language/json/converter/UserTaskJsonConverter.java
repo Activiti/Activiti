@@ -14,7 +14,6 @@ package org.activiti.editor.language.json.converter;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.logging.Level;
 
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.FlowElement;
@@ -98,14 +97,7 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter {
   @Override
   protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
     UserTask task = new UserTask();
-    String priority = getPropertyValueAsString(PROPERTY_USERTASK_PRIORITY, elementNode);
-    if (StringUtils.isNotEmpty(priority)) {
-      try {
-        task.setPriority(Integer.valueOf(priority));
-      } catch(Exception e) {
-        LOGGER.log(Level.INFO, "priority is not a number " + priority);
-      }
-    }
+    task.setPriority(getPropertyValueAsString(PROPERTY_USERTASK_PRIORITY, elementNode));
     task.setFormKey(getPropertyValueAsString(PROPERTY_USERTASK_FORMKEY, elementNode));
     task.setDueDate(getPropertyValueAsString(PROPERTY_USERTASK_DUEDATE, elementNode));
     

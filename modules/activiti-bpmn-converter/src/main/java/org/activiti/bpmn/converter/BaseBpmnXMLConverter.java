@@ -34,7 +34,8 @@ import org.activiti.bpmn.converter.child.MultiInstanceParser;
 import org.activiti.bpmn.converter.child.SignalEventDefinitionParser;
 import org.activiti.bpmn.converter.child.TaskListenerParser;
 import org.activiti.bpmn.converter.child.TimerEventDefinitionParser;
-import org.activiti.bpmn.model.ActivitiListener;
+import org.activiti.bpmn.converter.util.ActivitiListenerUtil;
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.Artifact;
 import org.activiti.bpmn.model.BaseElement;
@@ -44,11 +45,9 @@ import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FormProperty;
 import org.activiti.bpmn.model.Gateway;
-import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
 import org.activiti.bpmn.model.Process;
-import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
@@ -336,45 +335,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
   }
   
   protected void writeListeners(BaseElement element, XMLStreamWriter xtw) throws Exception {
-    List<ActivitiListener> listenerList = null;
-    String xmlElementName = ELEMENT_EXECUTION_LISTENER;
-    if (element instanceof UserTask) {
-      listenerList = ((UserTask) element).getTaskListeners();
-      xmlElementName = ELEMENT_TASK_LISTENER;
-    } else if (element instanceof Activity) {
-      listenerList = ((Activity) element).getExecutionListeners();
-    } else if (element instanceof Process) {
-      listenerList = ((Process) element).getExecutionListeners();
-    } else if (element instanceof SequenceFlow) {
-      listenerList = ((SequenceFlow) element).getExecutionListeners();
-    }
-    
-    if (listenerList != null) {
-    
-      for (ActivitiListener listener : listenerList) {
-        
-        if (StringUtils.isNotEmpty(listener.getEvent())) {
-          
-          if (didWriteExtensionStartElement == false) { 
-            xtw.writeStartElement(ELEMENT_EXTENSIONS);
-            didWriteExtensionStartElement = true;
-          }
-          
-          xtw.writeStartElement(ACTIVITI_EXTENSIONS_PREFIX, xmlElementName, ACTIVITI_EXTENSIONS_NAMESPACE);
-          writeDefaultAttribute(ATTRIBUTE_LISTENER_EVENT, listener.getEvent(), xtw);
-          
-          if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType())) {
-            writeDefaultAttribute(ATTRIBUTE_LISTENER_CLASS, listener.getImplementation(), xtw);
-          } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(listener.getImplementationType())) {
-            writeDefaultAttribute(ATTRIBUTE_LISTENER_EXPRESSION, listener.getImplementation(), xtw);
-          } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(listener.getImplementationType())) {
-            writeDefaultAttribute(ATTRIBUTE_LISTENER_DELEGATEEXPRESSION, listener.getImplementation(), xtw);
-          }
-          
-          xtw.writeEndElement();
-        }
-      }
-    }
+    ActivitiListenerUtil.writeListeners(element, didWriteExtensionStartElement, xtw);
   }
   
   protected void writeEventDefinitions(List<EventDefinition> eventDefinitions, XMLStreamWriter xtw) throws Exception {
@@ -432,14 +393,10 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
   }
   
   protected void writeDefaultAttribute(String attributeName, String value, XMLStreamWriter xtw) throws Exception {
-    if (StringUtils.isNotEmpty(value) && "null".equalsIgnoreCase(value) == false) {
-      xtw.writeAttribute(attributeName, value);
-    }
+    BpmnXMLUtil.writeDefaultAttribute(attributeName, value, xtw);
   }
   
   protected void writeQualifiedAttribute(String attributeName, String value, XMLStreamWriter xtw) throws Exception {
-    if (StringUtils.isNotEmpty(value)) {
-      xtw.writeAttribute(ACTIVITI_EXTENSIONS_PREFIX, ACTIVITI_EXTENSIONS_NAMESPACE, attributeName, value);
-    }
+    BpmnXMLUtil.writeQualifiedAttribute(attributeName, value, xtw);
   }
 }
