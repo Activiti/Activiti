@@ -223,8 +223,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected List<Deployer> customPostDeployers;
   protected List<Deployer> deployers;
   protected DeploymentManager deploymentManager;
+  
   protected int processDefinitionCacheLimit = -1; // By default, no limit
   protected DeploymentCache<ProcessDefinitionEntity> processDefinitionCache;
+  
+  protected int knowledgeBaseCacheLimit = -1;
+  protected DeploymentCache<Object> knowledgeBaseCache;
 
   // JOB EXECUTOR /////////////////////////////////////////////////////////////
   
@@ -678,6 +682,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       deploymentManager = new DeploymentManager();
       deploymentManager.setDeployers(deployers);
       
+      // Process Definition cache
       if (processDefinitionCache == null) {
         if (processDefinitionCacheLimit <= 0) {
           processDefinitionCache = new DefaultDeploymentCache<ProcessDefinitionEntity>();
@@ -685,7 +690,18 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
           processDefinitionCache = new DefaultDeploymentCache<ProcessDefinitionEntity>(processDefinitionCacheLimit);
         }
       } 
-      deploymentManager.setProcessDefinitionCache(processDefinitionCache);  
+      
+      // Knowledge base cache (used for Drools business task)
+      if (knowledgeBaseCache == null) {
+        if (knowledgeBaseCacheLimit <= 0) {
+          knowledgeBaseCache = new DefaultDeploymentCache<Object>();
+        } else {
+          knowledgeBaseCache = new DefaultDeploymentCache<Object>(knowledgeBaseCacheLimit);
+        }
+      }
+      
+      deploymentManager.setProcessDefinitionCache(processDefinitionCache);
+      deploymentManager.setKnowledgeBaseCache(knowledgeBaseCache);
     }
   }
 
@@ -1727,6 +1743,39 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   public void setBatchSizeTasks(int batchSizeTasks) {
     this.batchSizeTasks = batchSizeTasks;
+  }
+  
+  public int getProcessDefinitionCacheLimit() {
+    return processDefinitionCacheLimit;
+  }
+
+  public void setProcessDefinitionCacheLimit(int processDefinitionCacheLimit) {
+    this.processDefinitionCacheLimit = processDefinitionCacheLimit;
+  }
+  
+  public DeploymentCache<ProcessDefinitionEntity> getProcessDefinitionCache() {
+    return processDefinitionCache;
+  }
+  
+  public void setProcessDefinitionCache(DeploymentCache<ProcessDefinitionEntity> processDefinitionCache) {
+    this.processDefinitionCache = processDefinitionCache;
+  }
+
+  public int getKnowledgeBaseCacheLimit() {
+    return knowledgeBaseCacheLimit;
+  }
+
+  public void setKnowledgeBaseCacheLimit(int knowledgeBaseCacheLimit) {
+    this.knowledgeBaseCacheLimit = knowledgeBaseCacheLimit;
+  }
+
+  
+  public DeploymentCache<Object> getKnowledgeBaseCache() {
+    return knowledgeBaseCache;
+  }
+  
+  public void setKnowledgeBaseCache(DeploymentCache<Object> knowledgeBaseCache) {
+    this.knowledgeBaseCache = knowledgeBaseCache;
   }
   
 }

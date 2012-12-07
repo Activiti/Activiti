@@ -39,7 +39,7 @@ public class RulesDeployer implements Deployer {
   public void deploy(DeploymentEntity deployment) {
     KnowledgeBuilder knowledgeBuilder = null;
 
-    DeploymentManager deploymentCache = Context
+    DeploymentManager deploymentManager = Context
       .getProcessEngineConfiguration()
       .getDeploymentManager();
     
@@ -59,7 +59,7 @@ public class RulesDeployer implements Deployer {
     
     if (knowledgeBuilder!=null) {
       KnowledgeBase knowledgeBase = knowledgeBuilder.newKnowledgeBase();
-      deploymentCache.addKnowledgeBase(deployment.getId(), knowledgeBase);
+      deploymentManager.getKnowledgeBaseCache().add(deployment.getId(), knowledgeBase);
     }
   }
 }

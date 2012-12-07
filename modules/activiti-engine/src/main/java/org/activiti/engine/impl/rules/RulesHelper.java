@@ -13,10 +13,9 @@
 
 package org.activiti.engine.impl.rules;
 
-import java.util.Map;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.drools.KnowledgeBase;
 
@@ -27,7 +26,7 @@ import org.drools.KnowledgeBase;
 public class RulesHelper {
 
   public static KnowledgeBase findKnowledgeBaseByDeploymentId(String deploymentId) {
-    Map<String, Object> knowledgeBaseCache = Context
+    DeploymentCache<Object> knowledgeBaseCache = Context
       .getProcessEngineConfiguration()
       .getDeploymentManager()
       .getKnowledgeBaseCache();

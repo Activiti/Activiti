@@ -13,9 +13,7 @@
 
 package org.activiti.engine.impl.persistence.deploy;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
@@ -33,7 +31,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 public class DeploymentManager {
 
   protected DeploymentCache<ProcessDefinitionEntity> processDefinitionCache;
-  protected Map<String, Object> knowledgeBaseCache = new HashMap<String, Object>(); 
+  protected DeploymentCache<Object> knowledgeBaseCache; // Needs to be object to avoid an import to Drools in this core class
   protected List<Deployer> deployers;
   
   public void deploy(DeploymentEntity deployment) {
@@ -117,28 +115,7 @@ public class DeploymentManager {
       .deleteDeployment(deploymentId, cascade);
   }
   
-  // Knowledgebase cache
-
-  public void addKnowledgeBase(String knowledgeBaseId, Object knowledgeBase) {
-    knowledgeBaseCache.put(knowledgeBaseId, knowledgeBase);
-  }
-
-  public void removeKnowledgeBase(String knowledgeBaseId) {
-    knowledgeBaseCache.remove(knowledgeBaseId);
-  }
-
-  public void discardKnowledgeBaseCache() {
-    knowledgeBaseCache.clear();
-  }
   // getters and setters //////////////////////////////////////////////////////
-  
-  public Map<String, Object> getKnowledgeBaseCache() {
-    return knowledgeBaseCache;
-  }
-  
-  public void setKnowledgeBaseCache(Map<String, Object> knowledgeBaseCache) {
-    this.knowledgeBaseCache = knowledgeBaseCache;
-  }
   
   public List<Deployer> getDeployers() {
     return deployers;
@@ -154,6 +131,14 @@ public class DeploymentManager {
   
   public void setProcessDefinitionCache(DeploymentCache<ProcessDefinitionEntity> processDefinitionCache) {
     this.processDefinitionCache = processDefinitionCache;
+  }
+  
+  public DeploymentCache<Object> getKnowledgeBaseCache() {
+    return knowledgeBaseCache;
+  }
+
+  public void setKnowledgeBaseCache(DeploymentCache<Object> knowledgeBaseCache) {
+    this.knowledgeBaseCache = knowledgeBaseCache;
   }
   
 }
