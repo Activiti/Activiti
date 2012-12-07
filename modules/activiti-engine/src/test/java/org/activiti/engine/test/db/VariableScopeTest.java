@@ -169,7 +169,7 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
       }
       
       ExecutionEntity execution = commandContext
-        .getExecutionManager()
+        .getExecutionEntityManager()
         .findExecutionById(executionId);
       
       if (execution==null) {

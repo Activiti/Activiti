@@ -39,7 +39,7 @@ public class GetTaskFormCmd implements Command<TaskFormData>, Serializable {
   public TaskFormData execute(CommandContext commandContext) {
     TaskEntity task = Context
       .getCommandContext()
-      .getTaskManager()
+      .getTaskEntityManager()
       .findTaskById(taskId);
     if (task == null) {
       throw new ActivitiException("No task found for taskId '" + taskId +"'");

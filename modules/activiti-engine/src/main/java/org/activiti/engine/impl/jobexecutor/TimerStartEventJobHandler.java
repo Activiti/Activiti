@@ -19,7 +19,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cmd.StartProcessInstanceCmd;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
+import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -36,9 +36,9 @@ public class TimerStartEventJobHandler implements JobHandler {
   }
   
   public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
-    DeploymentCache deploymentCache = Context
+    DeploymentManager deploymentCache = Context
             .getProcessEngineConfiguration()
-            .getDeploymentCache();
+            .getDeploymentManager();
     
     ProcessDefinition processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKey(configuration);
     try {

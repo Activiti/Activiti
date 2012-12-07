@@ -23,7 +23,7 @@ import org.activiti.engine.impl.persistence.AbstractManager;
 /**
  * @author Tom Baeyens
  */
-public class ResourceManager extends AbstractManager {
+public class ResourceEntityManager extends AbstractManager {
 
   public void insertResource(ResourceEntity resource) {
     getDbSqlSession().insert(resource);

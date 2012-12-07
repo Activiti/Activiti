@@ -37,7 +37,7 @@ import org.activiti.engine.runtime.Job;
  * @author Tom Baeyens
  * @author Daniel Meyer
  */
-public class JobManager extends AbstractManager {
+public class JobEntityManager extends AbstractManager {
 
   public void send(MessageEntity message) {
     message.insert();
@@ -87,7 +87,7 @@ public class JobManager extends AbstractManager {
   public void cancelTimers(ExecutionEntity execution) {
     List<TimerEntity> timers = Context
       .getCommandContext()
-      .getJobManager()
+      .getJobEntityManager()
       .findTimersByExecutionId(execution.getId());
     
     for (TimerEntity timer: timers) {

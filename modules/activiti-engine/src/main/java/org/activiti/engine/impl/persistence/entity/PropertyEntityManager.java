@@ -15,19 +15,14 @@ package org.activiti.engine.impl.persistence.entity;
 
 import org.activiti.engine.impl.persistence.AbstractManager;
 
+
 /**
- * @author Joram Barrez
+ * @author Tom Baeyens
  */
-public class ByteArrayManager extends AbstractManager {
-  
-  /**
-   * Deletes the {@link ByteArrayEntity} with the given id from the database.
-   * Important: this operation will NOT do any optimistic locking, to avoid loading the 
-   * bytes in memory. So use this method only in conjunction with an entity that has
-   * optimistic locking!.
-   */
-  public void deleteByteArrayById(String byteArrayEntityId) {
-    getDbSqlSession().delete("deleteByteArrayNoRevisionCheck", byteArrayEntityId);
+public class PropertyEntityManager extends AbstractManager {
+
+  public PropertyEntity findPropertyById(String propertyId) {
+    return getDbSqlSession().selectById(PropertyEntity.class, propertyId);
   }
 
 }

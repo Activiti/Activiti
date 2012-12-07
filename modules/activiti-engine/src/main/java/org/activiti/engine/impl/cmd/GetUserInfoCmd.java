@@ -36,7 +36,7 @@ public class GetUserInfoCmd implements Command<String>, Serializable {
 
   public String execute(CommandContext commandContext) {
     IdentityInfoEntity identityInfo = commandContext
-      .getIdentityInfoManager()
+      .getIdentityInfoEntityManager()
       .findUserInfoByUserIdAndKey(userId, key);
 
     return (identityInfo!=null ? identityInfo.getValue() : null);

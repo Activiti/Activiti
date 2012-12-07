@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.deploy.Deployer;
-import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
+import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 import org.drools.KnowledgeBase;
@@ -39,9 +39,9 @@ public class RulesDeployer implements Deployer {
   public void deploy(DeploymentEntity deployment) {
     KnowledgeBuilder knowledgeBuilder = null;
 
-    DeploymentCache deploymentCache = Context
+    DeploymentManager deploymentCache = Context
       .getProcessEngineConfiguration()
-      .getDeploymentCache();
+      .getDeploymentManager();
     
     Map<String, ResourceEntity> resources = deployment.getResources();
     for (String resourceName : resources.keySet()) {

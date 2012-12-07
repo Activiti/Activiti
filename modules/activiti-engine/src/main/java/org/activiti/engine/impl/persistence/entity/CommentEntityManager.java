@@ -25,7 +25,7 @@ import org.activiti.engine.task.Event;
 /**
  * @author Tom Baeyens
  */
-public class CommentManager extends AbstractManager {
+public class CommentEntityManager extends AbstractManager {
   
   public void delete(PersistentObject persistentObject) {
     checkHistoryEnabled();

@@ -24,7 +24,7 @@ import org.activiti.engine.impl.persistence.AbstractManager;
  * @author Tom Baeyens
  * @author Saeid Mirzaei
  */
-public class IdentityLinkManager extends AbstractManager {
+public class IdentityLinkEntityManager extends AbstractManager {
 
   public void deleteIdentityLink(IdentityLinkEntity identityLink) {
     getDbSqlSession().delete(identityLink);

@@ -37,9 +37,9 @@ public class SaveModelCmd implements Command<Void>, Serializable {
       throw new ActivitiException("model is null");
     }
     if (model.getId() == null) {
-      commandContext.getModelManager().insertModel(model);
+      commandContext.getModelEntityManager().insertModel(model);
     } else {
-      commandContext.getModelManager().updateModel(model);
+      commandContext.getModelEntityManager().updateModel(model);
     }
     return null;
   }

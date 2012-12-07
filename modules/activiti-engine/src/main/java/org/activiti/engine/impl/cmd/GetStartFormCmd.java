@@ -39,7 +39,7 @@ public class GetStartFormCmd implements Command<StartFormData>, Serializable {
   public StartFormData execute(CommandContext commandContext) {
     ProcessDefinitionEntity processDefinition = Context
       .getProcessEngineConfiguration()
-      .getDeploymentCache()
+      .getDeploymentManager()
       .findDeployedProcessDefinitionById(processDefinitionId);
     if (processDefinition == null) {
       throw new ActivitiException("No process definition found for id '" + processDefinitionId +"'");

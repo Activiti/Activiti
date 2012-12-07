@@ -39,7 +39,7 @@ public class GetIdentityLinksForProcessDefinitionCmd implements Command<List<Ide
   public List<IdentityLink> execute(CommandContext commandContext) {
     ProcessDefinitionEntity processDefinition = Context
         .getCommandContext()
-        .getProcessDefinitionManager()
+        .getProcessDefinitionEntityManager()
         .findLatestProcessDefinitionById(processDefinitionId);
       
     if (processDefinition == null) {

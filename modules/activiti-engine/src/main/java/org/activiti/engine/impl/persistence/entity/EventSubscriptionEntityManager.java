@@ -28,7 +28,7 @@ import org.activiti.engine.impl.persistence.AbstractManager;
 /**
  * @author Daniel Meyer
  */
-public class EventSubscriptionManager extends AbstractManager {
+public class EventSubscriptionEntityManager extends AbstractManager {
   
   /** keep track of subscriptions created in the current command */
   protected List<SignalEventSubscriptionEntity> createdSignalSubscriptions = new ArrayList<SignalEventSubscriptionEntity>();

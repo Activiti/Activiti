@@ -52,7 +52,7 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
       log.fine("Executing job " + jobId);
     }
     JobEntity job = commandContext
-      .getJobManager()
+      .getJobEntityManager()
       .findJobById(jobId);
     
     if (job == null) {

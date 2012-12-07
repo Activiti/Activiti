@@ -153,7 +153,7 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
     checkQueryOk();
     ensureVariablesInitialized();
     return commandContext
-      .getExecutionManager()
+      .getExecutionEntityManager()
       .findProcessInstanceCountByQueryCriteria(this);
   }
 
@@ -161,7 +161,7 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
     checkQueryOk();
     ensureVariablesInitialized();
     return commandContext
-      .getExecutionManager()
+      .getExecutionEntityManager()
       .findProcessInstanceByQueryCriteria(this, page);
   }
   

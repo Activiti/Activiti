@@ -28,7 +28,7 @@ import org.activiti.engine.task.Task;
 /**
  * @author Tom Baeyens
  */
-public class TaskManager extends AbstractManager {
+public class TaskEntityManager extends AbstractManager {
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public void deleteTasksByProcessInstanceId(String processInstanceId, String deleteReason, boolean cascade) {
@@ -57,16 +57,16 @@ public class TaskManager extends AbstractManager {
       }
       
       commandContext
-        .getIdentityLinkManager()
+        .getIdentityLinkEntityManager()
         .deleteIdentityLinksByTaskId(taskId);
 
       commandContext
-        .getVariableInstanceManager()
+        .getVariableInstanceEntityManager()
         .deleteVariableInstanceByTask(task);
 
       if (cascade) {
         commandContext
-          .getHistoricTaskInstanceManager()
+          .getHistoricTaskInstanceEntityManager()
           .deleteHistoricTaskInstanceById(taskId);
       } else {
         commandContext
@@ -130,7 +130,7 @@ public class TaskManager extends AbstractManager {
   public void deleteTask(String taskId, String deleteReason, boolean cascade) {
     TaskEntity task = Context
       .getCommandContext()
-      .getTaskManager()
+      .getTaskEntityManager()
       .findTaskById(taskId);
     
     if (task!=null) {
@@ -143,7 +143,7 @@ public class TaskManager extends AbstractManager {
     } else if (cascade) {
       Context
         .getCommandContext()
-        .getHistoricTaskInstanceManager()
+        .getHistoricTaskInstanceEntityManager()
         .deleteHistoricTaskInstanceById(taskId);
     }
   }

@@ -27,7 +27,7 @@ import org.activiti.engine.impl.persistence.AbstractManager;
 /**
  * @author Tom Baeyens
  */
-public class HistoricActivityInstanceManager extends AbstractManager {
+public class HistoricActivityInstanceEntityManager extends AbstractManager {
 
   public void deleteHistoricActivityInstancesByProcessInstanceId(String historicProcessInstanceId) {
     if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {

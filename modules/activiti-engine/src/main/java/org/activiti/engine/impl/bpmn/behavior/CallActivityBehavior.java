@@ -65,7 +65,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     
     ProcessDefinitionImpl processDefinition = Context
       .getProcessEngineConfiguration()
-      .getDeploymentCache()
+      .getDeploymentManager()
       .findDeployedLatestProcessDefinitionByKey(processDefinitonKey);
     
     PvmProcessInstance subProcessInstance = execution.createSubProcessInstance(processDefinition);

@@ -77,7 +77,7 @@ public class UserEntity implements User, Serializable, PersistentObject, HasRevi
     if (pictureByteArrayId!=null) {
       Context
         .getCommandContext()
-        .getByteArrayManager()
+        .getByteArrayEntityManager()
         .deleteByteArrayById(pictureByteArrayId);
     }
     if (picture!=null) {

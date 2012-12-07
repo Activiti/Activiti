@@ -54,7 +54,7 @@ public class AddIdentityLinkForProcessDefinitionCmd implements Command<Void>, Se
   public Void execute(CommandContext commandContext) {
     ProcessDefinitionEntity processDefinition = Context
       .getCommandContext()
-      .getProcessDefinitionManager()
+      .getProcessDefinitionEntityManager()
       .findLatestProcessDefinitionById(processDefinitionId);
     
     if (processDefinition == null) {

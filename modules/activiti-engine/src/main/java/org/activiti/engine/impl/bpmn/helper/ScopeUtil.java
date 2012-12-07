@@ -128,7 +128,7 @@ public class ScopeUtil {
       // and holds snapshot data).
       if(eventSubscription.getConfiguration() !=null) {
         compensatingExecution = Context.getCommandContext()
-          .getExecutionManager()
+          .getExecutionEntityManager()
           .findExecutionById(eventSubscription.getConfiguration());
         // move the compensating execution under this execution:
         compensatingExecution.setParent((InterpretableExecution) execution);        

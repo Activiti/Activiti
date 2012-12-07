@@ -29,21 +29,21 @@ public class RulesHelper {
   public static KnowledgeBase findKnowledgeBaseByDeploymentId(String deploymentId) {
     Map<String, Object> knowledgeBaseCache = Context
       .getProcessEngineConfiguration()
-      .getDeploymentCache()
+      .getDeploymentManager()
       .getKnowledgeBaseCache();
   
     KnowledgeBase knowledgeBase = (KnowledgeBase) knowledgeBaseCache.get(deploymentId);
     if (knowledgeBase==null) {
       DeploymentEntity deployment = Context
         .getCommandContext()
-        .getDeploymentManager()
+        .getDeploymentEntityManager()
         .findDeploymentById(deploymentId);
       if (deployment==null) {
         throw new ActivitiException("no deployment with id "+deploymentId);
       }
       Context
         .getProcessEngineConfiguration()
-        .getDeploymentCache()
+        .getDeploymentManager()
         .deploy(deployment);
       knowledgeBase = (KnowledgeBase) knowledgeBaseCache.get(deploymentId);
       if (knowledgeBase==null) {

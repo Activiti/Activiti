@@ -35,7 +35,7 @@ public class GetTaskCommentsCmd implements Command<List<Comment>>, Serializable 
 
   public List<Comment> execute(CommandContext commandContext) {
     return commandContext
-      .getCommentManager()
+      .getCommentEntityManager()
       .findCommentsByTaskId(taskId);
   }
 }

@@ -165,7 +165,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
     checkQueryOk();
     ensureVariablesInitialized();
     return commandContext
-      .getHistoricProcessInstanceManager()
+      .getHistoricProcessInstanceEntityManager()
       .findHistoricProcessInstanceCountByQueryCriteria(this);
   }
 
@@ -173,7 +173,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
     checkQueryOk();
     ensureVariablesInitialized();
     return commandContext
-      .getHistoricProcessInstanceManager()
+      .getHistoricProcessInstanceEntityManager()
       .findHistoricProcessInstancesByQueryCriteria(this, page);
   }
   

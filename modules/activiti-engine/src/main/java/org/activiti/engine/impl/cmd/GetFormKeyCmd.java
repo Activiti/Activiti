@@ -60,7 +60,7 @@ public class GetFormKeyCmd implements Command<String> {
   public String execute(CommandContext commandContext) {
     ProcessDefinitionEntity processDefinition = Context
             .getProcessEngineConfiguration()
-            .getDeploymentCache()
+            .getDeploymentManager()
             .findDeployedProcessDefinitionById(processDefinitionId);
     DefaultFormHandler formHandler;
     if (taskDefinitionKey == null) {

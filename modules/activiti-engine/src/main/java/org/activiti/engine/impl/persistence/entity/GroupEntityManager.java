@@ -33,7 +33,7 @@ import org.activiti.engine.impl.persistence.AbstractManager;
  * @author Saeid Mirzaei
  * @author Joram Barrez
  */
-public class GroupManager extends AbstractManager {
+public class GroupEntityManager extends AbstractManager {
 
   public Group createNewGroup(String groupId) {
     return new GroupEntity(groupId);

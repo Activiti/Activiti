@@ -37,7 +37,7 @@ public class GetModelEditorSourceExtraCmd implements Command<byte[]>, Serializab
     }
     
     byte[] bytes = commandContext
-      .getModelManager()
+      .getModelEntityManager()
       .findEditorSourceExtraByModelId(modelId);
     
     return bytes;

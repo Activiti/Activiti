@@ -38,7 +38,7 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
     CommandContext commandContext = Context.getCommandContext();
     
     List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByEventName = commandContext
-      .getEventSubscriptionManager()
+      .getEventSubscriptionEntityManager()
       .findSignalEventSubscriptionsByEventName(signalDefinition.getEventName());
     
     for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : findSignalEventSubscriptionsByEventName) {

@@ -23,7 +23,7 @@ import org.activiti.engine.task.Attachment;
 /**
  * @author Tom Baeyens
  */
-public class AttachmentManager extends AbstractManager {
+public class AttachmentEntityManager extends AbstractManager {
 
   @SuppressWarnings("unchecked")
   public List<Attachment> findAttachmentsByProcessInstanceId(String processInstanceId) {

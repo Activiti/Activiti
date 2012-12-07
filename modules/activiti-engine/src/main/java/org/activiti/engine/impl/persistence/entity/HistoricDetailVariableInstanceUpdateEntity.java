@@ -89,7 +89,7 @@ public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEn
       getByteArrayValue();
       Context
         .getCommandContext()
-        .getByteArrayManager()
+        .getByteArrayEntityManager()
         .deleteByteArrayById(byteArrayValueId);
     }
   }
@@ -134,7 +134,7 @@ public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEn
       getByteArrayValue();
       Context
         .getCommandContext()
-        .getByteArrayManager()
+        .getByteArrayEntityManager()
        .deleteByteArrayById(this.byteArrayValueId);
     }
     if (bytes!=null) {
@@ -159,7 +159,7 @@ public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEn
       getByteArrayValue();
       Context
         .getCommandContext()
-        .getByteArrayManager()
+        .getByteArrayEntityManager()
         .deleteByteArrayById(this.byteArrayValueId);
     }
   }

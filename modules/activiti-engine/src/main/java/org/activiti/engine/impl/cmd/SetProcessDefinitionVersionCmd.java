@@ -21,9 +21,9 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
+import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.persistence.entity.ExecutionManager;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
@@ -79,7 +79,7 @@ public class SetProcessDefinitionVersionCmd implements Command<Void>, Serializab
   public Void execute(CommandContext commandContext) {
     // check that the new process definition is just another version of the same
     // process definition that the process instance is using
-    ExecutionManager executionManager = commandContext.getExecutionManager();
+    ExecutionEntityManager executionManager = commandContext.getExecutionEntityManager();
     ExecutionEntity processInstance = executionManager.findExecutionById(processInstanceId);
     if (processInstance == null) {
       throw new ActivitiException("No process instance found for id = '" + processInstanceId + "'.");
@@ -93,9 +93,9 @@ public class SetProcessDefinitionVersionCmd implements Command<Void>, Serializab
     }
     ProcessDefinitionImpl currentProcessDefinitionImpl = processInstance.getProcessDefinition();
 
-    DeploymentCache deploymentCache = Context
+    DeploymentManager deploymentCache = Context
       .getProcessEngineConfiguration()
-      .getDeploymentCache();
+      .getDeploymentManager();
     ProcessDefinitionEntity currentProcessDefinition;
     if (currentProcessDefinitionImpl instanceof ProcessDefinitionEntity) {
       currentProcessDefinition = (ProcessDefinitionEntity) currentProcessDefinitionImpl;
@@ -137,7 +137,7 @@ public class SetProcessDefinitionVersionCmd implements Command<Void>, Serializab
     execution.setProcessDefinition(newProcessDefinition);
     
     // and change possible existing tasks (as the process definition id is stored there too)
-    List<TaskEntity> tasks = commandContext.getTaskManager().findTasksByExecutionId(execution.getId());
+    List<TaskEntity> tasks = commandContext.getTaskEntityManager().findTasksByExecutionId(execution.getId());
     for (TaskEntity taskEntity : tasks) {
       taskEntity.setProcessDefinitionId(newProcessDefinition.getId());
     }

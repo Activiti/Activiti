@@ -47,7 +47,7 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
     if ( deploymentBuilder.isDuplicateFilterEnabled() ) {
       DeploymentEntity existingDeployment = Context
         .getCommandContext()
-        .getDeploymentManager()
+        .getDeploymentEntityManager()
         .findLatestDeploymentByName(deployment.getName());
       
       if ( (existingDeployment!=null)
@@ -58,11 +58,17 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
 
     deployment.setNew(true);
     
+    // Save the data
     Context
       .getCommandContext()
-      .getDeploymentManager()
+      .getDeploymentEntityManager()
       .insertDeployment(deployment);
     
+    // Actually deploy
+    Context
+      .getProcessEngineConfiguration()
+      .getDeploymentManager()
+      .deploy(deployment);
     
     if (deploymentBuilder.getProcessDefinitionsActivationDate() != null) {
       scheduleProcessDefinitionActivation(commandContext, deployment);

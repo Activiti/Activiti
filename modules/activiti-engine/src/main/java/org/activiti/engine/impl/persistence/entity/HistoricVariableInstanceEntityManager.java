@@ -25,7 +25,7 @@ import org.activiti.engine.impl.persistence.AbstractManager;
 /**
  * @author Christian Lipphardt (camunda)
  */
-public class HistoricVariableInstanceManager extends AbstractManager {
+public class HistoricVariableInstanceEntityManager extends AbstractManager {
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public void deleteHistoricVariableInstanceByProcessInstanceId(String historicProcessInstanceId) {

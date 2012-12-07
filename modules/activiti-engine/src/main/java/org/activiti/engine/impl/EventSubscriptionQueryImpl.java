@@ -104,7 +104,7 @@ public class EventSubscriptionQueryImpl
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
     return commandContext
-      .getEventSubscriptionManager()
+      .getEventSubscriptionEntityManager()
       .findEventSubscriptionCountByQueryCriteria(this);
   }
 
@@ -112,7 +112,7 @@ public class EventSubscriptionQueryImpl
   public List<EventSubscriptionEntity> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     return commandContext
-      .getEventSubscriptionManager()
+      .getEventSubscriptionEntityManager()
       .findEventSubscriptionsByQueryCriteria(this,page);
   }
   

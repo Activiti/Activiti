@@ -75,7 +75,7 @@ public class TimerEntity extends JobEntity {
         te.setDuedate(newTimer);
         Context
             .getCommandContext()
-            .getJobManager()
+            .getJobEntityManager()
             .schedule(te);
       }
     }

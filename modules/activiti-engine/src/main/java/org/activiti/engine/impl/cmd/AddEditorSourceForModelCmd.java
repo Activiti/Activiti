@@ -36,7 +36,7 @@ public class AddEditorSourceForModelCmd implements Command<Object>, Serializable
 
   public Object execute(CommandContext commandContext) {
     commandContext
-      .getModelManager()
+      .getModelEntityManager()
       .insertEditorSourceForModel(modelId, bytes);
     
     return null;

@@ -30,7 +30,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 /**
  * @author Tom Baeyens
  */
-public class ExecutionManager extends AbstractManager {
+public class ExecutionEntityManager extends AbstractManager {
   
   @SuppressWarnings("unchecked")
   public void deleteProcessInstancesByProcessDefinition(String processDefinitionId, String deleteReason, boolean cascade) {
@@ -44,7 +44,7 @@ public class ExecutionManager extends AbstractManager {
     if (cascade) {
       Context
         .getCommandContext()
-        .getHistoricProcessInstanceManager()
+        .getHistoricProcessInstanceEntityManager()
         .deleteHistoricProcessInstanceByProcessDefinitionId(processDefinitionId);
     }
   }
@@ -62,7 +62,7 @@ public class ExecutionManager extends AbstractManager {
     
     CommandContext commandContext = Context.getCommandContext();
     commandContext
-      .getTaskManager()
+      .getTaskEntityManager()
       .deleteTasksByProcessInstanceId(processInstanceId, deleteReason, cascade);
     
     // delete the execution BEFORE we delete the history, otherwise we will produce orphan HistoricVariableInstance instances
@@ -70,7 +70,7 @@ public class ExecutionManager extends AbstractManager {
     
     if (cascade) {
       commandContext
-      .getHistoricProcessInstanceManager()
+      .getHistoricProcessInstanceEntityManager()
       .deleteHistoricProcessInstanceById(processInstanceId);
     }
   }

@@ -37,13 +37,12 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.persistence.deploy.Deployer;
-import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionManager;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.impl.util.IoUtil;
@@ -128,8 +127,7 @@ public class BpmnDeployer implements Deployer {
     }
     
     CommandContext commandContext = Context.getCommandContext();
-    ProcessDefinitionManager processDefinitionManager = commandContext.getProcessDefinitionManager();
-    DeploymentCache deploymentCache = Context.getProcessEngineConfiguration().getDeploymentCache();
+    ProcessDefinitionEntityManager processDefinitionManager = commandContext.getProcessDefinitionEntityManager();
     DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);
     for (ProcessDefinitionEntity processDefinition : processDefinitions) {
       
@@ -164,7 +162,6 @@ public class BpmnDeployer implements Deployer {
         addMessageEventSubscriptions(processDefinition);
 
         dbSqlSession.insert(processDefinition);
-        deploymentCache.addProcessDefinition(processDefinition);
         addAuthorizations(processDefinition);
 
         
@@ -176,7 +173,6 @@ public class BpmnDeployer implements Deployer {
         processDefinition.setVersion(persistedProcessDefinition.getVersion());
         processDefinition.setSuspensionState(persistedProcessDefinition.getSuspensionState());
         
-        deploymentCache.addProcessDefinition(processDefinition);
         addAuthorizations(processDefinition);
 
       }
@@ -184,8 +180,9 @@ public class BpmnDeployer implements Deployer {
       // Add to cache
       Context
         .getProcessEngineConfiguration()
-        .getDeploymentCache()
-        .addProcessDefinition(processDefinition);
+        .getDeploymentManager()
+        .getProcessDefinitionCache()
+        .add(processDefinition.getId(), processDefinition);
       
       // Add to deployment for further usage
       deployment.addDeployedArtifact(processDefinition);
@@ -200,7 +197,7 @@ public class BpmnDeployer implements Deployer {
         TimerEntity timer = timerDeclaration.prepareTimerEntity(null);
         Context
           .getCommandContext()
-          .getJobManager()
+          .getJobEntityManager()
           .schedule(timer);
       }
     }
@@ -209,7 +206,7 @@ public class BpmnDeployer implements Deployer {
   protected void removeObsoleteTimers(ProcessDefinitionEntity processDefinition) {
     List<Job> jobsToDelete = Context
       .getCommandContext()
-      .getJobManager()
+      .getJobEntityManager()
       .findJobsByConfiguration(TimerStartEventJobHandler.TYPE, processDefinition.getKey());
     
     for (Job job :jobsToDelete) {
@@ -223,7 +220,7 @@ public class BpmnDeployer implements Deployer {
       CommandContext commandContext = Context.getCommandContext();
       
       List<EventSubscriptionEntity> subscriptionsToDelete = commandContext
-        .getEventSubscriptionManager()
+        .getEventSubscriptionEntityManager()
         .findEventSubscriptionsByConfiguration(MessageEventHandler.EVENT_HANDLER_TYPE, latestProcessDefinition.getId());
       
       for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsToDelete) {
@@ -242,7 +239,7 @@ public class BpmnDeployer implements Deployer {
         if(messageEventDefinition.isStartEvent()) {
           // look for subscriptions for the same name in db:
           List<EventSubscriptionEntity> subscriptionsForSameMessageName = commandContext
-            .getEventSubscriptionManager()
+            .getEventSubscriptionEntityManager()
             .findEventSubscriptionsByName(MessageEventHandler.EVENT_HANDLER_TYPE, messageEventDefinition.getEventName());
           // also look for subscriptions created in the session:
           List<MessageEventSubscriptionEntity> cachedSubscriptions = commandContext

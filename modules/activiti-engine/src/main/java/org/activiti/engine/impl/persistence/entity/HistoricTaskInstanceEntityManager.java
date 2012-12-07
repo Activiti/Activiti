@@ -30,7 +30,7 @@ import org.activiti.engine.impl.persistence.AbstractManager;
 /**
  * @author Tom Baeyens
  */
-public class HistoricTaskInstanceManager extends AbstractManager {
+public class HistoricTaskInstanceEntityManager extends AbstractManager {
 
   @SuppressWarnings("unchecked")
   public void deleteHistoricTaskInstancesByProcessInstanceId(String processInstanceId) {
@@ -74,19 +74,19 @@ public class HistoricTaskInstanceManager extends AbstractManager {
         CommandContext commandContext = Context.getCommandContext();
         
         commandContext
-          .getHistoricDetailManager()
+          .getHistoricDetailEntityManager()
           .deleteHistoricDetailsByTaskId(taskId);
 
         commandContext
-          .getHistoricVariableInstanceManager()
+          .getHistoricVariableInstanceEntityManager()
           .deleteHistoricVariableInstancesByTaskId(taskId);
 
         commandContext
-          .getCommentManager()
+          .getCommentEntityManager()
           .deleteCommentsByTaskId(taskId);
         
         commandContext
-          .getAttachmentManager()
+          .getAttachmentEntityManager()
           .deleteAttachmentsByTaskId(taskId);
       
         getDbSqlSession().delete(historicTaskInstance);

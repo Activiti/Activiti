@@ -43,7 +43,7 @@ public class GetRenderedTaskFormCmd  implements Command<Object>, Serializable {
   public Object execute(CommandContext commandContext) {
     TaskEntity task = Context
       .getCommandContext()
-      .getTaskManager()
+      .getTaskEntityManager()
       .findTaskById(taskId);
     if (task == null) {
       throw new ActivitiException("Task '" + taskId +"' not found");

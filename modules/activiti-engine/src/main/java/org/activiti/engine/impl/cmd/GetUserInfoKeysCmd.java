@@ -36,7 +36,7 @@ public class GetUserInfoKeysCmd implements Command<List<String>>, Serializable {
 
   public List<String> execute(CommandContext commandContext) {
     return commandContext
-      .getIdentityInfoManager()
+      .getIdentityInfoEntityManager()
       .findUserInfoKeysByUserIdAndType(userId, userInfoType);
   }
 }

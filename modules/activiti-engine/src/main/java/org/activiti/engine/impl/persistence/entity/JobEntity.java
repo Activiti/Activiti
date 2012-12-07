@@ -71,7 +71,7 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject, 
   public void execute(CommandContext commandContext) {
     ExecutionEntity execution = null;
     if (executionId != null) {
-      execution = commandContext.getExecutionManager().findExecutionById(executionId);
+      execution = commandContext.getExecutionEntityManager().findExecutionById(executionId);
     }
 
     Map<String, JobHandler> jobHandlers = Context.getProcessEngineConfiguration().getJobHandlers();
@@ -90,7 +90,7 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject, 
     // add link to execution
     if(executionId != null) {
       ExecutionEntity execution = Context.getCommandContext()
-        .getExecutionManager()
+        .getExecutionEntityManager()
         .findExecutionById(executionId);
       execution.addJob(this);
     }
@@ -105,13 +105,13 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject, 
 
     // Also delete the job's exception byte array
     if (exceptionByteArrayId != null) {
-      Context.getCommandContext().getByteArrayManager().deleteByteArrayById(exceptionByteArrayId);
+      Context.getCommandContext().getByteArrayEntityManager().deleteByteArrayById(exceptionByteArrayId);
     }
     
     // remove link to execution
     if(executionId != null) {
       ExecutionEntity execution = Context.getCommandContext()
-        .getExecutionManager()
+        .getExecutionEntityManager()
         .findExecutionById(executionId);
       execution.removeJob(this);
     }

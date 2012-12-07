@@ -30,7 +30,7 @@ import org.activiti.engine.repository.ModelQuery;
 /**
  * @author Tijs Rademakers
  */
-public class ModelManager extends AbstractManager {
+public class ModelEntityManager extends AbstractManager {
 
   public Model createNewModel() {
     return new ModelEntity();
@@ -61,7 +61,7 @@ public class ModelManager extends AbstractManager {
       if (model.getEditorSourceValueId() != null) {
         Context
           .getCommandContext()
-          .getByteArrayManager()
+          .getByteArrayEntityManager()
           .deleteByteArrayById(model.getEditorSourceValueId());
       }
       if (modelSource != null) {
@@ -100,7 +100,7 @@ public class ModelManager extends AbstractManager {
       if (model.getEditorSourceExtraValueId() != null) {
         Context
           .getCommandContext()
-          .getByteArrayManager()
+          .getByteArrayEntityManager()
           .deleteByteArrayById(model.getEditorSourceExtraValueId());
       }
       if (modelSource != null) {

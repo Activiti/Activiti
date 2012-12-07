@@ -22,7 +22,7 @@ import org.activiti.engine.impl.persistence.AbstractManager;
 /**
  * @author Tom Baeyens
  */
-public class MembershipManager extends AbstractManager {
+public class MembershipEntityManager extends AbstractManager {
 
   public void createMembership(String userId, String groupId) {
     Map<String, Object> parameters = new HashMap<String, Object>();

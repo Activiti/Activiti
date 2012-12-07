@@ -116,14 +116,14 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
     ensureVariablesInitialized();
-    return commandContext.getHistoricVariableInstanceManager().findHistoricVariableInstanceCountByQueryCriteria(this);
+    return commandContext.getHistoricVariableInstanceEntityManager().findHistoricVariableInstanceCountByQueryCriteria(this);
   }
 
   public List<HistoricVariableInstance> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     ensureVariablesInitialized();
     List<HistoricVariableInstance> historicVariableInstances = commandContext
-            .getHistoricVariableInstanceManager()
+            .getHistoricVariableInstanceEntityManager()
             .findHistoricVariableInstancesByQueryCriteria(this, page);
     if (historicVariableInstances!=null) {
       for (HistoricVariableInstance historicVariableInstance: historicVariableInstances) {

@@ -26,7 +26,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerChangeProcessDefinitionSuspensionStateJobHandler;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionManager;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
 import org.activiti.engine.impl.persistence.entity.SuspensionState.SuspensionStateUtil;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
@@ -87,7 +87,7 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
     }
     
     List<ProcessDefinitionEntity> processDefinitionEntities = new ArrayList<ProcessDefinitionEntity>();
-    ProcessDefinitionManager processDefinitionManager = commandContext.getProcessDefinitionManager();
+    ProcessDefinitionEntityManager processDefinitionManager = commandContext.getProcessDefinitionEntityManager();
     
     if(processDefinitionId != null) {
       
@@ -123,7 +123,7 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
       timer.setJobHandlerType(getDelayedExecutionJobHandlerType());
       timer.setJobHandlerConfiguration(TimerChangeProcessDefinitionSuspensionStateJobHandler
               .createJobHandlerConfiguration(includeProcessInstances));
-      commandContext.getJobManager().schedule(timer);
+      commandContext.getJobEntityManager().schedule(timer);
     }
   }
   
@@ -135,7 +135,9 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
       // Evict cache
       Context
         .getProcessEngineConfiguration()
-        .getDeploymentCache().removeProcessDefinition(processDefinition.getId());
+        .getDeploymentManager()
+        .getProcessDefinitionCache()
+        .remove(processDefinition.getId());
       
       // Suspend process instances (if needed)
       if (includeProcessInstances) {

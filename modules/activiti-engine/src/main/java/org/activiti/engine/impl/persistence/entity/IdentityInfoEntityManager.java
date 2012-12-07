@@ -26,7 +26,7 @@ import org.activiti.engine.impl.persistence.AbstractManager;
 /**
  * @author Tom Baeyens
  */
-public class IdentityInfoManager extends AbstractManager {
+public class IdentityInfoEntityManager extends AbstractManager {
 
   public void deleteUserInfoByUserIdAndKey(String userId, String key) {
     IdentityInfoEntity identityInfoEntity = findUserInfoByUserIdAndKey(userId, key);

@@ -35,7 +35,7 @@ public class DeleteModelCmd implements Command<Void>, Serializable  {
     if(modelId == null) {
       throw new ActivitiException("modelId is null");
     }
-    commandContext.getModelManager().deleteModel(modelId);
+    commandContext.getModelEntityManager().deleteModel(modelId);
     
     return null;
   }

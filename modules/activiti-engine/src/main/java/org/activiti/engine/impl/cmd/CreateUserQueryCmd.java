@@ -29,7 +29,7 @@ public class CreateUserQueryCmd implements Command<UserQuery>, Serializable {
 
   public UserQuery execute(CommandContext commandContext) {
     return commandContext
-      .getUserManager()
+      .getUserEntityManager()
       .createNewUserQuery();
   }
 

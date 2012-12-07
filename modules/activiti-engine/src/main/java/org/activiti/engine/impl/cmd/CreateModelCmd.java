@@ -29,7 +29,7 @@ public class CreateModelCmd implements Command<Model>, Serializable {
 
   public Model execute(CommandContext commandContext) {
     return commandContext
-      .getModelManager()
+      .getModelEntityManager()
       .createNewModel();
   }
 

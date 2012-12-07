@@ -44,7 +44,7 @@ public abstract class NeedsActiveTaskCmd<T> implements Command<T>, Serializable 
     
     TaskEntity task = Context
       .getCommandContext()
-      .getTaskManager()
+      .getTaskEntityManager()
       .findTaskById(taskId);
     
     if (task == null) {

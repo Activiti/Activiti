@@ -122,7 +122,7 @@ public class IdentityLinkEntity implements Serializable, IdentityLink, Persisten
     if ( (task==null) && (taskId!=null) ) {
       this.task = Context
         .getCommandContext()
-        .getTaskManager()
+        .getTaskEntityManager()
         .findTaskById(taskId);
     }
     return task;
@@ -137,7 +137,7 @@ public class IdentityLinkEntity implements Serializable, IdentityLink, Persisten
     if ((processDef == null) && (processDefId != null)) {
       this.processDef = Context
               .getCommandContext()
-              .getProcessDefinitionManager()
+              .getProcessDefinitionEntityManager()
               .findLatestProcessDefinitionById(processDefId);
     }
     return processDef;

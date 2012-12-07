@@ -27,7 +27,7 @@ import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.impl.persistence.entity.CommentEntity;
-import org.activiti.engine.impl.persistence.entity.CommentManager;
+import org.activiti.engine.impl.persistence.entity.CommentEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
@@ -497,7 +497,7 @@ public class HistoryManager extends AbstractManager {
       if (historicProcessVariable==null) {
         historicProcessVariable = Context
                 .getCommandContext()
-                .getHistoricVariableInstanceManager()
+                .getHistoricVariableInstanceEntityManager()
                 .findHistoricVariableInstanceByVariableInstanceId(variable.getId());
       }
       if (historicProcessVariable!=null) {
@@ -538,7 +538,7 @@ public class HistoryManager extends AbstractManager {
         }
         comment.setMessage(new String[]{groupId, type});
       }
-      getSession(CommentManager.class).insert(comment);
+      getSession(CommentEntityManager.class).insert(comment);
     }
   }
   
@@ -561,7 +561,7 @@ public class HistoryManager extends AbstractManager {
         comment.setAction(Event.ACTION_DELETE_ATTACHMENT);
       }
       comment.setMessage(attachmentName);
-      getSession(CommentManager.class).insert(comment);
+      getSession(CommentEntityManager.class).insert(comment);
     }
   }
 

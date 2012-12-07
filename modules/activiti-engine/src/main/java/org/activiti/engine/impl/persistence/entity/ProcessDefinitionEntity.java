@@ -124,7 +124,7 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   public void deleteIdentityLink(String userId, String groupId) {
     List<IdentityLinkEntity> identityLinks = Context
       .getCommandContext()
-      .getIdentityLinkManager()
+      .getIdentityLinkEntityManager()
       .findIdentityLinkByProcessDefinitionUserAndGroup(id, userId, groupId);
     
     for (IdentityLinkEntity identityLink: identityLinks) {
@@ -139,7 +139,7 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
     if (!isIdentityLinksInitialized) {
       definitionIdentityLinkEntities = Context
         .getCommandContext()
-        .getIdentityLinkManager()
+        .getIdentityLinkEntityManager()
         .findIdentityLinksByProcessDefinitionId(id);
       isIdentityLinksInitialized = true;
     }

@@ -45,11 +45,11 @@ public class SignalEventReceivedCmd implements Command<Void> {
     List<SignalEventSubscriptionEntity> signalEvents = null;
     
     if(executionId == null) {
-       signalEvents = commandContext.getEventSubscriptionManager()
+       signalEvents = commandContext.getEventSubscriptionEntityManager()
         .findSignalEventSubscriptionsByEventName(eventName);              
     } else {
       
-      ExecutionEntity execution = commandContext.getExecutionManager().findExecutionById(executionId);
+      ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(executionId);
       
       if (execution == null) {
         throw new ActivitiException("Cannot find execution with id '" + executionId + "'");
@@ -60,7 +60,7 @@ public class SignalEventReceivedCmd implements Command<Void> {
                 + "' because execution '" + executionId + "' is suspended");
       }
       
-      signalEvents = commandContext.getEventSubscriptionManager()
+      signalEvents = commandContext.getEventSubscriptionEntityManager()
         .findSignalEventSubscriptionsByNameAndExecution(eventName, executionId);
       
       if(signalEvents.isEmpty()) {

@@ -55,7 +55,7 @@ public class JuelFormEngine implements FormEngine {
     
     ResourceEntity resourceStream = Context
       .getCommandContext()
-      .getResourceManager()
+      .getResourceEntityManager()
       .findResourceByDeploymentIdAndResourceName(deploymentId, formKey);
     
     if (resourceStream == null) {

@@ -31,7 +31,7 @@ import org.activiti.engine.runtime.Job;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class DeploymentManager extends AbstractManager {
+public class DeploymentEntityManager extends AbstractManager {
   
   public void insertDeployment(DeploymentEntity deployment) {
     getDbSqlSession().insert(deployment);
@@ -40,11 +40,6 @@ public class DeploymentManager extends AbstractManager {
       resource.setDeploymentId(deployment.getId());
       getResourceManager().insertResource(resource);
     }
-    
-    Context
-      .getProcessEngineConfiguration()
-      .getDeploymentCache()
-      .deploy(deployment);
   }
   
   public void deleteDeployment(String deploymentId, boolean cascade) {
@@ -88,17 +83,10 @@ public class DeploymentManager extends AbstractManager {
       .deleteProcessDefinitionsByDeploymentId(deploymentId);
     
     for (ProcessDefinition processDefinition : processDefinitions) {
-      String processDefinitionId = processDefinition.getId();
-      
-      // remove process definitions from cache:
-      Context
-        .getProcessEngineConfiguration()
-        .getDeploymentCache()
-        .removeProcessDefinition(processDefinitionId);
       
       // remove timer start events:
       List<Job> timerStartJobs = Context.getCommandContext()
-        .getJobManager()
+        .getJobEntityManager()
         .findJobsByConfiguration(TimerStartEventJobHandler.TYPE, processDefinition.getKey());
       for (Job job : timerStartJobs) {
         ((JobEntity)job).delete();        
@@ -107,7 +95,7 @@ public class DeploymentManager extends AbstractManager {
       // remove message event subscriptions:
       List<EventSubscriptionEntity> findEventSubscriptionsByConfiguration = Context
         .getCommandContext()
-        .getEventSubscriptionManager()
+        .getEventSubscriptionEntityManager()
         .findEventSubscriptionsByConfiguration(MessageEventHandler.EVENT_HANDLER_TYPE, processDefinition.getId());
       for (EventSubscriptionEntity eventSubscriptionEntity : findEventSubscriptionsByConfiguration) {
         eventSubscriptionEntity.delete();        

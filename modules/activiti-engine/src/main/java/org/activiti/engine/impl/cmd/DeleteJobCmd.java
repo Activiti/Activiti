@@ -33,7 +33,7 @@ public class DeleteJobCmd implements Command<Object>, Serializable {
       log.fine("Deleting job " + jobId);
     }
 
-    JobEntity job = commandContext.getJobManager().findJobById(jobId);
+    JobEntity job = commandContext.getJobEntityManager().findJobById(jobId);
     if (job == null) {
       throw new ActivitiException("No job found with id '" + jobId + "'");
     }

@@ -301,7 +301,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
         TimerEntity timer = timerDeclaration.prepareTimerEntity(this);
         Context
           .getCommandContext()
-          .getJobManager()
+          .getJobEntityManager()
           .schedule(timer);        
       }
     }
@@ -547,7 +547,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
     Context
       .getCommandContext()
-      .getJobManager()
+      .getJobEntityManager()
       .send(message);
   }
 
@@ -572,7 +572,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     if (executions==null) {
       this.executions = (List) Context
         .getCommandContext()
-        .getExecutionManager()
+        .getExecutionEntityManager()
         .findChildExecutionsByParentExecutionId(id);
     }
   }
@@ -650,7 +650,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     if ((processDefinition == null) && (processDefinitionId != null)) {
       ProcessDefinitionEntity deployedProcessDefinition = Context
         .getProcessEngineConfiguration()
-        .getDeploymentCache()
+        .getDeploymentManager()
         .findDeployedProcessDefinitionById(processDefinitionId);
       setProcessDefinition(deployedProcessDefinition);
     }
@@ -673,7 +673,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     if ((processInstance == null) && (processInstanceId != null)) {
       processInstance =  Context
         .getCommandContext()
-        .getExecutionManager()
+        .getExecutionEntityManager()
         .findExecutionById(processInstanceId);
     }
   }
@@ -727,7 +727,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     if (parent == null && parentId != null) {
       parent = Context
         .getCommandContext()
-        .getExecutionManager()
+        .getExecutionEntityManager()
         .findExecutionById(parentId);
     }
   }
@@ -770,7 +770,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     if (superExecution == null && superExecutionId != null) {
       superExecution = Context
         .getCommandContext()
-        .getExecutionManager()
+        .getExecutionEntityManager()
         .findExecutionById(superExecutionId);
     }
   }
@@ -788,7 +788,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     if (subProcessInstance == null) {
       subProcessInstance = Context
         .getCommandContext()
-        .getExecutionManager()
+        .getExecutionEntityManager()
         .findSubProcessInstanceBySuperExecutionId(id);
     }
   }
@@ -909,7 +909,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
         }
       } else {
         Context.getCommandContext()
-          .getTaskManager()
+          .getTaskEntityManager()
           .deleteTask(task, reason, false);
       }
     }
@@ -957,7 +957,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     
     // update the related process variables
     List<VariableInstanceEntity> variables = (List) commandContext
-      .getVariableInstanceManager()
+      .getVariableInstanceEntityManager()
       .findVariableInstancesByExecutionId(id);
     
     for (VariableInstanceEntity variable: variables) {
@@ -986,7 +986,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   protected List<VariableInstanceEntity> loadVariableInstances() {
     return Context
       .getCommandContext()
-      .getVariableInstanceManager()
+      .getVariableInstanceEntityManager()
       .findVariableInstancesByExecutionId(id);
   }
 
@@ -1106,7 +1106,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     if (eventSubscriptions == null) {
 
       eventSubscriptions = Context.getCommandContext()
-        .getEventSubscriptionManager()
+        .getEventSubscriptionEntityManager()
         .findEventSubscriptionsByExecution(id);
     }
   }
@@ -1126,7 +1126,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   protected void ensureJobsInitialized() {
     if(jobs == null) {    
       jobs = (List)Context.getCommandContext()
-        .getJobManager()
+        .getJobEntityManager()
         .findJobsByExecutionId(id);
     }    
   }
@@ -1154,7 +1154,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   protected void ensureTasksInitialized() {
     if(tasks == null) {    
       tasks = (List)Context.getCommandContext()
-        .getTaskManager()
+        .getTaskEntityManager()
         .findTasksByExecutionId(id);      
     }    
   }

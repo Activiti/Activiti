@@ -28,7 +28,7 @@ import org.activiti.engine.impl.persistence.AbstractManager;
 /**
  * @author Tom Baeyens
  */
-public class HistoricProcessInstanceManager extends AbstractManager {
+public class HistoricProcessInstanceEntityManager extends AbstractManager {
 
   public HistoricProcessInstanceEntity findHistoricProcessInstance(String processInstanceId) {
     if (getHistoryManager().isHistoryEnabled()) {
@@ -56,19 +56,19 @@ public class HistoricProcessInstanceManager extends AbstractManager {
       HistoricProcessInstanceEntity historicProcessInstance = findHistoricProcessInstance(historicProcessInstanceId);
       
       commandContext
-        .getHistoricDetailManager()
+        .getHistoricDetailEntityManager()
         .deleteHistoricDetailsByProcessInstanceId(historicProcessInstanceId);
 
       commandContext
-        .getHistoricVariableInstanceManager()
+        .getHistoricVariableInstanceEntityManager()
         .deleteHistoricVariableInstanceByProcessInstanceId(historicProcessInstanceId);
       
       commandContext
-        .getHistoricActivityInstanceManager()
+        .getHistoricActivityInstanceEntityManager()
         .deleteHistoricActivityInstancesByProcessInstanceId(historicProcessInstanceId);
       
       commandContext
-        .getHistoricTaskInstanceManager()
+        .getHistoricTaskInstanceEntityManager()
         .deleteHistoricTaskInstancesByProcessInstanceId(historicProcessInstanceId);
 
       getDbSqlSession().delete(historicProcessInstance);

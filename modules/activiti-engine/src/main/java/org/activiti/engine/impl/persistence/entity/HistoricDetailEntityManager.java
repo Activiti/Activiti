@@ -25,7 +25,7 @@ import org.activiti.engine.impl.persistence.AbstractManager;
 /**
  * @author Tom Baeyens
  */
-public class HistoricDetailManager extends AbstractManager {
+public class HistoricDetailEntityManager extends AbstractManager {
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public void deleteHistoricDetailsByProcessInstanceId(String historicProcessInstanceId) {

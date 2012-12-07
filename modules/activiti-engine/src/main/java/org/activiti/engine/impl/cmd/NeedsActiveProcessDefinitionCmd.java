@@ -37,7 +37,7 @@ public abstract class NeedsActiveProcessDefinitionCmd<T> implements Command<T>, 
   public T execute(CommandContext commandContext) {
     ProcessDefinitionEntity processDefinition = Context
             .getProcessEngineConfiguration()
-            .getDeploymentCache()
+            .getDeploymentManager()
             .findDeployedProcessDefinitionById(processDefinitionId);
 
     if (processDefinition == null) {

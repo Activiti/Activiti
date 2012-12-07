@@ -34,7 +34,7 @@ import org.activiti.engine.impl.persistence.AbstractManager;
  * @author Saeid Mirzaei
  * @author Joram Barrez
  */
-public class UserManager extends AbstractManager {
+public class UserEntityManager extends AbstractManager {
 
   public User createNewUser(String userId) {
     return new UserEntity(userId);

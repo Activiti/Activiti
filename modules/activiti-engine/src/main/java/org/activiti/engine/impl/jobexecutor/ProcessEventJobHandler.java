@@ -32,7 +32,7 @@ public class ProcessEventJobHandler implements JobHandler {
 
   public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
     // lookup subscription:    
-    EventSubscriptionEntity eventSubscription = commandContext.getEventSubscriptionManager()
+    EventSubscriptionEntity eventSubscription = commandContext.getEventSubscriptionEntityManager()
       .findEventSubscriptionbyId(configuration);
     
     // if event subscription is null, ignore 

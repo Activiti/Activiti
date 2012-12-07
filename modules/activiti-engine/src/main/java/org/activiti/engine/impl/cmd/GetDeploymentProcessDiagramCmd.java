@@ -47,7 +47,7 @@ public class GetDeploymentProcessDiagramCmd implements Command<InputStream>, Ser
   public InputStream execute(CommandContext commandContext) {
     ProcessDefinitionEntity processDefinition = Context
             .getProcessEngineConfiguration()
-            .getDeploymentCache()
+            .getDeploymentManager()
             .findDeployedProcessDefinitionById(processDefinitionId);
     String deploymentId = processDefinition.getDeploymentId();
     String resourceName = processDefinition.getDiagramResourceName();

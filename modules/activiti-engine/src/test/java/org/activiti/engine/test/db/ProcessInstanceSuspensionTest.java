@@ -116,7 +116,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
       .execute(new Command<Void>() {
         public Void execute(CommandContext commandContext) {
           Date currentTime = ClockUtil.getCurrentTime();
-          commandContext.getJobManager()
+          commandContext.getJobEntityManager()
             .findJobById(job.getId())
             .setDuedate(new Date(currentTime.getTime() - 10000));
           return null;

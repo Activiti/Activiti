@@ -136,14 +136,14 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
     return commandContext
-      .getUserManager()
+      .getUserEntityManager()
       .findUserCountByQueryCriteria(this);
   }
   
   public List<User> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     return commandContext
-      .getUserManager()
+      .getUserEntityManager()
       .findUserByQueryCriteria(this, page);
   }
   

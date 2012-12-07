@@ -101,32 +101,35 @@ import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerSuspendProcessDefinitionHandler;
 import org.activiti.engine.impl.persistence.GenericManagerFactory;
+import org.activiti.engine.impl.persistence.deploy.DefaultDeploymentCache;
 import org.activiti.engine.impl.persistence.deploy.Deployer;
 import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
-import org.activiti.engine.impl.persistence.entity.AttachmentManager;
-import org.activiti.engine.impl.persistence.entity.ByteArrayManager;
-import org.activiti.engine.impl.persistence.entity.CommentManager;
-import org.activiti.engine.impl.persistence.entity.DeploymentManager;
-import org.activiti.engine.impl.persistence.entity.EventSubscriptionManager;
-import org.activiti.engine.impl.persistence.entity.ExecutionManager;
-import org.activiti.engine.impl.persistence.entity.GroupManager;
-import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceManager;
-import org.activiti.engine.impl.persistence.entity.HistoricDetailManager;
-import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceManager;
-import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceManager;
-import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceManager;
-import org.activiti.engine.impl.persistence.entity.IdentityInfoManager;
-import org.activiti.engine.impl.persistence.entity.IdentityLinkManager;
-import org.activiti.engine.impl.persistence.entity.JobManager;
-import org.activiti.engine.impl.persistence.entity.MembershipManager;
-import org.activiti.engine.impl.persistence.entity.ModelManager;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionManager;
-import org.activiti.engine.impl.persistence.entity.PropertyManager;
-import org.activiti.engine.impl.persistence.entity.ResourceManager;
+import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
+import org.activiti.engine.impl.persistence.entity.AttachmentEntityManager;
+import org.activiti.engine.impl.persistence.entity.ByteArrayEntityManager;
+import org.activiti.engine.impl.persistence.entity.CommentEntityManager;
+import org.activiti.engine.impl.persistence.entity.DeploymentEntityManager;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
+import org.activiti.engine.impl.persistence.entity.GroupEntityManager;
+import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityManager;
+import org.activiti.engine.impl.persistence.entity.HistoricDetailEntityManager;
+import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntityManager;
+import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntityManager;
+import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntityManager;
+import org.activiti.engine.impl.persistence.entity.IdentityInfoEntityManager;
+import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityManager;
+import org.activiti.engine.impl.persistence.entity.JobEntityManager;
+import org.activiti.engine.impl.persistence.entity.MembershipEntityManager;
+import org.activiti.engine.impl.persistence.entity.ModelEntityManager;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
+import org.activiti.engine.impl.persistence.entity.PropertyEntityManager;
+import org.activiti.engine.impl.persistence.entity.ResourceEntityManager;
 import org.activiti.engine.impl.persistence.entity.TableDataManager;
-import org.activiti.engine.impl.persistence.entity.TaskManager;
-import org.activiti.engine.impl.persistence.entity.UserManager;
-import org.activiti.engine.impl.persistence.entity.VariableInstanceManager;
+import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
+import org.activiti.engine.impl.persistence.entity.UserEntityManager;
+import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
 import org.activiti.engine.impl.scripting.BeansResolverFactory;
 import org.activiti.engine.impl.scripting.ResolverFactory;
 import org.activiti.engine.impl.scripting.ScriptBindingsFactory;
@@ -219,7 +222,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected List<Deployer> customPreDeployers;
   protected List<Deployer> customPostDeployers;
   protected List<Deployer> deployers;
-  protected DeploymentCache deploymentCache;
+  protected DeploymentManager deploymentManager;
+  protected int processDefinitionCacheLimit = -1; // By default, no limit
+  protected DeploymentCache<ProcessDefinitionEntity> processDefinitionCache;
 
   // JOB EXECUTOR /////////////////////////////////////////////////////////////
   
@@ -610,30 +615,30 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       dbSqlSessionFactory.setDatabaseSchema(databaseSchema);
       addSessionFactory(dbSqlSessionFactory);
       
-      addSessionFactory(new GenericManagerFactory(AttachmentManager.class));
-      addSessionFactory(new GenericManagerFactory(CommentManager.class));
-      addSessionFactory(new GenericManagerFactory(DeploymentManager.class));
-      addSessionFactory(new GenericManagerFactory(ModelManager.class));
-      addSessionFactory(new GenericManagerFactory(ExecutionManager.class));
-      addSessionFactory(new GenericManagerFactory(HistoricActivityInstanceManager.class));
-      addSessionFactory(new GenericManagerFactory(HistoricDetailManager.class));
-      addSessionFactory(new GenericManagerFactory(HistoricProcessInstanceManager.class));
-      addSessionFactory(new GenericManagerFactory(HistoricVariableInstanceManager.class));
-      addSessionFactory(new GenericManagerFactory(HistoricTaskInstanceManager.class));
-      addSessionFactory(new GenericManagerFactory(IdentityInfoManager.class));
-      addSessionFactory(new GenericManagerFactory(IdentityLinkManager.class));
-      addSessionFactory(new GenericManagerFactory(JobManager.class));
-      addSessionFactory(new GenericManagerFactory(GroupManager.class));
-      addSessionFactory(new GenericManagerFactory(MembershipManager.class));
-      addSessionFactory(new GenericManagerFactory(ProcessDefinitionManager.class));
-      addSessionFactory(new GenericManagerFactory(PropertyManager.class));
-      addSessionFactory(new GenericManagerFactory(ResourceManager.class));
-      addSessionFactory(new GenericManagerFactory(ByteArrayManager.class));
+      addSessionFactory(new GenericManagerFactory(AttachmentEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(CommentEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(DeploymentEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(ModelEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(ExecutionEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(HistoricActivityInstanceEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(HistoricDetailEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(HistoricProcessInstanceEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(HistoricVariableInstanceEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(HistoricTaskInstanceEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(IdentityInfoEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(IdentityLinkEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(JobEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(GroupEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(MembershipEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(ProcessDefinitionEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(PropertyEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(ResourceEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(ByteArrayEntityManager.class));
       addSessionFactory(new GenericManagerFactory(TableDataManager.class));
-      addSessionFactory(new GenericManagerFactory(TaskManager.class));
-      addSessionFactory(new GenericManagerFactory(UserManager.class));
-      addSessionFactory(new GenericManagerFactory(VariableInstanceManager.class));
-      addSessionFactory(new GenericManagerFactory(EventSubscriptionManager.class));
+      addSessionFactory(new GenericManagerFactory(TaskEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(UserEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(VariableInstanceEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(EventSubscriptionEntityManager.class));
       addSessionFactory(new GenericManagerFactory(HistoryManager.class));
     }
     if (customSessionFactories!=null) {
@@ -660,7 +665,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         this.deployers.addAll(customPostDeployers);
       }
     }
-    if (deploymentCache==null) {
+    if (deploymentManager==null) {
       List<Deployer> deployers = new ArrayList<Deployer>();
       if (customPreDeployers!=null) {
         deployers.addAll(customPreDeployers);
@@ -670,8 +675,17 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         deployers.addAll(customPostDeployers);
       }
 
-      deploymentCache = new DeploymentCache();
-      deploymentCache.setDeployers(deployers);
+      deploymentManager = new DeploymentManager();
+      deploymentManager.setDeployers(deployers);
+      
+      if (processDefinitionCache == null) {
+        if (processDefinitionCacheLimit <= 0) {
+          processDefinitionCache = new DefaultDeploymentCache<ProcessDefinitionEntity>();
+        } else {
+          processDefinitionCache = new DefaultDeploymentCache<ProcessDefinitionEntity>(processDefinitionCacheLimit);
+        }
+      } 
+      deploymentManager.setProcessDefinitionCache(processDefinitionCache);  
     }
   }
 
@@ -1589,12 +1603,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     this.resolverFactories = resolverFactories;
   }
 
-  public DeploymentCache getDeploymentCache() {
-    return deploymentCache;
+  public DeploymentManager getDeploymentManager() {
+    return deploymentManager;
   }
   
-  public void setDeploymentCache(DeploymentCache deploymentCache) {
-    this.deploymentCache = deploymentCache;
+  public void setDeploymentManager(DeploymentManager deploymentManager) {
+    this.deploymentManager = deploymentManager;
   }
     
   public ProcessEngineConfigurationImpl setDelegateInterceptor(DelegateInterceptor delegateInterceptor) {

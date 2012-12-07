@@ -44,7 +44,7 @@ public class DeleteJobsCmd implements Command<Void> {
     for (String jobId: jobIds) {
       jobToDelete = Context
         .getCommandContext()
-        .getJobManager()
+        .getJobEntityManager()
         .findJobById(jobId);
       
       if(jobToDelete != null) {

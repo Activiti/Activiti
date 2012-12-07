@@ -20,7 +20,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
+import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -46,9 +46,9 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
   }
   
   public ProcessInstance execute(CommandContext commandContext) {
-    DeploymentCache deploymentCache = Context
+    DeploymentManager deploymentCache = Context
       .getProcessEngineConfiguration()
-      .getDeploymentCache();
+      .getDeploymentManager();
     
     // Find the process definition
     ProcessDefinitionEntity processDefinition = null;

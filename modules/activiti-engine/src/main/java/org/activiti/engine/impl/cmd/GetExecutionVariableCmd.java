@@ -45,7 +45,7 @@ public class GetExecutionVariableCmd implements Command<Object>, Serializable {
     }
     
     ExecutionEntity execution = commandContext
-      .getExecutionManager()
+      .getExecutionEntityManager()
       .findExecutionById(executionId);
     
     if (execution==null) {

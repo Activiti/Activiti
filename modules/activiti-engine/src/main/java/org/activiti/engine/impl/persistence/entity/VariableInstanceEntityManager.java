@@ -22,7 +22,7 @@ import org.activiti.engine.impl.persistence.AbstractManager;
 /**
  * @author Tom Baeyens
  */
-public class VariableInstanceManager extends AbstractManager {
+public class VariableInstanceEntityManager extends AbstractManager {
 
   @SuppressWarnings("unchecked")
   public List<VariableInstanceEntity> findVariableInstancesByTaskId(String taskId) {

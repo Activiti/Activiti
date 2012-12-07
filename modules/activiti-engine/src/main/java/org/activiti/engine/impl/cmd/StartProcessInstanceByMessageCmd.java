@@ -19,7 +19,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
+import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
@@ -48,7 +48,7 @@ public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance
       throw new ActivitiException("Cannot start process instance by message: message name is null");
     }
     
-    MessageEventSubscriptionEntity messageEventSubscription = commandContext.getEventSubscriptionManager()
+    MessageEventSubscriptionEntity messageEventSubscription = commandContext.getEventSubscriptionEntityManager()
       .findMessageStartEventSubscriptionByName(messageName);
     
     if(messageEventSubscription == null) {
@@ -60,9 +60,9 @@ public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance
       throw new ActivitiException("Cannot start process instance by message: subscription to message with name '"+messageName+"' is not a message start event.");
     }
         
-    DeploymentCache deploymentCache = Context
+    DeploymentManager deploymentCache = Context
             .getProcessEngineConfiguration()
-            .getDeploymentCache();
+            .getDeploymentManager();
           
     ProcessDefinitionEntity processDefinition = deploymentCache.findDeployedProcessDefinitionById(processDefinitionId);
     if (processDefinition == null) {

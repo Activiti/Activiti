@@ -42,7 +42,7 @@ public class DecrementJobRetriesCmd implements Command<Object> {
   public Object execute(CommandContext commandContext) {
     JobEntity job = Context
       .getCommandContext()
-      .getJobManager()
+      .getJobEntityManager()
       .findJobById(jobId);
     job.setRetries(job.getRetries() - 1);
     job.setLockOwner(null);

@@ -148,7 +148,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
 
     Context
       .getCommandContext()
-      .getTaskManager()
+      .getTaskEntityManager()
       .deleteTask(this, TaskEntity.DELETE_REASON_COMPLETED, false);
     
     if (executionId!=null) {
@@ -229,7 +229,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   protected List<VariableInstanceEntity> loadVariableInstances() {
     return Context
       .getCommandContext()
-      .getVariableInstanceManager()
+      .getVariableInstanceEntityManager()
       .findVariableInstancesByTaskId(id);
   }
 
@@ -239,7 +239,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     if ( (execution==null) && (executionId!=null) ) {
       this.execution = Context
         .getCommandContext()
-        .getExecutionManager()
+        .getExecutionEntityManager()
         .findExecutionById(executionId);
     }
     return execution;
@@ -279,7 +279,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   public void deleteIdentityLink(String userId, String groupId, String type) {
     List<IdentityLinkEntity> identityLinks = Context
       .getCommandContext()
-      .getIdentityLinkManager()
+      .getIdentityLinkEntityManager()
       .findIdentityLinkByTaskUserGroupAndType(id, userId, groupId, type);
     
     for (IdentityLinkEntity identityLink: identityLinks) {
@@ -352,7 +352,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     if (!isIdentityLinksInitialized) {
       taskIdentityLinkEntities = Context
         .getCommandContext()
-        .getIdentityLinkManager()
+        .getIdentityLinkEntityManager()
         .findIdentityLinksByTaskId(id);
       isIdentityLinksInitialized = true;
     }
@@ -554,7 +554,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     if (taskDefinition==null && taskDefinitionKey!=null) {
       ProcessDefinitionEntity processDefinition = Context
         .getProcessEngineConfiguration()
-        .getDeploymentCache()
+        .getDeploymentManager()
         .findDeployedProcessDefinitionById(processDefinitionId);
       taskDefinition = processDefinition.getTaskDefinitions().get(taskDefinitionKey);
     }

@@ -38,7 +38,7 @@ public class GetUserAccountCmd implements Command<Account>, Serializable {
 
   public Account execute(CommandContext commandContext) {
     return commandContext
-      .getIdentityInfoManager()
+      .getIdentityInfoEntityManager()
       .findUserAccountByUserIdAndKey(userId, userPassword, accountName);
   }
 }

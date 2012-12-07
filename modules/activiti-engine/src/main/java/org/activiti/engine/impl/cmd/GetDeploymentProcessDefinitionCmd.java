@@ -36,7 +36,7 @@ public class GetDeploymentProcessDefinitionCmd implements Command<ProcessDefinit
   public ProcessDefinitionEntity execute(CommandContext commandContext) {
     return Context
       .getProcessEngineConfiguration()
-      .getDeploymentCache()
+      .getDeploymentManager()
       .findDeployedProcessDefinitionById(processDefinitionId);
   }
 }
