@@ -496,7 +496,8 @@
             </listitem>
             <listitem>
               <para>Store the extension somewhere on the hard drive where it will be able to remain
-                and remember the location;</para>
+                and remember the location. <emphasis>Note: </emphasis> the location must be outside the Eclipse workspace of Activiti Designer - 
+                storing the extension inside the workspace will lead to the user getting a popup error message and the extensions being unavailable;</para>
             </listitem>
             <listitem>
               <para>Start Activiti Designer and from the menu, select <literal>Window</literal> >
