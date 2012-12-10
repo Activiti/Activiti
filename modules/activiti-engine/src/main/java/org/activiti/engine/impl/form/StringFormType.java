@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.form;
 
+import org.activiti.engine.form.AbstractFormType;
+
 
 
 /**

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.form.AbstractFormType;
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;

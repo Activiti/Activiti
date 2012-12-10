@@ -15,7 +15,7 @@ package org.activiti.explorer.form;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.impl.form.AbstractFormType;
+import org.activiti.engine.form.AbstractFormType;
 
 
 /**

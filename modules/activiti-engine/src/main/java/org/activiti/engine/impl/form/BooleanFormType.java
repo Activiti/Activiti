@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.form;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.form.AbstractFormType;
 
 /**
  * @author Frederik Heremans
