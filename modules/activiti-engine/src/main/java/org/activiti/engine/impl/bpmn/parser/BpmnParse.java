@@ -275,21 +275,7 @@ public class BpmnParse extends Parse {
   }
 
   protected void parseDefinitionsAttributes() {
-    String typeLanguage = rootElement.attribute("typeLanguage");
-    String expressionLanguage = rootElement.attribute("expressionLanguage");
     this.targetNamespace = rootElement.attribute("targetNamespace");
-
-    if (typeLanguage != null) {
-      if (typeLanguage.contains("XMLSchema")) {
-        LOGGER.info("XMLSchema currently not supported as typeLanguage");
-      }
-    }
-
-    if (expressionLanguage != null) {
-      if (expressionLanguage.contains("XPath")) {
-        LOGGER.info("XPath currently not supported as expressionLanguage");
-      }
-    }
 
     for (String attribute : rootElement.attributes()) {
       if (attribute.startsWith("xmlns:")) {

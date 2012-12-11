@@ -30,6 +30,7 @@ import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
+import org.activiti.engine.impl.TaskServiceImpl;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -170,13 +171,13 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
       String taskId = task.getId();
       identityService.setAuthenticatedUserId("johndoe");
       // Fetch the task again and update
-      taskService.createAttachment("web page", taskId, "someprocessinstanceid", "weatherforcast", "temperatures and more", "http://weather.com");
+      taskService.createAttachment("web page", taskId, null, "weatherforcast", "temperatures and more", "http://weather.com");
       Attachment attachment = taskService.getTaskAttachments(taskId).get(0);
       assertEquals("weatherforcast", attachment.getName());
       assertEquals("temperatures and more", attachment.getDescription());
       assertEquals("web page", attachment.getType());
       assertEquals(taskId, attachment.getTaskId());
-      assertEquals("someprocessinstanceid", attachment.getProcessInstanceId());
+      assertNull(attachment.getProcessInstanceId());
       assertEquals("http://weather.com", attachment.getUrl());
       assertNull(taskService.getAttachmentContent(attachment.getId()));
       
@@ -187,6 +188,31 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
       assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskId(taskId).list().size());
 
       taskService.deleteTask(taskId, true);
+    }
+  }
+  
+  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+  public void testTaskAttachmentWithProcessInstanceId() {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      
+      ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+      
+      String processInstanceId = processInstance.getId();
+      taskService.createAttachment("web page", null, processInstanceId, "weatherforcast", "temperatures and more", "http://weather.com");
+      Attachment attachment = taskService.getProcessInstanceAttachments(processInstanceId).get(0);
+      assertEquals("weatherforcast", attachment.getName());
+      assertEquals("temperatures and more", attachment.getDescription());
+      assertEquals("web page", attachment.getType());
+      assertEquals(processInstanceId, attachment.getProcessInstanceId());
+      assertNull(attachment.getTaskId());
+      assertEquals("http://weather.com", attachment.getUrl());
+      assertNull(taskService.getAttachmentContent(attachment.getId()));
+      
+      // Finally, clean up
+      taskService.deleteAttachment(attachment.getId());
+      
+      // TODO: Bad API design. Need to fix attachment/comment properly
+      ((TaskServiceImpl) taskService).deleteComments(null, processInstanceId);
     }
   }
 
@@ -890,8 +916,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     }
   }
   
-  @Deployment(resources = { 
-  "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testRemoveVariable() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
     

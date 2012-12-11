@@ -51,6 +51,10 @@
   </insert>
 
   <!-- COMMENT DELETE -->
+  
+  <delete id="deleteComment" parameterType="string">
+    delete from ${prefix}ACT_HI_COMMENT where ID_ = #{id}
+  </delete>
 
   <delete id="deleteCommentsByTaskId" parameterType="string">
     delete from ${prefix}ACT_HI_COMMENT where TASK_ID_ = #{taskId} 
