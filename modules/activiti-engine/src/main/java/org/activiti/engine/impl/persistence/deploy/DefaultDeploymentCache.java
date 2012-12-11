@@ -41,13 +41,13 @@ public class DefaultDeploymentCache<T> implements DeploymentCache<T> {
       private static final long serialVersionUID = 1L;
 
       protected boolean removeEldestEntry(java.util.Map.Entry<String, T> eldest) {
-        return size() > limit;
+        boolean removeEldest = size() > limit;
+        if (removeEldest) {
+          logger.finer("Cache limit is reached, " + eldest.getKey() + " will be evicted");
+        }
+        return removeEldest;
       }
       
-      public T remove(Object key) {
-        logger.finer("Cache limit is reached, " + key + " will is evicted");
-        return super.remove(key);
-      }
     };
   }
   
