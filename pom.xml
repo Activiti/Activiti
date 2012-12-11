@@ -227,12 +227,12 @@
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-core</artifactId>
-        <version>5.1.1</version>
+        <version>5.4.0.Final</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-compiler</artifactId>
-        <version>5.1.1</version>
+        <version>5.4.0.Final</version>
       </dependency>
       <dependency>
         <groupId>org.json</groupId>

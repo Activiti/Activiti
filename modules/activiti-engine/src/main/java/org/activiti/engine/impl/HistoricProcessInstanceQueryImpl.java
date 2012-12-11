@@ -63,7 +63,6 @@ public class HistoricProcessInstanceQueryImpl extends ExecutionVariableQueryImpl
     return this;
   }
   
-  @Override
   public HistoricProcessInstanceQuery processDefinitionKey(String processDefinitionKey) {
     this.processDefinitionKey = processDefinitionKey; 
     return this;
@@ -89,32 +88,27 @@ public class HistoricProcessInstanceQueryImpl extends ExecutionVariableQueryImpl
     return this;
   }
   
-  @Override
   public HistoricProcessInstanceQuery processDefinitionKeyNotIn(List<String> processDefinitionKeys) {
     this.processKeyNotIn = processDefinitionKeys;
     return this;
   }
   
-  @Override
   public HistoricProcessInstanceQuery startedAfter(Date date) {
     startedAfter = date;
     return this;
   }
   
-  @Override
   public HistoricProcessInstanceQuery startedBefore(Date date) {
     startedBefore = date;
     return this;
   }
   
-  @Override
   public HistoricProcessInstanceQuery finishedAfter(Date date) {
     finishedAfter = date;
     finished = true;
     return this;
   }
   
-  @Override
   public HistoricProcessInstanceQuery finishedBefore(Date date) {
     finishedBefore = date;
     finished = true;
