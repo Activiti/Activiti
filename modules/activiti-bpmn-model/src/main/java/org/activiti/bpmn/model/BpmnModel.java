@@ -117,6 +117,49 @@ public class BpmnModel {
     return foundFlowElement;
 	}
 	
+	public Artifact getArtifact(String id) {
+	  Artifact foundArtifact = null;
+    for (Process process : processes) {
+      foundArtifact = process.getArtifact(id);
+      if (foundArtifact != null) {
+        break;
+      }
+    }
+    
+    if (foundArtifact == null) {
+      for (Process process : processes) {
+        for (FlowElement flowElement : process.getFlowElements()) {
+          if (flowElement instanceof SubProcess) {
+            foundArtifact = getArtifactInSubProcess(id, (SubProcess) flowElement);
+            if (foundArtifact != null) {
+              break;
+            }
+          }
+        }
+        if (foundArtifact != null) {
+          break;
+        }
+      }
+    }
+    
+    return foundArtifact;
+  }
+  
+  protected Artifact getArtifactInSubProcess(String id, SubProcess subProcess) {
+    Artifact foundArtifact = subProcess.getArtifact(id);
+    if (foundArtifact == null) {
+      for (FlowElement flowElement : subProcess.getFlowElements()) {
+        if (flowElement instanceof SubProcess) {
+          foundArtifact = getArtifactInSubProcess(id, (SubProcess) flowElement);
+          if (foundArtifact != null) {
+            break;
+          }
+        }
+      }
+    }
+    return foundArtifact;
+  }
+	
 	public void addGraphicInfo(String key, GraphicInfo graphicInfo) {
 		locationMap.put(key, graphicInfo);
 	}

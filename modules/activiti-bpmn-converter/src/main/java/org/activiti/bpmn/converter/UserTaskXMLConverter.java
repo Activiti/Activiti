@@ -22,12 +22,15 @@ import javax.xml.stream.XMLStreamWriter;
 import org.activiti.bpmn.converter.child.BaseChildElementParser;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.UserTask;
+import org.activiti.bpmn.model.alfresco.AlfrescoUserTask;
 import org.apache.commons.lang.StringUtils;
 
 /**
  * @author Tijs Rademakers
  */
 public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
+  
+  List<String> formTypes = new ArrayList<String>();
   
   public UserTaskXMLConverter() {
     HumanPerformerParser humanPerformerParser = new HumanPerformerParser();
@@ -50,10 +53,20 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
   }
   
   @Override
-  protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
-    UserTask userTask = new UserTask();
+  protected BaseElement convertXMLToElement(XMLStreamReader xtr) {
+    String formKey = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_FORM_FORMKEY);
+    UserTask userTask = null;
+    if (StringUtils.isNotEmpty(formKey)) {
+      if (formTypes.contains(formKey)) {
+        userTask = new AlfrescoUserTask();
+      }
+    }
+    if (userTask == null) {
+      userTask = new UserTask();
+    }
+    
     userTask.setDueDate(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_DUEDATE));
-    userTask.setFormKey(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_FORM_FORMKEY));
+    userTask.setFormKey(formKey);
     userTask.setAssignee(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_ASSIGNEE)); 
     userTask.setPriority(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_PRIORITY));
     
@@ -89,6 +102,12 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
   protected void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
     UserTask userTask = (UserTask) element;
     writeFormProperties(userTask, xtw);
+  }
+  
+  public void addFormType(String formType) {
+    if (StringUtils.isNotEmpty(formType)) {
+      formTypes.add(formType);
+    }
   }
   
   public class HumanPerformerParser extends BaseChildElementParser {

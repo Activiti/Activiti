@@ -15,20 +15,20 @@ package org.activiti.bpmn.converter.child;
 import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.model.BaseElement;
-import org.activiti.bpmn.model.ScriptTask;
+import org.activiti.bpmn.model.TextAnnotation;
 
 /**
  * @author Tijs Rademakers
  */
-public class ScriptTextParser extends BaseChildElementParser {
+public class TextAnnotationTextParser extends BaseChildElementParser {
 	
   public String getElementName() {
-    return ATTRIBUTE_TASK_SCRIPT_TEXT;
+    return ELEMENT_TEXT_ANNOTATION_TEXT;
   }
   
   public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement) throws Exception {
-    if (parentElement instanceof ScriptTask == false) return;
+    if (parentElement instanceof TextAnnotation == false) return;
     
-    ((ScriptTask) parentElement).setScript(xtr.getElementText());
+    ((TextAnnotation) parentElement).setText(xtr.getElementText());
   }
 }

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
   <process id="process" name="process1" isExecutable="true">
+    <extensionElements>
+      <activiti:executionListener class="TestClass" event="start" />
+    </extensionElements>
     <sequenceFlow id="sid-4BE8FBF0-B946-48DB-9B18-488BF8DFE4D1" sourceRef="boundaryEvent1" targetRef="sid-194696BA-1A7D-47D7-95A9-A77390D25048"></sequenceFlow>
     <sequenceFlow id="sid-04DAFAA0-34C1-48DF-BAD5-1038344BBFA9" sourceRef="start1" targetRef="userTask1"></sequenceFlow>
     <subProcess id="subprocess1" name="subProcess">

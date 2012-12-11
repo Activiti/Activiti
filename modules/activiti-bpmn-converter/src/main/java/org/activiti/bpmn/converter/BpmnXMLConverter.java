@@ -27,6 +27,8 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
+import org.activiti.bpmn.converter.alfresco.AlfrescoStartEventXMLConverter;
+import org.activiti.bpmn.converter.alfresco.AlfrescoUserTaskXMLConverter;
 import org.activiti.bpmn.converter.child.DocumentationParser;
 import org.activiti.bpmn.converter.child.ExecutionListenerParser;
 import org.activiti.bpmn.converter.child.MultiInstanceParser;
@@ -42,13 +44,12 @@ import org.activiti.bpmn.converter.parser.SubProcessParser;
 import org.activiti.bpmn.converter.util.ActivitiListenerUtil;
 import org.activiti.bpmn.exceptions.XMLException;
 import org.activiti.bpmn.model.Activity;
-import org.activiti.bpmn.model.AssociationModel;
+import org.activiti.bpmn.model.Artifact;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.Pool;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
@@ -62,13 +63,12 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 
   protected static final Logger LOGGER = Logger.getLogger(BpmnXMLConverter.class.getName());
 	
-	public List<AssociationModel> associationModels = new ArrayList<AssociationModel>();
-	public Map<String, GraphicInfo> labelLocationMap = new HashMap<String, GraphicInfo>();
-	
 	private static Map<String, Class<? extends BaseBpmnXMLConverter>> convertersToBpmnMap = 
 	    new HashMap<String, Class<? extends BaseBpmnXMLConverter>>();
 	private static Map<Class<? extends BaseElement>, Class<? extends BaseBpmnXMLConverter>> convertersToXMLMap = 
 	    new HashMap<Class<? extends BaseElement>, Class<? extends BaseBpmnXMLConverter>>();
+	private List<String> userTaskFormTypes;
+	private List<String> startEventFormTypes;
 	
 	static {
 		// events
@@ -98,6 +98,14 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
     addConverter(CatchEventXMLConverter.getXMLType(), CatchEventXMLConverter.getBpmnElementType(), CatchEventXMLConverter.class);
     addConverter(ThrowEventXMLConverter.getXMLType(), ThrowEventXMLConverter.getBpmnElementType(), ThrowEventXMLConverter.class);
     addConverter(BoundaryEventXMLConverter.getXMLType(), BoundaryEventXMLConverter.getBpmnElementType(), BoundaryEventXMLConverter.class);
+    
+    // artifacts
+    addConverter(TextAnnotationXMLConverter.getXMLType(), TextAnnotationXMLConverter.getBpmnElementType(), TextAnnotationXMLConverter.class);
+    addConverter(AssociationXMLConverter.getXMLType(), AssociationXMLConverter.getBpmnElementType(), AssociationXMLConverter.class);
+    
+    // Alfresco types
+    addConverter(AlfrescoStartEventXMLConverter.getXMLType(), AlfrescoStartEventXMLConverter.getBpmnElementType(), AlfrescoStartEventXMLConverter.class);
+    addConverter(AlfrescoUserTaskXMLConverter.getXMLType(), AlfrescoUserTaskXMLConverter.getBpmnElementType(), AlfrescoUserTaskXMLConverter.class);
   }
   
   private static void addConverter(String elementName, Class<? extends BaseElement> elementClass, 
@@ -106,11 +114,18 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
     convertersToBpmnMap.put(elementName, converter);
     convertersToXMLMap.put(elementClass, converter);
   }
+  
+  public void setUserTaskFormTypes(List<String> userTaskFormTypes) {
+    this.userTaskFormTypes = userTaskFormTypes;
+  }
+  
+  public void setStartEventFormTypes(List<String> startEventFormTypes) {
+    this.startEventFormTypes = startEventFormTypes;
+  }
 
 	public BpmnModel convertToBpmnModel(XMLStreamReader xtr) {
 	  BpmnModel model = new BpmnModel();
 		try {
-			boolean processExtensionAvailable = false;
 			Process activeProcess = null;
 			List<SubProcess> activeSubProcessList = new ArrayList<SubProcess>();
 			while (xtr.hasNext()) {
@@ -162,7 +177,6 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 					
 				  if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_ID))) {
 				    String processId = xtr.getAttributeValue(null, ATTRIBUTE_ID);
-            processExtensionAvailable = true;
             Process process = new Process();
             process.setId(processId);
             process.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
@@ -195,13 +209,11 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 				  
 				  new BpmnEdgeParser().parse(xtr, model);
 
-				} else if (processExtensionAvailable == true && ELEMENT_EXECUTION_LISTENER.equalsIgnoreCase(xtr.getLocalName())) {
+				} else if (ELEMENT_EXECUTION_LISTENER.equalsIgnoreCase(xtr.getLocalName())) {
 					
 				  new ExecutionListenerParser().parseChildElement(xtr, activeProcess);
 
 				} else {
-
-					processExtensionAvailable = false;
 
 					if (activeSubProcessList.size() > 0 && ELEMENT_EXTENSIONS.equalsIgnoreCase(xtr.getLocalName())) {
 						new ExecutionListenerParser().parseChildElement(xtr, activeSubProcessList.get(activeSubProcessList.size() - 1));
@@ -211,8 +223,20 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 						new MultiInstanceParser().parseChildElement(xtr, activeSubProcessList.get(activeSubProcessList.size() - 1));
 					  
 					} else if (convertersToBpmnMap.containsKey(xtr.getLocalName())) {
-					  Class<? extends BaseBpmnXMLConverter> converter = convertersToBpmnMap.get(xtr.getLocalName());
-					  converter.newInstance().convertToBpmnModel(xtr, model, activeProcess, activeSubProcessList);
+					  Class<? extends BaseBpmnXMLConverter> converterClass = convertersToBpmnMap.get(xtr.getLocalName());
+					  BaseBpmnXMLConverter converter = converterClass.newInstance();
+					  if (userTaskFormTypes != null && ELEMENT_TASK_USER.equals(xtr.getLocalName())) {
+					    UserTaskXMLConverter userTaskConverter = (UserTaskXMLConverter) converter;
+					    for (String formType : userTaskFormTypes) {
+					      userTaskConverter.addFormType(formType);
+              }
+					  } else if (startEventFormTypes != null && ELEMENT_EVENT_START.equals(xtr.getLocalName())) {
+					    StartEventXMLConverter startEventConverter = (StartEventXMLConverter) converter;
+              for (String formType : startEventFormTypes) {
+                startEventConverter.addFormType(formType);
+              }
+					  }
+					  converter.convertToBpmnModel(xtr, model, activeProcess, activeSubProcessList);
 					}
 				}
 			}
@@ -304,10 +328,18 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
         
         LaneExport.writeLanes(process, xtw);
         
-        ActivitiListenerUtil.writeListeners(process, false, xtw);
+        boolean wroteListener = ActivitiListenerUtil.writeListeners(process, false, xtw);
+        if (wroteListener) {
+          // closing extensions element
+          xtw.writeEndElement();
+        }
         
         for (FlowElement flowElement : process.getFlowElements()) {
           createXML(flowElement, xtw);
+        }
+        
+        for (Artifact artifact : process.getArtifacts()) {
+          createXML(artifact, xtw);
         }
         
         // end process element
@@ -362,6 +394,10 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
         createXML(subElement, xtw);
       }
       
+      for (Artifact artifact : subProcess.getArtifacts()) {
+        createXML(artifact, xtw);
+      }
+      
       xtw.writeEndElement();
       
     } else {
@@ -374,5 +410,16 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
       
       converter.newInstance().convertToXML(xtw, flowElement);
     }
+  }
+  
+  private void createXML(Artifact artifact, XMLStreamWriter xtw) throws Exception {
+    
+    Class<? extends BaseBpmnXMLConverter> converter = convertersToXMLMap.get(artifact.getClass());
+      
+    if (converter == null) {
+      throw new XMLException("No converter for " + artifact.getClass() + " found");
+    }
+      
+    converter.newInstance().convertToXML(xtw, artifact);
   }
 }
