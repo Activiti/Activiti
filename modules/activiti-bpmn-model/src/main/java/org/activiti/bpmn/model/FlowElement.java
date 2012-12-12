@@ -12,8 +12,6 @@
  */
 package org.activiti.bpmn.model;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Tijs Rademakers
@@ -22,8 +20,6 @@ public class FlowElement extends BaseElement {
 
   protected String name;
   protected String documentation;
-  protected List<SequenceFlow> incomingFlows = new ArrayList<SequenceFlow>();
-  protected List<SequenceFlow> outgoingFlows = new ArrayList<SequenceFlow>();
 
   public String getName() {
     return name;
@@ -39,21 +35,5 @@ public class FlowElement extends BaseElement {
 
   public void setDocumentation(String documentation) {
     this.documentation = documentation;
-  }
-  
-  public List<SequenceFlow> getIncomingFlows() {
-    return incomingFlows;
-  }
-
-  public void setIncomingFlows(List<SequenceFlow> incomingFlows) {
-    this.incomingFlows = incomingFlows;
-  }
-
-  public List<SequenceFlow> getOutgoingFlows() {
-    return outgoingFlows;
-  }
-
-  public void setOutgoingFlows(List<SequenceFlow> outgoingFlows) {
-    this.outgoingFlows = outgoingFlows;
   }
 }

@@ -50,6 +50,7 @@ import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Pool;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
@@ -255,17 +256,17 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 	  for (FlowElement flowElement : flowElementList) {
   	  if (flowElement instanceof SequenceFlow) {
         SequenceFlow sequenceFlow = (SequenceFlow) flowElement;
-        FlowElement sourceElement = getFlowElementFromScope(sequenceFlow.getSourceRef(), parentScope);
-        if (sourceElement != null) {
-          sourceElement.getOutgoingFlows().add(sequenceFlow);
+        FlowNode sourceNode = getFlowNodeFromScope(sequenceFlow.getSourceRef(), parentScope);
+        if (sourceNode != null) {
+          sourceNode.getOutgoingFlows().add(sequenceFlow);
         }
-        FlowElement targetElement = getFlowElementFromScope(sequenceFlow.getTargetRef(), parentScope);
-        if (targetElement != null) {
-          targetElement.getIncomingFlows().add(sequenceFlow);
+        FlowNode targetNode = getFlowNodeFromScope(sequenceFlow.getTargetRef(), parentScope);
+        if (targetNode != null) {
+          targetNode.getIncomingFlows().add(sequenceFlow);
         }
       } else if (flowElement instanceof BoundaryEvent) {
         BoundaryEvent boundaryEvent = (BoundaryEvent) flowElement;
-        FlowElement attachedToElement = getFlowElementFromScope(boundaryEvent.getAttachedToRefId(), parentScope);
+        FlowElement attachedToElement = getFlowNodeFromScope(boundaryEvent.getAttachedToRefId(), parentScope);
         if(attachedToElement != null) {
           boundaryEvent.setAttachedToRef((Activity) attachedToElement);
           ((Activity) attachedToElement).getBoundaryEvents().add(boundaryEvent);
@@ -277,14 +278,14 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 	  }
 	}
 	
-	private FlowElement getFlowElementFromScope(String elementId, BaseElement scope) {
-	  FlowElement flowElement = null;
+	private FlowNode getFlowNodeFromScope(String elementId, BaseElement scope) {
+	  FlowNode flowNode = null;
 	  if (scope instanceof Process) {
-	    flowElement = ((Process) scope).getFlowElement(elementId);
+	    flowNode = (FlowNode) ((Process) scope).getFlowElement(elementId);
 	  } else if (scope instanceof SubProcess) {
-	    flowElement = ((SubProcess) scope).getFlowElement(elementId);
+	    flowNode = (FlowNode) ((SubProcess) scope).getFlowElement(elementId);
 	  }
-	  return flowElement;
+	  return flowNode;
 	}
 	
 	public byte[] convertToXML(BpmnModel model) {

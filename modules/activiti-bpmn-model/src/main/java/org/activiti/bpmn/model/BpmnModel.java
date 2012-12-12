@@ -180,6 +180,10 @@ public class BpmnModel {
     return flowLocationMap;
   }
 	
+	public GraphicInfo getLabelGraphicInfo(String key) {
+    return labelLocationMap.get(key);
+  }
+	
 	public void addLabelGraphicInfo(String key, GraphicInfo graphicInfo) {
 		labelLocationMap.put(key, graphicInfo);
 	}
@@ -190,6 +194,15 @@ public class BpmnModel {
 	
   public Collection<Signal> getSignals() {
     return signalMap.values();
+  }
+  
+  public void setSignals(Collection<Signal> signalList) {
+    if (signalList != null) {
+      signalMap.clear();
+      for (Signal signal : signalList) {
+        addSignal(signal.getId(), signal.getName());
+      }
+    }
   }
   
   public void addSignal(String id, String name) {
@@ -204,6 +217,15 @@ public class BpmnModel {
 
   public Collection<Message> getMessages() {
     return messageMap.values();
+  }
+  
+  public void setMessages(Collection<Message> messageList) {
+    if (messageList != null) {
+      messageMap.clear();
+      for (Message message : messageList) {
+        addSignal(message.getId(), message.getName());
+      }
+    }
   }
 
   public void addMessage(String id, String name) {

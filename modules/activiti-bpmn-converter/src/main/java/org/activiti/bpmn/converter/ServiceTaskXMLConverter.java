@@ -106,7 +106,13 @@ public class ServiceTaskXMLConverter extends BaseBpmnXMLConverter {
         }
         xtw.writeStartElement(ACTIVITI_EXTENSIONS_PREFIX, ELEMENT_FIELD, ACTIVITI_EXTENSIONS_NAMESPACE);
         xtw.writeAttribute(ATTRIBUTE_FIELD_NAME, customProperty.getName());
-        xtw.writeStartElement(ACTIVITI_EXTENSIONS_PREFIX, ELEMENT_FIELD_STRING, ACTIVITI_EXTENSIONS_NAMESPACE);
+        if ((customProperty.getSimpleValue().contains("${") || customProperty.getSimpleValue().contains("#{")) &&
+            customProperty.getSimpleValue().contains("}")) {
+          
+          xtw.writeStartElement(ACTIVITI_EXTENSIONS_PREFIX, ATTRIBUTE_FIELD_EXPRESSION, ACTIVITI_EXTENSIONS_NAMESPACE);
+        } else {
+          xtw.writeStartElement(ACTIVITI_EXTENSIONS_PREFIX, ELEMENT_FIELD_STRING, ACTIVITI_EXTENSIONS_NAMESPACE);
+        }
         xtw.writeCharacters(customProperty.getSimpleValue());
         xtw.writeEndElement();
         xtw.writeEndElement();

@@ -56,6 +56,19 @@ public class BPMNDIExport implements BpmnXMLConstants {
         xtw.writeEndElement();
       }
       
+      GraphicInfo labelGraphicInfo = model.getLabelGraphicInfo(elementId);
+      if (labelGraphicInfo != null) {
+        xtw.writeStartElement(BPMNDI_PREFIX, ELEMENT_DI_LABEL, BPMNDI_NAMESPACE);
+        xtw.writeStartElement(OMGDC_PREFIX, ELEMENT_DI_BOUNDS, OMGDC_NAMESPACE);
+        xtw.writeAttribute(ATTRIBUTE_DI_HEIGHT, "" + labelGraphicInfo.height);
+        xtw.writeAttribute(ATTRIBUTE_DI_WIDTH, "" + labelGraphicInfo.width);
+        xtw.writeAttribute(ATTRIBUTE_DI_X, "" + labelGraphicInfo.x);
+        xtw.writeAttribute(ATTRIBUTE_DI_Y, "" + labelGraphicInfo.y);
+        xtw.writeEndElement();
+        xtw.writeEndElement();
+        break;
+      }
+      
       xtw.writeEndElement();
     }
     
