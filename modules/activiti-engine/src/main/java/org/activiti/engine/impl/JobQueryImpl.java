@@ -41,10 +41,10 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
   protected boolean executable;
   protected boolean onlyTimers;
   protected boolean onlyMessages;
-  protected Date duedateHigherThen;
-  protected Date duedateLowerThen;
-  protected Date duedateHigherThenOrEqual;
-  protected Date duedateLowerThenOrEqual;
+  protected Date duedateHigherThan;
+  protected Date duedateLowerThan;
+  protected Date duedateHigherThanOrEqual;
+  protected Date duedateLowerThanOrEqual;
   protected boolean withException;
   protected String exceptionMessage;
   
@@ -117,35 +117,43 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
     return this;
   }
   
-  public JobQuery duedateHigherThen(Date date) {
+  public JobQuery duedateHigherThan(Date date) {
     if (date == null) {
       throw new ActivitiException("Provided date is null");
     }
-    this.duedateHigherThen = date;
+    this.duedateHigherThan = date;
     return this;
+  }
+  
+  public JobQuery duedateLowerThan(Date date) {
+    if (date == null) {
+      throw new ActivitiException("Provided date is null");
+    }
+    this.duedateLowerThan = date;
+    return this;
+  }
+  
+  public JobQuery duedateHigherThen(Date date) {
+    return duedateHigherThan(date);
   }
   
   public JobQuery duedateHigherThenOrEquals(Date date) {
     if (date == null) {
       throw new ActivitiException("Provided date is null");
     }
-    this.duedateHigherThenOrEqual = date;
+    this.duedateHigherThanOrEqual = date;
     return this;
   }
   
   public JobQuery duedateLowerThen(Date date) {
-    if (date == null) {
-      throw new ActivitiException("Provided date is null");
-    }
-    this.duedateLowerThen = date;
-    return this;
+    return duedateLowerThan(date);
   }
   
   public JobQuery duedateLowerThenOrEquals(Date date) {
     if (date == null) {
       throw new ActivitiException("Provided date is null");
     }
-    this.duedateLowerThenOrEqual = date;
+    this.duedateLowerThanOrEqual = date;
     return this;
   }
   

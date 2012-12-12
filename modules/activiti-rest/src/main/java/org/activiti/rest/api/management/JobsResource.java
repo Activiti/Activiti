@@ -50,10 +50,10 @@ public class JobsResource extends SecuredResource {
     Boolean executable = RequestUtil.getBoolean(getQuery(), "executable", false);
     Boolean onlyTimers = RequestUtil.getBoolean(getQuery(), "only-timers", false);
     Boolean onlyMessages = RequestUtil.getBoolean(getQuery(), "only-messages", false);
-    Date dueDateLowerThen = RequestUtil.getDate(getQuery(), "duedate-lt");
-    Date dueDateLowerThenOrEquals = RequestUtil.getDate(getQuery(), "duedate-ltoe");
-    Date dueDateHigherThen = RequestUtil.getDate(getQuery(), "duedate-ht");
-    Date dueDateHigherThenOrEquals = RequestUtil.getDate(getQuery(), "duedate-htoe");
+    Date dueDateLowerThan = RequestUtil.getDate(getQuery(), "duedate-lt");
+    Date dueDateLowerThanOrEquals = RequestUtil.getDate(getQuery(), "duedate-ltoe");
+    Date dueDateHigherThan = RequestUtil.getDate(getQuery(), "duedate-ht");
+    Date dueDateHigherThanOrEquals = RequestUtil.getDate(getQuery(), "duedate-htoe");
 
     JobQuery jobQuery = ActivitiUtil.getManagementService().createJobQuery();
     if (processInstanceId != null) {
@@ -71,17 +71,17 @@ public class JobsResource extends SecuredResource {
     if (onlyMessages) {
       jobQuery.messages();
     }
-    if (dueDateLowerThen != null) {
-      jobQuery.duedateLowerThen(dueDateLowerThen);
+    if (dueDateLowerThan != null) {
+      jobQuery.duedateLowerThan(dueDateLowerThan);
     }
-    if (dueDateLowerThenOrEquals != null) {
-      jobQuery.duedateLowerThenOrEquals(dueDateLowerThenOrEquals);
+    if (dueDateLowerThanOrEquals != null) {
+      jobQuery.duedateLowerThenOrEquals(dueDateLowerThanOrEquals);
     }
-    if (dueDateHigherThen != null) {
-      jobQuery.duedateHigherThen(dueDateHigherThen);
+    if (dueDateHigherThan != null) {
+      jobQuery.duedateHigherThan(dueDateHigherThan);
     }
-    if (dueDateHigherThenOrEquals != null) {
-      jobQuery.duedateLowerThenOrEquals(dueDateLowerThenOrEquals);
+    if (dueDateHigherThanOrEquals != null) {
+      jobQuery.duedateLowerThenOrEquals(dueDateHigherThanOrEquals);
     }
     
     DataResponse response = new JobsPaginateList().paginateList(getQuery(), jobQuery, "id", properties);

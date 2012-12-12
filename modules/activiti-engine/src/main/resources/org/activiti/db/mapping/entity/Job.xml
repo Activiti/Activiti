@@ -184,17 +184,17 @@
       <if test="onlyMessages">
         and RES.TYPE_ = 'message'
       </if>
-      <if test="duedateHigherThen != null">
-        and RES.DUEDATE_ &gt; #{duedateHigherThen}
+      <if test="duedateHigherThan != null">
+        and RES.DUEDATE_ &gt; #{duedateHigherThan}
       </if>
-      <if test="duedateLowerThen != null">
-        and RES.DUEDATE_ &lt; #{duedateLowerThen}
+      <if test="duedateLowerThan != null">
+        and RES.DUEDATE_ &lt; #{duedateLowerThan}
       </if>
-      <if test="duedateHigherThenOrEqual != null">
-        and RES.DUEDATE_ &gt;= #{duedateHigherThenOrEqual}
+      <if test="duedateHigherThanOrEqual != null">
+        and RES.DUEDATE_ &gt;= #{duedateHigherThanOrEqual}
       </if>
-      <if test="duedateLowerThenOrEqual != null">
-        and RES.DUEDATE_ &lt;= #{duedateLowerThenOrEqual}
+      <if test="duedateLowerThanOrEqual != null">
+        and RES.DUEDATE_ &lt;= #{duedateLowerThanOrEqual}
       </if>
       <if test="withException">
       	and (RES.EXCEPTION_MSG_ is not null or RES.EXCEPTION_STACK_ID_ is not null)
