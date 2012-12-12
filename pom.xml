@@ -25,6 +25,7 @@
     </activiti.osgi.import.defaults>
     <activiti.osgi.import.before.defaults />
     <activiti.osgi.import.additional />
+    <activiti.osgi.export.additional />
     <activiti.osgi.import.pkg>
       org.activiti.*;${activiti.osgi.import.activiti.version},
       ${activiti.osgi.import.before.defaults},
@@ -39,7 +40,11 @@
     <activiti.osgi.export.pkg>!*.impl;${activiti.artifact}*</activiti.osgi.export.pkg>
     <activiti.osgi.private.pkg>${activiti.artifact}*.impl</activiti.osgi.private.pkg>
     -->
-    <activiti.osgi.export.pkg>${activiti.artifact}*</activiti.osgi.export.pkg>
+    <activiti.osgi.export.pkg>
+      ${activiti.artifact},
+      ${activiti.osgi.export.additional},
+      *
+    </activiti.osgi.export.pkg>
     <activiti.osgi.private.pkg></activiti.osgi.private.pkg>
     <activiti.osgi.version>version=${project.version}</activiti.osgi.version>
     <activiti.osgi.split.pkg>-split-package:=first</activiti.osgi.split.pkg>
