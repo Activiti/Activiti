@@ -83,7 +83,7 @@ public class TaskManager extends AbstractManager {
     if (id == null) {
       throw new ActivitiException("Invalid task id : null");
     }
-    return (TaskEntity) getDbSqlSession().selectOne("selectTask", id);
+    return (TaskEntity) getDbSqlSession().selectById(TaskEntity.class, id);
   }
 
   @SuppressWarnings("unchecked")
