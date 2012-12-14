@@ -2091,7 +2091,7 @@ public class BpmnParse extends Parse {
     
     TaskDefinition taskDefinition = parseTaskDefinition(userTaskElement, activity.getId(), (ProcessDefinitionEntity) scope.getProcessDefinition());
 
-    UserTaskActivityBehavior userTaskActivity = new UserTaskActivityBehavior(expressionManager, taskDefinition);
+    UserTaskActivityBehavior userTaskActivity = new UserTaskActivityBehavior(taskDefinition);
     activity.setActivityBehavior(userTaskActivity);
 
     parseProperties(userTaskElement, activity);

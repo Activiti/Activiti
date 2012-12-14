@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.form;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
@@ -25,7 +26,7 @@ import org.activiti.engine.impl.util.xml.Element;
 /**
  * @author Tom Baeyens
  */
-public interface FormHandler {
+public interface FormHandler extends Serializable {
 
   ThreadLocal<FormHandler> current = new ThreadLocal<FormHandler>();
 

@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.pvm.process;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,8 +24,10 @@ import java.util.List;
  * 
  * @author Frederik Heremans
  */
-public class LaneSet {
+public class LaneSet implements Serializable {
 
+  private static final long serialVersionUID = 1L;
+  
   protected String id;
   protected List<Lane> lanes;
   protected String name;

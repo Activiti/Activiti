@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.pvm.process;
 
+import java.io.Serializable;
+
 
 /**
  * Object indicating that a {@link ProcessDefinitionImpl} is a participant in a collaboration (pool). 
@@ -20,8 +22,10 @@ package org.activiti.engine.impl.pvm.process;
  * 
  * @author Frederik Heremans
  */
-public class ParticipantProcess implements HasDIBounds {
+public class ParticipantProcess implements HasDIBounds , Serializable {
 
+  private static final long serialVersionUID = 1L;
+  
   protected String id;
   protected String name;
   protected int x = -1;

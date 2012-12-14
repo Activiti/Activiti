@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,8 +35,10 @@ import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
  * 
  * @author Joram Barrez
  */
-public class BpmnActivityBehavior {
-
+public class BpmnActivityBehavior implements Serializable {
+  
+  private static final long serialVersionUID = 1L;
+  
   private static Logger log = Logger.getLogger(BpmnActivityBehavior.class.getName());
 
   /**

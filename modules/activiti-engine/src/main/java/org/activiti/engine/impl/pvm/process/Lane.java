@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.pvm.process;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,8 +23,9 @@ import java.util.List;
 * 
 * @author Frederik Heremans
 */
-public class Lane implements HasDIBounds {
+public class Lane implements HasDIBounds, Serializable {
 
+  private static final long serialVersionUID = 1L;
   protected String id;
   protected String name;
   protected List<String> flowNodeIds;
