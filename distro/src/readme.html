@@ -46,16 +46,20 @@
   <ul>
     <li>Added Activiti Modeler to the Activiti Explorer web application</li>
     <li>Removed buggy demo script and replaced with simpler distribution</li>
+    <li>Support for doing queries that are not out-of-the-box possible with the query api (called 'native queries')</li>
     <li>Enhanced ability to query for history variable values</li>
     <li>Improved functionality to suspend and activate process definitions and instances</li>
     <li>Improved Activiti QA and added DB2 and MSSQL servers</li>
+    <li>Added support for using a service call in a Java delegate (see <a href="http://www.jorambarrez.be/blog/2012/10/25/call-a-service-in-a-service-tas/">here</a> for more details)</li>
     <li>Lots of bug fixes</li>
   </ul>
 
   <h4>Important upgrade note</h4>
-  <p>In 5.11 we introduce a new history table for process variables. There is an optional migration database script
-  that you can run to generate historic variables for existing process instances.  This is optional because 
-  the engine will just create those records upon update of the variable if they don't exist.  
+  <p>In 5.11 we introduce a new history table for process variables (ACT_HI_VARINST). 
+  The engine will create records in this table also for already running process instances
+  if a variable is updated. On the default level (audit) this table will be filled with the latest value of a process variable.
+  Also note that the history level is now only defined in the process engine configuration file and not anymore in the Activiti database (ACT_GE_PROPERTY).
+  You can switch between history levels now by only changing the process engine configuration and do a restart of the engine.
   </p>
   <p>The files can be found in the database directory of the Activiti distribution
   <code>org/activiti/db/upgrade/optional</code>.
