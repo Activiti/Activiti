@@ -12,10 +12,9 @@
  */
 package org.activiti.bpmn.model;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -24,7 +23,7 @@ import java.util.Map;
 public class SubProcess extends Activity {
 
   protected Map<String, FlowElement> flowElementMap = new HashMap<String, FlowElement>();
-  protected List<Artifact> artifacts = new ArrayList<Artifact>();
+  protected Map<String, Artifact> artifactMap = new LinkedHashMap<String, Artifact>();
 
   public FlowElement getFlowElement(String id) {
     return flowElementMap.get(id);
@@ -34,15 +33,35 @@ public class SubProcess extends Activity {
     return flowElementMap.values();
   }
   
+  public Map<String, FlowElement> getFlowElementMap() {
+    return flowElementMap;
+  }
+  
   public void addFlowElement(FlowElement element) {
     flowElementMap.put(element.getId(), element);
   }
   
-  public List<Artifact> getArtifacts() {
-    return artifacts;
+  public void removeFlowElement(String elementId) {
+    flowElementMap.remove(elementId);
   }
-
-  public void setArtifacts(List<Artifact> artifacts) {
-    this.artifacts = artifacts;
+  
+  public Artifact getArtifact(String id) {
+    return artifactMap.get(id);
+  }
+  
+  public Collection<Artifact> getArtifacts() {
+    return artifactMap.values();
+  }
+  
+  public Map<String, Artifact> getArtifactMap() {
+    return artifactMap;
+  }
+  
+  public void addArtifact(Artifact artifact) {
+    artifactMap.put(artifact.getId(), artifact);
+  }
+  
+  public void removeArtifact(String artifactId) {
+    artifactMap.remove(artifactId);
   }
 }

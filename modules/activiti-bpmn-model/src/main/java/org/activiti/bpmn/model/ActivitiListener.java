@@ -23,8 +23,6 @@ public class ActivitiListener extends BaseElement {
   protected String event;
   protected String implementationType;
   protected String implementation;
-  protected String runAs;
-  protected String scriptProcessor;
   protected List<FieldExtension> fieldExtensions = new ArrayList<FieldExtension>();
 
   public String getEvent() {
@@ -50,17 +48,5 @@ public class ActivitiListener extends BaseElement {
   }
   public void setFieldExtensions(List<FieldExtension> fieldExtensions) {
     this.fieldExtensions = fieldExtensions;
-  }
-  public String getRunAs() {
-    return runAs;
-  }
-  public void setRunAs(String runAs) {
-    this.runAs = runAs;
-  }
-  public String getScriptProcessor() {
-    return scriptProcessor;
-  }
-  public void setScriptProcessor(String scriptProcessor) {
-    this.scriptProcessor = scriptProcessor;
   }
 }

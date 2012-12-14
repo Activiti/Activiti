@@ -18,6 +18,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.form.AbstractFormType;
 
 
 /**

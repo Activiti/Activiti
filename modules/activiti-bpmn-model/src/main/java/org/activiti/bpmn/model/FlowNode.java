@@ -20,19 +20,22 @@ import java.util.List;
  */
 public class FlowNode extends FlowElement {
 
-  protected List<SequenceFlow> incoming = new ArrayList<SequenceFlow>();
-  protected List<SequenceFlow> outgoing = new ArrayList<SequenceFlow>();
+  protected List<SequenceFlow> incomingFlows = new ArrayList<SequenceFlow>();
+  protected List<SequenceFlow> outgoingFlows = new ArrayList<SequenceFlow>();
 
-  public List<SequenceFlow> getIncoming() {
-    return incoming;
+  public List<SequenceFlow> getIncomingFlows() {
+    return incomingFlows;
   }
-  public void setIncoming(List<SequenceFlow> incoming) {
-    this.incoming = incoming;
+
+  public void setIncomingFlows(List<SequenceFlow> incomingFlows) {
+    this.incomingFlows = incomingFlows;
   }
-  public List<SequenceFlow> getOutgoing() {
-    return outgoing;
+
+  public List<SequenceFlow> getOutgoingFlows() {
+    return outgoingFlows;
   }
-  public void setOutgoing(List<SequenceFlow> outgoing) {
-    this.outgoing = outgoing;
+
+  public void setOutgoingFlows(List<SequenceFlow> outgoingFlows) {
+    this.outgoingFlows = outgoingFlows;
   }
 }

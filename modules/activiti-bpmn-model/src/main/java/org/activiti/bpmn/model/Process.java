@@ -13,7 +13,10 @@
 package org.activiti.bpmn.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Tijs Rademakers
@@ -25,7 +28,7 @@ public class Process extends FlowElementsContainer {
   protected String documentation;
   protected List<ActivitiListener> executionListeners = new ArrayList<ActivitiListener>();
   protected List<Lane> lanes = new ArrayList<Lane>();
-  protected List<Artifact> artifacts = new ArrayList<Artifact>();
+  protected Map<String, Artifact> artifactMap = new LinkedHashMap<String, Artifact>();
   protected List<String> candidateStarterUsers = new ArrayList<String>();
   protected List<String> candidateStarterGroups = new ArrayList<String>();
 
@@ -69,12 +72,24 @@ public class Process extends FlowElementsContainer {
     this.lanes = lanes;
   }
 
-  public List<Artifact> getArtifacts() {
-    return artifacts;
+  public Artifact getArtifact(String id) {
+    return artifactMap.get(id);
   }
-
-  public void setArtifacts(List<Artifact> artifacts) {
-    this.artifacts = artifacts;
+  
+  public Collection<Artifact> getArtifacts() {
+    return artifactMap.values();
+  }
+  
+  public Map<String, Artifact> getArtifactMap() {
+    return artifactMap;
+  }
+  
+  public void addArtifact(Artifact artifact) {
+    artifactMap.put(artifact.getId(), artifact);
+  }
+  
+  public void removeArtifact(String artifactId) {
+    artifactMap.remove(artifactId);
   }
 
   public List<String> getCandidateStarterUsers() {

@@ -16,7 +16,7 @@ import org.apache.commons.lang.StringUtils;
 
 public class ActivitiListenerUtil implements BpmnXMLConstants {
 
-  public static void writeListeners(BaseElement element, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
+  public static boolean writeListeners(BaseElement element, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
     List<ActivitiListener> listenerList = null;
     String xmlElementName = ELEMENT_EXECUTION_LISTENER;
     if (element instanceof UserTask) {
@@ -52,10 +52,13 @@ public class ActivitiListenerUtil implements BpmnXMLConstants {
             BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_DELEGATEEXPRESSION, listener.getImplementation(), xtw);
           }
           
+          FieldExtensionUtil.writeFieldExtensions(listener.getFieldExtensions(), true, xtw);
+          
           xtw.writeEndElement();
         }
       }
     }
+    return didWriteExtensionStartElement;
   }
   
 }

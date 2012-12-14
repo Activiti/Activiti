@@ -18,10 +18,8 @@ package org.activiti.bpmn.model;
 public class Association extends Artifact {
 
   protected AssociationDirection associationDirection = AssociationDirection.NONE;
-
-  protected BaseElement sourceRef;
-
-  protected BaseElement targetRef;
+  protected String sourceRef;
+  protected String targetRef;
 
   public AssociationDirection getAssociationDirection() {
     return associationDirection;
@@ -31,19 +29,19 @@ public class Association extends Artifact {
     this.associationDirection = associationDirection;
   }
 
-  public BaseElement getSourceRef() {
+  public String getSourceRef() {
     return sourceRef;
   }
 
-  public void setSourceRef(BaseElement sourceRef) {
+  public void setSourceRef(String sourceRef) {
     this.sourceRef = sourceRef;
   }
 
-  public BaseElement getTargetRef() {
+  public String getTargetRef() {
     return targetRef;
   }
 
-  public void setTargetRef(BaseElement targetRef) {
+  public void setTargetRef(String targetRef) {
     this.targetRef = targetRef;
   }
 

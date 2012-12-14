@@ -33,7 +33,7 @@ public class BpmnEdgeParser implements BpmnXMLConstants {
 		List<GraphicInfo> wayPointList = new ArrayList<GraphicInfo>();
 		while (xtr.hasNext()) {
 			xtr.next();
-			if (xtr.isStartElement() && "BPMNLabel".equalsIgnoreCase(xtr.getLocalName())) {
+			if (xtr.isStartElement() && ELEMENT_DI_LABEL.equalsIgnoreCase(xtr.getLocalName())) {
 			  
 			  while (xtr.hasNext()) {
           xtr.next();
@@ -43,7 +43,7 @@ public class BpmnEdgeParser implements BpmnXMLConstants {
             graphicInfo.y = Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_Y)).intValue();
 					  model.addLabelGraphicInfo(id, graphicInfo);
 					  break;
-          } else if(xtr.isEndElement() && "BPMNLabel".equalsIgnoreCase(xtr.getLocalName())) {
+          } else if(xtr.isEndElement() && ELEMENT_DI_LABEL.equalsIgnoreCase(xtr.getLocalName())) {
             break;
           }
 			  }

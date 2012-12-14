@@ -28,6 +28,7 @@ import org.activiti.engine.impl.cmd.CompleteTaskCmd;
 import org.activiti.engine.impl.cmd.CreateAttachmentCmd;
 import org.activiti.engine.impl.cmd.DelegateTaskCmd;
 import org.activiti.engine.impl.cmd.DeleteAttachmentCmd;
+import org.activiti.engine.impl.cmd.DeleteCommentCmd;
 import org.activiti.engine.impl.cmd.DeleteIdentityLinkCmd;
 import org.activiti.engine.impl.cmd.DeleteTaskCmd;
 import org.activiti.engine.impl.cmd.GetAttachmentCmd;
@@ -285,6 +286,10 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
 
   public void deleteAttachment(String attachmentId) {
     commandExecutor.execute(new DeleteAttachmentCmd(attachmentId));
+  }
+  
+  public void deleteComments(String taskId, String processInstanceId) {
+    commandExecutor.execute(new DeleteCommentCmd(taskId, processInstanceId));
   }
 
   public Attachment getAttachment(String attachmentId) {

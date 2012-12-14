@@ -16,6 +16,7 @@ package org.activiti.engine.impl.form;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.form.AbstractFormType;
 
 
 /**

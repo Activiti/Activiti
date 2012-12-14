@@ -496,7 +496,8 @@
             </listitem>
             <listitem>
               <para>Store the extension somewhere on the hard drive where it will be able to remain
-                and remember the location;</para>
+                and remember the location. <emphasis>Note: </emphasis> the location must be outside the Eclipse workspace of Activiti Designer - 
+                storing the extension inside the workspace will lead to the user getting a popup error message and the extensions being unavailable;</para>
             </listitem>
             <listitem>
               <para>Start Activiti Designer and from the menu, select <literal>Window</literal> >
@@ -724,7 +725,9 @@ public class AcmeMoneyTask extends AbstractCustomServiceTask {
           		The user's property values will be injected into the <literal>delegationClass</literal> runtime class 
           		if you provide members in the class for Activiti to inject into. The names should match the names of the members 
           		in your <literal>CustomServiceTask</literal>. For more information, consult <link linkend="serviceTaskFieldInjection">this part</link> 
-          		of the userguide.
+          		of the userguide. Note that since version 5.11.0 of the Designer you can use the <literal>Expression</literal> interface for dynamic field values.
+              This means that the value of the property in the Activiti Designer must contain an expression and this expression will then be injected
+              into an <literal>Expression</literal> property in the <literal>JavaDelegate</literal> implementation class.
           	</para>
           	
           	<para>

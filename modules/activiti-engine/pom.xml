@@ -125,9 +125,11 @@
 
   <properties>
     <activiti.artifact>
-      org.activiti.db.mapping.entity,
       org.activiti.engine
     </activiti.artifact>
+    <activiti.osgi.export.additional>
+      org.activiti.db.mapping.entity
+    </activiti.osgi.export.additional>
     <activiti.osgi.import.additional>
       junit*;resolution:=optional,
       org.junit*;resolution:=optional,

@@ -117,6 +117,49 @@ public class BpmnModel {
     return foundFlowElement;
 	}
 	
+	public Artifact getArtifact(String id) {
+	  Artifact foundArtifact = null;
+    for (Process process : processes) {
+      foundArtifact = process.getArtifact(id);
+      if (foundArtifact != null) {
+        break;
+      }
+    }
+    
+    if (foundArtifact == null) {
+      for (Process process : processes) {
+        for (FlowElement flowElement : process.getFlowElements()) {
+          if (flowElement instanceof SubProcess) {
+            foundArtifact = getArtifactInSubProcess(id, (SubProcess) flowElement);
+            if (foundArtifact != null) {
+              break;
+            }
+          }
+        }
+        if (foundArtifact != null) {
+          break;
+        }
+      }
+    }
+    
+    return foundArtifact;
+  }
+  
+  protected Artifact getArtifactInSubProcess(String id, SubProcess subProcess) {
+    Artifact foundArtifact = subProcess.getArtifact(id);
+    if (foundArtifact == null) {
+      for (FlowElement flowElement : subProcess.getFlowElements()) {
+        if (flowElement instanceof SubProcess) {
+          foundArtifact = getArtifactInSubProcess(id, (SubProcess) flowElement);
+          if (foundArtifact != null) {
+            break;
+          }
+        }
+      }
+    }
+    return foundArtifact;
+  }
+	
 	public void addGraphicInfo(String key, GraphicInfo graphicInfo) {
 		locationMap.put(key, graphicInfo);
 	}
@@ -137,6 +180,10 @@ public class BpmnModel {
     return flowLocationMap;
   }
 	
+	public GraphicInfo getLabelGraphicInfo(String key) {
+    return labelLocationMap.get(key);
+  }
+	
 	public void addLabelGraphicInfo(String key, GraphicInfo graphicInfo) {
 		labelLocationMap.put(key, graphicInfo);
 	}
@@ -147,6 +194,15 @@ public class BpmnModel {
 	
   public Collection<Signal> getSignals() {
     return signalMap.values();
+  }
+  
+  public void setSignals(Collection<Signal> signalList) {
+    if (signalList != null) {
+      signalMap.clear();
+      for (Signal signal : signalList) {
+        addSignal(signal.getId(), signal.getName());
+      }
+    }
   }
   
   public void addSignal(String id, String name) {
@@ -161,6 +217,15 @@ public class BpmnModel {
 
   public Collection<Message> getMessages() {
     return messageMap.values();
+  }
+  
+  public void setMessages(Collection<Message> messageList) {
+    if (messageList != null) {
+      messageMap.clear();
+      for (Message message : messageList) {
+        addSignal(message.getId(), message.getName());
+      }
+    }
   }
 
   public void addMessage(String id, String name) {

@@ -103,6 +103,7 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_TASK_SERVICE_EXPRESSION = "expression";
   public static final String ATTRIBUTE_TASK_SERVICE_DELEGATEEXPRESSION = "delegateExpression";
   public static final String ATTRIBUTE_TASK_SERVICE_RESULTVARIABLE = "resultVariableName";
+  public static final String ATTRIBUTE_TASK_SERVICE_EXTENSIONID = "extensionId";
   
   public static final String ATTRIBUTE_TASK_USER_ASSIGNEE = "assignee";
   public static final String ATTRIBUTE_TASK_USER_CANDIDATEUSERS = "candidateUsers";
@@ -127,6 +128,12 @@ public interface BpmnXMLConstants {
   public static final String ELEMENT_FLOW_CONDITION = "conditionExpression";
   public static final String ATTRIBUTE_FLOW_SOURCE_REF = "sourceRef";
   public static final String ATTRIBUTE_FLOW_TARGET_REF = "targetRef";
+  
+  public static final String ELEMENT_TEXT_ANNOTATION = "textAnnotation";
+  public static final String ATTRIBUTE_TEXTFORMAT = "textFormat";
+  public static final String ELEMENT_TEXT_ANNOTATION_TEXT = "text";
+  
+  public static final String ELEMENT_ASSOCIATION = "association";
   
   public static final String ELEMENT_GATEWAY_EXCLUSIVE = "exclusiveGateway";
   public static final String ELEMENT_GATEWAY_EVENT = "eventBasedGateway";
@@ -172,6 +179,7 @@ public interface BpmnXMLConstants {
   public static final String ELEMENT_DI_PLANE = "BPMNPlane";
   public static final String ELEMENT_DI_SHAPE = "BPMNShape";
   public static final String ELEMENT_DI_EDGE = "BPMNEdge";
+  public static final String ELEMENT_DI_LABEL = "BPMNLabel";
   public static final String ELEMENT_DI_BOUNDS = "Bounds";
   public static final String ELEMENT_DI_WAYPOINT = "waypoint";
   public static final String ATTRIBUTE_DI_BPMNELEMENT = "bpmnElement";

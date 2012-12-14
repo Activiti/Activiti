@@ -4,9 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.TimerEventDefinition;
@@ -64,5 +66,11 @@ public class SubProcessConverterTest extends AbstractConverterTest {
     assertEquals("subprocess1", boundaryEvent.getAttachedToRef().getId());
     assertEquals(1, boundaryEvent.getEventDefinitions().size());
     assertTrue(boundaryEvent.getEventDefinitions().get(0) instanceof TimerEventDefinition);
+    
+    assertEquals(1, model.getMainProcess().getExecutionListeners().size());
+    ActivitiListener listener = model.getMainProcess().getExecutionListeners().get(0);
+    assertEquals("TestClass", listener.getImplementation());
+    assertEquals(ImplementationType.IMPLEMENTATION_TYPE_CLASS, listener.getImplementationType());
+    assertEquals("start", listener.getEvent());
   }
 }

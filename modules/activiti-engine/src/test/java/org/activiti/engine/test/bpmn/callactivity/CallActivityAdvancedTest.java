@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -281,6 +280,34 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
 
     assertProcessEnded(processInstance.getId());
     assertEquals(0, runtimeService.createExecutionQuery().list().size());
+  }
+  
+  /**
+   * Test case for handing over process variables to a sub process
+   */
+  @Deployment(resources = {
+    "org/activiti/engine/test/bpmn/callactivity/CallActivity.testTwoSubProcesses.bpmn20.xml", 
+    "org/activiti/engine/test/bpmn/callactivity/simpleSubProcess.bpmn20.xml" })
+  public void testTwoSubProcesses() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("callTwoSubProcesses");
+    
+    List<ProcessInstance> instanceList = runtimeService.createProcessInstanceQuery().list();
+    assertNotNull(instanceList);
+    assertEquals(3, instanceList.size());
+    
+    List<Task> taskList = taskService.createTaskQuery().list();
+    assertNotNull(taskList);
+    assertEquals(2, taskList.size());
+    
+    runtimeService.deleteProcessInstance(processInstance.getId(), "Test cascading");
+    
+    instanceList = runtimeService.createProcessInstanceQuery().list();
+    assertNotNull(instanceList);
+    assertEquals(0, instanceList.size());
+    
+    taskList = taskService.createTaskQuery().list();
+    assertNotNull(taskList);
+    assertEquals(0, taskList.size());
   }
     
 }

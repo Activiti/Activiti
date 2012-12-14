@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.form.AbstractFormType;
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.impl.el.StartProcessVariableScope;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;

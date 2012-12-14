@@ -28,6 +28,7 @@ import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.FormProperty;
 import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.ImplementationType;
@@ -107,8 +108,12 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
     
     flowElementNode.put(EDITOR_SHAPE_PROPERTIES, propertiesNode);
     ArrayNode outgoingArrayNode = objectMapper.createArrayNode();
-    for (SequenceFlow sequenceFlow : flowElement.getOutgoingFlows()) {
-      outgoingArrayNode.add(BpmnJsonConverterUtil.createResourceNode(sequenceFlow.getId()));
+    
+    if (flowElement instanceof FlowNode) {
+      FlowNode flowNode = (FlowNode) flowElement;
+      for (SequenceFlow sequenceFlow : flowNode.getOutgoingFlows()) {
+        outgoingArrayNode.add(BpmnJsonConverterUtil.createResourceNode(sequenceFlow.getId()));
+      }
     }
     
     if (flowElement instanceof Activity) {
