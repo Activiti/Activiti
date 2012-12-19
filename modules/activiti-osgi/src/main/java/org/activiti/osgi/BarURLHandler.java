@@ -12,21 +12,24 @@
  */
 package org.activiti.osgi;
 
-import org.osgi.service.url.AbstractURLStreamHandlerService;
-
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.osgi.service.url.AbstractURLStreamHandlerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author <a href="gnodet@gmail.com">Guillaume Nodet</a>
  */
 public class BarURLHandler extends AbstractURLStreamHandlerService {
 
-    private static final Logger LOGGER = Logger.getLogger(BarURLHandler.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(BarURLHandler.class);
 
     private static String SYNTAX = "bar: bar-xml-uri";
 
@@ -46,7 +49,7 @@ public class BarURLHandler extends AbstractURLStreamHandlerService {
         }
         barXmlURL = new URL(url.getPath());
 
-        LOGGER.log(Level.FINE, "bar xml URL is: [" + barXmlURL + "]");
+        LOGGER.debug("bar xml URL is: [{}]", barXmlURL);
         return new Connection(url);
     }
 
@@ -74,7 +77,7 @@ public class BarURLHandler extends AbstractURLStreamHandlerService {
                         BarTransformer.transform(barXmlURL, pout);
                     }
                     catch( Exception e ) {
-                        LOGGER.log( Level.WARNING, "Bundle cannot be generated" );
+                        LOGGER.warn("Bundle cannot be generated" );
                     }
                     finally {
                         try {
@@ -82,7 +85,7 @@ public class BarURLHandler extends AbstractURLStreamHandlerService {
                         }
                         catch( IOException ignore ) {
                             // if we get here something is very wrong
-                            LOGGER.log( Level.SEVERE, "Bundle cannot be generated", ignore );
+                            LOGGER.error("Bundle cannot be generated", ignore );
                         }
                     }
                 }

@@ -26,8 +26,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,11 +56,12 @@ import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.entity.PropertyEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
-import org.activiti.engine.impl.util.ClassNameUtil;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.impl.variable.DeserializedObject;
 import org.apache.ibatis.session.SqlSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /** responsibilities:
@@ -75,7 +74,7 @@ import org.apache.ibatis.session.SqlSession;
  */
 public class DbSqlSession implements Session {
   
-  private static Logger log = Logger.getLogger(DbSqlSession.class.getName());
+  private static Logger log = LoggerFactory.getLogger(DbSqlSession.class);
   
   private static final Pattern CLEAN_VERSION_REGEX = Pattern.compile("\\d\\.\\d*");
 
@@ -228,7 +227,9 @@ public class DbSqlSession implements Session {
       if (deleteStatement == null) {
         throw new ActivitiException("no delete statement for " + persistentObject.getClass() + " in the ibatis mapping files");
       }
-      log.fine("deleting: " + ClassNameUtil.getClassNameWithoutPackage(persistentObject.getClass()) + "[" + persistentObject.getId() + "]");
+      if(log.isDebugEnabled()) {
+        log.debug("deleting: {}[{}]", persistentObject.getClass().getSimpleName(), persistentObject.getId());
+      }
       
       
       // It only makes sense to check for optimistic locking exceptions for objects that actually have a revision
@@ -442,18 +443,18 @@ public class DbSqlSession implements Session {
     flushDeserializedObjects();
     List<PersistentObject> updatedObjects = getUpdatedObjects();
     
-    if (log.isLoggable(Level.FINE)) {
-      log.fine("flush summary:");
+    if (log.isDebugEnabled()) {
+      log.debug("flush summary:");
       for (PersistentObject insertedObject: insertedObjects) {
-        log.fine("  insert "+toString(insertedObject));
+        log.debug("  insert {}", toString(insertedObject));
       }
       for (PersistentObject updatedObject: updatedObjects) {
-        log.fine("  update "+toString(updatedObject));
+        log.debug("  update {}", toString(updatedObject));
       }
       for (Object deleteOperation: deleteOperations) {
-        log.fine("  "+deleteOperation);
+        log.debug("  {}", deleteOperation);
       }
-      log.fine("now executing flush...");
+      log.debug("now executing flush...");
     }
 
     flushInserts();
@@ -563,7 +564,7 @@ public class DbSqlSession implements Session {
           if (!persistentObject.getPersistentState().equals(originalState)) {
             updatedObjects.add(persistentObject);
           } else {
-            log.finest("loaded object '"+persistentObject+"' was not updated");
+            log.trace("loaded object '{}' was not updated", persistentObject);
           }
         }
         
@@ -628,7 +629,7 @@ public class DbSqlSession implements Session {
         throw new ActivitiException("no insert statement for "+insertedObject.getClass()+" in the ibatis mapping files");
       }
       
-      log.fine("inserting: "+toString(insertedObject));
+      log.debug("inserting: {}", toString(insertedObject));
       sqlSession.insert(insertStatement, insertedObject);
       
       // See http://jira.codehaus.org/browse/ACT-1290
@@ -646,7 +647,7 @@ public class DbSqlSession implements Session {
       if (updateStatement==null) {
         throw new ActivitiException("no update statement for "+updatedObject.getClass()+" in the ibatis mapping files");
       }
-      log.fine("updating: "+toString(updatedObject)+"]");
+      log.debug("updating: ", toString(updatedObject));
       int updatedRecords = sqlSession.update(updateStatement, updatedObject);
       if (updatedRecords!=1) {
         throw new ActivitiOptimisticLockingException(toString(updatedObject)+" was updated by another transaction concurrently");
@@ -663,7 +664,7 @@ public class DbSqlSession implements Session {
 
   protected void flushDeletes() {
     for (DeleteOperation delete: deleteOperations) {
-      log.fine("executing: "+delete);
+      log.debug("executing: {}", delete);
       delete.execute();
     }
     deleteOperations.clear();
@@ -685,7 +686,7 @@ public class DbSqlSession implements Session {
     if (persistentObject==null) {
       return "null";
     }
-    return ClassNameUtil.getClassNameWithoutPackage(persistentObject)+"["+persistentObject.getId()+"]";
+    return persistentObject.getClass().getSimpleName() +"["+persistentObject.getId()+"]";
   }
   
   // schema operations ////////////////////////////////////////////////////////
@@ -725,7 +726,7 @@ public class DbSqlSession implements Session {
       }
     }
 
-    log.fine("activiti db schema check successful");
+    log.debug("activiti db schema check successful");
   }
 
   protected String addMissingComponent(String missingComponents, String component) {
@@ -902,8 +903,7 @@ public class DbSqlSession implements Session {
       throw new ActivitiException("Version of activiti database (" + versionInDatabase + ") is more recent than the engine (" + ProcessEngine.VERSION +")");
     } else if(cleanDbVersion.compareTo(cleanEngineVersion) == 0) {
       // Versions don't match exactly, possibly snapshot is being used
-      log.warning("Engine-version is the same, but not an exact match: " + versionInDatabase + " vs. " + ProcessEngine.VERSION 
-              + ". Not performing database-upgrade.");
+      log.warn("Engine-version is the same, but not an exact match: {} vs. {}. Not performing database-upgrade.", versionInDatabase, ProcessEngine.VERSION);
       return false;
     }
     return true;
@@ -928,7 +928,7 @@ public class DbSqlSession implements Session {
   }
 
   protected void dbSchemaUpgrade(String component, String dbVersion) {
-    log.info("upgrading activiti "+component+" schema from "+dbVersion+" to "+ProcessEngine.VERSION);
+    log.info("upgrading activiti {} schema from {} to {}", component, dbVersion, ProcessEngine.VERSION);
     
     if (dbVersion.endsWith("-SNAPSHOT")) {
       dbVersion = dbVersion.substring(0, dbVersion.length()-"-SNAPSHOT".length());
@@ -958,7 +958,7 @@ public class DbSqlSession implements Session {
       inputStream = ReflectUtil.getResourceAsStream(resourceName);
       if (inputStream == null) {
         if (isOptional) {
-          log.fine("no schema resource "+resourceName+" for "+operation);
+          log.debug("no schema resource {} for {}", resourceName, operation);
         } else {
           throw new ActivitiException("resource '" + resourceName + "' is not available");
         }
@@ -972,7 +972,7 @@ public class DbSqlSession implements Session {
   }
 
   private void executeSchemaResource(String operation, String component, String resourceName, InputStream inputStream) {
-    log.info("performing "+operation+" on "+component+" with resource "+resourceName);
+    log.info("performing {} on {} with resource {}", operation, component, resourceName);
     String sqlStatement = null;
     String exceptionSqlStatement = null;
     try {
@@ -984,10 +984,10 @@ public class DbSqlSession implements Session {
       String line = readNextTrimmedLine(reader);
       while (line != null) {
         if (line.startsWith("# ")) {
-          log.fine(line.substring(2));
+          log.debug(line.substring(2));
           
         } else if (line.startsWith("-- ")) {
-          log.fine(line.substring(3));
+          log.debug(line.substring(3));
           
         } else if (line.startsWith("execute java ")) {
           String upgradestepClassName = line.substring(13).trim();
@@ -998,7 +998,7 @@ public class DbSqlSession implements Session {
             throw new ActivitiException("database update java class '"+upgradestepClassName+"' can't be instantiated: "+e.getMessage(), e);
           }
           try {
-            log.fine("executing upgrade step java class "+upgradestepClassName);
+            log.debug("executing upgrade step java class {}", upgradestepClassName);
             dbUpgradeStep.execute(this);
           } catch (Exception e) {
             throw new ActivitiException("error while executing database update java class '"+upgradestepClassName+"': "+e.getMessage(), e);
@@ -1011,7 +1011,7 @@ public class DbSqlSession implements Session {
             Statement jdbcStatement = connection.createStatement();
             try {
               // no logging needed as the connection will log it
-              log.fine("SQL: "+sqlStatement);
+              log.debug("SQL: {}", sqlStatement);
               jdbcStatement.execute(sqlStatement);
               jdbcStatement.close();
             } catch (Exception e) {
@@ -1019,7 +1019,7 @@ public class DbSqlSession implements Session {
                 exception = e;
                 exceptionSqlStatement = sqlStatement;
               }
-              log.log(Level.SEVERE, "problem during schema " + operation + ", statement '" + sqlStatement, e);
+              log.error("problem during schema {}, statement {}", operation, sqlStatement, e);
             } finally {
               sqlStatement = null; 
             }
@@ -1035,7 +1035,7 @@ public class DbSqlSession implements Session {
         throw exception;
       }
       
-      log.fine("activiti db schema " + operation + " for component "+component+" successful");
+      log.debug("activiti db schema {} for component {} successful", operation, component);
       
     } catch (Exception e) {
       throw new ActivitiException("couldn't "+operation+" db schema: "+exceptionSqlStatement, e);

@@ -12,18 +12,18 @@
  */
 package org.activiti.bpmn.converter;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Tijs Rademakers
  */
 public class XMLStreamReaderUtil {
   
-  protected static final Logger LOGGER = Logger.getLogger(XMLStreamReaderUtil.class.getName());
+  protected static final Logger LOGGER = LoggerFactory.getLogger(XMLStreamReaderUtil.class);
 
   public static String moveDown(XMLStreamReader xtr) {
     try {
@@ -39,7 +39,7 @@ public class XMLStreamReaderUtil {
         }
       }
     } catch (Exception e) {
-      LOGGER.log(Level.WARNING, "Error while moving down in XML document", e);
+      LOGGER.warn("Error while moving down in XML document", e);
     }
     return null;
   }
@@ -58,7 +58,7 @@ public class XMLStreamReaderUtil {
         }
       }
     } catch (Exception e) {
-      LOGGER.log(Level.WARNING, "Error while moving to end of element " + elementName, e);
+      LOGGER.warn("Error while moving to end of element {}", elementName, e);
     }
     return false;
   }

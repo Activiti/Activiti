@@ -19,8 +19,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
@@ -56,13 +54,15 @@ import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.SubProcess;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Tijs Rademakers
  */
 public class BpmnXMLConverter implements BpmnXMLConstants {
 
-  protected static final Logger LOGGER = Logger.getLogger(BpmnXMLConverter.class.getName());
+  protected static final Logger LOGGER = LoggerFactory.getLogger(BpmnXMLConverter.class);
 	
 	private static Map<String, Class<? extends BaseBpmnXMLConverter>> convertersToBpmnMap = 
 	    new HashMap<String, Class<? extends BaseBpmnXMLConverter>>();
@@ -133,7 +133,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 				try {
 					xtr.next();
 				} catch(Exception e) {
-					LOGGER.log(Level.SEVERE, "Error reading XML document", e);
+					LOGGER.error("Error reading XML document", e);
 					return model;
 				}
 
@@ -247,7 +247,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 			}
 
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "Error processing BPMN document", e);
+			LOGGER.error("Error processing BPMN document", e);
 		}
 		return model;
 	}
@@ -362,7 +362,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
       return outputStream.toByteArray();
       
     } catch (Exception e) {
-      LOGGER.log(Level.SEVERE, "Error writing BPMN XML", e);
+      LOGGER.error("Error writing BPMN XML", e);
       throw new XMLException("Error writing BPMN XML", e);
     }
   }

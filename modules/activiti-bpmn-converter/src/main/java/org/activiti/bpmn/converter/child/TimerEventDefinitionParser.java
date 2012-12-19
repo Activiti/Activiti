@@ -12,8 +12,6 @@
  */
 package org.activiti.bpmn.converter.child;
 
-import java.util.logging.Level;
-
 import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.model.BaseElement;
@@ -53,7 +51,7 @@ public class TimerEventDefinitionParser extends BaseChildElementParser {
         }
       }
     } catch (Exception e) {
-      LOGGER.log(Level.WARNING, "Error parsing timer event definition", e);
+      LOGGER.warn("Error parsing timer event definition", e);
     }
     
     ((Event) parentElement).getEventDefinitions().add(eventDefinition);

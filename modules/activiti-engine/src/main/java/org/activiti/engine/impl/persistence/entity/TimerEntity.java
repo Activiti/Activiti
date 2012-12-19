@@ -13,14 +13,14 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -30,7 +30,7 @@ public class TimerEntity extends JobEntity {
 
   private static final long serialVersionUID = 1L;
 
-  private static Logger log = Logger.getLogger(TimerEntity.class.getName());
+  private static Logger log = LoggerFactory.getLogger(TimerEntity.class);
 
   protected String repeat;
 
@@ -63,8 +63,8 @@ public class TimerEntity extends JobEntity {
 
     if (repeat == null) {
 
-      if (log.isLoggable(Level.FINE)) {
-        log.fine("Timer " + getId() + " fired. Deleting timer.");
+      if (log.isDebugEnabled()) {
+        log.debug("Timer {} fired. Deleting timer.", getId());
       }
       delete();
     } else {

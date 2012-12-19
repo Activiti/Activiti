@@ -15,8 +15,6 @@ package org.activiti.editor.language.json.converter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.Activity;
@@ -51,13 +49,15 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Tijs Rademakers
  */
 public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, StencilConstants {
   
-  protected static final Logger LOGGER = Logger.getLogger(BaseBpmnJsonConverter.class.getName());
+  protected static final Logger LOGGER = LoggerFactory.getLogger(BaseBpmnJsonConverter.class);
   
   protected ObjectMapper objectMapper = new ObjectMapper();
   protected ActivityProcessor processor;
@@ -407,7 +407,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
         try {
           listenersNode = objectMapper.readTree(listenersNode.asText());
         } catch (Exception e) {
-          LOGGER.log(Level.INFO, "Listeners node can not be read", e);
+          LOGGER.info("Listeners node can not be read", e);
         }
       }
       

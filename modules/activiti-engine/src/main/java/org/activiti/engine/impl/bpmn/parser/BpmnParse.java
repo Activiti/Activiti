@@ -20,8 +20,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.ExecutionListener;
@@ -78,7 +76,6 @@ import org.activiti.engine.impl.bpmn.listener.DelegateExpressionExecutionListene
 import org.activiti.engine.impl.bpmn.listener.DelegateExpressionTaskListener;
 import org.activiti.engine.impl.bpmn.listener.ExpressionExecutionListener;
 import org.activiti.engine.impl.bpmn.listener.ExpressionTaskListener;
-import org.activiti.engine.impl.bpmn.parser.BpmnParseListener;
 import org.activiti.engine.impl.bpmn.webservice.BpmnInterface;
 import org.activiti.engine.impl.bpmn.webservice.BpmnInterfaceImplementation;
 import org.activiti.engine.impl.bpmn.webservice.MessageDefinition;
@@ -118,6 +115,8 @@ import org.activiti.engine.impl.util.xml.Element;
 import org.activiti.engine.impl.util.xml.Parse;
 import org.activiti.engine.impl.variable.VariableDeclaration;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Specific parsing of one BPMN 2.0 XML file, created by the {@link BpmnParser}.
@@ -133,7 +132,7 @@ import org.activiti.engine.repository.ProcessDefinition;
  */
 public class BpmnParse extends Parse {
 
-  protected static final Logger LOGGER = Logger.getLogger(BpmnParse.class.getName());
+  protected static final Logger LOGGER = LoggerFactory.getLogger(BpmnParse.class);
 
   public static final String PROPERTYNAME_DOCUMENTATION = "documentation";
   public static final String PROPERTYNAME_INITIAL = "initial";
@@ -228,7 +227,7 @@ public class BpmnParse extends Parse {
       parseRootElement();
 
     } catch (Exception e) {
-      LOGGER.log(Level.SEVERE, "Unknown exception", e);
+      LOGGER.error("Unknown exception", e);
       
       // ALL unexpected exceptions should bubble up since they are not handled
       // accordingly by onderlying parse-methods and can't be deployed
@@ -521,10 +520,10 @@ public class BpmnParse extends Parse {
       if (isExecutableStr != null) {
         if (!Boolean.parseBoolean(isExecutableStr)) {
           isExecutable = false;
-          LOGGER.info("Ignoring non-executable process with id='" + processElement.attribute("id") + "'. Set the attribute isExecutable=\"true\" to deploy this process.");
+          LOGGER.info("Ignoring non-executable process with id='{}'. Set the attribute isExecutable=\"true\" to deploy this process.", processElement.attribute("id"));
         }
       } else {
-        LOGGER.info("Process with id='" + processElement.attribute("id") + "' has no attribute isExecutable. Assuming it is executable. Better set the attribute explicitely, especially to be compatible with future engine versions which might change the default behavior.");
+        LOGGER.info("Process with id='{}' has no attribute isExecutable. Assuming it is executable. Better set the attribute explicitely, especially to be compatible with future engine versions which might change the default behavior.", processElement.attribute("id"));
       }
 
       //Only process executable processes
@@ -587,8 +586,8 @@ public class BpmnParse extends Parse {
     processDefinition.setTaskDefinitions(new HashMap<String, TaskDefinition>());
     processDefinition.setDeploymentId(deployment.getId());
 
-    if (LOGGER.isLoggable(Level.FINE)) {
-      LOGGER.fine("Parsing process " + processDefinition.getKey());
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Parsing process {}", processDefinition.getKey());
     }
     parseScope(processElement, processDefinition);
     
@@ -1446,8 +1445,8 @@ public class BpmnParse extends Parse {
    */
   public ActivityImpl createActivityOnScope(Element activityElement, ScopeImpl scopeElement) {
     String id = activityElement.attribute("id");
-    if (LOGGER.isLoggable(Level.FINE)) {
-      LOGGER.fine("Parsing activity " + id);
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Parsing activity {}", id);
     }
     ActivityImpl activity = scopeElement.createActivity(id);
 
@@ -2399,8 +2398,8 @@ public class BpmnParse extends Parse {
       // Representation structure-wise is a nested activity in the activity to
       // which its attached
       String id = boundaryEventElement.attribute("id");
-      if (LOGGER.isLoggable(Level.FINE)) {
-        LOGGER.fine("Parsing boundary event " + id);
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("Parsing boundary event {}", id);
       }
 
       ActivityImpl parentActivity = scopeElement.findActivity(attachedToRef);

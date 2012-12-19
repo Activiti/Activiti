@@ -12,19 +12,18 @@
  */
 package org.activiti.engine.impl.jobexecutor;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class TimerCatchIntermediateEventJobHandler implements JobHandler {
 
-  private static Logger log = Logger.getLogger(TimerCatchIntermediateEventJobHandler.class.getName());
+  private static Logger log = LoggerFactory.getLogger(TimerCatchIntermediateEventJobHandler.class);
 
   public static final String TYPE = "timer-intermediate-transition";
 
@@ -45,10 +44,10 @@ public class TimerCatchIntermediateEventJobHandler implements JobHandler {
       }
       execution.signal(null, null);
     } catch (RuntimeException e) {
-      log.log(Level.SEVERE, "exception during timer execution", e);
+      log.error("exception during timer execution", e);
       throw e;
     } catch (Exception e) {
-      log.log(Level.SEVERE, "exception during timer execution", e);
+      log.error("exception during timer execution", e);
       throw new ActivitiException("exception during timer execution: " + e.getMessage(), e);
     }
   }

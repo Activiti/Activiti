@@ -12,8 +12,6 @@
  */
 package org.activiti.bpmn.converter.child;
 
-import java.util.logging.Level;
-
 import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.model.Activity;
@@ -63,7 +61,7 @@ public class MultiInstanceParser extends BaseChildElementParser {
         }
       }
     } catch (Exception e) {
-      LOGGER.log(Level.WARNING, "Error parsing multi instance definition", e);
+      LOGGER.warn("Error parsing multi instance definition", e);
     }
     ((Activity) parentElement).setLoopCharacteristics(multiInstanceDef);
   }

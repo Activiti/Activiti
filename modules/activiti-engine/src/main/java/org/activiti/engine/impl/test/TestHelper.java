@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Logger;
 
 import junit.framework.AssertionFailedError;
 
@@ -35,11 +34,12 @@ import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
-import org.activiti.engine.impl.util.ClassNameUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -47,7 +47,7 @@ import org.activiti.engine.test.Deployment;
  */
 public abstract class TestHelper {
   
-  private static Logger log = Logger.getLogger(TestHelper.class.getName());
+  private static Logger log = LoggerFactory.getLogger(TestHelper.class);
 
   public static final String EMPTY_LINE = "                                                                                           ";
 
@@ -79,7 +79,7 @@ public abstract class TestHelper {
     }
     Deployment deploymentAnnotation = method.getAnnotation(Deployment.class);
     if (deploymentAnnotation != null) {
-      log.fine("annotation @Deployment creates deployment for "+ClassNameUtil.getClassNameWithoutPackage(testClass)+"."+methodName);
+      log.debug("annotation @Deployment creates deployment for {}.{}", testClass.getSimpleName(), methodName);
       String[] resources = deploymentAnnotation.resources();
       if (resources.length == 0) {
         String name = method.getName();
@@ -89,7 +89,7 @@ public abstract class TestHelper {
       
       DeploymentBuilder deploymentBuilder = processEngine.getRepositoryService()
         .createDeployment()
-        .name(ClassNameUtil.getClassNameWithoutPackage(testClass)+"."+methodName);
+        .name(testClass.getSimpleName()+"."+methodName);
       
       for (String resource: resources) {
         deploymentBuilder.addClasspathResource(resource);
@@ -102,7 +102,7 @@ public abstract class TestHelper {
   }
   
   public static void annotationDeploymentTearDown(ProcessEngine processEngine, String deploymentId, Class<?> testClass, String methodName) {
-    log.fine("annotation @Deployment deletes deployment for "+ClassNameUtil.getClassNameWithoutPackage(testClass)+"."+methodName);
+    log.debug("annotation @Deployment deletes deployment for {}.{}", testClass.getSimpleName(), methodName);
     if(deploymentId != null) {
       processEngine.getRepositoryService().deleteDeployment(deploymentId, true);      
     }
@@ -133,7 +133,7 @@ public abstract class TestHelper {
    * It throws AssertionFailed in case the DB is not clean.
    * If the DB is not clean, it is cleaned by performing a create a drop. */
   public static void assertAndEnsureCleanDb(ProcessEngine processEngine) {
-    log.fine("verifying that db is clean after test");
+    log.debug("verifying that db is clean after test");
     Map<String, Long> tableCounts = processEngine.getManagementService().getTableCount();
     StringBuilder outputMessage = new StringBuilder();
     for (String tableName : tableCounts.keySet()) {
@@ -146,8 +146,8 @@ public abstract class TestHelper {
     }
     if (outputMessage.length() > 0) {
       outputMessage.insert(0, "DB NOT CLEAN: \n");
-      log.severe(EMPTY_LINE);
-      log.severe(outputMessage.toString());
+      log.error(EMPTY_LINE);
+      log.error(outputMessage.toString());
 
       ((ProcessEngineImpl)processEngine)
         .getProcessEngineConfiguration()
@@ -219,11 +219,11 @@ public abstract class TestHelper {
   public static ProcessEngine getProcessEngine(String configurationResource) {
     ProcessEngine processEngine = processEngines.get(configurationResource);
     if (processEngine==null) {
-      log.fine("==== BUILDING PROCESS ENGINE ========================================================================");
+      log.debug("==== BUILDING PROCESS ENGINE ========================================================================");
       processEngine = ProcessEngineConfiguration
         .createProcessEngineConfigurationFromResource(configurationResource)
         .buildProcessEngine();
-      log.fine("==== PROCESS ENGINE CREATED =========================================================================");
+      log.debug("==== PROCESS ENGINE CREATED =========================================================================");
       processEngines.put(configurationResource, processEngine);
     }
     return processEngine;

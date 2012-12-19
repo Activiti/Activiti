@@ -13,14 +13,14 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.Condition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -31,7 +31,7 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
   
-  private static Logger log = Logger.getLogger(ExclusiveGatewayActivityBehavior.class.getName());
+  private static Logger log = LoggerFactory.getLogger(ExclusiveGatewayActivityBehavior.class);
   
   /**
    * The default behaviour of BPMN, taking every outgoing sequence flow
@@ -49,8 +49,8 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
   @Override
   protected void leave(ActivityExecution execution) {
     
-    if (log.isLoggable(Level.FINE)) {
-      log.fine("Leaving activity '" + execution.getActivity().getId() + "'");
+    if (log.isDebugEnabled()) {
+      log.debug("Leaving activity '{}'", execution.getActivity().getId());
     }
     
     PvmTransition outgoingSeqFlow = null;
@@ -62,9 +62,8 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
       Condition condition = (Condition) seqFlow.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
       if ( (condition == null && (defaultSequenceFlow == null || !defaultSequenceFlow.equals(seqFlow.getId())) ) 
               || (condition != null && condition.evaluate(execution)) ) {
-        if (log.isLoggable(Level.FINE)) {
-          log.fine("Sequence flow '" + seqFlow.getId() + " '"
-                  + "selected as outgoing sequence flow.");
+        if (log.isDebugEnabled()) {
+          log.debug("Sequence flow '{}'selected as outgoing sequence flow.", seqFlow.getId());
         }
         outgoingSeqFlow = seqFlow;
       }

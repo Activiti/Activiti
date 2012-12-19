@@ -13,7 +13,6 @@
 package org.activiti.engine.impl;
 
 import java.util.Map;
-import java.util.logging.Logger;
 
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
@@ -32,13 +31,15 @@ import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Tom Baeyens
  */
 public class ProcessEngineImpl implements ProcessEngine {
 
-  private static Logger log = Logger.getLogger(ProcessEngineImpl.class.getName());
+  private static Logger log = LoggerFactory.getLogger(ProcessEngineImpl.class);
 
   protected String name;
   protected RepositoryService repositoryService;
@@ -77,7 +78,7 @@ public class ProcessEngineImpl implements ProcessEngine {
     if (name == null) {
       log.info("default activiti ProcessEngine created");
     } else {
-      log.info("ProcessEngine " + name + " created");
+      log.info("ProcessEngine {} created", name);
     }
     
     ProcessEngines.registerProcessEngine(this);

@@ -1,12 +1,12 @@
 package org.activiti.spring.test.components;
 
 
-import java.util.logging.Logger;
-
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.spring.annotations.BusinessKey;
 import org.activiti.spring.annotations.ProcessVariable;
 import org.activiti.spring.annotations.StartProcess;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * simple class that demonstrates the annotations to implicitly handle annotation-driven process managment
@@ -16,7 +16,7 @@ import org.activiti.spring.annotations.StartProcess;
  */
 public class ProcessInitiatingPojo {
 
-	private Logger log = Logger.getLogger(getClass().getName());
+	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private int methodState = 0;
 
@@ -36,7 +36,7 @@ public class ProcessInitiatingPojo {
 
 	@StartProcess(processKey = "b")
 	public void startProcess(@ProcessVariable("customerId") long customerId) {
-		log.info("starting 'b' with customerId # " + customerId);
+		log.info("starting 'b' with customerId # {}", customerId);
 		this.methodState += 1;
 		log.info("up'd the method state");
 	}
@@ -57,7 +57,7 @@ public class ProcessInitiatingPojo {
 
 	@StartProcess(processKey = "component-waiter")
 	public void startScopedProcess( @ProcessVariable("customerId") long customerId){
-		log.info(" start scoped 'component-waiter' process.") ;
+		log.info("start scoped 'component-waiter' process.") ;
 	}
 
 

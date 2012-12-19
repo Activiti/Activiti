@@ -12,31 +12,31 @@
  */
 package org.activiti.osgi;
 
-import org.apache.felix.fileinstall.ArtifactUrlTransformer;
+import static org.osgi.framework.Constants.BUNDLE_SYMBOLICNAME;
+import static org.osgi.framework.Constants.BUNDLE_VERSION;
 
 import java.io.File;
 import java.net.URL;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import static org.osgi.framework.Constants.BUNDLE_SYMBOLICNAME;
-import static org.osgi.framework.Constants.BUNDLE_VERSION;
+import org.apache.felix.fileinstall.ArtifactUrlTransformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author <a href="gnodet@gmail.com">Guillaume Nodet</a>
  */
 public class BarDeploymentListener implements ArtifactUrlTransformer {
 
-    private static final Logger LOGGER = Logger.getLogger(BarDeploymentListener.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(BarDeploymentListener.class);
 
     public URL transform(URL artifact) throws Exception {
         try {
             return new URL("bar", null, artifact.toString());
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Unable to build bar bundle", e);
+            LOGGER.error("Unable to build bar bundle", e);
             return null;
         }
     }

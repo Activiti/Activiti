@@ -13,8 +13,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.JobNotFoundException;
@@ -26,6 +24,8 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.jobexecutor.FailedJobListener;
 import org.activiti.engine.impl.jobexecutor.JobExecutorContext;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -35,7 +35,7 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  private static Logger log = Logger.getLogger(ExecuteJobsCmd.class.getName());
+  private static Logger log = LoggerFactory.getLogger(ExecuteJobsCmd.class);
   
   protected String jobId;
  
@@ -48,8 +48,8 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
       throw new ActivitiException("jobId is null");
     }
     
-    if (log.isLoggable(Level.FINE)) {
-      log.fine("Executing job " + jobId);
+    if (log.isDebugEnabled()) {
+      log.debug("Executing job {}", jobId);
     }
     JobEntity job = commandContext
       .getJobEntityManager()

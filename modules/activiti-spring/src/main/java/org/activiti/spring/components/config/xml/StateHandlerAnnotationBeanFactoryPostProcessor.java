@@ -18,6 +18,8 @@ package org.activiti.spring.components.config.xml;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.spring.components.ActivitiContextUtils;
 import org.activiti.spring.components.registry.ActivitiStateHandlerRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
@@ -27,7 +29,6 @@ import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 
-import java.util.logging.Logger;
 
 /**
  * this class is responsible for registering the other {@link org.springframework.beans.factory.config.BeanFactoryPostProcessor}s
@@ -40,7 +41,7 @@ import java.util.logging.Logger;
 public class StateHandlerAnnotationBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
 
 	private ProcessEngine processEngine ;
-	private Logger log = Logger.getLogger(getClass().getName());
+	private Logger log = LoggerFactory.getLogger(getClass());
 
 	public void setProcessEngine(ProcessEngine processEngine) {
 		this.processEngine = processEngine;
@@ -51,7 +52,7 @@ public class StateHandlerAnnotationBeanFactoryPostProcessor implements BeanFacto
 
 		if (!beanAlreadyConfigured(registry, registryBeanName, ActivitiStateHandlerRegistry.class)) {
 			String registryName =ActivitiStateHandlerRegistry.class.getName();
-			log.info( "registering a " + registryName + " instance under bean name "+ ActivitiContextUtils.ACTIVITI_REGISTRY_BEAN_NAME+ ".");
+			log.info("registering a {} instance under bean name {}.", registryName, ActivitiContextUtils.ACTIVITI_REGISTRY_BEAN_NAME);
 
 			RootBeanDefinition rootBeanDefinition = new RootBeanDefinition();
 			rootBeanDefinition.setBeanClassName( registryName );
@@ -67,10 +68,8 @@ public class StateHandlerAnnotationBeanFactoryPostProcessor implements BeanFacto
 			BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
 			configureDefaultActivitiRegistry(ActivitiContextUtils.ACTIVITI_REGISTRY_BEAN_NAME, registry);
 
-
 		} else {
-			log.info("BeanFactory is not a BeanDefinitionRegistry. The default '"
-					+ ActivitiContextUtils.ACTIVITI_REGISTRY_BEAN_NAME + "' cannot be configured.");
+			log.info("BeanFactory is not a BeanDefinitionRegistry. The default '{}' cannot be configured.", ActivitiContextUtils.ACTIVITI_REGISTRY_BEAN_NAME);
 		}
 	}
 

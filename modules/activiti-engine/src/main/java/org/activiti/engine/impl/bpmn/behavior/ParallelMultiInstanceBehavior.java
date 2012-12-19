@@ -14,7 +14,6 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -124,9 +123,8 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
         }
       }
       for (ExecutionEntity executionToRemove : executionsToRemove) {
-        if (LOGGER.isLoggable(Level.FINE)) {
-          LOGGER.fine("Execution " + executionToRemove + " still active, "
-                  + "but multi-instance is completed. Removing this execution.");
+        if (LOGGER.isDebugEnabled()) {
+          LOGGER.debug("Execution {} still active, but multi-instance is completed. Removing this execution.", executionToRemove);
         }
         executionToRemove.inactivate();
         executionToRemove.deleteCascade("multi-instance completed");

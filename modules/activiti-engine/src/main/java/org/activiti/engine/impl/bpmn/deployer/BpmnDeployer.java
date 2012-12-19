@@ -18,8 +18,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
@@ -48,6 +46,8 @@ import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.task.IdentityLinkType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Tom Baeyens
@@ -55,7 +55,7 @@ import org.activiti.engine.task.IdentityLinkType;
  */
 public class BpmnDeployer implements Deployer {
 
-  private static final Logger LOG = Logger.getLogger(BpmnDeployer.class.getName());;
+  private static final Logger LOG = LoggerFactory.getLogger(BpmnDeployer.class);;
 
   public static final String[] BPMN_RESOURCE_SUFFIXES = new String[] { "bpmn20.xml", "bpmn" };
   public static final String[] DIAGRAM_SUFFIXES = new String[]{"png", "jpg", "gif", "svg"};
@@ -65,14 +65,14 @@ public class BpmnDeployer implements Deployer {
   protected IdGenerator idGenerator;
 
   public void deploy(DeploymentEntity deployment) {
-    LOG.fine("Processing deployment " + deployment.getName());
+    LOG.debug("Processing deployment {}", deployment.getName());
     
     List<ProcessDefinitionEntity> processDefinitions = new ArrayList<ProcessDefinitionEntity>();
     Map<String, ResourceEntity> resources = deployment.getResources();
 
     for (String resourceName : resources.keySet()) {
 
-      LOG.info("Processing resource " + resourceName);
+      LOG.info("Processing resource {}", resourceName);
       if (isBpmnResource(resourceName)) {
         ResourceEntity resource = resources.get(resourceName);
         byte[] bytes = resource.getBytes();
@@ -106,7 +106,7 @@ public class BpmnDeployer implements Deployer {
                   diagramResourceName = getProcessImageResourceName(resourceName, processDefinition.getKey(), "png");
                   createResource(diagramResourceName, diagramBytes, deployment);
               } catch (Throwable t) { // if anything goes wrong, we don't store the image (the process will still be executable).
-                LOG.log(Level.WARNING, "Error while generating process diagram, image will not be stored in repository", t);
+                LOG.warn("Error while generating process diagram, image will not be stored in repository", t);
               }
             } 
           }

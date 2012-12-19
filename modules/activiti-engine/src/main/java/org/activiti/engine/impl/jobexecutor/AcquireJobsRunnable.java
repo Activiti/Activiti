@@ -15,14 +15,14 @@ package org.activiti.engine.impl.jobexecutor;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.impl.util.ClockUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -30,7 +30,7 @@ import org.activiti.engine.impl.util.ClockUtil;
  */
 public class AcquireJobsRunnable implements Runnable {
 
-  private static Logger log = Logger.getLogger(AcquireJobsRunnable.class.getName());
+  private static Logger log = LoggerFactory.getLogger(AcquireJobsRunnable.class);
 
   protected final JobExecutor jobExecutor;
 
@@ -48,9 +48,7 @@ public class AcquireJobsRunnable implements Runnable {
   }
 
   public synchronized void run() {
-    if (log.isLoggable(Level.INFO)) {
-      log.info(jobExecutor.getName() + " starting to acquire jobs");
-    }
+    log.info("{} starting to acquire jobs", jobExecutor.getName());
 
     final CommandExecutor commandExecutor = jobExecutor.getCommandExecutor();
 
@@ -88,17 +86,15 @@ public class AcquireJobsRunnable implements Runnable {
 
       } catch (ActivitiOptimisticLockingException optimisticLockingException) { 
         // See http://jira.codehaus.org/browse/ACT-1390
-        if (log.isLoggable(Level.FINE)) {
-          log.fine("Optimistic locking exception during job acquisition. If you have multiple job executors running against the same database, " +
+        if (log.isDebugEnabled()) {
+          log.debug("Optimistic locking exception during job acquisition. If you have multiple job executors running against the same database, " +
           		"this exception means that this thread tried to acquire a job, which already was acquired by another job executor acquisition thread." +
           		"This is expected behavior in a clustered environment. " +
           		"You can ignore this message if you indeed have multiple job executor acquisition threads running against the same database. " +
-          		"Exception message: " + optimisticLockingException.getMessage());
+          		"Exception message: {}", optimisticLockingException.getMessage());
         }
       } catch (Exception e) {
-        if (log.isLoggable(Level.SEVERE)) {
-          log.log(Level.SEVERE, "exception during job acquisition: " + e.getMessage(), e);          
-        }
+        log.error("exception during job acquisition: {}", e.getMessage(), e);          
         millisToWait *= waitIncreaseFactor;
         if (millisToWait > maxWait) {
           millisToWait = maxWait;
@@ -109,8 +105,8 @@ public class AcquireJobsRunnable implements Runnable {
 
       if ((millisToWait > 0) && (!isJobAdded)) {
         try {
-          if (log.isLoggable(Level.FINE)) {
-            log.fine("job acquisition thread sleeping for " + millisToWait + " millis");
+          if (log.isDebugEnabled()) {
+            log.debug("job acquisition thread sleeping for {} millis", millisToWait);
           }
           synchronized (MONITOR) {
             if(!isInterrupted) {
@@ -119,12 +115,12 @@ public class AcquireJobsRunnable implements Runnable {
             }
           }
           
-          if (log.isLoggable(Level.FINE)) {
-            log.fine("job acquisition thread woke up");
+          if (log.isDebugEnabled()) {
+            log.debug("job acquisition thread woke up");
           }
         } catch (InterruptedException e) {
-          if (log.isLoggable(Level.FINE)) {
-            log.fine("job acquisition wait interrupted");
+          if (log.isDebugEnabled()) {
+            log.debug("job acquisition wait interrupted");
           }
         } finally {
           isWaiting.set(false);
@@ -132,9 +128,7 @@ public class AcquireJobsRunnable implements Runnable {
       }
     }
     
-    if (log.isLoggable(Level.INFO)) {
-      log.info(jobExecutor.getName() + " stopped job acquisition");
-    }
+    log.info("{} stopped job acquisition", jobExecutor.getName());
   }
 
   public void stop() {

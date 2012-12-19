@@ -12,8 +12,6 @@
  */
 package org.activiti.bpmn.converter.child;
 
-import java.util.logging.Level;
-
 import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.model.BaseElement;
@@ -62,7 +60,7 @@ public class FormPropertyParser extends BaseChildElementParser {
         }
       }
     } catch (Exception e) {
-      LOGGER.log(Level.WARNING, "Error parsing form properties child elements", e);
+      LOGGER.warn("Error parsing form properties child elements", e);
     }
     
     if (parentElement instanceof UserTask) {

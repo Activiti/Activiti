@@ -14,8 +14,6 @@ package org.activiti.editor.ui;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
@@ -37,6 +35,8 @@ import org.activiti.explorer.ui.process.listener.NewModelClickListener;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -63,7 +63,7 @@ import com.vaadin.ui.themes.Reindeer;
 public class EditorProcessDefinitionDetailPanel extends DetailPanel {
   
   private static final long serialVersionUID = 1L;
-  protected static final Logger LOGGER = Logger.getLogger(EditorProcessDefinitionDetailPanel.class.getName());
+  protected static final Logger LOGGER = LoggerFactory.getLogger(EditorProcessDefinitionDetailPanel.class);
   
   // Members
   protected Model modelData;
@@ -237,7 +237,7 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
             // Need a file download POPUP
             ds.setParameter("Content-Disposition", "attachment; filename=" + filename);
           } catch(Exception e) {
-            LOGGER.log(Level.SEVERE, "failed to export model to BPMN XML", e);
+            LOGGER.error("failed to export model to BPMN XML", e);
             ExplorerApp.get().getNotificationManager().showErrorNotification(Messages.PROCESS_TOXML_FAILED, e);
           }
           return ds;

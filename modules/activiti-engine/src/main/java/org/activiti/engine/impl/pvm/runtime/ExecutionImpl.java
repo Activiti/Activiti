@@ -19,12 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.activiti.engine.EngineServices;
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmException;
@@ -39,6 +35,8 @@ import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Tom Baeyens
@@ -55,7 +53,7 @@ public class ExecutionImpl implements
   
   private static final long serialVersionUID = 1L;
   
-  private static Logger log = Logger.getLogger(ExecutionImpl.class.getName());
+  private static Logger log = LoggerFactory.getLogger(ExecutionImpl.class);
   
   // current position /////////////////////////////////////////////////////////
   
@@ -197,7 +195,7 @@ public class ExecutionImpl implements
     List<InterpretableExecution> childExecutions = new ArrayList<InterpretableExecution>(getExecutions());
     for (InterpretableExecution childExecution : childExecutions) {
       if(childExecution.isEventScope()) {
-        log.fine("removing eventScope "+childExecution);
+        log.debug("removing eventScope {}", childExecution);
         childExecution.destroy();
         childExecution.remove();
       }
@@ -206,9 +204,7 @@ public class ExecutionImpl implements
   
   public void destroyScope(String reason) {
     
-    if(log.isLoggable(Level.FINE)) {
-      log.fine("performing destroy scope behavior for execution "+this);
-    }
+   log.debug("performing destroy scope behavior for execution {}", this);
     
     // remove all child executions and sub process instances:
     List<InterpretableExecution> executions = new ArrayList<InterpretableExecution>(getExecutions());
@@ -480,9 +476,9 @@ public class ExecutionImpl implements
         otherConcurrentExecutions.add(this);
       }
     }
-    if (log.isLoggable(Level.FINE)) {
-      log.fine("inactive concurrent executions in '"+activity+"': "+inactiveConcurrentExecutionsInActivity);
-      log.fine("other concurrent executions: "+otherConcurrentExecutions);
+    if (log.isDebugEnabled()) {
+      log.debug("inactive concurrent executions in '{}': {}", activity, inactiveConcurrentExecutionsInActivity);
+      log.debug("other concurrent executions: {}", otherConcurrentExecutions);
     }
     return inactiveConcurrentExecutionsInActivity;
   }
@@ -508,9 +504,9 @@ public class ExecutionImpl implements
       }
     }
 
-    if (log.isLoggable(Level.FINE)) {
-      log.fine("transitions to take concurrent: " + transitions);
-      log.fine("active concurrent executions: " + concurrentActiveExecutions);
+    if (log.isDebugEnabled()) {
+      log.debug("transitions to take concurrent: {}", transitions);
+      log.debug("active concurrent executions: {}", concurrentActiveExecutions);
     }
 
     if ( (transitions.size()==1)
@@ -523,12 +519,12 @@ public class ExecutionImpl implements
         // Some recyclable executions are inactivated (joined executions)
         // Others are already ended (end activities)
         if (!prunedExecution.isEnded()) {
-          log.fine("pruning execution " + prunedExecution);
+          log.debug("pruning execution {}", prunedExecution);
           prunedExecution.remove();
         }
       }
 
-      log.fine("activating the concurrent root "+concurrentRoot+" as the single path of execution going forward");
+      log.debug("activating the concurrent root {} as the single path of execution going forward", concurrentRoot);
       concurrentRoot.setActive(true);
       concurrentRoot.setActivity(activity);
       concurrentRoot.setConcurrent(false);
@@ -540,7 +536,7 @@ public class ExecutionImpl implements
 
       recyclableExecutions.remove(concurrentRoot);
   
-      log.fine("recyclable executions for reused: " + recyclableExecutions);
+      log.debug("recyclable executions for reused: {}", recyclableExecutions);
       
       // first create the concurrent executions
       while (!transitions.isEmpty()) {
@@ -549,10 +545,10 @@ public class ExecutionImpl implements
         ExecutionImpl outgoingExecution = null;
         if (recyclableExecutions.isEmpty()) {
           outgoingExecution = concurrentRoot.createExecution();
-          log.fine("new "+outgoingExecution+" created to take transition "+outgoingTransition);
+          log.debug("new {} created to take transition {}", outgoingExecution, outgoingTransition);
         } else {
           outgoingExecution = (ExecutionImpl) recyclableExecutions.remove(0);
-          log.fine("recycled "+outgoingExecution+" to take transition "+outgoingTransition);
+          log.debug("recycled {} to take transition {}",outgoingExecution, outgoingTransition);
         }
         
         outgoingExecution.setActive(true);
@@ -563,7 +559,7 @@ public class ExecutionImpl implements
 
       // prune the executions that are not recycled 
       for (ActivityExecution prunedExecution: recyclableExecutions) {
-        log.fine("pruning execution "+prunedExecution);
+        log.debug("pruning execution {}", prunedExecution);
         prunedExecution.end();
       }
 
@@ -581,8 +577,8 @@ public class ExecutionImpl implements
       while (nextOperation!=null) {
         AtomicOperation currentOperation = this.nextOperation;
         this.nextOperation = null;
-        if (log.isLoggable(Level.FINEST)) {
-          log.finest("AtomicOperation: " + currentOperation + " on " + this);
+        if (log.isTraceEnabled()) {
+          log.trace("AtomicOperation: {} on {}", currentOperation, this);
         }
         currentOperation.execute(this);
       }
@@ -656,7 +652,7 @@ public class ExecutionImpl implements
   }
 
   public void setVariableLocally(String variableName, Object value) {
-    log.fine("setting variable '"+variableName+"' to value '"+value+"' on "+this);
+    log.debug("setting variable '{}' to value '{}' on {}", variableName, value, this);
     variables.put(variableName, value);
   }
   

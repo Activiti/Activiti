@@ -22,12 +22,14 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class ProxyDriver implements Driver {
   
-  private static Logger log = Logger.getLogger(ProxyDriver.class.getName());
+  private static Logger log = LoggerFactory.getLogger(ProxyDriver.class);
   
   static String url;
   static DatabaseFormatter databaseFormatter = new DatabaseFormatter();
@@ -66,7 +68,7 @@ public class ProxyDriver implements Driver {
     }
     Connection connection;
     try {
-      log.info("creating proxy connection to "+ProxyDriver.url);
+      log.info("creating proxy connection to {}", ProxyDriver.url);
       connection = DriverManager.getConnection(ProxyDriver.url, properties);
     } catch (SQLException e) {
       e.printStackTrace();
@@ -91,7 +93,7 @@ public class ProxyDriver implements Driver {
     throw new RuntimeException("buzz");
   }
 
-  public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+  public java.util.logging.Logger getParentLogger() throws SQLFeatureNotSupportedException {
     throw new RuntimeException("buzz");
   }
 }

@@ -6,8 +6,6 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import junit.framework.AssertionFailedError;
 
@@ -34,7 +32,6 @@ import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.test.PvmTestCase;
 import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.impl.util.ClockUtil;
-import org.activiti.engine.impl.util.LogUtil.ThreadLogMode;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.rest.application.ActivitiRestApplication;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -43,10 +40,12 @@ import org.restlet.Component;
 import org.restlet.data.ChallengeScheme;
 import org.restlet.data.Protocol;
 import org.restlet.resource.ClientResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BaseRestTestCase extends PvmTestCase {
 
-  private static Logger log = Logger.getLogger(BaseRestTestCase.class.getName());
+  private static Logger log = LoggerFactory.getLogger(BaseRestTestCase.class);
   protected Component component;
   protected ObjectMapper objectMapper = new ObjectMapper();
   
@@ -57,7 +56,6 @@ public class BaseRestTestCase extends PvmTestCase {
   protected ProcessEngine processEngine;
   protected static ProcessEngine cachedProcessEngine;
   
-  protected ThreadLogMode threadRenderingMode = DEFAULT_THREAD_LOG_MODE;
   protected String deploymentId;
   protected Throwable exception;
 
@@ -99,7 +97,7 @@ public class BaseRestTestCase extends PvmTestCase {
     
     createUsers();
 
-    log.severe(EMPTY_LINE);
+    log.error(EMPTY_LINE);
 
     try {
       
@@ -108,14 +106,14 @@ public class BaseRestTestCase extends PvmTestCase {
       super.runBare();
 
     }  catch (AssertionFailedError e) {
-      log.severe(EMPTY_LINE);
-      log.log(Level.SEVERE, "ASSERTION FAILED: "+e, e);
+      log.error(EMPTY_LINE);
+      log.error("ASSERTION FAILED: {}", e, e);
       exception = e;
       throw e;
       
     } catch (Throwable e) {
-      log.severe(EMPTY_LINE);
-      log.log(Level.SEVERE, "EXCEPTION: "+e, e);
+      log.error(EMPTY_LINE);
+      log.error("EXCEPTION: {}", e, e);
       exception = e;
       throw e;
       
@@ -168,7 +166,7 @@ public class BaseRestTestCase extends PvmTestCase {
    * It throws AssertionFailed in case the DB is not clean.
    * If the DB is not clean, it is cleaned by performing a create a drop. */
   protected void assertAndEnsureCleanDb() throws Throwable {
-    log.fine("verifying that db is clean after test");
+    log.debug("verifying that db is clean after test");
     Map<String, Long> tableCounts = managementService.getTableCount();
     StringBuilder outputMessage = new StringBuilder();
     for (String tableName : tableCounts.keySet()) {
@@ -182,8 +180,8 @@ public class BaseRestTestCase extends PvmTestCase {
     }
     if (outputMessage.length() > 0) {
       outputMessage.insert(0, "DB NOT CLEAN: \n");
-      log.severe(EMPTY_LINE);
-      log.severe(outputMessage.toString());
+      log.error(EMPTY_LINE);
+      log.error(outputMessage.toString());
       
       log.info("dropping and recreating db");
       

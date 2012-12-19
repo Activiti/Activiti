@@ -14,12 +14,12 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of the Parallel Gateway/AND gateway as definined in the BPMN
@@ -51,7 +51,7 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
   
-  private static Logger log = Logger.getLogger(ParallelGatewayActivityBehavior.class.getName());
+  private static Logger log = LoggerFactory.getLogger(ParallelGatewayActivityBehavior.class);
 
   public void execute(ActivityExecution execution) throws Exception { 
     
@@ -69,11 +69,13 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
     if (nbrOfExecutionsJoined==nbrOfExecutionsToJoin) {
       
       // Fork
-      log.fine("parallel gateway '"+activity.getId()+"' activates: "+nbrOfExecutionsJoined+" of "+nbrOfExecutionsToJoin+" joined");
+      if(log.isDebugEnabled()) {
+        log.debug("parallel gateway '{}' activates: {} of {} joined", activity.getId(), nbrOfExecutionsJoined, nbrOfExecutionsToJoin);
+      }
       execution.takeAll(outgoingTransitions, joinedExecutions);
       
-    } else if (log.isLoggable(Level.FINE)){
-      log.fine("parallel gateway '"+activity.getId()+"' does not activate: "+nbrOfExecutionsJoined+" of "+nbrOfExecutionsToJoin+" joined");
+    } else if (log.isDebugEnabled()){
+      log.debug("parallel gateway '{}' does not activate: {} of {} joined", activity.getId(), nbrOfExecutionsJoined, nbrOfExecutionsToJoin);
     }
   }
 

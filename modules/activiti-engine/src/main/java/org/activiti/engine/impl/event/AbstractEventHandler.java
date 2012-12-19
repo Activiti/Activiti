@@ -14,7 +14,6 @@
 package org.activiti.engine.impl.event;
 
 import java.util.Map;
-import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
@@ -31,8 +30,6 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
  */
 public abstract class AbstractEventHandler implements EventHandler {
 
-  private static Logger log = Logger.getLogger(AbstractEventHandler.class.getName());
-  
   public void handleEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext) {
 
     ExecutionEntity execution = eventSubscription.getExecution();

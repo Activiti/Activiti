@@ -15,21 +15,22 @@
  */
 package org.activiti.spring.components.registry;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.impl.bpmn.behavior.ReceiveTaskActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
 
 
 /**
@@ -42,7 +43,7 @@ import java.util.logging.Logger;
  */
 public class ActivitiStateHandlerRegistry extends ReceiveTaskActivityBehavior implements BeanFactoryAware, BeanNameAware, ActivityBehavior, InitializingBean {
 
-	private Logger logger = Logger.getLogger(getClass().getName());
+	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	private String beanName;
 
@@ -161,7 +162,7 @@ public class ActivitiStateHandlerRegistry extends ReceiveTaskActivityBehavior im
 
 	public void afterPropertiesSet() throws Exception {
 		Assert.notNull(this.processEngine, "the 'processEngine' can't be null");
-		logger.info( "this bean contains a processEngine reference. "+ this.processEngine);
-		logger.info("starting " + getClass().getName());
+		logger.info( "this bean contains a processEngine reference. {} ", this.processEngine);
+		logger.info("starting {}", getClass().getName());
 	}
 }

@@ -18,8 +18,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.ConversationScoped;
@@ -37,6 +35,8 @@ import org.activiti.engine.impl.context.ExecutionContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.task.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default implementation of the business process association manager. Uses a
@@ -51,7 +51,7 @@ import org.activiti.engine.task.Task;
 @SuppressWarnings("serial")
 public class DefaultContextAssociationManager implements ContextAssociationManager, Serializable {
   
-  private final static Logger log = Logger.getLogger(DefaultContextAssociationManager.class.getName());
+  private final static Logger log = LoggerFactory.getLogger(DefaultContextAssociationManager.class);
   
   protected static class ScopedAssociation { 
     
@@ -114,7 +114,7 @@ public class DefaultContextAssociationManager implements ContextAssociationManag
         beanManager.getContext(scopeAnnotation.annotationType());
         return scopeType;
       } catch (ContextNotActiveException e) {
-        log.finest("Context " + scopeAnnotation.annotationType() + " not active.");            
+        log.trace("Context {} not active.", scopeAnnotation.annotationType());            
       }
     }
     throw new ActivitiException("Could not determine an active context to associate the current process instance / task instance with.");
@@ -154,9 +154,9 @@ public class DefaultContextAssociationManager implements ContextAssociationManag
       throw new ActivitiCdiException("Cannot associate "+execution+", already associated with "+associatedExecution+". Disassociate first!");
     }
     
-    if (log.isLoggable(Level.FINE)) {
-      log.fine("Associating "+execution+" (@" 
-                + scopedAssociation.getClass().getAnnotations()[0].annotationType().getSimpleName() + ")");
+    if (log.isTraceEnabled()) {
+      log.trace("Associating {} (@{})", execution, 
+                scopedAssociation.getClass().getAnnotations()[0].annotationType().getSimpleName());
     }
     scopedAssociation.setExecution(execution);
   }
@@ -172,8 +172,8 @@ public class DefaultContextAssociationManager implements ContextAssociationManag
                 + scopedAssociation.getClass().getAnnotations()[0].annotationType().getSimpleName()
                 + " execution associated. ");
     }
-    if (log.isLoggable(Level.FINE)) {
-      log.fine("Disassociating");
+    if (log.isTraceEnabled()) {
+      log.trace("Disassociating");
     }
     scopedAssociation.setExecution(null);
     scopedAssociation.setTask(null);

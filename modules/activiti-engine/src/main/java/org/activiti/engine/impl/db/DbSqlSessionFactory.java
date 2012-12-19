@@ -20,7 +20,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
-import org.activiti.engine.impl.util.ClassNameUtil;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 
@@ -153,7 +152,7 @@ public class DbSqlSessionFactory implements SessionFactory {
     if (statement!=null) {
       return statement;
     }
-    statement = prefix+ClassNameUtil.getClassNameWithoutPackage(persistentObjectClass);
+    statement = prefix + persistentObjectClass.getSimpleName();
     statement = statement.substring(0, statement.length()-6);
     cachedStatements.put(persistentObjectClass, statement);
     return statement;

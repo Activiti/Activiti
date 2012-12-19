@@ -15,7 +15,6 @@ package org.activiti.cdi.test;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
-import java.util.logging.Logger;
 
 import javax.enterprise.inject.spi.BeanManager;
 
@@ -42,6 +41,8 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract base class for executing activiti-cdi tests in a Java SE
@@ -52,7 +53,7 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public abstract class CdiActivitiTestCase {
 
-  protected Logger logger = Logger.getLogger(getClass().getName());
+  protected Logger logger = LoggerFactory.getLogger(getClass().getName());
     
   @Deployment
   public static JavaArchive createDeployment() {

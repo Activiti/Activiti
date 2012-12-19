@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.activiti.engine.EngineServices;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
@@ -53,6 +51,8 @@ import org.activiti.engine.impl.variable.VariableDeclaration;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -64,7 +64,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
   private static final long serialVersionUID = 1L;
   
-  private static Logger log = Logger.getLogger(ExecutionEntity.class.getName());
+  private static Logger log = LoggerFactory.getLogger(ExecutionEntity.class);
   
   // Persistent refrenced entities state //////////////////////////////////////
   protected static final int EVENT_SUBSCRIPTIONS_STATE_BIT = 1;
@@ -233,8 +233,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     createdExecution.setProcessInstance(getProcessInstance());
     createdExecution.setActivity(getActivity());
     
-    if (log.isLoggable(Level.FINE)) {
-      log.fine("Child execution "+createdExecution+" created with parent "+this);
+    if (log.isDebugEnabled()) {
+      log.debug("Child execution {} created with parent ", createdExecution, this);
     }
     
     return createdExecution;
@@ -274,7 +274,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
   @SuppressWarnings("unchecked")
   public void initialize() {
-    log.fine("initializing "+this);
+    log.debug("initializing {}", this);
 
     ScopeImpl scope = getScope();
     ensureParentInitialized();
@@ -326,7 +326,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   }
 
   public void destroy() {
-    log.fine("destroying "+this);
+    log.debug("destroying {}", this);
     
     ensureParentInitialized();
     deleteVariablesInstanceForLeavingScope();
@@ -396,9 +396,9 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
         otherConcurrentExecutions.add(this);
       }
     }
-    if (log.isLoggable(Level.FINE)) {
-      log.fine("inactive concurrent executions in '"+activity+"': "+inactiveConcurrentExecutionsInActivity);
-      log.fine("other concurrent executions: "+otherConcurrentExecutions);
+    if (log.isDebugEnabled()) {
+      log.debug("inactive concurrent executions in '{}': {}", activity, inactiveConcurrentExecutionsInActivity);
+      log.debug("other concurrent executions: {}", otherConcurrentExecutions);
     }
     return inactiveConcurrentExecutionsInActivity;
   }
@@ -436,9 +436,9 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
       }
     }
 
-    if (log.isLoggable(Level.FINE)) {
-      log.fine("transitions to take concurrent: " + transitions);
-      log.fine("active concurrent executions: " + concurrentActiveExecutions);
+    if (log.isDebugEnabled()) {
+      log.debug("transitions to take concurrent: {}", transitions);
+      log.debug("active concurrent executions: {}", concurrentActiveExecutions);
     }
 
     if ( (transitions.size()==1)
@@ -453,12 +453,12 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
         // Some recyclable executions are inactivated (joined executions)
         // Others are already ended (end activities)
         if (!prunedExecution.isEnded()) {
-          log.fine("pruning execution " + prunedExecution);
+          log.debug("pruning execution {}", prunedExecution);
           prunedExecution.remove();
         }
       }
 
-      log.fine("activating the concurrent root "+concurrentRoot+" as the single path of execution going forward");
+      log.debug("activating the concurrent root {} as the single path of execution going forward", concurrentRoot);
       concurrentRoot.setActive(true);
       concurrentRoot.setActivity(activity);
       concurrentRoot.setConcurrent(false);
@@ -470,7 +470,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
       recyclableExecutions.remove(concurrentRoot);
   
-      log.fine("recyclable executions for reuse: " + recyclableExecutions);
+      log.debug("recyclable executions for reuse: {}", recyclableExecutions);
       
       // first create the concurrent executions
       while (!transitions.isEmpty()) {
@@ -479,11 +479,11 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
         ExecutionEntity outgoingExecution = null;
         if (recyclableExecutions.isEmpty()) {
           outgoingExecution = concurrentRoot.createExecution();
-          log.fine("new "+outgoingExecution+" with parent " 
-                  + outgoingExecution.getParent()+" created to take transition "+outgoingTransition);
+          log.debug("new {} with parent {} created to take transition {}", 
+                  outgoingExecution, outgoingExecution.getParent(), outgoingTransition);
         } else {
           outgoingExecution = (ExecutionEntity) recyclableExecutions.remove(0);
-          log.fine("recycled "+outgoingExecution+" to take transition "+outgoingTransition);
+          log.debug("recycled {} to take transition {}", outgoingExecution, outgoingTransition);
         }
         
         outgoingExecution.setActive(true);
@@ -495,7 +495,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
       // prune the executions that are not recycled 
       for (ActivityExecution prunedExecution: recyclableExecutions) {
-        log.fine("pruning execution "+prunedExecution);
+        log.debug("pruning execution {}", prunedExecution);
         prunedExecution.end();
       }
 
@@ -846,8 +846,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
   public void destroyScope(String reason) {
     
-    if(log.isLoggable(Level.FINE)) {
-      log.fine("performing destroy scope behavior for execution "+this);
+    if(log.isDebugEnabled()) {
+      log.debug("performing destroy scope behavior for execution {}", this);
     }
     
     // remove all child executions and sub process instances:
@@ -868,7 +868,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     List<InterpretableExecution> childExecutions = new ArrayList<InterpretableExecution>(getExecutions());
     for (InterpretableExecution childExecution : childExecutions) {
       if(childExecution.isEventScope()) {
-        log.fine("removing eventScope "+childExecution);
+        log.debug("removing eventScope {}", childExecution);
         childExecution.destroy();
         childExecution.remove();
       }

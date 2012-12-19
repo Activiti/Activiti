@@ -13,7 +13,8 @@
 
 package org.activiti.engine.test.concurrency;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -21,7 +22,7 @@ import java.util.logging.Logger;
  */
 public class ControllableThread extends Thread {
   
-  private static Logger log = Logger.getLogger(ControllableThread.class.getName());
+  private static Logger log = LoggerFactory.getLogger(ControllableThread.class);
 
   public ControllableThread() {
     String className = getClass().getName();
@@ -30,7 +31,7 @@ public class ControllableThread extends Thread {
   }
   
   public synchronized void startAndWaitUntilControlIsReturned() {
-    log.fine("test thread will start "+getName()+" and wait till it returns control");
+    log.debug("test thread will start {} and wait till it returns control", getName());
     start();
     try {
       wait();
@@ -40,7 +41,7 @@ public class ControllableThread extends Thread {
   }
 
   public synchronized void returnControlToTestThreadAndWait() {
-    log.fine(getName()+" will notify test thread and till test thread proceeds this thread");
+    log.debug("{} will notify test thread and till test thread proceeds this thread", getName());
     this.notify();
     try {
       this.wait();
@@ -50,7 +51,7 @@ public class ControllableThread extends Thread {
   }
 
   public synchronized void proceedAndWaitTillDone() {
-    log.fine("test thread will notify "+getName()+" and wait until it completes");
+    log.debug("test thread will notify {} and wait until it completes", getName());
     notify();
     try {
       join();

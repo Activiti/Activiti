@@ -15,7 +15,6 @@ package org.activiti.engine.test.db;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.util.logging.Logger;
 
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
@@ -23,6 +22,8 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.apache.ibatis.session.SqlSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -30,7 +31,7 @@ import org.apache.ibatis.session.SqlSession;
  */
 public class MetaDataTest extends PluggableActivitiTestCase {
   
-  private static Logger log = Logger.getLogger(MetaDataTest.class.getName());
+  private static Logger log = LoggerFactory.getLogger(MetaDataTest.class);
 
   public void testMetaData() {
     ((ProcessEngineImpl)processEngine)
@@ -48,7 +49,7 @@ public class MetaDataTest extends PluggableActivitiTestCase {
               ResultSetMetaData resultSetMetaData = tables.getMetaData();
               int columnCount = resultSetMetaData.getColumnCount();
               for (int i=1; i<=columnCount; i++) {
-                log.info("result set column "+i+" | "+resultSetMetaData.getColumnName(i)+" | "+resultSetMetaData.getColumnLabel(i)+" | "+tables.getString(i));
+                log.info("result set column {}|{}|{}|{}", i, resultSetMetaData.getColumnName(i), resultSetMetaData.getColumnLabel(i), tables.getString(i));
               }
               log.info("-------------------------------------------------------");
             }

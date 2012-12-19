@@ -74,6 +74,22 @@
         <artifactId>commons-dbcp</artifactId>
         <version>1.4</version>
       </dependency>
+      <!-- Logging -->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>1.7.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl-over-slf4j</artifactId>
+        <version>1.7.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>1.7.2</version>
+      </dependency>
       <dependency>
         <!-- required by Apache commons httpclient, required by restlet -->
         <groupId>commons-logging</groupId>
@@ -248,6 +264,12 @@
         <artifactId>openjpa</artifactId>
         <version>1.2.2</version>
         <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.codehaus.groovy</groupId>
@@ -342,6 +364,12 @@
         <groupId>org.springframework</groupId>
         <artifactId>spring-core</artifactId>
         <version>${spring.framework.version}</version>
+        <exclusions>
+          <exclusion>
+            <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
@@ -378,6 +406,12 @@
         <artifactId>subethasmtp-wiser</artifactId>
         <version>1.2</version>
         <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>postgresql</groupId>
@@ -878,5 +912,4 @@
     <connection>scm:git:https://github.com/Activiti/Activiti.git</connection>
     <developerConnection>scm:git:https://github.com/Activiti/Activiti.git</developerConnection>
   </scm>
-
 </project>

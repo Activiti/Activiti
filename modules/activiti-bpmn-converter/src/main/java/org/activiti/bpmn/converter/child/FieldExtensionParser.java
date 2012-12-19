@@ -12,8 +12,6 @@
  */
 package org.activiti.bpmn.converter.child;
 
-import java.util.logging.Level;
-
 import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.model.ActivitiListener;
@@ -59,7 +57,7 @@ public class FieldExtensionParser extends BaseChildElementParser {
           }
         }
       } catch (Exception e) {
-        LOGGER.log(Level.WARNING, "Error parsing field extension child elements", e);
+        LOGGER.warn("Error parsing field extension child elements", e);
       }
     }
     

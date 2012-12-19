@@ -200,7 +200,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     for (Task task : tasks) {      
       Map<String, Object> variables = new HashMap<String, Object>();
       // set token local variable
-      log.fine("setting variables on task "+task.getId()+", execution "+task.getExecutionId());
+      log.debug("setting variables on task {}, execution {}", task.getId(), task.getExecutionId());
       runtimeService.setVariableLocal(task.getExecutionId(), "parallelValue1", task.getName());
       runtimeService.setVariableLocal(task.getExecutionId(), "parallelValue2", "test");
       taskService.complete(task.getId(), variables);      
