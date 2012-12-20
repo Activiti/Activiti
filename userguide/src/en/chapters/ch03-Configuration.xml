@@ -509,4 +509,21 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
     </para>
   </section>
 
+  <section id="processDefinitionCacheConfiguration">
+    <title>Deployment cache configuration</title>
+    <para>All process definition are cached (after they're parsed) to avoid hitting
+    the database every time a process definition is needed and because process definition data doesn't change.
+    By default, there is no limit on this cache. To limit the process definition cache, add following property
+    <programlisting>&lt;property name=&quot;processDefinitionCacheLimit&quot; value=&quot;10&quot; /&gt;</programlisting>
+    Setting this property will swap the default hashmap cache with a LRU cache that has the provided hard limit.</para>
+    <para>You can also inject your own cache implementation. This must be a bean that implements the
+    org.activiti.engine.impl.persistence.deploy.DeploymentCache interface:
+    <programlisting>
+&lt;property name=&quot;processDefinitionCache&quot;&gt;
+  &lt;bean class=&quot;org.activiti.MyCache&quot; />
+&lt;/property&gt;</programlisting></para>
+    <para>There is a similar property called <literal>knowledgeBaseCacheLimit</literal> and <literal>knowledgeBaseCache</literal> for configuring the rules cache.
+    This is only needed when you use the rules task in your processes.</para>
+  </section>
+
 </chapter>
