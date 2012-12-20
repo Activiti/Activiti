@@ -490,24 +490,6 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
     will be exposed with the names as you specify in that map.  
     </para>
   </section>
-  
-  <section id="loggingConfiguration">
-    <title>Logging</title>
-    <para>As of Activiti 5.12, SLF4J is used as logging framework, replacing the 
-    previous used java.util.logging. All logging (activiti, spring, mybatis, ...) is rooted through SLF4J and allows for
-    selecting the logging-implementation of your choice.</para>
-    <para><emphasis role="bold">By default no SFL4J-binding jar is present in the activiti-engine dependencies, this should be added
-    in your project in order to use the logging framework of your choice.</emphasis> If no implementation jar is added, SLF4J will use a NOP-logger,
-     not logging anything at all, other than a warning that nothing will be logged. For more info on these bindings <ulink url="http://www.slf4j.org/codes.html#StaticLoggerBinder">http://www.slf4j.org/codes.html#StaticLoggerBinder</ulink>.</para>
-    
-    <para>The activiti-explorer and activiti-rest webapps are configured to use Log4j-binding. Log4j is also used when running the tests for all the activiti-* modules.</para>
-  
-    <para>
-      <emphasis role="bold">Important note when using a container with commons-logging in the classpath:</emphasis>
-      In order to route the spring-logging through SLF4J, a bridge is used (see <ulink url="http://www.slf4j.org/legacy.html#jclOverSLF4J">http://www.slf4j.org/legacy.html#jclOverSLF4J</ulink>). If your container provides a commons-logging implementation,
-      please follow directions on this page: <ulink url="http://www.slf4j.org/codes.html#release">http://www.slf4j.org/codes.html#release</ulink> to ensure stability.
-    </para>
-  </section>
 
   <section id="processDefinitionCacheConfiguration">
     <title>Deployment cache configuration</title>
@@ -522,8 +504,41 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
 &lt;property name=&quot;processDefinitionCache&quot;&gt;
   &lt;bean class=&quot;org.activiti.MyCache&quot; />
 &lt;/property&gt;</programlisting></para>
-    <para>There is a similar property called <literal>knowledgeBaseCacheLimit</literal> and <literal>knowledgeBaseCache</literal> for configuring the rules cache.
-    This is only needed when you use the rules task in your processes.</para>
+     <para>There is a similar property called <literal>knowledgeBaseCacheLimit</literal> and <literal>knowledgeBaseCache</literal> for configuring the rules cache.
+     This is only needed when you use the rules task in your processes.</para>
+    </section>
+  
+  <section id="loggingConfiguration">
+    <title>Logging</title>
+    <para>As of Activiti 5.12, SLF4J is used as logging framework, replacing the 
+    previous used java.util.logging. All logging (activiti, spring, mybatis, ...) is routed through SLF4J and allows for
+    selecting the logging-implementation of your choice.</para>
+    <para><emphasis role="bold">By default no SFL4J-binding jar is present in the activiti-engine dependencies, this should be added
+    in your project in order to use the logging framework of your choice.</emphasis> If no implementation jar is added, SLF4J will use a NOP-logger,
+     not logging anything at all, other than a warning that nothing will be logged. For more info on these bindings <ulink url="http://www.slf4j.org/codes.html#StaticLoggerBinder">http://www.slf4j.org/codes.html#StaticLoggerBinder</ulink>.</para>
+
+    <para>With Maven, add for example a dependency like this (here using log4j), note that you still need to add a version:
+    <programlisting>
+&lt;dependency&gt;
+  &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+  &lt;artifactId&gt;slf4j-log4j12&lt;/artifactId&gt;
+&lt;/dependency&gt;</programlisting></para>
+    
+    <para>The activiti-explorer and activiti-rest webapps are configured to use Log4j-binding. Log4j is also used when running the tests for all the activiti-* modules.</para>
+  
+    <para>
+      <emphasis role="bold">Important note when using a container with commons-logging in the classpath:</emphasis>
+      In order to route the spring-logging through SLF4J, a bridge is used (see <ulink url="http://www.slf4j.org/legacy.html#jclOverSLF4J">http://www.slf4j.org/legacy.html#jclOverSLF4J</ulink>). If your container provides a commons-logging implementation,
+      please follow directions on this page: <ulink url="http://www.slf4j.org/codes.html#release">http://www.slf4j.org/codes.html#release</ulink> to ensure stability.
+    </para>
+    <para>
+      Example when using Maven (version omitted):
+      <programlisting>
+&lt;dependency&gt;
+  &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+  &lt;artifactId&gt;jcl-over-slf4j&lt;/artifactId&gt;
+&lt;/dependency&gt;</programlisting>
+    </para>
   </section>
 
 </chapter>
