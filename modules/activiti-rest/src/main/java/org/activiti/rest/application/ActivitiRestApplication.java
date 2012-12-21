@@ -16,6 +16,7 @@ package org.activiti.rest.application;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.DefaultResource;
 import org.activiti.rest.api.engine.ProcessEngineResource;
+import org.activiti.rest.api.history.HistoricFormPropertiesResource;
 import org.activiti.rest.api.identity.GroupCreateResource;
 import org.activiti.rest.api.identity.GroupResource;
 import org.activiti.rest.api.identity.GroupSearchResource;
@@ -165,6 +166,8 @@ public class ActivitiRestApplication extends Application {
     router.attach("/management/tables", TablesResource.class);
     router.attach("/management/table/{tableName}", TableResource.class);
     router.attach("/management/table/{tableName}/data", TableDataResource.class);
+    
+    router.attach("/history/{taskId}/form-properties", HistoricFormPropertiesResource.class);
     
     authenticator.setNext(router);
     

@@ -115,6 +115,11 @@ public class ProcessInstanceResource extends SecuredResource {
         } else {
           taskJSON.putNull("taskName");
         }
+        if (historicTaskInstance.getDescription() != null) {
+          taskJSON.put("description", historicTaskInstance.getDescription());
+        } else {
+          taskJSON.putNull("description");
+        }
         if (historicTaskInstance.getOwner() != null) {
           taskJSON.put("owner", historicTaskInstance.getOwner());
         } else {
@@ -126,6 +131,11 @@ public class ProcessInstanceResource extends SecuredResource {
           taskJSON.putNull("assignee");
         }
         taskJSON.put("startTime", RequestUtil.dateToString(historicTaskInstance.getStartTime()));
+        if (historicTaskInstance.getDueDate() != null) {
+          taskJSON.put("dueDate", RequestUtil.dateToString(historicTaskInstance.getDueDate()));
+        } else {
+          taskJSON.putNull("dueDate");
+        }
         if(historicTaskInstance.getEndTime() == null) {
           taskJSON.put("completed", false);
         } else {

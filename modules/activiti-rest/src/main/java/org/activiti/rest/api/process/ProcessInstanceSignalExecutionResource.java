@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.RuntimeService;
-import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.*;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
 import org.apache.commons.lang.StringUtils;
@@ -47,17 +47,11 @@ public class ProcessInstanceSignalExecutionResource extends SecuredResource {
 			// extract activity id
 			String activityId = (String) variables.remove("activityId");
 
-			if(activityId == null){
-				responseJSON.put("success", false);
-				responseJSON.put("failureReason", "Request is missing activity id");
-				return responseJSON;
-			}
-				
+			
 			RuntimeService runtimeService = ActivitiUtil.getRuntimeService();
-			Execution execution = runtimeService.createExecutionQuery()
-					  .processInstanceId(processInstanceId)
-					  .activityId(activityId)
-					  .singleResult();
+			Execution execution = findExecution(processInstanceId, 
+			                                    activityId,
+                                          runtimeService);
 			
 			// signal receive task and attach variables if available
 			if (variables.size() > 0) {
@@ -72,6 +66,20 @@ public class ProcessInstanceSignalExecutionResource extends SecuredResource {
 		} catch (Exception e) {
 			throw new ActivitiException("Failed to signal receive task for process instance id " + processInstanceId, e);
 		}
-
 	}
+
+  private Execution findExecution(String processInstanceId, 
+                                  String activityId,
+                                  RuntimeService runtimeService) {
+    ExecutionQuery executionQuery = 
+        runtimeService
+        .createExecutionQuery()
+        .processInstanceId(processInstanceId);
+    
+    if (activityId != null) {
+      executionQuery.activityId(activityId);
+    }
+    
+    return executionQuery.singleResult();
+  }
 }
