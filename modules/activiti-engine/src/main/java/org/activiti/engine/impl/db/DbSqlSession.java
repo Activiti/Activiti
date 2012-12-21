@@ -808,7 +808,7 @@ public class DbSqlSession implements Session {
       // the next piece assumes both DB version and library versions are formatted 5.x
       PropertyEntity dbVersionProperty = selectById(PropertyEntity.class, "schema.version");
       dbVersion = dbVersionProperty.getValue();
-      isUpgradeNeeded = !ProcessEngine.VERSION.equals(dbVersion);
+      isUpgradeNeeded = isUpgradeNeeded(dbVersion);
       
       if (isUpgradeNeeded) {
         dbVersionProperty.setValue(ProcessEngine.VERSION);
