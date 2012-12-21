@@ -37,7 +37,7 @@ public class CatchEventXMLConverter extends BaseBpmnXMLConverter {
   }
   
   @Override
-  protected BaseElement convertXMLToElement(XMLStreamReader xtr) {
+  protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
     IntermediateCatchEvent catchEvent = new IntermediateCatchEvent();
     parseChildElements(getXMLElementName(), catchEvent, xtr);
     return catchEvent;

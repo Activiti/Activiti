@@ -53,7 +53,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
         .deploy();
       fail("ActivitiException expected");
     } catch (ActivitiException re) {
-      assertTextPresent("'errorCode' is mandatory on errors referenced by throwing error event definitions", re.getMessage());
+      assertTextPresent("errorCode is required for an error event", re.getMessage());
     }
   }
 
@@ -64,7 +64,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
         .deploy();
       fail("ActivitiException expected");
     } catch (ActivitiException re) {
-      assertTextPresent("'errorCode' is mandatory on errors referenced by throwing error event definitions", re.getMessage());
+      assertTextPresent("errorCode is required for an error event", re.getMessage());
     }
   }
 

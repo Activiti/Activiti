@@ -19,6 +19,7 @@ public class ScriptTask extends Task {
 
   protected String scriptFormat;
   protected String script;
+  protected String resultVariable;
 
   public String getScriptFormat() {
     return scriptFormat;
@@ -31,5 +32,11 @@ public class ScriptTask extends Task {
   }
   public void setScript(String script) {
     this.script = script;
+  }
+  public String getResultVariable() {
+    return resultVariable;
+  }
+  public void setResultVariable(String resultVariable) {
+    this.resultVariable = resultVariable;
   }
 }

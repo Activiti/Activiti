@@ -20,6 +20,7 @@ import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SubProcess;
+import org.activiti.bpmn.model.Transaction;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -29,8 +30,9 @@ public class SubProcessParser implements BpmnXMLConstants {
   
   public void parse(XMLStreamReader xtr, List<SubProcess> activeSubProcessList, Process activeProcess) {
   	SubProcess subProcess = null;
-		if (ATTRIBUTE_VALUE_TRUE.equalsIgnoreCase(xtr.getAttributeValue(null, ATTRIBUTE_TRIGGERED_BY))) {
-		  
+  	if (ELEMENT_TRANSACTION.equalsIgnoreCase(xtr.getLocalName())) {
+  	  subProcess = new Transaction();
+  	} else if (ATTRIBUTE_VALUE_TRUE.equalsIgnoreCase(xtr.getAttributeValue(null, ATTRIBUTE_TRIGGERED_BY))) {
 			subProcess = new EventSubProcess();
 		} else {
 			subProcess = new SubProcess();

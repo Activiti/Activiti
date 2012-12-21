@@ -36,13 +36,13 @@ public class BpmnShapeParser implements BpmnXMLConstants {
 				graphicInfo.x = Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_X)).intValue();
 				graphicInfo.y = Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_Y)).intValue();
 				FlowElement flowElement = model.getFlowElement(id);
-				if (flowElement instanceof Event) {
+				/*if (flowElement instanceof Event) {
 				  graphicInfo.width = 30;
 				  graphicInfo.height = 30;
-				} else {
+				} else {*/
 				  graphicInfo.width = Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_WIDTH)).intValue();
 				  graphicInfo.height = Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_HEIGHT)).intValue();
-				}
+				//}
 				
 				model.addGraphicInfo(id, graphicInfo);
 				break;

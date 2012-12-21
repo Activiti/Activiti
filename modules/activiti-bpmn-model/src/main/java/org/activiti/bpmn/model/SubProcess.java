@@ -12,56 +12,67 @@
  */
 package org.activiti.bpmn.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.List;
 
 /**
  * @author Tijs Rademakers
  */
 public class SubProcess extends Activity {
 
-  protected Map<String, FlowElement> flowElementMap = new HashMap<String, FlowElement>();
-  protected Map<String, Artifact> artifactMap = new LinkedHashMap<String, Artifact>();
+  protected List<FlowElement> flowElementList = new ArrayList<FlowElement>();
+  protected List<Artifact> artifactList = new ArrayList<Artifact>();
 
   public FlowElement getFlowElement(String id) {
-    return flowElementMap.get(id);
+    FlowElement foundElement = null;
+    for (FlowElement element : flowElementList) {
+      if (id.equals(element.getId())) {
+        foundElement = element;
+        break;
+      }
+    }
+    return foundElement;
   }
   
   public Collection<FlowElement> getFlowElements() {
-    return flowElementMap.values();
-  }
-  
-  public Map<String, FlowElement> getFlowElementMap() {
-    return flowElementMap;
+    return flowElementList;
   }
   
   public void addFlowElement(FlowElement element) {
-    flowElementMap.put(element.getId(), element);
+    flowElementList.add(element);
   }
   
   public void removeFlowElement(String elementId) {
-    flowElementMap.remove(elementId);
+    FlowElement element = getFlowElement(elementId);
+    if (element != null) {
+      flowElementList.remove(element);
+    }
   }
   
   public Artifact getArtifact(String id) {
-    return artifactMap.get(id);
+    Artifact foundArtifact = null;
+    for (Artifact artifact : artifactList) {
+      if (id.equals(artifact.getId())) {
+        foundArtifact = artifact;
+        break;
+      }
+    }
+    return foundArtifact;
   }
   
   public Collection<Artifact> getArtifacts() {
-    return artifactMap.values();
-  }
-  
-  public Map<String, Artifact> getArtifactMap() {
-    return artifactMap;
+    return artifactList;
   }
   
   public void addArtifact(Artifact artifact) {
-    artifactMap.put(artifact.getId(), artifact);
+    artifactList.add(artifact);
   }
   
   public void removeArtifact(String artifactId) {
-    artifactMap.remove(artifactId);
+    Artifact artifact = getArtifact(artifactId);
+    if (artifact != null) {
+      artifactList.remove(artifact);
+    }
   }
 }

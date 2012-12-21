@@ -17,10 +17,12 @@ import java.util.logging.Level;
 import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FormProperty;
 import org.activiti.bpmn.model.FormValue;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.UserTask;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * @author Tijs Rademakers
@@ -28,24 +30,30 @@ import org.activiti.bpmn.model.UserTask;
 public class FormPropertyParser extends BaseChildElementParser {
 
   public String getElementName() {
-    return "formProperty";
+    return ELEMENT_FORMPROPERTY;
   }
   
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement) throws Exception {
+  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
+    
     if (parentElement instanceof UserTask == false && parentElement instanceof StartEvent == false) return;
     
     FormProperty property = new FormProperty();
-    property.setId(xtr.getAttributeValue(null, "id"));
-    property.setName(xtr.getAttributeValue(null, "name"));
-    property.setType(xtr.getAttributeValue(null, "type"));
-    property.setValue(xtr.getAttributeValue(null, "value"));
-    property.setVariable(xtr.getAttributeValue(null, "variable"));
-    property.setExpression(xtr.getAttributeValue(null, "expression"));
-    property.setDefaultExpression(xtr.getAttributeValue(null, "default"));
-    property.setDatePattern(xtr.getAttributeValue(null, "datePattern"));
-    property.setRequired(Boolean.valueOf(xtr.getAttributeValue(null, "required")));
-    property.setReadable(Boolean.valueOf(xtr.getAttributeValue(null, "readable")));
-    property.setWriteable(Boolean.valueOf(xtr.getAttributeValue(null, "writable")));
+    property.setId(xtr.getAttributeValue(null, ATTRIBUTE_FORM_ID));
+    property.setName(xtr.getAttributeValue(null, ATTRIBUTE_FORM_NAME));
+    property.setType(xtr.getAttributeValue(null, ATTRIBUTE_FORM_TYPE));
+    property.setVariable(xtr.getAttributeValue(null, ATTRIBUTE_FORM_VARIABLE));
+    property.setExpression(xtr.getAttributeValue(null, ATTRIBUTE_FORM_EXPRESSION));
+    property.setDefaultExpression(xtr.getAttributeValue(null, ATTRIBUTE_FORM_DEFAULT));
+    property.setDatePattern(xtr.getAttributeValue(null, ATTRIBUTE_FORM_DATEPATTERN));
+    if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_FORM_REQUIRED))) {
+      property.setRequired(Boolean.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_FORM_REQUIRED)));
+    }
+    if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_FORM_READABLE))) {
+      property.setReadable(Boolean.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_FORM_READABLE)));
+    }
+    if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_FORM_WRITABLE))) {
+      property.setWriteable(Boolean.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_FORM_WRITABLE)));
+    }
     
     boolean readyWithFormProperty = false;
     try {
@@ -53,8 +61,8 @@ public class FormPropertyParser extends BaseChildElementParser {
         xtr.next();
         if (xtr.isStartElement() && "value".equalsIgnoreCase(xtr.getLocalName())) {
           FormValue value = new FormValue();
-          value.setId(xtr.getAttributeValue(null, "id"));
-          value.setName(xtr.getAttributeValue(null, "name"));
+          value.setId(xtr.getAttributeValue(null, ATTRIBUTE_ID));
+          value.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
           property.getFormValues().add(value);
 
         } else if (xtr.isEndElement() && getElementName().equalsIgnoreCase(xtr.getLocalName())) {

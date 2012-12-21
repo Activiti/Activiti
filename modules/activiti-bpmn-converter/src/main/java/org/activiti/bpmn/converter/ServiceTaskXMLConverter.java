@@ -17,6 +17,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.converter.util.FieldExtensionUtil;
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.CustomProperty;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.ServiceTask;
@@ -41,7 +42,7 @@ public class ServiceTaskXMLConverter extends BaseBpmnXMLConverter {
   }
 
   @Override
-  protected BaseElement convertXMLToElement(XMLStreamReader xtr) {
+  protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
 		ServiceTask serviceTask = new ServiceTask();
 		if (StringUtils.isNotEmpty(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_SERVICE_CLASS))) {
 			serviceTask.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
@@ -54,9 +55,23 @@ public class ServiceTaskXMLConverter extends BaseBpmnXMLConverter {
 		} else if (StringUtils.isNotEmpty(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_SERVICE_DELEGATEEXPRESSION))) {
 			serviceTask.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION);
 			serviceTask.setImplementation(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_SERVICE_DELEGATEEXPRESSION));
+		
+		} else if ("##WebService".equals(xtr.getAttributeValue(null, ATTRIBUTE_TASK_IMPLEMENTATION))) {
+		  serviceTask.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_WEBSERVICE);
+		  serviceTask.setOperationRef(parseOperationRef(xtr.getAttributeValue(null, ATTRIBUTE_TASK_OPERATION_REF), model));
 		}
 	
 		serviceTask.setResultVariableName(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_SERVICE_RESULTVARIABLE));
+		if (StringUtils.isEmpty(serviceTask.getResultVariableName())) {
+		  serviceTask.setResultVariableName(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, "resultVariable"));
+		}
+		
+		if (StringUtils.isNotEmpty(serviceTask.getResultVariableName()) && (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(serviceTask.getImplementationType()) || 
+		    ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(serviceTask.getImplementationType()))) {
+		  
+		  model.addProblem("'resultVariableName' not supported for service tasks using 'class' or 'delegateExpression", xtr);
+		}
+		
 		serviceTask.setType(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TYPE));
 		serviceTask.setExtensionId(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_SERVICE_EXTENSIONID));
 	
@@ -120,5 +135,20 @@ public class ServiceTaskXMLConverter extends BaseBpmnXMLConverter {
     } else {
       didWriteExtensionStartElement = FieldExtensionUtil.writeFieldExtensions(serviceTask.getFieldExtensions(), didWriteExtensionStartElement, xtw);
     }
+  }
+  
+  protected String parseOperationRef(String operationRef, BpmnModel model) {
+    String result = null;
+    if (StringUtils.isNotEmpty(operationRef)) {
+      int indexOfP = operationRef.indexOf(':');
+      if (indexOfP != -1) {
+        String prefix = operationRef.substring(0, indexOfP);
+        String resolvedNamespace = model.getNamespace(prefix);
+        result = resolvedNamespace + ":" + operationRef.substring(indexOfP + 1);
+      } else {
+        result = model.getTargetNamespace() + ":" + operationRef;
+      }
+    }
+    return result;
   }
 }

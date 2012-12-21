@@ -14,6 +14,34 @@ package org.activiti.cdi.impl.event;
 
 import java.util.List;
 
+import org.activiti.bpmn.model.Activity;
+import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.bpmn.model.BusinessRuleTask;
+import org.activiti.bpmn.model.CallActivity;
+import org.activiti.bpmn.model.EndEvent;
+import org.activiti.bpmn.model.ErrorEventDefinition;
+import org.activiti.bpmn.model.EventGateway;
+import org.activiti.bpmn.model.ExclusiveGateway;
+import org.activiti.bpmn.model.InclusiveGateway;
+import org.activiti.bpmn.model.IntermediateCatchEvent;
+import org.activiti.bpmn.model.ManualTask;
+import org.activiti.bpmn.model.MessageEventDefinition;
+import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
+import org.activiti.bpmn.model.ParallelGateway;
+import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.ReceiveTask;
+import org.activiti.bpmn.model.ScriptTask;
+import org.activiti.bpmn.model.SendTask;
+import org.activiti.bpmn.model.SequenceFlow;
+import org.activiti.bpmn.model.ServiceTask;
+import org.activiti.bpmn.model.SignalEventDefinition;
+import org.activiti.bpmn.model.StartEvent;
+import org.activiti.bpmn.model.SubProcess;
+import org.activiti.bpmn.model.Task;
+import org.activiti.bpmn.model.ThrowEvent;
+import org.activiti.bpmn.model.TimerEventDefinition;
+import org.activiti.bpmn.model.Transaction;
+import org.activiti.bpmn.model.UserTask;
 import org.activiti.cdi.BusinessProcessEventType;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.bpmn.parser.BpmnParseListener;
@@ -41,95 +69,95 @@ public class CdiEventSupportBpmnParseListener implements BpmnParseListener {
   }
 
   @Override
-  public void parseProcess(Element processElement, ProcessDefinitionEntity processDefinition) {
+  public void parseProcess(Process processElement, ProcessDefinitionEntity processDefinition) {
   }
 
   @Override
-  public void parseStartEvent(Element startEventElement, ScopeImpl scope, ActivityImpl startEventActivity) {
+  public void parseStartEvent(StartEvent startEventElement, ScopeImpl scope, ActivityImpl startEventActivity) {
     addStartEventListener(startEventActivity);
     addEndEventListener(startEventActivity);
   }
 
   @Override
-  public void parseExclusiveGateway(Element exclusiveGwElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseExclusiveGateway(ExclusiveGateway exclusiveGwElement, ScopeImpl scope, ActivityImpl activity) {
     addStartEventListener(activity);
     addEndEventListener(activity);
   }
 
   @Override
-  public void parseInclusiveGateway(Element inclusiveGwElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseInclusiveGateway(InclusiveGateway inclusiveGwElement, ScopeImpl scope, ActivityImpl activity) {
     addStartEventListener(activity);
     addEndEventListener(activity);
   }
 
   @Override
-  public void parseParallelGateway(Element parallelGwElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseParallelGateway(ParallelGateway parallelGwElement, ScopeImpl scope, ActivityImpl activity) {
     addStartEventListener(activity);
     addEndEventListener(activity);
   }
 
   @Override
-  public void parseScriptTask(Element scriptTaskElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseScriptTask(ScriptTask scriptTaskElement, ScopeImpl scope, ActivityImpl activity) {
     addStartEventListener(activity);
     addEndEventListener(activity);
   }
 
   @Override
-  public void parseServiceTask(Element serviceTaskElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseServiceTask(ServiceTask serviceTaskElement, ScopeImpl scope, ActivityImpl activity) {
     addStartEventListener(activity);
     addEndEventListener(activity);
   }
 
   @Override
-  public void parseBusinessRuleTask(Element businessRuleTaskElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseBusinessRuleTask(BusinessRuleTask businessRuleTaskElement, ScopeImpl scope, ActivityImpl activity) {
     addStartEventListener(activity);
     addEndEventListener(activity);
   }
 
   @Override
-  public void parseTask(Element taskElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseTask(Task taskElement, ScopeImpl scope, ActivityImpl activity) {
     addStartEventListener(activity);
     addEndEventListener(activity);
   }
 
   @Override
-  public void parseManualTask(Element manualTaskElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseManualTask(ManualTask manualTaskElement, ScopeImpl scope, ActivityImpl activity) {
     addStartEventListener(activity);
     addEndEventListener(activity);
   }
 
   @Override
-  public void parseUserTask(Element userTaskElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseUserTask(UserTask userTaskElement, ScopeImpl scope, ActivityImpl activity) {
     addStartEventListener(activity);
     addEndEventListener(activity);
   }
 
   @Override
-  public void parseEndEvent(Element endEventElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseEndEvent(EndEvent endEventElement, ScopeImpl scope, ActivityImpl activity) {
     addStartEventListener(activity);
     addEndEventListener(activity);
   }
 
   @Override
-  public void parseBoundaryTimerEventDefinition(Element timerEventDefinition, boolean interrupting, ActivityImpl timerActivity) {
+  public void parseBoundaryTimerEventDefinition(TimerEventDefinition timerEventDefinition, boolean interrupting, ActivityImpl timerActivity) {
     addStartEventListener(timerActivity);
     addEndEventListener(timerActivity);
   }
 
   @Override
-  public void parseBoundaryErrorEventDefinition(Element errorEventDefinition, boolean interrupting, ActivityImpl activity, ActivityImpl nestedErrorEventActivity) {
+  public void parseBoundaryErrorEventDefinition(ErrorEventDefinition errorEventDefinition, boolean interrupting, ActivityImpl activity, ActivityImpl nestedErrorEventActivity) {
     addStartEventListener(activity);
     addEndEventListener(activity);
   }
 
   @Override
-  public void parseSubProcess(Element subProcessElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseSubProcess(SubProcess subProcessElement, ScopeImpl scope, ActivityImpl activity) {
     addStartEventListener(activity);
     addEndEventListener(activity);
   }
 
   @Override
-  public void parseCallActivity(Element callActivityElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseCallActivity(CallActivity callActivityElement, ScopeImpl scope, ActivityImpl activity) {
     addStartEventListener(activity);
     addEndEventListener(activity);
   }
@@ -139,18 +167,18 @@ public class CdiEventSupportBpmnParseListener implements BpmnParseListener {
   }
 
   @Override
-  public void parseSequenceFlow(Element sequenceFlowElement, ScopeImpl scopeElement, TransitionImpl transition) {
+  public void parseSequenceFlow(SequenceFlow sequenceFlowElement, ScopeImpl scopeElement, TransitionImpl transition) {
     transition.addExecutionListener(new CdiExecutionListener(transition.getId()));
   }
 
   @Override
-  public void parseSendTask(Element sendTaskElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseSendTask(SendTask sendTaskElement, ScopeImpl scope, ActivityImpl activity) {
     addStartEventListener(activity);
     addEndEventListener(activity);
   }
 
   @Override
-  public void parseMultiInstanceLoopCharacteristics(Element activityElement, Element multiInstanceLoopCharacteristicsElement, ActivityImpl activity) {
+  public void parseMultiInstanceLoopCharacteristics(Activity activityElement, MultiInstanceLoopCharacteristics multiInstanceLoopCharacteristicsElement, ActivityImpl activity) {
   }
   
   @Override
@@ -158,37 +186,37 @@ public class CdiEventSupportBpmnParseListener implements BpmnParseListener {
   }
 
   @Override
-  public void parseIntermediateTimerEventDefinition(Element timerEventDefinition, ActivityImpl timerActivity) {
+  public void parseIntermediateTimerEventDefinition(TimerEventDefinition timerEventDefinition, ActivityImpl timerActivity) {
     addStartEventListener(timerActivity);
     addEndEventListener(timerActivity);
   }
 
   @Override
-  public void parseReceiveTask(Element receiveTaskElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseReceiveTask(ReceiveTask receiveTaskElement, ScopeImpl scope, ActivityImpl activity) {
     addStartEventListener(activity);
     addEndEventListener(activity);
   }
 
   @Override
-  public void parseIntermediateSignalCatchEventDefinition(Element signalEventDefinition, ActivityImpl signalActivity) {
+  public void parseIntermediateSignalCatchEventDefinition(SignalEventDefinition signalEventDefinition, ActivityImpl signalActivity) {
     addStartEventListener(signalActivity);
     addEndEventListener(signalActivity);
   }
 
   @Override
-  public void parseBoundarySignalEventDefinition(Element signalEventDefinition, boolean interrupting, ActivityImpl signalActivity) {
+  public void parseBoundarySignalEventDefinition(SignalEventDefinition signalEventDefinition, boolean interrupting, ActivityImpl signalActivity) {
     addStartEventListener(signalActivity);
     addEndEventListener(signalActivity);
   }
 
   @Override
-  public void parseEventBasedGateway(Element eventBasedGwElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseEventBasedGateway(EventGateway eventBasedGwElement, ScopeImpl scope, ActivityImpl activity) {
     addStartEventListener(activity);
     addEndEventListener(activity);
   }
 
   @Override
-  public void parseTransaction(Element transactionElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseTransaction(Transaction transactionElement, ScopeImpl scope, ActivityImpl activity) {
     addStartEventListener(activity);
     addEndEventListener(activity);
   }
@@ -199,25 +227,25 @@ public class CdiEventSupportBpmnParseListener implements BpmnParseListener {
   }
 
   @Override
-  public void parseIntermediateThrowEvent(Element intermediateEventElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseIntermediateThrowEvent(ThrowEvent intermediateEventElement, ScopeImpl scope, ActivityImpl activity) {
     addStartEventListener(activity);
     addEndEventListener(activity);    
   }
 
   @Override
-  public void parseIntermediateCatchEvent(Element intermediateEventElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseIntermediateCatchEvent(IntermediateCatchEvent intermediateEventElement, ScopeImpl scope, ActivityImpl activity) {
   }
 
   @Override
-  public void parseBoundaryEvent(Element boundaryEventElement, ScopeImpl scopeElement, ActivityImpl nestedActivity) {
+  public void parseBoundaryEvent(BoundaryEvent boundaryEventElement, ScopeImpl scopeElement, ActivityImpl nestedActivity) {
   }
   
   @Override
-  public void parseIntermediateMessageCatchEventDefinition(Element messageEventDefinition, ActivityImpl nestedActivity) {
+  public void parseIntermediateMessageCatchEventDefinition(MessageEventDefinition messageEventDefinition, ActivityImpl nestedActivity) {
   }
 
   @Override
-  public void parseBoundaryMessageEventDefinition(Element element, boolean interrupting, ActivityImpl messageActivity) {
+  public void parseBoundaryMessageEventDefinition(MessageEventDefinition element, boolean interrupting, ActivityImpl messageActivity) {
   }
 
 }

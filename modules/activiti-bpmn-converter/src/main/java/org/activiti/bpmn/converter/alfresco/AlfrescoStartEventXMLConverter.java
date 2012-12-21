@@ -38,7 +38,7 @@ public class AlfrescoStartEventXMLConverter extends StartEventXMLConverter {
   }
   
   @Override
-  protected BaseElement convertXMLToElement(XMLStreamReader xtr) {
+  protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
     return super.convertXMLToElement(xtr);
   }
   

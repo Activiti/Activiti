@@ -19,6 +19,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.converter.child.BaseChildElementParser;
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.CallActivity;
 import org.activiti.bpmn.model.IOParameter;
 import org.apache.commons.lang.StringUtils;
@@ -101,7 +102,7 @@ public class CallActivityXMLConverter extends BaseBpmnXMLConverter {
       return ELEMENT_CALL_ACTIVITY_IN_PARAMETERS;
     }
 
-    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement) throws Exception {
+    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
       String source = xtr.getAttributeValue(null, ATTRIBUTE_IOPARAMETER_SOURCE);
       String sourceExpression = xtr.getAttributeValue(null, ATTRIBUTE_IOPARAMETER_SOURCE_EXPRESSION);
       String target = xtr.getAttributeValue(null, ATTRIBUTE_IOPARAMETER_TARGET);
@@ -127,7 +128,7 @@ public class CallActivityXMLConverter extends BaseBpmnXMLConverter {
       return ELEMENT_CALL_ACTIVITY_OUT_PARAMETERS;
     }
 
-    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement) throws Exception {
+    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
       String source = xtr.getAttributeValue(null, ATTRIBUTE_IOPARAMETER_SOURCE);
       String sourceExpression = xtr.getAttributeValue(null, ATTRIBUTE_IOPARAMETER_SOURCE_EXPRESSION);
       String target = xtr.getAttributeValue(null, ATTRIBUTE_IOPARAMETER_TARGET);

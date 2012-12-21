@@ -211,14 +211,13 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
     
     assertProcessEnded(processInstance.getId());
     
-    // starting the process using startProcessInstanceByKey is not possible:
-    try {
-      runtimeService.startProcessInstanceByKey("testProcess");
-      fail("exception expected");
-    }catch (ActivitiException e) {
-      assertTrue("different exception expected, not " + e.getMessage(), e.getMessage().contains("has no default start activity"));
-    }
-    
+    // starting the process using startProcessInstanceByKey is possible, the first message start event will be the default:
+    processInstance = runtimeService.startProcessInstanceByKey("testProcess");
+    assertFalse(processInstance.isEnded());
+    task = taskService.createTaskQuery().taskDefinitionKey("taskAfterMessageStart").singleResult();
+    assertNotNull(task);
+    taskService.complete(task.getId()); 
+    assertProcessEnded(processInstance.getId());
   }
   
 }

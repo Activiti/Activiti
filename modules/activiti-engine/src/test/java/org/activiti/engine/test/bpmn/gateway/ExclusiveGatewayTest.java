@@ -185,7 +185,7 @@ public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
       fail("Could deploy a process definition with a sequence flow out of a XOR Gateway without condition with is not the default flow.");
     }
     catch (ActivitiException ex) {
-      assertTrue( ex.getMessage().startsWith("Exclusive Gateway 'exclusiveGw' has outgoing sequence flow 'flow3' without condition which is not the default flow."));
+      assertTrue(ex.getMessage().contains("Exclusive Gateway 'exclusiveGw' has outgoing sequence flow 'flow3' without condition which is not the default flow."));
     }
     
     String defaultFlowWithCondition = "<?xml version='1.0' encoding='UTF-8'?>" +
@@ -211,7 +211,7 @@ public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
       fail("Could deploy a process definition with a sequence flow out of a XOR Gateway without condition with is not the default flow.");
     }
     catch (ActivitiException ex) {
-      assertTrue( ex.getMessage().startsWith("Exclusive Gateway 'exclusiveGw' has outgoing sequence flow 'flow3' which is the default flow but has a condition too."));
+      assertTrue(ex.getMessage().contains("Exclusive Gateway 'exclusiveGw' has outgoing sequence flow 'flow3' which is the default flow but has a condition too."));
     }
 
     String noOutgoingFlow = "<?xml version='1.0' encoding='UTF-8'?>" +
@@ -228,7 +228,7 @@ public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
     }
     catch (ActivitiException ex) {
       ex.printStackTrace();
-      assertTrue( ex.getMessage().startsWith("Exclusive Gateway 'exclusiveGw' has no outgoing sequence flows."));
+      assertTrue( ex.getMessage().contains("Exclusive Gateway 'exclusiveGw' has no outgoing sequence flows."));
     }
 
   }

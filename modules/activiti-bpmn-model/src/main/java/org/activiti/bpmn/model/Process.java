@@ -14,9 +14,7 @@ package org.activiti.bpmn.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Tijs Rademakers
@@ -24,11 +22,13 @@ import java.util.Map;
 public class Process extends FlowElementsContainer {
 
   protected String name;
-  protected boolean executable;
+  protected boolean executable = true;
+  protected String targetNamespace;
   protected String documentation;
+  protected IOSpecification ioSpecification;
   protected List<ActivitiListener> executionListeners = new ArrayList<ActivitiListener>();
   protected List<Lane> lanes = new ArrayList<Lane>();
-  protected Map<String, Artifact> artifactMap = new LinkedHashMap<String, Artifact>();
+  protected List<Artifact> artifactList = new ArrayList<Artifact>();
   protected List<String> candidateStarterUsers = new ArrayList<String>();
   protected List<String> candidateStarterGroups = new ArrayList<String>();
 
@@ -56,6 +56,22 @@ public class Process extends FlowElementsContainer {
     this.executable = executable;
   }
 
+  public String getTargetNamespace() {
+    return targetNamespace;
+  }
+
+  public void setTargetNamespace(String targetNamespace) {
+    this.targetNamespace = targetNamespace;
+  }
+
+  public IOSpecification getIoSpecification() {
+    return ioSpecification;
+  }
+
+  public void setIoSpecification(IOSpecification ioSpecification) {
+    this.ioSpecification = ioSpecification;
+  }
+
   public List<ActivitiListener> getExecutionListeners() {
     return executionListeners;
   }
@@ -71,25 +87,31 @@ public class Process extends FlowElementsContainer {
   public void setLanes(List<Lane> lanes) {
     this.lanes = lanes;
   }
-
+  
   public Artifact getArtifact(String id) {
-    return artifactMap.get(id);
+    Artifact foundArtifact = null;
+    for (Artifact artifact : artifactList) {
+      if (id.equals(artifact.getId())) {
+        foundArtifact = artifact;
+        break;
+      }
+    }
+    return foundArtifact;
   }
   
   public Collection<Artifact> getArtifacts() {
-    return artifactMap.values();
-  }
-  
-  public Map<String, Artifact> getArtifactMap() {
-    return artifactMap;
+    return artifactList;
   }
   
   public void addArtifact(Artifact artifact) {
-    artifactMap.put(artifact.getId(), artifact);
+    artifactList.add(artifact);
   }
   
   public void removeArtifact(String artifactId) {
-    artifactMap.remove(artifactId);
+    Artifact artifact = getArtifact(artifactId);
+    if (artifact != null) {
+      artifactList.remove(artifact);
+    }
   }
 
   public List<String> getCandidateStarterUsers() {
@@ -104,7 +126,7 @@ public class Process extends FlowElementsContainer {
     return candidateStarterGroups;
   }
 
-  public void setCandidateGroups(List<String> candidateStarterGroups) {
+  public void setCandidateStarterGroups(List<String> candidateStarterGroups) {
     this.candidateStarterGroups = candidateStarterGroups;
   }
 }

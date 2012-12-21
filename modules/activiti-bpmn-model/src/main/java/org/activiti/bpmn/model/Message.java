@@ -18,13 +18,15 @@ package org.activiti.bpmn.model;
 public class Message extends BaseElement {
 
   protected String name;
+  protected String itemRef;
   
   public Message() {
   }
   
-  public Message(String id, String name) {
+  public Message(String id, String name, String itemRef) {
     this.id = id;
     this.name = name;
+    this.itemRef = itemRef;
   }
 
   public String getName() {
@@ -33,5 +35,13 @@ public class Message extends BaseElement {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public String getItemRef() {
+    return itemRef;
+  }
+
+  public void setItemRef(String itemRef) {
+    this.itemRef = itemRef;
   }
 }

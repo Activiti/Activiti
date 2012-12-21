@@ -37,7 +37,7 @@ public class EndEventXMLConverter extends BaseBpmnXMLConverter {
   }
   
   @Override
-  protected BaseElement convertXMLToElement(XMLStreamReader xtr) {
+  protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
     EndEvent endEvent = new EndEvent();
     parseChildElements(getXMLElementName(), endEvent, xtr);
     return endEvent;

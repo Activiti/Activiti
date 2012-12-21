@@ -34,7 +34,7 @@ public class ScopedConverterTest extends AbstractConverterTest {
   }
   
   private void validateModel(BpmnModel model) {
-    FlowElement flowElement = model.getMainProcess().getFlowElementMap().get("outerSubProcess");
+    FlowElement flowElement = model.getMainProcess().getFlowElement("outerSubProcess");
     assertNotNull(flowElement);
     assertTrue(flowElement instanceof SubProcess);
     assertEquals("outerSubProcess", flowElement.getId());

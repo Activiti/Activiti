@@ -47,6 +47,10 @@ public class ScriptTaskXMLConverter extends BaseBpmnXMLConverter {
   protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
     ScriptTask scriptTask = new ScriptTask();
     scriptTask.setScriptFormat(xtr.getAttributeValue(null, ATTRIBUTE_TASK_SCRIPT_FORMAT));
+    scriptTask.setResultVariable(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_SCRIPT_RESULTVARIABLE));
+    if (StringUtils.isEmpty(scriptTask.getResultVariable())) {
+      scriptTask.setResultVariable(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_SERVICE_RESULTVARIABLE));
+    }
     parseChildElements(getXMLElementName(), scriptTask, xtr);
     return scriptTask;
   }
@@ -55,6 +59,7 @@ public class ScriptTaskXMLConverter extends BaseBpmnXMLConverter {
   protected void writeAdditionalAttributes(BaseElement element, XMLStreamWriter xtw) throws Exception {
     ScriptTask scriptTask = (ScriptTask) element;
     writeDefaultAttribute(ATTRIBUTE_TASK_SCRIPT_FORMAT, scriptTask.getScriptFormat(), xtw);
+    writeQualifiedAttribute(ATTRIBUTE_TASK_SCRIPT_RESULTVARIABLE, scriptTask.getResultVariable(), xtw);
   }
 
   @Override

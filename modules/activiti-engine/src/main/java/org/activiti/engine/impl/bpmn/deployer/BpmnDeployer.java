@@ -86,7 +86,7 @@ public class BpmnDeployer implements Deployer {
           .name(resourceName);
         
         if (!deployment.isValidatingSchema()) {
-          bpmnParse.setSchemaResource(null);
+          //bpmnParse.setSchemaResource(null);
         }
         
         bpmnParse.execute();

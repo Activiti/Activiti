@@ -12,7 +12,7 @@
  */
 package org.activiti.engine.impl.bpmn.parser;
 
-import org.activiti.engine.impl.util.xml.Element;
+import org.activiti.bpmn.model.Import;
 
 /**
  * A XML importer
@@ -27,5 +27,5 @@ public interface XMLImporter {
    * @param element the declarations to be imported
    * @param parse the parse who called this importer
    */
-  void importFrom(Element element, BpmnParse parse);
+  void importFrom(Import theImport, BpmnParse parse);
 }

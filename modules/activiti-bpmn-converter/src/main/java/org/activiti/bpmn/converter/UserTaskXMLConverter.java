@@ -21,6 +21,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.converter.child.BaseChildElementParser;
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.bpmn.model.alfresco.AlfrescoUserTask;
 import org.apache.commons.lang.StringUtils;
@@ -53,7 +54,7 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
   }
   
   @Override
-  protected BaseElement convertXMLToElement(XMLStreamReader xtr) {
+  protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
     String formKey = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_FORM_FORMKEY);
     UserTask userTask = null;
     if (StringUtils.isNotEmpty(formKey)) {
@@ -116,7 +117,11 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
       return "humanPerformer";
     }
 
-    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement) throws Exception {
+    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
+      UserTask userTask = (UserTask) parentElement;
+      if (StringUtils.isNotEmpty(userTask.getAssignee())) {
+        model.addProblem("No duplicate assignee and humanPerformer definition allowed", xtr);
+      }
       String resourceElement = XMLStreamReaderUtil.moveDown(xtr);
       if (StringUtils.isNotEmpty(resourceElement) && "resourceAssignmentExpression".equals(resourceElement)) {
         String expression = XMLStreamReaderUtil.moveDown(xtr);
@@ -133,7 +138,7 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
       return "potentialOwner";
     }
 
-    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement) throws Exception {
+    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
       String resourceElement = XMLStreamReaderUtil.moveDown(xtr);
       if (StringUtils.isNotEmpty(resourceElement) && "resourceAssignmentExpression".equals(resourceElement)) {
         String expression = XMLStreamReaderUtil.moveDown(xtr);
@@ -153,9 +158,14 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
             if (assignmentValue.length() == 0)
               continue;
 
-            if (assignmentValue.trim().startsWith("user(")) {
+            String userPrefix = "user(";
+            String groupPrefix = "group(";
+            if (assignmentValue.startsWith(userPrefix)) {
+              assignmentValue = assignmentValue.substring(userPrefix.length(), assignmentValue.length() - 1).trim();
               ((UserTask) parentElement).getCandidateUsers().add(assignmentValue);
-
+            } else if (assignmentValue.startsWith(groupPrefix)) {
+              assignmentValue = assignmentValue.substring(groupPrefix.length(), assignmentValue.length() - 1).trim();
+              ((UserTask) parentElement).getCandidateGroups().add(assignmentValue);
             } else {
               ((UserTask) parentElement).getCandidateGroups().add(assignmentValue);
             }

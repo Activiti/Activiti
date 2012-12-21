@@ -17,6 +17,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.model.Association;
 import org.activiti.bpmn.model.BaseElement;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * @author Tijs Rademakers
@@ -42,6 +43,13 @@ public class AssociationXMLConverter extends BaseBpmnXMLConverter {
     association.setSourceRef(xtr.getAttributeValue(null, ATTRIBUTE_FLOW_SOURCE_REF));
     association.setTargetRef(xtr.getAttributeValue(null, ATTRIBUTE_FLOW_TARGET_REF));
     association.setId(xtr.getAttributeValue(null, ATTRIBUTE_ID));
+    
+    if(StringUtils.isEmpty(association.getSourceRef())) {
+      model.addProblem("association element missing attribute 'sourceRef'", xtr);
+    }
+    if(StringUtils.isEmpty(association.getTargetRef())) {
+      model.addProblem("association element missing attribute 'targetRef'", xtr);
+    }
     
     return association;
   }
