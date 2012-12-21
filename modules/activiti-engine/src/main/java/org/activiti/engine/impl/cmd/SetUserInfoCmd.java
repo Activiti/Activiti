@@ -54,7 +54,7 @@ public class SetUserInfoCmd implements Command<Object>, Serializable {
 
   public Object execute(CommandContext commandContext) {
     commandContext
-      .getIdentityInfoManager()
+      .getIdentityInfoEntityManager()
       .setUserInfo(userId, userPassword, type, key, value, accountPassword, accountDetails);
     return null;
   }

@@ -44,7 +44,7 @@ public class SetJobRetriesCmd implements Command<Void>, Serializable {
 
   public Void execute(CommandContext commandContext) {
     JobEntity job = commandContext
-            .getJobManager()
+            .getJobEntityManager()
             .findJobById(jobId);
     if (job != null) {
       job.setRetries(retries);

@@ -18,12 +18,12 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
 import org.activiti.explorer.Constants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.thebuzzmedia.imgscalr.Scalr;
 import com.thebuzzmedia.imgscalr.Scalr.Mode;
@@ -34,7 +34,7 @@ import com.thebuzzmedia.imgscalr.Scalr.Mode;
  */
 public class ImageUtil {
   
-  protected static final Logger LOGGER = Logger.getLogger(ImageUtil.class.getName());
+  protected static final Logger LOGGER = LoggerFactory.getLogger(ImageUtil.class.getName());
 
   /**
    * Resizes the given image (passed as {@link InputStream}.
@@ -61,7 +61,7 @@ public class ImageUtil {
       ImageIO.write(image, Constants.MIMETYPE_EXTENSION_MAPPING.get(mimeType), bos);
       return new ByteArrayInputStream(bos.toByteArray());
     } catch (IOException e) {
-      LOGGER.log(Level.SEVERE, "Exception while resizing image", e);
+      LOGGER.error("Exception while resizing image", e);
       return null;
     }
   }

@@ -35,7 +35,7 @@ public class GetTaskAttachmentsCmd implements Command<List<Attachment>>, Seriali
 
   public List<Attachment> execute(CommandContext commandContext) {
     return commandContext
-      .getAttachmentManager()
+      .getAttachmentEntityManager()
       .findAttachmentsByTaskId(taskId);
   }
 }

@@ -109,7 +109,7 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
     return commandContext
-      .getDeploymentManager()
+      .getDeploymentEntityManager()
       .findDeploymentCountByQueryCriteria(this);
   }
 
@@ -117,7 +117,7 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
   public List<Deployment> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     return commandContext
-      .getDeploymentManager()
+      .getDeploymentEntityManager()
       .findDeploymentsByQueryCriteria(this, page);
   }
   

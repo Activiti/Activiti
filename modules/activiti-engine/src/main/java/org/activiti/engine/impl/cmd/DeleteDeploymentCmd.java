@@ -15,6 +15,7 @@ package org.activiti.engine.impl.cmd;
 import java.io.Serializable;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
@@ -36,11 +37,13 @@ public class DeleteDeploymentCmd implements Command<Void>, Serializable {
     if(deploymentId == null) {
       throw new ActivitiException("deploymentId is null");
     }
-
-    commandContext
-      .getDeploymentManager()
-      .deleteDeployment(deploymentId, cascade);
     
+    // Remove process definitions from cache:
+    Context
+      .getProcessEngineConfiguration()
+      .getDeploymentManager()
+      .removeDeployment(deploymentId, cascade);
+
     return null;
   }
 }

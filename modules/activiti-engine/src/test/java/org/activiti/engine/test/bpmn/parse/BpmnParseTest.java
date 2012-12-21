@@ -84,7 +84,7 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
       public ProcessDefinitionEntity execute(CommandContext commandContext) {
         return Context
           .getProcessEngineConfiguration()
-          .getDeploymentCache()
+          .getDeploymentManager()
           .findDeployedLatestProcessDefinitionByKey("myProcess");
       }
     });
@@ -145,7 +145,7 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
       public ProcessDefinitionEntity execute(CommandContext commandContext) {
         return Context
           .getProcessEngineConfiguration()
-          .getDeploymentCache()
+          .getDeploymentManager()
           .findDeployedLatestProcessDefinitionByKey("resolvableNamespacesProcess");
       }
     });

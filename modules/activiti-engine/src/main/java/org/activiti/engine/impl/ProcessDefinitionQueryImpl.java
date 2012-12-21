@@ -208,7 +208,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     if(authorizationUserId != null) {
       List<Group> groups = Context
               .getCommandContext()
-              .getGroupManager()
+              .getGroupEntityManager()
               .findGroupsByUser(authorizationUserId);
             List<String> groupIds = new ArrayList<String>();
             for (Group group : groups) {
@@ -250,14 +250,14 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
     return commandContext
-      .getProcessDefinitionManager()
+      .getProcessDefinitionEntityManager()
       .findProcessDefinitionCountByQueryCriteria(this);
   }
 
   public List<ProcessDefinition> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     return commandContext
-      .getProcessDefinitionManager()
+      .getProcessDefinitionEntityManager()
       .findProcessDefinitionsByQueryCriteria(this, page);
   }
   

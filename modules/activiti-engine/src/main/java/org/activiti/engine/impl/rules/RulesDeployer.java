@@ -14,11 +14,10 @@
 package org.activiti.engine.impl.rules;
 
 import java.util.Map;
-import java.util.logging.Logger;
 
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.deploy.Deployer;
-import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
+import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 import org.drools.KnowledgeBase;
@@ -27,6 +26,8 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -34,18 +35,18 @@ import org.drools.io.ResourceFactory;
  */
 public class RulesDeployer implements Deployer {
   
-  private static Logger log = Logger.getLogger(RulesDeployer.class.getName());
+  private static Logger log = LoggerFactory.getLogger(RulesDeployer.class);
 
   public void deploy(DeploymentEntity deployment) {
     KnowledgeBuilder knowledgeBuilder = null;
 
-    DeploymentCache deploymentCache = Context
+    DeploymentManager deploymentManager = Context
       .getProcessEngineConfiguration()
-      .getDeploymentCache();
+      .getDeploymentManager();
     
     Map<String, ResourceEntity> resources = deployment.getResources();
     for (String resourceName : resources.keySet()) {
-      log.info("Processing resource " + resourceName);
+      log.info("Processing resource {}", resourceName);
       if (resourceName.endsWith(".drl")) { // is only parsing .drls sufficient? what about other rule dsl's? (@see ResourceType)
         if (knowledgeBuilder==null) {
           knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -59,7 +60,7 @@ public class RulesDeployer implements Deployer {
     
     if (knowledgeBuilder!=null) {
       KnowledgeBase knowledgeBase = knowledgeBuilder.newKnowledgeBase();
-      deploymentCache.addKnowledgeBase(deployment.getId(), knowledgeBase);
+      deploymentManager.getKnowledgeBaseCache().add(deployment.getId(), knowledgeBase);
     }
   }
 }

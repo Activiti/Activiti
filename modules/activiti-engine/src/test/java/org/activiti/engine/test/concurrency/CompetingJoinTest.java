@@ -13,14 +13,14 @@
 
 package org.activiti.engine.test.concurrency;
 
-import java.util.logging.Logger;
-
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.impl.cmd.SignalCmd;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -28,7 +28,7 @@ import org.activiti.engine.test.Deployment;
  */
 public class CompetingJoinTest extends PluggableActivitiTestCase {
 
-  private static Logger log = Logger.getLogger(CompetingSignalsTest.class.getName());
+  private static Logger log = LoggerFactory.getLogger(CompetingSignalsTest.class);
   
   Thread testThread = Thread.currentThread();
   static ControllableThread activeThread;
@@ -53,7 +53,7 @@ public class CompetingJoinTest extends PluggableActivitiTestCase {
       } catch (ActivitiOptimisticLockingException e) {
         this.exception = e;
       }
-      log.fine(getName()+" ends");
+      log.debug("{} ends", getName());
     }
   }
   
@@ -72,19 +72,19 @@ public class CompetingJoinTest extends PluggableActivitiTestCase {
       .activityId("wait2")
       .singleResult();
 
-    log.fine("test thread starts thread one");
+    log.debug("test thread starts thread one");
     SignalThread threadOne = new SignalThread(execution1.getId());
     threadOne.startAndWaitUntilControlIsReturned();
     
-    log.fine("test thread continues to start thread two");
+    log.debug("test thread continues to start thread two");
     SignalThread threadTwo = new SignalThread(execution2.getId());
     threadTwo.startAndWaitUntilControlIsReturned();
 
-    log.fine("test thread notifies thread 1");
+    log.debug("test thread notifies thread 1");
     threadOne.proceedAndWaitTillDone();
     assertNull(threadOne.exception);
 
-    log.fine("test thread notifies thread 2");
+    log.debug("test thread notifies thread 2");
     threadTwo.proceedAndWaitTillDone();
     assertNotNull(threadTwo.exception);
     assertTextPresent("was updated by another transaction concurrently", threadTwo.exception.getMessage());

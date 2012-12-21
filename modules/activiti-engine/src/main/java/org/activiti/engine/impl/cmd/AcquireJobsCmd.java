@@ -48,7 +48,7 @@ public class AcquireJobsCmd implements Command<AcquiredJobs> {
     
     AcquiredJobs acquiredJobs = new AcquiredJobs();
     List<JobEntity> jobs = commandContext
-      .getJobManager()
+      .getJobEntityManager()
       .findNextJobsToExecute(new Page(0, maxNonExclusiveJobsPerAcquisition));
 
     for (JobEntity job: jobs) {
@@ -58,7 +58,7 @@ public class AcquireJobsCmd implements Command<AcquiredJobs> {
         if (job.isExclusive() && job.getProcessInstanceId() != null) {
           // acquire all exclusive jobs in the same process instance
           // (includes the current job)
-          List<JobEntity> exclusiveJobs = commandContext.getJobManager()
+          List<JobEntity> exclusiveJobs = commandContext.getJobEntityManager()
             .findExclusiveJobsToExecute(job.getProcessInstanceId());
           for (JobEntity exclusiveJob : exclusiveJobs) {
             if(exclusiveJob != null) {

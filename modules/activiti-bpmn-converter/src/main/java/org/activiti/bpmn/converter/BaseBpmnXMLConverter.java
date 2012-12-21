@@ -15,7 +15,6 @@ package org.activiti.bpmn.converter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -59,13 +58,15 @@ import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.bpmn.model.UserTask;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Tijs Rademakers
  */
 public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
 
-  protected static final Logger LOGGER = Logger.getLogger(BaseBpmnXMLConverter.class.getName());
+  protected static final Logger LOGGER = LoggerFactory.getLogger(BaseBpmnXMLConverter.class);
   
   protected BpmnModel model;
   protected Process activeProcess;

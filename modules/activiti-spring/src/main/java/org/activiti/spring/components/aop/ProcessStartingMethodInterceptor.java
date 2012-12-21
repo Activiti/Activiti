@@ -20,7 +20,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Future;
-import java.util.logging.Logger;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
@@ -30,6 +29,8 @@ import org.activiti.spring.annotations.ProcessVariable;
 import org.activiti.spring.annotations.StartProcess;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.util.Assert;
@@ -43,7 +44,7 @@ import org.springframework.util.StringUtils;
  */
 public class ProcessStartingMethodInterceptor implements MethodInterceptor {
 
-	private Logger log = Logger.getLogger(getClass().getName());
+	private Logger log = LoggerFactory.getLogger(getClass());
 
 	/**
 	 * injected reference - can be obtained via a {@link org.activiti.spring.ProcessEngineFactoryBean}
@@ -87,13 +88,13 @@ public class ProcessStartingMethodInterceptor implements MethodInterceptor {
 
 			String businessKey = this.processBusinessKey(invocation);
 
-			log.info("variables for the started process: " + vars.toString());
+			log.info("variables for the started process: {}", vars.toString());
 
 			RuntimeService runtimeService = this.processEngine.getRuntimeService();
 			ProcessInstance pi ;
 			if (null != businessKey && StringUtils.hasText(businessKey)) {
 				pi = runtimeService.startProcessInstanceByKey(processKey, businessKey, vars);
-				log.info("the business key for the started process is '" + businessKey + "' ");
+				log.info("the business key for the started process is '{}'", businessKey);
 			} else {
 				pi = runtimeService.startProcessInstanceByKey(processKey, vars);
 			}

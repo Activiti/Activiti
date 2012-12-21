@@ -62,7 +62,7 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
     if (resources==null && id!=null) {
       List<ResourceEntity> resourcesList = Context
         .getCommandContext()
-        .getResourceManager()
+        .getResourceEntityManager()
         .findResourcesByDeploymentId(id);
       resources = new HashMap<String, ResourceEntity>();
       for (ResourceEntity resource: resourcesList) {

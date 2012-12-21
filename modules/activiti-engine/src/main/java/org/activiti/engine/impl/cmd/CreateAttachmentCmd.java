@@ -83,7 +83,7 @@ public class CreateAttachmentCmd implements Command<Attachment> {
 
   private void verifyParameters(CommandContext commandContext) {
     if (taskId != null) {
-      TaskEntity task = Context.getCommandContext().getTaskManager().findTaskById(taskId);
+      TaskEntity task = Context.getCommandContext().getTaskEntityManager().findTaskById(taskId);
 
       if (task == null) {
         throw new ActivitiException("Cannot find task with id " + taskId);
@@ -95,7 +95,7 @@ public class CreateAttachmentCmd implements Command<Attachment> {
     }
     
     if (processInstanceId != null) {
-      ExecutionEntity execution = commandContext.getExecutionManager().findExecutionById(processInstanceId);
+      ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
 
       if (execution == null) {
         throw new ActivitiException("Process instance " + processInstanceId + " doesn't exist");

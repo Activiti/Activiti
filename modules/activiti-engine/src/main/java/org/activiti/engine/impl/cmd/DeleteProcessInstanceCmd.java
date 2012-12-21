@@ -39,7 +39,7 @@ public class DeleteProcessInstanceCmd implements Command<Void>, Serializable {
     }
     
     commandContext
-      .getExecutionManager()
+      .getExecutionEntityManager()
       .deleteProcessInstance(processInstanceId, deleteReason);
     return null;
   }

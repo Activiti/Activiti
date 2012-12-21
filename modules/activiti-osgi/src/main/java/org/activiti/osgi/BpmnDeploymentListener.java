@@ -12,18 +12,19 @@
  */
 package org.activiti.osgi;
 
+import java.io.File;
+import java.net.URL;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.apache.felix.fileinstall.ArtifactUrlTransformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
-import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * A fileinstall deployer transforming a BPMN xml definition file into
@@ -33,7 +34,7 @@ import java.util.logging.Logger;
  */
 public class BpmnDeploymentListener implements ArtifactUrlTransformer {
 
-    private static final Logger LOGGER = Logger.getLogger(BpmnDeploymentListener.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(BpmnDeploymentListener.class);
 
     private DocumentBuilderFactory dbf;
 
@@ -48,7 +49,7 @@ public class BpmnDeploymentListener implements ArtifactUrlTransformer {
                 }
             }
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Unable to parse deployed file " + artifact.getAbsolutePath(), e);
+            LOGGER.error("Unable to parse deployed file {}", artifact.getAbsolutePath(), e);
         }
         return false;
     }
@@ -57,7 +58,7 @@ public class BpmnDeploymentListener implements ArtifactUrlTransformer {
         try {
             return new URL("bpmn", null, artifact.toString());
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Unable to build BPMN bundle", e);
+            LOGGER.error("Unable to build BPMN bundle", e);
             return null;
         }
     }

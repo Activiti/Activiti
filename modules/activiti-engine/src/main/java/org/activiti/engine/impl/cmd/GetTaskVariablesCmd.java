@@ -48,7 +48,7 @@ public class GetTaskVariablesCmd implements Command<Map<String, Object>>, Serial
     
     TaskEntity task = Context
       .getCommandContext()
-      .getTaskManager()
+      .getTaskEntityManager()
       .findTaskById(taskId);
     
     if (task==null) {

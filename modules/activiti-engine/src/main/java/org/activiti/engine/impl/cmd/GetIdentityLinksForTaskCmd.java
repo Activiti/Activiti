@@ -41,7 +41,7 @@ public class GetIdentityLinksForTaskCmd implements Command<List<IdentityLink>>, 
   public List<IdentityLink> execute(CommandContext commandContext) {
     TaskEntity task = Context
       .getCommandContext()
-      .getTaskManager()
+      .getTaskEntityManager()
       .findTaskById(taskId);
 
     List<IdentityLink> identityLinks = (List) task.getIdentityLinks();

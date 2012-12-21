@@ -40,7 +40,7 @@ public class GetJobExceptionStacktraceCmd implements Command<String>, Serializab
     }
     
     JobEntity job = commandContext
-      .getJobManager()
+      .getJobEntityManager()
       .findJobById(jobId);
     
     if(job == null) {

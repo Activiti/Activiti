@@ -12,9 +12,6 @@
  */
 package org.activiti.editor.rest.model;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
@@ -25,13 +22,15 @@ import org.restlet.data.Form;
 import org.restlet.data.Status;
 import org.restlet.resource.Put;
 import org.restlet.resource.ServerResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Tijs Rademakers
  */
 public class ModelSaveRestResource extends ServerResource implements ModelDataJsonConstants {
   
-  protected static final Logger LOGGER = Logger.getLogger(ModelSaveRestResource.class.getName());
+  protected static final Logger LOGGER = LoggerFactory.getLogger(ModelSaveRestResource.class);
 
   @Put
   public void saveModel(Form modelForm) {
@@ -62,7 +61,7 @@ public class ModelSaveRestResource extends ServerResource implements ModelDataJs
       repositoryService.addModelEditorSourceExtra(model.getId(), modelForm.getFirstValue("svg_xml").getBytes("utf-8"));
       
     } catch(Exception e) {
-      LOGGER.log(Level.SEVERE, "Error saving model", e);
+      LOGGER.error("Error saving model", e);
       setStatus(Status.SERVER_ERROR_INTERNAL);
     }
   }

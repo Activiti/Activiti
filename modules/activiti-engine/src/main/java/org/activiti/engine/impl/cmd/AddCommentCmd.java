@@ -56,7 +56,7 @@ public class AddCommentCmd extends NeedsActiveTaskCmd<Object> {
     comment.setFullMessage(message);
     
     commandContext
-      .getCommentManager()
+      .getCommentEntityManager()
       .insert(comment);
     
     return null;

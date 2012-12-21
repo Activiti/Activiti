@@ -12,20 +12,21 @@
  */
 package org.activiti.bpmn.converter.child;
 
-import java.util.logging.Logger;
 
 import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Tijs Rademakers
  */
 public abstract class BaseChildElementParser implements BpmnXMLConstants {
   
-  protected static final Logger LOGGER = Logger.getLogger(BaseChildElementParser.class.getName());
+  protected static final Logger LOGGER = LoggerFactory.getLogger(BaseChildElementParser.class);
 
   protected BaseElement parentElement;
   

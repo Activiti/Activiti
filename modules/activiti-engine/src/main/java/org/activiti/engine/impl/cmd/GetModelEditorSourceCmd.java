@@ -37,7 +37,7 @@ public class GetModelEditorSourceCmd implements Command<byte[]>, Serializable {
     }
     
     byte[] bytes = commandContext
-      .getModelManager()
+      .getModelEntityManager()
       .findEditorSourceByModelId(modelId);
     
     return bytes;

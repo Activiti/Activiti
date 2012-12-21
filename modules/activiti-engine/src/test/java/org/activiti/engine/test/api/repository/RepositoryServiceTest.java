@@ -13,10 +13,15 @@
 
 package org.activiti.engine.test.api.repository;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.RepositoryServiceImpl;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.repository.Model;
@@ -271,5 +276,23 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
     assertEquals("new", new String(repositoryService.getModelEditorSourceExtra(model.getId()), "utf-8"));
     
     repositoryService.deleteModel(model.getId());
+  }
+  
+  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+  public void testProcessDefinitionEntitySerializable() {
+    String procDefId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
+    ProcessDefinition processDefinition = ((RepositoryServiceImpl) repositoryService).getProcessDefinition(procDefId);
+    
+    try {
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      new ObjectOutputStream(baos).writeObject(processDefinition);
+      
+      byte[] bytes = baos.toByteArray();
+      assertTrue(bytes.length > 0);
+      System.out.println("-----> " + bytes.length);
+    } catch (IOException e) {
+      e.printStackTrace();
+      fail();
+    }
   }
 }

@@ -14,7 +14,6 @@
 package org.activiti.engine.impl.bpmn.helper;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.BpmnError;
@@ -31,6 +30,8 @@ import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -45,7 +46,7 @@ import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
  */
 public class ErrorPropagation {
 
-  private static final Logger LOG = Logger.getLogger(ErrorPropagation.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(ErrorPropagation.class);
 
   public static void propagateError(BpmnError error, ActivityExecution execution) throws Exception {    
     propagateError(error.getErrorCode(), execution);
@@ -63,9 +64,8 @@ public class ErrorPropagation {
       if (superExecution != null) {
         executeCatchInSuperProcess(errorCode, superExecution);
       } else {
-        LOG.info(execution.getActivity().getId() + " throws error event with errorCode '"
-                + errorCode + "', but no catching boundary event was defined. "
-                +   "Execution will simply be ended (none end event semantics).");
+        LOG.info("{} throws error event with errorCode '{}', but no catching boundary event was defined. Execution will simply be ended (none end event semantics).",
+                execution.getActivity().getId(), errorCode);
         execution.end();
       }
     }

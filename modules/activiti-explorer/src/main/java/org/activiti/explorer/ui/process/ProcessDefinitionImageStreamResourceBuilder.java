@@ -15,7 +15,6 @@ package org.activiti.explorer.ui.process;
 
 import java.io.InputStream;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
@@ -27,6 +26,8 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.explorer.Constants;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.ui.util.InputStreamStreamSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.terminal.StreamResource.StreamSource;
@@ -40,7 +41,7 @@ import com.vaadin.terminal.StreamResource.StreamSource;
  */
 public class ProcessDefinitionImageStreamResourceBuilder {
   
-  protected static final Logger LOGGER = Logger.getLogger(ProcessDefinitionImageStreamResourceBuilder.class.getName());
+  protected static final Logger LOGGER = LoggerFactory.getLogger(ProcessDefinitionImageStreamResourceBuilder.class);
   
   public StreamResource buildStreamResource(ProcessDefinition processDefinition, RepositoryService repositoryService) {
     
@@ -86,7 +87,7 @@ public class ProcessDefinitionImageStreamResourceBuilder {
         }
       } catch(Throwable t) {
         // Image can't be generated, ignore this
-        LOGGER.warning("Process image cannot be generated due to exception: " + t.getClass().getName() + " - " + t.getMessage());
+        LOGGER.warn("Process image cannot be generated due to exception: {} - {}", t.getClass().getName(), t.getMessage());
       }
     }
     return imageResource;

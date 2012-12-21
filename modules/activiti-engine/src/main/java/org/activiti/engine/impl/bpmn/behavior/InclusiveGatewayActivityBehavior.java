@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.Condition;
@@ -26,6 +24,8 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of the Inclusive Gateway/OR gateway/inclusive data-based
@@ -37,7 +37,7 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
   
-  private static Logger log = Logger.getLogger(InclusiveGatewayActivityBehavior.class.getName());
+  private static Logger log = LoggerFactory.getLogger(InclusiveGatewayActivityBehavior.class.getName());
   
   public void execute(ActivityExecution execution) throws Exception { 
 
@@ -47,8 +47,8 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
     PvmActivity activity = execution.getActivity();
     if (!activeConcurrentExecutionsExist(execution)) {
       
-      if (log.isLoggable(Level.FINE)) {
-        log.fine("inclusive gateway '" + activity.getId() + "' activates");
+      if (log.isDebugEnabled()) {
+        log.debug("inclusive gateway '{}' activates", activity.getId());
       }
       
       List<ActivityExecution> joinedExecutions = execution.findInactiveConcurrentExecutions(activity);
@@ -84,8 +84,8 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
         }
       
     } else {
-      if (log.isLoggable(Level.FINE)) {
-        log.fine("Inclusive gateway '"+activity.getId()+"' does not activate");
+      if (log.isDebugEnabled()) {
+        log.debug("Inclusive gateway '{}' does not activate", activity.getId());
       }
     }
   }
@@ -106,16 +106,16 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
           }
           
           if(reachable) {
-            if (log.isLoggable(Level.FINE)) {
-              log.fine("an active concurrent execution found: '"+concurrentExecution.getActivity());
+            if (log.isDebugEnabled()) {
+              log.debug("an active concurrent execution found: '{}'", concurrentExecution.getActivity());
             }
             return true;
           }
         }
       }
     } else if (execution.isActive()) { // is this ever true?
-      if (log.isLoggable(Level.FINE)) {
-        log.fine("an active concurrent execution found: '"+execution.getActivity());
+      if (log.isDebugEnabled()) {
+        log.debug("an active concurrent execution found: '{}'", execution.getActivity());
       }
       return true;
     }

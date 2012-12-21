@@ -16,8 +16,6 @@ package org.activiti.explorer.demo;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.engine.IdentityService;
@@ -32,6 +30,8 @@ import org.activiti.engine.repository.Model;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -39,7 +39,7 @@ import org.codehaus.jackson.node.ObjectNode;
  */
 public class DemoDataGenerator implements ModelDataJsonConstants {
   
-  protected static final Logger LOGGER = Logger.getLogger(DemoDataGenerator.class.getName());
+  protected static final Logger LOGGER = LoggerFactory.getLogger(DemoDataGenerator.class);
 
   protected ProcessEngine processEngine;
   protected IdentityService identityService;
@@ -202,14 +202,14 @@ public class DemoDataGenerator implements ModelDataJsonConstants {
         InputStream svgStream = this.getClass().getClassLoader().getResourceAsStream("org/activiti/explorer/demo/model/test.svg");
         repositoryService.addModelEditorSourceExtra(model.getId(), IOUtils.toByteArray(svgStream));
       } catch(Exception e) {
-        LOGGER.log(Level.WARNING, "Failed to read SVG", e);
+        LOGGER.warn("Failed to read SVG", e);
       }
       
       try {
         InputStream editorJsonStream = this.getClass().getClassLoader().getResourceAsStream(jsonFile);
         repositoryService.addModelEditorSource(model.getId(), IOUtils.toByteArray(editorJsonStream));
       } catch(Exception e) {
-        LOGGER.log(Level.WARNING, "Failed to read editor JSON", e);
+        LOGGER.warn("Failed to read editor JSON", e);
       }
     }
   }

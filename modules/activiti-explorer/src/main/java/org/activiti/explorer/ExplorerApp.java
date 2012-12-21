@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.impl.identity.Authentication;
-import org.activiti.engine.impl.util.LogUtil;
 import org.activiti.explorer.cache.UserCache;
 import org.activiti.explorer.identity.LoggedInUser;
 import org.activiti.explorer.navigation.UriFragment;
@@ -39,11 +38,6 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   
   private static final long serialVersionUID = -1L;
 
-  // Initialise logging
-  static {
-    LogUtil.readJavaUtilLoggingConfigFromClasspath();
-  }
-  
   // Thread local storage of instance for each user
   protected static ThreadLocal<ExplorerApp> current = new ThreadLocal<ExplorerApp>();
   

@@ -26,8 +26,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
@@ -46,13 +44,15 @@ import org.osgi.util.tracker.BundleTracker;
 import org.osgi.util.tracker.BundleTrackerCustomizer;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author <a href="gnodet@gmail.com">Guillaume Nodet</a>
  */
 public class Extender implements BundleTrackerCustomizer, ServiceTrackerCustomizer {
 
-  private static final Logger LOGGER = Logger.getLogger(Extender.class.getName());
+  private static final Logger LOGGER = LoggerFactory.getLogger(Extender.class);
   private static final String META_INF_SERVICES_DIR = "META-INF/services";
   private static final String SCRIPT_ENGINE_SERVICE_FILE = "javax.script.ScriptEngineFactory";
 
@@ -161,7 +161,7 @@ public class Extender implements BundleTrackerCustomizer, ServiceTrackerCustomiz
   }
 
   private void checkBundle(Bundle bundle) {
-    LOGGER.log(Level.FINE, "Scanning bundle {} for activiti process", bundle.getSymbolicName());
+    LOGGER.debug("Scanning bundle {} for activiti process", bundle.getSymbolicName());
     try {
       List<URL> pathList = new ArrayList<URL>();
       String activitiHeader = (String) bundle.getHeaders().get(BUNDLE_ACTIVITI_HEADER);
@@ -193,8 +193,7 @@ public class Extender implements BundleTrackerCustomizer, ServiceTrackerCustomiz
       }
 
       if (!pathList.isEmpty()) {
-        LOGGER.log(Level.FINE, "Found activiti process in bundle " + bundle.getSymbolicName()
-                + " with paths: " +  pathList);
+        LOGGER.debug("Found activiti process in bundle {} with paths: {}", bundle.getSymbolicName(),  pathList);
 
         ProcessEngine engine = (ProcessEngine) engineServiceTracker.waitForService(timeout);
         if (engine == null) {
@@ -218,10 +217,10 @@ public class Extender implements BundleTrackerCustomizer, ServiceTrackerCustomiz
         builder.enableDuplicateFiltering();
         builder.deploy();
       } else {
-        LOGGER.log(Level.FINE, "No activiti process found in bundle {}", bundle.getSymbolicName());
+        LOGGER.debug("No activiti process found in bundle {}", bundle.getSymbolicName());
       }
     } catch (Throwable t) {
-      LOGGER.log(Level.SEVERE, "Unable to deploy activiti bundle", t);
+      LOGGER.error("Unable to deploy activiti bundle", t);
     }
   }
 
@@ -271,7 +270,7 @@ public class Extender implements BundleTrackerCustomizer, ServiceTrackerCustomiz
       try {
           override = privateDataVersion.toURI().toURL();
       } catch (MalformedURLException e) {
-          LOGGER.log(Level.SEVERE, "Unexpected URL Conversion Issue", e);
+          LOGGER.error("Unexpected URL Conversion Issue", e);
       }
     }
     return override;
@@ -302,13 +301,13 @@ public class Extender implements BundleTrackerCustomizer, ServiceTrackerCustomiz
       return null;
     }
     
-    LOGGER.fine("Found " + refs.length + " OSGi ScriptEngineResolver services");
+    LOGGER.debug("Found {} OSGi ScriptEngineResolver services", refs.length);
     
     for (ServiceReference ref : refs) {
       ScriptEngineResolver resolver = (ScriptEngineResolver) context.getService(ref);
       ScriptEngine engine = resolver.resolveScriptEngine(scriptEngineName);
       context.ungetService(ref);
-      LOGGER.fine("OSGi resolver " + resolver + " produced " + scriptEngineName + " engine " + engine);
+      LOGGER.debug("OSGi resolver {} produced {} engine {}", resolver, scriptEngineName, engine);
       if (engine != null) {
         return engine;
       }
@@ -323,7 +322,7 @@ public class Extender implements BundleTrackerCustomizer, ServiceTrackerCustomiz
       configURL = (URL) e.nextElement();
     }
     if (configURL != null) {
-      LOGGER.info("Found ScriptEngineFactory in " + bundle.getSymbolicName());
+      LOGGER.info("Found ScriptEngineFactory in {}",bundle.getSymbolicName());
       resolvers.add(new BundleScriptEngineResolver(bundle, configURL));
     }
   } 
@@ -376,14 +375,14 @@ public class Extender implements BundleTrackerCustomizer, ServiceTrackerCustomiz
             } finally {
               Thread.currentThread().setContextClassLoader(old);
             }
-            LOGGER.finest("Resolved ScriptEngineFactory: " + engine + " for expected name: " + name);
+            LOGGER.trace("Resolved ScriptEngineFactory: {} for expected name: {}", engine, name);
             return engine;
           }
         }
-        LOGGER.fine("ScriptEngineFactory: " + factory.getEngineName() + " does not match expected name: " + name);
+        LOGGER.debug("ScriptEngineFactory: {} does not match expected name: {}", factory.getEngineName(), name);
         return null;
       } catch (Exception e) {
-        LOGGER.log(Level.WARNING, "Cannot create ScriptEngineFactory: " + e.getClass().getName(), e);
+        LOGGER.warn("Cannot create ScriptEngineFactory: {}", e.getClass().getName(), e);
         return null;
       }
     }

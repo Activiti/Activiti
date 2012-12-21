@@ -38,7 +38,7 @@ public abstract class NeedsActiveExecutionCmd<T> implements Command<T>, Serializ
     }
     
     ExecutionEntity execution = commandContext
-      .getExecutionManager()
+      .getExecutionEntityManager()
       .findExecutionById(executionId);
     
     if (execution==null) {

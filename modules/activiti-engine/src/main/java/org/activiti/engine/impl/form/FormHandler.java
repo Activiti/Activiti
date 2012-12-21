@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.form;
 
 import java.util.List;
+import java.io.Serializable;
 import java.util.Map;
 
 import org.activiti.bpmn.model.FormProperty;
@@ -25,7 +26,7 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 /**
  * @author Tom Baeyens
  */
-public interface FormHandler {
+public interface FormHandler extends Serializable {
 
   ThreadLocal<FormHandler> current = new ThreadLocal<FormHandler>();
 

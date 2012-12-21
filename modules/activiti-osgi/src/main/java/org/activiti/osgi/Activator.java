@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.felix.fileinstall.ArtifactListener;
 import org.apache.felix.fileinstall.ArtifactUrlTransformer;
@@ -25,6 +23,8 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.url.URLStreamHandlerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * OSGi Activator
@@ -32,7 +32,7 @@ import org.osgi.service.url.URLStreamHandlerService;
  */
 public class Activator implements BundleActivator {
 
-    private static final Logger LOGGER = Logger.getLogger(Activator.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(Activator.class);
 
     private List<Runnable> callbacks = new ArrayList<Runnable>();
 
@@ -59,8 +59,8 @@ public class Activator implements BundleActivator {
                     new BarDeploymentListener(),
                     null));
         } catch (NoClassDefFoundError e) {
-            LOGGER.log( Level.WARNING, "FileInstall package is not available, disabling fileinstall support" );
-            LOGGER.log( Level.FINE, "FileInstall package is not available, disabling fileinstall support", e );
+            LOGGER.warn("FileInstall package is not available, disabling fileinstall support" );
+            LOGGER.debug("FileInstall package is not available, disabling fileinstall support", e );
         }
         callbacks.add(new Tracker(new Extender(context)));
     }

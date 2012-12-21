@@ -19,7 +19,6 @@ package org.activiti.spring.components.scope;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
@@ -30,6 +29,8 @@ import org.activiti.spring.components.aop.util.Scopifier;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.scope.ScopedObject;
 import org.springframework.beans.BeansException;
@@ -70,7 +71,7 @@ public class ProcessScope implements Scope, InitializingBean, BeanFactoryPostPro
 
 	private boolean proxyTargetClass = true;
 
-	private Logger logger = Logger.getLogger(getClass().getName());
+	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	private ProcessEngine processEngine;
 
@@ -86,7 +87,7 @@ public class ProcessScope implements Scope, InitializingBean, BeanFactoryPostPro
 
 		ExecutionEntity executionEntity = null;
 		try {
-			logger.fine("returning scoped object having beanName '" + name + "' for conversation ID '" + this.getConversationId() + "'. ");
+			logger.debug("returning scoped object having beanName '{}' for conversation ID '{}'.", name, this.getConversationId());
 
 			ProcessInstance processInstance = Context.getExecutionContext().getProcessInstance();
 			executionEntity = (ExecutionEntity) processInstance;
@@ -97,23 +98,23 @@ public class ProcessScope implements Scope, InitializingBean, BeanFactoryPostPro
 				if (scopedObject instanceof ScopedObject) {
 					ScopedObject sc = (ScopedObject) scopedObject;
 					scopedObject = sc.getTargetObject();
-					logger.fine("de-referencing " + ScopedObject.class.getName() + "#targetObject before persisting variable");
+					logger.debug("de-referencing {}#targetObject before persisting variable", ScopedObject.class.getName());
 				}
 				persistVariable(name, scopedObject);
 			}
 			return createDirtyCheckingProxy(name, scopedObject);
 		} catch (Throwable th) {
-			logger.warning("couldn't return value from process scope! " + ExceptionUtils.getFullStackTrace(th));
+			logger.warn("couldn't return value from process scope! {}",ExceptionUtils.getFullStackTrace(th));
 		} finally {
 			if (executionEntity != null) {
-				logger.fine("set variable '" + name + "' on executionEntity# " + executionEntity.getId());
+				logger.debug("set variable '{}' on executionEntity#{}", name, executionEntity.getId());
 			}
 		}
 		return null;
 	}
 
 	public void registerDestructionCallback(String name, Runnable callback) {
-		logger.fine("no support for registering descruction callbacks implemented currently. registerDestructionCallback('" + name + "',callback) will do nothing.");
+		logger.debug("no support for registering descruction callbacks implemented currently. registerDestructionCallback('{}',callback) will do nothing.", name);
 	}
 
 	private String getExecutionId() {
@@ -122,7 +123,7 @@ public class ProcessScope implements Scope, InitializingBean, BeanFactoryPostPro
 
 	public Object remove(String name) {
 
-		logger.fine("remove '" + name + "'");
+		logger.debug("remove '{}'", name);
 		return runtimeService.getVariable(getExecutionId(), name);
 	}
 
@@ -150,7 +151,7 @@ public class ProcessScope implements Scope, InitializingBean, BeanFactoryPostPro
 			public Object invoke(MethodInvocation methodInvocation) throws Throwable {
 				String methodName = methodInvocation.getMethod().getName() ;
 
-				logger.info("method invocation for " + methodName+ ".");
+				logger.info("method invocation for {}.", methodName);
 				if(methodName.equals("toString"))
 					return "SharedProcessInstance";
 
@@ -210,7 +211,7 @@ public class ProcessScope implements Scope, InitializingBean, BeanFactoryPostPro
 	}
 
 	public void destroy() throws Exception {
-		logger.info(ProcessScope.class.getName() + "#destroy() called ...");
+		logger.info("{}#destroy() called ...", ProcessScope.class.getName());
 	}
 
 	public void afterPropertiesSet() throws Exception {

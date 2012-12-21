@@ -136,7 +136,7 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
       getByteArrayValue();
       Context
         .getCommandContext()
-        .getByteArrayManager()
+        .getByteArrayEntityManager()
         .deleteByteArrayById(this.byteArrayValueId);
     }
     if (bytes!=null) {
@@ -161,7 +161,7 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
       getByteArrayValue();
       Context
         .getCommandContext()
-        .getByteArrayManager()
+        .getByteArrayEntityManager()
         .deleteByteArrayById(this.byteArrayValueId);
     }
   }

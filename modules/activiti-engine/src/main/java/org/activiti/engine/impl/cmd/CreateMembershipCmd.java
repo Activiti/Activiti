@@ -42,7 +42,7 @@ public class CreateMembershipCmd implements Command<Object>, Serializable {
       throw new ActivitiException("groupId is null");
     }
     commandContext
-      .getMembershipManager()
+      .getMembershipEntityManager()
       .createMembership(userId, groupId);
     return null;
   }

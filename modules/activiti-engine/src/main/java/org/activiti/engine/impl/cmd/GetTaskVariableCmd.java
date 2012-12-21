@@ -48,7 +48,7 @@ public class GetTaskVariableCmd implements Command<Object>, Serializable {
     
     TaskEntity task = Context
       .getCommandContext()
-      .getTaskManager()
+      .getTaskEntityManager()
       .findTaskById(taskId);
     
     if (task==null) {

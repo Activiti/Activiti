@@ -21,7 +21,6 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
-import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.task.TaskDefinition;
@@ -34,10 +33,8 @@ import org.activiti.engine.impl.task.TaskDefinition;
 public class UserTaskActivityBehavior extends TaskActivityBehavior {
 
   protected TaskDefinition taskDefinition;
-  protected ExpressionManager expressionManager;
 
-  public UserTaskActivityBehavior(ExpressionManager expressionManager, TaskDefinition taskDefinition) {
-    this.expressionManager = expressionManager;
+  public UserTaskActivityBehavior(TaskDefinition taskDefinition) {
     this.taskDefinition = taskDefinition;
   }
 
@@ -149,8 +146,4 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     return taskDefinition;
   }
   
-  public ExpressionManager getExpressionManager() {
-    return expressionManager;
-  }
-
 }

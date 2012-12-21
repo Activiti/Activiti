@@ -154,7 +154,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     checkQueryOk();
     ensureVariablesInitialized();
     return commandContext
-      .getExecutionManager()
+      .getExecutionEntityManager()
       .findExecutionCountByQueryCriteria(this);
   }
 
@@ -163,7 +163,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     checkQueryOk();
     ensureVariablesInitialized();
     return (List) commandContext
-      .getExecutionManager()
+      .getExecutionEntityManager()
       .findExecutionsByQueryCriteria(this, page);
   }
   

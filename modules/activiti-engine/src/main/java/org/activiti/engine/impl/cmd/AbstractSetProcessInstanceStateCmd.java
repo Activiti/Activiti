@@ -41,7 +41,7 @@ public abstract class AbstractSetProcessInstanceStateCmd implements Command<Void
       throw new ActivitiException("ProcessInstanceId cannot be null.");
     }
     
-    ExecutionEntity executionEntity = commandContext.getExecutionManager()
+    ExecutionEntity executionEntity = commandContext.getExecutionEntityManager()
       .findExecutionById(executionId);
 
     if(executionEntity == null) {
@@ -54,7 +54,7 @@ public abstract class AbstractSetProcessInstanceStateCmd implements Command<Void
     SuspensionStateUtil.setSuspensionState(executionEntity, getNewState());
     
     // All child executions are suspended
-    List<ExecutionEntity> childExecutions = commandContext.getExecutionManager().findChildExecutionsByProcessInstanceId(executionId);
+    List<ExecutionEntity> childExecutions = commandContext.getExecutionEntityManager().findChildExecutionsByProcessInstanceId(executionId);
     for (ExecutionEntity childExecution : childExecutions) {
       if (!childExecution.getId().equals(executionId)) {
         SuspensionStateUtil.setSuspensionState(childExecution, getNewState());
@@ -62,7 +62,7 @@ public abstract class AbstractSetProcessInstanceStateCmd implements Command<Void
     }
     
     // All tasks are suspended
-    List<TaskEntity> tasks = commandContext.getTaskManager().findTasksByProcessInstanceId(executionId);
+    List<TaskEntity> tasks = commandContext.getTaskEntityManager().findTasksByProcessInstanceId(executionId);
     for (TaskEntity taskEntity : tasks) {
       SuspensionStateUtil.setSuspensionState(taskEntity, getNewState());
     }

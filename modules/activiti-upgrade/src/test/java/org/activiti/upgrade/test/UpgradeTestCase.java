@@ -12,8 +12,6 @@
  */
 package org.activiti.upgrade.test;
 
-import java.util.logging.Logger;
-
 import junit.framework.TestCase;
 
 import org.activiti.engine.HistoryService;
@@ -27,9 +25,10 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.PropertyEntity;
-import org.activiti.engine.impl.util.LogUtil;
 import org.activiti.upgrade.UpgradeUtil;
 import org.junit.Ignore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @Ignore
@@ -39,11 +38,7 @@ import org.junit.Ignore;
  */
 public abstract class UpgradeTestCase extends TestCase {
   
-  static {
-    LogUtil.readJavaUtilLoggingConfigFromClasspath();
-  }
-  
-  static Logger log = Logger.getLogger(UpgradeTestCase.class.getName());
+  static Logger log = LoggerFactory.getLogger(UpgradeTestCase.class.getName());
 
   protected static ProcessEngine processEngine; 
   protected static RuntimeService runtimeService;
@@ -80,8 +75,8 @@ public abstract class UpgradeTestCase extends TestCase {
     
     if (processEngine==null) {
       String database = System.getProperty("database");
-      log.fine("Configuration properties...");
-      log.fine("database.....:"+database);
+      log.debug("Configuration properties...");
+      log.debug("database: {}", database);
       setProcessEngine(UpgradeUtil.createProcessEngineConfiguration(database).buildProcessEngine());
     }
   }

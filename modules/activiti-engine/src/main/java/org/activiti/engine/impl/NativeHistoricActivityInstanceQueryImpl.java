@@ -38,13 +38,13 @@ public class NativeHistoricActivityInstanceQueryImpl extends AbstractNativeQuery
   
   public List<HistoricActivityInstance> executeList(CommandContext commandContext, Map<String, Object> parameterMap, int firstResult, int maxResults) {
     return commandContext
-      .getHistoricActivityInstanceManager()
+      .getHistoricActivityInstanceEntityManager()
       .findHistoricActivityInstancesByNativeQuery(parameterMap, firstResult, maxResults);
   }
   
   public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
     return commandContext
-      .getHistoricActivityInstanceManager()
+      .getHistoricActivityInstanceEntityManager()
       .findHistoricActivityInstanceCountByNativeQuery(parameterMap);
   }
 

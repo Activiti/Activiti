@@ -24,7 +24,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.jobexecutor.GetUnlockedTimersByDuedateCmd;
-import org.activiti.engine.impl.persistence.entity.JobManager;
+import org.activiti.engine.impl.persistence.entity.JobEntityManager;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -41,7 +41,7 @@ public class JobExecutorTest extends JobExecutorTestCase {
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
     commandExecutor.execute(new Command<Void>() {
       public Void execute(CommandContext commandContext) {
-        JobManager jobManager = commandContext.getJobManager();
+        JobEntityManager jobManager = commandContext.getJobEntityManager();
         jobManager.send(createTweetMessage("message-one"));
         jobManager.send(createTweetMessage("message-two"));
         jobManager.send(createTweetMessage("message-three"));

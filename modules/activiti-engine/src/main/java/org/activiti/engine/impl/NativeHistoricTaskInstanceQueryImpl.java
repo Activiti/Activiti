@@ -38,13 +38,13 @@ public class NativeHistoricTaskInstanceQueryImpl extends AbstractNativeQuery<Nat
   
   public List<HistoricTaskInstance> executeList(CommandContext commandContext, Map<String, Object> parameterMap, int firstResult, int maxResults) {
     return commandContext
-      .getHistoricTaskInstanceManager()
+      .getHistoricTaskInstanceEntityManager()
       .findHistoricTaskInstancesByNativeQuery(parameterMap, firstResult, maxResults);
   }
   
   public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
     return commandContext
-      .getHistoricTaskInstanceManager()
+      .getHistoricTaskInstanceEntityManager()
       .findHistoricTaskInstanceCountByNativeQuery(parameterMap);
   }
 

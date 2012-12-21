@@ -13,15 +13,12 @@
 
 package org.activiti.engine.impl.test;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
-import org.activiti.engine.impl.util.ClassNameUtil;
-import org.activiti.engine.impl.util.LogUtil;
-import org.activiti.engine.impl.util.LogUtil.ThreadLogMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -31,24 +28,10 @@ public class PvmTestCase extends TestCase {
 
   protected static final String EMPTY_LINE = "                                                                                           ";
 
-  static {
-    LogUtil.readJavaUtilLoggingConfigFromClasspath();
-  }
+  protected static Logger log = LoggerFactory.getLogger(PvmTestCase.class);
   
-  protected static Logger log = Logger.getLogger(PvmTestCase.class.getName());
-
-  protected static final ThreadLogMode DEFAULT_THREAD_LOG_MODE = ThreadLogMode.INDENT;
-  
-  protected ThreadLogMode threadRenderingMode;
   protected boolean isEmptyLinesEnabled = true;
 
-  public PvmTestCase() {
-    this(DEFAULT_THREAD_LOG_MODE);
-  }
-  
-  public PvmTestCase(ThreadLogMode threadRenderingMode) {
-    this.threadRenderingMode = threadRenderingMode;
-  }
   
   /**
    * Asserts if the provided text is part of some text.
@@ -70,14 +53,11 @@ public class PvmTestCase extends TestCase {
   
   @Override
   protected void runTest() throws Throwable {
-    LogUtil.resetThreadIndents();
-    ThreadLogMode oldThreadRenderingMode = LogUtil.setThreadLogMode(threadRenderingMode);
-    
-    if (log.isLoggable(Level.FINE)) {
+    if (log.isDebugEnabled()) {
       if (isEmptyLinesEnabled) {
-        log.fine(EMPTY_LINE);
+        log.debug(EMPTY_LINE);
       }
-      log.fine("#### START "+ClassNameUtil.getClassNameWithoutPackage(this)+"."+getName()+" ###########################################################");
+      log.debug("#### START {}.{} ###########################################################", this.getClass().getSimpleName(), getName());
     }
 
     try {
@@ -85,18 +65,17 @@ public class PvmTestCase extends TestCase {
       super.runTest();
 
     }  catch (AssertionFailedError e) {
-      log.severe(EMPTY_LINE);
-      log.log(Level.SEVERE, "ASSERTION FAILED: "+e, e);
+      log.error(EMPTY_LINE);
+      log.error("ASSERTION FAILED: {}", e, e);
       throw e;
       
     } catch (Throwable e) {
-      log.severe(EMPTY_LINE);
-      log.log(Level.SEVERE, "EXCEPTION: "+e, e);
+      log.error(EMPTY_LINE);
+      log.error("EXCEPTION: {}", e, e);
       throw e;
       
     } finally {
-      log.fine("#### END "+ClassNameUtil.getClassNameWithoutPackage(this)+"."+getName()+" #############################################################");
-      LogUtil.setThreadLogMode(oldThreadRenderingMode);
+      log.debug("#### END {}.{} #############################################################", this.getClass().getSimpleName(), getName());
     }
   }
 

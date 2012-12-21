@@ -12,8 +12,6 @@
  */
 package org.activiti.bpmn.converter.child;
 
-import java.util.logging.Level;
-
 import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.model.Activity;
@@ -78,7 +76,7 @@ public class IOSpecificationParser extends BaseChildElementParser {
         }
       }
     } catch (Exception e) {
-      LOGGER.log(Level.WARNING, "Error parsing ioSpecification child elements", e);
+      LOGGER.warn("Error parsing ioSpecification child elements", e);
     }
     
     if (parentElement instanceof Process) {

@@ -45,7 +45,7 @@ public class GetDeploymentResourceCmd implements Command<InputStream>, Serializa
     }
     
     ResourceEntity resource = commandContext
-      .getResourceManager()
+      .getResourceEntityManager()
       .findResourceByDeploymentIdAndResourceName(deploymentId, resourceName);
     if(resource == null) {
       throw new ActivitiException("no resource found with name '" + resourceName + "' in deployment '" + deploymentId + "'");

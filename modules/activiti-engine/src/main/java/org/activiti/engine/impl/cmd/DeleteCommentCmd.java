@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.CommentEntity;
-import org.activiti.engine.impl.persistence.entity.CommentManager;
+import org.activiti.engine.impl.persistence.entity.CommentEntityManager;
 import org.activiti.engine.task.Comment;
 
 /**
@@ -36,7 +36,7 @@ public class DeleteCommentCmd implements Command<Void>, Serializable {
   }
 
   public Void execute(CommandContext commandContext) {
-    CommentManager commentManager = commandContext.getCommentManager();
+    CommentEntityManager commentManager = commandContext.getCommentEntityManager();
     
     ArrayList<Comment> comments = new ArrayList<Comment>();
     if (processInstanceId != null) {

@@ -18,25 +18,25 @@ import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.history.HistoryManager;
 import org.activiti.engine.impl.interceptor.Session;
-import org.activiti.engine.impl.persistence.entity.AttachmentManager;
-import org.activiti.engine.impl.persistence.entity.ByteArrayManager;
-import org.activiti.engine.impl.persistence.entity.DeploymentManager;
-import org.activiti.engine.impl.persistence.entity.ExecutionManager;
-import org.activiti.engine.impl.persistence.entity.GroupManager;
-import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceManager;
-import org.activiti.engine.impl.persistence.entity.HistoricDetailManager;
-import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceManager;
-import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceManager;
-import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceManager;
-import org.activiti.engine.impl.persistence.entity.IdentityInfoManager;
-import org.activiti.engine.impl.persistence.entity.IdentityLinkManager;
-import org.activiti.engine.impl.persistence.entity.MembershipManager;
-import org.activiti.engine.impl.persistence.entity.ModelManager;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionManager;
-import org.activiti.engine.impl.persistence.entity.ResourceManager;
-import org.activiti.engine.impl.persistence.entity.TaskManager;
-import org.activiti.engine.impl.persistence.entity.UserManager;
-import org.activiti.engine.impl.persistence.entity.VariableInstanceManager;
+import org.activiti.engine.impl.persistence.entity.AttachmentEntityManager;
+import org.activiti.engine.impl.persistence.entity.ByteArrayEntityManager;
+import org.activiti.engine.impl.persistence.entity.DeploymentEntityManager;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
+import org.activiti.engine.impl.persistence.entity.GroupEntityManager;
+import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityManager;
+import org.activiti.engine.impl.persistence.entity.HistoricDetailEntityManager;
+import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntityManager;
+import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntityManager;
+import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntityManager;
+import org.activiti.engine.impl.persistence.entity.IdentityInfoEntityManager;
+import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityManager;
+import org.activiti.engine.impl.persistence.entity.MembershipEntityManager;
+import org.activiti.engine.impl.persistence.entity.ModelEntityManager;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
+import org.activiti.engine.impl.persistence.entity.ResourceEntityManager;
+import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
+import org.activiti.engine.impl.persistence.entity.UserEntityManager;
+import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
 
 
 /**
@@ -61,80 +61,80 @@ public abstract class AbstractManager implements Session {
     return Context.getCommandContext().getSession(sessionClass);
   }
 
-  protected DeploymentManager getDeploymentManager() {
-    return getSession(DeploymentManager.class);
+  protected DeploymentEntityManager getDeploymentManager() {
+    return getSession(DeploymentEntityManager.class);
   }
 
-  protected ResourceManager getResourceManager() {
-    return getSession(ResourceManager.class);
+  protected ResourceEntityManager getResourceManager() {
+    return getSession(ResourceEntityManager.class);
   }
   
-  protected ByteArrayManager getByteArrayManager() {
-    return getSession(ByteArrayManager.class);
+  protected ByteArrayEntityManager getByteArrayManager() {
+    return getSession(ByteArrayEntityManager.class);
   }
   
-  protected ProcessDefinitionManager getProcessDefinitionManager() {
-    return getSession(ProcessDefinitionManager.class);
+  protected ProcessDefinitionEntityManager getProcessDefinitionManager() {
+    return getSession(ProcessDefinitionEntityManager.class);
   }
   
-  protected ModelManager getModelManager() {
-    return getSession(ModelManager.class);
+  protected ModelEntityManager getModelManager() {
+    return getSession(ModelEntityManager.class);
   }
 
-  protected ExecutionManager getProcessInstanceManager() {
-    return getSession(ExecutionManager.class);
+  protected ExecutionEntityManager getProcessInstanceManager() {
+    return getSession(ExecutionEntityManager.class);
   }
 
-  protected TaskManager getTaskManager() {
-    return getSession(TaskManager.class);
+  protected TaskEntityManager getTaskManager() {
+    return getSession(TaskEntityManager.class);
   }
 
-  protected IdentityLinkManager getIdentityLinkManager() {
-    return getSession(IdentityLinkManager.class);
+  protected IdentityLinkEntityManager getIdentityLinkManager() {
+    return getSession(IdentityLinkEntityManager.class);
   }
 
-  protected VariableInstanceManager getVariableInstanceManager() {
-    return getSession(VariableInstanceManager.class);
+  protected VariableInstanceEntityManager getVariableInstanceManager() {
+    return getSession(VariableInstanceEntityManager.class);
   }
 
-  protected HistoricProcessInstanceManager getHistoricProcessInstanceManager() {
-    return getSession(HistoricProcessInstanceManager.class);
+  protected HistoricProcessInstanceEntityManager getHistoricProcessInstanceManager() {
+    return getSession(HistoricProcessInstanceEntityManager.class);
   }
 
-  protected HistoricDetailManager getHistoricDetailManager() {
-    return getSession(HistoricDetailManager.class);
+  protected HistoricDetailEntityManager getHistoricDetailManager() {
+    return getSession(HistoricDetailEntityManager.class);
   }
 
-  protected HistoricActivityInstanceManager getHistoricActivityInstanceManager() {
-    return getSession(HistoricActivityInstanceManager.class);
+  protected HistoricActivityInstanceEntityManager getHistoricActivityInstanceManager() {
+    return getSession(HistoricActivityInstanceEntityManager.class);
   }
   
-  protected HistoricVariableInstanceManager getHistoricVariableInstanceManager() {
-    return getSession(HistoricVariableInstanceManager.class);
+  protected HistoricVariableInstanceEntityManager getHistoricVariableInstanceManager() {
+    return getSession(HistoricVariableInstanceEntityManager.class);
   }
   
-  protected HistoricTaskInstanceManager getHistoricTaskInstanceManager() {
-    return getSession(HistoricTaskInstanceManager.class);
+  protected HistoricTaskInstanceEntityManager getHistoricTaskInstanceManager() {
+    return getSession(HistoricTaskInstanceEntityManager.class);
   }
   
-  protected UserManager getUserManager() {
-    return getSession(UserManager.class);
+  protected UserEntityManager getUserManager() {
+    return getSession(UserEntityManager.class);
   }
   
-  protected GroupManager getGroupManager() {
-    return getSession(GroupManager.class);
+  protected GroupEntityManager getGroupManager() {
+    return getSession(GroupEntityManager.class);
   }
   
-  protected IdentityInfoManager getIdentityInfoManager() {
-    return getSession(IdentityInfoManager.class);
+  protected IdentityInfoEntityManager getIdentityInfoManager() {
+    return getSession(IdentityInfoEntityManager.class);
   }
   
-  protected MembershipManager getMembershipManager() {
-    return getSession(MembershipManager.class);
+  protected MembershipEntityManager getMembershipManager() {
+    return getSession(MembershipEntityManager.class);
   }
   
-  protected AttachmentManager getAttachmentManager() {
-    return getSession(AttachmentManager.class);
+  protected AttachmentEntityManager getAttachmentManager() {
+    return getSession(AttachmentEntityManager.class);
   }
   
   protected HistoryManager getHistoryManager() {

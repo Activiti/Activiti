@@ -13,8 +13,6 @@
 package org.activiti.cdi;
 
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -23,6 +21,8 @@ import javax.inject.Named;
 
 import org.activiti.cdi.annotation.ProcessVariable;
 import org.activiti.cdi.impl.ProcessVariableMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Allows to access the process variables of a managed process instance.
@@ -32,7 +32,7 @@ import org.activiti.cdi.impl.ProcessVariableMap;
  */
 public class ProcessVariables {
 
-  private Logger logger = Logger.getLogger(ProcessVariables.class.getName());
+  private Logger logger = LoggerFactory.getLogger(ProcessVariables.class);
 
   @Inject private BusinessProcess businessProcess;
   @Inject private ProcessVariableMap processVariableMap;
@@ -50,8 +50,8 @@ public class ProcessVariables {
   protected Object getProcessVariable(InjectionPoint ip) {
     String processVariableName = getVariableName(ip);
 
-    if (logger.isLoggable(Level.FINE)) {
-      logger.fine("Getting process variable '" + processVariableName + "' from ProcessInstance[" + businessProcess.getProcessInstanceId() + "].");
+    if (logger.isDebugEnabled()) {
+      logger.debug("Getting process variable '{}' from ProcessInstance[{}].", processVariableName, businessProcess.getProcessInstanceId());
     }
 
     return businessProcess.getVariable(processVariableName);

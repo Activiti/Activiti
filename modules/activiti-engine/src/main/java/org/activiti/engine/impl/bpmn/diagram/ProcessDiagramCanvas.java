@@ -31,8 +31,8 @@ import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
-import java.awt.geom.RoundRectangle2D;
 import java.awt.geom.Path2D;
+import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -42,13 +42,14 @@ import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Represents a canvas on which BPMN 2.0 constructs can be drawn.
@@ -61,7 +62,7 @@ import org.activiti.engine.impl.util.ReflectUtil;
  */
 public class ProcessDiagramCanvas {
 
-  protected static final Logger LOGGER = Logger.getLogger(ProcessDiagramCanvas.class.getName());
+  protected static final Logger LOGGER = LoggerFactory.getLogger(ProcessDiagramCanvas.class);
 
   // Predefined sized
   protected static final int ARROW_WIDTH = 5;
@@ -125,7 +126,7 @@ public class ProcessDiagramCanvas {
       SIGNAL_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/engine/impl/bpmn/deployer/signal_catch.png"));
       SIGNAL_THROW_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/engine/impl/bpmn/deployer/signal_throw.png"));
     } catch (IOException e) {
-      LOGGER.warning("Could not load image for process diagram creation: " + e.getMessage());
+      LOGGER.warn("Could not load image for process diagram creation: {}", e.getMessage());
     }
   }
 

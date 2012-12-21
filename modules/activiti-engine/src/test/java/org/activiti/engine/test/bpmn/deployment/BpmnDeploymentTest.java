@@ -150,7 +150,7 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
       ProcessDefinitionEntity processDefinitionEntity = commandExecutor.execute(new Command<ProcessDefinitionEntity>() {
         public ProcessDefinitionEntity execute(CommandContext commandContext) {
           return Context.getProcessEngineConfiguration()
-                        .getDeploymentCache()
+                        .getDeploymentManager()
                         .findDeployedLatestProcessDefinitionByKey("myProcess");
         }
       });

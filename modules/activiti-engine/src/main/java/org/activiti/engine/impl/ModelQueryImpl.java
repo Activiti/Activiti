@@ -180,14 +180,14 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
     return commandContext
-      .getModelManager()
+      .getModelEntityManager()
       .findModelCountByQueryCriteria(this);
   }
 
   public List<Model> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     return commandContext
-      .getModelManager()
+      .getModelEntityManager()
       .findModelsByQueryCriteria(this, page);
   }
   

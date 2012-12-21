@@ -15,17 +15,12 @@ package org.activiti.engine.impl.db;
 
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.util.LogUtil;
 
 
 /**
  * @author Tom Baeyens
  */
 public class DbSchemaCreate {
-
-  static {
-    LogUtil.readJavaUtilLoggingConfigFromClasspath();
-  }
 
   public static void main(String[] args) {
     ProcessEngineConfiguration

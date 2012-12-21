@@ -15,44 +15,44 @@ package org.activiti.engine.impl.interceptor;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.JobNotFoundException;
 import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
+import org.activiti.engine.JobNotFoundException;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.history.HistoryManager;
 import org.activiti.engine.impl.jobexecutor.FailedJobCommandFactory;
-import org.activiti.engine.impl.persistence.entity.AttachmentManager;
-import org.activiti.engine.impl.persistence.entity.ByteArrayManager;
-import org.activiti.engine.impl.persistence.entity.CommentManager;
-import org.activiti.engine.impl.persistence.entity.DeploymentManager;
-import org.activiti.engine.impl.persistence.entity.EventSubscriptionManager;
-import org.activiti.engine.impl.persistence.entity.ExecutionManager;
-import org.activiti.engine.impl.persistence.entity.GroupManager;
-import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceManager;
-import org.activiti.engine.impl.persistence.entity.HistoricDetailManager;
-import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceManager;
-import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceManager;
-import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceManager;
-import org.activiti.engine.impl.persistence.entity.IdentityInfoManager;
-import org.activiti.engine.impl.persistence.entity.IdentityLinkManager;
-import org.activiti.engine.impl.persistence.entity.JobManager;
-import org.activiti.engine.impl.persistence.entity.MembershipManager;
-import org.activiti.engine.impl.persistence.entity.ModelManager;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionManager;
-import org.activiti.engine.impl.persistence.entity.PropertyManager;
-import org.activiti.engine.impl.persistence.entity.ResourceManager;
+import org.activiti.engine.impl.persistence.entity.AttachmentEntityManager;
+import org.activiti.engine.impl.persistence.entity.ByteArrayEntityManager;
+import org.activiti.engine.impl.persistence.entity.CommentEntityManager;
+import org.activiti.engine.impl.persistence.entity.DeploymentEntityManager;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
+import org.activiti.engine.impl.persistence.entity.GroupEntityManager;
+import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityManager;
+import org.activiti.engine.impl.persistence.entity.HistoricDetailEntityManager;
+import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntityManager;
+import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntityManager;
+import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntityManager;
+import org.activiti.engine.impl.persistence.entity.IdentityInfoEntityManager;
+import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityManager;
+import org.activiti.engine.impl.persistence.entity.JobEntityManager;
+import org.activiti.engine.impl.persistence.entity.MembershipEntityManager;
+import org.activiti.engine.impl.persistence.entity.ModelEntityManager;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
+import org.activiti.engine.impl.persistence.entity.PropertyEntityManager;
+import org.activiti.engine.impl.persistence.entity.ResourceEntityManager;
 import org.activiti.engine.impl.persistence.entity.TableDataManager;
-import org.activiti.engine.impl.persistence.entity.TaskManager;
-import org.activiti.engine.impl.persistence.entity.UserManager;
-import org.activiti.engine.impl.persistence.entity.VariableInstanceManager;
+import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
+import org.activiti.engine.impl.persistence.entity.UserEntityManager;
+import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
 import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Tom Baeyens
@@ -60,7 +60,7 @@ import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
  */
 public class CommandContext {
 
-  private static Logger log = Logger.getLogger(CommandContext.class.getName());
+  private static Logger log = LoggerFactory.getLogger(CommandContext.class);
 
   protected Command< ? > command;
   protected TransactionContext transactionContext;
@@ -79,8 +79,8 @@ public class CommandContext {
         Context.setExecutionContext(execution);
         while (!nextOperations.isEmpty()) {
           AtomicOperation currentOperation = nextOperations.removeFirst();
-          if (log.isLoggable(Level.FINEST)) {
-            log.finest("AtomicOperation: " + currentOperation + " on " + this);
+          if (log.isTraceEnabled()) {
+            log.trace("AtomicOperation: {} on {}", currentOperation, this);
           }
           currentOperation.execute(execution);
         }
@@ -127,16 +127,13 @@ public class CommandContext {
           }
 
           if (exception != null) {
-            Level loggingLevel = Level.SEVERE;
-            if (exception instanceof JobNotFoundException) {
+            if (exception instanceof JobNotFoundException || exception instanceof ActivitiTaskAlreadyClaimedException) {
               // reduce log level, because this may have been caused because of job deletion due to cancelActiviti="true"
-              loggingLevel = Level.INFO;
-              
-            } else if (exception instanceof ActivitiTaskAlreadyClaimedException) {
-              loggingLevel = Level.INFO; // reduce log level, because this is not really a technical exception
+              log.info("Error while closing command context", exception);
+            } else {
+              log.error("Error while closing command context", exception);
             }
 
-            log.log(loggingLevel, "Error while closing command context", exception);
             transactionContext.rollback();
           }
         }
@@ -182,7 +179,7 @@ public class CommandContext {
     if (this.exception == null) {
       this.exception = exception;
     } else {
-      log.log(Level.SEVERE, "masked exception in command context. for root cause, see below as it will be rethrown later.", exception);
+      log.error("masked exception in command context. for root cause, see below as it will be rethrown later.", exception);
     }
   }
 
@@ -205,106 +202,106 @@ public class CommandContext {
     return getSession(DbSqlSession.class);
   }
   
-  public DeploymentManager getDeploymentManager() {
-    return getSession(DeploymentManager.class);
+  public DeploymentEntityManager getDeploymentEntityManager() {
+    return getSession(DeploymentEntityManager.class);
   }
 
-  public ResourceManager getResourceManager() {
-    return getSession(ResourceManager.class);
+  public ResourceEntityManager getResourceEntityManager() {
+    return getSession(ResourceEntityManager.class);
   }
   
-  public ByteArrayManager getByteArrayManager() {
-    return getSession(ByteArrayManager.class);
+  public ByteArrayEntityManager getByteArrayEntityManager() {
+    return getSession(ByteArrayEntityManager.class);
   }
   
-  public ProcessDefinitionManager getProcessDefinitionManager() {
-    return getSession(ProcessDefinitionManager.class);
+  public ProcessDefinitionEntityManager getProcessDefinitionEntityManager() {
+    return getSession(ProcessDefinitionEntityManager.class);
   }
   
-  public ModelManager getModelManager() {
-    return getSession(ModelManager.class);
+  public ModelEntityManager getModelEntityManager() {
+    return getSession(ModelEntityManager.class);
   }
 
-  public ExecutionManager getExecutionManager() {
-    return getSession(ExecutionManager.class);
+  public ExecutionEntityManager getExecutionEntityManager() {
+    return getSession(ExecutionEntityManager.class);
   }
 
-  public TaskManager getTaskManager() {
-    return getSession(TaskManager.class);
+  public TaskEntityManager getTaskEntityManager() {
+    return getSession(TaskEntityManager.class);
   }
 
-  public IdentityLinkManager getIdentityLinkManager() {
-    return getSession(IdentityLinkManager.class);
+  public IdentityLinkEntityManager getIdentityLinkEntityManager() {
+    return getSession(IdentityLinkEntityManager.class);
   }
 
-  public VariableInstanceManager getVariableInstanceManager() {
-    return getSession(VariableInstanceManager.class);
+  public VariableInstanceEntityManager getVariableInstanceEntityManager() {
+    return getSession(VariableInstanceEntityManager.class);
   }
 
-  public HistoricProcessInstanceManager getHistoricProcessInstanceManager() {
-    return getSession(HistoricProcessInstanceManager.class);
+  public HistoricProcessInstanceEntityManager getHistoricProcessInstanceEntityManager() {
+    return getSession(HistoricProcessInstanceEntityManager.class);
   }
 
-  public HistoricDetailManager getHistoricDetailManager() {
-    return getSession(HistoricDetailManager.class);
+  public HistoricDetailEntityManager getHistoricDetailEntityManager() {
+    return getSession(HistoricDetailEntityManager.class);
   }
   
-  public HistoricVariableInstanceManager getHistoricVariableInstanceManager() {
-    return getSession(HistoricVariableInstanceManager.class);
+  public HistoricVariableInstanceEntityManager getHistoricVariableInstanceEntityManager() {
+    return getSession(HistoricVariableInstanceEntityManager.class);
   }
 
-  public HistoricActivityInstanceManager getHistoricActivityInstanceManager() {
-    return getSession(HistoricActivityInstanceManager.class);
+  public HistoricActivityInstanceEntityManager getHistoricActivityInstanceEntityManager() {
+    return getSession(HistoricActivityInstanceEntityManager.class);
   }
   
-  public HistoricTaskInstanceManager getHistoricTaskInstanceManager() {
-    return getSession(HistoricTaskInstanceManager.class);
+  public HistoricTaskInstanceEntityManager getHistoricTaskInstanceEntityManager() {
+    return getSession(HistoricTaskInstanceEntityManager.class);
   }
   
-  public JobManager getJobManager() {
-    return getSession(JobManager.class);
+  public JobEntityManager getJobEntityManager() {
+    return getSession(JobEntityManager.class);
   }
 
-  public UserManager getUserManager() {
-    return getSession(UserManager.class);
+  public UserEntityManager getUserEntityManager() {
+    return getSession(UserEntityManager.class);
   }
 
-  public GroupManager getGroupManager() {
-    return getSession(GroupManager.class);
+  public GroupEntityManager getGroupEntityManager() {
+    return getSession(GroupEntityManager.class);
   }
 
-  public IdentityInfoManager getIdentityInfoManager() {
-    return getSession(IdentityInfoManager.class);
+  public IdentityInfoEntityManager getIdentityInfoEntityManager() {
+    return getSession(IdentityInfoEntityManager.class);
   }
 
-  public MembershipManager getMembershipManager() {
-    return getSession(MembershipManager.class);
+  public MembershipEntityManager getMembershipEntityManager() {
+    return getSession(MembershipEntityManager.class);
   }
   
-  public AttachmentManager getAttachmentManager() {
-    return getSession(AttachmentManager.class);
+  public AttachmentEntityManager getAttachmentEntityManager() {
+    return getSession(AttachmentEntityManager.class);
   }
 
   public TableDataManager getTableDataManager() {
     return getSession(TableDataManager.class);
   }
 
-  public CommentManager getCommentManager() {
-    return getSession(CommentManager.class);
+  public CommentEntityManager getCommentEntityManager() {
+    return getSession(CommentEntityManager.class);
   }
   
-  public EventSubscriptionManager getEventSubscriptionManager() {
-    return getSession(EventSubscriptionManager.class);
+  public PropertyEntityManager getPropertyEntityManager() {
+    return getSession(PropertyEntityManager.class);
+  }
+  
+  public EventSubscriptionEntityManager getEventSubscriptionEntityManager() {
+    return getSession(EventSubscriptionEntityManager.class);
   }
 
   public Map<Class< ? >, SessionFactory> getSessionFactories() {
     return sessionFactories;
   }
 
-  public PropertyManager getPropertyManager() {
-    return getSession(PropertyManager.class);
-  }
-  
   public HistoryManager getHistoryManager() {
     return getSession(HistoryManager.class);
   }

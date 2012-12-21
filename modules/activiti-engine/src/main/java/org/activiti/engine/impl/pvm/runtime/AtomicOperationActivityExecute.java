@@ -12,11 +12,11 @@
  */
 package org.activiti.engine.impl.pvm.runtime;
 
-import java.util.logging.Logger;
-
 import org.activiti.engine.impl.pvm.PvmException;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -24,7 +24,7 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
  */
 public class AtomicOperationActivityExecute implements AtomicOperation {
   
-  private static Logger log = Logger.getLogger(AtomicOperationActivityExecute.class.getName());
+  private static Logger log = LoggerFactory.getLogger(AtomicOperationActivityExecute.class);
 
   public boolean isAsync(InterpretableExecution execution) {
     return false;
@@ -38,7 +38,7 @@ public class AtomicOperationActivityExecute implements AtomicOperation {
       throw new PvmException("no behavior specified in "+activity);
     }
 
-    log.fine(execution+" executes "+activity+": "+activityBehavior.getClass().getName());
+    log.debug("{} executes {}: {}", execution, activity, activityBehavior.getClass().getName());
     
     try {
       activityBehavior.execute(execution);

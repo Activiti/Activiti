@@ -22,8 +22,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
@@ -171,6 +169,8 @@ import org.activiti.engine.impl.util.io.UrlStreamSource;
 import org.activiti.engine.impl.util.xml.Element;
 import org.activiti.engine.impl.variable.VariableDeclaration;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Specific parsing of one BPMN 2.0 XML file, created by the {@link BpmnParser}.
@@ -179,7 +179,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public class BpmnParse implements BpmnXMLConstants {
 
-  protected static final Logger LOGGER = Logger.getLogger(BpmnParse.class.getName());
+  protected static final Logger LOGGER = LoggerFactory.getLogger(BpmnParse.class);
 
   public static final String PROPERTYNAME_DOCUMENTATION = "documentation";
   public static final String PROPERTYNAME_INITIAL = "initial";
@@ -455,20 +455,6 @@ public class BpmnParse implements BpmnXMLConstants {
       processDI();
     }
   }
-
-  protected String resolveName(String name) {
-    if (name == null) {
-      return null;
-    }
-    int indexOfP = name.indexOf(':');
-    if (indexOfP != -1) {
-      String prefix = name.substring(0, indexOfP);
-      String resolvedPrefix = this.prefixs.get(prefix);
-      return resolvedPrefix + ":" + name.substring(indexOfP + 1);
-    } else {
-      return this.targetNamespace + ":" + name;
-    }
-  }
   
   /**
    * Parses one process (ie anything inside a &lt;process&gt; element).
@@ -503,8 +489,8 @@ public class BpmnParse implements BpmnXMLConstants {
       processDefinition.addCandidateStarterGroupIdExpression(expressionManager.createExpression(candidateGroup));
     }
 
-    if (LOGGER.isLoggable(Level.FINE)) {
-      LOGGER.fine("Parsing process " + processDefinition.getKey());
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Parsing process {}", processDefinition.getKey());
     }
     
     processFlowElements(process.getFlowElements(), processDefinition);
@@ -1096,8 +1082,8 @@ public class BpmnParse implements BpmnXMLConstants {
    * scope element.
    */
   public ActivityImpl createActivityOnScope(FlowElement flowElement, String xmlLocalName, ScopeImpl scopeElement) {
-    if (LOGGER.isLoggable(Level.FINE)) {
-      LOGGER.fine("Parsing activity " + flowElement.getId());
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Parsing activity {}", flowElement.getId());
     }
     
     ActivityImpl activity = scopeElement.createActivity(flowElement.getId());
@@ -1596,7 +1582,7 @@ public class BpmnParse implements BpmnXMLConstants {
     
     TaskDefinition taskDefinition = parseTaskDefinition(userTask, userTask.getId(), (ProcessDefinitionEntity) scope.getProcessDefinition());
 
-    UserTaskActivityBehavior userTaskActivity = new UserTaskActivityBehavior(expressionManager, taskDefinition);
+    UserTaskActivityBehavior userTaskActivity = new UserTaskActivityBehavior(taskDefinition);
     activity.setActivityBehavior(userTaskActivity);
 
     //parseProperties(userTaskElement, activity);
@@ -1784,7 +1770,7 @@ public class BpmnParse implements BpmnXMLConstants {
           bpmnModel.addProblem("messageName is required for a message event", boundaryEvent.getId());
         }
         modelMessageEvent.setMessageRef(messageName);
-      }
+	  }
       createBoundaryMessageEventDefinition((MessageEventDefinition) eventDefinition, interrupting, nestedActivity);
     } else {
       bpmnModel.addProblem("Unsupported boundary event type", boundaryEvent.getId());

@@ -41,7 +41,7 @@ public class GetDeploymentResourceNamesCmd implements Command<List>, Serializabl
     
     return Context
       .getCommandContext()
-      .getDeploymentManager()
+      .getDeploymentEntityManager()
       .getDeploymentResourceNames(deploymentId);
   }
 

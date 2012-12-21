@@ -38,7 +38,7 @@ public class DeleteHistoricProcessInstanceCmd implements Command<Object>, Serial
     }
     // Check if process instance is still running
     HistoricProcessInstance instance = commandContext
-      .getHistoricProcessInstanceManager()
+      .getHistoricProcessInstanceEntityManager()
       .findHistoricProcessInstance(processInstanceId);
     
     if(instance == null) {
@@ -49,7 +49,7 @@ public class DeleteHistoricProcessInstanceCmd implements Command<Object>, Serial
     }
     
     commandContext
-      .getHistoricProcessInstanceManager()
+      .getHistoricProcessInstanceEntityManager()
       .deleteHistoricProcessInstanceById(processInstanceId);
     
     return null;

@@ -15,13 +15,13 @@ package org.activiti.engine.impl.jobexecutor;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.activiti.engine.impl.cmd.AcquireJobsCmd;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.runtime.Job;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>Interface to the work management component of activiti.</p>
@@ -38,7 +38,7 @@ import org.activiti.engine.runtime.Job;
  */
 public abstract class JobExecutor {
   
-  private static Logger log = Logger.getLogger(JobExecutor.class.getName());
+  private static Logger log = LoggerFactory.getLogger(JobExecutor.class);
 
   protected String name = "JobExecutor["+getClass().getName()+"]";
   protected CommandExecutor commandExecutor;
@@ -59,7 +59,7 @@ public abstract class JobExecutor {
     if (isActive) {
       return;
     }
-    log.info("Starting up the JobExecutor["+getClass().getName()+"].");
+    log.info("Starting up the JobExecutor[{}].", getClass().getName());
     ensureInitialization();    
     startExecutingJobs();
     isActive = true;
@@ -69,7 +69,7 @@ public abstract class JobExecutor {
     if (!isActive) {
       return;
     }
-    log.info("Shutting down the JobExecutor["+getClass().getName()+"].");
+    log.info("Shutting down the JobExecutor[{}].", getClass().getName());
     acquireJobsRunnable.stop();
     stopExecutingJobs();
     ensureCleanup();   
@@ -181,10 +181,7 @@ public abstract class JobExecutor {
 		try {
 			jobAcquisitionThread.join();
 		} catch (InterruptedException e) {
-			log.log(
-					Level.WARNING,
-					"Interrupted while waiting for the job Acquisition thread to terminate",
-					e);
+			log.warn("Interrupted while waiting for the job Acquisition thread to terminate", e);
 		}	
 		jobAcquisitionThread = null;
 	}

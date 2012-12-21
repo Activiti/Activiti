@@ -13,13 +13,14 @@
 package org.activiti.engine.impl.pvm.runtime;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.PvmException;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -27,7 +28,7 @@ import org.activiti.engine.impl.pvm.process.TransitionImpl;
  */
 public class AtomicOperationTransitionNotifyListenerTake implements AtomicOperation {
   
-  private static Logger log = Logger.getLogger(AtomicOperationTransitionNotifyListenerTake.class.getName());
+  private static Logger log = LoggerFactory.getLogger(AtomicOperationTransitionNotifyListenerTake.class);
   
   public boolean isAsync(InterpretableExecution execution) {
     return false;
@@ -54,7 +55,7 @@ public class AtomicOperationTransitionNotifyListenerTake implements AtomicOperat
       execution.performOperation(this);
 
     } else {
-      log.fine(execution+" takes transition "+transition);
+      log.debug("{} takes transition {}", execution, transition);
       execution.setExecutionListenerIndex(0);
       execution.setEventName(null);
       execution.setEventSource(null);

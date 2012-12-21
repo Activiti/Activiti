@@ -34,7 +34,7 @@ public class CheckPassword implements Command<Boolean>, Serializable {
   }
 
   public Boolean execute(CommandContext commandContext) {
-    return commandContext.getUserManager().checkPassword(userId, password);
+    return commandContext.getUserEntityManager().checkPassword(userId, password);
   }
 
 }

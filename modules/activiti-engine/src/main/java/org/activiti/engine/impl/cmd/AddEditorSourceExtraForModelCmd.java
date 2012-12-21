@@ -36,7 +36,7 @@ public class AddEditorSourceExtraForModelCmd implements Command<Object>, Seriali
 
   public Object execute(CommandContext commandContext) {
     commandContext
-      .getModelManager()
+      .getModelEntityManager()
       .insertEditorSourceExtraForModel(modelId, bytes);
     
     return null;

@@ -15,8 +15,6 @@ package org.activiti.engine.impl.interceptor;
 
 
 import java.lang.reflect.UndeclaredThrowableException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
@@ -28,12 +26,15 @@ import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author Guillaume Nodet
  */
 public class JtaTransactionInterceptor extends CommandInterceptor {
 
-    private static final Logger LOGGER = Logger.getLogger(JtaTransactionInterceptor.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(JtaTransactionInterceptor.class);
 
     private final TransactionManager transactionManager;
     private final boolean requiresNew;
@@ -145,7 +146,7 @@ public class JtaTransactionInterceptor extends CommandInterceptor {
               transactionManager.setRollbackOnly();
             }
         } catch (SystemException e) {
-            LOGGER.log(Level.FINE, "Error when rolling back transaction", e);
+            LOGGER.debug("Error when rolling back transaction", e);
         }
     }
 

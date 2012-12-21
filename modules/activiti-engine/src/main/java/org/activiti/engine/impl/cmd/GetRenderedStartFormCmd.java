@@ -42,7 +42,7 @@ public class GetRenderedStartFormCmd implements Command<Object>, Serializable {
   public Object execute(CommandContext commandContext) {
     ProcessDefinitionEntity processDefinition = Context
       .getProcessEngineConfiguration()
-      .getDeploymentCache()
+      .getDeploymentManager()
       .findDeployedProcessDefinitionById(processDefinitionId);
     if (processDefinition == null) {
       throw new ActivitiException("Process Definition '" + processDefinitionId +"' not found");

@@ -94,21 +94,21 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
 //      message.setEventPayload(payload);
 //    }
     
-    commandContext.getJobManager().send(message);
+    commandContext.getJobEntityManager().send(message);
   }
   
   // persistence behavior /////////////////////
 
   public void delete() {
     Context.getCommandContext()
-      .getEventSubscriptionManager()
+      .getEventSubscriptionEntityManager()
       .deleteEventSubscription(this);
     removeFromExecution();
   }
   
   public void insert() {
     Context.getCommandContext()
-      .getEventSubscriptionManager()
+      .getEventSubscriptionEntityManager()
       .insert(this);
     addToExecution();   
   }
@@ -143,7 +143,7 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
   public ExecutionEntity getExecution() {
     if(execution == null && executionId != null) {
       execution = Context.getCommandContext()
-              .getExecutionManager()
+              .getExecutionEntityManager()
               .findExecutionById(executionId);
     }
     return execution;

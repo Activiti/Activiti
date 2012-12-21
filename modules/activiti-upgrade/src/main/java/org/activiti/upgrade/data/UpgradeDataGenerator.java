@@ -14,7 +14,6 @@ package org.activiti.upgrade.data;
 
 import java.io.PrintWriter;
 import java.sql.DriverManager;
-import java.util.logging.Logger;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -22,11 +21,11 @@ import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.util.ClassNameUtil;
-import org.activiti.engine.impl.util.LogUtil;
 import org.activiti.upgrade.CleanPostgres;
 import org.activiti.upgrade.ProxyDriver;
 import org.activiti.upgrade.UpgradeUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Tom Baeyens
@@ -34,38 +33,35 @@ import org.activiti.upgrade.UpgradeUtil;
  */
 public class UpgradeDataGenerator {
   
-  static Logger log = Logger.getLogger(UpgradeDataGenerator.class.getName());
+  static Logger log = LoggerFactory.getLogger(UpgradeDataGenerator.class);
   
   public static void main(String[] args) {
     
     ProcessEngineConfigurationImpl processEngineConfiguration = null;
     
     try {
-
-      LogUtil.readJavaUtilLoggingConfigFromClasspath();
-      
       if (args==null || args.length!=2) {
         throw new RuntimeException("exactly 2 arguments expected: database and releaseVersion");
       }
       
       String database = args[0];
       String releaseVersion = args[1];
-      log.fine("database: "+database);
-      log.fine("releaseVersion: "+releaseVersion);
+      log.debug("database: {}", database);
+      log.debug("releaseVersion: {}", releaseVersion);
   
       processEngineConfiguration = UpgradeUtil.createProcessEngineConfiguration(database);
 
       // install the jdbc proxy driver
-      log.fine("installing jdbc proxy driver delegating to "+processEngineConfiguration.getJdbcUrl());
+      log.debug("installing jdbc proxy driver delegating to {}", processEngineConfiguration.getJdbcUrl());
       ProxyDriver.setUrl(processEngineConfiguration.getJdbcUrl());
       processEngineConfiguration.setJdbcUrl("proxy");
       DriverManager.registerDriver(new ProxyDriver());
 
-      log.fine("building the process engine...");
+      log.debug("building the process engine...");
       ProcessEngine processEngine = processEngineConfiguration.buildProcessEngine();
 
       
-      log.fine("### Running data generator "+ClassNameUtil.getClassNameWithoutPackage(CommonDataGenerator.class)+" in the old version");
+      log.debug("### Running data generator {} in the old version", CommonDataGenerator.class.getSimpleName());
       CommonDataGenerator commonDataGenerator = new CommonDataGenerator();
       commonDataGenerator.setProcessEngine(processEngine);
       commonDataGenerator.run();
@@ -77,7 +73,7 @@ public class UpgradeDataGenerator {
         activiti_5_10_DataGenerator.run();
       }
 
-      log.fine("### Captured SQL");
+      log.debug("### Captured SQL");
       PrintWriter file = new PrintWriter("src/test/resources/org/activiti/db/"+releaseVersion+"/data/"+database+".data.sql");
       System.err.println();
       System.err.println();

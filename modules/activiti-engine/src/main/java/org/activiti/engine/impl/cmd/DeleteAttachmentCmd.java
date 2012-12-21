@@ -44,7 +44,7 @@ public class DeleteAttachmentCmd implements Command<Object>, Serializable {
     
     if (attachment.getContentId() != null) {
       commandContext
-        .getByteArrayManager()
+        .getByteArrayEntityManager()
         .deleteByteArrayById(attachment.getContentId());
     }
     

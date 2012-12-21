@@ -12,9 +12,6 @@
  */
 package org.activiti.editor.rest.model;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
@@ -25,13 +22,15 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Tijs Rademakers
  */
 public class ModelEditorJsonRestResource extends ServerResource implements ModelDataJsonConstants {
   
-  protected static final Logger LOGGER = Logger.getLogger(ModelEditorJsonRestResource.class.getName());
+  protected static final Logger LOGGER = LoggerFactory.getLogger(ModelEditorJsonRestResource.class);
   private ObjectMapper objectMapper = new ObjectMapper();
   
   @Get
@@ -51,7 +50,7 @@ public class ModelEditorJsonRestResource extends ServerResource implements Model
           modelNode.put("model", editorJsonNode);
           
         } catch(Exception e) {
-          LOGGER.log(Level.SEVERE, "Error creating model JSON", e);
+          LOGGER.error("Error creating model JSON", e);
           setStatus(Status.SERVER_ERROR_INTERNAL);
         }
       }

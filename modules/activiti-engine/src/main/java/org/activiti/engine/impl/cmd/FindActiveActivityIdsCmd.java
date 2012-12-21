@@ -40,7 +40,7 @@ public class FindActiveActivityIdsCmd implements Command<List<String>>, Serializ
     }
     
     ExecutionEntity execution = commandContext
-      .getExecutionManager()
+      .getExecutionEntityManager()
       .findExecutionById(executionId);
     
     if (execution==null) {
