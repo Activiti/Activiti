@@ -174,53 +174,53 @@
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-engine</artifactId>
-        <version>${version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-spring</artifactId>
-        <version>${version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-bpmn-model</artifactId>
-        <version>${version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-bpmn-converter</artifactId>
-        <version>${version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-json-converter</artifactId>
-        <version>${version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-explorer</artifactId>
-        <version>${version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-modeler</artifactId>
-        <version>${version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-rest</artifactId>
-        <version>${version}</version>
+        <version>${project.version}</version>
       </dependency> 
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-webapp-rest2</artifactId>
         <type>war</type>
-        <version>${version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-cxf</artifactId>
-        <version>${version}</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- EMAIL -->
       <dependency>
@@ -795,6 +795,7 @@
             <plugin>
               <groupId>org.zeroturnaround</groupId>
               <artifactId>jrebel-maven-plugin</artifactId>
+              <version>1.1.3</version>
               <executions>
                 <execution>
                   <id>generate-rebel-xml</id>
