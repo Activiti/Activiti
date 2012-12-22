@@ -102,7 +102,7 @@ public class BpmnDeployer implements Deployer {
             if (Context.getProcessEngineConfiguration().isCreateDiagramOnDeploy() &&
                   diagramResourceName==null && processDefinition.isGraphicalNotationDefined()) {
               try {
-                  byte[] diagramBytes = IoUtil.readInputStream(ProcessDiagramGenerator.generatePngDiagram(processDefinition), null);
+                  byte[] diagramBytes = IoUtil.readInputStream(ProcessDiagramGenerator.generatePngDiagram(processDefinition, Context.getProcessEngineConfiguration().getActivityFontName()), null);
                   diagramResourceName = getProcessImageResourceName(resourceName, processDefinition.getKey(), "png");
                   createResource(diagramResourceName, diagramBytes, deployment);
               } catch (Throwable t) { // if anything goes wrong, we don't store the image (the process will still be executable).

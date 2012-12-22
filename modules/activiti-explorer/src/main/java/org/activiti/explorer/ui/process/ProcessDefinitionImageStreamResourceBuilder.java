@@ -43,7 +43,7 @@ public class ProcessDefinitionImageStreamResourceBuilder {
   
   protected static final Logger LOGGER = LoggerFactory.getLogger(ProcessDefinitionImageStreamResourceBuilder.class);
   
-  public StreamResource buildStreamResource(ProcessDefinition processDefinition, RepositoryService repositoryService) {
+  public StreamResource buildStreamResource(ProcessDefinition processDefinition, RepositoryService repositoryService, String activityFontName) {
     
     StreamResource imageResource = null;
     
@@ -64,7 +64,7 @@ public class ProcessDefinitionImageStreamResourceBuilder {
     return imageResource;
   }
 
-  public StreamResource buildStreamResource(ProcessInstance processInstance, RepositoryService repositoryService, RuntimeService runtimeService) {
+  public StreamResource buildStreamRessource(ProcessInstance processInstance, RepositoryService repositoryService, RuntimeService runtimeService, String activityFontName) {
 
     StreamResource imageResource = null;
     
@@ -74,7 +74,7 @@ public class ProcessDefinitionImageStreamResourceBuilder {
     if (processDefinition != null && processDefinition.isGraphicalNotationDefined()) {
       try {
         InputStream definitionImageStream = ProcessDiagramGenerator.generateDiagram(processDefinition, "png", 
-                runtimeService.getActiveActivityIds(processInstance.getId()));
+                runtimeService.getActiveActivityIds(processInstance.getId()), activityFontName);
               
         if(definitionImageStream != null) {
           StreamSource streamSource = new InputStreamStreamSource(definitionImageStream);
@@ -93,7 +93,7 @@ public class ProcessDefinitionImageStreamResourceBuilder {
     return imageResource;
   }
   
-  public StreamResource buildStreamResource(String processInstanceId, String processDefinitionId, RepositoryService repositoryService, RuntimeService runtimeService) {
+  public StreamResource buildStreamResource(String processInstanceId, String processDefinitionId, RepositoryService repositoryService, RuntimeService runtimeService, String activityFontName) {
 
     StreamResource imageResource = null;
     
@@ -101,7 +101,7 @@ public class ProcessDefinitionImageStreamResourceBuilder {
 
     if (processDefinition != null && processDefinition.isGraphicalNotationDefined()) {
       InputStream definitionImageStream = ProcessDiagramGenerator.generateDiagram(processDefinition, "png", 
-        runtimeService.getActiveActivityIds(processInstanceId));
+        runtimeService.getActiveActivityIds(processInstanceId), activityFontName);
       
       StreamSource streamSource = new InputStreamStreamSource(definitionImageStream);
       
