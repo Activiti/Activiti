@@ -15,7 +15,7 @@ import org.activiti.engine.impl.variable.VariableDeclaration;
  * 
  * @author ruecker
  */
-public class AbstractBpmnParseListener implements BpmnParseListener {
+public class AbstractBpmnParseListener { //implements BpmnParseListener {
 
   public void parseProcess(Element processElement, ProcessDefinitionEntity processDefinition) {
   }

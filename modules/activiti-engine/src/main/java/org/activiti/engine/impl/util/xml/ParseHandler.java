@@ -13,8 +13,9 @@
 package org.activiti.engine.impl.util.xml;
 
 import java.util.Stack;
-import java.util.logging.Logger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
@@ -27,7 +28,7 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class ParseHandler extends DefaultHandler {
   
-  private static Logger log = Logger.getLogger(ParseHandler.class.getName());
+  private static Logger log = LoggerFactory.getLogger(ParseHandler.class);
 
   protected String defaultNamespace;
   protected Parse parse;
@@ -63,7 +64,7 @@ public class ParseHandler extends DefaultHandler {
     parse.addError(e);
   }
   public void warning(SAXParseException e) {
-    log.warning(e.toString());
+    log.warn(e.toString());
   }
   public void setDocumentLocator(Locator locator) {
     this.locator = locator;

@@ -13,8 +13,6 @@
 package org.activiti.cdi.impl.context;
 
 import java.lang.annotation.Annotation;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
@@ -25,6 +23,8 @@ import javax.enterprise.inject.spi.BeanManager;
 import org.activiti.cdi.BusinessProcess;
 import org.activiti.cdi.annotation.BusinessProcessScoped;
 import org.activiti.cdi.impl.util.ProgrammaticBeanLookup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of the BusinessProcessContext-scope.
@@ -34,7 +34,7 @@ import org.activiti.cdi.impl.util.ProgrammaticBeanLookup;
 @SuppressWarnings("unchecked")
 public class BusinessProcessContext implements Context {
 
-  final static Logger logger = Logger.getLogger(BusinessProcessContext.class.getName());
+  final static Logger logger = LoggerFactory.getLogger(BusinessProcessContext.class);
   
   private final BeanManager beanManager;  
   
@@ -59,12 +59,11 @@ public class BusinessProcessContext implements Context {
     BusinessProcess businessProcess = getBusinessProcess();
     Object variable = businessProcess.getVariable(variableName);
     if (variable != null) {
-
-      if (logger.isLoggable(Level.FINE)) {
+      if(logger.isDebugEnabled()) {
         if(businessProcess.isAssociated()) {        
-          logger.fine("Getting instance of bean '" + variableName + "' from Execution[" + businessProcess.getExecutionId() + "].");
+          logger.debug("Getting instance of bean '{}' from Execution[{}]", variableName, businessProcess.getExecutionId());
         } else {
-          logger.fine("Getting instance of bean '" + variableName + "' from transient bean store");
+          logger.debug("Getting instance of bean '{}' from transient bean store", variableName);
         }
       }
 
@@ -84,23 +83,22 @@ public class BusinessProcessContext implements Context {
     BusinessProcess businessProcess = getBusinessProcess();
     Object variable = businessProcess.getVariable(variableName);
     if (variable != null) {
-
-      if (logger.isLoggable(Level.FINE)) {
+      if(logger.isDebugEnabled()) {
         if(businessProcess.isAssociated()) {        
-          logger.fine("Getting instance of bean '" + variableName + "' from Execution[" + businessProcess.getExecutionId() + "].");
+          logger.debug("Getting instance of bean '{}' from Execution[{}]", variableName, businessProcess.getExecutionId());
         } else {
-          logger.fine("Getting instance of bean '" + variableName + "' from transient bean store");
+          logger.debug("Getting instance of bean '{}' from transient bean store", variableName);
         }
       }
 
       return (T) variable;
     } else {
-      if (logger.isLoggable(Level.FINE)) {
+      
+      if(logger.isDebugEnabled()) {
         if(businessProcess.isAssociated()) {        
-          logger.fine("Creating instance of bean '" + variableName + "' in business process context representing Execution["
-                  + businessProcess.getExecutionId() + "].");
+          logger.debug("Creating instance of bean '{}' in business process context representing Execution[{}]", variableName, businessProcess.getExecutionId());
         } else {
-          logger.fine("Creating instance of bean '" + variableName + "' in transient bean store");
+          logger.debug("Creating instance of bean '{}' in transient bean store", variableName);
         }
       }
 

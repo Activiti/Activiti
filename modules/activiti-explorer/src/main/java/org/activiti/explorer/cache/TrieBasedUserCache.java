@@ -18,11 +18,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -47,7 +47,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TrieBasedUserCache implements UserCache {
   
-  private static final Logger LOGGER = Logger.getLogger(TrieBasedUserCache.class.getName());
+  private static final Logger LOGGER = LoggerFactory.getLogger(TrieBasedUserCache.class);
   
   protected IdentityService identityService;
   protected RadixTree<List<User>> userTrie = new RadixTreeImpl<List<User>>();
@@ -69,9 +69,7 @@ public class TrieBasedUserCache implements UserCache {
     
     while (usersAdded < nrOfUsers) {
 
-      if (LOGGER.isLoggable(Level.INFO)) {
-        LOGGER.info("Caching users " + usersAdded + " to " + (usersAdded+25));
-      }
+      LOGGER.info("Caching users {} to {}", usersAdded, usersAdded+25);
       
       List<User> users = identityService.createUserQuery().listPage((int) usersAdded, 25);
       for (User user : users) {

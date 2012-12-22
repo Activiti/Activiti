@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.task;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,7 +29,9 @@ import org.activiti.engine.impl.form.TaskFormHandler;
  * 
  * @author Joram Barrez
  */
-public class TaskDefinition {
+public class TaskDefinition implements Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   protected String key;
   

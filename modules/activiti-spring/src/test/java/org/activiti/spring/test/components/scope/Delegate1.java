@@ -1,15 +1,15 @@
 package org.activiti.spring.test.components.scope;
 
+import java.util.UUID;
+
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.junit.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-
-import java.util.UUID;
-import java.util.logging.Logger;
 
 /**
  * @author Josh Long
@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 
 public class Delegate1 implements JavaDelegate,InitializingBean {
 
-	private Logger log = Logger.getLogger( getClass().getName());
+	private Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired private ProcessInstance processInstance ;
 
@@ -28,12 +28,12 @@ public class Delegate1 implements JavaDelegate,InitializingBean {
 
 		 String pid = this.processInstance.getId();
 
-		log.info("the processInstance#id is "+ pid) ;
+		log.info("the processInstance#id is {}", pid) ;
 
 		Assert.assertNotNull("the 'scopedCustomer' reference can't be null", statefulObject);
 		String uuid =  UUID.randomUUID().toString();
 		statefulObject.setName(uuid);
-		log.info("the 'uuid' value given to the ScopedCustomer#name property is '" + uuid + "' in " + getClass().getName());
+		log.info("the 'uuid' value given to the ScopedCustomer#name property is '{}' in {}", uuid, getClass().getName());
 
 		this.statefulObject.increment();
 	}

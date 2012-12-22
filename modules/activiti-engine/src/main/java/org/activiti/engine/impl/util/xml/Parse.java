@@ -17,9 +17,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -29,8 +27,8 @@ import org.activiti.engine.impl.util.io.ResourceStreamSource;
 import org.activiti.engine.impl.util.io.StreamSource;
 import org.activiti.engine.impl.util.io.StringStreamSource;
 import org.activiti.engine.impl.util.io.UrlStreamSource;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -40,7 +38,7 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class Parse extends DefaultHandler {
   
-  private static final Logger LOGGER = Logger.getLogger(Parse.class.getName());
+  private static final Logger LOGGER = LoggerFactory.getLogger(Parse.class);
   
   private static final String JAXP_SCHEMA_SOURCE = "http://java.sun.com/xml/jaxp/properties/schemaSource";
   private static final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
@@ -173,7 +171,7 @@ public class Parse extends DefaultHandler {
   
   public void logWarnings() {
     for (Problem warning : warnings) {
-      LOGGER.warning(warning.toString());
+      LOGGER.warn(warning.toString());
     }
   }
   
@@ -193,7 +191,7 @@ public class Parse extends DefaultHandler {
     try {
       saxParserFactory.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
     } catch (Exception e) {
-      LOGGER.warning(e.getMessage());
+      LOGGER.warn(e.getMessage());
     }
     this.schemaResource = schemaResource;
   }

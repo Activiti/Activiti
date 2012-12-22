@@ -19,7 +19,7 @@ import java.util.zip.ZipInputStream;
 /**
  * Builder for creating new deployments.
  * 
- * A builder instance can be obtained through {@link org.activiti.engine.RuntimeService#createDeployment()}.
+ * A builder instance can be obtained through {@link org.activiti.engine.RepositoryService#createDeployment()}.
  * 
  * Multiple resources can be added to one deployment before calling the {@link #deploy()}
  * operation.

@@ -12,11 +12,10 @@
  */
 package org.activiti.bpmn.converter.child;
 
-import java.util.logging.Level;
-
 import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.TimerEventDefinition;
 
@@ -29,7 +28,7 @@ public class TimerEventDefinitionParser extends BaseChildElementParser {
     return "timerEventDefinition";
   }
   
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement) throws Exception {
+  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
     if (parentElement instanceof Event == false) return;
     
     TimerEventDefinition eventDefinition = new TimerEventDefinition();
@@ -53,7 +52,7 @@ public class TimerEventDefinitionParser extends BaseChildElementParser {
         }
       }
     } catch (Exception e) {
-      LOGGER.log(Level.WARNING, "Error parsing timer event definition", e);
+      LOGGER.warn("Error parsing timer event definition", e);
     }
     
     ((Event) parentElement).getEventDefinitions().add(eventDefinition);

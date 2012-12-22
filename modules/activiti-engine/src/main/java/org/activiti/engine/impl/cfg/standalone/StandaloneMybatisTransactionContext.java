@@ -16,13 +16,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.cfg.TransactionListener;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -30,7 +31,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
  */
 public class StandaloneMybatisTransactionContext implements TransactionContext {
   
-  private static Logger log = Logger.getLogger(StandaloneMybatisTransactionContext.class.getName());
+  private static Logger log = LoggerFactory.getLogger(StandaloneMybatisTransactionContext.class);
 
   protected CommandContext commandContext;
   protected Map<TransactionState,List<TransactionListener>> stateTransactionListeners = null;
@@ -52,11 +53,11 @@ public class StandaloneMybatisTransactionContext implements TransactionContext {
   }
   
   public void commit() {
-    log.fine("firing event committing...");
+    log.debug("firing event committing...");
     fireTransactionEvent(TransactionState.COMMITTING);
-    log.fine("committing the ibatis sql session...");
+    log.debug("committing the ibatis sql session...");
     getDbSqlSession().commit();
-    log.fine("firing event committed...");
+    log.debug("firing event committed...");
     fireTransactionEvent(TransactionState.COMMITTED);
   }
 
@@ -80,23 +81,23 @@ public class StandaloneMybatisTransactionContext implements TransactionContext {
   public void rollback() {
     try {
       try {
-        log.fine("firing event rolling back...");
+        log.debug("firing event rolling back...");
         fireTransactionEvent(TransactionState.ROLLINGBACK);
         
       } catch (Throwable exception) {
-        log.info("Exception during transaction: " + exception.getMessage());
+        log.info("Exception during transaction: {}",exception.getMessage());
         commandContext.exception(exception);
       } finally {
-        log.fine("rolling back ibatis sql session...");
+        log.debug("rolling back ibatis sql session...");
         getDbSqlSession().rollback();
       }
       
     } catch (Throwable exception) {
-      log.info("Exception during transaction: " + exception.getMessage());
+      log.info("Exception during transaction: {}",exception.getMessage());
       commandContext.exception(exception);
 
     } finally {
-      log.fine("firing event rolled back...");
+      log.debug("firing event rolled back...");
       fireTransactionEvent(TransactionState.ROLLED_BACK);
     }
   }

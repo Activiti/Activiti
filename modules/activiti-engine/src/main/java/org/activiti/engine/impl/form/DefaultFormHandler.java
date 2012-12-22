@@ -21,14 +21,12 @@ import java.util.Map;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.form.AbstractFormType;
 import org.activiti.engine.form.FormProperty;
-import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.util.xml.Element;
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -40,83 +38,44 @@ public class DefaultFormHandler implements FormHandler {
   protected String deploymentId;
   protected List<FormPropertyHandler> formPropertyHandlers = new ArrayList<FormPropertyHandler>();
   
-  public void parseConfiguration(Element activityElement, DeploymentEntity deployment, ProcessDefinitionEntity processDefinition, BpmnParse bpmnParse) {
+  public void parseConfiguration(List<org.activiti.bpmn.model.FormProperty> formProperties, String formKey, DeploymentEntity deployment, ProcessDefinitionEntity processDefinition) {
     this.deploymentId = deployment.getId();
     
     ExpressionManager expressionManager = Context
         .getProcessEngineConfiguration()
         .getExpressionManager();
     
-    String formKeyAttribute = activityElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "formKey");
-    
-    if (formKeyAttribute != null) {
-      this.formKey = expressionManager.createExpression(formKeyAttribute);
+    if (StringUtils.isNotEmpty(formKey)) {
+      this.formKey = expressionManager.createExpression(formKey);
     }
     
-    Element extensionElement = activityElement.element("extensionElements");
-    if (extensionElement != null) {
-      
-      FormTypes formTypes = Context
-        .getProcessEngineConfiguration()
-        .getFormTypes();
+    FormTypes formTypes = Context
+      .getProcessEngineConfiguration()
+      .getFormTypes();
     
-      List<Element> formPropertyElements = extensionElement.elementsNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "formProperty");
-      for (Element formPropertyElement : formPropertyElements) {
-        FormPropertyHandler formPropertyHandler = new FormPropertyHandler();
-        
-        String id = formPropertyElement.attribute("id");
-        if (id==null) {
-          bpmnParse.addError("attribute 'id' is required", formPropertyElement);
-        }
-        formPropertyHandler.setId(id);
-        
-        String name = formPropertyElement.attribute("name");
-        formPropertyHandler.setName(name);
-        
-        AbstractFormType type = formTypes.parseFormPropertyType(formPropertyElement, bpmnParse);
-        formPropertyHandler.setType(type);
+    for (org.activiti.bpmn.model.FormProperty formProperty : formProperties) {
+      FormPropertyHandler formPropertyHandler = new FormPropertyHandler();
+      formPropertyHandler.setId(formProperty.getId());
+      formPropertyHandler.setName(formProperty.getName());
+      
+      AbstractFormType type = formTypes.parseFormPropertyType(formProperty);
+      formPropertyHandler.setType(type);
+      formPropertyHandler.setRequired(formProperty.isRequired());
+      formPropertyHandler.setReadable(formProperty.isReadable());
+      formPropertyHandler.setWritable(formProperty.isWriteable());
+      formPropertyHandler.setVariableName(formProperty.getVariable());
 
-        String requiredText = formPropertyElement.attribute("required", "false");
-        Boolean required = bpmnParse.parseBooleanAttribute(requiredText);
-        if (required!=null) {
-          formPropertyHandler.setRequired(required);
-        } else {
-          bpmnParse.addError("attribute 'required' must be one of {on|yes|true|enabled|active|off|no|false|disabled|inactive}", formPropertyElement);
-        }
-
-        String readableText = formPropertyElement.attribute("readable", "true");
-        Boolean readable = bpmnParse.parseBooleanAttribute(readableText);
-        if (readable!=null) {
-          formPropertyHandler.setReadable(readable);
-        } else {
-          bpmnParse.addError("attribute 'readable' must be one of {on|yes|true|enabled|active|off|no|false|disabled|inactive}", formPropertyElement);
-        }
-        
-        String writableText = formPropertyElement.attribute("writable", "true");
-        Boolean writable = bpmnParse.parseBooleanAttribute(writableText);
-        if (writable!=null) {
-          formPropertyHandler.setWritable(writable);
-        } else {
-          bpmnParse.addError("attribute 'writable' must be one of {on|yes|true|enabled|active|off|no|false|disabled|inactive}", formPropertyElement);
-        }
-
-        String variableName = formPropertyElement.attribute("variable");
-        formPropertyHandler.setVariableName(variableName);
-
-        String expressionText = formPropertyElement.attribute("expression");
-        if (expressionText!=null) {
-          Expression expression = expressionManager.createExpression(expressionText);
-          formPropertyHandler.setVariableExpression(expression);
-        }
-
-        String defaultExpressionText = formPropertyElement.attribute("default");
-        if (defaultExpressionText!=null) {
-          Expression defaultExpression = expressionManager.createExpression(defaultExpressionText);
-          formPropertyHandler.setDefaultExpression(defaultExpression);
-        }
-
-        formPropertyHandlers.add(formPropertyHandler);
+      if (StringUtils.isNotEmpty(formProperty.getExpression())) {
+        Expression expression = expressionManager.createExpression(formProperty.getExpression());
+        formPropertyHandler.setVariableExpression(expression);
       }
+
+      if (StringUtils.isNotEmpty(formProperty.getDefaultExpression())) {
+        Expression defaultExpression = expressionManager.createExpression(formProperty.getDefaultExpression());
+        formPropertyHandler.setDefaultExpression(defaultExpression);
+      }
+
+      formPropertyHandlers.add(formPropertyHandler);
     }
   }
 

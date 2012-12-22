@@ -18,6 +18,7 @@ package org.activiti.bpmn.model;
 public class SignalEventDefinition extends EventDefinition {
 
   protected String signalRef;
+  protected boolean async;
 
   public String getSignalRef() {
     return signalRef;
@@ -25,5 +26,13 @@ public class SignalEventDefinition extends EventDefinition {
 
   public void setSignalRef(String signalRef) {
     this.signalRef = signalRef;
+  }
+
+  public boolean isAsync() {
+    return async;
+  }
+
+  public void setAsync(boolean async) {
+    this.async = async;
   }
 }

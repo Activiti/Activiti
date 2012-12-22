@@ -15,8 +15,10 @@ package org.activiti.bpmn.converter.child;
 import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.SignalEventDefinition;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * @author Tijs Rademakers
@@ -24,14 +26,21 @@ import org.activiti.bpmn.model.SignalEventDefinition;
 public class SignalEventDefinitionParser extends BaseChildElementParser {
 
   public String getElementName() {
-    return "signalEventDefinition";
+    return ELEMENT_EVENT_SIGNALDEFINITION;
   }
   
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement) throws Exception {
+  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
     if (parentElement instanceof Event == false) return;
     
     SignalEventDefinition eventDefinition = new SignalEventDefinition();
-    eventDefinition.setSignalRef(xtr.getAttributeValue(null, "signalRef"));
+    eventDefinition.setSignalRef(xtr.getAttributeValue(null, ATTRIBUTE_SIGNAL_REF));
+    if (StringUtils.isNotEmpty(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_ASYNCHRONOUS))) {
+      eventDefinition.setAsync(Boolean.parseBoolean(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_ASYNCHRONOUS)));
+    }
+    
+    if (StringUtils.isEmpty(eventDefinition.getSignalRef())) {
+      model.addProblem("signalEventDefinition does not have required property 'signalRef'", xtr);
+    }
     
     ((Event) parentElement).getEventDefinitions().add(eventDefinition);
   }

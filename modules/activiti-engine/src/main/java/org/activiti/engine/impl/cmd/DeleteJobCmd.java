@@ -1,13 +1,13 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Saeid Mirzaei
@@ -16,8 +16,8 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 
 public class DeleteJobCmd implements Command<Object>, Serializable {
 
+  private static final Logger log = LoggerFactory.getLogger(DeleteJobCmd.class);
   private static final long serialVersionUID = 1L;
-  private static Logger log = Logger.getLogger(DeleteJobCmd.class.getName());
 
   protected String jobId;
 
@@ -29,8 +29,8 @@ public class DeleteJobCmd implements Command<Object>, Serializable {
     if (jobId == null) {
       throw new ActivitiException("jobId is null");
     }
-    if (log.isLoggable(Level.FINE)) {
-      log.fine("Deleting job " + jobId);
+    if (log.isDebugEnabled()) {
+      log.debug("Deleting job {}", jobId);
     }
 
     JobEntity job = commandContext.getJobEntityManager().findJobById(jobId);

@@ -4,18 +4,19 @@ import java.beans.FeatureDescriptor;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.javax.el.ELContext;
 import org.activiti.engine.impl.javax.el.ELResolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @see org.activiti.spring.ApplicationContextElResolver
  */
 public class BlueprintELResolver extends ELResolver {
 	
-  private static final Logger LOGGER = Logger.getLogger(BlueprintELResolver.class.getName());
+  private static final Logger LOGGER = LoggerFactory.getLogger(BlueprintELResolver.class);
 	private Map<String, JavaDelegate> delegateMap = new HashMap<String, JavaDelegate>();
 
 	public Object getValue(ELContext context, Object base, Object property) {
@@ -37,7 +38,7 @@ public class BlueprintELResolver extends ELResolver {
 	public void bindService(JavaDelegate delegate, Map props) {
     String name = (String) props.get("osgi.service.blueprint.compname");
     delegateMap.put(name, delegate);
-    LOGGER.info("added Activiti service to delegate cache " + name);
+    LOGGER.info("added Activiti service to delegate cache {}", name);
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -46,7 +47,7 @@ public class BlueprintELResolver extends ELResolver {
     if(delegateMap.containsKey(name)) {
     	delegateMap.remove(name);
     }
-    LOGGER.info("removed Activiti service from delegate cache " + name);
+    LOGGER.info("removed Activiti service from delegate cache {}", name);
 	}
 
 	public boolean isReadOnly(ELContext context, Object base, Object property) {

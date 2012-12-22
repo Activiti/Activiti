@@ -37,7 +37,7 @@ public class ThrowEventXMLConverter extends BaseBpmnXMLConverter {
   }
   
   @Override
-  protected BaseElement convertXMLToElement(XMLStreamReader xtr) {
+  protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
     ThrowEvent throwEvent = new ThrowEvent();
     parseChildElements(getXMLElementName(), throwEvent, xtr);
     return throwEvent;

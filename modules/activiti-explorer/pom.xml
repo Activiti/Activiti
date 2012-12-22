@@ -49,6 +49,12 @@
       <groupId>org.activiti</groupId>
       <artifactId>activiti-json-converter</artifactId>
     </dependency>
+    
+    <!-- Logging, using Log4j as SLF4J implementation -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+    </dependency>
 
     <!-- Vaadin -->
     <dependency>

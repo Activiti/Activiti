@@ -16,8 +16,6 @@ package org.activiti.editor.ui;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
@@ -29,6 +27,8 @@ import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.terminal.StreamResource.StreamSource;
 import com.vaadin.ui.ComponentContainer;
@@ -45,7 +45,7 @@ import com.vaadin.ui.themes.Reindeer;
  */
 public class EditorProcessDefinitionInfoComponent extends VerticalLayout {
 
-  protected static final Logger LOGGER = Logger.getLogger(EditorProcessDefinitionInfoComponent.class.getName());
+  protected static final Logger LOGGER = LoggerFactory.getLogger(EditorProcessDefinitionInfoComponent.class);
   private static final long serialVersionUID = 1L;
 
   // Services
@@ -105,7 +105,7 @@ public class EditorProcessDefinitionInfoComponent extends VerticalLayout {
               try {
                 inStream = new ByteArrayInputStream(result);
               } catch (Exception e) {
-                LOGGER.log(Level.WARNING, "Error reading PNG in StreamSource", e);
+                LOGGER.warn("Error reading PNG in StreamSource", e);
               }
             }
             return inStream;
@@ -113,7 +113,7 @@ public class EditorProcessDefinitionInfoComponent extends VerticalLayout {
         };
         
       } catch(Exception e) {
-        LOGGER.log(Level.WARNING, "Error transforming SVG to PNG", e);
+        LOGGER.warn("Error transforming SVG to PNG", e);
       }
     }
 

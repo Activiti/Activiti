@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
@@ -164,6 +163,8 @@ import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 import org.apache.ibatis.type.JdbcType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -171,7 +172,7 @@ import org.apache.ibatis.type.JdbcType;
  */
 public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfiguration {  
 
-  private static Logger log = Logger.getLogger(ProcessEngineConfigurationImpl.class.getName());
+  private static Logger log = LoggerFactory.getLogger(ProcessEngineConfigurationImpl.class);
   
   public static final String DB_SCHEMA_UPDATE_CREATE = "create";
   public static final String DB_SCHEMA_UPDATE_DROP_CREATE = "drop-create";
@@ -459,7 +460,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
           throw new ActivitiException("DataSource or JDBC properties have to be specified in a process engine configuration");
         }
         
-        log.fine("initializing datasource to db: "+jdbcUrl);
+        log.debug("initializing datasource to db: {}", jdbcUrl);
         
         PooledDataSource pooledDataSource = 
           new PooledDataSource(ReflectUtil.getClassLoader(), jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword );
@@ -534,12 +535,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       connection = dataSource.getConnection();
       DatabaseMetaData databaseMetaData = connection.getMetaData();
       String databaseProductName = databaseMetaData.getDatabaseProductName();
-      log.fine("database product name: '"+databaseProductName+"'");
+      log.debug("database product name: '{}'", databaseProductName);
       databaseType = databaseTypeMappings.getProperty(databaseProductName);
       if (databaseType==null) {
         throw new ActivitiException("couldn't deduct database type from database product name '"+databaseProductName+"'");
       }
-      log.fine("using database type: "+databaseType);
+      log.debug("using database type: {}", databaseType);
 
     } catch (SQLException e) {
       e.printStackTrace();

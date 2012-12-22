@@ -38,11 +38,13 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_ID = "id";
   public static final String ATTRIBUTE_NAME = "name";
   public static final String ATTRIBUTE_TYPE = "type";
+  public static final String ATTRIBUTE_ITEM_REF = "itemRef";
   public static final String ELEMENT_DEFINITIONS = "definitions";
   public static final String ELEMENT_DOCUMENTATION = "documentation";
   
   public static final String ELEMENT_SIGNAL = "signal";
   public static final String ELEMENT_MESSAGE = "message";
+  public static final String ELEMENT_ERROR = "error";
   public static final String ELEMENT_COLLABORATION = "collaboration";
   public static final String ELEMENT_PARTICIPANT = "participant";
   public static final String ELEMENT_LANESET = "laneSet";
@@ -52,8 +54,12 @@ public interface BpmnXMLConstants {
   
   public static final String ELEMENT_PROCESS = "process";
   public static final String ATTRIBUTE_PROCESS_EXECUTABLE = "isExecutable";
+  public static final String ELEMENT_POTENTIAL_STARTER = "potentialStarter";
+  public static final String ATTRIBUTE_PROCESS_CANDIDATE_USERS = "candidateStarterUsers";
+  public static final String ATTRIBUTE_PROCESS_CANDIDATE_GROUPS = "candidateStarterGroups";
   public static final String ELEMENT_SUBPROCESS = "subProcess";
   public static final String ATTRIBUTE_TRIGGERED_BY = "triggeredByEvent";
+  public static final String ELEMENT_TRANSACTION = "transaction";
   
   public static final String ELEMENT_EXTENSIONS = "extensionElements";
   
@@ -70,6 +76,38 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_ACTIVITY_ASYNCHRONOUS = "async";
   public static final String ATTRIBUTE_ACTIVITY_EXCLUSIVE = "exclusive";
   public static final String ATTRIBUTE_ACTIVITY_DEFAULT = "default";
+  public static final String ATTRIBUTE_ACTIVITY_ISFORCOMPENSATION = "isForCompensation";
+  
+  public static final String ELEMENT_IMPORT = "import";
+  public static final String ATTRIBUTE_IMPORT_TYPE = "importType";
+  public static final String ATTRIBUTE_LOCATION = "location";
+  public static final String ATTRIBUTE_NAMESPACE = "namespace";
+  
+  public static final String ELEMENT_INTERFACE = "interface";
+  public static final String ELEMENT_OPERATION = "operation";
+  public static final String ATTRIBUTE_IMPLEMENTATION_REF = "implementationRef";
+  public static final String ELEMENT_IN_MESSAGE = "inMessageRef";
+  public static final String ELEMENT_OUT_MESSAGE = "outMessageRef";
+  
+  public static final String ELEMENT_ITEM_DEFINITION = "itemDefinition";
+  public static final String ATTRIBUTE_STRUCTURE_REF = "structureRef";
+  public static final String ATTRIBUTE_ITEM_KIND = "itemKind";
+  
+  public static final String ELEMENT_IOSPECIFICATION = "ioSpecification";
+  public static final String ELEMENT_DATA_INPUT = "dataInput";
+  public static final String ELEMENT_DATA_OUTPUT = "dataOutput";
+  public static final String ELEMENT_DATA_INPUT_REFS = "dataInputRefs";
+  public static final String ELEMENT_DATA_OUTPUT_REFS = "dataOutputRefs";
+  public static final String ATTRIBUTE_DATA_SUBJECT_REF = "itemSubjectRef";
+  
+  public static final String ELEMENT_INPUT_ASSOCIATION = "dataInputAssociation";
+  public static final String ELEMENT_OUTPUT_ASSOCIATION = "dataOutputAssociation";
+  public static final String ELEMENT_SOURCE_REF = "sourceRef";
+  public static final String ELEMENT_TARGET_REF = "targetRef";
+  public static final String ELEMENT_TRANSFORMATION = "transformation";
+  public static final String ELEMENT_ASSIGNMENT = "assignment";
+  public static final String ELEMENT_FROM = "from";
+  public static final String ELEMENT_TO = "to";
   
   // fake element for mail task
   public static final String ELEMENT_TASK_MAIL = "mailTask";
@@ -96,8 +134,12 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_MULTIINSTANCE_COLLECTION = "collection";
   public static final String ATTRIBUTE_MULTIINSTANCE_VARIABLE = "elementVariable";
   
+  public static final String ATTRIBUTE_TASK_IMPLEMENTATION = "implementation";
+  public static final String ATTRIBUTE_TASK_OPERATION_REF = "operationRef";
+  
   public static final String ATTRIBUTE_TASK_SCRIPT_TEXT = "script";
   public static final String ATTRIBUTE_TASK_SCRIPT_FORMAT = "scriptFormat";
+  public static final String ATTRIBUTE_TASK_SCRIPT_RESULTVARIABLE = "resultVariable";
   
   public static final String ATTRIBUTE_TASK_SERVICE_CLASS = "class";
   public static final String ATTRIBUTE_TASK_SERVICE_EXPRESSION = "expression";
@@ -151,6 +193,7 @@ public interface BpmnXMLConstants {
   
   public static final String ELEMENT_EVENT_ERRORDEFINITION = "errorEventDefinition";
   public static final String ATTRIBUTE_ERROR_REF = "errorRef";
+  public static final String ATTRIBUTE_ERROR_CODE = "errorCode";
   public static final String ELEMENT_EVENT_MESSAGEDEFINITION = "messageEventDefinition";
   public static final String ATTRIBUTE_MESSAGE_REF = "messageRef";
   public static final String ELEMENT_EVENT_SIGNALDEFINITION = "signalEventDefinition";
@@ -159,6 +202,11 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_TIMER_DATE = "timeDate";
   public static final String ATTRIBUTE_TIMER_CYCLE = "timeCycle";
   public static final String ATTRIBUTE_TIMER_DURATION = "timeDuration";
+  public static final String ELEMENT_EVENT_TERMINATEDEFINITION = "terminateEventDefinition";
+  public static final String ELEMENT_EVENT_CANCELDEFINITION = "cancelEventDefinition";
+  public static final String ELEMENT_EVENT_COMPENSATEDEFINITION = "compensateEventDefinition";
+  public static final String ATTRIBUTE_COMPENSATE_ACTIVITYREF = "activityRef";
+  public static final String ATTRIBUTE_COMPENSATE_WAITFORCOMPLETION = "waitForCompletion";
   
   public static final String ELEMENT_FORMPROPERTY = "formProperty";
   public static final String ATTRIBUTE_FORM_ID = "id";
@@ -166,6 +214,11 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_FORM_TYPE = "type";
   public static final String ATTRIBUTE_FORM_EXPRESSION = "expression";
   public static final String ATTRIBUTE_FORM_VARIABLE = "variable";
+  public static final String ATTRIBUTE_FORM_READABLE = "readable";
+  public static final String ATTRIBUTE_FORM_WRITABLE = "writable";
+  public static final String ATTRIBUTE_FORM_REQUIRED = "required";
+  public static final String ATTRIBUTE_FORM_DEFAULT = "default";
+  public static final String ATTRIBUTE_FORM_DATEPATTERN = "datePattern";
   
   public static final String ELEMENT_FIELD = "field";
   public static final String ATTRIBUTE_FIELD_NAME = "name";

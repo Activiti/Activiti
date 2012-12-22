@@ -19,7 +19,7 @@ public class BoundaryEvent extends Event {
 
   protected Activity attachedToRef;
   protected String attachedToRefId;
-  protected boolean cancelActivity;
+  protected boolean cancelActivity = true;
 
   public Activity getAttachedToRef() {
     return attachedToRef;

@@ -3,8 +3,6 @@ package org.activiti.spring.test.components;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.logging.Logger;
-
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
@@ -13,6 +11,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -24,7 +24,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration("classpath:org/activiti/spring/test/components/ProcessStartingBeanPostProcessorTest-context.xml")
 public class ProcessStartingBeanPostProcessorTest {
 
-	private Logger log = Logger.getLogger(getClass().getName());
+	private Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired 
 	private ProcessEngine processEngine;
@@ -86,7 +86,7 @@ public class ProcessStartingBeanPostProcessorTest {
 		String processInstance = processInitiatingPojo.startProcessA(id);
 		Long customerId = (Long) processEngine.getRuntimeService().getVariable(processInstance, "customerId");
 		assertEquals("the process variable should both exist and be equal to the value given, " + id, customerId, (Long) id);
-		log.info("the customerId fromt he ProcessInstance is " + customerId);
+		log.info("the customerId fromt he ProcessInstance is {}", customerId);
 		assertNotNull("processInstanc can't be null", processInstance);
 		assertNotNull("the variable should be non-null", customerId);
 	}

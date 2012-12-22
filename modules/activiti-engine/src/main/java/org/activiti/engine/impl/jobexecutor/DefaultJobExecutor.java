@@ -18,8 +18,10 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * <p>This is a simple implementation of the {@link JobExecutor} using self-managed
@@ -36,7 +38,7 @@ import java.util.logging.Logger;
  */
 public class DefaultJobExecutor extends JobExecutor {
   
-  private static Logger log = Logger.getLogger(DefaultJobExecutor.class.getName());
+  private static Logger log = LoggerFactory.getLogger(DefaultJobExecutor.class);
   
   protected int queueSize = 3;
   protected int corePoolSize = 3;
@@ -65,11 +67,11 @@ public class DefaultJobExecutor extends JobExecutor {
     // Waits for 1 minute to finish all currently executing jobs
     try {
       if(!threadPoolExecutor.awaitTermination(60L, TimeUnit.SECONDS)) {
-        log.log(Level.WARNING, "Timeout during shutdown of job executor. "
+        log.warn("Timeout during shutdown of job executor. "
                 + "The current running jobs could not end within 60 seconds after shutdown operation.");        
       }              
     } catch (InterruptedException e) {
-      log.log(Level.WARNING, "Interrupted while shutting down the job executor. ", e);
+      log.warn("Interrupted while shutting down the job executor. ", e);
     }
 
     threadPoolExecutor = null;

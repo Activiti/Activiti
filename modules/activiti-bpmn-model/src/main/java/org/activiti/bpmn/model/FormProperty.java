@@ -21,15 +21,14 @@ import java.util.List;
 public class FormProperty extends BaseElement {
 
   protected String name;
-  protected String value;
   protected String expression;
   protected String variable;
   protected String type;
   protected String defaultExpression;
   protected String datePattern;
-  protected Boolean readable;
-  protected Boolean writeable;
-  protected Boolean required;
+  protected boolean readable = true;
+  protected boolean writeable = true;
+  protected boolean required;
   protected List<FormValue> formValues = new ArrayList<FormValue>();
 
   public String getName() {
@@ -37,12 +36,6 @@ public class FormProperty extends BaseElement {
   }
   public void setName(String name) {
     this.name = name;
-  }
-  public String getValue() {
-    return value;
-  }
-  public void setValue(String value) {
-    this.value = value;
   }
   public String getExpression() {
     return expression;
@@ -74,22 +67,22 @@ public class FormProperty extends BaseElement {
   public void setDatePattern(String datePattern) {
     this.datePattern = datePattern;
   }
-  public Boolean getReadable() {
+  public boolean isReadable() {
     return readable;
   }
-  public void setReadable(Boolean readable) {
+  public void setReadable(boolean readable) {
     this.readable = readable;
   }
-  public Boolean getWriteable() {
+  public boolean isWriteable() {
     return writeable;
   }
-  public void setWriteable(Boolean writeable) {
+  public void setWriteable(boolean writeable) {
     this.writeable = writeable;
   }
-  public Boolean getRequired() {
+  public boolean isRequired() {
     return required;
   }
-  public void setRequired(Boolean required) {
+  public void setRequired(boolean required) {
     this.required = required;
   }
   public List<FormValue> getFormValues() {

@@ -14,17 +14,18 @@ package org.activiti.upgrade;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.util.logging.Logger;
 
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CleanPostgres {
   
-  private static Logger log = Logger.getLogger(CleanPostgres.class.getName());
+  private static Logger log = LoggerFactory.getLogger(CleanPostgres.class);
   
   static String[] cleanStatements = new String[] {
   "drop table ACT_GE_PROPERTY cascade;", 
@@ -74,11 +75,10 @@ public class CleanPostgres {
                 PreparedStatement preparedStatement = connection.prepareStatement(cleanStatement);
                 preparedStatement.execute();
                 connection.commit();
-                log.info("executed [" + cleanStatement + "] successfully");
+                log.info("executed [{}] successfully", cleanStatement);
 
               } catch (Exception e) {
-                log.info("ERROR WHILE EXECUTING [" + cleanStatement + "]:");
-                e.printStackTrace();
+                log.info("ERROR WHILE EXECUTING [{}]:", cleanStatement, e);
                 connection.rollback();
               }
             }

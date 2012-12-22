@@ -17,8 +17,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import math.geom2d.Point2D;
 import math.geom2d.conic.Circle2D;
@@ -44,13 +42,15 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Tijs Rademakers
  */
 public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants, ActivityProcessor {
   
-  protected static final Logger LOGGER = Logger.getLogger(BpmnJsonConverter.class.getName());
+  protected static final Logger LOGGER = LoggerFactory.getLogger(BpmnJsonConverter.class);
   
   private ObjectMapper objectMapper = new ObjectMapper();
   
@@ -217,7 +217,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
                     converter.newInstance().convertToJson(flowElement, this, model, elementShapesArrayNode, 
                         laneGraphicInfo.x, laneGraphicInfo.y);
                   } catch (Exception e) {
-                    LOGGER.log(Level.SEVERE, "Error converting " + flowElement, e);
+                    LOGGER.error("Error converting {}", flowElement, e);
                   }
                 }
               }
@@ -244,7 +244,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
           converter.newInstance().convertToJson(flowElement, this, model, shapesArrayNode, 
               subProcessX, subProcessY);
         } catch (Exception e) {
-          LOGGER.log(Level.SEVERE, "Error converting " + flowElement, e);
+          LOGGER.error("Error converting {}", flowElement, e);
         }
       }
     }
@@ -357,7 +357,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
         try {
           converter.newInstance().convertToBpmnModel(shapeNode, modelNode, this, parentElement, shapeMap);
         } catch (Exception e) {
-          LOGGER.log(Level.SEVERE, "Error converting " + BpmnJsonConverterUtil.getStencilId(shapeNode), e);
+          LOGGER.error("Error converting {}", BpmnJsonConverterUtil.getStencilId(shapeNode), e);
         }
       }
     }
@@ -483,12 +483,12 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       JsonNode targetRefNode = sourceAndTargetList.get(1);
       
       if (sourceRefNode == null) {
-      	LOGGER.log(Level.INFO, "Skipping edge " + edgeId + " because source ref is null");
+      	LOGGER.info("Skipping edge {} because source ref is null", edgeId);
       	continue;
       }
       
       if (targetRefNode == null) {
-      	LOGGER.log(Level.INFO, "Skipping edge " + edgeId + " because target ref is null");
+      	LOGGER.info("Skipping edge {} because target ref is null", edgeId);
       	continue;
       }
       

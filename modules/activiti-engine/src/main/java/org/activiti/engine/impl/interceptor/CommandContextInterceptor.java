@@ -14,17 +14,18 @@
 package org.activiti.engine.impl.interceptor;
 
 
-import java.util.logging.Logger;
 
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Tom Baeyens
  */
 public class CommandContextInterceptor extends CommandInterceptor {
   
-  private final Logger log = Logger.getLogger(CommandContextInterceptor.class.getName());
+  private final Logger log = LoggerFactory.getLogger(CommandContextInterceptor.class);
 
   protected CommandContextFactory commandContextFactory;
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
@@ -48,7 +49,7 @@ public class CommandContextInterceptor extends CommandInterceptor {
     	context = commandContextFactory.createCommandContext(command);    	
     }  
     else {
-    	log.fine("Valid context found. Reusing it for the current comment '" + command.getClass().getCanonicalName() + "'");
+    	log.debug("Valid context found. Reusing it for the current comment '{}'", command.getClass().getCanonicalName());
     	contextReused = true;
     }
 

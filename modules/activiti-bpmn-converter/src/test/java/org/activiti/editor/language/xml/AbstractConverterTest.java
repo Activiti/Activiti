@@ -9,9 +9,6 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.repository.Deployment;
 
 public abstract class AbstractConverterTest {
   
@@ -35,7 +32,7 @@ public abstract class AbstractConverterTest {
   }
   
   protected void deployProcess(BpmnModel bpmnModel)  {
-    byte[] xml = new BpmnXMLConverter().convertToXML(bpmnModel);
+    /*byte[] xml = new BpmnXMLConverter().convertToXML(bpmnModel);
     ProcessEngineConfiguration configuration = ProcessEngineConfiguration.createStandaloneInMemProcessEngineConfiguration();
     ProcessEngine processEngine = configuration.buildProcessEngine();
     try {
@@ -43,7 +40,7 @@ public abstract class AbstractConverterTest {
       processEngine.getRepositoryService().deleteDeployment(deployment.getId());
     } finally {
       processEngine.close();
-    }
+    }*/
   }
   
   protected abstract String getResource();

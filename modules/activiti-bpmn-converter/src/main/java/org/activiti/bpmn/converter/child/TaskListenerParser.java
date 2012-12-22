@@ -15,6 +15,7 @@ package org.activiti.bpmn.converter.child;
 import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.UserTask;
 
 /**
@@ -23,12 +24,12 @@ import org.activiti.bpmn.model.UserTask;
 public class TaskListenerParser extends ActivitiListenerParser {
 
   public String getElementName() {
-  	return "taskListener";
+  	return ELEMENT_TASK_LISTENER;
   }
   
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement) throws Exception {
+  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
     
-    super.parseChildElement(xtr, parentElement);
+    super.parseChildElement(xtr, parentElement, model);
     
     ((UserTask) parentElement).getTaskListeners().add(listener);
   }

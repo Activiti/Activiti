@@ -12,10 +12,11 @@
  */
 package org.activiti.engine.impl.jobexecutor;
 
-import java.util.logging.Logger;
 
 import org.activiti.engine.impl.cfg.TransactionListener;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -23,7 +24,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
  */
 public class MessageAddedNotification implements TransactionListener {
   
-  private static Logger log = Logger.getLogger(MessageAddedNotification.class.getName());
+  private static Logger log = LoggerFactory.getLogger(MessageAddedNotification.class);
   
   protected JobExecutor jobExecutor;
   
@@ -32,7 +33,7 @@ public class MessageAddedNotification implements TransactionListener {
   }
 
   public void execute(CommandContext commandContext) {
-    log.fine("notifying job executor of new job");
+    log.debug("notifying job executor of new job");
     jobExecutor.jobWasAdded();
   }
 }

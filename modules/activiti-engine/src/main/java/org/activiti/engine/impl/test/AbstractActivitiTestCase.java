@@ -19,8 +19,6 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import junit.framework.AssertionFailedError;
 
@@ -41,9 +39,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.util.ClockUtil;
-import org.activiti.engine.impl.util.LogUtil.ThreadLogMode;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.apache.ibatis.logging.LogFactory;
 import org.junit.Assert;
 
 
@@ -52,19 +48,12 @@ import org.junit.Assert;
  */
 public abstract class AbstractActivitiTestCase extends PvmTestCase {
 
-  static {
-    // this ensures that mybatis uses the jdk logging
-    LogFactory.useJdkLogging();
-    // with an upgrade of mybatis, this might have to become org.mybatis.generator.logging.LogFactory.forceJavaLogging();
-  }
-  
   private static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Arrays.asList(
     "ACT_GE_PROPERTY"
   );
 
   protected ProcessEngine processEngine; 
   
-  protected ThreadLogMode threadRenderingMode = DEFAULT_THREAD_LOG_MODE;
   protected String deploymentId;
   protected Throwable exception;
 
@@ -90,7 +79,7 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
       initializeServices();
     }
 
-    log.severe(EMPTY_LINE);
+    log.error(EMPTY_LINE);
 
     try {
       
@@ -99,14 +88,14 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
       super.runBare();
 
     }  catch (AssertionFailedError e) {
-      log.severe(EMPTY_LINE);
-      log.log(Level.SEVERE, "ASSERTION FAILED: "+e, e);
+      log.error(EMPTY_LINE);
+      log.error("ASSERTION FAILED: {}", e, e);
       exception = e;
       throw e;
       
     } catch (Throwable e) {
-      log.severe(EMPTY_LINE);
-      log.log(Level.SEVERE, "EXCEPTION: "+e, e);
+      log.error(EMPTY_LINE);
+      log.error("EXCEPTION: {}",e, e);
       exception = e;
       throw e;
       
@@ -125,7 +114,7 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
    * It throws AssertionFailed in case the DB is not clean.
    * If the DB is not clean, it is cleaned by performing a create a drop. */
   protected void assertAndEnsureCleanDb() throws Throwable {
-    log.fine("verifying that db is clean after test");
+    log.debug("verifying that db is clean after test");
     Map<String, Long> tableCounts = managementService.getTableCount();
     StringBuilder outputMessage = new StringBuilder();
     for (String tableName : tableCounts.keySet()) {
@@ -139,8 +128,8 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
     }
     if (outputMessage.length() > 0) {
       outputMessage.insert(0, "DB NOT CLEAN: \n");
-      log.severe(EMPTY_LINE);
-      log.severe(outputMessage.toString());
+      log.error(EMPTY_LINE);
+      log.error(outputMessage.toString());
       
       log.info("dropping and recreating db");
       

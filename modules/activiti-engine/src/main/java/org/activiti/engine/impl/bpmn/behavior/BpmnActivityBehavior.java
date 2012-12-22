@@ -13,11 +13,10 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.Condition;
@@ -25,6 +24,8 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Helper class for implementing BPMN 2.0 activities, offering convenience
@@ -34,9 +35,11 @@ import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
  * 
  * @author Joram Barrez
  */
-public class BpmnActivityBehavior {
-
-  private static Logger log = Logger.getLogger(BpmnActivityBehavior.class.getName());
+public class BpmnActivityBehavior implements Serializable {
+  
+  private static final long serialVersionUID = 1L;
+  
+  private static Logger log = LoggerFactory.getLogger(BpmnActivityBehavior.class);
 
   /**
    * Performs the default outgoing BPMN 2.0 behavior, which is having parallel
@@ -80,8 +83,8 @@ public class BpmnActivityBehavior {
   protected void performOutgoingBehavior(ActivityExecution execution, 
           boolean checkConditions, boolean throwExceptionIfExecutionStuck, List<ActivityExecution> reusableExecutions) {
 
-    if (log.isLoggable(Level.FINE)) {
-      log.fine("Leaving activity '" + execution.getActivity().getId() + "'");
+    if (log.isDebugEnabled()) {
+      log.debug("Leaving activity '{}'", execution.getActivity().getId());
     }
 
     String defaultSequenceFlow = (String) execution.getActivity().getProperty("default");
@@ -130,8 +133,8 @@ public class BpmnActivityBehavior {
           
         } else {
           
-          if (log.isLoggable(Level.FINE)) {
-            log.fine("No outgoing sequence flow found for " + execution.getActivity().getId() + ". Ending execution.");
+          if (log.isDebugEnabled()) {
+            log.debug("No outgoing sequence flow found for {}. Ending execution.", execution.getActivity().getId());
           }
           execution.end();
           

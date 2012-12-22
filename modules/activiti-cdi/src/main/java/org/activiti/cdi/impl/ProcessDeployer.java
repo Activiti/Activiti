@@ -15,8 +15,6 @@ package org.activiti.cdi.impl;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -24,6 +22,8 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -42,7 +42,7 @@ public class ProcessDeployer {
   public final static String PROCESS_ELEMENT_NAME = "process";
   public final static String PROCESS_ATTR_RESOURCE = "resource";
 
-  private static Logger logger = Logger.getLogger(ProcessDeployer.class.getName());
+  private static Logger logger = LoggerFactory.getLogger(ProcessDeployer.class);
 
   protected final ProcessEngine processEngine;
     
@@ -57,13 +57,13 @@ public class ProcessDeployer {
    *         {@link ProcessDefinition#getId()}
    */
   public String deployProcess(String resourceName) {
-    logger.fine("Start deploying single process.");
+    logger.debug("Start deploying single process.");
     // deploy processes as one deployment
     DeploymentBuilder deploymentBuilder = processEngine.getRepositoryService().createDeployment();
     deploymentBuilder.addClasspathResource(resourceName);
     // deploy the processes
     Deployment deployment = deploymentBuilder.deploy();
-    logger.fine("Process deployed");
+    logger.debug("Process deployed");
     // retreive the processDefinitionId for this process
     return processEngine.getRepositoryService().createProcessDefinitionQuery().deploymentId(deployment.getId()).singleResult().getId();
   }
@@ -75,10 +75,10 @@ public class ProcessDeployer {
     // build a single deployment containing all discovered processes
     Set<String> resourceNames = getResourceNames();
     if (resourceNames.size() == 0) {
-      logger.fine("Not creating a deployment");
+      logger.debug("Not creating a deployment");
       return;
     }
-    logger.fine("Start deploying processes.");
+    logger.debug("Start deploying processes.");
     DeploymentBuilder deploymentBuilder = processEngine.getRepositoryService().createDeployment();
     for (String string : resourceNames) {
       logger.info("Adding '" + string + "' to deployment.");
@@ -86,14 +86,14 @@ public class ProcessDeployer {
     }
     // deploy the processes
     deploymentBuilder.deploy();
-    logger.fine("Done deploying processes.");
+    logger.debug("Done deploying processes.");
   }
 
   public Set<String> getResourceNames() {
     Set<String> result = new HashSet<String>();
     URL processFileUrl = getClass().getClassLoader().getResource(PROCESSES_FILE_NAME);
     if (processFileUrl == null) {
-      logger.fine("No '" + PROCESSES_FILE_NAME + "'-file provided.");
+      logger.debug("No '{}'-file provided.", PROCESSES_FILE_NAME);
       // return empty set
       return result;
     }
@@ -113,7 +113,7 @@ public class ProcessDeployer {
         result.add(resourceName);
       }
     } catch (Exception e) {
-      logger.log(Level.SEVERE, "could not parse file " + PROCESSES_FILE_NAME + "'. " + e.getMessage(), e);
+      logger.error("could not parse file '{}'. {}", PROCESSES_FILE_NAME, e.getMessage(), e);
     }
     return result;
   }

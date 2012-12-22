@@ -15,7 +15,9 @@ package org.activiti.engine.impl.persistence.deploy;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default cache: keep everything in memory, unless a limit is set.
@@ -24,7 +26,7 @@ import java.util.logging.Logger;
  */
 public class DefaultDeploymentCache<T> implements DeploymentCache<T> {
   
-  private static final Logger logger = Logger.getLogger(DefaultDeploymentCache.class.getName());
+  private static final Logger logger = LoggerFactory.getLogger(DefaultDeploymentCache.class);
   
   protected Map<String, T> cache;
   
@@ -43,7 +45,7 @@ public class DefaultDeploymentCache<T> implements DeploymentCache<T> {
       protected boolean removeEldestEntry(java.util.Map.Entry<String, T> eldest) {
         boolean removeEldest = size() > limit;
         if (removeEldest) {
-          logger.finer("Cache limit is reached, " + eldest.getKey() + " will be evicted");
+          logger.trace("Cache limit is reached, {} will be evicted",  eldest.getKey());
         }
         return removeEldest;
       }

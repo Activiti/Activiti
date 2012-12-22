@@ -13,12 +13,14 @@
 
 package org.activiti.engine.delegate;
 
+import java.io.Serializable;
+
 
 
 /**
  * @author Frederik Heremans
  */
-public interface Expression {
+public interface Expression extends Serializable {
 
    Object getValue(VariableScope variableScope);
    

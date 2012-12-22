@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.el;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.activiti.engine.delegate.Expression;
@@ -50,7 +51,6 @@ import org.activiti.engine.impl.persistence.entity.VariableScopeImpl;
  */
 public class ExpressionManager {
 
-
   protected ExpressionFactory expressionFactory;
   // Default implementation (does nothing)
   protected ELContext parsingElContext = new ParsingElContext();
@@ -71,7 +71,7 @@ public class ExpressionManager {
   
   public Expression createExpression(String expression) {
     ValueExpression valueExpression = expressionFactory.createValueExpression(parsingElContext, expression, Object.class);
-    return new JuelExpression(valueExpression, this, expression);
+    return new JuelExpression(valueExpression, expression);
   }
 
   public void setExpressionFactory(ExpressionFactory expressionFactory) {

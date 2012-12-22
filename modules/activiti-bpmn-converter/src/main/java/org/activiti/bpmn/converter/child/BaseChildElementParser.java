@@ -12,44 +12,41 @@
  */
 package org.activiti.bpmn.converter.child;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.BpmnModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Tijs Rademakers
  */
 public abstract class BaseChildElementParser implements BpmnXMLConstants {
   
-  protected static final Logger LOGGER = Logger.getLogger(BaseChildElementParser.class.getName());
+  protected static final Logger LOGGER = LoggerFactory.getLogger(BaseChildElementParser.class);
 
   protected BaseElement parentElement;
   
   public abstract String getElementName();
   
-  public abstract void parseChildElement(XMLStreamReader xtr, BaseElement parentElement) throws Exception;
+  public abstract void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception;
   
-  protected void parseChildElements(XMLStreamReader xtr, BaseElement parentElement, BaseChildElementParser parser) {
+  protected void parseChildElements(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model, BaseChildElementParser parser) throws Exception {
   	this.parentElement = parentElement;
     boolean readyWithChildElements = false;
-    try {
-      while (readyWithChildElements == false && xtr.hasNext()) {
-        xtr.next();
-        if (xtr.isStartElement()) {
-          if (parser.getElementName().equals(xtr.getLocalName())) {
-            parser.parseChildElement(xtr, parentElement);
-          }
-
-        } else if (xtr.isEndElement() && getElementName().equalsIgnoreCase(xtr.getLocalName())) {
-          readyWithChildElements = true;
+    while (readyWithChildElements == false && xtr.hasNext()) {
+      xtr.next();
+      if (xtr.isStartElement()) {
+        if (parser.getElementName().equals(xtr.getLocalName())) {
+          parser.parseChildElement(xtr, parentElement, model);
         }
+
+      } else if (xtr.isEndElement() && getElementName().equalsIgnoreCase(xtr.getLocalName())) {
+        readyWithChildElements = true;
       }
-    } catch (Exception e) {
-      LOGGER.log(Level.WARNING, "Error parsing child elements for " + getElementName(), e);
     }
   }
 }

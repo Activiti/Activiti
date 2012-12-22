@@ -15,12 +15,10 @@ package org.activiti.engine.impl.interceptor;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.JobNotFoundException;
 import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
+import org.activiti.engine.JobNotFoundException;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.context.Context;
@@ -53,6 +51,8 @@ import org.activiti.engine.impl.persistence.entity.UserEntityManager;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
 import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Tom Baeyens
@@ -60,7 +60,7 @@ import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
  */
 public class CommandContext {
 
-  private static Logger log = Logger.getLogger(CommandContext.class.getName());
+  private static Logger log = LoggerFactory.getLogger(CommandContext.class);
 
   protected Command< ? > command;
   protected TransactionContext transactionContext;
@@ -79,8 +79,8 @@ public class CommandContext {
         Context.setExecutionContext(execution);
         while (!nextOperations.isEmpty()) {
           AtomicOperation currentOperation = nextOperations.removeFirst();
-          if (log.isLoggable(Level.FINEST)) {
-            log.finest("AtomicOperation: " + currentOperation + " on " + this);
+          if (log.isTraceEnabled()) {
+            log.trace("AtomicOperation: {} on {}", currentOperation, this);
           }
           currentOperation.execute(execution);
         }
@@ -127,16 +127,13 @@ public class CommandContext {
           }
 
           if (exception != null) {
-            Level loggingLevel = Level.SEVERE;
-            if (exception instanceof JobNotFoundException) {
+            if (exception instanceof JobNotFoundException || exception instanceof ActivitiTaskAlreadyClaimedException) {
               // reduce log level, because this may have been caused because of job deletion due to cancelActiviti="true"
-              loggingLevel = Level.INFO;
-              
-            } else if (exception instanceof ActivitiTaskAlreadyClaimedException) {
-              loggingLevel = Level.INFO; // reduce log level, because this is not really a technical exception
+              log.info("Error while closing command context", exception);
+            } else {
+              log.error("Error while closing command context", exception);
             }
 
-            log.log(loggingLevel, "Error while closing command context", exception);
             transactionContext.rollback();
           }
         }
@@ -182,7 +179,7 @@ public class CommandContext {
     if (this.exception == null) {
       this.exception = exception;
     } else {
-      log.log(Level.SEVERE, "masked exception in command context. for root cause, see below as it will be rethrown later.", exception);
+      log.error("masked exception in command context. for root cause, see below as it will be rethrown later.", exception);
     }
   }
 

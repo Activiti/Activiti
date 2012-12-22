@@ -10,30 +10,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.bpmn.converter;
+package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
 
-import org.activiti.bpmn.converter.child.BaseChildElementParser;
 import org.activiti.bpmn.model.BaseElement;
-import org.activiti.bpmn.model.ErrorEventDefinition;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.Event;
+import org.activiti.bpmn.model.TerminateEventDefinition;
 
 /**
  * @author Tijs Rademakers
  */
-public class ErrorEventDefinitionParser extends BaseChildElementParser {
+public class TerminateEventDefinitionParser extends BaseChildElementParser {
 
   public String getElementName() {
-    return "errorEventDefinition";
+    return ELEMENT_EVENT_TERMINATEDEFINITION;
   }
   
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement) throws Exception {
-    if (parentElement instanceof Event == false) return;
+  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
+    if (parentElement instanceof EndEvent == false) return;
     
-    ErrorEventDefinition eventDefinition = new ErrorEventDefinition();
-    eventDefinition.setErrorCode(xtr.getAttributeValue(null, "errorRef"));
-    
+    TerminateEventDefinition eventDefinition = new TerminateEventDefinition();
     ((Event) parentElement).getEventDefinitions().add(eventDefinition);
   }
 }
