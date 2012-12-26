@@ -19,14 +19,15 @@ import org.activiti.engine.impl.db.PersistentObject;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class MembershipEntity implements Serializable, PersistentObject {
 
   private static final long serialVersionUID = 1L;
 
-  protected UserEntity user;
-  protected GroupEntity group;
-
+  protected String userId;
+  protected String groupId;
+  
   public Object getPersistentState() {
     // membership is not updatable
     return MembershipEntity.class;
@@ -38,17 +39,21 @@ public class MembershipEntity implements Serializable, PersistentObject {
   public void setId(String id) {
     // membership doesn't have an id
   }
-
-  public UserEntity getUser() {
-    return user;
+  
+  public String getUserId() {
+    return userId;
   }
-  public void setUser(UserEntity user) {
-    this.user = user;
+  
+  public void setUserId(String userId) {
+    this.userId = userId;
   }
-  public GroupEntity getGroup() {
-    return group;
+  
+  public String getGroupId() {
+    return groupId;
   }
-  public void setGroup(GroupEntity group) {
-    this.group = group;
+  
+  public void setGroupId(String groupId) {
+    this.groupId = groupId;
   }
+  
 }
