@@ -16,6 +16,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
 
 /**
@@ -27,7 +28,7 @@ public class MultiInstanceParser extends BaseChildElementParser {
     return ELEMENT_MULTIINSTANCE;
   }
   
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement) throws Exception {
+  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
     if (parentElement instanceof Activity == false) return;
     
     MultiInstanceLoopCharacteristics multiInstanceDef = new MultiInstanceLoopCharacteristics();

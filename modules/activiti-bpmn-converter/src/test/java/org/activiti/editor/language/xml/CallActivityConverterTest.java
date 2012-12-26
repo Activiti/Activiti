@@ -33,7 +33,7 @@ public class CallActivityConverterTest extends AbstractConverterTest {
   }
   
   private void validateModel(BpmnModel model) {
-    FlowElement flowElement = model.getMainProcess().getFlowElementMap().get("callactivity");
+    FlowElement flowElement = model.getMainProcess().getFlowElement("callactivity");
     assertNotNull(flowElement);
     assertTrue(flowElement instanceof CallActivity);
     CallActivity callActivity = (CallActivity) flowElement;

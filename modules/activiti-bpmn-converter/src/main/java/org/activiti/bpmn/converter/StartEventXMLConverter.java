@@ -44,7 +44,7 @@ public class StartEventXMLConverter extends BaseBpmnXMLConverter {
   }
   
   @Override
-  protected BaseElement convertXMLToElement(XMLStreamReader xtr) {
+  protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
     String formKey = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_FORM_FORMKEY);
     StartEvent startEvent = null;
     if (StringUtils.isNotEmpty(formKey)) {

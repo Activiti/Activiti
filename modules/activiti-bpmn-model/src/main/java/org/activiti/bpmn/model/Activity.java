@@ -23,9 +23,12 @@ public class Activity extends FlowNode {
   protected boolean asynchronous;
   protected boolean notExclusive;
   protected String defaultFlow;
+  protected boolean forCompensation;
   protected MultiInstanceLoopCharacteristics loopCharacteristics;
+  protected IOSpecification ioSpecification;
+  protected List<DataAssociation> dataInputAssociations = new ArrayList<DataAssociation>();
+  protected List<DataAssociation> dataOutputAssociations = new ArrayList<DataAssociation>();
   protected List<BoundaryEvent> boundaryEvents = new ArrayList<BoundaryEvent>();
-  protected List<ActivitiListener> executionListeners = new ArrayList<ActivitiListener>();
 
   public boolean isAsynchronous() {
     return asynchronous;
@@ -39,6 +42,12 @@ public class Activity extends FlowNode {
   public void setNotExclusive(boolean notExclusive) {
     this.notExclusive = notExclusive;
   }
+  public boolean isForCompensation() {
+    return forCompensation;
+  }
+  public void setForCompensation(boolean forCompensation) {
+    this.forCompensation = forCompensation;
+  }
   public List<BoundaryEvent> getBoundaryEvents() {
     return boundaryEvents;
   }
@@ -51,16 +60,28 @@ public class Activity extends FlowNode {
   public void setDefaultFlow(String defaultFlow) {
     this.defaultFlow = defaultFlow;
   }
-  public List<ActivitiListener> getExecutionListeners() {
-    return executionListeners;
-  }
-  public void setExecutionListeners(List<ActivitiListener> executionListeners) {
-    this.executionListeners = executionListeners;
-  }
   public MultiInstanceLoopCharacteristics getLoopCharacteristics() {
     return loopCharacteristics;
   }
   public void setLoopCharacteristics(MultiInstanceLoopCharacteristics loopCharacteristics) {
     this.loopCharacteristics = loopCharacteristics;
+  }
+  public IOSpecification getIoSpecification() {
+    return ioSpecification;
+  }
+  public void setIoSpecification(IOSpecification ioSpecification) {
+    this.ioSpecification = ioSpecification;
+  }
+  public List<DataAssociation> getDataInputAssociations() {
+    return dataInputAssociations;
+  }
+  public void setDataInputAssociations(List<DataAssociation> dataInputAssociations) {
+    this.dataInputAssociations = dataInputAssociations;
+  }
+  public List<DataAssociation> getDataOutputAssociations() {
+    return dataOutputAssociations;
+  }
+  public void setDataOutputAssociations(List<DataAssociation> dataOutputAssociations) {
+    this.dataOutputAssociations = dataOutputAssociations;
   }
 }

@@ -25,10 +25,6 @@ public class Parser {
   
   public static final Parser INSTANCE = new Parser();
 
-  public Parse createParse() {
-    return new Parse(this);
-  }
-
   protected SAXParser getSaxParser() throws Exception {
     return getSaxParserFactory().newSAXParser();
   }

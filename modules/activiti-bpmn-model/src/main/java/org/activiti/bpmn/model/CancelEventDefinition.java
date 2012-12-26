@@ -10,22 +10,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.activiti.engine.test.bpmn.ruletask;
-
-import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.JavaDelegate;
-
+package org.activiti.bpmn.model;
 
 /**
- * @author Bernd Ruecker
+ * @author Tijs Rademakers
  */
-public class DummyServiceTask implements JavaDelegate {
-  
-  public static boolean wasExecuted = false;
-  
-  public void execute(DelegateExecution execution) throws Exception {
-    wasExecuted = true;
-  }
+public class CancelEventDefinition extends EventDefinition {
 
 }

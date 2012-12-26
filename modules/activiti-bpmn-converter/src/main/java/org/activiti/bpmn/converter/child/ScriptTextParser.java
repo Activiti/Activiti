@@ -15,6 +15,7 @@ package org.activiti.bpmn.converter.child;
 import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ScriptTask;
 
 /**
@@ -26,7 +27,7 @@ public class ScriptTextParser extends BaseChildElementParser {
     return ATTRIBUTE_TASK_SCRIPT_TEXT;
   }
   
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement) throws Exception {
+  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
     if (parentElement instanceof ScriptTask == false) return;
     
     ((ScriptTask) parentElement).setScript(xtr.getElementText());

@@ -222,7 +222,7 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
     catch(ActivitiException expected) {
       // Check if no deployments are made
       assertEquals(0, repositoryService.createDeploymentQuery().count());
-      assertTrue(expected.getMessage().startsWith("Error while parsing process: "));
+      assertTrue(expected.getMessage().startsWith("Error parsing XML"));
     }
   }
   

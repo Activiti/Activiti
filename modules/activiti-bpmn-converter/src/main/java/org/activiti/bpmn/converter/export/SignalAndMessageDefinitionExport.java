@@ -32,7 +32,7 @@ public class SignalAndMessageDefinitionExport implements BpmnXMLConstants {
             } else if (eventDefinition instanceof MessageEventDefinition) {
               MessageEventDefinition messageEvent = (MessageEventDefinition) eventDefinition;
               if (model.containsMessageId(messageEvent.getMessageRef()) == false) {
-                model.addMessage(messageEvent.getMessageRef(), messageEvent.getMessageRef());
+                model.addMessage(messageEvent.getMessageRef(), messageEvent.getMessageRef(), null);
               }
             }
           }

@@ -152,7 +152,7 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
         .deploy();
       fail("exception expected");
     } catch (Exception e) {
-      if(!e.getMessage().contains("Invalid incoming sequenceflow for intermediateCatchEvent")) {
+      if(!e.getMessage().contains("Invalid incoming sequenceflow")) {
         fail("different exception expected");
       }
     }

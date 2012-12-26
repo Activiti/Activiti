@@ -17,10 +17,11 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.activiti.bpmn.model.FormProperty;
+import org.activiti.bpmn.model.FormValue;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.form.AbstractFormType;
-import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.bpmn.parser.BpmnParser;
-import org.activiti.engine.impl.util.xml.Element;
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -34,29 +35,24 @@ public class FormTypes {
     formTypes.put(formType.getName(), formType);
   }
 
-  public AbstractFormType parseFormPropertyType(Element formPropertyElement, BpmnParse bpmnParse) {
+  public AbstractFormType parseFormPropertyType(FormProperty formProperty) {
     AbstractFormType formType = null;
 
-    String typeText = formPropertyElement.attribute("type");
-    String datePatternText = formPropertyElement.attribute("datePattern");
-    
-    if ("date".equals(typeText) && datePatternText!=null) {
-      formType = new DateFormType(datePatternText);
+    if ("date".equals(formProperty.getType()) && StringUtils.isNotEmpty(formProperty.getDatePattern())) {
+      formType = new DateFormType(formProperty.getDatePattern());
       
-    } else if ("enum".equals(typeText)) {
+    } else if ("enum".equals(formProperty.getType())) {
       // ACT-1023: Using linked hashmap to preserve the order in which the entries are defined
       Map<String, String> values = new LinkedHashMap<String, String>();
-      for (Element valueElement: formPropertyElement.elementsNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS,"value")) {
-        String valueId = valueElement.attribute("id");
-        String valueName = valueElement.attribute("name");
-        values.put(valueId, valueName);
+      for (FormValue formValue: formProperty.getFormValues()) {
+        values.put(formValue.getId(), formValue.getName());
       }
       formType = new EnumFormType(values);
       
-    } else if (typeText!=null) {
-      formType = formTypes.get(typeText);
-      if (formType==null) {
-        bpmnParse.addError("unknown type '"+typeText+"'", formPropertyElement);
+    } else if (StringUtils.isNotEmpty(formProperty.getType())) {
+      formType = formTypes.get(formProperty.getType());
+      if (formType == null) {
+        throw new ActivitiException("unknown type '" + formProperty.getType() + "' " + formProperty.getId());
       }
     }
     return formType;

@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.form.AbstractFormType;
+import org.drools.core.util.StringUtils;
 
 
 /**
@@ -46,7 +47,7 @@ public class DateFormType extends AbstractFormType {
   }
 
   public Object convertFormValueToModelValue(String propertyValue) {
-    if (propertyValue==null || "".equals(propertyValue)) {
+    if (StringUtils.isEmpty(propertyValue)) {
       return null;
     }
     try {
@@ -57,7 +58,7 @@ public class DateFormType extends AbstractFormType {
   }
 
   public String convertModelValueToFormValue(Object modelValue) {
-    if (modelValue==null) {
+    if (modelValue == null) {
       return null;
     }
     return dateFormat.format(modelValue);

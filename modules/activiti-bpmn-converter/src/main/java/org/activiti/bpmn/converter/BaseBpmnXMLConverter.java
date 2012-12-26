@@ -12,7 +12,6 @@
  */
 package org.activiti.bpmn.converter;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,15 +21,22 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.child.BaseChildElementParser;
+import org.activiti.bpmn.converter.child.CancelEventDefinitionParser;
+import org.activiti.bpmn.converter.child.CompensateEventDefinitionParser;
 import org.activiti.bpmn.converter.child.ConditionExpressionParser;
+import org.activiti.bpmn.converter.child.DataInputAssociationParser;
+import org.activiti.bpmn.converter.child.DataOutputAssociationParser;
 import org.activiti.bpmn.converter.child.DocumentationParser;
+import org.activiti.bpmn.converter.child.ErrorEventDefinitionParser;
 import org.activiti.bpmn.converter.child.ExecutionListenerParser;
 import org.activiti.bpmn.converter.child.FieldExtensionParser;
 import org.activiti.bpmn.converter.child.FormPropertyParser;
+import org.activiti.bpmn.converter.child.IOSpecificationParser;
 import org.activiti.bpmn.converter.child.MessageEventDefinitionParser;
 import org.activiti.bpmn.converter.child.MultiInstanceParser;
 import org.activiti.bpmn.converter.child.SignalEventDefinitionParser;
 import org.activiti.bpmn.converter.child.TaskListenerParser;
+import org.activiti.bpmn.converter.child.TerminateEventDefinitionParser;
 import org.activiti.bpmn.converter.child.TimerEventDefinitionParser;
 import org.activiti.bpmn.converter.util.ActivitiListenerUtil;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
@@ -70,16 +76,22 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
   protected boolean didWriteExtensionStartElement = false;
   
   static {
+    addGenericParser(new CancelEventDefinitionParser());
+    addGenericParser(new CompensateEventDefinitionParser());
     addGenericParser(new ConditionExpressionParser());
+    addGenericParser(new DataInputAssociationParser());
+    addGenericParser(new DataOutputAssociationParser());
     addGenericParser(new DocumentationParser());
     addGenericParser(new ErrorEventDefinitionParser());
     addGenericParser(new ExecutionListenerParser());
     addGenericParser(new FieldExtensionParser());
     addGenericParser(new FormPropertyParser());
+    addGenericParser(new IOSpecificationParser());
     addGenericParser(new MessageEventDefinitionParser());
     addGenericParser(new MultiInstanceParser());
     addGenericParser(new SignalEventDefinitionParser());
     addGenericParser(new TaskListenerParser());
+    addGenericParser(new TerminateEventDefinitionParser());
     addGenericParser(new TimerEventDefinitionParser());
   }
   
@@ -98,6 +110,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     boolean async = parseAsync(xtr);
     boolean notExclusive = parseNotExclusive(xtr);
     String defaultFlow = xtr.getAttributeValue(null, "default");
+    boolean isForCompensation = parseForCompensation(xtr);
     
     BaseElement parsedElement = convertXMLToElement(xtr);
     
@@ -125,6 +138,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
         Activity activity = (Activity) currentFlowElement;
         activity.setAsynchronous(async);
         activity.setNotExclusive(notExclusive);
+        activity.setForCompensation(isForCompensation);
         if(StringUtils.isNotEmpty(defaultFlow)) {
           activity.setDefaultFlow(defaultFlow);
         }
@@ -226,7 +240,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
   
   // To BpmnModel converter convenience methods
   
-  protected void parseChildElements(String elementName, BaseElement parentElement, XMLStreamReader xtr) {
+  protected void parseChildElements(String elementName, BaseElement parentElement, XMLStreamReader xtr) throws Exception {
     Map<String, BaseChildElementParser> childParsers = new HashMap<String, BaseChildElementParser>();
     childParsers.putAll(genericChildParserMap);
     if (childElementParsers != null) {
@@ -234,20 +248,16 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     }
     
     boolean readyWithChildElements = false;
-    try {
-      while (readyWithChildElements == false && xtr.hasNext()) {
-        xtr.next();
-        if (xtr.isStartElement()) {
-          if (childParsers.containsKey(xtr.getLocalName())) {
-            childParsers.get(xtr.getLocalName()).parseChildElement(xtr, parentElement);
-          }
-
-        } else if (xtr.isEndElement() && elementName.equalsIgnoreCase(xtr.getLocalName())) {
-          readyWithChildElements = true;
+    while (readyWithChildElements == false && xtr.hasNext()) {
+      xtr.next();
+      if (xtr.isStartElement()) {
+        if (childParsers.containsKey(xtr.getLocalName())) {
+          childParsers.get(xtr.getLocalName()).parseChildElement(xtr, parentElement, model);
         }
+
+      } else if (xtr.isEndElement() && elementName.equalsIgnoreCase(xtr.getLocalName())) {
+        readyWithChildElements = true;
       }
-    } catch (Exception e) {
-      LOGGER.warn("Error parsing child elements for {}", elementName, e);
     }
   }
   
@@ -269,20 +279,17 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     return notExclusive;
   }
   
-  protected List<String> parseDelimitedList(String expression) {
-    List<String> resultList = new ArrayList<String>();
-    if (StringUtils.isNotEmpty(expression)) {
-      String[] expressionList = null;
-      if (expression.contains(",")) {
-        expressionList = expression.split(",");
-      } else {
-        expressionList = new String[] { expression };
-      }
-      for (String strExpression : expressionList) {
-        resultList.add(strExpression);
-      }
+  private boolean parseForCompensation(XMLStreamReader xtr) {
+    boolean isForCompensation = false;
+    String compensationString = xtr.getAttributeValue(null, ATTRIBUTE_ACTIVITY_ISFORCOMPENSATION);
+    if (ATTRIBUTE_VALUE_TRUE.equalsIgnoreCase(compensationString)) {
+      isForCompensation = true;
     }
-    return resultList;
+    return isForCompensation;
+  }
+  
+  protected List<String> parseDelimitedList(String expression) {
+    return BpmnXMLUtil.parseDelimitedList(expression);
   }
   
   private boolean isInSubProcess(List<SubProcess> subProcessList) {
@@ -333,6 +340,17 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
           writeDefaultAttribute(ATTRIBUTE_FORM_TYPE, property.getType(), xtw);
           writeDefaultAttribute(ATTRIBUTE_FORM_EXPRESSION, property.getExpression(), xtw);
           writeDefaultAttribute(ATTRIBUTE_FORM_VARIABLE, property.getVariable(), xtw);
+          writeDefaultAttribute(ATTRIBUTE_FORM_DEFAULT, property.getDefaultExpression(), xtw);
+          writeDefaultAttribute(ATTRIBUTE_FORM_DATEPATTERN, property.getDatePattern(), xtw);
+          if (property.isReadable() == false) {
+            writeDefaultAttribute(ATTRIBUTE_FORM_READABLE, ATTRIBUTE_VALUE_FALSE, xtw);
+          }
+          if (property.isWriteable() == false) {
+            writeDefaultAttribute(ATTRIBUTE_FORM_WRITABLE, ATTRIBUTE_VALUE_FALSE, xtw);
+          }
+          if (property.isRequired()) {
+            writeDefaultAttribute(ATTRIBUTE_FORM_REQUIRED, ATTRIBUTE_VALUE_TRUE, xtw);
+          }
           
           xtw.writeEndElement();
         }

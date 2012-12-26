@@ -283,7 +283,7 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
   }
   
   /**
-   * Test case for handing over process variables to a sub process
+   * Test case for deleting a sub process
    */
   @Deployment(resources = {
     "org/activiti/engine/test/bpmn/callactivity/CallActivity.testTwoSubProcesses.bpmn20.xml", 

@@ -13,14 +13,15 @@
 
 package org.activiti.engine.impl.form;
 
+import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.model.FormProperty;
 import org.activiti.engine.form.StartFormData;
-import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.util.xml.Element;
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -29,9 +30,9 @@ import org.activiti.engine.impl.util.xml.Element;
 public class DefaultStartFormHandler extends DefaultFormHandler implements StartFormHandler {
   
   @Override
-  public void parseConfiguration(Element activityElement, DeploymentEntity deployment, ProcessDefinitionEntity processDefinition, BpmnParse bpmnParse) {
-    super.parseConfiguration(activityElement, deployment, processDefinition, bpmnParse);
-    if (formKey!=null) {
+  public void parseConfiguration(List<FormProperty> formProperties, String formKey, DeploymentEntity deployment, ProcessDefinitionEntity processDefinition) {
+    super.parseConfiguration(formProperties, formKey, deployment, processDefinition);
+    if (StringUtils.isNotEmpty(formKey)) {
       processDefinition.setStartFormKey(true);
     }
   }

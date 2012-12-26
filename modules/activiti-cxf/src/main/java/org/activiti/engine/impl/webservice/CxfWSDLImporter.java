@@ -24,12 +24,12 @@ import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.schema.Schema;
 import javax.xml.namespace.QName;
 
+import org.activiti.bpmn.model.Import;
 import org.activiti.engine.impl.bpmn.data.SimpleStructureDefinition;
 import org.activiti.engine.impl.bpmn.data.StructureDefinition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.XMLImporter;
 import org.activiti.engine.impl.util.ReflectUtil;
-import org.activiti.engine.impl.util.xml.Element;
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
 import org.apache.cxf.service.model.EndpointInfo;
@@ -64,9 +64,9 @@ public class CxfWSDLImporter implements XMLImporter {
     this.namespace = "";
   }
   
-  public void importFrom(Element element, BpmnParse parse) {
-    this.namespace = element.attribute("namespace") == null ? "" : element.attribute("namespace") + ":";
-    this.importFrom(element.attribute("location"));
+  public void importFrom(Import theImport, BpmnParse parse) {
+    this.namespace = theImport.getNamespace() == null ? "" : theImport.getNamespace() + ":";
+    this.importFrom(theImport.getLocation());
     this.transferImportsToParse(parse);
   }
   

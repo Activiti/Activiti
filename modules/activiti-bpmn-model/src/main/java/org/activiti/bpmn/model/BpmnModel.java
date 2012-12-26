@@ -18,6 +18,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.stream.XMLStreamReader;
+
+import org.activiti.bpmn.model.parse.Problem;
+import org.activiti.bpmn.model.parse.Warning;
 import org.apache.commons.lang.StringUtils;
 
 
@@ -32,8 +36,16 @@ public class BpmnModel {
 	protected Map<String, List<GraphicInfo>> flowLocationMap = new HashMap<String, List<GraphicInfo>>();
 	protected Map<String, Signal> signalMap = new HashMap<String, Signal>();
 	protected Map<String, Message> messageMap = new HashMap<String, Message>();
+	protected Map<String, String> errorMap = new HashMap<String, String>();
+	protected Map<String, ItemDefinition> itemDefinitionMap = new HashMap<String, ItemDefinition>();
 	protected List<Pool> pools = new ArrayList<Pool>();
+	protected List<Import> imports = new ArrayList<Import>();
+	protected List<Interface> interfaces = new ArrayList<Interface>();
+	protected List<Problem> problems = new ArrayList<Problem>();
+	protected List<Warning> warnings = new ArrayList<Warning>();
+	protected Map<String, String> namespaceMap = new HashMap<String, String>();
 	protected String targetNamespace;
+	protected int nextFlowIdCounter = 1;
 
 	public Process getMainProcess() {
 	  Process process = getProcess(null);
@@ -214,6 +226,10 @@ public class BpmnModel {
   public boolean containsSignalId(String signalId) {
     return signalMap.containsKey(signalId);
   }
+  
+  public Signal getSignal(String id) {
+    return signalMap.get(id);
+  }
 
   public Collection<Message> getMessages() {
     return messageMap.values();
@@ -228,14 +244,54 @@ public class BpmnModel {
     }
   }
 
-  public void addMessage(String id, String name) {
+  public void addMessage(String id, String name, String itemRef) {
     if (StringUtils.isNotEmpty(id)) {
-      messageMap.put(id, new Message(id, name));
+      messageMap.put(id, new Message(id, name, itemRef));
     }
+  }
+  
+  public Message getMessage(String id) {
+    return messageMap.get(id);
   }
   
   public boolean containsMessageId(String messageId) {
     return messageMap.containsKey(messageId);
+  }
+  
+  public Map<String, String> getErrors() {
+    return errorMap;
+  }
+  
+  public void setErrors(Map<String, String> errorMap) {
+    this.errorMap = errorMap;
+  }
+
+  public void addError(String errorRef, String errorCode) {
+    if (StringUtils.isNotEmpty(errorRef)) {
+      errorMap.put(errorRef, errorCode);
+    }
+  }
+  
+  public boolean containsErrorRef(String errorRef) {
+    return errorMap.containsKey(errorRef);
+  }
+  
+  public Map<String, ItemDefinition> getItemDefinitions() {
+    return itemDefinitionMap;
+  }
+  
+  public void setItemDefinitions(Map<String, ItemDefinition> itemDefinitionMap) {
+    this.itemDefinitionMap = itemDefinitionMap;
+  }
+
+  public void addItemDefinition(String id, ItemDefinition item) {
+    if (StringUtils.isNotEmpty(id)) {
+      itemDefinitionMap.put(id, item);
+    }
+  }
+  
+  public boolean containsItemDefinitionId(String id) {
+    return itemDefinitionMap.containsKey(id);
   }
 
   public List<Pool> getPools() {
@@ -246,11 +302,63 @@ public class BpmnModel {
     this.pools = pools;
   }
   
+  public List<Import> getImports() {
+    return imports;
+  }
+
+  public void setImports(List<Import> imports) {
+    this.imports = imports;
+  }
+
+  public List<Interface> getInterfaces() {
+    return interfaces;
+  }
+
+  public void setInterfaces(List<Interface> interfaces) {
+    this.interfaces = interfaces;
+  }
+
+  public void addNamespace(String prefix, String uri) {
+    namespaceMap.put(prefix, uri);
+  }
+  
+  public boolean containsNamespacePrefix(String prefix) {
+    return namespaceMap.containsKey(prefix);
+  }
+  
+  public String getNamespace(String prefix) {
+    return namespaceMap.get(prefix);
+  }
+  
   public String getTargetNamespace() {
     return targetNamespace;
   }
 
   public void setTargetNamespace(String targetNamespace) {
     this.targetNamespace = targetNamespace;
+  }
+  
+  public void addProblem(String errorMessage, XMLStreamReader xtr) {
+    problems.add(new Problem(errorMessage, xtr));
+  }
+  
+  public void addProblem(String errorMessage, String elementId) {
+    problems.add(new Problem(errorMessage, elementId));
+  }
+  
+  public List<Problem> getProblems() {
+    return problems;
+  }
+  
+  public void addWarning(String warningMessage, XMLStreamReader xtr) {
+    warnings.add(new Warning(warningMessage, xtr));
+  }
+  
+  public void addWarning(String warningMessage, String elementId) {
+    warnings.add(new Warning(warningMessage, elementId));
+  }
+  
+  public List<Warning> getWarning() {
+    return warnings;
   }
 }

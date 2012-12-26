@@ -26,6 +26,7 @@ public class ServiceTask extends Task {
   protected String implementationType;
   protected String resultVariableName;
   protected String type;
+  protected String operationRef;
   protected String extensionId;
   protected List<FieldExtension> fieldExtensions = new ArrayList<FieldExtension>();
   protected List<CustomProperty> customProperties = new ArrayList<CustomProperty>();
@@ -65,6 +66,12 @@ public class ServiceTask extends Task {
   }
   public void setCustomProperties(List<CustomProperty> customProperties) {
     this.customProperties = customProperties;
+  }
+  public String getOperationRef() {
+    return operationRef;
+  }
+  public void setOperationRef(String operationRef) {
+    this.operationRef = operationRef;
   }
   public String getExtensionId() {
     return extensionId;

@@ -12,6 +12,9 @@
  */
 package org.activiti.bpmn.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * @author Tijs Rademakers
@@ -20,6 +23,7 @@ public class FlowElement extends BaseElement {
 
   protected String name;
   protected String documentation;
+  protected List<ActivitiListener> executionListeners = new ArrayList<ActivitiListener>();
 
   public String getName() {
     return name;
@@ -35,5 +39,12 @@ public class FlowElement extends BaseElement {
 
   public void setDocumentation(String documentation) {
     this.documentation = documentation;
+  }
+  
+  public List<ActivitiListener> getExecutionListeners() {
+    return executionListeners;
+  }
+  public void setExecutionListeners(List<ActivitiListener> executionListeners) {
+    this.executionListeners = executionListeners;
   }
 }

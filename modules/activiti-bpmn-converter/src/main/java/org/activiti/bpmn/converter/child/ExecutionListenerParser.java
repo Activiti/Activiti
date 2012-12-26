@@ -16,6 +16,8 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.SubProcess;
@@ -26,15 +28,17 @@ import org.activiti.bpmn.model.SubProcess;
 public class ExecutionListenerParser extends ActivitiListenerParser {
 
   public String getElementName() {
-  	return "executionListener";
+  	return ELEMENT_EXECUTION_LISTENER;
   }
   
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement) throws Exception {
+  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
     
-    super.parseChildElement(xtr, parentElement);
+    super.parseChildElement(xtr, parentElement, model);
     
     if (parentElement instanceof Activity) {
       ((Activity) parentElement).getExecutionListeners().add(listener);
+    } else if (parentElement instanceof Event) {
+      ((Event) parentElement).getExecutionListeners().add(listener);
     } else if (parentElement instanceof SequenceFlow){
       ((SequenceFlow) parentElement).getExecutionListeners().add(listener);
     } else if (parentElement instanceof SubProcess){

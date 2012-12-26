@@ -40,13 +40,13 @@ public class BoundaryEventXMLConverter extends BaseBpmnXMLConverter {
   }
   
   @Override
-  protected BaseElement convertXMLToElement(XMLStreamReader xtr) {
+  protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
     BoundaryEvent boundaryEvent = new BoundaryEvent();
     
     if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_BOUNDARY_CANCELACTIVITY))) {
       String cancelActivity = xtr.getAttributeValue(null, ATTRIBUTE_BOUNDARY_CANCELACTIVITY);
-      if (ATTRIBUTE_VALUE_TRUE.equalsIgnoreCase(cancelActivity)) {
-        boundaryEvent.setCancelActivity(true);
+      if (ATTRIBUTE_VALUE_FALSE.equalsIgnoreCase(cancelActivity)) {
+        boundaryEvent.setCancelActivity(false);
       }
     }
     boundaryEvent.setAttachedToRefId(xtr.getAttributeValue(null, ATTRIBUTE_BOUNDARY_ATTACHEDTOREF));

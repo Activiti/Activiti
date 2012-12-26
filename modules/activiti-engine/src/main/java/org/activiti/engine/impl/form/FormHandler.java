@@ -13,14 +13,14 @@
 
 package org.activiti.engine.impl.form;
 
+import java.util.List;
 import java.io.Serializable;
 import java.util.Map;
 
-import org.activiti.engine.impl.bpmn.parser.BpmnParse;
+import org.activiti.bpmn.model.FormProperty;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.util.xml.Element;
 
 
 /**
@@ -30,7 +30,7 @@ public interface FormHandler extends Serializable {
 
   ThreadLocal<FormHandler> current = new ThreadLocal<FormHandler>();
 
-  void parseConfiguration(Element activityElement, DeploymentEntity deployment, ProcessDefinitionEntity processDefinition, BpmnParse bpmnParse);
+  void parseConfiguration(List<FormProperty> formProperties, String formKey, DeploymentEntity deployment, ProcessDefinitionEntity processDefinition);
 
   void submitFormProperties(Map<String, String> properties, ExecutionEntity execution);
 }

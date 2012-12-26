@@ -437,6 +437,11 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     // Start process instance, 2 tasks will be available
     runtimeService.startProcessInstanceByKey("taskDefinitionKeyProcess");
     
+    List<Task> tasks2 = taskService.createTaskQuery().list();
+    for (Task task : tasks2) {
+      System.out.println("task " + task.getId() + " " + task.getTaskDefinitionKey() + " " + task.getName());
+    }
+    
     // 1 task should exist with key "taskKey1"
     List<Task> tasks = taskService.createTaskQuery().taskDefinitionKey("taskKey1").list();
     assertNotNull(tasks);

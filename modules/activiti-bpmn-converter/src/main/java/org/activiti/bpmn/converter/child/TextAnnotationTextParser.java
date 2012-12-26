@@ -15,6 +15,7 @@ package org.activiti.bpmn.converter.child;
 import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.TextAnnotation;
 
 /**
@@ -26,7 +27,7 @@ public class TextAnnotationTextParser extends BaseChildElementParser {
     return ELEMENT_TEXT_ANNOTATION_TEXT;
   }
   
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement) throws Exception {
+  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
     if (parentElement instanceof TextAnnotation == false) return;
     
     ((TextAnnotation) parentElement).setText(xtr.getElementText());

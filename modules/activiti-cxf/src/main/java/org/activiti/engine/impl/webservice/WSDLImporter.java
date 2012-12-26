@@ -32,6 +32,7 @@ import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 
+import org.activiti.bpmn.model.Import;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.data.SimpleStructureDefinition;
 import org.activiti.engine.impl.bpmn.data.StructureDefinition;
@@ -74,9 +75,9 @@ public class WSDLImporter implements XMLImporter {
     this.namespace = "";
   }
 
-  public void importFrom(org.activiti.engine.impl.util.xml.Element element, BpmnParse parse) {
-    this.namespace = element.attribute("namespace") == null ? "" : element.attribute("namespace") + ":";
-    this.importFrom(element.attribute("location"));
+  public void importFrom(Import theImport, BpmnParse parse) {
+    this.namespace = theImport.getNamespace() == null ? "" : theImport.getNamespace() + ":";
+    this.importFrom(theImport.getLocation());
     this.transferImportsToParse(parse);
   }
 
