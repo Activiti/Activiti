@@ -26,14 +26,14 @@ import org.apache.commons.lang.StringUtils;
 public class MessageEventDefinitionParser extends BaseChildElementParser {
 
   public String getElementName() {
-    return "messageEventDefinition";
+    return ELEMENT_EVENT_MESSAGEDEFINITION;
   }
   
   public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
     if (parentElement instanceof Event == false) return;
     
     MessageEventDefinition eventDefinition = new MessageEventDefinition();
-    eventDefinition.setMessageRef(xtr.getAttributeValue(null, "messageRef"));
+    eventDefinition.setMessageRef(xtr.getAttributeValue(null, ATTRIBUTE_MESSAGE_REF));
     
     if(StringUtils.isEmpty(eventDefinition.getMessageRef())) {
       model.addProblem("attribute 'messageRef' is required", xtr);
@@ -50,9 +50,8 @@ public class MessageEventDefinitionParser extends BaseChildElementParser {
       
       if(model.containsMessageId(eventDefinition.getMessageRef()) == false) {
         model.addProblem("Invalid 'messageRef': no message with id '" + eventDefinition.getMessageRef() + "' found.", xtr);
-      } else {
-        ((Event) parentElement).getEventDefinitions().add(eventDefinition);
       }
     }
+    ((Event) parentElement).getEventDefinitions().add(eventDefinition);
   }
 }

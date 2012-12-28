@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * @author Tijs Rademakers
  */
@@ -26,10 +28,12 @@ public class SubProcess extends Activity {
 
   public FlowElement getFlowElement(String id) {
     FlowElement foundElement = null;
-    for (FlowElement element : flowElementList) {
-      if (id.equals(element.getId())) {
-        foundElement = element;
-        break;
+    if (StringUtils.isNotEmpty(id)) {  
+      for (FlowElement element : flowElementList) {
+        if (id.equals(element.getId())) {
+          foundElement = element;
+          break;
+        }
       }
     }
     return foundElement;

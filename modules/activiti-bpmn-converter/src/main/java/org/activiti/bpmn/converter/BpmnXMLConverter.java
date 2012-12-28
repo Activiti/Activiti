@@ -314,10 +314,12 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 	
 	private FlowNode getFlowNodeFromScope(String elementId, BaseElement scope) {
 	  FlowNode flowNode = null;
-	  if (scope instanceof Process) {
-	    flowNode = (FlowNode) ((Process) scope).getFlowElement(elementId);
-	  } else if (scope instanceof SubProcess) {
-	    flowNode = (FlowNode) ((SubProcess) scope).getFlowElement(elementId);
+	  if (StringUtils.isNotEmpty(elementId)) {
+  	  if (scope instanceof Process) {
+  	    flowNode = (FlowNode) ((Process) scope).getFlowElement(elementId);
+  	  } else if (scope instanceof SubProcess) {
+  	    flowNode = (FlowNode) ((SubProcess) scope).getFlowElement(elementId);
+  	  }
 	  }
 	  return flowNode;
 	}

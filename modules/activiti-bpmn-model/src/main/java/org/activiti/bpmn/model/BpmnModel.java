@@ -239,7 +239,7 @@ public class BpmnModel {
     if (messageList != null) {
       messageMap.clear();
       for (Message message : messageList) {
-        addSignal(message.getId(), message.getName());
+        addMessage(message.getId(), message.getName(), message.getItemRef());
       }
     }
   }
