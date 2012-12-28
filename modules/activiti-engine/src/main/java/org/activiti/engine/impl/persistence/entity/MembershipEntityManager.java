@@ -25,10 +25,10 @@ import org.activiti.engine.impl.persistence.AbstractManager;
 public class MembershipEntityManager extends AbstractManager {
 
   public void createMembership(String userId, String groupId) {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put("userId", userId);
-    parameters.put("groupId", groupId);
-    getDbSqlSession().getSqlSession().insert("insertMembership", parameters);
+    MembershipEntity membershipEntity = new MembershipEntity();
+    membershipEntity.setUserId(userId);
+    membershipEntity.setGroupId(groupId);
+    getDbSqlSession().insert(membershipEntity);
   }
 
   public void deleteMembership(String userId, String groupId) {

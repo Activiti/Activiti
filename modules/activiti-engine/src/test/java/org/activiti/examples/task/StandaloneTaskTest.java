@@ -114,4 +114,25 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
     taskService.deleteTask(task.getId(), true);
   }
 
+  // See http://jira.codehaus.org/browse/ACT-1290 
+  public void testRevisionUpdatedOnSaveWhenFetchedUsingQuery() {
+    Task task = taskService.newTask();
+    taskService.saveTask(task);
+    assertEquals(1, ((TaskEntity) task).getRevision());
+    
+    task.setAssignee("kermit");
+    taskService.saveTask(task);
+    assertEquals(2, ((TaskEntity) task).getRevision());
+    
+    // Now fetch the task through the query api
+    task = taskService.createTaskQuery().singleResult();
+    assertEquals(2, ((TaskEntity) task).getRevision());
+    task.setPriority(1);
+    taskService.saveTask(task);
+    
+    assertEquals(3, ((TaskEntity) task).getRevision());
+    
+    taskService.deleteTask(task.getId(), true);
+  }
+
 }
