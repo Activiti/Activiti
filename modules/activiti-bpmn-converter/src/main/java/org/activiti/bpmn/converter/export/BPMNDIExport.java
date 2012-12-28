@@ -66,7 +66,6 @@ public class BPMNDIExport implements BpmnXMLConstants {
         xtw.writeAttribute(ATTRIBUTE_DI_Y, "" + labelGraphicInfo.y);
         xtw.writeEndElement();
         xtw.writeEndElement();
-        break;
       }
       
       xtw.writeEndElement();
