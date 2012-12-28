@@ -57,7 +57,7 @@ public class FormPropertyParser extends BaseChildElementParser {
     try {
       while (readyWithFormProperty == false && xtr.hasNext()) {
         xtr.next();
-        if (xtr.isStartElement() && "value".equalsIgnoreCase(xtr.getLocalName())) {
+        if (xtr.isStartElement() && ELEMENT_VALUE.equalsIgnoreCase(xtr.getLocalName())) {
           FormValue value = new FormValue();
           value.setId(xtr.getAttributeValue(null, ATTRIBUTE_ID));
           value.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));

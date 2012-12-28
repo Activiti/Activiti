@@ -58,4 +58,15 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
     return result;
   }
   
+  public static String convertToDelimitedString(List<String> stringList) {
+    StringBuilder resultString = new StringBuilder();
+    for (String result : stringList) {
+      if (resultString.length() > 0) {
+        resultString.append(",");
+      }
+      resultString.append(result);
+    }
+    return resultString.toString();
+  }
+  
 }

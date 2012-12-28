@@ -14,7 +14,7 @@ package org.activiti.bpmn.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,19 +31,19 @@ import org.apache.commons.lang.StringUtils;
 public class BpmnModel {
   
 	protected List<Process> processes = new ArrayList<Process>();
-	protected Map<String, GraphicInfo> locationMap = new HashMap<String, GraphicInfo>();
-	protected Map<String, GraphicInfo> labelLocationMap = new HashMap<String, GraphicInfo>();
-	protected Map<String, List<GraphicInfo>> flowLocationMap = new HashMap<String, List<GraphicInfo>>();
-	protected Map<String, Signal> signalMap = new HashMap<String, Signal>();
-	protected Map<String, Message> messageMap = new HashMap<String, Message>();
-	protected Map<String, String> errorMap = new HashMap<String, String>();
-	protected Map<String, ItemDefinition> itemDefinitionMap = new HashMap<String, ItemDefinition>();
+	protected Map<String, GraphicInfo> locationMap = new LinkedHashMap<String, GraphicInfo>();
+	protected Map<String, GraphicInfo> labelLocationMap = new LinkedHashMap<String, GraphicInfo>();
+	protected Map<String, List<GraphicInfo>> flowLocationMap = new LinkedHashMap<String, List<GraphicInfo>>();
+	protected Map<String, Signal> signalMap = new LinkedHashMap<String, Signal>();
+	protected Map<String, Message> messageMap = new LinkedHashMap<String, Message>();
+	protected Map<String, String> errorMap = new LinkedHashMap<String, String>();
+	protected Map<String, ItemDefinition> itemDefinitionMap = new LinkedHashMap<String, ItemDefinition>();
 	protected List<Pool> pools = new ArrayList<Pool>();
 	protected List<Import> imports = new ArrayList<Import>();
 	protected List<Interface> interfaces = new ArrayList<Interface>();
 	protected List<Problem> problems = new ArrayList<Problem>();
 	protected List<Warning> warnings = new ArrayList<Warning>();
-	protected Map<String, String> namespaceMap = new HashMap<String, String>();
+	protected Map<String, String> namespaceMap = new LinkedHashMap<String, String>();
 	protected String targetNamespace;
 	protected int nextFlowIdCounter = 1;
 
@@ -328,6 +328,10 @@ public class BpmnModel {
   
   public String getNamespace(String prefix) {
     return namespaceMap.get(prefix);
+  }
+  
+  public Map<String, String> getNamespaces() {
+    return namespaceMap;
   }
   
   public String getTargetNamespace() {

@@ -33,8 +33,8 @@ import org.activiti.bpmn.converter.child.IOSpecificationParser;
 import org.activiti.bpmn.converter.child.MultiInstanceParser;
 import org.activiti.bpmn.converter.export.BPMNDIExport;
 import org.activiti.bpmn.converter.export.DefinitionsRootExport;
-import org.activiti.bpmn.converter.export.LaneExport;
 import org.activiti.bpmn.converter.export.PoolExport;
+import org.activiti.bpmn.converter.export.ProcessExport;
 import org.activiti.bpmn.converter.export.SignalAndMessageDefinitionExport;
 import org.activiti.bpmn.converter.parser.BpmnEdgeParser;
 import org.activiti.bpmn.converter.parser.BpmnShapeParser;
@@ -47,7 +47,6 @@ import org.activiti.bpmn.converter.parser.PotentialStarterParser;
 import org.activiti.bpmn.converter.parser.ProcessParser;
 import org.activiti.bpmn.converter.parser.SignalParser;
 import org.activiti.bpmn.converter.parser.SubProcessParser;
-import org.activiti.bpmn.converter.util.ActivitiListenerUtil;
 import org.activiti.bpmn.exceptions.XMLException;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.Artifact;
@@ -346,41 +345,14 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
           continue;
         }
       
-        // start process element
-        xtw.writeStartElement(ELEMENT_PROCESS);
-        xtw.writeAttribute(ATTRIBUTE_ID, process.getId());
-        
-        if (StringUtils.isNotEmpty(process.getName())) {
-          xtw.writeAttribute(ATTRIBUTE_NAME, process.getName());
-        }
-        
-        if (StringUtils.isNotEmpty(process.getTargetNamespace())) {
-          xtw.writeAttribute(TARGET_NAMESPACE_ATTRIBUTE, process.getTargetNamespace());
-        }
-        
-        xtw.writeAttribute(ATTRIBUTE_PROCESS_EXECUTABLE, ATTRIBUTE_VALUE_TRUE);
-        
-        if (StringUtils.isNotEmpty(process.getDocumentation())) {
-  
-          xtw.writeStartElement(ELEMENT_DOCUMENTATION);
-          xtw.writeCharacters(process.getDocumentation());
-          xtw.writeEndElement();
-        }
-        
-        LaneExport.writeLanes(process, xtw);
-        
-        boolean wroteListener = ActivitiListenerUtil.writeListeners(process, false, xtw);
-        if (wroteListener) {
-          // closing extensions element
-          xtw.writeEndElement();
-        }
+        ProcessExport.writeProcess(process, xtw);
         
         for (FlowElement flowElement : process.getFlowElements()) {
-          createXML(flowElement, xtw);
+          createXML(flowElement, model, xtw);
         }
         
         for (Artifact artifact : process.getArtifacts()) {
-          createXML(artifact, xtw);
+          createXML(artifact, model, xtw);
         }
         
         // end process element
@@ -407,7 +379,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
     }
   }
 
-  private void createXML(FlowElement flowElement, XMLStreamWriter xtw) throws Exception {
+  private void createXML(FlowElement flowElement, BpmnModel model, XMLStreamWriter xtw) throws Exception {
     
     if (flowElement instanceof SubProcess) {
       
@@ -432,11 +404,11 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
       }
       
       for (FlowElement subElement : subProcess.getFlowElements()) {
-        createXML(subElement, xtw);
+        createXML(subElement, model, xtw);
       }
       
       for (Artifact artifact : subProcess.getArtifacts()) {
-        createXML(artifact, xtw);
+        createXML(artifact, model, xtw);
       }
       
       xtw.writeEndElement();
@@ -449,11 +421,11 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
         throw new XMLException("No converter for " + flowElement.getClass() + " found");
       }
       
-      converter.newInstance().convertToXML(xtw, flowElement);
+      converter.newInstance().convertToXML(xtw, flowElement, model);
     }
   }
   
-  private void createXML(Artifact artifact, XMLStreamWriter xtw) throws Exception {
+  private void createXML(Artifact artifact, BpmnModel model, XMLStreamWriter xtw) throws Exception {
     
     Class<? extends BaseBpmnXMLConverter> converter = convertersToXMLMap.get(artifact.getClass());
       
@@ -461,6 +433,6 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
       throw new XMLException("No converter for " + artifact.getClass() + " found");
     }
       
-    converter.newInstance().convertToXML(xtw, artifact);
+    converter.newInstance().convertToXML(xtw, artifact, model);
   }
 }

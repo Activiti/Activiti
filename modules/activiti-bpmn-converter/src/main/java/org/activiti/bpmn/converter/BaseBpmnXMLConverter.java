@@ -48,6 +48,7 @@ import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FormProperty;
+import org.activiti.bpmn.model.FormValue;
 import org.activiti.bpmn.model.Gateway;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
@@ -158,7 +159,10 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     }
   }
   
-  public void convertToXML(XMLStreamWriter xtw, BaseElement baseElement) throws Exception {
+  public void convertToXML(XMLStreamWriter xtw, BaseElement baseElement, BpmnModel model) throws Exception {
+    
+    this.model = model;
+    
     xtw.writeStartElement(getXMLElementName());
     didWriteExtensionStartElement = false;
     writeDefaultAttribute(ATTRIBUTE_ID, baseElement.getId(), xtw);
@@ -303,14 +307,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
   // To XML converter convenience methods
   
   protected String convertToDelimitedString(List<String> stringList) {
-    StringBuilder resultString = new StringBuilder();
-    for (String result : stringList) {
-      if (resultString.length() > 0) {
-        resultString.append(",");
-      }
-      resultString.append(result);
-    }
-    return resultString.toString();
+    return BpmnXMLUtil.convertToDelimitedString(stringList);
   }
   
   protected void writeFormProperties(FlowElement flowElement, XMLStreamWriter xtw) throws Exception {
@@ -350,6 +347,15 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
           }
           if (property.isRequired()) {
             writeDefaultAttribute(ATTRIBUTE_FORM_REQUIRED, ATTRIBUTE_VALUE_TRUE, xtw);
+          }
+          
+          for (FormValue formValue : property.getFormValues()) {
+            if (StringUtils.isNotEmpty(formValue.getId())) {
+              xtw.writeStartElement(ACTIVITI_EXTENSIONS_PREFIX, ELEMENT_VALUE, ACTIVITI_EXTENSIONS_NAMESPACE);
+              xtw.writeAttribute(ATTRIBUTE_ID, formValue.getId());
+              xtw.writeAttribute(ATTRIBUTE_NAME, formValue.getName());
+              xtw.writeEndElement();
+            }
           }
           
           xtw.writeEndElement();
@@ -406,7 +412,24 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
   
   protected void writeMessageDefinition(MessageEventDefinition messageDefinition, XMLStreamWriter xtw) throws Exception {
     xtw.writeStartElement(ELEMENT_EVENT_MESSAGEDEFINITION);
-    writeDefaultAttribute(ATTRIBUTE_MESSAGE_REF, messageDefinition.getMessageRef(), xtw); 
+    
+    String messageRef = messageDefinition.getMessageRef();
+    if (StringUtils.isNotEmpty(messageRef)) {
+      // remove the namespace from the message id if set
+      if (messageRef.startsWith(model.getTargetNamespace())) {
+        messageRef = messageRef.replace(model.getTargetNamespace(), "");
+        messageRef = messageRef.replaceFirst(":", "");
+      } else {
+        for (String prefix : model.getNamespaces().keySet()) {
+          String namespace = model.getNamespace(prefix);
+          if (messageRef.startsWith(namespace)) {
+            messageRef = messageRef.replace(model.getTargetNamespace(), "");
+            messageRef = prefix + messageRef;
+          }
+        }
+      }
+    }
+    writeDefaultAttribute(ATTRIBUTE_MESSAGE_REF, messageRef, xtw); 
     xtw.writeEndElement();
   }
   
