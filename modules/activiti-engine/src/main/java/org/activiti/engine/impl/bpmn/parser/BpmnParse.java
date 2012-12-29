@@ -474,7 +474,7 @@ public class BpmnParse implements BpmnXMLConstants {
      */
     processDefinition.setKey(process.getId());
     processDefinition.setName(process.getName());
-    processDefinition.setCategory(process.getTargetNamespace());
+    processDefinition.setCategory(bpmnModel.getTargetNamespace());
     processDefinition.setDescription(process.getDocumentation()); 
     processDefinition.setProperty(PROPERTYNAME_DOCUMENTATION, process.getDocumentation()); // Kept for backwards compatibility. See ACT-1020
     processDefinition.setTaskDefinitions(new HashMap<String, TaskDefinition>());

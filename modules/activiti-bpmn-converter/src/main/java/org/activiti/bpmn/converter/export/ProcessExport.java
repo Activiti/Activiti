@@ -19,10 +19,6 @@ public class ProcessExport implements BpmnXMLConstants {
       xtw.writeAttribute(ATTRIBUTE_NAME, process.getName());
     }
     
-    if (StringUtils.isNotEmpty(process.getTargetNamespace())) {
-      xtw.writeAttribute(TARGET_NAMESPACE_ATTRIBUTE, process.getTargetNamespace());
-    }
-    
     xtw.writeAttribute(ATTRIBUTE_PROCESS_EXECUTABLE, ATTRIBUTE_VALUE_TRUE);
     
     if (process.getCandidateStarterUsers().size() > 0) {

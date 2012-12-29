@@ -23,7 +23,6 @@ public class Process extends FlowElementsContainer {
 
   protected String name;
   protected boolean executable = true;
-  protected String targetNamespace;
   protected String documentation;
   protected IOSpecification ioSpecification;
   protected List<ActivitiListener> executionListeners = new ArrayList<ActivitiListener>();
@@ -54,14 +53,6 @@ public class Process extends FlowElementsContainer {
 
   public void setExecutable(boolean executable) {
     this.executable = executable;
-  }
-
-  public String getTargetNamespace() {
-    return targetNamespace;
-  }
-
-  public void setTargetNamespace(String targetNamespace) {
-    this.targetNamespace = targetNamespace;
   }
 
   public IOSpecification getIoSpecification() {

@@ -3,10 +3,12 @@ package org.activiti.bpmn.converter.export;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
+import org.activiti.bpmn.model.BpmnModel;
+import org.apache.commons.lang.StringUtils;
 
 public class DefinitionsRootExport implements BpmnXMLConstants {
 
-  public static void writeRootElement(XMLStreamWriter xtw) throws Exception {
+  public static void writeRootElement(BpmnModel model, XMLStreamWriter xtw) throws Exception {
     xtw.writeStartDocument("UTF-8", "1.0");
 
     // start definitions root element
@@ -20,6 +22,10 @@ public class DefinitionsRootExport implements BpmnXMLConstants {
     xtw.writeNamespace(OMGDI_PREFIX, OMGDI_NAMESPACE);
     xtw.writeAttribute(TYPE_LANGUAGE_ATTRIBUTE, SCHEMA_NAMESPACE);
     xtw.writeAttribute(EXPRESSION_LANGUAGE_ATTRIBUTE, XPATH_NAMESPACE);
-    xtw.writeAttribute(TARGET_NAMESPACE_ATTRIBUTE, PROCESS_NAMESPACE);
+    if (StringUtils.isNotEmpty(model.getTargetNamespace())) {
+      xtw.writeAttribute(TARGET_NAMESPACE_ATTRIBUTE, model.getTargetNamespace());
+    } else {
+      xtw.writeAttribute(TARGET_NAMESPACE_ATTRIBUTE, PROCESS_NAMESPACE);
+    }
   }
 }
