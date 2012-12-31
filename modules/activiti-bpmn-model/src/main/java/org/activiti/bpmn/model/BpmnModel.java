@@ -86,6 +86,37 @@ public class BpmnModel {
 	  processes.add(process);
 	}
 	
+	public Pool getPool(String id) {
+	  Pool foundPool = null;
+	  if (StringUtils.isNotEmpty(id)) {
+  	  for (Pool pool : pools) {
+        if (id.equals(pool.getId())) {
+          foundPool = pool;
+          break;
+        }
+      }
+	  }
+	  return foundPool;
+	}
+	
+	public Lane getLane(String id) {
+	  Lane foundLane = null;
+    if (StringUtils.isNotEmpty(id)) {
+      for (Process process : processes) {
+        for (Lane lane : process.getLanes()) {
+          if (id.equals(lane.getId())) {
+            foundLane = lane;
+            break;
+          }
+        }
+        if (foundLane != null) {
+          break;
+        }
+      }
+    }
+    return foundLane;
+  }
+	
 	public FlowElement getFlowElement(String id) {
 	  FlowElement foundFlowElement = null;
 	  for (Process process : processes) {
@@ -180,8 +211,16 @@ public class BpmnModel {
 		return locationMap.get(key);
 	}
 	
+	public void removeGraphicInfo(String key) {
+    locationMap.remove(key);
+  }
+	
 	public List<GraphicInfo> getFlowLocationGraphicInfo(String key) {
     return flowLocationMap.get(key);
+  }
+	
+	public void removeFlowGraphicInfoList(String key) {
+	  flowLocationMap.remove(key);
   }
 	
 	public Map<String, GraphicInfo> getLocationMap() {
@@ -199,6 +238,10 @@ public class BpmnModel {
 	public void addLabelGraphicInfo(String key, GraphicInfo graphicInfo) {
 		labelLocationMap.put(key, graphicInfo);
 	}
+	
+	public void removeLabelGraphicInfo(String key) {
+	  labelLocationMap.remove(key);
+  }
 	
 	public void addFlowGraphicInfoList(String key, List<GraphicInfo> graphicInfoList) {
 		flowLocationMap.put(key, graphicInfoList);

@@ -53,6 +53,7 @@ import org.activiti.bpmn.model.Gateway;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
 import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
@@ -194,10 +195,13 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     }
     writeAdditionalChildElements(baseElement, xtw);
     
-    didWriteExtensionStartElement = writeListeners(baseElement, xtw);
-    
-    if (didWriteExtensionStartElement) {
-      xtw.writeEndElement();
+    // sequence flow has condition expression that should come after extensionElements
+    if (baseElement instanceof SequenceFlow == false) {
+      didWriteExtensionStartElement = writeListeners(baseElement, xtw);
+      
+      if (didWriteExtensionStartElement) {
+        xtw.writeEndElement();
+      }
     }
     
     if (baseElement instanceof Activity) {
