@@ -70,7 +70,7 @@ public class ExpressionManager {
  
   
   public Expression createExpression(String expression) {
-    ValueExpression valueExpression = expressionFactory.createValueExpression(parsingElContext, expression, Object.class);
+    ValueExpression valueExpression = expressionFactory.createValueExpression(parsingElContext, expression.trim(), Object.class);
     return new JuelExpression(valueExpression, expression);
   }
 
