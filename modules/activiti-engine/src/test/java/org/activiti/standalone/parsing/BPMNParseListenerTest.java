@@ -10,23 +10,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.activiti.standalone.deploy;
-
-import java.io.InputStream;
+package org.activiti.standalone.parsing;
 
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
-import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
 
 
 /**
  * @author Frederik Heremans
+ * @author Joram Barrez
  */
-public class BPMNParseListenerTestCase extends ResourceActivitiTestCase {
+public class BPMNParseListenerTest extends ResourceActivitiTestCase {
   
-  public BPMNParseListenerTestCase() {
-    super("org/activiti/standalone/deploy/bpmn.parse.listener.activiti.cfg.xml");
+  public BPMNParseListenerTest() {
+    super("org/activiti/standalone/parsing/bpmn.parse.listener.activiti.cfg.xml");
   }
 
   @Deployment
@@ -34,23 +31,5 @@ public class BPMNParseListenerTestCase extends ResourceActivitiTestCase {
     // Check if process-definition has different key
     assertEquals(0, repositoryService.createProcessDefinitionQuery().processDefinitionKey("oneTaskProcess").count());
     assertEquals(1, repositoryService.createProcessDefinitionQuery().processDefinitionKey("oneTaskProcess-modified").count());
-    
-    // Check if process has an automatically-generated diagram
-    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionKey("oneTaskProcess-modified").singleResult();
-    assertNotNull(processDefinition.getDiagramResourceName());
-   
-    // Get diagram
-    InputStream diagramStream = repositoryService.getResourceAsStream(processDefinition.getDeploymentId(), processDefinition.getDiagramResourceName());
-    try {
-      // Validate if retrieving the image resource works
-      byte[] buffer = new byte[1];
-      assertEquals(1, diagramStream.read(buffer));
-      
-    } finally {
-      if(diagramStream != null) {
-        diagramStream.close();
-      }
-    }
-    
   }
 }

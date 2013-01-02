@@ -10,27 +10,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.standalone.deploy;
 
-import java.util.List;
-
-import org.activiti.engine.impl.bpmn.parser.AbstractBpmnParseListener;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.util.xml.Element;
-
+import java.io.InputStream;
+import java.util.Scanner;
 
 /**
- * @author Frederik Heremans
+ * @author Joram Barrez
  */
-public class TestBPMNParseListener extends AbstractBpmnParseListener {
-
-
-  public void parseRootElement(Element rootElement, List<ProcessDefinitionEntity> processDefinitions) {
-    // Change the key of all deployed process-definitions
-    for(ProcessDefinitionEntity entity : processDefinitions) {
-      entity.setKey(entity.getKey() + "-modified");
+public class DeploymentCacheTestUtil {
+  
+  public static String readTemplateFile(String templateFile) {
+    InputStream inputStream = DeploymentCacheTestUtil.class.getResourceAsStream(templateFile);
+    Scanner scanner = null;
+    try {
+      scanner = new Scanner(inputStream, "UTF-8").useDelimiter("\\A");
+      if (scanner.hasNext()) {
+        return scanner.next();
+      }
+    } finally {
+      if (scanner != null) {
+        scanner.close();
+       }
     }
+    return null;
   }
 
 }

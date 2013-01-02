@@ -15,10 +15,10 @@ package org.activiti.engine.impl.bpmn.parser;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
+import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti.engine.impl.cfg.BpmnParseFactory;
 import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.impl.util.xml.Parser;
 
 
@@ -70,14 +70,10 @@ public class BpmnParser extends Parser {
   public static final String XSI_NS = "http://www.w3.org/2001/XMLSchema-instance";
 
   protected ExpressionManager expressionManager;
-  protected List<BpmnParseListener> parseListeners = new ArrayList<BpmnParseListener>();
-  
+  protected ActivityBehaviorFactory activityBehaviorFactory;
+  protected ListenerFactory listenerFactory;
   protected BpmnParseFactory bpmnParseFactory;
-  
-  public BpmnParser(ExpressionManager expressionManager, BpmnParseFactory bpmnParseFactory) {
-    this.expressionManager = expressionManager;
-    this.bpmnParseFactory = bpmnParseFactory;
-  }
+  protected List<BpmnParseListener> parseListeners = new ArrayList<BpmnParseListener>();
   
   /**
    * Creates a new {@link BpmnParse} instance that can be used
@@ -85,6 +81,30 @@ public class BpmnParser extends Parser {
    */
   public BpmnParse createParse() {
     return bpmnParseFactory.createBpmnParse(this);
+  }
+  
+  public ActivityBehaviorFactory getActivityBehaviorFactory() {
+    return activityBehaviorFactory;
+  }
+  
+  public void setActivityBehaviorFactory(ActivityBehaviorFactory activityBehaviorFactory) {
+    this.activityBehaviorFactory = activityBehaviorFactory;
+  }
+  
+  public ListenerFactory getListenerFactory() {
+    return listenerFactory;
+  }
+
+  public void setListenerFactory(ListenerFactory listenerFactory) {
+    this.listenerFactory = listenerFactory;
+  }
+  
+  public BpmnParseFactory getBpmnParseFactory() {
+    return bpmnParseFactory;
+  }
+  
+  public void setBpmnParseFactory(BpmnParseFactory bpmnParseFactory) {
+    this.bpmnParseFactory = bpmnParseFactory;
   }
 
   public ExpressionManager getExpressionManager() {
