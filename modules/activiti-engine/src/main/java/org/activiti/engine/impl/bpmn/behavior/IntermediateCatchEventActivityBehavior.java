@@ -15,7 +15,7 @@ package org.activiti.engine.impl.bpmn.behavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 
-public class IntermediateCatchEventActivitiBehaviour extends AbstractBpmnActivityBehavior {
+public class IntermediateCatchEventActivityBehavior extends AbstractBpmnActivityBehavior {
 
 
   public void execute(ActivityExecution execution) throws Exception {

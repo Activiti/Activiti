@@ -83,7 +83,7 @@ import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.EventBasedGatewayActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.EventSubProcessStartEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ExclusiveGatewayActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchEventActivitiBehaviour;
+import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.WebServiceActivityBehavior;
 import org.activiti.engine.impl.bpmn.data.AbstractDataAssociation;
@@ -851,7 +851,7 @@ public class BpmnParse implements BpmnXMLConstants {
       }
       
       // Catch event behavior is the same for all types
-      nestedActivity.setActivityBehavior(activityBehaviorFactory.createIntermediateCatchEvent(event));
+      nestedActivity.setActivityBehavior(activityBehaviorFactory.createIntermediateCatchEventActivityBehavior(event));
       
       if (eventDefinition instanceof TimerEventDefinition) {
         createIntermediateTimerEventDefinition((TimerEventDefinition) eventDefinition, nestedActivity, isAfterEventBasedGateway);
@@ -2108,7 +2108,7 @@ public class BpmnParse implements BpmnXMLConstants {
     } else if (destinationActivity == null) {
       throw new ActivitiException("Invalid destination '" + sequenceFlow.getTargetRef() + "' of sequence flow '" + sequenceFlow.getId() + "'");
     } else if(!(sourceActivity.getActivityBehavior() instanceof EventBasedGatewayActivityBehavior)
-            && destinationActivity.getActivityBehavior() instanceof IntermediateCatchEventActivitiBehaviour
+            && destinationActivity.getActivityBehavior() instanceof IntermediateCatchEventActivityBehavior
             && (destinationActivity.getParentActivity() != null)
             && (destinationActivity.getParentActivity().getActivityBehavior() instanceof EventBasedGatewayActivityBehavior)) {
       
