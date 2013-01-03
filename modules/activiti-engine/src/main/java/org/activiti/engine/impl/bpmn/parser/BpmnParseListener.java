@@ -13,8 +13,6 @@
 
 package org.activiti.engine.impl.bpmn.parser;
 
-import java.util.List;
-
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BusinessRuleTask;
 import org.activiti.bpmn.model.CallActivity;
@@ -82,7 +80,6 @@ public interface BpmnParseListener {
   void parseSendTask(SendTask sendTask, ScopeImpl scope, ActivityImpl activity);
   void parseMultiInstanceLoopCharacteristics(org.activiti.bpmn.model.Activity modelActivity, MultiInstanceLoopCharacteristics multiInstanceLoopCharacteristics, ActivityImpl activity);
   void parseIntermediateTimerEventDefinition(TimerEventDefinition timerEventDefinition, ActivityImpl timerActivity);
-  void parseRootElement(Element rootElement, List<ProcessDefinitionEntity> processDefinitions);
   void parseReceiveTask(ReceiveTask receiveTask, ScopeImpl scope, ActivityImpl activity);
   void parseIntermediateSignalCatchEventDefinition(SignalEventDefinition signalEventDefinition, ActivityImpl signalActivity);
   void parseIntermediateMessageCatchEventDefinition(MessageEventDefinition messageEventDefinition, ActivityImpl nestedActivity);

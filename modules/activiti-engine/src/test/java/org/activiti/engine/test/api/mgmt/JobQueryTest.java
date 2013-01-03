@@ -15,6 +15,7 @@ package org.activiti.engine.test.api.mgmt;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -78,20 +79,25 @@ public class JobQueryTest extends PluggableActivitiTestCase {
         .getId();
     
     // Create proc inst that has timer that will fire on t1 + 1 hour
-    Date t1 = new Date();
+    Calendar startTime = Calendar.getInstance();
+    startTime.set(Calendar.MILLISECOND, 0);
+    
+    Date t1 = startTime.getTime();
     ClockUtil.setCurrentTime(t1);
     processInstanceIdOne = runtimeService.startProcessInstanceByKey("timerOnTask").getId();
     testStartTime = t1;
     timerOneFireTime = new Date(t1.getTime() + ONE_HOUR);
     
     // Create proc inst that has timer that will fire on t2 + 1 hour
-    Date t2 = new Date(t1.getTime() + ONE_HOUR);  // t2 = t1 + 1 hour
+    startTime.add(Calendar.HOUR_OF_DAY, 1);
+    Date t2 = startTime.getTime();  // t2 = t1 + 1 hour
     ClockUtil.setCurrentTime(t2);
     processInstanceIdTwo = runtimeService.startProcessInstanceByKey("timerOnTask").getId();
     timerTwoFireTime = new Date(t2.getTime() + ONE_HOUR);
     
     // Create proc inst that has timer that will fire on t3 + 1 hour
-    Date t3 = new Date(t2.getTime() + ONE_HOUR); // t3 = t2 + 1 hour
+    startTime.add(Calendar.HOUR_OF_DAY, 1);
+    Date t3 = startTime.getTime(); // t3 = t2 + 1 hour
     ClockUtil.setCurrentTime(t3);
     processInstanceIdThree = runtimeService.startProcessInstanceByKey("timerOnTask").getId();
     timerThreeFireTime = new Date(t3.getTime() + ONE_HOUR);

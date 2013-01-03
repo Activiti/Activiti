@@ -189,7 +189,12 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
       try {
         while (areJobsAvailable && !task.isTimeLimitExceeded()) {
           Thread.sleep(intervalMillis);
-          areJobsAvailable = areJobsAvailable();
+          try {
+            areJobsAvailable = areJobsAvailable();
+          } catch(Throwable t) {
+            // Ignore, possible that exception occurs due to locking/updating of table on MSSQL when
+            // isolation level doesn't allow READ of the table
+          }
         }
       } catch (InterruptedException e) {
       } finally {

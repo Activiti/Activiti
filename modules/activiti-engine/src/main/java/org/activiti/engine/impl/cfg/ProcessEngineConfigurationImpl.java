@@ -53,6 +53,10 @@ import org.activiti.engine.impl.bpmn.data.ItemInstance;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.bpmn.parser.BpmnParseListener;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
+import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
+import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
+import org.activiti.engine.impl.bpmn.parser.factory.DefaultListenerFactory;
+import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti.engine.impl.bpmn.webservice.MessageInstance;
 import org.activiti.engine.impl.calendar.BusinessCalendarManager;
 import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
@@ -247,6 +251,13 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected IdGenerator idGenerator;
   protected DataSource idGeneratorDataSource;
   protected String idGeneratorDataSourceJndiName;
+  
+  // Bpmn parser
+  protected List<BpmnParseListener> preParseListeners;
+  protected List<BpmnParseListener> postParseListeners;
+  protected ActivityBehaviorFactory activityBehaviorFactory;
+  protected ListenerFactory listenerFactory;
+  protected BpmnParseFactory bpmnParseFactory;
 
   // OTHER ////////////////////////////////////////////////////////////////////
   protected List<FormEngine> customFormEngines;
@@ -270,13 +281,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected CommandContextFactory commandContextFactory;
   protected TransactionContextFactory transactionContextFactory;
-  protected BpmnParseFactory bpmnParseFactory;
   
   protected HistoryLevel historyLevel;
   
-  protected List<BpmnParseListener> preParseListeners;
-  protected List<BpmnParseListener> postParseListeners;
-
   protected Map<Object, Object> beans;
 
   protected boolean isDbIdentityUsed = true;
@@ -717,7 +724,23 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       bpmnParseFactory = new DefaultBpmnParseFactory();
     }
     
-    BpmnParser bpmnParser = new BpmnParser(expressionManager, bpmnParseFactory);
+    if (activityBehaviorFactory == null) {
+      DefaultActivityBehaviorFactory defaultActivityBehaviorFactory = new DefaultActivityBehaviorFactory();
+      defaultActivityBehaviorFactory.setExpressionManager(expressionManager);
+      activityBehaviorFactory = defaultActivityBehaviorFactory;
+    }
+    
+    if (listenerFactory == null) {
+      DefaultListenerFactory defaultListenerFactory = new DefaultListenerFactory();
+      defaultListenerFactory.setExpressionManager(expressionManager);
+      listenerFactory = defaultListenerFactory;
+    }
+    
+    BpmnParser bpmnParser = new BpmnParser();
+    bpmnParser.setExpressionManager(expressionManager);
+    bpmnParser.setBpmnParseFactory(bpmnParseFactory);
+    bpmnParser.setActivityBehaviorFactory(activityBehaviorFactory);
+    bpmnParser.setListenerFactory(listenerFactory);
     
     if(preParseListeners != null) {
       bpmnParser.getParseListeners().addAll(preParseListeners);
@@ -1410,6 +1433,30 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   public void setPostParseListeners(List<BpmnParseListener> postParseListeners) {
     this.postParseListeners = postParseListeners;
+  }
+  
+  public ActivityBehaviorFactory getActivityBehaviorFactory() {
+    return activityBehaviorFactory;
+  }
+  
+  public void setActivityBehaviorFactory(ActivityBehaviorFactory activityBehaviorFactory) {
+    this.activityBehaviorFactory = activityBehaviorFactory;
+  }
+  
+  public ListenerFactory getListenerFactory() {
+    return listenerFactory;
+  }
+
+  public void setListenerFactory(ListenerFactory listenerFactory) {
+    this.listenerFactory = listenerFactory;
+  }
+  
+  public BpmnParseFactory getBpmnParseFactory() {
+    return bpmnParseFactory;
+  }
+  
+  public void setBpmnParseFactory(BpmnParseFactory bpmnParseFactory) {
+    this.bpmnParseFactory = bpmnParseFactory;
   }
 
   public Map<Object, Object> getBeans() {

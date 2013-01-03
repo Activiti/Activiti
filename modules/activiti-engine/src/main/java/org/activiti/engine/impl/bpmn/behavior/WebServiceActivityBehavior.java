@@ -41,8 +41,7 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
 
   protected List<AbstractDataAssociation> dataOutputAssociations;
 
-  public WebServiceActivityBehavior(Operation operation) {
-    this.operation = operation;
+  public WebServiceActivityBehavior() {
     this.dataInputAssociations = new ArrayList<AbstractDataAssociation>();
     this.dataOutputAssociations = new ArrayList<AbstractDataAssociation>();
   }
@@ -106,4 +105,9 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
   public void setIoSpecification(IOSpecification ioSpecification) {
     this.ioSpecification = ioSpecification;
   }
+
+  public void setOperation(Operation operation) {
+    this.operation = operation;
+  }
+  
 }

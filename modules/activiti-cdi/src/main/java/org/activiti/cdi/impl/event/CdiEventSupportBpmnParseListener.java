@@ -12,8 +12,6 @@
  */
 package org.activiti.cdi.impl.event;
 
-import java.util.List;
-
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BusinessRuleTask;
@@ -43,6 +41,7 @@ import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.bpmn.model.Transaction;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.cdi.BusinessProcessEventType;
+import org.activiti.cdi.impl.event.CdiExecutionListener;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.bpmn.parser.BpmnParseListener;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
@@ -181,10 +180,6 @@ public class CdiEventSupportBpmnParseListener implements BpmnParseListener {
   public void parseMultiInstanceLoopCharacteristics(Activity activityElement, MultiInstanceLoopCharacteristics multiInstanceLoopCharacteristicsElement, ActivityImpl activity) {
   }
   
-  @Override
-  public void parseRootElement(Element rootElement, List<ProcessDefinitionEntity> processDefinitions) {
-  }
-
   @Override
   public void parseIntermediateTimerEventDefinition(TimerEventDefinition timerEventDefinition, ActivityImpl timerActivity) {
     addStartEventListener(timerActivity);

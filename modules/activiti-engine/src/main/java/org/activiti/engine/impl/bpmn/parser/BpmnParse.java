@@ -48,7 +48,6 @@ import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Gateway;
 import org.activiti.bpmn.model.GraphicInfo;
-import org.activiti.bpmn.model.IOParameter;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.Import;
 import org.activiti.bpmn.model.InclusiveGateway;
@@ -81,38 +80,11 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.Condition;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.BusinessRuleTaskActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.CallActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.CancelBoundaryEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.CancelEndEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ErrorEndEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.EventBasedGatewayActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.EventSubProcessStartEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ExclusiveGatewayActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.InclusiveGatewayActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchEventActivitiBehaviour;
-import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowCompensationEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowNoneEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowSignalEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.MailActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ManualTaskActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.NoneEndEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.NoneStartEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ParallelGatewayActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ParallelMultiInstanceBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ReceiveTaskActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ScriptTaskActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.SequentialMultiInstanceBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ServiceTaskDelegateExpressionActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ServiceTaskExpressionActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ShellActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.SubProcessActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.TaskActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.TerminateEndEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.TransactionActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.WebServiceActivityBehavior;
 import org.activiti.engine.impl.bpmn.data.AbstractDataAssociation;
 import org.activiti.engine.impl.bpmn.data.Assignment;
@@ -125,11 +97,8 @@ import org.activiti.engine.impl.bpmn.data.ItemKind;
 import org.activiti.engine.impl.bpmn.data.SimpleDataInputAssociation;
 import org.activiti.engine.impl.bpmn.data.StructureDefinition;
 import org.activiti.engine.impl.bpmn.data.TransformationDataOutputAssociation;
-import org.activiti.engine.impl.bpmn.helper.ClassDelegate;
-import org.activiti.engine.impl.bpmn.listener.DelegateExpressionExecutionListener;
-import org.activiti.engine.impl.bpmn.listener.DelegateExpressionTaskListener;
-import org.activiti.engine.impl.bpmn.listener.ExpressionExecutionListener;
-import org.activiti.engine.impl.bpmn.listener.ExpressionTaskListener;
+import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
+import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti.engine.impl.bpmn.webservice.BpmnInterface;
 import org.activiti.engine.impl.bpmn.webservice.BpmnInterfaceImplementation;
 import org.activiti.engine.impl.bpmn.webservice.MessageDefinition;
@@ -138,7 +107,6 @@ import org.activiti.engine.impl.bpmn.webservice.MessageImplicitDataOutputAssocia
 import org.activiti.engine.impl.bpmn.webservice.Operation;
 import org.activiti.engine.impl.bpmn.webservice.OperationImplementation;
 import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.el.FixedValue;
 import org.activiti.engine.impl.el.UelExpressionCondition;
 import org.activiti.engine.impl.form.DefaultStartFormHandler;
 import org.activiti.engine.impl.form.DefaultTaskFormHandler;
@@ -158,7 +126,6 @@ import org.activiti.engine.impl.pvm.process.HasDIBounds;
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
-import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.impl.util.io.InputStreamSource;
@@ -176,6 +143,7 @@ import org.slf4j.LoggerFactory;
  * Specific parsing of one BPMN 2.0 XML file, created by the {@link BpmnParser}.
  * 
  * @author Tijs Rademakers
+ * @author Joram Barrez
  */
 public class BpmnParse implements BpmnXMLConstants {
 
@@ -201,6 +169,11 @@ public class BpmnParse implements BpmnXMLConstants {
   protected static final String CANDIDATE_STARTER_GROUPS_EXTENSION = "candidateStarterGroups";
   
   protected static final String ATTRIBUTEVALUE_T_FORMAL_EXPRESSION = BpmnParser.BPMN20_NS + ":tFormalExpression";
+  
+  protected String name;
+  protected StreamSource streamSource;
+  protected BpmnModel bpmnModel;
+  protected String targetNamespace;
 
   /** The deployment to which the parsed process definitions will be added. */
   protected DeploymentEntity deployment;
@@ -226,24 +199,23 @@ public class BpmnParse implements BpmnXMLConstants {
   protected Map<String, ItemDefinition> itemDefinitions = new HashMap<String, ItemDefinition>();
   protected Map<String, BpmnInterface> bpmnInterfaces = new HashMap<String, BpmnInterface>();
   protected Map<String, Operation> operations = new HashMap<String, Operation>();
+  protected Map<String, XMLImporter> importers = new HashMap<String, XMLImporter>();
+  protected Map<String, String> prefixs = new HashMap<String, String>();
 
   // Members
   protected ExpressionManager expressionManager;
   protected List<BpmnParseListener> parseListeners;
-  protected Map<String, XMLImporter> importers = new HashMap<String, XMLImporter>();
-  protected Map<String, String> prefixs = new HashMap<String, String>();
-  protected String targetNamespace;
+  protected ActivityBehaviorFactory activityBehaviorFactory;
+  protected ListenerFactory listenerFactory;
 
-  protected String name;
-  protected StreamSource streamSource;
-  protected BpmnModel bpmnModel;
-  
   /**
    * Constructor to be called by the {@link BpmnParser}.
    */
   public BpmnParse(BpmnParser parser) {
     this.expressionManager = parser.getExpressionManager();
     this.parseListeners = parser.getParseListeners();
+    this.activityBehaviorFactory = parser.getActivityBehaviorFactory();
+    this.listenerFactory = parser.getListenerFactory();
     this.initializeXSDItemDefinitions();
   }
 
@@ -646,7 +618,7 @@ public class BpmnParse implements BpmnXMLConstants {
     }
 
     // all start events share the same behavior:
-    startEventActivity.setActivityBehavior(new NoneStartEventActivityBehavior());
+    startEventActivity.setActivityBehavior(activityBehaviorFactory.createNoneStartEventActivityBehavior(startEvent));
     if (startEvent.getEventDefinitions().size() > 0) {
       EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
       if (eventDefinition instanceof TimerEventDefinition) {
@@ -689,7 +661,8 @@ public class BpmnParse implements BpmnXMLConstants {
     if (isTriggeredByEvent) { // event subprocess
       
       // all start events of an event subprocess share common behavior
-      EventSubProcessStartEventActivityBehavior activityBehavior = new EventSubProcessStartEventActivityBehavior(startEventActivity.getId());
+      EventSubProcessStartEventActivityBehavior activityBehavior = 
+              activityBehaviorFactory.createEventSubProcessStartEventActivityBehavior(startEvent, startEventActivity.getId()); 
       startEventActivity.setActivityBehavior(activityBehavior);
       
       // the scope of the event subscription is the parent of the event
@@ -756,7 +729,7 @@ public class BpmnParse implements BpmnXMLConstants {
       }
       if (scope.getProperty(PROPERTYNAME_INITIAL) == null) {
         scope.setProperty(PROPERTYNAME_INITIAL, startEventActivity);
-        startEventActivity.setActivityBehavior(new NoneStartEventActivityBehavior());
+        startEventActivity.setActivityBehavior(activityBehaviorFactory.createNoneStartEventActivityBehavior(startEvent));
       } else {
         bpmnModel.addProblem("multiple start events not supported for subprocess", subProcess);
       }
@@ -868,7 +841,7 @@ public class BpmnParse implements BpmnXMLConstants {
       }
       
       // Catch event behavior is the same for all types
-      nestedActivity.setActivityBehavior(new IntermediateCatchEventActivitiBehaviour());
+      nestedActivity.setActivityBehavior(activityBehaviorFactory.createIntermediateCatchEventActivityBehavior(event));
       
       if (eventDefinition instanceof TimerEventDefinition) {
         createIntermediateTimerEventDefinition((TimerEventDefinition) eventDefinition, nestedActivity, isAfterEventBasedGateway);
@@ -938,15 +911,14 @@ public class BpmnParse implements BpmnXMLConstants {
       nestedActivityImpl.setProperty("type", "intermediateSignalThrow");  
       EventSubscriptionDeclaration signalDefinition = new EventSubscriptionDeclaration(signalEventDefinition.getSignalRef(), "signal");
       signalDefinition.setAsync(signalEventDefinition.isAsync());
-      activityBehavior = new IntermediateThrowSignalEventActivityBehavior(signalDefinition);
+      activityBehavior = activityBehaviorFactory.createIntermediateThrowSignalEventActivityBehavior(intermediateEvent, signalDefinition); 
     } else if (eventDefinition instanceof org.activiti.bpmn.model.CompensateEventDefinition) {
       CompensateEventDefinition compensateEventDefinition = createCompensateEventDefinition((org.activiti.bpmn.model.CompensateEventDefinition) eventDefinition, scopeElement);
-      activityBehavior = new IntermediateThrowCompensationEventActivityBehavior(compensateEventDefinition);
+      activityBehavior = activityBehaviorFactory.createIntermediateThrowCompensationEventActivityBehavior(intermediateEvent,compensateEventDefinition); 
       
-      // IntermediateThrowNoneEventActivityBehavior
     } else if (eventDefinition == null) {
-      activityBehavior = new IntermediateThrowNoneEventActivityBehavior();
-    } else { // None intermediate event
+      activityBehavior = activityBehaviorFactory.createIntermediateThrowNoneEventActivityBehavior(intermediateEvent); 
+    } else { 
       bpmnModel.addProblem("Unsupported intermediate throw event type " + eventDefinition, intermediateEvent);
     }
     
@@ -1003,7 +975,7 @@ public class BpmnParse implements BpmnXMLConstants {
       }
     }
     
-    return new CancelBoundaryEventActivityBehavior();
+    return activityBehaviorFactory.createCancelBoundaryEventActivityBehavior(cancelEventDefinition);
   }
 
   /**
@@ -1011,6 +983,7 @@ public class BpmnParse implements BpmnXMLConstants {
    * any is defined.
    */
   public void createMultiInstanceLoopCharacteristics(org.activiti.bpmn.model.Activity modelActivity, ActivityImpl activity) {
+    
     MultiInstanceActivityBehavior miActivityBehavior = null;
     
     MultiInstanceLoopCharacteristics loopCharacteristics = modelActivity.getLoopCharacteristics();
@@ -1019,18 +992,27 @@ public class BpmnParse implements BpmnXMLConstants {
       return;
     }
     
+    // Activity Behavior
     if (loopCharacteristics.isSequential()) {
-      miActivityBehavior = new SequentialMultiInstanceBehavior(activity, (AbstractBpmnActivityBehavior) activity.getActivityBehavior());
+      miActivityBehavior = activityBehaviorFactory.createSequentialMultiInstanceBehavior(
+              activity, (AbstractBpmnActivityBehavior) activity.getActivityBehavior()); 
     } else {
-      miActivityBehavior = new ParallelMultiInstanceBehavior(activity, (AbstractBpmnActivityBehavior) activity.getActivityBehavior());
+      miActivityBehavior = activityBehaviorFactory.createParallelMultiInstanceBehavior(
+              activity, (AbstractBpmnActivityBehavior) activity.getActivityBehavior());
     }
+    
+    // ActivityImpl settings
     activity.setScope(true);
     activity.setProperty("multiInstance", loopCharacteristics.isSequential() ? "sequential" : "parallel");
     activity.setActivityBehavior(miActivityBehavior);
     
+    
+    // loopcardinality
     if (StringUtils.isNotEmpty(loopCharacteristics.getLoopCardinality())) {
       miActivityBehavior.setLoopCardinalityExpression(expressionManager.createExpression(loopCharacteristics.getLoopCardinality()));
     }
+    
+    // completion condition
     if (StringUtils.isNotEmpty(loopCharacteristics.getCompletionCondition())) {
       miActivityBehavior.setCompletionConditionExpression(expressionManager.createExpression(loopCharacteristics.getCompletionCondition()));
     }
@@ -1100,7 +1082,6 @@ public class BpmnParse implements BpmnXMLConstants {
       return null;
     }
     
-    
     StringBuilder builder = new StringBuilder();
     for (Element e: docElements) {
       if (builder.length() != 0) {
@@ -1118,7 +1099,7 @@ public class BpmnParse implements BpmnXMLConstants {
    */
   public ActivityImpl createExclusiveGateway(ExclusiveGateway gateway, ScopeImpl scope) {
     ActivityImpl activity = createActivityOnScope(gateway, ELEMENT_GATEWAY_EXCLUSIVE, scope);
-    activity.setActivityBehavior(new ExclusiveGatewayActivityBehavior());
+    activity.setActivityBehavior(activityBehaviorFactory.createExclusiveGatewayActivityBehavior(gateway));
 
     createExecutionListenersOnScope(gateway.getExecutionListeners(), activity);
 
@@ -1133,7 +1114,7 @@ public class BpmnParse implements BpmnXMLConstants {
    */
   public ActivityImpl createInclusiveGateway(InclusiveGateway gateway, ScopeImpl scope) {
     ActivityImpl activity = createActivityOnScope(gateway, ELEMENT_GATEWAY_INCLUSIVE, scope);
-    activity.setActivityBehavior(new InclusiveGatewayActivityBehavior());
+    activity.setActivityBehavior(activityBehaviorFactory.createInclusiveGatewayActivityBehavior(gateway));
 
     createExecutionListenersOnScope(gateway.getExecutionListeners(), activity);
 
@@ -1145,7 +1126,7 @@ public class BpmnParse implements BpmnXMLConstants {
   
   public ActivityImpl createEventBasedGateway(EventGateway gateway, ScopeImpl scope) {
     ActivityImpl activity = createActivityOnScope(gateway, ELEMENT_GATEWAY_EVENT, scope);   
-    activity.setActivityBehavior(new EventBasedGatewayActivityBehavior());
+    activity.setActivityBehavior(activityBehaviorFactory.createEventBasedGatewayActivityBehavior(gateway));
     activity.setScope(true);
 
     createExecutionListenersOnScope(gateway.getExecutionListeners(), activity);
@@ -1171,7 +1152,7 @@ public class BpmnParse implements BpmnXMLConstants {
    */
   public ActivityImpl createParallelGateway(ParallelGateway gateway, ScopeImpl scope) {
     ActivityImpl activity = createActivityOnScope(gateway, ELEMENT_GATEWAY_PARALLEL, scope);
-    activity.setActivityBehavior(new ParallelGatewayActivityBehavior());
+    activity.setActivityBehavior(activityBehaviorFactory.createParallelGatewayActivityBehavior(gateway));
 
     createExecutionListenersOnScope(gateway.getExecutionListeners(), activity);
 
@@ -1187,15 +1168,10 @@ public class BpmnParse implements BpmnXMLConstants {
   public ActivityImpl createScriptTask(ScriptTask scriptTask, ScopeImpl scope) {
     ActivityImpl activity = createActivityOnScope(scriptTask, ELEMENT_TASK_SCRIPT, scope);
     
-    String language = scriptTask.getScriptFormat();
-    if (language == null) {
-      language = ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE;
-    }
-        
     activity.setAsync(scriptTask.isAsynchronous());
     activity.setExclusive(!scriptTask.isNotExclusive());
 
-    activity.setActivityBehavior(new ScriptTaskActivityBehavior(scriptTask.getScript(), language, scriptTask.getResultVariable()));
+    activity.setActivityBehavior(activityBehaviorFactory.createScriptTaskActivityBehavior(scriptTask));
 
     createExecutionListenersOnScope(scriptTask.getExecutionListeners(), activity);
 
@@ -1213,36 +1189,46 @@ public class BpmnParse implements BpmnXMLConstants {
     activity.setAsync(serviceTask.isAsynchronous());
     activity.setExclusive(!serviceTask.isNotExclusive());
 
+    // Email, Mule and Shell service tasks
     if (StringUtils.isNotEmpty(serviceTask.getType())) {
+      
       if (serviceTask.getType().equalsIgnoreCase("mail")) {
-        createEmailServiceTask(activity, serviceTask, createFieldDeclarations(serviceTask.getFieldExtensions()));
+        validateFieldDeclarationsForEmail(serviceTask, serviceTask.getFieldExtensions());
+        activity.setActivityBehavior(activityBehaviorFactory.createMailActivityBehavior(serviceTask));
+        
       } else if (serviceTask.getType().equalsIgnoreCase("mule")) {
-        createMuleServiceTask(activity, serviceTask, createFieldDeclarations(serviceTask.getFieldExtensions()));
+        activity.setActivityBehavior(activityBehaviorFactory.createMuleActivityBehavior(serviceTask, bpmnModel));
+        
       } else if (serviceTask.getType().equalsIgnoreCase("shell")) {
-        createShellServiceTask(activity, serviceTask, createFieldDeclarations(serviceTask.getFieldExtensions()));
+        validateFieldDeclarationsForShell(serviceTask, serviceTask.getFieldExtensions());
+        activity.setActivityBehavior(activityBehaviorFactory.createShellActivityBehavior(serviceTask));
+        
       } else {
         bpmnModel.addProblem("Invalid usage of type attribute: '" + serviceTask.getType() + "'.", serviceTask);
       }
 
+    // activiti:class
     } else if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(serviceTask.getImplementationType())) {
-      activity.setActivityBehavior(new ClassDelegate(serviceTask.getImplementation(), createFieldDeclarations(serviceTask.getFieldExtensions())));
-
+      activity.setActivityBehavior(activityBehaviorFactory.createClassDelegateServiceTask(serviceTask));
+      
+    // activiti:delegateExpression
     } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(serviceTask.getImplementationType())) {
-      activity.setActivityBehavior(new ServiceTaskDelegateExpressionActivityBehavior(expressionManager.createExpression(serviceTask.getImplementation()), 
-          createFieldDeclarations(serviceTask.getFieldExtensions())));
+      activity.setActivityBehavior(activityBehaviorFactory.createServiceTaskDelegateExpressionActivityBehavior(serviceTask));
 
+    // activiti:expression      
     } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(serviceTask.getImplementationType())) {
-      activity.setActivityBehavior(new ServiceTaskExpressionActivityBehavior(expressionManager.createExpression(serviceTask.getImplementation()), 
-          serviceTask.getResultVariableName()));
+      activity.setActivityBehavior(activityBehaviorFactory.createServiceTaskExpressionActivityBehavior(serviceTask));
 
+    // Webservice   
     } else if (ImplementationType.IMPLEMENTATION_TYPE_WEBSERVICE.equalsIgnoreCase(serviceTask.getImplementationType()) && 
         StringUtils.isNotEmpty(serviceTask.getOperationRef())) {
       
       if (!this.operations.containsKey(serviceTask.getOperationRef())) {
         bpmnModel.addProblem(serviceTask.getOperationRef() + " does not exist", serviceTask);
       } else {
-        Operation operation = this.operations.get(serviceTask.getOperationRef());
-        WebServiceActivityBehavior webServiceActivityBehavior = new WebServiceActivityBehavior(operation);
+        
+        WebServiceActivityBehavior webServiceActivityBehavior = activityBehaviorFactory.createWebServiceActivityBehavior(serviceTask);
+        webServiceActivityBehavior.setOperation(this.operations.get(serviceTask.getOperationRef()));
 
         if (serviceTask.getIoSpecification() != null) {
           IOSpecification ioSpecification = this.createIOSpecification(serviceTask.getIoSpecification());
@@ -1342,26 +1328,8 @@ public class BpmnParse implements BpmnXMLConstants {
       
     activity.setAsync(businessRuleTask.isAsynchronous());
     activity.setExclusive(!businessRuleTask.isNotExclusive());
-
-    BusinessRuleTaskActivityBehavior ruleActivity = new BusinessRuleTaskActivityBehavior();
-    activity.setActivityBehavior(ruleActivity);
+    activity.setActivityBehavior(activityBehaviorFactory.createBusinessRuleTaskActivityBehavior(businessRuleTask));
     
-    for (String ruleVariableInputObject : businessRuleTask.getInputVariables()) {
-      ruleActivity.addRuleVariableInputIdExpression(expressionManager.createExpression(ruleVariableInputObject.trim()));
-    }
-
-    for (String rule : businessRuleTask.getRuleNames()) {
-      ruleActivity.addRuleIdExpression(expressionManager.createExpression(rule.trim()));
-    }
-
-    ruleActivity.setExclude(businessRuleTask.isExclude());
-
-    if (StringUtils.isNotEmpty(businessRuleTask.getResultVariableName())) {
-      ruleActivity.setResultVariable(businessRuleTask.getResultVariableName());
-    } else {
-      ruleActivity.setResultVariable("org.activiti.engine.rules.OUTPUT");
-    }
-
     createExecutionListenersOnScope(businessRuleTask.getExecutionListeners(), activity);
 
     for (BpmnParseListener parseListener : parseListeners) {
@@ -1383,9 +1351,10 @@ public class BpmnParse implements BpmnXMLConstants {
     // for e-mail
     if (StringUtils.isNotEmpty(sendTask.getType())) {
       if (sendTask.getType().equalsIgnoreCase("mail")) {
-        createEmailServiceTask(activity, sendTask, createFieldDeclarations(sendTask.getFieldExtensions()));
+        validateFieldDeclarationsForEmail(sendTask, sendTask.getFieldExtensions());
+        activity.setActivityBehavior(activityBehaviorFactory.createMailActivityBehavior(sendTask));
       } else if (sendTask.getType().equalsIgnoreCase("mule")) {
-        createMuleServiceTask(activity, sendTask, createFieldDeclarations(sendTask.getFieldExtensions()));
+        activity.setActivityBehavior(activityBehaviorFactory.createMuleActivityBehavior(sendTask, bpmnModel));
       } else {
         bpmnModel.addProblem("Invalid usage of type attribute: '" + sendTask.getType() + "'.", sendTask);
       }
@@ -1397,8 +1366,9 @@ public class BpmnParse implements BpmnXMLConstants {
       if (!this.operations.containsKey(sendTask.getOperationRef())) {
         bpmnModel.addProblem(sendTask.getOperationRef() + " does not exist", sendTask);
       } else {
+        WebServiceActivityBehavior webServiceActivityBehavior = activityBehaviorFactory.createWebServiceActivityBehavior(sendTask);
         Operation operation = this.operations.get(sendTask.getOperationRef());
-        WebServiceActivityBehavior webServiceActivityBehavior = new WebServiceActivityBehavior(operation);
+        webServiceActivityBehavior.setOperation(operation);
 
         if (sendTask.getIoSpecification() != null) {
           IOSpecification ioSpecification = this.createIOSpecification(sendTask.getIoSpecification());
@@ -1441,37 +1411,19 @@ public class BpmnParse implements BpmnXMLConstants {
       return dataOutputAssociation;
     }
   }
-
-  protected void createMuleServiceTask(ActivityImpl activity, Task task, List<FieldDeclaration> fieldDeclarations) {
-    try {
-      Class< ? > theClass = Class.forName("org.activiti.mule.MuleSendActivitiBehavior");
-      activity.setActivityBehavior((ActivityBehavior) ClassDelegate.instantiateDelegate(theClass, fieldDeclarations));
-    } catch (ClassNotFoundException e) {
-      bpmnModel.addProblem("Could not find org.activiti.mule.MuleSendActivitiBehavior", task);
-    }
-  }
-
-  protected void createEmailServiceTask(ActivityImpl activity, Task task, List<FieldDeclaration> fieldDeclarations) {
-    validateFieldDeclarationsForEmail(task, fieldDeclarations);
-    activity.setActivityBehavior((MailActivityBehavior) ClassDelegate.instantiateDelegate(MailActivityBehavior.class, fieldDeclarations));
-  }
   
-  protected void createShellServiceTask(ActivityImpl activity, Task task, List<FieldDeclaration> fieldDeclarations) {
-    validateFieldDeclarationsForShell(task, fieldDeclarations);
-    activity.setActivityBehavior((ActivityBehavior) ClassDelegate.instantiateDelegate(ShellActivityBehavior.class, fieldDeclarations));
-  }
-  
-  protected void validateFieldDeclarationsForEmail(Task task, List<FieldDeclaration> fieldDeclarations) {
+  protected void validateFieldDeclarationsForEmail(Task task, List<FieldExtension> fieldExtensions) {
     boolean toDefined = false;
     boolean textOrHtmlDefined = false;
-    for (FieldDeclaration fieldDeclaration : fieldDeclarations) {
-      if (fieldDeclaration.getName().equals("to")) {
+    
+    for (FieldExtension fieldExtension : fieldExtensions) {
+      if (fieldExtension.getFieldName().equals("to")) {
         toDefined = true;
       }
-      if (fieldDeclaration.getName().equals("html")) {
+      if (fieldExtension.getFieldName().equals("html")) {
         textOrHtmlDefined = true;
       }
-      if (fieldDeclaration.getName().equals("text")) {
+      if (fieldExtension.getFieldName().equals("text")) {
         textOrHtmlDefined = true;
       }
     }
@@ -1484,13 +1436,12 @@ public class BpmnParse implements BpmnXMLConstants {
     }
   }
 
-  protected void validateFieldDeclarationsForShell(Task task, List<FieldDeclaration> fieldDeclarations) {
+  protected void validateFieldDeclarationsForShell(Task task, List<FieldExtension> fieldExtensions) {
     boolean shellCommandDefined = false;
 
-    for (FieldDeclaration fieldDeclaration : fieldDeclarations) {
-      String fieldName = fieldDeclaration.getName();
-      FixedValue fieldFixedValue = (FixedValue) fieldDeclaration.getValue();
-      String fieldValue = fieldFixedValue.getExpressionText();
+    for (FieldExtension fieldExtension : fieldExtensions) {
+      String fieldName = fieldExtension.getFieldName();
+      String fieldValue = fieldExtension.getStringValue();
 
       shellCommandDefined |= fieldName.equals("command");
 
@@ -1512,7 +1463,7 @@ public class BpmnParse implements BpmnXMLConstants {
    */
   public ActivityImpl createTask(Task task, ScopeImpl scope) {
     ActivityImpl activity = createActivityOnScope(task, ELEMENT_TASK, scope);
-    activity.setActivityBehavior(new TaskActivityBehavior());
+    activity.setActivityBehavior(activityBehaviorFactory.createTaskActivityBehavior(task));
     
     activity.setAsync(task.isAsynchronous());
     activity.setExclusive(!task.isNotExclusive());
@@ -1530,7 +1481,7 @@ public class BpmnParse implements BpmnXMLConstants {
    */
   public ActivityImpl createManualTask(ManualTask manualTask, ScopeImpl scope) {
     ActivityImpl activity = createActivityOnScope(manualTask, ELEMENT_TASK_MANUAL, scope);
-    activity.setActivityBehavior(new ManualTaskActivityBehavior());
+    activity.setActivityBehavior(activityBehaviorFactory.createManualTaskActivityBehavior(manualTask));
     
     activity.setAsync(manualTask.isAsynchronous());
     activity.setExclusive(!manualTask.isNotExclusive());
@@ -1548,7 +1499,7 @@ public class BpmnParse implements BpmnXMLConstants {
    */
   public ActivityImpl createReceiveTask(ReceiveTask receiveTask, ScopeImpl scope) {
     ActivityImpl activity = createActivityOnScope(receiveTask, ELEMENT_TASK_RECEIVE, scope);
-    activity.setActivityBehavior(new ReceiveTaskActivityBehavior());
+    activity.setActivityBehavior(activityBehaviorFactory.createReceiveTaskActivityBehavior(receiveTask));
     
     activity.setAsync(receiveTask.isAsynchronous());
     activity.setExclusive(!receiveTask.isNotExclusive());
@@ -1571,9 +1522,7 @@ public class BpmnParse implements BpmnXMLConstants {
     activity.setExclusive(!userTask.isNotExclusive()); 
     
     TaskDefinition taskDefinition = parseTaskDefinition(userTask, userTask.getId(), (ProcessDefinitionEntity) scope.getProcessDefinition());
-
-    UserTaskActivityBehavior userTaskActivity = new UserTaskActivityBehavior(taskDefinition);
-    activity.setActivityBehavior(userTaskActivity);
+    activity.setActivityBehavior(activityBehaviorFactory.createUserTaskActivityBehavior(userTask, taskDefinition));
 
     //parseProperties(userTaskElement, activity);
     createExecutionListenersOnScope(userTask.getExecutionListeners(), activity);
@@ -1635,12 +1584,11 @@ public class BpmnParse implements BpmnXMLConstants {
     TaskListener taskListener = null;
 
     if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(activitiListener.getImplementationType())) {
-      taskListener = new ClassDelegate(activitiListener.getImplementation(), createFieldDeclarations(activitiListener.getFieldExtensions()));
+      taskListener = listenerFactory.createClassDelegateTaskListener(activitiListener); 
     } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
-      taskListener = new ExpressionTaskListener(expressionManager.createExpression(activitiListener.getImplementation()));
+      taskListener = listenerFactory.createExpressionTaskListener(activitiListener);
     } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
-      taskListener = new DelegateExpressionTaskListener(expressionManager.createExpression(activitiListener.getImplementation()), 
-          createFieldDeclarations(activitiListener.getFieldExtensions()));
+      taskListener = listenerFactory.createDelegateExpressionTaskListener(activitiListener);
     } else {
       bpmnModel.addProblem("Element 'class', 'expression' or 'delegateExpression' is mandatory on taskListener for task", activitiListener);
     }
@@ -1664,6 +1612,7 @@ public class BpmnParse implements BpmnXMLConstants {
       eventDefinition = endEvent.getEventDefinitions().get(0);
     }
     
+    // Error end event
     if (eventDefinition instanceof org.activiti.bpmn.model.ErrorEventDefinition) {
       org.activiti.bpmn.model.ErrorEventDefinition errorDefinition = (org.activiti.bpmn.model.ErrorEventDefinition) eventDefinition;
       if (bpmnModel.containsErrorRef(errorDefinition.getErrorCode())) {
@@ -1674,18 +1623,24 @@ public class BpmnParse implements BpmnXMLConstants {
         activity.setProperty("type", "errorEndEvent");
         errorDefinition.setErrorCode(errorCode);
       }
-      activity.setActivityBehavior(new ErrorEndEventActivityBehavior(errorDefinition.getErrorCode()));
+      activity.setActivityBehavior(activityBehaviorFactory.createErrorEndEventActivityBehavior(endEvent, errorDefinition));
+      
+    // Cancel end event      
     } else if (eventDefinition instanceof CancelEventDefinition) {
       if (scope.getProperty("type")==null || !scope.getProperty("type").equals("transaction")) {
         bpmnModel.addProblem("end event with cancelEventDefinition only supported inside transaction subprocess", endEvent);
       } else {
         activity.setProperty("type", "cancelEndEvent");
-        activity.setActivityBehavior(new CancelEndEventActivityBehavior());
+        activity.setActivityBehavior(activityBehaviorFactory.createCancelEndEventActivityBehavior(endEvent));
       }
+    
+    // Terminate end event  
     } else if (eventDefinition instanceof TerminateEventDefinition) {
-      activity.setActivityBehavior(new TerminateEndEventActivityBehavior());
+      activity.setActivityBehavior(activityBehaviorFactory.createTerminateEndEventActivityBehavior(endEvent));
+      
+    // None end event  
     } else if (eventDefinition == null) {
-      activity.setActivityBehavior(new NoneEndEventActivityBehavior());
+      activity.setActivityBehavior(activityBehaviorFactory.createNoneEndEventActivityBehavior(endEvent));
     }
     
     createExecutionListenersOnScope(endEvent.getExecutionListeners(), activity);
@@ -1728,11 +1683,11 @@ public class BpmnParse implements BpmnXMLConstants {
     ActivityBehavior behavior = null;
     
     if (eventDefinition instanceof TimerEventDefinition) {
-      behavior = new BoundaryEventActivityBehavior(interrupting, nestedActivity.getId());
+      behavior = activityBehaviorFactory.createBoundaryEventActivityBehavior(boundaryEvent, interrupting, nestedActivity); 
       createBoundaryTimerEventDefinition((TimerEventDefinition) eventDefinition, interrupting, nestedActivity);
     } else if (eventDefinition instanceof org.activiti.bpmn.model.ErrorEventDefinition) {
       interrupting = true; // non-interrupting not yet supported
-      behavior = new BoundaryEventActivityBehavior(interrupting, nestedActivity.getId());
+      behavior = activityBehaviorFactory.createBoundaryEventActivityBehavior(boundaryEvent, interrupting, nestedActivity);
       org.activiti.bpmn.model.ErrorEventDefinition modelErrorEvent = (org.activiti.bpmn.model.ErrorEventDefinition) eventDefinition;
       if (bpmnModel.containsErrorRef(modelErrorEvent.getErrorCode())) {
         String errorCode = bpmnModel.getErrors().get(modelErrorEvent.getErrorCode());
@@ -1743,16 +1698,16 @@ public class BpmnParse implements BpmnXMLConstants {
       }
       createBoundaryErrorEventDefinition(modelErrorEvent, interrupting, parentActivity, nestedActivity);
     } else if (eventDefinition instanceof SignalEventDefinition) {
-      behavior = new BoundaryEventActivityBehavior(interrupting, nestedActivity.getId());
+      behavior = activityBehaviorFactory.createBoundaryEventActivityBehavior(boundaryEvent, interrupting, nestedActivity);
       createBoundarySignalEventDefinition((SignalEventDefinition) eventDefinition, interrupting, nestedActivity);
     } else if (eventDefinition instanceof CancelEventDefinition) {
       // always interrupting
       behavior = createBoundaryCancelEventDefinition((CancelEventDefinition) eventDefinition, nestedActivity);
     } else if (eventDefinition instanceof org.activiti.bpmn.model.CompensateEventDefinition) {
-      behavior = new BoundaryEventActivityBehavior(interrupting, nestedActivity.getId());
+      behavior = activityBehaviorFactory.createBoundaryEventActivityBehavior(boundaryEvent, interrupting, nestedActivity);
       createCatchCompensateEventDefinition((org.activiti.bpmn.model.CompensateEventDefinition) eventDefinition, nestedActivity);      
     } else if (eventDefinition instanceof MessageEventDefinition) {
-      behavior = new BoundaryEventActivityBehavior(interrupting, nestedActivity.getId());
+      behavior = activityBehaviorFactory.createBoundaryEventActivityBehavior(boundaryEvent, interrupting, nestedActivity);
       MessageEventDefinition modelMessageEvent = (MessageEventDefinition) eventDefinition;
       if (bpmnModel.containsMessageId(modelMessageEvent.getMessageRef())) {
         String messageName = bpmnModel.getMessage(modelMessageEvent.getMessageRef()).getName();
@@ -1760,7 +1715,7 @@ public class BpmnParse implements BpmnXMLConstants {
           bpmnModel.addProblem("messageName is required for a message event", boundaryEvent);
         }
         modelMessageEvent.setMessageRef(messageName);
-	  }
+      }
       createBoundaryMessageEventDefinition((MessageEventDefinition) eventDefinition, interrupting, nestedActivity);
     } else {
       bpmnModel.addProblem("Unsupported boundary event type", boundaryEvent);
@@ -2006,7 +1961,7 @@ public class BpmnParse implements BpmnXMLConstants {
     
     // event subprocesses are not scopes
     activity.setScope(!triggeredByEvent);
-    activity.setActivityBehavior(new SubProcessActivityBehavior());
+    activity.setActivityBehavior(activityBehaviorFactory.createSubprocActivityBehavior(subProcess));
     
     processFlowElements(subProcess.getFlowElements(), activity, subProcess);
     processArtifacts(subProcess.getArtifacts(), activity);
@@ -2029,7 +1984,7 @@ public class BpmnParse implements BpmnXMLConstants {
     activity.setExclusive(!transaction.isNotExclusive());
     
     activity.setScope(true);
-    activity.setActivityBehavior(new TransactionActivityBehavior());
+    activity.setActivityBehavior(activityBehaviorFactory.createTransactionActivityBehavior(transaction));
     
     processFlowElements(transaction.getFlowElements(), activity, transaction);
     processArtifacts(transaction.getArtifacts(), activity);
@@ -2055,35 +2010,8 @@ public class BpmnParse implements BpmnXMLConstants {
    */
   public ActivityImpl createCallActivity(CallActivity callActivity, ScopeImpl scope) {
     ActivityImpl activity = createActivityOnScope(callActivity, ELEMENT_CALL_ACTIVITY, scope);
-    
-    String expressionRegex = "\\$+\\{+.+\\}";
-    CallActivityBehavior callActivityBehaviour = null;
-    if (StringUtils.isNotEmpty(callActivity.getCalledElement()) && callActivity.getCalledElement().matches(expressionRegex)) {
-      callActivityBehaviour = new CallActivityBehavior(expressionManager.createExpression(callActivity.getCalledElement()));
-    } else {
-      callActivityBehaviour = new CallActivityBehavior(callActivity.getCalledElement());
-    }
-
-    for (IOParameter ioParameter : callActivity.getInParameters()) {
-      if (StringUtils.isNotEmpty(ioParameter.getSourceExpression())) {
-        Expression expression = expressionManager.createExpression(ioParameter.getSourceExpression().trim());
-        callActivityBehaviour.addDataInputAssociation(new SimpleDataInputAssociation(expression, ioParameter.getTarget()));
-      } else {
-        callActivityBehaviour.addDataInputAssociation(new SimpleDataInputAssociation(ioParameter.getSource(), ioParameter.getTarget()));
-      }
-    }
-    
-    for (IOParameter ioParameter : callActivity.getOutParameters()) {
-      if (StringUtils.isNotEmpty(ioParameter.getSourceExpression())) {
-        Expression expression = expressionManager.createExpression(ioParameter.getSourceExpression().trim());
-        callActivityBehaviour.addDataOutputAssociation(new MessageImplicitDataOutputAssociation(ioParameter.getTarget(), expression));
-      } else {
-        callActivityBehaviour.addDataOutputAssociation(new MessageImplicitDataOutputAssociation(ioParameter.getTarget(), ioParameter.getSource()));
-      }
-    }
-
     activity.setScope(true);
-    activity.setActivityBehavior(callActivityBehaviour);
+    activity.setActivityBehavior(activityBehaviorFactory.createCallActivityBehavior(callActivity));
 
     createExecutionListenersOnScope(callActivity.getExecutionListeners(), activity);
 
@@ -2112,7 +2040,7 @@ public class BpmnParse implements BpmnXMLConstants {
     } else if (destinationActivity == null) {
       throw new ActivitiException("Invalid destination '" + sequenceFlow.getTargetRef() + "' of sequence flow '" + sequenceFlow.getId() + "'");
     } else if(!(sourceActivity.getActivityBehavior() instanceof EventBasedGatewayActivityBehavior)
-            && destinationActivity.getActivityBehavior() instanceof IntermediateCatchEventActivitiBehaviour
+            && destinationActivity.getActivityBehavior() instanceof IntermediateCatchEventActivityBehavior
             && (destinationActivity.getParentActivity() != null)
             && (destinationActivity.getParentActivity().getActivityBehavior() instanceof EventBasedGatewayActivityBehavior)) {
       
@@ -2194,32 +2122,13 @@ public class BpmnParse implements BpmnXMLConstants {
     ExecutionListener executionListener = null;
   
     if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(activitiListener.getImplementationType())) {
-      executionListener = new ClassDelegate(activitiListener.getImplementation(), createFieldDeclarations(activitiListener.getFieldExtensions()));
+      executionListener = listenerFactory.createClassDelegateExecutionListener(activitiListener);  
     } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
-      executionListener = new ExpressionExecutionListener(expressionManager.createExpression(activitiListener.getImplementation()));
+      executionListener = listenerFactory.createExpressionExecutionListener(activitiListener);
     } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
-      executionListener = new DelegateExpressionExecutionListener(expressionManager.createExpression(activitiListener.getImplementation()), 
-          createFieldDeclarations(activitiListener.getFieldExtensions()));
+      executionListener = listenerFactory.createDelegateExpressionExecutionListener(activitiListener);
     }
     return executionListener;
-  }
-  
-  public List<FieldDeclaration> createFieldDeclarations(List<FieldExtension> fieldList) {
-    List<FieldDeclaration> fieldDeclarations = new ArrayList<FieldDeclaration>();
-
-    for (FieldExtension fieldExtension : fieldList) {
-      FieldDeclaration fieldDeclaration = null;
-      if (StringUtils.isNotEmpty(fieldExtension.getExpression())) {
-        fieldDeclaration = new FieldDeclaration(fieldExtension.getFieldName(), Expression.class.getName(), 
-            expressionManager.createExpression(fieldExtension.getExpression()));
-      } else {
-        fieldDeclaration = new FieldDeclaration(fieldExtension.getFieldName(), Expression.class.getName(), 
-            new FixedValue(fieldExtension.getStringValue()));
-      }
-      
-      fieldDeclarations.add(fieldDeclaration);
-    }
-    return fieldDeclarations;
   }
   
   protected void addErrorEventDefinition(ErrorEventDefinition errorEventDefinition, ScopeImpl catchingScope) {
@@ -2332,4 +2241,21 @@ public class BpmnParse implements BpmnXMLConstants {
   public void addOperation(OperationImplementation operationImplementation) {
     this.operationImplementations.put(operationImplementation.getId(), operationImplementation);
   }
+  
+  public ActivityBehaviorFactory getActivityBehaviorFactory() {
+    return activityBehaviorFactory;
+  }
+  
+  public void setActivityBehaviorFactory(ActivityBehaviorFactory activityBehaviorFactory) {
+    this.activityBehaviorFactory = activityBehaviorFactory;
+  }
+  
+  public ListenerFactory getListenerFactory() {
+    return listenerFactory;
+  }
+  
+  public void setListenerFactory(ListenerFactory listenerFactory) {
+    this.listenerFactory = listenerFactory;
+  }
+  
 }

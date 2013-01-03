@@ -248,6 +248,12 @@ repositoryService.createDeployment()
       an image is provided</link> in the deployment.
       <mediaobject><imageobject><imagedata align="center" fileref="images/deployment.image.generation.png"/></imageobject></mediaobject>
     </para>
+    <para>
+      If, for some reason, it is not necessary or wanted to generate a diagram during deployment the 
+      <literal>isCreateDiagramOnDeploy</literal> property can be set on the process engine configuration:
+      <programlisting>&lt;property name=&quot;isCreateDiagramOnDeploy&quot; value=&quot;false&quot; /&gt;</programlisting>
+      No diagram will be generated now.
+    </para>
   </section>
 
   <section id="deploymentCategory">

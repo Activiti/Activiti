@@ -69,4 +69,9 @@ public class DefaultDeploymentCache<T> implements DeploymentCache<T> {
     cache.clear();
   }
   
+  // For testing purposes only
+  public int size() {
+    return cache.size();
+  }
+  
 }

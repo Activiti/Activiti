@@ -808,6 +808,33 @@
           </plugins>
         </build>
     </profile>
+    <profile>
+      <!-- Profile used by the start-explorer.sh script to build the Explorer webapp and all its dependencies -->
+      <id>buildRestappDependencies</id>
+      <modules>
+        <module>modules/activiti-rest</module>
+      </modules>
+      <properties>
+        <skipTests>true</skipTests>
+      </properties>
+      <build>
+          <plugins>
+            <plugin>
+              <groupId>org.zeroturnaround</groupId>
+              <artifactId>jrebel-maven-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>generate-rebel-xml</id>
+                  <phase>process-resources</phase>
+                  <goals>
+                    <goal>generate</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </build>
+    </profile>
   </profiles>
   
   <distributionManagement>

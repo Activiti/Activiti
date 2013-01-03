@@ -5,19 +5,10 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
 
   <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
-  
-    <!-- Database configurations -->
-    <property name="history" value="audit" />
+    
     <property name="databaseSchemaUpdate" value="true" />
     
-    <!-- job executor configurations -->
-    <property name="jobExecutorActivate" value="false" />
-    
-    <property name="preParseListeners">
-      <list>
-        <bean class="org.activiti.standalone.deploy.TestBPMNParseListener" />
-      </list>
-    </property>
+    <property name="processDefinitionCacheLimit" value="3" />  
     
   </bean>
 
