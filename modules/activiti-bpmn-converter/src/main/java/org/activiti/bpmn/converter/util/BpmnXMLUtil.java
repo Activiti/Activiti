@@ -4,13 +4,29 @@ import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.stream.Location;
+import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
+import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.GraphicInfo;
 import org.apache.commons.lang.StringUtils;
 
 public class BpmnXMLUtil implements BpmnXMLConstants {
 
+  public static void addXMLLocation(BaseElement element, XMLStreamReader xtr) {
+    Location location = xtr.getLocation();
+    element.setXmlRowNumber(location.getLineNumber());
+    element.setXmlColumnNumber(location.getColumnNumber());
+  }
+  
+  public static void addXMLLocation(GraphicInfo graphicInfo, XMLStreamReader xtr) {
+    Location location = xtr.getLocation();
+    graphicInfo.setXmlRowNumber(location.getLineNumber());
+    graphicInfo.setXmlColumnNumber(location.getColumnNumber());
+  }
+  
   public static void writeDefaultAttribute(String attributeName, String value, XMLStreamWriter xtw) throws Exception {
     if (StringUtils.isNotEmpty(value) && "null".equalsIgnoreCase(value) == false) {
       xtw.writeAttribute(attributeName, value);

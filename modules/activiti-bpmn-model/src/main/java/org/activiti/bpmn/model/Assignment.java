@@ -1,6 +1,6 @@
 package org.activiti.bpmn.model;
 
-public class Assignment {
+public class Assignment extends BaseElement {
 
   protected String from;
   protected String to;

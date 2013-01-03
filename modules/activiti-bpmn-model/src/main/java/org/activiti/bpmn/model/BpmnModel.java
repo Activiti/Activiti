@@ -255,14 +255,14 @@ public class BpmnModel {
     if (signalList != null) {
       signalMap.clear();
       for (Signal signal : signalList) {
-        addSignal(signal.getId(), signal.getName());
+        addSignal(signal);
       }
     }
   }
   
-  public void addSignal(String id, String name) {
-    if (StringUtils.isNotEmpty(id)) {
-      signalMap.put(id, new Signal(id, name));
+  public void addSignal(Signal signal) {
+    if (signal != null && StringUtils.isNotEmpty(signal.getId())) {
+      signalMap.put(signal.getId(), signal);
     }
   }
   
@@ -282,14 +282,14 @@ public class BpmnModel {
     if (messageList != null) {
       messageMap.clear();
       for (Message message : messageList) {
-        addMessage(message.getId(), message.getName(), message.getItemRef());
+        addMessage(message);
       }
     }
   }
 
-  public void addMessage(String id, String name, String itemRef) {
-    if (StringUtils.isNotEmpty(id)) {
-      messageMap.put(id, new Message(id, name, itemRef));
+  public void addMessage(Message message) {
+    if (message != null && StringUtils.isNotEmpty(message.getId())) {
+      messageMap.put(message.getId(), message);
     }
   }
   
@@ -389,8 +389,12 @@ public class BpmnModel {
     problems.add(new Problem(errorMessage, xtr));
   }
   
-  public void addProblem(String errorMessage, String elementId) {
-    problems.add(new Problem(errorMessage, elementId));
+  public void addProblem(String errorMessage, BaseElement element) {
+    problems.add(new Problem(errorMessage, element));
+  }
+  
+  public void addProblem(String errorMessage, GraphicInfo graphicInfo) {
+    problems.add(new Problem(errorMessage, graphicInfo));
   }
   
   public List<Problem> getProblems() {
@@ -401,8 +405,8 @@ public class BpmnModel {
     warnings.add(new Warning(warningMessage, xtr));
   }
   
-  public void addWarning(String warningMessage, String elementId) {
-    warnings.add(new Warning(warningMessage, elementId));
+  public void addWarning(String warningMessage, BaseElement element) {
+    warnings.add(new Warning(warningMessage, element));
   }
   
   public List<Warning> getWarning() {

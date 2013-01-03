@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Interface;
 import org.activiti.bpmn.model.Operation;
@@ -33,6 +34,7 @@ public class InterfaceParser implements BpmnXMLConstants {
   public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
     
     Interface interfaceObject = new Interface();
+    BpmnXMLUtil.addXMLLocation(interfaceObject, xtr);
     interfaceObject.setId(model.getTargetNamespace() + ":" + xtr.getAttributeValue(null, ATTRIBUTE_ID));
     interfaceObject.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
     interfaceObject.setImplementationRef(parseMessageRef(xtr.getAttributeValue(null, ATTRIBUTE_IMPLEMENTATION_REF), model));
@@ -44,6 +46,7 @@ public class InterfaceParser implements BpmnXMLConstants {
         xtr.next();
         if (xtr.isStartElement() && ELEMENT_OPERATION.equals(xtr.getLocalName())) {
           operation = new Operation();
+          BpmnXMLUtil.addXMLLocation(operation, xtr);
           operation.setId(model.getTargetNamespace() + ":" + xtr.getAttributeValue(null, ATTRIBUTE_ID));
           operation.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
           operation.setImplementationRef(parseMessageRef(xtr.getAttributeValue(null, ATTRIBUTE_IMPLEMENTATION_REF), model));

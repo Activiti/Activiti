@@ -90,9 +90,9 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
     }
     
     flowElementNode = BpmnJsonConverterUtil.createChildShape(flowElement.getId(), stencilId, 
-        graphicInfo.x - subProcessX + graphicInfo.width, 
-        graphicInfo.y - subProcessY + graphicInfo.height, 
-        graphicInfo.x - subProcessX, graphicInfo.y - subProcessY);
+        graphicInfo.getX() - subProcessX + graphicInfo.getWidth(), 
+        graphicInfo.getY() - subProcessY + graphicInfo.getHeight(), 
+        graphicInfo.getX() - subProcessX, graphicInfo.getY() - subProcessY);
     shapesArrayNode.add(flowElementNode);
     ObjectNode propertiesNode = objectMapper.createObjectNode();
     propertiesNode.put(PROPERTY_OVERRIDE_ID, flowElement.getId());

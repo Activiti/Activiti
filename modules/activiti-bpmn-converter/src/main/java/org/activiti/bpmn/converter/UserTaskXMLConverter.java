@@ -20,6 +20,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.converter.child.BaseChildElementParser;
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.UserTask;
@@ -65,7 +66,7 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
     if (userTask == null) {
       userTask = new UserTask();
     }
-    
+    BpmnXMLUtil.addXMLLocation(userTask, xtr);
     userTask.setDueDate(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_DUEDATE));
     userTask.setFormKey(formKey);
     userTask.setAssignee(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_ASSIGNEE)); 

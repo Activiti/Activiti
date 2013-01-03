@@ -15,6 +15,7 @@ package org.activiti.bpmn.converter;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.ExclusiveGateway;
 
@@ -39,6 +40,7 @@ public class ExclusiveGatewayXMLConverter extends BaseBpmnXMLConverter {
   @Override
   protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
     ExclusiveGateway gateway = new ExclusiveGateway();
+    BpmnXMLUtil.addXMLLocation(gateway, xtr);
     return gateway;
   }
 

@@ -18,6 +18,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.converter.child.BaseChildElementParser;
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.CallActivity;
@@ -52,6 +53,7 @@ public class CallActivityXMLConverter extends BaseBpmnXMLConverter {
   @Override
   protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
     CallActivity callActivity = new CallActivity();
+    BpmnXMLUtil.addXMLLocation(callActivity, xtr);
     callActivity.setCalledElement(xtr.getAttributeValue(null, ATTRIBUTE_CALL_ACTIVITY_CALLEDELEMENT));
     parseChildElements(getXMLElementName(), callActivity, xtr);
     return callActivity;

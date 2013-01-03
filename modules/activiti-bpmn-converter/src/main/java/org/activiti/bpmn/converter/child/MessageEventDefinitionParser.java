@@ -14,6 +14,7 @@ package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
 
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Event;
@@ -33,6 +34,7 @@ public class MessageEventDefinitionParser extends BaseChildElementParser {
     if (parentElement instanceof Event == false) return;
     
     MessageEventDefinition eventDefinition = new MessageEventDefinition();
+    BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
     eventDefinition.setMessageRef(xtr.getAttributeValue(null, ATTRIBUTE_MESSAGE_REF));
     
     if(StringUtils.isEmpty(eventDefinition.getMessageRef())) {

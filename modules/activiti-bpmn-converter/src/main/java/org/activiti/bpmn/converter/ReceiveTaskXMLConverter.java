@@ -15,6 +15,7 @@ package org.activiti.bpmn.converter;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.ReceiveTask;
 
@@ -39,6 +40,7 @@ public class ReceiveTaskXMLConverter extends BaseBpmnXMLConverter {
   @Override
   protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
     ReceiveTask receiveTask = new ReceiveTask();
+    BpmnXMLUtil.addXMLLocation(receiveTask, xtr);
     parseChildElements(getXMLElementName(), receiveTask, xtr);
     return receiveTask;
   }

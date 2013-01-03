@@ -2,6 +2,8 @@ package org.activiti.bpmn.model.parse;
 
 import javax.xml.stream.XMLStreamReader;
 
+import org.activiti.bpmn.model.BaseElement;
+
 public class Warning {
 
   protected String warningMessage;
@@ -16,9 +18,11 @@ public class Warning {
     this.column = xtr.getLocation().getColumnNumber();
   }
   
-  public Warning(String warningMessage, String elementId) {
+  public Warning(String warningMessage, BaseElement element) {
     this.warningMessage = warningMessage;
-    this.resource = elementId;
+    this.resource = element.getId();
+    line = element.getXmlRowNumber();
+    column = element.getXmlColumnNumber();
   }
   
   public String toString() {

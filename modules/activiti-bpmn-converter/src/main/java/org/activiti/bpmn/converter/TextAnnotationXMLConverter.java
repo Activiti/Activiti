@@ -16,6 +16,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.converter.child.TextAnnotationTextParser;
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.TextAnnotation;
 import org.apache.commons.lang.StringUtils;
@@ -46,6 +47,7 @@ public class TextAnnotationXMLConverter extends BaseBpmnXMLConverter {
   @Override
   protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
     TextAnnotation textAnnotation = new TextAnnotation();
+    BpmnXMLUtil.addXMLLocation(textAnnotation, xtr);
     textAnnotation.setTextFormat(xtr.getAttributeValue(null, ATTRIBUTE_TEXTFORMAT));
     parseChildElements(getXMLElementName(), textAnnotation, xtr);
     return textAnnotation;

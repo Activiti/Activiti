@@ -18,6 +18,7 @@ import java.util.List;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.alfresco.AlfrescoStartEvent;
@@ -55,6 +56,7 @@ public class StartEventXMLConverter extends BaseBpmnXMLConverter {
     if (startEvent == null) {
       startEvent = new StartEvent();
     }
+    BpmnXMLUtil.addXMLLocation(startEvent, xtr);
     startEvent.setInitiator(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_EVENT_START_INITIATOR));
     startEvent.setFormKey(formKey);
     

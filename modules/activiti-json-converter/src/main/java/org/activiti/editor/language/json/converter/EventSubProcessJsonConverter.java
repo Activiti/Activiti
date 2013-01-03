@@ -54,7 +54,7 @@ public class EventSubProcessJsonConverter extends BaseBpmnJsonConverter {
     ArrayNode subProcessShapesArrayNode = objectMapper.createArrayNode();
     GraphicInfo graphicInfo = model.getGraphicInfo(flowElement.getId());
     processor.processFlowElements(subProcess.getFlowElements(), model, subProcessShapesArrayNode, 
-        graphicInfo.x + subProcessX, graphicInfo.y + subProcessY);
+        graphicInfo.getX() + subProcessX, graphicInfo.getY() + subProcessY);
     flowElementNode.put("childShapes", subProcessShapesArrayNode);
   }
   

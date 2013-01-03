@@ -443,18 +443,18 @@
 							</configuration>
 						</execution>
 						<execution>
-                            <id>database-test-drop-schema</id>
-                            <phase>prepare-package</phase>
-                            <goals>
-                                <goal>run</goal>
-                            </goals>
-                            <configuration>
-                                <tasks>
-                                    <echo message="dropping schema in ${database}" />
-                                    <java classname="org.activiti.engine.impl.db.DbSchemaDrop" classpathref="maven.test.classpath" />
-                                </tasks>
-                            </configuration>
-                        </execution>
+                <id>database-test-drop-schema</id>
+                <phase>prepare-package</phase>
+                <goals>
+                    <goal>run</goal>
+                </goals>
+                <configuration>
+                    <tasks>
+                        <echo message="dropping schema in ${database}" />
+                        <java classname="org.activiti.engine.impl.db.DbSchemaDrop" classpathref="maven.test.classpath" />
+                    </tasks>
+                </configuration>
+            </execution>
 					</executions>
 				</plugin>
 				<plugin>

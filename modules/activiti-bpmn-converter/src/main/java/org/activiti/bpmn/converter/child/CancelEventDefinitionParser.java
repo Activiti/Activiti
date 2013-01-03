@@ -14,6 +14,7 @@ package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
 
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.CancelEventDefinition;
@@ -32,6 +33,7 @@ public class CancelEventDefinitionParser extends BaseChildElementParser {
     if (parentElement instanceof Event == false) return;
     
     CancelEventDefinition eventDefinition = new CancelEventDefinition();
+    BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
     ((Event) parentElement).getEventDefinitions().add(eventDefinition);
   }
 }

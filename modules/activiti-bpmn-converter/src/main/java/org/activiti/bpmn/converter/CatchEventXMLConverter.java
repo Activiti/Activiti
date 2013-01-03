@@ -15,6 +15,7 @@ package org.activiti.bpmn.converter;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 
@@ -39,6 +40,7 @@ public class CatchEventXMLConverter extends BaseBpmnXMLConverter {
   @Override
   protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
     IntermediateCatchEvent catchEvent = new IntermediateCatchEvent();
+    BpmnXMLUtil.addXMLLocation(catchEvent, xtr);
     parseChildElements(getXMLElementName(), catchEvent, xtr);
     return catchEvent;
   }

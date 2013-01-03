@@ -14,6 +14,7 @@ package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
 
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
@@ -40,13 +41,14 @@ public class IOSpecificationParser extends BaseChildElementParser {
         parentElement instanceof SubProcess == false && parentElement instanceof Process == false) return;
     
     IOSpecification ioSpecification = new IOSpecification();
-    
+    BpmnXMLUtil.addXMLLocation(ioSpecification, xtr);
     boolean readyWithIOSpecification = false;
     try {
       while (readyWithIOSpecification == false && xtr.hasNext()) {
         xtr.next();
         if (xtr.isStartElement() && ELEMENT_DATA_INPUT.equalsIgnoreCase(xtr.getLocalName())) {
           DataSpec dataSpec = new DataSpec();
+          BpmnXMLUtil.addXMLLocation(dataSpec, xtr);
           dataSpec.setId(xtr.getAttributeValue(null, ATTRIBUTE_ID));
           dataSpec.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
           dataSpec.setItemSubjectRef(parseItemSubjectRef(xtr.getAttributeValue(null, ATTRIBUTE_DATA_SUBJECT_REF), model));
@@ -54,6 +56,7 @@ public class IOSpecificationParser extends BaseChildElementParser {
 
         } else if (xtr.isStartElement() && ELEMENT_DATA_OUTPUT.equalsIgnoreCase(xtr.getLocalName())) {
           DataSpec dataSpec = new DataSpec();
+          BpmnXMLUtil.addXMLLocation(dataSpec, xtr);
           dataSpec.setId(xtr.getAttributeValue(null, ATTRIBUTE_ID));
           dataSpec.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
           dataSpec.setItemSubjectRef(parseItemSubjectRef(xtr.getAttributeValue(null, ATTRIBUTE_DATA_SUBJECT_REF), model));

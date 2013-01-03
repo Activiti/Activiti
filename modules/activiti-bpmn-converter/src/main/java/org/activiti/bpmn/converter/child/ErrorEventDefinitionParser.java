@@ -14,6 +14,7 @@ package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
 
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EndEvent;
@@ -34,6 +35,7 @@ public class ErrorEventDefinitionParser extends BaseChildElementParser {
     if (parentElement instanceof Event == false) return;
     
     ErrorEventDefinition eventDefinition = new ErrorEventDefinition();
+    BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
     eventDefinition.setErrorCode(xtr.getAttributeValue(null, "errorRef"));
     if (parentElement instanceof EndEvent && StringUtils.isEmpty(eventDefinition.getErrorCode())) {
       model.addProblem("errorRef is required for an error event", xtr);

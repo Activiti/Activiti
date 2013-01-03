@@ -15,6 +15,7 @@ package org.activiti.bpmn.converter.parser;
 import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ItemDefinition;
 import org.apache.commons.lang.StringUtils;
@@ -31,6 +32,7 @@ public class ItemDefinitionParser implements BpmnXMLConstants {
       if (StringUtils.isNotEmpty(structureRef)) {
         ItemDefinition item = new ItemDefinition();
         item.setId(itemDefinitionId);
+        BpmnXMLUtil.addXMLLocation(item, xtr);
         
         int indexOfP = structureRef.indexOf(':');
         if (indexOfP != -1) {

@@ -14,6 +14,7 @@ package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
 
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
@@ -37,6 +38,7 @@ public class FieldExtensionParser extends BaseChildElementParser {
         parentElement instanceof SendTask == false) return;
     
     FieldExtension extension = new FieldExtension();
+    BpmnXMLUtil.addXMLLocation(extension, xtr);
     extension.setFieldName(xtr.getAttributeValue(null, ATTRIBUTE_FIELD_NAME));
     
     if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_FIELD_STRING))) {

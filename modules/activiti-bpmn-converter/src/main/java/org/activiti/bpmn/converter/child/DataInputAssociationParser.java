@@ -14,6 +14,7 @@ package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
 
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
@@ -35,6 +36,7 @@ public class DataInputAssociationParser extends BaseChildElementParser {
     if (parentElement instanceof ServiceTask == false && parentElement instanceof SendTask == false) return;
     
     DataAssociation dataAssociation = new DataAssociation();
+    BpmnXMLUtil.addXMLLocation(dataAssociation, xtr);
     DataAssociationParser.parseDataAssociation(dataAssociation, getElementName(), xtr);
     
     ((Activity) parentElement).getDataOutputAssociations().add(dataAssociation);

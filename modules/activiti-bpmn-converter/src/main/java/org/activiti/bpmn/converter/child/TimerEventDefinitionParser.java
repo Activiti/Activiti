@@ -14,6 +14,7 @@ package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
 
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Event;
@@ -25,29 +26,30 @@ import org.activiti.bpmn.model.TimerEventDefinition;
 public class TimerEventDefinitionParser extends BaseChildElementParser {
 
   public String getElementName() {
-    return "timerEventDefinition";
+    return ELEMENT_EVENT_TIMERDEFINITION;
   }
   
   public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
     if (parentElement instanceof Event == false) return;
     
     TimerEventDefinition eventDefinition = new TimerEventDefinition();
+    BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
     try {
       while (xtr.hasNext()) {
         xtr.next();
-        if (xtr.isStartElement() && "timeDuration".equalsIgnoreCase(xtr.getLocalName())) {
+        if (xtr.isStartElement() && ATTRIBUTE_TIMER_DURATION.equalsIgnoreCase(xtr.getLocalName())) {
           eventDefinition.setTimeDuration(xtr.getElementText());
           break;
 
-        } else if (xtr.isStartElement() && "timeDate".equalsIgnoreCase(xtr.getLocalName())) {
+        } else if (xtr.isStartElement() && ATTRIBUTE_TIMER_DATE.equalsIgnoreCase(xtr.getLocalName())) {
           eventDefinition.setTimeDate(xtr.getElementText());
           break;
 
-        } else if (xtr.isStartElement() && "timeCycle".equalsIgnoreCase(xtr.getLocalName())) {
+        } else if (xtr.isStartElement() && ATTRIBUTE_TIMER_CYCLE.equalsIgnoreCase(xtr.getLocalName())) {
           eventDefinition.setTimeCycle(xtr.getElementText());
           break;
           
-        } else if (xtr.isEndElement() && "timerEventDefinition".equalsIgnoreCase(xtr.getLocalName())) {
+        } else if (xtr.isEndElement() && ELEMENT_EVENT_TIMERDEFINITION.equalsIgnoreCase(xtr.getLocalName())) {
           break;
         }
       }

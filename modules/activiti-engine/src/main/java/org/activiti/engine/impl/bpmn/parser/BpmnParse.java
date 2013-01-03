@@ -345,7 +345,7 @@ public class BpmnParse implements BpmnXMLConstants {
     for (Import theImport : bpmnModel.getImports()) {
       XMLImporter importer = this.getImporter(theImport);
       if (importer == null) {
-        bpmnModel.addProblem("Could not import item of type " + theImport.getImportType(), "import");
+        bpmnModel.addProblem("Could not import item of type " + theImport.getImportType(), theImport);
       } else {
         importer.importFrom(theImport, this);
       }
@@ -364,7 +364,7 @@ public class BpmnParse implements BpmnXMLConstants {
           this.importers.put(theImport.getImportType(), newInstance);
           return newInstance;
         } catch (Exception e) {
-          bpmnModel.addProblem("Could not find importer for type " + theImport.getImportType(), "import");
+          bpmnModel.addProblem("Could not find importer for type " + theImport.getImportType(), theImport);
         }
       }
       return null;
@@ -376,7 +376,7 @@ public class BpmnParse implements BpmnXMLConstants {
       MessageDefinition messageDefinition = new MessageDefinition(messageElement.getId(), name);
       if (StringUtils.isNotEmpty(messageElement.getItemRef())) {
         if (!this.itemDefinitions.containsKey(messageElement.getItemRef())) {
-            bpmnModel.addProblem(messageElement.getItemRef() + " does not exist", messageElement.getId());          
+            bpmnModel.addProblem(messageElement.getItemRef() + " does not exist", messageElement);          
         } else {
             ItemDefinition itemDefinition = this.itemDefinitions.get(messageElement.getItemRef());
             messageDefinition.setItemDefinition(itemDefinition);
@@ -415,7 +415,7 @@ public class BpmnParse implements BpmnXMLConstants {
       
       for (org.activiti.bpmn.model.Operation operationObject : interfaceObject.getOperations()) {
         if (!this.messages.containsKey(operationObject.getInMessageRef())) {
-          bpmnModel.addProblem(operationObject.getInMessageRef() + " does not exist", operationObject.getId());
+          bpmnModel.addProblem(operationObject.getInMessageRef() + " does not exist", operationObject);
         } else {
           MessageDefinition inMessage = this.messages.get(operationObject.getInMessageRef());
           Operation operation = new Operation(operationObject.getId(), operationObject.getName(), bpmnInterface, inMessage);
@@ -493,7 +493,7 @@ public class BpmnParse implements BpmnXMLConstants {
       LOGGER.debug("Parsing process {}", processDefinition.getKey());
     }
     
-    processFlowElements(process.getFlowElements(), processDefinition);
+    processFlowElements(process.getFlowElements(), processDefinition, null);
     processArtifacts(process.getArtifacts(), processDefinition);
     
     if (process.getIoSpecification() != null) {
@@ -505,13 +505,10 @@ public class BpmnParse implements BpmnXMLConstants {
       parseListener.parseProcess(process, processDefinition);
     }
     
-    // now we have parsed anything we can validate some stuff
-    validateActivities(processDefinition.getActivities());
-    
     return processDefinition;
   }
   
-  protected void processFlowElements(Collection<FlowElement> flowElements, ScopeImpl scope) {
+  protected void processFlowElements(Collection<FlowElement> flowElements, ScopeImpl scope, SubProcess subProcess) {
     // activities
     for (FlowElement flowElement : flowElements) {
       
@@ -519,7 +516,7 @@ public class BpmnParse implements BpmnXMLConstants {
       
       ActivityImpl activity = null;
       if (flowElement instanceof StartEvent) {
-        createStartEvent((StartEvent) flowElement, scope);
+        createStartEvent((StartEvent) flowElement, scope, subProcess);
       } else if (flowElement instanceof EndEvent) {
         createEndEvent((EndEvent) flowElement, scope);
       } else if (flowElement instanceof ServiceTask) {
@@ -576,6 +573,14 @@ public class BpmnParse implements BpmnXMLConstants {
         createSequenceFlow((SequenceFlow) flowElement, scope);
       }
     }
+    
+    // validations after complete model
+    for (FlowElement flowElement : flowElements) {
+      if (flowElement instanceof ExclusiveGateway) {
+        ActivityImpl gatewayActivity = scope.findActivity(flowElement.getId());
+        validateExclusiveGateway(gatewayActivity, (ExclusiveGateway) flowElement);
+      }
+    }
   }
   
   protected void processArtifacts(Collection<Artifact> artifacts, ScopeImpl scope) {
@@ -597,14 +602,14 @@ public class BpmnParse implements BpmnXMLConstants {
    * @param scope
    *          The {@link ScopeImpl} to which the start events must be added.
    */
-  protected void createStartEvent(StartEvent startEvent, ScopeImpl scope) {
+  protected void createStartEvent(StartEvent startEvent, ScopeImpl scope, SubProcess subProcess) {
     
     ActivityImpl startEventActivity = createActivityOnScope(startEvent, ELEMENT_EVENT_START, scope);
 
     if (scope instanceof ProcessDefinitionEntity) {        
       createProcessDefinitionStartEvent(startEventActivity, startEvent, (ProcessDefinitionEntity) scope);
     } else {
-      createScopeStartEvent(startEventActivity, startEvent, scope);
+      createScopeStartEvent(startEventActivity, startEvent, scope, subProcess);
     }
 
     for (BpmnParseListener parseListener : parseListeners) {
@@ -613,12 +618,12 @@ public class BpmnParse implements BpmnXMLConstants {
     createExecutionListenersOnScope(startEvent.getExecutionListeners(), startEventActivity);      
     
     if(scope instanceof ProcessDefinitionEntity) {
-      selectInitial(startEventActivity, (ProcessDefinitionEntity) scope);
+      selectInitial(startEventActivity, startEvent, (ProcessDefinitionEntity) scope);
       createStartFormHandlers(startEvent, (ProcessDefinitionEntity) scope);
     }
   }
 
-  protected void selectInitial(ActivityImpl startEventActivity, ProcessDefinitionEntity processDefinition) {
+  protected void selectInitial(ActivityImpl startEventActivity, StartEvent startEvent, ProcessDefinitionEntity processDefinition) {
     
     if (processDefinition.getInitial() == null) {
       processDefinition.setInitial(startEventActivity);
@@ -629,7 +634,7 @@ public class BpmnParse implements BpmnXMLConstants {
         if (currentInitialType.equals("messageStartEvent")) {
           processDefinition.setInitial(startEventActivity);
         } else {
-          bpmnModel.addProblem("multiple none start events or timer start events not supported on process definition.", processDefinition.getId());
+          bpmnModel.addProblem("multiple none start events or timer start events not supported on process definition.", startEvent);
         }
       }
     }
@@ -652,7 +657,7 @@ public class BpmnParse implements BpmnXMLConstants {
         if (bpmnModel.containsMessageId(messageDefinition.getMessageRef())) {
           String messageName = bpmnModel.getMessage(messageDefinition.getMessageRef()).getName();
           if (StringUtils.isEmpty(messageName)) {
-            bpmnModel.addProblem("messageName is required for a message event", startEvent.getId());
+            bpmnModel.addProblem("messageName is required for a message event", startEvent);
           }
           messageDefinition.setMessageRef(messageName);
         }
@@ -661,7 +666,7 @@ public class BpmnParse implements BpmnXMLConstants {
         eventSubscription.setActivityId(startEventActivity.getId());
         // create message event subscription:      
         eventSubscription.setStartEvent(true);
-        addEventSubscriptionDeclaration(eventSubscription, processDefinition);
+        addEventSubscriptionDeclaration(eventSubscription, messageDefinition, processDefinition);
       }
     }
   }
@@ -676,7 +681,7 @@ public class BpmnParse implements BpmnXMLConstants {
     }
   }
 
-  protected void createScopeStartEvent(ActivityImpl startEventActivity, StartEvent startEvent, ScopeImpl scope) {
+  protected void createScopeStartEvent(ActivityImpl startEventActivity, StartEvent startEvent, ScopeImpl scope, SubProcess subProcess) {
 
     Object triggeredByEvent = scope.getProperty("triggeredByEvent");
     boolean isTriggeredByEvent = triggeredByEvent != null && ((Boolean) triggeredByEvent == true);
@@ -702,13 +707,13 @@ public class BpmnParse implements BpmnXMLConstants {
               if (bpmnModel.containsErrorRef(modelErrorEvent.getErrorCode())) {
                 String errorCode = bpmnModel.getErrors().get(modelErrorEvent.getErrorCode());
                 if (StringUtils.isEmpty(errorCode)) {
-                  bpmnModel.addProblem("errorCode is required for an error event", startEvent.getId());
+                  bpmnModel.addProblem("errorCode is required for an error event", startEvent);
                 }
                 modelErrorEvent.setErrorCode(errorCode);
               }
               createErrorStartEventDefinition(modelErrorEvent, startEventActivity, catchingScope);
             } else {
-              bpmnModel.addProblem("multiple start events not supported for subprocess", scope.getId());
+              bpmnModel.addProblem("multiple start events not supported for subprocess", subProcess);
             }
           
         } else if (eventDefinition instanceof MessageEventDefinition) {
@@ -716,44 +721,44 @@ public class BpmnParse implements BpmnXMLConstants {
           if (bpmnModel.containsMessageId(messageDefinition.getMessageRef())) {
             String messageName = bpmnModel.getMessage(messageDefinition.getMessageRef()).getName();
             if (StringUtils.isEmpty(messageName)) {
-              bpmnModel.addProblem("messageName is required for a message event", startEvent.getId());
+              bpmnModel.addProblem("messageName is required for a message event", startEvent);
             }
             messageDefinition.setMessageRef(messageName);
           }
           EventSubscriptionDeclaration eventSubscriptionDeclaration = new EventSubscriptionDeclaration(messageDefinition.getMessageRef(), "message");
           eventSubscriptionDeclaration.setActivityId(startEventActivity.getId());
           eventSubscriptionDeclaration.setStartEvent(false);
-          addEventSubscriptionDeclaration(eventSubscriptionDeclaration, catchingScope);
+          addEventSubscriptionDeclaration(eventSubscriptionDeclaration, messageDefinition, catchingScope);
           
         } else if (eventDefinition instanceof SignalEventDefinition) {
           SignalEventDefinition signalDefinition = (SignalEventDefinition) eventDefinition;
           if (bpmnModel.containsSignalId(signalDefinition.getSignalRef())) {
             String signalName = bpmnModel.getSignal(signalDefinition.getSignalRef()).getName();
             if (StringUtils.isEmpty(signalName)) {
-              bpmnModel.addProblem("signalName is required for a signal event", startEvent.getId());
+              bpmnModel.addProblem("signalName is required for a signal event", startEvent);
             }
             signalDefinition.setSignalRef(signalName);
           }
           EventSubscriptionDeclaration eventSubscriptionDeclaration = new EventSubscriptionDeclaration(signalDefinition.getSignalRef(), "signal");
           eventSubscriptionDeclaration.setActivityId(startEventActivity.getId());
           eventSubscriptionDeclaration.setStartEvent(false);
-          addEventSubscriptionDeclaration(eventSubscriptionDeclaration, catchingScope);
+          addEventSubscriptionDeclaration(eventSubscriptionDeclaration, signalDefinition, catchingScope);
         
         } else {
-          bpmnModel.addProblem("start event of event subprocess must be of type 'error', 'message' or 'signal' ", startEvent.getId());
+          bpmnModel.addProblem("start event of event subprocess must be of type 'error', 'message' or 'signal' ", startEvent);
         }
       }
       
     } else { // "regular" subprocess
       
       if(startEvent.getEventDefinitions().size() > 0) {
-        bpmnModel.addProblem("event definitions only allowed on start event if subprocess is an event subprocess", startEvent.getId());
+        bpmnModel.addProblem("event definitions only allowed on start event if subprocess is an event subprocess", startEvent);
       }
       if (scope.getProperty(PROPERTYNAME_INITIAL) == null) {
         scope.setProperty(PROPERTYNAME_INITIAL, startEventActivity);
         startEventActivity.setActivityBehavior(new NoneStartEventActivityBehavior());
       } else {
-        bpmnModel.addProblem("multiple start events not supported for subprocess", scope.getId());
+        bpmnModel.addProblem("multiple start events not supported for subprocess", subProcess);
       }
     }
 
@@ -769,7 +774,7 @@ public class BpmnParse implements BpmnXMLConstants {
   }
  
   @SuppressWarnings("unchecked")
-  protected void addEventSubscriptionDeclaration(EventSubscriptionDeclaration subscription, ScopeImpl scope) {
+  protected void addEventSubscriptionDeclaration(EventSubscriptionDeclaration subscription, EventDefinition parsedEventDefinition, ScopeImpl scope) {
     List<EventSubscriptionDeclaration> eventDefinitions = (List<EventSubscriptionDeclaration>) scope.getProperty(PROPERTYNAME_EVENT_SUBSCRIPTION_DECLARATION);
     if(eventDefinitions == null) {
       eventDefinitions = new ArrayList<EventSubscriptionDeclaration>();
@@ -783,39 +788,23 @@ public class BpmnParse implements BpmnXMLConstants {
             && eventDefinition.isStartEvent() == subscription.isStartEvent()) {
             
             bpmnModel.addProblem("Cannot have more than one message event subscription with name '" + subscription.getEventName() +
-                "' for scope '"+scope.getId()+"'", scope.getId());
+                "' for scope '"+scope.getId()+"'", parsedEventDefinition);
           }
         }
       }
     }  
     eventDefinitions.add(subscription);
   }
-  
-  public void validateActivities(List<ActivityImpl> activities) {
-    for (ActivityImpl activity : activities) {
-      validateActivity(activity);
-      // check children if it is an own scope / subprocess / ...
-      if (activity.getActivities().size()>0) {
-        validateActivities(activity.getActivities());
-      }
-    }
-  }
 
-  protected void validateActivity(ActivityImpl activity) {
-    if (activity.getActivityBehavior() instanceof ExclusiveGatewayActivityBehavior) {
-      validateExclusiveGateway(activity);
-    }
-  }
-
-  public void validateExclusiveGateway(ActivityImpl activity) {
+  public void validateExclusiveGateway(ActivityImpl activity, ExclusiveGateway exclusiveGateway) {
     if (activity.getOutgoingTransitions().size() == 0) {
       // TODO: double check if this is valid (I think in Activiti yes, since we need start events we will need an end event as well)
-      bpmnModel.addProblem("Exclusive Gateway '" + activity.getId() + "' has no outgoing sequence flows.", activity.getId());      
+      bpmnModel.addProblem("Exclusive Gateway '" + activity.getId() + "' has no outgoing sequence flows.", exclusiveGateway);      
     } else if (activity.getOutgoingTransitions().size() == 1) {
       PvmTransition flow = activity.getOutgoingTransitions().get(0);
       Condition condition = (Condition) flow.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
       if (condition!=null) {
-        bpmnModel.addProblem("Exclusive Gateway '" + activity.getId() + "' has only one outgoing sequence flow ('" + flow.getId() + "'). This is not allowed to have a condition.", activity.getId());
+        bpmnModel.addProblem("Exclusive Gateway '" + activity.getId() + "' has only one outgoing sequence flow ('" + flow.getId() + "'). This is not allowed to have a condition.", exclusiveGateway);
       }
     } else {    
       String defaultSequenceFlow = (String) activity.getProperty("default");
@@ -831,18 +820,19 @@ public class BpmnParse implements BpmnXMLConstants {
           flowsWithoutCondition.add(flow);
         }
         if (hasConditon && isDefaultFlow) {
-          bpmnModel.addProblem("Exclusive Gateway '" + activity.getId() + "' has outgoing sequence flow '" + flow.getId() + "' which is the default flow but has a condition too.", activity.getId());
+          bpmnModel.addProblem("Exclusive Gateway '" + activity.getId() + "' has outgoing sequence flow '" + flow.getId() + "' which is the default flow but has a condition too.", exclusiveGateway);
         }
       }
       if (hasDefaultFlow || flowsWithoutCondition.size()>1) {
         // if we either have a default flow (then no flows without conditions are valid at all) or if we have more than one flow without condition this is an error 
         for (PvmTransition flow : flowsWithoutCondition) {          
-          bpmnModel.addProblem("Exclusive Gateway '" + activity.getId() + "' has outgoing sequence flow '" + flow.getId() + "' without condition which is not the default flow.", activity.getId());
+          bpmnModel.addProblem("Exclusive Gateway '" + activity.getId() + "' has outgoing sequence flow '" + flow.getId() + "' without condition which is not the default flow.", exclusiveGateway);
         }        
       } else if (flowsWithoutCondition.size() == 1) {
         // Havinf no default and exactly one flow without condition this is considered the default one now (to not break backward compatibility)
         PvmTransition flow = flowsWithoutCondition.get(0);
-        bpmnModel.addWarning("Exclusive Gateway '" + activity.getId() + "' has outgoing sequence flow '" + flow.getId() + "' without condition which is not the default flow. We assume it to be the default flow, but it is bad modeling practice, better set the default flow in your gateway.", activity.getId());
+        bpmnModel.addWarning("Exclusive Gateway '" + activity.getId() + "' has outgoing sequence flow '" + flow.getId() + 
+            "' without condition which is not the default flow. We assume it to be the default flow, but it is bad modeling practice, better set the default flow in your gateway.", exclusiveGateway);
       }
     }
   }
@@ -855,7 +845,7 @@ public class BpmnParse implements BpmnXMLConstants {
     }
    
     if (eventDefinition == null) {
-      bpmnModel.addProblem("No event definition for intermediate catch event " + event.getId(), event.getId());
+      bpmnModel.addProblem("No event definition for intermediate catch event " + event.getId(), event);
       nestedActivity = createActivityOnScope(event, ELEMENT_EVENT_CATCH, scopeElement);
     } else {
       
@@ -887,7 +877,7 @@ public class BpmnParse implements BpmnXMLConstants {
       } else if (eventDefinition instanceof MessageEventDefinition) {
         createIntermediateMessageEventDefinition((MessageEventDefinition) eventDefinition, nestedActivity, isAfterEventBasedGateway);
       } else {
-        bpmnModel.addProblem("Unsupported intermediate catch event type.", event.getId());
+        bpmnModel.addProblem("Unsupported intermediate catch event type.", event);
       }
     }
     
@@ -908,7 +898,7 @@ public class BpmnParse implements BpmnXMLConstants {
     if (bpmnModel.containsMessageId(messageEventDefinition.getMessageRef())) {
       String messageName = bpmnModel.getMessage(messageEventDefinition.getMessageRef()).getName();
       if (StringUtils.isEmpty(messageName)) {
-        bpmnModel.addProblem("messageName is required for a message event", nestedActivity.getId());
+        bpmnModel.addProblem("messageName is required for a message event", messageEventDefinition);
       }
       messageEventDefinition.setMessageRef(messageName);
     }
@@ -916,10 +906,10 @@ public class BpmnParse implements BpmnXMLConstants {
     EventSubscriptionDeclaration messageDefinition = new EventSubscriptionDeclaration(messageEventDefinition.getMessageRef(), "message");
     if(isAfterEventBasedGateway) {
       messageDefinition.setActivityId(nestedActivity.getId());
-      addEventSubscriptionDeclaration(messageDefinition, nestedActivity.getParent());      
+      addEventSubscriptionDeclaration(messageDefinition, messageEventDefinition, nestedActivity.getParent());      
     } else {
       nestedActivity.setScope(true);
-      addEventSubscriptionDeclaration(messageDefinition, nestedActivity);   
+      addEventSubscriptionDeclaration(messageDefinition, messageEventDefinition, nestedActivity);   
     }
     
     for (BpmnParseListener parseListener : parseListeners) {
@@ -941,7 +931,7 @@ public class BpmnParse implements BpmnXMLConstants {
       if (bpmnModel.containsSignalId(signalEventDefinition.getSignalRef())) {
         String signalName = bpmnModel.getSignal(signalEventDefinition.getSignalRef()).getName();
         if (StringUtils.isEmpty(signalName)) {
-          bpmnModel.addProblem("signalName is required for a signal event", intermediateEvent.getId());
+          bpmnModel.addProblem("signalName is required for a signal event", intermediateEvent);
         }
         signalEventDefinition.setSignalRef(signalName);
       }
@@ -957,7 +947,7 @@ public class BpmnParse implements BpmnXMLConstants {
     } else if (eventDefinition == null) {
       activityBehavior = new IntermediateThrowNoneEventActivityBehavior();
     } else { // None intermediate event
-      bpmnModel.addProblem("Unsupported intermediate throw event type " + eventDefinition, intermediateEvent.getId());
+      bpmnModel.addProblem("Unsupported intermediate throw event type " + eventDefinition, intermediateEvent);
     }
     
     nestedActivityImpl.setActivityBehavior(activityBehavior);
@@ -976,7 +966,7 @@ public class BpmnParse implements BpmnXMLConstants {
     if(StringUtils.isNotEmpty(eventDefinition.getActivityRef())) {
       if(scopeElement.findActivity(eventDefinition.getActivityRef()) == null) {
         bpmnModel.addProblem("Invalid attribute value for 'activityRef': no activity with id '" + eventDefinition.getActivityRef() +
-            "' in current scope " + scopeElement.getId(), scopeElement.getId());
+            "' in current scope " + scopeElement.getId(), eventDefinition);
       }
     }
     
@@ -993,7 +983,7 @@ public class BpmnParse implements BpmnXMLConstants {
     ScopeImpl parent = activity.getParent();
     for (ActivityImpl child : parent.getActivities()) {
       if (child.getProperty("type").equals("compensationBoundaryCatch") && child != activity ) {
-        bpmnModel.addProblem("multiple boundary events with compensateEventDefinition not supported on same activity.", activity.getId());        
+        bpmnModel.addProblem("multiple boundary events with compensateEventDefinition not supported on same activity.", compensateEventDefinition);        
       }
     }
   }
@@ -1003,13 +993,13 @@ public class BpmnParse implements BpmnXMLConstants {
     
     ActivityImpl parent = (ActivityImpl) activity.getParent();
     if(!parent.getProperty("type").equals("transaction")) {
-      bpmnModel.addProblem("boundary event with cancelEventDefinition only supported on transaction subprocesses.", activity.getId());
+      bpmnModel.addProblem("boundary event with cancelEventDefinition only supported on transaction subprocesses.", cancelEventDefinition);
     }
     
     for (ActivityImpl child : parent.getActivities()) {
       if(child.getProperty("type").equals("cancelBoundaryCatch")
         && child != activity ) {
-        bpmnModel.addProblem("multiple boundary events with cancelEventDefinition not supported on same transaction subprocess.", activity.getId());        
+        bpmnModel.addProblem("multiple boundary events with cancelEventDefinition not supported on same transaction subprocess.", cancelEventDefinition);        
       }
     }
     
@@ -1062,13 +1052,13 @@ public class BpmnParse implements BpmnXMLConstants {
     // Validation
     if (miActivityBehavior.getLoopCardinalityExpression() == null && miActivityBehavior.getCollectionExpression() == null
             && miActivityBehavior.getCollectionVariable() == null) {
-      bpmnModel.addProblem("Either loopCardinality or loopDataInputRef/activiti:collection must been set.", modelActivity.getId());
+      bpmnModel.addProblem("Either loopCardinality or loopDataInputRef/activiti:collection must been set.", loopCharacteristics);
     }
 
     // Validation
     if (miActivityBehavior.getCollectionExpression() == null && miActivityBehavior.getCollectionVariable() == null
             && miActivityBehavior.getCollectionElementVariable() != null) {
-      bpmnModel.addProblem("LoopDataInputRef/activiti:collection must be set when using inputDataItem or activiti:elementVariable.", modelActivity.getId());
+      bpmnModel.addProblem("LoopDataInputRef/activiti:collection must be set when using inputDataItem or activiti:elementVariable.", loopCharacteristics);
     }
 
     for (BpmnParseListener parseListener : parseListeners) {
@@ -1168,7 +1158,7 @@ public class BpmnParse implements BpmnXMLConstants {
     for (SequenceFlow sequenceFlow : gateway.getOutgoingFlows()) {
       FlowElement flowElement = bpmnModel.getFlowElement(sequenceFlow.getTargetRef());
       if (flowElement != null && flowElement instanceof IntermediateCatchEvent == false) {
-        bpmnModel.addProblem("Event based gateway can only be connected to elements of type intermediateCatchEvent.", flowElement.getId());
+        bpmnModel.addProblem("Event based gateway can only be connected to elements of type intermediateCatchEvent.", flowElement);
       }
     }
     
@@ -1225,13 +1215,13 @@ public class BpmnParse implements BpmnXMLConstants {
 
     if (StringUtils.isNotEmpty(serviceTask.getType())) {
       if (serviceTask.getType().equalsIgnoreCase("mail")) {
-        createEmailServiceTask(activity, serviceTask.getId(), createFieldDeclarations(serviceTask.getFieldExtensions()));
+        createEmailServiceTask(activity, serviceTask, createFieldDeclarations(serviceTask.getFieldExtensions()));
       } else if (serviceTask.getType().equalsIgnoreCase("mule")) {
-        createMuleServiceTask(activity, serviceTask.getId(), createFieldDeclarations(serviceTask.getFieldExtensions()));
+        createMuleServiceTask(activity, serviceTask, createFieldDeclarations(serviceTask.getFieldExtensions()));
       } else if (serviceTask.getType().equalsIgnoreCase("shell")) {
-        createShellServiceTask(activity, serviceTask.getId(), createFieldDeclarations(serviceTask.getFieldExtensions()));
+        createShellServiceTask(activity, serviceTask, createFieldDeclarations(serviceTask.getFieldExtensions()));
       } else {
-        bpmnModel.addProblem("Invalid usage of type attribute: '" + serviceTask.getType() + "'.", serviceTask.getId());
+        bpmnModel.addProblem("Invalid usage of type attribute: '" + serviceTask.getType() + "'.", serviceTask);
       }
 
     } else if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(serviceTask.getImplementationType())) {
@@ -1249,7 +1239,7 @@ public class BpmnParse implements BpmnXMLConstants {
         StringUtils.isNotEmpty(serviceTask.getOperationRef())) {
       
       if (!this.operations.containsKey(serviceTask.getOperationRef())) {
-        bpmnModel.addProblem(serviceTask.getOperationRef() + " does not exist", serviceTask.getId());
+        bpmnModel.addProblem(serviceTask.getOperationRef() + " does not exist", serviceTask);
       } else {
         Operation operation = this.operations.get(serviceTask.getOperationRef());
         WebServiceActivityBehavior webServiceActivityBehavior = new WebServiceActivityBehavior(operation);
@@ -1272,7 +1262,7 @@ public class BpmnParse implements BpmnXMLConstants {
         activity.setActivityBehavior(webServiceActivityBehavior);
       }
     } else {
-      bpmnModel.addProblem("One of the attributes 'class', 'delegateExpression', 'type', 'operation', or 'expression' is mandatory on serviceTask.", serviceTask.getId());
+      bpmnModel.addProblem("One of the attributes 'class', 'delegateExpression', 'type', 'operation', or 'expression' is mandatory on serviceTask.", serviceTask);
     }
 
     createExecutionListenersOnScope(serviceTask.getExecutionListeners(), activity);
@@ -1313,7 +1303,7 @@ public class BpmnParse implements BpmnXMLConstants {
   
   protected AbstractDataAssociation createDataInputAssociation(DataAssociation dataAssociationElement) {
     if (StringUtils.isEmpty(dataAssociationElement.getTargetRef())) {
-      bpmnModel.addProblem("targetRef is required", "dataInput");
+      bpmnModel.addProblem("targetRef is required", dataAssociationElement);
     }
     
     if (dataAssociationElement.getAssignments().isEmpty()) {
@@ -1393,11 +1383,11 @@ public class BpmnParse implements BpmnXMLConstants {
     // for e-mail
     if (StringUtils.isNotEmpty(sendTask.getType())) {
       if (sendTask.getType().equalsIgnoreCase("mail")) {
-        createEmailServiceTask(activity, sendTask.getId(), createFieldDeclarations(sendTask.getFieldExtensions()));
+        createEmailServiceTask(activity, sendTask, createFieldDeclarations(sendTask.getFieldExtensions()));
       } else if (sendTask.getType().equalsIgnoreCase("mule")) {
-        createMuleServiceTask(activity, sendTask.getId(), createFieldDeclarations(sendTask.getFieldExtensions()));
+        createMuleServiceTask(activity, sendTask, createFieldDeclarations(sendTask.getFieldExtensions()));
       } else {
-        bpmnModel.addProblem("Invalid usage of type attribute: '" + sendTask.getType() + "'.", sendTask.getId());
+        bpmnModel.addProblem("Invalid usage of type attribute: '" + sendTask.getType() + "'.", sendTask);
       }
 
       // for web service
@@ -1405,7 +1395,7 @@ public class BpmnParse implements BpmnXMLConstants {
         StringUtils.isNotEmpty(sendTask.getOperationRef())) {
       
       if (!this.operations.containsKey(sendTask.getOperationRef())) {
-        bpmnModel.addProblem(sendTask.getOperationRef() + " does not exist", sendTask.getId());
+        bpmnModel.addProblem(sendTask.getOperationRef() + " does not exist", sendTask);
       } else {
         Operation operation = this.operations.get(sendTask.getOperationRef());
         WebServiceActivityBehavior webServiceActivityBehavior = new WebServiceActivityBehavior(operation);
@@ -1428,7 +1418,7 @@ public class BpmnParse implements BpmnXMLConstants {
         activity.setActivityBehavior(webServiceActivityBehavior);
       }
     } else {
-      bpmnModel.addProblem("One of the attributes 'type' or 'operation' is mandatory on sendTask.", sendTask.getId());
+      bpmnModel.addProblem("One of the attributes 'type' or 'operation' is mandatory on sendTask.", sendTask);
     }
 
     createExecutionListenersOnScope(sendTask.getExecutionListeners(), activity);
@@ -1452,26 +1442,26 @@ public class BpmnParse implements BpmnXMLConstants {
     }
   }
 
-  protected void createMuleServiceTask(ActivityImpl activity, String taskId, List<FieldDeclaration> fieldDeclarations) {
+  protected void createMuleServiceTask(ActivityImpl activity, Task task, List<FieldDeclaration> fieldDeclarations) {
     try {
       Class< ? > theClass = Class.forName("org.activiti.mule.MuleSendActivitiBehavior");
       activity.setActivityBehavior((ActivityBehavior) ClassDelegate.instantiateDelegate(theClass, fieldDeclarations));
     } catch (ClassNotFoundException e) {
-      bpmnModel.addProblem("Could not find org.activiti.mule.MuleSendActivitiBehavior", taskId);
+      bpmnModel.addProblem("Could not find org.activiti.mule.MuleSendActivitiBehavior", task);
     }
   }
 
-  protected void createEmailServiceTask(ActivityImpl activity, String taskId, List<FieldDeclaration> fieldDeclarations) {
-    validateFieldDeclarationsForEmail(taskId, fieldDeclarations);
+  protected void createEmailServiceTask(ActivityImpl activity, Task task, List<FieldDeclaration> fieldDeclarations) {
+    validateFieldDeclarationsForEmail(task, fieldDeclarations);
     activity.setActivityBehavior((MailActivityBehavior) ClassDelegate.instantiateDelegate(MailActivityBehavior.class, fieldDeclarations));
   }
   
-  protected void createShellServiceTask(ActivityImpl activity, String taskId, List<FieldDeclaration> fieldDeclarations) {
-    validateFieldDeclarationsForShell(taskId, fieldDeclarations);
+  protected void createShellServiceTask(ActivityImpl activity, Task task, List<FieldDeclaration> fieldDeclarations) {
+    validateFieldDeclarationsForShell(task, fieldDeclarations);
     activity.setActivityBehavior((ActivityBehavior) ClassDelegate.instantiateDelegate(ShellActivityBehavior.class, fieldDeclarations));
   }
   
-  protected void validateFieldDeclarationsForEmail(String taskId, List<FieldDeclaration> fieldDeclarations) {
+  protected void validateFieldDeclarationsForEmail(Task task, List<FieldDeclaration> fieldDeclarations) {
     boolean toDefined = false;
     boolean textOrHtmlDefined = false;
     for (FieldDeclaration fieldDeclaration : fieldDeclarations) {
@@ -1487,14 +1477,14 @@ public class BpmnParse implements BpmnXMLConstants {
     }
 
     if (!toDefined) {
-      bpmnModel.addProblem("No recipient is defined on the mail activity", taskId);
+      bpmnModel.addProblem("No recipient is defined on the mail activity", task);
     }
     if (!textOrHtmlDefined) {
-      bpmnModel.addProblem("Text or html field should be provided", taskId);
+      bpmnModel.addProblem("Text or html field should be provided", task);
     }
   }
 
-  protected void validateFieldDeclarationsForShell(String taskId, List<FieldDeclaration> fieldDeclarations) {
+  protected void validateFieldDeclarationsForShell(Task task, List<FieldDeclaration> fieldDeclarations) {
     boolean shellCommandDefined = false;
 
     for (FieldDeclaration fieldDeclaration : fieldDeclarations) {
@@ -1506,13 +1496,13 @@ public class BpmnParse implements BpmnXMLConstants {
 
       if ((fieldName.equals("wait") || fieldName.equals("redirectError") || fieldName.equals("cleanEnv")) && !fieldValue.toLowerCase().equals("true")
               && !fieldValue.toLowerCase().equals("false")) {
-        bpmnModel.addProblem("undefined value for shell " + fieldName + " parameter :" + fieldValue.toString() + ".", taskId);
+        bpmnModel.addProblem("undefined value for shell " + fieldName + " parameter :" + fieldValue.toString() + ".", task);
       }
 
     }
 
     if (!shellCommandDefined) {
-      bpmnModel.addProblem("No shell command is defined on the shell activity", taskId);
+      bpmnModel.addProblem("No shell command is defined on the shell activity", task);
     }
   }
 
@@ -1652,7 +1642,7 @@ public class BpmnParse implements BpmnXMLConstants {
       taskListener = new DelegateExpressionTaskListener(expressionManager.createExpression(activitiListener.getImplementation()), 
           createFieldDeclarations(activitiListener.getFieldExtensions()));
     } else {
-      bpmnModel.addProblem("Element 'class', 'expression' or 'delegateExpression' is mandatory on taskListener for task", taskId);
+      bpmnModel.addProblem("Element 'class', 'expression' or 'delegateExpression' is mandatory on taskListener for task", activitiListener);
     }
     return taskListener;
   }
@@ -1679,7 +1669,7 @@ public class BpmnParse implements BpmnXMLConstants {
       if (bpmnModel.containsErrorRef(errorDefinition.getErrorCode())) {
         String errorCode = bpmnModel.getErrors().get(errorDefinition.getErrorCode());
         if (StringUtils.isEmpty(errorCode)) {
-          bpmnModel.addProblem("errorCode is required for an error event", errorDefinition.getId());
+          bpmnModel.addProblem("errorCode is required for an error event", errorDefinition);
         }
         activity.setProperty("type", "errorEndEvent");
         errorDefinition.setErrorCode(errorCode);
@@ -1687,7 +1677,7 @@ public class BpmnParse implements BpmnXMLConstants {
       activity.setActivityBehavior(new ErrorEndEventActivityBehavior(errorDefinition.getErrorCode()));
     } else if (eventDefinition instanceof CancelEventDefinition) {
       if (scope.getProperty("type")==null || !scope.getProperty("type").equals("transaction")) {
-        bpmnModel.addProblem("end event with cancelEventDefinition only supported inside transaction subprocess", endEvent.getId());
+        bpmnModel.addProblem("end event with cancelEventDefinition only supported inside transaction subprocess", endEvent);
       } else {
         activity.setProperty("type", "cancelEndEvent");
         activity.setActivityBehavior(new CancelEndEventActivityBehavior());
@@ -1723,7 +1713,7 @@ public class BpmnParse implements BpmnXMLConstants {
     ActivityImpl parentActivity = scopeElement.findActivity(boundaryEvent.getAttachedToRefId());
     if (parentActivity == null) {
       bpmnModel.addProblem("Invalid reference in boundary event. Make sure that the referenced activity is defined in the same scope as the boundary event", 
-              boundaryEvent.getId());
+              boundaryEvent);
       return;
     }
    
@@ -1747,7 +1737,7 @@ public class BpmnParse implements BpmnXMLConstants {
       if (bpmnModel.containsErrorRef(modelErrorEvent.getErrorCode())) {
         String errorCode = bpmnModel.getErrors().get(modelErrorEvent.getErrorCode());
         if (StringUtils.isEmpty(errorCode)) {
-          bpmnModel.addProblem("errorCode is required for an error event", boundaryEvent.getId());
+          bpmnModel.addProblem("errorCode is required for an error event", boundaryEvent);
         }
         modelErrorEvent.setErrorCode(errorCode);
       }
@@ -1767,13 +1757,13 @@ public class BpmnParse implements BpmnXMLConstants {
       if (bpmnModel.containsMessageId(modelMessageEvent.getMessageRef())) {
         String messageName = bpmnModel.getMessage(modelMessageEvent.getMessageRef()).getName();
         if (StringUtils.isEmpty(messageName)) {
-          bpmnModel.addProblem("messageName is required for a message event", boundaryEvent.getId());
+          bpmnModel.addProblem("messageName is required for a message event", boundaryEvent);
         }
         modelMessageEvent.setMessageRef(messageName);
 	  }
       createBoundaryMessageEventDefinition((MessageEventDefinition) eventDefinition, interrupting, nestedActivity);
     } else {
-      bpmnModel.addProblem("Unsupported boundary event type", boundaryEvent.getId());
+      bpmnModel.addProblem("Unsupported boundary event type", boundaryEvent);
     }
     
     nestedActivity.setActivityBehavior(behavior);
@@ -1823,14 +1813,14 @@ public class BpmnParse implements BpmnXMLConstants {
     if (bpmnModel.containsSignalId(signalEventDefinition.getSignalRef())) {
       String signalName = bpmnModel.getSignal(signalEventDefinition.getSignalRef()).getName();
       if (StringUtils.isEmpty(signalName)) {
-        bpmnModel.addProblem("signalName is required for a signal event", signalActivity.getId());
+        bpmnModel.addProblem("signalName is required for a signal event", signalEventDefinition);
       }
       signalEventDefinition.setSignalRef(signalName);
     }
     
     EventSubscriptionDeclaration signalDefinition = new EventSubscriptionDeclaration(signalEventDefinition.getSignalRef(), "signal");
     signalDefinition.setActivityId(signalActivity.getId());
-    addEventSubscriptionDeclaration(signalDefinition, signalActivity.getParent());
+    addEventSubscriptionDeclaration(signalDefinition, signalEventDefinition, signalActivity.getParent());
     
     if (signalActivity.getParent() instanceof ActivityImpl) {     
       ((ActivityImpl) signalActivity.getParent()).setScope(true);
@@ -1847,7 +1837,7 @@ public class BpmnParse implements BpmnXMLConstants {
     
     EventSubscriptionDeclaration messageDefinition = new EventSubscriptionDeclaration(messageEventDefinition.getMessageRef(), "message");
     messageDefinition.setActivityId(messageActivity.getId());
-    addEventSubscriptionDeclaration(messageDefinition, messageActivity.getParent());
+    addEventSubscriptionDeclaration(messageDefinition, messageEventDefinition, messageActivity.getParent());
     
     if (messageActivity.getParent() instanceof ActivityImpl) {     
       ((ActivityImpl) messageActivity.getParent()).setScope(true);
@@ -1879,7 +1869,7 @@ public class BpmnParse implements BpmnXMLConstants {
     if (bpmnModel.containsSignalId(signalEventDefinition.getSignalRef())) {
       String signalName = bpmnModel.getSignal(signalEventDefinition.getSignalRef()).getName();
       if (StringUtils.isEmpty(signalName)) {
-        bpmnModel.addProblem("signalName is required for a signal event", signalActivity.getId());
+        bpmnModel.addProblem("signalName is required for a signal event", signalEventDefinition);
       }
       signalEventDefinition.setSignalRef(signalName);
     }
@@ -1887,10 +1877,10 @@ public class BpmnParse implements BpmnXMLConstants {
     EventSubscriptionDeclaration signalDefinition = new EventSubscriptionDeclaration(signalEventDefinition.getSignalRef(), "signal");
     if (isAfterEventBasedGateway) {
       signalDefinition.setActivityId(signalActivity.getId());
-      addEventSubscriptionDeclaration(signalDefinition, signalActivity.getParent());      
+      addEventSubscriptionDeclaration(signalDefinition, signalEventDefinition, signalActivity.getParent());      
     } else {
       signalActivity.setScope(true);
-      addEventSubscriptionDeclaration(signalDefinition, signalActivity);   
+      addEventSubscriptionDeclaration(signalDefinition, signalEventDefinition, signalActivity);   
     }
     
     for (BpmnParseListener parseListener : parseListeners) {
@@ -1931,7 +1921,7 @@ public class BpmnParse implements BpmnXMLConstants {
     
     // neither date, cycle or duration configured!
     if (expression == null) {
-      bpmnModel.addProblem("Timer needs configuration (either timeDate, timeCycle or timeDuration is needed).", timerActivity.getId());      
+      bpmnModel.addProblem("Timer needs configuration (either timeDate, timeCycle or timeDuration is needed).", timerEventDefinition);      
     }    
 
     // Parse the timer declaration
@@ -2018,7 +2008,7 @@ public class BpmnParse implements BpmnXMLConstants {
     activity.setScope(!triggeredByEvent);
     activity.setActivityBehavior(new SubProcessActivityBehavior());
     
-    processFlowElements(subProcess.getFlowElements(), activity);
+    processFlowElements(subProcess.getFlowElements(), activity, subProcess);
     processArtifacts(subProcess.getArtifacts(), activity);
     
     if (subProcess.getIoSpecification() != null) {
@@ -2041,7 +2031,7 @@ public class BpmnParse implements BpmnXMLConstants {
     activity.setScope(true);
     activity.setActivityBehavior(new TransactionActivityBehavior());
     
-    processFlowElements(transaction.getFlowElements(), activity);
+    processFlowElements(transaction.getFlowElements(), activity, transaction);
     processArtifacts(transaction.getArtifacts(), activity);
     
     if (transaction.getIoSpecification() != null) {
@@ -2104,59 +2094,6 @@ public class BpmnParse implements BpmnXMLConstants {
   }
 
   /**
-   * Parses the properties of an element (if any) that can contain properties
-   * (processes, activities, etc.)
-   * 
-   * Returns true if property subelemens are found.
-   * 
-   * @param element
-   *          The element that can contain properties.
-   * @param activity
-   *          The activity where the property declaration is done.
-   */
-  public void parseProperties(Element element, ActivityImpl activity) {
-    List<Element> propertyElements = element.elements("property");
-    for (Element propertyElement : propertyElements) {
-      parseProperty(propertyElement, activity);
-    }
-  }
-
-  /**
-   * Parses one property definition.
-   * 
-   * @param propertyElement
-   *          The 'property' element that defines how a property looks like and
-   *          is handled.
-   */
-  public void parseProperty(Element propertyElement, ActivityImpl activity) {
-    String id = propertyElement.attribute("id");
-    String name = propertyElement.attribute("name");
-
-    // If name isn't given, use the id as name
-    if (name == null) {
-      if (id == null) {
-        bpmnModel.addProblem("Invalid property usage on line " + propertyElement.getLine() + ": no id or name specified.", activity.getId());
-      } else {
-        name = id;
-      }
-    }
-
-    String itemSubjectRef = propertyElement.attribute("itemSubjectRef");
-    String type = null;
-    if (itemSubjectRef != null) {
-      ItemDefinition itemDefinition = itemDefinitions.get(itemSubjectRef);
-      if (itemDefinition != null) {
-        StructureDefinition structure = itemDefinition.getStructureDefinition();
-        type = structure.getId();
-      } else {
-        bpmnModel.addProblem("Invalid itemDefinition reference: " + itemSubjectRef + " not found", activity.getId());
-      }
-    }
-
-    //parsePropertyCustomExtensions(activity, propertyElement, name, type);
-  }
-
-  /**
    * Parses all sequence flow of a scope.
    * 
    * @param processElement
@@ -2171,7 +2108,7 @@ public class BpmnParse implements BpmnXMLConstants {
     ActivityImpl destinationActivity = scope.findActivity(sequenceFlow.getTargetRef());
     
     if (sourceActivity == null) {
-      bpmnModel.addProblem("Invalid source '" + sequenceFlow.getSourceRef() + "' of sequence flow '" + sequenceFlow.getId() + "'", sequenceFlow.getId());
+      bpmnModel.addProblem("Invalid source '" + sequenceFlow.getSourceRef() + "' of sequence flow '" + sequenceFlow.getId() + "'", sequenceFlow);
     } else if (destinationActivity == null) {
       throw new ActivitiException("Invalid destination '" + sequenceFlow.getTargetRef() + "' of sequence flow '" + sequenceFlow.getId() + "'");
     } else if(!(sourceActivity.getActivityBehavior() instanceof EventBasedGatewayActivityBehavior)
@@ -2180,7 +2117,7 @@ public class BpmnParse implements BpmnXMLConstants {
             && (destinationActivity.getParentActivity().getActivityBehavior() instanceof EventBasedGatewayActivityBehavior)) {
       
       bpmnModel.addProblem("Invalid incoming sequenceflow " + sequenceFlow.getId() + " for intermediateCatchEvent with id '"
-            +destinationActivity.getId()+"' connected to an event-based gateway.", sequenceFlow.getId());        
+            +destinationActivity.getId()+"' connected to an event-based gateway.", sequenceFlow);        
     } else {       
       
       TransitionImpl transition = sourceActivity.createOutgoingTransition(sequenceFlow.getId());
@@ -2225,7 +2162,7 @@ public class BpmnParse implements BpmnXMLConstants {
       if(sourceActivity != null && sourceActivity.getProperty("type").equals("compensationBoundaryCatch")) {
         Object isForCompensation = targetActivity.getProperty(PROPERTYNAME_IS_FOR_COMPENSATION);          
         if(isForCompensation == null || !(Boolean) isForCompensation) {
-          bpmnModel.addProblem("compensation boundary catch must be connected to element with isForCompensation=true", association.getId());
+          bpmnModel.addProblem("compensation boundary catch must be connected to element with isForCompensation=true", association);
         } else {            
           ActivityImpl compensatedActivity = sourceActivity.getParentActivity();
           compensatedActivity.setProperty(PROPERTYNAME_COMPENSATION_HANDLER_ID, targetActivity.getId());            
@@ -2306,13 +2243,13 @@ public class BpmnParse implements BpmnXMLConstants {
         if (processDefinition != null) {
           processDefinition.setGraphicalNotationDefined(true);
           for (String shapeId : bpmnModel.getLocationMap().keySet()) {
-            if (process.getFlowElement(shapeId) != null) {
+            if (processDefinition.findActivity(shapeId) != null) {
               createBPMNShape(shapeId, bpmnModel.getGraphicInfo(shapeId), processDefinition);
             }
           }
       
           for (String edgeId : bpmnModel.getFlowLocationMap().keySet()) {
-            if (process.getFlowElement(edgeId) != null) {
+            if (bpmnModel.getFlowElement(edgeId) != null) {
               createBPMNEdge(edgeId, bpmnModel.getFlowLocationGraphicInfo(edgeId));
             }
           }
@@ -2333,16 +2270,16 @@ public class BpmnParse implements BpmnXMLConstants {
         // The shape represents a lane
         createDIBounds(graphicInfo, lane);
       } else {
-        bpmnModel.addProblem("Invalid reference in 'bpmnElement' attribute, activity " + key + " not found", key);
+        bpmnModel.addProblem("Invalid reference in 'bpmnElement' attribute, activity " + key + " not found", graphicInfo);
       }
     }
   }
  
   protected void createDIBounds(GraphicInfo graphicInfo, HasDIBounds target) {
-    target.setX((int) graphicInfo.x);
-    target.setY((int) graphicInfo.y);
-    target.setWidth((int) graphicInfo.width);
-    target.setHeight((int) graphicInfo.height);
+    target.setX((int) graphicInfo.getX());
+    target.setY((int) graphicInfo.getY());
+    target.setWidth((int) graphicInfo.getWidth());
+    target.setHeight((int) graphicInfo.getHeight());
   }
 
   public void createBPMNEdge(String key, List<GraphicInfo> graphicList) {
@@ -2351,14 +2288,20 @@ public class BpmnParse implements BpmnXMLConstants {
       TransitionImpl sequenceFlow = sequenceFlows.get(key);
       List<Integer> waypoints = new ArrayList<Integer>();
       for (GraphicInfo waypointInfo : graphicList) {
-        waypoints.add((int) waypointInfo.x);
-        waypoints.add((int) waypointInfo.y);
+        waypoints.add((int) waypointInfo.getX());
+        waypoints.add((int) waypointInfo.getY());
       }
       sequenceFlow.setWaypoints(waypoints);
     } else if (bpmnModel.getArtifact(key) != null) {
       // it's an association, so nothing to do
     } else { 
-      bpmnModel.addProblem("Invalid reference in 'bpmnElement' attribute, sequenceFlow " + key + " not found", key);
+      GraphicInfo graphicInfo = null;
+      if (graphicList != null && graphicList.size() > 0) {
+        graphicInfo = graphicList.get(0);
+      } else {
+        graphicInfo = new GraphicInfo();
+      }
+      bpmnModel.addProblem("Invalid reference in 'bpmnElement' attribute, sequenceFlow " + key + " not found", graphicInfo);
     }
   }
 
