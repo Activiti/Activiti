@@ -46,7 +46,10 @@ public class EventGatewayXMLConverter extends BaseBpmnXMLConverter {
 
   @Override
   protected void writeAdditionalAttributes(BaseElement element, XMLStreamWriter xtw) throws Exception {
-    
+  }
+  
+  @Override
+  protected void writeExtensionChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
   }
 
   @Override

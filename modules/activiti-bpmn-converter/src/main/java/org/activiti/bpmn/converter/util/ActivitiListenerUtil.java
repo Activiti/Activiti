@@ -6,11 +6,10 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.ActivitiListener;
-import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.Process;
-import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.UserTask;
 import org.apache.commons.lang.StringUtils;
 
@@ -22,12 +21,10 @@ public class ActivitiListenerUtil implements BpmnXMLConstants {
     if (element instanceof UserTask) {
       listenerList = ((UserTask) element).getTaskListeners();
       xmlElementName = ELEMENT_TASK_LISTENER;
-    } else if (element instanceof Activity) {
-      listenerList = ((Activity) element).getExecutionListeners();
+    } else if (element instanceof FlowElement) {
+      listenerList = ((FlowElement) element).getExecutionListeners();
     } else if (element instanceof Process) {
       listenerList = ((Process) element).getExecutionListeners();
-    } else if (element instanceof SequenceFlow) {
-      listenerList = ((SequenceFlow) element).getExecutionListeners();
     }
     
     if (listenerList != null) {

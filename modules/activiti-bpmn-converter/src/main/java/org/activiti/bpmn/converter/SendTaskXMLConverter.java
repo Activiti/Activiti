@@ -68,9 +68,13 @@ public class SendTaskXMLConverter extends BaseBpmnXMLConverter {
   }
   
   @Override
-  protected void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
+  protected void writeExtensionChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
     SendTask sendTask = (SendTask) element;
     didWriteExtensionStartElement = FieldExtensionUtil.writeFieldExtensions(sendTask.getFieldExtensions(), didWriteExtensionStartElement, xtw);
+  }
+  
+  @Override
+  protected void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
   }
   
   protected String parseOperationRef(String operationRef, BpmnModel model) {

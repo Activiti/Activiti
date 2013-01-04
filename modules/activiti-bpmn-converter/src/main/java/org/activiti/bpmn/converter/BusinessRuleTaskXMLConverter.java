@@ -75,6 +75,10 @@ public class BusinessRuleTaskXMLConverter extends BaseBpmnXMLConverter {
       writeQualifiedAttribute(ATTRIBUTE_TASK_RULE_EXCLUDE, ATTRIBUTE_VALUE_TRUE, xtw);
     }
   }
+  
+  @Override
+  protected void writeExtensionChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
+  }
 
   @Override
   protected void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {

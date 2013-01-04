@@ -20,9 +20,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.XMLConstants;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+import javax.xml.transform.stax.StAXSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.alfresco.AlfrescoStartEventXMLConverter;
@@ -71,10 +76,13 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 
   protected static final Logger LOGGER = LoggerFactory.getLogger(BpmnXMLConverter.class);
 	
+  private static final String BPMN_XSD = "org/activiti/impl/bpmn/parser/BPMN20.xsd";
+  
 	private static Map<String, Class<? extends BaseBpmnXMLConverter>> convertersToBpmnMap = 
 	    new HashMap<String, Class<? extends BaseBpmnXMLConverter>>();
 	private static Map<Class<? extends BaseElement>, Class<? extends BaseBpmnXMLConverter>> convertersToXMLMap = 
 	    new HashMap<Class<? extends BaseElement>, Class<? extends BaseBpmnXMLConverter>>();
+	private ClassLoader classloader;
 	private List<String> userTaskFormTypes;
 	private List<String> startEventFormTypes;
 	
@@ -124,6 +132,10 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
     convertersToXMLMap.put(elementClass, converter);
   }
   
+  public void setClassloader(ClassLoader classloader) {
+    this.classloader = classloader;
+  }
+
   public void setUserTaskFormTypes(List<String> userTaskFormTypes) {
     this.userTaskFormTypes = userTaskFormTypes;
   }
@@ -131,8 +143,28 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
   public void setStartEventFormTypes(List<String> startEventFormTypes) {
     this.startEventFormTypes = startEventFormTypes;
   }
+  
+  public void validateModel(XMLStreamReader xtr) throws Exception {
+    
+    SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+    Schema schema = null;
+    if (classloader != null) {
+      schema = factory.newSchema(classloader.getResource(BPMN_XSD));
+    }
+    
+    if (schema == null) {
+      schema = factory.newSchema(BpmnXMLConverter.class.getClassLoader().getResource(BPMN_XSD));
+    }
+    
+    if (schema == null) {
+      throw new XMLException("BPMN XSD could not be found");
+    }
 
-	public BpmnModel convertToBpmnModel(XMLStreamReader xtr) {
+    Validator validator = schema.newValidator();
+    validator.validate(new StAXSource(xtr));
+  }
+
+	public BpmnModel convertToBpmnModel(XMLStreamReader xtr) { 
 	  BpmnModel model = new BpmnModel();
 		try {
 			Process activeProcess = null;

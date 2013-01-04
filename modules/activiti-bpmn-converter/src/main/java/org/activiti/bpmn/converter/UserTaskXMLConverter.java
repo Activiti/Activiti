@@ -99,11 +99,15 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
       writeQualifiedAttribute(ATTRIBUTE_TASK_USER_PRIORITY, userTask.getPriority().toString(), xtw);
     }
   }
+  
+  @Override
+  protected void writeExtensionChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
+    UserTask userTask = (UserTask) element;
+    writeFormProperties(userTask, xtw);
+  }
 
   @Override
   protected void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
-    UserTask userTask = (UserTask) element;
-    writeFormProperties(userTask, xtw);
   }
   
   public void addFormType(String formType) {

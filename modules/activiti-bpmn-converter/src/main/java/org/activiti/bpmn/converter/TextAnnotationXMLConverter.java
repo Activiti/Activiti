@@ -58,6 +58,10 @@ public class TextAnnotationXMLConverter extends BaseBpmnXMLConverter {
     TextAnnotation textAnnotation = (TextAnnotation) element;
     writeDefaultAttribute(ATTRIBUTE_TEXTFORMAT, textAnnotation.getTextFormat(), xtw);
   }
+  
+  @Override
+  protected void writeExtensionChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
+  }
 
   @Override
   protected void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {

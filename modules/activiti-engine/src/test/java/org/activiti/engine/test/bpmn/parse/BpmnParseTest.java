@@ -37,18 +37,17 @@ import org.activiti.engine.test.Deployment;
  */
 public class BpmnParseTest extends PluggableActivitiTestCase {
   
-  // Do we want this to fail?
-  /*public void testInvalidProcessDefinition() {
+  public void testInvalidProcessDefinition() {
     try {
       String resource = TestHelper.getBpmnProcessDefinitionResource(getClass(), "testInvalidProcessDefinition");
       repositoryService.createDeployment().name(resource).addClasspathResource(resource).deploy();
       fail();
     } catch (ActivitiException e) {
-      assertTextPresent("cvc-complex-type.3.2.2:", e.getMessage());
-      assertTextPresent("invalidAttribute", e.getMessage());
-      assertTextPresent("process", e.getMessage());
+      assertTextPresent("cvc-complex-type.3.2.2:", e.getCause().getMessage());
+      assertTextPresent("invalidAttribute", e.getCause().getMessage());
+      assertTextPresent("process", e.getCause().getMessage());
     }
-  }*/
+  }
   
   public void testParseWithBpmnNamespacePrefix() {
       repositoryService.createDeployment()

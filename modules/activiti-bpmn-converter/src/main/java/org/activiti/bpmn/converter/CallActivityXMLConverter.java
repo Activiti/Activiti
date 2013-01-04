@@ -66,12 +66,16 @@ public class CallActivityXMLConverter extends BaseBpmnXMLConverter {
       xtw.writeAttribute(ATTRIBUTE_CALL_ACTIVITY_CALLEDELEMENT, callActivity.getCalledElement());
     }
   }
-
+  
   @Override
-  protected void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
+  protected void writeExtensionChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
     CallActivity callActivity = (CallActivity) element;
     writeIOParameters(ELEMENT_CALL_ACTIVITY_IN_PARAMETERS, callActivity.getInParameters(), xtw);
     writeIOParameters(ELEMENT_CALL_ACTIVITY_OUT_PARAMETERS, callActivity.getOutParameters(), xtw);
+  }
+
+  @Override
+  protected void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
   }
   
   private void writeIOParameters(String elementName, List<IOParameter> parameterList, XMLStreamWriter xtw) throws Exception {

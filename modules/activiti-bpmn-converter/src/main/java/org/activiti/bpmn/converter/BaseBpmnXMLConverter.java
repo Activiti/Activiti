@@ -193,16 +193,13 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
         xtw.writeEndElement();
       }
     }
-    writeAdditionalChildElements(baseElement, xtw);
     
-    // sequence flow has condition expression that should come after extensionElements
-    if (baseElement instanceof SequenceFlow == false) {
-      didWriteExtensionStartElement = writeListeners(baseElement, xtw);
-      
-      if (didWriteExtensionStartElement) {
-        xtw.writeEndElement();
-      }
+    writeExtensionChildElements(baseElement, xtw);
+    didWriteExtensionStartElement = writeListeners(baseElement, xtw);
+    if (didWriteExtensionStartElement) {
+      xtw.writeEndElement();
     }
+    writeAdditionalChildElements(baseElement, xtw);
     
     if (baseElement instanceof Activity) {
       Activity activity = (Activity) baseElement;
@@ -243,6 +240,8 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
   protected abstract String getXMLElementName();
   
   protected abstract void writeAdditionalAttributes(BaseElement element, XMLStreamWriter xtw) throws Exception;
+  
+  protected abstract void writeExtensionChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception;
   
   protected abstract void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception;
   

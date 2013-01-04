@@ -63,6 +63,10 @@ public class ScriptTaskXMLConverter extends BaseBpmnXMLConverter {
     writeDefaultAttribute(ATTRIBUTE_TASK_SCRIPT_FORMAT, scriptTask.getScriptFormat(), xtw);
     writeQualifiedAttribute(ATTRIBUTE_TASK_SCRIPT_RESULTVARIABLE, scriptTask.getResultVariable(), xtw);
   }
+  
+  @Override
+  protected void writeExtensionChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
+  }
 
   @Override
   protected void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {

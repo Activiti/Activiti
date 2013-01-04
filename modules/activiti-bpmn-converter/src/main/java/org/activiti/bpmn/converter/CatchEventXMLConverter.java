@@ -49,6 +49,10 @@ public class CatchEventXMLConverter extends BaseBpmnXMLConverter {
   protected void writeAdditionalAttributes(BaseElement element, XMLStreamWriter xtw) throws Exception {
     
   }
+  
+  @Override
+  protected void writeExtensionChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
+  }
 
   @Override
   protected void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {

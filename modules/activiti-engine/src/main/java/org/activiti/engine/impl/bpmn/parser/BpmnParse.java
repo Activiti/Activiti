@@ -82,7 +82,6 @@ import org.activiti.engine.impl.Condition;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.EventBasedGatewayActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.EventSubProcessStartEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ExclusiveGatewayActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.WebServiceActivityBehavior;
@@ -232,9 +231,14 @@ public class BpmnParse implements BpmnXMLConstants {
   public BpmnParse execute() {
     BpmnXMLConverter converter = new BpmnXMLConverter();
     XMLInputFactory xif = XMLInputFactory.newInstance();
+    InputStreamReader in = null;
     try {
-      InputStreamReader in = new InputStreamReader(streamSource.getInputStream(), "UTF-8");
+      in = new InputStreamReader(streamSource.getInputStream(), "UTF-8");
       XMLStreamReader xtr = xif.createXMLStreamReader(in);
+      converter.validateModel(xtr);
+      streamSource.getInputStream().reset();
+      in = new InputStreamReader(streamSource.getInputStream(), "UTF-8");
+      xtr = xif.createXMLStreamReader(in);
       bpmnModel = converter.convertToBpmnModel(xtr);
       createImports();
       createItemDefinitions();
@@ -243,6 +247,14 @@ public class BpmnParse implements BpmnXMLConstants {
       transformProcessDefinitions();
     } catch (Exception e) {
       throw new ActivitiException("Error parsing XML", e);
+    } finally {
+      try {
+        if (in != null) {
+          in.close();
+        }
+      } catch (Exception e) {
+        LOGGER.info("Problem closing BPMN input stream", e);
+      }
     }
     
     if (bpmnModel.getProblems().size() > 0) {
