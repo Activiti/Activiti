@@ -436,7 +436,7 @@
 								<tasks>
 								    <echo message="Copying jta enabled Activiti configuration file to target/test-classes" />
 									<echo message="Updating activiti configuration config to db ${database}" />
-									<copy file="${basedir}/../../qa/jta/activiti.cfg.xml" todir="target/test-classes" overwrite="true">
+									<copy file="${basedir}/../../qa/jta/${database}/activiti.cfg.xml" todir="target/test-classes" overwrite="true">
 									   <filterset filtersfile="${user.home}/.activiti/jdbc/build.${database}.properties" />
 									</copy>
 								</tasks>
