@@ -103,7 +103,9 @@ public class CxfWSDLImporter implements XMLImporter {
         this.wsServices.put(this.namespace + wsService.getName(), wsService);
       }
       
-      this.importTypes(def.getTypes());
+      if(def != null && def.getTypes() != null) {
+        this.importTypes(def.getTypes());
+      }
     } catch (WSDLException e) {
       e.printStackTrace();
     }
