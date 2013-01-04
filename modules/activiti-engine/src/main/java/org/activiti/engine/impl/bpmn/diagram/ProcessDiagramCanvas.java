@@ -46,6 +46,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.slf4j.Logger;
@@ -138,6 +139,7 @@ public class ProcessDiagramCanvas {
   protected Graphics2D g;
   protected FontMetrics fontMetrics;
   protected boolean closed;
+  protected String activityFontName = "Arial";
 
   /**
    * Creates an empty canvas with given width and height.
@@ -145,12 +147,13 @@ public class ProcessDiagramCanvas {
   public ProcessDiagramCanvas(int width, int height) {
     this.canvasWidth = width;
     this.canvasHeight = height;
+    this.activityFontName = Context.getProcessEngineConfiguration().getActivityFontName();
     this.processDiagram = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
     this.g = processDiagram.createGraphics();
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     g.setPaint(Color.black);
-
-    Font font = new Font("Arial", Font.BOLD, FONT_SIZE);
+    
+    Font font = new Font(activityFontName, Font.BOLD, FONT_SIZE);
     g.setFont(font);
     this.fontMetrics = g.getFontMetrics();
   }
