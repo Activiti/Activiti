@@ -272,6 +272,12 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
     orderBy(HistoricTaskInstanceQueryProperty.START);
     return this;
   }
+  
+  @Override
+  public HistoricTaskInstanceQuery orderByHistoricTaskInstanceStartTime() {
+    orderBy(HistoricTaskInstanceQueryProperty.START);
+    return this;
+  }
 
   public HistoricTaskInstanceQueryImpl orderByTaskName() {
     orderBy(HistoricTaskInstanceQueryProperty.TASK_NAME);
