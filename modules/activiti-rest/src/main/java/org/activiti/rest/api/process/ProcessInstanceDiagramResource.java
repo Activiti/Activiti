@@ -18,6 +18,7 @@ import java.io.InputStream;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.rest.api.ActivitiUtil;
@@ -52,7 +53,7 @@ public class ProcessInstanceDiagramResource extends SecuredResource {
         .getDeployedProcessDefinition(pi.getProcessDefinitionId());
 
     if (pde != null && pde.isGraphicalNotationDefined()) {
-      InputStream resource = ProcessDiagramGenerator.generateDiagram(pde, "png", ActivitiUtil.getRuntimeService().getActiveActivityIds(processInstanceId));
+      InputStream resource = ProcessDiagramGenerator.generateDiagram(pde, "png", ActivitiUtil.getRuntimeService().getActiveActivityIds(processInstanceId), Context.getProcessEngineConfiguration().getActivityFontName());
 
       InputRepresentation output = new InputRepresentation(resource, MediaType.IMAGE_PNG);
       return output;

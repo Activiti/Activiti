@@ -344,7 +344,7 @@ public class ProcessDiagramCanvas {
     }
 
     int radius = 15;
-	  
+    
     Path2D path = new Path2D.Double();
 
     boolean isDefaultConditionAvailable = false;
@@ -485,8 +485,8 @@ public class ProcessDiagramCanvas {
     Line2D.Double defaultIndicator = new Line2D.Double(-halfOfLength, 0, halfOfLength, 0);
 
     double angle = Math.atan2(line.y2 - line.y1, line.x2 - line.x1);
-	double dx = f * Math.cos(angle), dy = f * Math.sin(angle),
-	       x1 = line.x1 + dx, y1 = line.y1 + dy;
+  double dx = f * Math.cos(angle), dy = f * Math.sin(angle),
+         x1 = line.x1 + dx, y1 = line.y1 + dy;
 
     AffineTransform transformation = new AffineTransform();
     transformation.setToIdentity();

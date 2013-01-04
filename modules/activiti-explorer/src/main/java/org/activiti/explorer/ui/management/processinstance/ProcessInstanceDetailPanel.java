@@ -25,7 +25,9 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.RepositoryServiceImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -47,11 +49,11 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 
@@ -63,6 +65,8 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
 
   private static final long serialVersionUID = 1L;
 
+  protected ProcessEngineConfigurationImpl engineConfiguration = null;
+  
   protected RuntimeService runtimeService;
   protected RepositoryService repositoryService;
   protected TaskService taskService;
@@ -83,17 +87,19 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
     // Member initialization
     this.processInstancePage = processInstancePage;
 
-    this.runtimeService = ProcessEngines.getDefaultProcessEngine().getRuntimeService();
-    this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
-    this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
-    this.historyService = ProcessEngines.getDefaultProcessEngine().getHistoryService();
+    ProcessEngineImpl processEngine = (ProcessEngineImpl) ProcessEngines.getDefaultProcessEngine();
+    engineConfiguration = (ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration();
+    this.runtimeService = processEngine.getRuntimeService();
+    this.repositoryService = processEngine.getRepositoryService();
+    this.taskService = processEngine.getTaskService();
+    this.historyService = processEngine.getHistoryService();
     this.i18nManager = ExplorerApp.get().getI18nManager();
     this.variableRendererManager = ExplorerApp.get().getVariableRendererManager();
 
     this.processInstance = getProcessInstance(processInstanceId);
     this.processDefinition = getProcessDefinition(processInstance.getProcessDefinitionId());
     this.historicProcessInstance = getHistoricProcessInstance(processInstanceId);
-    this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
+    this.identityService = processEngine.getIdentityService();
 
     init();
   }
@@ -149,7 +155,7 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
     // Only show when graphical notation is defined
     if (processDefinitionEntity != null && processDefinitionEntity.isGraphicalNotationDefined()) {
       StreamResource diagram = new ProcessDefinitionImageStreamResourceBuilder()
-        .buildStreamResource(processInstance, repositoryService, runtimeService);
+        .buildStreamRessource(processInstance, repositoryService, runtimeService, engineConfiguration.getActivityFontName());
 
       if(diagram != null) {
         Label header = new Label(i18nManager.getMessage(Messages.PROCESS_HEADER_DIAGRAM));

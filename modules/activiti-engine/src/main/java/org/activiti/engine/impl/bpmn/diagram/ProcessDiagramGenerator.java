@@ -281,23 +281,23 @@ public class ProcessDiagramGenerator {
    * Generates a PNG diagram image of the given process definition, using the
    * diagram interchange information of the process.
    */
-  public static InputStream generatePngDiagram(ProcessDefinitionEntity processDefinition) {
-    return generateDiagram(processDefinition, "png", Collections.<String> emptyList());
+  public static InputStream generatePngDiagram(ProcessDefinitionEntity processDefinition, String activityFontName) {
+    return generateDiagram(processDefinition, "png", Collections.<String> emptyList(), activityFontName);
   }
 
   /**
    * Generates a JPG diagram image of the given process definition, using the
    * diagram interchange information of the process.
    */
-  public static InputStream generateJpgDiagram(ProcessDefinitionEntity processDefinition) {
-    return generateDiagram(processDefinition, "jpg", Collections.<String> emptyList());
+  public static InputStream generateJpgDiagram(ProcessDefinitionEntity processDefinition, String activityFontName) {
+    return generateDiagram(processDefinition, "jpg", Collections.<String> emptyList(), activityFontName);
   }
 
-  protected static ProcessDiagramCanvas generateDiagram(ProcessDefinitionEntity processDefinition, List<String> highLightedActivities) {
-	  return generateDiagram(processDefinition, highLightedActivities, Collections.<String> emptyList());
+  protected static ProcessDiagramCanvas generateDiagram(ProcessDefinitionEntity processDefinition, List<String> highLightedActivities, String activityFontName) {
+    return generateDiagram(processDefinition, highLightedActivities, Collections.<String> emptyList(), activityFontName);
   }
-  protected static ProcessDiagramCanvas generateDiagram(ProcessDefinitionEntity processDefinition, List<String> highLightedActivities, List<String> highLightedFlows) {
-    ProcessDiagramCanvas processDiagramCanvas = initProcessDiagramCanvas(processDefinition);
+  protected static ProcessDiagramCanvas generateDiagram(ProcessDefinitionEntity processDefinition, List<String> highLightedActivities, List<String> highLightedFlows, String activityFontName) {
+    ProcessDiagramCanvas processDiagramCanvas = initProcessDiagramCanvas(processDefinition, activityFontName);
     
     // Draw pool shape, if process is participant in collaboration
     if(processDefinition.getParticipantProcess() != null) {
@@ -323,12 +323,12 @@ public class ProcessDiagramGenerator {
     return processDiagramCanvas;
   }
 
-  public static InputStream generateDiagram(ProcessDefinitionEntity processDefinition, String imageType, List<String> highLightedActivities) {
-    return generateDiagram(processDefinition, highLightedActivities, Collections.<String> emptyList()).generateImage(imageType);
+  public static InputStream generateDiagram(ProcessDefinitionEntity processDefinition, String imageType, List<String> highLightedActivities, String activityFontName) {
+    return generateDiagram(processDefinition, highLightedActivities, Collections.<String> emptyList(), activityFontName).generateImage(imageType);
   }
 
-  public static InputStream generateDiagram(ProcessDefinitionEntity processDefinition, String imageType, List<String> highLightedActivities, List<String> highLightedFlows) {
-    return generateDiagram(processDefinition, highLightedActivities, highLightedFlows).generateImage(imageType);
+  public static InputStream generateDiagram(ProcessDefinitionEntity processDefinition, String imageType, List<String> highLightedActivities, List<String> highLightedFlows, String activityFontName) {
+    return generateDiagram(processDefinition, highLightedActivities, highLightedFlows, activityFontName).generateImage(imageType);
   }
 
   protected static void drawActivity(ProcessDiagramCanvas processDiagramCanvas, ActivityImpl activity, List<String> highLightedActivities, List<String> highLightedFlows) {
@@ -396,7 +396,7 @@ public class ProcessDiagramGenerator {
       boolean drawConditionalIndicator = sequenceFlow.getProperty(BpmnParse.PROPERTYNAME_CONDITION) != null
               && !((String) activity.getProperty("type")).toLowerCase().contains("gateway");
       boolean isDefault = sequenceFlow.getId().equals(activity.getProperty("default"))
-    		  && ((String) activity.getProperty("type")).toLowerCase().contains("gateway");
+          && ((String) activity.getProperty("type")).toLowerCase().contains("gateway");
       
       List<Integer> waypoints = ((TransitionImpl) sequenceFlow).getWaypoints();
       int xPoints[]= new int[waypoints.size()/2];
@@ -404,8 +404,8 @@ public class ProcessDiagramGenerator {
       for (int i=0, j=0; i < waypoints.size(); i+=2, j++) { // waypoints.size()
                                                       // minimally 4: x1, y1,
                                                       // x2, y2
-      	xPoints[j] = waypoints.get(i);
-      	yPoints[j] = waypoints.get(i+1);
+        xPoints[j] = waypoints.get(i);
+        yPoints[j] = waypoints.get(i+1);
       }
       processDiagramCanvas.drawSequenceflow(xPoints, yPoints, drawConditionalIndicator, isDefault, highLighted);
     }
@@ -421,7 +421,7 @@ public class ProcessDiagramGenerator {
 
   }
 
-  protected static ProcessDiagramCanvas initProcessDiagramCanvas(ProcessDefinitionEntity processDefinition) {
+  protected static ProcessDiagramCanvas initProcessDiagramCanvas(ProcessDefinitionEntity processDefinition, String activityFontName) {
     int minX = Integer.MAX_VALUE;
     int maxX = 0;
     int minY = Integer.MAX_VALUE;

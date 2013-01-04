@@ -26,7 +26,9 @@ import org.activiti.engine.history.HistoricFormProperty;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricVariableUpdate;
+import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.RepositoryServiceImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -60,6 +62,8 @@ public class AdminCompletedInstancesPanel extends DetailPanel {
 
   private static final long serialVersionUID = 1L;
   
+  protected ProcessEngineConfigurationImpl engineConfiguration;
+  
   protected HistoryService historyService;
   protected RepositoryService repositoryService;
   protected IdentityService identityService;
@@ -77,9 +81,12 @@ public class AdminCompletedInstancesPanel extends DetailPanel {
   protected ManagementProcessDefinition selectedManagementDefinition;
   
   public AdminCompletedInstancesPanel() {
-    this.historyService = ProcessEngines.getDefaultProcessEngine().getHistoryService();
-    this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
-    this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
+    ProcessEngineImpl processEngine = (ProcessEngineImpl) ProcessEngines.getDefaultProcessEngine();
+    engineConfiguration = (ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration();
+    
+    this.historyService = engineConfiguration.getHistoryService();
+    this.repositoryService = engineConfiguration.getRepositoryService();
+    this.identityService = engineConfiguration.getIdentityService();
     this.variableRendererManager = ExplorerApp.get().getVariableRendererManager();
     this.instanceList = historyService.createHistoricProcessInstanceQuery().finished().list();
     this.i18nManager = ExplorerApp.get().getI18nManager();
@@ -304,7 +311,7 @@ public class AdminCompletedInstancesPanel extends DetailPanel {
     	}
       
     	StreamResource diagram = new ProcessDefinitionImageStreamResourceBuilder()
-      		.buildStreamResource(processDefinition, repositoryService);
+      		.buildStreamResource(processDefinition, repositoryService, engineConfiguration.getActivityFontName());
 
       currentEmbedded = new Embedded(null, diagram);
       currentEmbedded.setType(Embedded.TYPE_IMAGE);

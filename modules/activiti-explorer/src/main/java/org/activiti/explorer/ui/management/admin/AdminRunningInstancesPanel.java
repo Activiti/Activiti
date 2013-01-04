@@ -25,7 +25,9 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.RepositoryServiceImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -59,6 +61,8 @@ public class AdminRunningInstancesPanel extends DetailPanel {
 
   private static final long serialVersionUID = 1L;
   
+  protected ProcessEngineConfigurationImpl engineConfiguration;
+  
   protected HistoryService historyService;
   protected RepositoryService repositoryService;
   protected RuntimeService runtimeService;
@@ -77,10 +81,13 @@ public class AdminRunningInstancesPanel extends DetailPanel {
   protected ManagementProcessDefinition selectedManagementDefinition;
   
   public AdminRunningInstancesPanel() {
-  	this.runtimeService = ProcessEngines.getDefaultProcessEngine().getRuntimeService();
-    this.historyService = ProcessEngines.getDefaultProcessEngine().getHistoryService();
-    this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
-    this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
+    ProcessEngineImpl processEngine = (ProcessEngineImpl) ProcessEngines.getDefaultProcessEngine();
+    engineConfiguration = (ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration();
+    
+  	this.runtimeService = engineConfiguration.getRuntimeService();
+    this.historyService = engineConfiguration.getHistoryService();
+    this.repositoryService = engineConfiguration.getRepositoryService();
+    this.identityService = engineConfiguration.getIdentityService();
     this.variableRendererManager = ExplorerApp.get().getVariableRendererManager();
     this.instanceList = historyService.createHistoricProcessInstanceQuery().unfinished().list();
     this.i18nManager = ExplorerApp.get().getI18nManager();
@@ -302,7 +309,7 @@ public class AdminRunningInstancesPanel extends DetailPanel {
       
       StreamResource diagram = new ProcessDefinitionImageStreamResourceBuilder()
         	.buildStreamResource(processInstance.getId(), processInstance.getProcessDefinitionId(), 
-        			repositoryService, runtimeService);
+        			repositoryService, runtimeService, engineConfiguration.getActivityFontName());
 
       currentEmbedded = new Embedded(null, diagram);
       currentEmbedded.setType(Embedded.TYPE_IMAGE);

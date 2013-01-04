@@ -19,6 +19,8 @@ import java.util.List;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.jobexecutor.TimerActivateProcessDefinitionHandler;
 import org.activiti.engine.impl.jobexecutor.TimerSuspendProcessDefinitionHandler;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
@@ -49,6 +51,8 @@ public class ProcessDefinitionInfoComponent extends VerticalLayout {
 
   private static final long serialVersionUID = 1L;
 
+  protected ProcessEngineConfigurationImpl engineConfiguration;
+  
   // Services
   protected RepositoryService repositoryService;
   protected ManagementService managementService;
@@ -65,8 +69,10 @@ public class ProcessDefinitionInfoComponent extends VerticalLayout {
   
   public ProcessDefinitionInfoComponent(ProcessDefinition processDefinition, Deployment deployment) {
     super();
-    this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
-    this.managementService = ProcessEngines.getDefaultProcessEngine().getManagementService();
+    ProcessEngineImpl processEngine = (ProcessEngineImpl) ProcessEngines.getDefaultProcessEngine();
+    engineConfiguration = (ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration();
+    this.repositoryService = engineConfiguration.getRepositoryService();
+    this.managementService = engineConfiguration.getManagementService();
     this.i18nManager = ExplorerApp.get().getI18nManager(); 
     
     this.processDefinition = processDefinition;
@@ -129,7 +135,7 @@ public class ProcessDefinitionInfoComponent extends VerticalLayout {
     // Try generating process-image stream
     if(processDefinition.getDiagramResourceName() != null) {
        diagram = new ProcessDefinitionImageStreamResourceBuilder()
-        .buildStreamResource(processDefinition, repositoryService);
+        .buildStreamResource(processDefinition, repositoryService, engineConfiguration.getActivityFontName());
     }
 
     if(diagram != null) {
