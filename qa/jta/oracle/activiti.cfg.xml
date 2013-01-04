@@ -7,7 +7,7 @@
 
     <bean id="dataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource" init-method="init" destroy-method="close">
         <property name="className" value="oracle.jdbc.xa.client.OracleXADataSource" />
-        <property name="uniqueName" value="xaDataSource" />
+        <property name="uniqueName" value="xaOracle" />
         <property name="maxPoolSize" value="20" />
         <property name="allowLocalTransactions" value="true" />
         <property name="driverProperties">
@@ -17,6 +17,7 @@
                 <prop key="databaseName">@jdbc.databasename@</prop>
                 <prop key="user">@jdbc.username@</prop>
                 <prop key="password">@jdbc.password@</prop>
+                <prop key="URL">@jdbc.url@</prop>
             </props>
             
         </property>
