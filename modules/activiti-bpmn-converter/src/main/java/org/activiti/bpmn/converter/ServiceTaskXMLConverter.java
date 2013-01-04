@@ -15,6 +15,7 @@ package org.activiti.bpmn.converter;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.converter.util.FieldExtensionUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
@@ -44,6 +45,7 @@ public class ServiceTaskXMLConverter extends BaseBpmnXMLConverter {
   @Override
   protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
 		ServiceTask serviceTask = new ServiceTask();
+		BpmnXMLUtil.addXMLLocation(serviceTask, xtr);
 		if (StringUtils.isNotEmpty(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_SERVICE_CLASS))) {
 			serviceTask.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
 			serviceTask.setImplementation(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_SERVICE_CLASS));
@@ -105,7 +107,7 @@ public class ServiceTaskXMLConverter extends BaseBpmnXMLConverter {
   }
   
   @Override
-  protected void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
+  protected void writeExtensionChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
     ServiceTask serviceTask = (ServiceTask) element;
     
     if (serviceTask.getCustomProperties().size() > 0) {
@@ -135,6 +137,10 @@ public class ServiceTaskXMLConverter extends BaseBpmnXMLConverter {
     } else {
       didWriteExtensionStartElement = FieldExtensionUtil.writeFieldExtensions(serviceTask.getFieldExtensions(), didWriteExtensionStartElement, xtw);
     }
+  }
+  
+  @Override
+  protected void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
   }
   
   protected String parseOperationRef(String operationRef, BpmnModel model) {

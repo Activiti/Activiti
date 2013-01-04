@@ -14,6 +14,7 @@ package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
 
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.CompensateEventDefinition;
@@ -33,6 +34,7 @@ public class CompensateEventDefinitionParser extends BaseChildElementParser {
     if (parentElement instanceof Event == false) return;
     
     CompensateEventDefinition eventDefinition = new CompensateEventDefinition();
+    BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
     eventDefinition.setActivityRef(xtr.getAttributeValue(null, ATTRIBUTE_COMPENSATE_ACTIVITYREF));
     if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_COMPENSATE_WAITFORCOMPLETION))) {
       eventDefinition.setWaitForCompletion(Boolean.parseBoolean(xtr.getAttributeValue(null, ATTRIBUTE_COMPENSATE_WAITFORCOMPLETION)));

@@ -3,7 +3,7 @@ package org.activiti.bpmn.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataAssociation {
+public class DataAssociation extends BaseElement {
 
   protected String sourceRef;
   protected String targetRef;

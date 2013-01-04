@@ -47,6 +47,9 @@ public class ClaimTaskCmd extends NeedsActiveTaskCmd<Void> {
       // Task should be assigned to no one
       task.setAssignee(null);
     }
+    
+    // Add claim time
+    commandContext.getHistoryManager().recordTaskClaim( taskId);
 
     return null;
   }

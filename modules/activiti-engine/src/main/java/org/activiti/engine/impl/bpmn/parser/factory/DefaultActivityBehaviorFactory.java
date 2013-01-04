@@ -163,14 +163,14 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
   // We do not want a hard dependency on Mule, hence we return ActivityBehavior and instantiate 
   // the delegate instance using a string instead of the Class itself.
   public ActivityBehavior createMuleActivityBehavior(ServiceTask serviceTask, BpmnModel bpmnModel) {
-    return createMuleActivityBehavior(serviceTask.getId(), serviceTask.getFieldExtensions(), bpmnModel);
+    return createMuleActivityBehavior(serviceTask, serviceTask.getFieldExtensions(), bpmnModel);
   }
   
   public ActivityBehavior createMuleActivityBehavior(SendTask sendTask, BpmnModel bpmnModel) {
-    return createMuleActivityBehavior(sendTask.getId(), sendTask.getFieldExtensions(), bpmnModel);
+    return createMuleActivityBehavior(sendTask, sendTask.getFieldExtensions(), bpmnModel);
   }
   
-  protected ActivityBehavior createMuleActivityBehavior(String taskId, List<FieldExtension> fieldExtensions, BpmnModel bpmnModel) {
+  protected ActivityBehavior createMuleActivityBehavior(Task task, List<FieldExtension> fieldExtensions, BpmnModel bpmnModel) {
     try {
       
       Class< ? > theClass = Class.forName("org.activiti.mule.MuleSendActivitiBehavior");
@@ -179,7 +179,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
       
     } catch (ClassNotFoundException e) {
       
-      bpmnModel.addProblem("Could not find org.activiti.mule.MuleSendActivitiBehavior: " + e.getMessage(), taskId);
+      bpmnModel.addProblem("Could not find org.activiti.mule.MuleSendActivitiBehavior: " + e.getMessage(), task);
       return null;
       
     }

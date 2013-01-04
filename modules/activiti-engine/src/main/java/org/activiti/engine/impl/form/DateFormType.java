@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.form.AbstractFormType;
-import org.drools.core.util.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 
 /**

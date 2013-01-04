@@ -179,7 +179,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       for (Pool pool : model.getPools()) {
         GraphicInfo graphicInfo = model.getGraphicInfo(pool.getId());
         ObjectNode poolNode = BpmnJsonConverterUtil.createChildShape(pool.getId(), STENCIL_POOL, 
-            graphicInfo.x + graphicInfo.width, graphicInfo.y + graphicInfo.height, graphicInfo.x, graphicInfo.y);
+            graphicInfo.getX() + graphicInfo.getWidth(), graphicInfo.getY() + graphicInfo.getHeight(), graphicInfo.getX(), graphicInfo.getY());
         shapesArrayNode.add(poolNode);
         ObjectNode poolPropertiesNode = objectMapper.createObjectNode();
         poolPropertiesNode.put(PROPERTY_OVERRIDE_ID, pool.getId());
@@ -196,8 +196,8 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
           for (Lane lane : process.getLanes()) {
             GraphicInfo laneGraphicInfo = model.getGraphicInfo(lane.getId());
             ObjectNode laneNode = BpmnJsonConverterUtil.createChildShape(lane.getId(), STENCIL_LANE, 
-                laneGraphicInfo.x + laneGraphicInfo.width, laneGraphicInfo.y + laneGraphicInfo.height, 
-                laneGraphicInfo.x, laneGraphicInfo.y);
+                laneGraphicInfo.getX() + laneGraphicInfo.getWidth(), laneGraphicInfo.getY() + laneGraphicInfo.getHeight(), 
+                laneGraphicInfo.getX(), laneGraphicInfo.getY());
             laneShapesArrayNode.add(laneNode);
             ObjectNode lanePropertiesNode = objectMapper.createObjectNode();
             lanePropertiesNode.put(PROPERTY_OVERRIDE_ID, lane.getId());
@@ -215,7 +215,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
                 if (converter != null) {
                   try {
                     converter.newInstance().convertToJson(flowElement, this, model, elementShapesArrayNode, 
-                        laneGraphicInfo.x, laneGraphicInfo.y);
+                        laneGraphicInfo.getX(), laneGraphicInfo.getY());
                   } catch (Exception e) {
                     LOGGER.error("Error converting {}", flowElement, e);
                   }
@@ -418,12 +418,12 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
           
           JsonNode boundsNode = jsonChildNode.get(EDITOR_BOUNDS);
           ObjectNode upperLeftNode = (ObjectNode) boundsNode.get(EDITOR_BOUNDS_UPPER_LEFT);
-          graphicInfo.x = upperLeftNode.get(EDITOR_BOUNDS_X).asDouble() + parentX;
-          graphicInfo.y = upperLeftNode.get(EDITOR_BOUNDS_Y).asDouble() + parentY;
+          graphicInfo.setX(upperLeftNode.get(EDITOR_BOUNDS_X).asDouble() + parentX);
+          graphicInfo.setY(upperLeftNode.get(EDITOR_BOUNDS_Y).asDouble() + parentY);
           
           ObjectNode lowerRightNode = (ObjectNode) boundsNode.get(EDITOR_BOUNDS_LOWER_RIGHT);
-          graphicInfo.width = lowerRightNode.get(EDITOR_BOUNDS_X).asDouble() - graphicInfo.x + parentX;
-          graphicInfo.height = lowerRightNode.get(EDITOR_BOUNDS_Y).asDouble() - graphicInfo.y + parentY;
+          graphicInfo.setWidth(lowerRightNode.get(EDITOR_BOUNDS_X).asDouble() - graphicInfo.getX() + parentX);
+          graphicInfo.setHeight(lowerRightNode.get(EDITOR_BOUNDS_Y).asDouble() - graphicInfo.getY() + parentY);
           
           String childShapeId = jsonChildNode.get(EDITOR_SHAPE_ID).asText();
           bpmnModel.addGraphicInfo(BpmnJsonConverterUtil.getElementId(jsonChildNode), graphicInfo);
@@ -440,7 +440,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
             }
           }
           
-          readShapeDI(jsonChildNode, graphicInfo.x, graphicInfo.y, shapeMap, sourceRefMap, bpmnModel);
+          readShapeDI(jsonChildNode, graphicInfo.getX(), graphicInfo.getY(), shapeMap, sourceRefMap, bpmnModel);
         }
       }
     }
@@ -507,8 +507,8 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       BoundsLocation targetRefUpperLeftLocation = getLocation(EDITOR_BOUNDS_UPPER_LEFT, targetRefBoundsNode);
       BoundsLocation targetRefLowerRightLocation = getLocation(EDITOR_BOUNDS_LOWER_RIGHT, targetRefBoundsNode);*/
       
-      double sourceRefLineX = sourceInfo.x + sourceDockersX;
-      double sourceRefLineY = sourceInfo.y + sourceDockersY;
+      double sourceRefLineX = sourceInfo.getX() + sourceDockersX;
+      double sourceRefLineY = sourceInfo.getY() + sourceDockersY;
       
       double nextPointInLineX;
       double nextPointInLineY;
@@ -516,8 +516,8 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       nextPointInLineX = dockersNode.get(1).get(EDITOR_BOUNDS_X).getDoubleValue();
       nextPointInLineY = dockersNode.get(1).get(EDITOR_BOUNDS_Y).getDoubleValue();
       if (dockersNode.size() == 2) {
-        nextPointInLineX += targetInfo.x;
-        nextPointInLineY += targetInfo.y;
+        nextPointInLineX += targetInfo.getX();
+        nextPointInLineY += targetInfo.getY();
       }
       
       Line2D firstLine = new Line2D(sourceRefLineX, sourceRefLineY, nextPointInLineX, nextPointInLineY);
@@ -528,8 +528,8 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       List<GraphicInfo> graphicInfoList = new ArrayList<GraphicInfo>();
       
       if (DI_CIRCLES.contains(sourceRefStencilId)) {
-        Circle2D eventCircle = new Circle2D(sourceInfo.x + sourceDockersX, 
-            sourceInfo.y + sourceDockersY, sourceDockersX);
+        Circle2D eventCircle = new Circle2D(sourceInfo.getX() + sourceDockersX, 
+            sourceInfo.getY() + sourceDockersY, sourceDockersX);
         
         Collection<Point2D> intersections = eventCircle.intersections(firstLine);
         Point2D intersection = intersections.iterator().next();
@@ -565,8 +565,8 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
         double endLastLineX = dockersNode.get(dockersNode.size() - 1).get(EDITOR_BOUNDS_X).getDoubleValue();
         double endLastLineY = dockersNode.get(dockersNode.size() - 1).get(EDITOR_BOUNDS_Y).getDoubleValue();
         
-        endLastLineX += targetInfo.x;
-        endLastLineY += targetInfo.y;
+        endLastLineX += targetInfo.getX();
+        endLastLineY += targetInfo.getY();
         
         lastLine = new Line2D(startLastLineX, startLastLineY, endLastLineX, endLastLineY);
         
@@ -586,8 +586,8 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
         double targetDockersX = dockersNode.get(dockersNode.size() - 1).get(EDITOR_BOUNDS_X).getDoubleValue();
         double targetDockersY = dockersNode.get(dockersNode.size() - 1).get(EDITOR_BOUNDS_Y).getDoubleValue();
         
-        Circle2D eventCircle = new Circle2D(targetInfo.x + targetDockersX, 
-            targetInfo.y + targetDockersY, targetDockersX);
+        Circle2D eventCircle = new Circle2D(targetInfo.getX() + targetDockersX, 
+            targetInfo.getY() + targetDockersY, targetDockersX);
         
         Collection<Point2D> intersections = eventCircle.intersections(lastLine);
         Point2D intersection = intersections.iterator().next();
@@ -606,32 +606,32 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
   }
   
   private Polyline2D createRectangle(GraphicInfo graphicInfo) {
-    Polyline2D rectangle = new Polyline2D(new Point2D(graphicInfo.x, graphicInfo.y),
-        new Point2D(graphicInfo.x + graphicInfo.width, graphicInfo.y),
-        new Point2D(graphicInfo.x + graphicInfo.width, graphicInfo.y + graphicInfo.height),
-        new Point2D(graphicInfo.x, graphicInfo.y + graphicInfo.height),
-        new Point2D(graphicInfo.x, graphicInfo.y));
+    Polyline2D rectangle = new Polyline2D(new Point2D(graphicInfo.getX(), graphicInfo.getY()),
+        new Point2D(graphicInfo.getX() + graphicInfo.getWidth(), graphicInfo.getY()),
+        new Point2D(graphicInfo.getX() + graphicInfo.getWidth(), graphicInfo.getY() + graphicInfo.getHeight()),
+        new Point2D(graphicInfo.getX(), graphicInfo.getY() + graphicInfo.getHeight()),
+        new Point2D(graphicInfo.getX(), graphicInfo.getY()));
     return rectangle;
   }
   
   private Polyline2D createGateway(GraphicInfo graphicInfo) {
     
-    double middleX = graphicInfo.x + (graphicInfo.width / 2);
-    double middleY = graphicInfo.y + (graphicInfo.height / 2);
+    double middleX = graphicInfo.getX() + (graphicInfo.getWidth() / 2);
+    double middleY = graphicInfo.getY() + (graphicInfo.getHeight() / 2);
     
-    Polyline2D gatewayRectangle = new Polyline2D(new Point2D(graphicInfo.x, middleY),
-        new Point2D(middleX, graphicInfo.y),
-        new Point2D(graphicInfo.x + graphicInfo.width, middleY),
-        new Point2D(middleX, graphicInfo.y + graphicInfo.height),
-        new Point2D(graphicInfo.x, middleY));
+    Polyline2D gatewayRectangle = new Polyline2D(new Point2D(graphicInfo.getX(), middleY),
+        new Point2D(middleX, graphicInfo.getY()),
+        new Point2D(graphicInfo.getX() + graphicInfo.getWidth(), middleY),
+        new Point2D(middleX, graphicInfo.getY() + graphicInfo.getHeight()),
+        new Point2D(graphicInfo.getX(), middleY));
     
     return gatewayRectangle;
   }
   
   private GraphicInfo createGraphicInfo(double x, double y) {
     GraphicInfo graphicInfo = new GraphicInfo();
-    graphicInfo.x = x;
-    graphicInfo.y = y;
+    graphicInfo.setX(x);
+    graphicInfo.setY(y);
     return graphicInfo;
   }
 }

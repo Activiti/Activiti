@@ -2,6 +2,9 @@ package org.activiti.bpmn.model.parse;
 
 import javax.xml.stream.XMLStreamReader;
 
+import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.GraphicInfo;
+
 public class Problem {
 
   protected String errorMessage;
@@ -16,9 +19,17 @@ public class Problem {
     this.column = xtr.getLocation().getColumnNumber();
   }
   
-  public Problem(String errorMessage, String elementId) {
+  public Problem(String errorMessage, BaseElement element) {
     this.errorMessage = errorMessage;
-    this.resource = elementId;
+    this.resource = element.getId();
+    line = element.getXmlRowNumber();
+    column = element.getXmlColumnNumber();
+  }
+  
+  public Problem(String errorMessage, GraphicInfo graphicInfo) {
+    this.errorMessage = errorMessage;
+    line = graphicInfo.getXmlRowNumber();
+    column = graphicInfo.getXmlColumnNumber();
   }
   
   public String toString() {

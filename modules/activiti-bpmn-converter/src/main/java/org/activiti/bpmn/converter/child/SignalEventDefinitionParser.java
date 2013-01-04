@@ -14,6 +14,7 @@ package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
 
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Event;
@@ -33,6 +34,7 @@ public class SignalEventDefinitionParser extends BaseChildElementParser {
     if (parentElement instanceof Event == false) return;
     
     SignalEventDefinition eventDefinition = new SignalEventDefinition();
+    BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
     eventDefinition.setSignalRef(xtr.getAttributeValue(null, ATTRIBUTE_SIGNAL_REF));
     if (StringUtils.isNotEmpty(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_ASYNCHRONOUS))) {
       eventDefinition.setAsync(Boolean.parseBoolean(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_ASYNCHRONOUS)));

@@ -174,53 +174,53 @@
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-engine</artifactId>
-        <version>${version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-spring</artifactId>
-        <version>${version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-bpmn-model</artifactId>
-        <version>${version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-bpmn-converter</artifactId>
-        <version>${version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-json-converter</artifactId>
-        <version>${version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-explorer</artifactId>
-        <version>${version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-modeler</artifactId>
-        <version>${version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-rest</artifactId>
-        <version>${version}</version>
+        <version>${project.version}</version>
       </dependency> 
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-webapp-rest2</artifactId>
         <type>war</type>
-        <version>${version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-cxf</artifactId>
-        <version>${version}</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- EMAIL -->
       <dependency>
@@ -787,6 +787,33 @@
         <module>modules/activiti-json-converter</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-bpmn-model</module>
+      </modules>
+      <properties>
+        <skipTests>true</skipTests>
+      </properties>
+      <build>
+          <plugins>
+            <plugin>
+              <groupId>org.zeroturnaround</groupId>
+              <artifactId>jrebel-maven-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>generate-rebel-xml</id>
+                  <phase>process-resources</phase>
+                  <goals>
+                    <goal>generate</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </build>
+    </profile>
+    <profile>
+      <!-- Profile used by the start-explorer.sh script to build the Explorer webapp and all its dependencies -->
+      <id>buildRestappDependencies</id>
+      <modules>
+        <module>modules/activiti-rest</module>
       </modules>
       <properties>
         <skipTests>true</skipTests>

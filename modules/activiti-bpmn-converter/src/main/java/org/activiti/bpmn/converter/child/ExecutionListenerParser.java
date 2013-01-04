@@ -14,13 +14,10 @@ package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
 
-import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.bpmn.model.Event;
+import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
-import org.activiti.bpmn.model.SequenceFlow;
-import org.activiti.bpmn.model.SubProcess;
 
 /**
  * @author Tijs Rademakers
@@ -35,14 +32,8 @@ public class ExecutionListenerParser extends ActivitiListenerParser {
     
     super.parseChildElement(xtr, parentElement, model);
     
-    if (parentElement instanceof Activity) {
-      ((Activity) parentElement).getExecutionListeners().add(listener);
-    } else if (parentElement instanceof Event) {
-      ((Event) parentElement).getExecutionListeners().add(listener);
-    } else if (parentElement instanceof SequenceFlow){
-      ((SequenceFlow) parentElement).getExecutionListeners().add(listener);
-    } else if (parentElement instanceof SubProcess){
-      ((SubProcess) parentElement).getExecutionListeners().add(listener);
+    if (parentElement instanceof FlowElement) {
+      ((FlowElement) parentElement).getExecutionListeners().add(listener);
     } else if (parentElement instanceof Process){
       ((Process) parentElement).getExecutionListeners().add(listener);
     }

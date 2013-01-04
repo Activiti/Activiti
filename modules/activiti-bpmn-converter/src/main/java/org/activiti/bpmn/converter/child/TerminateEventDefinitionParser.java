@@ -14,6 +14,7 @@ package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
 
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EndEvent;
@@ -33,6 +34,7 @@ public class TerminateEventDefinitionParser extends BaseChildElementParser {
     if (parentElement instanceof EndEvent == false) return;
     
     TerminateEventDefinition eventDefinition = new TerminateEventDefinition();
+    BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
     ((Event) parentElement).getEventDefinitions().add(eventDefinition);
   }
 }

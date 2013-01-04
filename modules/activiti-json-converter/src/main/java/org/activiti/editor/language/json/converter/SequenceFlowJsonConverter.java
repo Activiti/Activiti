@@ -57,23 +57,23 @@ public class SequenceFlowJsonConverter extends BaseBpmnJsonConverter {
     ObjectNode flowNode = BpmnJsonConverterUtil.createChildShape(sequenceFlow.getId(), STENCIL_SEQUENCE_FLOW, 172, 212, 128, 212);
     ArrayNode dockersArrayNode = objectMapper.createArrayNode();
     ObjectNode dockNode = objectMapper.createObjectNode();
-    dockNode.put(EDITOR_BOUNDS_X, model.getGraphicInfo(sequenceFlow.getSourceRef()).width / 2.0);
-    dockNode.put(EDITOR_BOUNDS_Y, model.getGraphicInfo(sequenceFlow.getSourceRef()).height / 2.0);
+    dockNode.put(EDITOR_BOUNDS_X, model.getGraphicInfo(sequenceFlow.getSourceRef()).getWidth() / 2.0);
+    dockNode.put(EDITOR_BOUNDS_Y, model.getGraphicInfo(sequenceFlow.getSourceRef()).getHeight() / 2.0);
     dockersArrayNode.add(dockNode);
     
     if (model.getFlowLocationGraphicInfo(sequenceFlow.getId()).size() > 2) {
       for (int i = 1; i < model.getFlowLocationGraphicInfo(sequenceFlow.getId()).size() - 1; i++) {
         GraphicInfo graphicInfo =  model.getFlowLocationGraphicInfo(sequenceFlow.getId()).get(i);
         dockNode = objectMapper.createObjectNode();
-        dockNode.put(EDITOR_BOUNDS_X, graphicInfo.x);
-        dockNode.put(EDITOR_BOUNDS_Y, graphicInfo.y);
+        dockNode.put(EDITOR_BOUNDS_X, graphicInfo.getX());
+        dockNode.put(EDITOR_BOUNDS_Y, graphicInfo.getY());
         dockersArrayNode.add(dockNode);
       }
     }
     
     dockNode = objectMapper.createObjectNode();
-    dockNode.put(EDITOR_BOUNDS_X, model.getGraphicInfo(sequenceFlow.getTargetRef()).width / 2.0);
-    dockNode.put(EDITOR_BOUNDS_Y, model.getGraphicInfo(sequenceFlow.getTargetRef()).height / 2.0);
+    dockNode.put(EDITOR_BOUNDS_X, model.getGraphicInfo(sequenceFlow.getTargetRef()).getWidth() / 2.0);
+    dockNode.put(EDITOR_BOUNDS_Y, model.getGraphicInfo(sequenceFlow.getTargetRef()).getHeight() / 2.0);
     dockersArrayNode.add(dockNode);
     flowNode.put("dockers", dockersArrayNode);
     ArrayNode outgoingArrayNode = objectMapper.createArrayNode();

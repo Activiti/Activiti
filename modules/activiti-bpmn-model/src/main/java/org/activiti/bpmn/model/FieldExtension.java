@@ -15,7 +15,7 @@ package org.activiti.bpmn.model;
 /**
  * @author Tijs Rademakers
  */
-public class FieldExtension {
+public class FieldExtension extends BaseElement {
 
   protected String fieldName;
   protected String stringValue;

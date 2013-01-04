@@ -33,6 +33,7 @@ public class ProcessParser implements BpmnXMLConstants {
       String processId = xtr.getAttributeValue(null, ATTRIBUTE_ID);
       process = new Process();
       process.setId(processId);
+      BpmnXMLUtil.addXMLLocation(process, xtr);
       process.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
       if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_PROCESS_EXECUTABLE))) {
         process.setExecutable(Boolean.parseBoolean(xtr.getAttributeValue(null, ATTRIBUTE_PROCESS_EXECUTABLE)));

@@ -72,8 +72,8 @@ public class BoundaryEventJsonConverter extends BaseBpmnJsonConverter {
     ObjectNode dockNode = objectMapper.createObjectNode();
     GraphicInfo graphicInfo = model.getGraphicInfo(boundaryEvent.getId());
     GraphicInfo parentGraphicInfo = model.getGraphicInfo(boundaryEvent.getAttachedToRef().getId());
-    dockNode.put(EDITOR_BOUNDS_X, graphicInfo.x + graphicInfo.width - parentGraphicInfo.x);
-    dockNode.put(EDITOR_BOUNDS_Y, graphicInfo.y - parentGraphicInfo.y);
+    dockNode.put(EDITOR_BOUNDS_X, graphicInfo.getX() + graphicInfo.getWidth() - parentGraphicInfo.getX());
+    dockNode.put(EDITOR_BOUNDS_Y, graphicInfo.getY() - parentGraphicInfo.getY());
     dockersArrayNode.add(dockNode);
     flowElementNode.put("dockers", dockersArrayNode);
     

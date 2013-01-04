@@ -15,6 +15,7 @@ package org.activiti.bpmn.converter;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.converter.util.FieldExtensionUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
@@ -43,6 +44,7 @@ public class SendTaskXMLConverter extends BaseBpmnXMLConverter {
   @Override
   protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
 		SendTask sendTask = new SendTask();
+		BpmnXMLUtil.addXMLLocation(sendTask, xtr);
 		sendTask.setType(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TYPE));
 		
 		if ("##WebService".equals(xtr.getAttributeValue(null, ATTRIBUTE_TASK_IMPLEMENTATION))) {
@@ -66,9 +68,13 @@ public class SendTaskXMLConverter extends BaseBpmnXMLConverter {
   }
   
   @Override
-  protected void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
+  protected void writeExtensionChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
     SendTask sendTask = (SendTask) element;
     didWriteExtensionStartElement = FieldExtensionUtil.writeFieldExtensions(sendTask.getFieldExtensions(), didWriteExtensionStartElement, xtw);
+  }
+  
+  @Override
+  protected void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
   }
   
   protected String parseOperationRef(String operationRef, BpmnModel model) {

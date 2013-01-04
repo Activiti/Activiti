@@ -14,6 +14,7 @@ package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
 
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
@@ -32,7 +33,7 @@ public class MultiInstanceParser extends BaseChildElementParser {
     if (parentElement instanceof Activity == false) return;
     
     MultiInstanceLoopCharacteristics multiInstanceDef = new MultiInstanceLoopCharacteristics();
-    
+    BpmnXMLUtil.addXMLLocation(multiInstanceDef, xtr);
     if (xtr.getAttributeValue(null, ATTRIBUTE_MULTIINSTANCE_SEQUENTIAL) != null) {
       multiInstanceDef.setSequential(Boolean.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_MULTIINSTANCE_SEQUENTIAL)));
     }

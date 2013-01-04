@@ -15,6 +15,7 @@ package org.activiti.bpmn.converter;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.ThrowEvent;
 
@@ -39,13 +40,17 @@ public class ThrowEventXMLConverter extends BaseBpmnXMLConverter {
   @Override
   protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
     ThrowEvent throwEvent = new ThrowEvent();
+    BpmnXMLUtil.addXMLLocation(throwEvent, xtr);
     parseChildElements(getXMLElementName(), throwEvent, xtr);
     return throwEvent;
   }
 
   @Override
   protected void writeAdditionalAttributes(BaseElement element, XMLStreamWriter xtw) throws Exception {
-    
+  }
+  
+  @Override
+  protected void writeExtensionChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
   }
 
   @Override

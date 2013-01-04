@@ -16,6 +16,7 @@ package org.activiti.rest.application;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.DefaultResource;
 import org.activiti.rest.api.engine.ProcessEngineResource;
+import org.activiti.rest.api.history.HistoricFormPropertiesResource;
 import org.activiti.rest.api.identity.GroupCreateResource;
 import org.activiti.rest.api.identity.GroupResource;
 import org.activiti.rest.api.identity.GroupSearchResource;
@@ -137,6 +138,10 @@ public class ActivitiRestApplication extends Application {
     router.attach("/process-definition/{processDefinitionId}/diagram", ProcessDefinitionDiagramResource.class);
     router.attach("/process-definition/{processDefinitionId}/properties", ProcessDefinitionPropertiesResource.class);
     
+    /*router.attach("/process-instance/{processInstanceId}/highlights", ProcessInstanceHighlightsResource.class);
+    router.attach("/process-instance/{processInstanceId}/diagram-layout", ProcessDefinitionDiagramLayoutResource.class);
+    router.attach("/process-definition/{processDefinitionId}/diagram-layout", ProcessDefinitionDiagramLayoutResource.class);*/
+    
     router.attach("/tasks", TasksResource.class);
     router.attach("/tasks-summary", TasksSummaryResource.class);
     router.attach("/task", TaskAddResource.class);
@@ -145,6 +150,8 @@ public class ActivitiRestApplication extends Application {
     router.attach("/task/{taskId}/attachment", TaskAttachmentAddResource.class);
     router.attach("/task/{taskId}/url", TaskUrlAddResource.class);
     router.attach("/task/{taskId}/{operation}", TaskOperationResource.class);
+    
+    router.attach("/history/{taskId}/form-properties", HistoricFormPropertiesResource.class);
     
     router.attach("/attachment/{attachmentId}", TaskAttachmentResource.class);
     

@@ -20,6 +20,16 @@
 	<listener>
 		<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
 	</listener>
+  
+  <filter>
+    <filter-name>UIFilter</filter-name>
+    <filter-class>org.activiti.explorer.filter.ExplorerFilter</filter-class>
+  </filter>
+  
+  <filter-mapping>
+    <filter-name>UIFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
 
 	<servlet>
 		<servlet-name>Vaadin Application Servlet</servlet-name>
@@ -39,28 +49,13 @@
 
 	<servlet-mapping>
 		<servlet-name>Vaadin Application Servlet</servlet-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>/ui/*</url-pattern>
 	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>/api/*</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>/editor/*</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>/explorer/*</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>/libs/*</url-pattern>
-	</servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>Vaadin Application Servlet</servlet-name>
+    <url-pattern>/VAADIN/*</url-pattern>
+  </servlet-mapping>
 
 	<!-- Catch all service requests -->
 	<servlet-mapping>

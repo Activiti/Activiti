@@ -355,7 +355,7 @@ public class AdminRunningInstancesPanel extends DetailPanel {
     List<HistoricTaskInstance> tasks = historyService.createHistoricTaskInstanceQuery()
       .processInstanceId(processInstance.getId())
       .orderByHistoricTaskInstanceEndTime().desc()
-      .orderByHistoricActivityInstanceStartTime().desc()
+      .orderByHistoricTaskInstanceStartTime().desc()
       .list();
     
     if(tasks.size() > 0) {

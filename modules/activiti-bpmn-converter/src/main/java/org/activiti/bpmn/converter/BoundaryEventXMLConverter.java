@@ -15,6 +15,7 @@ package org.activiti.bpmn.converter;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.ErrorEventDefinition;
@@ -42,7 +43,7 @@ public class BoundaryEventXMLConverter extends BaseBpmnXMLConverter {
   @Override
   protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
     BoundaryEvent boundaryEvent = new BoundaryEvent();
-    
+    BpmnXMLUtil.addXMLLocation(boundaryEvent, xtr);
     if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_BOUNDARY_CANCELACTIVITY))) {
       String cancelActivity = xtr.getAttributeValue(null, ATTRIBUTE_BOUNDARY_CANCELACTIVITY);
       if (ATTRIBUTE_VALUE_FALSE.equalsIgnoreCase(cancelActivity)) {
@@ -78,6 +79,10 @@ public class BoundaryEventXMLConverter extends BaseBpmnXMLConverter {
         writeDefaultAttribute(ATTRIBUTE_BOUNDARY_CANCELACTIVITY, String.valueOf(boundaryEvent.isCancelActivity()).toLowerCase(), xtw);
       }
     }
+  }
+  
+  @Override
+  protected void writeExtensionChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
   }
 
   @Override

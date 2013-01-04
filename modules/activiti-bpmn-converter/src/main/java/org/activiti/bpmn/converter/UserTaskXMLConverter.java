@@ -20,6 +20,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.converter.child.BaseChildElementParser;
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.UserTask;
@@ -65,7 +66,7 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
     if (userTask == null) {
       userTask = new UserTask();
     }
-    
+    BpmnXMLUtil.addXMLLocation(userTask, xtr);
     userTask.setDueDate(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_DUEDATE));
     userTask.setFormKey(formKey);
     userTask.setAssignee(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_ASSIGNEE)); 
@@ -98,11 +99,15 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
       writeQualifiedAttribute(ATTRIBUTE_TASK_USER_PRIORITY, userTask.getPriority().toString(), xtw);
     }
   }
+  
+  @Override
+  protected void writeExtensionChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
+    UserTask userTask = (UserTask) element;
+    writeFormProperties(userTask, xtw);
+  }
 
   @Override
   protected void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
-    UserTask userTask = (UserTask) element;
-    writeFormProperties(userTask, xtw);
   }
   
   public void addFormType(String formType) {

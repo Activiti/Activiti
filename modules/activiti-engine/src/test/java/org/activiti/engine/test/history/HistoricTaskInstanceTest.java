@@ -60,8 +60,16 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(taskDefinitionKey, historicTaskInstance.getTaskDefinitionKey());
     assertNull(historicTaskInstance.getEndTime());
     assertNull(historicTaskInstance.getDurationInMillis());
+    assertNull(historicTaskInstance.getWorkTimeInMillis());
     
     runtimeService.setVariable(processInstanceId, "deadline", "yesterday");
+    
+    taskService.claim(taskId, "kermit");
+    
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().count());
+    historicTaskInstance = historyService.createHistoricTaskInstanceQuery().singleResult();
+    assertNotNull(historicTaskInstance.getClaimTime());
+    assertNull(historicTaskInstance.getWorkTimeInMillis());
     
     taskService.complete(taskId);
     
@@ -78,6 +86,8 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(taskDefinitionKey, historicTaskInstance.getTaskDefinitionKey());
     assertNotNull(historicTaskInstance.getEndTime());
     assertNotNull(historicTaskInstance.getDurationInMillis());
+    assertNotNull(historicTaskInstance.getClaimTime());
+    assertNotNull(historicTaskInstance.getWorkTimeInMillis());
     
     historyService.deleteHistoricTaskInstance(taskId);
 
@@ -228,7 +238,7 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByDeleteReason().asc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByExecutionId().asc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByHistoricActivityInstanceId().asc().count());    
-    assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByHistoricActivityInstanceStartTime().asc().count());    
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByHistoricTaskInstanceStartTime().asc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByProcessDefinitionId().asc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByProcessInstanceId().asc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByTaskDescription().asc().count());    
@@ -241,7 +251,7 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByDeleteReason().desc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByExecutionId().desc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByHistoricActivityInstanceId().desc().count());    
-    assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByHistoricActivityInstanceStartTime().desc().count());    
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByHistoricTaskInstanceStartTime().desc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByProcessDefinitionId().desc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByProcessInstanceId().desc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByTaskDescription().desc().count());    

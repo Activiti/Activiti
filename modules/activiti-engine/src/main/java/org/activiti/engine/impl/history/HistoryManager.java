@@ -320,6 +320,21 @@ public class HistoryManager extends AbstractManager {
   }
   
   /**
+   * record task instance claim time, if audit history is enabled 
+   * @param taskId
+   */
+
+  public void recordTaskClaim(String taskId) {
+    if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
+      HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
+      if (historicTaskInstance != null) {
+        historicTaskInstance.setClaimTime( ClockUtil.getCurrentTime());
+      }
+    }    
+  }
+
+  
+  /**
    * Record the id of a the task associated with a historic activity, if activity history is enabled.
    */
   public void recordTaskId(TaskEntity task) {

@@ -125,6 +125,8 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   protected boolean jpaHandleTransaction;
   protected boolean jpaCloseEntityManager;
   
+  protected String activityFontName = "Arial";
+  
   protected ClassLoader classLoader;
 
   /** use one of the static createXxxx methods instead */
@@ -500,5 +502,14 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   public void setDataSourceJndiName(String dataSourceJndiName) {
     this.dataSourceJndiName = dataSourceJndiName;
   }
+
+  public String getActivityFontName() {
+    return activityFontName;
+  }
+
+  public void setActivityFontName(String activityFontName) {
+    this.activityFontName = activityFontName;
+  }
+
 
 }

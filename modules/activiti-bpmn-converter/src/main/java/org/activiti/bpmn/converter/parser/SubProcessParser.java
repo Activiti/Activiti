@@ -17,6 +17,7 @@ import java.util.List;
 import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SubProcess;
@@ -37,6 +38,7 @@ public class SubProcessParser implements BpmnXMLConstants {
 		} else {
 			subProcess = new SubProcess();
 		}
+  	BpmnXMLUtil.addXMLLocation(subProcess, xtr);
 		activeSubProcessList.add(subProcess);
 		
 		subProcess.setId(xtr.getAttributeValue(null, ATTRIBUTE_ID));

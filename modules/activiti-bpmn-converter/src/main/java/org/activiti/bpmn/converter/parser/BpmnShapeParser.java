@@ -15,10 +15,9 @@ package org.activiti.bpmn.converter.parser;
 import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.bpmn.model.Event;
-import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.GraphicInfo;
 
 /**
@@ -29,19 +28,20 @@ public class BpmnShapeParser implements BpmnXMLConstants {
   public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
     
   	String id = xtr.getAttributeValue(null, ATTRIBUTE_DI_BPMNELEMENT);
+  	GraphicInfo graphicInfo = new GraphicInfo();
+    BpmnXMLUtil.addXMLLocation(graphicInfo, xtr);
 		while (xtr.hasNext()) {
 			xtr.next();
 			if (xtr.isStartElement() && ELEMENT_DI_BOUNDS.equalsIgnoreCase(xtr.getLocalName())) {
-				GraphicInfo graphicInfo = new GraphicInfo();
-				graphicInfo.x = Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_X)).intValue();
-				graphicInfo.y = Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_Y)).intValue();
-				FlowElement flowElement = model.getFlowElement(id);
-				/*if (flowElement instanceof Event) {
+				graphicInfo.setX(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_X)).intValue());
+				graphicInfo.setY(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_Y)).intValue());
+				/*FlowElement flowElement = model.getFlowElement(id);
+				if (flowElement instanceof Event) {
 				  graphicInfo.width = 30;
 				  graphicInfo.height = 30;
 				} else {*/
-				  graphicInfo.width = Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_WIDTH)).intValue();
-				  graphicInfo.height = Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_HEIGHT)).intValue();
+				  graphicInfo.setWidth(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_WIDTH)).intValue());
+				  graphicInfo.setHeight(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_HEIGHT)).intValue());
 				//}
 				
 				model.addGraphicInfo(id, graphicInfo);

@@ -199,8 +199,13 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
   /** Order by end time (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricTaskInstanceQuery orderByHistoricTaskInstanceEndTime();
   
-  /** Order by start time (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  /** Order by start time (needs to be followed by {@link #asc()} or {@link #desc()}). 
+   * @deprecated use {@link #orderByHistoricTaskInstanceStartTime()} */
+  @Deprecated
   HistoricTaskInstanceQuery orderByHistoricActivityInstanceStartTime();
+  
+  /** Order by start time (needs to be followed by {@link #asc()} or {@link #desc()}).  */
+  HistoricTaskInstanceQuery orderByHistoricTaskInstanceStartTime();
   
   /** Order by task name (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricTaskInstanceQuery orderByTaskName();

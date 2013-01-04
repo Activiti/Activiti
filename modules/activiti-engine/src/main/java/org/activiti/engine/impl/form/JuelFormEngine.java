@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.impl.form;
 
+import java.io.UnsupportedEncodingException;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.form.FormData;
 import org.activiti.engine.form.StartFormData;
@@ -63,7 +65,13 @@ public class JuelFormEngine implements FormEngine {
     }
     
     byte[] resourceBytes = resourceStream.getBytes();
-    String formTemplateString = new String(resourceBytes);
+    String encoding = "UTF-8";
+    String formTemplateString = "";
+    try {
+      formTemplateString = new String(resourceBytes, encoding);
+    } catch (UnsupportedEncodingException e) {
+      throw new ActivitiException("Unsupported encoding of :" + encoding, e);
+    }
     return formTemplateString;
   }
 }

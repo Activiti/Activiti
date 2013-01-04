@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.Assignment;
 import org.activiti.bpmn.model.DataAssociation;
 import org.apache.commons.lang.StringUtils;
@@ -40,6 +41,7 @@ public class DataAssociationParser implements BpmnXMLConstants {
           
         } else if (xtr.isStartElement() && ELEMENT_ASSIGNMENT.equals(xtr.getLocalName())) {
           assignment = new Assignment();
+          BpmnXMLUtil.addXMLLocation(assignment, xtr);
           
         } else if (xtr.isStartElement() && ELEMENT_FROM.equals(xtr.getLocalName())) {
           String from = xtr.getElementText();

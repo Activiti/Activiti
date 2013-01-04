@@ -12,10 +12,13 @@
  */
 package org.activiti.explorer.ui.login;
 
+import java.io.UnsupportedEncodingException;
+
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.util.HtmlUtils;
 
 import com.vaadin.ui.LoginForm;
@@ -104,7 +107,13 @@ public class ExplorerLoginForm extends LoginForm {
       + "<span>" + submitCaption + "</span>"
       + "</span></div></div></form></div></body>";
     
-    return (x + "<html>" + h + b + "</html>").getBytes();
+    String encoding = "UTF-8";
+    try {
+		return (x + "<html>" + h + b + "</html>").getBytes(encoding);
+	} catch (UnsupportedEncodingException e) {
+		// This should never happen
+		throw new java.lang.RuntimeException("Unsupported encoding: " + encoding);
+	}
   }
 
 }

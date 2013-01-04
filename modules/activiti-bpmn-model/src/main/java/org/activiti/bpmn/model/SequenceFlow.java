@@ -12,8 +12,6 @@
  */
 package org.activiti.bpmn.model;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Tijs Rademakers
@@ -23,7 +21,6 @@ public class SequenceFlow extends FlowElement {
   protected String conditionExpression;
   protected String sourceRef;
   protected String targetRef;
-  protected List<ActivitiListener> executionListeners = new ArrayList<ActivitiListener>();
 
   public String getConditionExpression() {
     return conditionExpression;
@@ -42,11 +39,5 @@ public class SequenceFlow extends FlowElement {
   }
   public void setTargetRef(String targetRef) {
     this.targetRef = targetRef;
-  }
-  public List<ActivitiListener> getExecutionListeners() {
-    return executionListeners;
-  }
-  public void setExecutionListeners(List<ActivitiListener> executionListeners) {
-    this.executionListeners = executionListeners;
   }
 }
