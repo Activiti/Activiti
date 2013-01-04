@@ -88,19 +88,6 @@
     </discriminator>
   </resultMap>
   
-  <resultMap id="historicDetailResultMap_postgres" type="org.activiti.engine.impl.persistence.entity.HistoricDetailEntity">
-    <id property="id" column="ID_" jdbcType="VARCHAR" />
-    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
-    <result property="activityInstanceId" column="ACT_INST_ID_" jdbcType="VARCHAR" />
-    <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
-    <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
-    <result property="time" column="TIME_" jdbcType="TIMESTAMP" />
-    <discriminator javaType="string" column="TYPE_">
-      <case value="VariableUpdate" resultMap="historicVariableUpdateResultMap_postgres"/> 
-      <case value="FormProperty" resultMap="historicFormPropertyResultMap"/> 
-    </discriminator>
-  </resultMap>
-
   <resultMap id="historicVariableUpdateResultMap" extends="historicDetailResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity">
     <result property="name" column="NAME_" javaType="String" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
@@ -121,14 +108,6 @@
   <!-- HISTORIC VARIABLE UPDATE SELECT -->
 
   <select id="selectHistoricDetailsByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricDetailQueryImpl" resultMap="historicDetailResultMap">
-  	${limitBefore}
-    select RES.* ${limitBetween}
-    <include refid="selectHistoricDetailsByQueryCriteriaSql"/>
-    ${orderBy}
-    ${limitAfter}
-  </select>
-  
-  <select id="selectHistoricDetailsByQueryCriteria_postgres" parameterType="org.activiti.engine.impl.HistoricDetailQueryImpl" resultMap="historicDetailResultMap_postgres">
   	${limitBefore}
     select RES.* ${limitBetween}
     <include refid="selectHistoricDetailsByQueryCriteriaSql"/>
