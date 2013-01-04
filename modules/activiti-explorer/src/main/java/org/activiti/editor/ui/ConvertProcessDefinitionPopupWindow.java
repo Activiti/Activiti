@@ -151,7 +151,7 @@ public class ConvertProcessDefinitionPopupWindow extends PopupWindow implements 
               close();
               ExplorerApp.get().getViewManager().showEditorProcessDefinitionPage(modelData.getId());
               ExplorerApp.get().getMainWindow().open(new ExternalResource(
-                  ExplorerApp.get().getURL().toString() + "service/editor?id=" + modelData.getId()));
+                  ExplorerApp.get().getURL().toString().replace("/ui", "") + "service/editor?id=" + modelData.getId()));
             }
           }
           

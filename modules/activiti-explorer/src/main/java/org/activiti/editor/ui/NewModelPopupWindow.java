@@ -157,7 +157,7 @@ public class NewModelPopupWindow extends PopupWindow implements ModelDataJsonCon
           close();
           ExplorerApp.get().getViewManager().showEditorProcessDefinitionPage(modelData.getId());
           ExplorerApp.get().getMainWindow().open(new ExternalResource(
-              ExplorerApp.get().getURL().toString() + "service/editor?id=" + modelData.getId()));
+              ExplorerApp.get().getURL().toString().replace("/ui", "") + "service/editor?id=" + modelData.getId()));
           
         } catch(Exception e) {
           notificationManager.showErrorNotification("error", e);

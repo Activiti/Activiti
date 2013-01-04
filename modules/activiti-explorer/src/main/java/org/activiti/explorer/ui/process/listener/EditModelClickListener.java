@@ -26,6 +26,6 @@ public class EditModelClickListener implements ClickListener {
 
   public void buttonClick(ClickEvent event) {
     ExplorerApp.get().getMainWindow().open(new ExternalResource(
-        ExplorerApp.get().getURL().toString() + "service/editor?id=" + modelId));
+        ExplorerApp.get().getURL().toString().replace("/ui", "") + "service/editor?id=" + modelId));
   }
 }
