@@ -46,6 +46,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.slf4j.Logger;
@@ -143,15 +144,15 @@ public class ProcessDiagramCanvas {
   /**
    * Creates an empty canvas with given width and height.
    */
-  public ProcessDiagramCanvas(int width, int height, String activityFontName) {
+  public ProcessDiagramCanvas(int width, int height) {
     this.canvasWidth = width;
     this.canvasHeight = height;
-    this.activityFontName = activityFontName;
+    this.activityFontName = Context.getProcessEngineConfiguration().getActivityFontName();
     this.processDiagram = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
     this.g = processDiagram.createGraphics();
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     g.setPaint(Color.black);
-
+    
     Font font = new Font(activityFontName, Font.BOLD, FONT_SIZE);
     g.setFont(font);
     this.fontMetrics = g.getFontMetrics();
@@ -171,8 +172,8 @@ public class ProcessDiagramCanvas {
    *          Hint that will be used when generating the image. Parts that fall
    *          below minX on the horizontal scale will be cropped.
    */
-  public ProcessDiagramCanvas(int width, int height, int minX, int minY, String activityFontName) {
-    this(width, height, activityFontName);
+  public ProcessDiagramCanvas(int width, int height, int minX, int minY) {
+    this(width, height);
     this.minX = minX;
     this.minY = minY;
   }
@@ -343,7 +344,7 @@ public class ProcessDiagramCanvas {
     }
 
     int radius = 15;
-	  
+    
     Path2D path = new Path2D.Double();
 
     boolean isDefaultConditionAvailable = false;
@@ -484,8 +485,8 @@ public class ProcessDiagramCanvas {
     Line2D.Double defaultIndicator = new Line2D.Double(-halfOfLength, 0, halfOfLength, 0);
 
     double angle = Math.atan2(line.y2 - line.y1, line.x2 - line.x1);
-	double dx = f * Math.cos(angle), dy = f * Math.sin(angle),
-	       x1 = line.x1 + dx, y1 = line.y1 + dy;
+  double dx = f * Math.cos(angle), dy = f * Math.sin(angle),
+         x1 = line.x1 + dx, y1 = line.y1 + dy;
 
     AffineTransform transformation = new AffineTransform();
     transformation.setToIdentity();

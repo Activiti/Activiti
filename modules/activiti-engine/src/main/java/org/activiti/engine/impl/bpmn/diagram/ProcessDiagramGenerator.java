@@ -505,7 +505,7 @@ public class ProcessDiagramGenerator {
       minY = 0;
     }
     
-    return new ProcessDiagramCanvas(maxX + 10, maxY + 10, minX, minY, activityFontName);
+    return new ProcessDiagramCanvas(maxX + 10, maxY + 10, minX, minY);
   }
 
   protected interface ActivityDrawInstruction {
