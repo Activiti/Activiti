@@ -30,6 +30,8 @@ import org.apache.commons.mail.SimpleEmail;
  */
 public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
 
+  private static final long serialVersionUID = 1L;
+  
   protected Expression to;
   protected Expression from;
   protected Expression cc;
