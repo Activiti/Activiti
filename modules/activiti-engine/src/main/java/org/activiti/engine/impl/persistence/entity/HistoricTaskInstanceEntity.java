@@ -38,6 +38,7 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
   protected String taskDefinitionKey;
   protected int priority;
   protected Date dueDate;
+  protected Date claimTime;
 
   public HistoricTaskInstanceEntity() {
   }
@@ -77,6 +78,9 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
     }
     if(dueDate != null) {
       persistentState.put("dueDate", dueDate);
+    }
+    if (claimTime != null) {
+      persistentState.put("claimTime", claimTime);
     }
     return persistentState;
   }
@@ -135,5 +139,17 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
   }
   public void setParentTaskId(String parentTaskId) {
     this.parentTaskId = parentTaskId;
+  }
+  public Date getClaimTime() {
+    return claimTime;
+  }
+  public void setClaimTime(Date claimTime) {
+    this.claimTime = claimTime;
+  }
+  public Long getWorkTimeInMillis() {
+    if (endTime == null || claimTime == null) {
+      return null;
+    }
+    return endTime.getTime() - claimTime.getTime();
   }
 }
