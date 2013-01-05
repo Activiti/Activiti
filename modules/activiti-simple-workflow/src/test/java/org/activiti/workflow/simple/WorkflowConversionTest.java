@@ -23,7 +23,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
+import org.activiti.engine.TaskService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -31,6 +33,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.ActivitiRule;
 import org.activiti.workflow.simple.converter.DefaultWorkflowDefinitionConversionListener;
 import org.activiti.workflow.simple.converter.HumanStepDefinitionConverter;
+import org.activiti.workflow.simple.converter.ParallelStepsDefinitionConverter;
 import org.activiti.workflow.simple.converter.StepDefinitionConverter;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversionFactory;
@@ -65,6 +68,7 @@ public class WorkflowConversionTest {
     // Steps
     List<StepDefinitionConverter> stepConverters = new ArrayList<StepDefinitionConverter>();
     stepConverters.add(new HumanStepDefinitionConverter());
+    stepConverters.add(new ParallelStepsDefinitionConverter());
     conversionFactory.setStepDefinitionConverters(stepConverters);
     
     // Listeners
@@ -113,21 +117,43 @@ public class WorkflowConversionTest {
     assertEquals(0, activitiRule.getRuntimeService().createProcessInstanceQuery().count());
   }
   
-//  @Test
-//  public void testTwoUserTasksInParallel() {
-//    WorkflowDefinition workflowDefinition = new WorkflowDefinition()
-//      .name("testWorkflow")
-//      .description("This is a test workflow")
-//      .inParallel()
-//        .addHumanStep("first task", "kermit")
-//        .addHumanStep("second step", "gonzo")
-//      .endParallel();
-//    
-//    // Validate
-//    activitiRule.getRuntimeService().startProcessInstanceByKey(convertAndDeploy(workflowDefinition));
-//    assertEquals(1, activitiRule.getTaskService().createTaskQuery().taskAssignee("kermit").count());
-//    assertEquals(1, activitiRule.getTaskService().createTaskQuery().taskAssignee("gonzo").count());
-//  }
+  @Test
+  public void testThreeUserTasksInParallel() {
+    TaskService taskService = activitiRule.getTaskService();
+    
+    WorkflowDefinition workflowDefinition = new WorkflowDefinition()
+      .name("testWorkflow")
+      .description("This is a test workflow")
+      .inParallel()
+        .addHumanStep("first task", "kermit")
+        .addHumanStep("second step", "gonzo")
+        .addHumanStep("thrid task", "mispiggy")
+      .endParallel()
+      .addHumanStep("Task in between", "kermit")
+      .inParallel()
+        .addHumanStep("fourth task", "gonzo")
+        .addHumanStep("fifth step", "gonzo")
+      .endParallel();
+    
+    // Validate
+    activitiRule.getRuntimeService().startProcessInstanceByKey(convertAndDeploy(workflowDefinition));
+    assertEquals(1, taskService.createTaskQuery().taskAssignee("kermit").count());
+    assertEquals(1, taskService.createTaskQuery().taskAssignee("gonzo").count());
+    assertEquals(1, taskService.createTaskQuery().taskAssignee("mispiggy").count());
+    
+    // Complete tasks
+    for (Task task : taskService.createTaskQuery().list()) {
+      activitiRule.getTaskService().complete(task.getId());
+    }
+    
+    // In between task should be active
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("Task in between", task.getName());
+    taskService.complete(task.getId());
+    
+    // There should be two task open now for gonzo
+    assertEquals(2, taskService.createTaskQuery().taskAssignee("gonzo").count());
+  }
   
   // Helper methods -----------------------------------------------------------------------------
   
@@ -138,19 +164,20 @@ public class WorkflowConversionTest {
     conversion.convert();
     log.info("Converted process : " + conversion.getbpm20Xml());
     
-//    InputStream is = conversion.getWorkflowDiagramImage();
-//    try {
-//      flow(is, new FileOutputStream("temp.png"), new byte[1024]);
-//    } catch (FileNotFoundException e) {
-//      e.printStackTrace();
-//    } catch (IOException e) {
-//      e.printStackTrace();
-//    }
+    InputStream is = conversion.getWorkflowDiagramImage();
+    try {
+      flow(is, new FileOutputStream("temp" + UUID.randomUUID().toString() + ".png"), new byte[1024]);
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     
     // Deploy
     deployProcessDefinition(conversion);
     return getDeployedProcessKey();
   }
+  
   public static void flow( InputStream is, OutputStream os, byte[] buf ) 
           throws IOException {
           int numRead;

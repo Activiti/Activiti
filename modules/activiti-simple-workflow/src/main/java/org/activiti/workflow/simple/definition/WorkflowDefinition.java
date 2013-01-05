@@ -12,19 +12,16 @@
  */
 package org.activiti.workflow.simple.definition;
 
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
  * @author Joram Barrez
  */
-public class WorkflowDefinition implements StepDefinitionContainer {
+public class WorkflowDefinition extends AbstractStepDefinitionContainer<WorkflowDefinition> {
 
   protected String name;
   protected String description;
-  protected List<StepDefinition> steps = new ArrayList<StepDefinition>();
-  protected ParallelBlock currentParallelBlock;
+  protected ParallelStepsDefinition currentParallelStepsDefinition;
 
   public String getName() {
     return name;
@@ -52,80 +49,10 @@ public class WorkflowDefinition implements StepDefinitionContainer {
     return this;
   }
   
-  public void addStep(StepDefinition stepDefinition) {
-    steps.add(stepDefinition);
-  }
-
-  public List<StepDefinition> getSteps() {
-    return steps;
-  }
-
-  public WorkflowDefinition addHumanStep(String name, String assignee) {
-    return addHumanStep(name, assignee, false);
-  }
-
-  public WorkflowDefinition addHumanStepForWorkflowInitiator(String name) {
-    return addHumanStep(name, null, true);
-  }
-
-  protected WorkflowDefinition addHumanStep(String name, String assignee, boolean initiator) {
-    HumanStepDefinition humanStepDefinition = new HumanStepDefinition();
-
-    if (name != null) {
-      humanStepDefinition.setName(name);
-    }
-
-    if (assignee != null) {
-      humanStepDefinition.setAssignee(assignee);
-    }
-
-    humanStepDefinition.setAssigneeInitiator(initiator);
-    humanStepDefinition.setStartWithPrevious(currentParallelBlock != null);
-
-    addStep(humanStepDefinition);
-    return this;
+  public ParallelStepsDefinition inParallel() {
+    currentParallelStepsDefinition = new ParallelStepsDefinition(this);
+    addStep(currentParallelStepsDefinition);
+    return currentParallelStepsDefinition;
   }
   
-  public ParallelBlock inParallel() {
-    currentParallelBlock = new ParallelBlock(this);
-    return currentParallelBlock;
-  }
-  
-  public WorkflowDefinition endParallel() {
-    currentParallelBlock = null;
-    return this;
-  }
-
-  // Helper classes
-  
-  public static class ParallelBlock implements StepDefinitionContainer {
-    
-    protected WorkflowDefinition workflowDefinition;
-    
-    public ParallelBlock(WorkflowDefinition workflowDefinition) {
-      this.workflowDefinition = workflowDefinition;
-    }
-    
-    public void addStep(StepDefinition stepDefinition) {
-      workflowDefinition.addStep(stepDefinition);
-    }
-
-    public ParallelBlock addHumanStep(String name, String assignee) {
-      workflowDefinition.addHumanStep(name, assignee);
-      return this;
-    }
-
-    public ParallelBlock addHumanStepForWorkflowInitiator(String name) {
-      workflowDefinition.addHumanStepForWorkflowInitiator(name);
-      return this;
-    }
-    
-    public WorkflowDefinition endParallel() {
-      workflowDefinition.endParallel();
-      return workflowDefinition;
-    }
-
-    
-  }
-
 }

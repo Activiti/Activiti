@@ -147,7 +147,11 @@ public class ProcessDiagramCanvas {
   public ProcessDiagramCanvas(int width, int height) {
     this.canvasWidth = width;
     this.canvasHeight = height;
-    this.activityFontName = Context.getProcessEngineConfiguration().getActivityFontName();
+    
+    if (Context.getProcessEngineConfiguration() != null) {
+      this.activityFontName = Context.getProcessEngineConfiguration().getActivityFontName();
+    }
+    
     this.processDiagram = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
     this.g = processDiagram.createGraphics();
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

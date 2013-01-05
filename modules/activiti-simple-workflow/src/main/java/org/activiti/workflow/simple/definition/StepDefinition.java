@@ -15,34 +15,6 @@ package org.activiti.workflow.simple.definition;
 /**
  * @author Joram Barrez
  */
-public class StepDefinition {
-
-  protected String name;
-  protected String description;
-  boolean isStartWithPrevious;
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public void setDescription(String description) {
-    this.description = description;
-  }
-
-  public boolean isStartWithPrevious() {
-    return isStartWithPrevious;
-  }
-  
-  public void setStartWithPrevious(boolean isStartWithPrevious) {
-    this.isStartWithPrevious = isStartWithPrevious;
-  }
+public interface StepDefinition {
   
 }

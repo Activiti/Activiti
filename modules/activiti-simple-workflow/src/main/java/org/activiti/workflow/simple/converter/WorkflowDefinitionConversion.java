@@ -14,6 +14,7 @@ package org.activiti.workflow.simple.converter;
 
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.bpmn.converter.BpmnXMLConverter;
@@ -47,6 +48,9 @@ public class WorkflowDefinitionConversion {
   protected WorkflowDefinitionConversionFactory conversionFactory;
   protected String lastActivityId;
   protected HashMap<String, Integer> incrementalIdMapping;
+  
+  protected boolean sequenceflowGenerationEnabled = true;
+  protected boolean updateLastActivityEnabled = true;
 
   /* package */WorkflowDefinitionConversion(WorkflowDefinitionConversionFactory factory) {
     this.conversionFactory = factory;
@@ -78,9 +82,7 @@ public class WorkflowDefinitionConversion {
     }
 
     // Convert each step
-    for (StepDefinition step : workflowDefinition.getSteps()) {
-      conversionFactory.getStepConverterFor(step).convertStepDefinition(step, this);
-    }
+   convertSteps(workflowDefinition.getSteps());
 
     // Let conversion listeners know step conversion is done
     for (WorkflowDefinitionConversionListener conversionListener : conversionFactory.getWorkflowDefinitionConversionListeners()) {
@@ -91,7 +93,13 @@ public class WorkflowDefinitionConversion {
     WorkflowDIGenerator workflowDIGenerator = new WorkflowDIGenerator(workflowDefinition, bpmnModel);
     workflowDIGenerator.generateDI();
   }
-
+  
+  public void convertSteps(List<StepDefinition> stepDefinitions) {
+    for (StepDefinition step : stepDefinitions) {
+      conversionFactory.getStepConverterFor(step).convertStepDefinition(step, this);
+    }
+  }
+  
   /**
    * @param baseName
    *          base name of the unique identifier
@@ -162,6 +170,22 @@ public class WorkflowDefinitionConversion {
     this.workflowDefinition = workflowDefinition;
   }
   
+  public boolean isSequenceflowGenerationEnabled() {
+    return sequenceflowGenerationEnabled;
+  }
+  
+  public void setSequenceflowGenerationEnabled(boolean sequenceflowGenerationEnabled) {
+    this.sequenceflowGenerationEnabled = sequenceflowGenerationEnabled;
+  }
+  
+  public boolean isUpdateLastActivityEnabled() {
+    return updateLastActivityEnabled;
+  }
+  
+  public void setUpdateLastActivityEnabled(boolean updateLastActivityEnabled) {
+    this.updateLastActivityEnabled = updateLastActivityEnabled;
+  }
+
   public String getbpm20Xml() {
     BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
     return new String(bpmnXMLConverter.convertToXML(bpmnModel));

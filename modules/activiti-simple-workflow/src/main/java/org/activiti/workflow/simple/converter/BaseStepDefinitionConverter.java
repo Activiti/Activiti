@@ -49,11 +49,14 @@ public abstract class BaseStepDefinitionConverter<U extends StepDefinition, T> i
   }
 
   protected void addFlowElement(WorkflowDefinitionConversion conversion, FlowElement flowElement, boolean addSequenceFlow) {
-      if (addSequenceFlow) {
+      if (conversion.isSequenceflowGenerationEnabled() && addSequenceFlow) {
           addSequenceFlow(conversion, conversion.getLastActivityId(), flowElement.getId());
       }
       conversion.getProcess().addFlowElement(flowElement);
-      conversion.setLastActivityId(flowElement.getId());
+      
+      if (conversion.isUpdateLastActivityEnabled()) {
+        conversion.setLastActivityId(flowElement.getId());
+      }
   }
 
   /**
@@ -77,5 +80,5 @@ public abstract class BaseStepDefinitionConverter<U extends StepDefinition, T> i
   protected String getSequenceFlowPrefix() {
     return ConversionConstants.DEFAULT_SEQUENCEFLOW_PREFIX;
   }
-
+  
 }

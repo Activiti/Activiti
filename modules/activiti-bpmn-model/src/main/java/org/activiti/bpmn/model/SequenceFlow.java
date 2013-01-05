@@ -40,4 +40,7 @@ public class SequenceFlow extends FlowElement {
   public void setTargetRef(String targetRef) {
     this.targetRef = targetRef;
   }
+  public String toString() {
+    return sourceRef + " --> " + targetRef;
+  }
 }

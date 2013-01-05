@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * @author Joram Barrez
  */
-public class HumanStepDefinition extends StepDefinition {
+public class HumanStepDefinition extends AbstractNamedStepDefinition {
 
   protected String assignee;
 

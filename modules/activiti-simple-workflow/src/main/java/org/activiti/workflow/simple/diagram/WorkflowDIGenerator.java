@@ -14,7 +14,6 @@ package org.activiti.workflow.simple.diagram;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -33,9 +32,11 @@ import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.Task;
 import org.activiti.bpmn.model.UserTask;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramCanvas;
-import org.activiti.workflow.simple.definition.StepDefinition;
+import org.activiti.workflow.simple.definition.AbstractNamedStepDefinition;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
+import org.activiti.workflow.simple.util.BpmnModelUtil;
 
 /**
  * @author Joram Barrez
@@ -68,11 +69,13 @@ public class WorkflowDIGenerator {
   protected Process process;
 
   // Will be set during image generation
+  protected int maximumWidth;
+  protected int maxiumHeight;
   protected int startX;
   protected int startY;
   protected int currentWidth;
   protected ProcessDiagramCanvas processDiagramCanvas;
-  protected List<BlockOfSteps> allStepBlocks;
+//  protected List<BlockOfSteps> allStepBlocks;
   protected Map<String, List<SequenceFlow>> outgoingSequenceFlowMapping;
   protected Map<String, List<SequenceFlow>> incomingSequenceFlowMapping;
   protected Set<String> handledElements;
@@ -95,26 +98,25 @@ public class WorkflowDIGenerator {
     
     process = bpmnModel.getProcesses().get(0); // will always contain just one
     
-    // Create task blocks (used for image generation and canvas size calculation)
-    generateTaskBlocks();
+    // Generate mappings of sequence flow and calculate the maximum sizes
+    generateSequenceflowMappings();
+    calculateMaximumSizes();
     
-    // Calulcate image height and width
     this.startX = 0;
-    this.startY = calculateMaximumHeight() / 2 + 10;
+    this.startY = maxiumHeight / 2 + 10;
     this.currentWidth = 0;
 
+    // Create canvas to draw on (if needed)
     if (generateImage) {
-      int width = calculateMaximumWidth() + 50;
-      int height = calculateMaximumHeight() + 50;
+      int width = maximumWidth + 50;
+      int height = maxiumHeight + 50;
       processDiagramCanvas = new ProcessDiagramCanvas(width, height);
     }
 
-    Collection<FlowElement> flowElements = process.getFlowElements();
-    generateSequenceflowMappings(flowElements);
     this.handledElements = new HashSet<String>();
 
     // Enough preparation, actually draw some stuff
-    for (FlowElement flowElement : flowElements) {
+    for (FlowElement flowElement : process.getFlowElements()) {
 
       if (!handledElements.contains(flowElement.getId())) {
 
@@ -157,75 +159,130 @@ public class WorkflowDIGenerator {
     return processDiagramCanvas.generateImage("png");
   }
 
-  protected void generateTaskBlocks() {
-    allStepBlocks = new ArrayList<BlockOfSteps>();
-
-    List<StepDefinition> workflowSteps = workflowDefinition.getSteps();
-    for (int i=0; i<workflowSteps.size(); i++) {
-      StepDefinition stepDefinition = workflowSteps.get(i);
-      
-      // Parallel tasks are grouped in the same task block
-      if (stepDefinition.isStartWithPrevious() && (i != 0)) {
-        allStepBlocks.get(allStepBlocks.size() - 1).addStep(stepDefinition);
-      } else {
-        BlockOfSteps blockOfSteps = new BlockOfSteps();
-        blockOfSteps.addStep(stepDefinition);
-        allStepBlocks.add(blockOfSteps);
-      }
-    }
-  }
+//  protected void generateTaskBlocks() {
+//    allStepBlocks = new ArrayList<BlockOfSteps>();
+//
+//    List<AbstractNamedStepDefinition> workflowSteps = workflowDefinition.getSteps();
+//    for (int i=0; i<workflowSteps.size(); i++) {
+//      AbstractNamedStepDefinition stepDefinition = workflowSteps.get(i);
+//      
+//      // Parallel tasks are grouped in the same task block
+//      if (stepDefinition.isStartWithPrevious() && (i != 0)) {
+//        allStepBlocks.get(allStepBlocks.size() - 1).addStep(stepDefinition);
+//      } else {
+//        BlockOfSteps blockOfSteps = new BlockOfSteps();
+//        blockOfSteps.addStep(stepDefinition);
+//        allStepBlocks.add(blockOfSteps);
+//      }
+//    }
+//  }
   
-  protected void generateSequenceflowMappings(Collection<FlowElement> flowElements) {
+  protected void generateSequenceflowMappings() {
     this.outgoingSequenceFlowMapping = new HashMap<String, List<SequenceFlow>>();
     this.incomingSequenceFlowMapping = new HashMap<String, List<SequenceFlow>>();
-    for (FlowElement flowElement : flowElements) {
-      if (flowElement instanceof SequenceFlow) {
-        SequenceFlow sequenceFlow = (SequenceFlow) flowElement;
-        String srcId = sequenceFlow.getSourceRef();
-        String targetId = sequenceFlow.getTargetRef();
+    
+    for (FlowElement flowElement : BpmnModelUtil.findFlowElementsOfType(process, SequenceFlow.class)) {
+      SequenceFlow sequenceFlow = (SequenceFlow) flowElement;
+      String srcId = sequenceFlow.getSourceRef();
+      String targetId = sequenceFlow.getTargetRef();
 
-        if (outgoingSequenceFlowMapping.get(srcId) == null) {
-          outgoingSequenceFlowMapping.put(srcId, new ArrayList<SequenceFlow>());
-        }
-        outgoingSequenceFlowMapping.get(srcId).add(sequenceFlow);
-
-        if (incomingSequenceFlowMapping.get(targetId) == null) {
-          incomingSequenceFlowMapping.put(targetId, new ArrayList<SequenceFlow>());
-        }
-        incomingSequenceFlowMapping.get(targetId).add(sequenceFlow);
+      if (outgoingSequenceFlowMapping.get(srcId) == null) {
+        outgoingSequenceFlowMapping.put(srcId, new ArrayList<SequenceFlow>());
       }
+      outgoingSequenceFlowMapping.get(srcId).add(sequenceFlow);
+
+      if (incomingSequenceFlowMapping.get(targetId) == null) {
+        incomingSequenceFlowMapping.put(targetId, new ArrayList<SequenceFlow>());
+      }
+      incomingSequenceFlowMapping.get(targetId).add(sequenceFlow);
     }
   }
 
-  protected int calculateMaximumWidth() {
+//  protected int calculateMaximumWidth() {
+//    int width = 0;
+//    for (BlockOfSteps blockOfSteps : allStepBlocks) {
+//      if (blockOfSteps.getNrOfSteps() == 1) {
+//        width += TASK_WIDTH + SEQUENCE_FLOW_WIDTH;
+//      } else {
+//        width += TASK_BLOCK_WIDTH + SEQUENCE_FLOW_WIDTH;
+//      }
+//    }
+//
+//    width += SEQUENCE_FLOW_WIDTH + 2 * EVENT_WIDTH;
+//
+//    return width;
+//  }
+  
+//  protected int calculateMaximumHeight() {
+//    int maxNrOfTasksInOneBlock = 0;
+//    for (BlockOfSteps blockOfSteps : allStepBlocks) {
+//      if (blockOfSteps.getNrOfSteps() > maxNrOfTasksInOneBlock) {
+//        maxNrOfTasksInOneBlock = blockOfSteps.getNrOfSteps();
+//      }
+//    }
+//
+//    int extra = 0;
+//    if (maxNrOfTasksInOneBlock % 2 == 0) { // If there is an even nr of tasks -> evenly spread, but no task in the  middle
+//      extra = 2 * TASK_HEIGHT;
+//    }
+//
+//    return (maxNrOfTasksInOneBlock * (TASK_HEIGHT + TASK_HEIGHT_SPACING)) + extra;
+//  }
+  
+  protected void calculateMaximumSizes() {
     int width = 0;
-    for (BlockOfSteps blockOfSteps : allStepBlocks) {
-      if (blockOfSteps.getNrOfSteps() == 1) {
-        width += TASK_WIDTH + SEQUENCE_FLOW_WIDTH;
-      } else {
+    int maxNrOfTasksInOneBlock = 1;
+    
+    // Find start event
+    List<StartEvent> startEvents = BpmnModelUtil.findFlowElementsOfType(process, StartEvent.class);
+    if (startEvents.size() != 1) {
+      throw new ActivitiException("Invalid number of start events: " + startEvents.size() + " found, but only 1 is supported");
+    }
+    
+    // Loop over all intermediate steps and add the width of the step
+    FlowElement currentFlowElement = startEvents.get(0);
+    while (currentFlowElement != null) {
+      if (currentFlowElement instanceof StartEvent) {
+        
+        width += EVENT_WIDTH + SEQUENCE_FLOW_WIDTH;
+        currentFlowElement = process.getFlowElement(outgoingSequenceFlowMapping.get(currentFlowElement.getId()).get(0).getTargetRef());
+        
+      } else if (currentFlowElement instanceof EndEvent) {
+        
+        width += EVENT_WIDTH; // Previous step will already added the sequence flow width
+        currentFlowElement = null;
+        
+      } else if (currentFlowElement instanceof ParallelGateway) {
+        
+        // width
         width += TASK_BLOCK_WIDTH + SEQUENCE_FLOW_WIDTH;
+        String nextTaskId = outgoingSequenceFlowMapping.get(currentFlowElement.getId()).get(0).getTargetRef(); // random sequence flow is ok since no nesting is supported
+        String joinGatewayId = outgoingSequenceFlowMapping.get(nextTaskId).get(0).getTargetRef(); // Has only one sequence flow
+        
+        // height
+        int nrOfStepsAfterGateway = outgoingSequenceFlowMapping.get(currentFlowElement.getId()).size();
+        if (nrOfStepsAfterGateway > maxNrOfTasksInOneBlock) {
+          maxNrOfTasksInOneBlock = nrOfStepsAfterGateway;
+        }
+                
+        currentFlowElement = process.getFlowElement(outgoingSequenceFlowMapping.get(joinGatewayId).get(0).getTargetRef());
+        
+      } else { // default: usertask, servicetask, etc.
+        
+        width += TASK_WIDTH + SEQUENCE_FLOW_WIDTH;
+        currentFlowElement = process.getFlowElement(outgoingSequenceFlowMapping.get(currentFlowElement.getId()).get(0).getTargetRef());
+        
       }
     }
-
-    width += SEQUENCE_FLOW_WIDTH + 2 * EVENT_WIDTH;
-
-    return width;
-  }
-
-  protected int calculateMaximumHeight() {
-    int maxNrOfTasksInOneBlock = 0;
-    for (BlockOfSteps blockOfSteps : allStepBlocks) {
-      if (blockOfSteps.getNrOfSteps() > maxNrOfTasksInOneBlock) {
-        maxNrOfTasksInOneBlock = blockOfSteps.getNrOfSteps();
-      }
-    }
-
+    
+    maximumWidth = width;
+            
     int extra = 0;
     if (maxNrOfTasksInOneBlock % 2 == 0) { // If there is an even nr of tasks -> evenly spread, but no task in the  middle
       extra = 2 * TASK_HEIGHT;
     }
-
-    return (maxNrOfTasksInOneBlock * (TASK_HEIGHT + TASK_HEIGHT_SPACING)) + extra;
+    maxiumHeight = (maxNrOfTasksInOneBlock * (TASK_HEIGHT + TASK_HEIGHT_SPACING)) + extra;
+    
   }
 
   protected void drawParallelBlock(int x, int y, ParallelGateway parallelGateway, boolean generateImage) {
@@ -400,9 +457,9 @@ public class WorkflowDIGenerator {
     List<GraphicInfo> graphicInfoForWaypoints = new ArrayList<GraphicInfo>();
     for (int i = 0; i < waypoints.length; i += 2) {
       GraphicInfo graphicInfo = new GraphicInfo();
-      graphicInfo.element = sequenceFlow;
-      graphicInfo.x = waypoints[i];
-      graphicInfo.y = waypoints[i + 1];
+      graphicInfo.setElement(sequenceFlow);
+      graphicInfo.setX(waypoints[i]);
+      graphicInfo.setY(waypoints[i + 1]);
       graphicInfoForWaypoints.add(graphicInfo);
     }
     bpmnModel.addFlowGraphicInfoList(sequenceFlow.getId(), graphicInfoForWaypoints);
@@ -412,11 +469,11 @@ public class WorkflowDIGenerator {
   protected void createDiagramInterchangeInformation(FlowElement flowElement,
           int x, int y, int width, int height) {
     GraphicInfo graphicInfo = new GraphicInfo();
-    graphicInfo.x = x;
-    graphicInfo.y = y;
-    graphicInfo.width = width;
-    graphicInfo.height = height;
-    graphicInfo.element = flowElement;
+    graphicInfo.setX(x);
+    graphicInfo.setY(y);
+    graphicInfo.setWidth(width);
+    graphicInfo.setHeight(height);
+    graphicInfo.setElement(flowElement);
     bpmnModel.addGraphicInfo(flowElement.getId(), graphicInfo);
   }
   
@@ -424,21 +481,21 @@ public class WorkflowDIGenerator {
 
   static class BlockOfSteps {
     
-    protected List<StepDefinition> steps;
+    protected List<AbstractNamedStepDefinition> steps;
 
     public BlockOfSteps() {
-      this.steps = new ArrayList<StepDefinition>();
+      this.steps = new ArrayList<AbstractNamedStepDefinition>();
     }
 
-    public List<StepDefinition> getSteps() {
+    public List<AbstractNamedStepDefinition> getSteps() {
       return steps;
     }
 
-    public void addStep(StepDefinition step) {
+    public void addStep(AbstractNamedStepDefinition step) {
       steps.add(step);
     }
 
-    public StepDefinition get(int index) {
+    public AbstractNamedStepDefinition get(int index) {
       return steps.get(index);
     }
 
