@@ -217,6 +217,12 @@ public interface Messages {
   static final String PROCESS_TOXML_FAILED = "process.toxml.failed";
   static final String PROCESS_CONVERT = "process.convert";
   static final String PROCESS_EXPORT = "process.export";
+  static final String PROCESS_EDITOR_CHOICE = "process.editor.choice";
+  static final String PROCESS_EDITOR_MODELER = "process.editor.modeler";
+  static final String PROCESS_EDITOR_MODELER_DESCRIPTION = "process.editor.modeler.description";
+  static final String PROCESS_EDITOR_TABLE = "process.editor.table";
+  static final String PROCESS_EDITOR_TABLE_DESCRIPTION = "process.editor.table.description";
+  
   static final String PROCESS_INSTANCE_DELETE = "process.instance.delete";
   static final String PROCESS_INSTANCE_DELETE_POPUP_TITLE = "process.instance.delete.popup.title";
   static final String PROCESS_INSTANCE_DELETE_POPUP_DESCRIPTION = "process.instance.delete.popup.description";

@@ -923,6 +923,13 @@ div.searchbox {
 .process-definition-suspend-choice {
     margin: 5px 5px 5px 10px;
 }
+
+.process-definition-editor-choice {
+	border: 1px solid lightgrey;
+	padding: 1px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
  
 /**********************
 * Custom Scrollbar CSS

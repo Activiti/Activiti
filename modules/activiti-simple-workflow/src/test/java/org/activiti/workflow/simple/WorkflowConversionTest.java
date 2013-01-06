@@ -16,14 +16,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.activiti.engine.TaskService;
 import org.activiti.engine.repository.Deployment;
@@ -31,13 +28,13 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.ActivitiRule;
-import org.activiti.workflow.simple.converter.DefaultWorkflowDefinitionConversionListener;
-import org.activiti.workflow.simple.converter.HumanStepDefinitionConverter;
-import org.activiti.workflow.simple.converter.ParallelStepsDefinitionConverter;
-import org.activiti.workflow.simple.converter.StepDefinitionConverter;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversionFactory;
-import org.activiti.workflow.simple.converter.WorkflowDefinitionConversionListener;
+import org.activiti.workflow.simple.converter.listener.DefaultWorkflowDefinitionConversionListener;
+import org.activiti.workflow.simple.converter.listener.WorkflowDefinitionConversionListener;
+import org.activiti.workflow.simple.converter.step.HumanStepDefinitionConverter;
+import org.activiti.workflow.simple.converter.step.ParallelStepsDefinitionConverter;
+import org.activiti.workflow.simple.converter.step.StepDefinitionConverter;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
 import org.junit.After;
 import org.junit.Before;
@@ -164,14 +161,14 @@ public class WorkflowConversionTest {
     conversion.convert();
     log.info("Converted process : " + conversion.getbpm20Xml());
     
-    InputStream is = conversion.getWorkflowDiagramImage();
-    try {
-      flow(is, new FileOutputStream("temp" + UUID.randomUUID().toString() + ".png"), new byte[1024]);
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+//    InputStream is = conversion.getWorkflowDiagramImage();
+//    try {
+//      flow(is, new FileOutputStream("temp" + UUID.randomUUID().toString() + ".png"), new byte[1024]);
+//    } catch (FileNotFoundException e) {
+//      e.printStackTrace();
+//    } catch (IOException e) {
+//      e.printStackTrace();
+//    }
     
     // Deploy
     deployProcessDefinition(conversion);

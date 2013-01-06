@@ -15,6 +15,8 @@ package org.activiti.workflow.simple.converter;
 import java.util.HashMap;
 import java.util.List;
 
+import org.activiti.workflow.simple.converter.listener.WorkflowDefinitionConversionListener;
+import org.activiti.workflow.simple.converter.step.StepDefinitionConverter;
 import org.activiti.workflow.simple.definition.StepDefinition;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
 

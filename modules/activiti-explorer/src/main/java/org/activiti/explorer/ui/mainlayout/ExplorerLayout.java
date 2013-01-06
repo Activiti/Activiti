@@ -113,6 +113,7 @@ public interface ExplorerLayout {
   static final String STYLE_PROCESS_HEADER_DEPLOY_TIME = "process-deploy-time";
   static final String STYLE_PROCESS_HEADER_VERSION = "process-version";
   static final String STYLE_PROCESS_HEADER_START_TIME = "process-start-time";
+  static final String STYLE_PROCESS_EDITOR_CHOICE = "process-definition-editor-choice";
   
   // Database page
   static final String STYLE_DATABASE_TABLE = "database-table";

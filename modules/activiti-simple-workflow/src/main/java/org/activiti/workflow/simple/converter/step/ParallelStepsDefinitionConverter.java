@@ -10,12 +10,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.workflow.simple.converter;
+package org.activiti.workflow.simple.converter.step;
 
 import java.util.List;
 
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.ParallelGateway;
+import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.definition.ParallelStepsDefinition;
 import org.activiti.workflow.simple.definition.StepDefinition;
 import org.activiti.workflow.simple.util.BpmnModelUtil;
