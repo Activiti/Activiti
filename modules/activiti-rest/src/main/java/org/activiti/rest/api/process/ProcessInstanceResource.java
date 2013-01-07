@@ -99,7 +99,7 @@ public class ProcessInstanceResource extends SecuredResource {
     List<HistoricTaskInstance> taskList = ActivitiUtil.getHistoryService()
         .createHistoricTaskInstanceQuery()
         .processInstanceId(processInstanceId)
-        .orderByHistoricActivityInstanceStartTime()
+        .orderByHistoricTaskInstanceStartTime()
         .asc()
         .list();
     

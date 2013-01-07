@@ -71,6 +71,7 @@ public interface ExplorerLayout {
   static final String STYLE_H4 = "h4";
   static final String STYLE_ADD = "add";
   static final String STYLE_NO_LINE = "no-line";
+  static final String STYLE_TEXTAREA_NO_RESIZE = "noResizeTextArea";
   
   static final String STYLE_APPLICATION_LOGO = "logo";
   static final String STYLE_WORKFLOW_CONSOLE_LOGO = "workflow-console-logo";
@@ -113,6 +114,7 @@ public interface ExplorerLayout {
   static final String STYLE_PROCESS_HEADER_DEPLOY_TIME = "process-deploy-time";
   static final String STYLE_PROCESS_HEADER_VERSION = "process-version";
   static final String STYLE_PROCESS_HEADER_START_TIME = "process-start-time";
+  static final String STYLE_PROCESS_EDITOR_CHOICE = "process-definition-editor-choice";
   
   // Database page
   static final String STYLE_DATABASE_TABLE = "database-table";

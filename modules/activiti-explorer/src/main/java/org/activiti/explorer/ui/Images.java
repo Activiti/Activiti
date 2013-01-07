@@ -88,5 +88,7 @@ public class Images {
   // Process
   public static final Resource PROCESS_50 = new ThemeResource("img/process-50.png");
   public static final Resource PROCESS_22 = new ThemeResource("img/process-22.png");
+  public static final Resource PROCESS_EDITOR_BPMN = new ThemeResource("img/button-bpmn-48.png");
+  public static final Resource PROCESS_EDITOR_TABLE = new ThemeResource("img/button-table-48.png");
   
 }

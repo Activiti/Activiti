@@ -67,8 +67,11 @@ public abstract class AbstractPage extends CustomComponent {
    * Subclasses are expected to provide their own menuBar.
    */
   protected void addMenuBar() {
-    toolBar = createMenuBar();
-    grid.addComponent(toolBar, 0, 0 , 1, 0);
+    ToolBar menuBar = createMenuBar();
+    if (menuBar != null) {
+      toolBar = createMenuBar();
+      grid.addComponent(toolBar, 0, 0 , 1, 0);
+    }
   }
   
   public ToolBar getToolBar() {
@@ -108,7 +111,9 @@ public abstract class AbstractPage extends CustomComponent {
   
   protected void addSelectComponent() {
     AbstractSelect select = createSelectComponent();
-    grid.addComponent(select, 0, 2);
+    if (select != null) {
+      grid.addComponent(select, 0, 2);
+    }
   }
 
   /**
