@@ -79,6 +79,8 @@ public interface ViewManager {
   
   void showMyProcessInstancesPage(String processInstanceId);
   
+  void showSimpleTableProcessEditor(String processName, String processDescription);
+  
   // Management
   
   void showDatabasePage();

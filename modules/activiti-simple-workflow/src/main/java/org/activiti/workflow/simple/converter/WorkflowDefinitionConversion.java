@@ -92,7 +92,7 @@ public class WorkflowDefinitionConversion {
     }
     
     // Add DI information to bpmn model
-    WorkflowDIGenerator workflowDIGenerator = new WorkflowDIGenerator(workflowDefinition, bpmnModel);
+    WorkflowDIGenerator workflowDIGenerator = new WorkflowDIGenerator(bpmnModel);
     workflowDIGenerator.generateDI();
   }
   
@@ -194,7 +194,10 @@ public class WorkflowDefinitionConversion {
   }
   
   public InputStream getWorkflowDiagramImage() {
-    WorkflowDIGenerator workflowDIGenerator = new WorkflowDIGenerator(workflowDefinition, bpmnModel);
+    if (bpmnModel == null) {
+      convert();
+    }
+    WorkflowDIGenerator workflowDIGenerator = new WorkflowDIGenerator(bpmnModel);
     return workflowDIGenerator.generateDiagram();
   }
   

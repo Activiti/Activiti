@@ -34,8 +34,6 @@ import org.activiti.bpmn.model.Task;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramCanvas;
-import org.activiti.workflow.simple.definition.AbstractNamedStepDefinition;
-import org.activiti.workflow.simple.definition.WorkflowDefinition;
 import org.activiti.workflow.simple.util.BpmnModelUtil;
 
 /**
@@ -62,9 +60,6 @@ public class WorkflowDIGenerator {
 
   protected int TASK_BLOCK_WIDTH = GATEWAY_WIDTH + TASK_WIDTH + SEQUENCE_FLOW_WIDTH + LONG_SEQUENCE_FLOW_WITHOUT_ARROW_WIDTH;
   
-  // Input
-  protected WorkflowDefinition workflowDefinition;
-  
   protected BpmnModel bpmnModel;
   protected Process process;
 
@@ -80,8 +75,7 @@ public class WorkflowDIGenerator {
   protected Map<String, List<SequenceFlow>> incomingSequenceFlowMapping;
   protected Set<String> handledElements;
 
-  public WorkflowDIGenerator(WorkflowDefinition workflowDefinition, BpmnModel bpmnModel) {
-    this.workflowDefinition = workflowDefinition;
+  public WorkflowDIGenerator(BpmnModel bpmnModel) {
     this.bpmnModel = bpmnModel;
   }
   
@@ -158,24 +152,6 @@ public class WorkflowDIGenerator {
     generateDI(true); // Generates DI and also the canvas which can export the image 
     return processDiagramCanvas.generateImage("png");
   }
-
-//  protected void generateTaskBlocks() {
-//    allStepBlocks = new ArrayList<BlockOfSteps>();
-//
-//    List<AbstractNamedStepDefinition> workflowSteps = workflowDefinition.getSteps();
-//    for (int i=0; i<workflowSteps.size(); i++) {
-//      AbstractNamedStepDefinition stepDefinition = workflowSteps.get(i);
-//      
-//      // Parallel tasks are grouped in the same task block
-//      if (stepDefinition.isStartWithPrevious() && (i != 0)) {
-//        allStepBlocks.get(allStepBlocks.size() - 1).addStep(stepDefinition);
-//      } else {
-//        BlockOfSteps blockOfSteps = new BlockOfSteps();
-//        blockOfSteps.addStep(stepDefinition);
-//        allStepBlocks.add(blockOfSteps);
-//      }
-//    }
-//  }
   
   protected void generateSequenceflowMappings() {
     this.outgoingSequenceFlowMapping = new HashMap<String, List<SequenceFlow>>();
@@ -197,37 +173,6 @@ public class WorkflowDIGenerator {
       incomingSequenceFlowMapping.get(targetId).add(sequenceFlow);
     }
   }
-
-//  protected int calculateMaximumWidth() {
-//    int width = 0;
-//    for (BlockOfSteps blockOfSteps : allStepBlocks) {
-//      if (blockOfSteps.getNrOfSteps() == 1) {
-//        width += TASK_WIDTH + SEQUENCE_FLOW_WIDTH;
-//      } else {
-//        width += TASK_BLOCK_WIDTH + SEQUENCE_FLOW_WIDTH;
-//      }
-//    }
-//
-//    width += SEQUENCE_FLOW_WIDTH + 2 * EVENT_WIDTH;
-//
-//    return width;
-//  }
-  
-//  protected int calculateMaximumHeight() {
-//    int maxNrOfTasksInOneBlock = 0;
-//    for (BlockOfSteps blockOfSteps : allStepBlocks) {
-//      if (blockOfSteps.getNrOfSteps() > maxNrOfTasksInOneBlock) {
-//        maxNrOfTasksInOneBlock = blockOfSteps.getNrOfSteps();
-//      }
-//    }
-//
-//    int extra = 0;
-//    if (maxNrOfTasksInOneBlock % 2 == 0) { // If there is an even nr of tasks -> evenly spread, but no task in the  middle
-//      extra = 2 * TASK_HEIGHT;
-//    }
-//
-//    return (maxNrOfTasksInOneBlock * (TASK_HEIGHT + TASK_HEIGHT_SPACING)) + extra;
-//  }
   
   protected void calculateMaximumSizes() {
     int width = 0;
@@ -477,32 +422,4 @@ public class WorkflowDIGenerator {
     bpmnModel.addGraphicInfo(flowElement.getId(), graphicInfo);
   }
   
-  // Helper class ------------------------------------------------------------------------
-
-  static class BlockOfSteps {
-    
-    protected List<AbstractNamedStepDefinition> steps;
-
-    public BlockOfSteps() {
-      this.steps = new ArrayList<AbstractNamedStepDefinition>();
-    }
-
-    public List<AbstractNamedStepDefinition> getSteps() {
-      return steps;
-    }
-
-    public void addStep(AbstractNamedStepDefinition step) {
-      steps.add(step);
-    }
-
-    public AbstractNamedStepDefinition get(int index) {
-      return steps.get(index);
-    }
-
-    public int getNrOfSteps() {
-      return steps.size();
-    }
-    
-  }
-
 }

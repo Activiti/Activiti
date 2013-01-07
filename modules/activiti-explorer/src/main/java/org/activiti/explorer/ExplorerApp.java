@@ -27,6 +27,7 @@ import org.activiti.explorer.ui.content.AttachmentRendererManager;
 import org.activiti.explorer.ui.form.FormPropertyRendererManager;
 import org.activiti.explorer.ui.login.LoginHandler;
 import org.activiti.explorer.ui.variable.VariableRendererManager;
+import org.activiti.workflow.simple.converter.WorkflowDefinitionConversionFactory;
 
 import com.vaadin.Application;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
@@ -51,6 +52,7 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   protected FormPropertyRendererManager formPropertyRendererManager;
   protected VariableRendererManager variableRendererManager;
   protected LoginHandler loginHandler;
+  protected WorkflowDefinitionConversionFactory workflowDefinitionConversionFactory;
   protected ComponentFactories componentFactories;
 
   // Flag to see if the session has been invalidated, when the application was closed
@@ -149,6 +151,10 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   
   public VariableRendererManager getVariableRendererManager() {
     return variableRendererManager;
+  }
+  
+  public WorkflowDefinitionConversionFactory getWorkflowDefinitionConversionFactory() {
+    return workflowDefinitionConversionFactory;
   }
   
   public void setLocale(Locale locale) {
@@ -256,5 +262,8 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   }
   public void setLoginHandler(LoginHandler loginHandler) {
     this.loginHandler = loginHandler;
+  }
+  public void setWorkflowDefinitionConversionFactory(WorkflowDefinitionConversionFactory workflowDefinitionConversionFactory) {
+    this.workflowDefinitionConversionFactory = workflowDefinitionConversionFactory;
   }
 }

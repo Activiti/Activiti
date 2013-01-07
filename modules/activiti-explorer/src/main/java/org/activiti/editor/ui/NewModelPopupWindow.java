@@ -61,7 +61,9 @@ public class NewModelPopupWindow extends PopupWindow implements ModelDataJsonCon
   protected TextField nameTextField;
   protected TextArea descriptionTextArea;
   protected HorizontalLayout modelerLayout;
+  protected Label modelerLabel;
   protected HorizontalLayout tableEditorLayout;
+  protected Label tableEditorLabel;
   protected boolean modelerPreffered;
   
   protected RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
@@ -100,6 +102,7 @@ public class NewModelPopupWindow extends PopupWindow implements ModelDataJsonCon
     descriptionTextArea = new TextArea();
     descriptionTextArea.setRows(8);
     descriptionTextArea.setWidth(25, Sizeable.UNITS_EM);
+    descriptionTextArea.addStyleName(ExplorerLayout.STYLE_TEXTAREA_NO_RESIZE);
     formLayout.addComponent(descriptionTextArea);
     
     Label editorLabel = new Label(i18nManager.getMessage(Messages.PROCESS_EDITOR_CHOICE));
@@ -150,7 +153,7 @@ public class NewModelPopupWindow extends PopupWindow implements ModelDataJsonCon
     modelerLayout.addComponent(modelerTextLayout);
     modelerLayout.setExpandRatio(modelerTextLayout, 1.0f);
     
-    Label modelerLabel = new Label(i18nManager.getMessage(Messages.PROCESS_EDITOR_MODELER));
+    modelerLabel = new Label(i18nManager.getMessage(Messages.PROCESS_EDITOR_MODELER));
     modelerLabel.addStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
     modelerLabel.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
     modelerTextLayout.addComponent(modelerLabel);
@@ -189,8 +192,7 @@ public class NewModelPopupWindow extends PopupWindow implements ModelDataJsonCon
     tableEditorLayout.addComponent(tableEditorTextLayout);
     tableEditorLayout.setExpandRatio(tableEditorTextLayout, 1.0f);
     
-    Label tableEditorLabel = new Label(i18nManager.getMessage(Messages.PROCESS_EDITOR_TABLE));
-    tableEditorLabel.addStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
+    tableEditorLabel = new Label(i18nManager.getMessage(Messages.PROCESS_EDITOR_TABLE));
     tableEditorLabel.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
     tableEditorTextLayout.addComponent(tableEditorLabel);
     
@@ -205,6 +207,9 @@ public class NewModelPopupWindow extends PopupWindow implements ModelDataJsonCon
       modelerPreffered = true;
       selectEditor(modelerLayout);
       deselectEditor(tableEditorLayout);
+      
+      modelerLabel.addStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
+      tableEditorLabel.removeStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
     }
   }
   
@@ -213,6 +218,9 @@ public class NewModelPopupWindow extends PopupWindow implements ModelDataJsonCon
       modelerPreffered = false;
       selectEditor(tableEditorLayout);
       deselectEditor(modelerLayout);
+      
+      tableEditorLabel.addStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
+      modelerLabel.removeStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
     }
   }
   
@@ -225,21 +233,10 @@ public class NewModelPopupWindow extends PopupWindow implements ModelDataJsonCon
   }
   
   protected void addButtons() {
-    // Cancel
-    Button cancelButton = new Button(i18nManager.getMessage(Messages.BUTTON_CANCEL));
-    cancelButton.addStyleName(Reindeer.BUTTON_SMALL);
-    cancelButton.addListener(new ClickListener() {
-      
-      private static final long serialVersionUID = 1L;
-      
-      public void buttonClick(ClickEvent event) {
-        close();
-      }
-    });
     
     // Create
     Button createButton = new Button(i18nManager.getMessage(Messages.PROCESS_NEW_POPUP_CREATE_BUTTON));
-    createButton.addStyleName(Reindeer.BUTTON_SMALL);
+    createButton.setWidth("200px");
     createButton.addListener(new ClickListener() {
       
       private static final long serialVersionUID = 1L;
@@ -276,10 +273,10 @@ public class NewModelPopupWindow extends PopupWindow implements ModelDataJsonCon
             modelData.setName((String) nameTextField.getValue());
             
             repositoryService.saveModel(modelData);
-            
             repositoryService.addModelEditorSource(modelData.getId(), editorNode.toString().getBytes("utf-8"));
             
             close();
+            
             ExplorerApp.get().getViewManager().showEditorProcessDefinitionPage(modelData.getId());
             ExplorerApp.get().getMainWindow().open(new ExternalResource(
                 ExplorerApp.get().getURL().toString().replace("/ui", "") + "service/editor?id=" + modelData.getId()));
@@ -289,7 +286,9 @@ public class NewModelPopupWindow extends PopupWindow implements ModelDataJsonCon
           }
         } else {
           
-          // TODO: Create kickstart screens
+          close();
+          ExplorerApp.get().getViewManager().showSimpleTableProcessEditor(
+                  (String) nameTextField.getValue(), (String) descriptionTextArea.getValue());
           
         }
       }
@@ -298,10 +297,9 @@ public class NewModelPopupWindow extends PopupWindow implements ModelDataJsonCon
     // Alignment
     HorizontalLayout buttonLayout = new HorizontalLayout();
     buttonLayout.setSpacing(true);
-    buttonLayout.addComponent(cancelButton);
     buttonLayout.addComponent(createButton);
     addComponent(buttonLayout);
-    windowLayout.setComponentAlignment(buttonLayout, Alignment.BOTTOM_RIGHT);
+    windowLayout.setComponentAlignment(buttonLayout, Alignment.MIDDLE_CENTER);
   }
 
 }
