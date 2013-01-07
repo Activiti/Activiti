@@ -14,14 +14,14 @@
           },
         "childShapes" : [  ],
         "dockers" : [  ],
-        "outgoing" : [ { "resourceId" : "sid-10FF0337-D8FC-495E-92C4-82C2FD5F44F8" } ],
+        "outgoing" : [ { "resourceId" : "flow1" } ],
         "properties" : { "documentation" : "",
             "executionlisteners" : "",
             "formproperties" : "",
             "initiator" : "",
             "name" : ""
           },
-        "resourceId" : "sid-12DAA756-C12D-42B6-9AB7-D08C7C8283C1",
+        "resourceId" : "start",
         "stencil" : { "id" : "StartNoneEvent" }
       },
       { "bounds" : { "lowerRight" : { "x" : 265.5,
@@ -97,7 +97,7 @@
             "documentation" : "",
             "name" : ""
           },
-        "resourceId" : "sid-10FF0337-D8FC-495E-92C4-82C2FD5F44F8",
+        "resourceId" : "flow1",
         "stencil" : { "id" : "SequenceFlow" },
         "target" : { "resourceId" : "usertask" }
       },
