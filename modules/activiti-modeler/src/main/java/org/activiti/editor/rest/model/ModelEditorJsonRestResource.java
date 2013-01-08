@@ -16,6 +16,7 @@ import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Model;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
@@ -44,7 +45,12 @@ public class ModelEditorJsonRestResource extends ServerResource implements Model
       
       if (model != null) {
         try {
-          modelNode = (ObjectNode) objectMapper.readTree(model.getMetaInfo());
+          if (StringUtils.isNotEmpty(model.getMetaInfo())) {
+            modelNode = (ObjectNode) objectMapper.readTree(model.getMetaInfo());
+          } else {
+            modelNode = objectMapper.createObjectNode();
+            modelNode.put(MODEL_NAME, model.getName());
+          }
           modelNode.put(MODEL_ID, model.getId());
           ObjectNode editorJsonNode = (ObjectNode) objectMapper.readTree(new String(repositoryService.getModelEditorSource(model.getId()), "utf-8"));
           modelNode.put("model", editorJsonNode);
