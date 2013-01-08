@@ -46,9 +46,12 @@ import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.themes.Reindeer;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 
 /**
@@ -73,7 +76,7 @@ public class SimpleTableEditor extends AbstractPage {
 	protected TextField nameField;
 	protected TextField descriptionField;
 	protected TaskTable taskTable;
-	protected Embedded diagram;
+	protected Panel imagePanel;
 	
 	public SimpleTableEditor() {
 		this(null, null);
@@ -116,8 +119,8 @@ public class SimpleTableEditor extends AbstractPage {
 	  
 	  toolBar.addToolbarEntry(KEY_EDITOR, ExplorerApp.get().getI18nManager().getMessage(Messages.PROCESS_EDITOR_TITLE), new ToolbarCommand() {
       public void toolBarItemSelected() {
-        if (diagram != null) {
-          diagram.setVisible(false);
+        if (imagePanel != null) {
+          imagePanel.setVisible(false);
           editorGrid.setVisible(true);
           toolBar.setActiveEntry(KEY_EDITOR);
         }
@@ -216,9 +219,22 @@ public class SimpleTableEditor extends AbstractPage {
     
     // resource must have unique id (or cache-crap can happen)!
     StreamResource imageresource = new StreamResource(streamSource,UUID.randomUUID() + ".png", ExplorerApp.get());
-    diagram = new Embedded("", imageresource);
+    Embedded diagram = new Embedded("", imageresource);
     diagram.setType(Embedded.TYPE_IMAGE);
-    mainLayout.addComponent(diagram);
+    diagram.setSizeUndefined();
+    
+    imagePanel = new Panel(); // using panel for scrollbars
+    imagePanel.setScrollable(true);
+    imagePanel.addStyleName(Reindeer.PANEL_LIGHT);
+    imagePanel.setWidth(100, UNITS_PERCENTAGE);
+//    imagePanel.setHeight(400, UNITS_PIXELS);
+    imagePanel.setHeight("100%");
+    mainLayout.addComponent(imagePanel);
+    
+    HorizontalLayout panelLayout = new HorizontalLayout();
+    panelLayout.setSizeUndefined();
+    imagePanel.setContent(panelLayout);
+    imagePanel.addComponent(diagram);
 	}
 	
 	protected void saveBpmnModel() {

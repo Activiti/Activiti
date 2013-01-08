@@ -108,7 +108,7 @@
     <property name="environment" value="${activiti.ui.environment}" />
   </bean>
 
-	<bean name="workflowDefinitionConversionFactory" class="org.activiti.workflow.simple.converter.WorkflowDefinitionConversionFactory">
+  <bean name="workflowDefinitionConversionFactory" class="org.activiti.workflow.simple.converter.WorkflowDefinitionConversionFactory">
 		<property name="stepDefinitionConverters">
 			<list>
 				<bean class="org.activiti.workflow.simple.converter.step.HumanStepDefinitionConverter" />
