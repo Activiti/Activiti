@@ -166,7 +166,7 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
         imagePanel.setScrollable(true);
         imagePanel.addStyleName(Reindeer.PANEL_LIGHT);
         imagePanel.setWidth(100, UNITS_PERCENTAGE);
-        imagePanel.setHeight(400, UNITS_PIXELS);
+        imagePanel.setHeight(100, UNITS_PERCENTAGE);
         
         HorizontalLayout panelLayoutT = new HorizontalLayout();
         panelLayoutT.setSizeUndefined();
