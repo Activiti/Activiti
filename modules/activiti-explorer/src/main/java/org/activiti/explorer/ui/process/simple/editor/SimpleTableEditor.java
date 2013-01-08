@@ -47,6 +47,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 
@@ -217,7 +218,7 @@ public class SimpleTableEditor extends AbstractPage {
     StreamResource imageresource = new StreamResource(streamSource,UUID.randomUUID() + ".png", ExplorerApp.get());
     diagram = new Embedded("", imageresource);
     diagram.setType(Embedded.TYPE_IMAGE);
-    diagram.setSizeUndefined();
+    diagram.setWidth("3000px");
     mainLayout.addComponent(diagram);
 	}
 	

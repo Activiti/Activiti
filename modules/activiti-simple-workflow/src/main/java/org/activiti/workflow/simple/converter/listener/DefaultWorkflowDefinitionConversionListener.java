@@ -12,13 +12,20 @@
  */
 package org.activiti.workflow.simple.converter.listener;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import org.activiti.bpmn.model.EndEvent;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.workflow.simple.converter.ConversionConstants;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
+import org.activiti.workflow.simple.util.BpmnModelUtil;
 
 /**
  * @author Joram Barrez
@@ -78,6 +85,79 @@ public class DefaultWorkflowDefinitionConversionListener implements WorkflowDefi
         sequenceFlow.setSourceRef(conversion.getLastActivityId());
         sequenceFlow.setTargetRef(END_EVENT_ID);
         process.addFlowElement(sequenceFlow);
+        
+        // To make the generated workflow compatible with some tools (eg the Modeler, but also others),
+        // We must add the ingoing and outgoing sequence flow to each of the flow nodes
+        SequenceFlowMapping sequenceFlowMapping = generateSequenceflowMappings(process);
+        
+        for (FlowNode flowNode : BpmnModelUtil.findFlowElementsOfType(process, FlowNode.class)) {
+          List<SequenceFlow> incomingSequenceFlow = sequenceFlowMapping.getIncomingSequenceFlowMapping().get(flowNode.getId());
+          if (incomingSequenceFlow != null) {
+            flowNode.setIncomingFlows(incomingSequenceFlow);
+          }
+          
+          List<SequenceFlow> outgoingSequenceFlow = sequenceFlowMapping.getOutgoingSequenceFlowMapping().get(flowNode.getId());
+          if (outgoingSequenceFlow != null) {
+            flowNode.setOutgoingFlows(outgoingSequenceFlow);
+          }
+        }
+    }
+    
+    protected SequenceFlowMapping generateSequenceflowMappings(Process process) {
+      HashMap<String, List<SequenceFlow>> incomingSequenceFlowMapping = new HashMap<String, List<SequenceFlow>>();
+      HashMap<String, List<SequenceFlow>> outgoingSequenceFlowMapping = new HashMap<String, List<SequenceFlow>>();
+      
+      for (FlowElement flowElement : BpmnModelUtil.findFlowElementsOfType(process, SequenceFlow.class)) {
+        SequenceFlow sequenceFlow = (SequenceFlow) flowElement;
+        String srcId = sequenceFlow.getSourceRef();
+        String targetId = sequenceFlow.getTargetRef();
+
+        if (outgoingSequenceFlowMapping.get(srcId) == null) {
+          outgoingSequenceFlowMapping.put(srcId, new ArrayList<SequenceFlow>());
+        }
+        outgoingSequenceFlowMapping.get(srcId).add(sequenceFlow);
+
+        if (incomingSequenceFlowMapping.get(targetId) == null) {
+          incomingSequenceFlowMapping.put(targetId, new ArrayList<SequenceFlow>());
+        }
+        incomingSequenceFlowMapping.get(targetId).add(sequenceFlow);
+      }
+      
+      SequenceFlowMapping mapping = new SequenceFlowMapping();
+      mapping.setIncomingSequenceFlowMapping(incomingSequenceFlowMapping);
+      mapping.setOutgoingSequenceFlowMapping(outgoingSequenceFlowMapping);
+      return mapping;
+    }
+    
+    static class SequenceFlowMapping {
+      
+      protected HashMap<String, List<SequenceFlow>> incomingSequenceFlowMapping;
+      protected HashMap<String, List<SequenceFlow>> outgoingSequenceFlowMapping;
+      
+      public HashMap<String, List<SequenceFlow>> getIncomingSequenceFlowMapping() {
+        return incomingSequenceFlowMapping;
+      }
+      
+      public void setIncomingSequenceFlowMapping(HashMap<String, List<SequenceFlow>> incomingSequenceFlowMapping) {
+        if (incomingSequenceFlowMapping != null) {
+          this.incomingSequenceFlowMapping = incomingSequenceFlowMapping;
+        } else {
+          this.incomingSequenceFlowMapping = new HashMap<String, List<SequenceFlow>>();
+        }
+      }
+      
+      public HashMap<String, List<SequenceFlow>> getOutgoingSequenceFlowMapping() {
+        return outgoingSequenceFlowMapping;
+      }
+      
+      public void setOutgoingSequenceFlowMapping(HashMap<String, List<SequenceFlow>> outgoingSequenceFlowMapping) {
+        if (outgoingSequenceFlowMapping != null) {
+          this.outgoingSequenceFlowMapping = outgoingSequenceFlowMapping;
+        } else {
+          this.outgoingSequenceFlowMapping = new HashMap<String, List<SequenceFlow>>();
+        }
+      }
+      
     }
 
 }
