@@ -12,10 +12,17 @@
  */
 package org.activiti.editor.rest.model;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+
 import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Model;
+import org.apache.batik.transcoder.TranscoderInput;
+import org.apache.batik.transcoder.TranscoderOutput;
+import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Form;
@@ -58,7 +65,20 @@ public class ModelSaveRestResource extends ServerResource implements ModelDataJs
       repositoryService.saveModel(model);
       
       repositoryService.addModelEditorSource(model.getId(), modelForm.getFirstValue("json_xml").getBytes("utf-8"));
-      repositoryService.addModelEditorSourceExtra(model.getId(), modelForm.getFirstValue("svg_xml").getBytes("utf-8"));
+      
+      InputStream svgStream = new ByteArrayInputStream(modelForm.getFirstValue("svg_xml").getBytes("utf-8"));
+      TranscoderInput input = new TranscoderInput(svgStream);
+      
+      PNGTranscoder transcoder = new PNGTranscoder();
+      // Setup output
+      ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+      TranscoderOutput output = new TranscoderOutput(outStream);
+      
+      // Do the transformation
+      transcoder.transcode(input, output);
+      final byte[] result = outStream.toByteArray();
+      repositoryService.addModelEditorSourceExtra(model.getId(), result);
+      outStream.close();
       
     } catch(Exception e) {
       LOGGER.error("Error saving model", e);
