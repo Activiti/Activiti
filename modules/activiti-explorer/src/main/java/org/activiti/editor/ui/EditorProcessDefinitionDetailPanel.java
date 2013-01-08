@@ -253,8 +253,6 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
       BpmnModel model = new BpmnJsonConverter().convertToBpmnModel(modelNode);
       byte[] bpmnBytes = new BpmnXMLConverter().convertToXML(model);
       
-      System.out.println("OUT ----> " + new String(bpmnBytes));
-
       String processName = modelData.getName() + ".bpmn20.xml";
       Deployment deployment = repositoryService.createDeployment().name(modelData.getName()).addString(processName, new String(bpmnBytes)).deploy();
 

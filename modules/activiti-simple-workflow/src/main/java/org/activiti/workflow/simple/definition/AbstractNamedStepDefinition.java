@@ -19,6 +19,7 @@ public abstract class AbstractNamedStepDefinition implements StepDefinition {
 
   protected String name;
   protected String description;
+  protected boolean startsWithPrevious;
 
   public String getName() {
     return name;
@@ -34,6 +35,14 @@ public abstract class AbstractNamedStepDefinition implements StepDefinition {
 
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  public boolean isStartsWithPrevious() {
+    return startsWithPrevious;
+  }
+
+  public void setStartsWithPrevious(boolean startsWithPrevious) {
+    this.startsWithPrevious = startsWithPrevious;
   }
 
 }

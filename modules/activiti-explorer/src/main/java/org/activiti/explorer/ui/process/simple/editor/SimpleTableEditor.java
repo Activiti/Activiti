@@ -14,9 +14,9 @@ package org.activiti.explorer.ui.process.simple.editor;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.UUID;
 
-import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
@@ -31,6 +31,7 @@ import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 import org.activiti.explorer.ui.process.simple.editor.table.TaskTable;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
+import org.activiti.workflow.simple.definition.ParallelStepsDefinition;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.node.ObjectNode;
@@ -47,7 +48,6 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 
@@ -218,7 +218,6 @@ public class SimpleTableEditor extends AbstractPage {
     StreamResource imageresource = new StreamResource(streamSource,UUID.randomUUID() + ".png", ExplorerApp.get());
     diagram = new Embedded("", imageresource);
     diagram.setType(Embedded.TYPE_IMAGE);
-    diagram.setWidth("3000px");
     mainLayout.addComponent(diagram);
 	}
 	
@@ -236,17 +235,14 @@ public class SimpleTableEditor extends AbstractPage {
             ExplorerApp.get().getWorkflowDefinitionConversionFactory().createWorkflowDefinitionConversion(workflowDefinition);
     conversion.convert();
     
-//    // Store BPMN 2.0
-    BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
-    System.out.println("IN --- > " + new String(bpmnXMLConverter.convertToXML(conversion.getBpmnModel())));
+//    // Store BPMN 2.0: not needed at the moment, we store the modeler json
+//    BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
 //    repositoryService.addModelEditorSource(model.getId(), bpmnXMLConverter.convertToXML(conversion.getBpmnModel()));
     
     // Store Modeler json, so the created process can be opened by the modeler
     try {
       BpmnJsonConverter bpmnJsonConverter = new BpmnJsonConverter();
       ObjectNode json = bpmnJsonConverter.convertToJson(conversion.getBpmnModel());
-      
-      System.out.println("JSON ---> " + json.toString());
       
       repositoryService.addModelEditorSource(model.getId(), json.toString().getBytes("utf-8"));
     
@@ -264,9 +260,32 @@ public class SimpleTableEditor extends AbstractPage {
 	    WorkflowDefinition workflow = new WorkflowDefinition();
 	    workflow.setName((String) nameField.getValue());
 	    workflow.setDescription((String) descriptionField.getValue());
-	    for (HumanStepDefinition step : taskTable.getSteps()) {
-	      workflow.addStep(step);
+	    
+	    List<HumanStepDefinition> steps = taskTable.getSteps();
+	    for (int i=0; i<steps.size(); i++) {
+	      HumanStepDefinition currentStep = steps.get(i);
+	      
+	      // Check if we have a parallel block
+	      int nextIndex = i+1;
+	      ParallelStepsDefinition parallelStepsDefinition = null;
+	      while (nextIndex < steps.size() && steps.get(nextIndex).isStartsWithPrevious()) {
+	        if (parallelStepsDefinition == null) {
+	          parallelStepsDefinition = new ParallelStepsDefinition();
+	          parallelStepsDefinition.addStep(currentStep);
+	        }
+	        
+	        parallelStepsDefinition.addStep(steps.get(nextIndex));
+	        nextIndex++;
+	      }
+	      
+	      if (parallelStepsDefinition != null) {
+	        workflow.addStep(parallelStepsDefinition);
+	        i = nextIndex - 1;
+	      } else {
+	        workflow.addStep(currentStep);
+	      }
 	    }
+	    
 	    return workflow;
 	  }
 	

@@ -20,13 +20,9 @@ import java.util.List;
 public class HumanStepDefinition extends AbstractNamedStepDefinition {
 
   protected String assignee;
-
   protected boolean isAssigneeInitiator = false;
-
   protected List<String> candidateUsers;
-
   protected List<String> candidateGroups;
-
   protected FormDefinition form;
 
   public boolean isAssigneeInitiator() {

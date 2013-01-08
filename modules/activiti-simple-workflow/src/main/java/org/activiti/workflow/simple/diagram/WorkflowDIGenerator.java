@@ -35,11 +35,15 @@ import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramCanvas;
 import org.activiti.workflow.simple.util.BpmnModelUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Joram Barrez
  */
 public class WorkflowDIGenerator {
+  
+  private static final Logger logger = LoggerFactory.getLogger(WorkflowDIGenerator.class);
 
   // Constants
   protected static final int SEQUENCE_FLOW_WITHOUT_ARROW_WIDTH = 45;
@@ -70,7 +74,6 @@ public class WorkflowDIGenerator {
   protected int startY;
   protected int currentWidth;
   protected ProcessDiagramCanvas processDiagramCanvas;
-//  protected List<BlockOfSteps> allStepBlocks;
   protected Map<String, List<SequenceFlow>> outgoingSequenceFlowMapping;
   protected Map<String, List<SequenceFlow>> incomingSequenceFlowMapping;
   protected Set<String> handledElements;
@@ -111,15 +114,25 @@ public class WorkflowDIGenerator {
 
     // Enough preparation, actually draw some stuff
     for (FlowElement flowElement : process.getFlowElements()) {
+      
+      System.out.println("Handling " + flowElement.getId());
+      System.out.println("Handled elements contains");
+      for (String element : handledElements) {
+        System.out.println("----> " + element);
+      }
+      System.out.println("Contains ? " + handledElements.contains(flowElement.getId()));
+      
 
       if (!handledElements.contains(flowElement.getId())) {
 
+        System.out.println("Must draw it now");
+        
         if (flowElement instanceof StartEvent) {
-
+          System.out.println("A");
           drawStartEvent(flowElement, startX, startY, EVENT_WIDTH, EVENT_WIDTH, generateImage);
 
         } else if (flowElement instanceof EndEvent) {
-
+          System.out.println("B");
           drawSequenceFlow(incomingSequenceFlowMapping.get(flowElement.getId()).get(0), 
                   generateImage,
                   currentWidth, startY + EVENT_WIDTH / 2, currentWidth
@@ -128,7 +141,7 @@ public class WorkflowDIGenerator {
 
         } else if (flowElement instanceof ParallelGateway 
                 && outgoingSequenceFlowMapping.get(flowElement.getId()).size() > 1) { // fork
-
+          System.out.println("C");
           ParallelGateway parallelGateway = (ParallelGateway) flowElement;
           drawSequenceFlow(incomingSequenceFlowMapping.get(flowElement.getId()).get(0), 
                   generateImage,
@@ -137,6 +150,7 @@ public class WorkflowDIGenerator {
           drawParallelBlock(currentWidth, startY - EVENT_WIDTH / 2, parallelGateway, generateImage);
 
         } else if (flowElement instanceof Task) {
+          System.out.println("Drawing task " + flowElement.getId());
           drawSequenceFlow(incomingSequenceFlowMapping.get(flowElement.getId()).get(0), 
                   generateImage,
                   currentWidth, startY + EVENT_WIDTH / 2, currentWidth

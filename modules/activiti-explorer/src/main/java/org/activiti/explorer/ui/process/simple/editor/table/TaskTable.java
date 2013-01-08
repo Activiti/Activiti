@@ -158,7 +158,7 @@ public class TaskTable extends Table implements TaskFormModelListener {
       humanStepDefinition.setAssignee((String) item.getItemProperty("assignee").getValue());
 //      humanStepDefinition.setGroups((String) item.getItemProperty("groups").getValue());
       humanStepDefinition.setDescription((String) ((TextField) item.getItemProperty("description").getValue()).getValue());
-//      humanStepDefinition.setStartWithPrevious((boolean) ((CheckBox) item.getItemProperty("startWithPrevious").getValue()).booleanValue());
+      humanStepDefinition.setStartsWithPrevious((boolean) ((CheckBox) item.getItemProperty("startWithPrevious").getValue()).booleanValue());
       humanStepDefinition.setForm(taskFormModel.getForm(itemId));
 
       steps.add(humanStepDefinition);
