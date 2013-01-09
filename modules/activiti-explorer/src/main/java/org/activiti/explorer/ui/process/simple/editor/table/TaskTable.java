@@ -82,13 +82,14 @@ public class TaskTable extends Table implements TaskFormModelListener {
     setColumnWidth(ID_ACTIONS, 170);
   }
 
-  // TODO: reactivate when having the option to edit
-//  public void addTaskRow(KickstartUserTask task) {
-//    Object taskItemId = addTaskRow(null, task.getName(), task.getAssignee(), task.getGroups(), task.getDescription(), task.getStartsWithPrevious());
-//    if (task.getForm() != null) {
-//      taskFormModel.addForm(taskItemId, task.getForm());
-//    }
-//  }
+  public void addTaskRow(HumanStepDefinition humanStepDefinition) {
+    Object taskItemId = addTaskRow(null, humanStepDefinition.getName(), humanStepDefinition.getAssignee(), 
+            humanStepDefinition.getCandidateGroupsCommaSeparated(), humanStepDefinition.getDescription(),
+            humanStepDefinition.isStartsWithPrevious());
+    if (humanStepDefinition.getForm() != null) {
+      taskFormModel.addForm(taskItemId, humanStepDefinition.getForm());
+    }
+  }
 
   public void addDefaultTaskRow() {
     addDefaultTaskRowAfter(null);
@@ -167,8 +168,16 @@ public class TaskTable extends Table implements TaskFormModelListener {
       Item item = getItem(itemId);
 
       HumanStepDefinition humanStepDefinition = new HumanStepDefinition();
-      humanStepDefinition.setName((String) item.getItemProperty(ID_NAME).getValue());
-      humanStepDefinition.setAssignee((String) item.getItemProperty(ID_ASSIGNEE).getValue());
+      
+      String name = (String) item.getItemProperty(ID_NAME).getValue();
+      if (name != null && name.length() > 0) {
+        humanStepDefinition.setName(name);
+      }
+      
+      String assignee = (String) item.getItemProperty(ID_ASSIGNEE).getValue();
+      if (assignee != null && assignee.length() > 0) {
+        humanStepDefinition.setAssignee(assignee);
+      }
       
       String groups = (String) item.getItemProperty("groups").getValue();
       List<String> candidateGroups = new ArrayList<String>();
@@ -178,10 +187,13 @@ public class TaskTable extends Table implements TaskFormModelListener {
         }
       }
       humanStepDefinition.setCandidateGroups(candidateGroups);
+
+      String description = (String) ((TextField) item.getItemProperty(ID_DESCRIPTION).getValue()).getValue();
+      if (description != null && description.length() > 0) {
+        humanStepDefinition.setDescription(description);
+      }
       
-      humanStepDefinition.setDescription((String) ((TextField) item.getItemProperty(ID_DESCRIPTION).getValue()).getValue());
       humanStepDefinition.setStartsWithPrevious((boolean) ((CheckBox) item.getItemProperty(ID_START_WITH_PREVIOUS).getValue()).booleanValue());
-      humanStepDefinition.setForm(taskFormModel.getForm(itemId));
       
       FormDefinition formDefinition = taskFormModel.getForm(itemId);
       humanStepDefinition.setForm(formDefinition);

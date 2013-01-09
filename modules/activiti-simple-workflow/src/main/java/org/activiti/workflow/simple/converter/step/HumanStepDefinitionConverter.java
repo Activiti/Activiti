@@ -76,9 +76,6 @@ public class HumanStepDefinitionConverter extends BaseStepDefinitionConverter<Hu
       
       FormDefinition formDefinition = humanStepDefinition.getForm();
       
-      // Form key
-      userTask.setFormKey(formDefinition.getFormKey());
-      
       // Form properties
       for (FormPropertyDefinition propertyDefinition : formDefinition.getFormProperties()) {
         FormProperty formProperty = new FormProperty();

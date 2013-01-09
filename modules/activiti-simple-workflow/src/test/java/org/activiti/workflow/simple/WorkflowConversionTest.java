@@ -115,7 +115,7 @@ public class WorkflowConversionTest {
   }
   
   @Test
-  public void testThreeUserTasksInParallel() {
+  public void testThreeUserTasksInParallel() throws Exception {
     TaskService taskService = activitiRule.getTaskService();
     
     WorkflowDefinition workflowDefinition = new WorkflowDefinition()

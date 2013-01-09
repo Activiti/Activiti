@@ -247,6 +247,7 @@ public interface Messages {
   String PROCESS_EDITOR_PROPERTY_TYPE_TEXT = "process.editor.property.type.text";
   String PROCESS_EDITOR_PROPERTY_TYPE_NUMBER = "process.editor.property.type.number";
   String PROCESS_EDITOR_PROPERTY_TYPE_DATE = "process.editor.property.type.date";
+  String PROCESS_EDITOR_LOADING_ERROR = "process.editor.loading.error";
   
   String PROCESS_INSTANCE_DELETE = "process.instance.delete";
   String PROCESS_INSTANCE_DELETE_POPUP_TITLE = "process.instance.delete.popup.title";

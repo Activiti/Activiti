@@ -17,7 +17,6 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 
-import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Model;
@@ -28,10 +27,14 @@ import org.activiti.explorer.ui.custom.DetailPanel;
 import org.activiti.explorer.ui.custom.ToolBar;
 import org.activiti.explorer.ui.custom.ToolbarEntry.ToolbarCommand;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
+import org.activiti.explorer.ui.process.simple.editor.listener.AddTaskClickListener;
 import org.activiti.explorer.ui.process.simple.editor.table.TaskTable;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
+import org.activiti.workflow.simple.converter.json.JsonConverter;
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
 import org.activiti.workflow.simple.definition.ParallelStepsDefinition;
+import org.activiti.workflow.simple.definition.StepDefinition;
+import org.activiti.workflow.simple.definition.StepDefinitionContainer;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.node.ObjectNode;
@@ -66,9 +69,13 @@ public class SimpleTableEditor extends AbstractPage {
 	private static final String KEY_EDITOR = "editor";
 	private static final String KEY_PREVIEW = "preview";
 
-	// Input
+	// Input when creating new process
 	protected String workflowName;
 	protected String description;
+	
+	// Input when updating existing proceess
+	protected String modelId;
+	protected WorkflowDefinition workflowDefinition;
 	
 	// ui
 	protected DetailPanel mainLayout;
@@ -78,20 +85,27 @@ public class SimpleTableEditor extends AbstractPage {
 	protected TaskTable taskTable;
 	protected Panel imagePanel;
 	
-	public SimpleTableEditor() {
-		this(null, null);
-	}
-	
+	/**
+	 * Constructor used when creating a new process.
+	 */
 	public SimpleTableEditor(String workflowName, String description) {
 	  this.workflowName = workflowName;
 	  this.description = description;
-	  
-	  setSizeFull();
+	}
+	
+	/**
+	 * Constructor used when updating an existing process
+	 */
+	public SimpleTableEditor(String modelId, WorkflowDefinition workflowDefinition) {
+	  this(workflowDefinition.getName(), workflowDefinition.getDescription());
+	  this.modelId = modelId;
+	  this.workflowDefinition = workflowDefinition;
 	}
 	
 	@Override
   protected void initUi() {
     super.initUi();
+    setSizeFull();
     grid.setColumnExpandRatio(0, 0f); // Hide the column on the left side
 
 	  mainLayout = new DetailPanel();
@@ -167,12 +181,27 @@ public class SimpleTableEditor extends AbstractPage {
 
 	protected void initTaskTable(GridLayout layout) {
 		taskTable = new TaskTable();
-		taskTable.addDefaultTaskRow();
-
-		// TODO: taskTable.addTaskRow for existing workflow definition
 		
+		// Add existing tasks in case we're editing
+		if (workflowDefinition != null) {
+		  loadTaskRows(workflowDefinition, taskTable);
+		} else {
+		  taskTable.addDefaultTaskRow();
+		}
+
 		layout.addComponent(new Label(ExplorerApp.get().getI18nManager().getMessage(Messages.PROCESS_EDITOR_TASKS)));
 		layout.addComponent(taskTable);
+	}
+	
+	protected void loadTaskRows(StepDefinitionContainer<?> container, TaskTable taskTable) {
+	  for (StepDefinition stepDefinition : container.getSteps()) {
+      if (stepDefinition instanceof HumanStepDefinition) {
+        HumanStepDefinition humanStepDefinition = (HumanStepDefinition) stepDefinition;
+        taskTable.addTaskRow(humanStepDefinition);
+      } else if (stepDefinition instanceof StepDefinitionContainer<?>) {
+        loadTaskRows((StepDefinitionContainer<?>) stepDefinition, taskTable);
+      }
+    }
 	}
 
 	protected void initButtons(GridLayout layout) {
@@ -183,7 +212,7 @@ public class SimpleTableEditor extends AbstractPage {
 		saveButton.addListener(new ClickListener() {
       private static final long serialVersionUID = 1L;
       public void buttonClick(ClickEvent event) {
-        saveBpmnModel();
+        save();
       }
     });
 
@@ -237,13 +266,20 @@ public class SimpleTableEditor extends AbstractPage {
     imagePanel.addComponent(diagram);
 	}
 	
-	protected void saveBpmnModel() {
+	protected void save() {
 	  WorkflowDefinition workflowDefinition = createWorkflow();
 	  
-	  // We're storing the bpmn 2.0 as a model for now
 	  RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
-	  Model model = repositoryService.newModel();
-    model.setName(workflowDefinition.getName());
+	  
+	  Model model = null;
+	  if (modelId == null) { // new process
+	    model = repositoryService.newModel();
+	  } else { // update existing process
+	    model = repositoryService.getModel(modelId);
+	  }
+
+	  model.setName(workflowDefinition.getName());
+    model.setCategory(SimpleTableEditorConstants.TABLE_EDITOR_CATEGORY);
     repositoryService.saveModel(model);
 
     // Store model entity
@@ -255,13 +291,17 @@ public class SimpleTableEditor extends AbstractPage {
 //    BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
 //    repositoryService.addModelEditorSource(model.getId(), bpmnXMLConverter.convertToXML(conversion.getBpmnModel()));
     
-    // Store Modeler json, so the created process can be opened by the modeler
     try {
-      BpmnJsonConverter bpmnJsonConverter = new BpmnJsonConverter();
-      ObjectNode json = bpmnJsonConverter.convertToJson(conversion.getBpmnModel());
-      
-      repositoryService.addModelEditorSource(model.getId(), json.toString().getBytes("utf-8"));
+//      BpmnJsonConverter bpmnJsonConverter = new BpmnJsonConverter();
+//      ObjectNode json = bpmnJsonConverter.convertToJson(conversion.getBpmnModel());
+//      
+//      repositoryService.addModelEditorSource(model.getId(), json.toString().getBytes("utf-8"));
     
+      JsonConverter jsonConverter = new JsonConverter();
+      ObjectNode json = jsonConverter.convertToJson(workflowDefinition);
+      System.out.println("JSON = " + json.toString());
+      repositoryService.addModelEditorSource(model.getId(), json.toString().getBytes("utf-8"));
+      
       // Store process image
       // TODO: we should really allow the service to take an inputstream as input. Now we load it into memory ...
       repositoryService.addModelEditorSourceExtra(model.getId(), IOUtils.toByteArray(conversion.getWorkflowDiagramImage()));
@@ -275,7 +315,11 @@ public class SimpleTableEditor extends AbstractPage {
 	 protected WorkflowDefinition createWorkflow() {
 	    WorkflowDefinition workflow = new WorkflowDefinition();
 	    workflow.setName((String) nameField.getValue());
-	    workflow.setDescription((String) descriptionField.getValue());
+	    
+	    String description = (String) descriptionField.getValue();
+	    if (description != null && description.length() > 0) {
+	      workflow.setDescription(description);
+	    }
 	    
 	    List<HumanStepDefinition> steps = taskTable.getSteps();
 	    for (int i=0; i<steps.size(); i++) {

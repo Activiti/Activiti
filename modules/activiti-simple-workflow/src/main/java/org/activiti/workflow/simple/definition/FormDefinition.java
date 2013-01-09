@@ -25,8 +25,6 @@ import java.util.List;
  */
 public class FormDefinition {
 
-  protected String formKey;
-
   protected List<FormPropertyDefinition> formProperties = new ArrayList<FormPropertyDefinition>();
 
   public List<FormPropertyDefinition> getFormProperties() {
@@ -39,14 +37,6 @@ public class FormDefinition {
 
   public void addFormProperty(FormPropertyDefinition formProperty) {
     formProperties.add(formProperty);
-  }
-
-  public String getFormKey() {
-    return formKey;
-  }
-
-  public void setFormKey(String formKey) {
-    this.formKey = formKey;
   }
 
 }

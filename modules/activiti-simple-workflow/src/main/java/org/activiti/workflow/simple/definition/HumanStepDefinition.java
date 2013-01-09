@@ -54,6 +54,19 @@ public class HumanStepDefinition extends AbstractNamedStepDefinition {
   public List<String> getCandidateGroups() {
     return candidateGroups;
   }
+  
+  public String getCandidateGroupsCommaSeparated() {
+    if (candidateGroups == null || candidateGroups.size() == 0) {
+      return null;
+    }
+    
+    StringBuilder strb = new StringBuilder();
+    for (String group : candidateGroups) {
+      strb.append(group + ", ");
+    }
+    strb.delete(strb.length() - 2, strb.length());
+    return strb.toString();
+  }
 
   public void setCandidateGroups(List<String> candidateGroups) {
     this.candidateGroups = candidateGroups;

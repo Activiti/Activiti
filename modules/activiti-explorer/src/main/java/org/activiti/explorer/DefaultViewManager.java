@@ -47,6 +47,7 @@ import org.activiti.explorer.ui.task.InvolvedPage;
 import org.activiti.explorer.ui.task.QueuedPage;
 import org.activiti.explorer.ui.task.TaskMenuBar;
 import org.activiti.explorer.ui.task.TasksPage;
+import org.activiti.workflow.simple.definition.WorkflowDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.ui.Window;
@@ -56,8 +57,6 @@ import com.vaadin.ui.Window;
  * @author Joram Barrez
  */
 public class DefaultViewManager implements ViewManager {
-  
-  private static final long serialVersionUID = 1L;
   
   protected AbstractPage currentPage;
   
@@ -223,6 +222,10 @@ public class DefaultViewManager implements ViewManager {
   
   public void showSimpleTableProcessEditor(String processName, String processDescription) {
     switchView(new SimpleTableEditor(processName, processDescription), ViewManager.MAIN_NAVIGATION_PROCESS, null);
+  }
+  
+  public void showSimpleTableProcessEditor(String modelId, WorkflowDefinition workflowDefinition) {
+    switchView(new SimpleTableEditor(modelId, workflowDefinition), ViewManager.MAIN_NAVIGATION_PROCESS, null);
   }
   
   // Management

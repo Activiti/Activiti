@@ -126,7 +126,7 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
     importModelButton.addListener(new ImportModelClickListener());
     
     editModelButton = new Button(i18nManager.getMessage(Messages.PROCESS_EDIT));
-    editModelButton.addListener(new EditModelClickListener(modelData.getId()));
+    editModelButton.addListener(new EditModelClickListener(modelData));
     
     actionLabel = new Label(i18nManager.getMessage(Messages.MODEL_ACTION));
     actionLabel.setSizeUndefined();
