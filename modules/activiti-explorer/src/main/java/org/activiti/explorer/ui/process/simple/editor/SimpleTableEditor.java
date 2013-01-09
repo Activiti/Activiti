@@ -299,7 +299,6 @@ public class SimpleTableEditor extends AbstractPage {
     
       JsonConverter jsonConverter = new JsonConverter();
       ObjectNode json = jsonConverter.convertToJson(workflowDefinition);
-      System.out.println("JSON = " + json.toString());
       repositoryService.addModelEditorSource(model.getId(), json.toString().getBytes("utf-8"));
       
       // Store process image

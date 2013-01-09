@@ -222,6 +222,7 @@ public interface Messages {
   String PROCESS_EDITOR_CHOICE = "process.editor.choice";
   String PROCESS_EDITOR_MODELER = "process.editor.modeler";
   String PROCESS_EDITOR_MODELER_DESCRIPTION = "process.editor.modeler.description";
+  String PROCESS_EDITOR_CONVERSION_WARNING_MODELER = "process.editor.conversion.warning.modeler";
   String PROCESS_EDITOR_TABLE = "process.editor.table";
   String PROCESS_EDITOR_TABLE_DESCRIPTION = "process.editor.table.description";
   String PROCESS_EDITOR_CREATE_NEW = "process.editor.create.new";
