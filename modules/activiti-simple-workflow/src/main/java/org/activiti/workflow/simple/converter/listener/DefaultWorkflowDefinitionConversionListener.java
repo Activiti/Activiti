@@ -24,10 +24,18 @@ import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.workflow.simple.converter.ConversionConstants;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
+import org.activiti.workflow.simple.converter.WorkflowDefinitionConversionFactory;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
 import org.activiti.workflow.simple.util.BpmnModelUtil;
 
 /**
+ * Default listener for {@link WorkflowDefinitionConversion} lifecycle events.
+ * 
+ * When added to a {@link WorkflowDefinitionConversionFactory}, this class will make sure
+ * a start event and end event is created for the {@link Process}. 
+ * Further, it will generate a correct incoming and outgoing sequence flow list
+ * for each {@link Process} element, as required by some toolings (eg Modeler).
+ * 
  * @author Joram Barrez
  */
 public class DefaultWorkflowDefinitionConversionListener implements WorkflowDefinitionConversionListener

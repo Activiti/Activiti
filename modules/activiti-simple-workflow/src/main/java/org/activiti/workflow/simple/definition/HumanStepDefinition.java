@@ -15,6 +15,8 @@ package org.activiti.workflow.simple.definition;
 import java.util.List;
 
 /**
+ * Defines a step that must be executed by a human actor.
+ * 
  * @author Joram Barrez
  */
 public class HumanStepDefinition extends AbstractNamedStepDefinition {

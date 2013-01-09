@@ -21,6 +21,8 @@ import org.activiti.workflow.simple.definition.HumanStepDefinition;
 import org.activiti.workflow.simple.definition.StepDefinition;
 
 /**
+ * {@link StepDefinitionConverter} for converting a {@link HumanStepDefinition} to a {@link UserTask}.
+ * 
  * @author Frederik Heremans
  * @author Joram Barrez
  */
@@ -84,10 +86,10 @@ public class HumanStepDefinitionConverter extends BaseStepDefinitionConverter<Hu
         formProperty.setName(propertyDefinition.getPropertyName());
         formProperty.setRequired(propertyDefinition.isRequired());
         
-        String type = "string";
-        if ("number".equals(propertyDefinition.getType())) {
+        String type = DefaultFormPropertyTypes.TEXT;
+        if (DefaultFormPropertyTypes.NUMBER.equals(propertyDefinition.getType())) {
           type = "long";
-        } else if ("date".equals(propertyDefinition.getType())) {
+        } else if (DefaultFormPropertyTypes.DATE.equals(propertyDefinition.getType())) {
           type = "date";
         }
         formProperty.setType(type);

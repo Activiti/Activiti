@@ -13,6 +13,8 @@
 package org.activiti.workflow.simple.definition;
 
 /**
+ * Defines one property in a {@link FormDefinition} that is associated with a {@link HumanStepDefinition}.
+ * 
  * @author Joram Barrez
  */
 public class FormPropertyDefinition {

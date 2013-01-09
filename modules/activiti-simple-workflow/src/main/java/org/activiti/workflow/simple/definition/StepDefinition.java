@@ -13,6 +13,8 @@
 package org.activiti.workflow.simple.definition;
 
 /**
+ * Marker interface for all 'patterns' that are known by the simple workflow API.
+ * 
  * @author Joram Barrez
  */
 public interface StepDefinition {

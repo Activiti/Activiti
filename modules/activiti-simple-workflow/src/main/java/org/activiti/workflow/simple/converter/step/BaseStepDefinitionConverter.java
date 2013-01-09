@@ -13,15 +13,21 @@
 package org.activiti.workflow.simple.converter.step;
 
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.workflow.simple.converter.ConversionConstants;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.definition.StepDefinition;
 
 /**
- * Base class that can be used for {@link StepDefinitionConverter}, contains
- * utility-methods.
- *
+ * Base class that can be used for {@link StepDefinitionConverter}, contains utility-methods.
+ * 
+ * All {@link StepDefinitionConverter} should extend this class and implement any BPMN 2.0 xml
+ * generation logic in the {@link #createProcessArtifact(StepDefinition, WorkflowDefinitionConversion)} method.
+ * 
+ * The generation of additional artifacts should be done by overriding the {@link #createAdditionalArtifacts(Object)}
+ * method adn adding the produced artifacts to the generic map on the {@link WorkflowDefinitionConversion}.
+ * 
  * @author Frederik Heremans
  * @author Joram Barrez
  */
@@ -46,6 +52,11 @@ public abstract class BaseStepDefinitionConverter<U extends StepDefinition, T> i
   protected void createAdditionalArtifacts(T defaultGeneratedArtifact) {
   }
 
+  /**
+   * Adds a flow element to the {@link Process}.
+   * A sequence flow from the last known element to this element will be generated,
+   * unless the sequence flow generation is globally disabled.
+   */
   protected void addFlowElement(WorkflowDefinitionConversion conversion, FlowElement flowElement) {
       addFlowElement(conversion, flowElement, true);
   }

@@ -13,6 +13,8 @@
 package org.activiti.workflow.simple.definition;
 
 /**
+ * Superclass for all {@link StepDefinition} classes that have a name or description.
+ * 
  * @author Joram Barrez
  */
 public abstract class AbstractNamedStepDefinition implements StepDefinition {

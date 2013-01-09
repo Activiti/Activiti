@@ -16,6 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * A {@link HumanStepDefinition} can have a form associated with it 
+ * that a user must complete to continue the workflow.
+ * Such a form contains {@link FormPropertyDefinition} and potentially
+ * a form key, when the properties are not used.
+ * 
  * @author Joram Barrez
  */
 public class FormDefinition {

@@ -13,14 +13,31 @@
 package org.activiti.workflow.simple.converter.listener;
 
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
+import org.activiti.workflow.simple.converter.WorkflowDefinitionConversionFactory;
+import org.activiti.workflow.simple.converter.step.StepDefinitionConverter;
 
 /**
+ * Allows to hook into the lifecycle of a {@link WorkflowDefinitionConversion}.
+ * 
+ * Instances of this class can be added to a {@link WorkflowDefinitionConversionFactory}
+ * and the specific methods will be called during the conversion.
+ * 
+ * @see DefaultWorkflowDefinitionConversionListener
+ * 
  * @author Joram Barrez
  */
 public interface WorkflowDefinitionConversionListener {
 
+  /**
+   * Called when the {@link WorkflowDefinitionConversion} is initialized,
+   * but nothing has been converted yet.
+   */
   void beforeStepsConversion(WorkflowDefinitionConversion conversion);
 
+  /**
+   * Called when the {@link WorkflowDefinitionConversion} has called all
+   * {@link StepDefinitionConverter} that were added to the {@link WorkflowDefinitionConversionFactory}.
+   */
   void afterStepsConversion(WorkflowDefinitionConversion conversion);
 
 }
