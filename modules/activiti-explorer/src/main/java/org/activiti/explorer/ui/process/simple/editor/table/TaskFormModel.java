@@ -27,7 +27,7 @@ public class TaskFormModel {
 
   protected List<TaskFormModelListener> formModelListeners = new ArrayList<TaskFormModelListener>();
 
-  /* Mapping id of task in taskTable <-> FormDto */
+  /* Mapping id of task in taskTable <-> FormDefinition */
   protected Map<Object, FormDefinition> forms = new HashMap<Object, FormDefinition>();
 
   public void addForm(Object taskItemId, FormDefinition form) {

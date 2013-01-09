@@ -14,6 +14,9 @@ package org.activiti.explorer.ui.process.simple.editor.table;
 
 import java.util.Arrays;
 
+import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.I18nManager;
+import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.process.simple.editor.listener.AddPropertyClickListener;
 import org.activiti.explorer.ui.process.simple.editor.listener.DeletePropertyClickListener;
 
@@ -32,20 +35,31 @@ public class PropertyTable extends Table {
 
   private static final long serialVersionUID = 6521446909987945815L;
 
+  public static final String ID_PROPERTY_NAME = "property";
+  public static final String ID_PROPERTY_TYPE = "type";
+  public static final String ID_PROPERTY_REQUIRED = "required";
+  public static final String ID_PROPERTY_ACTIONS = "actions";
+  
+  private static final String DEFAULT_PROPERTY_NAME = "My property";
+  
+  protected I18nManager i18nManager;
+  
   public PropertyTable() {
+    this.i18nManager = ExplorerApp.get().getI18nManager();
+    
     setEditable(true);
     setColumnReorderingAllowed(true);
     setPageLength(size());
 
-    addContainerProperty("property", String.class, null);
-    addContainerProperty("type", ComboBox.class, null);
-    addContainerProperty("required", CheckBox.class, null);
-    addContainerProperty("actions", HorizontalLayout.class, null);
+    addContainerProperty(ID_PROPERTY_NAME, String.class, null);
+    addContainerProperty(ID_PROPERTY_TYPE, ComboBox.class, null);
+    addContainerProperty(ID_PROPERTY_REQUIRED, CheckBox.class, null);
+    addContainerProperty(ID_PROPERTY_ACTIONS, HorizontalLayout.class, null);
 
-    setColumnHeader("property", "Property");
-    setColumnHeader("type", "Type");
-    setColumnHeader("required", "Required?");
-    setColumnHeader("actions", "Actions");
+    setColumnHeader(ID_PROPERTY_NAME, i18nManager.getMessage(Messages.PROCESS_EDITOR_PROPERTY_NAME));
+    setColumnHeader(ID_PROPERTY_TYPE,  i18nManager.getMessage(Messages.PROCESS_EDITOR_PROPERTY_TYPE));
+    setColumnHeader(ID_PROPERTY_REQUIRED,  i18nManager.getMessage(Messages.PROCESS_EDITOR_PROPERTY_REQUIRED));
+    setColumnHeader(ID_PROPERTY_ACTIONS,  i18nManager.getMessage(Messages.PROCESS_EDITOR_ACTIONS));
   }
 
   public void addPropertyRow() {
@@ -70,22 +84,25 @@ public class PropertyTable extends Table {
     Item newItem = getItem(newItemId);
 
     // name
-    newItem.getItemProperty("property").setValue(propertyName == null ? "My Property" : propertyName);
+    newItem.getItemProperty(ID_PROPERTY_NAME).setValue(propertyName == null ? DEFAULT_PROPERTY_NAME : propertyName);
 
     // type
-    ComboBox typeComboBox = new ComboBox("types", Arrays.asList("text", "number", "date"));
+    ComboBox typeComboBox = new ComboBox("", Arrays.asList(
+            i18nManager.getMessage(Messages.PROCESS_EDITOR_PROPERTY_TYPE_TEXT),
+            i18nManager.getMessage(Messages.PROCESS_EDITOR_PROPERTY_TYPE_NUMBER),
+            i18nManager.getMessage(Messages.PROCESS_EDITOR_PROPERTY_TYPE_DATE)));
     typeComboBox.setNullSelectionAllowed(false);
     if (propertyType == null) {
       typeComboBox.setValue(typeComboBox.getItemIds().iterator().next());
     } else {
       typeComboBox.setValue(propertyType);
     }
-    newItem.getItemProperty("type").setValue(typeComboBox);
+    newItem.getItemProperty(ID_PROPERTY_TYPE).setValue(typeComboBox);
 
     // required
     CheckBox requiredCheckBox = new CheckBox();
     requiredCheckBox.setValue(required == null ? false : required);
-    newItem.getItemProperty("required").setValue(requiredCheckBox);
+    newItem.getItemProperty(ID_PROPERTY_REQUIRED).setValue(requiredCheckBox);
 
     // actions
     HorizontalLayout actionButtons = new HorizontalLayout();
@@ -100,7 +117,7 @@ public class PropertyTable extends Table {
     addRowButton.addListener(new AddPropertyClickListener(this));
     actionButtons.addComponent(addRowButton);
 
-    newItem.getItemProperty("actions").setValue(actionButtons);
+    newItem.getItemProperty(ID_PROPERTY_ACTIONS).setValue(actionButtons);
   }
 
 }
