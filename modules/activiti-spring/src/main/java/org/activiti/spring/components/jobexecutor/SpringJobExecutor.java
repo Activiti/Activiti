@@ -66,9 +66,6 @@ public class SpringJobExecutor extends JobExecutor {
 
 	@Override
 	protected void stopExecutingJobs() {
-		
 		stopJobAcquisitionThread();
-
-		taskExecutor = null;
 	}
 }

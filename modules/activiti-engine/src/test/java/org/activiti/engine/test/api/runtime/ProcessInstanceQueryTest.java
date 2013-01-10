@@ -723,7 +723,10 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     
     ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
     
-    Date date2 = Calendar.getInstance().getTime();
+    Calendar cal2 = Calendar.getInstance();
+    cal2.add(Calendar.SECOND, 1);
+    
+    Date date2 = cal2.getTime();
     vars = new HashMap<String, Object>();
     vars.put("dateVar", date1);
     vars.put("dateVar2", date2);

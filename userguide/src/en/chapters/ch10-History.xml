@@ -193,7 +193,7 @@ ProcessEngine processEngine = ProcessEngineConfiguration
     
     <programlisting>historyService
       .createHistoricDetailQuery()
-      .onlyFormProperties()
+      .formProperties()
       ...
       .list();</programlisting>
       

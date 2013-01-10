@@ -86,6 +86,11 @@ public class ProcessEngineImpl implements ProcessEngine {
     if ((jobExecutor != null) && (jobExecutor.isAutoActivate())) {
       jobExecutor.start();
     }
+    
+    if(processEngineConfiguration.getProcessEngineLifecycleListener() != null)
+    {
+      processEngineConfiguration.getProcessEngineLifecycleListener().onProcessEngineBuilt(this);
+    }
   }
   
   public void close() {
@@ -95,6 +100,11 @@ public class ProcessEngineImpl implements ProcessEngine {
     }
 
     commandExecutor.execute(new SchemaOperationProcessEngineClose());
+    
+    if(processEngineConfiguration.getProcessEngineLifecycleListener() != null)
+    {
+      processEngineConfiguration.getProcessEngineLifecycleListener().onProcessEngineClosed(this);
+    }
   }
 
   public DbSqlSessionFactory getDbSqlSessionFactory() {
