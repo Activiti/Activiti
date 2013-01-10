@@ -128,6 +128,7 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   protected String activityFontName = "Arial";
   
   protected ClassLoader classLoader;
+  protected ProcessEngineLifecycleListener processEngineLifecycleListener;
 
   /** use one of the static createXxxx methods instead */
   protected ProcessEngineConfiguration() {
@@ -510,6 +511,12 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   public void setActivityFontName(String activityFontName) {
     this.activityFontName = activityFontName;
   }
-
-
+  
+  public void setProcessEngineLifecycleListener(ProcessEngineLifecycleListener processEngineLifecycleListener) {
+    this.processEngineLifecycleListener = processEngineLifecycleListener;
+  }
+  
+  public ProcessEngineLifecycleListener getProcessEngineLifecycleListener() {
+    return processEngineLifecycleListener;
+  }
 }
