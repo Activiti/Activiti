@@ -16,11 +16,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * A {@link HumanStepDefinition} can have a form associated with it 
+ * that a user must complete to continue the workflow.
+ * Such a form contains {@link FormPropertyDefinition} and potentially
+ * a form key, when the properties are not used.
+ * 
  * @author Joram Barrez
  */
 public class FormDefinition {
-
-  protected String formKey;
 
   protected List<FormPropertyDefinition> formProperties = new ArrayList<FormPropertyDefinition>();
 
@@ -34,14 +37,6 @@ public class FormDefinition {
 
   public void addFormProperty(FormPropertyDefinition formProperty) {
     formProperties.add(formProperty);
-  }
-
-  public String getFormKey() {
-    return formKey;
-  }
-
-  public void setFormKey(String formKey) {
-    this.formKey = formKey;
   }
 
 }

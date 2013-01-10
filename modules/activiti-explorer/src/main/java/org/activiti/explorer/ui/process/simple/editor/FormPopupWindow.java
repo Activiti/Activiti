@@ -13,6 +13,8 @@
 package org.activiti.explorer.ui.process.simple.editor;
 
 
+import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.process.simple.editor.table.PropertyTable;
 import org.activiti.explorer.ui.process.simple.editor.table.TaskFormModel;
 import org.activiti.workflow.simple.definition.FormDefinition;
@@ -71,7 +73,7 @@ public class FormPopupWindow extends Window {
     buttons.setSpacing(true);
 
     // Save button
-    Button saveButton = new Button("Save");
+    Button saveButton = new Button(ExplorerApp.get().getI18nManager().getMessage(Messages.BUTTON_SAVE));
     buttons.addComponent(saveButton);
     saveButton.addListener(new Button.ClickListener() {
 
@@ -85,7 +87,7 @@ public class FormPopupWindow extends Window {
     });
 
     // Delete button
-    Button deleteButton = new Button("Delete");
+    Button deleteButton = new Button(ExplorerApp.get().getI18nManager().getMessage(Messages.BUTTON_DELETE));
     buttons.addComponent(deleteButton);
     deleteButton.addListener(new Button.ClickListener() {
 
@@ -105,9 +107,9 @@ public class FormPopupWindow extends Window {
     FormDefinition formDefinition = new FormDefinition();
     for (Object itemId : propertyTable.getItemIds()) {
       FormPropertyDefinition formPropertyDefinition = new FormPropertyDefinition();
-      formPropertyDefinition.setPropertyName((String) propertyTable.getItem(itemId).getItemProperty("property").getValue());
-      formPropertyDefinition.setType((String) ((ComboBox) propertyTable.getItem(itemId).getItemProperty("type").getValue()).getValue());
-      formPropertyDefinition.setRequired((Boolean) ((CheckBox) propertyTable.getItem(itemId).getItemProperty("required").getValue()).getValue());
+      formPropertyDefinition.setPropertyName((String) propertyTable.getItem(itemId).getItemProperty(PropertyTable.ID_PROPERTY_NAME).getValue());
+      formPropertyDefinition.setType((String) ((ComboBox) propertyTable.getItem(itemId).getItemProperty(PropertyTable.ID_PROPERTY_TYPE).getValue()).getValue());
+      formPropertyDefinition.setRequired((Boolean) ((CheckBox) propertyTable.getItem(itemId).getItemProperty(PropertyTable.ID_PROPERTY_REQUIRED).getValue()).getValue());
       formDefinition.addFormProperty(formPropertyDefinition);
     }
     return formDefinition;

@@ -140,7 +140,7 @@ public class ProcessDefinitionInfoComponent extends VerticalLayout {
       Panel imagePanel = new Panel(); // using panel for scrollbars
       imagePanel.addStyleName(Reindeer.PANEL_LIGHT);
       imagePanel.setWidth(100, UNITS_PERCENTAGE);
-      imagePanel.setHeight(400, UNITS_PIXELS);
+      imagePanel.setHeight(100, UNITS_PERCENTAGE);
       HorizontalLayout panelLayout = new HorizontalLayout();
       panelLayout.setSizeUndefined();
       imagePanel.setContent(panelLayout);

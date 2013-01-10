@@ -10,13 +10,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.workflow.simple.definition;
+package org.activiti.workflow.simple.converter.step;
 
 /**
- * Marker interface for all 'patterns' that are known by the simple workflow API.
- * 
  * @author Joram Barrez
  */
-public interface StepDefinition {
+public interface DefaultFormPropertyTypes {
+
+  String TEXT = "string";
+  
+  String NUMBER = "number";
+  
+  String DATE = "date";
   
 }
+

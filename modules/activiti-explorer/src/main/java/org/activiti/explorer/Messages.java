@@ -28,6 +28,8 @@ public interface Messages {
   String BUTTON_OK = "button.ok";
   String BUTTON_CREATE = "button.create";
   String BUTTON_CANCEL = "button.cancel";
+  String BUTTON_SAVE = "button.save";
+  String BUTTON_DELETE = "button.delete";
   String UNCAUGHT_EXCEPTION = "uncaught.exception";
   
   // Navigation
@@ -220,6 +222,7 @@ public interface Messages {
   String PROCESS_EDITOR_CHOICE = "process.editor.choice";
   String PROCESS_EDITOR_MODELER = "process.editor.modeler";
   String PROCESS_EDITOR_MODELER_DESCRIPTION = "process.editor.modeler.description";
+  String PROCESS_EDITOR_CONVERSION_WARNING_MODELER = "process.editor.conversion.warning.modeler";
   String PROCESS_EDITOR_TABLE = "process.editor.table";
   String PROCESS_EDITOR_TABLE_DESCRIPTION = "process.editor.table.description";
   String PROCESS_EDITOR_CREATE_NEW = "process.editor.create.new";
@@ -230,6 +233,22 @@ public interface Messages {
   String PROCESS_EDITOR_NAME = "process.editor.name";
   String PROCESS_EDITOR_DESCRIPTION = "process.editor.description";
   String PROCESS_EDITOR_TASKS = "process.editor.tasks";
+  String PROCESS_EDITOR_TASK_NAME = "process.editor.task.name";
+  String PROCESS_EDITOR_TASK_ASSIGNEE = "process.editor.task.assignee";
+  String PROCESS_EDITOR_TASK_GROUPS = "process.editor.task.groups";
+  String PROCESS_EDITOR_TASK_DESCRIPTION = "process.editor.task.description";
+  String PROCESS_EDITOR_TASK_CONCURRENCY = "process.editor.task.concurrency";
+  String PROCESS_EDITOR_TASK_START_WITH_PREVIOUS = "process.editor.task.startwithprevious";
+  String PROCESS_EDITOR_TASK_FORM_CREATE = "process.editor.task.form.create";
+  String PROCESS_EDITOR_TASK_FORM_EDIT = "process.editor.task.form.edit";
+  String PROCESS_EDITOR_ACTIONS = "process.editor.actions";
+  String PROCESS_EDITOR_PROPERTY_NAME = "process.editor.property.name";
+  String PROCESS_EDITOR_PROPERTY_TYPE = "process.editor.property.type";
+  String PROCESS_EDITOR_PROPERTY_REQUIRED = "process.editor.property.required";
+  String PROCESS_EDITOR_PROPERTY_TYPE_TEXT = "process.editor.property.type.text";
+  String PROCESS_EDITOR_PROPERTY_TYPE_NUMBER = "process.editor.property.type.number";
+  String PROCESS_EDITOR_PROPERTY_TYPE_DATE = "process.editor.property.type.date";
+  String PROCESS_EDITOR_LOADING_ERROR = "process.editor.loading.error";
   
   String PROCESS_INSTANCE_DELETE = "process.instance.delete";
   String PROCESS_INSTANCE_DELETE_POPUP_TITLE = "process.instance.delete.popup.title";

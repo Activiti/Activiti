@@ -95,6 +95,9 @@
       <if test="processInstanceId != null">
         RES.PROC_INST_ID_ = #{processInstanceId}
       </if>
+      <if test="taskId != null">
+        RES.TASK_ID_ = #{taskId}
+      </if>
       <if test="variableName != null">
         and RES.NAME_ = #{variableName}
       </if>

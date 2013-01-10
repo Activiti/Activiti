@@ -12,9 +12,40 @@
  */
 package org.activiti.workflow.simple.definition;
 
-
+import org.activiti.bpmn.converter.BpmnXMLConverter;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 
 /**
+ * Allows to create simple workflows through an easy, fluent Java API.
+ * 
+ * For example:
+ * 
+ *  WorkflowDefinition workflowDefinition = new WorkflowDefinition()
+ *    .name("testWorkflow")
+ *    .description("This is a test workflow")
+ *    .inParallel()
+ *      .addHumanStep("first task", "kermit")
+ *      .addHumanStep("second step", "gonzo")
+ *      .addHumanStep("thrid task", "mispiggy")
+ *     .endParallel()
+ *    .addHumanStep("Task in between", "kermit")
+ *    .inParallel()
+ *      .addHumanStep("fourth task", "gonzo")
+ *      .addHumanStep("fifth step", "gonzo")
+ *    .endParallel();
+ *    
+ * Feed this {@link WorkflowDefinition} instance to a {@link WorkflowDefinitionConversion}
+ * and it will convert it a to a {@link BpmnModel}, which in it turn can be used
+ * to generate valid BPMN 2.0 through the {@link BpmnXMLConverter}.
+ * 
+ * The reason why we're not just using the {@link BpmnModel} and it's related 
+ * classes to generate bpmn 2.0 xml, is because this class and it's related classes 
+ * are a layer on top of them, allowing to easily create patterns. Such patterns are 
+ * for example a parallel block ({@link ParallelStepsDefinition}) or a choice step.
+ * These can be expressed in their {@link BpmnModel} counterpart of course,
+ * but these abstraction are much easier to read and use.
+ * 
  * @author Joram Barrez
  */
 public class WorkflowDefinition extends AbstractStepDefinitionContainer<WorkflowDefinition> {

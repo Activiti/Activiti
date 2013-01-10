@@ -18,8 +18,7 @@ import org.activiti.workflow.simple.definition.StepDefinition;
 /**
  * <p>
  * A class that is responsible for converting a single {@link StepDefinition} to
- * all required artifacts needed. This includes process-elements, content-types
- * and forms.
+ * all required artifacts needed.
  * </p>
  * 
  * <p>
@@ -43,7 +42,7 @@ public interface StepDefinitionConverter {
    * @param stepDefinition
    *          the {@link StepDefinition}
    * @param conversion
-   *          context to add artifacts to
+   *          The conversion which is calling this step converter.
    */
   void convertStepDefinition(StepDefinition stepDefinition, WorkflowDefinitionConversion conversion);
   
