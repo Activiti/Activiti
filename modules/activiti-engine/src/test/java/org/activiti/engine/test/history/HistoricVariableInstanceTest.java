@@ -13,11 +13,16 @@
 
 package org.activiti.engine.test.history;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricVariableInstance;
@@ -275,4 +280,38 @@ public class HistoricVariableInstanceTest extends AbstractActivitiTestCase {
      */
     assertFalse(historicActivityInstance2.getExecutionId().equals(update2.getExecutionId()));
   }  
+  
+  // Test for ACT-1528, which (correctly) reported that deleting any
+  // historic process instance would remove ALL historic variables.
+  // Yes. Real serious bug. 
+  @Deployment
+  public void testHistoricProcessInstanceDeleteCascadesCorrectly() {
+    
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("var1", "value1");
+    variables.put("var2", "value2");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("myProcess", variables);
+    assertNotNull(processInstance);
+
+    variables = new HashMap<String, Object>();
+    variables.put("var3", "value3");
+    variables.put("var4", "value4");
+    ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("myProcess", variables);
+    assertNotNull(processInstance2);
+    
+    // check variables
+    long count = historyService.createHistoricVariableInstanceQuery().count();
+    assertEquals(4, count);
+
+    // delete runtime execution of ONE process instance
+    runtimeService.deleteProcessInstance(processInstance.getId(), "reason 1");
+    historyService.deleteHistoricProcessInstance(processInstance.getId());
+    
+    // recheck variables
+    // this is a bug: all variables was deleted after delete a history processinstance
+    count = historyService.createHistoricVariableInstanceQuery().count();
+    assertEquals(2, count);
+    
+  }
+  
 }
