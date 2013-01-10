@@ -1,14 +1,15 @@
-package org.activiti.bpmn.converter.util;
+package org.activiti.bpmn.converter.export;
 
 import java.util.List;
 
 import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.FieldExtension;
 import org.apache.commons.lang.StringUtils;
 
-public class FieldExtensionUtil implements BpmnXMLConstants {
+public class FieldExtensionExport implements BpmnXMLConstants {
 
   public static boolean writeFieldExtensions(List<FieldExtension> fieldExtensionList, 
       boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {

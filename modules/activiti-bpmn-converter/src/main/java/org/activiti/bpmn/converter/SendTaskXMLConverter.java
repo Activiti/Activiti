@@ -15,8 +15,8 @@ package org.activiti.bpmn.converter;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.activiti.bpmn.converter.export.FieldExtensionExport;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
-import org.activiti.bpmn.converter.util.FieldExtensionUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ImplementationType;
@@ -70,7 +70,7 @@ public class SendTaskXMLConverter extends BaseBpmnXMLConverter {
   @Override
   protected void writeExtensionChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
     SendTask sendTask = (SendTask) element;
-    didWriteExtensionStartElement = FieldExtensionUtil.writeFieldExtensions(sendTask.getFieldExtensions(), didWriteExtensionStartElement, xtw);
+    didWriteExtensionStartElement = FieldExtensionExport.writeFieldExtensions(sendTask.getFieldExtensions(), didWriteExtensionStartElement, xtw);
   }
   
   @Override
