@@ -15,18 +15,16 @@ package org.activiti.workflow.simple.definition;
 import java.util.List;
 
 /**
+ * Defines a step that must be executed by a human actor.
+ * 
  * @author Joram Barrez
  */
 public class HumanStepDefinition extends AbstractNamedStepDefinition {
 
   protected String assignee;
-
   protected boolean isAssigneeInitiator = false;
-
   protected List<String> candidateUsers;
-
   protected List<String> candidateGroups;
-
   protected FormDefinition form;
 
   public boolean isAssigneeInitiator() {
@@ -55,6 +53,19 @@ public class HumanStepDefinition extends AbstractNamedStepDefinition {
 
   public List<String> getCandidateGroups() {
     return candidateGroups;
+  }
+  
+  public String getCandidateGroupsCommaSeparated() {
+    if (candidateGroups == null || candidateGroups.size() == 0) {
+      return null;
+    }
+    
+    StringBuilder strb = new StringBuilder();
+    for (String group : candidateGroups) {
+      strb.append(group + ", ");
+    }
+    strb.delete(strb.length() - 2, strb.length());
+    return strb.toString();
   }
 
   public void setCandidateGroups(List<String> candidateGroups) {

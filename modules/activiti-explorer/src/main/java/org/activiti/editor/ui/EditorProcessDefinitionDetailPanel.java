@@ -126,7 +126,7 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
     importModelButton.addListener(new ImportModelClickListener());
     
     editModelButton = new Button(i18nManager.getMessage(Messages.PROCESS_EDIT));
-    editModelButton.addListener(new EditModelClickListener(modelData.getId()));
+    editModelButton.addListener(new EditModelClickListener(modelData));
     
     actionLabel = new Label(i18nManager.getMessage(Messages.MODEL_ACTION));
     actionLabel.setSizeUndefined();
@@ -253,13 +253,14 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
       BpmnModel model = new BpmnJsonConverter().convertToBpmnModel(modelNode);
       byte[] bpmnBytes = new BpmnXMLConverter().convertToXML(model);
       
-      Deployment deployment = repositoryService.createDeployment().name(modelData.getName())
-          .addString(modelData.getName() + ".bpmn20.xml", new String(bpmnBytes)).deploy();
-      
+      String processName = modelData.getName() + ".bpmn20.xml";
+      Deployment deployment = repositoryService.createDeployment().name(modelData.getName()).addString(processName, new String(bpmnBytes)).deploy();
+
       ExplorerApp.get().getViewManager().showDeploymentPage(deployment.getId());
-      
-    } catch(Exception e) {
+
+    } catch (Exception e) {
       ExplorerApp.get().getNotificationManager().showErrorNotification(Messages.PROCESS_TOXML_FAILED, e);
     }
   }
+
 }

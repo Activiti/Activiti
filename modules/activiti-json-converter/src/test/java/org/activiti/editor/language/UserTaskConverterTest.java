@@ -6,11 +6,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FormProperty;
 import org.activiti.bpmn.model.ImplementationType;
+import org.activiti.bpmn.model.SequenceFlow;
+import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.UserTask;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
@@ -27,6 +30,7 @@ public class UserTaskConverterTest extends AbstractConverterTest {
   public void doubleConversionValidation() throws Exception {
     BpmnModel bpmnModel = readJsonFile();
     bpmnModel = convertToJsonAndBack(bpmnModel);
+    System.out.println("xml " + new String(new BpmnXMLConverter().convertToXML(bpmnModel), "utf-8"));
     validateModel(bpmnModel);
   }
   
@@ -83,5 +87,19 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     assertTrue(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(listener.getImplementationType()));
     assertEquals("${someDelegateExpression}", listener.getImplementation());
     assertEquals("complete", listener.getEvent());
+    
+    flowElement = model.getMainProcess().getFlowElement("start");
+    assertTrue(flowElement instanceof StartEvent);
+    
+    StartEvent startEvent  = (StartEvent) flowElement;
+    assertTrue(startEvent.getOutgoingFlows().size() == 1);
+    
+    flowElement = model.getMainProcess().getFlowElement("flow1");
+    assertTrue(flowElement instanceof SequenceFlow);
+    
+    SequenceFlow flow  = (SequenceFlow) flowElement;
+    assertEquals("flow1", flow.getId());
+    assertNotNull(flow.getSourceRef());
+    assertNotNull(flow.getTargetRef());
   }
 }

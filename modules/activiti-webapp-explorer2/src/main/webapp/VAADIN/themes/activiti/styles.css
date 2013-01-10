@@ -38,6 +38,10 @@ body {
   color:#3c3c3c;
 }
 
+.noResizeTextArea{
+  resize: none;
+}
+
 /* -------------
    Popup windows
    ------------- */
@@ -929,6 +933,7 @@ div.searchbox {
 	padding: 1px;
 	margin-top: 5px;
 	margin-bottom: 5px;
+	background-color: #FFF298;
 }
  
 /**********************

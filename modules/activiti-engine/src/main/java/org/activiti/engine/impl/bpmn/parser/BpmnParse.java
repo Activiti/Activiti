@@ -233,12 +233,10 @@ public class BpmnParse implements BpmnXMLConstants {
     XMLInputFactory xif = XMLInputFactory.newInstance();
     InputStreamReader in = null;
     try {
-      in = new InputStreamReader(streamSource.getInputStream(), "UTF-8");
-      XMLStreamReader xtr = xif.createXMLStreamReader(in);
-      converter.validateModel(xtr);
+      converter.validateModel(streamSource.getInputStream());
       streamSource.getInputStream().reset();
       in = new InputStreamReader(streamSource.getInputStream(), "UTF-8");
-      xtr = xif.createXMLStreamReader(in);
+      XMLStreamReader xtr = xif.createXMLStreamReader(in);
       bpmnModel = converter.convertToBpmnModel(xtr);
       createImports();
       createItemDefinitions();

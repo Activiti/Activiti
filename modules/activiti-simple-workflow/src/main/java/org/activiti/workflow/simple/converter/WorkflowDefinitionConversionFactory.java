@@ -21,8 +21,11 @@ import org.activiti.workflow.simple.definition.StepDefinition;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
 
 /**
- * Factory that is capable of creating {@link WorkflowDefinitionConversion}
- * objects.
+ * Factory that is capable of creating {@link WorkflowDefinitionConversion} objects.
+ * 
+ * It is necessary for a correct conversion to set (or inject) {@link StepDefinition} converters
+ * (instances of {@link StepDefinitionConverter}) and conversion life cycle listeners
+ * (instance of {@link WorkflowDefinitionConversionListener}). 
  * 
  * @author Frederik Heremans
  * @author Joram Barrez

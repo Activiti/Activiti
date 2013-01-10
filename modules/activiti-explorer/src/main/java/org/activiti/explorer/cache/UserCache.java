@@ -10,7 +10,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.explorer.cache;
 
 import java.util.List;
@@ -25,8 +24,6 @@ import org.activiti.engine.identity.User;
  * eg. 'ke' -> Kermit The Frog
  * eg. 'Th' -> Kermit The Frog
  * eg 'be' -> Fozzie Bear
- * 
- * TODO: Should this functionality be moved to the engine?
  * 
  * @author Joram Barrez
  */

@@ -15,6 +15,8 @@ package org.activiti.workflow.simple.definition;
 import org.activiti.engine.ActivitiException;
 
 /**
+ * Defines a block of steps that all must be executed in parallel.
+ * 
  * @author Joram Barrez
  */
 public class ParallelStepsDefinition extends AbstractStepDefinitionContainer<ParallelStepsDefinition> implements StepDefinition {

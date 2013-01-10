@@ -22,6 +22,14 @@ import org.activiti.workflow.simple.definition.StepDefinition;
 import org.activiti.workflow.simple.util.BpmnModelUtil;
 
 /**
+ * {@link StepDefinitionConverter} for converting a {@link ParallelStepsDefinition} to the following BPMN 2.0 structure:
+ * 
+ *      __ t1___
+ *      |       |
+ *   + -- ...---+-
+ *      |       |
+ *      - txxx---
+ * 
  * @author Joram Barrez
  */
 public class ParallelStepsDefinitionConverter extends BaseStepDefinitionConverter<ParallelStepsDefinition, ParallelGateway> {

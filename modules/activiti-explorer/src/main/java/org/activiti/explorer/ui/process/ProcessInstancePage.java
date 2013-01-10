@@ -50,7 +50,7 @@ public abstract class ProcessInstancePage extends AbstractTablePage {
     final Table processInstanceTable = new Table();
     processInstanceTable.addStyleName(ExplorerLayout.STYLE_PROCESS_INSTANCE_LIST);
     
-    // Listener to change right panel when clicked on a task
+    // Listener to change right panel when clicked on a process instance
     processInstanceTable.addListener(new Property.ValueChangeListener() {
       private static final long serialVersionUID = 8811553575319455854L;
       public void valueChange(ValueChangeEvent event) {

@@ -28,10 +28,12 @@ import org.activiti.workflow.simple.definition.WorkflowDefinition;
 import org.activiti.workflow.simple.diagram.WorkflowDIGenerator;
 
 /**
- * Context that holds all artifacts and meta-data required when converting
- * {@link WorkflowDefinition}s into required artifacts for deployment.
+ * Instances of this class are created by a {@link WorkflowDefinitionConversionFactory}.
  * 
- * @see StepDefinitionConverter
+ * An instance of this class is capabale of doing the actual conversion of a {@link WorkflowDefinition}
+ * and it will contain all artifacts produces by the {@link StepDefinitionConverter} objects and
+ * {@link WorkflowDefinitionConversionListener} which were injected into 
+ * the {@link WorkflowDefinitionConversionFactory}.
  * 
  * @author Frederik Heremans
  * @author Joram Barrez
@@ -44,6 +46,12 @@ public class WorkflowDefinitionConversion {
   // Artifacts of the conversion
   protected BpmnModel bpmnModel;
   protected Process process;
+  
+  /**
+   * It is assumed the conversion will always create a {@link BpmnModel} and a {@link Process}
+   * (altough, strictly even that is pluggable). Other artifacts that are produced 
+   * during conversion are stored in this generic map.
+   */
   protected Map<String, Object> additionalArtifacts;
 
   // Helper members
@@ -51,6 +59,7 @@ public class WorkflowDefinitionConversion {
   protected String lastActivityId;
   protected HashMap<String, Integer> incrementalIdMapping;
   
+  // Properties to influence the conversion
   protected boolean sequenceflowGenerationEnabled = true;
   protected boolean updateLastActivityEnabled = true;
 
@@ -64,6 +73,10 @@ public class WorkflowDefinitionConversion {
     this.workflowDefinition = workflowDefinition;
   }
 
+  /**
+   * Call this method to actually execute the conversion of the {@link WorkflowDefinition}
+   * which was provided in the constructor.
+   */
   public void convert() {
     
     if (workflowDefinition == null) {
@@ -79,20 +92,24 @@ public class WorkflowDefinitionConversion {
     bpmnModel.addProcess(process);
 
     // Let conversion listeners know initialization is finished
-    for (WorkflowDefinitionConversionListener conversionListener : conversionFactory.getWorkflowDefinitionConversionListeners()) {
-      conversionListener.beforeStepsConversion(this);
+    if (conversionFactory.getWorkflowDefinitionConversionListeners() != null) {
+      for (WorkflowDefinitionConversionListener conversionListener : conversionFactory.getWorkflowDefinitionConversionListeners()) {
+        conversionListener.beforeStepsConversion(this);
+      }
     }
 
     // Convert each step
    convertSteps(workflowDefinition.getSteps());
 
     // Let conversion listeners know step conversion is done
-    for (WorkflowDefinitionConversionListener conversionListener : conversionFactory.getWorkflowDefinitionConversionListeners()) {
-      conversionListener.afterStepsConversion(this);
-    }
+   if (conversionFactory.getWorkflowDefinitionConversionListeners() != null) {
+     for (WorkflowDefinitionConversionListener conversionListener : conversionFactory.getWorkflowDefinitionConversionListeners()) {
+       conversionListener.afterStepsConversion(this);
+     }
+   }
     
     // Add DI information to bpmn model
-    WorkflowDIGenerator workflowDIGenerator = new WorkflowDIGenerator(workflowDefinition, bpmnModel);
+    WorkflowDIGenerator workflowDIGenerator = new WorkflowDIGenerator(bpmnModel);
     workflowDIGenerator.generateDI();
   }
   
@@ -188,13 +205,27 @@ public class WorkflowDefinitionConversion {
     this.updateLastActivityEnabled = updateLastActivityEnabled;
   }
 
+  /**
+   * Returns the BPMN 2.0 xml which is the converted version of the 
+   * provided {@link WorkflowDefinition}. 
+   */
   public String getbpm20Xml() {
+    if (bpmnModel == null) {
+      convert();
+    }
     BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
     return new String(bpmnXMLConverter.convertToXML(bpmnModel));
   }
   
+  /**
+   * Returns the BPMN 2.0 diagram which is the converted version of the
+   * provided {@link WorkflowDefinition}.
+   */
   public InputStream getWorkflowDiagramImage() {
-    WorkflowDIGenerator workflowDIGenerator = new WorkflowDIGenerator(workflowDefinition, bpmnModel);
+    if (bpmnModel == null) {
+      convert();
+    }
+    WorkflowDIGenerator workflowDIGenerator = new WorkflowDIGenerator(bpmnModel);
     return workflowDIGenerator.generateDiagram();
   }
   

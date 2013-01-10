@@ -12,12 +12,17 @@
  */
 package org.activiti.workflow.simple.converter.step;
 
+import org.activiti.bpmn.model.FormProperty;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
+import org.activiti.workflow.simple.definition.FormDefinition;
+import org.activiti.workflow.simple.definition.FormPropertyDefinition;
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
 import org.activiti.workflow.simple.definition.StepDefinition;
 
 /**
+ * {@link StepDefinitionConverter} for converting a {@link HumanStepDefinition} to a {@link UserTask}.
+ * 
  * @author Frederik Heremans
  * @author Joram Barrez
  */
@@ -47,21 +52,51 @@ public class HumanStepDefinitionConverter extends BaseStepDefinitionConverter<Hu
     userTask.setName(humanStepDefinition.getName());
     userTask.setDocumentation(humanStepDefinition.getDescription());
 
+    // Initiator
     if (humanStepDefinition.isAssigneeInitiator()) {
       userTask.setAssignee(INITIATOR_ASSIGNEE_EXPRESSION);
+      
+    // Assignee  
     } else if (humanStepDefinition.getAssignee() != null) {
       userTask.setAssignee(humanStepDefinition.getAssignee());
     }
 
+    // Candidate Users
     if (humanStepDefinition.getCandidateUsers() != null && humanStepDefinition.getCandidateUsers().size() > 0) {
       userTask.setCandidateUsers(humanStepDefinition.getCandidateUsers());
     }
 
+    // Candidate groups
     if (humanStepDefinition.getCandidateGroups() != null && humanStepDefinition.getCandidateGroups().size() > 0) {
       userTask.setCandidateGroups(humanStepDefinition.getCandidateGroups());
+    }
+    
+    // Form
+    if (humanStepDefinition.getForm() != null) {
+      
+      FormDefinition formDefinition = humanStepDefinition.getForm();
+      
+      // Form properties
+      for (FormPropertyDefinition propertyDefinition : formDefinition.getFormProperties()) {
+        FormProperty formProperty = new FormProperty();
+        formProperty.setId(propertyDefinition.getPropertyName());
+        formProperty.setName(propertyDefinition.getPropertyName());
+        formProperty.setRequired(propertyDefinition.isRequired());
+        
+        String type = DefaultFormPropertyTypes.TEXT;
+        if (DefaultFormPropertyTypes.NUMBER.equals(propertyDefinition.getType())) {
+          type = "long";
+        } else if (DefaultFormPropertyTypes.DATE.equals(propertyDefinition.getType())) {
+          type = "date";
+        }
+        formProperty.setType(type);
+        
+        userTask.getFormProperties().add(formProperty);
+      }
+      
     }
 
     return userTask;
   }
-
+  
 }

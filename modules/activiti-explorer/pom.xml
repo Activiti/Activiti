@@ -49,6 +49,10 @@
       <groupId>org.activiti</groupId>
       <artifactId>activiti-json-converter</artifactId>
     </dependency>
+    <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-simple-workflow</artifactId>
+    </dependency>
     
     <!-- Logging, using Log4j as SLF4J implementation -->
     <dependency>
@@ -104,34 +108,6 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.xmlgraphics</groupId>
-      <artifactId>batik-parser</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.xmlgraphics</groupId>
-      <artifactId>batik-transcoder</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.xmlgraphics</groupId>
-      <artifactId>batik-bridge</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.xmlgraphics</groupId>
-      <artifactId>batik-codec</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.xmlgraphics</groupId>
-      <artifactId>batik-css</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.xmlgraphics</groupId>
-      <artifactId>batik-svg-dom</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.xmlgraphics</groupId>
-      <artifactId>batik-svggen</artifactId>
     </dependency>
 
     <!-- Running example processes -->

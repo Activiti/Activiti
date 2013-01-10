@@ -1,31 +1,129 @@
 package org.activiti.explorer.ui.process.listener;
 
+import java.io.IOException;
+
+import org.activiti.editor.language.json.converter.BpmnJsonConverter;
+import org.activiti.editor.ui.SelectEditorComponent;
+import org.activiti.editor.ui.SelectEditorComponent.EditorSelectedListener;
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.Model;
 import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.Messages;
 import org.activiti.explorer.NotificationManager;
+import org.activiti.explorer.ui.custom.PopupWindow;
+import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
+import org.activiti.explorer.ui.process.simple.editor.SimpleTableEditorConstants;
+import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
+import org.activiti.workflow.simple.converter.json.JsonConverter;
+import org.activiti.workflow.simple.definition.WorkflowDefinition;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ObjectNode;
 
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.themes.Reindeer;
 
 
 /**
  * @author Tijs Rademakers
+ * @author Joram Barrez
  */
 public class EditModelClickListener implements ClickListener {
 
   private static final long serialVersionUID = 1L;
   
+  protected Model model;
   protected NotificationManager notificationManager;
-  protected String modelId;
   
-  public EditModelClickListener(String modelId) {
+  public EditModelClickListener(Model model) {
     this.notificationManager = ExplorerApp.get().getNotificationManager(); 
-    
-    this.modelId = modelId;
+    this.model = model;
   }
 
   public void buttonClick(ClickEvent event) {
-    ExplorerApp.get().getMainWindow().open(new ExternalResource(
-        ExplorerApp.get().getURL().toString().replace("/ui", "") + "service/editor?id=" + modelId));
+    if (SimpleTableEditorConstants.TABLE_EDITOR_CATEGORY.equals(model.getCategory())) {
+      showSelectEditorPopupWindow();
+    } else {
+      showModeler();
+    }
   }
+
+  protected WorkflowDefinition loadWorkflowDefinition() throws JsonProcessingException, IOException {
+    RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    JsonNode jsonNode = objectMapper.readTree(repositoryService.getModelEditorSource(model.getId()));
+    
+    JsonConverter jsonConverter = new JsonConverter();
+    return jsonConverter.convertFromJson(jsonNode);
+  }
+  
+  protected void showSelectEditorPopupWindow() {
+    final PopupWindow selectEditorPopupWindow = new PopupWindow();
+    selectEditorPopupWindow.setModal(true);
+    selectEditorPopupWindow.setResizable(false);
+    selectEditorPopupWindow.setWidth("350px");
+    selectEditorPopupWindow.setHeight("250px");
+    selectEditorPopupWindow.addStyleName(Reindeer.PANEL_LIGHT);
+    selectEditorPopupWindow.center();
+    
+    final SelectEditorComponent selectEditorComponent = new SelectEditorComponent(false);
+    selectEditorComponent.getModelerDescriptionLabel().setValue(
+            ExplorerApp.get().getI18nManager().getMessage(Messages.PROCESS_EDITOR_CONVERSION_WARNING_MODELER));
+    selectEditorComponent.getModelerDescriptionLabel().addStyleName(ExplorerLayout.STYLE_LABEL_RED);
+    selectEditorComponent.preferTableDrivenEditor();
+    selectEditorPopupWindow.getContent().addComponent(selectEditorComponent);
+    
+    selectEditorComponent.setEditorSelectedListener(new EditorSelectedListener() {
+      public void editorSelectionChanged() {
+        
+        try {
+          WorkflowDefinition workflowDefinition = loadWorkflowDefinition();
+        
+          // When using the modeler, the format must first be converted to the modeler json format
+          if (selectEditorComponent.isModelerPreferred()) {
+             
+            WorkflowDefinitionConversion conversion = ExplorerApp.get()
+                    .getWorkflowDefinitionConversionFactory().createWorkflowDefinitionConversion(workflowDefinition);
+            conversion.convert();
+            
+            RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+            model.setCategory(null);
+            repositoryService.saveModel(model);
+            
+            BpmnJsonConverter bpmnJsonConverter = new BpmnJsonConverter();
+            ObjectNode json = bpmnJsonConverter.convertToJson(conversion.getBpmnModel());
+            repositoryService.addModelEditorSource(model.getId(), json.toString().getBytes("utf-8"));
+            
+            // Show modeler
+            showModeler();
+            
+          } else {
+            
+            // Load and show table editor
+            ExplorerApp.get().getViewManager().showSimpleTableProcessEditor(model.getId(), workflowDefinition);
+            
+          }
+        } catch (Exception e) {
+          e.printStackTrace();
+          ExplorerApp.get().getNotificationManager().showErrorNotification(Messages.PROCESS_EDITOR_LOADING_ERROR, e);
+        } finally {
+          ExplorerApp.get().getMainWindow().removeWindow(selectEditorPopupWindow);
+        }
+        
+      }
+    });
+    
+    ExplorerApp.get().getViewManager().showPopupWindow(selectEditorPopupWindow);
+  }
+  
+  protected void showModeler() {
+    ExplorerApp.get().getMainWindow().open(new ExternalResource(
+            ExplorerApp.get().getURL().toString().replace("/ui", "") + "service/editor?id=" + model.getId()));
+  }
+  
 }

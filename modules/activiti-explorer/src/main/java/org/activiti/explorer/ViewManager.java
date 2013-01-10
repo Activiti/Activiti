@@ -13,6 +13,9 @@
 
 package org.activiti.explorer;
 
+import org.activiti.engine.repository.Model;
+import org.activiti.workflow.simple.definition.WorkflowDefinition;
+
 import com.vaadin.ui.Window;
 
 
@@ -78,6 +81,10 @@ public interface ViewManager {
   void showMyProcessInstancesPage();
   
   void showMyProcessInstancesPage(String processInstanceId);
+  
+  void showSimpleTableProcessEditor(String processName, String processDescription);
+  
+  void showSimpleTableProcessEditor(String modelId, WorkflowDefinition workflowDefinition);
   
   // Management
   

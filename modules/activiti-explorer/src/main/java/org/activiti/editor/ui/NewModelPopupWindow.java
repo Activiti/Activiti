@@ -20,19 +20,15 @@ import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.NotificationManager;
-import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.custom.PopupWindow;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
 
-import com.vaadin.event.LayoutEvents.LayoutClickEvent;
-import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.UserError;
-import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -60,9 +56,7 @@ public class NewModelPopupWindow extends PopupWindow implements ModelDataJsonCon
   protected GridLayout formLayout;
   protected TextField nameTextField;
   protected TextArea descriptionTextArea;
-  protected HorizontalLayout modelerLayout;
-  protected HorizontalLayout tableEditorLayout;
-  protected boolean modelerPreffered;
+  protected SelectEditorComponent selectEditorComponent;
   
   protected RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
   
@@ -81,7 +75,7 @@ public class NewModelPopupWindow extends PopupWindow implements ModelDataJsonCon
     addStyleName(Reindeer.WINDOW_LIGHT);
     setModal(true);
     setWidth("460px");
-    setHeight("450px");
+    setHeight("470px");
     center();
     setCaption(i18nManager.getMessage(Messages.PROCESS_NEW_POPUP_CAPTION));
   }
@@ -100,146 +94,28 @@ public class NewModelPopupWindow extends PopupWindow implements ModelDataJsonCon
     descriptionTextArea = new TextArea();
     descriptionTextArea.setRows(8);
     descriptionTextArea.setWidth(25, Sizeable.UNITS_EM);
+    descriptionTextArea.addStyleName(ExplorerLayout.STYLE_TEXTAREA_NO_RESIZE);
     formLayout.addComponent(descriptionTextArea);
     
     Label editorLabel = new Label(i18nManager.getMessage(Messages.PROCESS_EDITOR_CHOICE));
     formLayout.addComponent(editorLabel);
     formLayout.setComponentAlignment(editorLabel, Alignment.MIDDLE_LEFT);
     
-    VerticalLayout editorsLayout = new VerticalLayout();
-    formLayout.addComponent(editorsLayout);
-
-    createModelerEditorChoice(editorsLayout);
-    createTableDrivenEditorChoice(editorsLayout);
+    selectEditorComponent = new SelectEditorComponent();
+    formLayout.addComponent(selectEditorComponent);
     
     addComponent(formLayout);
-    
-    preferModeler();
     
     // Some empty space
     Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
     addComponent(emptySpace);
   }
 
-
-  protected void createModelerEditorChoice(VerticalLayout editorsLayout) {
-    modelerLayout = new HorizontalLayout();
-    modelerLayout.setWidth("300px");
-    modelerLayout.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
-    editorsLayout.addComponent(modelerLayout);
-    
-    modelerLayout.addListener(new LayoutClickListener() {
-      public void layoutClick(LayoutClickEvent event) {
-        preferModeler();
-      }
-    });
-    
-    Button modelerButton = new Button();
-    modelerButton.setIcon(Images.PROCESS_EDITOR_BPMN);
-    modelerButton.setStyleName(Reindeer.BUTTON_LINK);
-    modelerLayout.addComponent(modelerButton);
-    modelerLayout.setComponentAlignment(modelerButton, Alignment.MIDDLE_LEFT);
-    
-    modelerButton.addListener(new ClickListener() {
-      public void buttonClick(ClickEvent event) {
-        preferModeler();
-      }
-    });
-    
-    VerticalLayout modelerTextLayout = new VerticalLayout();
-    modelerLayout.addComponent(modelerTextLayout);
-    modelerLayout.setExpandRatio(modelerTextLayout, 1.0f);
-    
-    Label modelerLabel = new Label(i18nManager.getMessage(Messages.PROCESS_EDITOR_MODELER));
-    modelerLabel.addStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
-    modelerLabel.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
-    modelerTextLayout.addComponent(modelerLabel);
-    
-    Label modelerDescriptionLabel = new Label(i18nManager.getMessage(Messages.PROCESS_EDITOR_MODELER_DESCRIPTION));
-    modelerDescriptionLabel.addStyleName(Reindeer.LABEL_SMALL);
-    modelerDescriptionLabel.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
-    modelerTextLayout.addComponent(modelerDescriptionLabel);
-  }
-  
-  protected void createTableDrivenEditorChoice(VerticalLayout editorsLayout) {
-    tableEditorLayout = new HorizontalLayout();
-    tableEditorLayout.setWidth("300px");
-    tableEditorLayout.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
-    editorsLayout.addComponent(tableEditorLayout);
-    
-    tableEditorLayout.addListener(new LayoutClickListener() {
-      public void layoutClick(LayoutClickEvent event) {
-        preferTableDrivenEditor();
-      }
-    });
-    
-    Button tableEditorButton = new Button();
-    tableEditorButton.setIcon(Images.PROCESS_EDITOR_TABLE);
-    tableEditorButton.setStyleName(Reindeer.BUTTON_LINK);
-    tableEditorLayout.addComponent(tableEditorButton);
-    tableEditorLayout.setComponentAlignment(tableEditorButton, Alignment.MIDDLE_LEFT);
-    
-    tableEditorButton.addListener(new ClickListener() {
-      public void buttonClick(ClickEvent event) {
-        preferTableDrivenEditor();
-      }
-    });
-    
-    VerticalLayout tableEditorTextLayout = new VerticalLayout();
-    tableEditorLayout.addComponent(tableEditorTextLayout);
-    tableEditorLayout.setExpandRatio(tableEditorTextLayout, 1.0f);
-    
-    Label tableEditorLabel = new Label(i18nManager.getMessage(Messages.PROCESS_EDITOR_TABLE));
-    tableEditorLabel.addStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
-    tableEditorLabel.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
-    tableEditorTextLayout.addComponent(tableEditorLabel);
-    
-    Label tableEditorDescriptionLabel = new Label(i18nManager.getMessage(Messages.PROCESS_EDITOR_TABLE_DESCRIPTION));
-    tableEditorDescriptionLabel.addStyleName(Reindeer.LABEL_SMALL);
-    tableEditorDescriptionLabel.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
-    tableEditorTextLayout.addComponent(tableEditorDescriptionLabel);
-  }
-  
-  protected void preferModeler() {
-    if (!modelerPreffered) {
-      modelerPreffered = true;
-      selectEditor(modelerLayout);
-      deselectEditor(tableEditorLayout);
-    }
-  }
-  
-  protected void preferTableDrivenEditor() {
-    if (modelerPreffered) {
-      modelerPreffered = false;
-      selectEditor(tableEditorLayout);
-      deselectEditor(modelerLayout);
-    }
-  }
-  
-  protected void selectEditor(AbstractLayout editorLayout) {
-    editorLayout.addStyleName(ExplorerLayout.STYLE_PROCESS_EDITOR_CHOICE);
-  }
-  
-  protected void deselectEditor(AbstractLayout editorLayout) {
-    editorLayout.removeStyleName(ExplorerLayout.STYLE_PROCESS_EDITOR_CHOICE);
-  }
-  
   protected void addButtons() {
-    // Cancel
-    Button cancelButton = new Button(i18nManager.getMessage(Messages.BUTTON_CANCEL));
-    cancelButton.addStyleName(Reindeer.BUTTON_SMALL);
-    cancelButton.addListener(new ClickListener() {
-      
-      private static final long serialVersionUID = 1L;
-      
-      public void buttonClick(ClickEvent event) {
-        close();
-      }
-    });
     
     // Create
     Button createButton = new Button(i18nManager.getMessage(Messages.PROCESS_NEW_POPUP_CREATE_BUTTON));
-    createButton.addStyleName(Reindeer.BUTTON_SMALL);
+    createButton.setWidth("200px");
     createButton.addListener(new ClickListener() {
       
       private static final long serialVersionUID = 1L;
@@ -251,7 +127,7 @@ public class NewModelPopupWindow extends PopupWindow implements ModelDataJsonCon
           return;
         }
         
-        if (modelerPreffered) {
+        if (selectEditorComponent.isModelerPreferred()) {
           try {
             ObjectMapper objectMapper = new ObjectMapper();
             ObjectNode editorNode = objectMapper.createObjectNode();
@@ -276,10 +152,10 @@ public class NewModelPopupWindow extends PopupWindow implements ModelDataJsonCon
             modelData.setName((String) nameTextField.getValue());
             
             repositoryService.saveModel(modelData);
-            
             repositoryService.addModelEditorSource(modelData.getId(), editorNode.toString().getBytes("utf-8"));
             
             close();
+            
             ExplorerApp.get().getViewManager().showEditorProcessDefinitionPage(modelData.getId());
             ExplorerApp.get().getMainWindow().open(new ExternalResource(
                 ExplorerApp.get().getURL().toString().replace("/ui", "") + "service/editor?id=" + modelData.getId()));
@@ -289,7 +165,9 @@ public class NewModelPopupWindow extends PopupWindow implements ModelDataJsonCon
           }
         } else {
           
-          // TODO: Create kickstart screens
+          close();
+          ExplorerApp.get().getViewManager().showSimpleTableProcessEditor(
+                  (String) nameTextField.getValue(), (String) descriptionTextArea.getValue());
           
         }
       }
@@ -298,10 +176,9 @@ public class NewModelPopupWindow extends PopupWindow implements ModelDataJsonCon
     // Alignment
     HorizontalLayout buttonLayout = new HorizontalLayout();
     buttonLayout.setSpacing(true);
-    buttonLayout.addComponent(cancelButton);
     buttonLayout.addComponent(createButton);
     addComponent(buttonLayout);
-    windowLayout.setComponentAlignment(buttonLayout, Alignment.BOTTOM_RIGHT);
+    windowLayout.setComponentAlignment(buttonLayout, Alignment.MIDDLE_CENTER);
   }
 
 }

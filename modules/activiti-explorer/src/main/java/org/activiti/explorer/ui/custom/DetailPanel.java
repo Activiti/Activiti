@@ -122,4 +122,8 @@ public class DetailPanel extends VerticalLayout {
   public void addComponentAsFirst(Component c) {
     addComponent(c, 0);
   }
+  
+  public Panel getMainPanel() {
+    return mainPanel;
+  }
 }

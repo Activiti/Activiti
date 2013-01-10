@@ -34,15 +34,13 @@ import org.activiti.bpmn.model.Task;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramCanvas;
-import org.activiti.workflow.simple.definition.AbstractNamedStepDefinition;
-import org.activiti.workflow.simple.definition.WorkflowDefinition;
 import org.activiti.workflow.simple.util.BpmnModelUtil;
 
 /**
  * @author Joram Barrez
  */
 public class WorkflowDIGenerator {
-
+  
   // Constants
   protected static final int SEQUENCE_FLOW_WITHOUT_ARROW_WIDTH = 45;
   protected static final int ARROW_WIDTH = 5;
@@ -62,9 +60,6 @@ public class WorkflowDIGenerator {
 
   protected int TASK_BLOCK_WIDTH = GATEWAY_WIDTH + TASK_WIDTH + SEQUENCE_FLOW_WIDTH + LONG_SEQUENCE_FLOW_WITHOUT_ARROW_WIDTH;
   
-  // Input
-  protected WorkflowDefinition workflowDefinition;
-  
   protected BpmnModel bpmnModel;
   protected Process process;
 
@@ -75,13 +70,11 @@ public class WorkflowDIGenerator {
   protected int startY;
   protected int currentWidth;
   protected ProcessDiagramCanvas processDiagramCanvas;
-//  protected List<BlockOfSteps> allStepBlocks;
   protected Map<String, List<SequenceFlow>> outgoingSequenceFlowMapping;
   protected Map<String, List<SequenceFlow>> incomingSequenceFlowMapping;
   protected Set<String> handledElements;
 
-  public WorkflowDIGenerator(WorkflowDefinition workflowDefinition, BpmnModel bpmnModel) {
-    this.workflowDefinition = workflowDefinition;
+  public WorkflowDIGenerator(BpmnModel bpmnModel) {
     this.bpmnModel = bpmnModel;
   }
   
@@ -117,15 +110,13 @@ public class WorkflowDIGenerator {
 
     // Enough preparation, actually draw some stuff
     for (FlowElement flowElement : process.getFlowElements()) {
-
+      
       if (!handledElements.contains(flowElement.getId())) {
 
         if (flowElement instanceof StartEvent) {
-
           drawStartEvent(flowElement, startX, startY, EVENT_WIDTH, EVENT_WIDTH, generateImage);
 
         } else if (flowElement instanceof EndEvent) {
-
           drawSequenceFlow(incomingSequenceFlowMapping.get(flowElement.getId()).get(0), 
                   generateImage,
                   currentWidth, startY + EVENT_WIDTH / 2, currentWidth
@@ -134,7 +125,6 @@ public class WorkflowDIGenerator {
 
         } else if (flowElement instanceof ParallelGateway 
                 && outgoingSequenceFlowMapping.get(flowElement.getId()).size() > 1) { // fork
-
           ParallelGateway parallelGateway = (ParallelGateway) flowElement;
           drawSequenceFlow(incomingSequenceFlowMapping.get(flowElement.getId()).get(0), 
                   generateImage,
@@ -158,24 +148,6 @@ public class WorkflowDIGenerator {
     generateDI(true); // Generates DI and also the canvas which can export the image 
     return processDiagramCanvas.generateImage("png");
   }
-
-//  protected void generateTaskBlocks() {
-//    allStepBlocks = new ArrayList<BlockOfSteps>();
-//
-//    List<AbstractNamedStepDefinition> workflowSteps = workflowDefinition.getSteps();
-//    for (int i=0; i<workflowSteps.size(); i++) {
-//      AbstractNamedStepDefinition stepDefinition = workflowSteps.get(i);
-//      
-//      // Parallel tasks are grouped in the same task block
-//      if (stepDefinition.isStartWithPrevious() && (i != 0)) {
-//        allStepBlocks.get(allStepBlocks.size() - 1).addStep(stepDefinition);
-//      } else {
-//        BlockOfSteps blockOfSteps = new BlockOfSteps();
-//        blockOfSteps.addStep(stepDefinition);
-//        allStepBlocks.add(blockOfSteps);
-//      }
-//    }
-//  }
   
   protected void generateSequenceflowMappings() {
     this.outgoingSequenceFlowMapping = new HashMap<String, List<SequenceFlow>>();
@@ -197,37 +169,6 @@ public class WorkflowDIGenerator {
       incomingSequenceFlowMapping.get(targetId).add(sequenceFlow);
     }
   }
-
-//  protected int calculateMaximumWidth() {
-//    int width = 0;
-//    for (BlockOfSteps blockOfSteps : allStepBlocks) {
-//      if (blockOfSteps.getNrOfSteps() == 1) {
-//        width += TASK_WIDTH + SEQUENCE_FLOW_WIDTH;
-//      } else {
-//        width += TASK_BLOCK_WIDTH + SEQUENCE_FLOW_WIDTH;
-//      }
-//    }
-//
-//    width += SEQUENCE_FLOW_WIDTH + 2 * EVENT_WIDTH;
-//
-//    return width;
-//  }
-  
-//  protected int calculateMaximumHeight() {
-//    int maxNrOfTasksInOneBlock = 0;
-//    for (BlockOfSteps blockOfSteps : allStepBlocks) {
-//      if (blockOfSteps.getNrOfSteps() > maxNrOfTasksInOneBlock) {
-//        maxNrOfTasksInOneBlock = blockOfSteps.getNrOfSteps();
-//      }
-//    }
-//
-//    int extra = 0;
-//    if (maxNrOfTasksInOneBlock % 2 == 0) { // If there is an even nr of tasks -> evenly spread, but no task in the  middle
-//      extra = 2 * TASK_HEIGHT;
-//    }
-//
-//    return (maxNrOfTasksInOneBlock * (TASK_HEIGHT + TASK_HEIGHT_SPACING)) + extra;
-//  }
   
   protected void calculateMaximumSizes() {
     int width = 0;
@@ -298,26 +239,28 @@ public class WorkflowDIGenerator {
     // Sequence flow up and down
     int centerOfRhombus = x + GATEWAY_WIDTH / 2;
     int maxHeight = (nrOfTasks / 2) * (TASK_HEIGHT + TASK_HEIGHT_SPACING);
-
+    
     int currentHeight = y - maxHeight;
 
     // first half
     for (int i = 0; i < nrOfTasks / 2; i++) {
       SequenceFlow sequenceFlow1 = sequenceFlows.get(i);
-      drawSequenceFlow(sequenceFlow1, generateImage, centerOfRhombus, y, centerOfRhombus, currentHeight, 
-              centerOfRhombus + SEQUENCE_FLOW_WIDTH, currentHeight);
 
       String targetFlowElementId = sequenceFlow1.getTargetRef();
       FlowElement userTask = process.getFlowElement(targetFlowElementId);
-      drawTask(userTask, centerOfRhombus + SEQUENCE_FLOW_WIDTH, 
-              currentHeight - ((TASK_HEIGHT + TASK_HEIGHT_SPACING) / 2), TASK_WIDTH, TASK_HEIGHT, generateImage);
+      int taskStartY = currentHeight - ((TASK_HEIGHT + TASK_HEIGHT_SPACING) / 2);
+      drawTask(userTask, centerOfRhombus + SEQUENCE_FLOW_WIDTH, taskStartY, TASK_WIDTH, TASK_HEIGHT, generateImage);
       handledElements.add(userTask.getId());
+      
+      int sequenceFlowY = taskStartY + TASK_HEIGHT/2;
+      drawSequenceFlow(sequenceFlow1, generateImage, centerOfRhombus, y, centerOfRhombus, sequenceFlowY, 
+              centerOfRhombus + SEQUENCE_FLOW_WIDTH, sequenceFlowY);
 
       int seqFlowX = centerOfRhombus + SEQUENCE_FLOW_WIDTH + TASK_WIDTH;
       SequenceFlow sequenceFlow2 = outgoingSequenceFlowMapping.get(userTask.getId()).get(0);
       drawSequenceFlow(sequenceFlow2, generateImage, 
-              seqFlowX, currentHeight, 
-              seqFlowX + LONG_SEQUENCE_FLOW_WITHOUT_ARROW_WIDTH, currentHeight, 
+              seqFlowX, sequenceFlowY, 
+              seqFlowX + LONG_SEQUENCE_FLOW_WITHOUT_ARROW_WIDTH, sequenceFlowY, 
               seqFlowX + LONG_SEQUENCE_FLOW_WITHOUT_ARROW_WIDTH, y);
 
       currentHeight += TASK_HEIGHT + TASK_HEIGHT_SPACING;
@@ -351,21 +294,22 @@ public class WorkflowDIGenerator {
     int startIndex = nrOfTasks % 2 == 0 ? nrOfTasks / 2 : (nrOfTasks / 2) + 1;
     for (int i = startIndex; i < nrOfTasks; i++) {
       SequenceFlow sequenceFlow1 = sequenceFlows.get(i);
-      drawSequenceFlow(sequenceFlow1, generateImage,
-              centerOfRhombus, y + GATEWAY_HEIGHT, centerOfRhombus, 
-              currentHeight, centerOfRhombus + SEQUENCE_FLOW_WIDTH, currentHeight);
       
       String targetFlowElementId = sequenceFlow1.getTargetRef();
       FlowElement userTask = process.getFlowElement(targetFlowElementId);
-      drawTask(userTask, centerOfRhombus + SEQUENCE_FLOW_WIDTH, 
-              currentHeight - ((TASK_HEIGHT + TASK_HEIGHT_SPACING) / 2), TASK_WIDTH,
-              TASK_HEIGHT, generateImage);
+      int taskY = currentHeight - ((TASK_HEIGHT + TASK_HEIGHT_SPACING) / 2);
+      drawTask(userTask, centerOfRhombus + SEQUENCE_FLOW_WIDTH, taskY, TASK_WIDTH, TASK_HEIGHT, generateImage);
+      
+      int sequenceFlowY = taskY + TASK_HEIGHT/2;
+      drawSequenceFlow(sequenceFlow1, generateImage,
+              centerOfRhombus, y + GATEWAY_HEIGHT, centerOfRhombus, 
+              sequenceFlowY, centerOfRhombus + SEQUENCE_FLOW_WIDTH, sequenceFlowY);
 
       int seqFlowX = centerOfRhombus + SEQUENCE_FLOW_WIDTH + TASK_WIDTH;
       SequenceFlow sequenceFlow2 = outgoingSequenceFlowMapping.get(userTask.getId()).get(0);
       drawSequenceFlow(sequenceFlow2, generateImage,
-              seqFlowX, currentHeight, 
-              seqFlowX + LONG_SEQUENCE_FLOW_WITHOUT_ARROW_WIDTH, currentHeight, seqFlowX
+              seqFlowX, sequenceFlowY, 
+              seqFlowX + LONG_SEQUENCE_FLOW_WITHOUT_ARROW_WIDTH, sequenceFlowY, seqFlowX
               + LONG_SEQUENCE_FLOW_WITHOUT_ARROW_WIDTH, y + GATEWAY_HEIGHT);
       handledElements.add(userTask.getId());
 
@@ -477,32 +421,4 @@ public class WorkflowDIGenerator {
     bpmnModel.addGraphicInfo(flowElement.getId(), graphicInfo);
   }
   
-  // Helper class ------------------------------------------------------------------------
-
-  static class BlockOfSteps {
-    
-    protected List<AbstractNamedStepDefinition> steps;
-
-    public BlockOfSteps() {
-      this.steps = new ArrayList<AbstractNamedStepDefinition>();
-    }
-
-    public List<AbstractNamedStepDefinition> getSteps() {
-      return steps;
-    }
-
-    public void addStep(AbstractNamedStepDefinition step) {
-      steps.add(step);
-    }
-
-    public AbstractNamedStepDefinition get(int index) {
-      return steps.get(index);
-    }
-
-    public int getNrOfSteps() {
-      return steps.size();
-    }
-    
-  }
-
 }

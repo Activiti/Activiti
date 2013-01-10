@@ -10,13 +10,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.workflow.simple.definition;
+package org.activiti.explorer.ui.process.simple.editor.listener;
 
 /**
- * Marker interface for all 'patterns' that are known by the simple workflow API.
- * 
  * @author Joram Barrez
  */
-public interface StepDefinition {
-  
+public interface TaskFormModelListener {
+
+  void formAdded(Object taskItemId);
+
+  void formRemoved(Object taskItemId);
+
 }

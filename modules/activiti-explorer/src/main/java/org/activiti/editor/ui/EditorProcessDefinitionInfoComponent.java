@@ -14,7 +14,6 @@
 package org.activiti.editor.ui;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 import org.activiti.engine.ProcessEngines;
@@ -24,9 +23,6 @@ import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
-import org.apache.batik.transcoder.TranscoderInput;
-import org.apache.batik.transcoder.TranscoderOutput;
-import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,41 +76,21 @@ public class EditorProcessDefinitionInfoComponent extends VerticalLayout {
     processImageContainer.addComponent(processTitle);
     
     StreamSource streamSource = null;
-    byte[] editorSourceExtra = repositoryService.getModelEditorSourceExtra(modelData.getId());
+    final byte[] editorSourceExtra = repositoryService.getModelEditorSourceExtra(modelData.getId());
     if (editorSourceExtra != null) {
-      InputStream svgStream = new ByteArrayInputStream(editorSourceExtra);
-      TranscoderInput input = new TranscoderInput(svgStream);
-      
-      PNGTranscoder transcoder = new PNGTranscoder();
-      try {
-        // Setup output
-        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-        TranscoderOutput output = new TranscoderOutput(outStream);
-        
-        // Do the transformation
-        transcoder.transcode(input, output);
-        final byte[] result = outStream.toByteArray();
-        outStream.close();
-        
-        streamSource = new StreamSource() {
-          private static final long serialVersionUID = 1L;
-  
-          public InputStream getStream() {
-            InputStream inStream = null;
-            if (result != null) {
-              try {
-                inStream = new ByteArrayInputStream(result);
-              } catch (Exception e) {
-                LOGGER.warn("Error reading PNG in StreamSource", e);
-              }
-            }
-            return inStream;
+      streamSource = new StreamSource() {
+        private static final long serialVersionUID = 1L;
+
+        public InputStream getStream() {
+          InputStream inStream = null;
+          try {
+            inStream = new ByteArrayInputStream(editorSourceExtra);
+          } catch (Exception e) {
+            LOGGER.warn("Error reading PNG in StreamSource", e);
           }
-        };
-        
-      } catch(Exception e) {
-        LOGGER.warn("Error transforming SVG to PNG", e);
-      }
+          return inStream;
+        }
+      };
     }
 
     if(streamSource != null) {
