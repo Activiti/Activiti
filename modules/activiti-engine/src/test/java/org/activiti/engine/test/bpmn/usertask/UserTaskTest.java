@@ -13,6 +13,8 @@
 
 package org.activiti.engine.test.bpmn.usertask;
 
+import java.util.List;
+
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -53,4 +55,21 @@ public class UserTaskTest extends PluggableActivitiTestCase {
     assertEquals(1, taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().size());
   }
   
+  @Deployment
+  public void testCompleteAfterParallelGateway() throws InterruptedException {
+	  // related to http://jira.codehaus.org/browse/ACT-1054
+	  
+	  // start the process
+    runtimeService.startProcessInstanceByKey("ForkProcess");
+    List<Task> taskList = taskService.createTaskQuery().list();
+    assertNotNull(taskList);
+    assertEquals(2, taskList.size());
+	
+    // make sure user task exists
+    Task task = taskService.createTaskQuery().taskDefinitionKey("SimpleUser").singleResult();
+  	assertNotNull(task);
+	
+  	// attempt to complete the task and get PersistenceException pointing to "referential integrity constraint violation"
+  	taskService.complete(task.getId());
+	}
 }
