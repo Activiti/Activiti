@@ -32,6 +32,10 @@ import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 import org.activiti.explorer.ui.process.listener.EditModelClickListener;
 import org.activiti.explorer.ui.process.listener.ImportModelClickListener;
 import org.activiti.explorer.ui.process.listener.NewModelClickListener;
+import org.activiti.explorer.ui.process.simple.editor.SimpleTableEditorConstants;
+import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
+import org.activiti.workflow.simple.converter.json.JsonConverter;
+import org.activiti.workflow.simple.definition.WorkflowDefinition;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
@@ -249,16 +253,29 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
   
   protected void deployModel() {
     try {
-      ObjectNode modelNode = (ObjectNode) new ObjectMapper().readTree(repositoryService.getModelEditorSource(modelData.getId()));
-      BpmnModel model = new BpmnJsonConverter().convertToBpmnModel(modelNode);
-      byte[] bpmnBytes = new BpmnXMLConverter().convertToXML(model);
       
+      ObjectNode modelNode = (ObjectNode) new ObjectMapper().readTree(repositoryService.getModelEditorSource(modelData.getId()));
+      byte[] bpmnBytes = null;
+      
+      if (SimpleTableEditorConstants.TABLE_EDITOR_CATEGORY.equals(modelData.getCategory())) {
+        JsonConverter jsonConverter = new JsonConverter();
+        WorkflowDefinition workflowDefinition = jsonConverter.convertFromJson(modelNode);
+        
+        WorkflowDefinitionConversion conversion = 
+                ExplorerApp.get().getWorkflowDefinitionConversionFactory().createWorkflowDefinitionConversion(workflowDefinition);
+        bpmnBytes = conversion.getbpm20Xml().getBytes("utf-8");
+      } else {
+        BpmnModel model = new BpmnJsonConverter().convertToBpmnModel(modelNode);
+        bpmnBytes = new BpmnXMLConverter().convertToXML(model);
+      }
+
       String processName = modelData.getName() + ".bpmn20.xml";
       Deployment deployment = repositoryService.createDeployment().name(modelData.getName()).addString(processName, new String(bpmnBytes)).deploy();
 
       ExplorerApp.get().getViewManager().showDeploymentPage(deployment.getId());
 
     } catch (Exception e) {
+      e.printStackTrace();
       ExplorerApp.get().getNotificationManager().showErrorNotification(Messages.PROCESS_TOXML_FAILED, e);
     }
   }

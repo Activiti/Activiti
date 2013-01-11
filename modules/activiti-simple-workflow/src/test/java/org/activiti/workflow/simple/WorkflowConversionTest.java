@@ -19,8 +19,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.activiti.engine.TaskService;
 import org.activiti.engine.repository.Deployment;
@@ -30,11 +28,6 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.ActivitiRule;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversionFactory;
-import org.activiti.workflow.simple.converter.listener.DefaultWorkflowDefinitionConversionListener;
-import org.activiti.workflow.simple.converter.listener.WorkflowDefinitionConversionListener;
-import org.activiti.workflow.simple.converter.step.HumanStepDefinitionConverter;
-import org.activiti.workflow.simple.converter.step.ParallelStepsDefinitionConverter;
-import org.activiti.workflow.simple.converter.step.StepDefinitionConverter;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
 import org.junit.After;
 import org.junit.Before;
@@ -61,17 +54,6 @@ public class WorkflowConversionTest {
     // Alternatively, the following setup could be done using a dependency injection container
     
     conversionFactory = new WorkflowDefinitionConversionFactory();
-    
-    // Steps
-    List<StepDefinitionConverter> stepConverters = new ArrayList<StepDefinitionConverter>();
-    stepConverters.add(new HumanStepDefinitionConverter());
-    stepConverters.add(new ParallelStepsDefinitionConverter());
-    conversionFactory.setStepDefinitionConverters(stepConverters);
-    
-    // Listeners
-    List<WorkflowDefinitionConversionListener> conversionListeners = new ArrayList<WorkflowDefinitionConversionListener>();
-    conversionListeners.add(new DefaultWorkflowDefinitionConversionListener());
-    conversionFactory.setWorkflowDefinitionConversionListeners(conversionListeners);
   }
   
   @After

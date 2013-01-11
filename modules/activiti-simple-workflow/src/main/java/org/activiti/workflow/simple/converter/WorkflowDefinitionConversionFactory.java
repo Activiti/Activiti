@@ -12,10 +12,14 @@
  */
 package org.activiti.workflow.simple.converter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.activiti.workflow.simple.converter.listener.DefaultWorkflowDefinitionConversionListener;
 import org.activiti.workflow.simple.converter.listener.WorkflowDefinitionConversionListener;
+import org.activiti.workflow.simple.converter.step.HumanStepDefinitionConverter;
+import org.activiti.workflow.simple.converter.step.ParallelStepsDefinitionConverter;
 import org.activiti.workflow.simple.converter.step.StepDefinitionConverter;
 import org.activiti.workflow.simple.definition.StepDefinition;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
@@ -32,8 +36,30 @@ import org.activiti.workflow.simple.definition.WorkflowDefinition;
  */
 public class WorkflowDefinitionConversionFactory {
 
+  protected HashMap<Class< ? >, StepDefinitionConverter> defaultStepConverters;
   protected HashMap<Class< ? >, StepDefinitionConverter> stepConverters;
+  
+  protected List<WorkflowDefinitionConversionListener> defaultWorkflowDefinitionConversionListeners;
   protected List<WorkflowDefinitionConversionListener> workflowDefinitionConversionListeners;
+  protected List<WorkflowDefinitionConversionListener> allWorkflowDefinitionConversionListeners;
+  
+  public WorkflowDefinitionConversionFactory() {
+    initDefaultStepConverters();
+    initDefaultWorkflowDefinitionConversionListeners();
+  }
+  
+  protected void initDefaultStepConverters() {
+    List<StepDefinitionConverter> converters = new ArrayList<StepDefinitionConverter>();
+    converters.add(new ParallelStepsDefinitionConverter());
+    converters.add(new HumanStepDefinitionConverter());
+    setDefaultStepDefinitionConverters(converters);
+  }
+  
+  protected void initDefaultWorkflowDefinitionConversionListeners() {
+    List<WorkflowDefinitionConversionListener> listeners = new ArrayList<WorkflowDefinitionConversionListener>();
+    listeners.add(new DefaultWorkflowDefinitionConversionListener());
+    setDefaultWorkflowDefinitionConversionListeners(listeners);
+  }
 
   /**
    * @return a new, empty conversion to be used to store all converted
@@ -46,11 +72,14 @@ public class WorkflowDefinitionConversionFactory {
   public WorkflowDefinitionConversion createWorkflowDefinitionConversion(WorkflowDefinition workflowDefinition) {
     return new WorkflowDefinitionConversion(this, workflowDefinition);
   }
+  
+  public void setDefaultStepDefinitionConverters(List<StepDefinitionConverter> stepConverters) {
+    this.defaultStepConverters = new HashMap<Class<?>, StepDefinitionConverter>();
+    for (StepDefinitionConverter converter : stepConverters) {
+      this.defaultStepConverters.put(converter.getHandledClass(), converter);
+    }
+  }
 
-  /**
-   * @param stepConverters
-   *          converter to register with this factory
-   */
   public void setStepDefinitionConverters(List<StepDefinitionConverter> stepConverters) {
     this.stepConverters = new HashMap<Class< ? >, StepDefinitionConverter>();
     for (StepDefinitionConverter converter : stepConverters) {
@@ -58,27 +87,60 @@ public class WorkflowDefinitionConversionFactory {
     }
   }
 
-  public List<WorkflowDefinitionConversionListener> getWorkflowDefinitionConversionListeners() {
-    return workflowDefinitionConversionListeners;
+  /**
+   * Returns all {@link WorkflowDefinitionConversionListener} instances, both the injected
+   * and the default ones.
+   */
+  public List<WorkflowDefinitionConversionListener> getAllWorkflowDefinitionConversionListeners() {
+    if (allWorkflowDefinitionConversionListeners == null) {
+      allWorkflowDefinitionConversionListeners = new ArrayList<WorkflowDefinitionConversionListener>();
+      
+      if (defaultWorkflowDefinitionConversionListeners != null) {
+        allWorkflowDefinitionConversionListeners.addAll(defaultWorkflowDefinitionConversionListeners);
+      }
+      
+      if (workflowDefinitionConversionListeners != null) {
+        allWorkflowDefinitionConversionListeners.addAll(workflowDefinitionConversionListeners);
+      }
+    }
+    return allWorkflowDefinitionConversionListeners;
+  }
+
+  public void setDefaultWorkflowDefinitionConversionListeners(List<WorkflowDefinitionConversionListener> defaultWorkflowDefinitionConversionListeners) {
+    this.defaultWorkflowDefinitionConversionListeners = defaultWorkflowDefinitionConversionListeners;
+    this.allWorkflowDefinitionConversionListeners = null;
   }
 
   public void setWorkflowDefinitionConversionListeners(List<WorkflowDefinitionConversionListener> workflowDefinitionConversionListeners) {
     this.workflowDefinitionConversionListeners = workflowDefinitionConversionListeners;
+    this.allWorkflowDefinitionConversionListeners = null;
   }
 
   /**
    * @param definition
-   *          step definition to get converter for.
+   *          {@link StepDefinition} to get converter for. First, the injected list
+   *          of {@link StepDefinitionConverter} is checked, before falling back 
+   *          to the default list of {@link StepDefinitionConverter}.
    * @return Converter that can be used on the given definition.
    * @throws IllegalArgumentException
    *           when there is no converter known for the given definition.
    */
   public StepDefinitionConverter getStepConverterFor(StepDefinition definition) {
-    final StepDefinitionConverter converter = stepConverters.get(definition.getClass());
+    StepDefinitionConverter converter = null; 
+            
+    if (stepConverters != null) {
+      converter = stepConverters.get(definition.getClass());
+    }
+    
+    if (converter == null && defaultStepConverters != null) {
+      converter = defaultStepConverters.get(definition.getClass());
+    }
+    
     if (converter == null) {
       // TODO: i18n and error-handling
       throw new IllegalArgumentException("No converter found for step: " + definition.getClass());
     }
+    
     return converter;
   }
 }
