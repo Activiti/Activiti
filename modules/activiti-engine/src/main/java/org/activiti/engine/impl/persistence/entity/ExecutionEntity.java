@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +60,9 @@ import org.slf4j.LoggerFactory;
  * @author Tom Baeyens
  * @author Daniel Meyer
  * @author Falko Menge
+ * @author Saeid Mirzaei
  */
+
 public class ExecutionEntity extends VariableScopeImpl implements ActivityExecution, ExecutionListenerExecution, Execution, PvmExecution, ProcessInstance, InterpretableExecution, PersistentObject, HasRevision {
 
   private static final long serialVersionUID = 1L;
@@ -929,7 +932,16 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     // update the related tasks
     for (TaskEntity task: getTasks()) {
       task.setExecutionId(replacedBy.getId());
-      task.setExecution(this.replacedBy);
+      task.setExecution(this.replacedBy);         
+      
+      Collection<VariableInstanceEntity> variables = new ArrayList<VariableInstanceEntity>();
+      variables.addAll(task.getVariableInstances().values());
+      
+	  task.deleteVariablesInstanceForLeavingScope();
+      
+      for (VariableInstanceEntity variable:variables) {    	  
+    	  task.setVariableLocal(variable.getName(), variable.getValue());    	  
+      }
       this.replacedBy.addTask(task);
     }
     
