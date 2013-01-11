@@ -59,7 +59,9 @@ import org.slf4j.LoggerFactory;
  * @author Tom Baeyens
  * @author Daniel Meyer
  * @author Falko Menge
+ * @author Saeid Mirzaei
  */
+
 public class ExecutionEntity extends VariableScopeImpl implements ActivityExecution, ExecutionListenerExecution, Execution, PvmExecution, ProcessInstance, InterpretableExecution, PersistentObject, HasRevision {
 
   private static final long serialVersionUID = 1L;
@@ -929,7 +931,17 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     // update the related tasks
     for (TaskEntity task: getTasks()) {
       task.setExecutionId(replacedBy.getId());
-      task.setExecution(this.replacedBy);
+      task.setExecution(this.replacedBy);         
+      
+      // update the related local task variables
+      List<VariableInstanceEntity> variables = (List) commandContext
+        .getVariableInstanceEntityManager()
+        .findVariableInstancesByTaskId(task.getId());
+      
+      for (VariableInstanceEntity variable : variables) {
+        variable.setExecution(this.replacedBy);
+      }
+      
       this.replacedBy.addTask(task);
     }
     

@@ -30,6 +30,7 @@
     update ${prefix}ACT_RU_VARIABLE
     set 
       REV_ = #{revisionNext, jdbcType=INTEGER},
+      EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR},
 	    BYTEARRAY_ID_ = #{byteArrayValueId, jdbcType=VARCHAR},
 	    DOUBLE_ = #{doubleValue, jdbcType=DOUBLE},
 	    LONG_ = #{longValue, jdbcType=BIGINT},

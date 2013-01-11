@@ -18,6 +18,7 @@ import org.activiti.engine.ProcessEngineLifecycleListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import bitronix.tm.BitronixTransactionManager;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 
@@ -30,6 +31,7 @@ import bitronix.tm.resource.jdbc.PoolingDataSource;
 public class CloseXADataSourceLifecycleListener implements ProcessEngineLifecycleListener {
 
   private PoolingDataSource dataSource;
+  private BitronixTransactionManager transactionManager;
   
   private static final Logger LOG = LoggerFactory.getLogger(CloseXADataSourceLifecycleListener.class);
   
@@ -45,11 +47,20 @@ public class CloseXADataSourceLifecycleListener implements ProcessEngineLifecycl
       LOG.info("--------------------- Closing datasource");
       dataSource.close();
     }
+    
+    if(transactionManager != null) {
+      transactionManager.shutdown();
+    }
   }
   
   
   public void setDataSource(PoolingDataSource dataSource) {
     this.dataSource = dataSource;
+  }
+  
+  
+  public void setTransactionManager(BitronixTransactionManager transactionManager) {
+    this.transactionManager = transactionManager;
   }
 
 }

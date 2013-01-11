@@ -3,7 +3,6 @@ package org.activiti.bpmn.converter.export;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
-import org.activiti.bpmn.converter.util.ActivitiListenerUtil;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.Process;
 import org.apache.commons.lang.StringUtils;
@@ -40,7 +39,7 @@ public class ProcessExport implements BpmnXMLConstants {
     
     LaneExport.writeLanes(process, xtw);
     
-    boolean wroteListener = ActivitiListenerUtil.writeListeners(process, false, xtw);
+    boolean wroteListener = ActivitiListenerExport.writeListeners(process, false, xtw);
     if (wroteListener) {
       // closing extensions element
       xtw.writeEndElement();

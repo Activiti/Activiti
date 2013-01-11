@@ -50,6 +50,8 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
 
   protected VariableType type;
   
+  boolean forcedUpdate;
+  
   // Default constructor for SQL mapping
   protected VariableInstanceEntity() {
   }
@@ -77,6 +79,7 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
   public void setExecution(ExecutionEntity execution) {
     this.executionId = execution.getId();
     this.processInstanceId = execution.getProcessInstanceId();
+    forcedUpdate = true;
   }
 
   public void delete() {
@@ -102,6 +105,9 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
     }
     if (byteArrayValueId != null) {
       persistentState.put("byteArrayValueId", byteArrayValueId);
+    }
+    if (forcedUpdate) {
+      persistentState.put("forcedUpdate", Boolean.TRUE);
     }
     return persistentState;
   }

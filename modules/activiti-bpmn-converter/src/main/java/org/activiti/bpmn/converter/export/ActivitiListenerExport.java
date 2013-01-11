@@ -1,10 +1,11 @@
-package org.activiti.bpmn.converter.util;
+package org.activiti.bpmn.converter.export;
 
 import java.util.List;
 
 import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.FlowElement;
@@ -13,7 +14,7 @@ import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.UserTask;
 import org.apache.commons.lang.StringUtils;
 
-public class ActivitiListenerUtil implements BpmnXMLConstants {
+public class ActivitiListenerExport implements BpmnXMLConstants {
 
   public static boolean writeListeners(BaseElement element, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
     List<ActivitiListener> listenerList = null;
@@ -49,7 +50,7 @@ public class ActivitiListenerUtil implements BpmnXMLConstants {
             BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_DELEGATEEXPRESSION, listener.getImplementation(), xtw);
           }
           
-          FieldExtensionUtil.writeFieldExtensions(listener.getFieldExtensions(), true, xtw);
+          FieldExtensionExport.writeFieldExtensions(listener.getFieldExtensions(), true, xtw);
           
           xtw.writeEndElement();
         }
