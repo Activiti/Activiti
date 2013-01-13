@@ -50,6 +50,8 @@ import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
  */
 public class WorkflowDefinition extends AbstractStepDefinitionContainer<WorkflowDefinition> {
 
+  protected String id;
+  protected String key;
   protected String name;
   protected String description;
   protected ParallelStepsDefinition currentParallelStepsDefinition;
@@ -66,7 +68,33 @@ public class WorkflowDefinition extends AbstractStepDefinitionContainer<Workflow
     setName(name);
     return this;
   }
-
+  
+  public WorkflowDefinition id(String id) {
+    setId(id);
+    return this;
+  }
+  
+  public void setId(String id) {
+    this.id = id;
+  }
+  
+  public String getId() {
+    return id;
+  }
+  
+  public WorkflowDefinition key(String key) {
+    setKey(key);
+    return this;
+  }
+  
+  public String getKey() {
+    return key;
+  }
+  
+  public void setKey(String key) {
+    this.key = key;
+  }
+  
   public String getDescription() {
     return description;
   }
