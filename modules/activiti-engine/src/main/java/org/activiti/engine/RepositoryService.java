@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
+import org.activiti.engine.impl.pvm.ReadOnlyProcessDefinition;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.engine.repository.DiagramLayout;
@@ -209,6 +210,13 @@ public interface RepositoryService {
    */
   ProcessDefinition getProcessDefinition(String processDefinitionId);  
 
+  /**
+   * Return ReadOnlyProcessDefinition
+   * @param processDefinitionId
+   * @return
+   */
+  ReadOnlyProcessDefinition getDeployedProcessDefinition(String processDefinitionId);
+  
   /**
    * Provides positions and dimensions of elements in a process diagram as
    * provided by {@link RepositoryService#getProcessDiagram(String)}.
