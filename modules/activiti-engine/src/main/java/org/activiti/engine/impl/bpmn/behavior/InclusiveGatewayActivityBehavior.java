@@ -143,7 +143,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
      // if source has no outputs, it is the end of the process, and its parent process should be checked.	  
 	if (srcActivity.getOutgoingTransitions().size() == 0) {
 		visitedActivities.add(srcActivity);
-		if (srcActivity.getParent() == null)
+		if (srcActivity.getParent() == null || !(srcActivity.getParent() instanceof PvmActivity) )
 			return false;
 		srcActivity = (PvmActivity) srcActivity.getParent();
 	}
