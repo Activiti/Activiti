@@ -46,7 +46,7 @@ public class ProcessInstanceSetVariablesResource extends SecuredResource {
 
 			RuntimeService runtimeService = ActivitiUtil.getRuntimeService();
 			Execution execution = runtimeService.createExecutionQuery()
-					  .processInstanceId(processInstanceId)
+					  .executionId(processInstanceId)
 					  .singleResult();
 	    
 			if (execution == null) {
