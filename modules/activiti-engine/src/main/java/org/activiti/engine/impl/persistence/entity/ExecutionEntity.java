@@ -14,7 +14,6 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -934,14 +933,15 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
       task.setExecutionId(replacedBy.getId());
       task.setExecution(this.replacedBy);         
       
-      Collection<VariableInstanceEntity> variables = new ArrayList<VariableInstanceEntity>();
-      variables.addAll(task.getVariableInstances().values());
+      // update the related local task variables
+      List<VariableInstanceEntity> variables = (List) commandContext
+        .getVariableInstanceEntityManager()
+        .findVariableInstancesByTaskId(task.getId());
       
-	  task.deleteVariablesInstanceForLeavingScope();
-      
-      for (VariableInstanceEntity variable:variables) {    	  
-    	  task.setVariableLocal(variable.getName(), variable.getValue());    	  
+      for (VariableInstanceEntity variable : variables) {
+        variable.setExecution(this.replacedBy);
       }
+      
       this.replacedBy.addTask(task);
     }
     

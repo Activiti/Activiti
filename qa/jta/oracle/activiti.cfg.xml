@@ -29,8 +29,9 @@
     </bean>
     
     <!-- Listener to close datasource when engine is closed, spring's destroy-method is never called... -->
-    <bean id="lifecycleListener" class="org.activiti.standalone.jta.CloseXADataSourceLifecycleListener">
+    <bean id="lifecycleListener" class="org.activiti.standalone.jta.CloseXADataSourceLifecycleListener" depends-on="btmConfig">
       <property name="dataSource" ref="dataSource" />
+      <property name="transactionManager" ref="transactionManager" />
     </bean>
 
     <!-- create BTM transaction manager -->

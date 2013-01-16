@@ -15,8 +15,8 @@ package org.activiti.bpmn.converter;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.activiti.bpmn.converter.export.FieldExtensionExport;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
-import org.activiti.bpmn.converter.util.FieldExtensionUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.CustomProperty;
@@ -135,7 +135,7 @@ public class ServiceTaskXMLConverter extends BaseBpmnXMLConverter {
         xtw.writeEndElement();
       }
     } else {
-      didWriteExtensionStartElement = FieldExtensionUtil.writeFieldExtensions(serviceTask.getFieldExtensions(), didWriteExtensionStartElement, xtw);
+      didWriteExtensionStartElement = FieldExtensionExport.writeFieldExtensions(serviceTask.getFieldExtensions(), didWriteExtensionStartElement, xtw);
     }
   }
   

@@ -37,8 +37,10 @@ import org.activiti.bpmn.converter.child.DocumentationParser;
 import org.activiti.bpmn.converter.child.ExecutionListenerParser;
 import org.activiti.bpmn.converter.child.IOSpecificationParser;
 import org.activiti.bpmn.converter.child.MultiInstanceParser;
+import org.activiti.bpmn.converter.export.ActivitiListenerExport;
 import org.activiti.bpmn.converter.export.BPMNDIExport;
 import org.activiti.bpmn.converter.export.DefinitionsRootExport;
+import org.activiti.bpmn.converter.export.MultiInstanceExport;
 import org.activiti.bpmn.converter.export.PoolExport;
 import org.activiti.bpmn.converter.export.ProcessExport;
 import org.activiti.bpmn.converter.export.SignalAndMessageDefinitionExport;
@@ -273,13 +275,13 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 				  
 				  new BpmnEdgeParser().parse(xtr, model);
 
-				} else if (ELEMENT_EXECUTION_LISTENER.equals(xtr.getLocalName())) {
+				} else if (activeSubProcessList.size() == 0 && ELEMENT_EXECUTION_LISTENER.equals(xtr.getLocalName())) {
 					
 				  new ExecutionListenerParser().parseChildElement(xtr, activeProcess, model);
 
 				} else {
 
-					if (activeSubProcessList.size() > 0 && ELEMENT_EXTENSIONS.equalsIgnoreCase(xtr.getLocalName())) {
+					if (activeSubProcessList.size() > 0 && ELEMENT_EXECUTION_LISTENER.equalsIgnoreCase(xtr.getLocalName())) {
 						new ExecutionListenerParser().parseChildElement(xtr, activeSubProcessList.get(activeSubProcessList.size() - 1), model);
 
 					} else if (activeSubProcessList.size() > 0 && ELEMENT_MULTIINSTANCE.equalsIgnoreCase(xtr.getLocalName())) {
@@ -435,6 +437,13 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
         xtw.writeCharacters(subProcess.getDocumentation());
         xtw.writeEndElement();
       }
+      
+      boolean wroteListener = ActivitiListenerExport.writeListeners(subProcess, false, xtw);
+      if (wroteListener) {
+        // closing extensions element
+        xtw.writeEndElement();
+      }
+      MultiInstanceExport.writeMultiInstance(subProcess, xtw);
       
       for (FlowElement subElement : subProcess.getFlowElements()) {
         createXML(subElement, model, xtw);

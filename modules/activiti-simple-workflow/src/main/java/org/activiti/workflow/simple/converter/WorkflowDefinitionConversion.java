@@ -92,8 +92,8 @@ public class WorkflowDefinitionConversion {
     bpmnModel.addProcess(process);
 
     // Let conversion listeners know initialization is finished
-    if (conversionFactory.getWorkflowDefinitionConversionListeners() != null) {
-      for (WorkflowDefinitionConversionListener conversionListener : conversionFactory.getWorkflowDefinitionConversionListeners()) {
+    if (conversionFactory.getAllWorkflowDefinitionConversionListeners() != null) {
+      for (WorkflowDefinitionConversionListener conversionListener : conversionFactory.getAllWorkflowDefinitionConversionListeners()) {
         conversionListener.beforeStepsConversion(this);
       }
     }
@@ -102,8 +102,8 @@ public class WorkflowDefinitionConversion {
    convertSteps(workflowDefinition.getSteps());
 
     // Let conversion listeners know step conversion is done
-   if (conversionFactory.getWorkflowDefinitionConversionListeners() != null) {
-     for (WorkflowDefinitionConversionListener conversionListener : conversionFactory.getWorkflowDefinitionConversionListeners()) {
+   if (conversionFactory.getAllWorkflowDefinitionConversionListeners() != null) {
+     for (WorkflowDefinitionConversionListener conversionListener : conversionFactory.getAllWorkflowDefinitionConversionListeners()) {
        conversionListener.afterStepsConversion(this);
      }
    }

@@ -13,14 +13,10 @@
 
 package org.activiti.engine.test.bpmn.usertask;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -64,25 +60,16 @@ public class UserTaskTest extends PluggableActivitiTestCase {
 	  // related to http://jira.codehaus.org/browse/ACT-1054
 	  
 	  // start the process
-	ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("ForkProcess");
-	List<Execution> executions = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).list();
-	Set<String> executionIds = new HashSet<String>();
-	for (Execution execution: executions)
-		executionIds.add(execution.getId());
+    runtimeService.startProcessInstanceByKey("ForkProcess");
+    List<Task> taskList = taskService.createTaskQuery().list();
+    assertNotNull(taskList);
+    assertEquals(2, taskList.size());
 	
-	  // make sure user task exists
-	List<Task> tasks = taskService.createTaskQuery().taskDefinitionKey("SimpleUser").list();
+    // make sure user task exists
+    Task task = taskService.createTaskQuery().taskDefinitionKey("SimpleUser").singleResult();
+  	assertNotNull(task);
 	
-	List<Task> selectedTasks = new ArrayList<Task>();
-	for (Task t: tasks)
-		if (executionIds.contains(t.getExecutionId()))
-			selectedTasks.add(t);
-			
-	assertEquals(selectedTasks.size(), 1);
-	
-	// attempt to complete the task and get PersistenceException pointing to "referential integrity constraint violation"
-	taskService.complete(selectedTasks.get(0).getId());
+  	// attempt to complete the task and get PersistenceException pointing to "referential integrity constraint violation"
+  	taskService.complete(task.getId());
 	}
-	
-  
 }

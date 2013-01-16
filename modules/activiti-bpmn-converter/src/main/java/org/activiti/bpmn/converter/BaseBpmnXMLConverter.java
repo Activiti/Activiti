@@ -38,7 +38,8 @@ import org.activiti.bpmn.converter.child.SignalEventDefinitionParser;
 import org.activiti.bpmn.converter.child.TaskListenerParser;
 import org.activiti.bpmn.converter.child.TerminateEventDefinitionParser;
 import org.activiti.bpmn.converter.child.TimerEventDefinitionParser;
-import org.activiti.bpmn.converter.util.ActivitiListenerUtil;
+import org.activiti.bpmn.converter.export.ActivitiListenerExport;
+import org.activiti.bpmn.converter.export.MultiInstanceExport;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.Artifact;
@@ -51,9 +52,7 @@ import org.activiti.bpmn.model.FormProperty;
 import org.activiti.bpmn.model.FormValue;
 import org.activiti.bpmn.model.Gateway;
 import org.activiti.bpmn.model.MessageEventDefinition;
-import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
 import org.activiti.bpmn.model.Process;
-import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
@@ -203,33 +202,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     
     if (baseElement instanceof Activity) {
       Activity activity = (Activity) baseElement;
-      if (activity.getLoopCharacteristics() != null) {
-        MultiInstanceLoopCharacteristics multiInstanceObject = activity.getLoopCharacteristics();
-        if (StringUtils.isNotEmpty(multiInstanceObject.getLoopCardinality()) ||
-            StringUtils.isNotEmpty(multiInstanceObject.getInputDataItem()) ||
-            StringUtils.isNotEmpty(multiInstanceObject.getCompletionCondition())) {
-          
-          xtw.writeStartElement(ELEMENT_MULTIINSTANCE);
-          writeDefaultAttribute(ATTRIBUTE_MULTIINSTANCE_SEQUENTIAL, String.valueOf(multiInstanceObject.isSequential()).toLowerCase(), xtw);
-          if (StringUtils.isNotEmpty(multiInstanceObject.getInputDataItem())) {
-            writeQualifiedAttribute(ATTRIBUTE_MULTIINSTANCE_COLLECTION, multiInstanceObject.getInputDataItem(), xtw);
-          }
-          if (StringUtils.isNotEmpty(multiInstanceObject.getElementVariable())) {
-            writeQualifiedAttribute(ATTRIBUTE_MULTIINSTANCE_VARIABLE, multiInstanceObject.getElementVariable(), xtw);
-          }
-          if (StringUtils.isNotEmpty(multiInstanceObject.getLoopCardinality())) {
-            xtw.writeStartElement(ELEMENT_MULTIINSTANCE_CARDINALITY);
-            xtw.writeCharacters(multiInstanceObject.getLoopCardinality());
-            xtw.writeEndElement();
-          }
-          if (StringUtils.isNotEmpty(multiInstanceObject.getCompletionCondition())) {
-            xtw.writeStartElement(ELEMENT_MULTIINSTANCE_CONDITION);
-            xtw.writeCharacters(multiInstanceObject.getCompletionCondition());
-            xtw.writeEndElement();
-          }
-          xtw.writeEndElement();
-        }
-      }
+      MultiInstanceExport.writeMultiInstance(activity, xtw);
     }
     
     xtw.writeEndElement();
@@ -368,7 +341,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
   }
   
   protected boolean writeListeners(BaseElement element, XMLStreamWriter xtw) throws Exception {
-    return ActivitiListenerUtil.writeListeners(element, didWriteExtensionStartElement, xtw);
+    return ActivitiListenerExport.writeListeners(element, didWriteExtensionStartElement, xtw);
   }
   
   protected void writeEventDefinitions(List<EventDefinition> eventDefinitions, XMLStreamWriter xtw) throws Exception {

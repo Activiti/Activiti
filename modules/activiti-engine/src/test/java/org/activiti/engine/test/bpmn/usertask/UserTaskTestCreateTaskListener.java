@@ -33,7 +33,8 @@ import org.activiti.engine.impl.el.Expression;
 
 public class UserTaskTestCreateTaskListener implements TaskListener {
 
-	private Expression expression;
+  private static final long serialVersionUID = 1L;
+  private Expression expression;
 	
 	@Override
 	public void notify(DelegateTask delegateTask) {

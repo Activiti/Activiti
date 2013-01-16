@@ -35,6 +35,8 @@ import org.codehaus.jackson.node.ObjectNode;
  */
 public class JsonConverter {
   
+  public static final String WORKFLOW_ID = "id";
+  public static final String WORKFLOW_KEY = "key";
   public static final String WORKFLOW_NAME = "name";
   public static final String WORKFLOW_DESCRIPTION = "description";
   public static final String WORKFLOW_STEPS = "steps";
@@ -58,6 +60,8 @@ public class JsonConverter {
     
     // Name and description
     workflowDefinition.setName(getStringFieldValue(json, WORKFLOW_NAME, true));
+    workflowDefinition.setKey(getStringFieldValue(json, WORKFLOW_KEY, false));
+    workflowDefinition.setId(getStringFieldValue(json, WORKFLOW_ID, false));
     
     String description = getStringFieldValue(json, WORKFLOW_DESCRIPTION, false);
     if (description != null) {
@@ -215,6 +219,12 @@ public class JsonConverter {
     ObjectNode json = objectMapper.createObjectNode();
     
     json.put(WORKFLOW_NAME, workflowDefinition.getName());
+    if(workflowDefinition.getId() != null) {
+      json.put(WORKFLOW_ID, workflowDefinition.getId());
+    }
+    if(workflowDefinition.getKey() != null) {
+      json.put(WORKFLOW_KEY, workflowDefinition.getKey());
+    }
     
     if (workflowDefinition.getDescription() != null) {
       json.put(WORKFLOW_DESCRIPTION, workflowDefinition.getDescription());

@@ -37,7 +37,7 @@ public abstract class BaseStepDefinitionConverter<U extends StepDefinition, T> i
   public void convertStepDefinition(StepDefinition stepDefinition, WorkflowDefinitionConversion conversion) {
     U typedStepDefinition = (U) stepDefinition;
     T processArtifact = createProcessArtifact(typedStepDefinition, conversion);
-    createAdditionalArtifacts(processArtifact);
+    createAdditionalArtifacts(conversion, typedStepDefinition, processArtifact);
   }
   
   /**
@@ -49,7 +49,7 @@ public abstract class BaseStepDefinitionConverter<U extends StepDefinition, T> i
    * Subclasses should override this method if they want to create additional artifacts
    * for this specific step. The default generated process artifact is passed as parameter.
    */
-  protected void createAdditionalArtifacts(T defaultGeneratedArtifact) {
+  protected void createAdditionalArtifacts(WorkflowDefinitionConversion conversion, U stepDefinition, T defaultGeneratedArtifact) {
   }
 
   /**
