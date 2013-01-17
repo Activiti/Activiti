@@ -395,18 +395,14 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
       assertTrue(e.getMessage().contains("No outgoing sequence flow"));
     }
 	}
+  
   @Deployment(resources={"org/activiti/engine/test/bpmn/gateway/InclusiveGatewayTest.testJoinAfterCall.bpmn20.xml",
 		                 "org/activiti/engine/test/bpmn/gateway/InclusiveGatewayTest.testJoinAfterCallSubProcess.bpmn20.xml"})	
   public void testJoinAfterCall() {
-	     // Test case to test act-1026
-
-		ProcessInstance processInstance = runtimeService
-				.startProcessInstanceByKey("InclusiveGateway");
+	  // Test case to test act-1026
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("InclusiveGateway");
 		assertNotNull(processInstance.getId());
 		
-		System.out.println("id " + processInstance.getId() + " "
-				+ processInstance.getProcessDefinitionId());
-
 		List<Task> tasks = taskService.createTaskQuery().list();
 		for (Task task : tasks) {
 			System.out.println("task " + task.getName());
