@@ -32,6 +32,7 @@ import org.activiti.engine.impl.bpmn.parser.XMLImporter;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
+import org.apache.cxf.endpoint.dynamic.DynamicClientFactory;
 import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.service.model.OperationInfo;
 import org.apache.cxf.service.model.ServiceInfo;
@@ -93,7 +94,8 @@ public class CxfWSDLImporter implements XMLImporter {
 
     try {
       Bus bus = BusFactory.getDefaultBus();
-      WSDLManager wsdlManager = bus.getExtension(WSDLManager.class);
+      DynamicClientFactory.newInstance(bus).createClient(url);
+      WSDLManager wsdlManager = bus.getExtension(WSDLManager.class);  
       Definition def = wsdlManager.getDefinition(url);
       WSDLServiceBuilder builder = new WSDLServiceBuilder(bus);
       List<ServiceInfo> services = builder.buildServices(def);
