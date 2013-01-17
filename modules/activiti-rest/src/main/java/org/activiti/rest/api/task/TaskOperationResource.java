@@ -66,6 +66,16 @@ public class TaskOperationResource extends SecuredResource {
       variables.remove("taskId");
       ActivitiUtil.getFormService().submitTaskFormData(taskId, variables);
       
+    } else if ("assign".equals(operation)) {
+      String userId = null;
+      try {
+        String startParams = entity.getText();
+        JsonNode startJSON = new ObjectMapper().readTree(startParams);
+        userId = startJSON.path("userId").getTextValue();
+      } catch(Exception e) {
+        throw new ActivitiException("Did not assign the operation parameters", e);
+      }
+      ActivitiUtil.getTaskService().setAssignee(taskId, userId);
     } else {
       throw new ActivitiException("'" + operation + "' is not a valid operation");
     }
