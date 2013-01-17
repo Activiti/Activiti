@@ -372,5 +372,42 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
 
 	}	
 	
+  @Deployment(resources={"org/activiti/engine/test/bpmn/gateway/InclusiveGatewayTest.testJoinAfterCall.bpmn20.xml",
+		                 "org/activiti/engine/test/bpmn/gateway/InclusiveGatewayTest.testJoinAfterCallSubProcess.bpmn20.xml"})	
+  public void testJoinAfterCall() {
+	     // Test case to test act-1026
+
+		ProcessInstance processInstance = runtimeService
+				.startProcessInstanceByKey("InclusiveGateway");
+		assertNotNull(processInstance.getId());
+		
+		System.out.println("id " + processInstance.getId() + " "
+				+ processInstance.getProcessDefinitionId());
+
+		List<Task> tasks = taskService.createTaskQuery().list();
+		for (Task task : tasks) {
+			System.out.println("task " + task.getName());
+		}
+		assertEquals(3, taskService.createTaskQuery().count());
+		
+		// now complate task A and check number of remaining tasks
+		Task taskA = taskService.createTaskQuery().taskName("Task A").singleResult();
+		assertNotNull(taskA);
+		taskService.complete(taskA.getId());
+		assertEquals(2, taskService.createTaskQuery().count());
+		
+		// now complate task B and check number of remaining tasks
+		Task taskB = taskService.createTaskQuery().taskName("Task B").singleResult();
+		assertNotNull(taskB);
+		taskService.complete(taskB.getId());
+		assertEquals(1, taskService.createTaskQuery().count());
+		
+		
+		// now complate task C and check number of remaining tasks
+		
+
+
+	}	
+	
   
 }
