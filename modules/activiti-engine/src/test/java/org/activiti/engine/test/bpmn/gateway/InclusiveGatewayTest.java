@@ -343,34 +343,56 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
   
   @Deployment	
   public void testJoinAfterSubprocesses() {
-	     // Test case to test act-1204
-
+	  // Test case to test act-1204
 		Map<String, Object> variableMap = new HashMap<String, Object>();
 		variableMap.put("a", 1);
 		variableMap.put("b", 1);
-		ProcessInstance processInstance = runtimeService
-				.startProcessInstanceByKey("InclusiveGateway", variableMap);
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("InclusiveGateway", variableMap);
 		assertNotNull(processInstance.getId());
-		System.out.println("id " + processInstance.getId() + " "
-				+ processInstance.getProcessDefinitionId());
-
-		List<Task> tasks = taskService.createTaskQuery()
-				.processInstanceId(processInstance.getId()).list();
-		for (Task task : tasks) {
-			System.out.println("task " + task.getName());
-		}
+		
+		List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
 		assertEquals(2, taskService.createTaskQuery().count());
 
 		taskService.complete(tasks.get(0).getId());
-		tasks = taskService.createTaskQuery()
-				.processInstanceId(processInstance.getId()).list();
-		for (Task task : tasks) {
-			System.out.println("after completing 1st task: task "
-					+ task.getName());
-		}
 		assertEquals(1, taskService.createTaskQuery().count());
-
-	}	
-	
-  
+		
+		taskService.complete(tasks.get(1).getId());
+		
+		Task task = taskService.createTaskQuery().taskAssignee("c").singleResult();
+		assertNotNull(task);
+		taskService.complete(task.getId());
+		
+		processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
+		assertNull(processInstance);
+		
+		variableMap = new HashMap<String, Object>();
+    variableMap.put("a", 1);
+    variableMap.put("b", 2);
+    processInstance = runtimeService.startProcessInstanceByKey("InclusiveGateway", variableMap);
+    assertNotNull(processInstance.getId());
+    
+    tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
+    assertEquals(1, taskService.createTaskQuery().count());
+    
+    task = tasks.get(0);
+    assertEquals("a", task.getAssignee());
+    taskService.complete(task.getId());
+    
+    task = taskService.createTaskQuery().taskAssignee("c").singleResult();
+    assertNotNull(task);
+    taskService.complete(task.getId());
+    
+    processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNull(processInstance);
+    
+    variableMap = new HashMap<String, Object>();
+    variableMap.put("a", 2);
+    variableMap.put("b", 2);
+    try {
+      processInstance = runtimeService.startProcessInstanceByKey("InclusiveGateway", variableMap);
+      fail();
+    } catch(ActivitiException e) {
+      assertTrue(e.getMessage().contains("No outgoing sequence flow"));
+    }
+	}
 }
