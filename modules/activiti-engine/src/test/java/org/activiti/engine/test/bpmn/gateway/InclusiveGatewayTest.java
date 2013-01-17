@@ -341,9 +341,9 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     assertProcessEnded(pi.getId());
   }
   
-  @Deployment(resources={
-  "org/activiti/engine/test/bpmn/gateway/InclusiveGatewayTest.testJoinAfterSubprocesses.bpmn20.xml"})	
+  @Deployment	
   public void testJoinAfterSubprocesses() {
+	     // Test case to test act-1204
 
 		Map<String, Object> variableMap = new HashMap<String, Object>();
 		variableMap.put("a", 1);
