@@ -948,7 +948,7 @@
       <section>
         <title>Perform Task Operation</title>
         <para>
-          Performs an operation (claim, unclaim or complete) on a task.
+          Performs an operation (claim, unclaim, assign or complete) on a task.
           For the "complete" operation additional variables (from a form) may be passed in the body.
           To read more about additional variables from forms, visit the Start Process Instance section
         </para>
@@ -956,7 +956,7 @@
           <listitem>
             <para>
               <emphasis role="bold">Request:</emphasis>
-              <literal>PUT /task/{taskId}/[claim|unclaim|complete]</literal>
+              <literal>PUT /task/{taskId}/[claim|unclaim|complete|assign]</literal>
               <programlisting>{}</programlisting>
             </para>
           </listitem>
