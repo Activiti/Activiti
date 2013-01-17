@@ -24,6 +24,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.runtime.Execution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,10 +91,23 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
     }
   }
   
+  List<? extends ActivityExecution> getLeaveExecutions(ActivityExecution parent) {
+	  List <ActivityExecution> executionlist = new ArrayList<ActivityExecution>();
+	  List <? extends ActivityExecution> subExecutions = parent.getExecutions();
+	  if (subExecutions.size()==0)
+		  executionlist.add(parent);
+	  else
+		  for (ActivityExecution concurrentExecution: subExecutions) {
+			  executionlist.addAll(getLeaveExecutions(concurrentExecution));
+		  }
+	  
+	return executionlist;	  
+  }
+  
   public boolean activeConcurrentExecutionsExist(ActivityExecution execution) {
     PvmActivity activity = execution.getActivity();
     if (execution.isConcurrent()) {
-      for (ActivityExecution concurrentExecution: execution.getParent().getExecutions()) {
+      for (ActivityExecution concurrentExecution: getLeaveExecutions(execution.getParent())) {
         if (concurrentExecution.isActive() && concurrentExecution.getActivity() != activity) {
           
           // TODO: when is transitionBeingTaken cleared? Should we clear it?
@@ -125,6 +139,15 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
   
   protected boolean isReachable(PvmActivity srcActivity, PvmActivity targetActivity, Set<PvmActivity> visitedActivities) {
 
+	  
+     // if source has no outputs, it is the end of the process, and its parent process should be checked.	  
+	if (srcActivity.getOutgoingTransitions().size() == 0) {
+		visitedActivities.add(srcActivity);
+		if (srcActivity.getParent() == null || !(srcActivity.getParent() instanceof PvmActivity) )
+			return false;
+		srcActivity = (PvmActivity) srcActivity.getParent();
+	}
+	
     if (srcActivity.equals(targetActivity)) {
       return true;
     }
