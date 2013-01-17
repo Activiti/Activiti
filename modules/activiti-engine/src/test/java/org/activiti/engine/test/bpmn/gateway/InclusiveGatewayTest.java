@@ -400,29 +400,37 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
 		                 "org/activiti/engine/test/bpmn/gateway/InclusiveGatewayTest.testJoinAfterCallSubProcess.bpmn20.xml"})	
   public void testJoinAfterCall() {
 	  // Test case to test act-1026
-		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("InclusiveGateway");
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("InclusiveGatewayAfterCall");
 		assertNotNull(processInstance.getId());
-		
-		List<Task> tasks = taskService.createTaskQuery().list();
-		for (Task task : tasks) {
-			System.out.println("task " + task.getName());
-		}
 		assertEquals(3, taskService.createTaskQuery().count());
 		
-		// now complate task A and check number of remaining tasks
+		// now complete task A and check number of remaining tasks. 
+		// inclusive gateway should wait for the "Task B" and "Task C"
 		Task taskA = taskService.createTaskQuery().taskName("Task A").singleResult();
 		assertNotNull(taskA);
 		taskService.complete(taskA.getId());
 		assertEquals(2, taskService.createTaskQuery().count());
 		
-		// now complate task B and check number of remaining tasks
+		// now complete task B and check number of remaining tasks
+		// inclusive gateway should wait for "Task C"
 		Task taskB = taskService.createTaskQuery().taskName("Task B").singleResult();
 		assertNotNull(taskB);
 		taskService.complete(taskB.getId());
 		assertEquals(1, taskService.createTaskQuery().count());
-		
-		
-		// now complate task C and check number of remaining tasks
 
+		// now complete task C. Gateway activates and "Task C" remains
+		Task taskC = taskService.createTaskQuery().taskName("Task C").singleResult();
+		assertNotNull(taskC);
+		taskService.complete(taskC.getId());
+		assertEquals(1, taskService.createTaskQuery().count());
+	
+		// check that remaining task is in fact task D
+		Task taskD = taskService.createTaskQuery().taskName("Task D").singleResult();
+		assertNotNull(taskD);
+		assertEquals("Task D", taskD.getName());
+		taskService.complete(taskD.getId());
+		
+		processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
+		assertNull(processInstance);
 	}	
 }

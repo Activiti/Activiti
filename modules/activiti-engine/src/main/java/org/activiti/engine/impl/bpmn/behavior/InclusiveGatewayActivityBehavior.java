@@ -37,8 +37,9 @@ import org.slf4j.LoggerFactory;
  */
 public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
 
-  private static Logger log = LoggerFactory
-      .getLogger(InclusiveGatewayActivityBehavior.class.getName());
+  private static final long serialVersionUID = 1L;
+  
+  private static Logger log = LoggerFactory.getLogger(InclusiveGatewayActivityBehavior.class.getName());
 
   public void execute(ActivityExecution execution) throws Exception {
 
