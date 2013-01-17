@@ -531,6 +531,14 @@ public class HistoryManager extends AbstractManager {
    * if history is enabled. 
    */
   public void createIdentityLinkComment(String taskId, String userId, String groupId, String type, boolean create) {
+    createIdentityLinkComment(taskId, userId, groupId, type, create, false);
+  }
+  
+  /**
+   * Creates a new comment to indicate a new {@link IdentityLink} has been created or deleted, 
+   * if history is enabled. 
+   */
+  public void createIdentityLinkComment(String taskId, String userId, String groupId, String type, boolean create, boolean forceNullUserId) {
     if(isHistoryEnabled()) {
       String authenticatedUserId = Authentication.getAuthenticatedUserId();
       CommentEntity comment = new CommentEntity();
@@ -538,7 +546,7 @@ public class HistoryManager extends AbstractManager {
       comment.setType(CommentEntity.TYPE_EVENT);
       comment.setTime(ClockUtil.getCurrentTime());
       comment.setTaskId(taskId);
-      if (userId!=null) {
+      if (userId!=null || forceNullUserId) {
         if(create) {
           comment.setAction(Event.ACTION_ADD_USER_LINK);
         } else {

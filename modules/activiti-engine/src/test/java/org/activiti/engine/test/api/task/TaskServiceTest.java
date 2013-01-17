@@ -538,6 +538,9 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
     assertEquals(user.getId(), task.getAssignee());
     
+    // Set assignee to null
+    taskService.setAssignee(task.getId(), null);
+    
     identityService.deleteUser(user.getId());
     taskService.deleteTask(task.getId(), true);
   }
