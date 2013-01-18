@@ -589,7 +589,12 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
         </para>
 		<para>
 	  	  <emphasis>Note:</emphasis> start timer event is scheduled as soon as process is deployed. There is no need to call startProcessInstanceByXXX, although calling start process methods is not restricted and will cause one more starting of the process at the time of startProcessInstanceByXXX Invocation.
-		</para>. 
+		</para>
+		<para>
+		   <emphasis>Note:</emphasis> when a new version of a process with a start timer event is deployed, the job
+		   corresponding with the previous timer will be removed. The reasoning is that normally it is not wanted to
+		   keep automatically starting new process instances of this old version of the process. 
+		</para>
 
       </section>
 

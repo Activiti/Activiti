@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cmd.DeleteJobsCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -28,7 +29,9 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.engine.test.Deployment;
 
-
+/**
+ * @author Joram Barrez
+ */
 public class StartTimerEventTest extends PluggableActivitiTestCase {
 
   @Deployment
@@ -156,12 +159,6 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
     assertEquals(0, jobQuery.count());
   }
   
-  private void cleanDB() {
-    String jobId = managementService.createJobQuery().singleResult().getId();
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
-    commandExecutor.execute(new DeleteJobsCmd(jobId));
-  }
-
   @Deployment
   public void testVersionUpgradeShouldCancelJobs() throws Exception {
     ClockUtil.setCurrentTime(new Date());
@@ -194,6 +191,61 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
 
     cleanDB();
     repositoryService.deleteDeployment(id, true);
+  }
+  
+  @Deployment
+  public void testTimerShouldNotBeRecreatedOnDeploymentCacheReboot() {
+    
+    // Just to be sure, I added this test. Sounds like something that could easily happen
+    // when the order of deploy/parsing is altered.
+    
+    // After process start, there should be timer created
+    JobQuery jobQuery = managementService.createJobQuery();
+    assertEquals(1, jobQuery.count());
+    
+    // Reset deployment cache
+    ((ProcessEngineConfigurationImpl) processEngineConfiguration).getProcessDefinitionCache().clear();
+    
+    // Start one instance of the process definition, this will trigger a cache reload
+    runtimeService.startProcessInstanceByKey("startTimer");
+    
+    // No new jobs should have been created
+    assertEquals(1, jobQuery.count());
+  }
+  
+  // Test for ACT-1533
+  public void testTimerShouldNotBeRemovedWhenUndeployingOldVersion() throws Exception {
+    // Deploy test process
+    String process = new String(IoUtil.readInputStream(getClass().getResourceAsStream("StartTimerEventTest.testTimerShouldNotBeRemovedWhenUndeployingOldVersion.bpmn20.xml"), ""));
+    String firstDeploymentId = repositoryService.createDeployment().addInputStream("StartTimerEventTest.testVersionUpgradeShouldCancelJobs.bpmn20.xml",
+            new ByteArrayInputStream(process.getBytes())).deploy().getId();
+    
+    // After process start, there should be timer created
+    JobQuery jobQuery = managementService.createJobQuery();
+    assertEquals(1, jobQuery.count());
+
+    //we deploy new process version, with some small change
+    String processChanged = process.replaceAll("beforeChange","changed");
+    String secondDeploymentId = repositoryService.createDeployment().addInputStream("StartTimerEventTest.testVersionUpgradeShouldCancelJobs.bpmn20.xml",
+        new ByteArrayInputStream(processChanged.getBytes())).deploy().getId();
+    assertEquals(1, jobQuery.count());
+
+    // Remove the first deployment
+    repositoryService.deleteDeployment(firstDeploymentId, true);
+    
+    // The removal of an old version should not affect timer deletion
+    // ACT-1533: this was a bug, and the timer was deleted!
+    assertEquals(1, jobQuery.count());
+    
+    // Cleanup
+    cleanDB();
+    repositoryService.deleteDeployment(secondDeploymentId, true);
+  }
+  
+  private void cleanDB() {
+    String jobId = managementService.createJobQuery().singleResult().getId();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    commandExecutor.execute(new DeleteJobsCmd(jobId));
   }
 
 }
