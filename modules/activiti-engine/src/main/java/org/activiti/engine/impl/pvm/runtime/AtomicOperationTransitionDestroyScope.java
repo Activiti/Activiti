@@ -76,7 +76,7 @@ public class AtomicOperationTransitionDestroyScope implements AtomicOperation {
             
             // We can't just merge the data of the lastConcurrent into the concurrentRoot.
             // This is because the concurrent root might be in a takeAll-loop.  So the 
-            // concurrent execution is the one that will be receiveing the take
+            // concurrent execution is the one that will be receiving the take
             concurrentRoot.setActivity((ActivityImpl) lastConcurrent.getActivity());
             concurrentRoot.setActive(lastConcurrent.isActive());
             lastConcurrent.setReplacedBy(concurrentRoot);
