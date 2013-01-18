@@ -15,6 +15,7 @@ package org.activiti.engine.impl.bpmn.parser;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.engine.BpmnParseListener;
 import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti.engine.impl.cfg.BpmnParseFactory;

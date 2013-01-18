@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.bpmn.parser;
+package org.activiti.engine;
 
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BusinessRuleTask;
@@ -40,6 +40,7 @@ import org.activiti.bpmn.model.ThrowEvent;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.bpmn.model.Transaction;
 import org.activiti.bpmn.model.UserTask;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
@@ -52,6 +53,9 @@ import org.activiti.engine.impl.variable.VariableDeclaration;
  * maybe influence ist). Instead of implementing this interface you might consider to extend 
  * the {@link AbstractBpmnParseListener}, which contains an empty implementation for all methods
  * and makes your implementation easier and more robust to future changes.
+ * 
+ * Instances of this interface can be injected into the {@link ProcessEngineConfigurationImpl}
+ * using the pre/postPastListeners lists.
  * 
  * @author Tom Baeyens
  * @author Falko Menge

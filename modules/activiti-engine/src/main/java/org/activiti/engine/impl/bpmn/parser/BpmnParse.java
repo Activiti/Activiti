@@ -75,6 +75,7 @@ import org.activiti.bpmn.model.Transaction;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.bpmn.model.parse.Problem;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.BpmnParseListener;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TaskListener;

@@ -1,4 +1,4 @@
-package org.activiti.engine.impl.bpmn.parser;
+package org.activiti.engine;
 
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BoundaryEvent;
@@ -36,7 +36,7 @@ import org.activiti.engine.impl.util.xml.Element;
 import org.activiti.engine.impl.variable.VariableDeclaration;
 
 /**
- * Abstract base class for implementing a {@link BpmnParseListener} without being forced to implement
+ * Base class for implementing a {@link BpmnParseListener} without being forced to implement
  * all methods provided, which makes the implementation more robust to future changes.
  * 
  * @author ruecker
