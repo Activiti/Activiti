@@ -5648,7 +5648,7 @@ public class MyTaskCreateListener implements TaskListener {
    ...
  </programlisting> 
 In the above xml excerpt user(user3) refers directly to user user3 and group(group3) to group group3. No indicator will default to a group type.
-It is also possible to use attributes of the &lt;process&gt; tag, namely &lt;activiti:candidateStarterUsers&gt; and &lt;activiti:candidateStarterUsers&gt;. Here is an example:
+It is also possible to use attributes of the &lt;process&gt; tag, namely &lt;activiti:candidateStarterUsers&gt; and &lt;activiti:candidateStarterGroups&gt;. Here is an example:
 
   <programlisting>
       &lt;process id="potentialStarter" activiti:candidateStarterUsers="user1, user2"  

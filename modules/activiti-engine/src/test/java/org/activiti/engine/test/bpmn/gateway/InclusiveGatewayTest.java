@@ -341,4 +341,96 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     assertProcessEnded(pi.getId());
   }
   
+  @Deployment	
+  public void testJoinAfterSubprocesses() {
+	  // Test case to test act-1204
+		Map<String, Object> variableMap = new HashMap<String, Object>();
+		variableMap.put("a", 1);
+		variableMap.put("b", 1);
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("InclusiveGateway", variableMap);
+		assertNotNull(processInstance.getId());
+		
+		List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
+		assertEquals(2, taskService.createTaskQuery().count());
+
+		taskService.complete(tasks.get(0).getId());
+		assertEquals(1, taskService.createTaskQuery().count());
+
+		taskService.complete(tasks.get(1).getId());
+
+		Task task = taskService.createTaskQuery().taskAssignee("c").singleResult();
+		assertNotNull(task);
+		taskService.complete(task.getId());
+		
+		processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
+		assertNull(processInstance);
+		
+		variableMap = new HashMap<String, Object>();
+    variableMap.put("a", 1);
+    variableMap.put("b", 2);
+    processInstance = runtimeService.startProcessInstanceByKey("InclusiveGateway", variableMap);
+    assertNotNull(processInstance.getId());
+    
+    tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
+    assertEquals(1, taskService.createTaskQuery().count());
+    
+    task = tasks.get(0);
+    assertEquals("a", task.getAssignee());
+    taskService.complete(task.getId());
+    
+    task = taskService.createTaskQuery().taskAssignee("c").singleResult();
+    assertNotNull(task);
+    taskService.complete(task.getId());
+    
+    processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNull(processInstance);
+    
+    variableMap = new HashMap<String, Object>();
+    variableMap.put("a", 2);
+    variableMap.put("b", 2);
+    try {
+      processInstance = runtimeService.startProcessInstanceByKey("InclusiveGateway", variableMap);
+      fail();
+    } catch(ActivitiException e) {
+      assertTrue(e.getMessage().contains("No outgoing sequence flow"));
+    }
+	}
+  
+  @Deployment(resources={"org/activiti/engine/test/bpmn/gateway/InclusiveGatewayTest.testJoinAfterCall.bpmn20.xml",
+		                 "org/activiti/engine/test/bpmn/gateway/InclusiveGatewayTest.testJoinAfterCallSubProcess.bpmn20.xml"})	
+  public void testJoinAfterCall() {
+	  // Test case to test act-1026
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("InclusiveGatewayAfterCall");
+		assertNotNull(processInstance.getId());
+		assertEquals(3, taskService.createTaskQuery().count());
+		
+		// now complete task A and check number of remaining tasks. 
+		// inclusive gateway should wait for the "Task B" and "Task C"
+		Task taskA = taskService.createTaskQuery().taskName("Task A").singleResult();
+		assertNotNull(taskA);
+		taskService.complete(taskA.getId());
+		assertEquals(2, taskService.createTaskQuery().count());
+		
+		// now complete task B and check number of remaining tasks
+		// inclusive gateway should wait for "Task C"
+		Task taskB = taskService.createTaskQuery().taskName("Task B").singleResult();
+		assertNotNull(taskB);
+		taskService.complete(taskB.getId());
+		assertEquals(1, taskService.createTaskQuery().count());
+
+		// now complete task C. Gateway activates and "Task C" remains
+		Task taskC = taskService.createTaskQuery().taskName("Task C").singleResult();
+		assertNotNull(taskC);
+		taskService.complete(taskC.getId());
+		assertEquals(1, taskService.createTaskQuery().count());
+	
+		// check that remaining task is in fact task D
+		Task taskD = taskService.createTaskQuery().taskName("Task D").singleResult();
+		assertNotNull(taskD);
+		assertEquals("Task D", taskD.getName());
+		taskService.complete(taskD.getId());
+		
+		processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
+		assertNull(processInstance);
+	}	
 }

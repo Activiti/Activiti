@@ -64,15 +64,25 @@ public class AddIdentityLinkCmd extends NeedsActiveTaskCmd<Void> {
   
   protected Void execute(CommandContext commandContext, TaskEntity task) {
 
+    boolean assignedToNoOne = false;
     if (IdentityLinkType.ASSIGNEE.equals(type)) {
       task.setAssignee(userId);
+      assignedToNoOne = userId == null;
     } else if (IdentityLinkType.OWNER.equals(type)) {
       task.setOwner(userId);
     } else {
       task.addIdentityLink(userId, groupId, type);
     }
 
-    commandContext.getHistoryManager().createIdentityLinkComment(taskId, userId, groupId, type, true);
+    if(assignedToNoOne)
+    {
+      // ACT-1317: Special handling when assignee is set to NULL, a CommentEntity notifying of assignee-delete should be created
+      commandContext.getHistoryManager().createIdentityLinkComment(taskId, userId, groupId, type, false, true);
+    }
+    else
+    {
+      commandContext.getHistoryManager().createIdentityLinkComment(taskId, userId, groupId, type, true);
+    }
     
     return null;  
   }
