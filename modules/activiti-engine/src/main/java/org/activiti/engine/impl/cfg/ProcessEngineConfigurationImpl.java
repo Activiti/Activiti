@@ -678,15 +678,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       }
     }
     if (deploymentManager==null) {
-      List<Deployer> deployers = new ArrayList<Deployer>();
-      if (customPreDeployers!=null) {
-        deployers.addAll(customPreDeployers);
-      }
-      deployers.addAll(getDefaultDeployers());
-      if (customPostDeployers!=null) {
-        deployers.addAll(customPostDeployers);
-      }
-
       deploymentManager = new DeploymentManager();
       deploymentManager.setDeployers(deployers);
       

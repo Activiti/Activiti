@@ -49,7 +49,7 @@ import org.activiti.engine.impl.variable.VariableDeclaration;
 
 /**
  * Listener which can be registered within the engine to receive events during parsing (and
- * maybe influence ist). Instead of implmenting this interface you migh consider to extend 
+ * maybe influence ist). Instead of implementing this interface you might consider to extend 
  * the {@link AbstractBpmnParseListener}, which contains an empty implementation for all methods
  * and makes your implementation easier and more robust to future changes.
  * 

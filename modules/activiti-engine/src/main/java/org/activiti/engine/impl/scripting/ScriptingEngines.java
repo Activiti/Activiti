@@ -25,6 +25,7 @@ import org.activiti.engine.delegate.VariableScope;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class ScriptingEngines {
 
@@ -56,7 +57,14 @@ public class ScriptingEngines {
   }
 
   public Object evaluate(String script, String language, VariableScope variableScope) {
-    Bindings bindings = createBindings(variableScope);
+    return evaluate(script, language, createBindings(variableScope));
+  }
+  
+  public Object evaluate(String script, String language, VariableScope variableScope, boolean storeScriptVariables) {
+    return evaluate(script, language, createBindings(variableScope, storeScriptVariables));
+  }
+  
+  protected Object evaluate(String script, String language, Bindings bindings) {
     ScriptEngine scriptEngine = scriptEngineManager.getEngineByName(language);
 
     if (scriptEngine == null) {
@@ -73,6 +81,11 @@ public class ScriptingEngines {
   /** override to build a spring aware ScriptingEngines */
   protected Bindings createBindings(VariableScope variableScope) {
     return scriptBindingsFactory.createBindings(variableScope); 
+  }
+  
+  /** override to build a spring aware ScriptingEngines */
+  protected Bindings createBindings(VariableScope variableScope, boolean storeScriptVariables) {
+    return scriptBindingsFactory.createBindings(variableScope, storeScriptVariables); 
   }
   
   public ScriptBindingsFactory getScriptBindingsFactory() {

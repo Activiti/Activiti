@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
@@ -62,6 +63,18 @@ public class ScriptTaskTest extends PluggableActivitiTestCase {
     }
     
     verifyExceptionInStacktrace(expectedException, IllegalStateException.class);
+  }
+  
+  @Deployment
+  public void testAutoStoreVariables() {
+    // The first script should NOT store anything as 'autoStoreVariables' is set to false
+    String id = runtimeService.startProcessInstanceByKey("testAutoStoreVariables",
+            CollectionUtil.map("a", 20, "b", 22)).getId();
+    assertNull(runtimeService.getVariable(id, "sum"));
+    
+    // The second script, after the user task will set the variable
+    taskService.complete(taskService.createTaskQuery().singleResult().getId());
+    assertEquals(42, ((Number) runtimeService.getVariable(id, "sum")).intValue());
   }
   
   protected void verifyExceptionInStacktrace(Exception rootExcepton, Class expectedExceptionClass) {
