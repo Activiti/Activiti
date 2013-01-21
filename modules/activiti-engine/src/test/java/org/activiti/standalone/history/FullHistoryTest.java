@@ -202,6 +202,58 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     assertEquals(123456789L, historicVariable.getValue());
   }
   
+  @Deployment(resources={"org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"})
+  public void testHistoricVariableInstanceQueryTaskVariables() {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("variable", "setFromProcess");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", variables);
+    
+    assertEquals(1, historyService.createHistoricVariableInstanceQuery().count());
+    
+    Task activeTask = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(activeTask);
+    taskService.setVariableLocal(activeTask.getId(), "variable", "setFromTask");
+
+    // Check if additional variable is available in history, task-local
+    assertEquals(2, historyService.createHistoricVariableInstanceQuery().count());
+    assertEquals(1, historyService.createHistoricVariableInstanceQuery().taskId(activeTask.getId()).count());
+    assertEquals("setFromTask", historyService.createHistoricVariableInstanceQuery().taskId(activeTask.getId()).singleResult().getValue());
+    assertEquals(activeTask.getId(), historyService.createHistoricVariableInstanceQuery().taskId(activeTask.getId()).singleResult().getTaskId());
+    assertEquals(1, historyService.createHistoricVariableInstanceQuery().excludeTaskVariables().count());
+    
+    // Test null task-id
+    try 
+    {
+      historyService.createHistoricVariableInstanceQuery().taskId(null).singleResult();
+      fail("Exception expected");
+    }
+    catch(ActivitiException ae)
+    {
+      assertEquals("taskId is null", ae.getMessage());
+    }
+    
+    // Test invalid usage of taskId together with excludeTaskVariables
+    try 
+    {
+      historyService.createHistoricVariableInstanceQuery().taskId("123").excludeTaskVariables().singleResult();
+      fail("Exception expected");
+    }
+    catch(ActivitiException ae)
+    {
+      assertEquals("Cannot use taskId together with excludeTaskVariables", ae.getMessage());
+    }
+    
+    try 
+    {
+      historyService.createHistoricVariableInstanceQuery().excludeTaskVariables().taskId("123").singleResult();
+      fail("Exception expected");
+    }
+    catch(ActivitiException ae)
+    {
+      assertEquals("Cannot use taskId together with excludeTaskVariables", ae.getMessage());
+    }
+  }
+  
   @Deployment(resources="org/activiti/standalone/history/FullHistoryTest.testVariableUpdates.bpmn20.xml")
   public void testHistoricVariableInstanceQuery() {
     Map<String, Object> variables = new HashMap<String, Object>();

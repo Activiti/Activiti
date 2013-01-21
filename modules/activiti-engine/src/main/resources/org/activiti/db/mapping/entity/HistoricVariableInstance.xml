@@ -96,7 +96,10 @@
         RES.PROC_INST_ID_ = #{processInstanceId}
       </if>
       <if test="taskId != null">
-        RES.TASK_ID_ = #{taskId}
+        and RES.TASK_ID_ = #{taskId}
+      </if>
+      <if test="excludeTaskRelated">
+        and RES.TASK_ID_ is NULL
       </if>
       <if test="variableName != null">
         and RES.NAME_ = #{variableName}

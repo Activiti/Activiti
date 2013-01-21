@@ -16,13 +16,11 @@ package org.activiti.engine.impl;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.history.HistoricVariableInstanceQuery;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity;
 import org.activiti.engine.impl.variable.VariableTypes;
 
@@ -69,7 +67,19 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
     if (taskId == null) {
       throw new ActivitiException("taskId is null");
     }
+    if(excludeTaskRelated) {
+      throw new ActivitiException("Cannot use taskId together with excludeTaskVariables");
+    }
     this.taskId = taskId;
+    return this;
+  }
+  
+  @Override
+  public HistoricVariableInstanceQuery excludeTaskVariables() {
+    if(taskId != null) {
+      throw new ActivitiException("Cannot use taskId together with excludeTaskVariables");
+    }
+    excludeTaskRelated = true;
     return this;
   }
 
@@ -98,11 +108,6 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
       throw new ActivitiException("variableNameLike is null");
     }
     this.variableNameLike = variableNameLike;
-    return this;
-  }
-
-  public HistoricVariableInstanceQuery excludeTaskDetails() {
-    this.excludeTaskRelated = true;
     return this;
   }
 
