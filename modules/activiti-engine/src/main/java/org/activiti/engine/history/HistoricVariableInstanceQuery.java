@@ -25,12 +25,18 @@ public interface HistoricVariableInstanceQuery extends Query<HistoricVariableIns
 
   /** Only select historic process variables with the given process instance. */
   HistoricVariableInstanceQuery processInstanceId(String processInstanceId);
+  
+  /** Only select historic process variables with the given task. */
+  HistoricVariableInstanceQuery taskId(String taskId);
 
   /** Only select historic process variables with the given variable name. */
   HistoricVariableInstanceQuery variableName(String variableName);
   
   /** Only select historic process variables where the given variable name is like. */
   HistoricVariableInstanceQuery variableNameLike(String variableNameLike);
+  
+  /** Only select historic process variables which were not set task-local. */
+  HistoricVariableInstanceQuery excludeTaskVariables();
 
   /**
    * only select historic process variables with the given name and value
@@ -40,4 +46,5 @@ public interface HistoricVariableInstanceQuery extends Query<HistoricVariableIns
   HistoricVariableInstanceQuery orderByProcessInstanceId();
   
   HistoricVariableInstanceQuery orderByVariableName();
+
 }
