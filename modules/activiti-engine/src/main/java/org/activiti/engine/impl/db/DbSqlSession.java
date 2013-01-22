@@ -892,14 +892,23 @@ public class DbSqlSession implements Session {
     }
   }
   
-  protected boolean isUpgradeNeeded(String versionInDatabase) {
+  protected static boolean isUpgradeNeeded(String versionInDatabase) {
     if(ProcessEngine.VERSION.equals(versionInDatabase)) {
       return false;
     }
-    Double cleanDbVersion = getCleanVersion(versionInDatabase);
-    Double cleanEngineVersion = getCleanVersion(ProcessEngine.VERSION);
+    
+    String cleanDbVersion = getCleanVersion(versionInDatabase);
+    String[] cleanDbVersionSplitted = cleanDbVersion.split("\\.");
+    int dbMajorVersion = Integer.valueOf(cleanDbVersionSplitted[0]);
+    int dbMinorVersion = Integer.valueOf(cleanDbVersionSplitted[1]);
+    
+    String cleanEngineVersion = getCleanVersion(ProcessEngine.VERSION);
+    String[] cleanEngineVersionSplitted = cleanEngineVersion.split("\\.");
+    int engineMajorVersion = Integer.valueOf(cleanEngineVersionSplitted[0]);
+    int engineMinorVersion = Integer.valueOf(cleanEngineVersionSplitted[1]);
       
-    if(cleanDbVersion.compareTo(cleanEngineVersion) > 0) {
+    if((dbMajorVersion > engineMajorVersion) 
+            || ( (dbMajorVersion <= engineMajorVersion) && (dbMinorVersion > engineMinorVersion) )) {
       throw new ActivitiException("Version of activiti database (" + versionInDatabase + ") is more recent than the engine (" + ProcessEngine.VERSION +")");
     } else if(cleanDbVersion.compareTo(cleanEngineVersion) == 0) {
       // Versions don't match exactly, possibly snapshot is being used
@@ -908,8 +917,8 @@ public class DbSqlSession implements Session {
     }
     return true;
   }
-
-  protected Double getCleanVersion(String versionString) {
+  
+  protected static String getCleanVersion(String versionString) {
     Matcher matcher = CLEAN_VERSION_REGEX.matcher(versionString);
     if(!matcher.find()) {
       throw new ActivitiException("Illegal format for version: " + versionString);
@@ -917,12 +926,13 @@ public class DbSqlSession implements Session {
     
     String cleanString = matcher.group();
     try {
-      return Double.parseDouble(cleanString);
+      Double.parseDouble(cleanString); // try to parse it, to see if it is really a number
+      return cleanString;
     } catch(NumberFormatException nfe) {
       throw new ActivitiException("Illegal format for version: " + versionString);
     }
   }
-
+  
   protected String prependDatabaseTablePrefix(String tableName) {
     return dbSqlSessionFactory.getDatabaseTablePrefix() + tableName;    
   }
