@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cmd.AddCommentCmd;
 import org.activiti.engine.impl.cmd.AddIdentityLinkCmd;
@@ -212,7 +213,7 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   
   public void setVariable(String executionId, String variableName, Object value) {
     if(variableName == null) {
-      throw new ActivitiException("variableName is null");
+      throw new ActivitiIllegalArgumentException("variableName is null");
     }
     Map<String, Object> variables = new HashMap<String, Object>();
     variables.put(variableName, value);
@@ -221,7 +222,7 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   
   public void setVariableLocal(String executionId, String variableName, Object value) {
     if(variableName == null) {
-      throw new ActivitiException("variableName is null");
+      throw new ActivitiIllegalArgumentException("variableName is null");
     }
     Map<String, Object> variables = new HashMap<String, Object>();
     variables.put(variableName, value);

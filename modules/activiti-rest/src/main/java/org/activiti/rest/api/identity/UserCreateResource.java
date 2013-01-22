@@ -14,6 +14,7 @@
 package org.activiti.rest.api.identity;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.User;
 import org.activiti.rest.api.ActivitiUtil;
@@ -31,7 +32,7 @@ public class UserCreateResource extends SecuredResource {
     
     IdentityService identityService = ActivitiUtil.getIdentityService();
     if(userInfo == null || userInfo.getId() == null) {
-      throw new ActivitiException("No user id supplied");
+      throw new ActivitiIllegalArgumentException("No user id supplied");
     }
 
     if (identityService.createUserQuery().userId(userInfo.getId()).count() == 0) {

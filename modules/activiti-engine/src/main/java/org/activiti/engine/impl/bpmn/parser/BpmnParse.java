@@ -75,6 +75,7 @@ import org.activiti.bpmn.model.Transaction;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.bpmn.model.parse.Problem;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.BpmnParseListener;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
@@ -297,7 +298,7 @@ public class BpmnParse implements BpmnXMLConstants {
     try {
       return sourceUrl(new URL(url));
     } catch (MalformedURLException e) {
-      throw new ActivitiException("malformed url: "+url, e);
+      throw new ActivitiIllegalArgumentException("malformed url: "+url, e);
     }
   }
   
@@ -319,7 +320,7 @@ public class BpmnParse implements BpmnXMLConstants {
 
   protected void setStreamSource(StreamSource streamSource) {
     if (this.streamSource!=null) {
-      throw new ActivitiException("invalid: multiple sources "+this.streamSource+" and "+streamSource);
+      throw new ActivitiIllegalArgumentException("invalid: multiple sources "+this.streamSource+" and "+streamSource);
     }
     this.streamSource = streamSource;
   }
@@ -2049,7 +2050,7 @@ public class BpmnParse implements BpmnXMLConstants {
     if (sourceActivity == null) {
       bpmnModel.addProblem("Invalid source '" + sequenceFlow.getSourceRef() + "' of sequence flow '" + sequenceFlow.getId() + "'", sequenceFlow);
     } else if (destinationActivity == null) {
-      throw new ActivitiException("Invalid destination '" + sequenceFlow.getTargetRef() + "' of sequence flow '" + sequenceFlow.getId() + "'");
+      throw new ActivitiIllegalArgumentException("Invalid destination '" + sequenceFlow.getTargetRef() + "' of sequence flow '" + sequenceFlow.getId() + "'");
     } else if(!(sourceActivity.getActivityBehavior() instanceof EventBasedGatewayActivityBehavior)
             && destinationActivity.getActivityBehavior() instanceof IntermediateCatchEventActivityBehavior
             && (destinationActivity.getParentActivity() != null)

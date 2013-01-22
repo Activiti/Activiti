@@ -16,6 +16,8 @@ package org.activiti.rest.api.task;
 import java.io.InputStream;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.task.Attachment;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
@@ -38,12 +40,12 @@ public class TaskAttachmentResource extends SecuredResource {
     String attachmentId = (String) getRequest().getAttributes().get("attachmentId");
     
     if(attachmentId == null) {
-      throw new ActivitiException("No attachment id provided");
+      throw new ActivitiIllegalArgumentException("No attachment id provided");
     }
 
     Attachment attachment = ActivitiUtil.getTaskService().getAttachment(attachmentId);
     if(attachment == null) {
-      throw new ActivitiException("No attachment found for " + attachmentId);
+      throw new ActivitiObjectNotFoundException("No attachment found for " + attachmentId, Attachment.class);
     }
     
     String contentType = attachment.getType();
@@ -66,7 +68,7 @@ public class TaskAttachmentResource extends SecuredResource {
     String attachmentId = (String) getRequest().getAttributes().get("attachmentId");
     
     if(attachmentId == null) {
-      throw new ActivitiException("No attachment id provided");
+      throw new ActivitiIllegalArgumentException("No attachment id provided");
     }
     
     ActivitiUtil.getTaskService().deleteAttachment(attachmentId);

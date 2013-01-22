@@ -3,9 +3,12 @@ package org.activiti.engine.impl.cmd;
 import java.io.Serializable;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +30,7 @@ public class DeleteJobCmd implements Command<Object>, Serializable {
 
   public Object execute(CommandContext commandContext) {
     if (jobId == null) {
-      throw new ActivitiException("jobId is null");
+      throw new ActivitiIllegalArgumentException("jobId is null");
     }
     if (log.isDebugEnabled()) {
       log.debug("Deleting job {}", jobId);
@@ -35,7 +38,7 @@ public class DeleteJobCmd implements Command<Object>, Serializable {
 
     JobEntity job = commandContext.getJobEntityManager().findJobById(jobId);
     if (job == null) {
-      throw new ActivitiException("No job found with id '" + jobId + "'");
+      throw new ActivitiObjectNotFoundException("No job found with id '" + jobId + "'", Job.class);
     }
     
     // We need to check if the job was locked, ie acquired by the job acquisition thread

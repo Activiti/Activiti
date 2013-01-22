@@ -19,10 +19,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -165,7 +168,7 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
 
     public List<String> execute(CommandContext commandContext) {
       if(executionId == null) {
-        throw new ActivitiException("executionId is null");
+        throw new ActivitiIllegalArgumentException("executionId is null");
       }
       
       ExecutionEntity execution = commandContext
@@ -173,7 +176,7 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
         .findExecutionById(executionId);
       
       if (execution==null) {
-        throw new ActivitiException("execution "+executionId+" doesn't exist");
+        throw new ActivitiObjectNotFoundException("execution "+executionId+" doesn't exist", Execution.class);
       }
 
       List<String> executionVariables;

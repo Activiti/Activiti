@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
@@ -59,7 +59,7 @@ public class HistoricTaskInstanceEntityManager extends AbstractManager {
   
   public HistoricTaskInstanceEntity findHistoricTaskInstanceById(String taskId) {
     if (taskId == null) {
-      throw new ActivitiException("Invalid historic task id : null");
+      throw new ActivitiIllegalArgumentException("Invalid historic task id : null");
     }
     if (getHistoryManager().isHistoryEnabled()) {
       return (HistoricTaskInstanceEntity) getDbSqlSession().selectOne("selectHistoricTaskInstance", taskId);

@@ -32,12 +32,8 @@ public class DefaultResource extends ServerResource {
       String deploymentId = path.substring(path.indexOf("/deployment/") + 12, path.indexOf("/", path.indexOf("/deployment/") + 12));
       String resourceName = path.substring(path.indexOf("/resource/") + 10);
       InputStream resource = ActivitiUtil.getRepositoryService().getResourceAsStream(deploymentId, resourceName);
-      if (resource != null) {
-        InputRepresentation output = new InputRepresentation(resource);
-        return output;
-      } else {
-        throw new ActivitiException("There is no resource with name '" + resourceName + "' for deployment with id '" + deploymentId + "'.");
-      }
+      InputRepresentation output = new InputRepresentation(resource);
+      return output;
     } else {
       throw new ActivitiException("No router defined");
     }

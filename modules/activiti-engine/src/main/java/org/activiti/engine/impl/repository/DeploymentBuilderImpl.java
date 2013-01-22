@@ -19,6 +19,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
@@ -46,7 +47,7 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
 
   public DeploymentBuilder addInputStream(String resourceName, InputStream inputStream) {
     if (inputStream==null) {
-      throw new ActivitiException("inputStream for resource '"+resourceName+"' is null");
+      throw new ActivitiIllegalArgumentException("inputStream for resource '"+resourceName+"' is null");
     }
     byte[] bytes = IoUtil.readInputStream(inputStream, resourceName);
     ResourceEntity resource = new ResourceEntity();
@@ -59,14 +60,14 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
   public DeploymentBuilder addClasspathResource(String resource) {
     InputStream inputStream = ReflectUtil.getResourceAsStream(resource);
     if (inputStream==null) {
-      throw new ActivitiException("resource '"+resource+"' not found");
+      throw new ActivitiIllegalArgumentException("resource '"+resource+"' not found");
     }
     return addInputStream(resource, inputStream);
   }
 
   public DeploymentBuilder addString(String resourceName, String text) {
     if (text==null) {
-      throw new ActivitiException("text is null");
+      throw new ActivitiIllegalArgumentException("text is null");
     }
     ResourceEntity resource = new ResourceEntity();
     resource.setName(resourceName);

@@ -15,8 +15,10 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.identity.Picture;
+import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.UserEntity;
@@ -39,13 +41,13 @@ public class SetUserPictureCmd implements Command<Object>, Serializable {
 
   public Object execute(CommandContext commandContext) {
     if(userId == null) {
-      throw new ActivitiException("userId is null");
+      throw new ActivitiIllegalArgumentException("userId is null");
     }
     UserEntity user = (UserEntity) commandContext
       .getUserEntityManager()
       .findUserById(userId);
     if(user == null) {
-      throw new ActivitiException("user "+userId+" doesn't exist");
+      throw new ActivitiObjectNotFoundException("user "+userId+" doesn't exist", User.class);
     }
     user.setPicture(picture);
     return null;

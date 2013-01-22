@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
@@ -61,7 +62,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
         } else if (dueDate instanceof String) {
           task.setDueDate(new DueDateBusinessCalendar().resolveDuedate((String) dueDate)); 
         } else {
-          throw new ActivitiException("Due date expression does not resolve to a Date or Date string: " + 
+          throw new ActivitiIllegalArgumentException("Due date expression does not resolve to a Date or Date string: " + 
               taskDefinition.getDueDateExpression().getExpressionText());
         }
       }
@@ -74,12 +75,12 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
           try {
             task.setPriority(Integer.valueOf((String) priority));
           } catch (NumberFormatException e) {
-            throw new ActivitiException("Priority does not resolve to a number: " + priority, e);
+            throw new ActivitiIllegalArgumentException("Priority does not resolve to a number: " + priority, e);
           }
         } else if (priority instanceof Number) {
           task.setPriority(((Number) priority).intValue());
         } else {
-          throw new ActivitiException("Priority expression does not resolve to a number: " + 
+          throw new ActivitiIllegalArgumentException("Priority expression does not resolve to a number: " + 
                   taskDefinition.getPriorityExpression().getExpressionText());
         }
       }
@@ -110,7 +111,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
         } else if (value instanceof Collection) {
           task.addCandidateGroups((Collection) value);
         } else {
-          throw new ActivitiException("Expression did not resolve to a string or collection of strings");
+          throw new ActivitiIllegalArgumentException("Expression did not resolve to a string or collection of strings");
         }
       }
     }

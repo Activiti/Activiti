@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.TaskQueryProperty;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.task.TaskQuery;
@@ -48,7 +49,7 @@ public class ProcessInstanceTaskResource extends SecuredResource {
 		String processInstanceId = (String) getRequest().getAttributes().get("processInstanceId");
 
 		if (processInstanceId == null) {
-			throw new ActivitiException("No process instance id provided");
+			throw new ActivitiIllegalArgumentException("No process instance id provided");
 		}
 
 		TaskQuery taskQuery = ActivitiUtil.getTaskService().createTaskQuery().processInstanceId(processInstanceId);

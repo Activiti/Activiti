@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
@@ -105,7 +106,7 @@ public class TimerDeclarationImpl implements Serializable {
     
     if (description==null) {
       // Prevent NPE from happening in the next line
-      throw new ActivitiException("Timer '"+executionEntity.getActivityId()+"' was not configured with a valid duration/time");
+      throw new ActivitiIllegalArgumentException("Timer '"+executionEntity.getActivityId()+"' was not configured with a valid duration/time");
     }
     
     String dueDateString = null;

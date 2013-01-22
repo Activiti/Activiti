@@ -16,6 +16,7 @@ package org.activiti.engine.impl;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -49,7 +50,7 @@ public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements 
 
   public GroupQuery groupId(String id) {
     if (id == null) {
-      throw new ActivitiException("Provided id is null");
+      throw new ActivitiIllegalArgumentException("Provided id is null");
     }
     this.id = id;
     return this;
@@ -57,7 +58,7 @@ public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements 
   
   public GroupQuery groupName(String name) {
     if (name == null) {
-      throw new ActivitiException("Provided name is null");
+      throw new ActivitiIllegalArgumentException("Provided name is null");
     }
     this.name = name;
     return this;
@@ -65,7 +66,7 @@ public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements 
   
   public GroupQuery groupNameLike(String nameLike) {
     if (nameLike == null) {
-      throw new ActivitiException("Provided nameLike is null");
+      throw new ActivitiIllegalArgumentException("Provided nameLike is null");
     }
     this.nameLike = nameLike;
     return this;
@@ -73,7 +74,7 @@ public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements 
   
   public GroupQuery groupType(String type) {
     if (type == null) {
-      throw new ActivitiException("Provided type is null");
+      throw new ActivitiIllegalArgumentException("Provided type is null");
     }
     this.type = type;
     return this;
@@ -81,7 +82,7 @@ public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements 
   
   public GroupQuery groupMember(String userId) {
     if (userId == null) {
-      throw new ActivitiException("Provided userId is null");
+      throw new ActivitiIllegalArgumentException("Provided userId is null");
     }
     this.userId = userId;
     return this;
@@ -89,7 +90,7 @@ public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements 
 
   public GroupQuery potentialStarter(String procDefId) {
     if (procDefId == null) {
-      throw new ActivitiException("Provided processDefinitionId is null or empty");
+      throw new ActivitiIllegalArgumentException("Provided processDefinitionId is null or empty");
     }
     this.procDefId = procDefId;
     return this;

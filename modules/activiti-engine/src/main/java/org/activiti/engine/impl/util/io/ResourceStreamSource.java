@@ -14,7 +14,7 @@ package org.activiti.engine.impl.util.io;
 
 import java.io.InputStream;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.util.ReflectUtil;
 
 
@@ -43,7 +43,7 @@ public class ResourceStreamSource implements StreamSource {
       classLoader.getResourceAsStream(resource);
     }
     if (inputStream==null) {
-      throw new ActivitiException("resource '"+resource+"' doesn't exist");
+      throw new ActivitiIllegalArgumentException("resource '"+resource+"' doesn't exist");
     }
     return inputStream;
   }

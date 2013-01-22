@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 
@@ -107,7 +108,7 @@ public interface DelegateTask extends VariableScope {
    * Involves a user with a task. The type of identity link is defined by the given identityLinkType.
    * @param userId id of the user involve, cannot be null.
    * @param identityLinkType type of identityLink, cannot be null (@see {@link IdentityLinkType}).
-   * @throws ActivitiException when the task or user doesn't exist.
+   * @throws ActivitiObjectNotFoundException when the task or user doesn't exist.
    */
   void addUserIdentityLink(String userId, String identityLinkType);
   
@@ -115,21 +116,21 @@ public interface DelegateTask extends VariableScope {
    * Involves a group with group task. The type of identityLink is defined by the given identityLink.
    * @param groupId id of the group to involve, cannot be null.
    * @param identityLinkType type of identity, cannot be null (@see {@link IdentityLinkType}).
-   * @throws ActivitiException when the task or group doesn't exist.
+   * @throws ActivitiObjectNotFoundException when the task or group doesn't exist.
    */
   void addGroupIdentityLink(String groupId, String identityLinkType);
   
   /**
    * Convenience shorthand for {@link #deleteUserIdentityLink(String, String)}; with type {@link IdentityLinkType#CANDIDATE}
    * @param userId id of the user to use as candidate, cannot be null.
-   * @throws ActivitiException when the task or user doesn't exist.
+   * @throws ActivitiObjectNotFoundException when the task or user doesn't exist.
    */
   void deleteCandidateUser(String userId);
   
   /**
    * Convenience shorthand for {@link #deleteGroupIdentityLink(String, String, String)}; with type {@link IdentityLinkType#CANDIDATE}
    * @param groupId id of the group to use as candidate, cannot be null.
-   * @throws ActivitiException when the task or group doesn't exist.
+   * @throws ActivitiObjectNotFoundException when the task or group doesn't exist.
    */
   void deleteCandidateGroup(String groupId);
   
@@ -137,7 +138,7 @@ public interface DelegateTask extends VariableScope {
    * Removes the association between a user and a task for the given identityLinkType.
    * @param userId id of the user involve, cannot be null.
    * @param identityLinkType type of identityLink, cannot be null (@see {@link IdentityLinkType}).
-   * @throws ActivitiException when the task or user doesn't exist.
+   * @throws ActivitiObjectNotFoundException when the task or user doesn't exist.
    */
   void deleteUserIdentityLink(String userId, String identityLinkType);
   
@@ -145,7 +146,7 @@ public interface DelegateTask extends VariableScope {
    * Removes the association between a group and a task for the given identityLinkType.
    * @param groupId id of the group to involve, cannot be null.
    * @param identityLinkType type of identity, cannot be null (@see {@link IdentityLinkType}).
-   * @throws ActivitiException when the task or group doesn't exist.
+   * @throws ActivitiObjectNotFoundException when the task or group doesn't exist.
    */
   void deleteGroupIdentityLink(String groupId, String identityLinkType);
 

@@ -16,6 +16,7 @@ package org.activiti.rest.api.repository;
 import java.io.InputStream;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
 import org.restlet.data.MediaType;
@@ -35,19 +36,15 @@ public class DeploymentArtifactResource extends SecuredResource {
     String resourceName = (String) getRequest().getAttributes().get("resourceName");
     
     if(deploymentId == null) {
-      throw new ActivitiException("No deployment id provided");
+      throw new ActivitiIllegalArgumentException("No deployment id provided");
     }
     
     if(resourceName == null) {
-      throw new ActivitiException("No resource name provided");
+      throw new ActivitiIllegalArgumentException("No resource name provided");
     }
 
     final InputStream resourceStream = ActivitiUtil.getRepositoryService().getResourceAsStream(
         deploymentId, resourceName);
-
-    if (resourceStream == null) {
-      throw new ActivitiException("No resource with name " + resourceName + " could be found");
-    }
 
     MediaType mediaType = null;
     String lowerResourceName = resourceName.toLowerCase();

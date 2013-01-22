@@ -14,7 +14,7 @@ package org.activiti.engine.impl.bpmn.listener;
 
 import java.util.List;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
@@ -54,7 +54,7 @@ public class DelegateExpressionExecutionListener implements ExecutionListener {
         .getDelegateInterceptor()
         .handleInvocation(new JavaDelegateInvocation((JavaDelegate) delegate, execution));
     } else {
-      throw new ActivitiException("Delegate expression " + expression 
+      throw new ActivitiIllegalArgumentException("Delegate expression " + expression 
               + " did not resolve to an implementation of " + ExecutionListener.class 
               + " nor " + JavaDelegate.class);
     }

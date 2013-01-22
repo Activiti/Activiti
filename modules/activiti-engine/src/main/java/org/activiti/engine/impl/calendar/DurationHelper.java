@@ -23,7 +23,7 @@ import java.util.List;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.joda.time.DateTime;
 
@@ -49,7 +49,7 @@ public class DurationHelper {
     datatypeFactory = DatatypeFactory.newInstance();
 
     if (expression.size() > 3 || expression.isEmpty()) {
-      throw new ActivitiException("Cannot parse duration");
+      throw new ActivitiIllegalArgumentException("Cannot parse duration");
     }
     if (expression.get(0).startsWith("R")) {
       isRepeat = true;

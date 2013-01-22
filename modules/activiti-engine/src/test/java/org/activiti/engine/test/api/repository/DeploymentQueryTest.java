@@ -16,6 +16,7 @@ package org.activiti.engine.test.api.repository;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentQuery;
@@ -84,7 +85,7 @@ public class DeploymentQueryTest extends PluggableActivitiTestCase {
     try {
       repositoryService.createDeploymentQuery().deploymentId(null);
       fail();
-    } catch (ActivitiException e) {}
+    } catch (ActivitiIllegalArgumentException e) {}
   }
   
   public void testQueryByName() {
@@ -103,7 +104,7 @@ public class DeploymentQueryTest extends PluggableActivitiTestCase {
     try {
       repositoryService.createDeploymentQuery().deploymentName(null);
       fail();
-    } catch (ActivitiException e) {}
+    } catch (ActivitiIllegalArgumentException e) {}
   }
   
   public void testQueryByNameLike() {
@@ -126,7 +127,7 @@ public class DeploymentQueryTest extends PluggableActivitiTestCase {
     try {
       repositoryService.createDeploymentQuery().deploymentNameLike(null);
       fail();
-    } catch (ActivitiException e) {}
+    } catch (ActivitiIllegalArgumentException e) {}
   }
   
   public void testQueryByNameAndCategory() {

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.zip.ZipInputStream;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.rest.api.ActivitiUtil;
@@ -54,7 +55,7 @@ public class DeploymentUploadResource extends SecuredResource {
       } else if (fileName.toLowerCase().endsWith(".bar") || fileName.toLowerCase().endsWith(".zip")) {
         deploymentBuilder.addZipInputStream(new ZipInputStream(uploadItem.getInputStream()));
       } else {
-        throw new ActivitiException("File must be of type .bpmn20.xml, .bpmn, .bar or .zip");
+        throw new ActivitiIllegalArgumentException("File must be of type .bpmn20.xml, .bpmn, .bar or .zip");
       }
       deploymentBuilder.name(fileName);
       Deployment deployment = deploymentBuilder.deploy();

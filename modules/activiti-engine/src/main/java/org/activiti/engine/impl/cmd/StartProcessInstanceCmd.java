@@ -17,12 +17,15 @@ import java.io.Serializable;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 
 
@@ -55,15 +58,15 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
     if (processDefinitionId!=null) {
       processDefinition = deploymentCache.findDeployedProcessDefinitionById(processDefinitionId);
       if (processDefinition == null) {
-        throw new ActivitiException("No process definition found for id = '" + processDefinitionId + "'");
+        throw new ActivitiObjectNotFoundException("No process definition found for id = '" + processDefinitionId + "'", ProcessDefinition.class);
       }
     } else if(processDefinitionKey != null){
       processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKey(processDefinitionKey);
       if (processDefinition == null) {
-        throw new ActivitiException("No process definition found for key '" + processDefinitionKey +"'");
+        throw new ActivitiObjectNotFoundException("No process definition found for key '" + processDefinitionKey +"'", ProcessDefinition.class);
       }
     } else {
-      throw new ActivitiException("processDefinitionKey and processDefinitionId are null");
+      throw new ActivitiIllegalArgumentException("processDefinitionKey and processDefinitionId are null");
     }
     
     // Do not start process a process instance if the process definition is suspended

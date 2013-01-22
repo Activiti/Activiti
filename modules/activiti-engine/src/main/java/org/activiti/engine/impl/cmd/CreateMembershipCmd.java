@@ -14,7 +14,7 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
@@ -36,10 +36,10 @@ public class CreateMembershipCmd implements Command<Object>, Serializable {
 
   public Object execute(CommandContext commandContext) {
     if(userId == null) {
-      throw new ActivitiException("userId is null");
+      throw new ActivitiIllegalArgumentException("userId is null");
     }
     if(groupId == null) {
-      throw new ActivitiException("groupId is null");
+      throw new ActivitiIllegalArgumentException("groupId is null");
     }
     commandContext
       .getMembershipEntityManager()

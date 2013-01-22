@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.history;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 
 /**
  * Enum that contains all possible history-levels. 
@@ -44,7 +45,7 @@ public enum HistoryLevel {
         return level;
       }
     }
-    throw new ActivitiException("Illegal value for history-level: " + key);
+    throw new ActivitiIllegalArgumentException("Illegal value for history-level: " + key);
   }
 
   /**

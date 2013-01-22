@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.query.Query;
 
 /**
@@ -84,7 +85,7 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   /** 
    * Only select tasks for which the 'candidateGroup' is one of the given groups.
    * 
-   * @throws ActivitiException 
+   * @throws ActivitiIllegalArgumentException 
    *   When query is executed and {@link #taskCandidateGroup(String)} or 
    *     {@link #taskCandidateUser(String)} has been executed on the query instance. 
    *   When passed group list is empty or <code>null</code>. 

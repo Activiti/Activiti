@@ -14,7 +14,7 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.GroupEntity;
@@ -34,7 +34,7 @@ public class SaveGroupCmd implements Command<Void>, Serializable {
   
   public Void execute(CommandContext commandContext) {
     if(group == null) {
-      throw new ActivitiException("group is null");
+      throw new ActivitiIllegalArgumentException("group is null");
     }
     if (group.getRevision()==0) {
       commandContext

@@ -18,10 +18,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
+import org.activiti.engine.runtime.Execution;
 
 
 /**
@@ -52,7 +54,7 @@ public class SignalEventReceivedCmd implements Command<Void> {
       ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(executionId);
       
       if (execution == null) {
-        throw new ActivitiException("Cannot find execution with id '" + executionId + "'");
+        throw new ActivitiObjectNotFoundException("Cannot find execution with id '" + executionId + "'", Execution.class);
       }
       
       if (execution.isSuspended()) {

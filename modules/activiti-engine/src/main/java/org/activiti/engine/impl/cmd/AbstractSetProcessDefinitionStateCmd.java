@@ -18,6 +18,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
 import org.activiti.engine.impl.context.Context;
@@ -83,7 +85,7 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
     
     // Validation of input parameters
     if(processDefinitionId == null && processDefinitionKey == null) {
-      throw new ActivitiException("Process definition id or key cannot be null");
+      throw new ActivitiIllegalArgumentException("Process definition id or key cannot be null");
     }
     
     List<ProcessDefinitionEntity> processDefinitionEntities = new ArrayList<ProcessDefinitionEntity>();
@@ -93,7 +95,7 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
       
       ProcessDefinitionEntity processDefinitionEntity = processDefinitionManager.findLatestProcessDefinitionById(processDefinitionId);
       if(processDefinitionEntity == null) {
-        throw new ActivitiException("Cannot find process definition for id '"+processDefinitionId+"'");
+        throw new ActivitiObjectNotFoundException("Cannot find process definition for id '"+processDefinitionId+"'", ProcessDefinition.class);
       }
       processDefinitionEntities.add(processDefinitionEntity);
       

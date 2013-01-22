@@ -17,11 +17,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricVariableUpdate;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.RequestUtil;
 import org.activiti.rest.api.SecuredResource;
@@ -47,7 +49,7 @@ public class ProcessInstanceResource extends SecuredResource {
         .singleResult();
     
     if(instance == null) {
-      throw new ActivitiException("Process instance not found for id " + processInstanceId);
+      throw new ActivitiObjectNotFoundException("Process instance not found for id " + processInstanceId, ProcessInstance.class);
     }
     
     ObjectNode responseJSON = new ObjectMapper().createObjectNode();

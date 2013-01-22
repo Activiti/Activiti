@@ -14,6 +14,7 @@
 package org.activiti.rest.api.management;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.management.TableMetaData;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
@@ -30,7 +31,7 @@ public class TableResource extends SecuredResource {
     
     String tableName = (String) getRequest().getAttributes().get("tableName");
     if(tableName == null) {
-      throw new ActivitiException("table name is required");
+      throw new ActivitiIllegalArgumentException("table name is required");
     }
     return ActivitiUtil.getManagementService().getTableMetaData(tableName);
   }

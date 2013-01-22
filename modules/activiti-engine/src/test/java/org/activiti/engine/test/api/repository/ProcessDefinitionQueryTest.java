@@ -16,6 +16,7 @@ package org.activiti.engine.test.api.repository;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -96,7 +97,7 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
     try {
       repositoryService.createProcessDefinitionQuery().deploymentId(null);
       fail();
-    } catch (ActivitiException e) {}
+    } catch (ActivitiIllegalArgumentException e) {}
   }
   
   public void testQueryByName() {
@@ -114,7 +115,7 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
     try {
       repositoryService.createProcessDefinitionQuery().processDefinitionName(null);
       fail();
-    } catch (ActivitiException e) {}
+    } catch (ActivitiIllegalArgumentException e) {}
   }
   
   public void testQueryByNameLike() {
@@ -144,7 +145,7 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
     try {
       repositoryService.createProcessDefinitionQuery().processDefinitionKey(null);
       fail();
-    } catch (ActivitiException e) {}
+    } catch (ActivitiIllegalArgumentException e) {}
   }
   
   public void testQueryByKeyLike() {
@@ -159,7 +160,7 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
     try {
       repositoryService.createProcessDefinitionQuery().processDefinitionKeyLike(null);
       fail();
-    } catch (ActivitiException e) {}
+    } catch (ActivitiIllegalArgumentException e) {}
   }
 
   public void testQueryByCategory() {
@@ -190,12 +191,12 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
     try {
       repositoryService.createProcessDefinitionQuery().processDefinitionVersion(-1).list();
       fail();
-    } catch (ActivitiException e) {}
+    } catch (ActivitiIllegalArgumentException e) {}
     
     try {
       repositoryService.createProcessDefinitionQuery().processDefinitionVersion(null).list();
       fail();
-    } catch (ActivitiException e) {}
+    } catch (ActivitiIllegalArgumentException e) {}
   }
   
   public void testQueryByKeyAndVersion() {
@@ -224,27 +225,27 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
     try {
       repositoryService.createProcessDefinitionQuery().processDefinitionId("test").latestVersion().list();
       fail();
-    } catch (ActivitiException e) {}
+    } catch (ActivitiIllegalArgumentException e) {}
     
     try {
       repositoryService.createProcessDefinitionQuery().processDefinitionName("test").latestVersion().list();
       fail();
-    } catch (ActivitiException e) {}
+    } catch (ActivitiIllegalArgumentException e) {}
     
     try {
       repositoryService.createProcessDefinitionQuery().processDefinitionNameLike("test").latestVersion().list();
       fail();
-    } catch (ActivitiException e) {}
+    } catch (ActivitiIllegalArgumentException e) {}
     
     try {
       repositoryService.createProcessDefinitionQuery().processDefinitionVersion(1).latestVersion().list();
       fail();
-    } catch (ActivitiException e) {}
+    } catch (ActivitiIllegalArgumentException e) {}
     
     try {
       repositoryService.createProcessDefinitionQuery().deploymentId("test").latestVersion().list();
       fail();
-    } catch (ActivitiException e) {}
+    } catch (ActivitiIllegalArgumentException e) {}
   }
   
   public void testQuerySorting() {

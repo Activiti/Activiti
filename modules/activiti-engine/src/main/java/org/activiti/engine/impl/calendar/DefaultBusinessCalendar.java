@@ -18,7 +18,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.util.ClockUtil;
 
 
@@ -60,7 +60,7 @@ public class DefaultBusinessCalendar implements BusinessCalendar {
   protected Date addSingleUnitQuantity(Date startDate, String singleUnitQuantity) {
     int spaceIndex = singleUnitQuantity.indexOf(" ");
     if (spaceIndex==-1 || singleUnitQuantity.length() < spaceIndex+1) {
-      throw new ActivitiException("invalid duedate format: "+singleUnitQuantity);
+      throw new ActivitiIllegalArgumentException("invalid duedate format: "+singleUnitQuantity);
     }
     
     String quantityText = singleUnitQuantity.substring(0, spaceIndex);

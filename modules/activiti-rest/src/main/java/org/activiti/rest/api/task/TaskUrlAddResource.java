@@ -14,6 +14,7 @@
 package org.activiti.rest.api.task;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.task.Attachment;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
@@ -33,7 +34,7 @@ public class TaskUrlAddResource extends SecuredResource {
     
     String taskId = (String) getRequest().getAttributes().get("taskId");
     if(taskId == null || taskId.length() == 0) {
-      throw new ActivitiException("No taskId provided");
+      throw new ActivitiIllegalArgumentException("No taskId provided");
     }
     
     try {

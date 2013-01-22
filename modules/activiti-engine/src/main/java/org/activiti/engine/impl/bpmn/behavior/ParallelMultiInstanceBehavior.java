@@ -15,7 +15,7 @@ package org.activiti.engine.impl.bpmn.behavior;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
@@ -38,7 +38,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
    protected void createInstances(ActivityExecution execution) throws Exception {
     int nrOfInstances = resolveNrOfInstances(execution);
     if (nrOfInstances <= 0) {
-      throw new ActivitiException("Invalid number of instances: must be positive integer value" 
+      throw new ActivitiIllegalArgumentException("Invalid number of instances: must be positive integer value" 
               + ", but was " + nrOfInstances);
     }
     

@@ -16,6 +16,7 @@ package org.activiti.engine.impl;
 import java.io.Serializable;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.variable.ByteArrayType;
 import org.activiti.engine.impl.variable.JPAEntityVariableType;
@@ -48,9 +49,9 @@ public class QueryVariableValue implements Serializable {
     if(variableInstanceEntity == null) {
       VariableType type = types.findVariableType(value);
       if(type instanceof ByteArrayType) {
-        throw new ActivitiException("Variables of type ByteArray cannot be used to query");
+        throw new ActivitiIllegalArgumentException("Variables of type ByteArray cannot be used to query");
       } else if(type instanceof JPAEntityVariableType && operator != QueryOperator.EQUALS) {
-        throw new ActivitiException("JPA entity variables can only be used in 'variableValueEquals'");
+        throw new ActivitiIllegalArgumentException("JPA entity variables can only be used in 'variableValueEquals'");
       } else {
         // Type implementation determines which fields are set on the entity
         variableInstanceEntity = VariableInstanceEntity.create(name, type, value);

@@ -15,10 +15,13 @@ package org.activiti.engine.impl.cmd;
 import java.io.Serializable;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.task.Task;
 
 /**
  * An abstract superclass for {@link Command} implementations that 
@@ -39,7 +42,7 @@ public abstract class NeedsActiveTaskCmd<T> implements Command<T>, Serializable 
   public T execute(CommandContext commandContext) {
     
     if(taskId == null) {
-      throw new ActivitiException("taskId is null");
+      throw new ActivitiIllegalArgumentException("taskId is null");
     }
     
     TaskEntity task = Context
@@ -48,7 +51,7 @@ public abstract class NeedsActiveTaskCmd<T> implements Command<T>, Serializable 
       .findTaskById(taskId);
     
     if (task == null) {
-      throw new ActivitiException("Cannot find task with id " + taskId);
+      throw new ActivitiObjectNotFoundException("Cannot find task with id " + taskId, Task.class);
     }
     
     if (task.isSuspended()) {

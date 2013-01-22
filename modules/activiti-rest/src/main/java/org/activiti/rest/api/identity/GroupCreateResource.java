@@ -14,6 +14,7 @@
 package org.activiti.rest.api.identity;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.activiti.rest.api.ActivitiUtil;
@@ -32,7 +33,7 @@ public class GroupCreateResource extends SecuredResource {
 
     IdentityService identityService = ActivitiUtil.getIdentityService();
     if (groupInfo == null || groupInfo.getId() == null) {
-      throw new ActivitiException("No group id supplied");
+      throw new ActivitiIllegalArgumentException("No group id supplied");
     }
     if (groupInfo.getName() == null || groupInfo.getName().equals(""))
       groupInfo.setName(groupInfo.getId());

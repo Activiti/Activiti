@@ -14,6 +14,7 @@
 package org.activiti.rest.api.identity;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.Picture;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
@@ -33,7 +34,7 @@ public class UserPictureResource extends SecuredResource {
     
     String userId = (String) getRequest().getAttributes().get("userId");
     if(userId == null) {
-      throw new ActivitiException("No userId provided");
+      throw new ActivitiIllegalArgumentException("No userId provided");
     }
     Picture picture = ActivitiUtil.getIdentityService().getUserPicture(userId);
     

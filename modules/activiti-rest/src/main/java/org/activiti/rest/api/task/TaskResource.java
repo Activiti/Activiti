@@ -16,6 +16,7 @@ package org.activiti.rest.api.task;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.IdentityLink;
@@ -42,7 +43,7 @@ public class TaskResource extends SecuredResource {
     Task task = ActivitiUtil.getTaskService().createTaskQuery().taskId(taskId).singleResult();
     
     if(task == null) {
-      throw new ActivitiException("Task not found for id " + taskId);
+      throw new ActivitiObjectNotFoundException("Task not found for id " + taskId, Task.class);
     }
     
     TaskResponse response = new TaskResponse(task);
@@ -93,7 +94,7 @@ public class TaskResource extends SecuredResource {
     Task task = ActivitiUtil.getTaskService().createTaskQuery().taskId(taskId).singleResult();
     
     if(task == null) {
-      throw new ActivitiException("Task not found for id " + taskId);
+      throw new ActivitiObjectNotFoundException("Task not found for id " + taskId, Task.class);
     }
     
     try {
@@ -148,7 +149,7 @@ public class TaskResource extends SecuredResource {
     Task task = ActivitiUtil.getTaskService().createTaskQuery().taskId(taskId).singleResult();
     
     if(task == null) {
-      throw new ActivitiException("Task not found for id " + taskId);
+      throw new ActivitiObjectNotFoundException("Task not found for id " + taskId, Task.class);
     }
     
     ActivitiUtil.getTaskService().deleteTask(taskId);
