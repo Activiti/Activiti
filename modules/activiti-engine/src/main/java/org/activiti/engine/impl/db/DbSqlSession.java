@@ -892,7 +892,7 @@ public class DbSqlSession implements Session {
     }
   }
   
-  protected static boolean isUpgradeNeeded(String versionInDatabase) {
+  protected boolean isUpgradeNeeded(String versionInDatabase) {
     if(ProcessEngine.VERSION.equals(versionInDatabase)) {
       return false;
     }
@@ -918,7 +918,7 @@ public class DbSqlSession implements Session {
     return true;
   }
   
-  protected static String getCleanVersion(String versionString) {
+  protected String getCleanVersion(String versionString) {
     Matcher matcher = CLEAN_VERSION_REGEX.matcher(versionString);
     if(!matcher.find()) {
       throw new ActivitiException("Illegal format for version: " + versionString);
