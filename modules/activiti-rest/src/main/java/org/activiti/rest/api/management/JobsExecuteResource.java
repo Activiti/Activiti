@@ -45,7 +45,11 @@ public class JobsExecuteResource extends SecuredResource {
       return successNode;
       
     } catch (Exception e) {
-      throw new ActivitiException("Failed to execute jobs", e);
+      if(e instanceof ActivitiException) {
+        throw (ActivitiException) e;
+      } else {
+        throw new ActivitiException("Failed to execute jobs", e);
+      }
     }
   }
 }

@@ -13,7 +13,6 @@
 
 package org.activiti.rest.api.management;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.management.TableMetaData;
 import org.activiti.rest.api.ActivitiUtil;

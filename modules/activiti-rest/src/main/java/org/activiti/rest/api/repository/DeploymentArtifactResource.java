@@ -15,7 +15,6 @@ package org.activiti.rest.api.repository;
 
 import java.io.InputStream;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;

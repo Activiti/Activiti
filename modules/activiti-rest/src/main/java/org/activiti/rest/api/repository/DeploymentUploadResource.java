@@ -62,6 +62,9 @@ public class DeploymentUploadResource extends SecuredResource {
       return new DeploymentResponse(deployment);
       
     } catch (Exception e) {
+      if(e instanceof ActivitiException) {
+        throw (ActivitiException) e;
+      }
       throw new ActivitiException(e.getMessage(), e);
     }
   }

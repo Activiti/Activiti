@@ -13,7 +13,6 @@
 
 package org.activiti.rest.api.identity;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.Group;
 import org.activiti.rest.api.ActivitiUtil;

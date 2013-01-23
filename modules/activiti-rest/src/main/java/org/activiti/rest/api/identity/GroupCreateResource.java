@@ -13,13 +13,14 @@
 
 package org.activiti.rest.api.identity;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
+import org.restlet.data.Status;
 import org.restlet.resource.Put;
+import org.restlet.resource.ResourceException;
 
 /**
  * @author Ernesto Revilla
@@ -48,7 +49,7 @@ public class GroupCreateResource extends SecuredResource {
       }
       identityService.saveGroup(group);
     } else {
-      throw new ActivitiException("group id must be unique");
+      throw new ResourceException(Status.CLIENT_ERROR_CONFLICT, "group id must be unique");
     }
     return new StateResponse().setSuccess(true);
   }

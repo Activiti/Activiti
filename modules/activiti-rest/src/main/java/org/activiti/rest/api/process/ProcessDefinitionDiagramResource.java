@@ -2,7 +2,6 @@ package org.activiti.rest.api.process;
 
 import java.io.InputStream;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.RepositoryService;

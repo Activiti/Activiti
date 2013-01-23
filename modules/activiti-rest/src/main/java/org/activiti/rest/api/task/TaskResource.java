@@ -137,6 +137,9 @@ public class TaskResource extends SecuredResource {
       return response;
       
     } catch (Exception e) {
+      if(e instanceof ActivitiException) {
+        throw (ActivitiException) e;
+      }
       throw new ActivitiException("Failed to update task " + taskId, e);
     }
   }

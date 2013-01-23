@@ -15,7 +15,6 @@ package org.activiti.rest.api.task;
 
 import java.io.InputStream;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.task.Attachment;
