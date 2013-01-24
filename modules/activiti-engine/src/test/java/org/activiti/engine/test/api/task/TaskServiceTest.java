@@ -215,6 +215,19 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
       ((TaskServiceImpl) taskService).deleteComments(null, processInstanceId);
     }
   }
+  
+  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+  public void testRap() {
+    
+    // Start a few  process instances
+    for (int i=0; i<20; i++) {
+      processEngine.getRuntimeService().startProcessInstanceByKey("oneTaskProcess");
+    }
+    
+    // See if there are tasks for kermit
+    List<Task> tasks = processEngine.getTaskService().createTaskQuery().list();
+    assertEquals(20, tasks.size());
+  }
 
   public void testTaskDelegation() {
     Task task = taskService.newTask();

@@ -908,7 +908,7 @@ public class DbSqlSession implements Session {
     int engineMinorVersion = Integer.valueOf(cleanEngineVersionSplitted[1]);
       
     if((dbMajorVersion > engineMajorVersion) 
-            || ( (dbMajorVersion <= engineMajorVersion) && (dbMinorVersion > engineMinorVersion) )) {
+            || ( (dbMajorVersion == engineMajorVersion) && (dbMinorVersion > engineMinorVersion) )) {
       throw new ActivitiException("Version of activiti database (" + versionInDatabase + ") is more recent than the engine (" + ProcessEngine.VERSION +")");
     } else if(cleanDbVersion.compareTo(cleanEngineVersion) == 0) {
       // Versions don't match exactly, possibly snapshot is being used

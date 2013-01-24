@@ -1,4 +1,4 @@
-package org.activiti.engine;
+package org.activiti.engine.parser;
 
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BoundaryEvent;

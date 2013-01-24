@@ -15,12 +15,12 @@ package org.activiti.engine.impl.bpmn.parser;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.BpmnParseListener;
 import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti.engine.impl.cfg.BpmnParseFactory;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.util.xml.Parser;
+import org.activiti.engine.parser.BpmnParseListener;
 
 
 /**

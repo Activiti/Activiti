@@ -30,7 +30,6 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.BpmnParseListener;
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
@@ -157,6 +156,7 @@ import org.activiti.engine.impl.variable.ShortType;
 import org.activiti.engine.impl.variable.StringType;
 import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.impl.variable.VariableTypes;
+import org.activiti.engine.parser.BpmnParseListener;
 import org.apache.ibatis.builder.xml.XMLConfigBuilder;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
 import org.apache.ibatis.mapping.Environment;

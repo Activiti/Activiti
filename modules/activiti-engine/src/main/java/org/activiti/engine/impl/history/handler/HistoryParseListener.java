@@ -43,7 +43,6 @@ import org.activiti.bpmn.model.ThrowEvent;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.bpmn.model.Transaction;
 import org.activiti.bpmn.model.UserTask;
-import org.activiti.engine.BpmnParseListener;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
@@ -53,6 +52,7 @@ import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.impl.util.xml.Element;
 import org.activiti.engine.impl.variable.VariableDeclaration;
+import org.activiti.engine.parser.BpmnParseListener;
 
 /**
  * Implements writing the history, but not all logic is contained here, see {@link ProcessDefinitionEntity} as well!

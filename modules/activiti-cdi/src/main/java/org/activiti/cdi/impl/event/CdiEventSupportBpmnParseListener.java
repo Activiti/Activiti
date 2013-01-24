@@ -42,7 +42,6 @@ import org.activiti.bpmn.model.Transaction;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.cdi.BusinessProcessEventType;
 import org.activiti.cdi.impl.event.CdiExecutionListener;
-import org.activiti.engine.BpmnParseListener;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
@@ -50,6 +49,7 @@ import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.activiti.engine.impl.util.xml.Element;
 import org.activiti.engine.impl.variable.VariableDeclaration;
+import org.activiti.engine.parser.BpmnParseListener;
 
 /**
  * {@link BpmnParseListener} registering the {@link CdiExecutionListener} for

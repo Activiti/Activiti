@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.engine;
+package org.activiti.engine.parser;
 
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BusinessRuleTask;
