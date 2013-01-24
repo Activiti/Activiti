@@ -270,12 +270,19 @@
     <changeSet id="13.2 ACT_UNIQ_HI_BUS_KEY" author="mmueller" >                                  
         <preConditions onFail="MARK_RAN">
             <not>
-                <dbms type="mssql" />
+                <or>
+                  <dbms type="mssql" />
+                  <dbms type="oracle" />
+                </or>
             </not>
         </preConditions>
         <addUniqueConstraint constraintName="ACT_UNIQ_HI_BUS_KEY"
                              tableName="ACT_HI_PROCINST"
                              columnNames="PROC_DEF_ID_, BUSINESS_KEY_"/>
+    </changeSet>
+    
+    <changeSet id="13.3 ACT_UNIQ_HI_BUS_KEY" author="trademakers" dbms="oracle">
+      <sql>create unique index ACT_UNIQ_HI_BUS_KEY on ACT_HI_PROCINST (case when BUSINESS_KEY_ is null then null else PROC_DEF_ID_ end, case when BUSINESS_KEY_ is null then null else BUSINESS_KEY_ end)</sql>
     </changeSet>               
     
     <changeSet id="14 ACT_HI_ACTINST" author="mmueller">
