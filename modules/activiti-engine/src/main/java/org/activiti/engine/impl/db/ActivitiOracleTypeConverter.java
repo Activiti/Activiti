@@ -1,7 +1,7 @@
 package org.activiti.engine.impl.db;
 
 import liquibase.database.Database;
-import liquibase.database.core.H2Database;
+import liquibase.database.core.OracleDatabase;
 import liquibase.database.structure.type.BigIntType;
 import liquibase.database.structure.type.CustomType;
 import liquibase.database.structure.type.DataType;
@@ -22,7 +22,7 @@ public class ActivitiOracleTypeConverter extends OracleTypeConverter {
 
   @Override
   public boolean supports(final Database database) {
-    return database instanceof H2Database;
+    return database instanceof OracleDatabase;
   }
 
   @Override
