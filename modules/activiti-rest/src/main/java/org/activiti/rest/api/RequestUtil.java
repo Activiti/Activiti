@@ -16,7 +16,7 @@ package org.activiti.rest.api;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.restlet.data.Form;
 
 /**
@@ -64,7 +64,7 @@ public class RequestUtil {
       try {
         value = longDateFormat.parse(input);
       } catch(Exception e) {
-        throw new ActivitiException("Failed to parse date " + input);
+        throw new ActivitiIllegalArgumentException("Failed to parse date " + input);
       }
     }
     return value;

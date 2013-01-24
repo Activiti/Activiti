@@ -14,7 +14,7 @@
 package org.activiti.standalone.parsing;
 
 import org.activiti.bpmn.model.Process;
-import org.activiti.engine.impl.bpmn.parser.AbstractBpmnParseListener;
+import org.activiti.engine.AbstractBpmnParseListener;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 
 

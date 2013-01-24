@@ -16,6 +16,8 @@ package org.activiti.engine.impl.persistence.deploy;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
@@ -42,14 +44,14 @@ public class DeploymentManager {
 
   public ProcessDefinitionEntity findDeployedProcessDefinitionById(String processDefinitionId) {
     if (processDefinitionId == null) {
-      throw new ActivitiException("Invalid process definition id : null");
+      throw new ActivitiIllegalArgumentException("Invalid process definition id : null");
     }
     ProcessDefinitionEntity processDefinition = Context
       .getCommandContext()
       .getProcessDefinitionEntityManager()
       .findLatestProcessDefinitionById(processDefinitionId);
     if(processDefinition == null) {
-      throw new ActivitiException("no deployed process definition found with id '" + processDefinitionId + "'");
+      throw new ActivitiObjectNotFoundException("no deployed process definition found with id '" + processDefinitionId + "'", ProcessDefinition.class);
     }
     processDefinition = resolveProcessDefinition(processDefinition);
     return processDefinition;
@@ -61,7 +63,7 @@ public class DeploymentManager {
       .getProcessDefinitionEntityManager()
       .findLatestProcessDefinitionByKey(processDefinitionKey);
     if (processDefinition==null) {
-      throw new ActivitiException("no processes deployed with key '"+processDefinitionKey+"'");
+      throw new ActivitiObjectNotFoundException("no processes deployed with key '"+processDefinitionKey+"'", ProcessDefinition.class);
     }
     processDefinition = resolveProcessDefinition(processDefinition);
     return processDefinition;
@@ -73,7 +75,7 @@ public class DeploymentManager {
       .getProcessDefinitionEntityManager()
       .findProcessDefinitionByKeyAndVersion(processDefinitionKey, processDefinitionVersion);
     if (processDefinition==null) {
-      throw new ActivitiException("no processes deployed with key = '" + processDefinitionKey + "' and version = '" + processDefinitionVersion + "'");
+      throw new ActivitiObjectNotFoundException("no processes deployed with key = '" + processDefinitionKey + "' and version = '" + processDefinitionVersion + "'", ProcessDefinition.class);
     }
     processDefinition = resolveProcessDefinition(processDefinition);
     return processDefinition;

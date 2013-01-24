@@ -26,6 +26,7 @@ import org.restlet.resource.ServerResource;
 
 /**
  * @author Tijs Rademakers
+ * @author Frederik Heremans
  */
 public class SecuredResource extends ServerResource {
 
@@ -92,5 +93,4 @@ public class SecuredResource extends ServerResource {
     }
     return variables;
   }
-
 }

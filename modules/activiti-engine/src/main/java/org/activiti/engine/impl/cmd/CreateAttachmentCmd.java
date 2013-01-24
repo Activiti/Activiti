@@ -16,6 +16,7 @@ package org.activiti.engine.impl.cmd;
 import java.io.InputStream;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.Command;
@@ -25,7 +26,9 @@ import org.activiti.engine.impl.persistence.entity.ByteArrayEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.util.IoUtil;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Attachment;
+import org.activiti.engine.task.Task;
 
 
 /**
@@ -86,7 +89,7 @@ public class CreateAttachmentCmd implements Command<Attachment> {
       TaskEntity task = Context.getCommandContext().getTaskEntityManager().findTaskById(taskId);
 
       if (task == null) {
-        throw new ActivitiException("Cannot find task with id " + taskId);
+        throw new ActivitiObjectNotFoundException("Cannot find task with id " + taskId, Task.class);
       }
 
       if (task.isSuspended()) {
@@ -98,7 +101,7 @@ public class CreateAttachmentCmd implements Command<Attachment> {
       ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
 
       if (execution == null) {
-        throw new ActivitiException("Process instance " + processInstanceId + " doesn't exist");
+        throw new ActivitiObjectNotFoundException("Process instance " + processInstanceId + " doesn't exist", ProcessInstance.class);
       }
 
       if (execution.isSuspended()) {

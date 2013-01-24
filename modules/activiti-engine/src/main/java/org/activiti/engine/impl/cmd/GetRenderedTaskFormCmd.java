@@ -16,6 +16,7 @@ package org.activiti.engine.impl.cmd;
 import java.io.Serializable;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.form.FormEngine;
@@ -23,6 +24,7 @@ import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.task.Task;
 
 
 /**
@@ -46,7 +48,7 @@ public class GetRenderedTaskFormCmd  implements Command<Object>, Serializable {
       .getTaskEntityManager()
       .findTaskById(taskId);
     if (task == null) {
-      throw new ActivitiException("Task '" + taskId +"' not found");
+      throw new ActivitiObjectNotFoundException("Task '" + taskId +"' not found", Task.class);
     }
     
     if (task.getTaskDefinition() == null) {

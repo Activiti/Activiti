@@ -15,12 +15,15 @@ package org.activiti.engine.impl.cmd;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.SuspensionState.SuspensionStateUtil;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.runtime.Execution;
 
 /**
  * @author Daniel Meyer
@@ -38,14 +41,14 @@ public abstract class AbstractSetProcessInstanceStateCmd implements Command<Void
   public Void execute(CommandContext commandContext) {
     
     if(executionId == null) {
-      throw new ActivitiException("ProcessInstanceId cannot be null.");
+      throw new ActivitiIllegalArgumentException("ProcessInstanceId cannot be null.");
     }
     
     ExecutionEntity executionEntity = commandContext.getExecutionEntityManager()
       .findExecutionById(executionId);
 
     if(executionEntity == null) {
-      throw new ActivitiException("Cannot find processInstance for id '"+executionId+"'.");
+      throw new ActivitiObjectNotFoundException("Cannot find processInstance for id '"+executionId+"'.", Execution.class);
     }
     if(!executionEntity.isProcessInstance()) {
       throw new ActivitiException("Cannot set suspension state for execution '"+executionId+"': not a process instance.");

@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.util.ReflectUtil;
 
@@ -61,11 +62,11 @@ public class ClassDelegateUtil {
     } else {
       Field field = ReflectUtil.getField(declaration.getName(), target);
       if(field == null) {
-        throw new ActivitiException("Field definition uses unexisting field '" + declaration.getName() + "' on class " + target.getClass().getName());
+        throw new ActivitiIllegalArgumentException("Field definition uses unexisting field '" + declaration.getName() + "' on class " + target.getClass().getName());
       }
       // Check if the delegate field's type is correct
      if(!fieldTypeCompatible(declaration, field)) {
-       throw new ActivitiException("Incompatible type set on field declaration '" + declaration.getName() 
+       throw new ActivitiIllegalArgumentException("Incompatible type set on field declaration '" + declaration.getName() 
           + "' for class " + target.getClass().getName() 
           + ". Declared value has type " + declaration.getValue().getClass().getName() 
           + ", while expecting " + field.getType().getName());

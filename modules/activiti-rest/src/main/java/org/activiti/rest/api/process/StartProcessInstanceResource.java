@@ -63,6 +63,9 @@ public class StartProcessInstanceResource extends SecuredResource {
       return response;
       
     } catch (Exception e) {
+      if(e instanceof ActivitiException) {
+        throw (ActivitiException) e;
+      }
       throw new ActivitiException("Failed to retrieve the process definition parameters", e);
     }
   }

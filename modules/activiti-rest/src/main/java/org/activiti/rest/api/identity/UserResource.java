@@ -13,7 +13,7 @@
 
 package org.activiti.rest.api.identity;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.User;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
@@ -30,7 +30,7 @@ public class UserResource extends SecuredResource {
     
     String userId = (String) getRequest().getAttributes().get("userId");
     if(userId == null) {
-      throw new ActivitiException("No userId provided");
+      throw new ActivitiIllegalArgumentException("No userId provided");
     }
     User user = ActivitiUtil.getIdentityService().createUserQuery().userId(userId).singleResult();
     UserInfo response = new UserInfo(user);

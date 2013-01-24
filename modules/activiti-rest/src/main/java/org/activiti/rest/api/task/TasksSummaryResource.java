@@ -15,7 +15,7 @@ package org.activiti.rest.api.task;
 
 import java.util.List;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.GroupQuery;
@@ -36,7 +36,7 @@ public class TasksSummaryResource extends SecuredResource {
     
     String user = getQuery().getValues("user");
     if(user == null) {
-      throw new ActivitiException("No user provided");
+      throw new ActivitiIllegalArgumentException("No user provided");
     }
     
     TaskService ts = ActivitiUtil.getTaskService();

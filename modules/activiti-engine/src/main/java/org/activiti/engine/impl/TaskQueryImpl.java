@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -84,20 +85,23 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   
   public TaskQueryImpl taskId(String taskId) {
     if (taskId == null) {
-      throw new ActivitiException("Task id is null");
+      throw new ActivitiIllegalArgumentException("Task id is null");
     }
     this.taskId = taskId;
     return this;
   }
   
   public TaskQueryImpl taskName(String name) {
+    if (name == null) {
+      throw new ActivitiIllegalArgumentException("Task name is null");
+    }
     this.name = name;
     return this;
   }
   
   public TaskQueryImpl taskNameLike(String nameLike) {
     if (nameLike == null) {
-      throw new ActivitiException("Task namelike is null");
+      throw new ActivitiIllegalArgumentException("Task namelike is null");
     }
     this.nameLike = nameLike;
     return this;
@@ -105,7 +109,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   
   public TaskQueryImpl taskDescription(String description) {
     if (description == null) {
-      throw new ActivitiException("Description is null");
+      throw new ActivitiIllegalArgumentException("Description is null");
     }
     this.description = description;
     return this;
@@ -113,7 +117,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   
   public TaskQuery taskDescriptionLike(String descriptionLike) {
     if (descriptionLike == null) {
-      throw new ActivitiException("Task descriptionlike is null");
+      throw new ActivitiIllegalArgumentException("Task descriptionlike is null");
     }
     this.descriptionLike = descriptionLike;
     return this;
@@ -121,7 +125,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   
   public TaskQuery taskPriority(Integer priority) {
     if (priority == null) {
-      throw new ActivitiException("Priority is null");
+      throw new ActivitiIllegalArgumentException("Priority is null");
     }
     this.priority = priority;
     return this;
@@ -129,7 +133,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
 
   public TaskQuery taskMinPriority(Integer minPriority) {
     if (minPriority == null) {
-      throw new ActivitiException("Min Priority is null");
+      throw new ActivitiIllegalArgumentException("Min Priority is null");
     }
     this.minPriority = minPriority;
     return this;
@@ -137,7 +141,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
 
   public TaskQuery taskMaxPriority(Integer maxPriority) {
     if (maxPriority == null) {
-      throw new ActivitiException("Max Priority is null");
+      throw new ActivitiIllegalArgumentException("Max Priority is null");
     }
     this.maxPriority = maxPriority;
     return this;
@@ -145,7 +149,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
 
   public TaskQueryImpl taskAssignee(String assignee) {
     if (assignee == null) {
-      throw new ActivitiException("Assignee is null");
+      throw new ActivitiIllegalArgumentException("Assignee is null");
     }
     this.assignee = assignee;
     return this;
@@ -153,7 +157,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   
   public TaskQueryImpl taskOwner(String owner) {
     if (owner == null) {
-      throw new ActivitiException("Owner is null");
+      throw new ActivitiIllegalArgumentException("Owner is null");
     }
     this.owner = owner;
     return this;
@@ -181,13 +185,13 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
 
   public TaskQueryImpl taskCandidateUser(String candidateUser) {
     if (candidateUser == null) {
-      throw new ActivitiException("Candidate user is null");
+      throw new ActivitiIllegalArgumentException("Candidate user is null");
     }
     if (candidateGroup != null) {
-      throw new ActivitiException("Invalid query usage: cannot set both candidateUser and candidateGroup");
+      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateUser and candidateGroup");
     }
     if (candidateGroups != null) {
-      throw new ActivitiException("Invalid query usage: cannot set both candidateUser and candidateGroupIn");
+      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateUser and candidateGroupIn");
     }
     this.candidateUser = candidateUser;
     return this;
@@ -195,7 +199,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   
   public TaskQueryImpl taskInvolvedUser(String involvedUser) {
     if (involvedUser == null) {
-      throw new ActivitiException("Involved user is null");
+      throw new ActivitiIllegalArgumentException("Involved user is null");
     }
     this.involvedUser = involvedUser;
     return this;
@@ -203,13 +207,13 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   
   public TaskQueryImpl taskCandidateGroup(String candidateGroup) {
     if (candidateGroup == null) {
-      throw new ActivitiException("Candidate group is null");
+      throw new ActivitiIllegalArgumentException("Candidate group is null");
     }
     if (candidateUser != null) {
-      throw new ActivitiException("Invalid query usage: cannot set both candidateGroup and candidateUser");
+      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroup and candidateUser");
     }
     if (candidateGroups != null) {
-      throw new ActivitiException("Invalid query usage: cannot set both candidateGroup and candidateGroupIn");
+      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroup and candidateGroupIn");
     }
     this.candidateGroup = candidateGroup;
     return this;
@@ -217,17 +221,17 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   
   public TaskQuery taskCandidateGroupIn(List<String> candidateGroups) {
     if(candidateGroups == null) {
-      throw new ActivitiException("Candidate group list is null");
+      throw new ActivitiIllegalArgumentException("Candidate group list is null");
     }
     if(candidateGroups.size()== 0) {
-      throw new ActivitiException("Candidate group list is empty");
+      throw new ActivitiIllegalArgumentException("Candidate group list is empty");
     }
     
     if (candidateUser != null) {
-      throw new ActivitiException("Invalid query usage: cannot set both candidateGroupIn and candidateUser");
+      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroupIn and candidateUser");
     }
     if (candidateGroup != null) {
-      throw new ActivitiException("Invalid query usage: cannot set both candidateGroupIn and candidateGroup");
+      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroupIn and candidateGroup");
     }
     
     this.candidateGroups = candidateGroups;
@@ -286,7 +290,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   
   public TaskQuery taskVariableValueEqualsIgnoreCase(String name, String value) {
     if(value == null) {
-      throw new ActivitiException("value is null");
+      throw new ActivitiIllegalArgumentException("value is null");
     }
     variables.add(new TaskQueryVariableValue(name, value.toLowerCase(), QueryOperator.EQUALS_IGNORE_CASE, true));
     return this;
@@ -294,7 +298,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   
   public TaskQuery taskVariableValueNotEqualsIgnoreCase(String name, String value) {
     if(value == null) {
-      throw new ActivitiException("value is null");
+      throw new ActivitiIllegalArgumentException("value is null");
     }
     variables.add(new TaskQueryVariableValue(name, value.toLowerCase(), QueryOperator.NOT_EQUALS_IGNORE_CASE, true));
     return this;
@@ -322,7 +326,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   
   public TaskQuery processVariableValueEqualsIgnoreCase(String name, String value) {
     if(value == null) {
-      throw new ActivitiException("value is null");
+      throw new ActivitiIllegalArgumentException("value is null");
     }
     variables.add(new TaskQueryVariableValue(name, value.toLowerCase(), QueryOperator.EQUALS_IGNORE_CASE, false));
     return this;
@@ -330,7 +334,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   
   public TaskQuery processVariableValueNotEqualsIgnoreCase(String name, String value) {
     if(value == null) {
-      throw new ActivitiException("value is null");
+      throw new ActivitiIllegalArgumentException("value is null");
     }
     variables.add(new TaskQueryVariableValue(name, value.toLowerCase(), QueryOperator.NOT_EQUALS_IGNORE_CASE, false));
     return this;

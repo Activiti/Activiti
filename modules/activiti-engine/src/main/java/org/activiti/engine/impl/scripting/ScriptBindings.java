@@ -21,12 +21,14 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.script.Bindings;
+import javax.script.SimpleScriptContext;
 
 import org.activiti.engine.delegate.VariableScope;
 
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class ScriptBindings implements Bindings {
 
@@ -41,10 +43,18 @@ public class ScriptBindings implements Bindings {
 
   protected List<Resolver> scriptResolvers;
   protected VariableScope variableScope;
-
+  protected Bindings defaultBindings;
+  protected boolean storeScriptVariables = true; // By default everything is stored (backwards compatibility) 
+  
   public ScriptBindings(List<Resolver> scriptResolvers, VariableScope variableScope) {
     this.scriptResolvers = scriptResolvers;
     this.variableScope = variableScope;
+    this.defaultBindings = new SimpleScriptContext().getBindings(SimpleScriptContext.ENGINE_SCOPE);
+  }
+  
+  public ScriptBindings(List<Resolver> scriptResolvers, VariableScope variableScope, boolean storeScriptVariables) {
+    this(scriptResolvers, variableScope);
+    this.storeScriptVariables = storeScriptVariables;
   }
 
   public boolean containsKey(Object key) {
@@ -53,7 +63,7 @@ public class ScriptBindings implements Bindings {
         return true;
       }
     }
-    return false;
+    return defaultBindings.containsKey(key);
   }
 
   public Object get(Object key) {
@@ -62,16 +72,19 @@ public class ScriptBindings implements Bindings {
         return scriptResolver.get(key);
       }
     }
-    return null;
+    return defaultBindings.get(key);
   }
 
   public Object put(String name, Object value) {
-    Object oldValue = null;
-    if (!UNSTORED_KEYS.contains(name)) {
-      oldValue = variableScope.getVariable(name);
-      variableScope.setVariable(name, value);
+    if (storeScriptVariables) {
+      Object oldValue = null;
+      if (!UNSTORED_KEYS.contains(name)) {
+        oldValue = variableScope.getVariable(name);
+        variableScope.setVariable(name, value);
+        return oldValue;
+      }
     }
-    return oldValue;
+    return defaultBindings.put(name, value);
   }
 
   public Set<java.util.Map.Entry<String, Object>> entrySet() {
@@ -102,7 +115,7 @@ public class ScriptBindings implements Bindings {
     if (UNSTORED_KEYS.contains(key)) {
       return null;
     }
-    throw new UnsupportedOperationException();
+    return defaultBindings.remove(key);
   }
 
   public void clear() {

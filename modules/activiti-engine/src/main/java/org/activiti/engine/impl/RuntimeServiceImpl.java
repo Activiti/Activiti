@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.form.FormData;
 import org.activiti.engine.impl.cmd.ActivateProcessInstanceCmd;
@@ -121,7 +122,7 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   
   public void setVariable(String executionId, String variableName, Object value) {
     if(variableName == null) {
-      throw new ActivitiException("variableName is null");
+      throw new ActivitiIllegalArgumentException("variableName is null");
     }
     Map<String, Object> variables = new HashMap<String, Object>();
     variables.put(variableName, value);
@@ -130,7 +131,7 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   
   public void setVariableLocal(String executionId, String variableName, Object value) {
     if(variableName == null) {
-      throw new ActivitiException("variableName is null");
+      throw new ActivitiIllegalArgumentException("variableName is null");
     }
     Map<String, Object> variables = new HashMap<String, Object>();
     variables.put(variableName, value);

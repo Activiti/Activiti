@@ -15,7 +15,7 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
@@ -34,7 +34,7 @@ public class DeleteHistoricTaskInstanceCmd implements Command<Object>, Serializa
   public Object execute(CommandContext commandContext) {
 
     if (taskId == null) {
-      throw new ActivitiException("taskId is null");
+      throw new ActivitiIllegalArgumentException("taskId is null");
     }
     commandContext
       .getHistoricTaskInstanceEntityManager()

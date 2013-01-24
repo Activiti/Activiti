@@ -24,6 +24,7 @@ import org.activiti.engine.delegate.VariableScope;
  */
 public class FixedValue implements Expression {
 
+  private static final long serialVersionUID = 1L;
   private Object value;
 
   public FixedValue(Object value) {

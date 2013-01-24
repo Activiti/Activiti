@@ -49,6 +49,9 @@ public class DeploymentsDeleteResource extends SecuredResource {
       successNode.put("success", true);
       return successNode;
     } catch(Exception e) {
+      if(e instanceof ActivitiException) {
+        throw (ActivitiException) e;
+      }
       throw new ActivitiException("Failed to delete deployments", e);
     }
   }

@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
@@ -42,7 +44,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     try {
       runtimeService.startProcessInstanceByKey(null);
       fail("ActivitiException expected");
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       // Expected exception
     }
   }
@@ -51,8 +53,9 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     try {
       runtimeService.startProcessInstanceByKey("unexistingkey");
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiObjectNotFoundException ae) {
       assertTextPresent("no processes deployed with key", ae.getMessage());
+      assertEquals(ProcessDefinition.class, ae.getObjectClass());
     }
   }
   
@@ -60,7 +63,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     try {
       runtimeService.startProcessInstanceById(null);
       fail("ActivitiException expected");
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       // Expected exception
     }
   }
@@ -69,8 +72,9 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     try {
       runtimeService.startProcessInstanceById("unexistingId");
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiObjectNotFoundException ae) {
       assertTextPresent("no deployed process definition found with id", ae.getMessage());
+      assertEquals(ProcessDefinition.class, ae.getObjectClass());
     }
   }
   
@@ -175,8 +179,9 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     try {
       runtimeService.deleteProcessInstance("enexistingInstanceId", null);
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiObjectNotFoundException ae) {
       assertTextPresent("No process instance found for id", ae.getMessage());
+      assertEquals(ProcessInstance.class, ae.getObjectClass());
     }
   }
   
@@ -185,7 +190,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     try {
       runtimeService.deleteProcessInstance(null, "test null id delete");
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("processInstanceId is null", ae.getMessage());
     }
   }
@@ -204,8 +209,9 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     try {
       runtimeService.getActiveActivityIds("unexistingExecutionId");      
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiObjectNotFoundException ae) {
       assertTextPresent("execution unexistingExecutionId doesn't exist", ae.getMessage());
+      assertEquals(Execution.class, ae.getObjectClass());
     }
   }
   
@@ -213,7 +219,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     try {
       runtimeService.getActiveActivityIds(null);      
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("executionId is null", ae.getMessage());
     }
   }
@@ -302,8 +308,9 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     try {
       runtimeService.signal("unexistingExecutionId");      
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiObjectNotFoundException ae) {
       assertTextPresent("execution unexistingExecutionId doesn't exist", ae.getMessage());
+      assertEquals(Execution.class, ae.getObjectClass());
     }
   }
   
@@ -311,7 +318,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     try {
       runtimeService.signal(null);      
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("executionId is null", ae.getMessage());
     }
   }
@@ -335,8 +342,9 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     try {
       runtimeService.getVariables("unexistingExecutionId");
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiObjectNotFoundException ae) {
       assertTextPresent("execution unexistingExecutionId doesn't exist", ae.getMessage());
+      assertEquals(Execution.class, ae.getObjectClass());
     }
   }
   
@@ -344,7 +352,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     try {
       runtimeService.getVariables(null);
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("executionId is null", ae.getMessage());
     }
   }
@@ -353,8 +361,9 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     try {
       runtimeService.getVariables("unexistingExecutionId");
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiObjectNotFoundException ae) {
       assertTextPresent("execution unexistingExecutionId doesn't exist", ae.getMessage());
+      assertEquals(Execution.class, ae.getObjectClass());
     }
   }
   
@@ -362,7 +371,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     try {
       runtimeService.getVariables(null);
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("executionId is null", ae.getMessage());
     }
   }
@@ -379,8 +388,9 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     try {
       runtimeService.setVariable("unexistingExecutionId", "variableName", "value");
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiObjectNotFoundException ae) {
       assertTextPresent("execution unexistingExecutionId doesn't exist", ae.getMessage());
+      assertEquals(Execution.class, ae.getObjectClass());
     }
   }
   
@@ -388,7 +398,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     try {
       runtimeService.setVariable(null, "variableName", "variableValue");
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("executionId is null", ae.getMessage());
     }
   }
@@ -400,7 +410,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
       ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
       runtimeService.setVariable(processInstance.getId(), null, "variableValue");
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("variableName is null", ae.getMessage());
     }
   }
@@ -424,8 +434,9 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     try {
       runtimeService.setVariables("unexistingexecution", Collections.EMPTY_MAP);
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiObjectNotFoundException ae) {
       assertTextPresent("execution unexistingexecution doesn't exist", ae.getMessage());
+      assertEquals(Execution.class, ae.getObjectClass());
     }
   }
   
@@ -434,7 +445,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     try {
       runtimeService.setVariables(null, Collections.EMPTY_MAP);
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("executionId is null", ae.getMessage());
     }
   }
@@ -505,7 +516,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     try {
       runtimeService.removeVariable(null, "variable");
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("executionId is null", ae.getMessage());
     }    
   }
@@ -559,7 +570,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     try {
       runtimeService.removeVariableLocal(null, "variable");
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("executionId is null", ae.getMessage());
     }    
   }
@@ -624,7 +635,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     try {
       runtimeService.removeVariables(null, Collections.EMPTY_LIST);
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("executionId is null", ae.getMessage());
     }    
   }
@@ -680,7 +691,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     try {
       runtimeService.removeVariablesLocal(null, Collections.EMPTY_LIST);
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("executionId is null", ae.getMessage());
     }    
   }
@@ -760,8 +771,9 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
    try {
      runtimeService.signalEventReceived("alert", "nonexistingExecution");
      fail("exeception expected");
-   }catch (ActivitiException e) {
+   }catch (ActivitiObjectNotFoundException ae) {
      // this is good
+     assertEquals(Execution.class, ae.getObjectClass());
    }
   }
  
@@ -769,7 +781,8 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
    try {
      runtimeService.messageEventReceived("alert", "nonexistingExecution");
      fail("exeception expected");
-   }catch (ActivitiException e) {
+   }catch (ActivitiObjectNotFoundException ae) {
+     assertEquals(Execution.class, ae.getObjectClass());
    }
   }
  

@@ -15,6 +15,7 @@ package org.activiti.engine.impl.form;
 import java.io.UnsupportedEncodingException;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.form.FormData;
 import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.form.TaskFormData;
@@ -61,7 +62,7 @@ public class JuelFormEngine implements FormEngine {
       .findResourceByDeploymentIdAndResourceName(deploymentId, formKey);
     
     if (resourceStream == null) {
-      throw new ActivitiException("Form with formKey '"+formKey+"' does not exist");
+      throw new ActivitiObjectNotFoundException("Form with formKey '"+formKey+"' does not exist", String.class);
     }
     
     byte[] resourceBytes = resourceStream.getBytes();

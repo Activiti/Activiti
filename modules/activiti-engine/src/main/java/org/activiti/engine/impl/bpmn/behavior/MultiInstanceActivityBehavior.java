@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
@@ -126,17 +127,17 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     } else if (collectionExpression != null) {
       Object obj = collectionExpression.getValue(execution);
       if (!(obj instanceof Collection)) {
-        throw new ActivitiException(collectionExpression.getExpressionText()+"' didn't resolve to a Collection");
+        throw new ActivitiIllegalArgumentException(collectionExpression.getExpressionText()+"' didn't resolve to a Collection");
       }
       nrOfInstances = ((Collection) obj).size();
     } else if (collectionVariable != null) {
       Object obj = execution.getVariable(collectionVariable);
       if (!(obj instanceof Collection)) {
-        throw new ActivitiException("Variable " + collectionVariable+"' is not a Collection");
+        throw new ActivitiIllegalArgumentException("Variable " + collectionVariable+"' is not a Collection");
       }
       nrOfInstances = ((Collection) obj).size();
     } else {
-      throw new ActivitiException("Couldn't resolve collection expression nor variable reference");
+      throw new ActivitiIllegalArgumentException("Couldn't resolve collection expression nor variable reference");
     }
     return nrOfInstances;
   }
@@ -188,7 +189,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     } else if (value instanceof String) {
       return Integer.valueOf((String) value);
     } else {
-      throw new ActivitiException("Could not resolve loopCardinality expression '" 
+      throw new ActivitiIllegalArgumentException("Could not resolve loopCardinality expression '" 
               +loopCardinalityExpression.getExpressionText()+"': not a number nor number String");
     }
   }
@@ -197,7 +198,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     if (completionConditionExpression != null) {
       Object value = completionConditionExpression.getValue(execution);
       if (! (value instanceof Boolean)) {
-        throw new ActivitiException("completionCondition '"
+        throw new ActivitiIllegalArgumentException("completionCondition '"
                 + completionConditionExpression.getExpressionText()
                 + "' does not evaluate to a boolean value");
       }

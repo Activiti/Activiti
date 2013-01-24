@@ -71,13 +71,19 @@ import org.restlet.routing.Router;
 import org.restlet.security.ChallengeAuthenticator;
 import org.restlet.security.SecretVerifier;
 import org.restlet.security.Verifier;
+import org.restlet.service.StatusService;
 /**
  * @author Tijs Rademakers
  */
 public class ActivitiRestApplication extends Application {
   
   private ChallengeAuthenticator authenticator;
+  private ActivitiStatusService activitiStatusService;
 
+  
+  public ActivitiRestApplication() {
+    activitiStatusService = new ActivitiStatusService();
+  }
   /**
    * Creates a root Restlet that will receive all incoming calls.
    */
@@ -184,5 +190,10 @@ public class ActivitiRestApplication extends Application {
       return null;
     }
     return request.getClientInfo().getUser().getIdentifier();
+  }
+  
+  @Override
+  public StatusService getStatusService() {
+    return activitiStatusService;
   }
 }

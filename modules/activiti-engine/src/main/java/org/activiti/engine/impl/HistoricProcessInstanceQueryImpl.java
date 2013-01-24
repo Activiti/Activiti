@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -66,10 +67,10 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
 
   public HistoricProcessInstanceQuery processInstanceIds(Set<String> processInstanceIds) {
     if (processInstanceIds == null) {
-      throw new ActivitiException("Set of process instance ids is null");
+      throw new ActivitiIllegalArgumentException("Set of process instance ids is null");
     }
     if (processInstanceIds.isEmpty()) {
-      throw new ActivitiException("Set of process instance ids is empty");
+      throw new ActivitiIllegalArgumentException("Set of process instance ids is empty");
     }
     this.processInstanceIds = processInstanceIds;
     return this;

@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.activiti.engine.impl.DeploymentQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.event.MessageEventHandler;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
@@ -88,8 +89,26 @@ public class DeploymentEntityManager extends AbstractManager {
       List<Job> timerStartJobs = Context.getCommandContext()
         .getJobEntityManager()
         .findJobsByConfiguration(TimerStartEventJobHandler.TYPE, processDefinition.getKey());
-      for (Job job : timerStartJobs) {
-        ((JobEntity)job).delete();        
+      
+      if (timerStartJobs != null && timerStartJobs.size() > 0) {
+        
+        long nrOfVersions = new ProcessDefinitionQueryImpl(Context.getCommandContext())
+          .processDefinitionKey(processDefinition.getKey())
+          .count();
+
+        long nrOfProcessDefinitionsWithSameKey = 0;
+        for (ProcessDefinition p : processDefinitions) {
+          if (!p.getId().equals(processDefinition) && p.getKey().equals(processDefinition)) {
+            nrOfProcessDefinitionsWithSameKey++;
+          }
+        }
+        
+        if (nrOfVersions - nrOfProcessDefinitionsWithSameKey <= 1) {
+          for (Job job : timerStartJobs) {
+            ((JobEntity)job).delete();        
+          }
+        }
+       
       }
       
       // remove message event subscriptions:

@@ -85,6 +85,9 @@ public class TaskAddResource extends SecuredResource {
       return response;
       
     } catch (Exception e) {
+      if(e instanceof ActivitiException) {
+        throw (ActivitiException) e;
+      }
       throw new ActivitiException("Failed to add new task", e);
     }
   }

@@ -55,6 +55,9 @@ public class TaskAttachmentAddResource extends SecuredResource {
       return new AttachmentResponse(attachment);
       
     } catch(Exception e) {
+      if(e instanceof ActivitiException) {
+        throw (ActivitiException) e;
+      }
       throw new ActivitiException("Unable to add new attachment to task " + taskId);
     }
   }

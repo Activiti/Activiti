@@ -18,6 +18,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.form.AbstractFormType;
 import org.apache.commons.lang.StringUtils;
 
@@ -53,7 +54,7 @@ public class DateFormType extends AbstractFormType {
     try {
       return dateFormat.parseObject(propertyValue);
     } catch (ParseException e) {
-      throw new ActivitiException("invalid date value "+propertyValue);
+      throw new ActivitiIllegalArgumentException("invalid date value "+propertyValue);
     }
   }
 

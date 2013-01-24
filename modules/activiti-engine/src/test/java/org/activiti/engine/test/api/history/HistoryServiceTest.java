@@ -25,7 +25,7 @@ import java.util.Map;
 
 import junit.framework.Assert;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity;
@@ -176,7 +176,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     try {
       historyService.createHistoricProcessInstanceQuery().processInstanceIds(new HashSet<String>());
       fail("ActivitiException expected");
-    } catch (ActivitiException re) {
+    } catch (ActivitiIllegalArgumentException re) {
       assertTextPresent("Set of process instance ids is empty", re.getMessage());
     }
   }
@@ -185,7 +185,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     try {
       historyService.createHistoricProcessInstanceQuery().processInstanceIds(null);
       fail("ActivitiException expected");
-    } catch (ActivitiException re) {
+    } catch (ActivitiIllegalArgumentException re) {
       assertTextPresent("Set of process instance ids is null", re.getMessage());
     }
   }
@@ -352,7 +352,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     try {
       instance = historyService.createHistoricProcessInstanceQuery().variableValueEqualsIgnoreCase("upper", null).singleResult();
       fail("Exception expected");
-    } catch(ActivitiException ae) {
+    } catch(ActivitiIllegalArgumentException ae) {
       assertEquals("value is null", ae.getMessage());
     }
     
@@ -360,7 +360,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     try {
       instance = historyService.createHistoricProcessInstanceQuery().variableValueEqualsIgnoreCase(null, "abcdefg").singleResult();
       fail("Exception expected");
-    } catch(ActivitiException ae) {
+    } catch(ActivitiIllegalArgumentException ae) {
       assertEquals("name is null", ae.getMessage());
     }
   }

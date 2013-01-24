@@ -23,6 +23,7 @@ import java.util.Map;
 import junit.framework.Assert;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricFormProperty;
@@ -200,6 +201,58 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     historicVariable = historicVariables.get(7);
     assertEquals("zzz", historicVariable.getVariableName());
     assertEquals(123456789L, historicVariable.getValue());
+  }
+  
+  @Deployment(resources={"org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"})
+  public void testHistoricVariableInstanceQueryTaskVariables() {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("variable", "setFromProcess");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", variables);
+    
+    assertEquals(1, historyService.createHistoricVariableInstanceQuery().count());
+    
+    Task activeTask = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(activeTask);
+    taskService.setVariableLocal(activeTask.getId(), "variable", "setFromTask");
+
+    // Check if additional variable is available in history, task-local
+    assertEquals(2, historyService.createHistoricVariableInstanceQuery().count());
+    assertEquals(1, historyService.createHistoricVariableInstanceQuery().taskId(activeTask.getId()).count());
+    assertEquals("setFromTask", historyService.createHistoricVariableInstanceQuery().taskId(activeTask.getId()).singleResult().getValue());
+    assertEquals(activeTask.getId(), historyService.createHistoricVariableInstanceQuery().taskId(activeTask.getId()).singleResult().getTaskId());
+    assertEquals(1, historyService.createHistoricVariableInstanceQuery().excludeTaskVariables().count());
+    
+    // Test null task-id
+    try 
+    {
+      historyService.createHistoricVariableInstanceQuery().taskId(null).singleResult();
+      fail("Exception expected");
+    }
+    catch(ActivitiIllegalArgumentException ae)
+    {
+      assertEquals("taskId is null", ae.getMessage());
+    }
+    
+    // Test invalid usage of taskId together with excludeTaskVariables
+    try 
+    {
+      historyService.createHistoricVariableInstanceQuery().taskId("123").excludeTaskVariables().singleResult();
+      fail("Exception expected");
+    }
+    catch(ActivitiIllegalArgumentException ae)
+    {
+      assertEquals("Cannot use taskId together with excludeTaskVariables", ae.getMessage());
+    }
+    
+    try 
+    {
+      historyService.createHistoricVariableInstanceQuery().excludeTaskVariables().taskId("123").singleResult();
+      fail("Exception expected");
+    }
+    catch(ActivitiIllegalArgumentException ae)
+    {
+      assertEquals("Cannot use taskId together with excludeTaskVariables", ae.getMessage());
+    }
   }
   
   @Deployment(resources="org/activiti/standalone/history/FullHistoryTest.testVariableUpdates.bpmn20.xml")
@@ -668,49 +721,49 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     try {
       historyService.createHistoricDetailQuery().asc().list();
       fail();
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       
     }
     
     try {
       historyService.createHistoricDetailQuery().desc().list();
       fail();
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       
     }
     
     try {
       historyService.createHistoricDetailQuery().orderByProcessInstanceId().list();
       fail();
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       
     }
     
     try {
       historyService.createHistoricDetailQuery().orderByTime().list();
       fail();
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       
     }
     
     try {
       historyService.createHistoricDetailQuery().orderByVariableName().list();
       fail();
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       
     }
     
     try {
       historyService.createHistoricDetailQuery().orderByVariableRevision().list();
       fail();
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       
     }
     
     try {
       historyService.createHistoricDetailQuery().orderByVariableType().list();
       fail();
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       
     }
   }

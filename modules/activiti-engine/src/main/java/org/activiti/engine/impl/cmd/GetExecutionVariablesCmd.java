@@ -17,10 +17,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.runtime.Execution;
 
 
 /**
@@ -41,7 +43,7 @@ public class GetExecutionVariablesCmd implements Command<Map<String, Object>>, S
 
   public Map<String, Object> execute(CommandContext commandContext) {
     if(executionId == null) {
-      throw new ActivitiException("executionId is null");
+      throw new ActivitiIllegalArgumentException("executionId is null");
     }
     
     ExecutionEntity execution = commandContext
@@ -49,7 +51,7 @@ public class GetExecutionVariablesCmd implements Command<Map<String, Object>>, S
       .findExecutionById(executionId);
     
     if (execution==null) {
-      throw new ActivitiException("execution "+executionId+" doesn't exist");
+      throw new ActivitiObjectNotFoundException("execution "+executionId+" doesn't exist", Execution.class);
     }
 
     Map<String, Object> executionVariables;

@@ -15,7 +15,7 @@ package org.activiti.engine.impl.cmd;
 import java.io.Serializable;
 import java.util.List;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -36,7 +36,7 @@ public class GetDeploymentResourceNamesCmd implements Command<List>, Serializabl
   
   public List execute(CommandContext commandContext) {
     if (deploymentId == null) {
-      throw new ActivitiException("deploymentId is null");
+      throw new ActivitiIllegalArgumentException("deploymentId is null");
     }
     
     return Context

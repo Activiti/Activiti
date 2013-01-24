@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.form.FormType;
 
 
@@ -53,7 +54,7 @@ public class FormPropertyRendererManager implements Serializable {
     FormPropertyRenderer renderer = propertyRenderers.get(clazz);
     
     if(renderer == null) {
-      throw new ActivitiException("No property renderer found for type: " + 
+      throw new ActivitiIllegalArgumentException("No property renderer found for type: " + 
         formType.getName() + ", " + formType.getClass());
     }
     return renderer;

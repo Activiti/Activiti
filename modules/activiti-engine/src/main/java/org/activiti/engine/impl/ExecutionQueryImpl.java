@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
@@ -62,7 +63,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
 
   public ExecutionQueryImpl processDefinitionId(String processDefinitionId) {
     if (processDefinitionId == null) {
-      throw new ActivitiException("Process definition id is null");
+      throw new ActivitiIllegalArgumentException("Process definition id is null");
     }
     this.processDefinitionId = processDefinitionId;
     return this;
@@ -70,7 +71,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
 
   public ExecutionQueryImpl processDefinitionKey(String processDefinitionKey) {
     if (processDefinitionKey == null) {
-      throw new ActivitiException("Process definition key is null");
+      throw new ActivitiIllegalArgumentException("Process definition key is null");
     }
     this.processDefinitionKey = processDefinitionKey;
     return this;
@@ -78,7 +79,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   
   public ExecutionQueryImpl processInstanceId(String processInstanceId) {
     if (processInstanceId == null) {
-      throw new ActivitiException("Process instance id is null");
+      throw new ActivitiIllegalArgumentException("Process instance id is null");
     }
     this.processInstanceId = processInstanceId;
     return this;
@@ -86,7 +87,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   
   public ExecutionQuery processInstanceBusinessKey(String businessKey) {
     if (businessKey == null) {
-      throw new ActivitiException("Business key is null");
+      throw new ActivitiIllegalArgumentException("Business key is null");
     }
     this.businessKey = businessKey;
     return this;
@@ -94,7 +95,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   
   public ExecutionQueryImpl executionId(String executionId) {
     if (executionId == null) {
-      throw new ActivitiException("Execution id is null");
+      throw new ActivitiIllegalArgumentException("Execution id is null");
     }
     this.executionId = executionId;
     return this;
@@ -119,10 +120,10 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   
   public ExecutionQuery eventSubscription(String eventType, String eventName) {
     if(eventName == null) {
-      throw new ActivitiException("event name is null");
+      throw new ActivitiIllegalArgumentException("event name is null");
     }
     if(eventType == null) {
-      throw new ActivitiException("event type is null");
+      throw new ActivitiIllegalArgumentException("event type is null");
     }
     if(eventSubscriptions == null) {
       eventSubscriptions = new ArrayList<EventSubscriptionQueryValue>();

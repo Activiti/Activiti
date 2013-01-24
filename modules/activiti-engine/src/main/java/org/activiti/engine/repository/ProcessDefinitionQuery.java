@@ -14,6 +14,7 @@
 package org.activiti.engine.repository;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.query.Query;
 
 /**
@@ -82,7 +83,7 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
    * Can also be used without any other criteria (ie. query.latest().list()), which
    * will then give all the latest versions of all the deployed process definitions.
    * 
-   * @throws ActivitiException if used in combination with  {@link #groupId(string)}, {@link #processDefinitionVersion(int)}
+   * @throws ActivitiIllegalArgumentException if used in combination with  {@link #groupId(string)}, {@link #processDefinitionVersion(int)}
    *                           or {@link #deploymentId(String)}
    */
   ProcessDefinitionQuery latestVersion();

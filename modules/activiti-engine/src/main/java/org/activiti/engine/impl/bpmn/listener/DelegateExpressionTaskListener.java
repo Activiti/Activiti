@@ -15,6 +15,7 @@ package org.activiti.engine.impl.bpmn.listener;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TaskListener;
@@ -52,7 +53,7 @@ public class DelegateExpressionTaskListener implements TaskListener {
         throw new ActivitiException("Exception while invoking TaskListener: "+e.getMessage(), e);
       }
     } else {
-      throw new ActivitiException("Delegate expression " + expression 
+      throw new ActivitiIllegalArgumentException("Delegate expression " + expression 
               + " did not resolve to an implementation of " + TaskListener.class );
     }
   }

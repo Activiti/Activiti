@@ -16,6 +16,7 @@ package org.activiti.rest.api.identity;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineInfo;
 import org.activiti.engine.ProcessEngines;
@@ -31,15 +32,15 @@ public class LoginResource extends ServerResource {
   @Post
   public LoginResponse login(LoginInfo loginInfo) {
     if(loginInfo == null) {
-      throw new ActivitiException("No login info supplied");
+      throw new ActivitiIllegalArgumentException("No login info supplied");
     }
     
     if(loginInfo.getUserId() == null) {
-      throw new ActivitiException("No user id supplied");
+      throw new ActivitiIllegalArgumentException("No user id supplied");
     }
     
     if(loginInfo.getPassword() == null) {
-      throw new ActivitiException("No password supplied");
+      throw new ActivitiIllegalArgumentException("No password supplied");
     }
     
     ProcessEngine pe = ActivitiUtil.getProcessEngine();

@@ -14,7 +14,7 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.management.TableMetaData;
@@ -34,7 +34,7 @@ public class GetTableMetaDataCmd implements Command<TableMetaData>, Serializable
   
   public TableMetaData execute(CommandContext commandContext) {
     if(tableName == null) {
-      throw new ActivitiException("tableName is null");
+      throw new ActivitiIllegalArgumentException("tableName is null");
     }
     return commandContext
       .getTableDataManager()

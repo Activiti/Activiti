@@ -16,6 +16,8 @@ package org.activiti.engine.impl.cmd;
 import java.io.Serializable;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -34,7 +36,7 @@ public class DeleteHistoricProcessInstanceCmd implements Command<Object>, Serial
 
   public Object execute(CommandContext commandContext) {
     if (processInstanceId == null) {
-      throw new ActivitiException("processInstanceId is null");
+      throw new ActivitiIllegalArgumentException("processInstanceId is null");
     }
     // Check if process instance is still running
     HistoricProcessInstance instance = commandContext
@@ -42,7 +44,7 @@ public class DeleteHistoricProcessInstanceCmd implements Command<Object>, Serial
       .findHistoricProcessInstance(processInstanceId);
     
     if(instance == null) {
-      throw new ActivitiException("No historic process instance found with id: " + processInstanceId);
+      throw new ActivitiObjectNotFoundException("No historic process instance found with id: " + processInstanceId, HistoricProcessInstance.class);
     }
     if(instance.getEndTime() == null) {
       throw new ActivitiException("Process instance is still running, cannot delete historic process instance: " + processInstanceId);

@@ -13,9 +13,10 @@
 
 package org.activiti.explorer.form;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.form.AbstractFormType;
+import org.activiti.engine.identity.User;
 
 
 /**
@@ -42,7 +43,7 @@ public class UserFormType extends AbstractFormType {
       .userId(propertyValue).count();
       
       if(count == 0) {
-        throw new ActivitiException("User " + propertyValue + " does not exist");
+        throw new ActivitiObjectNotFoundException("User " + propertyValue + " does not exist", User.class);
       }
       return propertyValue;
     }

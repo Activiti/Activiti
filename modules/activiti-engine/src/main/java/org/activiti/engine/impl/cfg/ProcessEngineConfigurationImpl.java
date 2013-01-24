@@ -30,6 +30,7 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.BpmnParseListener;
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
@@ -51,7 +52,6 @@ import org.activiti.engine.impl.ServiceImpl;
 import org.activiti.engine.impl.TaskServiceImpl;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
-import org.activiti.engine.impl.bpmn.parser.BpmnParseListener;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
@@ -678,15 +678,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       }
     }
     if (deploymentManager==null) {
-      List<Deployer> deployers = new ArrayList<Deployer>();
-      if (customPreDeployers!=null) {
-        deployers.addAll(customPreDeployers);
-      }
-      deployers.addAll(getDefaultDeployers());
-      if (customPostDeployers!=null) {
-        deployers.addAll(customPostDeployers);
-      }
-
       deploymentManager = new DeploymentManager();
       deploymentManager.setDeployers(deployers);
       

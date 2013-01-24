@@ -17,6 +17,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
@@ -64,13 +66,13 @@ public class SetProcessDefinitionVersionCmd implements Command<Void>, Serializab
 
   public SetProcessDefinitionVersionCmd(String processInstanceId, Integer processDefinitionVersion) {
     if (processInstanceId == null || processInstanceId.length() < 1) {
-      throw new ActivitiException("The process instance id is mandatory, but '" + processInstanceId + "' has been provided.");
+      throw new ActivitiIllegalArgumentException("The process instance id is mandatory, but '" + processInstanceId + "' has been provided.");
     }
     if (processDefinitionVersion == null) {
-      throw new ActivitiException("The process definition version is mandatory, but 'null' has been provided.");
+      throw new ActivitiIllegalArgumentException("The process definition version is mandatory, but 'null' has been provided.");
     }
     if (processDefinitionVersion < 1) {
-      throw new ActivitiException("The process definition version must be positive, but '" + processDefinitionVersion + "' has been provided.");
+      throw new ActivitiIllegalArgumentException("The process definition version must be positive, but '" + processDefinitionVersion + "' has been provided.");
     }
     this.processInstanceId = processInstanceId;
     this.processDefinitionVersion = processDefinitionVersion;
@@ -82,9 +84,9 @@ public class SetProcessDefinitionVersionCmd implements Command<Void>, Serializab
     ExecutionEntityManager executionManager = commandContext.getExecutionEntityManager();
     ExecutionEntity processInstance = executionManager.findExecutionById(processInstanceId);
     if (processInstance == null) {
-      throw new ActivitiException("No process instance found for id = '" + processInstanceId + "'.");
+      throw new ActivitiObjectNotFoundException("No process instance found for id = '" + processInstanceId + "'.", ProcessInstance.class);
     } else if (!processInstance.isProcessInstance()) {
-      throw new ActivitiException(
+      throw new ActivitiIllegalArgumentException(
         "A process instance id is required, but the provided id " +
         "'"+processInstanceId+"' " +
         "points to a child execution of process instance " +
