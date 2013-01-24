@@ -803,13 +803,13 @@ public class DbSqlSession implements Session {
     } catch (Exception e) {
       throw new ActivitiException("Error creating Activiti tables", e);
     } finally {
-      if (connection != null) {
+      /*if (connection != null) {
         try {
           connection.close();
         } catch(Exception e) {
           log.error("Error closing connection for Activiti table create script", e);
         }
-      }
+      }*/
     }
   }
 
@@ -840,11 +840,11 @@ public class DbSqlSession implements Session {
       throw new ActivitiException("Error dropping Activiti tables", e);
     } finally {
       if (connection != null) {
-        try {
+        /*try {
           connection.close();
         } catch(Exception e) {
           log.error("Error closing connection for Activiti table drop script", e);
-        }
+        }*/
       }
     }
   }
