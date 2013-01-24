@@ -1,8 +1,7 @@
 package org.activiti.engine.impl.db;
 
 import liquibase.database.Database;
-import liquibase.database.core.OracleDatabase;
-import liquibase.database.structure.Column;
+import liquibase.database.core.H2Database;
 import liquibase.database.structure.type.BigIntType;
 import liquibase.database.structure.type.CustomType;
 import liquibase.database.structure.type.DataType;
@@ -10,11 +9,12 @@ import liquibase.database.structure.type.DateTimeType;
 import liquibase.database.structure.type.DoubleType;
 import liquibase.database.structure.type.FloatType;
 import liquibase.database.structure.type.IntType;
+import liquibase.database.structure.type.NVarcharType;
 import liquibase.database.structure.type.SmallIntType;
 import liquibase.database.typeconversion.core.OracleTypeConverter;
 
 public class ActivitiOracleTypeConverter extends OracleTypeConverter {
-
+  
   @Override
   public int getPriority() {
     return super.getPriority() + 1;
@@ -22,7 +22,7 @@ public class ActivitiOracleTypeConverter extends OracleTypeConverter {
 
   @Override
   public boolean supports(final Database database) {
-    return database instanceof OracleDatabase;
+    return database instanceof H2Database;
   }
 
   @Override
@@ -32,31 +32,17 @@ public class ActivitiOracleTypeConverter extends OracleTypeConverter {
 
     DataType dataType = super.getDataType(columnTypeString, autoIncrement,
         dataTypeName, precision, additionalInformation);
-    if (dataType instanceof CustomType
-        && columnTypeString.toUpperCase().equals("REAL")) {
+    if (dataType instanceof NVarcharType) {
+      try {
+        int intPrecision = Integer.valueOf(precision);
+        if (intPrecision > 2000) {
+          dataType.setFirstParameter("2000");
+        }
+      } catch(Exception e) {}
+    } else if (dataType instanceof CustomType && columnTypeString.toUpperCase().equals("REAL")) {
       dataType = getFloatType();
     }
     return dataType;
-  }
-
-  // See http://liquibase.org/forum/index.php?topic=715.0
-  @Override
-  public String convertToDatabaseTypeString(final Column referenceColumn, final Database database) {
-    String translatedTypeName = referenceColumn.getTypeName();
-    if ("NVARCHAR2".equals(translatedTypeName)) {
-      int columnSize = referenceColumn.getColumnSize();
-      if (columnSize > 2000) {
-        columnSize = 2000;
-      }
-      translatedTypeName = translatedTypeName + "(" + columnSize + ")";
-    } else if ("BINARY_FLOAT".equals(translatedTypeName)
-        || "BINARY_DOUBLE".equals(translatedTypeName)) {
-      // nothing to do
-    } else {
-      translatedTypeName = super.convertToDatabaseTypeString(referenceColumn,
-          database);
-    }
-    return translatedTypeName;
   }
 
   @Override
