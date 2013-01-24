@@ -526,6 +526,7 @@
     <module>modules/activiti-bpmn-model</module>
     <module>modules/activiti-bpmn-converter</module>
     <module>modules/activiti-engine</module>
+    <module>modules/activiti-cdi</module>
   </modules>
 
   <repositories>
