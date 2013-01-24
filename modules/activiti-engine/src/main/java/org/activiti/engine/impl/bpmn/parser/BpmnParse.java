@@ -429,10 +429,6 @@ public class BpmnParse implements BpmnXMLConstants {
       }
     }
     
-    for (BpmnParseListener parseListener : parseListeners) {
-      //parseListener.parseRootElement(rootElement, getProcessDefinitions());
-    }
-    
     if (processDefinitions.size() > 0) {
       processDI();
     }
@@ -1534,7 +1530,6 @@ public class BpmnParse implements BpmnXMLConstants {
     TaskDefinition taskDefinition = parseTaskDefinition(userTask, userTask.getId(), (ProcessDefinitionEntity) scope.getProcessDefinition());
     activity.setActivityBehavior(activityBehaviorFactory.createUserTaskActivityBehavior(userTask, taskDefinition));
 
-    //parseProperties(userTaskElement, activity);
     createExecutionListenersOnScope(userTask.getExecutionListeners(), activity);
 
     for (BpmnParseListener parseListener : parseListeners) {

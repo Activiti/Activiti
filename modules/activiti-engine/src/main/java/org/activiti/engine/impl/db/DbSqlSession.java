@@ -29,6 +29,15 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import liquibase.Liquibase;
+import liquibase.database.Database;
+import liquibase.database.DatabaseFactory;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.resource.ClassLoaderResourceAccessor;
+import liquibase.resource.CompositeResourceAccessor;
+import liquibase.resource.FileSystemResourceAccessor;
+import liquibase.resource.ResourceAccessor;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.ActivitiWrongDbException;
@@ -695,7 +704,13 @@ public class DbSqlSession implements Session {
   public void dbSchemaCheckVersion() {
     try {
       String dbVersion = getDbVersion();
-      if (!ProcessEngine.VERSION.equals(dbVersion)) {
+      Matcher matcher = CLEAN_VERSION_REGEX.matcher(ProcessEngine.VERSION);
+      if(!matcher.find()) {
+        throw new ActivitiException("Illegal format for version: " + ProcessEngine.VERSION);
+      }
+      
+      String cleanString = matcher.group();
+      if (!cleanString.equals(dbVersion)) {
         throw new ActivitiWrongDbException(ProcessEngine.VERSION, dbVersion);
       }
 
@@ -753,25 +768,40 @@ public class DbSqlSession implements Session {
       dbSchemaCreateEngine();
     }
 
-    if (processEngineConfiguration.getHistoryLevel() != HistoryLevel.NONE) {
+    /*if (processEngineConfiguration.getHistoryLevel() != HistoryLevel.NONE) {
       dbSchemaCreateHistory();
-    }
+    }*/
 
-    if (processEngineConfiguration.isDbIdentityUsed()) {
+    /*if (processEngineConfiguration.isDbIdentityUsed()) {
       dbSchemaCreateIdentity();
-    }
+    }*/
   }
 
-  protected void dbSchemaCreateIdentity() {
+  /*protected void dbSchemaCreateIdentity() {
     executeMandatorySchemaResource("create", "identity");
   }
 
   protected void dbSchemaCreateHistory() {
     executeMandatorySchemaResource("create", "history");
-  }
+  }*/
 
   protected void dbSchemaCreateEngine() {
-    executeMandatorySchemaResource("create", "engine");
+    //executeMandatorySchemaResource("create", "engine");
+    Thread currentThread = Thread.currentThread();
+    ClassLoader contextClassLoader = currentThread.getContextClassLoader();
+    ResourceAccessor threadClFO = new ClassLoaderResourceAccessor(contextClassLoader);
+
+    ResourceAccessor clFO = new ClassLoaderResourceAccessor();
+    ResourceAccessor fsFO = new FileSystemResourceAccessor();
+
+    try {
+      Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(sqlSession.getConnection()));
+      database.setDefaultSchemaName(this.connectionMetadataDefaultSchema);
+      Liquibase liquibase = new Liquibase("org/activiti/db/liquibase/activiti-master.xml", new CompositeResourceAccessor(clFO,fsFO, threadClFO), database);
+      liquibase.update("production");
+    } catch(Exception e) {
+      e.printStackTrace();
+    }
   }
 
   public void dbSchemaDrop() {
@@ -832,7 +862,7 @@ public class DbSqlSession implements Session {
       dbSchemaCreateEngine();
     }
     
-    if (isHistoryTablePresent()) {
+    /*if (isHistoryTablePresent()) {
       if (isUpgradeNeeded) {
         dbSchemaUpgrade("history", dbVersion);
       }
@@ -846,7 +876,7 @@ public class DbSqlSession implements Session {
       }
     } else if (dbSqlSessionFactory.isDbIdentityUsed()) {
       dbSchemaCreateIdentity();
-    }
+    }*/
     
     return feedback;
   }
