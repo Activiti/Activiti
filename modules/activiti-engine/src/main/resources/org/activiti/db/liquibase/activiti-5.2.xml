@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<databaseChangeLog
+     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="120 Activiti 5.2 Update Schema Version" author="thilka">
+        <update tableName="ACT_GE_PROPERTY">
+            <column name="VALUE_" value="5.2"/>
+            <column name="REV_" value="2"/>
+            <where>NAME_='schema.version'</where>
+        </update>
+    </changeSet>
+    
+    <changeSet id="120.1 Activiti 5.2 Schema History Entry added" author="thilka">
+        <insert tableName="ACT_GE_PROPERTY">
+            <column name="NAME_"  value="schema.history"/>
+            <column name="VALUE_" value="create(5.2)"/>
+            <column name="REV_"   valueNumeric="1"/>
+        </insert>
+    </changeSet>
+    
+</databaseChangeLog>

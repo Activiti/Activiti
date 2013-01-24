@@ -56,6 +56,7 @@ import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
+import org.activiti.bpmn.model.TerminateEventDefinition;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.bpmn.model.UserTask;
 import org.apache.commons.lang.StringUtils;
@@ -354,6 +355,8 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
         writeMessageDefinition((MessageEventDefinition) eventDefinition, xtw);
       } else if (eventDefinition instanceof ErrorEventDefinition) {
         writeErrorDefinition((ErrorEventDefinition) eventDefinition, xtw);
+      } else if (eventDefinition instanceof TerminateEventDefinition) {
+        writeTerminateDefinition((TerminateEventDefinition) eventDefinition, xtw);
       }
     }
   }
@@ -412,6 +415,11 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
   protected void writeErrorDefinition(ErrorEventDefinition errorDefinition, XMLStreamWriter xtw) throws Exception {
     xtw.writeStartElement(ELEMENT_EVENT_ERRORDEFINITION);
     writeDefaultAttribute(ATTRIBUTE_ERROR_REF, errorDefinition.getErrorCode(), xtw); 
+    xtw.writeEndElement();
+  }
+  
+  protected void writeTerminateDefinition(TerminateEventDefinition terminateDefinition, XMLStreamWriter xtw) throws Exception {
+    xtw.writeStartElement(ELEMENT_EVENT_TERMINATEDEFINITION);
     xtw.writeEndElement();
   }
   

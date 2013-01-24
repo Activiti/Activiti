@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<databaseChangeLog
+     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <!-- Changes in activiti.*.create.engine.sql from Activiti 5.11 to 5.12 -->
+
+   <changeSet id="1 Activiti 5.12 Update Schema Versions" author="trademakers">
+        <update tableName="ACT_GE_PROPERTY">
+            <column name="VALUE_" value="5.12"/>
+            <column name="REV_" value="1"/>
+            <where>NAME_='schema.version'</where>
+        </update>
+        <update tableName="ACT_GE_PROPERTY">
+            <column name="VALUE_" value="create(5.12)"/>
+            <column name="REV_"   valueNumeric="1"/>
+            <where>NAME_='schema.history'</where>
+        </update>
+   </changeSet>
+
+   <changeSet id="2 Activiti 5.12 Update ACT_HI_TASKINST" author="trademakers">
+        <addColumn tableName="ACT_HI_TASKINST">
+            <column name="CLAIM_TIME_" type="TIMESTAMP" />
+        </addColumn>
+   </changeSet>
+</databaseChangeLog>

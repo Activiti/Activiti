@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<databaseChangeLog
+     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+
+    <!-- Changes in activiti.h2.create.engine.sql from Activiti 5.4 to 5.6 -->
+
+    <changeSet id="1 Update Schema and History Versions" author="mmueller">
+        <update tableName="ACT_GE_PROPERTY">
+            <column name="VALUE_" value="5.6"/>
+            <column name="REV_" value="1"/>
+            <where>NAME_='schema.version'</where>
+        </update>
+        <update tableName="ACT_GE_PROPERTY">
+            <column name="VALUE_" value="create(5.6)"/>
+            <column name="REV_"   valueNumeric="1"/>
+            <where>NAME_='schema.history'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="10 ACT_RU_JOB.EXCEPTION_MSG_" author="mmueller">
+        <modifyDataType tableName="ACT_RU_JOB" columnName="EXCEPTION_MSG_" 
+            newDataType="NVARCHAR(4000)"/>
+    </changeSet>
+
+    <changeSet id="11 ACT_RU_JOB.HANDLER_CFG_" author="mmueller">
+        <modifyDataType tableName="ACT_RU_JOB" columnName="HANDLER_CFG_" 
+            newDataType="NVARCHAR(4000)"/>
+    </changeSet>
+
+    <changeSet id="12 ACT_RE_PROCDEF.RESOURCE_NAME_" author="mmueller">
+        <modifyDataType tableName="ACT_RE_PROCDEF" columnName="RESOURCE_NAME_" 
+            newDataType="NVARCHAR(4000)"/>
+    </changeSet>
+
+    <changeSet id="13 ACT_RE_PROCDEF.DGRM_RESOURCE_NAME_" author="mmueller">
+        <modifyDataType tableName="ACT_RE_PROCDEF" columnName="DGRM_RESOURCE_NAME_" 
+            newDataType="NVARCHAR(4000)"/>
+    </changeSet>
+
+    <changeSet id="14 ACT_RU_TASK.PARENT_TASK_ID_" author="mmueller">
+        <addColumn tableName="ACT_RU_TASK">
+            <column name="PARENT_TASK_ID_" type="NVARCHAR(64)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="15 ACT_RU_TASK.DESCRIPTION_" author="mmueller">
+        <modifyDataType tableName="ACT_RU_TASK" columnName="DESCRIPTION_" 
+            newDataType="NVARCHAR(4000)"/>
+    </changeSet>
+
+    <changeSet id="16 ACT_RU_VARIABLE.TEXT_" author="mmueller">
+        <modifyDataType tableName="ACT_RU_VARIABLE" columnName="TEXT_" 
+            newDataType="NVARCHAR(4000)"/>
+    </changeSet>
+
+    <changeSet id="17 ACT_RU_VARIABLE.TEXT2_" author="mmueller">
+        <modifyDataType tableName="ACT_RU_VARIABLE" columnName="TEXT2_" 
+            newDataType="NVARCHAR(4000)"/>
+    </changeSet>
+
+
+
+
+    <!-- Changes in activiti.h2.create.history.sql from Activiti 5.4 to 5.6 -->
+
+
+    <changeSet id="30 ACT_HI_TASKINST.PARENT_TASK_ID_" author="mmueller">
+        <addColumn tableName="ACT_HI_TASKINST">
+            <column name="PARENT_TASK_ID_" type="NVARCHAR(64)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="31 ACT_HI_TASKINST.DESCRIPTION_" author="mmueller">
+        <modifyDataType tableName="ACT_HI_TASKINST" columnName="DESCRIPTION_" 
+            newDataType="NVARCHAR(4000)"/>
+    </changeSet>
+
+    <changeSet id="32 ACT_HI_TASKINST.OWNER_" author="mmueller">
+        <addColumn tableName="ACT_HI_TASKINST">
+            <column name="OWNER_" type="NVARCHAR(64)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="33 ACT_HI_TASKINST.DELETE_REASON_" author="mmueller">
+        <modifyDataType tableName="ACT_HI_TASKINST" columnName="DELETE_REASON_" 
+            newDataType="NVARCHAR(4000)"/>
+    </changeSet>
+
+    <changeSet id="34 ACT_HI_DETAIL.TEXT_" author="mmueller">
+        <modifyDataType tableName="ACT_HI_DETAIL" columnName="TEXT_" 
+            newDataType="NVARCHAR(4000)"/>
+    </changeSet>
+
+    <changeSet id="35 ACT_HI_DETAIL.TEXT2_" author="mmueller">
+        <modifyDataType tableName="ACT_HI_DETAIL" columnName="TEXT2_" 
+            newDataType="NVARCHAR(4000)"/>
+    </changeSet>
+
+
+
+
+
+    <changeSet id="36 ACT_HI_COMMENT.TYPE_" author="mmueller">
+        <addColumn tableName="ACT_HI_COMMENT">
+            <column name="TYPE_" type="NVARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="37 ACT_HI_COMMENT.ACTION_" author="mmueller">
+        <addColumn tableName="ACT_HI_COMMENT">
+            <column name="ACTION_" type="NVARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="38 ACT_HI_COMMENT.MESSAGE_" author="mmueller">
+        <modifyDataType tableName="ACT_HI_COMMENT" columnName="MESSAGE_" 
+            newDataType="NVARCHAR(4000)"/>
+    </changeSet>
+
+    <changeSet id="39 ACT_HI_COMMENT.FULL_MSG_" author="mmueller">
+        <addColumn tableName="ACT_HI_COMMENT">
+            <column name="FULL_MSG_" type="BLOB"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="40 ACT_HI_ATTACHMENT.DESCRIPTION_" author="mmueller">
+        <modifyDataType tableName="ACT_HI_ATTACHMENT" columnName="DESCRIPTION_" 
+            newDataType="NVARCHAR(4000)"/>
+    </changeSet>
+
+    <changeSet id="41 ACT_HI_ATTACHMENT.URL_" author="mmueller">
+        <modifyDataType tableName="ACT_HI_ATTACHMENT" columnName="URL_" 
+            newDataType="NVARCHAR(4000)"/>
+    </changeSet>
+
+</databaseChangeLog>
