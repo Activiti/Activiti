@@ -940,7 +940,7 @@ public class DbSqlSession implements Session {
       }
       
       String databaseType = dbSqlSessionFactory.getDatabaseType();
-      
+      log.debug("Looking for table " + tableName + " for database type " + databaseType);
       if ("postgres".equals(databaseType)) {
         tableName = tableName.toLowerCase();
       }
