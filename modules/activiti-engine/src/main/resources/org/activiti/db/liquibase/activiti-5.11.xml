@@ -61,7 +61,6 @@
         <addColumn tableName="ACT_RE_PROCDEF">
             <column name="DESCRIPTION_" type="NVARCHAR(4000)" />
         </addColumn>
-        <addNotNullConstraint tableName="ACT_RE_PROCDEF" columnName="KEY_" columnDataType="NVARCHAR(255)"/> 
         <addNotNullConstraint tableName="ACT_RE_PROCDEF" columnName="VERSION_" columnDataType="INTEGER"/> 
    </changeSet>
 
