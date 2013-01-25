@@ -802,14 +802,6 @@ public class DbSqlSession implements Session {
       liquibase.update("production");
     } catch (Exception e) {
       throw new ActivitiException("Error creating Activiti tables", e);
-    } finally {
-      /*if (connection != null) {
-        try {
-          connection.close();
-        } catch(Exception e) {
-          log.error("Error closing connection for Activiti table create script", e);
-        }
-      }*/
     }
   }
 
@@ -821,7 +813,6 @@ public class DbSqlSession implements Session {
     if (dbSqlSessionFactory.isDbIdentityUsed()) {
       executeMandatorySchemaResource("drop", "identity");
     }*/
-    
     Thread currentThread = Thread.currentThread();
     ClassLoader contextClassLoader = currentThread.getContextClassLoader();
     ResourceAccessor threadClFO = new ClassLoaderResourceAccessor(contextClassLoader);
@@ -833,19 +824,14 @@ public class DbSqlSession implements Session {
     try {
       connection = new JdbcConnection(sqlSession.getConnection());
       Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(connection);
+      log.debug("Dropping schema for " + database.getTypeName());
       database.setDefaultSchemaName(this.connectionMetadataDefaultSchema);
       Liquibase liquibase = new Liquibase("org/activiti/db/liquibase/activiti-master.xml", new CompositeResourceAccessor(clFO,fsFO, threadClFO), database);
       liquibase.dropAll();
+      log.debug("Successfully dropped schema for " + database.getTypeName());
     } catch (Exception e) {
+      log.error("Error dropping Activiti tables", e);
       throw new ActivitiException("Error dropping Activiti tables", e);
-    } finally {
-      if (connection != null) {
-        /*try {
-          connection.close();
-        } catch(Exception e) {
-          log.error("Error closing connection for Activiti table drop script", e);
-        }*/
-      }
     }
   }
 
