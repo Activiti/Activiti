@@ -1,8 +1,7 @@
 package org.activiti.engine.impl.db;
 
-import liquibase.database.Database;
-import liquibase.database.core.OracleDatabase;
 import liquibase.database.structure.type.BigIntType;
+import liquibase.database.structure.type.BooleanType;
 import liquibase.database.structure.type.CustomType;
 import liquibase.database.structure.type.DataType;
 import liquibase.database.structure.type.DateTimeType;
@@ -17,12 +16,7 @@ public class ActivitiOracleTypeConverter extends OracleTypeConverter {
   
   @Override
   public int getPriority() {
-    return super.getPriority() + 1;
-  }
-
-  @Override
-  public boolean supports(final Database database) {
-    return database instanceof OracleDatabase;
+    return PRIORITY_DATABASE + 1;
   }
 
   @Override
@@ -44,6 +38,11 @@ public class ActivitiOracleTypeConverter extends OracleTypeConverter {
     }
     return dataType;
   }
+  
+  @Override
+  public BooleanType getBooleanType() {
+    return new BooleanType.NumericBooleanType("NUMBER(1,0)");
+  }
 
   @Override
   public SmallIntType getSmallIntType() {
@@ -52,7 +51,7 @@ public class ActivitiOracleTypeConverter extends OracleTypeConverter {
 
   @Override
   public DateTimeType getDateTimeType() {
-    return new DateTimeType("TIMESTAMP(9)");
+    return new DateTimeType("TIMESTAMP(6)");
   }
 
   @Override

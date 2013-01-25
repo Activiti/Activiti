@@ -82,13 +82,13 @@
     </changeSet>
     
     <changeSet id="4.1 ACT_UNIQ_RU_BUS_KEY" author="mmueller" >  
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <or>
-                  <dbms type="mssql"/>
-                  <dbms type="oracle"/>
-                </or>
-            </not>
+        <preConditions>
+            <or>
+              <dbms type="db2" />
+              <dbms type="h2" />
+              <dbms type="mysql" />
+              <dbms type="postgres" />
+            </or>
         </preConditions>
         <addUniqueConstraint constraintName="ACT_UNIQ_RU_BUS_KEY"
                              tableName="ACT_RU_EXECUTION"
