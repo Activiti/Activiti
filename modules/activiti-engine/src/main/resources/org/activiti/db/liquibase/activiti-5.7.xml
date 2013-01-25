@@ -82,7 +82,7 @@
     </changeSet>
     
     <changeSet id="4.1 ACT_UNIQ_RU_BUS_KEY" author="mmueller" >  
-        <preConditions>
+        <preConditions onFail="CONTINUE">
             <or>
               <dbms type="db2" />
               <dbms type="h2" />
