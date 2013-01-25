@@ -141,7 +141,7 @@
     <dependency>
       <groupId>org.liquibase</groupId>
       <artifactId>liquibase-core</artifactId>
-      <version>2.0.5</version>
+      <version>2.0.3</version>
     </dependency>
           
   </dependencies>
@@ -215,26 +215,6 @@
           </execution>
         </executions>
       </plugin>
-      <!-- <plugin>
-        <groupId>org.liquibase</groupId>
-        <artifactId>liquibase-maven-plugin</artifactId>
-        <version>2.0.5</version>
-        <executions>
-          <execution>
-            <phase>process-resources</phase>
-            <configuration>
-              <changeLogFile>src/main/resources/org/activiti/db/liquibase/activiti-master.xml</changeLogFile>
-              <driver>com.mysql.jdbc.Driver</driver>
-              <url>jdbc:mysql://localhost:3306/activiti</url>
-              <username>sa</username>
-              <password></password>
-            </configuration>
-            <goals>
-              <goal>update</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin> -->
     </plugins>
     <pluginManagement>
       <plugins>
@@ -258,19 +238,6 @@
                     <goals>
                       <goal>cleanVersions</goal>
                       <goal>manifest</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore></ignore>
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.liquibase</groupId>
-                    <artifactId>liquibase-maven-plugin</artifactId>
-                    <versionRange>[2.0.1,)</versionRange>
-                    <goals>
-                      <goal>update</goal>
                     </goals>
                   </pluginExecutionFilter>
                   <action>
