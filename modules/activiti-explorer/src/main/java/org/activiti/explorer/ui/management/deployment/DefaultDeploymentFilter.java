@@ -15,6 +15,7 @@ package org.activiti.explorer.ui.management.deployment;
 
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.explorer.ui.management.deployment.DeploymentListQuery.DeploymentListitem;
 
@@ -41,6 +42,10 @@ public class DefaultDeploymentFilter implements DeploymentFilter {
 
   public DeploymentListitem createItem(Deployment deployment) {
     return new DeploymentListitem(deployment);
+  }
+  
+  public void beforeDeploy(DeploymentBuilder deployment) {
+    // Nothing special needs to be done with the deployment, by default
   }
 
 }
