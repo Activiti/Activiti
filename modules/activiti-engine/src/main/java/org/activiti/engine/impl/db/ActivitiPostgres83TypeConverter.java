@@ -5,9 +5,9 @@ import liquibase.database.structure.type.DateTimeType;
 import liquibase.database.structure.type.IntType;
 import liquibase.database.structure.type.NVarcharType;
 import liquibase.database.structure.type.VarcharType;
-import liquibase.database.typeconversion.core.PostgresTypeConverter;
+import liquibase.database.typeconversion.core.Postgres83TypeConverter;
 
-public class ActivitiPostgresTypeConverter extends PostgresTypeConverter {
+public class ActivitiPostgres83TypeConverter extends Postgres83TypeConverter {
   
   @Override
   public int getPriority() {
