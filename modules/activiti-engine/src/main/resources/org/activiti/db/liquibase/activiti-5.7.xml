@@ -267,6 +267,11 @@
     </changeSet>
  
     <changeSet id="13 ACT_HI_PROCINST" author="mmueller">
+        <preConditions onFail="CONTINUE" onSqlOutput="TEST">
+          <not>
+            <dbms type="db2" />
+          </not>
+        </preConditions>
         <createTable tableName="ACT_HI_PROCINST">
             <column name="ID_"                  type="NVARCHAR(64)">
                 <constraints primaryKey="true" nullable="false"/>
@@ -291,6 +296,11 @@
     </changeSet>
 
     <changeSet id="13.1 UK_ACT_HI_PROCINST" author="mmueller">
+        <preConditions onFail="CONTINUE" onSqlOutput="TEST">
+          <not>
+            <dbms type="db2" />
+          </not>
+        </preConditions>
         <addUniqueConstraint constraintName="UK_ACT_HI_PROCINST"
             tableName="ACT_HI_PROCINST" columnNames="PROC_INST_ID_"/>
     </changeSet>
@@ -313,6 +323,7 @@
             DELETE_REASON_ varchar(4000),
             primary key (ID_) )
         </sql>
+        <sql>alter table ACT_HI_PROCINST add constraint PROC_INST_ID_ unique(PROC_INST_ID_)</sql>
         <sql>create unique index ACT_UNIQ_HI_BUS_KEY on ACT_HI_PROCINST(UNI_PROC_DEF_ID, UNI_BUSINESS_KEY)</sql>
     </changeSet>
     
