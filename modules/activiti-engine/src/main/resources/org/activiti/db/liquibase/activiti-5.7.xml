@@ -296,30 +296,41 @@
     </changeSet>
     
     <changeSet id="13.2.1 ACT_UNIQ_HI_BUS_KEY DB2" author="trademakers" dbms="db2">
+        <sql>create table ACT_HI_PROCINST (
+            ID_ varchar(64) not null,
+            PROC_INST_ID_ varchar(64) not null,
+            BUSINESS_KEY_ varchar(255),
+            PROC_DEF_ID_ varchar(64) not null,
+            START_TIME_ timestamp not null,
+            END_TIME_ timestamp,
+            DURATION_ bigint,
+            START_USER_ID_ varchar(255),
+            START_ACT_ID_ varchar(255),
+            END_ACT_ID_ varchar(255),
+            SUPER_PROCESS_INSTANCE_ID_ varchar(64),
+            UNI_BUSINESS_KEY varchar (255)  not null  generated always as (case when "BUSINESS_KEY_" is null then "ID_" else "BUSINESS_KEY_" end),
+            UNI_PROC_DEF_ID varchar (64)  not null  generated always as (case when "PROC_DEF_ID_" is null then "ID_" else "PROC_DEF_ID_" end),
+            DELETE_REASON_ varchar(4000),
+            primary key (ID_) )
+        </sql>
+        <sql>create unique index ACT_UNIQ_HI_BUS_KEY on ACT_HI_PROCINST(UNI_PROC_DEF_ID, UNI_BUSINESS_KEY)</sql>
+    </changeSet>
+    
+    <changeSet id="13.2.2 ACT_UNIQ_HI_BUS_KEY" author="trademakers">
+        <preConditions onFail="CONTINUE" onSqlOutput="TEST">
+          <not>
+            <or>
+              <dbms type="db2" />
+              <dbms type="oracle" />
+            </or>
+          </not>
+        </preConditions>
         <addUniqueConstraint constraintName="ACT_UNIQ_HI_BUS_KEY"
                              tableName="ACT_HI_PROCINST"
                              columnNames="PROC_DEF_ID_, BUSINESS_KEY_"/>
     </changeSet>
     
-    <changeSet id="13.2.2 ACT_UNIQ_HI_BUS_KEY H2" author="trademakers" dbms="h2">
-        <addUniqueConstraint constraintName="ACT_UNIQ_HI_BUS_KEY"
-                             tableName="ACT_HI_PROCINST"
-                             columnNames="PROC_DEF_ID_, BUSINESS_KEY_"/>
-    </changeSet>
-    
-    <changeSet id="13.2.3 ACT_UNIQ_HI_BUS_KEY MySQL" author="trademakers" dbms="mysql">
-        <addUniqueConstraint constraintName="ACT_UNIQ_HI_BUS_KEY"
-                             tableName="ACT_HI_PROCINST"
-                             columnNames="PROC_DEF_ID_, BUSINESS_KEY_"/>
-    </changeSet>
-    
-    <changeSet id="13.2.4 ACT_UNIQ_HI_BUS_KEY Postgres" author="trademakers" dbms="postgres">
-        <addUniqueConstraint constraintName="ACT_UNIQ_HI_BUS_KEY"
-                             tableName="ACT_HI_PROCINST"
-                             columnNames="PROC_DEF_ID_, BUSINESS_KEY_"/>
-    </changeSet>
-    
-    <changeSet id="13.2.5 ACT_UNIQ_HI_BUS_KEY Oracle" author="trademakers" dbms="oracle">
+    <changeSet id="13.2.3 ACT_UNIQ_HI_BUS_KEY Oracle" author="trademakers" dbms="oracle">
       <sql>create unique index ACT_UNIQ_HI_BUS_KEY on ACT_HI_PROCINST (case when BUSINESS_KEY_ is null then null else PROC_DEF_ID_ end, case when BUSINESS_KEY_ is null then null else BUSINESS_KEY_ end)</sql>
     </changeSet>               
     
