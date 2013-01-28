@@ -564,10 +564,19 @@
             referencedTableName="ACT_RE_DEPLOYMENT" referencedColumnNames="ID_"/>
     </changeSet>                                                                     
                                                                                    
-    <changeSet id="52 ACT_FK_EXE_PROCINST" author="mmueller" >                                  
+    <changeSet id="52 ACT_FK_EXE_PROCINST" author="mmueller">
+        <preConditions onFail="CONTINUE" onSqlOutput="TEST">
+          <not>
+            <dbms type="mysql" />
+          </not>
+        </preConditions>                                  
         <addForeignKeyConstraint constraintName="ACT_FK_EXE_PROCINST"                  
             baseTableName="ACT_RU_EXECUTION" baseColumnNames="PROC_INST_ID_"     
             referencedTableName="ACT_RU_EXECUTION" referencedColumnNames="ID_"/> 
+    </changeSet>
+    
+    <changeSet id="52.1 ACT_FK_EXE_PROCINST MySQL" author="trademakers" dbms="mysql">                                  
+        <sql>alter table ACT_RU_EXECUTION add constraint ACT_FK_EXE_PROCINST foreign key (PROC_INST_ID_) references ACT_RU_EXECUTION (ID_) on delete cascade on update cascade</sql> 
     </changeSet>                                                                     
                                                                                    
     <changeSet id="53 ACT_FK_EXE_PARENT" author="mmueller" >                                  
