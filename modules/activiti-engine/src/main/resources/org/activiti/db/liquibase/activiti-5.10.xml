@@ -43,30 +43,21 @@
     
     <!-- UNIQUE -->
     
-    <changeSet id="7.1 ACT_UNIQ_PROCDEF DB2" author="trademakers" dbms="db2">
+    <changeSet id="7.0 Pre ACT_UNIQ_PROCDEF DB2" author="trademakers" dbms="db2">
+        <sql>alter table ACT_RE_PROCDEF alter column KEY_ set not null</sql>
+        <sql>alter table ACT_RE_PROCDEF alter column VERSION_ set not null</sql>
+        <sql>Call Sysproc.admin_cmd ('REORG TABLE ACT_RE_PROCDEF')</sql>
+    </changeSet>
+    
+    <changeSet id="7.1 ACT_UNIQ_PROCDEF" author="trademakers">
+        <preConditions onFail="CONTINUE" onSqlOutput="TEST">
+          <not>
+            <dbms type="mssql" />
+          </not>
+        </preConditions>
         <addUniqueConstraint constraintName="ACT_UNIQ_PROCDEF"
             tableName="ACT_RE_PROCDEF" columnNames="KEY_, VERSION_"/>
     </changeSet>
-    
-    <changeSet id="7.2 ACT_UNIQ_PROCDEF H2" author="trademakers" dbms="h2">
-        <addUniqueConstraint constraintName="ACT_UNIQ_PROCDEF"
-            tableName="ACT_RE_PROCDEF" columnNames="KEY_, VERSION_"/>
-    </changeSet>
-    
-    <changeSet id="7.3 ACT_UNIQ_PROCDEF MySQL" author="trademakers" dbms="mysql">
-        <addUniqueConstraint constraintName="ACT_UNIQ_PROCDEF"
-            tableName="ACT_RE_PROCDEF" columnNames="KEY_, VERSION_"/>
-    </changeSet>
-    
-    <changeSet id="7.4 ACT_UNIQ_PROCDEF Oracle" author="trademakers" dbms="oracle">
-        <addUniqueConstraint constraintName="ACT_UNIQ_PROCDEF"
-            tableName="ACT_RE_PROCDEF" columnNames="KEY_, VERSION_"/>
-    </changeSet>
-    
-    <changeSet id="7.5 ACT_UNIQ_PROCDEF Postgres" author="trademakers" dbms="postgres">
-        <addUniqueConstraint constraintName="ACT_UNIQ_PROCDEF"
-            tableName="ACT_RE_PROCDEF" columnNames="KEY_, VERSION_"/>
-    </changeSet> 
     
     <!-- FOREIGN_KEY -->
     
