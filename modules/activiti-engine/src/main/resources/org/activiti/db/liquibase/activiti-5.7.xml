@@ -64,6 +64,11 @@
     </changeSet>
  
     <changeSet id="4 ACT_RU_EXECUTION" author="mmueller">
+        <preConditions onFail="CONTINUE" onSqlOutput="TEST">
+          <not>
+            <dbms type="db2" />
+          </not>
+        </preConditions>
         <createTable tableName="ACT_RU_EXECUTION">
             <column name="ID_"                  type="NVARCHAR(64)">
                 <constraints primaryKey="true" nullable="false"/>
@@ -82,30 +87,43 @@
     </changeSet>
     
     <changeSet id="4.1.1 ACT_UNIQ_RU_BUS_KEY DB2" author="mmueller" dbms="db2">
+        <sql>create table ACT_RU_EXECUTION (
+            ID_ varchar(64) not null,
+            REV_ integer,
+            PROC_INST_ID_ varchar(64),
+            BUSINESS_KEY_ varchar(255),
+            PARENT_ID_ varchar(64),
+            PROC_DEF_ID_ varchar(64),
+            SUPER_EXEC_ varchar(64),
+            ACT_ID_ varchar(255),
+            IS_ACTIVE_ smallint check(IS_ACTIVE_ in (1,0)),
+            IS_CONCURRENT_ smallint check(IS_CONCURRENT_ in (1,0)),
+            IS_SCOPE_ smallint check(IS_SCOPE_ in (1,0)),
+            IS_EVENT_SCOPE_ smallint check(IS_EVENT_SCOPE_ in (1,0)),
+            UNI_BUSINESS_KEY varchar (255)  not null  generated always as (case when "BUSINESS_KEY_" is null then "ID_" else "BUSINESS_KEY_" end),
+            UNI_PROC_DEF_ID varchar (64)  not null  generated always as (case when "PROC_DEF_ID_" is null then "ID_" else "PROC_DEF_ID_" end),
+            SUSPENSION_STATE_ integer,
+            CACHED_ENT_STATE_ integer,
+            primary key (ID_) )
+        </sql>
+        <sql>create unique index ACT_UNIQ_RU_BUS_KEY on ACT_RU_EXECUTION(UNI_PROC_DEF_ID, UNI_BUSINESS_KEY)</sql>
+    </changeSet>
+    
+    <changeSet id="4.1.2 ACT_UNIQ_RU_BUS_KEY" author="mmueller">
+        <preConditions onFail="CONTINUE" onSqlOutput="TEST">
+          <not>
+            <or>
+              <dbms type="db2" />
+              <dbms type="oracle" />
+            </or>
+          </not>
+        </preConditions>
         <addUniqueConstraint constraintName="ACT_UNIQ_RU_BUS_KEY"
                              tableName="ACT_RU_EXECUTION"
                              columnNames="PROC_DEF_ID_, BUSINESS_KEY_"/>
     </changeSet>
     
-    <changeSet id="4.1.2 ACT_UNIQ_RU_BUS_KEY H2" author="mmueller" dbms="h2">
-        <addUniqueConstraint constraintName="ACT_UNIQ_RU_BUS_KEY"
-                             tableName="ACT_RU_EXECUTION"
-                             columnNames="PROC_DEF_ID_, BUSINESS_KEY_"/>
-    </changeSet>
-    
-    <changeSet id="4.1.3 ACT_UNIQ_RU_BUS_KEY MySQL" author="mmueller" dbms="mysql">
-        <addUniqueConstraint constraintName="ACT_UNIQ_RU_BUS_KEY"
-                             tableName="ACT_RU_EXECUTION"
-                             columnNames="PROC_DEF_ID_, BUSINESS_KEY_"/>
-    </changeSet>
-    
-    <changeSet id="4.1.4 ACT_UNIQ_RU_BUS_KEY Postgres" author="mmueller" dbms="postgres">
-        <addUniqueConstraint constraintName="ACT_UNIQ_RU_BUS_KEY"
-                             tableName="ACT_RU_EXECUTION"
-                             columnNames="PROC_DEF_ID_, BUSINESS_KEY_"/>
-    </changeSet>
-    
-    <changeSet id="4.1.5 ACT_UNIQ_RU_BUS_KEY Oracle" author="trademakers" dbms="oracle">
+    <changeSet id="4.1.3 ACT_UNIQ_RU_BUS_KEY Oracle" author="trademakers" dbms="oracle">
       <sql>create unique index ACT_UNIQ_RU_BUS_KEY on ACT_RU_EXECUTION (case when BUSINESS_KEY_ is null then null else PROC_DEF_ID_ end, case when BUSINESS_KEY_ is null then null else BUSINESS_KEY_ end)</sql>
     </changeSet>              
  
