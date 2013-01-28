@@ -21,6 +21,10 @@ public class ActivitiMySQLTypeConverter extends MySQLTypeConverter {
       final Boolean autoIncrement, final String dataTypeName,
       final String precision, final String additionalInformation) {
 
+    if (columnTypeString.equalsIgnoreCase("timestamp")) {
+      return new DateTimeType("datetime");
+    }
+    
     DataType dataType = super.getDataType(columnTypeString, autoIncrement,
         dataTypeName, precision, additionalInformation);
     if (dataType instanceof NVarcharType) {
@@ -38,11 +42,6 @@ public class ActivitiMySQLTypeConverter extends MySQLTypeConverter {
   @Override
   public IntType getIntType() {
     return new IntType("integer");
-  }
-  
-  @Override
-  public DateTimeType getDateTimeType() {
-    return new DateTimeType("datetime");
   }
 
   @Override
