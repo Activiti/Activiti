@@ -1,7 +1,6 @@
 package org.activiti.engine.impl.db;
 
 import liquibase.database.structure.type.BigIntType;
-import liquibase.database.structure.type.BooleanType;
 import liquibase.database.structure.type.DateTimeType;
 import liquibase.database.structure.type.DoubleType;
 import liquibase.database.structure.type.IntType;
@@ -14,10 +13,10 @@ public class ActivitiMSSQLTypeConverter extends MSSQLTypeConverter {
     return PRIORITY_DATABASE + 1;
   }
   
-  @Override
+  /*@Override
   public BooleanType getBooleanType() {
     return new BooleanType("tinyint");
-  }
+  }*/
 
   @Override
   public DateTimeType getDateTimeType() {
@@ -36,6 +35,6 @@ public class ActivitiMSSQLTypeConverter extends MSSQLTypeConverter {
 
   @Override
   public DoubleType getDoubleType() {
-      return new DoubleType("double precision");
+    return new DoubleType("double precision");
   }
 }
