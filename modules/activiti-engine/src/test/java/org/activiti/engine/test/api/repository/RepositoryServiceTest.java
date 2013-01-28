@@ -24,6 +24,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.RepositoryServiceImpl;
+import org.activiti.engine.impl.cmd.DeleteDeploymentCmd;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
@@ -89,13 +90,35 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
       assertTextPresent("deploymentId is null", ae.getMessage());
     }
   }
-  
+
   public void testDeleteDeploymentCascadeNullDeploymentId() {
     try {
       repositoryService.deleteDeployment(null, true);    
       fail("ActivitiException expected");
     } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("deploymentId is null", ae.getMessage());
+    }
+  }
+
+  public void testDeleteDeploymentNonExistentDeploymentId() {
+    try {
+      repositoryService.deleteDeployment("foobar");
+      fail("ActivitiException expected");
+    } catch (ActivitiObjectNotFoundException ae) {
+      assertTextPresent("Could not find a deployment with id 'foobar'.", ae.getMessage());
+    } catch (Throwable t) {
+      fail("Unexpected exception: " + t);
+    }
+  }
+
+  public void testDeleteDeploymentCascadeNonExistentDeploymentId() {
+    try {
+      repositoryService.deleteDeployment("foobar", true);
+      fail("ActivitiException expected");
+    } catch (ActivitiObjectNotFoundException ae) {
+      assertTextPresent("Could not find a deployment with id 'foobar'.", ae.getMessage());
+    } catch (Throwable t) {
+      fail("Unexpected exception: " + t);
     }
   }
 

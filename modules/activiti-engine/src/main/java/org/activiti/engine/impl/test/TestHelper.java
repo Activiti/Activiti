@@ -25,6 +25,7 @@ import java.util.TimerTask;
 import junit.framework.AssertionFailedError;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.ProcessEngineImpl;
@@ -104,7 +105,11 @@ public abstract class TestHelper {
   public static void annotationDeploymentTearDown(ProcessEngine processEngine, String deploymentId, Class<?> testClass, String methodName) {
     log.debug("annotation @Deployment deletes deployment for {}.{}", testClass.getSimpleName(), methodName);
     if(deploymentId != null) {
-      processEngine.getRepositoryService().deleteDeployment(deploymentId, true);      
+      try {
+        processEngine.getRepositoryService().deleteDeployment(deploymentId, true);
+      } catch (ActivitiObjectNotFoundException e) {
+        // Deployment was already deleted by the test case. Ignore.
+      }
     }
   }
 

@@ -21,6 +21,7 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
+import org.activiti.engine.impl.persistence.entity.DeploymentEntityManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 
@@ -102,6 +103,12 @@ public class DeploymentManager {
   }
   
   public void removeDeployment(String deploymentId, boolean cascade) {
+	  DeploymentEntityManager deploymentEntityManager = Context
+			  .getCommandContext()
+			  .getDeploymentEntityManager();
+	  if(deploymentEntityManager.findDeploymentById(deploymentId) == null)
+		  throw new ActivitiObjectNotFoundException("Could not find a deployment with id '" + deploymentId + "'.", DeploymentEntity.class);
+
     // Remove any process definition from the cache
     List<ProcessDefinition> processDefinitions = new ProcessDefinitionQueryImpl(Context.getCommandContext())
             .deploymentId(deploymentId)
@@ -111,10 +118,7 @@ public class DeploymentManager {
     }
     
     // Delete data
-    Context
-      .getCommandContext()
-      .getDeploymentEntityManager()
-      .deleteDeployment(deploymentId, cascade);
+    deploymentEntityManager.deleteDeployment(deploymentId, cascade);
   }
   
   // getters and setters //////////////////////////////////////////////////////
