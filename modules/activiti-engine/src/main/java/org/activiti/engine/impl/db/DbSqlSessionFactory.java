@@ -105,6 +105,7 @@ public class DbSqlSessionFactory implements SessionFactory {
     TypeConverterFactory.getInstance().register(new ActivitiDb2TypeConverter());
     TypeConverterFactory.getInstance().register(new ActivitiMySQLTypeConverter());
     TypeConverterFactory.getInstance().register(new ActivitiOracleTypeConverter());
+    TypeConverterFactory.getInstance().register(new ActivitiPostgresTypeConverter());
   }
   
   protected String databaseType;
