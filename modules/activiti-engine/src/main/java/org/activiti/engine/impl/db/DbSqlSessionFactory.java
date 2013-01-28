@@ -103,6 +103,7 @@ public class DbSqlSessionFactory implements SessionFactory {
     addDatabaseSpecificStatement("mssql", "selectExclusiveJobsToExecute", "selectExclusiveJobsToExecute_integerBoolean");
     
     TypeConverterFactory.getInstance().register(new ActivitiDb2TypeConverter());
+    TypeConverterFactory.getInstance().register(new ActivitiMySQLTypeConverter());
     TypeConverterFactory.getInstance().register(new ActivitiOracleTypeConverter());
   }
   
