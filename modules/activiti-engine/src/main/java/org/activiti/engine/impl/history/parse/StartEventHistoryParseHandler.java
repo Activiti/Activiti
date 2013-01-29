@@ -14,12 +14,9 @@ package org.activiti.engine.impl.history.parse;
 
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.StartEvent;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.handler.AbstractSingleElementBpmnParseHandler;
 import org.activiti.engine.impl.history.handler.StartEventEndHandler;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 
 
 /**
@@ -33,7 +30,7 @@ public class StartEventHistoryParseHandler extends AbstractSingleElementBpmnPars
     return StartEvent.class;
   }
   
-  protected void executeParse(BpmnParse bpmnParse, StartEvent element, ScopeImpl scope, ActivityImpl activity, SubProcess subProcess) {
+  protected void executeParse(BpmnParse bpmnParse, StartEvent element) {
     bpmnParse.getCurrentActivity().addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, START_EVENT_END_HANDLER);
   }
 

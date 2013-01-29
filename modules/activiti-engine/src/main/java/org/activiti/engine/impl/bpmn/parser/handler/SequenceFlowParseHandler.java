@@ -15,7 +15,6 @@ package org.activiti.engine.impl.bpmn.parser.handler;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.SequenceFlow;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.Condition;
 import org.activiti.engine.impl.bpmn.behavior.EventBasedGatewayActivityBehavior;
@@ -39,9 +38,10 @@ public class SequenceFlowParseHandler extends AbstractMultiInstanceEnabledParseH
     return SequenceFlow.class;
   }
 
-  protected void executeParse(BpmnParse bpmnParse, SequenceFlow sequenceFlow, ScopeImpl scope, ActivityImpl activity, SubProcess subProcess) {
+  protected void executeParse(BpmnParse bpmnParse, SequenceFlow sequenceFlow) {
     
     BpmnModel bpmnModel = bpmnParse.getBpmnModel();
+    ScopeImpl scope = bpmnParse.getCurrentScope();
 
     // Implicit check: sequence flow cannot cross (sub) process boundaries: we
     // don't do a processDefinition.findActivity here

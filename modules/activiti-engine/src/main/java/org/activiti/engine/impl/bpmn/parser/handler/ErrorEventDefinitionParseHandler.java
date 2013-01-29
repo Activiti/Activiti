@@ -16,7 +16,6 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
@@ -34,7 +33,7 @@ public class ErrorEventDefinitionParseHandler extends AbstractMultiInstanceEnabl
     return ErrorEventDefinition.class;
   }
   
-  protected void executeParse(BpmnParse bpmnParse, ErrorEventDefinition eventDefinition, ScopeImpl scope, ActivityImpl activity, SubProcess subProcess) {
+  protected void executeParse(BpmnParse bpmnParse, ErrorEventDefinition eventDefinition) {
 
     org.activiti.bpmn.model.ErrorEventDefinition modelErrorEvent = (org.activiti.bpmn.model.ErrorEventDefinition) eventDefinition;
     if (bpmnParse.getBpmnModel().containsErrorRef(modelErrorEvent.getErrorCode())) {
@@ -45,6 +44,8 @@ public class ErrorEventDefinitionParseHandler extends AbstractMultiInstanceEnabl
       modelErrorEvent.setErrorCode(errorCode);
     }
     
+    ScopeImpl scope = bpmnParse.getCurrentScope();
+    ActivityImpl activity = bpmnParse.getCurrentActivity();
     if (bpmnParse.getCurrentFlowElement() instanceof StartEvent) {
     
       if (scope.getProperty(PROPERTYNAME_INITIAL) == null) {
@@ -56,7 +57,7 @@ public class ErrorEventDefinitionParseHandler extends AbstractMultiInstanceEnabl
         
         createErrorStartEventDefinition(modelErrorEvent, activity, catchingScope);
       } else {
-        bpmnParse.getBpmnModel().addProblem("multiple start events not supported for subprocess", subProcess);
+        bpmnParse.getBpmnModel().addProblem("multiple start events not supported for subprocess", bpmnParse.getCurrentSubProcess());
       }
       
     } else if (bpmnParse.getCurrentFlowElement() instanceof BoundaryEvent) {

@@ -15,10 +15,8 @@ package org.activiti.engine.impl.bpmn.parser.handler;
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BusinessRuleTask;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 
 
 /**
@@ -31,9 +29,9 @@ public class BusinessRuleParseHandler extends AbstractMultiInstanceEnabledParseH
   }
   
   @Override
-  protected void executeParse(BpmnParse bpmnParse, BusinessRuleTask businessRuleTask, ScopeImpl scope, ActivityImpl activityImpl, SubProcess subProcess) {
+  protected void executeParse(BpmnParse bpmnParse, BusinessRuleTask businessRuleTask) {
     
-    ActivityImpl activity = createActivityOnScope(bpmnParse, businessRuleTask, BpmnXMLConstants.ELEMENT_TASK_BUSINESSRULE, scope);
+    ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, businessRuleTask, BpmnXMLConstants.ELEMENT_TASK_BUSINESSRULE);
     activity.setAsync(businessRuleTask.isAsynchronous());
     activity.setExclusive(!businessRuleTask.isNotExclusive());
     activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createBusinessRuleTaskActivityBehavior(businessRuleTask));

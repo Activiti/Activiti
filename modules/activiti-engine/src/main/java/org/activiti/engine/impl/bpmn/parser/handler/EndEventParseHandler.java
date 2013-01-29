@@ -17,7 +17,6 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.CancelEventDefinition;
 import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.EventDefinition;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.TerminateEventDefinition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
@@ -34,9 +33,9 @@ public class EndEventParseHandler extends AbstractMultiInstanceEnabledParseHandl
     return EndEvent.class;
   }
   
-  protected void executeParse(BpmnParse bpmnParse, EndEvent endEvent, ScopeImpl scope, ActivityImpl activityImpl, SubProcess subProcess) {
+  protected void executeParse(BpmnParse bpmnParse, EndEvent endEvent) {
     
-    ActivityImpl endEventActivity = createActivityOnScope(bpmnParse, endEvent, BpmnXMLConstants.ELEMENT_EVENT_END, scope);
+    ActivityImpl endEventActivity = createActivityOnCurrentScope(bpmnParse, endEvent, BpmnXMLConstants.ELEMENT_EVENT_END);
     EventDefinition eventDefinition = null;
     if (endEvent.getEventDefinitions().size() > 0) {
       eventDefinition = endEvent.getEventDefinitions().get(0);
@@ -57,6 +56,7 @@ public class EndEventParseHandler extends AbstractMultiInstanceEnabledParseHandl
       
     // Cancel end event      
     } else if (eventDefinition instanceof CancelEventDefinition) {
+      ScopeImpl scope = bpmnParse.getCurrentScope();
       if (scope.getProperty("type")==null || !scope.getProperty("type").equals("transaction")) {
         bpmnParse.getBpmnModel().addProblem("end event with cancelEventDefinition only supported inside transaction subprocess", endEvent);
       } else {

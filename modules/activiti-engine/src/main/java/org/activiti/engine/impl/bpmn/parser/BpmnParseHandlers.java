@@ -19,9 +19,6 @@ import java.util.Map;
 
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.SubProcess;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.parse.BpmnParseHandler;
 import org.slf4j.Logger;
 
@@ -60,7 +57,7 @@ public class BpmnParseHandlers {
     }
   }
   
-  public void parse(BpmnParse bpmnParse, BaseElement element, ScopeImpl scope, ActivityImpl activity, SubProcess subProcess) {
+  public void parse(BpmnParse bpmnParse, BaseElement element) {
     
     if (element instanceof FlowElement) {
       bpmnParse.setCurrentFlowElement((FlowElement) element);
@@ -73,7 +70,7 @@ public class BpmnParseHandlers {
       LOGGER.warn("Could not find matching parse handler for + " + element.getId() + " this is likely a bug.");
     } else {
       for (BpmnParseHandler handler : handlers) {
-        handler.parse(bpmnParse, element, scope, activity, subProcess);
+        handler.parse(bpmnParse, element);
       }
     }
   }

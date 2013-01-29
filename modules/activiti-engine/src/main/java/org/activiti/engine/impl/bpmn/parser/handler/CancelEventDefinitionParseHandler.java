@@ -16,10 +16,8 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.CancelEventDefinition;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 
 /**
  * @author Joram Barrez
@@ -30,12 +28,13 @@ public class CancelEventDefinitionParseHandler extends AbstractMultiInstanceEnab
     return CancelEventDefinition.class;
   }
 
-  protected void executeParse(BpmnParse bpmnParse, CancelEventDefinition cancelEventDefinition, ScopeImpl scope, ActivityImpl activity, SubProcess subProcess) {
+  protected void executeParse(BpmnParse bpmnParse, CancelEventDefinition cancelEventDefinition) {
 
     BpmnModel bpmnModel = bpmnParse.getBpmnModel();
 
     if (bpmnParse.getCurrentFlowElement() instanceof BoundaryEvent) {
       
+      ActivityImpl activity = bpmnParse.getCurrentActivity();
       activity.setProperty("type", "cancelBoundaryCatch");
       ActivityImpl parent = (ActivityImpl) activity.getParent();
       

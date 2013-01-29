@@ -17,7 +17,6 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.SignalEventDefinition;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.ThrowEvent;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.CompensateEventDefinition;
@@ -35,11 +34,11 @@ public class IntermediateThrowEventParseHandler extends AbstractMultiInstanceEna
     return ThrowEvent.class;
   }
   
-  protected void executeParse(BpmnParse bpmnParse, ThrowEvent intermediateEvent, ScopeImpl scope, ActivityImpl activityImpl, SubProcess subProcess) {
+  protected void executeParse(BpmnParse bpmnParse, ThrowEvent intermediateEvent) {
 
     BpmnModel bpmnModel = bpmnParse.getBpmnModel();
 
-    ActivityImpl nestedActivityImpl = createActivityOnScope(bpmnParse, intermediateEvent, BpmnXMLConstants.ELEMENT_EVENT_THROW, scope);
+    ActivityImpl nestedActivityImpl = createActivityOnCurrentScope(bpmnParse, intermediateEvent, BpmnXMLConstants.ELEMENT_EVENT_THROW);
     
     EventDefinition eventDefinition = null;
     if (intermediateEvent.getEventDefinitions().size() > 0) {
@@ -47,9 +46,9 @@ public class IntermediateThrowEventParseHandler extends AbstractMultiInstanceEna
     }
     
     if (eventDefinition instanceof SignalEventDefinition) {
-      bpmnParse.getBpmnParserHandlers().parse(bpmnParse, eventDefinition, scope, nestedActivityImpl, subProcess);
+      bpmnParse.getBpmnParserHandlers().parse(bpmnParse, eventDefinition);
     } else if (eventDefinition instanceof org.activiti.bpmn.model.CompensateEventDefinition) {
-      bpmnParse.getBpmnParserHandlers().parse(bpmnParse, eventDefinition, scope, nestedActivityImpl, subProcess);
+      bpmnParse.getBpmnParserHandlers().parse(bpmnParse, eventDefinition);
     } else if (eventDefinition == null) {
       nestedActivityImpl.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateThrowNoneEventActivityBehavior(intermediateEvent)); 
     } else { 

@@ -17,14 +17,12 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.DataAssociation;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.SendTask;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.impl.bpmn.behavior.WebServiceActivityBehavior;
 import org.activiti.engine.impl.bpmn.data.AbstractDataAssociation;
 import org.activiti.engine.impl.bpmn.data.IOSpecification;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.webservice.Operation;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.apache.commons.lang.StringUtils;
 
 
@@ -37,9 +35,9 @@ public class SendTaskParseHandler extends AbstractMultiInstanceEnabledParseHandl
     return SendTask.class;
   }
   
-  protected void executeParse(BpmnParse bpmnParse, SendTask sendTask, ScopeImpl scope, ActivityImpl activityImpl, SubProcess subProcess) {
+  protected void executeParse(BpmnParse bpmnParse, SendTask sendTask) {
  
-    ActivityImpl activity = createActivityOnScope(bpmnParse, sendTask, BpmnXMLConstants.ELEMENT_TASK_SEND, scope);
+    ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, sendTask, BpmnXMLConstants.ELEMENT_TASK_SEND);
     
     activity.setAsync(sendTask.isAsynchronous());
     activity.setExclusive(!sendTask.isNotExclusive());

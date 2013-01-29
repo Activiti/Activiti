@@ -14,12 +14,9 @@ package org.activiti.engine.impl.history.parse;
 
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.Process;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.handler.AbstractSingleElementBpmnParseHandler;
 import org.activiti.engine.impl.history.handler.ProcessInstanceEndHandler;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 
 
 /**
@@ -33,7 +30,7 @@ public class ProcessHistoryParseHandler extends AbstractSingleElementBpmnParseHa
     return Process.class;
   }
   
-  protected void executeParse(BpmnParse bpmnParse, Process element, ScopeImpl scope, ActivityImpl activity, SubProcess subProcess) {
+  protected void executeParse(BpmnParse bpmnParse, Process element) {
     
     bpmnParse.getCurrentProcessDefinition().addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, PROCESS_INSTANCE_END_HANDLER);
     

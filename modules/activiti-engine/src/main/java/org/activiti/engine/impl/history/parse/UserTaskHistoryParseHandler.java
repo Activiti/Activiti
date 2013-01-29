@@ -13,7 +13,6 @@
 package org.activiti.engine.impl.history.parse;
 
 import org.activiti.bpmn.model.BaseElement;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
@@ -21,8 +20,6 @@ import org.activiti.engine.impl.bpmn.parser.handler.AbstractSingleElementBpmnPar
 import org.activiti.engine.impl.bpmn.parser.handler.UserTaskParseHandler;
 import org.activiti.engine.impl.history.handler.UserTaskAssignmentHandler;
 import org.activiti.engine.impl.history.handler.UserTaskIdHandler;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.task.TaskDefinition;
 
 
@@ -39,7 +36,7 @@ public class UserTaskHistoryParseHandler extends AbstractSingleElementBpmnParseH
     return UserTask.class;
   }
   
-  protected void executeParse(BpmnParse bpmnParse, UserTask element, ScopeImpl scope, ActivityImpl activity, SubProcess subProcess) {
+  protected void executeParse(BpmnParse bpmnParse, UserTask element) {
     TaskDefinition taskDefinition = (TaskDefinition) bpmnParse.getCurrentActivity().getProperty(UserTaskParseHandler.PROPERTY_TASK_DEFINITION);
     taskDefinition.addTaskListener(TaskListener.EVENTNAME_ASSIGNMENT, USER_TASK_ASSIGNMENT_HANDLER);
     taskDefinition.addTaskListener(TaskListener.EVENTNAME_CREATE, USER_TASK_ID_HANDLER);

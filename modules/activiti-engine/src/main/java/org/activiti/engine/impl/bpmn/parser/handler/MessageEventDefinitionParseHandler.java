@@ -17,7 +17,6 @@ import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
@@ -34,7 +33,7 @@ public class MessageEventDefinitionParseHandler extends AbstractMultiInstanceEna
     return MessageEventDefinition.class;
   }
   
-  protected void executeParse(BpmnParse bpmnParse, MessageEventDefinition messageDefinition, ScopeImpl scope, ActivityImpl activity, SubProcess subProcess) {
+  protected void executeParse(BpmnParse bpmnParse, MessageEventDefinition messageDefinition) {
     
     if (bpmnParse.getBpmnModel().containsMessageId(messageDefinition.getMessageRef())) {
       String messageName = bpmnParse.getBpmnModel().getMessage(messageDefinition.getMessageRef()).getName();
@@ -46,7 +45,9 @@ public class MessageEventDefinitionParseHandler extends AbstractMultiInstanceEna
     
     EventSubscriptionDeclaration eventSubscription = new EventSubscriptionDeclaration(messageDefinition.getMessageRef(), "message");
 
-    if (bpmnParse.getCurrentFlowElement() instanceof StartEvent && subProcess != null) {
+    ScopeImpl scope = bpmnParse.getCurrentScope();
+    ActivityImpl activity = bpmnParse.getCurrentActivity();
+    if (bpmnParse.getCurrentFlowElement() instanceof StartEvent && bpmnParse.getCurrentSubProcess() != null) {
       
       // the scope of the event subscription is the parent of the event
       // subprocess (subscription must be created when parent is initialized)

@@ -63,6 +63,14 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement> extends Ab
   
   public static final String PROPERTYNAME_TIMER_DECLARATION = "timerDeclarations";
   
+  protected ActivityImpl findActivity(BpmnParse bpmnParse, String id) {
+    return bpmnParse.getCurrentScope().findActivity(id);
+  }
+  
+  public ActivityImpl createActivityOnCurrentScope(BpmnParse bpmnParse, FlowElement flowElement, String xmlLocalName) {
+    return createActivityOnScope(bpmnParse, flowElement, xmlLocalName, bpmnParse.getCurrentScope());
+  }
+  
   /**
    * Parses the generic information of an activity element (id, name,
    * documentation, etc.), and creates a new {@link ActivityImpl} on the given

@@ -15,10 +15,8 @@ package org.activiti.engine.impl.bpmn.parser.handler;
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.CallActivity;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 
 
 /**
@@ -30,9 +28,9 @@ public class CallActivityParseHandler extends AbstractMultiInstanceEnabledParseH
     return CallActivity.class;
   }
   
-  protected void executeParse(BpmnParse bpmnParse, CallActivity callActivity, ScopeImpl scope, ActivityImpl activityImpl, SubProcess subProcess) {
+  protected void executeParse(BpmnParse bpmnParse, CallActivity callActivity) {
     
-    ActivityImpl activity = createActivityOnScope(bpmnParse, callActivity, BpmnXMLConstants.ELEMENT_CALL_ACTIVITY, scope);
+    ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, callActivity, BpmnXMLConstants.ELEMENT_CALL_ACTIVITY);
     activity.setScope(true);
     activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createCallActivityBehavior(callActivity));
 

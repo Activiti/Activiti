@@ -37,7 +37,6 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.history.handler.ActivityInstanceEndHandler;
 import org.activiti.engine.impl.history.handler.ActivityInstanceStartHandler;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.parse.BpmnParseHandler;
 
 /**
@@ -78,8 +77,8 @@ public class FlowNodeHistoryParseHandler implements BpmnParseHandler {
     return supportedElementClasses;
   }
 
-  public void parse(BpmnParse bpmnParse, BaseElement element, ScopeImpl scope, ActivityImpl activityImpl, SubProcess subProcess) {
-    ActivityImpl activity = scope.findActivity(element.getId());
+  public void parse(BpmnParse bpmnParse, BaseElement element) {
+    ActivityImpl activity = bpmnParse.getCurrentScope().findActivity(element.getId());
     activity.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_START, ACTIVITY_INSTANCE_START_LISTENER, 0);
     activity.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, ACTIVITI_INSTANCE_END_LISTENER);
   }

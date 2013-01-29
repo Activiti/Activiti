@@ -14,12 +14,10 @@ package org.activiti.engine.impl.bpmn.parser.handler;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BaseElement;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.Transaction;
 import org.activiti.engine.impl.bpmn.data.IOSpecification;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 
 
 /**
@@ -31,9 +29,9 @@ public class TransactionParseHandler extends AbstractMultiInstanceEnabledParseHa
     return Transaction.class;
   }
   
-  protected void executeParse(BpmnParse bpmnParse, Transaction transaction, ScopeImpl scope, ActivityImpl activityImpl, SubProcess subProcess) {
+  protected void executeParse(BpmnParse bpmnParse, Transaction transaction) {
     
-    ActivityImpl activity = createActivityOnScope(bpmnParse, transaction, BpmnXMLConstants.ELEMENT_TRANSACTION, scope);
+    ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, transaction, BpmnXMLConstants.ELEMENT_TRANSACTION);
     
     activity.setAsync(transaction.isAsynchronous());
     activity.setExclusive(!transaction.isNotExclusive());
@@ -41,8 +39,13 @@ public class TransactionParseHandler extends AbstractMultiInstanceEnabledParseHa
     activity.setScope(true);
     activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createTransactionActivityBehavior(transaction));
     
-    bpmnParse.processFlowElements(transaction.getFlowElements(), activity, subProcess);
+
+    bpmnParse.setCurrentScope(activity);
+    
+    bpmnParse.processFlowElements(transaction.getFlowElements());
     bpmnParse.processArtifacts(transaction.getArtifacts(), activity);
+    
+    bpmnParse.removeCurrentScope();
     
     if (transaction.getIoSpecification() != null) {
       IOSpecification ioSpecification = bpmnParse.createIOSpecification(transaction.getIoSpecification());

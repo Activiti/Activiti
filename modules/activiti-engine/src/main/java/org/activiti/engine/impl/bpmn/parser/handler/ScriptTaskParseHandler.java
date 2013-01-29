@@ -15,10 +15,8 @@ package org.activiti.engine.impl.bpmn.parser.handler;
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.ScriptTask;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 
 
 /**
@@ -30,9 +28,9 @@ public class ScriptTaskParseHandler extends AbstractMultiInstanceEnabledParseHan
     return ScriptTask.class;
   }
   
-  protected void executeParse(BpmnParse bpmnParse, ScriptTask scriptTask, ScopeImpl scope, ActivityImpl activityimpl, SubProcess subProcess) {
+  protected void executeParse(BpmnParse bpmnParse, ScriptTask scriptTask) {
     
-    ActivityImpl activity = createActivityOnScope(bpmnParse, scriptTask, BpmnXMLConstants.ELEMENT_TASK_SCRIPT, scope);
+    ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, scriptTask, BpmnXMLConstants.ELEMENT_TASK_SCRIPT);
     
     activity.setAsync(scriptTask.isAsynchronous());
     activity.setExclusive(!scriptTask.isNotExclusive());

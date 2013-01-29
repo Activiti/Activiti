@@ -14,11 +14,9 @@ package org.activiti.engine.impl.bpmn.parser.handler;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BaseElement;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.Task;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 
 
 /**
@@ -30,8 +28,8 @@ public class TaskParseHandler extends AbstractMultiInstanceEnabledParseHandler<T
     return Task.class;
   }
   
-  protected void executeParse(BpmnParse bpmnParse, Task task, ScopeImpl scope, ActivityImpl activityImpl, SubProcess subProcess) {
-    ActivityImpl activity = createActivityOnScope(bpmnParse, task, BpmnXMLConstants.ELEMENT_TASK, scope);
+  protected void executeParse(BpmnParse bpmnParse, Task task) {
+    ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, task, BpmnXMLConstants.ELEMENT_TASK);
     activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createTaskActivityBehavior(task));
     
     activity.setAsync(task.isAsynchronous());

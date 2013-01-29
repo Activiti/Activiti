@@ -16,13 +16,10 @@ import java.util.HashMap;
 
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.Process;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.impl.bpmn.data.IOSpecification;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +37,7 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
     return Process.class;
   }
   
-  protected void executeParse(BpmnParse bpmnParse, Process process, ScopeImpl scope, ActivityImpl activity, SubProcess subProcess) {
+  protected void executeParse(BpmnParse bpmnParse, Process process) {
     if (process.isExecutable() == false) {
       LOGGER.info("Ignoring non-executable process with id='" + process.getId() + "'. Set the attribute isExecutable=\"true\" to deploy this process.");
     } else {
@@ -80,8 +77,12 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
       LOGGER.debug("Parsing process {}", currentProcessDefinition.getKey());
     }
     
-    bpmnParse.processFlowElements(process.getFlowElements(), currentProcessDefinition, null);
+    bpmnParse.setCurrentScope(currentProcessDefinition);
+    
+    bpmnParse.processFlowElements(process.getFlowElements());
     bpmnParse.processArtifacts(process.getArtifacts(), currentProcessDefinition);
+    
+    bpmnParse.removeCurrentScope();
     
     if (process.getIoSpecification() != null) {
       IOSpecification ioSpecification = bpmnParse.createIOSpecification(process.getIoSpecification());

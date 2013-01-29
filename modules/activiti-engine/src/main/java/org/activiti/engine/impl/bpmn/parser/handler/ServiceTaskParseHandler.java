@@ -17,13 +17,11 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.DataAssociation;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.ServiceTask;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.impl.bpmn.behavior.WebServiceActivityBehavior;
 import org.activiti.engine.impl.bpmn.data.AbstractDataAssociation;
 import org.activiti.engine.impl.bpmn.data.IOSpecification;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.apache.commons.lang.StringUtils;
 
 
@@ -36,9 +34,9 @@ public class ServiceTaskParseHandler extends AbstractMultiInstanceEnabledParseHa
     return ServiceTask.class;
   }
   
-  protected void executeParse(BpmnParse bpmnParse, ServiceTask serviceTask, ScopeImpl scope, ActivityImpl activityImpl, SubProcess subProcess) {
+  protected void executeParse(BpmnParse bpmnParse, ServiceTask serviceTask) {
     
-      ActivityImpl activity = createActivityOnScope(bpmnParse, serviceTask, BpmnXMLConstants.ELEMENT_TASK_SERVICE, scope);
+      ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, serviceTask, BpmnXMLConstants.ELEMENT_TASK_SERVICE);
       activity.setAsync(serviceTask.isAsynchronous());
       activity.setExclusive(!serviceTask.isNotExclusive());
 

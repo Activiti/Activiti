@@ -17,12 +17,10 @@ import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.ThrowEvent;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.apache.commons.lang.StringUtils;
 
 
@@ -35,7 +33,7 @@ public class SignalEventDefinitionParseHandler extends AbstractMultiInstanceEnab
     return SignalEventDefinition.class;
   }
   
-  protected void executeParse(BpmnParse bpmnParse, SignalEventDefinition signalDefinition, ScopeImpl scope, ActivityImpl activity, SubProcess subProcess) {
+  protected void executeParse(BpmnParse bpmnParse, SignalEventDefinition signalDefinition) {
     
     if (bpmnParse.getBpmnModel().containsSignalId(signalDefinition.getSignalRef())) {
       String signalName = bpmnParse.getBpmnModel().getSignal(signalDefinition.getSignalRef()).getName();
@@ -45,12 +43,13 @@ public class SignalEventDefinitionParseHandler extends AbstractMultiInstanceEnab
       signalDefinition.setSignalRef(signalName);
     }
     
+    ActivityImpl activity = bpmnParse.getCurrentActivity();
     if (bpmnParse.getCurrentFlowElement() instanceof StartEvent) {
     
       EventSubscriptionDeclaration eventSubscriptionDeclaration = new EventSubscriptionDeclaration(signalDefinition.getSignalRef(), "signal");
       eventSubscriptionDeclaration.setActivityId(activity.getId());
       eventSubscriptionDeclaration.setStartEvent(false);
-      addEventSubscriptionDeclaration(bpmnParse, eventSubscriptionDeclaration, signalDefinition, scope);
+      addEventSubscriptionDeclaration(bpmnParse, eventSubscriptionDeclaration, signalDefinition, bpmnParse.getCurrentScope());
       
     } else if (bpmnParse.getCurrentFlowElement() instanceof IntermediateCatchEvent){
       

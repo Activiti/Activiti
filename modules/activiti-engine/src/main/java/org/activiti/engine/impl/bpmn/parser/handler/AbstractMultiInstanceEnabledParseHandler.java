@@ -16,13 +16,11 @@ import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.apache.commons.lang.StringUtils;
 
 
@@ -32,22 +30,22 @@ import org.apache.commons.lang.StringUtils;
 public abstract class AbstractMultiInstanceEnabledParseHandler<T extends BaseElement> extends AbstractBpmnParseHandler<T> {
   
   @Override
-  public void parse(BpmnParse bpmnParse, BaseElement element, ScopeImpl scope, ActivityImpl activity, SubProcess subProcess) {
-    super.parse(bpmnParse, element, scope, activity, subProcess);
+  public void parse(BpmnParse bpmnParse, BaseElement element) {
+    super.parse(bpmnParse, element);
     
     if (element instanceof Activity
             && ((Activity) element).getLoopCharacteristics() != null) {
-      createMultiInstanceLoopCharacteristics(bpmnParse, (Activity) element, scope);
+      createMultiInstanceLoopCharacteristics(bpmnParse, (Activity) element);
     }
   }
   
-  protected void createMultiInstanceLoopCharacteristics(BpmnParse bpmnParse, org.activiti.bpmn.model.Activity modelActivity, ScopeImpl scope) {
+  protected void createMultiInstanceLoopCharacteristics(BpmnParse bpmnParse, org.activiti.bpmn.model.Activity modelActivity) {
     
     MultiInstanceLoopCharacteristics loopCharacteristics = modelActivity.getLoopCharacteristics();
     
     // Activity Behavior
     MultiInstanceActivityBehavior miActivityBehavior = null;
-    ActivityImpl activity = scope.findActivity(modelActivity.getId());
+    ActivityImpl activity = bpmnParse.getCurrentScope().findActivity(modelActivity.getId());
     if (activity == null) {
       bpmnParse.getBpmnModel().addProblem("Activity " + modelActivity.getId() + " needed for multi instance cannot bv found", modelActivity);
     }
@@ -104,11 +102,6 @@ public abstract class AbstractMultiInstanceEnabledParseHandler<T extends BaseEle
       bpmnModel.addProblem("LoopDataInputRef/activiti:collection must be set when using inputDataItem or activiti:elementVariable.", loopCharacteristics);
     }
 
-    // Todo: backwards compatibility?
-    
-//    for (BpmnParseListener parseListener : parseListeners) {
-//      parseListener.parseMultiInstanceLoopCharacteristics(modelActivity, loopCharacteristics, activity);
-//    }
   }
 
 }

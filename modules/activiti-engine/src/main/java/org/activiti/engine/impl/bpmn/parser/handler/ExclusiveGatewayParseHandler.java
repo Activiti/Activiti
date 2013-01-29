@@ -15,10 +15,8 @@ package org.activiti.engine.impl.bpmn.parser.handler;
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.ExclusiveGateway;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 
 
 /**
@@ -30,8 +28,8 @@ public class ExclusiveGatewayParseHandler extends AbstractMultiInstanceEnabledPa
     return ExclusiveGateway.class;
   }
   
-  protected void executeParse(BpmnParse bpmnParse, ExclusiveGateway gateway, ScopeImpl scope, ActivityImpl activityImpl, SubProcess subProcess) {
-    ActivityImpl activity = createActivityOnScope(bpmnParse, gateway, BpmnXMLConstants.ELEMENT_GATEWAY_EXCLUSIVE, scope);
+  protected void executeParse(BpmnParse bpmnParse, ExclusiveGateway gateway) {
+    ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, gateway, BpmnXMLConstants.ELEMENT_GATEWAY_EXCLUSIVE);
     activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createExclusiveGatewayActivityBehavior(gateway));
 
     createExecutionListenersOnScope(bpmnParse, gateway.getExecutionListeners(), activity);

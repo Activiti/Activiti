@@ -18,7 +18,6 @@ import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.engine.impl.bpmn.behavior.EventSubProcessStartEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
@@ -44,15 +43,16 @@ public class StartEventParseHandler extends AbstractMultiInstanceEnabledParseHan
   }
   
   @Override
-  protected void executeParse(BpmnParse bpmnParse, StartEvent startEvent, ScopeImpl scope, ActivityImpl activity, SubProcess subProcess) {
-    ActivityImpl startEventActivity = createActivityOnScope(bpmnParse, startEvent, BpmnXMLConstants.ELEMENT_EVENT_START, scope);
+  protected void executeParse(BpmnParse bpmnParse, StartEvent startEvent) {
+    ActivityImpl startEventActivity = createActivityOnCurrentScope(bpmnParse, startEvent, BpmnXMLConstants.ELEMENT_EVENT_START);
 
+    ScopeImpl scope = bpmnParse.getCurrentScope();
     if (scope instanceof ProcessDefinitionEntity) {
       createProcessDefinitionStartEvent(bpmnParse, startEventActivity, startEvent, (ProcessDefinitionEntity) scope);
       selectInitial(bpmnParse, startEventActivity, startEvent, (ProcessDefinitionEntity) scope);
       createStartFormHandlers(bpmnParse, startEvent, (ProcessDefinitionEntity) scope);
     } else {
-      createScopeStartEvent(bpmnParse, startEventActivity, startEvent, scope, subProcess);
+      createScopeStartEvent(bpmnParse, startEventActivity, startEvent);
     }
     
     createExecutionListenersOnScope(bpmnParse, startEvent.getExecutionListeners(), startEventActivity);
@@ -94,15 +94,16 @@ public class StartEventParseHandler extends AbstractMultiInstanceEnabledParseHan
     if (startEvent.getEventDefinitions().size() > 0) {
       EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
       if (eventDefinition instanceof TimerEventDefinition || eventDefinition instanceof MessageEventDefinition) {
-        bpmnParse.getBpmnParserHandlers().parse(bpmnParse, eventDefinition, processDefinition, startEventActivity, null);
+        bpmnParse.getBpmnParserHandlers().parse(bpmnParse, eventDefinition);
       } else {
         bpmnParse.getBpmnModel().addProblem("Unsupported event definition on start event", eventDefinition);
       }
     }
   }
   
-  protected void createScopeStartEvent(BpmnParse bpmnParse, ActivityImpl startEventActivity, StartEvent startEvent, ScopeImpl scope, SubProcess subProcess) {
+  protected void createScopeStartEvent(BpmnParse bpmnParse, ActivityImpl startEventActivity, StartEvent startEvent) {
 
+    ScopeImpl scope = bpmnParse.getCurrentScope();
     Object triggeredByEvent = scope.getProperty("triggeredByEvent");
     boolean isTriggeredByEvent = triggeredByEvent != null && ((Boolean) triggeredByEvent == true);
     
@@ -113,17 +114,13 @@ public class StartEventParseHandler extends AbstractMultiInstanceEnabledParseHan
               bpmnParse.getActivityBehaviorFactory().createEventSubProcessStartEventActivityBehavior(startEvent, startEventActivity.getId()); 
       startEventActivity.setActivityBehavior(activityBehavior);
       
-      // the scope of the event subscription is the parent of the event
-      // subprocess (subscription must be created when parent is initialized)
-      ScopeImpl catchingScope = ((ActivityImpl) scope).getParent();
-      
       if (startEvent.getEventDefinitions().size() > 0) {
         EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
         
         if (eventDefinition instanceof org.activiti.bpmn.model.ErrorEventDefinition 
                 || eventDefinition instanceof MessageEventDefinition
                 || eventDefinition instanceof SignalEventDefinition) {
-          bpmnParse.getBpmnParserHandlers().parse(bpmnParse, eventDefinition, scope, startEventActivity, subProcess);
+          bpmnParse.getBpmnParserHandlers().parse(bpmnParse, eventDefinition);
         } else {
           bpmnParse.getBpmnModel().addProblem("start event of event subprocess must be of type 'error', 'message' or 'signal' ", startEvent);
         }
@@ -138,7 +135,7 @@ public class StartEventParseHandler extends AbstractMultiInstanceEnabledParseHan
         scope.setProperty(PROPERTYNAME_INITIAL, startEventActivity);
         startEventActivity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createNoneStartEventActivityBehavior(startEvent));
       } else {
-        bpmnParse.getBpmnModel().addProblem("multiple start events not supported for subprocess", subProcess);
+        bpmnParse.getBpmnModel().addProblem("multiple start events not supported for subprocess", bpmnParse.getCurrentSubProcess());
       }
     }
 

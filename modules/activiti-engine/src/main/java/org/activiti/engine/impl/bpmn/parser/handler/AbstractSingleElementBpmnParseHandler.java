@@ -16,10 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.activiti.bpmn.model.BaseElement;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.parse.BpmnParseHandler;
 
 
@@ -40,11 +37,11 @@ public abstract class AbstractSingleElementBpmnParseHandler<T extends BaseElemen
   }
   
   @SuppressWarnings("unchecked")
-  public void parse(BpmnParse bpmnParse, BaseElement element, ScopeImpl scope, ActivityImpl activity, SubProcess subProcess) {
+  public void parse(BpmnParse bpmnParse, BaseElement element) {
     T baseElement = (T) element;
-    executeParse(bpmnParse, baseElement, scope, activity, subProcess);
+    executeParse(bpmnParse, baseElement);
   }
   
-  protected abstract void executeParse(BpmnParse bpmnParse, T element, ScopeImpl scope, ActivityImpl activity, SubProcess subProcess);
+  protected abstract void executeParse(BpmnParse bpmnParse, T element);
 
 }

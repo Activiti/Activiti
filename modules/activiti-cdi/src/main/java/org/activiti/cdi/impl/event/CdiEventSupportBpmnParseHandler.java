@@ -42,7 +42,6 @@ import org.activiti.cdi.BusinessProcessEventType;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.activiti.engine.parse.BpmnParseHandler;
 
@@ -89,12 +88,12 @@ public class CdiEventSupportBpmnParseHandler implements BpmnParseHandler {
     return supportedTypes;
   }
   
-  public void parse(BpmnParse bpmnParse, BaseElement element, ScopeImpl scope, ActivityImpl activityImpl, SubProcess subProcess) {
+  public void parse(BpmnParse bpmnParse, BaseElement element) {
     if (element instanceof SequenceFlow) {
       TransitionImpl transition = bpmnParse.getSequenceFlows().get(element.getId());
       transition.addExecutionListener(new CdiExecutionListener(transition.getId()));
     } else {
-      ActivityImpl activity = scope.findActivity(element.getId());
+      ActivityImpl activity = bpmnParse.getCurrentScope().findActivity(element.getId());
       if (activity != null) {
         addStartEventListener(activity);
         addEndEventListener(activity);

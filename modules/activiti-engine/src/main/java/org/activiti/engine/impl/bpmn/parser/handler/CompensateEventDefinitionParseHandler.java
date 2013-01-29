@@ -15,7 +15,6 @@ package org.activiti.engine.impl.bpmn.parser.handler;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.CompensateEventDefinition;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.ThrowEvent;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
@@ -31,8 +30,9 @@ public class CompensateEventDefinitionParseHandler extends AbstractMultiInstance
     return CompensateEventDefinition.class;
   }
 
-  protected void executeParse(BpmnParse bpmnParse, CompensateEventDefinition eventDefinition, ScopeImpl scope, ActivityImpl activity, SubProcess subProcess) {
+  protected void executeParse(BpmnParse bpmnParse, CompensateEventDefinition eventDefinition) {
     
+    ScopeImpl scope = bpmnParse.getCurrentScope();
     if(StringUtils.isNotEmpty(eventDefinition.getActivityRef())) {
       if(scope.findActivity(eventDefinition.getActivityRef()) == null) {
         bpmnParse.getBpmnModel().addProblem("Invalid attribute value for 'activityRef': no activity with id '" + eventDefinition.getActivityRef() +
@@ -45,6 +45,7 @@ public class CompensateEventDefinitionParseHandler extends AbstractMultiInstance
     compensateEventDefinition.setActivityRef(eventDefinition.getActivityRef());
     compensateEventDefinition.setWaitForCompletion(eventDefinition.isWaitForCompletion());
     
+    ActivityImpl activity = bpmnParse.getCurrentActivity();
     if (bpmnParse.getCurrentFlowElement() instanceof ThrowEvent) {
       
       activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateThrowCompensationEventActivityBehavior((ThrowEvent) bpmnParse.getCurrentFlowElement(), compensateEventDefinition));

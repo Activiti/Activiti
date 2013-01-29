@@ -20,11 +20,9 @@ import org.activiti.bpmn.model.CancelEventDefinition;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.SignalEventDefinition;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 
 
 /**
@@ -36,16 +34,17 @@ public class BoundaryEventParseHandler extends AbstractBpmnParseHandler<Boundary
     return BoundaryEvent.class;
   }
   
-  protected void executeParse(BpmnParse bpmnParse, BoundaryEvent boundaryEvent, ScopeImpl scope, ActivityImpl activity,  SubProcess subProcess) {
+  protected void executeParse(BpmnParse bpmnParse, BoundaryEvent boundaryEvent) {
     
     BpmnModel bpmnModel = bpmnParse.getBpmnModel();
-    ActivityImpl parentActivity = scope.findActivity(boundaryEvent.getAttachedToRefId());
+    ActivityImpl parentActivity = findActivity(bpmnParse, boundaryEvent.getAttachedToRefId());
     if (parentActivity == null) {
       bpmnModel.addProblem("Invalid reference in boundary event. Make sure that the referenced activity is defined in the same scope as the boundary event",  boundaryEvent);
       return;
     }
    
     ActivityImpl nestedActivity = createActivityOnScope(bpmnParse, boundaryEvent, BpmnXMLConstants.ELEMENT_EVENT_BOUNDARY, parentActivity);
+    bpmnParse.setCurrentActivity(nestedActivity);
 
     EventDefinition eventDefinition = null;
     if (boundaryEvent.getEventDefinitions().size() > 0) {
@@ -59,7 +58,7 @@ public class BoundaryEventParseHandler extends AbstractBpmnParseHandler<Boundary
             || eventDefinition instanceof MessageEventDefinition
             || eventDefinition instanceof org.activiti.bpmn.model.CompensateEventDefinition) {
 
-      bpmnParse.getBpmnParserHandlers().parse(bpmnParse, eventDefinition, scope, nestedActivity, subProcess);
+      bpmnParse.getBpmnParserHandlers().parse(bpmnParse, eventDefinition);
       
     } else {
       bpmnModel.addProblem("Unsupported boundary event type", boundaryEvent);

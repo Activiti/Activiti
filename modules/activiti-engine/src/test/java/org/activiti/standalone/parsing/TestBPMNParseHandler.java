@@ -15,11 +15,8 @@ package org.activiti.standalone.parsing;
 
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.Process;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.handler.AbstractBpmnParseHandler;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 
 
 /**
@@ -32,7 +29,7 @@ public class TestBPMNParseHandler extends AbstractBpmnParseHandler<Process> {
     return Process.class;
   }
   
-  protected void executeParse(BpmnParse bpmnParse, Process element, ScopeImpl scope, ActivityImpl activity, SubProcess subProcess) {
+  protected void executeParse(BpmnParse bpmnParse, Process element) {
     // Change the key of all deployed process-definitions
     bpmnParse.getCurrentProcessDefinition().setKey(bpmnParse.getCurrentProcessDefinition().getKey() + "-modified");
   }

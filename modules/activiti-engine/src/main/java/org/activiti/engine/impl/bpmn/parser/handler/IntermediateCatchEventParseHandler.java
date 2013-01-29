@@ -19,7 +19,6 @@ import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.SignalEventDefinition;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
@@ -35,7 +34,7 @@ public class IntermediateCatchEventParseHandler extends AbstractMultiInstanceEna
     return IntermediateCatchEvent.class;
   }
   
-  protected void executeParse(BpmnParse bpmnParse, IntermediateCatchEvent event, ScopeImpl scope, ActivityImpl activityImpl, SubProcess subProcess) {
+  protected void executeParse(BpmnParse bpmnParse, IntermediateCatchEvent event) {
     
     BpmnModel bpmnModel = bpmnParse.getBpmnModel();
     ActivityImpl nestedActivity = null;
@@ -47,10 +46,11 @@ public class IntermediateCatchEventParseHandler extends AbstractMultiInstanceEna
     if (eventDefinition == null) {
       
       bpmnModel.addProblem("No event definition for intermediate catch event " + event.getId(), event);
-      nestedActivity = createActivityOnScope(bpmnParse, event, BpmnXMLConstants.ELEMENT_EVENT_CATCH, scope);
+      nestedActivity = createActivityOnCurrentScope(bpmnParse, event, BpmnXMLConstants.ELEMENT_EVENT_CATCH);
       
     } else {
       
+      ScopeImpl scope = bpmnParse.getCurrentScope();
       String eventBasedGatewayId = getPrecedingEventBasedGateway(bpmnParse, event);
       if (eventBasedGatewayId  != null) {
         ActivityImpl gatewayActivity = scope.findActivity(eventBasedGatewayId);
@@ -66,7 +66,7 @@ public class IntermediateCatchEventParseHandler extends AbstractMultiInstanceEna
               || eventDefinition instanceof SignalEventDefinition
               || eventDefinition instanceof MessageEventDefinition) {
         
-        bpmnParse.getBpmnParserHandlers().parse(bpmnParse, eventDefinition, scope, nestedActivity, subProcess);
+        bpmnParse.getBpmnParserHandlers().parse(bpmnParse, eventDefinition);
         
       } else {
         bpmnModel.addProblem("Unsupported intermediate catch event type.", event);

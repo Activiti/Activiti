@@ -15,10 +15,7 @@ package org.activiti.engine.parse;
 import java.util.Set;
 
 import org.activiti.bpmn.model.BaseElement;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 
 /**
  * @author Joram Barrez
@@ -27,6 +24,6 @@ public interface BpmnParseHandler {
   
   Set<Class<? extends BaseElement>> getHandledTypes();
   
-  void parse(BpmnParse bpmnParse, BaseElement element, ScopeImpl scope, ActivityImpl activity, SubProcess subProcess);
+  void parse(BpmnParse bpmnParse, BaseElement element);
 
 }

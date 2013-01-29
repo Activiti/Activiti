@@ -19,7 +19,6 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.StartEvent;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.jobexecutor.TimerCatchIntermediateEventJobHandler;
@@ -28,7 +27,6 @@ import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 
 
 /**
@@ -42,8 +40,9 @@ public class TimerEventDefinitionParseHandler extends AbstractMultiInstanceEnabl
     return TimerEventDefinition.class;
   }
   
-  protected void executeParse(BpmnParse bpmnParse, TimerEventDefinition timerEventDefinition, ScopeImpl scope, ActivityImpl timerActivity, SubProcess subProcess) {
+  protected void executeParse(BpmnParse bpmnParse, TimerEventDefinition timerEventDefinition) {
     
+    ActivityImpl timerActivity = bpmnParse.getCurrentActivity();
     if (bpmnParse.getCurrentFlowElement() instanceof StartEvent) {
       
       ProcessDefinitionEntity processDefinition = bpmnParse.getCurrentProcessDefinition();

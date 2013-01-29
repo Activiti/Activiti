@@ -19,6 +19,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -120,6 +121,8 @@ public class BpmnParse implements BpmnXMLConstants {
   protected ProcessDefinitionEntity currentProcessDefinition;
   protected FlowElement currentFlowElement;
   protected ActivityImpl currentActivity;
+  protected LinkedList<SubProcess> currentSubprocessStack = new LinkedList<SubProcess>();
+  protected LinkedList<ScopeImpl> currentScopeStack = new LinkedList<ScopeImpl>();
   
   // NEW
   
@@ -375,7 +378,7 @@ public class BpmnParse implements BpmnXMLConstants {
   protected void transformProcessDefinitions() {
     sequenceFlows = new HashMap<String, TransitionImpl>();
     for (Process process : bpmnModel.getProcesses()) {
-      bpmnParserHandlers.parse(this, process, null, null, null);
+      bpmnParserHandlers.parse(this, process);
     }
     
     if (processDefinitions.size() > 0) {
@@ -383,7 +386,7 @@ public class BpmnParse implements BpmnXMLConstants {
     }
   }
   
-  public void processFlowElements(Collection<FlowElement> flowElements, ScopeImpl scope, SubProcess subProcess) {
+  public void processFlowElements(Collection<FlowElement> flowElements) {
     
     // Parsing the elements is done in a strict order of types, 
     // as otherwise certain information might not be available when parsing a certain type.
@@ -401,25 +404,25 @@ public class BpmnParse implements BpmnXMLConstants {
       } else if (flowElement instanceof BoundaryEvent) {
         boundaryEventsToParse.add((BoundaryEvent) flowElement);
       } else {
-        bpmnParserHandlers.parse(this, flowElement, scope, null, subProcess);
+        bpmnParserHandlers.parse(this, flowElement);
       }
       
     }
     
     // Boundary events are parsed after all the regular activities are parsed
     for (BoundaryEvent boundaryEvent : boundaryEventsToParse) {
-      bpmnParserHandlers.parse(this, boundaryEvent, scope, null, subProcess);
+      bpmnParserHandlers.parse(this, boundaryEvent);
     }
     
     // sequence flows
     for (SequenceFlow sequenceFlow : sequenceFlowToParse) {
-      bpmnParserHandlers.parse(this, sequenceFlow, scope, null, subProcess);
+      bpmnParserHandlers.parse(this, sequenceFlow);
     }
     
     // validations after complete model
     for (FlowElement flowElement : flowElements) {
       if (flowElement instanceof ExclusiveGateway) {
-        ActivityImpl gatewayActivity = scope.findActivity(flowElement.getId());
+        ActivityImpl gatewayActivity = getCurrentScope().findActivity(flowElement.getId());
         validateExclusiveGateway(gatewayActivity, (ExclusiveGateway) flowElement);
       }
     }
@@ -761,13 +764,36 @@ public class BpmnParse implements BpmnXMLConstants {
     this.currentFlowElement = currentFlowElement;
   }
 
-  
   public ActivityImpl getCurrentActivity() {
     return currentActivity;
   }
 
   public void setCurrentActivity(ActivityImpl currentActivity) {
     this.currentActivity = currentActivity;
+  }
+  
+  public void setCurrentSubProcess(SubProcess subProcess) {
+    currentSubprocessStack.push(subProcess);
+  }
+  
+  public SubProcess getCurrentSubProcess() {
+    return currentSubprocessStack.peek();
+  }
+  
+  public void removeCurrentSubProcess() {
+    currentSubprocessStack.pop();
+  }
+  
+  public void setCurrentScope(ScopeImpl scope) {
+    currentScopeStack.push(scope);
+  }
+  
+  public ScopeImpl getCurrentScope() {
+    return currentScopeStack.peek();
+  }
+  
+  public void removeCurrentScope() {
+    currentScopeStack.pop();
   }
   
 }

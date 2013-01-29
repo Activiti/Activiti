@@ -15,10 +15,8 @@ package org.activiti.engine.impl.bpmn.parser.handler;
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.InclusiveGateway;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 
 
 /**
@@ -30,8 +28,8 @@ public class InclusiveGatewayParseHandler extends AbstractMultiInstanceEnabledPa
     return InclusiveGateway.class;
   }
   
-  protected void executeParse(BpmnParse bpmnParse, InclusiveGateway gateway, ScopeImpl scope, ActivityImpl activityImpl, SubProcess subProcess) {
-    ActivityImpl activity = createActivityOnScope(bpmnParse, gateway, BpmnXMLConstants.ELEMENT_GATEWAY_INCLUSIVE, scope);
+  protected void executeParse(BpmnParse bpmnParse, InclusiveGateway gateway) {
+    ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, gateway, BpmnXMLConstants.ELEMENT_GATEWAY_INCLUSIVE);
     activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createInclusiveGatewayActivityBehavior(gateway));
 
     createExecutionListenersOnScope(bpmnParse, gateway.getExecutionListeners(), activity);

@@ -15,10 +15,8 @@ package org.activiti.engine.impl.bpmn.parser.handler;
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.ReceiveTask;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 
 
 /**
@@ -30,8 +28,8 @@ public class ReceiveTaskParseHandler extends AbstractMultiInstanceEnabledParseHa
     return ReceiveTask.class;
   }
   
-  protected void executeParse(BpmnParse bpmnParse, ReceiveTask receiveTask, ScopeImpl scope, ActivityImpl activityImpl, SubProcess subProcess) {
-    ActivityImpl activity = createActivityOnScope(bpmnParse, receiveTask, BpmnXMLConstants.ELEMENT_TASK_RECEIVE, scope);
+  protected void executeParse(BpmnParse bpmnParse, ReceiveTask receiveTask) {
+    ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, receiveTask, BpmnXMLConstants.ELEMENT_TASK_RECEIVE);
     activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createReceiveTaskActivityBehavior(receiveTask));
     
     activity.setAsync(receiveTask.isAsynchronous());

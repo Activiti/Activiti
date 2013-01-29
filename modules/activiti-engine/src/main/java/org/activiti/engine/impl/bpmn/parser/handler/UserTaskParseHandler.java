@@ -16,7 +16,6 @@ import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.ImplementationType;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
@@ -25,7 +24,6 @@ import org.activiti.engine.impl.form.DefaultTaskFormHandler;
 import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.apache.commons.lang.StringUtils;
 
@@ -41,13 +39,13 @@ public class UserTaskParseHandler extends AbstractMultiInstanceEnabledParseHandl
     return UserTask.class;
   }
   
-  protected void executeParse(BpmnParse bpmnParse, UserTask userTask, ScopeImpl scope, ActivityImpl activityImpl, SubProcess subProcess) {
-    ActivityImpl activity = createActivityOnScope(bpmnParse, userTask, BpmnXMLConstants.ELEMENT_TASK_USER, scope);
+  protected void executeParse(BpmnParse bpmnParse, UserTask userTask) {
+    ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, userTask, BpmnXMLConstants.ELEMENT_TASK_USER);
     
     activity.setAsync(userTask.isAsynchronous());
     activity.setExclusive(!userTask.isNotExclusive()); 
     
-    TaskDefinition taskDefinition = parseTaskDefinition(bpmnParse, userTask, userTask.getId(), (ProcessDefinitionEntity) scope.getProcessDefinition());
+    TaskDefinition taskDefinition = parseTaskDefinition(bpmnParse, userTask, userTask.getId(), (ProcessDefinitionEntity) bpmnParse.getCurrentScope().getProcessDefinition());
     activity.setProperty(PROPERTY_TASK_DEFINITION, taskDefinition);
     activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createUserTaskActivityBehavior(userTask, taskDefinition));
 

@@ -19,10 +19,8 @@ import org.activiti.bpmn.model.EventGateway;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.SequenceFlow;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 
 
 /**
@@ -34,8 +32,8 @@ public class EventBasedGatewayParseHandler extends AbstractMultiInstanceEnabledP
     return EventGateway.class;
   }
   
-  protected void executeParse(BpmnParse bpmnParse, EventGateway gateway, ScopeImpl scope, ActivityImpl activityimpl, SubProcess subProcess) {
-    ActivityImpl activity = createActivityOnScope(bpmnParse, gateway, BpmnXMLConstants.ELEMENT_GATEWAY_EVENT, scope);   
+  protected void executeParse(BpmnParse bpmnParse, EventGateway gateway) {
+    ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, gateway, BpmnXMLConstants.ELEMENT_GATEWAY_EVENT);   
     activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createEventBasedGatewayActivityBehavior(gateway));
     activity.setScope(true);
 

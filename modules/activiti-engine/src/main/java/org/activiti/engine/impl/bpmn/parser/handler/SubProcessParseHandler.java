@@ -22,7 +22,6 @@ import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.impl.bpmn.data.IOSpecification;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 
 
 /**
@@ -41,9 +40,9 @@ public class SubProcessParseHandler extends AbstractMultiInstanceEnabledParseHan
     return supportedTypes;
   }
   
-  protected void executeParse(BpmnParse bpmnParse, SubProcess subProcess, ScopeImpl scope, ActivityImpl activityImpl, SubProcess parentSubProcess) {
+  protected void executeParse(BpmnParse bpmnParse, SubProcess subProcess) {
     
-    ActivityImpl activity = createActivityOnScope(bpmnParse, subProcess, BpmnXMLConstants.ELEMENT_SUBPROCESS, scope);
+    ActivityImpl activity = createActivityOnScope(bpmnParse, subProcess, BpmnXMLConstants.ELEMENT_SUBPROCESS, bpmnParse.getCurrentScope());
     
     activity.setAsync(subProcess.isAsynchronous());
     activity.setExclusive(!subProcess.isNotExclusive());
@@ -58,8 +57,14 @@ public class SubProcessParseHandler extends AbstractMultiInstanceEnabledParseHan
     activity.setScope(!triggeredByEvent);
     activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createSubprocActivityBehavior(subProcess));
     
-    bpmnParse.processFlowElements(subProcess.getFlowElements(), activity, subProcess);
+    bpmnParse.setCurrentScope(activity);
+    bpmnParse.setCurrentSubProcess(subProcess);
+    
+    bpmnParse.processFlowElements(subProcess.getFlowElements());
     bpmnParse.processArtifacts(subProcess.getArtifacts(), activity);
+    
+    bpmnParse.removeCurrentScope();
+    bpmnParse.removeCurrentSubProcess();
     
     if (subProcess.getIoSpecification() != null) {
       IOSpecification ioSpecification = bpmnParse.createIOSpecification(subProcess.getIoSpecification());
