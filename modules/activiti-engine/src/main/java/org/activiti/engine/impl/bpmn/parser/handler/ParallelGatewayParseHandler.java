@@ -22,7 +22,7 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 /**
  * @author Joram Barrez
  */
-public class ParallelGatewayParseHandler extends AbstractMultiInstanceEnabledParseHandler<ParallelGateway> {
+public class ParallelGatewayParseHandler extends AbstractActivityBpmnParseHandler<ParallelGateway> {
   
   public Class< ? extends BaseElement> getHandledType() {
     return ParallelGateway.class;
@@ -31,8 +31,6 @@ public class ParallelGatewayParseHandler extends AbstractMultiInstanceEnabledPar
   protected void executeParse(BpmnParse bpmnParse, ParallelGateway gateway) {
     ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, gateway, BpmnXMLConstants.ELEMENT_GATEWAY_PARALLEL);
     activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createParallelGatewayActivityBehavior(gateway));
-
-    createExecutionListenersOnScope(bpmnParse, gateway.getExecutionListeners(), activity);
   }
 
 }

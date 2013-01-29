@@ -28,7 +28,7 @@ import org.apache.commons.lang.StringUtils;
 /**
  * @author Joram Barrez
  */
-public class IntermediateThrowEventParseHandler extends AbstractMultiInstanceEnabledParseHandler<ThrowEvent> {
+public class IntermediateThrowEventParseHandler extends AbstractActivityBpmnParseHandler<ThrowEvent> {
   
   public Class< ? extends BaseElement> getHandledType() {
     return ThrowEvent.class;
@@ -54,8 +54,6 @@ public class IntermediateThrowEventParseHandler extends AbstractMultiInstanceEna
     } else { 
       bpmnModel.addProblem("Unsupported intermediate throw event type " + eventDefinition, intermediateEvent);
     }
-    
-    createExecutionListenersOnScope(bpmnParse, intermediateEvent.getExecutionListeners(), nestedActivityImpl);
   }
   
   protected CompensateEventDefinition createCompensateEventDefinition(BpmnParse bpmnParse, org.activiti.bpmn.model.CompensateEventDefinition eventDefinition, ScopeImpl scopeElement) {

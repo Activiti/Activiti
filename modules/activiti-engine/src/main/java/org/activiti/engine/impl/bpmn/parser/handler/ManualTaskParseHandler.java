@@ -22,7 +22,7 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 /**
  * @author Joram Barrez
  */
-public class ManualTaskParseHandler extends AbstractMultiInstanceEnabledParseHandler<ManualTask> {
+public class ManualTaskParseHandler extends AbstractActivityBpmnParseHandler<ManualTask> {
   
   public Class< ? extends BaseElement> getHandledType() {
     return ManualTask.class;
@@ -34,8 +34,6 @@ public class ManualTaskParseHandler extends AbstractMultiInstanceEnabledParseHan
     
     activity.setAsync(manualTask.isAsynchronous());
     activity.setExclusive(!manualTask.isNotExclusive());
-
-    createExecutionListenersOnScope(bpmnParse, manualTask.getExecutionListeners(), activity);
   }
 
 }

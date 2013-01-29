@@ -32,7 +32,7 @@ import org.apache.commons.lang.StringUtils;
 /**
  * @author Joram Barrez
  */
-public class StartEventParseHandler extends AbstractMultiInstanceEnabledParseHandler<StartEvent> {
+public class StartEventParseHandler extends AbstractActivityBpmnParseHandler<StartEvent> {
   
   public static final String PROPERTYNAME_INITIATOR_VARIABLE_NAME = "initiatorVariableName";
   public static final String PROPERTYNAME_INITIAL = "initial";
@@ -54,8 +54,6 @@ public class StartEventParseHandler extends AbstractMultiInstanceEnabledParseHan
     } else {
       createScopeStartEvent(bpmnParse, startEventActivity, startEvent);
     }
-    
-    createExecutionListenersOnScope(bpmnParse, startEvent.getExecutionListeners(), startEventActivity);
   }
   
   protected void selectInitial(BpmnParse bpmnParse, ActivityImpl startEventActivity, StartEvent startEvent, ProcessDefinitionEntity processDefinition) {

@@ -31,7 +31,7 @@ import org.apache.commons.lang.StringUtils;
 /**
  * @author Joram Barrez
  */
-public class UserTaskParseHandler extends AbstractMultiInstanceEnabledParseHandler<UserTask> {
+public class UserTaskParseHandler extends AbstractActivityBpmnParseHandler<UserTask> {
   
   public static final String PROPERTY_TASK_DEFINITION = "taskDefinition";
   
@@ -48,9 +48,6 @@ public class UserTaskParseHandler extends AbstractMultiInstanceEnabledParseHandl
     TaskDefinition taskDefinition = parseTaskDefinition(bpmnParse, userTask, userTask.getId(), (ProcessDefinitionEntity) bpmnParse.getCurrentScope().getProcessDefinition());
     activity.setProperty(PROPERTY_TASK_DEFINITION, taskDefinition);
     activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createUserTaskActivityBehavior(userTask, taskDefinition));
-
-    //parseProperties(userTaskElement, activity);
-    createExecutionListenersOnScope(bpmnParse, userTask.getExecutionListeners(), activity);
   }
   
   public TaskDefinition parseTaskDefinition(BpmnParse bpmnParse, UserTask userTask, String taskDefinitionKey, ProcessDefinitionEntity processDefinition) {

@@ -12,36 +12,21 @@
  */
 package org.activiti.engine.impl.bpmn.parser.handler;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.FlowNode;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.parse.BpmnParseHandler;
 
 
 /**
  * @author Joram Barrez
  */
-public abstract class AbstractSingleElementBpmnParseHandler<T extends BaseElement> implements BpmnParseHandler {
+public abstract class AbstractFlowNodeBpmnParseHandler<T extends FlowNode> extends AbstractBpmnParseHandler<T> {
   
-  public Set<Class< ? extends BaseElement>> getHandledTypes() {
-    Set<Class< ? extends BaseElement>> types = new HashSet<Class<? extends BaseElement>>();
-    types.add(getHandledType());
-    return types;
-  }
-  
-  protected Class<? extends BaseElement> getHandledType() {
-    // Subclasses should override
-    return null;
-  }
-  
-  @SuppressWarnings("unchecked")
+  @Override
   public void parse(BpmnParse bpmnParse, BaseElement element) {
-    T baseElement = (T) element;
-    executeParse(bpmnParse, baseElement);
+    super.parse(bpmnParse, element);
+    createExecutionListenersOnScope(bpmnParse, ((FlowNode) element).getExecutionListeners(), findActivity(bpmnParse, element.getId()));
   }
   
-  protected abstract void executeParse(BpmnParse bpmnParse, T element);
-
+  
 }

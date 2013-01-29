@@ -16,7 +16,7 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.bpmn.parser.handler.AbstractSingleElementBpmnParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.AbstractBpmnParseHandler;
 import org.activiti.engine.impl.bpmn.parser.handler.UserTaskParseHandler;
 import org.activiti.engine.impl.history.handler.UserTaskAssignmentHandler;
 import org.activiti.engine.impl.history.handler.UserTaskIdHandler;
@@ -26,7 +26,7 @@ import org.activiti.engine.impl.task.TaskDefinition;
 /**
  * @author Joram Barrez
  */
-public class UserTaskHistoryParseHandler extends AbstractSingleElementBpmnParseHandler<UserTask> {
+public class UserTaskHistoryParseHandler extends AbstractBpmnParseHandler<UserTask> {
   
   protected static final UserTaskAssignmentHandler USER_TASK_ASSIGNMENT_HANDLER = new UserTaskAssignmentHandler();
   

@@ -28,7 +28,7 @@ import org.apache.commons.lang.StringUtils;
 /**
  * @author Joram Barrez
  */
-public class ServiceTaskParseHandler extends AbstractMultiInstanceEnabledParseHandler<ServiceTask> {
+public class ServiceTaskParseHandler extends AbstractExternalInvocationBpmnParseHandler<ServiceTask> {
   
   public Class< ? extends BaseElement> getHandledType() {
     return ServiceTask.class;
@@ -101,8 +101,6 @@ public class ServiceTaskParseHandler extends AbstractMultiInstanceEnabledParseHa
       } else {
         bpmnParse.getBpmnModel().addProblem("One of the attributes 'class', 'delegateExpression', 'type', 'operation', or 'expression' is mandatory on serviceTask.", serviceTask);
       }
-
-      createExecutionListenersOnScope(bpmnParse, serviceTask.getExecutionListeners(), activity);
 
     }
 }

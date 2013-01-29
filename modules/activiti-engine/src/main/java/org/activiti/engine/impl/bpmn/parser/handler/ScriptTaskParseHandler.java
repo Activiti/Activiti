@@ -22,7 +22,7 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 /**
  * @author Joram Barrez
  */
-public class ScriptTaskParseHandler extends AbstractMultiInstanceEnabledParseHandler<ScriptTask> {
+public class ScriptTaskParseHandler extends AbstractActivityBpmnParseHandler<ScriptTask> {
   
   public Class< ? extends BaseElement> getHandledType() {
     return ScriptTask.class;
@@ -36,8 +36,6 @@ public class ScriptTaskParseHandler extends AbstractMultiInstanceEnabledParseHan
     activity.setExclusive(!scriptTask.isNotExclusive());
 
     activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createScriptTaskActivityBehavior(scriptTask));
-
-    createExecutionListenersOnScope(bpmnParse, scriptTask.getExecutionListeners(), activity);
   }
 
 }

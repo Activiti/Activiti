@@ -28,7 +28,7 @@ import org.activiti.engine.impl.pvm.process.ScopeImpl;
 /**
  * @author Joram Barrez
  */
-public class IntermediateCatchEventParseHandler extends AbstractMultiInstanceEnabledParseHandler<IntermediateCatchEvent> {
+public class IntermediateCatchEventParseHandler extends AbstractActivityBpmnParseHandler<IntermediateCatchEvent> {
   
   public Class< ? extends BaseElement> getHandledType() {
     return IntermediateCatchEvent.class;
@@ -72,8 +72,6 @@ public class IntermediateCatchEventParseHandler extends AbstractMultiInstanceEna
         bpmnModel.addProblem("Unsupported intermediate catch event type.", event);
       }
     }
-    
-    createExecutionListenersOnScope(bpmnParse, event.getExecutionListeners(), nestedActivity);
   }
   
 }

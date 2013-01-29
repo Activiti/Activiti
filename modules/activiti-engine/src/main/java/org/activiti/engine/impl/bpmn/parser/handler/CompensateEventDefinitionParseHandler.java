@@ -24,7 +24,7 @@ import org.apache.commons.lang.StringUtils;
 /**
  * @author Joram Barrez
  */
-public class CompensateEventDefinitionParseHandler extends AbstractMultiInstanceEnabledParseHandler<CompensateEventDefinition> {
+public class CompensateEventDefinitionParseHandler extends AbstractBpmnParseHandler<CompensateEventDefinition> {
 
   public Class< ? extends BaseElement> getHandledType() {
     return CompensateEventDefinition.class;

@@ -13,34 +13,27 @@
 package org.activiti.engine.impl.bpmn.parser.handler;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.EventGateway;
-import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Gateway;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.SequenceFlow;
-import org.activiti.bpmn.model.Task;
-import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.engine.delegate.ExecutionListener;
-import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.bpmn.parser.ErrorEventDefinition;
 import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
-import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
-import org.activiti.engine.impl.jobexecutor.TimerDeclarationType;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
-import org.apache.commons.lang.StringUtils;
+import org.activiti.engine.parse.BpmnParseHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Joram Barrez
  */
-public abstract class AbstractBpmnParseHandler<T extends BaseElement> extends AbstractSingleElementBpmnParseHandler<T> {
+public abstract class AbstractBpmnParseHandler<T extends BaseElement> implements BpmnParseHandler {
   
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractBpmnParseHandler.class);
   
@@ -63,6 +56,25 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement> extends Ab
   
   public static final String PROPERTYNAME_TIMER_DECLARATION = "timerDeclarations";
   
+  public Set<Class< ? extends BaseElement>> getHandledTypes() {
+    Set<Class< ? extends BaseElement>> types = new HashSet<Class<? extends BaseElement>>();
+    types.add(getHandledType());
+    return types;
+  }
+  
+  protected Class<? extends BaseElement> getHandledType() {
+    // Subclasses should override
+    return null;
+  }
+  
+  @SuppressWarnings("unchecked")
+  public void parse(BpmnParse bpmnParse, BaseElement element) {
+    T baseElement = (T) element;
+    executeParse(bpmnParse, baseElement);
+  }
+  
+  protected abstract void executeParse(BpmnParse bpmnParse, T element);
+  
   protected ActivityImpl findActivity(BpmnParse bpmnParse, String id) {
     return bpmnParse.getCurrentScope().findActivity(id);
   }
@@ -71,11 +83,6 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement> extends Ab
     return createActivityOnScope(bpmnParse, flowElement, xmlLocalName, bpmnParse.getCurrentScope());
   }
   
-  /**
-   * Parses the generic information of an activity element (id, name,
-   * documentation, etc.), and creates a new {@link ActivityImpl} on the given
-   * scope element.
-   */
   public ActivityImpl createActivityOnScope(BpmnParse bpmnParse, FlowElement flowElement, String xmlLocalName, ScopeImpl scopeElement) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Parsing activity {}", flowElement.getId());
@@ -148,97 +155,6 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement> extends Ab
     eventDefinitions.add(subscription);
   }
   
-  // Todo: move to correct class
-  protected TimerDeclarationImpl createTimer(BpmnParse bpmnParse, TimerEventDefinition timerEventDefinition, ScopeImpl timerActivity, String jobHandlerType) {
-    TimerDeclarationType type = null;
-    Expression expression = null;
-    ExpressionManager expressionManager = bpmnParse.getExpressionManager();
-    if (StringUtils.isNotEmpty(timerEventDefinition.getTimeDate())) {
-      // TimeDate
-      type = TimerDeclarationType.DATE;
-      expression = expressionManager.createExpression(timerEventDefinition.getTimeDate());
-    } else if (StringUtils.isNotEmpty(timerEventDefinition.getTimeCycle())) {
-      // TimeCycle
-      type = TimerDeclarationType.CYCLE;
-      expression = expressionManager.createExpression(timerEventDefinition.getTimeCycle());
-    } else if (StringUtils.isNotEmpty(timerEventDefinition.getTimeDuration())) {
-      // TimeDuration
-      type = TimerDeclarationType.DURATION;
-      expression = expressionManager.createExpression(timerEventDefinition.getTimeDuration());
-    }    
-    
-    // neither date, cycle or duration configured!
-    if (expression == null) {
-      bpmnParse.getBpmnModel().addProblem("Timer needs configuration (either timeDate, timeCycle or timeDuration is needed).", timerEventDefinition);      
-    }    
-
-    // Parse the timer declaration
-    // TODO move the timer declaration into the bpmn activity or next to the
-    // TimerSession
-    TimerDeclarationImpl timerDeclaration = new TimerDeclarationImpl(expression, type, jobHandlerType);
-    timerDeclaration.setJobHandlerConfiguration(timerActivity.getId());
-    timerDeclaration.setExclusive(true);
-    return timerDeclaration;
-  }
-  
-  protected void addErrorEventDefinition(ErrorEventDefinition errorEventDefinition, ScopeImpl catchingScope) {
-    List<ErrorEventDefinition> errorEventDefinitions = (List<ErrorEventDefinition>) catchingScope.getProperty(PROPERTYNAME_ERROR_EVENT_DEFINITIONS);
-    if(errorEventDefinitions == null) {
-      errorEventDefinitions = new ArrayList<ErrorEventDefinition>();
-      catchingScope.setProperty(PROPERTYNAME_ERROR_EVENT_DEFINITIONS, errorEventDefinitions);
-    }
-    errorEventDefinitions.add(errorEventDefinition);
-    Collections.sort(errorEventDefinitions, ErrorEventDefinition.comparator);
-  }
-  
-  // TODO: does this belong here? What about a second subclass?
-  protected void validateFieldDeclarationsForEmail(BpmnParse bpmnParse, Task task, List<FieldExtension> fieldExtensions) {
-    boolean toDefined = false;
-    boolean textOrHtmlDefined = false;
-    
-    for (FieldExtension fieldExtension : fieldExtensions) {
-      if (fieldExtension.getFieldName().equals("to")) {
-        toDefined = true;
-      }
-      if (fieldExtension.getFieldName().equals("html")) {
-        textOrHtmlDefined = true;
-      }
-      if (fieldExtension.getFieldName().equals("text")) {
-        textOrHtmlDefined = true;
-      }
-    }
-
-    if (!toDefined) {
-      bpmnParse.getBpmnModel().addProblem("No recipient is defined on the mail activity", task);
-    }
-    if (!textOrHtmlDefined) {
-      bpmnParse.getBpmnModel().addProblem("Text or html field should be provided", task);
-    }
-  }
-
-  // TODO: does this belong here? What about a second subclass?
-  protected void validateFieldDeclarationsForShell(BpmnParse bpmnParse, Task task, List<FieldExtension> fieldExtensions) {
-    boolean shellCommandDefined = false;
-
-    for (FieldExtension fieldExtension : fieldExtensions) {
-      String fieldName = fieldExtension.getFieldName();
-      String fieldValue = fieldExtension.getStringValue();
-
-      shellCommandDefined |= fieldName.equals("command");
-
-      if ((fieldName.equals("wait") || fieldName.equals("redirectError") || fieldName.equals("cleanEnv")) && !fieldValue.toLowerCase().equals("true")
-              && !fieldValue.toLowerCase().equals("false")) {
-        bpmnParse.getBpmnModel().addProblem("undefined value for shell " + fieldName + " parameter :" + fieldValue.toString() + ".", task);
-      }
-
-    }
-
-    if (!shellCommandDefined) {
-      bpmnParse.getBpmnModel().addProblem("No shell command is defined on the shell activity", task);
-    }
-  }
-  
-  // Todo: move to correct subclass
   protected String getPrecedingEventBasedGateway(BpmnParse bpmnParse, IntermediateCatchEvent event) {
     String eventBasedGatewayId = null;
     for (SequenceFlow sequenceFlow : event.getIncomingFlows()) {
@@ -249,17 +165,6 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement> extends Ab
       }
     }
     return eventBasedGatewayId;
-  }
-  
-  // TODO: move to correct class
-  @SuppressWarnings("unchecked")
-  protected void addTimerDeclaration(ScopeImpl scope, TimerDeclarationImpl timerDeclaration) {
-    List<TimerDeclarationImpl> timerDeclarations = (List<TimerDeclarationImpl>) scope.getProperty(PROPERTYNAME_TIMER_DECLARATION);
-    if (timerDeclarations == null) {
-      timerDeclarations = new ArrayList<TimerDeclarationImpl>();
-      scope.setProperty(PROPERTYNAME_TIMER_DECLARATION, timerDeclarations);
-    }
-    timerDeclarations.add(timerDeclaration);
   }
   
 

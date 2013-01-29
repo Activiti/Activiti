@@ -22,7 +22,7 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 /**
  * @author Joram Barrez
  */
-public class BusinessRuleParseHandler extends AbstractMultiInstanceEnabledParseHandler<BusinessRuleTask> {
+public class BusinessRuleParseHandler extends AbstractActivityBpmnParseHandler<BusinessRuleTask> {
   
   public Class< ? extends BaseElement> getHandledType() {
     return BusinessRuleTask.class;
@@ -35,8 +35,6 @@ public class BusinessRuleParseHandler extends AbstractMultiInstanceEnabledParseH
     activity.setAsync(businessRuleTask.isAsynchronous());
     activity.setExclusive(!businessRuleTask.isNotExclusive());
     activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createBusinessRuleTaskActivityBehavior(businessRuleTask));
-    
-    createExecutionListenersOnScope(bpmnParse, businessRuleTask.getExecutionListeners(), activity);
   }
 
 }

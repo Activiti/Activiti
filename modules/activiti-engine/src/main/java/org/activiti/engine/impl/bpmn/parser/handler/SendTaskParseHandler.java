@@ -29,7 +29,7 @@ import org.apache.commons.lang.StringUtils;
 /**
  * @author Joram Barrez
  */
-public class SendTaskParseHandler extends AbstractMultiInstanceEnabledParseHandler<SendTask> {
+public class SendTaskParseHandler extends AbstractExternalInvocationBpmnParseHandler<SendTask> {
   
   public Class< ? extends BaseElement> getHandledType() {
     return SendTask.class;
@@ -84,8 +84,6 @@ public class SendTaskParseHandler extends AbstractMultiInstanceEnabledParseHandl
     } else {
       bpmnParse.getBpmnModel().addProblem("One of the attributes 'type' or 'operation' is mandatory on sendTask.", sendTask);
     }
-
-    createExecutionListenersOnScope(bpmnParse, sendTask.getExecutionListeners(), activity);
   }
 
 }

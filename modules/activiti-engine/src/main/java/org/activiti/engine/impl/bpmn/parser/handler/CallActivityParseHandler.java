@@ -22,7 +22,7 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 /**
  * @author Joram Barrez
  */
-public class CallActivityParseHandler extends AbstractMultiInstanceEnabledParseHandler<CallActivity> {
+public class CallActivityParseHandler extends AbstractActivityBpmnParseHandler<CallActivity> {
   
   public Class< ? extends BaseElement> getHandledType() {
     return CallActivity.class;
@@ -33,8 +33,6 @@ public class CallActivityParseHandler extends AbstractMultiInstanceEnabledParseH
     ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, callActivity, BpmnXMLConstants.ELEMENT_CALL_ACTIVITY);
     activity.setScope(true);
     activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createCallActivityBehavior(callActivity));
-
-    createExecutionListenersOnScope(bpmnParse, callActivity.getExecutionListeners(), activity);
   }
 
 }

@@ -27,7 +27,7 @@ import org.apache.commons.lang.StringUtils;
 /**
  * @author Joram Barrez
  */
-public class SignalEventDefinitionParseHandler extends AbstractMultiInstanceEnabledParseHandler<SignalEventDefinition> {
+public class SignalEventDefinitionParseHandler extends AbstractBpmnParseHandler<SignalEventDefinition> {
   
   public Class< ? extends BaseElement> getHandledType() {
     return SignalEventDefinition.class;

@@ -22,7 +22,7 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 /**
  * @author Joram Barrez
  */
-public class InclusiveGatewayParseHandler extends AbstractMultiInstanceEnabledParseHandler<InclusiveGateway> {
+public class InclusiveGatewayParseHandler extends AbstractActivityBpmnParseHandler<InclusiveGateway> {
   
   public Class< ? extends BaseElement> getHandledType() {
     return InclusiveGateway.class;
@@ -31,8 +31,6 @@ public class InclusiveGatewayParseHandler extends AbstractMultiInstanceEnabledPa
   protected void executeParse(BpmnParse bpmnParse, InclusiveGateway gateway) {
     ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, gateway, BpmnXMLConstants.ELEMENT_GATEWAY_INCLUSIVE);
     activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createInclusiveGatewayActivityBehavior(gateway));
-
-    createExecutionListenersOnScope(bpmnParse, gateway.getExecutionListeners(), activity);
   }
 
 }

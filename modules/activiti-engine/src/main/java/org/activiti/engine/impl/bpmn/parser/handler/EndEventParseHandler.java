@@ -27,7 +27,7 @@ import org.apache.commons.lang.StringUtils;
 /**
  * @author Joram Barrez
  */
-public class EndEventParseHandler extends AbstractMultiInstanceEnabledParseHandler<EndEvent> {
+public class EndEventParseHandler extends AbstractActivityBpmnParseHandler<EndEvent> {
   
   public Class< ? extends BaseElement> getHandledType() {
     return EndEvent.class;
@@ -72,8 +72,6 @@ public class EndEventParseHandler extends AbstractMultiInstanceEnabledParseHandl
     } else if (eventDefinition == null) {
       endEventActivity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createNoneEndEventActivityBehavior(endEvent));
     }
-    
-    createExecutionListenersOnScope(bpmnParse, endEvent.getExecutionListeners(), endEventActivity);
   }
 
 }

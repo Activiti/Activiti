@@ -27,7 +27,7 @@ import org.apache.commons.lang.StringUtils;
 /**
  * @author Joram Barrez
  */
-public class MessageEventDefinitionParseHandler extends AbstractMultiInstanceEnabledParseHandler<MessageEventDefinition> {
+public class MessageEventDefinitionParseHandler extends AbstractBpmnParseHandler<MessageEventDefinition> {
   
   public Class< ? extends BaseElement> getHandledType() {
     return MessageEventDefinition.class;

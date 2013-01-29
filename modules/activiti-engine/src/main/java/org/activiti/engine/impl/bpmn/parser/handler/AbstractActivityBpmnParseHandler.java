@@ -15,6 +15,7 @@ package org.activiti.engine.impl.bpmn.parser.handler;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
@@ -27,7 +28,7 @@ import org.apache.commons.lang.StringUtils;
 /**
  * @author Joram Barrez
  */
-public abstract class AbstractMultiInstanceEnabledParseHandler<T extends BaseElement> extends AbstractBpmnParseHandler<T> {
+public abstract class AbstractActivityBpmnParseHandler<T extends FlowNode> extends AbstractFlowNodeBpmnParseHandler<T> {
   
   @Override
   public void parse(BpmnParse bpmnParse, BaseElement element) {

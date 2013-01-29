@@ -23,7 +23,7 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 /**
  * @author Joram Barrez
  */
-public class TransactionParseHandler extends AbstractMultiInstanceEnabledParseHandler<Transaction> {
+public class TransactionParseHandler extends AbstractActivityBpmnParseHandler<Transaction> {
   
   public Class< ? extends BaseElement> getHandledType() {
     return Transaction.class;

@@ -96,7 +96,6 @@ public class BpmnParse implements BpmnXMLConstants {
 
   protected static final Logger LOGGER = LoggerFactory.getLogger(BpmnParse.class);
 
-  public static final String PROPERTYNAME_DOCUMENTATION = "documentation";
   public static final String PROPERTYNAME_INITIAL = "initial";
   public static final String PROPERTYNAME_INITIATOR_VARIABLE_NAME = "initiatorVariableName";
   public static final String PROPERTYNAME_CONDITION = "condition";
@@ -109,26 +108,12 @@ public class BpmnParse implements BpmnXMLConstants {
   public static final String PROPERTYNAME_ERROR_EVENT_DEFINITIONS = "errorEventDefinitions";
   public static final String PROPERTYNAME_EVENT_SUBSCRIPTION_DECLARATION = "eventDefinitions";
 
-  /* process start authorization specific finals */
-  protected static final String POTENTIAL_STARTER = "potentialStarter";
-  protected static final String CANDIDATE_STARTER_USERS_EXTENSION = "candidateStarterUsers";
-  protected static final String CANDIDATE_STARTER_GROUPS_EXTENSION = "candidateStarterGroups";
-  
-  protected static final String ATTRIBUTEVALUE_T_FORMAL_EXPRESSION = BpmnParser.BPMN20_NS + ":tFormalExpression";
-  
-  // NEW
-  protected BpmnParseHandlers bpmnParserHandlers;
-  protected ProcessDefinitionEntity currentProcessDefinition;
-  protected FlowElement currentFlowElement;
-  protected ActivityImpl currentActivity;
-  protected LinkedList<SubProcess> currentSubprocessStack = new LinkedList<SubProcess>();
-  protected LinkedList<ScopeImpl> currentScopeStack = new LinkedList<ScopeImpl>();
-  
-  // NEW
-  
   protected String name;
+  
   protected StreamSource streamSource;
+  
   protected BpmnModel bpmnModel;
+  
   protected String targetNamespace;
 
   /** The deployment to which the parsed process definitions will be added. */
@@ -139,6 +124,18 @@ public class BpmnParse implements BpmnXMLConstants {
   
   /** A map for storing sequence flow based on their id during parsing. */
   protected Map<String, TransitionImpl> sequenceFlows;
+  
+  protected BpmnParseHandlers bpmnParserHandlers;
+  
+  protected ProcessDefinitionEntity currentProcessDefinition;
+  
+  protected FlowElement currentFlowElement;
+  
+  protected ActivityImpl currentActivity;
+  
+  protected LinkedList<SubProcess> currentSubprocessStack = new LinkedList<SubProcess>();
+  
+  protected LinkedList<ScopeImpl> currentScopeStack = new LinkedList<ScopeImpl>();
 
   /**
    * Mapping containing values stored during the first phase of parsing since
@@ -158,7 +155,7 @@ public class BpmnParse implements BpmnXMLConstants {
   protected Map<String, XMLImporter> importers = new HashMap<String, XMLImporter>();
   protected Map<String, String> prefixs = new HashMap<String, String>();
 
-  // Members
+  // Factories
   protected ExpressionManager expressionManager;
   protected ActivityBehaviorFactory activityBehaviorFactory;
   protected ListenerFactory listenerFactory;

@@ -15,14 +15,14 @@ package org.activiti.engine.impl.history.parse;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.bpmn.parser.handler.AbstractSingleElementBpmnParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.AbstractBpmnParseHandler;
 import org.activiti.engine.impl.history.handler.StartEventEndHandler;
 
 
 /**
  * @author Joram Barrez
  */
-public class StartEventHistoryParseHandler extends AbstractSingleElementBpmnParseHandler<StartEvent> {
+public class StartEventHistoryParseHandler extends AbstractBpmnParseHandler<StartEvent> {
   
   protected static final StartEventEndHandler START_EVENT_END_HANDLER = new StartEventEndHandler();
 

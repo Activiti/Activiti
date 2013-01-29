@@ -12,6 +12,10 @@
  */
 package org.activiti.engine.impl.bpmn.parser.handler;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.ErrorEventDefinition;
@@ -25,7 +29,7 @@ import org.apache.commons.lang.StringUtils;
 /**
  * @author Joram Barrez
  */
-public class ErrorEventDefinitionParseHandler extends AbstractMultiInstanceEnabledParseHandler<ErrorEventDefinition> {
+public class ErrorEventDefinitionParseHandler extends AbstractBpmnParseHandler<ErrorEventDefinition> {
   
   public static final String PROPERTYNAME_INITIAL = "initial";
   
@@ -93,6 +97,18 @@ public class ErrorEventDefinitionParseHandler extends AbstractMultiInstanceEnabl
 
     addErrorEventDefinition(definition, catchingScope);
 
+  }
+  
+  @SuppressWarnings("unchecked")
+  protected void addErrorEventDefinition(org.activiti.engine.impl.bpmn.parser.ErrorEventDefinition errorEventDefinition, ScopeImpl catchingScope) {
+    List<org.activiti.engine.impl.bpmn.parser.ErrorEventDefinition> errorEventDefinitions = 
+            (List<org.activiti.engine.impl.bpmn.parser.ErrorEventDefinition>) catchingScope.getProperty(PROPERTYNAME_ERROR_EVENT_DEFINITIONS);
+    if(errorEventDefinitions == null) {
+      errorEventDefinitions = new ArrayList<org.activiti.engine.impl.bpmn.parser.ErrorEventDefinition>();
+      catchingScope.setProperty(PROPERTYNAME_ERROR_EVENT_DEFINITIONS, errorEventDefinitions);
+    }
+    errorEventDefinitions.add(errorEventDefinition);
+    Collections.sort(errorEventDefinitions, org.activiti.engine.impl.bpmn.parser.ErrorEventDefinition.comparator);
   }
 
 }

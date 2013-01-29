@@ -27,7 +27,7 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 /**
  * @author Joram Barrez
  */
-public class SubProcessParseHandler extends AbstractMultiInstanceEnabledParseHandler<SubProcess> {
+public class SubProcessParseHandler extends AbstractActivityBpmnParseHandler<SubProcess> {
 
   protected static Set<Class<? extends BaseElement>> supportedTypes = new HashSet<Class<? extends BaseElement>>();
   

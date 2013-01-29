@@ -22,7 +22,7 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 /**
  * @author Joram Barrez
  */
-public class CancelEventDefinitionParseHandler extends AbstractMultiInstanceEnabledParseHandler<CancelEventDefinition> {
+public class CancelEventDefinitionParseHandler extends AbstractBpmnParseHandler<CancelEventDefinition> {
 
   public Class< ? extends BaseElement> getHandledType() {
     return CancelEventDefinition.class;

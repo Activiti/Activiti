@@ -29,7 +29,7 @@ import org.apache.commons.lang.StringUtils;
 /**
  * @author Joram Barrez
  */
-public class SequenceFlowParseHandler extends AbstractMultiInstanceEnabledParseHandler<SequenceFlow> {
+public class SequenceFlowParseHandler extends AbstractBpmnParseHandler<SequenceFlow> {
   
   public static final String PROPERTYNAME_CONDITION = "condition";
   public static final String PROPERTYNAME_CONDITION_TEXT = "conditionText";
