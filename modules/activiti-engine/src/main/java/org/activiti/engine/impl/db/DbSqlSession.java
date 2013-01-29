@@ -763,6 +763,8 @@ public class DbSqlSession implements Session {
       Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(connection);
       database.setDefaultSchemaName(this.connectionMetadataDefaultSchema);
       Liquibase liquibase = new Liquibase("org/activiti/db/liquibase/activiti-master.xml", new ClassLoaderResourceAccessor(), database);
+      liquibase.getDatabase().setDatabaseChangeLogLockTableName("ACT_" + liquibase.getDatabase().getDatabaseChangeLogLockTableName());
+      liquibase.getDatabase().setDatabaseChangeLogTableName("ACT_" + liquibase.getDatabase().getDatabaseChangeLogTableName());
       liquibase.update("production");
     } catch (Exception e) {
       throw new ActivitiException("Error creating Activiti tables", e);
@@ -775,6 +777,8 @@ public class DbSqlSession implements Session {
       Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(connection);
       database.setDefaultSchemaName(this.connectionMetadataDefaultSchema);
       Liquibase liquibase = new Liquibase("org/activiti/db/liquibase/activiti-master.xml", new ClassLoaderResourceAccessor(), database);
+      liquibase.getDatabase().setDatabaseChangeLogLockTableName("ACT_" + liquibase.getDatabase().getDatabaseChangeLogLockTableName());
+      liquibase.getDatabase().setDatabaseChangeLogTableName("ACT_" + liquibase.getDatabase().getDatabaseChangeLogTableName());
       log.debug("Dropping schema for " + database.getTypeName());
       liquibase.dropAll();
       log.debug("Successfully dropped schema for " + database.getTypeName());
@@ -807,6 +811,7 @@ public class DbSqlSession implements Session {
         database.setDefaultSchemaName(this.connectionMetadataDefaultSchema);
         Liquibase liquibase = new Liquibase("org/activiti/db/liquibase/activiti-upgrade-" + dbVersion + ".xml", new ClassLoaderResourceAccessor(), database);
         liquibase.getDatabase().setDatabaseChangeLogLockTableName("ACT_" + liquibase.getDatabase().getDatabaseChangeLogLockTableName());
+        liquibase.getDatabase().setDatabaseChangeLogTableName("ACT_" + liquibase.getDatabase().getDatabaseChangeLogTableName());
         liquibase.update("production");
       } catch (Exception e) {
         throw new ActivitiException("Error creating Activiti tables", e);
