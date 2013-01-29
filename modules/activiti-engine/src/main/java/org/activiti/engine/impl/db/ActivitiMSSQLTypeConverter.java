@@ -1,6 +1,7 @@
 package org.activiti.engine.impl.db;
 
 import liquibase.database.structure.type.BigIntType;
+import liquibase.database.structure.type.BlobType;
 import liquibase.database.structure.type.DateTimeType;
 import liquibase.database.structure.type.DoubleType;
 import liquibase.database.structure.type.IntType;
@@ -36,5 +37,10 @@ public class ActivitiMSSQLTypeConverter extends MSSQLTypeConverter {
   @Override
   public DoubleType getDoubleType() {
     return new DoubleType("double precision");
+  }
+
+  @Override
+  public BlobType getBlobType() {
+    return new BlobType("image");
   }
 }
