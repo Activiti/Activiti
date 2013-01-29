@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<databaseChangeLog
+     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <!-- Changes in activiti.h2.create.engine.sql from Activiti 5.7 to 5.9 -->
+                
+    <changeSet id="10 ACT_GE_BYTEARRAY.GENERATED_" author="bzeuner">
+        <addColumn tableName="ACT_GE_BYTEARRAY">
+            <column name="GENERATED_" type="BOOLEAN" />
+        </addColumn>
+        <update tableName="ACT_GE_BYTEARRAY">
+            <column name="GENERATED_" value="0"/>
+        </update>
+    </changeSet>
+
+    <changeSet id="11 ACT_RU_EXECUTION.IS_EVENT_SCOPE_" author="bzeuner">
+        <addColumn tableName="ACT_RU_EXECUTION">
+            <column name="IS_EVENT_SCOPE_" type="BOOLEAN" />
+        </addColumn>
+        <addColumn tableName="ACT_RU_EXECUTION">
+            <column name="SUSPENSION_STATE_" type="INTEGER" />
+        </addColumn>
+        <update tableName="ACT_RU_EXECUTION">
+            <column name="IS_EVENT_SCOPE_" value="0"/>
+        </update>
+        <update tableName="ACT_RU_EXECUTION">
+            <column name="SUSPENSION_STATE_" value="1"/>
+        </update>
+    </changeSet>
+
+    <changeSet id="12 ACT_RE_PROCDEF.REV_" author="bzeuner">
+        <addColumn tableName="ACT_RE_PROCDEF">
+            <column name="REV_" type="INTEGER" />
+        </addColumn>
+        <addColumn tableName="ACT_RE_PROCDEF">
+            <column name="SUSPENSION_STATE_" type="INTEGER" />
+        </addColumn>
+        <update tableName="ACT_RE_PROCDEF">
+            <column name="REV_" value="1"/>
+        </update>
+        <update tableName="ACT_RE_PROCDEF">
+            <column name="SUSPENSION_STATE_" value="1"/>
+        </update>
+    </changeSet>
+    
+    <changeSet id="13 ACT_RU_EVENT_SUBSCR" author="bzeuner">
+        <createTable tableName="ACT_RU_EVENT_SUBSCR">
+            <column name="ID_" type="NVARCHAR(64)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="REV_" type="INTEGER"/>
+            <column name="EVENT_TYPE_" type="NVARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EVENT_NAME_" type="NVARCHAR(255)"/>
+            <column name="EXECUTION_ID_" type="NVARCHAR(64)"/>
+            <column name="PROC_INST_ID_" type="NVARCHAR(64)"/>
+            <column name="ACTIVITY_ID_" type="NVARCHAR(64)"/>
+            <column name="CONFIGURATION_" type="NVARCHAR(255)"/>
+            <column name="CREATED_" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    
+    <changeSet id="13.1 ACT_IDX_EVENT_SUBSCR_CONFIG_" author="bzeuner" >                                  
+        <createIndex indexName="ACT_IDX_EVENT_SUBSCR_CONFIG_" 
+                     tableName="ACT_RU_EVENT_SUBSCR" >
+            <column name="CONFIGURATION_"/>
+        </createIndex>
+    </changeSet>    
+    
+    <changeSet id="13.2 ACT_FK_EVENT_EXEC" author="bzeuner" >                                  
+        <addForeignKeyConstraint constraintName="ACT_FK_EVENT_EXEC"                  
+            baseTableName="ACT_RU_EVENT_SUBSCR" baseColumnNames="EXECUTION_ID_"    
+            referencedTableName="ACT_RU_EXECUTION" referencedColumnNames="ID_"/>
+    </changeSet> 
+    
+    <changeSet id="13.3 ACT_IDX_EVENT_SUBSCR" author="bzeuner" >                                  
+        <createIndex indexName="ACT_IDX_EVENT_SUBSCR" 
+                     tableName="ACT_RU_EVENT_SUBSCR" >
+            <column name="EXECUTION_ID_"/>
+        </createIndex>
+    </changeSet>
+    
+     <!-- Changes in activiti.h2.create.history.sql from Activiti 5.7 to 5.9 -->                  
+    
+    <changeSet id="14 ACT_HI_PROCINST.DELETE_REASON_" author="bzeuner">
+        <addColumn tableName="ACT_HI_PROCINST">
+            <column name="DELETE_REASON_" type="VARCHAR(4000)" />
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

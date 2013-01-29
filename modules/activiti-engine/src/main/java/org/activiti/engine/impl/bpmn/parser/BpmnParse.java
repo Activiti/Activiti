@@ -45,6 +45,7 @@ import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.parse.Problem;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.Condition;
 import org.activiti.engine.impl.bpmn.data.AbstractDataAssociation;
@@ -249,7 +250,7 @@ public class BpmnParse implements BpmnXMLConstants {
     try {
       return sourceUrl(new URL(url));
     } catch (MalformedURLException e) {
-      throw new ActivitiException("malformed url: "+url, e);
+      throw new ActivitiIllegalArgumentException("malformed url: "+url, e);
     }
   }
   
@@ -271,7 +272,7 @@ public class BpmnParse implements BpmnXMLConstants {
 
   protected void setStreamSource(StreamSource streamSource) {
     if (this.streamSource!=null) {
-      throw new ActivitiException("invalid: multiple sources "+this.streamSource+" and "+streamSource);
+      throw new ActivitiIllegalArgumentException("invalid: multiple sources "+this.streamSource+" and "+streamSource);
     }
     this.streamSource = streamSource;
   }

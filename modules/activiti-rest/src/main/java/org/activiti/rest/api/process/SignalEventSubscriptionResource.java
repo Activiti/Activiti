@@ -72,6 +72,9 @@ public class SignalEventSubscriptionResource extends SecuredResource {
 			responseJSON.put("success", true);
 			return responseJSON;
 		} catch (Exception e) {
+		  if(e instanceof ActivitiException) {
+		    throw (ActivitiException) e;
+		  }
 			throw new ActivitiException("Failed to signal receive task for process instance id " + processInstanceId, e);
 		}
 

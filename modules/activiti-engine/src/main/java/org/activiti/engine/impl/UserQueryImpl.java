@@ -15,7 +15,7 @@ package org.activiti.engine.impl;
 
 import java.util.List;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -51,46 +51,55 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
 
   public UserQuery userId(String id) {
     if (id == null) {
-      throw new ActivitiException("Provided id is null");
+      throw new ActivitiIllegalArgumentException("Provided id is null");
     }
     this.id = id;
     return this;
   }
   
   public UserQuery userFirstName(String firstName) {
+    if (firstName == null) {
+      throw new ActivitiIllegalArgumentException("Provided firstName is null");
+    }
     this.firstName = firstName;
     return this;
   }
   
   public UserQuery userFirstNameLike(String firstNameLike) {
     if (firstNameLike == null) {
-      throw new ActivitiException("Provided firstNameLike is null");
+      throw new ActivitiIllegalArgumentException("Provided firstNameLike is null");
     }
     this.firstNameLike = firstNameLike;
     return this;
   }
   
   public UserQuery userLastName(String lastName) {
+    if (lastName == null) {
+      throw new ActivitiIllegalArgumentException("Provided lastName is null");
+    }
     this.lastName = lastName;
     return this;
   }
   
   public UserQuery userLastNameLike(String lastNameLike) {
     if (lastNameLike == null) {
-      throw new ActivitiException("Provided lastNameLike is null");
+      throw new ActivitiIllegalArgumentException("Provided lastNameLike is null");
     }
     this.lastNameLike = lastNameLike;
     return this;
   }
   
   public UserQuery userEmail(String email) {
+    if (email == null) {
+      throw new ActivitiIllegalArgumentException("Provided email is null");
+    }
     this.email = email;
     return this;
   }
   
   public UserQuery userEmailLike(String emailLike) {
     if (emailLike == null) {
-      throw new ActivitiException("Provided emailLike is null");
+      throw new ActivitiIllegalArgumentException("Provided emailLike is null");
     }
     this.emailLike = emailLike;
     return this;
@@ -98,7 +107,7 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
   
   public UserQuery memberOfGroup(String groupId) {
     if (groupId == null) {
-      throw new ActivitiException("Provided groupIds is null or empty");
+      throw new ActivitiIllegalArgumentException("Provided groupIds is null or empty");
     }
     this.groupId = groupId;
     return this;
@@ -106,7 +115,7 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
   
   public UserQuery potentialStarter(String procDefId) {
     if (procDefId == null) {
-      throw new ActivitiException("Provided processDefinitionId is null or empty");
+      throw new ActivitiIllegalArgumentException("Provided processDefinitionId is null or empty");
     }
     this.procDefId = procDefId;
     return this;

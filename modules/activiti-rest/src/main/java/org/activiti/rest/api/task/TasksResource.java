@@ -16,7 +16,7 @@ package org.activiti.rest.api.task;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.TaskQueryProperty;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.task.TaskQuery;
@@ -73,7 +73,7 @@ public class TasksResource extends SecuredResource {
     } else if (candidateGroupId != null) {
       taskQuery.taskCandidateGroup(candidateGroupId);
     } else {
-      throw new ActivitiException("Tasks must be filtered with 'assignee', 'owner', 'involved', 'candidate' or 'candidate-group'");
+      throw new ActivitiIllegalArgumentException("Tasks must be filtered with 'assignee', 'owner', 'involved', 'candidate' or 'candidate-group'");
     }
     
     if (strPriority != null) {

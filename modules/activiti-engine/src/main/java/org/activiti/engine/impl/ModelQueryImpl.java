@@ -16,6 +16,7 @@ package org.activiti.engine.impl;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.repository.Model;
@@ -60,7 +61,7 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
   
   public ModelQueryImpl modelCategory(String category) {
     if (category == null) {
-      throw new ActivitiException("category is null");
+      throw new ActivitiIllegalArgumentException("category is null");
     }
     this.category = category;
     return this;
@@ -68,7 +69,7 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
   
   public ModelQueryImpl modelCategoryLike(String categoryLike) {
     if (categoryLike == null) {
-      throw new ActivitiException("categoryLike is null");
+      throw new ActivitiIllegalArgumentException("categoryLike is null");
     }
     this.categoryLike = categoryLike;
     return this;
@@ -76,7 +77,7 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
 
   public ModelQueryImpl modelCategoryNotEquals(String categoryNotEquals) {
     if (categoryNotEquals == null) {
-      throw new ActivitiException("categoryNotEquals is null");
+      throw new ActivitiIllegalArgumentException("categoryNotEquals is null");
     }
     this.categoryNotEquals = categoryNotEquals;
     return this;
@@ -84,7 +85,7 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
 
   public ModelQueryImpl modelName(String name) {
     if (name == null) {
-      throw new ActivitiException("name is null");
+      throw new ActivitiIllegalArgumentException("name is null");
     }
     this.name = name;
     return this;
@@ -92,7 +93,7 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
   
   public ModelQueryImpl modelNameLike(String nameLike) {
     if (nameLike == null) {
-      throw new ActivitiException("nameLike is null");
+      throw new ActivitiIllegalArgumentException("nameLike is null");
     }
     this.nameLike = nameLike;
     return this;
@@ -100,7 +101,7 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
   
   public ModelQuery modelKey(String key) {
     if (key == null) {
-      throw new ActivitiException("key is null");
+      throw new ActivitiIllegalArgumentException("key is null");
     }
     this.key = key;
     return this;
@@ -108,9 +109,9 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
   
   public ModelQueryImpl modelVersion(Integer version) {
     if (version == null) {
-      throw new ActivitiException("version is null");
+      throw new ActivitiIllegalArgumentException("version is null");
     } else if (version <= 0) {
-      throw new ActivitiException("version must be positive");
+      throw new ActivitiIllegalArgumentException("version must be positive");
     }
     this.version = version;
     return this;
@@ -123,7 +124,7 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
   
   public ModelQuery deploymentId(String deploymentId) {
     if (deploymentId == null) {
-      throw new ActivitiException("DeploymentId is null");
+      throw new ActivitiIllegalArgumentException("DeploymentId is null");
     }
     this.deploymentId = deploymentId;
     return this;
@@ -131,7 +132,7 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
   
   public ModelQuery notDeployed() {
     if (deployed == true) {
-      throw new ActivitiException("Invalid usage: cannot use deployed() and notDeployed() in the same query");
+      throw new ActivitiIllegalArgumentException("Invalid usage: cannot use deployed() and notDeployed() in the same query");
     }
     this.notDeployed = true;
     return this;
@@ -139,7 +140,7 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
   
   public ModelQuery deployed() {
     if (notDeployed == true) {
-      throw new ActivitiException("Invalid usage: cannot use deployed() and notDeployed() in the same query");
+      throw new ActivitiIllegalArgumentException("Invalid usage: cannot use deployed() and notDeployed() in the same query");
     }
     this.deployed = true;
     return this;

@@ -18,11 +18,12 @@ import java.util.Date;
 import junit.framework.Assert;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.JobNotFoundException;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cmd.AcquireJobsCmd;
-import org.activiti.engine.impl.cmd.ExecuteJobsCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.jobexecutor.AcquiredJobs;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
@@ -49,7 +50,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     try {
       managementService.getTableMetaData(null);
       fail("ActivitiException expected");
-    } catch (ActivitiException re) {
+    } catch (ActivitiIllegalArgumentException re) {
       assertTextPresent("tableName is null", re.getMessage());
     }
   }
@@ -58,7 +59,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     try {
       managementService.executeJob(null);
       fail("ActivitiException expected");
-    } catch (ActivitiException re) {
+    } catch (ActivitiIllegalArgumentException re) {
       assertTextPresent("jobId is null", re.getMessage());
     }
   }
@@ -67,8 +68,9 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     try {
       managementService.executeJob("unexistingjob");
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
-      assertTextPresent("No job found with id", ae.getMessage());
+    } catch (JobNotFoundException jnfe) {
+      assertTextPresent("No job found with id", jnfe.getMessage());
+      assertEquals(Job.class, jnfe.getObjectClass());
     }
   }
   
@@ -111,8 +113,9 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     try {
       managementService.getJobExceptionStacktrace("unexistingjob");
       fail("ActivitiException expected");
-    } catch (ActivitiException re) {
+    } catch (ActivitiObjectNotFoundException re) {
       assertTextPresent("No job found with id unexistingjob", re.getMessage());
+      assertEquals(Job.class, re.getObjectClass());
     }
   }
   
@@ -120,7 +123,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     try {
       managementService.getJobExceptionStacktrace(null);
       fail("ActivitiException expected");
-    } catch (ActivitiException re) {
+    } catch (ActivitiIllegalArgumentException re) {
       assertTextPresent("jobId is null", re.getMessage());
     }
   }
@@ -150,8 +153,9 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     try {
       managementService.setJobRetries("unexistingjob", 5);
       fail("ActivitiException expected");
-    } catch (ActivitiException re) {
+    } catch (ActivitiObjectNotFoundException re) {
       assertTextPresent("No job found with id 'unexistingjob'.", re.getMessage());
+      assertEquals(Job.class, re.getObjectClass());
     }
   }
   
@@ -159,7 +163,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     try {
       managementService.setJobRetries("", 5);
       fail("ActivitiException expected");
-    } catch (ActivitiException re) {
+    } catch (ActivitiIllegalArgumentException re) {
       assertTextPresent("The job id is mandatory, but '' has been provided.", re.getMessage());
     }
   }
@@ -168,7 +172,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     try {
       managementService.setJobRetries(null, 5);
       fail("ActivitiException expected");
-    } catch (ActivitiException re) {
+    } catch (ActivitiIllegalArgumentException re) {
       assertTextPresent("The job id is mandatory, but 'null' has been provided.", re.getMessage());
     }
   }
@@ -177,7 +181,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     try {
       managementService.setJobRetries("unexistingjob", -1);
       fail("ActivitiException expected");
-    } catch (ActivitiException re) {
+    } catch (ActivitiIllegalArgumentException re) {
       assertTextPresent("The number of job retries must be a non-negative Integer, but '-1' has been provided.", re.getMessage());
     }
   }
@@ -186,7 +190,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     try {
       managementService.deleteJob(null);
       fail("ActivitiException expected");
-    } catch (ActivitiException re) {
+    } catch (ActivitiIllegalArgumentException re) {
       assertTextPresent("jobId is null", re.getMessage());
     }
   }
@@ -195,8 +199,9 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     try {
       managementService.deleteJob("unexistingjob");
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiObjectNotFoundException ae) {
       assertTextPresent("No job found with id", ae.getMessage());
+      assertEquals(Job.class, ae.getObjectClass());
     }
   }
 

@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.form.TaskFormData;
@@ -67,7 +69,7 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     try {
       formService.getRenderedStartForm(null);
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiIllegalArgumentException ae) {
       // Exception expected
     }
   }
@@ -76,7 +78,7 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     try {
       formService.getRenderedStartForm(null);
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiIllegalArgumentException ae) {
       // Exception expected
     }
   }
@@ -85,8 +87,9 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     try {
       formService.getRenderedStartForm("unexistingId");
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiObjectNotFoundException ae) {
       assertTextPresent("no deployed process definition found with id", ae.getMessage());
+      assertEquals(ProcessDefinition.class, ae.getObjectClass());
     }
   }
 
@@ -94,7 +97,7 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     try {
       formService.getRenderedTaskForm(null);
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiIllegalArgumentException ae) {
       // Expected Exception
     }
   }
@@ -103,8 +106,9 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     try {
       formService.getRenderedTaskForm("unexistingtask");
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiObjectNotFoundException ae) {
       assertTextPresent("Task 'unexistingtask' not found", ae.getMessage());
+      assertEquals(Task.class, ae.getObjectClass());
     }
   }
 
@@ -313,14 +317,14 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     try {
       formService.getStartFormKey(null);
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("The process definition id is mandatory, but 'null' has been provided.", ae.getMessage());
     }
 
     try {
       formService.getStartFormKey("");
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("The process definition id is mandatory, but '' has been provided.", ae.getMessage());
     }
   }
@@ -337,28 +341,28 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     try {
       formService.getTaskFormKey(null, "23");
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("The process definition id is mandatory, but 'null' has been provided.", ae.getMessage());
     }
 
     try {
       formService.getTaskFormKey("", "23");
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("The process definition id is mandatory, but '' has been provided.", ae.getMessage());
     }
 
     try {
       formService.getTaskFormKey("42", null);
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("The task definition key is mandatory, but 'null' has been provided.", ae.getMessage());
     }
 
     try {
       formService.getTaskFormKey("42", "");
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("The task definition key is mandatory, but '' has been provided.", ae.getMessage());
     }
   }

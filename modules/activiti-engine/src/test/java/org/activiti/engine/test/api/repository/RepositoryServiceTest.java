@@ -15,12 +15,16 @@ package org.activiti.engine.test.api.repository;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.RepositoryServiceImpl;
+import org.activiti.engine.impl.cmd.DeleteDeploymentCmd;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
@@ -82,17 +86,39 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
     try {
       repositoryService.deleteDeployment(null);    
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("deploymentId is null", ae.getMessage());
     }
   }
-  
+
   public void testDeleteDeploymentCascadeNullDeploymentId() {
     try {
       repositoryService.deleteDeployment(null, true);    
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("deploymentId is null", ae.getMessage());
+    }
+  }
+
+  public void testDeleteDeploymentNonExistentDeploymentId() {
+    try {
+      repositoryService.deleteDeployment("foobar");
+      fail("ActivitiException expected");
+    } catch (ActivitiObjectNotFoundException ae) {
+      assertTextPresent("Could not find a deployment with id 'foobar'.", ae.getMessage());
+    } catch (Throwable t) {
+      fail("Unexpected exception: " + t);
+    }
+  }
+
+  public void testDeleteDeploymentCascadeNonExistentDeploymentId() {
+    try {
+      repositoryService.deleteDeployment("foobar", true);
+      fail("ActivitiException expected");
+    } catch (ActivitiObjectNotFoundException ae) {
+      assertTextPresent("Could not find a deployment with id 'foobar'.", ae.getMessage());
+    } catch (Throwable t) {
+      fail("Unexpected exception: " + t);
     }
   }
 
@@ -112,7 +138,7 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
     try {
       repositoryService.getDeploymentResourceNames(null);    
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("deploymentId is null", ae.getMessage());
     }
   }
@@ -169,8 +195,9 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
     try {
       repositoryService.getResourceAsStream(deployment.getId(), "org/activiti/engine/test/api/unexistingProcess.bpmn.xml");
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiObjectNotFoundException ae) {
       assertTextPresent("no resource found with name", ae.getMessage());
+      assertEquals(InputStream.class, ae.getObjectClass());
     }
   }
   
@@ -180,8 +207,9 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
     try {
       repositoryService.getResourceAsStream("unexistingdeployment", "org/activiti/engine/test/api/unexistingProcess.bpmn.xml");
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
-      assertTextPresent("no resource found with name", ae.getMessage());
+    } catch (ActivitiObjectNotFoundException ae) {
+      assertTextPresent("deployment does not exist", ae.getMessage());
+      assertEquals(org.activiti.engine.repository.Deployment.class, ae.getObjectClass());
     }
   }
   
@@ -190,14 +218,14 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
     try {
       repositoryService.getResourceAsStream(null, "resource");    
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("deploymentId is null", ae.getMessage());
     }
     
     try {
       repositoryService.getResourceAsStream("deployment", null);    
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("resourceName is null", ae.getMessage());
     }
   }

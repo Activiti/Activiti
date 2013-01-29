@@ -14,7 +14,7 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.JobNotFoundException;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.context.Context;
@@ -45,7 +45,7 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
 
   public Object execute(CommandContext commandContext) {
     if(jobId == null) {
-      throw new ActivitiException("jobId is null");
+      throw new ActivitiIllegalArgumentException("jobId is null");
     }
     
     if (log.isDebugEnabled()) {

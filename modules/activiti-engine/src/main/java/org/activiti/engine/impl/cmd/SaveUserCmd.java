@@ -14,7 +14,7 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -35,7 +35,7 @@ public class SaveUserCmd implements Command<Void>, Serializable {
   
   public Void execute(CommandContext commandContext) {
     if(user == null) {
-      throw new ActivitiException("user is null");
+      throw new ActivitiIllegalArgumentException("user is null");
     }
     if (user.getRevision()==0) {
       commandContext

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.event.MessageEventHandler;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
@@ -43,7 +44,7 @@ public class MessageEventReceivedCmd extends NeedsActiveExecutionCmd<Void> {
 
   protected Void execute(CommandContext commandContext, ExecutionEntity execution) {
     if(messageName == null) {
-      throw new ActivitiException("messageName cannot be null");
+      throw new ActivitiIllegalArgumentException("messageName cannot be null");
     }
     
     List<EventSubscriptionEntity> eventSubscriptions = commandContext.getEventSubscriptionEntityManager()

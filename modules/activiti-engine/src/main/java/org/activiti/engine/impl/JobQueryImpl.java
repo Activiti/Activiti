@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.util.ClockUtil;
@@ -61,7 +62,7 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
   
   public JobQuery jobId(String jobId) {
     if (jobId == null) {
-      throw new ActivitiException("Provided job id is null");
+      throw new ActivitiIllegalArgumentException("Provided job id is null");
     }
     this.id = jobId;
     return this;
@@ -69,7 +70,7 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
 
   public JobQueryImpl processInstanceId(String processInstanceId) {
     if (processInstanceId == null) {
-      throw new ActivitiException("Provided process instance id is null");
+      throw new ActivitiIllegalArgumentException("Provided process instance id is null");
     }
     this.processInstanceId = processInstanceId;
     return this;
@@ -77,7 +78,7 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
   
   public JobQueryImpl processDefinitionId(String processDefinitionId) {
     if (processDefinitionId == null) {
-      throw new ActivitiException("Provided process definition id is null");
+      throw new ActivitiIllegalArgumentException("Provided process definition id is null");
     }
     this.processDefinitionId = processDefinitionId;
     return this;
@@ -85,7 +86,7 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
   
   public JobQueryImpl executionId(String executionId) {
     if (executionId == null) {
-      throw new ActivitiException("Provided execution id is null");
+      throw new ActivitiIllegalArgumentException("Provided execution id is null");
     }
     this.executionId = executionId;
     return this;
@@ -103,7 +104,7 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
   
   public JobQuery timers() {
     if (onlyMessages) {
-      throw new ActivitiException("Cannot combine onlyTimers() with onlyMessages() in the same query");
+      throw new ActivitiIllegalArgumentException("Cannot combine onlyTimers() with onlyMessages() in the same query");
     }
     this.onlyTimers = true;
     return this;
@@ -111,7 +112,7 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
   
   public JobQuery messages() {
     if (onlyTimers) {
-      throw new ActivitiException("Cannot combine onlyTimers() with onlyMessages() in the same query");
+      throw new ActivitiIllegalArgumentException("Cannot combine onlyTimers() with onlyMessages() in the same query");
     }
     this.onlyMessages = true;
     return this;
@@ -119,7 +120,7 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
   
   public JobQuery duedateHigherThan(Date date) {
     if (date == null) {
-      throw new ActivitiException("Provided date is null");
+      throw new ActivitiIllegalArgumentException("Provided date is null");
     }
     this.duedateHigherThan = date;
     return this;
@@ -127,7 +128,7 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
   
   public JobQuery duedateLowerThan(Date date) {
     if (date == null) {
-      throw new ActivitiException("Provided date is null");
+      throw new ActivitiIllegalArgumentException("Provided date is null");
     }
     this.duedateLowerThan = date;
     return this;
@@ -139,7 +140,7 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
   
   public JobQuery duedateHigherThenOrEquals(Date date) {
     if (date == null) {
-      throw new ActivitiException("Provided date is null");
+      throw new ActivitiIllegalArgumentException("Provided date is null");
     }
     this.duedateHigherThanOrEqual = date;
     return this;
@@ -151,7 +152,7 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
   
   public JobQuery duedateLowerThenOrEquals(Date date) {
     if (date == null) {
-      throw new ActivitiException("Provided date is null");
+      throw new ActivitiIllegalArgumentException("Provided date is null");
     }
     this.duedateLowerThanOrEqual = date;
     return this;
@@ -164,7 +165,7 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
 
   public JobQuery exceptionMessage(String exceptionMessage) {
     if (exceptionMessage == null) {
-      throw new ActivitiException("Provided exception message is null");
+      throw new ActivitiIllegalArgumentException("Provided exception message is null");
     }
     this.exceptionMessage = exceptionMessage;
     return this;

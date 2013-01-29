@@ -16,6 +16,7 @@ package org.activiti.engine.impl;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.history.HistoricVariableInstanceQuery;
 import org.activiti.engine.impl.context.Context;
@@ -52,7 +53,7 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
 
   public HistoricVariableInstanceQueryImpl processInstanceId(String processInstanceId) {
     if (processInstanceId == null) {
-      throw new ActivitiException("processInstanceId is null");
+      throw new ActivitiIllegalArgumentException("processInstanceId is null");
     }
     this.processInstanceId = processInstanceId;
     return this;
@@ -65,10 +66,10 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
 
   public HistoricVariableInstanceQuery taskId(String taskId) {
     if (taskId == null) {
-      throw new ActivitiException("taskId is null");
+      throw new ActivitiIllegalArgumentException("taskId is null");
     }
     if(excludeTaskRelated) {
-      throw new ActivitiException("Cannot use taskId together with excludeTaskVariables");
+      throw new ActivitiIllegalArgumentException("Cannot use taskId together with excludeTaskVariables");
     }
     this.taskId = taskId;
     return this;
@@ -77,7 +78,7 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
   @Override
   public HistoricVariableInstanceQuery excludeTaskVariables() {
     if(taskId != null) {
-      throw new ActivitiException("Cannot use taskId together with excludeTaskVariables");
+      throw new ActivitiIllegalArgumentException("Cannot use taskId together with excludeTaskVariables");
     }
     excludeTaskRelated = true;
     return this;
@@ -85,7 +86,7 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
 
   public HistoricVariableInstanceQuery variableName(String variableName) {
     if (variableName == null) {
-      throw new ActivitiException("variableName is null");
+      throw new ActivitiIllegalArgumentException("variableName is null");
     }
     this.variableName = variableName;
     return this;
@@ -93,10 +94,10 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
 
   public HistoricVariableInstanceQuery variableValueEquals(String variableName, Object variableValue) {
     if (variableName == null) {
-      throw new ActivitiException("variableName is null");
+      throw new ActivitiIllegalArgumentException("variableName is null");
     }
     if (variableValue == null) {
-      throw new ActivitiException("variableValue is null");
+      throw new ActivitiIllegalArgumentException("variableValue is null");
     }
     this.variableName = variableName;
     queryVariableValue = new QueryVariableValue(variableName, variableValue, QueryOperator.EQUALS, true);
@@ -105,7 +106,7 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
 
   public HistoricVariableInstanceQuery variableNameLike(String variableNameLike) {
     if (variableNameLike == null) {
-      throw new ActivitiException("variableNameLike is null");
+      throw new ActivitiIllegalArgumentException("variableNameLike is null");
     }
     this.variableNameLike = variableNameLike;
     return this;

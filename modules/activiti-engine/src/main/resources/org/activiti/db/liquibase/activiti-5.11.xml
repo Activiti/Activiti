@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<databaseChangeLog
+     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <!-- Changes in activiti.*.create.engine.sql from Activiti 5.10 to 5.11 -->
+
+   <changeSet id="2 Activiti 5.11 Update ACT_RE_DEPLOYMENT" author="fheyl">
+        <addColumn tableName="ACT_RE_DEPLOYMENT">
+            <column name="CATEGORY_" type="NVARCHAR(255)" />
+        </addColumn>
+   </changeSet>
+
+   <changeSet id="3 Activiti 5.11 Create Table ACT_RE_MODEL" author="fheyl">
+        <createTable tableName="ACT_RE_MODEL">
+            <column name="ID_" type="NVARCHAR(64)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="REV_" type="INTEGER"/>
+            <column name="NAME_" type="NVARCHAR(255)"/>
+            <column name="KEY_" type="NVARCHAR(255)"/>
+            <column name="CATEGORY_" type="NVARCHAR(255)"/>
+            <column name="CREATE_TIME_" type="TIMESTAMP"/>
+            <column name="LAST_UPDATE_TIME_" type="TIMESTAMP"/>
+            <column name="VERSION_" type="INTEGER"/>
+            <column name="META_INFO_" type="NVARCHAR(4000)"/>            
+            <column name="DEPLOYMENT_ID_" type="NVARCHAR(64)"/>
+            <column name="EDITOR_SOURCE_VALUE_ID_" type="NVARCHAR(64)"/>
+            <column name="EDITOR_SOURCE_EXTRA_VALUE_ID_" type="NVARCHAR(64)"/>
+        </createTable>
+   </changeSet>
+
+   <changeSet id="3.1 Activiti 5.11 Add Constraint to ACT_RE_MODEL" author="fheyl">
+        <addForeignKeyConstraint constraintName="ACT_FK_MODEL_SOURCE" 
+            baseTableName="ACT_RE_MODEL" baseColumnNames="EDITOR_SOURCE_VALUE_ID_" 
+            referencedTableName="ACT_GE_BYTEARRAY" referencedColumnNames="ID_"/>
+   </changeSet>
+   
+   <changeSet id="3.2 Activiti 5.11 Add Constraint to ACT_RE_MODEL" author="fheyl">
+        <addForeignKeyConstraint constraintName="ACT_FK_MODEL_SOURCE_EXTRA" 
+            baseTableName="ACT_RE_MODEL" baseColumnNames="EDITOR_SOURCE_EXTRA_VALUE_ID_" 
+            referencedTableName="ACT_GE_BYTEARRAY" referencedColumnNames="ID_"/>
+   </changeSet>
+   
+   <changeSet id="3.3 Activiti 5.11 Add Constraint to ACT_RE_MODEL" author="fheyl">
+        <addForeignKeyConstraint constraintName="ACT_FK_MODEL_DEPLOYMENT" 
+            baseTableName="ACT_RE_MODEL" baseColumnNames="DEPLOYMENT_ID_" 
+            referencedTableName="ACT_RE_DEPLOYMENT" referencedColumnNames="ID_"/>
+   </changeSet>
+    
+   <changeSet id="4 Activiti 5.11 Update ACT_RU_JOB" author="fheyl">
+        <addColumn tableName="ACT_RU_JOB">
+            <column name="PROC_DEF_ID_" type="NVARCHAR(64)" />
+        </addColumn>
+   </changeSet>
+
+   <changeSet id="5 Activiti 5.11 Update ACT_RE_PROCDEF" author="fheyl">
+        <addColumn tableName="ACT_RE_PROCDEF">
+            <column name="DESCRIPTION_" type="NVARCHAR(4000)" />
+        </addColumn>
+        <addNotNullConstraint tableName="ACT_RE_PROCDEF" columnName="VERSION_" columnDataType="INTEGER"/> 
+   </changeSet>
+
+   <changeSet id="6 Activiti 5.11 Update ACT_RU_TASK" author="fheyl">
+        <addColumn tableName="ACT_RU_TASK">
+            <column name="SUSPENSION_STATE_" type="INTEGER"/>            
+        </addColumn>
+        <update tableName="ACT_RU_TASK">
+            <column name="SUSPENSION_STATE_" value="1"/>
+        </update>
+        <modifyDataType tableName="ACT_RU_TASK" columnName="OWNER_" newDataType="NVARCHAR(255)"/>
+        <modifyDataType tableName="ACT_RU_TASK" columnName="ASSIGNEE_" newDataType="NVARCHAR(255)"/>
+   </changeSet>
+
+   <changeSet id="7 Activiti 5.11 Add Constraint to ACT_RU_EXECUTION" author="fheyl">
+        <addForeignKeyConstraint constraintName="ACT_FK_EXE_PROCDEF" 
+            baseTableName="ACT_RU_EXECUTION" baseColumnNames="PROC_DEF_ID_"
+            referencedTableName="ACT_RE_PROCDEF" referencedColumnNames="ID_"/>
+   </changeSet>
+
+   <changeSet id="8 Activiti 5.11 Update ACT_RU_IDENTITYLINK" author="fheyl">
+        <modifyDataType tableName="ACT_RU_IDENTITYLINK" columnName="GROUP_ID_" newDataType="NVARCHAR(255)"/>
+        <modifyDataType tableName="ACT_RU_IDENTITYLINK" columnName="USER_ID_" newDataType="NVARCHAR(255)"/>
+   </changeSet>
+
+   <changeSet id="9 Activiti 5.11 Update ACT_HI_ACTINST" author="fheyl">
+        <addColumn tableName="ACT_HI_ACTINST">
+            <column name="TASK_ID_" type="NVARCHAR(64)" />
+        </addColumn>
+        <addColumn tableName="ACT_HI_ACTINST">
+            <column name="CALL_PROC_INST_ID_" type="NVARCHAR(64)" />
+        </addColumn>
+   </changeSet>
+   
+   <changeSet id="9.1 Activiti 5.11 Create Index on ACT_HI_ACTINST" author="fheyl">                                  
+        <createIndex indexName="ACT_IDX_HI_ACT_INST_PROCINST" 
+                     tableName="ACT_HI_ACTINST" >
+            <column name="PROC_INST_ID_"/>
+            <column name="ACT_ID_"/>
+        </createIndex>
+   </changeSet>                                                                     
+
+   <changeSet id="10 Activiti 5.11 Update ACT_HI_TASKINST" author="fheyl">
+        <modifyDataType tableName="ACT_HI_TASKINST" columnName="OWNER_" newDataType="NVARCHAR(255)"/>
+        <modifyDataType tableName="ACT_HI_TASKINST" columnName="ASSIGNEE_" newDataType="NVARCHAR(255)"/>
+   </changeSet>
+
+   <changeSet id="11 Activiti 5.11 Create Table ACT_HI_VARINST" author="fheyl">
+        <createTable tableName="ACT_HI_VARINST">
+            <column name="ID_" type="NVARCHAR(64)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="PROC_INST_ID_" type="NVARCHAR(64)"/>
+            <column name="EXECUTION_ID_" type="NVARCHAR(64)"/>
+            <column name="TASK_ID_" type="NVARCHAR(64)"/>
+            <column name="NAME_" type="NVARCHAR(255)">
+              <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="VAR_TYPE_" type="NVARCHAR(100)"/>
+            <column name="REV_" type="INTEGER"/>
+            <column name="BYTEARRAY_ID_" type="NVARCHAR(64)"/>
+            <column name="DOUBLE_" type="DOUBLE" />
+            <column name="LONG_" type="BIGINT" />
+            <column name="TEXT_" type="NVARCHAR(4000)"/>            
+            <column name="TEXT2_" type="NVARCHAR(4000)"/>            
+        </createTable>
+   </changeSet>
+   
+   <changeSet id="11.1 Activiti 5.11 Create Index on ACT_HI_VARINST" author="fheyl">                                  
+        <createIndex indexName="ACT_IDX_HI_PROCVAR_PROC_INST" 
+                     tableName="ACT_HI_VARINST" >
+            <column name="PROC_INST_ID_"/>
+        </createIndex>
+   </changeSet>                                                                     
+
+   <changeSet id="11.2 Activiti 5.11 Create Index on ACT_HI_VARINST" author="fheyl">                                  
+        <createIndex indexName="ACT_IDX_HI_PROCVAR_NAME_TYPE" 
+                     tableName="ACT_HI_VARINST" >
+            <column name="NAME_"/>
+            <column name="VAR_TYPE_"/>
+        </createIndex>
+   </changeSet>                                                                     
+
+</databaseChangeLog>

@@ -15,9 +15,12 @@ package org.activiti.engine.impl.cmd;
 import java.io.Serializable;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.runtime.Execution;
 
 /**
  * @author Joram Barrez
@@ -34,7 +37,7 @@ public abstract class NeedsActiveExecutionCmd<T> implements Command<T>, Serializ
   
   public T execute(CommandContext commandContext) {
     if(executionId == null) {
-      throw new ActivitiException("executionId is null");
+      throw new ActivitiIllegalArgumentException("executionId is null");
     }
     
     ExecutionEntity execution = commandContext
@@ -42,7 +45,7 @@ public abstract class NeedsActiveExecutionCmd<T> implements Command<T>, Serializ
       .findExecutionById(executionId);
     
     if (execution==null) {
-      throw new ActivitiException("execution "+executionId+" doesn't exist");
+      throw new ActivitiObjectNotFoundException("execution "+executionId+" doesn't exist", Execution.class);
     }
     
     if (execution.isSuspended()) {

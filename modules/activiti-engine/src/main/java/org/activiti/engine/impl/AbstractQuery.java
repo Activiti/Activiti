@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.ListQueryParameterObject;
 import org.activiti.engine.impl.interceptor.Command;
@@ -83,7 +84,7 @@ public abstract class AbstractQuery<T extends Query<?,?>, U> extends ListQueryPa
   @SuppressWarnings("unchecked")
   public T direction(Direction direction) {
     if (orderProperty==null) {
-      throw new ActivitiException("You should call any of the orderBy methods first before specifying a direction");
+      throw new ActivitiIllegalArgumentException("You should call any of the orderBy methods first before specifying a direction");
     }
     addOrder(orderProperty.getName(), direction.getName());
     orderProperty = null;
@@ -92,7 +93,7 @@ public abstract class AbstractQuery<T extends Query<?,?>, U> extends ListQueryPa
   
   protected void checkQueryOk() {
     if (orderProperty != null) {
-      throw new ActivitiException("Invalid query: call asc() or desc() after using orderByXX()");
+      throw new ActivitiIllegalArgumentException("Invalid query: call asc() or desc() after using orderByXX()");
     }
   }
   

@@ -16,7 +16,7 @@ package org.activiti.engine.impl.cmd;
 import java.io.InputStream;
 import java.io.Serializable;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -40,7 +40,7 @@ public class GetDeploymentProcessDiagramCmd implements Command<InputStream>, Ser
 
   public GetDeploymentProcessDiagramCmd(String processDefinitionId) {
     if (processDefinitionId == null || processDefinitionId.length() < 1) {
-      throw new ActivitiException("The process definition id is mandatory, but '" + processDefinitionId + "' has been provided.");
+      throw new ActivitiIllegalArgumentException("The process definition id is mandatory, but '" + processDefinitionId + "' has been provided.");
     }
     this.processDefinitionId = processDefinitionId;
   }

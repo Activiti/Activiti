@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -102,7 +103,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     try {
       taskService.createTaskQuery().taskId(null);
       fail("expected exception");
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       // OK
     }
   }
@@ -129,7 +130,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     try {
       taskService.createTaskQuery().taskName(null).singleResult();
       fail("expected exception");
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       // OK
     }
   }
@@ -142,15 +143,15 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
   }
   
   public void testQueryByInvalidNameLike() {
-    TaskQuery query = taskService.createTaskQuery().taskName("1");
+    TaskQuery query = taskService.createTaskQuery().taskNameLike("1");
     assertNull(query.singleResult());
     assertEquals(0, query.list().size());
     assertEquals(0, query.count());
     
     try {
-      taskService.createTaskQuery().taskName(null).singleResult();
+      taskService.createTaskQuery().taskNameLike(null).singleResult();
       fail();
-    } catch (ActivitiException e) { }
+    } catch (ActivitiIllegalArgumentException e) { }
   }
   
   public void testQueryByDescription() {
@@ -173,7 +174,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     try {
       taskService.createTaskQuery().taskDescription(null).list();
       fail();
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       
     }
   }
@@ -194,7 +195,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     try {
       taskService.createTaskQuery().taskDescriptionLike(null).list();
       fail();
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       
     }
   }
@@ -231,7 +232,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     try {
       taskService.createTaskQuery().taskPriority(null);
       fail("expected exception");
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       // OK
     }
   }
@@ -252,7 +253,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     try {
       taskService.createTaskQuery().taskAssignee(null).list();
       fail("expected exception");
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       // OK
     }
   }
@@ -289,7 +290,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     try {
       taskService.createTaskQuery().taskCandidateUser(null).list();
       fail();
-    } catch(ActivitiException e) {}
+    } catch(ActivitiIllegalArgumentException e) {}
   }
   
   public void testQueryByCandidateGroup() {
@@ -312,7 +313,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     try {
       taskService.createTaskQuery().taskCandidateGroup(null).list();
       fail("expected exception");
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       // OK
     }
   }
@@ -340,13 +341,13 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     try {
       taskService.createTaskQuery().taskCandidateGroupIn(null).list();
       fail("expected exception");
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       // OK
     }
     try {
       taskService.createTaskQuery().taskCandidateGroupIn(new ArrayList<String>()).list();
       fail("expected exception");
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       // OK
     }
   }

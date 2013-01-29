@@ -15,7 +15,7 @@ package org.activiti.engine.impl.variable;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 
@@ -30,10 +30,10 @@ public class EntityManagerSessionFactory implements SessionFactory {
 
   public EntityManagerSessionFactory(Object entityManagerFactory, boolean handleTransactions, boolean closeEntityManager) {
     if(entityManagerFactory == null) {
-      throw new ActivitiException("entityManagerFactory is null");
+      throw new ActivitiIllegalArgumentException("entityManagerFactory is null");
     }
     if(!(entityManagerFactory instanceof EntityManagerFactory)) {
-      throw new ActivitiException("EntityManagerFactory must implement 'javax.persistence.EntityManagerFactory'");
+      throw new ActivitiIllegalArgumentException("EntityManagerFactory must implement 'javax.persistence.EntityManagerFactory'");
     }
     
     this.entityManagerFactory = (EntityManagerFactory) entityManagerFactory;

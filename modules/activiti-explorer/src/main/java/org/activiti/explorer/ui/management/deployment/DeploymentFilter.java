@@ -15,12 +15,14 @@ package org.activiti.explorer.ui.management.deployment;
 
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.explorer.ui.management.deployment.DeploymentListQuery.DeploymentListitem;
 
 
 /**
- * Class used in {@link DeploymentListQuery} for filtering.
+ * Class used in {@link DeploymentListQuery} for filtering and consulted right before
+ * a new {@link Deployment} is about to be deployed through the UI.
  * 
  * @author Frederik Heremans
  */
@@ -42,4 +44,10 @@ public interface DeploymentFilter {
    * @return item representing the deployment
    */
   DeploymentListitem createItem(Deployment deployment);
+  
+  /**
+   * Called right before the deployment, created in the UI, is deployed to the
+   * API. This allows to ad additional artifacts or alter deployment properties.
+   */
+  void beforeDeploy(DeploymentBuilder deployment);
 }

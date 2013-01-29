@@ -13,7 +13,7 @@
 
 package org.activiti.engine.impl.cmd;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.form.DefaultFormHandler;
 import org.activiti.engine.impl.interceptor.Command;
@@ -45,14 +45,14 @@ public class GetFormKeyCmd implements Command<String> {
   public GetFormKeyCmd(String processDefinitionId, String taskDefinitionKey) {
     setProcessDefinitionId(processDefinitionId);
     if (taskDefinitionKey == null || taskDefinitionKey.length() < 1) {
-      throw new ActivitiException("The task definition key is mandatory, but '" + taskDefinitionKey + "' has been provided.");
+      throw new ActivitiIllegalArgumentException("The task definition key is mandatory, but '" + taskDefinitionKey + "' has been provided.");
     }
     this.taskDefinitionKey = taskDefinitionKey;
   }
 
   protected void setProcessDefinitionId(String processDefinitionId) {
     if (processDefinitionId == null || processDefinitionId.length() < 1) {
-      throw new ActivitiException("The process definition id is mandatory, but '" + processDefinitionId + "' has been provided.");
+      throw new ActivitiIllegalArgumentException("The process definition id is mandatory, but '" + processDefinitionId + "' has been provided.");
     }
     this.processDefinitionId = processDefinitionId;
   }

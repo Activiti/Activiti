@@ -9,8 +9,10 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.rest.BaseRestTestCase;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
+import org.restlet.resource.ResourceException;
 
 public class StartProcessInstanceResourceTest extends BaseRestTestCase {
 
@@ -38,6 +40,19 @@ public class StartProcessInstanceResourceTest extends BaseRestTestCase {
     
     instanceList = runtimeService.createProcessInstanceQuery().list();
     assertEquals(0, instanceList.size());
+  }
+  
+  public void testStartInstanceUnexistingKey() throws Exception {
+    ClientResource client = getAuthenticatedClient("process-instance");
+    ObjectNode requestNode = objectMapper.createObjectNode();
+    requestNode.put("processDefinitionKey", "unexistingProcess");
+    try {
+      client.post(requestNode);
+      fail("Exception expected");
+    } catch(ResourceException re) {
+      // Check status
+      assertEquals(Status.CLIENT_ERROR_NOT_FOUND.getCode(), re.getStatus().getCode());
+    }
   }
   
   @Deployment

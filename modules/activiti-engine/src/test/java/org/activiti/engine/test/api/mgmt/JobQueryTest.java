@@ -23,6 +23,7 @@ import java.util.UUID;
 import junit.framework.Assert;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.cmd.DeleteJobsCmd;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -136,7 +137,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     try {
       managementService.createJobQuery().processInstanceId(null);
       fail();
-    } catch (ActivitiException e) {}
+    } catch (ActivitiIllegalArgumentException e) {}
   }
   
   public void testQueryByExecutionId() {
@@ -153,7 +154,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     try {
       managementService.createJobQuery().executionId(null).list();
       fail();
-    } catch (ActivitiException e) {}
+    } catch (ActivitiIllegalArgumentException e) {}
   }
   
   public void testQueryByRetriesLeft() {
@@ -193,7 +194,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     try {
       managementService.createJobQuery().timers().messages().list();
       fail();
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       assertTextPresent("Cannot combine onlyTimers() with onlyMessages() in the same query", e.getMessage());
     }
   }
@@ -263,7 +264,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     try {
       managementService.createJobQuery().exceptionMessage(null);
       fail("ActivitiException expected");
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       assertEquals("Provided exception message is null", e.getMessage());
     }
   }
@@ -339,14 +340,14 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     try {
       managementService.createJobQuery().orderByJobId().list();
       fail();
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       assertTextPresent("call asc() or desc() after using orderByXX()", e.getMessage());
     }
     
     try {
       managementService.createJobQuery().asc();
       fail();
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       assertTextPresent("You should call any of the orderBy methods first before specifying a direction", e.getMessage());
     }
   }

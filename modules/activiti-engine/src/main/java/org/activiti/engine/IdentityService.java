@@ -111,12 +111,12 @@ public interface IdentityService {
   void setAuthenticatedUserId(String authenticatedUserId);
   
   /** Sets the picture for a given user.
-   * @throws ActivitiException if the user doesn't exist.
+   * @throws ActivitiObjectNotFoundException if the user doesn't exist.
    * @param picture can be null to delete the picture. */
   void setUserPicture(String userId, Picture picture);
 
   /** Retrieves the picture for a given user.
-   * @throws ActivitiException if the user doesn't exist.
+   * @throws ActivitiObjectNotFoundException if the user doesn't exist.
    * @returns null if the user doesn't have a picture. */
   Picture getUserPicture(String userId);
 

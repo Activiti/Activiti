@@ -17,6 +17,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
@@ -48,7 +49,7 @@ public class EventSubscriptionQueryImpl
 
   public EventSubscriptionQueryImpl eventSubscriptionId(String id) {
     if (eventSubscriptionId == null) {
-      throw new ActivitiException("Provided svent subscription id is null");
+      throw new ActivitiIllegalArgumentException("Provided svent subscription id is null");
     }
     this.eventSubscriptionId = id;
     return this;
@@ -56,7 +57,7 @@ public class EventSubscriptionQueryImpl
 
   public EventSubscriptionQueryImpl eventName(String eventName) {
     if (eventName == null) {
-      throw new ActivitiException("Provided event name is null");
+      throw new ActivitiIllegalArgumentException("Provided event name is null");
     }
     this.eventName = eventName;
     return this;
@@ -64,7 +65,7 @@ public class EventSubscriptionQueryImpl
 
   public EventSubscriptionQueryImpl executionId(String executionId) {
     if (executionId == null) {
-      throw new ActivitiException("Provided execution id is null");
+      throw new ActivitiIllegalArgumentException("Provided execution id is null");
     }
     this.executionId = executionId;
     return this;
@@ -72,7 +73,7 @@ public class EventSubscriptionQueryImpl
 
   public EventSubscriptionQueryImpl processInstanceId(String processInstanceId) {
     if (processInstanceId == null) {
-      throw new ActivitiException("Provided process instance id is null");
+      throw new ActivitiIllegalArgumentException("Provided process instance id is null");
     }
     this.processInstanceId = processInstanceId;
     return this;
@@ -80,7 +81,7 @@ public class EventSubscriptionQueryImpl
 
   public EventSubscriptionQueryImpl activityId(String activityId) {
     if (activityId == null) {
-      throw new ActivitiException("Provided activity id is null");
+      throw new ActivitiIllegalArgumentException("Provided activity id is null");
     }
     this.activityId = activityId;
     return this;
@@ -88,7 +89,7 @@ public class EventSubscriptionQueryImpl
   
   public EventSubscriptionQueryImpl eventType(String eventType) {
     if (eventType == null) {
-      throw new ActivitiException("Provided event type is null");
+      throw new ActivitiIllegalArgumentException("Provided event type is null");
     }
     this.eventType = eventType;
     return this;

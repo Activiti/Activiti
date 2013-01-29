@@ -13,12 +13,14 @@
 
 package org.activiti.rest.api.identity;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.User;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
+import org.restlet.data.Status;
 import org.restlet.resource.Put;
+import org.restlet.resource.ResourceException;
 
 /**
  * @author Tijs Rademakers
@@ -31,7 +33,7 @@ public class UserCreateResource extends SecuredResource {
     
     IdentityService identityService = ActivitiUtil.getIdentityService();
     if(userInfo == null || userInfo.getId() == null) {
-      throw new ActivitiException("No user id supplied");
+      throw new ActivitiIllegalArgumentException("No user id supplied");
     }
 
     if (identityService.createUserQuery().userId(userInfo.getId()).count() == 0) {
@@ -42,7 +44,7 @@ public class UserCreateResource extends SecuredResource {
        user.setEmail(userInfo.getEmail());
        identityService.saveUser(user);
     } else  {
-      throw new ActivitiException("user id must be unique");
+      throw new ResourceException(Status.CLIENT_ERROR_CONFLICT, "user id must be unique");
     }
     return new StateResponse().setSuccess(true);
   }

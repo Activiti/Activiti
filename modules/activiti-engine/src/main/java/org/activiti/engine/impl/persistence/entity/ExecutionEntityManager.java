@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.AbstractVariableQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.context.Context;
@@ -57,7 +58,7 @@ public class ExecutionEntityManager extends AbstractManager {
     ExecutionEntity execution = findExecutionById(processInstanceId);
     
     if(execution == null) {
-      throw new ActivitiException("No process instance found for id '" + processInstanceId + "'");
+      throw new ActivitiObjectNotFoundException("No process instance found for id '" + processInstanceId + "'", ProcessInstance.class);
     }
     
     CommandContext commandContext = Context.getCommandContext();

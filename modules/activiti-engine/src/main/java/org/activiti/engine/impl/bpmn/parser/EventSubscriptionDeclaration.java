@@ -15,7 +15,7 @@ package org.activiti.engine.impl.bpmn.parser;
 
 import java.io.Serializable;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
@@ -82,7 +82,7 @@ public class EventSubscriptionDeclaration implements Serializable {
     }else  if(eventType.equals("signal")) {
       eventSubscriptionEntity = new SignalEventSubscriptionEntity(execution);
     }else {
-      throw new ActivitiException("Found event definition of unknown type: "+eventType);
+      throw new ActivitiIllegalArgumentException("Found event definition of unknown type: "+eventType);
     }
     
     eventSubscriptionEntity.setEventName(eventName);

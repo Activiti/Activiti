@@ -23,6 +23,7 @@ import java.util.Map;
 import junit.framework.Assert;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricFormProperty;
@@ -227,7 +228,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
       historyService.createHistoricVariableInstanceQuery().taskId(null).singleResult();
       fail("Exception expected");
     }
-    catch(ActivitiException ae)
+    catch(ActivitiIllegalArgumentException ae)
     {
       assertEquals("taskId is null", ae.getMessage());
     }
@@ -238,7 +239,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
       historyService.createHistoricVariableInstanceQuery().taskId("123").excludeTaskVariables().singleResult();
       fail("Exception expected");
     }
-    catch(ActivitiException ae)
+    catch(ActivitiIllegalArgumentException ae)
     {
       assertEquals("Cannot use taskId together with excludeTaskVariables", ae.getMessage());
     }
@@ -248,7 +249,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
       historyService.createHistoricVariableInstanceQuery().excludeTaskVariables().taskId("123").singleResult();
       fail("Exception expected");
     }
-    catch(ActivitiException ae)
+    catch(ActivitiIllegalArgumentException ae)
     {
       assertEquals("Cannot use taskId together with excludeTaskVariables", ae.getMessage());
     }
@@ -720,49 +721,49 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     try {
       historyService.createHistoricDetailQuery().asc().list();
       fail();
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       
     }
     
     try {
       historyService.createHistoricDetailQuery().desc().list();
       fail();
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       
     }
     
     try {
       historyService.createHistoricDetailQuery().orderByProcessInstanceId().list();
       fail();
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       
     }
     
     try {
       historyService.createHistoricDetailQuery().orderByTime().list();
       fail();
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       
     }
     
     try {
       historyService.createHistoricDetailQuery().orderByVariableName().list();
       fail();
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       
     }
     
     try {
       historyService.createHistoricDetailQuery().orderByVariableRevision().list();
       fail();
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       
     }
     
     try {
       historyService.createHistoricDetailQuery().orderByVariableType().list();
       fail();
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       
     }
   }

@@ -14,7 +14,7 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ModelEntity;
@@ -34,7 +34,7 @@ public class SaveModelCmd implements Command<Void>, Serializable {
   
   public Void execute(CommandContext commandContext) {
     if(model == null) {
-      throw new ActivitiException("model is null");
+      throw new ActivitiIllegalArgumentException("model is null");
     }
     if (model.getId() == null) {
       commandContext.getModelEntityManager().insertModel(model);

@@ -14,6 +14,7 @@
 package org.activiti.engine.test.history;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
@@ -246,21 +247,21 @@ public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
     try {
       historyService.createHistoricActivityInstanceQuery().asc().list();
       fail();
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       
     }
     
     try {
       historyService.createHistoricActivityInstanceQuery().desc().list();
       fail();
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       
     }
     
     try {
       historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceDuration().list();
       fail();
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       
     }
   }

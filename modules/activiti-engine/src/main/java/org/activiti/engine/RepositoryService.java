@@ -72,7 +72,7 @@ public interface RepositoryService {
    * Gives access to a deployment resource through a stream of bytes.
    * @param deploymentId id of the deployment, cannot be null.
    * @param resourceName name of the resource, cannot be null.
-   * @throws ActivitiException when the resource doesn't exist in the given deployment or when no deployment exists
+   * @throws ActivitiObjectNotFoundException when the resource doesn't exist in the given deployment or when no deployment exists
    * for the given deploymentId.
    */
   InputStream getResourceAsStream(String deploymentId, String resourceName);
@@ -92,7 +92,8 @@ public interface RepositoryService {
    * <strong>Note: all the process instances of the process definition will still be active 
    * (ie. not suspended)!</strong>
    * 
-   *  @throws ActivitiException if no such processDefinition can be found or if the process definition is already in state suspended.
+   *  @throws ActivitiObjectNotFoundException if no such processDefinition can be found
+   *  @throws ActivitiException if the process definition is already in state suspended.
    */
   void suspendProcessDefinitionById(String processDefinitionId);
 
@@ -108,7 +109,8 @@ public interface RepositoryService {
    *                       process definition is suspended immediately. 
    *                       Note: The job executor needs to be active to use this!                                
    * 
-   * @throws ActivitiException if no such processDefinition can be found or if the process definition is already in state suspended.
+   * @throws ActivitiObjectNotFoundException if no such processDefinition can be found. 
+   * @throws ActivitiException if the process definition is already in state suspended.
    */
   void suspendProcessDefinitionById(String processDefinitionId, boolean suspendProcessInstances, Date suspensionDate);
   
@@ -121,7 +123,8 @@ public interface RepositoryService {
    * <strong>Note: all the process instances of the process definition will still be active 
    * (ie. not suspended)!</strong>
    * 
-   *  @throws ActivitiException if no such processDefinition can be found or if the process definition is already in state suspended.
+   *  @throws ActivitiObjectNotFoundException if no such processDefinition can be found
+   *  @throws ActivitiException if the process definition is already in state suspended.
    */
   void suspendProcessDefinitionByKey(String processDefinitionKey);
   
@@ -136,14 +139,15 @@ public interface RepositoryService {
    * @param suspensionDate The date on which the process definition will be suspended. If null, the 
    *                       process definition is suspended immediately. 
    *                       Note: The job executor needs to be active to use this!   
-   * @throws ActivitiException if no such processDefinition can be found or if the process definition is already in state suspended.
+   *  @throws ActivitiObjectNotFoundException if no such processDefinition can be found
+   *  @throws ActivitiException if the process definition is already in state suspended.
    */
   void suspendProcessDefinitionByKey(String processDefinitionKey, boolean suspendProcessInstances, Date suspensionDate);
   
   /**
    * Activates the process definition with the given id. 
    * 
-   * @throws ActivitiException if no such processDefinition can be found or if the process definition is already in state active.
+   * @throws ActivitiObjectNotFoundException if no such processDefinition can be found or if the process definition is already in state active.
    */
   void activateProcessDefinitionById(String processDefinitionId);
   
@@ -156,14 +160,16 @@ public interface RepositoryService {
    *                       process definition is suspended immediately. 
    *                       Note: The job executor needs to be active to use this!                                 
    *                                
-   * @throws ActivitiException if no such processDefinition can be found or if the process definition is already in state active.
+   * @throws ActivitiObjectNotFoundException if no such processDefinition can be found.
+   * @throws ActivitiException if the process definition is already in state active.
    */
   void activateProcessDefinitionById(String processDefinitionId, boolean activateProcessInstances, Date activationDate);
   
   /**
    * Activates the process definition with the given key (=id in the bpmn20.xml file). 
    * 
-   * @throws ActivitiException if no such processDefinition can be found or if the process definition is already in state active.
+   * @throws ActivitiObjectNotFoundException if no such processDefinition can be found.
+   * @throws ActivitiException if the process definition is already in state active.
    */
   void activateProcessDefinitionByKey(String processDefinitionKey);
   
@@ -176,7 +182,8 @@ public interface RepositoryService {
    *                       process definition is suspended immediately. 
    *                       Note: The job executor needs to be active to use this!                                 
    *                                
-   * @throws ActivitiException if no such processDefinition can be found or if the process definition is already in state active.
+   * @throws ActivitiObjectNotFoundException if no such processDefinition can be found.
+   * @throws ActivitiException if the process definition is already in state active.
    */
   void activateProcessDefinitionByKey(String processDefinitionKey, boolean activateProcessInstances,  Date activationDate);
 
@@ -186,7 +193,7 @@ public interface RepositoryService {
    *
    * @param processDefinitionId
    *          id of a {@link ProcessDefinition}, cannot be null.
-   * @throws ActivitiException
+   * @throws ActivitiObjectNotFoundException
    *           when the process model doesn't exist.
    */
   InputStream getProcessModel(String processDefinitionId);
@@ -198,7 +205,7 @@ public interface RepositoryService {
    * @param processDefinitionId
    *          id of a {@link ProcessDefinition}, cannot be null.
    * @return null when the diagram resource name of a {@link ProcessDefinition} is null.
-   * @throws ActivitiException
+   * @throws ActivitiObjectNotFoundException
    *           when the process diagram doesn't exist.
    */
   InputStream getProcessDiagram(String processDefinitionId);
@@ -217,7 +224,7 @@ public interface RepositoryService {
    * @param processDefinitionId id of a {@link ProcessDefinition}, cannot be null.
    * @return Map with process element ids as keys and positions and dimensions as values.
    * @return null when the input stream of a process diagram is null.
-   * @throws ActivitiException when the process model or diagram doesn't exist.
+   * @throws ActivitiObjectNotFoundException when the process model or diagram doesn't exist.
    */
   DiagramLayout getProcessDiagramLayout(String processDefinitionId);
   
@@ -279,7 +286,7 @@ public interface RepositoryService {
    * Authorizes a candidate user for a process definition.
    * @param processDefinitionId id of the process definition, cannot be null.
    * @param userId id of the user involve, cannot be null.
-   * @throws ActivitiException when the process definition or user doesn't exist.
+   * @throws ActivitiObjectNotFoundException when the process definition or user doesn't exist.
    */
   void addCandidateStarterUser(String processDefinitionId, String userId);
   
@@ -287,7 +294,7 @@ public interface RepositoryService {
    * Authorizes a candidate group for a process definition.
    * @param processDefinitionId id of the process definition, cannot be null.
    * @param groupId id of the group involve, cannot be null.
-   * @throws ActivitiException when the process definition or group doesn't exist.
+   * @throws ActivitiObjectNotFoundException when the process definition or group doesn't exist.
    */
   void addCandidateStarterGroup(String processDefinitionId, String groupId);
   
@@ -295,7 +302,7 @@ public interface RepositoryService {
    * Removes the authorization of a candidate user for a process definition.
    * @param processDefinitionId id of the process definition, cannot be null.
    * @param userId id of the user involve, cannot be null.
-   * @throws ActivitiException when the process definition or user doesn't exist.
+   * @throws ActivitiObjectNotFoundException when the process definition or user doesn't exist.
    */
   void deleteCandidateStarterUser(String processDefinitionId, String userId);
   
@@ -303,7 +310,7 @@ public interface RepositoryService {
    * Removes the authorization of a candidate group for a process definition.
    * @param processDefinitionId id of the process definition, cannot be null.
    * @param groupId id of the group involve, cannot be null.
-   * @throws ActivitiException when the process definition or group doesn't exist.
+   * @throws ActivitiObjectNotFoundException when the process definition or group doesn't exist.
    */
   void deleteCandidateStarterGroup(String processDefinitionId, String groupId);
 

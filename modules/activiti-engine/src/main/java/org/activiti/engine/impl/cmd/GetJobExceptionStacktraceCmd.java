@@ -15,10 +15,12 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.runtime.Job;
 
 
 /**
@@ -36,7 +38,7 @@ public class GetJobExceptionStacktraceCmd implements Command<String>, Serializab
 
   public String execute(CommandContext commandContext) {
     if(jobId == null) {
-      throw new ActivitiException("jobId is null");
+      throw new ActivitiIllegalArgumentException("jobId is null");
     }
     
     JobEntity job = commandContext
@@ -44,7 +46,7 @@ public class GetJobExceptionStacktraceCmd implements Command<String>, Serializab
       .findJobById(jobId);
     
     if(job == null) {
-      throw new ActivitiException("No job found with id " + jobId);
+      throw new ActivitiObjectNotFoundException("No job found with id " + jobId, Job.class);
     }
     
     return job.getExceptionStacktrace();

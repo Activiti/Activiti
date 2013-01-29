@@ -51,15 +51,16 @@ FormService formService = processEngine.getFormService();</programlisting>
     <programlisting>/**
  * Called when the task is successfully executed.
  * @param taskId the id of the task to complete, cannot be null.
- * @throws ActivitiException when no task exists with the given id.
+ * @throws ActivitiObjectNotFoundException when no task exists with the given id.
  */
  void complete(String taskId);
     </programlisting>
     
-    In the example above, when an id is passed for which no task exists, an exception will be thrown. Also, since the javadoc <emphasis role="bold">explicitly states that taskId cannot be null, an <literal>ActivitiException</literal> will be thrown when <literal>null</literal> is passed</emphasis>.
+    In the example above, when an id is passed for which no task exists, an exception will be thrown. Also, since the javadoc <emphasis role="bold">explicitly states that taskId cannot be null, an <literal>ActivitiIllegalArgumentException</literal> will be thrown when <literal>null</literal> is passed</emphasis>.
     </para>
     <para>
-      Even though we want to avoid a big exception hierarchy, the following subclasses were added which are thrown in specific cases:
+      Even though we want to avoid a big exception hierarchy, the following subclasses were added which are thrown in specific cases. All other errors that occur during process-execution or API-invokation that don't fit into the
+      possible exceptions below, are throw as regular <literal>ActivitiExceptions</literal>s.
       <itemizedlist>
         <listitem>
             <para>
@@ -74,6 +75,21 @@ FormService formService = processEngine.getFormService();</programlisting>
           <listitem>
             <para>
              <literal>ActivitiClassLoadingException: </literal> Thrown when an class requested to load was not found or when error occurred while loading it (e.g. JavaDelegates, TaskListeners, ...).
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+             <literal>ActivitiObjectNotFoundException: </literal> Thrown when an object that is requested or actioned on does not exist.
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+             <literal>ActivitiIllegalArgumentException: </literal> An exception indicating that an illegal argument has been supplied in an Activiti API-call, an illegal value was configured in the engine's configuration or an illegal value has been supplied or an illegal value is used in a process-definition.
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+             <literal>ActivitiTaskAlreadyClaimedException: Thrown when a task is already claimed, when the <literal>taskService.claim(...)</literal> is called.</literal> .
             </para>
           </listitem>
       </itemizedlist>

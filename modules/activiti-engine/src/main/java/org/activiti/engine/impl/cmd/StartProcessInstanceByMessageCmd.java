@@ -16,6 +16,8 @@ package org.activiti.engine.impl.cmd;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -24,6 +26,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 
 
@@ -45,7 +48,7 @@ public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance
   public ProcessInstance execute(CommandContext commandContext) {
     
     if(messageName == null) {
-      throw new ActivitiException("Cannot start process instance by message: message name is null");
+      throw new ActivitiIllegalArgumentException("Cannot start process instance by message: message name is null");
     }
     
     MessageEventSubscriptionEntity messageEventSubscription = commandContext.getEventSubscriptionEntityManager()
@@ -66,7 +69,7 @@ public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance
           
     ProcessDefinitionEntity processDefinition = deploymentCache.findDeployedProcessDefinitionById(processDefinitionId);
     if (processDefinition == null) {
-        throw new ActivitiException("No process definition found for id '" + processDefinitionId + "'");
+        throw new ActivitiObjectNotFoundException("No process definition found for id '" + processDefinitionId + "'", ProcessDefinition.class);
     }
   
     ActivityImpl startActivity = processDefinition.findActivity(messageEventSubscription.getActivityId());

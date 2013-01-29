@@ -29,6 +29,12 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import liquibase.Liquibase;
+import liquibase.database.Database;
+import liquibase.database.DatabaseFactory;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.resource.ClassLoaderResourceAccessor;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.ActivitiWrongDbException;
@@ -52,7 +58,6 @@ import org.activiti.engine.impl.UserQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.upgrade.DbUpgradeStep;
-import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.entity.PropertyEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
@@ -695,7 +700,13 @@ public class DbSqlSession implements Session {
   public void dbSchemaCheckVersion() {
     try {
       String dbVersion = getDbVersion();
-      if (!ProcessEngine.VERSION.equals(dbVersion)) {
+      Matcher matcher = CLEAN_VERSION_REGEX.matcher(ProcessEngine.VERSION);
+      if(!matcher.find()) {
+        throw new ActivitiException("Illegal format for version: " + ProcessEngine.VERSION);
+      }
+      
+      String cleanString = matcher.group();
+      if (!cleanString.equals(dbVersion)) {
         throw new ActivitiWrongDbException(ProcessEngine.VERSION, dbVersion);
       }
 
@@ -703,14 +714,8 @@ public class DbSqlSession implements Session {
       if (!isEngineTablePresent()) {
         errorMessage = addMissingComponent(errorMessage, "engine");
       }
-      if (dbSqlSessionFactory.isDbHistoryUsed() && !isHistoryTablePresent()) {
-        errorMessage = addMissingComponent(errorMessage, "history");
-      }
-      if (dbSqlSessionFactory.isDbIdentityUsed() && !isIdentityTablePresent()) {
-        errorMessage = addMissingComponent(errorMessage, "identity");
-      }
       
-      if (errorMessage!=null) {
+      if (errorMessage != null) {
         throw new ActivitiException("Activiti database problem: "+errorMessage);
       }
       
@@ -742,8 +747,6 @@ public class DbSqlSession implements Session {
   }
 
   public void dbSchemaCreate() {
-    ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
-    
     if (isEngineTablePresent()) {
       String dbVersion = getDbVersion();
       if (!ProcessEngine.VERSION.equals(dbVersion)) {
@@ -752,44 +755,36 @@ public class DbSqlSession implements Session {
     } else {
       dbSchemaCreateEngine();
     }
-
-    if (processEngineConfiguration.getHistoryLevel() != HistoryLevel.NONE) {
-      dbSchemaCreateHistory();
-    }
-
-    if (processEngineConfiguration.isDbIdentityUsed()) {
-      dbSchemaCreateIdentity();
-    }
-  }
-
-  protected void dbSchemaCreateIdentity() {
-    executeMandatorySchemaResource("create", "identity");
-  }
-
-  protected void dbSchemaCreateHistory() {
-    executeMandatorySchemaResource("create", "history");
   }
 
   protected void dbSchemaCreateEngine() {
-    executeMandatorySchemaResource("create", "engine");
+    try {
+      JdbcConnection connection = new JdbcConnection(sqlSession.getConnection());
+      Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(connection);
+      database.setDefaultSchemaName(this.connectionMetadataDefaultSchema);
+      Liquibase liquibase = new Liquibase("org/activiti/db/liquibase/activiti-master.xml", new ClassLoaderResourceAccessor(), database);
+      liquibase.getDatabase().setDatabaseChangeLogLockTableName("ACT_" + liquibase.getDatabase().getDatabaseChangeLogLockTableName());
+      liquibase.getDatabase().setDatabaseChangeLogTableName("ACT_" + liquibase.getDatabase().getDatabaseChangeLogTableName());
+      liquibase.update("production");
+    } catch (Exception e) {
+      throw new ActivitiException("Error creating Activiti tables", e);
+    }
   }
 
   public void dbSchemaDrop() {
-    executeMandatorySchemaResource("drop", "engine");
-    if (dbSqlSessionFactory.isDbHistoryUsed()) {
-      executeMandatorySchemaResource("drop", "history");
-    }
-    if (dbSqlSessionFactory.isDbIdentityUsed()) {
-      executeMandatorySchemaResource("drop", "identity");
-    }
-  }
-
-  public void dbSchemaPrune() {
-    if (isHistoryTablePresent() && !dbSqlSessionFactory.isDbHistoryUsed()) {
-      executeMandatorySchemaResource("drop", "history");
-    }
-    if (isIdentityTablePresent() && dbSqlSessionFactory.isDbIdentityUsed()) {
-      executeMandatorySchemaResource("drop", "identity");
+    try {
+      JdbcConnection connection = new JdbcConnection(sqlSession.getConnection());
+      Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(connection);
+      database.setDefaultSchemaName(this.connectionMetadataDefaultSchema);
+      Liquibase liquibase = new Liquibase("org/activiti/db/liquibase/activiti-master.xml", new ClassLoaderResourceAccessor(), database);
+      liquibase.getDatabase().setDatabaseChangeLogLockTableName("ACT_" + liquibase.getDatabase().getDatabaseChangeLogLockTableName());
+      liquibase.getDatabase().setDatabaseChangeLogTableName("ACT_" + liquibase.getDatabase().getDatabaseChangeLogTableName());
+      log.debug("Dropping schema for " + database.getTypeName());
+      liquibase.dropAll();
+      log.debug("Successfully dropped schema for " + database.getTypeName());
+    } catch (Exception e) {
+      log.error("Error dropping Activiti tables", e);
+      throw new ActivitiException("Error dropping Activiti tables", e);
     }
   }
 
@@ -801,51 +796,30 @@ public class DbSqlSession implements Session {
 
   public String dbSchemaUpdate() {
     String feedback = null;
-    String dbVersion = null;
-    boolean isUpgradeNeeded = false;
-      
+    
     if (isEngineTablePresent()) {
       // the next piece assumes both DB version and library versions are formatted 5.x
       PropertyEntity dbVersionProperty = selectById(PropertyEntity.class, "schema.version");
-      dbVersion = dbVersionProperty.getValue();
-      isUpgradeNeeded = isUpgradeNeeded(dbVersion);
-      
-      if (isUpgradeNeeded) {
-        dbVersionProperty.setValue(ProcessEngine.VERSION);
-
-        PropertyEntity dbHistoryProperty;
-        if ("5.0".equals(dbVersion)) {
-          dbHistoryProperty = new PropertyEntity("schema.history", "create(5.0)");
-          insert(dbHistoryProperty);
-        } else {
-          dbHistoryProperty = selectById(PropertyEntity.class, "schema.history");
-        }
-        
-        String dbHistoryValue = dbHistoryProperty.getValue()+" upgrade("+dbVersion+"->"+ProcessEngine.VERSION+")";
-        dbHistoryProperty.setValue(dbHistoryValue);
-        
-        dbSchemaUpgrade("engine", dbVersion);
-
-        feedback = "upgraded Activiti from "+dbVersion+" to "+ProcessEngine.VERSION;
+      String dbVersion = dbVersionProperty.getValue();
+      if (dbVersion.endsWith("-SNAPSHOT")) {
+        dbVersion = dbVersion.substring(0, dbVersion.length()-"-SNAPSHOT".length());
       }
+      
+      try {
+        JdbcConnection connection = new JdbcConnection(sqlSession.getConnection());
+        Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(connection);
+        database.setDefaultSchemaName(this.connectionMetadataDefaultSchema);
+        Liquibase liquibase = new Liquibase("org/activiti/db/liquibase/activiti-upgrade-" + dbVersion + ".xml", new ClassLoaderResourceAccessor(), database);
+        liquibase.getDatabase().setDatabaseChangeLogLockTableName("ACT_" + liquibase.getDatabase().getDatabaseChangeLogLockTableName());
+        liquibase.getDatabase().setDatabaseChangeLogTableName("ACT_" + liquibase.getDatabase().getDatabaseChangeLogTableName());
+        liquibase.update("production");
+      } catch (Exception e) {
+        throw new ActivitiException("Error creating Activiti tables", e);
+      }
+      feedback = "upgraded Activiti from "+dbVersion+" to "+ProcessEngine.VERSION;
+      
     } else {
       dbSchemaCreateEngine();
-    }
-    
-    if (isHistoryTablePresent()) {
-      if (isUpgradeNeeded) {
-        dbSchemaUpgrade("history", dbVersion);
-      }
-    } else if (dbSqlSessionFactory.isDbHistoryUsed()) {
-      dbSchemaCreateHistory();
-    }
-    
-    if (isIdentityTablePresent()) {
-      if (isUpgradeNeeded) {
-        dbSchemaUpgrade("identity", dbVersion);
-      }
-    } else if (dbSqlSessionFactory.isDbIdentityUsed()) {
-      dbSchemaCreateIdentity();
     }
     
     return feedback;
@@ -853,12 +827,6 @@ public class DbSqlSession implements Session {
 
   public boolean isEngineTablePresent(){
     return isTablePresent("ACT_RU_EXECUTION");
-  }
-  public boolean isHistoryTablePresent(){
-    return isTablePresent("ACT_HI_PROCINST");
-  }
-  public boolean isIdentityTablePresent(){
-    return isTablePresent("ACT_ID_USER");
   }
 
   public boolean isTablePresent(String tableName) {
@@ -875,7 +843,7 @@ public class DbSqlSession implements Session {
       }
       
       String databaseType = dbSqlSessionFactory.getDatabaseType();
-      
+      log.debug("Looking for table " + tableName + " for database type " + databaseType);
       if ("postgres".equals(databaseType)) {
         tableName = tableName.toLowerCase();
       }
@@ -890,32 +858,6 @@ public class DbSqlSession implements Session {
     } catch (Exception e) {
       throw new ActivitiException("couldn't check if tables are already present using metadata: "+e.getMessage(), e); 
     }
-  }
-  
-  protected boolean isUpgradeNeeded(String versionInDatabase) {
-    if(ProcessEngine.VERSION.equals(versionInDatabase)) {
-      return false;
-    }
-    
-    String cleanDbVersion = getCleanVersion(versionInDatabase);
-    String[] cleanDbVersionSplitted = cleanDbVersion.split("\\.");
-    int dbMajorVersion = Integer.valueOf(cleanDbVersionSplitted[0]);
-    int dbMinorVersion = Integer.valueOf(cleanDbVersionSplitted[1]);
-    
-    String cleanEngineVersion = getCleanVersion(ProcessEngine.VERSION);
-    String[] cleanEngineVersionSplitted = cleanEngineVersion.split("\\.");
-    int engineMajorVersion = Integer.valueOf(cleanEngineVersionSplitted[0]);
-    int engineMinorVersion = Integer.valueOf(cleanEngineVersionSplitted[1]);
-      
-    if((dbMajorVersion > engineMajorVersion) 
-            || ( (dbMajorVersion == engineMajorVersion) && (dbMinorVersion > engineMinorVersion) )) {
-      throw new ActivitiException("Version of activiti database (" + versionInDatabase + ") is more recent than the engine (" + ProcessEngine.VERSION +")");
-    } else if(cleanDbVersion.compareTo(cleanEngineVersion) == 0) {
-      // Versions don't match exactly, possibly snapshot is being used
-      log.warn("Engine-version is the same, but not an exact match: {} vs. {}. Not performing database-upgrade.", versionInDatabase, ProcessEngine.VERSION);
-      return false;
-    }
-    return true;
   }
   
   protected String getCleanVersion(String versionString) {
@@ -935,26 +877,6 @@ public class DbSqlSession implements Session {
   
   protected String prependDatabaseTablePrefix(String tableName) {
     return dbSqlSessionFactory.getDatabaseTablePrefix() + tableName;    
-  }
-
-  protected void dbSchemaUpgrade(String component, String dbVersion) {
-    log.info("upgrading activiti {} schema from {} to {}", component, dbVersion, ProcessEngine.VERSION);
-    
-    if (dbVersion.endsWith("-SNAPSHOT")) {
-      dbVersion = dbVersion.substring(0, dbVersion.length()-"-SNAPSHOT".length());
-    }
-    int minorDbVersionNumber = Integer.parseInt(dbVersion.substring(2));
-    
-    String libraryVersion = ProcessEngine.VERSION;
-    if (ProcessEngine.VERSION.endsWith("-SNAPSHOT")) {
-      libraryVersion = ProcessEngine.VERSION.substring(0, ProcessEngine.VERSION.length()-"-SNAPSHOT".length());
-    }
-    int minorLibraryVersionNumber = Integer.parseInt(libraryVersion.substring(2));
-    
-    while (minorDbVersionNumber<minorLibraryVersionNumber) {
-      executeSchemaResource("upgrade", component, getResourceForDbOperation("upgrade", "upgradestep.5"+minorDbVersionNumber+".to.5"+(minorDbVersionNumber+1), component), true);
-      minorDbVersionNumber++;
-    }
   }
 
   public String getResourceForDbOperation(String directory, String operation, String component) {

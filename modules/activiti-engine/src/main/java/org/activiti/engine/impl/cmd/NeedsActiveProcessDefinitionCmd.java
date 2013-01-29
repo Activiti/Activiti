@@ -15,6 +15,7 @@ package org.activiti.engine.impl.cmd;
 import java.io.Serializable;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -41,7 +42,7 @@ public abstract class NeedsActiveProcessDefinitionCmd<T> implements Command<T>, 
             .findDeployedProcessDefinitionById(processDefinitionId);
 
     if (processDefinition == null) {
-      throw new ActivitiException("No process definition found for id = '" + processDefinitionId + "'");
+      throw new ActivitiObjectNotFoundException("No process definition found for id = '" + processDefinitionId + "'", ProcessDefinition.class);
     }
     
     if (processDefinition.isSuspended()) {

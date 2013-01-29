@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -74,7 +75,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   
   public ProcessDefinitionQueryImpl processDefinitionCategory(String category) {
     if (category == null) {
-      throw new ActivitiException("category is null");
+      throw new ActivitiIllegalArgumentException("category is null");
     }
     this.category = category;
     return this;
@@ -82,7 +83,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   
   public ProcessDefinitionQueryImpl processDefinitionCategoryLike(String categoryLike) {
     if (categoryLike == null) {
-      throw new ActivitiException("categoryLike is null");
+      throw new ActivitiIllegalArgumentException("categoryLike is null");
     }
     this.categoryLike = categoryLike;
     return this;
@@ -90,7 +91,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
 
   public ProcessDefinitionQueryImpl processDefinitionCategoryNotEquals(String categoryNotEquals) {
     if (categoryNotEquals == null) {
-      throw new ActivitiException("categoryNotEquals is null");
+      throw new ActivitiIllegalArgumentException("categoryNotEquals is null");
     }
     this.categoryNotEquals = categoryNotEquals;
     return this;
@@ -98,7 +99,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
 
   public ProcessDefinitionQueryImpl processDefinitionName(String name) {
     if (name == null) {
-      throw new ActivitiException("name is null");
+      throw new ActivitiIllegalArgumentException("name is null");
     }
     this.name = name;
     return this;
@@ -106,7 +107,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   
   public ProcessDefinitionQueryImpl processDefinitionNameLike(String nameLike) {
     if (nameLike == null) {
-      throw new ActivitiException("nameLike is null");
+      throw new ActivitiIllegalArgumentException("nameLike is null");
     }
     this.nameLike = nameLike;
     return this;
@@ -114,7 +115,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
 
   public ProcessDefinitionQueryImpl deploymentId(String deploymentId) {
     if (deploymentId == null) {
-      throw new ActivitiException("id is null");
+      throw new ActivitiIllegalArgumentException("id is null");
     }
     this.deploymentId = deploymentId;
     return this;
@@ -122,7 +123,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
 
   public ProcessDefinitionQueryImpl processDefinitionKey(String key) {
     if (key == null) {
-      throw new ActivitiException("key is null");
+      throw new ActivitiIllegalArgumentException("key is null");
     }
     this.key = key;
     return this;
@@ -130,7 +131,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   
   public ProcessDefinitionQueryImpl processDefinitionKeyLike(String keyLike) {
     if (keyLike == null) {
-      throw new ActivitiException("keyLike is null");
+      throw new ActivitiIllegalArgumentException("keyLike is null");
     }
     this.keyLike = keyLike;
     return this;
@@ -138,7 +139,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   
   public ProcessDefinitionQueryImpl processDefinitionResourceName(String resourceName) {
     if (resourceName == null) {
-      throw new ActivitiException("resourceName is null");
+      throw new ActivitiIllegalArgumentException("resourceName is null");
     }
     this.resourceName = resourceName;
     return this;
@@ -146,7 +147,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   
   public ProcessDefinitionQueryImpl processDefinitionResourceNameLike(String resourceNameLike) {
     if (resourceNameLike == null) {
-      throw new ActivitiException("resourceNameLike is null");
+      throw new ActivitiIllegalArgumentException("resourceNameLike is null");
     }
     this.resourceNameLike = resourceNameLike;
     return this;
@@ -154,9 +155,9 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   
   public ProcessDefinitionQueryImpl processDefinitionVersion(Integer version) {
     if (version == null) {
-      throw new ActivitiException("version is null");
+      throw new ActivitiIllegalArgumentException("version is null");
     } else if (version <= 0) {
-      throw new ActivitiException("version must be positive");
+      throw new ActivitiIllegalArgumentException("version must be positive");
     }
     this.version = version;
     return this;
@@ -192,7 +193,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
 
   public ProcessDefinitionQuery eventSubscription(String eventType, String eventName) {
     if(eventName == null) {
-      throw new ActivitiException("event name is null");
+      throw new ActivitiIllegalArgumentException("event name is null");
     }
     if(eventType == null) {
       throw new ActivitiException("event type is null");
@@ -266,7 +267,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     
     // latest() makes only sense when used with key() or keyLike()
     if (latest && ( (id != null) || (name != null) || (nameLike != null) || (version != null) || (deploymentId != null) ) ){
-      throw new ActivitiException("Calling latest() can only be used in combination with key(String) and keyLike(String)");
+      throw new ActivitiIllegalArgumentException("Calling latest() can only be used in combination with key(String) and keyLike(String)");
     }
   }
   
@@ -320,7 +321,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
 
   public ProcessDefinitionQueryImpl startableByUser(String userId) {
     if (userId == null) {
-      throw new ActivitiException("userId is null");
+      throw new ActivitiIllegalArgumentException("userId is null");
     }
     this.authorizationUserId = userId;
     return this;

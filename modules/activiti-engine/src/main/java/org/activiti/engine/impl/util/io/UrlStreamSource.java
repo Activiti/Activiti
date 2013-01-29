@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 
 
 /**
@@ -34,7 +35,7 @@ public class UrlStreamSource implements StreamSource {
     try {
       return url.openStream();
     } catch (IOException e) {
-      throw new ActivitiException("couldn't open url '"+url+"'", e);
+      throw new ActivitiIllegalArgumentException("couldn't open url '"+url+"'", e);
     }
   }
 }

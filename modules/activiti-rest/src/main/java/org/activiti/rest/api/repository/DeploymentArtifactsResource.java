@@ -15,7 +15,7 @@ package org.activiti.rest.api.repository;
 
 import java.util.List;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.RequestUtil;
@@ -37,7 +37,7 @@ public class DeploymentArtifactsResource extends SecuredResource {
     String deploymentId = (String) getRequest().getAttributes().get("deploymentId");
     
     if(deploymentId == null) {
-      throw new ActivitiException("No deployment id provided");
+      throw new ActivitiIllegalArgumentException("No deployment id provided");
     }
 
     Deployment deployment = ActivitiUtil.getRepositoryService().createDeploymentQuery().deploymentId(deploymentId).singleResult();

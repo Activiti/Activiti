@@ -14,7 +14,7 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.List;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
@@ -77,7 +77,7 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
         leave(execution);
 
       } else {
-        throw new ActivitiException("Delegate expression " + expression
+        throw new ActivitiIllegalArgumentException("Delegate expression " + expression
                 + " did neither resolve to an implementation of " + ActivityBehavior.class
                 + " nor " + JavaDelegate.class);
       }

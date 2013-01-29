@@ -17,6 +17,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.repository.Deployment;
@@ -50,7 +51,7 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
 
   public DeploymentQueryImpl deploymentId(String deploymentId) {
     if (deploymentId == null) {
-      throw new ActivitiException("Deployment id is null");
+      throw new ActivitiIllegalArgumentException("Deployment id is null");
     }
     this.deploymentId = deploymentId;
     return this;
@@ -58,7 +59,7 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
   
   public DeploymentQueryImpl deploymentName(String deploymentName) {
     if (deploymentName == null) {
-      throw new ActivitiException("deploymentName is null");
+      throw new ActivitiIllegalArgumentException("deploymentName is null");
     }
     this.name = deploymentName;
     return this;
@@ -66,7 +67,7 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
 
   public DeploymentQueryImpl deploymentNameLike(String nameLike) {
     if (nameLike == null) {
-      throw new ActivitiException("deploymentNameLike is null");
+      throw new ActivitiIllegalArgumentException("deploymentNameLike is null");
     }
     this.nameLike = nameLike;
     return this;
@@ -74,7 +75,7 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
 
   public DeploymentQueryImpl deploymentCategory(String deploymentCategory) {
     if (deploymentCategory == null) {
-      throw new ActivitiException("deploymentCategory is null");
+      throw new ActivitiIllegalArgumentException("deploymentCategory is null");
     }
     this.category = deploymentCategory;
     return this;
@@ -82,7 +83,7 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
 
   public DeploymentQueryImpl deploymentCategoryNotEquals(String deploymentCategoryNotEquals) {
     if (deploymentCategoryNotEquals == null) {
-      throw new ActivitiException("deploymentCategoryExclude is null");
+      throw new ActivitiIllegalArgumentException("deploymentCategoryExclude is null");
     }
     this.categoryNotEquals = deploymentCategoryNotEquals;
     return this;

@@ -15,7 +15,7 @@ package org.activiti.engine.impl.util;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 
 /**
  * helper/convience methods for working with collections.
@@ -49,7 +49,7 @@ public class CollectionUtil {
   public static Map<String, Object> map(Object...objects) {
     
     if (objects.length % 2 != 0) {
-      throw new ActivitiException("The input should always be even since we expect a list of key-value pairs!");
+      throw new ActivitiIllegalArgumentException("The input should always be even since we expect a list of key-value pairs!");
     }
     
     Map<String, Object> map = new HashMap<String, Object>();

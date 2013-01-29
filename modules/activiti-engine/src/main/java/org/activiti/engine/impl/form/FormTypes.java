@@ -19,7 +19,7 @@ import java.util.Map;
 
 import org.activiti.bpmn.model.FormProperty;
 import org.activiti.bpmn.model.FormValue;
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.form.AbstractFormType;
 import org.apache.commons.lang.StringUtils;
 
@@ -52,7 +52,7 @@ public class FormTypes {
     } else if (StringUtils.isNotEmpty(formProperty.getType())) {
       formType = formTypes.get(formProperty.getType());
       if (formType == null) {
-        throw new ActivitiException("unknown type '" + formProperty.getType() + "' " + formProperty.getId());
+        throw new ActivitiIllegalArgumentException("unknown type '" + formProperty.getType() + "' " + formProperty.getId());
       }
     }
     return formType;

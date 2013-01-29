@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.context.Context;
@@ -81,7 +82,7 @@ public class TaskEntityManager extends AbstractManager {
 
   public TaskEntity findTaskById(String id) {
     if (id == null) {
-      throw new ActivitiException("Invalid task id : null");
+      throw new ActivitiIllegalArgumentException("Invalid task id : null");
     }
     return (TaskEntity) getDbSqlSession().selectById(TaskEntity.class, id);
   }

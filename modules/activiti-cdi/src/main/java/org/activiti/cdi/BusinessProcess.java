@@ -25,6 +25,7 @@ import javax.inject.Named;
 import org.activiti.cdi.annotation.BusinessProcessScoped;
 import org.activiti.cdi.impl.context.ContextAssociationManager;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -204,7 +205,7 @@ public class BusinessProcess implements Serializable {
     
     ProcessDefinition definition = processEngine.getRepositoryService().createProcessDefinitionQuery().processDefinitionName(string).singleResult();
     if (definition == null) {
-      throw new ActivitiException("No process definition found for name: " + string);
+      throw new ActivitiObjectNotFoundException("No process definition found for name: " + string, ProcessDefinition.class);
     }
     ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceById(definition.getId(), getAndClearCachedVariables());
     setExecution(instance);
@@ -220,7 +221,7 @@ public class BusinessProcess implements Serializable {
     
     ProcessDefinition definition = processEngine.getRepositoryService().createProcessDefinitionQuery().processDefinitionName(string).singleResult();
     if (definition == null) {
-      throw new ActivitiException("No process definition found for name: " + string);
+      throw new ActivitiObjectNotFoundException("No process definition found for name: " + string, ProcessDefinition.class);
     }
     Map<String, Object> cachedVariables = getAndClearCachedVariables();
     cachedVariables.putAll(variables);
