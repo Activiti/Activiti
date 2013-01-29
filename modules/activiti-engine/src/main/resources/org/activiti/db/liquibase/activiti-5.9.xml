@@ -12,6 +12,9 @@
         <addColumn tableName="ACT_GE_BYTEARRAY">
             <column name="GENERATED_" type="BOOLEAN" />
         </addColumn>
+        <update tableName="ACT_GE_BYTEARRAY">
+            <column name="GENERATED_" value="0"/>
+        </update>
     </changeSet>
 
     <changeSet id="11 ACT_RU_EXECUTION.IS_EVENT_SCOPE_" author="bzeuner">
@@ -21,6 +24,12 @@
         <addColumn tableName="ACT_RU_EXECUTION">
             <column name="SUSPENSION_STATE_" type="INTEGER" />
         </addColumn>
+        <update tableName="ACT_RU_EXECUTION">
+            <column name="IS_EVENT_SCOPE_" value="0"/>
+        </update>
+        <update tableName="ACT_RU_EXECUTION">
+            <column name="SUSPENSION_STATE_" value="1"/>
+        </update>
     </changeSet>
 
     <changeSet id="12 ACT_RE_PROCDEF.REV_" author="bzeuner">
@@ -30,6 +39,12 @@
         <addColumn tableName="ACT_RE_PROCDEF">
             <column name="SUSPENSION_STATE_" type="INTEGER" />
         </addColumn>
+        <update tableName="ACT_RE_PROCDEF">
+            <column name="REV_" value="1"/>
+        </update>
+        <update tableName="ACT_RE_PROCDEF">
+            <column name="SUSPENSION_STATE_" value="1"/>
+        </update>
     </changeSet>
     
     <changeSet id="13 ACT_RU_EVENT_SUBSCR" author="bzeuner">

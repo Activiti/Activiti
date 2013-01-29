@@ -12,6 +12,9 @@
         <addColumn tableName="ACT_RU_EXECUTION">
             <column name="CACHED_ENT_STATE_" type="INTEGER" />
         </addColumn>
+        <update tableName="ACT_RU_EXECUTION">
+            <column name="CACHED_ENT_STATE_" value="7"/>
+        </update>
     </changeSet>
     
     <changeSet id="3 ACT_RU_IDENTITYLINK.PROC_DEF_ID" author="ditte">

@@ -68,6 +68,9 @@
         <addColumn tableName="ACT_RU_TASK">
             <column name="SUSPENSION_STATE_" type="INTEGER"/>            
         </addColumn>
+        <update tableName="ACT_RU_TASK">
+            <column name="SUSPENSION_STATE_" value="1"/>
+        </update>
         <modifyDataType tableName="ACT_RU_TASK" columnName="OWNER_" newDataType="NVARCHAR(255)"/>
         <modifyDataType tableName="ACT_RU_TASK" columnName="ASSIGNEE_" newDataType="NVARCHAR(255)"/>
    </changeSet>
@@ -113,7 +116,9 @@
             <column name="PROC_INST_ID_" type="NVARCHAR(64)"/>
             <column name="EXECUTION_ID_" type="NVARCHAR(64)"/>
             <column name="TASK_ID_" type="NVARCHAR(64)"/>
-            <column name="NAME_" type="NVARCHAR(255)"/>
+            <column name="NAME_" type="NVARCHAR(255)">
+              <constraints primaryKey="true" nullable="false"/>
+            </column>
             <column name="VAR_TYPE_" type="NVARCHAR(100)"/>
             <column name="REV_" type="INTEGER"/>
             <column name="BYTEARRAY_ID_" type="NVARCHAR(64)"/>

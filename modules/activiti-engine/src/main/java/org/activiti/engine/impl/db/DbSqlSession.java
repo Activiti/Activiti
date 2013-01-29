@@ -806,6 +806,7 @@ public class DbSqlSession implements Session {
         Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(connection);
         database.setDefaultSchemaName(this.connectionMetadataDefaultSchema);
         Liquibase liquibase = new Liquibase("org/activiti/db/liquibase/activiti-upgrade-" + dbVersion + ".xml", new ClassLoaderResourceAccessor(), database);
+        liquibase.getDatabase().setDatabaseChangeLogLockTableName("ACT_" + liquibase.getDatabase().getDatabaseChangeLogLockTableName());
         liquibase.update("production");
       } catch (Exception e) {
         throw new ActivitiException("Error creating Activiti tables", e);

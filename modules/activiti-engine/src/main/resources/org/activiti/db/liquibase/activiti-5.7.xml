@@ -264,7 +264,7 @@
             <column name="DOUBLE_"              type="DOUBLE" />
             <column name="LONG_"                type="BIGINT" />
             <column name="TEXT_"                type="NVARCHAR(4000)" />
-            <column name="TEXT2_"                type="NVARCHAR(4000)" />
+            <column name="TEXT2_"               type="NVARCHAR(4000)" />
         </createTable>
     </changeSet>
  
@@ -402,8 +402,8 @@
             <column name="BYTEARRAY_ID_"        type="NVARCHAR(64)" />
             <column name="DOUBLE_"              type="DOUBLE" />
             <column name="LONG_"                type="BIGINT" />
-            <column name="TEXT_"                type="NVARCHAR(255)" />
-            <column name="TEXT2_"               type="NVARCHAR(255)" />
+            <column name="TEXT_"                type="NVARCHAR(4000)" />
+            <column name="TEXT2_"               type="NVARCHAR(4000)" />
         </createTable>
     </changeSet>
     
@@ -437,7 +437,9 @@
             <column name="ID_" type="NVARCHAR(64)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="TIME_" type="TIMESTAMP" />
+            <column name="TIME_" type="TIMESTAMP">
+              <constraints nullable="false"/>
+            </column>
             <column name="USER_ID_" type="NVARCHAR(255)" />
             <column name="TASK_ID_" type="NVARCHAR(64)" />
             <column name="PROC_INST_ID_" type="NVARCHAR(64)" />
