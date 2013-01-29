@@ -61,13 +61,13 @@ public class SubProcessParseHandler extends AbstractActivityBpmnParseHandler<Sub
     bpmnParse.setCurrentSubProcess(subProcess);
     
     bpmnParse.processFlowElements(subProcess.getFlowElements());
-    bpmnParse.processArtifacts(subProcess.getArtifacts(), activity);
+    processArtifacts(bpmnParse, subProcess.getArtifacts(), activity);
     
     bpmnParse.removeCurrentScope();
     bpmnParse.removeCurrentSubProcess();
     
     if (subProcess.getIoSpecification() != null) {
-      IOSpecification ioSpecification = bpmnParse.createIOSpecification(subProcess.getIoSpecification());
+      IOSpecification ioSpecification = createIOSpecification(bpmnParse, subProcess.getIoSpecification());
       activity.setIoSpecification(ioSpecification);
     }
 

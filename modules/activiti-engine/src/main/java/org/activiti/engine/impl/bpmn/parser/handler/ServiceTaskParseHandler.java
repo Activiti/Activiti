@@ -82,17 +82,17 @@ public class ServiceTaskParseHandler extends AbstractExternalInvocationBpmnParse
           webServiceActivityBehavior.setOperation(bpmnParse.getOperations().get(serviceTask.getOperationRef()));
 
           if (serviceTask.getIoSpecification() != null) {
-            IOSpecification ioSpecification = bpmnParse.createIOSpecification(serviceTask.getIoSpecification());
+            IOSpecification ioSpecification = createIOSpecification(bpmnParse, serviceTask.getIoSpecification());
             webServiceActivityBehavior.setIoSpecification(ioSpecification);
           }
 
           for (DataAssociation dataAssociationElement : serviceTask.getDataInputAssociations()) {
-            AbstractDataAssociation dataAssociation = bpmnParse.createDataInputAssociation(dataAssociationElement);
+            AbstractDataAssociation dataAssociation = createDataInputAssociation(bpmnParse, dataAssociationElement);
             webServiceActivityBehavior.addDataInputAssociation(dataAssociation);
           }
 
           for (DataAssociation dataAssociationElement : serviceTask.getDataOutputAssociations()) {
-            AbstractDataAssociation dataAssociation = bpmnParse.createDataOutputAssociation(dataAssociationElement);
+            AbstractDataAssociation dataAssociation = createDataOutputAssociation(bpmnParse, dataAssociationElement);
             webServiceActivityBehavior.addDataOutputAssociation(dataAssociation);
           }
 

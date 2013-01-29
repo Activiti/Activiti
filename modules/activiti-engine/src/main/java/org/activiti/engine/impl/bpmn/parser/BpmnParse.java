@@ -28,12 +28,8 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
-import org.activiti.bpmn.model.Artifact;
-import org.activiti.bpmn.model.Association;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.bpmn.model.DataAssociation;
-import org.activiti.bpmn.model.DataSpec;
 import org.activiti.bpmn.model.ExclusiveGateway;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.GraphicInfo;
@@ -46,26 +42,16 @@ import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.parse.Problem;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.Condition;
-import org.activiti.engine.impl.bpmn.data.AbstractDataAssociation;
-import org.activiti.engine.impl.bpmn.data.Assignment;
 import org.activiti.engine.impl.bpmn.data.ClassStructureDefinition;
-import org.activiti.engine.impl.bpmn.data.Data;
-import org.activiti.engine.impl.bpmn.data.DataRef;
-import org.activiti.engine.impl.bpmn.data.IOSpecification;
 import org.activiti.engine.impl.bpmn.data.ItemDefinition;
 import org.activiti.engine.impl.bpmn.data.ItemKind;
-import org.activiti.engine.impl.bpmn.data.SimpleDataInputAssociation;
 import org.activiti.engine.impl.bpmn.data.StructureDefinition;
-import org.activiti.engine.impl.bpmn.data.TransformationDataOutputAssociation;
 import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti.engine.impl.bpmn.webservice.BpmnInterface;
 import org.activiti.engine.impl.bpmn.webservice.BpmnInterfaceImplementation;
 import org.activiti.engine.impl.bpmn.webservice.MessageDefinition;
-import org.activiti.engine.impl.bpmn.webservice.MessageImplicitDataInputAssociation;
-import org.activiti.engine.impl.bpmn.webservice.MessageImplicitDataOutputAssociation;
 import org.activiti.engine.impl.bpmn.webservice.Operation;
 import org.activiti.engine.impl.bpmn.webservice.OperationImplementation;
 import org.activiti.engine.impl.el.ExpressionManager;
@@ -82,7 +68,6 @@ import org.activiti.engine.impl.util.io.ResourceStreamSource;
 import org.activiti.engine.impl.util.io.StreamSource;
 import org.activiti.engine.impl.util.io.StringStreamSource;
 import org.activiti.engine.impl.util.io.UrlStreamSource;
-import org.activiti.engine.impl.util.xml.Element;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -426,15 +411,6 @@ public class BpmnParse implements BpmnXMLConstants {
     }
   }
   
-  public void processArtifacts(Collection<Artifact> artifacts, ScopeImpl scope) {
-    // associations  
-    for (Artifact artifact : artifacts) {
-      if (artifact instanceof Association) {
-        createAssociation((Association) artifact, scope);
-      }
-    }
-  }
-
   public void validateExclusiveGateway(ActivityImpl activity, ExclusiveGateway exclusiveGateway) {
     if (activity.getOutgoingTransitions().size() == 0) {
       // TODO: double check if this is valid (I think in Activiti yes, since we need start events we will need an end event as well)
@@ -476,111 +452,6 @@ public class BpmnParse implements BpmnXMLConstants {
     }
   }
 
-  public IOSpecification createIOSpecification(org.activiti.bpmn.model.IOSpecification specificationModel) {
-    IOSpecification ioSpecification = new IOSpecification();
-
-    for (DataSpec dataInputElement : specificationModel.getDataInputs()) {
-      ItemDefinition itemDefinition = this.itemDefinitions.get(dataInputElement.getItemSubjectRef());
-      Data dataInput = new Data(this.targetNamespace + ":" + dataInputElement.getId(), dataInputElement.getId(), itemDefinition);
-      ioSpecification.addInput(dataInput);
-    }
-
-    for (DataSpec dataOutputElement : specificationModel.getDataOutputs()) {
-      ItemDefinition itemDefinition = this.itemDefinitions.get(dataOutputElement.getItemSubjectRef());
-      Data dataOutput = new Data(this.targetNamespace + ":" + dataOutputElement.getId(), dataOutputElement.getId(), itemDefinition);
-      ioSpecification.addOutput(dataOutput);
-    }
-
-    for (String dataInputRef : specificationModel.getDataInputRefs()) {
-      DataRef dataRef = new DataRef(dataInputRef);
-      ioSpecification.addInputRef(dataRef);
-    }
-
-    for (String dataOutputRef : specificationModel.getDataOutputRefs()) {
-      DataRef dataRef = new DataRef(dataOutputRef);
-      ioSpecification.addOutputRef(dataRef);
-    }
-
-    return ioSpecification;
-  }
-  
-  public AbstractDataAssociation createDataInputAssociation(DataAssociation dataAssociationElement) {
-    if (StringUtils.isEmpty(dataAssociationElement.getTargetRef())) {
-      bpmnModel.addProblem("targetRef is required", dataAssociationElement);
-    }
-    
-    if (dataAssociationElement.getAssignments().isEmpty()) {
-      return new MessageImplicitDataInputAssociation(dataAssociationElement.getSourceRef(), dataAssociationElement.getTargetRef());
-    } else {
-      SimpleDataInputAssociation dataAssociation = new SimpleDataInputAssociation(
-          dataAssociationElement.getSourceRef(), dataAssociationElement.getTargetRef());
-
-      for (org.activiti.bpmn.model.Assignment assigmentElement : dataAssociationElement.getAssignments()) {
-        if (StringUtils.isNotEmpty(assigmentElement.getFrom()) && StringUtils.isNotEmpty(assigmentElement.getTo())) {
-          Expression from = this.expressionManager.createExpression(assigmentElement.getFrom());
-          Expression to = this.expressionManager.createExpression(assigmentElement.getTo());
-          Assignment assignment = new Assignment(from, to);
-          dataAssociation.addAssignment(assignment);
-        }
-      }
-      return dataAssociation;
-    }
-  }
-  
-  public AbstractDataAssociation createDataOutputAssociation(DataAssociation dataAssociationElement) {
-    if (StringUtils.isNotEmpty(dataAssociationElement.getSourceRef())) {
-      return new MessageImplicitDataOutputAssociation(dataAssociationElement.getTargetRef(), dataAssociationElement.getSourceRef());
-    } else {
-      Expression transformation = this.expressionManager.createExpression(dataAssociationElement.getTransformation());
-      AbstractDataAssociation dataOutputAssociation = new TransformationDataOutputAssociation(null, dataAssociationElement.getTargetRef(), transformation);
-      return dataOutputAssociation;
-    }
-  }
-
-  protected AbstractDataAssociation parseDataOutputAssociation(Element dataAssociationElement) {
-    String targetRef = dataAssociationElement.element("targetRef").getText();
-
-    if (dataAssociationElement.element("sourceRef") != null) {
-      String sourceRef = dataAssociationElement.element("sourceRef").getText();
-      return new MessageImplicitDataOutputAssociation(targetRef, sourceRef);
-    } else {
-      Expression transformation = this.expressionManager.createExpression(dataAssociationElement.element("transformation").getText());
-      AbstractDataAssociation dataOutputAssociation = new TransformationDataOutputAssociation(null, targetRef, transformation);
-      return dataOutputAssociation;
-    }
-  }
-  
-  protected void createAssociation(Association association, ScopeImpl parentScope) {
-    if (bpmnModel.getArtifact(association.getSourceRef()) != null ||
-        bpmnModel.getArtifact(association.getTargetRef()) != null) {
-      
-      // connected to a text annotation so skipping it
-      return;
-    }
-    
-    ActivityImpl sourceActivity = parentScope.findActivity(association.getSourceRef());
-    ActivityImpl targetActivity = parentScope.findActivity(association.getTargetRef());
-    
-    // an association may reference elements that are not parsed as activities (like for instance 
-    // text annotations so do not throw an exception if sourceActivity or targetActivity are null)
-    // However, we make sure they reference 'something':
-    if(sourceActivity == null) {
-      //bpmnModel.addProblem("Invalid reference sourceRef '" + association.getSourceRef() + "' of association element ", association.getId());
-    } else if(targetActivity == null) {
-      //bpmnModel.addProblem("Invalid reference targetRef '" + association.getTargetRef() + "' of association element ", association.getId());
-    } else {      
-      if(sourceActivity != null && sourceActivity.getProperty("type").equals("compensationBoundaryCatch")) {
-        Object isForCompensation = targetActivity.getProperty(PROPERTYNAME_IS_FOR_COMPENSATION);          
-        if(isForCompensation == null || !(Boolean) isForCompensation) {
-          bpmnModel.addProblem("compensation boundary catch must be connected to element with isForCompensation=true", association);
-        } else {            
-          ActivityImpl compensatedActivity = sourceActivity.getParentActivity();
-          compensatedActivity.setProperty(PROPERTYNAME_COMPENSATION_HANDLER_ID, targetActivity.getId());            
-        }
-      }
-    }
-  }
-  
   //Diagram interchange
   // /////////////////////////////////////////////////////////////////
 
@@ -654,21 +525,6 @@ public class BpmnParse implements BpmnXMLConstants {
     }
   }
 
-  // Getters, setters and Parser overriden operations
-  // ////////////////////////////////////////
-  
-  public List<ProcessDefinitionEntity> getProcessDefinitions() {
-    return processDefinitions;
-  }
-
-  public BpmnParseHandlers getBpmnParserHandlers() {
-    return bpmnParserHandlers;
-  }
-  
-  public void setBpmnParserHandlers(BpmnParseHandlers bpmnParserHandlers) {
-    this.bpmnParserHandlers = bpmnParserHandlers;
-  }
-
   public ProcessDefinitionEntity getProcessDefinition(String processDefinitionKey) {
     for (ProcessDefinitionEntity processDefinition : processDefinitions) {
       if (processDefinition.getKey().equals(processDefinitionKey)) {
@@ -688,6 +544,27 @@ public class BpmnParse implements BpmnXMLConstants {
 
   public void addOperation(OperationImplementation operationImplementation) {
     this.operationImplementations.put(operationImplementation.getId(), operationImplementation);
+  }
+  
+  
+  /* ------------------- 
+   * GETTERS AND SETTERS
+   * ------------------- */
+  
+  public List<ProcessDefinitionEntity> getProcessDefinitions() {
+    return processDefinitions;
+  }
+  
+  public String getTargetNamespace() {
+    return targetNamespace;
+  }
+
+  public BpmnParseHandlers getBpmnParserHandlers() {
+    return bpmnParserHandlers;
+  }
+  
+  public void setBpmnParserHandlers(BpmnParseHandlers bpmnParserHandlers) {
+    this.bpmnParserHandlers = bpmnParserHandlers;
   }
   
   public DeploymentEntity getDeployment() {
@@ -733,11 +610,23 @@ public class BpmnParse implements BpmnXMLConstants {
   public Map<String, TransitionImpl> getSequenceFlows() {
     return sequenceFlows;
   }
-  
-  public void setSequenceFlows(Map<String, TransitionImpl> sequenceFlows) {
-    this.sequenceFlows = sequenceFlows;
+
+  public Map<String, MessageDefinition> getMessages() {
+    return messages;
   }
   
+  public Map<String, BpmnInterfaceImplementation> getInterfaceImplementations() {
+    return interfaceImplementations;
+  }
+  
+  public Map<String, ItemDefinition> getItemDefinitions() {
+    return itemDefinitions;
+  }
+  
+  public Map<String, XMLImporter> getImporters() {
+    return importers;
+  }
+
   public Map<String, Operation> getOperations() {
     return operations;
   }
