@@ -47,7 +47,6 @@ import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 import org.activiti.engine.impl.pvm.runtime.OutgoingExecution;
 import org.activiti.engine.impl.pvm.runtime.StartingExecution;
 import org.activiti.engine.impl.util.BitMaskUtil;
-import org.activiti.engine.impl.variable.VariableDeclaration;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -281,13 +280,6 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     ScopeImpl scope = getScope();
     ensureParentInitialized();
 
-    List<VariableDeclaration> variableDeclarations = (List<VariableDeclaration>) scope.getProperty(BpmnParse.PROPERTYNAME_VARIABLE_DECLARATIONS);
-    if (variableDeclarations!=null) {
-      for (VariableDeclaration variableDeclaration : variableDeclarations) {
-        variableDeclaration.initialize(this, parent);
-      }
-    }
-    
     // initialize the lists of referenced objects (prevents db queries)
     variableInstances = new HashMap<String, VariableInstanceEntity>();
     eventSubscriptions = new ArrayList<EventSubscriptionEntity>();

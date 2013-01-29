@@ -295,9 +295,9 @@ public class BusinessTripRequest implements Serializable {
 	  	Activiti can be hooked-up to the CDI event-bus. This allows us to be notified of process events using standard CDI event mechanisms. 
 	  	In order to enable CDI event support for activiti, enable the corresponding parse listener in the configuration:
 <programlisting>
-&lt;property name=&quot;customPostBPMNParseListeners&quot;&gt;
+&lt;property name=&quot;postBpmnParseHandlers&quot;&gt;
 	&lt;list&gt;
-		&lt;bean class=&quot;org.activiti.cdi.impl.event.CdiEventSupportBpmnParseListener&quot; /&gt;
+		&lt;bean class=&quot;org.activiti.cdi.impl.event.CdiEventSupportBpmnParseHandler&quot; /&gt;
 	&lt;/list&gt;
 &lt;/property&gt;
 </programlisting>

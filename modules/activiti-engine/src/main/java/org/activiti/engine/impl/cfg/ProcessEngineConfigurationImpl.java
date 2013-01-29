@@ -51,11 +51,40 @@ import org.activiti.engine.impl.ServiceImpl;
 import org.activiti.engine.impl.TaskServiceImpl;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
+import org.activiti.engine.impl.bpmn.parser.BpmnParseHandlers;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultListenerFactory;
 import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
+import org.activiti.engine.impl.bpmn.parser.handler.BoundaryEventParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.BusinessRuleParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.CallActivityParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.CancelEventDefinitionParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.CompensateEventDefinitionParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.EndEventParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.ErrorEventDefinitionParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.EventBasedGatewayParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.ExclusiveGatewayParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.InclusiveGatewayParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.IntermediateCatchEventParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.IntermediateThrowEventParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.ManualTaskParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.MessageEventDefinitionParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.ParallelGatewayParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.ProcessParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.ReceiveTaskParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.ScriptTaskParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.SendTaskParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.SequenceFlowParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.ServiceTaskParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.SignalEventDefinitionParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.StartEventParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.SubProcessParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.TaskParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.TimerEventDefinitionParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.TransactionParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.UserTaskParseHandler;
 import org.activiti.engine.impl.bpmn.webservice.MessageInstance;
 import org.activiti.engine.impl.calendar.BusinessCalendarManager;
 import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
@@ -81,7 +110,10 @@ import org.activiti.engine.impl.form.LongFormType;
 import org.activiti.engine.impl.form.StringFormType;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.history.HistoryManager;
-import org.activiti.engine.impl.history.handler.HistoryParseListener;
+import org.activiti.engine.impl.history.parse.FlowNodeHistoryParseHandler;
+import org.activiti.engine.impl.history.parse.ProcessHistoryParseHandler;
+import org.activiti.engine.impl.history.parse.StartEventHistoryParseHandler;
+import org.activiti.engine.impl.history.parse.UserTaskHistoryParseHandler;
 import org.activiti.engine.impl.interceptor.CommandContextFactory;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.interceptor.CommandExecutorImpl;
@@ -156,7 +188,7 @@ import org.activiti.engine.impl.variable.ShortType;
 import org.activiti.engine.impl.variable.StringType;
 import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.impl.variable.VariableTypes;
-import org.activiti.engine.parser.BpmnParseListener;
+import org.activiti.engine.parse.BpmnParseHandler;
 import org.apache.ibatis.builder.xml.XMLConfigBuilder;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
 import org.apache.ibatis.mapping.Environment;
@@ -253,8 +285,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected String idGeneratorDataSourceJndiName;
   
   // Bpmn parser
-  protected List<BpmnParseListener> preParseListeners;
-  protected List<BpmnParseListener> postParseListeners;
+  protected List<BpmnParseHandler> preBpmnParseHandlers;
+  protected List<BpmnParseHandler> postBpmnParseHandlers;
   protected ActivityBehaviorFactory activityBehaviorFactory;
   protected ListenerFactory listenerFactory;
   protected BpmnParseFactory bpmnParseFactory;
@@ -733,13 +765,18 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     bpmnParser.setActivityBehaviorFactory(activityBehaviorFactory);
     bpmnParser.setListenerFactory(listenerFactory);
     
-    if(preParseListeners != null) {
-      bpmnParser.getParseListeners().addAll(preParseListeners);
+    List<BpmnParseHandler> parseHandlers = new ArrayList<BpmnParseHandler>();
+    if(getPreBpmnParseHandlers() != null) {
+      parseHandlers.addAll(getPreBpmnParseHandlers());
     }
-    bpmnParser.getParseListeners().addAll(getDefaultBPMNParseListeners());
-    if(postParseListeners != null) {
-      bpmnParser.getParseListeners().addAll(postParseListeners);
+    parseHandlers.addAll(getDefaultBpmnParseHandlers());
+    if(getPostBpmnParseHandlers() != null) {
+      parseHandlers.addAll(getPostBpmnParseHandlers());
     }
+    
+    BpmnParseHandlers bpmnParseHandlers = new BpmnParseHandlers();
+    bpmnParseHandlers.addHandlers(parseHandlers);
+    bpmnParser.setBpmnParserHandlers(bpmnParseHandlers);
     
     bpmnDeployer.setBpmnParser(bpmnParser);
     
@@ -747,10 +784,53 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return defaultDeployers;
   }
   
-  protected List<BpmnParseListener> getDefaultBPMNParseListeners() {
-    List<BpmnParseListener> defaultListeners = new ArrayList<BpmnParseListener>();
-    defaultListeners.add(new HistoryParseListener());
-    return defaultListeners;
+  protected List<BpmnParseHandler> getDefaultBpmnParseHandlers() {
+    // Alpabetic list of default parse handler classes
+    List<BpmnParseHandler> bpmnParserHandlers = new ArrayList<BpmnParseHandler>();
+    bpmnParserHandlers.add(new BoundaryEventParseHandler());
+    bpmnParserHandlers.add(new BusinessRuleParseHandler());
+    bpmnParserHandlers.add(new CallActivityParseHandler());
+    bpmnParserHandlers.add(new CancelEventDefinitionParseHandler());
+    bpmnParserHandlers.add(new CompensateEventDefinitionParseHandler());
+    bpmnParserHandlers.add(new EndEventParseHandler());
+    bpmnParserHandlers.add(new ErrorEventDefinitionParseHandler());
+    bpmnParserHandlers.add(new EventBasedGatewayParseHandler());
+    bpmnParserHandlers.add(new ExclusiveGatewayParseHandler());
+    bpmnParserHandlers.add(new InclusiveGatewayParseHandler());
+    bpmnParserHandlers.add(new IntermediateCatchEventParseHandler());
+    bpmnParserHandlers.add(new IntermediateThrowEventParseHandler());
+    bpmnParserHandlers.add(new ManualTaskParseHandler());
+    bpmnParserHandlers.add(new MessageEventDefinitionParseHandler());
+    bpmnParserHandlers.add(new ParallelGatewayParseHandler());
+    bpmnParserHandlers.add(new ProcessParseHandler());
+    bpmnParserHandlers.add(new ReceiveTaskParseHandler());
+    bpmnParserHandlers.add(new ScriptTaskParseHandler());
+    bpmnParserHandlers.add(new SendTaskParseHandler());
+    bpmnParserHandlers.add(new SequenceFlowParseHandler());
+    bpmnParserHandlers.add(new ServiceTaskParseHandler());
+    bpmnParserHandlers.add(new SignalEventDefinitionParseHandler());
+    bpmnParserHandlers.add(new StartEventParseHandler());
+    bpmnParserHandlers.add(new SubProcessParseHandler());
+    bpmnParserHandlers.add(new TaskParseHandler());
+    bpmnParserHandlers.add(new TimerEventDefinitionParseHandler());
+    bpmnParserHandlers.add(new TransactionParseHandler());
+    bpmnParserHandlers.add(new UserTaskParseHandler());
+    
+    // History
+    for (BpmnParseHandler handler : getDefaultHistoryParseHandlers()) {
+      bpmnParserHandlers.add(handler);
+    }
+    
+    return bpmnParserHandlers;
+  }
+  
+  protected List<BpmnParseHandler> getDefaultHistoryParseHandlers() {
+    List<BpmnParseHandler> parseHandlers = new ArrayList<BpmnParseHandler>();
+    parseHandlers.add(new FlowNodeHistoryParseHandler());
+    parseHandlers.add(new ProcessHistoryParseHandler());
+    parseHandlers.add(new StartEventHistoryParseHandler());
+    parseHandlers.add(new UserTaskHistoryParseHandler());
+    return parseHandlers;
   }
 
   // job executor /////////////////////////////////////////////////////////////
@@ -1393,39 +1473,23 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     this.customPostVariableTypes = customPostVariableTypes;
     return this;
   }
+
+  public List<BpmnParseHandler> getPreBpmnParseHandlers() {
+    return preBpmnParseHandlers;
+  }
   
-  public List<BpmnParseListener> getCustomPreBPMNParseListeners() {
-    return preParseListeners;
+  public void setPreBpmnParseHandlers(List<BpmnParseHandler> preBpmnParseHandlers) {
+    this.preBpmnParseHandlers = preBpmnParseHandlers;
   }
 
-  public void setCustomPreBPMNParseListeners(List<BpmnParseListener> preParseListeners) {
-    this.preParseListeners = preParseListeners;
+  public List<BpmnParseHandler> getPostBpmnParseHandlers() {
+    return postBpmnParseHandlers;
   }
 
-  public List<BpmnParseListener> getCustomPostBPMNParseListeners() {
-    return postParseListeners;
+  public void setPostBpmnParseHandlers(List<BpmnParseHandler> postBpmnParseHandlers) {
+    this.postBpmnParseHandlers = postBpmnParseHandlers;
   }
 
-  public void setCustomPostBPMNParseListeners(List<BpmnParseListener> postParseListeners) {
-    this.postParseListeners = postParseListeners;
-  }
-  
-  public List<BpmnParseListener> getPreParseListeners() {
-    return preParseListeners;
-  }
-
-  public void setPreParseListeners(List<BpmnParseListener> preParseListeners) {
-    this.preParseListeners = preParseListeners;
-  }
-  
-  public List<BpmnParseListener> getPostParseListeners() {
-    return postParseListeners;
-  }
-  
-  public void setPostParseListeners(List<BpmnParseListener> postParseListeners) {
-    this.postParseListeners = postParseListeners;
-  }
-  
   public ActivityBehaviorFactory getActivityBehaviorFactory() {
     return activityBehaviorFactory;
   }
