@@ -10,23 +10,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.activiti.engine.parse;
 
-package org.activiti.standalone.parsing;
+import java.util.Set;
 
-import org.activiti.bpmn.model.Process;
-import org.activiti.engine.AbstractBpmnParseListener;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-
+import org.activiti.bpmn.model.BaseElement;
+import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
 /**
- * @author Frederik Heremans
+ * @author Joram Barrez
  */
-public class TestBPMNParseListener extends AbstractBpmnParseListener {
-
-  @Override
-  public void parseProcess(Process process, ProcessDefinitionEntity processDefinition) {
-    // Change the key of all deployed process-definitions
-    processDefinition.setKey(processDefinition.getKey() + "-modified");
-  }
+public interface BpmnParseHandler {
+  
+  Set<Class<? extends BaseElement>> getHandledTypes();
+  
+  void parse(BpmnParse bpmnParse, BaseElement element);
 
 }
