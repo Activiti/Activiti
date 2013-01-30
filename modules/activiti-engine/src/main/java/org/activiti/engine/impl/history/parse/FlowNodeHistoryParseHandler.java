@@ -20,7 +20,6 @@ import org.activiti.bpmn.model.BusinessRuleTask;
 import org.activiti.bpmn.model.CallActivity;
 import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.EventGateway;
-import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.ExclusiveGateway;
 import org.activiti.bpmn.model.InclusiveGateway;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
@@ -72,7 +71,6 @@ public class FlowNodeHistoryParseHandler implements BpmnParseHandler {
     
     supportedElementClasses.add(CallActivity.class);
     supportedElementClasses.add(SubProcess.class);
-    supportedElementClasses.add(EventSubProcess.class);
   }
   
   public Set<Class< ? extends BaseElement>> getHandledTypes() {

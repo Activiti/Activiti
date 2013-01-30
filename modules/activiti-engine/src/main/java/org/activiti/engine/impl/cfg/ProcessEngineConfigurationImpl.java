@@ -65,6 +65,7 @@ import org.activiti.engine.impl.bpmn.parser.handler.CompensateEventDefinitionPar
 import org.activiti.engine.impl.bpmn.parser.handler.EndEventParseHandler;
 import org.activiti.engine.impl.bpmn.parser.handler.ErrorEventDefinitionParseHandler;
 import org.activiti.engine.impl.bpmn.parser.handler.EventBasedGatewayParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.EventSubProcessParseHandler;
 import org.activiti.engine.impl.bpmn.parser.handler.ExclusiveGatewayParseHandler;
 import org.activiti.engine.impl.bpmn.parser.handler.InclusiveGatewayParseHandler;
 import org.activiti.engine.impl.bpmn.parser.handler.IntermediateCatchEventParseHandler;
@@ -813,6 +814,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     bpmnParserHandlers.add(new SignalEventDefinitionParseHandler());
     bpmnParserHandlers.add(new StartEventParseHandler());
     bpmnParserHandlers.add(new SubProcessParseHandler());
+    bpmnParserHandlers.add(new EventSubProcessParseHandler());
     bpmnParserHandlers.add(new TaskParseHandler());
     bpmnParserHandlers.add(new TimerEventDefinitionParseHandler());
     bpmnParserHandlers.add(new TransactionParseHandler());
