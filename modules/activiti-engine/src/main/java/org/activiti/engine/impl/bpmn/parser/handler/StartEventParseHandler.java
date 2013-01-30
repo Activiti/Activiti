@@ -92,7 +92,7 @@ public class StartEventParseHandler extends AbstractActivityBpmnParseHandler<Sta
     if (startEvent.getEventDefinitions().size() > 0) {
       EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
       if (eventDefinition instanceof TimerEventDefinition || eventDefinition instanceof MessageEventDefinition) {
-        bpmnParse.getBpmnParserHandlers().parse(bpmnParse, eventDefinition);
+        bpmnParse.getBpmnParserHandlers().parseElement(bpmnParse, eventDefinition);
       } else {
         bpmnParse.getBpmnModel().addProblem("Unsupported event definition on start event", eventDefinition);
       }
@@ -118,7 +118,7 @@ public class StartEventParseHandler extends AbstractActivityBpmnParseHandler<Sta
         if (eventDefinition instanceof org.activiti.bpmn.model.ErrorEventDefinition 
                 || eventDefinition instanceof MessageEventDefinition
                 || eventDefinition instanceof SignalEventDefinition) {
-          bpmnParse.getBpmnParserHandlers().parse(bpmnParse, eventDefinition);
+          bpmnParse.getBpmnParserHandlers().parseElement(bpmnParse, eventDefinition);
         } else {
           bpmnParse.getBpmnModel().addProblem("start event of event subprocess must be of type 'error', 'message' or 'signal' ", startEvent);
         }

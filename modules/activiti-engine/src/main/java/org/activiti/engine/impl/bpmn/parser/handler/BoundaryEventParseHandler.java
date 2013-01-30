@@ -58,7 +58,7 @@ public class BoundaryEventParseHandler extends AbstractBpmnParseHandler<Boundary
             || eventDefinition instanceof MessageEventDefinition
             || eventDefinition instanceof org.activiti.bpmn.model.CompensateEventDefinition) {
 
-      bpmnParse.getBpmnParserHandlers().parse(bpmnParse, eventDefinition);
+      bpmnParse.getBpmnParserHandlers().parseElement(bpmnParse, eventDefinition);
       
     } else {
       bpmnModel.addProblem("Unsupported boundary event type", boundaryEvent);

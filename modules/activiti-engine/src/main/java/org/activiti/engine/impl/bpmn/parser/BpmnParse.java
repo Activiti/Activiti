@@ -361,7 +361,7 @@ public class BpmnParse implements BpmnXMLConstants {
   protected void transformProcessDefinitions() {
     sequenceFlows = new HashMap<String, TransitionImpl>();
     for (Process process : bpmnModel.getProcesses()) {
-      bpmnParserHandlers.parse(this, process);
+      bpmnParserHandlers.parseElement(this, process);
     }
     
     if (processDefinitions.size() > 0) {
@@ -387,19 +387,19 @@ public class BpmnParse implements BpmnXMLConstants {
       } else if (flowElement instanceof BoundaryEvent) {
         boundaryEventsToParse.add((BoundaryEvent) flowElement);
       } else {
-        bpmnParserHandlers.parse(this, flowElement);
+        bpmnParserHandlers.parseElement(this, flowElement);
       }
       
     }
     
     // Boundary events are parsed after all the regular activities are parsed
     for (BoundaryEvent boundaryEvent : boundaryEventsToParse) {
-      bpmnParserHandlers.parse(this, boundaryEvent);
+      bpmnParserHandlers.parseElement(this, boundaryEvent);
     }
     
     // sequence flows
     for (SequenceFlow sequenceFlow : sequenceFlowToParse) {
-      bpmnParserHandlers.parse(this, sequenceFlow);
+      bpmnParserHandlers.parseElement(this, sequenceFlow);
     }
     
     // validations after complete model

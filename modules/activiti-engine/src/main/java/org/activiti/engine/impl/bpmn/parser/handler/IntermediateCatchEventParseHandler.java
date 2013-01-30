@@ -66,7 +66,7 @@ public class IntermediateCatchEventParseHandler extends AbstractActivityBpmnPars
               || eventDefinition instanceof SignalEventDefinition
               || eventDefinition instanceof MessageEventDefinition) {
         
-        bpmnParse.getBpmnParserHandlers().parse(bpmnParse, eventDefinition);
+        bpmnParse.getBpmnParserHandlers().parseElement(bpmnParse, eventDefinition);
         
       } else {
         bpmnModel.addProblem("Unsupported intermediate catch event type.", event);

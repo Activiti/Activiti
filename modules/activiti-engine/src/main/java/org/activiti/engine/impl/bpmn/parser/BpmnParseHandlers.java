@@ -57,7 +57,7 @@ public class BpmnParseHandlers {
     }
   }
   
-  public void parse(BpmnParse bpmnParse, BaseElement element) {
+  public void parseElement(BpmnParse bpmnParse, BaseElement element) {
     
     if (element instanceof FlowElement) {
       bpmnParse.setCurrentFlowElement((FlowElement) element);
