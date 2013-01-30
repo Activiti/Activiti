@@ -21,6 +21,7 @@ import org.activiti.bpmn.model.CallActivity;
 import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.EventGateway;
+import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.ExclusiveGateway;
 import org.activiti.bpmn.model.InclusiveGateway;
 import org.activiti.bpmn.model.ManualTask;
@@ -70,6 +71,7 @@ public class CdiEventSupportBpmnParseHandler implements BpmnParseHandler {
     supportedTypes.add(UserTask.class);
     supportedTypes.add(EndEvent.class);
     supportedTypes.add(SubProcess.class);
+    supportedTypes.add(EventSubProcess.class);
     supportedTypes.add(CallActivity.class);
     supportedTypes.add(SendTask.class);
     supportedTypes.add(ReceiveTask.class);

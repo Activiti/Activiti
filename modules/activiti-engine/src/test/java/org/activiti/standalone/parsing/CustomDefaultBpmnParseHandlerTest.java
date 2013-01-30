@@ -20,16 +20,22 @@ import org.activiti.engine.test.Deployment;
  * @author Frederik Heremans
  * @author Joram Barrez
  */
-public class BPMNParseListenerTest extends ResourceActivitiTestCase {
+public class CustomDefaultBpmnParseHandlerTest extends ResourceActivitiTestCase {
   
-  public BPMNParseListenerTest() {
-    super("org/activiti/standalone/parsing/bpmn.parse.listener.activiti.cfg.xml");
+  public CustomDefaultBpmnParseHandlerTest() {
+    super("org/activiti/standalone/parsing/custom.default.parse.handler.activiti.cfg.xml");
   }
 
   @Deployment
-  public void testAlterProcessDefinitionKeyWhenDeploying() throws Exception {
-    // Check if process-definition has different key
-    assertEquals(0, repositoryService.createProcessDefinitionQuery().processDefinitionKey("oneTaskProcess").count());
-    assertEquals(1, repositoryService.createProcessDefinitionQuery().processDefinitionKey("oneTaskProcess-modified").count());
+  public void testCustomDefaultUserTaskParsing() throws Exception {
+    // The task which is created after process instance start should be async
+    runtimeService.startProcessInstanceByKey("customDefaultBpmnParseHandler");
+    
+    assertEquals(0, taskService.createTaskQuery().count());
+    assertEquals(1, managementService.createJobQuery().count());
+    
+    managementService.executeJob(managementService.createJobQuery().singleResult().getId());
+    assertEquals(1, taskService.createTaskQuery().count());
   }
+  
 }

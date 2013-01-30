@@ -12,9 +12,6 @@
  */
 package org.activiti.engine.impl.bpmn.parser.handler;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.EventSubProcess;
@@ -29,15 +26,8 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
  */
 public class SubProcessParseHandler extends AbstractActivityBpmnParseHandler<SubProcess> {
 
-  protected static Set<Class<? extends BaseElement>> supportedTypes = new HashSet<Class<? extends BaseElement>>();
-  
-  static {
-    supportedTypes.add(SubProcess.class);
-    supportedTypes.add(EventSubProcess.class);
-  }
-  
-  public Set<Class< ? extends BaseElement>> getHandledTypes() {
-    return supportedTypes;
+  protected Class< ? extends BaseElement> getHandledType() {
+    return SubProcess.class;
   }
   
   protected void executeParse(BpmnParse bpmnParse, SubProcess subProcess) {

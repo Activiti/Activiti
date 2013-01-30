@@ -287,6 +287,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // Bpmn parser
   protected List<BpmnParseHandler> preBpmnParseHandlers;
   protected List<BpmnParseHandler> postBpmnParseHandlers;
+  protected List<BpmnParseHandler> customDefaultBpmnParseHandlers;
   protected ActivityBehaviorFactory activityBehaviorFactory;
   protected ListenerFactory listenerFactory;
   protected BpmnParseFactory bpmnParseFactory;
@@ -785,6 +786,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   }
   
   protected List<BpmnParseHandler> getDefaultBpmnParseHandlers() {
+    
     // Alpabetic list of default parse handler classes
     List<BpmnParseHandler> bpmnParserHandlers = new ArrayList<BpmnParseHandler>();
     bpmnParserHandlers.add(new BoundaryEventParseHandler());
@@ -815,6 +817,37 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     bpmnParserHandlers.add(new TimerEventDefinitionParseHandler());
     bpmnParserHandlers.add(new TransactionParseHandler());
     bpmnParserHandlers.add(new UserTaskParseHandler());
+    
+    // Replace any default handler if the user wants to replace them
+    if (customDefaultBpmnParseHandlers != null) {
+      
+      Map<Class<?>, BpmnParseHandler> customParseHandlerMap = new HashMap<Class<?>, BpmnParseHandler>();
+      for (BpmnParseHandler bpmnParseHandler : customDefaultBpmnParseHandlers) {
+        for (Class<?> handledType : bpmnParseHandler.getHandledTypes()) {
+          customParseHandlerMap.put(handledType, bpmnParseHandler);
+        }
+      }
+      
+      for (int i=0; i<bpmnParserHandlers.size(); i++) {
+        // All the default handlers support only one type
+        BpmnParseHandler defaultBpmnParseHandler = bpmnParserHandlers.get(i);
+        if (defaultBpmnParseHandler.getHandledTypes().size() != 1) {
+          StringBuilder supportedTypes = new StringBuilder();
+          for (Class<?> type : defaultBpmnParseHandler.getHandledTypes()) {
+            supportedTypes.append(" " + type.getCanonicalName() + " ");
+          }
+          throw new ActivitiException("The default BPMN parse handlers should only support one type, but " + defaultBpmnParseHandler.getClass() 
+                  + " supports " + supportedTypes.toString() + ". This is likely a programmatic error");
+        } else {
+          Class<?> handledType = defaultBpmnParseHandler.getHandledTypes().iterator().next();
+          if (customParseHandlerMap.containsKey(handledType)) {
+            BpmnParseHandler newBpmnParseHandler = customParseHandlerMap.get(handledType);
+            log.info("Replacing default BpmnParseHandler " + defaultBpmnParseHandler.getClass().getName() + " with " + newBpmnParseHandler.getClass().getName());
+            bpmnParserHandlers.set(i, newBpmnParseHandler);
+          }
+        }
+      }
+    }
     
     // History
     for (BpmnParseHandler handler : getDefaultHistoryParseHandlers()) {
@@ -1481,6 +1514,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public void setPreBpmnParseHandlers(List<BpmnParseHandler> preBpmnParseHandlers) {
     this.preBpmnParseHandlers = preBpmnParseHandlers;
   }
+  
+  public List<BpmnParseHandler> getCustomDefaultBpmnParseHandlers() {
+    return customDefaultBpmnParseHandlers;
+  }
+  
+  public void setCustomDefaultBpmnParseHandlers(List<BpmnParseHandler> customDefaultBpmnParseHandlers) {
+    this.customDefaultBpmnParseHandlers = customDefaultBpmnParseHandlers;
+  }
 
   public List<BpmnParseHandler> getPostBpmnParseHandlers() {
     return postBpmnParseHandlers;
@@ -1871,7 +1912,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public void setKnowledgeBaseCacheLimit(int knowledgeBaseCacheLimit) {
     this.knowledgeBaseCacheLimit = knowledgeBaseCacheLimit;
   }
-
   
   public DeploymentCache<Object> getKnowledgeBaseCache() {
     return knowledgeBaseCache;
