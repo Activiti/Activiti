@@ -12,7 +12,7 @@
  */
 package org.activiti.engine.parse;
 
-import java.util.Set;
+import java.util.Collection;
 
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
@@ -22,7 +22,7 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
  */
 public interface BpmnParseHandler {
   
-  Set<Class<? extends BaseElement>> getHandledTypes();
+  Collection<Class<? extends BaseElement>> getHandledTypes();
   
   void parse(BpmnParse bpmnParse, BaseElement element);
 

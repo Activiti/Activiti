@@ -23,12 +23,7 @@
       <li><a href="docs/javadocs/index.html">Javadocs</a></li>
     </ul>
     
-    <h1>Links for demo setup</h1>
-    <p>After installing the Activiti distribution,
-    you can open the <a href="http://localhost:8080/activiti-explorer/">Activiti Explorer</a>
-    </p>
-    
-    <h1>Other Links</h1>
+    <h1>Links</h1>
     <ul>
       <li><a href="http://forums.activiti.org/en/viewforum.php?f=3">Activiti User Forum</a></li>
       <li><a href="http://forums.activiti.org/en/viewforum.php?f=4">Activiti Developer Forum</a></li>
@@ -39,6 +34,21 @@
     <a href="http://activiti.org/community.html">Activiti Community page</a>
 
   <h1>Activiti Release Notes</h1>
+
+  <h3>Release Notes - Activiti - Version 5.12</h3>
+  
+  <h4>Important upgrade note</h4>
+  
+  <p>
+    The internal <i>org.activiti.engine.impl.bpmn.parser.BpmnParseListener</i> interface and related classes have been removed.
+  </p>
+    
+  <p>  
+    Yes, we know many people relied on its capabilities, altough it was a class in an internal package. But do not worry:
+    we have introduced a replacement in the <b>api package</b> that offers similar (and even more powerful) functionality.
+    The code is not backwards compatible, but the required changes should be minimal (eg the XML element is replaced by a
+    Java pojo representation of the element). Read more about it in the new 'Advanced' chapter of the userguide.
+  </p>
 
   <h3>Release Notes - Activiti - Version 5.11</h3>
 
