@@ -3,7 +3,6 @@ package org.activiti.engine.impl.db;
 import liquibase.database.structure.type.BlobType;
 import liquibase.database.structure.type.BooleanType;
 import liquibase.database.structure.type.DataType;
-import liquibase.database.structure.type.DateTimeType;
 import liquibase.database.structure.type.IntType;
 import liquibase.database.structure.type.NVarcharType;
 import liquibase.database.structure.type.VarcharType;
@@ -21,10 +20,6 @@ public class ActivitiMySQLTypeConverter extends MySQLTypeConverter {
       final Boolean autoIncrement, final String dataTypeName,
       final String precision, final String additionalInformation) {
 
-    if (columnTypeString.equalsIgnoreCase("timestamp")) {
-      return new DateTimeType("datetime");
-    }
-    
     DataType dataType = super.getDataType(columnTypeString, autoIncrement,
         dataTypeName, precision, additionalInformation);
     if (dataType instanceof NVarcharType) {
