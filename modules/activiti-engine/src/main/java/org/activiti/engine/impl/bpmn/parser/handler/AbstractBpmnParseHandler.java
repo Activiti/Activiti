@@ -48,9 +48,6 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Doccen: do not use, only for internal usage
- * (or we must extract a second subclass).
- * 
  * @author Joram Barrez
  */
 public abstract class AbstractBpmnParseHandler<T extends BaseElement> implements BpmnParseHandler {
