@@ -43,12 +43,12 @@ public class TransactionParseHandler extends AbstractActivityBpmnParseHandler<Tr
     bpmnParse.setCurrentScope(activity);
     
     bpmnParse.processFlowElements(transaction.getFlowElements());
-    bpmnParse.processArtifacts(transaction.getArtifacts(), activity);
+    processArtifacts(bpmnParse, transaction.getArtifacts(), activity);
     
     bpmnParse.removeCurrentScope();
     
     if (transaction.getIoSpecification() != null) {
-      IOSpecification ioSpecification = bpmnParse.createIOSpecification(transaction.getIoSpecification());
+      IOSpecification ioSpecification = createIOSpecification(bpmnParse, transaction.getIoSpecification());
       activity.setIoSpecification(ioSpecification);
     }
 

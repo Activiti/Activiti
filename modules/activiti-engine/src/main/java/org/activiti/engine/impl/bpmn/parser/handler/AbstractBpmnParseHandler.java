@@ -13,13 +13,18 @@
 package org.activiti.engine.impl.bpmn.parser.handler;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.Activity;
+import org.activiti.bpmn.model.Artifact;
+import org.activiti.bpmn.model.Association;
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.DataSpec;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.EventGateway;
 import org.activiti.bpmn.model.FlowElement;
@@ -28,6 +33,10 @@ import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.impl.bpmn.data.Data;
+import org.activiti.engine.impl.bpmn.data.DataRef;
+import org.activiti.engine.impl.bpmn.data.IOSpecification;
+import org.activiti.engine.impl.bpmn.data.ItemDefinition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
@@ -165,6 +174,75 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement> implements
       }
     }
     return eventBasedGatewayId;
+  }
+  
+  protected IOSpecification createIOSpecification(BpmnParse bpmnParse, org.activiti.bpmn.model.IOSpecification specificationModel) {
+    IOSpecification ioSpecification = new IOSpecification();
+
+    for (DataSpec dataInputElement : specificationModel.getDataInputs()) {
+      ItemDefinition itemDefinition = bpmnParse.getItemDefinitions().get(dataInputElement.getItemSubjectRef());
+      Data dataInput = new Data(bpmnParse.getTargetNamespace() + ":" + dataInputElement.getId(), dataInputElement.getId(), itemDefinition);
+      ioSpecification.addInput(dataInput);
+    }
+
+    for (DataSpec dataOutputElement : specificationModel.getDataOutputs()) {
+      ItemDefinition itemDefinition = bpmnParse.getItemDefinitions().get(dataOutputElement.getItemSubjectRef());
+      Data dataOutput = new Data(bpmnParse.getTargetNamespace() + ":" + dataOutputElement.getId(), dataOutputElement.getId(), itemDefinition);
+      ioSpecification.addOutput(dataOutput);
+    }
+
+    for (String dataInputRef : specificationModel.getDataInputRefs()) {
+      DataRef dataRef = new DataRef(dataInputRef);
+      ioSpecification.addInputRef(dataRef);
+    }
+
+    for (String dataOutputRef : specificationModel.getDataOutputRefs()) {
+      DataRef dataRef = new DataRef(dataOutputRef);
+      ioSpecification.addOutputRef(dataRef);
+    }
+
+    return ioSpecification;
+  }
+  
+  protected void processArtifacts(BpmnParse bpmnParse, Collection<Artifact> artifacts, ScopeImpl scope) {
+    // associations  
+    for (Artifact artifact : artifacts) {
+      if (artifact instanceof Association) {
+        createAssociation(bpmnParse, (Association) artifact, scope);
+      }
+    }
+  }
+  
+  protected void createAssociation(BpmnParse bpmnParse, Association association, ScopeImpl parentScope) {
+    BpmnModel bpmnModel = bpmnParse.getBpmnModel();
+    if (bpmnModel.getArtifact(association.getSourceRef()) != null ||
+        bpmnModel.getArtifact(association.getTargetRef()) != null) {
+      
+      // connected to a text annotation so skipping it
+      return;
+    }
+    
+    ActivityImpl sourceActivity = parentScope.findActivity(association.getSourceRef());
+    ActivityImpl targetActivity = parentScope.findActivity(association.getTargetRef());
+    
+    // an association may reference elements that are not parsed as activities (like for instance 
+    // text annotations so do not throw an exception if sourceActivity or targetActivity are null)
+    // However, we make sure they reference 'something':
+    if(sourceActivity == null) {
+      //bpmnModel.addProblem("Invalid reference sourceRef '" + association.getSourceRef() + "' of association element ", association.getId());
+    } else if(targetActivity == null) {
+      //bpmnModel.addProblem("Invalid reference targetRef '" + association.getTargetRef() + "' of association element ", association.getId());
+    } else {      
+      if(sourceActivity != null && sourceActivity.getProperty("type").equals("compensationBoundaryCatch")) {
+        Object isForCompensation = targetActivity.getProperty(PROPERTYNAME_IS_FOR_COMPENSATION);          
+        if(isForCompensation == null || !(Boolean) isForCompensation) {
+          bpmnModel.addProblem("compensation boundary catch must be connected to element with isForCompensation=true", association);
+        } else {            
+          ActivityImpl compensatedActivity = sourceActivity.getParentActivity();
+          compensatedActivity.setProperty(BpmnParse.PROPERTYNAME_COMPENSATION_HANDLER_ID, targetActivity.getId());            
+        }
+      }
+    }
   }
   
 

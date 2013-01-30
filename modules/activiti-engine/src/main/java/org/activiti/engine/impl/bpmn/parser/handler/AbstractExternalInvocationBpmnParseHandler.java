@@ -14,10 +14,19 @@ package org.activiti.engine.impl.bpmn.parser.handler;
 
 import java.util.List;
 
+import org.activiti.bpmn.model.DataAssociation;
 import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Task;
+import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.impl.bpmn.data.AbstractDataAssociation;
+import org.activiti.engine.impl.bpmn.data.Assignment;
+import org.activiti.engine.impl.bpmn.data.SimpleDataInputAssociation;
+import org.activiti.engine.impl.bpmn.data.TransformationDataOutputAssociation;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
+import org.activiti.engine.impl.bpmn.webservice.MessageImplicitDataInputAssociation;
+import org.activiti.engine.impl.bpmn.webservice.MessageImplicitDataOutputAssociation;
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -69,5 +78,39 @@ public abstract class AbstractExternalInvocationBpmnParseHandler<T extends FlowN
       bpmnParse.getBpmnModel().addProblem("No shell command is defined on the shell activity", task);
     }
   }
+  
+  public AbstractDataAssociation createDataInputAssociation(BpmnParse bpmnParse, DataAssociation dataAssociationElement) {
+    if (StringUtils.isEmpty(dataAssociationElement.getTargetRef())) {
+      bpmnParse.getBpmnModel().addProblem("targetRef is required", dataAssociationElement);
+    }
+    
+    if (dataAssociationElement.getAssignments().isEmpty()) {
+      return new MessageImplicitDataInputAssociation(dataAssociationElement.getSourceRef(), dataAssociationElement.getTargetRef());
+    } else {
+      SimpleDataInputAssociation dataAssociation = new SimpleDataInputAssociation(
+          dataAssociationElement.getSourceRef(), dataAssociationElement.getTargetRef());
+
+      for (org.activiti.bpmn.model.Assignment assigmentElement : dataAssociationElement.getAssignments()) {
+        if (StringUtils.isNotEmpty(assigmentElement.getFrom()) && StringUtils.isNotEmpty(assigmentElement.getTo())) {
+          Expression from = bpmnParse.getExpressionManager().createExpression(assigmentElement.getFrom());
+          Expression to = bpmnParse.getExpressionManager().createExpression(assigmentElement.getTo());
+          Assignment assignment = new Assignment(from, to);
+          dataAssociation.addAssignment(assignment);
+        }
+      }
+      return dataAssociation;
+    }
+  }
+  
+  public AbstractDataAssociation createDataOutputAssociation(BpmnParse bpmnParse, DataAssociation dataAssociationElement) {
+    if (StringUtils.isNotEmpty(dataAssociationElement.getSourceRef())) {
+      return new MessageImplicitDataOutputAssociation(dataAssociationElement.getTargetRef(), dataAssociationElement.getSourceRef());
+    } else {
+      Expression transformation = bpmnParse.getExpressionManager().createExpression(dataAssociationElement.getTransformation());
+      AbstractDataAssociation dataOutputAssociation = new TransformationDataOutputAssociation(null, dataAssociationElement.getTargetRef(), transformation);
+      return dataOutputAssociation;
+    }
+  }
+
 
 }

@@ -80,12 +80,12 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
     bpmnParse.setCurrentScope(currentProcessDefinition);
     
     bpmnParse.processFlowElements(process.getFlowElements());
-    bpmnParse.processArtifacts(process.getArtifacts(), currentProcessDefinition);
+    processArtifacts(bpmnParse, process.getArtifacts(), currentProcessDefinition);
     
     bpmnParse.removeCurrentScope();
     
     if (process.getIoSpecification() != null) {
-      IOSpecification ioSpecification = bpmnParse.createIOSpecification(process.getIoSpecification());
+      IOSpecification ioSpecification = createIOSpecification(bpmnParse, process.getIoSpecification());
       currentProcessDefinition.setIoSpecification(ioSpecification);
     }
     return currentProcessDefinition;
