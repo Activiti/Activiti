@@ -8,7 +8,7 @@
 
     <!-- Changes in activiti.db2.create.engine.sql from Activiti 5.9 to 5.10 -->
     
-   <changeSet id="2 ACT_RU_EXECUTION.CACHED_END_STATE" author="ditte">
+   <changeSet id="2 ACT_RU_EXECUTION.CACHED_END_STATE" author="trademakers">
         <addColumn tableName="ACT_RU_EXECUTION">
             <column name="CACHED_ENT_STATE_" type="INTEGER" />
         </addColumn>
@@ -17,27 +17,27 @@
         </update>
     </changeSet>
     
-    <changeSet id="3 ACT_RU_IDENTITYLINK.PROC_DEF_ID" author="ditte">
+    <changeSet id="3 ACT_RU_IDENTITYLINK.PROC_DEF_ID" author="trademakers">
         <addColumn tableName="ACT_RU_IDENTITYLINK">
             <column name="PROC_DEF_ID_" type="NVARCHAR(64)" />
         </addColumn>
     </changeSet>
     
        
-    <changeSet id="4 ACT_RE_PROCDEF_KEY_NOT_NULL" author="ditte" >                                  
+    <changeSet id="4 ACT_RE_PROCDEF_KEY_NOT_NULL" author="trademakers" >                                  
         <addNotNullConstraint tableName="ACT_RE_PROCDEF" columnName="KEY_" columnDataType="NVARCHAR(255)"/>
     </changeSet>
     
    <!-- INDEX --> 
     
-   <changeSet id="5 ACT_IDX_VARIABLE_TASK_ID" author="ditte" >                                  
+   <changeSet id="5 ACT_IDX_VARIABLE_TASK_ID" author="trademakers" >                                  
         <createIndex indexName="ACT_IDX_VARIABLE_TASK_ID" 
                      tableName="ACT_RU_VARIABLE" >
             <column name="TASK_ID_"/>
         </createIndex>
     </changeSet> 
     
-    <changeSet id="6 ACT_IDX_ATHRZ_PROCEDEF" author="ditte" >                                  
+    <changeSet id="6 ACT_IDX_ATHRZ_PROCEDEF" author="trademakers" >                                  
         <createIndex indexName="ACT_IDX_ATHRZ_PROCEDEF" 
                      tableName="ACT_RU_IDENTITYLINK" >
             <column name="PROC_DEF_ID_"/>
@@ -64,7 +64,7 @@
     
     <!-- FOREIGN_KEY -->
     
-    <changeSet id="8 ACT_FK_ATHRZ_PROCEDEF" author="ditte" >                                  
+    <changeSet id="8 ACT_FK_ATHRZ_PROCEDEF" author="trademakers" >                                  
         <addForeignKeyConstraint constraintName="ACT_FK_ATHRZ_PROCEDEF"                  
             baseTableName="ACT_RU_IDENTITYLINK" baseColumnNames="PROC_DEF_ID_"    
             referencedTableName="ACT_RE_PROCDEF" referencedColumnNames="ID_"/>
@@ -72,7 +72,7 @@
        
     <!-- Changes in activiti.db2.create.history.sql from Activiti 5.9 to 5.10 -->
     
-    <changeSet id="9 ACT_IDX_HI_DETAIL_TASK_ID" author="ditte" >                                  
+    <changeSet id="9 ACT_IDX_HI_DETAIL_TASK_ID" author="trademakers" >                                  
         <createIndex indexName="ACT_IDX_HI_DETAIL_TASK_ID" 
                      tableName="ACT_HI_DETAIL" >
             <column name="TASK_ID_"/>

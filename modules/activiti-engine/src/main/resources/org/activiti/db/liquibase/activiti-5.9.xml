@@ -8,7 +8,7 @@
 
     <!-- Changes in activiti.h2.create.engine.sql from Activiti 5.7 to 5.9 -->
                 
-    <changeSet id="10 ACT_GE_BYTEARRAY.GENERATED_" author="bzeuner">
+    <changeSet id="10 ACT_GE_BYTEARRAY.GENERATED_" author="trademakers">
         <addColumn tableName="ACT_GE_BYTEARRAY">
             <column name="GENERATED_" type="BOOLEAN" />
         </addColumn>
@@ -17,7 +17,7 @@
         </update>
     </changeSet>
 
-    <changeSet id="11 ACT_RU_EXECUTION.IS_EVENT_SCOPE_" author="bzeuner">
+    <changeSet id="11 ACT_RU_EXECUTION.IS_EVENT_SCOPE_" author="trademakers">
         <addColumn tableName="ACT_RU_EXECUTION">
             <column name="IS_EVENT_SCOPE_" type="BOOLEAN" />
         </addColumn>
@@ -32,7 +32,7 @@
         </update>
     </changeSet>
 
-    <changeSet id="12 ACT_RE_PROCDEF.REV_" author="bzeuner">
+    <changeSet id="12 ACT_RE_PROCDEF.REV_" author="trademakers">
         <addColumn tableName="ACT_RE_PROCDEF">
             <column name="REV_" type="INTEGER" />
         </addColumn>
@@ -47,7 +47,7 @@
         </update>
     </changeSet>
     
-    <changeSet id="13 ACT_RU_EVENT_SUBSCR" author="bzeuner">
+    <changeSet id="13 ACT_RU_EVENT_SUBSCR" author="trademakers">
         <createTable tableName="ACT_RU_EVENT_SUBSCR">
             <column name="ID_" type="NVARCHAR(64)">
                 <constraints primaryKey="true" nullable="false"/>
@@ -67,20 +67,20 @@
         </createTable>
     </changeSet>
     
-    <changeSet id="13.1 ACT_IDX_EVENT_SUBSCR_CONFIG_" author="bzeuner" >                                  
+    <changeSet id="13.1 ACT_IDX_EVENT_SUBSCR_CONFIG_" author="trademakers" >                                  
         <createIndex indexName="ACT_IDX_EVENT_SUBSCR_CONFIG_" 
                      tableName="ACT_RU_EVENT_SUBSCR" >
             <column name="CONFIGURATION_"/>
         </createIndex>
     </changeSet>    
     
-    <changeSet id="13.2 ACT_FK_EVENT_EXEC" author="bzeuner" >                                  
+    <changeSet id="13.2 ACT_FK_EVENT_EXEC" author="trademakers" >                                  
         <addForeignKeyConstraint constraintName="ACT_FK_EVENT_EXEC"                  
             baseTableName="ACT_RU_EVENT_SUBSCR" baseColumnNames="EXECUTION_ID_"    
             referencedTableName="ACT_RU_EXECUTION" referencedColumnNames="ID_"/>
     </changeSet> 
     
-    <changeSet id="13.3 ACT_IDX_EVENT_SUBSCR" author="bzeuner" >                                  
+    <changeSet id="13.3 ACT_IDX_EVENT_SUBSCR" author="trademakers" >                                  
         <createIndex indexName="ACT_IDX_EVENT_SUBSCR" 
                      tableName="ACT_RU_EVENT_SUBSCR" >
             <column name="EXECUTION_ID_"/>
@@ -89,7 +89,7 @@
     
      <!-- Changes in activiti.h2.create.history.sql from Activiti 5.7 to 5.9 -->                  
     
-    <changeSet id="14 ACT_HI_PROCINST.DELETE_REASON_" author="bzeuner">
+    <changeSet id="14 ACT_HI_PROCINST.DELETE_REASON_" author="trademakers">
         <addColumn tableName="ACT_HI_PROCINST">
             <column name="DELETE_REASON_" type="VARCHAR(4000)" />
         </addColumn>

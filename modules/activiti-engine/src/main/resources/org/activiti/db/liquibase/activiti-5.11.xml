@@ -8,13 +8,13 @@
 
     <!-- Changes in activiti.*.create.engine.sql from Activiti 5.10 to 5.11 -->
 
-   <changeSet id="2 Activiti 5.11 Update ACT_RE_DEPLOYMENT" author="fheyl">
+   <changeSet id="2 Activiti 5.11 Update ACT_RE_DEPLOYMENT" author="trademakers">
         <addColumn tableName="ACT_RE_DEPLOYMENT">
             <column name="CATEGORY_" type="NVARCHAR(255)" />
         </addColumn>
    </changeSet>
 
-   <changeSet id="3 Activiti 5.11 Create Table ACT_RE_MODEL" author="fheyl">
+   <changeSet id="3 Activiti 5.11 Create Table ACT_RE_MODEL" author="trademakers">
         <createTable tableName="ACT_RE_MODEL">
             <column name="ID_" type="NVARCHAR(64)">
                 <constraints primaryKey="true" nullable="false"/>
@@ -33,38 +33,38 @@
         </createTable>
    </changeSet>
 
-   <changeSet id="3.1 Activiti 5.11 Add Constraint to ACT_RE_MODEL" author="fheyl">
+   <changeSet id="3.1 Activiti 5.11 Add Constraint to ACT_RE_MODEL" author="trademakers">
         <addForeignKeyConstraint constraintName="ACT_FK_MODEL_SOURCE" 
             baseTableName="ACT_RE_MODEL" baseColumnNames="EDITOR_SOURCE_VALUE_ID_" 
             referencedTableName="ACT_GE_BYTEARRAY" referencedColumnNames="ID_"/>
    </changeSet>
    
-   <changeSet id="3.2 Activiti 5.11 Add Constraint to ACT_RE_MODEL" author="fheyl">
+   <changeSet id="3.2 Activiti 5.11 Add Constraint to ACT_RE_MODEL" author="trademakers">
         <addForeignKeyConstraint constraintName="ACT_FK_MODEL_SOURCE_EXTRA" 
             baseTableName="ACT_RE_MODEL" baseColumnNames="EDITOR_SOURCE_EXTRA_VALUE_ID_" 
             referencedTableName="ACT_GE_BYTEARRAY" referencedColumnNames="ID_"/>
    </changeSet>
    
-   <changeSet id="3.3 Activiti 5.11 Add Constraint to ACT_RE_MODEL" author="fheyl">
+   <changeSet id="3.3 Activiti 5.11 Add Constraint to ACT_RE_MODEL" author="trademakers">
         <addForeignKeyConstraint constraintName="ACT_FK_MODEL_DEPLOYMENT" 
             baseTableName="ACT_RE_MODEL" baseColumnNames="DEPLOYMENT_ID_" 
             referencedTableName="ACT_RE_DEPLOYMENT" referencedColumnNames="ID_"/>
    </changeSet>
     
-   <changeSet id="4 Activiti 5.11 Update ACT_RU_JOB" author="fheyl">
+   <changeSet id="4 Activiti 5.11 Update ACT_RU_JOB" author="trademakers">
         <addColumn tableName="ACT_RU_JOB">
             <column name="PROC_DEF_ID_" type="NVARCHAR(64)" />
         </addColumn>
    </changeSet>
 
-   <changeSet id="5 Activiti 5.11 Update ACT_RE_PROCDEF" author="fheyl">
+   <changeSet id="5 Activiti 5.11 Update ACT_RE_PROCDEF" author="trademakers">
         <addColumn tableName="ACT_RE_PROCDEF">
             <column name="DESCRIPTION_" type="NVARCHAR(4000)" />
         </addColumn>
         <addNotNullConstraint tableName="ACT_RE_PROCDEF" columnName="VERSION_" columnDataType="INTEGER"/> 
    </changeSet>
 
-   <changeSet id="6 Activiti 5.11 Update ACT_RU_TASK" author="fheyl">
+   <changeSet id="6 Activiti 5.11 Update ACT_RU_TASK" author="trademakers">
         <addColumn tableName="ACT_RU_TASK">
             <column name="SUSPENSION_STATE_" type="INTEGER"/>            
         </addColumn>
@@ -75,18 +75,18 @@
         <modifyDataType tableName="ACT_RU_TASK" columnName="ASSIGNEE_" newDataType="NVARCHAR(255)"/>
    </changeSet>
 
-   <changeSet id="7 Activiti 5.11 Add Constraint to ACT_RU_EXECUTION" author="fheyl">
+   <changeSet id="7 Activiti 5.11 Add Constraint to ACT_RU_EXECUTION" author="trademakers">
         <addForeignKeyConstraint constraintName="ACT_FK_EXE_PROCDEF" 
             baseTableName="ACT_RU_EXECUTION" baseColumnNames="PROC_DEF_ID_"
             referencedTableName="ACT_RE_PROCDEF" referencedColumnNames="ID_"/>
    </changeSet>
 
-   <changeSet id="8 Activiti 5.11 Update ACT_RU_IDENTITYLINK" author="fheyl">
+   <changeSet id="8 Activiti 5.11 Update ACT_RU_IDENTITYLINK" author="trademakers">
         <modifyDataType tableName="ACT_RU_IDENTITYLINK" columnName="GROUP_ID_" newDataType="NVARCHAR(255)"/>
         <modifyDataType tableName="ACT_RU_IDENTITYLINK" columnName="USER_ID_" newDataType="NVARCHAR(255)"/>
    </changeSet>
 
-   <changeSet id="9 Activiti 5.11 Update ACT_HI_ACTINST" author="fheyl">
+   <changeSet id="9 Activiti 5.11 Update ACT_HI_ACTINST" author="trademakers">
         <addColumn tableName="ACT_HI_ACTINST">
             <column name="TASK_ID_" type="NVARCHAR(64)" />
         </addColumn>
@@ -95,7 +95,7 @@
         </addColumn>
    </changeSet>
    
-   <changeSet id="9.1 Activiti 5.11 Create Index on ACT_HI_ACTINST" author="fheyl">                                  
+   <changeSet id="9.1 Activiti 5.11 Create Index on ACT_HI_ACTINST" author="trademakers">                                  
         <createIndex indexName="ACT_IDX_HI_ACT_INST_PROCINST" 
                      tableName="ACT_HI_ACTINST" >
             <column name="PROC_INST_ID_"/>
@@ -103,12 +103,12 @@
         </createIndex>
    </changeSet>                                                                     
 
-   <changeSet id="10 Activiti 5.11 Update ACT_HI_TASKINST" author="fheyl">
+   <changeSet id="10 Activiti 5.11 Update ACT_HI_TASKINST" author="trademakers">
         <modifyDataType tableName="ACT_HI_TASKINST" columnName="OWNER_" newDataType="NVARCHAR(255)"/>
         <modifyDataType tableName="ACT_HI_TASKINST" columnName="ASSIGNEE_" newDataType="NVARCHAR(255)"/>
    </changeSet>
 
-   <changeSet id="11 Activiti 5.11 Create Table ACT_HI_VARINST" author="fheyl">
+   <changeSet id="11 Activiti 5.11 Create Table ACT_HI_VARINST" author="trademakers">
         <createTable tableName="ACT_HI_VARINST">
             <column name="ID_" type="NVARCHAR(64)">
                 <constraints primaryKey="true" nullable="false"/>
@@ -129,14 +129,14 @@
         </createTable>
    </changeSet>
    
-   <changeSet id="11.1 Activiti 5.11 Create Index on ACT_HI_VARINST" author="fheyl">                                  
+   <changeSet id="11.1 Activiti 5.11 Create Index on ACT_HI_VARINST" author="trademakers">                                  
         <createIndex indexName="ACT_IDX_HI_PROCVAR_PROC_INST" 
                      tableName="ACT_HI_VARINST" >
             <column name="PROC_INST_ID_"/>
         </createIndex>
    </changeSet>                                                                     
 
-   <changeSet id="11.2 Activiti 5.11 Create Index on ACT_HI_VARINST" author="fheyl">                                  
+   <changeSet id="11.2 Activiti 5.11 Create Index on ACT_HI_VARINST" author="trademakers">                                  
         <createIndex indexName="ACT_IDX_HI_PROCVAR_NAME_TYPE" 
                      tableName="ACT_HI_VARINST" >
             <column name="NAME_"/>
