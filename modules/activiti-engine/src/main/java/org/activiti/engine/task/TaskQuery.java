@@ -16,7 +16,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.query.Query;
 
@@ -142,6 +141,11 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   /**
    * Only select tasks which have a local string variable with the given value, 
    * case insensitive.
+   * <p>
+   * This method only works if your database has encoding/collation that supports case-sensitive
+   * queries. For example, use "collate UTF-8" on MySQL and for MSSQL, select one of the case-sensitive Collations 
+   * available (<a href="http://msdn.microsoft.com/en-us/library/ms144250(v=sql.105).aspx">MSDN Server Collation Reference</a>).
+   * </p>
    */
   TaskQuery taskVariableValueEqualsIgnoreCase(String name, String value);
   
@@ -156,6 +160,11 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   /**
    * Only select tasks which have a local string variable with is not the given value, 
    * case insensitive.
+   * <p>
+   * This method only works if your database has encoding/collation that supports case-sensitive
+   * queries. For example, use "collate UTF-8" on MySQL and for MSSQL, select one of the case-sensitive Collations 
+   * available (<a href="http://msdn.microsoft.com/en-us/library/ms144250(v=sql.105).aspx">MSDN Server Collation Reference</a>).
+   * </p>
    */
   TaskQuery taskVariableValueNotEqualsIgnoreCase(String name, String value);
   
@@ -174,6 +183,11 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   /**
    * Only select tasks which are part of a process that has a local string variable which 
    * is not the given value, case insensitive.
+   * <p>
+   * This method only works if your database has encoding/collation that supports case-sensitive
+   * queries. For example, use "collate UTF-8" on MySQL and for MSSQL, select one of the case-sensitive Collations 
+   * available (<a href="http://msdn.microsoft.com/en-us/library/ms144250(v=sql.105).aspx">MSDN Server Collation Reference</a>).
+   * </p>
    */
   TaskQuery processVariableValueEqualsIgnoreCase(String name, String value);
   
@@ -188,6 +202,11 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   /**
    * Only select tasks which are part of a process that has a string variable with 
    * the given value, case insensitive.
+   * <p>
+   * This method only works if your database has encoding/collation that supports case-sensitive
+   * queries. For example, use "collate UTF-8" on MySQL and for MSSQL, select one of the case-sensitive Collations 
+   * available (<a href="http://msdn.microsoft.com/en-us/library/ms144250(v=sql.105).aspx">MSDN Server Collation Reference</a>).
+   * </p>
    */
   TaskQuery processVariableValueNotEqualsIgnoreCase(String name, String value);
   
