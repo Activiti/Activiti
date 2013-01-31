@@ -31,6 +31,9 @@
             <column name="EDITOR_SOURCE_VALUE_ID_" type="NVARCHAR(64)"/>
             <column name="EDITOR_SOURCE_EXTRA_VALUE_ID_" type="NVARCHAR(64)"/>
         </createTable>
+        <modifySql dbms="mysql">
+         <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin"/>
+        </modifySql>
    </changeSet>
 
    <changeSet id="3.1 Activiti 5.11 Add Constraint to ACT_RE_MODEL" author="trademakers">
@@ -127,6 +130,9 @@
             <column name="TEXT_" type="NVARCHAR(4000)"/>            
             <column name="TEXT2_" type="NVARCHAR(4000)"/>            
         </createTable>
+        <modifySql dbms="mysql">
+         <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin"/>
+        </modifySql>
    </changeSet>
    
    <changeSet id="11.1 Activiti 5.11 Create Index on ACT_HI_VARINST" author="trademakers">                                  

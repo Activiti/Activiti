@@ -65,6 +65,9 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+        <modifySql dbms="mysql">
+         <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin"/>
+        </modifySql>
     </changeSet>
     
     <changeSet id="13.1 ACT_IDX_EVENT_SUBSCR_CONFIG_" author="trademakers" >                                  
