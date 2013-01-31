@@ -51,6 +51,7 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     String taskId = runtimeTask.getId();
     String taskDefinitionKey = runtimeTask.getTaskDefinitionKey();
     
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().count());
     HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().singleResult();
     assertEquals(taskId, historicTaskInstance.getId());
     assertEquals(1234, historicTaskInstance.getPriority());

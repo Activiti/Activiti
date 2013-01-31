@@ -16,6 +16,9 @@
             <column name="VALUE_"               type="NVARCHAR(300)" />
             <column name="REV_"                 type="INTEGER" />
         </createTable>
+        <modifySql dbms="mysql">
+         <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin"/>
+        </modifySql>
     </changeSet>
  
     <changeSet id="1.2 ACT_GE_PROPERTY" author="trademakers">
@@ -51,6 +54,9 @@
             <column name="DEPLOYMENT_ID_"       type="NVARCHAR(64)" />
             <column name="BYTES_"               type="BLOB" />
         </createTable>
+        <modifySql dbms="mysql">
+         <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin"/>
+        </modifySql>
     </changeSet>
  
     <changeSet id="3 ACT_RE_DEPLOYMENT" author="trademakers">
@@ -61,6 +67,9 @@
             <column name="NAME_"                type="NVARCHAR(255)" />
             <column name="DEPLOY_TIME_"         type="TIMESTAMP" /> 
         </createTable>
+        <modifySql dbms="mysql">
+         <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin"/>
+        </modifySql>
     </changeSet>
  
     <changeSet id="4 ACT_RU_EXECUTION" author="trademakers">
@@ -84,6 +93,12 @@
             <column name="IS_CONCURRENT_"       type="BOOLEAN" />
             <column name="IS_SCOPE_"            type="BOOLEAN" />
         </createTable>
+        <modifySql dbms="mssql">
+          <replace replace="BOOLEAN" with="tinyint"/>
+        </modifySql>
+        <modifySql dbms="mysql">
+         <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin"/>
+        </modifySql>
     </changeSet>
     
     <changeSet id="4.1.1 ACT_UNIQ_RU_BUS_KEY DB2" author="trademakers" dbms="db2">
@@ -151,6 +166,12 @@
             <column name="HANDLER_TYPE_"        type="NVARCHAR(255)" />
             <column name="HANDLER_CFG_"         type="NVARCHAR(4000)" />
         </createTable>
+        <modifySql dbms="mssql">
+          <replace replace="BOOLEAN" with="bit"/>
+        </modifySql>
+        <modifySql dbms="mysql">
+          <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin"/>
+        </modifySql>
     </changeSet>
 
     <changeSet id="6 ACT_ID_GROUP" author="trademakers">
@@ -162,6 +183,9 @@
             <column name="NAME_"                type="NVARCHAR(255)" />
             <column name="TYPE_"                type="NVARCHAR(255)" />
         </createTable>
+        <modifySql dbms="mysql">
+         <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin"/>
+        </modifySql>
     </changeSet>
  
     <changeSet id="7 ACT_ID_MEMBERSHIP" author="trademakers">
@@ -173,6 +197,9 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+        <modifySql dbms="mysql">
+         <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin"/>
+        </modifySql>
     </changeSet>
  
     <changeSet id="7.1 ACT_ID_MEMBERSHIP" author="trademakers">
@@ -192,6 +219,9 @@
             <column name="PWD_"                 type="NVARCHAR(255)" />
             <column name="PICTURE_ID_"          type="NVARCHAR(64)" />
         </createTable>
+        <modifySql dbms="mysql">
+         <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin"/>
+        </modifySql>
     </changeSet>
  
     <changeSet id="9 ACT_RE_PROCDEF" author="trademakers">
@@ -208,6 +238,9 @@
             <column name="DGRM_RESOURCE_NAME_"  type="NVARCHAR(4000)" />
             <column name="HAS_START_FORM_KEY_"  type="BOOLEAN" />
         </createTable>
+        <modifySql dbms="mysql">
+         <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin"/>
+        </modifySql>
     </changeSet>
  
     <changeSet id="10 ACT_RU_TASK" author="trademakers">
@@ -230,6 +263,9 @@
             <column name="DUE_DATE_"            type="TIMESTAMP" />
             <column name="PARENT_TASK_ID_"      type="NVARCHAR(64)"/>
         </createTable>
+        <modifySql dbms="mysql">
+         <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin"/>
+        </modifySql>
     </changeSet>
  
     <changeSet id="11 ACT_RU_IDENTITYLINK" author="trademakers">
@@ -243,6 +279,9 @@
             <column name="USER_ID_"             type="NVARCHAR(64)" />
             <column name="TASK_ID_"             type="NVARCHAR(64)" />
         </createTable>
+        <modifySql dbms="mysql">
+         <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin"/>
+        </modifySql>
     </changeSet>
  
     <changeSet id="12 ACT_RU_VARIABLE" author="trademakers">
@@ -266,6 +305,9 @@
             <column name="TEXT_"                type="NVARCHAR(4000)" />
             <column name="TEXT2_"               type="NVARCHAR(4000)" />
         </createTable>
+        <modifySql dbms="mysql">
+         <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin"/>
+        </modifySql>
     </changeSet>
  
     <changeSet id="13 ACT_HI_PROCINST" author="trademakers">
@@ -295,6 +337,9 @@
             <column name="END_ACT_ID_"          type="NVARCHAR(255)" />
             <column name="SUPER_PROCESS_INSTANCE_ID_" type="NVARCHAR(64)" />
         </createTable>
+        <modifySql dbms="mysql">
+         <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin"/>
+        </modifySql>
     </changeSet>
 
     <changeSet id="13.1 UK_ACT_HI_PROCINST" author="trademakers">
@@ -379,6 +424,9 @@
             <column name="END_TIME_"            type="TIMESTAMP" />
             <column name="DURATION_"            type="BIGINT" />
         </createTable>
+        <modifySql dbms="mysql">
+         <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin"/>
+        </modifySql>
     </changeSet>
     
     <changeSet id="15 ACT_HI_DETAIL" author="trademakers">
@@ -407,6 +455,9 @@
             <column name="TEXT_"                type="NVARCHAR(4000)" />
             <column name="TEXT2_"               type="NVARCHAR(4000)" />
         </createTable>
+        <modifySql dbms="mysql">
+         <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin"/>
+        </modifySql>
     </changeSet>
     
     <changeSet id="16 Activiti 5.1 Update ACT_HI_TASKINST" author="trademakers">
@@ -432,6 +483,9 @@
             <column name="OWNER_" type="NVARCHAR(64)"/>
             <column name="PARENT_TASK_ID_" type="NVARCHAR(64)"/>
         </createTable>
+        <modifySql dbms="mysql">
+         <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin"/>
+        </modifySql>
     </changeSet>
     
     <changeSet id="17 Activiti 5.4 Create ACT_HI_COMMENT" author="trademakers">
@@ -450,6 +504,9 @@
             <column name="ACTION_" type="NVARCHAR(255)"/>
             <column name="FULL_MSG_" type="BLOB"/>
         </createTable>
+        <modifySql dbms="mysql">
+         <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin"/>
+        </modifySql>
     </changeSet>
 
     <changeSet id="18 Activiti 5.4 Create ACT_HI_ATTACHMENT" author="trademakers">
@@ -467,6 +524,9 @@
             <column name="URL_" type="NVARCHAR(4000)" />
             <column name="CONTENT_ID_" type="NVARCHAR(64)" />
         </createTable>
+        <modifySql dbms="mysql">
+         <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin"/>
+        </modifySql>
     </changeSet>
 
     <changeSet id="19 Activiti 5.4 Create ACT_ID_INFO" author="trademakers">
@@ -482,6 +542,9 @@
             <column name="PASSWORD_" type="BLOB" />
             <column name="PARENT_ID_" type="NVARCHAR(255)" />
         </createTable>
+        <modifySql dbms="mysql">
+         <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin"/>
+        </modifySql>
     </changeSet>
 
     <!-- Indexes: -->
