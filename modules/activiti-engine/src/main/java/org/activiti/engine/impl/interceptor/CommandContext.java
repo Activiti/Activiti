@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
 import org.activiti.engine.JobNotFoundException;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -130,7 +131,10 @@ public class CommandContext {
             if (exception instanceof JobNotFoundException || exception instanceof ActivitiTaskAlreadyClaimedException) {
               // reduce log level, because this may have been caused because of job deletion due to cancelActiviti="true"
               log.info("Error while closing command context", exception);
-            } else {
+            } else if (exception instanceof ActivitiOptimisticLockingException) {
+              // reduce log level, as normally we're not interested in logging this exception
+            log.debug("Optimistic locking exception : " + exception);
+            }else {
               log.error("Error while closing command context", exception);
             }
 
