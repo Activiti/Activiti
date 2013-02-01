@@ -14,7 +14,7 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -35,7 +35,7 @@ public class DeleteDeploymentCmd implements Command<Void>, Serializable {
 
   public Void execute(CommandContext commandContext) {
     if(deploymentId == null) {
-      throw new ActivitiException("deploymentId is null");
+      throw new ActivitiIllegalArgumentException("deploymentId is null");
     }
     
     // Remove process definitions from cache:

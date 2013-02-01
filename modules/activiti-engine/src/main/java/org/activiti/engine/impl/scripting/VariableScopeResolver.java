@@ -13,6 +13,7 @@
 package org.activiti.engine.impl.scripting;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
@@ -32,7 +33,7 @@ public class VariableScopeResolver implements Resolver {
   
   public VariableScopeResolver(VariableScope variableScope) {
     if (variableScope==null) {
-      throw new ActivitiException("variableScope cannot be null");
+      throw new ActivitiIllegalArgumentException("variableScope cannot be null");
     }
     if (variableScope instanceof ExecutionEntity) {
       variableScopeKey = "execution";

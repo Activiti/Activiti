@@ -22,6 +22,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.util.io.InputStreamSource;
 import org.activiti.engine.impl.util.io.ResourceStreamSource;
 import org.activiti.engine.impl.util.io.StreamSource;
@@ -87,7 +88,7 @@ public class Parse extends DefaultHandler {
     try {
       return sourceUrl(new URL(url));
     } catch (MalformedURLException e) {
-      throw new ActivitiException("malformed url: "+url, e);
+      throw new ActivitiIllegalArgumentException("malformed url: "+url, e);
     }
   }
   
@@ -109,7 +110,7 @@ public class Parse extends DefaultHandler {
 
   protected void setStreamSource(StreamSource streamSource) {
     if (this.streamSource!=null) {
-      throw new ActivitiException("invalid: multiple sources "+this.streamSource+" and "+streamSource);
+      throw new ActivitiIllegalArgumentException("invalid: multiple sources "+this.streamSource+" and "+streamSource);
     }
     this.streamSource = streamSource;
   }

@@ -13,9 +13,9 @@
     <!-- job executor configurations -->
     <property name="jobExecutorActivate" value="false" />
     
-    <property name="preParseListeners">
+    <property name="postBpmnParseHandlers">
       <list>
-        <bean class="org.activiti.standalone.parsing.TestBPMNParseListener" />
+        <bean class="org.activiti.standalone.parsing.TestBPMNParseHandler" />
       </list>
     </property>
     

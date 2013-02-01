@@ -15,6 +15,8 @@ package org.activiti.engine.impl.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiIllegalArgumentException;
+
 /**
  * helper/convience methods for working with collections.
  * 
@@ -35,6 +37,26 @@ public class CollectionUtil {
   public static Map<String, Object> singletonMap(String key, Object value) {
     Map<String, Object> map = new HashMap<String, Object>();
     map.put(key, value);
+    return map;
+  }
+  
+  /**
+   * Helper method to easily create a map.
+   * 
+   * Takes as input a varargs containing the key1, value1, key2, value2, etc.
+   * Note: altough an Object, we will cast the key to String internally.
+   */
+  public static Map<String, Object> map(Object...objects) {
+    
+    if (objects.length % 2 != 0) {
+      throw new ActivitiIllegalArgumentException("The input should always be even since we expect a list of key-value pairs!");
+    }
+    
+    Map<String, Object> map = new HashMap<String, Object>();
+    for (int i = 0; i<objects.length; i+=2) {
+      map.put((String) objects[i], objects[i+1]);
+    }
+    
     return map;
   }
   

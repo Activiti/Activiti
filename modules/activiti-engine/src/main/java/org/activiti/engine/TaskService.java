@@ -57,6 +57,7 @@ public interface TaskService {
 	 * Deletes the given task, not deleting historic information that is related to this task.
 	 * @param taskId The id of the task that will be deleted, cannot be null. If no task
 	 * exists with the given taskId, the operation is ignored.
+	 * @throws ActivitiObjectNotFoundException when the task with given id does not exist.
 	 * @throws ActivitiException when an error occurs while deleting the task or in case the task is part
    *   of a running process.
 	 */
@@ -67,6 +68,7 @@ public interface TaskService {
 	 * to these tasks.
 	 * @param taskIds The id's of the tasks that will be deleted, cannot be null. All
 	 * id's in the list that don't have an existing task will be ignored.
+	 * @throws ActivitiObjectNotFoundException when one of the task does not exist.
 	 * @throws ActivitiException when an error occurs while deleting the tasks or in case one of the tasks
    *  is part of a running process.
 	 */
@@ -77,6 +79,7 @@ public interface TaskService {
    * @param taskId The id of the task that will be deleted, cannot be null. If no task
    * exists with the given taskId, the operation is ignored.
    * @param cascade If cascade is true, also the historic information related to this task is deleted.
+   * @throws ActivitiObjectNotFoundException when the task with given id does not exist.
    * @throws ActivitiException when an error occurs while deleting the task or in case the task is part
    *   of a running process.
    */
@@ -87,8 +90,7 @@ public interface TaskService {
    * @param taskIds The id's of the tasks that will be deleted, cannot be null. All
    * id's in the list that don't have an existing task will be ignored.
    * @param cascade If cascade is true, also the historic information related to this task is deleted.
-   * @throws ActivitiException when an error occurs while deleting the tasks or in case one of the tasks
-   *  is part of a running process.
+   * @throws ActivitiObjectNotFoundException when one of the tasks does not exist.
    * @throws ActivitiException when an error occurs while deleting the tasks or in case one of the tasks
    *  is part of a running process.
    */
@@ -99,6 +101,7 @@ public interface TaskService {
    * @param taskId The id of the task that will be deleted, cannot be null. If no task
    * exists with the given taskId, the operation is ignored.
    * @param deleteReason reason the task is deleted. Is recorded in history, if enabled.
+   * @throws ActivitiObjectNotFoundException when the task with given id does not exist.
    * @throws ActivitiException when an error occurs while deleting the task or in case the task is part
    *  of a running process
    */
@@ -109,6 +112,7 @@ public interface TaskService {
    * @param taskIds The id's of the tasks that will be deleted, cannot be null. All
    * id's in the list that don't have an existing task will be ignored.
    * @param deleteReason reason the task is deleted. Is recorded in history, if enabled.
+   * @throws ActivitiObjectNotFoundException when one of the tasks does not exist.
    * @throws ActivitiException when an error occurs while deleting the tasks or in case one of the tasks
    *  is part of a running process.
    */
@@ -122,15 +126,16 @@ public interface TaskService {
    * @param taskId task to claim, cannot be null.
    * @param userId user that claims the task. When userId is null the task is unclaimed,
    * assigned to no one.
-   * @throws ActivitiException when the task doesn't exist or when the task
-   * is already claimed by another user.
+   * @throws ActivitiObjectNotFoundException when the task doesn't exist.
+   * @throws ActivitiTaskAlreadyClaimedException when the task is already claimed by another user.
    */
   void claim(String taskId, String userId);
   
   /**
    * Called when the task is successfully executed.
    * @param taskId the id of the task to complete, cannot be null.
-   * @throws ActivitiException when no task exists with the given id or when this task is {@link DelegationState#PENDING} delegation.
+   * @throws ActivitiObjectNotFoundException when no task exists with the given id.
+   * @throws ActivitiException when this task is {@link DelegationState#PENDING} delegation.
    */
   void complete(String taskId);
   
@@ -141,7 +146,7 @@ public interface TaskService {
    * of the task.
    * @param taskId The id of the task that will be delegated.
    * @param userId The id of the user that will be set as assignee.
-   * @throws ActivitiException when no task exists with the given id.
+   * @throws ActivitiObjectNotFoundException when no task exists with the given id.
    */
   void delegateTask(String taskId, String userId);
   
@@ -150,7 +155,7 @@ public interface TaskService {
    * Can only be called when this task is {@link DelegationState#PENDING} delegation.
    * After this method returns, the {@link Task#getDelegationState() delegationState} is set to {@link DelegationState#RESOLVED}.
    * @param taskId the id of the task to resolve, cannot be null.
-   * @throws ActivitiException when no task exists with the given id.
+   * @throws ActivitiObjectNotFoundException when no task exists with the given id.
    */
   void resolveTask(String taskId);
 
@@ -159,7 +164,7 @@ public interface TaskService {
    * and the required task parameters are given by the end-user.
    * @param taskId the id of the task to complete, cannot be null.
    * @param variables task parameters. May be null or empty.
-   * @throws ActivitiException when no task exists with the given id.
+   * @throws ActivitiObjectNotFoundException when no task exists with the given id.
    */
   void complete(String taskId, Map<String, Object> variables);
 
@@ -168,7 +173,7 @@ public interface TaskService {
    * No check is done whether the user is known by the identity component.
    * @param taskId id of the task, cannot be null.
    * @param userId id of the user to use as assignee.
-   * @throws ActivitiException when the task or user doesn't exist.
+   * @throws ActivitiObjectNotFoundException when the task or user doesn't exist.
    */
   void setAssignee(String taskId, String userId);
   
@@ -177,7 +182,7 @@ public interface TaskService {
    * No check is done whether the user is known by the identity component.
    * @param taskId id of the task, cannot be null.
    * @param userId of the person that is receiving ownership.
-   * @throws ActivitiException when the task or user doesn't exist.
+   * @throws ActivitiObjectNotFoundException when the task or user doesn't exist.
    */
   void setOwner(String taskId, String userId);
   
@@ -192,7 +197,7 @@ public interface TaskService {
    * Convenience shorthand for {@link #addUserIdentityLink(String, String, String)}; with type {@link IdentityLinkType#CANDIDATE}
    * @param taskId id of the task, cannot be null.
    * @param userId id of the user to use as candidate, cannot be null.
-   * @throws ActivitiException when the task or user doesn't exist.
+   * @throws ActivitiObjectNotFoundException when the task or user doesn't exist.
    */
   void addCandidateUser(String taskId, String userId);
   
@@ -200,7 +205,7 @@ public interface TaskService {
    * Convenience shorthand for {@link #addGroupIdentityLink(String, String, String)}; with type {@link IdentityLinkType#CANDIDATE}
    * @param taskId id of the task, cannot be null.
    * @param groupId id of the group to use as candidate, cannot be null.
-   * @throws ActivitiException when the task or group doesn't exist.
+   * @throws ActivitiObjectNotFoundException when the task or group doesn't exist.
    */
   void addCandidateGroup(String taskId, String groupId);
   
@@ -210,7 +215,7 @@ public interface TaskService {
    * @param taskId id of the task, cannot be null.
    * @param userId id of the user involve, cannot be null.
    * @param identityLinkType type of identityLink, cannot be null (@see {@link IdentityLinkType}).
-   * @throws ActivitiException when the task or user doesn't exist.
+   * @throws ActivitiObjectNotFoundException when the task or user doesn't exist.
    */
   void addUserIdentityLink(String taskId, String userId, String identityLinkType);
   
@@ -220,7 +225,7 @@ public interface TaskService {
    * @param taskId id of the task, cannot be null.
    * @param groupId id of the group to involve, cannot be null.
    * @param identityLinkType type of identity, cannot be null (@see {@link IdentityLinkType}).
-   * @throws ActivitiException when the task or group doesn't exist.
+   * @throws ActivitiObjectNotFoundException when the task or group doesn't exist.
    */
   void addGroupIdentityLink(String taskId, String groupId, String identityLinkType);
   
@@ -228,7 +233,7 @@ public interface TaskService {
    * Convenience shorthand for {@link #deleteUserIdentityLink(String, String, String)}; with type {@link IdentityLinkType#CANDIDATE}
    * @param taskId id of the task, cannot be null.
    * @param userId id of the user to use as candidate, cannot be null.
-   * @throws ActivitiException when the task or user doesn't exist.
+   * @throws ActivitiObjectNotFoundException when the task or user doesn't exist.
    */
   void deleteCandidateUser(String taskId, String userId);
   
@@ -236,7 +241,7 @@ public interface TaskService {
    * Convenience shorthand for {@link #deleteGroupIdentityLink(String, String, String)}; with type {@link IdentityLinkType#CANDIDATE}
    * @param taskId id of the task, cannot be null.
    * @param groupId id of the group to use as candidate, cannot be null.
-   * @throws ActivitiException when the task or group doesn't exist.
+   * @throws ActivitiObjectNotFoundException when the task or group doesn't exist.
    */
   void deleteCandidateGroup(String taskId, String groupId);
   
@@ -245,7 +250,7 @@ public interface TaskService {
    * @param taskId id of the task, cannot be null.
    * @param userId id of the user involve, cannot be null.
    * @param identityLinkType type of identityLink, cannot be null (@see {@link IdentityLinkType}).
-   * @throws ActivitiException when the task or user doesn't exist.
+   * @throws ActivitiObjectNotFoundException when the task or user doesn't exist.
    */
   void deleteUserIdentityLink(String taskId, String userId, String identityLinkType);
   
@@ -254,7 +259,7 @@ public interface TaskService {
    * @param taskId id of the task, cannot be null.
    * @param groupId id of the group to involve, cannot be null.
    * @param identityLinkType type of identity, cannot be null (@see {@link IdentityLinkType}).
-   * @throws ActivitiException when the task or group doesn't exist.
+   * @throws ActivitiObjectNotFoundException when the task or group doesn't exist.
    */
   void deleteGroupIdentityLink(String taskId, String groupId, String identityLinkType);
   
@@ -265,7 +270,7 @@ public interface TaskService {
    * 
    * @param taskId id of the task, cannot be null.
    * @param priority the new priority for the task.
-   * @throws ActivitiException when the task doesn't exist.
+   * @throws ActivitiObjectNotFoundException when the task doesn't exist.
    */
   void setPriority(String taskId, int priority);
   

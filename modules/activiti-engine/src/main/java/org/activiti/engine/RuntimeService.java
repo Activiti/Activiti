@@ -38,7 +38,7 @@ public interface RuntimeService {
   /** 
    * Starts a new process instance in the latest version of the process definition with the given key.
    * @param processDefinitionKey key of process definition, cannot be null.
-   * @throws ActivitiException when no process definition is deployed with the given key.
+   * @throws ActivitiObjectNotFoundException when no process definition is deployed with the given key.
    */
   ProcessInstance startProcessInstanceByKey(String processDefinitionKey);
   
@@ -64,7 +64,7 @@ public interface RuntimeService {
    * @param businessKey
    *          a key that uniquely identifies the process instance in the context
    *          or the given process definition.
-   * @throws ActivitiException
+   * @throws ActivitiObjectNotFoundException
    *           when no process definition is deployed with the given key.
    */
   ProcessInstance startProcessInstanceByKey(String processDefinitionKey, String businessKey);
@@ -72,7 +72,7 @@ public interface RuntimeService {
   /** Starts a new process instance in the latest version of the process definition with the given key 
    * @param processDefinitionKey key of process definition, cannot be null.
    * @param variables the variables to pass, can be null.
-   * @throws ActivitiException when no process definition is deployed with the given key. 
+   * @throws ActivitiObjectNotFoundException when no process definition is deployed with the given key. 
    */
   ProcessInstance startProcessInstanceByKey(String processDefinitionKey, Map<String, Object> variables);
   
@@ -95,13 +95,13 @@ public interface RuntimeService {
    * @param variables the variables to pass, can be null.
    * @param businessKey a key that uniquely identifies the process instance in the context or the
    *                    given process definition.
-   * @throws ActivitiException when no process definition is deployed with the given key.
+   * @throws ActivitiObjectNotFoundException when no process definition is deployed with the given key.
    */
   ProcessInstance startProcessInstanceByKey(String processDefinitionKey, String businessKey, Map<String, Object> variables);
 
   /** Starts a new process instance in the exactly specified version of the process definition with the given id.
    * @param processDefinitionId the id of the process definition, cannot be null.
-   * @throws ActivitiException when no process definition is deployed with the given key. 
+   * @throws ActivitiObjectNotFoundException when no process definition is deployed with the given key. 
    */
   ProcessInstance startProcessInstanceById(String processDefinitionId);
   
@@ -122,14 +122,14 @@ public interface RuntimeService {
    * @param processDefinitionId the id of the process definition, cannot be null.
    * @param businessKey a key that uniquely identifies the process instance in the context or the
    *                    given process definition.
-   * @throws ActivitiException when no process definition is deployed with the given key. 
+   * @throws ActivitiObjectNotFoundException when no process definition is deployed with the given key. 
    */
   ProcessInstance startProcessInstanceById(String processDefinitionId, String businessKey);
   
   /** Starts a new process instance in the exactly specified version of the process definition with the given id.
    * @param processDefinitionId the id of the process definition, cannot be null.
    * @param variables variables to be passed, can be null
-   * @throws ActivitiException when no process definition is deployed with the given key. 
+   * @throws ActivitiObjectNotFoundException when no process definition is deployed with the given key. 
    */
   ProcessInstance startProcessInstanceById(String processDefinitionId, Map<String, Object> variables);
   
@@ -149,7 +149,7 @@ public interface RuntimeService {
    * 
    * @param processDefinitionId the id of the process definition, cannot be null.
    * @param variables variables to be passed, can be null
-   * @throws ActivitiException when no process definition is deployed with the given key. 
+   * @throws ActivitiObjectNotFoundException when no process definition is deployed with the given key. 
    */
   ProcessInstance startProcessInstanceById(String processDefinitionId, String businessKey, Map<String, Object> variables);
   
@@ -244,27 +244,27 @@ public interface RuntimeService {
   /** Delete an existing runtime process instance.
    * @param processInstanceId id of process instance to delete, cannot be null.
    * @param deleteReason reason for deleting, can be null.
-   * @throws ActivitiException when no process instance is found with the given id.
+   * @throws ActivitiObjectNotFoundException when no process instance is found with the given id.
    */
   void deleteProcessInstance(String processInstanceId, String deleteReason);
     
   /** Finds the activity ids for all executions that are waiting in activities. 
    * This is a list because a single activity can be active multiple times.
    * @param executionId id of the execution, cannot be null.
-   * @throws ActivitiException when no execution exists with the given executionId. 
+   * @throws ActivitiObjectNotFoundException when no execution exists with the given executionId. 
    */
   List<String> getActiveActivityIds(String executionId);
 
   /** Sends an external trigger to an activity instance that is waiting inside the given execution.
    * @param executionId id of execution to signal, cannot be null.
-   * @throws ActivitiException when no execution is found for the given executionId. 
+   * @throws ActivitiObjectNotFoundException when no execution is found for the given executionId. 
    */
   void signal(String executionId);
   
   /** Sends an external trigger to an activity instance that is waiting inside the given execution.
    * @param executionId id of execution to signal, cannot be null.
    * @param processVariables a map of process variables
-   * @throws ActivitiException when no execution is found for the given executionId. 
+   * @throws ActivitiObjectNotFoundException when no execution is found for the given executionId. 
    */
   void signal(String executionId, Map<String, Object> processVariables);
   
@@ -273,7 +273,7 @@ public interface RuntimeService {
   /** All variables visible from the given execution scope (including parent scopes).
    * @param executionId id of execution, cannot be null.
    * @return the variables or an empty map if no such variables are found.
-   * @throws ActivitiException when no execution is found for the given executionId. */
+   * @throws ActivitiObjectNotFoundException when no execution is found for the given executionId. */
   Map<String, Object> getVariables(String executionId);
   
   /** All variable values that are defined in the execution scope, without taking outer scopes into account.
@@ -281,21 +281,21 @@ public interface RuntimeService {
    * for better performance.
    * @param executionId id of execution, cannot be null.
    * @return the variables or an empty map if no such variables are found.
-   * @throws ActivitiException when no execution is found for the given executionId. */
+   * @throws ActivitiObjectNotFoundException when no execution is found for the given executionId. */
    Map<String, Object> getVariablesLocal(String executionId);
 
    /** The variable values for all given variableNames, takes all variables into account which are visible from the given execution scope (including parent scopes). 
    * @param executionId id of execution, cannot be null.
    * @param variableNames the collection of variable names that should be retrieved.
    * @return the variables or an empty map if no such variables are found.
-   * @throws ActivitiException when no execution is found for the given executionId. */
+   * @throws ActivitiObjectNotFoundException when no execution is found for the given executionId. */
    Map<String, Object> getVariables(String executionId, Collection<String> variableNames);
 
    /** The variable values for the given variableNames only taking the given execution scope into account, not looking in outer scopes. 
    * @param executionId id of execution, cannot be null.
    * @param variableNames the collection of variable names that should be retrieved.
    * @return the variables or an empty map if no such variables are found.
-   * @throws ActivitiException when no execution is found for the given executionId.  */
+   * @throws ActivitiObjectNotFoundException when no execution is found for the given executionId.  */
    Map<String, Object> getVariablesLocal(String executionId, Collection<String> variableNames);
 
   /** The variable value.  Searching for the variable is done in all scopes that are visible to the given execution (including parent scopes).
@@ -303,7 +303,7 @@ public interface RuntimeService {
    * @param executionId id of execution, cannot be null.
    * @param variableName name of variable, cannot be null.
    * @return the variable value or null if the variable is undefined or the value of the variable is null.
-   * @throws ActivitiException when no execution is found for the given executionId. */
+   * @throws ActivitiObjectNotFoundException when no execution is found for the given executionId. */
   Object getVariable(String executionId, String variableName);
 
   /** The variable value for an execution. Returns the value when the variable is set 
@@ -316,7 +316,7 @@ public interface RuntimeService {
    * @param variableName name of variable to set, cannot be null.
    * @param value value to set. When null is passed, the variable is not removed,
    * only it's value will be set to null.
-   * @throws ActivitiException when no execution is found for the given executionId. 
+   * @throws ActivitiObjectNotFoundException when no execution is found for the given executionId. 
    */
   void setVariable(String executionId, String variableName, Object value);
 
@@ -326,20 +326,20 @@ public interface RuntimeService {
    * @param variableName name of variable to set, cannot be null.
    * @param value value to set. When null is passed, the variable is not removed,
    * only it's value will be set to null.
-   * @throws ActivitiException when no execution is found for the given executionId.  */
+   * @throws ActivitiObjectNotFoundException when no execution is found for the given executionId.  */
   void setVariableLocal(String executionId, String variableName, Object value);
 
   /** Update or create given variables for an execution (including parent scopes). If the variables are not already existing, they will be created in the process instance 
    * (which is the root execution).
    * @param executionId id of the execution, cannot be null.
    * @param variables map containing name (key) and value of variables, can be null.
-   * @throws ActivitiException when no execution is found for the given executionId.  */
+   * @throws ActivitiObjectNotFoundException when no execution is found for the given executionId.  */
   void setVariables(String executionId, Map<String, ? extends Object> variables);
   
   /** Update or create given variables for an execution (not considering parent scopes). If the variables are not already existing, it will be created in the given execution.
    * @param executionId id of the execution, cannot be null.
    * @param variables map containing name (key) and value of variables, can be null.
-   * @throws ActivitiException when no execution is found for the given executionId. */
+   * @throws ActivitiObjectNotFoundException when no execution is found for the given executionId. */
   void setVariablesLocal(String executionId, Map<String, ? extends Object> variables);
   
   /**
@@ -406,7 +406,8 @@ public interface RuntimeService {
    * one process instance form the hierarchy will not suspend other 
    * process instances form that hierarchy.
    * 
-   *  @throws ActivitiException if no such processInstance can be found or if the process instance is already in state suspended.
+   *  @throws ActivitiObjectNotFoundException if no such processInstance can be found.
+   *  @throws ActivitiException the process instance is already in state suspended.
    */
   void suspendProcessInstanceById(String processInstanceId);
   
@@ -417,7 +418,8 @@ public interface RuntimeService {
    * one process instance form the hierarchy will not suspend other 
    * process instances form that hierarchy.
    * 
-   * @throws ActivitiException if no such processInstance can be found or if the process instance is already in state active.
+   * @throws ActivitiObjectNotFoundException if no such processInstance can be found. 
+   * @throws ActivitiException if the process instance is already in state active.
    */
   void activateProcessInstanceById(String processInstanceId);
   
@@ -459,8 +461,8 @@ public interface RuntimeService {
    *          the name of the signal event
    * @param executionId
    *          the id of the execution to deliver the signal to
-   * @throws ActivitiException if no such execution exists or if the execution 
-   *          has not subscribed to the signal
+   * @throws ActivitiObjectNotFoundException if no such execution exists.
+   * @throws ActivitiException if the execution has not subscribed to the signal.
    */
   void signalEventReceived(String signalName, String executionId);  
   
@@ -476,8 +478,8 @@ public interface RuntimeService {
    *          the id of the execution to deliver the signal to
    * @param processVariables
    *          a map of variables added to the execution(s)
-   * @throws ActivitiException if no such execution exists or if the execution 
-   *          has not subscribed to the signal
+   * @throws ActivitiObjectNotFoundException if no such execution exists.
+   * @throws ActivitiException if the execution has not subscribed to the signal
    */
   void signalEventReceived(String signalName, String executionId, Map<String, Object> processVariables);
 
@@ -491,8 +493,8 @@ public interface RuntimeService {
    *          the name of the message event
    * @param executionId
    *          the id of the execution to deliver the message to
-   * @throws ActivitiException if no such execution exists or if the execution 
-   *          has not subscribed to the signal
+   * @throws ActivitiObjectNotFoundException if no such execution exists.
+   * @throws ActivitiException if the execution has not subscribed to the signal
    */
   void messageEventReceived(String messageName, String executionId);
   
@@ -508,8 +510,8 @@ public interface RuntimeService {
    *          the id of the execution to deliver the message to
    * @param processVariables
    *          a map of variables added to the execution
-   * @throws ActivitiException if no such execution exists or if the execution 
-   *          has not subscribed to the signal
+   * @throws ActivitiObjectNotFoundException if no such execution exists.
+   * @throws ActivitiException if the execution has not subscribed to the signal
    */
   void messageEventReceived(String messageName, String executionId, Map<String, Object> processVariables);
    

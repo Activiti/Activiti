@@ -22,6 +22,7 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.util.ReflectUtil;
 
@@ -64,12 +65,12 @@ public class JPAEntityMappings {
 
   public String getJPAClassString(Object value) {
     if(value == null) {
-      throw new ActivitiException("null value cannot be saved");
+      throw new ActivitiIllegalArgumentException("null value cannot be saved");
     }
     
     EntityMetaData metaData = getEntityMetaData(value.getClass());
     if(!metaData.isJPAEntity()) {
-      throw new ActivitiException("Object is not a JPA Entity: class='" + value.getClass() + "', " + value);
+      throw new ActivitiIllegalArgumentException("Object is not a JPA Entity: class='" + value.getClass() + "', " + value);
     }
     
     // Extract the ID from the Entity instance using the metaData
@@ -79,7 +80,7 @@ public class JPAEntityMappings {
   public String getJPAIdString(Object value) {
     EntityMetaData metaData = getEntityMetaData(value.getClass());
     if(!metaData.isJPAEntity()) {
-      throw new ActivitiException("Object is not a JPA Entity: class='" + value.getClass() + "', " + value);
+      throw new ActivitiIllegalArgumentException("Object is not a JPA Entity: class='" + value.getClass() + "', " + value);
     }
     Object idValue = getIdValue(value, metaData);
     return getIdString(idValue);
@@ -111,7 +112,7 @@ public class JPAEntityMappings {
     
     EntityMetaData metaData = getEntityMetaData(entityClass);
     if(metaData == null) {
-      throw new ActivitiException("Class is not a JPA-entity: " + className);
+      throw new ActivitiIllegalArgumentException("Class is not a JPA-entity: " + className);
     }
     
     // Create primary key of right type
@@ -161,13 +162,13 @@ public class JPAEntityMappings {
     } else if(type == BigInteger.class) {
       return new BigInteger(string);
     } else {
-      throw new ActivitiException("Unsupported Primary key type for JPA-Entity: " + type.getName());
+      throw new ActivitiIllegalArgumentException("Unsupported Primary key type for JPA-Entity: " + type.getName());
     }
   }
   
   public String getIdString(Object value) {
     if(value == null) {
-      throw new ActivitiException("Value of primary key for JPA-Entity cannot be null");
+      throw new ActivitiIllegalArgumentException("Value of primary key for JPA-Entity cannot be null");
     }
     // Only java.sql.date and java.util.date require custom handling, the other types
     // can just use toString()
@@ -181,7 +182,7 @@ public class JPAEntityMappings {
        || value instanceof BigInteger) {
       return value.toString();
     } else {
-      throw new ActivitiException("Unsupported Primary key type for JPA-Entity: " + value.getClass().getName());
+      throw new ActivitiIllegalArgumentException("Unsupported Primary key type for JPA-Entity: " + value.getClass().getName());
     }
   }
 }

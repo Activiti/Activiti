@@ -36,4 +36,9 @@ public interface HistoricVariableInstance {
   /** The process instance reference. */
   String getProcessInstanceId();
   
+  /**
+   * @return the task id of the task, in case this variable instance has been set locally
+   * on a task. Returns null, if this variable is not related to a task.
+   */
+  String getTaskId();
 }

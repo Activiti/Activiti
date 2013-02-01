@@ -13,7 +13,7 @@
 
 package org.activiti.engine.test.bpmn.event.compensate.helper;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 
@@ -28,7 +28,7 @@ public class GetVariablesDelegate implements JavaDelegate {
     Integer variable = SetVariablesDelegate.variablesMap.get(nrOfCompletedInstances);
     Object variableLocal = execution.getVariable("variable");
     if(!variableLocal.equals(variable)) {
-      throw new ActivitiException("wrong variable passed in to compensation handler");
+      throw new ActivitiIllegalArgumentException("wrong variable passed in to compensation handler");
     }
   }
 

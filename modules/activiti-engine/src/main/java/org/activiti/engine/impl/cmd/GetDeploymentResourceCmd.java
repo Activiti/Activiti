@@ -16,10 +16,12 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
+import org.activiti.engine.repository.Deployment;
 
 
 /**
@@ -38,17 +40,23 @@ public class GetDeploymentResourceCmd implements Command<InputStream>, Serializa
 
   public InputStream execute(CommandContext commandContext) {
     if (deploymentId == null) {
-      throw new ActivitiException("deploymentId is null");
+      throw new ActivitiIllegalArgumentException("deploymentId is null");
     }
     if(resourceName == null) {
-      throw new ActivitiException("resourceName is null");
+      throw new ActivitiIllegalArgumentException("resourceName is null");
     }
     
     ResourceEntity resource = commandContext
       .getResourceEntityManager()
       .findResourceByDeploymentIdAndResourceName(deploymentId, resourceName);
     if(resource == null) {
-      throw new ActivitiException("no resource found with name '" + resourceName + "' in deployment '" + deploymentId + "'");
+      if(commandContext.getDeploymentEntityManager().findDeploymentById(deploymentId) == null) {
+        throw new ActivitiObjectNotFoundException("deployment does not exist: " + deploymentId, Deployment.class);
+      }
+      else
+      {
+        throw new ActivitiObjectNotFoundException("no resource found with name '" + resourceName + "' in deployment '" + deploymentId + "'", InputStream.class);
+      }
     }
     return new ByteArrayInputStream(resource.getBytes());
   }

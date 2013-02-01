@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -102,7 +103,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     try {
       taskService.createTaskQuery().taskId(null);
       fail("expected exception");
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       // OK
     }
   }
@@ -129,7 +130,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     try {
       taskService.createTaskQuery().taskName(null).singleResult();
       fail("expected exception");
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       // OK
     }
   }
@@ -142,15 +143,15 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
   }
   
   public void testQueryByInvalidNameLike() {
-    TaskQuery query = taskService.createTaskQuery().taskName("1");
+    TaskQuery query = taskService.createTaskQuery().taskNameLike("1");
     assertNull(query.singleResult());
     assertEquals(0, query.list().size());
     assertEquals(0, query.count());
     
     try {
-      taskService.createTaskQuery().taskName(null).singleResult();
+      taskService.createTaskQuery().taskNameLike(null).singleResult();
       fail();
-    } catch (ActivitiException e) { }
+    } catch (ActivitiIllegalArgumentException e) { }
   }
   
   public void testQueryByDescription() {
@@ -173,7 +174,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     try {
       taskService.createTaskQuery().taskDescription(null).list();
       fail();
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       
     }
   }
@@ -194,7 +195,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     try {
       taskService.createTaskQuery().taskDescriptionLike(null).list();
       fail();
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       
     }
   }
@@ -231,7 +232,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     try {
       taskService.createTaskQuery().taskPriority(null);
       fail("expected exception");
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       // OK
     }
   }
@@ -252,7 +253,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     try {
       taskService.createTaskQuery().taskAssignee(null).list();
       fail("expected exception");
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       // OK
     }
   }
@@ -289,7 +290,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     try {
       taskService.createTaskQuery().taskCandidateUser(null).list();
       fail();
-    } catch(ActivitiException e) {}
+    } catch(ActivitiIllegalArgumentException e) {}
   }
   
   public void testQueryByCandidateGroup() {
@@ -312,7 +313,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     try {
       taskService.createTaskQuery().taskCandidateGroup(null).list();
       fail("expected exception");
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       // OK
     }
   }
@@ -340,13 +341,13 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     try {
       taskService.createTaskQuery().taskCandidateGroupIn(null).list();
       fail("expected exception");
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       // OK
     }
     try {
       taskService.createTaskQuery().taskCandidateGroupIn(new ArrayList<String>()).list();
       fail("expected exception");
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       // OK
     }
   }
@@ -765,19 +766,20 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     task.setDueDate(dueDate);
     taskService.saveTask(task);
 
-    assertEquals(1, taskService.createTaskQuery().dueDate(dueDate).count());
+    assertEquals(1, taskService.createTaskQuery().processInstanceId(processInstance.getId()).dueDate(dueDate).count());
     
     Calendar otherDate = Calendar.getInstance();
     otherDate.add(Calendar.YEAR, 1);
-    assertEquals(0, taskService.createTaskQuery().dueDate(otherDate.getTime()).count());
+    assertEquals(0, taskService.createTaskQuery().processInstanceId(processInstance.getId()).dueDate(otherDate.getTime()).count());
 
     Calendar priorDate = Calendar.getInstance();
     priorDate.setTime(dueDate);
     priorDate.roll(Calendar.YEAR, -1);
-    assertEquals(1, taskService.createTaskQuery().dueAfter(priorDate.getTime())
+    
+    assertEquals(1, taskService.createTaskQuery().processInstanceId(processInstance.getId()).dueAfter(priorDate.getTime())
         .count());
 
-    assertEquals(1, taskService.createTaskQuery()
+    assertEquals(1, taskService.createTaskQuery().processInstanceId(processInstance.getId())
         .dueBefore(otherDate.getTime()).count());
   }
   
@@ -799,16 +801,16 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     oneHourLater.setTime(dueDateCal.getTime());
     oneHourLater.add(Calendar.HOUR, 1);
 
-    assertEquals(1, taskService.createTaskQuery().dueBefore(oneHourLater.getTime()).count());
-    assertEquals(0, taskService.createTaskQuery().dueBefore(oneHourAgo.getTime()).count());
+    assertEquals(1, taskService.createTaskQuery().processInstanceId(processInstance.getId()).dueBefore(oneHourLater.getTime()).count());
+    assertEquals(0, taskService.createTaskQuery().processInstanceId(processInstance.getId()).dueBefore(oneHourAgo.getTime()).count());
     
     // Update due-date to null, shouldn't show up anymore in query that matched before
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     task.setDueDate(null);
     taskService.saveTask(task);
     
-    assertEquals(0, taskService.createTaskQuery().dueBefore(oneHourLater.getTime()).count());
-    assertEquals(0, taskService.createTaskQuery().dueBefore(oneHourAgo.getTime()).count());
+    assertEquals(0, taskService.createTaskQuery().processInstanceId(processInstance.getId()).dueBefore(oneHourLater.getTime()).count());
+    assertEquals(0, taskService.createTaskQuery().processInstanceId(processInstance.getId()).dueBefore(oneHourAgo.getTime()).count());
   }
   
   @Deployment(resources={"org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml"})
@@ -829,16 +831,16 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     oneHourLater.setTime(dueDateCal.getTime());
     oneHourLater.add(Calendar.HOUR, 1);
 
-    assertEquals(1, taskService.createTaskQuery().dueAfter(oneHourAgo.getTime()).count());
-    assertEquals(0, taskService.createTaskQuery().dueAfter(oneHourLater.getTime()).count());
+    assertEquals(1, taskService.createTaskQuery().processInstanceId(processInstance.getId()).dueAfter(oneHourAgo.getTime()).count());
+    assertEquals(0, taskService.createTaskQuery().processInstanceId(processInstance.getId()).dueAfter(oneHourLater.getTime()).count());
     
     // Update due-date to null, shouldn't show up anymore in query that matched before
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     task.setDueDate(null);
     taskService.saveTask(task);
     
-    assertEquals(0, taskService.createTaskQuery().dueAfter(oneHourLater.getTime()).count());
-    assertEquals(0, taskService.createTaskQuery().dueAfter(oneHourAgo.getTime()).count());
+    assertEquals(0, taskService.createTaskQuery().processInstanceId(processInstance.getId()).dueAfter(oneHourLater.getTime()).count());
+    assertEquals(0, taskService.createTaskQuery().processInstanceId(processInstance.getId()).dueAfter(oneHourAgo.getTime()).count());
   }
   
   public void testQueryPaging() {

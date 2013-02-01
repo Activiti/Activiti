@@ -10,6 +10,7 @@ import org.activiti.rest.BaseRestTestCase;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
+import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 
@@ -31,7 +32,7 @@ public class SignalEventSubscriptionResourceTest extends BaseRestTestCase {
     instanceList = runtimeService.createProcessInstanceQuery().list();
     assertEquals(0, instanceList.size());
   }
-  
+    
   @Deployment
   public void testSignalEventWithVariables() throws Exception {
     ProcessInstance instance = runtimeService.startProcessInstanceByKey("signalEvent");

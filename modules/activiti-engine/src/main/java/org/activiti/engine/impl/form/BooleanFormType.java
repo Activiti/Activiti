@@ -13,7 +13,7 @@
 
 package org.activiti.engine.impl.form;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.form.AbstractFormType;
 
 /**
@@ -46,6 +46,6 @@ public class BooleanFormType extends AbstractFormType {
             || boolean.class.isAssignableFrom(modelValue.getClass())) {
       return modelValue.toString();      
     }
-    throw new ActivitiException("Model value is not of type boolean, but of type " + modelValue.getClass().getName());
+    throw new ActivitiIllegalArgumentException("Model value is not of type boolean, but of type " + modelValue.getClass().getName());
   }
 }

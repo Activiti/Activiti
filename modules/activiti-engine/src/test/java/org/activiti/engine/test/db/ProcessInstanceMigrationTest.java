@@ -16,6 +16,8 @@ package org.activiti.engine.test.db;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.cmd.SetProcessDefinitionVersionCmd;
 import org.activiti.engine.impl.history.HistoryLevel;
@@ -46,28 +48,28 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     try {
       new SetProcessDefinitionVersionCmd(null, 23);    
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("The process instance id is mandatory, but 'null' has been provided.", ae.getMessage());
     }
 
     try {
       new SetProcessDefinitionVersionCmd("", 23);    
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("The process instance id is mandatory, but '' has been provided.", ae.getMessage());
     }
 
     try {
       new SetProcessDefinitionVersionCmd("42", null);    
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("The process definition version is mandatory, but 'null' has been provided.", ae.getMessage());
     }
 
     try {
       new SetProcessDefinitionVersionCmd("42", -1);    
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("The process definition version must be positive, but '-1' has been provided.", ae.getMessage());
     }
   }
@@ -77,8 +79,9 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     try {
       commandExecutor.execute(new SetProcessDefinitionVersionCmd("42", 23));    
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiObjectNotFoundException ae) {
       assertTextPresent("No process instance found for id = '42'.", ae.getMessage());
+      assertEquals(ProcessInstance.class, ae.getObjectClass());
     }
   }
   
@@ -109,8 +112,9 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     try {
       commandExecutor.execute(new SetProcessDefinitionVersionCmd(pi.getId(), 23));    
       fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
+    } catch (ActivitiObjectNotFoundException ae) {
       assertTextPresent("no processes deployed with key = 'receiveTask' and version = '23'", ae.getMessage());
+      assertEquals(ProcessDefinition.class, ae.getObjectClass());
     }
   }
   

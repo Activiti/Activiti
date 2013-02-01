@@ -20,9 +20,6 @@ import org.activiti.engine.impl.el.Expression;
 
 
 /**
- * @author Tom Baeyens
- * @author Daniel Meyer
- * @author Falko Menge
  * @author Saeid Mirzaei
  */
 

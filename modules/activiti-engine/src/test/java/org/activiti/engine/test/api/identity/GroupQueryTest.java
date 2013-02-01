@@ -16,6 +16,7 @@ package org.activiti.engine.test.api.identity;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -85,7 +86,7 @@ public class GroupQueryTest extends PluggableActivitiTestCase {
     try {
       identityService.createGroupQuery().groupId(null).list();
       fail();
-    } catch (ActivitiException e) {}
+    } catch (ActivitiIllegalArgumentException e) {}
   }
   
   public void testQueryByName() {
@@ -103,7 +104,7 @@ public class GroupQueryTest extends PluggableActivitiTestCase {
     try {
       identityService.createGroupQuery().groupName(null).list();
       fail();
-    } catch (ActivitiException e) {}
+    } catch (ActivitiIllegalArgumentException e) {}
   }
   
   public void testQueryByNameLike() {
@@ -124,7 +125,7 @@ public class GroupQueryTest extends PluggableActivitiTestCase {
     try {
       identityService.createGroupQuery().groupNameLike(null).list();
       fail();
-    } catch (ActivitiException e) {}
+    } catch (ActivitiIllegalArgumentException e) {}
   }
   
   public void testQueryByType() {
@@ -142,7 +143,7 @@ public class GroupQueryTest extends PluggableActivitiTestCase {
     try {
       identityService.createGroupQuery().groupType(null).list();
       fail();
-    } catch (ActivitiException e) {}
+    } catch (ActivitiIllegalArgumentException e) {}
   }
   
   public void testQueryByMember() {
@@ -173,7 +174,7 @@ public class GroupQueryTest extends PluggableActivitiTestCase {
     try {
       identityService.createGroupQuery().groupMember(null).list();
       fail();
-    } catch (ActivitiException e) {}
+    } catch (ActivitiIllegalArgumentException e) {}
   }
   
   public void testQuerySorting() {
@@ -207,12 +208,12 @@ public class GroupQueryTest extends PluggableActivitiTestCase {
     try {
       identityService.createGroupQuery().orderByGroupId().list();
       fail();
-    } catch (ActivitiException e) {}
+    } catch (ActivitiIllegalArgumentException e) {}
     
     try {
       identityService.createGroupQuery().orderByGroupId().orderByGroupName().list();
       fail();
-    } catch (ActivitiException e) {}
+    } catch (ActivitiIllegalArgumentException e) {}
   }
   
   private void verifyQueryResults(GroupQuery query, int countExpected) {

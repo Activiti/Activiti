@@ -15,11 +15,13 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.repository.ProcessDefinition;
 
 
 /**
@@ -44,11 +46,11 @@ public class DeleteIdentityLinkForProcessDefinitionCmd implements Command<Object
   
   protected void validateParams(String userId, String groupId, String processDefinitionId) {
     if(processDefinitionId == null) {
-      throw new ActivitiException("processDefinitionId is null");
+      throw new ActivitiIllegalArgumentException("processDefinitionId is null");
     }
     
     if (userId == null && groupId == null) {
-      throw new ActivitiException("userId and groupId cannot both be null");
+      throw new ActivitiIllegalArgumentException("userId and groupId cannot both be null");
     }
   }
   
@@ -59,7 +61,7 @@ public class DeleteIdentityLinkForProcessDefinitionCmd implements Command<Object
         .findLatestProcessDefinitionById(processDefinitionId);
       
     if (processDefinition == null) {
-      throw new ActivitiException("Cannot find process definition with id " + processDefinitionId);
+      throw new ActivitiObjectNotFoundException("Cannot find process definition with id " + processDefinitionId, ProcessDefinition.class);
     }
     
     processDefinition.deleteIdentityLink(userId, groupId);

@@ -16,10 +16,13 @@ package org.activiti.rest.api.process;
 import java.io.InputStream;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
 import org.restlet.data.MediaType;
@@ -38,14 +41,14 @@ public class ProcessInstanceDiagramResource extends SecuredResource {
     String processInstanceId = (String) getRequest().getAttributes().get("processInstanceId");
     
     if(processInstanceId == null) {
-      throw new ActivitiException("No process instance id provided");
+      throw new ActivitiIllegalArgumentException("No process instance id provided");
     }
 
     ExecutionEntity pi =
         (ExecutionEntity) ActivitiUtil.getRuntimeService().createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
 
     if (pi == null) {
-      throw new ActivitiException("Process instance with id" + processInstanceId + " could not be found");
+      throw new ActivitiObjectNotFoundException("Process instance with id" + processInstanceId + " could not be found", ProcessInstance.class);
     }
 
     ProcessDefinitionEntity pde = (ProcessDefinitionEntity) ((RepositoryServiceImpl) ActivitiUtil.getRepositoryService())

@@ -16,7 +16,7 @@ package org.activiti.rest.api;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.AbstractQuery;
 import org.activiti.engine.query.Query;
 import org.activiti.engine.query.QueryProperty;
@@ -57,7 +57,7 @@ public abstract class AbstractPaginateList {
     if (sort != null && properties.size() > 0) {
       QueryProperty qp = properties.get(sort);
       if (qp == null) {
-        throw new ActivitiException("Value for param 'sort' is not valid, '" + sort + "' is not a valid property");
+        throw new ActivitiIllegalArgumentException("Value for param 'sort' is not valid, '" + sort + "' is not a valid property");
       }
       ((AbstractQuery) query).orderBy(qp);
       if (order.equals("asc")) {
@@ -67,7 +67,7 @@ public abstract class AbstractPaginateList {
         query.desc();
       }
       else {
-        throw new ActivitiException("Value for param 'order' is not valid : '" + order + "', must be 'asc' or 'desc'");
+        throw new ActivitiIllegalArgumentException("Value for param 'order' is not valid : '" + order + "', must be 'asc' or 'desc'");
       }
     }
 

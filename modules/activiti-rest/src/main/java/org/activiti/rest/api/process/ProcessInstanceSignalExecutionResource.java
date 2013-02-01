@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.rest.api.ActivitiUtil;
@@ -28,7 +29,7 @@ public class ProcessInstanceSignalExecutionResource extends SecuredResource {
 		String processInstanceId = (String) getRequest().getAttributes().get("processInstanceId");
 
     if (processInstanceId == null) {
-      throw new ActivitiException("No process instance is provided");
+      throw new ActivitiIllegalArgumentException("No process instance is provided");
     }
 		
 		try {
@@ -70,6 +71,9 @@ public class ProcessInstanceSignalExecutionResource extends SecuredResource {
 			responseJSON.put("success", true);
 			return responseJSON;
 		} catch (Exception e) {
+		  if(e instanceof ActivitiException) {
+		    throw (ActivitiException) e;
+		  }
 			throw new ActivitiException("Failed to signal receive task for process instance id " + processInstanceId, e);
 		}
 

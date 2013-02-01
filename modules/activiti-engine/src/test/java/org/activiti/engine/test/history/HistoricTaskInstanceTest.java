@@ -18,6 +18,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -50,6 +51,7 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     String taskId = runtimeTask.getId();
     String taskDefinitionKey = runtimeTask.getTaskDefinitionKey();
     
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().count());
     HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().singleResult();
     assertEquals(taskId, historicTaskInstance.getId());
     assertEquals(1234, historicTaskInstance.getPriority());
@@ -266,21 +268,21 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     try {
       historyService.createHistoricTaskInstanceQuery().asc();
       fail();
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       
     }
     
     try {
       historyService.createHistoricTaskInstanceQuery().desc();
       fail();
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       
     }
     
     try {
       historyService.createHistoricTaskInstanceQuery().orderByProcessInstanceId().list();
       fail();
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       
     }
   }

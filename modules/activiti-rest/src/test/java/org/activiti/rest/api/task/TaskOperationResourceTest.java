@@ -8,8 +8,10 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.rest.BaseRestTestCase;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
+import org.restlet.resource.ResourceException;
 
 public class TaskOperationResourceTest extends BaseRestTestCase {
 
@@ -34,6 +36,27 @@ public class TaskOperationResourceTest extends BaseRestTestCase {
     
     List<ProcessInstance> instanceList = runtimeService.createProcessInstanceQuery().list();
     assertEquals(0, instanceList.size());
+  }
+  
+  @Deployment
+  public void testClaimTaskAlreadyClaimed() throws Exception {
+    runtimeService.startProcessInstanceByKey("simpleProcess");
+    Task task = taskService.createTaskQuery().singleResult();
+    assertNotNull(task);
+    assertEquals("WaitTask", task.getName());
+    assertNull(task.getAssignee());
+    
+    // Claim the task through API, using different user
+    taskService.claim(task.getId(), "gonzo");
+    
+    // Try claiming through rest, should create conflict
+    ClientResource client = getAuthenticatedClient("task/" + task.getId() + "/claim");
+    try {
+     client.put(null);
+     fail("Exception expected");
+    } catch(ResourceException re) {
+      assertEquals(Status.SERVER_ERROR_INTERNAL.getCode(), re.getStatus().getCode());
+    }
   }
   
   @Deployment
@@ -63,5 +86,24 @@ public class TaskOperationResourceTest extends BaseRestTestCase {
     
     List<ProcessInstance> instanceList = runtimeService.createProcessInstanceQuery().list();
     assertEquals(0, instanceList.size());
+  }
+  
+  @Deployment
+  public void testAssignTask() throws Exception {
+    runtimeService.startProcessInstanceByKey("simpleProcess");
+    Task task = taskService.createTaskQuery().singleResult();
+    assertNotNull(task);
+    assertEquals("WaitTask", task.getName());
+    assertNull(task.getAssignee());
+    
+    ClientResource client = getAuthenticatedClient("task/" + task.getId() + "/assign");
+    ObjectNode requestNode = objectMapper.createObjectNode();
+    requestNode.put("userId", "jenny");
+    Representation response = client.put(requestNode);
+    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    assertTrue(responseNode.get("success").getBooleanValue());
+    
+    task = taskService.createTaskQuery().singleResult();
+    assertEquals("jenny", task.getAssignee());
   }
 }

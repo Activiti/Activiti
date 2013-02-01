@@ -70,14 +70,14 @@ public interface ManagementService {
    * is in suspended state.
    * 
    * @param jobId id of the job to execute, cannot be null.
-   * @throws ActivitiException when there is no job with the given id. 
+   * @throws ActivitiObjectNotFoundException when there is no job with the given id. 
    */
   void executeJob(String jobId);
   
   /** 
    * Delete the job with the provided id.
    * @param jobId id of the job to execute, cannot be null.
-   * @throws ActivitiException when there is no job with the given id. 
+   * @throws ActivitiObjectNotFoundException when there is no job with the given id. 
    */
   void deleteJob(String jobId);
 
@@ -97,7 +97,7 @@ public interface ManagementService {
    * with the given id was last executed. Returns null when the job has no
    * exception stacktrace.
    * @param jobId id of the job, cannot be null.
-   * @throws ActivitiException when no job exists with the given id.
+   * @throws ActivitiObjectNotFoundException when no job exists with the given id.
    */
   String getJobExceptionStacktrace(String jobId);
 

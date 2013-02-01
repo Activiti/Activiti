@@ -27,6 +27,7 @@ import javax.persistence.EntityManagerFactory;
 import junit.framework.Assert;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -353,7 +354,7 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
     try {
       runtimeService.startProcessInstanceByKey("JPAVariableProcessExceptions", variables);
       fail("Exception expected");
-    } catch(ActivitiException ae) {
+    } catch(ActivitiIllegalArgumentException ae) {
       assertTextPresent("Value of primary key for JPA-Entity cannot be null", ae.getMessage());
     }
     
@@ -414,31 +415,31 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
     try {
       runtimeService.createProcessInstanceQuery().variableValueNotEquals("entityToQuery", entityToQuery).singleResult();
       fail("Exception expected");
-    } catch(ActivitiException ae) {
+    } catch(ActivitiIllegalArgumentException ae) {
       assertTextPresent("JPA entity variables can only be used in 'variableValueEquals'", ae.getMessage());
     }
     try {
       runtimeService.createProcessInstanceQuery().variableValueGreaterThan("entityToQuery", entityToQuery).singleResult();
       fail("Exception expected");
-    } catch(ActivitiException ae) {
+    } catch(ActivitiIllegalArgumentException ae) {
       assertTextPresent("JPA entity variables can only be used in 'variableValueEquals'", ae.getMessage());
     }
     try {
       runtimeService.createProcessInstanceQuery().variableValueGreaterThanOrEqual("entityToQuery", entityToQuery).singleResult();
       fail("Exception expected");
-    } catch(ActivitiException ae) {
+    } catch(ActivitiIllegalArgumentException ae) {
       assertTextPresent("JPA entity variables can only be used in 'variableValueEquals'", ae.getMessage());
     }
     try {
       runtimeService.createProcessInstanceQuery().variableValueLessThan("entityToQuery", entityToQuery).singleResult();
       fail("Exception expected");
-    } catch(ActivitiException ae) {
+    } catch(ActivitiIllegalArgumentException ae) {
       assertTextPresent("JPA entity variables can only be used in 'variableValueEquals'", ae.getMessage());
     }
     try {
       runtimeService.createProcessInstanceQuery().variableValueLessThanOrEqual("entityToQuery", entityToQuery).singleResult();
       fail("Exception expected");
-    } catch(ActivitiException ae) {
+    } catch(ActivitiIllegalArgumentException ae) {
       assertTextPresent("JPA entity variables can only be used in 'variableValueEquals'", ae.getMessage());
     }
   }

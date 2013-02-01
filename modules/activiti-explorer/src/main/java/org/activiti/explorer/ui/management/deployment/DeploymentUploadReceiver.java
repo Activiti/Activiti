@@ -76,21 +76,24 @@ public class DeploymentUploadReceiver implements Receiver, FinishedListener {
 
   protected void deployUploadedFile() {
     DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().name(fileName);
+    DeploymentFilter deploymentFilter = ExplorerApp.get().getComponentFactory(DeploymentFilterFactory.class).create();
     try {
       try {
         if (fileName.endsWith(".bpmn20.xml") || fileName.endsWith(".bpmn")) {
           validFile = true;
-          deployment = deploymentBuilder
-            .addInputStream(fileName, new ByteArrayInputStream(outputStream.toByteArray()))
-            .deploy();
+          deploymentBuilder.addInputStream(fileName, new ByteArrayInputStream(outputStream.toByteArray()));
         } else if (fileName.endsWith(".bar") || fileName.endsWith(".zip")) {
           validFile = true;
-          deployment = deploymentBuilder
-            .addZipInputStream(new ZipInputStream(new ByteArrayInputStream(outputStream.toByteArray())))
-            .deploy();
+          deploymentBuilder.addZipInputStream(new ZipInputStream(new ByteArrayInputStream(outputStream.toByteArray())));
         } else {
           notificationManager.showErrorNotification(Messages.DEPLOYMENT_UPLOAD_INVALID_FILE,
-          		i18nManager.getMessage(Messages.DEPLOYMENT_UPLOAD_INVALID_FILE_EXPLANATION));
+              i18nManager.getMessage(Messages.DEPLOYMENT_UPLOAD_INVALID_FILE_EXPLANATION));
+        }
+        
+        // If the deployment is valid, run it through the beforeDeploy and actually deploy it in Activiti
+        if(validFile) {
+          deploymentFilter.beforeDeploy(deploymentBuilder);
+          deployment = deploymentBuilder.deploy();
         }
       } catch (ActivitiException e) {
         String errorMsg = e.getMessage().replace(System.getProperty("line.separator"), "<br/>");

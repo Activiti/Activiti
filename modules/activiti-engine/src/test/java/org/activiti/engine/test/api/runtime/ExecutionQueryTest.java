@@ -38,6 +38,7 @@ import java.util.Map;
 import junit.framework.Assert;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
@@ -312,7 +313,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     try {
       execution = runtimeService.createExecutionQuery().variableValueEqualsIgnoreCase("upper", null).singleResult();
       fail("Exception expected");
-    } catch(ActivitiException ae) {
+    } catch(ActivitiIllegalArgumentException ae) {
       assertEquals("value is null", ae.getMessage());
     }
     
@@ -320,7 +321,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     try {
       execution = runtimeService.createExecutionQuery().variableValueEqualsIgnoreCase(null, "abcdefg").singleResult();
       fail("Exception expected");
-    } catch(ActivitiException ae) {
+    } catch(ActivitiIllegalArgumentException ae) {
       assertEquals("name is null", ae.getMessage());
     }
     
@@ -338,7 +339,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     try {
       execution = runtimeService.createExecutionQuery().variableValueNotEqualsIgnoreCase("upper", null).singleResult();
       fail("Exception expected");
-    } catch(ActivitiException ae) {
+    } catch(ActivitiIllegalArgumentException ae) {
       assertEquals("value is null", ae.getMessage());
     }
     
@@ -346,7 +347,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     try {
       execution = runtimeService.createExecutionQuery().variableValueNotEqualsIgnoreCase(null, "abcdefg").singleResult();
       fail("Exception expected");
-    } catch(ActivitiException ae) {
+    } catch(ActivitiIllegalArgumentException ae) {
       assertEquals("name is null", ae.getMessage());
     }
   }
@@ -891,28 +892,28 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
   try {
     runtimeService.createProcessInstanceQuery().variableValueGreaterThan("booleanVar", true);
     fail("Excetion expected");
-  } catch(ActivitiException ae) {
+  } catch(ActivitiIllegalArgumentException ae) {
     assertTextPresent("Booleans and null cannot be used in 'greater than' condition", ae.getMessage());
   }
   
   try {
     runtimeService.createProcessInstanceQuery().variableValueGreaterThanOrEqual("booleanVar", true);
     fail("Excetion expected");
-  } catch(ActivitiException ae) {
+  } catch(ActivitiIllegalArgumentException ae) {
     assertTextPresent("Booleans and null cannot be used in 'greater than or equal' condition", ae.getMessage());
   }
   
   try {
     runtimeService.createProcessInstanceQuery().variableValueLessThan("booleanVar", true);
     fail("Excetion expected");
-  } catch(ActivitiException ae) {
+  } catch(ActivitiIllegalArgumentException ae) {
     assertTextPresent("Booleans and null cannot be used in 'less than' condition", ae.getMessage());
   }
   
   try {
     runtimeService.createProcessInstanceQuery().variableValueLessThanOrEqual("booleanVar", true);
     fail("Excetion expected");
-  } catch(ActivitiException ae) {
+  } catch(ActivitiIllegalArgumentException ae) {
     assertTextPresent("Booleans and null cannot be used in 'less than or equal' condition", ae.getMessage());
   }
   
@@ -1016,35 +1017,35 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     try {
       runtimeService.createExecutionQuery().variableValueGreaterThan("nullVar", null);
       fail("Excetion expected");
-    } catch(ActivitiException ae) {
+    } catch(ActivitiIllegalArgumentException ae) {
       assertTextPresent("Booleans and null cannot be used in 'greater than' condition", ae.getMessage());
     }
     
     try {
       runtimeService.createExecutionQuery().variableValueGreaterThanOrEqual("nullVar", null);
       fail("Excetion expected");
-    } catch(ActivitiException ae) {
+    } catch(ActivitiIllegalArgumentException ae) {
       assertTextPresent("Booleans and null cannot be used in 'greater than or equal' condition", ae.getMessage());
     }
     
     try {
       runtimeService.createExecutionQuery().variableValueLessThan("nullVar", null);
       fail("Excetion expected");
-    } catch(ActivitiException ae) {
+    } catch(ActivitiIllegalArgumentException ae) {
       assertTextPresent("Booleans and null cannot be used in 'less than' condition", ae.getMessage());
     }
     
     try {
       runtimeService.createExecutionQuery().variableValueLessThanOrEqual("nullVar", null);
       fail("Excetion expected");
-    } catch(ActivitiException ae) {
+    } catch(ActivitiIllegalArgumentException ae) {
       assertTextPresent("Booleans and null cannot be used in 'less than or equal' condition", ae.getMessage());
     }
     
     try {
       runtimeService.createExecutionQuery().variableValueLike("nullVar", null);
       fail("Excetion expected");
-    } catch(ActivitiException ae) {
+    } catch(ActivitiIllegalArgumentException ae) {
       assertTextPresent("Only string values can be used with 'like' condition", ae.getMessage());
     }
     
@@ -1073,7 +1074,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
         .variableValueEquals("bytesVar", "test".getBytes())
         .list();
       fail("Expected exception");
-    } catch(ActivitiException ae) {
+    } catch(ActivitiIllegalArgumentException ae) {
       assertTextPresent("Variables of type ByteArray cannot be used to query", ae.getMessage());
     }
     
@@ -1082,7 +1083,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
         .variableValueEquals("serializableVar", new DummySerializable())
         .list();
       fail("Expected exception");
-    } catch(ActivitiException ae) {
+    } catch(ActivitiIllegalArgumentException ae) {
       assertTextPresent("Variables of type ByteArray cannot be used to query", ae.getMessage());
     }   
   
@@ -1093,43 +1094,43 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     try {
       runtimeService.createExecutionQuery().variableValueEquals(null, "value");
       fail("Expected exception");
-    } catch(ActivitiException ae) {
+    } catch(ActivitiIllegalArgumentException ae) {
       assertTextPresent("name is null", ae.getMessage());
     }   
     try {
       runtimeService.createExecutionQuery().variableValueNotEquals(null, "value");
       fail("Expected exception");
-    } catch(ActivitiException ae) {
+    } catch(ActivitiIllegalArgumentException ae) {
       assertTextPresent("name is null", ae.getMessage());
     }   
     try {
       runtimeService.createExecutionQuery().variableValueGreaterThan(null, "value");
       fail("Expected exception");
-    } catch(ActivitiException ae) {
+    } catch(ActivitiIllegalArgumentException ae) {
       assertTextPresent("name is null", ae.getMessage());
     }   
     try {
       runtimeService.createExecutionQuery().variableValueGreaterThanOrEqual(null, "value");
       fail("Expected exception");
-    } catch(ActivitiException ae) {
+    } catch(ActivitiIllegalArgumentException ae) {
       assertTextPresent("name is null", ae.getMessage());
     }   
     try {
       runtimeService.createExecutionQuery().variableValueLessThan(null, "value");
       fail("Expected exception");
-    } catch(ActivitiException ae) {
+    } catch(ActivitiIllegalArgumentException ae) {
       assertTextPresent("name is null", ae.getMessage());
     }   
     try {
       runtimeService.createExecutionQuery().variableValueLessThanOrEqual(null, "value");
       fail("Expected exception");
-    } catch(ActivitiException ae) {
+    } catch(ActivitiIllegalArgumentException ae) {
       assertTextPresent("name is null", ae.getMessage());
     }   
     try {
       runtimeService.createExecutionQuery().variableValueLike(null, "value");
       fail("Expected exception");
-    } catch(ActivitiException ae) {
+    } catch(ActivitiIllegalArgumentException ae) {
       assertTextPresent("name is null", ae.getMessage());
     }   
   }

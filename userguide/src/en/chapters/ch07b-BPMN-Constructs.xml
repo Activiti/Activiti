@@ -589,7 +589,12 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
         </para>
 		<para>
 	  	  <emphasis>Note:</emphasis> start timer event is scheduled as soon as process is deployed. There is no need to call startProcessInstanceByXXX, although calling start process methods is not restricted and will cause one more starting of the process at the time of startProcessInstanceByXXX Invocation.
-		</para>. 
+		</para>
+		<para>
+		   <emphasis>Note:</emphasis> when a new version of a process with a start timer event is deployed, the job
+		   corresponding with the previous timer will be removed. The reasoning is that normally it is not wanted to
+		   keep automatically starting new process instances of this old version of the process. 
+		</para>
 
       </section>
 
@@ -3043,10 +3048,11 @@ public class FakeLdapService {
 		    <para>
 		      The value of the <emphasis role="bold">scriptFormat</emphasis> attribute must be a
 		      name that is compatible with the <ulink url="http://jcp.org/en/jsr/detail?id=223">JSR-223</ulink>
-		      (scripting for the Java platform). The Groovy jar is shipped by default with the
-		      Activiti distribution. If you want to use another (JSR-223 compatible) scripting
+		      (scripting for the Java platform). By default JavaScript is included in every JDK and as such
+		      doesn't need any additional jars. If you want to use another (JSR-223 compatible) scripting
 		      engine, it is sufficient to add the corresponding jar to the classpath and use
-		      the appropriate name.
+		      the appropriate name. For example, the Activiti unit tests often use Groovy because 
+		      the syntax is pretty similar to that of Java.
 		    </para>
 		    
 		  </section>
@@ -3078,6 +3084,18 @@ public class FakeLdapService {
 		    </para>
 		    
 		    <para>
+		      However, some languages (for example JavaScript) do not know such capabilities for script-local
+		      variables. Use the <literal>autoStoreVariables</literal> argument on the script task definition:
+<programlisting>
+&lt;scriptTask id=&quot;scrip&quot;" scriptFormat=&quot;JavaScript&quot; activiti:autoStoreVariables=&quot;false&quot;>
+</programlisting>
+              The default of this parameter is <literal>true</literal>, meaning that if the parameter is omitted
+              from the script task definition, all the declared variables will be stored as process variables.
+              If set to <literal>false</literal>, any variable can be declared without it being stored
+              as process variable.
+		    </para>
+		    
+		    <para>
 		      An alternative is to set variables through the current execution, which is available
 		      as a reserved variable called <emphasis>'execution'</emphasis>.
 <programlisting>
@@ -3085,6 +3103,8 @@ public class FakeLdapService {
     def scriptVar = &quot;test123&quot;
     execution.setVariable(&quot;myVar&quot;, scriptVar)
 &lt;/script&gt;</programlisting>
+              As of Activiti 5.12, using this approach in combination with using <literal>activiti:autoStoreVariable=&quot;false&quot;</literal>
+              is the prefered way, as it is the way of least surprises.
 		    </para>
 		    
 		    <para>
@@ -5628,7 +5648,7 @@ public class MyTaskCreateListener implements TaskListener {
    ...
  </programlisting> 
 In the above xml excerpt user(user3) refers directly to user user3 and group(group3) to group group3. No indicator will default to a group type.
-It is also possible to use attributes of the &lt;process&gt; tag, namely &lt;activiti:candidateStarterUsers&gt; and &lt;activiti:candidateStarterUsers&gt;. Here is an example:
+It is also possible to use attributes of the &lt;process&gt; tag, namely &lt;activiti:candidateStarterUsers&gt; and &lt;activiti:candidateStarterGroups&gt;. Here is an example:
 
   <programlisting>
       &lt;process id="potentialStarter" activiti:candidateStarterUsers="user1, user2"  

@@ -15,6 +15,7 @@ package org.activiti.engine.impl.cmd;
 import java.io.Serializable;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
@@ -33,7 +34,7 @@ public class GetModelEditorSourceCmd implements Command<byte[]>, Serializable {
 
   public byte[] execute(CommandContext commandContext) {
     if (modelId == null) {
-      throw new ActivitiException("modelId is null");
+      throw new ActivitiIllegalArgumentException("modelId is null");
     }
     
     byte[] bytes = commandContext

@@ -14,6 +14,7 @@
 package org.activiti.engine.delegate;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.bpmn.parser.Error;
 
 
@@ -48,10 +49,10 @@ public class BpmnError extends ActivitiException {
 
   protected void setErrorCode(String errorCode) {
     if (errorCode == null) {
-      throw new ActivitiException("Error Code must not be null.");
+      throw new ActivitiIllegalArgumentException("Error Code must not be null.");
     }
     if (errorCode.length() < 1) {
-      throw new ActivitiException("Error Code must not be empty.");
+      throw new ActivitiIllegalArgumentException("Error Code must not be empty.");
     }
     this.errorCode = errorCode;
   }

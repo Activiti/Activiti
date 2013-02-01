@@ -12,9 +12,6 @@
  */
 package org.activiti.engine.impl.bpmn.parser;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti.engine.impl.cfg.BpmnParseFactory;
@@ -73,7 +70,7 @@ public class BpmnParser extends Parser {
   protected ActivityBehaviorFactory activityBehaviorFactory;
   protected ListenerFactory listenerFactory;
   protected BpmnParseFactory bpmnParseFactory;
-  protected List<BpmnParseListener> parseListeners = new ArrayList<BpmnParseListener>();
+  protected BpmnParseHandlers bpmnParserHandlers;
   
   /**
    * Creates a new {@link BpmnParse} instance that can be used
@@ -115,11 +112,12 @@ public class BpmnParser extends Parser {
     this.expressionManager = expressionManager;
   }
 
-  public List<BpmnParseListener> getParseListeners() {
-    return parseListeners;
+  public BpmnParseHandlers getBpmnParserHandlers() {
+    return bpmnParserHandlers;
+  }
+
+  public void setBpmnParserHandlers(BpmnParseHandlers bpmnParserHandlers) {
+    this.bpmnParserHandlers = bpmnParserHandlers;
   }
   
-  public void setParseListeners(List<BpmnParseListener> parseListeners) {
-    this.parseListeners = parseListeners;
-  }
 }

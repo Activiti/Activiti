@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cfg.TransactionListener;
@@ -47,7 +47,7 @@ public class JobEntityManager extends AbstractManager {
   public void schedule(TimerEntity timer) {
     Date duedate = timer.getDuedate();
     if (duedate==null) {
-      throw new ActivitiException("duedate is null");
+      throw new ActivitiIllegalArgumentException("duedate is null");
     }
 
     timer.insert();

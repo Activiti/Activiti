@@ -14,12 +14,14 @@ package org.activiti.bpmn.model;
 
 /**
  * @author Tijs Rademakers
+ * @author Joram Barrez
  */
 public class ScriptTask extends Task {
 
   protected String scriptFormat;
   protected String script;
   protected String resultVariable;
+  protected boolean autoStoreVariables = true; // 'true' for backwards compatibility
 
   public String getScriptFormat() {
     return scriptFormat;
@@ -38,5 +40,11 @@ public class ScriptTask extends Task {
   }
   public void setResultVariable(String resultVariable) {
     this.resultVariable = resultVariable;
+  }
+  public boolean isAutoStoreVariables() {
+    return autoStoreVariables;
+  }
+  public void setAutoStoreVariables(boolean autoStoreVariables) {
+    this.autoStoreVariables = autoStoreVariables;
   }
 }

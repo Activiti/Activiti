@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -75,7 +76,7 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
     } else if (text != null) {
       return createTextOnlyEmail(text);
     } else {
-      throw new ActivitiException("'html' or 'text' is required to be defined when using the mail activity");
+      throw new ActivitiIllegalArgumentException("'html' or 'text' is required to be defined when using the mail activity");
     }
   }
 

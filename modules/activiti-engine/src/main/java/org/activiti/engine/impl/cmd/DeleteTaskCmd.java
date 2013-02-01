@@ -15,7 +15,7 @@ package org.activiti.engine.impl.cmd;
 import java.io.Serializable;
 import java.util.Collection;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -52,7 +52,7 @@ public class DeleteTaskCmd implements Command<Void>, Serializable {
           deleteTask(taskId);
         }   
     } else {
-      throw new ActivitiException("taskId and taskIds are null");
+      throw new ActivitiIllegalArgumentException("taskId and taskIds are null");
     }
     
     

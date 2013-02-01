@@ -31,14 +31,22 @@ import org.activiti.engine.impl.scripting.ScriptingEngines;
  */
 public class ScriptTaskActivityBehavior extends TaskActivityBehavior {
   
-  protected final String script;
-  protected final String language;
-  protected final String resultVariable;
+  private static final long serialVersionUID = 1L;
+  
+  protected String script;
+  protected String language;
+  protected String resultVariable;
+  protected boolean storeScriptVariables = true; // 'true' for backwards compatibility
 
   public ScriptTaskActivityBehavior(String script, String language, String resultVariable) {
     this.script = script;
     this.language = language;
     this.resultVariable = resultVariable;
+  }
+  
+  public ScriptTaskActivityBehavior(String script, String language, String resultVariable, boolean storeScriptVariables) {
+    this(script, language, resultVariable);
+    this.storeScriptVariables = storeScriptVariables;
   }
   
   public void execute(ActivityExecution execution) throws Exception {
@@ -48,7 +56,7 @@ public class ScriptTaskActivityBehavior extends TaskActivityBehavior {
 
     boolean noErrors = true;
     try {
-      Object result = scriptingEngines.evaluate(script, language, execution);
+      Object result = scriptingEngines.evaluate(script, language, execution, storeScriptVariables);
       
       if (resultVariable != null) {
         execution.setVariable(resultVariable, result);

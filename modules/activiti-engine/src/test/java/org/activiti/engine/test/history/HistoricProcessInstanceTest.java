@@ -20,6 +20,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -194,21 +195,21 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     try {
       historyService.createHistoricProcessInstanceQuery().asc();
       fail();
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       
     }
     
     try {
       historyService.createHistoricProcessInstanceQuery().desc();
       fail();
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       
     }
     
     try {
       historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceId().list();
       fail();
-    } catch (ActivitiException e) {
+    } catch (ActivitiIllegalArgumentException e) {
       
     }
   }

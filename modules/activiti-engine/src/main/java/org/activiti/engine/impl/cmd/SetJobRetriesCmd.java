@@ -15,10 +15,12 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.runtime.Job;
 
 
 /**
@@ -33,10 +35,10 @@ public class SetJobRetriesCmd implements Command<Void>, Serializable {
 
   public SetJobRetriesCmd(String jobId, int retries) {
     if (jobId == null || jobId.length() < 1) {
-      throw new ActivitiException("The job id is mandatory, but '" + jobId + "' has been provided.");
+      throw new ActivitiIllegalArgumentException("The job id is mandatory, but '" + jobId + "' has been provided.");
     }
     if (retries < 0) {
-      throw new ActivitiException("The number of job retries must be a non-negative Integer, but '" + retries + "' has been provided.");
+      throw new ActivitiIllegalArgumentException("The number of job retries must be a non-negative Integer, but '" + retries + "' has been provided.");
     }
     this.jobId = jobId;
     this.retries = retries;
@@ -49,7 +51,7 @@ public class SetJobRetriesCmd implements Command<Void>, Serializable {
     if (job != null) {
       job.setRetries(retries);
     } else {
-      throw new ActivitiException("No job found with id '" + jobId + "'.");
+      throw new ActivitiObjectNotFoundException("No job found with id '" + jobId + "'.", Job.class);
     }
     return null;
   }

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
@@ -61,7 +62,7 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
 
   public ProcessInstanceQueryImpl processInstanceId(String processInstanceId) {
     if (processInstanceId == null) {
-      throw new ActivitiException("Process instance id is null");
+      throw new ActivitiIllegalArgumentException("Process instance id is null");
     }
     this.executionId = processInstanceId;
     return this;
@@ -69,10 +70,10 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   
   public ProcessInstanceQuery processInstanceIds(Set<String> processInstanceIds) {
     if (processInstanceIds == null) {
-      throw new ActivitiException("Set of process instance ids is null");
+      throw new ActivitiIllegalArgumentException("Set of process instance ids is null");
     }
     if (processInstanceIds.isEmpty()) {
-      throw new ActivitiException("Set of process instance ids is empty");
+      throw new ActivitiIllegalArgumentException("Set of process instance ids is empty");
     }
     this.processInstanceIds = processInstanceIds;
     return this;
@@ -80,7 +81,7 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
 
   public ProcessInstanceQuery processInstanceBusinessKey(String businessKey) {
     if (businessKey == null) {
-      throw new ActivitiException("Business key is null");
+      throw new ActivitiIllegalArgumentException("Business key is null");
     }
     this.businessKey = businessKey;
     return this;
@@ -88,7 +89,7 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   
   public ProcessInstanceQuery processInstanceBusinessKey(String businessKey, String processDefinitionKey) {
     if (businessKey == null) {
-      throw new ActivitiException("Business key is null");
+      throw new ActivitiIllegalArgumentException("Business key is null");
     }
     this.businessKey = businessKey;
     this.processDefinitionKey = processDefinitionKey;
@@ -97,7 +98,7 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   
   public ProcessInstanceQueryImpl processDefinitionId(String processDefinitionId) {
     if (processDefinitionId == null) {
-      throw new ActivitiException("Process definition id is null");
+      throw new ActivitiIllegalArgumentException("Process definition id is null");
     }
     this.processDefinitionId = processDefinitionId;
     return this;
@@ -105,7 +106,7 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
 
   public ProcessInstanceQueryImpl processDefinitionKey(String processDefinitionKey) {
     if (processDefinitionKey == null) {
-      throw new ActivitiException("Process definition key is null");
+      throw new ActivitiIllegalArgumentException("Process definition key is null");
     }
     this.processDefinitionKey = processDefinitionKey;
     return this;

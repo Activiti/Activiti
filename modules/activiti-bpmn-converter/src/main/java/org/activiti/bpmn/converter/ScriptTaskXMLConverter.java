@@ -53,6 +53,10 @@ public class ScriptTaskXMLConverter extends BaseBpmnXMLConverter {
     if (StringUtils.isEmpty(scriptTask.getResultVariable())) {
       scriptTask.setResultVariable(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_SERVICE_RESULTVARIABLE));
     }
+    String autoStoreVariables = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_SCRIPT_AUTO_STORE_VARIABLE);
+    if (StringUtils.isNotEmpty(autoStoreVariables)) {
+      scriptTask.setAutoStoreVariables(Boolean.valueOf(autoStoreVariables));
+    }
     parseChildElements(getXMLElementName(), scriptTask, xtr);
     return scriptTask;
   }
@@ -62,6 +66,7 @@ public class ScriptTaskXMLConverter extends BaseBpmnXMLConverter {
     ScriptTask scriptTask = (ScriptTask) element;
     writeDefaultAttribute(ATTRIBUTE_TASK_SCRIPT_FORMAT, scriptTask.getScriptFormat(), xtw);
     writeQualifiedAttribute(ATTRIBUTE_TASK_SCRIPT_RESULTVARIABLE, scriptTask.getResultVariable(), xtw);
+    writeQualifiedAttribute(ATTRIBUTE_TASK_SCRIPT_AUTO_STORE_VARIABLE, String.valueOf(scriptTask.isAutoStoreVariables()), xtw);
   }
   
   @Override

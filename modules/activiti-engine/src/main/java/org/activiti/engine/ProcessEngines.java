@@ -84,7 +84,7 @@ public abstract class ProcessEngines {
       try {
         resources = classLoader.getResources("activiti.cfg.xml");
       } catch (IOException e) {
-        throw new ActivitiException("problem retrieving activiti.cfg.xml resources on the classpath: "+System.getProperty("java.class.path"), e);
+        throw new ActivitiIllegalArgumentException("problem retrieving activiti.cfg.xml resources on the classpath: "+System.getProperty("java.class.path"), e);
       }
       
       // Remove duplicated configuration URL's using set. Some classloaders may return identical URL's twice, causing duplicate startups
@@ -101,7 +101,7 @@ public abstract class ProcessEngines {
       try {
         resources = classLoader.getResources("activiti-context.xml");
       } catch (IOException e) {
-        throw new ActivitiException("problem retrieving activiti-context.xml resources on the classpath: "+System.getProperty("java.class.path"), e);
+        throw new ActivitiIllegalArgumentException("problem retrieving activiti-context.xml resources on the classpath: "+System.getProperty("java.class.path"), e);
       }
       while (resources.hasMoreElements()) {
         URL resource = resources.nextElement();
@@ -194,7 +194,7 @@ public abstract class ProcessEngines {
       return processEngineConfiguration.buildProcessEngine();
       
     } catch (IOException e) {
-      throw new ActivitiException("couldn't open resource stream: "+e.getMessage(), e);
+      throw new ActivitiIllegalArgumentException("couldn't open resource stream: "+e.getMessage(), e);
     } finally {
       IoUtil.closeSilently(inputStream);
     }
@@ -233,7 +233,7 @@ public abstract class ProcessEngines {
     try {
       return initProcessEnginFromResource(new URL(resourceUrl));
     } catch (MalformedURLException e) {
-      throw new ActivitiException("invalid url: "+resourceUrl, e);
+      throw new ActivitiIllegalArgumentException("invalid url: "+resourceUrl, e);
     }
   }
   

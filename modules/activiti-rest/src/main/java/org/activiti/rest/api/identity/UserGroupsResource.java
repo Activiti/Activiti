@@ -17,8 +17,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.IdentityService;
+import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.GroupQueryProperty;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.rest.api.ActivitiUtil;
@@ -47,7 +50,7 @@ public class UserGroupsResource extends SecuredResource {
 
     String userId = (String) getRequest().getAttributes().get("userId");
     if (userId == null) {
-      throw new ActivitiException("No userId provided");
+      throw new ActivitiIllegalArgumentException("No userId provided");
     }
 
     DataResponse dataResponse = new UserGroupsPaginateList().paginateList(
@@ -62,21 +65,21 @@ public class UserGroupsResource extends SecuredResource {
       return null;
     String userId = (String) getRequest().getAttributes().get("userId");
     if (userId == null) {
-      throw new ActivitiException("No userId provided");
+      throw new ActivitiIllegalArgumentException("No userId provided");
     }
     if (groupIds == null) {
-      throw new ActivitiException("No groupIds provided");
+      throw new ActivitiIllegalArgumentException("No groupIds provided");
     }
 
     IdentityService identityService = ActivitiUtil.getIdentityService();
     // Check if user exists
     if (identityService.createUserQuery().userId(userId).singleResult() == null)
-      throw new ActivitiException("The user '" + userId + " does not exist.");
+      throw new ActivitiObjectNotFoundException("The user '" + userId + " does not exist.", User.class);
 
     // Check first if all groups exist
     for (String groupId : groupIds) {
       if (identityService.createGroupQuery().groupId(groupId).singleResult() == null)
-        throw new ActivitiException("Group '" + groupId + "' does not exist.");
+        throw new ActivitiObjectNotFoundException("Group '" + groupId + "' does not exist.", Group.class);
     }
     for (String groupId : groupIds) {
       // Add only if not already member

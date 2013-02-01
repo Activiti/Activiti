@@ -14,9 +14,11 @@
 package org.activiti.engine.impl.rules;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
+import org.activiti.engine.repository.Deployment;
 import org.drools.KnowledgeBase;
 
 
@@ -38,7 +40,7 @@ public class RulesHelper {
         .getDeploymentEntityManager()
         .findDeploymentById(deploymentId);
       if (deployment==null) {
-        throw new ActivitiException("no deployment with id "+deploymentId);
+        throw new ActivitiObjectNotFoundException("no deployment with id "+deploymentId, Deployment.class);
       }
       Context
         .getProcessEngineConfiguration()

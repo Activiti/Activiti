@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
 import org.apache.commons.lang.StringUtils;
@@ -60,14 +61,27 @@ public class TaskOperationResource extends SecuredResource {
           }
         }
       } catch(Exception e) {
+        if(e instanceof ActivitiException) {
+          throw (ActivitiException) e;
+        }
         throw new ActivitiException("Did not receive the operation parameters", e);
       }
       
       variables.remove("taskId");
       ActivitiUtil.getFormService().submitTaskFormData(taskId, variables);
       
+    } else if ("assign".equals(operation)) {
+      String userId = null;
+      try {
+        String startParams = entity.getText();
+        JsonNode startJSON = new ObjectMapper().readTree(startParams);
+        userId = startJSON.path("userId").getTextValue();
+      } catch(Exception e) {
+        throw new ActivitiException("Did not assign the operation parameters", e);
+      }
+      ActivitiUtil.getTaskService().setAssignee(taskId, userId);
     } else {
-      throw new ActivitiException("'" + operation + "' is not a valid operation");
+      throw new ActivitiIllegalArgumentException("'" + operation + "' is not a valid operation");
     }
     
     ObjectNode successNode = new ObjectMapper().createObjectNode();

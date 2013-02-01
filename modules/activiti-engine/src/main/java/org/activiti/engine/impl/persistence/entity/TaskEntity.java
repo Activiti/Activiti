@@ -259,8 +259,6 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
       this.executionId = null;
       this.processInstanceId = null;
       this.processDefinitionId = null;
-      
-      throw new ActivitiException("huh?");
     }
   }
     
