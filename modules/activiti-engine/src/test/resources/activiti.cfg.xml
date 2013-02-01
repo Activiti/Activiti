@@ -13,7 +13,7 @@
     <property name="jdbcPassword" value="" />
 
     <!-- Database configurations -->
-    <property name="databaseSchemaUpdate" value="true" />
+    <property name="databaseSchemaUpdate" value="drop-create" />
 
     <!-- job executor configurations -->
     <property name="jobExecutorActivate" value="false" />

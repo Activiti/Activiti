@@ -26,4 +26,15 @@
             <column name="CLAIM_TIME_" type="TIMESTAMP" />
         </addColumn>
    </changeSet>
+   
+   <changeSet id="3 Activiti 5.12 Update ACT_HI_ACTINST assignee column size" author="fheremans">
+        <modifyDataType tableName="ACT_RU_TASK" columnName="OWNER_" newDataType="NVARCHAR(255)"/>
+   </changeSet>
+   
+   <changeSet id="4 Activiti 5.12 Update ACT_HI_ACTINST remove owner column DB2-onmy" author="fheremans">
+       <preConditions onFail="CONTINUE">
+           <dbms type="db2" />
+       </preConditions>
+       <dropColumn tableName="ACT_HI_ACTINST" columnName="OWNER_"/>
+   </changeSet>
 </databaseChangeLog>
