@@ -13,6 +13,7 @@
 package org.activiti.workflow.simple.definition;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -42,8 +43,31 @@ public abstract class AbstractStepDefinitionContainer<T> implements StepDefiniti
   public T addHumanStepForWorkflowInitiator(String name) {
     return (T) addHumanStep(name, null, true);
   }
+  
+  public T addHumanStepForGroup(String name, List<String> groups) {
+    HumanStepDefinition humanStepDefinition = createHumanStepDefinition(name);
+    humanStepDefinition.setCandidateGroups(groups);
+    return (T) this;
+  }
+  
+  public T addHumanStepForGroup(String name, String...groups) {
+    return addHumanStepForGroup(name, Arrays.asList(groups));
+  }
 
   protected T addHumanStep(String name, String assignee, boolean initiator) {
+    createHumanStepDefinition(name, assignee, initiator);
+    return (T) this;
+  }
+  
+  protected HumanStepDefinition createHumanStepDefinition(String name) {
+    return createHumanStepDefinition(name, null);
+  }
+  
+  protected HumanStepDefinition createHumanStepDefinition(String name, String assignee) {
+    return createHumanStepDefinition(name, assignee, false);
+  }
+  
+  protected HumanStepDefinition createHumanStepDefinition(String name, String assignee, boolean initiator) {
     HumanStepDefinition humanStepDefinition = new HumanStepDefinition();
 
     if (name != null) {
@@ -54,10 +78,10 @@ public abstract class AbstractStepDefinitionContainer<T> implements StepDefiniti
       humanStepDefinition.setAssignee(assignee);
     }
 
-    humanStepDefinition.setAssigneeInitiator(initiator);
+    humanStepDefinition.setAssigneeIsInitiator(initiator);
 
     addStep(humanStepDefinition);
-    return (T) this;
+    return humanStepDefinition;
   }
-
+  
 }

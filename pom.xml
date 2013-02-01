@@ -729,6 +729,12 @@
       </modules>	
     </profile>
     <profile>
+      <id>checksimpleworkflow</id>
+      <modules>
+        <module>modules/activiti-simple-workflow</module>
+      </modules>    
+    </profile>
+    <profile>
       <!-- this profile prevents that tests are executed while running the qa/build.xml test.demo.setup target -->
       <id>nodocs</id>
       <activation>

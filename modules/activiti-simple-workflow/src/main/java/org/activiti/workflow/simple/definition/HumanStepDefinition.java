@@ -22,17 +22,17 @@ import java.util.List;
 public class HumanStepDefinition extends AbstractNamedStepDefinition {
 
   protected String assignee;
-  protected boolean isAssigneeInitiator = false;
+  protected boolean assigneeIsInitiator = false;
   protected List<String> candidateUsers;
   protected List<String> candidateGroups;
   protected FormDefinition form;
 
   public boolean isAssigneeInitiator() {
-    return isAssigneeInitiator;
+    return assigneeIsInitiator;
   }
 
-  public void setAssigneeInitiator(boolean isAssigneeInitiator) {
-    this.isAssigneeInitiator = isAssigneeInitiator;
+  public void setAssigneeIsInitiator(boolean assigneeIsInitiator) {
+    this.assigneeIsInitiator = assigneeIsInitiator;
   }
 
   public String getAssignee() {

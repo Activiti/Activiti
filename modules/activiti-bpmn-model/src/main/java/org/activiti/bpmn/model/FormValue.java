@@ -18,7 +18,7 @@ package org.activiti.bpmn.model;
 public class FormValue extends BaseElement {
 
   protected String name;
-
+  
   public String getName() {
     return name;
   }

@@ -23,5 +23,7 @@ public interface DefaultFormPropertyTypes {
   
   String DATE = "date";
   
+  String LIST = "list";
+  
 }
 

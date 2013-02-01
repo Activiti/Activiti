@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 import org.activiti.engine.TaskService;
 import org.activiti.engine.repository.Deployment;
@@ -134,6 +135,53 @@ public class WorkflowConversionTest {
     assertEquals(2, taskService.createTaskQuery().taskAssignee("gonzo").count());
   }
   
+  @Test
+  public void testInitiatorOnHumanStep() {
+    WorkflowDefinition workflowDefinition = new WorkflowDefinition()
+      .name("testWorkflow")
+      .description("This is a test workflow")
+      .addHumanStep("step1", "kermit")
+      .addHumanStepForWorkflowInitiator("step2");
+    
+    activitiRule.getIdentityService().setAuthenticatedUserId("MrPink");
+    activitiRule.getRuntimeService().startProcessInstanceByKey(convertAndDeploy(workflowDefinition));
+    activitiRule.getIdentityService().setAuthenticatedUserId("null");
+    
+    // Complete first task
+    TaskService taskService = activitiRule.getTaskService();
+    assertEquals(1, taskService.createTaskQuery().taskAssignee("kermit").count());
+    taskService.complete(taskService.createTaskQuery().singleResult().getId());
+    
+    // Second task should be done by initiator of workflow
+    assertEquals(1, taskService.createTaskQuery().taskAssignee("MrPink").count());
+    assertEquals(0, taskService.createTaskQuery().taskAssignee("kermit").count());
+  }
+  
+  @Test
+  public void testGroupsForHumanStep() {
+    WorkflowDefinition workflowDefinition = new WorkflowDefinition()
+      .name("testWorkflow")
+      .description("This is a test workflow")
+      .addHumanStepForGroup("step1", "management", "sales")
+      .addHumanStepForGroup("step1", "sales");
+    activitiRule.getRuntimeService().startProcessInstanceByKey(convertAndDeploy(workflowDefinition));
+      
+    // Complete first task
+    TaskService taskService = activitiRule.getTaskService();
+    assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("management").count());
+    assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("sales").count());
+    assertEquals(1, taskService.createTaskQuery().taskCandidateGroupIn(Arrays.asList("management")).count());
+    assertEquals(1, taskService.createTaskQuery().taskCandidateGroupIn(Arrays.asList("management", "sales")).count());
+    taskService.complete(taskService.createTaskQuery().singleResult().getId());
+    
+    // Second task is only done by sales
+    assertEquals(0, taskService.createTaskQuery().taskCandidateGroup("management").count());
+    assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("sales").count());
+    assertEquals(0, taskService.createTaskQuery().taskCandidateGroupIn(Arrays.asList("management")).count());
+    assertEquals(1, taskService.createTaskQuery().taskCandidateGroupIn(Arrays.asList("sales")).count());
+    assertEquals(1, taskService.createTaskQuery().taskCandidateGroupIn(Arrays.asList("management", "sales")).count());
+  }
+  
   // Helper methods -----------------------------------------------------------------------------
   
   protected String convertAndDeploy(WorkflowDefinition workflowDefinition) {
@@ -145,7 +193,7 @@ public class WorkflowConversionTest {
     
 //    InputStream is = conversion.getWorkflowDiagramImage();
 //    try {
-//      flow(is, new FileOutputStream("temp" + UUID.randomUUID().toString() + ".png"), new byte[1024]);
+//      write(is, new FileOutputStream("temp" + UUID.randomUUID().toString() + ".png"), new byte[1024]);
 //    } catch (FileNotFoundException e) {
 //      e.printStackTrace();
 //    } catch (IOException e) {
@@ -157,13 +205,12 @@ public class WorkflowConversionTest {
     return getDeployedProcessKey();
   }
   
-  public static void flow( InputStream is, OutputStream os, byte[] buf ) 
-          throws IOException {
-          int numRead;
-          while ( (numRead = is.read(buf) ) >= 0) {
-              os.write(buf, 0, numRead);
-          }
-      } 
+  public static void write(InputStream is, OutputStream os, byte[] buf) throws IOException {
+    int numRead;
+    while ((numRead = is.read(buf)) >= 0) {
+      os.write(buf, 0, numRead);
+    }
+  }
   
   protected String getDeployedProcessKey() {
     ProcessDefinition processDefinition = activitiRule.getRepositoryService().createProcessDefinitionQuery().singleResult();

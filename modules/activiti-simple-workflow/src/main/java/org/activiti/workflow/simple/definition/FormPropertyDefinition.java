@@ -12,6 +12,8 @@
  */
 package org.activiti.workflow.simple.definition;
 
+import java.util.List;
+
 /**
  * Defines one property in a {@link FormDefinition} that is associated with a {@link HumanStepDefinition}.
  * 
@@ -24,6 +26,8 @@ public class FormPropertyDefinition {
   protected String type;
 
   protected boolean required;
+  
+  protected List<String> values; // used by eg. the enum type
 
   public String getPropertyName() {
     return propertyName;
@@ -47,6 +51,14 @@ public class FormPropertyDefinition {
 
   public void setRequired(boolean required) {
     this.required = required;
+  }
+
+  public List<String> getValues() {
+    return values;
+  }
+
+  public void setValues(List<String> values) {
+    this.values = values;
   }
 
 }

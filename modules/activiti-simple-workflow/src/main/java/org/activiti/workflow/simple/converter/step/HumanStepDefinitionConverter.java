@@ -12,13 +12,19 @@
  */
 package org.activiti.workflow.simple.converter.step;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.activiti.bpmn.model.FormProperty;
+import org.activiti.bpmn.model.FormValue;
+import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.definition.FormDefinition;
 import org.activiti.workflow.simple.definition.FormPropertyDefinition;
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
 import org.activiti.workflow.simple.definition.StepDefinition;
+import org.activiti.workflow.simple.util.BpmnModelUtil;
 
 /**
  * {@link StepDefinitionConverter} for converting a {@link HumanStepDefinition} to a {@link UserTask}.
@@ -30,7 +36,8 @@ public class HumanStepDefinitionConverter extends BaseStepDefinitionConverter<Hu
 
   private static final String USER_TASK_PREFIX = "userTask";
 
-  private static final String INITIATOR_ASSIGNEE_EXPRESSION = "${initiator.properties.userName}";
+  private static final String DEFAULT_INITIATOR_VARIABLE = "initiator";
+  private static final String DEFAULT_INITIATOR_ASSIGNEE_EXPRESSION = "${initiator}";
 
   public Class< ? extends StepDefinition> getHandledClass() {
     return HumanStepDefinition.class;
@@ -54,7 +61,12 @@ public class HumanStepDefinitionConverter extends BaseStepDefinitionConverter<Hu
 
     // Initiator
     if (humanStepDefinition.isAssigneeInitiator()) {
-      userTask.setAssignee(INITIATOR_ASSIGNEE_EXPRESSION);
+      userTask.setAssignee(getInitiatorExpression());
+
+      // Add the initiator variable declaration to the start event
+      for (StartEvent startEvent : BpmnModelUtil.findFlowElementsOfType(conversion.getProcess(), StartEvent.class)) {
+        startEvent.setInitiator(getInitiatorVariable());
+      }
       
     // Assignee  
     } else if (humanStepDefinition.getAssignee() != null) {
@@ -88,6 +100,20 @@ public class HumanStepDefinitionConverter extends BaseStepDefinitionConverter<Hu
           type = "long";
         } else if (DefaultFormPropertyTypes.DATE.equals(propertyDefinition.getType())) {
           type = "date";
+        } else if (DefaultFormPropertyTypes.LIST.equals(propertyDefinition.getType())) {
+          
+          type = "enum";
+          
+          if (!propertyDefinition.getValues().isEmpty()) {
+            List<FormValue> formValues = new ArrayList<FormValue>(propertyDefinition.getValues().size());
+            for (String formValueString : propertyDefinition.getValues()) {
+              FormValue formValue = new FormValue();
+              // We're using same value for id and name for the moment
+              formValue.setId(formValueString);
+              formValue.setName(formValueString);
+              formValues.add(formValue);
+            }
+          }
         }
         formProperty.setType(type);
         
@@ -97,6 +123,16 @@ public class HumanStepDefinitionConverter extends BaseStepDefinitionConverter<Hu
     }
 
     return userTask;
+  }
+  
+  //Extracted in a method such that subclasses can override if needed
+  protected String getInitiatorVariable() {
+    return DEFAULT_INITIATOR_VARIABLE;
+  }
+  
+  // Extracted in a method such that subclasses can override if needed
+  protected String getInitiatorExpression() {
+    return DEFAULT_INITIATOR_ASSIGNEE_EXPRESSION;
   }
   
 }

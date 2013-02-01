@@ -48,12 +48,21 @@ public class JsonConverter {
   public static final String HUMAN_STEP_NAME = "name";
   public static final String HUMAN_STEP_DESCRIPTION = "description";
   public static final String HUMAN_STEP_ASSIGNEE = "assignee";
+  public static final String HUMAN_STEP_ASSIGNEE_TYPE = "type";
+  public static final String HUMAN_STEP_ASSIGNEE_TYPE_USER = "user";
+  public static final String HUMAN_STEP_ASSIGNEE_USER = "user";
+  public static final String HUMAN_STEP_ASSIGNEE_TYPE_USERS = "users";
+  public static final String HUMAN_STEP_ASSIGNEE_USERS = "users";
+  public static final String HUMAN_STEP_ASSIGNEE_TYPE_GROUPS = "groups";
+  public static final String HUMAN_STEP_ASSIGNEE_GROUPS = "groups";
+  public static final String HUMAN_STEP_ASSIGNEE_TYPE_INITIATOR = "initiator";
   public static final String HUMAN_STEP_GROUPS = "groups";
   
   public static final String FORM = "form";
   public static final String FORM_PROPERTY_NAME = "name";
   public static final String FORM_PROPERTY_TYPE = "type";
   public static final String FORM_PROPERTY_MANDATORY = "mandatory";
+  public static final String FORM_PROPERTY_VALUES = "values";
   
   public WorkflowDefinition convertFromJson(JsonNode json) {
     WorkflowDefinition workflowDefinition = new WorkflowDefinition();
@@ -119,21 +128,30 @@ public class JsonConverter {
       humanStepDefinition.setDescription(description);
     }
     
-    String assignee = getStringFieldValue(humanStepJson, HUMAN_STEP_ASSIGNEE, false);
-    if (assignee != null) {
-      humanStepDefinition.setAssignee(assignee);
-    }
-    
-    // Candidate groups
-    ArrayNode groupArray = getArray(humanStepJson, HUMAN_STEP_GROUPS, false);
-    if (groupArray != null && groupArray.size() > 0) {
-      List<String> groups = new ArrayList<String>();
-      Iterator<JsonNode> groupIterator = groupArray.iterator();
-      while (groupIterator.hasNext()) {
-        JsonNode groupNode = groupIterator.next();
-        groups.add(groupNode.getTextValue());
+    JsonNode assigneeNode = getObject(humanStepJson, HUMAN_STEP_ASSIGNEE, false);
+    if (assigneeNode != null) {
+      
+      String type = getStringFieldValue(assigneeNode, HUMAN_STEP_ASSIGNEE_TYPE, true);
+      if (type.equals(HUMAN_STEP_ASSIGNEE_TYPE_USER)) {
+        humanStepDefinition.setAssignee(getStringFieldValue(assigneeNode, HUMAN_STEP_ASSIGNEE_USER, true));
+      } else if (type.equals(HUMAN_STEP_ASSIGNEE_TYPE_USERS)) {
+        ArrayNode userArray = getArray(assigneeNode, HUMAN_STEP_ASSIGNEE_USERS, true);
+        List<String> users = new ArrayList<String>();
+        for (JsonNode userNode : userArray) {
+          users.add(userNode.getTextValue());
+        }
+        humanStepDefinition.setCandidateUsers(users);
+      } else if (type.equals(HUMAN_STEP_ASSIGNEE_TYPE_GROUPS)) {
+        ArrayNode groupArray = getArray(assigneeNode, HUMAN_STEP_ASSIGNEE_GROUPS, true);
+        List<String> groups = new ArrayList<String>();
+        for (JsonNode groupNode : groupArray) {
+          groups.add(groupNode.getTextValue());
+        }
+        humanStepDefinition.setCandidateGroups(groups);
+      } else if (type.equals(HUMAN_STEP_ASSIGNEE_TYPE_INITIATOR)) {
+        humanStepDefinition.setAssigneeIsInitiator(true);
       }
-      humanStepDefinition.setCandidateGroups(groups);
+      
     }
     
     // Form
@@ -147,6 +165,7 @@ public class JsonConverter {
         propertyDefinition.setPropertyName(getStringFieldValue(formPropertyJsonNode, FORM_PROPERTY_NAME, true));
         propertyDefinition.setType(getStringFieldValue(formPropertyJsonNode, FORM_PROPERTY_TYPE, true));
         propertyDefinition.setRequired(getBooleanValue(formPropertyJsonNode, FORM_PROPERTY_MANDATORY, false, false));
+        propertyDefinition.setValues(getStringList(formPropertyJsonNode, FORM_PROPERTY_VALUES, false));
         formDefinition.addFormProperty(propertyDefinition);
       }
       
@@ -210,6 +229,18 @@ public class JsonConverter {
         return null;
       }
     }
+  }
+  
+  protected List<String> getStringList(JsonNode json, String arrayName, boolean mandatory) {
+    ArrayNode arrayNode = getArray(json, arrayName, mandatory);
+    if (arrayNode != null) {
+      List<String> list = new ArrayList<String>(arrayNode.size());
+      for (JsonNode jsonNode : arrayNode) {
+        list.add(jsonNode.getTextValue());
+      }
+      return list;
+    }
+    return null;
   }
   
   // Conversion to JSON  ------------------------------------------------------------------------
