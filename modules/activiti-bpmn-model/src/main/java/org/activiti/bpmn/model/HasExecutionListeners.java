@@ -10,12 +10,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.bpmn.model;
+
+import java.util.List;
 
 
 /**
- * @author Tijs Rademakers
+ * Interface indicating an element has execution-listeners
+ * 
+ * @author Frederik Heremans
  */
-public class ThrowEvent extends Event {
-
+public interface HasExecutionListeners {
+  
+  List<ActivitiListener> getExecutionListeners();
+  
+  void setExecutionListeners(List<ActivitiListener> executionListeners);
 }

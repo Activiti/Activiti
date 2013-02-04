@@ -8,33 +8,32 @@ import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.BaseElement;
-import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.HasExecutionListeners;
 import org.activiti.bpmn.model.ImplementationType;
-import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.UserTask;
 import org.apache.commons.lang.StringUtils;
 
 public class ActivitiListenerExport implements BpmnXMLConstants {
 
   public static boolean writeListeners(BaseElement element, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
-    List<ActivitiListener> listenerList = null;
-    String xmlElementName = ELEMENT_EXECUTION_LISTENER;
-    if (element instanceof UserTask) {
-      listenerList = ((UserTask) element).getTaskListeners();
-      xmlElementName = ELEMENT_TASK_LISTENER;
-    } else if (element instanceof FlowElement) {
-      listenerList = ((FlowElement) element).getExecutionListeners();
-    } else if (element instanceof Process) {
-      listenerList = ((Process) element).getExecutionListeners();
+    if(element instanceof HasExecutionListeners) {
+      didWriteExtensionStartElement =  writeListeners(ELEMENT_EXECUTION_LISTENER, ((HasExecutionListeners) element).getExecutionListeners(), didWriteExtensionStartElement, xtw);
     }
-    
+    // In case of a usertaks, also add task-listeners
+    if(element instanceof UserTask) {
+      didWriteExtensionStartElement =  writeListeners(ELEMENT_TASK_LISTENER, ((UserTask) element).getTaskListeners(), didWriteExtensionStartElement, xtw);
+    }
+    return didWriteExtensionStartElement;
+  }
+  
+  private static boolean writeListeners(String xmlElementName, List<ActivitiListener> listenerList, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
     if (listenerList != null) {
-    
+      
       for (ActivitiListener listener : listenerList) {
         
         if (StringUtils.isNotEmpty(listener.getEvent())) {
           
-          if (didWriteExtensionStartElement == false) { 
+          if (!didWriteExtensionStartElement) { 
             xtw.writeStartElement(ELEMENT_EXTENSIONS);
             didWriteExtensionStartElement = true;
           }

@@ -16,8 +16,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.HasExecutionListeners;
 
 /**
  * @author Tijs Rademakers
@@ -32,10 +31,8 @@ public class ExecutionListenerParser extends ActivitiListenerParser {
     
     super.parseChildElement(xtr, parentElement, model);
     
-    if (parentElement instanceof FlowElement) {
-      ((FlowElement) parentElement).getExecutionListeners().add(listener);
-    } else if (parentElement instanceof Process){
-      ((Process) parentElement).getExecutionListeners().add(listener);
+    if (parentElement instanceof HasExecutionListeners) {
+      ((HasExecutionListeners) parentElement).getExecutionListeners().add(listener);
     }
   }
 }
