@@ -31,6 +31,8 @@ import org.mule.api.client.LocalMuleClient;
  */
 public class MuleSendActivitiBehavior extends AbstractBpmnActivityBehavior {
 
+  private static final long serialVersionUID = 1L;
+
   private MuleContext muleContext;
 
   private MessageExchangePattern mep = MessageExchangePattern.REQUEST_RESPONSE;

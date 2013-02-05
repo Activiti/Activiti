@@ -17,11 +17,11 @@
         <parallelGateway id="parallelSplit"/>
         <sequenceFlow sourceRef="parallelSplit" targetRef="serviceTaskAsync1"/>
         <sequenceFlow sourceRef="parallelSplit" targetRef="serviceTaskAsync2"/>
-        <serviceTask id="serviceTaskAsync1" activiti:delegateExpression="${camel}"/>
+        <serviceTask id="serviceTaskAsync1" activiti:type="camel"/>
         <sequenceFlow sourceRef="serviceTaskAsync1" targetRef="receive1"/>
         <receiveTask id="receive1" name="Wait State" />
         <sequenceFlow sourceRef="receive1" targetRef="parallelJoin"/>
-        <serviceTask id="serviceTaskAsync2" activiti:delegateExpression="${camel}"/>
+        <serviceTask id="serviceTaskAsync2" activiti:type="camel"/>
         <sequenceFlow sourceRef="serviceTaskAsync2" targetRef="receive2"/>
         <receiveTask id="receive2" name="Wait State" />
         <sequenceFlow sourceRef="receive2" targetRef="parallelJoin"/>

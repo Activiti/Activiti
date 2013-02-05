@@ -1594,6 +1594,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     super.setHistory(history);
     return this;
   }
+  
+  
 
   @Override
   public ProcessEngineConfigurationImpl setIdBlockSize(int idBlockSize) {
@@ -1737,8 +1739,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public ProcessEngineConfigurationImpl setJdbcPingConnectionNotUsedFor(int jdbcPingNotUsedFor) {
     this.jdbcPingConnectionNotUsedFor = jdbcPingNotUsedFor;
     return this;
-  }    
+  }
   
+  @Override
+  public ProcessEngineConfigurationImpl setDefaultCamelContext(String defaultCamelContext) {
+    super.defaultCamelContext = defaultCamelContext;
+    return this;
+  }
+
   public boolean isDbIdentityUsed() {
     return isDbIdentityUsed;
   }

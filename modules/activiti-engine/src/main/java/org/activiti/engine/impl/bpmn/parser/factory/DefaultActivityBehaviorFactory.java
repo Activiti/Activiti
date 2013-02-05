@@ -185,6 +185,30 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     }
   }
   
+  // We do not want a hard dependency on Camel, hence we return ActivityBehavior and instantiate 
+  // the delegate instance using a string instead of the Class itself.
+  public ActivityBehavior createCamelActivityBehavior(ServiceTask serviceTask, BpmnModel bpmnModel) {
+    return createCamelActivityBehavior(serviceTask, serviceTask.getFieldExtensions(), bpmnModel);
+  }
+ 
+  public ActivityBehavior createCamelActivityBehavior(SendTask sendTask, BpmnModel bpmnModel) {
+    return createCamelActivityBehavior(sendTask, sendTask.getFieldExtensions(), bpmnModel);
+  }
+ 
+  protected ActivityBehavior createCamelActivityBehavior(Task task, List<FieldExtension> fieldExtensions, BpmnModel bpmnModel) {
+    try {
+     
+      Class< ? > theClass = Class.forName("org.activiti.camel.CamelBehavior");
+      List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(fieldExtensions);
+      return (ActivityBehavior) ClassDelegate.instantiateDelegate(theClass, fieldDeclarations);
+     
+    } catch (ClassNotFoundException e) {
+     
+      bpmnModel.addProblem("Could not find org.activiti.camel.CamelBehavior: " + e.getMessage(), task);
+      return null;
+    }
+  }
+  
   public ShellActivityBehavior createShellActivityBehavior(ServiceTask serviceTask) {
     List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(serviceTask.getFieldExtensions());
     return (ShellActivityBehavior) ClassDelegate.instantiateDelegate(ShellActivityBehavior.class, fieldDeclarations);

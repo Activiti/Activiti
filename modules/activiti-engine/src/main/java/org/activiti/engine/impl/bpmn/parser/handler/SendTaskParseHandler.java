@@ -49,6 +49,8 @@ public class SendTaskParseHandler extends AbstractExternalInvocationBpmnParseHan
         activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createMailActivityBehavior(sendTask));
       } else if (sendTask.getType().equalsIgnoreCase("mule")) {
         activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createMuleActivityBehavior(sendTask, bpmnParse.getBpmnModel()));
+      } else if (sendTask.getType().equalsIgnoreCase("camel")) {
+        activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createCamelActivityBehavior(sendTask, bpmnParse.getBpmnModel()));
       } else {
         bpmnParse.getBpmnModel().addProblem("Invalid usage of type attribute: '" + sendTask.getType() + "'.", sendTask);
       }

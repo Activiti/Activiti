@@ -125,6 +125,8 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   protected boolean jpaHandleTransaction;
   protected boolean jpaCloseEntityManager;
   
+  protected String defaultCamelContext = "camelContext";
+  
   protected String activityFontName = "Arial";
   
   protected ClassLoader classLoader;
@@ -502,6 +504,15 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
 
   public void setDataSourceJndiName(String dataSourceJndiName) {
     this.dataSourceJndiName = dataSourceJndiName;
+  }
+
+  public String getDefaultCamelContext() {
+    return defaultCamelContext;
+  }
+
+  public ProcessEngineConfiguration setDefaultCamelContext(String defaultCamelContext) {
+    this.defaultCamelContext = defaultCamelContext;
+    return this;
   }
 
   public String getActivityFontName() {

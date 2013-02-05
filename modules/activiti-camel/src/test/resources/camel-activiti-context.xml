@@ -36,28 +36,12 @@
 
     <bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService"/>
 
-    <camelContext id="camelProcess" xmlns="http://camel.apache.org/schema/spring">
+    <camelContext id="camelContext" xmlns="http://camel.apache.org/schema/spring">
         <packageScan>
             <package>org.activiti.camel.route</package>
         </packageScan>
     </camelContext>
 
-
-    <bean id="camel" class="org.activiti.camel.CamelBehaviour">
-        <constructor-arg index="0">
-            <list>
-                <bean class="org.activiti.camel.SimpleContextProvider">
-                    <constructor-arg index="0" value="camelProcess"/>
-                    <constructor-arg index="1" ref="camelProcess"/>
-                </bean>
-                <bean class="org.activiti.camel.SimpleContextProvider">
-                    <constructor-arg index="0" value="asyncCamelProcess"/>
-                    <constructor-arg index="1" ref="camelProcess"/>
-                </bean>
-            </list>
-        </constructor-arg>
-    </bean>
-    
     <bean id="sleepBean" class="org.activiti.camel.SleepBean"/>
 
 </beans>
