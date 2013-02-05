@@ -1,4 +1,4 @@
-package org.activiti.engine.impl.db;
+package liquibase.ext;
 
 import liquibase.database.structure.type.BigIntType;
 import liquibase.database.structure.type.BooleanType;

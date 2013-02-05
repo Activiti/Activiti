@@ -1,16 +1,17 @@
-package org.activiti.engine.impl.db;
+package liquibase.ext;
 
 import liquibase.database.structure.type.DataType;
+import liquibase.database.structure.type.DateTimeType;
 import liquibase.database.structure.type.IntType;
 import liquibase.database.structure.type.NVarcharType;
 import liquibase.database.structure.type.VarcharType;
-import liquibase.database.typeconversion.core.DB2TypeConverter;
+import liquibase.database.typeconversion.core.PostgresTypeConverter;
 
-public class ActivitiDb2TypeConverter extends DB2TypeConverter {
+public class ActivitiPostgresTypeConverter extends PostgresTypeConverter {
   
   @Override
   public int getPriority() {
-    return PRIORITY_DATABASE + 1;
+    return super.getPriority() + 1;
   }
  
   @Override
@@ -30,5 +31,10 @@ public class ActivitiDb2TypeConverter extends DB2TypeConverter {
   @Override
   public IntType getIntType() {
     return new IntType("integer");
+  }
+  
+  @Override
+  public DateTimeType getDateTimeType() {
+    return new DateTimeType("TIMESTAMP");
   }
 }

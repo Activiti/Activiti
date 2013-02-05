@@ -43,7 +43,7 @@ public class CamelBehavior extends BpmnActivityBehavior implements ActivityBehav
     }
     
     SpringProcessEngineConfiguration springConfiguration = (SpringProcessEngineConfiguration) engineConfiguration;
-    String camelContextValue = this.getStringFromField(this.camelContext, execution);
+    String camelContextValue = getStringFromField(camelContext, execution);
     if (StringUtils.isEmpty(camelContextValue)) {
       camelContextValue = springConfiguration.getDefaultCamelContext();
     }
