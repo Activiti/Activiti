@@ -238,6 +238,7 @@ public interface BpmnXMLConstants {
   public static final String ELEMENT_DI_BOUNDS = "Bounds";
   public static final String ELEMENT_DI_WAYPOINT = "waypoint";
   public static final String ATTRIBUTE_DI_BPMNELEMENT = "bpmnElement";
+  public static final String ATTRIBUTE_DI_IS_EXPANDED = "isExpanded";
   public static final String ATTRIBUTE_DI_WIDTH = "width";
   public static final String ATTRIBUTE_DI_HEIGHT = "height";
   public static final String ATTRIBUTE_DI_X = "x";

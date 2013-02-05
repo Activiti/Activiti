@@ -1,3 +1,15 @@
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.activiti.bpmn.converter.export;
 
 import java.util.List;
@@ -8,6 +20,7 @@ import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.GraphicInfo;
+import org.activiti.bpmn.model.SubProcess;
 import org.apache.commons.lang.StringUtils;
 
 public class BPMNDIExport implements BpmnXMLConstants {
@@ -39,6 +52,11 @@ public class BPMNDIExport implements BpmnXMLConstants {
         xtw.writeAttribute(ATTRIBUTE_ID, "BPMNShape_" + elementId);
         
         GraphicInfo graphicInfo = model.getGraphicInfo(elementId);
+        FlowElement flowElement = model.getFlowElement(elementId);
+        if (flowElement != null && flowElement instanceof SubProcess) {
+          xtw.writeAttribute(ATTRIBUTE_DI_IS_EXPANDED, String.valueOf(graphicInfo.isExpanded()));
+        }
+        
         xtw.writeStartElement(OMGDC_PREFIX, ELEMENT_DI_BOUNDS, OMGDC_NAMESPACE);
         xtw.writeAttribute(ATTRIBUTE_DI_HEIGHT, "" + graphicInfo.getHeight());
         xtw.writeAttribute(ATTRIBUTE_DI_WIDTH, "" + graphicInfo.getWidth());
