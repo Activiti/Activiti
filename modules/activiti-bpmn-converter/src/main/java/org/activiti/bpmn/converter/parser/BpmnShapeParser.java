@@ -35,14 +35,13 @@ public class BpmnShapeParser implements BpmnXMLConstants {
 			if (xtr.isStartElement() && ELEMENT_DI_BOUNDS.equalsIgnoreCase(xtr.getLocalName())) {
 				graphicInfo.setX(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_X)).intValue());
 				graphicInfo.setY(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_Y)).intValue());
-				/*FlowElement flowElement = model.getFlowElement(id);
-				if (flowElement instanceof Event) {
-				  graphicInfo.width = 30;
-				  graphicInfo.height = 30;
-				} else {*/
-				  graphicInfo.setWidth(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_WIDTH)).intValue());
-				  graphicInfo.setHeight(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_HEIGHT)).intValue());
-				//}
+				graphicInfo.setWidth(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_WIDTH)).intValue());
+				graphicInfo.setHeight(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_HEIGHT)).intValue());
+				
+				String strIsExpanded = xtr.getAttributeValue(null, ATTRIBUTE_DI_IS_EXPANDED);
+				if ("true".equalsIgnoreCase(strIsExpanded)) {
+				  graphicInfo.setExpanded(true);
+				}
 				
 				model.addGraphicInfo(id, graphicInfo);
 				break;

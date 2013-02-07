@@ -957,7 +957,18 @@
             <para>
               <emphasis role="bold">Request:</emphasis>
               <literal>PUT /task/{taskId}/[claim|unclaim|complete|assign]</literal>
-              <programlisting>{}</programlisting>
+              Claim and unclaim don't need a JSON body, but for complete you can provide a number of variables and for assign a userId field is required.
+              An example body for the complete operation:
+              <programlisting>
+{
+      "variableName1": "variableValue1",
+      "variableName2": "variableValue2"
+}</programlisting>
+              An example body for the assign operation:
+              <programlisting>
+{
+      "userId": "newAssignee"
+}</programlisting>
             </para>
           </listitem>
           <listitem>

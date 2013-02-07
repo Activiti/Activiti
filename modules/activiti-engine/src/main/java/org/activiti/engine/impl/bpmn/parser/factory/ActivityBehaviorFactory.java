@@ -136,6 +136,10 @@ public interface ActivityBehaviorFactory {
   public abstract ActivityBehavior createMuleActivityBehavior(ServiceTask serviceTask, BpmnModel bpmnModel);
 
   public abstract ActivityBehavior createMuleActivityBehavior(SendTask sendTask, BpmnModel bpmnModel);
+  
+  public abstract ActivityBehavior createCamelActivityBehavior(ServiceTask serviceTask, BpmnModel bpmnModel);
+ 
+  public abstract ActivityBehavior createCamelActivityBehavior(SendTask sendTask, BpmnModel bpmnModel);
 
   public abstract ShellActivityBehavior createShellActivityBehavior(ServiceTask serviceTask);
 

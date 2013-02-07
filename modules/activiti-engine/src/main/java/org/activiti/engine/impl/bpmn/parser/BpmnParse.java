@@ -101,7 +101,7 @@ public class BpmnParse implements BpmnXMLConstants {
   protected BpmnModel bpmnModel;
   
   protected String targetNamespace;
-
+  
   /** The deployment to which the parsed process definitions will be added. */
   protected DeploymentEntity deployment;
 

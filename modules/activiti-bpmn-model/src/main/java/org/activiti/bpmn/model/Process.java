@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * @author Tijs Rademakers
  */
-public class Process extends FlowElementsContainer {
+public class Process extends FlowElementsContainer implements HasExecutionListeners {
 
   protected String name;
   protected boolean executable = true;

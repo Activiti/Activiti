@@ -36,7 +36,7 @@
 
     <bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService"/>
 
-    <camelContext id="camelContext" xmlns="http://camel.apache.org/schema/spring">
+    <camelContext id="customCamelContext" xmlns="http://camel.apache.org/schema/spring">
         <packageScan>
             <package>org.activiti.camel.route</package>
         </packageScan>

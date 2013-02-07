@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * @author Tijs Rademakers
  */
-public class FlowElement extends BaseElement {
+public class FlowElement extends BaseElement implements HasExecutionListeners {
 
   protected String name;
   protected String documentation;

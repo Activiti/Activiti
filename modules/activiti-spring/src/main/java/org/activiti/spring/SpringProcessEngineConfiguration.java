@@ -31,6 +31,9 @@ import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.LogInterceptor;
 import org.activiti.engine.impl.variable.EntityManagerSession;
 import org.activiti.engine.repository.DeploymentBuilder;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ContextResource;
 import org.springframework.core.io.Resource;
@@ -44,12 +47,12 @@ import org.springframework.transaction.support.TransactionTemplate;
  * @author David Syer
  * @author Joram Barrez
  */
-public class SpringProcessEngineConfiguration extends ProcessEngineConfigurationImpl {
+public class SpringProcessEngineConfiguration extends ProcessEngineConfigurationImpl implements ApplicationContextAware {
 
   protected PlatformTransactionManager transactionManager;
   protected String deploymentName = "SpringAutoDeployment";
   protected Resource[] deploymentResources = new Resource[0];
-  
+  protected ApplicationContext applicationContext;
   
   public SpringProcessEngineConfiguration() {
     transactionsExternallyManaged = true;
@@ -178,5 +181,14 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
   
   public void setDeploymentResources(Resource[] deploymentResources) {
     this.deploymentResources = deploymentResources;
+  }
+
+  public ApplicationContext getApplicationContext() {
+    return applicationContext;
+  }
+
+  @Override
+  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    this.applicationContext = applicationContext;
   }
 }

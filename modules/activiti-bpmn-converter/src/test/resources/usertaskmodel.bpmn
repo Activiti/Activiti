@@ -12,6 +12,8 @@
         <activiti:taskListener event="create" class="org.test.TestClass"></activiti:taskListener>
         <activiti:taskListener event="assignment" expression="${someExpression}"></activiti:taskListener>
         <activiti:taskListener event="complete" delegateExpression="${someDelegateExpression}"></activiti:taskListener>
+      	<activiti:executionListener expression="${someExpression}" event="end" />
+      	
       </extensionElements>
     </userTask>
   </process>

@@ -119,5 +119,4 @@ public class BpmnParser extends Parser {
   public void setBpmnParserHandlers(BpmnParseHandlers bpmnParserHandlers) {
     this.bpmnParserHandlers = bpmnParserHandlers;
   }
-  
 }

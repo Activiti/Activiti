@@ -50,6 +50,9 @@ public class ServiceTaskParseHandler extends AbstractExternalInvocationBpmnParse
         } else if (serviceTask.getType().equalsIgnoreCase("mule")) {
           activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createMuleActivityBehavior(serviceTask, bpmnParse.getBpmnModel()));
           
+        } else if (serviceTask.getType().equalsIgnoreCase("camel")) {
+          activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createCamelActivityBehavior(serviceTask, bpmnParse.getBpmnModel()));
+          
         } else if (serviceTask.getType().equalsIgnoreCase("shell")) {
           validateFieldDeclarationsForShell(bpmnParse, serviceTask, serviceTask.getFieldExtensions());
           activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createShellActivityBehavior(serviceTask));

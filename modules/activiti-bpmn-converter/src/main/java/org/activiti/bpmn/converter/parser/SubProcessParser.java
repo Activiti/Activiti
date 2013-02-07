@@ -58,8 +58,8 @@ public class SubProcessParser implements BpmnXMLConstants {
 		
 		subProcess.setAsynchronous(async);
 		subProcess.setNotExclusive(notExclusive);
-    if(StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_ACTIVITY_DEFAULT))) {
-      subProcess.setDefaultFlow(xtr.getAttributeValue(null, ATTRIBUTE_ACTIVITY_DEFAULT));
+    if(StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_DEFAULT))) {
+      subProcess.setDefaultFlow(xtr.getAttributeValue(null, ATTRIBUTE_DEFAULT));
     }
     
     if(activeSubProcessList.size() > 1) {

@@ -84,5 +84,11 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     assertTrue(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(listener.getImplementationType()));
     assertEquals("${someDelegateExpression}", listener.getImplementation());
     assertEquals("complete", listener.getEvent());
+    
+    List<ActivitiListener> executionListeners = userTask.getExecutionListeners();
+    assertEquals(1, executionListeners.size());
+    ActivitiListener executionListener = executionListeners.get(0);
+    assertEquals("end", executionListener.getEvent());
+    
   }
 }

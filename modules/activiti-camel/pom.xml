@@ -4,7 +4,6 @@
   <modelVersion>4.0.0</modelVersion>
 
   <name>Activiti - Camel</name>
-  <groupId>org.activiti</groupId>
   <artifactId>activiti-camel</artifactId>
   <packaging>bundle</packaging>
 
@@ -20,7 +19,6 @@
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-spring</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.camel</groupId>
@@ -30,7 +28,20 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
       <scope>provided</scope>
-	</dependency>      
+	 </dependency>
+   <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

@@ -38,6 +38,7 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_ID = "id";
   public static final String ATTRIBUTE_NAME = "name";
   public static final String ATTRIBUTE_TYPE = "type";
+  public static final String ATTRIBUTE_DEFAULT = "default";
   public static final String ATTRIBUTE_ITEM_REF = "itemRef";
   public static final String ELEMENT_DEFINITIONS = "definitions";
   public static final String ELEMENT_DOCUMENTATION = "documentation";
@@ -75,7 +76,6 @@ public interface BpmnXMLConstants {
   
   public static final String ATTRIBUTE_ACTIVITY_ASYNCHRONOUS = "async";
   public static final String ATTRIBUTE_ACTIVITY_EXCLUSIVE = "exclusive";
-  public static final String ATTRIBUTE_ACTIVITY_DEFAULT = "default";
   public static final String ATTRIBUTE_ACTIVITY_ISFORCOMPENSATION = "isForCompensation";
   
   public static final String ELEMENT_IMPORT = "import";
@@ -238,6 +238,7 @@ public interface BpmnXMLConstants {
   public static final String ELEMENT_DI_BOUNDS = "Bounds";
   public static final String ELEMENT_DI_WAYPOINT = "waypoint";
   public static final String ATTRIBUTE_DI_BPMNELEMENT = "bpmnElement";
+  public static final String ATTRIBUTE_DI_IS_EXPANDED = "isExpanded";
   public static final String ATTRIBUTE_DI_WIDTH = "width";
   public static final String ATTRIBUTE_DI_HEIGHT = "height";
   public static final String ATTRIBUTE_DI_X = "x";
