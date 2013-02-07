@@ -111,7 +111,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     String elementName = xtr.getAttributeValue(null, ATTRIBUTE_NAME);
     boolean async = parseAsync(xtr);
     boolean notExclusive = parseNotExclusive(xtr);
-    String defaultFlow = xtr.getAttributeValue(null, "default");
+    String defaultFlow = xtr.getAttributeValue(null, ATTRIBUTE_DEFAULT);
     boolean isForCompensation = parseForCompensation(xtr);
     
     BaseElement parsedElement = convertXMLToElement(xtr);
@@ -172,20 +172,25 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     }
     
     if (baseElement instanceof Activity) {
-      Activity activity = (Activity) baseElement;
+      final Activity activity = (Activity) baseElement;
       if (activity.isAsynchronous()) {
         writeQualifiedAttribute(ATTRIBUTE_ACTIVITY_ASYNCHRONOUS, ATTRIBUTE_VALUE_TRUE, xtw);
       }
       if (activity.isNotExclusive()) {
         writeQualifiedAttribute(ATTRIBUTE_ACTIVITY_EXCLUSIVE, ATTRIBUTE_VALUE_FALSE, xtw);
       }
-      writeDefaultAttribute(ATTRIBUTE_ACTIVITY_DEFAULT, activity.getDefaultFlow(), xtw);
+      writeDefaultAttribute(ATTRIBUTE_DEFAULT, activity.getDefaultFlow(), xtw);
+    }
+    
+    if (baseElement instanceof Gateway) {
+      final Gateway gateway = (Gateway) baseElement;
+      writeDefaultAttribute(ATTRIBUTE_DEFAULT, gateway.getDefaultFlow(), xtw);
     }
     
     writeAdditionalAttributes(baseElement, xtw);
     
     if (baseElement instanceof FlowElement) {
-      FlowElement flowElement = (FlowElement) baseElement;
+      final FlowElement flowElement = (FlowElement) baseElement;
       if (StringUtils.isNotEmpty(flowElement.getDocumentation())) {
   
         xtw.writeStartElement(ELEMENT_DOCUMENTATION);
@@ -202,7 +207,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     writeAdditionalChildElements(baseElement, xtw);
     
     if (baseElement instanceof Activity) {
-      Activity activity = (Activity) baseElement;
+      final Activity activity = (Activity) baseElement;
       MultiInstanceExport.writeMultiInstance(activity, xtw);
     }
     
