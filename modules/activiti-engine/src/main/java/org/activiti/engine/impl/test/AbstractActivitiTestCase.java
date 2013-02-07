@@ -49,9 +49,7 @@ import org.junit.Assert;
 public abstract class AbstractActivitiTestCase extends PvmTestCase {
 
   private static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Arrays.asList(
-    "ACT_GE_PROPERTY",
-    "ACT_DATABASECHANGELOGLOCK",
-    "ACT_DATABASECHANGELOG"
+    "ACT_GE_PROPERTY"
   );
 
   protected ProcessEngine processEngine; 

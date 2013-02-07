@@ -1,261 +1,311 @@
-create table ACT_GE_PROPERTY (
-    NAME_ nvarchar(64),
-    VALUE_ nvarchar(300),
-    REV_ int,
-    primary key (NAME_)
-);
+-- *********************************************************************
+-- Update Database Script
+-- *********************************************************************
+-- Change Log: liquibase/activiti-engine-master.xml
+-- Ran at: 2/7/13 4:45 PM
+-- Against: alfresco@jdbc:sqlserver://172.30.40.192:1433;authenticationScheme=nativeAuthentication;xopenStates=false;sendTimeAsDatetime=true;trustServerCertificate=false;sendStringParametersAsUnicode=true;selectMethod=direct;responseBuffering=adaptive;packetSize=8000;multiSubnetFailover=false;loginTimeout=15;lockTimeout=-1;lastUpdateCount=true;encrypt=false;disableStatementPooling=true;databaseName=activiti;applicationName=Microsoft JDBC Driver for SQL Server;applicationIntent=readwrite;
+-- Liquibase version: 2.0.3
+-- *********************************************************************
 
-insert into ACT_GE_PROPERTY
-values ('schema.version', '5.12-SNAPSHOT', 1);
+-- Lock Database
+-- Changeset liquibase/activiti-engine-5.7.xml::1 ACT_GE_PROPERTY::trademakers::(Checksum: 3:20b6bfff5d4d03156f50d3f4caf588ae)
+CREATE TABLE [dbo].[ACT_GE_PROPERTY] ([NAME_] NVARCHAR(64) NOT NULL, [VALUE_] NVARCHAR(300), [REV_] int, CONSTRAINT [PK_ACT_GE_PROPERTY] PRIMARY KEY ([NAME_]))
+GO
 
-insert into ACT_GE_PROPERTY
-values ('schema.history', 'create(5.12-SNAPSHOT)', 1);
 
-insert into ACT_GE_PROPERTY
-values ('next.dbid', '1', 1);
+-- Changeset liquibase/activiti-engine-5.7.xml::1.2 ACT_GE_PROPERTY::trademakers::(Checksum: 3:f6a317a310eb5e906132095b1d639964)
+INSERT INTO [dbo].[ACT_GE_PROPERTY] ([NAME_], [REV_], [VALUE_]) VALUES ('next.dbid', 1, '1')
+GO
 
-create table ACT_GE_BYTEARRAY (
-    ID_ nvarchar(64),
-    REV_ int,
-    NAME_ nvarchar(255),
-    DEPLOYMENT_ID_ nvarchar(64),
-    BYTES_ image,
-    GENERATED_ tinyint,
-    primary key (ID_)
-);
 
-create table ACT_RE_DEPLOYMENT (
-    ID_ nvarchar(64),
-    NAME_ nvarchar(255),
-    CATEGORY_ nvarchar(255),
-    DEPLOY_TIME_ datetime,
-    primary key (ID_)
-);
+-- Changeset liquibase/activiti-engine-5.7.xml::2 ACT_GE_BYTEARRAY::trademakers::(Checksum: 3:29bc6b27ef2d59aacbf4ab8eae713186)
+CREATE TABLE [dbo].[ACT_GE_BYTEARRAY] ([ID_] NVARCHAR(64) NOT NULL, [REV_] int, [NAME_] NVARCHAR(255), [DEPLOYMENT_ID_] NVARCHAR(64), [BYTES_] image, CONSTRAINT [PK_ACT_GE_BYTEARRAY] PRIMARY KEY ([ID_]))
+GO
 
-create table ACT_RE_MODEL (
-    ID_ nvarchar(64) not null,
-    REV_ int,
-    NAME_ nvarchar(255),
-    KEY_ nvarchar(255),
-    CATEGORY_ nvarchar(255),
-    CREATE_TIME_ datetime,
-    LAST_UPDATE_TIME_ datetime,
-    VERSION_ int,
-    META_INFO_ nvarchar(4000),
-    DEPLOYMENT_ID_ nvarchar(64),
-    EDITOR_SOURCE_VALUE_ID_ nvarchar(64),
-    EDITOR_SOURCE_EXTRA_VALUE_ID_ nvarchar(64),
-    primary key (ID_)
-);
 
-create table ACT_RU_EXECUTION (
-    ID_ nvarchar(64),
-    REV_ int,
-    PROC_INST_ID_ nvarchar(64),
-    BUSINESS_KEY_ nvarchar(255),
-    PARENT_ID_ nvarchar(64),
-    PROC_DEF_ID_ nvarchar(64),
-    SUPER_EXEC_ nvarchar(64),
-    ACT_ID_ nvarchar(255),
-    IS_ACTIVE_ tinyint,
-    IS_CONCURRENT_ tinyint,
-    IS_SCOPE_ tinyint,
-    IS_EVENT_SCOPE_ tinyint,
-    SUSPENSION_STATE_ tinyint,
-    CACHED_ENT_STATE_ int,
-    primary key (ID_)
-);
+-- Changeset liquibase/activiti-engine-5.7.xml::3 ACT_RE_DEPLOYMENT::trademakers::(Checksum: 3:c020dd7872af2758628adbbee6e7614e)
+CREATE TABLE [dbo].[ACT_RE_DEPLOYMENT] ([ID_] NVARCHAR(64) NOT NULL, [NAME_] NVARCHAR(255), [DEPLOY_TIME_] datetime, CONSTRAINT [PK_ACT_RE_DEPLOYMENT] PRIMARY KEY ([ID_]))
+GO
 
-create table ACT_RU_JOB (
-    ID_ nvarchar(64) NOT NULL,
-	REV_ int,
-    TYPE_ nvarchar(255) NOT NULL,
-    LOCK_EXP_TIME_ datetime,
-    LOCK_OWNER_ nvarchar(255),
-    EXCLUSIVE_ bit,
-    EXECUTION_ID_ nvarchar(64),
-    PROCESS_INSTANCE_ID_ nvarchar(64),
-    PROC_DEF_ID_ nvarchar(64),
-    RETRIES_ int,
-    EXCEPTION_STACK_ID_ nvarchar(64),
-    EXCEPTION_MSG_ nvarchar(4000),
-    DUEDATE_ datetime NULL,
-    REPEAT_ nvarchar(255),
-    HANDLER_TYPE_ nvarchar(255),
-    HANDLER_CFG_ nvarchar(4000),
-    primary key (ID_)
-);
 
-create table ACT_RE_PROCDEF (
-    ID_ nvarchar(64) not null,
-    REV_ int,
-    CATEGORY_ nvarchar(255),
-    NAME_ nvarchar(255),
-    KEY_ nvarchar(255) not null,
-    VERSION_ int not null,
-    DEPLOYMENT_ID_ nvarchar(64),
-    RESOURCE_NAME_ nvarchar(4000),
-    DGRM_RESOURCE_NAME_ nvarchar(4000),
-    DESCRIPTION_ nvarchar(4000),
-    HAS_START_FORM_KEY_ tinyint,
-    SUSPENSION_STATE_ tinyint,
-    primary key (ID_)
-);
+-- Changeset liquibase/activiti-engine-5.7.xml::4 ACT_RU_EXECUTION::trademakers::(Checksum: 3:653628f4d7254d39845ff019ff5f30b2)
+CREATE TABLE [dbo].[ACT_RU_EXECUTION] ([ID_] NVARCHAR(64) NOT NULL, [REV_] int, [PROC_INST_ID_] NVARCHAR(64), [BUSINESS_KEY_] NVARCHAR(255), [PARENT_ID_] NVARCHAR(64), [PROC_DEF_ID_] NVARCHAR(64), [SUPER_EXEC_] NVARCHAR(64), [ACT_ID_] NVARCHAR(255), [IS_ACTIVE_] BIT, [IS_CONCURRENT_] BIT, [IS_SCOPE_] BIT, CONSTRAINT [PK_ACT_RU_EXECUTION] PRIMARY KEY ([ID_]))
+GO
 
-create table ACT_RU_TASK (
-    ID_ nvarchar(64),
-    REV_ int,
-    EXECUTION_ID_ nvarchar(64),
-    PROC_INST_ID_ nvarchar(64),
-    PROC_DEF_ID_ nvarchar(64),
-    NAME_ nvarchar(255),
-    PARENT_TASK_ID_ nvarchar(64),
-    DESCRIPTION_ nvarchar(4000),
-    TASK_DEF_KEY_ nvarchar(255),
-    OWNER_ nvarchar(255),
-    ASSIGNEE_ nvarchar(255),
-    DELEGATION_ nvarchar(64),
-    PRIORITY_ int,
-    CREATE_TIME_ datetime,
-    DUE_DATE_ datetime,
-    SUSPENSION_STATE_ int,
-    primary key (ID_)
-);
 
-create table ACT_RU_IDENTITYLINK (
-    ID_ nvarchar(64),
-    REV_ int,
-    GROUP_ID_ nvarchar(255),
-    TYPE_ nvarchar(255),
-    USER_ID_ nvarchar(255),
-    TASK_ID_ nvarchar(64),
-    PROC_DEF_ID_ nvarchar(64),
-    primary key (ID_)
-);
+-- Changeset liquibase/activiti-engine-5.7.xml::4.1.2 ACT_UNIQ_RU_BUS_KEY::trademakers::(Checksum: 3:6cabb0e25ad66ce335a4f8c87c443de7)
+-- Changeset liquibase/activiti-engine-5.7.xml::4.1.4 ACT_UNIQ_RU_BUS_KEY MSSQL::trademakers::(Checksum: 3:783abaf3a0e08c478760318d49d78e2b)
+create unique index ACT_UNIQ_RU_BUS_KEY on ACT_RU_EXECUTION (PROC_DEF_ID_, BUSINESS_KEY_) where BUSINESS_KEY_ is not null
+GO
 
-create table ACT_RU_VARIABLE (
-    ID_ nvarchar(64) not null,
-    REV_ int,
-    TYPE_ nvarchar(255) not null,
-    NAME_ nvarchar(255) not null,
-    EXECUTION_ID_ nvarchar(64),
-    PROC_INST_ID_ nvarchar(64),
-    TASK_ID_ nvarchar(64),
-    BYTEARRAY_ID_ nvarchar(64),
-    DOUBLE_ double precision,
-    LONG_ numeric(19,0),
-    TEXT_ nvarchar(4000),
-    TEXT2_ nvarchar(4000),
-    primary key (ID_)
-);
 
-create table ACT_RU_EVENT_SUBSCR (
-    ID_ nvarchar(64) not null,
-    REV_ int,
-    EVENT_TYPE_ nvarchar(255) not null,
-    EVENT_NAME_ nvarchar(255),
-    EXECUTION_ID_ nvarchar(64),
-    PROC_INST_ID_ nvarchar(64),
-    ACTIVITY_ID_ nvarchar(64),
-    CONFIGURATION_ nvarchar(255),
-    CREATED_ datetime not null,
-    primary key (ID_)
-);
+-- Changeset liquibase/activiti-engine-5.7.xml::5 ACT_RU_JOB::trademakers::(Checksum: 3:3e2b04e77737576a7ab2ee3c0ed62976)
+CREATE TABLE [dbo].[ACT_RU_JOB] ([ID_] NVARCHAR(64) NOT NULL, [REV_] int, [TYPE_] NVARCHAR(255) NOT NULL, [LOCK_EXP_TIME_] datetime, [LOCK_OWNER_] NVARCHAR(255), [EXCLUSIVE_] BIT, [EXECUTION_ID_] NVARCHAR(64), [PROCESS_INSTANCE_ID_] NVARCHAR(64), [RETRIES_] int, [EXCEPTION_STACK_ID_] NVARCHAR(64), [EXCEPTION_MSG_] NVARCHAR(4000), [DUEDATE_] datetime, [REPEAT_] NVARCHAR(255), [HANDLER_TYPE_] NVARCHAR(255), [HANDLER_CFG_] NVARCHAR(4000), CONSTRAINT [PK_ACT_RU_JOB] PRIMARY KEY ([ID_]))
+GO
 
-create index ACT_IDX_EXEC_BUSKEY on ACT_RU_EXECUTION(BUSINESS_KEY_);
-create index ACT_IDX_TASK_CREATE on ACT_RU_TASK(CREATE_TIME_);
-create index ACT_IDX_IDENT_LNK_USER on ACT_RU_IDENTITYLINK(USER_ID_);
-create index ACT_IDX_IDENT_LNK_GROUP on ACT_RU_IDENTITYLINK(GROUP_ID_);
-create index ACT_IDX_EVENT_SUBSCR_CONFIG_ on ACT_RU_EVENT_SUBSCR(CONFIGURATION_);
-create index ACT_IDX_VARIABLE_TASK_ID on ACT_RU_VARIABLE(TASK_ID_);
-create unique index ACT_UNIQ_RU_BUS_KEY on ACT_RU_EXECUTION (PROC_DEF_ID_, BUSINESS_KEY_) where BUSINESS_KEY_ is not null;
-create index ACT_IDX_ATHRZ_PROCEDEF on ACT_RU_IDENTITYLINK(PROC_DEF_ID_);
 
-alter table ACT_GE_BYTEARRAY
-    add constraint ACT_FK_BYTEARR_DEPL 
-    foreign key (DEPLOYMENT_ID_) 
-    references ACT_RE_DEPLOYMENT (ID_);
+-- Changeset liquibase/activiti-engine-5.7.xml::9 ACT_RE_PROCDEF::trademakers::(Checksum: 3:bfb18fac10e7be4a526c2c60e3e9d5ce)
+CREATE TABLE [dbo].[ACT_RE_PROCDEF] ([ID_] NVARCHAR(64) NOT NULL, [CATEGORY_] NVARCHAR(255), [NAME_] NVARCHAR(255), [KEY_] NVARCHAR(255), [VERSION_] int, [DEPLOYMENT_ID_] NVARCHAR(64), [RESOURCE_NAME_] NVARCHAR(4000), [DGRM_RESOURCE_NAME_] NVARCHAR(4000), [HAS_START_FORM_KEY_] BIT, CONSTRAINT [PK_ACT_RE_PROCDEF] PRIMARY KEY ([ID_]))
+GO
 
-alter table ACT_RE_PROCDEF
-    add constraint ACT_UNIQ_PROCDEF
-    unique (KEY_,VERSION_);
-    
-alter table ACT_RU_EXECUTION
-    add constraint ACT_FK_EXE_PARENT 
-    foreign key (PARENT_ID_) 
-    references ACT_RU_EXECUTION (ID_);
-    
-alter table ACT_RU_EXECUTION
-    add constraint ACT_FK_EXE_SUPER 
-    foreign key (SUPER_EXEC_) 
-    references ACT_RU_EXECUTION (ID_);
 
-alter table ACT_RU_EXECUTION
-    add constraint ACT_FK_EXE_PROCDEF 
-    foreign key (PROC_DEF_ID_) 
-    references ACT_RE_PROCDEF (ID_);
+-- Changeset liquibase/activiti-engine-5.7.xml::10 ACT_RU_TASK::trademakers::(Checksum: 3:e3259896b8b1742627cfac858bfe3f27)
+CREATE TABLE [dbo].[ACT_RU_TASK] ([ID_] NVARCHAR(64) NOT NULL, [REV_] int, [EXECUTION_ID_] NVARCHAR(64), [PROC_INST_ID_] NVARCHAR(64), [PROC_DEF_ID_] NVARCHAR(64), [NAME_] NVARCHAR(255), [DESCRIPTION_] NVARCHAR(4000), [TASK_DEF_KEY_] NVARCHAR(255), [ASSIGNEE_] NVARCHAR(64), [PRIORITY_] int, [CREATE_TIME_] datetime, [OWNER_] NVARCHAR(64), [DELEGATION_] NVARCHAR(64), [DUE_DATE_] datetime, [PARENT_TASK_ID_] NVARCHAR(64), CONSTRAINT [PK_ACT_RU_TASK] PRIMARY KEY ([ID_]))
+GO
 
-alter table ACT_RU_IDENTITYLINK
-    add constraint ACT_FK_TSKASS_TASK 
-    foreign key (TASK_ID_) 
-    references ACT_RU_TASK (ID_);
-    
-alter table ACT_RU_IDENTITYLINK
-    add constraint ACT_FK_ATHRZ_PROCEDEF
-    foreign key (PROC_DEF_ID_) 
-    references ACT_RE_PROCDEF (ID_);
-    
-alter table ACT_RU_TASK
-    add constraint ACT_FK_TASK_EXE
-    foreign key (EXECUTION_ID_)
-    references ACT_RU_EXECUTION (ID_);
-    
-alter table ACT_RU_TASK
-    add constraint ACT_FK_TASK_PROCINST
-    foreign key (PROC_INST_ID_)
-    references ACT_RU_EXECUTION (ID_);
-    
-alter table ACT_RU_TASK
-  add constraint ACT_FK_TASK_PROCDEF
-  foreign key (PROC_DEF_ID_)
-  references ACT_RE_PROCDEF (ID_);
-  
-alter table ACT_RU_VARIABLE 
-    add constraint ACT_FK_VAR_EXE 
-    foreign key (EXECUTION_ID_) 
-    references ACT_RU_EXECUTION (ID_);
 
-alter table ACT_RU_VARIABLE
-    add constraint ACT_FK_VAR_PROCINST
-    foreign key (PROC_INST_ID_)
-    references ACT_RU_EXECUTION(ID_);
+-- Changeset liquibase/activiti-engine-5.7.xml::11 ACT_RU_IDENTITYLINK::trademakers::(Checksum: 3:9796e60ff228968ed5ae22c089bf95fe)
+CREATE TABLE [dbo].[ACT_RU_IDENTITYLINK] ([ID_] NVARCHAR(64) NOT NULL, [REV_] int, [GROUP_ID_] NVARCHAR(64), [TYPE_] NVARCHAR(255), [USER_ID_] NVARCHAR(64), [TASK_ID_] NVARCHAR(64), CONSTRAINT [PK_ACT_RU_IDENTITYLINK] PRIMARY KEY ([ID_]))
+GO
 
-alter table ACT_RU_VARIABLE 
-    add constraint ACT_FK_VAR_BYTEARRAY 
-    foreign key (BYTEARRAY_ID_) 
-    references ACT_GE_BYTEARRAY (ID_);
-	
-alter table ACT_RU_JOB 
-    add constraint ACT_FK_JOB_EXCEPTION 
-    foreign key (EXCEPTION_STACK_ID_) 
-    references ACT_GE_BYTEARRAY (ID_);
-    
-alter table ACT_RU_EVENT_SUBSCR
-    add constraint ACT_FK_EVENT_EXEC
-    foreign key (EXECUTION_ID_)
-    references ACT_RU_EXECUTION(ID_);
-    
-alter table ACT_RE_MODEL 
-    add constraint ACT_FK_MODEL_SOURCE 
-    foreign key (EDITOR_SOURCE_VALUE_ID_) 
-    references ACT_GE_BYTEARRAY (ID_);
 
-alter table ACT_RE_MODEL 
-    add constraint ACT_FK_MODEL_SOURCE_EXTRA 
-    foreign key (EDITOR_SOURCE_EXTRA_VALUE_ID_) 
-    references ACT_GE_BYTEARRAY (ID_);
+-- Changeset liquibase/activiti-engine-5.7.xml::12 ACT_RU_VARIABLE::trademakers::(Checksum: 3:d199f15a8bc8201ae0291e648b7092c1)
+CREATE TABLE [dbo].[ACT_RU_VARIABLE] ([ID_] NVARCHAR(64) NOT NULL, [REV_] int, [TYPE_] NVARCHAR(255) NOT NULL, [NAME_] NVARCHAR(255) NOT NULL, [EXECUTION_ID_] NVARCHAR(64), [PROC_INST_ID_] NVARCHAR(64), [TASK_ID_] NVARCHAR(64), [BYTEARRAY_ID_] NVARCHAR(64), [DOUBLE_] double precision, [LONG_] numeric(19,0), [TEXT_] NVARCHAR(4000), [TEXT2_] NVARCHAR(4000), CONSTRAINT [PK_ACT_RU_VARIABLE] PRIMARY KEY ([ID_]))
+GO
 
-alter table ACT_RE_MODEL 
-    add constraint ACT_FK_MODEL_DEPLOYMENT 
-    foreign key (DEPLOYMENT_ID_) 
-    references ACT_RE_DEPLOYMENT (ID_);    
+
+-- Changeset liquibase/activiti-engine-5.7.xml::21 ACT_IDX_EXEC_BUSKEY::trademakers::(Checksum: 3:6e4fc0d34c346a21e11966c81263ace7)
+CREATE INDEX [ACT_IDX_EXEC_BUSKEY] ON [dbo].[ACT_RU_EXECUTION]([BUSINESS_KEY_])
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.7.xml::22 ACT_IDX_TASK_CREATE::trademakers::(Checksum: 3:f237247c56ad5af0dbbd1568f2cd09da)
+CREATE INDEX [ACT_IDX_TASK_CREATE] ON [dbo].[ACT_RU_TASK]([CREATE_TIME_])
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.7.xml::23 ACT_IDX_IDENT_LNK_USER::trademakers::(Checksum: 3:497d4d4eddc6b4d9dbd8f6d8abb222bf)
+CREATE INDEX [ACT_IDX_IDENT_LNK_USER] ON [dbo].[ACT_RU_IDENTITYLINK]([USER_ID_])
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.7.xml::24 ACT_IDX_IDENT_LNK_GROUP::trademakers::(Checksum: 3:9b03e22ef5d9f5961b2453b7db5fc6a8)
+CREATE INDEX [ACT_IDX_IDENT_LNK_GROUP] ON [dbo].[ACT_RU_IDENTITYLINK]([GROUP_ID_])
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.7.xml::51 ACT_FK_BYTEARR_DEPL::trademakers::(Checksum: 3:fbebf8fdd4ad06c67da4a8c14fda628e)
+ALTER TABLE [dbo].[ACT_GE_BYTEARRAY] ADD CONSTRAINT [ACT_FK_BYTEARR_DEPL] FOREIGN KEY ([DEPLOYMENT_ID_]) REFERENCES [dbo].[ACT_RE_DEPLOYMENT] ([ID_])
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.7.xml::52 ACT_FK_EXE_PROCINST::trademakers::(Checksum: 3:06eddbe55cb6d5917dec7045809d96b5)
+ALTER TABLE [dbo].[ACT_RU_EXECUTION] ADD CONSTRAINT [ACT_FK_EXE_PROCINST] FOREIGN KEY ([PROC_INST_ID_]) REFERENCES [dbo].[ACT_RU_EXECUTION] ([ID_])
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.7.xml::53 ACT_FK_EXE_PARENT::trademakers::(Checksum: 3:b8c2607c87be7b7368fb6c2c0d5af881)
+ALTER TABLE [dbo].[ACT_RU_EXECUTION] ADD CONSTRAINT [ACT_FK_EXE_PARENT] FOREIGN KEY ([PARENT_ID_]) REFERENCES [dbo].[ACT_RU_EXECUTION] ([ID_])
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.7.xml::54 ACT_FK_EXE_SUPER::trademakers::(Checksum: 3:c0883e51216970df5a3fb4ff93388d82)
+ALTER TABLE [dbo].[ACT_RU_EXECUTION] ADD CONSTRAINT [ACT_FK_EXE_SUPER] FOREIGN KEY ([SUPER_EXEC_]) REFERENCES [dbo].[ACT_RU_EXECUTION] ([ID_])
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.7.xml::57 ACT_FK_TSKASS_TASK::trademakers::(Checksum: 3:be7abbf398f05eadf79c78ff7a377491)
+ALTER TABLE [dbo].[ACT_RU_IDENTITYLINK] ADD CONSTRAINT [ACT_FK_TSKASS_TASK] FOREIGN KEY ([TASK_ID_]) REFERENCES [dbo].[ACT_RU_TASK] ([ID_])
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.7.xml::58 ACT_FK_TASK_EXE::trademakers::(Checksum: 3:5afe12bf1349a6b516062de31955fc58)
+ALTER TABLE [dbo].[ACT_RU_TASK] ADD CONSTRAINT [ACT_FK_TASK_EXE] FOREIGN KEY ([EXECUTION_ID_]) REFERENCES [dbo].[ACT_RU_EXECUTION] ([ID_])
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.7.xml::59 ACT_FK_TASK_PROCINST::trademakers::(Checksum: 3:b7e947a4126db8bd28b24105e0289c2e)
+ALTER TABLE [dbo].[ACT_RU_TASK] ADD CONSTRAINT [ACT_FK_TASK_PROCINST] FOREIGN KEY ([PROC_INST_ID_]) REFERENCES [dbo].[ACT_RU_EXECUTION] ([ID_])
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.7.xml::60 ACT_FK_TASK_PROCDEF::trademakers::(Checksum: 3:25ece10f364a958400ac6f2ae43dd36d)
+ALTER TABLE [dbo].[ACT_RU_TASK] ADD CONSTRAINT [ACT_FK_TASK_PROCDEF] FOREIGN KEY ([PROC_DEF_ID_]) REFERENCES [dbo].[ACT_RE_PROCDEF] ([ID_])
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.7.xml::62 ACT_FK_VAR_EXE::trademakers::(Checksum: 3:b208208780b3b8a4bf56f8786a9fe153)
+ALTER TABLE [dbo].[ACT_RU_VARIABLE] ADD CONSTRAINT [ACT_FK_VAR_EXE] FOREIGN KEY ([EXECUTION_ID_]) REFERENCES [dbo].[ACT_RU_EXECUTION] ([ID_])
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.7.xml::63 ACT_FK_VAR_PROCINST::trademakers::(Checksum: 3:d51e276ea59e3fa22cdb608b5fc42787)
+ALTER TABLE [dbo].[ACT_RU_VARIABLE] ADD CONSTRAINT [ACT_FK_VAR_PROCINST] FOREIGN KEY ([PROC_INST_ID_]) REFERENCES [dbo].[ACT_RU_EXECUTION] ([ID_])
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.7.xml::64 ACT_FK_VAR_BYTEARRAY::trademakers::(Checksum: 3:d9e957a154929aabc2ab452a2167cbee)
+ALTER TABLE [dbo].[ACT_RU_VARIABLE] ADD CONSTRAINT [ACT_FK_VAR_BYTEARRAY] FOREIGN KEY ([BYTEARRAY_ID_]) REFERENCES [dbo].[ACT_GE_BYTEARRAY] ([ID_])
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.7.xml::65 ACT_FK_JOB_EXCEPTION::trademakers::(Checksum: 3:1363cc07c8aad1d229c513714892e870)
+ALTER TABLE [dbo].[ACT_RU_JOB] ADD CONSTRAINT [ACT_FK_JOB_EXCEPTION] FOREIGN KEY ([EXCEPTION_STACK_ID_]) REFERENCES [dbo].[ACT_GE_BYTEARRAY] ([ID_])
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.9.xml::10 ACT_GE_BYTEARRAY.GENERATED_::trademakers::(Checksum: 3:e7aa1c5b1e1d90db4ff8813367f63e2b)
+ALTER TABLE [dbo].[ACT_GE_BYTEARRAY] ADD [GENERATED_] BIT
+GO
+
+UPDATE [dbo].[ACT_GE_BYTEARRAY] SET [GENERATED_] = '0'
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.9.xml::11 ACT_RU_EXECUTION.IS_EVENT_SCOPE_::trademakers::(Checksum: 3:636068d01179fac833a50f959a1705b0)
+ALTER TABLE [dbo].[ACT_RU_EXECUTION] ADD [IS_EVENT_SCOPE_] BIT
+GO
+
+ALTER TABLE [dbo].[ACT_RU_EXECUTION] ADD [SUSPENSION_STATE_] int
+GO
+
+UPDATE [dbo].[ACT_RU_EXECUTION] SET [IS_EVENT_SCOPE_] = '0'
+GO
+
+UPDATE [dbo].[ACT_RU_EXECUTION] SET [SUSPENSION_STATE_] = '1'
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.9.xml::12 ACT_RE_PROCDEF.REV_::trademakers::(Checksum: 3:4f3075476cef091ad911da0dc433f67f)
+ALTER TABLE [dbo].[ACT_RE_PROCDEF] ADD [REV_] int
+GO
+
+ALTER TABLE [dbo].[ACT_RE_PROCDEF] ADD [SUSPENSION_STATE_] int
+GO
+
+UPDATE [dbo].[ACT_RE_PROCDEF] SET [REV_] = '1'
+GO
+
+UPDATE [dbo].[ACT_RE_PROCDEF] SET [SUSPENSION_STATE_] = '1'
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.9.xml::13 ACT_RU_EVENT_SUBSCR::trademakers::(Checksum: 3:e6dbc84a1dc55c5e622303bc3962c4a2)
+CREATE TABLE [dbo].[ACT_RU_EVENT_SUBSCR] ([ID_] NVARCHAR(64) NOT NULL, [REV_] int, [EVENT_TYPE_] NVARCHAR(255) NOT NULL, [EVENT_NAME_] NVARCHAR(255), [EXECUTION_ID_] NVARCHAR(64), [PROC_INST_ID_] NVARCHAR(64), [ACTIVITY_ID_] NVARCHAR(64), [CONFIGURATION_] NVARCHAR(255), [CREATED_] datetime NOT NULL, CONSTRAINT [PK_ACT_RU_EVENT_SUBSCR] PRIMARY KEY ([ID_]))
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.9.xml::13.1 ACT_IDX_EVENT_SUBSCR_CONFIG_::trademakers::(Checksum: 3:4727158000ce80228e36eeeeacde778c)
+CREATE INDEX [ACT_IDX_EVENT_SUBSCR_CONFIG_] ON [dbo].[ACT_RU_EVENT_SUBSCR]([CONFIGURATION_])
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.9.xml::13.2 ACT_FK_EVENT_EXEC::trademakers::(Checksum: 3:89c7edd01a11df64670a084cdbdba5a5)
+ALTER TABLE [dbo].[ACT_RU_EVENT_SUBSCR] ADD CONSTRAINT [ACT_FK_EVENT_EXEC] FOREIGN KEY ([EXECUTION_ID_]) REFERENCES [dbo].[ACT_RU_EXECUTION] ([ID_])
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.9.xml::13.3 ACT_IDX_EVENT_SUBSCR::trademakers::(Checksum: 3:c21de54dca4df301cf2d2728d4493667)
+CREATE INDEX [ACT_IDX_EVENT_SUBSCR] ON [dbo].[ACT_RU_EVENT_SUBSCR]([EXECUTION_ID_])
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.10.xml::2 ACT_RU_EXECUTION.CACHED_END_STATE::trademakers::(Checksum: 3:542126dedd8688a1570754caf4b0e08e)
+ALTER TABLE [dbo].[ACT_RU_EXECUTION] ADD [CACHED_ENT_STATE_] int
+GO
+
+UPDATE [dbo].[ACT_RU_EXECUTION] SET [CACHED_ENT_STATE_] = '7'
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.10.xml::3 ACT_RU_IDENTITYLINK.PROC_DEF_ID::trademakers::(Checksum: 3:95e90f215874e3218980aa5778b08f43)
+ALTER TABLE [dbo].[ACT_RU_IDENTITYLINK] ADD [PROC_DEF_ID_] NVARCHAR(64)
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.10.xml::4 ACT_RE_PROCDEF_KEY_NOT_NULL::trademakers::(Checksum: 3:703fa27685f96e11b44f2fb06f93c71c)
+ALTER TABLE [dbo].[ACT_RE_PROCDEF] ALTER COLUMN [KEY_] NVARCHAR(255) NOT NULL
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.10.xml::5 ACT_IDX_VARIABLE_TASK_ID::trademakers::(Checksum: 3:1cd13424f9824745a27294484af45543)
+CREATE INDEX [ACT_IDX_VARIABLE_TASK_ID] ON [dbo].[ACT_RU_VARIABLE]([TASK_ID_])
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.10.xml::6 ACT_IDX_ATHRZ_PROCEDEF::trademakers::(Checksum: 3:da26bc8e0c11ee20ecc2b888b80ad5e7)
+CREATE INDEX [ACT_IDX_ATHRZ_PROCEDEF] ON [dbo].[ACT_RU_IDENTITYLINK]([PROC_DEF_ID_])
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.10.xml::7.1 ACT_UNIQ_PROCDEF::trademakers::(Checksum: 3:24667cea47a828e6b3d0769139c5c5f1)
+-- Changeset liquibase/activiti-engine-5.10.xml::8 ACT_FK_ATHRZ_PROCEDEF::trademakers::(Checksum: 3:e564b59a699f37b53facf903128652fe)
+ALTER TABLE [dbo].[ACT_RU_IDENTITYLINK] ADD CONSTRAINT [ACT_FK_ATHRZ_PROCEDEF] FOREIGN KEY ([PROC_DEF_ID_]) REFERENCES [dbo].[ACT_RE_PROCDEF] ([ID_])
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.11.xml::2 Activiti 5.11 Update ACT_RE_DEPLOYMENT::trademakers::(Checksum: 3:2645c0a8ee212fea7c089a048e636670)
+ALTER TABLE [dbo].[ACT_RE_DEPLOYMENT] ADD [CATEGORY_] NVARCHAR(255)
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.11.xml::3 Activiti 5.11 Create Table ACT_RE_MODEL::trademakers::(Checksum: 3:e5966ce466ef8ae95ae90c210fc90d9b)
+CREATE TABLE [dbo].[ACT_RE_MODEL] ([ID_] NVARCHAR(64) NOT NULL, [REV_] int, [NAME_] NVARCHAR(255), [KEY_] NVARCHAR(255), [CATEGORY_] NVARCHAR(255), [CREATE_TIME_] datetime, [LAST_UPDATE_TIME_] datetime, [VERSION_] int, [META_INFO_] NVARCHAR(4000), [DEPLOYMENT_ID_] NVARCHAR(64), [EDITOR_SOURCE_VALUE_ID_] NVARCHAR(64), [EDITOR_SOURCE_EXTRA_VALUE_ID_] NVARCHAR(64), CONSTRAINT [PK_ACT_RE_MODEL] PRIMARY KEY ([ID_]))
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.11.xml::3.1 Activiti 5.11 Add Constraint to ACT_RE_MODEL::trademakers::(Checksum: 3:cae7d16cb90ee31151344b7fccc8d75d)
+ALTER TABLE [dbo].[ACT_RE_MODEL] ADD CONSTRAINT [ACT_FK_MODEL_SOURCE] FOREIGN KEY ([EDITOR_SOURCE_VALUE_ID_]) REFERENCES [dbo].[ACT_GE_BYTEARRAY] ([ID_])
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.11.xml::3.2 Activiti 5.11 Add Constraint to ACT_RE_MODEL::trademakers::(Checksum: 3:03a82868bf06a980c0edc0985e40f13c)
+ALTER TABLE [dbo].[ACT_RE_MODEL] ADD CONSTRAINT [ACT_FK_MODEL_SOURCE_EXTRA] FOREIGN KEY ([EDITOR_SOURCE_EXTRA_VALUE_ID_]) REFERENCES [dbo].[ACT_GE_BYTEARRAY] ([ID_])
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.11.xml::3.3 Activiti 5.11 Add Constraint to ACT_RE_MODEL::trademakers::(Checksum: 3:8e7bb028ee670cb7487412736fb31eba)
+ALTER TABLE [dbo].[ACT_RE_MODEL] ADD CONSTRAINT [ACT_FK_MODEL_DEPLOYMENT] FOREIGN KEY ([DEPLOYMENT_ID_]) REFERENCES [dbo].[ACT_RE_DEPLOYMENT] ([ID_])
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.11.xml::4 Activiti 5.11 Update ACT_RU_JOB::trademakers::(Checksum: 3:95d5d4704f5b6b454fdda3b74153b184)
+ALTER TABLE [dbo].[ACT_RU_JOB] ADD [PROC_DEF_ID_] NVARCHAR(64)
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.11.xml::5 Activiti 5.11 Update ACT_RE_PROCDEF::trademakers::(Checksum: 3:5f7d01ea3c4e4aa5114337ed803e8fef)
+ALTER TABLE [dbo].[ACT_RE_PROCDEF] ADD [DESCRIPTION_] NVARCHAR(4000)
+GO
+
+ALTER TABLE [dbo].[ACT_RE_PROCDEF] ALTER COLUMN [VERSION_] int NOT NULL
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.11.xml::6 Activiti 5.11 Update ACT_RU_TASK::trademakers::(Checksum: 3:7c0645022c6a9c83eea31ef8215871e3)
+ALTER TABLE [dbo].[ACT_RU_TASK] ADD [SUSPENSION_STATE_] int
+GO
+
+UPDATE [dbo].[ACT_RU_TASK] SET [SUSPENSION_STATE_] = '1'
+GO
+
+ALTER TABLE [dbo].[ACT_RU_TASK] ALTER COLUMN [OWNER_] NVARCHAR(255)
+GO
+
+ALTER TABLE [dbo].[ACT_RU_TASK] ALTER COLUMN [ASSIGNEE_] NVARCHAR(255)
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.11.xml::7 Activiti 5.11 Add Constraint to ACT_RU_EXECUTION::trademakers::(Checksum: 3:f546586b1f9fe030e866f4db640a1177)
+ALTER TABLE [dbo].[ACT_RU_EXECUTION] ADD CONSTRAINT [ACT_FK_EXE_PROCDEF] FOREIGN KEY ([PROC_DEF_ID_]) REFERENCES [dbo].[ACT_RE_PROCDEF] ([ID_])
+GO
+
+
+-- Changeset liquibase/activiti-engine-5.11.xml::8 Activiti 5.11 Update ACT_RU_IDENTITYLINK::trademakers::(Checksum: 3:2223fe871100a2441dde70984c5b0c30)
+ALTER TABLE [dbo].[ACT_RU_IDENTITYLINK] ALTER COLUMN [GROUP_ID_] NVARCHAR(255)
+GO
+
+ALTER TABLE [dbo].[ACT_RU_IDENTITYLINK] ALTER COLUMN [USER_ID_] NVARCHAR(255)
+GO
+
+
+-- Changeset liquibase/activiti-engine-master.xml::1 Activiti 5.12 Update Schema Versions::trademakers::(Checksum: 3:6516d14069326092475dad969a886a41)
+INSERT INTO [dbo].[ACT_GE_PROPERTY] ([NAME_], [REV_], [VALUE_]) VALUES ('schema.version', 1, '5.12-SNAPSHOT')
+GO
+
+INSERT INTO [dbo].[ACT_GE_PROPERTY] ([NAME_], [REV_], [VALUE_]) VALUES ('schema.history', 1, 'create(5.12-SNAPSHOT)')
+GO
+
+
+-- Release Database Lock
+-- Release Database Lock

@@ -1,131 +1,120 @@
-create table ACT_HI_PROCINST (
-    ID_ varchar(64) not null,
-    PROC_INST_ID_ varchar(64) not null,
-    BUSINESS_KEY_ varchar(255),
-    PROC_DEF_ID_ varchar(64) not null,
-    START_TIME_ timestamp not null,
-    END_TIME_ timestamp,
-    DURATION_ bigint,
-    START_USER_ID_ varchar(255),
-    START_ACT_ID_ varchar(255),
-    END_ACT_ID_ varchar(255),
-    SUPER_PROCESS_INSTANCE_ID_ varchar(64),
-    DELETE_REASON_ varchar(4000),
-    primary key (ID_),
-    unique (PROC_INST_ID_),
-    unique (PROC_DEF_ID_, BUSINESS_KEY_)
-);
+-- *********************************************************************
+-- Update Database Script
+-- *********************************************************************
+-- Change Log: liquibase/activiti-history-master.xml
+-- Ran at: 2/7/13 4:46 PM
+-- Against: activiti@jdbc:postgresql://localhost:5432/activiti
+-- Liquibase version: 2.0.3
+-- *********************************************************************
 
-create table ACT_HI_ACTINST (
-    ID_ varchar(64) not null,
-    PROC_DEF_ID_ varchar(64) not null,
-    PROC_INST_ID_ varchar(64) not null,
-    EXECUTION_ID_ varchar(64) not null,
-    ACT_ID_ varchar(255) not null,
-    TASK_ID_ varchar(64),
-    CALL_PROC_INST_ID_ varchar(64),
-    ACT_NAME_ varchar(255),
-    ACT_TYPE_ varchar(255) not null,
-    ASSIGNEE_ varchar(64),
-    START_TIME_ timestamp not null,
-    END_TIME_ timestamp,
-    DURATION_ bigint,
-    primary key (ID_)
-);
-
-create table ACT_HI_TASKINST (
-    ID_ varchar(64) not null,
-    PROC_DEF_ID_ varchar(64),
-    TASK_DEF_KEY_ varchar(255),
-    PROC_INST_ID_ varchar(64),
-    EXECUTION_ID_ varchar(64),
-    NAME_ varchar(255),
-    PARENT_TASK_ID_ varchar(64),
-    DESCRIPTION_ varchar(4000),
-    OWNER_ varchar(255),
-    ASSIGNEE_ varchar(255),
-    START_TIME_ timestamp not null,
-    CLAIM_TIME_ timestamp,
-    END_TIME_ timestamp,
-    DURATION_ bigint,
-    DELETE_REASON_ varchar(4000),
-    PRIORITY_ integer,
-    DUE_DATE_ timestamp,
-    primary key (ID_)
-);
-
-create table ACT_HI_VARINST (
-    ID_ varchar(64) not null,
-    PROC_INST_ID_ varchar(64),
-    EXECUTION_ID_ varchar(64),
-    TASK_ID_ varchar(64),
-    NAME_ varchar(255) not null,
-    VAR_TYPE_ varchar(100),
-    REV_ integer,
-    BYTEARRAY_ID_ varchar(64),
-    DOUBLE_ double precision,
-    LONG_ bigint,
-    TEXT_ varchar(4000),
-    TEXT2_ varchar(4000),
-    primary key (ID_)
-);
-
-create table ACT_HI_DETAIL (
-    ID_ varchar(64) not null,
-    TYPE_ varchar(255) not null,
-    PROC_INST_ID_ varchar(64),
-    EXECUTION_ID_ varchar(64),
-    TASK_ID_ varchar(64),
-    ACT_INST_ID_ varchar(64),
-    NAME_ varchar(255) not null,
-    VAR_TYPE_ varchar(64),
-    REV_ integer,
-    TIME_ timestamp not null,
-    BYTEARRAY_ID_ varchar(64),
-    DOUBLE_ double precision,
-    LONG_ bigint,
-    TEXT_ varchar(4000),
-    TEXT2_ varchar(4000),
-    primary key (ID_)
-);
-
-create table ACT_HI_COMMENT (
-    ID_ varchar(64) not null,
-    TYPE_ varchar(255),
-    TIME_ timestamp not null,
-    USER_ID_ varchar(255),
-    TASK_ID_ varchar(64),
-    PROC_INST_ID_ varchar(64),
-    ACTION_ varchar(255),
-    MESSAGE_ varchar(4000),
-    FULL_MSG_ bytea,
-    primary key (ID_)
-);
-
-create table ACT_HI_ATTACHMENT (
-    ID_ varchar(64) not null,
-    REV_ integer,
-    USER_ID_ varchar(255),
-    NAME_ varchar(255),
-    DESCRIPTION_ varchar(4000),
-    TYPE_ varchar(255),
-    TASK_ID_ varchar(64),
-    PROC_INST_ID_ varchar(64),
-    URL_ varchar(4000),
-    CONTENT_ID_ varchar(64),
-    primary key (ID_)
-);
+-- Lock Database
+-- Changeset liquibase/activiti-history-5.7.xml::13 ACT_HI_PROCINST::trademakers::(Checksum: 3:ffa26c36487be2674fbae36a716fb4aa)
+CREATE TABLE ACT_HI_PROCINST (ID_ VARCHAR(64) NOT NULL, PROC_INST_ID_ VARCHAR(64) NOT NULL, BUSINESS_KEY_ VARCHAR(255), PROC_DEF_ID_ VARCHAR(64) NOT NULL, START_TIME_ TIMESTAMP NOT NULL, END_TIME_ TIMESTAMP, DURATION_ BIGINT, START_USER_ID_ VARCHAR(255), START_ACT_ID_ VARCHAR(255), END_ACT_ID_ VARCHAR(255), SUPER_PROCESS_INSTANCE_ID_ VARCHAR(64), CONSTRAINT PK_ACT_HI_PROCINST PRIMARY KEY (ID_));
 
 
-create index ACT_IDX_HI_PRO_INST_END on ACT_HI_PROCINST(END_TIME_);
-create index ACT_IDX_HI_PRO_I_BUSKEY on ACT_HI_PROCINST(BUSINESS_KEY_);
-create index ACT_IDX_HI_ACT_INST_START on ACT_HI_ACTINST(START_TIME_);
-create index ACT_IDX_HI_ACT_INST_END on ACT_HI_ACTINST(END_TIME_);
-create index ACT_IDX_HI_DETAIL_PROC_INST on ACT_HI_DETAIL(PROC_INST_ID_);
-create index ACT_IDX_HI_DETAIL_ACT_INST on ACT_HI_DETAIL(ACT_INST_ID_);
-create index ACT_IDX_HI_DETAIL_TIME on ACT_HI_DETAIL(TIME_);
-create index ACT_IDX_HI_DETAIL_NAME on ACT_HI_DETAIL(NAME_);
-create index ACT_IDX_HI_DETAIL_TASK_ID on ACT_HI_DETAIL(TASK_ID_);
-create index ACT_IDX_HI_PROCVAR_PROC_INST on ACT_HI_VARINST(PROC_INST_ID_);
-create index ACT_IDX_HI_PROCVAR_NAME_TYPE on ACT_HI_VARINST(NAME_, VAR_TYPE_);
-create index ACT_IDX_HI_ACT_INST_PROCINST on ACT_HI_ACTINST(PROC_INST_ID_, ACT_ID_);
+-- Changeset liquibase/activiti-history-5.7.xml::13.1 UK_ACT_HI_PROCINST::trademakers::(Checksum: 3:7a5de961b84c19234bba6eca127b4625)
+ALTER TABLE ACT_HI_PROCINST ADD CONSTRAINT UK_ACT_HI_PROCINST UNIQUE (PROC_INST_ID_);
+
+
+-- Changeset liquibase/activiti-history-5.7.xml::13.2.2 ACT_UNIQ_HI_BUS_KEY::trademakers::(Checksum: 3:477f8ef75e72853f82728d65ba2a1de8)
+ALTER TABLE ACT_HI_PROCINST ADD CONSTRAINT ACT_UNIQ_HI_BUS_KEY UNIQUE (PROC_DEF_ID_, BUSINESS_KEY_);
+
+
+-- Changeset liquibase/activiti-history-5.7.xml::14 ACT_HI_ACTINST::trademakers::(Checksum: 3:1fb763bd09c394182036114e5a70b9e2)
+CREATE TABLE ACT_HI_ACTINST (ID_ VARCHAR(64) NOT NULL, PROC_DEF_ID_ VARCHAR(64) NOT NULL, PROC_INST_ID_ VARCHAR(64) NOT NULL, EXECUTION_ID_ VARCHAR(64) NOT NULL, ACT_ID_ VARCHAR(255) NOT NULL, ACT_NAME_ VARCHAR(255), ACT_TYPE_ VARCHAR(255) NOT NULL, ASSIGNEE_ VARCHAR(64), START_TIME_ TIMESTAMP NOT NULL, END_TIME_ TIMESTAMP, DURATION_ BIGINT, CONSTRAINT PK_ACT_HI_ACTINST PRIMARY KEY (ID_));
+
+
+-- Changeset liquibase/activiti-history-5.7.xml::15 ACT_HI_DETAIL::trademakers::(Checksum: 3:7bdb9517d181930141272c32d2b2bc69)
+CREATE TABLE ACT_HI_DETAIL (ID_ VARCHAR(64) NOT NULL, TYPE_ VARCHAR(255) NOT NULL, PROC_INST_ID_ VARCHAR(64), TASK_ID_ VARCHAR(64), EXECUTION_ID_ VARCHAR(64), ACT_INST_ID_ VARCHAR(64), NAME_ VARCHAR(255) NOT NULL, VAR_TYPE_ VARCHAR(255), REV_ integer, TIME_ TIMESTAMP NOT NULL, BYTEARRAY_ID_ VARCHAR(64), DOUBLE_ DOUBLE PRECISION, LONG_ BIGINT, TEXT_ VARCHAR(4000), TEXT2_ VARCHAR(4000), CONSTRAINT PK_ACT_HI_DETAIL PRIMARY KEY (ID_));
+
+
+-- Changeset liquibase/activiti-history-5.7.xml::16 Activiti 5.1 Update ACT_HI_TASKINST::trademakers::(Checksum: 3:1cd88f05139a9f4d4082675e004e43ae)
+CREATE TABLE ACT_HI_TASKINST (ID_ VARCHAR(64) NOT NULL, PROC_DEF_ID_ VARCHAR(64), TASK_DEF_KEY_ VARCHAR(255), PROC_INST_ID_ VARCHAR(64), EXECUTION_ID_ VARCHAR(64), NAME_ VARCHAR(255), DESCRIPTION_ VARCHAR(4000), ASSIGNEE_ VARCHAR(64), START_TIME_ TIMESTAMP NOT NULL, END_TIME_ TIMESTAMP, DURATION_ BIGINT, DELETE_REASON_ VARCHAR(4000), PRIORITY_ integer, DUE_DATE_ TIMESTAMP, OWNER_ VARCHAR(64), PARENT_TASK_ID_ VARCHAR(64), CONSTRAINT PK_ACT_HI_TASKINST PRIMARY KEY (ID_));
+
+
+-- Changeset liquibase/activiti-history-5.7.xml::17 Activiti 5.4 Create ACT_HI_COMMENT::trademakers::(Checksum: 3:ef09429f6b3ff0e664395cfdcaa7eb12)
+CREATE TABLE ACT_HI_COMMENT (ID_ VARCHAR(64) NOT NULL, TIME_ TIMESTAMP NOT NULL, USER_ID_ VARCHAR(255), TASK_ID_ VARCHAR(64), PROC_INST_ID_ VARCHAR(64), MESSAGE_ VARCHAR(4000), TYPE_ VARCHAR(255), ACTION_ VARCHAR(255), FULL_MSG_ BYTEA, CONSTRAINT PK_ACT_HI_COMMENT PRIMARY KEY (ID_));
+
+
+-- Changeset liquibase/activiti-history-5.7.xml::18 Activiti 5.4 Create ACT_HI_ATTACHMENT::trademakers::(Checksum: 3:2b9395f6497b3804d2facea4536168a9)
+CREATE TABLE ACT_HI_ATTACHMENT (ID_ VARCHAR(64) NOT NULL, REV_ integer, USER_ID_ VARCHAR(255), NAME_ VARCHAR(255), DESCRIPTION_ VARCHAR(4000), TYPE_ VARCHAR(255), TASK_ID_ VARCHAR(64), PROC_INST_ID_ VARCHAR(64), URL_ VARCHAR(4000), CONTENT_ID_ VARCHAR(64), CONSTRAINT PK_ACT_HI_ATTACHMENT PRIMARY KEY (ID_));
+
+
+-- Changeset liquibase/activiti-history-5.7.xml::25 ACT_IDX_HI_PRO_INST_END::trademakers::(Checksum: 3:682c05c7c07325608625382a0bc48408)
+CREATE INDEX ACT_IDX_HI_PRO_INST_END ON ACT_HI_PROCINST(END_TIME_);
+
+
+-- Changeset liquibase/activiti-history-5.7.xml::26 ACT_IDX_HI_PRO_I_BUSKEY::trademakers::(Checksum: 3:d75ff4683f8a81d16012d80fea8dae27)
+CREATE INDEX ACT_IDX_HI_PRO_I_BUSKEY ON ACT_HI_PROCINST(BUSINESS_KEY_);
+
+
+-- Changeset liquibase/activiti-history-5.7.xml::27 ACT_IDX_HI_ACT_INST_START::trademakers::(Checksum: 3:a669421332d6638fb16213c6723cd3cb)
+CREATE INDEX ACT_IDX_HI_ACT_INST_START ON ACT_HI_ACTINST(START_TIME_);
+
+
+-- Changeset liquibase/activiti-history-5.7.xml::28 ACT_IDX_HI_ACT_INST_END::trademakers::(Checksum: 3:431543ec3a95f263a91adec6e84729e0)
+CREATE INDEX ACT_IDX_HI_ACT_INST_END ON ACT_HI_ACTINST(END_TIME_);
+
+
+-- Changeset liquibase/activiti-history-5.7.xml::29 ACT_IDX_HI_DETAIL_PROC_INST::trademakers::(Checksum: 3:f3eb53ae07ceb08c8d0066d00be26a4f)
+CREATE INDEX ACT_IDX_HI_DETAIL_PROC_INST ON ACT_HI_DETAIL(PROC_INST_ID_);
+
+
+-- Changeset liquibase/activiti-history-5.7.xml::30 ACT_IDX_HI_DETAIL_ACT_INST::trademakers::(Checksum: 3:bc91b120e7eaefd127f006c4f7b4edbf)
+CREATE INDEX ACT_IDX_HI_DETAIL_ACT_INST ON ACT_HI_DETAIL(ACT_INST_ID_);
+
+
+-- Changeset liquibase/activiti-history-5.7.xml::31 ACT_IDX_HI_DETAIL_TIME::trademakers::(Checksum: 3:2bdae734eb1e90701cdda40af696e68a)
+CREATE INDEX ACT_IDX_HI_DETAIL_TIME ON ACT_HI_DETAIL(TIME_);
+
+
+-- Changeset liquibase/activiti-history-5.7.xml::32 ACT_IDX_HI_DETAIL_NAME::trademakers::(Checksum: 3:0ffce2cda8e6629337f21afe03da7542)
+CREATE INDEX ACT_IDX_HI_DETAIL_NAME ON ACT_HI_DETAIL(NAME_);
+
+
+-- Changeset liquibase/activiti-history-5.9.xml::14 ACT_HI_PROCINST.DELETE_REASON_::trademakers::(Checksum: 3:54ad2c1dc9cb02bfb52a66cfc1c66aa3)
+ALTER TABLE ACT_HI_PROCINST ADD DELETE_REASON_ VARCHAR(4000);
+
+
+-- Changeset liquibase/activiti-history-5.10.xml::9 ACT_IDX_HI_DETAIL_TASK_ID::trademakers::(Checksum: 3:97a0cbf45f348b4f4736dd3ed07bd098)
+CREATE INDEX ACT_IDX_HI_DETAIL_TASK_ID ON ACT_HI_DETAIL(TASK_ID_);
+
+
+-- Changeset liquibase/activiti-history-5.11.xml::9 Activiti 5.11 Update ACT_HI_ACTINST::trademakers::(Checksum: 3:8970a107e1f9caba608b4077cc7ad65d)
+ALTER TABLE ACT_HI_ACTINST ADD TASK_ID_ VARCHAR(64);
+
+ALTER TABLE ACT_HI_ACTINST ADD CALL_PROC_INST_ID_ VARCHAR(64);
+
+
+-- Changeset liquibase/activiti-history-5.11.xml::9.1 Activiti 5.11 Create Index on ACT_HI_ACTINST::trademakers::(Checksum: 3:d00c20e5802342aaa5a251692bb312d1)
+CREATE INDEX ACT_IDX_HI_ACT_INST_PROCINST ON ACT_HI_ACTINST(PROC_INST_ID_, ACT_ID_);
+
+
+-- Changeset liquibase/activiti-history-5.11.xml::10 Activiti 5.11 Update ACT_HI_TASKINST::trademakers::(Checksum: 3:5310733ba3499bcbe6bb37cbd07f2a51)
+ALTER TABLE ACT_HI_TASKINST ALTER COLUMN OWNER_ TYPE VARCHAR(255);
+
+ALTER TABLE ACT_HI_TASKINST ALTER COLUMN ASSIGNEE_ TYPE VARCHAR(255);
+
+
+-- Changeset liquibase/activiti-history-5.11.xml::11 Activiti 5.11 Create Table ACT_HI_VARINST::trademakers::(Checksum: 3:73d4b4b51ac50ffd429865ed05d9b295)
+CREATE TABLE ACT_HI_VARINST (ID_ VARCHAR(64) NOT NULL, PROC_INST_ID_ VARCHAR(64), EXECUTION_ID_ VARCHAR(64), TASK_ID_ VARCHAR(64), NAME_ VARCHAR(255) NOT NULL, VAR_TYPE_ VARCHAR(100), REV_ integer, BYTEARRAY_ID_ VARCHAR(64), DOUBLE_ DOUBLE PRECISION, LONG_ BIGINT, TEXT_ VARCHAR(4000), TEXT2_ VARCHAR(4000), CONSTRAINT PK_ACT_HI_VARINST PRIMARY KEY (ID_, NAME_));
+
+
+-- Changeset liquibase/activiti-history-5.11.xml::11.1 Activiti 5.11 Create Index on ACT_HI_VARINST::trademakers::(Checksum: 3:8e38f0f467738b465f82b24e5ffd6c84)
+CREATE INDEX ACT_IDX_HI_PROCVAR_PROC_INST ON ACT_HI_VARINST(PROC_INST_ID_);
+
+
+-- Changeset liquibase/activiti-history-5.11.xml::11.2 Activiti 5.11 Create Index on ACT_HI_VARINST::trademakers::(Checksum: 3:073fe2780a7f3f19c1bf034800f9d3bc)
+CREATE INDEX ACT_IDX_HI_PROCVAR_NAME_TYPE ON ACT_HI_VARINST(NAME_, VAR_TYPE_);
+
+
+-- Changeset liquibase/activiti-history-5.12.xml::2 Activiti 5.12 Update ACT_HI_TASKINST::trademakers::(Checksum: 3:319900036855ef42da46e29d4d01c05f)
+ALTER TABLE ACT_HI_TASKINST ADD CLAIM_TIME_ TIMESTAMP;
+
+
+-- Changeset liquibase/activiti-history-5.12.xml::3 Activiti 5.12 Update ACT_HI_ACTINST assignee column size::fheremans::(Checksum: 3:7fce6782a51bfd36d2232adb3d386d14)
+ALTER TABLE ACT_RU_TASK ALTER COLUMN OWNER_ TYPE VARCHAR(255);
+
+
+-- Release Database Lock
+-- Release Database Lock
