@@ -13,6 +13,7 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
@@ -49,7 +50,7 @@ public class ByteArrayEntity implements Serializable, PersistentObject, HasRevis
   }
 
   public Object getPersistentState() {
-    return (bytes != null ? bytes : PERSISTENTSTATE_NULL);
+    return (bytes != null ? new ByteArray(bytes) : PERSISTENTSTATE_NULL);
   }
   
   public int getRevisionNext() {
@@ -82,4 +83,25 @@ public class ByteArrayEntity implements Serializable, PersistentObject, HasRevis
   public void setRevision(int revision) {
     this.revision = revision;
   }
+  
+  // Wrapper for a byte array, needed to do byte array comparisons
+  // See http://jira.codehaus.org/browse/ACT-1524
+  public static class ByteArray {
+    
+    protected byte[] bytes;
+    
+    public ByteArray(byte[] bytes) {
+      this.bytes = bytes;
+    }
+    
+    public boolean equals(Object other) {
+      if (other instanceof ByteArray) {
+        ByteArray otherByteArray = (ByteArray) other;
+        return Arrays.equals(this.bytes, otherByteArray.bytes);
+      }
+      return false;
+    }
+    
+  }
+  
 }
