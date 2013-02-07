@@ -762,6 +762,7 @@ public class DbSqlSession implements Session {
       JdbcConnection connection = new JdbcConnection(sqlSession.getConnection());
       Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(connection);
       database.setDefaultSchemaName(this.connectionMetadataDefaultSchema);
+      database.setAutoCommit(false);
       Liquibase liquibase = new Liquibase("org/activiti/db/liquibase/activiti-master.xml", new ClassLoaderResourceAccessor(), database);
       liquibase.getDatabase().setDatabaseChangeLogLockTableName("ACT_" + liquibase.getDatabase().getDatabaseChangeLogLockTableName());
       liquibase.getDatabase().setDatabaseChangeLogTableName("ACT_" + liquibase.getDatabase().getDatabaseChangeLogTableName());
@@ -776,6 +777,7 @@ public class DbSqlSession implements Session {
       JdbcConnection connection = new JdbcConnection(sqlSession.getConnection());
       Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(connection);
       database.setDefaultSchemaName(this.connectionMetadataDefaultSchema);
+      database.setAutoCommit(false);
       Liquibase liquibase = new Liquibase("org/activiti/db/liquibase/activiti-master.xml", new ClassLoaderResourceAccessor(), database);
       liquibase.getDatabase().setDatabaseChangeLogLockTableName("ACT_" + liquibase.getDatabase().getDatabaseChangeLogLockTableName());
       liquibase.getDatabase().setDatabaseChangeLogTableName("ACT_" + liquibase.getDatabase().getDatabaseChangeLogTableName());
@@ -809,6 +811,7 @@ public class DbSqlSession implements Session {
         JdbcConnection connection = new JdbcConnection(sqlSession.getConnection());
         Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(connection);
         database.setDefaultSchemaName(this.connectionMetadataDefaultSchema);
+        database.setAutoCommit(false);
         Liquibase liquibase = new Liquibase("org/activiti/db/liquibase/activiti-upgrade-" + dbVersion + ".xml", new ClassLoaderResourceAccessor(), database);
         liquibase.getDatabase().setDatabaseChangeLogLockTableName("ACT_" + liquibase.getDatabase().getDatabaseChangeLogLockTableName());
         liquibase.getDatabase().setDatabaseChangeLogTableName("ACT_" + liquibase.getDatabase().getDatabaseChangeLogTableName());
