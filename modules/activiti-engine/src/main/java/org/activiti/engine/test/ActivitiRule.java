@@ -139,6 +139,7 @@ public class ActivitiRule extends TestWatchman {
   
   public void setProcessEngine(ProcessEngine processEngine) {
     this.processEngine = processEngine;
+	initializeServices();
   }
   
   public RepositoryService getRepositoryService() {

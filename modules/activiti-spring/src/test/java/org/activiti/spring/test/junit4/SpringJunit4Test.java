@@ -14,6 +14,7 @@
 package org.activiti.spring.test.junit4;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
@@ -62,6 +63,9 @@ public class SpringJunit4Test {
     runtimeService.startProcessInstanceByKey("simpleProcess");
     Task task = taskService.createTaskQuery().singleResult();
     assertEquals("My Task", task.getName());
+	
+	// ACT-1186: ActivitiRule services not initialized when using SpringJUnit4ClassRunner together with @ContextConfiguration
+	assertNotNull(activitiSpringRule.getRuntimeService());
   
     taskService.complete(task.getId());
     assertEquals(0, runtimeService.createProcessInstanceQuery().count());
