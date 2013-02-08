@@ -1,20 +1,2 @@
--- *********************************************************************
--- Update Database Script
--- *********************************************************************
--- Change Log: liquibase/activiti-history-sql-5.12.xml
--- Ran at: 2/7/13 4:46 PM
--- Against: activiti@jdbc:postgresql://localhost:5432/activiti
--- Liquibase version: 2.0.3
--- *********************************************************************
-
--- Lock Database
--- Changeset liquibase/activiti-history-5.12.xml::2 Activiti 5.12 Update ACT_HI_TASKINST::trademakers::(Checksum: 3:319900036855ef42da46e29d4d01c05f)
-ALTER TABLE ACT_HI_TASKINST ADD CLAIM_TIME_ TIMESTAMP;
-
-
--- Changeset liquibase/activiti-history-5.12.xml::3 Activiti 5.12 Update ACT_HI_ACTINST assignee column size::fheremans::(Checksum: 3:7fce6782a51bfd36d2232adb3d386d14)
-ALTER TABLE ACT_RU_TASK ALTER COLUMN OWNER_ TYPE VARCHAR(255);
-
-
--- Release Database Lock
--- Release Database Lock
+alter table ACT_HI_TASKINST
+  add column CLAIM_TIME_ timestamp;
