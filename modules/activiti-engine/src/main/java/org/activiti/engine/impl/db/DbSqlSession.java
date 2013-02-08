@@ -884,7 +884,11 @@ public class DbSqlSession implements Session {
         tables = databaseMetaData.getTables(this.connectionMetadataDefaultCatalog, schema, tableName, JDBC_METADATA_TABLE_TYPES);
         return tables.next();
       } finally {
-        tables.close();
+        try {
+          tables.close();
+        } catch (Exception e) {
+          log.error("Error closing meta data tables", e);
+        }
       }
       
     } catch (Exception e) {
