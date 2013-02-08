@@ -89,7 +89,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
     final ProcessInstanceQuery piq = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExample");
     
     moveByMinutes(5);
-    waitForJobExecutorOnCondition(10000, 100, new Callable<Boolean>() {
+    waitForJobExecutorOnCondition(10000, 500, new Callable<Boolean>() {
       public Boolean call() throws Exception {
         return 1 == piq.count();
       }      
@@ -98,7 +98,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
     assertEquals(1, jobQuery.count());
 
     moveByMinutes(5);
-    waitForJobExecutorOnCondition(10000, 100, new Callable<Boolean>() {
+    waitForJobExecutorOnCondition(10000, 500, new Callable<Boolean>() {
       public Boolean call() throws Exception {
         return 2 ==  piq.count();
       }      
@@ -126,7 +126,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
     final ProcessInstanceQuery piq = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExampleCycle");
     
     moveByMinutes(5);
-    waitForJobExecutorOnCondition(10000, 100, new Callable<Boolean>() {
+    waitForJobExecutorOnCondition(10000, 500, new Callable<Boolean>() {
       public Boolean call() throws Exception {
         return 1 ==  piq.count();
       }      
@@ -134,7 +134,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
     assertEquals(1, jobQuery.count());
 
     moveByMinutes(5);
-    waitForJobExecutorOnCondition(10000, 100, new Callable<Boolean>() {
+    waitForJobExecutorOnCondition(10000, 500, new Callable<Boolean>() {
       public Boolean call() throws Exception {
         return 2 ==  piq.count();
       }      
@@ -175,7 +175,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
     assertEquals(1, jobQuery.count());
 
     moveByMinutes(5);
-    waitForJobExecutorOnCondition(10000, 100, new Callable<Boolean>() {
+    waitForJobExecutorOnCondition(10000, 500, new Callable<Boolean>() {
       public Boolean call() throws Exception {
         //we check that correct version was started
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExample").singleResult();
