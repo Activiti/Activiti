@@ -81,9 +81,10 @@ public class FormPropertyHandler {
     if (isRequired && !properties.containsKey(id) && defaultExpression == null) {
       throw new ActivitiException("form property '"+id+"' is required");
     }
-    
+    boolean propertyExits = false;
     Object modelValue = null;
     if (properties.containsKey(id)) {
+    	propertyExits = true;
       final String propertyValue = properties.remove(id);
       if (type != null) {
         modelValue = type.convertFormValueToModelValue(propertyValue);
@@ -100,8 +101,7 @@ public class FormPropertyHandler {
         throw new ActivitiException("form property '"+id+"' is required");
       }
     }
-    
-    if (modelValue != null) {
+    if (propertyExits || (modelValue != null)) {
       if (variableName != null) {
         execution.setVariable(variableName, modelValue);
       } else if (variableExpression != null) {
