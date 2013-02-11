@@ -46,7 +46,7 @@ public class OsgiScriptingEngines extends ScriptingEngines {
     }
     
     if (scriptEngine == null) {
-      throw new ActivitiException("Can't find scripting engine for '" + language + "'");
+      return super.evaluate(script, language, variableScope);
     }
 
     try {

@@ -1,2 +1,2 @@
 alter table ACT_HI_TASKINST
-	add CLAIM_TIME_ datetime;
+  add CLAIM_TIME_ datetime;

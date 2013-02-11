@@ -68,7 +68,7 @@ create table ACT_RU_EXECUTION (
 
 create table ACT_RU_JOB (
     ID_ nvarchar(64) NOT NULL,
-	REV_ int,
+  REV_ int,
     TYPE_ nvarchar(255) NOT NULL,
     LOCK_EXP_TIME_ datetime,
     LOCK_OWNER_ nvarchar(255),
@@ -234,7 +234,7 @@ alter table ACT_RU_VARIABLE
     add constraint ACT_FK_VAR_BYTEARRAY 
     foreign key (BYTEARRAY_ID_) 
     references ACT_GE_BYTEARRAY (ID_);
-	
+  
 alter table ACT_RU_JOB 
     add constraint ACT_FK_JOB_EXCEPTION 
     foreign key (EXCEPTION_STACK_ID_) 

@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
@@ -120,4 +121,54 @@ public class VariablesTest extends PluggableActivitiTestCase {
     assertNotNull(newValue);
     assertEquals("a value", newValue);
   }
+  
+  // test case for ACT-1428
+  @Deployment
+  public void testNullVariable() {
+	    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess");
+	    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+
+	    Map<String, String> variables = new HashMap<String, String>();
+	    variables.put("testProperty", "434");
+
+	    formService.submitTaskFormData(task.getId(), variables);
+	    String resultVar = (String) runtimeService.getVariable(processInstance.getId(), "testProperty");
+	    
+	    assertEquals("434", resultVar);
+	    
+	    task = taskService.createTaskQuery().executionId(processInstance.getId()).singleResult();
+	    taskService.complete(task.getId());
+
+	    // If no variable is given, no variable should be set and script test should throw exception
+	    processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess");
+	    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();	    
+	    variables = new HashMap<String, String>();
+	    try {
+	    	formService.submitTaskFormData(task.getId(), variables);
+	    	fail("Should throw exception as testProperty is not defined and used in Script task");
+	    } catch (Exception e) {
+		    runtimeService.deleteProcessInstance(processInstance.getId(), "intentional exception in script task");
+
+	    	assertEquals("class org.activiti.engine.ActivitiException", e.getClass().toString());
+	    }
+	    
+	    	    
+	    // No we put null property, This should be put into the variable. We do not expect exceptions
+	    processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess");
+	    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();	    
+	    variables = new HashMap<String, String>();
+	    variables.put("testProperty", null);
+	    
+	    try {
+	    	formService.submitTaskFormData(task.getId(), variables);
+	    } catch (Exception e) {
+	    	fail("Should not throw exception as the testProperty is defined, although null");
+	    }
+	    resultVar = (String) runtimeService.getVariable(processInstance.getId(), "testProperty");
+	    
+	    assertNull(resultVar);
+	    
+	    runtimeService.deleteProcessInstance(processInstance.getId(), "intentional exception in script task");
+  }
+
 }
