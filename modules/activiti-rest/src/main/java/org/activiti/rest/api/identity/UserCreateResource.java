@@ -19,7 +19,7 @@ import org.activiti.engine.identity.User;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
 import org.restlet.data.Status;
-import org.restlet.resource.Put;
+import org.restlet.resource.Post;
 import org.restlet.resource.ResourceException;
 
 /**
@@ -27,7 +27,7 @@ import org.restlet.resource.ResourceException;
  */
 public class UserCreateResource extends SecuredResource {
   
-  @Put()
+  @Post()
   public StateResponse createUser(UserInfoWithPassword userInfo){
     if(authenticate() == false) return null;
     
